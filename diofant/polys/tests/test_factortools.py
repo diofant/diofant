@@ -307,7 +307,7 @@ def test_dmp_zz_wang():
     assert R.dmp_expand(factors) == w_1
 
 
-def test_issue_6355():
+def test_sympyissue_6355():
     # This tests a bug in the Wang algorithm that occured only with a very
     # specific set of random numbers.
     random_sequence = [-1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 3, -1, 3, 3, 3, 3, -1, 3]
@@ -515,7 +515,7 @@ def test_dup_factor_list():
 
     assert R.dup_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
     assert R.dup_factor_list_include(x**2 + 2*x + 1) == [(x + 1, 2)]
-    # issue 8037
+    # issue sympy/sympy#8037
     assert R.dup_factor_list(6*x**2 - 5*x - 6) == (1, [(2*x - 3, 1), (3*x + 2, 1)])
 
     R, x = ring("x", QQ)

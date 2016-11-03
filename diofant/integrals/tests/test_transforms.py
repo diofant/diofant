@@ -517,7 +517,7 @@ def test_laplace_transform():
         ])
 
 
-def test_issue_8368_7173():
+def test_sympyissue_8368_7173():
     LT = laplace_transform
     # hyperbolic
     assert LT(sinh(x), x, s) == (1/(s**2 - 1), 1, True)
@@ -744,11 +744,11 @@ def test_hankel_transform():
         nu + Rational(3, 2))/sqrt(pi), k, r, nu) == r**nu*exp(-a*r)
 
 
-def test_issue_7181():
+def test_sympyissue_7181():
     assert mellin_transform(1/(1 - x), x, s) is not None
 
 
-def test_issue_8882():
+def test_sympyissue_8882():
     # This is the original test.
     # from diofant import diff, Integral, integrate
     # r = Symbol('r')
@@ -765,7 +765,7 @@ def test_issue_8882():
         **{'as_meijerg': True, 'needeval': True}))
 
 
-def test_issue_7173():
+def test_sympyissue_7173():
     assert laplace_transform(sinh(a*x)*cosh(a*x), x, s) == \
         (a/(s**2 - 4*a**2), 0,
         And(Or(Abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <
@@ -774,7 +774,7 @@ def test_issue_7173():
         Abs(periodic_argument(a, oo)) <= pi/2)))
 
 
-def test_issue_8514():
+def test_sympyissue_8514():
     a, b, c, = symbols('a b c', positive=True, finite=True)
     t = symbols('t', positive=True)
     ft = simplify(inverse_laplace_transform(1/(a*s**2 + b*s + c), s, t))

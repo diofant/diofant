@@ -71,7 +71,7 @@ def test_trigsimp2():
         Subs(x, x, sin(y)**2 + cos(y)**2)) == Subs(x, x, 1)
 
 
-def test_issue_4373():
+def test_sympyissue_4373():
     assert abs(trigsimp(2.0*sin(x)**2 + 2.0*cos(x)**2) - 2.0) < 1e-10
 
 
@@ -88,7 +88,7 @@ def test_trigsimp3():
     assert trigsimp(tan(x)) == trigsimp(sin(x)/cos(x))
 
 
-def test_issue_4661():
+def test_sympyissue_4661():
     eq = -4*sin(x)**4 + 4*cos(x)**4 - 8*cos(x)**2
     assert trigsimp(eq) == -4
     n = sin(x)**6 + 4*sin(x)**4*cos(x)**2 + 5*sin(x)**2*cos(x)**4 + 2*cos(x)**6
@@ -99,27 +99,27 @@ def test_issue_4661():
     assert trigsimp(eq) == 0
 
 
-def test_issue_4494():
+def test_sympyissue_4494():
     eq = sin(a)**2*sin(b)**2 + cos(a)**2*cos(b)**2*tan(a)**2 + cos(a)**2
     assert trigsimp(eq) == 1
 
 
-def test_issue_5948():
+def test_sympyissue_5948():
     assert trigsimp(diff(integrate(cos(x)/sin(x)**7, x), x)) == cos(x)/sin(x)**7
 
 
-def test_issue_4775():
+def test_sympyissue_4775():
     assert trigsimp(sin(x)*cos(y)+cos(x)*sin(y)) == sin(x + y)
     assert trigsimp(sin(x)*cos(y)+cos(x)*sin(y)+3) == sin(x + y) + 3
 
 
-def test_issue_4280():
+def test_sympyissue_4280():
     assert trigsimp(cos(x)**2 + cos(y)**2*sin(x)**2 + sin(y)**2*sin(x)**2) == 1
     assert trigsimp(a**2*sin(x)**2 + a**2*cos(y)**2*cos(x)**2 + a**2*cos(x)**2*sin(y)**2) == a**2
     assert trigsimp(a**2*cos(y)**2*sin(x)**2 + a**2*sin(y)**2*sin(x)**2) == a**2*sin(x)**2
 
 
-def test_issue_3210():
+def test_sympyissue_3210():
     eqs = (sin(2)*cos(3) + sin(3)*cos(2),
         -sin(2)*sin(3) + cos(2)*cos(3),
         sin(2)*cos(3) - sin(3)*cos(2),
@@ -140,10 +140,10 @@ def test_issue_3210():
 
 
 def test_trigsimp_issues():
-    # issue 4625 - factor_terms works, too
+    # issue sympy/sympy#4625 - factor_terms works, too
     assert trigsimp(sin(x)**3 + cos(x)**2*sin(x)) == sin(x)
 
-    # issue 5948
+    # issue sympy/sympy#5948
     assert trigsimp(diff(integrate(cos(x)/sin(x)**3, x), x)) == \
         cos(x)/sin(x)**3
     assert trigsimp(diff(integrate(sin(x)/cos(x)**3, x), x)) == \
@@ -166,7 +166,7 @@ def test_trigsimp_issues():
     assert trigsimp(cos(2)*(cos(3) + 1)**2*(cos(3) - 1)**2) == \
         cos(2)*sin(3)**4
 
-    # issue 6789; this generates an expression that formerly caused
+    # issue sympy/sympy#6789; this generates an expression that formerly caused
     # trigsimp to hang
     assert cot(x).equals(tan(x)) is False
 
@@ -318,7 +318,7 @@ def test_trigsimp_groebner():
     trigsimp_groebner(csc(x) * sin(x))  # not raises
 
 
-def test_issue_2827_trigsimp_methods():
+def test_sympyissue_2827_trigsimp_methods():
     def measure1(expr):
         return len(str(expr))
 
@@ -387,7 +387,7 @@ def test_exptrigsimp():
 
 
 @pytest.mark.xfail
-def test_issue_6811_fail():
+def test_sympyissue_6811_fail():
     xp = Symbol('xp')
     eq = 4*(-19*sin(x)*y + 5*sin(3*x)*y + 15*cos(2*x)*z - 21*z)*xp/(9*cos(x) - 5*cos(3*x))
     assert trigsimp(eq) == -2*(2*cos(x)*tan(x)*y + 3*z)*xp/cos(x)

@@ -79,20 +79,20 @@ def test_radsimp():
     assert radsimp(1/sqrt(5 + 2 * sqrt(6))) == -sqrt(2) + sqrt(3)
     assert radsimp(1/sqrt(5 + 2 * sqrt(6))**3) == -(-sqrt(3) + sqrt(2))**3
 
-    # issue 6532
+    # issue sympy/sympy#6532
     assert fraction(radsimp(1/sqrt(x))) == (sqrt(x), x)
     assert fraction(radsimp(1/sqrt(2*x + 3))) == (sqrt(2*x + 3), 2*x + 3)
     assert fraction(radsimp(1/sqrt(2*(x + 3)))) == (sqrt(2*x + 6), 2*x + 6)
 
-    # issue 5994
+    # issue sympy/sympy#5994
     e = -(2 + 2*sqrt(2) + 4*2**Rational(1, 4))/(1 + 2**Rational(3, 4) + 3*2**Rational(1, 4) + 3*sqrt(2))
     assert radsimp(e).expand() == -2*2**Rational(3, 4) - 2*2**Rational(1, 4) + 2 + 2*sqrt(2)
 
-    # issue 5986 (modifications to radimp didn't initially recognize this so
+    # issue sympy/sympy#5986 (modifications to radimp didn't initially recognize this so
     # the test is included here)
     assert radsimp(1/(-sqrt(5)/2 - Rational(1, 2) + (-sqrt(5)/2 - Rational(1, 2))**2)) == 1
 
-    # from issue 5934
+    # from issue sympy/sympy#5934
     eq = (
         (-240*sqrt(2)*sqrt(sqrt(5) + 5)*sqrt(8*sqrt(5) + 40) -
         360*sqrt(2)*sqrt(-8*sqrt(5) + 40)*sqrt(-sqrt(5) + 5) -
@@ -136,12 +136,12 @@ def test_radsimp():
     assert radsimp(x/(y + r)/r, symbolic=False) == \
         -x*(-sqrt(2) + 1)/(y + 1 + sqrt(2))
 
-    # issue 7408
+    # issue sympy/sympy#7408
     eq = sqrt(x)/sqrt(y)
     assert radsimp(eq) == umul(sqrt(x), sqrt(y), 1/y)
     assert radsimp(eq, symbolic=False) == eq
 
-    # issue 7498
+    # issue sympy/sympy#7498
     assert radsimp(sqrt(x)/sqrt(y)**3) == umul(sqrt(x), sqrt(y**3), 1/y**3)
 
     # for coverage
@@ -202,7 +202,7 @@ def test_collect_4():
     """Collect with respect to a power"""
 
     assert collect(a*x**c + b*x**c, x**c) == x**c*(a + b)
-    # issue 6096: 2 stays with c (unless c is integer or x is positive0
+    # issue sympy/sympy#6096: 2 stays with c (unless c is integer or x is positive0
     assert collect(a*x**(2*c) + b*x**(2*c), x**c) == x**(2*c)*(a + b)
 
 
@@ -224,7 +224,7 @@ def test_collect_D():
     assert collect(a*fx + b*fx, fx) == (a + b)*fx
     assert collect(a*D(fx, x) + b*D(fx, x), fx) == (a + b)*D(fx, x)
     assert collect(a*fxx + b*fxx, fx) == (a + b)*D(fx, x)
-    # issue 4784
+    # issue sympy/sympy#4784
     assert collect(5*f(x) + 3*fx, fx) == 5*f(x) + 3*fx
     assert collect(f(x) + f(x)*diff(f(x), x) + x*diff(f(x), x)*f(x), f(x).diff(x), exact=True) == \
         (x*f(x) + f(x))*D(f(x), x) + f(x)
@@ -275,7 +275,7 @@ def test_rcollect():
 
 @pytest.mark.xfail
 def test_collect_func_xfail():
-    # XXX: this test will pass when automatic constant distribution is removed (issue 4596)
+    # XXX: this test will pass when automatic constant distribution is removed (issue sympy/sympy#4596)
     assert collect(f, x, factor, evaluate=False) == {S.One: (a + 1)**3,
                    x: 3*(a + 1)**2, x**2: 3*(a + 1), x**3: 1}
 
@@ -325,7 +325,7 @@ def test_collect_const():
     assert collect_const(sqrt(2)*(1 + sqrt(2)) + sqrt(3) + x*sqrt(2)) == \
         sqrt(2)*(x + 1 + sqrt(2)) + sqrt(3)
 
-    # issue 5290
+    # issue sympy/sympy#5290
     assert collect_const(2*x + 2*y + 1, 2) == \
         collect_const(2*x + 2*y + 1) == \
         Add(Integer(1), Mul(2, x + y, evaluate=False), evaluate=False)
@@ -341,7 +341,7 @@ def test_collect_const():
         2*sqrt(sqrt(2) + 3)*(sqrt(5)*x + y) + 2
 
 
-def test_issue_6097():
+def test_sympyissue_6097():
     assert collect(a*y**(2.0*x) + b*y**(2.0*x), y**x) == y**(2.0*x)*(a + b)
     assert collect(a*2**(2.0*x) + b*2**(2.0*x), 2**x) == 2**(2.0*x)*(a + b)
 
@@ -381,13 +381,13 @@ def test_fraction():
     assert fraction(exp(-n)) == (exp(-n), 1)
 
 
-def test_issue_5615():
+def test_sympyissue_5615():
     aA, Re, D = symbols('aA Re D')
     e = ((D**3*a + b*aA**3)/Re).expand()
     assert collect(e, [aA**3/Re, a]) == e
 
 
-def test_issue_5933():
+def test_sympyissue_5933():
     from diofant import Polygon, RegularPolygon, denom
     x = Polygon(*RegularPolygon((0, 0), 1, 5).vertices).centroid.x
     assert abs(denom(x).n()) > 1e-12

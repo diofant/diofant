@@ -699,7 +699,7 @@ class MatrixBase:
         return "Matrix([\n%s])" % self.table(printer, rowsep=',\n')
 
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
-    # regardless of the global setting.  See issue 5487.
+    # regardless of the global setting.  See issue sympy/sympy#5487.
     def __repr__(self):
         from diofant.printing import srepr
         return srepr(self, order=None)

@@ -212,7 +212,7 @@ def test_matrix2numpy_conversion():
     assert d.dtype == numpy.dtype('float64')
 
 
-def test_issue_3728():
+def test_sympyissue_3728():
     assert (Rational(1, 2)*array([2*x, 0]) == array([x, 0])).all()
     assert (Rational(1, 2) + array(
         [2*x, 0]) == array([2*x + Rational(1, 2), Rational(1, 2)])).all()

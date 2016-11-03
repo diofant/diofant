@@ -231,20 +231,20 @@ def test_hacky_inequalities():
     assert reduce_inequalities(x + y >= 1, symbols=[x]) == And(-y + 1 <= x, x < oo)
 
 
-def test_issue_10203():
+def test_sympyissue_10203():
     y = Symbol('y', extended_real=True)
     assert reduce_inequalities(Eq(0, x - y), symbols=[x]) == Eq(x, y)
     assert reduce_inequalities(Ne(0, x - y), symbols=[x]) == \
         Or(And(-oo < x, x < y), And(x < oo, y < x))
 
 
-def test_issue_6343():
+def test_sympyissue_6343():
     eq = -3*x**2/2 - 45*x/4 + Rational(33, 2) > 0
     assert reduce_inequalities(eq) == \
         And(x < -Rational(15, 4) + sqrt(401)/4, -sqrt(401)/4 - Rational(15, 4) < x)
 
 
-def test_issue_8235():
+def test_sympyissue_8235():
     assert reduce_inequalities(x**2 - 1 < 0) == \
         And(Integer(-1) < x, x < Integer(1))
     assert reduce_inequalities(x**2 - 1 <= 0) == \
@@ -263,7 +263,7 @@ def test_issue_8235():
     assert solve(sqrt((-x + 1)**2) < 1) == And(Integer(0) < x, x < 2)
 
 
-def test_issue_5526():
+def test_sympyissue_5526():
     assert reduce_inequalities(Integer(0) <=
         x + Integral(y**2, (y, 1, 3)) - 1, [x]) == \
         And(-Integral(y**2, (y, 1, 3)) + 1 <= x, x < oo)
@@ -278,11 +278,11 @@ def test_solve_univariate_inequality():
         Union(Interval(1, 2), Interval(3, oo, False, True))
     assert isolve((x - 1)*(x - 2)*(x - 3) >= 0, x) == \
         Or(And(Le(1, x), Le(x, 2)), And(Le(3, x), Lt(x, oo)))
-    # issue 2785:
+    # issue sympy/sympy#2785:
     assert isolve(x**3 - 2*x - 1 > 0, x, relational=False) == \
         Union(Interval(-1, -sqrt(5)/2 + Rational(1, 2), True, True),
               Interval(Rational(1, 2) + sqrt(5)/2, oo, True, True))
-    # issue 2794:
+    # issue sympy/sympy#2794:
     assert isolve(x**3 - x**2 + x - 1 > 0, x, relational=False) == \
         Interval(1, oo, True, True)
 
@@ -310,7 +310,7 @@ def test_slow_general_univariate():
         Or(And(Integer(0) < x, x < r**6), And(r**6 < x, x < oo))
 
 
-def test_issue_8545():
+def test_sympyissue_8545():
     eq = 1 - x - abs(1 - x)
     ans = And(Lt(1, x), Lt(x, oo))
     assert reduce_piecewise_inequality(eq, '<', x) == ans
@@ -318,15 +318,15 @@ def test_issue_8545():
     assert reduce_inequalities(eq < 0) == ans
 
 
-def test_issue_8974():
+def test_sympyissue_8974():
     assert isolve(-oo < x, x) == And(-oo < x, x < oo)
     assert isolve(oo > x, x) == And(-oo < x, x < oo)
 
 
-def test_issue_10196():
+def test_sympyissue_10196():
     assert reduce_inequalities(x**2 >= 0)
     assert reduce_inequalities(x**2 < 0) is S.false
 
 
-def test_issue_10268():
+def test_sympyissue_10268():
     assert reduce_inequalities(log(x) < 300) == And(-oo < x, x < E**300)

@@ -1686,7 +1686,7 @@ def _meijerint_indefinite_1(f, x):
 
         cancel is used before mul_expand since it is possible for an
         expression to have an additive constant that doesn't become isolated
-        with simple expansion. Such a situation was identified in issue 6369:
+        with simple expansion. Such a situation was identified in issue sympy/sympy#6369:
 
 
         >>> from diofant import sqrt, cancel

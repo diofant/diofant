@@ -288,7 +288,7 @@ def test_ImageSet_simplification():
             imageset(Lambda(m, sin(tan(m))), S.Integers))
 
 
-def test_issue_10497():
+def test_sympyissue_10497():
     # __iter__ for infinite product set
     assert (list(itertools.islice(iter(S.Integers**2), 7)) ==
             [(0, 0), (0, 1), (1, 0), (1, 1), (0, -1), (1, -1), (-1, 0)])

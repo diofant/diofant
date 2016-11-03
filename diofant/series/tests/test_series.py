@@ -31,7 +31,7 @@ def test_exp2():
     assert e1 == e2
 
 
-def test_issue_5223():
+def test_sympyissue_5223():
     assert series(1, x) == 1
     assert next(Integer(0).lseries(x)) == 0
     assert cos(x).series() == cos(x).series(x)
@@ -80,7 +80,7 @@ def test_issue_5223():
         1 + x*log(x) + x**2*log(x)**2/2 + O(x**2)
 
 
-def test_issue_3978():
+def test_sympyissue_3978():
     f = Function('f')
     assert f(x).series(x, 0, 3, dir='-') == \
             f(0) + x*Subs(Derivative(f(x), x), (x,), (0,)) + \
@@ -101,18 +101,18 @@ def test_issue_3978():
             x**2*Subs(Derivative(TestF(x), x, x), (x,), (0,))/2 + O(x**3)
 
 
-def test_issue_5852():
+def test_sympyissue_5852():
     assert series(1/cos(x/log(x)), x, 0) == 1 + x**2/(2*log(x)**2) + \
         5*x**4/(24*log(x)**4) + O(x**6)
 
 
-def test_issue_4583():
+def test_sympyissue_4583():
     assert cos(1 + x + x**2).series(x, 0, 5) == cos(1) - x*sin(1) + \
         x**2*(-sin(1) - cos(1)/2) + x**3*(-cos(1) + sin(1)/6) + \
         x**4*(-11*cos(1)/24 + sin(1)/2) + O(x**5)
 
 
-def test_issue_6318():
+def test_sympyissue_6318():
     eq = (1/x)**Rational(2, 3)
     assert (eq + 1).as_leading_term(x) == eq
 
@@ -127,7 +127,7 @@ def test_sin_power():
     assert e.compute_leading_term(x) == x**1.2
 
 
-def test_issue_7203():
+def test_sympyissue_7203():
     assert series(cos(x), x, pi, 3) == \
         -1 + (x - pi)**2/2 + O((x - pi)**3, (x, pi))
 
@@ -141,11 +141,11 @@ def test_exp_product_positive_factors():
         a**7*b**7/5040 + O(a**8*b**8)
 
 
-def test_issue_8805():
+def test_sympyissue_8805():
     assert series(1, n=8) == 1
 
 
-def test_issue_9173():
+def test_sympyissue_9173():
     p_0, p_1, p_2, p_3, b_0, b_1, b_2 = symbols('p_0:4, b_0:3')
     Q = (p_0 + (p_1 + (p_2 + p_3/y)/y)/y)/(1 + ((p_3/(b_0*y) +
         (b_0*p_2 - b_1*p_3)/b_0**2)/y + (b_0**2*p_1 - b_0*b_1*p_2 -
@@ -154,14 +154,14 @@ def test_issue_9173():
 
 
 @pytest.mark.slow
-def test_issue_9549():
+def test_sympyissue_9549():
     e = (x**2 + x + 1)/(x**3 + x**2)
     r = e.series(x, oo)
     assert r == x**(-5) - 1/x**4 + x**(-3) + 1/x + O(x**(-6), (x, oo))
     assert e.series(x, oo, n=8) + O(1/x**6, (x, oo)) == r
 
 
-def test_issue_10761():
+def test_sympyissue_10761():
     e = 1/(x**-2 + x**-3)
     assert e.series(x) == x**3 - x**4 + x**5 + O(x**6)
     # more tests from https://github.com/sympy/sympy/pull/10762
@@ -173,13 +173,13 @@ def test_issue_10761():
                                  + x**17 - x**18 + x**19 + O(x**20))
 
 
-def test_issue_11407():
+def test_sympyissue_11407():
     a, b, c = symbols('a, b, c')
     assert sqrt(a + b + c*x).series(x, 0, 1) == sqrt(a + b) + O(x)
     assert sqrt(a + b + c + c*x).series(x, 0, 1) == sqrt(a + b + c) + O(x)
 
 
-def test_issue_6179():
+def test_sympyissue_6179():
     assert (sin(x)*log(x)).series(x, 0, 4) == (x*log(x) -
                                                x**3*log(x)/6 + O(x**4))
     assert ((x**2*(x**3 + x**2 + 1)*log(x)).series(x, 0, 4) ==
@@ -187,7 +187,7 @@ def test_issue_6179():
 
 
 @pytest.mark.slow
-def test_issue_11722():
+def test_sympyissue_11722():
     t, g = symbols('t g')
     good = -g**4*t**4/4 + 7*g**3*t**4/3 + g**3*t**3/3 - 27*g**2*t**4/4 - 2*g**2*t**3 - g**2*t**2/2 + 15*g*t**4/2 + 19*g*t**3/6 + 3*g*t**2/2 + g*t + g - 2009*t**4/720 - 13*t**3/9 - 5*t**2/6 - t/2 - (g + log(-t + 1) - 1 + (g + log(-t + 1))/(-1 + 1/t) - 1/(2*(-1 + 1/t)) - (g + log(-t + 1))**2/(2*(-1 + 1/t)**2) + 3*(g + log(-t + 1))/(2*(-1 + 1/t)**2) - 5/(6*(-1 + 1/t)**2) + (g + log(-t + 1))**3/(3*(-1 + 1/t)**3) - 2*(g + log(-t + 1))**2/(-1 + 1/t)**3 + 19*(g + log(-t + 1))/(6*(-1 + 1/t)**3) - 13/(9*(-1 + 1/t)**3) - (g + log(-t + 1))**4/(4*(-1 + 1/t)**4) + 7*(g + log(-t + 1))**3/(3*(-1 + 1/t)**4) - 27*(g + log(-t + 1))**2/(4*(-1 + 1/t)**4) + 15*(g + log(-t + 1))/(2*(-1 + 1/t)**4) - 2009/(720*(-1 + 1/t)**4) + 1/t)/(1 - 1/(g + log(-t + 1) - 1 + (g + log(-t + 1))/(-1 + 1/t) - 1/(2*(-1 + 1/t)) - (g + log(-t + 1))**2/(2*(-1 + 1/t)**2) + 3*(g + log(-t + 1))/(2*(-1 + 1/t)**2) - 5/(6*(-1 + 1/t)**2) + (g + log(-t + 1))**3/(3*(-1 + 1/t)**3) - 2*(g + log(-t + 1))**2/(-1 + 1/t)**3 + 19*(g + log(-t + 1))/(6*(-1 + 1/t)**3) - 13/(9*(-1 + 1/t)**3) - (g + log(-t + 1))**4/(4*(-1 + 1/t)**4) + 7*(g + log(-t + 1))**3/(3*(-1 + 1/t)**4) - 27*(g + log(-t + 1))**2/(4*(-1 + 1/t)**4) + 15*(g + log(-t + 1))/(2*(-1 + 1/t)**4) - 2009/(720*(-1 + 1/t)**4) + 1/t)) + 1/t
     bad = good.subs(g, log(1/t))

@@ -1286,7 +1286,7 @@ class Derivative(Expr):
 
     def _eval_subs(self, old, new):
         if old in self.variables and not new.is_Symbol:
-            # issue 4719
+            # issue sympy/sympy#4719
             return Subs(self, old, new)
         # If both are Derivatives with the same expr, check if old is
         # equivalent to self or if old is a subderivative of self.
@@ -2449,7 +2449,7 @@ def nfloat(expr, n=15, exponent=False):
 
     # watch out for RootOf instances that don't like to have
     # their exponents replaced with Dummies and also sometimes have
-    # problems with evaluating at low precision (issue 6393)
+    # problems with evaluating at low precision (issue sympy/sympy#6393)
     rv = rv.xreplace({ro: ro.n(n) for ro in rv.atoms(RootOf)})
 
     if not exponent:

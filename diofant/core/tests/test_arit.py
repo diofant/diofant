@@ -427,7 +427,7 @@ def test_Mul_is_even_odd():
     assert (k*m*x).is_even is True
     assert (k*m*x).is_odd is False
 
-    # issue 6791:
+    # issue sympy/sympy#6791:
     assert (x/2).is_integer is None
     assert (k/2).is_integer is False
     assert (m/2).is_integer is True
@@ -934,7 +934,7 @@ def test_Pow_is_integer():
     assert (k**2).is_integer is True
     assert (k**(-2)).is_integer is None
     assert ((m + 1)**(-2)).is_integer is False
-    assert (m**(-1)).is_integer is None  # issue 8580
+    assert (m**(-1)).is_integer is None  # issue sympy/sympy#8580
 
     assert (2**k).is_integer is None
     assert (2**(-k)).is_integer is None
@@ -972,7 +972,7 @@ def test_Pow_is_integer():
     assert ((-1)**k).is_integer
 
     x = Symbol('x', extended_real=True, integer=False)
-    assert (x**2).is_integer is None  # issue 8641
+    assert (x**2).is_integer is None  # issue sympy/sympy#8641
 
 
 def test_Pow_is_real():
@@ -1025,7 +1025,7 @@ def test_Pow_is_real():
     n = Symbol('n', nonnegative=True)
     assert log(n).is_extended_real is None
 
-    assert sqrt(-I).is_extended_real is False  # issue 7843
+    assert sqrt(-I).is_extended_real is False  # issue sympy/sympy#7843
 
 
 def test_real_Pow():
@@ -1160,7 +1160,7 @@ def test_Pow_is_zero():
     assert Pow(2, 2, evaluate=False).is_zero is False
 
     a = Symbol('a', zero=False)
-    assert Pow(a, 3).is_zero is False  # issue 7965
+    assert Pow(a, 3).is_zero is False  # issue sympy/sympy#7965
 
     assert Pow(2, oo, evaluate=False).is_zero is False
     assert Pow(2, -oo, evaluate=False).is_zero
@@ -1264,7 +1264,7 @@ def test_Mul_is_imaginary_real():
     assert (r*i*ii).is_imaginary is None
     assert (r*i*ii).is_extended_real is True
 
-    # Github's issue 5874:
+    # Github's issue sympy/sympy#5874:
     nr = Symbol('nr', extended_real=False, complex=True)
     a = Symbol('a', extended_real=True, nonzero=True)
     b = Symbol('b', extended_real=True)
@@ -1340,7 +1340,7 @@ def test_Add_is_irrational():
 
 
 @pytest.mark.xfail
-def test_issue_3531():
+def test_sympyissue_3531():
     class MightyNumeric(tuple):
         def __rdiv__(self, other):
             return "something"
@@ -1350,7 +1350,7 @@ def test_issue_3531():
     assert sympify(1)/MightyNumeric((1, 2)) == "something"
 
 
-def test_issue_3531b():
+def test_sympyissue_3531b():
     class Foo:
         def __init__(self):
             self.field = 1.0
@@ -1389,7 +1389,7 @@ def test_suppressed_evaluation():
 
 
 def test_Add_as_coeff_mul():
-    # issue 5524.  These should all be (1, self)
+    # issue sympy/sympy#5524.  These should all be (1, self)
     assert (x + 1).as_coeff_mul() == (1, (x + 1,))
     assert (x + 2).as_coeff_mul() == (1, (x + 2,))
     assert (x + 3).as_coeff_mul() == (1, (x + 3,))
@@ -1413,7 +1413,7 @@ def test_Pow_as_coeff_mul_doesnt_expand():
     assert exp(x + exp(x + y)) != exp(x + exp(x)*exp(y))
 
 
-def test_issue_3514():
+def test_sympyissue_3514():
     assert sqrt(S.Half) * sqrt(6) == 2 * sqrt(3)/2
     assert Rational(1, 2)*sqrt(6)*sqrt(2) == sqrt(3)
     assert sqrt(6)/2*sqrt(2) == sqrt(3)
@@ -1434,7 +1434,7 @@ def test_make_args():
     assert Mul.make_args((x + y)**z) == ((x + y)**z,)
 
 
-def test_issue_5126():
+def test_sympyissue_5126():
     assert (-2)**x*(-3)**x != 6**x
     i = Symbol('i', integer=1)
     assert (-2)**i*(-3)**i == 6**i
@@ -1491,7 +1491,7 @@ def test_Pow_as_content_primitive():
     assert ((2*x + 2)**3).as_content_primitive() == (8, (x + 1)**3)
 
 
-def test_issue_5460():
+def test_sympyissue_5460():
     u = Mul(2, (1 + x), evaluate=False)
     assert (2 + u).args == (2, u)
 
@@ -1503,7 +1503,7 @@ def test_product_irrational():
     assert (I*pi).is_positive is False
 
 
-def test_issue_5919():
+def test_sympyissue_5919():
     assert (x/(y*(1 + y))).expand() == x/(y**2 + y)
 
 
@@ -1602,7 +1602,7 @@ def test_Mod():
     assert (3*i*x) % (2*i*y) == i*Mod(3*x, 2*y)
     assert Mod(4*i, 4) == 0
 
-    # issue 8677
+    # issue sympy/sympy#8677
     n = Symbol('n', integer=True, positive=True)
     assert (factorial(n) % n).equals(0) is not False
 
@@ -1636,7 +1636,7 @@ def test_Mod_is_nonposneg():
     assert Mod(k, n).is_nonnegative is None
 
 
-def test_issue_6001():
+def test_sympyissue_6001():
     A = Symbol("A", commutative=False)
     eq = A + A**2
     # it doesn't matter whether it's True or False; they should
@@ -1671,7 +1671,7 @@ def test_polar():
     assert ((p*q)**x).expand() == p**x * q**x
 
 
-def test_issue_6040():
+def test_sympyissue_6040():
     a, b = Pow(1, 2, evaluate=False), S.One
     assert a != b
     assert b != a
@@ -1679,7 +1679,7 @@ def test_issue_6040():
     assert not (b == a)
 
 
-def test_issue_6082():
+def test_sympyissue_6082():
     # Comparison is symmetric
     assert Basic.compare(Max(x, 1), Max(x, 2)) == \
         - Basic.compare(Max(x, 2), Max(x, 1))
@@ -1689,7 +1689,7 @@ def test_issue_6082():
     assert Basic.compare(Max(1, x), frozenset((1, x))) != 0
 
 
-def test_issue_6077():
+def test_sympyissue_6077():
     assert x**2.0/x == x**1.0
     assert x/x**2.0 == x**-1.0
     assert x*x**2.0 == x**3.0
@@ -1733,18 +1733,18 @@ def test_diofantissue_31():
     assert sin(O(x))/sin(O(x)) == Mul(1/sin(O(x)), sin(O(x)), evaluate=False)
 
 
-def test_issue_5160_6087_6089_6090():
-    # issue 6087
+def test_sympyissue_5160_6087_6089_6090():
+    # issue sympy/sympy#6087
     assert ((-2*x*y**y)**3.2).n(2) == (2**3.2*(-x*y**y)**3.2).n(2)
-    # issue 6089
+    # issue sympy/sympy#6089
     A, B, C = symbols('A,B,C', commutative=False)
     assert (2.*B*C)**3 == 8.0*(B*C)**3
     assert (-2.*B*C)**3 == -8.0*(B*C)**3
     assert (-2*B*C)**2 == 4*(B*C)**2
-    # issue 5160
+    # issue sympy/sympy#5160
     assert sqrt(-1.0*x) == 1.0*sqrt(-x)
     assert sqrt(1.0*x) == 1.0*sqrt(x)
-    # issue 6090
+    # issue sympy/sympy#6090
     assert (-2*x*y*A*B)**2 == 4*x**2*y**2*(A*B)**2
 
 
@@ -1785,7 +1785,7 @@ def test_float_int():
         12345678901234567891
 
 
-def test_issue_6611a():
+def test_sympyissue_6611a():
     assert Mul.flatten([3**Rational(1, 3),
         Pow(-Rational(1, 9), Rational(2, 3), evaluate=False)]) == \
         ([Rational(1, 3), (-1)**Rational(2, 3)], [], None)
@@ -1887,7 +1887,7 @@ def test_mul_zero_detection():
         test(z, b, e)
 
 
-def test_issue_8247_8354():
+def test_sympyissue_8247_8354():
     from diofant import tan
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_positive is False  # it's 0
@@ -1910,7 +1910,7 @@ def test_issue_8247_8354():
     assert z.is_positive is False  # it's 0 (and a single _mexpand isn't enough)
 
 
-def test_issue_9832():
+def test_sympyissue_9832():
     x = Symbol('x', extended_real=True)
     assert (x**2 - oo).is_negative is None
 

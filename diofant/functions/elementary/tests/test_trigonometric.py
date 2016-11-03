@@ -57,7 +57,7 @@ def test_sin():
     assert sin(pi*k/2).func == sin
     assert sin(pi*e/2) == 0
     assert sin(pi*k) == 0
-    assert sin(pi*k).subs(k, 3) == sin(pi*k/2).subs(k, 6)  # issue 8298
+    assert sin(pi*k).subs(k, 3) == sin(pi*k/2).subs(k, 6)  # issue sympy/sympy#8298
 
     assert sin(pi/3) == S.Half*sqrt(3)
     assert sin(-2*pi/3) == -S.Half*sqrt(3)
@@ -116,7 +116,7 @@ def test_sin():
     assert sin(qz).is_rational
     assert sin(0, evaluate=False).is_rational
     assert sin(qn).is_rational is False
-    assert sin(q).is_rational is None  # issue 8653
+    assert sin(q).is_rational is None  # issue sympy/sympy#8653
 
     assert isinstance(sin( re(x) - im(y)), sin) is True
     assert isinstance(sin(-re(x) + im(y)), sin) is False
@@ -321,7 +321,7 @@ def test_cos():
             assert e < 1e-12
 
 
-def test_issue_6190():
+def test_sympyissue_6190():
     c = Float('123456789012345678901234567890.25', '')
     for cls in [sin, cos, tan, cot]:
         assert cls(c*pi) == cls(pi/4)
@@ -605,7 +605,7 @@ def test_cot():
 def test_cot_series():
     assert cot(x).series(x, 0, 9) == \
         1/x - x/3 - x**3/45 - 2*x**5/945 - x**7/4725 + O(x**9)
-    # issue 6210
+    # issue sympy/sympy#6210
     assert cot(x**4 + x**5).series(x, 0, 1) == \
         x**(-4) - 1/x**3 + x**(-2) - 1/x + 1 + O(x)
 
@@ -982,7 +982,7 @@ def test_evenodd_rewrite():
             x - y) == -func(y - x)  # it doesn't matter which form is canonical
 
 
-def test_issue_4547():
+def test_sympyissue_4547():
     assert sin(x).rewrite(cot) == 2*cot(x/2)/(1 + cot(x/2)**2)
     assert cos(x).rewrite(cot) == -(1 - cot(x/2)**2)/(1 + cot(x/2)**2)
     assert tan(x).rewrite(cot) == 1/cot(x)
@@ -1029,7 +1029,7 @@ def test_aseries():
     t(acot, -0.1, '-', 1e-5)
 
 
-def test_issue_4420():
+def test_sympyissue_4420():
     i = Symbol('i', integer=True)
     e = Symbol('e', even=True)
     o = Symbol('o', odd=True)
@@ -1171,7 +1171,7 @@ def test_real_imag():
 
 @pytest.mark.xfail
 def test_sin_cos_with_infinity():
-    # Test for issue 5196
+    # Test for issue sympy/sympy#5196
     # https://github.com/sympy/sympy/issues/5196
     assert sin(oo) == S.NaN
     assert cos(oo) == S.NaN
@@ -1228,7 +1228,7 @@ def test_sec():
     assert sec(pi/3) == 2
     assert sec(5*pi/2) == zoo
     assert sec(9*pi/7) == -sec(2*pi/7)
-    assert sec(3*pi/4) == -sqrt(2)  # issue 8421
+    assert sec(3*pi/4) == -sqrt(2)  # issue sympy/sympy#8421
     assert sec(I) == sech(1)
     assert sec(x*I) == sech(x)
     assert sec(-x) == sec(x)
@@ -1302,7 +1302,7 @@ def test_csc():
     assert csc(pi/3) == 2*sqrt(3)/3
     assert csc(5*pi/2) == 1
     assert csc(9*pi/7) == -csc(2*pi/7)
-    assert csc(3*pi/4) == sqrt(2)  # issue 8421
+    assert csc(3*pi/4) == sqrt(2)  # issue sympy/sympy#8421
     assert csc(I) == -I*csch(1)
     assert csc(x*I) == -I*csch(x)
     assert csc(-x) == -csc(x)
@@ -1397,7 +1397,7 @@ def test_csc_rewrite_failing():
     assert csc(x).rewrite(sqrt) == csc(x)
 
 
-def test_issue_8653():
+def test_sympyissue_8653():
     n = Symbol('n', integer=True)
     assert sin(n).is_irrational is None
     assert cos(n).is_irrational is None

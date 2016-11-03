@@ -104,7 +104,7 @@ def test_union():
 
     assert X.is_iterable is False
 
-    # issue 7843
+    # issue sympy/sympy#7843
     assert Union(S.EmptySet, FiniteSet(-sqrt(-I), sqrt(-I))) == FiniteSet(-sqrt(-I), sqrt(-I))
 
 
@@ -231,7 +231,7 @@ def test_intersect():
     assert Union(Interval(0, 5), FiniteSet('ham')).intersect(FiniteSet(2, 3, 4, 5, 6)) == \
         Union(FiniteSet(2, 3, 4, 5), Intersection(FiniteSet(6), Union(Interval(0, 5), FiniteSet('ham'))))
 
-    # issue 8217
+    # issue sympy/sympy#8217
     assert Intersection(FiniteSet(x), FiniteSet(y)) == \
         Intersection(FiniteSet(x), FiniteSet(y), evaluate=False)
     assert FiniteSet(x).intersect(S.Reals) == \
@@ -410,13 +410,13 @@ def test_contains():
     assert FiniteSet(1, 2, 3).contains(2) is S.true
     assert FiniteSet(1, 2, x).contains(x) is S.true
 
-    # issue 8197
+    # issue sympy/sympy#8197
     assert isinstance(FiniteSet(b).contains(-a), Contains)
     assert isinstance(FiniteSet(b).contains(a), Contains)
     assert isinstance(FiniteSet(a).contains(1), Contains)
     pytest.raises(TypeError, lambda: 1 in FiniteSet(a))
 
-    # issue 8209
+    # issue sympy/sympy#8209
     rad1 = Integer(4)
     rad2 = Pow(2, 2, evaluate=False)
     s1 = FiniteSet(rad1)
@@ -545,7 +545,7 @@ def test_finite_basic():
     assert FiniteSet(x, 1, 5).sup == Max(x, 5)
     assert FiniteSet(x, 1, 5).inf == Min(x, 1)
 
-    # issue 7335
+    # issue sympy/sympy#7335
     assert FiniteSet(S.EmptySet) != S.EmptySet
     assert FiniteSet(FiniteSet(1, 2, 3)) != FiniteSet(1, 2, 3)
     assert FiniteSet((1, 2, 3)) != FiniteSet(1, 2, 3)
@@ -674,7 +674,7 @@ def test_Union_of_ProductSets_shares():
 
 
 def test_Interval_free_symbols():
-    # issue 6211
+    # issue sympy/sympy#6211
     assert Interval(0, 1).free_symbols == set()
     x = Symbol('x', extended_real=True)
     assert Interval(0, x).free_symbols == {x}
@@ -747,8 +747,8 @@ def test_image_EmptySet():
     assert imageset(x, 2*x, S.EmptySet) == S.EmptySet
 
 
-def test_issue_5724_7680():
-    assert I not in S.Reals  # issue 7680
+def test_sympyissue_5724_7680():
+    assert I not in S.Reals  # issue sympy/sympy#7680
     assert Interval(-oo, oo).contains(I) is S.false
 
 
@@ -818,7 +818,7 @@ def test_interior():
     assert Interval(0, 1, False, True).interior == Interval(0, 1, True, True)
 
 
-def test_issue_7841():
+def test_sympyissue_7841():
     pytest.raises(TypeError, lambda: x in S.Reals)
 
 
@@ -852,17 +852,17 @@ def test_SymmetricDifference():
                   Interval(2, 5) - Interval(0, 4)))
 
 
-def test_issue_9956():
+def test_sympyissue_9956():
     assert Union(Interval(-oo, oo), FiniteSet(1)) == Interval(-oo, oo)
     assert Interval(-oo, oo).contains(1) is S.true
 
 
-def test_issue_9536():
+def test_sympyissue_9536():
     a = Symbol('a', real=True)
     assert FiniteSet(log(a)).intersect(S.Reals) == Intersection(S.Reals, FiniteSet(log(a)))
 
 
-def test_issue_9637():
+def test_sympyissue_9637():
     n = Symbol('n')
     a = FiniteSet(n)
     b = FiniteSet(2, n)
@@ -875,7 +875,7 @@ def test_issue_9637():
     assert Complement(a, Interval(1, 3)) == Complement(a, Interval(1, 3), evaluate=False)
 
 
-def test_issue_10113():
+def test_sympyissue_10113():
     f = x**2/(x**2 - 4)
     assert imageset(x, f, S.Reals) == Union(Interval(-oo, 0, True),
                                             Interval(1, oo, True, True))
@@ -885,7 +885,7 @@ def test_issue_10113():
                                                              oo, False, True))
 
 
-def test_issue_9808():
+def test_sympyissue_9808():
     assert (Complement(FiniteSet(y), FiniteSet(1)) ==
             Complement(FiniteSet(y), FiniteSet(1), evaluate=False))
     assert (Complement(FiniteSet(1, 2, x), FiniteSet(x, y, 2, 3)) ==

@@ -610,7 +610,7 @@ def minimal_polynomial(ex, x=None, **args):
 
     ex = sympify(ex)
     if ex.is_number:
-        # not sure if it's always needed but try it for numbers (issue 8354)
+        # not sure if it's always needed but try it for numbers (issue sympy/sympy#8354)
         ex = _mexpand(ex, recursive=True)
     for expr in preorder_traversal(ex):
         if expr.is_AlgebraicNumber:

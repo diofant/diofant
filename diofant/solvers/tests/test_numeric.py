@@ -14,7 +14,7 @@ def test_nsolve():
     # Testing checks on number of inputs
     pytest.raises(TypeError, lambda: nsolve(Eq(2*x, 2)))
     pytest.raises(TypeError, lambda: nsolve(Eq(2*x, 2), x, 1, 2))
-    # issue 4829
+    # issue sympy/sympy#4829
     assert nsolve(x**2/(1 - x)/(1 - 2*x)**2 - 100, x, 0)  # doesn't fail
     # multidimensional
     x1 = Symbol('x1')
@@ -49,12 +49,12 @@ def test_nsolve():
         mpf('0.31883011387318591'))
 
 
-def test_issue_6408():
+def test_sympyissue_6408():
     x = Symbol('x')
     assert nsolve(Piecewise((x, x < 1), (x**2, True)), x, 2) == 0.0
 
 
 @pytest.mark.xfail
-def test_issue_6408_fail():
+def test_sympyissue_6408_fail():
     x, y = symbols('x y')
     assert nsolve(Integral(x*y, (x, 0, 5)), y, 2) == 0.0

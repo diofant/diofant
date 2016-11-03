@@ -377,7 +377,7 @@ def test_divisors_and_divisor_count():
     assert divisor_count(2*3*5, 7) == 0
 
 
-def test_issue_6981():
+def test_sympyissue_6981():
     S = set(divisors(4)).union(set(divisors(Integer(2))))
     assert S == {1, 2, 4}
 
@@ -659,7 +659,7 @@ def test_multinomial_coefficients():
       ((0, 2, 0, 0, 0, 0, 0), 1), ((1, 0, 1, 0, 0, 0, 0), 2)]
 
 
-def test_issue_4356():
+def test_sympyissue_4356():
     assert factorint(1030903) == {53: 2, 367: 1}
 
 

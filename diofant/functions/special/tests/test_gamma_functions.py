@@ -70,7 +70,7 @@ def test_gamma():
     assert gamma(3*exp_polar(I*pi)/4).is_nonnegative is False
     assert gamma(3*exp_polar(I*pi)/4).is_nonpositive is True
 
-    # Issue 8526
+    # Issue sympy/sympy#8526
     k = Symbol('k', integer=True, nonnegative=True)
     assert isinstance(gamma(k), gamma)
     assert gamma(-k) == zoo
@@ -398,7 +398,7 @@ def test_polygamma_expansion():
         2*x**3 + 3*x**4 + 2*x**5 - x**7 + 4*x**9/3 + O(x**11)
 
 
-def test_issue_8657():
+def test_sympyissue_8657():
     n = Symbol('n', negative=True, integer=True)
     m = Symbol('m', integer=True)
     o = Symbol('o', positive=True)
@@ -410,7 +410,7 @@ def test_issue_8657():
     assert gamma(w).is_extended_real is None
 
 
-def test_issue_8524():
+def test_sympyissue_8524():
     x = Symbol('x', positive=True)
     y = Symbol('y', negative=True)
     z = Symbol('z', positive=False)

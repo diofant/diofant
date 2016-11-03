@@ -17,7 +17,7 @@ __all__ = (
 )
 
 
-# Note, see issue 4986.  Ideally, we wouldn't want to subclass both Boolean
+# Note, see issue sympy/sympy#4986.  Ideally, we wouldn't want to subclass both Boolean
 # and Expr.
 
 class Relational(Boolean, Expr, EvalfMixin):
@@ -691,10 +691,10 @@ class GreaterThan(_Greater):
     .. [2] For more information, see these two bug reports:
 
        "Separate boolean and symbolic relationals"
-       `Issue 4986 <https://github.com/sympy/sympy/issues/4986>`_
+       `Issue sympy/sympy#4986 <https://github.com/sympy/sympy/issues/4986>`_
 
        "It right 0 < x < 1 ?"
-       `Issue 6059 <https://github.com/sympy/sympy/issues/6059>`_
+       `Issue sympy/sympy#6059 <https://github.com/sympy/sympy/issues/6059>`_
     """
 
     rel_op = '>='

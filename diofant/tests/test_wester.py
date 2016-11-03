@@ -572,7 +572,7 @@ def test_H31():
 
 
 @pytest.mark.xfail
-def test_H32():  # issue 6558
+def test_H32():  # issue sympy/sympy#6558
     raise NotImplementedError("[A*B*C - (A*B*C)**(-1)]*A*C*B (product \
                               of a non-commuting product and its inverse)")
 
@@ -2182,7 +2182,7 @@ def test_U9():
 
 
 def test_U10():
-    # see issue 2519:
+    # see issue sympy/sympy#2519:
     assert residue((z**3 + 5)/((z**4 - 1)*(z + 1)), z, -1) == Rational(-9, 4)
 
 
@@ -2620,7 +2620,7 @@ def test_X8():
     # Puiseux series (terms with fractional degree):
     # => 1/sqrt(x - 3/2 pi) + (x - 3/2 pi)^(3/2) / 12 + O([x - 3/2 pi]^(7/2))
 
-    # see issue 7167:
+    # see issue sympy/sympy#7167:
     x = symbols('x', extended_real=True)
     assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
             1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**Rational(3, 2)/12 +

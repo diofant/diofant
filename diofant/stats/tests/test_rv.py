@@ -203,7 +203,7 @@ def test_real():
     assert x.is_extended_real
 
 
-def test_issue_10052():
+def test_sympyissue_10052():
     X = Exponential('X', 3)
     assert P(X < oo) == 1
     assert P(X > oo) == 0

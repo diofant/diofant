@@ -245,7 +245,7 @@ class log(Function):
             elif arg is S.Exp1:
                 return S.One
 
-        # don't autoexpand Pow or Mul (see the issue 3351):
+        # don't autoexpand Pow or Mul (see the issue sympy/sympy#3351):
         if not arg.is_Add:
             coeff = arg.as_coefficient(S.ImaginaryUnit)
 

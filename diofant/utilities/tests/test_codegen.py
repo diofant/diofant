@@ -1218,7 +1218,7 @@ def test_inline_function():
 
 
 def test_f_code_call_signature_wrap():
-    # Issue #7934
+    # Issue sympy/sympy#7934
     x = symbols('x:20')
     expr = 0
     for sym in x:
@@ -1384,7 +1384,7 @@ def test_fcode_matrixsymbol_slice():
 
 
 def test_fcode_matrixsymbol_slice_autoname():
-    # see issue #8093
+    # see issue sympy/sympy#8093
     A = MatrixSymbol('A', 2, 3)
     name_expr = ("test", A[:, 1])
     result = codegen(name_expr, "f95", "test", header=False, empty=False)

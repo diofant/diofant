@@ -98,7 +98,7 @@ def test_minimal_polynomial():
     assert minimal_polynomial(
         a**Q(3, 2), x) == 729*x**4 - 506898*x**2 + 84604519
 
-    # issue 5994
+    # issue sympy/sympy#5994
     eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
           sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
           sqrt(15)*I/28800000)**Rational(1, 3))))
@@ -156,14 +156,14 @@ def test_minimal_polynomial_sq():
 
 
 def test_minpoly_compose():
-    # issue 6868
+    # issue sympy/sympy#6868
     eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
           sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
           sqrt(15)*I/28800000)**Rational(1, 3))))
     mp = minimal_polynomial(eq + 3, x)
     assert mp == 8000*x**2 - 48000*x + 71999
 
-    # issue 5888
+    # issue sympy/sympy#5888
     assert minimal_polynomial(exp(I*pi/8), x) == x**8 + 1
 
     mp = minimal_polynomial(sin(pi/7) + sqrt(2), x)
@@ -221,7 +221,7 @@ def test_minpoly_compose():
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(sin(pi*sqrt(2)), x))
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(exp(I*pi*sqrt(2)), x))
 
-    # issue 5934
+    # issue sympy/sympy#5934
     ex = 1/(-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
         24*sqrt(10)*sqrt(-sqrt(5) + 5))**2) + 1
     pytest.raises(ZeroDivisionError, lambda: minimal_polynomial(ex, x))
@@ -734,6 +734,6 @@ def test_minpoly_domain():
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(y, x, domain=QQ))
 
 
-def test_issue_11553():
+def test_sympyissue_11553():
     eqs = (x + y + 1, x + GoldenRatio)
     assert solve(eqs, x, y) == {x: -GoldenRatio, y: -1 + GoldenRatio}

@@ -23,7 +23,7 @@ A, B = symbols('A,B', commutative=False)
 
 
 def test__nsort():
-    # issue 6137
+    # issue sympy/sympy#6137
     r = ([Q(3, 2) + sqrt(Q(-14, 3) - 2*(Q(-415, 216) + 13*I/12)**Q(1, 3) -
                          4/sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)) +
                                 2*(Q(-415, 216) + 13*I/12)**Q(1, 3)) -
@@ -297,7 +297,7 @@ def test_dict_from_expr():
     pytest.raises(PolynomialError, lambda: dict_from_expr(A*B - B*A))
 
 
-def test_issue_7383():
+def test_sympyissue_7383():
     from diofant import erf, integrate
     x, z, R, a = symbols('x z R a')
     r = sqrt(x**2 + z**2)
@@ -307,7 +307,7 @@ def test_issue_7383():
         -2*sqrt(2)*R*a**3*exp(-R**2*a**2/2)/(3*sqrt(pi))
 
 
-def test_issue_10161():
+def test_sympyissue_10161():
     x = symbols('x', real=True)
     h = (2*x*(-2*x + Abs(x))*(x**2 - 1)/Abs(x**2 - 1)
          + (x/Abs(x) - 2)*Abs(x**2 - 1))

@@ -87,9 +87,9 @@ def test_Eq():
     assert Eq(x**2) == Eq(x**2, 0)
     assert Eq(x**2) != Eq(x**2, 1)
 
-    assert Eq(x, x)  # issue 5719
+    assert Eq(x, x)  # issue sympy/sympy#5719
 
-    # issue 6116
+    # issue sympy/sympy#6116
     p = Symbol('p', positive=True)
     assert Eq(p, 0) is S.false
 
@@ -278,7 +278,7 @@ def test_relational_bool_output():
 
 
 def test_relational_logic_symbols():
-    # See issue 6204
+    # See issue sympy/sympy#6204
     assert (x < y) & (z < t) == And(x < y, z < t)
     assert (x < y) | (z < t) == Or(x < y, z < t)
     assert ~(x < y) == Not(x < y)
@@ -359,7 +359,7 @@ def assert_all_ineq_give_class_Inequality(a, b):
 
 
 def test_imaginary_compare_raises_TypeError():
-    # See issue #5724
+    # See issue sympy/sympy#5724
     assert_all_ineq_raise_TypeError(I, x)
 
 
@@ -377,7 +377,7 @@ def test_complex_compare_not_real():
 
 
 def test_imaginary_and_inf_compare_raises_TypeError():
-    # See pull request #7835
+    # See pull request sympy/sympy#7835
     y = Symbol('y', imaginary=True, nonzero=True)
     assert_all_ineq_raise_TypeError(oo, y)
     assert_all_ineq_raise_TypeError(-oo, y)
@@ -404,7 +404,7 @@ def test_complex_pure_imag_not_ordered():
 
 def test_x_minus_y_not_same_as_x_lt_y():
     """
-    A consequence of pull request #7792 is that `x - y < 0` and `x < y`
+    A consequence of pull request sympy/sympy#7792 is that `x - y < 0` and `x < y`
     are not synonymous.
     """
     x = I + 2
@@ -431,11 +431,11 @@ def test_x_minus_y_not_same_as_x_lt_y():
 
 
 def test_nan_equality_exceptions():
-    # See issue #7774
+    # See issue sympy/sympy#7774
     assert Equality(nan, nan) is S.false
     assert Unequality(nan, nan) is S.true
 
-    # See issue #7773
+    # See issue sympy/sympy#7773
     A = (x, Integer(0), Rational(1, 3), pi, oo, -oo)
     assert Equality(nan, random.choice(A)) is S.false
     assert Equality(random.choice(A), nan) is S.false
@@ -444,7 +444,7 @@ def test_nan_equality_exceptions():
 
 
 def test_nan_inequality_raise_errors():
-    # See discussion in pull request #7776.  We test inequalities with
+    # See discussion in pull request sympy/sympy#7776.  We test inequalities with
     # a set including examples of various classes.
     for q in (x, Integer(0), Integer(10), Rational(1, 3), pi, Float(1.3), oo, -oo, nan):
         assert_all_ineq_raise_TypeError(q, nan)
@@ -506,7 +506,7 @@ def test_inequalities_symbol_name_same_complex():
 
 
 def test_inequalities_cant_sympify_other():
-    # see issue 7833
+    # see issue sympy/sympy#7833
 
     bar = "foo"
 
@@ -527,7 +527,7 @@ def test_ineq_avoid_wild_symbol_flip():
     assert e == Ge(x, p, evaluate=False)
 
 
-def test_issue_8245():
+def test_sympyissue_8245():
     a = Rational(6506833320952669167898688709329, 5070602400912917605986812821504)
     q = a.n(10)
     assert (a == q) is True
@@ -555,7 +555,7 @@ def test_issue_8245():
     assert (r <= a) is S.true
 
 
-def test_issue_8449():
+def test_sympyissue_8449():
     p = Symbol('p', nonnegative=True)
     assert Lt(-oo, p)
     assert Ge(-oo, p) is S.false
@@ -632,7 +632,7 @@ def test_canonical():
 
 
 @pytest.mark.xfail
-def test_issue_8444():
+def test_sympyissue_8444():
     x = Symbol('x', extended_real=True)
     assert (x <= oo) == (x >= -oo) == S.true
 

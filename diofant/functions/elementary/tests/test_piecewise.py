@@ -304,7 +304,7 @@ def test_piecewise_solve():
                   (-x + 2, x - 2 <= 0), (x - 2, x - 2 > 0))
     assert solve(g, x) == [5]
 
-# See issue 4352 (enhance the solver to handle inequalities).
+# See issue sympy/sympy#4352 (enhance the solver to handle inequalities).
 
 
 @pytest.mark.xfail
@@ -498,6 +498,6 @@ def test_S_srepr_is_identity():
     assert p == q
 
 
-def test_issue_10258():
+def test_sympyissue_10258():
     p = Piecewise((1, x < 0), (0, True))
     assert (p > 0) == Gt(p, 0, evaluate=False)

@@ -338,6 +338,6 @@ def test_limits():
            hyper((1,), (Rational(4, 3), Rational(5, 3)), 0) + \
            9*k**2*hyper((2,), (Rational(7, 3), Rational(8, 3)), 0)/20 + \
            81*k**4*hyper((3,), (Rational(10, 3), Rational(11, 3)), 0)/1120 + \
-           O(k**6)  # issue 6350
+           O(k**6)  # issue sympy/sympy#6350
     assert limit(meijerg((), (), (1,), (0,), -x), x, 0) == \
-            meijerg(((), ()), ((1,), (0,)), 0)  # issue 6052
+            meijerg(((), ()), ((1,), (0,)), 0)  # issue sympy/sympy#6052

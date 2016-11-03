@@ -295,7 +295,7 @@ def test_symbols():
     assert symbols('aa:d,x:z') == (aa, ab, ac, ad, x, y, z)
     assert symbols(('aa:d', 'x:z')) == ((aa, ab, ac, ad), (x, y, z))
 
-    # issue 6675
+    # issue sympy/sympy#6675
     def sym(s):
         return sstr(symbols(s))
     assert sym('a0:4') == '(a0, a1, a2, a3)'
@@ -327,7 +327,7 @@ def test_symbols():
     pytest.raises(ValueError, lambda: symbols('::a'))
 
 
-def test_issue_9057():
+def test_sympyissue_9057():
     from diofant.functions import beta
 
     beta(2, 3)

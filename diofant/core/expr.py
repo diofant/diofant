@@ -101,7 +101,7 @@ class Expr(Basic, EvalfMixin):
     #
     # **NOTE**:
     # This is a temporary fix, and will eventually be replaced with
-    # something better and more powerful.  See issue 5510.
+    # something better and more powerful.  See issue sympy/sympy#5510.
     _op_priority = 10.0
 
     def __pos__(self):
@@ -619,7 +619,7 @@ class Expr(Basic, EvalfMixin):
 
         if constant is None and (diff.free_symbols or not diff.is_number):
             # e.g. unless the right simplification is done, a symbolic
-            # zero is possible (see expression of issue 6829: without
+            # zero is possible (see expression of issue sympy/sympy#6829: without
             # simplification constant will be None).
             return
 

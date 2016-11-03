@@ -118,7 +118,7 @@ def test_quadratic_non_perfect_square():
     assert check_solutions(x**2 - 9*y**2 - 2*x - 6*y)
 
 
-def test_issue_9106():
+def test_sympyissue_9106():
     assert check_integrality(-48 - 2*x*(3*x - 1) + y*(3*y - 1))
 
 

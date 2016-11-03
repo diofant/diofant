@@ -151,7 +151,7 @@ def test_MatrixSymbol():
     n, m, t = symbols('n,m,t')
     X = MatrixSymbol('X', n, m)
     assert X.shape == (n, m)
-    pytest.raises(TypeError, lambda: MatrixSymbol('X', n, m)(t))  # issue 5855
+    pytest.raises(TypeError, lambda: MatrixSymbol('X', n, m)(t))  # issue sympy/sympy#5855
     assert X.doit() == X
 
 

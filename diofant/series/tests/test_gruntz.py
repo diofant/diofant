@@ -323,7 +323,7 @@ def test_limit():
     assert gruntz(exp(x)/(1 + exp(x)), x) == 1
     assert gruntz(exp(x)/(a + exp(x)), x) == 1
 
-    assert gruntz((3**x + 5**x)**(1/x), x) == 5  # issue 3463
+    assert gruntz((3**x + 5**x)**(1/x), x) == 5  # issue sympy/sympy#3463
 
     assert gruntz(Ei(x + exp(-x))*exp(-x)*x, x) == 1
 
@@ -361,7 +361,7 @@ def test_I():
     assert gruntz(y*3*sin(I)*x, x).simplify() == sign(y)*I*oo
 
 
-def test_issue_4814():
+def test_sympyissue_4814():
     assert gruntz((x + 1)**(1/log(x + 1)), x) == E
 
 
@@ -404,21 +404,21 @@ def test_exp_log_series():
     assert gruntz(x/log(log(x*exp(x))), x) == oo
 
 
-def test_issue_3644():
+def test_sympyissue_3644():
     assert gruntz(((x**7 + x + 1)/(2**x + x**2))**(-1/x), x) == 2
 
 
-def test_issue_6843():
+def test_sympyissue_6843():
     n = Symbol('n', integer=True, positive=True)
     r = (n + 1)*(1 + 1/x)**(n + 1)/((1 + 1/x)**(n + 1) - 1) - (1 + 1/x)*x
     assert gruntz(r, x).simplify() == n/2
 
 
-def test_issue_4190():
+def test_sympyissue_4190():
     assert gruntz(x - gamma(1/x), x) == S.EulerGamma
 
 
-def test_issue_5172():
+def test_sympyissue_5172():
     n = Symbol('n', real=True, positive=True)
     r = Symbol('r', positive=True)
     c = Symbol('c')
@@ -432,21 +432,21 @@ def test_issue_5172():
         (2**(p + 1) + r - 1)/(r + 1)**(p + 1)
 
 
-def test_issue_4109():
+def test_sympyissue_4109():
     assert gruntz(1/gamma(1/x), x) == 0
     assert gruntz(gamma(1/x)/x, x) == 1
 
 
-def test_issue_6682():
+def test_sympyissue_6682():
     assert gruntz(exp(2*Ei(-1/x))*x**2, x) == exp(2*EulerGamma)
 
 
-def test_issue_7096():
+def test_sympyissue_7096():
     from diofant.functions import sign
     assert gruntz((-1/x)**-pi, x) == oo*sign((-1)**(-pi))
 
 
-def test_issue_8462():
+def test_sympyissue_8462():
     assert gruntz(binomial(x, x/2), x) == oo
     # issue sympy/sympy#10801
     assert gruntz(16**x/(x*binomial(2*x, x)**2), x) == pi
@@ -470,11 +470,11 @@ def test_diofantissue_75():
     assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) == +oo
 
 
-def test_issue_8241():
+def test_sympyissue_8241():
     e = x/log(x)**(log(x)/(m*log(log(x))))
     pytest.raises(NotImplementedError, lambda: gruntz(e, x))
     assert isinstance(e.limit(x, oo), Limit)
 
 
-def test_issue_10976():
+def test_sympyissue_10976():
     assert gruntz(erf(m/x)/erf(1/x), x) == m

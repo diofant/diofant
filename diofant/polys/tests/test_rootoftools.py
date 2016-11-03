@@ -208,7 +208,7 @@ def test_RootOf_evalf():
     assert re.epsilon_eq(Float("+1.272897223922499190910"))
     assert im.epsilon_eq(Float("+0.719798681483861386681"))
 
-    # issue 6393
+    # issue sympy/sympy#6393
     assert str(RootOf(x**5 + 2*x**4 + x**3 - 68719476736, 0).n(3)) == '147.'
     eq = (531441*x**11 + 3857868*x**10 + 13730229*x**9 + 32597882*x**8 +
         55077472*x**7 + 60452000*x**6 + 32172064*x**5 - 4383808*x**4 -
@@ -218,13 +218,13 @@ def test_RootOf_evalf():
     assert a == c
     assert b < d
     assert b == -d
-    # issue 6451
+    # issue sympy/sympy#6451
     r = RootOf(legendre_poly(64, x), 7)
     assert r.n(2) == r.n(100).n(2)
-    # issue 8617
+    # issue sympy/sympy#8617
     ans = [w.n(2) for w in solve(x**3 - x - 4)]
     assert RootOf(exp(x)**3 - exp(x) - 4, 0).n(2) in ans
-    # issue 9019
+    # issue sympy/sympy#9019
     r0 = RootOf(x**2 + 1, 0, radicals=False)
     r1 = RootOf(x**2 + 1, 1, radicals=False)
     assert r0.n(4) == -1.0*I
@@ -296,7 +296,7 @@ def test_RootSum___new__():
     assert RootSum(f**2, g) == 2*RootSum(f, g)
     assert RootSum((x - 7)*f**3, g) == log(7*x) + 3*RootSum(f, g)
 
-    # issue 5571
+    # issue sympy/sympy#5571
     assert hash(RootSum((x - 7)*f**3, g)) == hash(log(7*x) + 3*RootSum(f, g))
 
     pytest.raises(MultivariatePolynomialError, lambda: RootSum(x**3 + x + y))
@@ -419,13 +419,13 @@ def test_RootSum_independent():
     assert RootSum(f, g, x).as_ordered_terms() == [10*r0, 15*r1, 126]
 
 
-def test_issue_7876():
+def test_sympyissue_7876():
     l1 = Poly(x**6 - x + 1, x).all_roots()
     l2 = [RootOf(x**6 - x + 1, i) for i in range(6)]
     assert frozenset(l1) == frozenset(l2)
 
 
-def test_issue_8316():
+def test_sympyissue_8316():
     f = Poly(7*x**8 - 9)
     assert len(f.all_roots()) == 8
     f = Poly(7*x**8 - 10)

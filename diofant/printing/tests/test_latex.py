@@ -205,7 +205,7 @@ def test_latex_functions():
     assert latex(a1) == r"\operatorname{a_{1}}"
     assert latex(a1(x)) == r"\operatorname{a_{1}}{\left (x \right )}"
 
-    # issue 5868
+    # issue sympy/sympy#5868
     omega1 = Function('omega1')
     assert latex(omega1) == r"\omega_{1}"
     assert latex(omega1(x)) == r"\omega_{1}{\left (x \right )}"
@@ -590,14 +590,14 @@ def test_latex_product():
 def test_latex_limits():
     assert latex(Limit(x, x, oo)) == r"\lim_{x \to \infty} x"
 
-    # issue 8175
+    # issue sympy/sympy#8175
     f = Function('f')
     assert latex(Limit(f(x), x, 0)) == r"\lim_{x \to 0^+} f{\left (x \right )}"
     assert latex(Limit(f(x), x, 0, "-")) == r"\lim_{x \to 0^-} f{\left (x \right )}"
     assert latex(Limit(f(x), x, 0, "real")) == r"\lim_{x \to 0} f{\left (x \right )}"
 
 
-def test_issue_3568():
+def test_sympyissue_3568():
     beta = Symbol(r'\beta')
     y = beta + x
     assert latex(y) in [r'\beta + x', r'x + \beta']
@@ -629,7 +629,7 @@ def test_latex_list():
 
 
 def test_latex_rational():
-    # tests issue 3973
+    # tests issue sympy/sympy#3973
     assert latex(-Rational(1, 2)) == "- \\frac{1}{2}"
     assert latex(Rational(-1, 2)) == "- \\frac{1}{2}"
     assert latex(Rational(1, -2)) == "- \\frac{1}{2}"
@@ -640,7 +640,7 @@ def test_latex_rational():
 
 
 def test_latex_inverse():
-    # tests issue 4129
+    # tests issue sympy/sympy#4129
     assert latex(1/x) == "\\frac{1}{x}"
     assert latex(1/(x + y)) == "\\frac{1}{x + y}"
 
@@ -663,7 +663,7 @@ def test_latex_Heaviside():
 def test_latex_KroneckerDelta():
     assert latex(KroneckerDelta(x, y)) == r"\delta_{x y}"
     assert latex(KroneckerDelta(x, y + 1)) == r"\delta_{x, y + 1}"
-    # issue 6578
+    # issue sympy/sympy#6578
     assert latex(KroneckerDelta(x + 1, y)) == r"\delta_{y, x + 1}"
 
 
@@ -1264,7 +1264,7 @@ def test_builtin_no_args():
     assert latex(lowergamma) == r'\gamma'
 
 
-def test_issue_6853():
+def test_sympyissue_6853():
     p = Function('Pi')
     assert latex(p(x)) == r"\Pi{\left (x \right )}"
 
@@ -1302,23 +1302,23 @@ def test_Pow():
             r"\left(1.453 \cdot 10^{4500}\right)^{x}")
 
 
-def test_issue_7180():
+def test_sympyissue_7180():
     assert latex(Equivalent(x, y)) == r"x \equiv y"
     assert latex(Not(Equivalent(x, y))) == r"x \not\equiv y"
 
 
-def test_issue_8409():
+def test_sympyissue_8409():
     assert latex(S.Half**n) == r"\left(\frac{1}{2}\right)^{n}"
 
 
-def test_issue_8470():
+def test_sympyissue_8470():
     from diofant.parsing.sympy_parser import parse_expr
     e = parse_expr("-B*A", evaluate=False)
     assert latex(e) == r"A \left(- B\right)"
 
 
-def test_issue_7117():
-    # See also issue #5031 (hence the evaluate=False in these).
+def test_sympyissue_7117():
+    # See also issue sympy/sympy#5031 (hence the evaluate=False in these).
     e = Eq(x + 1, 2*x)
     q = Mul(2, e, evaluate=False)
     assert latex(q) == r"2 \left(x + 1 = 2 x\right)"
@@ -1328,5 +1328,5 @@ def test_issue_7117():
     assert latex(q) == r"\left(x + 1 = 2 x\right)^{2}"
 
 
-def test_issue_2934():
+def test_sympyissue_2934():
     assert latex(Symbol(r'\frac{a_1}{b_1}')) == '\\frac{a_1}{b_1}'

@@ -265,11 +265,11 @@ def checksol(f, symbol, sol=None, **flags):
                 val = val.subs(reps)
             nz = val.is_nonzero
             if nz is not None:
-                # issue 5673: nz may be True even when False
+                # issue sympy/sympy#5673: nz may be True even when False
                 # so these are just hacks to keep a false positive
                 # from being returned
 
-                # HACK 1: LambertW (issue 5673)
+                # HACK 1: LambertW (issue sympy/sympy#5673)
                 if val.is_number and val.has(LambertW):
                     # don't eval this to verify solution since if we got here,
                     # numerical must be False
@@ -708,7 +708,7 @@ def solve(f, *symbols, **flags):
 
     *Solving equations involving radicals*
 
-    Because of Diofant's use of the principle root (issue #8789), some solutions
+    Because of Diofant's use of the principle root (issue sympy/sympy#8789), some solutions
     to radical equations will be missed unless check=False:
 
         >>> from diofant import root
@@ -1498,7 +1498,7 @@ def _solve(f, *symbols, **flags):
             # polys (e.g. for symbols other than the one we are interested
             # in) so recast the poly in terms of our generator of interest.
             # Also use composite=True with f_num since Poly won't update
-            # poly as documented in issue 8810.
+            # poly as documented in issue sympy/sympy#8810.
 
             poly = Poly(f_num, gens[0], composite=True)
 

@@ -277,12 +277,12 @@ def test_as_real_imag():
     # this should not hang
     assert n.as_real_imag() == (n, 0)
 
-    # issue 6261
+    # issue sympy/sympy#6261
     assert sqrt(x).as_real_imag() == \
         ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(arg(re(x) + I*im(x))/2),
      (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(arg(re(x) + I*im(x))/2))
 
-    # issue 3853
+    # issue sympy/sympy#3853
     a, b = symbols('a,b', extended_real=True)
     assert ((1 + sqrt(a + b*I))/2).as_real_imag() == \
            (
@@ -309,7 +309,7 @@ def test_sign_issue_3068():
 
 
 def test_Abs():
-    pytest.raises(TypeError, lambda: Abs(Interval(2, 3)))  # issue 8717
+    pytest.raises(TypeError, lambda: Abs(Interval(2, 3)))  # issue sympy/sympy#8717
 
     x, y = symbols('x,y')
     assert sign(sign(x)) == sign(x)
@@ -683,17 +683,17 @@ def test_unpolarify():
     assert unpolarify(True) is True
 
 
-def test_issue_4035():
+def test_sympyissue_4035():
     assert Abs(x).expand(trig=True) == Abs(x)
     assert sign(x).expand(trig=True) == sign(x)
     assert arg(x).expand(trig=True) == arg(x)
 
 
-def test_issue_3206():
+def test_sympyissue_3206():
     assert Abs(Abs(x)) == Abs(x)
 
 
-def test_issue_4754_derivative_conjugate():
+def test_sympyissue_4754_derivative_conjugate():
     x = Symbol('x', extended_real=True)
     y = Symbol('y', imaginary=True)
     f = Function('f')
@@ -778,7 +778,7 @@ def test_principal_branch():
 
 
 @pytest.mark.xfail
-def test_issue_6167_6151():
+def test_sympyissue_6167_6151():
     n = pi**1000
     i = int(n)
     assert sign(n - i) == 1
@@ -792,7 +792,7 @@ def test_issue_6167_6151():
         assert sign(e.subs(x, xi)) == 1
 
 
-def test_issue_11413():
+def test_sympyissue_11413():
     V = Matrix([[x], [y], [z]])
     U = V.normalized()
     r = sqrt(Abs(x)**2 + Abs(y)**2 + Abs(z)**2)

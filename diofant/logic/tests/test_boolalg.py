@@ -699,7 +699,7 @@ def test_canonical_atoms():
     assert false.canonical == false
 
 
-def test_issue_8777():
+def test_sympyissue_8777():
     x = symbols('x')
     assert And(x > 2, x < oo).as_set() == Interval(2, oo, True, True)
     assert And(x >= 1, x < oo).as_set() == Interval(1, oo, False, True)
@@ -707,7 +707,7 @@ def test_issue_8777():
     assert (x > -oo).as_set() == Interval(-oo, oo, True, True)
 
 
-def test_issue_8975():
+def test_sympyissue_8975():
     x = symbols('x')
     assert Or(And(-oo < x, x <= -2), And(2 <= x, x < oo)).as_set() == \
         Interval(-oo, -2, True) + Interval(2, oo, False, True)
