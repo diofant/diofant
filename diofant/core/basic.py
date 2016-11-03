@@ -199,7 +199,7 @@ class Basic(metaclass=ManagedProperties):
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
         """
 
-        # XXX: remove this when issue 5169 is fixed
+        # XXX: remove this when issue sympy/sympy#5169 is fixed
         def inner_key(arg):
             if isinstance(arg, Basic):
                 return arg.sort_key(order)
@@ -238,7 +238,7 @@ class Basic(metaclass=ManagedProperties):
         from .function import AppliedUndef
 
         if type(self) is not type(other):
-            # issue 6100 a**1.0 == a like a**2.0 == a**2
+            # issue sympy/sympy#6100 a**1.0 == a like a**2.0 == a**2
             if isinstance(self, Pow) and self.exp == 1:
                 return self.base == other
             if isinstance(other, Pow) and other.exp == 1:
@@ -305,7 +305,7 @@ class Basic(metaclass=ManagedProperties):
         return self.subs(dummy, tmp) == other.subs(symbol, tmp)
 
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
-    # regardless of the global setting.  See issue 5487.
+    # regardless of the global setting.  See issue sympy/sympy#5487.
     def __repr__(self):
         from diofant.printing import srepr
         return srepr(self, order=None)

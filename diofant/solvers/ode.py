@@ -1058,7 +1058,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
         # Bernoulli case: a(x)*y'+b(x)*y+c(x)*y**n == 0
         r = collect(
             reduced_eq, f(x), exact=True).match(a*df + b*f(x) + c*f(x)**n)
-        if r and r[c] != 0 and r[n] != 1:  # See issue 4676
+        if r and r[c] != 0 and r[n] != 1:  # See issue sympy/sympy#4676
             r['a'] = a
             r['b'] = b
             r['c'] = c
@@ -1142,7 +1142,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
 
             except NotImplementedError:
                 # Differentiating the coefficients might fail because of things
-                # like f(2*x).diff(x).  See issue 4624 and issue 4719.
+                # like f(2*x).diff(x).  See issue sympy/sympy#4624 and issue 4719.
                 pass
 
         # Any first order ODE can be ideally solved by the Lie Group
@@ -1611,7 +1611,7 @@ def check_linear_2eq_order1(eq, func, func_coef):
         r['d1'] = forcing[0]
         r['d2'] = forcing[1]
     else:
-        # Issue #9244: nonhomogeneous linear systems are not supported
+        # Issue sympy/sympy#9244: nonhomogeneous linear systems are not supported
         return
 
     # Conditions to check for type 6 whose equations are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and
@@ -1796,7 +1796,7 @@ def check_linear_3eq_order1(eq, func, func_coef):
                 forcing[i] += j
     if forcing[0].has(t) or forcing[1].has(t) or forcing[2].has(t):
         # We can handle homogeneous case and simple constant forcings.
-        # Issue #9244: nonhomogeneous linear systems are not supported
+        # Issue sympy/sympy#9244: nonhomogeneous linear systems are not supported
         return
 
     if all(not r[k].has(t) for k in 'a1 a2 a3 b1 b2 b3 c1 c2 c3 d1 d2 d3'.split()):
@@ -5151,7 +5151,7 @@ def _solve_variation_of_parameters(eq, func, order, match):
 
     if r.get('simplify', True):
         # We need much better simplification for
-        # some ODEs. See issue 4662, for example.
+        # some ODEs. See issue sympy/sympy#4662, for example.
         wr = simplify(wr)
 
         # To reduce commonly occuring sin(x)**2 + cos(x)**2 to 1

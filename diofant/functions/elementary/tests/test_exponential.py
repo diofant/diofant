@@ -356,7 +356,7 @@ def test_lambertw():
         Float("0.701338383413663009202120278965", 30), 1e-29)
     assert re(LambertW(2, -1)).evalf().epsilon_eq(Float("-0.834310366631110"))
 
-    assert LambertW(-1).is_extended_real is False  # issue 5215
+    assert LambertW(-1).is_extended_real is False  # issue sympy/sympy#5215
     assert LambertW(2, evaluate=False).is_extended_real
     p = Symbol('p', positive=True)
     assert LambertW(p, evaluate=False).is_extended_real
@@ -377,7 +377,7 @@ def test_lambertw():
         125*x**5/24 + O(x**6)
 
 
-def test_issue_5673():
+def test_sympyissue_5673():
     e = LambertW(-1)
     assert e.is_comparable is False
     assert e.is_positive is not True
@@ -424,7 +424,7 @@ def test_polar():
     # Compare exp(1.0*pi*I).
     assert (exp_polar(1.0*pi*I).n(n=5)).as_real_imag()[1] >= 0
 
-    assert exp_polar(0).is_rational is True  # issue 8008
+    assert exp_polar(0).is_rational is True  # issue sympy/sympy#8008
 
     nz = Symbol('nz', rational=True, nonzero=True)
     assert exp_polar(nz).is_rational is False
@@ -457,7 +457,7 @@ def test_log_product():
     assert simplify(expr) == expr
 
 
-def test_issue_8866():
+def test_sympyissue_8866():
     assert simplify(log(x, 10, evaluate=False)) == simplify(log(x, 10))
     assert expand_log(log(x, 10, evaluate=False)) == expand_log(log(x, 10))
 

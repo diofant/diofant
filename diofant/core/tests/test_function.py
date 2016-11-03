@@ -88,7 +88,7 @@ def test_diff_symbols():
     assert diff(f(x, y, z), x, x, x) == Derivative(f(x, y, z), x, x, x)
     assert diff(f(x, y, z), x, 3) == Derivative(f(x, y, z), x, 3)
 
-    # issue 5028
+    # issue sympy/sympy#5028
     assert [diff(-z + x/y, sym) for sym in (z, x, y)] == [-1, 1/y, -x/y**2]
     assert diff(f(x, y, z), x, y, z, 2) == Derivative(f(x, y, z), x, y, z, z)
     assert diff(f(x, y, z), x, y, z, 2, evaluate=False) == \
@@ -285,8 +285,8 @@ def test_function_comparable_infinities():
 
 
 def test_deriv1():
-    # These all requre derivatives evaluated at a point (issue 4719) to work.
-    # See issue 4624
+    # These all requre derivatives evaluated at a point (issue sympy/sympy#4719) to work.
+    # See issue sympy/sympy#4624
     assert f(2*x).diff(x) == 2*Subs(Derivative(f(x), x), Tuple(x), Tuple(2*x))
     assert (f(x)**3).diff(x) == 3*f(x)**2*f(x).diff(x)
     assert (
@@ -318,7 +318,7 @@ def test_deriv2():
 
 def test_func_deriv():
     assert f(x).diff(x) == Derivative(f(x), x)
-    # issue 4534
+    # issue sympy/sympy#4534
     assert f(x, y).diff(x, y) - f(x, y).diff(y, x) == 0
     assert Derivative(f(x, y), x, y).args[1:] == (x, y)
     assert Derivative(f(x, y), y, x).args[1:] == (y, x)
@@ -407,7 +407,7 @@ def test_function__eval_nseries():
         log(x)/2 - log(x)/x - 1/x + O(1, x)
     assert loggamma(log(1/x)).nseries(x, n=1, logx=y) == loggamma(-y)
 
-    # issue 6725:
+    # issue sympy/sympy#6725:
     assert expint(Rational(3, 2), -x)._eval_nseries(x, 8, None) == \
         2 - 2*I*sqrt(pi)*sqrt(x) - 2*x - x**2/3 - x**3/15 - x**4/84 + O(x**5)
     assert sin(sqrt(x))._eval_nseries(x, 6, None) == \
@@ -432,7 +432,7 @@ def test_evalf_default():
     assert type(sin(Rational(1, 4))) == sin
 
 
-def test_issue_5399():
+def test_sympyissue_5399():
     args = [x, y, Integer(2), S.Half]
 
     def ok(a):
@@ -634,21 +634,21 @@ def test_nfloat():
     assert nfloat({sqrt(2): x}) == {sqrt(2): x}
     assert nfloat(cos(x + sqrt(2))) == cos(x + nfloat(sqrt(2)))
 
-    # issue 6342
+    # issue sympy/sympy#6342
     lamda = Symbol('lamda')
     f = x*lamda + lamda**3*(x/2 + Rational(1, 2)) + lamda**2 + Rational(1, 4)
     assert not any(a.free_symbols for a in solve(f.subs(x, -0.139)))
 
-    # issue 6632
+    # issue sympy/sympy#6632
     assert nfloat(-100000*sqrt(2500000001) + 5000000001) == \
         9.99999999800000e-11
 
-    # issue 7122
+    # issue sympy/sympy#7122
     eq = cos(3*x**4 + y)*RootOf(x**5 + 3*x**3 + 1, 0)
     assert str(nfloat(eq, exponent=False, n=1)) == '-0.7*cos(3.0*x**4 + y)'
 
 
-def test_issue_7068():
+def test_sympyissue_7068():
     from diofant.abc import a, b
     f = Function('f')
     y1 = Dummy('y')
@@ -663,7 +663,7 @@ def test_issue_7068():
     assert z1 != z2
 
 
-def test_issue_7231():
+def test_sympyissue_7231():
     from diofant.abc import a
     ans1 = f(x).series(x, a)
     _xi_1 = ans1.atoms(Dummy).pop()
@@ -680,7 +680,7 @@ def test_issue_7231():
     assert res == ans2
 
 
-def test_issue_7687():
+def test_sympyissue_7687():
     from diofant.core.function import Function
     from diofant.abc import x
     f = Function('f')(x)
@@ -693,7 +693,7 @@ def test_issue_7687():
     assert match_with_cache == ff.matches(f)
 
 
-def test_issue_7688():
+def test_sympyissue_7688():
     from diofant.core.function import Function, UndefinedFunction
 
     f = Function('f')  # actually an UndefinedFunction
@@ -713,7 +713,7 @@ def test_mexpand():
     assert _mexpand(x*(x + 1)**2) == (x*(x + 1)**2).expand()
 
 
-def test_issue_11313():
+def test_sympyissue_11313():
     # test Derivative series & as_leading_term
     assert Derivative(x**3 + x**4, x).as_leading_term(x).doit() == 3*x**2
     s = Derivative(sin(x), x).series(x, n=3)

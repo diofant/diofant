@@ -181,7 +181,7 @@ def test_numexpr_printer():
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 @pytest.mark.skipif(numexpr is None, reason="no numexpr")
-def test_issue_9334():
+def test_sympyissue_9334():
     expr = b*a - sqrt(a**2)
     a, b = sorted(expr.free_symbols, key=lambda s: s.name)
     func_numexpr = lambdify((a, b), expr, modules=[numexpr], dummify=False)
@@ -512,7 +512,7 @@ def test_dummification():
 
 
 def test_python_keywords():
-    # Test for issue 7452. The automatic dummification should ensure use of
+    # Test for issue sympy/sympy#7452. The automatic dummification should ensure use of
     # Python reserved keywords as symbol names will create valid lambda
     # functions. This is an additional regression test.
     python_if = symbols('if')
@@ -573,7 +573,7 @@ def test_true_false():
     assert lambdify([], false)() is False
 
 
-def test_issue_2790():
+def test_sympyissue_2790():
     assert lambdify((x, (y, z)), x + y)(1, (2, 4)) == 3
     assert lambdify((x, (y, (w, z))), w + x + y + z)(1, (2, (3, 4))) == 10
     assert lambdify(x, x + 1, dummify=False)(1) == 2

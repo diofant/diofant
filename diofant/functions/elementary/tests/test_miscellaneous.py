@@ -107,11 +107,11 @@ def test_Min():
     # a and b are both real, Min(a, b) should be real
     assert Min(a, b).is_extended_real
 
-    # issue 7619
+    # issue sympy/sympy#7619
     f = Function('f')
     assert Min(1, 2*Min(f(1), 2))  # doesn't fail
 
-    # issue 7233
+    # issue sympy/sympy#7233
     e = Min(0, x)
     assert e.evalf == e.n
     assert e.n().args == (0, x)
@@ -167,13 +167,13 @@ def test_Max():
     # a and b are both real, Max(a, b) should be real
     assert Max(a, b).is_extended_real
 
-    # issue 7233
+    # issue sympy/sympy#7233
     e = Max(0, x)
     assert e.evalf == e.n
     assert e.n().args == (0, x)
 
 
-def test_issue_8413():
+def test_sympyissue_8413():
     x = Symbol('x', extended_real=True)
     # we can't evaluate in general because non-reals are not
     # comparable: Min(floor(3.2 + I), 3.2 + I) -> ValueError

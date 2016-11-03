@@ -39,7 +39,7 @@ def test_bernoulli():
     b = bernoulli(10**6, evaluate=False).evalf()
     assert str(b) == '-2.23799235765713e+4767529'
 
-    # Issue #8527
+    # Issue sympy/sympy#8527
     l = Symbol('l', integer=True)
     m = Symbol('m', integer=True, nonnegative=True)
     n = Symbol('n', integer=True, positive=True)
@@ -202,7 +202,7 @@ def test_harmonic_rational():
 
 def test_harmonic_evalf():
     assert str(harmonic(1.5).evalf(n=10)) == '1.280372306'
-    assert str(harmonic(1.5, 2).evalf(n=10)) == '1.154576311'  # issue 7443
+    assert str(harmonic(1.5, 2).evalf(n=10)) == '1.154576311'  # issue sympy/sympy#7443
 
 
 def test_harmonic_rewrite_polygamma():
@@ -500,7 +500,7 @@ def test_nC_nP_nT():
     pytest.raises(ValueError, lambda: _multiset_histogram({1: 'a'}))
 
 
-def test_issue_8496():
+def test_sympyissue_8496():
     n = Symbol("n")
     k = Symbol("k")
 
@@ -508,7 +508,7 @@ def test_issue_8496():
     pytest.raises(TypeError, lambda: euler(n, k))
 
 
-def test_issue_8601():
+def test_sympyissue_8601():
     n = Symbol('n', integer=True, negative=True)
 
     assert catalan(n - 1) == S.Zero

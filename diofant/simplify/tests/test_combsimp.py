@@ -95,7 +95,7 @@ def test_combsimp_gamma():
     assert powsimp(combsimp(gamma(2*x)/gamma(x))) == \
         2**(2*x - 1)*gamma(x + Rational(1, 2))/sqrt(pi)
 
-    # issue 6792
+    # issue sympy/sympy#6792
     e = (-gamma(k)*gamma(k + 2) + gamma(k + 1)**2)/gamma(k)**2
     assert combsimp(e) == -k
     assert combsimp(1/e) == -1/k
@@ -123,7 +123,7 @@ def test_combsimp_gamma():
         3*2**(3*k + 1)*3**(-3*k - S.Half)*sqrt(pi)*gamma(3*k/2 + S.Half)/2)
 
 
-def test_issue_9699():
+def test_sympyissue_9699():
     n, k = symbols('n k', real=True)
     assert combsimp((n + 1)*factorial(n)) == factorial(n + 1)
     assert combsimp((x + 1)*factorial(x)/gamma(y)) == gamma(x + 2)/gamma(y)

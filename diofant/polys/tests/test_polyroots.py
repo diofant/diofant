@@ -47,7 +47,7 @@ def test_roots_quadratic():
     r = roots_quadratic(f)
     assert r == _nsort(r)
 
-    # issue 8255
+    # issue sympy/sympy#8255
     f = Poly(-24*x**2 - 180*x + 264)
     assert [w.n(2) for w in f.all_roots(radicals=True)] == \
            [w.n(2) for w in f.all_roots(radicals=False)]
@@ -57,7 +57,7 @@ def test_roots_quadratic():
         assert roots == _nsort(roots)
 
 
-def test_issue_8438():
+def test_sympyissue_8438():
     p = Poly([1, y, -2, -3], x).as_expr()
     roots = roots_cubic(Poly(p, x), x)
     z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
@@ -68,7 +68,7 @@ def test_issue_8438():
     assert all(p.subs({y: z, x: i}).n(2, chop=True) == 0 for i in post)
 
 
-def test_issue_8285():
+def test_sympyissue_8285():
     roots = (Poly(4*x**8 - 1, x)*Poly(x**2 + 1)).all_roots()
     assert roots == _nsort(roots)
     f = Poly(x**4 + 5*x**2 + 6, x)
@@ -83,7 +83,7 @@ def test_issue_8285():
     assert len(Poly(2*x**10 - 1).all_roots()) == 10  # doesn't fail
 
 
-def test_issue_8289():
+def test_sympyissue_8289():
     roots = (Poly(x**2 + 2)*Poly(x**4 + 2)).all_roots()
     assert roots == _nsort(roots)
     roots = Poly(x**6 + 3*x**3 + 2, x).all_roots()
@@ -156,7 +156,7 @@ def test_roots_quartic():
     eq = x**4 + 2*x**3 + 3*x**2 + x*(z + 11) + 5
     zans = roots_quartic(Poly(eq, x))
     assert all([verify_numerically(eq.subs(((x, i), (z, -1))), 0) for i in zans])
-    # but some are (see also issue 4989)
+    # but some are (see also issue sympy/sympy#4989)
     # it's ok if the solution is not Piecewise, but the tests below should pass
     eq = Poly(y*x**4 + x**3 - x + z, x)
     ans = roots_quartic(eq)
@@ -243,7 +243,7 @@ def test_roots_binomial():
         ans = roots_binomial(p)
         assert ans == _nsort(ans)
 
-    # issue 8813
+    # issue sympy/sympy#8813
     assert roots(Poly(2*x**3 - 16*y**3, x)) == {
         2*y*(-Rational(1, 2) - sqrt(3)*I/2): 1,
         2*y: 1,

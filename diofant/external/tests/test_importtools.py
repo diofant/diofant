@@ -5,7 +5,7 @@ import pytest
 from diofant.core.compatibility import HAS_GMPY
 from diofant.external import import_module
 
-# fixes issue that arose in addressing issue 6533
+# fixes issue that arose in addressing issue sympy/sympy#6533
 
 
 def test_no_stdlib_collections():

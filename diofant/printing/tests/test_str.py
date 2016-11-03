@@ -161,7 +161,7 @@ def test_Interval():
 
 def test_Lambda():
     assert str(Lambda(d, d**2)) == "Lambda(_d, _d**2)"
-    # issue 2908
+    # issue sympy/sympy#2908
     assert str(Lambda((), 1)) == "Lambda((), 1)"
     assert str(Lambda((), x)) == "Lambda((), x)"
 
@@ -413,7 +413,7 @@ def test_Pow():
     assert str(sqrt(sqrt(x))) == "x**(1/4)"
     # not the same as x**-1
     assert str(x**-1.0) == 'x**(-1.0)'
-    # see issue #2860
+    # see issue sympy/sympy#2860
     assert str(Pow(Integer(2), -1.0, evaluate=False)) == '2**(-1.0)'
 
 
@@ -569,21 +569,21 @@ def test_zeta():
     assert str(zeta(3)) == "zeta(3)"
 
 
-def test_issue_3101():
+def test_sympyissue_3101():
     e = x - y
     a = str(e)
     b = str(e)
     assert a == b
 
 
-def test_issue_3103():
+def test_sympyissue_3103():
     e = -2*sqrt(x) - y/sqrt(x)/2
     assert str(e) not in ["(-2)*x**1/2(-1/2)*x**(-1/2)*y",
             "-2*x**1/2(-1/2)*x**(-1/2)*y", "-2*x**1/2-1/2*x**-1/2*w"]
     assert str(e) == "-2*sqrt(x) - y/(2*sqrt(x))"
 
 
-def test_issue_4021():
+def test_sympyissue_4021():
     e = Integral(x, x) + 1
     assert str(e) == 'Integral(x, x) + 1'
 
@@ -672,7 +672,7 @@ def test_Tr():
     assert str(t) == 'Tr(A*B)'
 
 
-def test_issue_6387():
+def test_sympyissue_6387():
     assert str(factor(-3.0*z + 3)) == '-3.0*(1.0*z - 1.0)'
 
 

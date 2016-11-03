@@ -47,7 +47,7 @@ x/y
 (1+x)*y  #3
 -5*x/(x+10)  # correct placement of negative sign
 1 - Rational(3,2)*(x+1)
--(-x + 5)*(-x - 2*sqrt(2) + 5) - (-y + 5)*(-y + 5) # issue 5524
+-(-x + 5)*(-x - 2*sqrt(2) + 5) - (-y + 5)*(-y + 5) # issue sympy/sympy#5524
 
 
 ORDERING:
@@ -386,7 +386,7 @@ x    \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    # see issue #2860
+    # see issue sympy/sympy#2860
     expr = Pow(Integer(2), -1.0, evaluate=False)
     ascii_str = \
 """\
@@ -451,7 +451,7 @@ x   \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    # See issue 4923
+    # See issue sympy/sympy#4923
     expr = Pow(3, 1, evaluate=False)
     ascii_str = \
 """\
@@ -879,7 +879,7 @@ y   \
     assert upretty(expr) == ucode_str
 
 
-def test_issue_5524():
+def test_sympyissue_5524():
     assert pretty(-(-x + 5)*(-x - 2*sqrt(2) + 5) - (-y + 5)*(-y + 5)) == \
 """\
         /         ___    \\           2\n\
@@ -1042,8 +1042,8 @@ y + 1     \
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
 
 
-def test_issue_7117():
-    # See also issue #5031 (hence the evaluate=False in these).
+def test_sympyissue_7117():
+    # See also issue sympy/sympy#5031 (hence the evaluate=False in these).
     e = Eq(x + 1, x/2)
     q = Mul(2, e, evaluate=False)
     assert upretty(q) == """\
@@ -3010,7 +3010,7 @@ def test_pretty_seq():
 
 
 def test_any_object_in_sequence():
-    # Cf. issue 5306
+    # Cf. issue sympy/sympy#5306
     b1 = Basic()
     b2 = Basic(Basic())
 
@@ -4545,12 +4545,12 @@ def test_PrettyPoly():
     assert upretty(expr) == "x + y"
 
 
-def test_issue_6285():
+def test_sympyissue_6285():
     assert pretty(Pow(2, -5, evaluate=False)) == '1 \n--\n 5\n2 '
     assert pretty(Pow(x, (1/pi))) == 'pi___\n\\/ x '
 
 
-def test_issue_6359():
+def test_sympyissue_6359():
     assert pretty(Integral(x**2, x)**2) == \
 """\
           2
@@ -4632,7 +4632,7 @@ def test_issue_6359():
 """
 
 
-def test_issue_6739():
+def test_sympyissue_6739():
     ascii_str = \
 """\
   1  \n\
@@ -4868,12 +4868,12 @@ def test_pretty_Mul():
     assert upretty(eq) == '1⋅1'
 
 
-def test_issue_7179():
+def test_sympyissue_7179():
     assert upretty(Not(Equivalent(x, y))) == 'x ≢ y'
     assert upretty(Not(Implies(x, y))) == 'x ↛ y'
 
 
-def test_issue_7180():
+def test_sympyissue_7180():
     assert upretty(Equivalent(x, y)) == 'x ≡ y'
 
 
@@ -4897,7 +4897,7 @@ def test_pretty_Contains():
     assert upretty(Contains(x, S.Integers)) == 'x ∈ ℤ'
 
 
-def test_issue_8292():
+def test_sympyissue_8292():
     from diofant.core import sympify
     e = sympify('((x+x**4)/(x-1))-(2*(x-1)**4/(x-1)**4)', evaluate=False)
     ucode_str = \
@@ -4920,7 +4920,7 @@ def test_issue_8292():
     assert upretty(e) == ucode_str
 
 
-def test_issue_4335():
+def test_sympyissue_4335():
     y = Function('y')
     expr = -y(x).diff(x)
     ucode_str = \
@@ -4939,7 +4939,7 @@ def test_issue_4335():
     assert upretty(expr) == ucode_str
 
 
-def test_issue_8344():
+def test_sympyissue_8344():
     from diofant.core import sympify
     e = sympify('2*x*y**2/1**2 + 1', evaluate=False)
     ucode_str = \
@@ -4953,7 +4953,7 @@ def test_issue_8344():
     assert upretty(e) == ucode_str
 
 
-def test_issue_6324():
+def test_sympyissue_6324():
     x = Pow(2, 3, evaluate=False)
     y = Pow(10, -2, evaluate=False)
     e = Mul(x, y, evaluate=False)
@@ -4968,7 +4968,7 @@ def test_issue_6324():
     assert upretty(e) == ucode_str
 
 
-def test_issue_7927():
+def test_sympyissue_7927():
     e = sin(x/2)**cos(x/2)
     ucode_str = \
 """\
@@ -4991,7 +4991,7 @@ def test_issue_7927():
     assert upretty(e) == ucode_str
 
 
-def test_issue_6134():
+def test_sympyissue_6134():
     from diofant.abc import lamda, t
     phi = Function('phi')
 
@@ -5007,7 +5007,7 @@ def test_issue_6134():
     assert upretty(e) == ucode_str
 
 
-def test_issue_9877():
+def test_sympyissue_9877():
     ucode_str1 = '(2, 3) ∪ ([1, 2] \ {x})'
     a, b, c = Interval(2, 3, True, True), Interval(1, 2), FiniteSet(x)
     assert upretty(Union(a, Complement(b, c))) == ucode_str1

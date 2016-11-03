@@ -178,7 +178,7 @@ def test_plane():
 
     assert pl3.random_point() in pl3
 
-    # issue 8570
+    # issue sympy/sympy#8570
     l2 = Line3D(Point3D(Rational(50000004459633, 5000000000000),
                         Rational(-891926590718643, 1000000000000000),
                         Rational(231800966893633, 100000000000000)),

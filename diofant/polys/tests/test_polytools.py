@@ -1428,7 +1428,7 @@ def test_Poly_diff():
     assert Poly(x**2*y**2 + x*y).diff(y, x) == Poly(4*x*y + 1)
 
 
-def test_issue_9585():
+def test_sympyissue_9585():
     assert diff(Poly(x**2 + x)) == Poly(2*x + 1)
     assert diff(Poly(x**2 + x), x, evaluate=False) == \
         Derivative(Poly(x**2 + x), x)
@@ -1483,7 +1483,7 @@ def test_Poly_eval():
     pytest.raises(ValueError, lambda: Poly(x*y + y, x, y).eval((6, 7, 8)))
     pytest.raises(DomainError, lambda: Poly(x + 1, domain='ZZ').eval(Rational(1, 2), auto=False))
 
-    # issue 6344
+    # issue sympy/sympy#6344
     alpha = Symbol('alpha')
     result = (2*alpha*z - 2*alpha + z**2 + 3)/(z**2 - 2*z + 1)
 
@@ -2393,7 +2393,7 @@ def test_factor():
 
     assert factor(sqrt(-x)) == sqrt(-x)
 
-    # issue 5917
+    # issue sympy/sympy#5917
     e = (-2*x*(-x + 1)*(x - 1)*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2)*(x**2*(x -
     1) - x*(x - 1) - x) - (-2*x**2*(x - 1)**2 - x*(-x + 1)*(-x*(-x + 1) +
     x*(x - 1)))*(x**2*(x - 1)**4 - x*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2)))
@@ -2738,7 +2738,7 @@ def test_nroots():
 
     pytest.raises(PolynomialError, lambda: nroots(0))
 
-    # issue 8296
+    # issue sympy/sympy#8296
     f = Poly(x**4 - 1)
     assert f.nroots(2) == [w.n(2) for w in f.all_roots()]
 
@@ -2870,7 +2870,7 @@ def test_cancel():
       + (-(-2*P**2 + 2)*P*Q**2/2 - (-2*Q**2 + 2)*P**2*Q/2)*((-2*P**2 + 2)*P*Q**2/2 + (-2*Q**2 + 2)*P**2*Q/2)/(2*(P**2*Q**2 + 0.0001)**Rational(3, 2))
     assert cancel(f).is_Mul
 
-    # issue 7022
+    # issue sympy/sympy#7022
     A = Symbol('A', commutative=False)
     p1 = Piecewise((A*(x**2 - 1)/(x + 1), x > 1), ((x + 2)/(x**2 + 2*x), True))
     p2 = Piecewise((A*(x - 1), x > 1), (1/x, True))
@@ -2887,7 +2887,7 @@ def test_cancel():
     assert cancel((x**2 - 1)/(x + 1)*p3) == (x - 1)*p4
     assert cancel((x**2 - 1)/(x + 1) + p3) == (x - 1) + p4
 
-    # issue 9363
+    # issue sympy/sympy#9363
     M = MatrixSymbol('M', 5, 5)
     assert cancel(M[0, 0] + 7) == M[0, 0] + 7
     expr = (z*sin(M[1, 4] + M[2, 1] * 5 * M[4, 0]) - 5 * M[1, 2])/z
@@ -3126,7 +3126,7 @@ def test_poly():
     assert poly(1, x) == Poly(1, x)
     pytest.raises(GeneratorsNeeded, lambda: poly(1))
 
-    # issue 6184
+    # issue sympy/sympy#6184
     assert poly(x + y, x, y) == Poly(x + y, x, y)
     assert poly(x + y, y, x) == Poly(x + y, y, x)
 
@@ -3154,7 +3154,7 @@ def test_poly_matching_consistency():
 
 
 @pytest.mark.xfail
-def test_issue_5786():
+def test_sympyissue_5786():
     assert expand(factor(expand(
         (x - I*y)*(z - I*t)), extension=[I])) == -I*t*x - t*y + x*z - I*y*z
 

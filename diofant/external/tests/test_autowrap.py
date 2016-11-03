@@ -182,7 +182,7 @@ def test_ufuncify_C_Cython():
 
 
 @pytest.mark.skipif(Cython is None, reason="Couldn't import Cython.")
-def test_issue_10274_C_cython():
+def test_sympyissue_10274_C_cython():
     has_module('Cython')
     runtest_issue_10274('C', 'cython')
 

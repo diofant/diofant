@@ -17,7 +17,7 @@ from diofant.abc import (x, y, z, t, a, b, c, d, e, f, g, h, i, r,
                          R, k, n, m, w, s)
 
 
-def test_issue_7263():
+def test_sympyissue_7263():
     assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf() -
                673.447451402970) < 1e-12
 
@@ -86,7 +86,7 @@ def test_simplify_expr():
     assert simplify(hyper([], [], x)) == exp(x)
 
 
-def test_issue_3557():
+def test_sympyissue_3557():
     f_1 = x*a + y*b + z*c - 1
     f_2 = x*d + y*e + z*f - 1
     f_3 = x*g + y*h + z*i - 1
@@ -106,7 +106,7 @@ def test_simplify_other():
         Eq(sin(x)**2 + cos(x)**2, factorial(x)/gamma(x))) == Eq(x, 1)
     nc = symbols('nc', commutative=False)
     assert simplify(x + x*nc) == x*(1 + nc)
-    # issue 6123
+    # issue sympy/sympy#6123
     # f = exp(-I*(k*sqrt(t) + x/(2*sqrt(t)))**2)
     # ans = integrate(f, (k, -oo, oo), conds='none')
     ans = (I*(-pi*x*exp(-3*I*pi/4 + I*x**2/(4*t))*erf(x*exp(-3*I*pi/4) /
@@ -114,7 +114,7 @@ def test_simplify_other():
               (2*sqrt(t)))*exp(-I*x**2/(4*t))/(sqrt(pi)*x) - I*sqrt(pi) *
            (-erf(x*exp(I*pi/4)/(2*sqrt(t))) + 1)*exp(I*pi/4)/(2*sqrt(t)))
     assert simplify(ans) == -(-1)**Rational(3, 4)*sqrt(pi)/sqrt(t)
-    # issue 6370
+    # issue sympy/sympy#6370
     assert simplify(2**(2 + x)/4) == 2**x
 
 
@@ -122,7 +122,7 @@ def test_simplify_complex():
     cosAsExp = cos(x)._eval_rewrite_as_exp(x)
     tanAsExp = tan(x)._eval_rewrite_as_exp(x)
     assert simplify(cosAsExp*tanAsExp).expand() == (
-        sin(x))._eval_rewrite_as_exp(x).expand()  # issue 4341
+        sin(x))._eval_rewrite_as_exp(x).expand()  # issue sympy/sympy#4341
 
 
 def test_simplify_ratio():
@@ -161,7 +161,7 @@ def test_simplify_issue_1308():
         (1 + E)*exp(-Rational(3, 2))
 
 
-def test_issue_5652():
+def test_sympyissue_5652():
     assert simplify(E + exp(-E)) == exp(-E) + E
     n = symbols('n', commutative=False)
     assert simplify(n + n**(-n)) == n + n**(-n)
@@ -212,16 +212,16 @@ def test_separatevars():
     assert separatevars(y/pi*exp(-(z - x)/cos(n))) == \
         y*exp(x/cos(n))*exp(-z/cos(n))/pi
     assert separatevars((x + y)*(x - y) + y**2 + 2*x + 1) == (x + 1)**2
-    # issue 4858
+    # issue sympy/sympy#4858
     p = Symbol('p', positive=True)
     assert separatevars(sqrt(p**2 + x*p**2)) == p*sqrt(1 + x)
     assert separatevars(sqrt(y*(p**2 + x*p**2))) == p*sqrt(y*(1 + x))
     assert separatevars(sqrt(y*(p**2 + x*p**2)), force=True) == \
         p*sqrt(y)*sqrt(1 + x)
-    # issue 4865
+    # issue sympy/sympy#4865
     assert separatevars(sqrt(x*y)).is_Pow
     assert separatevars(sqrt(x*y), force=True) == sqrt(x)*sqrt(y)
-    # issue 4957
+    # issue sympy/sympy#4957
     # any type sequence for symbols is fine
     assert separatevars(((2*x + 2)*y), dict=True, symbols=()) == \
         {'coeff': 1, x: 2*x + 2, y: y}
@@ -239,11 +239,11 @@ def test_separatevars():
     assert separatevars(2*x + y, dict=True, symbols=()) is None
     assert separatevars(2*x + y, dict=True) is None
     assert separatevars(2*x + y, dict=True, symbols=None) == {'coeff': 2*x + y}
-    # issue 4808
+    # issue sympy/sympy#4808
     n, m = symbols('n,m', commutative=False)
     assert separatevars(m + n*m) == (1 + n)*m
     assert separatevars(x + x*n) == x*(1 + n)
-    # issue 4910
+    # issue sympy/sympy#4910
     f = Function('f')
     assert separatevars(f(x) + x*f(x)) == f(x) + x*f(x)
     # a noncommutable object present
@@ -336,13 +336,13 @@ def test_nsimplify():
     assert nsimplify(-.2, tolerance=0) == -S.One/5
     assert nsimplify(.2222, tolerance=0) == Rational(1111, 5000)
     assert nsimplify(-.2222, tolerance=0) == -Rational(1111, 5000)
-    # issue 7211, PR 4112
+    # issue sympy/sympy#7211, PR sympy/sympy#4112
     assert nsimplify(Float(2e-8)) == Rational(1, 50000000)
-    # issue 7322 direct test
+    # issue sympy/sympy#7322 direct test
     assert nsimplify(1e-42, rational=True) != 0
 
 
-def test_issue_9448():
+def test_sympyissue_9448():
     expr = (1/(1 - (-1)**Rational(2, 3) - (-1)**Rational(1, 3)) +
             1/(1 + (-1)**Rational(2, 3) + (-1)**Rational(1, 3)))
     assert nsimplify(expr) == S.Half
@@ -432,7 +432,7 @@ def test_posify():
         'Sum(_x**(-n), (n, 1, 3))'
 
 
-def test_issue_4194():
+def test_sympyissue_4194():
     # simplify should call cancel
     f = Function('f')
     assert simplify((4*x + 6*f(y))/(2*x + 3*f(y))) == 2
@@ -440,7 +440,7 @@ def test_issue_4194():
 
 @pytest.mark.xfail
 def test_simplify_float_vs_integer():
-    # Test for issue 4473:
+    # Test for issue sympy/sympy#4473:
     # https://github.com/sympy/sympy/issues/4473
     assert simplify(x**2.0 - x**2) == 0
     assert simplify(x**2 - x**2.0) == 0
@@ -526,19 +526,19 @@ def test_polymorphism():
     assert simplify(a) == 1
 
 
-def test_issue_from_PR1599():
+def test_sympyissue_from_PR1599():
     n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True)
     assert simplify(I*sqrt(n1)) == -sqrt(-n1)
 
 
-def test_issue_6811():
+def test_sympyissue_6811():
     eq = (x + 2*y)*(2*x + 2)
     assert simplify(eq) == (x + 1)*(x + 2*y)*2
     # reject the 2-arg Mul -- these are a headache for test writing
     assert simplify(eq.expand()) == 2*x**2 + 4*x*y + 2*x + 4*y
 
 
-def test_issue_6920():
+def test_sympyissue_6920():
     e = [cos(x) + I*sin(x), cos(x) - I*sin(x),
          cosh(x) - sinh(x), cosh(x) + sinh(x)]
     ok = [exp(I*x), exp(-I*x), exp(-x), exp(x)]
@@ -547,7 +547,7 @@ def test_issue_6920():
     assert [simplify(f(ei)).args[0] for ei in e] == ok
 
 
-def test_issue_7001():
+def test_sympyissue_7001():
     assert (simplify(-(r*Piecewise((4*pi/3, r <= R),
                                    (-8*pi*R**3/(3*r**3), True)) +
                        2*Piecewise((4*pi*r/3, r <= R),
@@ -564,7 +564,7 @@ def test_inequality_no_auto_simplify():
     assert simplify(e)
 
 
-def test_issue_9398():
+def test_sympyissue_9398():
     assert cancel(1e-14) != 0
     assert cancel(1e-14*I) != 0
 

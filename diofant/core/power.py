@@ -540,7 +540,7 @@ class Pow(Expr):
                 ct1 = (self.exp/ct2[1], ct2[1])
                 ok, pow = _check(ct1, ct2, old)
                 if ok:
-                    # issue 5180: (x**(6*y)).subs(x**(3*y),z)->z**2
+                    # issue sympy/sympy#5180: (x**(6*y)).subs(x**(3*y),z)->z**2
                     return self.func(new, pow)
             else:  # b**(6*x+a).subs(b**(3*x), y) -> y**2 * b**a
                 # exp(exp(x) + exp(x**2)).subs(exp(exp(x)), w) -> w * exp(exp(x**2))

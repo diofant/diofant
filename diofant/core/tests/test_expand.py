@@ -50,7 +50,7 @@ def test_expand_non_commutative():
     assert ((A + B)**2).expand() == A**2 + A*B + B*A + B**2
     assert ((A + B)**3).expand() == (A**2*B + B**2*A + A*B**2 + B*A**2 +
                                      A**3 + B**3 + A*B*A + B*A*B)
-    # issue 6219
+    # issue sympy/sympy#6219
     assert ((a*A*B*A**-1)**2).expand() == a**2*A*B**2/A
     # Note that (a*A*B*A**-1)**2 is automatically converted to a**2*(A*B*A**-1)**2
     assert ((a*A*B*A**-1)**2).expand(deep=False) == a**2*(A*B*A**-1)**2
@@ -60,7 +60,7 @@ def test_expand_non_commutative():
     assert ((a*A)**2).expand() == a**2*A**2
     assert ((a*A*B)**i).expand() == a**i*(A*B)**i
     assert ((a*A*(B*(A*B/A)**2))**i).expand() == a**i*(A*B*A*B**2/A)**i
-    # issue 6558
+    # issue sympy/sympy#6558
     assert (A*B*(A*B)**-1).expand() == A*B*(A*B)**-1
     assert ((a*A)**i).expand() == a**i*A**i
     assert ((a*A*B*A**-1)**3).expand() == a**3*A*B**3/A
@@ -111,7 +111,7 @@ def test_expand_modulus():
     pytest.raises(ValueError, lambda: ((x + y)**11).expand(modulus=x))
 
 
-def test_issue_5743():
+def test_sympyissue_5743():
     assert (x*sqrt(
         x + y)*(1 + sqrt(x + y))).expand() == x**2 + x*y + x*sqrt(x + y)
     assert (x*sqrt(
@@ -129,7 +129,7 @@ def test_expand_frac():
     assert expand_numer(eq, multinomial=False) == eq
 
 
-def test_issue_6121():
+def test_sympyissue_6121():
     eq = -I*exp(-3*I*pi/4)/(4*pi**Rational(3, 2)*sqrt(x))
     assert eq.expand(complex=True)  # does not give oo recursion
 
@@ -210,9 +210,9 @@ def test_expand_arit():
     m = Symbol('m', negative=True)
     assert ((-2*x*y*n)**z).expand() == 2**z*(-n)**z*(x*y)**z
     assert ((-2*x*y*n*m)**z).expand() == 2**z*(-m)**z*(-n)**z*(-x*y)**z
-    # issue 5482
+    # issue sympy/sympy#5482
     assert sqrt(-2*x*n) == sqrt(2)*sqrt(-n)*sqrt(x)
-    # issue 5605 (2)
+    # issue sympy/sympy#5605 (2)
     assert (cos(x + y)**2).expand(trig=True) in [
         (-sin(x)*sin(y) + cos(x)*cos(y))**2,
         sin(x)**2*sin(y)**2 - 2*sin(x)*sin(y)*cos(x)*cos(y) + cos(x)**2*cos(y)**2
@@ -246,13 +246,13 @@ def test_power_expand():
     assert (A**(a + b)).expand() != A**(a + b)
 
 
-def test_issues_5919_6830():
-    # issue 5919
+def test_sympyissues_5919_6830():
+    # issue sympy/sympy#5919
     n = -1 + 1/x
     z = n/x/(-n)**2 - 1/n/x
     assert expand(z) == 1/(x**2 - 2*x + 1) - 1/(x - 2 + 1/x) - 1/(-x + 1)
 
-    # issue 6830
+    # issue sympy/sympy#6830
     p = (1 + x)**2
     assert expand_multinomial((1 + x*p)**2) == (
         x**2*(x**4 + 4*x**3 + 6*x**2 + 4*x + 1) + 2*x*(x**2 + 2*x + 1) + 1)

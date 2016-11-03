@@ -201,7 +201,7 @@ def test_multivar_3():
     assert (O(x**2*y) + O(y*x)) == O(x*y)
 
 
-def test_issue_3468():
+def test_sympyissue_3468():
     y = Symbol('y', negative=True)
     z = Symbol('z', complex=True)
 
@@ -288,7 +288,7 @@ def test_eval():
     assert (O(1)**x).is_Pow
 
 
-def test_issue_4279():
+def test_sympyissue_4279():
     a, b = symbols('a b')
     assert O(a, a, b) + O(1, a, b) == O(1, a, b)
     assert O(b, a, b) + O(1, a, b) == O(1, a, b)
@@ -298,7 +298,7 @@ def test_issue_4279():
     assert O(1, a, b) + O(a + b) == O(1, a, b)
 
 
-def test_issue_4855():
+def test_sympyissue_4855():
     assert 1/O(1) != O(1)
     assert 1/O(x) != O(1/x)
     assert 1/O(x, (x, oo)) != O(1/x, (x, oo))
@@ -330,11 +330,11 @@ def test_order_noncommutative():
     assert expand((A + O(x))*A*x) == A*A*x + O(x**2, x)
 
 
-def test_issue_6753():
+def test_sympyissue_6753():
     assert (1 + x**2)**10000*O(x) == O(x)
 
 
-def test_issue_7872():
+def test_sympyissue_7872():
     assert O(x**3).subs(x, exp(-x**2)) in [O(exp(-3*x**2), (x, oo)),
                                            O(exp(-3*x**2), (x, -oo))]
 
@@ -376,7 +376,7 @@ def test_order_at_infinity():
     assert O(x**3, (x, oo)) + O(exp(2/x), (x, oo)) == O(x**3, (x, oo))
     assert O(x**-3, (x, oo)) + O(exp(2/x), (x, oo)) == O(exp(2/x), (x, oo))
 
-    # issue 7207
+    # issue sympy/sympy#7207
     assert O(exp(x), (x, oo)).expr == O(2*exp(x), (x, oo)).expr == exp(x)
     assert O(y**x, (x, oo)).expr == O(2*y**x, (x, oo)).expr == y**x
 
@@ -405,25 +405,25 @@ def test_order_at_some_point():
 
 
 def test_order_subs_limits():
-    # issue 3333
+    # issue sympy/sympy#3333
     assert (1 + O(x)).subs(x, 1/x) == 1 + O(1/x, (x, oo))
     assert (1 + O(x)).limit(x, 0) == 1
-    # issue 5769
+    # issue sympy/sympy#5769
     assert ((x + O(x**2))/x).limit(x, 0) == 1
 
     assert O(x**2).subs(x, y - 1) == O((y - 1)**2, (y, 1))
     assert O(10*x**2, (x, 2)).subs(x, y - 1) == O(1, (y, 3))
 
 
-def test_issue_9351():
+def test_sympyissue_9351():
     assert exp(x).series(x, 10, 1) == exp(10) + O(x - 10, (x, 10))
 
 
-def test_issue_9192():
+def test_sympyissue_9192():
     assert O(1)*O(1) == O(1)
     assert O(1)**O(1) == O(1)
 
 
-def test_issue_7599():
+def test_sympyissue_7599():
     n = Symbol('n', integer=True)
     assert O(x**n, x) + O(x**2) == Add(O(x**2), O(x**n, x), evaluate=False)

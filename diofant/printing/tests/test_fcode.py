@@ -64,7 +64,7 @@ def test_fcode_functions():
     assert fcode(sin(x) ** cos(y)) == "      sin(x)**cos(y)"
 
 
-# issue 6814
+# issue sympy/sympy#6814
 def test_fcode_functions_with_integers():
     x = symbols('x')
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"

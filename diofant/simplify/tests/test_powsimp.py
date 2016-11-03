@@ -89,13 +89,13 @@ def test_powsimp():
 
     assert powsimp(exp(p/2)) == exp(p/2)
 
-    # issue 6368
+    # issue sympy/sympy#6368
     eq = Mul(*[sqrt(Dummy(imaginary=True)) for i in range(3)])
     assert powsimp(eq) == eq and eq.is_Mul
 
     assert all(powsimp(e) == e for e in (sqrt(x**a), sqrt(x**2)))
 
-    # issue 8836
+    # issue sympy/sympy#8836
     assert str( powsimp(exp(I*pi/3)*root(-1, 3)) ) == '(-1)**(2/3)'
 
 
@@ -138,7 +138,7 @@ def test_powsimp_nc():
     assert powsimp(B**x*A**x*C**x, combine='exp') == B**x*A**x*C**x
 
 
-def test_issue_6440():
+def test_sympyissue_6440():
     assert powsimp(16*2**a*8**b) == 2**(a + 3*b + 4)
 
 
@@ -197,20 +197,20 @@ def test_powdenest_polar():
     assert powdenest(((x**a)**b*y**c)**c) == x**(a*b*c)*y**(c**2)
 
 
-def test_issue_5805():
+def test_sympyissue_5805():
     arg = ((gamma(x)*hyper((), (), x))*pi)**2
     assert powdenest(arg) == (pi*gamma(x)*hyper((), (), x))**2
     assert arg.is_positive is None
 
 
-def test_issue_9324_powsimp_on_matrix_symbol():
+def test_sympyissue_9324_powsimp_on_matrix_symbol():
     M = MatrixSymbol('M', 10, 10)
     expr = powsimp(M, deep=True)
     assert expr == M
     assert expr.args[0] == 'M'
 
 
-def test_issue_6367():
+def test_sympyissue_6367():
     z = -5*sqrt(2)/(2*sqrt(2*sqrt(29) + 29)) + sqrt(-sqrt(29)/29 + Rational(1, 2))
     assert Mul(*[powsimp(a) for a in Mul.make_args(z.normal())]) == 0
     assert powsimp(z.normal()) == 0
@@ -243,7 +243,7 @@ def test_powsimp_polar():
         sin(exp_polar(x + y))
 
 
-def test_issue_5728():
+def test_sympyissue_5728():
     b = x*sqrt(y)
     a = sqrt(b)
     c = sqrt(sqrt(x)*y)
@@ -272,7 +272,7 @@ def test_issue_5728():
     assert powsimp(a**2*sqrt(sqrt(a))) == sqrt(sqrt(a))**9
 
 
-def test_issue_from_PR1599():
+def test_sympyissue_from_PR1599():
     n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True)
     assert simplify(I*sqrt(n1)) == -sqrt(-n1)
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==

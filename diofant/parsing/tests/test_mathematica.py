@@ -20,6 +20,6 @@ def test_mathematica():
         '2*Sin[x+y]': '2*sin(x+y)',
         'Sin[x]+Cos[y]': 'sin(x)+cos(y)',
         'Sin[Cos[x]]': 'sin(cos(x))',
-        '2*Sqrt[x+y]': '2*sqrt(x+y)'}   # Test case from the issue 4259
+        '2*Sqrt[x+y]': '2*sqrt(x+y)'}   # Test case from the issue sympy/sympy#4259
     for e in d:
         assert mathematica(e) == sympify(d[e])

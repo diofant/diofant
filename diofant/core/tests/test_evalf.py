@@ -189,9 +189,9 @@ def test_evalf_bugs():
     assert NS((x*(1 + y*(1 + n))).subs(d).evalf(), 6) == '0.346011 + 0.433884*I'
     assert NS(((-I - sqrt(2)*I)**2).evalf()) == '-5.82842712474619'
     assert NS((1 + I)**2*I, 15) == '-2.00000000000000'
-    # issue 4758 (1/2):
+    # issue sympy/sympy#4758 (1/2):
     assert NS(pi.evalf(69) - pi) == '-4.43863937855894e-71'
-    # issue 4758 (2/2): With the bug present, this still only fails if the
+    # issue sympy/sympy#4758 (2/2): With the bug present, this still only fails if the
     # terms are in the order given here. This is not generally the case,
     # because the order depends on the hashes of the terms.
     assert NS(20 - 5008329267844*n**25 - 477638700*n**37 - 19*n,
@@ -202,7 +202,7 @@ def test_evalf_bugs():
     assert NS((-2*x).n()) == '-2.00000000000000*x'
     assert NS((-2*x*y).n()) == '-2.00000000000000*x*y'
     assert cos(x).n(subs={x: 1+I}) == cos(x).subs(x, 1+I).n()
-    # issue 6660. Also NaN != mpmath.nan
+    # issue sympy/sympy#6660. Also NaN != mpmath.nan
     # In this order:
     # 0*nan, 0/nan, 0*inf, 0/inf
     # 0+nan, 0-nan, 0+inf, 0-inf
@@ -229,7 +229,7 @@ def test_evalf_bugs():
     assert (5+E**(oo)).n() == S.Infinity
     assert (5-E**(oo)).n() == S.NegativeInfinity
 
-    # issue 7416
+    # issue sympy/sympy#7416
     assert as_mpmath(0.0, 10, {'chop': True}) == 0
 
 
@@ -285,11 +285,11 @@ def test_evalf_sum():
     # the next test should return instantly
     assert Sum(1/n, (n, 1, 2)).evalf() == 1.5
 
-    # issue 8219
+    # issue sympy/sympy#8219
     assert Sum(E/factorial(n), (n, 0, oo)).evalf() == (E*E).evalf()
-    # issue 8254
+    # issue sympy/sympy#8254
     assert Sum(2**n*n/factorial(n), (n, 0, oo)).evalf() == (2*E*E).evalf()
-    # issue 8411
+    # issue sympy/sympy#8411
     s = Sum(1/x**2, (x, 100, oo))
     assert s.n() == s.doit().n()
 
@@ -358,11 +358,11 @@ def test_evalf_relational():
     assert Eq(x/5, y/10).evalf() == Eq(0.2*x, 0.1*y)
 
 
-def test_issue_5486():
+def test_sympyissue_5486():
     assert not cos(sqrt(0.5 + I)).n().is_Function
 
 
-def test_issue_5486_bug():
+def test_sympyissue_5486_bug():
     from diofant import I, Expr
     assert abs(Expr._from_mpmath(I._to_mpmath(15), 15) - I) < 1.0e-15
     pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
@@ -385,8 +385,8 @@ def test_subs():
     pytest.raises(TypeError, lambda: x.evalf(subs=(x, 1)))
 
 
-def test_issue_4956_5204():
-    # issue 4956
+def test_sympyissue_4956_5204():
+    # issue sympy/sympy#4956
     v = ((-27*12**Rational(1, 3)*sqrt(31)*I +
          27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I) /
          (-2511*2**Rational(2, 3)*3**Rational(1, 3) + (29*18**Rational(1, 3) +
@@ -394,7 +394,7 @@ def test_issue_4956_5204():
          87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
     assert NS(v, 1) == '0.e-118 - 0.e-118*I'
 
-    # issue 5204
+    # issue sympy/sympy#5204
     v = (-(357587765856 + 18873261792*249**Rational(1, 2) +
          56619785376*I*83**Rational(1, 2) + 108755765856*I*3**Rational(1, 2) +
          41281887168*6**Rational(1, 3)*(1422 + 54*249**Rational(1, 2))**Rational(1, 3)
@@ -417,7 +417,7 @@ def test_old_docstring():
     assert a.n() == 17.25866050002001
 
 
-def test_issue_4806():
+def test_sympyissue_4806():
     assert integrate(atan(x)**2, (x, -1, 1)).evalf().round(1) == 0.5
     assert atan(0, evaluate=False).n() == 0
 
@@ -456,13 +456,13 @@ def test_to_mpmath():
     assert Float(3.2)._to_mpmath(20)._mpf_ == (0, int(838861), -18, 20)
 
 
-def test_issue_6632_evalf():
+def test_sympyissue_6632_evalf():
     add = (-100000*sqrt(2500000001) + 5000000001)
     assert add.n() == 9.999999998e-11
     assert (add*add).n() == 9.999999996e-21
 
 
-def test_issue_4945():
+def test_sympyissue_4945():
     from diofant.abc import H
     from diofant import zoo
     assert (H/0).evalf(subs={H: 1}) == zoo*H
@@ -474,7 +474,7 @@ def test_evalf_integral():
     assert Integral(sin(x), (x, -pi, pi + eps)).n(2)._prec == 10
 
 
-def test_issue_8821_highprec_from_str():
+def test_sympyissue_8821_highprec_from_str():
     s = str(pi.evalf(128))
     p = N(s)
     assert Abs(sin(p)) < 1e-15
@@ -482,7 +482,7 @@ def test_issue_8821_highprec_from_str():
     assert Abs(sin(p)) < 1e-64
 
 
-def test_issue_8853():
+def test_sympyissue_8853():
     p = Symbol('x', even=True, positive=True)
     assert floor(-p - S.Half).is_even is False
     assert floor(-p + S.Half).is_even
@@ -490,7 +490,7 @@ def test_issue_8853():
     assert ceiling(p + S.Half).is_even is False
 
 
-def test_issue_9326():
+def test_sympyissue_9326():
     from diofant import Dummy
     d1 = Dummy('d')
     d2 = Dummy('d')

@@ -64,12 +64,12 @@ def test_global_dict():
         assert parse_expr(text, global_dict=global_dict) == result
 
 
-def test_issue_2515():
+def test_sympyissue_2515():
     pytest.raises(TokenError, lambda: parse_expr('(()'))
     pytest.raises(TokenError, lambda: parse_expr('"""'))
 
 
-def test_issue_7663():
+def test_sympyissue_7663():
     x = Symbol('x')
     e = '2*(x+1)'
     assert parse_expr(e, evaluate=0) == parse_expr(e, evaluate=False)

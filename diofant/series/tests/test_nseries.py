@@ -248,23 +248,23 @@ def test_sinsinbug():
     assert sin(sin(x)).nseries(x, 8) == x - x**3/3 + x**5/10 - 8*x**7/315 + O(x**9)
 
 
-def test_issue_3258():
+def test_sympyissue_3258():
     a = x/(exp(x) - 1)
     assert a.nseries(x) == 1 - x/2 - x**4/720 + x**2/12 + O(x**5)
 
 
-def test_issue_3204():
+def test_sympyissue_3204():
     x = Symbol("x", nonnegative=True)
     f = sin(x**3)**Rational(1, 3)
     assert f.nseries(x) == x - x**7/18 - x**13/3240 + O(x**19)
 
 
-def test_issue_3224():
+def test_sympyissue_3224():
     f = sqrt(1 - sqrt(y))
     assert f.nseries(y, 4) == 1 - sqrt(y)/2 - y/8 - sqrt(y)**3/16 + O(y**2)
 
 
-def test_issue_3463():
+def test_sympyissue_3463():
     r = log(5)/log(3)
     p = w**(-1 + r)
     e = 1/x*(-log(w**(1 + r)) + log(w + w**r))
@@ -280,19 +280,19 @@ def test_sin():
         cos(y)*x**3/6 + sin(y)*x**4/24 + O(x**5)
 
 
-def test_issue_3515():
+def test_sympyissue_3515():
     e = sin(8*x)/x
     assert e.nseries(x, n=6) == 8 - 256*x**2/3 + 4096*x**4/15 + O(x**6)
 
 
-def test_issue_3505():
+def test_sympyissue_3505():
     e = sin(x)**(-4)*(sqrt(cos(x))*sin(x)**2 -
         cos(x)**Rational(1, 3)*sin(x)**2)
     assert e.nseries(x, n=8) == -Rational(1)/12 - 7*x**2/288 - \
         43*x**4/10368 + O(x**6)
 
 
-def test_issue_3501():
+def test_sympyissue_3501():
     e = x**(-2)*(x*sin(a + x) - x*sin(a))
     assert e.nseries(x, n=5) == cos(a) - sin(a)*x/2 - cos(a)*x**2/6 + \
         sin(a)*x**3/24 + O(x**4)
@@ -301,24 +301,24 @@ def test_issue_3501():
         cos(a)*x**3/24 + O(x**4)
 
 
-def test_issue_3502():
+def test_sympyissue_3502():
     e = sin(5*x)/sin(2*x)
     assert e.nseries(x, n=2) == Rational(5, 2) + O(x**2)
     assert e.nseries(x, n=6) == \
         Rational(5, 2) - 35*x**2/4 + 329*x**4/48 + O(x**6)
 
 
-def test_issue_3503():
+def test_sympyissue_3503():
     e = sin(2 + x)/(2 + x)
     assert e.nseries(x, n=2) == sin(2)/2 + x*(-sin(2)/4 + cos(2)/2) + O(x**2)
 
 
-def test_issue_3506():
+def test_sympyissue_3506():
     e = (x + sin(3*x))**(-2)*(x*(x + sin(3*x)) - (x + sin(3*x))*sin(2*x))
     assert e.nseries(x) == -Rational(1, 4) + 5*x**2/96 + 91*x**4/768 + O(x**6)
 
 
-def test_issue_3508():
+def test_sympyissue_3508():
     x = Symbol("x", extended_real=True)
     assert log(sin(x)).series(x, n=5) == log(x) - x**2/6 - x**4/180 + O(x**5)
     e = -log(x) + x*(-log(x) + log(sin(2*x))) + log(sin(2*x))
@@ -326,13 +326,13 @@ def test_issue_3508():
         log(2) + log(2)*x - 2*x**2/3 - 2*x**3/3 - 4*x**4/45 + O(x**5)
 
 
-def test_issue_3507():
+def test_sympyissue_3507():
     e = x**(-4)*(x**2 - x**2*sqrt(cos(x)))
     assert e.nseries(x, n=7) == \
         Rational(1, 4) + x**2/96 + 19*x**4/5760 + O(x**6)
 
 
-def test_issue_3639():
+def test_sympyissue_3639():
     assert sin(cos(x)).nseries(x, n=5) == \
         sin(1) - x**2*cos(1)/2 + x**4*(-sin(1)/8 + cos(1)/24) + O(x**5)
 
@@ -379,7 +379,7 @@ def test_bug5():
         x/l + (1 + x/l)/w + O(w)
 
 
-def test_issue_4115():
+def test_sympyissue_4115():
     assert (sin(x)/(1 - cos(x))).nseries(x, n=4) == 2/x + O(x)
     assert (sin(x)**2/(1 - cos(x))).nseries(x, n=2) == 2 + O(x**2)
 
@@ -449,13 +449,13 @@ def test_dir():
     assert sin(x + y).series(x, 0, dir='-') == sin(x + y).series(x, 0, dir='+')
 
 
-def test_issue_3504():
+def test_sympyissue_3504():
     e = asin(a*x)/x
     assert e.series(x, 4, n=2).removeO() == \
         (x - 4)*(a/(4*sqrt(-16*a**2 + 1)) - asin(4*a)/16) + asin(4*a)/4
 
 
-def test_issue_4441():
+def test_sympyissue_4441():
     f = 1/(1 + a*x)
     assert f.series(x, 0, 5) == 1 - a*x + a**2*x**2 - a**3*x**3 + \
         a**4*x**4 + O(x**5)
@@ -463,7 +463,7 @@ def test_issue_4441():
     assert f.series(x, 0, 3) == 1 + x*(-a - b) + x**2*(a**2 + 2*a*b + b**2) + O(x**3)
 
 
-def test_issue_4329():
+def test_sympyissue_4329():
     assert tan(x).series(x, pi/2, n=3).removeO() == \
         -pi/6 + x/3 - 1/(x - pi/2)
     assert cot(x).series(x, pi, n=3).removeO() == \
@@ -471,7 +471,7 @@ def test_issue_4329():
     assert limit(tan(x)**tan(2*x), x, pi/4) == exp(-1)
 
 
-def test_issue_5183():
+def test_sympyissue_5183():
     assert abs(x + x**2).series(n=1) == O(x)
     assert abs(x + x**2).series(n=2) == x + O(x**2)
     assert ((1 + x)**2).series(x, n=6) == 1 + 2*x + x**2
@@ -480,14 +480,14 @@ def test_issue_5183():
         1 + x + x**2/2 + x**3/6 + x**4/24 + Derivative(O(x**6), x)
 
 
-def test_issue_5654():
+def test_sympyissue_5654():
     assert (1/(x**2+a**2)**2).series(x, x0=I*a, n=0) == \
         -I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) + O(1, (x, I*a))
     assert (1/(x**2+a**2)**2).series(x, x0=I*a, n=1) == 3/(16*a**4) \
         - I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) + O(-I*a + x, (x, I*a))
 
 
-def test_issue_5925():
+def test_sympyissue_5925():
     sx = sqrt(x + z).series(z, 0, 1)
     sxy = sqrt(x + y + z).series(z, 0, 1)
     s1, s2 = sx.subs(x, x + y), sxy
@@ -498,7 +498,7 @@ def test_issue_5925():
     assert sxy.subs({x: 1, y: 2}) == sx.subs(x, 3)
 
 
-def test_issues_6235_6236():
+def test_sympyissues_6235_6236():
     q = Symbol('q', positive=True)
     assert (((x - 1)**q + 1)/(x**q - 1)).nseries(x, n=2).removeO() == \
         (-1 - x**q + (-1)**(q + 1) + (-1)**(q + 1)*x**q +

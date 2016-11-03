@@ -106,7 +106,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     __neg__ = MatrixBase.__neg__
     __div__ = MatrixBase.__div__
     __truediv__ = MatrixBase.__truediv__
-# This is included after the class definition as a workaround for issue 7213.
+# This is included after the class definition as a workaround for issue sympy/sympy#7213.
 # See https://github.com/sympy/sympy/issues/7213
 ImmutableMatrix.is_zero = DenseMatrix.is_zero
 
@@ -166,6 +166,6 @@ class ImmutableSparseMatrix(Basic, SparseMatrixBase):
         return hash((type(self).__name__,) + (self.shape, tuple(self._smat)))
 
     _eval_Eq = ImmutableMatrix._eval_Eq
-# This is included after the class definition as a workaround for issue 7213.
+# This is included after the class definition as a workaround for issue sympy/sympy#7213.
 # See https://github.com/sympy/sympy/issues/7213
 ImmutableSparseMatrix.is_zero = SparseMatrixBase.is_zero

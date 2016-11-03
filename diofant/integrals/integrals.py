@@ -585,7 +585,7 @@ class Integral(AddWithLimits):
         """
 
         # differentiate under the integral sign; we do not
-        # check for regularity conditions (TODO), see issue 4215
+        # check for regularity conditions (TODO), see issue sympy/sympy#4215
 
         # get limits and the function
         f, limits = self.function, list(self.limits)

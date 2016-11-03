@@ -82,7 +82,7 @@ def test_cse_not_possible():
     substs, reduced = cse([e])
     assert substs == []
     assert reduced == [x + y]
-    # issue 6329
+    # issue sympy/sympy#6329
     eq = (meijerg((1, 2), (y, 4), (5,), [], x) +
           meijerg((1, 3), (y, 4), (5,), [], x))
     assert cse(eq) == ([], [eq])
@@ -108,7 +108,7 @@ def test_subtraction_opt():
         [e], optimizations=[(cse_opts.sub_pre, cse_opts.sub_post)])
     assert substs == [(x0, (x - y)*(y - z))]
     assert reduced == [x0 + exp(x0)]
-    # issue 4077
+    # issue sympy/sympy#4077
     n = -1 + 1/x
     e = n/x/(-n)**2 - 1/n/x
     assert cse(e, optimizations=[(cse_opts.sub_pre, cse_opts.sub_post)]) == \
@@ -178,21 +178,21 @@ def test_powers():
     assert cse(x*y**2 + x*y) == ([(x0, x*y)], [x0*y + x0])
 
 
-def test_issue_4498():
+def test_sympyissue_4498():
     assert cse(w/(x - y) + z/(y - x), optimizations='basic') == \
         ([], [(w - z)/(x - y)])
 
 
-def test_issue_4020():
+def test_sympyissue_4020():
     assert cse(x**5 + x**4 + x**3 + x**2, optimizations='basic') \
         == ([(x0, x**2)], [x0*(x**3 + x + x0 + 1)])
 
 
-def test_issue_4203():
+def test_sympyissue_4203():
     assert cse(sin(x**x)/x**x) == ([(x0, x**x)], [sin(x0)/x0])
 
 
-def test_issue_6263():
+def test_sympyissue_6263():
     e = Eq(x*(-x + 1) + x*(x - 1), 0)
     assert cse(e, optimizations='basic') == ([], [True])
 
@@ -248,7 +248,7 @@ def test_postprocess():
         [x0 + exp(x0/x1) + cos(x1), z - 2, x0*x2]]
 
 
-def test_issue_4499():
+def test_sympyissue_4499():
     # previously, this gave 16 constants
     from diofant.abc import a, b
     B = Function('B')
@@ -272,7 +272,7 @@ def test_issue_4499():
     assert ans == c
 
 
-def test_issue_6169():
+def test_sympyissue_6169():
     r = RootOf(x**6 - 4*x**5 - 2, 1)
     assert cse(r) == ([], [r])
     # and a check that the right thing is done with the new
@@ -340,7 +340,7 @@ def test_symbols_exhausted_error():
         cse(l, symbols=sym)
 
 
-def test_issue_7840():
+def test_sympyissue_7840():
     # daveknippers' example
     C393 = sympify(
         'Piecewise((C391 - 1.65, C390 < 0.5), (Piecewise((C391 - 1.65, \
@@ -375,7 +375,7 @@ def test_issue_7840():
     assert len(substitutions) < 1
 
 
-def test_issue_8891():
+def test_sympyissue_8891():
     for cls in (MutableDenseMatrix, MutableSparseMatrix,
             ImmutableDenseMatrix, ImmutableSparseMatrix):
         m = cls(2, 2, [x + y, 0, 0, 0])

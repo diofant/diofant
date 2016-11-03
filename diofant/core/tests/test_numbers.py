@@ -714,14 +714,14 @@ def test_Infinity_inequations():
     assert -oo < oo and -oo <= oo
     assert (-oo > oo) is S.false and (-oo >= oo) is S.false
 
-    assert (oo < oo) is S.false  # issue 7775
+    assert (oo < oo) is S.false  # issue sympy/sympy#7775
     assert (oo > oo) is S.false
     assert (-oo > -oo) is S.false and (-oo < -oo) is S.false
     assert oo >= oo and oo <= oo and -oo >= -oo and -oo <= -oo
 
     x = Symbol('x')
     b = Symbol('b', finite=True, extended_real=True)
-    assert (x < oo) == Lt(x, oo)  # issue 7775
+    assert (x < oo) == Lt(x, oo)  # issue sympy/sympy#7775
     assert b < oo and b > -oo and b <= oo and b >= -oo
     assert oo > b and oo >= b and (oo < b) is S.false and (oo <= b) is S.false
     assert (-oo > b) is S.false and (-oo >= b) is S.false and -oo < b and -oo <= b
@@ -1030,25 +1030,25 @@ def test_no_len():
     pytest.raises(TypeError, lambda: len(Integer(2)))
 
 
-def test_issue_3321():
+def test_sympyissue_3321():
     assert sqrt(Rational(1, 5)) == sqrt(Rational(1, 5))
     assert 5 * sqrt(Rational(1, 5)) == sqrt(5)
 
 
-def test_issue_3692():
+def test_sympyissue_3692():
     assert ((-1)**Rational(1, 6)).expand(complex=True) == I/2 + sqrt(3)/2
     assert ((-5)**Rational(1, 6)).expand(complex=True) == \
         5**Rational(1, 6)*I/2 + 5**Rational(1, 6)*sqrt(3)/2
     assert ((-64)**Rational(1, 6)).expand(complex=True) == I + sqrt(3)
 
 
-def test_issue_3423():
+def test_sympyissue_3423():
     x = Symbol("x")
     assert sqrt(x - 1).as_base_exp() == (x - 1, S.Half)
     assert sqrt(x - 1) != I*sqrt(1 - x)
 
 
-def test_issue_3449():
+def test_sympyissue_3449():
     x = Symbol("x")
     assert sqrt(x - 1).subs(x, 5) == 2
 
@@ -1124,7 +1124,7 @@ def test_Rational_factors():
     assert str(F(-25, 14*9, visual=True)) == '-5**2/(2*3**2*7)'
 
 
-def test_issue_4107():
+def test_sympyissue_4107():
     assert pi*(E + 10) + pi*(-E - 10) != 0
     assert pi*(E + 10**10) + pi*(-E - 10**10) != 0
     assert pi*(E + 10**20) + pi*(-E - 10**20) != 0
@@ -1192,7 +1192,7 @@ def test_Float_gcd_lcm_cofactors():
         (S.One, Float(2.0), Rational(1, 2))
 
 
-def test_issue_4611():
+def test_sympyissue_4611():
     assert abs(pi._evalf(50) - 3.14159265358979) < 1e-10
     assert abs(E._evalf(50) - 2.71828182845905) < 1e-10
     assert abs(Catalan._evalf(50) - 0.915965594177219) < 1e-10
@@ -1302,7 +1302,7 @@ def test_zoo():
     assert Mul.flatten([Integer(-1), oo, Integer(0)]) == ([S.NaN], [], None)
 
 
-def test_issue_4122():
+def test_sympyissue_4122():
     x = Symbol('x', nonpositive=True)
     assert (oo + x).is_Add
     x = Symbol('x', finite=True)
@@ -1336,12 +1336,12 @@ def test_as_content_primitive():
 
 
 def test_hashing_diofant_integers():
-    # Test for issue 5072
+    # Test for issue sympy/sympy#5072
     assert {Integer(3)} == {int(3)}
     assert hash(Integer(4)) == hash(int(4))
 
 
-def test_issue_4172():
+def test_sympyissue_4172():
     assert int((E**100).round()) == \
         26881171418161354484126255515800135873611119
     assert int((pi**100).round()) == \
@@ -1409,7 +1409,7 @@ def test_approximation_interval():
     assert Catalan.approximation_interval(Float) is None
 
 
-def test_issue_6640():
+def test_sympyissue_6640():
     from mpmath.libmp.libmpf import finf, fninf
     # fnan is not included because Float no longer returns fnan,
     # but otherwise, the same sort of test could apply
@@ -1418,7 +1418,7 @@ def test_issue_6640():
     assert bool(Float(0)) is False
 
 
-def test_issue_6349():
+def test_sympyissue_6349():
     assert Float('23.e3', '')._prec == 10
     assert Float('23e3', '')._prec == 20
     assert Float('23000', '')._prec == 20
@@ -1442,7 +1442,7 @@ def test_latex():
     assert latex(I) == r"i"
 
 
-def test_issue_7742():
+def test_sympyissue_7742():
     assert -oo % 1 == nan
 
 
@@ -1455,7 +1455,7 @@ def test_simplify_AlgebraicNumber():
     assert simplify(A(e)) == A(1 + sqrt(2))  # wester test_C21
 
     e = (3 + 4*I)**Rational(3, 2)
-    assert simplify(A(e)) == A(2 + 11*I)  # issue 4401
+    assert simplify(A(e)) == A(2 + 11*I)  # issue sympy/sympy#4401
 
 
 def test_Float_idempotence():
@@ -1484,11 +1484,11 @@ def test_comp():
     assert comp(sqrt(2).n(2), Float(1.4, 3), '') is False
 
 
-def test_issue_10063():
+def test_sympyissue_10063():
     assert 2**Float(3) == Float(8)
 
 
-def test_issue_10020():
+def test_sympyissue_10020():
     assert oo**I is S.NaN
     assert oo**(1 + I) is S.ComplexInfinity
     assert oo**(-1 + I) is S.Zero

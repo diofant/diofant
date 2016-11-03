@@ -149,7 +149,7 @@ def test_line_geom():
     assert Ray((1, 1), angle=5) == Ray((1, 1), (2, 1 + tan(5)))
     pytest.raises(ValueError, lambda: Ray((1, 1), 1))
 
-    # issue 7963
+    # issue sympy/sympy#7963
     r = Ray((0, 0), angle=x)
     assert r.subs(x, 3*pi/4) == Ray((0, 0), (-1, 1))
     assert r.subs(x, 5*pi/4) == Ray((0, 0), (-1, -1))
@@ -391,7 +391,7 @@ def test_line3d():
     assert intersection(l1, p5) == []
     assert intersection(l1, l1.parallel_line(p1)) == [
         Line3D(Point3D(0, 0, 0), Point3D(1, 1, 1))]
-    # issue 8517
+    # issue sympy/sympy#8517
     line3 = Line3D(Point3D(4, 0, 1), Point3D(0, 4, 1))
     line4 = Line3D(Point3D(0, 0, 1), Point3D(4, 4, 1))
     assert line3.intersection(line4) == [Point3D(2, 2, 1)]
@@ -414,7 +414,7 @@ def test_line3d():
         Segment3D((-2, 0), (1, 0))) == [Segment3D((0, 0), (1, 0))]
     assert Segment3D((0, 0), (3, 0)).intersection(
         Segment3D((-2, 0), (0, 0))) == [Point3D(0, 0, 0)]
-    # issue 7757
+    # issue sympy/sympy#7757
     p = Ray3D(Point3D(1, 0, 0), Point3D(-1, 0, 0))
     q = Ray3D(Point3D(0, 1, 0), Point3D(0, -1, 0))
     assert intersection(p, q) == [Point3D(0, 0, 0)]
@@ -621,7 +621,7 @@ def test_line_intersection():
     assert Line(Point(0, 0), Point(1, -sqrt(3))).contains(Point(x, y)) is True
 
 
-def test_issue_2941():
+def test_sympyissue_2941():
     def _check():
         for f, g in itertools.product(*[(Line, Ray, Segment)]*2):
             l1 = f(a, b)
@@ -638,7 +638,7 @@ def test_issue_2941():
 
 
 def test_symbolic_intersect():
-    # Issue 7814.
+    # Issue sympy/sympy#7814.
     circle = Circle(Point(x, 0), y)
     line = Line(Point(k, z), slope=0)
     assert line.intersection(circle) == [

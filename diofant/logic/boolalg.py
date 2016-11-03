@@ -1678,7 +1678,7 @@ def bool_map(bool1, bool2):
         arguments are only symbols or negated symbols. For example,
         And(x, Not(y), Or(w, Not(z))).
 
-        Basic.match is not robust enough (see issue 4835) so this is
+        Basic.match is not robust enough (see issue sympy/sympy#4835) so this is
         a workaround that is valid for simplified boolean expressions
         """
 

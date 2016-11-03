@@ -65,7 +65,7 @@ def test_one():
     assert z.is_comparable is True
     assert z.is_prime is False
     assert z.is_number is True
-    assert z.is_composite is False  # issue 8807
+    assert z.is_composite is False  # issue sympy/sympy#8807
 
 
 def test_negativeone():
@@ -323,7 +323,7 @@ def test_I():
 
 
 def test_symbol_real():
-    # issue 3848
+    # issue sympy/sympy#3848
     a = Symbol('a', extended_real=False)
 
     assert a.is_extended_real is False
@@ -575,7 +575,7 @@ def test_other_symbol():
     assert x.is_integer is False
 
 
-def test_issue_3825():
+def test_sympyissue_3825():
     """catch: hash instability"""
     x = Symbol("x")
     y = Symbol("y")
@@ -588,7 +588,7 @@ def test_issue_3825():
     assert h1 == h2
 
 
-def test_issue_4822():
+def test_sympyissue_4822():
     z = (-1)**Rational(1, 3)*(1 - I*sqrt(3))
     assert z.is_extended_real in [True, None]
 
@@ -654,8 +654,8 @@ def test_Add_is_pos_neg():
     assert (n + xf).is_negative is True
     assert (p + xf).is_negative is False
 
-    assert (x - S.Infinity).is_negative is None  # issue 7798
-    # issue 8046, 16.2
+    assert (x - S.Infinity).is_negative is None  # issue sympy/sympy#7798
+    # issue sympy/sympy#8046, 16.2
     assert (p + nn).is_positive
     assert (n + np).is_negative
     assert (p + r).is_positive is None
@@ -663,7 +663,7 @@ def test_Add_is_pos_neg():
 
 def test_Add_is_imaginary():
     nn = Dummy(nonnegative=True, finite=True)
-    assert (I*nn + I).is_imaginary  # issue 8046, 17
+    assert (I*nn + I).is_imaginary  # issue sympy/sympy#8046, 17
 
 
 def test_Add_is_algebraic():
@@ -786,7 +786,7 @@ def test_special_is_rational():
     assert (r**i).is_rational is None
     assert (r**r).is_rational is None
     assert (r**x).is_rational is None
-    assert (nr**i).is_rational is None  # issue 8598
+    assert (nr**i).is_rational is None  # issue sympy/sympy#8598
     assert (nr**Symbol('z', zero=True)).is_rational
     assert sin(1).is_rational is False
     assert sin(ni).is_rational is False
@@ -797,7 +797,7 @@ def test_special_is_rational():
 
 
 @pytest.mark.xfail
-def test_issue_6275():
+def test_sympyissue_6275():
     x = Symbol('x')
     # both zero or both Muls...but neither "change would be very appreciated.
     # This is similar to x/x => 1 even though if x = 0, it is really nan.
@@ -808,7 +808,7 @@ def test_issue_6275():
 
 
 def test_sanitize_assumptions():
-    # issue 6666
+    # issue sympy/sympy#6666
     for cls in (Symbol, Dummy, Wild):
         x = cls('x', extended_real=1, positive=0)
         assert x.is_extended_real is True
@@ -827,12 +827,12 @@ def test_special_assumptions():
 
 
 def test_inconsistent():
-    # cf. issues 5795 and 5545
+    # cf. issues sympy/sympy#5795 and sympy/sympy#5545
     pytest.raises(InconsistentAssumptions, lambda: Symbol('x', extended_real=True,
            commutative=False))
 
 
-def test_issue_6631():
+def test_sympyissue_6631():
     assert ((-1)**(I)).is_extended_real is True
     assert ((-1)**(I*2)).is_extended_real is True
     assert ((-1)**(I/2)).is_extended_real is True
@@ -840,11 +840,11 @@ def test_issue_6631():
     assert (I**(I + 2)).is_extended_real is True
 
 
-def test_issue_2730():
+def test_sympyissue_2730():
     assert (1/(1 + I)).is_extended_real is False
 
 
-def test_issue_4149():
+def test_sympyissue_4149():
     assert (3 + I).is_complex
     assert (3 + I).is_imaginary is False
     assert (3*I + S.Pi*I).is_imaginary
@@ -859,18 +859,18 @@ def test_issue_4149():
     assert ([(i**a).is_imaginary for a in range(4)] ==
             [False, True, False, True])
 
-    # tests from the PR #7887:
+    # tests from the PR sympy/sympy#7887:
     e = -sqrt(3)*I/2 + Float(0.866025403784439)*I
     assert e.is_extended_real is False
     assert e.is_imaginary
 
 
-def test_issue_2920():
+def test_sympyissue_2920():
     n = Symbol('n', real=True, negative=True)
     assert sqrt(n).is_imaginary
 
 
-def test_issue_7899():
+def test_sympyissue_7899():
     x = Symbol('x', extended_real=True)
     assert (I*x).is_extended_real is None
     assert ((x - I)*(x - 1)).is_zero is None
@@ -878,23 +878,23 @@ def test_issue_7899():
 
 
 @pytest.mark.xfail
-def test_issue_7993():
+def test_sympyissue_7993():
     x = Dummy(integer=True)
     y = Dummy(noninteger=True)
     assert (x - y).is_zero is False
 
 
-def test_issue_8075():
+def test_sympyissue_8075():
     pytest.raises(InconsistentAssumptions, lambda: Dummy(zero=True, finite=False))
     pytest.raises(InconsistentAssumptions, lambda: Dummy(zero=True, infinite=True))
 
 
-def test_issue_8642():
+def test_sympyissue_8642():
     x = Symbol('x', extended_real=True, integer=False)
     assert (x*2).is_integer is None
 
 
-def test_issue_9165():
+def test_sympyissue_9165():
     z = Symbol('z', zero=True)
     f = Symbol('f', finite=False)
     assert 0/z == S.NaN
@@ -902,6 +902,6 @@ def test_issue_9165():
     assert 0*f == S.NaN
 
 
-def test_issue_10024():
+def test_sympyissue_10024():
     x = Dummy('x')
     assert Mod(x, 2*pi).is_zero is None

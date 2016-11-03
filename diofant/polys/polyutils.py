@@ -27,7 +27,7 @@ def _nsort(roots, separated=False):
     according to real and imaginary parts. If ``separated`` is True, then
     the real and imaginary roots will be returned in two lists, respectively.
 
-    This routine tries to avoid issue 6137 by separating the roots into real
+    This routine tries to avoid issue sympy/sympy#6137 by separating the roots into real
     and imaginary parts before evaluation. In addition, the sorting will raise
     an error if any computation cannot be done with precision.
     """
@@ -42,7 +42,7 @@ def _nsort(roots, separated=False):
                 return [[], [r]]
     if not all(r.is_number for r in roots):
         raise NotImplementedError
-    # see issue 6137:
+    # see issue sympy/sympy#6137:
     # get the real part of the evaluated real and imaginary parts of each root
     key = [[i.n(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
     # make sure the parts were computed with precision

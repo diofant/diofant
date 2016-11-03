@@ -760,7 +760,7 @@ def test_nullspace():
     assert basis[2] == Matrix([-2, 0, 0, -2, 1, 0, 0])
     assert basis[3] == Matrix([0, 0, 0, 0, 0, R(-1)/3, 1])
 
-    # issue 4797; just see that we can do it when rows > cols
+    # issue sympy/sympy#4797; just see that we can do it when rows > cols
     M = Matrix([[1, 2], [2, 4], [3, 6]])
     assert M.nullspace()
 
@@ -1033,7 +1033,7 @@ def test_zip_row_op():
                          [0,  0, 2]])
 
 
-def test_issue_3950():
+def test_sympyissue_3950():
     m = Matrix([1, 2, 3])
     a = Matrix([1, 2, 3])
     b = Matrix([2, 2, 3])
@@ -1044,7 +1044,7 @@ def test_issue_3950():
     assert m != b
 
 
-def test_issue_3981():
+def test_sympyissue_3981():
     class Index1:
         def __index__(self):
             return 1
@@ -1149,7 +1149,7 @@ def test_empty_zeros():
     assert a.cols == 0
 
 
-def test_issue_3749():
+def test_sympyissue_3749():
     a = Matrix([[x**2, x*y], [x*sin(y), x*cos(y)]])
     assert a.diff(x) == Matrix([[2*x, y], [sin(y), cos(y)]])
     assert Matrix([
@@ -1198,7 +1198,7 @@ def test_jacobian2():
     assert X.jacobian(Y) == J
 
 
-def test_issue_4564():
+def test_sympyissue_4564():
     X = Matrix([exp(x + y + z), exp(x + y + z), exp(x + y + z)])
     Y = Matrix([x, y, z])
     for i in range(1, 3):
@@ -1346,7 +1346,7 @@ def test_inv_block():
 def test_creation_args():
     """
     Check that matrix dimensions can be specified using any reasonable type
-    (see issue 4614).
+    (see issue sympy/sympy#4614).
     """
     pytest.raises(ValueError, lambda: zeros(3, -1))
     pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))
@@ -1467,7 +1467,7 @@ def test_eigen_vects():
     m = Matrix(2, 2, [1, 0, 0, I])
     pytest.raises(NotImplementedError, lambda: m.is_diagonalizable(True))
     # !!! bug because of eigenvects() or roots(x**2 + (-1 - I)*x + I, x)
-    # see issue 5292
+    # see issue sympy/sympy#5292
     assert not m.is_diagonalizable(True)
     pytest.raises(MatrixError, lambda: m.diagonalize(True))
     (P, D) = m.diagonalize(True)
@@ -1585,7 +1585,7 @@ def test_jordan_form_complex_issue_9274():
     assert simplify(P*J*P.inv()) == A
 
 
-def test_issue_10220():
+def test_sympyissue_10220():
     # two non-orthogonal Jordan blocks with eigenvalue 1
     M = Matrix([[1, 0, 0, 1],
                 [0, 1, 1, 0],
@@ -2186,17 +2186,17 @@ def test_invertible_check():
 
 
 @pytest.mark.xfail
-def test_issue_3959():
+def test_sympyissue_3959():
     x, y = symbols('x, y')
     e = x*y
     assert e.subs(x, Matrix([3, 5, 3])) == Matrix([3, 5, 3])*y
 
 
-def test_issue_5964():
+def test_sympyissue_5964():
     assert str(Matrix([[1, 2], [3, 4]])) == 'Matrix([\n[1, 2],\n[3, 4]])'
 
 
-def test_issue_7604():
+def test_sympyissue_7604():
     x, y = symbols("x y")
     assert sstr(Matrix([[x, 2*y], [y**2, x + 3]])) == \
         'Matrix([\n[   x,   2*y],\n[y**2, x + 3]])'
@@ -2207,9 +2207,9 @@ def test_is_Identity():
     assert eye(3).as_immutable().is_Identity
     assert not zeros(3).is_Identity
     assert not ones(3).is_Identity
-    # issue 6242
+    # issue sympy/sympy#6242
     assert not Matrix([[1, 0, 0]]).is_Identity
-    # issue 8854
+    # issue sympy/sympy#8854
     assert SparseMatrix(3, 3, {(0, 0): 1, (1, 1): 1, (2, 2): 1}).is_Identity
     assert not SparseMatrix(2, 3, range(6)).is_Identity
     assert not SparseMatrix(3, 3, {(0, 0): 1, (1, 1): 1}).is_Identity
@@ -2269,11 +2269,11 @@ def test_normalize_sort_diogonalization():
     assert P*Q*P.inv() == A
 
 
-def test_issue_5321():
+def test_sympyissue_5321():
     pytest.raises(ValueError, lambda: Matrix([[1, 2, 3], Matrix(0, 1, [])]))
 
 
-def test_issue_5320():
+def test_sympyissue_5320():
     assert Matrix.hstack(eye(2), 2*eye(2)) == Matrix([
         [1, 0, 2, 0],
         [0, 1, 0, 2]
@@ -2315,15 +2315,15 @@ def test_hash():
     for cls in classes[-2:]:
         s = {cls.eye(1), cls.eye(1)}
         assert len(s) == 1 and s.pop() == cls.eye(1)
-    # issue 3979
+    # issue sympy/sympy#3979
     for cls in classes[:2]:
         assert not isinstance(cls.eye(1), collections.Hashable)
 
 
 @pytest.mark.xfail
-def test_issue_3979():
+def test_sympyissue_3979():
     # when this passes, delete this and change the [1:2]
-    # to [:2] in the test_hash above for issue 3979
+    # to [:2] in the test_hash above for issue sympy/sympy#3979
     cls = classes[0]
     pytest.raises(AttributeError, lambda: hash(cls.eye(1)))
 
@@ -2462,7 +2462,7 @@ def test_pinv_rank_deficient():
     assert A * A.pinv() * B != B
 
 
-def test_issue_7201():
+def test_sympyissue_7201():
     assert ones(0, 1) + ones(0, 1) == Matrix(0, 1, [])
     assert ones(1, 0) + ones(1, 0) == Matrix(1, 0, [])
 
@@ -2474,7 +2474,7 @@ def test_free_symbols():
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_from_ndarray():
-    """See issue 7465."""
+    """See issue sympy/sympy#7465."""
     assert Matrix(numpy.array([1, 2, 3])) == Matrix([1, 2, 3])
     assert Matrix(numpy.array([[1, 2, 3]])) == Matrix([[1, 2, 3]])
     assert Matrix(numpy.array([[1, 2, 3], [4, 5, 6]])) == \
@@ -2495,7 +2495,7 @@ def test_hermitian():
     assert a.is_hermitian is False
 
 
-def test_issue_9457_9467_9876():
+def test_sympyissue_9457_9467_9876():
     # for row_del(index)
     M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
     M.row_del(1)
@@ -2524,7 +2524,7 @@ def test_issue_9457_9467_9876():
     pytest.raises(IndexError, lambda: Q.col_del(-10))
 
 
-def test_issue_9422():
+def test_sympyissue_9422():
     x, y = symbols('x y', commutative=False)
     a, b = symbols('a b')
     M = eye(2)
@@ -2536,7 +2536,7 @@ def test_issue_9422():
     assert y*x*M == Matrix([[y*x, 0], [0, y*x]])
 
 
-def test_issue_9480():
+def test_sympyissue_9480():
     m = Matrix([[-5 + 5*sqrt(2), -5],
                 [-5*sqrt(2)/2 + 5, -5*sqrt(2)/2]])
     assert m.rank() == 1
@@ -2564,7 +2564,7 @@ def test_diofantissue_288():
     assert m.rank() != 4
 
 
-def test_issue_11434():
+def test_sympyissue_11434():
     ax, ay, bx, by, cx, cy, dx, dy, ex, ey, t0, t1 = \
         symbols('a_x a_y b_x b_y c_x c_y d_x d_y e_x e_y t_0 t_1')
     M = Matrix([[ax, ay, ax*t0, ay*t0, 0],

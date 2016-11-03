@@ -77,7 +77,7 @@ class BaseSymbol(AtomicExpr, Boolean):
         obj = Expr.__new__(cls)
         obj.name = name
 
-        # TODO: Issue #8873: Forcing the commutative assumption here means
+        # TODO: Issue sympy/sympy#8873: Forcing the commutative assumption here means
         # later code such as ``srepr()`` cannot tell whether the user
         # specified ``commutative=True`` or omitted it.  To workaround this,
         # we keep a copy of the assumptions dict, then create the StdFactKB,
@@ -91,7 +91,7 @@ class BaseSymbol(AtomicExpr, Boolean):
         is_commutative = fuzzy_bool(assumptions.get('commutative', True))
         assumptions['commutative'] = is_commutative
         obj._assumptions = StdFactKB(assumptions)
-        obj._assumptions._generator = tmp_asm_copy  # Issue #8873
+        obj._assumptions._generator = tmp_asm_copy  # Issue sympy/sympy#8873
         return obj
 
     __xnew__ = staticmethod(

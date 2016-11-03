@@ -620,12 +620,12 @@ def test_messy():
         Piecewise((-acosh(1/x), 1 < abs(x**(-2))), (I*asin(1/x), True))
 
 
-def test_issue_6122():
+def test_sympyissue_6122():
     assert integrate(exp(-I*x**2), (x, -oo, oo), meijerg=True) == \
         -I*sqrt(pi)*exp(I*pi/4)
 
 
-def test_issue_6252():
+def test_sympyissue_6252():
     expr = 1/x/(a + b*x)**Rational(1, 3)
     anti = integrate(expr, x, meijerg=True)
     assert not expr.has(hyper)
@@ -633,7 +633,7 @@ def test_issue_6252():
     # putting in numerical values seems to work...
 
 
-def test_issue_6348():
+def test_sympyissue_6348():
     assert integrate(exp(I*x)/(1 + x**2), (x, -oo, oo)).simplify().rewrite(exp) \
         == pi*exp(-1)
 
@@ -645,11 +645,11 @@ def test_fresnel():
     assert expand_func(integrate(cos(pi*x**2/2), x)) == fresnelc(x)
 
 
-def test_issue_6860():
+def test_sympyissue_6860():
     assert meijerint_indefinite(x**x**x, x) is None
 
 
-def test_issue_8368():
+def test_sympyissue_8368():
     assert meijerint_indefinite(cosh(x)*exp(-x*t), x) == (
         (-t - 1)*exp(x) + (-t + 1)*exp(-x))*exp(-t*x)/2/(t**2 - 1)
 

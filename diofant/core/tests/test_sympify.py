@@ -16,7 +16,7 @@ from diofant.core.compatibility import HAS_GMPY
 from diofant.abc import x, y, _clash, _clash1, _clash2
 
 
-def test_issue_3538():
+def test_sympyissue_3538():
     v = sympify("exp(x)")
     assert v == exp(x)
     assert isinstance(v, Pow)
@@ -29,7 +29,7 @@ def test_sympify1():
     assert sympify("x") == Symbol("x")
     assert sympify("   x") == Symbol("x")
     assert sympify("   x   ") == Symbol("x")
-    # issue 4877
+    # issue sympy/sympy#4877
     n1 = Rational(1, 2)
     assert sympify('--.5') == n1
     assert sympify('-1/2') == -n1
@@ -195,7 +195,7 @@ def test_sympify_poly():
     assert sympify(p) is p
 
 
-def test_issue_3595():
+def test_sympyissue_3595():
     assert sympify("a_") == Symbol("a_")
     assert sympify("_a") == Symbol("_a")
 
@@ -378,14 +378,14 @@ def test_evaluate_false():
         assert sympify(case, evaluate=False) == result
 
 
-def test_issue_4133():
+def test_sympyissue_4133():
     a = sympify('Integer(4)')
 
     assert a == Integer(4)
     assert a.is_Integer
 
 
-def test_issue_3982():
+def test_sympyissue_3982():
     a = [3, 2.0]
     assert sympify(a) == [Integer(3), Float(2.0)]
     assert sympify(tuple(a)) == Tuple(Integer(3), Float(2.0))
@@ -397,19 +397,19 @@ def test_S_sympify():
     assert (-2)**Rational(1, 2) == sqrt(2)*I
 
 
-def test_issue_4788():
+def test_sympyissue_4788():
     assert srepr(sympify(1.0 + 0J)) == srepr(Float(1.0)) == srepr(Float(1.0))
 
 
-def test_issue_4798_None():
+def test_sympyissue_4798_None():
     assert sympify(None) is None
 
 
-def test_issue_3218():
+def test_sympyissue_3218():
     assert sympify("x+\ny") == x + y
 
 
-def test_issue_4988_builtins():
+def test_sympyissue_4988_builtins():
     C = Symbol('C')
     vars = {}
     vars['C'] = C
@@ -427,14 +427,14 @@ def test_geometry():
     assert L == Line((0, 1), (1, 0)) and isinstance(L, Line)
 
 
-def test_issue_6540_6552():
+def test_sympyissue_6540_6552():
     assert sympify('[[1/3,2], (2/5,)]') == [[Rational(1, 3), 2], (Rational(2, 5),)]
     assert sympify('[[2/6,2], (2/4,)]') == [[Rational(1, 3), 2], (Rational(1, 2),)]
     assert sympify('[[[2*(1)]]]') == [[[2]]]
     assert sympify('Matrix([2*(1)])') == Matrix([2])
 
 
-def test_issue_6046():
+def test_sympyissue_6046():
     assert str(sympify("Q & C", locals=_clash1)) == 'And(C, Q)'
     assert str(sympify('pi(x)', locals=_clash2)) == 'pi(x)'
     assert str(sympify('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
@@ -443,7 +443,7 @@ def test_issue_6046():
     assert str(sympify('O&S', locals)) == 'And(O, S)'
 
 
-def test_issue_8821_highprec_from_str():
+def test_sympyissue_8821_highprec_from_str():
     s = str(pi.evalf(128))
     p = sympify(s)
     assert Abs(sin(p)) < 1e-127

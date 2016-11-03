@@ -650,7 +650,7 @@ def test_classify_ode():
         '1st_homogeneous_coeff_subs_indep_div_dep_Integral',
         '1st_homogeneous_coeff_subs_dep_div_indep_Integral')
     assert classify_ode(f(x).diff(x)**2, f(x)) == ('lie_group',)
-    # issue 4749: f(x) should be cleared from highest derivative before classifying
+    # issue sympy/sympy#4749: f(x) should be cleared from highest derivative before classifying
     a = classify_ode(Eq(f(x).diff(x) + f(x), x), f(x))
     b = classify_ode(f(x).diff(x)*f(x) + f(x)*f(x) - x*f(x), f(x))
     c = classify_ode(f(x).diff(x)/f(x) + f(x)/f(x) - x/f(x), f(x))
@@ -673,7 +673,7 @@ def test_classify_ode():
         classify_ode(2*f(x).diff(x) + f(x)**2 - f(x)/x + 3*x**(-2), f(x))
     pytest.raises(ValueError,
                   lambda: classify_ode(x + f(x, y).diff(x).diff(y), f(x, y)))
-    # issue 5176
+    # issue sympy/sympy#5176
     k = Symbol('k')
     assert classify_ode(f(x).diff(x)/(k*f(x) + k*x*f(x)) + 2*f(x)/(k*f(x) +
         k*x*f(x)) + x*f(x).diff(x)/(k*f(x) + k*x*f(x)) + z, f(x)) == \
@@ -1022,7 +1022,7 @@ def test_ode_order():
     assert ode_order(diff(f(x), x, x)*diff(g(x), x), f(x)) == 2
     assert ode_order(diff(f(x), x, x)*diff(g(x), x), g(x)) == 1
     assert ode_order(diff(x*diff(x*exp(f(x)), x, x), x), g(x)) == 0
-    # issue 5835: ode_order has to also work for unevaluated derivatives
+    # issue sympy/sympy#5835: ode_order has to also work for unevaluated derivatives
     # (ie, without using doit()).
     assert ode_order(Derivative(x*f(x), x), f(x)) == 1
     assert ode_order(x*sin(Derivative(x*f(x)**2, x, x)), f(x)) == 2
@@ -1137,7 +1137,7 @@ def test_1st_exact1():
     assert dsolve(eq4, hint='1st_exact') == sol4
     assert dsolve(eq5, hint='1st_exact', simplify=False) == sol5
     assert checkodesol(eq1, sol1, order=1, solve_for_func=False)[0]
-    # issue 5080 blocks the testing of this solution
+    # issue sympy/sympy#5080 blocks the testing of this solution
     # assert checkodesol(eq2, sol2, order=1, solve_for_func=False)[0]
     assert checkodesol(eq2, sol2b, order=1, solve_for_func=False)[0]
     assert checkodesol(eq3, sol3, order=1, solve_for_func=False)[0]
@@ -1389,7 +1389,7 @@ def test_1st_homogeneous_coeff_ode_check3():
     # (False,
     #   x*(log(exp(-LambertW(C1*x))) +
     #   LambertW(C1*x))*exp(-LambertW(C1*x) + 1))
-    # This is blocked by issue 5080.
+    # This is blocked by issue sympy/sympy#5080.
     eq3 = f(x) + (x*log(f(x)/x) - 2*x)*diff(f(x), x)
     sol3a = Eq(f(x), x*exp(1 - LambertW(C1*x)))
     assert checkodesol(eq3, sol3a, solve_for_func=True)[0]
@@ -1441,7 +1441,7 @@ def test_1st_homogeneous_coeff_ode_check9():
 
 def test_1st_homogeneous_coeff_ode3():
     # The standard integration engine cannot handle one of the integrals
-    # involved (see issue 4551).  meijerg code comes up with an answer, but in
+    # involved (see issue sympy/sympy#4551).  meijerg code comes up with an answer, but in
     # unconventional form.
     # checkodesol fails for this equation, so its test is in
     # test_1st_homogeneous_coeff_ode_check9 above. It has to compare string
@@ -1947,7 +1947,7 @@ def test_nth_linear_constant_coeff_undetermined_coefficients():
     assert checkodesol(eq28, sol28, order=1, solve_for_func=False)[0]
 
 
-def test_issue_5787():
+def test_sympyissue_5787():
     # This test case is to show the classification of imaginary constants under
     # nth_linear_constant_coeff_undetermined_coefficients
     eq = Eq(diff(f(x), x), I*f(x) + Rational(1, 2) - I)
@@ -2108,7 +2108,7 @@ def test_unexpanded_Liouville_ODE():
     assert checkodesol(eq2, sol2, order=2, solve_for_func=False)[0]
 
 
-def test_issue_4785():
+def test_sympyissue_4785():
     from diofant.abc import A
     eq = x + A*(x + diff(f(x), x) + f(x)) + diff(f(x), x) + f(x) + 2
     assert classify_ode(eq, f(x)) == ('1st_linear', 'almost_linear',
@@ -2117,7 +2117,7 @@ def test_issue_4785():
         'nth_linear_constant_coeff_variation_of_parameters',
         '1st_linear_Integral', 'almost_linear_Integral',
         'nth_linear_constant_coeff_variation_of_parameters_Integral')
-    # issue 4864
+    # issue sympy/sympy#4864
     eq = (x**2 + f(x)**2)*f(x).diff(x) - 2*x*f(x)
     assert classify_ode(eq, f(x)) == ('1st_exact',
         '1st_homogeneous_coeff_best',
@@ -2129,11 +2129,11 @@ def test_issue_4785():
         '1st_homogeneous_coeff_subs_dep_div_indep_Integral')
 
 
-def test_issue_4825():
+def test_sympyissue_4825():
     pytest.raises(ValueError, lambda: dsolve(f(x, y).diff(x) - y*f(x, y), f(x)))
     assert classify_ode(f(x, y).diff(x) - y*f(x, y), f(x), dict=True) == \
         {'default': None, 'order': 0}
-    # See also issue 3793, test Z13.
+    # See also issue sympy/sympy#3793, test Z13.
     pytest.raises(ValueError, lambda: dsolve(f(x).diff(x), f(y)))
     assert classify_ode(f(x).diff(x), f(y), dict=True) == \
         {'default': None, 'order': 0}
@@ -2150,7 +2150,7 @@ def test_constant_renumber_order_issue_5308():
         assert constant_renumber(a*(b + x)*(c + y), "C", 1, 3) == e
 
 
-def test_issue_5770():
+def test_sympyissue_5770():
     k = Symbol("k", extended_real=True)
     t = Symbol('t')
     w = Function('w')
@@ -2165,7 +2165,7 @@ def test_issue_5770():
     assert constantsimp(x + C1 + Integral(x, (x, 1, 2)), {C1}) == C1 + x
 
 
-def test_issue_5112_5430():
+def test_sympyissue_5112_5430():
     assert homogeneous_order(-log(x) + acosh(x), x) is None
     assert homogeneous_order(y - log(x), x, y) is None
 
@@ -2313,7 +2313,7 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_variation_of_parameters():
     assert checkodesol(eq, sol, order=2, solve_for_func=False)[0]
 
 
-def test_issue_5095():
+def test_sympyissue_5095():
     f = Function('f')
     pytest.raises(ValueError, lambda: dsolve(f(x).diff(x)**2, f(x), 'separable'))
     pytest.raises(ValueError, lambda: dsolve(f(x).diff(x)**2, f(x), 'fdsjf'))
@@ -2463,7 +2463,7 @@ def test_constantsimp_take_problem():
     assert len(Poly(constantsimp(exp(C1) + c + c*x, [C1])).gens) == 2
 
 
-def test_issue_6879():
+def test_sympyissue_6879():
     f = Function('f')
     eq = Eq(Derivative(f(x), x, 2) - 2*Derivative(f(x), x) + f(x), sin(x))
     sol = (C1 + C2*x)*exp(x) + cos(x)/2
@@ -2471,7 +2471,7 @@ def test_issue_6879():
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 
 
-def test_issue_6989():
+def test_sympyissue_6989():
     f = Function('f')
     k = Symbol('k')
     assert dsolve(f(x).diff(x) - x*exp(-k*x), f(x)) == \
@@ -2527,7 +2527,7 @@ def test_heuristic1():
         assert check[0]
 
 
-def test_issue_6247():
+def test_sympyissue_6247():
     eq = x**2*f(x)**2 + x*Derivative(f(x), x)
     sol = dsolve(eq, hint='separable_reduced')
     assert checkodesol(eq, sol, order=1)[0]
@@ -2711,7 +2711,7 @@ def test_user_infinitesimals():
     pytest.raises(ValueError, lambda: dsolve(eq, hint='lie_group', xi=0, eta=f(x)))
 
 
-def test_issue_7081():
+def test_sympyissue_7081():
     eq = x*(f(x).diff(x)) + 1 - f(x)**2
     assert dsolve(eq) == Eq(f(x), (C1 + x**2)/(C1 - x**2))
 
@@ -2775,7 +2775,7 @@ def test_2nd_power_series_regular():
     assert dsolve(eq) == Eq(f(x), C2*(-x**4/2 + 1) + C1*x**2 + O(x**6))
 
 
-def test_issue_7093():
+def test_sympyissue_7093():
     x = Symbol("x")  # assuming x is real leads to an error
     sol = Eq(f(x), C1 - 2*x*sqrt(x**3)/5)
     eq = Derivative(f(x), x)**2 - x**3
@@ -2811,7 +2811,7 @@ def test_diofantissue_293():
     assert dsolve(eqs) == sol
 
 
-def test_issue_11290():
+def test_sympyissue_11290():
     eq = cos(f(x)) - (x*sin(f(x)) - f(x)**2)*f(x).diff(x)
     s0 = dsolve(eq, f(x), simplify=False, hint='1st_exact')
     s1 = dsolve(eq, f(x), simplify=False, hint='1st_exact_Integral')

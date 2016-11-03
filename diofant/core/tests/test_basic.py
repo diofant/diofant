@@ -158,7 +158,7 @@ def test_sorted_args():
 
 def test_call():
     x, y = symbols('x y')
-    # See the long history of this in issues 5026 and 5105.
+    # See the long history of this in issues sympy/sympy#5026 and sympy/sympy#5105.
 
     pytest.raises(TypeError, lambda: sin(x)({x: 1, sin(x): 2}))
     pytest.raises(TypeError, lambda: sin(x)(1))

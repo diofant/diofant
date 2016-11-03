@@ -115,7 +115,7 @@ def test_count_ops_visual():
     assert count(Eq(x + y, Integer(2))) == ADD
 
 
-def test_issue_9324():
+def test_sympyissue_9324():
     def count(val):
         return count_ops(val, visual=False)
 

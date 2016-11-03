@@ -512,7 +512,7 @@ def test_ANP_unify():
 
 
 def test___hash__():
-    # issue 5571
+    # issue sympy/sympy#5571
     assert DMP([[1, 2], [3]], ZZ) == DMP([[int(1), int(2)], [int(3)]], ZZ)
     assert hash(DMP([[1, 2], [3]], ZZ)) == hash(DMP([[int(1), int(2)], [int(3)]], ZZ))
     assert DMF(

@@ -168,7 +168,7 @@ def test_relational():
     assert (-pi >= 3) is S.false
     r = Symbol('r', extended_real=True)
     assert (r - 2 < r - 3) is S.false
-    assert Lt(x + I, x + I + 2).func == Lt  # issue 8288
+    assert Lt(x + I, x + I + 2).func == Lt  # issue sympy/sympy#8288
 
 
 def test_relational_assumptions():
@@ -256,7 +256,7 @@ def test_as_leading_term():
     assert (2 + pi + x).as_leading_term(x) == 2 + pi
     assert (2*x + pi*x + x**2).as_leading_term(x) == (2 + pi)*x
 
-    # see issue 6843
+    # see issue sympy/sympy#6843
     n = Symbol('n', integer=True, positive=True)
     r = -n**3/(2*n**2 + 4*n + 2) - n**2/(n**2 + 2*n + 1) + \
         n**2/(n + 1) - n/(2*n**2 + 4*n + 2) + n/(n*x + x) + 2*n/(n + 1) - \
@@ -307,7 +307,7 @@ def test_atoms():
     assert (1 + x*(2 + y) + exp(3 + z)).atoms(Add) == \
         {1 + x*(2 + y) + exp(3 + z), 2 + y, 3 + z}
 
-    # issue 6132
+    # issue sympy/sympy#6132
     f = Function('f')
     e = (f(x) + sin(x) + 2)
     assert e.atoms(AppliedUndef) == \
@@ -557,7 +557,7 @@ def test_as_independent():
     assert (2*sin(x)).as_independent(x) == (2, sin(x))
     assert (2*sin(x)).as_independent(y) == (2*sin(x), 1)
 
-    # issue 4903 = 1766b
+    # issue sympy/sympy#4903 = 4865b
     n1, n2, n3 = symbols('n1 n2 n3', commutative=False)
     assert (n1 + n1*n2).as_independent(n2) == (n1, n1*n2)
     assert (n2*n1 + n1*n2).as_independent(n2) == (0, n1*n2 + n2*n1)
@@ -569,10 +569,10 @@ def test_as_independent():
     assert (3 + x).as_independent(x, as_Add=True) == (3, x)
     assert (3 + x).as_independent(x, as_Add=False) == (1, 3 + x)
 
-    # issue 5479
+    # issue sympy/sympy#5479
     assert (3*x).as_independent(Symbol) == (3, x)
 
-    # issue 5648
+    # issue sympy/sympy#5648
     assert (n1*x*y).as_independent(x) == (n1*y, x)
     assert ((x + n1)*(x - y)).as_independent(x) == (1, (x + n1)*(x - y))
     assert ((x + n1)*(x - y)).as_independent(y) == (x + n1, x - y)
@@ -584,7 +584,7 @@ def test_as_independent():
     assert (DiracDelta(x - n1)*DiracDelta(y - n1)*DiracDelta(x - n2)).as_independent(y) == \
            (DiracDelta(x - n1)*DiracDelta(x - n2), DiracDelta(y - n1))
 
-    # issue 5784
+    # issue sympy/sympy#5784
     assert (x + Integral(x, (x, 1, 2))).as_independent(x, strict=True) == \
            (Integral(x, (x, 1, 2)), x)
 
@@ -936,7 +936,7 @@ def test_as_coeff_exponent():
     assert (2*x**3 + pi*x**3).as_coeff_exponent(x) == (2 + pi, 3)
     assert (x*log(2)/(2*x + pi*x)).as_coeff_exponent(x) == \
         (log(2)/(2 + pi), 0)
-    # issue 4784
+    # issue sympy/sympy#4784
     D = Derivative
     f = Function('f')
     fx = D(f(x), x)
@@ -1126,7 +1126,7 @@ def test_as_base_exp():
     assert ((x + y)**z).as_base_exp() == (x + y, z)
 
 
-def test_issue_4963():
+def test_sympyissue_4963():
     assert hasattr(Mul(x, y), "is_commutative")
     assert hasattr(Mul(x, y, evaluate=False), "is_commutative")
     assert hasattr(Pow(x, y), "is_commutative")
@@ -1213,7 +1213,7 @@ def test_new_rawargs():
     assert m._new_rawargs(S.One) is S.One
 
 
-def test_issue_5226():
+def test_sympyissue_5226():
     assert Add(evaluate=False) == 0
     assert Mul(evaluate=False) == 1
     assert Mul(x + y, evaluate=False).is_Add
@@ -1227,7 +1227,7 @@ def test_free_symbols():
     assert (-Integral(x, (x, 1, y))).free_symbols == {y}
 
 
-def test_issue_5300():
+def test_sympyissue_5300():
     x = Symbol('x', commutative=False)
     assert x*sqrt(2)/sqrt(6) == x*sqrt(3)/3
 
@@ -1364,7 +1364,7 @@ def test_as_ordered_terms():
     assert f.as_ordered_terms(order="rev-grlex") == [2, y, x**2*y**2, x*y**4]
 
 
-def test_issue_4199():
+def test_sympyissue_4199():
     # first subs and limit gives NaN
     a = x/y
     assert a._eval_interval(x, 0, oo)._eval_interval(y, oo, 0) is S.NaN
@@ -1405,7 +1405,7 @@ def test_primitive():
     assert S.Zero.primitive() == (S.One, S.Zero)
 
 
-def test_issue_5843():
+def test_sympyissue_5843():
     a = 1 + x
     assert (2*a).extract_multiplicatively(a) == 2
     assert (4*a).extract_multiplicatively(2*a) == 2
@@ -1479,7 +1479,7 @@ def test_equals():
     p = expand(q**3)**Rational(1, 3)
     assert (p - q).equals(0)
 
-    # issue 6829
+    # issue sympy/sympy#6829
     # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3)
     # z = eq.subs(x, solve(eq, x)[0])
     q = symbols('q')
@@ -1507,7 +1507,7 @@ def test_random():
     assert posify(x)[0]._random() is not None
     assert lucas(n)._random(2, -2, 0, -1, 1) is None
 
-    # issue 8662
+    # issue sympy/sympy#8662
     assert Piecewise((Max(x, y), z))._random() is None
 
 
@@ -1584,20 +1584,20 @@ def test_round():
     assert (pi/10 + E*I).round(2).as_real_imag() == (0.31, 2.72)
     assert (pi/10 + E*I).round(2) == Float(0.31, 2) + I*Float(2.72, 3)
 
-    # issue 6914
+    # issue sympy/sympy#6914
     assert (I**(I + 3)).round(3) == Float('-0.208', '')*I
 
-    # issue 8720
+    # issue sympy/sympy#8720
     assert Float(-123.6).round() == -124.
     assert Float(-1.5).round() == -2.
     assert Float(-100.5).round() == -101.
     assert (Float(-1.5) - Float(10.5)*I).round() == -2.0 - 11.0*I
 
-    # issue 7961
+    # issue sympy/sympy#7961
     assert str(Float(0.006).round(2)) == '0.01'
     assert str(Float(0.00106).round(4)) == '0.0011'
 
-    # issue 8147
+    # issue sympy/sympy#8147
     assert S.NaN.round() == S.NaN
     assert S.Infinity.round() == S.Infinity
     assert S.NegativeInfinity.round() == S.NegativeInfinity
@@ -1636,7 +1636,7 @@ def test_float_0_fail():
     assert (x + Float(0.0)).is_Add
 
 
-def test_issue_6325():
+def test_sympyissue_6325():
     ans = (b**2 + z**2 - (b*(a + b*t) + z*(c + t*z))**2/(
         (a + b*t)**2 + (c + t*z)**2))/sqrt((a + b*t)**2 + (c + t*z)**2)
     e = sqrt((a + b*t)**2 + (c + z*t)**2)
@@ -1645,7 +1645,7 @@ def test_issue_6325():
     assert diff(e, t, 2, simplify=False) != ans
 
 
-def test_issue_7426():
+def test_sympyissue_7426():
     f1 = a % c
     f2 = x % z
     assert f1.equals(f2) is False

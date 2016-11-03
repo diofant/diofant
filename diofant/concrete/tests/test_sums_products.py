@@ -230,14 +230,14 @@ def test_geometric_sums():
     assert summation(2**(-4*n + 3), (n, 1, oo)) == Rational(8, 15)
     assert summation(2**(n + 1), (n, 1, b)).expand() == 4*(2**b - 1)
 
-    # issue 6664:
+    # issue sympy/sympy#6664:
     assert summation(x**n, (n, 0, oo)) == \
         Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
 
     assert summation(-2**n, (n, 0, oo)) == -oo
     assert summation(I**n, (n, 0, oo)) == Sum(I**n, (n, 0, oo))
 
-    # issue 6802:
+    # issue sympy/sympy#6802:
     assert summation((-1)**(2*x + 2), (x, 0, n)) == n + 1
     assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/Integer(3) - Rational(4, 3)
     assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/Integer(2) + Rational(1, 2)
@@ -247,7 +247,7 @@ def test_geometric_sums():
         4*Piecewise((n + 1, Eq((-2)**y, 1)),
                     ((-(-2)**(y*(n + 1)) + 1)/(-(-2)**y + 1), True))
 
-    # issue 8251:
+    # issue sympy/sympy#8251:
     assert summation((1/(n + 1)**2)*n**2, (n, 0, oo)) == oo
 
     # issue sympy/sympy#9908:
@@ -382,7 +382,7 @@ def test_evalf_euler_maclaurin():
 
 def test_evalf_symbolic():
     f, g = symbols('f g', cls=Function)
-    # issue 6328
+    # issue sympy/sympy#6328
     expr = Sum(f(x), (x, 1, 3)) + Sum(g(x), (x, 1, 3))
     assert expr.evalf() == expr
 
@@ -454,7 +454,7 @@ def test_wallis_product():
 
 
 def test_telescopic_sums():
-    # checks also input 2 of comment 1 issue 4127
+    # checks also input 2 of comment 1 issue sympy/sympy#4127
     assert Sum(1/k - 1/(k + 1), (k, 1, n)).doit() == 1 - 1/(1 + n)
     f = Function("f")
     assert Sum(
@@ -514,7 +514,7 @@ def test_equality():
         assert F(1, (x, 1, x)) != F(1, (y, 1, x))
         assert F(1, (x, 1, x)) != F(1, (y, 1, y))
 
-    # issue 5265
+    # issue sympy/sympy#5265
     assert Sum(x, (x, 1, x)).subs(x, a) == Sum(x, (x, 1, a))
 
 
@@ -540,7 +540,7 @@ def test_Sum_doit():
     assert Sum(f(l)*Sum(KroneckerDelta(m, l), (m, 0, oo)), (l, 1, oo)).doit() == \
         Sum(f(l), (l, 1, oo))
 
-    # issue 2597
+    # issue sympy/sympy#2597
     nmax = symbols('N', integer=True, positive=True)
     pw = Piecewise((1, And(Integer(1) <= n, n <= nmax)), (0, True))
     assert Sum(pw, (n, 1, nmax)).doit() == Sum(pw, (n, 1, nmax))
@@ -594,7 +594,7 @@ def test_hypersum():
     assert summation(binomial(m, k), (k, 0, m)) == 2**m
 
 
-def test_issue_4170():
+def test_sympyissue_4170():
     assert summation(1/factorial(k), (k, 0, oo)) == E
 
 
@@ -662,16 +662,16 @@ def test_conjugate_transpose():
     assert p.transpose().doit() == p.doit().transpose()
 
 
-def test_issue_4171():
+def test_sympyissue_4171():
     assert summation(factorial(2*k + 1)/factorial(2*k), (k, 0, oo)) == oo
     assert summation(2*k + 1, (k, 0, oo)) == oo
 
 
-def test_issue_6273():
+def test_sympyissue_6273():
     assert Sum(x, (x, 1, n)).n(2, subs={n: 1}) == 1
 
 
-def test_issue_6274():
+def test_sympyissue_6274():
     assert Sum(x, (x, 1, 0)).doit() == 0
     assert NS(Sum(x, (x, 1, 0))) == '0'
     assert Sum(n, (n, 10, 5)).doit() == -30
@@ -707,9 +707,9 @@ def test_simplify():
     assert simplify(Sum(x, (x, a, b))*Sum(x**2, (x, a, b))) == \
         Sum(x, (x, a, b)) * Sum(x**2, (x, a, b))
     assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) + Sum(z, (t, a, b))) \
-        == Sum(x + y + z, (t, a, b))          # issue 8596
+        == Sum(x + y + z, (t, a, b))          # issue sympy/sympy#8596
     assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) + Sum(z, (t, a, b)) +
-        Sum(v, (t, a, b))) == Sum(x + y + z + v, (t, a, b))  # issue 8596
+        Sum(v, (t, a, b))) == Sum(x + y + z + v, (t, a, b))  # issue sympy/sympy#8596
 
 
 def test_change_index():
@@ -796,7 +796,7 @@ def test_findrecur():
             (-n + y + 1)*F(n - 1, k)/(-n + x + y + 2) + F(n - 2, k - 1))
 
 
-def test_issue_7097():
+def test_sympyissue_7097():
     assert sum(x**n/n for n in range(1, 401)) == summation(x**n/n, (n, 1, 400))
 
 
@@ -836,7 +836,7 @@ def test_distribution_over_equality():
         Eq(Sum(f(x), (x, 0, y)), Sum(x**2, (x, 0, y)))
 
 
-def test_issue_2787():
+def test_sympyissue_2787():
     n, k = symbols('n k', positive=True, integer=True)
     p = symbols('p', positive=True)
     binomial_dist = binomial(n, k)*p**k*(1 - p)**(n - k)
@@ -848,15 +848,15 @@ def test_issue_2787():
         True))
 
 
-def test_issue_4668():
+def test_sympyissue_4668():
     assert summation(1/n, (n, 2, oo)) == oo
 
 
-def test_issue_8822():
+def test_sympyissue_8822():
     assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan
 
 
-def test_issue_8016():
+def test_sympyissue_8016():
     n, m = symbols('n, m', integer=True, positive=True)
     k = symbols('k', integer=True)
     s = Sum(binomial(m, k)*binomial(m, n-k)*(-1)**k, (k, 0, n))
@@ -868,7 +868,7 @@ def test_diofantissue_236():
     assert summation(n/((n + 2)*(n + 4)*(n + 8)), (n, 1, oo)) == Rational(4, 35)
 
 
-def test_issue_10156():
+def test_sympyissue_10156():
     cx = Sum(2*y**2*x, (x, 1, 3))
     e = 2*y*Sum(2*cx*x**2, (x, 1, 9))
     assert e.factor() == \

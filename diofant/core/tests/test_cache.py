@@ -107,7 +107,7 @@ def test_nocache(clear_imports, monkeypatch):
     r = f*g  # not raises
 
 
-def test_issue_8825():
+def test_sympyissue_8825():
     import weakref
     a, b = symbols('a b')
     d = weakref.WeakKeyDictionary([(a, 1), (b, 2)])

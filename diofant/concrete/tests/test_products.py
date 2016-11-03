@@ -195,7 +195,7 @@ def test_simple_products():
     pytest.raises(ValueError, lambda: Product(n, k, 1, 10))
     pytest.raises(ValueError, lambda: Product(n, (k, 1)))
 
-    assert product(1, (n, 1, oo)) == 1  # issue 8301
+    assert product(1, (n, 1, oo)) == 1  # issue sympy/sympy#8301
     assert product(2, (n, 1, oo)) == oo
     assert product(-1, (n, 1, oo)).func is Product
 
@@ -231,21 +231,21 @@ def test_special_products():
 
 def test__eval_product():
     from diofant.abc import i, n
-    # issue 4809
+    # issue sympy/sympy#4809
     a = Function('a')
     assert product(2*a(i), (i, 1, n)) == 2**n * Product(a(i), (i, 1, n))
-    # issue 4810
+    # issue sympy/sympy#4810
     assert product(2**i, (i, 1, n)) == 2**(n/2 + n**2/2)
 
 
 def test_product_pow():
-    # issue 4817
+    # issue sympy/sympy#4817
     assert product(2**f(k), (k, 1, n)) == 2**Sum(f(k), (k, 1, n))
     assert product(2**(2*f(k)), (k, 1, n)) == 2**Sum(2*f(k), (k, 1, n))
 
 
 def test_infinite_product():
-    # issue 5737
+    # issue sympy/sympy#5737
     assert isinstance(Product(2**(1/factorial(n)), (n, 0, oo)), Product)
 
 

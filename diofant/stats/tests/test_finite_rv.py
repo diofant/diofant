@@ -133,9 +133,9 @@ def test_dice_bayes():
 
 
 def test_die_args():
-    pytest.raises(ValueError, lambda: Die('X', -1))  # issue 8105: negative sides.
+    pytest.raises(ValueError, lambda: Die('X', -1))  # issue sympy/sympy#8105: negative sides.
     pytest.raises(ValueError, lambda: Die('X', 0))
-    pytest.raises(ValueError, lambda: Die('X', 1.5))  # issue 8103: non integer sides.
+    pytest.raises(ValueError, lambda: Die('X', 1.5))  # issue sympy/sympy#8103: non integer sides.
 
     k = Symbol('k')
     sym_die = Die('X', k)

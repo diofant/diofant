@@ -52,7 +52,7 @@ def test_Trace_A_plus_B():
 
 
 def test_Trace_MatAdd_doit():
-    # See issue #9028
+    # See issue sympy/sympy#9028
     X = ImmutableMatrix([[1, 2, 3]]*3)
     Y = MatrixSymbol('Y', 3, 3)
     q = MatAdd(X, 2*X, Y, -3*Y)
@@ -79,7 +79,7 @@ def test_Trace_doit_deep_False():
 
 
 def test_trace_constant_factor():
-    # Issue 9052: gave 2*Trace(MatMul(A)) instead of 2*Trace(A)
+    # Issue sympy/sympy#9052: gave 2*Trace(MatMul(A)) instead of 2*Trace(A)
     assert trace(2*A) == 2*Trace(A)
     X = ImmutableMatrix([[1, 2], [3, 4]])
     assert trace(MatMul(2, X)) == 10
