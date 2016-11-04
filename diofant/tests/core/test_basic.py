@@ -6,7 +6,7 @@ import collections
 
 import pytest
 
-from diofant import Lambda, cos, sin
+from diofant import I, Lambda, cos, exp, gamma, sin
 from diofant.abc import w, x, y, z
 from diofant.core.basic import Atom, Basic, preorder_traversal
 from diofant.core.compatibility import default_sort_key
@@ -82,6 +82,12 @@ def test_subs():
 
 def test_rewrite():
     assert sin(1).rewrite() == sin(1)
+
+    f1 = sin(x) + cos(x)
+    assert f1.rewrite(cos, exp) == exp(I*x)/2 + sin(x) + exp(-I*x)/2
+
+    f2 = sin(x) + cos(y)/gamma(z)
+    assert f2.rewrite(sin, exp) == -I*(exp(I*x) - exp(-I*x))/2 + cos(y)/gamma(z)
 
 
 def test_atoms():
