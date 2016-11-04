@@ -7,11 +7,11 @@ The Diofant CAS can be installed on virtually any computer with Python
 3.4 or above.  Diofant requires `setuptools`_.  You can install latest
 release with pip::
 
-    $ pip install --pre diofant
+    $ pip install diofant
 
 or to install also extra dependencies::
 
-    $ pip install --pre diofant[gmpy,plot]
+    $ pip install diofant[gmpy,plot]
 
 .. tip::
 
