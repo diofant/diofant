@@ -46,7 +46,7 @@ Id = S.IdentityFunction
 ###############################################################################
 
 
-def sqrt(arg):
+def sqrt(arg, **kwargs):
     """The square root function
 
     sqrt(x) -> Returns the principal square root of x.
@@ -113,10 +113,10 @@ def sqrt(arg):
     .. [2] http://en.wikipedia.org/wiki/Principal_value
     """
     # arg = sympify(arg) is handled by Pow
-    return Pow(arg, S.Half)
+    return Pow(arg, S.Half, **kwargs)
 
 
-def cbrt(arg):
+def cbrt(arg, **kwargs):
     """This function computes the principial cube root of `arg`, so
     it's just a shortcut for `arg**Rational(1, 3)`.
 
@@ -165,7 +165,7 @@ def cbrt(arg):
     * http://en.wikipedia.org/wiki/Principal_value
 
     """
-    return Pow(arg, Rational(1, 3))
+    return Pow(arg, Rational(1, 3), **kwargs)
 
 
 def root(arg, n, k=0):
