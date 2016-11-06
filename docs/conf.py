@@ -24,7 +24,7 @@ warnings.simplefilter('error', UserWarning)
 # coming with Sphinx (named 'sphinx.addons.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
               'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.autosummary',
-              'sphinx.ext.intersphinx',]
+              'sphinx.ext.intersphinx']
 
 numpydoc_show_class_members = False
 numpydoc_class_members_toctree = False
@@ -49,7 +49,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'Diofant'
-copyright = '2016 Diofant Development Team, Sergey B Kirpichev'
+copyright = '2016 SymPy Development Team, Sergey B Kirpichev'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -131,7 +131,14 @@ graphviz_output_format = 'svg'
 
 intersphinx_mapping = {
     'python3': ('https://docs.python.org/3/', None),
-    'numpy': ('http://docs.scipy.org/doc/numpy', None),
+    'numpy': ('https://docs.scipy.org/doc/numpy', None),
+}
+
+html_static_path = ['_static']
+html_context = {
+    'css_files': [
+        '_static/theme_overrides.css',
+    ],
 }
 
 # RTD theme support:

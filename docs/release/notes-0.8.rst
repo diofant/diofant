@@ -62,13 +62,13 @@ Minor changes
 =============
 
 * Add support for bidirectional limits, see `#10 <https://github.com/diofant/diofant/pull/10>`_.
-* Reimplement cot, see `#113 <https://github.com/diofant/diofant/pull/113>`_.
-* A better implementation of singularities(), see `#147 <https://github.com/diofant/diofant/pull/147>`_.
+* Reimplement :class:`~diofant.functions.elementary.trigonometric.cot`, see `#113 <https://github.com/diofant/diofant/pull/113>`_.
+* A better implementation of :func:`~diofant.calculus.singularities.singularities`, see `#147 <https://github.com/diofant/diofant/pull/147>`_.
 * Fix "flip" of arguments in relational expressions, see `#30 <https://github.com/diofant/diofant/pull/30>`_.
 * Make Gosper code use new dispersion algorithm, see `#205 <https://github.com/diofant/diofant/pull/205>`_.  Thanks to Raoul Bourquin.
 * Consolidate code for solving linear systems, see `#253 <https://github.com/diofant/diofant/pull/253>`_.
-* Ugly hacks for automatic symbols and wrapping int's now replaced with AST transformers, see `#278 <https://github.com/diofant/diofant/pull/278>`_ and `#167 <https://github.com/diofant/diofant/pull/167>`_.
-* Build correct inhomogeneous solution in rsolve_hyper, see `#298 <https://github.com/diofant/diofant/pull/298>`_.
+* Hacks for automatic symbols and wrapping int's replaced with AST transformers, see `#278 <https://github.com/diofant/diofant/pull/278>`_ and `#167 <https://github.com/diofant/diofant/pull/167>`_.
+* Build correct inhomogeneous solution in :func:`~diofant.solvers.recurr.rsolve_hyper`, see `#298 <https://github.com/diofant/diofant/pull/298>`_.
 * Evaluate matrix powers for non-diagonalizable matrices, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 * Support non-orthogonal Jordan blocks, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 * Make risch_integrate(x**x, x) work, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
@@ -307,7 +307,7 @@ Issues closed
 * `sympy/sympy#5907 <https://github.com/sympy/sympy/issues/5907>`_ integrate(1/(x**2 + a**2)**2, x) is wrong if a is real
 * `sympy/sympy#11722 <https://github.com/sympy/sympy/issues/11722>`_ series() calculation up to O(t**k) returns invalid coefficients for t**k * log(t)
 * `#347 <https://github.com/diofant/diofant/issues/347>`_ Search & mention more closed SymPy issues
-* `sympy/sympy#8804_ <https://github.com/sympy/sympy/issues/8804>`_ series expansion of 1/x ignores order parameter
+* `sympy/sympy#8804 <https://github.com/sympy/sympy/issues/8804>`_ series expansion of 1/x ignores order parameter
 
 See also full `list of closed issues <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.8.0+is%3Aclosed>`_ in the Diofant repository.
 

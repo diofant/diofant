@@ -4,125 +4,71 @@
  Printing
 ==========
 
-As we have already seen, Diofant can pretty print its output using Unicode
-characters.  This is a short introduction to the most common printing options
-available in Diofant.
-
-Printers
-========
-
-There are several printers available in Diofant.  The most common ones are
-
-- str
-- repr
-- ASCII pretty printer
-- Unicode pretty printer
-- LaTeX
-- MathML
-- Dot
-
-In addition to these, there are also "printers" that can output Diofant objects
-to code, such as C, Fortran, Javascript, Theano, and Python.  These are not
-discussed in this tutorial.
-
-Setting up Pretty Printing
-==========================
-
-Pretty printing is enabled automatically for IPython's sessions, best
-printer is used by default (i.e. `\LaTeX` in the IPython QTConsole or
-notebooks and Unicode pretty printer in the IPython console).
-
-  .. image:: ../pics/ipythonconsole.png
-
-If you want manually configure pretty printing, please use the
-``init_printing()`` function.  Without arguments it will just automatically
-enable the best printer available in your environment.
-
-To explicitly not use `\LaTeX`, pass ``use_latex=False`` to
-``init_printing()`` or ``init_session()``.  To explicitly not use Unicode,
-pass ``use_unicode=False``.
-
-For convinience, the ``init_session()`` function is available, it will
-automatically import everything in Diofant, create some common Symbols, setup
-plotting, and run ``init_printing()``.
-
-Printing Functions
-==================
-
-In addition to automatic printing, you can explicitly use any one of the
-printers by calling the appropriate function.
-
-str
----
-
-To get a string form of an expression, use ``str(expr)``.  This is also the
-form that is produced by ``print(expr)``.  String forms are designed to be
-easy to read, but in a form that is correct Python syntax so that it can be
-copied and pasted.  The ``str()`` form of an expression will usually look
-exactly the same as the expression as you would enter it.
-
+..
     >>> from diofant import *
     >>> x, y, z = symbols('x y z')
-    >>> str(Integral(sqrt(1/x), x))
+    >>> init_printing(pretty_print=True, use_unicode=True)
+
+As we have already seen, Diofant can pretty print its output using
+Unicode characters.  This is a short introduction to the most common
+printing options available in Diofant.  The most common ones are
+
+- `Str`_
+- `Repr`_
+- `2D Pretty Printer`_ (Unicode or ASCII)
+- `LaTeX`_
+- `Dot`_
+
+In addition to these, there are also "printers" that can output
+Diofant objects to code, such as C, Fortran, or Mathematica.
+
+Best printer is enabled automatically for interactive session
+(i.e. `\LaTeX` in the IPython notebooks, pretty printer in the IPython
+console or str printer in the Python console).  If you want manually
+configure pretty printing, please use the
+:func:`~diofant.interactive.printing.init_printing` function.
+
+Lets take this simple expression
+
+    >>> expr = Integral(sqrt(1/x), x)
+
+and try several available printers.
+
+Str
+===
+
+To get a string form of an expression, use :class:`str`.  This is also
+the form that is produced by :func:`print`.  String forms are designed
+to be easy to read and mostly to be in a form that is a correct Python syntax
+so that it can be copied and pasted.
+
+    >>> str(expr)
     'Integral(sqrt(1/x), x)'
-    >>> print(Integral(sqrt(1/x), x))
+    >>> print(expr)
     Integral(sqrt(1/x), x)
 
-repr
-----
+Repr
+====
 
-The repr form of an expression is designed to show the exact form of an
-expression.  It will be discussed more in the :ref:`tutorial-manipulation`
-section.  To get it, use ``repr()``.
+The repr form of an expression is designed to show the exact form of
+an expression, it would yield an object with the same value when
+passed to :func:`eval`.  To get it, use :func:`repr`.
 
-    >>> repr(Integral(sqrt(1/x), x))
+    >>> repr(expr)
     "Integral(Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2)), Tuple(Symbol('x')))"
 
-The repr form is mostly useful for understanding how an expression is built
-internally.
+The repr form is mostly useful for understanding how an expression is
+built internally.
 
+2D Pretty Printer
+=================
 
-ASCII Pretty Printer
---------------------
+A two-dimensional (2D) textual representation of the expression can be
+obtained with :func:`~diofant.printing.pretty.pretty.pretty`.
 
-The ASCII pretty printer is accessed from ``pprint()``.  If the terminal does
-not support Unicode, the ASCII printer is used by default.  Otherwise, you
-must pass ``use_unicode=False``.
-
-    >>> pprint(Integral(sqrt(1/x), x), use_unicode=False)
-      /
-     |
-     |     ___
-     |    / 1
-     |   /  -  dx
-     | \/   x
-     |
-    /
-
-``pprint()`` prints the output to the screen.  If you want the string form,
-use ``pretty()``.
-
-    >>> pretty(sqrt(1/x), use_unicode=False)
-    '    ___\n   / 1 \n  /  - \n\\/   x '
-    >>> print(pretty(Integral(sqrt(1/x), x), use_unicode=False))
-      /
-     |
-     |     ___
-     |    / 1
-     |   /  -  dx
-     | \/   x
-     |
-    /
-
-Unicode Pretty Printer
-----------------------
-
-The Unicode pretty printer is also accessed from ``pprint()`` and
-``pretty()``.  It the terminal supports Unicode, it is used automatically.  If
-``pprint()`` is not able to detect that the terminal supports unicode, you can
-pass ``use_unicode=True`` to force it to use Unicode.
-
-    >>> pprint(Integral(sqrt(1/x), x), use_unicode=True)
+    >>> pretty(expr)
+    '⌠           \n⎮     ___   \n⎮    ╱ 1    \n⎮   ╱  ─  dx\n⎮ ╲╱   x    \n⌡           '
+    >>> print(_)
     ⌠
     ⎮     ___
     ⎮    ╱ 1
@@ -130,50 +76,75 @@ pass ``use_unicode=True`` to force it to use Unicode.
     ⎮ ╲╱   x
     ⌡
 
-.. _LaTeX:
+You can pass ``use_unicode=False`` to use ASCII symbols.
 
-`\LaTeX`
---------
+    >>> print(pretty(expr, use_unicode=False))
+       /
+      |
+      |     ___
+      |    / 1
+      |   /  -  dx
+      | \/   x
+      |
+     /
 
-To get the `\LaTeX` form of an expression, use ``latex()``.
+:func:`~diofant.printing.pretty.pretty.pprint` prints the output to
+the screen.
 
-    >>> print(latex(Integral(sqrt(1/x), x)))
+    >>> pprint(expr)
+    ⌠
+    ⎮     ___
+    ⎮    ╱ 1
+    ⎮   ╱  ─  dx
+    ⎮ ╲╱   x
+    ⌡
+
+LaTeX
+=====
+
+To get the `\LaTeX` form of an expression, use
+:func:`~diofant.printing.latex.latex`.
+
+    >>> print(latex(expr))
     \int \sqrt{\frac{1}{x}}\, dx
 
-The ``latex()`` function has many options to change the formatting of
-different things.  See :py:meth:`its documentation
-<diofant.printing.latex.latex>` for more details.
-
-MathML
-------
-
-There is also a printer to MathML, called ``print_mathml()``.  It must be
-imported from ``diofant.printing.mathml``.
-
-    >>> from diofant.printing.mathml import print_mathml
-    >>> print_mathml(Integral(sqrt(1/x), x))
-    <apply>
-        <int/>
-        <bvar>
-            <ci>x</ci>
-        </bvar>
-        <apply>
-            <root/>
-            <apply>
-                <power/>
-                <ci>x</ci>
-                <cn>-1</cn>
-            </apply>
-        </apply>
-    </apply>
-
-``print_mathml()`` prints the output.  If you want the string, use the
-function ``mathml()``.
-
 Dot
----
+===
 
-The ``dotprint()`` function in ``diofant.printing.dot`` prints output to dot
-format, which can be rendered with Graphviz.  See the
-:ref:`tutorial-manipulation` section for some examples of the output of this
-printer.
+:func:`~diofant.printing.dot.dotprint` function prints output to
+dot format, which can be rendered with Graphviz:
+
+.. graphviz::
+
+    digraph{
+
+    # Graph style
+    "bgcolor"="transparent"
+    "ordering"="out"
+    "rankdir"="TD"
+
+    #########
+    # Nodes #
+    #########
+
+    "Integral(Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2)), Tuple(Symbol('x')))_()" ["color"="black", "label"="Integral", "shape"="ellipse"];
+    "Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2))_(0,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Pow(Symbol('x'), Integer(-1))_(0, 0)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('x')_(0, 0, 0)" ["color"="black", "label"="x", "shape"="ellipse"];
+    "Integer(-1)_(0, 0, 1)" ["color"="black", "label"="-1", "shape"="ellipse"];
+    "Rational(1, 2)_(0, 1)" ["color"="black", "label"="1/2", "shape"="ellipse"];
+    "Tuple(Symbol('x'))_(1,)" ["color"="blue", "label"="Tuple", "shape"="ellipse"];
+    "Symbol('x')_(1, 0)" ["color"="black", "label"="x", "shape"="ellipse"];
+
+    #########
+    # Edges #
+    #########
+
+    "Integral(Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2)), Tuple(Symbol('x')))_()" -> "Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2))_(0,)";
+    "Integral(Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2)), Tuple(Symbol('x')))_()" -> "Tuple(Symbol('x'))_(1,)";
+    "Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2))_(0,)" -> "Pow(Symbol('x'), Integer(-1))_(0, 0)";
+    "Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2))_(0,)" -> "Rational(1, 2)_(0, 1)";
+    "Pow(Symbol('x'), Integer(-1))_(0, 0)" -> "Symbol('x')_(0, 0, 0)";
+    "Pow(Symbol('x'), Integer(-1))_(0, 0)" -> "Integer(-1)_(0, 0, 1)";
+    "Tuple(Symbol('x'))_(1,)" -> "Symbol('x')_(1, 0)";
+    }

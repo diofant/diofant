@@ -16,7 +16,10 @@ def _init_python_printing(stringify_func):
         """
         if arg is not None:
             builtins._ = None
-            print(stringify_func(arg))
+            if isinstance(arg, str):
+                print(repr(arg))
+            else:
+                print(stringify_func(arg))
             builtins._ = arg
 
     sys.displayhook = _displayhook

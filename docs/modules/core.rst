@@ -24,16 +24,7 @@ cacheit
 
 basic
 -----
-.. module:: diofant.core.basic
-
-Basic
-^^^^^
-.. autoclass:: Basic
-   :members:
-
-Atom
-^^^^
-.. autoclass:: Atom
+.. automodule:: diofant.core.basic
    :members:
 
 core
@@ -47,6 +38,12 @@ singleton
 S
 ^
 .. autoclass:: S
+   :members:
+
+evaluate
+--------
+
+.. automodule:: diofant.core.evaluate
    :members:
 
 expr

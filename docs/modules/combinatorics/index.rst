@@ -4,10 +4,9 @@
 Combinatorics
 =============
 
-Contents
-========
-
 .. toctree::
+   :caption: Contents
+   :name: combtoc
    :maxdepth: 2
 
    partitions.rst

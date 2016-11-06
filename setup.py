@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-This script uses Setuptools (http://pythonhosted.org/setuptools/), a
-collection of enhancements to the standard Python distutils.
+Setup script for Diofant.
+
+This script uses Setuptools (https://setuptools.readthedocs.io/en/latest/),
+a collection of enhancements to the standard Python distutils.
 """
 
 import re
 import sys
-import os
-import shutil
-from setuptools import setup, Command, find_packages
+from setuptools import setup, find_packages
 
 
 # Make sure I have the right Python version.  We can drop this

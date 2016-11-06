@@ -1888,6 +1888,7 @@ def pretty_print(expr, **settings):
     """
     print(pretty(expr, **settings))
 
+#:
 pprint = pretty_print
 
 

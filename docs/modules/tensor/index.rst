@@ -6,10 +6,9 @@ Tensors
 
 .. automodule:: diofant.tensor
 
-Contents
-========
-
 .. toctree::
+    :caption: Contents
+    :name: tenstoc
     :maxdepth: 3
 
     indexed.rst

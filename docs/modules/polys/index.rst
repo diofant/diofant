@@ -14,10 +14,9 @@ There is a vast number of methods implemented, ranging from simple tools
 like polynomial division, to advanced concepts including Gröbner bases
 and multivariate factorization over algebraic number domains.
 
-Contents
-========
-
 .. toctree::
+    :caption: Contents
+    :name: polytoc
     :maxdepth: 3
 
     basics.rst

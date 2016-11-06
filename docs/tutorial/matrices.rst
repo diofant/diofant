@@ -2,15 +2,17 @@
  Matrices
 ==========
 
+..
     >>> from diofant import *
+    >>> x, y, z = symbols('x y z')
     >>> init_printing(pretty_print=True, use_unicode=True)
 
-To make a matrix in Diofant, use the ``Matrix`` object.  A matrix is constructed
-by providing a list of row vectors that make up the matrix.  For example,
-to construct the matrix
+To make a matrix in Diofant, use the
+:class:`~diofant.matrices.Matrix` object.  A matrix is
+constructed by providing a list of row vectors that make up the
+matrix.  For example, to construct the matrix
 
 .. math::
-
 
    \left[\begin{array}{cc}1 & -1\\3 & 4\\0 & 2\end{array}\right]
 
@@ -23,8 +25,8 @@ use
     ⎢     ⎥
     ⎣0  2 ⎦
 
-To make it easy to make column vectors, a list of elements is considered to be
-a column vector.
+To make it easy to make column vectors, a list of elements is
+considered to be a column vector.
 
     >>> Matrix([1, 2, 3])
     ⎡1⎤
@@ -33,30 +35,61 @@ a column vector.
     ⎢ ⎥
     ⎣3⎦
 
-Matrices are manipulated just like any other object in Diofant or Python.
+One important thing to note about Diofant matrices is that, unlike
+every other object in Diofant, they are mutable.  This means that they
+can be modified in place, as we will see below.  Use
+:class:`~diofant.matrices.immutable.ImmutableMatrix` in places that
+require immutability, such as inside other Diofant expressions or as
+keys to dictionaries.
 
-    >>> M = Matrix([[1, 2, 3], [3, 2, 1]])
-    >>> N = Matrix([0, 1, 1])
-    >>> M*N
-    ⎡5⎤
+Indexing
+========
+
+Diofant matrices support subscription of matrix elements with pair of
+integers or :class:`slice` instances.  In last case, new
+:class:`~diofant.matrices.Matrix` instances will be returned.
+
+    >>> M = Matrix([[1, 2, 3], [4, 5, 6]])
+    >>> M[0, 1]
+    2
+    >>> M[1, 1]
+    5
+    >>> M[:, 1]
+    ⎡2⎤
     ⎢ ⎥
-    ⎣3⎦
+    ⎣5⎦
+    >>> M[1, :-1]
+    [4  5]
 
-One important thing to note about Diofant matrices is that, unlike every other
-object in Diofant, they are mutable.  This means that they can be modified in
-place, as we will see below.  The downside to this is that ``Matrix`` cannot
-be used in places that require immutability, such as inside other Diofant
-expressions or as keys to dictionaries.  If you need an immutable version of
-``Matrix``, use ``ImmutableMatrix``.
+To get an individual row or column of a matrix, you could also use
+methods :meth:`~diofant.matrices.dense.DenseMatrix.row` or
+:meth:`~diofant.matrices.dense.DenseMatrix.col`.
 
-Basic Operations
-================
+    >>> M.row(0)
+    [1  2  3]
+    >>> M.col(-1)
+    ⎡3⎤
+    ⎢ ⎥
+    ⎣6⎦
 
-Shape
------
+It's possible to modify matrix elements.
 
-Here are some basic operations on ``Matrix``.  To get the shape of a matrix
-use ``shape``
+    >>> M[0, 0] = 0
+    >>> M
+    ⎡0  2  3⎤
+    ⎢       ⎥
+    ⎣4  5  6⎦
+    >>> M[1, 1:] = Matrix([[0, 0]])
+    >>> M
+    ⎡0  2  3⎤
+    ⎢       ⎥
+    ⎣4  0  0⎦
+
+Reshape and Rearrange
+=====================
+
+To get the shape of a matrix use
+:attr:`~diofant.matrices.matrices.MatrixBase.shape` property
 
     >>> M = Matrix([[1, 2, 3], [-2, 0, 4]])
     >>> M
@@ -66,25 +99,9 @@ use ``shape``
     >>> M.shape
     (2, 3)
 
-Accessing Rows and Columns
---------------------------
-
-To get an individual row or column of a matrix, use ``row`` or ``col``.  For
-example, ``M.row(0)`` will get the first row. ``M.col(-1)`` will get the last
-column.
-
-    >>> M.row(0)
-    [1  2  3]
-    >>> M.col(-1)
-    ⎡3⎤
-    ⎢ ⎥
-    ⎣4⎦
-
-Deleting and Inserting Rows and Columns
----------------------------------------
-
-To delete a row or column, use ``row_del`` or ``col_del``.  These operations
-will modify the Matrix **in place**.
+To delete a row or column, use methods
+:meth:`~diofant.matrices.dense.MutableDenseMatrix.row_del` or
+:meth:`~diofant.matrices.dense.MutableDenseMatrix.col_del`.
 
     >>> M.col_del(0)
     >>> M
@@ -95,10 +112,14 @@ will modify the Matrix **in place**.
     >>> M
     [2  3]
 
-.. TODO: This is a mess. See issue sympy/sympy#6992.
+.. note::
 
-To insert rows or columns, use ``row_insert`` or ``col_insert``.  These
-operations **do not** operate in place.
+   You can see, that these methods will modify the Matrix **in
+   place**.  In general, as a rule, such methods will return ``None``.
+
+To insert rows or columns, use methods
+:meth:`~diofant.matrices.matrices.MatrixBase.row_insert` or
+:meth:`~diofant.matrices.matrices.MatrixBase.col_insert`.
 
     >>> M
     [2  3]
@@ -113,15 +134,36 @@ operations **do not** operate in place.
     ⎢        ⎥
     ⎣-2  0  4⎦
 
-Unless explicitly stated, the methods mentioned below do not operate in
-place. In general, a method that does not operate in place will return a new
-``Matrix`` and a method that does operate in place will return ``None``.
+To swap two given rows or columns, use methods
+:meth:`~diofant.matrices.dense.MutableDenseMatrix.row_swap` or
+:meth:`~diofant.matrices.dense.MutableDenseMatrix.col_swap`.
 
-Basic Methods
-=============
+    >>> M.row_swap(0, 1)
+    >>> M
+    ⎡-2  0  4⎤
+    ⎢        ⎥
+    ⎣1   2  3⎦
+    >>> M.col_swap(1, 2)
+    >>> M
+    ⎡-2  4  0⎤
+    ⎢        ⎥
+    ⎣1   3  2⎦
 
-As noted above, simple operations like addition and multiplication are done
-just by using ``+``, ``*``, and ``**``.  To find the inverse of a matrix, just
+To take the transpose of a Matrix, use
+:attr:`~diofant.matrices.matrices.MatrixBase.T` property.
+
+    >>> M.T
+    ⎡-2  1⎤
+    ⎢     ⎥
+    ⎢4   3⎥
+    ⎢     ⎥
+    ⎣0   2⎦
+
+Algebraic Operations
+====================
+
+Simple operations like addition and multiplication are done just by
+using ``+``, ``*``, and ``**``.  To find the inverse of a matrix, just
 raise it to the ``-1`` power.
 
     >>> M = Matrix([[1, 3], [-2, 3]])
@@ -151,25 +193,11 @@ raise it to the ``-1`` power.
     ...
     ValueError: Matrix det == 0; not invertible.
 
-To take the transpose of a Matrix, use ``T``.
-
-    >>> M = Matrix([[1, 2, 3], [4, 5, 6]])
-    >>> M
-    ⎡1  2  3⎤
-    ⎢       ⎥
-    ⎣4  5  6⎦
-    >>> M.T
-    ⎡1  4⎤
-    ⎢    ⎥
-    ⎢2  5⎥
-    ⎢    ⎥
-    ⎣3  6⎦
-
-Matrix Constructors
-===================
+Special Matrices
+=================
 
 Several constructors exist for creating common matrices.  To create an
-identity matrix, use ``eye``.  ``eye(n)`` will create an `n\times n` identity matrix.
+identity matrix, use :func:`~diofant.matrices.dense.eye` function.
 
     >>> eye(3)
     ⎡1  0  0⎤
@@ -186,15 +214,16 @@ identity matrix, use ``eye``.  ``eye(n)`` will create an `n\times n` identity ma
     ⎢          ⎥
     ⎣0  0  0  1⎦
 
-To create a matrix of all zeros, use ``zeros``.  ``zeros(n, m)`` creates an
-`n\times m` matrix of `0`\ s.
+To create a matrix of all zeros, use
+:func:`~diofant.matrices.dense.zeros` function.
 
     >>> zeros(2, 3)
     ⎡0  0  0⎤
     ⎢       ⎥
     ⎣0  0  0⎦
 
-Similarly, ``ones`` creates a matrix of ones.
+Similarly, function :func:`~diofant.matrices.dense.ones` creates a
+matrix of ones.
 
     >>> ones(3, 2)
     ⎡1  1⎤
@@ -203,10 +232,10 @@ Similarly, ``ones`` creates a matrix of ones.
     ⎢    ⎥
     ⎣1  1⎦
 
-To create diagonal matrices, use ``diag``.  The arguments to ``diag`` can be
-either numbers or matrices.  A number is interpreted as a `1\times 1`
-matrix. The matrices are stacked diagonally.  The remaining elements are
-filled with `0`\ s.
+To create diagonal matrices, use function
+:func:`~diofant.matrices.dense.diag`.  Its arguments can be either
+numbers or matrices.  A number is interpreted as a `1\times 1`
+matrix. The matrices are stacked diagonally.
 
     >>> diag(1, 2, 3)
     ⎡1  0  0⎤
@@ -230,10 +259,8 @@ filled with `0`\ s.
 Advanced Methods
 ================
 
-Determinant
------------
-
-To compute the determinant of a matrix, use ``det``.
+To compute the determinant of a matrix, use
+:meth:`~diofant.matrices.matrices.MatrixBase.det` method.
 
     >>> M = Matrix([[1, 0, 1], [2, -1, 3], [4, 3, 2]])
     >>> M
@@ -242,15 +269,13 @@ To compute the determinant of a matrix, use ``det``.
     ⎢2  -1  3⎥
     ⎢        ⎥
     ⎣4  3   2⎦
-    >>> M.det()
+    >>> det(M)
     -1
 
-RREF
-----
-
-To put a matrix into reduced row echelon form, use ``rref``.  ``rref`` returns
-a tuple of two elements. The first is the reduced row echelon form, and the
-second is a list of indices of the pivot columns.
+To put a matrix into reduced row echelon form, use method
+:meth:`~diofant.matrices.matrices.MatrixBase.rref`.  It returns a
+tuple of two elements.  The first is the reduced row echelon form, and
+the second is a list of indices of the pivot columns.
 
     >>> M = Matrix([[1, 0, 1, 3], [2, 3, 4, 7], [-1, -3, -3, -4]])
     >>> M
@@ -266,14 +291,9 @@ second is a list of indices of the pivot columns.
     ⎜⎢              ⎥        ⎟
     ⎝⎣0  0   0    0 ⎦        ⎠
 
-.. Note:: The first element of the tuple returned by ``rref`` is of type
-   ``Matrix``. The second is of type ``list``.
-
-Nullspace
----------
-
-To find the nullspace of a matrix, use ``nullspace``. ``nullspace`` returns a
-``list`` of column vectors that span the nullspace of the matrix.
+To find the nullspace of a matrix, use method
+:meth:`~diofant.matrices.matrices.MatrixBase.nullspace`.  It returns a
+list of column vectors that span the nullspace of the matrix.
 
     >>> M = Matrix([[1, 2, 3, 0, 0], [4, 10, 0, 0, 1]])
     >>> M
@@ -291,14 +311,13 @@ To find the nullspace of a matrix, use ``nullspace``. ``nullspace`` returns a
     ⎢⎢   ⎥  ⎢ ⎥  ⎢    ⎥⎥
     ⎣⎣ 0 ⎦  ⎣0⎦  ⎣ 1  ⎦⎦
 
-Eigenvalues, Eigenvectors, and Diagonalization
-----------------------------------------------
+To find the eigenvalues of a matrix, use method
+:meth:`~diofant.matrices.matrices.MatrixBase.eigenvals`.  It returns a
+dictionary of roots including its multiplicity (similar to the output
+of :func:`~diofant.polys.polyroots.roots` function).
 
-To find the eigenvalues of a matrix, use ``eigenvals``.  ``eigenvals``
-returns a dictionary of ``eigenvalue:algebraic multiplicity`` pairs (similar to the
-output of :ref:`roots <tutorial-roots>`).
-
-    >>> M = Matrix([[3, -2,  4, -2], [5,  3, -3, -2], [5, -2,  2, -2], [5, -2, -3,  3]])
+    >>> M = Matrix([[3, -2,  4, -2], [5,  3, -3, -2],
+    ...             [5, -2,  2, -2], [5, -2, -3,  3]])
     >>> M
     ⎡3  -2  4   -2⎤
     ⎢             ⎥
@@ -311,12 +330,22 @@ output of :ref:`roots <tutorial-roots>`).
     {-2: 1, 3: 1, 5: 2}
 
 This means that ``M`` has eigenvalues -2, 3, and 5, and that the
-eigenvalues -2 and 3 have algebraic multiplicity 1 and that the eigenvalue 5
-has algebraic multiplicity 2.
+eigenvalues -2 and 3 have algebraic multiplicity 1 and that the
+eigenvalue 5 has algebraic multiplicity 2.
 
-To find the eigenvectors of a matrix, use ``eigenvects``.  ``eigenvects``
-returns a list of tuples of the form ``(eigenvalue:algebraic multiplicity,
-[eigenvectors])``.
+Matrices can have symbolic elements.
+
+    >>> Matrix([[x, x + y], [y, x]])
+    ⎡x  x + y⎤
+    ⎢        ⎥
+    ⎣y    x  ⎦
+    >>> _.eigenvals()
+    ⎧      ___________           ___________   ⎫
+    ⎨x - ╲╱ y⋅(x + y) : 1, x + ╲╱ y⋅(x + y) : 1⎬
+    ⎩                                          ⎭
+
+To find the eigenvectors of a matrix, use method
+:meth:`~diofant.matrices.matrices.MatrixBase.eigenvects`.
 
     >>> M.eigenvects()
     ⎡⎛-2, 1, ⎡⎡0⎤⎤⎞, ⎛3, 1, ⎡⎡1⎤⎤⎞, ⎛5, 2, ⎡⎡1⎤, ⎡0 ⎤⎤⎞⎤
@@ -328,12 +357,13 @@ returns a list of tuples of the form ``(eigenvalue:algebraic multiplicity,
     ⎣⎝       ⎣⎣1⎦⎦⎠  ⎝      ⎣⎣1⎦⎦⎠  ⎝      ⎣⎣0⎦  ⎣1 ⎦⎦⎠⎦
 
 This shows us that, for example, the eigenvalue 5 also has geometric
-multiplicity 2, because it has two eigenvectors.  Because the algebraic and
-geometric multiplicities are the same for all the eigenvalues, ``M`` is
-diagonalizable.
+multiplicity 2, because it has two eigenvectors.  Because the
+algebraic and geometric multiplicities are the same for all the
+eigenvalues, ``M`` is diagonalizable.
 
-To diagonalize a matrix, use ``diagonalize``. ``diagonalize`` returns a tuple
-`(P, D)`, where `D` is diagonal and `M = PDP^{-1}`.
+To diagonalize a matrix, use method
+:meth:`~diofant.matrices.matrices.MatrixBase.diagonalize`.  It returns
+a tuple `(P, D)`, where `D` is diagonal and `M = PDP^{-1}`.
 
     >>> P, D = M.diagonalize()
     >>> P
@@ -352,37 +382,34 @@ To diagonalize a matrix, use ``diagonalize``. ``diagonalize`` returns a tuple
     ⎢0   0  5  0⎥
     ⎢           ⎥
     ⎣0   0  0  5⎦
-    >>> P*D*P**-1
-    ⎡3  -2  4   -2⎤
-    ⎢             ⎥
-    ⎢5  3   -3  -2⎥
-    ⎢             ⎥
-    ⎢5  -2  2   -2⎥
-    ⎢             ⎥
-    ⎣5  -2  -3  3 ⎦
     >>> P*D*P**-1 == M
     True
 
-.. tip::
+If all you want is the characteristic polynomial, use method
+:meth:`~diofant.matrices.matrices.MatrixBase.charpoly`.  This is more
+efficient than :meth:`~diofant.matrices.matrices.MatrixBase.eigenvals`
+method, because sometimes symbolic roots can be expensive to
+calculate.
 
-   ``lambda`` is a reserved keyword in Python, so to create a Symbol called
-   `\lambda`, while using the same names for Diofant Symbols and Python
-   variables, use ``lamda`` (without the ``b``).  It will still pretty print
-   as `\lambda`.
-
-Note that since ``eigenvects`` also includes the eigenvalues, you should use
-it instead of ``eigenvals`` if you also want the eigenvectors. However, as
-computing the eigenvectors may often be costly, ``eigenvals`` should be
-preferred if you only wish to find the eigenvalues.
-
-If all you want is the characteristic polynomial, use ``charpoly``.  This is
-more efficient than ``eigenvals``, because sometimes symbolic roots can be
-expensive to calculate.
-
-    >>> lamda = symbols('lamda')
-    >>> p = M.charpoly(lamda)
+    >>> p = M.charpoly(x)
     >>> factor(p)
            2
-    (λ - 5) ⋅(λ - 3)⋅(λ + 2)
+    (x - 5) ⋅(x - 3)⋅(x + 2)
 
-.. TODO: Add an example for ``jordan_form``, once it is fully implemented.
+To compute Jordan canonical form `J` for matrix `M` and its similarity
+transformation `P` (i.e. such that `J = P M P^{-1}`), use method
+:meth:`~diofant.matrices.matrices.MatrixBase.jordan_form`.
+
+    >>> M = Matrix([[-2, 4], [1, 3]])
+    >>> P, J = M.jordan_form()
+    >>> J
+    ⎡      ____              ⎤
+    ⎢1   ╲╱ 41               ⎥
+    ⎢─ + ──────       0      ⎥
+    ⎢2     2                 ⎥
+    ⎢                        ⎥
+    ⎢                ____    ⎥
+    ⎢              ╲╱ 41    1⎥
+    ⎢    0       - ────── + ─⎥
+    ⎣                2      2⎦
+
