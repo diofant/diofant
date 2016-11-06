@@ -1,4 +1,4 @@
-Guidelines for contributing
+Guidelines for Contributing
 ===========================
 
 This project adheres to `No Code of Conduct`_.  Contributions will
@@ -6,7 +6,7 @@ be judged by their technical merit.  Nothing else matters.
 
 .. _reporting-issues:
 
-Reporting issues
+Reporting Issues
 ----------------
 
 When opening a new issue, please take the following steps:
@@ -20,7 +20,7 @@ When opening a new issue, please take the following steps:
 4. Include any relevant details of your local setup (i.e. Python
    version, installed libraries).
 
-Contributing code
+Contributing Code
 -----------------
 
 All work should be submitted via `Pull Requests (PR)`_.

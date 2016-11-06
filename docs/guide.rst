@@ -14,7 +14,7 @@ Developer's Guide
 
 .. include:: ../CONTRIBUTING.rst
 
-Rosetta stone
+Rosetta Stone
 =============
 
 The Diofant project is a `SymPy`_'s fork, so it could be handy to collect here
@@ -52,7 +52,7 @@ does mean issue ``sympy/sympy#3222`` on Github.
 .. _SymPy : http://www.sympy.org/
 .. _Diofant's issues : https://github.com/diofant/diofant/issues
 
-Versioning and Release procedure
+Versioning and Release Procedure
 ================================
 
 We use standard `Semantic Versioning`_ MAJOR.MINOR.MAINTENANCE
