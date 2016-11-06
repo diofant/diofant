@@ -62,13 +62,13 @@ Minor changes
 =============
 
 * Add support for bidirectional limits, see `#10 <https://github.com/diofant/diofant/pull/10>`_.
-* Reimplement cot, see `#113 <https://github.com/diofant/diofant/pull/113>`_.
-* A better implementation of singularities(), see `#147 <https://github.com/diofant/diofant/pull/147>`_.
+* Reimplement :class:`~diofant.functions.elementary.trigonometric.cot`, see `#113 <https://github.com/diofant/diofant/pull/113>`_.
+* A better implementation of :func:`~diofant.calculus.singularities.singularities`, see `#147 <https://github.com/diofant/diofant/pull/147>`_.
 * Fix "flip" of arguments in relational expressions, see `#30 <https://github.com/diofant/diofant/pull/30>`_.
 * Make Gosper code use new dispersion algorithm, see `#205 <https://github.com/diofant/diofant/pull/205>`_.  Thanks to Raoul Bourquin.
 * Consolidate code for solving linear systems, see `#253 <https://github.com/diofant/diofant/pull/253>`_.
-* Ugly hacks for automatic symbols and wrapping int's now replaced with AST transformers, see `#278 <https://github.com/diofant/diofant/pull/278>`_ and `#167 <https://github.com/diofant/diofant/pull/167>`_.
-* Build correct inhomogeneous solution in rsolve_hyper, see `#298 <https://github.com/diofant/diofant/pull/298>`_.
+* Hacks for automatic symbols and wrapping int's replaced with AST transformers, see `#278 <https://github.com/diofant/diofant/pull/278>`_ and `#167 <https://github.com/diofant/diofant/pull/167>`_.
+* Build correct inhomogeneous solution in :func:`~diofant.solvers.recurr.rsolve_hyper`, see `#298 <https://github.com/diofant/diofant/pull/298>`_.
 * Evaluate matrix powers for non-diagonalizable matrices, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 * Support non-orthogonal Jordan blocks, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 * Make risch_integrate(x**x, x) work, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
