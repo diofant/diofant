@@ -21,6 +21,9 @@ def split_super_sub(text):
     >>> split_super_sub('var_sub1__sup_sub2')
     ('var', ['sup'], ['sub1', 'sub2'])
     """
+    if len(text) == 0:
+        return text, [], []
+
     pos = 0
     name = None
     supers = []

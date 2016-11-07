@@ -4954,3 +4954,8 @@ def test_AlgebraicNumber():
 """
     assert upretty(a) == ucode_str
     assert upretty(b) == "θ + 1"
+
+
+def test_sympyissue_11801():
+    assert pretty(Symbol("")) == ""
+    assert upretty(Symbol("")) == ""
