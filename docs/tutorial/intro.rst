@@ -36,7 +36,7 @@ symbolic computation --- results can be symbolically simplified.
 
 Yet we can also approximate this number with any precision
 
-   >>> _.n(20)
+   >>> _.evalf(20)
    2.8284271247461900976
 
 The above example starts to show how we can manipulate irrational

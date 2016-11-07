@@ -111,8 +111,9 @@ To get the `\LaTeX` form of an expression, use
 Dot
 ===
 
-:func:`~diofant.printing.dot.dotprint` function prints output to
-dot format, which can be rendered with Graphviz:
+:func:`~diofant.printing.dot.dotprint` function prints output to dot
+format, which can be rendered with `Graphviz
+<http://www.graphviz.org/>`_:
 
 .. graphviz::
 
