@@ -2292,7 +2292,13 @@ def count_ops(expr, visual=False):
     from diofant.logic.boolalg import BooleanFunction
 
     expr = sympify(expr)
-    if isinstance(expr, Expr):
+
+    if type(expr) is dict:
+        ops = [count_ops(k, visual=visual) +
+               count_ops(v, visual=visual) for k, v in expr.items()]
+    elif iterable(expr):
+        ops = [count_ops(i, visual=visual) for i in expr]
+    elif isinstance(expr, Expr):
 
         ops = []
         args = [expr]
@@ -2378,11 +2384,6 @@ def count_ops(expr, visual=False):
             if not a.is_Symbol:
                 args.extend(a.args)
 
-    elif type(expr) is dict:
-        ops = [count_ops(k, visual=visual) +
-               count_ops(v, visual=visual) for k, v in expr.items()]
-    elif iterable(expr):
-        ops = [count_ops(i, visual=visual) for i in expr]
     elif not isinstance(expr, Basic):
         ops = []
     else:  # it's Basic not isinstance(expr, Expr):

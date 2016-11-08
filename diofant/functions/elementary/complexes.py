@@ -975,7 +975,15 @@ class principal_branch(Function):
 
 def _polarify(eq, lift, pause=False):
     from diofant import Integral
+    from diofant.core.containers import Tuple
+    from diofant.logic.boolalg import BooleanAtom
+
+    if isinstance(eq, Tuple):
+        return eq.func(*[_polarify(arg, lift, pause=False) for arg in eq.args])
+
     if eq.is_polar:
+        return eq
+    if isinstance(eq, BooleanAtom):
         return eq
     if eq.is_number and not pause:
         return polar_lift(eq)
