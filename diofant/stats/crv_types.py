@@ -43,7 +43,7 @@ import random
 
 from diofant import (log, sqrt, pi, S, Dummy, Interval, sympify, gamma,
                      Piecewise, And, Eq, binomial, factorial, Sum, floor, Abs,
-                     Lambda, Basic, oo, Rational)
+                     Lambda, Expr, oo, Rational)
 from diofant import beta as beta_fn
 from diofant import cos, exp, besseli
 from diofant.stats.crv import (SingleContinuousPSpace, SingleContinuousDistribution,
@@ -1009,7 +1009,7 @@ class FrechetDistribution(SingleContinuousDistribution):
 
     def __new__(cls, a, s=1, m=0):
         a, s, m = list(map(sympify, (a, s, m)))
-        return Basic.__new__(cls, a, s, m)
+        return Expr.__new__(cls, a, s, m)
 
     def pdf(self, x):
         a, s, m = self.a, self.s, self.m
@@ -2240,6 +2240,10 @@ def Uniform(name, left, right):
 
 class UniformSumDistribution(SingleContinuousDistribution):
     _argnames = ('n',)
+
+    @property
+    def n(self):
+        return self.args[self._argnames.index('n')]
 
     @property
     def set(self):

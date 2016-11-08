@@ -12,7 +12,7 @@ diofant.stats.frv
 diofant.stats.rv_interface
 """
 
-from diofant import (Basic, S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
+from diofant import (S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
                      Equality, solve, Lambda, DiracDelta, Integer, sympify)
 from diofant.core.relational import Relational
 from diofant.logic.boolalg import Boolean
@@ -21,7 +21,7 @@ from diofant.sets.sets import FiniteSet, ProductSet
 from diofant.abc import x
 
 
-class RandomDomain(Basic):
+class RandomDomain(Expr):
     """
     Represents a set of variables and the values which they can take
 
@@ -37,7 +37,7 @@ class RandomDomain(Basic):
 
     def __new__(cls, symbols, *args):
         symbols = FiniteSet(*symbols)
-        return Basic.__new__(cls, symbols, *args)
+        return Expr.__new__(cls, symbols, *args)
 
     @property
     def symbols(self):
@@ -65,7 +65,7 @@ class SingleDomain(RandomDomain):
     """
     def __new__(cls, symbol, set):
         assert symbol.is_Symbol
-        return Basic.__new__(cls, symbol, set)
+        return Expr.__new__(cls, symbol, set)
 
     @property
     def symbol(self):
@@ -94,7 +94,7 @@ class ConditionalDomain(RandomDomain):
     def __new__(cls, fulldomain, condition):
         condition = condition.xreplace({rs: rs.symbol
                                         for rs in random_symbols(condition)})
-        return Basic.__new__(cls, fulldomain, condition)
+        return Expr.__new__(cls, fulldomain, condition)
 
     @property
     def symbols(self):
@@ -116,7 +116,7 @@ class ConditionalDomain(RandomDomain):
         return And(self.fulldomain.as_boolean(), self.condition)
 
 
-class PSpace(Basic):
+class PSpace(Expr):
     """
     A Probability Space
 
@@ -175,7 +175,7 @@ class SinglePSpace(PSpace):
             s = Symbol(s)
         if not isinstance(s, Symbol):
             raise TypeError("s should have been string or Symbol")
-        return Basic.__new__(cls, s, distribution)
+        return Expr.__new__(cls, s, distribution)
 
     @property
     def value(self):
@@ -225,7 +225,7 @@ class RandomSymbol(Expr):
             raise TypeError("symbol should be of type Symbol")
         if not isinstance(pspace, PSpace):
             raise TypeError("pspace variable should be of type PSpace")
-        return Basic.__new__(cls, pspace, symbol)
+        return Expr.__new__(cls, pspace, symbol)
 
     is_finite = True
     is_Symbol = True
@@ -284,7 +284,7 @@ class ProductPSpace(PSpace):
             from diofant.stats.crv import ProductContinuousPSpace
             cls = ProductContinuousPSpace
 
-        obj = Basic.__new__(cls, *FiniteSet(*spaces))
+        obj = Expr.__new__(cls, *FiniteSet(*spaces))
 
         return obj
 
@@ -358,7 +358,7 @@ class ProductDomain(RandomDomain):
             from diofant.stats.crv import ProductContinuousDomain
             cls = ProductContinuousDomain
 
-        return Basic.__new__(cls, *domains2)
+        return Expr.__new__(cls, *domains2)
 
     @property
     def sym_domain_dict(self):
@@ -636,7 +636,7 @@ def probability(condition, given_condition=None, numsamples=None,
         return result
 
 
-class Density(Basic):
+class Density(Expr):
     expr = property(lambda self: self.args[0])
 
     @property

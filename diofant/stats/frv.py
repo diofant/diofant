@@ -11,7 +11,7 @@ diofant.stats.crv
 from itertools import product
 import random
 
-from diofant import (Basic, Symbol, cacheit, sympify, Mul,
+from diofant import (Expr, Symbol, cacheit, sympify, Mul,
                      And, Or, Tuple, Piecewise, Eq, Lambda)
 from diofant.sets.sets import FiniteSet
 from diofant.stats.rv import (RandomDomain, ProductDomain, ConditionalDomain,
@@ -73,7 +73,7 @@ class SingleFiniteDomain(FiniteDomain):
     def __new__(cls, symbol, set):
         if not isinstance(set, FiniteSet):
             set = FiniteSet(*set)
-        return Basic.__new__(cls, symbol, set)
+        return Expr.__new__(cls, symbol, set)
 
     @property
     def symbol(self):
@@ -136,7 +136,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
                 condition, tuple(cond.free_symbols - domain.free_symbols)) +
                 "Will be unable to iterate using this condition")
 
-        return Basic.__new__(cls, domain, cond)
+        return Expr.__new__(cls, domain, cond)
 
     def _test(self, elem):
         val = self.condition.xreplace(dict(elem))
@@ -165,10 +165,10 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
         return FiniteDomain.as_boolean(self)
 
 
-class SingleFiniteDistribution(Basic, NamedArgsMixin):
+class SingleFiniteDistribution(Expr, NamedArgsMixin):
     def __new__(cls, *args):
         args = list(map(sympify, args))
-        return Basic.__new__(cls, *args)
+        return Expr.__new__(cls, *args)
 
     @property
     @cacheit
