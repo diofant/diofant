@@ -1846,7 +1846,10 @@ class Expr(Basic, EvalfMixin):
         normal: return a/b instead of a, b
         """
 
-        return self, S.One
+        try:
+            return self._eval_as_numer_denom()
+        except AttributeError:
+            return self, S.One
 
     def normal(self):
         """canonicalize ratio, i.e. return numerator if denominator is 1"""

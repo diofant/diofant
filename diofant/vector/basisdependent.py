@@ -111,16 +111,6 @@ class BasisDependent(Expr):
                                for k, v in self.components.items()]
         return self._add_func(*integral_components)
 
-    def as_numer_denom(self):
-        """
-        Returns the expression as a tuple wrt the following
-        transformation -
-
-        expression -> a/b -> a, b
-
-        """
-        return self, 1
-
     def factor(self, *args, **kwargs):
         """
         Implements the Diofant factor routine, on the scalar parts

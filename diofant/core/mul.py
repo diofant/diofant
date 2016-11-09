@@ -953,7 +953,7 @@ class Mul(Expr, AssocOp):
             d[b] += e
         return d
 
-    def as_numer_denom(self):
+    def _eval_as_numer_denom(self):
         """expression -> a/b -> a, b
 
         See Also
