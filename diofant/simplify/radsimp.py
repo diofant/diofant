@@ -8,7 +8,6 @@ from diofant.core.numbers import Rational
 from diofant.core.exprtools import Factors, gcd_terms
 from diofant.core.mul import _keep_coeff, _unevaluated_Mul
 from diofant.core.function import _mexpand
-from diofant.core.add import _unevaluated_Add
 from diofant.functions import sqrt, log
 from diofant.polys import gcd
 from diofant.simplify.sqrtdenest import sqrtdenest
@@ -582,7 +581,6 @@ def collect_const(expr, *vars, **kwargs):
 
         args = []
         hit = False
-        uneval = False
         for k in ordered(terms):
             v = terms[k]
             if k is S.One:
@@ -597,20 +595,13 @@ def collect_const(expr, *vars, **kwargs):
             else:
                 v = v[0]
 
-            # be careful not to let uneval become True unless
-            # it must be because it's going to be more expensive
-            # to rebuild the expression as an unevaluated one
             if Numbers and k.is_Number and v.is_Add:
                 args.append(_keep_coeff(k, v, sign=True))
-                uneval = True
             else:
                 args.append(k*v)
 
         if hit:
-            if uneval:
-                expr = _unevaluated_Add(*args)
-            else:
-                expr = Add(*args)
+            expr = Add(*args)
             if not expr.is_Add:
                 break
 
