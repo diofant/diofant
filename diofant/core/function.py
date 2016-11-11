@@ -1617,6 +1617,10 @@ class Subs(Expr):
         if old in self.variables:
             return self
 
+        if isinstance(old, Subs) and self.point == old.point:
+            if self.expr.subs(zip(self.variables, old.variables)) == old.expr:
+                return new
+
     def _eval_derivative(self, s):
         if s not in self.free_symbols:
             return S.Zero
