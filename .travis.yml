@@ -4,6 +4,12 @@ cache: pip
 python:
   - 3.4
   - 3.5
+env:
+  - SPLIT=1/5
+  - SPLIT=2/5
+  - SPLIT=3/5
+  - SPLIT=4/5
+  - SPLIT=5/5
 addons:
   apt:
     packages:
@@ -17,9 +23,25 @@ addons:
 matrix:
   include:
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/5'
     - python: 3.4
-      env: COVERAGE='on' SELECT='slow and not xfail'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/5'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/5'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/5'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/5'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='slow and not xfail' SPLIT='1/5'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='slow and not xfail' SPLIT='2/5'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='slow and not xfail' SPLIT='3/5'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='slow and not xfail' SPLIT='4/5'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='slow and not xfail' SPLIT='5/5'
     - python: 3.5
       env: COVERAGE='on' EXTRA='on'
       install:
@@ -30,6 +52,27 @@ matrix:
         - py.test --cov diofant diofant/polys
       after_success: codecov
     - python: "3.6-dev"
+      env: SPLIT='1/5'
+      install:
+        - travis_wait pip install .[exports,plot,interactive,gmpy]
+        - pip uninstall -y Theano
+    - python: "3.6-dev"
+      env: SPLIT='2/5'
+      install:
+        - travis_wait pip install .[exports,plot,interactive,gmpy]
+        - pip uninstall -y Theano
+    - python: "3.6-dev"
+      env: SPLIT='3/5'
+      install:
+        - travis_wait pip install .[exports,plot,interactive,gmpy]
+        - pip uninstall -y Theano
+    - python: "3.6-dev"
+      env: SPLIT='4/5'
+      install:
+        - travis_wait pip install .[exports,plot,interactive,gmpy]
+        - pip uninstall -y Theano
+    - python: "3.6-dev"
+      env: SPLIT='5/5'
       install:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
         - pip uninstall -y Theano
@@ -54,9 +97,9 @@ before_script:
 script:
   - |
     if [ -n "${COVERAGE}" ]; then
-      python setup.py test --addopts "--cov diofant -m \"${SELECT}\""
+      python setup.py test --addopts "--cov diofant -m \"${SELECT}\" --split=${SPLIT}"
     else
-      python setup.py test
+      python setup.py test --addopts "--split=${SPLIT}"
     fi
 after_success: test -n "${COVERAGE}" && codecov
 deploy:
@@ -68,7 +111,7 @@ deploy:
   server: https://pypi.python.org/pypi
   on:
     python: 3.4
-    condition: -z "${COVERAGE}"
+    condition: -z "${COVERAGE}" -a "${SPLIT}" = "1/5"
     tags: true
 notifications:
   email: false
