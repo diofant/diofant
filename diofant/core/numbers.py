@@ -556,21 +556,26 @@ class Float(Number):
 
     >>> approx, exact = Float(.1, 1), Float(.125, 1)
 
-    For calculation purposes, evalf needs to be able to change the precision
+    For calculation purposes, you can change the precision of Float,
     but this will not increase the accuracy of the inexact value. The
     following is the most accurate 5-digit approximation of a value of 0.1
     that had only 1 digit of precision:
 
-    >>> approx.evalf(5)
+    >>> Float(approx, 5)
     0.099609
 
+    Please note that you can't increase precision with evalf:
+
+    >>> approx.evalf(5)
+    0.1
+
     By contrast, 0.125 is exact in binary (as it is in base 10) and so it
-    can be passed to Float or evalf to obtain an arbitrary precision with
+    can be passed to Float constructor to obtain an arbitrary precision with
     matching accuracy:
 
     >>> Float(exact, 5)
     0.12500
-    >>> exact.evalf(20)
+    >>> Float(exact, 20)
     0.12500000000000000000
 
     Trying to make a high-precision Float from a float is not disallowed,
@@ -609,13 +614,6 @@ class Float(Number):
     >>> show(Float(t, 2)) # lower prec
     307/2**10 at prec=10
 
-    The same thing happens when evalf is used on a Float:
-
-    >>> show(t.evalf(20))
-    4915/2**14 at prec=70
-    >>> show(t.evalf(2))
-    307/2**10 at prec=10
-
     Finally, Floats can be instantiated with an mpf tuple (n, c, p) to
     produce the number (-1)**n*c*2**p:
 
@@ -634,7 +632,6 @@ class Float(Number):
     This is not needed for instantiation and is not the same thing as the
     precision. The mpf tuple and the precision are two separate quantities
     that Float tracks.
-
     """
 
     # A Float represents many real numbers,

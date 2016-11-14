@@ -114,14 +114,20 @@ So the displayed precision should not be used as a model of error propagation or
 significance arithmetic; rather, this scheme is employed to ensure stability of
 numerical algorithms.
 
-``N`` and ``evalf`` can be used to change the precision of existing
-floating-point numbers:
+Function :func:`~diofant.core.evalf.N` (or
+:meth:`~diofant.core.evalf.EvalfMixin.evalf` method) can be used to
+change the precision of existing floating-point numbers:
 
     >>> N(3.5)
     3.50000000000000
     >>> N(3.5, 5)
     3.5000
-    >>> N(3.5, 30)
+
+However, you can "increase" precision of the
+:class:`~diofant.core.numbers.Float` number only with it's class
+constructor:
+
+    >>> Float(3.5, 30)
     3.50000000000000000000000000000
 
 

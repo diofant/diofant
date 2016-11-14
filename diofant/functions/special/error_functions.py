@@ -740,8 +740,8 @@ class erfinv(Function):
     We can numerically evaluate the inverse error function to arbitrary precision
     on [-1, 1]:
 
-    >>> erfinv(0.2).evalf(30)
-    0.179143454621291692285822705344
+    >>> erfinv(0.2)
+    0.179143454621292
 
     See Also
     ========
