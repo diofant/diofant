@@ -2,8 +2,8 @@ language: python
 sudo: false
 cache: pip
 python:
-  - 3.4
   - 3.5
+  - "3.6-dev"
 env:
   - SPLIT=1/5
   - SPLIT=2/5
@@ -51,31 +51,6 @@ matrix:
         - sphinx-build -W -b html docs build/sphinx/html
         - py.test --cov diofant diofant/polys
       after_success: codecov
-    - python: "3.6-dev"
-      env: SPLIT='1/5'
-      install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
-        - pip uninstall -y Theano
-    - python: "3.6-dev"
-      env: SPLIT='2/5'
-      install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
-        - pip uninstall -y Theano
-    - python: "3.6-dev"
-      env: SPLIT='3/5'
-      install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
-        - pip uninstall -y Theano
-    - python: "3.6-dev"
-      env: SPLIT='4/5'
-      install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
-        - pip uninstall -y Theano
-    - python: "3.6-dev"
-      env: SPLIT='5/5'
-      install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
-        - pip uninstall -y Theano
 before_install:
   - |
     mkdir -p $HOME/.local
@@ -91,6 +66,10 @@ before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]
+  - |
+    if [ "${TRAVIS_PYTHON_VERSION}" = "3.6-dev" ]; then
+      pip uninstall -y Theano
+    fi
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
