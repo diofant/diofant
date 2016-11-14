@@ -2875,11 +2875,10 @@ class Expr(Basic, EvalfMixin):
     # ################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ################## #
     ###################################################################################
 
-    def diff(self, *symbols, **assumptions):
+    def diff(self, *symbols, **kwargs):
         """Alias for :func:`~diofant.core.function.diff`. """
-        new_symbols = list(map(sympify, symbols))  # e.g. x, 2, y, z
-        assumptions.setdefault("evaluate", True)
-        return Derivative(self, *new_symbols, **assumptions)
+        from diofant.core.function import diff
+        return diff(self, *symbols, **kwargs)
 
     ###########################################################################
     # #################### EXPRESSION EXPANSION METHODS ##################### #

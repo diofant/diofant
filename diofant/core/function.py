@@ -1692,10 +1692,6 @@ def diff(f, *symbols, **kwargs):
 
     """
     kwargs.setdefault('evaluate', True)
-    try:
-        return f._eval_diff(*symbols, **kwargs)
-    except AttributeError:
-        pass
     return Derivative(f, *symbols, **kwargs)
 
 

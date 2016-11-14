@@ -565,7 +565,7 @@ def test_Sum_interface():
     pytest.raises(ValueError, lambda: Sum(x, (x, 1, 2, 3)))
 
 
-def test_eval_diff():
+def test_eval_derivative():
     assert Sum(x, (x, 1, 2)).diff(x) == 0
     assert Sum(x*y, (x, 1, 2)).diff(x) == 0
     assert Sum(x*y, (y, 1, 2)).diff(x) == Sum(y, (y, 1, 2))
