@@ -2153,7 +2153,6 @@ class Poly(Expr):
             raise OperationNotSupported(self, 'diff')
 
     _eval_derivative = diff
-    _eval_diff = diff
 
     def eval(self, x, a=None, auto=True):
         """
