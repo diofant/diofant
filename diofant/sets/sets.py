@@ -198,6 +198,21 @@ class Set(Basic):
             return ret
 
     def symmetric_difference(self, other):
+        """
+        Returns symmetric difference of ``self`` and ``other``.
+
+        Examples
+        ========
+
+        >>> Interval(1, 3).symmetric_difference(Reals)
+        (-oo, 1) U (3, oo)
+
+        References
+        ==========
+
+        * https://en.wikipedia.org/wiki/Symmetric_difference
+
+        """
         return SymmetricDifference(self, other)
 
     def _symmetric_difference(self, other):
