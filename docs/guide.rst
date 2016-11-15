@@ -56,8 +56,8 @@ Versioning and Release Procedure
 ================================
 
 We use standard `Semantic Versioning`_ MAJOR.MINOR.MAINTENANCE
-numbering scheme, but adopt `PEP 440`_ for alpha ("aN" suffix),
-beta ("bN" suffix) and release candidates ("rcN" suffix).
+numbering scheme, but adopt `PEP 440`_ for alpha ("aN" suffix), beta
+("bN"), release candidates ("rcN") and development (".devN").
 
 Releasing a new version is done as follows:
 
