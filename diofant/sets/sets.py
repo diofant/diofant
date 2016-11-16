@@ -428,6 +428,23 @@ class Set(Basic):
 
     @property
     def is_open(self):
+        """
+        Test if a set is open.
+
+        A set is open if it has an empty intersection with its boundary.
+
+        Examples
+        ========
+
+        >>> from diofant import S
+        >>> S.Reals.is_open
+        True
+
+        See Also
+        ========
+
+        boundary
+        """
         if not Intersection(self, self.boundary):
             return True
 
