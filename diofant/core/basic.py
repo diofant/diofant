@@ -1517,7 +1517,7 @@ class Atom(Basic):
         if self == expr:
             return repl_dict
 
-    def xreplace(self, rule, hack2=False):
+    def xreplace(self, rule):
         """Replace occurrences of objects within the expression.
 
         See Also

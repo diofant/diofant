@@ -52,7 +52,7 @@ class exp_polar(Function):
         """
         return log
 
-    def as_numer_denom(self):
+    def _eval_as_numer_denom(self):
         """
         Returns this with a positive exponent as a 2-tuple (a fraction).
 

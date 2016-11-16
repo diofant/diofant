@@ -1446,7 +1446,7 @@ class Rational(Number):
                 igcd(self.q, other.q))
         return Number.lcm(self, other)
 
-    def as_numer_denom(self):
+    def _eval_as_numer_denom(self):
         """expression -> a/b -> a, b
 
         See Also
@@ -1785,16 +1785,6 @@ class Integer(Rational):
             return fuzzy_not(self.is_prime)
         else:
             return False
-
-    def as_numer_denom(self):
-        """expression -> a/b -> a, b
-
-        See Also
-        ========
-
-        diofant.core.expr.Expr.as_numer_denom
-        """
-        return self, S.One
 
     def __floordiv__(self, other):
         return Integer(self.p // Integer(other).p)
