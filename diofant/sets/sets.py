@@ -458,6 +458,16 @@ class Set(Basic):
 
     @property
     def is_closed(self):
+        """
+        Test if a set is closed.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1).is_closed
+        True
+
+        """
         return self.boundary.is_subset(self)
 
     @property
