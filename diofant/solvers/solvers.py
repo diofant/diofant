@@ -454,7 +454,7 @@ def solve(f, *symbols, **flags):
           you have obtained does not necessarily mean that the value is
           equivalent to the expression obtained:
 
-            >>> solve(sqrt(2) - 1, 1)
+            >>> solve(sqrt(2) - 1, 1, check=False)
             [sqrt(2)]
             >>> solve(x - y + 1, 1)  # /!\ -1 is targeted, too
             [x/(y - 1)]
@@ -1027,7 +1027,7 @@ def solve(f, *symbols, **flags):
             if type(solution[0]) is tuple:
                 for sol in solution:
                     for symb, val in zip(symbols, sol):
-                        test = check_assumptions(val, **symb.assumptions0)
+                        test = check_assumptions(val, **symb._assumptions)
                         if test is False:
                             break
                         if test is None:
@@ -1038,7 +1038,7 @@ def solve(f, *symbols, **flags):
                 for sol in solution:
                     a_None = False
                     for symb, val in sol.items():
-                        test = check_assumptions(val, **symb.assumptions0)
+                        test = check_assumptions(val, **symb._assumptions)
                         if test:
                             continue
                         if test is False:
@@ -1050,7 +1050,7 @@ def solve(f, *symbols, **flags):
                             got_None.append(sol)
             else:  # list of expressions
                 for sol in solution:
-                    test = check_assumptions(sol, **symbols[0].assumptions0)
+                    test = check_assumptions(sol, **symbols[0]._assumptions)
                     if test is False:
                         continue
                     no_False.append(sol)
@@ -1060,7 +1060,7 @@ def solve(f, *symbols, **flags):
         elif type(solution) is dict:
             a_None = False
             for symb, val in solution.items():
-                test = check_assumptions(val, **symb.assumptions0)
+                test = check_assumptions(val, **symb._assumptions)
                 if test:
                     continue
                 if test is False:
@@ -1075,7 +1075,7 @@ def solve(f, *symbols, **flags):
         elif isinstance(solution, (Relational, And, Or)):
             if len(symbols) != 1:
                 raise ValueError("Length should be 1")
-            if warn and symbols[0].assumptions0:
+            if warn and symbols[0]._assumptions:
                 warnings.warn(filldedent("""
                     \tWarning: assumptions about variable '%s' are
                     not handled currently.""" % symbols[0]))

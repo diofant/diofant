@@ -107,19 +107,9 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     def _hashable_content(self):
         # Note: user-specified assumptions not hashed, just derived ones
-        return (self.name,) + tuple(sorted(self.assumptions0.items()))
-
-    @property
-    def assumptions0(self):
-        """Return object assumptions.
-
-        See Also
-        ========
-
-        diofant.core.basic.Basic.assumptions0
-        """
-        return {key: value for key, value
-                in self._assumptions.items() if value is not None}
+        return ((self.name,) +
+                tuple(sorted((k, v) for k, v in self._assumptions.items()
+                             if v is not None)))
 
     @classmethod
     def class_key(cls):
