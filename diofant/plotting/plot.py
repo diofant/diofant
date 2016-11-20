@@ -30,7 +30,12 @@ from ..core import sympify, Expr, Tuple, Dummy, Symbol
 from ..external import import_module
 from ..utilities.decorator import doctest_depends_on
 from ..utilities.iterables import is_sequence
-from .experimental_lambdify import (vectorized_lambdify, lambdify)
+from ..utilities import lambdify
+
+
+def vectorized_lambdify(args, expr):
+    return lambdify(args, expr, "numpy")
+
 
 # Global variable
 # Set to False when running tests / doctests so that the plots don't show.

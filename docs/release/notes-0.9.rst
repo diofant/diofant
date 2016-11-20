@@ -30,6 +30,7 @@ Backwards-incompatible changes
 * Removed agca submodule of :mod:`~diofant.polys`, see `#404 <https://github.com/diofant/diofant/pull/404>`_.
 * Removed ``pager_print()`` and ``print_fcode()``, see `#411 <https://github.com/diofant/diofant/pull/411>`_.
 * "Increase" precision of Floats with :meth:`~diofant.core.evalf.EvalfMixin.evalf` now disallowed, see `#380 <https://github.com/diofant/diofant/pull/380>`_.
+* Removed ``experimental_lambdify()`` and ``intervalmath`` module from plotting package, see `#384 <https://github.com/diofant/diofant/pull/384>`_.
 
 Minor changes
 =============
@@ -82,8 +83,11 @@ Issues closed
 * `sympy/sympy#5169 <https://github.com/sympy/sympy/issues/5169>`_ All elements of .args should be Basic
 * `sympy/sympy#6249 <https://github.com/sympy/sympy/issues/6249>`_ Problems with MatrixSymbol and simplifying functions
 * `sympy/sympy#6426 <https://github.com/sympy/sympy/issues/6426>`_ test_args.py should also test rebuilability
+* `sympy/sympy#11461 <https://github.com/sympy/sympy/issues/11461>`_ NameError: name 'Ne' is not defined plotting real_root((log(x/(x-2))), 3)
+* `sympy/sympy#10925 <https://github.com/sympy/sympy/issues/10925>`_ plot doesn't work with Piecewise
+* `#336 <https://github.com/diofant/diofant/issues/336>`_ Drop diofant/plotting/experimental_lambdify.py
 
-.. last pr: #415
+.. last pr: #384
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

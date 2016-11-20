@@ -1,33 +1,17 @@
 """Implicit plotting module for Diofant
 
 The module implements a data series called ImplicitSeries which is used by
-``Plot`` class to plot implicit plots for different backends. The module,
-by default, implements plotting using interval arithmetic. It switches to a
-fall back algorithm if the expression cannot be plotted using interval arithmetic.
-It is also possible to specify to use the fall back algorithm for all plots.
-
-Boolean combinations of expressions cannot be plotted by the fall back
-algorithm.
+``Plot`` class to plot implicit plots for different backends.
 
 See Also
 ========
+
 diofant.plotting.plot
-
-References
-==========
-- Jeffrey Allen Tupper. Reliable Two-Dimensional Graphing Methods for
-Mathematical Formulae with Two Free Variables.
-
-- Jeffrey Allen Tupper. Graphing Equations with Generalized Interval
-Arithmetic. Master's thesis. University of Toronto, 1996
-
 """
 
 import warnings
 
 from .plot import BaseSeries, Plot
-from .experimental_lambdify import experimental_lambdify, vectorized_lambdify
-from .intervalmath import interval
 from ..core.relational import (Equality, GreaterThan, LessThan,
                                Relational, StrictLessThan, StrictGreaterThan)
 from ..core import Eq, Tuple, sympify, Symbol, Dummy
@@ -35,7 +19,11 @@ from ..external import import_module
 from ..logic.boolalg import BooleanFunction
 from ..polys.polyutils import _sort_gens
 from ..utilities.decorator import doctest_depends_on
-from ..utilities import flatten
+from ..utilities import flatten, lambdify
+
+
+def vectorized_lambdify(args, expr):
+    return lambdify(args, expr, "numpy")
 
 
 class ImplicitSeries(BaseSeries):
@@ -64,109 +52,8 @@ class ImplicitSeries(BaseSeries):
         self.depth = 4 + depth
         self.line_color = line_color
 
-    def __str__(self):
-        return ('Implicit equation: %s for '
-                '%s over %s and %s over %s') % (
-                    str(self.expr),
-                    str(self.var_x),
-                    str((self.start_x, self.end_x)),
-                    str(self.var_y),
-                    str((self.start_y, self.end_y)))
-
     def get_raster(self):
-        func = experimental_lambdify((self.var_x, self.var_y), self.expr,
-                                    use_interval=True)
-        xinterval = interval(self.start_x, self.end_x)
-        yinterval = interval(self.start_y, self.end_y)
-        try:
-            temp = func(xinterval, yinterval)
-        except (AttributeError, NameError):
-            if self.use_interval_math:
-                warnings.warn("Adaptive meshing could not be applied to the"
-                            " expression. Using uniform meshing.")
-            self.use_interval_math = False
-
-        if self.use_interval_math:
-            return self._get_raster_interval(func)
-        else:
-            return self._get_meshes_grid()
-
-    def _get_raster_interval(self, func):
-        """ Uses interval math to adaptively mesh and obtain the plot"""
-        k = self.depth
-        interval_list = []
-        # Create initial 32 divisions
-        np = import_module('numpy')
-        xsample = np.linspace(self.start_x, self.end_x, 33)
-        ysample = np.linspace(self.start_y, self.end_y, 33)
-
-        # Add a small jitter so that there are no false positives for equality.
-        # Ex: y==x becomes True for x interval(1, 2) and y interval(1, 2)
-        # which will draw a rectangle.
-        jitterx = (np.random.rand(
-            len(xsample)) * 2 - 1) * (self.end_x - self.start_x) / 2**20
-        jittery = (np.random.rand(
-            len(ysample)) * 2 - 1) * (self.end_y - self.start_y) / 2**20
-        xsample += jitterx
-        ysample += jittery
-
-        xinter = [interval(x1, x2) for x1, x2 in zip(xsample[:-1],
-                           xsample[1:])]
-        yinter = [interval(y1, y2) for y1, y2 in zip(ysample[:-1],
-                           ysample[1:])]
-        interval_list = [[x, y] for x in xinter for y in yinter]
-        plot_list = []
-
-        # recursive call refinepixels which subdivides the intervals which are
-        # neither True nor False according to the expression.
-        def refine_pixels(interval_list):
-            """ Evaluates the intervals and subdivides the interval if the
-            expression is partially satisfied.
-            """
-            temp_interval_list = []
-            plot_list = []
-            for intervals in interval_list:
-
-                # Convert the array indices to x and y values
-                intervalx = intervals[0]
-                intervaly = intervals[1]
-                func_eval = func(intervalx, intervaly)
-                # The expression is valid in the interval. Change the contour
-                # array values to 1.
-                if func_eval[1] is False or func_eval[0] is False:
-                    pass
-                elif func_eval == (True, True):
-                    plot_list.append([intervalx, intervaly])
-                elif func_eval[1] is None or func_eval[0] is None:
-                    # Subdivide
-                    avgx = intervalx.mid
-                    avgy = intervaly.mid
-                    a = interval(intervalx.start, avgx)
-                    b = interval(avgx, intervalx.end)
-                    c = interval(intervaly.start, avgy)
-                    d = interval(avgy, intervaly.end)
-                    temp_interval_list.append([a, c])
-                    temp_interval_list.append([a, d])
-                    temp_interval_list.append([b, c])
-                    temp_interval_list.append([b, d])
-            return temp_interval_list, plot_list
-
-        while k >= 0 and len(interval_list):
-            interval_list, plot_list_temp = refine_pixels(interval_list)
-            plot_list.extend(plot_list_temp)
-            k = k - 1
-        # Check whether the expression represents an equality
-        # If it represents an equality, then none of the intervals
-        # would have satisfied the expression due to floating point
-        # differences. Add all the undecided values to the plot.
-        if self.has_equality:
-            for intervals in interval_list:
-                intervalx = intervals[0]
-                intervaly = intervals[1]
-                func_eval = func(intervalx, intervaly)
-                if func_eval[1] and func_eval[0] is not False:
-                    plot_list.append([intervalx, intervaly])
-        return plot_list, 'fill'
+        return self._get_meshes_grid()
 
     def _get_meshes_grid(self):
         """Generates the mesh for generating a contour.
@@ -293,17 +180,6 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     Plotting regions.
 
     >>> p6 = plot_implicit(y > x**2)
-
-    Plotting Using boolean conjunctions.
-
-    >>> p7 = plot_implicit(And(y > x, y > -x))
-
-    When plotting an expression with a single variable (y - 1, for example),
-    specify the x or the y variable explicitly:
-
-    >>> p8 = plot_implicit(y - 1, y_var=y)
-    >>> p9 = plot_implicit(x - 1, x_var=x)
-
     """
 
     # Represents whether the expression contains an Equality,
@@ -364,7 +240,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
             xyvar.append(undeclared.pop())
     var_start_end_y = _range_tuple(xyvar[1])
 
-    use_interval = kwargs.pop('adaptive', True)
+    use_interval = kwargs.pop('adaptive', False)
     nb_of_points = kwargs.pop('points', 300)
     depth = kwargs.pop('depth', 0)
     line_color = kwargs.pop('line_color', "blue")
