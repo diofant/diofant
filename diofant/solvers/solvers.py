@@ -1,15 +1,6 @@
 """
-This module contain solvers for all kinds of equations:
-
-    - algebraic or transcendental, use solve()
-
-    - recurrence, use rsolve()
-
-    - differential, use dsolve()
-
-    - nonlinear (numerically), use nsolve()
-      (you will need a good starting point)
-
+This module contain solvers for all kinds of equations,
+algebraic or transcendental.
 """
 
 from types import GeneratorType
@@ -344,15 +335,7 @@ def check_assumptions(expr, **assumptions):
 
 
 def solve(f, *symbols, **flags):
-    r"""
-    Algebraically solves equations and systems of equations.
-
-    Currently supported are:
-        - polynomial,
-        - transcendental
-        - piecewise combinations of the above
-        - systems of linear and polynomial equations
-        - systems containing relational expressions.
+    r"""Algebraically solves equations and systems of equations.
 
     Input is formed as:
 
@@ -779,9 +762,8 @@ def solve(f, *symbols, **flags):
     See Also
     ========
 
-        - rsolve() for solving recurrence relationships
-        - dsolve() for solving differential equations
-
+    diofant.solvers.recurr.rsolve : solving recurrence equations
+    diofant.solvers.ode.dsolve : solving differential equations
     """
     # keeping track of how f was passed since if it is a list
     # a dictionary of results will be returned.
