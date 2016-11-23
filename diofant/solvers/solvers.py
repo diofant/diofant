@@ -13,6 +13,7 @@ from diofant.core.compatibility import (iterable, is_sequence, ordered,
                                         default_sort_key)
 from diofant.core.sympify import sympify
 from diofant.core import S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow
+from diofant.core.assumptions import check_assumptions
 from diofant.core.exprtools import factor_terms
 from diofant.core.function import (expand_mul, expand_multinomial, expand_log,
                                    Derivative, AppliedUndef, UndefinedFunction,
@@ -285,53 +286,6 @@ def checksol(f, symbol, sol=None, **flags):
         warnings.warn("\n\tWarning: could not verify solution %s." % sol)
     # returns None if it can't conclude
     # TODO: improve solution testing
-
-
-def check_assumptions(expr, **assumptions):
-    """Checks whether expression `expr` satisfies all assumptions.
-
-    `assumptions` is a dict of assumptions: {'assumption': True|False, ...}.
-
-    Examples
-    ========
-
-       >>> from diofant import Symbol, pi, I, exp
-       >>> from diofant.solvers.solvers import check_assumptions
-
-       >>> check_assumptions(-5, integer=True)
-       True
-       >>> check_assumptions(pi, extended_real=True, integer=False)
-       True
-       >>> check_assumptions(pi, extended_real=True, negative=True)
-       False
-       >>> check_assumptions(exp(I*pi/7), extended_real=False)
-       True
-
-       >>> x = Symbol('x', extended_real=True, positive=True)
-       >>> check_assumptions(2*x + 1, extended_real=True, positive=True)
-       True
-       >>> check_assumptions(-2*x - 5, extended_real=True, positive=True)
-       False
-
-       `None` is returned if check_assumptions() could not conclude.
-
-       >>> check_assumptions(2*x - 1, extended_real=True, positive=True)
-       >>> z = Symbol('z')
-       >>> check_assumptions(z, extended_real=True)
-    """
-    expr = sympify(expr)
-
-    result = True
-    for key, expected in assumptions.items():
-        if expected is None:
-            continue
-        test = getattr(expr, 'is_' + key, None)
-        if test is expected:
-            continue
-        elif test is not None:
-            return False
-        result = None  # Can't conclude, unless an other test fails.
-    return result
 
 
 def solve(f, *symbols, **flags):

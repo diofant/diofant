@@ -30,8 +30,6 @@ is the symbol that we want to solve the equation for.
 
 .. autofunction:: diofant.solvers.solvers.nsolve
 
-.. autofunction:: diofant.solvers.solvers.check_assumptions
-
 .. autofunction:: diofant.solvers.solvers.checksol
 
 .. autofunction:: diofant.solvers.solvers.unrad
