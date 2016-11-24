@@ -536,3 +536,7 @@ def test_sympyissue_2865():
     assert l1 != 0 and isinstance(l1, Limit)
     l2 = limit(O(x, (x, oo)), x, 0)
     assert l2 != 0 and isinstance(l2, Limit)
+
+
+def test_sympyissue_11879():
+    assert limit(((x + y)**n - x**n)/y, y, 0).powsimp() == n*x**(n-1)
