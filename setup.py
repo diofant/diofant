@@ -24,7 +24,7 @@ with open('diofant/__init__.py') as f:
     long_description = source.split('"""')[1]
 
     for line in source.splitlines():
-        m = re.match('^__version__ = "([0-9ab.]+)".*$', line)
+        m = re.match('^__version__ = "([0-9ab.]+(dev[0-9]+)?)".*$', line)
         if m:
             __version__ = m.group(1)
 

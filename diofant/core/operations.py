@@ -239,6 +239,9 @@ class AssocOp(Basic):
                         i += 0
                         continue
 
+                else:  # pragma: no cover
+                    raise NotImplementedError
+
                 break  # if we didn't continue, there is nothing more to do
 
         return
@@ -263,8 +266,6 @@ class AssocOp(Basic):
         def is_in(expr):
             if expr == self:
                 return True
-            elif not isinstance(expr, Basic):
-                return False
             elif isinstance(expr, cls):
                 _c, _nc = _ncsplit(expr)
                 if (c & _c) == c:
@@ -318,10 +319,7 @@ class AssocOp(Basic):
         args = []
         for a in self.args:
             newa = a.evalf(prec)
-            if newa is None:
-                args.append(a)
-            else:
-                args.append(newa)
+            args.append(newa)
         if not _aresame(tuple(args), self.args):
             return self.func(*args)
         return self

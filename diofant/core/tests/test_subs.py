@@ -675,3 +675,15 @@ def test_RootOf_issue_10092():
 def test_sympyissue_11746():
     x = Symbol('x', real=True)
     assert (1/x).subs(x**2, 1) != 1
+
+
+def test_diofantissue_376():
+    x, y, z, t = symbols('x y z t')
+    f = symbols('f', cls=Function)
+    e1 = Subs(Derivative(f(x), x), x, y*z)
+    e2 = Subs(Derivative(f(t), t), t, y*z)
+    assert (x*e1).subs(e2, y) == x*y
+    e3 = Subs(Derivative(f(t), t), t, y*z**2)
+    assert e3.subs(e2, y) == e3
+    e4 = Subs(Derivative(f(t), t, t), t, y*z)
+    assert e4.subs(e2, y) == e4

@@ -350,7 +350,7 @@ class Add(Expr, AssocOp):
         """
         return self.args[0], self._new_rawargs(*self.args[1:])
 
-    def as_numer_denom(self):
+    def _eval_as_numer_denom(self):
         """expression -> a/b -> a, b
 
         See Also
