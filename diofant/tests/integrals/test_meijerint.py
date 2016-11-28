@@ -12,7 +12,7 @@ from diofant import (E1, RR, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      laplace_transform, log, lowergamma, meijerg, nan, oo, pi,
                      piecewise_fold, polygamma, powdenest, powsimp, re,
                      simplify, sin, sinh, sqrt, symbols, unpolarify)
-from diofant.abc import R, a, b, c, d, r, s, t, x, y, z
+from diofant.abc import R, a, b, c, d, h, r, s, t, w, x, y, z
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          _rewrite1, _rewrite_single,
                                          meijerint_definite,
@@ -666,3 +666,14 @@ def test_sympyissue_10681():
     g = (1.0/3)*R**1.0*r**3*hyper((-0.5, Rational(3, 2)), (Rational(5, 2),),
                                   r**2*exp_polar(2*I*pi)/R**2)
     assert RR.almosteq((f/g).n(), 1.0, 1e-12)
+
+
+def test_sympyissue_10211():
+    assert integrate((1/sqrt(((y - x)**2 + h**2))**3),
+                     (x, 0, w), (y, 0, w)) == 2*sqrt(1 + w**2/h**2)/h - 2/h
+
+
+def test_sympyissue_11806():
+    y, L = symbols('y L', positive=True)
+    assert integrate(1/sqrt(x**2 + y**2)**3, (x, -L, L)) == \
+        2*L/(y**2*sqrt(L**2 + y**2))

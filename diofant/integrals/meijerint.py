@@ -1674,7 +1674,13 @@ def _meijerint_indefinite_1(f, x):
         else:
             r = meijerg(
                 tr(g.an) + [1], tr(g.aother), tr(g.bm), tr(g.bother) + [0], t)
-        r = hyperexpand(r.subs({t: a*x**b}))
+
+        # The antiderivative is most often expected to be defined
+        # in the neighborhood of  x = 0.
+        place = 0
+        if b < 0 or f.subs({x: 0}).has(nan, zoo):
+            place = None
+        r = hyperexpand(r.subs({t: a*x**b}), place=place)
 
         # now substitute back
         # Note: we really do want the powers of x to combine.

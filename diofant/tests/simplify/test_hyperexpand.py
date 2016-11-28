@@ -6,7 +6,7 @@ from diofant import (RR, Ci, I, Integer, Piecewise, Rational, Si, Symbol,
                      Tuple, asin, atanh, besseli, cbrt, combsimp, cos, erf,
                      exp, exp_polar, expand, gamma, hyper, lerchphi, log,
                      lowergamma, meijerg, oo, pi, polylog, simplify, sin, sqrt,
-                     sympify, unpolarify, uppergamma)
+                     sympify, unpolarify, uppergamma, zoo)
 from diofant.abc import a, b, c, z
 from diofant.simplify.hyperexpand import (Formula, FormulaCollection,
                                           G_Function, Hyper_Function,
@@ -46,6 +46,12 @@ def test_hyperexpand():
     assert hyperexpand(z*hyper([], [Rational(3, 2)], -z**2/4)) == sin(z)
     assert hyperexpand(hyper([Rational(1, 2), Rational(1, 2)], [Rational(3, 2)], z**2)*z) \
         == asin(z)
+
+    # Test place option
+    f = meijerg(((0, 1), ()), ((Rational(1, 2),), (0,)), z**2)
+    assert hyperexpand(f) == sqrt(pi)/sqrt(1 + z**(-2))
+    assert hyperexpand(f, place=0) == sqrt(pi)*z/sqrt(z**2 + 1)
+    assert hyperexpand(f, place=zoo) == sqrt(pi)/sqrt(1 + z**(-2))
 
 
 def can_do(ap, bq, numerical=True, div=1, lowerplane=False):

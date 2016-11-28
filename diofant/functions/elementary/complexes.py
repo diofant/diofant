@@ -453,6 +453,8 @@ class Abs(Function):
                 if all(a.is_extended_real or a.is_imaginary or (I*a).is_extended_real for a in arg.args):
                     from ...core import expand_mul
                     return sqrt(expand_mul(arg*arg.conjugate()))
+        if arg is zoo:
+            return oo
         if arg.is_extended_real is not True and arg.is_imaginary is False:
             from ...core import expand_mul
             return sqrt(expand_mul(arg*arg.conjugate()))
