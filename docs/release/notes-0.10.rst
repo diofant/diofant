@@ -153,3 +153,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`12695` [matrices] remove dead files densearith.py densetools.py and densesolve.py
 * :sympyissue:`5428` Should Poly use an algebraic domain by default?
 * :sympyissue:`14337` Poly constructor uses domain EX when it's not necessary
+* :sympyissue:`8818` lambdify precision loss with module=mpmath from high-precision Floats
