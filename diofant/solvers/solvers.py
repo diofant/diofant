@@ -2243,10 +2243,6 @@ def _tsolve(eq, sym, **flags):
                 return list(ordered([s.subs(reps) for s in soln]))
             except NotImplementedError:
                 pass
-        else:
-            pass  # here for coverage
-
-    return  # here for coverage
 
 
 # TODO: option for calculating J numerically
