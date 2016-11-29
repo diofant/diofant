@@ -66,21 +66,16 @@ def denoms(eq, symbols=None):
     Examples
     ========
 
-    >>> from diofant.solvers.solvers import denoms
     >>> from diofant.abc import x, y, z
-    >>> from diofant import sqrt
 
-    >>> denoms(x/y) == {y}
-    True
-
-    >>> denoms(x/(y*z)) == {y, z}
-    True
-
-    >>> denoms(3/x + y/z) == {x, z}
-    True
-
-    >>> denoms(x/2 + y/z) == {2, z}
-    True
+    >>> denoms(x/y)
+    {y}
+    >>> denoms(x/(y*z))
+    {y, z}
+    >>> denoms(3/x + y/z)
+    {x, z}
+    >>> denoms(x/2 + y/z)
+    {2, z}
     """
 
     pot = preorder_traversal(eq)
@@ -146,7 +141,6 @@ def checksol(f, symbol, sol=None, **flags):
            simplify the function before trying specific simplifications
         'force=True (default is False)'
            make positive all symbols without assumptions regarding sign.
-
     """
     minimal = flags.get('minimal', False)
 
@@ -381,13 +375,13 @@ def solve(f, *symbols, **flags):
 
         >>> solve(x - 3, dict=True)
         [{x: 3}]
-        >>> solve([x - 3, y - 1], dict=True) == [{x: 3, y: 1}]
-        True
+        >>> solve([x - 3, y - 1], dict=True)
+        [{x: 3, y: 1}]
 
     * to get a list of symbols and set of solution(s) use flag set=True
 
-        >>> solve([x**2 - 3, y - 1], set=True) == ([x, y], {(-sqrt(3), 1), (sqrt(3), 1)})
-        True
+        >>> solve([x**2 - 3, y - 1], set=True)
+        ([x, y], {(-sqrt(3), 1), (sqrt(3), 1)})
 
     * single expression and single symbol that is in the expression
 
@@ -399,10 +393,10 @@ def solve(f, *symbols, **flags):
         [3]
         >>> solve(Poly(x - 3), x)
         [3]
-        >>> solve(x**2 - y**2, x, set=True) == ([x], {(-y,), (y,)})
-        True
-        >>> solve(x**4 - 1, x, set=True) == ([x], {(-1,), (1,), (-I,), (I,)})
-        True
+        >>> solve(x**2 - y**2, x, set=True)
+        ([x], {(-y,), (y,)})
+        >>> solve(x**4 - 1, x, set=True)
+        ([x], {(-1,), (1,), (-I,), (I,)})
 
     * single expression with no symbol that is in the expression
 
@@ -420,12 +414,12 @@ def solve(f, *symbols, **flags):
 
             >>> solve(x - 3)
             [3]
-            >>> solve(x**2 - y**2) == [{x: -y}, {x: y}]
-            True
-            >>> solve(z**2*x**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
-            True
-            >>> solve(z**2*x - z**2*y**2) == [{x: y**2}, {z: 0}]
-            True
+            >>> solve(x**2 - y**2)
+            [{x: -y}, {x: y}]
+            >>> solve(z**2*x**2 - z**2*y**2)
+            [{x: -y}, {x: y}, {z: 0}]
+            >>> solve(z**2*x - z**2*y**2)
+            [{x: y**2}, {z: 0}]
 
     * when an object other than a Symbol is given as a symbol, it is
       isolated algebraically and an implicit solution may be obtained.
@@ -440,14 +434,14 @@ def solve(f, *symbols, **flags):
           [x + f(x)]
           >>> solve(f(x).diff(x) - f(x) - x, f(x))
           [-x + Derivative(f(x), x)]
-          >>> solve(x + exp(x)**2, exp(x), set=True) == ([exp(x)], {(-sqrt(-x),), (sqrt(-x),)})
-          True
+          >>> solve(x + exp(x)**2, exp(x), set=True)
+          ([E**x], {(-sqrt(-x),), (sqrt(-x),)})
 
           >>> from diofant import Indexed, IndexedBase, Tuple, sqrt
           >>> A = IndexedBase('A')
           >>> eqs = Tuple(A[1] + A[2] - 3, A[1] - A[2] + 1)
-          >>> solve(eqs, eqs.atoms(Indexed)) == {A[1]: 1, A[2]: 2}
-          True
+          >>> solve(eqs, eqs.atoms(Indexed))
+          {A[1]: 1, A[2]: 2}
 
         * To solve for a *symbol* implicitly, use 'implicit=True':
 
@@ -461,17 +455,17 @@ def solve(f, *symbols, **flags):
 
             >>> solve(x + 2 + sqrt(3), x + 2)
             [-sqrt(3)]
-            >>> solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2) == {y: -2 + sqrt(3), x + 2: -sqrt(3)}
-            True
+            >>> solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2)
+            {y: -2 + sqrt(3), x + 2: -sqrt(3)}
 
         * Nothing heroic is done in this implicit solving so you may end up
           with a symbol still in the solution:
 
             >>> eqs = (x*y + 3*y + sqrt(3), x + 4 + y)
-            >>> solve(eqs, y, x + 2) == {y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}
-            True
-            >>> solve(eqs, y*x, x) == {x: -y - 4, x*y: -3*y - sqrt(3)}
-            True
+            >>> solve(eqs, y, x + 2)
+            {y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}
+            >>> solve(eqs, y*x, x)
+            {x: -y - 4, x*y: -3*y - sqrt(3)}
 
         * if you attempt to solve for a number remember that the number
           you have obtained does not necessarily mean that the value is
@@ -499,23 +493,23 @@ def solve(f, *symbols, **flags):
 
             * that are linear
 
-                >>> solve((a + b)*x - b + 2, a, b) == {a: -2, b: 2}
-                True
+                >>> solve((a + b)*x - b + 2, a, b)
+                {a: -2, b: 2}
 
             * that are nonlinear
 
-                >>> solve((a + b)*x - b**2 + 2, a, b, set=True) == ([a, b], {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))})
-                True
+                >>> solve((a + b)*x - b**2 + 2, a, b, set=True)
+                ([a, b], {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))})
 
         * if there is no linear solution then the first successful
           attempt for a nonlinear solution will be returned
 
-            >>> solve(x**2 - y**2, x, y) == [{x: -y}, {x: y}]
-            True
+            >>> solve(x**2 - y**2, x, y)
+            [{x: -y}, {x: y}]
             >>> solve(x**2 - y**2/exp(x), x, y)
             [{x: 2*LambertW(y/2)}]
-            >>> solve(x**2 - y**2/exp(x), y, x) == [{y: -x*sqrt(exp(x))}, {y: x*sqrt(exp(x))}]
-            True
+            >>> solve(x**2 - y**2/exp(x), y, x)
+            [{y: -x*sqrt(E**x)}, {y: x*sqrt(E**x)}]
 
     * iterable of one or more of the above
 
@@ -532,12 +526,12 @@ def solve(f, *symbols, **flags):
 
                 >>> solve([x - 3], x)
                 {x: 3}
-                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y) == {x: -3, y: 1}
-                True
-                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z) == {x: -3, y: 1}
-                True
-                >>> solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y) == {x: -5*y + 2, z: 21*y - 6}
-                True
+                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y)
+                {x: -3, y: 1}
+                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z)
+                {x: -3, y: 1}
+                >>> solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y)
+                {x: -5*y + 2, z: 21*y - 6}
 
             * without a solution
 
@@ -546,16 +540,16 @@ def solve(f, *symbols, **flags):
 
         * when the system is not linear
 
-            >>> solve([x**2 + y -2, y**2 - 4], x, y, set=True) == ([x, y], {(-2, -2), (0, 2), (2, -2)})
-            True
+            >>> solve([x**2 + y -2, y**2 - 4], x, y, set=True)
+            ([x, y], {(-2, -2), (0, 2), (2, -2)})
 
         * if no symbols are given, all free symbols will be selected and a list
           of mappings returned
 
-            >>> solve([x - 2, x**2 + y]) == [{x: 2, y: -4}]
-            True
-            >>> solve([x - 2, x**2 + f(x)], {f(x), x}) == [{x: 2, f(x): -4}]
-            True
+            >>> solve([x - 2, x**2 + y])
+            [{x: 2, y: -4}]
+            >>> solve([x - 2, x**2 + f(x)], {f(x), x})
+            [{x: 2, f(x): -4}]
 
         * if any equation doesn't depend on the symbol(s) given it will be
           eliminated from the equation set and an answer may be given
@@ -1783,7 +1777,6 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
     Examples
     ========
 
-    >>> from diofant.solvers.solvers import solve_linear
     >>> from diofant.abc import x, y, z
 
     These are linear in x and 1/x:
@@ -1826,7 +1819,6 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
     (y, -x - z)
 
     If only x was excluded then a solution for y or z might be obtained.
-
     """
     if isinstance(lhs, Equality):
         if rhs:
@@ -2013,7 +2005,6 @@ def solve_linear_system(system, *symbols, **flags):
     Examples
     ========
 
-    >>> from diofant import Matrix, solve_linear_system
     >>> from diofant.abc import x, y
 
     Solve the following system::
@@ -2022,8 +2013,8 @@ def solve_linear_system(system, *symbols, **flags):
         -2 x +   y == 14
 
     >>> system = Matrix(( (1, 4, 2), (-2, 1, 14)))
-    >>> solve_linear_system(system, x, y) == {x: -6, y: 2}
-    True
+    >>> solve_linear_system(system, x, y)
+    {x: -6, y: 2}
 
     A degenerate system returns an empty dictionary.
 
@@ -2058,24 +2049,26 @@ def solve_linear_system(system, *symbols, **flags):
 
 def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
     """Solve equation of a type p(x; a_1, ..., a_k) == q(x) where both
-       p, q are univariate polynomials and f depends on k parameters.
-       The result of this functions is a dictionary with symbolic
-       values of those parameters with respect to coefficients in q.
+    p, q are univariate polynomials and f depends on k parameters.
 
-       This functions accepts both Equations class instances and ordinary
-       Diofant expressions. Specification of parameters and variable is
-       obligatory for efficiency and simplicity reason.
+    The result of this functions is a dictionary with symbolic
+    values of those parameters with respect to coefficients in q.
 
-       >>> from diofant import Eq, Rational
-       >>> from diofant.abc import a, b, c, x
-       >>> from diofant.solvers import solve_undetermined_coeffs
+    This functions accepts both Equations class instances and ordinary
+    Diofant expressions. Specification of parameters and variable is
+    obligatory for efficiency and simplicity reason.
 
-       >>> solve_undetermined_coeffs(Eq(2*a*x + a+b, x), [a, b], x) == {a: Rational(1, 2), b: -Rational(1, 2)}
-       True
+    Examples
+    ========
 
-       >>> solve_undetermined_coeffs(Eq(a*c*x + a+b, x), [a, b], x) == {a: 1/c, b: -1/c}
-       True
+    >>> from diofant import Eq, Rational
+    >>> from diofant.abc import a, b, c, x
 
+    >>> solve_undetermined_coeffs(Eq(2*a*x + a+b, x), [a, b], x)
+    {a: 1/2, b: -1/2}
+
+    >>> solve_undetermined_coeffs(Eq(a*c*x + a+b, x), [a, b], x)
+    {a: 1/c, b: -1/c}
     """
     if isinstance(equ, Equality):
         # got equation, so move all the
@@ -2128,7 +2121,6 @@ def _tsolve(eq, sym, **flags):
 
     >>> tsolve(log(x) + 2*x, x)
     [LambertW(2)/2]
-
     """
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []
