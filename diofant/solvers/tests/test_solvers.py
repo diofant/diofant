@@ -8,7 +8,7 @@ from diofant import (
     Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
     erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow, expand_log,
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
-    root, simplify, atan2, arg, SparseMatrix, Tuple, nsolve, oo)
+    root, simplify, atan2, arg, SparseMatrix, Tuple, oo)
 from diofant.core.function import nfloat
 from diofant.solvers import solve_linear_system, solve_undetermined_coeffs
 from diofant.solvers.solvers import (_invert, unrad, checksol, posify,
@@ -1613,18 +1613,6 @@ def test_sympyissue_7110():
     assert any(i.is_real for i in solve(y))
 
 
-def test_sympyissue_7547():
-    A, B, V = symbols('A,B,V')
-    eq1 = Eq(630.26*(V - 39.0)*V*(V + 39) - A + B, 0)
-    eq2 = Eq(B, 1.36*10**8*(V - 39))
-    eq3 = Eq(A, 5.75*10**5*V*(V + 39.0))
-    sol = Matrix(nsolve(Tuple(eq1, eq2, eq3), [A, B, V], (0, 0, 0)))
-    assert str(sol) == str(Matrix(
-        [['4442890172.68209'],
-         ['4289299466.1432'],
-         ['70.5389666628177']]))
-
-
 def test_sympyissue_7895():
     r = symbols('r', extended_real=True)
     assert solve(sqrt(r) - 2) == [4]
@@ -1647,10 +1635,6 @@ def test_sympyissue_2777():
 def test_sympyissue_7322():
     number = 5.62527e-35
     assert solve(x - number, x)[0] == number
-
-
-def test_nsolve():
-    pytest.raises(ValueError, lambda: nsolve(x, (-1, 1), method='bisect'))
 
 
 def test_sympyissue_8587():
