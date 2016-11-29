@@ -41,21 +41,6 @@ from diofant.solvers.polysys import solve_poly_system
 from diofant.solvers.inequalities import reduce_inequalities
 
 
-def _simple_dens(f, symbols):
-    # when checking if a denominator is zero, we can just check the
-    # base of powers with nonzero exponents since if the base is zero
-    # the power will be zero, too. To keep it simple and fast, we
-    # limit simplification to exponents that are Numbers
-    dens = set()
-    for d in denoms(f, symbols):
-        if d.is_Pow and d.exp.is_Number:
-            if d.exp.is_zero:
-                continue  # foo**0 is never 0
-            d = d.base
-        dens.add(d)
-    return dens
-
-
 def denoms(eq, symbols=None):
     """Return (recursively) set of all denominators that appear in eq
     that contain any symbol in iterable ``symbols``; if ``symbols`` is
@@ -1246,10 +1231,10 @@ def _solve(f, *symbols, **flags):
             # all solutions have been checked but now we must
             # check that the solutions do not set denominators
             # in any factor to zero
-            dens = _simple_dens(f, symbols)
+            dens = denoms(f, symbols)
             result = [s for s in result if
-                all(not checksol(den, {symbol: s}, **flags) for den in
-                dens)]
+                      all(not checksol(den, {symbol: s}, **flags) for den in
+                          dens)]
         # set flags for quick exit at end
         check = False
         flags['simplify'] = False
@@ -1536,10 +1521,10 @@ def _solve(f, *symbols, **flags):
     if checkdens:
         # reject any result that makes any denom. affirmatively 0;
         # if in doubt, keep it
-        dens = _simple_dens(f, symbols)
+        dens = denoms(f, symbols)
         result = [s for s in result if
                   all(not checksol(d, {symbol: s}, **flags)
-                    for d in dens)]
+                      for d in dens)]
     if check:
         # keep only results if the check is not False
         result = [r for r in result if
@@ -1560,7 +1545,7 @@ def _solve_system(exprs, symbols, **flags):
     checkdens = check = flags.get('check', True)
 
     for j, g in enumerate(exprs):
-        dens.update(_simple_dens(g, symbols))
+        dens.update(denoms(g, symbols))
         i, d = _invert(g, *symbols)
         g = d - i
         g = g.as_numer_denom()[0]
@@ -1874,7 +1859,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
                 if xi not in dn.free_symbols:
                     vi = -(nn.subs(xi, 0))/dn
                     if dens is None:
-                        dens = _simple_dens(eq, symbols)
+                        dens = denoms(eq, symbols)
                     if not any(checksol(di, {xi: vi}, minimal=True) is True
                               for di in dens):
                         # simplify any trivial integral

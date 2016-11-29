@@ -11,8 +11,7 @@ from diofant import (
     root, simplify, atan2, arg, SparseMatrix, Tuple, oo)
 from diofant.core.function import nfloat
 from diofant.solvers import solve_linear_system, solve_undetermined_coeffs
-from diofant.solvers.solvers import (_invert, unrad, checksol, posify,
-                                     _simple_dens)
+from diofant.solvers.solvers import _invert, unrad, checksol, posify
 from diofant.polys.rootoftools import RootOf
 from diofant.utilities.randtest import verify_numerically as tn
 
@@ -1662,12 +1661,6 @@ def test_base_0_exp_0():
     assert solve(0**(x - 2) - 1) == [2]
     e = x*(Pow(Pow(x, 0, evaluate=False), -1, evaluate=False) - x)
     assert solve(e) == [0, 1]
-
-
-def test__simple_dens():
-    assert _simple_dens(1/x**0, [x]) == set()
-    assert _simple_dens(1/x**y, [x]) == {x**y}
-    assert _simple_dens(1/root(x, 3), [x]) == {x}
 
 
 def test_sympyissue_8755():
