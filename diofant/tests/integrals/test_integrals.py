@@ -1281,3 +1281,8 @@ def test_diofantissue_149():
 
 def test_sympyissue_7337():
     assert integrate(x*sqrt(2*x + 3), (x, -1, 1)) == Rational(2, 5)
+
+
+def test_sympyissue_11877():
+    assert integrate(log(Rational(1, 2) - x),
+                     (x, 0, Rational(1, 2))) == -Rational(1, 2) - log(2)/2

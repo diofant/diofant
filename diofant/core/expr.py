@@ -650,6 +650,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         respectively.
 
         """
+        from ..logic import false
         from ..series import limit, Limit
         if (a is None and b is None):
             raise ValueError('Both interval ends cannot be None.')
@@ -659,7 +660,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             A = self.subs({x: a})
             if A.has(nan, oo, -oo, zoo):
-                A = limit(self, x, a)
+                A = limit(self, x, a, '+' if (a < b) is not false else '-')
                 if isinstance(A, Limit):
                     raise NotImplementedError("Could not compute limit")
 
@@ -669,6 +670,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = self.subs({x: b})
             if B.has(nan, oo, -oo, zoo):
                 B = limit(self, x, b)
+                B = limit(self, x, b, '-' if (a < b) is not false else '+')
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
 
