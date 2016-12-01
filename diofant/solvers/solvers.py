@@ -934,12 +934,8 @@ def solve(f, *symbols, **flags):
     # top level so that the appropriate strategy gets selected.
     # However, this is necessary only if one of the piecewise
     # functions depends on one of the symbols we are solving for.
-    def _has_piecewise(e):
-        if e.is_Piecewise:
-            return e.has(*symbols)
-        return any([_has_piecewise(a) for a in e.args])
     for i, fi in enumerate(f):
-        if _has_piecewise(fi):
+        if any(e.has(*symbols) for e in fi.atoms(Piecewise)):
             f[i] = piecewise_fold(fi)
 
     #
