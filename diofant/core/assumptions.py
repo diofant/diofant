@@ -49,7 +49,7 @@ attributes of objects/classes.
 from random import shuffle
 
 from .facts import FactRules, FactKB
-
+from .sympify import sympify
 
 _assume_rules = FactRules([
     'integer        ->  rational',
@@ -367,6 +367,50 @@ def make_property(fact):
 
     getit.func_name = as_property(fact)
     return property(getit, doc=_assume_docs[fact])
+
+
+def check_assumptions(expr, **assumptions):
+    """Checks if expression `expr` satisfies all assumptions.
+
+    Parameters
+    ==========
+
+    expr : Expr
+        Expression to test.
+    \*\*assumptions : dict
+        Keyword arguments to specify assumptions to test.
+
+    Returns
+    =======
+
+    True, False or None (if can't conclude).
+
+    Examples
+    ========
+
+    >>> from diofant import Symbol
+
+    >>> check_assumptions(-5, integer=True)
+    True
+    >>> x = Symbol('x', positive=True)
+    >>> check_assumptions(2*x + 1, negative=True)
+    False
+    >>> z = Symbol('z')
+    >>> check_assumptions(z, real=True) is None
+    True
+    """
+    expr = sympify(expr)
+
+    result = True
+    for key, expected in assumptions.items():
+        test = getattr(expr, 'is_' + key, None)
+        if test is expected:
+            continue
+        elif test is not None:
+            return False
+        else:
+            result = None
+    return result
 
 
 def _ask(fact, obj):

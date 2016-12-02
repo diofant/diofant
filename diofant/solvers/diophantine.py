@@ -8,7 +8,7 @@ from diofant.utilities import default_sort_key, numbered_symbols
 from diofant.core.numbers import igcdex, Rational
 from diofant.ntheory.residue_ntheory import sqrt_mod
 from diofant.core.relational import Eq
-from diofant.solvers.solvers import check_assumptions
+from diofant.core.assumptions import check_assumptions
 
 __all__ = ('diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_solution_linear',
            'diop_quadratic', 'diop_DN', 'cornacchia', 'diop_bf_DN', 'transformation_to_DN', 'find_DN',

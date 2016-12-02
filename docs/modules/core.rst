@@ -13,6 +13,7 @@ assumptions
 -----------
 
 .. automodule:: diofant.core.assumptions
+    :members:
 
 cache
 -------

@@ -1,27 +1,17 @@
 """
-This module contain solvers for all kinds of equations:
-
-    - algebraic or transcendental, use solve()
-
-    - recurrence, use rsolve()
-
-    - differential, use dsolve()
-
-    - nonlinear (numerically), use nsolve()
-      (you will need a good starting point)
-
+This module contain solvers for all kinds of equations,
+algebraic or transcendental.
 """
 
 from types import GeneratorType
 from collections import defaultdict
 import warnings
 
-from mpmath import findroot
-
 from diofant.core.compatibility import (iterable, is_sequence, ordered,
                                         default_sort_key)
 from diofant.core.sympify import sympify
 from diofant.core import S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow
+from diofant.core.assumptions import check_assumptions
 from diofant.core.exprtools import factor_terms
 from diofant.core.function import (expand_mul, expand_multinomial, expand_log,
                                    Derivative, AppliedUndef, UndefinedFunction,
@@ -51,21 +41,6 @@ from diofant.solvers.polysys import solve_poly_system
 from diofant.solvers.inequalities import reduce_inequalities
 
 
-def _simple_dens(f, symbols):
-    # when checking if a denominator is zero, we can just check the
-    # base of powers with nonzero exponents since if the base is zero
-    # the power will be zero, too. To keep it simple and fast, we
-    # limit simplification to exponents that are Numbers
-    dens = set()
-    for d in denoms(f, symbols):
-        if d.is_Pow and d.exp.is_Number:
-            if d.exp.is_zero:
-                continue  # foo**0 is never 0
-            d = d.base
-        dens.add(d)
-    return dens
-
-
 def denoms(eq, symbols=None):
     """Return (recursively) set of all denominators that appear in eq
     that contain any symbol in iterable ``symbols``; if ``symbols`` is
@@ -74,21 +49,16 @@ def denoms(eq, symbols=None):
     Examples
     ========
 
-    >>> from diofant.solvers.solvers import denoms
     >>> from diofant.abc import x, y, z
-    >>> from diofant import sqrt
 
-    >>> denoms(x/y) == {y}
-    True
-
-    >>> denoms(x/(y*z)) == {y, z}
-    True
-
-    >>> denoms(3/x + y/z) == {x, z}
-    True
-
-    >>> denoms(x/2 + y/z) == {2, z}
-    True
+    >>> denoms(x/y)
+    {y}
+    >>> denoms(x/(y*z))
+    {y, z}
+    >>> denoms(3/x + y/z)
+    {x, z}
+    >>> denoms(x/2 + y/z)
+    {2, z}
     """
 
     pot = preorder_traversal(eq)
@@ -154,7 +124,6 @@ def checksol(f, symbol, sol=None, **flags):
            simplify the function before trying specific simplifications
         'force=True (default is False)'
            make positive all symbols without assumptions regarding sign.
-
     """
     minimal = flags.get('minimal', False)
 
@@ -296,63 +265,8 @@ def checksol(f, symbol, sol=None, **flags):
     # TODO: improve solution testing
 
 
-def check_assumptions(expr, **assumptions):
-    """Checks whether expression `expr` satisfies all assumptions.
-
-    `assumptions` is a dict of assumptions: {'assumption': True|False, ...}.
-
-    Examples
-    ========
-
-       >>> from diofant import Symbol, pi, I, exp
-       >>> from diofant.solvers.solvers import check_assumptions
-
-       >>> check_assumptions(-5, integer=True)
-       True
-       >>> check_assumptions(pi, extended_real=True, integer=False)
-       True
-       >>> check_assumptions(pi, extended_real=True, negative=True)
-       False
-       >>> check_assumptions(exp(I*pi/7), extended_real=False)
-       True
-
-       >>> x = Symbol('x', extended_real=True, positive=True)
-       >>> check_assumptions(2*x + 1, extended_real=True, positive=True)
-       True
-       >>> check_assumptions(-2*x - 5, extended_real=True, positive=True)
-       False
-
-       `None` is returned if check_assumptions() could not conclude.
-
-       >>> check_assumptions(2*x - 1, extended_real=True, positive=True)
-       >>> z = Symbol('z')
-       >>> check_assumptions(z, extended_real=True)
-    """
-    expr = sympify(expr)
-
-    result = True
-    for key, expected in assumptions.items():
-        if expected is None:
-            continue
-        test = getattr(expr, 'is_' + key, None)
-        if test is expected:
-            continue
-        elif test is not None:
-            return False
-        result = None  # Can't conclude, unless an other test fails.
-    return result
-
-
 def solve(f, *symbols, **flags):
-    r"""
-    Algebraically solves equations and systems of equations.
-
-    Currently supported are:
-        - polynomial,
-        - transcendental
-        - piecewise combinations of the above
-        - systems of linear and polynomial equations
-        - systems containing relational expressions.
+    r"""Algebraically solves equations and systems of equations.
 
     Input is formed as:
 
@@ -444,13 +358,13 @@ def solve(f, *symbols, **flags):
 
         >>> solve(x - 3, dict=True)
         [{x: 3}]
-        >>> solve([x - 3, y - 1], dict=True) == [{x: 3, y: 1}]
-        True
+        >>> solve([x - 3, y - 1], dict=True)
+        [{x: 3, y: 1}]
 
     * to get a list of symbols and set of solution(s) use flag set=True
 
-        >>> solve([x**2 - 3, y - 1], set=True) == ([x, y], {(-sqrt(3), 1), (sqrt(3), 1)})
-        True
+        >>> solve([x**2 - 3, y - 1], set=True)
+        ([x, y], {(-sqrt(3), 1), (sqrt(3), 1)})
 
     * single expression and single symbol that is in the expression
 
@@ -462,10 +376,10 @@ def solve(f, *symbols, **flags):
         [3]
         >>> solve(Poly(x - 3), x)
         [3]
-        >>> solve(x**2 - y**2, x, set=True) == ([x], {(-y,), (y,)})
-        True
-        >>> solve(x**4 - 1, x, set=True) == ([x], {(-1,), (1,), (-I,), (I,)})
-        True
+        >>> solve(x**2 - y**2, x, set=True)
+        ([x], {(-y,), (y,)})
+        >>> solve(x**4 - 1, x, set=True)
+        ([x], {(-1,), (1,), (-I,), (I,)})
 
     * single expression with no symbol that is in the expression
 
@@ -483,12 +397,12 @@ def solve(f, *symbols, **flags):
 
             >>> solve(x - 3)
             [3]
-            >>> solve(x**2 - y**2) == [{x: -y}, {x: y}]
-            True
-            >>> solve(z**2*x**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
-            True
-            >>> solve(z**2*x - z**2*y**2) == [{x: y**2}, {z: 0}]
-            True
+            >>> solve(x**2 - y**2)
+            [{x: -y}, {x: y}]
+            >>> solve(z**2*x**2 - z**2*y**2)
+            [{x: -y}, {x: y}, {z: 0}]
+            >>> solve(z**2*x - z**2*y**2)
+            [{x: y**2}, {z: 0}]
 
     * when an object other than a Symbol is given as a symbol, it is
       isolated algebraically and an implicit solution may be obtained.
@@ -503,14 +417,14 @@ def solve(f, *symbols, **flags):
           [x + f(x)]
           >>> solve(f(x).diff(x) - f(x) - x, f(x))
           [-x + Derivative(f(x), x)]
-          >>> solve(x + exp(x)**2, exp(x), set=True) == ([exp(x)], {(-sqrt(-x),), (sqrt(-x),)})
-          True
+          >>> solve(x + exp(x)**2, exp(x), set=True)
+          ([E**x], {(-sqrt(-x),), (sqrt(-x),)})
 
           >>> from diofant import Indexed, IndexedBase, Tuple, sqrt
           >>> A = IndexedBase('A')
           >>> eqs = Tuple(A[1] + A[2] - 3, A[1] - A[2] + 1)
-          >>> solve(eqs, eqs.atoms(Indexed)) == {A[1]: 1, A[2]: 2}
-          True
+          >>> solve(eqs, eqs.atoms(Indexed))
+          {A[1]: 1, A[2]: 2}
 
         * To solve for a *symbol* implicitly, use 'implicit=True':
 
@@ -524,17 +438,17 @@ def solve(f, *symbols, **flags):
 
             >>> solve(x + 2 + sqrt(3), x + 2)
             [-sqrt(3)]
-            >>> solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2) == {y: -2 + sqrt(3), x + 2: -sqrt(3)}
-            True
+            >>> solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2)
+            {y: -2 + sqrt(3), x + 2: -sqrt(3)}
 
         * Nothing heroic is done in this implicit solving so you may end up
           with a symbol still in the solution:
 
             >>> eqs = (x*y + 3*y + sqrt(3), x + 4 + y)
-            >>> solve(eqs, y, x + 2) == {y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}
-            True
-            >>> solve(eqs, y*x, x) == {x: -y - 4, x*y: -3*y - sqrt(3)}
-            True
+            >>> solve(eqs, y, x + 2)
+            {y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}
+            >>> solve(eqs, y*x, x)
+            {x: -y - 4, x*y: -3*y - sqrt(3)}
 
         * if you attempt to solve for a number remember that the number
           you have obtained does not necessarily mean that the value is
@@ -562,23 +476,23 @@ def solve(f, *symbols, **flags):
 
             * that are linear
 
-                >>> solve((a + b)*x - b + 2, a, b) == {a: -2, b: 2}
-                True
+                >>> solve((a + b)*x - b + 2, a, b)
+                {a: -2, b: 2}
 
             * that are nonlinear
 
-                >>> solve((a + b)*x - b**2 + 2, a, b, set=True) == ([a, b], {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))})
-                True
+                >>> solve((a + b)*x - b**2 + 2, a, b, set=True)
+                ([a, b], {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))})
 
         * if there is no linear solution then the first successful
           attempt for a nonlinear solution will be returned
 
-            >>> solve(x**2 - y**2, x, y) == [{x: -y}, {x: y}]
-            True
+            >>> solve(x**2 - y**2, x, y)
+            [{x: -y}, {x: y}]
             >>> solve(x**2 - y**2/exp(x), x, y)
             [{x: 2*LambertW(y/2)}]
-            >>> solve(x**2 - y**2/exp(x), y, x) == [{y: -x*sqrt(exp(x))}, {y: x*sqrt(exp(x))}]
-            True
+            >>> solve(x**2 - y**2/exp(x), y, x)
+            [{y: -x*sqrt(E**x)}, {y: x*sqrt(E**x)}]
 
     * iterable of one or more of the above
 
@@ -595,12 +509,12 @@ def solve(f, *symbols, **flags):
 
                 >>> solve([x - 3], x)
                 {x: 3}
-                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y) == {x: -3, y: 1}
-                True
-                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z) == {x: -3, y: 1}
-                True
-                >>> solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y) == {x: -5*y + 2, z: 21*y - 6}
-                True
+                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y)
+                {x: -3, y: 1}
+                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z)
+                {x: -3, y: 1}
+                >>> solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y)
+                {x: -5*y + 2, z: 21*y - 6}
 
             * without a solution
 
@@ -609,16 +523,16 @@ def solve(f, *symbols, **flags):
 
         * when the system is not linear
 
-            >>> solve([x**2 + y -2, y**2 - 4], x, y, set=True) == ([x, y], {(-2, -2), (0, 2), (2, -2)})
-            True
+            >>> solve([x**2 + y -2, y**2 - 4], x, y, set=True)
+            ([x, y], {(-2, -2), (0, 2), (2, -2)})
 
         * if no symbols are given, all free symbols will be selected and a list
           of mappings returned
 
-            >>> solve([x - 2, x**2 + y]) == [{x: 2, y: -4}]
-            True
-            >>> solve([x - 2, x**2 + f(x)], {f(x), x}) == [{x: 2, f(x): -4}]
-            True
+            >>> solve([x - 2, x**2 + y])
+            [{x: 2, y: -4}]
+            >>> solve([x - 2, x**2 + f(x)], {f(x), x})
+            [{x: 2, f(x): -4}]
 
         * if any equation doesn't depend on the symbol(s) given it will be
           eliminated from the equation set and an answer may be given
@@ -779,9 +693,8 @@ def solve(f, *symbols, **flags):
     See Also
     ========
 
-        - rsolve() for solving recurrence relationships
-        - dsolve() for solving differential equations
-
+    diofant.solvers.recurr.rsolve : solving recurrence equations
+    diofant.solvers.ode.dsolve : solving differential equations
     """
     # keeping track of how f was passed since if it is a list
     # a dictionary of results will be returned.
@@ -1021,12 +934,8 @@ def solve(f, *symbols, **flags):
     # top level so that the appropriate strategy gets selected.
     # However, this is necessary only if one of the piecewise
     # functions depends on one of the symbols we are solving for.
-    def _has_piecewise(e):
-        if e.is_Piecewise:
-            return e.has(*symbols)
-        return any([_has_piecewise(a) for a in e.args])
     for i, fi in enumerate(f):
-        if _has_piecewise(fi):
+        if any(e.has(*symbols) for e in fi.atoms(Piecewise)):
             f[i] = piecewise_fold(fi)
 
     #
@@ -1318,10 +1227,10 @@ def _solve(f, *symbols, **flags):
             # all solutions have been checked but now we must
             # check that the solutions do not set denominators
             # in any factor to zero
-            dens = _simple_dens(f, symbols)
+            dens = denoms(f, symbols)
             result = [s for s in result if
-                all(not checksol(den, {symbol: s}, **flags) for den in
-                dens)]
+                      all(not checksol(den, {symbol: s}, **flags) for den in
+                          dens)]
         # set flags for quick exit at end
         check = False
         flags['simplify'] = False
@@ -1608,10 +1517,10 @@ def _solve(f, *symbols, **flags):
     if checkdens:
         # reject any result that makes any denom. affirmatively 0;
         # if in doubt, keep it
-        dens = _simple_dens(f, symbols)
+        dens = denoms(f, symbols)
         result = [s for s in result if
                   all(not checksol(d, {symbol: s}, **flags)
-                    for d in dens)]
+                      for d in dens)]
     if check:
         # keep only results if the check is not False
         result = [r for r in result if
@@ -1632,7 +1541,7 @@ def _solve_system(exprs, symbols, **flags):
     checkdens = check = flags.get('check', True)
 
     for j, g in enumerate(exprs):
-        dens.update(_simple_dens(g, symbols))
+        dens.update(denoms(g, symbols))
         i, d = _invert(g, *symbols)
         g = d - i
         g = g.as_numer_denom()[0]
@@ -1847,7 +1756,6 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
     Examples
     ========
 
-    >>> from diofant.solvers.solvers import solve_linear
     >>> from diofant.abc import x, y, z
 
     These are linear in x and 1/x:
@@ -1890,7 +1798,6 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
     (y, -x - z)
 
     If only x was excluded then a solution for y or z might be obtained.
-
     """
     if isinstance(lhs, Equality):
         if rhs:
@@ -1948,7 +1855,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
                 if xi not in dn.free_symbols:
                     vi = -(nn.subs(xi, 0))/dn
                     if dens is None:
-                        dens = _simple_dens(eq, symbols)
+                        dens = denoms(eq, symbols)
                     if not any(checksol(di, {xi: vi}, minimal=True) is True
                               for di in dens):
                         # simplify any trivial integral
@@ -2077,7 +1984,6 @@ def solve_linear_system(system, *symbols, **flags):
     Examples
     ========
 
-    >>> from diofant import Matrix, solve_linear_system
     >>> from diofant.abc import x, y
 
     Solve the following system::
@@ -2086,8 +1992,8 @@ def solve_linear_system(system, *symbols, **flags):
         -2 x +   y == 14
 
     >>> system = Matrix(( (1, 4, 2), (-2, 1, 14)))
-    >>> solve_linear_system(system, x, y) == {x: -6, y: 2}
-    True
+    >>> solve_linear_system(system, x, y)
+    {x: -6, y: 2}
 
     A degenerate system returns an empty dictionary.
 
@@ -2122,24 +2028,26 @@ def solve_linear_system(system, *symbols, **flags):
 
 def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
     """Solve equation of a type p(x; a_1, ..., a_k) == q(x) where both
-       p, q are univariate polynomials and f depends on k parameters.
-       The result of this functions is a dictionary with symbolic
-       values of those parameters with respect to coefficients in q.
+    p, q are univariate polynomials and f depends on k parameters.
 
-       This functions accepts both Equations class instances and ordinary
-       Diofant expressions. Specification of parameters and variable is
-       obligatory for efficiency and simplicity reason.
+    The result of this functions is a dictionary with symbolic
+    values of those parameters with respect to coefficients in q.
 
-       >>> from diofant import Eq, Rational
-       >>> from diofant.abc import a, b, c, x
-       >>> from diofant.solvers import solve_undetermined_coeffs
+    This functions accepts both Equations class instances and ordinary
+    Diofant expressions. Specification of parameters and variable is
+    obligatory for efficiency and simplicity reason.
 
-       >>> solve_undetermined_coeffs(Eq(2*a*x + a+b, x), [a, b], x) == {a: Rational(1, 2), b: -Rational(1, 2)}
-       True
+    Examples
+    ========
 
-       >>> solve_undetermined_coeffs(Eq(a*c*x + a+b, x), [a, b], x) == {a: 1/c, b: -1/c}
-       True
+    >>> from diofant import Eq, Rational
+    >>> from diofant.abc import a, b, c, x
 
+    >>> solve_undetermined_coeffs(Eq(2*a*x + a+b, x), [a, b], x)
+    {a: 1/2, b: -1/2}
+
+    >>> solve_undetermined_coeffs(Eq(a*c*x + a+b, x), [a, b], x)
+    {a: 1/c, b: -1/c}
     """
     if isinstance(equ, Equality):
         # got equation, so move all the
@@ -2192,7 +2100,6 @@ def _tsolve(eq, sym, **flags):
 
     >>> tsolve(log(x) + 2*x, x)
     [LambertW(2)/2]
-
     """
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []
@@ -2315,150 +2222,6 @@ def _tsolve(eq, sym, **flags):
                 return list(ordered([s.subs(reps) for s in soln]))
             except NotImplementedError:
                 pass
-        else:
-            pass  # here for coverage
-
-    return  # here for coverage
-
-
-# TODO: option for calculating J numerically
-
-
-def nsolve(*args, **kwargs):
-    r"""
-    Solve a nonlinear equation system numerically::
-
-        nsolve(f, [args,] x0, modules=['mpmath'], **kwargs)
-
-    f is a vector function of symbolic expressions representing the system.
-    args are the variables. If there is only one variable, this argument can
-    be omitted.
-    x0 is a starting vector close to a solution.
-
-    Use the modules keyword to specify which modules should be used to
-    evaluate the function and the Jacobian matrix. Make sure to use a module
-    that supports matrices. For more information on the syntax, please see the
-    docstring of lambdify.
-
-    Overdetermined systems are supported.
-
-    >>> from diofant import Symbol, nsolve
-    >>> import diofant
-    >>> import mpmath
-    >>> mpmath.mp.dps = 15
-    >>> x1 = Symbol('x1')
-    >>> x2 = Symbol('x2')
-    >>> f1 = 3 * x1**2 - 2 * x2**2 - 1
-    >>> f2 = x1**2 - 2 * x1 + x2**2 + 2 * x2 - 8
-    >>> print(nsolve((f1, f2), (x1, x2), (-1, 1)))
-    [-1.19287309935246]
-    [ 1.27844411169911]
-
-    For one-dimensional functions the syntax is simplified:
-
-    >>> from diofant import sin, nsolve
-    >>> from diofant.abc import x
-    >>> print(nsolve(sin(x), x, 2))
-    3.14159265358979
-    >>> print(nsolve(sin(x), 2))
-    3.14159265358979
-
-    mpmath.findroot is used, you can find there more extensive documentation,
-    especially concerning keyword parameters and available solvers. Note,
-    however, that this routine works only with the numerator of the function
-    in the one-dimensional case, and for very steep functions near the root
-    this may lead to a failure in the verification of the root. In this case
-    you should use the flag `verify=False` and independently verify the
-    solution.
-
-    >>> from diofant import cos, cosh
-    >>> from diofant.abc import i
-    >>> f = cos(x)*cosh(x) - 1
-    >>> nsolve(f, 3.14*100)
-    Traceback (most recent call last):
-    ...
-    ValueError: Could not find root within given tolerance. (1.39267e+230 > 2.1684e-19)
-    >>> ans = nsolve(f, 3.14*100, verify=False); print(ans)
-    312.588469032184
-    >>> f.subs(x, ans).n(2)
-    2.1e+121
-    >>> (f/f.diff(x)).subs(x, ans).n(2)
-    7.4e-15
-
-    One might safely skip the verification if bounds of the root are known
-    and a bisection method is used:
-
-    >>> bounds = lambda i: (3.14*i, 3.14*(i + 1))
-    >>> print(nsolve(f, bounds(100), solver='bisect', verify=False))
-    315.730061685774
-    """
-    # there are several other Diofant functions that use method= so
-    # guard against that here
-    if 'method' in kwargs:
-        raise ValueError(filldedent('''
-            Keyword "method" should not be used in this context.  When using
-            some mpmath solvers directly, the keyword "method" is
-            used, but when using nsolve (and findroot) the keyword to use is
-            "solver".'''))
-
-    # interpret arguments
-    if len(args) == 3:
-        f = args[0]
-        fargs = args[1]
-        x0 = args[2]
-    elif len(args) == 2:
-        f = args[0]
-        fargs = None
-        x0 = args[1]
-    elif len(args) < 2:
-        raise TypeError('nsolve expected at least 2 arguments, got %i'
-                        % len(args))
-    else:
-        raise TypeError('nsolve expected at most 3 arguments, got %i'
-                        % len(args))
-    modules = kwargs.get('modules', ['mpmath'])
-    if iterable(f):
-        f = list(f)
-        for i, fi in enumerate(f):
-            if isinstance(fi, Equality):
-                f[i] = fi.lhs - fi.rhs
-        f = Matrix(f).T
-    if not isinstance(f, Matrix):
-        # assume it's a diofant expression
-        if isinstance(f, Equality):
-            f = f.lhs - f.rhs
-        f = f.evalf()
-        syms = f.free_symbols
-        if fargs is None:
-            fargs = syms.copy().pop()
-        if not (len(syms) == 1 and (fargs in syms or fargs[0] in syms)):
-            raise ValueError(filldedent('''
-                expected a one-dimensional and numerical function'''))
-
-        # the function is much better behaved if there is no denominator
-        f = f.as_numer_denom()[0]
-
-        f = lambdify(fargs, f, modules)
-        return findroot(f, x0, **kwargs)
-
-    if len(fargs) > f.cols:
-        raise NotImplementedError(filldedent('''
-            need at least as many equations as variables'''))
-    verbose = kwargs.get('verbose', False)
-    if verbose:
-        print('f(x):')
-        print(f)
-    # derive Jacobian
-    J = f.jacobian(fargs)
-    if verbose:
-        print('J(x):')
-        print(J)
-    # create functions
-    f = lambdify(fargs, f.T, modules)
-    J = lambdify(fargs, J, modules)
-    # solve the system numerically
-    x = findroot(f, x0, J=J, **kwargs)
-    return x
 
 
 def _invert(eq, *symbols, **kwargs):
