@@ -1594,20 +1594,19 @@ def _solve_system(exprs, symbols, **flags):
                 result = []
                 for syms in subsets(free, len(polys)):
                     try:
-                        # returns [] or list of tuples of solutions for syms
                         res = solve_poly_system(polys, *syms)
                         if res:
                             for r in res:
                                 skip = False
-                                for r1 in r:
+                                for r1 in r.values():
                                     if got_s and any([ss in r1.free_symbols
-                                           for ss in got_s]):
+                                                      for ss in got_s]):
                                         # sol depends on previously
                                         # solved symbols: discard it
                                         skip = True
                                 if not skip:
                                     got_s.update(syms)
-                                    result.extend([dict(zip(syms, r))])
+                                    result.append(r)
                     except NotImplementedError:
                         pass
                 if got_s:
@@ -1621,12 +1620,6 @@ def _solve_system(exprs, symbols, **flags):
                 except NotImplementedError:
                     failed.extend([g.as_expr() for g in polys])
                     solved_syms = []
-                if result:
-                    # we don't know here if the symbols provided were given
-                    # or not, so let solve resolve that. A list of dictionaries
-                    # is going to always be returned from here.
-                    #
-                    result = [dict(zip(solved_syms, r)) for r in result]
 
     if result:
         if type(result) is dict:

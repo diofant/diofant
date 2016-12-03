@@ -20,12 +20,10 @@ def solve_poly_system(seq, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import solve_poly_system
     >>> from diofant.abc import x, y
 
     >>> solve_poly_system([x*y - 2*y, 2*y**2 - x**2], x, y)
-    [(0, 0), (2, -sqrt(2)), (2, sqrt(2))]
-
+    [{x: 0, y: 0}, {x: 2, y: -sqrt(2)}, {x: 2, y: sqrt(2)}]
     """
     try:
         polys, opt = parallel_poly_from_expr(seq, *gens, **args)
@@ -138,24 +136,23 @@ def solve_generic(polys, opt):
     ========
 
     >>> from diofant.polys import Poly, Options
-    >>> from diofant.solvers.polysys import solve_generic
     >>> from diofant.abc import x, y
     >>> NewOption = Options((x, y), {'domain': 'ZZ'})
 
     >>> a = Poly(x - y + 5, x, y, domain='ZZ')
     >>> b = Poly(x + y - 3, x, y, domain='ZZ')
     >>> solve_generic([a, b], NewOption)
-    [(-1, 4)]
+    [{x: -1, y: 4}]
 
     >>> a = Poly(x - 2*y + 5, x, y, domain='ZZ')
     >>> b = Poly(2*x - y - 3, x, y, domain='ZZ')
     >>> solve_generic([a, b], NewOption)
-    [(11/3, 13/3)]
+    [{x: 11/3, y: 13/3}]
 
     >>> a = Poly(x**2 + y, x, y, domain='ZZ')
     >>> b = Poly(x + y*4, x, y, domain='ZZ')
     >>> solve_generic([a, b], NewOption)
-    [(0, 0), (1/4, -1/16)]
+    [{x: 0, y: 0}, {x: 1/4, y: -1/16}]
     """
     def _is_univariate(f):
         """Returns True if 'f' is univariate in its last variable. """
@@ -193,10 +190,10 @@ def solve_generic(polys, opt):
         gens = f.gens
         gen = gens[-1]
 
-        zeros = list(roots(f.ltrim(gen)).keys())
+        zeros = [k.doit() for k in roots(f.ltrim(gen)).keys()]
 
         if len(basis) == 1:
-            return [ (zero,) for zero in zeros ]
+            return [{gen: zero} for zero in zeros]
 
         solutions = []
 
@@ -211,7 +208,8 @@ def solve_generic(polys, opt):
                     new_system.append(eq)
 
             for solution in _solve_reduced_system(new_system, new_gens):
-                solutions.append(solution + (zero,))
+                solution[gen] = zero
+                solutions.append(solution)
 
         return solutions
 
