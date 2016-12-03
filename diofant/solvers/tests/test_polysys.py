@@ -4,7 +4,7 @@ import pytest
 
 from diofant import flatten, I, Integer, Poly, QQ, Rational, S, sqrt, symbols
 from diofant.polys import PolynomialError, ComputationFailed
-from diofant.solvers.polysys import solve_poly_system, solve_triangulated
+from diofant.solvers.polysys import solve_poly_system
 
 from diofant.abc import x, y, z
 
@@ -87,22 +87,6 @@ def test_solve_biquadratic():
 
     assert len(result) == 2 and all(len(r) == 2 for r in result)
     assert all(len(r.find(query)) == 1 for r in flatten(result))
-
-
-def test_solve_triangualted():
-    f_1 = x**2 + y + z - 1
-    f_2 = x + y**2 + z - 1
-    f_3 = x + y + z**2 - 1
-
-    a, b = sqrt(2) - 1, -sqrt(2) - 1
-
-    assert solve_triangulated([f_1, f_2, f_3], x, y, z) == \
-        [(0, 0, 1), (0, 1, 0), (1, 0, 0)]
-
-    dom = QQ.algebraic_field(sqrt(2))
-
-    assert solve_triangulated([f_1, f_2, f_3], x, y, z, domain=dom) == \
-        [(0, 0, 1), (0, 1, 0), (1, 0, 0), (a, a, a), (b, b, b)]
 
 
 def test_solve_issue_3686():

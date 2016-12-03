@@ -65,8 +65,6 @@ Systems of Polynomial Equations
 
 .. autofunction:: diofant.solvers.polysys.solve_poly_system
 
-.. autofunction:: diofant.solvers.polysys.solve_triangulated
-
 Diophantine Equations (DEs)
 ---------------------------
 
