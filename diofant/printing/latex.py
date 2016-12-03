@@ -174,7 +174,6 @@ class LatexPrinter(Printer):
         specifies that this expr is the last to appear in a Mul.
         ``first=True`` specifies that this expr is the first to appear in a Mul.
         """
-        from ..functions import Piecewise
         from ..concrete import Product, Sum
         from ..integrals import Integral
 
@@ -186,11 +185,13 @@ class LatexPrinter(Printer):
             if not first and _coeff_isneg(expr):
                 return True
 
+        if expr.is_Piecewise:
+            return True
+
         if expr.has(Mod):
             return True
 
-        if (not last and any(expr.has(x) for
-                             x in (Integral, Piecewise, Product, Sum))):
+        if not last and any(expr.has(x) for x in (Integral, Product, Sum)):
             return True
 
         return False
