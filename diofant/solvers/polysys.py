@@ -48,26 +48,27 @@ def solve_poly_system(seq, *gens, **args):
 
 
 def solve_biquadratic(f, g, opt):
-    """Solve a system of two bivariate quadratic polynomial equations.
+    """
+    Solve a system of two bivariate quadratic polynomial equations.
 
     Examples
     ========
 
     >>> from diofant.polys import Options, Poly
     >>> from diofant.abc import x, y
-    >>> from diofant.solvers.polysys import solve_biquadratic
+
     >>> NewOption = Options((x, y), {'domain': 'ZZ'})
 
     >>> a = Poly(y**2 - 4 + x, y, x, domain='ZZ')
     >>> b = Poly(y*2 + 3*x - 7, y, x, domain='ZZ')
     >>> solve_biquadratic(a, b, NewOption)
-    [(1/3, 3), (41/27, 11/9)]
+    [{x: 1/3, y: 3}, {x: 41/27, y: 11/9}]
 
     >>> a = Poly(y + x**2 - 3, y, x, domain='ZZ')
     >>> b = Poly(-y + x - 4, y, x, domain='ZZ')
     >>> solve_biquadratic(a, b, NewOption)
-    [(-sqrt(29)/2 + 7/2, -sqrt(29)/2 - 1/2), (sqrt(29)/2 + 7/2, -1/2 + \
-      sqrt(29)/2)]
+    [{x: -sqrt(29)/2 + 7/2, y: -sqrt(29)/2 - 1/2},
+     {x: sqrt(29)/2 + 7/2, y: -1/2 + sqrt(29)/2}]
     """
     G = groebner([f, g])
 
@@ -83,14 +84,14 @@ def solve_biquadratic(f, g, opt):
     p = Poly(p, x, expand=False)
     q = q.ltrim(-1)
 
-    p_roots = [ rcollect(expr, y) for expr in roots(p).keys() ]
+    p_roots = [rcollect(expr, y) for expr in roots(p).keys()]
     q_roots = list(roots(q).keys())
 
     solutions = []
 
     for q_root in q_roots:
         for p_root in p_roots:
-            solution = (p_root.subs(y, q_root), q_root)
+            solution = {x: p_root.subs(y, q_root), y: q_root}
             solutions.append(solution)
 
     return sorted(solutions, key=default_sort_key)

@@ -63,6 +63,8 @@ Recurrence Equations
 Systems of Polynomial Equations
 -------------------------------
 
+.. autofunction:: diofant.solvers.polysys.solve_biquadratic
+
 .. autofunction:: diofant.solvers.polysys.solve_poly_system
 
 Diophantine Equations (DEs)
