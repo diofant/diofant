@@ -107,34 +107,6 @@ class Basic(metaclass=ManagedProperties):
         been defined by a class. See note about this in Basic.__eq__."""
         return self._args
 
-    @property
-    def assumptions0(self):
-        r"""
-        Return object `type` assumptions.
-
-        For example:
-
-          Symbol('x', real=True)
-          Symbol('x', integer=True)
-
-        are different objects. In other words, besides Python type (Symbol in
-        this case), the initial assumptions are also forming their typeinfo.
-
-        Examples
-        ========
-
-        >>> from diofant import Symbol
-        >>> from diofant.abc import x
-        >>> x.assumptions0
-        {'commutative': True}
-        >>> x = Symbol("x", positive=True)
-        >>> x.assumptions0
-        {'commutative': True, 'extended_real': True, 'imaginary': False,
-         'negative': False, 'nonnegative': True, 'nonpositive': False,
-         'nonzero': True, 'positive': True, 'zero': False}
-        """
-        return {}
-
     def compare(self, other):
         """
         Return -1, 0, 1 if the object is smaller, equal, or greater than other.
@@ -442,7 +414,7 @@ class Basic(metaclass=ManagedProperties):
         while any(s.name.endswith(u) for s in V):
             u += "_"
         name = '%%i%s' % u
-        return {v: Symbol(name % i, **v.assumptions0) for i, v in enumerate(V)}
+        return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
 
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.

@@ -115,7 +115,7 @@ def merge_solution(var, var_t, solution):
             l.append(next(params))
 
     for val, symb in zip(l, var):
-        if check_assumptions(val, **symb.assumptions0) is False:
+        if check_assumptions(val, **symb._assumptions) is False:
             return tuple()
 
     return tuple(l)
