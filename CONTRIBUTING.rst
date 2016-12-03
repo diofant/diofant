@@ -34,10 +34,9 @@ All work should be submitted via `Pull Requests (PR)`_.
    (<= 78 characters) one-line summary, then newline followed by
    verbose description of your changes.
 
-4. Please conform to `PEP 8`_ for code formatting, check
-   code quality with `flake8`_ tool::
-
-       $ python setup.py flake8
+4. Please conform to `PEP 8`_, enable `flake8 git hook
+   <http://flake8.pycqa.org/en/stable/user/using-hooks.html>`_ to
+   prevent badly formatted commits.
 
 5. PR should include tests:
 

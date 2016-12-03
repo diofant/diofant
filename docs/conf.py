@@ -1,13 +1,16 @@
 #
 # Diofant documentation build configuration file.
 #
-# This file is execfile()d with the current directory set to its containing dir.
+# This file is execfile()d with the current directory set to its
+# containing dir.
 #
-# The contents of this file are pickled, so don't put values in the namespace
-# that aren't pickleable (module imports are okay, they're removed automatically).
+# The contents of this file are pickled, so don't put values in the
+# namespace that aren't pickleable (module imports are okay, they're
+# removed automatically).
 #
-# All configuration values have a default value; values that are commented out
-# serve to show the default value.
+# All configuration values have a default value; values that are
+# commented out serve to show the default value.
+#
 
 import os
 import warnings
@@ -35,14 +38,8 @@ nitpicky = True
 # MathJax file, which is free to use.  See http://www.mathjax.org/docs/2.0/start.html
 mathjax_path = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full'
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['.templates']
-
 # A list of glob-style patterns that should be excluded when looking for source files.
 exclude_patterns = ['README.rst']
-
-# The suffix of source filenames.
-source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
@@ -59,9 +56,6 @@ version = diofant.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
-# Today_fmt is used as the format for a strftime call.
-today_fmt = '%B %d, %Y'
-
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
@@ -71,10 +65,6 @@ default_role = 'math'
 
 # Options for HTML output
 # -----------------------
-
-# If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
-# using the given strftime format.
-html_last_updated_fmt = '%b %d, %Y'
 
 # If true, generate domain-specific indices in addition to the general
 # index. For e.g. the Python domain, this is the global module index. Default
