@@ -403,6 +403,8 @@ def check_assumptions(expr, **assumptions):
 
     result = True
     for key, expected in assumptions.items():
+        if expected is None:
+            continue
         test = getattr(expr, 'is_' + key, None)
         if test is expected:
             continue
