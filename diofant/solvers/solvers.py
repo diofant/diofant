@@ -472,18 +472,6 @@ def solve(f, *symbols, **flags):
             >>> solve(x**2 - y, x, y)
             [{y: x**2}]
 
-        * when undetermined coefficients are identified
-
-            * that are linear
-
-                >>> solve((a + b)*x - b + 2, a, b)
-                {a: -2, b: 2}
-
-            * that are nonlinear
-
-                >>> solve((a + b)*x - b**2 + 2, a, b, set=True)
-                ([a, b], {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))})
-
         * if there is no linear solution then the first successful
           attempt for a nonlinear solution will be returned
 
@@ -1147,14 +1135,6 @@ def _solve(f, *symbols, **flags):
         if len(ex) != 1:
             ind, dep = f.as_independent(*symbols)
             ex = ind.free_symbols & dep.free_symbols
-        if len(ex) == 1:
-            ex = ex.pop()
-            try:
-                # soln may come back as dict, list of dicts or tuples, or
-                # tuple of symbol list and set of solution tuples
-                soln = solve_undetermined_coeffs(f, symbols, ex, **flags)
-            except NotImplementedError:
-                pass
         if soln:
             if flags.get('simplify', True):
                 if type(soln) is dict:

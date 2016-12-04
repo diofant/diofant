@@ -15,7 +15,7 @@ from diofant.solvers.solvers import _invert, checksol, posify
 from diofant.polys.rootoftools import RootOf
 from diofant.utilities.randtest import verify_numerically as tn
 
-from diofant.abc import a, b, c, k, h, p, x, y, z, t, q, m
+from diofant.abc import a, b, c, x, y, z, t, q, m
 
 
 def NS(e, n=15, **options):
@@ -27,7 +27,6 @@ def test_swap_back():
     fx, gx = f(x), g(x)
     assert solve([fx + y - 2, fx - gx - 5], fx, y, gx) == \
         {fx: gx + 5, y: -gx - 3}
-    assert solve(fx + gx*x - 2, [fx, gx]) == {fx: 2, gx: 0}
     assert solve(fx + gx**2*x - y, [fx, gx]) == [{fx: y - gx**2*x}]
     assert solve([f(1) - 2, x + 2]) == [{x: -2, f(1): 2}]
 
@@ -113,22 +112,6 @@ def test_solve_args():
     assert solve(y - 3, {x, y}) == [{y: 3}]
     # multiple symbols: take the first linear solution
     assert solve(x + y - 3, [x, y]) == [{x: 3 - y}]
-    # unless it is an undetermined coefficients system
-    assert solve(a + b*x - 2, [a, b]) == {a: 2, b: 0}
-    args = (a + b)*x - b**2 + 2, a, b
-    assert solve(*args) == \
-        [(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))]
-    assert solve(*args, set=True) == \
-        ([a, b], {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))})
-    assert solve(*args, dict=True) == \
-        [{b: sqrt(2), a: -sqrt(2)}, {b: -sqrt(2), a: sqrt(2)}]
-    eq = a*x**2 + b*x + c - ((x - h)**2 + 4*p*k)/4/p
-    flags = dict(dict=True)
-    assert solve(eq, [h, p, k], exclude=[a, b, c], **flags) == \
-        [{k: c - b**2/(4*a), h: -b/(2*a), p: 1/(4*a)}]
-    flags.update(dict(simplify=False))
-    assert solve(eq, [h, p, k], exclude=[a, b, c], **flags) == \
-        [{k: (4*a*c - b**2)/(4*a), h: -b/(2*a), p: 1/(4*a)}]
     # failing undetermined system
     assert solve(a*x + b**2/(x + 4) - 3*x - 4/x, a, b) == \
         [{a: (-b**2*x + 3*x**3 + 12*x**2 + 4*x + 16)/(x**2*(x + 4))}]
@@ -617,8 +600,6 @@ def test_sympyissue_5197():
     x = Symbol('x', positive=True)
     y = Symbol('y')
     assert solve([x + 5*y - 2, -3*x + 6*y - 15], x, y) == []
-    # The solution following should not contain (-sqrt(2), sqrt(2))
-    assert solve((x + y)*n - y**2 + 2, x, y) == [(sqrt(2), -sqrt(2))]
     y = Symbol('y', positive=True)
     # The solution following should not contain {y: -x*exp(x/2)}
     assert solve(x**2 - y**2/exp(x), y, x) == [{y: x*exp(x/2)}]
@@ -865,9 +846,6 @@ def test_sympyissue_5901():
         ([g(a)], {
         (-sqrt(h(a)**2*f(a)**2 + G)/f(a),),
         (sqrt(h(a)**2*f(a)**2 + G)/f(a),)})
-    args = [f(x).diff(x, 2)*(f(x) + g(x)) - g(x)**2 + 2, f(x), g(x)]
-    assert set(solve(*args)) == \
-        {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))}
     eqs = [f(x)**2 + g(x) - 2*f(x).diff(x), g(x)**2 - 4]
     assert solve(eqs, f(x), g(x), set=True) == \
         ([f(x), g(x)], {
