@@ -2384,6 +2384,17 @@ class Expr(Basic, EvalfMixin):
         else:
             return self._eval_is_algebraic_expr(syms)
 
+    def is_hypergeometric(self, k):
+        """Test if self is a hypergeometric term in k.
+
+        See Also
+        ========
+
+        diofant.simplify.simplify.hypersimp
+        """
+        from diofant.simplify import hypersimp
+        return hypersimp(self, k) is not None
+
     ###################################################################################
     # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
     ###################################################################################

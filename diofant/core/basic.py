@@ -449,17 +449,6 @@ class Basic(metaclass=ManagedProperties):
         else:
             return expr_to_call
 
-    def is_hypergeometric(self, k):
-        """Test if self is a hypergeometric term in k.
-
-        See Also
-        ========
-
-        diofant.simplify.simplify.hypersimp
-        """
-        from diofant.simplify import hypersimp
-        return hypersimp(self, k) is not None
-
     @property
     def is_comparable(self):
         """
