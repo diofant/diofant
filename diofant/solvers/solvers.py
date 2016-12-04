@@ -37,7 +37,7 @@ from diofant.functions.elementary.piecewise import piecewise_fold, Piecewise
 from diofant.utilities.lambdify import lambdify
 from diofant.utilities.misc import filldedent
 from diofant.utilities.iterables import uniq, generate_bell, flatten
-from diofant.solvers.polysys import solve_poly_system
+from diofant.solvers.polysys import solve_linear_system, solve_poly_system
 from diofant.solvers.inequalities import reduce_inequalities
 
 
@@ -1947,76 +1947,6 @@ def minsolve_linear_system(system, *symbols, **flags):
                 break
             bestsol = thissol
         return bestsol
-
-
-def solve_linear_system(system, *symbols, **flags):
-    r"""Solve system of linear equations.
-
-    Both under- and overdetermined systems are supported. The possible
-    number of solutions is zero, one or infinite.
-
-    Parameters
-    ==========
-
-    system : Matrix
-        Nx(M+1) matrix, which means it has to be in augmented
-        form.  This matrix will not be modified.
-    \*symbols : list
-        List of M Symbol's
-
-    Returns
-    =======
-
-    solution: dict or None
-        Respectively, this procedure will return None or
-        a dictionary with solutions.  In the case of underdetermined
-        systems, all arbitrary parameters are skipped.  This may
-        cause a situation in which an empty dictionary is returned.
-        In that case, all symbols can be assigned arbitrary values.
-
-    Examples
-    ========
-
-    >>> from diofant.abc import x, y
-
-    Solve the following system::
-
-           x + 4 y ==  2
-        -2 x +   y == 14
-
-    >>> system = Matrix(( (1, 4, 2), (-2, 1, 14)))
-    >>> solve_linear_system(system, x, y)
-    {x: -6, y: 2}
-
-    A degenerate system returns an empty dictionary.
-
-    >>> system = Matrix(( (0,0,0), (0,0,0) ))
-    >>> solve_linear_system(system, x, y)
-    {}
-
-    See Also
-    ========
-
-    diofant.matrices.matrices.MatrixBase.rref
-    """
-    from diofant.polys.rings import sring
-    from diofant.polys.solvers import solve_lin_sys
-
-    eqs = system*Matrix(symbols + (-1,))
-    domain, eqs = sring(eqs.transpose().tolist()[0], *symbols, field=True)
-
-    res = solve_lin_sys(eqs, domain)
-    if res is None:
-        return
-
-    for k in list(res.keys()):
-        s = domain.symbols[domain.index(k)]
-        res[s] = res[k].as_expr()
-        del res[k]
-        if flags.get('simplify', True):
-            res[s] = simplify(res[s])
-
-    return res
 
 
 def solve_undetermined_coeffs(equ, coeffs, sym, **flags):

@@ -24,8 +24,6 @@ is the symbol that we want to solve the equation for.
 
 .. autofunction:: diofant.solvers.solvers.solve_linear
 
-.. autofunction:: diofant.solvers.solvers.solve_linear_system
-
 .. autofunction:: diofant.solvers.solvers.solve_undetermined_coeffs
 
 .. autofunction:: diofant.solvers.solvers.checksol
@@ -62,6 +60,8 @@ Recurrence Equations
 
 Systems of Polynomial Equations
 -------------------------------
+
+.. autofunction:: diofant.solvers.solvers.solve_linear_system
 
 .. autofunction:: diofant.solvers.polysys.solve_biquadratic
 
