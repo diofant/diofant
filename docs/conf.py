@@ -106,7 +106,7 @@ latex_elements = {
 latex_show_pagerefs = True
 
 # We use False otherwise the module index gets generated twice.
-latex_use_modindex = False
+latex_domain_indices = False
 
 # Options for extensions
 # ----------------------
