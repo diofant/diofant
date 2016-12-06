@@ -447,6 +447,16 @@ class Set(Basic):
 
     @property
     def closure(self):
+        """
+        Return the closure of a set.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1, right_open=True).closure
+        [0, 1]
+
+        """
         return self + self.boundary
 
     @property
