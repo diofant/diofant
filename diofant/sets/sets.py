@@ -476,6 +476,21 @@ class Set(Basic):
 
     @property
     def interior(self):
+        """
+        Return the interior of a set.
+
+        The interior of a set consists all points of a set that do not
+        belong to its boundary.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1).interior
+        (0, 1)
+        >>> Interval(0, 1).boundary.interior
+        EmptySet()
+
+        """
         return self - self.boundary
 
     @property
