@@ -4429,6 +4429,8 @@ def test_gammas():
     assert pretty(uppergamma(x, y)) == "uppergamma(x, y)"
     assert upretty(gamma(x)) == 'Γ(x)'
     assert pretty(gamma(x)) == 'gamma(x)'
+    # issue sympy/sympy#11841
+    assert upretty(Function('gamma')(x)) == 'γ(x)'
 
 
 def test_deltas():
