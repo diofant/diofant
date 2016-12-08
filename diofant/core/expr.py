@@ -2384,6 +2384,48 @@ class Expr(Basic, EvalfMixin):
         else:
             return self._eval_is_algebraic_expr(syms)
 
+    def is_hypergeometric(self, k):
+        """Test if self is a hypergeometric term in k.
+
+        See Also
+        ========
+
+        diofant.simplify.simplify.hypersimp
+        """
+        from diofant.simplify import hypersimp
+        return hypersimp(self, k) is not None
+
+    @property
+    def is_comparable(self):
+        """
+        Test if self can be computed to a real number with precision.
+
+        Examples
+        ========
+
+        >>> from diofant import exp_polar, pi, I
+        >>> (I*exp_polar(I*pi/2)).is_comparable
+        True
+        >>> (I*exp_polar(I*pi*2)).is_comparable
+        False
+        """
+        is_real = self.is_extended_real
+        if is_real is False:
+            return False
+        is_number = self.is_number
+        if is_number is False:
+            return False
+        n, i = self.as_real_imag()
+        if not (self.is_Float and self._prec == 1):  # workaround for diofant/diofant#161
+            n, i = n.evalf(2), i.evalf(2)
+        if not i.is_Number or not n.is_Number:
+            return False
+        if i and (i._prec > 1 or i._prec == -1):
+            return False
+        if not i and (i._prec > 1 or i._prec == -1):
+            if n._prec > 1 or n._prec == -1:
+                return True
+
     ###################################################################################
     # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
     ###################################################################################
