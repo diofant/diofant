@@ -220,10 +220,10 @@ polynomials and to solve some systems of polynomial equations::
        2         2          2         2
 
     >>> solve_poly_system([y - x, x - 5], x, y)
-    [(5, 5)]
+    [{x: 5, y: 5}]
 
     >>> solve_poly_system([y**2 - x**3 + 1, y*x], x, y)
-                                       ___                 ___
-                                 1   \/ 3 *I         1   \/ 3 *I
-    [(0, -I), (0, I), (1, 0), (- - - -------, 0), (- - + -------, 0)]
-                                 2      2            2      2
+                                                            ___                       ___
+                                                      1   \/ 3 *I               1   \/ 3 *I
+    [{x: 0, y: -I}, {x: 0, y: I}, {x: 1, y: 0}, {x: - - - -------, y: 0}, {x: - - + -------, y: 0}]
+                                                      2      2                  2      2

@@ -24,13 +24,9 @@ is the symbol that we want to solve the equation for.
 
 .. autofunction:: diofant.solvers.solvers.solve_linear
 
-.. autofunction:: diofant.solvers.solvers.solve_linear_system
-
 .. autofunction:: diofant.solvers.solvers.solve_undetermined_coeffs
 
 .. autofunction:: diofant.solvers.solvers.checksol
-
-.. autofunction:: diofant.solvers.solvers.unrad
 
 Ordinary Differential equations (ODEs)
 --------------------------------------
@@ -63,9 +59,11 @@ Recurrence Equations
 Systems of Polynomial Equations
 -------------------------------
 
-.. autofunction:: diofant.solvers.polysys.solve_poly_system
+.. autofunction:: diofant.solvers.solvers.solve_linear_system
 
-.. autofunction:: diofant.solvers.polysys.solve_triangulated
+.. autofunction:: diofant.solvers.polysys.solve_biquadratic
+
+.. autofunction:: diofant.solvers.polysys.solve_poly_system
 
 Diophantine Equations (DEs)
 ---------------------------

@@ -113,6 +113,10 @@ sqrtdenest
 ^^^^^^^^^^
 .. autofunction:: sqrtdenest
 
+unrad
+^^^^^
+.. autofunction:: unrad
+
 Common Subexpresion Elimination
 -------------------------------
 .. module:: diofant.simplify.cse_main

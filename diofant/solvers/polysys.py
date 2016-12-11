@@ -1,16 +1,89 @@
 """Solvers of systems of polynomial equations. """
 
 from diofant.core import S
-from diofant.polys import Poly, groebner, roots
+from diofant.matrices import Matrix
+from diofant.polys import Poly, groebner, roots, sring
 from diofant.polys.polytools import parallel_poly_from_expr
 from diofant.polys.polyerrors import (ComputationFailed,
                                       PolificationFailed, CoercionFailed)
-from diofant.simplify import rcollect
+from diofant.polys.solvers import solve_lin_sys
+from diofant.simplify import rcollect, simplify
 from diofant.utilities import default_sort_key, postfixes
+
+
+__all__ = ('solve_linear_system', 'solve_poly_system')
 
 
 class SolveFailed(Exception):
     """Raised when solver's conditions weren't met. """
+
+
+def solve_linear_system(system, *symbols, **flags):
+    r"""Solve system of linear equations.
+
+    Both under- and overdetermined systems are supported. The possible
+    number of solutions is zero, one or infinite.
+
+    Parameters
+    ==========
+
+    system : Matrix
+        Nx(M+1) matrix, which means it has to be in augmented
+        form.  This matrix will not be modified.
+    \*symbols : list
+        List of M Symbol's
+
+    Returns
+    =======
+
+    solution: dict or None
+        Respectively, this procedure will return None or
+        a dictionary with solutions.  In the case of underdetermined
+        systems, all arbitrary parameters are skipped.  This may
+        cause a situation in which an empty dictionary is returned.
+        In that case, all symbols can be assigned arbitrary values.
+
+    Examples
+    ========
+
+    >>> from diofant.abc import x, y
+
+    Solve the following system::
+
+           x + 4 y ==  2
+        -2 x +   y == 14
+
+    >>> system = Matrix(( (1, 4, 2), (-2, 1, 14)))
+    >>> solve_linear_system(system, x, y)
+    {x: -6, y: 2}
+
+    A degenerate system returns an empty dictionary.
+
+    >>> system = Matrix(( (0,0,0), (0,0,0) ))
+    >>> solve_linear_system(system, x, y)
+    {}
+
+    See Also
+    ========
+
+    diofant.matrices.matrices.MatrixBase.rref
+    """
+
+    eqs = system*Matrix(symbols + (-1,))
+    domain, eqs = sring(eqs.transpose().tolist()[0], *symbols, field=True)
+
+    res = solve_lin_sys(eqs, domain)
+    if res is None:
+        return
+
+    for k in list(res.keys()):
+        s = domain.symbols[domain.index(k)]
+        res[s] = res[k].as_expr()
+        del res[k]
+        if flags.get('simplify', True):
+            res[s] = simplify(res[s])
+
+    return res
 
 
 def solve_poly_system(seq, *gens, **args):
@@ -20,12 +93,10 @@ def solve_poly_system(seq, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import solve_poly_system
     >>> from diofant.abc import x, y
 
     >>> solve_poly_system([x*y - 2*y, 2*y**2 - x**2], x, y)
-    [(0, 0), (2, -sqrt(2)), (2, sqrt(2))]
-
+    [{x: 0, y: 0}, {x: 2, y: -sqrt(2)}, {x: 2, y: sqrt(2)}]
     """
     try:
         polys, opt = parallel_poly_from_expr(seq, *gens, **args)
@@ -48,26 +119,27 @@ def solve_poly_system(seq, *gens, **args):
 
 
 def solve_biquadratic(f, g, opt):
-    """Solve a system of two bivariate quadratic polynomial equations.
+    """
+    Solve a system of two bivariate quadratic polynomial equations.
 
     Examples
     ========
 
     >>> from diofant.polys import Options, Poly
     >>> from diofant.abc import x, y
-    >>> from diofant.solvers.polysys import solve_biquadratic
+
     >>> NewOption = Options((x, y), {'domain': 'ZZ'})
 
     >>> a = Poly(y**2 - 4 + x, y, x, domain='ZZ')
     >>> b = Poly(y*2 + 3*x - 7, y, x, domain='ZZ')
     >>> solve_biquadratic(a, b, NewOption)
-    [(1/3, 3), (41/27, 11/9)]
+    [{x: 1/3, y: 3}, {x: 41/27, y: 11/9}]
 
     >>> a = Poly(y + x**2 - 3, y, x, domain='ZZ')
     >>> b = Poly(-y + x - 4, y, x, domain='ZZ')
     >>> solve_biquadratic(a, b, NewOption)
-    [(-sqrt(29)/2 + 7/2, -sqrt(29)/2 - 1/2), (sqrt(29)/2 + 7/2, -1/2 + \
-      sqrt(29)/2)]
+    [{x: -sqrt(29)/2 + 7/2, y: -sqrt(29)/2 - 1/2},
+     {x: sqrt(29)/2 + 7/2, y: -1/2 + sqrt(29)/2}]
     """
     G = groebner([f, g])
 
@@ -83,14 +155,14 @@ def solve_biquadratic(f, g, opt):
     p = Poly(p, x, expand=False)
     q = q.ltrim(-1)
 
-    p_roots = [ rcollect(expr, y) for expr in roots(p).keys() ]
+    p_roots = [rcollect(expr, y) for expr in roots(p).keys()]
     q_roots = list(roots(q).keys())
 
     solutions = []
 
     for q_root in q_roots:
         for p_root in p_roots:
-            solution = (p_root.subs(y, q_root), q_root)
+            solution = {x: p_root.subs(y, q_root), y: q_root}
             solutions.append(solution)
 
     return sorted(solutions, key=default_sort_key)
@@ -137,24 +209,23 @@ def solve_generic(polys, opt):
     ========
 
     >>> from diofant.polys import Poly, Options
-    >>> from diofant.solvers.polysys import solve_generic
     >>> from diofant.abc import x, y
     >>> NewOption = Options((x, y), {'domain': 'ZZ'})
 
     >>> a = Poly(x - y + 5, x, y, domain='ZZ')
     >>> b = Poly(x + y - 3, x, y, domain='ZZ')
     >>> solve_generic([a, b], NewOption)
-    [(-1, 4)]
+    [{x: -1, y: 4}]
 
     >>> a = Poly(x - 2*y + 5, x, y, domain='ZZ')
     >>> b = Poly(2*x - y - 3, x, y, domain='ZZ')
     >>> solve_generic([a, b], NewOption)
-    [(11/3, 13/3)]
+    [{x: 11/3, y: 13/3}]
 
     >>> a = Poly(x**2 + y, x, y, domain='ZZ')
     >>> b = Poly(x + y*4, x, y, domain='ZZ')
     >>> solve_generic([a, b], NewOption)
-    [(0, 0), (1/4, -1/16)]
+    [{x: 0, y: 0}, {x: 1/4, y: -1/16}]
     """
     def _is_univariate(f):
         """Returns True if 'f' is univariate in its last variable. """
@@ -192,10 +263,10 @@ def solve_generic(polys, opt):
         gens = f.gens
         gen = gens[-1]
 
-        zeros = list(roots(f.ltrim(gen)).keys())
+        zeros = [k.doit() for k in roots(f.ltrim(gen)).keys()]
 
         if len(basis) == 1:
-            return [ (zero,) for zero in zeros ]
+            return [{gen: zero} for zero in zeros]
 
         solutions = []
 
@@ -210,7 +281,8 @@ def solve_generic(polys, opt):
                     new_system.append(eq)
 
             for solution in _solve_reduced_system(new_system, new_gens):
-                solutions.append(solution + (zero,))
+                solution[gen] = zero
+                solutions.append(solution)
 
         return solutions
 
@@ -223,87 +295,3 @@ def solve_generic(polys, opt):
         return sorted(result, key=default_sort_key)
     else:
         return
-
-
-def solve_triangulated(polys, *gens, **args):
-    """
-    Solve a polynomial system using Gianni-Kalkbrenner algorithm.
-
-    The algorithm proceeds by computing one Groebner basis in the ground
-    domain and then by iteratively computing polynomial factorizations in
-    appropriately constructed algebraic extensions of the ground domain.
-
-    Examples
-    ========
-
-    >>> from diofant.solvers.polysys import solve_triangulated
-    >>> from diofant.abc import x, y, z
-
-    >>> F = [x**2 + y + z - 1, x + y**2 + z - 1, x + y + z**2 - 1]
-
-    >>> solve_triangulated(F, x, y, z)
-    [(0, 0, 1), (0, 1, 0), (1, 0, 0)]
-
-    References
-    ==========
-
-    1. Patrizia Gianni, Teo Mora, Algebraic Solution of System of
-    Polynomial Equations using Groebner Bases, AAECC-5 on Applied Algebra,
-    Algebraic Algorithms and Error-Correcting Codes, LNCS 356 247--257, 1989
-
-    """
-    G = groebner(polys, gens, polys=True)
-    G = list(reversed(G))
-
-    domain = args.get('domain')
-
-    if domain is not None:
-        for i, g in enumerate(G):
-            G[i] = g.set_domain(domain)
-
-    f, G = G[0].ltrim(-1), G[1:]
-    dom = f.get_domain()
-
-    zeros = f.ground_roots()
-    solutions = set()
-
-    for zero in zeros:
-        solutions.add(((zero,), dom))
-
-    var_seq = reversed(gens[:-1])
-    vars_seq = postfixes(gens[1:])
-
-    for var, vars in zip(var_seq, vars_seq):
-        _solutions = set()
-
-        for values, dom in solutions:
-            H, mapping = [], list(zip(vars, values))
-
-            for g in G:
-                _vars = (var,) + vars
-
-                if g.has_only_gens(*_vars) and g.degree(var) != 0:
-                    h = g.ltrim(var).eval(dict(mapping))
-
-                    if g.degree(var) == h.degree():
-                        H.append(h)
-
-            p = min(H, key=lambda h: h.degree())
-            zeros = p.ground_roots()
-
-            for zero in zeros:
-                if not zero.is_Rational:
-                    dom_zero = dom.algebraic_field(zero)
-                else:
-                    dom_zero = dom
-
-                _solutions.add(((zero,) + values, dom_zero))
-
-        solutions = _solutions
-
-    solutions = list(solutions)
-
-    for i, (solution, _) in enumerate(solutions):
-        solutions[i] = solution
-
-    return sorted(solutions, key=default_sort_key)
