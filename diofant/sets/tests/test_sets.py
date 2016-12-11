@@ -658,7 +658,7 @@ def test_supinf():
 
 def test_universalset():
     U = S.UniversalSet
-    assert U.as_relational(x) is True
+    assert U.as_relational(x) is S.true
     assert U.union(Interval(2, 4)) == U
 
     assert U.intersect(Interval(2, 4)) == Interval(2, 4)

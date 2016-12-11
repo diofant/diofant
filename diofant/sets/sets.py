@@ -1614,7 +1614,7 @@ class UniversalSet(Set, metaclass=Singleton):
         return true
 
     def as_relational(self, symbol):
-        return True
+        return true
 
     def _union(self, other):
         return self
