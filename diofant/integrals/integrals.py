@@ -14,7 +14,7 @@ from diofant.integrals.trigonometry import trigintegrate
 from diofant.integrals.meijerint import meijerint_definite, meijerint_indefinite
 from diofant.utilities.misc import filldedent
 from diofant.polys import Poly, PolynomialError
-from diofant.functions import Piecewise, sqrt, sign
+from diofant.functions import Piecewise, sqrt, sign, piecewise_fold
 from diofant.functions.elementary.exponential import log
 from diofant.series import limit
 from diofant.series.order import Order
@@ -486,6 +486,16 @@ class Integral(AddWithLimits):
             if meijerg1 is False and meijerg is True:
                 antideriv = None
             else:
+                # Rewrite to Piecewise if possible
+                if len(xab) >= 2:
+                    if (any(b.is_extended_real for b in xab[1:]) and
+                            not any(b.is_extended_real is False for b in xab[1:])):
+                        r = Dummy('r', extended_real=True)
+                        function = function.subs(xab[0], r)
+                        function = function.rewrite(Piecewise)
+                        function = function.subs(r, xab[0])
+                        function = piecewise_fold(function)
+
                 antideriv = self._eval_integral(
                     function, xab[0],
                     meijerg=meijerg1, risch=risch,

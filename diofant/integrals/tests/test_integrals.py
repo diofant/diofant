@@ -9,7 +9,7 @@ from diofant import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
                      Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
                      simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
                      sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
-                     im, polar_lift, meijerg)
+                     im, polar_lift, meijerg, Min, Max)
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically
@@ -1141,3 +1141,29 @@ def test_sympyissue_4231():
     e = (1 + 2*x + sqrt(x + log(x))*(1 + 3*x) +
          x**2)/(x*(x + sqrt(x + log(x)))*sqrt(x + log(x)))
     assert integrate(e, x) == 2*log(x + sqrt(x + log(x))) + 2*sqrt(x + log(x))
+
+
+def test_issue_11045():
+    e = 1/(x*sqrt(x**2 - 1))
+    assert integrate(e, (x, 1, 2)) == pi/3
+
+
+def test_definite_integrals_abs():
+    # issue sympy/sympy#8430
+    assert integrate(abs(x), (x, 0, 1)) == S.Half
+    # issue sympy/sympy#7165
+    r = Symbol('r', real=True)
+    assert (integrate(abs(x - r**2), (x, 0, 2)) ==
+            r**2*Max(0, Min(2, r**2)) + r**2*Min(2, r**2) -
+            2*r**2 - Max(0, Min(2, r**2))**2/2 -
+            Min(2, r**2)**2/2 + 2)
+    # issue sympy/sympy#8733
+    assert integrate(abs(x + 1), (x, 0, 1)) == Rational(3, 2)
+
+    e = x*abs(x**2 - 9)
+    assert integrate(e, (x, -2, 2)) == 0
+    assert integrate(e, (x, -1, 2)) == Rational(39, 4)
+    assert integrate(e, (x, -2, 7)) == Rational(1625, 4)
+    assert integrate(e, (x, -3, 11)) == 3136
+    assert integrate(e, (x, -17, -2)) == Rational(-78425, 4)
+    assert integrate(e, (x, -17, 20)) == Rational(74481, 4)
