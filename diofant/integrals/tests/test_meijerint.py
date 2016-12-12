@@ -342,10 +342,10 @@ def test_probability():
     # various integrals from probability theory
     from diofant.abc import x, y
     from diofant import symbols, Symbol, Abs, expand_mul, combsimp, powsimp, sin
-    mu1, mu2 = symbols('mu1 mu2', extended_real=True, nonzero=True, finite=True)
-    sigma1, sigma2 = symbols('sigma1 sigma2', extended_real=True, nonzero=True,
-                             finite=True, positive=True)
-    rate = Symbol('lambda', extended_real=True, positive=True, finite=True)
+    mu1, mu2 = symbols('mu1 mu2', real=True, nonzero=True)
+    sigma1, sigma2 = symbols('sigma1 sigma2', real=True,
+                             nonzero=True, positive=True)
+    rate = Symbol('lambda', real=True, positive=True)
 
     def normal(x, mu, sigma):
         return 1/sqrt(2*pi*sigma**2)*exp(-(x - mu)**2/2/sigma**2)

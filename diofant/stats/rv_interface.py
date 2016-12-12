@@ -90,7 +90,7 @@ def covariance(X, Y, condition=None, **kwargs):
     >>> from diofant.stats import Exponential, covariance
     >>> from diofant import Symbol
 
-    >>> rate = Symbol('lambda', positive=True, extended_real=True, finite=True)
+    >>> rate = Symbol('lambda', positive=True, real=True)
     >>> X = Exponential('X', rate)
     >>> Y = Exponential('Y', rate)
 
@@ -123,7 +123,7 @@ def correlation(X, Y, condition=None, **kwargs):
     >>> from diofant.stats import Exponential, correlation
     >>> from diofant import Symbol
 
-    >>> rate = Symbol('lambda', positive=True, extended_real=True, finite=True)
+    >>> rate = Symbol('lambda', positive=True, real=True)
     >>> X = Exponential('X', rate)
     >>> Y = Exponential('Y', rate)
 
@@ -169,7 +169,7 @@ def smoment(X, n, condition=None, **kwargs):
 
     >>> from diofant.stats import skewness, Exponential, smoment
     >>> from diofant import Symbol
-    >>> rate = Symbol('lambda', positive=True, extended_real=True, finite=True)
+    >>> rate = Symbol('lambda', positive=True, real=True)
     >>> Y = Exponential('Y', rate)
     >>> smoment(Y, 4)
     9
@@ -199,7 +199,7 @@ def skewness(X, condition=None, **kwargs):
     >>> X = Normal('X', 0, 1)
     >>> skewness(X)
     0
-    >>> rate = Symbol('lambda', positive=True, extended_real=True, finite=True)
+    >>> rate = Symbol('lambda', positive=True, real=True)
     >>> Y = Exponential('Y', rate)
     >>> skewness(Y)
     2
