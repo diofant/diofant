@@ -3,8 +3,8 @@ import pytest
 from diofant import ccode
 from diofant.core import (Catalan, Dummy, Eq, EulerGamma, GoldenRatio, Integer,
                           Lambda, Mul, Rational, oo, pi, symbols)
-from diofant.functions import (Abs, Piecewise, ceiling, cos, elliptic_e, exp,
-                               gamma, sign, sin, sqrt)
+from diofant.functions import (Abs, Max, Piecewise, ceiling, cos, elliptic_e,
+                               exp, gamma, sign, sin, sqrt)
 from diofant.logic import ITE, Equivalent
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.printing.ccode import CCodePrinter
@@ -48,6 +48,13 @@ def test_ccode_Pow():
     # Related to sympy/sympy#11353
     assert ccode(2**x, user_functions={'Pow': _cond_cfunc2}) == 'exp2(x)'
     assert ccode(x**2, user_functions={'Pow': _cond_cfunc2}) == 'pow(x, 2)'
+
+
+def test_ccode_Max():
+    # issue sympy/sympy#11926
+    assert ccode(Max(x, x*x),
+                 user_functions={"Max": "my_max",
+                                 "Pow": "my_pow"}) == 'my_max(x, my_pow(x, 2))'
 
 
 def test_ccode_constants_mathh():
