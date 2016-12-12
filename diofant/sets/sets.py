@@ -1353,7 +1353,6 @@ class Intersection(Set):
         return Intersection(imageset(f, arg) for arg in self.args)
 
     def _contains(self, other):
-        from diofant.logic.boolalg import And
         return And(*[set.contains(other) for set in self.args])
 
     def __iter__(self):
@@ -1540,7 +1539,7 @@ class EmptySet(Set, metaclass=Singleton):
         return false
 
     def as_relational(self, symbol):
-        return False
+        return false
 
     def __len__(self):
         return 0
@@ -1614,7 +1613,7 @@ class UniversalSet(Set, metaclass=Singleton):
         return true
 
     def as_relational(self, symbol):
-        return True
+        return true
 
     def _union(self, other):
         return self
@@ -1791,7 +1790,6 @@ class FiniteSet(Set, EvalfMixin):
 
     def as_relational(self, symbol):
         """Rewrite a FiniteSet in terms of equalities and logic operators. """
-        from diofant.core.relational import Eq
         return Or(*[Eq(symbol, elem) for elem in self])
 
     def compare(self, other):

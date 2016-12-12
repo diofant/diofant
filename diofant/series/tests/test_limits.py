@@ -274,7 +274,7 @@ def test_sympyissue_5184():
     assert limit(cos(x)/x, x, oo) == 0
     assert limit(gamma(x), x, Rational(1, 2)) == sqrt(pi)
 
-    r = Symbol('r', extended_real=True, finite=True)
+    r = Symbol('r', real=True)
     assert limit(r*sin(1/r), r, 0) == 0
 
 

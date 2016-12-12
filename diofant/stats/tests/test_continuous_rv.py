@@ -90,13 +90,13 @@ def test_multiple_normal():
 
 @pytest.mark.slow
 def test_symbolic():
-    mu1, mu2 = symbols('mu1 mu2', extended_real=True, finite=True)
-    s1, s2 = symbols('sigma1 sigma2', extended_real=True, finite=True, positive=True)
-    rate = Symbol('lambda', extended_real=True, positive=True, finite=True)
+    mu1, mu2 = symbols('mu1 mu2', real=True)
+    s1, s2 = symbols('sigma1 sigma2', real=True, positive=True)
+    rate = Symbol('lambda', real=True, positive=True)
     X = Normal('x', mu1, s1)
     Y = Normal('y', mu2, s2)
     Z = Exponential('z', rate)
-    a, b, c = symbols('a b c', extended_real=True, finite=True)
+    a, b, c = symbols('a b c', real=True)
 
     assert E(X) == mu1
     assert E(X + Y) == mu1 + mu2
@@ -130,6 +130,10 @@ def test_cdf():
     f = cdf(Z)
     z = Symbol('z')
     assert f(z) == Piecewise((1 - exp(-z), z >= 0), (0, True))
+
+    U = Uniform('x', 3, 5)
+    u = cdf(U)
+    assert u(z) == z/2 - Rational(3, 2)
 
 
 def test_sample():
@@ -248,7 +252,7 @@ def test_erlang():
 
 
 def test_exponential():
-    rate = Symbol('lambda', positive=True, extended_real=True, finite=True)
+    rate = Symbol('lambda', positive=True, real=True)
     X = Exponential('x', rate)
 
     assert E(X) == 1/rate
@@ -305,7 +309,7 @@ def test_gamma():
     # assert simplify(variance(X)) == k*theta**2  # handled numerically below
     assert E(X) == moment(X, 1)
 
-    k, theta = symbols('k theta', extended_real=True, finite=True, positive=True)
+    k, theta = symbols('k theta', real=True, positive=True)
     X = Gamma('x', k, theta)
     assert simplify(E(X)) == k*theta
     # can't get things to simplify on this one so we use subs
@@ -347,8 +351,8 @@ def test_logistic():
 
 
 def test_lognormal():
-    mean = Symbol('mu', extended_real=True, finite=True)
-    std = Symbol('sigma', positive=True, extended_real=True, finite=True)
+    mean = Symbol('mu', real=True)
+    std = Symbol('sigma', positive=True, real=True)
     X = LogNormal('x', mean, std)
     # The diofant integrator can't do this too well
     # assert E(X) == exp(mean+std**2/2)
@@ -470,7 +474,7 @@ def test_quadratic_u():
 
 
 def test_uniform():
-    l = Symbol('l', extended_real=True, finite=True)
+    l = Symbol('l', real=True)
     w = Symbol('w', positive=True, finite=True)
     X = Uniform('x', l, l + w)
 
@@ -492,7 +496,7 @@ def test_uniform_P():
     I decided to regress on this class for general cleanliness (and I suspect
     speed) of the algorithm.
     """
-    l = Symbol('l', extended_real=True, finite=True)
+    l = Symbol('l', real=True)
     w = Symbol('w', positive=True, finite=True)
     X = Uniform('x', l, l + w)
     assert P(X < l) == 0 and P(X > l + w) == 0

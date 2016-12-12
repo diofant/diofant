@@ -2155,7 +2155,7 @@ class UniformDistribution(SingleContinuousDistribution):
 
     def compute_cdf(self, **kwargs):
         from diofant import Lambda, Min
-        z = Dummy('z', extended_real=True, finite=True)
+        z = Dummy('z', real=True)
         result = SingleContinuousDistribution.compute_cdf(self, **kwargs)(z)
         reps = {
             Min(z, self.right): z,

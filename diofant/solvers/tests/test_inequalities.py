@@ -109,7 +109,7 @@ def test_reduce_poly_inequalities_complex_relational():
     assert reduce_rational_inequalities(
         [[Le(x**2, 0)]], x, relational=True) == Eq(x, 0)
     assert reduce_rational_inequalities(
-        [[Lt(x**2, 0)]], x, relational=True) is False
+        [[Lt(x**2, 0)]], x, relational=True) is S.false
     assert reduce_rational_inequalities(
         [[Ge(x**2, 0)]], x, relational=True) == And(Lt(-oo, x), Lt(x, oo))
     assert reduce_rational_inequalities(
@@ -144,7 +144,7 @@ def test_reduce_poly_inequalities_complex_relational():
 
 
 def test_reduce_rational_inequalities_real_relational():
-    assert reduce_rational_inequalities([], x) is False
+    assert reduce_rational_inequalities([], x) is S.false
     assert reduce_rational_inequalities(
         [[(x**2 + 3*x + 2)/(x**2 - 16) >= 0]], x, relational=False) == \
         Union(Interval.open(-oo, -4), Interval(-2, -1), Interval.open(4, oo))

@@ -194,7 +194,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
         Returns a Lambda
         """
-        x, z = symbols('x, z', extended_real=True, finite=True, cls=Dummy)
+        x, z = symbols('x, z', real=True, cls=Dummy)
         left_bound = self.set.start
 
         # CDF is integral of PDF from left bound to z
@@ -270,7 +270,7 @@ class ContinuousPSpace(PSpace):
             pdf = self.domain.integrate(self.pdf, symbols, **kwargs)
             return Lambda(expr.symbol, pdf)
 
-        z = Dummy('z', extended_real=True, finite=True)
+        z = Dummy('z', real=True)
         return Lambda(z, self.integrate(DiracDelta(expr - z), **kwargs))
 
     @cacheit
@@ -280,7 +280,7 @@ class ContinuousPSpace(PSpace):
                 "CDF not well defined on multivariate expressions")
 
         d = self.compute_density(expr, **kwargs)
-        x, z = symbols('x, z', extended_real=True, finite=True, cls=Dummy)
+        x, z = symbols('x, z', real=True, cls=Dummy)
         left_bound = self.domain.set.start
 
         # CDF is integral of PDF from left bound to z
@@ -290,7 +290,7 @@ class ContinuousPSpace(PSpace):
         return Lambda(z, cdf)
 
     def probability(self, condition, **kwargs):
-        z = Dummy('z', extended_real=True, finite=True)
+        z = Dummy('z', real=True)
         # Univariate case can be handled by where
         try:
             domain = self.where(condition)
