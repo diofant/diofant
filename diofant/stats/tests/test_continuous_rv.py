@@ -131,6 +131,10 @@ def test_cdf():
     z = Symbol('z')
     assert f(z) == Piecewise((1 - exp(-z), z >= 0), (0, True))
 
+    U = Uniform('x', 3, 5)
+    u = cdf(U)
+    assert u(z) == z/2 - Rational(3, 2)
+
 
 def test_sample():
     z = Symbol('z')
