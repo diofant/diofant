@@ -1576,12 +1576,7 @@ class preorder_traversal:
             self._skip_flag = False
             return
         if isinstance(node, Basic):
-            if not keys and hasattr(node, '_argset'):
-                # LatticeOp keeps args as a set. We should use this if we
-                # don't care about the order, to prevent unnecessary sorting.
-                args = node._argset
-            else:
-                args = node.args
+            args = node.args
             if keys:
                 args = ordered(args)
             for arg in args:
