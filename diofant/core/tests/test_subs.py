@@ -4,7 +4,7 @@ from diofant import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function,
                      Derivative, abc, Integer, Eq, symbols, Add, I, Float,
                      log, Rational, Lambda, atan2, cse, cot, tan, S, Tuple,
                      Basic, Dict, Piecewise, oo, Mul, factor, nsimplify,
-                     zoo, Subs, E, RootOf)
+                     zoo, Subs, E, RootOf, Min)
 from diofant.core.basic import _aresame
 
 from diofant.abc import x, y, z
@@ -687,3 +687,9 @@ def test_diofantissue_376():
     assert e3.subs(e2, y) == e3
     e4 = Subs(Derivative(f(t), t, t), t, y*z)
     assert e4.subs(e2, y) == e4
+
+
+def test_aresame_ordering():
+    e = Min(3, z)
+    s = (Min(z, 3), 3)
+    assert e.subs(*s) == 3
