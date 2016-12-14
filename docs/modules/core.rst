@@ -394,15 +394,15 @@ Function
    the atoms method:
 
    >>> e = (f(x) + cos(x) + 2)
-   >>> e.atoms(Function) == {f(x), cos(x)}
-   True
+   >>> e.atoms(Function)
+   {f(x), cos(x)}
 
    If you just want the function you defined, not Diofant functions, the
    thing to search for is AppliedUndef:
 
    >>> from diofant.core.function import AppliedUndef
-   >>> e.atoms(AppliedUndef) == {f(x)}
-   True
+   >>> e.atoms(AppliedUndef)
+   {f(x)}
 
 Subs
 ^^^^

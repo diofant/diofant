@@ -1127,8 +1127,8 @@ class MatrixBase:
         >>> from diofant.matrices import Matrix
         >>> Matrix([[x]])
         Matrix([[x]])
-        >>> _.atoms() == {x}
-        True
+        >>> _.atoms()
+        {x}
         """
 
         if types:
@@ -1150,8 +1150,8 @@ class MatrixBase:
 
         >>> from diofant.abc import x
         >>> from diofant.matrices import Matrix
-        >>> Matrix([[x], [1]]).free_symbols == {x}
-        True
+        >>> Matrix([[x], [1]]).free_symbols
+        {x}
         """
 
         return set().union(*[i.free_symbols for i in self])

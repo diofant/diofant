@@ -70,10 +70,10 @@ def separatevars(expr, symbols=[], dict=False, force=False):
     >>> e = 2*x**2*z*sin(y)+2*z*x**2
     >>> separatevars(e)
     2*x**2*z*(sin(y) + 1)
-    >>> separatevars(e, symbols=(x, y), dict=True) == {'coeff': 2*z, x: x**2, y: sin(y) + 1}
-    True
-    >>> separatevars(e, [x, y, alpha], dict=True) == {'coeff': 2*z, alpha: 1, x: x**2, y: sin(y) + 1}
-    True
+    >>> separatevars(e, symbols=(x, y), dict=True)
+    {'coeff': 2*z, x: x**2, y: sin(y) + 1}
+    >>> separatevars(e, [x, y, alpha], dict=True)
+    {'coeff': 2*z, alpha: 1, x: x**2, y: sin(y) + 1}
 
     If the expression is not really separable, or is only partially
     separable, separatevars will do the best it can to separate it

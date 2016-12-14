@@ -513,8 +513,8 @@ class ProductSet(Set):
 
     >>> H, T = Symbol('H'), Symbol('T')
     >>> coin = FiniteSet(H, T)
-    >>> set(coin**2) == {(H, H), (H, T), (T, H), (T, T)}
-    True
+    >>> set(coin**2)
+    {(H, H), (H, T), (T, H), (T, T)}
 
     Notes
     =====

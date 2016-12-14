@@ -311,9 +311,8 @@ class CoordSysCartesian(Basic):
         >>> A = CoordSysCartesian('A')
         >>> q = Symbol('q')
         >>> B = A.orient_new_axis('B', q, A.k)
-        >>> A.scalar_map(B) == {A.x: B.x*cos(q) - B.y*sin(q), A.y: B.x*sin(q) + B.y*cos(q), A.z: B.z}
-        True
-
+        >>> A.scalar_map(B)
+        {A.x: B.x*cos(q) - B.y*sin(q), A.y: B.x*sin(q) + B.y*cos(q), A.z: B.z}
         """
 
         relocated_scalars = []

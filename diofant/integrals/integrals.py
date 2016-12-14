@@ -85,8 +85,8 @@ class Integral(AddWithLimits):
 
         >>> from diofant import Integral
         >>> from diofant.abc import x, y
-        >>> Integral(x, (x, y, 1)).free_symbols == {y}
-        True
+        >>> Integral(x, (x, y, 1)).free_symbols
+        {y}
 
         See Also
         ========
@@ -587,11 +587,10 @@ class Integral(AddWithLimits):
 
         The previous must be true since there is no y in the evaluated integral:
 
-        >>> i.free_symbols == {x}
-        True
+        >>> i.free_symbols
+        {x}
         >>> i.doit()
         2*x**3/3 - x/2 - 1/6
-
         """
 
         # differentiate under the integral sign; we do not

@@ -21,8 +21,8 @@ def dpll_satisfiable(expr):
 
     >>> from diofant.abc import A, B
     >>> from diofant.logic.algorithms.dpll import dpll_satisfiable
-    >>> dpll_satisfiable(A & ~B) == {A: True, B: False}
-    True
+    >>> dpll_satisfiable(A & ~B)
+    {A: True, B: False}
     >>> dpll_satisfiable(A & ~A)
     False
     """
@@ -204,10 +204,8 @@ def unit_propagate_int_repr(clauses, s):
     Same as unit_propagate, but arguments are expected to be in integer
     representation
 
-    >>> from diofant.logic.algorithms.dpll import unit_propagate_int_repr
-    >>> unit_propagate_int_repr([{1, 2}, {3, -2}, {2}], 2) == [{3}]
-    True
-
+    >>> unit_propagate_int_repr([{1, 2}, {3, -2}, {2}], 2)
+    [{3}]
     """
     negated = {-s}
     return [clause - negated for clause in clauses if s not in clause]

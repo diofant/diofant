@@ -199,12 +199,12 @@ class Poly(Expr):
         >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
-        >>> Poly(x**2 + 1).free_symbols == {x}
-        True
-        >>> Poly(x**2 + y).free_symbols == {x, y}
-        True
-        >>> Poly(x**2 + y, x).free_symbols == {x, y}
-        True
+        >>> Poly(x**2 + 1).free_symbols
+        {x}
+        >>> Poly(x**2 + y).free_symbols
+        {x, y}
+        >>> Poly(x**2 + y, x).free_symbols
+        {x, y}
         """
         symbols = set()
 
@@ -224,12 +224,12 @@ class Poly(Expr):
         >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
-        >>> Poly(x**2 + 1).free_symbols_in_domain == set()
-        True
-        >>> Poly(x**2 + y).free_symbols_in_domain == set()
-        True
-        >>> Poly(x**2 + y, x).free_symbols_in_domain == {y}
-        True
+        >>> Poly(x**2 + 1).free_symbols_in_domain
+        set()
+        >>> Poly(x**2 + y).free_symbols_in_domain
+        set()
+        >>> Poly(x**2 + y, x).free_symbols_in_domain
+        {y}
         """
         domain, symbols = self.rep.domain, set()
 
@@ -3909,12 +3909,12 @@ class PurePoly(Poly):
         >>> from diofant import PurePoly
         >>> from diofant.abc import x, y
 
-        >>> PurePoly(x**2 + 1).free_symbols == set()
-        True
-        >>> PurePoly(x**2 + y).free_symbols == set()
-        True
-        >>> PurePoly(x**2 + y, x).free_symbols == {y}
-        True
+        >>> PurePoly(x**2 + 1).free_symbols
+        set()
+        >>> PurePoly(x**2 + y).free_symbols
+        set()
+        >>> PurePoly(x**2 + y, x).free_symbols
+        {y}
         """
         return self.free_symbols_in_domain
 

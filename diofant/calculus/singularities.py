@@ -13,14 +13,14 @@ def singularities(f, x):
     >>> from diofant import Symbol, exp, log
     >>> from diofant.abc import x
 
-    >>> singularities(1/(1 + x), x) == {-1}
-    True
+    >>> singularities(1/(1 + x), x)
+    {-1}
 
-    >>> singularities(exp(1/x) + log(x + 1), x) == {-1, 0}
-    True
+    >>> singularities(exp(1/x) + log(x + 1), x)
+    {-1, 0}
 
-    >>> singularities(exp(1/log(x + 1)), x) == {0}
-    True
+    >>> singularities(exp(1/log(x + 1)), x)
+    {0}
 
     Notes
     =====

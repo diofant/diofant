@@ -641,8 +641,9 @@ class G_Function(Expr):
         >>> from diofant import symbols, Rational
 
         >>> a, b = [1, 3, 2, Rational(3, 2)], [1 + y, y, 2, y + 3]
-        >>> G_Function(a, b, [2], [y]).compute_buckets() == ({0: [3, 2, 1], Rational(1, 2): [Rational(3, 2)]}, {0: [2], y: [y, y + 1, y + 3]}, {0: [2]}, {y: [y]})
-        True
+        >>> G_Function(a, b, [2], [y]).compute_buckets()
+        ({0: [3, 2, 1], 1/2: [3/2]}, {0: [2], y: [y, y + 1, y + 3]},
+         {0: [2]}, {y: [y]})
         """
         dicts = pan, pap, pbm, pbq = [defaultdict(list) for i in range(4)]
         for dic, lis in zip(dicts, (self.an, self.ap, self.bm, self.bq)):

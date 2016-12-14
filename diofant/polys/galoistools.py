@@ -258,10 +258,10 @@ def gf_to_dict(f, p, symmetric=True):
     Examples
     ========
 
-    >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5) == {0: -1, 4: -2, 10: -1}
-    True
-    >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5, symmetric=False) == {0: 4, 4: 3, 10: 4}
-    True
+    >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5)
+    {0: -1, 4: -2, 10: -1}
+    >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5, symmetric=False)
+    {0: 4, 4: 3, 10: 4}
     """
     n, result = gf_degree(f), {}
 
@@ -1023,8 +1023,8 @@ def gf_gcdex(f, g, p, K):
        >>> S = gf_mul(s, ZZ.map([1, 8, 7]), 11, ZZ)
        >>> T = gf_mul(t, ZZ.map([1, 7, 1, 7]), 11, ZZ)
 
-       >>> gf_add(S, T, 11, ZZ) == [1, 7]
-       True
+       >>> gf_add(S, T, 11, ZZ)
+       [1, 7]
 
     References
     ==========

@@ -27,8 +27,8 @@ def dpll_satisfiable(expr, all_models=False):
 
     >>> from diofant.abc import A, B
     >>> from diofant.logic.algorithms.dpll2 import dpll_satisfiable
-    >>> dpll_satisfiable(A & ~B) == {A: True, B: False}
-    True
+    >>> dpll_satisfiable(A & ~B)
+    {A: True, B: False}
     >>> dpll_satisfiable(A & ~A)
     False
     """
@@ -173,9 +173,9 @@ class SATSolver:
         >>> from diofant.abc import A, B, C
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
         ... {3, -2}], {1, 2, 3}, set(), [A, B, C])
-        >>> list(l._find_model()) == [{A: True, B: False, C: False},
-        ...                           {A: True, B: True, C: True}]
-        True
+        >>> list(l._find_model())
+        [{A: True, B: False, C: False},
+         {A: True, B: True, C: True}]
         """
 
         # We use this variable to keep track of if we should flip a
@@ -267,8 +267,8 @@ class SATSolver:
         0
         >>> l._current_level.flipped
         False
-        >>> l._current_level.var_settings == {1, 2}
-        True
+        >>> l._current_level.var_settings
+        {1, 2}
         """
         return self.levels[-1]
 
@@ -329,8 +329,8 @@ class SATSolver:
         ... {3, -2}], {1, 2, 3}, set())
         >>> next(l._find_model())
         {1: True, 2: False, 3: False}
-        >>> l.var_settings == {-3, -2, 1}
-        True
+        >>> l.var_settings
+        {-3, -2, 1}
 
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
         ... {3, -2}], {1, 2, 3}, set())
@@ -339,8 +339,8 @@ class SATSolver:
         ...     next(l._find_model())
         ... except StopIteration:
         ...     pass
-        >>> l.var_settings == {-1}
-        True
+        >>> l.var_settings
+        {-1}
         """
         self.var_settings.add(lit)
         self._current_level.var_settings.add(lit)
@@ -379,12 +379,12 @@ class SATSolver:
         >>> next(l._find_model())
         {1: True, 2: False, 3: False}
         >>> level = l._current_level
-        >>> (level.decision, level.var_settings, level.flipped) == (-3, {-3, -2}, False)
-        True
+        >>> (level.decision, level.var_settings, level.flipped)
+        (-3, {-3, -2}, False)
         >>> l._undo()
         >>> level = l._current_level
-        >>> (level.decision, level.var_settings, level.flipped) == (0, {1}, False)
-        True
+        >>> (level.decision, level.var_settings, level.flipped)
+        (0, {1}, False)
         """
         # Undo the variable settings
         for lit in self._current_level.var_settings:
@@ -473,13 +473,13 @@ class SATSolver:
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
         ... {3, -2}], {1, 2, 3}, set())
 
-        >>> l.lit_scores == {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
-        True
+        >>> l.lit_scores
+        {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
 
         >>> l._vsids_decay()
 
-        >>> l.lit_scores == {-3: -1.0, -2: -1.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -1.0}
-        True
+        >>> l.lit_scores
+        {-3: -1.0, -2: -1.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -1.0}
         """
         # We divide every literal score by 2 for a decay factor
         #  Note: This doesn't change the heap property
@@ -555,15 +555,15 @@ class SATSolver:
 
         >>> l.num_learned_clauses
         0
-        >>> l.lit_scores == {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
-        True
+        >>> l.lit_scores
+        {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
 
         >>> l._vsids_clause_added({2, -3})
 
         >>> l.num_learned_clauses
         1
-        >>> l.lit_scores == {-3: -1.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -2.0}
-        True
+        >>> l.lit_scores
+        {-3: -1.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -2.0}
         """
         self.num_learned_clauses += 1
         for lit in cls:

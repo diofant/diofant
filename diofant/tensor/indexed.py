@@ -79,10 +79,10 @@
     get_indices() and get_contraction_structure():
 
     >>> from diofant.tensor import get_indices, get_contraction_structure
-    >>> get_indices(A[i, j, j]) == ({i}, {})
-    True
-    >>> get_contraction_structure(A[i, j, j]) == {(j,): {A[i, j, j]}}
-    True
+    >>> get_indices(A[i, j, j])
+    ({i}, {})
+    >>> get_contraction_structure(A[i, j, j])
+    {(j,): {A[i, j, j]}}
 
     See the appropriate docstrings for a detailed explanation of the output.
 """

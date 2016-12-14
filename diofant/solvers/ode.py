@@ -569,8 +569,8 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     y0(t)*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t)**2, t)))]
     >>> eq = (Eq(Derivative(x(t),t),x(t)*y(t)*sin(t)), Eq(Derivative(y(t),t),y(t)**2*sin(t)))
     >>> C1, C2 = symbols('C1, C2')
-    >>> dsolve(eq) == {Eq(x(t), -E**C1/(C2*E**C1 - cos(t))), Eq(y(t), -1/(C1 - cos(t)))}
-    True
+    >>> dsolve(eq)
+    {Eq(x(t), -E**C1/(E**C1*C2 - cos(t))), Eq(y(t), -1/(C1 - cos(t)))}
     """
     if iterable(eq):
         match = classify_sysode(eq, func)
@@ -1451,11 +1451,11 @@ def classify_sysode(eq, funcs=None, **kwargs):
     >>> x1 = diff(x(t), t) ; y1 = diff(y(t), t)
     >>> x2 = diff(x(t), t, t) ; y2 = diff(y(t), t, t)
     >>> eq = (Eq(5*x1, 12*x(t) - 6*y(t)), Eq(2*y1, 11*x(t) + 3*y(t)))
-    >>> classify_sysode(eq) == {'eq': [-12*x(t) + 6*y(t) + 5*Derivative(x(t), t), -11*x(t) - 3*y(t) + 2*Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -12, (0, x(t), 1): 5, (0, y(t), 0): 6, (0, y(t), 1): 0, (1, x(t), 0): -11, (1, x(t), 1): 0, (1, y(t), 0): -3, (1, y(t), 1): 2}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type1'}
-    True
+    >>> classify_sysode(eq)
+    {'eq': [-12*x(t) + 6*y(t) + 5*Derivative(x(t), t), -11*x(t) - 3*y(t) + 2*Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -12, (0, x(t), 1): 5, (0, y(t), 0): 6, (0, y(t), 1): 0, (1, x(t), 0): -11, (1, x(t), 1): 0, (1, y(t), 0): -3, (1, y(t), 1): 2}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type1'}
     >>> eq = (Eq(diff(x(t),t), 5*t*x(t) + t**2*y(t)), Eq(diff(y(t),t), -t**2*x(t) + 5*t*y(t)))
-    >>> classify_sysode(eq) == {'eq': [-t**2*y(t) - 5*t*x(t) + Derivative(x(t), t), t**2*x(t) - 5*t*y(t) + Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -5*t, (0, x(t), 1): 1, (0, y(t), 0): -t**2, (0, y(t), 1): 0, (1, x(t), 0): t**2, (1, x(t), 1): 0, (1, y(t), 0): -5*t, (1, y(t), 1): 1}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type4'}
-    True
+    >>> classify_sysode(eq)
+    {'eq': [-t**2*y(t) - 5*t*x(t) + Derivative(x(t), t), t**2*x(t) - 5*t*y(t) + Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -5*t, (0, x(t), 1): 1, (0, y(t), 0): -t**2, (0, y(t), 1): 0, (1, x(t), 0): t**2, (1, x(t), 1): 0, (1, y(t), 0): -5*t, (1, y(t), 1): 1}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type4'}
     """
 
     # Sympify equations and convert iterables of equations into
@@ -3929,8 +3929,8 @@ def _nth_linear_match(eq, func, order):
     >>> f = Function('f')
     >>> _nth_linear_match(f(x).diff(x, 3) + 2*f(x).diff(x) +
     ... x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
-    ... sin(x), f(x), 3) == {-1: x - sin(x), 0: -1, 1: cos(x) + 2, 2: x, 3: 1}
-    True
+    ... sin(x), f(x), 3)
+    {-1: x - sin(x), 0: -1, 1: cos(x) + 2, 2: x, 3: 1}
     >>> _nth_linear_match(f(x).diff(x, 3) + 2*f(x).diff(x) +
     ... x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
     ... sin(f(x)), f(x), 3) == None
@@ -4931,8 +4931,8 @@ def _undetermined_coefficients_match(expr, x):
     >>> from diofant import log, exp
     >>> from diofant.solvers.ode import _undetermined_coefficients_match
     >>> from diofant.abc import x
-    >>> _undetermined_coefficients_match(9*x*exp(x) + exp(-x), x) == {'test': True, 'trialset': {x*exp(x), exp(-x), exp(x)}}
-    True
+    >>> _undetermined_coefficients_match(9*x*exp(x) + exp(-x), x)
+    {'test': True, 'trialset': {E**(-x), E**x, E**x*x}}
     >>> _undetermined_coefficients_match(log(x), x)
     {'test': False}
 
@@ -5590,8 +5590,8 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
     >>> eta = Function('eta')
     >>> xi = Function('xi')
     >>> eq = f(x).diff(x) - x**2*f(x)
-    >>> infinitesimals(eq) == [{eta(x, f(x)): exp(x**3/3), xi(x, f(x)): 0}]
-    True
+    >>> infinitesimals(eq)
+    [{eta(x, f(x)): E**(x**3/3), xi(x, f(x)): 0}]
 
     References
     ==========
