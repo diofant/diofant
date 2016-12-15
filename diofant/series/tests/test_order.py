@@ -94,6 +94,8 @@ def test_simple_8():
     assert O(x**3*sqrt(-(-x)**3)) == O(x**Rational(9, 2))
     assert O(x**Rational(3, 2)*sqrt((-x)**3)) == O(x**3)
     assert O(x*(-2*x)**(I/2)) == O(x*(-x)**(I/2))
+    assert O(sqrt((-x)**I)) == O(sqrt((-x)**I), evaluate=False)
+    assert O(sqrt(-x**I)) == O(sqrt(-x**I), evaluate=False)
 
 
 def test_as_expr_variables():
@@ -314,10 +316,12 @@ def test_order_conjugate_transpose():
     assert conjugate(O(y)) == O(conjugate(y))
     assert conjugate(O(x**2)) == O(conjugate(x)**2)
     assert conjugate(O(y**2)) == O(conjugate(y)**2)
+    assert conjugate(O(z)) == conjugate(O(z), evaluate=False)
     assert transpose(O(x)) == O(transpose(x))
     assert transpose(O(y)) == O(transpose(y))
     assert transpose(O(x**2)) == O(transpose(x)**2)
     assert transpose(O(y**2)) == O(transpose(y)**2)
+    assert transpose(O(z)) == transpose(O(z), evaluate=False)
 
 
 def test_order_noncommutative():
@@ -413,6 +417,8 @@ def test_order_subs_limits():
 
     assert O(x**2).subs(x, y - 1) == O((y - 1)**2, (y, 1))
     assert O(10*x**2, (x, 2)).subs(x, y - 1) == O(1, (y, 3))
+
+    assert O(x).subs(x, y*z) == O(y*z, y, z)
 
 
 def test_sympyissue_9351():
