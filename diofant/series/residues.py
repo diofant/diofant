@@ -1,4 +1,4 @@
-from diofant import sympify, Integer
+from diofant import sympify, Integer, Mul
 
 
 def residue(expr, x, x0):
@@ -40,14 +40,15 @@ def residue(expr, x, x0):
     # For the definition of a resultant, see section 1.4 (and any
     # previous sections for more review).
 
-    from diofant import collect, Mul, Order
+    from diofant import collect, Order
+
     expr = sympify(expr)
     if x0 != 0:
         expr = expr.subs(x, x + x0)
-    for n in [1, 2, 4, 8, 16, 32]:
+    s, n = Order(1, x), 1
+    while s.has(Order) and s.getn() <= 0:
         s = expr.nseries(x, n=n)
-        if not s.has(Order) or s.getn() >= 0:
-            break
+        n *= 2
     s = collect(s.removeO(), x)
     if s.is_Add:
         args = s.args
