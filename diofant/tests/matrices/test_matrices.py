@@ -2688,3 +2688,10 @@ def test_sympyissue_10770():
             f = getattr(M, op)
             new = f(m) if 'join' in op else f(42, m)
             assert new == m and id(new) != id(m)
+
+
+def test_sympyissue_11944():
+    A = Matrix([[1]])
+    AIm = A.as_immutable()
+    assert Matrix.hstack(AIm, A) == Matrix([[1, 1]])
+    assert Matrix.vstack(AIm, A) == Matrix([[1], [1]])
