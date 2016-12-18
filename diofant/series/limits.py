@@ -48,14 +48,11 @@ def heuristics(e, z, z0, dir):
                 return
             elif isinstance(l, Limit):
                 return
-            elif l is S.NaN:
-                return
             else:
                 r.append(l)
-        if r:
-            rv = e.func(*r)
-            if rv is S.NaN:
-                return
+        rv = e.func(*r)
+        if rv is S.NaN:
+            return
 
     return rv
 
