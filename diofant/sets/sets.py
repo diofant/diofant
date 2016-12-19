@@ -431,8 +431,6 @@ class Set(Basic):
     def is_open(self):
         if not Intersection(self, self.boundary):
             return True
-        # We can't confidently claim that an intersection exists
-        return
 
     @property
     def is_closed(self):
@@ -604,7 +602,6 @@ class ProductSet(Set):
         if self.args[-1] == other.args[-1]:
             return Union(ProductSet(self.args[:-1]),
                          ProductSet(other.args[:-1])) * self.args[-1]
-        return
 
     @property
     def sets(self):

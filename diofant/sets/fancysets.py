@@ -46,7 +46,6 @@ class Naturals(Set, metaclass=Singleton):
         if other.is_Interval:
             return Intersection(
                 S.Integers, other, Interval(self._inf, S.Infinity, False, True))
-        return
 
     def _contains(self, other):
         if other.is_positive and other.is_integer:
@@ -127,7 +126,6 @@ class Integers(Set, metaclass=Singleton):
         elif other.is_Interval:
             s = Range(ceiling(other.left), floor(other.right) + 1)
             return s.intersection(other)  # take out endpoints if open interval
-        return
 
     def _contains(self, other):
         if other.is_integer:
@@ -423,8 +421,6 @@ class Range(Set):
 
         if other == S.Integers:
             return self
-
-        return
 
     def _contains(self, other):
         if (((self.start - other)/self.step).is_integer or
