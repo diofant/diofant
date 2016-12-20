@@ -197,7 +197,9 @@ class Rationals(Set, metaclass=Singleton):
 
     def __iter__(self):
         seen = []
-        for n, d in cantor_product(S.Integers, S.Naturals):
+        pairs = cantor_product(S.Integers, S.Naturals)
+        while True:
+            n, d = next(pairs)
             r = Rational(n, d)
             if r not in seen:
                 seen.append(r)
@@ -265,12 +267,8 @@ class ImageSet(Set):
             solns = solve(L.expr - other, L.variables[0])
 
         for soln in solns:
-            try:
-                if soln in self.base_set:
-                    return S.true
-            except TypeError:
-                if soln.evalf() in self.base_set:
-                    return S.true
+            if soln in self.base_set:
+                return S.true
         return S.false
 
     @property
@@ -426,8 +424,7 @@ class Range(Set):
         if (((self.start - other)/self.step).is_integer or
                 ((self.stop - other)/self.step).is_integer):
             return _sympify(other >= self.inf and other <= self.sup)
-        elif (((self.start - other)/self.step).is_integer is False and
-              ((self.stop - other)/self.step).is_integer is False):
+        else:
             return S.false
 
     def __iter__(self):
