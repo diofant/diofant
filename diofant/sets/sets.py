@@ -245,7 +245,7 @@ class Set(Basic):
 
     @property
     def _sup(self):
-        raise NotImplementedError("(%s)._sup" % self)
+        raise NotImplementedError("(%s)._sup" % self)  # pragma: no cover
 
     def contains(self, other):
         """
@@ -269,7 +269,7 @@ class Set(Basic):
         return ret
 
     def _contains(self, other):
-        raise NotImplementedError("(%s)._contains(%s)" % (self, other))
+        raise NotImplementedError("(%s)._contains(%s)" % (self, other))  # pragma: no cover
 
     def is_subset(self, other):
         """
@@ -446,7 +446,7 @@ class Set(Basic):
 
     @property
     def _boundary(self):
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def _eval_imageset(self, f):
         from diofant.sets.fancysets import ImageSet
@@ -454,7 +454,7 @@ class Set(Basic):
 
     @property
     def _measure(self):
-        raise NotImplementedError("(%s)._measure" % self)
+        raise NotImplementedError("(%s)._measure" % self)  # pragma: no cover
 
     def __add__(self, other):
         return self.union(other)
@@ -1331,14 +1331,6 @@ class Intersection(Set):
     @property
     def is_iterable(self):
         return any(arg.is_iterable for arg in self.args)
-
-    @property
-    def _inf(self):
-        raise NotImplementedError()
-
-    @property
-    def _sup(self):
-        raise NotImplementedError()
 
     def _eval_imageset(self, f):
         return Intersection(imageset(f, arg) for arg in self.args)
