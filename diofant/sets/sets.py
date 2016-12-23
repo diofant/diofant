@@ -472,7 +472,7 @@ class Set(Basic):
         return SymmetricDifference(self, other)
 
     def __pow__(self, exp):
-        if not sympify(exp).is_Integer and exp >= 0:
+        if not sympify(exp).is_Integer or exp < 0:
             raise ValueError("%s: Exponent must be a positive Integer" % exp)
         return ProductSet([self]*exp)
 
@@ -696,10 +696,7 @@ class Interval(Set, EvalfMixin):
         if not all(i.is_extended_real is not False for i in (start, end)):
             raise ValueError("Non-real intervals are not supported")
 
-        # evaluate if possible
-        if (end < start) is S.true:
-            return S.EmptySet
-        elif (end - start).is_negative:
+        if (end - start).is_negative:
             return S.EmptySet
 
         is_open = left_open or right_open
@@ -806,9 +803,7 @@ class Interval(Set, EvalfMixin):
 
         # handle (-oo, oo)
         if Eq(self, S.Reals) is S.true:
-            l, r = self.left, self.right
-            if l.is_extended_real or r.is_extended_real:
-                return other
+            return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
         if not self._is_comparable(other):
@@ -1257,7 +1252,7 @@ class Union(Set, EvalfMixin):
         def roundrobin(*iterables):
             "roundrobin('ABC', 'D', 'EF') --> A D E B F C"
             pending = len(iterables)
-            nexts = itertools.cycle(iter(it).next for it in iterables)
+            nexts = itertools.cycle(iter(it).__next__ for it in iterables)
             while pending:
                 try:
                     for next in nexts:
