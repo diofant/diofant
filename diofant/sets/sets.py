@@ -39,6 +39,7 @@ class Set(Basic):
     is_EmptySet = None
     is_UniversalSet = None
     is_Complement = None
+    is_SymmetricDifference = None
 
     @staticmethod
     def _infimum_key(expr):
@@ -1355,9 +1356,6 @@ class Intersection(Set):
         """
 
         # ===== Global Rules =====
-        # If any EmptySets return EmptySet
-        if any(s.is_EmptySet for s in args):
-            return S.EmptySet
 
         # If any FiniteSets see which elements of that finite set occur within
         # all other sets in the intersection
@@ -1459,8 +1457,6 @@ class Complement(Set, EvalfMixin):
         Simplify a :class:`Complement`.
 
         """
-        if B == S.UniversalSet:
-            return EmptySet()
 
         if isinstance(B, Union):
             return Intersection(s.complement(A) for s in B.args)
@@ -1505,9 +1501,6 @@ class EmptySet(Set, metaclass=Singleton):
     """
     is_EmptySet = True
     is_FiniteSet = True
-
-    def _intersection(self, other):
-        return S.EmptySet
 
     @property
     def _measure(self):
@@ -1653,16 +1646,6 @@ class FiniteSet(Set, EvalfMixin):
     def __iter__(self):
         return iter(self.args)
 
-    def _intersection(self, other):
-        """
-        This function should only be used internally
-
-        See Set._intersection for docstring
-        """
-        if isinstance(other, self.__class__):
-            return self.__class__(*(self._elements & other._elements))
-        return self.__class__(el for el in self if el in other)
-
     def _complement(self, other):
         if other.is_Interval:
             nums = sorted(m for m in self.args if m.is_number and m in other)
@@ -1706,8 +1689,6 @@ class FiniteSet(Set, EvalfMixin):
 
         See Set._union for docstring
         """
-        if other.is_FiniteSet:
-            return FiniteSet(*(self._elements | other._elements))
 
         # If other set contains one of my elements, remove it from myself
         if any(other.contains(x) is true for x in self):
@@ -1769,9 +1750,6 @@ class FiniteSet(Set, EvalfMixin):
     def as_relational(self, symbol):
         """Rewrite a FiniteSet in terms of equalities and logic operators. """
         return Or(*[Eq(symbol, elem) for elem in self])
-
-    def compare(self, other):
-        return hash(self) - hash(other)
 
     def _eval_evalf(self, prec):
         return FiniteSet(*[elem._eval_evalf(prec) for elem in self])
