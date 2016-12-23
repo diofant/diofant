@@ -107,6 +107,13 @@ def test_union():
     # issue sympy/sympy#7843
     assert Union(S.EmptySet, FiniteSet(-sqrt(-I), sqrt(-I))) == FiniteSet(-sqrt(-I), sqrt(-I))
 
+    assert Union(ProductSet(FiniteSet(1), FiniteSet(2)), Interval(0, 1)).is_Union
+    assert Union(ProductSet(FiniteSet(1), FiniteSet(2)),
+                 ProductSet(FiniteSet(1), FiniteSet(2), FiniteSet(3))).is_Union
+
+    assert list(Union(FiniteSet(1, 2), FiniteSet(3, 4), evaluate=False)) == [1, 3, 2, 4]
+    pytest.raises(TypeError, lambda: iter(Union(FiniteSet(1, 2), Interval(0, 1))))
+
 
 def test_difference():
     assert Interval(1, 3) - Interval(1, 2) == Interval(2, 3, True)
@@ -246,6 +253,9 @@ def test_intersection():
     assert Union(Interval(0, 1), Interval(2, 3)).intersection(Interval(1, 2)) == \
         Union(Interval(1, 1), Interval(2, 2))
 
+    assert ProductSet(FiniteSet(1),
+                      FiniteSet(2)).intersection(Interval(1, 2)).is_Intersection
+
     # iterable
     i = Intersection(FiniteSet(1, 2, 3), Interval(2, 5), evaluate=False)
     assert i.is_iterable
@@ -276,10 +286,20 @@ def test_intersection():
 def test_is_disjoint():
     assert Interval(0, 2).is_disjoint(Interval(1, 2)) is False
     assert Interval(0, 2).is_disjoint(Interval(3, 4)) is True
+    assert Interval(0, 2).isdisjoint(Interval(3, 4)) is True
 
 
 def test_ProductSet_of_single_arg_is_arg():
     assert ProductSet(Interval(0, 1)) == Interval(0, 1)
+
+
+def test_pow_args():
+    pytest.raises(ValueError, lambda: Interval(0, 1)**-1)
+    pytest.raises(TypeError, lambda: ProductSet(2))
+
+
+def test_ProductSet_iter():
+    pytest.raises(TypeError, lambda: iter(ProductSet(Set(1), Set(2))))
 
 
 def test_interval_subs():
@@ -529,6 +549,8 @@ def test_EmptySet():
     assert S.EmptySet.as_relational(x) is false
     assert S.EmptySet.intersection(S.UniversalSet) == S.EmptySet
     assert S.EmptySet.boundary == S.EmptySet
+    assert Interval(0, 1).symmetric_difference(S.EmptySet) == Interval(0, 1)
+    assert Interval(1, 2).intersection(S.EmptySet) == S.EmptySet
 
 
 def test_finite_basic():
@@ -665,6 +687,8 @@ def test_universalset():
     assert U.measure == S.Infinity
     assert U.boundary == S.EmptySet
     assert U.contains(0) is S.true
+    assert Interval(0, 1).symmetric_difference(U) == Interval(0, 1)
+    assert U.complement(U) == S.EmptySet
 
 
 def test_Union_of_ProductSets_shares():
@@ -824,6 +848,8 @@ def test_sympyissue_7841():
 
 def test_Eq():
     assert Eq(Interval(0, 1), Interval(0, 1))
+    assert Eq(Interval(0, 1), Union(Interval(2, 3),
+                                    Interval(4, 5))).is_Equality
     assert Eq(Interval(0, 1), Interval(0, 2)) is S.false
 
     s1 = FiniteSet(0, 1)
@@ -835,6 +861,11 @@ def test_Eq():
     assert Eq(s1*s2, s1*s2)
     assert Eq(s1*s2, s2*s1) is S.false
 
+    p1 = ProductSet(FiniteSet(1), FiniteSet(2))
+    assert Eq(p1, s1).is_Equality
+    p2 = ProductSet(FiniteSet(1), FiniteSet(2), FiniteSet(3))
+    assert Eq(p1, p2) is S.false
+
 
 def test_SymmetricDifference():
     assert (SymmetricDifference(FiniteSet(0, 1, 2, 3, 4, 5),
@@ -843,6 +874,7 @@ def test_SymmetricDifference():
     assert (SymmetricDifference(FiniteSet(2, 3, 4),
                                 FiniteSet(2, 3, 4, 5)) ==
             FiniteSet(5))
+    assert FiniteSet(2).symmetric_difference(FiniteSet(2, 5)) == FiniteSet(5)
     assert (FiniteSet(1, 2, 3, 4, 5) ^ FiniteSet(1, 2, 5, 6) ==
             FiniteSet(3, 4, 6))
     assert (Set(1, 2, 3) ^ Set(2, 3, 4) ==
