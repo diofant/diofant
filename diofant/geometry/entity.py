@@ -332,7 +332,7 @@ class GeometrySet(GeometryEntity, Set):
         if self._contains(o):
             return self
 
-    def _intersect(self, o):
+    def _intersection(self, o):
         """ Returns a diofant.sets.Set of intersection objects,
         if possible. """
 

@@ -21,8 +21,8 @@ def test_naturals():
     assert (a, b, c, d) == (1, 2, 3, 4)
     assert isinstance(a, Basic)
 
-    assert N.intersect(Interval(-5, 5)) == Range(1, 6)
-    assert N.intersect(Interval(-5, 5, True, True)) == Range(1, 5)
+    assert N.intersection(Interval(-5, 5)) == Range(1, 6)
+    assert N.intersection(Interval(-5, 5, True, True)) == Range(1, 5)
 
     assert N.boundary == N
 
@@ -47,8 +47,8 @@ def test_integers():
     assert (a, b, c, d) == (0, 1, -1, 2)
     assert isinstance(a, Basic)
 
-    assert Z.intersect(Interval(-5, 5)) == Range(-5, 6)
-    assert Z.intersect(Interval(-5, 5, True, True)) == Range(-4, 5)
+    assert Z.intersection(Interval(-5, 5)) == Range(-5, 6)
+    assert Z.intersection(Interval(-5, 5, True, True)) == Range(-4, 5)
 
     assert Z.inf == -oo
     assert Z.sup == oo
@@ -81,9 +81,9 @@ def test_ImageSet():
     squares = ImageSet(Lambda(x, x**2), S.Naturals)
     assert 4 in squares
     assert 5 not in squares
-    assert FiniteSet(*range(10)).intersect(squares) == FiniteSet(1, 4, 9)
+    assert FiniteSet(*range(10)).intersection(squares) == FiniteSet(1, 4, 9)
 
-    assert 16 not in squares.intersect(Interval(0, 10))
+    assert 16 not in squares.intersection(Interval(0, 10))
 
     si = iter(squares)
     a, b, c, d = next(si), next(si), next(si), next(si)
@@ -169,8 +169,8 @@ def test_Range():
     it = iter(Range(-oo, 0, 2))
     assert (next(it), next(it)) == (-2, -4)
 
-    assert Range(-1, 10, 1).intersect(S.Integers) == Range(-1, 10, 1)
-    assert Range(-1, 10, 1).intersect(S.Naturals) == Range(1, 10, 1)
+    assert Range(-1, 10, 1).intersection(S.Integers) == Range(-1, 10, 1)
+    assert Range(-1, 10, 1).intersection(S.Naturals) == Range(1, 10, 1)
 
     assert Range(1, 10, 1)._ith_element(5) == 6  # the index starts from zero
     assert Range(1, 10, 1)._last_element == 9
@@ -180,22 +180,22 @@ def test_Range():
 
 def test_range_interval_intersection():
     # Intersection with intervals
-    assert FiniteSet(*Range(0, 10, 1).intersect(Interval(2, 6))) == \
+    assert FiniteSet(*Range(0, 10, 1).intersection(Interval(2, 6))) == \
         FiniteSet(2, 3, 4, 5, 6)
 
     # Open Intervals are removed
-    assert (FiniteSet(*Range(0, 10, 1).intersect(Interval(2, 6,
-                                                          True, True))) ==
+    assert (FiniteSet(*Range(0, 10, 1).intersection(Interval(2, 6,
+                                                             True, True))) ==
             FiniteSet(3, 4, 5))
 
     # Try this with large steps
-    assert (FiniteSet(*Range(0, 100, 10).intersect(Interval(15, 55))) ==
+    assert (FiniteSet(*Range(0, 100, 10).intersection(Interval(15, 55))) ==
             FiniteSet(20, 30, 40, 50))
 
     # Going backwards
-    assert (FiniteSet(*Range(10, -9, -3).intersect(Interval(-5, 6))) ==
+    assert (FiniteSet(*Range(10, -9, -3).intersection(Interval(-5, 6))) ==
             FiniteSet(-5, -2, 1, 4))
-    assert (FiniteSet(*Range(10, -9, -3).intersect(Interval(-5, 6, True))) ==
+    assert (FiniteSet(*Range(10, -9, -3).intersection(Interval(-5, 6, True))) ==
             FiniteSet(-2, 1, 4))
 
 
@@ -218,33 +218,33 @@ def take(n, iterable):
 
 
 def test_intersections():
-    assert S.Integers.intersect(S.Reals) == S.Integers
-    assert 5 in S.Integers.intersect(S.Reals)
-    assert 5 in S.Integers.intersect(S.Reals)
-    assert -5 not in S.Naturals.intersect(S.Reals)
-    assert 5.5 not in S.Integers.intersect(S.Reals)
-    assert 5 in S.Integers.intersect(Interval(3, oo))
-    assert -5 in S.Integers.intersect(Interval(-oo, 3))
+    assert S.Integers.intersection(S.Reals) == S.Integers
+    assert 5 in S.Integers.intersection(S.Reals)
+    assert 5 in S.Integers.intersection(S.Reals)
+    assert -5 not in S.Naturals.intersection(S.Reals)
+    assert 5.5 not in S.Integers.intersection(S.Reals)
+    assert 5 in S.Integers.intersection(Interval(3, oo))
+    assert -5 in S.Integers.intersection(Interval(-oo, 3))
     assert all(x.is_Integer
-               for x in take(10, S.Integers.intersect(Interval(3, oo))))
+               for x in take(10, S.Integers.intersection(Interval(3, oo))))
 
 
 def test_infinitely_indexed_set_1():
     assert imageset(Lambda(n, n), S.Integers) == imageset(Lambda(m, m), S.Integers)
 
     assert (imageset(Lambda(n, 2*n),
-                     S.Integers).intersect(imageset(Lambda(m, 2*m + 1),
-                                                    S.Integers)) ==
+                     S.Integers).intersection(imageset(Lambda(m, 2*m + 1),
+                                                       S.Integers)) ==
             EmptySet())
 
     assert (imageset(Lambda(n, 2*n),
-                     S.Integers).intersect(imageset(Lambda(n, 2*n + 1),
-                                                    S.Integers)) ==
+                     S.Integers).intersection(imageset(Lambda(n, 2*n + 1),
+                                                       S.Integers)) ==
             EmptySet())
 
     assert (imageset(Lambda(m, 2*m),
-                     S.Integers).intersect(imageset(Lambda(n, 3*n),
-                                                    S.Integers)) ==
+                     S.Integers).intersection(imageset(Lambda(n, 3*n),
+                                                       S.Integers)) ==
             ImageSet(Lambda(t, 6*t), S.Integers))
 
 
@@ -258,20 +258,20 @@ def test_infinitely_indexed_set_2():
     assert imageset(Lambda(n, exp(n)), S.Integers) != imageset(Lambda(n, n), S.Integers)
 
 
-def test_imageset_intersect_real():
+def test_imageset_intersection_real():
     assert (imageset(Lambda(n, n + (n - 1)*(n + 1)*I),
-                     S.Integers).intersect(S.Reals) ==
+                     S.Integers).intersection(S.Reals) ==
             FiniteSet(-1, 1))
 
     s = ImageSet(Lambda(n, -I*(I*(2*pi*n - pi/4) + log(Abs(sqrt(-I))))), S.Integers)
-    assert s.intersect(S.Reals) == imageset(Lambda(n, 2*n*pi - pi/4), S.Integers)
+    assert s.intersection(S.Reals) == imageset(Lambda(n, 2*n*pi - pi/4), S.Integers)
 
 
 @pytest.mark.xfail
 def test_infinitely_indexed_failed_diophantine():
     assert (imageset(Lambda(m, 2*pi*m),
-                     S.Integers).intersect(imageset(Lambda(n, 3*pi*n),
-                                                    S.Integers)) ==
+                     S.Integers).intersection(imageset(Lambda(n, 3*pi*n),
+                                                       S.Integers)) ==
             ImageSet(Lambda(t, -6*pi*t), S.Integers))
 
 

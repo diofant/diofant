@@ -96,7 +96,7 @@ def test_union():
         Interval(1, 3, True, False)
     X = Interval(1, 3) + FiniteSet(5)
     Y = Interval(1, 2) + FiniteSet(3)
-    XandY = X.intersect(Y)
+    XandY = X.intersection(Y)
     assert 2 in X and 3 in X and 3 in XandY
     assert XandY.is_subset(X) and XandY.is_subset(Y)
 
@@ -143,7 +143,7 @@ def test_Complement():
     assert Complement(S.Integers, S.UniversalSet) == EmptySet()
     assert S.UniversalSet.complement(S.Integers) == EmptySet()
 
-    assert (0 not in S.Reals.intersect(S.Integers - FiniteSet(0)))
+    assert (0 not in S.Reals.intersection(S.Integers - FiniteSet(0)))
 
     assert S.EmptySet - S.Integers == S.EmptySet
 
@@ -201,40 +201,42 @@ def test_complement():
     assert all(pt in notsquare for pt in [(-1, 0), (1.5, .5), (10, 10)])
 
 
-def test_intersect():
-    assert Interval(0, 2).intersect(Interval(1, 2)) == Interval(1, 2)
-    assert Interval(0, 2).intersect(Interval(1, 2, True)) == \
+def test_intersection():
+    assert Interval(0, 2).intersection(Interval(1, 2)) == Interval(1, 2)
+    assert Interval(0, 2).intersection(Interval(1, 2, True)) == \
         Interval(1, 2, True)
-    assert Interval(0, 2, True).intersect(Interval(1, 2)) == \
+    assert Interval(0, 2, True).intersection(Interval(1, 2)) == \
         Interval(1, 2, False, False)
-    assert Interval(0, 2, True, True).intersect(Interval(1, 2)) == \
+    assert Interval(0, 2, True, True).intersection(Interval(1, 2)) == \
         Interval(1, 2, False, True)
-    assert Interval(0, 2).intersect(Union(Interval(0, 1), Interval(2, 3))) == \
+    assert Interval(0, 2).intersection(Union(Interval(0, 1), Interval(2, 3))) == \
         Union(Interval(0, 1), Interval(2, 2))
 
-    assert FiniteSet(1, 2, x).intersect(FiniteSet(x)) == FiniteSet(x)
-    assert FiniteSet('ham', 'eggs').intersect(FiniteSet('ham')) == \
+    x = Symbol('x')
+
+    assert FiniteSet(1, 2, x).intersection(FiniteSet(x)) == FiniteSet(x)
+    assert FiniteSet('ham', 'eggs').intersection(FiniteSet('ham')) == \
         FiniteSet('ham')
-    assert FiniteSet(1, 2, 3, 4, 5).intersect(S.EmptySet) == S.EmptySet
+    assert FiniteSet(1, 2, 3, 4, 5).intersection(S.EmptySet) == S.EmptySet
 
-    assert Interval(0, 5).intersect(FiniteSet(1, 3)) == FiniteSet(1, 3)
-    assert Interval(0, 1, True, True).intersect(FiniteSet(1)) == S.EmptySet
+    assert Interval(0, 5).intersection(FiniteSet(1, 3)) == FiniteSet(1, 3)
+    assert Interval(0, 1, True, True).intersection(FiniteSet(1)) == S.EmptySet
 
-    assert Union(Interval(0, 1), Interval(2, 3)).intersect(Interval(1, 2)) == \
+    assert Union(Interval(0, 1), Interval(2, 3)).intersection(Interval(1, 2)) == \
         Union(Interval(1, 1), Interval(2, 2))
-    assert Union(Interval(0, 1), Interval(2, 3)).intersect(Interval(0, 2)) == \
+    assert Union(Interval(0, 1), Interval(2, 3)).intersection(Interval(0, 2)) == \
         Union(Interval(0, 1), Interval(2, 2))
-    assert Union(Interval(0, 1), Interval(2, 3)).intersect(Interval(1, 2, True, True)) == \
+    assert Union(Interval(0, 1), Interval(2, 3)).intersection(Interval(1, 2, True, True)) == \
         S.EmptySet
-    assert Union(Interval(0, 1), Interval(2, 3)).intersect(S.EmptySet) == \
+    assert Union(Interval(0, 1), Interval(2, 3)).intersection(S.EmptySet) == \
         S.EmptySet
-    assert Union(Interval(0, 5), FiniteSet('ham')).intersect(FiniteSet(2, 3, 4, 5, 6)) == \
+    assert Union(Interval(0, 5), FiniteSet('ham')).intersection(FiniteSet(2, 3, 4, 5, 6)) == \
         Union(FiniteSet(2, 3, 4, 5), Intersection(FiniteSet(6), Union(Interval(0, 5), FiniteSet('ham'))))
 
     # issue sympy/sympy#8217
     assert Intersection(FiniteSet(x), FiniteSet(y)) == \
         Intersection(FiniteSet(x), FiniteSet(y), evaluate=False)
-    assert FiniteSet(x).intersect(S.Reals) == \
+    assert FiniteSet(x).intersection(S.Reals) == \
         Intersection(S.Reals, FiniteSet(x), evaluate=False)
 
     # tests for the intersection alias
@@ -244,8 +246,6 @@ def test_intersect():
     assert Union(Interval(0, 1), Interval(2, 3)).intersection(Interval(1, 2)) == \
         Union(Interval(1, 1), Interval(2, 2))
 
-
-def test_intersection():
     # iterable
     i = Intersection(FiniteSet(1, 2, 3), Interval(2, 5), evaluate=False)
     assert i.is_iterable
@@ -318,7 +318,7 @@ def test_measure():
     assert (square + offsetsquare).measure == 175  # there is some overlap
     assert (square - offsetsquare).measure == 75
     assert (square * FiniteSet(1, 2, 3)).measure == 0
-    assert (square.intersect(band)).measure == 20
+    assert (square.intersection(band)).measure == 20
     assert (square + band).measure == oo
     assert (band * FiniteSet(1, 2, 3)).measure == nan
 
@@ -527,7 +527,7 @@ def test_Intersection_as_relational():
 
 def test_EmptySet():
     assert S.EmptySet.as_relational(x) is false
-    assert S.EmptySet.intersect(S.UniversalSet) == S.EmptySet
+    assert S.EmptySet.intersection(S.UniversalSet) == S.EmptySet
     assert S.EmptySet.boundary == S.EmptySet
 
 
@@ -535,7 +535,7 @@ def test_finite_basic():
     A = FiniteSet(1, 2, 3)
     B = FiniteSet(3, 4, 5)
     AorB = Union(A, B)
-    AandB = A.intersect(B)
+    AandB = A.intersection(B)
     assert A.is_subset(AorB) and B.is_subset(AorB)
     assert AandB.is_subset(A)
     assert AandB == FiniteSet(3)
@@ -661,7 +661,7 @@ def test_universalset():
     assert U.as_relational(x) is S.true
     assert U.union(Interval(2, 4)) == U
 
-    assert U.intersect(Interval(2, 4)) == Interval(2, 4)
+    assert U.intersection(Interval(2, 4)) == Interval(2, 4)
     assert U.measure == S.Infinity
     assert U.boundary == S.EmptySet
     assert U.contains(0) is S.true
@@ -726,9 +726,9 @@ def test_image_piecewise():
 def test_image_Intersection():
     x = Symbol('x', extended_real=True)
     y = Symbol('y', extended_real=True)
-    assert (imageset(x, x**2, Interval(-2, 0).intersect(Interval(x, y))) ==
-            Interval(0, 4).intersect(Interval(Min(x**2, y**2),
-                                              Max(x**2, y**2))))
+    assert (imageset(x, x**2, Interval(-2, 0).intersection(Interval(x, y))) ==
+            Interval(0, 4).intersection(Interval(Min(x**2, y**2),
+                                                 Max(x**2, y**2))))
 
 
 def test_image_FiniteSet():
@@ -859,7 +859,7 @@ def test_sympyissue_9956():
 
 def test_sympyissue_9536():
     a = Symbol('a', real=True)
-    assert FiniteSet(log(a)).intersect(S.Reals) == Intersection(S.Reals, FiniteSet(log(a)))
+    assert FiniteSet(log(a)).intersection(S.Reals) == Intersection(S.Reals, FiniteSet(log(a)))
 
 
 def test_sympyissue_9637():

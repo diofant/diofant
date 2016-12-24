@@ -544,7 +544,7 @@ class Piecewise(Function):
         exp_sets = []
         U = S.Reals
         for expr, cond in self.args:
-            cond_int = U.intersect(cond.as_set())
+            cond_int = U.intersection(cond.as_set())
             U = U - cond_int
             exp_sets.append((expr, cond_int))
         return exp_sets
