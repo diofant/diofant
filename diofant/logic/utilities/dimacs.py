@@ -61,11 +61,3 @@ def load(s):
                     clauses.append(Or(*list))
 
     return And(*clauses)
-
-
-def load_file(location):
-    """Loads a boolean expression from a file."""
-    with open(location) as f:
-        s = f.read()
-
-    return load(s)
