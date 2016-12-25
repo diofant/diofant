@@ -115,7 +115,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                             # Make limit into an Interval like [-oo, oo]
                             lintvl = Interval(limit[1], limit[2])
                             # Intersect them to get [0, oo]
-                            intvl = cintvl.intersect(lintvl)
+                            intvl = cintvl.intersection(lintvl)
                             # Put back into limits list
                             limits[i] = (symbol, intvl.left, intvl.right)
             else:
@@ -322,7 +322,7 @@ class ContinuousPSpace(PSpace):
                 "Multiple continuous random variables not supported")
         rv = tuple(rvs)[0]
         interval = reduce_rational_inequalities_wrap(condition, rv)
-        interval = interval.intersect(self.domain.set)
+        interval = interval.intersection(self.domain.set)
         return SingleContinuousDomain(rv.symbol, interval)
 
     def conditional_space(self, condition, normalize=True, **kwargs):
@@ -423,5 +423,5 @@ def reduce_rational_inequalities_wrap(condition, var):
             for arg in condition.args]
         I = intervals[0]
         for i in intervals:
-            I = I.intersect(i)
+            I = I.intersection(i)
         return I

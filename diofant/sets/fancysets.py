@@ -28,7 +28,7 @@ class Naturals(Set, metaclass=Singleton):
     2
     >>> next(iterable)
     3
-    >>> pprint(S.Naturals.intersect(Interval(0, 10)))
+    >>> pprint(S.Naturals.intersection(Interval(0, 10)))
     {1, 2, ..., 10}
 
     See Also
@@ -42,7 +42,7 @@ class Naturals(Set, metaclass=Singleton):
     _inf = S.One
     _sup = S.Infinity
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         if other.is_Interval:
             return Intersection(
                 S.Integers, other, Interval(self._inf, S.Infinity, False, True))
@@ -108,7 +108,7 @@ class Integers(Set, metaclass=Singleton):
     >>> next(iterable)
     2
 
-    >>> pprint(S.Integers.intersect(Interval(-4, 4)))
+    >>> pprint(S.Integers.intersection(Interval(-4, 4)))
     {-4, -3, ..., 4}
 
     See Also
@@ -120,13 +120,13 @@ class Integers(Set, metaclass=Singleton):
 
     is_iterable = True
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         from diofant.functions.elementary.integers import floor, ceiling
         if other is Interval(S.NegativeInfinity, S.Infinity, True, True) or other is S.Reals:
             return self
         elif other.is_Interval:
             s = Range(ceiling(other.left), floor(other.right) + 1)
-            return s.intersect(other)  # take out endpoints if open interval
+            return s.intersection(other)  # take out endpoints if open interval
         return
 
     def _contains(self, other):
@@ -227,7 +227,7 @@ class ImageSet(Set):
     >>> 5 in squares
     False
 
-    >>> FiniteSet(0, 1, 2, 3, 4, 5, 6, 7, 9, 10).intersect(squares)
+    >>> FiniteSet(0, 1, 2, 3, 4, 5, 6, 7, 9, 10).intersection(squares)
     {1, 4, 9}
 
     >>> square_iterable = iter(squares)
@@ -279,7 +279,7 @@ class ImageSet(Set):
     def is_iterable(self):
         return self.base_set.is_iterable
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         from diofant import Dummy
         from diofant.solvers.diophantine import diophantine
         from diofant.sets.sets import imageset
@@ -331,7 +331,7 @@ class ImageSet(Set):
             else:
                 return
 
-            return imageset(Lambda(n_, re), self.base_set.intersect(s))
+            return imageset(Lambda(n_, re), self.base_set.intersection(s))
 
 
 class Range(Set):
@@ -392,7 +392,7 @@ class Range(Set):
     stop = property(lambda self: self.args[1])
     step = property(lambda self: self.args[2])
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         from diofant.functions.elementary.integers import floor, ceiling
         from diofant.functions.elementary.miscellaneous import Min, Max
         if other.is_Interval:
@@ -419,7 +419,7 @@ class Range(Set):
             return Range(inf, sup + 1, self.step)
 
         if other == S.Naturals:
-            return self._intersect(Interval(1, S.Infinity, False, True))
+            return self._intersection(Interval(1, S.Infinity, False, True))
 
         if other == S.Integers:
             return self

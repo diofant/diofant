@@ -79,28 +79,22 @@ class Set(Basic):
         """
         return Union(self, other)
 
-    def intersect(self, other):
+    def intersection(self, other):
         """
         Returns the intersection of 'self' and 'other'.
 
         >>> from diofant import Interval
 
-        >>> Interval(1, 3).intersect(Interval(1, 2))
+        >>> Interval(1, 3).intersection(Interval(1, 2))
         [1, 2]
         """
         return Intersection(self, other)
 
-    def intersection(self, other):
-        """
-        Alias for :meth:`intersect()`
-        """
-        return self.intersect(other)
-
-    def _intersect(self, other):
+    def _intersection(self, other):
         """
         This function should only be used internally
 
-        self._intersect(other) returns a new, intersected set if self knows how
+        self._intersection(other) returns a new, intersected set if self knows how
         to intersect itself with other, otherwise it returns ``None``
 
         When making a new set class you can be assured that other will not
@@ -128,7 +122,7 @@ class Set(Basic):
 
         .. [1] http://en.wikipedia.org/wiki/Disjoint_sets
         """
-        return self.intersect(other) == S.EmptySet
+        return self.intersection(other) == S.EmptySet
 
     def isdisjoint(self, other):
         """
@@ -291,7 +285,7 @@ class Set(Basic):
         False
         """
         if isinstance(other, Set):
-            return self.intersect(other) == self
+            return self.intersection(other) == self
         else:
             raise ValueError("Unknown argument '%s'" % other)
 
@@ -471,7 +465,7 @@ class Set(Basic):
         return self.union(other)
 
     def __and__(self, other):
-        return self.intersect(other)
+        return self.intersection(other)
 
     def __mul__(self, other):
         return ProductSet(self, other)
@@ -587,17 +581,17 @@ class ProductSet(Set):
             return false
         return And(*[s.contains(i) for s, i in zip(self.sets, element)])
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         """
         This function should only be used internally
 
-        See Set._intersect for docstring
+        See Set._intersection for docstring
         """
         if not other.is_ProductSet:
             return
         if len(other.args) != len(self.args):
             return S.EmptySet
-        return ProductSet(a.intersect(b) for a, b in zip(self.sets, other.sets))
+        return ProductSet(a.intersection(b) for a, b in zip(self.sets, other.sets))
 
     def _union(self, other):
         if not other.is_ProductSet:
@@ -803,11 +797,11 @@ class Interval(Set, EvalfMixin):
         """
         return self.args[3]
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         """
         This function should only be used internally
 
-        See Set._intersect for docstring
+        See Set._intersection for docstring
         """
         # We only know how to intersect with other intervals
         if not other.is_Interval:
@@ -1197,7 +1191,7 @@ class Union(Set, EvalfMixin):
         # Sets is a collection of intersections and a set of elementary
         # sets which made up those intersections (called "sos" for set of sets)
         # An example element might of this list might be:
-        #    ( {A,B,C}, A.intersect(B).intersect(C) )
+        #    ( {A,B,C}, A.intersection(B).intersection(C) )
 
         # Start with just elementary sets (  ({A}, A), ({B}, B), ... )
         # Then get and subtract (  ({A,B}, (A int B), ... ) while non-zero
@@ -1210,7 +1204,7 @@ class Union(Set, EvalfMixin):
 
             # For each intersection in sets, compute the intersection with every
             # other set not already part of the intersection.
-            sets = ((sos + FiniteSet(newset), newset.intersect(intersection))
+            sets = ((sos + FiniteSet(newset), newset.intersection(intersection))
                     for sos, intersection in sets for newset in self.args
                     if newset not in sos)
 
@@ -1294,7 +1288,7 @@ class Intersection(Set):
 
     We often use the .intersect method
 
-    >>> Interval(1,3).intersect(Interval(2,4))
+    >>> Interval(1,3).intersection(Interval(2,4))
     [2, 3]
 
     See Also
@@ -1423,7 +1417,7 @@ class Intersection(Set):
             for s in args:
                 new_args = False
                 for t in args - {s}:
-                    new_set = s._intersect(t)
+                    new_set = s._intersection(t)
                     # This returns None if s does not know how to intersect
                     # with t. Returns the newly intersected set otherwise
                     if new_set is not None:
@@ -1512,7 +1506,7 @@ class EmptySet(Set, metaclass=Singleton):
     >>> S.EmptySet
     EmptySet()
 
-    >>> Interval(1, 2).intersect(S.EmptySet)
+    >>> Interval(1, 2).intersection(S.EmptySet)
     EmptySet()
 
     See Also
@@ -1528,7 +1522,7 @@ class EmptySet(Set, metaclass=Singleton):
     is_EmptySet = True
     is_FiniteSet = True
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         return S.EmptySet
 
     @property
@@ -1580,7 +1574,7 @@ class UniversalSet(Set, metaclass=Singleton):
     >>> S.UniversalSet
     UniversalSet()
 
-    >>> Interval(1, 2).intersect(S.UniversalSet)
+    >>> Interval(1, 2).intersection(S.UniversalSet)
     [1, 2]
 
     See Also
@@ -1596,7 +1590,7 @@ class UniversalSet(Set, metaclass=Singleton):
 
     is_UniversalSet = True
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         return other
 
     def _complement(self, other):
@@ -1675,11 +1669,11 @@ class FiniteSet(Set, EvalfMixin):
     def __iter__(self):
         return iter(self.args)
 
-    def _intersect(self, other):
+    def _intersection(self, other):
         """
         This function should only be used internally
 
-        See Set._intersect for docstring
+        See Set._intersection for docstring
         """
         if isinstance(other, self.__class__):
             return self.__class__(*(self._elements & other._elements))

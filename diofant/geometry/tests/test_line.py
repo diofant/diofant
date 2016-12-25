@@ -637,7 +637,7 @@ def test_sympyissue_2941():
     _check()
 
 
-def test_symbolic_intersect():
+def test_symbolic_intersection():
     # Issue sympy/sympy#7814.
     circle = Circle(Point(x, 0), y)
     line = Line(Point(k, z), slope=0)
