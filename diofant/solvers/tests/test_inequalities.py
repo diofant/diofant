@@ -24,6 +24,8 @@ def test_solve_poly_inequality():
     assert psolve(Poly(0, x), '==') == [S.Reals]
     assert psolve(Poly(1, x), '==') == [S.EmptySet]
     assert psolve(PurePoly(x + 1, x), ">") == [Interval(-1, oo, True, True)]
+    pytest.raises(ValueError, lambda: psolve(x, '=='))
+    pytest.raises(ValueError, lambda: psolve(Poly(x, x), '??'))
 
 
 def test_reduce_poly_inequalities_real_interval():
@@ -101,6 +103,9 @@ def test_reduce_poly_inequalities_real_interval():
     # issue sympy/sympy#10237
     assert reduce_rational_inequalities(
         [[x < oo, x >= 0, -oo < x]], x, relational=False) == Interval(0, oo, False, True)
+
+    assert reduce_rational_inequalities([[Eq((x + 1)/(x**2 - 1),
+                                             0)]], x) is S.false
 
 
 def test_reduce_poly_inequalities_complex_relational():
@@ -302,6 +307,8 @@ def test_solve_univariate_inequality():
     den = ((x - 1)*(x - 2)).expand()
     assert isolve((x - 1)/den <= 0, x) == \
         Or(And(-oo < x, x < 1), And(Integer(1) < x, x < 2))
+
+    assert isolve(x > oo, x) is S.false
 
 
 def test_slow_general_univariate():

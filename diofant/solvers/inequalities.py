@@ -36,13 +36,15 @@ def solve_poly_inequality(poly, rel):
     """
     if not isinstance(poly, Poly):
         raise ValueError('`poly` should be a Poly instance')
+    if rel not in {'>', '<', '>=', '<=', '==', '!='}:
+        raise ValueError("Invalid relational operator symbol: %r" % rel)
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
         if t is S.true:
             return [S.Reals]
         elif t is S.false:
             return [S.EmptySet]
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Couldn't determine truth value of %s" % t)
 
     reals, intervals = poly.real_roots(multiple=False), []
@@ -68,10 +70,8 @@ def solve_poly_inequality(poly, rel):
             eq_sign = -1
         elif rel == '>=':
             eq_sign, equal = +1, True
-        elif rel == '<=':
-            eq_sign, equal = -1, True
         else:
-            raise ValueError("'%s' is not a valid relation" % rel)
+            eq_sign, equal = -1, True
 
         right, right_open = S.Infinity, True
 
@@ -135,9 +135,6 @@ def solve_rational_inequalities(eqs):
     result = S.EmptySet
 
     for eq in eqs:
-        if not eq:
-            continue
-
         global_intervals = [S.Reals]
 
         for (numer, denom), rel in eq:
@@ -212,13 +209,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
             else:
                 numer, denom = expr.together().as_numer_denom()
 
-            try:
-                (numer, denom), opt = parallel_poly_from_expr(
-                    (numer, denom), gen)
-            except PolynomialError:
-                raise PolynomialError(filldedent('''
-                    only polynomials and
-                    rational functions are supported in this context'''))
+            (numer, denom), opt = parallel_poly_from_expr((numer, denom), gen)
 
             if not opt.domain.is_Exact:
                 numer, denom, exact = numer.to_exact(), denom.to_exact(), False
@@ -297,7 +288,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
         elif expr.is_Pow:
             n = expr.exp
 
-            if not n.is_Integer:
+            if not n.is_Integer:  # pragma: no cover
                 raise NotImplementedError("only integer powers are supported")
 
             _exprs = _bottom_up_scan(expr.base)
@@ -404,23 +395,14 @@ def solve_univariate_inequality(expr, gen, relational=True):
         r = simplify(r)
         if r in (S.true, S.false):
             return r
-        if v.is_extended_real is False:
-            return S.false
-        else:
-            if v.is_comparable:
-                v = v.n(2)
-                if v._prec > 1:
-                    return expr.func(v, 0)
-            elif v.is_comparable is False:
-                return False
+        elif v.is_comparable is False:
+            return False
+        else:  # pragma: no cover
             raise NotImplementedError
 
     start = S.NegativeInfinity
     sol_sets = [S.EmptySet]
-    try:
-        reals = _nsort(set(solns + singularities), separated=True)[0]
-    except NotImplementedError:
-        raise NotImplementedError('sorting of these roots is not supported')
+    reals = _nsort(set(solns + singularities), separated=True)[0]
     for x in reals:
         end = x
 
@@ -532,8 +514,6 @@ def reduce_inequalities(inequalities, symbols=[]):
             continue
         elif i == S.false:
             return S.false
-        if i.lhs.is_number:
-            raise NotImplementedError("Couldn't determine truth value of %s" % i)
         keep.append(i)
     inequalities = keep
     del keep
