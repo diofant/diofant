@@ -1,7 +1,5 @@
 """Tools for solving inequalities and systems of inequalities. """
 
-from functools import reduce
-
 from diofant.core import Symbol, Dummy, Integer
 from diofant.core.compatibility import iterable
 from diofant.sets import Interval
@@ -22,8 +20,6 @@ def solve_poly_inequality(poly, rel):
     Examples
     ========
 
-    >>> from diofant import Poly
-    >>> from diofant.solvers.inequalities import solve_poly_inequality
     >>> from diofant.abc import x
 
     >>> solve_poly_inequality(Poly(x, x, domain='ZZ'), '==')
@@ -105,9 +101,8 @@ def solve_poly_inequalities(polys):
     Examples
     ========
 
-    >>> from diofant.solvers.inequalities import solve_poly_inequalities
-    >>> from diofant.polys import Poly
     >>> from diofant.abc import x
+
     >>> solve_poly_inequalities(((Poly(x**2 - 3), ">"),
     ...                          (Poly(-x**2 + 1), ">")))
     (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
@@ -123,8 +118,6 @@ def solve_rational_inequalities(eqs):
     ========
 
     >>> from diofant.abc import x
-    >>> from diofant import Poly
-    >>> from diofant.solvers.inequalities import solve_rational_inequalities
 
     >>> solve_rational_inequalities([[((Poly(-x + 1), Poly(1, x)), '>='),
     ...                               ((Poly(-x + 1), Poly(1, x)), '<=')]])
@@ -185,9 +178,6 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
 
     Examples
     ========
-
-    >>> from diofant import Poly, Symbol
-    >>> from diofant.solvers.inequalities import reduce_rational_inequalities
 
     >>> x = Symbol('x', real=True)
 
@@ -263,9 +253,6 @@ def reduce_piecewise_inequality(expr, rel, gen):
 
     Examples
     ========
-
-    >>> from diofant import Abs, Symbol, Piecewise
-    >>> from diofant.solvers.inequalities import reduce_piecewise_inequality
 
     >>> x = Symbol('x', real=True)
 
@@ -361,9 +348,6 @@ def reduce_piecewise_inequalities(exprs, gen):
     Examples
     ========
 
-    >>> from diofant import Abs, Symbol
-    >>> from diofant.solvers.inequalities import reduce_piecewise_inequalities
-
     >>> x = Symbol('x', real=True)
 
     >>> reduce_piecewise_inequalities([(Abs(3*x - 5) - 7, '<'),
@@ -387,9 +371,6 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
     Examples
     ========
-
-    >>> from diofant.solvers.inequalities import solve_univariate_inequality
-    >>> from diofant.core.symbol import Symbol
 
     >>> x = Symbol('x', real=True)
 
@@ -529,8 +510,6 @@ def reduce_inequalities(inequalities, symbols=[]):
     Examples
     ========
 
-    >>> from diofant.solvers.inequalities import reduce_inequalities
-
     >>> x = Symbol('x', real=True)
     >>> y = Symbol('y', real=True)
 
@@ -559,7 +538,7 @@ def reduce_inequalities(inequalities, symbols=[]):
     inequalities = keep
     del keep
 
-    gens = reduce(set.union, [i.free_symbols for i in inequalities], set())
+    gens = set().union(*[i.free_symbols for i in inequalities])
 
     if not iterable(symbols):
         symbols = [symbols]
