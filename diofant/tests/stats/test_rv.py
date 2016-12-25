@@ -253,3 +253,10 @@ def test_sample_iter():
     assert all(_ > 5 for _ in sample_iter(expr, numsamples=3, condition=X > 2))
     pytest.raises(ValueError, lambda: tuple(sample_iter(expr, numsamples=3,
                                                         condition=X)))
+
+
+def test_sympyissue_8129():
+    X = Exponential('X', 4)
+    assert P(X >= X) == 1
+    assert P(X > X) == 0
+    assert P(X > X+1) == 0
