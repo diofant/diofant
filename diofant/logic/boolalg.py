@@ -348,7 +348,7 @@ class And(LatticeOp, BooleanFunction):
         from diofant.sets.sets import Intersection
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Sorry, And.as_set has not yet been"
                                       " implemented for multivariate"
                                       " expressions")

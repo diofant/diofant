@@ -99,7 +99,7 @@ class SATSolver:
             # Note: Uncomment this if/when clause learning is enabled
             # self.update_functions.append(self._vsids_decay)
 
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError
 
         if 'simple' == clause_learning:
@@ -109,7 +109,7 @@ class SATSolver:
         elif 'none' == clause_learning:
             self.add_learned_clause = lambda x: None
             self.compute_conflict = lambda: None
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError
 
         # Create the base level
