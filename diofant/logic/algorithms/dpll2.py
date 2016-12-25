@@ -26,7 +26,6 @@ def dpll_satisfiable(expr, all_models=False):
     ========
 
     >>> from diofant.abc import A, B
-    >>> from diofant.logic.algorithms.dpll2 import dpll_satisfiable
     >>> dpll_satisfiable(A & ~B)
     {A: True, B: False}
     >>> dpll_satisfiable(A & ~A)
@@ -156,18 +155,16 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
         >>> list(l._find_model())
         [{1: True, 2: False, 3: False}, {1: True, 2: True, 3: True}]
 
         >>> from diofant.abc import A, B, C
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set(), [A, B, C])
+        ...                {3, -2}], {1, 2, 3}, set(), [A, B, C])
         >>> list(l._find_model())
-        [{A: True, B: False, C: False},
-         {A: True, B: True, C: True}]
+        [{A: True, B: False, C: False}, {A: True, B: True, C: True}]
         """
 
         # We use this variable to keep track of if we should flip a
@@ -245,7 +242,6 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{1}, {2}], {1, 2}, set())
         >>> next(l._find_model())
         {1: True, 2: True}
@@ -264,7 +260,6 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{1}, {-1}], {1}, set())
         >>> try:
         ...     next(l._find_model())
@@ -286,9 +281,8 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
         >>> next(l._find_model())
         {1: True, 2: False, 3: False}
         >>> l._is_sentinel(2, 3)
@@ -310,16 +304,15 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
         >>> next(l._find_model())
         {1: True, 2: False, 3: False}
         >>> l.var_settings
         {-3, -2, 1}
 
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
         >>> l._assign_literal(-1)
         >>> try:
         ...     next(l._find_model())
@@ -359,9 +352,8 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
         >>> next(l._find_model())
         {1: True, 2: False, 3: False}
         >>> level = l._current_level
@@ -395,21 +387,17 @@ class SATSolver:
         Examples
         ========
 
-        >>> from collections import defaultdict
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
         >>> l.variable_set
         [False, False, False, False]
-        >>> l.sentinels == defaultdict(int, {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}})
-        True
-
+        >>> l.sentinels
+        {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}}
         >>> l._simplify()
-
         >>> l.variable_set
         [False, True, False, False]
-        >>> l.sentinels == defaultdict(int, {-3: {0, 2}, -2: {3, 4}, -1: set(), 2: {0, 3}, 3: {2, 4}})
-        True
+        >>> l.sentinels
+        {-3: {0, 2}, -2: {3, 4}, -1: set(), 2: {0, 3}, 3: {2, 4}}
         """
         changed = True
         while changed:
@@ -455,15 +443,11 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
-
+        ...                {3, -2}], {1, 2, 3}, set())
         >>> l.lit_scores
         {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
-
         >>> l._vsids_decay()
-
         >>> l.lit_scores
         {-3: -1.0, -2: -1.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -1.0}
         """
@@ -474,21 +458,18 @@ class SATSolver:
 
     def _vsids_calculate(self):
         """
-            VSIDS Heuristic Calculation
+        VSIDS Heuristic Calculation
 
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
 
         >>> l.lit_heap
         [(-2.0, -3), (-2.0, 2), (-2.0, -2), (0.0, 1), (-2.0, 3), (0.0, -1)]
-
         >>> l._vsids_calculate()
         -3
-
         >>> l.lit_heap
         [(-2.0, -2), (-2.0, 2), (0.0, -1), (0.0, 1), (-2.0, 3)]
         """
@@ -513,17 +494,15 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
+
         >>> l.lit_heap
         [(-2.0, -3), (-2.0, 2), (-2.0, -2), (0.0, 1), (-2.0, 3), (0.0, -1)]
-
         >>> l._vsids_lit_unset(2)
-
         >>> l.lit_heap
         [(-2.0, -3), (-2.0, -2), (-2.0, -2), (-2.0, 2), (-2.0, 3), (0.0, -1),
-        ...(-2.0, 2), (0.0, 1)]
+         (-2.0, 2), (0.0, 1)]
         """
         var = abs(lit)
         heappush(self.lit_heap, (self.lit_scores[var], var))
@@ -535,9 +514,8 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
 
         >>> l.num_learned_clauses
         0
@@ -545,7 +523,6 @@ class SATSolver:
         {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
 
         >>> l._vsids_clause_added({2, -3})
-
         >>> l.num_learned_clauses
         1
         >>> l.lit_scores
@@ -564,24 +541,21 @@ class SATSolver:
         Examples
         ========
 
-        >>> from collections import defaultdict
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
 
         >>> l.num_learned_clauses
         0
         >>> l.clauses
         [[2, -3], [1], [3, -3], [2, -2], [3, -2]]
-        >>> l.sentinels == defaultdict(int, {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}})
-        True
+        >>> l.sentinels
+        {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}}
 
         >>> l._simple_add_learned_clause([3])
-
         >>> l.clauses
         [[2, -3], [1], [3, -3], [2, -2], [3, -2], [3]]
-        >>> l.sentinels == defaultdict(int, {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4, 5}})
-        True
+        >>> l.sentinels
+        {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4, 5}}
         """
         cls_num = len(self.clauses)
         self.clauses.append(cls)
@@ -601,9 +575,8 @@ class SATSolver:
         Examples
         ========
 
-        >>> from diofant.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ... {3, -2}], {1, 2, 3}, set())
+        ...                {3, -2}], {1, 2, 3}, set())
         >>> next(l._find_model())
         {1: True, 2: False, 3: False}
         >>> l._simple_compute_conflict()

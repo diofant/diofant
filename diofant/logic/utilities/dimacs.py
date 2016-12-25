@@ -1,7 +1,6 @@
 """For reading in DIMACS file format
 
 www.cs.ubc.ca/~hoos/SATLIB/Benchmarks/SAT/satformat.ps
-
 """
 
 import re
@@ -16,7 +15,6 @@ def load(s):
     Examples
     ========
 
-    >>> from diofant.logic.utilities.dimacs import load
     >>> load('1')
     cnf_1
     >>> load('1 2')
