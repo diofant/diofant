@@ -78,7 +78,6 @@ class SATSolver:
         self.heuristic = heuristic
         self.is_unsatisfied = False
         self._unit_prop_queue = []
-        self.update_functions = []
         self.INTERVAL = INTERVAL
 
         if symbols is None:
@@ -96,17 +95,10 @@ class SATSolver:
             self.heur_lit_unset = self._vsids_lit_unset
             self.heur_clause_added = self._vsids_clause_added
 
-            # Note: Uncomment this if/when clause learning is enabled
-            # self.update_functions.append(self._vsids_decay)
-
         else:  # pragma: no cover
             raise NotImplementedError
 
-        if 'simple' == clause_learning:
-            self.add_learned_clause = self._simple_add_learned_clause
-            self.compute_conflict = self.simple_compute_conflict
-            self.update_functions.append(self.simple_clean_clauses)
-        elif 'none' == clause_learning:
+        if 'none' == clause_learning:
             self.add_learned_clause = lambda x: None
             self.compute_conflict = lambda: None
         else:  # pragma: no cover
@@ -189,11 +181,6 @@ class SATSolver:
 
         # While the theory still has clauses remaining
         while True:
-            # Perform cleanup / fixup at regular intervals
-            if self.num_decisions % self.INTERVAL == 0:
-                for func in self.update_functions:
-                    func()
-
             if flip_var:
                 # We have just backtracked and we are trying to opposite literal
                 flip_var = False
@@ -229,7 +216,6 @@ class SATSolver:
 
             # Check if we've made the theory unsat
             if self.is_unsatisfied:
-
                 self.is_unsatisfied = False
 
                 # We unroll all of the decisions until we can flip a literal
@@ -624,10 +610,6 @@ class SATSolver:
         [3]
         """
         return [-(level.decision) for level in self.levels[1:]]
-
-    def _simple_clean_clauses(self):
-        """Clean up learned clauses."""
-        pass
 
 
 class Level:

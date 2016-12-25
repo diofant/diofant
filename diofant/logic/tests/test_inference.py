@@ -125,6 +125,12 @@ def test_dpll2_satisfiable():
     assert dpll2_satisfiable( Equivalent(A, B) & A ) == {A: True, B: True}
     assert dpll2_satisfiable( Equivalent(A, B) & ~A ) == {A: False, B: False}
 
+    from diofant.logic.algorithms.dpll2 import SATSolver
+
+    l = SATSolver([], set(), set())
+    assert l.lit_heap == []
+    assert l._vsids_calculate() == 0
+
 
 def test_satisfiable():
     A, B, C = symbols('A,B,C')
