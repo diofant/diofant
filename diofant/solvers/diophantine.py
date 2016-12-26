@@ -261,7 +261,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     >>> diop_solve(x + 3*y - 4*z + w -6)
     (t_0, t_0 + t_1, 6*t_0 + 5*t_1 + 4*t_2 - 6, 5*t_0 + 4*t_1 + 3*t_2 - 6)
     >>> diop_solve(x**2 + y**2 - 5)
-    {(-1, -2), (-1, 2), (1, -2), (1, 2)}
+    {(-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1)}
 
     See Also
     ========
@@ -872,15 +872,14 @@ def _diop_quadratic(var, coeff, t):
         solns_pell = diop_DN(D, N)
 
         if D < 0:
-            for solution in solns_pell:
-                for X_i in [-solution[0], solution[0]]:
-                    for Y_i in [-solution[1], solution[1]]:
-                        s = P*Matrix([X_i, Y_i]) + Q
+            for x0, y0 in solns_pell:
+                for x in [-x0, x0]:
+                    for y in [-y0, y0]:
+                        s = P*Matrix([x, y]) + Q
                         try:
                             sol.add(tuple(as_int(_) for _ in s))
                         except ValueError:
                             pass
-
         else:
             # In this case equation can be transformed into a Pell equation
 
@@ -1006,7 +1005,8 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
                 if sols:
                     for x, y in sols:
                         sol.append((d*x, d*y))
-
+                        if D == -1:
+                            sol.append((d*y, d*x))
             return sol
 
     elif D == 0:
@@ -1203,10 +1203,10 @@ def cornacchia(a, b, m):
     Examples
     ========
 
-    >>> cornacchia(2, 3, 35)  # equation 2x**2 + 3y**2 = 35
+    >>> cornacchia(2, 3, 35)
     {(2, 3), (4, 1)}
-    >>> cornacchia(1, 1, 25)  # equation x**2 + y**2 = 25
-    {(3, 4)}
+    >>> cornacchia(1, 1, 25)
+    {(4, 3)}
 
     References
     ===========
@@ -1246,7 +1246,7 @@ def cornacchia(a, b, m):
             m1 = m1 // b
             s, _exact = integer_nthroot(m1, 2)
             if _exact:
-                if a == b and r > s:
+                if a == b and r < s:
                     r, s = s, r
                 sols.add((int(r), int(s)))
 

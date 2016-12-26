@@ -130,7 +130,7 @@ def test_quadratic_elliptical_case():
     assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-1, -1)}
     # assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-15, 6)}
     assert diop_solve(10*x**2 + 12*x*y + 12*y**2 - 34) == \
-        {(1, -2), (-1, -1), (1, 1), (-1, 2)}
+        {(-1, -1), (-1, 2), (1, -2), (1, 1)}
 
 
 def test_quadratic_parabolic_case():
@@ -209,8 +209,8 @@ def test_DN():
 
     # When equation is x**2 + y**2 = N
     # Solutions are interchangeable
-    assert diop_DN(-1, 5) == [(1, 2)]
-    assert diop_DN(-1, 169) == [(5, 12), (0, 13)]
+    assert diop_DN(-1, 5) == [(2, 1), (1, 2)]
+    assert diop_DN(-1, 169) == [(12, 5), (5, 12), (13, 0), (0, 13)]
 
     # D > 0 and D is not a square
 
@@ -739,7 +739,7 @@ def test_diopcoverage():
     assert base_solution_linear(4, 8, 12, t=None) == tuple(_.subs({t: 0}) for _ in ans)
 
     assert cornacchia(1, 1, 20) is None
-    assert cornacchia(1, 1, 5) == {(1, 2)}
+    assert cornacchia(1, 1, 5) == {(2, 1)}
     assert cornacchia(1, 2, 17) == {(3, 2)}
     assert cornacchia(2, 3, 31) == set()
 
@@ -779,6 +779,9 @@ def test_diopcoverage():
     assert diop_general_pythagorean(x + y) is None  # wrong type
     assert diop_general_sum_of_squares(x + y) is None  # wrong type
     assert diop_general_sum_of_even_powers(x + y) is None  # wrong type
+
+    assert diop_quadratic(x**2 + y**2 - 1**2 - 3**4) == \
+        {(-9, -1), (-9, 1), (-1, -9), (-1, 9), (1, -9), (1, 9), (9, -1), (9, 1)}
 
 
 def test_holzer():
@@ -895,3 +898,10 @@ def test_sympyissue_9538():
     assert diophantine(eq, syms=[y, x]) == {(t_0, 3*t_0 - 2)}
     pytest.raises(TypeError, lambda: diophantine(eq, syms={y, x}))
     assert diophantine(eq, syms=[x, y]) == {(3*t_0 - 2, t_0)}
+
+
+def test_sympyissue_11959():
+    solution = {(11, -71), (33, -64), (49, -53), (54, -48), (-59, -41),
+                (-61, -38), (65, -32), (-70, -17), (72, -10), (-72, 6),
+                (-68, 25), (42, 60), (39, 62), (-24, 69), (18, 71), (-5, 73)}
+    assert diophantine(10*x**2 - 6*x + 10*y**2 - 14*y - 52548) == solution
