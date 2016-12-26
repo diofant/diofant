@@ -103,6 +103,8 @@ def test_union():
     pytest.raises(TypeError, lambda: Union(1, 2, 3))
 
     assert X.is_iterable is False
+    Z = Union(FiniteSet(1, 2)*FiniteSet(3, 4), FiniteSet(1, 2, 3, 4))
+    assert Z.is_iterable
 
     # issue sympy/sympy#7843
     assert Union(S.EmptySet, FiniteSet(-sqrt(-I), sqrt(-I))) == FiniteSet(-sqrt(-I), sqrt(-I))
@@ -209,6 +211,9 @@ def test_complement():
 
 
 def test_intersection():
+    pytest.raises(TypeError, lambda: Intersection(1))
+    pytest.raises(TypeError, lambda: Intersection())
+
     assert Interval(0, 2).intersection(Interval(1, 2)) == Interval(1, 2)
     assert Interval(0, 2).intersection(Interval(1, 2, True)) == \
         Interval(1, 2, True)
@@ -220,6 +225,8 @@ def test_intersection():
         Union(Interval(0, 1), Interval(2, 2))
 
     x = Symbol('x')
+
+    assert Intersection(Interval(0, 1), FiniteSet(x)).is_iterable
 
     assert FiniteSet(1, 2, x).intersection(FiniteSet(x)) == FiniteSet(x)
     assert FiniteSet('ham', 'eggs').intersection(FiniteSet('ham')) == \
@@ -733,6 +740,9 @@ def test_image_interval():
 
     assert (imageset(Lambda(x, sin(cos(x))), Interval(0, 1)) ==
             ImageSet(Lambda(x, sin(cos(x))), Interval(0, 1)))
+
+    assert imageset(x, -(x - 2)*(x + 2),
+                    Interval(-3, 4)) == Interval(-12, 4)
 
 
 def test_image_piecewise():

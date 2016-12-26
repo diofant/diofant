@@ -939,12 +939,9 @@ class Interval(Set, EvalfMixin):
 
                 # remove the part which has been `imaged`
                 domain_set = Complement(domain_set, intrvl)
-                if domain_set.is_EmptySet:
+                if (p_expr, p_cond) != expr.args[-1] and domain_set.is_EmptySet:
                     break
             return result
-
-        if not self.start.is_comparable or not self.end.is_comparable:
-            return
 
         try:
             sing = [x for x in singularities(expr, var)
@@ -1242,10 +1239,7 @@ class Union(Set, EvalfMixin):
         return all(arg.is_iterable for arg in self.args)
 
     def _eval_evalf(self, prec):
-        try:
-            return Union(set._eval_evalf(prec) for set in self.args)
-        except Exception:
-            raise TypeError("Not all sets are evalf-able")
+        return Union(set._eval_evalf(prec) for set in self.args)
 
     def __iter__(self):
         # roundrobin recipe taken from itertools documentation:
@@ -1457,9 +1451,6 @@ class Complement(Set, EvalfMixin):
         Simplify a :class:`Complement`.
 
         """
-
-        if isinstance(B, Union):
-            return Intersection(s.complement(A) for s in B.args)
 
         result = B._complement(A)
         if result is not None:
