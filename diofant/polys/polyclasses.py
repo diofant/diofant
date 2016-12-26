@@ -4,36 +4,6 @@ from diofant.core.sympify import CantSympify
 from diofant.polys.polyerrors import CoercionFailed, NotReversible
 from diofant import oo
 
-
-class GenericPoly:
-    """Base class for low-level polynomial representations. """
-
-    def ground_to_ring(self):
-        """Make the ground domain a ring. """
-        return self.set_domain(self.domain.get_ring())
-
-    def ground_to_field(self):
-        """Make the ground domain a field. """
-        return self.set_domain(self.domain.get_field())
-
-    def ground_to_exact(self):
-        """Make the ground domain exact. """
-        return self.set_domain(self.domain.get_exact())
-
-    @classmethod
-    def _perify_factors(cls, result, include):
-        if include:
-            coeff, factors = result
-        else:
-            coeff = result
-
-        factors = [(cls(g), k) for g, k in factors]
-
-        if include:
-            return coeff, factors
-        else:
-            return factors
-
 from diofant.polys.densebasic import (
     dmp_validate,
     dup_normal, dmp_normal,
@@ -131,10 +101,6 @@ from diofant.polys.rootisolation import (
 from diofant.polys.polyerrors import (
     UnificationFailed,
     PolynomialError)
-
-
-def init_normal_DMP(rep, lev, dom):
-    return DMP(dmp_normal(rep, lev, dom), dom, lev)
 
 
 class DMP(CantSympify):
