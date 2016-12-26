@@ -389,23 +389,6 @@ class Line2DBaseSeries(BaseSeries):
             return c*np.ones(self.nb_of_points)
 
 
-class List2DSeries(Line2DBaseSeries):
-    """Representation for a line consisting of list of points."""
-
-    def __init__(self, list_x, list_y):
-        np = import_module('numpy')
-        super(List2DSeries, self).__init__()
-        self.list_x = np.array(list_x)
-        self.list_y = np.array(list_y)
-        self.label = 'list'
-
-    def __str__(self):
-        return 'list plot'
-
-    def get_points(self):
-        return self.list_x, self.list_y
-
-
 class LineOver1DRangeSeries(Line2DBaseSeries):
     """Representation for a line consisting of a Diofant expression over a range."""
 
@@ -790,48 +773,6 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
         fy = vectorized_lambdify((self.var_u, self.var_v), self.expr_y)
         fz = vectorized_lambdify((self.var_u, self.var_v), self.expr_z)
         return fx(mesh_u, mesh_v), fy(mesh_u, mesh_v), fz(mesh_u, mesh_v)
-
-
-# Contours
-class ContourSeries(BaseSeries):
-    """Representation for a contour plot."""
-    # The code is mostly repetition of SurfaceOver2DRange.
-    # XXX: Presently not used in any of those functions.
-    # XXX: Add contour plot and use this seties.
-
-    is_contour = True
-
-    def __init__(self, expr, var_start_end_x, var_start_end_y):
-        super(ContourSeries, self).__init__()
-        self.nb_of_points_x = 50
-        self.nb_of_points_y = 50
-        self.expr = sympify(expr)
-        self.var_x = sympify(var_start_end_x[0])
-        self.start_x = float(var_start_end_x[1])
-        self.end_x = float(var_start_end_x[2])
-        self.var_y = sympify(var_start_end_y[0])
-        self.start_y = float(var_start_end_y[1])
-        self.end_y = float(var_start_end_y[2])
-
-        self.get_points = self.get_meshes
-
-    def __str__(self):
-        return ('contour: %s for '
-                '%s over %s and %s over %s') % (
-                    str(self.expr),
-                    str(self.var_x),
-                    str((self.start_x, self.end_x)),
-                    str(self.var_y),
-                    str((self.start_y, self.end_y)))
-
-    def get_meshes(self):
-        np = import_module('numpy')
-        mesh_x, mesh_y = np.meshgrid(np.linspace(self.start_x, self.end_x,
-                                                 num=self.nb_of_points_x),
-                                     np.linspace(self.start_y, self.end_y,
-                                                 num=self.nb_of_points_y))
-        f = vectorized_lambdify((self.var_x, self.var_y), self.expr)
-        return mesh_x, mesh_y, f(mesh_x, mesh_y)
 
 
 ##############################################################################

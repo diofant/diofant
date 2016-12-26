@@ -186,50 +186,12 @@ class lambdify:
 
     def __call__(self, args):
         args = complex(args)
-        try:
-            # The result can be diofant.Float. Hence wrap it with complex type.
-            result = complex(self.lambda_func(args))
-            if abs(result.imag) > 1e-7 * abs(result):
-                return
-            else:
-                return result.real
-        except Exception as e:
-            # The exceptions raised by diofant, cmath are not consistent and
-            # hence it is not possible to specify all the exceptions that
-            # are to be caught. Presently there are no cases for which the code
-            # reaches this block other than ZeroDivisionError and complex
-            # comparision. Also the exception is caught only once. If the
-            # exception repeats itself,
-            # then it is not caught and the corresponding error is raised.
-            # XXX: Remove catching all exceptions once the plotting module
-            # is heavily tested.
-            if isinstance(e, ZeroDivisionError):
-                return
-            elif isinstance(e, TypeError) and ('no ordering relation is'
-                                               ' defined for complex numbers'
-                                               in str(e)):
-                self.lambda_func = experimental_lambdify(self.args, self.expr,
-                                                         use_evalf=True,
-                                                         use_python_math=True)
-                result = self.lambda_func(args.real)
-                return result
-            else:
-                if self.failure:
-                    raise e
-                # Failure
-                # Try wrapping it with complex(..).evalf()
-                self.failure = True
-                self.lambda_func = experimental_lambdify(self.args, self.expr,
-                                                    use_evalf=True,
-                                                    complex_wrap_evalf=True)
-                result = self.lambda_func(args)
-                warnings.warn('The evaluation of the expression is'
-                        ' problematic. We are trying a failback method'
-                        ' that may still work. Please report this as a bug.')
-                if abs(result.imag) > 1e-7 * abs(result):
-                    return
-                else:
-                    return result.real
+        # The result can be diofant.Float. Hence wrap it with complex type.
+        result = complex(self.lambda_func(args))
+        if abs(result.imag) > 1e-7 * abs(result):
+            return
+        else:
+            return result.real
 
 
 def experimental_lambdify(*args, **kwargs):
