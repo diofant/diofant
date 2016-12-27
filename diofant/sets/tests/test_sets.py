@@ -744,6 +744,11 @@ def test_image_interval():
     assert imageset(x, -(x - 2)*(x + 2),
                     Interval(-3, 4)) == Interval(-12, 4)
 
+    assert (imageset(z, 2*z, ImageSet(Lambda((x, y), x*y),
+                                      Interval(0, 2))) ==
+            ImageSet(Lambda(z, 2*z), ImageSet(Lambda((x, y), x*y),
+                                              Interval(0, 2))))
+
 
 def test_image_piecewise():
     f = Piecewise((x, x <= -1), (1/x**2, x <= 5), (x**3, True))
@@ -892,6 +897,14 @@ def test_SymmetricDifference():
     assert (Interval(0, 4) ^ Interval(2, 5) ==
             Union(Interval(0, 4) - Interval(2, 5),
                   Interval(2, 5) - Interval(0, 4)))
+
+    class TestSet(Set):
+        def _symmetric_difference(self, other):
+            return
+
+    t1, t2 = TestSet(1), TestSet(2)
+    assert t1.symmetric_difference(t2) == SymmetricDifference(t1, t2,
+                                                              evaluate=False)
 
 
 def test_sympyissue_9956():

@@ -254,17 +254,14 @@ class ImageSet(Set):
                 already_seen.add(val)
                 yield val
 
-    def _is_multivariate(self):
-        return len(self.lamda.variables) > 1
-
     def _contains(self, other):
         from diofant.solvers import solve
+
         L = self.lamda
-        if self._is_multivariate():
-            solns = solve([expr - val for val, expr in zip(other, L.expr)],
-                          L.variables)
-        else:
-            solns = solve(L.expr - other, L.variables[0])
+        if len(self.lamda.variables) > 1:
+            return  # pragma: no cover
+
+        solns = solve(L.expr - other, L.variables[0])
 
         for soln in solns:
             if soln in self.base_set:
@@ -297,7 +294,7 @@ class ImageSet(Set):
                 if len(solns) == 1:
                     t = list(solns[0][0].free_symbols)[0]
                 else:
-                    return
+                    return  # pragma: no cover
 
                 # since 'a' < 'b'
                 return imageset(Lambda(t, f.subs(a, solns[0][0])), S.Integers)
@@ -305,8 +302,9 @@ class ImageSet(Set):
         if other == S.Reals:
             from diofant.solvers.diophantine import diophantine
             from diofant.core.function import expand_complex
+
             if len(self.lamda.variables) > 1 or self.base_set is not S.Integers:
-                return
+                return  # pragma: no cover
 
             f = self.lamda.expr
             n = self.lamda.variables[0]
@@ -318,14 +316,12 @@ class ImageSet(Set):
             im = expand_complex(im)
 
             sols = list(diophantine(im, n_))
-            if not sols:
-                return S.EmptySet
-            elif all(s[0].has(n_) is False for s in sols):
+            if all(s[0].has(n_) is False for s in sols):
                 s = FiniteSet(*[s[0] for s in sols])
             elif len(sols) == 1 and sols[0][0].has(n_):
                 s = imageset(Lambda(n_, sols[0][0]), S.Integers)
             else:
-                return
+                return  # pragma: no cover
 
             return imageset(Lambda(n_, re), self.base_set.intersection(s))
 
