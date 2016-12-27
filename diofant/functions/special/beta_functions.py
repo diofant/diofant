@@ -87,10 +87,8 @@ class beta(Function):
     def fdiff(self, argindex):
         x, y = self.args
         if argindex == 1:
-            # Diff wrt x
             return beta(x, y)*(digamma(x) - digamma(x + y))
         elif argindex == 2:
-            # Diff wrt y
             return beta(x, y)*(digamma(y) - digamma(x + y))
         else:
             raise ArgumentIndexError(self, argindex)
