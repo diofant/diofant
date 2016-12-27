@@ -46,12 +46,6 @@ class exp_polar(Function):
 
     unbranched = True
 
-    def inverse(self, argindex=1):
-        """
-        Returns the inverse function of ``exp(x)``.
-        """
-        return log
-
     def _eval_as_numer_denom(self):
         """
         Returns this with a positive exponent as a 2-tuple (a fraction).
@@ -413,6 +407,8 @@ class log(Function):
                 l = floor(arg(t.removeO()*c)/(2*S.Pi)).limit(x, 0)
                 if l.is_finite:
                     log_series += 2*S.ImaginaryUnit*S.Pi*l
+                else:
+                    raise NotImplementedError  # pragma: no cover
         return log_series + log(c) + e*logx
 
     def _eval_as_leading_term(self, x):
@@ -494,12 +490,14 @@ class LambertW(Function):
         if len(self.args) == 1:
             if argindex == 1:
                 return LambertW(x)/(x*(1 + LambertW(x)))
+            else:
+                raise ArgumentIndexError(self, argindex)
         else:
             k = self.args[1]
             if argindex == 1:
                 return LambertW(x, k)/(x*(1 + LambertW(x, k)))
-
-        raise ArgumentIndexError(self, argindex)
+            else:
+                raise ArgumentIndexError(self, argindex)
 
     def _eval_is_extended_real(self):
         x = self.args[0]

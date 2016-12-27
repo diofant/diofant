@@ -1,7 +1,10 @@
-from diofant import (
-    symbols, log, Float, nan, oo, zoo, I, pi, E, O, exp, Symbol,
-    LambertW, sqrt, Rational, expand_log, S, sign, conjugate, Integer,
-    sin, cos, sinh, cosh, tanh, exp_polar, re, Function, simplify)
+import pytest
+
+from diofant import (symbols, log, Float, nan, oo, zoo, I, pi, E, O, exp,
+                     Symbol, LambertW, sqrt, Rational, expand_log, S, sign,
+                     conjugate, Integer, sin, cos, sinh, cosh, tanh,
+                     exp_polar, re, Function, simplify, arg)
+from diofant.core.function import ArgumentIndexError
 
 from diofant.abc import x, y, z
 
@@ -215,6 +218,11 @@ def test_log_symbolic():
     assert log(-x).func is log and log(-x).args[0] == -x
     assert log(-p).func is log and log(-p).args[0] == -p
 
+    pytest.raises(ArgumentIndexError, lambda: log(x).fdiff(3))
+
+    assert (log(1 + (I + x)**2).as_real_imag(deep=False) ==
+            (log(abs((x + I)**2 + 1)), arg((x + I)**2 + 1)))
+
 
 def test_exp_assumptions():
     r = Symbol('r', extended_real=True)
@@ -351,6 +359,8 @@ def test_lambertw():
 
     assert LambertW(x**2).diff(x) == 2*LambertW(x**2)/x/(1 + LambertW(x**2))
     assert LambertW(x, k).diff(x) == LambertW(x, k)/x/(1 + LambertW(x, k))
+    pytest.raises(ArgumentIndexError, lambda: LambertW(x).fdiff(3))
+    pytest.raises(ArgumentIndexError, lambda: LambertW(x, k).fdiff(3))
 
     assert LambertW(sqrt(2)).evalf(30).epsilon_eq(
         Float("0.701338383413663009202120278965", 30), 1e-29)
@@ -375,6 +385,10 @@ def test_lambertw():
     # See sympy/sympy#7259:
     assert LambertW(x).series(x) == x - x**2 + 3*x**3/2 - 8*x**4/3 + \
         125*x**5/24 + O(x**6)
+
+    assert LambertW(x).series(x, n=0) == O(1, x)
+    assert LambertW(x, k).series(x, x0=1, n=1) == (LambertW(1, k) +
+                                                   O(x - 1, (x, 1)))
 
 
 def test_sympyissue_5673():
