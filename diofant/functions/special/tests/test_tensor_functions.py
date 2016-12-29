@@ -66,6 +66,7 @@ def test_kronecker_delta_secondquant():
 
     assert D(i, a) == 0
     assert D(i, t) == 0
+    assert D(u, w) == 0
 
     assert D(i, j).is_above_fermi is False
     assert D(a, b).is_above_fermi is True
