@@ -109,6 +109,7 @@ def test_radius_of_convergence():
 def test_meijer():
     pytest.raises(TypeError, lambda: meijerg(1, z))
     pytest.raises(TypeError, lambda: meijerg(((1,), (2,)), (3,), (4,), z))
+    pytest.raises(TypeError, lambda: meijerg((1, 2, 3), (4, 5), z))
 
     assert meijerg(((1, 2), (3,)), ((4,), (5,)), z) == \
         meijerg(Tuple(1, 2), Tuple(3), Tuple(4), Tuple(5), z)
