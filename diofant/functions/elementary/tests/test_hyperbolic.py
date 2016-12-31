@@ -4,11 +4,13 @@ from diofant import (symbols, Symbol, sinh, nan, oo, zoo, pi,
                      asinh, acosh, log, sqrt, coth, I, cot, E, tanh,
                      tan, cosh, cos, S, sin, Rational, atanh, acoth,
                      O, exp, sech, sec, csch)
+from diofant.core.function import ArgumentIndexError
+from diofant.functions.elementary.hyperbolic import ReciprocalHyperbolicFunction
+
+from diofant.abc import x, y
 
 
 def test_sinh():
-    x, y = symbols('x,y')
-
     k = Symbol('k', integer=True)
 
     assert sinh(nan) == nan
@@ -75,16 +77,15 @@ def test_sinh():
     assert sinh(i).is_finite
     assert sinh(x).is_finite is None
 
+    pytest.raises(ArgumentIndexError, lambda: sinh(x).fdiff(2))
+
 
 def test_sinh_series():
-    x = Symbol('x')
     assert sinh(x).series(x, 0, 10) == \
         x + x**3/6 + x**5/120 + x**7/5040 + x**9/362880 + O(x**10)
 
 
 def test_cosh():
-    x, y = symbols('x,y')
-
     k = Symbol('k', integer=True)
 
     assert cosh(nan) == nan
@@ -149,16 +150,15 @@ def test_cosh():
     assert cosh(i).is_finite
     assert cosh(x).is_finite is None
 
+    pytest.raises(ArgumentIndexError, lambda: cosh(x).fdiff(2))
+
 
 def test_cosh_series():
-    x = Symbol('x')
     assert cosh(x).series(x, 0, 10) == \
         1 + x**2/2 + x**4/24 + x**6/720 + x**8/40320 + O(x**10)
 
 
 def test_tanh():
-    x, y = symbols('x,y')
-
     k = Symbol('k', integer=True)
 
     assert tanh(nan) == nan
@@ -224,16 +224,15 @@ def test_tanh():
     assert tanh(r).is_finite
     assert tanh(x).is_finite is None
 
+    pytest.raises(ArgumentIndexError, lambda: tanh(x).fdiff(2))
+
 
 def test_tanh_series():
-    x = Symbol('x')
     assert tanh(x).series(x, 0, 10) == \
         x - x**3/3 + 2*x**5/15 - 17*x**7/315 + 62*x**9/2835 + O(x**10)
 
 
 def test_coth():
-    x, y = symbols('x,y')
-
     k = Symbol('k', integer=True)
 
     assert coth(nan) == nan
@@ -293,16 +292,15 @@ def test_coth():
 
     assert coth(k*pi*I) == -cot(k*pi)*I
 
+    pytest.raises(ArgumentIndexError, lambda: coth(x).fdiff(2))
+
 
 def test_coth_series():
-    x = Symbol('x')
     assert coth(x).series(x, 0, 8) == \
         1/x + x/3 - x**3/45 + 2*x**5/945 - x**7/4725 + O(x**8)
 
 
 def test_csch():
-    x, y = symbols('x,y')
-
     k = Symbol('k', integer=True)
     n = Symbol('n', positive=True)
 
@@ -359,17 +357,23 @@ def test_csch():
     assert csch(n).is_extended_real is True
     assert csch(n).is_finite is None
 
+    pytest.raises(ArgumentIndexError, lambda: csch(x).fdiff(2))
+
 
 def test_csch_series():
-    x = Symbol('x')
-    assert csch(x).series(x, 0, 10) == \
-       1/x - x/6 + 7*x**3/360 - 31*x**5/15120 + 127*x**7/604800 \
-          - 73*x**9/3421440 + O(x**10)
+    assert (csch(x).series(x, 0, 10) ==
+            1/x - x/6 + 7*x**3/360 - 31*x**5/15120 + 127*x**7/604800 -
+            73*x**9/3421440 + O(x**10))
+
+
+def test_reciprocal():
+    class fake_sech(ReciprocalHyperbolicFunction):
+        _reciprocal_of = cosh
+
+    assert fake_sech(-x) == 1/cosh(x)
 
 
 def test_sech():
-    x, y = symbols('x, y')
-
     k = Symbol('k', integer=True)
     n = Symbol('n', positive=True)
 
@@ -423,17 +427,18 @@ def test_sech():
     assert sech(n).is_extended_real is True
     assert csch(n).is_finite is None
 
+    pytest.raises(ArgumentIndexError, lambda: sech(x).fdiff(2))
+
 
 def test_sech_series():
-    x = Symbol('x')
     assert sech(x).series(x, 0, 10) == \
         1 - x**2/2 + 5*x**4/24 - 61*x**6/720 + 277*x**8/8064 + O(x**10)
 
 
 def test_asinh():
-    x, y = symbols('x,y')
     assert asinh(x) == asinh(x)
     assert asinh(-x) == -asinh(x)
+    assert asinh(-2) == -asinh(2)
     assert asinh(nan) == nan
     assert asinh( 0) == 0
     assert asinh(+1) == log(sqrt(2) + 1)
@@ -461,9 +466,10 @@ def test_asinh():
     assert asinh(I*(sqrt(5) + 1)/4) == 3*pi*I/10
     assert asinh(-I*(sqrt(5) + 1)/4) == -3*pi*I/10
 
+    pytest.raises(ArgumentIndexError, lambda: asinh(x).fdiff(2))
+
 
 def test_asinh_series():
-    x = Symbol('x')
     assert asinh(x).series(x, 0, 8) == \
         x - x**3/6 + 3*x**5/40 - 5*x**7/112 + O(x**8)
     t5 = asinh(x).taylor_term(5, x)
@@ -475,7 +481,6 @@ def test_acosh():
     # TODO please write more tests  -- see issue sympy/sympy#3751
     # From http://functions.wolfram.com/ElementaryFunctions/ArcCosh/03/01/
     # at specific points
-    x = Symbol('x')
 
     assert acosh(-x) == acosh(-x)
 
@@ -507,6 +512,8 @@ def test_acosh():
     assert str(acosh(5*I).n(6)) == '2.31244 + 1.5708*I'
     assert str(acosh(-5*I).n(6)) == '2.31244 - 1.5708*I'
 
+    pytest.raises(ArgumentIndexError, lambda: acosh(x).fdiff(2))
+
 
 def test_acosh_infinities():
     assert acosh(oo) == oo
@@ -516,7 +523,6 @@ def test_acosh_infinities():
 
 
 def test_acosh_series():
-    x = Symbol('x')
     assert acosh(x).series(x, 0, 8) == \
         -I*x + pi*I/2 - I*x**3/6 - 3*I*x**5/40 - 5*I*x**7/112 + O(x**8)
     t5 = acosh(x).taylor_term(5, x)
@@ -529,7 +535,6 @@ def test_atanh():
     # TODO please write more tests  -- see issue sympy/sympy#3751
     # From http://functions.wolfram.com/ElementaryFunctions/ArcTanh/03/01/
     # at specific points
-    x = Symbol('x')
 
     # at specific points
     assert atanh(0) == 0
@@ -537,6 +542,7 @@ def test_atanh():
     assert atanh(-I) == -I*pi/4
     assert atanh(1) == oo
     assert atanh(-1) == -oo
+    assert atanh(-2) == -atanh(2)
 
     # at infinites
     assert atanh(I*oo) == I*pi/2
@@ -561,9 +567,10 @@ def test_atanh():
     assert atanh(I*(sqrt(3) - 2)) == -pi*I/12
     assert atanh(oo) == -I*pi/2
 
+    pytest.raises(ArgumentIndexError, lambda: atanh(x).fdiff(2))
+
 
 def test_atanh_series():
-    x = Symbol('x')
     assert atanh(x).series(x, 0, 10) == \
         x + x**3/3 + x**5/5 + x**7/7 + x**9/9 + O(x**10)
 
@@ -579,7 +586,6 @@ def test_acoth():
     # TODO please write more tests  -- see issue sympy/sympy#3751
     # From http://functions.wolfram.com/ElementaryFunctions/ArcCoth/03/01/
     # at specific points
-    x = Symbol('x')
 
     # at specific points
     assert acoth(0) == I*pi/2
@@ -587,6 +593,7 @@ def test_acoth():
     assert acoth(-I) == I*pi/4
     assert acoth(1) == oo
     assert acoth(-1) == -oo
+    assert acoth(-2) == -acoth(2)
 
     # at infinites
     assert acoth(oo) == 0
@@ -613,15 +620,15 @@ def test_acoth():
     assert acoth(I*(2 - sqrt(3))) == -5*pi*I/12
     assert acoth(I*(sqrt(3) - 2)) == 5*pi*I/12
 
+    pytest.raises(ArgumentIndexError, lambda: acoth(x).fdiff(2))
+
 
 def test_acoth_series():
-    x = Symbol('x')
     assert acoth(x).series(x, 0, 10) == \
         I*pi/2 + x + x**3/3 + x**5/5 + x**7/7 + x**9/9 + O(x**10)
 
 
 def test_inverses():
-    x = Symbol('x')
     assert sinh(x).inverse() == asinh
     pytest.raises(AttributeError, lambda: cosh(x).inverse())
     assert tanh(x).inverse() == atanh
@@ -633,7 +640,6 @@ def test_inverses():
 
 
 def test_leading_term():
-    x = Symbol('x')
     assert cosh(x).as_leading_term(x) == 1
     assert coth(x).as_leading_term(x) == 1/x
     assert acosh(x).as_leading_term(x) == I*pi/2
@@ -647,6 +653,7 @@ def test_leading_term():
     for func in [csch, sech]:
         eq = func(S.Half)
         assert eq.as_leading_term(x) == eq
+    assert csch(x).as_leading_term(x) == 1/x
 
 
 def test_complex():
@@ -792,7 +799,6 @@ def test_derivs():
 
 
 def test_sinh_expansion():
-    x, y = symbols('x,y')
     assert sinh(x+y).expand(trig=True) == sinh(x)*cosh(y) + cosh(x)*sinh(y)
     assert sinh(2*x).expand(trig=True) == 2*sinh(x)*cosh(x)
     assert sinh(3*x).expand(trig=True).expand() == \
@@ -800,7 +806,6 @@ def test_sinh_expansion():
 
 
 def test_cosh_expansion():
-    x, y = symbols('x,y')
     assert cosh(x+y).expand(trig=True) == cosh(x)*cosh(y) + sinh(x)*sinh(y)
     assert cosh(2*x).expand(trig=True) == cosh(x)**2 + sinh(x)**2
     assert cosh(3*x).expand(trig=True).expand() == \
