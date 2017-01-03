@@ -180,8 +180,6 @@ class gamma(Function):
         return (gamma(t + 1)/rf(self.args[0], -x0 + 1))._eval_nseries(x, n, logx)
 
     def _latex(self, printer, exp=None):
-        if len(self.args) != 1:
-            raise ValueError("Args length should be 1")
         aa = printer._print(self.args[0])
         if exp:
             return r'\Gamma^{%s}{\left(%s \right)}' % (printer._print(exp), aa)
@@ -870,8 +868,6 @@ class loggamma(Function):
                     return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
                 elif n.is_negative:
                     return loggamma(p / q) - n*log(q) + S.Pi*S.ImaginaryUnit*n - Sum(log(k*q - p), (k, 1, -n))
-                elif n.is_zero:
-                    return loggamma(p / q)
 
         return self
 
