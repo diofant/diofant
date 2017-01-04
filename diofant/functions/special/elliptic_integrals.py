@@ -25,8 +25,8 @@ class elliptic_k(Function):
     Examples
     ========
 
-    >>> from diofant import elliptic_k, I, pi
     >>> from diofant.abc import z
+
     >>> elliptic_k(0)
     pi/2
     >>> elliptic_k(1.0 + I)
@@ -62,7 +62,10 @@ class elliptic_k(Function):
 
     def fdiff(self, argindex=1):
         z = self.args[0]
-        return (elliptic_e(z) - (1 - z)*elliptic_k(z))/(2*z*(1 - z))
+        if argindex == 1:
+            return (elliptic_e(z) - (1 - z)*elliptic_k(z))/(2*z*(1 - z))
+        else:
+            raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         z = self.args[0]
@@ -94,8 +97,8 @@ class elliptic_f(Function):
     Examples
     ========
 
-    >>> from diofant import elliptic_f, I, O
     >>> from diofant.abc import z, m
+
     >>> elliptic_f(z, m).series(z)
     z + z**5*(3*m**2/40 - m/30) + m*z**3/6 + O(z**6)
     >>> elliptic_f(3.0 + I/2, 1.0 + I)
@@ -135,7 +138,8 @@ class elliptic_f(Function):
         elif argindex == 2:
             return (elliptic_e(z, m)/(2*m*(1 - m)) - elliptic_f(z, m)/(2*m) -
                     sin(2*z)/(4*(1 - m)*fm))
-        raise ArgumentIndexError(self, argindex)
+        else:
+            raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         z, m = self.args
@@ -161,8 +165,8 @@ class elliptic_e(Function):
     Examples
     ========
 
-    >>> from diofant import elliptic_e, I, pi, O
     >>> from diofant.abc import z, m
+
     >>> elliptic_e(z, m).series(z)
     z + z**5*(-m**2/40 + m/30) - m*z**3/6 + O(z**6)
     >>> elliptic_e(z).series(z, n=4)
@@ -215,11 +219,14 @@ class elliptic_e(Function):
                 return sqrt(1 - m*sin(z)**2)
             elif argindex == 2:
                 return (elliptic_e(z, m) - elliptic_f(z, m))/(2*m)
+            else:
+                raise ArgumentIndexError(self, argindex)
         else:
             z = self.args[0]
             if argindex == 1:
                 return (elliptic_e(z) - elliptic_k(z))/(2*z)
-        raise ArgumentIndexError(self, argindex)
+            else:
+                raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         if len(self.args) == 2:
@@ -266,8 +273,8 @@ class elliptic_pi(Function):
     Examples
     ========
 
-    >>> from diofant import elliptic_pi, I, pi, O, S
     >>> from diofant.abc import z, n, m
+
     >>> elliptic_pi(n, z, m).series(z, n=4)
     z + z**3*(m/6 + n/3) + O(z**4)
     >>> elliptic_pi(0.5 + I, 1.0 - I, 1.2)
@@ -349,6 +356,8 @@ class elliptic_pi(Function):
                 return (elliptic_e(z, m)/(m - 1) +
                         elliptic_pi(n, z, m) -
                         m*sin(2*z)/(2*(m - 1)*fm))/(2*(n - m))
+            else:
+                raise ArgumentIndexError(self, argindex)
         else:
             n, m = self.args
             if argindex == 1:
@@ -356,4 +365,5 @@ class elliptic_pi(Function):
                         (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
             elif argindex == 2:
                 return (elliptic_e(m)/(m - 1) + elliptic_pi(n, m))/(2*(n - m))
-        raise ArgumentIndexError(self, argindex)
+            else:
+                raise ArgumentIndexError(self, argindex)

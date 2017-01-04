@@ -2475,8 +2475,8 @@ def diop_general_sum_of_squares(eq, limit=1):
 
     >>> from diofant.solvers.diophantine import diop_general_sum_of_squares
     >>> from diofant.abc import a, b, c, d, e, f
-    >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345) == {(0, 48, 5, 4, 0)}
-    True
+    >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345)
+    {(0, 48, 5, 4, 0)}
 
     References
     ==========

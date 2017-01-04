@@ -343,9 +343,6 @@ class gegenbauer(OrthogonalPolynomial):
                 if (re(a) > S.Half) is S.true:
                     return S.ComplexInfinity
                 else:
-                    # No sec function available yet
-                    # return (cos(S.Pi*(a+n)) * sec(S.Pi*a) * gamma(2*a+n) /
-                    #            (gamma(2*a) * gamma(n+1)))
                     return
 
             # Symbolic result C^a_n(x)
@@ -569,10 +566,7 @@ class chebyshevu(OrthogonalPolynomial):
                 return S.NegativeOne**n * chebyshevu(n, -x)
             # U_{-n}(x)  --->  -U_{n-2}(x)
             if n.could_extract_minus_sign():
-                if n == S.NegativeOne:
-                    return S.Zero
-                else:
-                    return -chebyshevu(-n - 2, x)
+                return -chebyshevu(-n - 2, x)
             # We can evaluate for some special values of x
             if x == S.Zero:
                 return cos(S.Half * S.Pi * n)
@@ -1010,7 +1004,7 @@ class laguerre(OrthogonalPolynomial):
             # L_{n}(-x)  --->  exp(-x) * L_{-n-1}(x)
             # L_{-n}(x)  --->  exp(x) * L_{n-1}(-x)
             if n.could_extract_minus_sign():
-                return exp(x) * laguerre(n - 1, -x)
+                return exp(x) * laguerre(-n - 1, -x)
             # We can evaluate for some special values of x
             if x == S.Zero:
                 return S.One

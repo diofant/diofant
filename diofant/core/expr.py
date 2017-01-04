@@ -1776,8 +1776,8 @@ class Expr(Basic, EvalfMixin):
         (2, 3*x + 1)
         >>> b = (x/2 + 3); b.primitive()
         (1/2, x + 6)
-        >>> (a*b).primitive() == (1, a*b)
-        True
+        >>> (a*b).primitive()
+        (1, (x/2 + 3)*(6*x + 2))
         """
         if not self:
             return S.One, S.Zero

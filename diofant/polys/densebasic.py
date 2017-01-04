@@ -526,8 +526,8 @@ def dup_from_diofant(f, K):
     >>> from diofant import Integer
     >>> from diofant.polys.domains import ZZ
 
-    >>> dup_from_diofant([Integer(1), Integer(2)], ZZ) == [ZZ(1), ZZ(2)]
-    True
+    >>> dup_from_diofant([Integer(1), Integer(2)], ZZ)
+    [1, 2]
     """
     return dup_strip([ K.from_diofant(c) for c in f ])
 
@@ -542,8 +542,8 @@ def dmp_from_diofant(f, u, K):
     >>> from diofant import Integer
     >>> from diofant.polys.domains import ZZ
 
-    >>> dmp_from_diofant([[Integer(1)], [Integer(2)]], 1, ZZ) == [[ZZ(1)], [ZZ(2)]]
-    True
+    >>> dmp_from_diofant([[Integer(1)], [Integer(2)]], 1, ZZ)
+    [[1], [2]]
     """
     if not u:
         return dup_from_diofant(f, K)
@@ -929,8 +929,8 @@ def dup_to_dict(f, K=None, zero=False):
     Examples
     ========
 
-    >>> dup_to_dict([1, 0, 5, 0, 7]) == {(0,): 7, (2,): 5, (4,): 1}
-    True
+    >>> dup_to_dict([1, 0, 5, 0, 7])
+    {(0,): 7, (2,): 5, (4,): 1}
     >>> dup_to_dict([])
     {}
     """
@@ -975,8 +975,8 @@ def dmp_to_dict(f, u, K=None, zero=False):
     Examples
     ========
 
-    >>> dmp_to_dict([[1, 0], [], [2, 3]], 1) == {(0, 0): 3, (0, 1): 2, (2, 1): 1}
-    True
+    >>> dmp_to_dict([[1, 0], [], [2, 3]], 1)
+    {(0, 0): 3, (0, 1): 2, (2, 1): 1}
     >>> dmp_to_dict([], 0)
     {}
     """

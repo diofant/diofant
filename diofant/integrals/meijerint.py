@@ -338,14 +338,14 @@ def _exponents(expr, x):
     >>> from diofant.integrals.meijerint import _exponents
     >>> from diofant.abc import x, y
     >>> from diofant import sin
-    >>> _exponents(x, x) == {1}
-    True
-    >>> _exponents(x**2, x) == {2}
-    True
-    >>> _exponents(x**2 + x, x) == {1, 2}
-    True
-    >>> _exponents(x**3*sin(x + x**y) + 1/x, x) == {-1, 1, 3, y}
-    True
+    >>> _exponents(x, x)
+    {1}
+    >>> _exponents(x**2, x)
+    {2}
+    >>> _exponents(x**2 + x, x)
+    {1, 2}
+    >>> _exponents(x**3*sin(x + x**y) + 1/x, x)
+    {-1, 1, 3, y}
     """
     def _exponents_(expr, x, res):
         if expr == x:
@@ -376,12 +376,12 @@ def _find_splitting_points(expr, x):
     >>> from diofant.integrals.meijerint import _find_splitting_points as fsp
     >>> from diofant import sin
     >>> from diofant.abc import a, x
-    >>> fsp(x, x) == {0}
-    True
-    >>> fsp((x-1)**3, x) == {1}
-    True
-    >>> fsp(sin(x+3)*x, x) == {-3, 0}
-    True
+    >>> fsp(x, x)
+    {0}
+    >>> fsp((x-1)**3, x)
+    {1}
+    >>> fsp(sin(x+3)*x, x)
+    {-3, 0}
     """
     p, q = [Wild(n, exclude=[x]) for n in 'pq']
 

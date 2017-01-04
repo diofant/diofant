@@ -1,7 +1,5 @@
 """Tools for solving inequalities and systems of inequalities. """
 
-from functools import reduce
-
 from diofant.core import Symbol, Dummy, Integer
 from diofant.core.compatibility import iterable
 from diofant.sets import Interval
@@ -22,8 +20,6 @@ def solve_poly_inequality(poly, rel):
     Examples
     ========
 
-    >>> from diofant import Poly
-    >>> from diofant.solvers.inequalities import solve_poly_inequality
     >>> from diofant.abc import x
 
     >>> solve_poly_inequality(Poly(x, x, domain='ZZ'), '==')
@@ -40,13 +36,15 @@ def solve_poly_inequality(poly, rel):
     """
     if not isinstance(poly, Poly):
         raise ValueError('`poly` should be a Poly instance')
+    if rel not in {'>', '<', '>=', '<=', '==', '!='}:
+        raise ValueError("Invalid relational operator symbol: %r" % rel)
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
         if t is S.true:
             return [S.Reals]
         elif t is S.false:
             return [S.EmptySet]
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Couldn't determine truth value of %s" % t)
 
     reals, intervals = poly.real_roots(multiple=False), []
@@ -72,10 +70,8 @@ def solve_poly_inequality(poly, rel):
             eq_sign = -1
         elif rel == '>=':
             eq_sign, equal = +1, True
-        elif rel == '<=':
-            eq_sign, equal = -1, True
         else:
-            raise ValueError("'%s' is not a valid relation" % rel)
+            eq_sign, equal = -1, True
 
         right, right_open = S.Infinity, True
 
@@ -105,9 +101,8 @@ def solve_poly_inequalities(polys):
     Examples
     ========
 
-    >>> from diofant.solvers.inequalities import solve_poly_inequalities
-    >>> from diofant.polys import Poly
     >>> from diofant.abc import x
+
     >>> solve_poly_inequalities(((Poly(x**2 - 3), ">"),
     ...                          (Poly(-x**2 + 1), ">")))
     (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
@@ -123,8 +118,6 @@ def solve_rational_inequalities(eqs):
     ========
 
     >>> from diofant.abc import x
-    >>> from diofant import Poly
-    >>> from diofant.solvers.inequalities import solve_rational_inequalities
 
     >>> solve_rational_inequalities([[((Poly(-x + 1), Poly(1, x)), '>='),
     ...                               ((Poly(-x + 1), Poly(1, x)), '<=')]])
@@ -142,9 +135,6 @@ def solve_rational_inequalities(eqs):
     result = S.EmptySet
 
     for eq in eqs:
-        if not eq:
-            continue
-
         global_intervals = [S.Reals]
 
         for (numer, denom), rel in eq:
@@ -186,9 +176,6 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     Examples
     ========
 
-    >>> from diofant import Poly, Symbol
-    >>> from diofant.solvers.inequalities import reduce_rational_inequalities
-
     >>> x = Symbol('x', real=True)
 
     >>> reduce_rational_inequalities([[x**2 <= 0]], x)
@@ -222,13 +209,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
             else:
                 numer, denom = expr.together().as_numer_denom()
 
-            try:
-                (numer, denom), opt = parallel_poly_from_expr(
-                    (numer, denom), gen)
-            except PolynomialError:
-                raise PolynomialError(filldedent('''
-                    only polynomials and
-                    rational functions are supported in this context'''))
+            (numer, denom), opt = parallel_poly_from_expr((numer, denom), gen)
 
             if not opt.domain.is_Exact:
                 numer, denom, exact = numer.to_exact(), denom.to_exact(), False
@@ -263,9 +244,6 @@ def reduce_piecewise_inequality(expr, rel, gen):
 
     Examples
     ========
-
-    >>> from diofant import Abs, Symbol, Piecewise
-    >>> from diofant.solvers.inequalities import reduce_piecewise_inequality
 
     >>> x = Symbol('x', real=True)
 
@@ -310,7 +288,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
         elif expr.is_Pow:
             n = expr.exp
 
-            if not n.is_Integer:
+            if not n.is_Integer:  # pragma: no cover
                 raise NotImplementedError("only integer powers are supported")
 
             _exprs = _bottom_up_scan(expr.base)
@@ -361,9 +339,6 @@ def reduce_piecewise_inequalities(exprs, gen):
     Examples
     ========
 
-    >>> from diofant import Abs, Symbol
-    >>> from diofant.solvers.inequalities import reduce_piecewise_inequalities
-
     >>> x = Symbol('x', real=True)
 
     >>> reduce_piecewise_inequalities([(Abs(3*x - 5) - 7, '<'),
@@ -387,9 +362,6 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
     Examples
     ========
-
-    >>> from diofant.solvers.inequalities import solve_univariate_inequality
-    >>> from diofant.core.symbol import Symbol
 
     >>> x = Symbol('x', real=True)
 
@@ -423,23 +395,14 @@ def solve_univariate_inequality(expr, gen, relational=True):
         r = simplify(r)
         if r in (S.true, S.false):
             return r
-        if v.is_extended_real is False:
-            return S.false
-        else:
-            if v.is_comparable:
-                v = v.n(2)
-                if v._prec > 1:
-                    return expr.func(v, 0)
-            elif v.is_comparable is False:
-                return False
+        elif v.is_comparable is False:
+            return False
+        else:  # pragma: no cover
             raise NotImplementedError
 
     start = S.NegativeInfinity
     sol_sets = [S.EmptySet]
-    try:
-        reals = _nsort(set(solns + singularities), separated=True)[0]
-    except NotImplementedError:
-        raise NotImplementedError('sorting of these roots is not supported')
+    reals = _nsort(set(solns + singularities), separated=True)[0]
     for x in reals:
         end = x
 
@@ -529,8 +492,6 @@ def reduce_inequalities(inequalities, symbols=[]):
     Examples
     ========
 
-    >>> from diofant.solvers.inequalities import reduce_inequalities
-
     >>> x = Symbol('x', real=True)
     >>> y = Symbol('y', real=True)
 
@@ -553,13 +514,11 @@ def reduce_inequalities(inequalities, symbols=[]):
             continue
         elif i == S.false:
             return S.false
-        if i.lhs.is_number:
-            raise NotImplementedError("Couldn't determine truth value of %s" % i)
         keep.append(i)
     inequalities = keep
     del keep
 
-    gens = reduce(set.union, [i.free_symbols for i in inequalities], set())
+    gens = set().union(*[i.free_symbols for i in inequalities])
 
     if not iterable(symbols):
         symbols = [symbols]

@@ -56,6 +56,19 @@ def test_ndim_array_initiation():
     assert array_with_many_args[0, 0] == 0
     assert array_with_many_args.rank() == 2
 
+    pytest.raises(TypeError, lambda: MutableDenseNDimArray(1))
+    pytest.raises(TypeError, lambda: MutableDenseNDimArray([1, 2], shape=(1.2, 3)))
+    pytest.raises(ValueError, lambda: MutableDenseNDimArray([[1, 2], [3]]))
+
+    b = MutableDenseNDimArray([1, 2, 3, 4], shape=(2, 2))
+    c = MutableDenseNDimArray(b)
+    assert c.shape == (2, 2)
+
+    a2 = MutableDenseNDimArray([[2, 3], [4, 5]])
+    pytest.raises(ValueError, lambda: a2[10])
+    pytest.raises(ValueError, lambda: a2[1, 1, 1])
+    pytest.raises(ValueError, lambda: a2[3, 3])
+
 
 def test_reshape():
     array = MutableDenseNDimArray(range(50), 50)
@@ -189,6 +202,8 @@ def test_equality():
     assert first_ndim_array != third_ndim_array
     assert first_ndim_array == fourth_ndim_array
 
+    assert (first_ndim_array == 0) is False
+
 
 def test_arithmetic():
     a = MutableDenseNDimArray([3 for i in range(9)], (3, 3))
@@ -217,6 +232,16 @@ def test_arithmetic():
 
     assert type(a) == type(b) == type(c1) == type(c2) == type(d1) == type(d2) \
         == type(e1) == type(e2) == type(e3) == type(f1)
+
+    c = MutableDenseNDimArray([3 for i in range(16)], (4, 4))
+
+    pytest.raises(TypeError, lambda: a + 0)
+    pytest.raises(ValueError, lambda: a + c)
+    pytest.raises(TypeError, lambda: a - 0)
+    pytest.raises(ValueError, lambda: a - c)
+    pytest.raises(ValueError, lambda: a*b)
+    pytest.raises(ValueError, lambda: [1, 2, 3, 4]*a)
+    pytest.raises(ValueError, lambda: a/b)
 
 
 def test_higher_dimenions():

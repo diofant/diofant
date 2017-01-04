@@ -13,7 +13,6 @@ def literal_symbol(literal):
     ========
 
     >>> from diofant.abc import A
-    >>> from diofant.logic.inference import literal_symbol
     >>> literal_symbol(A)
     A
     >>> literal_symbol(~A)
@@ -47,9 +46,8 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     ========
 
     >>> from diofant.abc import A, B
-    >>> from diofant.logic.inference import satisfiable
-    >>> satisfiable(A & ~B) == {A: True, B: False}
-    True
+    >>> satisfiable(A & ~B)
+    {A: True, B: False}
     >>> satisfiable(A & ~A)
     False
     >>> satisfiable(True)
@@ -57,10 +55,10 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     >>> next(satisfiable(A & ~A, all_models=True))
     False
     >>> models = satisfiable((A >> B) & B, all_models=True)
-    >>> next(models) == {A: False, B: True}
-    True
-    >>> next(models) == {A: True, B: True}
-    True
+    >>> next(models)
+    {A: False, B: True}
+    >>> next(models)
+    {A: True, B: True}
     >>> def use_models(models):
     ...     for model in models:
     ...         if model:
@@ -94,7 +92,6 @@ def valid(expr):
     ========
 
     >>> from diofant.abc import A, B
-    >>> from diofant.logic.inference import valid
     >>> valid(A | ~A)
     True
     >>> valid(A | B)
@@ -104,7 +101,6 @@ def valid(expr):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/Validity
-
     """
     return not satisfiable(Not(expr))
 
@@ -130,7 +126,6 @@ def pl_true(expr, model={}, deep=False):
     ========
 
     >>> from diofant.abc import A, B, C
-    >>> from diofant.logic.inference import pl_true
     >>> pl_true( A & B, {A: True, B: True})
     True
     >>> pl_true(A & B, {A: False})
@@ -188,7 +183,6 @@ def entails(expr, formula_set={}):
     ========
 
     >>> from diofant.abc import A, B, C
-    >>> from diofant.logic.inference import entails
     >>> entails(A, [A >> B, B >> C])
     False
     >>> entails(C, [A >> B, B >> C, A])
@@ -202,7 +196,6 @@ def entails(expr, formula_set={}):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/Logical_consequence
-
     """
     formula_set = list(formula_set)
     formula_set.append(Not(expr))
@@ -239,7 +232,6 @@ class PropKB(KB):
         Examples
         ========
 
-        >>> from diofant.logic.inference import PropKB
         >>> from diofant.abc import x, y
         >>> l = PropKB()
         >>> l.clauses
@@ -279,7 +271,6 @@ class PropKB(KB):
         Examples
         ========
 
-        >>> from diofant.logic.inference import PropKB
         >>> from diofant.abc import x, y
         >>> l = PropKB()
         >>> l.clauses

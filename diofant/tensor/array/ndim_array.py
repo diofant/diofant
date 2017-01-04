@@ -85,7 +85,7 @@ class NDimArray:
 
     def _setter_iterable_check(self, value):
         if isinstance(value, (collections.Iterable, Matrix, NDimArray)):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
 
     @classmethod
     def _scan_iterable_shape(cls, iterable):
@@ -109,16 +109,17 @@ class NDimArray:
         if shape is None and iterable is None:
             shape = ()
             iterable = ()
+
+        # Construct N-dim array from another N-dim array:
+        elif shape is None and isinstance(iterable, NDimArray):
+            shape = iterable.shape
+
         # Construct N-dim array from an iterable (numpy arrays included):
         elif shape is None and isinstance(iterable, collections.Iterable):
             iterable, shape = cls._scan_iterable_shape(iterable)
 
         # Construct N-dim array from a Matrix:
         elif shape is None and isinstance(iterable, Matrix):
-            shape = iterable.shape
-
-        # Construct N-dim array from another N-dim array:
-        elif shape is None and isinstance(iterable, NDimArray):
             shape = iterable.shape
 
         # Construct NDimArray(iterable, shape)
@@ -272,9 +273,6 @@ class NDimArray:
         result_list = [i/other for i in self]
         return type(self)(result_list, self.shape)
 
-    def __rdiv__(self, other):
-        raise TypeError('unsupported operation on NDimArray')
-
     def __eq__(self, other):
         """
         NDimArray instances can be compared to each other.
@@ -304,4 +302,3 @@ class NDimArray:
         return not self.__eq__(other)
 
     __truediv__ = __div__
-    __rtruediv__ = __rdiv__

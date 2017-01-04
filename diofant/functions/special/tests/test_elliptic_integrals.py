@@ -1,5 +1,8 @@
+import pytest
+
 from diofant import (S, Symbol, pi, I, oo, zoo, sin, sqrt, tan, gamma,
                      atanh, hyper, meijerg, O, Rational)
+from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.elliptic_integrals import (elliptic_k as K,
                                                           elliptic_f as F,
                                                           elliptic_e as E,
@@ -27,6 +30,7 @@ def test_K():
 
     assert K(z).diff(z) == (E(z) - (1 - z)*K(z))/(2*z*(1 - z))
     assert td(K(z), z)
+    pytest.raises(ArgumentIndexError, lambda: K(z).fdiff(2))
 
     zi = Symbol('z', extended_real=False)
     assert K(zi).conjugate() == K(zi.conjugate())
@@ -59,6 +63,7 @@ def test_F():
     r = randcplx()
     assert td(F(z, r), z)
     assert td(F(r, m), m)
+    pytest.raises(ArgumentIndexError, lambda: F(z, m).fdiff(3))
 
     mi = Symbol('m', extended_real=False)
     assert F(z, mi).conjugate() == F(z.conjugate(), mi.conjugate())
@@ -90,6 +95,8 @@ def test_E():
     assert td(E(r, m), m)
     assert td(E(z, r), z)
     assert td(E(z), z)
+    pytest.raises(ArgumentIndexError, lambda: E(z, m).fdiff(3))
+    pytest.raises(ArgumentIndexError, lambda: E(z).fdiff(2))
 
     mi = Symbol('m', extended_real=False)
     assert E(z, mi).conjugate() == E(z.conjugate(), mi.conjugate())
@@ -99,9 +106,11 @@ def test_E():
     assert E(mr).conjugate() == E(mr)
 
     assert E(z).rewrite(hyper) == (pi/2)*hyper((-S.Half, S.Half), (S.One,), z)
+    assert E(z, m).rewrite(hyper) == E(z, m)
     assert tn(E(z), (pi/2)*hyper((-S.Half, S.Half), (S.One,), z))
     assert E(z).rewrite(meijerg) == \
         -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4
+    assert E(z, m).rewrite(meijerg) == E(z, m)
     assert tn(E(z), -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4)
 
     assert E(z, m).series(z) == \
@@ -127,6 +136,8 @@ def test_P():
     assert P(2, 1) == -oo
     assert P(-1, 1) == oo
     assert P(n, n) == E(n)/(1 - n)
+    assert P(oo, m) == 0
+    assert P(n, oo) == 0
 
     assert P(n, -z, m) == -P(n, z, m)
 
@@ -151,6 +162,8 @@ def test_P():
     assert td(P(n, rx, ry), n)
     assert td(P(rx, z, ry), z)
     assert td(P(rx, ry, m), m)
+    pytest.raises(ArgumentIndexError, lambda: P(n, z, m).fdiff(4))
+    pytest.raises(ArgumentIndexError, lambda: P(n, m).fdiff(3))
 
     assert P(n, z, m).series(z) == z + z**3*(m/6 + n/3) + \
         z**5*(3*m**2/40 + m*n/10 - m/30 + n**2/5 - n/15) + O(z**6)

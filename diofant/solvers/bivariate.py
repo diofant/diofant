@@ -24,8 +24,8 @@ def _filtered_gens(poly, symbol):
     >>> from diofant.solvers.bivariate import _filtered_gens
     >>> from diofant import Poly, exp
     >>> from diofant.abc import x
-    >>> _filtered_gens(Poly(x + 1/x + exp(x)), x) == {x, exp(x)}
-    True
+    >>> _filtered_gens(Poly(x + 1/x + exp(x)), x)
+    {E**x, x}
     """
     gens = {g for g in poly.gens if symbol in g.free_symbols}
     for g in list(gens):

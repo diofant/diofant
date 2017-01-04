@@ -32,8 +32,8 @@ class Vector(BasisDependent):
         >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> v = 3*C.i + 4*C.j + 5*C.k
-        >>> v.components == {C.i: 3, C.j: 4, C.k: 5}
-        True
+        >>> v.components
+        {C.i: 3, C.j: 4, C.k: 5}
 
         """
         # The '_components' attribute is defined according to the
@@ -297,9 +297,8 @@ class Vector(BasisDependent):
         >>> R1 = CoordSysCartesian('R1')
         >>> R2 = CoordSysCartesian('R2')
         >>> v = R1.i + R2.i
-        >>> v.separate() == {R1: R1.i, R2: R2.i}
-        True
-
+        >>> v.separate()
+        {R1: R1.i, R2: R2.i}
         """
 
         parts = {}

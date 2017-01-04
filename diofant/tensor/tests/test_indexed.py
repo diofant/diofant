@@ -1,6 +1,6 @@
 import pytest
 
-from diofant.core import symbols, Symbol, Tuple, Dict, oo
+from diofant.core import symbols, Symbol, Tuple, Dict, oo, Basic
 from diofant.core.compatibility import iterable
 from diofant.tensor.indexed import IndexException
 
@@ -22,6 +22,12 @@ def test_Idx_construction():
     pytest.raises(TypeError, lambda: Idx(i, (x, 5)))
     pytest.raises(TypeError, lambda: Idx(i, (2, x)))
     pytest.raises(TypeError, lambda: Idx(i, (2, 3.5)))
+    pytest.raises(ValueError, lambda: Idx(i, (1, 2, 3)))
+    pytest.raises(TypeError, lambda: Idx(i, Basic()))
+
+
+def test_IndexedBase_construction():
+    pytest.raises(TypeError, lambda: IndexedBase(1))
 
 
 def test_Idx_properties():

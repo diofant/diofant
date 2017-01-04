@@ -39,6 +39,7 @@ class Set(Basic):
     is_EmptySet = None
     is_UniversalSet = None
     is_Complement = None
+    is_SymmetricDifference = None
 
     @staticmethod
     def _infimum_key(expr):
@@ -245,7 +246,7 @@ class Set(Basic):
 
     @property
     def _sup(self):
-        raise NotImplementedError("(%s)._sup" % self)
+        raise NotImplementedError("(%s)._sup" % self)  # pragma: no cover
 
     def contains(self, other):
         """
@@ -269,7 +270,7 @@ class Set(Basic):
         return ret
 
     def _contains(self, other):
-        raise NotImplementedError("(%s)._contains(%s)" % (self, other))
+        raise NotImplementedError("(%s)._contains(%s)" % (self, other))  # pragma: no cover
 
     def is_subset(self, other):
         """
@@ -431,8 +432,6 @@ class Set(Basic):
     def is_open(self):
         if not Intersection(self, self.boundary):
             return True
-        # We can't confidently claim that an intersection exists
-        return
 
     @property
     def is_closed(self):
@@ -448,7 +447,7 @@ class Set(Basic):
 
     @property
     def _boundary(self):
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def _eval_imageset(self, f):
         from diofant.sets.fancysets import ImageSet
@@ -456,7 +455,7 @@ class Set(Basic):
 
     @property
     def _measure(self):
-        raise NotImplementedError("(%s)._measure" % self)
+        raise NotImplementedError("(%s)._measure" % self)  # pragma: no cover
 
     def __add__(self, other):
         return self.union(other)
@@ -474,7 +473,7 @@ class Set(Basic):
         return SymmetricDifference(self, other)
 
     def __pow__(self, exp):
-        if not sympify(exp).is_Integer and exp >= 0:
+        if not sympify(exp).is_Integer or exp < 0:
             raise ValueError("%s: Exponent must be a positive Integer" % exp)
         return ProductSet([self]*exp)
 
@@ -513,8 +512,8 @@ class ProductSet(Set):
 
     >>> H, T = Symbol('H'), Symbol('T')
     >>> coin = FiniteSet(H, T)
-    >>> set(coin**2) == {(H, H), (H, T), (T, H), (T, T)}
-    True
+    >>> set(coin**2)
+    {(H, H), (H, T), (T, H), (T, T)}
 
     Notes
     =====
@@ -604,7 +603,6 @@ class ProductSet(Set):
         if self.args[-1] == other.args[-1]:
             return Union(ProductSet(self.args[:-1]),
                          ProductSet(other.args[:-1])) * self.args[-1]
-        return
 
     @property
     def sets(self):
@@ -699,10 +697,7 @@ class Interval(Set, EvalfMixin):
         if not all(i.is_extended_real is not False for i in (start, end)):
             raise ValueError("Non-real intervals are not supported")
 
-        # evaluate if possible
-        if (end < start) is S.true:
-            return S.EmptySet
-        elif (end - start).is_negative:
+        if (end - start).is_negative:
             return S.EmptySet
 
         is_open = left_open or right_open
@@ -809,9 +804,7 @@ class Interval(Set, EvalfMixin):
 
         # handle (-oo, oo)
         if Eq(self, S.Reals) is S.true:
-            l, r = self.left, self.right
-            if l.is_extended_real or r.is_extended_real:
-                return other
+            return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
         if not self._is_comparable(other):
@@ -946,12 +939,9 @@ class Interval(Set, EvalfMixin):
 
                 # remove the part which has been `imaged`
                 domain_set = Complement(domain_set, intrvl)
-                if domain_set.is_EmptySet:
+                if (p_expr, p_cond) != expr.args[-1] and domain_set.is_EmptySet:
                     break
             return result
-
-        if not self.start.is_comparable or not self.end.is_comparable:
-            return
 
         try:
             sing = [x for x in singularities(expr, var)
@@ -1249,10 +1239,7 @@ class Union(Set, EvalfMixin):
         return all(arg.is_iterable for arg in self.args)
 
     def _eval_evalf(self, prec):
-        try:
-            return Union(set._eval_evalf(prec) for set in self.args)
-        except Exception:
-            raise TypeError("Not all sets are evalf-able")
+        return Union(set._eval_evalf(prec) for set in self.args)
 
     def __iter__(self):
         # roundrobin recipe taken from itertools documentation:
@@ -1260,7 +1247,7 @@ class Union(Set, EvalfMixin):
         def roundrobin(*iterables):
             "roundrobin('ABC', 'D', 'EF') --> A D E B F C"
             pending = len(iterables)
-            nexts = itertools.cycle(iter(it).next for it in iterables)
+            nexts = itertools.cycle(iter(it).__next__ for it in iterables)
             while pending:
                 try:
                     for next in nexts:
@@ -1335,14 +1322,6 @@ class Intersection(Set):
     def is_iterable(self):
         return any(arg.is_iterable for arg in self.args)
 
-    @property
-    def _inf(self):
-        raise NotImplementedError()
-
-    @property
-    def _sup(self):
-        raise NotImplementedError()
-
     def _eval_imageset(self, f):
         return Intersection(imageset(f, arg) for arg in self.args)
 
@@ -1371,9 +1350,6 @@ class Intersection(Set):
         """
 
         # ===== Global Rules =====
-        # If any EmptySets return EmptySet
-        if any(s.is_EmptySet for s in args):
-            return S.EmptySet
 
         # If any FiniteSets see which elements of that finite set occur within
         # all other sets in the intersection
@@ -1475,11 +1451,6 @@ class Complement(Set, EvalfMixin):
         Simplify a :class:`Complement`.
 
         """
-        if B == S.UniversalSet:
-            return EmptySet()
-
-        if isinstance(B, Union):
-            return Intersection(s.complement(A) for s in B.args)
 
         result = B._complement(A)
         if result is not None:
@@ -1521,9 +1492,6 @@ class EmptySet(Set, metaclass=Singleton):
     """
     is_EmptySet = True
     is_FiniteSet = True
-
-    def _intersection(self, other):
-        return S.EmptySet
 
     @property
     def _measure(self):
@@ -1669,16 +1637,6 @@ class FiniteSet(Set, EvalfMixin):
     def __iter__(self):
         return iter(self.args)
 
-    def _intersection(self, other):
-        """
-        This function should only be used internally
-
-        See Set._intersection for docstring
-        """
-        if isinstance(other, self.__class__):
-            return self.__class__(*(self._elements & other._elements))
-        return self.__class__(el for el in self if el in other)
-
     def _complement(self, other):
         if other.is_Interval:
             nums = sorted(m for m in self.args if m.is_number and m in other)
@@ -1722,8 +1680,6 @@ class FiniteSet(Set, EvalfMixin):
 
         See Set._union for docstring
         """
-        if other.is_FiniteSet:
-            return FiniteSet(*(self._elements | other._elements))
 
         # If other set contains one of my elements, remove it from myself
         if any(other.contains(x) is true for x in self):
@@ -1785,9 +1741,6 @@ class FiniteSet(Set, EvalfMixin):
     def as_relational(self, symbol):
         """Rewrite a FiniteSet in terms of equalities and logic operators. """
         return Or(*[Eq(symbol, elem) for elem in self])
-
-    def compare(self, other):
-        return hash(self) - hash(other)
 
     def _eval_evalf(self, prec):
         return FiniteSet(*[elem._eval_evalf(prec) for elem in self])

@@ -4,11 +4,12 @@ import pytest
 
 from diofant.sets.fancysets import ImageSet, Range
 from diofant.sets.contains import Contains
-from diofant.sets.sets import FiniteSet, Interval, imageset, EmptySet
+from diofant.sets.sets import (FiniteSet, Interval, imageset, EmptySet,
+                               Intersection, Set)
 from diofant import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,
                      Integer, Rational, sqrt, tan, log, Abs, exp, I)
 
-from diofant.abc import x, n, m, t
+from diofant.abc import x, y, n, m, t
 
 
 def test_naturals():
@@ -23,6 +24,8 @@ def test_naturals():
 
     assert N.intersection(Interval(-5, 5)) == Range(1, 6)
     assert N.intersection(Interval(-5, 5, True, True)) == Range(1, 5)
+    assert N.intersection(Set(x)) == Intersection(N, Set(x),
+                                                  evaluate=False)
 
     assert N.boundary == N
 
@@ -49,11 +52,15 @@ def test_integers():
 
     assert Z.intersection(Interval(-5, 5)) == Range(-5, 6)
     assert Z.intersection(Interval(-5, 5, True, True)) == Range(-4, 5)
+    assert Z.intersection(Set(x)) == Intersection(Z, Set(x),
+                                                  evaluate=False)
 
     assert Z.inf == -oo
     assert Z.sup == oo
 
     assert Z.boundary == Z
+
+    assert imageset(Lambda((x, y), x*y), Z) == ImageSet(Lambda((x, y), x*y), Z)
 
 
 def test_rationals():
@@ -171,6 +178,8 @@ def test_Range():
 
     assert Range(-1, 10, 1).intersection(S.Integers) == Range(-1, 10, 1)
     assert Range(-1, 10, 1).intersection(S.Naturals) == Range(1, 10, 1)
+    assert (Range(-1, 10, 1).intersection(Set(x)) ==
+            Intersection(Range(-1, 10, 1), Set(x), evaluate=False))
 
     assert Range(1, 10, 1)._ith_element(5) == 6  # the index starts from zero
     assert Range(1, 10, 1)._last_element == 9

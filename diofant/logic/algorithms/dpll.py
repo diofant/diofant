@@ -20,9 +20,8 @@ def dpll_satisfiable(expr):
     It returns a model rather than True when it succeeds
 
     >>> from diofant.abc import A, B
-    >>> from diofant.logic.algorithms.dpll import dpll_satisfiable
-    >>> dpll_satisfiable(A & ~B) == {A: True, B: False}
-    True
+    >>> dpll_satisfiable(A & ~B)
+    {A: True, B: False}
     >>> dpll_satisfiable(A & ~A)
     False
     """
@@ -47,10 +46,8 @@ def dpll(clauses, symbols, model):
     Clauses is an array of conjuncts.
 
     >>> from diofant.abc import A, B, D
-    >>> from diofant.logic.algorithms.dpll import dpll
     >>> dpll([A, B, D], [A, B], {D: False})
     False
-
     """
     # compute DP kernel
     P, value = find_unit_clause(clauses, model)
@@ -95,10 +92,8 @@ def dpll_int_repr(clauses, symbols, model):
     Compute satisfiability in a partial model.
     Arguments are expected to be in integer representation
 
-    >>> from diofant.logic.algorithms.dpll import dpll_int_repr
     >>> dpll_int_repr([{1}, {2}, {3}], {1, 2}, {3: False})
     False
-
     """
     # compute DP kernel
     P, value = find_unit_clause_int_repr(clauses, model)
@@ -144,11 +139,9 @@ def pl_true_int_repr(clause, model={}):
     Argument clause represents the set of args of an Or clause. This is used
     inside dpll_int_repr, it is not meant to be used directly.
 
-    >>> from diofant.logic.algorithms.dpll import pl_true_int_repr
     >>> pl_true_int_repr({1, 2}, {1: False})
     >>> pl_true_int_repr({1, 2}, {1: False, 2: False})
     False
-
     """
     result = False
     for lit in clause:
@@ -176,12 +169,9 @@ def unit_propagate(clauses, symbol):
 
     Arguments are expected to be in CNF.
 
-    >>> from diofant import symbols
     >>> from diofant.abc import A, B, D
-    >>> from diofant.logic.algorithms.dpll import unit_propagate
     >>> unit_propagate([A | B, D | ~B, B], B)
     [D, B]
-
     """
     output = []
     for c in clauses:
@@ -204,10 +194,8 @@ def unit_propagate_int_repr(clauses, s):
     Same as unit_propagate, but arguments are expected to be in integer
     representation
 
-    >>> from diofant.logic.algorithms.dpll import unit_propagate_int_repr
-    >>> unit_propagate_int_repr([{1, 2}, {3, -2}, {2}], 2) == [{3}]
-    True
-
+    >>> unit_propagate_int_repr([{1, 2}, {3, -2}, {2}], 2)
+    [{3}]
     """
     negated = {-s}
     return [clause - negated for clause in clauses if s not in clause]
@@ -218,12 +206,9 @@ def find_pure_symbol(symbols, unknown_clauses):
     Find a symbol and its value if it appears only as a positive literal
     (or only as a negative) in clauses.
 
-    >>> from diofant import symbols
     >>> from diofant.abc import A, B, D
-    >>> from diofant.logic.algorithms.dpll import find_pure_symbol
     >>> find_pure_symbol([A, B, D], [A|~B,~B|~D,D|A])
     (A, True)
-
     """
     for sym in symbols:
         found_pos, found_neg = False, False
@@ -242,10 +227,8 @@ def find_pure_symbol_int_repr(symbols, unknown_clauses):
     Same as find_pure_symbol, but arguments are expected
     to be in integer representation
 
-    >>> from diofant.logic.algorithms.dpll import find_pure_symbol_int_repr
     >>> find_pure_symbol_int_repr({1, 2, 3}, [{1, -2}, {-2, -3}, {3, 1}])
     (1, True)
-
     """
     all_symbols = set().union(*unknown_clauses)
     found_pos = all_symbols.intersection(symbols)
@@ -263,12 +246,9 @@ def find_unit_clause(clauses, model):
     """
     A unit clause has only 1 variable that is not bound in the model.
 
-    >>> from diofant import symbols
     >>> from diofant.abc import A, B, D
-    >>> from diofant.logic.algorithms.dpll import find_unit_clause
     >>> find_unit_clause([A | B | D, B | ~D, A | ~B], {A:True})
     (B, False)
-
     """
     for clause in clauses:
         num_not_in_model = 0
@@ -287,10 +267,8 @@ def find_unit_clause_int_repr(clauses, model):
     Same as find_unit_clause, but arguments are expected to be in
     integer representation.
 
-    >>> from diofant.logic.algorithms.dpll import find_unit_clause_int_repr
     >>> find_unit_clause_int_repr([{1, 2, 3}, {2, -3}, {1, -2}], {1: True})
     (2, False)
-
     """
     bound = set(model) | {-sym for sym in model}
     for clause in clauses:

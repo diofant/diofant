@@ -1540,8 +1540,8 @@ def make_routine(name, expr, argument_sequence=None,
     [x, y, f, g]
     >>> [arg.name for arg in r.result_variables]
     [f, g]
-    >>> r.local_vars == set()
-    True
+    >>> r.local_vars
+    set()
 
     Another more complicated example with a mixture of specified and
     automatically-assigned names.  Also has Matrix output.

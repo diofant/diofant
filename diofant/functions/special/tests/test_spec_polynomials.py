@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Symbol, Dummy, diff, Derivative, Rational, roots, S, sqrt,
-                     hyper, cos, gamma, conjugate, factorial, pi, oo,
+                     hyper, cos, gamma, conjugate, factorial, pi, oo, exp,
                      zoo, binomial, RisingFactorial, legendre, assoc_legendre,
                      chebyshevu, chebyshevt, chebyshevt_root, chebyshevu_root,
                      laguerre, assoc_laguerre, laguerre_poly, hermite,
@@ -40,6 +40,7 @@ def test_jacobi():
 
     m = Symbol("m", positive=True)
     assert jacobi(m, a, b, oo) == oo*RisingFactorial(a + b + m + 1, m)
+    assert jacobi(n, a, b, oo) == jacobi(n, a, b, oo, evaluate=False)
 
     assert conjugate(jacobi(m, a, b, x)) == \
         jacobi(m, conjugate(a), conjugate(b), conjugate(x))
@@ -80,6 +81,8 @@ def test_gegenbauer():
     assert gegenbauer(n, 1, x) == chebyshevu(n, x)
     assert gegenbauer(n, -1, x) == 0
 
+    assert gegenbauer(n, -2, -1) == gegenbauer(n, -2, -1, evaluate=False)
+
     X = gegenbauer(n, a, x)
     assert isinstance(X, gegenbauer)
 
@@ -92,6 +95,7 @@ def test_gegenbauer():
 
     m = Symbol("m", positive=True)
     assert gegenbauer(m, a, oo) == oo*RisingFactorial(a, m)
+    assert gegenbauer(n, a, oo) == gegenbauer(n, a, oo, evaluate=False)
 
     assert conjugate(gegenbauer(n, a, x)) == gegenbauer(n, conjugate(a), conjugate(x))
 
@@ -179,6 +183,7 @@ def test_assoc_legendre():
 
     pytest.raises(ValueError, lambda: Plm(-1, 0, x))
     pytest.raises(ValueError, lambda: Plm(0, 1, x))
+    pytest.raises(ValueError, lambda: Plm(-1, 2, x))
 
     assert conjugate(assoc_legendre(n, m, x)) == \
         assoc_legendre(n, conjugate(m), conjugate(x))
@@ -195,6 +200,7 @@ def test_chebyshev():
     assert chebyshevt(1, x) == x
     assert chebyshevt(2, x) == 2*x**2 - 1
     assert chebyshevt(3, x) == 4*x**3 - 3*x
+    assert chebyshevt(-2, x) == 2*x**2 - 1
 
     for n in range(1, 4):
         for k in range(n):
@@ -233,6 +239,8 @@ def test_chebyshev():
     assert chebyshevu(n, oo) == oo
     assert chebyshevu(n, 0) == cos(pi*n/2)
     assert chebyshevu(n, 1) == n + 1
+    assert chebyshevu(-1, x) == 0
+    assert chebyshevu(-2, x) == -1
 
     assert conjugate(chebyshevu(n, x)) == chebyshevu(n, conjugate(x))
 
@@ -256,6 +264,8 @@ def test_hermite():
     assert hermite(n, 0) == 2**n*sqrt(pi)/gamma((1 - n)/2)
     assert hermite(n, oo) == oo
 
+    pytest.raises(ValueError, lambda: hermite(-1, x))
+
     assert conjugate(hermite(n, x)) == hermite(n, conjugate(x))
 
     assert diff(hermite(n, x), x) == 2*n*hermite(n - 1, x)
@@ -270,6 +280,8 @@ def test_laguerre():
 
     assert laguerre(n, oo) == (-1)**n*oo
     assert laguerre(n, -oo) == oo
+
+    assert laguerre(-n, x) == exp(x)*laguerre(n - 1, -x)
 
     X = laguerre(n, x)
     assert isinstance(X, laguerre)

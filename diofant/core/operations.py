@@ -336,9 +336,8 @@ class AssocOp(Basic):
         (x, y)
         >>> Add.make_args(x*y)
         (x*y,)
-        >>> set(Add.make_args(x*y + y)) == {y, x*y}
-        True
-
+        >>> set(Add.make_args(x*y + y))
+        {y, x*y}
         """
         if isinstance(expr, cls):
             return expr.args
@@ -431,9 +430,8 @@ class LatticeOp(AssocOp):
         (x, y)
         >>> Add.make_args(x*y)
         (x*y,)
-        >>> set(Add.make_args(x*y + y)) == {y, x*y}
-        True
-
+        >>> set(Add.make_args(x*y + y))
+        {y, x*y}
         """
         if isinstance(expr, cls):
             return expr._argset

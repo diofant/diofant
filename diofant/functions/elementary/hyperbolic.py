@@ -615,24 +615,16 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         if arg.could_extract_minus_sign():
             if cls._is_even:
                 return cls(-arg)
-            if cls._is_odd:
+            elif cls._is_odd:
                 return -cls(-arg)
 
         t = cls._reciprocal_of.eval(arg)
-        if hasattr(arg, 'inverse') and arg.inverse() == cls:
-            return arg.args[0]
         return 1/t if t is not None else t
 
     def _call_reciprocal(self, method_name, *args, **kwargs):
         # Calls method_name on _reciprocal_of
         o = self._reciprocal_of(self.args[0])
         return getattr(o, method_name)(*args, **kwargs)
-
-    def _calculate_reciprocal(self, method_name, *args, **kwargs):
-        # If calling method_name on _reciprocal_of returns a value != None
-        # then return the reciprocal of that value
-        t = self._call_reciprocal(method_name, *args, **kwargs)
-        return 1/t if t is not None else t
 
     def _rewrite_reciprocal(self, method_name, arg):
         # Special handling for rewrite functions. If reciprocal rewrite returns

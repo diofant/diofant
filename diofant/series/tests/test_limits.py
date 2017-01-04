@@ -39,6 +39,7 @@ def test_basic1():
     assert limit(gamma(1/x + 3), x, oo) == 2
     assert limit(S.NaN, x, -oo) == S.NaN
     assert limit(O(2)*x, x, S.NaN) == S.NaN
+    assert limit(sin(O(x)), x, 0) == 0
     assert limit(1/(x - 1), x, 1, dir="+") == oo
     assert limit(1/(x - 1), x, 1, dir="-") == -oo
     assert limit(1/(5 - x)**3, x, 5, dir="+") == -oo
@@ -109,6 +110,8 @@ def test_basic5():
     a = Symbol('a', positive=True)
     f = exp(x*(-a - 1)) * sinh(x)
     assert limit(f, x, oo) == 0
+
+    assert limit(O(x), x, x**2) == Limit(O(x), x, x**2)
 
 
 def test_sympyissue_3885():
@@ -188,6 +191,7 @@ def test_heuristic():
     x = Symbol("x", extended_real=True)
     assert heuristics(sin(1/x) + atan(x), x, 0, '+') == sin(oo)
     assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, '+') == log(2)
+    assert heuristics(tan(tan(1/x)), x, 0, '+') is None
 
 
 def test_sympyissue_3871():

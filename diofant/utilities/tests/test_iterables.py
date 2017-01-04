@@ -49,6 +49,9 @@ def test_postorder_traversal():
     assert list(postorder_traversal(('abc', ('d', 'ef')))) == [
         'abc', 'd', 'ef', ('d', 'ef'), ('abc', ('d', 'ef'))]
 
+    assert list(ordered(postorder_traversal(x*(y + z)))) == [x, y, z,
+                                                             y + z, x*(y + z)]
+
 
 def test_flatten():
     assert flatten((1, (1,))) == [1, 1]
@@ -161,6 +164,8 @@ def test_filter_symbols():
     s = numbered_symbols()
     filtered = filter_symbols(s, symbols("x0 x2 x3"))
     assert take(filtered, 3) == list(symbols("x1 x4 x5"))
+
+    assert set(filter_symbols((), set())) == set()
 
 
 def test_numbered_symbols():
@@ -405,6 +410,9 @@ def test_partitions():
         i.copy() for i in partitions(4) if all(k <= 3 for k in i)]
 
     pytest.raises(ValueError, lambda: list(partitions(3, 0)))
+    pytest.raises(ValueError, lambda: list(partitions(-1)))
+    pytest.raises(ValueError, lambda: list(partitions(3, -2)))
+    pytest.raises(ValueError, lambda: list(partitions(3, 2, -2)))
 
     # Consistency check on output of _partitions and RGS_unrank.
     # This provides a sanity test on both routines.  Also verifies that
@@ -597,6 +605,8 @@ def test_reshape():
     assert reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)]) == \
         [[0, 1, [2, 3, 4], {5, 6}, (7, (8, 9, 10), 11)]]
 
+    pytest.raises(ValueError, lambda: reshape([1], [-1]))
+
 
 def test_uniq():
     assert list(uniq(p.copy() for p in partitions(4))) == \
@@ -687,6 +697,8 @@ def test_kbins():
             [[2, 0], [1]]
             [[2], [1, 0]]
             [[2, 1], [0]]\n''')
+
+    pytest.raises(ValueError, lambda: list(kbins([1], 2, 22)))
 
 
 def test_has_dups():

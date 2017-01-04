@@ -36,8 +36,8 @@ def components(f, x):
     >>> from diofant.abc import x, y
     >>> from diofant.integrals.heurisch import components
 
-    >>> components(sin(x)*cos(x)**2, x) == {x, sin(x), cos(x)}
-    True
+    >>> components(sin(x)*cos(x)**2, x)
+    {x, sin(x), cos(x)}
 
     See Also
     ========

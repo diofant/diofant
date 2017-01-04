@@ -80,12 +80,12 @@ def smoothness_p(n, m=-1, power=0, visual=None):
     and vice versa:
 
         >>> f = factorint(17*9)
-        >>> f == {3: 2, 17: 1}
-        True
+        >>> f
+        {3: 2, 17: 1}
         >>> smoothness_p(f)
         'p**i=3**2 has p-1 B=2, B-pow=2\\np**i=17**1 has p-1 B=2, B-pow=16'
-        >>> smoothness_p(_) == {3: 2, 17: 1}
-        True
+        >>> smoothness_p(_)
+        {3: 2, 17: 1}
 
     The table of the output logic is:
 
@@ -531,8 +531,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
         ...     M = ilcm(M, i)
         ...
         >>> {igcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
-        ...  igcd(pow(a, M, n) - 1, n) != n} == {1009}
-        True
+        ...  igcd(pow(a, M, n) - 1, n) != n}
+        {1009}
 
     But does aM % d for every divisor of n give 1?
 
@@ -574,8 +574,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     The B and B-pow are the same for the p - 1 factorizations of the divisors
     because those factorizations had a very large prime factor:
 
-        >>> factorint(4410317 - 1) == {2: 2, 617: 1, 1787: 1}
-        True
+        >>> factorint(4410317 - 1)
+        {2: 2, 617: 1, 1787: 1}
         >>> factorint(4869863-1)
         {2: 1, 2434931: 1}
 
@@ -835,8 +835,8 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     >>> from diofant.ntheory import isprime
     >>> a = 1407633717262338957430697921446883
     >>> f = factorint(a, limit=10000)
-    >>> f == {991: 1, int(202916782076162456022877024859): 1, 7: 1}
-    True
+    >>> f
+    {7: 1, 991: 1, 202916782076162456022877024859: 1}
     >>> isprime(max(f))
     False
 

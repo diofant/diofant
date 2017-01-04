@@ -815,23 +815,23 @@ def roots(f, *gens, **flags):
     >>> from diofant import Poly, roots, sqrt
     >>> from diofant.abc import x, y
 
-    >>> roots(x**2 - 1, x) == {-1: 1, 1: 1}
-    True
+    >>> roots(x**2 - 1, x)
+    {-1: 1, 1: 1}
 
     >>> p = Poly(x**2-1, x)
-    >>> roots(p) == {-1: 1, 1: 1}
-    True
+    >>> roots(p)
+    {-1: 1, 1: 1}
 
     >>> p = Poly(x**2-y, x, y)
 
-    >>> roots(Poly(p, x)) == {-sqrt(y): 1, sqrt(y): 1}
-    True
+    >>> roots(Poly(p, x))
+    {-sqrt(y): 1, sqrt(y): 1}
 
-    >>> roots(x**2 - y, x) == {-sqrt(y): 1, sqrt(y): 1}
-    True
+    >>> roots(x**2 - y, x)
+    {-sqrt(y): 1, sqrt(y): 1}
 
-    >>> roots([1, 0, -1]) == {-1: 1, 1: 1}
-    True
+    >>> roots([1, 0, -1])
+    {-1: 1, 1: 1}
 
     References
     ==========

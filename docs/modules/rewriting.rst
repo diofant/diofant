@@ -48,8 +48,8 @@ process by using ``collect`` function:
     >>> (x + I*y).as_real_imag()
     (re(x) - im(y), re(y) + im(x))
 
-    >>> collect((x + I*y).expand(complex=True), I, evaluate=False) == {1: re(x) - im(y), I: re(y) + im(x)}
-    True
+    >>> collect((x + I*y).expand(complex=True), I, evaluate=False)
+    {1: re(x) - im(y), I: re(y) + im(x)}
 
 There is also possibility for expanding expressions in terms of expressions of
 different kind. This is very general type of expanding and usually you would

@@ -94,10 +94,10 @@ class Curve(GeometrySet):
 
         >>> from diofant.abc import t, a
         >>> from diofant.geometry import Curve
-        >>> Curve((t, t**2), (t, 0, 2)).free_symbols == set()
-        True
-        >>> Curve((t, t**2), (t, a, 2)).free_symbols == {a}
-        True
+        >>> Curve((t, t**2), (t, 0, 2)).free_symbols
+        set()
+        >>> Curve((t, t**2), (t, a, 2)).free_symbols
+        {a}
         """
         free = set()
         for a in self.functions + self.limits[1:]:

@@ -89,17 +89,15 @@ def DiscreteUniform(name, items):
     ========
 
     >>> from diofant.stats import DiscreteUniform, density
-    >>> from diofant import symbols, Rational, Symbol
-
-    >>> s3, s5 = Rational(1, 3), Rational(1, 5)
+    >>> from diofant import symbols, Symbol
 
     >>> X = DiscreteUniform('X', symbols('a b c')) # equally likely over a, b, c
-    >>> density(X).dict == {Symbol('a'): s3, Symbol('b'): s3, Symbol('c'): s3}
-    True
+    >>> density(X).dict
+    {a: 1/3, b: 1/3, c: 1/3}
 
     >>> Y = DiscreteUniform('Y', list(range(5))) # distribution over a range
-    >>> density(Y).dict == {0: s5, 1: s5, 2: s5, 3: s5, 4: s5}
-    True
+    >>> density(Y).dict
+    {0: 1/5, 1: 1/5, 2: 1/5, 3: 1/5, 4: 1/5}
     """
     return rv(name, DiscreteUniformDistribution, *items)
 
@@ -176,12 +174,12 @@ def Bernoulli(name, p, succ=1, fail=0):
     >>> from diofant import Rational, Symbol
 
     >>> X = Bernoulli('X', Rational(3, 4)) # 1-0 Bernoulli variable, probability = 3/4
-    >>> density(X).dict == {0: Rational(1, 4), 1: Rational(3, 4)}
-    True
+    >>> density(X).dict
+    {0: 1/4, 1: 3/4}
 
     >>> X = Bernoulli('X', S.Half, 'Heads', 'Tails') # A fair coin toss
-    >>> density(X).dict == {Symbol('Heads'): Rational(1, 2), Symbol('Tails'): Rational(1, 2)}
-    True
+    >>> density(X).dict
+    {Heads: 1/2, Tails: 1/2}
     """
 
     return rv(name, BernoulliDistribution, p, succ, fail)
@@ -201,12 +199,12 @@ def Coin(name, p=S.Half):
     >>> H, T = Symbol('H'), Symbol('T')
 
     >>> C = Coin('C') # A fair coin toss
-    >>> density(C).dict == {H: Rational(1, 2), T: Rational(1, 2)}
-    True
+    >>> density(C).dict
+    {H: 1/2, T: 1/2}
 
     >>> C2 = Coin('C2', Rational(3, 5)) # An unfair coin
-    >>> density(C2).dict == {H: Rational(3, 5), T: Rational(2, 5)}
-    True
+    >>> density(C2).dict
+    {H: 3/5, T: 2/5}
     """
     return rv(name, BernoulliDistribution, p, 'H', 'T')
 
@@ -306,14 +304,11 @@ def Rademacher(name):
     Examples
     ========
 
-    >>> from diofant.core.numbers import Rational
     >>> from diofant.stats import Rademacher, density
 
-    >>> s2 = Rational(1, 2)
-
     >>> X = Rademacher('X')
-    >>> density(X).dict == {-1: s2, 1: s2}
-    True
+    >>> density(X).dict
+    {-1: 1/2, 1: 1/2}
 
     See Also
     ========

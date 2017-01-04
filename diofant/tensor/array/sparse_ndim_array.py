@@ -145,11 +145,7 @@ class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
 
         """
         index = self._parse_index(index)
-        if not isinstance(value, MutableNDimArray):
-            value = _sympify(value)
-
-        if isinstance(value, NDimArray):
-            return NotImplementedError
+        value = _sympify(value)
 
         if value == 0 and index in self._sparse_array:
             self._sparse_array.pop(index)

@@ -1384,10 +1384,10 @@ class RegularPolygon(Polygon):
 
         >>> from diofant import RegularPolygon, Point2D, sqrt, pi
         >>> r = RegularPolygon(Point2D(0, 0), 5, 3)
-        >>> r.angles == {Point2D(-5/2, -5*sqrt(3)/2): pi/3,
-        ...              Point2D(-5/2, 5*sqrt(3)/2): pi/3,
-        ...              Point2D(5, 0): pi/3}
-        True
+        >>> r.angles
+        {Point2D(-5/2, -5*sqrt(3)/2): pi/3,
+         Point2D(-5/2, 5*sqrt(3)/2): pi/3,
+         Point2D(5, 0): pi/3}
         """
         ret = {}
         ang = self.interior_angle

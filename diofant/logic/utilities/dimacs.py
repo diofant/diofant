@@ -1,7 +1,6 @@
 """For reading in DIMACS file format
 
 www.cs.ubc.ca/~hoos/SATLIB/Benchmarks/SAT/satformat.ps
-
 """
 
 import re
@@ -16,7 +15,6 @@ def load(s):
     Examples
     ========
 
-    >>> from diofant.logic.utilities.dimacs import load
     >>> load('1')
     cnf_1
     >>> load('1 2')
@@ -61,11 +59,3 @@ def load(s):
                     clauses.append(Or(*list))
 
     return And(*clauses)
-
-
-def load_file(location):
-    """Loads a boolean expression from a file."""
-    with open(location) as f:
-        s = f.read()
-
-    return load(s)

@@ -81,11 +81,11 @@ class Options(dict):
 
     >>> from diofant.abc import x, y, z
 
-    >>> Options((x, y, z), {'domain': 'ZZ'}) == {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
-    True
+    >>> Options((x, y, z), {'domain': 'ZZ'})
+    {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
 
-    >>> build_options((x, y, z), {'domain': 'ZZ'}) == {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
-    True
+    >>> build_options((x, y, z), {'domain': 'ZZ'})
+    {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
 
     **Options**
 

@@ -195,12 +195,12 @@ return value is a three-tuple containing: (i) a set of number symbols that must
 be defined as 'Fortran parameters', (ii) a list functions that can not be
 translated in pure Fortran and (iii) a string of Fortran code. A few examples:
 
-    >>> fcode(1 - gamma(x)**2, human=False) == (set(), {gamma(x)}, '      -gamma(x)**2 + 1')
-    True
-    >>> fcode(1 - sin(x)**2, human=False) == (set(), set(), '      -sin(x)**2 + 1')
-    True
-    >>> fcode(x - pi**2, human=False) == ({(pi, '3.14159265358979d0')}, set(), '      x - pi**2')
-    True
+    >>> fcode(1 - gamma(x)**2, human=False)
+    (set(), {gamma(x)}, '      -gamma(x)**2 + 1')
+    >>> fcode(1 - sin(x)**2, human=False)
+    (set(), set(), '      -sin(x)**2 + 1')
+    >>> fcode(x - pi**2, human=False)
+    ({(pi, '3.14159265358979d0')}, set(), '      x - pi**2')
 
 Mathematica code printing
 -------------------------

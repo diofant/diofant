@@ -6,10 +6,10 @@ def binomial_coefficients(n):
     ========
 
     >>> from diofant.ntheory import binomial_coefficients
-    >>> binomial_coefficients(9) == {(0, 9): 1, (1, 8): 9, (2, 7): 36,
-    ...     (3, 6): 84, (4, 5): 126, (5, 4): 126, (6, 3): 84,
-    ...     (7, 2): 36, (8, 1): 9, (9, 0): 1}
-    True
+    >>> binomial_coefficients(9)
+    {(0, 9): 1, (1, 8): 9, (2, 7): 36,
+     (3, 6): 84, (4, 5): 126, (5, 4): 126, (6, 3): 84,
+     (7, 2): 36, (8, 1): 9, (9, 0): 1}
 
     See Also
     ========
@@ -55,9 +55,9 @@ def multinomial_coefficients(m, n):
     ========
 
     >>> from diofant.ntheory import multinomial_coefficients
-    >>> multinomial_coefficients(2, 5) == {(0, 5): 1, (1, 4): 5,
-    ...    (2, 3): 10, (3, 2): 10, (4, 1): 5, (5, 0): 1}
-    True
+    >>> multinomial_coefficients(2, 5)
+    {(0, 5): 1, (1, 4): 5,
+     (2, 3): 10, (3, 2): 10, (4, 1): 5, (5, 0): 1}
 
     Notes
     =====

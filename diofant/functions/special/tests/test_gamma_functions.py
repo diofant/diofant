@@ -3,7 +3,7 @@ import pytest
 from diofant import (Symbol, gamma, I, oo, nan, zoo, factorial, sqrt, Rational,
                      log, Integer, polygamma, EulerGamma, pi, uppergamma, S,
                      expand_func, loggamma, sin, cos, O, lowergamma, exp, erf,
-                     exp_polar, harmonic, zeta, conjugate)
+                     exp_polar, harmonic, zeta, conjugate, trigamma)
 from diofant.core.function import ArgumentIndexError
 from diofant.utilities.randtest import (test_derivative_numerically as td,
                                         random_complex_number as randcplx,
@@ -52,6 +52,7 @@ def test_gamma():
         19, 8)).expand(func=True) == Rational(33, 64)*gamma(Rational(3, 8))
 
     assert gamma(x).diff(x) == gamma(x)*polygamma(0, x)
+    pytest.raises(ArgumentIndexError, lambda: gamma(x).fdiff(2))
 
     assert gamma(x - 1).expand(func=True) == gamma(x)/(x - 1)
     assert gamma(x + 2).expand(func=True, mul=False) == x*(x + 1)*gamma(x)
@@ -107,6 +108,7 @@ def test_lowergamma():
     assert lowergamma(x, y).diff(x) == \
         gamma(x)*polygamma(0, x) - uppergamma(x, y)*log(y) \
         - meijerg([], [1, 1], [0, 0, x], [], y)
+    pytest.raises(ArgumentIndexError, lambda: lowergamma(x, y).fdiff(3))
 
     assert lowergamma(S.Half, x) == sqrt(pi)*erf(sqrt(x))
     assert not lowergamma(S.Half - 3, x).has(lowergamma)
@@ -144,11 +146,13 @@ def test_lowergamma():
 def test_uppergamma():
     from diofant import meijerg, exp_polar, I, expint
     assert uppergamma(4, 0) == 6
+    assert uppergamma(x, oo) == 0
     assert uppergamma(x, y).diff(y) == -y**(x - 1)*exp(-y)
     assert td(uppergamma(randcplx(), y), y)
     assert uppergamma(x, y).diff(x) == \
         uppergamma(x, y)*log(y) + meijerg([], [1, 1], [0, 0, x], [], y)
     assert td(uppergamma(x, randcplx()), x)
+    pytest.raises(ArgumentIndexError, lambda: uppergamma(x, y).fdiff(3))
 
     assert uppergamma(S.Half, x) == sqrt(pi)*(1 - erf(sqrt(x)))
     assert not uppergamma(S.Half - 3, x).has(uppergamma)
@@ -208,6 +212,7 @@ def test_polygamma():
     assert polygamma(3, 1) == pi**4 / 15
     assert polygamma(3, 5) == 6*(Rational(-22369, 20736) + pi**4/90)
     assert polygamma(5, 1) == 8 * pi**6 / 63
+    assert trigamma(x) == polygamma(1, x)
 
     def t(m, n):
         x = Integer(m)/n
@@ -254,6 +259,8 @@ def test_polygamma():
 
     # Test a bug
     assert polygamma(0, -x).expand(func=True) == polygamma(0, -x)
+
+    assert polygamma(1, x).as_leading_term(x) == polygamma(1, x)
 
 
 def test_polygamma_expand_func():
@@ -351,6 +358,9 @@ def test_loggamma():
     E = -log(19) - log(12) - log(5) + loggamma(Rational(2, 7)) + 3*log(7) - 3*I*pi
     assert expand_func(L).doit() == E
     assert L.n() == E.n()
+
+    assert expand_func(loggamma(x)) == loggamma(x)
+    assert expand_func(loggamma(1/Integer(3))) == loggamma(1/Integer(3))
 
     assert loggamma(x).diff(x) == polygamma(0, x)
     s1 = loggamma(1/(x + sin(x)) + cos(x)).nseries(x, n=4)

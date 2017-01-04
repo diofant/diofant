@@ -348,7 +348,7 @@ class And(LatticeOp, BooleanFunction):
         from diofant.sets.sets import Intersection
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Sorry, And.as_set has not yet been"
                                       " implemented for multivariate"
                                       " expressions")
@@ -1283,11 +1283,10 @@ def to_int_repr(clauses, symbols):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import to_int_repr
     >>> from diofant.abc import x, y
-    >>> to_int_repr([x | y, y], [x, y]) == [{1, 2}, {2}]
-    True
 
+    >>> to_int_repr([x | y, y], [x, y])
+    [{1, 2}, {2}]
     """
 
     symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
@@ -1602,10 +1601,10 @@ def _finger(eq):
     >>> from diofant import And, Or, Not
     >>> from diofant.abc import a, b, x, y
     >>> eq = Or(And(Not(y), a), And(Not(y), b), And(x, y))
-    >>> dict(finger(eq)) == {(0, 0, 1, 0, 2): [x],
-    ...                      (0, 0, 1, 0, 3): [a, b],
-    ...                      (0, 0, 1, 2, 8): [y]}
-    True
+    >>> dict(finger(eq))
+    {(0, 0, 1, 0, 2): [x],
+     (0, 0, 1, 0, 3): [a, b],
+     (0, 0, 1, 2, 8): [y]}
 
     So y and x have unique fingerprints, but a and b do not.
     """
@@ -1650,22 +1649,22 @@ def bool_map(bool1, bool2):
     >>> from diofant.abc import w, x, y, z, a, b, c, d
     >>> function1 = SOPform([x, z, y],[[1, 0, 1], [0, 0, 1]])
     >>> function2 = SOPform([a, b, c],[[1, 0, 1], [1, 0, 0]])
-    >>> bool_map(function1, function2) == (And(Not(z), y), {y: a, z: b})
-    True
+    >>> bool_map(function1, function2)
+    (And(Not(z), y), {y: a, z: b})
 
     The results are not necessarily unique, but they are canonical. Here,
     ``(w, z)`` could be ``(a, d)`` or ``(d, a)``:
 
     >>> eq =  Or(And(Not(y), w), And(Not(y), z), And(x, y))
     >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
-    >>> bool_map(eq, eq2) == (Or(And(Not(y), w), And(Not(y), z),
-    ...                          And(x, y)), {w: a, x: b, y: c, z: d})
-    True
+    >>> bool_map(eq, eq2)
+    (Or(And(Not(y), w), And(Not(y), z),
+     And(x, y)), {w: a, x: b, y: c, z: d})
     >>> eq = And(Xor(a, b), c, And(c,d))
-    >>> bool_map(eq, eq.subs(c, x)) == (And(Or(Not(a), Not(b)),
-    ...                                     Or(a, b), c, d),
-    ...                                 {a: a, b: b, c: d, d: x})
-    True
+    >>> bool_map(eq, eq.subs(c, x))
+    (And(Or(Not(a), Not(b)),
+     Or(a, b), c, d),
+     {a: a, b: b, c: d, d: x})
     """
 
     def match(function1, function2):

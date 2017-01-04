@@ -199,6 +199,9 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
         string = 'PDE '
         dummy = 'p'
 
+    else:  # pragma: no cover
+        return NotImplementedError
+
     # Magic that should only be used internally.  Prevents classify_ode from
     # being called more than it needs to be by passing its results through
     # recursive calls.
@@ -227,14 +230,6 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
         raise ValueError(
             str(eq) + " is not a differential equation in " + str(func))
 
-    if not hints['default']:
-        # classify_ode will set hints['default'] to None if no hints match.
-        if hint not in allhints and hint != 'default':
-            raise ValueError("Hint not recognized: " + hint)
-        elif hint not in hints['ordered_hints'] and hint != 'default':
-            raise ValueError(string + str(eq) + " does not match hint " + hint)
-        else:
-            raise NotImplementedError(dummy + "solve" + ": Cannot solve " + str(eq))
     if hint == 'default':
         return _desolve(eq, func, init=init, hint=hints['default'], simplify=simplify,
                       prep=prep, x0=x0, classify=False, order=hints['order'],

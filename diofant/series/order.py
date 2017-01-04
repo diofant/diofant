@@ -389,13 +389,11 @@ class Order(Expr):
                         point = d.subs(res[0]).limit(old, self.point[i])
                     newvars[i] = var
                     newpt[i] = point
-                elif old not in syms:
+                else:
                     del newvars[i], newpt[i]
                     if not syms and new == self.point[i]:
                         newvars.extend(syms)
                         newpt.extend([S.Zero]*len(syms))
-                else:
-                    return
             return Order(newexpr, *zip(newvars, newpt))
 
     def _eval_conjugate(self):
