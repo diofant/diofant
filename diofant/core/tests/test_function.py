@@ -719,3 +719,10 @@ def test_sympyissue_11313():
     s = Derivative(sin(x), x).series(x, n=3)
     assert s == Derivative(-x**3/6, x) + Derivative(x, x) + O(x**3)
     assert s.doit() == 1 - x**2/2 + O(x**3)
+
+
+def test_sympyissue_12005():
+    e = Subs(Derivative(f(x), x), (x,), (x,))
+    assert e.diff(x) == Derivative(f(x), x, x)
+
+    assert f(g(x)).diff(g(x), g(x)) == Subs(Derivative(Function('f')(y), y, y), (y,), (g(x),))
