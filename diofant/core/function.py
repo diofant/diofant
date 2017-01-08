@@ -1622,12 +1622,10 @@ class Subs(Expr):
                 return new
 
     def _eval_derivative(self, s):
-        if s not in self.free_symbols:
-            return S.Zero
-        return self.func(self.expr.diff(s), self.variables, self.point).doit() \
-            + Add(*[ Subs(point.diff(s) * self.expr.diff(arg),
-                    self.variables, self.point).doit() for arg,
-                    point in zip(self.variables, self.point) ])
+        return Add(*[self.func(p.diff(s)*self.expr.diff(v) +
+                               (self.expr.diff(s) if s != v else S.Zero),
+                               self.variables, self.point).doit()
+                     for v, p in zip(self.variables, self.point)])
 
 
 def diff(f, *symbols, **kwargs):
