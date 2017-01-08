@@ -8,7 +8,7 @@ from diofant.diffgeom import (Commutator, Differential, TensorProduct,
                               metric_to_Christoffel_2nd, metric_to_Riemann_components,
                               metric_to_Ricci_components, intcurve_diffequ,
                               intcurve_series, Manifold, Patch, CoordSystem)
-from diofant.core import Symbol, symbols, Function, Derivative
+from diofant.core import Symbol, symbols, Function, Derivative, Subs
 from diofant.simplify import trigsimp, simplify
 from diofant.functions import sqrt, atan2, sin, exp
 from diofant.matrices import Matrix
@@ -217,3 +217,26 @@ def test_schwarzschild():
     assert eq1 == f(R).diff(R) + g(R).diff(R)
     eq2 = simplify(ricci[1, 1].replace(g, lambda x: -f(x)).replace(r, R).doit())
     assert eq2 == -2*f(R).diff(R)**2 - f(R).diff(R, 2) - 2*f(R).diff(R)/R
+
+
+def test_sympyissue_11799():
+    n = 2
+    M = Manifold('M', n)
+    P = Patch('P', M)
+
+    coord = CoordSystem('coord', P, ['x%s' % i for i in range(n)])
+    x = coord.coord_functions()
+    dx = coord.base_oneforms()
+
+    f = Function('f')
+    g = [[f(x[0], x[1])**2, 0], [0, f(x[0], x[1])**2]]
+    metric = sum([g[i][j]*TP(dx[i], dx[j]) for i in range(n) for j in range(n)])
+
+    R = metric_to_Riemann_components(metric)
+    d = Symbol('d')
+
+    assert (R[0, 1, 0, 1] ==
+            -Subs(Derivative(f(d, x[1]), d, d), (d,), (x[0],))/f(x[0], x[1]) -
+            Subs(Derivative(f(x[0], d), d, d), (d,), (x[1],))/f(x[0], x[1]) +
+            Subs(Derivative(f(d, x[1]), d), (d,), (x[0],))**2/f(x[0], x[1])**2 +
+            Subs(Derivative(f(x[0], d), d), (d,), (x[1],))**2/f(x[0], x[1])**2)
