@@ -26,6 +26,7 @@ known_functions = {
     "sign": [(lambda x: True, "Sign")],
     "meijerg": [(lambda *x: True, "MeijerG")],
     "hyper": [(lambda *x: True, "HypergeometricPFQ")],
+    "binomial": [(lambda n, k: True, "Binomial")],
 }
 
 

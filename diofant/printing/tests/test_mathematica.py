@@ -4,7 +4,7 @@ from diofant.core import (S, pi, oo, symbols, Function,
 from diofant.integrals import Integral
 from diofant.concrete import Sum
 from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
-                               Min, Max, Piecewise)
+                               Min, Max, Piecewise, binomial)
 from diofant.matrices import Matrix
 from diofant.logic import Or, true, false
 
@@ -42,6 +42,8 @@ def test_Function():
 
     assert mcode(Min(x, y)) == "Min[x, y]"
     assert mcode(Max(x, y)) == "Max[x, y]"
+
+    assert mcode(binomial(x, y)) == "Binomial[x, y]"
 
 
 def test_Derivative():
