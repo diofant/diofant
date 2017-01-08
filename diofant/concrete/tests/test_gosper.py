@@ -192,3 +192,8 @@ def test_gosper_sum_AeqB_part3():
     assert g is not None and simplify(g - g3f) == 0
     g = gosper_sum(f3g, (n, 1, m))
     assert g is not None and simplify(g - g3g) == 0
+
+
+def test_sympyissue_12018():
+    f = binomial(n + 1, k)/2**(n + 1) - binomial(n, k)/2**n  # Ex. 5.7.11a
+    assert gosper_sum(f, (k, 0, n)).simplify() == -2**(-n - 1)
