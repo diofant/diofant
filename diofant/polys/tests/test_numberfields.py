@@ -498,6 +498,10 @@ def test_to_number_field():
 
     pytest.raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), sqrt(3)))
 
+    # issue sympy/sympy#5649
+    assert AlgebraicNumber(1).rep == to_number_field(1, AlgebraicNumber(1)).rep
+    assert AlgebraicNumber(sqrt(2)).rep == to_number_field(sqrt(2), AlgebraicNumber(sqrt(2))).rep
+
 
 def test_AlgebraicNumber():
     minpoly, root = x**2 - 2, sqrt(2)
@@ -580,7 +584,7 @@ def test_AlgebraicNumber():
     assert a.is_aliased is False
 
     assert AlgebraicNumber( sqrt(3)).rep == DMP([ QQ(1), QQ(0)], QQ)
-    assert AlgebraicNumber(-sqrt(3)).rep == DMP([-QQ(1), QQ(0)], QQ)
+    assert AlgebraicNumber(-sqrt(3)).rep == DMP([ QQ(1), QQ(0)], QQ)
 
     a = AlgebraicNumber(sqrt(2))
     b = AlgebraicNumber(sqrt(2))
@@ -628,9 +632,9 @@ def test_AlgebraicNumber():
 
     a = AlgebraicNumber(sqrt(2))
     b = to_number_field(sqrt(2))
-    assert a.args == b.args == (sqrt(2), Tuple())
+    assert a.args == b.args == (sqrt(2), Tuple(1, 0))
     b = AlgebraicNumber(sqrt(2), alias='alpha')
-    assert b.args == (sqrt(2), Tuple(), Symbol('alpha'))
+    assert b.args == (sqrt(2), Tuple(1, 0), Symbol('alpha'))
 
     a = AlgebraicNumber(sqrt(2), [1, 2, 3])
     assert a.args == (sqrt(2), Tuple(1, 2, 3))

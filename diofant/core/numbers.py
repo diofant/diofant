@@ -1803,7 +1803,7 @@ class AlgebraicNumber(Expr):
     is_algebraic = True
     is_number = True
 
-    def __new__(cls, expr, coeffs=Tuple(), alias=None, **args):
+    def __new__(cls, expr, coeffs=(1, 0), alias=None, **args):
         """Construct a new algebraic number. """
         from diofant import Poly
         from diofant.polys.polyclasses import ANP, DMP
@@ -1825,26 +1825,17 @@ class AlgebraicNumber(Expr):
 
         dom = minpoly.get_domain()
 
-        if coeffs != Tuple():
-            if not isinstance(coeffs, ANP):
-                rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
-                scoeffs = Tuple(*coeffs)
-            else:
-                rep = DMP.from_list(coeffs.to_list(), 0, dom)
-                scoeffs = Tuple(*coeffs.to_list())
-
-            if rep.degree() >= minpoly.degree():
-                rep = rep.rem(minpoly.rep)
-
-            sargs = (root, scoeffs)
-
+        if not isinstance(coeffs, ANP):
+            rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
+            coeffs = Tuple(*coeffs)
         else:
-            rep = DMP.from_list([1, 0], 0, dom)
+            rep = DMP.from_list(coeffs.to_list(), 0, dom)
+            coeffs = Tuple(*coeffs.to_list())
 
-            if root.is_negative:
-                rep = -rep
+        if rep.degree() >= minpoly.degree():
+            rep = rep.rem(minpoly.rep)
 
-            sargs = (root, coeffs)
+        sargs = (root, coeffs)
 
         if alias is not None:
             if not isinstance(alias, Symbol):
@@ -1859,9 +1850,6 @@ class AlgebraicNumber(Expr):
         obj.minpoly = minpoly
 
         return obj
-
-    def __hash__(self):
-        return super(AlgebraicNumber, self).__hash__()
 
     def _eval_evalf(self, prec):
         return self.as_expr()._evalf(prec)
