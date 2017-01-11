@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
                      S, WildFunction, ImmutableMatrix, sin, true, false, ones,
-                     Symbol, Dummy, Wild)
+                     Symbol, Dummy, Wild, AlgebraicNumber, sqrt, root)
 from diofant.geometry import Point, Ellipse
 from diofant.printing import srepr
 from diofant.polys import ring, field, ZZ, QQ, lex, grlex
@@ -98,6 +98,15 @@ def test_empty_Matrix():
 def test_Rational():
     sT(Rational(1, 3), "Rational(1, 3)")
     sT(Rational(-1, 3), "Rational(-1, 3)")
+
+
+def test_AlgebraicNumber():
+    a = AlgebraicNumber(sqrt(2))
+    sT(a, "AlgebraicNumber(Pow(Integer(2), Rational(1, 2)), Tuple(Integer(1), Integer(0)))")
+    a = AlgebraicNumber(sqrt(2), alias='a')
+    sT(a, "AlgebraicNumber(Pow(Integer(2), Rational(1, 2)), Tuple(Integer(1), Integer(0)), Symbol('a'))")
+    a = AlgebraicNumber(root(-2, 3))
+    sT(a, "AlgebraicNumber(Pow(Integer(-2), Rational(1, 3)), Tuple(Integer(1), Integer(0)))")
 
 
 def test_Float():

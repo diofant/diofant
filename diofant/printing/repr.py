@@ -168,10 +168,6 @@ class ReprPrinter(Printer):
     def _print_WildFunction(self, expr):
         return "%s('%s')" % (expr.__class__.__name__, expr.name)
 
-    def _print_AlgebraicNumber(self, expr):
-        return "%s(%s, %s)" % (self.__class__.__name__,
-            self._print(self.coeffs()), self._print(expr.root))
-
     def _print_PolyRing(self, ring):
         return "%s(%s, %s, %s)" % (ring.__class__.__name__,
             self._print(ring.symbols), self._print(ring.domain), self._print(ring.order))
