@@ -592,12 +592,14 @@ def solve(f, *symbols, **flags):
         sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)), -(3*sqrt(69)/2 +
         27/2)**(1/3)/3 - 1/(3*sqrt(69)/2 + 27/2)**(1/3)]
         >>> solve(x**3 - x + 1, cubics=False)
-        [RootOf(x**3 - x + 1, 0), RootOf(x**3 - x + 1, 1), RootOf(x**3 - x + 1, 2)]
+        [RootOf(x**3 - x + 1, x, 0), RootOf(x**3 - x + 1, x, 1),
+         RootOf(x**3 - x + 1, x, 2)]
 
         If the expression is multivariate, no solution might be returned:
 
         >>> solve(x**3 - x + a, x, cubics=False)
-        []
+        [RootOf(a + x**3 - x, x, 0), RootOf(a + x**3 - x, x, 1),
+         RootOf(a + x**3 - x, x, 2)]
 
     Sometimes solutions will be obtained even when a flag is False because the
     expression could be factored. In the following example, the equation can
@@ -628,8 +630,8 @@ def solve(f, *symbols, **flags):
         >>> from diofant import real_root, Rational
         >>> eq = root(x, 3) - root(x, 5) + Rational(1, 7)
         >>> solve(eq)  # this gives 2 solutions but misses a 3rd
-        [RootOf(7*_p**5 - 7*_p**3 + 1, 1)**15,
-        RootOf(7*_p**5 - 7*_p**3 + 1, 2)**15]
+        [RootOf(7*_p**5 - 7*_p**3 + 1, _p, 1)**15,
+         RootOf(7*_p**5 - 7*_p**3 + 1, _p, 2)**15]
         >>> sol = solve(eq, check=False)
         >>> [abs(eq.subs(x,i).n(2)) for i in sol]
         [0.48, 0.e-110, 0.e-110, 0.052, 0.052]
@@ -639,44 +641,6 @@ def solve(f, *symbols, **flags):
 
         >>> abs(real_root(eq.subs(x, sol[0])).n(2))
         0.e-110
-
-    If the roots of the equation are not real then more care will be necessary
-    to find the roots, especially for higher order equations. Consider the
-    following expression:
-
-        >>> expr = root(x, 3) - root(x, 5)
-
-    We will construct a known value for this expression at x = 3 by selecting
-    the 1-th root for each radical:
-
-        >>> expr1 = root(x, 3, 1) - root(x, 5, 1)
-        >>> v = expr1.subs(x, -3)
-
-    The solve function is unable to find any exact roots to this equation:
-
-        >>> eq = Eq(expr, v); eq1 = Eq(expr1, v)
-        >>> solve(eq, check=False), solve(eq1, check=False)
-        ([], [])
-
-    The function unrad, however, can be used to get a form of the equation for
-    which numerical roots can be found:
-
-        >>> from diofant.solvers.solvers import unrad
-        >>> from diofant import nroots, pprint
-        >>> e, (p, cov) = unrad(eq)
-        >>> pvals = nroots(e)
-        >>> inversion = solve(cov, x)[0]
-        >>> xvals = [inversion.subs(p, i) for i in pvals]
-
-    Although eq or eq1 could have been used to find xvals, the solution can
-    only be verified with expr1:
-
-        >>> z = expr - v
-        >>> [xi.n(chop=1e-9) for xi in xvals if abs(z.subs(x, xi).n()) < 1e-9]
-        []
-        >>> z1 = expr1 - v
-        >>> pprint([xi.n(chop=1e-9) for xi in xvals if abs(z1.subs(x, xi).n()) < 1e-9])
-        [-3.0]
 
     See Also
     ========

@@ -3222,7 +3222,7 @@ class Poly(Expr):
         IndexError: root index out of [-3, 2] range, got 3
 
         >>> Poly(x**5 + x + 1).root(0)
-        RootOf(x**3 - x**2 + 1, 0)
+        RootOf(x**3 - x**2 + 1, x, 0)
         """
         return diofant.polys.rootoftools.RootOf(self, index, radicals=radicals)
 
@@ -3239,7 +3239,7 @@ class Poly(Expr):
         >>> Poly(2*x**3 - 7*x**2 + 4*x + 4).real_roots()
         [-1/2, 2, 2]
         >>> Poly(x**3 + x + 1).real_roots()
-        [RootOf(x**3 + x + 1, 0)]
+        [RootOf(x**3 + x + 1, x, 0)]
         """
         reals = diofant.polys.rootoftools.RootOf.real_roots(self, radicals=radicals)
 
@@ -3261,9 +3261,9 @@ class Poly(Expr):
         >>> Poly(2*x**3 - 7*x**2 + 4*x + 4).all_roots()
         [-1/2, 2, 2]
         >>> Poly(x**3 + x + 1).all_roots()
-        [RootOf(x**3 + x + 1, 0),
-         RootOf(x**3 + x + 1, 1),
-         RootOf(x**3 + x + 1, 2)]
+        [RootOf(x**3 + x + 1, x, 0),
+         RootOf(x**3 + x + 1, x, 1),
+         RootOf(x**3 + x + 1, x, 2)]
         """
         roots = diofant.polys.rootoftools.RootOf.all_roots(self, radicals=radicals)
 

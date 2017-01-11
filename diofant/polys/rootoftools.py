@@ -7,6 +7,7 @@ from mpmath.libmp.libmpf import prec_to_dps
 
 from diofant.core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
                           sympify, Rational, Dummy)
+from diofant.core.evaluate import global_evaluate
 from diofant.core.cache import cacheit
 from diofant.core.function import AppliedUndef
 from diofant.functions.elementary.miscellaneous import root as _root
@@ -39,7 +40,8 @@ class RootOf(Expr):
     is_complex = True
     is_number = True
 
-    def __new__(cls, f, x, index=None, radicals=True, expand=True):
+    def __new__(cls, f, x, index=None, radicals=True, expand=True,
+                evaluate=None):
         """Construct a new ``RootOf`` object for ``k``-th root of ``f``. """
         x = sympify(x)
 
@@ -59,6 +61,7 @@ class RootOf(Expr):
             raise PolynomialError("only univariate polynomials are allowed")
 
         degree = poly.degree()
+        dom = poly.get_domain()
 
         if degree <= 0:
             raise PolynomialError("can't construct RootOf object for %s" % f)
@@ -69,7 +72,19 @@ class RootOf(Expr):
         elif index < 0:
             index += degree
 
-        dom = poly.get_domain()
+        if not dom.is_ZZ and poly.LC().is_nonzero is False:
+            raise NotImplementedError("sorted roots not supported over %s" % dom)
+
+        if evaluate is None:
+            evaluate = global_evaluate[0]
+
+        if not evaluate:
+            obj = Expr.__new__(cls)
+
+            obj.poly = poly
+            obj.index = index
+
+            return obj
 
         if not dom.is_Exact:
             poly = poly.to_exact()
@@ -82,10 +97,11 @@ class RootOf(Expr):
         coeff, poly = preprocess_roots(poly)
         dom = poly.get_domain()
 
-        if not dom.is_ZZ:
-            raise NotImplementedError("RootOf is not supported over %s" % dom)
+        if dom.is_ZZ:
+            root = cls._indexed_root(poly, index)
+        else:
+            root = poly, index
 
-        root = cls._indexed_root(poly, index)
         return coeff*cls._postprocess_root(root, radicals)
 
     @classmethod
@@ -113,17 +129,17 @@ class RootOf(Expr):
 
     @property
     def args(self):
-        return self.expr, Integer(self.index)
+        return self.expr, self.poly.gen, Integer(self.index)
 
     @property
     def free_symbols(self):
-        # RootOf currently only works with univariate expressions and although
-        # the poly attribute is often a PurePoly, sometimes it is a Poly. In
-        # either case no free symbols should be reported.
-        return set()
+        return self.poly.free_symbols
 
     def _eval_is_real(self):
-        return self.index < len(_reals_cache[self.poly])
+        try:
+            return self.index < len(_reals_cache[self.poly])
+        except KeyError:
+            pass
     _eval_is_extended_real = _eval_is_real
 
     @classmethod
@@ -425,6 +441,10 @@ class RootOf(Expr):
     @classmethod
     def _all_roots(cls, poly):
         """Get real and complex roots of a composite polynomial. """
+
+        if not poly.domain.is_ZZ:
+            return [(poly, i) for i in range(poly.degree())]
+
         (_, factors) = poly.factor_list()
 
         reals = cls._get_reals(factors)
@@ -473,9 +493,8 @@ class RootOf(Expr):
         coeff, poly = preprocess_roots(poly)
         dom = poly.get_domain()
 
-        if not dom.is_ZZ:
-            raise NotImplementedError(
-                "sorted roots not supported over %s" % dom)
+        if not dom.is_ZZ and poly.LC().is_nonzero is False:
+            raise NotImplementedError("sorted roots not supported over %s" % dom)
 
         return coeff, poly
 
@@ -534,7 +553,11 @@ class RootOf(Expr):
             else:
                 func = lambdify(g, self.expr)
 
-            interval = self._get_interval()
+            try:
+                interval = self._get_interval()
+            except KeyError:
+                return super(Expr, self)._eval_evalf(prec)
+
             if not self.is_extended_real:
                 # For complex intervals, we need to keep refining until the
                 # imaginary interval is disjunct with other roots, that is,

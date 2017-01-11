@@ -402,6 +402,35 @@ def test_solve_transcendental():
     assert sstr(solve(Eq(a, 0.5 - cos(pi*b)/2), b)) == \
         '[-0.318309886183791*acos(-2.0*a + 1.0) + 2.0, 0.318309886183791*acos(-2.0*a + 1.0)]'
 
+    expr = root(x, 3) - root(x, 5)
+    expr1 = root(x, 3, 1) - root(x, 5, 1)
+    v = expr1.subs(x, -3)
+    eq = Eq(expr, v)
+    eq1 = Eq(expr1, v)
+    assert solve(eq, check=False) == [RootOf(-x**5 + x**3 + v, x, 0)**15,
+                                      RootOf(-x**5 + x**3 + v, x, 1)**15,
+                                      RootOf(-x**5 + x**3 + v, x, 2)**15,
+                                      RootOf(-x**5 + x**3 + v, x, 3)**15,
+                                      RootOf(-x**5 + x**3 + v, x, 4)**15]
+    assert solve(eq1, check=False) == [RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 0)**15,
+                                       RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 1)**15,
+
+                                       RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 2)**15,
+
+                                       RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 3)**15,
+
+                                       RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 4)**15]
+
 
 def test_solve_for_functions_derivatives():
     t = Symbol('t')
@@ -1387,4 +1416,4 @@ def test_sympyissue_10391():
 
 def test_sympyissue_11538():
     eqs = (x - y**3 + 4, x + y + 4 + 4*E)
-    assert len(solve(eqs, x, y)) == 3
+    assert len(solve(eqs, x, y, check=False)) == 3
