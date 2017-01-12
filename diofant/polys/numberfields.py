@@ -109,11 +109,11 @@ def _separate_sq(p):
                 a.append((y, S.One))
             elif y.is_Pow and y.exp.is_integer:
                 a.append((y, S.One))
-            else:
+            else:  # pragma: no cover
                 raise NotImplementedError
-            continue
-        sifted = sift(y.args, is_sqrt)
-        a.append((Mul(*sifted[False]), Mul(*sifted[True])**2))
+        else:
+            sifted = sift(y.args, is_sqrt)
+            a.append((Mul(*sifted[False]), Mul(*sifted[True])**2))
     a.sort(key=lambda z: z[1])
     if a[-1][1] is S.One:
         # there are no surds
@@ -249,7 +249,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
     elif op is Mul:
         mp1a = _muly(mp1, x, y)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError('option not available')
 
     if op is Mul or dom != QQ:
@@ -420,7 +420,7 @@ def _minpoly_cos(ex, x):
                 if c.q == 7:
                     return 8*x**3 - 4*x**2 - 4*x + 1
                 if c.q == 9:
-                    return 8*x**3 - 6*x + 1
+                    return 8*x**3 - 6*x - 1
             elif c.p == 2:
                 q = sympify(c.q)
                 if q.is_prime:
