@@ -153,12 +153,6 @@ class Del(Basic):
     __xor__ = cross
     __xor__.__doc__ = cross.__doc__
 
-    def __str__(self, printer=None):
-        return self._name
-
-    __repr__ = __str__
-    _diofantstr = __str__
-
 
 def _diff_conditional(expr, base_scalar):
     """

@@ -262,12 +262,10 @@ class DyadicZero(BasisDependentZero, Dyadic):
 
 def _dyad_div(one, other):
     """ Helper for division involving dyadics """
-    if isinstance(one, Dyadic) and isinstance(other, Dyadic):
+    if isinstance(other, Dyadic):
         raise TypeError("Cannot divide two dyadics")
-    elif isinstance(one, Dyadic):
-        return DyadicMul(one, Pow(other, S.NegativeOne))
     else:
-        raise TypeError("Cannot divide by a dyadic")
+        return DyadicMul(one, Pow(other, S.NegativeOne))
 
 Dyadic._expr_type = Dyadic
 Dyadic._mul_func = DyadicMul

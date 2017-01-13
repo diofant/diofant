@@ -56,13 +56,11 @@ def express(expr, system, system2=None, variables=False):
         return expr
 
     if not isinstance(system, CoordSysCartesian):
-        raise TypeError("system should be a CoordSysCartesian \
-                        instance")
+        raise TypeError("system should be a CoordSysCartesian instance")
 
     if isinstance(expr, Vector):
         if system2 is not None:
-            raise ValueError("system2 should not be provided for \
-                                Vectors")
+            raise ValueError("system2 should not be provided for Vectors")
         # Given expr is a Vector
         if variables:
             # If variables attribute is True, substitute
@@ -92,8 +90,7 @@ def express(expr, system, system2=None, variables=False):
         if system2 is None:
             system2 = system
         if not isinstance(system2, CoordSysCartesian):
-            raise TypeError("system2 should be a CoordSysCartesian \
-                            instance")
+            raise TypeError("system2 should be a CoordSysCartesian instance")
         outdyad = Dyadic.zero
         var = variables
         for k, v in expr.components.items():
@@ -105,8 +102,7 @@ def express(expr, system, system2=None, variables=False):
 
     else:
         if system2 is not None:
-            raise ValueError("system2 should not be provided for \
-                                Vectors")
+            raise ValueError("system2 should not be provided for Vectors")
         if variables:
             # Given expr is a scalar field
             system_set = set()

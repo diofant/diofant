@@ -11,6 +11,7 @@ from diofant.vector.functions import (curl, divergence, gradient,
                                       is_conservative, is_solenoidal,
                                       scalar_potential,
                                       scalar_potential_difference)
+from diofant.vector.deloperator import Del
 
 C = CoordSysCartesian('C')
 i, j, k = C.base_vectors()
@@ -20,6 +21,7 @@ a, b, c, q = symbols('a b c q')
 
 
 def test_del_operator():
+    pytest.raises(TypeError, lambda: Del(Integer(1)))
 
     # Tests for curl
     assert (delop ^ Vector.zero ==
@@ -161,6 +163,8 @@ curl_field = curl(vector_field, C)
 
 
 def test_conservative():
+    pytest.raises(TypeError, lambda: is_conservative(1))
+
     assert is_conservative(Vector.zero) is True
     assert is_conservative(i) is True
     assert is_conservative(2 * i + 3 * j + 4 * k) is True
@@ -175,6 +179,8 @@ def test_conservative():
 
 
 def test_solenoidal():
+    pytest.raises(TypeError, lambda: is_solenoidal(1))
+
     assert is_solenoidal(Vector.zero) is True
     assert is_solenoidal(i) is True
     assert is_solenoidal(2 * i + 3 * j + 4 * k) is True
@@ -189,6 +195,8 @@ def test_solenoidal():
 
 
 def test_scalar_potential():
+    pytest.raises(TypeError, lambda: scalar_potential(i, 1))
+
     assert scalar_potential(Vector.zero, C) == 0
     assert scalar_potential(i, C) == x
     assert scalar_potential(j, C) == y
@@ -222,3 +230,5 @@ def test_scalar_potential_difference():
     assert (scalar_potential_difference(grad_field, P, P.origin,
                                         genericpointP).simplify() ==
             potential_diff_P)
+
+    pytest.raises(TypeError, lambda: scalar_potential_difference(Integer(0), 1, point1, point2))

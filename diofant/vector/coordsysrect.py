@@ -48,8 +48,6 @@ class CoordSysCartesian(Basic):
         Vector = diofant.vector.Vector
         BaseVector = diofant.vector.BaseVector
         Point = diofant.vector.Point
-        if not isinstance(name, str):
-            raise TypeError("name should be a string")
 
         # If orientation information has been provided, store
         # the rotation matrix accordingly
@@ -72,12 +70,6 @@ class CoordSysCartesian(Basic):
             else:
                 if not isinstance(location, Vector):
                     raise TypeError("location should be a Vector")
-                # Check that location does not contain base
-                # scalars
-                for x in location.free_symbols:
-                    if isinstance(x, BaseScalar):
-                        raise ValueError("location should not contain" +
-                                         " BaseScalars")
             origin = parent.origin.locate_new(name + '.origin',
                                               location)
         else:
@@ -700,9 +692,6 @@ def _check_strings(arg_name, arg):
     errorstr = arg_name + " must be an iterable of 3 string-types"
     if len(arg) != 3:
         raise ValueError(errorstr)
-    try:
-        for s in arg:
-            if not isinstance(s, str):
-                raise TypeError(errorstr)
-    except:
-        raise TypeError(errorstr)
+    for s in arg:
+        if not isinstance(s, str):
+            raise TypeError(errorstr)

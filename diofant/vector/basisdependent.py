@@ -18,17 +18,9 @@ class BasisDependent(Expr):
     def __add__(self, other):
         return self._add_func(self, other)
 
-    @call_highest_priority('__add__')
-    def __radd__(self, other):
-        return self._add_func(other, self)
-
     @call_highest_priority('__rsub__')
     def __sub__(self, other):
         return self._add_func(self, -other)
-
-    @call_highest_priority('__sub__')
-    def __rsub__(self, other):
-        return self._add_func(other, -self)
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rmul__')
@@ -48,12 +40,7 @@ class BasisDependent(Expr):
     def __div__(self, other):
         return self._div_helper(other)
 
-    @call_highest_priority('__div__')
-    def __rdiv__(self, other):
-        return TypeError("Invalid divisor for division")
-
     __truediv__ = __div__
-    __rtruediv__ = __rdiv__
 
     def evalf(self, prec=None, **options):
         """
@@ -128,11 +115,6 @@ class BasisDependent(Expr):
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product. """
         return Integer(1), self
-
-    def as_coeff_add(self, *deps):
-        """Efficiently extract the coefficient of a summation. """
-        l = [x * self.components[x] for x in self.components]
-        return 0, tuple(l)
 
     def diff(self, *args, **kwargs):
         """
@@ -256,8 +238,6 @@ class BasisDependentMul(BasisDependent, Mul):
         obj = super(BasisDependentMul, cls).__new__(cls, measure_number,
                                                     expr._base_instance,
                                                     **options)
-        if isinstance(obj, Add):
-            return cls._add_func(*obj.args)
         obj._base_instance = expr._base_instance
         obj._measure_number = measure_number
         assumptions = {}
@@ -307,29 +287,29 @@ class BasisDependentZero(BasisDependent):
     def __add__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:
-            raise TypeError("Invalid argument types for addition")
+        else:  # pragma: no cover
+            return NotImplemented
 
     @call_highest_priority('__add__')
     def __radd__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:
-            raise TypeError("Invalid argument types for addition")
+        else:  # pragma: no cover
+            return NotImplemented
 
     @call_highest_priority('__rsub__')
     def __sub__(self, other):
         if isinstance(other, self._expr_type):
             return -other
-        else:
-            raise TypeError("Invalid argument types for subtraction")
+        else:  # pragma: no cover
+            return NotImplemented
 
     @call_highest_priority('__sub__')
     def __rsub__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:
-            raise TypeError("Invalid argument types for subtraction")
+        else:  # pragma: no cover
+            return NotImplemented
 
     def __neg__(self):
         return self

@@ -393,3 +393,5 @@ def _rot(axis, angle):
         return Matrix(rot_axis2(angle).T)
     elif axis == 3:
         return Matrix(rot_axis3(angle).T)
+    else:  # pragma: no cover
+        raise NotImplementedError

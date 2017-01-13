@@ -1,3 +1,5 @@
+import pytest
+
 from diofant import (sin, cos, symbols, pi, ImmutableMatrix as Matrix,
                      simplify)
 from diofant.vector import (CoordSysCartesian, Vector, Dyadic,
@@ -15,6 +17,8 @@ def test_dyadic():
     assert BaseDyadic(A.i, A.j) != BaseDyadic(A.j, A.i)
     assert (BaseDyadic(Vector.zero, A.i) ==
             BaseDyadic(A.i, Vector.zero) == Dyadic.zero)
+    pytest.raises(TypeError, lambda: BaseDyadic(A.i, a))
+    pytest.raises(TypeError, lambda: BaseDyadic(a, A.j))
 
     d1 = A.i | A.i
     d2 = A.j | A.j
@@ -32,20 +36,25 @@ def test_dyadic():
     v2 = A.i + b*A.j
     assert v1 | v2 == v1.outer(v2) == (a * (A.i | A.i) + (a*b) * (A.i | A.j)
                                        - (A.k | A.i) - b * (A.k | A.j))
+    pytest.raises(TypeError, lambda: A.i.outer(A.x))
+
     assert d1 * 0 == Dyadic.zero
     assert d1 != Dyadic.zero
     assert d1 * 2 == 2 * (A.i | A.i)
     assert d1 / 2. == 0.5 * d1
+    pytest.raises(TypeError, lambda: d1/d2)
 
     assert d1.dot(0 * d1) == Vector.zero
     assert d1 & d2 == Dyadic.zero
     assert d1.dot(A.i) == A.i == d1 & A.i
+    pytest.raises(TypeError, lambda: d1.dot(a))
 
     assert d1.cross(Vector.zero) == Dyadic.zero
     assert d1.cross(A.i) == Dyadic.zero
     assert d1 ^ A.j == d1.cross(A.j)
     assert d1.cross(A.k) == - A.i | A.j
     assert d2.cross(A.i) == - A.j | A.k == d2 ^ A.i
+    pytest.raises(TypeError, lambda: d1.cross(a))
 
     assert A.i ^ d1 == Dyadic.zero
     assert A.j.cross(d1) == - A.k | A.i == A.j ^ d1
