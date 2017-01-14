@@ -104,6 +104,8 @@ def test_apart_undetermined_coeffs():
 def test_apart_list():
     from diofant.utilities.iterables import numbered_symbols
 
+    assert apart_list(1) == 1
+
     w0, w1, w2 = Symbol("w0"), Symbol("w1"), Symbol("w2")
     _a = Dummy("a")
 
