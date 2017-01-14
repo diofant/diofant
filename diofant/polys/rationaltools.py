@@ -59,25 +59,20 @@ def together(expr, deep=False):
     E**(-3*x)*(E**x*x + 1)/x
     """
     def _together(expr):
-        if isinstance(expr, Basic):
-            if expr.is_Atom or (expr.is_Function and not deep):
-                return expr
-            elif expr.is_Add:
-                return gcd_terms(list(map(_together, Add.make_args(expr))))
-            elif expr.is_Pow:
-                base = _together(expr.base)
+        if expr.is_Atom or (expr.is_Function and not deep):
+            return expr
+        elif expr.is_Add:
+            return gcd_terms(list(map(_together, Add.make_args(expr))))
+        elif expr.is_Pow:
+            base = _together(expr.base)
 
-                if deep:
-                    exp = _together(expr.exp)
-                else:
-                    exp = expr.exp
-
-                return expr.__class__(base, exp)
+            if deep:
+                exp = _together(expr.exp)
             else:
-                return expr.__class__(*[ _together(arg) for arg in expr.args ])
-        elif iterable(expr):
-            return expr.__class__([ _together(ex) for ex in expr ])
+                exp = expr.exp
 
-        return expr
+            return expr.__class__(base, exp)
+        else:
+            return expr.__class__(*[ _together(arg) for arg in expr.args ])
 
     return _together(sympify(expr))
