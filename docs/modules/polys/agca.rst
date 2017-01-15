@@ -76,7 +76,7 @@ various methods to create new objects from old. For example, in order to
 create the local ring of the nodal cubic `y^2 = x^3` at the origin, over
 `\mathbb{Q}`, you do::
 
-    >>> lr = QQ.old_poly_ring(x, y, order="ilex") / [y**2 - x**3]
+    >>> lr = QQ.poly_ring(x, y, order="ilex") / [y**2 - x**3]
     >>> lr
     ℚ[x, y, order=ilex]
     ───────────────────
@@ -104,7 +104,7 @@ When no localisation is needed, a more mathematical notation can be
 used. For example, let us create the coordinate ring of three-dimensional
 affine space `\mathbb{A}^3`::
 
-    >>> ar = QQ.old_poly_ring(x, y, z); ar
+    >>> ar = QQ.poly_ring(x, y, z); ar
     ℚ[x, y, z]
 
 For more details, refer to the following class documentation. Note that

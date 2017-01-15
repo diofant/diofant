@@ -4657,7 +4657,7 @@ def test_complicated_symbol_unchanged():
 
 
 def test_PrettyModules():
-    R = QQ.old_poly_ring(x, y)
+    R = QQ.poly_ring(x, y)
     F = R.free_module(2)
     M = F.submodule([x, y], [1, x**2])
 
@@ -4747,7 +4747,7 @@ QQ[x, y] \
 
 
 def test_QuotientRing():
-    R = QQ.old_poly_ring(x)/[x**2 + 1]
+    R = QQ.poly_ring(x)/[x**2 + 1]
 
     ucode_str = \
 """\
@@ -4787,7 +4787,7 @@ def test_QuotientRing():
 def test_Homomorphism():
     from diofant.polys.agca import homomorphism
 
-    R = QQ.old_poly_ring(x)
+    R = QQ.poly_ring(x)
 
     expr = homomorphism(R.free_module(1), R.free_module(1), [0])
 
