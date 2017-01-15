@@ -50,9 +50,7 @@ class AppliedFunction:
 
     `exponent` is for handling the shorthand sin^2, ln^2, etc.
     """
-    def __init__(self, function, args, exponent=None):
-        if exponent is None:
-            exponent = []
+    def __init__(self, function, args, exponent=[]):
         self.function = function
         self.args = args
         self.exponent = exponent
@@ -67,10 +65,6 @@ class AppliedFunction:
 
     def __getitem__(self, index):
         return getattr(self, self.items[index])
-
-    def __repr__(self):
-        return "AppliedFunction(%s, %s, %s)" % (self.function, self.args,
-                                                self.exponent)
 
 
 class ParenthesisGroup(list):
@@ -216,8 +210,7 @@ def _implicit_multiplication(tokens, local_dict, global_dict):
               (isinstance(nextTok, AppliedFunction) or nextTok[0] == NAME)):
             # Constant followed by (implicitly applied) function
             result.append((OP, '*'))
-    if tokens:
-        result.append(tokens[-1])
+    result.append(tokens[-1])
     return result
 
 
@@ -242,6 +235,8 @@ def _implicit_application(tokens, local_dict, global_dict):
             if _token_callable(tok, local_dict, global_dict, nextTok):
                 result.append((OP, '('))
                 appendParen += 1
+            else:  # pragma: no cover
+                raise NotImplementedError
         # name followed by exponent - function exponentiation
         elif (tok[0] == NAME and nextTok[0] == OP and nextTok[1] == '**'):
             if _token_callable(tok, local_dict, global_dict):
@@ -271,8 +266,7 @@ def _implicit_application(tokens, local_dict, global_dict):
             result.append((OP, ')'))
             appendParen -= 1
 
-    if tokens:
-        result.append(tokens[-1])
+    result.append(tokens[-1])
 
     if appendParen:
         result.extend([(OP, ')')] * appendParen)
@@ -302,15 +296,14 @@ def function_exponentiation(tokens, local_dict, global_dict):
         elif consuming_exponent:
             if tok[0] == NAME and tok[1] == 'Function':
                 tok = (NAME, 'Symbol')
-            exponent.append(tok)
-
             # only want to stop after hitting )
             if tok[0] == nextTok[0] == OP and tok[1] == ')' and nextTok[1] == '(':
                 consuming_exponent = False
             # if implicit multiplication was used, we may have )*( instead
             if tok[0] == nextTok[0] == OP and tok[1] == '*' and nextTok[1] == '(':
                 consuming_exponent = False
-                del exponent[-1]
+            else:
+                exponent.append(tok)
             continue
         elif exponent and not consuming_exponent:
             if tok[0] == OP:
@@ -324,10 +317,9 @@ def function_exponentiation(tokens, local_dict, global_dict):
                 exponent = []
                 continue
         result.append(tok)
-    if tokens:
-        result.append(tokens[-1])
-    if exponent:
-        result.extend(exponent)
+    result.append(tokens[-1])
+    if exponent:  # pragma: no cover
+        raise NotImplementedError
     return result
 
 
@@ -542,9 +534,8 @@ def lambda_notation(tokens, local_dict, global_dict):
     """
     result = []
     flag = False
-    if len(tokens) > 1:
-        if tokens[0][1] == 'utf-8' and tokens[1] == (NAME, 'lambda'):
-            tokens = tokens[1:]
+    if tokens[0][1] == 'utf-8' and tokens[1] == (NAME, 'lambda'):
+        tokens = tokens[1:]
     toknum, tokval = tokens[0]
     tokLen = len(tokens)
     if toknum == NAME and tokval == 'lambda':
@@ -566,6 +557,8 @@ def lambda_notation(tokens, local_dict, global_dict):
                     result.insert(-1, (tokNum, tokVal))
                 else:
                     result.insert(-2, (tokNum, tokVal))
+        else:  # pragma: no cover
+            raise NotImplementedError
     else:
         result.extend(tokens)
 
@@ -822,4 +815,5 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
                 new_node.args = self.flatten(new_node.args, sympy_class)
 
             return new_node
-        return node
+        else:  # pragma: no cover
+            return node
