@@ -40,6 +40,7 @@ Issues closed
 * `sympy/sympy#12005 <https://github.com/sympy/sympy/issues/12005>`_ Subs._eval_derivative doubles derivatives
 * `sympy/sympy#11799 <https://github.com/sympy/sympy/issues/11799>`_ Something wrong with the Riemann tensor?
 * `sympy/sympy#12018 <https://github.com/sympy/sympy/issues/12018>`_ solution not found by Sum and gosper_sum
+* `sympy/sympy#5649 <https://github.com/sympy/sympy/issues/5649>`_ Bug with AlgebraicNumber.__eq__
 
 .. last pr: #401
 
