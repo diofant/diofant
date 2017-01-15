@@ -603,11 +603,8 @@ def cycle_length(f, x0, nmax=None, values=False):
         hare = f(hare)
         lam += 1
     if nmax and i == nmax:
-        if values:
-            return
-        else:
+        if not values:
             yield nmax, None
-            return
     if not values:
         # Find the position of the first repetition of length lambda
         mu = 0

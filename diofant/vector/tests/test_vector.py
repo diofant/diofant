@@ -1,6 +1,9 @@
+import pytest
+
 from diofant.simplify import simplify, trigsimp
 from diofant import (pi, sqrt, symbols, ImmutableMatrix as Matrix,
-                     sin, cos, Function, Integral, Derivative, diff)
+                     sin, cos, Function, Integral, Derivative, diff,
+                     Add, Mul, Pow)
 from diofant.vector.vector import (Vector, BaseVector, VectorAdd,
                                    VectorMul, VectorZero)
 from diofant.vector.coordsysrect import CoordSysCartesian
@@ -26,6 +29,9 @@ def test_vector_diofant():
 
 
 def test_vector():
+    pytest.raises(ValueError, lambda: BaseVector('x', 10, C, ' ', ' '))
+    pytest.raises(TypeError, lambda: BaseVector('x', 0, a, ' ', ' '))
+
     assert isinstance(i, BaseVector)
     assert i != j
     assert j != k
@@ -36,11 +42,17 @@ def test_vector():
     assert Vector.zero != 0
     assert -Vector.zero == Vector.zero
 
+    assert Vector.zero - i == -i
+
     v1 = a*i + b*j + c*k
     v2 = a**2*i + b**2*j + c**2*k
     v3 = v1 + v2
     v4 = 2 * v1
     v5 = a * i
+
+    assert i + Mul(2, i) == 3*i
+    assert i + Add(i, j) == 2*i + j
+    pytest.raises(TypeError, lambda: i + Pow(j, 2))
 
     assert isinstance(v1, VectorAdd)
     assert v1 - v1 == Vector.zero
@@ -58,6 +70,10 @@ def test_vector():
     assert v1 + v2 == v2 + v1
     assert v1 - v2 == -1 * (v2 - v1)
     assert a * v1 == v1 * a
+
+    pytest.raises(ValueError, lambda: (i + j)*(i - j))
+    pytest.raises(TypeError, lambda: v1/v2)
+    pytest.raises(ValueError, lambda: v1/0)
 
     assert isinstance(v5, VectorMul)
     assert v5.base_vector == i
@@ -189,6 +205,7 @@ def test_vector_cross():
 def test_vector_diff_integrate():
     f = Function('f')
     v = f(a)*C.i + a**2*C.j - C.k
+    pytest.raises(TypeError, lambda: v.diff(v))
     assert Derivative(v, a) == Derivative((f(a))*C.i +
                                           a**2*C.j + (-1)*C.k, a)
     assert (diff(v, a) == v.diff(a) == Derivative(v, a).doit() ==

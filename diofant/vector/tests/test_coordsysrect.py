@@ -3,7 +3,7 @@ import pytest
 from diofant.vector.coordsysrect import CoordSysCartesian
 from diofant.vector.scalar import BaseScalar
 from diofant import (sin, cos, pi, ImmutableMatrix as Matrix,
-                     symbols, simplify, zeros)
+                     symbols, simplify, zeros, Symbol)
 from diofant.vector.functions import express
 from diofant.vector.point import Point
 from diofant.vector.vector import Vector
@@ -26,6 +26,16 @@ def test_func_args():
 
     pytest.raises(TypeError, lambda: CoordSysCartesian('B', parent=A,
                                                        location=Point('a')))
+    pytest.raises(TypeError, lambda: CoordSysCartesian('A',
+                                                       rotation_matrix=a))
+    pytest.raises(TypeError, lambda: CoordSysCartesian('B', parent=a))
+    pytest.raises(ValueError, lambda: CoordSysCartesian('A', vector_names=(1,)))
+    pytest.raises(TypeError, lambda: CoordSysCartesian('A', vector_names=("a", "b", 1)))
+
+
+def test_point():
+    pytest.raises(TypeError, lambda: Point('a', position=1))
+    pytest.raises(TypeError, lambda: Point('a', parent_point=1))
 
 
 def test_coordsyscartesian_equivalence():
@@ -39,9 +49,14 @@ def test_coordsyscartesian_equivalence():
 def test_orienters():
     A = CoordSysCartesian('A')
     axis_orienter = AxisOrienter(a, A.k)
-    body_orienter = BodyOrienter(a, b, c, '123')
+    B = body_orienter = BodyOrienter(a, b, c, '123')
+    assert (B.angle1, B.angle2, B.angle3) == (a, b, c)
+    assert B.rot_order == '123'
+    B = BodyOrienter(a, b, c, Symbol('123'))
+    assert B.rot_order == '123'
     space_orienter = SpaceOrienter(a, b, c, '123')
-    q_orienter = QuaternionOrienter(q1, q2, q3, q4)
+    Q = q_orienter = QuaternionOrienter(q1, q2, q3, q4)
+    assert (Q.q0, Q.q1, Q.q2, Q.q3) == (q1, q2, q3, q4)
     assert axis_orienter.rotation_matrix(A) == Matrix([
         [ cos(a), sin(a), 0],
         [-sin(a), cos(a), 0],
@@ -67,6 +82,12 @@ def test_orienters():
         [2*q1*q3 + 2*q2*q4,
          -2*q1*q2 + 2*q3*q4, q1**2 - q2**2 - q3**2 + q4**2]])
 
+    B = CoordSysCartesian('T')
+    pytest.raises(ValueError, lambda: A.orient_new_axis('A', a, B.i))
+
+    pytest.raises(TypeError, lambda: BodyOrienter(a, b, c, '12'))
+    pytest.raises(TypeError, lambda: BodyOrienter(a, b, c, '111'))
+
 
 def test_coordinate_vars():
     """
@@ -81,6 +102,8 @@ def test_coordinate_vars():
     assert isinstance(A.x, BaseScalar) and \
            isinstance(A.y, BaseScalar) and \
            isinstance(A.z, BaseScalar)
+    pytest.raises(TypeError, lambda: BaseScalar('Ax', 0, 1, ' ', ' '))
+    pytest.raises(ValueError, lambda: BaseScalar('Ax', 5, A, ' ', ' '))
     assert A.scalar_map(A) == {A.x: A.x, A.y: A.y, A.z: A.z}
     assert A.x.system == A
     B = A.orient_new_axis('B', q, A.k)
@@ -105,6 +128,11 @@ def test_coordinate_vars():
     assert simplify(express(A.x*A.i + A.y*A.j + A.z*A.k, B,
                             variables=True)) == \
            B.x*B.i + B.y*B.j + B.z*B.k
+    pytest.raises(TypeError, lambda: express(A.x, 1))
+    pytest.raises(ValueError, lambda: express(A.i, B, A))
+    pytest.raises(TypeError, lambda: express(A.i | A.j, B, 1))
+    pytest.raises(ValueError, lambda: express(1, B, 1))
+
     N = B.orient_new_axis('N', -q, B.k)
     assert N.scalar_map(A) == \
            {N.x: A.x, N.z: A.z, N.y: A.y}
@@ -181,6 +209,8 @@ def test_rotation_matrix():
             sin(q1)*cos(q3) + sin(q2)*sin(q3)*cos(q1)], [
                 sin(q2), -sin(q1)*cos(q2), cos(q1)*cos(q2)]])
 
+    pytest.raises(TypeError, lambda: G.rotation_matrix(a))
+
 
 def test_vector():
     """
@@ -222,6 +252,8 @@ def test_vector():
     assert A.k.dot(C.j) == sin(q2)
     assert A.k.dot(C.k) == cos(q2)*cos(q3)
 
+    pytest.raises(TypeError, lambda: N.i.dot(A.x))
+
     # Test cross
     assert N.i.cross(A.i) == sin(q1)*A.k
     assert N.i.cross(A.j) == cos(q1)*A.k
@@ -246,6 +278,8 @@ def test_vector():
     assert C.j.cross(A.i) == (sin(q2))*A.j + (-cos(q2))*A.k
     assert express(C.k.cross(A.i), C).trigsimp() == cos(q3)*C.j
 
+    pytest.raises(TypeError, lambda: N.i.cross(A.x))
+
 
 def test_orient_new_methods():
     N = CoordSysCartesian('N')
@@ -262,6 +296,8 @@ def test_orient_new_methods():
     assert F == N.orient_new_quaternion('F', q1, q2, q3, q4)
     assert G == N.orient_new_body('G', q1, q2, q3, '123')
 
+    pytest.raises(TypeError, lambda: AxisOrienter(q4, 1))
+
 
 def test_locatenew_point():
     """
@@ -271,6 +307,7 @@ def test_locatenew_point():
     assert isinstance(A.origin, Point)
     v = a*A.i + b*A.j + c*A.k
     C = A.locate_new('C', v)
+    pytest.raises(TypeError, lambda: C.origin.position_wrt(1))
     assert C.origin.position_wrt(A) == \
            C.position_wrt(A) == \
            C.origin.position_wrt(A.origin) == v

@@ -21,6 +21,8 @@ def test_together():
     assert together(1/x + 3) == (3*x + 1)/x
     assert together(1/x + x) == (x**2 + 1)/x
 
+    assert together((1/x + 1, 1/x + 3)) == ((x + 1)/x, (3*x + 1)/x)
+
     assert together(1/x + Rational(1, 2)) == (x + 2)/(2*x)
     assert together(Rational(1, 2) + x/2) == Mul(S.Half, x + 1, evaluate=False)
 

@@ -6,6 +6,7 @@ from mpmath.libmp import (fzero, from_man_exp, from_int, from_rational,
                           mpf_cosh_sinh, pi_fixed, mpf_cos)
 
 from diofant.core.numbers import igcd
+from diofant.utilities.misc import debug
 
 
 __all__ = ('npartitions')
@@ -13,6 +14,7 @@ __all__ = ('npartitions')
 
 def _a(n, j, prec):
     """Compute the inner sum in the HRR formula."""
+    assert prec > 3
     if j == 1:
         return fone
     s = fzero
@@ -28,10 +30,7 @@ def _a(n, j, prec):
         if j >= 3:
             for k in range(1, j):
                 t = h*k*one//j
-                if t > 0:
-                    frac = t & onemask
-                else:
-                    frac = -((-t) & onemask)
+                frac = t & onemask
                 g += k*(frac - half)
         g = ((g - 2*h*n*one)*pi//j) >> prec
         s = mpf_add(s, mpf_cos(from_man_exp(g, -prec), prec), prec)
@@ -54,7 +53,7 @@ def _d(n, j, prec, sq23pi, sqrt8):
     return mpf_mul(D, E)
 
 
-def npartitions(n, verbose=False):
+def npartitions(n):
     """Calculate the partition function P(n), i.e. the number of ways that
     n can be written as a sum of positive integers.
 
@@ -92,8 +91,7 @@ def npartitions(n, verbose=False):
         a = _a(n, q, p)
         d = _d(n, q, p, sq23pi, sqrt8)
         s = mpf_add(s, mpf_mul(a, d), prec)
-        if verbose:
-            print("step", q, "of", M, to_str(a, 10), to_str(d, 10))
+        debug("step", q, "of", M, to_str(a, 10), to_str(d, 10))
         # On average, the terms decrease rapidly in magnitude. Dynamically
         # reducing the precision greatly improves performance.
         p = bitcount(abs(to_int(d))) + 50

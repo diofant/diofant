@@ -175,6 +175,9 @@ def test_minpoly_compose():
     mp = minimal_polynomial(exp(I*pi/7) + sqrt(2), x)
     assert mp == x**12 - 2*x**11 - 9*x**10 + 16*x**9 + 43*x**8 - 70*x**7 - 97*x**6 + 126*x**5 + 211*x**4 - 212*x**3 - 37*x**2 + 142*x + 127
 
+    mp = minimal_polynomial(cos(pi/9), x)
+    assert mp == 8*x**3 - 6*x - 1
+
     mp = minimal_polynomial(sin(pi/7) + sqrt(2), x)
     assert mp == 4096*x**12 - 63488*x**10 + 351488*x**8 - 826496*x**6 + \
         770912*x**4 - 268432*x**2 + 28561
@@ -229,6 +232,11 @@ def test_minpoly_compose():
     ex = sqrt(1 + 2**Rational(1, 3)) + sqrt(1 + 2**Rational(1, 4)) + sqrt(2)
     mp = minimal_polynomial(ex, x)
     assert degree(mp) == 48 and mp.subs({x: 0}) == -16630256576
+
+    mp = minimal_polynomial(sin(pi/27), x)
+    assert mp == (262144*x**18 - 1179648*x**16 + 2211840*x**14 -
+                  2236416*x**12 + 1317888*x**10 - 456192*x**8 +
+                  88704*x**6 - 8640*x**4 + 324*x**2 - 3)
 
 
 def test_minpoly_issue_7113():
@@ -498,6 +506,10 @@ def test_to_number_field():
 
     pytest.raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), sqrt(3)))
 
+    # issue sympy/sympy#5649
+    assert AlgebraicNumber(1).rep == to_number_field(1, AlgebraicNumber(1)).rep
+    assert AlgebraicNumber(sqrt(2)).rep == to_number_field(sqrt(2), AlgebraicNumber(sqrt(2))).rep
+
 
 def test_AlgebraicNumber():
     minpoly, root = x**2 - 2, sqrt(2)
@@ -580,7 +592,7 @@ def test_AlgebraicNumber():
     assert a.is_aliased is False
 
     assert AlgebraicNumber( sqrt(3)).rep == DMP([ QQ(1), QQ(0)], QQ)
-    assert AlgebraicNumber(-sqrt(3)).rep == DMP([-QQ(1), QQ(0)], QQ)
+    assert AlgebraicNumber(-sqrt(3)).rep == DMP([ QQ(1), QQ(0)], QQ)
 
     a = AlgebraicNumber(sqrt(2))
     b = AlgebraicNumber(sqrt(2))
@@ -628,9 +640,9 @@ def test_AlgebraicNumber():
 
     a = AlgebraicNumber(sqrt(2))
     b = to_number_field(sqrt(2))
-    assert a.args == b.args == (sqrt(2), Tuple())
+    assert a.args == b.args == (sqrt(2), Tuple(1, 0))
     b = AlgebraicNumber(sqrt(2), alias='alpha')
-    assert b.args == (sqrt(2), Tuple(), Symbol('alpha'))
+    assert b.args == (sqrt(2), Tuple(1, 0), Symbol('alpha'))
 
     a = AlgebraicNumber(sqrt(2), [1, 2, 3])
     assert a.args == (sqrt(2), Tuple(1, 2, 3))

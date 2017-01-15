@@ -689,7 +689,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     if pow(a, f // igcd(f, n), p) != 1:
         return
     if not isprime(p):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     if (p - 1) % n == 0:
         return _nthroot_mod1(a, n, p, all_roots)

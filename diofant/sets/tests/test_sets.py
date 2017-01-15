@@ -2,10 +2,10 @@ from mpmath import mpi
 import pytest
 
 from diofant import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
-                     LessThan, Max, Min, And, Or, Eq, Le,
-                     Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
+                     LessThan, Max, Min, And, Or, Eq, Le, Lt,
+                     Float, FiniteSet, Intersection, imageset, I, true, false,
                      ProductSet, sqrt, Complement, EmptySet, sin, cos, Lambda,
-                     ImageSet, pi, Pow, Contains, Sum, RootOf, log,
+                     ImageSet, pi, Pow, Contains, Sum, RootOf, log, E,
                      SymmetricDifference, Integer, Rational, Piecewise)
 
 from diofant.abc import a, b, x, y, z
@@ -35,6 +35,12 @@ def test_interval_arguments():
     pytest.raises(NotImplementedError, lambda: Interval(0, 1, And(x, y)))
     pytest.raises(NotImplementedError, lambda: Interval(0, 1, False, And(x, y)))
     pytest.raises(NotImplementedError, lambda: Interval(0, 1, z, And(x, y)))
+
+
+def test_interval_evalf():
+    assert (Interval(E, pi).evalf() ==
+            Interval(Float('2.7182818284590451', prec=15),
+                     Float('3.1415926535897931', prec=15), false, false))
 
 
 def test_interval_symbolic_end_points():
@@ -115,6 +121,10 @@ def test_union():
 
     assert list(Union(FiniteSet(1, 2), FiniteSet(3, 4), evaluate=False)) == [1, 3, 2, 4]
     pytest.raises(TypeError, lambda: iter(Union(FiniteSet(1, 2), Interval(0, 1))))
+
+    assert (Union(FiniteSet(E), FiniteSet(pi), evaluate=False).evalf() ==
+            FiniteSet(Float('2.7182818284590451', prec=15),
+                      Float('3.1415926535897931', prec=15)))
 
 
 def test_difference():
@@ -227,6 +237,7 @@ def test_intersection():
     x = Symbol('x')
 
     assert Intersection(Interval(0, 1), FiniteSet(x)).is_iterable
+    assert not Intersection(Interval(0, 1), Interval(0, x)).is_iterable
 
     assert FiniteSet(1, 2, x).intersection(FiniteSet(x)) == FiniteSet(x)
     assert FiniteSet('ham', 'eggs').intersection(FiniteSet('ham')) == \
@@ -288,6 +299,10 @@ def test_intersection():
     assert (Intersection(Intersection(S.Integers, S.Naturals, evaluate=False),
                          S.Reals, evaluate=False) ==
             Intersection(S.Integers, S.Naturals, S.Reals, evaluate=False))
+
+    assert (imageset(Lambda(x, x**2),
+                     Intersection(FiniteSet(1, 2), FiniteSet(2, 3),
+                                  evaluate=False)) == FiniteSet(4))
 
 
 def test_is_disjoint():
@@ -561,6 +576,8 @@ def test_EmptySet():
 
 
 def test_finite_basic():
+    assert isinstance(FiniteSet(evaluate=False), FiniteSet)
+
     A = FiniteSet(1, 2, 3)
     B = FiniteSet(3, 4, 5)
     AorB = Union(A, B)
@@ -591,6 +608,10 @@ def test_finite_basic():
     assert A >= A and A <= A
     assert A >= AandB and B >= AandB
     assert A > AandB and B > AandB
+
+    assert (FiniteSet(pi, E).evalf() ==
+            FiniteSet(Float('2.7182818284590451', prec=15),
+                      Float('3.1415926535897931', prec=15)))
 
 
 def test_powerset():
@@ -872,6 +893,7 @@ def test_Eq():
 
     assert Eq(s1, s1)
     assert Eq(s1, s2) is S.false
+    assert Eq(FiniteSet(1, 2), FiniteSet(3, 4, 5)) is S.false
 
     assert Eq(s1*s2, s1*s2)
     assert Eq(s1*s2, s2*s1) is S.false

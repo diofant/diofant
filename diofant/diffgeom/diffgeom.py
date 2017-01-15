@@ -37,8 +37,9 @@ class Manifold(Basic):
         return obj
 
     def _latex(self, printer, *args):
-        if len(self.name) == 1:
-            if self.name.isupper():
+        name = str(self.name)
+        if len(name) == 1:
+            if name.isupper():
                 return r'\mathbb{%s}^{%s}' % (self.name, self.dim)
 
         return r'\mathrm{%s}' % self.name
@@ -242,7 +243,7 @@ class CoordSystem(Basic):
             to_sys.transforms[self] = self._inv_transf(from_coords, to_exprs)
 
         if fill_in_gaps:
-            self._fill_gaps_in_transformations()
+            return NotImplementedError  # pragma: no cover
 
     @staticmethod
     def _inv_transf(from_coords, to_exprs):
@@ -250,18 +251,10 @@ class CoordSystem(Basic):
         # format instead of wondering dict/tuple/whatever.
         # As it is at the moment this is an ugly hack for changing the format
         inv_from = [i.as_dummy() for i in from_coords]
-        inv_to = solve(
-            [t[0] - t[1] for t in zip(inv_from, to_exprs)], list(from_coords))
-        if isinstance(inv_to, dict):
-            inv_to = [inv_to[fc] for fc in from_coords]
-        else:
-            inv_to = inv_to[0]
+        inv_to = solve([t[0] - t[1] for t in zip(inv_from, to_exprs)],
+                       list(from_coords), dict=True)
+        inv_to = [inv_to[0][fc] for fc in from_coords]
         return Matrix(inv_from), Matrix(inv_to)
-
-    @staticmethod
-    def _fill_gaps_in_transformations():
-        raise NotImplementedError
-        # TODO
 
     def coord_tuple_transform_to(self, to_sys, coords):
         """Transform ``coords`` to coord system ``to_sys``.
@@ -405,11 +398,6 @@ class Point(Basic):
             return self._coord_sys.coord_tuple_transform_to(to_sys, self._coords)
         else:
             return self._coords
-
-    @property
-    def free_symbols(self):
-        raise NotImplementedError
-        return self._coords.free_symbols
 
 
 class BaseScalarField(Expr):
@@ -914,8 +902,7 @@ class WedgeProduct(TensorProduct):
         orders = (covariant_order(e) for e in self.args)
         mul = 1/Mul(*(factorial(o) for o in orders))
         perms = permutations(vector_fields)
-        perms_par = (Permutation(
-            p).signature() for p in permutations(list(range(len(vector_fields)))))
+        perms_par = [Permutation(p).signature() for p in permutations(list(range(len(vector_fields))))]
         tensor_prod = TensorProduct(*self.args)
         return mul*Add(*[tensor_prod(*p[0])*p[1] for p in zip(perms, perms_par)])
 
@@ -1015,7 +1002,7 @@ class BaseCovarDerivativeOp(Expr):
         If the argument is not a scalar field the behaviour is undefined.
         """
         if covariant_order(field) != 0:
-            raise NotImplementedError()
+            raise NotImplementedError  # pragma: no cover
 
         field = vectors_in_basis(field, self._coord_sys)
 
@@ -1069,8 +1056,9 @@ class CovarDerivativeOp(Expr):
     """
     def __init__(self, wrt, christoffel):
         super(CovarDerivativeOp, self).__init__()
-        if len({v._coord_sys for v in wrt.atoms(BaseVectorField)}) > 1:
-            raise NotImplementedError()
+        if len({v._coord_sys
+                for v in wrt.atoms(BaseVectorField)}) > 1:  # pragma: no cover
+            raise NotImplementedError
         if contravariant_order(wrt) != 1 or covariant_order(wrt):
             raise ValueError('Covariant derivatives are defined only with '
                              'respect to vector fields. The supplied argument '

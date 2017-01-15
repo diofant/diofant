@@ -22,32 +22,6 @@ class SingleDiscreteDistribution(Basic, NamedArgsMixin):
         args = list(map(sympify, args))
         return Basic.__new__(cls, *args)
 
-    @staticmethod
-    def check(*args):
-        pass
-
-    def sample(self):
-        """ A random realization from the distribution """
-        icdf = self._inverse_cdf_expression()
-        return floor(icdf(random.uniform(0, 1)))
-
-    @cacheit
-    def _inverse_cdf_expression(self):
-        """ Inverse of the CDF
-
-        Used by sample
-        """
-        x, z = symbols('x, z', extended_real=True, positive=True, cls=Dummy)
-        # Invert CDF
-        try:
-            inverse_cdf = solve(self.cdf(x) - z, x)
-        except NotImplementedError:
-            inverse_cdf = None
-        if not inverse_cdf or len(inverse_cdf) != 1:
-            raise NotImplementedError("Could not invert CDF")
-
-        return Lambda(z, inverse_cdf[0])
-
     @cacheit
     def compute_cdf(self, **kwargs):
         """ Compute the CDF from the PDF
@@ -97,14 +71,6 @@ class SingleDiscretePSpace(SinglePSpace):
     def domain(self):
         return SingleDiscreteDomain(self.symbol, self.set)
 
-    def sample(self):
-        """
-        Internal sample method
-
-        Returns dictionary mapping RandomSymbol to realization value.
-        """
-        return {self.value: self.distribution.sample()}
-
     def integrate(self, expr, rvs=None, **kwargs):
         rvs = rvs or (self.value,)
         if self.value not in rvs:
@@ -119,14 +85,3 @@ class SingleDiscretePSpace(SinglePSpace):
         except Exception:
             return Sum(expr * self.pdf, (x, self.set.inf, self.set.sup),
                     **kwargs)
-
-    def compute_cdf(self, expr, **kwargs):
-        if expr == self.value:
-            return self.distribution.compute_cdf(**kwargs)
-        else:
-            raise NotImplementedError()
-
-    def compute_density(self, expr, **kwargs):
-        if expr == self.value:
-            return self.distribution
-        raise NotImplementedError()

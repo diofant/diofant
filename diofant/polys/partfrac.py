@@ -94,21 +94,15 @@ def apart(f, x=None, full=False, **options):
                 if i.is_commutative:
                     c.append(i)
                 else:
-                    try:
-                        nc.append(apart(i, x=x, full=full, **_options))
-                    except NotImplementedError:
-                        nc.append(i)
+                    nc.append(apart(i, x=x, full=full, **_options))
             return apart(f.func(*c), x=x, full=full, **_options) + f.func(*nc)
         else:
             reps = []
             pot = preorder_traversal(f)
             next(pot)
             for e in pot:
-                try:
-                    reps.append((e, apart(e, x=x, full=full, **_options)))
-                    pot.skip()  # this was handled successfully
-                except NotImplementedError:
-                    pass
+                reps.append((e, apart(e, x=x, full=full, **_options)))
+                pot.skip()  # this was handled successfully
             return f.xreplace(dict(reps))
 
     if P.is_multivariate:
@@ -317,9 +311,8 @@ def apart_list(f, x=None, dummies=None, **options):
     options = set_defaults(options, extension=True)
     (P, Q), opt = parallel_poly_from_expr((P, Q), x, **options)
 
-    if P.is_multivariate:
-        raise NotImplementedError(
-            "multivariate partial fraction decomposition")
+    if P.is_multivariate:  # pragma: no cover
+        raise NotImplementedError("multivariate partial fraction decomposition")
 
     common, P, Q = P.cancel(Q)
 

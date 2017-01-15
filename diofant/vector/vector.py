@@ -424,14 +424,12 @@ class VectorZero(BasisDependentZero, Vector):
 
 def _vect_div(one, other):
     """ Helper for division involving vectors. """
-    if isinstance(one, Vector) and isinstance(other, Vector):
+    if isinstance(other, Vector):
         raise TypeError("Cannot divide two vectors")
-    elif isinstance(one, Vector):
+    else:
         if other == S.Zero:
             raise ValueError("Cannot divide a vector by zero")
         return VectorMul(one, Pow(other, S.NegativeOne))
-    else:
-        raise TypeError("Invalid division involving a vector")
 
 
 Vector._expr_type = Vector
