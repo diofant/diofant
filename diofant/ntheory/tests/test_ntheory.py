@@ -111,6 +111,7 @@ def test_perfect_power():
 def test_isprime():
     s = Sieve()
     s.extend(100000)
+    assert repr(s) == '<Sieve with 9592 primes sieved: 2, 3, 5, ... 99989, 99991>'
     ps = set(s.primerange(2, 100001))
     for n in range(100001):
         # if (n in ps) != isprime(n): print n
@@ -175,11 +176,13 @@ def test_generate():
     assert nextprime(12) == 13
     assert nextprime(90) == 97
     assert nextprime(10**40) == (10**40 + 121)
+    pytest.raises(ValueError, lambda: prevprime(2))
     assert prevprime(3) == 2
     assert prevprime(7) == 5
     assert prevprime(13) == 11
     assert prevprime(97) == 89
     assert prevprime(10**40) == (10**40 - 17)
+    assert list(primerange(3001110000000, 799999999)) == []
     assert list(primerange(2, 7)) == [2, 3, 5]
     assert list(primerange(2, 10)) == [2, 3, 5, 7]
     assert list(primerange(1050, 1100)) == [1051, 1061,
@@ -222,6 +225,7 @@ def test_randprime():
         for b in [100, 300, 500, 250000]:
             p = randprime(a, a + b)
             assert a <= p < (a + b) and isprime(p)
+    assert randprime(70, 7) is None
 
 
 def fac_multiplicity(n, p):
@@ -423,6 +427,7 @@ def test_divisor_sigma():
 def test_partitions():
     assert [npartitions(k) for k in range(13)] == \
         [1, 1, 2, 3, 5, 7, 11, 15, 22, 30, 42, 56, 77]
+    assert npartitions(-1) == 0
     assert npartitions(100) == 190569292
     assert npartitions(200) == 3972999029388
     assert npartitions(1000) == 24061467864032622473692149727991
@@ -551,6 +556,7 @@ def test_residue():
         r = nthroot_mod(a, q, p)
         assert pow(r, q, p) == a
     assert nthroot_mod(11, 3, 109) is None
+    assert nthroot_mod(6, 12, 5) == 1
 
     for p in primerange(5, 100):
         qv = range(3, p, 4)
@@ -596,6 +602,7 @@ def test_residue():
     assert mobius(p) == -1
     pytest.raises(TypeError, lambda: mobius(x))
     pytest.raises(ValueError, lambda: mobius(i))
+    mobius(Symbol('p', positive=True, integer=True))
 
 
 def test_crt():
@@ -631,6 +638,8 @@ def test_binomial_coefficients():
 
 
 def test_multinomial_coefficients():
+    assert multinomial_coefficients(0, 1) == {}
+    assert multinomial_coefficients(3, 0) == {(0, 0, 0): 1}
     assert multinomial_coefficients(1, 1) == {(1,): 1}
     assert multinomial_coefficients(1, 2) == {(2,): 1}
     assert multinomial_coefficients(1, 3) == {(3,): 1}
@@ -643,6 +652,11 @@ def test_multinomial_coefficients():
             (0, 0, 1): 1}
     assert multinomial_coefficients(3, 2) == {(0, 1, 1): 2, (0, 0, 2): 1,
             (1, 1, 0): 2, (0, 2, 0): 1, (1, 0, 1): 2, (2, 0, 0): 1}
+    mc = multinomial_coefficients(4, 2)
+    assert mc == {(0, 0, 0, 2): 1, (0, 0, 1, 1): 2, (0, 0, 2, 0): 1,
+                  (0, 1, 0, 1): 2, (0, 1, 1, 0): 2, (0, 2, 0, 0): 1,
+                  (1, 0, 0, 1): 2, (1, 0, 1, 0): 2, (1, 1, 0, 0): 2,
+                  (2, 0, 0, 0): 1}
     mc = multinomial_coefficients(3, 3)
     assert mc == {(2, 1, 0): 3, (0, 3, 0): 1,
             (1, 0, 2): 3, (0, 2, 1): 3, (0, 1, 2): 3, (3, 0, 0): 1,
@@ -850,12 +864,15 @@ def test_continued_fraction():
 
 
 def test_egyptian_fraction():
+    pytest.raises(ValueError, lambda: egyptian_fraction(S.Half, "spam"))
+
     def test_equality(r, alg="Greedy"):
         return r == Add(*[Rational(1, i) for i in egyptian_fraction(r, alg)])
 
     r = random_complex_number(a=0, c=1, b=0, d=0, rational=True)
     assert test_equality(r)
 
+    assert egyptian_fraction(1) == [1]
     assert egyptian_fraction(Rational(4, 17)) == [5, 29, 1233, 3039345]
     assert egyptian_fraction(Rational(7, 13), "Greedy") == [2, 26]
     assert egyptian_fraction(Rational(23, 101), "Greedy") == \

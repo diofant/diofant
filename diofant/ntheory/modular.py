@@ -226,8 +226,8 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
             if m in uniq:
                 if r != uniq[m]:
                     return
-                continue
-            uniq[m] = r
+            else:
+                uniq[m] = r
         rm = [(r, m) for m, r in uniq.items()]
         del uniq
 
