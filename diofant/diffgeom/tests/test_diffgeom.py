@@ -8,7 +8,7 @@ from diofant.diffgeom import (Commutator, Differential, TensorProduct,
                               metric_to_Christoffel_2nd, metric_to_Riemann_components,
                               metric_to_Ricci_components, intcurve_diffequ,
                               intcurve_series, Manifold, Patch, CoordSystem)
-from diofant.core import Symbol, symbols, Function, Derivative, Subs
+from diofant.core import S, Symbol, symbols, Function, Derivative, Subs
 from diofant.simplify import trigsimp, simplify
 from diofant.functions import sqrt, atan2, sin, exp
 from diofant.matrices import Matrix
@@ -183,10 +183,14 @@ def test_correct_arguments():
     pytest.raises(ValueError, lambda: intcurve_diffequ(R2.x, a, R2_r.point([1, 2])))
 
     pytest.raises(ValueError, lambda: contravariant_order(R2.e_x + R2.dx))
+    pytest.raises(ValueError, lambda: contravariant_order(R2.dx**2))
     pytest.raises(ValueError, lambda: covariant_order(R2.e_x + R2.dx))
 
     pytest.raises(ValueError, lambda: contravariant_order(R2.e_x*R2.e_y))
     pytest.raises(ValueError, lambda: covariant_order(R2.dx*R2.dy))
+
+    assert covariant_order(S.Zero, True) == -1
+    assert contravariant_order(S.Zero, True) == -1
 
 
 def test_simplify():

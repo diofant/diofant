@@ -24,6 +24,9 @@ from diofant.logic import Implies
 from diofant.logic.boolalg import And, Or, Xor
 from diofant.core.trace import Tr
 from diofant.combinatorics.permutations import Cycle, Permutation
+from diofant.diffgeom import (Manifold, Patch, TensorProduct,
+                              metric_to_Christoffel_2nd, CovarDerivativeOp)
+from diofant.diffgeom.rn import R2, R2_r
 
 x, y, z, t, a, b = symbols('x y z t a b')
 k, m, n = symbols('k m n', integer=True)
@@ -1330,3 +1333,20 @@ def test_sympyissue_7117():
 
 def test_sympyissue_2934():
     assert latex(Symbol(r'\frac{a_1}{b_1}')) == '\\frac{a_1}{b_1}'
+
+
+def test_diffgeom():
+    assert latex(R2) == r'\mathbb{R}^{2}'
+    r2 = Manifold('r', 2)
+    assert latex(r2) == r'\mathrm{r}'
+    foo = Manifold('Foo', 2)
+    assert latex(foo) == r'\mathrm{Foo}'
+    R2_origin = Patch('origin', R2)
+    assert latex(R2_origin) == r'\mathrm{origin}_{\mathbb{R}^{2}}'
+    assert latex(R2_r) == r'\mathrm{rectangular}^{\mathrm{origin}}_{\mathbb{R}^{2}}'
+    tp1 = TensorProduct(R2.dx, R2.dy)
+    assert latex(tp1) == r'\mathrm{d}x\otimes\mathrm{d}y'
+    ch = metric_to_Christoffel_2nd(TensorProduct(R2.dx, R2.dx) +
+                                   TensorProduct(R2.dy, R2.dy))
+    cvd = CovarDerivativeOp(R2.x*R2.e_x, ch)
+    assert latex(cvd) == r'\mathbb{\nabla}_{\boldsymbol{\mathrm{x}} \partial_{x}}'
