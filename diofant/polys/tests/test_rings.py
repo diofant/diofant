@@ -5,7 +5,7 @@ from operator import add, mul
 
 import pytest
 
-from diofant.polys.rings import ring, xring, sring, PolyRing, PolyElement
+from diofant.polys.rings import ring, sring, PolyRing, PolyElement
 from diofant.polys.fields import field, FracField
 from diofant.polys.domains import ZZ, QQ, RR, FF, EX
 from diofant.polys.orderings import lex, grlex
@@ -1074,7 +1074,7 @@ def test_PolyElement_l1_norm():
 
 
 def test_PolyElement_diff():
-    R, X = xring("x:11", QQ)
+    R, *X = ring("x:11", QQ)
 
     f = QQ(288, 5)*X[0]**8*X[1]**6*X[4]**3*X[10]**2 + 8*X[0]**2*X[2]**3*X[4]**3 + 2*X[0]**2 - 2*X[1]**2
 
