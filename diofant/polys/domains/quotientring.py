@@ -151,7 +151,7 @@ class QuotientRing(Ring):
     from_ZZ_gmpy = from_ZZ_python
     from_QQ_gmpy = from_ZZ_python
     from_RealField = from_ZZ_python
-    from_GlobalPolynomialRing = from_ZZ_python
+    from_PolynomialRing = from_ZZ_python
     from_FractionField = from_ZZ_python
 
     def from_diofant(self, a):
