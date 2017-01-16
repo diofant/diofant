@@ -1571,14 +1571,6 @@ class LatexPrinter(Printer):
         symbols = ", ".join(map(self._print, expr.symbols))
         return r"%s\left(%s\right)" % (domain, symbols)
 
-    def _print_PolynomialRingBase(self, expr):
-        domain = self._print(expr.domain)
-        symbols = ", ".join(map(self._print, expr.symbols))
-        inv = ""
-        if not expr.is_Poly:
-            inv = r"S_<^{-1}"
-        return r"%s%s\left[%s\right]" % (inv, domain, symbols)
-
     def _print_Poly(self, poly):
         cls = poly.__class__.__name__
         expr = self._print(poly.as_expr())
@@ -1673,42 +1665,6 @@ class LatexPrinter(Printer):
 
     def _print_DMF(self, p):
         return self._print_DMP(p)
-
-    def _print_FreeModule(self, M):
-        return '{%s}^{%s}' % (self._print(M.ring), self._print(M.rank))
-
-    def _print_FreeModuleElement(self, m):
-        # Print as row vector for convenience, for now.
-        return r"\left[ %s \right]" % ",".join(
-            '{' + self._print(x) + '}' for x in m)
-
-    def _print_SubModule(self, m):
-        return r"\left< %s \right>" % ",".join(
-            '{' + self._print(x) + '}' for x in m.gens)
-
-    def _print_ModuleImplementedIdeal(self, m):
-        return r"\left< %s \right>" % ",".join(
-            '{' + self._print(x) + '}' for [x] in m._module.gens)
-
-    def _print_QuotientRing(self, R):
-        # TODO nicer fractions for few generators...
-        return r"\frac{%s}{%s}" % (self._print(R.ring), self._print(R.base_ideal))
-
-    def _print_QuotientRingElement(self, x):
-        return r"{%s} + {%s}" % (self._print(x.data), self._print(x.ring.base_ideal))
-
-    def _print_QuotientModuleElement(self, m):
-        return r"{%s} + {%s}" % (self._print(m.data),
-                                 self._print(m.module.killed_module))
-
-    def _print_QuotientModule(self, M):
-        # TODO nicer fractions for few generators...
-        return r"\frac{%s}{%s}" % (self._print(M.base),
-                                   self._print(M.killed_module))
-
-    def _print_MatrixHomomorphism(self, h):
-        return r"{%s} : {%s} \to {%s}" % (self._print(h._diofant_matrix()),
-            self._print(h.domain), self._print(h.codomain))
 
     def _print_BaseScalarField(self, field):
         string = field._coord_sys._names[field._index]

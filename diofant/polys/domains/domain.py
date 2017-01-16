@@ -211,14 +211,6 @@ class Domain:
         """Convert a ``EX`` object to ``dtype``. """
         return self.from_diofant(a.ex)
 
-    def from_GlobalPolynomialRing(self, a, K0):
-        """Convert a polynomial to ``dtype``. """
-        if a.degree() <= 0:
-            return self.convert(a.LC(), K0.domain)
-
-    def from_GeneralizedPolynomialRing(self, a, K0):
-        return self.from_FractionField(a, K0)
-
     def unify_with_symbols(self, K1, symbols):
         if (self.is_Composite and (set(self.symbols) & set(symbols))) or (K1.is_Composite and (set(K1.symbols) & set(symbols))):
             raise UnificationFailed("can't unify %s with %s, given %s generators" % (self, K1, tuple(symbols)))

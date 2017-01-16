@@ -22,6 +22,5 @@ and multivariate factorization over algebraic number domains.
     basics.rst
     wester.rst
     reference.rst
-    agca.rst
     internals.rst
     literature.rst
