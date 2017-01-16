@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant.polys.rings import ring, xring
+from diofant.polys.rings import ring
 from diofant.polys.domains import FF, ZZ, QQ, RR, EX
 from diofant.polys import polyconfig as config
 from diofant.polys.polyerrors import DomainError
@@ -592,7 +592,7 @@ def test_dmp_factor_list():
     assert R.dmp_factor_list_include(0) == [(0, 1)]
     assert R.dmp_factor_list_include(7) == [(7, 1)]
 
-    R, X = xring("x:200", ZZ)
+    R, *X = ring("x:200", ZZ)
 
     f, g = X[0]**2 + 2*X[0] + 1, X[0] + 1
     assert R.dmp_factor_list(f) == (1, [(g, 2)])

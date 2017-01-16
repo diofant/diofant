@@ -5,12 +5,17 @@ import pytest
 from diofant.polys.domains import QQ, ZZ
 from diofant.polys.polyerrors import (ExactQuotientFailed, CoercionFailed,
                                       NotReversible, GeneratorsNeeded)
+from diofant.polys.orderings import build_product_order
 
 from diofant.abc import x, y
 
 
 def test_build_order():
     R = QQ.poly_ring(x, y, order=lambda q: "lex" if q == x else "ilex")
+    assert R.order((1, 5)) == ((1,), (-5,))
+
+    R = QQ.poly_ring(x, y, order=build_product_order((("lex", x),
+                                                      ("ilex", y)), (x, y)))
     assert R.order((1, 5)) == ((1,), (-5,))
 
 
