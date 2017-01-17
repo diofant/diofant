@@ -14,5 +14,4 @@ from .tree import print_tree
 from .str import StrPrinter, sstr, sstrrepr
 del str  # or this hide the str function
 del repr  # or this hide the repr function
-from .tableform import TableForm
 from .dot import dotprint
