@@ -2,13 +2,14 @@
 Mathematica code printer
 """
 
+import types
+
 from diofant.printing.codeprinter import CodePrinter
 from diofant.printing.str import StrPrinter
 from diofant.printing.precedence import precedence
 
 # Used in MCodePrinter._print_Function(self)
 known_functions = {
-    "exp": [(lambda x: True, "Exp")],
     "log": [(lambda x: True, "Log")],
     "sin": [(lambda x: True, "Sin")],
     "cos": [(lambda x: True, "Cos")],
@@ -54,8 +55,15 @@ class MCodePrinter(CodePrinter):
         userfuncs = settings.get('user_functions', {})
         for k, v in userfuncs.items():
             if not isinstance(v, list):
-                userfuncs[k] = [(lambda *x: True, v)]
-                self.known_functions.update(userfuncs)
+                userfuncs[k] = [(lambda *x: True, str(v))]
+            else:
+                v = v[0]
+                if (isinstance(v, (list, tuple)) and len(v) == 2 and
+                        isinstance(v[0], types.FunctionType)):
+                    userfuncs[k] = [(v[0], str(v[1]))]
+                else:
+                    raise ValueError("bad user_functions")
+            self.known_functions.update(userfuncs)
 
     doprint = StrPrinter.doprint
 
@@ -89,12 +97,12 @@ class MCodePrinter(CodePrinter):
     _print_ExprCondPair = _print_list
 
     def _print_Function(self, expr):
-        if expr.func.__name__ in self.known_functions:
-            cond_mfunc = self.known_functions[expr.func.__name__]
-            for cond, mfunc in cond_mfunc:
-                if cond(*expr.args):
-                    return "%s[%s]" % (mfunc, self.stringify(expr.args, ", "))
-        return expr.func.__name__ + "[%s]" % self.stringify(expr.args, ", ")
+        fname = expr.func.__name__
+        if fname in self.known_functions:
+            cond, mfunc = self.known_functions[fname][0]
+            if cond(*expr.args):
+                return "%s[%s]" % (mfunc, self.stringify(expr.args, ", "))
+        return fname + "[%s]" % self.stringify(expr.args, ", ")
 
     def _print_Min(self, expr):
         return expr.func.__name__ + "[%s]" % self.stringify(expr.args, ", ")

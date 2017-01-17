@@ -358,7 +358,6 @@ there is code to manipulate polynomials in a *sparse* representation.
 Sparse polynomials are represented as dictionaries.
 
 .. autofunction:: ring
-.. autofunction:: xring
 .. autofunction:: vring
 .. autofunction:: sring
 

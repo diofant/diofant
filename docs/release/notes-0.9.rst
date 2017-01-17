@@ -21,6 +21,8 @@ Backwards-incompatible changes
 * Dropped support for solving undetermined coefficients in :func:`~diofant.solvers.solvers.solve`, see `#389 <https://github.com/diofant/diofant/pull/389>`_.
 * Drop ``intersect()`` alias for :meth:`~diofant.sets.sets.Set.intersection`, see `#396 <https://github.com/diofant/diofant/pull/396>`_.
 * Drop ``interactive_traversal()``, see `#395 <https://github.com/diofant/diofant/pull/395>`_.
+* Drop ``xring()`` and ``xfield()``, see `#403 <https://github.com/diofant/diofant/pull/403>`_.
+* Drop JS printer and ``TableForm`` class, see `#403 <https://github.com/diofant/diofant/pull/403>`_.
 
 Minor changes
 =============
@@ -42,7 +44,7 @@ Issues closed
 * `sympy/sympy#12018 <https://github.com/sympy/sympy/issues/12018>`_ solution not found by Sum and gosper_sum
 * `sympy/sympy#5649 <https://github.com/sympy/sympy/issues/5649>`_ Bug with AlgebraicNumber.__eq__
 
-.. last pr: #401
+.. last pr: #403
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

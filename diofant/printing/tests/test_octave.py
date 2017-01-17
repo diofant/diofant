@@ -74,9 +74,11 @@ def test_mix_number_mult_symbols():
     assert mcode(x/3) == "x/3"
     assert mcode(x/pi) == "x/pi"
     assert mcode(x*y) == "x.*y"
+    assert mcode(x*y, order="none") == "x.*y"
     assert mcode(3*x*y) == "3*x.*y"
     assert mcode(3*pi*x*y) == "3*pi*x.*y"
     assert mcode(x/y) == "x./y"
+    assert octave_code(x*y**-2) == "x./y.^2"
     assert mcode(3*x/y) == "3*x./y"
     assert mcode(x*y/z) == "x.*y./z"
     assert mcode(x/y*z) == "x.*z./y"
@@ -117,6 +119,8 @@ def test_constants():
     assert mcode(S.NaN) == "NaN"
     assert mcode(S.Exp1) == "exp(1)"
     assert mcode(exp(1)) == "exp(1)"
+    assert mcode(S.true) == "true"
+    assert mcode(S.false) == "false"
 
 
 def test_constants_other():
@@ -126,6 +130,8 @@ def test_constants_other():
 
 
 def test_boolean():
+    assert mcode(True) == "true"
+    assert mcode(False) == "false"
     assert mcode(x & y) == "x & y"
     assert mcode(x | y) == "x | y"
     assert mcode(~x) == "~x"

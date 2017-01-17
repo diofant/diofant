@@ -57,35 +57,6 @@ def ring(symbols, domain, order=lex):
 
 
 @public
-def xring(symbols, domain, order=lex):
-    """Construct a polynomial ring returning ``(ring, (x_1, ..., x_n))``.
-
-    Parameters
-    ==========
-
-    symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`~diofant.polys.domains.domain.Domain` or coercible
-    order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
-
-    Examples
-    ========
-
-    >>> from diofant.polys.domains import ZZ
-    >>> from diofant.polys.orderings import lex
-
-    >>> R, (x, y, z) = xring("x,y,z", ZZ, lex)
-    >>> R
-    Polynomial ring in x, y, z over ZZ with lex order
-    >>> x + y + z
-    x + y + z
-    >>> type(_)
-    <class 'diofant.polys.rings.PolyElement'>
-    """
-    _ring = PolyRing(symbols, domain, order)
-    return _ring, _ring.gens
-
-
-@public
 def vring(symbols, domain, order=lex):
     """Construct a polynomial ring and inject ``x_1, ..., x_n`` into the global namespace.
 

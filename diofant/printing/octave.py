@@ -81,11 +81,6 @@ class OctaveCodePrinter(CodePrinter):
     def _format_code(self, lines):
         return self.indent_code(lines)
 
-    def _traverse_matrix_indices(self, mat):
-        # Octave uses Fortran order (column-major)
-        rows, cols = mat.shape
-        return ((i, j) for j in range(cols) for i in range(rows))
-
     def _get_loop_opening_ending(self, indices):
         open_lines = []
         close_lines = []
@@ -253,9 +248,6 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_BooleanFalse(self, expr):
         return "false"
-
-    def _print_bool(self, expr):
-        return str(expr).lower()
 
     # Could generate quadrature code for definite Integrals?
     # _print_Integral = _print_not_supported
@@ -425,9 +417,6 @@ class OctaveCodePrinter(CodePrinter):
         pretty = []
         level = 0
         for n, line in enumerate(code):
-            if line == '' or line == '\n':
-                pretty.append(line)
-                continue
             level -= decrease[n]
             pretty.append("%s%s" % (tab*level, line))
             level += increase[n]
@@ -571,11 +560,3 @@ def octave_code(expr, assign_to=None, **settings):
     'Dy(i) = (y(i + 1) - y(i))./(t(i + 1) - t(i));'
     """
     return OctaveCodePrinter(settings).doprint(expr, assign_to)
-
-
-def print_octave_code(expr, **settings):
-    """Prints the Octave (or Matlab) representation of the given expression.
-
-    See `octave_code` for the meaning of the optional arguments.
-    """
-    print(octave_code(expr, **settings))

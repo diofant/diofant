@@ -47,7 +47,7 @@ def split_super_sub(text):
             supers.append(part[2:])
         elif part.startswith("_"):
             subs.append(part[1:])
-        else:
+        else:  # pragma: no cover
             raise RuntimeError("This should never happen.")
 
     # make a little exception when a name ends with digits, i.e. treat them

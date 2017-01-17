@@ -6250,8 +6250,8 @@ def reduced(f, G, *gens, **args):
         opt = opt.clone(dict(domain=domain.get_field()))
         retract = True
 
-    from diofant.polys.rings import xring
-    _ring, _ = xring(opt.gens, opt.domain, opt.order)
+    from diofant.polys.rings import ring
+    _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
     for i, poly in enumerate(polys):
         poly = poly.set_domain(opt.domain).rep.to_dict()
@@ -6518,8 +6518,8 @@ class GroebnerBasis(Basic):
             order=dst_order,
         ))
 
-        from diofant.polys.rings import xring
-        _ring, _ = xring(opt.gens, opt.domain, src_order)
+        from diofant.polys.rings import ring
+        _ring, *_ = ring(opt.gens, opt.domain, src_order)
 
         for i, poly in enumerate(polys):
             poly = poly.set_domain(opt.domain).rep.to_dict()
@@ -6574,8 +6574,8 @@ class GroebnerBasis(Basic):
             opt = opt.clone(dict(domain=domain.get_field()))
             retract = True
 
-        from diofant.polys.rings import xring
-        _ring, _ = xring(opt.gens, opt.domain, opt.order)
+        from diofant.polys.rings import ring
+        _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
         for i, poly in enumerate(polys):
             poly = poly.set_domain(opt.domain).rep.to_dict()
