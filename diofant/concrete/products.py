@@ -306,14 +306,6 @@ class Product(ExprWithIntLimits):
                 if p is not None:
                     return p**term.exp
 
-        elif isinstance(term, Product):
-            evaluated = term.doit()
-            f = self._eval_product(evaluated, limits)
-            if f is None:
-                return self.func(evaluated, limits)
-            else:
-                return f
-
     def _eval_simplify(self, ratio, measure):
         from diofant.simplify.simplify import product_simplify
         return product_simplify(self)
