@@ -1,10 +1,14 @@
+import pytest
+
 from diofant.core import (S, pi, oo, symbols, Function,
                           Rational, Integer, Tuple, Derivative,
                           Eq, Ne, Le, Gt)
 from diofant.integrals import Integral
 from diofant.concrete import Sum
 from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
-                               Min, Max, Piecewise, binomial)
+                               Min, Max, Piecewise, binomial,
+                               log, tan, cot, asin, acos, atan, sinh, cosh,
+                               tanh, coth, sech, csch)
 from diofant.matrices import Matrix
 from diofant.logic import Or, true, false
 
@@ -44,6 +48,38 @@ def test_Function():
     assert mcode(Max(x, y)) == "Max[x, y]"
 
     assert mcode(binomial(x, y)) == "Binomial[x, y]"
+
+    assert mcode(log(x)) == "Log[x]"
+    assert mcode(tan(x)) == "Tan[x]"
+    assert mcode(cot(x)) == "Cot[x]"
+    assert mcode(asin(x)) == "ArcSin[x]"
+    assert mcode(acos(x)) == "ArcCos[x]"
+    assert mcode(atan(x)) == "ArcTan[x]"
+    assert mcode(sinh(x)) == "Sinh[x]"
+    assert mcode(cosh(x)) == "Cosh[x]"
+    assert mcode(tanh(x)) == "Tanh[x]"
+    assert mcode(coth(x)) == "Coth[x]"
+    assert mcode(sech(x)) == "Sech[x]"
+    assert mcode(csch(x)) == "Csch[x]"
+
+    class myfunc1(Function):
+        @classmethod
+        def eval(cls, x):
+            pass
+
+    class myfunc2(Function):
+        @classmethod
+        def eval(cls, x, y):
+            pass
+
+    pytest.raises(ValueError,
+                  lambda: mcode(myfunc1(x),
+                                user_functions={"myfunc1": ["Myfunc1"]}))
+    assert mcode(myfunc1(x),
+                 user_functions={"myfunc1": "Myfunc1"}) == "Myfunc1[x]"
+    assert mcode(myfunc2(x, y),
+                 user_functions={"myfunc2": [(lambda *x: False,
+                                              "Myfunc2")]}) == "myfunc2[x, y]"
 
 
 def test_Derivative():
