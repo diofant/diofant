@@ -23,6 +23,7 @@ Backwards-incompatible changes
 * Drop ``interactive_traversal()``, see `#395 <https://github.com/diofant/diofant/pull/395>`_.
 * Drop ``xring()`` and ``xfield()``, see `#403 <https://github.com/diofant/diofant/pull/403>`_.
 * Drop JS printer and ``TableForm`` class, see `#403 <https://github.com/diofant/diofant/pull/403>`_.
+* Removed agca submodule of :mod:`~diofant.polys`, see `#404 <https://github.com/diofant/diofant/pull/404>`_.
 
 Minor changes
 =============
@@ -44,7 +45,7 @@ Issues closed
 * `sympy/sympy#12018 <https://github.com/sympy/sympy/issues/12018>`_ solution not found by Sum and gosper_sum
 * `sympy/sympy#5649 <https://github.com/sympy/sympy/issues/5649>`_ Bug with AlgebraicNumber.__eq__
 
-.. last pr: #403
+.. last pr: #404
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

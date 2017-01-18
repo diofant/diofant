@@ -16,7 +16,7 @@ from diofant import (
     meijerg, oo, polar_lift, polylog, re, root, sin, sqrt, symbols,
     uppergamma, zeta, subfactorial, totient, elliptic_k, elliptic_f,
     elliptic_e, elliptic_pi, cos, tan, Wild, true, false, Equivalent, Not,
-    Contains, divisor_sigma, SymmetricDifference, Dummy)
+    Contains, divisor_sigma, SymmetricDifference, Dummy, QQ)
 from diofant.abc import mu, tau
 from diofant.printing.latex import latex, translate
 from diofant.functions import DiracDelta, Heaviside, KroneckerDelta, LeviCivita
@@ -956,7 +956,6 @@ def test_latex_RandomDomain():
 
 
 def test_PrettyPoly():
-    from diofant.polys.domains import QQ
     F = QQ.frac_field(x, y)
     R = QQ[x, y]
 
@@ -987,45 +986,8 @@ def test_integral_transforms():
     assert latex(InverseSineTransform(f(k), k, x)) == r"\mathcal{SIN}^{-1}_{k}\left[f{\left (k \right )}\right]\left(x\right)"
 
 
-def test_PolynomialRingBase():
-    from diofant.polys.domains import QQ
-    assert latex(QQ.old_poly_ring(x, y)) == r"\mathbb{Q}\left[x, y\right]"
-    assert latex(QQ.old_poly_ring(x, y, order="ilex")) == \
-        r"S_<^{-1}\mathbb{Q}\left[x, y\right]"
-
-
-def test_Modules():
-    from diofant.polys.domains import QQ
-    from diofant.polys.agca import homomorphism
-
-    R = QQ.old_poly_ring(x, y)
-    F = R.free_module(2)
-    M = F.submodule([x, y], [1, x**2])
-
-    assert latex(F) == r"{\mathbb{Q}\left[x, y\right]}^{2}"
-    assert latex(M) == \
-        r"\left< {\left[ {x},{y} \right]},{\left[ {1},{x^{2}} \right]} \right>"
-
-    I = R.ideal(x**2, y)
-    assert latex(I) == r"\left< {x^{2}},{y} \right>"
-
-    Q = F / M
-    assert latex(Q) == r"\frac{{\mathbb{Q}\left[x, y\right]}^{2}}{\left< {\left[ {x},{y} \right]},{\left[ {1},{x^{2}} \right]} \right>}"
-    assert latex(Q.submodule([1, x**3/2], [2, y])) == \
-        r"\left< {{\left[ {1},{\frac{x^{3}}{2}} \right]} + {\left< {\left[ {x},{y} \right]},{\left[ {1},{x^{2}} \right]} \right>}},{{\left[ {2},{y} \right]} + {\left< {\left[ {x},{y} \right]},{\left[ {1},{x^{2}} \right]} \right>}} \right>"
-
-    h = homomorphism(QQ.old_poly_ring(x).free_module(2), QQ.old_poly_ring(x).free_module(2), [0, 0])
-
-    assert latex(h) == r"{\left[\begin{matrix}0 & 0\\0 & 0\end{matrix}\right]} : {{\mathbb{Q}\left[x\right]}^{2}} \to {{\mathbb{Q}\left[x\right]}^{2}}"
-
-
-def test_QuotientRing():
-    from diofant.polys.domains import QQ
-    R = QQ.old_poly_ring(x)/[x**2 + 1]
-
-    assert latex(
-        R) == r"\frac{\mathbb{Q}\left[x\right]}{\left< {x^{2} + 1} \right>}"
-    assert latex(R.one) == r"{1} + {\left< {x^{2} + 1} \right>}"
+def test_PolynomialRing():
+    assert latex(QQ.poly_ring(x, y)) == r"\mathbb{Q}\left[x, y\right]"
 
 
 def test_Tr():
