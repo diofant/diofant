@@ -7,6 +7,8 @@ from diofant.tensor.index_methods import IndexConformanceException
 
 from diofant import get_contraction_structure, get_indices
 
+__all__ = ()
+
 
 def test_trivial_indices():
     x, y = symbols('x y')

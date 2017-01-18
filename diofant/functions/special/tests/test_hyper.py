@@ -9,6 +9,8 @@ from diofant.utilities.randtest import (random_complex_number as randcplx,
 
 from diofant.abc import x, z, k
 
+__all__ = ()
+
 
 def test_TupleParametersBase():
     # test that our implementation of the chain rule works

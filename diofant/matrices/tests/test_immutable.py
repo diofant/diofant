@@ -2,7 +2,10 @@ import pytest
 
 from diofant import (ImmutableMatrix, Matrix, eye, zeros, S, Equality,
                      Unequality, ImmutableSparseMatrix, SparseMatrix, sympify)
+
 from diofant.abc import x, y
+
+__all__ = ()
 
 IM = ImmutableMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 ieye = ImmutableMatrix(eye(3))

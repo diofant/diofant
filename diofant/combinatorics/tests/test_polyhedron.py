@@ -8,6 +8,8 @@ from diofant.combinatorics.polyhedron import (Polyhedron, tetrahedron,
 from diofant.combinatorics.permutations import Permutation
 from diofant.combinatorics.perm_groups import PermutationGroup
 
+__all__ = ()
+
 rmul = Permutation.rmul
 
 

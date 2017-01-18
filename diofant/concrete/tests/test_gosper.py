@@ -5,6 +5,8 @@ from diofant import (binomial, factorial, gamma, Poly, Rational,
 from diofant.abc import a, b, j, k, m, n, r, x
 from diofant.concrete.gosper import gosper_normal, gosper_sum, gosper_term
 
+__all__ = ()
+
 
 def test_gosper_normal():
     assert gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n) == \

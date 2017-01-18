@@ -16,6 +16,8 @@ from diofant.simplify.simplify import nthroot
 from diofant.abc import (x, y, z, t, a, b, c, d, e, f, g, h, i, r,
                          R, k, n, m, w, s)
 
+__all__ = ()
+
 
 def test_sympyissue_7263():
     assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf() -

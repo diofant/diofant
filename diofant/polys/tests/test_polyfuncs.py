@@ -2,16 +2,13 @@
 
 import pytest
 
-from diofant.polys.polyfuncs import (
-    symmetrize, horner, interpolate, viete,
-)
-
-from diofant.polys.polyerrors import (
-    MultivariatePolynomialError,
-)
-
+from diofant.polys.polyfuncs import symmetrize, horner, interpolate, viete
+from diofant.polys.polyerrors import MultivariatePolynomialError
 from diofant import symbols
+
 from diofant.abc import a, b, c, d, e, x, y, z
+
+__all__ = ()
 
 
 def test_symmetrize():

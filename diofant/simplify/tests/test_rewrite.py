@@ -2,6 +2,8 @@ from diofant import sin, cos, exp, cot, I, symbols, Pow
 
 x, y, z, n = symbols('x,y,z,n')
 
+__all__ = ()
+
 
 def test_has():
     assert cot(x).has(x)

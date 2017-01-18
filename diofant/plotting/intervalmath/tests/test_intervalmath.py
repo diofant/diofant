@@ -2,6 +2,8 @@ import pytest
 
 from diofant.plotting.intervalmath import interval
 
+__all__ = ()
+
 
 def test_interval():
     assert (interval(1, 1) == interval(1, 1, is_valid=True)) == (True, True)

@@ -34,6 +34,8 @@ from diofant.polys import polyconfig as config
 from diofant.polys.domains import ZZ
 from diofant import pi, nextprime
 
+__all__ = ()
+
 
 def test_gf_crt():
     U = [49, 76, 65]

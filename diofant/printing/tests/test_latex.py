@@ -28,6 +28,8 @@ from diofant.diffgeom import (Manifold, Patch, TensorProduct,
                               metric_to_Christoffel_2nd, CovarDerivativeOp)
 from diofant.diffgeom.rn import R2, R2_r
 
+__all__ = ()
+
 x, y, z, t, a, b = symbols('x y z t a b')
 k, m, n = symbols('k m n', integer=True)
 

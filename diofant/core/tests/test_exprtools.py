@@ -12,6 +12,8 @@ from diofant.simplify.cse_opts import sub_pre
 
 from diofant.abc import a, b, t, x, y, z
 
+__all__ = ()
+
 
 def test_decompose_power():
     assert decompose_power(x) == (x, 1)

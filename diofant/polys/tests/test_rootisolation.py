@@ -6,6 +6,8 @@ from diofant.polys.rings import ring
 from diofant.polys.domains import ZZ, QQ, EX
 from diofant.polys.polyerrors import DomainError, RefinementFailed
 
+__all__ = ()
+
 
 def test_dup_sturm():
     R, x = ring("x", QQ)

@@ -2,6 +2,8 @@ from diofant.matrices.expressions import MatrixSymbol, MatAdd, MatPow, MatMul
 from diofant.matrices import eye, ImmutableMatrix
 from diofant import Basic
 
+__all__ = ()
+
 X = MatrixSymbol('X', 2, 2)
 Y = MatrixSymbol('Y', 2, 2)
 

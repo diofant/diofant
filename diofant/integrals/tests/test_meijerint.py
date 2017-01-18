@@ -15,6 +15,8 @@ from diofant.utilities.randtest import (verify_numerically,
 
 from diofant.abc import x, y, a, b, c, d, s, t, z
 
+__all__ = ()
+
 
 def test_rewrite_single():
     def t(expr, c, m):

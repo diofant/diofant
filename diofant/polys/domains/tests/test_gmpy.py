@@ -4,6 +4,8 @@ from diofant.polys.polyerrors import CoercionFailed
 from diofant.polys.domains import FF
 from diofant.external import import_module
 
+__all__ = ()
+
 gmpy = import_module('gmpy')
 
 

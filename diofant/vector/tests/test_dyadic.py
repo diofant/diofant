@@ -6,6 +6,7 @@ from diofant.vector import (CoordSysCartesian, Vector, Dyadic,
                             DyadicAdd, DyadicMul, DyadicZero,
                             BaseDyadic, express)
 
+__all__ = ()
 
 A = CoordSysCartesian('A')
 

@@ -6,6 +6,8 @@ from diofant.core.symbol import Dummy
 from diofant.matrices import MatrixSymbol, Matrix
 from diofant.tensor import IndexedBase, Idx
 
+__all__ = ()
+
 
 def setup_test_printer(**kwargs):
     p = CodePrinter(settings=kwargs)

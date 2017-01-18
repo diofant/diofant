@@ -9,11 +9,13 @@ from diofant.polys.polyoptions import (
 
 from diofant.polys.orderings import lex
 from diofant.polys.domains import FF, GF, ZZ, QQ, EX
-
 from diofant.polys.polyerrors import OptionError, GeneratorsError
 
 from diofant import Integer, Symbol, I, sqrt
+
 from diofant.abc import x, y, z
+
+__all__ = ()
 
 
 def test_Options_clone():

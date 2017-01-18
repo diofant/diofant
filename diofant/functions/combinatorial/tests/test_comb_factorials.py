@@ -6,6 +6,8 @@ from diofant import (S, Symbol, symbols, factorial, factorial2, binomial,
 from diofant.functions.combinatorial.factorials import subfactorial
 from diofant.functions.special.gamma_functions import uppergamma
 
+__all__ = ()
+
 
 def test_rf_eval_apply():
     x, y = symbols('x,y')

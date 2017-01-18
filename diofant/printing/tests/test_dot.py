@@ -1,7 +1,10 @@
 from diofant.printing.dot import (styleof, attrprint, dotnode,
                                   dotedges, dotprint)
 from diofant import Symbol, Integer, Basic, Expr
+
 from diofant.abc import x
+
+__all__ = ()
 
 
 def test_styleof():

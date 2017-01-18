@@ -6,6 +6,8 @@ from diofant import (Symbol, Rational, exp, ln, log, nan, oo, O, pi, I, Add,
 
 from diofant.abc import w, x, y, z
 
+__all__ = ()
+
 
 def test_caching_bug():
     # needs to be a first test, so that all caches are clean

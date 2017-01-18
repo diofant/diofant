@@ -6,6 +6,8 @@ from diofant.solvers.pde import (pde_separate_add, pde_separate_mul,
                                  pdsolve, classify_pde, checkpdesol,
                                  pde_separate)
 
+__all__ = ()
+
 a, b, c, x, y = symbols('a b c x y')
 
 

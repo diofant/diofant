@@ -9,6 +9,8 @@ from diofant.combinatorics.util import (_check_cycles_alt_sym, _strip,
                                         _base_ordering, _remove_gens)
 from diofant.combinatorics.testutil import _verify_bsgs
 
+__all__ = ()
+
 
 def test_check_cycles_alt_sym():
     perm1 = Permutation([[0, 1, 2, 3, 4, 5, 6], [7], [8], [9]])

@@ -14,6 +14,8 @@ from diofant.logic import Or, true, false
 
 from diofant import mathematica_code as mcode
 
+__all__ = ()
+
 x, y, z = symbols('x,y,z')
 f = Function('f')
 

@@ -16,6 +16,7 @@ from diofant.solvers.solvers import solve
 
 from diofant.abc import x, y
 
+__all__ = ()
 
 inf = oo.evalf()
 

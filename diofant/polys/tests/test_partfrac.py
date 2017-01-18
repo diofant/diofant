@@ -10,6 +10,8 @@ from diofant import (Poly, E, pi, I, Eq, RootSum, Lambda, Rational,
 
 from diofant.abc import x, y, a, b, c
 
+__all__ = ()
+
 
 def test_apart():
     assert apart(1) == 1

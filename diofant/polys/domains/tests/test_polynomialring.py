@@ -9,6 +9,8 @@ from diofant.polys.orderings import build_product_order
 
 from diofant.abc import x, y
 
+__all__ = ()
+
 
 def test_build_order():
     R = QQ.poly_ring(x, y, order=build_product_order((("lex", x),

@@ -2,6 +2,8 @@ from diofant import sin, cos, exp, tanh, E, S, O
 
 from diofant.abc import x, y
 
+__all__ = ()
+
 
 def test_sin():
     e = sin(x).lseries(x)

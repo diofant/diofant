@@ -9,6 +9,8 @@ from diofant.external import import_module
 from diofant.tensor import IndexedBase, Idx
 from diofant.utilities.autowrap import autowrap, ufuncify, CodeWrapError
 
+__all__ = ()
+
 numpy = import_module('numpy', min_module_version='1.6.1')
 Cython = import_module('Cython', min_module_version='0.15.1')
 f2py = import_module('numpy.f2py', __import__kwargs={'fromlist': ['f2py']})

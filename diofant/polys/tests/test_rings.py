@@ -15,6 +15,8 @@ from diofant.polys.polyerrors import (GeneratorsError, GeneratorsNeeded,
 from diofant.core import Symbol, symbols
 from diofant import sqrt, pi, oo
 
+__all__ = ()
+
 
 def test_PolyRing___init__():
     x, y, z, t = map(Symbol, "xyzt")

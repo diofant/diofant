@@ -2,6 +2,8 @@ from diofant.functions import bspline_basis_set
 from diofant import Piecewise, Interval
 from diofant import symbols, Rational
 
+__all__ = ()
+
 x, y = symbols('x,y')
 
 

@@ -9,6 +9,8 @@ from diofant.parsing.sympy_parser import (parse_expr, standard_transformations,
                                           rationalize, TokenError, split_symbols,
                                           implicit_multiplication)
 
+__all__ = ()
+
 
 def test_diofant_parser():
     x = Symbol('x')

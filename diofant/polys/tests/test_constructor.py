@@ -7,6 +7,8 @@ from diofant import sqrt, sin, Float, Integer, Rational
 
 from diofant.abc import x, y
 
+__all__ = ()
+
 
 def test_construct_domain():
     assert construct_domain([1, 2, 3]) == (ZZ, [ZZ(1), ZZ(2), ZZ(3)])

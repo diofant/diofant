@@ -11,6 +11,8 @@ from diofant.tensor import IndexedBase, Idx
 from diofant.utilities.lambdify import implemented_function
 from diofant.matrices import Matrix, MatrixSymbol
 
+__all__ = ()
+
 
 def test_printmethod():
     x = symbols('x')

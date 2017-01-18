@@ -36,7 +36,8 @@ extra_reqs = {'exports': ['numpy', 'scipy', 'Theano'],
               'docs': ['docutils!=0.13.1', 'sphinx>=1.2.3', 'numpydoc',
                        'sphinx_rtd_theme'],
               }
-extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0', 'pep8-naming',
+extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
+                         'flake8-docstrings', 'pep8-naming',
                          'pytest-cov', 'coverage'] + setup_reqs
 
 setup(name='Diofant',

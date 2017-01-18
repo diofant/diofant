@@ -5,6 +5,8 @@ from diofant.matrices import Identity, MatrixSymbol, ImmutableMatrix, ZeroMatrix
 from diofant.matrices.expressions import MatPow, MatAdd, MatMul
 from diofant.matrices.expressions.matexpr import ShapeError
 
+__all__ = ()
+
 n, m, l, k = symbols('n m l k', integer=True)
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', m, l)

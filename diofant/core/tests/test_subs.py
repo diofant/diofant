@@ -9,6 +9,8 @@ from diofant.core.basic import _aresame
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_subs():
     n3 = Rational(3)

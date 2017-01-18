@@ -2,6 +2,8 @@ from diofant.matrices.expressions import MatrixSymbol
 from diofant.matrices.expressions.diagonal import DiagonalMatrix, DiagonalOf
 from diofant import Symbol
 
+__all__ = ()
+
 n = Symbol('n')
 x = MatrixSymbol('x', n, 1)
 X = MatrixSymbol('X', n, n)

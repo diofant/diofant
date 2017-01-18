@@ -2,6 +2,8 @@ from diofant.matrices.densesolve import LU_solve, rref_solve, cholesky_solve
 from diofant import Dummy
 from diofant import QQ
 
+__all__ = ()
+
 
 def test_LU_solve():
     x, y, z = Dummy('x'), Dummy('y'), Dummy('z')

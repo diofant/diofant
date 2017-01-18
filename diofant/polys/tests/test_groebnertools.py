@@ -14,6 +14,8 @@ from diofant.polys.rings import ring
 from diofant.polys.domains import ZZ, QQ
 from diofant.polys import polyconfig as config
 
+__all__ = ()
+
 
 def _do_test_groebner():
     R,  x, y = ring("x,y", QQ, lex)

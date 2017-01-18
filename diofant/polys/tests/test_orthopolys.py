@@ -15,6 +15,8 @@ from diofant.polys.orthopolys import (
 
 from diofant.abc import x, a, b
 
+__all__ = ()
+
 
 def test_jacobi_poly():
     pytest.raises(ValueError, lambda: jacobi_poly(-1, a, b, x))

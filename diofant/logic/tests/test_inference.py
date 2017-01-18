@@ -13,6 +13,8 @@ from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
                                            unit_propagate_int_repr)
 from diofant.logic.algorithms.dpll2 import dpll_satisfiable as dpll2_satisfiable
 
+__all__ = ()
+
 
 def test_literal():
     A, B = symbols('A,B')

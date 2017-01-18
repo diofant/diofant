@@ -6,6 +6,8 @@ from diofant.calculus.finite_diff import (apply_finite_diff,
 
 from diofant.abc import x, y, h
 
+__all__ = ()
+
 
 def test_apply_finite_diff():
     pytest.raises(ValueError, lambda: apply_finite_diff(1, [1, 2], [3], x))

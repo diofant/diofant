@@ -7,6 +7,8 @@ from diofant.simplify.sqrtdenest import _subsets as subsets, unrad
 
 from diofant.abc import x, y, a, b, c, d, t
 
+__all__ = ()
+
 r2, r3, r5, r6, r7, r10, r15, r29 = [sqrt(x) for x in [2, 3, 5, 6, 7, 10,
                                                        15, 29]]
 

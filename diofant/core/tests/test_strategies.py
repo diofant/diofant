@@ -4,6 +4,8 @@ from diofant.core import Basic, Integer, Add
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 def test_rm_id():
     rmzeros = rm_id(lambda x: x == 0)

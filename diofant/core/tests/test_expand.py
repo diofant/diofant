@@ -8,6 +8,8 @@ from diofant.utilities.randtest import verify_numerically
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_expand_no_log():
     assert (

@@ -4,6 +4,8 @@ from diofant.functions import exp, sign
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 def test_minimize():
     assert minimize(1) == (1, {})

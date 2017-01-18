@@ -5,6 +5,8 @@ from diofant import (Matrix, Tuple, symbols, sympify, Basic, Dict, S,
 from diofant.core.containers import tuple_wrapper
 from diofant.core.compatibility import is_sequence, iterable
 
+__all__ = ()
+
 
 def test_Tuple():
     t = (1, 2, 3, 4)

@@ -2,6 +2,8 @@ import pytest
 
 from diofant.external import import_module
 
+__all__ = ()
+
 theano = import_module('theano')
 if theano:
     import numpy as np

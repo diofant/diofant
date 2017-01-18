@@ -1,5 +1,7 @@
 from diofant import Symbol, Dummy, Rational, exp
 
+__all__ = ()
+
 
 def test_equal():
     b = Symbol("b")

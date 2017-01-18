@@ -3,6 +3,8 @@ from diofant.calculus.singularities import singularities
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 def test_singularities():
     assert singularities(x**2, x) == set()

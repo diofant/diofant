@@ -1,5 +1,7 @@
 from diofant.combinatorics import Subset
 
+__all__ = ()
+
 
 def test_subset():
     a = Subset(['c', 'd'], ['a', 'b', 'c', 'd'])

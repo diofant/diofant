@@ -4,6 +4,8 @@ from diofant import (abc, Add, cos, Derivative, diff, exp, Float, Function,
                      I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt,
                      Symbol, symbols, Wild, pi, meijerg)
 
+__all__ = ()
+
 
 def test_symbol():
     x = Symbol('x')

@@ -12,9 +12,11 @@ from diofant.polys.monomials import (
 )
 
 from diofant.polys.polyerrors import ExactQuotientFailed
+from diofant.core import Integer
 
 from diofant.abc import a, b, c, x, y, z
-from diofant.core import Integer
+
+__all__ = ()
 
 
 def test_monomials():

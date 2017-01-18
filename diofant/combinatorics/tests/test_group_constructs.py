@@ -1,6 +1,8 @@
 from diofant.combinatorics.group_constructs import DirectProduct
 from diofant.combinatorics.named_groups import CyclicGroup, DihedralGroup
 
+__all__ = ()
+
 
 def test_direct_product_n():
     C = CyclicGroup(4)

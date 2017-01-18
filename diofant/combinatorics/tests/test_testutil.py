@@ -8,6 +8,8 @@ from diofant.combinatorics.testutil import (_verify_bsgs, _cmp_perm_lists,
 from diofant.combinatorics.permutations import Permutation
 from diofant.combinatorics.perm_groups import PermutationGroup
 
+__all__ = ()
+
 
 def test_cmp_perm_lists():
     S = SymmetricGroup(4)

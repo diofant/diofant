@@ -3,6 +3,8 @@ import pytest
 from diofant import symbols, Matrix, Tuple
 from diofant.core.trace import Tr
 
+__all__ = ()
+
 
 def test_trace_new():
     a, b, c, d, Y = symbols('a b c d Y')

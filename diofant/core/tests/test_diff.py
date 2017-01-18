@@ -3,6 +3,8 @@ import pytest
 from diofant import (Symbol, Rational, cos, sin, tan, cot, exp, log, Function,
                      Derivative, Expr, symbols, pi, I, S)
 
+__all__ = ()
+
 
 def test_diff():
     x, y = symbols('x, y')

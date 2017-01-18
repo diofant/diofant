@@ -19,6 +19,8 @@ from diofant.polys.specialpolys import (
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_swinnerton_dyer_poly():
     pytest.raises(ValueError, lambda: swinnerton_dyer_poly(0, x))

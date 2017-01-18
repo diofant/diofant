@@ -7,6 +7,8 @@ from diofant.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
 
 from diofant.abc import a, b
 
+__all__ = ()
+
 y = Function('y')
 n, k = symbols('n,k', integer=True)
 C0, C1, C2 = symbols('C0,C1,C2')

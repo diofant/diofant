@@ -9,6 +9,8 @@ from diofant.functions.elementary.hyperbolic import ReciprocalHyperbolicFunction
 
 from diofant.abc import x, y
 
+__all__ = ()
+
 
 def test_sinh():
     k = Symbol('k', integer=True)

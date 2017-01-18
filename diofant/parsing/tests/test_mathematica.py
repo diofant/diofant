@@ -1,6 +1,8 @@
 from diofant.parsing.mathematica import mathematica
 from diofant import sympify
 
+__all__ = ()
+
 
 def test_mathematica():
     d = {

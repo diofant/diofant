@@ -10,6 +10,8 @@ from diofant.vector.vector import Vector
 from diofant.vector.orienters import (AxisOrienter, BodyOrienter,
                                       SpaceOrienter, QuaternionOrienter)
 
+__all__ = ()
+
 a, b, c, q = symbols('a b c q')
 q1, q2, q3, q4 = symbols('q1 q2 q3 q4')
 

@@ -2,6 +2,8 @@ from diofant.combinatorics.named_groups import (SymmetricGroup, CyclicGroup,
                                                 DihedralGroup, AlternatingGroup,
                                                 AbelianGroup)
 
+__all__ = ()
+
 
 def test_SymmetricGroup():
     G = SymmetricGroup(5)

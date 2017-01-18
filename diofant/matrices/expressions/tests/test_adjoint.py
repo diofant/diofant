@@ -3,6 +3,8 @@ from diofant.functions import adjoint, conjugate, transpose
 from diofant.matrices.expressions import MatrixSymbol, Adjoint, trace, Transpose
 from diofant.matrices import eye, Matrix
 
+__all__ = ()
+
 n, m, l, k, p = symbols('n m l k p', integer=True)
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', m, l)

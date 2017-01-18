@@ -4,6 +4,8 @@ from diofant.integrals.quadrature import (gauss_legendre, gauss_laguerre,
                                           gauss_chebyshev_t, gauss_chebyshev_u,
                                           gauss_jacobi)
 
+__all__ = ()
+
 
 def test_legendre():
     x, w = gauss_legendre(1, 17)

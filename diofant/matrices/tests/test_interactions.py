@@ -13,6 +13,8 @@ from diofant.matrices import (Matrix, MatrixSymbol, eye, Identity,
 from diofant.matrices.expressions import MatrixExpr, MatAdd
 from diofant.matrices.matrices import classof
 
+__all__ = ()
+
 SM = MatrixSymbol('X', 3, 3)
 MM = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 IM = ImmutableMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])

@@ -19,6 +19,8 @@ from diofant.external import import_module
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 # don't re-order this list
 classes = (Matrix, SparseMatrix, ImmutableMatrix, ImmutableSparseMatrix)
 

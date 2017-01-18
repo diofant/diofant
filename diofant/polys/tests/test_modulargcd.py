@@ -11,6 +11,8 @@ from diofant.polys.modulargcd import (
     _func_field_modgcd_m)
 from diofant import sqrt
 
+__all__ = ()
+
 
 def test_modgcd_univariate_integers():
     R, x = ring("x", ZZ)

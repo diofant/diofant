@@ -2,6 +2,8 @@ from diofant import (Symbol, sqrt, I, Integer, Rational, cos, sin, im, re,
                      Abs, exp, sinh, cosh, tan, tanh, conjugate, sign, cot,
                      coth, pi, symbols, expand_complex)
 
+__all__ = ()
+
 
 def test_complex():
     a = Symbol("a", extended_real=True)

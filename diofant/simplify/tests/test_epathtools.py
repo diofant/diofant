@@ -7,6 +7,8 @@ from diofant import sin, cos, E
 
 from diofant.abc import x, y, z, t
 
+__all__ = ()
+
 
 def test_epath_select():
     expr = [((x, 1, t), 2), ((3, y, 4), z)]

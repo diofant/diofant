@@ -8,6 +8,8 @@ from diofant.solvers.polysys import solve_poly_system
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_solve_poly_system():
     assert solve_poly_system([x - 1], x) == [{x: 1}]

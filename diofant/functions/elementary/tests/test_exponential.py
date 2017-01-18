@@ -8,6 +8,8 @@ from diofant.core.function import ArgumentIndexError
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_exp_values():
     k = Symbol('k', integer=True)

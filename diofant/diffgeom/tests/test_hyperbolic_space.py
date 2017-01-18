@@ -19,6 +19,8 @@ from diofant.diffgeom import (twoform_to_matrix,
 import diofant.diffgeom.rn
 from diofant.tensor.array import ImmutableDenseNDimArray
 
+__all__ = ()
+
 
 def test_H2():
     TP = diofant.diffgeom.TensorProduct

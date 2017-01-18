@@ -18,6 +18,8 @@ from diofant.utilities.randtest import verify_numerically as tn
 
 from diofant.abc import z, a, b, c
 
+__all__ = ()
+
 
 def test_branch_bug():
     assert hyperexpand(hyper((-Rational(1, 3), Rational(1, 2)), (Rational(2, 3), Rational(3, 2)), -z)) == \

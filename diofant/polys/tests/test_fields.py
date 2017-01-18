@@ -10,6 +10,8 @@ from diofant.polys.orderings import lex
 from diofant.core import symbols
 from diofant import sqrt, Rational
 
+__all__ = ()
+
 
 def test_FracField___init__():
     F1 = FracField("x,y", ZZ, lex)

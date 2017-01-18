@@ -28,9 +28,11 @@ import subprocess
 
 import pytest
 
-from diofant.abc import x, y, z
 from diofant.utilities.codegen import codegen, make_routine, get_code_generator
 
+from diofant.abc import x, y, z
+
+__all__ = ()
 
 # templates for the main program that will test the generated code.
 

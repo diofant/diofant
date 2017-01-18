@@ -2,6 +2,8 @@ import pytest
 
 from diofant.combinatorics.prufer import Prufer
 
+__all__ = ()
+
 
 def test_prufer():
     # number of nodes is optional

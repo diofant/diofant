@@ -12,6 +12,8 @@ from diofant.matrices import Matrix
 
 from diofant.abc import p, x
 
+__all__ = ()
+
 
 def BayesTest(A, B):
     assert P(A, B) == P(And(A, B)) / P(B)

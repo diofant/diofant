@@ -5,6 +5,8 @@ from diofant import (residue, Symbol, Function, sin, sqrt,
 
 from diofant.abc import x, z, a, s
 
+__all__ = ()
+
 
 def test_basic1():
     assert residue(1/x, x, 0) == 1

@@ -11,6 +11,8 @@ from diofant import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,
 
 from diofant.abc import x, y, n, m, t
 
+__all__ = ()
+
 
 def test_naturals():
     N = S.Naturals

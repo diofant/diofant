@@ -1,5 +1,7 @@
 from diofant import symbols, E, ln, Curve, line_integrate, sqrt
 
+__all__ = ()
+
 s, t, x, y, z = symbols('s,t,x,y,z')
 
 

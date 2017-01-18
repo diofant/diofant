@@ -9,6 +9,8 @@ from diofant.matrices.expressions.matmul import (factor_in_front, remove_ids,
                                                  MatMul, xxinv, any_zeros,
                                                  unpack, only_squares)
 
+__all__ = ()
+
 n, m, l, k = symbols('n m l k', integer=True)
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', m, l)

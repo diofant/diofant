@@ -7,6 +7,8 @@ from diofant.parsing.sympy_parser import (parse_expr, standard_transformations,
                                           function_exponentiation, split_symbols,
                                           split_symbols_custom, _token_splittable)
 
+__all__ = ()
+
 
 def test_implicit_multiplication():
     cases = {

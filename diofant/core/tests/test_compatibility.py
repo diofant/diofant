@@ -6,6 +6,8 @@ from diofant.core.singleton import S
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 def test_default_sort_key():
     def func(x):

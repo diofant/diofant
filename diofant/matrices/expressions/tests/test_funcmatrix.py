@@ -1,5 +1,7 @@
 from diofant import symbols, FunctionMatrix, MatrixExpr, Lambda, Matrix
 
+__all__ = ()
+
 
 def test_funcmatrix():
     i, j = symbols('i,j')

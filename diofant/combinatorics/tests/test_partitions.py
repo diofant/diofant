@@ -7,6 +7,8 @@ from diofant.combinatorics.partitions import (Partition, IntegerPartition,
 from diofant.sets.sets import Set
 from diofant.utilities.iterables import default_sort_key, partitions
 
+__all__ = ()
+
 
 def test_partition():
     from diofant.abc import x

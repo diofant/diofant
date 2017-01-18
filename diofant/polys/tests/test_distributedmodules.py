@@ -12,6 +12,8 @@ from diofant.polys.domains import QQ
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_sdm_monomial_mul():
     assert sdm_monomial_mul((1, 1, 0), (1, 3)) == (1, 2, 3)

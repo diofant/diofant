@@ -8,6 +8,8 @@ from diofant.polys.specialpolys import (
     dmp_fateman_poly_F_2,
     dmp_fateman_poly_F_3)
 
+__all__ = ()
+
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 
 

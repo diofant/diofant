@@ -4,6 +4,8 @@ from diofant.core import symbols, Dummy, Tuple, Rational
 from diofant.functions import hyper
 from diofant.simplify.hyperexpand import Hyper_Function
 
+__all__ = ()
+
 
 def test_attrs():
     a, b = symbols('a, b', cls=Dummy)

@@ -1,6 +1,8 @@
 from diofant.diffgeom import Manifold, Patch, CoordSystem, Point
 from diofant import symbols, Function
 
+__all__ = ()
+
 m = Manifold('m', 2)
 p = Patch('p', m)
 cs = CoordSystem('cs', p, ['a', 'b'])

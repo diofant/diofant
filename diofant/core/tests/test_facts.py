@@ -5,6 +5,8 @@ from diofant.core.facts import (deduce_alpha_implications, Prover,
                                 FactRules, FactKB, InconsistentAssumptions)
 from diofant.core.logic import And, Or, Not
 
+__all__ = ()
+
 T = True
 F = False
 U = None

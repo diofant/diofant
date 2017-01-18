@@ -13,6 +13,8 @@ from diofant.vector.functions import (curl, divergence, gradient,
                                       scalar_potential_difference)
 from diofant.vector.deloperator import Del
 
+__all__ = ()
+
 C = CoordSysCartesian('C')
 i, j, k = C.base_vectors()
 x, y, z = C.base_scalars()

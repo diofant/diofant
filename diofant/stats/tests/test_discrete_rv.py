@@ -5,6 +5,8 @@ from diofant.stats import E, variance, density
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 def test_PoissonDistribution():
     l = 3

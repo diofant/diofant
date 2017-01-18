@@ -2,6 +2,8 @@ from diofant import Symbol, Contains, S, Interval, FiniteSet
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 def test_contains_basic():
     assert Contains(2, S.Integers) is S.true

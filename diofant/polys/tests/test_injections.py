@@ -6,6 +6,8 @@ from diofant.polys.rings import vring
 from diofant.polys.fields import vfield
 from diofant.polys.domains import QQ
 
+__all__ = ()
+
 # make r1 with call-depth = 1
 
 

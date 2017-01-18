@@ -1,6 +1,8 @@
 from diofant import Expr, Symbol
 from diofant.core.decorators import call_highest_priority
 
+__all__ = ()
+
 
 class Higher(Expr):
 
