@@ -365,16 +365,6 @@ class Domain:
         from diofant.polys.domains.fractionfield import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
 
-    def old_poly_ring(self, *symbols, **kwargs):
-        """Returns a polynomial ring, i.e. `K[X]`. """
-        from diofant.polys.domains.old_polynomialring import PolynomialRing
-        return PolynomialRing(self, *symbols, **kwargs)
-
-    def old_frac_field(self, *symbols, **kwargs):
-        """Returns a fraction field, i.e. `K(X)`. """
-        from diofant.polys.domains.old_fractionfield import FractionField
-        return FractionField(self, *symbols, **kwargs)
-
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `K(\alpha, \ldots)`. """
         raise DomainError("can't create algebraic field over %s" % self)

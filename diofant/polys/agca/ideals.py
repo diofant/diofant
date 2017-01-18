@@ -13,7 +13,7 @@ class Ideal:
 
     >>> from diofant import QQ
     >>> from diofant.abc import x
-    >>> QQ.old_poly_ring(x).ideal(x+1)
+    >>> QQ.poly_ring(x).ideal(x+1)
     <x + 1>
 
     Attributes
@@ -119,9 +119,9 @@ class Ideal:
 
         >>> from diofant.abc import x
         >>> from diofant import QQ
-        >>> QQ.old_poly_ring(x).ideal(x+1, x-1).contains(3)
+        >>> QQ.poly_ring(x).ideal(x+1, x-1).contains(3)
         True
-        >>> QQ.old_poly_ring(x).ideal(x**2, x**3).contains(x)
+        >>> QQ.poly_ring(x).ideal(x**2, x**3).contains(x)
         False
         """
         return self._contains_elem(self.ring.convert(elem))
@@ -134,12 +134,12 @@ class Ideal:
 
         >>> from diofant.abc import x
         >>> from diofant import QQ
-        >>> I = QQ.old_poly_ring(x).ideal(x+1)
+        >>> I = QQ.poly_ring(x).ideal(x+1)
         >>> I.subset([x**2 - 1, x**2 + 2*x + 1])
         True
         >>> I.subset([x**2 + 1, x + 1])
         False
-        >>> I.subset(QQ.old_poly_ring(x).ideal(x**2 - 1))
+        >>> I.subset(QQ.poly_ring(x).ideal(x**2 - 1))
         True
         """
         if isinstance(other, Ideal):
@@ -155,7 +155,7 @@ class Ideal:
 
         >>> from diofant.abc import x, y
         >>> from diofant import QQ
-        >>> R = QQ.old_poly_ring(x, y)
+        >>> R = QQ.poly_ring(x, y)
         >>> R.ideal(x*y).quotient(R.ideal(x))
         <y>
         """
@@ -168,7 +168,7 @@ class Ideal:
 
         >>> from diofant.abc import x, y
         >>> from diofant import QQ
-        >>> R = QQ.old_poly_ring(x, y)
+        >>> R = QQ.poly_ring(x, y)
         >>> R.ideal(x).intersect(R.ideal(y))
         <x*y>
         """
@@ -191,7 +191,7 @@ class Ideal:
 
         >>> from diofant.abc import x
         >>> from diofant import QQ
-        >>> QQ.old_poly_ring(x).ideal(x**2 - 1).union(QQ.old_poly_ring(x).ideal((x+1)**2)) == QQ.old_poly_ring(x).ideal(x+1)
+        >>> QQ.poly_ring(x).ideal(x**2 - 1).union(QQ.poly_ring(x).ideal((x+1)**2)) == QQ.poly_ring(x).ideal(x+1)
         True
         """
         self._check_ideal(J)
@@ -206,7 +206,7 @@ class Ideal:
 
         >>> from diofant.abc import x, y
         >>> from diofant import QQ
-        >>> QQ.old_poly_ring(x, y).ideal(x).product(QQ.old_poly_ring(x, y).ideal(y))
+        >>> QQ.poly_ring(x, y).ideal(x).product(QQ.poly_ring(x, y).ideal(y))
         <x*y>
         """
         self._check_ideal(J)
@@ -304,7 +304,7 @@ class ModuleImplementedIdeal(Ideal):
         >>> from diofant import QQ
         >>> from diofant.abc import x, y
 
-        >>> list(QQ.old_poly_ring(x, y).ideal(x, y, x**2 + y).gens)
+        >>> list(QQ.poly_ring(x, y).ideal(x, y, x**2 + y).gens)
         [x, y, x**2 + y]
         """
         return (x[0] for x in self._module.gens)
@@ -315,9 +315,9 @@ class ModuleImplementedIdeal(Ideal):
 
         >>> from diofant.abc import x
         >>> from diofant import QQ
-        >>> QQ.old_poly_ring(x).ideal(x).is_zero()
+        >>> QQ.poly_ring(x).ideal(x).is_zero()
         False
-        >>> QQ.old_poly_ring(x).ideal().is_zero()
+        >>> QQ.poly_ring(x).ideal().is_zero()
         True
         """
         return self._module.is_zero()
@@ -328,11 +328,11 @@ class ModuleImplementedIdeal(Ideal):
 
         >>> from diofant.abc import x
         >>> from diofant import QQ, ilex
-        >>> QQ.old_poly_ring(x).ideal(x).is_whole_ring()
+        >>> QQ.poly_ring(x).ideal(x).is_whole_ring()
         False
-        >>> QQ.old_poly_ring(x).ideal(3).is_whole_ring()
+        >>> QQ.poly_ring(x).ideal(3).is_whole_ring()
         True
-        >>> QQ.old_poly_ring(x, order=ilex).ideal(2 + x).is_whole_ring()
+        >>> QQ.poly_ring(x, order=ilex).ideal(2 + x).is_whole_ring()
         True
         """
         return self._module.is_full_module()
@@ -355,7 +355,7 @@ class ModuleImplementedIdeal(Ideal):
         >>> from diofant.abc import x
         >>> from diofant import QQ
 
-        >>> I = QQ.old_poly_ring(x).ideal(x**2 + 1, x)
+        >>> I = QQ.poly_ring(x).ideal(x**2 + 1, x)
         >>> I.in_terms_of_generators(1)
         [1, -x]
         """

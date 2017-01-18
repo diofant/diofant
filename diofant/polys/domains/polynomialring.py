@@ -139,3 +139,88 @@ class PolynomialRing(Ring, CompositeDomain):
     def factorial(self, a):
         """Returns factorial of `a`. """
         return self.dtype(self.domain.factorial(a))
+
+    def free_module(self, rank):
+        """
+        Generate a free module of rank ``rank`` over ``self``.
+
+        >>> from diofant.abc import x
+        >>> from diofant import QQ
+        >>> QQ.poly_ring(x).free_module(2)
+        QQ[x]**2
+        """
+        from diofant.polys.agca.modules import FreeModulePolyRing
+        return FreeModulePolyRing(self, rank)
+
+    def _vector_to_sdm(self, v, order):
+        """
+        Turn an iterable into a sparse distributed module.
+
+        Note that the vector is multiplied by a unit first to make all entries
+        polynomials.
+
+        >>> from diofant import ilex, QQ
+        >>> from diofant.abc import x, y
+        >>> from diofant.printing import pprint
+        >>> R = QQ.poly_ring(x, y, order=ilex)
+        >>> f = R.convert((x + 2*y) / (1 + x))
+        >>> g = R.convert(x * y)
+        >>> pprint(R._vector_to_sdm([f, g], ilex))
+        [((0, 0, 1), 2), ((0, 1, 0), 1), ((1, 1, 1), 1), ((1,
+          2, 1), 1)]
+        """
+        # NOTE this is quite inefficient...
+        u = self.one.numer()
+        for x in v:
+            u *= x.denom()
+        return _vector_to_sdm_helper([x.numer()*u/x.denom() for x in v], order)
+
+    def _vector_to_sdm(self, v, order):
+        """
+        >>> from diofant import lex, QQ
+        >>> from diofant.abc import x, y
+        >>> from diofant.printing import pprint
+        >>> R = QQ.poly_ring(x, y)
+        >>> f = R.convert(x + 2*y)
+        >>> g = R.convert(x * y)
+        >>> pprint(R._vector_to_sdm([f, g], lex))
+        [((1, 1, 1), 1), ((0, 1, 0), 1), ((0, 0, 1), 2)]
+        """
+        return _vector_to_sdm_helper(v, order)
+
+    def _sdm_to_dics(self, s, n):
+        """Helper for _sdm_to_vector."""
+        from diofant.polys.distributedmodules import sdm_to_dict
+        dic = sdm_to_dict(s)
+        res = [{} for _ in range(n)]
+        for k, v in dic.items():
+            res[k[0]][k[1:]] = v
+        return res
+
+    def _sdm_to_vector(self, s, n):
+        """
+        For internal use by the modules class.
+
+        Convert a sparse distributed module into a list of length ``n``.
+
+        >>> from diofant import QQ, ilex
+        >>> from diofant.abc import x, y
+        >>> R = QQ.poly_ring(x, y, order=ilex)
+        >>> L = [((1, 1, 1), QQ(1)), ((0, 1, 0), QQ(1)), ((0, 0, 1), QQ(2))]
+        >>> R._sdm_to_vector(L, 2)
+        [x + 2*y, x*y]
+        """
+        dics = self._sdm_to_dics(s, n)
+        # NOTE this works for global and local rings!
+        return [self(x) for x in dics]
+
+
+
+def _vector_to_sdm_helper(v, order):
+    """Helper method for common code in Global and Local poly rings."""
+    from diofant.polys.distributedmodules import sdm_from_dict
+    d = {}
+    for i, e in enumerate(v):
+        for key, value in e.to_dict().items():
+            d[(i,) + key] = value
+    return sdm_from_dict(d, order)

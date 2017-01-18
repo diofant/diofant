@@ -7,7 +7,7 @@ from diofant.abc import x, y, z
 
 
 def test_ideal_operations():
-    R = QQ.old_poly_ring(x, y)
+    R = QQ.poly_ring(x, y)
     I = R.ideal(x)
     J = R.ideal(y)
     S = R.ideal(x*y)
@@ -49,8 +49,8 @@ def test_ideal_operations():
 
 
 def test_exceptions():
-    I = QQ.old_poly_ring(x).ideal(x)
-    J = QQ.old_poly_ring(y).ideal(1)
+    I = QQ.poly_ring(x).ideal(x)
+    J = QQ.poly_ring(y).ideal(1)
     pytest.raises(ValueError, lambda: I.union(x))
     pytest.raises(ValueError, lambda: I + J)
     pytest.raises(ValueError, lambda: I * J)
@@ -60,7 +60,7 @@ def test_exceptions():
 
 
 def test_nontriv_global():
-    R = QQ.old_poly_ring(x, y, z)
+    R = QQ.poly_ring(x, y, z)
 
     def contains(I, f):
         return R.ideal(*I).contains(f)
@@ -90,7 +90,7 @@ def test_nontriv_global():
 
 
 def test_nontriv_local():
-    R = QQ.old_poly_ring(x, y, z, order=ilex)
+    R = QQ.poly_ring(x, y, z, order=ilex)
 
     def contains(I, f):
         return R.ideal(*I).contains(f)
@@ -106,26 +106,26 @@ def test_nontriv_local():
 
 
 def test_intersection():
-    R = QQ.old_poly_ring(x, y, z)
+    R = QQ.poly_ring(x, y, z)
     # SCA, example 1.8.11
     assert R.ideal(x, y).intersect(R.ideal(y**2, z)) == R.ideal(y**2, y*z, x*z)
 
     assert R.ideal(x, y).intersect(R.ideal()).is_zero()
 
-    R = QQ.old_poly_ring(x, y, z, order="ilex")
+    R = QQ.poly_ring(x, y, z, order="ilex")
     assert R.ideal(x, y).intersect(R.ideal(y**2 + y**2*z, z + z*x**3*y)) == \
         R.ideal(y**2, y*z, x*z)
 
 
 def test_quotient():
     # SCA, example 1.8.13
-    R = QQ.old_poly_ring(x, y, z)
+    R = QQ.poly_ring(x, y, z)
     assert R.ideal(x, y).quotient(R.ideal(y**2, z)) == R.ideal(x, y)
 
 
 def test_reduction():
     from diofant.polys.distributedmodules import sdm_nf_buchberger_reduced
-    R = QQ.old_poly_ring(x, y)
+    R = QQ.poly_ring(x, y)
     I = R.ideal(x**5, y)
     e = R.convert(x**3 + y**2)
     assert I.reduce_element(e) == e

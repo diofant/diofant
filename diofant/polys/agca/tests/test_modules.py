@@ -10,9 +10,9 @@ from diofant.abc import x, y, z
 
 
 def test_FreeModuleElement():
-    M = QQ.old_poly_ring(x).free_module(3)
+    M = QQ.poly_ring(x).free_module(3)
     e = M.convert([1, x, x**2])
-    f = [QQ.old_poly_ring(x).convert(1), QQ.old_poly_ring(x).convert(x), QQ.old_poly_ring(x).convert(x**2)]
+    f = [QQ.poly_ring(x).convert(1), QQ.poly_ring(x).convert(x), QQ.poly_ring(x).convert(x**2)]
     assert list(e) == f
     assert f[0] == e[0]
     assert f[1] == e[1]
@@ -26,17 +26,17 @@ def test_FreeModuleElement():
     assert e - g == M.convert([1 - x, x, x**2])
     assert e != g
 
-    assert M.convert([x, x, x]) / QQ.old_poly_ring(x).convert(x) == [1, 1, 1]
-    R = QQ.old_poly_ring(x, order="ilex")
+    assert M.convert([x, x, x]) / QQ.poly_ring(x).convert(x) == [1, 1, 1]
+    R = QQ.poly_ring(x, order="ilex")
     assert R.free_module(1).convert([x]) / R.convert(x) == [1]
 
 
 def test_FreeModule():
-    M1 = FreeModule(QQ.old_poly_ring(x), 2)
-    assert M1 == FreeModule(QQ.old_poly_ring(x), 2)
-    assert M1 != FreeModule(QQ.old_poly_ring(y), 2)
-    assert M1 != FreeModule(QQ.old_poly_ring(x), 3)
-    M2 = FreeModule(QQ.old_poly_ring(x, order="ilex"), 2)
+    M1 = FreeModule(QQ.poly_ring(x), 2)
+    assert M1 == FreeModule(QQ.poly_ring(x), 2)
+    assert M1 != FreeModule(QQ.poly_ring(y), 2)
+    assert M1 != FreeModule(QQ.poly_ring(x), 3)
+    M2 = FreeModule(QQ.poly_ring(x, order="ilex"), 2)
 
     assert [x, 1] in M1
     assert [x] not in M1
@@ -44,7 +44,7 @@ def test_FreeModule():
     assert [1/(x + 1), 2] not in M1
 
     e = M1.convert([x, x**2 + 1])
-    X = QQ.old_poly_ring(x).convert(x)
+    X = QQ.poly_ring(x).convert(x)
     assert e == [X, X**2 + 1]
     assert e == [x, x**2 + 1]
     assert 2*e == [2*x, 2*x**2 + 2]
@@ -61,7 +61,7 @@ def test_FreeModule():
     assert [1/(x + 1), 2] in M2
 
     e = M2.convert([x, x**2 + 1])
-    X = QQ.old_poly_ring(x, order="ilex").convert(x)
+    X = QQ.poly_ring(x, order="ilex").convert(x)
     assert e == [X, X**2 + 1]
     assert e == [x, x**2 + 1]
     assert 2*e == [2*x, 2*x**2 + 2]
@@ -73,15 +73,15 @@ def test_FreeModule():
     assert X*e == [x**2, x**3 + x]
     assert e*X == [x**2, x**3 + x]
 
-    M3 = FreeModule(QQ.old_poly_ring(x, y), 2)
+    M3 = FreeModule(QQ.poly_ring(x, y), 2)
     assert M3.convert(e) == M3.convert([x, x**2 + 1])
 
     assert not M3.is_submodule(0)
     assert not M3.is_zero()
 
-    pytest.raises(NotImplementedError, lambda: ZZ.old_poly_ring(x).free_module(2))
+    pytest.raises(NotImplementedError, lambda: ZZ.poly_ring(x).free_module(2))
     pytest.raises(NotImplementedError, lambda: FreeModulePolyRing(ZZ, 2))
-    pytest.raises(CoercionFailed, lambda: M1.convert(QQ.old_poly_ring(x).free_module(3)
+    pytest.raises(CoercionFailed, lambda: M1.convert(QQ.poly_ring(x).free_module(3)
            .convert([1, 2, 3])))
     pytest.raises(CoercionFailed, lambda: M3.convert(1))
 
@@ -99,7 +99,7 @@ def test_ModuleOrder():
 
 
 def test_SubModulePolyRing_global():
-    R = QQ.old_poly_ring(x, y)
+    R = QQ.poly_ring(x, y)
     F = R.free_module(3)
     Fd = F.submodule([1, 0, 0], [1, 2, 0], [1, 2, 3])
     M = F.submodule([x**2 + y**2, 1, 0], [x, y, 1])
@@ -139,7 +139,7 @@ def test_SubModulePolyRing_global():
 
 
 def test_SubModulePolyRing_local():
-    R = QQ.old_poly_ring(x, y, order=ilex)
+    R = QQ.poly_ring(x, y, order=ilex)
     F = R.free_module(3)
     Fd = F.submodule([1 + x, 0, 0], [1 + y, 2 + 2*y, 0], [1, 2, 3])
     M = F.submodule([x**2 + y**2, 1, 0], [x, y, 1])
@@ -170,7 +170,7 @@ def test_SubModulePolyRing_local():
 
 
 def test_SubModulePolyRing_nontriv_global():
-    R = QQ.old_poly_ring(x, y, z)
+    R = QQ.poly_ring(x, y, z)
     F = R.free_module(1)
 
     def contains(I, f):
@@ -201,7 +201,7 @@ def test_SubModulePolyRing_nontriv_global():
 
 
 def test_SubModulePolyRing_nontriv_local():
-    R = QQ.old_poly_ring(x, y, z, order=ilex)
+    R = QQ.poly_ring(x, y, z, order=ilex)
     F = R.free_module(1)
 
     def contains(I, f):
@@ -218,7 +218,7 @@ def test_SubModulePolyRing_nontriv_local():
 
 
 def test_syzygy():
-    R = QQ.old_poly_ring(x, y, z)
+    R = QQ.poly_ring(x, y, z)
     M = R.free_module(1).submodule([x*y], [y*z], [x*z])
     S = R.free_module(3).submodule([0, x, -y], [z, -x, 0])
     assert M.syzygy_module() == S
@@ -230,14 +230,14 @@ def test_syzygy():
     F = R.free_module(3)
     assert F.submodule(*F.basis()).syzygy_module() == F.submodule()
 
-    R2 = QQ.old_poly_ring(x, y, z) / [x*y*z]
+    R2 = QQ.poly_ring(x, y, z) / [x*y*z]
     M3 = R2.free_module(1).submodule([x*y], [y*z], [x*z])
     S3 = R2.free_module(3).submodule([z, 0, 0], [0, x, 0], [0, 0, y])
     assert M3.syzygy_module() == S3
 
 
 def test_in_terms_of_generators():
-    R = QQ.old_poly_ring(x, order="ilex")
+    R = QQ.poly_ring(x, order="ilex")
     M = R.free_module(2).submodule([2*x, 0], [1, 2])
     assert M.in_terms_of_generators(
         [x, x]) == [R.convert(Rational(1, 4)), R.convert(x/2)]
@@ -247,7 +247,7 @@ def test_in_terms_of_generators():
     SM = M.submodule([1, x])
     assert SM.in_terms_of_generators([2, 0]) == [R.convert(-2/(x - 1))]
 
-    R = QQ.old_poly_ring(x, y) / [x**2 - y**2]
+    R = QQ.poly_ring(x, y) / [x**2 - y**2]
     M = R.free_module(2)
     SM = M.submodule([x, 0], [0, y])
     assert SM.in_terms_of_generators(
@@ -255,7 +255,7 @@ def test_in_terms_of_generators():
 
 
 def test_QuotientModuleElement():
-    R = QQ.old_poly_ring(x)
+    R = QQ.poly_ring(x)
     F = R.free_module(3)
     N = F.submodule([1, x, x**2])
     M = F/N
@@ -290,7 +290,7 @@ def test_QuotientModuleElement():
 
 
 def test_QuotientModule():
-    R = QQ.old_poly_ring(x)
+    R = QQ.poly_ring(x)
     F = R.free_module(3)
     N = F.submodule([1, x, x**2])
     M = F/N
@@ -319,10 +319,10 @@ def test_QuotientModule():
 
 
 def test_ModulesQuotientRing():
-    R = QQ.old_poly_ring(x, y, order=(("lex", x), ("ilex", y))) / [x**2 + 1]
+    R = QQ.poly_ring(x, y, order=lambda q: "lex" if q == x else "ilex") / [x**2 + 1]
     M1 = R.free_module(2)
     assert M1 == R.free_module(2)
-    assert M1 != QQ.old_poly_ring(x).free_module(2)
+    assert M1 != QQ.poly_ring(x).free_module(2)
     assert M1 != R.free_module(3)
 
     assert [x, 1] in M1
@@ -362,7 +362,7 @@ def test_ModulesQuotientRing():
 
 
 def test_module_mul():
-    R = QQ.old_poly_ring(x)
+    R = QQ.poly_ring(x)
     M = R.free_module(2)
     S1 = M.submodule([x, 0], [0, x])
     S2 = M.submodule([x**2, 0], [0, x**2])
@@ -374,7 +374,7 @@ def test_module_mul():
 
 def test_intersection():
     # SCA, example 2.8.5
-    F = QQ.old_poly_ring(x, y).free_module(2)
+    F = QQ.poly_ring(x, y).free_module(2)
     M1 = F.submodule([x, y], [y, 1])
     M2 = F.submodule([0, y - 1], [x, 1], [y, x])
     I = F.submodule([x, y], [y**2 - y, y - 1], [x*y + y, x + 1])
@@ -389,10 +389,10 @@ def test_intersection():
 
 def test_quotient():
     # SCA, example 2.8.6
-    R = QQ.old_poly_ring(x, y, z)
+    R = QQ.poly_ring(x, y, z)
     F = R.free_module(2)
     assert F.submodule([x*y, x*z], [y*z, x*y]).module_quotient(
-        F.submodule([y, z], [z, y])) == QQ.old_poly_ring(x, y, z).ideal(x**2*y**2 - x*y*z**2)
+        F.submodule([y, z], [z, y])) == QQ.poly_ring(x, y, z).ideal(x**2*y**2 - x*y*z**2)
     assert F.submodule([x, y]).module_quotient(F.submodule()).is_whole_ring()
 
     M = F.submodule([x**2, x**2], [y**2, y**2])
@@ -404,7 +404,7 @@ def test_quotient():
 
 
 def test_groebner_extendend():
-    M = QQ.old_poly_ring(x, y, z).free_module(3).submodule([x + 1, y, 1], [x*y, z, z**2])
+    M = QQ.poly_ring(x, y, z).free_module(3).submodule([x + 1, y, 1], [x*y, z, z**2])
     G, R = M._groebner_vec(extended=True)
     for i, g in enumerate(G):
         assert g == sum(c*gen for c, gen in zip(R[i], M.gens))

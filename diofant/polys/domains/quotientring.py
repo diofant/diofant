@@ -95,16 +95,16 @@ class QuotientRing(Ring):
 
     >>> from diofant.abc import x
     >>> from diofant import QQ
-    >>> I = QQ.old_poly_ring(x).ideal(x**3 + 1)
-    >>> QQ.old_poly_ring(x).quotient_ring(I)
+    >>> I = QQ.poly_ring(x).ideal(x**3 + 1)
+    >>> QQ.poly_ring(x).quotient_ring(I)
     QQ[x]/<x**3 + 1>
 
     Shorter versions are possible:
 
-    >>> QQ.old_poly_ring(x)/I
+    >>> QQ.poly_ring(x)/I
     QQ[x]/<x**3 + 1>
 
-    >>> QQ.old_poly_ring(x)/[x**3 + 1]
+    >>> QQ.poly_ring(x)/[x**3 + 1]
     QQ[x]/<x**3 + 1>
 
     Attributes:
@@ -151,7 +151,7 @@ class QuotientRing(Ring):
     from_ZZ_gmpy = from_ZZ_python
     from_QQ_gmpy = from_ZZ_python
     from_RealField = from_ZZ_python
-    from_GlobalPolynomialRing = from_ZZ_python
+    from_PolynomialRing = from_ZZ_python
     from_FractionField = from_ZZ_python
 
     def from_diofant(self, a):
@@ -191,7 +191,7 @@ class QuotientRing(Ring):
 
         >>> from diofant.abc import x
         >>> from diofant import QQ
-        >>> (QQ.old_poly_ring(x)/[x**2 + 1]).free_module(2)
+        >>> (QQ.poly_ring(x)/[x**2 + 1]).free_module(2)
         (QQ[x]/<x**2 + 1>)**2
         """
         return FreeModuleQuotientRing(self, rank)
