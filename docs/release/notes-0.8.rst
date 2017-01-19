@@ -131,6 +131,7 @@ Issues closed
 * `sympy/sympy#8649 <https://github.com/sympy/sympy/issues/8649>`_ If t is transcendental, t**n is determined (wrongly) to be non-integer
 * `#74 <https://github.com/diofant/diofant/issues/74>`_ Trivial limit's of sign fails
 * `#31 <https://github.com/diofant/diofant/issues/31>`_ Wrong automatical cancelation of expr with O terms
+* `sympy/sympy#5641 <https://github.com/sympy/sympy/issues/5641>`_ Compatibility with py.test
 * `sympy/sympy#10258 <https://github.com/sympy/sympy/issues/10258>`_ Relational involving Piecewise evaluates incorrectly as True
 * `sympy/sympy#10205 <https://github.com/sympy/sympy/issues/10205>`_ 10203: handle Eq and Ne with _solve_inequality
 * `sympy/sympy#10268 <https://github.com/sympy/sympy/issues/10268>`_ solving inequality involving exp fails for large values
