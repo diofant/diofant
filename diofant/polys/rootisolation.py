@@ -1745,9 +1745,6 @@ class RealInterval:
         """Return tuple representation of real isolating interval. """
         return self.a, self.b
 
-    def __repr__(self):
-        return "(%s, %s)" % (self.a, self.b)
-
     def is_disjoint(self, other):
         """Return ``True`` if two isolation intervals are disjoint. """
         return (self.b <= other.a or other.b <= self.a)
@@ -1851,9 +1848,6 @@ class ComplexInterval:
     def as_tuple(self):
         """Return tuple representation of complex isolating interval. """
         return (self.ax, self.ay), (self.bx, self.by)
-
-    def __repr__(self):
-        return "(%s, %s) x (%s, %s)" % (self.ax, self.bx, self.ay, self.by)
 
     def conjugate(self):
         """This complex interval really is located in lower half-plane. """

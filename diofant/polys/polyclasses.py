@@ -120,10 +120,6 @@ class DMP(CantSympify):
         self.domain = dom
         self.ring = ring
 
-    def __repr__(self):
-        return "%s(%s, %s, %s)" % (self.__class__.__name__, self.rep,
-                                   self.domain, self.ring)
-
     def __hash__(self):
         return hash((self.__class__.__name__, self.to_tuple(),
                      self.lev, self.domain, self.ring))
@@ -1074,10 +1070,6 @@ class DMF(CantSympify):
 
         return num, den, lev
 
-    def __repr__(self):
-        return "%s((%s, %s), %s, %s)" % (self.__class__.__name__, self.num,
-                                         self.den, self.domain, self.ring)
-
     def __hash__(self):
         return hash((self.__class__.__name__, dmp_to_tuple(self.num, self.lev),
                      dmp_to_tuple(self.den, self.lev), self.lev, self.domain,
@@ -1470,10 +1462,6 @@ class ANP(CantSympify):
                 self.mod = dup_strip(mod)
 
         self.domain = dom
-
-    def __repr__(self):
-        return "%s(%s, %s, %s)" % (self.__class__.__name__, self.rep,
-                                   self.mod, self.domain)
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.to_tuple(),

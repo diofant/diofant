@@ -50,9 +50,6 @@ class Domain:
     def __str__(self):
         return self.rep
 
-    def __repr__(self):
-        return str(self)
-
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
 

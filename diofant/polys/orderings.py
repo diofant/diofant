@@ -2,6 +2,7 @@
 
 __all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
 
+from diofant.core.containers import Tuple
 from diofant.core.symbol import Symbol
 from diofant.core.compatibility import iterable
 
@@ -12,12 +13,6 @@ class MonomialOrder:
     alias = None
     is_global = None
     is_default = False
-
-    def __repr__(self):
-        if self.alias:
-            return str(self)
-        else:
-            return self.__class__.__name__ + "()"
 
     def __str__(self):
         return self.alias
@@ -115,12 +110,7 @@ class ProductOrder(MonomialOrder):
     def __call__(self, monomial):
         return tuple(O(lamda(monomial)) for (O, lamda) in self.args)
 
-    def __repr__(self):
-        from diofant.core import Tuple
-        return self.__class__.__name__ + repr(Tuple(*[x[0] for x in self.args]))
-
     def __str__(self):
-        from diofant.core import Tuple
         return self.__class__.__name__ + str(Tuple(*[x[0] for x in self.args]))
 
     def __eq__(self, other):
