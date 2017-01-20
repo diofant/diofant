@@ -106,7 +106,7 @@ class MPContext(PythonMPContext):
         raise ValueError("expected a real number, got %s" % tol)
 
     def _convert_fallback(self, x, strings):
-        raise TypeError("cannot create mpf from " + repr(x))
+        raise TypeError("cannot create mpf from " + str(x))
 
     @property
     def _repr_digits(self):

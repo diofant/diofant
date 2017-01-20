@@ -25,9 +25,6 @@ class ModularInteger(DomainElement):
     def __hash__(self):
         return hash((self.val, self.mod))
 
-    def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, self.val)
-
     def __str__(self):
         return "%s mod %s" % (self.val, self.mod)
 

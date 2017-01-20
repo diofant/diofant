@@ -23,7 +23,7 @@ There are three types of functions implemented in Diofant:
     >>> from diofant.abc import x
     >>> f(x)
     f(x)
-    >>> print(diofant.srepr(f(x).func))
+    >>> print(repr(f(x).func))
     Function('f')
     >>> f(x).args
     (x,)
@@ -174,6 +174,12 @@ class FunctionClass(ManagedProperties):
         return FiniteSet(*self._nargs) if self._nargs else S.Naturals0
 
     def __repr__(self):
+        if issubclass(self, AppliedUndef):
+            return 'Function(%r)' % (self.__name__)
+        else:
+            return self.__name__
+
+    def __str__(self):
         return self.__name__
 
 

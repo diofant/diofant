@@ -5,7 +5,7 @@ import mpmath
 import pytest
 
 from diofant import (Symbol, exp, Integer, Float, sin, cos, Poly, Lambda,
-                     Function, I, S, sqrt, srepr, Rational, Tuple, Matrix,
+                     Function, I, S, sqrt, Rational, Tuple, Matrix,
                      Interval, Add, Mul, Pow, Or, true, false, Abs, pi, Xor)
 from diofant.core.sympify import sympify, _sympify, SympifyError
 from diofant.core.decorators import _sympifyit
@@ -398,7 +398,7 @@ def test_S_sympify():
 
 
 def test_sympyissue_4788():
-    assert srepr(sympify(1.0 + 0J)) == srepr(Float(1.0)) == srepr(Float(1.0))
+    assert repr(sympify(1.0 + 0J)) == repr(Float(1.0)) == repr(Float(1.0))
 
 
 def test_sympyissue_4798_None():

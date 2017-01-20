@@ -4,7 +4,6 @@ from diofant import (adjoint, And, Basic, conjugate, diff, expand, Eq, Function,
                      I, Integral, integrate, Interval, lambdify, log, Max, Min,
                      oo, Or, pi, Piecewise, piecewise_fold, Rational, solve,
                      symbols, transpose, cos, exp, Abs, Not, Symbol, sympify, Gt)
-from diofant.printing import srepr
 
 x, y = symbols('x y')
 z = symbols('z', nonzero=True)
@@ -492,9 +491,9 @@ def test_as_expr_set_pairs():
          (0, Interval(-oo, 0, True, True))]
 
 
-def test_S_srepr_is_identity():
+def test_S_repr_is_identity():
     p = Piecewise((10, Eq(x, 0)), (12, True))
-    q = sympify(srepr(p))
+    q = sympify(repr(p))
     assert p == q
 
 

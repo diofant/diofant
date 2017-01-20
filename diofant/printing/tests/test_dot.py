@@ -1,6 +1,6 @@
 from diofant.printing.dot import (styleof, attrprint, dotnode,
                                   dotedges, dotprint)
-from diofant import Symbol, Integer, Basic, Expr, srepr
+from diofant import Symbol, Integer, Basic, Expr
 from diofant.abc import x
 
 
@@ -70,6 +70,6 @@ def test_Matrix_and_non_basics():
 
 
 def test_labelfunc():
-    text = dotprint(x + 2, labelfunc=srepr)
+    text = dotprint(x + 2, labelfunc=repr)
     assert "Symbol('x')" in text
     assert "Integer(2)" in text

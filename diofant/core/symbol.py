@@ -78,7 +78,7 @@ class BaseSymbol(AtomicExpr, Boolean):
         obj.name = name
 
         # TODO: Issue sympy/sympy#8873: Forcing the commutative assumption here means
-        # later code such as ``srepr()`` cannot tell whether the user
+        # later code such as ``repr()`` cannot tell whether the user
         # specified ``commutative=True`` or omitted it.  To workaround this,
         # we keep a copy of the assumptions dict, then create the StdFactKB,
         # and finally overwrite its ``._generator`` with the dict copy.  This

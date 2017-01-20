@@ -22,9 +22,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
             else:
                 self.ex = ex.ex
 
-        def __repr__(self):
-            return 'EX(%s)' % repr(self.ex)
-
         def __str__(self):
             return 'EX(%s)' % str(self.ex)
 

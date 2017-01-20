@@ -4,25 +4,31 @@ from diofant import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
                      S, WildFunction, ImmutableMatrix, sin, true, false, ones,
                      Symbol, Dummy, Wild, AlgebraicNumber, sqrt, root)
 from diofant.geometry import Point, Ellipse
-from diofant.printing import srepr
+from diofant.printing.repr import srepr
 from diofant.polys import ring, field, ZZ, QQ, lex, grlex
 
 x, y = symbols('x,y')
 
-# eval(srepr(expr)) == expr has to succeed in the right environment. The right
+# eval(repr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from diofant import *" for most cases.
 ENV = {}
-exec("from diofant import *", ENV)
+imports = """
+from diofant import *
+from diofant.polys.rings import PolyRing
+from diofant.polys.fields import FracField
+from diofant.polys.orderings import LexOrder, GradedLexOrder
+"""
+exec(imports, ENV)
 
 
 def sT(expr, string):
     """
-    sT := sreprTest
+    sT := reprTest
 
-    Tests that srepr delivers the expected string and that
-    the condition eval(srepr(expr))==expr holds.
+    Tests that repr delivers the expected string and that
+    the condition eval(repr(expr))==expr holds.
     """
-    assert srepr(expr) == string
+    assert repr(expr) == string
     assert eval(string, ENV) == expr
 
 
@@ -30,12 +36,13 @@ def test_printmethod():
     class R(Abs):
         def _diofantrepr(self, printer):
             return "foo(%s)" % printer._print(self.args[0])
-    assert srepr(R(x)) == "foo(Symbol('x'))"
+    assert repr(R(x)) == "foo(Symbol('x'))"
 
 
 def test_Add():
     sT(x + y, "Add(Symbol('x'), Symbol('y'))")
-    assert srepr(x**2 + 1, order='lex') == "Add(Pow(Symbol('x'), Integer(2)), Integer(1))"
+    assert srepr(x**2 + 1, order='lex') == ("Add(Pow(Symbol('x'), "
+                                            "Integer(2)), Integer(1))")
 
 
 def test_Function():
@@ -129,8 +136,8 @@ def test_Symbol_two_assumptions():
     # order could vary
     s1 = "Symbol('x', integer=True, negative=False)"
     s2 = "Symbol('x', negative=False, integer=True)"
-    assert srepr(x) in (s1, s2)
-    assert eval(srepr(x), ENV) == x
+    assert repr(x) in (s1, s2)
+    assert eval(repr(x), ENV) == x
 
 
 def test_Symbol_no_special_commutative_treatment():
@@ -148,14 +155,14 @@ def test_Wild():
 def test_Dummy():
     # cannot use sT here
     d = Dummy('d', nonzero=True)
-    assert srepr(d) == "Dummy('d', nonzero=True)"
+    assert repr(d) == "Dummy('d', nonzero=True)"
 
 
 def test_Dummy_from_Symbol():
     # should not get the full dictionary of assumptions
     n = Symbol('n', integer=True)
     d = n.as_dummy()
-    assert srepr(d) == "Dummy('n', integer=True)"
+    assert repr(d) == "Dummy('n', integer=True)"
 
 
 def test_tuple():
@@ -167,7 +174,7 @@ def test_WildFunction():
     sT(WildFunction('w'), "WildFunction('w')")
 
 
-def test_settins():
+def test_settings():
     pytest.raises(TypeError, lambda: srepr(x, method="garbage"))
 
 
@@ -176,37 +183,50 @@ def test_Mul():
 
 
 def test_PolyRing():
-    assert srepr(ring("x", ZZ, lex)[0]) == "PolyRing((Symbol('x'),), ZZ, lex)"
-    assert srepr(ring("x,y", QQ, grlex)[0]) == "PolyRing((Symbol('x'), Symbol('y')), QQ, grlex)"
-    assert srepr(ring("x,y,z", ZZ["t"], lex)[0]) == "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), ZZ[t], lex)"
+    sT(ring("x", ZZ, lex)[0], "PolyRing((Symbol('x'),), "
+                              "%s, LexOrder())" % repr(ZZ))
+    sT(ring("x,y", QQ, grlex)[0], "PolyRing((Symbol('x'), Symbol('y')), "
+                                  "%s, GradedLexOrder())" % repr(QQ))
+    sT(ring("x,y,z", ZZ["t"], lex)[0],
+            "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), "
+            "PolynomialRing(PolyRing((Symbol('t'),), "
+            "%s, LexOrder())), LexOrder())" % repr(ZZ))
 
 
 def test_FracField():
-    assert srepr(field("x", ZZ, lex)[0]) == "FracField((Symbol('x'),), ZZ, lex)"
-    assert srepr(field("x,y", QQ, grlex)[0]) == "FracField((Symbol('x'), Symbol('y')), QQ, grlex)"
-    assert srepr(field("x,y,z", ZZ["t"], lex)[0]) == "FracField((Symbol('x'), Symbol('y'), Symbol('z')), ZZ[t], lex)"
+    sT(field("x", ZZ, lex)[0], "FracField((Symbol('x'),), "
+                               "%s, LexOrder())" % repr(ZZ))
+    sT(field("x,y", QQ, grlex)[0], "FracField((Symbol('x'), Symbol('y')), "
+                                   "%s, GradedLexOrder())" % repr(QQ))
+    sT(field("x,y,z", ZZ["t"], lex)[0],
+            "FracField((Symbol('x'), Symbol('y'), Symbol('z')), "
+            "PolynomialRing(PolyRing((Symbol('t'),), %s, "
+            "LexOrder())), LexOrder())" % repr(ZZ))
 
 
 def test_PolyElement():
     R, x, y = ring("x,y", ZZ)
     g = R.domain.dtype
-    assert srepr(3*x**2*y + 1) == ("PolyElement(PolyRing((Symbol('x'), "
-                                   "Symbol('y')), ZZ, lex), [((2, 1), %s), "
-                                   "((0, 0), %s)])" % (repr(g(3)), repr(g(1))))
+    assert repr(3*x**2*y + 1) == ("PolyElement(PolyRing((Symbol('x'), "
+                                  "Symbol('y')), %s, LexOrder()), [((2, 1), "
+                                  "%s), ((0, 0), %s)])" % (repr(ZZ),
+                                                           repr(g(3)),
+                                                           repr(g(1))))
 
 
 def test_FracElement():
     F, x, y = field("x,y", ZZ)
     g = F.domain.dtype
-    assert srepr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FracField((Symbol('x'), "
-                                                "Symbol('y')), ZZ, lex), [((2, 1), %s), "
-                                                "((0, 0), %s)], [((1, 0), %s), "
-                                                "((0, 2), %s)])" % (repr(g(3)),
-                                                                    repr(g(1)),
-                                                                    repr(g(1)),
-                                                                    repr(g(-1))))
+    assert repr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FracField((Symbol('x'), "
+                                               "Symbol('y')), %s, LexOrder()), [((2, 1), %s), "
+                                               "((0, 0), %s)], [((1, 0), %s), "
+                                               "((0, 2), %s)])" % (repr(ZZ),
+                                                                   repr(g(3)),
+                                                                   repr(g(1)),
+                                                                   repr(g(1)),
+                                                                   repr(g(-1))))
 
 
 def test_BooleanAtom():
-    assert srepr(true) == "true"
-    assert srepr(false) == "false"
+    assert repr(true) == "true"
+    assert repr(false) == "false"
