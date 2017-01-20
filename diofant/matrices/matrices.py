@@ -19,6 +19,7 @@ from diofant.simplify import simplify as _simplify, signsimp, nsimplify
 from diofant.utilities.iterables import flatten
 from diofant.functions.elementary.miscellaneous import sqrt, Max, Min
 from diofant.functions import exp, factorial
+from diofant.printing.defaults import DefaultPrinting
 from diofant.printing import sstr
 
 
@@ -73,7 +74,7 @@ class DeferredVector(Symbol, NotIterable):
         return "DeferredVector('%s')" % (self.name)
 
 
-class MatrixBase:
+class MatrixBase(DefaultPrinting):
 
     # Added just for numpy compatibility
     __array_priority__ = 11
@@ -697,16 +698,6 @@ class MatrixBase:
         if self.rows == 1:
             return "Matrix([%s])" % self.table(printer, rowsep=',\n')
         return "Matrix([\n%s])" % self.table(printer, rowsep=',\n')
-
-    # Note, we always use the default ordering (lex) in __str__ and __repr__,
-    # regardless of the global setting.  See issue sympy/sympy#5487.
-    def __repr__(self):
-        from diofant.printing import srepr
-        return srepr(self, order=None)
-
-    def __str__(self):
-        from diofant.printing import sstr
-        return sstr(self, order=None)
 
     def _repr_pretty_(self, p, cycle):
         from diofant.printing import pretty
