@@ -7,10 +7,11 @@ from diofant.polys.polyerrors import UnificationFailed, CoercionFailed, DomainEr
 from diofant.polys.orderings import lex
 from diofant.polys.polyutils import _unify_gens
 from diofant.utilities import default_sort_key, public
+from diofant.printing.defaults import DefaultPrinting
 
 
 @public
-class Domain:
+class Domain(DefaultPrinting):
     """Represents an abstract domain. """
 
     dtype = None
