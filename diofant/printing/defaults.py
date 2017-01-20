@@ -15,4 +15,6 @@ class DefaultPrinting:
         from diofant.printing.str import sstr
         return sstr(self, order=None)
 
-    __repr__ = __str__
+    def __repr__(self):
+        from diofant.printing import srepr
+        return srepr(self, order=None)
