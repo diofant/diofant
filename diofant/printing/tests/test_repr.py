@@ -12,7 +12,13 @@ x, y = symbols('x,y')
 # eval(srepr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from diofant import *" for most cases.
 ENV = {}
-exec("from diofant import *", ENV)
+imports = """
+from diofant import *
+from diofant.polys.rings import PolyRing
+from diofant.polys.fields import FracField
+from diofant.polys.orderings import LexOrder, GradedLexOrder
+"""
+exec(imports, ENV)
 
 
 def sT(expr, string):
@@ -176,35 +182,48 @@ def test_Mul():
 
 
 def test_PolyRing():
-    assert srepr(ring("x", ZZ, lex)[0]) == "PolyRing((Symbol('x'),), ZZ, lex)"
-    assert srepr(ring("x,y", QQ, grlex)[0]) == "PolyRing((Symbol('x'), Symbol('y')), QQ, grlex)"
-    assert srepr(ring("x,y,z", ZZ["t"], lex)[0]) == "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), ZZ[t], lex)"
+    sT(ring("x", ZZ, lex)[0], "PolyRing((Symbol('x'),), "
+                              "%s, LexOrder())" % repr(ZZ))
+    sT(ring("x,y", QQ, grlex)[0], "PolyRing((Symbol('x'), Symbol('y')), "
+                                  "%s, GradedLexOrder())" % repr(QQ))
+    sT(ring("x,y,z", ZZ["t"], lex)[0],
+            "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), "
+            "PolynomialRing(PolyRing((Symbol('t'),), "
+            "%s, LexOrder())), LexOrder())" % repr(ZZ))
 
 
 def test_FracField():
-    assert srepr(field("x", ZZ, lex)[0]) == "FracField((Symbol('x'),), ZZ, lex)"
-    assert srepr(field("x,y", QQ, grlex)[0]) == "FracField((Symbol('x'), Symbol('y')), QQ, grlex)"
-    assert srepr(field("x,y,z", ZZ["t"], lex)[0]) == "FracField((Symbol('x'), Symbol('y'), Symbol('z')), ZZ[t], lex)"
+    sT(field("x", ZZ, lex)[0], "FracField((Symbol('x'),), "
+                               "%s, LexOrder())" % repr(ZZ))
+    sT(field("x,y", QQ, grlex)[0], "FracField((Symbol('x'), Symbol('y')), "
+                                   "%s, GradedLexOrder())" % repr(QQ))
+    sT(field("x,y,z", ZZ["t"], lex)[0],
+            "FracField((Symbol('x'), Symbol('y'), Symbol('z')), "
+            "PolynomialRing(PolyRing((Symbol('t'),), %s, "
+            "LexOrder())), LexOrder())" % repr(ZZ))
 
 
 def test_PolyElement():
     R, x, y = ring("x,y", ZZ)
     g = R.domain.dtype
-    assert srepr(3*x**2*y + 1) == ("PolyElement(PolyRing((Symbol('x'), "
-                                   "Symbol('y')), ZZ, lex), [((2, 1), %s), "
-                                   "((0, 0), %s)])" % (repr(g(3)), repr(g(1))))
+    assert repr(3*x**2*y + 1) == ("PolyElement(PolyRing((Symbol('x'), "
+                                  "Symbol('y')), %s, LexOrder()), [((2, 1), "
+                                  "%s), ((0, 0), %s)])" % (repr(ZZ),
+                                                           repr(g(3)),
+                                                           repr(g(1))))
 
 
 def test_FracElement():
     F, x, y = field("x,y", ZZ)
     g = F.domain.dtype
-    assert srepr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FracField((Symbol('x'), "
-                                                "Symbol('y')), ZZ, lex), [((2, 1), %s), "
-                                                "((0, 0), %s)], [((1, 0), %s), "
-                                                "((0, 2), %s)])" % (repr(g(3)),
-                                                                    repr(g(1)),
-                                                                    repr(g(1)),
-                                                                    repr(g(-1))))
+    assert repr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FracField((Symbol('x'), "
+                                               "Symbol('y')), %s, LexOrder()), [((2, 1), %s), "
+                                               "((0, 0), %s)], [((1, 0), %s), "
+                                               "((0, 2), %s)])" % (repr(ZZ),
+                                                                   repr(g(3)),
+                                                                   repr(g(1)),
+                                                                   repr(g(1)),
+                                                                   repr(g(-1))))
 
 
 def test_BooleanAtom():
