@@ -1,7 +1,8 @@
 """
 A Printer for generating executable code.
 
-The most important function here is srepr that returns a string so that the
+The most important function here is srepr (that is an exact equivalent of
+builtin repr, except for optional arguments) that returns a string so that the
 relation eval(srepr(expr))=expr holds in an appropriate environment.
 """
 

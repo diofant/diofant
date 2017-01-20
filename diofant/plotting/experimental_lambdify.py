@@ -44,19 +44,19 @@ from diofant.utilities.iterables import numbered_symbols
 # A: Because it is more complicated and not much more powerful in this case.
 
 # Q: What if I have Symbol('sin') or g=Function('f')?
-# A: You will break the algorithm. We should use srepr to defend against this?
+# A: You will break the algorithm. We should use repr to defend against this?
 #  The problem with Symbol('sin') is that it will be printed as 'sin'. The
 # parser will distinguish it from the function 'sin' because functions are
 # detected thanks to the opening parenthesis, but the lambda expression won't
 # understand the difference if we have also the sin function.
-# The solution (complicated) is to use srepr and maybe ast.
+# The solution (complicated) is to use repr and maybe ast.
 #  The problem with the g=Function('f') is that it will be printed as 'f' but in
 # the global namespace we have only 'g'. But as the same printer is used in the
 # constructor of the namespace there will be no problem.
 
 # Q: What if some of the printers are not printing as expected?
-# A: The algorithm wont work. You must use srepr for those cases. But even
-# srepr may not print well. All problems with printers should be considered
+# A: The algorithm wont work. You must use repr for those cases. But even
+# repr may not print well. All problems with printers should be considered
 # bugs.
 
 # Q: What about _imp_ functions?
@@ -64,7 +64,7 @@ from diofant.utilities.iterables import numbered_symbols
 # faster but it's not worth the code complexity.
 
 # Q: Will ast fix all possible problems?
-# A: No. You will always have to use some printer. Even srepr may not work in
+# A: No. You will always have to use some printer. Even repr may not work in
 # some cases. But if the printer does not work, that should be considered a
 # bug.
 

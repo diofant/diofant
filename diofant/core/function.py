@@ -23,7 +23,7 @@ There are three types of functions implemented in Diofant:
     >>> from diofant.abc import x
     >>> f(x)
     f(x)
-    >>> print(diofant.srepr(f(x).func))
+    >>> print(repr(f(x).func))
     Function('f')
     >>> f(x).args
     (x,)
