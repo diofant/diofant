@@ -2,6 +2,8 @@ from diofant import ratsimpmodprime, ratsimp, Rational, sqrt, pi, log, erf
 
 from diofant.abc import x, y, z, t, a, b, c, d, e
 
+__all__ = ()
+
 
 def test_ratsimp():
     f, g = 1/x + 1/y, (x + y)/(x*y)

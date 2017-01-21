@@ -1,5 +1,5 @@
 """ This module contains various functions that are special cases
-    of incomplete gamma functions. It should probably be renamed. """
+of incomplete gamma functions. It should probably be renamed. """
 
 from diofant.core import Add, S, sympify, cacheit, pi, I, Integer, Rational
 from diofant.core.function import Function, ArgumentIndexError
@@ -2321,8 +2321,8 @@ class fresnelc(FresnelIntegral):
 
 
 class _erfs(Function):
-    """
-    Helper function to make the `\\mathrm{erf}(z)` function
+    r"""
+    Helper function to make the `\mathrm{erf}(z)` function
     tractable for the Gruntz algorithm.
     """
 
@@ -2374,8 +2374,8 @@ class _erfs(Function):
 
 
 class _eis(Function):
-    """
-    Helper function to make the `\\mathrm{Ei}(z)` and `\\mathrm{li}(z)` functions
+    r"""
+    Helper function to make the `\mathrm{Ei}(z)` and `\mathrm{li}(z)` functions
     tractable for the Gruntz algorithm.
     """
 

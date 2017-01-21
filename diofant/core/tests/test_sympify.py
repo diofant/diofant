@@ -15,6 +15,8 @@ from diofant.core.compatibility import HAS_GMPY
 
 from diofant.abc import x, y, _clash, _clash1, _clash2
 
+__all__ = ()
+
 
 def test_sympyissue_3538():
     v = sympify("exp(x)")

@@ -7,6 +7,8 @@ from diofant.polys.dispersion import dispersion, dispersionset
 
 from diofant.abc import x, y, a
 
+__all__ = ()
+
 
 def test_dispersion():
     pytest.raises(ValueError, lambda: dispersionset(poly(x*y, x, y),

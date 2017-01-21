@@ -6,6 +6,8 @@ from diofant.matrices.expressions import (Identity, MatrixExpr, MatrixSymbol,
                                           Determinant, det, ZeroMatrix,
                                           Transpose)
 
+__all__ = ()
+
 n = symbols('n', integer=True)
 A = MatrixSymbol('A', n, n)
 B = MatrixSymbol('B', n, n)

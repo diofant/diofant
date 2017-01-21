@@ -3,6 +3,8 @@ from diofant.stats.rv import pspace, ProductPSpace, density
 from diofant.stats.drv_types import PoissonDistribution
 from diofant import Symbol, Eq
 
+__all__ = ()
+
 
 def test_density():
     x = Symbol('x')

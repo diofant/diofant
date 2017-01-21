@@ -160,12 +160,11 @@ def _implicit_multiplication(tokens, local_dict, global_dict):
 
     - AppliedFunction next to an open parenthesis ("sin x (cos x + 1)")
 
-    - A close parenthesis next to an AppliedFunction ("(x+2)sin x")\
+    - A close parenthesis next to an AppliedFunction ("(x+2)sin x")
 
     - A close parenthesis next to an open parenthesis ("(x+2)(x+3)")
 
     - AppliedFunction next to an implicitly applied function ("sin(x)cos x")
-
     """
     result = []
     for tok, nextTok in zip(tokens, tokens[1:]):
@@ -670,7 +669,7 @@ def eval_expr(code, local_dict, global_dict):
 
 def parse_expr(s, local_dict=None, transformations=standard_transformations,
                global_dict=None, evaluate=True):
-    """Converts the string ``s`` to a Diofant expression, in ``local_dict``
+    r"""Converts the string ``s`` to a Diofant expression, in ``local_dict``
 
     Parameters
     ==========
@@ -705,7 +704,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     1/2
     >>> type(_)
     <class 'diofant.core.numbers.Half'>
-    >>> from diofant.parsing.sympy_parser import standard_transformations,\\
+    >>> from diofant.parsing.sympy_parser import standard_transformations,\
     ... implicit_multiplication_application
     >>> transformations = (standard_transformations +
     ...     (implicit_multiplication_application,))

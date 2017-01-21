@@ -14,6 +14,8 @@ from diofant.sets.sets import Interval, FiniteSet
 
 from diofant.abc import w, x, y, z, t
 
+__all__ = ()
+
 
 def test_rel_ne():
     assert Relational(x, y, '!=') == Ne(x, y)

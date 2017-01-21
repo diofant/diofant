@@ -1,9 +1,9 @@
 """Module for Diofant containers
 
-    (Diofant objects that store other Diofant objects)
+(Diofant objects that store other Diofant objects)
 
-    The containers implemented in this module are subclassed to Basic.
-    They are supposed to work seamlessly within the Diofant framework.
+The containers implemented in this module are subclassed to Basic.
+They are supposed to work seamlessly within the Diofant framework.
 """
 
 from .basic import Basic
@@ -105,7 +105,8 @@ class Tuple(Basic):
 
     def index(self, value, start=None, stop=None):
         """T.index(value, [start, [stop]]) -> integer -- return first index of value.
-           Raises ValueError if the value is not present."""
+
+        Raises ValueError if the value is not present."""
         # XXX: One would expect:
         #
         # return self.args.index(value, start, stop)
@@ -224,31 +225,31 @@ class Dict(Basic):
         return tuple(self.elements)
 
     def items(self):
-        '''D.items() -> list of D's (key, value) pairs, as 2-tuples'''
+        """D.items() -> list of D's (key, value) pairs, as 2-tuples"""
         return self._dict.items()
 
     def keys(self):
-        '''D.keys() -> list of D's keys'''
+        """D.keys() -> list of D's keys"""
         return self._dict.keys()
 
     def values(self):
-        '''D.values() -> list of D's values'''
+        """D.values() -> list of D's values"""
         return self._dict.values()
 
     def __iter__(self):
-        '''x.__iter__() <==> iter(x)'''
+        """x.__iter__() <==> iter(x)"""
         return iter(self._dict)
 
     def __len__(self):
-        '''x.__len__() <==> len(x)'''
+        """x.__len__() <==> len(x)"""
         return self._dict.__len__()
 
     def get(self, key, default=None):
-        '''D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.'''
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
         return self._dict.get(sympify(key), default)
 
     def __contains__(self, key):
-        '''D.__contains__(k) -> True if D has a key k, else False'''
+        """D.__contains__(k) -> True if D has a key k, else False"""
         return sympify(key) in self._dict
 
     def __lt__(self, other):

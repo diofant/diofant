@@ -4,6 +4,8 @@ from diofant import I, Rational, Float, Symbol, pi, sqrt
 from diofant.geometry import Line, Point, Point3D, Line3D
 from diofant.matrices import Matrix
 
+__all__ = ()
+
 x = Symbol('x', real=True)
 y = Symbol('y', real=True)
 z = Symbol('z', real=True)

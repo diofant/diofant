@@ -2,6 +2,8 @@ from diofant.matrices.densetools import eye
 from diofant.matrices.densearith import add, sub, mulmatmat, mulmatscaler
 from diofant import ZZ
 
+__all__ = ()
+
 
 def test_add():
     a = [[ZZ(3), ZZ(7), ZZ(4)], [ZZ(2), ZZ(4), ZZ(5)], [ZZ(6), ZZ(2), ZZ(3)]]

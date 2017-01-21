@@ -5,9 +5,11 @@ import pytest
 from diofant.polys.orderings import (
     monomial_key, lex, grlex, grevlex, ilex, igrlex,
     LexOrder, InverseOrder, ProductOrder, build_product_order)
+from diofant.core import Integer
 
 from diofant.abc import x, y, z, t
-from diofant.core import Integer
+
+__all__ = ()
 
 
 def test_lex_order():

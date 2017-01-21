@@ -10,6 +10,8 @@ from diofant import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
 
 from diofant.abc import a, b, x, y, z
 
+__all__ = ()
+
 
 def test_interval_arguments():
     assert Interval(0, oo).right_open is false

@@ -22,6 +22,8 @@ from diofant.polys.polytools import degree
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 Q = Rational
 
 

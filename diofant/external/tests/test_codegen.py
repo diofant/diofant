@@ -28,9 +28,11 @@ import subprocess
 
 import pytest
 
-from diofant.abc import x, y, z
 from diofant.utilities.codegen import codegen, make_routine, get_code_generator
 
+from diofant.abc import x, y, z
+
+__all__ = ()
 
 # templates for the main program that will test the generated code.
 
@@ -127,11 +129,11 @@ def try_run(commands):
 def run_test(label, routines, numerical_tests, language, commands, friendly=True):
     """A driver for the codegen tests.
 
-       This driver assumes that a compiler ifort is present in the PATH and that
-       ifort is (at least) a Fortran 90 compiler. The generated code is written in
-       a temporary directory, together with a main program that validates the
-       generated code. The test passes when the compilation and the validation
-       run correctly.
+    This driver assumes that a compiler ifort is present in the PATH and that
+    ifort is (at least) a Fortran 90 compiler. The generated code is written in
+    a temporary directory, together with a main program that validates the
+    generated code. The test passes when the compilation and the validation
+    run correctly.
     """
 
     # Check input arguments before touching the file system

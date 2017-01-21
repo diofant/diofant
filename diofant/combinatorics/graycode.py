@@ -41,8 +41,8 @@ class GrayCode(Basic):
     ['000', '001', '011', '010', '110', '111', '101', '100']
     >>> a = GrayCode(4)
     >>> list(a.generate_gray())
-    ['0000', '0001', '0011', '0010', '0110', '0111', '0101', '0100', \
-    '1100', '1101', '1111', '1110', '1010', '1011', '1001', '1000']
+    ['0000', '0001', '0011', '0010', '0110', '0111', '0101', '0100',
+     '1100', '1101', '1111', '1110', '1010', '1011', '1001', '1000']
     """
 
     _skip = False
@@ -400,15 +400,16 @@ def graycode_subsets(gray_code_set):
 
     >>> from diofant.combinatorics.graycode import graycode_subsets
     >>> list(graycode_subsets(['a', 'b', 'c']))
-    [[], ['c'], ['b', 'c'], ['b'], ['a', 'b'], ['a', 'b', 'c'], \
-    ['a', 'c'], ['a']]
+    [[], ['c'], ['b', 'c'], ['b'], ['a', 'b'], ['a', 'b', 'c'],
+     ['a', 'c'], ['a']]
     >>> list(graycode_subsets(['a', 'b', 'c', 'c']))
-    [[], ['c'], ['c', 'c'], ['c'], ['b', 'c'], ['b', 'c', 'c'], \
-    ['b', 'c'], ['b'], ['a', 'b'], ['a', 'b', 'c'], ['a', 'b', 'c', 'c'], \
-    ['a', 'b', 'c'], ['a', 'c'], ['a', 'c', 'c'], ['a', 'c'], ['a']]
+    [[], ['c'], ['c', 'c'], ['c'], ['b', 'c'], ['b', 'c', 'c'],
+     ['b', 'c'], ['b'], ['a', 'b'], ['a', 'b', 'c'], ['a', 'b', 'c', 'c'],
+     ['a', 'b', 'c'], ['a', 'c'], ['a', 'c', 'c'], ['a', 'c'], ['a']]
 
     See Also
     ========
+
     get_subset_from_bitstring
     """
     for bitstring in list(GrayCode(len(gray_code_set)).generate_gray()):

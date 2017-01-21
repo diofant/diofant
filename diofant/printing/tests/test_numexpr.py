@@ -6,6 +6,8 @@ from diofant.printing.lambdarepr import NumExprPrinter
 
 from diofant.abc import x, y
 
+__all__ = ()
+
 
 def test_numexprprinter():
     p = NumExprPrinter()

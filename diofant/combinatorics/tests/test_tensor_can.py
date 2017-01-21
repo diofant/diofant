@@ -4,6 +4,8 @@ from diofant.combinatorics.tensor_can import (perm_af_direct_product, dummy_sgs,
                                               canonicalize, bsgs_direct_product)
 from diofant.combinatorics.testutil import canonicalize_naive, graph_certificate
 
+__all__ = ()
+
 
 def test_perm_af_direct_product():
     gens1 = [[1, 0, 2, 3], [0, 1, 3, 2]]

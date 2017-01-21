@@ -195,8 +195,8 @@ def _is_sum_surds(p):
 
 def _nthroot_solve(p, n, prec):
     """
-     helper function for ``nthroot``
-     It denests ``p**Rational(1, n)`` using its minimal polynomial
+    helper function for ``nthroot``
+    It denests ``p**Rational(1, n)`` using its minimal polynomial
     """
     from diofant.polys.numberfields import _minimal_polynomial_sq
     from diofant.solvers import solve
@@ -337,11 +337,14 @@ def posify(eq):
 
 def hypersimp(f, k):
     """Given combinatorial term f(k) simplify its consecutive term ratio
-       i.e. f(k+1)/f(k).  The input term can be composed of functions and
-       integer sequences which have equivalent representation in terms
-       of gamma special function.
+    i.e. f(k+1)/f(k).  The input term can be composed of functions and
+    integer sequences which have equivalent representation in terms
+    of gamma special function.
 
-       The algorithm performs three basic steps:
+    Notes
+    =====
+
+    The algorithm [1]_ performs three basic steps::
 
        1. Rewrite all functions in terms of gamma, if possible.
 
@@ -353,14 +356,15 @@ def hypersimp(f, k):
           and if the resulting expression is a quotient of
           polynomials, reduce their total degree.
 
-       If f(k) is hypergeometric then as result we arrive with a
-       quotient of polynomials of minimal degree. Otherwise None
-       is returned.
+    If f(k) is hypergeometric then as result we arrive with a
+    quotient of polynomials of minimal degree. Otherwise None
+    is returned.
 
-       For more information on the implemented algorithm refer to:
+    References
+    ==========
 
-       1. W. Koepf, Algorithms for m-fold Hypergeometric Summation,
-          Journal of Symbolic Computation (1995) 20, 399-417
+    .. [1] W. Koepf, Algorithms for m-fold Hypergeometric Summation,
+           Journal of Symbolic Computation (1995) 20, 399-417
     """
     f = sympify(f)
 
@@ -380,12 +384,14 @@ def hypersimp(f, k):
 def hypersimilar(f, g, k):
     """Returns True if 'f' and 'g' are hyper-similar.
 
-       Similarity in hypergeometric sense means that a quotient of
-       f(k) and g(k) is a rational function in k.  This procedure
-       is useful in solving recurrence relations.
+    Similarity in hypergeometric sense means that a quotient of
+    f(k) and g(k) is a rational function in k.  This procedure
+    is useful in solving recurrence relations.
 
-       For more information see hypersimp().
+    See Also
+    ========
 
+    hypersimp
     """
     f, g = list(map(sympify, (f, g)))
 
@@ -607,8 +613,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     # See also https://github.com/sympy/sympy/pull/185.
 
     def shorter(*choices):
-        '''Return the choice that has the fewest ops. In case of a tie,
-        the expression listed first is selected.'''
+        """Return the choice that has the fewest ops. In case of a tie,
+        the expression listed first is selected."""
         if not has_variety(choices):
             return choices[0]
         return min(choices, key=measure)

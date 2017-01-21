@@ -3,6 +3,8 @@ import pytest
 from diofant import (symbols, MatrixSymbol, MatPow, BlockMatrix,
                      Identity, ZeroMatrix, ImmutableMatrix, eye, Sum)
 
+__all__ = ()
+
 k, l, m, n = symbols('k l m n', integer=True)
 i, j = symbols('i j', integer=True)
 

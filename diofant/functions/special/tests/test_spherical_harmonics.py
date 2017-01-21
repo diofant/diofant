@@ -5,6 +5,8 @@ from diofant import (Symbol, sqrt, pi, sin, cos, cot, exp, I,
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.spherical_harmonics import Ynm, Znm, Ynm_c
 
+__all__ = ()
+
 
 def test_Ynm():
     # http://en.wikipedia.org/wiki/Spherical_harmonics

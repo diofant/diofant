@@ -8,6 +8,8 @@ from diofant.vector.vector import (Vector, BaseVector, VectorAdd,
                                    VectorMul, VectorZero)
 from diofant.vector.coordsysrect import CoordSysCartesian
 
+__all__ = ()
+
 C = CoordSysCartesian('C')
 
 i, j, k = C.base_vectors()

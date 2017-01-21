@@ -372,43 +372,41 @@ def variations(seq, n, repetition=False):
 def subsets(seq, k=None, repetition=False):
     """Generates all k-subsets (combinations) from an n-element set, seq.
 
-       A k-subset of an n-element set is any subset of length exactly k. The
-       number of k-subsets of an n-element set is given by binomial(n, k),
-       whereas there are 2**n subsets all together. If k is None then all
-       2**n subsets will be returned from shortest to longest.
+    A k-subset of an n-element set is any subset of length exactly k. The
+    number of k-subsets of an n-element set is given by binomial(n, k),
+    whereas there are 2**n subsets all together. If k is None then all
+    2**n subsets will be returned from shortest to longest.
 
-       Examples
-       ========
+    Examples
+    ========
 
-       >>> from diofant.utilities.iterables import subsets
+    >>> from diofant.utilities.iterables import subsets
 
-       subsets(seq, k) will return the n!/k!/(n - k)! k-subsets (combinations)
-       without repetition, i.e. once an item has been removed, it can no
-       longer be "taken":
+    subsets(seq, k) will return the n!/k!/(n - k)! k-subsets (combinations)
+    without repetition, i.e. once an item has been removed, it can no
+    longer be "taken":
 
-           >>> list(subsets([1, 2], 2))
-           [(1, 2)]
-           >>> list(subsets([1, 2]))
-           [(), (1,), (2,), (1, 2)]
-           >>> list(subsets([1, 2, 3], 2))
-           [(1, 2), (1, 3), (2, 3)]
+    >>> list(subsets([1, 2], 2))
+    [(1, 2)]
+    >>> list(subsets([1, 2]))
+    [(), (1,), (2,), (1, 2)]
+    >>> list(subsets([1, 2, 3], 2))
+    [(1, 2), (1, 3), (2, 3)]
 
+    subsets(seq, k, repetition=True) will return the (n - 1 + k)!/k!/(n - 1)!
+    combinations *with* repetition:
 
-       subsets(seq, k, repetition=True) will return the (n - 1 + k)!/k!/(n - 1)!
-       combinations *with* repetition:
+    >>> list(subsets([1, 2], 2, repetition=True))
+    [(1, 1), (1, 2), (2, 2)]
 
-           >>> list(subsets([1, 2], 2, repetition=True))
-           [(1, 1), (1, 2), (2, 2)]
+    If you ask for more items than are in the set you get the empty set unless
+    you allow repetitions:
 
-       If you ask for more items than are in the set you get the empty set unless
-       you allow repetitions:
-
-           >>> list(subsets([0, 1], 3, repetition=False))
-           []
-           >>> list(subsets([0, 1], 3, repetition=True))
-           [(0, 0, 0), (0, 0, 1), (0, 1, 1), (1, 1, 1)]
-
-       """
+    >>> list(subsets([0, 1], 3, repetition=False))
+    []
+    >>> list(subsets([0, 1], 3, repetition=True))
+    [(0, 0, 0), (0, 0, 1), (0, 1, 1), (1, 1, 1)]
+    """
     if k is None:
         for k in range(len(seq) + 1):
             for i in subsets(seq, k, repetition):
@@ -487,7 +485,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
 
 
 def capture(func):
-    """Return the printed output of func().
+    r"""Return the printed output of func().
 
     `func` should be a function without arguments that produces output with
     print statements.
@@ -501,8 +499,7 @@ def capture(func):
     >>> 'hello' in capture(foo) # foo, not foo()
     True
     >>> capture(lambda: pprint(2/x, use_unicode=False))
-    '2\\n-\\nx\\n'
-
+    '2\n-\nx\n'
     """
     from io import StringIO
     import sys
@@ -1648,14 +1645,15 @@ def generate_derangements(perm):
     >>> list(generate_derangements([0, 1, 2]))
     [[1, 2, 0], [2, 0, 1]]
     >>> list(generate_derangements([0, 1, 2, 3]))
-    [[1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1], \
-    [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1], \
-    [3, 2, 1, 0]]
+    [[1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1],
+     [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1],
+     [3, 2, 1, 0]]
     >>> list(generate_derangements([0, 1, 1]))
     []
 
     See Also
     ========
+
     diofant.functions.combinatorial.factorials.subfactorial
     """
     p = multiset_permutations(perm)
@@ -1728,7 +1726,7 @@ def generate_oriented_forest(n):
     References
     ==========
 
-    .. [1] T. Beyer and S.M. Hedetniemi: constant time generation of \
+    .. [1] T. Beyer and S.M. Hedetniemi: constant time generation of
            rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
     .. [2] http://stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
 
@@ -1737,8 +1735,8 @@ def generate_oriented_forest(n):
 
     >>> from diofant.utilities.iterables import generate_oriented_forest
     >>> list(generate_oriented_forest(4))
-    [[0, 1, 2, 3], [0, 1, 2, 2], [0, 1, 2, 1], [0, 1, 2, 0], \
-    [0, 1, 1, 1], [0, 1, 1, 0], [0, 1, 0, 1], [0, 1, 0, 0], [0, 0, 0, 0]]
+    [[0, 1, 2, 3], [0, 1, 2, 2], [0, 1, 2, 1], [0, 1, 2, 0],
+     [0, 1, 1, 1], [0, 1, 1, 0], [0, 1, 0, 1], [0, 1, 0, 0], [0, 0, 0, 0]]
     """
     P = list(range(-1, n))
     while True:

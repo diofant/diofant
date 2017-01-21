@@ -11,6 +11,8 @@ from diofant.geometry import (Circle, GeometryError, Line, Point, Ray,
 from diofant.geometry.line import Undecidable
 from diofant.geometry.polygon import _asa as asa
 
+__all__ = ()
+
 x = Symbol('x', extended_real=True)
 y = Symbol('y', extended_real=True)
 z = Symbol('z', extended_real=True)

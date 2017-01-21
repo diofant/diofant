@@ -3,6 +3,8 @@ import pytest
 from diofant import Symbol, Function, Derivative as D, Eq, cos, sin
 from diofant.calculus.euler import euler_equations as euler
 
+__all__ = ()
+
 
 def test_euler_interface():
     x = Function('x')

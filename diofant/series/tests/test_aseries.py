@@ -5,6 +5,8 @@ from diofant import (S, Symbol, symbols, exp, log, sqrt, O, oo, sin,
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 @pytest.mark.slow
 def test_simple():

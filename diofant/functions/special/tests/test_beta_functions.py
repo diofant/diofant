@@ -5,6 +5,8 @@ from diofant.core.function import ArgumentIndexError
 
 from diofant.abc import x, y
 
+__all__ = ()
+
 
 def test_beta():
     assert isinstance(beta(x, y), beta)

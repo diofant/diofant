@@ -1607,7 +1607,7 @@ class PermutationGroup(Basic):
         return True
 
     def is_primitive(self, randomized=True):
-        """Test if a group is primitive.
+        r"""Test if a group is primitive.
 
         A permutation group ``G`` acting on a set ``S`` is called primitive if
         ``S`` contains no nontrivial block under the action of ``G``
@@ -1642,7 +1642,6 @@ class PermutationGroup(Basic):
         ========
 
         minimal_block, random_stab
-
         """
         if self._is_primitive is not None:
             return self._is_primitive

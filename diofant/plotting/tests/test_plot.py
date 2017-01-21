@@ -14,6 +14,7 @@ from diofant.plotting.plot import unset_show
 from diofant.plotting.experimental_lambdify import lambdify
 from diofant.external import import_module
 
+__all__ = ()
 
 matplotlib = import_module('matplotlib', min_module_version='1.1.0',
                            catch=(RuntimeError,))

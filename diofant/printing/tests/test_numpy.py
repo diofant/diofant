@@ -3,6 +3,8 @@ from diofant.printing.lambdarepr import NumPyPrinter
 
 from diofant.abc import x, a, b
 
+__all__ = ()
+
 
 def test_numpy_piecewise_regression():
     """

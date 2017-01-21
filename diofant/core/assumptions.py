@@ -370,7 +370,7 @@ def make_property(fact):
 
 
 def check_assumptions(expr, **assumptions):
-    """Checks if expression `expr` satisfies all assumptions.
+    r"""Checks if expression `expr` satisfies all assumptions.
 
     Parameters
     ==========

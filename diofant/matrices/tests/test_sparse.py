@@ -3,6 +3,8 @@ import pytest
 from diofant import Symbol, I, Rational, PurePoly
 from diofant.matrices import Matrix, SparseMatrix, eye, zeros, ShapeError
 
+__all__ = ()
+
 
 def test_sparse_matrix():
     def sparse_eye(n):

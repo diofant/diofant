@@ -17,6 +17,8 @@ from diofant.utilities.randtest import verify_numerically as tn
 
 from diofant.abc import a, b, c, x, y, z, t, q, m
 
+__all__ = ()
+
 
 def NS(e, n=15, **options):
     return sstr(sympify(e).evalf(n, **options), full_prec=True)
@@ -801,7 +803,7 @@ def test_sympyissue_5849():
 
 @pytest.mark.xfail
 def test_sympyissue_5849_matrix():
-    '''Same as test_issue_5849 but solved with the matrix solver.'''
+    """Same as test_issue_5849 but solved with the matrix solver."""
     I1, I2, I3, I4, I5, I6 = symbols('I1:7')
     dI1, dI4, dQ2, dQ4, Q2, Q4 = symbols('dI1,dI4,dQ2,dQ4,Q2,Q4')
 

@@ -21,6 +21,8 @@ from diofant.stats.rv import ProductPSpace
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_single_normal():
     mu = Symbol('mu', real=True)

@@ -7,6 +7,8 @@
 
 from diofant.external import import_module
 
+__all__ = ()
+
 scipy = import_module('scipy')
 if not scipy:
     # py.test will not execute any tests now

@@ -3,6 +3,8 @@ import warnings
 from diofant.core.decorators import deprecated
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
+__all__ = ()
+
 
 def test_deprecated():
     @deprecated(useinstead="bar", issue=1234, deprecated_since_version="0.7.2")

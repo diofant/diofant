@@ -11,6 +11,8 @@ from diofant import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,
 
 from diofant.abc import x, y, n, m, t
 
+__all__ = ()
+
 
 def test_naturals():
     N = S.Naturals
@@ -222,7 +224,7 @@ def test_reals():
 
 
 def take(n, iterable):
-    "Return first n items of the iterable as a list"
+    """Return first n items of the iterable as a list"""
     return list(itertools.islice(iterable, n))
 
 

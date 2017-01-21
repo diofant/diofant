@@ -2,6 +2,8 @@ import pytest
 
 from diofant.plotting.intervalmath import interval
 
+__all__ = ()
+
 
 def test_interval():
     assert (interval(1, 1) == interval(1, 1, is_valid=True)) == (True, True)
@@ -194,14 +196,14 @@ def test_interval_div():
 
 
 def test_hashable():
-    '''
+    """
     test that interval objects are hashable.
     this is required in order to be able to put them into the cache, which
     appears to be necessary for plotting in py3k. For details, see:
 
     https://github.com/sympy/sympy/pull/2101
     https://github.com/sympy/sympy/issues/6533
-    '''
+    """
     hash(interval(1, 1))
     hash(interval(1, 1, is_valid=True))
     hash(interval(-4, -0.5))

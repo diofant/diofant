@@ -12,6 +12,8 @@ from diofant.matrices import Matrix, MatrixSymbol
 
 from diofant import ccode
 
+__all__ = ()
+
 x, y, z = symbols('x,y,z')
 
 

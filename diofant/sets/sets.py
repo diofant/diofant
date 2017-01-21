@@ -1245,7 +1245,7 @@ class Union(Set, EvalfMixin):
         # roundrobin recipe taken from itertools documentation:
         # https://docs.python.org/3/library/itertools.html#itertools-recipes
         def roundrobin(*iterables):
-            "roundrobin('ABC', 'D', 'EF') --> A D E B F C"
+            """roundrobin('ABC', 'D', 'EF') --> A D E B F C"""
             sentinel = object()
             it = itertools.chain.from_iterable(itertools.zip_longest(fillvalue=sentinel, *iterables))
             return (i for i in it if i is not sentinel)

@@ -1,12 +1,14 @@
 import warnings
+from tempfile import NamedTemporaryFile
 
 import pytest
 
 from diofant import (plot_implicit, cos, Symbol, symbols, Eq, sin, re, And,
                      Or, exp, I, tan, pi)
 from diofant.plotting.plot import unset_show
-from tempfile import NamedTemporaryFile
 from diofant.external import import_module
+
+__all__ = ()
 
 # Set plots not to show
 unset_show()

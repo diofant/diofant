@@ -7,6 +7,8 @@ from diofant import (symbols, sin, simplify, cos, trigsimp, tan, csc,
 
 from diofant.abc import x, y, z, a, b
 
+__all__ = ()
+
 
 def test_trigsimp1():
     assert trigsimp(1 - sin(x)**2) == cos(x)**2

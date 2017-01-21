@@ -10,6 +10,8 @@ from diofant.core.function import ArgumentIndexError
 
 from diofant.abc import a, b, n, m, k, x, alpha
 
+__all__ = ()
+
 
 def test_jacobi():
     assert jacobi(0, a, b, x) == 1

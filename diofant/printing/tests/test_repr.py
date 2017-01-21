@@ -7,6 +7,8 @@ from diofant.geometry import Point, Ellipse
 from diofant.printing.repr import srepr
 from diofant.polys import ring, field, ZZ, QQ, lex, grlex
 
+__all__ = ()
+
 x, y = symbols('x,y')
 
 # eval(repr(expr)) == expr has to succeed in the right environment. The right

@@ -6,6 +6,8 @@ from diofant.polys.rings import ring
 from diofant.polys.domains import FF, ZZ, QQ
 from diofant.polys.specialpolys import f_polys
 
+__all__ = ()
+
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 
 

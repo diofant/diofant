@@ -9,6 +9,8 @@ from diofant.stats.rv import ProductPSpace, rs_swap, Density, NamedArgsMixin
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 def test_where():
     X, Y = Die('X'), Die('Y')

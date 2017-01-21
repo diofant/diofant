@@ -4,6 +4,8 @@ from diofant.core import symbols
 from diofant.matrices import ShapeError, MatrixSymbol
 from diofant.matrices.expressions import HadamardProduct, hadamard_product
 
+__all__ = ()
+
 n, m, k = symbols('n,m,k')
 Z = MatrixSymbol('Z', n, n)
 A = MatrixSymbol('A', n, m)

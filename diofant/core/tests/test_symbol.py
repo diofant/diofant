@@ -4,6 +4,8 @@ from diofant import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
                      StrictLessThan, pi, I, Rational, sympify, symbols, Dummy,
                      Integer, Float, sstr)
 
+__all__ = ()
+
 
 def test_Symbol():
     a = Symbol("a")

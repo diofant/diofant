@@ -10,7 +10,7 @@ from diofant.logic.boolalg import And, Or
 
 
 def load(s):
-    """Loads a boolean expression from a string.
+    r"""Loads a boolean expression from a string.
 
     Examples
     ========
@@ -19,9 +19,9 @@ def load(s):
     cnf_1
     >>> load('1 2')
     Or(cnf_1, cnf_2)
-    >>> load('1 \\n 2')
+    >>> load('1 \n 2')
     And(cnf_1, cnf_2)
-    >>> load('1 2 \\n 3')
+    >>> load('1 2 \n 3')
     And(Or(cnf_1, cnf_2), cnf_3)
     """
     clauses = []

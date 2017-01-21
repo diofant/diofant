@@ -24,6 +24,8 @@ from diofant.functions.elementary.piecewise import Piecewise, ExprCondPair
 
 from diofant.abc import w, x, y, z
 
+__all__ = ()
+
 
 def test_postorder_traversal():
     expr = z + w*(x + y)

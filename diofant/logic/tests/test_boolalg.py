@@ -12,6 +12,7 @@ from diofant.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                    to_cnf, to_dnf, to_int_repr, bool_map, true,
                                    false, BooleanAtom, is_literal, BooleanFunction)
 
+__all__ = ()
 
 A, B, C, D = symbols('A,B,C,D')
 

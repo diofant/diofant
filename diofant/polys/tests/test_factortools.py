@@ -10,6 +10,8 @@ from diofant.polys.polyclasses import ANP
 from diofant.polys.specialpolys import f_polys, w_polys
 from diofant import nextprime, sin, sqrt, I
 
+__all__ = ()
+
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 w_1, w_2 = w_polys()
 

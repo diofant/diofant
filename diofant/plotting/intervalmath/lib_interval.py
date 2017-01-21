@@ -418,7 +418,7 @@ def atanh(x):
 
 def And(*args):
     """Defines the three valued ``And`` behaviour for a 2-tuple of
-     three valued logic values"""
+    three valued logic values"""
     def reduce_and(cmp_intervala, cmp_intervalb):
         if cmp_intervala[0] is False or cmp_intervalb[0] is False:
             first = False
@@ -438,7 +438,7 @@ def And(*args):
 
 def Or(*args):
     """Defines the three valued ``Or`` behaviour for a 2-tuple of
-     three valued logic values"""
+    three valued logic values"""
     def reduce_or(cmp_intervala, cmp_intervalb):
         if cmp_intervala[0] is True or cmp_intervalb[0] is True:
             first = True

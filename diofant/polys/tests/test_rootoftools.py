@@ -11,6 +11,8 @@ from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
 
 from diofant.abc import a, b, x, y, z, r
 
+__all__ = ()
+
 
 def test_RootOf___new__():
     assert RootOf(x, 0) == 0

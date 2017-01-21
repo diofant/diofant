@@ -3,6 +3,8 @@ from diofant.core import Mul, Add
 
 from diofant.abc import x, y
 
+__all__ = ()
+
 
 def test_add():
     with evaluate(False):

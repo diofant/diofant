@@ -1,6 +1,8 @@
 from diofant.matrices.sparsetools import _doktocsr, _csrtodok
 from diofant import SparseMatrix
 
+__all__ = ()
+
 
 def test_doktocsr():
     a = SparseMatrix([[1, 2, 0, 0], [0, 3, 9, 0], [0, 1, 4, 0]])

@@ -87,11 +87,11 @@ class NumPyPrinter(LambdaPrinter):
     }
 
     def _print_MatMul(self, expr):
-        "Matrix multiplication printer"
+        """Matrix multiplication printer"""
         return '({0})'.format(').dot('.join(self._print(i) for i in expr.args))
 
     def _print_Piecewise(self, expr):
-        "Piecewise function printer"
+        """Piecewise function printer"""
         exprs = '[{0}]'.format(','.join(self._print(arg.expr) for arg in expr.args))
         conds = '[{0}]'.format(','.join(self._print(arg.cond) for arg in expr.args))
         # If [default_value, True] is a (expr, cond) sequence in a Piecewise object
@@ -101,7 +101,7 @@ class NumPyPrinter(LambdaPrinter):
         return 'select({0}, {1}, default=nan)'.format(conds, exprs)
 
     def _print_Relational(self, expr):
-        "Relational printer"
+        """Relational printer"""
         op = {'==': 'equal',
               '!=': 'not_equal',
               '<': 'less',
@@ -113,21 +113,21 @@ class NumPyPrinter(LambdaPrinter):
                                            rhs=self._print(expr.rhs))
 
     def _print_And(self, expr):
-        "Logical And printer"
+        """Logical And printer"""
         # We have to override LambdaPrinter because it uses Python 'and' keyword.
         # If LambdaPrinter didn't define it, we could use StrPrinter's
         # version of the function and add 'logical_and' to NUMPY_TRANSLATIONS.
         return '{0}({1})'.format('logical_and', ','.join(self._print(i) for i in expr.args))
 
     def _print_Or(self, expr):
-        "Logical Or printer"
+        """Logical Or printer"""
         # We have to override LambdaPrinter because it uses Python 'or' keyword.
         # If LambdaPrinter didn't define it, we could use StrPrinter's
         # version of the function and add 'logical_or' to NUMPY_TRANSLATIONS.
         return '{0}({1})'.format('logical_or', ','.join(self._print(i) for i in expr.args))
 
     def _print_Not(self, expr):
-        "Logical Not printer"
+        """Logical Not printer"""
         # We have to override LambdaPrinter because it uses Python 'not' keyword.
         # If LambdaPrinter didn't define it, we would still have to define our
         #     own because StrPrinter doesn't define it.

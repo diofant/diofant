@@ -350,15 +350,15 @@ class TIDS(CantSympify):
         >>> tids_1 = TIDS.from_components_and_indices([T], [m0, m1, -m1, m3])
         >>> tids_2 = TIDS.from_components_and_indices([A], [m2])
         >>> tids_1 * tids_2
-        TIDS([T(Lorentz,Lorentz,Lorentz,Lorentz), A(Lorentz)],\
-            [(m0, 0, 0), (m3, 3, 0), (m2, 0, 1)], [(1, 2, 0, 0)])
+        TIDS([T(Lorentz,Lorentz,Lorentz,Lorentz), A(Lorentz)],
+             [(m0, 0, 0), (m3, 3, 0), (m2, 0, 1)], [(1, 2, 0, 0)])
 
         In this case no contraction has been performed.
 
         >>> tids_3 = TIDS.from_components_and_indices([A], [-m3])
         >>> tids_1 * tids_3
-        TIDS([T(Lorentz,Lorentz,Lorentz,Lorentz), A(Lorentz)],\
-            [(m0, 0, 0)], [(1, 2, 0, 0), (3, 0, 0, 1)])
+        TIDS([T(Lorentz,Lorentz,Lorentz,Lorentz), A(Lorentz)],
+             [(m0, 0, 0)], [(1, 2, 0, 0), (3, 0, 0, 1)])
 
         Free indices ``m3`` and ``-m3`` are identified as a contracted couple, and are
         therefore transformed into dummy indices.

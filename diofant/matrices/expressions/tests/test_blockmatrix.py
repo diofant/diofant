@@ -8,6 +8,8 @@ from diofant.matrices import Matrix, ImmutableMatrix
 from diofant.core import Tuple, symbols, Expr
 from diofant.functions import transpose
 
+__all__ = ()
+
 i, j, k, l, m, n, p = symbols('i:n, p', integer=True)
 A = MatrixSymbol('A', n, n)
 B = MatrixSymbol('B', n, n)

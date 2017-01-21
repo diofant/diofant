@@ -7,6 +7,8 @@ from diofant.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd, MatMul
                               MatPow, Matrix, MatrixExpr, MatrixSymbol, ShapeError,
                               ZeroMatrix, Transpose, Adjoint)
 
+__all__ = ()
+
 n, m, l, k, p = symbols('n m l k p', integer=True)
 x = symbols('x')
 A = MatrixSymbol('A', n, m)

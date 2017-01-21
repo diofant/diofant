@@ -4,6 +4,8 @@ from diofant.core import symbols
 from diofant.matrices.expressions import MatrixSymbol, Inverse
 from diofant.matrices import eye, Identity, ShapeError
 
+__all__ = ()
+
 n, m, l = symbols('n m l', integer=True)
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', m, l)

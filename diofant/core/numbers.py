@@ -179,18 +179,17 @@ def ilcm(*args):
 def igcdex(a, b):
     """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
 
-       >>> from diofant.core.numbers import igcdex
-       >>> igcdex(2, 3)
-       (-1, 1, 1)
-       >>> igcdex(10, 12)
-       (-1, 1, 2)
+    >>> from diofant.core.numbers import igcdex
+    >>> igcdex(2, 3)
+    (-1, 1, 1)
+    >>> igcdex(10, 12)
+    (-1, 1, 2)
 
-       >>> x, y, g = igcdex(100, 2004)
-       >>> x, y, g
-       (-20, 1, 4)
-       >>> x*100 + y*2004
-       4
-
+    >>> x, y, g = igcdex(100, 2004)
+    >>> x, y, g
+    (-20, 1, 4)
+    >>> x*100 + y*2004
+    4
     """
     if (not a) and (not b):
         return 0, 1, 0

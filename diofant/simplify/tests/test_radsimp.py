@@ -11,6 +11,8 @@ from diofant.simplify.radsimp import (collect_sqrt,
 
 from diofant.abc import x, y, z, t, a, b, c, d, f
 
+__all__ = ()
+
 
 def test_radsimp():
     r2 = sqrt(2)

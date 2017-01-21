@@ -1,13 +1,14 @@
 """A module for solving all kinds of equations.
 
-    Examples
-    ========
+Examples
+========
 
-    >>> from diofant.solvers import solve
-    >>> from diofant.abc import x
-    >>> solve(x**5+5*x**4+10*x**3+10*x**2+5*x+1,x)
-    [-1]
+>>> from diofant.solvers import solve
+>>> from diofant.abc import x
+>>> solve(x**5+5*x**4+10*x**3+10*x**2+5*x+1,x)
+[-1]
 """
+
 from .solvers import (solve, solve_undetermined_coeffs,
                       solve_linear, checksol)
 

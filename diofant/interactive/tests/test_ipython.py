@@ -7,6 +7,8 @@ import pytest
 
 from diofant.interactive.session import IntegerWrapper
 
+__all__ = ()
+
 
 @pytest.mark.skipif(sys.version_info >= (3, 5),
                     reason="XXX python3.5 api changes")

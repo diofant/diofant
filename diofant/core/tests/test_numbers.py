@@ -12,6 +12,8 @@ from diofant.core.power import integer_nthroot
 from diofant.core.numbers import (igcd, ilcm, igcdex, seterr,
                                   mpf_norm, comp)
 
+__all__ = ()
+
 t = Symbol('t', real=False)
 
 
@@ -1017,7 +1019,7 @@ def test_bug_sqrt():
 
 
 def test_pi_Pi():
-    "Test that pi (instance) is imported, but Pi (class) is not"
+    """Test that pi (instance) is imported, but Pi (class) is not"""
     from diofant import pi
     with pytest.raises(ImportError):
         from diofant import Pi

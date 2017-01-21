@@ -218,12 +218,12 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         # ---------------- helper functions
 
         def ratq(x):
-            '''Return Rational part of x's exponent as it appears in the bkey.
-            '''
+            """Return Rational part of x's exponent as it appears in the bkey.
+            """
             return bkey(x)[0][1]
 
         def bkey(b, e=None):
-            '''Return (b**s, c.q), c.p where e -> c*s. If e is not given then
+            """Return (b**s, c.q), c.p where e -> c*s. If e is not given then
             it will be taken by using as_base_exp() on the input b.
             e.g.
                 x**3/2 -> (x, 2), 3
@@ -231,7 +231,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 x**(2*y/3) -> (x**y, 3), 2
                 exp(x/2) -> (exp(a), 2), 1
 
-            '''
+            """
             if e is not None:  # coming from c_powers or from below
                 if e.is_Integer:
                     return (b, S.One), e
@@ -247,12 +247,12 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 return bkey(*b.as_base_exp())
 
         def update(b):
-            '''Decide what to do with base, b. If its exponent is now an
+            """Decide what to do with base, b. If its exponent is now an
             integer multiple of the Rational denominator, then remove it
             and put the factors of its base in the common_b dictionary or
             update the existing bases if necessary. If it has been zeroed
             out, simply remove the base.
-            '''
+            """
             newe, r = divmod(common_b[b], b[1])
             if not r:
                 common_b.pop(b)

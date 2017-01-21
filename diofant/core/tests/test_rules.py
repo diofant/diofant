@@ -2,6 +2,8 @@ import pytest
 
 from diofant.core.rules import Transform
 
+__all__ = ()
+
 
 def test_Transform():
     add1 = Transform(lambda x: x + 1, lambda x: x % 2 == 1)

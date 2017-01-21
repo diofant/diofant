@@ -7,6 +7,8 @@ from diofant import Function, sympify, sin, cos, limit, tanh
 
 from diofant.abc import x
 
+__all__ = ()
+
 
 def test_function_series1():
     """Create our new "sin" function."""

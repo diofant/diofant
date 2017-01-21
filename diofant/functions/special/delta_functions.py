@@ -66,33 +66,32 @@ class DiracDelta(Function):
     def simplify(self, x):
         """simplify(self, x)
 
-           Compute a simplified representation of the function using
-           property number 4.
+        Compute a simplified representation of the function using
+        property number 4.
 
-           x can be:
+        x can be:
 
-           - a symbol
+        - a symbol
 
-           Examples
-           ========
+        Examples
+        ========
 
-           >>> from diofant import DiracDelta
-           >>> from diofant.abc import x, y
+        >>> from diofant import DiracDelta
+        >>> from diofant.abc import x, y
 
-           >>> DiracDelta(x*y).simplify(x)
-           DiracDelta(x)/Abs(y)
-           >>> DiracDelta(x*y).simplify(y)
-           DiracDelta(y)/Abs(x)
+        >>> DiracDelta(x*y).simplify(x)
+        DiracDelta(x)/Abs(y)
+        >>> DiracDelta(x*y).simplify(y)
+        DiracDelta(y)/Abs(x)
 
-           >>> DiracDelta(x**2 + x - 2).simplify(x)
-           DiracDelta(x - 1)/3 + DiracDelta(x + 2)/3
+        >>> DiracDelta(x**2 + x - 2).simplify(x)
+        DiracDelta(x - 1)/3 + DiracDelta(x + 2)/3
 
-           See Also
-           ========
+        See Also
+        ========
 
-           diofant.functions.special.delta_functions.DiracDelta.is_simple
-           diofant.functions.special.delta_functions.DiracDelta
-
+        diofant.functions.special.delta_functions.DiracDelta.is_simple
+        diofant.functions.special.delta_functions.DiracDelta
         """
         from diofant.polys.polyroots import roots
 
@@ -121,35 +120,35 @@ class DiracDelta(Function):
     def is_simple(self, x):
         """is_simple(self, x)
 
-           Tells whether the argument(args[0]) of DiracDelta is a linear
-           expression in x.
+        Tells whether the argument(args[0]) of DiracDelta is a linear
+        expression in x.
 
-           x can be:
+        x can be:
 
-           - a symbol
+        - a symbol
 
-           Examples
-           ========
+        Examples
+        ========
 
-           >>> from diofant import DiracDelta, cos
-           >>> from diofant.abc import x, y
+        >>> from diofant import DiracDelta, cos
+        >>> from diofant.abc import x, y
 
-           >>> DiracDelta(x*y).is_simple(x)
-           True
-           >>> DiracDelta(x*y).is_simple(y)
-           True
+        >>> DiracDelta(x*y).is_simple(x)
+        True
+        >>> DiracDelta(x*y).is_simple(y)
+        True
 
-           >>> DiracDelta(x**2+x-2).is_simple(x)
-           False
+        >>> DiracDelta(x**2+x-2).is_simple(x)
+        False
 
-           >>> DiracDelta(cos(x)).is_simple(x)
-           False
+        >>> DiracDelta(cos(x)).is_simple(x)
+        False
 
-           See Also
-           ========
+        See Also
+        ========
 
-           diofant.simplify.simplify.simplify
-           diofant.functions.special.delta_functions.DiracDelta
+        diofant.simplify.simplify.simplify
+        diofant.functions.special.delta_functions.DiracDelta
         """
         p = self.args[0].as_poly(x)
         if p:

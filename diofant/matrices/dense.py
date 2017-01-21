@@ -1565,33 +1565,32 @@ def wronskian(functions, var, method='bareis'):
 
 def casoratian(seqs, n, zero=True):
     """Given linear difference operator L of order 'k' and homogeneous
-       equation Ly = 0 we want to compute kernel of L, which is a set
-       of 'k' sequences: a(n), b(n), ... z(n).
+    equation Ly = 0 we want to compute kernel of L, which is a set
+    of 'k' sequences: a(n), b(n), ... z(n).
 
-       Solutions of L are linearly independent iff their Casoratian,
-       denoted as C(a, b, ..., z), do not vanish for n = 0.
+    Solutions of L are linearly independent iff their Casoratian,
+    denoted as C(a, b, ..., z), do not vanish for n = 0.
 
-       Casoratian is defined by k x k determinant::
+    Casoratian is defined by k x k determinant::
 
-                  +  a(n)     b(n)     . . . z(n)     +
-                  |  a(n+1)   b(n+1)   . . . z(n+1)   |
-                  |    .         .     .        .     |
-                  |    .         .       .      .     |
-                  |    .         .         .    .     |
-                  +  a(n+k-1) b(n+k-1) . . . z(n+k-1) +
+       +  a(n)     b(n)     . . . z(n)     +
+       |  a(n+1)   b(n+1)   . . . z(n+1)   |
+       |    .         .     .        .     |
+       |    .         .       .      .     |
+       |    .         .         .    .     |
+       +  a(n+k-1) b(n+k-1) . . . z(n+k-1) +
 
-       It proves very useful in rsolve_hyper() where it is applied
-       to a generating set of a recurrence to factor out linearly
-       dependent solutions and return a basis:
+    It proves very useful in rsolve_hyper() where it is applied
+    to a generating set of a recurrence to factor out linearly
+    dependent solutions and return a basis:
 
-       >>> from diofant import Symbol, casoratian, factorial
-       >>> n = Symbol('n', integer=True)
+    >>> from diofant import Symbol, casoratian, factorial
+    >>> n = Symbol('n', integer=True)
 
-       Exponential and factorial are linearly independent:
+    Exponential and factorial are linearly independent:
 
-       >>> casoratian([2**n, factorial(n)], n) != 0
-       True
-
+    >>> casoratian([2**n, factorial(n)], n) != 0
+    True
     """
     from diofant.matrices import Matrix
 

@@ -10,6 +10,8 @@ from diofant.utilities.randtest import verify_numerically
 
 from diofant.abc import a, b, c, x, y, z
 
+__all__ = ()
+
 
 def test_TR1():
     assert TR1(2*csc(x) + sec(x)) == 1/cos(x) + 2/sin(x)

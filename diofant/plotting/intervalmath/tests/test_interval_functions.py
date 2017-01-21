@@ -4,6 +4,8 @@ from diofant.plotting.intervalmath import (
     exp, floor, imax, imin, interval, log, log10, Or, sin, sinh, sqrt,
     tan, tanh)
 
+__all__ = ()
+
 np = import_module('numpy')
 if not np:
     disabled = True

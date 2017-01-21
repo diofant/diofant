@@ -211,10 +211,11 @@ class RootOf(Expr):
         from diofant.utilities.iterables import sift
 
         def is_imag(c):
-            '''
+            """
             return True if all roots are imaginary (ax**2 + b)
             return False if no roots are imaginary
-            return None if 2 roots are imaginary (ax**N'''
+            return None if 2 roots are imaginary (ax**N
+            """
             u, f, k = c
             deg = f.degree()
             if f.length() == 2:
@@ -310,10 +311,10 @@ class RootOf(Expr):
 
         # sort imaginary roots
         def key(c):
-            '''return, for ax**n+b, +/-root(abs(b/a), b) according to the
+            """return, for ax**n+b, +/-root(abs(b/a), b) according to the
             apparent sign of the imaginary interval, e.g. if the interval
             were (0, 3) the positive root would be returned.
-            '''
+            """
             u, f, k = c
             r = _root(abs(f.TC()/f.LC()), f.degree())
             if u.ay < 0 or u.by < 0:

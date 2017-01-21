@@ -762,7 +762,7 @@ def TR10(rv, first=True):
     >>> TR10(sin(a + b))
     sin(a)*cos(b) + sin(b)*cos(a)
     >>> TR10(sin(a + b + c))
-    (-sin(a)*sin(b) + cos(a)*cos(b))*sin(c) + \
+    (-sin(a)*sin(b) + cos(a)*cos(b))*sin(c) +
     (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)
     """
 

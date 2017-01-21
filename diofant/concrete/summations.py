@@ -561,10 +561,10 @@ def telescopic_direct(L, R, n, limits):
 
 
 def telescopic(L, R, limits):
-    '''Tries to perform the summation using the telescopic property
+    """Tries to perform the summation using the telescopic property
 
     return None if not possible
-    '''
+    """
     (i, a, b) = limits
     if L.is_Add or R.is_Add:
         return

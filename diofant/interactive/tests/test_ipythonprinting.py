@@ -5,6 +5,8 @@ import pytest
 from diofant.core import Symbol, Integer, Rational
 from diofant.external import import_module
 
+__all__ = ()
+
 ipython = import_module("IPython", min_module_version="2.3.0")
 
 

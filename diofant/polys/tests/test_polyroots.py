@@ -20,6 +20,8 @@ from diofant.utilities.randtest import verify_numerically
 
 a, b, c, d, e, q, t, x, y, z = symbols('a,b,c,d,e,q,t,x,y,z')
 
+__all__ = ()
+
 
 def test_roots_linear():
     assert roots_linear(Poly(2*x + 1, x)) == [-Rational(1, 2)]

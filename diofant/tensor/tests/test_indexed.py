@@ -7,6 +7,8 @@ from diofant.tensor.indexed import IndexException
 # import test:
 from diofant import IndexedBase, Idx, Indexed
 
+__all__ = ()
+
 
 def test_Idx_construction():
     i, a, b = symbols('i a b', integer=True)

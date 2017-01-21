@@ -7,6 +7,8 @@ from diofant.polys.domains import ZZ, QQ
 from diofant.polys.specialpolys import f_polys
 from diofant.polys.polyerrors import ExactQuotientFailed
 
+__all__ = ()
+
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
 

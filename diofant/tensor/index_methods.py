@@ -1,13 +1,13 @@
 """Module with functions operating on IndexedBase, Indexed and Idx objects
 
-    - Check shape conformance
-    - Determine indices in resulting expression
+- Check shape conformance
+- Determine indices in resulting expression
 
-    etc.
+etc.
 
-    Methods in this module could be implemented by calling methods on Expr
-    objects instead.  When things stabilize this could be a useful
-    refactoring.
+Methods in this module could be implemented by calling methods on Expr
+objects instead.  When things stabilize this could be a useful
+refactoring.
 """
 
 from functools import reduce

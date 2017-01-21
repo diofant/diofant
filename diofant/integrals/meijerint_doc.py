@@ -1,5 +1,5 @@
 """ This module cooks up a docstring when imported. Its only purpose is to
-    be displayed in the sphinx documentation. """
+be displayed in the sphinx documentation. """
 
 from diofant.integrals.meijerint import _create_lookup_table
 from diofant import latex, Eq, Add, Symbol, default_sort_key

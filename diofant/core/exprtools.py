@@ -1107,7 +1107,9 @@ def factor_nc(expr):
     from diofant.polys import gcd, factor
 
     def _pemexpand(expr):
-        "Expand with the minimal set of hints necessary to check the result."
+        """Expand with the minimal set of hints necessary to check
+        the result.
+        """
         return expr.expand(deep=True, mul=True, power_exp=True,
             power_base=False, basic=False, multinomial=True, log=False)
 

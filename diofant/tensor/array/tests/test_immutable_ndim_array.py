@@ -7,6 +7,8 @@ from diofant import Symbol, Rational, SparseMatrix, Dict
 from diofant.matrices import Matrix
 from diofant.tensor.array.sparse_ndim_array import ImmutableSparseNDimArray
 
+__all__ = ()
+
 
 def test_ndim_array_initiation():
     arr_with_one_element = ImmutableDenseNDimArray([23])

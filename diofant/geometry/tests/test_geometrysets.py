@@ -2,6 +2,8 @@ from diofant import Rational, Symbol
 from diofant.geometry import Circle, Line, Point, Polygon, Segment
 from diofant.sets import FiniteSet, Union, Intersection, EmptySet
 
+__all__ = ()
+
 x = Symbol('x', real=True)
 y = Symbol('y', real=True)
 z = Symbol('z', real=True)

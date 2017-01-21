@@ -2,6 +2,8 @@ from diofant.core import Eq, Rational, Symbol
 from diofant.functions import sin, cos, tan, csc, sec, cot, log, Piecewise
 from diofant.integrals.trigonometry import trigintegrate
 
+__all__ = ()
+
 x = Symbol('x')
 
 

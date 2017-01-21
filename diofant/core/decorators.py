@@ -29,18 +29,18 @@ def deprecated(**decorator_kwargs):
 def _sympifyit(arg, retval=None):
     """decorator to smartly _sympify function arguments
 
-       @_sympifyit('other', NotImplemented)
-       def add(self, other):
-           ...
+    @_sympifyit('other', NotImplemented)
+    def add(self, other):
+       ...
 
-       In add, other can be thought of as already being a Diofant object.
+    In add, other can be thought of as already being a Diofant object.
 
-       If it is not, the code is likely to catch an exception, then other will
-       be explicitly _sympified, and the whole code restarted.
+    If it is not, the code is likely to catch an exception, then other will
+    be explicitly _sympified, and the whole code restarted.
 
-       if _sympify(arg) fails, NotImplemented will be returned
+    if _sympify(arg) fails, NotImplemented will be returned
 
-       see: __sympifyit
+    see: __sympifyit
     """
     def deco(func):
         return __sympifyit(func, arg, retval)
@@ -51,7 +51,7 @@ def _sympifyit(arg, retval=None):
 def __sympifyit(func, arg, retval=None):
     """decorator to _sympify `arg` argument for function `func`
 
-       don't use directly -- use _sympifyit instead
+    don't use directly -- use _sympifyit instead
     """
 
     # we support f(a,b) only

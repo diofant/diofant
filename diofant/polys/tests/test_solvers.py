@@ -5,6 +5,8 @@ from diofant.polys.fields import field
 from diofant.polys.domains import ZZ, QQ
 from diofant.polys.solvers import solve_lin_sys
 
+__all__ = ()
+
 
 def test_solve_lin_sys_2x2_one():
     domain,  x1, x2 = ring("x1,x2", QQ)

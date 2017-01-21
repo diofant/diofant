@@ -12,17 +12,19 @@ from diofant.utilities.codegen import (codegen, make_routine, CCodeGen,
                                        OutputArgument, InOutArgument)
 from diofant.utilities.lambdify import implemented_function
 
+__all__ = ()
+
 # FIXME: Fails due to circular import in with core
 # from diofant import codegen
 
 
 def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
     """Wrapper for dump_fn. dump_fn writes its results to a stream object and
-       this wrapper returns the contents of that stream as a string. This
-       auxiliary function is used by many tests below.
+    this wrapper returns the contents of that stream as a string. This
+    auxiliary function is used by many tests below.
 
-       The header and the empty lines are not generated to facilitate the
-       testing of the output.
+    The header and the empty lines are not generated to facilitate the
+    testing of the output.
     """
     output = StringIO()
     dump_fn(routines, output, prefix, header, empty)

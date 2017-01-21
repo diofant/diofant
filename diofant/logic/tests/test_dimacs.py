@@ -6,6 +6,8 @@ ftp://dimacs.rutgers.edu/pub/challenge/satisfiability/benchmarks/cnf/
 from diofant.logic.utilities.dimacs import load
 from diofant.logic.algorithms.dpll import dpll_satisfiable
 
+__all__ = ()
+
 
 def test_f1():
     assert bool(dpll_satisfiable(load(f1)))

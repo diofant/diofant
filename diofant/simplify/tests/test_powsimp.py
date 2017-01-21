@@ -5,6 +5,8 @@ from diofant import (
 
 from diofant.abc import x, y, z, a, b, c
 
+__all__ = ()
+
 
 def test_powsimp():
     x, y, z, n = symbols('x,y,z,n')

@@ -8,6 +8,8 @@ from diofant.combinatorics.polyhedron import tetrahedron as Tetra, cube
 from diofant.combinatorics.testutil import (_verify_bsgs, _verify_centralizer,
                                             _verify_normal_closure)
 
+__all__ = ()
+
 rmul = Permutation.rmul
 
 

@@ -5,6 +5,8 @@ from diofant import (
 
 from diofant.abc import x, y, n, k
 
+__all__ = ()
+
 
 def test_combsimp():
     assert combsimp(factorial(n)) == factorial(n)

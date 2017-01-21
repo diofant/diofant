@@ -3,6 +3,8 @@ from diofant.vector.coordsysrect import CoordSysCartesian
 from diofant.vector.functions import express, matrix_to_vector
 from diofant import symbols, sin, cos, ImmutableMatrix as Matrix, Integer
 
+__all__ = ()
+
 N = CoordSysCartesian('N')
 q1, q2, q3, q4, q5 = symbols('q1 q2 q3 q4 q5')
 A = N.orient_new_axis('A', q1, N.k)

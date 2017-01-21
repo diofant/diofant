@@ -4,6 +4,8 @@ import pytest
 
 from diofant import Symbol, var, Function, FunctionClass
 
+__all__ = ()
+
 # make z1 with call-depth = 1
 
 

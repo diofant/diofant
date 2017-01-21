@@ -557,7 +557,7 @@ class Hyper_Function(Expr):
 
     def difficulty(self, func):
         """ Estimate how many steps it takes to reach ``func`` from self.
-            Return -1 if impossible. """
+        Return -1 if impossible. """
         if self.gamma != func.gamma:
             return -1
         oabuckets, obbuckets, abuckets, bbuckets = [sift(params, _mod1) for
@@ -1361,7 +1361,7 @@ class ReduceOrder(Operator):
     @classmethod
     def _meijer(cls, b, a, sign):
         """ Cancel b + sign*s and a + sign*s
-            This is for meijer G functions. """
+        This is for meijer G functions. """
         b = sympify(b)
         a = sympify(a)
         n = b - a
@@ -1698,7 +1698,7 @@ def try_shifted_sum(func, z):
 
 def try_polynomial(func, z):
     """ Recognise polynomial cases. Returns None if not such a case.
-        Requires order to be fully reduced. """
+    Requires order to be fully reduced. """
     abuckets, bbuckets = sift(func.ap, _mod1), sift(func.bq, _mod1)
     a0 = abuckets[Integer(0)]
     b0 = bbuckets[Integer(0)]
@@ -2127,11 +2127,11 @@ def devise_plan_meijer(fro, to, z):
 
     def try_shift(f, t, shifter, diff, counter):
         """ Try to apply ``shifter`` in order to bring some element in ``f``
-            nearer to its counterpart in ``to``. ``diff`` is +/- 1 and
-            determines the effect of ``shifter``. Counter is a list of elements
-            blocking the shift.
+        nearer to its counterpart in ``to``. ``diff`` is +/- 1 and
+        determines the effect of ``shifter``. Counter is a list of elements
+        blocking the shift.
 
-            Return an operator if change was possible, else None.
+        Return an operator if change was possible, else None.
         """
         for idx, (a, b) in enumerate(zip(f, t)):
             if (

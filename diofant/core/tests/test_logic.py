@@ -5,6 +5,8 @@ import pytest
 from diofant.core.logic import (fuzzy_not, Logic, And, Or, Not, fuzzy_and,
                                 fuzzy_or, _fuzzy_group)
 
+__all__ = ()
+
 T = True
 F = False
 U = None

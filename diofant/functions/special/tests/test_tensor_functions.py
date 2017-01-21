@@ -1,6 +1,8 @@
 from diofant import (adjoint, conjugate, Dummy, Eijk, KroneckerDelta,
                      LeviCivita, Symbol, symbols, transpose)
 
+__all__ = ()
+
 x, y = symbols('x y')
 
 

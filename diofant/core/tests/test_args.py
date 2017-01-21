@@ -1,4 +1,4 @@
-"""Test whether all elements of cls.args are instances of Basic. """
+"""Test whether all elements of cls.args are instances of Basic."""
 
 # NOTE: keep tests sorted by (module, class name) key.
 
@@ -14,6 +14,8 @@ from diofant import Basic, S, symbols, sqrt, sin, oo, Interval, exp, Integer
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
 from diofant.abc import x, y, z
+
+__all__ = ()
 
 
 def test_all_classes_are_tested():

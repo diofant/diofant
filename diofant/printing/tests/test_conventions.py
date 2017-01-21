@@ -4,6 +4,8 @@ from diofant.functions.special.polynomials import legendre
 from diofant.functions.combinatorial.numbers import bell
 from diofant.printing.conventions import split_super_sub, requires_partial
 
+__all__ = ()
+
 
 def test_super_sub():
     assert split_super_sub("beta_13_2") == ("beta", [], ["13", "2"])

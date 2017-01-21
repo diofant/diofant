@@ -6,6 +6,8 @@ from diofant.core import (Symbol, S, Rational, Integer, Dummy,
 from diofant.core.facts import InconsistentAssumptions
 from diofant import simplify
 
+__all__ = ()
+
 
 def test_symbol_unset():
     x = Symbol('x', extended_real=True, integer=True)

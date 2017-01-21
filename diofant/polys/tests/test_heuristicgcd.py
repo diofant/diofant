@@ -2,6 +2,8 @@ from diofant.polys.rings import ring
 from diofant.polys.domains import ZZ
 from diofant.polys.heuristicgcd import heugcd
 
+__all__ = ()
+
 
 def test_heugcd_univariate_integers():
     R, x = ring("x", ZZ)

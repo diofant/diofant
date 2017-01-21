@@ -3,6 +3,8 @@ from diofant.combinatorics.graycode import (GrayCode, bin_to_gray,
                                             get_subset_from_bitstring,
                                             graycode_subsets)
 
+__all__ = ()
+
 
 def test_graycode():
     g = GrayCode(2)

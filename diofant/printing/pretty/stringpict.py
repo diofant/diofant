@@ -204,10 +204,10 @@ class stringPict:
     def render(self, * args, **kwargs):
         """Return the string form of self.
 
-           Unless the argument line_break is set to False, it will
-           break the expression in a form that can be printed
-           on the terminal without being broken up.
-         """
+        Unless the argument line_break is set to False, it will
+        break the expression in a form that can be printed
+        on the terminal without being broken up.
+        """
         if kwargs["wrap_line"] is False:
             return "\n".join(self.picture)
 

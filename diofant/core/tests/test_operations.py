@@ -4,6 +4,8 @@ from diofant import Integer
 from diofant.core.operations import AssocOp, LatticeOp
 from diofant.core.sympify import SympifyError
 
+__all__ = ()
+
 
 class MyMul(AssocOp):
     identity = Integer(1)

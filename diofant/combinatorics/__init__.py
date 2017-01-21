@@ -1,3 +1,7 @@
+"""
+Combinatorics package.
+"""
+
 from diofant.combinatorics.permutations import Permutation, Cycle
 from diofant.combinatorics.prufer import Prufer
 from diofant.combinatorics.generators import cyclic, alternating, symmetric, dihedral

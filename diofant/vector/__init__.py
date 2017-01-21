@@ -1,3 +1,7 @@
+"""
+Package for symbolic vector algebra in 3D.
+"""
+
 from diofant.vector.vector import (Vector, VectorAdd, VectorMul,
                                    BaseVector, VectorZero)
 from diofant.vector.dyadic import (Dyadic, DyadicAdd, DyadicMul,

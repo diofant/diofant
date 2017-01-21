@@ -1238,8 +1238,8 @@ def eliminate_implications(expr):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import Implies, Equivalent, \
-         eliminate_implications
+    >>> from diofant.logic.boolalg import (Implies, Equivalent,
+    ...                                    eliminate_implications)
     >>> from diofant.abc import A, B, C
     >>> eliminate_implications(Implies(A, B))
     Or(B, Not(A))

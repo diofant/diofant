@@ -47,7 +47,7 @@ def smoothness(n):
 
 
 def smoothness_p(n, m=-1, power=0, visual=None):
-    """
+    r"""
     Return a list of [m, (p, (M, sm(p + m), psm(p + m)))...]
     where:
 
@@ -83,7 +83,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
         >>> f
         {3: 2, 17: 1}
         >>> smoothness_p(f)
-        'p**i=3**2 has p-1 B=2, B-pow=2\\np**i=17**1 has p-1 B=2, B-pow=16'
+        'p**i=3**2 has p-1 B=2, B-pow=2\np**i=17**1 has p-1 B=2, B-pow=16'
         >>> smoothness_p(_)
         {3: 2, 17: 1}
 
@@ -714,7 +714,7 @@ def _factorint_small(factors, n, limit, fail_max):
 
     def done(n, d):
         """return n, d if the sqrt(n) wasn't reached yet, else
-           n, 0 indicating that factoring is done.
+        n, 0 indicating that factoring is done.
         """
         if d*d <= n:
             return n, d

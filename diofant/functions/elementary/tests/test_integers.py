@@ -3,6 +3,8 @@ import pytest
 from diofant import (Symbol, floor, nan, oo, E, symbols, ceiling, pi, Rational,
                      Float, I, sin, exp, log, factorial, S)
 
+__all__ = ()
+
 
 def test_floor():
 

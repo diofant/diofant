@@ -2,6 +2,8 @@ import pytest
 
 from diofant import Symbol, Function, exp, sqrt, Rational, I, cos, tan
 
+__all__ = ()
+
 
 def test_add_eval():
     a = Symbol("a")

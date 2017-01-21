@@ -14,6 +14,8 @@ from diofant.tensor.tensor import (TensorIndexType, tensor_indices, TensorSymmet
                                    riemann_cyclic, TensMul, tensorsymmetry,
                                    tensorhead, TensorManager, TensExpr, TIDS)
 
+__all__ = ()
+
 numpy = import_module("numpy")
 
 

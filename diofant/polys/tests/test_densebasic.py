@@ -42,6 +42,8 @@ from diofant.polys.domains import ZZ, QQ
 from diofant.polys.rings import ring
 from diofant import oo, Integer, Rational
 
+__all__ = ()
+
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
 

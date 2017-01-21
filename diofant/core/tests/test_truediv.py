@@ -2,6 +2,8 @@
 
 from diofant import Rational, Symbol, Float
 
+__all__ = ()
+
 
 def test_truediv():
     assert 1/2 != 0

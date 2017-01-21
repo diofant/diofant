@@ -5,6 +5,8 @@ from diofant.geometry import (Line, Point, Ray, Segment,
                               Point3D, Line3D, Ray3D, Segment3D, Plane)
 from diofant.geometry.util import are_coplanar
 
+__all__ = ()
+
 x = Symbol('x', real=True)
 y = Symbol('y', real=True)
 z = Symbol('z', real=True)

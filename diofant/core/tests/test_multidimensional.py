@@ -6,6 +6,8 @@ from diofant.core.multidimensional import vectorize
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_vectorize():
     vsin1 = vectorize(Integer(0))(sin)

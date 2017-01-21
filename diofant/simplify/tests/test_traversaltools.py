@@ -3,7 +3,10 @@
 from diofant.simplify.traversaltools import use
 
 from diofant import expand, factor, I
+
 from diofant.abc import x, y
+
+__all__ = ()
 
 
 def test_use():

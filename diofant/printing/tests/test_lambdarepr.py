@@ -5,6 +5,8 @@ from diofant.printing.lambdarepr import lambdarepr
 
 from diofant.abc import x, y, z
 
+__all__ = ()
+
 
 def test_basic():
     assert lambdarepr(x*y) == "x*y"

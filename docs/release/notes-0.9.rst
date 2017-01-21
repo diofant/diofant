@@ -28,6 +28,11 @@ Backwards-incompatible changes
 Minor changes
 =============
 
+Developer changes
+=================
+
+* Enabled docstring testing with flake8, see `#408 <https://github.com/diofant/diofant/pull/408>`_.
+
 Issues closed
 =============
 

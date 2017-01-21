@@ -5,6 +5,8 @@ from diofant import (adjoint, And, Basic, conjugate, diff, expand, Eq, Function,
                      oo, Or, pi, Piecewise, piecewise_fold, Rational, solve,
                      symbols, transpose, cos, exp, Abs, Not, Symbol, sympify, Gt)
 
+__all__ = ()
+
 x, y = symbols('x y')
 z = symbols('z', nonzero=True)
 
