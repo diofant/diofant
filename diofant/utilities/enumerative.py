@@ -897,7 +897,6 @@ class MultisetPartitionTraverser():
                 self.lpart -= 1
 
     def enum_range(self, multiplicities, lb, ub):
-
         """Enumerate the partitions of a multiset with
         ``lb < num(parts) <= ub``.
 
