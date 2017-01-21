@@ -3,7 +3,7 @@
 from diofant.polys.constructor import construct_domain
 from diofant.polys.domains import ZZ, QQ, RR, EX
 from diofant.polys.domains.realfield import RealField
-from diofant import sqrt, sin, Float, Integer, Rational
+from diofant import sqrt, sin, Float, Integer, Rational, E, GoldenRatio
 
 from diofant.abc import x, y
 
@@ -127,3 +127,13 @@ def test_precision():
     result = construct_domain([f2])
     y = result[1][0]
     assert y-1 > 1e-50
+
+
+def test_sympyissue_11538():
+    assert construct_domain(E)[0] == ZZ[E]
+
+    assert (construct_domain(x**2 + 2*x + E) ==
+            (ZZ[x, E], ZZ[x, E].convert(x**2 + 2*x + E)))
+
+    assert (construct_domain(x + y + GoldenRatio) ==
+            (EX, EX.convert(x + y + GoldenRatio)))

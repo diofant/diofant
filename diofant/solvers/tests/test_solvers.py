@@ -8,7 +8,7 @@ from diofant import (
     Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
     erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow, expand_log,
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
-    root, simplify, atan2, arg, SparseMatrix, Tuple, oo)
+    root, simplify, atan2, arg, SparseMatrix, Tuple, oo, E, cbrt)
 from diofant.core.function import nfloat
 from diofant.solvers import solve_linear_system, solve_undetermined_coeffs
 from diofant.solvers.solvers import _invert, checksol, posify
@@ -1383,3 +1383,8 @@ def test_sympyissue_8828():
 
 def test_sympyissue_10391():
     assert solve((2*x + 8)*exp(-6*x), x) == [-4]
+
+
+def test_sympyissue_11538():
+    eqs = (x - y**3 + 4, x + y + 4 + 4*E)
+    assert len(solve(eqs, x, y)) == 3
