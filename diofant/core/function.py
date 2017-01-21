@@ -1628,9 +1628,11 @@ class Subs(Expr):
                 return new
 
     def _eval_derivative(self, s):
-        return Add(*[self.func(p.diff(s)*self.expr.diff(v) +
-                               (self.expr.diff(s) if s != v else S.Zero),
-                               self.variables, self.point).doit()
+        return Add((self.func(self.expr.diff(s),
+                              self.variables, self.point).doit()
+                    if s not in self.variables else S.Zero),
+                   *[p.diff(s)*self.func(self.expr.diff(v),
+                                         self.variables, self.point).doit()
                      for v, p in zip(self.variables, self.point)])
 
 
