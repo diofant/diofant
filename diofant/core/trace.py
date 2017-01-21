@@ -58,9 +58,8 @@ def _cycle_permute(l):
 
 
 def _rearrange_args(l):
-    """ this just moves the last arg to first position
-     to enable expansion of args
-     A,B,A ==> A**2,B
+    """ Just moves the last arg to first position
+    to enable expansion of args A,B,A ==> A**2,B
     """
     assert len(l) > 1
 

@@ -1,15 +1,16 @@
 """Integration functions that integrates a diofant expression.
 
-    Examples
-    ========
+Examples
+========
 
-    >>> from diofant import integrate, sin
-    >>> from diofant.abc import x
-    >>> integrate(1/x,x)
-    log(x)
-    >>> integrate(sin(x),x)
-    -cos(x)
+>>> from diofant import integrate, sin
+>>> from diofant.abc import x
+>>> integrate(1/x,x)
+log(x)
+>>> integrate(sin(x),x)
+-cos(x)
 """
+
 from .integrals import integrate, Integral, line_integrate
 from .transforms import (mellin_transform, inverse_mellin_transform,
                          MellinTransform, InverseMellinTransform,

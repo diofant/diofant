@@ -885,51 +885,51 @@ def rad_rationalize(num, den):
 
 def fraction(expr, exact=False):
     """Returns a pair with expression's numerator and denominator.
-       If the given expression is not a fraction then this function
-       will return the tuple (expr, 1).
 
-       This function will not make any attempt to simplify nested
-       fractions or to do any term rewriting at all.
+    If the given expression is not a fraction then this function
+    will return the tuple (expr, 1).
 
-       If only one of the numerator/denominator pair is needed then
-       use numer(expr) or denom(expr) functions respectively.
+    This function will not make any attempt to simplify nested
+    fractions or to do any term rewriting at all.
 
-       >>> from diofant import fraction, Rational, Symbol
-       >>> from diofant.abc import x, y
+    If only one of the numerator/denominator pair is needed then
+    use numer(expr) or denom(expr) functions respectively.
 
-       >>> fraction(x/y)
-       (x, y)
-       >>> fraction(x)
-       (x, 1)
+    >>> from diofant import fraction, Rational, Symbol
+    >>> from diofant.abc import x, y
 
-       >>> fraction(1/y**2)
-       (1, y**2)
+    >>> fraction(x/y)
+    (x, y)
+    >>> fraction(x)
+    (x, 1)
 
-       >>> fraction(x*y/2)
-       (x*y, 2)
-       >>> fraction(Rational(1, 2))
-       (1, 2)
+    >>> fraction(1/y**2)
+    (1, y**2)
 
-       This function will also work fine with assumptions:
+    >>> fraction(x*y/2)
+    (x*y, 2)
+    >>> fraction(Rational(1, 2))
+    (1, 2)
 
-       >>> k = Symbol('k', negative=True)
-       >>> fraction(x * y**k)
-       (x, y**(-k))
+    This function will also work fine with assumptions:
 
-       If we know nothing about sign of some exponent and 'exact'
-       flag is unset, then structure this exponent's structure will
-       be analyzed and pretty fraction will be returned:
+    >>> k = Symbol('k', negative=True)
+    >>> fraction(x * y**k)
+    (x, y**(-k))
 
-       >>> from diofant import exp
-       >>> fraction(2*x**(-y))
-       (2, x**y)
+    If we know nothing about sign of some exponent and 'exact'
+    flag is unset, then structure this exponent's structure will
+    be analyzed and pretty fraction will be returned:
 
-       >>> fraction(exp(-x))
-       (1, E**x)
+    >>> from diofant import exp
+    >>> fraction(2*x**(-y))
+    (2, x**y)
 
-       >>> fraction(exp(-x), exact=True)
-       (E**(-x), 1)
+    >>> fraction(exp(-x))
+    (1, E**x)
 
+    >>> fraction(exp(-x), exact=True)
+    (E**(-x), 1)
     """
     expr = sympify(expr)
 

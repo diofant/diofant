@@ -1,9 +1,9 @@
 """Module for Diofant containers
 
-    (Diofant objects that store other Diofant objects)
+(Diofant objects that store other Diofant objects)
 
-    The containers implemented in this module are subclassed to Basic.
-    They are supposed to work seamlessly within the Diofant framework.
+The containers implemented in this module are subclassed to Basic.
+They are supposed to work seamlessly within the Diofant framework.
 """
 
 from .basic import Basic
@@ -105,7 +105,8 @@ class Tuple(Basic):
 
     def index(self, value, start=None, stop=None):
         """T.index(value, [start, [stop]]) -> integer -- return first index of value.
-           Raises ValueError if the value is not present."""
+
+        Raises ValueError if the value is not present."""
         # XXX: One would expect:
         #
         # return self.args.index(value, start, stop)

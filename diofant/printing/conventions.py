@@ -9,18 +9,17 @@ import collections
 def split_super_sub(text):
     """Split a symbol name into a name, superscripts and subscripts
 
-       The first part of the symbol name is considered to be its actual
-       'name', followed by super- and subscripts. Each superscript is
-       preceded with a "^" character or by "__". Each subscript is preceded
-       by a "_" character.  The three return values are the actual name, a
-       list with superscripts and a list with subscripts.
+    The first part of the symbol name is considered to be its actual
+    'name', followed by super- and subscripts. Each superscript is
+    preceded with a "^" character or by "__". Each subscript is preceded
+    by a "_" character.  The three return values are the actual name, a
+    list with superscripts and a list with subscripts.
 
-       >>> from diofant.printing.conventions import split_super_sub
-       >>> split_super_sub('a_x^1')
-       ('a', ['1'], ['x'])
-       >>> split_super_sub('var_sub1__sup_sub2')
-       ('var', ['sup'], ['sub1', 'sub2'])
-
+    >>> from diofant.printing.conventions import split_super_sub
+    >>> split_super_sub('a_x^1')
+    ('a', ['1'], ['x'])
+    >>> split_super_sub('var_sub1__sup_sub2')
+    ('var', ['sup'], ['sub1', 'sub2'])
     """
     pos = 0
     name = None

@@ -6,37 +6,37 @@ from diofant.core.compatibility import default_sort_key
 def change_mul(node, x):
     """change_mul(node, x)
 
-       Rearranges the operands of a product, bringing to front any simple
-       DiracDelta expression.
+    Rearranges the operands of a product, bringing to front any simple
+    DiracDelta expression.
 
-       If no simple DiracDelta expression was found, then all the DiracDelta
-       expressions are simplified (using DiracDelta.simplify).
+    If no simple DiracDelta expression was found, then all the DiracDelta
+    expressions are simplified (using DiracDelta.simplify).
 
-       Return: (dirac, new node)
-       Where:
-         o dirac is either a simple DiracDelta expression or None (if no simple
-           expression was found);
-         o new node is either a simplified DiracDelta expressions or None (if it
-           could not be simplified).
+    Return: (dirac, new node)
+    Where:
+        o dirac is either a simple DiracDelta expression or None (if no simple
+          expression was found);
+        o new node is either a simplified DiracDelta expressions or None (if it
+          could not be simplified).
 
-       Examples
-       ========
+    Examples
+    ========
 
-       >>> from diofant import DiracDelta, cos
-       >>> from diofant.integrals.deltafunctions import change_mul
-       >>> from diofant.abc import x, y
-       >>> change_mul(x*y*DiracDelta(x)*cos(x), x)
-       (DiracDelta(x), x*y*cos(x))
-       >>> change_mul(x*y*DiracDelta(x**2 - 1)*cos(x), x)
-       (None, x*y*cos(x)*DiracDelta(x - 1)/2 + x*y*cos(x)*DiracDelta(x + 1)/2)
-       >>> change_mul(x*y*DiracDelta(cos(x))*cos(x), x)
-       (None, None)
+    >>> from diofant import DiracDelta, cos
+    >>> from diofant.integrals.deltafunctions import change_mul
+    >>> from diofant.abc import x, y
+    >>> change_mul(x*y*DiracDelta(x)*cos(x), x)
+    (DiracDelta(x), x*y*cos(x))
+    >>> change_mul(x*y*DiracDelta(x**2 - 1)*cos(x), x)
+    (None, x*y*cos(x)*DiracDelta(x - 1)/2 + x*y*cos(x)*DiracDelta(x + 1)/2)
+    >>> change_mul(x*y*DiracDelta(cos(x))*cos(x), x)
+    (None, None)
 
-       See Also
-       ========
+    See Also
+    ========
 
-       diofant.functions.special.delta_functions.DiracDelta
-       deltaintegrate
+    diofant.functions.special.delta_functions.DiracDelta
+    deltaintegrate
     """
     if not (node.is_Mul or node.is_Pow):
         return node

@@ -1234,10 +1234,12 @@ class Mul(Expr, AssocOp):
             return a, S.One
 
         def breakup(eq):
-            """break up powers of eq when treated as a Mul:
-                   b**(Rational*e) -> b**e, Rational
-                commutatives come back as a dictionary {b**e: Rational}
-                noncommutatives come back as a list [(b**e, Rational)]
+            """break up powers of eq when treated as a Mul::
+
+                b**(Rational*e) -> b**e, Rational
+
+            commutatives come back as a dictionary {b**e: Rational}
+            noncommutatives come back as a list [(b**e, Rational)]
             """
 
             (c, nc) = (defaultdict(int), list())

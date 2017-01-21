@@ -129,11 +129,11 @@ def try_run(commands):
 def run_test(label, routines, numerical_tests, language, commands, friendly=True):
     """A driver for the codegen tests.
 
-       This driver assumes that a compiler ifort is present in the PATH and that
-       ifort is (at least) a Fortran 90 compiler. The generated code is written in
-       a temporary directory, together with a main program that validates the
-       generated code. The test passes when the compilation and the validation
-       run correctly.
+    This driver assumes that a compiler ifort is present in the PATH and that
+    ifort is (at least) a Fortran 90 compiler. The generated code is written in
+    a temporary directory, together with a main program that validates the
+    generated code. The test passes when the compilation and the validation
+    run correctly.
     """
 
     # Check input arguments before touching the file system

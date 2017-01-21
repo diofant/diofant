@@ -421,7 +421,7 @@ def xobj(symb, length):
 def vobj(symb, height):
     """Construct vertical object of a given height
 
-       see: xobj
+    see: xobj
     """
     return '\n'.join( xobj(symb, height) )
 
@@ -429,7 +429,7 @@ def vobj(symb, height):
 def hobj(symb, width):
     """Construct horizontal object of a given width
 
-       see: xobj
+    see: xobj
     """
     return ''.join( xobj(symb, width) )
 

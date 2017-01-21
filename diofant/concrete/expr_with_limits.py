@@ -331,8 +331,9 @@ class ExprWithLimits(Expr):
 
 
 class AddWithLimits(ExprWithLimits):
-    r"""Represents unevaluated oriented additions.
-        Parent class for Integral and Sum.
+    """Represents unevaluated oriented additions.
+
+    Parent class for Integral and Sum.
     """
 
     def __new__(cls, function, *symbols, **assumptions):

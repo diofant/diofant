@@ -280,11 +280,10 @@ class FCodePrinter(CodePrinter):
     def _wrap_fortran(self, lines):
         r"""Wrap long Fortran lines
 
-           Argument:
-             lines  --  a list of lines (without \n character)
+        Argument: lines  --  a list of lines (without \n character)
 
-           A comment line is split at white space. Code lines are split with a more
-           complex rule to give nice results.
+        A comment line is split at white space. Code lines are split with a more
+        complex rule to give nice results.
         """
         # routine to find split point in a code line
         my_alnum = set("_+-." + string.digits + string.ascii_letters)
@@ -518,6 +517,6 @@ def fcode(expr, assign_to=None, **settings):
 def print_fcode(expr, **settings):
     """Prints the Fortran representation of the given expression.
 
-       See fcode for the meaning of the optional arguments.
+    See fcode for the meaning of the optional arguments.
     """
     print(fcode(expr, **settings))

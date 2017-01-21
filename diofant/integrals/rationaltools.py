@@ -8,28 +8,28 @@ from diofant.polys import Poly, resultant, ZZ
 def ratint(f, x, **flags):
     """Performs indefinite integration of rational functions.
 
-       Given a field :math:`K` and a rational function :math:`f = p/q`,
-       where :math:`p` and :math:`q` are polynomials in :math:`K[x]`,
-       returns a function :math:`g` such that :math:`f = g'`.
+    Given a field :math:`K` and a rational function :math:`f = p/q`,
+    where :math:`p` and :math:`q` are polynomials in :math:`K[x]`,
+    returns a function :math:`g` such that :math:`f = g'`.
 
-       >>> from diofant.integrals.rationaltools import ratint
-       >>> from diofant.abc import x
+    >>> from diofant.integrals.rationaltools import ratint
+    >>> from diofant.abc import x
 
-       >>> ratint(36/(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2), x)
-       (12*x + 6)/(x**2 - 1) + 4*log(x - 2) - 4*log(x + 1)
+    >>> ratint(36/(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2), x)
+    (12*x + 6)/(x**2 - 1) + 4*log(x - 2) - 4*log(x + 1)
 
-       References
-       ==========
+    References
+    ==========
 
-       .. [Bro05] M. Bronstein, Symbolic Integration I: Transcendental
-          Functions, Second Edition, Springer-Verlag, 2005, pp. 35-70
+    .. [Bro05] M. Bronstein, Symbolic Integration I: Transcendental
+       Functions, Second Edition, Springer-Verlag, 2005, pp. 35-70
 
-       See Also
-       ========
+    See Also
+    ========
 
-       diofant.integrals.integrals.Integral.doit
-       diofant.integrals.rationaltools.ratint_logpart
-       diofant.integrals.rationaltools.ratint_ratpart
+    diofant.integrals.integrals.Integral.doit
+    diofant.integrals.rationaltools.ratint_logpart
+    diofant.integrals.rationaltools.ratint_ratpart
     """
     if type(f) is not tuple:
         p, q = f.as_numer_denom()

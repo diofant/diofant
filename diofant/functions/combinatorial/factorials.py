@@ -26,53 +26,54 @@ class CombinatorialFunction(Function):
 
 class factorial(CombinatorialFunction):
     """Implementation of factorial function over nonnegative integers.
-       By convention (consistent with the gamma function and the binomial
-       coefficients), factorial of a negative integer is complex infinity.
 
-       The factorial is very important in combinatorics where it gives
-       the number of ways in which `n` objects can be permuted. It also
-       arises in calculus, probability, number theory, etc.
+    By convention (consistent with the gamma function and the binomial
+    coefficients), factorial of a negative integer is complex infinity.
 
-       There is strict relation of factorial with gamma function. In
-       fact n! = gamma(n+1) for nonnegative integers. Rewrite of this
-       kind is very useful in case of combinatorial simplification.
+    The factorial is very important in combinatorics where it gives
+    the number of ways in which `n` objects can be permuted. It also
+    arises in calculus, probability, number theory, etc.
 
-       Computation of the factorial is done using two algorithms. For
-       small arguments naive product is evaluated. However for bigger
-       input algorithm Prime-Swing is used. It is the fastest algorithm
-       known and computes n! via prime factorization of special class
-       of numbers, called here the 'Swing Numbers'.
+    There is strict relation of factorial with gamma function. In
+    fact n! = gamma(n+1) for nonnegative integers. Rewrite of this
+    kind is very useful in case of combinatorial simplification.
 
-       Examples
-       ========
+    Computation of the factorial is done using two algorithms. For
+    small arguments naive product is evaluated. However for bigger
+    input algorithm Prime-Swing is used. It is the fastest algorithm
+    known and computes n! via prime factorization of special class
+    of numbers, called here the 'Swing Numbers'.
 
-       >>> from diofant import Symbol, factorial, Rational
-       >>> n = Symbol('n', integer=True)
+    Examples
+    ========
 
-       >>> factorial(0)
-       1
+    >>> from diofant import Symbol, factorial, Rational
+    >>> n = Symbol('n', integer=True)
 
-       >>> factorial(7)
-       5040
+    >>> factorial(0)
+    1
 
-       >>> factorial(-2)
-       zoo
+    >>> factorial(7)
+    5040
 
-       >>> factorial(n)
-       factorial(n)
+    >>> factorial(-2)
+    zoo
 
-       >>> factorial(2*n)
-       factorial(2*n)
+    >>> factorial(n)
+    factorial(n)
 
-       >>> factorial(Rational(1, 2))
-       factorial(1/2)
+    >>> factorial(2*n)
+    factorial(2*n)
 
-       See Also
-       ========
+    >>> factorial(Rational(1, 2))
+    factorial(1/2)
 
-       diofant.functions.combinatorial.factorials.factorial2
-       diofant.functions.combinatorial.factorials.RisingFactorial
-       diofant.functions.combinatorial.factorials.FallingFactorial
+    See Also
+    ========
+
+    diofant.functions.combinatorial.factorials.factorial2
+    diofant.functions.combinatorial.factorials.RisingFactorial
+    diofant.functions.combinatorial.factorials.FallingFactorial
     """
 
     def fdiff(self, argindex=1):
@@ -385,36 +386,38 @@ class factorial2(CombinatorialFunction):
 
 class RisingFactorial(CombinatorialFunction):
     """Rising factorial (also called Pochhammer symbol) is a double valued
-       function arising in concrete mathematics, hypergeometric functions
-       and series expansions. It is defined by:
+    function arising in concrete mathematics, hypergeometric functions
+    and series expansions.
+
+    It is defined by::
 
                    rf(x, k) = x * (x+1) * ... * (x + k-1)
 
-       where 'x' can be arbitrary expression and 'k' is an integer. For
-       more information check "Concrete mathematics" by Graham, pp. 66
-       or visit http://mathworld.wolfram.com/RisingFactorial.html page.
+    where 'x' can be arbitrary expression and 'k' is an integer. For
+    more information check "Concrete mathematics" by Graham, pp. 66
+    or visit http://mathworld.wolfram.com/RisingFactorial.html page.
 
-       Examples
-       ========
+    Examples
+    ========
 
-       >>> from diofant import rf
-       >>> from diofant.abc import x
+    >>> from diofant import rf
+    >>> from diofant.abc import x
 
-       >>> rf(x, 0)
-       1
+    >>> rf(x, 0)
+    1
 
-       >>> rf(1, 5)
-       120
+    >>> rf(1, 5)
+    120
 
-       >>> rf(x, 5) == x*(1 + x)*(2 + x)*(3 + x)*(4 + x)
-       True
+    >>> rf(x, 5) == x*(1 + x)*(2 + x)*(3 + x)*(4 + x)
+    True
 
-       See Also
-       ========
+    See Also
+    ========
 
-       diofant.functions.combinatorial.factorials.factorial
-       diofant.functions.combinatorial.factorials.factorial2
-       diofant.functions.combinatorial.factorials.FallingFactorial
+    diofant.functions.combinatorial.factorials.factorial
+    diofant.functions.combinatorial.factorials.factorial2
+    diofant.functions.combinatorial.factorials.FallingFactorial
     """
 
     @classmethod
@@ -462,33 +465,35 @@ class RisingFactorial(CombinatorialFunction):
 
 class FallingFactorial(CombinatorialFunction):
     """Falling factorial (related to rising factorial) is a double valued
-       function arising in concrete mathematics, hypergeometric functions
-       and series expansions. It is defined by
+    function arising in concrete mathematics, hypergeometric functions
+    and series expansions.
+
+    It is defined by::
 
                    ff(x, k) = x * (x-1) * ... * (x - k+1)
 
-       where 'x' can be arbitrary expression and 'k' is an integer. For
-       more information check "Concrete mathematics" by Graham, pp. 66
-       or visit http://mathworld.wolfram.com/FallingFactorial.html page.
+    where 'x' can be arbitrary expression and 'k' is an integer. For
+    more information check "Concrete mathematics" by Graham, pp. 66
+    or visit http://mathworld.wolfram.com/FallingFactorial.html page.
 
-       >>> from diofant import ff
-       >>> from diofant.abc import x
+    >>> from diofant import ff
+    >>> from diofant.abc import x
 
-       >>> ff(x, 0)
-       1
+    >>> ff(x, 0)
+    1
 
-       >>> ff(5, 5)
-       120
+    >>> ff(5, 5)
+    120
 
-       >>> ff(x, 5) == x*(x-1)*(x-2)*(x-3)*(x-4)
-       True
+    >>> ff(x, 5) == x*(x-1)*(x-2)*(x-3)*(x-4)
+    True
 
-       See Also
-       ========
+    See Also
+    ========
 
-       diofant.functions.combinatorial.factorials.factorial
-       diofant.functions.combinatorial.factorials.factorial2
-       diofant.functions.combinatorial.factorials.RisingFactorial
+    diofant.functions.combinatorial.factorials.factorial
+    diofant.functions.combinatorial.factorials.factorial2
+    diofant.functions.combinatorial.factorials.RisingFactorial
     """
 
     @classmethod
