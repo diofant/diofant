@@ -2321,8 +2321,8 @@ class fresnelc(FresnelIntegral):
 
 
 class _erfs(Function):
-    """
-    Helper function to make the `\\mathrm{erf}(z)` function
+    r"""
+    Helper function to make the `\mathrm{erf}(z)` function
     tractable for the Gruntz algorithm.
     """
 
@@ -2374,8 +2374,8 @@ class _erfs(Function):
 
 
 class _eis(Function):
-    """
-    Helper function to make the `\\mathrm{Ei}(z)` and `\\mathrm{li}(z)` functions
+    r"""
+    Helper function to make the `\mathrm{Ei}(z)` and `\mathrm{li}(z)` functions
     tractable for the Gruntz algorithm.
     """
 

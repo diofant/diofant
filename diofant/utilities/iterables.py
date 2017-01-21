@@ -487,7 +487,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
 
 
 def capture(func):
-    """Return the printed output of func().
+    r"""Return the printed output of func().
 
     `func` should be a function without arguments that produces output with
     print statements.
@@ -501,8 +501,7 @@ def capture(func):
     >>> 'hello' in capture(foo) # foo, not foo()
     True
     >>> capture(lambda: pprint(2/x, use_unicode=False))
-    '2\\n-\\nx\\n'
-
+    '2\n-\nx\n'
     """
     from io import StringIO
     import sys
@@ -1648,14 +1647,15 @@ def generate_derangements(perm):
     >>> list(generate_derangements([0, 1, 2]))
     [[1, 2, 0], [2, 0, 1]]
     >>> list(generate_derangements([0, 1, 2, 3]))
-    [[1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1], \
-    [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1], \
-    [3, 2, 1, 0]]
+    [[1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1],
+     [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1],
+     [3, 2, 1, 0]]
     >>> list(generate_derangements([0, 1, 1]))
     []
 
     See Also
     ========
+
     diofant.functions.combinatorial.factorials.subfactorial
     """
     p = multiset_permutations(perm)
@@ -1728,7 +1728,7 @@ def generate_oriented_forest(n):
     References
     ==========
 
-    .. [1] T. Beyer and S.M. Hedetniemi: constant time generation of \
+    .. [1] T. Beyer and S.M. Hedetniemi: constant time generation of
            rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
     .. [2] http://stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
 
@@ -1737,8 +1737,8 @@ def generate_oriented_forest(n):
 
     >>> from diofant.utilities.iterables import generate_oriented_forest
     >>> list(generate_oriented_forest(4))
-    [[0, 1, 2, 3], [0, 1, 2, 2], [0, 1, 2, 1], [0, 1, 2, 0], \
-    [0, 1, 1, 1], [0, 1, 1, 0], [0, 1, 0, 1], [0, 1, 0, 0], [0, 0, 0, 0]]
+    [[0, 1, 2, 3], [0, 1, 2, 2], [0, 1, 2, 1], [0, 1, 2, 0],
+     [0, 1, 1, 1], [0, 1, 1, 0], [0, 1, 0, 1], [0, 1, 0, 0], [0, 0, 0, 0]]
     """
     P = list(range(-1, n))
     while True:

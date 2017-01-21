@@ -7,7 +7,7 @@ possible. Some useful pointers to Fortran can be found on wikipedia:
 
 http://en.wikipedia.org/wiki/Fortran
 
-Most of the code below is based on the "Professional Programmer\'s Guide to
+Most of the code below is based on the "Professional Programmer's Guide to
 Fortran77" by Clive G. Page:
 
 http://www.star.le.ac.uk/~cgp/prof77.html
@@ -278,10 +278,10 @@ class FCodePrinter(CodePrinter):
         return result
 
     def _wrap_fortran(self, lines):
-        """Wrap long Fortran lines
+        r"""Wrap long Fortran lines
 
            Argument:
-             lines  --  a list of lines (without \\n character)
+             lines  --  a list of lines (without \n character)
 
            A comment line is split at white space. Code lines are split with a more
            complex rule to give nice results.

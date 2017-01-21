@@ -368,7 +368,7 @@ _range = _re.compile('([0-9]*:[0-9]+|[a-zA-Z]?:[a-zA-Z])')
 
 
 def symbols(names, **args):
-    """
+    r"""
     Transform strings into instances of :class:`Symbol` class.
 
     :func:`symbols` function returns a sequence of symbols with names taken
@@ -481,7 +481,6 @@ def symbols(names, **args):
 
         >>> type(_[0])
         <class 'diofant.core.function.UndefinedFunction'>
-
     """
     result = []
 

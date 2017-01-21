@@ -194,7 +194,7 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
 
 
 def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
-    """
+    r"""
     Calculates the finite difference approximation of
     the derivative of requested order at x0 from points
     provided in x_list and y_list.
@@ -238,10 +238,9 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     >>> i = Idx('i')
     >>> x_list, y_list = zip(*[(x[i+j], y[i+j]) for j in range(-1,2)])
     >>> apply_finite_diff(1, x_list, y_list, x[i])
-    (-1 + (x[i + 1] - x[i])/(-x[i - 1] + x[i]))*y[i]/(x[i + 1] - x[i]) + \
-(-x[i - 1] + x[i])*y[i + 1]/((-x[i - 1] + x[i + 1])*(x[i + 1] - x[i])) - \
-(x[i + 1] - x[i])*y[i - 1]/((-x[i - 1] + x[i + 1])*(-x[i - 1] + x[i]))
-
+    (-1 + (x[i + 1] - x[i])/(-x[i - 1] + x[i]))*y[i]/(x[i + 1] - x[i]) +
+    (-x[i - 1] + x[i])*y[i + 1]/((-x[i - 1] + x[i + 1])*(x[i + 1] - x[i])) -
+    (x[i + 1] - x[i])*y[i - 1]/((-x[i - 1] + x[i + 1])*(-x[i - 1] + x[i]))
 
     Notes
     =====
@@ -263,7 +262,6 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     Fortran 90 implementation with Python interface for numerics: finitediff_
 
     .. _finitediff: https://github.com/bjodah/finitediff
-
     """
 
     # In the original paper the following holds for the notation:
@@ -283,7 +281,7 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
 
 
 def as_finite_diff(derivative, points=1, x0=None, wrt=None):
-    """
+    r"""
     Returns an approximation of a derivative of a function in
     the form of a finite difference formula. The expression is a
     weighted sum of the function at a number of discrete values of
@@ -311,7 +309,6 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
         "with respect to" the variable for which the (partial)
         derivative is to be approximated for. If not provided it
         is required that the Derivative is ordinary. default: None
-
 
     Examples
     ========
@@ -341,10 +338,10 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
     >>> e, sq2 = exp(1), sqrt(2)
     >>> xl = [x-h, x+h, x+e*h]
     >>> as_finite_diff(f(x).diff(x, 1), xl, x+h*sq2)
-    2*h*f(E*h + x)*((h + sqrt(2)*h)/(2*h) -\
-    (-sqrt(2)*h + h)/(2*h))/((-h + E*h)*(h + E*h)) +\
-    f(-h + x)*(-(-sqrt(2)*h + h)/(2*h) - (-sqrt(2)*h + E*h)/(2*h))/(h +\
-    E*h) + f(h + x)*(-(h + sqrt(2)*h)/(2*h) + (-sqrt(2)*h +\
+    2*h*f(E*h + x)*((h + sqrt(2)*h)/(2*h) -
+    (-sqrt(2)*h + h)/(2*h))/((-h + E*h)*(h + E*h)) +
+    f(-h + x)*(-(-sqrt(2)*h + h)/(2*h) - (-sqrt(2)*h + E*h)/(2*h))/(h +
+    E*h) + f(h + x)*(-(h + sqrt(2)*h)/(2*h) + (-sqrt(2)*h +
     E*h)/(2*h))/(-h + E*h)
 
     Partial derivatives are also supported:
@@ -359,7 +356,6 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
 
     diofant.calculus.finite_diff.apply_finite_diff
     diofant.calculus.finite_diff.finite_diff_weights
-
     """
     if wrt is None:
         wrt = derivative.variables[0]

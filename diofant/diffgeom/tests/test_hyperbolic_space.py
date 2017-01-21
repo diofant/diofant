@@ -1,4 +1,4 @@
-'''
+r"""
 unit test describing the hyperbolic half-plane with the Poincare metric. This
 is a basic model of hyperbolic geometry on the (positive) half-space
 
@@ -11,7 +11,8 @@ ds^2 = (dx^2 + dy^2)/y^2
 It has constant negative scalar curvature = -2
 
 https://en.wikipedia.org/wiki/Poincare_half-plane_model
-'''
+"""
+
 from diofant import diag
 from diofant.diffgeom import (twoform_to_matrix,
                               metric_to_Christoffel_1st, metric_to_Christoffel_2nd,

@@ -76,13 +76,13 @@ class Polyhedron(Basic):
         permutation, Permutation(range(4)), is not included since it does
         not change the orientation of the vertices.)
 
-        >>> pgroup = [Permutation([[0, 1, 2], [3]]), \
-                      Permutation([[0, 1, 3], [2]]), \
-                      Permutation([[0, 2, 3], [1]]), \
-                      Permutation([[1, 2, 3], [0]]), \
-                      Permutation([[0, 1], [2, 3]]), \
-                      Permutation([[0, 2], [1, 3]]), \
-                      Permutation([[0, 3], [1, 2]])]
+        >>> pgroup = [Permutation([[0, 1, 2], [3]]),
+        ...           Permutation([[0, 1, 3], [2]]),
+        ...           Permutation([[0, 2, 3], [1]]),
+        ...           Permutation([[1, 2, 3], [0]]),
+        ...           Permutation([[0, 1], [2, 3]]),
+        ...           Permutation([[0, 2], [1, 3]]),
+        ...           Permutation([[0, 3], [1, 2]])]
 
         The Polyhedron is now constructed and demonstrated:
 
@@ -106,18 +106,18 @@ class Polyhedron(Basic):
         Here is a demonstration that applying p and p**2 for every p in
         pgroup generates all the orientations of a tetrahedron and no others:
 
-        >>> all = ( (w, x, y, z), \
-                    (x, y, w, z), \
-                    (y, w, x, z), \
-                    (w, z, x, y), \
-                    (z, w, y, x), \
-                    (w, y, z, x), \
-                    (y, z, w, x), \
-                    (x, z, y, w), \
-                    (z, y, x, w), \
-                    (y, x, z, w), \
-                    (x, w, z, y), \
-                    (z, x, w, y) )
+        >>> all = ( (w, x, y, z),
+        ...         (x, y, w, z),
+        ...         (y, w, x, z),
+        ...         (w, z, x, y),
+        ...         (z, w, y, x),
+        ...         (w, y, z, x),
+        ...         (y, z, w, x),
+        ...         (x, z, y, w),
+        ...         (z, y, x, w),
+        ...         (y, x, z, w),
+        ...         (x, w, z, y),
+        ...         (z, x, w, y) )
 
         >>> got = []
         >>> for p in (pgroup + [p**2 for p in pgroup]):
@@ -374,7 +374,6 @@ class Polyhedron(Basic):
         ==========
 
         [1] www.ocf.berkeley.edu/~wwu/articles/platonicsolids.pdf
-
         """
         faces = [minlex(f, directed=False, is_set=True) for f in faces]
         corners, faces, pgroup = args = \

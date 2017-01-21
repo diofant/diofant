@@ -1,4 +1,4 @@
-"""Module that defines indexed objects
+r"""Module that defines indexed objects
 
     The classes IndexedBase, Indexed and Idx would represent a matrix element
     M[i, j] as in the following graph::

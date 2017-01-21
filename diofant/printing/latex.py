@@ -606,7 +606,7 @@ class LatexPrinter(Printer):
             return r"%s %s" % (tex, self._print(e))
 
     def _hprint_Function(self, func):
-        '''
+        r'''
         Logic to decide how to render a function to latex
           - if it is a recognized latex name, use the appropriate latex command
           - if it is a single letter, just use that letter

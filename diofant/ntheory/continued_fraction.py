@@ -220,8 +220,8 @@ def continued_fraction_convergents(cf):
 
     >>> from diofant.core import Rational, pi
     >>> from diofant import S
-    >>> from diofant.ntheory.continued_fraction import \
-            continued_fraction_convergents, continued_fraction_iterator
+    >>> from diofant.ntheory.continued_fraction import (
+    ...     continued_fraction_convergents, continued_fraction_iterator)
 
     >>> list(continued_fraction_convergents([0, 2, 1, 2]))
     [0, 1/2, 1/3, 3/8]

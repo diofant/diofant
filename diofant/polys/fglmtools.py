@@ -101,7 +101,7 @@ def _update(s, _lambda, P):
 
 
 def _representing_matrices(basis, G, ring):
-    """
+    r"""
     Compute the matrices corresponding to the linear maps `m \mapsto
     x_i m` for all variables `x_i`.
     """

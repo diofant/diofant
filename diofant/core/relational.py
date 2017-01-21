@@ -456,7 +456,7 @@ class _Less(_Inequality):
 
 
 class GreaterThan(_Greater):
-    """Class representations of inequalities.
+    r"""Class representations of inequalities.
 
     Extended Summary
     ================
@@ -528,7 +528,7 @@ class GreaterThan(_Greater):
     x >= 2
 
     >>> rels = Ge( x, 2 ), Gt( x, 2 ), Le( x, 2 ), Lt( x, 2 )
-    >>> print('%s\\n%s\\n%s\\n%s' % rels)
+    >>> print('%s\n%s\n%s\n%s' % rels)
     x >= 2
     x > 2
     x <= 2
@@ -552,25 +552,25 @@ class GreaterThan(_Greater):
     succinctly and less conveniently:
 
     >>> rels = Rel(x, 1, '>='), Relational(x, 1, '>='), GreaterThan(x, 1)
-    >>> print('%s\\n%s\\n%s' % rels)
+    >>> print('%s\n%s\n%s' % rels)
     x >= 1
     x >= 1
     x >= 1
 
     >>> rels = Rel(x, 1, '>'), Relational(x, 1, '>'), StrictGreaterThan(x, 1)
-    >>> print('%s\\n%s\\n%s' % rels)
+    >>> print('%s\n%s\n%s' % rels)
     x > 1
     x > 1
     x > 1
 
     >>> rels = Rel(x, 1, '<='), Relational(x, 1, '<='), LessThan(x, 1)
-    >>> print("%s\\n%s\\n%s" % rels)
+    >>> print("%s\n%s\n%s" % rels)
     x <= 1
     x <= 1
     x <= 1
 
     >>> rels = Rel(x, 1, '<'), Relational(x, 1, '<'), StrictLessThan(x, 1)
-    >>> print('%s\\n%s\\n%s' % rels)
+    >>> print('%s\n%s\n%s' % rels)
     x < 1
     x < 1
     x < 1
@@ -598,7 +598,7 @@ class GreaterThan(_Greater):
     >>> e6 = 1 >= x
     >>> e7 = 1 <  x
     >>> e8 = 1 <= x
-    >>> print("%s     %s\\n"*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
+    >>> print("%s     %s\n"*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
     x > 1     x >= 1
     x < 1     x <= 1
     x < 1     x <= 1
@@ -617,7 +617,7 @@ class GreaterThan(_Greater):
     >>> e6 = Ge(1, x)
     >>> e7 = Lt(1, x)
     >>> e8 = Le(1, x)
-    >>> print("%s     %s\\n"*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
+    >>> print("%s     %s\n"*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
     1 > x     1 >= x
     1 < x     1 <= x
     1 > x     1 >= x

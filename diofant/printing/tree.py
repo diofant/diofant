@@ -1,17 +1,16 @@
 def pprint_nodes(subtrees):
-    """
+    r"""
     Prettyprints systems of nodes.
 
     Examples
     ========
 
     >>> from diofant.printing.tree import pprint_nodes
-    >>> print(pprint_nodes(["a", "b1\\nb2", "c"]))
+    >>> print(pprint_nodes(["a", "b1\nb2", "c"]))
     +-a
     +-b1
     | b2
     +-c
-
     """
     def indent(s, type=1):
         x = s.split("\n")
