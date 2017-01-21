@@ -1,3 +1,7 @@
+"""
+Package for elementary functions.
+"""
+
 from . import complexes
 from . import exponential
 from . import hyperbolic
