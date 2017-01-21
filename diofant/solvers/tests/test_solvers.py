@@ -709,7 +709,7 @@ def test_sympyissue_5335():
 
 
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def _test_issue_5335_float():
+def _test_sympyissue_5335_float():
     # gives ZeroDivisionError: polynomial division
     lam, a0, conc = symbols('lam a0 conc')
     eqs = [lam + 2*y - a0*(1 - x/2)*x - 0.005*x/2*x,
@@ -803,7 +803,7 @@ def test_sympyissue_5849():
 
 @pytest.mark.xfail
 def test_sympyissue_5849_matrix():
-    """Same as test_issue_5849 but solved with the matrix solver."""
+    """Same as test_sympyissue_5849 but solved with the matrix solver."""
     I1, I2, I3, I4, I5, I6 = symbols('I1:7')
     dI1, dI4, dQ2, dQ4, Q2, Q4 = symbols('dI1,dI4,dQ2,dQ4,Q2,Q4')
 

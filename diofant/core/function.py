@@ -2012,7 +2012,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
 def _mexpand(expr, recursive=False):
     # expand multinomials and then expand products; this may not always
     # be sufficient to give a fully expanded expression (see
-    # test_issue_8247_8354 in test_arit)
+    # test_sympyissue_8247_8354 in test_arit)
     if expr is None:
         return
     was = None
