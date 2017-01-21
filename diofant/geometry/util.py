@@ -286,8 +286,9 @@ def convex_hull(*args):
         return Segment(p[0], p[1])
 
     def _orientation(p, q, r):
-        '''Return positive if p-q-r are clockwise, neg if ccw, zero if
-        collinear.'''
+        """Return positive if p-q-r are clockwise, neg if ccw, zero if
+        collinear.
+        """
         return (q.y - p.y)*(r.x - p.x) - (q.x - p.x)*(r.y - p.y)
 
     # scan to find upper and lower convex hulls of a set of 2d points.

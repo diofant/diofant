@@ -12,7 +12,7 @@ __all__ = ()
 
 @cacheit
 def _emptyfn():
-    "test docstring"
+    """test docstring"""
     pass
 
 

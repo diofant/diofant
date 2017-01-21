@@ -4332,11 +4332,11 @@ def _linear_coeff_match(expr, func):
     x = func.args[0]
 
     def abc(eq):
-        r'''
+        r"""
         Internal function of _linear_coeff_match
         that returns Rationals a, b, c
         if eq is a*x + b*f(x) + c, else None.
-        '''
+        """
         eq = _mexpand(eq)
         c = eq.as_independent(x, f(x), as_Add=True)[0]
         if not c.is_Rational:
@@ -4351,12 +4351,12 @@ def _linear_coeff_match(expr, func):
             return a, b, c
 
     def match(arg):
-        r'''
+        r"""
         Internal function of _linear_coeff_match that returns Rationals a1,
         b1, c1, a2, b2, c2 and a2*b1 - a1*b2 of the expression (a1*x + b1*f(x)
         + c1)/(a2*x + b2*f(x) + c2) if one of c1 or c2 and a2*b1 - a1*b2 is
         non-zero, else None.
-        '''
+        """
         n, d = arg.together().as_numer_denom()
         m = abc(n)
         if m is not None:

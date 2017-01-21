@@ -1011,14 +1011,14 @@ def _check_antecedents(g1, g2, x):
                      And(re(mu + rho + v - u) < 1, Eq(zos, 1))))
 
         def _cond():
-            '''
+            """
             Note: if `zso` is 1 then tmp will be NaN.  This raises a
             TypeError on `NaN < pi`.  Previously this gave `False` so
             this behavior has been hardcoded here but someone should
             check if this NaN is more serious! This NaN is triggered by
             test_meijerint() in test_meijerint.py:
             `meijerint_definite(exp(x), x, 0, I)`
-            '''
+            """
             tmp = abs(arg_(1 - zso))
             return False if tmp is S.NaN else tmp < pi
         c14_alt = And(Eq(phi, 0), cstar - 1 + bstar <= 0,

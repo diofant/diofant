@@ -606,13 +606,13 @@ class LatexPrinter(Printer):
             return r"%s %s" % (tex, self._print(e))
 
     def _hprint_Function(self, func):
-        r'''
+        r"""
         Logic to decide how to render a function to latex
           - if it is a recognized latex name, use the appropriate latex command
           - if it is a single letter, just use that letter
           - if it is a longer name, then put \operatorname{} around it and be
             mindful of undercores in the name
-        '''
+        """
         func = self._deal_with_super_sub(func)
 
         if func in accepted_latex_functions:
@@ -624,7 +624,7 @@ class LatexPrinter(Printer):
         return name
 
     def _print_Function(self, expr, exp=None):
-        r'''
+        r"""
         Render functions to LaTeX, handling functions that LaTeX knows about
         e.g., sin, cos, ... by using the proper LaTeX command (\sin, \cos, ...).
         For single-letter function names, render them as regular LaTeX math
@@ -634,7 +634,7 @@ class LatexPrinter(Printer):
 
         expr is the expression involving the function
         exp is an exponent
-        '''
+        """
         func = expr.func.__name__
 
         if hasattr(self, '_print_' + func):
@@ -1704,7 +1704,7 @@ class LatexPrinter(Printer):
 
 
 def translate(s):
-    r'''
+    r"""
     Check for a modifier ending the string.  If present, convert the
     modifier to latex and translate the rest recursively.
 
@@ -1716,7 +1716,7 @@ def translate(s):
     >>> from diofant.printing.latex import translate
     >>> translate('alphahatdotprime')
     "{\\dot{\\hat{\\alpha}}}'"
-    '''
+    """
     # Process the rest
     tex = tex_greek_dictionary.get(s)
     if tex:

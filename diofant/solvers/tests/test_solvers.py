@@ -803,7 +803,7 @@ def test_sympyissue_5849():
 
 @pytest.mark.xfail
 def test_sympyissue_5849_matrix():
-    '''Same as test_issue_5849 but solved with the matrix solver.'''
+    """Same as test_issue_5849 but solved with the matrix solver."""
     I1, I2, I3, I4, I5, I6 = symbols('I1:7')
     dI1, dI4, dQ2, dQ4, Q2, Q4 = symbols('dI1,dI4,dQ2,dQ4,Q2,Q4')
 

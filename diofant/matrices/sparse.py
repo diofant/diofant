@@ -336,7 +336,7 @@ class SparseMatrixBase(MatrixBase):
         return rv
 
     def scalar_multiply(self, scalar):
-        "Scalar element-wise multiplication"
+        """Scalar element-wise multiplication"""
         M = self.zeros(*self.shape)
         if scalar:
             for i in self._smat:
@@ -842,7 +842,7 @@ class SparseMatrixBase(MatrixBase):
         return self._new(X)
 
     def _diagonal_solve(self, rhs):
-        "Diagonal solve."
+        """Diagonal solve."""
         return self._new(self.rows, 1, lambda i, j: rhs[i, 0] / self[i, i])
 
     def _cholesky_solve(self, rhs):

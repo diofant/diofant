@@ -118,7 +118,7 @@ class PartComponent:
         self.v = 0
 
     def __repr__(self):
-        "for debug/algorithm animation purposes"
+        """for debug/algorithm animation purposes"""
         return 'c:%d u:%d v:%d' % (self.c, self.u, self.v)
 
     def __eq__(self, other):

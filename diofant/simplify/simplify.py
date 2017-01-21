@@ -613,8 +613,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     # See also https://github.com/sympy/sympy/pull/185.
 
     def shorter(*choices):
-        '''Return the choice that has the fewest ops. In case of a tie,
-        the expression listed first is selected.'''
+        """Return the choice that has the fewest ops. In case of a tie,
+        the expression listed first is selected."""
         if not has_variety(choices):
             return choices[0]
         return min(choices, key=measure)
