@@ -629,7 +629,7 @@ def solve(f, *symbols, **flags):
 
         >>> from diofant import real_root, Rational
         >>> eq = root(x, 3) - root(x, 5) + Rational(1, 7)
-        >>> solve(eq)  # this gives 2 solutions but misses a 3rd
+        >>> solve(eq)
         [RootOf(7*_p**5 - 7*_p**3 + 1, _p, 1)**15,
          RootOf(7*_p**5 - 7*_p**3 + 1, _p, 2)**15]
         >>> sol = solve(eq, check=False)
