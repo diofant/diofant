@@ -1169,3 +1169,8 @@ def test_definite_integrals_abs():
     assert integrate(e, (x, -3, 11)) == 3136
     assert integrate(e, (x, -17, -2)) == Rational(-78425, 4)
     assert integrate(e, (x, -17, 20)) == Rational(74481, 4)
+
+
+def test_sympyissue_12081():
+    assert isinstance(integrate(x**(-Rational(3, 2))*exp(-x),
+                                (x, 0, oo)), Integral)
