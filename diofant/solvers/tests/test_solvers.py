@@ -378,7 +378,10 @@ def test_solve_transcendental():
     assert solve(x**y - 1) == [{x: 1}, {y: 0}]
     assert solve([x**y - 1]) == [{x: 1}, {y: 0}]
     assert solve(x*y*(x**2 - y**2)) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
-    assert solve([x*y*(x**2 - y**2)]) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
+    assert (solve([x*y*(x**2 - y**2)], check=False) ==
+            [{x: RootOf(x**3 - x*y**2, x, 0)},
+             {x: RootOf(x**3 - x*y**2, x, 1)},
+             {x: RootOf(x**3 - x*y**2, x, 2)}])
     # issue sympy/sympy#4739
     assert solve(exp(log(5)*x) - 2**x, x) == [0]
 
@@ -1352,9 +1355,11 @@ def test_sympyissue_8587():
 def test_high_order_multivariate():
     assert len(solve(a*x**3 - x + 1, x)) == 3
     assert len(solve(a*x**4 - x + 1, x)) == 4
-    assert solve(a*x**5 - x + 1, x) == []  # incomplete solution allowed
-    pytest.raises(NotImplementedError, lambda:
-                  solve(a*x**5 - x + 1, x, incomplete=False))
+    assert solve(a*x**5 - x + 1, x) == [RootOf(a*x**5 - x + 1, x, 0),
+                                        RootOf(a*x**5 - x + 1, x, 1),
+                                        RootOf(a*x**5 - x + 1, x, 2),
+                                        RootOf(a*x**5 - x + 1, x, 3),
+                                        RootOf(a*x**5 - x + 1, x, 4)]
 
     # result checking must always consider the denominator and RootOf
     # must be checked, too

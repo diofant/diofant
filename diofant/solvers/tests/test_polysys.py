@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import flatten, I, Integer, Poly, QQ, Rational, S, sqrt, symbols
-from diofant.polys import PolynomialError, ComputationFailed
+from diofant.polys import PolynomialError, ComputationFailed, RootOf
 from diofant.solvers.polysys import solve_poly_system
 
 from diofant.abc import x, y, z
@@ -54,6 +54,11 @@ def test_solve_poly_system():
     pytest.raises(NotImplementedError,
                   lambda: solve_poly_system([x**3 - y**3], x, y))
     pytest.raises(PolynomialError, lambda: solve_poly_system([1/x], x))
+
+    assert (solve_poly_system([x**6 + x - 1], x) ==
+            [{x: RootOf(x**6 + x - 1, 0)}, {x: RootOf(x**6 + x - 1, 1)},
+             {x: RootOf(x**6 + x - 1, 2)}, {x: RootOf(x**6 + x - 1, 3)},
+             {x: RootOf(x**6 + x - 1, 4)}, {x: RootOf(x**6 + x - 1, 5)}])
 
 
 def test_solve_biquadratic():
