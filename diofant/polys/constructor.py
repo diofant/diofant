@@ -122,7 +122,7 @@ def _construct_composite(coeffs, opt):
         return
 
     if opt.composite is None:
-        if any(gen.is_number for gen in gens):
+        if any(g.is_number and not g.is_transcendental for g in gens):
             return  # generators are number-like so lets better use EX
 
         all_symbols = set()

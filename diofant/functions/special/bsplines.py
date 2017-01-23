@@ -12,8 +12,7 @@ def _add_splines(c, b1, d, b2):
     else:
         new_args = []
         n_intervals = len(b1.args)
-        if n_intervals != len(b2.args):
-            raise ValueError("Args of b1 and b2 are not equal")
+        assert n_intervals == len(b2.args)
         new_args.append((c*b1.args[0].expr, b1.args[0].cond))
         for i in range(1, n_intervals - 1):
             new_args.append((

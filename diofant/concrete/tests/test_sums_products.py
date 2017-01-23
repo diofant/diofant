@@ -348,6 +348,9 @@ def test_evalf_slow_series():
 
 
 def test_euler_maclaurin():
+    pytest.raises(ValueError, lambda: Sum(x - y, (x, 0, 2),
+                                          (y, 0, 2)).euler_maclaurin())
+
     # Exact polynomial sums with E-M
     def check_exact(f, a, b, m, n):
         A = Sum(f, (k, a, b))
@@ -776,7 +779,11 @@ def test_reverse_order():
 
 @pytest.mark.slow
 def test_findrecur():
-    a, x, y = symbols("a, x, y")
+    pytest.raises(ValueError, lambda: Sum(x*y, (x, 0, 2),
+                                          (y, 0, 2)).findrecur())
+    pytest.raises(ValueError, lambda: Sum(x*y, (x, 0, 2)).findrecur())
+    pytest.raises(ValueError, lambda: Sum(x, (x, 0, oo)).findrecur())
+
     n, k = symbols("n, k", integer=True)
     F = symbols("F", cls=Function)
 

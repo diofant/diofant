@@ -193,13 +193,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         involving a limit variable, the unevaluated derivative is returned.
         """
 
-        # diff already confirmed that x is in the free symbols of self, but we
-        # don't want to differentiate wrt any free symbol in the upper or lower
-        # limits
-        # XXX remove this test for free_symbols when the default _eval_derivative is in
-        if x not in self.free_symbols:
-            return S.Zero
-
         # get limits and the function
         f, limits = self.function, list(self.limits)
 
@@ -217,7 +210,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             if limit[0] not in df.free_symbols:
                 rv = rv.doit()
             return rv
-        else:
+        else:  # pragma: no cover
             return NotImplementedError('Lower and upper bound expected.')
 
     def _eval_simplify(self, ratio, measure):
@@ -614,18 +607,6 @@ def eval_sum(f, limits):
         return f*(b - a + 1)
     if a == b:
         return f.subs(i, a)
-    if isinstance(f, Piecewise):
-        if not any(i in arg.args[1].free_symbols for arg in f.args):
-            # Piecewise conditions do not depend on the dummy summation variable,
-            # therefore we can fold:     Sum(Piecewise((e, c), ...), limits)
-            #                        --> Piecewise((Sum(e, limits), c), ...)
-            newargs = []
-            for arg in f.args:
-                newexpr = eval_sum(arg.expr, limits)
-                if newexpr is None:
-                    return
-                newargs.append((newexpr, arg.cond))
-            return f.func(*newargs)
 
     if f.has(KroneckerDelta) and _has_simple_delta(f, limits[0]):
         return deltasummation(f, limits)
@@ -793,8 +774,6 @@ def _eval_sum_hyper(f, i, a):
         e = hyperexpand(h)
     except PolynomialError:
         pass
-    if e is S.NaN and h.convergence_statement:
-        e = h
 
     return f.subs(i, 0)*e, h.convergence_statement
 
@@ -831,12 +810,6 @@ def eval_sum_hyper(f, i_a_b):
         res2 = _eval_sum_hyper(f, i, 0)
         if res1 is None or res2 is None:
             return
-        res1, cond1 = res1
-        res2, cond2 = res2
-        cond = And(cond1, cond2)
-        if cond == S.false:
-            return
-        return Piecewise((res1 + res2, cond), (old_sum, True))
 
     # Now b == oo, a != -oo
     res = _eval_sum_hyper(f, i, a)

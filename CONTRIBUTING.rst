@@ -32,7 +32,8 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 3. One logical change per commit.  Make good commit messages: short
    (<= 78 characters) one-line summary, then newline followed by
-   verbose description of your changes.
+   verbose description of your changes.  Please `mention closed
+   issues`_ with commit message.
 
 4. Please conform to `PEP 8`_ and `PEP 257`_, enable `flake8 git hook
    <http://flake8.pycqa.org/en/stable/user/using-hooks.html>`_ to
@@ -67,3 +68,4 @@ By submitting a PR, you agree to license your code under the
 .. _BSD license: LICENSE
 .. _LGPL: https://www.gnu.org/copyleft/lesser.html
 .. _No Code of Conduct: https://github.com/domgetter/NCoC
+.. _mention closed issues: https://help.github.com/articles/closing-issues-via-commit-messages

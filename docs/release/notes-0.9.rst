@@ -49,8 +49,10 @@ Issues closed
 * `sympy/sympy#11799 <https://github.com/sympy/sympy/issues/11799>`_ Something wrong with the Riemann tensor?
 * `sympy/sympy#12018 <https://github.com/sympy/sympy/issues/12018>`_ solution not found by Sum and gosper_sum
 * `sympy/sympy#5649 <https://github.com/sympy/sympy/issues/5649>`_ Bug with AlgebraicNumber.__eq__
+* `sympy/sympy#11538 <https://github.com/sympy/sympy/issues/11538>`_ Bug in solve maybe
+* `sympy/sympy#12081 <https://github.com/sympy/sympy/issues/12081>`_ integrate(x**(-S(3)/2)*exp(-x), (x, 0, oo)) encounters Runtime Error
 
-.. last pr: #404
+.. last pr: #406
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
