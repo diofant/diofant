@@ -3,7 +3,7 @@ import pytest
 from diofant.core import (pi, oo, symbols, Rational, Integer,
                           GoldenRatio, EulerGamma, Catalan, Lambda, Dummy, Eq)
 from diofant.functions import (Piecewise, sin, cos, Abs, exp, ceiling, sqrt,
-                               gamma, sign)
+                               gamma, sign, elliptic_e)
 from diofant.logic import ITE
 from diofant.printing.ccode import CCodePrinter
 from diofant.utilities.lambdify import implemented_function
@@ -74,6 +74,9 @@ def test_ccode_Integer():
 
 def test_ccode_functions():
     assert ccode(sin(x) ** cos(x)) == "pow(sin(x), cos(x))"
+
+    assert ccode(elliptic_e(x)) == ("// Not supported in C:\n"
+                                    "// elliptic_e\nelliptic_e(x)")
 
 
 def test_ccode_inline_function():
