@@ -93,7 +93,7 @@ def euler_equations(L, funcs=(), vars=()):
         eq = diff(L, f)
         for i in range(1, order + 1):
             for p in combinations_with_replacement(vars, i):
-                eq = eq + S.NegativeOne**i*diff(L, diff(f, *p), *p)
+                eq += S.NegativeOne**i * diff(L, diff(f, *p), *p)
         eqns.append(Eq(eq))
 
     return eqns
