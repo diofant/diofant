@@ -6,6 +6,7 @@ from collections import defaultdict
 from itertools import combinations, product
 
 from diofant.core.basic import Basic, Atom
+from diofant.core.expr import Expr
 from diofant.core.cache import cacheit
 from diofant.core.numbers import Number
 from diofant.core.operations import LatticeOp
@@ -15,7 +16,7 @@ from diofant.core.sympify import converter, _sympify, sympify
 from diofant.core.singleton import Singleton, S
 
 
-class Boolean(Basic):
+class Boolean(Expr):
     """A boolean object is an object for which logic operations make sense."""
 
     def __and__(self, other):
@@ -50,7 +51,7 @@ class Boolean(Basic):
 
     __rxor__ = __xor__
 
-    def equals(self, other):
+    def equals(self, other, failing_expression=False):
         """
         Returns True if the given formulas have the same truth table.
         For two formulas to be equal they must have the same literals.
@@ -69,6 +70,8 @@ class Boolean(Basic):
         """
         from diofant.logic.inference import satisfiable
         from diofant.core.relational import Relational
+
+        other = sympify(other)
 
         if self.has(Relational) or other.has(Relational):
             raise NotImplementedError('handling of relationals')
@@ -784,7 +787,7 @@ class Implies(BooleanFunction):
             if (~A).canonical == B.canonical:
                 return B
         else:
-            return Basic.__new__(cls, *args)
+            return Expr.__new__(cls, *args)
 
     def to_nnf(self, simplify=True):
         a, b = self.args

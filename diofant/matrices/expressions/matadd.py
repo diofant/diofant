@@ -3,7 +3,8 @@ from operator import add
 
 from strategies import condition, exhaust, do_one
 
-from diofant.core import Add, Basic, sympify
+from diofant.core import Add, sympify, Expr
+from diofant.core.logic import _fuzzy_group
 from diofant.functions import adjoint
 from diofant.matrices.matrices import MatrixBase
 from diofant.matrices.expressions.transpose import transpose
@@ -26,11 +27,15 @@ class MatAdd(MatrixExpr):
     """
     is_MatAdd = True
 
+    def _eval_is_commutative(self):
+        return _fuzzy_group((a.is_commutative for a in self.args),
+                             quick_exit=True)
+
     def __new__(cls, *args, **kwargs):
         args = list(map(sympify, args))
         check = kwargs.get('check', True)
 
-        obj = Basic.__new__(cls, *args)
+        obj = Expr.__new__(cls, *args)
         if check:
             validate(*args)
         return obj

@@ -10,9 +10,10 @@ from .evalf import EvalfMixin, pure_complex
 from .decorators import _sympifyit, call_highest_priority
 from .cache import cacheit
 from .compatibility import as_int, default_sort_key
+from .assumptions import ManagedProperties
 
 
-class Expr(Basic, EvalfMixin):
+class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     """
     Base class for algebraic expressions.
 
@@ -26,6 +27,11 @@ class Expr(Basic, EvalfMixin):
 
     diofant.core.basic.Basic
     """
+
+    def __new__(cls, *args):
+        obj = Basic.__new__(cls, *args)
+        obj._assumptions = cls.default_assumptions
+        return obj
 
     @property
     def _diff_wrt(self):

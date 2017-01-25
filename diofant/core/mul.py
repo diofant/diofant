@@ -78,7 +78,7 @@ def _unevaluated_Mul(*args):
     return Mul._from_args(newargs)
 
 
-class Mul(Expr, AssocOp):
+class Mul(AssocOp):
 
     is_Mul = True
 

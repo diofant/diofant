@@ -1,5 +1,5 @@
 from .matexpr import MatrixExpr
-from diofant import Basic, sympify
+from diofant import sympify, Expr
 
 
 class FunctionMatrix(MatrixExpr):
@@ -27,7 +27,7 @@ class FunctionMatrix(MatrixExpr):
     """
     def __new__(cls, rows, cols, lamda):
         rows, cols = sympify(rows), sympify(cols)
-        return Basic.__new__(cls, rows, cols, lamda)
+        return Expr.__new__(cls, rows, cols, lamda)
 
     @property
     def shape(self):

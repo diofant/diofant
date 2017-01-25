@@ -10,6 +10,8 @@ New features
 Major changes
 =============
 
+* Assumptions (old) moved from :class:`~diofant.core.basic.Basic` to :class:`~diofant.core.expr.Expr`, see `#311 <https://github.com/diofant/diofant/pull/311>`_.
+
 Backwards-incompatible changes
 ==============================
 
@@ -27,6 +29,8 @@ Backwards-incompatible changes
 
 Minor changes
 =============
+
+* New integration heuristics for integrals with :class:`~diofant.functions.elementary.complexes.Abs`, see `#321 <https://github.com/diofant/diofant/pull/321>`_.
 
 Developer changes
 =================
@@ -51,8 +55,9 @@ Issues closed
 * `sympy/sympy#5649 <https://github.com/sympy/sympy/issues/5649>`_ Bug with AlgebraicNumber.__eq__
 * `sympy/sympy#11538 <https://github.com/sympy/sympy/issues/11538>`_ Bug in solve maybe
 * `sympy/sympy#12081 <https://github.com/sympy/sympy/issues/12081>`_ integrate(x**(-S(3)/2)*exp(-x), (x, 0, oo)) encounters Runtime Error
+* `sympy/sympy#7214 <https://github.com/sympy/sympy/issues/7214>`_ Move old assumptions from Basic to Expr
 
-.. last pr: #406
+.. last pr: #311
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

@@ -16,7 +16,7 @@ from diofant.stats.rv import (RandomDomain, SingleDomain, ConditionalDomain,
 from diofant.functions.special.delta_functions import DiracDelta
 from diofant import (Interval, symbols, sympify, Dummy, Mul,
                      Integral, And, Or, Piecewise, solve, cacheit, integrate,
-                     oo, Lambda, Basic, S)
+                     oo, Lambda, Expr, S)
 from diofant.solvers.inequalities import reduce_rational_inequalities
 from diofant.polys.polyerrors import PolynomialError
 
@@ -137,7 +137,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                 "Set of Conditional Domain not Implemented")
 
 
-class ContinuousDistribution(Basic):
+class ContinuousDistribution(Expr):
     def __call__(self, *args):
         return self.pdf(*args)
 
@@ -160,7 +160,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
     def __new__(cls, *args):
         args = list(map(sympify, args))
-        return Basic.__new__(cls, *args)
+        return Expr.__new__(cls, *args)
 
     @staticmethod
     def check(*args):
@@ -222,7 +222,7 @@ class ContinuousDistributionHandmade(SingleContinuousDistribution):
         return self.args[1]
 
     def __new__(cls, pdf, set=Interval(-oo, oo, True, True)):
-        return Basic.__new__(cls, pdf, set)
+        return Expr.__new__(cls, pdf, set)
 
 
 class ContinuousPSpace(PSpace):

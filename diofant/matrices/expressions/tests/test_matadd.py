@@ -27,3 +27,10 @@ def test_doit_args():
     assert MatAdd(A, MatMul(A, B)).doit() == A + A*B
     assert (MatAdd(A, X, MatMul(A, B), Y, MatAdd(2*A, B)).doit() ==
             MatAdd(3*A + A*B + B, X, Y))
+
+
+def test_is_commutative():
+    A = MatrixSymbol('A', 2, 2, commutative=True)
+    B = MatrixSymbol('B', 2, 2, commutative=True)
+    assert (A + B).is_commutative
+    assert (A + X).is_commutative is False

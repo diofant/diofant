@@ -4,6 +4,7 @@ from mpmath import mpi, mpf
 
 from diofant.core.sympify import _sympify, sympify
 from diofant.core.basic import Basic
+from diofant.core.expr import Expr
 from diofant.core.singleton import Singleton, S
 from diofant.core.evalf import EvalfMixin
 from diofant.core.numbers import Float
@@ -892,6 +893,9 @@ class Interval(Set, EvalfMixin):
         return FiniteSet(self.start, self.end)
 
     def _contains(self, other):
+        if not isinstance(other, Expr):
+            return false
+
         if other.is_extended_real is False:
             return false
 

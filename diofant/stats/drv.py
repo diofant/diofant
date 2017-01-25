@@ -1,11 +1,11 @@
 import random
 
-from diofant import (Basic, sympify, symbols, Dummy, Lambda, summation,
+from diofant import (Expr, sympify, symbols, Dummy, Lambda, summation,
                      Piecewise, S, cacheit, solve, Sum)
 from diofant.stats.rv import NamedArgsMixin, SinglePSpace, SingleDomain
 
 
-class SingleDiscreteDistribution(Basic, NamedArgsMixin):
+class SingleDiscreteDistribution(Expr, NamedArgsMixin):
     """ Discrete distribution of a single variable
 
     Serves as superclass for PoissonDistribution etc....
@@ -20,7 +20,7 @@ class SingleDiscreteDistribution(Basic, NamedArgsMixin):
 
     def __new__(cls, *args):
         args = list(map(sympify, args))
-        return Basic.__new__(cls, *args)
+        return Expr.__new__(cls, *args)
 
     @cacheit
     def compute_cdf(self, **kwargs):

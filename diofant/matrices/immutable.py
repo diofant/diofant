@@ -1,4 +1,4 @@
-from diofant.core import Basic, Integer, Tuple, Dict, S, sympify
+from diofant.core import Basic, Integer, Tuple, Dict, S, sympify, Expr
 from diofant.core.sympify import converter as sympify_converter
 from diofant.matrices.matrices import MatrixBase
 from diofant.matrices.dense import DenseMatrix
@@ -40,7 +40,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
         rows = Integer(rows)
         cols = Integer(cols)
         mat = Tuple(*flat_list)
-        return Basic.__new__(cls, rows, cols, mat)
+        return Expr.__new__(cls, rows, cols, mat)
 
     def __new__(cls, *args, **kwargs):
         return cls._new(*args, **kwargs)

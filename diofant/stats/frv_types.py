@@ -17,7 +17,7 @@ from diofant.core.logic import fuzzy_not, fuzzy_and
 from diofant.stats.frv import (SingleFinitePSpace, SingleFiniteDistribution)
 from diofant.concrete.summations import Sum
 from diofant import (S, sympify, Rational, binomial, cacheit, Integer,
-                     Dict, Basic, KroneckerDelta, Dummy)
+                     Dict, Expr, KroneckerDelta, Dummy)
 
 __all__ = ('FiniteRV', 'DiscreteUniform', 'Die', 'Bernoulli', 'Coin',
            'Binomial', 'Hypergeometric')
@@ -35,7 +35,7 @@ class FiniteDistributionHandmade(SingleFiniteDistribution):
 
     def __new__(cls, density):
         density = Dict(density)
-        return Basic.__new__(cls, density)
+        return Expr.__new__(cls, density)
 
 
 def FiniteRV(name, density):
@@ -226,6 +226,10 @@ class BinomialDistribution(SingleFiniteDistribution):
             return super(BinomialDistribution, cls).__new__(cls, *args)
 
     @property
+    def n(self):
+        return self.args[self._argnames.index('n')]
+
+    @property
     @cacheit
     def dict(self):
         n, p, succ, fail = self.n, self.p, self.succ, self.fail
@@ -267,6 +271,10 @@ class HypergeometricDistribution(SingleFiniteDistribution):
                                  binomial(N, n))
                         for k in range(max(0, n + m - N), min(m, n) + 1)}
         return density
+
+    @property
+    def n(self):
+        return self.args[self._argnames.index('n')]
 
 
 def Hypergeometric(name, N, m, n):

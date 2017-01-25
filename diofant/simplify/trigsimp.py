@@ -468,6 +468,7 @@ def trigsimp(expr, **opts):
 
     """
     from diofant.simplify.fu import fu
+    from diofant.matrices.expressions.matexpr import MatrixExpr
 
     expr = sympify(expr)
 
@@ -493,7 +494,7 @@ def trigsimp(expr, **opts):
                 args = [trigsimp_groebner(x, **opts) for x in args]
             return e.func(*args)
         new = traverse(ex)
-        if not isinstance(new, Expr):
+        if not isinstance(new, Expr) or isinstance(new, MatrixExpr):
             return new
         return trigsimp_groebner(new, **opts)
 

@@ -3,9 +3,9 @@ This module contains the machinery handling assumptions.
 
 All symbolic objects have assumption attributes that can be accessed via
 .is_<assumption name> attribute, i.e.
-:py:attr:`~diofant.core.basic.Basic.is_integer`.  Full set of defined
+:py:attr:`~diofant.core.expr.Expr.is_integer`.  Full set of defined
 assumption names are accessible as
-``Basic.default_assumptions.rules.defined_facts`` attribute.
+``Expr.default_assumptions.rules.defined_facts`` attribute.
 
 Assumptions determine certain properties of symbolic objects and can
 have 3 possible values: True, False, None.  True is returned if the
@@ -34,9 +34,9 @@ See Also
 .. seealso::
 
     :py:class:`~diofant.core.numbers.ImaginaryUnit`
-    :py:attr:`~diofant.core.basic.Basic.is_algebraic`
-    :py:attr:`~diofant.core.basic.Basic.is_real`
-    :py:attr:`~diofant.core.basic.Basic.is_prime`
+    :py:attr:`~diofant.core.expr.Expr.is_algebraic`
+    :py:attr:`~diofant.core.expr.Expr.is_real`
+    :py:attr:`~diofant.core.expr.Expr.is_prime`
 
 Notes
 =====

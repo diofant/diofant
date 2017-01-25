@@ -1,5 +1,5 @@
 from diofant.core.sympify import _sympify
-from diofant.core import Basic, Integer
+from diofant.core import Integer, Expr
 from diofant.matrices.expressions.matexpr import ShapeError
 from diofant.matrices.expressions.matpow import MatPow
 
@@ -37,7 +37,7 @@ class Inverse(MatPow):
             raise TypeError("mat should be a matrix")
         if not mat.is_square:
             raise ShapeError("Inverse of non-square matrix %s" % mat)
-        return Basic.__new__(cls, mat)
+        return Expr.__new__(cls, mat)
 
     @property
     def arg(self):

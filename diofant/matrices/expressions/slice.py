@@ -1,5 +1,5 @@
 from diofant.matrices.expressions.matexpr import MatrixExpr
-from diofant import Tuple, Basic, S
+from diofant import Tuple, S, Expr
 from diofant.functions.elementary.integers import floor
 
 
@@ -66,7 +66,7 @@ class MatrixSlice(MatrixExpr):
             raise IndexError()
         if isinstance(parent, MatrixSlice):
             return mat_slice_of_slice(parent, rowslice, colslice)
-        return Basic.__new__(cls, parent, Tuple(*rowslice), Tuple(*colslice))
+        return Expr.__new__(cls, parent, Tuple(*rowslice), Tuple(*colslice))
 
     @property
     def shape(self):

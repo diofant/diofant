@@ -2,7 +2,7 @@ from strategies import exhaust, condition, do_one
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
-from diofant.core import S, Basic, Add, sympify
+from diofant.core import S, Add, sympify, Expr
 from diofant.core.strategies import unpack
 from diofant.utilities import sift
 from diofant.matrices.expressions.matexpr import MatrixExpr, ZeroMatrix, Identity
@@ -47,7 +47,7 @@ class BlockMatrix(MatrixExpr):
         args = map(sympify, args)
         mat = ImmutableMatrix(*args)
 
-        obj = Basic.__new__(cls, mat)
+        obj = Expr.__new__(cls, mat)
         return obj
 
     @property
@@ -193,7 +193,7 @@ class BlockDiagMatrix(BlockMatrix):
 
     """
     def __new__(cls, *mats):
-        return Basic.__new__(BlockDiagMatrix, *mats)
+        return Expr.__new__(BlockDiagMatrix, *mats)
 
     @property
     def diag(self):

@@ -1,6 +1,8 @@
 from functools import wraps
 
 from diofant.core import S, Symbol, Tuple, Integer, Basic, Expr
+from diofant.core.assumptions import StdFactKB
+from diofant.core.logic import fuzzy_bool
 from diofant.core.decorators import call_highest_priority
 from diofant.core.sympify import SympifyError, sympify
 from diofant.functions import conjugate, adjoint
@@ -24,7 +26,7 @@ def _sympifyit(arg, retval=None):
     return deco
 
 
-class MatrixExpr(Basic):
+class MatrixExpr(Expr):
     """ Superclass for Matrix Expressions
 
     MatrixExprs represent abstract matrices, linear transformations represented
@@ -58,11 +60,9 @@ class MatrixExpr(Basic):
     is_MatAdd = False
     is_MatMul = False
 
-    is_commutative = False
-
     def __new__(cls, *args, **kwargs):
         args = map(sympify, args)
-        return Basic.__new__(cls, *args, **kwargs)
+        return Expr.__new__(cls, *args, **kwargs)
 
     # The following is adapted from the core Expr object
     def __neg__(self):
@@ -349,16 +349,22 @@ class MatrixSymbol(MatrixExpr):
     >>> 2*A*B + Identity(3)
     I + 2*A*B
     """
-    is_commutative = False
     is_Atom = True
 
-    def __new__(cls, name, n, m):
+    is_number = False
+
+    def __new__(cls, name, n, m, **assumptions):
         n, m = sympify(n), sympify(m)
-        obj = Basic.__new__(cls, name, n, m)
+        is_commutative = fuzzy_bool(assumptions.get('commutative', False))
+        assumptions['commutative'] = is_commutative
+        obj = Expr.__new__(cls, name, n, m)
+        obj._assumptions = StdFactKB(assumptions)
         return obj
 
     def _hashable_content(self):
-        return(self.name, self.shape)
+        return ((self.name, self.shape) +
+                tuple(sorted((k, v) for k, v in self._assumptions.items()
+                             if v is not None)))
 
     @property
     def shape(self):
@@ -386,7 +392,8 @@ class MatrixSymbol(MatrixExpr):
     def doit(self, **hints):
         if hints.get('deep', True):
             return type(self)(self.name, self.args[1].doit(**hints),
-                    self.args[2].doit(**hints))
+                              self.args[2].doit(**hints),
+                              **self._assumptions._generator)
         else:
             return self
 
