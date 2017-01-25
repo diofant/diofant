@@ -3057,7 +3057,7 @@ def test_Y2():
     w = symbols('w', extended_real=True)
     s = symbols('s')
     f = inverse_laplace_transform(s/(s**2 + (w - 1)**2), s, t)
-    assert f == cos(t*w - t)
+    assert f == cos(t*abs(w - 1))
 
 
 @pytest.mark.slow

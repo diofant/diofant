@@ -685,10 +685,9 @@ def test_sympyissue_4671_4463_4467():
 
 def test_sympyissue_5132():
     r, t = symbols('r,t')
-    assert set(solve([r - x**2 - y**2, tan(t) - y/x], [x, y])) == \
-        {(
-            -sqrt(r*cos(t)**2), -1*sqrt(r*cos(t)**2)*tan(t)),
-            (sqrt(r*cos(t)**2), sqrt(r*cos(t)**2)*tan(t))}
+    assert (set(solve([r - x**2 - y**2, tan(t) - y/x], [x, y])) ==
+            {(-sqrt(r*sin(t)**2)/tan(t), -sqrt(r*sin(t)**2)),
+             (sqrt(r*sin(t)**2)/tan(t), sqrt(r*sin(t)**2))})
     assert solve([exp(x) - sin(y), 1/y - 3], [x, y]) == \
         [(log(sin(Rational(1, 3))), Rational(1, 3))]
     assert solve([exp(x) - sin(y), 1/exp(y) - 3], [x, y]) == \
@@ -875,11 +874,10 @@ def test_sympyissue_5901():
         {f(x): 3*D}
     assert solve([f(x) - 3*f(x).diff(x), f(x)**2 - y + 4], f(x), y) == \
         [{f(x): 3*D, y: 9*D**2 + 4}]
-    assert solve(-f(a)**2*g(a)**2 + f(a)**2*h(a)**2 + g(a).diff(a),
-                h(a), g(a), set=True) == \
-        ([g(a)], {
-        (-sqrt(h(a)**2*f(a)**2 + G)/f(a),),
-        (sqrt(h(a)**2*f(a)**2 + G)/f(a),)})
+    assert (solve(-f(a)**2*g(a)**2 + f(a)**2*h(a)**2 + g(a).diff(a),
+                  h(a), g(a), set=True) ==
+            ([g(a)], {(-sqrt(h(a)**2 + G/f(a)**2),),
+             (sqrt(h(a)**2 + G/f(a)**2),)}))
     eqs = [f(x)**2 + g(x) - 2*f(x).diff(x), g(x)**2 - 4]
     assert solve(eqs, f(x), g(x), set=True) == \
         ([f(x), g(x)], {
