@@ -11,6 +11,7 @@ from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
                                tanh, coth, sech, csch)
 from diofant.matrices import Matrix
 from diofant.logic import Or, true, false
+from diofant.polys import Poly, RootOf
 
 from diofant import mathematica_code as mcode
 
@@ -165,3 +166,8 @@ def test_Piecewise():
     assert (mcode(g) ==
             'Piecewise[{{0, x >= 1 || x <= -1}, '
             '{-x + 1, x > 0}, {x + 1, True}}]')
+
+
+def test_RootOf():
+    p = Poly(x**3 + y*x + 1, x)
+    assert mcode(RootOf(p, 0)) == 'Root[#^3 + #*y + 1 &, 1]'

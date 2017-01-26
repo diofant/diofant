@@ -152,6 +152,13 @@ class MCodePrinter(CodePrinter):
                              expr.rel_op,
                              self.parenthesize(expr.rhs, PREC))
 
+    def _print_RootOf(self, expr):
+        from diofant.core.symbol import Symbol
+
+        return 'Root[%s &, %s]' % (self.doprint(expr.expr.subs(expr.poly.gen,
+                                                               Symbol('#'))),
+                                   self.doprint(expr.index + 1))
+
 
 def mathematica_code(expr, **settings):
     r"""Converts an expr to a string of the Wolfram Mathematica code
