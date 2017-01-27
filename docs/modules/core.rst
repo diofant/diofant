@@ -34,11 +34,7 @@ core
 
 singleton
 ---------
-.. module:: diofant.core.singleton
-
-S
-^
-.. autoclass:: S
+.. automodule:: diofant.core.singleton
    :members:
 
 evaluate

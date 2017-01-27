@@ -5,7 +5,40 @@ from .assumptions import ManagedProperties
 
 class SingletonRegistry:
     """
-    A map from singleton classes to the corresponding instances.
+    The registry for the singleton classes.
+
+    Several classes in Diofant appear so often that they are
+    singletonized, that is, using some metaprogramming they are made
+    so that they can only be instantiated once (see the
+    :class:`diofant.core.singleton.Singleton` class for details).  For
+    instance, every time you create ``Integer(0)``, this will return
+    the same instance, :class:`diofant.core.numbers.Zero`.
+
+    >>> from diofant import S, Integer
+    >>> a = Integer(0)
+    >>> a is S.Zero
+    True
+
+    All singleton instances are attributes of the
+    :data:`~diofant.core.singleton.S` object, so ``Integer(0)`` can
+    also be accessed as ``S.Zero``.
+
+    Notes
+    =====
+
+    For the most part, the fact that certain objects are singletonized
+    is an implementation detail that users shouldn't need to worry
+    about.  In Diofant library code, :keyword:`is` comparison is often
+    used for performance purposes.  The primary advantage of
+    :data:`~diofant.core.singleton.S` for end users is the convenient
+    access to certain instances that are otherwise difficult to type,
+    like ``S.Half`` (instead of ``Rational(1, 2)``).
+
+    When using ``is`` comparison, make sure the argument is a
+    :class:`~diofant.core.basic.Basic` instance.  For example,
+
+    >>> int(0) is S.Zero
+    False
     """
 
     def __init__(self):
@@ -46,6 +79,7 @@ class SingletonRegistry:
     def __repr__(self):
         return "S"
 
+#: Alias for instance of :class:`SingletonRegistry`.
 S = SingletonRegistry()
 
 
@@ -53,9 +87,10 @@ class Singleton(ManagedProperties):
     """
     Metaclass for singleton classes.
 
-    A singleton class has only one instance which is returned every time the
-    class is instantiated. Additionally, this instance can be accessed through
-    the global registry object S as S.<class_name>.
+    A singleton class has only one instance which is returned every
+    time the class is instantiated. Additionally, this instance can be
+    accessed through the global registry object
+    :data:`~diofant.core.singleton.S` as ``S.<class_name>``.
 
     Examples
     ========
