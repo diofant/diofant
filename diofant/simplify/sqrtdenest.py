@@ -669,6 +669,7 @@ def unrad(eq, *syms, **flags):
     >>> unrad(eq)
     (_p**3 + _p**2 - 2, [_p, -x + _p**6])
     """
+    from diofant.polys.rootoftools import RootOf
     from diofant.solvers.solvers import solve
 
     _inv_error = 'cannot get an analytical solution for the inversion'
@@ -838,7 +839,7 @@ def unrad(eq, *syms, **flags):
             x = list(x)[0]
             try:
                 inv = solve(covsym**lcm - b, x, **uflags)
-                if not inv:
+                if not inv or any(isinstance(s, RootOf) for s in inv):
                     raise NotImplementedError
                 eq = poly.as_expr().subs(b, covsym**lcm).subs(x, inv[0])
                 _cov(covsym, covsym**lcm - b)
@@ -871,7 +872,7 @@ def unrad(eq, *syms, **flags):
                     for x in syms:
                         try:
                             sol = solve(c, x, **uflags)
-                            if not sol:
+                            if not sol or any(isinstance(s, RootOf) for s in sol):
                                 raise NotImplementedError
                             neweq = r0.subs(x, sol[0]) + covsym*r1/_rads1 + \
                                 others

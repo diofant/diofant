@@ -187,8 +187,8 @@ def test_rsolve():
         2**(2*n)*n*(2*n - 1)*(4*n**2 - 1)/12
 
     assert (rsolve(y(n) + a*(y(n + 1) + y(n - 1))/2, y(n)) -
-            (C0*((sqrt(-a**2 + 1) - 1)/a)**n +
-             C1*((-sqrt(-a**2 + 1) - 1)/a)**n)).simplify() == 0
+            (C0*(-sqrt(-1 + a**(-2)) - 1/a)**n +
+             C1*(sqrt(-1 + a**(-2)) - 1/a)**n)).simplify() == 0
 
 
 def test_rsolve_raises():

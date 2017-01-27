@@ -1,8 +1,10 @@
 """Solvers of systems of polynomial equations. """
 
+import collections
+
 from diofant.core import S
 from diofant.matrices import Matrix
-from diofant.polys import Poly, groebner, roots, sring
+from diofant.polys import Poly, groebner, sring
 from diofant.polys.polytools import parallel_poly_from_expr
 from diofant.polys.polyerrors import (ComputationFailed,
                                       PolificationFailed, CoercionFailed)
@@ -16,6 +18,13 @@ __all__ = ('solve_linear_system', 'solve_poly_system')
 
 class SolveFailed(Exception):
     """Raised when solver's conditions weren't met. """
+
+
+def roots(p):
+    r = collections.defaultdict(int)
+    for v in p.all_roots():
+        r[v] += 1
+    return r
 
 
 def solve_linear_system(system, *symbols, **flags):
@@ -188,11 +197,6 @@ def solve_generic(polys, opt):
     for the last (eliminated) variable in other elements of G, new
     polynomial system is generated. Applying the above procedure
     recursively, a finite number of solutions can be found.
-
-    The ability of finding all solutions by this procedure depends
-    on the root finding algorithms. If no solutions were found, it
-    means only that roots() failed, but the system is solvable. To
-    overcome this difficulty use numerical algorithms instead.
 
     References
     ==========

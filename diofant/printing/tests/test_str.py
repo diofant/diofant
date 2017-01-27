@@ -495,7 +495,7 @@ def test_Relational():
 
 
 def test_RootOf():
-    assert str(RootOf(x**5 + 2*x - 1, 0)) == "RootOf(x**5 + 2*x - 1, 0)"
+    assert str(RootOf(x**5 + 2*x - 1, 0)) == "RootOf(x**5 + 2*x - 1, x, 0)"
 
 
 def test_RootSum():

@@ -7,6 +7,8 @@ Not Released Yet
 New features
 ============
 
+* Polynomial solvers now express all available solutions with :class:`~diofant.polys.rootoftools.RootOf`, see `#400 <https://github.com/diofant/diofant/pull/400>`_.  Only zero-dimentional systems are supported, however.
+
 Major changes
 =============
 
@@ -31,6 +33,8 @@ Minor changes
 =============
 
 * New integration heuristics for integrals with :class:`~diofant.functions.elementary.complexes.Abs`, see `#321 <https://github.com/diofant/diofant/pull/321>`_.
+* Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`, see `#400 <https://github.com/diofant/diofant/pull/400>`_.
+* Sorting of symbolic quadratic roots now same as in :class:`~diofant.polys.rootoftools.RootOf` for numerical coefficients, see `#400 <https://github.com/diofant/diofant/pull/400>`_.
 
 Developer changes
 =================
@@ -56,8 +60,11 @@ Issues closed
 * `sympy/sympy#11538 <https://github.com/sympy/sympy/issues/11538>`_ Bug in solve maybe
 * `sympy/sympy#12081 <https://github.com/sympy/sympy/issues/12081>`_ integrate(x**(-S(3)/2)*exp(-x), (x, 0, oo)) encounters Runtime Error
 * `sympy/sympy#7214 <https://github.com/sympy/sympy/issues/7214>`_ Move old assumptions from Basic to Expr
+* `sympy/sympy#4678 <https://github.com/sympy/sympy/issues/4678>`_ Have solve() return RootOf when it can't solve equations
+* `sympy/sympy#7789 <https://github.com/sympy/sympy/issues/7789>`_ Poly(...).all_roots fails for general quadratic equation
+* `sympy/sympy#8255 <https://github.com/sympy/sympy/issues/8255>`_ roots_quadratic should return roots in same order as Poly.all_roots(radicals=False)
 
-.. last pr: #311
+.. last pr: #400
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

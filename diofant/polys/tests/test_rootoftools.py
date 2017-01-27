@@ -2,12 +2,12 @@
 
 import pytest
 
-from diofant.polys.polytools import Poly
+from diofant.polys.polytools import Poly, PurePoly
 from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.polys.polyerrors import (MultivariatePolynomialError,
                                       GeneratorsNeeded, PolynomialError)
 from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                     Function, Eq, solve, legendre_poly)
+                     Function, Eq, solve, legendre_poly, Symbol)
 
 from diofant.abc import a, b, x, y, z, r
 
@@ -75,14 +75,17 @@ def test_RootOf___new__():
 
     pytest.raises(PolynomialError, lambda: RootOf(x - y, 0))
 
-    pytest.raises(NotImplementedError, lambda: RootOf(x**3 - x + sqrt(2), 0))
-    pytest.raises(NotImplementedError, lambda: RootOf(x**3 - x + I, 0))
-
     pytest.raises(IndexError, lambda: RootOf(x**2 - 1, -4))
     pytest.raises(IndexError, lambda: RootOf(x**2 - 1, -3))
     pytest.raises(IndexError, lambda: RootOf(x**2 - 1, 2))
     pytest.raises(IndexError, lambda: RootOf(x**2 - 1, 3))
     pytest.raises(ValueError, lambda: RootOf(x**2 - 1, x))
+    pytest.raises(NotImplementedError,
+                  lambda: RootOf(Symbol('a', nonzero=False)*x**5 +
+                                 2*x - 1, x, 0))
+    pytest.raises(NotImplementedError,
+                  lambda: Poly(Symbol('a', nonzero=False)*x**5 +
+                               2*x - 1, x).all_roots())
 
     assert RootOf(Poly(x - y, x), 0) == y
 
@@ -92,20 +95,25 @@ def test_RootOf___new__():
     assert RootOf(Poly(x**3 - y, x), 0) == y**Rational(1, 3)
 
     assert RootOf(y*x**3 + y*x + 2*y, x, 0) == -1
-    pytest.raises(NotImplementedError, lambda: RootOf(x**3 + x + 2*y, x, 0))
 
     assert RootOf(x**3 + x + 1, 0).is_commutative is True
+
+    e = RootOf(x**2 - 4, x, 1, evaluate=False)
+    assert isinstance(e, RootOf)
+    assert e.doit() == 2
+    assert e.args == (x**2 - 4, x, 1)
+    assert e.poly == PurePoly(x**2 - 4, x)
+    assert e.index == 1
 
 
 def test_RootOf_attributes():
     r = RootOf(x**3 + x + 3, 0)
     assert r.is_number
     assert r.free_symbols == set()
-    # if the following assertion fails then multivariate polynomials
-    # are apparently supported and the RootOf.free_symbols routine
-    # should be changed to return whatever symbols would not be
-    # the PurePoly dummy symbol
-    pytest.raises(NotImplementedError, lambda: RootOf(Poly(x**3 + y*x + 1, x), 0))
+
+    r = RootOf(x**3 + y*x + 1, x, 0)
+    assert isinstance(r, RootOf) and r.expr == x**3 + y*x + 1
+    assert r.free_symbols == {y}
 
 
 def test_RootOf___eq__():
@@ -152,6 +160,9 @@ def test_RootOf_is_real():
     assert RootOf(x**3 + x + 3, 0).is_real is True
     assert RootOf(x**3 + x + 3, 1).is_real is False
     assert RootOf(x**3 + x + 3, 2).is_real is False
+
+    r = RootOf(x**3 + y*x + 1, x, 0)
+    assert r.is_real is None
 
 
 def test_RootOf_is_complex():
@@ -234,6 +245,8 @@ def test_RootOf_evalf():
 
     # make sure verification is used in case a max/min traps the "root"
     assert str(RootOf(4*x**5 + 16*x**3 + 12*x**2 + 7, 0).n(3)) == '-0.976'
+
+    assert isinstance(RootOf(x**3 + y*x + 1, x, 0).n(2), RootOf)
 
 
 def test_RootOf_evalf_caching_bug():

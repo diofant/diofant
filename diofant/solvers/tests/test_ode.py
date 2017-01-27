@@ -5,7 +5,8 @@ import pytest
 from diofant import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
                      Dummy, Eq, erf, erfi, exp, Function, I, E, Integral, LambertW,
                      Pow, log, O, pi, Rational, RootOf, simplify, sin, sqrt, sstr,
-                     Symbol, Subs, tan, asin, sinh, Piecewise, symbols, Poly, Integer)
+                     Symbol, Subs, tan, asin, sinh, Piecewise, symbols, Poly,
+                     Integer, Abs)
 from diofant.solvers.ode import (_undetermined_coefficients_match, checkodesol,
                                  classify_ode, classify_sysode, constant_renumber,
                                  constantsimp, homogeneous_order, infinitesimals,
@@ -1522,7 +1523,7 @@ def test_nth_linear_constant_coeff_homogeneous():
         C4*exp(-x*sqrt(a)))
     sol11 = Eq(f(x),
         C1*exp(x*(k - sqrt(k**2 + 2))) + C2*exp(x*(k + sqrt(k**2 + 2))))
-    sol12 = Eq(f(x), C1*exp(-6*k*x) + C2*exp(2*k*x))
+    sol12 = Eq(f(x), E**(2*x*(-k - 2*Abs(k)))*C1 + E**(2*x*(-k + 2*Abs(k)))*C2)
     sol13 = Eq(f(x), C1 + C2*x + C3*x**2 + C4*x**3)
     sol14 = Eq(f(x), (C1 + C2*x)*exp(-2*x))
     sol15 = Eq(f(x), (C1 + C2*x)*exp(-x) + C3*exp(x/3))
@@ -2360,7 +2361,8 @@ def test_exact_enhancement():
     df = Derivative(f, x)
     eq = f/x**2 + ((f*x - 1)/x)*df
     sol = dsolve(eq, f)
-    assert sol == [Eq(f, (i*sqrt(C1*x**2 + 1) + 1)/x) for i in (-1, 1)]
+    assert sol == [Eq(f, -sqrt(C1*x**2 + 1)/Abs(x) + 1/x),
+                   Eq(f, sqrt(C1*x**2 + 1)/Abs(x) + 1/x)]
 
     eq = (x*f - 1) + df*(x**2 - x*f)
     rhs = [sol.rhs for sol in dsolve(eq, f)]

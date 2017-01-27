@@ -378,7 +378,10 @@ def test_solve_transcendental():
     assert solve(x**y - 1) == [{x: 1}, {y: 0}]
     assert solve([x**y - 1]) == [{x: 1}, {y: 0}]
     assert solve(x*y*(x**2 - y**2)) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
-    assert solve([x*y*(x**2 - y**2)]) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
+    assert (solve([x*y*(x**2 - y**2)], check=False) ==
+            [{x: RootOf(x**3 - x*y**2, x, 0)},
+             {x: RootOf(x**3 - x*y**2, x, 1)},
+             {x: RootOf(x**3 - x*y**2, x, 2)}])
     # issue sympy/sympy#4739
     assert solve(exp(log(5)*x) - 2**x, x) == [0]
 
@@ -401,6 +404,35 @@ def test_solve_transcendental():
     a, b = symbols('a, b', extended_real=True, negative=False)
     assert sstr(solve(Eq(a, 0.5 - cos(pi*b)/2), b)) == \
         '[-0.318309886183791*acos(-2.0*a + 1.0) + 2.0, 0.318309886183791*acos(-2.0*a + 1.0)]'
+
+    expr = root(x, 3) - root(x, 5)
+    expr1 = root(x, 3, 1) - root(x, 5, 1)
+    v = expr1.subs(x, -3)
+    eq = Eq(expr, v)
+    eq1 = Eq(expr1, v)
+    assert solve(eq, check=False) == [RootOf(-x**5 + x**3 + v, x, 0)**15,
+                                      RootOf(-x**5 + x**3 + v, x, 1)**15,
+                                      RootOf(-x**5 + x**3 + v, x, 2)**15,
+                                      RootOf(-x**5 + x**3 + v, x, 3)**15,
+                                      RootOf(-x**5 + x**3 + v, x, 4)**15]
+    assert solve(eq1, check=False) == [RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 0)**15,
+                                       RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 1)**15,
+
+                                       RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 2)**15,
+
+                                       RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 3)**15,
+
+                                       RootOf((-1)**Rational(2, 3)*x**5 -
+                                              (-1)**Rational(2, 5)*x**3 -
+                                              v, x, 4)**15]
 
 
 def test_solve_for_functions_derivatives():
@@ -653,10 +685,9 @@ def test_sympyissue_4671_4463_4467():
 
 def test_sympyissue_5132():
     r, t = symbols('r,t')
-    assert set(solve([r - x**2 - y**2, tan(t) - y/x], [x, y])) == \
-        {(
-            -sqrt(r*cos(t)**2), -1*sqrt(r*cos(t)**2)*tan(t)),
-            (sqrt(r*cos(t)**2), sqrt(r*cos(t)**2)*tan(t))}
+    assert (set(solve([r - x**2 - y**2, tan(t) - y/x], [x, y])) ==
+            {(-sqrt(r*sin(t)**2)/tan(t), -sqrt(r*sin(t)**2)),
+             (sqrt(r*sin(t)**2)/tan(t), sqrt(r*sin(t)**2))})
     assert solve([exp(x) - sin(y), 1/y - 3], [x, y]) == \
         [(log(sin(Rational(1, 3))), Rational(1, 3))]
     assert solve([exp(x) - sin(y), 1/exp(y) - 3], [x, y]) == \
@@ -843,11 +874,10 @@ def test_sympyissue_5901():
         {f(x): 3*D}
     assert solve([f(x) - 3*f(x).diff(x), f(x)**2 - y + 4], f(x), y) == \
         [{f(x): 3*D, y: 9*D**2 + 4}]
-    assert solve(-f(a)**2*g(a)**2 + f(a)**2*h(a)**2 + g(a).diff(a),
-                h(a), g(a), set=True) == \
-        ([g(a)], {
-        (-sqrt(h(a)**2*f(a)**2 + G)/f(a),),
-        (sqrt(h(a)**2*f(a)**2 + G)/f(a),)})
+    assert (solve(-f(a)**2*g(a)**2 + f(a)**2*h(a)**2 + g(a).diff(a),
+                  h(a), g(a), set=True) ==
+            ([g(a)], {(-sqrt(h(a)**2 + G/f(a)**2),),
+             (sqrt(h(a)**2 + G/f(a)**2),)}))
     eqs = [f(x)**2 + g(x) - 2*f(x).diff(x), g(x)**2 - 4]
     assert solve(eqs, f(x), g(x), set=True) == \
         ([f(x), g(x)], {
@@ -1323,9 +1353,11 @@ def test_sympyissue_8587():
 def test_high_order_multivariate():
     assert len(solve(a*x**3 - x + 1, x)) == 3
     assert len(solve(a*x**4 - x + 1, x)) == 4
-    assert solve(a*x**5 - x + 1, x) == []  # incomplete solution allowed
-    pytest.raises(NotImplementedError, lambda:
-                  solve(a*x**5 - x + 1, x, incomplete=False))
+    assert solve(a*x**5 - x + 1, x) == [RootOf(a*x**5 - x + 1, x, 0),
+                                        RootOf(a*x**5 - x + 1, x, 1),
+                                        RootOf(a*x**5 - x + 1, x, 2),
+                                        RootOf(a*x**5 - x + 1, x, 3),
+                                        RootOf(a*x**5 - x + 1, x, 4)]
 
     # result checking must always consider the denominator and RootOf
     # must be checked, too
@@ -1387,4 +1419,4 @@ def test_sympyissue_10391():
 
 def test_sympyissue_11538():
     eqs = (x - y**3 + 4, x + y + 4 + 4*E)
-    assert len(solve(eqs, x, y)) == 3
+    assert len(solve(eqs, x, y, check=False)) == 3
