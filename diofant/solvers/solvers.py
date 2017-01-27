@@ -1099,26 +1099,6 @@ def _solve(f, *symbols, **flags):
         if len(ex) != 1:
             ind, dep = f.as_independent(*symbols)
             ex = ind.free_symbols & dep.free_symbols
-        if soln:
-            if flags.get('simplify', True):
-                if type(soln) is dict:
-                    for k in soln:
-                        soln[k] = simplify(soln[k])
-                elif type(soln) is list:
-                    if type(soln[0]) is dict:
-                        for d in soln:
-                            for k in d:
-                                d[k] = simplify(d[k])
-                    elif type(soln[0]) is tuple:
-                        soln = [tuple(simplify(i) for i in j) for j in soln]
-                    else:
-                        raise TypeError('unrecognized args in list')
-                elif type(soln) is tuple:
-                    sym, sols = soln
-                    soln = sym, {tuple(simplify(i) for i in j) for j in sols}
-                else:
-                    raise TypeError('unrecognized solution type')
-            return soln
         # find first successful solution
         failed = []
         got_s = set()
