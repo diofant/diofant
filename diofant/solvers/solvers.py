@@ -132,29 +132,8 @@ def checksol(f, symbol, sol=None, **flags):
     elif isinstance(symbol, dict):
         sol = symbol
     else:
-        msg = 'Expecting (sym, val) or ({sym: val}, None) but got (%s, %s)'
-        raise ValueError(msg % (symbol, sol))
-
-    if iterable(f):
-        if not f:
-            raise ValueError('no functions to check')
-        rv = True
-        for fi in f:
-            check = checksol(fi, sol, **flags)
-            if check:
-                continue
-            if check is False:
-                return False
-            rv = None  # don't return, wait to see if there's a False
-        return rv
-
-    if isinstance(f, Poly):
-        f = f.as_expr()
-    elif isinstance(f, Equality):
-        f = f.lhs - f.rhs
-
-    if not f:
-        return True
+        raise ValueError("Expecting (sym, val) or ({sym: val}, "
+                         "None) but got (%s, %s)" % (symbol, sol))
 
     if sol and not f.has(*list(sol.keys())):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
@@ -223,8 +202,6 @@ def checksol(f, symbol, sol=None, **flags):
                     saw_pow_func = True
                 elif p.is_Function:
                     saw_pow_func = True
-                elif isinstance(p, UndefinedFunction):
-                    saw_pow_func = True
                 if saw_pow_func:
                     break
             if saw_pow_func is False:
@@ -232,21 +209,6 @@ def checksol(f, symbol, sol=None, **flags):
             if flags.get('force', True):
                 # don't do a zero check with the positive assumptions in place
                 val = val.subs(reps)
-            nz = val.is_nonzero
-            if nz is not None:
-                # issue sympy/sympy#5673: nz may be True even when False
-                # so these are just hacks to keep a false positive
-                # from being returned
-
-                # HACK 1: LambertW (issue sympy/sympy#5673)
-                if val.is_number and val.has(LambertW):
-                    # don't eval this to verify solution since if we got here,
-                    # numerical must be False
-                    return
-
-                # add other HACKs here if necessary, otherwise we assume
-                # the nz value is correct
-                return not nz
             break
 
         if val == was:
@@ -261,8 +223,6 @@ def checksol(f, symbol, sol=None, **flags):
 
     if flags.get('warn', False):
         warnings.warn("\n\tWarning: could not verify solution %s." % sol)
-    # returns None if it can't conclude
-    # TODO: improve solution testing
 
 
 def solve(f, *symbols, **flags):
