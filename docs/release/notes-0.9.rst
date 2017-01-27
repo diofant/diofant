@@ -126,8 +126,9 @@ Issues closed
 * :sympyissue:`10489` Mathematical Symbol does not seem to serialize correctly LaTeX printer
 * :sympyissue:`10336` nsimplify problems with `oo` and `inf`
 * :sympyissue:`12345` nonlinsolve (solve_biquadratic) gives no solution with radical
+* :issue:`361` Fill release notes for old (SymPy) versions
 
-.. last pr: #448
+.. last pr: #410
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
