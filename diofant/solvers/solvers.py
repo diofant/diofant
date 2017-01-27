@@ -883,7 +883,7 @@ def solve(f, *symbols, **flags):
                     break
             elif not solution:
                 break
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError(filldedent('''
                             no handling of %s was implemented''' % solution))
 
@@ -1311,7 +1311,7 @@ def _solve(f, *symbols, **flags):
                     # or high-order EX domain.
                     try:
                         soln = poly.all_roots()
-                    except NotImplementedError:
+                    except NotImplementedError:  # pragma: no cover
                         if not flags.get('incomplete', True):
                                 raise NotImplementedError(
                                 filldedent('''
@@ -1413,9 +1413,6 @@ def _solve(f, *symbols, **flags):
 
 
 def _solve_system(exprs, symbols, **flags):
-    if not exprs:
-        return []
-
     polys = []
     dens = set()
     failed = []
@@ -1491,11 +1488,11 @@ def _solve_system(exprs, symbols, **flags):
                                 if not skip:
                                     got_s.update(syms)
                                     result.append(r)
-                    except NotImplementedError:
+                    except NotImplementedError:  # pragma: no cover
                         pass
                 if got_s:
                     solved_syms = list(got_s)
-                else:
+                else:  # pragma: no cover
                     raise NotImplementedError('no valid subset found')
             else:
                 try:
@@ -1558,10 +1555,7 @@ def _solve_system(exprs, symbols, **flags):
                         newresult.append(r)
                     break  # skip as it's independent of desired symbols
                 for s in ok_syms:
-                    try:
-                        soln = _solve(eq2, s, **flags)
-                    except NotImplementedError:
-                        continue
+                    soln = _solve(eq2, s, **flags)
                     # put each solution in r and append the now-expanded
                     # result in the new result list; use copy since the
                     # solution for s in being added in-place
@@ -1577,7 +1571,7 @@ def _solve_system(exprs, symbols, **flags):
                         newresult.append(rnew)
                     hit = True
                     got_s.add(s)
-                if not hit:
+                if not hit:  # pragma: no cover
                     raise NotImplementedError('could not solve %s' % eq2)
             else:
                 result = newresult
@@ -2151,7 +2145,7 @@ def _invert(eq, *symbols, **kwargs):
                         ad.func == bd.func and len(ad.args) == len(bd.args):
                     if len(ad.args) == 1:
                         lhs = ad.args[0] - bd.args[0]
-                    else:
+                    else:  # pragma: no cover
                         # should be able to solve
                         # f(x, y) == f(2, 3) -> x == 2
                         # f(x, x + y) == f(2, 3) -> x == 2 or x == 3 - y
