@@ -214,6 +214,7 @@ def test_generate():
     assert next(cycle_length(func, 4, nmax=5)) == (5, None)
     assert list(cycle_length(func, 4, nmax=5, values=True)) == \
         [17, 35, 2, 5, 26]
+    assert list(cycle_length(lambda i: 0, 0, nmax=0)) == [(1, 0)]
 
 
 def test_randprime():
@@ -424,6 +425,8 @@ def test_divisor_sigma():
     assert divisor_sigma(m).subs(m, 3**10) == 88573
     assert divisor_sigma(m, k).subs([(m, 3**10), (k, 3)]) == 213810021790597
     assert summation(divisor_sigma(m), (m, 1, 11)) == 99
+
+    pytest.raises(ValueError, lambda: divisor_sigma(-4))
 
 
 def test_partitions():
@@ -688,6 +691,7 @@ def test_divisors():
 def test_divisor_count():
     assert divisor_count(0) == 0
     assert divisor_count(6) == 4
+    assert divisor_count(6, 0) == 0
 
 
 def test_antidivisors():
@@ -904,3 +908,6 @@ def test_core():
     assert core(10**27, 22) == 10**5
     assert core(537824) == 14
     assert core(1, 6) == 1
+
+    pytest.raises(ValueError, lambda: core(-1))
+    pytest.raises(ValueError, lambda: core(1, 0))
