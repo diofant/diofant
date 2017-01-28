@@ -27,10 +27,6 @@ def test_Idx_construction():
     pytest.raises(TypeError, lambda: Idx(i, Basic()))
 
 
-def test_IndexedBase_construction():
-    pytest.raises(TypeError, lambda: IndexedBase(1))
-
-
 def test_Idx_properties():
     i, a, b = symbols('i a b', integer=True)
     assert Idx(i).is_integer
@@ -204,3 +200,14 @@ def test_Indexed_coeff():
     a = (1/y[i+1]*y[i]).coeff(y[i])
     b = (y[i]/y[i+1]).coeff(y[i])
     assert a == b
+
+
+def test_indexed_is_constant():
+    A = IndexedBase("A")
+    i, j, k = symbols("i,j,k")
+    assert not A[i].is_constant()
+    assert A[i].is_constant(j)
+    assert not A[1 + 2*i, k].is_constant()
+    assert not A[1 + 2*i, k].is_constant(i)
+    assert A[1 + 2*i, k].is_constant(j)
+    assert not A[1 + 2*i, k].is_constant(k)

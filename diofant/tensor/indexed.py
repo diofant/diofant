@@ -318,7 +318,7 @@ class IndexedBase(Expr, NotIterable):
         elif isinstance(label, (Dummy, Symbol)):
             pass
         else:
-            raise TypeError("Base label should be a string or Symbol.")
+            label = sympify(label, strict=True)
 
         obj = Expr.__new__(cls, label, **kw_args)
         if is_sequence(shape):
