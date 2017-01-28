@@ -11,7 +11,7 @@ from diofant.core.symbol import Symbol
 from diofant.core.compatibility import is_sequence, as_int
 
 
-def random_complex_number(a=2, b=-1, c=3, d=1, rational=False):
+def random_complex_number(a=2, b=-1, c=3, d=1, rational=True):
     """
     Return a random complex number.
 
