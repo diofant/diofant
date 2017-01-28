@@ -87,12 +87,12 @@ class FCodePrinter(CodePrinter):
             self._lead_cont = "      "
             self._lead_comment = "! "
         else:
-            raise ValueError("Unknown source format: %s" % self._settings[
-                             'source_format'])
+            raise ValueError("Unknown source "
+                             "format: %s" % self._settings['source_format'])
         standards = {66, 77, 90, 95, 2003, 2008}
         if self._settings['standard'] not in standards:
-            raise ValueError("Unknown Fortran standard: %s" % self._settings[
-                             'standard'])
+            raise ValueError("Unknown Fortran "
+                             "standard: %s" % self._settings['standard'])
 
     def _rate_index_position(self, p):
         return -p*5
@@ -192,8 +192,6 @@ class FCodePrinter(CodePrinter):
                     t = t[1:]
                 else:
                     sign = "+"
-                if precedence(term) < PREC:
-                    t = "(%s)" % t
 
                 return "cmplx(%s,%s) %s %s" % (
                     self._print(Add(*pure_real)),
@@ -512,11 +510,3 @@ def fcode(expr, assign_to=None, **settings):
     """
 
     return FCodePrinter(settings).doprint(expr, assign_to)
-
-
-def print_fcode(expr, **settings):
-    """Prints the Fortran representation of the given expression.
-
-    See fcode for the meaning of the optional arguments.
-    """
-    print(fcode(expr, **settings))

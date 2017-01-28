@@ -11,20 +11,24 @@ from diofant.tensor import IndexedBase, Idx
 from diofant.utilities.lambdify import implemented_function
 from diofant.matrices import Matrix, MatrixSymbol
 
+from diofant.abc import x, y, z
+
 __all__ = ()
 
 
 def test_printmethod():
-    x = symbols('x')
-
     class nint(Function):
         def _fcode(self, printer):
             return "nint(%s)" % printer._print(self.args[0])
     assert fcode(nint(x)) == "      nint(x)"
 
 
+def test_args():
+    pytest.raises(ValueError, lambda: fcode(x, source_format="spam"))
+    pytest.raises(ValueError, lambda: fcode(x, standard="eggs"))
+
+
 def test_fcode_Pow():
-    x, y = symbols('x,y')
     n = symbols('n', integer=True)
 
     assert fcode(x**3) == "      x**3"
@@ -42,7 +46,6 @@ def test_fcode_Pow():
 
 
 def test_fcode_Rational():
-    x = symbols('x')
     assert fcode(Rational(3, 7)) == "      3.0d0/7.0d0"
     assert fcode(Rational(18, 9)) == "      2"
     assert fcode(Rational(3, -7)) == "      -3.0d0/7.0d0"
@@ -62,13 +65,11 @@ def test_fcode_Float():
 
 
 def test_fcode_functions():
-    x, y = symbols('x,y')
     assert fcode(sin(x) ** cos(y)) == "      sin(x)**cos(y)"
 
 
 # issue sympy/sympy#6814
 def test_fcode_functions_with_integers():
-    x = symbols('x')
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
     assert fcode(x * log(Integer(10))) == "      x*2.30258509299405d0"
@@ -116,14 +117,12 @@ def test_fcode_complex():
 
 
 def test_implicit():
-    x, y = symbols('x,y')
     assert fcode(sin(x)) == "      sin(x)"
     assert fcode(atan2(x, y)) == "      atan2(x, y)"
     assert fcode(conjugate(x)) == "      conjg(x)"
 
 
 def test_not_fortran():
-    x = symbols('x')
     g = Function('g')
     assert fcode(
         gamma(x)) == "C     Not supported in Fortran:\nC     gamma\n      gamma(x)"
@@ -132,9 +131,7 @@ def test_not_fortran():
 
 
 def test_user_functions():
-    x = symbols('x')
     assert fcode(sin(x), user_functions={"sin": "zsin"}) == "      zsin(x)"
-    x = symbols('x')
     assert fcode(
         gamma(x), user_functions={"gamma": "mygamma"}) == "      mygamma(x)"
     g = Function('g')
@@ -145,7 +142,6 @@ def test_user_functions():
 
 
 def test_inline_function():
-    x = symbols('x')
     g = implemented_function('g', Lambda(x, 2*x))
     assert fcode(g(x)) == "      2*x"
     g = implemented_function('g', Lambda(x, 2*pi/x))
@@ -164,12 +160,10 @@ def test_inline_function():
 
 
 def test_assign_to():
-    x = symbols('x')
     assert fcode(sin(x), assign_to="s") == "      s = sin(x)"
 
 
 def test_line_wrapping():
-    x, y = symbols('x,y')
     assert fcode(((x + y)**10).expand(), assign_to="var") == (
         "      var = x**10 + 10*x**9*y + 45*x**8*y**2 + 120*x**7*y**3 + 210*x**6*\n"
         "     @ y**4 + 252*x**5*y**5 + 210*x**4*y**6 + 120*x**3*y**7 + 45*x**2*y\n"
@@ -183,7 +177,6 @@ def test_line_wrapping():
 
 
 def test_fcode_precedence():
-    x, y = symbols("x y")
     assert fcode(And(x < y, y < x + 1), source_format="free") == \
         "x < y .and. y < x + 1"
     assert fcode(Or(x < y, y < x + 1), source_format="free") == \
@@ -195,7 +188,6 @@ def test_fcode_precedence():
 
 
 def test_fcode_Logical():
-    x, y, z = symbols("x y z")
     # unary Not
     assert fcode(Not(x), source_format="free") == ".not. x"
     # binary And
@@ -244,7 +236,6 @@ def test_fcode_Logical():
 
 
 def test_fcode_Xlogical():
-    x, y, z = symbols("x y z")
     # binary Xor
     assert fcode(Xor(x, y, evaluate=False), source_format="free") == \
         "x .neqv. y"
@@ -343,7 +334,6 @@ def test_fcode_Xlogical():
 
 
 def test_fcode_Relational():
-    x, y = symbols("x y")
     assert fcode(Relational(x, y, "=="), source_format="free") == "Eq(x, y)"
     assert fcode(Relational(x, y, "!="), source_format="free") == "Ne(x, y)"
     assert fcode(Relational(x, y, ">="), source_format="free") == "x >= y"
@@ -353,7 +343,6 @@ def test_fcode_Relational():
 
 
 def test_fcode_Piecewise():
-    x = symbols('x')
     expr = Piecewise((x, x < 1), (x**2, True))
     # Check that inline conditional (merge) fails if standard isn't 95+
     pytest.raises(NotImplementedError, lambda: fcode(expr))
@@ -393,6 +382,16 @@ def test_fcode_Piecewise():
     # Check that Piecewise without a True (default) condition error
     expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
     pytest.raises(ValueError, lambda: fcode(expr))
+
+    assert (fcode(Piecewise((0, x < -1), (1, And(x >= -1, x < 0)),
+                            (-1, True)), assign_to="var") ==
+            '      if (x < -1) then\n'
+            '         var = 0\n'
+            '      else if (x >= -1 .and. x < 0) then\n'
+            '         var = 1\n'
+            '      else\n'
+            '         var = -1\n'
+            '      end if')
 
 
 def test_wrap_fortran():
@@ -454,6 +453,22 @@ def test_wrap_fortran():
         assert w == e
     assert len(wrapped_lines) == len(expected_lines)
 
+    lines = ["C     553253524254653461546154715734516547876868686868687"
+             "86686868668866871376456135451745651 54165175461 5613 5754"
+             "41586585565557575576577657575757576547"]
+    assert (printer._wrap_fortran(lines) ==
+            ['C     553253524254653461546154715734516547876868686868687'
+             '866868686688668', 'C     71376456135451745651 54165175461 5613',
+             'C     575441586585565557575576577657575757576547'])
+
+    lines = ["      i = ohhohohoerhoheroighokhjhkhkhkhkhjhkhjkhjkhjhjkhjk"
+             "hhkerhgiheoheohoge + iuirefgiuguieriufgirugfiur + ruhfriehierhi"]
+    assert (printer._wrap_fortran(lines) ==
+            ['      i =',
+             '     @ ohhohohoerhoheroighokhjhkhkhkhkhjhkhjk'
+             'hjkhjhjkhjkhhkerhgiheoheoho',
+             '     @ ge + iuirefgiuguieriufgirugfiur + ruhfriehierhi'])
+
 
 def test_wrap_fortran_keep_d0():
     printer = FCodePrinter()
@@ -486,12 +501,10 @@ def test_settings():
 
 
 def test_free_form_code_line():
-    x, y = symbols('x,y')
     assert fcode(cos(x) + sin(y), source_format='free') == "sin(y) + cos(x)"
 
 
 def test_free_form_continuation_line():
-    x, y = symbols('x,y')
     result = fcode(((cos(x) + sin(y))**(7)).expand(), source_format='free')
     expected = (
         'sin(y)**7 + 7*sin(y)**6*cos(x) + 21*sin(y)**5*cos(x)**2 + 35*sin(y)**4* &\n'
@@ -636,7 +649,6 @@ def test_indent():
 
 
 def test_Matrix_printing():
-    x, y, z = symbols('x,y,z')
     # Test returning a Matrix
     mat = Matrix([x*y, Piecewise((2 + x, y > 0), (y, True)), sin(z)])
     A = MatrixSymbol('A', 3, 1)

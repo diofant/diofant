@@ -72,6 +72,8 @@ def test_python_keyword_symbol_name_escaping():
             "lambda__ = Symbol('lambda')\nlambda_ = Symbol('lambda_')\ne = 7*lambda_ + 5*lambda__")
     assert (python(5*Symbol("for") + Function("for_")(8)) ==
             "for__ = Symbol('for')\nfor_ = Function('for_')\ne = 5*for__ + for_(8)")
+    assert (python(5*Symbol("for_") + Function("for")(8)) ==
+            "for_ = Symbol('for_')\nfor__ = Function('for')\ne = 5*for_ + for__(8)")
 
 
 def test_python_keyword_function_name_escaping():

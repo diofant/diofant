@@ -28,6 +28,7 @@ Backwards-incompatible changes
 * Drop ``xring()`` and ``xfield()``, see `#403 <https://github.com/diofant/diofant/pull/403>`_.
 * Drop JS printer and ``TableForm`` class, see `#403 <https://github.com/diofant/diofant/pull/403>`_.
 * Removed agca submodule of :mod:`~diofant.polys`, see `#404 <https://github.com/diofant/diofant/pull/404>`_.
+* Removed ``pager_print()`` and ``print_fcode()``, see `#411 <https://github.com/diofant/diofant/pull/411>`_.
 
 Minor changes
 =============

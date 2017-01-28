@@ -40,6 +40,7 @@ def test_dotedges():
         '"Add(Symbol(\'x\'), Integer(2))_()" -> "Integer(2)_(0,)";',
         '"Add(Symbol(\'x\'), Integer(2))_()" -> "Symbol(\'x\')_(1,)";'
     ]
+    assert dotedges(1) == []
 
 
 def test_dotprint():
@@ -58,6 +59,14 @@ def test_dotprint():
     assert all(e in text for e in dotedges(x**x, repeat=True))
     assert all(n in text for n in [dotnode(x, pos=(0,)), dotnode(x, pos=(1,))])
     assert 'digraph' in text
+
+    assert dotprint(x**x**x) != dotprint(x**x**x, maxdepth=1)
+    assert (dotprint(x**x**x, maxdepth=-1) ==
+            'digraph{\n\n# Graph style\n"bgcolor"="transparent"\n"ordering"'
+            '="out"\n"rankdir"="TD"\n\n#########\n# Nodes #\n#########\n\n"'
+            'Pow(Symbol(\'x\'), Pow(Symbol(\'x\'), Symbol(\'x\')))_()" '
+            '["color"="black", "label"="Pow", "shape"="ellipse"];\n\n'
+            '#########\n# Edges #\n#########\n\n\n}')
 
 
 def test_dotprint_depth():
