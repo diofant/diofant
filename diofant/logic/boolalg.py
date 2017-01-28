@@ -296,7 +296,7 @@ class And(LatticeOp, BooleanFunction):
     ========
 
     >>> x & y
-    And(x, y)
+    x & y
 
     Notes
     =====
@@ -366,7 +366,7 @@ class Or(LatticeOp, BooleanFunction):
     ========
 
     >>> x | y
-    Or(x, y)
+    x | y
 
     Notes
     =====
@@ -442,11 +442,11 @@ class Not(BooleanFunction):
     >>> Not(Or(True, False))
     false
     >>> Not(And(And(True, x), Or(x, False)))
-    Not(x)
+    ~x
     >>> ~x
-    Not(x)
+    ~x
     >>> Not(And(Or(x, y), Or(~x, ~y)))
-    Not(And(Or(Not(x), Not(y)), Or(x, y)))
+    ~((x | y) & (~x | ~y))
 
     Notes
     =====
@@ -660,7 +660,7 @@ class Nand(BooleanFunction):
     >>> Nand(True, True)
     false
     >>> Nand(x, y)
-    Not(And(x, y))
+    ~(x & y)
 
     """
 
@@ -691,7 +691,7 @@ class Nor(BooleanFunction):
     >>> Nor(False, False)
     true
     >>> Nor(x, y)
-    Not(Or(x, y))
+    ~(x | y)
 
     """
 
@@ -946,7 +946,7 @@ def distribute_and_over_or(expr):
     ========
 
     >>> distribute_and_over_or(Or(a, And(Not(b), Not(c))))
-    And(Or(Not(b), a), Or(Not(c), a))
+    (a | ~b) & (a | ~c)
 
     """
     return _distribute((expr, And, Or))
@@ -963,7 +963,7 @@ def distribute_or_over_and(expr):
     ========
 
     >>> distribute_or_over_and(And(Or(Not(a), b), c))
-    Or(And(Not(a), c), And(b, c))
+    (b & c) | (c & ~a)
 
     """
     return _distribute((expr, Or, And))
@@ -999,9 +999,9 @@ def to_nnf(expr, simplify=True):
     ========
 
     >>> to_nnf(Not((~a & ~b) | (c & d)))
-    And(Or(Not(c), Not(d)), Or(a, b))
+    (a | b) & (~c | ~d)
     >>> to_nnf(Equivalent(a >> b, b >> a))
-    And(Or(And(Not(a), b), Not(a), b), Or(And(Not(b), a), Not(b), a))
+    (a | ~b | (a & ~b)) & (b | ~a | (b & ~a))
 
     """
     if is_nnf(expr, simplify):
@@ -1019,9 +1019,9 @@ def to_cnf(expr, simplify=False):
     ========
 
     >>> to_cnf(~(a | b) | c)
-    And(Or(Not(a), c), Or(Not(b), c))
+    (c | ~a) & (c | ~b)
     >>> to_cnf((a | b) & (a | ~a), True)
-    Or(a, b)
+    a | b
 
     """
     expr = sympify(expr)
@@ -1049,9 +1049,9 @@ def to_dnf(expr, simplify=False):
     ========
 
     >>> to_dnf(b & (a | c))
-    Or(And(a, b), And(b, c))
+    (a & b) | (b & c)
     >>> to_dnf((a & b) | (a & ~b) | (b & c) | (~b & c), True)
-    Or(a, c)
+    a | c
 
     """
     expr = sympify(expr)
@@ -1208,11 +1208,11 @@ def eliminate_implications(expr):
     ========
 
     >>> eliminate_implications(Implies(a, b))
-    Or(Not(a), b)
+    b | ~a
     >>> eliminate_implications(Equivalent(a, b))
-    And(Or(Not(a), b), Or(Not(b), a))
+    (a | ~b) & (b | ~a)
     >>> eliminate_implications(Equivalent(a, b, c))
-    And(Or(Not(a), b), Or(Not(b), c), Or(Not(c), a))
+    (a | ~c) & (b | ~a) & (c | ~b)
 
     """
     return to_nnf(expr)
@@ -1397,7 +1397,7 @@ def SOPform(variables, minterms, dontcares=None):
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
     >>> SOPform([t, x, y, z], minterms, dontcares)
-    Or(And(Not(t), z), And(y, z))
+    (y & z) | (z & ~t)
 
     References
     ==========
@@ -1446,7 +1446,7 @@ def POSform(variables, minterms, dontcares=None):
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
     >>> POSform([t, x, y, z], minterms, dontcares)
-    And(Or(Not(t), y), z)
+    z & (y | ~t)
 
     References
     ==========
@@ -1512,12 +1512,12 @@ def simplify_logic(expr, form=None, deep=True):
 
     >>> b = (~x & ~y & ~z) | (~x & ~y & z)
     >>> simplify_logic(b)
-    And(Not(x), Not(y))
+    ~x & ~y
 
     >>> sympify(b)
-    Or(And(Not(x), Not(y), Not(z)), And(Not(x), Not(y), z))
+    (z & ~x & ~y) | (~x & ~y & ~z)
     >>> simplify_logic(_)
-    And(Not(x), Not(y))
+    ~x & ~y
 
     """
 
@@ -1604,7 +1604,7 @@ def bool_map(bool1, bool2):
     >>> function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
     >>> function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2)
-    (And(Not(z), y), {y: a, z: b})
+    (y & ~z, {y: a, z: b})
 
     The results are not necessarily unique, but they are canonical. Here,
     ``(t, z)`` could be ``(a, d)`` or ``(d, a)``:
@@ -1612,13 +1612,10 @@ def bool_map(bool1, bool2):
     >>> eq =  Or(And(Not(y), t), And(Not(y), z), And(x, y))
     >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
     >>> bool_map(eq, eq2)
-    (Or(And(Not(y), t), And(Not(y), z),
-     And(x, y)), {t: a, x: b, y: c, z: d})
+    ((x & y) | (t & ~y) | (z & ~y), {t: a, x: b, y: c, z: d})
     >>> eq = And(Xor(a, b), c, And(c, d))
     >>> bool_map(eq, eq.subs({c: x}))
-    (And(Or(Not(a), Not(b)),
-     Or(a, b), c, d),
-     {a: a, b: b, c: d, d: x})
+    (c & d & (a | b) & (~a | ~b), {a: a, b: b, c: d, d: x})
 
     """
 

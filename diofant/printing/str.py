@@ -70,13 +70,14 @@ class StrPrinter(Printer):
     def _print_BooleanFalse(self, expr):
         return "false"
 
+    def _print_Not(self, expr):
+        return '~%s' % self.parenthesize(expr.args[0], PRECEDENCE["Not"])
+
     def _print_And(self, expr):
-        return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
-                                                       expr.args)))
+        return self.stringify(expr.args, " & ", PRECEDENCE["BitwiseAnd"])
 
     def _print_Or(self, expr):
-        return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
-                                                       expr.args)))
+        return self.stringify(expr.args, " | ", PRECEDENCE["BitwiseOr"])
 
     def _print_Basic(self, expr):
         l = [self._print(o) for o in expr.args]

@@ -584,7 +584,7 @@ def _condsimp(cond):
     added as need arises rather than following any logical pattern.
 
     >>> _condsimp(Or(x < y, z, Eq(x, y)))
-    Or(x <= y, z)
+    z | (x <= y)
     >>> _condsimp(Or(x <= y, And(x < y, z)))
     x <= y
 

@@ -239,11 +239,11 @@ class PropKB(KB):
 
         >>> l.tell(x | y)
         >>> l.clauses
-        [Or(x, y)]
+        [x | y]
 
         >>> l.tell(y)
         >>> l.clauses
-        [y, Or(x, y)]
+        [y, x | y]
 
         """
         for c in conjuncts(to_cnf(sentence)):
@@ -277,7 +277,7 @@ class PropKB(KB):
 
         >>> l.tell(x | y)
         >>> l.clauses
-        [Or(x, y)]
+        [x | y]
 
         >>> l.retract(x | y)
         >>> l.clauses
