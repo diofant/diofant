@@ -372,7 +372,7 @@ class Line2DBaseSeries(BaseSeries):
         np = import_module('numpy')
         c = self.line_color
         if hasattr(c, '__call__'):
-            f = np.vectorize(c)
+            f = np.vectorize(c, otypes=[np.float64])
             arity = len(getfullargspec(c)[0])
             if arity == 1 and self.is_parametric:
                 x = self.get_parameter_points()
@@ -672,7 +672,7 @@ class SurfaceBaseSeries(BaseSeries):
         np = import_module('numpy')
         c = self.surface_color
         if isinstance(c, Callable):
-            f = np.vectorize(c)
+            f = np.vectorize(c, otypes=[np.float64])
             arity = len(getfullargspec(c)[0])
             if self.is_parametric:
                 variables = list(map(centers_of_faces, self.get_parameter_meshes()))
