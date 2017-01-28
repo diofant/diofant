@@ -10,5 +10,6 @@ development work they do here in a user friendly format.
 .. toctree::
    :glob:
    :maxdepth: 1
+   :reversed:
 
    notes-*

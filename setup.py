@@ -33,7 +33,7 @@ extra_reqs = {'exports': ['numpy', 'scipy', 'Theano'],
               'gmpy': ['gmpy2>2.0.3'],
               'plot': ['pyparsing!=2.1.2', 'matplotlib'],
               'interactive': ['ipython>=2.3.0'],
-              'docs': ['docutils!=0.13.1', 'sphinx>=1.2.3', 'numpydoc',
+              'docs': ['docutils!=0.13.1', 'sphinx>1.5', 'numpydoc',
                        'sphinx_rtd_theme'],
               }
 extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
