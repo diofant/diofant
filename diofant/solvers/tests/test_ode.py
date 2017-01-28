@@ -2824,3 +2824,9 @@ def test_sympyissue_11290():
             "- Integral(-sin(_y), x), _y) + "
             "Integral(cos(_y), x), (_y,), (f(x),)), C1)")
     assert s1.doit() == s0
+
+
+def test_sympyissue_7138():
+    eqs = [Eq(f(x).diff(x), f(x) - 1), Eq(g(x).diff(x), f(x) + 2*g(x) - 3)]
+    assert dsolve(eqs) == [Eq(f(x), -E**x*C1 + 1),
+                           Eq(g(x), 2*E**(2*x)*C2 + E**x*C1 + 1)]

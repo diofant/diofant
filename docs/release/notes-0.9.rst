@@ -63,8 +63,9 @@ Issues closed
 * `sympy/sympy#4678 <https://github.com/sympy/sympy/issues/4678>`_ Have solve() return RootOf when it can't solve equations
 * `sympy/sympy#7789 <https://github.com/sympy/sympy/issues/7789>`_ Poly(...).all_roots fails for general quadratic equation
 * `sympy/sympy#8255 <https://github.com/sympy/sympy/issues/8255>`_ roots_quadratic should return roots in same order as Poly.all_roots(radicals=False)
+* `sympy/sympy#7138 <https://github.com/sympy/sympy/issues/7138>`_ How to solve system of differential equations with symbolic solution?
 
-.. last pr: #400
+.. last pr: #411
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
