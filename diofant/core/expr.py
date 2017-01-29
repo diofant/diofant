@@ -2421,15 +2421,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         is_number = self.is_number
         if is_number is False:
             return False
-        n, i = self.as_real_imag()
-        if not (self.is_Float and self._prec == 1):  # workaround for diofant/diofant#161
-            n, i = n.evalf(2), i.evalf(2)
+        n, i = self.n().as_real_imag()
         if not i.is_Number or not n.is_Number:
             return False
-        if i and (i._prec > 1 or i._prec == -1):
-            return False
-        if not i and (i._prec > 1 or i._prec == -1):
-            if n._prec > 1 or n._prec == -1:
+        if i._prec > 1 or i._prec == -1:
+            if i:
+                return False
+            elif not i and (n._prec > 1 or n._prec == -1):
                 return True
 
     ###################################################################################
