@@ -1095,6 +1095,7 @@ def test_M38():
     assert solve_lin_sys(system, variabes) == solution
 
 
+@pytest.mark.slow
 def test_M39():
     x, y, z = symbols('x y z', complex=True)
     assert (solve((x**2*y + 3*y*z - 4,
