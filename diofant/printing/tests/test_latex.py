@@ -28,9 +28,10 @@ from diofant.diffgeom import (Manifold, Patch, TensorProduct,
                               metric_to_Christoffel_2nd, CovarDerivativeOp)
 from diofant.diffgeom.rn import R2, R2_r
 
+from diofant.abc import x, y, z, t, a, b
+
 __all__ = ()
 
-x, y, z, t, a, b = symbols('x y z t a b')
 k, m, n = symbols('k m n', integer=True)
 
 
@@ -1257,7 +1258,9 @@ def test_Mul():
 
 def test_Add():
     e = Add(0, 0, evaluate=False)
-    assert latex(e)  == r'0 + 0'
+    assert latex(e) == '0 + 0'
+
+    assert latex(x + y + 1, order='none') == '1 + x + y'
 
 
 def test_Pow():

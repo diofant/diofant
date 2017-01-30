@@ -246,8 +246,6 @@ This class implements LaTeX printing. See ``diofant.printing.latex``.
 
 .. autofunction:: latex
 
-.. autofunction:: print_latex
-
 MathMLPrinter
 -------------
 
