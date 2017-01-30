@@ -148,7 +148,7 @@ def egypt_graham_jewett(x, y):
 
     while len(l) != len(set(l)):
         l.sort()  # so the list has duplicates. find a smallest pair
-        for i in range(len(l) - 1):
+        for i in range(len(l) - 1):  # pragma: no branch
             if l[i] == l[i + 1]:
                 break
         # we have now identified a pair of identical
@@ -164,7 +164,7 @@ def egypt_takenouchi(x, y):
     l = [y] * x
     while len(l) != len(set(l)):
         l.sort()
-        for i in range(len(l) - 1):
+        for i in range(len(l) - 1):  # pragma: no branch
             if l[i] == l[i + 1]:
                 break
         k = l[i]

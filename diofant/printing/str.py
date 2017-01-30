@@ -33,11 +33,6 @@ class StrPrinter(Printer):
     def emptyPrinter(self, expr):
         if isinstance(expr, str):
             return expr
-        elif isinstance(expr, Basic):
-            if hasattr(expr, "args"):
-                return str(expr)
-            else:
-                raise
         else:
             return str(expr)
 
@@ -79,16 +74,11 @@ class StrPrinter(Printer):
         return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
             expr.args)))
 
-    def _print_AppliedPredicate(self, expr):
-        return '%s(%s)' % (expr.func, expr.arg)
-
     def _print_Basic(self, expr):
         l = [self._print(o) for o in expr.args]
         return expr.__class__.__name__ + "(%s)" % ", ".join(l)
 
     def _print_BlockMatrix(self, B):
-        if B.blocks.shape == (1, 1):
-            self._print(B.blocks[0, 0])
         return self._print(B.blocks)
 
     def _print_Catalan(self, expr):
@@ -114,14 +104,7 @@ class StrPrinter(Printer):
         return self._print_dict(expr)
 
     def _print_RandomDomain(self, d):
-        try:
-            return 'Domain: ' + self._print(d.as_boolean())
-        except Exception:
-            try:
-                return ('Domain: ' + self._print(d.symbols) + ' in ' +
-                        self._print(d.set))
-            except:
-                return 'Domain on ' + self._print(d.symbols)
+        return 'Domain: ' + self._print(d.as_boolean())
 
     def _print_Dummy(self, expr):
         return '_' + expr.name
@@ -306,9 +289,6 @@ class StrPrinter(Printer):
     def _print_NegativeInfinity(self, expr):
         return '-oo'
 
-    def _print_Normal(self, expr):
-        return "Normal(%s, %s)" % (expr.mu, expr.sigma)
-
     def _print_Order(self, expr):
         if all(p is S.Zero for p in expr.point) or not len(expr.variables):
             if len(expr.variables) <= 1:
@@ -439,11 +419,10 @@ class StrPrinter(Printer):
             else:
                 terms.extend(['+', s_term])
 
-        if terms[0] in ['-', '+']:
-            modifier = terms.pop(0)
+        modifier = terms.pop(0)
 
-            if modifier == '-':
-                terms[0] = '-' + terms[0]
+        if modifier == '-':
+            terms[0] = '-' + terms[0]
 
         format = expr.__class__.__name__ + "(%s, %s"
 
@@ -483,11 +462,11 @@ class StrPrinter(Printer):
                 return '1/%s' % self.parenthesize(expr.base, PREC)
 
         e = self.parenthesize(expr.exp, PREC)
-        if self.printmethod == '_diofantrepr' and expr.exp.is_Rational and expr.exp.q != 1:
-            # the parenthesized exp should be '(Rational(a, b))' so strip parens,
-            # but just check to be sure.
-            if e.startswith('(Rational'):
-                return '%s**%s' % (self.parenthesize(expr.base, PREC), e[1:-1])
+        if (self.printmethod == '_diofantrepr' and
+                expr.exp.is_Rational and not expr.exp.is_Integer):
+            # The parenthesized exp should be '(Rational(a, b))' so strip
+            # parens, but just check to be sure.
+            return '%s**%s' % (self.parenthesize(expr.base, PREC), e[1:-1])
         return '%s**%s' % (self.parenthesize(expr.base, PREC), e)
 
     def _print_Mod(self, expr):
@@ -500,7 +479,7 @@ class StrPrinter(Printer):
     def _print_MatPow(self, expr):
         PREC = precedence(expr)
         return '%s**%s' % (self.parenthesize(expr.base, PREC),
-                         self.parenthesize(expr.exp, PREC))
+                           self.parenthesize(expr.exp, PREC))
 
     def _print_ImmutableDenseNDimArray(self, expr):
         return str(expr)
@@ -517,10 +496,7 @@ class StrPrinter(Printer):
         return str(expr)
 
     def _print_Rational(self, expr):
-        if expr.q == 1:
-            return str(expr.p)
-        else:
-            return "%s/%s" % (expr.p, expr.q)
+        return "%s/%s" % (expr.p, expr.q)
 
     def _print_Fraction(self, expr):
         if expr.denominator == 1:
@@ -547,6 +523,8 @@ class StrPrinter(Printer):
             strip = True
         elif self._settings["full_prec"] == "auto":
             strip = self._print_level > 1
+        else:  # pragma: no cover
+            raise NotImplementedError
         rv = mlib.to_str(expr._mpf_, dps, strip_zeros=strip)
         if rv.startswith('-.0'):
             rv = '-0.' + rv[3:]
@@ -597,9 +575,6 @@ class StrPrinter(Printer):
 
         return "%s(%s)" % (cls, ", ".join(args))
 
-    def _print_Sample(self, expr):
-        return "Sample([%s])" % self.stringify(expr, ", ", 0)
-
     def _print_frozenset(self, s):
         items = sorted(s, key=default_sort_key)
 
@@ -613,16 +588,9 @@ class StrPrinter(Printer):
             return "set()"
         return "{%s}" % self.stringify(sorted(expr, key=default_sort_key), ", ")
 
-    def _print_SparseMatrix(self, expr):
-        from diofant.matrices import Matrix
-        return self._print(Matrix(expr))
-
     def _print_Sum(self, expr):
         def _xab_tostr(xab):
-            if len(xab) == 1:
-                return self._print(xab[0])
-            else:
-                return self._print((xab[0],) + tuple(xab[1:]))
+            return self._print((xab[0],) + tuple(xab[1:]))
         L = ', '.join([_xab_tostr(l) for l in expr.limits])
         return 'Sum(%s, %s)' % (self._print(expr.function), L)
 
@@ -636,9 +604,6 @@ class StrPrinter(Printer):
 
     def _print_ZeroMatrix(self, expr):
         return "0"
-
-    def _print_Predicate(self, expr):
-        return "Q.%s" % expr.name
 
     def _print_str(self, expr):
         return expr
@@ -655,20 +620,11 @@ class StrPrinter(Printer):
     def _print_Transpose(self, T):
         return "%s'" % self.parenthesize(T.arg, PRECEDENCE["Pow"])
 
-    def _print_Uniform(self, expr):
-        return "Uniform(%s, %s)" % (expr.a, expr.b)
-
     def _print_Union(self, expr):
         return ' U '.join(self._print(set) for set in expr.args)
 
     def _print_Complement(self, expr):
         return r' \ '.join(self._print(set) for set in expr.args)
-
-    def _print_Unit(self, expr):
-        return expr.abbrev
-
-    def _print_Dimension(self, expr):
-        return str(expr)
 
     def _print_Wild(self, expr):
         return expr.name + '_'
@@ -680,23 +636,12 @@ class StrPrinter(Printer):
         return "0"
 
     def _print_DMP(self, p):
-        from diofant.core.sympify import SympifyError
-        try:
-            if p.ring is not None:
-                # TODO incorporate order
-                return self._print(p.ring.to_diofant(p))
-        except SympifyError:
-            pass
-
         cls = p.__class__.__name__
         rep = self._print(p.rep)
         dom = self._print(p.domain)
         ring = self._print(p.ring)
 
         return "%s(%s, %s, %s)" % (cls, rep, dom, ring)
-
-    def _print_DMF(self, expr):
-        return self._print_DMP(expr)
 
     def _print_BaseScalarField(self, field):
         return field._coord_sys._names[field._index]

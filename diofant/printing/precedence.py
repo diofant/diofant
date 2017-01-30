@@ -86,10 +86,8 @@ def precedence_PolyElement(item):
 
 
 def precedence_FracElement(item):
-    if item.denom == 1:
-        return precedence_PolyElement(item.numer)
-    else:
-        return PRECEDENCE["Mul"]
+    assert item.denom == 1
+    return precedence_PolyElement(item.numer)
 
 
 PRECEDENCE_FUNCTIONS = {
@@ -106,12 +104,7 @@ def precedence(item):
     """
     Returns the precedence of a given object.
     """
-    if hasattr(item, "precedence"):
-        return item.precedence
-    try:
-        mro = item.__class__.__mro__
-    except AttributeError:
-        return PRECEDENCE["Atom"]
+    mro = item.__class__.__mro__
     for i in mro:
         n = i.__name__
         if n in PRECEDENCE_FUNCTIONS:

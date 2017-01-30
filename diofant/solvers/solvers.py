@@ -132,29 +132,8 @@ def checksol(f, symbol, sol=None, **flags):
     elif isinstance(symbol, dict):
         sol = symbol
     else:
-        msg = 'Expecting (sym, val) or ({sym: val}, None) but got (%s, %s)'
-        raise ValueError(msg % (symbol, sol))
-
-    if iterable(f):
-        if not f:
-            raise ValueError('no functions to check')
-        rv = True
-        for fi in f:
-            check = checksol(fi, sol, **flags)
-            if check:
-                continue
-            if check is False:
-                return False
-            rv = None  # don't return, wait to see if there's a False
-        return rv
-
-    if isinstance(f, Poly):
-        f = f.as_expr()
-    elif isinstance(f, Equality):
-        f = f.lhs - f.rhs
-
-    if not f:
-        return True
+        raise ValueError("Expecting (sym, val) or ({sym: val}, "
+                         "None) but got (%s, %s)" % (symbol, sol))
 
     if sol and not f.has(*list(sol.keys())):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
@@ -223,8 +202,6 @@ def checksol(f, symbol, sol=None, **flags):
                     saw_pow_func = True
                 elif p.is_Function:
                     saw_pow_func = True
-                elif isinstance(p, UndefinedFunction):
-                    saw_pow_func = True
                 if saw_pow_func:
                     break
             if saw_pow_func is False:
@@ -232,21 +209,6 @@ def checksol(f, symbol, sol=None, **flags):
             if flags.get('force', True):
                 # don't do a zero check with the positive assumptions in place
                 val = val.subs(reps)
-            nz = val.is_nonzero
-            if nz is not None:
-                # issue sympy/sympy#5673: nz may be True even when False
-                # so these are just hacks to keep a false positive
-                # from being returned
-
-                # HACK 1: LambertW (issue sympy/sympy#5673)
-                if val.is_number and val.has(LambertW):
-                    # don't eval this to verify solution since if we got here,
-                    # numerical must be False
-                    return
-
-                # add other HACKs here if necessary, otherwise we assume
-                # the nz value is correct
-                return not nz
             break
 
         if val == was:
@@ -261,8 +223,6 @@ def checksol(f, symbol, sol=None, **flags):
 
     if flags.get('warn', False):
         warnings.warn("\n\tWarning: could not verify solution %s." % sol)
-    # returns None if it can't conclude
-    # TODO: improve solution testing
 
 
 def solve(f, *symbols, **flags):
@@ -533,7 +493,7 @@ def solve(f, *symbols, **flags):
     =====
 
     solve() with check=True (default) will run through the symbol tags to
-    elimate unwanted solutions.  If no assumptions are included all possible
+    eliminate unwanted solutions.  If no assumptions are included all possible
     solutions will be returned.
 
         >>> from diofant import Symbol, solve
@@ -923,7 +883,7 @@ def solve(f, *symbols, **flags):
                     break
             elif not solution:
                 break
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError(filldedent('''
                             no handling of %s was implemented''' % solution))
 
@@ -1099,26 +1059,6 @@ def _solve(f, *symbols, **flags):
         if len(ex) != 1:
             ind, dep = f.as_independent(*symbols)
             ex = ind.free_symbols & dep.free_symbols
-        if soln:
-            if flags.get('simplify', True):
-                if type(soln) is dict:
-                    for k in soln:
-                        soln[k] = simplify(soln[k])
-                elif type(soln) is list:
-                    if type(soln[0]) is dict:
-                        for d in soln:
-                            for k in d:
-                                d[k] = simplify(d[k])
-                    elif type(soln[0]) is tuple:
-                        soln = [tuple(simplify(i) for i in j) for j in soln]
-                    else:
-                        raise TypeError('unrecognized args in list')
-                elif type(soln) is tuple:
-                    sym, sols = soln
-                    soln = sym, {tuple(simplify(i) for i in j) for j in sols}
-                else:
-                    raise TypeError('unrecognized solution type')
-            return soln
         # find first successful solution
         failed = []
         got_s = set()
@@ -1371,7 +1311,7 @@ def _solve(f, *symbols, **flags):
                     # or high-order EX domain.
                     try:
                         soln = poly.all_roots()
-                    except NotImplementedError:
+                    except NotImplementedError:  # pragma: no cover
                         if not flags.get('incomplete', True):
                                 raise NotImplementedError(
                                 filldedent('''
@@ -1473,9 +1413,6 @@ def _solve(f, *symbols, **flags):
 
 
 def _solve_system(exprs, symbols, **flags):
-    if not exprs:
-        return []
-
     polys = []
     dens = set()
     failed = []
@@ -1551,11 +1488,11 @@ def _solve_system(exprs, symbols, **flags):
                                 if not skip:
                                     got_s.update(syms)
                                     result.append(r)
-                    except NotImplementedError:
+                    except NotImplementedError:  # pragma: no cover
                         pass
                 if got_s:
                     solved_syms = list(got_s)
-                else:
+                else:  # pragma: no cover
                     raise NotImplementedError('no valid subset found')
             else:
                 try:
@@ -1618,10 +1555,7 @@ def _solve_system(exprs, symbols, **flags):
                         newresult.append(r)
                     break  # skip as it's independent of desired symbols
                 for s in ok_syms:
-                    try:
-                        soln = _solve(eq2, s, **flags)
-                    except NotImplementedError:
-                        continue
+                    soln = _solve(eq2, s, **flags)
                     # put each solution in r and append the now-expanded
                     # result in the new result list; use copy since the
                     # solution for s in being added in-place
@@ -1637,7 +1571,7 @@ def _solve_system(exprs, symbols, **flags):
                         newresult.append(rnew)
                     hit = True
                     got_s.add(s)
-                if not hit:
+                if not hit:  # pragma: no cover
                     raise NotImplementedError('could not solve %s' % eq2)
             else:
                 result = newresult
@@ -2211,7 +2145,7 @@ def _invert(eq, *symbols, **kwargs):
                         ad.func == bd.func and len(ad.args) == len(bd.args):
                     if len(ad.args) == 1:
                         lhs = ad.args[0] - bd.args[0]
-                    else:
+                    else:  # pragma: no cover
                         # should be able to solve
                         # f(x, y) == f(2, 3) -> x == 2
                         # f(x, x + y) == f(2, 3) -> x == 2 or x == 3 - y

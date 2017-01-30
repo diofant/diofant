@@ -997,6 +997,10 @@ def test_sympyissue_5673():
     assert checksol(eq, x, 2, numerical=False) is None
 
 
+def test_checksol():
+    pytest.raises(ValueError, lambda: checksol(x**4 - 1, 1))
+
+
 def test_exclude():
     R, C, Ri, Vout, V1, Vminus, Vplus, s = \
         symbols('R, C, Ri, Vout, V1, Vminus, Vplus, s')

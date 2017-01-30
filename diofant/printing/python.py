@@ -38,9 +38,6 @@ class PythonPrinter(ReprPrinter, StrPrinter):
             self.symbols.append(symbol)
         return StrPrinter._print_Symbol(self, expr)
 
-    def _print_module(self, expr):
-        raise ValueError('Modules in the expression are unacceptable')
-
 
 def python(expr, **settings):
     """Return Python interpretation of passed expression

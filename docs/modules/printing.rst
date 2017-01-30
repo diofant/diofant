@@ -86,7 +86,6 @@ that manual changes in the result are no longer needed.
 
 .. module:: diofant.printing.fcode
 .. autofunction:: fcode
-.. autofunction:: print_fcode
 .. autoclass:: FCodePrinter
    :members:
 

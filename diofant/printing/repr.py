@@ -31,17 +31,11 @@ class ReprPrinter(Printer):
         """
         The fallback printer.
         """
-        if isinstance(expr, str):
-            return expr
-        elif hasattr(expr, "__srepr__"):
-            return expr.__srepr__()
-        elif hasattr(expr, "args") and hasattr(expr.args, "__iter__"):
+        if hasattr(expr, "args") and hasattr(expr.args, "__iter__"):
             l = []
             for o in expr.args:
                 l.append(self._print(o))
             return expr.__class__.__name__ + '(%s)' % ', '.join(l)
-        elif hasattr(expr, "__module__") and hasattr(expr, "__name__"):
-            return "<'%s.%s'>" % (expr.__module__, expr.__name__)
         else:
             return repr(expr)
 
@@ -67,11 +61,8 @@ class ReprPrinter(Printer):
         else:
             return expr.__name__
 
-    def _print_Half(self, expr):
-        return 'Rational(1, 2)'
-
     def _print_RationalConstant(self, expr):
-        return str(expr)
+        return 'Rational(%s, %s)' % (expr.p, expr.q)
 
     def _print_AtomicExpr(self, expr):
         return str(expr)
@@ -127,18 +118,10 @@ class ReprPrinter(Printer):
     def _print_Rational(self, expr):
         return 'Rational(%s, %s)' % (self._print(expr.p), self._print(expr.q))
 
-    def _print_Fraction(self, expr):
-        return 'Fraction(%s, %s)' % (self._print(expr.numerator), self._print(expr.denominator))
-    _print_PythonRational = _print_Fraction
-
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)
         r = mlib.to_str(expr._mpf_, repr_dps(expr._prec))
         return "%s('%s', prec=%i)" % (expr.__class__.__name__, r, dps)
-
-    def _print_Sum2(self, expr):
-        return "Sum2(%s, (%s, %s, %s))" % (self._print(expr.f), self._print(expr.i),
-                                           self._print(expr.a), self._print(expr.b))
 
     def _print_Symbol(self, expr):
         d = expr._assumptions.generator
@@ -150,12 +133,6 @@ class ReprPrinter(Printer):
                                    self._print(expr.name), ', '.join(attr))
     _print_Dummy = _print_Symbol
     _print_Wild = _print_Symbol
-
-    def _print_Predicate(self, expr):
-        return "%s(%s)" % (expr.__class__.__name__, self._print(expr.name))
-
-    def _print_AppliedPredicate(self, expr):
-        return "%s(%s, %s)" % (expr.__class__.__name__, expr.func, expr.arg)
 
     def _print_str(self, expr):
         return repr(expr)

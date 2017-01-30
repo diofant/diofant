@@ -171,12 +171,8 @@ class NumExprPrinter(LambdaPrinter):
         return '1j'
 
     def _print_seq(self, seq, delimiter=', '):
-        # simplified _print_seq taken from pretty.py
         s = [self._print(item) for item in seq]
-        if s:
-            return delimiter.join(s)
-        else:
-            return ""
+        return delimiter.join(s)
 
     def _print_Function(self, e):
         func_name = e.func.__name__

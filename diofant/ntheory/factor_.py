@@ -111,7 +111,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
     # visual must be True, False or other (stored as None)
     if visual in (1, 0):
         visual = bool(visual)
-    elif visual not in (True, False):
+    if visual not in (True, False):
         visual = None
 
     if type(n) is str:
@@ -173,9 +173,8 @@ def trailing(n):
 
     # 2**m is quick for z up through 2**30
     z = bitcount(n) - 1
-    if isinstance(z, DIOFANT_INTS):
-        if n == 1 << z:
-            return z
+    if n == 1 << z:
+        return z
 
     t = 0
     p = 8
@@ -205,25 +204,17 @@ def multiplicity(p, n):
         p, n = as_int(p), as_int(n)
     except ValueError:
         if all(isinstance(i, (DIOFANT_INTS, Rational)) for i in (p, n)):
-            try:
-                p = Rational(p)
-                n = Rational(n)
-                if p.q == 1:
-                    if n.p == 1:
-                        return -multiplicity(p.p, n.q)
-                    return S.Zero
-                elif p.p == 1:
-                    return multiplicity(p.q, n.q)
-                else:
-                    like = min(
-                        multiplicity(p.p, n.p),
-                        multiplicity(p.q, n.q))
-                    cross = min(
-                        multiplicity(p.q, n.p),
-                        multiplicity(p.p, n.q))
-                    return like - cross
-            except AttributeError:
-                pass
+            p, n = Rational(p), Rational(n)
+            if p.q == 1:
+                if n.p == 1:
+                    return -multiplicity(p.p, n.q)
+                return S.Zero
+            elif p.p == 1:
+                return multiplicity(p.q, n.q)
+            else:
+                like = min(multiplicity(p.p, n.p), multiplicity(p.q, n.q))
+                cross = min(multiplicity(p.q, n.p), multiplicity(p.p, n.q))
+                return like - cross
         raise ValueError('expecting ints or fractions, got %s and %s' % (p, n))
 
     if n == 0:

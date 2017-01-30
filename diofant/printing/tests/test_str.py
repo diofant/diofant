@@ -5,16 +5,18 @@ from diofant import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp
                      Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Pow, Rational, Float, Rel,
                      S, sin, SparseMatrix, sqrt, summation, Sum, Symbol, symbols, Wild,
                      WildFunction, zeta, zoo, Dummy, Dict, Tuple, FiniteSet, factor,
-                     subfactorial, true, false, Equivalent, Xor, Complement, SymmetricDifference)
+                     subfactorial, true, false, Equivalent, Xor, Complement,
+                     SymmetricDifference, MatrixSymbol, And)
 from diofant.core import Expr
 from diofant.polys import Poly, RootOf, RootSum, groebner, ring, field, ZZ, QQ, lex, grlex
 from diofant.geometry import Point, Circle
 from diofant.printing import sstr, sstrrepr, StrPrinter
 from diofant.core.trace import Tr
 
+from diofant.abc import x, y, z, w
+
 __all__ = ()
 
-x, y, z, w = symbols('x,y,z,w')
 d = Dummy('d')
 
 
@@ -51,6 +53,7 @@ def test_Add():
     assert str(x - 1*y*x*y) == "-x*y**2 + x"
     assert str(sin(x).series(x, 0, 15)) == "x - x**3/6 + x**5/120 - x**7/5040 + x**9/362880 - x**11/39916800 + x**13/6227020800 + O(x**15)"
     assert str(Add(0, 0, evaluate=False)) == "0 + 0"
+    assert str(Add(And(x, y), z)) == 'z + (And(x, y))'
 
 
 def test_Catalan():
@@ -679,13 +682,15 @@ def test_sympyissue_6387():
 
 
 def test_MatMul_MatAdd():
-    from diofant import MatrixSymbol
     assert str(2*(MatrixSymbol("X", 2, 2) + MatrixSymbol("Y", 2, 2))) == \
         "2*(X + Y)"
 
 
+def test_MatPow():
+    assert str(MatrixSymbol("M", 2, 2)**2) == "M**2"
+
+
 def test_MatrixSlice():
-    from diofant.matrices.expressions import MatrixSymbol
     assert str(MatrixSymbol('X', 10, 10)[:5, 1:9:2]) == 'X[:5, 1:9:2]'
     assert str(MatrixSymbol('X', 10, 10)[5, :5:2]) == 'X[5, :5:2]'
 
