@@ -716,7 +716,7 @@ class Float(Number):
                 # it's a hexadecimal (coming from a pickled object)
                 # assume that it is in standard form
                 num = list(num)
-                num[1] = int(num[1], 16)
+                num[1] = mlib.backend.MPZ(num[1], 16)
                 _mpf_ = tuple(num)
             else:
                 if not num[1] and len(num) == 4:

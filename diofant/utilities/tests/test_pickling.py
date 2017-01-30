@@ -532,3 +532,12 @@ def test_series():
 def test_concrete():
     for c in (Product, Product(x, (x, 2, 4)), Sum, Sum(x, (x, 2, 4))):
         check(c)
+
+
+def test_sympyissue_7457():
+    pickle.loads(pickle.dumps(Point(1.1, 2.1).evalf()))  # not raises
+
+    a = Float('1.2')
+    b = pickle.loads(pickle.dumps(a))
+    b.n()  # not raises
+    assert a == b
