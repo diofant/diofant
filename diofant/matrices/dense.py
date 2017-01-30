@@ -372,7 +372,8 @@ class DenseMatrix(MatrixBase):
     def _cholesky(self):
         """Helper function of cholesky.
         Without the error checks.
-        To be used privately. """
+        To be used privately.
+        """
         L = zeros(self.rows, self.rows)
         for i in range(self.rows):
             for j in range(i):
@@ -413,7 +414,8 @@ class DenseMatrix(MatrixBase):
 
     def _upper_triangular_solve(self, rhs):
         """Helper function of function upper_triangular_solve.
-        Without the error checks, to be used privately. """
+        Without the error checks, to be used privately.
+        """
         X = zeros(self.rows, rhs.cols)
         for j in range(rhs.cols):
             for i in reversed(range(self.rows)):

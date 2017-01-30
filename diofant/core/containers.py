@@ -106,7 +106,8 @@ class Tuple(Basic):
     def index(self, value, start=None, stop=None):
         """T.index(value, [start, [stop]]) -> integer -- return first index of value.
 
-        Raises ValueError if the value is not present."""
+        Raises ValueError if the value is not present.
+        """
         # XXX: One would expect:
         #
         # return self.args.index(value, start, stop)

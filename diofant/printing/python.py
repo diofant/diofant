@@ -41,7 +41,8 @@ class PythonPrinter(ReprPrinter, StrPrinter):
 
 def python(expr, **settings):
     """Return Python interpretation of passed expression
-    (can be passed to the exec() function without any modifications)"""
+    (can be passed to the exec() function without any modifications)
+    """
 
     printer = PythonPrinter(settings)
     exprp = printer.doprint(expr)

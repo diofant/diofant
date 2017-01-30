@@ -1586,7 +1586,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         def has(e):
             """return the standard has() if there are no literal symbols, else
-            check to see that symbol-deps are in the free symbols."""
+            check to see that symbol-deps are in the free symbols.
+            """
             has_other = e.has(*other)
             if not sym:
                 return has_other
@@ -1655,7 +1656,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         values, the corresponding exponents. The resulting dictionary should
         be used with caution if the expression is a Mul and contains non-
         commutative factors since the order that they appeared will be lost in
-        the dictionary."""
+        the dictionary.
+        """
         d = defaultdict(int)
         b, e = self.as_base_exp()
         d[b] = e

@@ -939,7 +939,8 @@ class LinearEntity(GeometrySet):
 
     def __contains__(self, other):
         """Return a definitive answer or else raise an error if it cannot
-        be determined that other is on the boundaries of self."""
+        be determined that other is on the boundaries of self.
+        """
         result = self.contains(other)
 
         if result is not None:
@@ -952,7 +953,8 @@ class LinearEntity(GeometrySet):
         """Subclasses should implement this method and should return
         True if other is on the boundaries of self;
         False if not on the boundaries of self;
-        None if a determination cannot be made."""
+        None if a determination cannot be made.
+        """
         raise NotImplementedError()
 
 

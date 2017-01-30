@@ -13,7 +13,8 @@ from .sympify import SympifyError, sympify
 def deprecated(**decorator_kwargs):
     """This is a decorator which can be used to mark functions
     as deprecated. It will result in a warning being emitted
-    when the function is used."""
+    when the function is used.
+    """
 
     def deprecated_decorator(func):
         @wraps(func)

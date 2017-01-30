@@ -3738,7 +3738,8 @@ class MatrixBase(DefaultPrinting):
 
     def _jordan_split(self, algebraical, geometrical):
         """Return a list of integers with sum equal to 'algebraical'
-        and length equal to 'geometrical'"""
+        and length equal to 'geometrical'
+        """
         n1 = algebraical // geometrical
         res = [n1]*geometrical
         res[len(res) - 1] += algebraical % geometrical

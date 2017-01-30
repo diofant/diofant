@@ -491,7 +491,8 @@ def _mul_as_two_parts(f):
 
 def _inflate_g(g, n):
     """ Return C, h such that h is a G function of argument z**n and
-    g = C*h. """
+    g = C*h.
+    """
     # TODO should this be a method of meijerg?
     # See: [L, page 150, equation (5)]
     def inflate(params, n):
@@ -511,7 +512,8 @@ def _inflate_g(g, n):
 
 def _flip_g(g):
     """ Turn the G function into one of inverse argument
-    (i.e. G(1/x) -> G'(x)) """
+    (i.e. G(1/x) -> G'(x))
+    """
     # See [L], section 5.2
     def tr(l):
         return [1 - a for a in l]
@@ -571,7 +573,8 @@ def _dummy_(name, token, **kwargs):
 
 def _is_analytic(f, x):
     """ Check if f(x), when expressed using G functions on the positive reals,
-    will in fact agree with the G functions almost everywhere """
+    will in fact agree with the G functions almost everywhere
+    """
     from diofant import Heaviside, Abs
     return not any(x in expr.free_symbols for expr in f.atoms(Heaviside, Abs))
 
@@ -688,7 +691,8 @@ def _my_principal_branch(expr, period, full_pb=False):
 
     This function does *not* guarantee to yield the principal branch,
     to avoid introducing opaque principal_branch() objects,
-    unless full_pb=True. """
+    unless full_pb=True.
+    """
     from diofant import principal_branch
     res = principal_branch(expr, period)
     if not full_pb:
@@ -1299,7 +1303,8 @@ def _check_antecedents_inversion(g, x):
 
     def statement(a, b, c, z):
         """ Provide a convergence statement for z**a * exp(b*z**c),
-        c/f sphinx docs. """
+        c/f sphinx docs.
+        """
         return And(statement_half(a, b, c, z, True),
                    statement_half(a, b, c, z, False))
 
@@ -1490,7 +1495,8 @@ def _rewrite_single(f, x, recursive=True):
     def my_imt(F, s, x, strip):
         """ Calling simplify() all the time is slow and not helpful, since
         most of the time it only factors things in a way that has to be
-        un-done anyway. But sometimes it can remove apparent poles. """
+        un-done anyway. But sometimes it can remove apparent poles.
+        """
         # XXX should this be in inverse_mellin_transform?
         try:
             return inverse_mellin_transform(F, s, x, strip,

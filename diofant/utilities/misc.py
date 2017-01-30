@@ -11,7 +11,8 @@ def filldedent(s, w=70):
 
     Empty line stripping serves to deal with docstrings like this one that
     start with a newline after the initial triple quote, inserting an empty
-    line at the beginning of the string."""
+    line at the beginning of the string.
+    """
     return '\n' + fill(dedent(str(s)).strip('\n'), width=w)
 
 

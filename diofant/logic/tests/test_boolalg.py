@@ -269,7 +269,8 @@ def test_bool_map():
 
 def test_bool_symbol():
     """Test that mixing symbols with boolean values
-    works as expected"""
+    works as expected
+    """
 
     assert And(A, True) == A
     assert And(A, True, True) == A

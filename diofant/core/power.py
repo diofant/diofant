@@ -233,7 +233,8 @@ class Pow(Expr):
             # helper functions ===========================
             def _half(e):
                 """Return True if the exponent has a literal 2 as the
-                denominator, else None."""
+                denominator, else None.
+                """
                 if getattr(e, 'q', None) == 2:
                     return True
                 n, d = e.as_numer_denom()
@@ -242,7 +243,8 @@ class Pow(Expr):
 
             def _n2(e):
                 """Return ``e`` evaluated to a Number with 2 significant
-                digits, else None."""
+                digits, else None.
+                """
                 try:
                     rv = e.evalf(2, strict=True)
                     if rv.is_Number:

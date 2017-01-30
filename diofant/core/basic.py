@@ -102,7 +102,8 @@ class Basic(object):
         accordingly to return such relevant attributes.
 
         Defining more than _hashable_content is necessary if __eq__ has
-        been defined by a class. See note about this in Basic.__eq__."""
+        been defined by a class. See note about this in Basic.__eq__.
+        """
         return self._args
 
     def compare(self, other):

@@ -1791,7 +1791,8 @@ class RealInterval:
 class ComplexInterval:
     """A fully qualified representation of a complex isolation interval.
     The printed form is shown as (x1, y1) x (x2, y2): the southwest x northeast
-    coordinates of the interval's rectangle."""
+    coordinates of the interval's rectangle.
+    """
 
     def __init__(self, a, b, I, Q, F1, F2, f1, f2, dom, conj=False):
         """Initialize new complex interval with complete information. """

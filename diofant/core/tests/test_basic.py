@@ -1,5 +1,6 @@
 """This tests diofant/core/basic.py with (ideally) no reference to subclasses
-of Basic or Atom."""
+of Basic or Atom.
+"""
 
 import pytest
 

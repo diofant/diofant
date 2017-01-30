@@ -1044,7 +1044,8 @@ def _solve(f, *symbols, **flags):
 
     If no method is implemented to solve the equation, a NotImplementedError
     will be raised. In the case that conversion of an expression to a Poly
-    gives None a ValueError will be raised."""
+    gives None a ValueError will be raised.
+    """
 
     not_impl_msg = "No algorithms are implemented to solve equation %s"
 

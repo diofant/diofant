@@ -127,7 +127,8 @@ class Relational(Boolean, Expr, EvalfMixin):
         """Return True if the sides of the relationship are mathematically
         identical and the type of relationship is the same.
         If failing_expression is True, return the expression whose truth value
-        was unknown."""
+        was unknown.
+        """
         if isinstance(other, Relational):
             if self == other or self.reversed == other:
                 return True

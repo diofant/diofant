@@ -1,5 +1,6 @@
 """ This module contains various functions that are special cases
-of incomplete gamma functions. It should probably be renamed. """
+of incomplete gamma functions. It should probably be renamed.
+"""
 
 from diofant.core import Add, S, sympify, cacheit, pi, I, Integer, Rational
 from diofant.core.function import Function, ArgumentIndexError

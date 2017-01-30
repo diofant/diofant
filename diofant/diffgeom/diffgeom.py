@@ -259,7 +259,8 @@ class CoordSystem(Basic):
     def coord_tuple_transform_to(self, to_sys, coords):
         """Transform ``coords`` to coord system ``to_sys``.
 
-        See the docstring of ``CoordSystem`` for examples."""
+        See the docstring of ``CoordSystem`` for examples.
+        """
         coords = Matrix(coords)
         if self != to_sys:
             transf = self.transforms[to_sys]
@@ -281,13 +282,15 @@ class CoordSystem(Basic):
 
         Takes a point and returns its coordinate in this coordinate system.
 
-        See the docstring of ``CoordSystem`` for examples."""
+        See the docstring of ``CoordSystem`` for examples.
+        """
         return BaseScalarField(self, coord_index)
 
     def coord_functions(self):
         """Returns a list of all coordinate functions.
 
-        For more details see the ``coord_function`` method of this class."""
+        For more details see the ``coord_function`` method of this class.
+        """
         return [self.coord_function(i) for i in range(self.dim)]
 
     def base_vector(self, coord_index):
@@ -296,13 +299,15 @@ class CoordSystem(Basic):
         The basis vector field for this coordinate system. It is also an
         operator on scalar fields.
 
-        See the docstring of ``CoordSystem`` for examples."""
+        See the docstring of ``CoordSystem`` for examples.
+        """
         return BaseVectorField(self, coord_index)
 
     def base_vectors(self):
         """Returns a list of all base vectors.
 
-        For more details see the ``base_vector`` method of this class."""
+        For more details see the ``base_vector`` method of this class.
+        """
         return [self.base_vector(i) for i in range(self.dim)]
 
     def base_oneform(self, coord_index):
@@ -311,13 +316,15 @@ class CoordSystem(Basic):
         The basis one-form field for this coordinate system. It is also an
         operator on vector fields.
 
-        See the docstring of ``CoordSystem`` for examples."""
+        See the docstring of ``CoordSystem`` for examples.
+        """
         return Differential(self.coord_function(coord_index))
 
     def base_oneforms(self):
         """Returns a list of all base oneforms.
 
-        For more details see the ``base_oneform`` method of this class."""
+        For more details see the ``base_oneform`` method of this class.
+        """
         return [self.base_oneform(i) for i in range(self.dim)]
 
     ##########################################################################
@@ -327,13 +334,15 @@ class CoordSystem(Basic):
     def point(self, coords):
         """Create a ``Point`` with coordinates given in this coord system.
 
-        See the docstring of ``CoordSystem`` for examples."""
+        See the docstring of ``CoordSystem`` for examples.
+        """
         return Point(self, coords)
 
     def point_to_coords(self, point):
         """Calculate the coordinates of a point in this coord system.
 
-        See the docstring of ``CoordSystem`` for examples."""
+        See the docstring of ``CoordSystem`` for examples.
+        """
         return point.coords(self)
 
     ##########################################################################
@@ -393,7 +402,8 @@ class Point(Basic):
         """Coordinates of the point in a given coordinate system.
 
         If ``to_sys`` is ``None`` it returns the coordinates in the system in
-        which the point was defined."""
+        which the point was defined.
+        """
         if to_sys:
             return self._coord_sys.coord_tuple_transform_to(to_sys, self._coords)
         else:
@@ -898,7 +908,8 @@ class WedgeProduct(TensorProduct):
     def __call__(self, *vector_fields):
         """Apply on a list of vector_fields.
 
-        The expression is rewritten internally in terms of tensor products and evaluated."""
+        The expression is rewritten internally in terms of tensor products and evaluated.
+        """
         orders = (covariant_order(e) for e in self.args)
         mul = 1/Mul(*(factorial(o) for o in orders))
         perms = permutations(vector_fields)

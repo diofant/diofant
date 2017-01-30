@@ -304,13 +304,15 @@ class CodePrinter(StrPrinter):
     def _format_code(self, lines):
         """Take in a list of lines of code, and format them accordingly.
 
-        This may include indenting, wrapping long lines, etc..."""
+        This may include indenting, wrapping long lines, etc...
+        """
         raise NotImplementedError("This function must be implemented by "
                                   "subclass of CodePrinter.")
 
     def _get_loop_opening_ending(self, indices):
         """Returns a tuple (open_lines, close_lines) containing lists
-        of codelines"""
+        of codelines
+        """
         raise NotImplementedError("This function must be implemented by "
                                   "subclass of CodePrinter.")
 

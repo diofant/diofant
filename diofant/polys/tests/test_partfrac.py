@@ -1,5 +1,6 @@
 """Tests for algorithms for partial fraction decomposition of rational
-functions. """
+functions.
+"""
 
 import pytest
 

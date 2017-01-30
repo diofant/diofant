@@ -306,7 +306,8 @@ def _sqrtdenest_rec(expr):
 
 def _sqrtdenest1(expr, denester=True):
     """Return denested expr after denesting with simpler methods or, that
-    failing, using the denester."""
+    failing, using the denester.
+    """
 
     from diofant.simplify.simplify import radsimp
 

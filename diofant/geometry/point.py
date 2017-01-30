@@ -210,7 +210,8 @@ class Point(GeometryEntity):
     @property
     def origin(self):
         """A point of all zeros of the same ambient dimension
-        as the current point"""
+        as the current point
+        """
         return Point([0]*len(self))
 
     @property
@@ -222,7 +223,8 @@ class Point(GeometryEntity):
     def ambient_dimension(self):
         """The dimension of the ambient space the point is in.
         I.e., if the point is in R^n, the ambient dimension
-        will be n"""
+        will be n
+        """
         return len(self)
 
     def distance(self, p):
@@ -393,7 +395,8 @@ class Point(GeometryEntity):
 
     def __sub__(self, other):
         """Subtract two points, or subtract a factor from this point's
-        coordinates."""
+        coordinates.
+        """
         return self + (-other)
 
     def __mul__(self, factor):

@@ -120,7 +120,8 @@ class ImplicitSeries(BaseSeries):
         # neither True nor False according to the expression.
         def refine_pixels(interval_list):
             """ Evaluates the intervals and subdivides the interval if the
-            expression is partially satisfied."""
+            expression is partially satisfied.
+            """
             temp_interval_list = []
             plot_list = []
             for intervals in interval_list:
