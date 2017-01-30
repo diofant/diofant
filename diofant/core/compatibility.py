@@ -22,6 +22,7 @@ class NotIterable:
     true when iterable() is called on its instances. I.e. avoid infinite loop
     when calling e.g. list() on the instance
     """
+
     pass
 
 

@@ -231,6 +231,7 @@ class Number(AtomicExpr):
 
       Rational(1) + sqrt(Rational(2))
     """
+
     is_commutative = True
     is_number = True
     is_Number = True
@@ -1107,6 +1108,7 @@ class Rational(Number):
     diofant.core.sympify.sympify
     diofant.simplify.simplify.nsimplify
     """
+
     is_real = True
     is_integer = False
     is_rational = True
@@ -1998,6 +2000,7 @@ class One(IntegerConstant, metaclass=Singleton):
 
     .. [1] http://en.wikipedia.org/wiki/1_%28number%29
     """
+
     is_number = True
 
     p = 1
@@ -2043,8 +2046,8 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/%E2%88%921_%28number%29
-
     """
+
     is_number = True
 
     p = -1
@@ -2114,6 +2117,7 @@ class Half(RationalConstant, metaclass=Singleton):
 
     .. [1] http://en.wikipedia.org/wiki/One_half
     """
+
     is_number = True
 
     p = 1
@@ -2599,8 +2603,8 @@ class NaN(Number, metaclass=Singleton):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/NaN
-
     """
+
     is_commutative = True
     is_comparable = False
     is_finite = False

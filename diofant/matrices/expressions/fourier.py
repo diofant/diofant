@@ -4,6 +4,7 @@ from diofant import S, I, sqrt, exp
 
 class DFT(MatrixExpr):
     """ Discrete Fourier Transform """
+
     n = property(lambda self: self.args[0])
     shape = property(lambda self: (self.n, self.n))
 
@@ -17,6 +18,7 @@ class DFT(MatrixExpr):
 
 class IDFT(DFT):
     """ Inverse Discrete Fourier Transform """
+
     def _entry(self, i, j):
         w = exp(-2*S.Pi*I/self.n)
         return w**(-i*j) / sqrt(self.n)

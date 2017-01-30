@@ -698,6 +698,7 @@ class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
     """Representation for a 3D surface consisting of a diofant expression and 2D
     range.
     """
+
     def __init__(self, expr, var_start_end_x, var_start_end_y, **kwargs):
         super(SurfaceOver2DRangeSeries, self).__init__()
         self.expr = sympify(expr)

@@ -76,6 +76,7 @@ class Naturals0(Naturals):
     Naturals : positive integers
     Integers : also includes the negative integers
     """
+
     _inf = S.Zero
 
     def _contains(self, other):
@@ -238,6 +239,7 @@ class ImageSet(Set):
     9
     16
     """
+
     def __new__(cls, lamda, base_set):
         return Basic.__new__(cls, lamda, base_set)
 

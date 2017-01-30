@@ -1412,6 +1412,7 @@ class totient(Function):
 
     divisor_count
     """
+
     @classmethod
     def eval(cls, n):
         n = sympify(n)

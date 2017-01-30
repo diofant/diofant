@@ -297,6 +297,7 @@ class _CoeffExpValueError(ValueError):
     """
     Exception raised by _get_coeff_exp, for internal use only.
     """
+
     pass
 
 

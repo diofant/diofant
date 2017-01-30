@@ -289,8 +289,8 @@ class Equality(Relational):
     returns anything other than None, that return value will be substituted for
     the Equality.  If None is returned by `_eval_Eq`, an Equality object will
     be created as usual.
-
     """
+
     rel_op = '=='
 
     is_Equality = True
@@ -360,8 +360,8 @@ class Unequality(Relational):
 
     This class is effectively the inverse of Equality.  As such, it uses the
     same algorithms, including any available `_eval_Eq` methods.
-
     """
+
     rel_op = '!='
 
     def __new__(cls, lhs, rhs, **options):
@@ -390,7 +390,6 @@ class _Inequality(Relational):
 
     Each subclass must implement _eval_relation to provide the method for
     comparing two real numbers.
-
     """
 
     def __new__(cls, lhs, rhs, **options):
@@ -424,7 +423,6 @@ class _Greater(_Inequality):
 
     _Greater is only used so that GreaterThan and StrictGreaterThan may subclass
     it for the .gts and .lts properties.
-
     """
 
     @property
@@ -443,7 +441,6 @@ class _Less(_Inequality):
 
     _Less is only used so that LessThan and StrictLessThan may subclass it for
     the .gts and .lts properties.
-
     """
 
     @property

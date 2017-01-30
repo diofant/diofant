@@ -45,6 +45,7 @@ class HadamardProduct(MatrixExpr):
     >>> isinstance(hadamard_product(A, B), HadamardProduct)
     True
     """
+
     is_HadamardProduct = True
 
     def __new__(cls, *args, **kwargs):

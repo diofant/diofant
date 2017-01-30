@@ -126,8 +126,8 @@ class Indexed(Expr):
     >>> A = IndexedBase('A')
     >>> Indexed('A', i, j) == A[i, j]
     True
-
     """
+
     is_commutative = True
 
     def __new__(cls, base, *args, **kw_args):

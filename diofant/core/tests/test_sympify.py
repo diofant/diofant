@@ -286,6 +286,7 @@ def test_int_float():
         """
         This class is still a float, even though it also implements __int__().
         """
+
         def __float__(self):
             return 1.1
 
@@ -296,6 +297,7 @@ def test_int_float():
         """
         This class is still a float, because it implements _diofant_()
         """
+
         def __float__(self):
             return 1.1
 
@@ -318,6 +320,7 @@ def test_int_float():
         If, in the future, we decide to do it anyway, the tests for I5b need to
         be changed.
         """
+
         def __float__(self):
             return 5.0
 
@@ -329,6 +332,7 @@ def test_int_float():
         This class implements both __int__() and __float__(), but also
         a _diofant_() method, so it will be Integer.
         """
+
         def __float__(self):
             return 5.0
 

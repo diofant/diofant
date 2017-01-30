@@ -60,9 +60,11 @@ class SingleDomain(RandomDomain):
 
     See Also
     ========
+
     diofant.stats.crv.SingleContinuousDomain
     diofant.stats.frv.SingleFiniteDomain
     """
+
     def __new__(cls, symbol, set):
         assert symbol.is_Symbol
         return Expr.__new__(cls, symbol, set)
@@ -88,9 +90,11 @@ class ConditionalDomain(RandomDomain):
 
     See Also
     ========
+
     diofant.stats.crv.ConditionalContinuousDomain
     diofant.stats.frv.ConditionalFiniteDomain
     """
+
     def __new__(cls, fulldomain, condition):
         condition = condition.xreplace({rs: rs.symbol
                                         for rs in random_symbols(condition)})
@@ -170,6 +174,7 @@ class SinglePSpace(PSpace):
     Represents the probabilities of a set of random events that can be
     attributed to a single variable/symbol.
     """
+
     def __new__(cls, s, distribution):
         if isinstance(s, str):
             s = Symbol(s)
@@ -334,9 +339,11 @@ class ProductDomain(RandomDomain):
 
     See Also
     ========
+
     diofant.stats.crv.ProductContinuousDomain
     diofant.stats.frv.ProductFiniteDomain
     """
+
     is_ProductDomain = True
 
     def __new__(cls, *domains):

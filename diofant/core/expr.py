@@ -3228,6 +3228,7 @@ class AtomicExpr(Atom, Expr):
     For example: Symbol, Number, Rational, Integer, ...
     But not: Add, Mul, Pow, ...
     """
+
     is_number = False
     is_Atom = True
 

@@ -832,6 +832,7 @@ class loggamma(Function):
     .. [3] http://mathworld.wolfram.com/LogGammaFunction.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/LogGamma/
     """
+
     @classmethod
     def eval(cls, z):
         z = sympify(z)

@@ -50,6 +50,7 @@ class MatrixSlice(MatrixExpr):
     [2, 3],
     [6, 7]])
     """
+
     parent = property(lambda self: self.args[0])
     rowslice = property(lambda self: self.args[1])
     colslice = property(lambda self: self.args[2])

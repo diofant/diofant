@@ -37,6 +37,7 @@ class MatrixError(Exception):
 
 class ShapeError(ValueError, MatrixError):
     """Wrong matrix shape"""
+
     pass
 
 
@@ -59,6 +60,7 @@ class DeferredVector(Symbol, NotIterable):
     >>> func( [1, 2, 3] )
     (3, 6)
     """
+
     def __getitem__(self, i):
         if i == -0:
             i = 0

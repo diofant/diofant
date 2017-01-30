@@ -1236,6 +1236,7 @@ class MeijerUnShiftB(Operator):
 
 class MeijerUnShiftC(Operator):
     """ Decrement a lower b index. """
+
     # XXX this is "essentially" the same as MeijerUnShiftA. This "essentially"
     #     can be made rigorous using the functional equation G(1/z) = G'(z),
     #     where G' denotes a G function of slightly altered parameters.
@@ -1287,6 +1288,7 @@ class MeijerUnShiftC(Operator):
 
 class MeijerUnShiftD(Operator):
     """ Increment a lower a index. """
+
     # XXX This is essentially the same as MeijerUnShiftA.
     #     See comment at MeijerUnShiftC.
 

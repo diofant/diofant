@@ -1565,6 +1565,7 @@ class preorder_traversal:
     >>> list(preorder_traversal((x + y)*z, keys=True))
     [z*(x + y), z, x + y, x, y]
     """
+
     def __init__(self, node, keys=None):
         self._skip_flag = False
         self._pt = self._preorder_traversal(node, keys)

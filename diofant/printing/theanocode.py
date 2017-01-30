@@ -63,6 +63,7 @@ if theano:
 
 class TheanoPrinter(Printer):
     """ Code printer for Theano computations """
+
     printmethod = "_theano"
 
     def __init__(self, *args, **kwargs):

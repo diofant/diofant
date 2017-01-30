@@ -20,6 +20,7 @@ class MathMLPrinter(Printer):
 
     .. [1] http://www.w3.org/TR/MathML2/
     """
+
     printmethod = "_mathml"
     _default_settings = {
         "order": None,

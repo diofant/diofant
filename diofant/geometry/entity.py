@@ -309,6 +309,7 @@ class GeometrySet(GeometryEntity, Set):
     """Parent class of all GeometryEntity that are also Sets
     (compatible with diofant.sets)
     """
+
     def _contains(self, other):
         """diofant.sets uses the _contains method, so include it for compatibility."""
 

@@ -83,6 +83,7 @@ class BooleanAtom(Atom, Boolean):
     """
     Base class of BooleanTrue and BooleanFalse.
     """
+
     is_Boolean = True
 
     @property
@@ -164,6 +165,7 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
 
     diofant.logic.boolalg.BooleanFalse
     """
+
     def __bool__(self):
         return True
 
@@ -216,6 +218,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
 
     diofant.logic.boolalg.BooleanTrue
     """
+
     def __bool__(self):
         return False
 
@@ -253,6 +256,7 @@ class BooleanFunction(Application, Boolean):
     """Boolean function is a function that lives in a boolean space
     It is used as base class for And, Or, Not, etc.
     """
+
     is_Boolean = True
 
     def __call__(self, *args):
@@ -311,8 +315,8 @@ class And(LatticeOp, BooleanFunction):
 
     >>> And(x, y).subs(x, 1)
     y
-
     """
+
     zero = false
     identity = true
 
@@ -384,8 +388,8 @@ class Or(LatticeOp, BooleanFunction):
 
     >>> Or(x, y).subs(x, 0)
     y
-
     """
+
     zero = true
     identity = false
 
@@ -593,8 +597,8 @@ class Xor(BooleanFunction):
 
     >>> Xor(x, y).subs(y, 0)
     x
-
     """
+
     def __new__(cls, *args, **kwargs):
         argset = set()
         obj = super(Xor, cls).__new__(cls, *args, **kwargs)
@@ -679,6 +683,7 @@ class Nand(BooleanFunction):
     >>> Nand(x, y)
     Not(And(x, y))
     """
+
     @classmethod
     def eval(cls, *args):
         return Not(And(*args))
@@ -712,6 +717,7 @@ class Nor(BooleanFunction):
     >>> Nor(x, y)
     Not(Or(x, y))
     """
+
     @classmethod
     def eval(cls, *args):
         return Not(Or(*args))
@@ -764,6 +770,7 @@ class Implies(BooleanFunction):
     >>> true >> false
     false
     """
+
     @classmethod
     def eval(cls, *args):
         try:
@@ -816,6 +823,7 @@ class Equivalent(BooleanFunction):
     >>> Equivalent(x, And(x, True))
     true
     """
+
     def __new__(cls, *args, **options):
         from diofant.core.relational import Relational
         args = [_sympify(arg) for arg in args]
@@ -893,6 +901,7 @@ class ITE(BooleanFunction):
     >>> ITE(x, y, y)
     y
     """
+
     @classmethod
     def eval(cls, *args):
         try:

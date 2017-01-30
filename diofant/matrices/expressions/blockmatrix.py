@@ -40,8 +40,8 @@ class BlockMatrix(MatrixExpr):
 
     >>> print(block_collapse(C*B))
     Matrix([[X, Z*Y + Z]])
-
     """
+
     def __new__(cls, *args):
         from diofant.matrices.immutable import ImmutableMatrix
         args = map(sympify, args)
@@ -190,8 +190,8 @@ class BlockDiagMatrix(BlockMatrix):
     Matrix([
     [X, 0],
     [0, Y]])
-
     """
+
     def __new__(cls, *mats):
         return Expr.__new__(BlockDiagMatrix, *mats)
 

@@ -25,6 +25,7 @@ class MatMul(MatrixExpr):
     >>> MatMul(A, B, C)
     A*B*C
     """
+
     is_MatMul = True
 
     def _eval_is_commutative(self):

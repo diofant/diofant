@@ -23,8 +23,8 @@ class Manifold(Basic):
     The only role that this object plays is to keep a list of all patches
     defined on the manifold. It does not provide any means to study the
     topological characteristics of the manifold that it represents.
-
     """
+
     def __new__(cls, name, dim):
         name = sympify(name)
         dim = sympify(dim)
@@ -66,8 +66,8 @@ class Patch(Basic):
     >>> p = Patch('P', m)
     >>> p in m.patches
     True
-
     """
+
     # Contains a reference to the parent manifold in order to be able to access
     # other patches.
     def __new__(cls, name, manifold):
@@ -177,8 +177,8 @@ class CoordSystem(Basic):
     >>> rect = CoordSystem('rect', patch, ['x', 'y'])
     >>> rect.coord_function(0), rect.base_vector(0), rect.base_oneform(0)
     (x, e_x, dx)
-
     """
+
     #  Contains a reference to the parent patch in order to be able to access
     # other coordinate system charts.
     def __new__(cls, name, patch, names=None):
@@ -390,8 +390,8 @@ class Point(Basic):
     Matrix([
     [-sqrt(2)*r/2],
     [ sqrt(2)*r/2]])
-
     """
+
     def __init__(self, coord_sys, coords):
         super(Point, self).__init__()
         self._coord_sys = coord_sys
@@ -460,7 +460,6 @@ class BaseScalarField(Expr):
     >>> fg = g(ftheta-pi)
     >>> fg.rcall(point)
     g(-pi)
-
     """
 
     is_commutative = True
@@ -551,7 +550,6 @@ class BaseVectorField(Expr):
     /  d                           \|
     |-----(g(r0*cos(theta0), xi_2))||
     \dxi_2                         /|xi_2=r0*sin(theta0)
-
     """
 
     is_commutative = False
@@ -631,8 +629,8 @@ class Commutator(Expr):
 
     >>> simplify(c_xr(R2.y**2).doit())
     -2*cos(theta)*y**2/(x**2 + y**2)
-
     """
+
     def __new__(cls, v1, v2):
         if (covariant_order(v1) or contravariant_order(v1) != 1
                 or covariant_order(v2) or contravariant_order(v2) != 1):
@@ -829,8 +827,8 @@ class TensorProduct(Expr):
 
     >>> metric.rcall(R2.e_y)
     3*dy
-
     """
+
     def __new__(cls, *args):
         if any(contravariant_order(a) for a in args):
             raise ValueError('A vector field was supplied as an argument to TensorProduct.')
@@ -901,8 +899,8 @@ class WedgeProduct(TensorProduct):
     >>> wp1 = WedgeProduct(R2.dx, R2.dy)
     >>> WedgeProduct(wp1, R2.dx)(R2.e_x, R2.e_y, R2.e_x)
     0
-
     """
+
     # TODO the calculation of signatures is slow
     # TODO you do not need all these permutations (neither the prefactor)
     def __call__(self, *vector_fields):
@@ -950,6 +948,7 @@ class LieDerivative(Expr):
     >>> LieDerivative(R2.e_x, tp).doit()
     LieDerivative(e_x, TensorProduct(dx, dy))
     """
+
     def __new__(cls, v_field, expr):
         expr_form_ord = covariant_order(expr)
         if contravariant_order(v_field) != 1 or covariant_order(v_field):
@@ -997,6 +996,7 @@ class BaseCovarDerivativeOp(Expr):
     >>> cvd(R2.x*R2.e_x)
     e_x
     """
+
     def __init__(self, coord_sys, index, christoffel):
         super(BaseCovarDerivativeOp, self).__init__()
         self._coord_sys = coord_sys
@@ -1063,8 +1063,8 @@ class CovarDerivativeOp(Expr):
     x
     >>> cvd(R2.x*R2.e_x)
     x*e_x
-
     """
+
     def __init__(self, wrt, christoffel):
         super(CovarDerivativeOp, self).__init__()
         if len({v._coord_sys

@@ -28,6 +28,7 @@ class Adjoint(MatrixExpr):
     >>> adjoint(A*B) == Adjoint(A*B).doit()
     True
     """
+
     is_Adjoint = True
 
     def doit(self, **hints):

@@ -255,6 +255,7 @@ def rules_2prereq(rules):
 
 class TautologyDetected(Exception):
     """(internal) Prover uses it for reporting detected tautology"""
+
     pass
 
 
@@ -476,6 +477,7 @@ class FactKB(dict):
     """
     A simple propositional knowledge base relying on compiled inference rules.
     """
+
     def __str__(self):
         return '{\n%s}' % ',\n'.join(
             ["\t%s: %s" % i for i in sorted(self.items())])

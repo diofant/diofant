@@ -25,6 +25,7 @@ class Polyhedron(Basic):
 
     http://mathworld.wolfram.com/PolyhedralGroup.html
     """
+
     _edges = None
 
     def __new__(cls, corners, faces=[], pgroup=[]):

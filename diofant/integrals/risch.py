@@ -678,6 +678,7 @@ class NonElementaryIntegralException(Exception):
     another that the function being integrated does not have an elementary
     integral in the given differential field.
     """
+
     # TODO: Rewrite algorithms below to use this (?)
 
     # TODO: Pass through information about why the integral was nonelementary,
@@ -1552,6 +1553,7 @@ class NonElementaryIntegral(Integral):
     >>> type(b.atoms(Integral).pop())
     <class 'diofant.integrals.risch.NonElementaryIntegral'>
     """
+
     # TODO: This is useful in and of itself, because isinstance(result,
     # NonElementaryIntegral) will tell if the integral has been proven to be
     # elementary. But should we do more?  Perhaps a no-op .doit() if

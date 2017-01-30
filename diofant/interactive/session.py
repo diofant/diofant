@@ -4,6 +4,7 @@ import builtins
 
 class IntegerWrapper(ast.NodeTransformer):
     """Wraps all integers in a call to Integer()"""
+
     def visit_Num(self, node):
         if isinstance(node.n, int):
             return ast.Call(func=ast.Name(id='Integer', ctx=ast.Load()),
@@ -19,6 +20,7 @@ class IntegerWrapper(ast.NodeTransformer):
 
 class AutomaticSymbols(ast.NodeTransformer):
     """Add missing Symbol definitions automatically."""
+
     def __init__(self):
         super(AutomaticSymbols, self).__init__()
         self.names = []

@@ -70,6 +70,7 @@ class Point(GeometryEntity):
     >>> print(Point(0.5, 0.25, evaluate=False))
     Point2D(0.5, 0.25)
     """
+
     def __new__(cls, *args, **kwargs):
         evaluate = kwargs.get('evaluate', global_evaluate[0])
 
@@ -468,8 +469,8 @@ class Point2D(Point):
     Point2D(1/2, 1/4)
     >>> print(Point2D(0.5, 0.25, evaluate=False))
     Point2D(0.5, 0.25)
-
     """
+
     def __new__(cls, *args, **kwargs):
         eval = kwargs.get('evaluate', global_evaluate[0])
         check = True
@@ -758,8 +759,8 @@ class Point3D(Point):
     Point3D(1/2, 1/4, 2)
     >>> print(Point3D(0.5, 0.25, 3, evaluate=False))
     Point3D(0.5, 0.25, 3)
-
     """
+
     def __new__(cls, *args, **kwargs):
         eval = kwargs.get('evaluate', global_evaluate[0])
         if isinstance(args[0], (Point, Point3D)):

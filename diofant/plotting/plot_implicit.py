@@ -40,6 +40,7 @@ from diofant.utilities.iterables import flatten
 
 class ImplicitSeries(BaseSeries):
     """ Representation for Implicit plot """
+
     is_implicit = True
 
     def __init__(self, expr, var_start_end_x, var_start_end_y,

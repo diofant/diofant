@@ -46,6 +46,7 @@ known_functions = {
 
 class FCodePrinter(CodePrinter):
     """A printer to convert diofant expressions to strings of Fortran code"""
+
     printmethod = "_fcode"
     language = "Fortran"
 

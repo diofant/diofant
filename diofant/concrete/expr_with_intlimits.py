@@ -6,6 +6,7 @@ class ReorderError(NotImplementedError):
     """
     Exception raised when trying to reorder dependent limits.
     """
+
     def __init__(self, expr, msg):
         super(ReorderError, self).__init__(
             "%s could not be reordered: %s." % (expr, msg))

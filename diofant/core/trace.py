@@ -95,8 +95,8 @@ class Tr(Expr):
     >>> m = Matrix([[1,2],[1,1]])
     >>> Tr(m)
     2
-
     """
+
     def __new__(cls, *args):
         """ Construct a Trace object.
 

@@ -213,6 +213,7 @@ class Routine:
 
 class DataType:
     """Holds strings for a certain datatype in different languages."""
+
     def __init__(self, cname, fname, pyname, octname):
         self.cname = cname
         self.fname = fname
@@ -314,8 +315,8 @@ class Argument(Variable):
     """An abstract Argument data structure: a name and a data type.
 
     This structure is refined in the descendants below.
-
     """
+
     pass
 
 
@@ -329,8 +330,8 @@ class ResultBase:
     Objects of this class stores a diofant expression, and a diofant object
     representing a result variable that will be used in the generated code
     only if necessary.
-
     """
+
     def __init__(self, expr, result_var):
         self.expr = expr
         self.result_var = result_var

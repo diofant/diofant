@@ -546,6 +546,7 @@ class Max(MinMaxBase, Application):
 
     diofant.functions.elementary.miscellaneous.Min : find minimum values
     """
+
     zero = S.Infinity
     identity = S.NegativeInfinity
 
@@ -598,6 +599,7 @@ class Min(MinMaxBase, Application):
 
     diofant.functions.elementary.miscellaneous.Max : find maximum values
     """
+
     zero = S.NegativeInfinity
     identity = S.Infinity
 

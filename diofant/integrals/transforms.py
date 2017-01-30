@@ -30,6 +30,7 @@ class IntegralTransformError(NotImplementedError):
     objects, and instead raise this exception if an integral cannot be
     computed.
     """
+
     def __init__(self, transform, function, msg):
         super(IntegralTransformError, self).__init__(
             "%s Transform could not be computed: %s." % (transform, msg))
@@ -400,6 +401,7 @@ class MellinTransformStripError(ValueError):
     """
     Exception raised by _rewrite_gamma. Mainly for internal use.
     """
+
     pass
 
 

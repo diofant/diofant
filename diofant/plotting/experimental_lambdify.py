@@ -101,6 +101,7 @@ class vectorized_lambdify:
     Check numpy bug http://projects.scipy.org/numpy/ticket/1013 to know what
     types of errors to expect.
     """
+
     def __init__(self, args, expr):
         self.args = args
         self.expr = expr

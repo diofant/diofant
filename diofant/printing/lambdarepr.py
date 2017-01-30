@@ -81,6 +81,7 @@ class NumPyPrinter(LambdaPrinter):
     Numpy printer which handles vectorized piecewise functions,
     logical operators, etc.
     """
+
     _default_settings = {
         "order": "none",
         "full_prec": "auto",

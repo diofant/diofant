@@ -2131,8 +2131,8 @@ class fresnels(FresnelIntegral):
     .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelS
     .. [5] The converging factors for the fresnel integrals
             by John W. Wrench Jr. and Vicki Alley
-
     """
+
     _trigfunc = sin
     _sign = -S.One
 
@@ -2265,6 +2265,7 @@ class fresnelc(FresnelIntegral):
     .. [5] The converging factors for the fresnel integrals
             by John W. Wrench Jr. and Vicki Alley
     """
+
     _trigfunc = cos
     _sign = S.One
 

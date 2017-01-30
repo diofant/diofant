@@ -47,6 +47,7 @@ class TupleParametersBase(Function):
     """ Base class that takes care of differentiation, when some of
     the arguments are actually tuples.
     """
+
     # This is not deduced automatically since there are Tuples as arguments.
     is_commutative = True
 
@@ -825,6 +826,7 @@ class HyperRep_power2(HyperRep):
 
 class HyperRep_log1(HyperRep):
     """ Represent -z*hyper([1, 1], [2], z) == log(1 - z). """
+
     @classmethod
     def _expr_small(cls, x):
         return log(1 - x)
@@ -844,6 +846,7 @@ class HyperRep_log1(HyperRep):
 
 class HyperRep_atanh(HyperRep):
     """ Represent hyper([1/2, 1], [3/2], z) == atanh(sqrt(z))/sqrt(z). """
+
     @classmethod
     def _expr_small(cls, x):
         return atanh(sqrt(x))/sqrt(x)
@@ -866,6 +869,7 @@ class HyperRep_atanh(HyperRep):
 
 class HyperRep_asin1(HyperRep):
     """ Represent hyper([1/2, 1/2], [3/2], z) == asin(sqrt(z))/sqrt(z). """
+
     @classmethod
     def _expr_small(cls, z):
         return asin(sqrt(z))/sqrt(z)
@@ -885,6 +889,7 @@ class HyperRep_asin1(HyperRep):
 
 class HyperRep_asin2(HyperRep):
     """ Represent hyper([1, 1], [3/2], z) == asin(sqrt(z))/sqrt(z)/sqrt(1-z). """
+
     # TODO this can be nicer
     @classmethod
     def _expr_small(cls, z):
@@ -995,6 +1000,7 @@ class HyperRep_log2(HyperRep):
 
 class HyperRep_cosasin(HyperRep):
     """ Represent hyper([a, -a], [1/2], z) == cos(2*a*asin(sqrt(z))). """
+
     # Note there are many alternative expressions, e.g. as powers of a sum of
     # square roots.
 

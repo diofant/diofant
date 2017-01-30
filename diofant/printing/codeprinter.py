@@ -14,6 +14,7 @@ class AssignmentError(Exception):
     """
     Raised if an assignment variable for a loop is missing.
     """
+
     pass
 
 

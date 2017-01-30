@@ -35,6 +35,7 @@ class MCodePrinter(CodePrinter):
     """A printer to convert python expressions to
     strings of the Wolfram's Mathematica code
     """
+
     printmethod = "_mcode"
 
     _default_settings = {

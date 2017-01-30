@@ -882,6 +882,7 @@ class mobius(Function):
     .. [1] http://en.wikipedia.org/wiki/M%C3%B6bius_function
     .. [2] Thomas Koshy "Elementary Number Theory with Applications"
     """
+
     @classmethod
     def eval(cls, n):
         if n.is_integer:

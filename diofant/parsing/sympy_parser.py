@@ -50,6 +50,7 @@ class AppliedFunction:
 
     `exponent` is for handling the shorthand sin^2, ln^2, etc.
     """
+
     def __init__(self, function, args, exponent=[]):
         self.function = function
         self.args = args
@@ -69,6 +70,7 @@ class AppliedFunction:
 
 class ParenthesisGroup(list):
     """List of tokens representing an expression in parentheses."""
+
     pass
 
 

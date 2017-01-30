@@ -25,6 +25,7 @@ pprint_try_use_unicode = pretty_try_use_unicode
 
 class PrettyPrinter(Printer):
     """Printer, which converts an expression into 2D ASCII-art figure."""
+
     printmethod = "_pretty"
 
     _default_settings = {

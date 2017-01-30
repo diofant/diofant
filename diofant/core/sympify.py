@@ -50,8 +50,8 @@ class CantSympify:
     Traceback (most recent call last):
     ...
     SympifyError: SympifyError: {}
-
     """
+
     pass
 
 

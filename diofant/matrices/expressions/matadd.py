@@ -25,6 +25,7 @@ class MatAdd(MatrixExpr):
     >>> MatAdd(A, B, C)
     A + B + C
     """
+
     is_MatAdd = True
 
     def _eval_is_commutative(self):

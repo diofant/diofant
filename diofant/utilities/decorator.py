@@ -40,8 +40,8 @@ class no_attrs_in_subclass:
     True
     >>> hasattr(B, 'x')
     False
-
     """
+
     def __init__(self, cls, f):
         self.cls = cls
         self.f = f

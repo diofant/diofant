@@ -305,6 +305,7 @@ class Cycle(dict):
 
     Permutation
     """
+
     def __missing__(self, arg):
         """Enter arg into dictionary and return arg."""
         self[arg] = arg

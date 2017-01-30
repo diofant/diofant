@@ -26,8 +26,8 @@ class Transpose(MatrixExpr):
     (A*B)'
     >>> transpose(A*B)
     B'*A'
-
     """
+
     is_Transpose = True
 
     def doit(self, **hints):
