@@ -2017,6 +2017,7 @@ def test_diofant__matrices__expressions__fourier__IDFT():
     from diofant.matrices.expressions.fourier import IDFT
     assert _test_args(IDFT(Integer(2)))
 
+
 from diofant.matrices.expressions import MatrixSymbol
 X = MatrixSymbol('X', 10, 10)
 

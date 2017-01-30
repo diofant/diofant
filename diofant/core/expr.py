@@ -3279,6 +3279,7 @@ def _mag(x):
         mag_first_dig += 1
     return mag_first_dig
 
+
 from .mul import Mul
 from .add import Add
 from .power import Pow

@@ -586,6 +586,7 @@ def powdenest(eq, force=False, polar=False):
     new = powsimp(sympify(eq))
     return new.xreplace(Transform(_denest_pow, filter=lambda m: m.is_Pow))
 
+
 _y = Dummy('y')
 
 

@@ -104,6 +104,7 @@ class F1_1(DummyNumber):
     def __float__(self):
         return self.number
 
+
 i5 = I5()
 f1_1 = F1_1()
 

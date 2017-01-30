@@ -2776,5 +2776,6 @@ def _merge(arr, temp, left, mid, right):
         arr[left:right + 1] = temp[left:right + 1]
     return inv_count
 
+
 Perm = Permutation
 _af_new = Perm._af_new

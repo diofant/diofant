@@ -681,6 +681,7 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
 
     return False
 
+
 trial_int_msg = "Trial division with ints [%i ... %i] and fail_max=%i"
 trial_msg = "Trial division with primes [%i ... %i]"
 rho_msg = "Pollard's rho with retries %i, max_steps %i and seed %i"

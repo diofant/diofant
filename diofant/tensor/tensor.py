@@ -1144,6 +1144,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                 data = vsympify(numpy.array(data))
         return data
 
+
 _tensor_data_substitution_dict = _TensorDataLazyEvaluator()
 
 

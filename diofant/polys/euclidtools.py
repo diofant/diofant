@@ -1104,6 +1104,7 @@ def dmp_ff_prs_gcd(f, g, u, K):
 
     return h, cff, cfg
 
+
 HEU_GCD_MAX = 6
 
 

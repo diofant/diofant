@@ -175,6 +175,7 @@ class InverseOrder(MonomialOrder):
     def __hash__(self):
         return hash((self.__class__, self.O))
 
+
 lex = LexOrder()
 grlex = GradedLexOrder()
 grevlex = ReversedGradedLexOrder()

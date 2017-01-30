@@ -3372,4 +3372,5 @@ def _stabilizer(degree, generators, alpha):
                     stab_gens.append(schreier_gen)
     return [_af_new(x) for x in stab_gens]
 
+
 PermGroup = PermutationGroup

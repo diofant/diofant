@@ -65,4 +65,5 @@ def configure():
         else:
             _current_config[key] = default
 
+
 configure()

@@ -187,6 +187,7 @@ class TheanoPrinter(Printer):
         """Returns printer's representation for expr (as a string)"""
         return self._print(expr, **kwargs)
 
+
 global_cache = {}
 
 

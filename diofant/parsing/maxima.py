@@ -25,6 +25,7 @@ class MaximaHelpers:
     def maxima_sec(self):
         return 1/cos(self)
 
+
 sub_dict = {
     'pi': re.compile('%pi'),
     'E': re.compile('%e'),

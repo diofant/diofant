@@ -545,6 +545,7 @@ def _inflate_fox_h(g, a):
     bs = [(n + 1)/p for n in range(p)]
     return D, meijerg(g.an, g.aother, g.bm, list(g.bother) + bs, z)
 
+
 _dummies = {}
 
 

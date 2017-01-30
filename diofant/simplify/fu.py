@@ -1770,6 +1770,8 @@ def _roots():
     global _ROOT2, _ROOT3, _invROOT3
     _ROOT2, _ROOT3 = sqrt(2), sqrt(3)
     _invROOT3 = 1/_ROOT3
+
+
 _ROOT2 = None
 
 

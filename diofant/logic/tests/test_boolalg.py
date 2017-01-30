@@ -302,6 +302,7 @@ def test_subs():
     assert (A | B).subs(B, False) == A
     assert (A | B).subs({A: True, B: True}) is true
 
+
 """
 we test for axioms of boolean algebra
 see http://en.wikipedia.org/wiki/Boolean_algebra_(structure)

@@ -328,6 +328,7 @@ class Equality(Relational):
     def _eval_relation(cls, lhs, rhs):
         return _sympify(lhs == rhs)
 
+
 Eq = Equality
 
 
@@ -379,6 +380,7 @@ class Unequality(Relational):
     @classmethod
     def _eval_relation(cls, lhs, rhs):
         return _sympify(lhs != rhs)
+
 
 Ne = Unequality
 
@@ -703,6 +705,7 @@ class GreaterThan(_Greater):
     def _eval_relation(cls, lhs, rhs):
         return _sympify(lhs >= rhs)
 
+
 Ge = GreaterThan
 
 
@@ -714,6 +717,7 @@ class LessThan(_Less):
     @classmethod
     def _eval_relation(cls, lhs, rhs):
         return _sympify(lhs <= rhs)
+
 
 Le = LessThan
 
@@ -727,6 +731,7 @@ class StrictGreaterThan(_Greater):
     def _eval_relation(cls, lhs, rhs):
         return _sympify(lhs > rhs)
 
+
 Gt = StrictGreaterThan
 
 
@@ -738,6 +743,7 @@ class StrictLessThan(_Less):
     @classmethod
     def _eval_relation(cls, lhs, rhs):
         return _sympify(lhs < rhs)
+
 
 Lt = StrictLessThan
 

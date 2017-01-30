@@ -503,6 +503,7 @@ class ZeroMatrix(MatrixExpr):
 def matrix_symbols(expr):
     return [sym for sym in expr.free_symbols if sym.is_Matrix]
 
+
 from .matmul import MatMul
 from .matadd import MatAdd
 from .matpow import MatPow

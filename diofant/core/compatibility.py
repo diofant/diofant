@@ -430,6 +430,7 @@ def ordered(seq, keys=None, default=True, warn=False):
             yield v
         d.pop(k)
 
+
 if sys.version_info >= (3, 5):
     from math import gcd
 else:

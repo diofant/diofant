@@ -24,6 +24,7 @@ class SympifyError(ValueError):
                 "raised:\n%s: %s" % (s, self.base_exc.__class__.__name__,
                                      str(self.base_exc)))
 
+
 converter = {}  # See sympify docstring.
 
 

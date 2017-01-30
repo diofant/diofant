@@ -236,6 +236,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
         from diofant.sets.sets import EmptySet
         return EmptySet()
 
+
 true = BooleanTrue()
 false = BooleanFalse()
 # We want S.true and S.false to work, rather than S.BooleanTrue and

@@ -77,8 +77,8 @@ def validate(*args):
         if A.shape != B.shape:
             raise ShapeError("Matrices %s and %s are not aligned" % (A, B))
 
-rules = (unpack,
-         flatten)
+
+rules = (unpack, flatten)
 
 canonicalize = exhaust(condition(lambda x: isinstance(x, HadamardProduct),
                                  do_one(rules)))

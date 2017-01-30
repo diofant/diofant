@@ -18,6 +18,7 @@ def upretty(expr):
     """Unicode pretty-printing"""
     return xpretty(expr, use_unicode=True, wrap_line=False)
 
+
 # Initialize the basic and tedious vector/dyadic expressions
 # needed for testing.
 # Some of the pretty forms shown denote how the expressions just

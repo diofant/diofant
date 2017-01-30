@@ -80,6 +80,7 @@ class SingletonRegistry:
     def __repr__(self):
         return "S"
 
+
 #: Alias for instance of :class:`SingletonRegistry`.
 S = SingletonRegistry()
 

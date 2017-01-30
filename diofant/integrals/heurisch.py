@@ -68,6 +68,7 @@ def components(f, x):
 
     return result
 
+
 # name -> [] of symbols
 _symbols_cache = {}
 

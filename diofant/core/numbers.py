@@ -93,6 +93,7 @@ def mpf_norm(mpf, prec):
     rv = mpf_normalize(sign, man, expt, bc, prec, rnd)
     return rv
 
+
 # TODO: we should use the warnings module
 _errdict = {"divide": False}
 
@@ -1788,6 +1789,7 @@ class Integer(Rational):
     def __rfloordiv__(self, other):
         return Integer(Integer(other).p // self.p)
 
+
 # Add sympify converters
 converter[int] = Integer
 
@@ -2350,6 +2352,7 @@ class Infinity(Number, metaclass=Singleton):
 
     __rmod__ = __mod__
 
+
 oo = S.Infinity
 
 
@@ -2647,6 +2650,7 @@ class NaN(Number, metaclass=Singleton):
     __lt__ = Expr.__lt__
     __le__ = Expr.__le__
 
+
 nan = S.NaN
 
 
@@ -2941,6 +2945,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
         I = S.ImaginaryUnit
         return cos(I) + I*cos(I + S.Pi/2)
 
+
 E = S.Exp1
 
 
@@ -3003,6 +3008,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
             return Integer(3), Integer(4)
         elif issubclass(number_cls, Rational):
             return Rational(223, 71), Rational(22, 7)
+
 
 pi = S.Pi
 
@@ -3233,11 +3239,13 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     def as_base_exp(self):
         return S.NegativeOne, S.Half
 
+
 I = S.ImaginaryUnit
 
 
 def sympify_fractions(f):
     return Rational(f.numerator, f.denominator)
+
 
 converter[fractions.Fraction] = sympify_fractions
 
@@ -3263,12 +3271,14 @@ except ImportError:
 def sympify_mpmath(x):
     return Expr._from_mpmath(x, x.context.prec)
 
+
 converter[mpnumeric] = sympify_mpmath
 
 
 def sympify_complex(a):
     real, imag = list(map(sympify, (a.real, a.imag)))
     return real + S.ImaginaryUnit*imag
+
 
 converter[complex] = sympify_complex
 

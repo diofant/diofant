@@ -160,6 +160,7 @@ class IntegralTransform(Function):
     def _eval_rewrite_as_Integral(self, *args):
         return self.as_integral
 
+
 from diofant.solvers.inequalities import solve_univariate_inequality
 
 
@@ -195,6 +196,8 @@ def _noconds_(default):
             return res
         return wrapper
     return make_wrapper
+
+
 _noconds = _noconds_(False)
 
 
@@ -753,6 +756,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
         return (h*fac).subs(x, x_), cond
 
     raise IntegralTransformError('Inverse Mellin', F, '')
+
 
 _allowed = None
 

@@ -711,6 +711,7 @@ class UndefinedFunction(FunctionClass):
     def __instancecheck__(self, instance):
         return self in type(instance).__mro__
 
+
 UndefinedFunction.__eq__ = lambda s, o: (isinstance(o, s.__class__) and
                                          (s.class_key() == o.class_key()))
 

@@ -107,6 +107,7 @@ def clashing():
     clash.update(clash2)
     return clash1, clash2, clash
 
+
 _clash1, _clash2, _clash = clashing()
 
 del _latin, _greek, clashing, Symbol

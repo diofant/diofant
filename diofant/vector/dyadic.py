@@ -267,6 +267,7 @@ def _dyad_div(one, other):
     else:
         return DyadicMul(one, Pow(other, S.NegativeOne))
 
+
 Dyadic._expr_type = Dyadic
 Dyadic._mul_func = DyadicMul
 Dyadic._add_func = DyadicAdd

@@ -1342,6 +1342,7 @@ class Pow(Expr):
 
         return e.equals(0)
 
+
 from .add import Add
 from .numbers import Integer
 from .mul import Mul, _keep_coeff

@@ -34,6 +34,7 @@ rnd = round_nearest
 def bitcount(n):
     return mpmath_bitcount(int(n))
 
+
 # Used in a few places as placeholder values to denote exponents and
 # precision levels, e.g. of exact numbers. Must be careful to avoid
 # passing these to mpmath functions or returning them in final results.
@@ -52,6 +53,7 @@ class PrecisionExhausted(ArithmeticError):
 #              Helper functions for arithmetic and complex parts           #
 #                                                                          #
 ############################################################################
+
 
 """
 An mpf value tuple is a tuple of integers (sign, man, exp, bc)
@@ -1107,6 +1109,7 @@ def evalf_symbol(x, prec, options):
         v = evalf(sympify(val), prec, options)
         cache[x] = (v, prec)
         return v
+
 
 evalf_table = None
 

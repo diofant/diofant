@@ -737,6 +737,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
 
     return count
 
+
 OO = 'OO'  # Origin of (re, im) coordinate system
 
 Q1 = 'Q1'  # Quadrant #1 (++): re > 0 and im > 0

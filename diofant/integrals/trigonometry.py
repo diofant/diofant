@@ -25,6 +25,7 @@ def _pat_sincos(x):
     pat = sin(a*x)**n * cos(a*x)**m
     return pat, a, n, m
 
+
 _u = Dummy('u')
 
 

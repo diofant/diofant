@@ -1957,6 +1957,7 @@ def hyperexpand_special(ap, bq, z):
     #      investigate what algorithms exist
     return hyper(ap, bq, z_)
 
+
 _collection = None
 
 
@@ -2204,6 +2205,7 @@ def devise_plan_meijer(fro, to, z):
         raise NotImplementedError('Could not devise plan.')
     ops.reverse()
     return ops
+
 
 _meijercollection = None
 

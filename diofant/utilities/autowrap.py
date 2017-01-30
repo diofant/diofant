@@ -559,6 +559,7 @@ def binary_function(symfunc, expr, **kwargs):
 #                           UFUNCIFY                            #
 #################################################################
 
+
 _ufunc_top = Template("""\
 #include "Python.h"
 #include "math.h"

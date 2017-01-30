@@ -224,6 +224,7 @@ def factor_in_front(mul):
         return newmul(factor, *matrices)
     return mul
 
+
 rules = (any_zeros, remove_ids, xxinv, unpack, rm_id(lambda x: x == 1),
          merge_explicit, factor_in_front, flatten)
 

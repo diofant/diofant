@@ -39,6 +39,7 @@ class IdentityFunction(Lambda, metaclass=Singleton):
         obj.nargs = FiniteSet(1)
         return obj
 
+
 Id = S.IdentityFunction
 
 ###############################################################################

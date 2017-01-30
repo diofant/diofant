@@ -29,6 +29,7 @@ def _ispow2(i):
     v = mathlog(i, 2)
     return v == int(v)
 
+
 _reals_cache = {}
 _complexes_cache = {}
 

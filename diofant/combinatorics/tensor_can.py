@@ -955,6 +955,7 @@ def get_symmetric_group_sgs(n, antisym=False):
     base = list(range(n - 1))
     return base, [_af_new(h) for h in gens]
 
+
 riemann_bsgs = [0, 2], [Permutation(0, 1)(4, 5), Permutation(2, 3)(4, 5),
                         Permutation(5)(0, 2)(1, 3)]
 

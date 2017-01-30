@@ -815,6 +815,7 @@ def _pgroup_calcs():
         tetrahedron_faces, cube_faces, octahedron_faces,
         dodecahedron_faces, icosahedron_faces)
 
+
 (tetrahedron, cube, octahedron, dodecahedron, icosahedron,
-tetrahedron_faces, cube_faces, octahedron_faces,
-dodecahedron_faces, icosahedron_faces) = _pgroup_calcs()
+ tetrahedron_faces, cube_faces, octahedron_faces,
+ dodecahedron_faces, icosahedron_faces) = _pgroup_calcs()
