@@ -646,7 +646,7 @@ class IPolys:
         return list(map(self.from_dense, prs)), sres
 
     def dmp_inner_subresultants(self, f, g):
-        prs, sres  = dmp_inner_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
+        prs, sres = dmp_inner_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return list(map(self.from_dense, prs)), sres
 
     def dup_subresultants(self, f, g):

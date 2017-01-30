@@ -3107,7 +3107,7 @@ class PermutationGroup(Basic):
             # accorndingly
             c[l] += 1
             if l == 0:
-                gamma  = sorted_orbits[l][c[l]]
+                gamma = sorted_orbits[l][c[l]]
             else:
                 gamma = computed_words[l - 1]._array_form.index(sorted_orbits[l][c[l]])
 

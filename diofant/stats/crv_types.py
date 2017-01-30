@@ -773,7 +773,7 @@ def Erlang(name, k, l):
 class ExponentialDistribution(SingleContinuousDistribution):
     _argnames = ('rate',)
 
-    set  = Interval(0, oo, False, True)
+    set = Interval(0, oo, False, True)
 
     @staticmethod
     def check(rate):

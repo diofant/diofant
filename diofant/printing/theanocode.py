@@ -226,7 +226,7 @@ def theano_function(inputs, outputs, dtypes={}, cache=None, **kwargs):
 
     code = partial(theano_code, cache=cache, dtypes=dtypes,
                    broadcastables=broadcastables)
-    tinputs  = list(map(code, inputs))
+    tinputs = list(map(code, inputs))
     toutputs = list(map(code, outputs))
     toutputs = toutputs[0] if len(toutputs) == 1 else toutputs
     return theano.function(tinputs, toutputs, **theano_kwargs)

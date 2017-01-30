@@ -235,7 +235,7 @@ class RandomSymbol(Expr):
 
     pspace = property(lambda self: self.args[0])
     symbol = property(lambda self: self.args[1])
-    name   = property(lambda self: self.symbol.name)
+    name = property(lambda self: self.symbol.name)
 
     def _eval_is_positive(self):
         return self.symbol.is_positive
