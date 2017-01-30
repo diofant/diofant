@@ -113,8 +113,7 @@ def combsimp(expr):
         def gamma_rat(x):
             # helper to simplify ratios of gammas
             was = x.count(gamma)
-            xx = x.replace(gamma, lambda n: _rf(1, (n - 1).expand()
-                ).replace(_rf, lambda a, b: gamma(a + b)/gamma(a)))
+            xx = x.replace(gamma, lambda n: _rf(1, (n - 1).expand()).replace(_rf, lambda a, b: gamma(a + b)/gamma(a)))
             if xx.count(gamma) < was:
                 x = xx
             return x

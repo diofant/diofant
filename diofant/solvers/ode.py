@@ -3285,10 +3285,7 @@ def homogeneous_order(eq, *symbols):
         return
 
     # These are all constants
-    if (eq.is_Number or
-        eq.is_NumberSymbol or
-        eq.is_number
-            ):
+    if eq.is_Number or eq.is_NumberSymbol or eq.is_number:
         return S.Zero
 
     # Replace all functions with dummy variables

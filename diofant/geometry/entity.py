@@ -181,8 +181,8 @@ class GeometryEntity(Basic):
             # apply the transform to a single point
             x, y = Dummy(), Dummy()
             xf = Point(x, y)
-            xf = xf.translate(y=-d).rotate(-a, o).scale(y=-1
-                ).rotate(a, o).translate(y=d)
+            xf = xf.translate(y=-d).rotate(-a, o)
+            xf = xf.scale(y=-1).rotate(a, o).translate(y=d)
             # replace every point using that transform
             reps = [(p, xf.xreplace({x: p.x, y: p.y})) for p in g.atoms(Point)]
         return g.xreplace(dict(reps))

@@ -533,8 +533,8 @@ def test_subs5():
     e = Integral(exp(-x**2), (x, x))
     assert e.subs(x, 5) == Integral(exp(-x**2), (x, 5))
     e = Integral(exp(x), x)
-    assert (e.subs(x, 1) - e.subs(x, 0) - Integral(exp(x), (x, 0, 1))
-        ).doit().is_zero
+    assert (e.subs(x, 1) - e.subs(x, 0) -
+            Integral(exp(x), (x, 0, 1))).doit().is_zero
 
 
 def test_subs6():

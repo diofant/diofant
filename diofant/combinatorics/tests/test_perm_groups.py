@@ -562,8 +562,8 @@ def _subgroup_search(i, j, k):
         fix35 = A.subgroup_search(prop_fix_points)
         points = [5]
         fix5 = A.subgroup_search(prop_fix_points)
-        assert A.subgroup_search(prop_fix_points, init_subgroup=fix35
-            ).is_subgroup(fix5)
+        assert A.subgroup_search(prop_fix_points,
+                                 init_subgroup=fix35).is_subgroup(fix5)
         base, strong_gens = A.schreier_sims_incremental()
         g = A.generators[0]
         comm_g = \

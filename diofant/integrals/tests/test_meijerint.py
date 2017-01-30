@@ -541,9 +541,10 @@ def test_expint():
     """ Test various exponential integrals. """
     from diofant import (expint, unpolarify, Symbol, Ci, Si, Shi, Chi,
                        sin, cos, sinh, cosh, Ei)
-    assert simplify(unpolarify(integrate(exp(-z*x)/x**y, (x, 1, oo),
-                meijerg=True, conds='none'
-                ).rewrite(expint).expand(func=True))) == expint(y, z)
+    assert simplify(integrate(exp(-z*x)/x**y,
+                              (x, 1, oo),
+                              meijerg=True,
+                              conds='none').rewrite(expint)) == expint(y, z)
 
     assert integrate(exp(-z*x)/x, (x, 1, oo), meijerg=True,
                      conds='none').rewrite(expint).expand() == \
@@ -572,14 +573,15 @@ def test_expint():
     assert integrate(cosh(u)/u, u, meijerg=True).expand().as_independent(u)[1] \
         == Chi(u)
 
-    assert integrate(expint(1, x), x, meijerg=True
-            ).rewrite(expint).expand() == x*expint(1, x) - exp(-x)
-    assert integrate(expint(2, x), x, meijerg=True
-            ).rewrite(expint).expand() == \
-        -x**2*expint(1, x)/2 + x*exp(-x)/2 - exp(-x)/2
-    assert simplify(unpolarify(integrate(expint(y, x), x,
-                 meijerg=True).rewrite(expint).expand(func=True))) == \
-        -expint(y + 1, x)
+    assert (integrate(expint(1, x), x,
+                      meijerg=True).rewrite(expint).expand() ==
+            x*expint(1, x) - exp(-x))
+    assert (integrate(expint(2, x), x,
+                      meijerg=True).rewrite(expint).expand() ==
+            -x**2*expint(1, x)/2 + x*exp(-x)/2 - exp(-x)/2)
+    assert (simplify(unpolarify(integrate(expint(y, x), x,
+                                          meijerg=True).rewrite(expint))) ==
+            -expint(y + 1, x))
 
     assert integrate(Si(x), x, meijerg=True) == x*Si(x) + cos(x)
     assert integrate(Ci(u), u, meijerg=True).expand() == u*Ci(u) - sin(u)

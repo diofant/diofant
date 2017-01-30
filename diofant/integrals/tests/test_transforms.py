@@ -332,9 +332,9 @@ def test_inverse_mellin_transform():
 
     # test factorisation of polys
     r = symbols('r', extended_real=True)
-    assert IMT(1/(s**2 + 1), s, exp(-x), (None, oo)
-              ).subs(x, r).rewrite(sin).simplify() \
-        == sin(r)*Heaviside(1 - exp(-r))
+    assert (IMT(1/(s**2 + 1), s, exp(-x),
+                (None, oo)).subs(x, r).rewrite(sin).simplify() ==
+            sin(r)*Heaviside(1 - exp(-r)))
 
     # test multiplicative substitution
     _a, _b = symbols('a b', positive=True)

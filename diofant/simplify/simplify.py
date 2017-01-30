@@ -714,8 +714,7 @@ def _real_to_rational(expr, tolerance=None):
             r = Rational(float).limit_denominator(reduce_num)
         elif (tolerance is not None and tolerance >= 1 and
                 float.is_Integer is False):
-            r = Rational(tolerance*round(float/tolerance)
-                ).limit_denominator(int(tolerance))
+            r = Rational(tolerance*round(float/tolerance)).limit_denominator(int(tolerance))
         else:
             r = nsimplify(float, rational=False)
             # e.g. log(3).n() -> log(3) instead of a Rational

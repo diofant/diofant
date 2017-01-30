@@ -615,13 +615,9 @@ def solve(f, *symbols, **flags):
     def _sympified_list(w):
         return list(map(sympify, w if iterable(w) else [w]))
     bare_f = not iterable(f)
-    ordered_symbols = (symbols and
-                       symbols[0] and
+    ordered_symbols = (symbols and symbols[0] and
                        (isinstance(symbols[0], (Dummy, Symbol)) or
-                        is_sequence(symbols[0],
-                        include=GeneratorType)
-                       )
-                      )
+                        is_sequence(symbols[0], include=GeneratorType)))
     f, symbols = (_sympified_list(w) for w in [f, symbols])
 
     implicit = flags.get('implicit', False)
