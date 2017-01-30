@@ -456,7 +456,9 @@ class Add(AssocOp):
 
     def _eval_is_positive(self):
         if self.is_number:
-            return super(Add, self)._eval_is_positive()
+            n = super(Add, self)._eval_is_positive()
+            if n is not None:
+                return n
 
         if any(a.is_infinite for a in self.args):
             args = [a for a in self.args if not a.is_finite]
@@ -483,7 +485,9 @@ class Add(AssocOp):
 
     def _eval_is_negative(self):
         if self.is_number:
-            return super(Add, self)._eval_is_negative()
+            n = super(Add, self)._eval_is_negative()
+            if n is not None:
+                return n
 
         if any(a.is_infinite for a in self.args):
             args = [a for a in self.args if not a.is_finite]

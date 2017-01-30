@@ -29,6 +29,7 @@ Backwards-incompatible changes
 * Drop JS printer and ``TableForm`` class, see `#403 <https://github.com/diofant/diofant/pull/403>`_.
 * Removed agca submodule of :mod:`~diofant.polys`, see `#404 <https://github.com/diofant/diofant/pull/404>`_.
 * Removed ``pager_print()`` and ``print_fcode()``, see `#411 <https://github.com/diofant/diofant/pull/411>`_.
+* "Increase" precision of Floats with :meth:`~diofant.core.evalf.EvalfMixin.evalf` now disallowed, see `#380 <https://github.com/diofant/diofant/pull/380>`_.
 
 Minor changes
 =============
@@ -65,8 +66,10 @@ Issues closed
 * `sympy/sympy#7789 <https://github.com/sympy/sympy/issues/7789>`_ Poly(...).all_roots fails for general quadratic equation
 * `sympy/sympy#8255 <https://github.com/sympy/sympy/issues/8255>`_ roots_quadratic should return roots in same order as Poly.all_roots(radicals=False)
 * `sympy/sympy#7138 <https://github.com/sympy/sympy/issues/7138>`_ How to solve system of differential equations with symbolic solution?
+* `#161 <https://github.com/diofant/diofant/issues/161>`_ Evalf can increase prec for Floats!
+* `sympy/sympy#7457 <https://github.com/sympy/sympy/issues/7457>`_ TypeError when using both multiprocessing and gmpy
 
-.. last pr: #411
+.. last pr: #380
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

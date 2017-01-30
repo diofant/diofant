@@ -642,7 +642,7 @@ class Basic(object):
         rather than
 
         >>> (1/x).subs({x: 3.0}).evalf(21)
-        0.333333333333333314830
+        0.333333333333333
 
         as the former will ensure that the desired level of precision is
         obtained.

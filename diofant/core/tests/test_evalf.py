@@ -192,7 +192,8 @@ def test_evalf_bugs():
     assert NS(((-I - sqrt(2)*I)**2).evalf()) == '-5.82842712474619'
     assert NS((1 + I)**2*I, 15) == '-2.00000000000000'
     # issue sympy/sympy#4758 (1/2):
-    assert NS(pi.evalf(69) - pi) == '-4.43863937855894e-71'
+    assert NS(Float(pi.evalf(69), 100) - pi) == '-4.43863937855894e-71'
+    assert NS(pi.evalf(69) - pi) == '-0.e-71'
     # issue sympy/sympy#4758 (2/2): With the bug present, this still only fails if the
     # terms are in the order given here. This is not generally the case,
     # because the order depends on the hashes of the terms.
@@ -498,3 +499,9 @@ def test_sympyissue_9326():
     d2 = Dummy('d')
     e = d1 + d2
     assert e.evalf(subs={d1: 1, d2: 2}) == 3
+
+
+def test_diofantissue_161():
+    n = sin(1)**2 + cos(1)**2 - 1
+    f = n.evalf()
+    assert f.evalf()._prec == 1
