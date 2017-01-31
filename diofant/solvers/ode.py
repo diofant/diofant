@@ -5386,8 +5386,10 @@ def ode_lie_group(eq, func, order, match):
             sol = solve(eq, df)
         except NotImplementedError:
             raise NotImplementedError("Unable to solve the differential equation " +
-                str(eq) + " by the lie group method")
+                                      str(eq) + " by the lie group method")
         else:
+            if len(sol) > 1:
+                return [dsolve(df - _, func) for _ in sol]
             y = Dummy("y")
             h = sol[0].subs(func, y)
 

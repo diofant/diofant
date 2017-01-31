@@ -2780,10 +2780,10 @@ def test_2nd_power_series_regular():
 
 
 def test_sympyissue_7093():
-    x = Symbol("x")  # assuming x is real leads to an error
-    sol = Eq(f(x), C1 - 2*x*sqrt(x**3)/5)
+    sol = [Eq(f(x), C1 - 2*x*sqrt(x**3)/5), Eq(f(x), C1 + 2*x*sqrt(x**3)/5)]
     eq = Derivative(f(x), x)**2 - x**3
-    assert dsolve(eq) == sol and checkodesol(eq, sol) == (True, 0)
+    assert dsolve(eq) == sol
+    assert checkodesol(eq, sol) == [(True, 0), (True, 0)]
 
 
 def test_dsolve_linsystem_symbol():
@@ -2830,3 +2830,8 @@ def test_sympyissue_7138():
     eqs = [Eq(f(x).diff(x), f(x) - 1), Eq(g(x).diff(x), f(x) + 2*g(x) - 3)]
     assert dsolve(eqs) == [Eq(f(x), -E**x*C1 + 1),
                            Eq(g(x), 2*E**(2*x)*C2 + E**x*C1 + 1)]
+
+
+def test_diofantissue_309():
+    assert dsolve(f(x).diff(x)**2 - 1, f(x)) == [Eq(f(x), C1 - x),
+                                                 Eq(f(x), C1 + x)]
