@@ -37,6 +37,7 @@ Minor changes
 * New integration heuristics for integrals with :class:`~diofant.functions.elementary.complexes.Abs`, see `#321 <https://github.com/diofant/diofant/pull/321>`_.
 * Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`, see `#400 <https://github.com/diofant/diofant/pull/400>`_.
 * Sorting of symbolic quadratic roots now same as in :class:`~diofant.polys.rootoftools.RootOf` for numerical coefficients, see `#400 <https://github.com/diofant/diofant/pull/400>`_.
+* Support simple first-order DAE with :func:`~diofant.solvers.ode.dsolve` helper :func:`~diofant.solvers.ode.ode_lie_group`, see `#413 <https://github.com/diofant/diofant/pull/413>`_.
 
 Developer changes
 =================
@@ -68,8 +69,9 @@ Issues closed
 * `sympy/sympy#7138 <https://github.com/sympy/sympy/issues/7138>`_ How to solve system of differential equations with symbolic solution?
 * `#161 <https://github.com/diofant/diofant/issues/161>`_ Evalf can increase prec for Floats!
 * `sympy/sympy#7457 <https://github.com/sympy/sympy/issues/7457>`_ TypeError when using both multiprocessing and gmpy
+* `#309 <https://github.com/diofant/diofant/issues/309>`_ Missing solution for trivial ODE f(t).diff(t)**2 - 1
 
-.. last pr: #380
+.. last pr: #413
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
