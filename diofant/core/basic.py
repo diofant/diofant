@@ -59,6 +59,7 @@ class Basic(object):
     is_Boolean = False
     is_Not = False
     is_Matrix = False
+    is_MatMul = False
     is_Vector = False
 
     def __new__(cls, *args):
