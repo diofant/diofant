@@ -1929,7 +1929,6 @@ def test_diofant__matrices__expressions__matexpr__MatrixElement():
     assert _test_args(MatrixElement(MatrixSymbol('A', 3, 5), Integer(2), Integer(3)))
 
 
-@pytest.mark.xfail
 def test_diofant__matrices__expressions__matexpr__MatrixSymbol():
     from diofant.matrices.expressions.matexpr import MatrixSymbol
     assert _test_args(MatrixSymbol('A', 3, 5))

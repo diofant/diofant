@@ -1,7 +1,7 @@
 from functools import wraps
 
 from ...core import (S, Symbol, Tuple, Integer, Basic, Expr,
-                     SympifyError, sympify)
+                     SympifyError, sympify, AtomicExpr)
 from ...core.assumptions import StdFactKB
 from ...core.logic import fuzzy_bool
 from ...core.decorators import call_highest_priority
@@ -335,7 +335,7 @@ class MatrixElement(Expr):
         return args[0][args[1], args[2]]
 
 
-class MatrixSymbol(MatrixExpr):
+class MatrixSymbol(MatrixExpr, AtomicExpr):
     """Symbolic representation of a Matrix object
 
     Creates a Diofant Symbol to represent a Matrix. This matrix has a shape and
@@ -358,7 +358,9 @@ class MatrixSymbol(MatrixExpr):
         n, m = sympify(n), sympify(m)
         is_commutative = fuzzy_bool(assumptions.get('commutative', False))
         assumptions['commutative'] = is_commutative
-        obj = Expr.__new__(cls, name, n, m)
+        obj = Expr.__new__(cls)
+        obj._name = name
+        obj._shape = (n, m)
         obj._assumptions = StdFactKB(assumptions)
         return obj
 
@@ -369,11 +371,11 @@ class MatrixSymbol(MatrixExpr):
 
     @property
     def shape(self):
-        return self.args[1:3]
+        return self._shape
 
     @property
     def name(self):
-        return self.args[0]
+        return self._name
 
     def _eval_subs(self, old, new):
         # only do substitutions in shape
@@ -392,8 +394,8 @@ class MatrixSymbol(MatrixExpr):
 
     def doit(self, **hints):
         if hints.get('deep', True):
-            return type(self)(self.name, self.args[1].doit(**hints),
-                              self.args[2].doit(**hints),
+            return type(self)(self.name,
+                              *(_.doit(**hints) for _ in self.shape),
                               **self._assumptions._generator)
         else:
             return self

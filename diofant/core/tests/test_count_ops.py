@@ -130,4 +130,4 @@ def test_sympyissue_9324():
     m = Symbol('m', integer=True)
     n = Symbol('n', integer=True)
     M = MatrixSymbol('M', m + n, m * m)
-    assert count(M[0, 1]) == 2
+    assert count(M[0, 1]) == 0
