@@ -72,6 +72,7 @@ Issues closed
 * `sympy/sympy#7457 <https://github.com/sympy/sympy/issues/7457>`_ TypeError when using both multiprocessing and gmpy
 * `#309 <https://github.com/diofant/diofant/issues/309>`_ Missing solution for trivial ODE f(t).diff(t)**2 - 1
 * `sympy/sympy#12115 <https://github.com/diofant/diofant/issues/12115>`_ Cannot access imported submodules in `sympy.core`
+* `sympy/sympy#4315 <https://github.com/diofant/diofant/issues/4315>`_ series expansion of piecewise fails
 
 .. last pr: #414
 

@@ -1,13 +1,15 @@
 import pytest
 
-from diofant import (adjoint, And, Basic, conjugate, diff, expand, Eq, Function,
-                     I, Integral, integrate, Interval, lambdify, log, Max, Min,
-                     oo, Or, pi, Piecewise, piecewise_fold, Rational, solve,
-                     symbols, transpose, cos, exp, Abs, Not, Symbol, sympify, Gt)
+from diofant import (adjoint, And, Basic, conjugate, diff, expand, Eq,
+                     Function, I, Integral, integrate, Interval, lambdify,
+                     log, Max, Min, oo, Or, pi, Piecewise, piecewise_fold,
+                     Rational, solve, symbols, transpose, sin, cos, exp,
+                     Abs, Not, Symbol, sympify, Gt, O)
+
+from diofant.abc import x, y
 
 __all__ = ()
 
-x, y = symbols('x y')
 z = symbols('z', nonzero=True)
 
 
@@ -419,9 +421,12 @@ def test_piecewise_lambdify():
 
 
 def test_piecewise_series():
-    from diofant import sin, cos, O
     p1 = Piecewise((sin(x), x < 0), (cos(x), x > 0))
     assert p1.nseries(x, n=2) == 1 + O(x**2)
+
+    # issue sympy/sympy#4315:
+    p2 = Piecewise((0, x < -1), (x**2, x <= 1), (log(x), True))
+    assert p2.series(x) == x**2
 
 
 def test_piecewise_as_leading_term():

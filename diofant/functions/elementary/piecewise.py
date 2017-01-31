@@ -446,7 +446,8 @@ class Piecewise(Function):
         return int_expr
 
     def _eval_nseries(self, x, n, logx):
-        args = [(ec.expr._eval_nseries(x, n, logx), ec.cond) for ec in self.args]
+        args = [(ec.expr._eval_nseries(x, n, logx),
+                 ec.cond.limit(x, 0)) for ec in self.args]
         return self.func(*args)
 
     def _eval_power(self, s):
