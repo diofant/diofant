@@ -6,7 +6,7 @@ from diofant import (adjoint, And, Basic, conjugate, diff, expand, Eq,
                      Rational, solve, symbols, transpose, sin, cos, exp,
                      Abs, Not, Symbol, sympify, Gt, O)
 
-from diofant.abc import x, y
+from diofant.abc import x, y, t
 
 __all__ = ()
 
@@ -507,3 +507,8 @@ def test_S_repr_is_identity():
 def test_sympyissue_10258():
     p = Piecewise((1, x < 0), (0, True))
     assert (p > 0) == Gt(p, 0, evaluate=False)
+
+
+def test_sympyissue_6807():
+    p = Piecewise( (0, x < -1), (y, x <= 1), (t, True))
+    assert p.atoms(Symbol) == {x, y, t}

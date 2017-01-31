@@ -73,6 +73,7 @@ Issues closed
 * `#309 <https://github.com/diofant/diofant/issues/309>`_ Missing solution for trivial ODE f(t).diff(t)**2 - 1
 * `sympy/sympy#12115 <https://github.com/diofant/diofant/issues/12115>`_ Cannot access imported submodules in `sympy.core`
 * `sympy/sympy#4315 <https://github.com/diofant/diofant/issues/4315>`_ series expansion of piecewise fails
+* `sympy/sympy#6807 <https://github.com/diofant/diofant/issues/6807>`_ atoms does not work correctly in the otherwise case of Piecewise
 
 .. last pr: #414
 
