@@ -1589,7 +1589,7 @@ def L(rv):
 
 # ============== end of basic Fu-like tools =====================
 
-if DIOFANT_DEBUG:
+if DIOFANT_DEBUG:  # pragma: no cover
     (TR0, TR1, TR2, TR3, TR4, TR5,
      TR6, TR7, TR8, TR9, TR10, TR11, TR12, TR13,
      TR2i, TRmorrie, TR14, TR15, TR16,
