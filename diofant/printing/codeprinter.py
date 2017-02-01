@@ -308,14 +308,14 @@ class CodePrinter(StrPrinter):
         This may include indenting, wrapping long lines, etc...
         """
         raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")
+                                  "subclass of CodePrinter.")  # pragma: no cover
 
     def _get_loop_opening_ending(self, indices):
         """Returns a tuple (open_lines, close_lines) containing lists
         of codelines
         """
         raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")
+                                  "subclass of CodePrinter.")  # pragma: no cover
 
     def _print_Assignment(self, expr):
         from diofant.functions.elementary.piecewise import Piecewise
