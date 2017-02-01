@@ -636,7 +636,7 @@ class PrettyPrinter(Printer):
                                             delimiter=', ').parens(left='[',
                                                                    right=']')[0]
             pform = prettyForm(binding=prettyForm.FUNC,
-                    *stringPict.next(prettyFunc, prettyIndices))
+                               *stringPict.next(prettyFunc, prettyIndices))
 
             # store pform parts so it can be reassembled e.g. when powered
             pform.prettyFunc = prettyFunc
