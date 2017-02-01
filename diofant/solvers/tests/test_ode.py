@@ -282,6 +282,20 @@ def test_linear_2eq_order2():
     5*sqrt(70771857)/36)**Rational(1, 3)) + 4 + 2*(Rational(4333, 4) + 5*sqrt(70771857)/36)**Rational(1, 3)) + 14))]
     assert dsolve(eq10) == sol10
 
+    eq11 = [x(t).diff(t, t) - 2*x(t) + 3*y(t) + 1,
+            y(t).diff(t, t) + 2*x(t) - 3*y(t) - 2]
+    sol11 = [Eq(x(t), (E**(sqrt(5)*t)*C1 - 3*C3*t - 3*C4 +
+                       3*t**2/10 + Rational(8, 25) + E**(-sqrt(5)*t)*C2)),
+             Eq(y(t), (-E**(sqrt(5)*t)*C1 - 2*C3*t - 2*C4 + t**2/5 -
+                       Rational(8, 25) - E**(-sqrt(5)*t)*C2))]
+    assert dsolve(eq11) == sol11
+    eq12 = [x(t).diff(t, t) - 2*x(t) + 2*y(t) + 2,
+            y(t).diff(t, t) - 2*x(t) + 2*y(t) + 1]
+    sol12 = [Eq(x(t), -2*C1*t**3 - 2*C2*t**2 + C3*t + C4 - t**4/12 - t**2),
+             Eq(y(t), (-2*C1*t**3 + 6*C1*t - 2*C2*t**2 + 2*C2 +
+                       C3*t + C4 - t**4/12 - t**2/2))]
+    assert dsolve(eq12) == sol12
+
 
 def test_linear_3eq_order1():
     x, y, z = symbols('x, y, z', cls=Function)
