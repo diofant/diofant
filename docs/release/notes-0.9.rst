@@ -70,8 +70,9 @@ Issues closed
 * `#161 <https://github.com/diofant/diofant/issues/161>`_ Evalf can increase prec for Floats!
 * `sympy/sympy#7457 <https://github.com/sympy/sympy/issues/7457>`_ TypeError when using both multiprocessing and gmpy
 * `#309 <https://github.com/diofant/diofant/issues/309>`_ Missing solution for trivial ODE f(t).diff(t)**2 - 1
+* `sympy/sympy#12115 <https://github.com/diofant/diofant/issues/12115>`_ Cannot access imported submodules in `sympy.core`
 
-.. last pr: #413
+.. last pr: #416
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
