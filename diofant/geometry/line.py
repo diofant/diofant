@@ -955,7 +955,7 @@ class LinearEntity(GeometrySet):
         False if not on the boundaries of self;
         None if a determination cannot be made.
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
 
 class Line(LinearEntity):
