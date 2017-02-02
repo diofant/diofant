@@ -149,7 +149,7 @@ Compute `\int_{-\infty}^\infty \sin{(x^2)}\,dx`.
    ───────────
         2
 
-Find :math:`\lim_{x\to 0^+}\frac{\sin{(x)}}{x}`.
+Find `\lim_{x\to 0^+}\frac{\sin{(x)}}{x}`.
 
    >>> limit(sin(x)/x, x, 0)
    1

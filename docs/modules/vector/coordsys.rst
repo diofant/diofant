@@ -13,13 +13,13 @@ We already know that the ``origin`` property of a
 ``CoordSysCartesian`` corresponds to the ``Point`` instance
 denoting its origin reference point.
 
-Consider a coordinate system :math:`N`. Suppose we want to define
-a new system :math:`M`, whose origin is located at
-:math:`\mathbf{3\hat{i} + 4\hat{j} + 5\hat{k}}` from :math:`N`'s origin.
-In other words, the coordinates of :math:`M`'s origin from N's perspective
-happen to be :math:`(3, 4, 5)`. Moreover, this would also mean that
-the coordinates of :math:`N`'s origin with respect to :math:`M`
-would be :math:`(-3, -4, -5)`.
+Consider a coordinate system `N`. Suppose we want to define
+a new system `M`, whose origin is located at
+`\mathbf{3\hat{i} + 4\hat{j} + 5\hat{k}}` from `N`'s origin.
+In other words, the coordinates of `M`'s origin from N's perspective
+happen to be `(3, 4, 5)`. Moreover, this would also mean that
+the coordinates of `N`'s origin with respect to `M`
+would be `(-3, -4, -5)`.
 
 This can be achieved programatically as follows -
 
@@ -31,9 +31,9 @@ This can be achieved programatically as follows -
   >>> N.origin.express_coordinates(M)
   (-3, -4, -5)
 
-It is worth noting that :math:`M`'s orientation is the same as that of
-:math:`N`. This means that the rotation matrix of :math: `N` with respect
-to :math:`M`, and also vice versa, is equal to the identity matrix of
+It is worth noting that `M`'s orientation is the same as that of
+`N`. This means that the rotation matrix of `N` with respect
+to `M`, and also vice versa, is equal to the identity matrix of
 dimensions 3x3.
 The ``locate_new`` method initializes a ``CoordSysCartesian`` that
 is only translated in space, not re-oriented, relative to the 'parent'
@@ -46,13 +46,13 @@ Similar to 'locating' new systems, :mod:`diofant.vector` also allows for
 initialization of new ``CoordSysCartesian`` instances that are oriented
 in user-defined ways with respect to existing systems.
 
-Suppose you have a coordinate system :math:`A`.
+Suppose you have a coordinate system `A`.
 
   >>> from diofant.vector import CoordSysCartesian
   >>> A = CoordSysCartesian('A')
 
-You want to initialize a new coordinate system :math:`B`, that is rotated with
-respect to :math:`A`'s Z-axis by an angle :math:`\theta`.
+You want to initialize a new coordinate system `B`, that is rotated with
+respect to `A`'s Z-axis by an angle `\theta`.
 
   >>> from diofant import Symbol
   >>> theta = Symbol('theta')
@@ -76,8 +76,8 @@ it.
 
   >>> B = A.orient_new_axis('B', theta, A.k)
 
-This initialzes :math:`B` with the required orientation information with
-respect to :math:`A`.
+This initialzes `B` with the required orientation information with
+respect to `A`.
 
 ``CoordSysCartesian`` provides the following direct orientation methods
 in its API-
@@ -103,7 +103,7 @@ storing the rotation information.
   >>> from diofant.vector import AxisOrienter
   >>> axis_orienter = AxisOrienter(theta, A.k)
 
-And then apply it using the ``orient_new`` method, to obtain :math:`B`.
+And then apply it using the ``orient_new`` method, to obtain `B`.
 
   >>> B = A.orient_new('B', axis_orienter)
 
@@ -235,15 +235,15 @@ variables used in the definition of vector/scalar fields in
 :mod:`diofant.vector`.
 
 For example, consider the scalar field
-:math:`\mathbf{{T}_{N}(x, y, z) = x + y + z}` defined in system :math:`N`.
-Thus, at a point with coordinates :math:`(a, b, c)`, the value of the
-field would be :math:`a + b + c`. Now consider system :math:`R`, whose
-origin is located at :math:`(1, 2, 3)` with respect to :math:`N` (no
+`\mathbf{{T}_{N}(x, y, z) = x + y + z}` defined in system `N`.
+Thus, at a point with coordinates `(a, b, c)`, the value of the
+field would be `a + b + c`. Now consider system `R`, whose
+origin is located at `(1, 2, 3)` with respect to `N` (no
 change of orientation).
-A point with coordinates :math:`(a, b, c)` in :math:`R` has coordinates
-:math:`(a + 1, b + 2, c + 3)` in :math:`N`.
-Therefore, the expression for :math:`\mathbf{{T}_{N}}` in :math:`R` becomes
-:math:`\mathbf{{T}_{R}}(x, y, z) = x + y + z + 6`.
+A point with coordinates `(a, b, c)` in `R` has coordinates
+`(a + 1, b + 2, c + 3)` in `N`.
+Therefore, the expression for `\mathbf{{T}_{N}}` in `R` becomes
+`\mathbf{{T}_{R}}(x, y, z) = x + y + z + 6`.
 
 Coordinate variables, if present in a vector/scalar/dyadic expression,
 can also be re-expressed in a given coordinate system, by setting the

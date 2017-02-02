@@ -1,6 +1,6 @@
 def binomial_coefficients(n):
     """Return a dictionary containing pairs `{(k1,k2) : C_{kn}}` where
-    `C_{kn}` are binomial coefficients and :math:`n=k1+k2`.
+    `C_{kn}` are binomial coefficients and `n=k1+k2`.
 
     Examples
     ========

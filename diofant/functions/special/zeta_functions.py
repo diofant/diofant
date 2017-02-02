@@ -16,12 +16,12 @@ class lerchphi(Function):
     r"""
     Lerch transcendent (Lerch phi function).
 
-    For :math:`\operatorname{Re}(a) > 0`, `|z| < 1` and `s \in \mathbb{C}`, the
+    For `\operatorname{Re}(a) > 0`, `|z| < 1` and `s \in \mathbb{C}`, the
     Lerch transcendent is defined as
 
     .. math :: \Phi(z, s, a) = \sum_{n=0}^\infty \frac{z^n}{(n + a)^s},
 
-    where the standard branch of the argument is used for :math:`n + a`,
+    where the standard branch of the argument is used for `n + a`,
     and by analytic continuation for other values of the parameters.
 
     A commonly used related function is the Lerch zeta function, defined by
@@ -41,20 +41,20 @@ class lerchphi(Function):
     .. math:: \Phi_0(z, s, a) = \int_0^\infty \frac{t^{s-1} e^{-at}}{1 - ze^{-t}}
                                 \frac{\mathrm{d}t}{\Gamma(s)}
 
-    provides an analytic continuation to :math:`\mathbb{C} - [1, \infty)`.
-    Finally, for :math:`x \in (1, \infty)` we find
+    provides an analytic continuation to `\mathbb{C} - [1, \infty)`.
+    Finally, for `x \in (1, \infty)` we find
 
     .. math:: \lim_{\epsilon \to 0^+} \Phi_0(x + i\epsilon, s, a)
              -\lim_{\epsilon \to 0^+} \Phi_0(x - i\epsilon, s, a)
              = \frac{2\pi i \log^{s-1}{x}}{x^a \Gamma(s)},
 
-    using the standard branch for both :math:`\log{x}` and
-    :math:`\log{\log{x}}` (a branch of :math:`\log{\log{x}}` is needed to
-    evaluate :math:`\log{x}^{s-1}`).
+    using the standard branch for both `\log{x}` and
+    `\log{\log{x}}` (a branch of `\log{\log{x}}` is needed to
+    evaluate `\log{x}^{s-1}`).
     This concludes the analytic continuation. The Lerch transcendent is thus
-    branched at :math:`z \in \{0, 1, \infty\}` and
-    :math:`a \in \mathbb{Z}_{\le 0}`. For fixed :math:`z, a` outside these
-    branch points, it is an entire function of :math:`s`.
+    branched at `z \in \{0, 1, \infty\}` and
+    `a \in \mathbb{Z}_{\le 0}`. For fixed `z, a` outside these
+    branch points, it is an entire function of `s`.
 
     See Also
     ========
@@ -76,25 +76,25 @@ class lerchphi(Function):
     not automatically evaluate to simpler functions. Use expand_func() to
     achieve this.
 
-    If :math:`z=1`, the Lerch transcendent reduces to the Hurwitz zeta function:
+    If `z=1`, the Lerch transcendent reduces to the Hurwitz zeta function:
 
     >>> from diofant import lerchphi, expand_func
     >>> from diofant.abc import z, s, a
     >>> expand_func(lerchphi(1, s, a))
     zeta(s, a)
 
-    More generally, if :math:`z` is a root of unity, the Lerch transcendent
+    More generally, if `z` is a root of unity, the Lerch transcendent
     reduces to a sum of Hurwitz zeta functions:
 
     >>> expand_func(lerchphi(-1, s, a))
     2**(-s)*zeta(s, a/2) - 2**(-s)*zeta(s, a/2 + 1/2)
 
-    If :math:`a=1`, the Lerch transcendent reduces to the polylogarithm:
+    If `a=1`, the Lerch transcendent reduces to the polylogarithm:
 
     >>> expand_func(lerchphi(z, s, 1))
     polylog(s, z)/z
 
-    More generally, if :math:`a` is rational, the Lerch transcendent reduces
+    More generally, if `a` is rational, the Lerch transcendent reduces
     to a sum of polylogarithms:
 
     >>> from diofant import Rational
@@ -105,7 +105,7 @@ class lerchphi(Function):
     -2**s/z + 2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                           polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))/z
 
-    The derivatives with respect to :math:`z` and :math:`a` can be computed in
+    The derivatives with respect to `z` and `a` can be computed in
     closed form:
 
     >>> lerchphi(z, s, a).diff(z)
@@ -207,16 +207,16 @@ class polylog(Function):
     r"""
     Polylogarithm function.
 
-    For :math:`|z| < 1` and :math:`s \in \mathbb{C}`, the polylogarithm is
+    For `|z| < 1` and `s \in \mathbb{C}`, the polylogarithm is
     defined by
 
     .. math:: \operatorname{Li}_s(z) = \sum_{n=1}^\infty \frac{z^n}{n^s},
 
-    where the standard branch of the argument is used for :math:`n`. It admits
-    an analytic continuation which is branched at :math:`z=1` (notably not on the
-    sheet of initial definition), :math:`z=0` and :math:`z=\infty`.
+    where the standard branch of the argument is used for `n`. It admits
+    an analytic continuation which is branched at `z=1` (notably not on the
+    sheet of initial definition), `z=0` and `z=\infty`.
 
-    The name polylogarithm comes from the fact that for :math:`s=1`, the
+    The name polylogarithm comes from the fact that for `s=1`, the
     polylogarithm is related to the ordinary logarithm (see examples), and that
 
     .. math:: \operatorname{Li}_{s+1}(z) =
@@ -234,7 +234,7 @@ class polylog(Function):
     Examples
     ========
 
-    For :math:`z \in \{0, 1, -1\}`, the polylogarithm is automatically expressed
+    For `z \in \{0, 1, -1\}`, the polylogarithm is automatically expressed
     using other functions:
 
     >>> from diofant import polylog
@@ -246,7 +246,7 @@ class polylog(Function):
     >>> polylog(s, -1)
     -dirichlet_eta(s)
 
-    If :math:`s` is a negative integer, :math:`0` or :math:`1`, the
+    If `s` is a negative integer, `0` or `1`, the
     polylogarithm can be expressed using elementary functions. This can be
     done using expand_func():
 
@@ -257,7 +257,7 @@ class polylog(Function):
     >>> expand_func(polylog(0, z))
     z/(-z + 1)
 
-    The derivative with respect to :math:`z` can be computed in closed form:
+    The derivative with respect to `z` can be computed in closed form:
 
     >>> polylog(s, z).diff(z)
     polylog(s - 1, z)/z
@@ -325,12 +325,12 @@ class zeta(Function):
 
     .. math:: \zeta(s, a) = \sum_{n=0}^\infty \frac{1}{(n + a)^s},
 
-    where the standard choice of argument for :math:`n + a` is used. For fixed
-    :math:`a` with `\operatorname{Re}(a) > 0` the Hurwitz zeta function admits a
-    meromorphic continuation to all of :math:`\mathbb{C}`, it is an unbranched
-    function with a simple pole at :math:`s = 1`.
+    where the standard choice of argument for `n + a` is used. For fixed
+    `a` with `\operatorname{Re}(a) > 0` the Hurwitz zeta function admits a
+    meromorphic continuation to all of `\mathbb{C}`, it is an unbranched
+    function with a simple pole at `s = 1`.
 
-    Analytic continuation to other :math:`a` is possible under some circumstances,
+    Analytic continuation to other `a` is possible under some circumstances,
     but this is not typically done.
 
     The Hurwitz zeta function is a special case of the Lerch transcendent:
@@ -338,11 +338,11 @@ class zeta(Function):
     .. math:: \zeta(s, a) = \Phi(1, s, a).
 
     This formula defines an analytic continuation for all possible values of
-    :math:`s` and :math:`a` (also `\operatorname{Re}(a) < 0`), see the documentation of
+    `s` and `a` (also `\operatorname{Re}(a) < 0`), see the documentation of
     :class:`lerchphi` for a description of the branching behavior.
 
-    If no value is passed for :math:`a`, by this function assumes a default value
-    of :math:`a = 1`, yielding the Riemann zeta function.
+    If no value is passed for `a`, by this function assumes a default value
+    of `a = 1`, yielding the Riemann zeta function.
 
     See Also
     ========
@@ -358,7 +358,7 @@ class zeta(Function):
     Examples
     ========
 
-    For :math:`a = 1` the Hurwitz zeta function reduces to the famous Riemann
+    For `a = 1` the Hurwitz zeta function reduces to the famous Riemann
     zeta function:
 
     .. math:: \zeta(s, 1) = \zeta(s) = \sum_{n=1}^\infty \frac{1}{n^s}.
@@ -403,14 +403,14 @@ class zeta(Function):
     >>> zeta(3).n()
     1.20205690315959
 
-    The derivative of :math:`\zeta(s, a)` with respect to :math:`a` is easily
+    The derivative of `\zeta(s, a)` with respect to `a` is easily
     computed:
 
     >>> from diofant.abc import a
     >>> zeta(s, a).diff(a)
     -s*zeta(s + 1, a)
 
-    However the derivative with respect to :math:`s` has no useful closed form
+    However the derivative with respect to `s` has no useful closed form
     expression:
 
     >>> zeta(s, a).diff(s)
@@ -517,7 +517,7 @@ class dirichlet_eta(Function):
 
     .. math:: \eta(s) = \sum_{n=1}^\infty \frac{(-1)^{n-1}}{n^s}.
 
-    It admits a unique analytic continuation to all of :math:`\mathbb{C}`.
+    It admits a unique analytic continuation to all of `\mathbb{C}`.
     It is an entire, unbranched function.
 
     See Also

@@ -1116,7 +1116,7 @@ class expint(Function):
     where `\Gamma(1 - \nu, z)` is the upper incomplete gamma function
     (``uppergamma``).
 
-    Hence for :math:`z` with positive real part we have
+    Hence for `z` with positive real part we have
 
     .. math:: \operatorname{E}_\nu(z)
               =   \int_1^\infty \frac{e^{-zt}}{t^\nu} \mathrm{d}t,
@@ -1124,9 +1124,9 @@ class expint(Function):
     which explains the name.
 
     The representation as an incomplete gamma function provides an analytic
-    continuation for :math:`\operatorname{E}_\nu(z)`. If :math:`\nu` is a
+    continuation for `\operatorname{E}_\nu(z)`. If `\nu` is a
     non-positive integer the exponential integral is thus an unbranched
-    function of :math:`z`, otherwise there is a branch point at the origin.
+    function of `z`, otherwise there is a branch point at the origin.
     Refer to the incomplete gamma function documentation for details of the
     branching behavior.
 
@@ -1862,19 +1862,19 @@ class Chi(TrigonometricIntegral):
     r"""
     Cosh integral.
 
-    This function is defined for positive :math:`x` by
+    This function is defined for positive `x` by
 
     .. math:: \operatorname{Chi}(x) = \gamma + \log{x}
                          + \int_0^x \frac{\cosh{t} - 1}{t} \mathrm{d}t,
 
-    where :math:`\gamma` is the Euler-Mascheroni constant.
+    where `\gamma` is the Euler-Mascheroni constant.
 
     We have
 
     .. math:: \operatorname{Chi}(z) = \operatorname{Ci}\left(e^{i \pi/2}z\right)
                          - i\frac{\pi}{2},
 
-    which holds for all polar :math:`z` and thus provides an analytic
+    which holds for all polar `z` and thus provides an analytic
     continuation to the Riemann surface of the logarithm.
     By lifting to the principal branch we obtain an analytic function on the
     cut complex plane.

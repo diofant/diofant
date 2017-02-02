@@ -44,13 +44,13 @@ class OrthogonalPolynomial(Function):
 
 class jacobi(OrthogonalPolynomial):
     r"""
-    Jacobi polynomial :math:`P_n^{\left(\alpha, \beta\right)}(x)`
+    Jacobi polynomial `P_n^{\left(\alpha, \beta\right)}(x)`
 
     jacobi(n, alpha, beta, x) gives the nth Jacobi polynomial
-    in x, :math:`P_n^{\left(\alpha, \beta\right)}(x)`.
+    in x, `P_n^{\left(\alpha, \beta\right)}(x)`.
 
-    The Jacobi polynomials are orthogonal on :math:`[-1, 1]` with respect
-    to the weight :math:`\left(1-x\right)^\alpha \left(1+x\right)^\beta`.
+    The Jacobi polynomials are orthogonal on `[-1, 1]` with respect
+    to the weight `\left(1-x\right)^\alpha \left(1+x\right)^\beta`.
 
     Examples
     ========
@@ -190,13 +190,13 @@ class jacobi(OrthogonalPolynomial):
 
 def jacobi_normalized(n, a, b, x):
     r"""
-    Jacobi polynomial :math:`P_n^{\left(\alpha, \beta\right)}(x)`
+    Jacobi polynomial `P_n^{\left(\alpha, \beta\right)}(x)`
 
     jacobi_normalized(n, alpha, beta, x) gives the nth Jacobi polynomial
-    in x, :math:`P_n^{\left(\alpha, \beta\right)}(x)`.
+    in x, `P_n^{\left(\alpha, \beta\right)}(x)`.
 
-    The Jacobi polynomials are orthogonal on :math:`[-1, 1]` with respect
-    to the weight :math:`\left(1-x\right)^\alpha \left(1+x\right)^\beta`.
+    The Jacobi polynomials are orthogonal on `[-1, 1]` with respect
+    to the weight `\left(1-x\right)^\alpha \left(1+x\right)^\beta`.
 
     This functions returns the polynomials normilzed:
 
@@ -253,13 +253,13 @@ def jacobi_normalized(n, a, b, x):
 
 class gegenbauer(OrthogonalPolynomial):
     r"""
-    Gegenbauer polynomial :math:`C_n^{\left(\alpha\right)}(x)`
+    Gegenbauer polynomial `C_n^{\left(\alpha\right)}(x)`
 
     gegenbauer(n, alpha, x) gives the nth Gegenbauer polynomial
-    in x, :math:`C_n^{\left(\alpha\right)}(x)`.
+    in x, `C_n^{\left(\alpha\right)}(x)`.
 
-    The Gegenbauer polynomials are orthogonal on :math:`[-1, 1]` with
-    respect to the weight :math:`\left(1-x^2\right)^{\alpha-\frac{1}{2}}`.
+    The Gegenbauer polynomials are orthogonal on `[-1, 1]` with
+    respect to the weight `\left(1-x^2\right)^{\alpha-\frac{1}{2}}`.
 
     Examples
     ========
@@ -388,13 +388,13 @@ class gegenbauer(OrthogonalPolynomial):
 
 class chebyshevt(OrthogonalPolynomial):
     r"""
-    Chebyshev polynomial of the first kind, :math:`T_n(x)`
+    Chebyshev polynomial of the first kind, `T_n(x)`
 
     chebyshevt(n, x) gives the nth Chebyshev polynomial (of the first
-    kind) in x, :math:`T_n(x)`.
+    kind) in x, `T_n(x)`.
 
     The Chebyshev polynomials of the first kind are orthogonal on
-    :math:`[-1, 1]` with respect to the weight :math:`\frac{1}{\sqrt{1-x^2}}`.
+    `[-1, 1]` with respect to the weight `\frac{1}{\sqrt{1-x^2}}`.
 
     Examples
     ========
@@ -487,13 +487,13 @@ class chebyshevt(OrthogonalPolynomial):
 
 class chebyshevu(OrthogonalPolynomial):
     r"""
-    Chebyshev polynomial of the second kind, :math:`U_n(x)`
+    Chebyshev polynomial of the second kind, `U_n(x)`
 
     chebyshevu(n, x) gives the nth Chebyshev polynomial of the second
-    kind in x, :math:`U_n(x)`.
+    kind in x, `U_n(x)`.
 
     The Chebyshev polynomials of the second kind are orthogonal on
-    :math:`[-1, 1]` with respect to the weight :math:`\sqrt{1-x^2}`.
+    `[-1, 1]` with respect to the weight `\sqrt{1-x^2}`.
 
     Examples
     ========
@@ -672,11 +672,11 @@ class chebyshevu_root(Function):
 
 class legendre(OrthogonalPolynomial):
     r"""
-    legendre(n, x) gives the nth Legendre polynomial of x, :math:`P_n(x)`
+    legendre(n, x) gives the nth Legendre polynomial of x, `P_n(x)`
 
     The Legendre polynomials are orthogonal on [-1, 1] with respect to
-    the constant weight 1. They satisfy :math:`P_n(1) = 1` for all n; further,
-    :math:`P_n` is odd for odd n and even for even n.
+    the constant weight 1. They satisfy `P_n(1) = 1` for all n; further,
+    `P_n` is odd for odd n and even for even n.
 
     Examples
     ========
@@ -758,9 +758,9 @@ class legendre(OrthogonalPolynomial):
 
 class assoc_legendre(Function):
     r"""
-    assoc_legendre(n,m, x) gives :math:`P_n^m(x)`, where n and m are
+    assoc_legendre(n,m, x) gives `P_n^m(x)`, where n and m are
     the degree and order or an expression which is related to the nth
-    order Legendre polynomial, :math:`P_n(x)` in the following manner:
+    order Legendre polynomial, `P_n(x)` in the following manner:
 
     .. math::
         P_n^m(x) = (-1)^m (1 - x^2)^{\frac{m}{2}}
@@ -852,10 +852,10 @@ class assoc_legendre(Function):
 
 class hermite(OrthogonalPolynomial):
     r"""
-    hermite(n, x) gives the nth Hermite polynomial in x, :math:`H_n(x)`
+    hermite(n, x) gives the nth Hermite polynomial in x, `H_n(x)`
 
-    The Hermite polynomials are orthogonal on :math:`(-\infty, \infty)`
-    with respect to the weight :math:`\exp\left(-\frac{x^2}{2}\right)`.
+    The Hermite polynomials are orthogonal on `(-\infty, \infty)`
+    with respect to the weight `\exp\left(-\frac{x^2}{2}\right)`.
 
     Examples
     ========
@@ -935,7 +935,7 @@ class hermite(OrthogonalPolynomial):
 
 class laguerre(OrthogonalPolynomial):
     r"""
-    Returns the nth Laguerre polynomial in x, :math:`L_n(x)`.
+    Returns the nth Laguerre polynomial in x, `L_n(x)`.
 
     Parameters
     ==========
@@ -1024,7 +1024,7 @@ class laguerre(OrthogonalPolynomial):
 
 class assoc_laguerre(OrthogonalPolynomial):
     r"""
-    Returns the nth generalized Laguerre polynomial in x, :math:`L_n(x)`.
+    Returns the nth generalized Laguerre polynomial in x, `L_n(x)`.
 
     Parameters
     ==========

@@ -19,13 +19,13 @@ system, and will primarily be used for printing purposes.
 
 Once a coordinate system (in essence, a ``CoordSysCartesian`` instance)
 has been defined, we can access the orthonormal unit vectors (i.e. the
-:math:`\mathbf{\hat{i}}`, :math:`\mathbf{\hat{j}}` and
-:math:`\mathbf{\hat{k}}` vectors) and coordinate variables/base
-scalars (i.e. the :math:`\mathbf{x}`, :math:`\mathbf{y}` and
-:math:`\mathbf{z}` variables) corresponding to it. We will talk
+`\mathbf{\hat{i}}`, `\mathbf{\hat{j}}` and
+`\mathbf{\hat{k}}` vectors) and coordinate variables/base
+scalars (i.e. the `\mathbf{x}`, `\mathbf{y}` and
+`\mathbf{z}` variables) corresponding to it. We will talk
 about coordinate variables in the later sections.
 
-The basis vectors for the :math:`X`, :math:`Y` and :math:`Z`
+The basis vectors for the `X`, `Y` and `Z`
 axes can be accessed using the ``i``, ``j`` and ``k``
 properties respectively.
 
@@ -198,7 +198,7 @@ be computed using the ``position_wrt`` method.
   >>> Q.position_wrt(N.origin)
   a*N.i + c*N.k
 
-Additionally, it is possible to obtain the :math:`X`, :math:`Y` and :math:`Z`
+Additionally, it is possible to obtain the `X`, `Y` and `Z`
 coordinates of a ``Point`` with respect to a ``CoordSysCartesian``
 in the form of a tuple. This is done using the ``express_coordinates``
 method.

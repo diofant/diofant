@@ -97,7 +97,7 @@ class besselj(BesselBase):
     .. math ::
         J_\nu(z) = z^\nu \left(\frac{1}{\Gamma(\nu + 1) 2^\nu} + O(z^2) \right),
 
-    if :math:`\nu` is not a negative integer. If :math:`\nu=-n \in \mathbb{Z}_{<0}`
+    if `\nu` is not a negative integer. If `\nu=-n \in \mathbb{Z}_{<0}`
     *is* a negative integer, then the definition is
 
     .. math ::
@@ -213,10 +213,10 @@ class bessely(BesselBase):
         Y_\nu(z) = \lim_{\mu \to \nu} \frac{J_\mu(z) \cos(\pi \mu)
                                             - J_{-\mu}(z)}{\sin(\pi \mu)},
 
-    where :math:`J_\mu(z)` is the Bessel function of the first kind.
+    where `J_\mu(z)` is the Bessel function of the first kind.
 
     It is a solution to Bessel's equation, and linearly independent from
-    :math:`J_\nu`.
+    `J_\nu`.
 
     Examples
     ========
@@ -293,7 +293,7 @@ class besseli(BesselBase):
     .. math ::
         I_\nu(z) = i^{-\nu} J_\nu(iz),
 
-    where :math:`J_\nu(z)` is the Bessel function of the first kind.
+    where `J_\nu(z)` is the Bessel function of the first kind.
 
     Examples
     ========
@@ -377,16 +377,16 @@ class besselk(BesselBase):
     r"""
     Modified Bessel function of the second kind.
 
-    The Bessel K function of order :math:`\nu` is defined as
+    The Bessel K function of order `\nu` is defined as
 
     .. math ::
         K_\nu(z) = \lim_{\mu \to \nu} \frac{\pi}{2}
                    \frac{I_{-\mu}(z) -I_\mu(z)}{\sin(\pi \mu)},
 
-    where :math:`I_\mu(z)` is the modified Bessel function of the first kind.
+    where `I_\mu(z)` is the modified Bessel function of the first kind.
 
     It is a solution of the modified Bessel equation, and linearly independent
-    from :math:`Y_\nu`.
+    from `Y_\nu`.
 
     Examples
     ========
@@ -461,8 +461,8 @@ class hankel1(BesselBase):
     .. math ::
         H_\nu^{(1)} = J_\nu(z) + iY_\nu(z),
 
-    where :math:`J_\nu(z)` is the Bessel function of the first kind, and
-    :math:`Y_\nu(z)` is the Bessel function of the second kind.
+    where `J_\nu(z)` is the Bessel function of the first kind, and
+    `Y_\nu(z)` is the Bessel function of the second kind.
 
     It is a solution to Bessel's equation.
 
@@ -504,11 +504,11 @@ class hankel2(BesselBase):
     .. math ::
         H_\nu^{(2)} = J_\nu(z) - iY_\nu(z),
 
-    where :math:`J_\nu(z)` is the Bessel function of the first kind, and
-    :math:`Y_\nu(z)` is the Bessel function of the second kind.
+    where `J_\nu(z)` is the Bessel function of the first kind, and
+    `Y_\nu(z)` is the Bessel function of the second kind.
 
     It is a solution to Bessel's equation, and linearly independent from
-    :math:`H_\nu^{(1)}`.
+    `H_\nu^{(1)}`.
 
     Examples
     ========
@@ -592,7 +592,7 @@ class jn(SphericalBesselBase):
     .. math ::
         j_\nu(z) = \sqrt{\frac{\pi}{2z}} J_{\nu + \frac{1}{2}}(z),
 
-    where :math:`J_\nu(z)` is the Bessel function of the first kind.
+    where `J_\nu(z)` is the Bessel function of the first kind.
 
     Examples
     ========
@@ -611,7 +611,7 @@ class jn(SphericalBesselBase):
 
     .. math:: j_n(z) = f_n(z) \sin{z} + (-1)^{n+1} f_{-n-1}(z) \cos{z},
 
-    where the coefficients :math:`f_n(z)` are available as
+    where the coefficients `f_n(z)` are available as
     :func:`diofant.polys.orthopolys.spherical_bessel_fn`.
 
     See Also
@@ -638,12 +638,12 @@ class yn(SphericalBesselBase):
     Spherical Bessel function of the second kind.
 
     This function is another solution to the spherical Bessel equation, and
-    linearly independent from :math:`j_n`. It can be defined as
+    linearly independent from `j_n`. It can be defined as
 
     .. math ::
         j_\nu(z) = \sqrt{\frac{\pi}{2z}} Y_{\nu + \frac{1}{2}}(z),
 
-    where :math:`Y_\nu(z)` is the Bessel function of the second kind.
+    where `Y_\nu(z)` is the Bessel function of the second kind.
 
     Examples
     ========
@@ -655,7 +655,7 @@ class yn(SphericalBesselBase):
     >>> expand_func(yn(1, z)) == -cos(z)/z**2-sin(z)/z
     True
 
-    For integral orders :math:`n`, :math:`y_n` is calculated using the formula:
+    For integral orders `n`, `y_n` is calculated using the formula:
 
     .. math:: y_n(z) = (-1)^{n+1} j_{-n-1}(z)
 

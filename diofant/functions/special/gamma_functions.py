@@ -210,7 +210,7 @@ class lowergamma(Function):
     .. math::
         \gamma(s, x) = \frac{x^s}{s} {}_1F_1\left({s \atop s+1} \middle| -x\right),
 
-    where :math:`{}_1F_1` is the (confluent) hypergeometric function.
+    where `{}_1F_1` is the (confluent) hypergeometric function.
 
     Examples
     ========
@@ -345,7 +345,7 @@ class uppergamma(Function):
     .. math::
         \Gamma(s, x) = \Gamma(s) - \frac{x^s}{s} {}_1F_1\left({s \atop s+1} \middle| -x\right),
 
-    where :math:`{}_1F_1` is the (confluent) hypergeometric function.
+    where `{}_1F_1` is the (confluent) hypergeometric function.
 
     The upper incomplete gamma function is also essentially equivalent to the
     generalized exponential integral:
