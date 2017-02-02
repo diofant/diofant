@@ -127,7 +127,7 @@ is_complex
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Real_number
+.. [1] http://mathworld.wolfram.com/RealNumber.html
 """,
     'imaginary':
 """
@@ -139,7 +139,7 @@ the imaginary unit ``I``.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Imaginary_number
+.. [1] http://mathworld.wolfram.com/ImaginaryNumber.html
 """,
     'extended_real':
 """
@@ -153,7 +153,7 @@ is_real
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Extended_real_number_line
+.. [1] http://mathworld.wolfram.com/AffinelyExtendedRealNumbers.html
 """,
     'integer':
 """
@@ -176,7 +176,7 @@ is_even
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
+.. [1] http://mathworld.wolfram.com/Parity.html
 """,
     'even':
 """
@@ -190,7 +190,7 @@ is_odd
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
+.. [1] http://mathworld.wolfram.com/Parity.html
 """,
     'prime':
 """
@@ -200,7 +200,7 @@ no positive divisors other than ``1`` and itself.  See [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Prime_number
+.. [1] http://mathworld.wolfram.com/PrimeNumber.html
 """,
     'composite':
 """
@@ -210,7 +210,7 @@ divisor other than ``1`` or the number itself.  See [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Composite_number
+.. [1] http://mathworld.wolfram.com/CompositeNumber.html
 """,
     'zero':
 """
@@ -241,7 +241,7 @@ Test if self can have only values from the set of algebraic numbers [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Algebraic_number
+.. [1] http://mathworld.wolfram.com/AlgebraicNumber.html
 """,
     'transcendental':
 """
@@ -250,7 +250,7 @@ Test if self can have only values from the set of transcendental numbers [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Transcendental_number
+.. [1] http://mathworld.wolfram.com/TranscendentalNumber.html
 """,
     'irrational':
 """
@@ -259,7 +259,7 @@ Test if self value cannot be represented exactly by Rational, see [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Irrational_number
+.. [1] http://mathworld.wolfram.com/IrrationalNumber.html
 """,
     'finite':
 """
