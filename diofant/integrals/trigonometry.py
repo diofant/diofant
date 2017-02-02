@@ -1,5 +1,5 @@
-from diofant.core import cacheit, Dummy, Eq, Integer, Rational, S, Wild
-from diofant.functions import binomial, sin, cos, Piecewise
+from ..core import cacheit, Dummy, Eq, Integer, Rational, S, Wild
+from ..functions import binomial, sin, cos, Piecewise
 
 # TODO sin(a*x)*cos(b*x) -> sin((a+b)x) + sin((a-b)x) ?
 
@@ -56,7 +56,7 @@ def trigintegrate(f, x, conds='piecewise'):
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.integrals.Integral
     """
-    from diofant.integrals.integrals import integrate
+    from .integrals import integrate
     pat, a, n, m = _pat_sincos(x)
 
     f = f.rewrite('sincos')

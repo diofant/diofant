@@ -1,11 +1,11 @@
 from itertools import combinations_with_replacement
 
-from diofant.core import symbols, Add, Dummy
-from diofant.core.numbers import Rational
-from diofant.polys import cancel, ComputationFailed, parallel_poly_from_expr, reduced, Poly
-from diofant.polys.monomials import Monomial, monomial_div
-from diofant.polys.polyerrors import PolificationFailed
-from diofant.utilities.misc import debug
+from ..core import symbols, Add, Dummy, Rational
+from ..polys import (cancel, ComputationFailed, parallel_poly_from_expr,
+                     reduced, Poly)
+from ..polys.monomials import Monomial, monomial_div
+from ..polys.polyerrors import PolificationFailed
+from ..utilities.misc import debug
 
 
 def ratsimp(expr):
@@ -58,7 +58,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
     http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.163.6984
     (specifically, the second algorithm)
     """
-    from diofant import solve
+    from ..solvers import solve
 
     quick = args.pop('quick', True)
     polynomial = args.pop('polynomial', False)

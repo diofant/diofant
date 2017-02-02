@@ -1,12 +1,12 @@
 """Algorithms for partial fraction decomposition of rational functions. """
 
-from diofant.polys import Poly, RootSum, cancel, factor
-from diofant.polys.polytools import parallel_poly_from_expr
-from diofant.polys.polyoptions import allowed_flags, set_defaults
-from diofant.polys.polyerrors import PolynomialError
-from diofant.core import S, Add, sympify, Function, Lambda, Dummy, Integer
-from diofant.core.basic import preorder_traversal
-from diofant.utilities import numbered_symbols, take, public
+from . import Poly, RootSum, cancel, factor
+from .polytools import parallel_poly_from_expr
+from .polyoptions import allowed_flags, set_defaults
+from .polyerrors import PolynomialError
+from ..core import (S, Add, sympify, Function, Lambda, Dummy, Integer,
+                    preorder_traversal)
+from ..utilities import numbered_symbols, take, public
 
 
 @public
@@ -166,7 +166,7 @@ def apart_undetermined_coeffs(P, Q):
     for (k,), coeff in F.terms():
         system.append(coeff - P.nth(k))
 
-    from diofant.solvers import solve
+    from ..solvers import solve
     solution = solve(system, symbols)
 
     for h, f, k in partial:

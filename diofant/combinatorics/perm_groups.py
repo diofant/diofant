@@ -1,20 +1,18 @@
+from itertools import islice
 from random import randrange, choice
 from math import log
 
-from diofant.core import Basic
-from diofant.combinatorics import Permutation
-from diofant.combinatorics.permutations import (_af_commutes_with, _af_invert,
-                                                _af_rmul, _af_rmuln, _af_pow,
-                                                Cycle)
-from diofant.combinatorics.util import (
-    _check_cycles_alt_sym, _distribute_gens_by_base,
-    _orbits_transversals_from_bsgs, _handle_precomputed_bsgs, _base_ordering,
-    _strong_gens_from_distr, _strip, _strip_af)
-from diofant.functions.combinatorial.factorials import factorial
-from diofant.ntheory import sieve
-from diofant.utilities.iterables import has_variety, is_sequence, uniq
-from diofant.utilities.randtest import _randrange
-from itertools import islice
+from ..core import Basic
+from .permutations import (Permutation, _af_commutes_with, _af_invert,
+                           _af_rmul, _af_rmuln, _af_pow, Cycle)
+from .util import (_check_cycles_alt_sym, _distribute_gens_by_base,
+                   _orbits_transversals_from_bsgs, _handle_precomputed_bsgs,
+                   _base_ordering, _strong_gens_from_distr, _strip, _strip_af)
+from ..functions import factorial
+from ..ntheory import sieve
+from ..utilities import has_variety
+from ..utilities.iterables import is_sequence, uniq
+from ..utilities.randtest import _randrange
 
 rmul = Permutation.rmul_with_af
 _af_new = Permutation._af_new

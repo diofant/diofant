@@ -1,13 +1,13 @@
 """Implementation of :class:`Domain` class. """
 
-from diofant.polys.domains.domainelement import DomainElement
-from diofant.core import Basic, sympify
-from diofant.core.compatibility import HAS_GMPY, is_sequence
-from diofant.polys.polyerrors import UnificationFailed, CoercionFailed, DomainError
-from diofant.polys.orderings import lex
-from diofant.polys.polyutils import _unify_gens
-from diofant.utilities import default_sort_key, public
-from diofant.printing.defaults import DefaultPrinting
+from .domainelement import DomainElement
+from ...core import Basic, sympify
+from ...core.compatibility import HAS_GMPY, is_sequence
+from ..polyerrors import UnificationFailed, CoercionFailed, DomainError
+from ..orderings import lex
+from ..polyutils import _unify_gens
+from ...utilities import default_sort_key, public
+from ...printing.defaults import DefaultPrinting
 
 
 @public
@@ -93,7 +93,7 @@ class Domain(DefaultPrinting):
         if self.of_type(element):
             return element
 
-        from diofant.polys.domains import PythonIntegerRing, GMPYIntegerRing, GMPYRationalField, RealField, ComplexField
+        from . import PythonIntegerRing, GMPYIntegerRing, GMPYRationalField, RealField, ComplexField
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())
@@ -303,7 +303,7 @@ class Domain(DefaultPrinting):
         if self.is_FiniteField and K1.is_FiniteField:
             return self.__class__(max(self.mod, K1.mod, key=default_sort_key))
 
-        from diofant.polys.domains import EX
+        from . import EX
         return EX
 
     def __eq__(self, other):
@@ -347,23 +347,13 @@ class Domain(DefaultPrinting):
 
     def poly_ring(self, *symbols, **kwargs):
         """Returns a polynomial ring, i.e. `K[X]`. """
-        from diofant.polys.domains.polynomialring import PolynomialRing
+        from .polynomialring import PolynomialRing
         return PolynomialRing(self, symbols, kwargs.get("order", lex))
 
     def frac_field(self, *symbols, **kwargs):
         """Returns a fraction field, i.e. `K(X)`. """
-        from diofant.polys.domains.fractionfield import FractionField
+        from .fractionfield import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
-
-    def old_poly_ring(self, *symbols, **kwargs):
-        """Returns a polynomial ring, i.e. `K[X]`. """
-        from diofant.polys.domains.old_polynomialring import PolynomialRing
-        return PolynomialRing(self, *symbols, **kwargs)
-
-    def old_frac_field(self, *symbols, **kwargs):
-        """Returns a fraction field, i.e. `K(X)`. """
-        from diofant.polys.domains.old_fractionfield import FractionField
-        return FractionField(self, *symbols, **kwargs)
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `K(\alpha, \ldots)`. """

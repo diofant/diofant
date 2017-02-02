@@ -1,9 +1,7 @@
-from diofant.core import S, sympify, Expr, Symbol, Dummy
-from diofant.core import Add, Mul, expand_power_base, expand_log
-from diofant.core.cache import cacheit
-from diofant.core.compatibility import default_sort_key, is_sequence
-from diofant.core.containers import Tuple
-from diofant.utilities.iterables import uniq
+from ..core import (S, sympify, Expr, Symbol, Dummy, Add, Mul,
+                    cacheit, expand_power_base, expand_log, Tuple)
+from ..core.compatibility import default_sort_key, is_sequence
+from ..utilities.iterables import uniq
 
 
 class Order(Expr):
@@ -159,7 +157,7 @@ class Order(Expr):
             expr = expr.subs(s)
 
             if expr.is_Add:
-                from diofant import expand_multinomial
+                from ..core import expand_multinomial
                 expr = expand_multinomial(expr)
 
             if s:
@@ -301,8 +299,8 @@ class Order(Expr):
             ``self`` belongs to ``expr``.  Return None if the inclusion
             relation cannot be determined.
         """
-        from diofant import powsimp
-        from diofant.series.limits import Limit
+        from ..simplify import powsimp
+        from .limits import Limit
         if expr is S.Zero:
             return True
         if expr is S.NaN:
@@ -383,7 +381,7 @@ class Order(Expr):
                     # E.g.  O(y).subs(y, sin(x))
                     point = new.subs(var, self.point[i])
                     if point != self.point[i]:
-                        from diofant.solvers import solve
+                        from ..solvers import solve
                         d = Dummy()
                         res = solve(old - new.subs(var, d), d, dict=True)
                         point = d.subs(res[0]).limit(old, self.point[i])

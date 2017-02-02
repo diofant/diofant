@@ -6,12 +6,10 @@ Contains
 _preprocess
 ode_order
 _desolve
-
 """
 
-from diofant.core.function import Derivative, AppliedUndef
-from diofant.core.relational import Equality
-from diofant.core.symbol import Wild
+from ..core import Derivative, Equality, Wild
+from ..core.function import AppliedUndef
 
 
 def _preprocess(expr, func=None, hint='_Integral'):
@@ -188,13 +186,13 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
     terms = kwargs.get('n')
 
     if type == 'ode':
-        from diofant.solvers.ode import classify_ode, allhints
+        from .ode import classify_ode, allhints
         classifier = classify_ode
         string = 'ODE '
         dummy = ''
 
     elif type == 'pde':
-        from diofant.solvers.pde import classify_pde, allhints
+        from .pde import classify_pde, allhints
         classifier = classify_pde
         string = 'PDE '
         dummy = 'p'

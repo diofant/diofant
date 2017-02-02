@@ -289,10 +289,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     except Exception as exc:
         raise SympifyError(a, exc)
 
-    from diofant.parsing.sympy_parser import (parse_expr, TokenError,
-                                              standard_transformations)
-    from diofant.parsing.sympy_parser import convert_xor as t_convert_xor
-    from diofant.parsing.sympy_parser import rationalize as t_rationalize
+    from ..parsing.sympy_parser import (parse_expr, TokenError,
+                                        standard_transformations)
+    from ..parsing.sympy_parser import convert_xor as t_convert_xor
+    from ..parsing.sympy_parser import rationalize as t_rationalize
 
     transformations = standard_transformations
 

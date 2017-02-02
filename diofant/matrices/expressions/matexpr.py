@@ -1,13 +1,13 @@
 from functools import wraps
 
-from diofant.core import S, Symbol, Tuple, Integer, Basic, Expr
-from diofant.core.assumptions import StdFactKB
-from diofant.core.logic import fuzzy_bool
-from diofant.core.decorators import call_highest_priority
-from diofant.core.sympify import SympifyError, sympify
-from diofant.functions import conjugate, adjoint
-from diofant.matrices import ShapeError
-from diofant.simplify import simplify
+from ...core import (S, Symbol, Tuple, Integer, Basic, Expr,
+                     SympifyError, sympify)
+from ...core.assumptions import StdFactKB
+from ...core.logic import fuzzy_bool
+from ...core.decorators import call_highest_priority
+from ...functions import conjugate, adjoint
+from .. import ShapeError
+from ...simplify import simplify
 
 
 def _sympifyit(arg, retval=None):
@@ -148,12 +148,12 @@ class MatrixExpr(Expr):
         return self.rows == self.cols
 
     def _eval_conjugate(self):
-        from diofant.matrices.expressions.adjoint import Adjoint
-        from diofant.matrices.expressions.transpose import Transpose
+        from .adjoint import Adjoint
+        from .transpose import Transpose
         return Adjoint(Transpose(self))
 
     def _eval_inverse(self):
-        from diofant.matrices.expressions.inverse import Inverse
+        from .inverse import Inverse
         return Inverse(self)
 
     def _eval_transpose(self):
@@ -169,7 +169,7 @@ class MatrixExpr(Expr):
             return self.__class__(*[simplify(x, **kwargs) for x in self.args])
 
     def _eval_adjoint(self):
-        from diofant.matrices.expressions.adjoint import Adjoint
+        from .adjoint import Adjoint
         return Adjoint(self)
 
     def _entry(self, i, j):
@@ -183,7 +183,7 @@ class MatrixExpr(Expr):
         return conjugate(self)
 
     def transpose(self):
-        from diofant.matrices.expressions.transpose import transpose
+        from .transpose import transpose
         return transpose(self)
 
     T = property(transpose, None, None, 'Matrix transposition.')
@@ -204,12 +204,12 @@ class MatrixExpr(Expr):
 
     def __getitem__(self, key):
         if not isinstance(key, tuple) and isinstance(key, slice):
-            from diofant.matrices.expressions.slice import MatrixSlice
+            from .slice import MatrixSlice
             return MatrixSlice(self, key, (0, None, 1))
         if isinstance(key, tuple) and len(key) == 2:
             i, j = key
             if isinstance(i, slice) or isinstance(j, slice):
-                from diofant.matrices.expressions.slice import MatrixSlice
+                from .slice import MatrixSlice
                 return MatrixSlice(self, i, j)
             i, j = sympify(i), sympify(j)
             if self.valid_index(i, j) is not False:
@@ -258,7 +258,7 @@ class MatrixExpr(Expr):
         as_mutable: returns mutable Matrix type
 
         """
-        from diofant.matrices.immutable import ImmutableMatrix
+        from ..immutable import ImmutableMatrix
         return ImmutableMatrix([[    self[i, j]
                             for j in range(self.cols)]
                             for i in range(self.rows)])

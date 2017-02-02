@@ -9,7 +9,7 @@ They are supposed to work seamlessly within the Diofant framework.
 from .basic import Basic
 from .compatibility import as_int
 from .sympify import sympify, converter
-from diofant.utilities.iterables import iterable
+from ..utilities.iterables import iterable
 
 
 class Tuple(Basic):
@@ -259,5 +259,5 @@ class Dict(Basic):
 
     @property
     def _sorted_args(self):
-        from diofant.utilities import default_sort_key
+        from ..utilities import default_sort_key
         return tuple(sorted(self.args, key=default_sort_key))

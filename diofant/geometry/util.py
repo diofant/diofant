@@ -10,8 +10,9 @@ are_coplanar
 are_similar
 """
 
-from diofant import Dummy, Symbol, Function, solve
-from diofant.core.compatibility import is_sequence
+from ..core import Dummy, Symbol, Function
+from ..solvers import solve
+from ..core.compatibility import is_sequence
 
 
 def idiff(eq, y, x, n=1):
@@ -335,9 +336,9 @@ def are_coplanar(*e):
     False
 
     """
-    from diofant.geometry.line3d import LinearEntity3D
-    from diofant.geometry.point import Point3D
-    from diofant.geometry.plane import Plane
+    from .line3d import LinearEntity3D
+    from .point import Point3D
+    from .plane import Plane
     # XXX update tests for coverage
 
     e = set(e)
@@ -492,7 +493,8 @@ def centroid(*args):
 
     """
 
-    from diofant.geometry import Polygon, Segment, Point
+    from .polygon import Polygon, Segment
+    from .point import Point
     if args:
         if all(isinstance(g, Point) for g in args):
             c = Point(0, 0)

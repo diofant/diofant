@@ -7,38 +7,34 @@ from types import GeneratorType
 from collections import defaultdict
 import warnings
 
-from diofant.core.compatibility import (iterable, is_sequence, ordered,
-                                        default_sort_key)
-from diofant.core.sympify import sympify
-from diofant.core import S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow
-from diofant.core.assumptions import check_assumptions
-from diofant.core.exprtools import factor_terms
-from diofant.core.function import (expand_mul, expand_multinomial, expand_log,
-                                   Derivative, AppliedUndef, UndefinedFunction,
-                                   nfloat, Function, expand_power_exp, Lambda,
-                                   _mexpand)
-from diofant.integrals.integrals import Integral
-from diofant.core.numbers import ilcm, Float, Integer
-from diofant.core.relational import Relational, Ge
-from diofant.logic.boolalg import And, Or, BooleanAtom
-from diofant.core.basic import preorder_traversal
-from diofant.functions import (log, exp, LambertW, cos, sin, tan, acos, asin,
-                               atan, Abs, re, im, arg, sqrt, atan2)
-from diofant.functions.elementary.trigonometric import (TrigonometricFunction,
-                                                        HyperbolicFunction)
-from diofant.simplify import (simplify, collect, powsimp, posify, powdenest,
-                              nsimplify, denom, logcombine)
-from diofant.simplify.sqrtdenest import sqrt_depth, unrad
-from diofant.simplify.fu import TR1
-from diofant.matrices import Matrix, zeros
-from diofant.polys import roots, cancel, factor, Poly, together, degree
-from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
-from diofant.functions.elementary.piecewise import piecewise_fold, Piecewise
-from diofant.utilities.lambdify import lambdify
-from diofant.utilities.misc import filldedent
-from diofant.utilities.iterables import uniq, generate_bell, flatten
-from diofant.solvers.polysys import solve_linear_system, solve_poly_system
-from diofant.solvers.inequalities import reduce_inequalities
+from ..core.compatibility import (iterable, is_sequence, ordered,
+                                  default_sort_key)
+from ..core import (sympify, S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow,
+                    expand_mul, expand_multinomial, expand_log, Derivative,
+                    Function, expand_power_exp, Lambda, nfloat, ilcm, Float,
+                    Integer, Ge, factor_terms, preorder_traversal)
+from ..core.assumptions import check_assumptions
+from ..core.function import AppliedUndef, UndefinedFunction, _mexpand
+from ..integrals import Integral
+from ..core.relational import Relational
+from ..logic import And, Or
+from ..logic.boolalg import BooleanAtom
+from ..functions import (log, exp, LambertW, cos, sin, tan, acos, asin, atan,
+                         Abs, re, im, arg, sqrt, atan2, piecewise_fold,
+                         Piecewise)
+from ..functions.elementary.trigonometric import (TrigonometricFunction,
+                                                  HyperbolicFunction)
+from ..simplify import (simplify, collect, powsimp, posify, powdenest,
+                        nsimplify, denom, logcombine)
+from ..simplify.sqrtdenest import sqrt_depth, unrad
+from ..simplify.fu import TR1
+from ..matrices import Matrix, zeros
+from ..polys import roots, cancel, factor, Poly, together, degree
+from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
+from ..utilities import lambdify, filldedent, flatten
+from ..utilities.iterables import uniq, generate_bell
+from .polysys import solve_linear_system, solve_poly_system
+from .inequalities import reduce_inequalities
 
 
 def denoms(eq, symbols=None):
@@ -1464,7 +1460,7 @@ def _solve_system(exprs, symbols, **flags):
 
         else:
             if len(symbols) > len(polys):
-                from diofant.utilities.iterables import subsets
+                from ..utilities import subsets
 
                 free = set().union(*[p.free_symbols for p in polys])
                 free = list(ordered(free.intersection(symbols)))
@@ -1796,7 +1792,7 @@ def minsolve_linear_system(system, *symbols, **flags):
         # We speed up slightly by starting at one less than the number of
         # variables the quick method manages.
         from itertools import combinations
-        from diofant.utilities.misc import debug
+        from ..utilities.misc import debug
         N = len(symbols)
         bestsol = minsolve_linear_system(system, *symbols, quick=True)
         n0 = len([x for x in bestsol.values() if x != 0])
@@ -2192,5 +2188,4 @@ def _invert(eq, *symbols, **kwargs):
     return rhs, lhs
 
 
-from diofant.solvers.bivariate import (
-    bivariate_type, _solve_lambert, _filtered_gens)
+from .bivariate import bivariate_type, _solve_lambert, _filtered_gens

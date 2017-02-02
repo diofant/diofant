@@ -2,9 +2,9 @@
 
 import operator
 
-from diofant.polys.polyerrors import CoercionFailed
-from diofant.polys.domains.domainelement import DomainElement
-from diofant.utilities import public
+from ..polyerrors import CoercionFailed
+from .domainelement import DomainElement
+from ...utilities import public
 
 
 @public

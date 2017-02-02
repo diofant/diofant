@@ -1,16 +1,14 @@
 import warnings
 
-from diofant.core import Expr, S, sympify, oo, pi, Symbol
-from diofant.core.compatibility import as_int
-from diofant.functions.elementary.complexes import sign
-from diofant.functions.elementary.piecewise import Piecewise
-from diofant.functions.elementary.trigonometric import cos, sin, tan
-from diofant.geometry.exceptions import GeometryError
-from diofant.logic import And
-from diofant.matrices import Matrix
-from diofant.simplify import simplify
-from diofant.utilities import default_sort_key
-from diofant.utilities.iterables import has_variety, has_dups, uniq
+from ..core import Expr, S, sympify, oo, pi, Symbol
+from ..core.compatibility import as_int
+from ..functions import sign, Piecewise, cos, sin, tan
+from .exceptions import GeometryError
+from ..logic import And
+from ..matrices import Matrix
+from ..simplify import simplify
+from ..utilities import default_sort_key
+from ..utilities.iterables import has_variety, has_dups, uniq
 from .entity import GeometryEntity, GeometrySet
 from .point import Point
 from .ellipse import Circle

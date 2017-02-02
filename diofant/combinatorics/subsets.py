@@ -1,7 +1,7 @@
 from itertools import combinations
 
-from diofant.core import Basic
-from diofant.combinatorics.graycode import GrayCode
+from ..core import Basic
+from .graycode import GrayCode
 
 
 class Subset(Basic):

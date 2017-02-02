@@ -1,12 +1,11 @@
 """ Tools for doing common subexpression elimination."""
 
-from diofant.core import Basic, Mul, Add, Pow, sympify, Symbol, Tuple
-from diofant.core.singleton import S
-from diofant.core.function import _coeff_isneg
-from diofant.core.exprtools import factor_terms
-from diofant.core.compatibility import iterable
-from diofant.utilities.iterables import (filter_symbols, numbered_symbols,
-                                         sift, topological_sort, ordered)
+from ..core import (Basic, Mul, Add, Pow, sympify, Symbol, Tuple,
+                    S, factor_terms)
+from ..core.function import _coeff_isneg
+from ..core.compatibility import iterable
+from ..utilities.iterables import (filter_symbols, numbered_symbols,
+                                   sift, topological_sort, ordered)
 from . import cse_opts
 
 # (preprocessor, postprocessor) pairs which are commonly useful. They should
@@ -438,8 +437,8 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
     >>> isinstance(_[1][-1], SparseMatrix)
     True
     """
-    from diofant.matrices import (MatrixBase, Matrix, ImmutableMatrix,
-                                SparseMatrix, ImmutableSparseMatrix)
+    from ..matrices import (MatrixBase, Matrix, ImmutableMatrix,
+                            SparseMatrix, ImmutableSparseMatrix)
 
     # Handle the case if just one expression was passed.
     if isinstance(exprs, (Basic, MatrixBase)):

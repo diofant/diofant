@@ -1,17 +1,14 @@
-from diofant.core.add import Add
-from diofant.core.basic import sympify, cacheit
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.core.logic import fuzzy_and, fuzzy_not
-from diofant.core.numbers import igcdex, Rational, Integer
-from diofant.core.singleton import S
-from diofant.core.symbol import Symbol
-from diofant.functions.combinatorial.factorials import factorial, RisingFactorial
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.elementary.exponential import log, exp
-from diofant.functions.elementary.hyperbolic import (acoth, asinh, atanh, cosh,
-                                                     coth, HyperbolicFunction,
-                                                     sinh, tanh, csch, sech)
-from diofant.utilities.iterables import numbered_symbols
+from ...core import (Add, sympify, cacheit, Function, S, Rational,
+                     Integer, Symbol, expand_mul)
+from ...core.function import ArgumentIndexError
+from ...core.logic import fuzzy_and, fuzzy_not
+from ...core.numbers import igcdex
+from ..combinatorial.factorials import factorial, RisingFactorial
+from .miscellaneous import sqrt
+from .exponential import log, exp
+from .hyperbolic import (acoth, asinh, atanh, cosh, coth,
+                         HyperbolicFunction, sinh, tanh, csch, sech)
+from ...utilities import numbered_symbols
 
 ###############################################################################
 # ######################## TRIGONOMETRIC FUNCTIONS ########################## #
@@ -336,7 +333,7 @@ class sin(TrigonometricFunction):
         return sin(re)*cosh(im), cos(re)*sinh(im)
 
     def _eval_expand_trig(self, **hints):
-        from diofant import chebyshevt, chebyshevu, expand_mul
+        from .. import chebyshevt, chebyshevu
         arg = self.args[0]
         x = None
         if arg.is_Add:  # TODO, implement more if deep stuff here
@@ -365,7 +362,7 @@ class sin(TrigonometricFunction):
         return sin(arg)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -463,7 +460,7 @@ class cos(TrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import chebyshevt
+        from .. import chebyshevt
         if arg.is_Number:
             if arg is S.Zero:
                 return S.One
@@ -629,7 +626,7 @@ class cos(TrigonometricFunction):
         return self._eval_rewrite_as_sqrt(arg)
 
     def _eval_rewrite_as_sqrt(self, arg):
-        from diofant import chebyshevt
+        from .. import chebyshevt
 
         def migcdex(x):
             # recursive calcuation of gcd and linear combination
@@ -647,7 +644,7 @@ class cos(TrigonometricFunction):
             return tuple([u] + [v*i for i in g[0:-1] ] + [h])
 
         def ipartfrac(r, factors=None):
-            from diofant.ntheory import factorint
+            from ...ntheory import factorint
             if isinstance(r, int):
                 return r
             if not isinstance(r, Rational):
@@ -740,7 +737,7 @@ class cos(TrigonometricFunction):
         return cos(re)*cosh(im), -sin(re)*sinh(im)
 
     def _eval_expand_trig(self, **hints):
-        from diofant import chebyshevt
+        from .. import chebyshevt
         arg = self.args[0]
         x = None
         if arg.is_Add:  # TODO: Do this more efficiently for more than two terms
@@ -761,7 +758,7 @@ class cos(TrigonometricFunction):
         return cos(arg)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -950,7 +947,7 @@ class tan(TrigonometricFunction):
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
-        from diofant import bernoulli
+        from .. import bernoulli
         if n < 0 or n % 2 == 0:
             return S.Zero
         else:
@@ -987,11 +984,11 @@ class tan(TrigonometricFunction):
             return self.func(re), S.Zero
 
     def _eval_expand_trig(self, **hints):
-        from diofant import im, re
+        from .complexes import im, re
         arg = self.args[0]
         x = None
         if arg.is_Add:
-            from diofant import symmetric_poly
+            from ...polys import symmetric_poly
             n = len(arg.args)
             TX = []
             for x in arg.args:
@@ -1047,7 +1044,7 @@ class tan(TrigonometricFunction):
         return y
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1281,7 +1278,7 @@ class sec(ReciprocalTrigonometricFunction):
     def taylor_term(n, x, *previous_terms):
         # Reference Formula:
         # http://functions.wolfram.com/ElementaryFunctions/Sec/06/01/02/01/
-        from diofant.functions.combinatorial.numbers import euler
+        from ..combinatorial.numbers import euler
         if n < 0 or n % 2 == 1:
             return S.Zero
         else:
@@ -1356,7 +1353,7 @@ class csc(ReciprocalTrigonometricFunction):
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
-        from diofant import bernoulli
+        from .. import bernoulli
         if n == 0:
             return 1/sympify(x)
         elif n < 0 or n % 2 == 0:
@@ -1452,11 +1449,11 @@ class cot(ReciprocalTrigonometricFunction):
             return self.func(re), S.Zero
 
     def _eval_expand_trig(self, **hints):
-        from diofant import im, re
+        from .complexes import im, re
         arg = self.args[0]
         x = None
         if arg.is_Add:
-            from diofant import symmetric_poly
+            from ...polys import symmetric_poly
             n = len(arg.args)
             CX = []
             for x in arg.args:
@@ -1480,7 +1477,7 @@ class cot(ReciprocalTrigonometricFunction):
         return cot(arg)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1624,7 +1621,7 @@ class asin(InverseTrigonometricFunction):
                 return R / F * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1788,7 +1785,7 @@ class acos(InverseTrigonometricFunction):
                 return -R / F * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1955,7 +1952,7 @@ class atan(InverseTrigonometricFunction):
             return (-1)**((n - 1)//2) * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -2107,7 +2104,7 @@ class acot(InverseTrigonometricFunction):
             return (-1)**((n + 1)//2) * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -2253,7 +2250,7 @@ class asec(InverseTrigonometricFunction):
         return sec
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
         if Order(1, x).contains(arg):
             return log(arg)
@@ -2347,7 +2344,7 @@ class acsc(InverseTrigonometricFunction):
         return csc
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
         if Order(1, x).contains(arg):
             return log(arg)
@@ -2480,7 +2477,8 @@ class atan2(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, y, x):
-        from diofant import Heaviside, im, re
+        from .. import Heaviside
+        from .complexes import im, re
         if x is S.NegativeInfinity:
             if y.is_zero:
                 # Special case y = 0 because we define Heaviside(0) = 1/2
@@ -2520,7 +2518,7 @@ class atan2(InverseTrigonometricFunction):
         return 2*atan(y / (sqrt(x**2 + y**2) + x))
 
     def _eval_rewrite_as_arg(self, y, x):
-        from diofant import arg
+        from .complexes import arg
         if x.is_extended_real and y.is_extended_real:
             return arg(x + y*S.ImaginaryUnit)
         I = S.ImaginaryUnit

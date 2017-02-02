@@ -6,28 +6,21 @@ combinatorial polynomials.
 
 """
 
-from diofant.core.singleton import S
-from diofant.core import Rational, Integer
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.core.symbol import Dummy
-from diofant.functions.combinatorial.factorials import binomial, factorial, RisingFactorial
-from diofant.functions.elementary.complexes import re
-from diofant.functions.elementary.exponential import exp
-from diofant.functions.elementary.integers import floor
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.elementary.trigonometric import cos
-from diofant.functions.special.gamma_functions import gamma
-from diofant.functions.special.hyper import hyper
+from ...core import (S, Rational, Integer, Function, Dummy)
+from ...core.function import ArgumentIndexError
+from ..combinatorial.factorials import binomial, factorial, RisingFactorial
+from ..elementary.complexes import re
+from ..elementary.exponential import exp
+from ..elementary.integers import floor
+from ..elementary.miscellaneous import sqrt
+from ..elementary.trigonometric import cos
+from .gamma_functions import gamma
+from .hyper import hyper
 
-from diofant.polys.orthopolys import (
-    jacobi_poly,
-    gegenbauer_poly,
-    chebyshevt_poly,
-    chebyshevu_poly,
-    laguerre_poly,
-    hermite_poly,
-    legendre_poly
-)
+from ...polys.orthopolys import (jacobi_poly, gegenbauer_poly,
+                                 chebyshevt_poly, chebyshevu_poly,
+                                 laguerre_poly, hermite_poly,
+                                 legendre_poly)
 
 _x = Dummy('dummy_for_special_polynomials')
 
@@ -163,7 +156,7 @@ class jacobi(OrthogonalPolynomial):
             return jacobi_poly(n, a, b, x)
 
     def fdiff(self, argindex=4):
-        from diofant import Sum
+        from ...concrete import Sum
         if argindex == 1:
             # Diff wrt n
             raise ArgumentIndexError(self, argindex)
@@ -363,7 +356,7 @@ class gegenbauer(OrthogonalPolynomial):
             return gegenbauer_poly(n, a, x)
 
     def fdiff(self, argindex=3):
-        from diofant import Sum
+        from ...concrete import Sum
         if argindex == 1:
             # Diff wrt n
             raise ArgumentIndexError(self, argindex)
@@ -1126,7 +1119,7 @@ class assoc_laguerre(OrthogonalPolynomial):
                 return cls._eval_at_order(n, x, alpha)
 
     def fdiff(self, argindex=3):
-        from diofant import Sum
+        from ...concrete import Sum
         if argindex == 2:
             # Diff wrt alpha
             n, alpha, x = self.args

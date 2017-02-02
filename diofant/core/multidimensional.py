@@ -6,7 +6,7 @@ Read the vectorize docstring for more details.
 
 from functools import wraps
 
-from diofant.core.numbers import Integer
+from .numbers import Integer
 
 
 def apply_on_element(f, args, kwargs, n):

@@ -3,8 +3,8 @@
 import sys
 import warnings
 
-from diofant.printing.conventions import split_super_sub
-from diofant.core.alphabets import greeks
+from ..conventions import split_super_sub
+from ...core.alphabets import greeks
 
 unicode_warnings = ''
 

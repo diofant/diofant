@@ -1,12 +1,8 @@
-from diofant.core import sympify
-from diofant.core.add import Add
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.core.numbers import Integer
-from diofant.core.power import Pow
-from diofant.core.singleton import S
-from diofant.core.mul import Mul
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.ntheory import multiplicity, perfect_power
+from ...core import (sympify, Add, Function, Integer, Pow, S, Mul,
+                     pi, expand_log)
+from ...core.function import ArgumentIndexError
+from .miscellaneous import sqrt
+from ...ntheory import multiplicity, perfect_power
 
 
 class exp_polar(Function):
@@ -110,12 +106,12 @@ class exp_polar(Function):
         return self.func(arg)
 
     def _eval_Abs(self):
-        from diofant import expand_mul
+        from ...core import expand_mul
         return sqrt(expand_mul(self * self.conjugate()))
 
     def _eval_evalf(self, prec):
         """ Careful! any evalf of polar numbers is flaky """
-        from diofant import im, pi, re
+        from .complexes import im, re
         i = im(self.exp)
         try:
             bad = (i <= -pi or i > pi)
@@ -184,7 +180,7 @@ class log(Function):
 
     @classmethod
     def eval(cls, arg, base=None):
-        from diofant import unpolarify
+        from .complexes import unpolarify
         arg = sympify(arg)
 
         if base is not None:
@@ -261,8 +257,8 @@ class log(Function):
         return self, S.One
 
     def _eval_expand_log(self, deep=True, **hints):
-        from diofant import unpolarify, expand_log
-        from diofant.concrete import Sum, Product
+        from .complexes import unpolarify
+        from ...concrete import Sum, Product
         force = hints.get('force', False)
         if (len(self.args) == 2):
             return expand_log(self.func(*self.args), deep=deep, force=force)
@@ -306,7 +302,7 @@ class log(Function):
         return self.func(arg)
 
     def _eval_simplify(self, ratio, measure):
-        from diofant.simplify.simplify import expand_log, simplify
+        from ...simplify import simplify
         if (len(self.args) == 2):
             return simplify(self.func(*self.args), ratio=ratio, measure=measure)
         expr = self.func(simplify(self.args[0], ratio=ratio, measure=measure))
@@ -333,7 +329,7 @@ class log(Function):
         (log(Abs(x)), arg(I*x))
 
         """
-        from diofant import Abs, arg
+        from .complexes import Abs, arg
         if deep:
             abs = Abs(self.args[0].expand(deep, **hints))
             arg = arg(self.args[0].expand(deep, **hints))
@@ -384,7 +380,9 @@ class log(Function):
         return (self.args[0] - 1).is_zero
 
     def _eval_nseries(self, x, n, logx):
-        from diofant import Order, floor, arg
+        from .integers import floor
+        from .complexes import arg
+        from ...series import Order
         if not logx:
             logx = log(x)
         arg_series = self.args[0].nseries(x, n=n, logx=logx)
@@ -526,9 +524,10 @@ class LambertW(Function):
 
     def _eval_nseries(self, x, n, logx):
         if len(self.args) == 1:
-            from diofant import O, Add, Integer, factorial
+            from ...series import Order
+            from .. import factorial
             x = self.args[0]
-            o = O(x**n, x)
+            o = Order(x**n, x)
             l = S.Zero
             if n > 0:
                 l += Add(*[Integer(-k)**(k - 1)*x**k/factorial(k)
@@ -537,4 +536,4 @@ class LambertW(Function):
         return super(LambertW, self)._eval_nseries(x, n=n, logx=logx)
 
 
-from diofant.core.function import _coeff_isneg
+from ...core.function import _coeff_isneg

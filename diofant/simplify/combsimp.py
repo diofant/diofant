@@ -1,10 +1,8 @@
-from diofant.core import Function, S, Mul, Pow, Add, Integer, Rational
-from diofant.core.compatibility import ordered, default_sort_key
-from diofant.functions.combinatorial.factorials import (binomial,
-                                                        factorial)
-from diofant.functions import gamma, sqrt, sin
-from diofant.polys import factor, cancel
-from diofant.utilities.iterables import sift, uniq
+from ..core import Function, S, Mul, Pow, Add, Integer, Rational
+from ..core.compatibility import ordered, default_sort_key
+from ..functions import binomial, factorial, gamma, sqrt, sin
+from ..polys import factor, cancel
+from ..utilities.iterables import sift, uniq
 
 
 def combsimp(expr):

@@ -1,8 +1,8 @@
 """Implementation of :class:`GMPYFiniteField` class. """
 
-from diofant.polys.domains.finitefield import FiniteField
-from diofant.polys.domains.gmpyintegerring import GMPYIntegerRing
-from diofant.utilities import public
+from .finitefield import FiniteField
+from .gmpyintegerring import GMPYIntegerRing
+from ...utilities import public
 
 
 @public

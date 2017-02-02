@@ -1,22 +1,14 @@
-from diofant.core import S
-from diofant.core.function import _coeff_isneg
-from diofant.core.mul import Mul
-from diofant.core.numbers import Rational
-from diofant.core.power import Pow
-from diofant.core.relational import Equality
-from diofant.core.symbol import Symbol
-from diofant.utilities import group
-from diofant.utilities.iterables import has_variety
-from diofant.core.sympify import SympifyError
-from diofant.printing.printer import Printer
-from diofant.printing.str import sstr
-from diofant.printing.conventions import requires_partial
+from ...core import S, Mul, Rational, Pow, Equality, Symbol, SympifyError, Add
+from ...core.function import _coeff_isneg
+from ...utilities import group, has_variety, default_sort_key
+from ..printer import Printer
+from ..str import sstr
+from ..conventions import requires_partial
 from .stringpict import prettyForm, stringPict
 from .pretty_symbology import (hobj, vobj, xobj, xsym, pretty_symbol,
                                pretty_atom, pretty_use_unicode,
                                pretty_try_use_unicode, greek_unicode,
                                annotated)
-from diofant.utilities import default_sort_key
 
 # rename for usage from outside
 pprint_use_unicode = pretty_use_unicode
@@ -142,7 +134,7 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_Not(self, e):
-        from diofant import Equivalent, Implies
+        from ...logic import Equivalent, Implies
         if self._use_unicode:
             arg = e.args[0]
             pform = self._print(arg)
@@ -284,7 +276,7 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_Cycle(self, dc):
-        from diofant.combinatorics.permutations import Permutation
+        from ...combinatorics import Permutation
         return self._print_tuple(Permutation(dc.as_list()).cyclic_form)
 
     def _print_Integral(self, integral):
@@ -624,8 +616,7 @@ class PrettyPrinter(Printer):
     _print_Matrix = _print_MatrixBase
 
     def _print_MatrixElement(self, expr):
-        from diofant.matrices import MatrixSymbol
-        from diofant import Symbol
+        from ...matrices import MatrixSymbol
         if (isinstance(expr.parent, MatrixSymbol)
                 and expr.i.is_number and expr.j.is_number):
             return self._print(
@@ -673,7 +664,7 @@ class PrettyPrinter(Printer):
 
     def _print_Transpose(self, expr):
         pform = self._print(expr.arg)
-        from diofant.matrices import MatrixSymbol
+        from ...matrices import MatrixSymbol
         if not isinstance(expr.arg, MatrixSymbol):
             pform = prettyForm(*pform.parens())
         pform = pform**(prettyForm('T'))
@@ -685,7 +676,7 @@ class PrettyPrinter(Printer):
             dag = prettyForm('\N{DAGGER}')
         else:
             dag = prettyForm('+')
-        from diofant.matrices import MatrixSymbol
+        from ...matrices import MatrixSymbol
         if not isinstance(expr.arg, MatrixSymbol):
             pform = prettyForm(*pform.parens())
         pform = pform**dag
@@ -701,7 +692,7 @@ class PrettyPrinter(Printer):
 
     def _print_MatMul(self, expr):
         args = list(expr.args)
-        from diofant import Add, MatAdd, HadamardProduct
+        from ...matrices import MatAdd, HadamardProduct
         for i, a in enumerate(args):
             if (isinstance(a, (Add, MatAdd, HadamardProduct))
                     and len(expr.args) > 1):
@@ -713,14 +704,14 @@ class PrettyPrinter(Printer):
 
     def _print_MatPow(self, expr):
         pform = self._print(expr.base)
-        from diofant.matrices import MatrixSymbol
+        from ...matrices import MatrixSymbol
         if not isinstance(expr.base, MatrixSymbol):
             pform = prettyForm(*pform.parens())
         pform = pform**(self._print(expr.exp))
         return pform
 
     def _print_HadamardProduct(self, expr):
-        from diofant import MatAdd, MatMul
+        from ...matrices import MatAdd, MatMul
         if self._use_unicode:
             delim = pretty_atom('Ring')
         else:
@@ -736,7 +727,7 @@ class PrettyPrinter(Printer):
         return D
 
     def _print_BasisDependent(self, expr):
-        from diofant.vector import Vector
+        from ...vector import Vector
 
         if not self._use_unicode:
             raise NotImplementedError("ASCII pretty printing of BasisDependent is not implemented")
@@ -1128,7 +1119,7 @@ class PrettyPrinter(Printer):
             return self._print_Function(e)
 
     def _print_expint(self, e):
-        from diofant import Function
+        from ...core import Function
         if e.args[0].is_Integer and self._use_unicode:
             return self._print_Function(Function('E_%s' % e.args[0])(e.args[1]))
         return self._print_Function(e)
@@ -1284,7 +1275,9 @@ class PrettyPrinter(Printer):
             else:
                 a.append(item)
 
-        from diofant import Integral, Piecewise, Product, Sum
+        from ...functions import Piecewise
+        from ...concrete import Product, Sum
+        from ...integrals import Integral
 
         # Convert to pretty forms. Add parens to Add instances if there
         # is more than one term in the numer/denom
@@ -1352,8 +1345,8 @@ class PrettyPrinter(Printer):
         return s
 
     def _print_Pow(self, power):
-        from diofant.simplify.simplify import fraction
-        from diofant.series.limits import Limit
+        from ...simplify import fraction
+        from ...series import Limit
         b, e = power.as_base_exp()
         if power.is_commutative:
             if e is S.NegativeOne:
@@ -1408,7 +1401,6 @@ class PrettyPrinter(Printer):
 
     def _print_ProductSet(self, p):
         if len(p.sets) > 1 and not has_variety(p.sets):
-            from diofant import Pow
             return self._print(Pow(p.sets[0], len(p.sets), evaluate=False))
         else:
             prod_char = "\N{MULTIPLICATION SIGN}"

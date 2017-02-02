@@ -1,4 +1,4 @@
-from diofant.matrices.expressions import MatrixExpr
+from .matexpr import MatrixExpr
 
 
 class Factorization(MatrixExpr):

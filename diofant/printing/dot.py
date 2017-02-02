@@ -1,4 +1,4 @@
-from diofant import Basic, Expr
+from ..core import Basic, Expr
 
 __all__ = ('dotprint')
 

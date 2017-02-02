@@ -1,11 +1,10 @@
 """Implementaton of :class:`GMPYRationalField` class. """
 
-from diofant.polys.domains.rationalfield import RationalField
-from diofant.polys.domains.groundtypes import (
-    GMPYRational, DiofantRational,
-    gmpy_numer, gmpy_denom, gmpy_factorial, gmpy_qdiv)
-from diofant.polys.polyerrors import CoercionFailed
-from diofant.utilities import public
+from .rationalfield import RationalField
+from .groundtypes import (GMPYRational, DiofantRational, gmpy_numer,
+                          gmpy_denom, gmpy_factorial, gmpy_qdiv)
+from ..polyerrors import CoercionFailed
+from ...utilities import public
 
 
 @public
@@ -23,7 +22,7 @@ class GMPYRationalField(RationalField):
 
     def get_ring(self):
         """Returns ring associated with ``self``. """
-        from diofant.polys.domains import GMPYIntegerRing
+        from . import GMPYIntegerRing
         return GMPYIntegerRing()
 
     def to_diofant(self, a):
@@ -36,7 +35,7 @@ class GMPYRationalField(RationalField):
         if a.is_Rational:
             return GMPYRational(a.p, a.q)
         elif a.is_Float:
-            from diofant.polys.domains import RR
+            from . import RR
             return GMPYRational(*RR.to_rational(a))
         else:
             raise CoercionFailed("expected `Rational` object, got %s" % a)

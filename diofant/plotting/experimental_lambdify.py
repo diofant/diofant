@@ -13,9 +13,9 @@ and so on).
 import re
 import warnings
 
-from diofant.external import import_module
-from diofant import Dummy, Symbol, NumberSymbol, I, zoo, oo
-from diofant.utilities.iterables import numbered_symbols
+from ..external import import_module
+from ..core import Dummy, Symbol, NumberSymbol, I, zoo, oo
+from ..utilities import numbered_symbols
 
 #  We parse the expression string into a tree that identifies functions. Then
 # we translate the names of the functions and we translate also some strings
@@ -239,7 +239,7 @@ class Lambdifier:
         # XXX Workaround
         # Ugly workaround because Pow(a,Half) prints as sqrt(a)
         # and diofant_expression_namespace can not catch it.
-        from diofant import sqrt
+        from ..functions import sqrt
         namespace.update({'sqrt': sqrt})
         namespace.update({'Eq': lambda x, y: x == y})
         # End workaround.

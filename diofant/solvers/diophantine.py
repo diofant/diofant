@@ -1,14 +1,16 @@
-from diofant import (Poly, igcd, divisors, sign, symbols, S, Integer, Wild,
-                     Symbol, factorint, Add, Mul, solve, ceiling, floor, sqrt,
-                     sympify, Subs, ilcm, Matrix, factor_list, perfect_power,
-                     isprime, nextprime, integer_nthroot)
-from diofant.core.function import _mexpand
-from diofant.simplify.radsimp import rad_rationalize
-from diofant.utilities import default_sort_key, numbered_symbols
-from diofant.core.numbers import igcdex, Rational
-from diofant.ntheory.residue_ntheory import sqrt_mod
-from diofant.core.relational import Eq
-from diofant.core.assumptions import check_assumptions
+from ..core import (igcd, symbols, S, Integer, Wild, Symbol, Add, Mul,
+                    sympify, Subs, ilcm, Rational, Eq, integer_nthroot)
+from ..polys import Poly, factor_list
+from ..matrices import Matrix
+from ..functions import sign, ceiling, floor, sqrt
+from ..core.function import _mexpand
+from ..simplify.radsimp import rad_rationalize
+from ..utilities import default_sort_key, numbered_symbols
+from ..core.numbers import igcdex
+from ..ntheory import (sqrt_mod, divisors, factorint, perfect_power,
+                       isprime, nextprime)
+from ..core.assumptions import check_assumptions
+from .solvers import solve
 
 __all__ = ('diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_solution_linear',
            'diop_quadratic', 'diop_DN', 'cornacchia', 'diop_bf_DN', 'transformation_to_DN', 'find_DN',

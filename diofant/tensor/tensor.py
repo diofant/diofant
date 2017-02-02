@@ -32,17 +32,14 @@ lowered when the tensor is put in canonical form.
 from collections import defaultdict
 from functools import reduce
 
-from diofant import Matrix, Rational
-from diofant.combinatorics.tensor_can import (get_symmetric_group_sgs,
-                                              bsgs_direct_product, canonicalize,
-                                              riemann_bsgs)
-from diofant.core import Basic, sympify, Add, S
-from diofant.core.containers import Tuple
-from diofant.core.symbol import Symbol, symbols
-from diofant.core.sympify import CantSympify
-from diofant.external import import_module
-from diofant.utilities.decorator import doctest_depends_on
-from diofant.matrices import eye
+from ..combinatorics.tensor_can import (get_symmetric_group_sgs,
+                                        bsgs_direct_product, canonicalize,
+                                        riemann_bsgs)
+from ..core import Basic, sympify, Add, S, Tuple, Symbol, symbols, Rational
+from ..core.sympify import CantSympify
+from ..external import import_module
+from ..utilities.decorator import doctest_depends_on
+from ..matrices import eye, Matrix
 
 
 class TIDS(CantSympify):
@@ -410,7 +407,7 @@ class TIDS(CantSympify):
         return TIDS(*self.mul(self, other))
 
     def __str__(self):
-        from diofant import sstr
+        from ..printing import sstr
         return "TIDS({0}, {1}, {2})".format(sstr(self.components), sstr(self.free), sstr(self.dum))
 
     def __repr__(self):
@@ -423,7 +420,7 @@ class TIDS(CantSympify):
         The sorting is done taking into account the commutation group
         of the component tensors.
         """
-        from diofant.combinatorics.permutations import _af_invert
+        from ..combinatorics.permutations import _af_invert
         cv = list(zip(self.components, range(len(self.components))))
         sign = 1
         n = len(cv) - 1
@@ -464,7 +461,7 @@ class TIDS(CantSympify):
         see ``canonicalize`` in ``tensor_can.py``
         """
         # to be called after sorted_components
-        from diofant.combinatorics.permutations import _af_new
+        from ..combinatorics.permutations import _af_new
 #       types = list(set(self._types))
 #       types.sort(key = lambda x: x._name)
         n = self._ext_rank
@@ -1827,7 +1824,7 @@ def tensorsymmetry(*args):
     >>> S2 = TensorType([Lorentz]*2, sym2)
     >>> V = S2('V')
     """
-    from diofant.combinatorics import Permutation
+    from ..combinatorics import Permutation
 
     def tableau2bsgs(a):
         if len(a) == 1:

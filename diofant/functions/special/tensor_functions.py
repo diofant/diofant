@@ -1,7 +1,5 @@
-from diofant.core.function import Function
-from diofant.core import S, Integer
-from diofant.core.mul import prod
-from diofant.utilities.iterables import has_dups, default_sort_key
+from ...core import Function, S, Integer, prod
+from ...utilities import has_dups, default_sort_key
 
 ###############################################################################
 # #################### Kronecker Delta, Levi-Civita etc. #################### #
@@ -24,7 +22,7 @@ def Eijk(*args, **kwargs):
 
 def eval_levicivita(*args):
     """Evaluate Levi-Civita symbol."""
-    from diofant import factorial
+    from .. import factorial
     n = len(args)
     return prod(
         prod(args[j] - args[i] for j in range(i + 1, n))

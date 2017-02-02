@@ -4,7 +4,7 @@ import sys
 import warnings
 from distutils.version import LooseVersion
 
-from diofant import DIOFANT_DEBUG
+from .. import DIOFANT_DEBUG
 
 
 def import_module(module, min_module_version=None, min_python_version=None,

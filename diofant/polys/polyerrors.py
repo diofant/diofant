@@ -1,6 +1,6 @@
 """Definitions of common exceptions for `polys` module. """
 
-from diofant.utilities import public
+from ..utilities import public
 
 
 @public
@@ -18,7 +18,7 @@ class ExactQuotientFailed(BasePolynomialError):
         self.f, self.g, self.domain = f, g, dom
 
     def __str__(self):  # pragma: no cover
-        from diofant.printing.str import sstr
+        from ..printing import sstr
 
         if self.domain is None:
             return "%s does not divide %s" % (sstr(self.g), sstr(self.f))

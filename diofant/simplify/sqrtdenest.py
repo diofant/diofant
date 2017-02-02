@@ -1,12 +1,11 @@
-from diofant.functions import sqrt, sign, root, log
-from diofant.core import S, sympify, Mul, Add, Expr, factor_terms, ilcm
-from diofant.core.compatibility import ordered
-from diofant.core.function import expand_mul
-from diofant.core.symbol import Dummy
-from diofant.polys import Poly, PolynomialError, degree, cancel
-from diofant.core.function import count_ops, _mexpand
-from diofant.simplify.powsimp import powdenest
-from diofant.utilities import default_sort_key
+from ..functions import sqrt, sign, root, log
+from ..core import (S, sympify, Mul, Add, Expr, factor_terms, ilcm,
+                    expand_mul, Dummy, count_ops)
+from ..core.compatibility import ordered
+from ..polys import Poly, PolynomialError, degree, cancel
+from ..core.function import _mexpand
+from .powsimp import powdenest
+from ..utilities import default_sort_key
 
 
 def is_sqrt(expr):
@@ -148,7 +147,7 @@ def _sqrt_match(p):
     >>> _sqrt_match(1 + sqrt(2) + sqrt(2)*sqrt(3) +  2*sqrt(1+sqrt(5)))
     [1 + sqrt(2) + sqrt(6), 2, 1 + sqrt(5)]
     """
-    from diofant.simplify.radsimp import split_surds
+    from .radsimp import split_surds
 
     p = _mexpand(p)
     if p.is_Number:
@@ -266,7 +265,7 @@ def _sqrtdenest_rec(expr):
     >>> _sqrtdenest_rec(sqrt(w))
     -sqrt(11) - sqrt(7) + sqrt(2) + 3*sqrt(5)
     """
-    from diofant.simplify.radsimp import radsimp, rad_rationalize, split_surds
+    from .radsimp import radsimp, rad_rationalize, split_surds
     if not expr.is_Pow:
         return sqrtdenest(expr)
     if expr.base < 0:
@@ -309,7 +308,7 @@ def _sqrtdenest1(expr, denester=True):
     failing, using the denester.
     """
 
-    from diofant.simplify.simplify import radsimp
+    from .simplify import radsimp
 
     if not is_sqrt(expr):
         return expr
@@ -429,7 +428,7 @@ def _sqrt_numeric_denest(a, b, r, d2):
     """Helper that denest expr = a + b*sqrt(r), with d2 = a**2 - b**2*r > 0
     or returns None if not denested.
     """
-    from diofant.simplify.simplify import radsimp
+    from .simplify import radsimp
     depthr = sqrt_depth(r)
     d = sqrt(d2)
     vad = a + d
@@ -488,7 +487,7 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     >>> sqrt_biquadratic_denest(z, a, b, r, d2)
     sqrt(2) + sqrt(sqrt(2) + 2) + 2
     """
-    from diofant.simplify.radsimp import radsimp, rad_rationalize
+    from .radsimp import radsimp, rad_rationalize
     if r <= 0 or d2 < 0 or not b or sqrt_depth(expr.base) < 2:
         return
     for x in (a, b, r):
@@ -534,7 +533,7 @@ def _denester(nested, av0, h, max_depth_level):
 
     This is discussed in the paper in the middle paragraph of page 179.
     """
-    from diofant.simplify.simplify import radsimp
+    from .simplify import radsimp
     if h > max_depth_level:
         return None, None
     if av0[1] is None:
@@ -670,8 +669,8 @@ def unrad(eq, *syms, **flags):
     >>> unrad(eq)
     (_p**3 + _p**2 - 2, [_p, -x + _p**6])
     """
-    from diofant.polys.rootoftools import RootOf
-    from diofant.solvers.solvers import solve
+    from ..polys.rootoftools import RootOf
+    from ..solvers import solve
 
     _inv_error = 'cannot get an analytical solution for the inversion'
 

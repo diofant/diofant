@@ -1,7 +1,7 @@
-from diofant.core import sympify, Add, Mul, Pow, PoleError
-from diofant.series.limits import Limit
-from diofant.functions import log, sign
-from diofant.solvers import solve
+from ..core import sympify, Add, Mul, Pow, PoleError
+from ..series.limits import Limit
+from ..functions import log, sign
+from ..solvers import solve
 
 
 def singularities(f, x):

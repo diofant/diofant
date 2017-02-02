@@ -4,30 +4,28 @@ from functools import reduce
 
 from mpmath import pslq, mp
 
-from diofant import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
-                     Dummy, expand_mul, I, pi, GoldenRatio)
-from diofant.functions.elementary.trigonometric import cos, sin
-from diofant.polys.polytools import (Poly, PurePoly, sqf_norm, invert,
-                                     factor_list, groebner, resultant,
-                                     degree, poly_from_expr,
-                                     parallel_poly_from_expr, lcm)
-from diofant.polys.polyerrors import (IsomorphismFailed, CoercionFailed,
-                                      NotAlgebraic, GeneratorsError)
-from diofant.polys.rootoftools import RootOf
-from diofant.polys.specialpolys import cyclotomic_poly
-from diofant.polys.polyutils import dict_from_expr, expr_from_dict
-from diofant.polys.domains import ZZ, QQ
-from diofant.polys.orthopolys import dup_chebyshevt
-from diofant.polys.rings import ring
-from diofant.polys.ring_series import rs_compose_add
-from diofant.printing.lambdarepr import LambdaPrinter
-from diofant.utilities import numbered_symbols, variations, lambdify, public, sift
-from diofant.core.exprtools import Factors
-from diofant.core.function import _mexpand
-from diofant.simplify.radsimp import _split_gcd
-from diofant.simplify.simplify import _is_sum_surds
-from diofant.ntheory import sieve
-from diofant.ntheory.factor_ import divisors
+from ..core import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
+                    Dummy, expand_mul, I, pi, GoldenRatio)
+from ..functions import cos, sin, sqrt
+from .polytools import (Poly, PurePoly, sqf_norm, invert, factor_list,
+                        groebner, resultant, degree, poly_from_expr,
+                        parallel_poly_from_expr, lcm)
+from .polyerrors import (IsomorphismFailed, CoercionFailed, NotAlgebraic,
+                         GeneratorsError)
+from .rootoftools import RootOf
+from .specialpolys import cyclotomic_poly
+from .polyutils import dict_from_expr, expr_from_dict
+from .domains import ZZ, QQ
+from .orthopolys import dup_chebyshevt
+from .rings import ring
+from .ring_series import rs_compose_add
+from ..printing.lambdarepr import LambdaPrinter
+from ..utilities import numbered_symbols, variations, lambdify, public, sift
+from ..core.exprtools import Factors
+from ..core.function import _mexpand
+from ..simplify.radsimp import _split_gcd
+from ..simplify.simplify import _is_sum_surds
+from ..ntheory import sieve, divisors
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
@@ -94,7 +92,7 @@ def _separate_sq(p):
     -x**8 + 48*x**6 - 536*x**4 + 1728*x**2 - 400
 
     """
-    from diofant.utilities.iterables import sift
+    from ..utilities import sift
 
     def is_sqrt(expr):
         return expr.is_Pow and expr.exp is S.Half
@@ -158,8 +156,6 @@ def _minimal_polynomial_sq(p, n, x):
     >>> _minimal_polynomial_sq(q, 3, x)
     x**12 - 4*x**9 - 4*x**6 + 16*x**3 - 8
     """
-    from diofant.simplify.simplify import _is_sum_surds
-
     p = sympify(p)
     n = sympify(n)
     r = _is_sum_surds(p)
@@ -412,7 +408,6 @@ def _minpoly_cos(ex, x):
     Returns the minimal polynomial of ``cos(ex)``
     see http://mathworld.wolfram.com/TrigonometryAngles.html
     """
-    from diofant import sqrt
     c, a = ex.args[0].as_coeff_Mul()
     if a is pi:
         if c.is_rational:
@@ -600,9 +595,9 @@ def minimal_polynomial(ex, x=None, **args):
     x**2 - y
 
     """
-    from diofant.polys.polytools import degree
-    from diofant.polys.domains import FractionField
-    from diofant.core.basic import preorder_traversal
+    from .polytools import degree
+    from .domains import FractionField
+    from ..core import preorder_traversal
 
     compose = args.get('compose', True)
     polys = args.get('polys', False)
@@ -656,8 +651,8 @@ def _minpoly_groebner(ex, x, cls):
     x**2 - 2*x - 1
 
     """
-    from diofant.polys.polytools import degree
-    from diofant.core.function import expand_multinomial
+    from .polytools import degree
+    from ..core import expand_multinomial
 
     generator = numbered_symbols('a', cls=Dummy)
     mapping, symbols, replace = {}, {}, []

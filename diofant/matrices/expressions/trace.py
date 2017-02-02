@@ -1,5 +1,5 @@
-from diofant import Expr
-from diofant.matrices.matrices import MatrixBase
+from ...core import Expr
+from ..matrices import MatrixBase
 from .matexpr import ShapeError
 
 
@@ -52,7 +52,8 @@ class Trace(Expr):
                 return Trace(self.arg)
 
     def _eval_rewrite_as_Sum(self):
-        from diofant import Sum, Dummy
+        from ...core import Dummy
+        from ...concrete import Sum
         i = Dummy('i')
         return Sum(self.arg[i, i], (i, 0, self.arg.rows-1)).doit()
 

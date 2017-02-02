@@ -1,10 +1,7 @@
-from diofant.core import S, Dummy, pi, Rational
-from diofant.functions.combinatorial.factorials import factorial
-from diofant.functions.elementary.trigonometric import sin, cos
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.special.gamma_functions import gamma
-from diofant.polys.orthopolys import legendre_poly, laguerre_poly, hermite_poly, jacobi_poly
-from diofant.polys.rootoftools import RootOf
+from ..core import S, Dummy, pi, Rational
+from ..functions import factorial, sin, cos, sqrt, gamma
+from ..polys.orthopolys import legendre_poly, laguerre_poly, hermite_poly, jacobi_poly
+from ..polys.rootoftools import RootOf
 
 
 def gauss_legendre(n, n_digits):

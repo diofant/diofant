@@ -19,7 +19,7 @@ def deprecated(**decorator_kwargs):
     def deprecated_decorator(func):
         @wraps(func)
         def new_func(*args, **kwargs):
-            from diofant.utilities.exceptions import DiofantDeprecationWarning
+            from ..utilities.exceptions import DiofantDeprecationWarning
             decorator_kwargs.setdefault('feature', func.__name__)
             DiofantDeprecationWarning(**decorator_kwargs).warn(stacklevel=3)
             return func(*args, **kwargs)

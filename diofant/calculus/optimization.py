@@ -1,10 +1,10 @@
-from diofant.core import oo, nan, diff, sympify
-from diofant.sets import Interval
-from diofant.core.compatibility import is_sequence
-from diofant.series import limit
-from diofant.functions import Min
-from diofant.solvers import solve
-from diofant.calculus import singularities
+from ..core import oo, nan, diff, sympify
+from ..sets import Interval
+from ..core.compatibility import is_sequence
+from ..series import limit
+from ..functions import Min
+from ..solvers import solve
+from ..calculus import singularities
 
 
 __all__ = ('minimize', 'maximize')

@@ -17,8 +17,8 @@ for:
 
 """
 
-from diofant import Integer
-from diofant.core.compatibility import iterable
+from ..core import Integer
+from ..core.compatibility import iterable
 
 
 def finite_diff_weights(order, x_list, x0=Integer(0)):

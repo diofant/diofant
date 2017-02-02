@@ -21,7 +21,7 @@ class AssocOp(Expr):
 
     @cacheit
     def __new__(cls, *args, **options):
-        from diofant import Order
+        from ..series import Order
         args = list(map(_sympify, args))
 
         if not options.pop('evaluate', global_evaluate[0]):
@@ -150,7 +150,7 @@ class AssocOp(Expr):
         """
         # make sure expr is Expr if pattern is Expr
         from .expr import Add, Expr
-        from diofant import Mul
+        from .mul import Mul
         if isinstance(self, Expr) and not isinstance(expr, Expr):
             return
 
@@ -227,7 +227,7 @@ class AssocOp(Expr):
                         continue
 
                     # try collection on non-Wild symbols
-                    from diofant.simplify.radsimp import collect
+                    from ..simplify.radsimp import collect
                     was = expr
                     did = set()
                     for w in reversed(wild_part):
@@ -291,8 +291,9 @@ class AssocOp(Expr):
         walks the args of the non-number part recursively (doing the same
         thing).
         """
-        from diofant import Symbol
-        from diofant.core.function import AppliedUndef
+        from .symbol import Symbol
+        from .function import AppliedUndef
+
         x, tail = self.as_independent(Symbol, AppliedUndef)
 
         if tail is not self.identity:

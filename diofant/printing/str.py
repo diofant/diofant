@@ -5,11 +5,11 @@ A Printer for generating readable representation of most diofant classes.
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from diofant.core import S, Rational, Pow, Basic, Mul
-from diofant.core.mul import _keep_coeff
+from ..core import S, Rational, Pow, Basic, Mul
+from ..core.mul import _keep_coeff
 from .printer import Printer
-from diofant.printing.precedence import precedence, PRECEDENCE
-from diofant.utilities import default_sort_key
+from .precedence import precedence, PRECEDENCE
+from ..utilities import default_sort_key
 
 
 class StrPrinter(Printer):
@@ -312,7 +312,7 @@ class StrPrinter(Printer):
         return expr.__repr__()
 
     def _print_Permutation(self, expr):
-        from diofant.combinatorics.permutations import Permutation, Cycle
+        from ..combinatorics import Permutation, Cycle
         if Permutation.print_cyclic:
             if not expr.size:
                 return 'Permutation()'
@@ -426,7 +426,7 @@ class StrPrinter(Printer):
 
         format = expr.__class__.__name__ + "(%s, %s"
 
-        from diofant.polys.polyerrors import PolynomialError
+        from ..polys.polyerrors import PolynomialError
 
         try:
             format += ", modulus=%s" % expr.get_modulus()

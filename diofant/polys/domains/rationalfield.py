@@ -1,9 +1,9 @@
 """Implementation of :class:`RationalField` class. """
 
-from diofant.polys.domains.field import Field
-from diofant.polys.domains.simpledomain import SimpleDomain
-from diofant.polys.domains.characteristiczero import CharacteristicZero
-from diofant.utilities import public
+from .field import Field
+from .simpledomain import SimpleDomain
+from .characteristiczero import CharacteristicZero
+from ...utilities import public
 
 
 @public
@@ -20,7 +20,7 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
-        from diofant.polys.domains import AlgebraicField
+        from . import AlgebraicField
         return AlgebraicField(self, *extension)
 
     def from_AlgebraicField(self, a, K0):

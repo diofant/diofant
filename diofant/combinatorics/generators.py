@@ -1,7 +1,8 @@
-from diofant.combinatorics.permutations import Permutation
-from diofant.utilities.iterables import variations, rotate_left
-from diofant.core.symbol import symbols
-from diofant.matrices import Matrix
+from .permutations import Permutation
+from ..utilities import variations
+from ..utilities.iterables import rotate_left
+from ..core import symbols
+from ..matrices import Matrix
 
 
 def symmetric(n):

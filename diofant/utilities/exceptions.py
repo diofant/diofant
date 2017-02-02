@@ -4,7 +4,7 @@ General Diofant exceptions and warnings.
 
 import warnings
 
-from diofant.utilities.misc import filldedent
+from .misc import filldedent
 
 
 class DiofantDeprecationWarning(DeprecationWarning):

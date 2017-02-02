@@ -8,7 +8,7 @@ import os
 import sys
 from collections import defaultdict
 
-from diofant.external import import_module
+from ..external import import_module
 
 
 # These are in here because telling if something is an iterable just by calling
@@ -264,9 +264,9 @@ def default_sort_key(item, order=None):
     diofant.core.expr.Expr.as_ordered_factors
     diofant.core.expr.Expr.as_ordered_terms
     """
-    from diofant.core import S, Basic
-    from diofant.core.sympify import sympify, SympifyError
-    from diofant.core.compatibility import iterable
+    from . import S, Basic
+    from .sympify import sympify, SympifyError
+    from .compatibility import iterable
 
     if isinstance(item, Basic):
         return item.sort_key(order=order)
@@ -423,7 +423,7 @@ def ordered(seq, keys=None, default=True, warn=False):
                 d[k] = ordered(d[k], (_nodes, default_sort_key,),
                                default=False, warn=warn)
             elif warn:
-                from diofant.utilities.iterables import uniq
+                from ..utilities.iterables import uniq
                 u = list(uniq(d[k]))
                 if len(u) > 1:
                     raise ValueError('not enough keys to break ties: %s' % u)

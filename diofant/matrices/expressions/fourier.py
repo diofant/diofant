@@ -1,5 +1,6 @@
-from diofant.matrices.expressions import MatrixExpr
-from diofant import S, I, sqrt, exp
+from .matexpr import MatrixExpr
+from ...core import S, I
+from ...functions import sqrt, exp
 
 
 class DFT(MatrixExpr):

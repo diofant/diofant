@@ -12,9 +12,9 @@ class DefaultPrinting:
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
     # regardless of the global setting. See issue sympy/sympy#5487.
     def __str__(self):
-        from diofant.printing.str import sstr
+        from .str import sstr
         return sstr(self, order=None)
 
     def __repr__(self):
-        from diofant.printing import srepr
+        from .repr import srepr
         return srepr(self, order=None)

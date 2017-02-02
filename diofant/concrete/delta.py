@@ -1,8 +1,8 @@
-from diofant.core import Add, Mul, S, Dummy, Integer
-from diofant.core.cache import cacheit
-from diofant.core.compatibility import default_sort_key
-from diofant.functions import KroneckerDelta, Piecewise, piecewise_fold
-from diofant.sets import Interval
+from ..core import Add, Mul, S, Dummy, Integer, cacheit, Eq
+from ..core.compatibility import default_sort_key
+from ..functions import KroneckerDelta, Piecewise, piecewise_fold
+from ..polys import factor
+from ..sets import Interval
 
 
 @cacheit
@@ -103,7 +103,7 @@ def _is_simple_delta(delta, index):
 @cacheit
 def _remove_multiple_delta(expr):
     """Evaluate products of KroneckerDelta's. """
-    from diofant.solvers import solve
+    from ..solvers import solve
     if expr.is_Add:
         return expr.func(*list(map(_remove_multiple_delta, expr.args)))
     if not expr.is_Mul:
@@ -132,7 +132,7 @@ def _remove_multiple_delta(expr):
 @cacheit
 def _simplify_delta(expr):
     """Rewrite a KroneckerDelta's indices in its simplest form. """
-    from diofant.solvers import solve
+    from ..solvers import solve
     if isinstance(expr, KroneckerDelta):
         try:
             slns = solve(expr.args[0] - expr.args[1], dict=True)
@@ -155,7 +155,7 @@ def deltaproduct(f, limit):
     diofant.functions.special.tensor_functions.KroneckerDelta
     diofant.concrete.products.product
     """
-    from diofant.concrete.products import product
+    from .products import product
 
     if ((limit[2] - limit[1]) < 0) is S.true:
         return S.One
@@ -195,14 +195,12 @@ def deltaproduct(f, limit):
     if not delta:
         g = _expand_delta(f, limit[0])
         if f != g:
-            from diofant import factor
             try:
                 return factor(deltaproduct(g, limit))
             except AssertionError:
                 return deltaproduct(g, limit)
         return product(f, limit)
 
-    from diofant import Eq
     c = Eq(limit[2], limit[1] - 1)
     return _remove_multiple_delta(f.subs(limit[0], limit[1])*KroneckerDelta(limit[2], limit[1])) + \
         S.One*_simplify_delta(KroneckerDelta(limit[2], limit[1] - 1))
@@ -271,8 +269,8 @@ def deltasummation(f, limit, no_piecewise=False):
     diofant.functions.special.tensor_functions.KroneckerDelta
     diofant.concrete.sums.summation
     """
-    from diofant.concrete.summations import summation
-    from diofant.solvers import solve
+    from .summations import summation
+    from ..solvers import solve
 
     if ((limit[2] - limit[1]) < 0) is S.true:
         return S.Zero

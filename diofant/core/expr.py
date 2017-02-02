@@ -117,7 +117,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return Mul(S.NegativeOne, self)
 
     def __abs__(self):
-        from diofant import Abs
+        from ..functions import Abs
         return Abs(self)
 
     @_sympifyit('other', NotImplemented)
@@ -196,7 +196,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # off by one. So...if our round value is the same as the int value
         # (regardless of how much extra work we do to calculate extra decimal
         # places) we need to test whether we are off by one.
-        from diofant import Dummy
+        from .symbol import Dummy
         r = self.round(2)
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
@@ -235,7 +235,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return complex(float(re), float(im))
 
     def __ge__(self, other):
-        from diofant import GreaterThan
+        from .relational import GreaterThan
         try:
             other = _sympify(other)
         except SympifyError:
@@ -253,7 +253,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return GreaterThan(self, other, evaluate=False)
 
     def __le__(self, other):
-        from diofant import LessThan
+        from .relational import LessThan
         try:
             other = _sympify(other)
         except SympifyError:
@@ -271,7 +271,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return LessThan(self, other, evaluate=False)
 
     def __gt__(self, other):
-        from diofant import StrictGreaterThan
+        from .relational import StrictGreaterThan
         try:
             other = _sympify(other)
         except SympifyError:
@@ -289,7 +289,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return StrictGreaterThan(self, other, evaluate=False)
 
     def __lt__(self, other):
-        from diofant import StrictLessThan
+        from .relational import StrictLessThan
         try:
             other = _sympify(other)
         except SympifyError:
@@ -308,7 +308,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     @staticmethod
     def _from_mpmath(x, prec):
-        from diofant import Float
+        from .numbers import Float
         if hasattr(x, "_mpf_"):
             return Float._new(x._mpf_, prec)
         elif hasattr(x, "_mpc_"):
@@ -381,7 +381,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         free = self.free_symbols
         prec = 1
         if free:
-            from diofant.utilities.randtest import random_complex_number
+            from ..utilities.randtest import random_complex_number
             a, c, b, d = re_min, re_max, im_min, im_max
             reps = dict(zip(free, [random_complex_number(a, b, c, d, rational=True)
                                    for zi in free]))
@@ -407,7 +407,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             # precision to see if we can get any significance
 
             from mpmath.libmp.libintmath import giant_steps
-            from diofant.core.evalf import DEFAULT_MAXPREC as TARGET
+            from .evalf import DEFAULT_MAXPREC as TARGET
 
             # evaluate
             for prec in giant_steps(2, TARGET):
@@ -594,8 +594,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         a Rational result, or is greater than 1) then the evalf value will be
         used to return True or False.
         """
-        from diofant.simplify.simplify import nsimplify, simplify
-        from diofant.solvers.solvers import solve
+        from ..simplify.simplify import nsimplify, simplify
+        from ..solvers.solvers import solve
 
         other = sympify(other)
         if self == other:
@@ -675,9 +675,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return
 
     def _eval_is_zero(self):
-        from diofant.polys.numberfields import minimal_polynomial
-        from diofant.polys.polyerrors import NotAlgebraic
-        from diofant.core.function import count_ops
+        from ..polys.numberfields import minimal_polynomial
+        from ..polys.polyerrors import NotAlgebraic
+        from .function import count_ops
 
         if self.is_number:
             try:
@@ -746,7 +746,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         If b or a is None, it only evaluates -self.subs(x, a) or self.subs(b, x),
         respectively.
         """
-        from diofant.series import limit, Limit
+        from ..series import limit, Limit
         if (a is None and b is None):
             raise ValueError('Both interval ends cannot be None.')
 
@@ -791,11 +791,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         diofant.functions.elementary.complexes.conjugate
         """
-        from diofant.functions.elementary.complexes import conjugate as c
+        from ..functions.elementary.complexes import conjugate as c
         return c(self)
 
     def _eval_transpose(self):
-        from diofant.functions.elementary.complexes import conjugate
+        from ..functions.elementary.complexes import conjugate
         if self.is_complex or self.is_extended_real:
             return self
         elif self.is_hermitian:
@@ -811,11 +811,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         diofant.functions.elementary.complexes.transpose
         """
-        from diofant.functions.elementary.complexes import transpose
+        from ..functions.elementary.complexes import transpose
         return transpose(self)
 
     def _eval_adjoint(self):
-        from diofant.functions.elementary.complexes import conjugate, transpose
+        from ..functions.elementary.complexes import conjugate, transpose
         if self.is_hermitian:
             return self
         elif self.is_antihermitian:
@@ -835,13 +835,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         diofant.functions.elementary.complexes.adjoint
         """
-        from diofant.functions.elementary.complexes import adjoint
+        from ..functions.elementary.complexes import adjoint
         return adjoint(self)
 
     @classmethod
     def _parse_order(cls, order):
         """Parse and configure the ordering of terms. """
-        from diofant.polys.orderings import monomial_key
+        from ..polys.orderings import monomial_key
 
         try:
             reverse = order.startswith('rev-')
@@ -915,8 +915,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def as_terms(self):
         """Transform an expression to a list of terms. """
-        from diofant.core import Add, Mul, S
-        from diofant.core.exprtools import decompose_power
+        from . import Add, Mul, S
+        from .exprtools import decompose_power
 
         gens, terms = set(), []
 
@@ -990,7 +990,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         2
         >>> (1 + x).getn()
         """
-        from diofant import Dummy, Symbol
+        from .symbol import Dummy, Symbol
         o = self.getO()
         if o is None:
             return
@@ -1570,8 +1570,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coeff_add
         as_coeff_mul
         """
-        from diofant.core.symbol import Dummy, Symbol
-        from diofant.utilities.iterables import sift
+        from .symbol import Dummy, Symbol
+        from ..utilities.iterables import sift
 
         func = self.func
         # sift out deps into symbolic and other and ignore
@@ -1644,7 +1644,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> (z + w*I).as_real_imag()
         (re(z) - im(w), re(w) + im(z))
         """
-        from diofant import im, re
+        from ..functions import im, re
         if hints.get('ignore') == self:
             return
         else:
@@ -2148,7 +2148,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> exp_polar(-I*pi).extract_branch_factor(allow_half=True)
         (1, -1/2)
         """
-        from diofant import exp_polar, pi, I, ceiling, Add
+        from .add import Add
+        from .numbers import pi, I
+        from ..functions import exp_polar, ceiling
         n = Integer(0)
         res = Integer(1)
         args = Mul.make_args(self)
@@ -2400,7 +2402,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         diofant.simplify.simplify.hypersimp
         """
-        from diofant.simplify import hypersimp
+        from ..simplify import hypersimp
         return hypersimp(self, k) is not None
 
     @property
@@ -2481,7 +2483,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> (1/x).series(x, n=8)
         1/x
         """
-        from diofant import collect, Dummy, Symbol, Order
+        from .symbol import Dummy, Symbol
+        from ..series import Order
+        from ..simplify import collect
 
         if x is None:
             syms = self.atoms(Dummy, Symbol)
@@ -2591,7 +2595,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         This method is slow, because it differentiates n-times. Subclasses can
         redefine it to make it faster by using the "previous_terms".
         """
-        from diofant import Dummy, factorial
+        from .symbol import Dummy
+        from ..functions import factorial
         x = sympify(x)
         _x = Dummy('x')
         return self.subs(x, _x).diff(_x, n).subs(_x, x).subs(x, 0) * x**n / factorial(n)
@@ -2718,7 +2723,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         must not contain log(x(1 + p)), this *has* to be expanded to
         log(x) + log(1 + p) if p.is_positive.)
         """
-        from diofant import Dummy, collect
+        from .symbol import Dummy
+        from ..simplify import collect
         if x.is_positive and x.is_finite:
             series = self._eval_nseries(x, n=n, logx=logx)
             order = series.getO() or S.Zero
@@ -2779,10 +2785,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         .. [2] Gruntz thesis - p90
         .. [3] http://en.wikipedia.org/wiki/Asymptotic_expansion
         """
-        from diofant import Dummy
-        from diofant.series.gruntz import mrv, rewrite
-        from diofant.functions import exp, log
-        from diofant.series import Order
+        from . import Dummy
+        from ..series.gruntz import mrv, rewrite
+        from ..functions import exp, log
+        from ..series import Order
 
         if x.is_positive is x.is_negative is None:
             xpos = Dummy('x', positive=True, finite=True)
@@ -2838,14 +2844,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def limit(self, x, xlim, dir='+'):
         """ Compute limit x->xlim.
         """
-        from diofant.series.limits import limit
+        from ..series.limits import limit
         return limit(self, x, xlim, dir)
 
     def compute_leading_term(self, x, logx=None):
         """as_leading_term is only allowed for results of .series()
         This is a wrapper to compute a series first.
         """
-        from diofant import Dummy, log
+        from .symbol import Dummy
+        from ..functions import log
 
         d = logx if logx else Dummy('logx')
 
@@ -2881,7 +2888,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> (1/x**2 + x + x**2).as_leading_term(x)
         x**(-2)
         """
-        from diofant import powsimp
+        from ..simplify import powsimp
         if len(symbols) > 1:
             c = self
             for x in symbols:
@@ -2905,7 +2912,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def as_coeff_exponent(self, x):
         """``c*x**e -> c,e`` where x can be any symbolic expression."""
-        from diofant import collect
+        from ..simplify import collect
         s = collect(self, x)
         c, p = s.as_coeff_mul(x)
         if len(p) == 1:
@@ -2928,7 +2935,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def diff(self, *symbols, **kwargs):
         """Alias for :func:`~diofant.core.function.diff`. """
-        from diofant.core.function import diff
+        from .function import diff
         return diff(self, *symbols, **kwargs)
 
     ###########################################################################
@@ -2981,7 +2988,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         diofant.core.function.expand
         """
-        from diofant.simplify.radsimp import fraction
+        from ..simplify.radsimp import fraction
 
         hints.update(power_base=power_base, power_exp=power_exp, mul=mul,
            log=log, multinomial=multinomial, basic=basic)
@@ -3067,69 +3074,69 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def integrate(self, *args, **kwargs):
         """See the integrate function in diofant.integrals"""
-        from diofant.integrals import integrate
+        from ..integrals import integrate
         return integrate(self, *args, **kwargs)
 
     def simplify(self, ratio=1.7, measure=None):
         """See the simplify function in diofant.simplify"""
-        from diofant.simplify import simplify
-        from diofant.core.function import count_ops
+        from ..simplify import simplify
+        from .function import count_ops
         measure = measure or count_ops
         return simplify(self, ratio, measure)
 
     def nsimplify(self, constants=[], tolerance=None, full=False):
         """See the nsimplify function in diofant.simplify"""
-        from diofant.simplify import nsimplify
+        from ..simplify import nsimplify
         return nsimplify(self, constants, tolerance, full)
 
     def collect(self, syms, func=None, evaluate=True, exact=False, distribute_order_term=True):
         """See the collect function in diofant.simplify"""
-        from diofant.simplify import collect
+        from ..simplify import collect
         return collect(self, syms, func, evaluate, exact, distribute_order_term)
 
     def together(self, *args, **kwargs):
         """See the together function in diofant.polys"""
-        from diofant.polys import together
+        from ..polys import together
         return together(self, *args, **kwargs)
 
     def apart(self, x=None, **args):
         """See the apart function in diofant.polys"""
-        from diofant.polys import apart
+        from ..polys import apart
         return apart(self, x, **args)
 
     def ratsimp(self):
         """See the ratsimp function in diofant.simplify"""
-        from diofant.simplify import ratsimp
+        from ..simplify import ratsimp
         return ratsimp(self)
 
     def trigsimp(self, **args):
         """See the trigsimp function in diofant.simplify"""
-        from diofant.simplify import trigsimp
+        from ..simplify import trigsimp
         return trigsimp(self, **args)
 
     def radsimp(self):
         """See the radsimp function in diofant.simplify"""
-        from diofant.simplify import radsimp
+        from ..simplify import radsimp
         return radsimp(self)
 
     def powsimp(self, deep=False, combine='all'):
         """See the powsimp function in diofant.simplify"""
-        from diofant.simplify import powsimp
+        from ..simplify import powsimp
         return powsimp(self, deep, combine)
 
     def combsimp(self):
         """See the combsimp function in diofant.simplify"""
-        from diofant.simplify import combsimp
+        from ..simplify import combsimp
         return combsimp(self)
 
     def factor(self, *gens, **args):
         """See the factor() function in diofant.polys.polytools"""
-        from diofant.polys import factor
+        from ..polys import factor
         return factor(self, *gens, **args)
 
     def cancel(self, *gens, **args):
         """See the cancel function in diofant.polys"""
-        from diofant.polys import cancel
+        from ..polys import cancel
         return cancel(self, *gens, **args)
 
     def round(self, p=0):
@@ -3177,7 +3184,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> isinstance((1 + 3*I).round(), Add)
         True
         """
-        from diofant import Float
+        from .numbers import Float
         x = self
         if not x.is_number:
             raise TypeError('%s is not a number' % type(x))
@@ -3266,7 +3273,7 @@ def _mag(x):
     4
     """
     from math import log10, ceil, log
-    from diofant import Float
+    from .numbers import Float
     xpos = abs(x.n())
     if not xpos:
         return S.Zero

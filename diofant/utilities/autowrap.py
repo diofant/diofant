@@ -74,17 +74,13 @@ import tempfile
 from subprocess import STDOUT, CalledProcessError, check_output
 from string import Template
 
-from diofant.core.cache import cacheit
-from diofant.core.function import Lambda
-from diofant.core.relational import Eq
-from diofant.core.symbol import Dummy, Symbol
-from diofant.tensor.indexed import Idx, IndexedBase
-from diofant.utilities.codegen import (make_routine, get_code_generator,
-                                       OutputArgument, InOutArgument, InputArgument,
-                                       CodeGenArgumentListError, Result,
-                                       ResultBase, CCodeGen)
-from diofant.utilities.lambdify import implemented_function
-from diofant.utilities.decorator import doctest_depends_on
+from ..core import cacheit, Lambda, Eq, Dummy, Symbol
+from ..tensor import Idx, IndexedBase
+from .codegen import (make_routine, get_code_generator, OutputArgument,
+                      InOutArgument, InputArgument, CodeGenArgumentListError,
+                      Result, ResultBase, CCodeGen)
+from .lambdify import implemented_function
+from .decorator import doctest_depends_on
 
 
 class CodeWrapError(Exception):

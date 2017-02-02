@@ -3,14 +3,12 @@
 Contains
 ========
 Curve
-
 """
 
-from diofant.core import sympify
-from diofant.core.compatibility import is_sequence
-from diofant.core.containers import Tuple
-from diofant.geometry.entity import GeometryEntity, GeometrySet
-from diofant.geometry.point import Point
+from ..core import sympify, Tuple
+from ..core.compatibility import is_sequence
+from .entity import GeometryEntity, GeometrySet
+from .point import Point
 from .util import _symbol
 
 
@@ -198,7 +196,7 @@ class Curve(GeometrySet):
         >>> Curve((x, x), (x, 0, 1)).rotate(pi/2)
         Curve((-x, x), (x, 0, 1))
         """
-        from diofant.matrices import Matrix, rot_axis3
+        from ..matrices import Matrix, rot_axis3
         pt = -Point(pt or (0, 0))
         rv = self.translate(*pt.args)
         f = list(rv.functions)

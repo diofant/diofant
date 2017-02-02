@@ -1,6 +1,6 @@
 """Low-level linear systems solver. """
 
-from diofant.matrices import Matrix, zeros
+from ..matrices import Matrix, zeros
 
 
 class RawMatrix(Matrix):

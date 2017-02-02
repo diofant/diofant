@@ -138,7 +138,7 @@ class Printer:
     printmethod = None
 
     def __init__(self, settings=None):
-        from diofant.external import import_module
+        from ..external import import_module
 
         self._str = str
 

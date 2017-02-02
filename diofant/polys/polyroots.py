@@ -3,26 +3,19 @@
 from functools import reduce
 import math
 
-from diofant.core.symbol import Dummy, Symbol, symbols
-from diofant.core import S, I, pi
-from diofant.core.compatibility import ordered
-from diofant.core.mul import expand_2arg, Mul
-from diofant.core.power import Pow
-from diofant.core.relational import Eq
-from diofant.core.sympify import sympify
-from diofant.core.numbers import Rational, igcd, comp, Integer, Float
-from diofant.core.exprtools import factor_terms
-from diofant.ntheory import divisors, isprime, nextprime
-from diofant.functions import exp, sqrt, im, cos, acos, Piecewise
-from diofant.functions.elementary.miscellaneous import root
-from diofant.polys.polytools import Poly, cancel, factor, gcd_list, discriminant
-from diofant.polys.specialpolys import cyclotomic_poly
-from diofant.polys.polyerrors import (PolynomialError, GeneratorsNeeded,
-                                      DomainError)
-from diofant.polys.polyquinticconst import PolyQuintic
-from diofant.polys.rationaltools import together
-from diofant.simplify import simplify, powsimp
-from diofant.utilities import public
+from ..core import (Dummy, Symbol, symbols, S, I, pi, Mul, Pow, Eq, sympify,
+                    Rational, igcd, comp, Integer, Float, factor_terms)
+from ..core.compatibility import ordered
+from ..core.mul import expand_2arg
+from ..ntheory import divisors, isprime, nextprime
+from ..functions import exp, sqrt, im, cos, acos, Piecewise, root
+from .polytools import Poly, cancel, factor, gcd_list, discriminant
+from .specialpolys import cyclotomic_poly
+from .polyerrors import PolynomialError, GeneratorsNeeded, DomainError
+from .polyquinticconst import PolyQuintic
+from .rationaltools import together
+from ..simplify import simplify, powsimp
+from ..utilities import public
 
 
 def roots_linear(f):
@@ -548,7 +541,7 @@ def roots_quintic(f):
 
     # Solve imported here. Causing problems if imported as 'solve'
     # and hence the changed name
-    from diofant.solvers.solvers import solve as _solve
+    from ..solvers import solve as _solve
     a, b = symbols('a b', cls=Dummy)
     _sol = _solve( sol**5 - a - I*b, sol)
     for i in range(5):
@@ -818,7 +811,7 @@ def roots(f, *gens, **flags):
 
     .. [1] http://en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
     """
-    from diofant.polys.polytools import to_rational_coeffs
+    from .polytools import to_rational_coeffs
     flags = dict(flags)
 
     auto = flags.pop('auto', True)

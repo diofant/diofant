@@ -2,9 +2,9 @@
 A MathML printer.
 """
 
-from diofant import sympify, S, Mul
-from diofant.core.function import _coeff_isneg
-from diofant.core.alphabets import greeks
+from ..core import sympify, S, Mul
+from ..core.function import _coeff_isneg
+from ..core.alphabets import greeks
 from .printer import Printer
 from .pretty.pretty_symbology import greek_unicode
 from .conventions import split_super_sub, requires_partial
@@ -91,7 +91,7 @@ class MathMLPrinter(Printer):
             x.appendChild(self._print_Mul(-expr))
             return x
 
-        from diofant.simplify import fraction
+        from ..simplify import fraction
         numer, denom = fraction(expr)
 
         if denom is not S.One:

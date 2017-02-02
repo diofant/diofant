@@ -26,10 +26,10 @@ from inspect import getfullargspec
 from collections import Callable
 import warnings
 
-from diofant import sympify, Expr, Tuple, Dummy, Symbol
-from diofant.external import import_module
-from diofant.utilities.decorator import doctest_depends_on
-from diofant.utilities.iterables import is_sequence
+from ..core import sympify, Expr, Tuple, Dummy, Symbol
+from ..external import import_module
+from ..utilities.decorator import doctest_depends_on
+from ..utilities.iterables import is_sequence
 from .experimental_lambdify import (vectorized_lambdify, lambdify)
 
 # Global variable

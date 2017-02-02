@@ -44,6 +44,7 @@ Developer changes
 =================
 
 * Enabled docstring testing with flake8, see `#408 <https://github.com/diofant/diofant/pull/408>`_.
+* Use only relative imports in the codebase, see `#421 <https://github.com/diofant/diofant/pull/421>`_.
 
 Issues closed
 =============
@@ -75,7 +76,7 @@ Issues closed
 * `sympy/sympy#4315 <https://github.com/diofant/diofant/issues/4315>`_ series expansion of piecewise fails
 * `sympy/sympy#6807 <https://github.com/diofant/diofant/issues/6807>`_ atoms does not work correctly in the otherwise case of Piecewise
 
-.. last pr: #414
+.. last pr: #421
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

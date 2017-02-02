@@ -1,17 +1,17 @@
 """ Integral Transforms """
 
+from itertools import repeat
 from functools import reduce, wraps
 
-from diofant.core import S, sympify
-from diofant.core.function import Function
-from diofant.core.numbers import oo, Integer, Rational
-from diofant.core.symbol import Dummy
-from diofant.integrals import integrate, Integral
-from diofant.integrals.meijerint import _dummy
-from diofant.logic.boolalg import to_cnf, conjuncts, disjuncts, Or, And
-from diofant.simplify import simplify
-from diofant.utilities import default_sort_key
-from diofant.matrices.matrices import MatrixBase
+from ..core import (S, sympify, Function, oo, Integer, Rational, Dummy,
+                    Add, expand_mul, Mul, pi, expand, I)
+from .integrals import integrate, Integral
+from .meijerint import _dummy
+from ..logic import to_cnf, Or, And
+from ..logic.boolalg import conjuncts, disjuncts
+from ..simplify import simplify
+from ..utilities import default_sort_key
+from ..matrices import MatrixBase
 
 
 ##########################################################################
@@ -106,8 +106,7 @@ class IntegralTransform(Function):
         usually the default is
         ``(simplify, noconds, needeval) = (True, False, False)``.
         """
-        from diofant import Add, expand_mul, Mul
-        from diofant.core.function import AppliedUndef
+        from ..core.function import AppliedUndef
         needeval = hints.pop('needeval', False)
         try_directly = not any(func.has(self.function_variable)
                                for func in self.function.atoms(AppliedUndef))
@@ -162,11 +161,12 @@ class IntegralTransform(Function):
         return self.as_integral
 
 
-from diofant.solvers.inequalities import solve_univariate_inequality
+from ..solvers.inequalities import solve_univariate_inequality
 
 
 def _simplify(expr, doit):
-    from diofant import powdenest, piecewise_fold
+    from ..functions import piecewise_fold
+    from ..simplify import powdenest
     if doit:
         return simplify(powdenest(piecewise_fold(expr), polar=True))
     return expr
@@ -213,7 +213,8 @@ def _default_integrator(f, x):
 @_noconds
 def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
     """ Backend function to compute Mellin transforms. """
-    from diofant import re, Max, Min, count_ops
+    from ..core import count_ops
+    from ..functions import re, Max, Min
     # We use a fresh dummy, because assumptions on s might drop conditions on
     # convergence of the integral.
     s = _dummy('s', 'mellin-transform', f)
@@ -300,7 +301,7 @@ class MellinTransform(IntegralTransform):
         return Integral(f*x**(s - 1), (x, 0, oo))
 
     def _collapse_extra(self, extra):
-        from diofant import Max, Min
+        from ..functions import Max, Min
         a = []
         b = []
         cond = []
@@ -388,7 +389,7 @@ def _rewrite_sin(m_n, s, a, b):
     # we create an undefined function!
     # So we try to write this in such a way that the gammas are
     # eminently on the right side of the strip.
-    from diofant import expand_mul, pi, ceiling, gamma
+    from ..functions import ceiling, gamma
     m, n = m_n
 
     m = expand_mul(m/pi)
@@ -452,9 +453,9 @@ def _rewrite_gamma(f, s, a, b):
     >>> _rewrite_gamma(2**(-s+3), s, -oo, oo)
     (([], []), ([], []), 1/2, 1, 8)
     """
-    from itertools import repeat
-    from diofant import (Poly, gamma, Mul, re, RootOf, expand,
-                       roots, ilcm, pi, sin, cos, tan, cot, igcd, exp_polar)
+    from ..core import ilcm, igcd
+    from ..polys import Poly, roots, RootOf
+    from ..functions import gamma, re, sin, cos, tan, cot, exp_polar
     # Our strategy will be as follows:
     # 1) Guess a constant c such that the inversion integral should be
     #    performed wrt s'=c*s (instead of plain s). Write s for s'.
@@ -706,8 +707,9 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
     """ A helper for the real inverse_mellin_transform function, this one here
     assumes x to be real and positive.
     """
-    from diofant import (expand, expand_mul, hyperexpand, meijerg,
-                       arg, pi, re, factor, Heaviside, gamma, Add)
+    from ..functions import meijerg, arg, re, Heaviside, gamma
+    from ..polys import factor
+    from ..simplify import hyperexpand
     x = _dummy('t', 'inverse-mellin-transform', F, positive=True)
     # Actually, we won't try integration at all. Instead we use the definition
     # of the Meijer G function as a fairly general inverse mellin transform.
@@ -794,12 +796,11 @@ class InverseMellinTransform(IntegralTransform):
         return a, b
 
     def _compute_transform(self, F, s, x, **hints):
-        from diofant import postorder_traversal
+        from ..utilities import postorder_traversal
         global _allowed
         if _allowed is None:
-            from diofant import (
-                exp, gamma, sin, cos, tan, cot, cosh, sinh, tanh,
-                coth, factorial, rf)
+            from ..functions import (exp, gamma, sin, cos, tan, cot, cosh,
+                                     sinh, tanh, coth, factorial, rf)
             _allowed = {exp, gamma, sin, cos, tan, cot, cosh, sinh, tanh, coth,
                         factorial, rf}
         for f in postorder_traversal(F):
@@ -810,7 +811,6 @@ class InverseMellinTransform(IntegralTransform):
         return _inverse_mellin_transform(F, s, x, strip, **hints)
 
     def _as_integral(self, F, s, x):
-        from diofant import I
         c = self.__class__._c
         return Integral(F*x**(-s), (s, c - I*oo, c + I*oo))
 
@@ -898,9 +898,9 @@ def _simplifyconds(expr, s, a):
     >>> simp(Ne(1, x**3), x, 0)
     Ne(1, x**3)
     """
-    from diofant.core.relational import ( StrictGreaterThan, StrictLessThan,
-        Unequality )
-    from diofant import Abs
+    from ..core.relational import (StrictGreaterThan, StrictLessThan,
+                                   Unequality)
+    from ..functions import Abs
 
     def power(ex):
         if ex == s:
@@ -961,8 +961,9 @@ def _simplifyconds(expr, s, a):
 @_noconds
 def _laplace_transform(f, t, s_, simplify=True):
     """ The backend function for Laplace transforms. """
-    from diofant import (re, Max, exp, pi, Min, periodic_argument as arg,
-                       cos, Wild, symbols, polar_lift)
+    from ..core import Wild, symbols
+    from ..functions import (re, Max, exp, Min, periodic_argument as arg,
+                             cos, polar_lift)
     s = Dummy('s')
     F = integrate(exp(-s*t) * f, (t, 0, oo))
 
@@ -1074,11 +1075,11 @@ class LaplaceTransform(IntegralTransform):
         return _laplace_transform(f, t, s, **hints)
 
     def _as_integral(self, f, t, s):
-        from diofant import exp
+        from ..functions import exp
         return Integral(f*exp(-s*t), (t, 0, oo))
 
     def _collapse_extra(self, extra):
-        from diofant import Max
+        from ..functions import Max
         conds = []
         planes = []
         for plane, cond in extra:
@@ -1131,8 +1132,10 @@ def laplace_transform(f, t, s, **hints):
 @_noconds_(True)
 def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
     """ The backend function for inverse Laplace transforms. """
-    from diofant import exp, Heaviside, log, expand_complex, Integral, Piecewise
-    from diofant.integrals.meijerint import meijerint_inversion, _get_coeff_exp
+    from ..core import expand_complex
+    from ..functions import exp, Heaviside, log, Piecewise
+    from .integrals import Integral
+    from .meijerint import meijerint_inversion, _get_coeff_exp
     # There are two strategies we can try:
     # 1) Use inverse mellin transforms - related by a simple change of variables.
     # 2) Use the inversion integral.
@@ -1229,7 +1232,7 @@ class InverseLaplaceTransform(IntegralTransform):
         return _inverse_laplace_transform(F, s, t, self.fundamental_plane, **hints)
 
     def _as_integral(self, F, s, t):
-        from diofant import I, exp
+        from ..functions import exp
         c = self.__class__._c
         return Integral(exp(s*t)*F, (s, c - I*oo, c + I*oo))
 
@@ -1290,7 +1293,7 @@ def _fourier_transform(f, x, k, a, b, name, simplify=True):
     For suitable choice of a and b, this reduces to the standard Fourier
     and inverse Fourier transforms.
     """
-    from diofant import exp, I
+    from ..functions import exp
     F = integrate(a*f*exp(b*I*x*k), (x, -oo, oo))
 
     if not F.has(Integral):
@@ -1323,7 +1326,7 @@ class FourierTypeTransform(IntegralTransform):
                                   self.__class__._name, **hints)
 
     def _as_integral(self, f, x, k):
-        from diofant import exp, I
+        from ..functions import exp
         a = self.a()
         b = self.b()
         return Integral(a*f*exp(b*I*x*k), (x, -oo, oo))
@@ -1437,7 +1440,7 @@ def inverse_fourier_transform(F, k, x, **hints):
 # Fourier Sine and Cosine Transform
 ##########################################################################
 
-from diofant import sin, cos, sqrt, pi
+from ..functions import sin, cos, sqrt
 
 
 @_noconds_(True)
@@ -1716,7 +1719,7 @@ def _hankel_transform(f, r, k, nu, name, simplify=True):
 
     .. math:: F_\nu(k) = \int_{0}^\infty f(r) J_\nu(k r) r \mathrm{d} r.
     """
-    from diofant import besselj
+    from ..functions import besselj
     F = integrate(f*besselj(nu, k*r)*r, (r, 0, oo))
 
     if not F.has(Integral):
@@ -1748,7 +1751,7 @@ class HankelTypeTransform(IntegralTransform):
         return _hankel_transform(f, r, k, nu, self._name, **hints)
 
     def _as_integral(self, f, r, k, nu):
-        from diofant import besselj
+        from ..functions import besselj
         return Integral(f*besselj(nu, k*r)*r, (r, 0, oo))
 
     @property

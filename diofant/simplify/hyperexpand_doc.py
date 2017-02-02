@@ -2,8 +2,10 @@
 be displayed in the sphinx documentation.
 """
 
-from diofant.simplify.hyperexpand import FormulaCollection
-from diofant import latex, Eq, hyper
+from .hyperexpand import FormulaCollection
+from ..core import Eq
+from ..functions import hyper
+from ..printing import latex
 
 c = FormulaCollection()
 

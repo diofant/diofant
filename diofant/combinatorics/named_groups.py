@@ -1,6 +1,6 @@
-from diofant.combinatorics.perm_groups import PermutationGroup
-from diofant.combinatorics.group_constructs import DirectProduct
-from diofant.combinatorics.permutations import Permutation
+from .perm_groups import PermutationGroup
+from .group_constructs import DirectProduct
+from .permutations import Permutation
 
 _af_new = Permutation._af_new
 
@@ -298,7 +298,7 @@ def RubikGroup(n):
     >>> RubikGroup(2).is_group
     True
     """
-    from diofant.combinatorics.generators import rubik
+    from .generators import rubik
     if n <= 1:
         raise ValueError("Invalid cube . n has to be greater than 1")
     return PermutationGroup(rubik(n))

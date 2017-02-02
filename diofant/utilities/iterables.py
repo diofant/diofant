@@ -4,12 +4,12 @@ from itertools import (combinations, permutations, product,
 import random
 from operator import gt
 
-from diofant.core import Basic, S
+from ..core import Basic, S
 # this is the logical location of these functions
-from diofant.core.compatibility import (as_int, default_sort_key,
-                                        is_sequence, iterable, ordered)
-from diofant.utilities.enumerative import (multiset_partitions_taocp,
-                                           list_visitor, MultisetPartitionTraverser)
+from ..core.compatibility import (as_int, default_sort_key, is_sequence,
+                                  iterable, ordered)
+from .enumerative import (multiset_partitions_taocp, list_visitor,
+                          MultisetPartitionTraverser)
 
 
 def flatten(iterable, levels=None, cls=None):
@@ -473,7 +473,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
     if cls is None:
         # We can't just make the default cls=Symbol because it isn't
         # imported yet.
-        from diofant import Symbol
+        from ..core import Symbol
         cls = Symbol
 
     while True:
@@ -1421,8 +1421,8 @@ def has_dups(seq):
     >>> all(has_dups(c) is False for c in (set(), Set(), dict(), Dict()))
     True
     """
-    from diofant.core.containers import Dict
-    from diofant.sets.sets import Set
+    from ..core import Dict
+    from ..sets import Set
     if isinstance(seq, (dict, set, Dict, Set)):
         return False
     uniq = set()

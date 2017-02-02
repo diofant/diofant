@@ -12,8 +12,8 @@ References:
 from collections import defaultdict
 from heapq import heappush, heappop
 
-from diofant import default_sort_key, ordered
-from diofant.logic.boolalg import conjuncts, to_cnf, to_int_repr, _find_predicates
+from ...core.compatibility import default_sort_key, ordered
+from ..boolalg import conjuncts, to_cnf, to_int_repr, _find_predicates
 
 
 def dpll_satisfiable(expr, all_models=False):

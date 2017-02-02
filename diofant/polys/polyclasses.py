@@ -1,106 +1,43 @@
 """OO layer for several polynomial representations. """
 
-from diofant.core.sympify import CantSympify
-from diofant.polys.polyerrors import CoercionFailed, NotReversible
-from diofant import oo
+from ..core.sympify import CantSympify
+from .polyerrors import CoercionFailed, NotReversible
+from ..core import oo
 
-from diofant.polys.densebasic import (
-    dmp_validate,
-    dup_normal, dmp_normal,
-    dup_convert, dmp_convert,
-    dmp_from_diofant,
-    dup_strip,
-    dup_degree, dmp_degree_in,
-    dmp_degree_list,
-    dmp_negative_p,
-    dup_LC, dmp_ground_LC,
-    dup_TC, dmp_ground_TC,
-    dmp_ground_nth,
-    dmp_one, dmp_ground,
-    dmp_zero_p, dmp_one_p, dmp_ground_p,
-    dup_from_dict, dmp_from_dict,
-    dmp_to_dict,
-    dmp_deflate,
-    dmp_inject, dmp_eject,
-    dmp_terms_gcd,
-    dmp_list_terms, dmp_exclude,
-    dmp_slice_in, dmp_permute,
-    dmp_to_tuple,)
-
-from diofant.polys.densearith import (
-    dmp_add_ground,
-    dmp_sub_ground,
-    dmp_mul_ground,
-    dmp_quo_ground,
-    dmp_exquo_ground,
-    dmp_abs,
-    dup_neg, dmp_neg,
-    dup_add, dmp_add,
-    dup_sub, dmp_sub,
-    dup_mul, dmp_mul,
-    dmp_sqr,
-    dup_pow, dmp_pow,
-    dmp_pdiv,
-    dmp_prem,
-    dmp_pquo,
-    dmp_pexquo,
-    dmp_div,
-    dup_rem, dmp_rem,
-    dmp_quo,
-    dmp_exquo,
-    dmp_add_mul, dmp_sub_mul,
-    dmp_max_norm,
-    dmp_l1_norm)
-
-from diofant.polys.densetools import (
-    dmp_clear_denoms,
-    dmp_integrate_in,
-    dmp_diff_in,
-    dmp_eval_in,
-    dup_revert,
-    dmp_ground_trunc,
-    dmp_ground_content,
-    dmp_ground_primitive,
-    dmp_ground_monic,
-    dmp_compose,
-    dup_decompose,
-    dup_shift,
-    dmp_lift)
-
-from diofant.polys.euclidtools import (
-    dup_half_gcdex, dup_gcdex, dup_invert,
-    dmp_subresultants,
-    dmp_resultant,
-    dmp_discriminant,
-    dmp_inner_gcd,
-    dmp_gcd,
-    dmp_lcm,
-    dmp_cancel)
-
-from diofant.polys.sqfreetools import (
-    dup_gff_list,
-    dmp_sqf_p,
-    dmp_sqf_norm,
-    dmp_sqf_part,
-    dmp_sqf_list, dmp_sqf_list_include)
-
-from diofant.polys.factortools import (
-    dup_cyclotomic_p, dmp_irreducible_p,
-    dmp_factor_list, dmp_factor_list_include)
-
-from diofant.polys.rootisolation import (
-    dup_isolate_real_roots_sqf,
-    dup_isolate_real_roots,
-    dup_isolate_all_roots_sqf,
-    dup_isolate_all_roots,
-    dup_refine_real_root,
-    dup_count_real_roots,
-    dup_count_complex_roots,
-    dup_sturm)
-
-from diofant.polys.polyerrors import (
-    UnificationFailed,
-    PolynomialError)
+from .densebasic import (dmp_validate, dup_normal, dmp_normal, dup_convert,
+                         dmp_convert, dmp_from_diofant, dup_strip, dup_degree,
+                         dmp_degree_in, dmp_degree_list, dmp_negative_p,
+                         dup_LC, dmp_ground_LC, dup_TC, dmp_ground_TC,
+                         dmp_ground_nth, dmp_one, dmp_ground, dmp_zero_p,
+                         dmp_one_p, dmp_ground_p, dup_from_dict, dmp_from_dict,
+                         dmp_to_dict, dmp_deflate, dmp_inject, dmp_eject,
+                         dmp_terms_gcd, dmp_list_terms, dmp_exclude,
+                         dmp_slice_in, dmp_permute, dmp_to_tuple)
+from .densearith import (dmp_add_ground, dmp_sub_ground, dmp_mul_ground,
+                         dmp_quo_ground, dmp_exquo_ground, dmp_abs,
+                         dup_neg, dmp_neg, dup_add, dmp_add, dup_sub,
+                         dmp_sub, dup_mul, dmp_mul, dmp_sqr, dup_pow,
+                         dmp_pow, dmp_pdiv, dmp_prem, dmp_pquo, dmp_pexquo,
+                         dmp_div, dup_rem, dmp_rem, dmp_quo, dmp_exquo,
+                         dmp_add_mul, dmp_sub_mul, dmp_max_norm,
+                         dmp_l1_norm)
+from .densetools import (dmp_clear_denoms, dmp_integrate_in, dmp_diff_in,
+                         dmp_eval_in, dup_revert, dmp_ground_trunc,
+                         dmp_ground_content, dmp_ground_primitive,
+                         dmp_ground_monic, dmp_compose, dup_decompose,
+                         dup_shift, dmp_lift)
+from .euclidtools import (dup_half_gcdex, dup_gcdex, dup_invert,
+                          dmp_subresultants, dmp_resultant, dmp_discriminant,
+                          dmp_inner_gcd, dmp_gcd, dmp_lcm, dmp_cancel)
+from .sqfreetools import (dup_gff_list, dmp_sqf_p, dmp_sqf_norm, dmp_sqf_part,
+                          dmp_sqf_list, dmp_sqf_list_include)
+from .factortools import (dup_cyclotomic_p, dmp_irreducible_p,
+                          dmp_factor_list, dmp_factor_list_include)
+from .rootisolation import (dup_isolate_real_roots_sqf, dup_isolate_real_roots,
+                            dup_isolate_all_roots_sqf, dup_isolate_all_roots,
+                            dup_refine_real_root, dup_count_real_roots,
+                            dup_count_complex_roots, dup_sturm)
+from .polyerrors import UnificationFailed, PolynomialError
 
 
 class DMP(CantSympify):
@@ -452,7 +389,7 @@ class DMP(CantSympify):
         lev, dom, per, F, G = self.unify(other)
         res = per(dmp_exquo(F, G, lev, dom))
         if self.ring and res not in self.ring:
-            from diofant.polys.polyerrors import ExactQuotientFailed
+            from .polyerrors import ExactQuotientFailed
             raise ExactQuotientFailed(self, other, self.ring)
         return res
 
@@ -1270,7 +1207,7 @@ class DMF(CantSympify):
 
         res = per(num, den)
         if self.ring is not None and res not in self.ring:
-            from diofant.polys.polyerrors import ExactQuotientFailed
+            from .polyerrors import ExactQuotientFailed
             raise ExactQuotientFailed(self, other, self.ring)
         return res
 
@@ -1375,7 +1312,7 @@ class DMF(CantSympify):
     def __rdiv__(self, other):
         r = self.invert(check=False)*other
         if self.ring and r not in self.ring:
-            from diofant.polys.polyerrors import ExactQuotientFailed
+            from .polyerrors import ExactQuotientFailed
             raise ExactQuotientFailed(other, self, self.ring)
         return r
 

@@ -1,9 +1,8 @@
 """Implementation of :class:`Ring` class. """
 
-from diofant.polys.domains.domain import Domain
-from diofant.polys.polyerrors import (ExactQuotientFailed, NotInvertible,
-                                      NotReversible)
-from diofant.utilities import public
+from .domain import Domain
+from ..polyerrors import ExactQuotientFailed, NotInvertible, NotReversible
+from ...utilities import public
 
 
 @public

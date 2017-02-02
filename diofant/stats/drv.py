@@ -1,8 +1,10 @@
 import random
 
-from diofant import (Expr, sympify, symbols, Dummy, Lambda, summation,
-                     Piecewise, S, cacheit, solve, Sum)
-from diofant.stats.rv import NamedArgsMixin, SinglePSpace, SingleDomain
+from ..core import Expr, sympify, symbols, Dummy, Lambda, S, cacheit
+from ..concrete import Sum, summation
+from ..functions import Piecewise
+from ..solvers import solve
+from .rv import NamedArgsMixin, SinglePSpace, SingleDomain
 
 
 class SingleDiscreteDistribution(Expr, NamedArgsMixin):

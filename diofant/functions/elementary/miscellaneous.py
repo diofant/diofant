@@ -1,20 +1,13 @@
-from diofant.core import S, sympify
-from diofant.core.add import Add
-from diofant.core.containers import Tuple
-from diofant.core.operations import LatticeOp, ShortCircuit
-from diofant.core.function import Application, Lambda, ArgumentIndexError
-from diofant.core.expr import Expr
-from diofant.core.mul import Mul
-from diofant.core.numbers import Rational
-from diofant.core.power import Pow
-from diofant.core.relational import Equality
-from diofant.core.singleton import Singleton
-from diofant.core.symbol import Dummy
-from diofant.core.rules import Transform
-from diofant.core.compatibility import as_int
-from diofant.core.logic import fuzzy_and
-from diofant.functions.elementary.integers import floor
-from diofant.logic.boolalg import And
+from ...core import (S, sympify, Add, Tuple, Lambda, Expr, Mul, Rational,
+                     Pow, Equality, Dummy)
+from ...core.operations import LatticeOp, ShortCircuit
+from ...core.function import Application, ArgumentIndexError
+from ...core.singleton import Singleton
+from ...core.rules import Transform
+from ...core.compatibility import as_int
+from ...core.logic import fuzzy_and
+from .integers import floor
+from ...logic import And
 
 
 class IdentityFunction(Lambda, metaclass=Singleton):
@@ -32,7 +25,7 @@ class IdentityFunction(Lambda, metaclass=Singleton):
     """
 
     def __new__(cls):
-        from diofant.sets.sets import FiniteSet
+        from ...sets import FiniteSet
         x = Dummy('dummy_for_IdentityFunction')
         # construct "by hand" to avoid infinite loop
         obj = Expr.__new__(cls, Tuple(x), x)
@@ -296,7 +289,8 @@ def real_root(arg, n=None):
     diofant.functions.elementary.miscellaneous.root
     diofant.functions.elementary.miscellaneous.sqrt
     """
-    from diofant import im, Piecewise
+    from .complexes import im
+    from .piecewise import Piecewise
     if n is not None:
         try:
             n = as_int(n)
@@ -551,7 +545,7 @@ class Max(MinMaxBase, Application):
     identity = S.NegativeInfinity
 
     def fdiff( self, argindex ):
-        from diofant import Heaviside
+        from .. import Heaviside
         n = len(self.args)
         if 0 < argindex and argindex <= n:
             argindex -= 1
@@ -563,7 +557,7 @@ class Max(MinMaxBase, Application):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_Heaviside(self, *args):
-        from diofant import Heaviside
+        from .. import Heaviside
         return Add(*[j*Mul(*[Heaviside(j - i) for i in args if i != j])
                      for j in args])
 
@@ -604,7 +598,7 @@ class Min(MinMaxBase, Application):
     identity = S.Infinity
 
     def fdiff( self, argindex ):
-        from diofant import Heaviside
+        from .. import Heaviside
         n = len(self.args)
         if 0 < argindex and argindex <= n:
             argindex -= 1
@@ -616,6 +610,6 @@ class Min(MinMaxBase, Application):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_Heaviside(self, *args):
-        from diofant import Heaviside
+        from .. import Heaviside
         return Add(*[j*Mul(*[Heaviside(i-j) for i in args if i != j])
                      for j in args])

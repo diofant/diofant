@@ -7,14 +7,10 @@ import math
 
 from .primetest import isprime
 from .generate import sieve, primerange, nextprime
-from diofant.core import sympify
-from diofant.core.evalf import bitcount
-from diofant.core.numbers import igcd, Rational
-from diofant.core.power import integer_nthroot, Pow
-from diofant.core.mul import Mul
-from diofant.core.compatibility import as_int, DIOFANT_INTS
-from diofant.core.singleton import S
-from diofant.core.function import Function
+from ..core import (sympify, igcd, Rational, Pow, integer_nthroot, Mul,
+                    S, Function)
+from ..core.evalf import bitcount
+from ..core.compatibility import as_int, DIOFANT_INTS
 
 small_trailing = [i and max(int(not i % 2**j) and j for j in range(1, 8))
     for i in range(256)]
@@ -106,7 +102,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
 
     factorint, smoothness
     """
-    from diofant.utilities import flatten
+    from ..utilities import flatten
 
     # visual must be True, False or other (stored as None)
     if visual in (1, 0):

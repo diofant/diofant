@@ -1,11 +1,9 @@
-from diofant.core.basic import Basic
-from diofant.core.compatibility import as_int
-from diofant.sets.sets import Set, Interval, Intersection, EmptySet, FiniteSet
-from diofant.core.singleton import Singleton, S
-from diofant.core.sympify import _sympify
-from diofant.core.function import Lambda
-from diofant.core.numbers import Integer, Rational
-from diofant.utilities.iterables import cantor_product
+from ..core import Basic, S, Lambda, Integer, Rational
+from ..core.compatibility import as_int
+from .sets import Set, Interval, Intersection, EmptySet, FiniteSet
+from ..core.singleton import Singleton
+from ..core.sympify import _sympify
+from ..utilities.iterables import cantor_product
 
 
 class Naturals(Set, metaclass=Singleton):
@@ -121,7 +119,7 @@ class Integers(Set, metaclass=Singleton):
     is_iterable = True
 
     def _intersection(self, other):
-        from diofant.functions.elementary.integers import floor, ceiling
+        from ..functions import floor, ceiling
         if other is Interval(S.NegativeInfinity, S.Infinity, True, True) or other is S.Reals:
             return self
         elif other.is_Interval:
@@ -155,7 +153,7 @@ class Integers(Set, metaclass=Singleton):
         return self
 
     def _eval_imageset(self, f):
-        from diofant import Wild
+        from ..core import Wild
         expr = f.expr
         if len(f.variables) > 1:
             return
@@ -257,7 +255,7 @@ class ImageSet(Set):
                 yield val
 
     def _contains(self, other):
-        from diofant.solvers import solve
+        from ..solvers import solve
 
         L = self.lamda
         if len(self.lamda.variables) > 1:
@@ -275,9 +273,9 @@ class ImageSet(Set):
         return self.base_set.is_iterable
 
     def _intersection(self, other):
-        from diofant import Dummy
-        from diofant.solvers.diophantine import diophantine
-        from diofant.sets.sets import imageset
+        from ..core import Dummy
+        from ..solvers.diophantine import diophantine
+        from .sets import imageset
         if self.base_set is S.Integers:
             if isinstance(other, ImageSet) and other.base_set is S.Integers:
                 f, g = self.lamda.expr, other.lamda.expr
@@ -302,8 +300,8 @@ class ImageSet(Set):
                 return imageset(Lambda(t, f.subs(a, solns[0][0])), S.Integers)
 
         if other == S.Reals:
-            from diofant.solvers.diophantine import diophantine
-            from diofant.core.function import expand_complex
+            from ..solvers.diophantine import diophantine
+            from ..core import expand_complex
 
             if len(self.lamda.variables) > 1 or self.base_set is not S.Integers:
                 return  # pragma: no cover
@@ -348,7 +346,7 @@ class Range(Set):
     is_iterable = True
 
     def __new__(cls, *args):
-        from diofant.functions.elementary.integers import ceiling
+        from ..functions import ceiling
         # expand range
         slc = slice(*args)
         start, stop, step = slc.start or 0, slc.stop, slc.step or 1
@@ -387,8 +385,7 @@ class Range(Set):
     step = property(lambda self: self.args[2])
 
     def _intersection(self, other):
-        from diofant.functions.elementary.integers import floor, ceiling
-        from diofant.functions.elementary.miscellaneous import Min, Max
+        from ..functions import floor, ceiling, Min, Max
         if other.is_Interval:
             osup = other.sup
             oinf = other.inf

@@ -7,18 +7,14 @@ Point2D
 Point3D
 """
 
-from diofant.core import S, sympify
-from diofant.core.compatibility import iterable
-from diofant.core.containers import Tuple
-from diofant.simplify import simplify, nsimplify
-from diofant.geometry.exceptions import GeometryError
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.elementary.complexes import im
+from ..core import S, sympify, Tuple, Float, Add
+from ..core.compatibility import iterable
+from ..simplify import simplify, nsimplify
+from .exceptions import GeometryError
+from ..functions import sqrt, im
 from .entity import GeometryEntity
-from diofant.matrices import Matrix
-from diofant.core.numbers import Float
-from diofant.core.evaluate import global_evaluate
-from diofant.core.add import Add
+from ..matrices import Matrix
+from ..core.evaluate import global_evaluate
 
 
 class Point(GeometryEntity):
@@ -621,9 +617,8 @@ class Point2D(Point):
         Point2D(0, 1)
         >>> t.rotate(pi/2, (2, 0))
         Point2D(2, -1)
-
         """
-        from diofant import cos, sin, Point
+        from ..functions import cos, sin
 
         c = cos(angle)
         s = sin(angle)
@@ -949,9 +944,8 @@ class Point3D(Point):
         >>> p5 = Point3D(0, 1, 3)
         >>> Point3D.are_coplanar(p1, p2, p3, p5)
         False
-
         """
-        from diofant.geometry.plane import Plane
+        from .plane import Plane
         points = list(set(points))
         if len(points) < 3:
             raise ValueError('At least 3 points are needed to define a plane.')
@@ -1073,7 +1067,7 @@ class Point3D(Point):
         if not valid_matrix:
             raise ValueError("The argument to the transform function must be "
                              + "a 4x4 matrix")
-        from diofant.matrices.expressions import Transpose
+        from ..matrices import Transpose
         x, y, z = self.args
         m = Transpose(matrix)
         return Point3D(*(Matrix(1, 4, [x, y, z, 1])*m).tolist()[0][:3])

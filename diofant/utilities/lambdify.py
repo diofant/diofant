@@ -6,9 +6,9 @@ lambda functions which can be used to calculate numerical values very fast.
 import inspect
 import textwrap
 
-from diofant.external import import_module
-from diofant.core.compatibility import is_sequence, iterable
-from diofant.utilities.decorator import doctest_depends_on
+from ..external import import_module
+from ..core.compatibility import is_sequence, iterable
+from .decorator import doctest_depends_on
 
 # These are the namespaces the lambda functions will use.
 MATH = {}
@@ -292,8 +292,8 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     ``lambdify`` always prefers ``_imp_`` implementations to implementations
     in other namespaces, unless the ``use_imps`` input parameter is False.
     """
-    from diofant.core.symbol import Symbol
-    from diofant.utilities.iterables import flatten
+    from ..core import Symbol
+    from .iterables import flatten
 
     # If the user hasn't specified any modules, use what is available.
     module_provided = True
@@ -340,11 +340,11 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     if _module_present('numpy', namespaces) and printer is None:
         # XXX: This has to be done here because of circular imports
-        from diofant.printing.lambdarepr import NumPyPrinter as printer
+        from ..printing.lambdarepr import NumPyPrinter as printer
 
     if _module_present('numexpr', namespaces) and printer is None:
         # XXX: This has to be done here because of circular imports
-        from diofant.printing.lambdarepr import NumExprPrinter as printer
+        from ..printing.lambdarepr import NumExprPrinter as printer
 
     # Get the names of the args, for creating a docstring
     if not iterable(args):
@@ -429,8 +429,9 @@ def lambdastr(args, expr, printer=None, dummify=False):
     'lambda _0,_1: (lambda x,y,z: (x + y))(*list(__flatten_args__([_0,_1])))'
     """
     # Transforming everything to strings.
-    from diofant.matrices import DeferredVector
-    from diofant import Dummy, sympify, Symbol, Function, flatten
+    from ..matrices import DeferredVector
+    from ..core import Dummy, sympify, Symbol, Function
+    from ..utilities import flatten
 
     if printer is not None:
         if inspect.isfunction(printer):
@@ -444,7 +445,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
                     return printer.doprint(expr)
     else:
         # XXX: This has to be done here because of circular imports
-        from diofant.printing.lambdarepr import lambdarepr
+        from ..printing.lambdarepr import lambdarepr
 
     def sub_args(args, dummies_dict):
         if isinstance(args, str):
@@ -552,7 +553,7 @@ def _imp_namespace(expr, namespace=None):
     ['f', 'g']
     """
     # Delayed import to avoid circular imports
-    from diofant.core.function import FunctionClass
+    from ..core.function import FunctionClass
     if namespace is None:
         namespace = {}
     # tuples, lists, dicts are valid expressions
@@ -621,7 +622,7 @@ def implemented_function(symfunc, implementation):
     5
     """
     # Delayed import to avoid circular imports
-    from diofant.core.function import UndefinedFunction
+    from ..core.function import UndefinedFunction
     # if name, create function to hold implementation
     if isinstance(symfunc, str):
         symfunc = UndefinedFunction(symfunc)

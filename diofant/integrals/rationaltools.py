@@ -1,8 +1,8 @@
 """This module implements tools for integrating rational functions. """
 
-from diofant import (S, Symbol, symbols, I, log, atan, roots, RootSum,
-                     Lambda, cancel, Dummy, Integer)
-from diofant.polys import Poly, resultant, ZZ
+from ..core import S, Symbol, symbols, I, Lambda, Dummy, Integer
+from ..functions import log, atan
+from ..polys import Poly, resultant, ZZ, RootSum, roots, cancel
 
 
 def ratint(f, x, **flags):
@@ -135,7 +135,7 @@ def ratint_ratpart(f, g, x):
     diofant.integrals.rationaltools.ratint
     diofant.integrals.rationaltools.ratint_logpart
     """
-    from diofant import solve
+    from ..solvers import solve
 
     f = Poly(f, x)
     g = Poly(g, x)
@@ -329,7 +329,7 @@ def log_to_real(h, q, x, t):
 
     log_to_atan
     """
-    from diofant import collect
+    from ..simplify import collect
     u, v = symbols('u,v', cls=Dummy)
 
     H = h.as_expr().subs({t: u + I*v}).expand()

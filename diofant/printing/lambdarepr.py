@@ -1,5 +1,5 @@
 from .str import StrPrinter
-from diofant.utilities import default_sort_key
+from ..utilities import default_sort_key
 
 
 class LambdaPrinter(StrPrinter):

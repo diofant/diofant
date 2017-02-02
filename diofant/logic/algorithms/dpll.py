@@ -8,10 +8,10 @@ References:
   - https://www.researchgate.net/publication/242384772
 """
 
-from diofant import default_sort_key
-from diofant.logic.boolalg import (Or, Not, conjuncts, disjuncts, to_cnf,
-                                   to_int_repr, _find_predicates)
-from diofant.logic.inference import pl_true, literal_symbol
+from ...core.compatibility import default_sort_key
+from ..boolalg import (Or, Not, conjuncts, disjuncts, to_cnf,
+                       to_int_repr, _find_predicates)
+from ..inference import pl_true, literal_symbol
 
 
 def dpll_satisfiable(expr):

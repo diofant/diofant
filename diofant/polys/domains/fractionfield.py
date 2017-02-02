@@ -1,9 +1,9 @@
 """Implementation of :class:`FractionField` class. """
 
-from diofant.polys.domains.field import Field
-from diofant.polys.domains.compositedomain import CompositeDomain
-from diofant.polys.polyerrors import CoercionFailed, GeneratorsError
-from diofant.utilities import public
+from .field import Field
+from .compositedomain import CompositeDomain
+from ..polyerrors import CoercionFailed, GeneratorsError
+from ...utilities import public
 
 
 @public
@@ -16,7 +16,7 @@ class FractionField(Field, CompositeDomain):
     has_assoc_Field = True
 
     def __init__(self, domain_or_field, symbols=None, order=None):
-        from diofant.polys.fields import FracField
+        from ..fields import FracField
 
         if isinstance(domain_or_field, FracField) and symbols is None and order is None:
             field = domain_or_field

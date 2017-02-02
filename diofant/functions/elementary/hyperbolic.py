@@ -1,8 +1,8 @@
-from diofant.core import S, sympify, cacheit
-from diofant.core.function import Function, ArgumentIndexError, _coeff_isneg
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.elementary.exponential import exp, log
-from diofant.functions.combinatorial.factorials import factorial, RisingFactorial
+from ...core import S, sympify, cacheit, Function
+from ...core.function import ArgumentIndexError, _coeff_isneg
+from .miscellaneous import sqrt
+from .exponential import exp, log
+from ..combinatorial.factorials import factorial, RisingFactorial
 
 
 def _rewrite_hyperbolics_as_exp(expr):
@@ -63,7 +63,7 @@ class sinh(HyperbolicFunction):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import sin
+        from .trigonometric import sin
 
         arg = sympify(arg)
 
@@ -127,7 +127,7 @@ class sinh(HyperbolicFunction):
         """
         Returns this function as a complex coordinate.
         """
-        from diofant import cos, sin
+        from .trigonometric import cos, sin
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
@@ -179,7 +179,7 @@ class sinh(HyperbolicFunction):
         return 2*coth_half/(coth_half**2 - 1)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -218,7 +218,7 @@ class cosh(HyperbolicFunction):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import cos
+        from .trigonometric import cos
         arg = sympify(arg)
 
         if arg.is_Number:
@@ -273,7 +273,7 @@ class cosh(HyperbolicFunction):
         return self.func(self.args[0].conjugate())
 
     def as_real_imag(self, deep=True, **hints):
-        from diofant import cos, sin
+        from .trigonometric import cos, sin
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
@@ -326,7 +326,7 @@ class cosh(HyperbolicFunction):
         return (coth_half + 1)/(coth_half - 1)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -371,7 +371,7 @@ class tanh(HyperbolicFunction):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import tan
+        from .trigonometric import tan
         arg = sympify(arg)
 
         if arg.is_Number:
@@ -414,7 +414,7 @@ class tanh(HyperbolicFunction):
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
-        from diofant import bernoulli
+        from .. import bernoulli
         if n < 0 or n % 2 == 0:
             return S.Zero
         else:
@@ -431,7 +431,7 @@ class tanh(HyperbolicFunction):
         return self.func(self.args[0].conjugate())
 
     def as_real_imag(self, deep=True, **hints):
-        from diofant import cos, sin
+        from .trigonometric import cos, sin
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
@@ -463,7 +463,7 @@ class tanh(HyperbolicFunction):
         return 1/coth(arg)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -501,7 +501,7 @@ class coth(HyperbolicFunction):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import cot
+        from .trigonometric import cot
         arg = sympify(arg)
 
         if arg.is_Number:
@@ -544,7 +544,7 @@ class coth(HyperbolicFunction):
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
-        from diofant import bernoulli
+        from .. import bernoulli
         if n == 0:
             return 1 / sympify(x)
         elif n < 0 or n % 2 == 0:
@@ -561,7 +561,7 @@ class coth(HyperbolicFunction):
         return self.func(self.args[0].conjugate())
 
     def as_real_imag(self, deep=True, **hints):
-        from diofant import cos, sin
+        from .trigonometric import cos, sin
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
@@ -593,7 +593,7 @@ class coth(HyperbolicFunction):
         return 1/tanh(arg)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -700,7 +700,7 @@ class csch(ReciprocalHyperbolicFunction):
         """
         Returns the next term in the Taylor series expansion
         """
-        from diofant import bernoulli
+        from .. import bernoulli
         if n == 0:
             return 1/sympify(x)
         elif n < 0 or n % 2 == 0:
@@ -747,7 +747,7 @@ class sech(ReciprocalHyperbolicFunction):
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
-        from diofant.functions.combinatorial.numbers import euler
+        from ..combinatorial.numbers import euler
         if n < 0 or n % 2 == 1:
             return S.Zero
         else:
@@ -784,7 +784,7 @@ class asinh(Function):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import asin
+        from .trigonometric import asin
         arg = sympify(arg)
 
         if arg.is_Number:
@@ -829,7 +829,7 @@ class asinh(Function):
                 return (-1)**k * R / F * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -931,7 +931,7 @@ class acosh(Function):
                 return -R / F * S.ImaginaryUnit * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -968,7 +968,7 @@ class atanh(Function):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import atan
+        from .trigonometric import atan
         arg = sympify(arg)
 
         if arg.is_Number:
@@ -1006,7 +1006,7 @@ class atanh(Function):
             return x**n / n
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1036,7 +1036,7 @@ class acoth(Function):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import acot
+        from .trigonometric import acot
         arg = sympify(arg)
 
         if arg.is_Number:
@@ -1076,7 +1076,7 @@ class acoth(Function):
             return x**n / n
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):

@@ -1,16 +1,14 @@
 """Tools for solving inequalities and systems of inequalities. """
 
-from diofant.core import Symbol, Dummy, Integer
-from diofant.core.compatibility import iterable
-from diofant.sets import Interval
-from diofant.core.relational import Relational, Eq, Ge, Lt
-from diofant.sets.sets import FiniteSet, Union
-from diofant.core.singleton import S
-from diofant.functions import Abs, Piecewise
-from diofant.logic import And
-from diofant.polys import Poly, PolynomialError, parallel_poly_from_expr
-from diofant.polys.polyutils import _nsort
-from diofant.utilities.misc import filldedent
+from ..core import Symbol, Dummy, Integer, Eq, Ge, Lt, S
+from ..core.compatibility import iterable
+from ..sets import Interval, FiniteSet, Union
+from ..core.relational import Relational
+from ..functions import Abs, Piecewise
+from ..logic import And
+from ..polys import Poly, PolynomialError, parallel_poly_from_expr
+from ..polys.polyutils import _nsort
+from ..utilities import filldedent
 
 
 def solve_poly_inequality(poly, rel):
@@ -370,8 +368,8 @@ def solve_univariate_inequality(expr, gen, relational=True):
     >>> solve_univariate_inequality(x**2 >= 4, x, relational=False)
     (-oo, -2] U [2, oo)
     """
-    from diofant.simplify.simplify import simplify
-    from diofant.solvers.solvers import solve, denoms
+    from ..simplify import simplify
+    from .solvers import solve, denoms
 
     e = expr.lhs - expr.rhs
     parts = n, d = e.as_numer_denom()

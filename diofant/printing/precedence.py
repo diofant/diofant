@@ -1,6 +1,6 @@
 """A module providing information about the necessity of brackets"""
 
-from diofant.core.function import _coeff_isneg
+from ..core.function import _coeff_isneg
 
 # Default precedence values for some basic types
 PRECEDENCE = {

@@ -1,13 +1,13 @@
 """ Elliptic integrals. """
 
-from diofant.core import S, pi, I, Rational
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.functions.elementary.hyperbolic import atanh
-from diofant.functions.elementary.trigonometric import sin, tan
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.elementary.complexes import sign
-from diofant.functions.special.hyper import hyper, meijerg
-from diofant.functions.special.gamma_functions import gamma
+from ...core import S, pi, I, Rational, Function
+from ...core.function import ArgumentIndexError
+from ..elementary.hyperbolic import atanh
+from ..elementary.trigonometric import sin, tan
+from ..elementary.miscellaneous import sqrt
+from ..elementary.complexes import sign
+from .hyper import hyper, meijerg
+from .gamma_functions import gamma
 
 
 class elliptic_k(Function):
@@ -73,7 +73,7 @@ class elliptic_k(Function):
             return self.func(z.conjugate())
 
     def _eval_nseries(self, x, n, logx):
-        from diofant.simplify import hyperexpand
+        from ...simplify import hyperexpand
         return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n, logx=logx))
 
     def _eval_rewrite_as_hyper(self, z):
@@ -239,7 +239,7 @@ class elliptic_e(Function):
                 return self.func(z.conjugate())
 
     def _eval_nseries(self, x, n, logx):
-        from diofant.simplify import hyperexpand
+        from ...simplify import hyperexpand
         if len(self.args) == 1:
             return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n, logx=logx))
         return super(elliptic_e, self)._eval_nseries(x, n=n, logx=logx)

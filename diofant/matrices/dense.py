@@ -1,20 +1,14 @@
 import itertools
 import random
 
-from diofant.core.basic import Basic
-from diofant.core.compatibility import is_sequence, as_int
-from diofant.core.function import count_ops
-from diofant.core.decorators import call_highest_priority
-from diofant.core.singleton import S
-from diofant.core.symbol import Symbol
-from diofant.core.sympify import sympify
-from diofant.functions.elementary.trigonometric import cos, sin
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.simplify import simplify as _simplify
-from diofant.utilities.misc import filldedent
-from diofant.utilities.decorator import doctest_depends_on
-from diofant.utilities.iterables import numbered_symbols
-from diofant.matrices.matrices import MatrixBase, ShapeError, a2idx, classof
+from ..core import Basic, count_ops, S, Symbol, sympify
+from ..core.compatibility import is_sequence, as_int
+from ..core.decorators import call_highest_priority
+from ..functions import cos, sin, sqrt
+from ..simplify import simplify as _simplify
+from ..utilities import filldedent, numbered_symbols
+from ..utilities.decorator import doctest_depends_on
+from .matrices import MatrixBase, ShapeError, a2idx, classof
 
 
 def _iszero(x):
@@ -287,7 +281,7 @@ class DenseMatrix(MatrixBase):
         inverse_GE
         inverse_ADJ
         """
-        from diofant.matrices import diag
+        from . import diag
 
         method = kwargs.get('method', 'GE')
         iszerofunc = kwargs.get('iszerofunc', _iszero)
@@ -357,7 +351,7 @@ class DenseMatrix(MatrixBase):
             return False
 
     def __eq__(self, other):
-        from diofant.matrices import Matrix
+        from . import Matrix
 
         try:
             if self.shape != other.shape:
@@ -1092,7 +1086,7 @@ def rot_axis3(theta):
     diofant.matrices.dense.rot_axis2: Returns a rotation matrix for a rotation of theta (in radians)
         about the 2-axis
     """
-    from diofant.matrices import Matrix
+    from . import Matrix
 
     ct = cos(theta)
     st = sin(theta)
@@ -1137,7 +1131,7 @@ def rot_axis2(theta):
     diofant.matrices.dense.rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
         about the 3-axis
     """
-    from diofant.matrices import Matrix
+    from . import Matrix
 
     ct = cos(theta)
     st = sin(theta)
@@ -1182,7 +1176,7 @@ def rot_axis1(theta):
     diofant.matrices.dense.rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
         about the 3-axis
     """
-    from diofant.matrices import Matrix
+    from . import Matrix
 
     ct = cos(theta)
     st = sin(theta)
@@ -1231,7 +1225,7 @@ def ones(r, c=None):
     diofant.matrices.dense.eye
     diofant.matrices.dense.diag
     """
-    from diofant.matrices import Matrix
+    from . import Matrix
 
     c = r if c is None else c
     r = as_int(r)
@@ -1251,7 +1245,7 @@ def zeros(r, c=None, cls=None):
     diofant.matrices.dense.diag
     """
     if cls is None:
-        from diofant.matrices import Matrix as cls
+        from . import Matrix as cls
     return cls.zeros(r, c)
 
 
@@ -1266,7 +1260,7 @@ def eye(n, cls=None):
     diofant.matrices.dense.ones
     """
     if cls is None:
-        from diofant.matrices import Matrix as cls
+        from . import Matrix as cls
     return cls.eye(n)
 
 
@@ -1356,12 +1350,12 @@ def diag(*values, **kwargs):
 
     diofant.matrices.dense.eye
     """
-    from diofant.matrices import Matrix
+    from . import Matrix
     from .sparse import MutableSparseMatrix
 
     cls = kwargs.pop('cls', None)
     if cls is None:
-        from diofant.matrices import Matrix as cls
+        from . import Matrix as cls
 
     if kwargs:
         raise ValueError('unrecognized keyword%s: %s' % (
@@ -1555,7 +1549,7 @@ def wronskian(functions, var, method='bareis'):
     diofant.matrices.matrices.MatrixBase.jacobian
     diofant.matrices.dense.hessian
     """
-    from diofant.matrices import Matrix
+    from . import Matrix
 
     for index in range(0, len(functions)):
         functions[index] = sympify(functions[index])
@@ -1595,7 +1589,7 @@ def casoratian(seqs, n, zero=True):
     >>> casoratian([2**n, factorial(n)], n) != 0
     True
     """
-    from diofant.matrices import Matrix
+    from . import Matrix
 
     seqs = list(map(sympify, seqs))
 
@@ -1648,7 +1642,7 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
     [0, 68,  0]
     [0, 91, 34]
     """
-    from diofant.matrices import Matrix
+    from . import Matrix
 
     if c is None:
         c = r

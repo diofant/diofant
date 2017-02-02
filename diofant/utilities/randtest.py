@@ -3,12 +3,9 @@
 from random import uniform
 import random
 
-from diofant.core.numbers import I
-from diofant.simplify.simplify import nsimplify
-from diofant.core.containers import Tuple
-from diofant.core.numbers import comp
-from diofant.core.symbol import Symbol
-from diofant.core.compatibility import is_sequence, as_int
+from ..core import I, Tuple, Symbol, comp
+from ..simplify import nsimplify
+from ..core.compatibility import is_sequence, as_int
 
 
 def random_complex_number(a=2, b=-1, c=3, d=1, rational=True):
@@ -68,7 +65,7 @@ def test_derivative_numerically(f, z, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     >>> td(sin(x), x)
     true
     """
-    from diofant.core.function import Derivative
+    from ..core import Derivative
     z0 = random_complex_number(a, b, c, d)
     f1 = f.diff(z).subs(z, z0)
     f2 = Derivative(f, z).doit_numerically(z0)

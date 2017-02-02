@@ -1,12 +1,12 @@
 """Tools for constructing domains for expressions. """
 
-from diofant.polys.polyutils import parallel_dict_from_basic
-from diofant.polys.polyoptions import build_options
-from diofant.polys.polyerrors import GeneratorsNeeded
-from diofant.polys.domains import ZZ, QQ, RR, EX
-from diofant.polys.domains.realfield import RealField
-from diofant.utilities import public
-from diofant.core import sympify
+from .polyutils import parallel_dict_from_basic
+from .polyoptions import build_options
+from .polyerrors import GeneratorsNeeded
+from .domains import ZZ, QQ, RR, EX
+from .domains.realfield import RealField
+from ..utilities import public
+from ..core import sympify
 
 
 def _construct_simple(coeffs, opt):
@@ -65,7 +65,7 @@ def _construct_simple(coeffs, opt):
 
 def _construct_algebraic(coeffs, opt):
     """We know that coefficients are algebraic so construct the extension. """
-    from diofant.polys.numberfields import primitive_element
+    from .numberfields import primitive_element
 
     result, exts = [], set()
 

@@ -1,5 +1,5 @@
-from diofant.ntheory import isprime
-from diofant.combinatorics.permutations import Permutation, _af_invert, _af_rmul
+from ..ntheory import isprime
+from .permutations import Permutation, _af_invert, _af_rmul
 
 rmul = Permutation.rmul
 _af_new = Permutation._af_new
@@ -288,7 +288,7 @@ def _orbits_transversals_from_bsgs(base, strong_gens_distr,
     _distribute_gens_by_base, _handle_precomputed_bsgs
 
     """
-    from diofant.combinatorics.perm_groups import _orbit_transversal
+    from .perm_groups import _orbit_transversal
     base_len = len(base)
     degree = strong_gens_distr[0][0].size
     transversals = [None]*base_len
@@ -351,7 +351,7 @@ def _remove_gens(base, strong_gens, basic_orbits=None, strong_gens_distr=None):
     "Handbook of computational group theory"
 
     """
-    from diofant.combinatorics.perm_groups import _orbit
+    from .perm_groups import _orbit
     base_len = len(base)
     degree = strong_gens[0].size
     if strong_gens_distr is None:

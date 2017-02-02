@@ -1,9 +1,8 @@
-from diofant.core.mul import Mul
-from diofant.core.singleton import S
-from diofant.concrete.expr_with_intlimits import ExprWithIntLimits
-from diofant.functions.elementary.exponential import exp, log
-from diofant.polys import quo, roots
-from diofant.simplify import powsimp
+from ..core import Mul, S
+from .expr_with_intlimits import ExprWithIntLimits
+from ..functions import exp, log
+from ..polys import quo, roots
+from ..simplify import powsimp
 
 
 class Product(ExprWithIntLimits):
@@ -186,7 +185,7 @@ class Product(ExprWithIntLimits):
         return obj
 
     def _eval_rewrite_as_Sum(self, *args):
-        from diofant.concrete.summations import Sum
+        from .summations import Sum
         return exp(Sum(log(self.function), *self.limits))
 
     @property
@@ -228,9 +227,9 @@ class Product(ExprWithIntLimits):
         return self.func(self.function.conjugate(), *self.limits)
 
     def _eval_product(self, term, limits):
-        from diofant.concrete.delta import deltaproduct, _has_simple_delta
-        from diofant.concrete.summations import summation
-        from diofant.functions import KroneckerDelta, RisingFactorial
+        from .delta import deltaproduct, _has_simple_delta
+        from .summations import summation
+        from ..functions import KroneckerDelta, RisingFactorial
 
         (k, a, n) = limits
 
@@ -307,7 +306,7 @@ class Product(ExprWithIntLimits):
                     return p**term.exp
 
     def _eval_simplify(self, ratio, measure):
-        from diofant.simplify.simplify import product_simplify
+        from ..simplify.simplify import product_simplify
         return product_simplify(self)
 
     def _eval_transpose(self):

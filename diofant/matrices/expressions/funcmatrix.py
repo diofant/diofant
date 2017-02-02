@@ -1,5 +1,5 @@
 from .matexpr import MatrixExpr
-from diofant import sympify, Expr
+from ...core import sympify, Expr
 
 
 class FunctionMatrix(MatrixExpr):
@@ -42,5 +42,5 @@ class FunctionMatrix(MatrixExpr):
         return self.lamda(i, j)
 
     def _eval_trace(self):
-        from diofant.matrices.expressions.trace import Trace
+        from .trace import Trace
         return Trace._eval_rewrite_as_Sum(Trace(self)).doit()

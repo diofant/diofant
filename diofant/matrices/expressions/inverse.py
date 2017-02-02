@@ -1,7 +1,7 @@
-from diofant.core.sympify import _sympify
-from diofant.core import Integer, Expr
-from diofant.matrices.expressions.matexpr import ShapeError
-from diofant.matrices.expressions.matpow import MatPow
+from ...core.sympify import _sympify
+from ...core import Integer, Expr
+from .matexpr import ShapeError
+from .matpow import MatPow
 
 
 class Inverse(MatPow):
@@ -51,7 +51,7 @@ class Inverse(MatPow):
         return self.arg
 
     def _eval_determinant(self):
-        from diofant.matrices.expressions.determinant import det
+        from .determinant import det
         return 1/det(self.arg)
 
     def doit(self, **hints):

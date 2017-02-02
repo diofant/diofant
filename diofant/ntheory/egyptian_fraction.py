@@ -1,6 +1,5 @@
-import diofant.polys
-from diofant import Integer
-from diofant.core.compatibility import gcd
+from ..core import Integer
+from ..core.compatibility import gcd
 
 
 def egyptian_fraction(r, algorithm="Greedy"):
@@ -177,9 +176,10 @@ def egypt_takenouchi(x, y):
 
 
 def egypt_golomb(x, y):
+    from ..polys.domains import ZZ
     if x == 1:
         return [y]
-    xp = diofant.polys.ZZ.invert(int(x), int(y))
+    xp = ZZ.invert(int(x), int(y))
     rv = [Integer(xp*y)]
     rv.extend(egypt_golomb((x*xp - 1)//y, xp))
     return sorted(rv)

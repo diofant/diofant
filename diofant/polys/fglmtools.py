@@ -1,6 +1,6 @@
 """Implementation of matrix FGLM Groebner basis conversion algorithm. """
 
-from diofant.polys.monomials import monomial_mul, monomial_div
+from .monomials import monomial_mul, monomial_div
 
 
 def matrix_fglm(F, ring, O_to):

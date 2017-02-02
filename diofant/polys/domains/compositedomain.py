@@ -1,8 +1,8 @@
 """Implementation of :class:`CompositeDomain` class. """
 
-from diofant.polys.domains.domain import Domain
-from diofant.polys.polyerrors import GeneratorsError
-from diofant.utilities import public
+from .domain import Domain
+from ..polyerrors import GeneratorsError
+from ...utilities import public
 
 
 @public

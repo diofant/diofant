@@ -17,16 +17,13 @@ GeometryEntity not considered a Set.
 
 Rn is a GeometrySet representing n-dimensional Euclidean space. R2 and
 R3 are currently the only ambient spaces implemented.
-
 """
 
-from diofant.core.compatibility import is_sequence
-from diofant.core.containers import Tuple
-from diofant.core.basic import Basic
-from diofant.core.sympify import sympify
-from diofant.functions import cos, sin
-from diofant.matrices import eye
-from diofant.sets import Set
+from ..core.compatibility import is_sequence
+from ..core import Basic, Tuple, sympify, Dummy, oo
+from ..functions import cos, sin, atan
+from ..matrices import eye
+from ..sets import Set
 
 
 class GeometryEntity(Basic):
@@ -38,7 +35,7 @@ class GeometryEntity(Basic):
     """
 
     def __new__(cls, *args, **kwargs):
-        from diofant.geometry.point import Point
+        from .point import Point
         args = [Tuple(*a) if is_sequence(a)
                 and not isinstance(a, Point) else sympify(a) for a in args]
         return Basic.__new__(cls, *args)
@@ -118,7 +115,7 @@ class GeometryEntity(Basic):
         Triangle(Point2D(2, 0), Point2D(-1, sqrt(3)), Point2D(-1, -sqrt(3)))
 
         """
-        from diofant.geometry.point import Point
+        from .point import Point
         if pt:
             pt = Point(pt)
             return self.translate(*(-pt).args).scale(x, y).translate(*pt.args)
@@ -155,8 +152,7 @@ class GeometryEntity(Basic):
         return self.func(*newargs)
 
     def reflect(self, line):
-        from diofant import atan, Point, Dummy, oo
-
+        from .point import Point
         g = self
         l = line
         o = Point(0, 0)
@@ -210,13 +206,11 @@ class GeometryEntity(Basic):
         True
         >>> t.encloses(t2)
         False
-
         """
-
-        from diofant.geometry.point import Point
-        from diofant.geometry.line import Segment, Ray, Line
-        from diofant.geometry.ellipse import Ellipse
-        from diofant.geometry.polygon import Polygon, RegularPolygon
+        from .line import Segment, Ray, Line
+        from .ellipse import Ellipse
+        from .polygon import Polygon, RegularPolygon
+        from .point import Point
 
         if isinstance(o, Point):
             return self.encloses_point(o)
@@ -278,7 +272,7 @@ class GeometryEntity(Basic):
 
     def __str__(self):
         """String representation of a GeometryEntity."""
-        from diofant.printing import sstr
+        from ..printing import sstr
         return type(self).__name__ + sstr(self.args)
 
     def __repr__(self):
@@ -294,7 +288,7 @@ class GeometryEntity(Basic):
         raise NotImplementedError()
 
     def _eval_subs(self, old, new):
-        from diofant.geometry.point import Point, Point3D
+        from .point import Point, Point3D
         if is_sequence(old) or is_sequence(new):
             if isinstance(self, Point3D):
                 old = Point3D(old)
@@ -323,7 +317,7 @@ class GeometrySet(GeometryEntity, Set):
         for use with diofant.sets.Set, if possible.
         """
 
-        from diofant.sets import Union, FiniteSet
+        from ..sets import Union, FiniteSet
 
         # if its a FiniteSet, merge any points
         # we contain and return a union with the rest
@@ -339,9 +333,8 @@ class GeometrySet(GeometryEntity, Set):
         """ Returns a diofant.sets.Set of intersection objects,
         if possible.
         """
-
-        from diofant.sets import FiniteSet, Union
-        from diofant.geometry import Point
+        from .point import Point
+        from ..sets import FiniteSet, Union
 
         try:
             inter = self.intersection(o)
@@ -374,7 +367,7 @@ def scale(x, y, pt=None):
     rv[0, 0] = x
     rv[1, 1] = y
     if pt:
-        from diofant.geometry.point import Point
+        from .point import Point
         pt = Point(pt)
         tr1 = translate(*(-pt).args)
         tr2 = translate(*pt.args)

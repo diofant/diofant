@@ -25,7 +25,7 @@ from .compatibility import DIOFANT_INTS, is_sequence
 from .sympify import sympify
 from .singleton import S
 
-from diofant.utilities.misc import debug
+from ..utilities.misc import debug
 
 LG10 = math.log(10, 2)
 rnd = round_nearest
@@ -323,13 +323,13 @@ def add_terms(terms, prec, target_prec):
 
     # see if any argument is NaN or oo and thus warrants a special return
     special = []
-    from diofant.core.numbers import Float
+    from .numbers import Float
     for t in terms:
         arg = Float._new(t[0], 1)
         if arg is S.NaN or arg.is_infinite:
             special.append(arg)
     if special:
-        from diofant.core.add import Add
+        from .add import Add
         rv = evalf(Add(*special), prec + 4, {})
         return rv[0], rv[2]
 
@@ -426,7 +426,7 @@ def evalf_mul(v, prec, options):
 
     # see if any argument is NaN or oo and thus warrants a special return
     special = []
-    from diofant.core.numbers import Float
+    from .numbers import Float
     for arg in args:
         arg = evalf(arg, prec, options)
         if arg[0] is None:
@@ -435,7 +435,7 @@ def evalf_mul(v, prec, options):
         if arg is S.NaN or arg.is_infinite:
             special.append(arg)
     if special:
-        from diofant.core.mul import Mul
+        from .mul import Mul
         special = Mul(*special)
         return evalf(special, prec + 4, {})
 
@@ -640,7 +640,7 @@ def evalf_trig(v, prec, options):
 
     TODO: should also handle tan of complex arguments.
     """
-    from diofant import cos, sin
+    from ..functions import cos, sin
     if v.func is cos:
         func = mpf_cos
     elif v.func is sin:
@@ -695,7 +695,8 @@ def evalf_trig(v, prec, options):
 
 
 def evalf_log(expr, prec, options):
-    from diofant import Abs, Add, log
+    from ..functions import Abs, log
+    from .add import Add
 
     if len(expr.args) > 1:
         expr = expr.doit()
@@ -754,7 +755,7 @@ def evalf_subs(prec, subs):
 
 
 def evalf_piecewise(expr, prec, options):
-    from diofant import Float, Integer
+    from .numbers import Float, Integer
     if 'subs' in options:
         expr = expr.subs(evalf_subs(prec, options['subs']))
         newopts = options.copy()
@@ -788,7 +789,7 @@ def evalf_bernoulli(expr, prec, options):
 
 
 def as_mpmath(x, prec, options):
-    from diofant.core.numbers import Infinity, NegativeInfinity, Zero
+    from .numbers import Infinity, NegativeInfinity, Zero
     x = sympify(x)
     if isinstance(x, Zero) or x == 0:
         return mpf(0)
@@ -831,7 +832,8 @@ def do_integral(expr, prec, options):
         # to account for the variable quadrature weights,
         # but it is better than nothing
 
-        from diofant import cos, sin, Wild
+        from ..functions import cos, sin
+        from .symbol import Wild
 
         have_part = [False, False]
         max_real_term = [MINUS_INF]
@@ -944,7 +946,7 @@ def check_convergence(numer, denom, n):
         <= 1 for polynomial divergence of rate n**(-h)
 
     """
-    from diofant import Poly
+    from ..polys import Poly
     npol = Poly(numer, n)
     dpol = Poly(denom, n)
     p = npol.degree()
@@ -969,7 +971,9 @@ def hypsum(expr, n, start, prec):
     quotient between successive terms must be a quotient of integer
     polynomials.
     """
-    from diofant import Float, hypersimp, lambdify
+    from .numbers import Float
+    from ..simplify import hypersimp
+    from ..utilities import lambdify
 
     if prec == float('inf'):
         raise NotImplementedError('does not support inf prec')
@@ -1039,7 +1043,7 @@ def hypsum(expr, n, start, prec):
 
 
 def evalf_prod(expr, prec, options):
-    from diofant import Sum
+    from ..concrete import Sum
     if all((l[1] - l[2]).is_Integer for l in expr.limits):
         re, im, re_acc, im_acc = evalf(expr.doit(), prec=prec, options=options)
     else:
@@ -1048,7 +1052,7 @@ def evalf_prod(expr, prec, options):
 
 
 def evalf_sum(expr, prec, options):
-    from diofant import Float
+    from .numbers import Float
     if 'subs' in options:
         expr = expr.subs(options['subs'])
     func = expr.function
@@ -1116,21 +1120,21 @@ evalf_table = None
 
 def _create_evalf_table():
     global evalf_table
-    from diofant.functions.combinatorial.numbers import bernoulli
-    from diofant.concrete.products import Product
-    from diofant.concrete.summations import Sum
-    from diofant.core.add import Add
-    from diofant.core.mul import Mul
-    from diofant.core.numbers import (Exp1, Float, Half, ImaginaryUnit,
-                                      Integer, NaN, NegativeOne, One, Pi,
-                                      Rational, Zero)
-    from diofant.core.power import Pow
-    from diofant.core.symbol import Dummy, Symbol
-    from diofant.functions.elementary.complexes import Abs, im, re
-    from diofant.functions.elementary.exponential import log
-    from diofant.functions.elementary.piecewise import Piecewise
-    from diofant.functions.elementary.trigonometric import atan, cos, sin
-    from diofant.integrals.integrals import Integral
+    from ..functions.combinatorial.numbers import bernoulli
+    from ..concrete.products import Product
+    from ..concrete.summations import Sum
+    from .add import Add
+    from .mul import Mul
+    from .numbers import (Exp1, Float, Half, ImaginaryUnit,
+                          Integer, NaN, NegativeOne, One, Pi,
+                          Rational, Zero)
+    from .power import Pow
+    from .symbol import Dummy, Symbol
+    from ..functions.elementary.complexes import Abs, im, re
+    from ..functions.elementary.exponential import log
+    from ..functions.elementary.piecewise import Piecewise
+    from ..functions.elementary.trigonometric import atan, cos, sin
+    from ..integrals.integrals import Integral
     evalf_table = {
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
@@ -1172,7 +1176,7 @@ def _create_evalf_table():
 
 
 def evalf(x, prec, options):
-    from diofant import re as re_, im as im_
+    from ..functions import re as re_, im as im_
     try:
         rf = evalf_table[x.func]
         r = rf(x, prec, options)
@@ -1251,7 +1255,7 @@ class EvalfMixin:
                 tanh-sinh quadrature is used. For oscillatory
                 integrals on an infinite interval, try quad='osc'.
         """
-        from diofant import Float, Number
+        from .numbers import Float, Number
         n = n if n is not None else 15
 
         if subs and is_sequence(subs):

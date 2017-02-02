@@ -15,7 +15,7 @@ from .singleton import S
 from .symbol import Dummy
 from .coreerrors import NonCommutativeExpression
 from .containers import Tuple, Dict
-from diofant.utilities.iterables import (common_prefix, common_suffix,
+from ..utilities.iterables import (common_prefix, common_suffix,
                                          variations)
 
 
@@ -1041,7 +1041,7 @@ def _mask_nc(eq, name=None):
     names = numbered_names()
 
     def Dummy(*args, **kwargs):
-        from diofant import Dummy
+        from .symbol import Dummy
         return Dummy(next(names), *args, **kwargs)
 
     expr = eq
@@ -1104,8 +1104,8 @@ def factor_nc(expr):
     >>> factor_nc(((x + A)*(x + B)).expand())
     (x + A)*(x + B)
     """
-    from diofant.simplify.simplify import powsimp
-    from diofant.polys import gcd, factor
+    from ..simplify.simplify import powsimp
+    from ..polys import gcd, factor
 
     def _pemexpand(expr):
         """Expand with the minimal set of hints necessary to check

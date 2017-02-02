@@ -1,9 +1,9 @@
-from diofant.core import Basic, S, Function, diff, Tuple, Dummy, Expr
-from diofant.core.relational import Equality, Relational
-from diofant.functions.elementary.miscellaneous import Max, Min
-from diofant.logic.boolalg import (And, Boolean, distribute_and_over_or, Not, Or,
-                                   true, false)
-from diofant.core.compatibility import default_sort_key
+from ...core import Basic, S, Function, diff, Tuple, Dummy, Expr, Equality
+from ...core.relational import Relational
+from .miscellaneous import Max, Min
+from ...logic import And, Not, Or, true, false
+from ...logic.boolalg import Boolean, distribute_and_over_or
+from ...core.compatibility import default_sort_key
 
 
 class ExprCondPair(Tuple):
@@ -194,7 +194,7 @@ class Piecewise(Function):
         return self.func(*[(e.evalf(prec), c) for e, c in self.args])
 
     def _eval_integral(self, x):
-        from diofant.integrals import integrate
+        from ...integrals import integrate
         return self.func(*[(integrate(e, x), c) for e, c in self.args])
 
     def _eval_interval(self, sym, a, b):
@@ -204,7 +204,7 @@ class Piecewise(Function):
         # following papers;
         #     http://portal.acm.org/citation.cfm?id=281649
         #     http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.4127&rep=rep1&type=pdf
-        from diofant.functions.elementary.complexes import Abs
+        from .complexes import Abs
 
         if sym.is_real is None:
             d = Dummy('d', real=True)
@@ -305,7 +305,7 @@ class Piecewise(Function):
         is given, we return a list of (lowerbound, upperbound) pairs for
         this condition.
         """
-        from diofant.solvers.inequalities import solve_univariate_inequality
+        from ...solvers import solve_univariate_inequality
         default = None
         int_expr = []
         expr_cond = []

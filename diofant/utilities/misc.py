@@ -24,6 +24,6 @@ def debug(*args):
     """
     Print ``*args`` if DIOFANT_DEBUG is True, else do nothing.
     """
-    from diofant import DIOFANT_DEBUG
+    from .. import DIOFANT_DEBUG
     if DIOFANT_DEBUG:
         print(*args, file=sys.stderr)

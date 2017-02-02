@@ -3,44 +3,33 @@
 import mpmath
 from mpmath.libmp.libhyper import NoConvergence
 
-from diofant.core import S, Basic, Expr, I, Integer, Add, Mul, Dummy, Tuple
-from diofant.core.mul import _keep_coeff
-from diofant.core.symbol import Symbol
-from diofant.core.basic import preorder_traversal
-from diofant.core.relational import Relational
-from diofant.core.sympify import sympify
-from diofant.core.decorators import _sympifyit
-from diofant.core.function import Derivative
-from diofant.logic.boolalg import BooleanAtom
-from diofant.polys.polyclasses import DMP
-from diofant.polys.polyutils import (
-    basic_from_dict,
-    _sort_gens,
-    _unify_gens,
-    _dict_reorder,
-    _dict_from_expr,
-    _parallel_dict_from_expr)
-from diofant.polys.rationaltools import together
-from diofant.polys.rootisolation import dup_isolate_real_roots_list
-from diofant.polys.groebnertools import groebner as _groebner
-from diofant.polys.fglmtools import matrix_fglm
-from diofant.polys.monomials import Monomial
-from diofant.polys.orderings import monomial_key
-from diofant.polys.polyerrors import (
-    OperationNotSupported, DomainError,
-    CoercionFailed, UnificationFailed,
-    GeneratorsNeeded, PolynomialError,
-    MultivariatePolynomialError,
-    ExactQuotientFailed,
-    PolificationFailed,
-    ComputationFailed,
-    GeneratorsError)
-from diofant.utilities import group, sift, public
-import diofant.polys
-from diofant.polys.domains import FF, QQ, ZZ
-from diofant.polys.constructor import construct_domain
-from diofant.polys import polyoptions as options
-from diofant.core.compatibility import iterable
+from ..core import (S, Basic, Expr, I, Integer, Add, Mul, Dummy,
+                    Tuple, Symbol, preorder_traversal, sympify, Derivative)
+from ..core.mul import _keep_coeff
+from ..core.relational import Relational
+from ..core.decorators import _sympifyit
+from ..logic.boolalg import BooleanAtom
+from .polyclasses import DMP
+from .polyutils import (basic_from_dict, _sort_gens, _unify_gens,
+                        _dict_reorder, _dict_from_expr,
+                        _parallel_dict_from_expr)
+from .rationaltools import together
+from .rootisolation import dup_isolate_real_roots_list
+from .groebnertools import groebner as _groebner
+from .fglmtools import matrix_fglm
+from .monomials import Monomial
+from .orderings import monomial_key
+from .polyerrors import (OperationNotSupported, DomainError,
+                         CoercionFailed, UnificationFailed,
+                         GeneratorsNeeded, PolynomialError,
+                         MultivariatePolynomialError, ExactQuotientFailed,
+                         PolificationFailed, ComputationFailed,
+                         GeneratorsError)
+from ..utilities import group, sift, public
+from .domains import FF, QQ, ZZ
+from .constructor import construct_domain
+from . import polyoptions as options
+from ..core.compatibility import iterable
 
 
 @public
@@ -2502,7 +2491,7 @@ class Poly(Expr):
         .. [3] [Abramov71]_
         .. [4] [Man93]_
         """
-        from diofant.polys.dispersion import dispersionset
+        from .dispersion import dispersionset
         return dispersionset(self, other)
 
     def dispersion(self, other=None):
@@ -2577,7 +2566,7 @@ class Poly(Expr):
         .. [3] [Abramov71]_
         .. [4] [Man93]_
         """
-        from diofant.polys.dispersion import dispersion
+        from .dispersion import dispersion
         return dispersion(self, other)
 
     def cofactors(self, other):
@@ -3224,7 +3213,8 @@ class Poly(Expr):
         >>> Poly(x**5 + x + 1).root(0)
         RootOf(x**3 - x**2 + 1, x, 0)
         """
-        return diofant.polys.rootoftools.RootOf(self, index, radicals=radicals)
+        from .rootoftools import RootOf
+        return RootOf(self, index, radicals=radicals)
 
     def real_roots(self, multiple=True, radicals=True):
         """
@@ -3241,7 +3231,8 @@ class Poly(Expr):
         >>> Poly(x**3 + x + 1).real_roots()
         [RootOf(x**3 + x + 1, x, 0)]
         """
-        reals = diofant.polys.rootoftools.RootOf.real_roots(self, radicals=radicals)
+        from .rootoftools import RootOf
+        reals = RootOf.real_roots(self, radicals=radicals)
 
         if multiple:
             return reals
@@ -3265,7 +3256,8 @@ class Poly(Expr):
          RootOf(x**3 + x + 1, x, 1),
          RootOf(x**3 + x + 1, x, 2)]
         """
-        roots = diofant.polys.rootoftools.RootOf.all_roots(self, radicals=radicals)
+        from .rootoftools import RootOf
+        roots = RootOf.all_roots(self, radicals=radicals)
 
         if multiple:
             return roots
@@ -3310,7 +3302,7 @@ class Poly(Expr):
             coeffs = [int(coeff) for coeff in self.all_coeffs()]
         elif self.rep.domain is QQ:
             denoms = [coeff.q for coeff in self.all_coeffs()]
-            from diofant.core.numbers import ilcm
+            from ..core import ilcm
             fac = ilcm(*denoms)
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
         else:
@@ -4039,7 +4031,7 @@ def parallel_poly_from_expr(exprs, *gens, **args):
 
 def _parallel_poly_from_expr(exprs, opt):
     """Construct polynomials from expressions. """
-    from diofant.functions.elementary.piecewise import Piecewise
+    from ..functions import Piecewise
 
     if len(exprs) == 2:
         f, g = exprs
@@ -5088,7 +5080,7 @@ def terms_gcd(f, *gens, **args):
     diofant.core.exprtools.gcd_terms, diofant.core.exprtools.factor_terms
 
     """
-    from diofant.core.relational import Equality
+    from ..core import Equality
 
     orig = sympify(f)
     if not isinstance(f, Expr) or f.is_Atom:
@@ -5640,7 +5632,7 @@ def to_rational_coeffs(f):
     True
 
     """
-    from diofant.simplify.simplify import simplify
+    from ..simplify import simplify
 
     def _try_rescale(f, f1=None):
         """
@@ -5650,7 +5642,7 @@ def to_rational_coeffs(f):
         ``alpha`` is the rescaling factor, and ``f`` is the rescaled
         polynomial; else ``alpha`` is ``None``.
         """
-        from diofant.core.add import Add
+        from ..core import Add
         if not len(f.gens) == 1 or not (f.gens[0]).is_Atom:
             return None, f
         n = f.degree()
@@ -5685,7 +5677,7 @@ def to_rational_coeffs(f):
         ``alpha`` is the translating factor, and ``f`` is the shifted
         polynomial; else ``alpha`` is ``None``.
         """
-        from diofant.core.add import Add
+        from ..core import Add
         if not len(f.gens) == 1 or not (f.gens[0]).is_Atom:
             return None, f
         n = f.degree()
@@ -5710,7 +5702,7 @@ def to_rational_coeffs(f):
         """
         Return True if ``f`` is a sum with square roots but no other root
         """
-        from diofant.core.exprtools import Factors
+        from ..core.exprtools import Factors
         coeffs = p.coeffs()
         has_sq = False
         for y in coeffs:
@@ -5760,7 +5752,7 @@ def _torational_factor_list(p, x):
     True
 
     """
-    from diofant.simplify.simplify import simplify
+    from ..simplify import simplify
     p1 = Poly(p, x, domain='EX')
     n = p1.degree()
     res = to_rational_coeffs(p1)
@@ -5910,7 +5902,7 @@ def factor(f, *gens, **args):
         return _generic_factor(f, gens, args, method='factor')
     except PolynomialError as msg:
         if not f.is_commutative:
-            from diofant.core.exprtools import factor_nc
+            from ..core.exprtools import factor_nc
             return factor_nc(f)
         else:
             raise PolynomialError(msg)
@@ -6155,8 +6147,8 @@ def cancel(f, *gens, **args):
     >>> cancel((sqrt(3) + sqrt(15)*A)/(sqrt(2) + sqrt(10)*A))
     sqrt(6)/2
     """
-    from diofant.core.exprtools import factor_terms
-    from diofant.functions.elementary.piecewise import Piecewise
+    from ..core.exprtools import factor_terms
+    from ..functions import Piecewise
     options.allowed_flags(args, ['polys'])
 
     f = sympify(f)
@@ -6250,7 +6242,7 @@ def reduced(f, G, *gens, **args):
         opt = opt.clone(dict(domain=domain.get_field()))
         retract = True
 
-    from diofant.polys.rings import ring
+    from .rings import ring
     _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
     for i, poly in enumerate(polys):
@@ -6359,7 +6351,7 @@ class GroebnerBasis(Basic):
         except PolificationFailed as exc:
             raise ComputationFailed('groebner', len(F), exc)
 
-        from diofant.polys.rings import PolyRing
+        from .rings import PolyRing
         ring = PolyRing(opt.gens, opt.domain, opt.order)
 
         if not ring.domain.is_Exact:
@@ -6518,7 +6510,7 @@ class GroebnerBasis(Basic):
             order=dst_order,
         ))
 
-        from diofant.polys.rings import ring
+        from .rings import ring
         _ring, *_ = ring(opt.gens, opt.domain, src_order)
 
         for i, poly in enumerate(polys):
@@ -6574,7 +6566,7 @@ class GroebnerBasis(Basic):
             opt = opt.clone(dict(domain=domain.get_field()))
             retract = True
 
-        from diofant.polys.rings import ring
+        from .rings import ring
         _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
         for i, poly in enumerate(polys):

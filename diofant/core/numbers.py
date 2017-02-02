@@ -19,8 +19,7 @@ from .expr import Expr, AtomicExpr
 from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
-from .compatibility import as_int, HAS_GMPY, DIOFANT_INTS
-import diofant.core.compatibility
+from .compatibility import as_int, HAS_GMPY, DIOFANT_INTS, gcd
 
 rnd = mlib.round_nearest
 
@@ -148,7 +147,7 @@ def igcd(*args):
     for b in args[1:]:
         a, b = as_int(a), abs(as_int(b))
 
-        a = diofant.core.compatibility.gcd(a, b)
+        a = gcd(a, b)
         if a == 1:
             break
     return a
@@ -262,7 +261,7 @@ class Number(AtomicExpr):
 
     def __divmod__(self, other):
         from .containers import Tuple
-        from diofant.functions.elementary.complexes import sign
+        from ..functions.elementary.complexes import sign
 
         try:
             other = Number(other)
@@ -470,17 +469,17 @@ class Number(AtomicExpr):
 
     def gcd(self, other):
         """Compute GCD of `self` and `other`. """
-        from diofant.polys import gcd
+        from ..polys import gcd
         return gcd(self, other)
 
     def lcm(self, other):
         """Compute LCM of `self` and `other`. """
-        from diofant.polys import lcm
+        from ..polys import lcm
         return lcm(self, other)
 
     def cofactors(self, other):
         """Compute GCD and cofactors of `self` and `other`. """
-        from diofant.polys import cofactors
+        from ..polys import cofactors
         return cofactors(self, other)
 
 
@@ -784,7 +783,7 @@ class Float(Number):
         return mpmath.mpf(self._mpf_)
 
     def _as_mpf_val(self, prec):
-        from diofant.utilities.misc import debug
+        from ..utilities.misc import debug
         rv = mpf_norm(self._mpf_, prec)
         if rv != self._mpf_ and self._prec == prec:
             debug(self._mpf_, rv)
@@ -1396,7 +1395,7 @@ class Rational(Number):
         smaller than limit (or cheap to compute). Special methods of
         factoring are disabled by default so that only trial division is used.
         """
-        from diofant.ntheory import factorint
+        from ..ntheory import factorint
 
         f = factorint(self.p, limit=limit, use_trial=use_trial,
                       use_rho=use_rho, use_pm1=use_pm1,
@@ -1683,7 +1682,7 @@ class Integer(Rational):
         the argument which is not done here for sake of speed.
 
         """
-        from diofant import perfect_power
+        from ..ntheory import perfect_power
 
         if expt is S.Infinity:
             if self.p > S.One:
@@ -1775,7 +1774,7 @@ class Integer(Rational):
         return result
 
     def _eval_is_prime(self):
-        from diofant.ntheory import isprime
+        from ..ntheory import isprime
 
         return isprime(self)
 
@@ -1805,10 +1804,10 @@ class AlgebraicNumber(Expr):
 
     def __new__(cls, expr, coeffs=(1, 0), alias=None, **args):
         """Construct a new algebraic number. """
-        from diofant import Poly
-        from diofant.polys.polyclasses import ANP, DMP
-        from diofant.polys.numberfields import minimal_polynomial
-        from diofant.core.symbol import Symbol
+        from ..polys import Poly
+        from ..polys.polyclasses import ANP, DMP
+        from ..polys.numberfields import minimal_polynomial
+        from .symbol import Symbol
 
         expr = sympify(expr)
 
@@ -1861,7 +1860,8 @@ class AlgebraicNumber(Expr):
 
     def as_poly(self, x=None):
         """Create a Poly instance from ``self``. """
-        from diofant import Dummy, Poly, PurePoly
+        from .symbol import Dummy
+        from ..polys import Poly, PurePoly
         if x is not None:
             return Poly.new(self.rep, x)
         else:
@@ -1884,7 +1884,7 @@ class AlgebraicNumber(Expr):
 
     def to_algebraic_integer(self):
         """Convert ``self`` to an algebraic integer. """
-        from diofant import Poly
+        from ..polys import Poly
         f = self.minpoly
 
         if f.LC() == 1:
@@ -1899,7 +1899,7 @@ class AlgebraicNumber(Expr):
         return AlgebraicNumber((minpoly, root), self.coeffs())
 
     def _eval_simplify(self, ratio, measure):
-        from diofant.polys import RootOf, minpoly
+        from ..polys import RootOf, minpoly
 
         for r in [r for r in self.minpoly.all_roots() if r.func != RootOf]:
             if minpoly(self.root - r).is_Symbol:
@@ -2275,7 +2275,7 @@ class Infinity(Number, metaclass=Singleton):
         NegativeInfinity
 
         """
-        from diofant.functions import re
+        from ..functions import re
 
         if expt.is_positive:
             return S.Infinity
@@ -2870,8 +2870,8 @@ class Exp1(NumberSymbol, metaclass=Singleton):
             return Integer(2), Integer(3)
 
     def _eval_power(self, arg):
-        from diofant.functions.elementary.exponential import log
-        from diofant import Add, Mul, Pow
+        from ..functions.elementary.exponential import log
+        from . import Add, Mul, Pow
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Infinity
@@ -2940,12 +2940,12 @@ class Exp1(NumberSymbol, metaclass=Singleton):
             return arg.exp()
 
     def _eval_rewrite_as_sin(self):
-        from diofant import sin
+        from ..functions import sin
         I = S.ImaginaryUnit
         return sin(I + S.Pi/2) - I*sin(I)
 
     def _eval_rewrite_as_cos(self):
-        from diofant import cos
+        from ..functions import cos
         I = S.ImaginaryUnit
         return cos(I) + I*cos(I + S.Pi/2)
 
@@ -3063,7 +3063,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
         return mpf_norm(rv, prec)
 
     def _eval_expand_func(self, **hints):
-        from diofant import sqrt
+        from ..functions import sqrt
         return S.Half + S.Half*sqrt(5)
 
     def approximation_interval(self, number_cls):

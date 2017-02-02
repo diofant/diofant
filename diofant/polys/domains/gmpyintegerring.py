@@ -1,12 +1,10 @@
 """Implementaton of :class:`GMPYIntegerRing` class. """
 
-from diofant.polys.domains.integerring import IntegerRing
-from diofant.polys.domains.groundtypes import (
-    GMPYInteger, DiofantInteger,
-    gmpy_factorial,
-    gmpy_gcdex, gmpy_gcd, gmpy_lcm, gmpy_sqrt)
-from diofant.polys.polyerrors import CoercionFailed
-from diofant.utilities import public
+from .integerring import IntegerRing
+from .groundtypes import (GMPYInteger, DiofantInteger, gmpy_factorial,
+                          gmpy_gcdex, gmpy_gcd, gmpy_lcm, gmpy_sqrt)
+from ..polyerrors import CoercionFailed
+from ...utilities import public
 
 
 @public

@@ -26,26 +26,18 @@ from the names used in Bronstein's book.
 
 from functools import reduce
 
-from diofant import real_roots, sympify, default_sort_key
-from diofant.core.function import Lambda
-from diofant.core.numbers import ilcm, oo, Integer
-from diofant.core.mul import Mul
-from diofant.core.power import Pow
-from diofant.core.relational import Eq
-from diofant.core.singleton import S
-from diofant.core.symbol import Symbol, Dummy
-from diofant.core.compatibility import ordered
-from diofant.integrals.heurisch import _symbols
-from diofant.functions import (acos, acot, asin, atan, cos, cot, exp, log,
-                               Piecewise, sin, tan)
+from ..core import (sympify, Lambda, oo, Integer, ilcm, Mul, Pow, Eq,
+                    S, Symbol, Dummy)
+from ..core.compatibility import ordered, default_sort_key
+from .heurisch import _symbols
+from ..functions import (acos, acot, asin, atan, cos, cot, exp, log,
+                         Piecewise, sin, tan, sinh, cosh, tanh, coth)
+from .integrals import Integral, integrate
+from ..polys import (gcd, cancel, PolynomialError, Poly,
+                     reduced, RootSum, DomainError, real_roots)
+from ..utilities import numbered_symbols
 
-from diofant.functions import sinh, cosh, tanh, coth
-from diofant.integrals import Integral, integrate
-from diofant.polys import (gcd, cancel, PolynomialError, Poly,
-                           reduced, RootSum, DomainError)
-from diofant.utilities.iterables import numbered_symbols
-
-from diofant.abc import z
+from ..abc import z
 
 
 def integer_powers(exprs):
@@ -201,7 +193,7 @@ class DifferentialExtension:
             raise ValueError("Either both f and x or a manual extension must "
             "be given.")
 
-        from diofant.integrals.prde import is_deriv_k
+        from .prde import is_deriv_k
 
         if handle_first not in ['log', 'exp']:
             raise ValueError("handle_first must be 'log' or 'exp', not %s." %
@@ -432,7 +424,7 @@ class DifferentialExtension:
         way around an algebraic extension (e.g., exp(log(x)/2)), it will raise
         NotImplementedError.
         """
-        from diofant.integrals.prde import is_log_deriv_k_t_radical
+        from .prde import is_log_deriv_k_t_radical
 
         new_extension = False
         restart = False
@@ -540,7 +532,7 @@ class DifferentialExtension:
         way, so this function does not ever return None or raise
         NotImplementedError.
         """
-        from diofant.integrals.prde import is_deriv_k
+        from .prde import is_deriv_k
 
         new_extension = False
         logargs = [i.args[0] for i in logs]
@@ -1264,7 +1256,7 @@ def integrate_primitive_polynomial(p, DE):
     True, or r = p - Dq does not have an elementary integral over k(t) if b is
     False.
     """
-    from diofant.integrals.prde import limited_integrate
+    from .prde import limited_integrate
 
     Zero = Poly(0, DE.t)
     q = Poly(0, DE.t)
@@ -1353,7 +1345,7 @@ def integrate_hyperexponential_polynomial(p, DE, z):
     k[t, 1/t] and a bool b in {True, False} such that p - Dq in k if b is True,
     or p - Dq does not have an elementary integral over k(t) if b is False.
     """
-    from diofant.integrals.rde import rischDE
+    from .rde import rischDE
 
     t1 = DE.t
     dtt = DE.d.exquo(Poly(DE.t, DE.t))

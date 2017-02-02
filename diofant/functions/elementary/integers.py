@@ -1,10 +1,5 @@
-from diofant.core.singleton import S
-from diofant.core.function import Function
-from diofant.core import Add
-from diofant.core.evalf import PrecisionExhausted
-from diofant.core.numbers import Integer
-from diofant.core.relational import Gt, Lt, Ge, Le
-from diofant.core.symbol import Dummy, Symbol
+from ...core import (S, Function, Add, Integer, Gt, Lt, Ge, Le, Dummy,
+                     Symbol, PrecisionExhausted)
 
 
 ###############################################################################
@@ -17,7 +12,7 @@ class RoundFunction(Function):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import im
+        from .complexes import im
         if arg.is_integer:
             return arg
         if arg.func is cls:
@@ -55,7 +50,7 @@ class RoundFunction(Function):
             npart.is_extended_real and (spart.is_imaginary or (S.ImaginaryUnit*spart).is_extended_real) or
                 npart.is_imaginary and spart.is_extended_real):
             try:
-                from diofant.core.evalf import DEFAULT_MAXPREC as TARGET
+                from ...core.evalf import DEFAULT_MAXPREC as TARGET
                 prec = 10
                 while True:
                     r, i = cls(npart, evaluate=False).evalf(prec).as_real_imag()

@@ -1,7 +1,7 @@
 from itertools import combinations_with_replacement
 
-from diofant import Function, sympify, diff, Eq, S, Symbol, Derivative
-from diofant.core.compatibility import iterable
+from ..core import Function, sympify, diff, Eq, S, Symbol, Derivative
+from ..core.compatibility import iterable
 
 
 def euler_equations(L, funcs=(), vars=()):

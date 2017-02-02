@@ -1,9 +1,8 @@
 """Tools for manipulation of rational expressions. """
 
-from diofant.core import Basic, Add, sympify
-from diofant.core.compatibility import iterable
-from diofant.core.exprtools import gcd_terms
-from diofant.utilities import public
+from ..core import Basic, Add, sympify, gcd_terms
+from ..core.compatibility import iterable
+from ..utilities import public
 
 
 @public

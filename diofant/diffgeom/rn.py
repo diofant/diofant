@@ -9,7 +9,8 @@ using the usual `coord_sys.coord_function(index, name)` interface.
 """
 
 from .diffgeom import Manifold, Patch, CoordSystem
-from diofant import sqrt, atan2, acos, sin, cos, Dummy
+from ..core import Dummy
+from ..functions import sqrt, atan2, acos, sin, cos
 
 
 ###############################################################################

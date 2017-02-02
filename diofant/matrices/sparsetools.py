@@ -1,4 +1,4 @@
-from diofant import SparseMatrix
+from .sparse import SparseMatrix
 
 
 def _doktocsr(dok):

@@ -1,5 +1,5 @@
-from diofant.concrete.expr_with_limits import ExprWithLimits
-from diofant.core.singleton import S
+from .expr_with_limits import ExprWithLimits
+from ..core import S
 
 
 class ReorderError(NotImplementedError):

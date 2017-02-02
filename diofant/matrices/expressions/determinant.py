@@ -1,4 +1,4 @@
-from diofant import Expr, sympify
+from ...core import Expr, sympify
 from .matexpr import ShapeError
 
 

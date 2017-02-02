@@ -1,11 +1,12 @@
-from diofant.core import Basic, Tuple
-from diofant.sets import FiniteSet
-from diofant.core.compatibility import as_int
-from diofant.combinatorics import Permutation as Perm
-from diofant.combinatorics.perm_groups import PermutationGroup
-from diofant.utilities.iterables import minlex, unflatten, flatten
+from ..core import Basic, Tuple
+from ..sets import FiniteSet
+from ..core.compatibility import as_int
+from .permutations import Permutation
+from .perm_groups import PermutationGroup
+from ..utilities import unflatten, flatten
+from ..utilities.iterables import minlex
 
-rmul = Perm.rmul
+rmul = Permutation.rmul
 
 
 class Polyhedron(Basic):
@@ -386,7 +387,7 @@ class Polyhedron(Basic):
             raise ValueError("Permutation size unequal to number of corners.")
         # use the identity permutation if none are given
         obj._pgroup = PermutationGroup((
-            pgroup or [Perm(range(len(corners)))] ))
+            pgroup or [Permutation(range(len(corners)))] ))
         return obj
 
     @property
@@ -453,7 +454,7 @@ class Polyhedron(Basic):
 
         corners, array_form
         """
-        return Perm._af_new(self.array_form).cyclic_form
+        return Permutation._af_new(self.array_form).cyclic_form
 
     @property
     def size(self):
@@ -558,7 +559,7 @@ class Polyhedron(Basic):
         >>> h5.corners == copy.corners
         False
         """
-        if not isinstance(perm, Perm):
+        if not isinstance(perm, Permutation):
             perm = self.pgroup[perm]
             # and we know it's valid
         else:
@@ -686,7 +687,7 @@ def _pgroup_calcs():
                        for f in reorder]
             # map face to vertex: the resulting list of vertices are the
             # permutation that we seek for the double
-            new_pgroup.append(Perm([fmap[f] for f in reorder]))
+            new_pgroup.append(Permutation([fmap[f] for f in reorder]))
         return new_pgroup
 
     tetrahedron_faces = [
@@ -697,13 +698,13 @@ def _pgroup_calcs():
     # cw from top
     #
     _t_pgroup = [
-        Perm([[1, 2, 3], [0]]),  # cw from top
-        Perm([[0, 1, 2], [3]]),  # cw from front face
-        Perm([[0, 3, 2], [1]]),  # cw from back right face
-        Perm([[0, 3, 1], [2]]),  # cw from back left face
-        Perm([[0, 1], [2, 3]]),  # through front left edge
-        Perm([[0, 2], [1, 3]]),  # through front right edge
-        Perm([[0, 3], [1, 2]]),  # through back edge
+        Permutation([[1, 2, 3], [0]]),  # cw from top
+        Permutation([[0, 1, 2], [3]]),  # cw from front face
+        Permutation([[0, 3, 2], [1]]),  # cw from back right face
+        Permutation([[0, 3, 1], [2]]),  # cw from back left face
+        Permutation([[0, 1], [2, 3]]),  # through front left edge
+        Permutation([[0, 2], [1, 3]]),  # through front right edge
+        Permutation([[0, 3], [1, 2]]),  # through back edge
     ]
 
     tetrahedron = Polyhedron(
@@ -718,7 +719,7 @@ def _pgroup_calcs():
     ]
 
     # U, D, F, B, L, R = up, down, front, back, left, right
-    _c_pgroup = [Perm(p) for p in
+    _c_pgroup = [Permutation(p) for p in
         [
         [1, 2, 3, 0, 5, 6, 7, 4],  # cw from top, U
         [4, 0, 3, 7, 5, 1, 2, 6],  # cw from F face
@@ -763,7 +764,7 @@ def _pgroup_calcs():
     ]
 
     def _string_to_perm(s):
-        rv = [Perm(range(20))]
+        rv = [Permutation(range(20))]
         p = None
         for si in s:
             if si not in '01':
@@ -775,14 +776,14 @@ def _pgroup_calcs():
                 elif si == '1':
                     p = _f1
             rv.extend([p]*count)
-        return Perm.rmul(*rv)
+        return Permutation.rmul(*rv)
 
     # top face cw
-    _f0 = Perm([
+    _f0 = Permutation([
         1, 2, 3, 4, 0, 6, 7, 8, 9, 5, 11,
         12, 13, 14, 10, 16, 17, 18, 19, 15])
     # front face cw
-    _f1 = Perm([
+    _f1 = Permutation([
         5, 0, 4, 9, 14, 10, 1, 3, 13, 15,
         6, 2, 8, 19, 16, 17, 11, 7, 12, 18])
     # the strings below, like 0104 are shorthand for F0*F1*F0**4 and are

@@ -1,12 +1,12 @@
 """Implementation of :class:`ComplexField` class. """
 
-from diofant.core.numbers import Float, I
-from diofant.utilities import public
-from diofant.polys.domains.field import Field
-from diofant.polys.domains.simpledomain import SimpleDomain
-from diofant.polys.domains.characteristiczero import CharacteristicZero
-from diofant.polys.domains.mpelements import MPContext
-from diofant.polys.polyerrors import DomainError, CoercionFailed
+from ...core import Float, I
+from ...utilities import public
+from .field import Field
+from .simpledomain import SimpleDomain
+from .characteristiczero import CharacteristicZero
+from .mpelements import MPContext
+from ..polyerrors import DomainError, CoercionFailed
 
 
 @public

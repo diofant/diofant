@@ -41,14 +41,15 @@ WignerSemicircle
 
 import random
 
-from diofant import (log, sqrt, pi, S, Dummy, Interval, sympify, gamma,
-                     Piecewise, And, Eq, binomial, factorial, Sum, floor, Abs,
-                     Lambda, Expr, oo, Rational)
-from diofant import beta as beta_fn
-from diofant import cos, exp, besseli
-from diofant.stats.crv import (SingleContinuousPSpace, SingleContinuousDistribution,
-                               ContinuousDistributionHandmade)
-from diofant.stats.rv import _value_check
+from ..core import pi, S, Dummy, sympify, Eq, Lambda, Expr, oo, Rational
+from ..concrete import Sum
+from ..logic import And
+from ..functions import (beta as beta_fn, cos, exp, besseli, log, sqrt,
+                         binomial, factorial, floor, Abs, gamma, Piecewise)
+from ..sets import Interval
+from .crv import (SingleContinuousPSpace, SingleContinuousDistribution,
+                  ContinuousDistributionHandmade)
+from .rv import _value_check
 
 __all__ = ('ContinuousRV',
            'Arcsin',
@@ -2153,7 +2154,7 @@ class UniformDistribution(SingleContinuousDistribution):
             (S.Zero, True))
 
     def compute_cdf(self, **kwargs):
-        from diofant import Lambda, Min
+        from ..functions import Min
         z = Dummy('z', real=True)
         result = SingleContinuousDistribution.compute_cdf(self, **kwargs)(z)
         reps = {
@@ -2164,7 +2165,7 @@ class UniformDistribution(SingleContinuousDistribution):
         return Lambda(z, result)
 
     def expectation(self, expr, var, **kwargs):
-        from diofant import Max, Min
+        from ..functions import Max, Min
         kwargs['evaluate'] = True
         result = SingleContinuousDistribution.expectation(self, expr, var, **kwargs)
         result = result.subs({Max(self.left, self.right): self.right,

@@ -12,12 +12,12 @@ Binomial
 Hypergeometric
 """
 
-from diofant.core.compatibility import as_int
-from diofant.core.logic import fuzzy_not, fuzzy_and
-from diofant.stats.frv import (SingleFinitePSpace, SingleFiniteDistribution)
-from diofant.concrete.summations import Sum
-from diofant import (S, sympify, Rational, binomial, cacheit, Integer,
-                     Dict, Expr, KroneckerDelta, Dummy)
+from ..core.compatibility import as_int
+from ..core.logic import fuzzy_not, fuzzy_and
+from .frv import (SingleFinitePSpace, SingleFiniteDistribution)
+from ..concrete import Sum
+from ..core import S, sympify, Rational, cacheit, Integer, Dict, Expr, Dummy
+from ..functions import binomial, KroneckerDelta
 
 __all__ = ('FiniteRV', 'DiscreteUniform', 'Die', 'Bernoulli', 'Coin',
            'Binomial', 'Hypergeometric')

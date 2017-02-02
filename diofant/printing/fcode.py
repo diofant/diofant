@@ -19,10 +19,9 @@ the responsibility for generating properly cased Fortran code to the user.
 
 import string
 
-from diofant.core import S, Add, N
-from diofant.core.function import Function
-from diofant.printing.codeprinter import CodePrinter, Assignment
-from diofant.printing.precedence import precedence
+from ..core import S, Add, N, Function
+from .codeprinter import CodePrinter, Assignment
+from .precedence import precedence
 
 known_functions = {
     "sin": "sin",

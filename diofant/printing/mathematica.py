@@ -4,9 +4,9 @@ Mathematica code printer
 
 import types
 
-from diofant.printing.codeprinter import CodePrinter
-from diofant.printing.str import StrPrinter
-from diofant.printing.precedence import precedence
+from .codeprinter import CodePrinter
+from .str import StrPrinter
+from .precedence import precedence
 
 # Used in MCodePrinter._print_Function(self)
 known_functions = {
@@ -154,7 +154,7 @@ class MCodePrinter(CodePrinter):
                              self.parenthesize(expr.rhs, PREC))
 
     def _print_RootOf(self, expr):
-        from diofant.core.symbol import Symbol
+        from ..core import Symbol
 
         return 'Root[%s &, %s]' % (self.doprint(expr.expr.subs(expr.poly.gen,
                                                                Symbol('#'))),

@@ -1,220 +1,97 @@
 """Compatibility interface between dense and sparse polys. """
 
-from diofant.polys.densearith import dup_add_term
-from diofant.polys.densearith import dmp_add_term
-from diofant.polys.densearith import dup_sub_term
-from diofant.polys.densearith import dmp_sub_term
-from diofant.polys.densearith import dup_mul_term
-from diofant.polys.densearith import dmp_mul_term
-from diofant.polys.densearith import dup_add_ground
-from diofant.polys.densearith import dmp_add_ground
-from diofant.polys.densearith import dup_sub_ground
-from diofant.polys.densearith import dmp_sub_ground
-from diofant.polys.densearith import dup_mul_ground
-from diofant.polys.densearith import dmp_mul_ground
-from diofant.polys.densearith import dup_quo_ground
-from diofant.polys.densearith import dmp_quo_ground
-from diofant.polys.densearith import dup_exquo_ground
-from diofant.polys.densearith import dmp_exquo_ground
-from diofant.polys.densearith import dup_lshift
-from diofant.polys.densearith import dup_rshift
-from diofant.polys.densearith import dup_abs
-from diofant.polys.densearith import dmp_abs
-from diofant.polys.densearith import dup_neg
-from diofant.polys.densearith import dmp_neg
-from diofant.polys.densearith import dup_add
-from diofant.polys.densearith import dmp_add
-from diofant.polys.densearith import dup_sub
-from diofant.polys.densearith import dmp_sub
-from diofant.polys.densearith import dup_add_mul
-from diofant.polys.densearith import dmp_add_mul
-from diofant.polys.densearith import dup_sub_mul
-from diofant.polys.densearith import dmp_sub_mul
-from diofant.polys.densearith import dup_mul
-from diofant.polys.densearith import dmp_mul
-from diofant.polys.densearith import dup_sqr
-from diofant.polys.densearith import dmp_sqr
-from diofant.polys.densearith import dup_pow
-from diofant.polys.densearith import dmp_pow
-from diofant.polys.densearith import dup_pdiv
-from diofant.polys.densearith import dup_prem
-from diofant.polys.densearith import dup_pquo
-from diofant.polys.densearith import dup_pexquo
-from diofant.polys.densearith import dmp_pdiv
-from diofant.polys.densearith import dmp_prem
-from diofant.polys.densearith import dmp_pquo
-from diofant.polys.densearith import dmp_pexquo
-from diofant.polys.densearith import dup_rr_div
-from diofant.polys.densearith import dmp_rr_div
-from diofant.polys.densearith import dup_ff_div
-from diofant.polys.densearith import dmp_ff_div
-from diofant.polys.densearith import dup_div
-from diofant.polys.densearith import dup_rem
-from diofant.polys.densearith import dup_quo
-from diofant.polys.densearith import dup_exquo
-from diofant.polys.densearith import dmp_div
-from diofant.polys.densearith import dmp_rem
-from diofant.polys.densearith import dmp_quo
-from diofant.polys.densearith import dmp_exquo
-from diofant.polys.densearith import dup_max_norm
-from diofant.polys.densearith import dmp_max_norm
-from diofant.polys.densearith import dup_l1_norm
-from diofant.polys.densearith import dmp_l1_norm
-from diofant.polys.densearith import dup_expand
-from diofant.polys.densearith import dmp_expand
-from diofant.polys.densebasic import dup_LC
-from diofant.polys.densebasic import dmp_LC
-from diofant.polys.densebasic import dup_TC
-from diofant.polys.densebasic import dmp_TC
-from diofant.polys.densebasic import dmp_ground_LC
-from diofant.polys.densebasic import dmp_ground_TC
-from diofant.polys.densebasic import dup_degree
-from diofant.polys.densebasic import dmp_degree
-from diofant.polys.densebasic import dmp_degree_in
-from diofant.polys.densebasic import dmp_to_dict
-from diofant.polys.densetools import dup_integrate
-from diofant.polys.densetools import dmp_integrate
-from diofant.polys.densetools import dmp_integrate_in
-from diofant.polys.densetools import dup_diff
-from diofant.polys.densetools import dmp_diff
-from diofant.polys.densetools import dmp_diff_in
-from diofant.polys.densetools import dup_eval
-from diofant.polys.densetools import dmp_eval
-from diofant.polys.densetools import dmp_eval_in
-from diofant.polys.densetools import dmp_eval_tail
-from diofant.polys.densetools import dmp_diff_eval_in
-from diofant.polys.densetools import dup_trunc
-from diofant.polys.densetools import dmp_trunc
-from diofant.polys.densetools import dmp_ground_trunc
-from diofant.polys.densetools import dup_monic
-from diofant.polys.densetools import dmp_ground_monic
-from diofant.polys.densetools import dup_content
-from diofant.polys.densetools import dmp_ground_content
-from diofant.polys.densetools import dup_primitive
-from diofant.polys.densetools import dmp_ground_primitive
-from diofant.polys.densetools import dup_extract
-from diofant.polys.densetools import dmp_ground_extract
-from diofant.polys.densetools import dup_real_imag
-from diofant.polys.densetools import dup_mirror
-from diofant.polys.densetools import dup_scale
-from diofant.polys.densetools import dup_shift
-from diofant.polys.densetools import dup_transform
-from diofant.polys.densetools import dup_compose
-from diofant.polys.densetools import dmp_compose
-from diofant.polys.densetools import dup_decompose
-from diofant.polys.densetools import dmp_lift
-from diofant.polys.densetools import dup_sign_variations
-from diofant.polys.densetools import dup_clear_denoms
-from diofant.polys.densetools import dmp_clear_denoms
-from diofant.polys.densetools import dup_revert
-from diofant.polys.euclidtools import dup_half_gcdex
-from diofant.polys.euclidtools import dmp_half_gcdex
-from diofant.polys.euclidtools import dup_gcdex
-from diofant.polys.euclidtools import dmp_gcdex
-from diofant.polys.euclidtools import dup_invert
-from diofant.polys.euclidtools import dmp_invert
-from diofant.polys.euclidtools import dup_euclidean_prs
-from diofant.polys.euclidtools import dmp_euclidean_prs
-from diofant.polys.euclidtools import dup_primitive_prs
-from diofant.polys.euclidtools import dmp_primitive_prs
-from diofant.polys.euclidtools import dup_inner_subresultants
-from diofant.polys.euclidtools import dup_subresultants
-from diofant.polys.euclidtools import dup_prs_resultant
-from diofant.polys.euclidtools import dup_resultant
-from diofant.polys.euclidtools import dmp_inner_subresultants
-from diofant.polys.euclidtools import dmp_subresultants
-from diofant.polys.euclidtools import dmp_prs_resultant
-from diofant.polys.euclidtools import dmp_zz_modular_resultant
-from diofant.polys.euclidtools import dmp_zz_collins_resultant
-from diofant.polys.euclidtools import dmp_qq_collins_resultant
-from diofant.polys.euclidtools import dmp_resultant
-from diofant.polys.euclidtools import dup_discriminant
-from diofant.polys.euclidtools import dmp_discriminant
-from diofant.polys.euclidtools import dup_rr_prs_gcd
-from diofant.polys.euclidtools import dup_ff_prs_gcd
-from diofant.polys.euclidtools import dmp_rr_prs_gcd
-from diofant.polys.euclidtools import dmp_ff_prs_gcd
-from diofant.polys.euclidtools import dup_zz_heu_gcd
-from diofant.polys.euclidtools import dmp_zz_heu_gcd
-from diofant.polys.euclidtools import dup_qq_heu_gcd
-from diofant.polys.euclidtools import dmp_qq_heu_gcd
-from diofant.polys.euclidtools import dup_inner_gcd
-from diofant.polys.euclidtools import dmp_inner_gcd
-from diofant.polys.euclidtools import dup_gcd
-from diofant.polys.euclidtools import dmp_gcd
-from diofant.polys.euclidtools import dup_rr_lcm
-from diofant.polys.euclidtools import dup_ff_lcm
-from diofant.polys.euclidtools import dup_lcm
-from diofant.polys.euclidtools import dmp_rr_lcm
-from diofant.polys.euclidtools import dmp_ff_lcm
-from diofant.polys.euclidtools import dmp_lcm
-from diofant.polys.euclidtools import dmp_content
-from diofant.polys.euclidtools import dmp_primitive
-from diofant.polys.euclidtools import dup_cancel
-from diofant.polys.euclidtools import dmp_cancel
-from diofant.polys.factortools import dup_trial_division
-from diofant.polys.factortools import dmp_trial_division
-from diofant.polys.factortools import dup_zz_mignotte_bound
-from diofant.polys.factortools import dmp_zz_mignotte_bound
-from diofant.polys.factortools import dup_zz_hensel_step
-from diofant.polys.factortools import dup_zz_hensel_lift
-from diofant.polys.factortools import dup_zz_zassenhaus
-from diofant.polys.factortools import dup_zz_irreducible_p
-from diofant.polys.factortools import dup_cyclotomic_p
-from diofant.polys.factortools import dup_zz_cyclotomic_poly
-from diofant.polys.factortools import dup_zz_cyclotomic_factor
-from diofant.polys.factortools import dup_zz_factor_sqf
-from diofant.polys.factortools import dup_zz_factor
-from diofant.polys.factortools import dmp_zz_wang_non_divisors
-from diofant.polys.factortools import dmp_zz_wang_lead_coeffs
-from diofant.polys.factortools import dup_zz_diophantine
-from diofant.polys.factortools import dmp_zz_diophantine
-from diofant.polys.factortools import dmp_zz_wang_hensel_lifting
-from diofant.polys.factortools import dmp_zz_wang
-from diofant.polys.factortools import dmp_zz_factor
-from diofant.polys.factortools import dup_ext_factor
-from diofant.polys.factortools import dmp_ext_factor
-from diofant.polys.factortools import dup_gf_factor
-from diofant.polys.factortools import dmp_gf_factor
-from diofant.polys.factortools import dup_factor_list
-from diofant.polys.factortools import dup_factor_list_include
-from diofant.polys.factortools import dmp_factor_list
-from diofant.polys.factortools import dmp_factor_list_include
-from diofant.polys.factortools import dup_irreducible_p
-from diofant.polys.factortools import dmp_irreducible_p
-from diofant.polys.rootisolation import dup_sturm
-from diofant.polys.rootisolation import dup_root_upper_bound
-from diofant.polys.rootisolation import dup_root_lower_bound
-from diofant.polys.rootisolation import dup_step_refine_real_root
-from diofant.polys.rootisolation import dup_inner_refine_real_root
-from diofant.polys.rootisolation import dup_outer_refine_real_root
-from diofant.polys.rootisolation import dup_refine_real_root
-from diofant.polys.rootisolation import dup_inner_isolate_real_roots
-from diofant.polys.rootisolation import dup_inner_isolate_positive_roots
-from diofant.polys.rootisolation import dup_inner_isolate_negative_roots
-from diofant.polys.rootisolation import dup_isolate_real_roots_sqf
-from diofant.polys.rootisolation import dup_isolate_real_roots
-from diofant.polys.rootisolation import dup_isolate_real_roots_list
-from diofant.polys.rootisolation import dup_count_real_roots
-from diofant.polys.rootisolation import dup_count_complex_roots
-from diofant.polys.rootisolation import dup_isolate_complex_roots_sqf
-from diofant.polys.rootisolation import dup_isolate_all_roots_sqf
-from diofant.polys.rootisolation import dup_isolate_all_roots
-from diofant.polys.sqfreetools import (
-    dup_sqf_p, dmp_sqf_p, dup_sqf_norm, dmp_sqf_norm, dup_gf_sqf_part, dmp_gf_sqf_part,
-    dup_sqf_part, dmp_sqf_part, dup_gf_sqf_list, dmp_gf_sqf_list, dup_sqf_list,
-    dup_sqf_list_include, dmp_sqf_list, dmp_sqf_list_include, dup_gff_list, dmp_gff_list)
-from diofant.polys.galoistools import (
-    gf_degree, gf_LC, gf_TC, gf_strip, gf_from_dict,
-    gf_to_dict, gf_from_int_poly, gf_to_int_poly, gf_neg, gf_add_ground, gf_sub_ground,
-    gf_mul_ground, gf_quo_ground, gf_add, gf_sub, gf_mul, gf_sqr, gf_add_mul, gf_sub_mul,
-    gf_expand, gf_div, gf_rem, gf_quo, gf_exquo, gf_lshift, gf_rshift, gf_pow, gf_pow_mod,
-    gf_gcd, gf_lcm, gf_cofactors, gf_gcdex, gf_monic, gf_diff, gf_eval, gf_multi_eval,
-    gf_compose, gf_compose_mod, gf_trace_map, gf_random, gf_irreducible, gf_irred_p_ben_or,
-    gf_irred_p_rabin, gf_irreducible_p, gf_sqf_p, gf_sqf_part, gf_Qmatrix,
-    gf_berlekamp, gf_ddf_zassenhaus, gf_edf_zassenhaus, gf_ddf_shoup, gf_edf_shoup,
-    gf_zassenhaus, gf_shoup, gf_factor_sqf, gf_factor)
-from diofant.utilities import public
+from .densearith import (dup_add_term, dmp_add_term, dup_sub_term,
+                         dmp_sub_term, dup_mul_term, dmp_mul_term,
+                         dup_add_ground, dmp_add_ground, dup_sub_ground,
+                         dmp_sub_ground, dup_mul_ground, dmp_mul_ground,
+                         dup_quo_ground, dmp_quo_ground, dup_exquo_ground,
+                         dmp_exquo_ground, dup_lshift, dup_rshift, dup_abs,
+                         dmp_abs, dup_neg, dmp_neg, dup_add, dmp_add, dup_sub,
+                         dmp_sub, dup_add_mul, dmp_add_mul, dup_sub_mul,
+                         dmp_sub_mul, dup_mul, dmp_mul, dup_sqr, dmp_sqr,
+                         dup_pow, dmp_pow, dup_pdiv, dup_prem, dup_pquo,
+                         dup_pexquo, dmp_pdiv, dmp_prem, dmp_pquo, dmp_pexquo,
+                         dup_rr_div, dmp_rr_div, dup_ff_div, dmp_ff_div,
+                         dup_div, dup_rem, dup_quo, dup_exquo, dmp_div,
+                         dmp_rem, dmp_quo, dmp_exquo, dup_max_norm,
+                         dmp_max_norm, dup_l1_norm, dmp_l1_norm,
+                         dup_expand, dmp_expand)
+from .densebasic import (dup_LC, dmp_LC, dup_TC, dmp_TC, dmp_ground_LC,
+                         dmp_ground_TC, dup_degree, dmp_degree, dmp_degree_in,
+                         dmp_to_dict)
+from .densetools import (dup_integrate, dmp_integrate, dmp_integrate_in,
+                         dup_diff, dmp_diff, dmp_diff_in, dup_eval, dmp_eval,
+                         dmp_eval_in, dmp_eval_tail, dmp_diff_eval_in,
+                         dup_trunc, dmp_trunc, dmp_ground_trunc, dup_monic,
+                         dmp_ground_monic, dup_content, dmp_ground_content,
+                         dup_primitive, dmp_ground_primitive, dup_extract,
+                         dmp_ground_extract, dup_real_imag, dup_mirror,
+                         dup_scale, dup_shift, dup_transform, dup_compose,
+                         dmp_compose, dup_decompose, dmp_lift,
+                         dup_sign_variations, dup_clear_denoms,
+                         dmp_clear_denoms, dup_revert)
+from .euclidtools import (dup_half_gcdex, dmp_half_gcdex, dup_gcdex,
+                          dmp_gcdex, dup_invert, dmp_invert, dup_euclidean_prs,
+                          dmp_euclidean_prs, dup_primitive_prs,
+                          dmp_primitive_prs, dup_inner_subresultants,
+                          dup_subresultants, dup_prs_resultant, dup_resultant,
+                          dmp_inner_subresultants, dmp_subresultants,
+                          dmp_prs_resultant, dmp_zz_modular_resultant,
+                          dmp_zz_collins_resultant, dmp_qq_collins_resultant,
+                          dmp_resultant, dup_discriminant, dmp_discriminant,
+                          dup_rr_prs_gcd, dup_ff_prs_gcd, dmp_rr_prs_gcd,
+                          dmp_ff_prs_gcd, dup_zz_heu_gcd, dmp_zz_heu_gcd,
+                          dup_qq_heu_gcd, dmp_qq_heu_gcd, dup_inner_gcd,
+                          dmp_inner_gcd, dup_gcd, dmp_gcd, dup_rr_lcm,
+                          dup_ff_lcm, dup_lcm, dmp_rr_lcm, dmp_ff_lcm,
+                          dmp_lcm, dmp_content, dmp_primitive, dup_cancel,
+                          dmp_cancel)
+from .factortools import (dup_trial_division, dmp_trial_division,
+                          dup_zz_mignotte_bound, dmp_zz_mignotte_bound,
+                          dup_zz_hensel_step, dup_zz_hensel_lift,
+                          dup_zz_zassenhaus, dup_zz_irreducible_p,
+                          dup_cyclotomic_p, dup_zz_cyclotomic_poly,
+                          dup_zz_cyclotomic_factor, dup_zz_factor_sqf,
+                          dup_zz_factor, dmp_zz_wang_non_divisors,
+                          dmp_zz_wang_lead_coeffs, dup_zz_diophantine,
+                          dmp_zz_diophantine, dmp_zz_wang_hensel_lifting,
+                          dmp_zz_wang, dmp_zz_factor, dup_ext_factor,
+                          dmp_ext_factor, dup_gf_factor, dmp_gf_factor,
+                          dup_factor_list, dup_factor_list_include,
+                          dmp_factor_list, dmp_factor_list_include,
+                          dup_irreducible_p, dmp_irreducible_p)
+from .rootisolation import (dup_sturm, dup_root_upper_bound,
+                            dup_root_lower_bound, dup_step_refine_real_root,
+                            dup_inner_refine_real_root,
+                            dup_outer_refine_real_root, dup_refine_real_root,
+                            dup_inner_isolate_real_roots,
+                            dup_inner_isolate_positive_roots,
+                            dup_inner_isolate_negative_roots,
+                            dup_isolate_real_roots_sqf, dup_isolate_real_roots,
+                            dup_isolate_real_roots_list, dup_count_real_roots,
+                            dup_count_complex_roots,
+                            dup_isolate_complex_roots_sqf,
+                            dup_isolate_all_roots_sqf, dup_isolate_all_roots)
+from .sqfreetools import (dup_sqf_p, dmp_sqf_p, dup_sqf_norm, dmp_sqf_norm,
+                          dup_gf_sqf_part, dmp_gf_sqf_part, dup_sqf_part,
+                          dmp_sqf_part, dup_gf_sqf_list, dmp_gf_sqf_list,
+                          dup_sqf_list, dup_sqf_list_include, dmp_sqf_list,
+                          dmp_sqf_list_include, dup_gff_list, dmp_gff_list)
+from .galoistools import (gf_degree, gf_LC, gf_TC, gf_strip, gf_from_dict,
+                          gf_to_dict, gf_from_int_poly, gf_to_int_poly,
+                          gf_neg, gf_add_ground, gf_sub_ground, gf_mul_ground,
+                          gf_quo_ground, gf_add, gf_sub, gf_mul, gf_sqr,
+                          gf_add_mul, gf_sub_mul, gf_expand, gf_div, gf_rem,
+                          gf_quo, gf_exquo, gf_lshift, gf_rshift, gf_pow,
+                          gf_pow_mod, gf_gcd, gf_lcm, gf_cofactors, gf_gcdex,
+                          gf_monic, gf_diff, gf_eval, gf_multi_eval, gf_compose,
+                          gf_compose_mod, gf_trace_map, gf_random,
+                          gf_irreducible, gf_irred_p_ben_or, gf_irred_p_rabin,
+                          gf_irreducible_p, gf_sqf_p, gf_sqf_part, gf_Qmatrix,
+                          gf_berlekamp, gf_ddf_zassenhaus, gf_edf_zassenhaus,
+                          gf_ddf_shoup, gf_edf_shoup, gf_zassenhaus, gf_shoup,
+                          gf_factor_sqf, gf_factor)
+from ..utilities import public
 
 
 @public
@@ -244,7 +121,7 @@ class IPolys:
         pass
 
     def wrap(self, element):
-        from diofant.polys.rings import PolyElement
+        from .rings import PolyElement
         if isinstance(element, PolyElement):
             if element.ring == self:
                 return element
@@ -1066,15 +943,15 @@ class IPolys:
         return dup_isolate_all_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast)
 
     def fateman_poly_F_1(self):
-        from diofant.polys.specialpolys import dmp_fateman_poly_F_1
+        from .specialpolys import dmp_fateman_poly_F_1
         return tuple(map(self.from_dense, dmp_fateman_poly_F_1(self.ngens-1, self.domain)))
 
     def fateman_poly_F_2(self):
-        from diofant.polys.specialpolys import dmp_fateman_poly_F_2
+        from .specialpolys import dmp_fateman_poly_F_2
         return tuple(map(self.from_dense, dmp_fateman_poly_F_2(self.ngens-1, self.domain)))
 
     def fateman_poly_F_3(self):
-        from diofant.polys.specialpolys import dmp_fateman_poly_F_3
+        from .specialpolys import dmp_fateman_poly_F_3
         return tuple(map(self.from_dense, dmp_fateman_poly_F_3(self.ngens-1, self.domain)))
 
     def to_gf_dense(self, element):

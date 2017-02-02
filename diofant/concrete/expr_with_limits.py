@@ -1,16 +1,8 @@
-from diofant.core.add import Add
-from diofant.core.expr import Expr
-from diofant.core.mul import Mul
-from diofant.core.relational import Equality
-from diofant.sets.sets import Interval
-from diofant.core.singleton import S
-from diofant.core.symbol import Dummy, Symbol
-from diofant.core.sympify import sympify
-from diofant.core.compatibility import is_sequence
-from diofant.core.containers import Tuple
-from diofant.functions.elementary.piecewise import piecewise_fold
-from diofant.utilities import flatten
-from diofant.utilities.iterables import sift
+from ..core import Add, Mul, Expr, Equality, S, Dummy, Symbol, sympify, Tuple
+from ..sets.sets import Interval
+from ..core.compatibility import is_sequence
+from ..functions import piecewise_fold
+from ..utilities import flatten, sift
 
 
 def _process_limits(*symbols):
@@ -274,9 +266,9 @@ class ExprWithLimits(Expr):
 
         variables : Lists the integration variables
         change_index : Perform mapping on the sum and product dummy variables
-
         """
-        from diofant.core.function import AppliedUndef, UndefinedFunction
+
+        from ..core.function import AppliedUndef, UndefinedFunction
         func, limits = self.function, list(self.limits)
 
         # If one of the expressions we are replacing is used as a func index

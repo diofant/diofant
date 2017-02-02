@@ -67,10 +67,9 @@ References
 
 from functools import reduce
 
-from diofant.core import S, Dummy, Mul, Add, evaluate, Float
-from diofant.core.compatibility import ordered
-from diofant.functions import log, exp, sign as sgn
-from diofant.core.cache import cacheit
+from ..core import S, Dummy, Mul, Add, evaluate, Float, cacheit
+from ..core.compatibility import ordered
+from ..functions import log, exp, sign as sgn
 
 
 def compare(a, b, x):

@@ -1,13 +1,10 @@
-from diofant.core import Add, Mul, Pow, S
-from diofant.core.basic import Basic
-from diofant.core.compatibility import default_sort_key
-from diofant.core.function import Lambda
-from diofant.core.mul import _keep_coeff
-from diofant.core.relational import Relational
-from diofant.core.symbol import Symbol
-from diofant.printing.str import StrPrinter
-from diofant.printing.precedence import precedence
-from diofant.core.sympify import _sympify, sympify
+from ..core import Add, Mul, Pow, S, Basic, Lambda, Symbol, sympify
+from ..core.compatibility import default_sort_key
+from ..core.mul import _keep_coeff
+from ..core.relational import Relational
+from .str import StrPrinter
+from .precedence import precedence
+from ..core.sympify import _sympify
 
 
 class AssignmentError(Exception):
@@ -57,9 +54,8 @@ class Assignment(Relational):
     rel_op = ':='
 
     def __new__(cls, lhs, rhs=0, **assumptions):
-        from diofant.matrices.expressions.matexpr import (
-            MatrixElement, MatrixSymbol)
-        from diofant.tensor.indexed import Indexed
+        from ..matrices.expressions.matexpr import MatrixElement, MatrixSymbol
+        from ..tensor import Indexed
         lhs = _sympify(lhs)
         rhs = _sympify(rhs)
         # Tuple of things that can be on the lhs of an assignment
@@ -117,7 +113,7 @@ class CodePrinter(StrPrinter):
             If provided, the printed code will set the expression to a
             variable with name ``assign_to``.
         """
-        from diofant.matrices.expressions.matexpr import MatrixSymbol
+        from ..matrices import MatrixSymbol
 
         if isinstance(assign_to, str):
             if expr.is_Matrix:
@@ -169,7 +165,7 @@ class CodePrinter(StrPrinter):
         # variables or accumulate it in the assign_to object.
 
         if self._settings.get('contract', True):
-            from diofant.tensor import get_contraction_structure
+            from ..tensor import get_contraction_structure
             # Setup loops over non-dummy indices  --  all terms need these
             indices = self._get_expression_indices(expr, assign_to)
             # Setup loops over dummy indices  --  each term needs separate treatment
@@ -242,7 +238,7 @@ class CodePrinter(StrPrinter):
         return "\n".join(lines)
 
     def _get_expression_indices(self, expr, assign_to):
-        from diofant.tensor import get_indices
+        from ..tensor import get_indices
         rinds, junk = get_indices(expr)
         linds, junk = get_indices(assign_to)
 
@@ -256,8 +252,7 @@ class CodePrinter(StrPrinter):
         return self._sort_optimized(rinds, assign_to)
 
     def _sort_optimized(self, indices, expr):
-
-        from diofant.tensor.indexed import Indexed
+        from ..tensor import Indexed
 
         if not indices:
             return []
@@ -318,9 +313,9 @@ class CodePrinter(StrPrinter):
                                   "subclass of CodePrinter.")  # pragma: no cover
 
     def _print_Assignment(self, expr):
-        from diofant.functions.elementary.piecewise import Piecewise
-        from diofant.matrices.expressions.matexpr import MatrixSymbol
-        from diofant.tensor.indexed import IndexedBase
+        from ..functions import Piecewise
+        from ..matrices import MatrixSymbol
+        from ..tensor.indexed import IndexedBase
         lhs = expr.lhs
         rhs = expr.rhs
         # We special case assignments that take multiple lines

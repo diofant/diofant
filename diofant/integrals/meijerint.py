@@ -26,25 +26,19 @@ The main references for this are:
     Gordon and Breach Science Publisher
 """
 
-from diofant.core import oo, S, pi, Expr, Pow, sympify
-from diofant.core.exprtools import factor_terms
-from diofant.core.function import expand, expand_mul, expand_power_base
-from diofant.core.add import Add
-from diofant.core.mul import Mul
-from diofant.core.numbers import Integer, Rational
-from diofant.core.cache import cacheit
-from diofant.core.symbol import Dummy, Wild
-from diofant.core.compatibility import ordered
-from diofant.simplify import hyperexpand, powdenest, collect
-from diofant.logic.boolalg import And, Or, BooleanAtom
-from diofant.functions.special.delta_functions import Heaviside
-from diofant.functions.elementary.piecewise import Piecewise, piecewise_fold
-from diofant.functions.elementary.hyperbolic import (_rewrite_hyperbolics_as_exp,
-                                                     HyperbolicFunction)
-from diofant.functions.special.hyper import meijerg
-from diofant.utilities.iterables import multiset_partitions
-from diofant.utilities.misc import debug as _debug
-from diofant.utilities import default_sort_key
+from ..core import (oo, S, pi, Expr, Pow, sympify, factor_terms,
+                    expand, expand_mul, expand_power_base, Add, Mul,
+                    Integer, Rational, cacheit, Dummy, Wild, Function,
+                    symbols, Eq, I, Ne, nan, zoo, Tuple)
+from ..core.compatibility import ordered, default_sort_key
+from ..simplify import hyperexpand, powdenest, collect
+from ..logic import And, Or, Not
+from ..logic.boolalg import BooleanAtom
+from ..functions import Heaviside, Piecewise, piecewise_fold, meijerg
+from ..functions.elementary.hyperbolic import (_rewrite_hyperbolics_as_exp,
+                                               HyperbolicFunction)
+from ..utilities.iterables import multiset_partitions
+from ..utilities.misc import debug as _debug
 
 # keep this at top for easy reference
 z = Dummy('z')
@@ -82,7 +76,8 @@ def _create_lookup_table(table):
 
     # [P], Section 8.
 
-    from diofant import unpolarify, Function, Not
+    from ..logic import Not
+    from ..functions import unpolarify
 
     class IsNonPositiveInteger(Function):
 
@@ -93,8 +88,8 @@ def _create_lookup_table(table):
                 return arg <= 0
 
     # Section 8.4.2
-    from diofant import (gamma, pi, cos, exp, re, sin, sqrt, sinh, cosh,
-                       factorial, log, erf, erfc, erfi, polar_lift)
+    from ..functions import (gamma, cos, exp, re, sin, sqrt, sinh, cosh,
+                             factorial, log, erf, erfc, erfi, polar_lift)
     # TODO this needs more polar_lift (c/f entry for exp)
     add(Heaviside(t - b)*(t - b)**(a - 1), [a], [], [], [0], t/b,
         gamma(a)*b**(a - 1), And(b > 0))
@@ -186,7 +181,8 @@ def _create_lookup_table(table):
     # TODO
 
     # Section 8.4.11
-    from diofant import Ei, I, expint, Si, Ci, Shi, Chi, fresnels, fresnelc
+    from ..functions import (Ei, expint, Si, Ci, Shi, Chi,
+                             fresnels, fresnelc)
     addi(Ei(t),
          constant(-I*pi) + [(Integer(-1), meijerg([], [1], [0, 0], [],
                   t*polar_lift(-1)))],
@@ -218,7 +214,7 @@ def _create_lookup_table(table):
     add(fresnelc(t), [1], [], [Rational(1, 4)], [0, Rational(3, 4)], pi**2*t**4/16, Rational(1, 2))
 
     # ##### bessel-type functions #####
-    from diofant import besselj, bessely, besseli, besselk
+    from ..functions import besselj, bessely, besseli, besselk
 
     # Section 8.4.19
     add(besselj(a, t), [], [], [a/2], [-a/2], t**2/4)
@@ -268,7 +264,7 @@ def _create_lookup_table(table):
     # TODO many more formulas. should all be derivable
 
     # Complete elliptic integrals K(z) and E(z)
-    from diofant import elliptic_k, elliptic_e
+    from ..functions import elliptic_k, elliptic_e
     add(elliptic_k(t), [S.Half, S.Half], [], [0], [0], -t, S.Half)
     add(elliptic_e(t), [S.Half, 3*S.Half], [], [0], [0], -t, -S.Half/2)
 
@@ -317,7 +313,7 @@ def _get_coeff_exp(expr, x):
     >>> _get_coeff_exp(x**3, x)
     (1, 3)
     """
-    from diofant import powsimp
+    from ..simplify import powsimp
     (c, m) = expand_power_base(powsimp(expr)).as_coeff_mul(x)
     if not m:
         return c, Integer(0)
@@ -364,7 +360,6 @@ def _exponents(expr, x):
 
 def _functions(expr, x):
     """ Find the types of functions in expr, to estimate the complexity. """
-    from diofant import Function
     return ({e.func for e in expr.atoms(Function) if x in e.free_symbols} |
             {e.func for e in expr.atoms(Pow) if e.base is S.Exp1 and x in e.free_symbols})
 
@@ -413,7 +408,7 @@ def _split_mul(f, x):
     >>> _split_mul((3*x)**s*sin(x**2)*x, x)
     (3**s, x*x**s, sin(x**2))
     """
-    from diofant import polarify, unpolarify
+    from ..functions import polarify, unpolarify
     fac = Integer(1)
     po = Integer(1)
     g = Integer(1)
@@ -577,7 +572,7 @@ def _is_analytic(f, x):
     """ Check if f(x), when expressed using G functions on the positive reals,
     will in fact agree with the G functions almost everywhere
     """
-    from diofant import Heaviside, Abs
+    from ..functions import Heaviside, Abs
     return not any(x in expr.free_symbols for expr in f.atoms(Heaviside, Abs))
 
 
@@ -596,10 +591,9 @@ def _condsimp(cond):
     >>> simp(Or(x <= y, And(x < y, z)))
     x <= y
     """
-    from diofant import (
-        symbols, Wild, Eq, unbranched_argument, exp_polar, pi, I,
-        periodic_argument, oo, polar_lift)
-    from diofant.logic.boolalg import BooleanFunction
+    from ..functions import (unbranched_argument, exp_polar,
+                             periodic_argument, polar_lift)
+    from ..logic.boolalg import BooleanFunction
     if not isinstance(cond, BooleanFunction):
         return cond
     cond = cond.func(*list(map(_condsimp, cond.args)))
@@ -695,7 +689,7 @@ def _my_principal_branch(expr, period, full_pb=False):
     to avoid introducing opaque principal_branch() objects,
     unless full_pb=True.
     """
-    from diofant import principal_branch
+    from ..functions import principal_branch
     res = principal_branch(expr, period)
     if not full_pb:
         res = res.replace(principal_branch, lambda x, y: x)
@@ -735,7 +729,7 @@ def _check_antecedents_1(g, x, helper=False):
     int_1^\infty g dx exists.
     """
     # NOTE if you update these conditions, please update the documentation as well
-    from diofant import Eq, Not, ceiling, Ne, re, unbranched_argument as arg
+    from ..functions import ceiling, re, unbranched_argument as arg
     delta = g.delta
     eta, _ = _get_coeff_exp(g.argument, x)
     m, n, p, q = sympify([len(g.bm), len(g.an), len(g.ap), len(g.bq)])
@@ -852,7 +846,8 @@ def _int0oo_1(g, x):
     gamma(-a)*gamma(c + 1)/(y*gamma(-d)*gamma(b + 1))
     """
     # See [L, section 5.6.1]. Note that s=1.
-    from diofant import gamma, combsimp, unpolarify
+    from ..functions import gamma, unpolarify
+    from ..simplify import combsimp
     eta, _ = _get_coeff_exp(g.argument, x)
     res = 1/eta
     # XXX TODO we should reduce order first
@@ -887,7 +882,7 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
     >>> r[2]
     meijerg(((), ()), ((m/2,), (-m/2,)), t/4)
     """
-    from diofant.core.numbers import ilcm
+    from ..core.numbers import ilcm
 
     def pb(g):
         a, b = _get_coeff_exp(g.argument, x)
@@ -936,8 +931,8 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
 
 def _check_antecedents(g1, g2, x):
     """ Return a condition under which the integral theorem applies. """
-    from diofant import re, Eq, Ne, cos, I, exp, sin, sign, unpolarify
-    from diofant import arg as arg_, unbranched_argument as arg
+    from ..functions import (re, cos, exp, sin, sign, unpolarify,
+                             arg as arg_, unbranched_argument as arg)
     #  Yes, this is madness.
     # XXX TODO this is a testing *nightmare*
     # NOTE if you update these conditions, please update the documentation as well
@@ -1276,7 +1271,7 @@ def _rewrite_inversion(fac, po, g, x):
 
 def _check_antecedents_inversion(g, x):
     """ Check antecedents for the laplace inversion integral. """
-    from diofant import re, im, Or, And, Eq, exp, I, Add, nan, Ne
+    from ..functions import re, im, exp
     _debug('Checking antecedents for inversion:')
     z = g.argument
     _, e = _get_coeff_exp(z, x)
@@ -1422,14 +1417,14 @@ def _rewrite_single(f, x, recursive=True):
     Returns a list of tuples (C, s, G) and a condition cond.
     Returns None on failure.
     """
-    from diofant import polarify, unpolarify, oo, zoo, Tuple
+    from ..functions import polarify, unpolarify
     global _lookup_table
     if not _lookup_table:
         _lookup_table = {}
         _create_lookup_table(_lookup_table)
 
     if isinstance(f, meijerg):
-        from diofant import factor
+        from ..polys import factor
         coeff, m = factor(f.argument, x).as_coeff_mul(x)
         if len(m) > 1:
             return
@@ -1488,11 +1483,10 @@ def _rewrite_single(f, x, recursive=True):
     if not recursive:
         return
     _debug('Trying recursive Mellin transform method.')
-    from diofant.integrals.transforms import (mellin_transform,
-                                              inverse_mellin_transform,
-                                              IntegralTransformError,
-                                              MellinTransformStripError)
-    from diofant import oo, nan, zoo, simplify, cancel
+    from .transforms import (mellin_transform, inverse_mellin_transform,
+                             IntegralTransformError, MellinTransformStripError)
+    from ..simplify import simplify
+    from ..polys import cancel
 
     def my_imt(F, s, x, strip):
         """ Calling simplify() all the time is slow and not helpful, since
@@ -1512,7 +1506,8 @@ def _rewrite_single(f, x, recursive=True):
     # to avoid infinite recursion, we have to force the two g functions case
 
     def my_integrator(f, x):
-        from diofant import Integral, hyperexpand
+        from .integrals import Integral
+        from ..simplify import hyperexpand
         r = _meijerint_definite_4(f, x, only_double=True)
         if r is not None:
             res, cond = r
@@ -1615,7 +1610,7 @@ def meijerint_indefinite(f, x):
     >>> meijerint_indefinite(sin(x), x)
     -cos(x)
     """
-    from diofant import hyper, meijerg
+    from ..functions import hyper, meijerg
 
     results = []
     for a in sorted(_find_splitting_points(f, x) | {Integer(0)}, key=default_sort_key):
@@ -1642,7 +1637,8 @@ def meijerint_indefinite(f, x):
 
 def _meijerint_indefinite_1(f, x):
     """ Helper that does not attempt any substitution. """
-    from diofant import Integral, piecewise_fold
+    from .integrals import Integral
+    from ..functions import piecewise_fold
     _debug('Trying to compute the indefinite integral of', f, 'wrt', x)
 
     gs = _rewrite1(f, x)
@@ -1707,7 +1703,7 @@ def _meijerint_indefinite_1(f, x):
         >>> cancel(bad).expand().as_independent(x)[0]
         1
         """
-        from diofant import cancel
+        from ..polys import cancel
         res = expand_mul(cancel(res), deep=False)
         return Add._from_args(res.as_coeff_add(x)[1])
 
@@ -1752,7 +1748,7 @@ def meijerint_definite(f, x, a, b):
     #
     # There are usually several ways of doing this, and we want to try all.
     # This function does (1), calls _meijerint_definite_2 for step (2).
-    from diofant import arg, exp, I, And, DiracDelta
+    from ..functions import arg, exp, DiracDelta
     _debug('Integrating', f, 'wrt %s from %s to %s.' % (x, a, b))
 
     if f.has(DiracDelta):
@@ -1859,8 +1855,8 @@ def meijerint_definite(f, x, a, b):
 
 def _guess_expansion(f, x):
     """ Try to guess sensible rewritings for integrand f(x). """
-    from diofant import expand_trig
-    from diofant.functions.elementary.trigonometric import TrigonometricFunction
+    from ..core import expand_trig
+    from ..functions.elementary.trigonometric import TrigonometricFunction
     res = [(f, 'original integrand')]
 
     orig = res[-1][0]
@@ -1939,7 +1935,7 @@ def _meijerint_definite_3(f, x):
 
 
 def _my_unpolarify(f):
-    from diofant import unpolarify
+    from ..functions import unpolarify
     return _eval_cond(unpolarify(f))
 
 
@@ -2027,7 +2023,9 @@ def meijerint_inversion(f, x, t):
     >>> meijerint_inversion(1/x, x, t)
     Heaviside(t)
     """
-    from diofant import I, Integral, exp, expand, log, Add, Mul, Heaviside
+    from ..core import expand, Add, Mul
+    from .integrals import Integral
+    from ..functions import exp, log, Heaviside
     f_ = f
     t_ = t
     t = Dummy('t', polar=True)  # We don't want sqrt(t**2) = abs(t) etc

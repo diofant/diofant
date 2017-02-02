@@ -1,6 +1,6 @@
 from re import match
 
-from diofant import sympify
+from ..core import sympify
 
 
 def mathematica(s):

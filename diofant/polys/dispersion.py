@@ -1,5 +1,5 @@
-from diofant.core import S
-from diofant.polys import Poly
+from ..core import S
+from . import Poly
 
 
 def dispersionset(p, q=None, *gens, **args):
