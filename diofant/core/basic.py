@@ -102,7 +102,8 @@ class Basic(object):
         accordingly to return such relevant attributes.
 
         Defining more than _hashable_content is necessary if __eq__ has
-        been defined by a class. See note about this in Basic.__eq__."""
+        been defined by a class. See note about this in Basic.__eq__.
+        """
         return self._args
 
     def compare(self, other):
@@ -1564,6 +1565,7 @@ class preorder_traversal:
     >>> list(preorder_traversal((x + y)*z, keys=True))
     [z*(x + y), z, x + y, x, y]
     """
+
     def __init__(self, node, keys=None):
         self._skip_flag = False
         self._pt = self._preorder_traversal(node, keys)

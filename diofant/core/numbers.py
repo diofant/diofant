@@ -93,6 +93,7 @@ def mpf_norm(mpf, prec):
     rv = mpf_normalize(sign, man, expt, bc, prec, rnd)
     return rv
 
+
 # TODO: we should use the warnings module
 _errdict = {"divide": False}
 
@@ -230,6 +231,7 @@ class Number(AtomicExpr):
 
       Rational(1) + sqrt(Rational(2))
     """
+
     is_commutative = True
     is_number = True
     is_Number = True
@@ -1106,6 +1108,7 @@ class Rational(Number):
     diofant.core.sympify.sympify
     diofant.simplify.simplify.nsimplify
     """
+
     is_real = True
     is_integer = False
     is_rational = True
@@ -1788,6 +1791,7 @@ class Integer(Rational):
     def __rfloordiv__(self, other):
         return Integer(Integer(other).p // self.p)
 
+
 # Add sympify converters
 converter[int] = Integer
 
@@ -1996,6 +2000,7 @@ class One(IntegerConstant, metaclass=Singleton):
 
     .. [1] http://en.wikipedia.org/wiki/1_%28number%29
     """
+
     is_number = True
 
     p = 1
@@ -2041,8 +2046,8 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/%E2%88%921_%28number%29
-
     """
+
     is_number = True
 
     p = -1
@@ -2112,6 +2117,7 @@ class Half(RationalConstant, metaclass=Singleton):
 
     .. [1] http://en.wikipedia.org/wiki/One_half
     """
+
     is_number = True
 
     p = 1
@@ -2349,6 +2355,7 @@ class Infinity(Number, metaclass=Singleton):
         return S.NaN
 
     __rmod__ = __mod__
+
 
 oo = S.Infinity
 
@@ -2596,8 +2603,8 @@ class NaN(Number, metaclass=Singleton):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/NaN
-
     """
+
     is_commutative = True
     is_comparable = False
     is_finite = False
@@ -2646,6 +2653,7 @@ class NaN(Number, metaclass=Singleton):
     __ge__ = Expr.__ge__
     __lt__ = Expr.__lt__
     __le__ = Expr.__le__
+
 
 nan = S.NaN
 
@@ -2941,6 +2949,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
         I = S.ImaginaryUnit
         return cos(I) + I*cos(I + S.Pi/2)
 
+
 E = S.Exp1
 
 
@@ -3003,6 +3012,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
             return Integer(3), Integer(4)
         elif issubclass(number_cls, Rational):
             return Rational(223, 71), Rational(22, 7)
+
 
 pi = S.Pi
 
@@ -3233,11 +3243,13 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     def as_base_exp(self):
         return S.NegativeOne, S.Half
 
+
 I = S.ImaginaryUnit
 
 
 def sympify_fractions(f):
     return Rational(f.numerator, f.denominator)
+
 
 converter[fractions.Fraction] = sympify_fractions
 
@@ -3263,12 +3275,14 @@ except ImportError:
 def sympify_mpmath(x):
     return Expr._from_mpmath(x, x.context.prec)
 
+
 converter[mpnumeric] = sympify_mpmath
 
 
 def sympify_complex(a):
     real, imag = list(map(sympify, (a.real, a.imag)))
     return real + S.ImaginaryUnit*imag
+
 
 converter[complex] = sympify_complex
 

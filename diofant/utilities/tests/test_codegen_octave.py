@@ -170,9 +170,8 @@ def test_results_named_ordered():
 def test_complicated_m_codegen():
     from diofant import sin, cos, tan
     name_expr = ("testlong",
-            [ ((sin(x) + cos(y) + tan(z))**3).expand(),
-            cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))
-    ])
+                 [((sin(x) + cos(y) + tan(z))**3).expand(),
+                  cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))])
     result = codegen(name_expr, "Octave", header=False, empty=False)
     assert result[0][0] == "testlong.m"
     source = result[0][1]

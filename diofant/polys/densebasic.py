@@ -47,6 +47,7 @@ def poly_TC(f, K):
     else:
         return f[-1]
 
+
 dup_LC = dmp_LC = poly_LC
 dup_TC = dmp_TC = poly_TC
 

@@ -21,6 +21,7 @@ x = Dummy('dummy_for_polyquinticconst')
 @public
 class PolyQuintic:
     """Special functions for solvable quintics"""
+
     def __init__(self, poly):
         _, _, self.p, self.q, self.r, self.s = poly.all_coeffs()
         self.zeta1 = Rational(-1, 4) + (sqrt(5)/4) + I*sqrt((sqrt(5)/8) + Rational(5, 8))

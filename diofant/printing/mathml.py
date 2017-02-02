@@ -20,6 +20,7 @@ class MathMLPrinter(Printer):
 
     .. [1] http://www.w3.org/TR/MathML2/
     """
+
     printmethod = "_mathml"
     _default_settings = {
         "order": None,
@@ -193,7 +194,8 @@ class MathMLPrinter(Printer):
 
     def _print_GoldenRatio(self, e):
         """We use unicode #x3c6 for Greek letter phi as defined here
-        http://www.w3.org/2003/entities/2007doc/isogrk1.html"""
+        http://www.w3.org/2003/entities/2007doc/isogrk1.html
+        """
         x = self.dom.createElement('cn')
         x.appendChild(self.dom.createTextNode("\N{GREEK SMALL LETTER PHI}"))
         return x
@@ -376,7 +378,8 @@ class MathMLPrinter(Printer):
 
     def _print_list(self, seq):
         """MathML reference for the <list> element:
-        http://www.w3.org/TR/MathML2/chapter4.html#contm.list"""
+        http://www.w3.org/TR/MathML2/chapter4.html#contm.list
+        """
         dom_element = self.dom.createElement('list')
         for item in seq:
             dom_element.appendChild(self._print(item))

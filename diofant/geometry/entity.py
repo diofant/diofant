@@ -181,8 +181,8 @@ class GeometryEntity(Basic):
             # apply the transform to a single point
             x, y = Dummy(), Dummy()
             xf = Point(x, y)
-            xf = xf.translate(y=-d).rotate(-a, o).scale(y=-1
-                ).rotate(a, o).translate(y=d)
+            xf = xf.translate(y=-d).rotate(-a, o)
+            xf = xf.scale(y=-1).rotate(a, o).translate(y=d)
             # replace every point using that transform
             reps = [(p, xf.xreplace({x: p.x, y: p.y})) for p in g.atoms(Point)]
         return g.xreplace(dict(reps))
@@ -283,7 +283,8 @@ class GeometryEntity(Basic):
 
     def __repr__(self):
         """String representation of a GeometryEntity that can be evaluated
-        by diofant."""
+        by diofant.
+        """
         return type(self).__name__ + repr(self.args)
 
     def __contains__(self, other):
@@ -308,6 +309,7 @@ class GeometrySet(GeometryEntity, Set):
     """Parent class of all GeometryEntity that are also Sets
     (compatible with diofant.sets)
     """
+
     def _contains(self, other):
         """diofant.sets uses the _contains method, so include it for compatibility."""
 
@@ -318,7 +320,8 @@ class GeometrySet(GeometryEntity, Set):
 
     def _union(self, o):
         """ Returns the union of self and o
-        for use with diofant.sets.Set, if possible. """
+        for use with diofant.sets.Set, if possible.
+        """
 
         from diofant.sets import Union, FiniteSet
 
@@ -334,7 +337,8 @@ class GeometrySet(GeometryEntity, Set):
 
     def _intersection(self, o):
         """ Returns a diofant.sets.Set of intersection objects,
-        if possible. """
+        if possible.
+        """
 
         from diofant.sets import FiniteSet, Union
         from diofant.geometry import Point
@@ -364,7 +368,8 @@ def translate(x, y):
 def scale(x, y, pt=None):
     """Return the matrix to multiply a 2-D point's coordinates by x and y.
 
-    If pt is given, the scaling is done relative to that point."""
+    If pt is given, the scaling is done relative to that point.
+    """
     rv = eye(3)
     rv[0, 0] = x
     rv[1, 1] = y

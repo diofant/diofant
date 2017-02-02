@@ -28,9 +28,10 @@ from diofant.diffgeom import (Manifold, Patch, TensorProduct,
                               metric_to_Christoffel_2nd, CovarDerivativeOp)
 from diofant.diffgeom.rn import R2, R2_r
 
+from diofant.abc import x, y, z, t, a, b
+
 __all__ = ()
 
-x, y, z, t, a, b = symbols('x y z t a b')
 k, m, n = symbols('k m n', integer=True)
 
 
@@ -1159,55 +1160,55 @@ def test_modifiers():
 
 
 def test_greek_symbols():
-    assert latex(Symbol('alpha'))   == r'\alpha'
-    assert latex(Symbol('beta'))    == r'\beta'
-    assert latex(Symbol('gamma'))   == r'\gamma'
-    assert latex(Symbol('delta'))   == r'\delta'
+    assert latex(Symbol('alpha')) == r'\alpha'
+    assert latex(Symbol('beta')) == r'\beta'
+    assert latex(Symbol('gamma')) == r'\gamma'
+    assert latex(Symbol('delta')) == r'\delta'
     assert latex(Symbol('epsilon')) == r'\epsilon'
-    assert latex(Symbol('zeta'))    == r'\zeta'
-    assert latex(Symbol('eta'))     == r'\eta'
-    assert latex(Symbol('theta'))   == r'\theta'
-    assert latex(Symbol('iota'))    == r'\iota'
-    assert latex(Symbol('kappa'))   == r'\kappa'
-    assert latex(Symbol('lambda'))  == r'\lambda'
-    assert latex(Symbol('mu'))      == r'\mu'
-    assert latex(Symbol('nu'))      == r'\nu'
-    assert latex(Symbol('xi'))      == r'\xi'
+    assert latex(Symbol('zeta')) == r'\zeta'
+    assert latex(Symbol('eta')) == r'\eta'
+    assert latex(Symbol('theta')) == r'\theta'
+    assert latex(Symbol('iota')) == r'\iota'
+    assert latex(Symbol('kappa')) == r'\kappa'
+    assert latex(Symbol('lambda')) == r'\lambda'
+    assert latex(Symbol('mu')) == r'\mu'
+    assert latex(Symbol('nu')) == r'\nu'
+    assert latex(Symbol('xi')) == r'\xi'
     assert latex(Symbol('omicron')) == r'o'
-    assert latex(Symbol('pi'))      == r'\pi'
-    assert latex(Symbol('rho'))     == r'\rho'
-    assert latex(Symbol('sigma'))   == r'\sigma'
-    assert latex(Symbol('tau'))     == r'\tau'
+    assert latex(Symbol('pi')) == r'\pi'
+    assert latex(Symbol('rho')) == r'\rho'
+    assert latex(Symbol('sigma')) == r'\sigma'
+    assert latex(Symbol('tau')) == r'\tau'
     assert latex(Symbol('upsilon')) == r'\upsilon'
-    assert latex(Symbol('phi'))     == r'\phi'
-    assert latex(Symbol('chi'))     == r'\chi'
-    assert latex(Symbol('psi'))     == r'\psi'
-    assert latex(Symbol('omega'))   == r'\omega'
+    assert latex(Symbol('phi')) == r'\phi'
+    assert latex(Symbol('chi')) == r'\chi'
+    assert latex(Symbol('psi')) == r'\psi'
+    assert latex(Symbol('omega')) == r'\omega'
 
-    assert latex(Symbol('Alpha'))   == r'A'
-    assert latex(Symbol('Beta'))    == r'B'
-    assert latex(Symbol('Gamma'))   == r'\Gamma'
-    assert latex(Symbol('Delta'))   == r'\Delta'
+    assert latex(Symbol('Alpha')) == r'A'
+    assert latex(Symbol('Beta')) == r'B'
+    assert latex(Symbol('Gamma')) == r'\Gamma'
+    assert latex(Symbol('Delta')) == r'\Delta'
     assert latex(Symbol('Epsilon')) == r'E'
-    assert latex(Symbol('Zeta'))    == r'Z'
-    assert latex(Symbol('Eta'))     == r'H'
-    assert latex(Symbol('Theta'))   == r'\Theta'
-    assert latex(Symbol('Iota'))    == r'I'
-    assert latex(Symbol('Kappa'))   == r'K'
-    assert latex(Symbol('Lambda'))  == r'\Lambda'
-    assert latex(Symbol('Mu'))      == r'M'
-    assert latex(Symbol('Nu'))      == r'N'
-    assert latex(Symbol('Xi'))      == r'\Xi'
+    assert latex(Symbol('Zeta')) == r'Z'
+    assert latex(Symbol('Eta')) == r'H'
+    assert latex(Symbol('Theta')) == r'\Theta'
+    assert latex(Symbol('Iota')) == r'I'
+    assert latex(Symbol('Kappa')) == r'K'
+    assert latex(Symbol('Lambda')) == r'\Lambda'
+    assert latex(Symbol('Mu')) == r'M'
+    assert latex(Symbol('Nu')) == r'N'
+    assert latex(Symbol('Xi')) == r'\Xi'
     assert latex(Symbol('Omicron')) == r'O'
-    assert latex(Symbol('Pi'))      == r'\Pi'
-    assert latex(Symbol('Rho'))     == r'P'
-    assert latex(Symbol('Sigma'))   == r'\Sigma'
-    assert latex(Symbol('Tau'))     == r'T'
+    assert latex(Symbol('Pi')) == r'\Pi'
+    assert latex(Symbol('Rho')) == r'P'
+    assert latex(Symbol('Sigma')) == r'\Sigma'
+    assert latex(Symbol('Tau')) == r'T'
     assert latex(Symbol('Upsilon')) == r'\Upsilon'
-    assert latex(Symbol('Phi'))     == r'\Phi'
-    assert latex(Symbol('Chi'))     == r'X'
-    assert latex(Symbol('Psi'))     == r'\Psi'
-    assert latex(Symbol('Omega'))   == r'\Omega'
+    assert latex(Symbol('Phi')) == r'\Phi'
+    assert latex(Symbol('Chi')) == r'X'
+    assert latex(Symbol('Psi')) == r'\Psi'
+    assert latex(Symbol('Omega')) == r'\Omega'
 
     assert latex(Symbol('varepsilon')) == r'\varepsilon'
     assert latex(Symbol('varkappa')) == r'\varkappa'
@@ -1238,31 +1239,33 @@ def test_sympyissue_6853():
 
 def test_Mul():
     e = Mul(-2, x + 1, evaluate=False)
-    assert latex(e)  == r'- 2 \left(x + 1\right)'
+    assert latex(e) == r'- 2 \left(x + 1\right)'
     e = Mul(2, x + 1, evaluate=False)
-    assert latex(e)  == r'2 \left(x + 1\right)'
+    assert latex(e) == r'2 \left(x + 1\right)'
     e = Mul(S.One/2, x + 1, evaluate=False)
-    assert latex(e)  == r'\frac{1}{2} \left(x + 1\right)'
+    assert latex(e) == r'\frac{1}{2} \left(x + 1\right)'
     e = Mul(y, x + 1, evaluate=False)
-    assert latex(e)  == r'y \left(x + 1\right)'
+    assert latex(e) == r'y \left(x + 1\right)'
     e = Mul(-y, x + 1, evaluate=False)
-    assert latex(e)  == r'- y \left(x + 1\right)'
+    assert latex(e) == r'- y \left(x + 1\right)'
     e = Mul(-2, x + 1)
-    assert latex(e)  == r'- 2 x - 2'
+    assert latex(e) == r'- 2 x - 2'
     e = Mul(2, x + 1)
-    assert latex(e)  == r'2 x + 2'
+    assert latex(e) == r'2 x + 2'
     e = Mul(1, 1, evaluate=False)
-    assert latex(e)  == r'1 \cdot 1'
+    assert latex(e) == r'1 \cdot 1'
 
 
 def test_Add():
     e = Add(0, 0, evaluate=False)
-    assert latex(e)  == r'0 + 0'
+    assert latex(e) == '0 + 0'
+
+    assert latex(x + y + 1, order='none') == '1 + x + y'
 
 
 def test_Pow():
     e = Pow(2, 2, evaluate=False)
-    assert latex(e)  == r'2^{2}'
+    assert latex(e) == r'2^{2}'
 
     # issue sympy/sympy#11011
     assert (latex(Float('1.453e4500')**x) ==

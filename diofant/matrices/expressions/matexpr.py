@@ -349,6 +349,7 @@ class MatrixSymbol(MatrixExpr):
     >>> 2*A*B + Identity(3)
     I + 2*A*B
     """
+
     is_Atom = True
 
     is_number = False
@@ -461,6 +462,7 @@ class ZeroMatrix(MatrixExpr):
     >>> Z*A.T
     0
     """
+
     is_ZeroMatrix = True
 
     def __new__(cls, m, n):
@@ -502,6 +504,7 @@ class ZeroMatrix(MatrixExpr):
 
 def matrix_symbols(expr):
     return [sym for sym in expr.free_symbols if sym.is_Matrix]
+
 
 from .matmul import MatMul
 from .matadd import MatAdd

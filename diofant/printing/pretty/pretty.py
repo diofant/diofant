@@ -25,6 +25,7 @@ pprint_try_use_unicode = pretty_try_use_unicode
 
 class PrettyPrinter(Printer):
     """Printer, which converts an expression into 2D ASCII-art figure."""
+
     printmethod = "_pretty"
 
     _default_settings = {
@@ -631,10 +632,11 @@ class PrettyPrinter(Printer):
                 Symbol(expr.parent.name + '_%d%d' % (expr.i, expr.j)))
         else:
             prettyFunc = self._print(expr.parent)
-            prettyIndices = self._print_seq((expr.i, expr.j), delimiter=', '
-                    ).parens(left='[', right=']')[0]
+            prettyIndices = self._print_seq((expr.i, expr.j),
+                                            delimiter=', ').parens(left='[',
+                                                                   right=']')[0]
             pform = prettyForm(binding=prettyForm.FUNC,
-                    *stringPict.next(prettyFunc, prettyIndices))
+                               *stringPict.next(prettyFunc, prettyIndices))
 
             # store pform parts so it can be reassembled e.g. when powered
             pform.prettyFunc = prettyFunc
@@ -1846,6 +1848,7 @@ def pretty_print(expr, **settings):
 
     """
     print(pretty(expr, **settings))
+
 
 #:
 pprint = pretty_print

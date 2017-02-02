@@ -267,10 +267,8 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_below_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
         """
-        return ( self.args[0]._assumptions.get("above_fermi")
-                or
-                self.args[1]._assumptions.get("above_fermi")
-                ) or False
+        return (self.args[0]._assumptions.get("above_fermi") or
+                self.args[1]._assumptions.get("above_fermi") or False)
 
     @property
     def is_only_below_fermi(self):
@@ -300,10 +298,8 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_below_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
         """
-        return ( self.args[0]._assumptions.get("below_fermi")
-                or
-                self.args[1]._assumptions.get("below_fermi")
-                ) or False
+        return (self.args[0]._assumptions.get("below_fermi") or
+                self.args[1]._assumptions.get("below_fermi") or False)
 
     @property
     def indices_contain_equal_information(self):

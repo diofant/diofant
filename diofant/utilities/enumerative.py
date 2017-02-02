@@ -411,7 +411,8 @@ class MultisetPartitionTraverser():
 
     def db_trace(self, msg):
         """Useful for usderstanding/debugging the algorithms.  Not
-        generally activated in end-user code."""
+        generally activated in end-user code.
+        """
         if self.debug:
             letters = 'abcdefghijklmnopqrstuvwxyz'
             state = [self.f, self.lpart, self.pstack]
@@ -426,7 +427,8 @@ class MultisetPartitionTraverser():
         """Allocates and initializes the partition stack.
 
         This is called from the enumeration/counting routines, so
-        there is no need to call it separately."""
+        there is no need to call it separately.
+        """
 
         num_components = len(multiplicities)
         # cardinality is the total number of elements, whether or not distinct

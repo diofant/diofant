@@ -1468,7 +1468,8 @@ def stirling(n, k, d=None, kind=2, signed=False):
 @cacheit
 def _nT(n, k):
     """Return the partitions of ``n`` items into ``k`` parts. This
-    is used by ``nT`` for the case when ``n`` is an integer."""
+    is used by ``nT`` for the case when ``n`` is an integer.
+    """
     if k == 0:
         return 1 if k == n else 0
     return sum(_nT(n - k, j) for j in range(min(k, n - k) + 1))

@@ -51,41 +51,40 @@ from diofant.stats.crv import (SingleContinuousPSpace, SingleContinuousDistribut
 from diofant.stats.rv import _value_check
 
 __all__ = ('ContinuousRV',
-'Arcsin',
-'Benini',
-'Beta',
-'BetaPrime',
-'Cauchy',
-'Chi',
-'ChiNoncentral',
-'ChiSquared',
-'Dagum',
-'Erlang',
-'Exponential',
-'FDistribution',
-'FisherZ',
-'Frechet',
-'Gamma',
-'GammaInverse',
-'Kumaraswamy',
-'Laplace',
-'Logistic',
-'LogNormal',
-'Maxwell',
-'Nakagami',
-'Normal',
-'Pareto',
-'QuadraticU',
-'RaisedCosine',
-'Rayleigh',
-'StudentT',
-'Triangular',
-'Uniform',
-'UniformSum',
-'VonMises',
-'Weibull',
-'WignerSemicircle'
-)
+           'Arcsin',
+           'Benini',
+           'Beta',
+           'BetaPrime',
+           'Cauchy',
+           'Chi',
+           'ChiNoncentral',
+           'ChiSquared',
+           'Dagum',
+           'Erlang',
+           'Exponential',
+           'FDistribution',
+           'FisherZ',
+           'Frechet',
+           'Gamma',
+           'GammaInverse',
+           'Kumaraswamy',
+           'Laplace',
+           'Logistic',
+           'LogNormal',
+           'Maxwell',
+           'Nakagami',
+           'Normal',
+           'Pareto',
+           'QuadraticU',
+           'RaisedCosine',
+           'Rayleigh',
+           'StudentT',
+           'Triangular',
+           'Uniform',
+           'UniformSum',
+           'VonMises',
+           'Weibull',
+           'WignerSemicircle')
 
 
 def ContinuousRV(symbol, density, set=Interval(-oo, oo, True, True)):
@@ -774,7 +773,7 @@ def Erlang(name, k, l):
 class ExponentialDistribution(SingleContinuousDistribution):
     _argnames = ('rate',)
 
-    set  = Interval(0, oo, False, True)
+    set = Interval(0, oo, False, True)
 
     @staticmethod
     def check(rate):

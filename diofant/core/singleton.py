@@ -65,7 +65,8 @@ class SingletonRegistry:
         This __getattr__ checks whether a class with the requested name was
         already registered but not installed; if no, raises an AttributeError.
         Otherwise, retrieves the class, calculates its singleton value, installs
-        it as an attribute of the given name, and unregisters the class."""
+        it as an attribute of the given name, and unregisters the class.
+        """
         if name not in self._classes_to_install:
             raise AttributeError(
                 "Attribute '%s' was not installed on Diofant registry %s" % (
@@ -78,6 +79,7 @@ class SingletonRegistry:
 
     def __repr__(self):
         return "S"
+
 
 #: Alias for instance of :class:`SingletonRegistry`.
 S = SingletonRegistry()

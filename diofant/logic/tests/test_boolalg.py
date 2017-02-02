@@ -269,7 +269,8 @@ def test_bool_map():
 
 def test_bool_symbol():
     """Test that mixing symbols with boolean values
-    works as expected"""
+    works as expected
+    """
 
     assert And(A, True) == A
     assert And(A, True, True) == A
@@ -300,6 +301,7 @@ def test_subs():
     assert (A | B).subs(B, True) is true
     assert (A | B).subs(B, False) == A
     assert (A | B).subs({A: True, B: True}) is true
+
 
 """
 we test for axioms of boolean algebra

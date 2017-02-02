@@ -25,6 +25,7 @@ class Polyhedron(Basic):
 
     http://mathworld.wolfram.com/PolyhedralGroup.html
     """
+
     _edges = None
 
     def __new__(cls, corners, faces=[], pgroup=[]):
@@ -815,6 +816,7 @@ def _pgroup_calcs():
         tetrahedron_faces, cube_faces, octahedron_faces,
         dodecahedron_faces, icosahedron_faces)
 
+
 (tetrahedron, cube, octahedron, dodecahedron, icosahedron,
-tetrahedron_faces, cube_faces, octahedron_faces,
-dodecahedron_faces, icosahedron_faces) = _pgroup_calcs()
+ tetrahedron_faces, cube_faces, octahedron_faces,
+ dodecahedron_faces, icosahedron_faces) = _pgroup_calcs()

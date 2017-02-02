@@ -113,6 +113,7 @@ def g(l):
 def G(l):
     return U('GREEK CAPITAL LETTER %s' % l.upper())
 
+
 greek_letters = list(greeks)  # make a copy
 # deal with Unicode's funny spelling of lambda
 greek_letters[greek_letters.index('lambda')] = 'lamda'
@@ -186,6 +187,7 @@ def DSUP(digit):
 
 def SSUP(symb):
     return U('SUPERSCRIPT %s' % symb_2txt[symb])
+
 
 sub = {}    # symb -> subscript symbol
 sup = {}    # symb -> superscript symbol
@@ -274,6 +276,7 @@ def TOP(symb):
 
 def BOT(symb):
     return U('%s BOTTOM' % symb_2txt[symb])
+
 
 # {} '('  ->  (extension, start, end, middle) 1-character
 _xobj_unicode = {
@@ -433,6 +436,7 @@ def hobj(symb, width):
     """
     return ''.join( xobj(symb, width) )
 
+
 # RADICAL
 # n -> symbol
 root = {
@@ -445,6 +449,7 @@ root = {
 # RATIONAL
 def VF(txt):
     return U('VULGAR FRACTION %s' % txt)
+
 
 # (p,q) -> symbol
 frac = {

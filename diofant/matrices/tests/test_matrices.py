@@ -1523,9 +1523,8 @@ def test_jordan_form():
     m = Matrix(4, 4, [6, 5, -2, -3, -3, -1, 3, 3, 2, 1, -2, -3, -1, 1, 5, 5])
     Jmust = Matrix(4, 4, [2, 1, 0, 0,
                           0, 2, 0, 0,
-              0, 0, 2, 1,
-              0, 0, 0, 2]
-              )
+                          0, 0, 2, 1,
+                          0, 0, 0, 2])
     P, J = m.jordan_form()
     assert Jmust == J
 
@@ -1551,18 +1550,16 @@ def test_jordan_form():
     # This can be seen most easily when one lets compute the J.c.f. of a matrix that
     # is in J.c.f already.
     m = Matrix(4, 4, [2, 1, 0, 0,
-                    0, 2, 1, 0,
-                    0, 0, 2, 0,
-                    0, 0, 0, 2
-    ])
+                      0, 2, 1, 0,
+                      0, 0, 2, 0,
+                      0, 0, 0, 2])
     P, J = m.jordan_form()
     assert m == J
 
     m = Matrix(4, 4, [2, 1, 0, 0,
-                    0, 2, 0, 0,
-                    0, 0, 2, 1,
-                    0, 0, 0, 2
-    ])
+                      0, 2, 0, 0,
+                      0, 0, 2, 1,
+                      0, 0, 0, 2])
     P, J = m.jordan_form()
     assert m == J
 
@@ -1663,8 +1660,9 @@ def test_errors():
     pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).trace())
     pytest.raises(TypeError, lambda: Matrix([1]).applyfunc(1))
     pytest.raises(ShapeError, lambda: Matrix([1]).LUsolve(Matrix([[1, 2], [3, 4]])))
-    pytest.raises(MatrixError, lambda: Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]
-           ]).QRdecomposition())
+    pytest.raises(MatrixError, lambda: Matrix([[1, 2, 3],
+                                               [4, 5, 6],
+                                               [7, 8, 9]]).QRdecomposition())
     pytest.raises(MatrixError, lambda: Matrix(1, 2, [1, 2]).QRdecomposition())
     pytest.raises(
         NonSquareMatrixError, lambda: Matrix([1, 2]).LUdecomposition_Simple())
@@ -1695,8 +1693,9 @@ def test_errors():
     pytest.raises(ValueError, lambda: hessian(Matrix([[1, 2], [3, 4]]), []))
     pytest.raises(ValueError, lambda: hessian(Symbol('x')**2, 'a'))
     pytest.raises(ValueError,
-        lambda: Matrix([[5, 10, 7], [0, -1, 2], [8, 3, 4]]
-        ).LUdecomposition_Simple(iszerofunc=lambda x: abs(x) <= 4))
+                  lambda: Matrix([[5, 10, 7],
+                                  [0, -1, 2],
+                                  [8, 3, 4]]).LUdecomposition_Simple(iszerofunc=lambda x: abs(x) <= 4))
     pytest.raises(TypeError,
         lambda: Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])**(0.5))
     pytest.raises(IndexError, lambda: eye(3)[5, 2])

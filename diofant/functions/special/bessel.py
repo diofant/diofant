@@ -535,6 +535,7 @@ class hankel2(BesselBase):
         if (z.is_extended_real and z.is_negative) is False:
             return hankel1(self.order.conjugate(), z.conjugate())
 
+
 from diofant.polys.orthopolys import spherical_bessel_fn as fn
 
 

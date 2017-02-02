@@ -28,6 +28,7 @@ def test_f4():
 def test_f5():
     assert bool(dpll_satisfiable(load(f5)))
 
+
 f1 = """c  simple example
 c Resolution: SATISFIABLE
 c

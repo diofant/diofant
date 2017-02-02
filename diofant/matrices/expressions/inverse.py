@@ -26,8 +26,8 @@ class Inverse(MatPow):
     B^-1*A^-1
     >>> Inverse(A*B)
     (A*B)^-1
-
     """
+
     is_Inverse = True
     exp = Integer(-1)
 

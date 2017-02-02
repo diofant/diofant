@@ -39,6 +39,7 @@ class FiniteDomain(RandomDomain):
 
     Represented using a FiniteSet.
     """
+
     is_Finite = True
 
     @property
@@ -207,6 +208,7 @@ class FinitePSpace(PSpace):
 
     Represents the probabilities of a finite number of events.
     """
+
     is_Finite = True
 
     @property
@@ -312,6 +314,7 @@ class SingleFinitePSpace(SinglePSpace, FinitePSpace):
     This class is implemented by many of the standard FiniteRV types such as
     Die, Bernoulli, Coin, etc....
     """
+
     @property
     def domain(self):
         return SingleFiniteDomain(self.symbol, self.distribution.set)
@@ -327,6 +330,7 @@ class ProductFinitePSpace(ProductPSpace, FinitePSpace):
     """
     A collection of several independent finite probability spaces
     """
+
     @property
     def domain(self):
         return ProductFiniteDomain(*[space.domain for space in self.spaces])

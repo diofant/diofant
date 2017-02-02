@@ -491,7 +491,8 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
 
 class Parametric2DLineSeries(Line2DBaseSeries):
     """Representation for a line consisting of two parametric diofant expressions
-    over a range."""
+    over a range.
+    """
 
     is_parametric = True
 
@@ -612,7 +613,8 @@ class Parametric2DLineSeries(Line2DBaseSeries):
 class Line3DBaseSeries(Line2DBaseSeries):
     """A base class for 3D lines.
 
-    Most of the stuff is derived from Line2DBaseSeries."""
+    Most of the stuff is derived from Line2DBaseSeries.
+    """
 
     is_2Dline = False
     is_3Dline = True
@@ -624,7 +626,8 @@ class Line3DBaseSeries(Line2DBaseSeries):
 
 class Parametric3DLineSeries(Line3DBaseSeries):
     """Representation for a 3D line consisting of two parametric diofant
-    expressions and a range."""
+    expressions and a range.
+    """
 
     def __init__(self, expr_x, expr_y, expr_z, var_start_end, **kwargs):
         super(Parametric3DLineSeries, self).__init__()
@@ -693,7 +696,9 @@ class SurfaceBaseSeries(BaseSeries):
 
 class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
     """Representation for a 3D surface consisting of a diofant expression and 2D
-    range."""
+    range.
+    """
+
     def __init__(self, expr, var_start_end_x, var_start_end_y, **kwargs):
         super(SurfaceOver2DRangeSeries, self).__init__()
         self.expr = sympify(expr)
@@ -728,7 +733,8 @@ class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
 
 class ParametricSurfaceSeries(SurfaceBaseSeries):
     """Representation for a 3D surface consisting of three parametric diofant
-    expressions and a range."""
+    expressions and a range.
+    """
 
     is_parametric = True
 

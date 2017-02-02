@@ -30,6 +30,7 @@ class IntegralTransformError(NotImplementedError):
     objects, and instead raise this exception if an integral cannot be
     computed.
     """
+
     def __init__(self, transform, function, msg):
         super(IntegralTransformError, self).__init__(
             "%s Transform could not be computed: %s." % (transform, msg))
@@ -160,6 +161,7 @@ class IntegralTransform(Function):
     def _eval_rewrite_as_Integral(self, *args):
         return self.as_integral
 
+
 from diofant.solvers.inequalities import solve_univariate_inequality
 
 
@@ -195,6 +197,8 @@ def _noconds_(default):
             return res
         return wrapper
     return make_wrapper
+
+
 _noconds = _noconds_(False)
 
 
@@ -397,6 +401,7 @@ class MellinTransformStripError(ValueError):
     """
     Exception raised by _rewrite_gamma. Mainly for internal use.
     """
+
     pass
 
 
@@ -699,7 +704,8 @@ def _rewrite_gamma(f, s, a, b):
 @_noconds_(True)
 def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
     """ A helper for the real inverse_mellin_transform function, this one here
-    assumes x to be real and positive. """
+    assumes x to be real and positive.
+    """
     from diofant import (expand, expand_mul, hyperexpand, meijerg,
                        arg, pi, re, factor, Heaviside, gamma, Add)
     x = _dummy('t', 'inverse-mellin-transform', F, positive=True)
@@ -752,6 +758,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
         return (h*fac).subs(x, x_), cond
 
     raise IntegralTransformError('Inverse Mellin', F, '')
+
 
 _allowed = None
 
@@ -904,7 +911,8 @@ def _simplifyconds(expr, s, a):
 
     def bigger(ex1, ex2):
         """ Return True only if |ex1| > |ex2|, False only if |ex1| < |ex2|.
-        Else return None. """
+        Else return None.
+        """
         if ex1.has(s) and ex2.has(s):
             return
         if ex1.func is Abs:

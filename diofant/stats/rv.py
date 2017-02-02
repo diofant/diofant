@@ -60,9 +60,11 @@ class SingleDomain(RandomDomain):
 
     See Also
     ========
+
     diofant.stats.crv.SingleContinuousDomain
     diofant.stats.frv.SingleFiniteDomain
     """
+
     def __new__(cls, symbol, set):
         assert symbol.is_Symbol
         return Expr.__new__(cls, symbol, set)
@@ -88,9 +90,11 @@ class ConditionalDomain(RandomDomain):
 
     See Also
     ========
+
     diofant.stats.crv.ConditionalContinuousDomain
     diofant.stats.frv.ConditionalFiniteDomain
     """
+
     def __new__(cls, fulldomain, condition):
         condition = condition.xreplace({rs: rs.symbol
                                         for rs in random_symbols(condition)})
@@ -170,6 +174,7 @@ class SinglePSpace(PSpace):
     Represents the probabilities of a set of random events that can be
     attributed to a single variable/symbol.
     """
+
     def __new__(cls, s, distribution):
         if isinstance(s, str):
             s = Symbol(s)
@@ -235,7 +240,7 @@ class RandomSymbol(Expr):
 
     pspace = property(lambda self: self.args[0])
     symbol = property(lambda self: self.args[1])
-    name   = property(lambda self: self.symbol.name)
+    name = property(lambda self: self.symbol.name)
 
     def _eval_is_positive(self):
         return self.symbol.is_positive
@@ -334,9 +339,11 @@ class ProductDomain(RandomDomain):
 
     See Also
     ========
+
     diofant.stats.crv.ProductContinuousDomain
     diofant.stats.frv.ProductFiniteDomain
     """
+
     is_ProductDomain = True
 
     def __new__(cls, *domains):
@@ -777,7 +784,8 @@ def where(condition, given_condition=None, **kwargs):
     (-1, 1)
 
     >>> where(And(D1<=D2 , D2<3))
-    Domain: Or(And(Eq(a, 1), Eq(b, 1)), And(Eq(a, 1), Eq(b, 2)), And(Eq(a, 2), Eq(b, 2)))    """
+    Domain: Or(And(Eq(a, 1), Eq(b, 1)), And(Eq(a, 1), Eq(b, 2)), And(Eq(a, 2), Eq(b, 2)))
+    """
     if given_condition is not None:  # If there is a condition
         # Recompute on new conditional expr
         return where(given(condition, given_condition, **kwargs), **kwargs)

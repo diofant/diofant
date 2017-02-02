@@ -3285,10 +3285,7 @@ def homogeneous_order(eq, *symbols):
         return
 
     # These are all constants
-    if (eq.is_Number or
-        eq.is_NumberSymbol or
-        eq.is_number
-            ):
+    if eq.is_Number or eq.is_NumberSymbol or eq.is_number:
         return S.Zero
 
     # Replace all functions with dummy variables
@@ -4718,8 +4715,8 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
                         collectterms = [(i, reroot, 0)] + collectterms
                         continue
                     conjugate_roots.append(conjugate(root))
-                    gensols.append(x**i*exp(reroot*x) * sin(abs(imroot) * x))
-                    gensols.append(x**i*exp(reroot*x) * cos(    imroot  * x))
+                    gensols.append(x**i * exp(reroot*x) * sin(abs(imroot)*x))
+                    gensols.append(x**i * exp(reroot*x) * cos(imroot*x))
 
                     # This ordering is important
                     collectterms = [(i, reroot, imroot)] + collectterms
@@ -6993,7 +6990,7 @@ def _linear_2eq_order2_type2(x, y, t, r, eq):
         if sig != 0:
             psol1 = r['d1']*sig**-1*(r['e1']*k-r['e2'])*t**2/2 - \
             sig**-2*(r['c1']*r['e1']+r['d1']*r['e2'])
-            psol2 = k*psol1  + (r['e2'] - r['e1']*k)*t**2/2
+            psol2 = k*psol1 + (r['e2'] - r['e1']*k)*t**2/2
             psol = [psol1, psol2]
         else:
             psol1 = r['d1']*(r['e2']-r['e1']*k)*t**4/24 + r['e1']*t**2/2

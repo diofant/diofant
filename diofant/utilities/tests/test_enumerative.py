@@ -109,7 +109,8 @@ def compare_multiset_states(s1, s2):
     """compare for equality two instances of multiset partition states
 
     This is useful for comparing different versions of the algorithm
-    to verify correctness."""
+    to verify correctness.
+    """
     # Comparison is physical, the only use of semantics is to ignore
     # trash off the top of the stack.
     f1, lpart1, pstack1 = s1
@@ -123,7 +124,8 @@ def compare_multiset_states(s1, s2):
 
 def test_multiset_partitions_taocp():
     """Compares the output of multiset_partitions_taocp with a baseline
-    (set partition based) implementation."""
+    (set partition based) implementation.
+    """
 
     # Test cases should not be too large, since the baseline
     # implementation is fairly slow.

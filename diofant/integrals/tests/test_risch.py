@@ -598,6 +598,7 @@ def test_DifferentialExtension_Rothstein():
 def test_DecrementLevel():
     class TestingException(Exception):
         """Dummy Exception class for testing."""
+
         pass
 
     DE = DifferentialExtension(x*log(exp(x) + 1), x, dummy=False)

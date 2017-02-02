@@ -88,6 +88,7 @@ class vectorize:
     [[Derivative(f(x, y), x), Derivative(f(x, y), y)],
      [Derivative(g(x, y), x), Derivative(g(x, y), y)]]
     """
+
     def __init__(self, *mdargs):
         """
         The given numbers and strings characterize the arguments that will be

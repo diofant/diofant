@@ -1387,6 +1387,7 @@ def gf_irred_p_rabin(f, p, K):
 
     return h == x
 
+
 _irred_methods = {
     'ben-or': gf_irred_p_ben_or,
     'rabin': gf_irred_p_rabin,
@@ -1967,6 +1968,7 @@ def gf_shoup(f, p, K):
         factors += gf_edf_shoup(factor, n, p, K)
 
     return _sort_factors(factors, multiple=False)
+
 
 _factor_methods = {
     'berlekamp': gf_berlekamp,  # ``p`` : small

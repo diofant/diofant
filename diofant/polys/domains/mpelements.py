@@ -36,6 +36,7 @@ class ComplexElement(_mpc, DomainElement):
     def parent(self):
         return self.context._parent
 
+
 new = object.__new__
 
 

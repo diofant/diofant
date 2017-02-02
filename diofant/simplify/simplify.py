@@ -614,7 +614,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     def shorter(*choices):
         """Return the choice that has the fewest ops. In case of a tie,
-        the expression listed first is selected."""
+        the expression listed first is selected.
+        """
         if not has_variety(choices):
             return choices[0]
         return min(choices, key=measure)
@@ -714,8 +715,7 @@ def _real_to_rational(expr, tolerance=None):
             r = Rational(float).limit_denominator(reduce_num)
         elif (tolerance is not None and tolerance >= 1 and
                 float.is_Integer is False):
-            r = Rational(tolerance*round(float/tolerance)
-                ).limit_denominator(int(tolerance))
+            r = Rational(tolerance*round(float/tolerance)).limit_denominator(int(tolerance))
         else:
             r = nsimplify(float, rational=False)
             # e.g. log(3).n() -> log(3) instead of a Rational

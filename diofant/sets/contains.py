@@ -22,6 +22,7 @@ class Contains(BooleanFunction):
 
     .. [1] http://en.wikipedia.org/wiki/Element_%28mathematics%29
     """
+
     @classmethod
     def eval(cls, x, S):
         ret = S.contains(x)

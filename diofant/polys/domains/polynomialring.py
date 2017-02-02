@@ -12,7 +12,7 @@ class PolynomialRing(Ring, CompositeDomain):
 
     is_PolynomialRing = is_Poly = True
 
-    has_assoc_Ring  = True
+    has_assoc_Ring = True
     has_assoc_Field = True
 
     def __init__(self, domain_or_ring, symbols=None, order=None):

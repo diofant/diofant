@@ -25,6 +25,7 @@ class FunctionMatrix(MatrixExpr):
     >>> (Y**2)[10,10] # So this is evaluated lazily
     342923500
     """
+
     def __new__(cls, rows, cols, lamda):
         rows, cols = sympify(rows), sympify(cols)
         return Expr.__new__(cls, rows, cols, lamda)

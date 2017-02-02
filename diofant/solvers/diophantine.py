@@ -746,7 +746,7 @@ def _diop_quadratic(var, coeff, t):
 
             for d in div:
                 if divisible(int(d - E), int(B)):
-                    x0  = (d - E)//B
+                    x0 = (d - E)//B
                     if divisible(int(D*E - B*F), int(d)):
                         if divisible(int((D*E - B*F)//d - D), int(B)):
                             y0 = ((D*E - B*F)//d - D)//B
@@ -2401,7 +2401,7 @@ def diop_general_pythagorean(eq, param=symbols("m", integer=True)):
     >>> diop_general_pythagorean(9*a**2 - 4*b**2 + 16*c**2 + 25*d**2 + e**2)
     (10*m1**2  + 10*m2**2  + 10*m3**2 - 10*m4**2, 15*m1**2  + 15*m2**2  + 15*m3**2  + 15*m4**2, 15*m1*m4, 12*m2*m4, 60*m3*m4)
     """
-    var, coeff, diop_type  = classify_diop(eq)
+    var, coeff, diop_type = classify_diop(eq)
 
     if diop_type == "general_pythagorean":
         return _diop_general_pythagorean(var, coeff, param)

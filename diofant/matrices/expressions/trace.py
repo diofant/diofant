@@ -13,9 +13,12 @@ class Trace(Expr):
     >>> Trace(A)
     Trace(A)
 
-    See Also:
-        trace
+    See Also
+    ========
+
+    trace
     """
+
     is_Trace = True
 
     def __new__(cls, mat):
@@ -66,7 +69,9 @@ def trace(expr):
     >>> trace(eye(3))
     3
 
-    See Also:
-        Trace
+    See Also
+    ========
+
+    Trace
     """
     return Trace(expr).doit()

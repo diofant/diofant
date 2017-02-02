@@ -78,6 +78,7 @@ reserved_words = ['auto',
 
 class CCodePrinter(CodePrinter):
     """A printer to convert python expressions to strings of c code"""
+
     printmethod = "_ccode"
     language = "C"
 

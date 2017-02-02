@@ -305,6 +305,7 @@ class Cycle(dict):
 
     Permutation
     """
+
     def __missing__(self, arg):
         """Enter arg into dictionary and return arg."""
         self[arg] = arg
@@ -2775,6 +2776,7 @@ def _merge(arr, temp, left, mid, right):
     else:
         arr[left:right + 1] = temp[left:right + 1]
     return inv_count
+
 
 Perm = Permutation
 _af_new = Perm._af_new

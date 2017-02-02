@@ -703,6 +703,7 @@ class UndefinedFunction(FunctionClass):
     """
     The (meta)class of undefined functions.
     """
+
     def __new__(cls, name, **kwargs):
         ret = type.__new__(cls, name, (AppliedUndef,), kwargs)
         ret.__module__ = None
@@ -710,6 +711,7 @@ class UndefinedFunction(FunctionClass):
 
     def __instancecheck__(self, instance):
         return self in type(instance).__mro__
+
 
 UndefinedFunction.__eq__ = lambda s, o: (isinstance(o, s.__class__) and
                                          (s.class_key() == o.class_key()))
@@ -1368,8 +1370,8 @@ class Lambda(Expr):
     >>> f = Lambda(p, x + y*z)
     >>> f(*p)
     x + y*z
-
     """
+
     is_Function = True
 
     def __new__(cls, variables, expr):
@@ -1497,8 +1499,8 @@ class Subs(Expr):
     Subs(z + f(x)*sin(y), (x, y), (0, 1))
     >>> _.doit()
     z + f(0)*sin(1)
-
     """
+
     def __new__(cls, expr, variables, point, **assumptions):
         from diofant import Symbol
         if not is_sequence(variables, Tuple):

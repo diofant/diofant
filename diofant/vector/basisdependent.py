@@ -265,6 +265,7 @@ class BasisDependentZero(BasisDependent):
     """
     Class to denote a zero basis dependent instance.
     """
+
     components = {}
 
     def __new__(cls):

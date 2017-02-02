@@ -328,6 +328,7 @@ class StdFactKB(FactKB):
 
     This is the only kind of FactKB that Basic objects should use.
     """
+
     rules = _assume_rules
 
     def __init__(self, facts=None):

@@ -286,6 +286,7 @@ def test_other_sums():
     assert summation(f, (m, -Rational(3, 2), Rational(3, 2))).expand() == g
     assert summation(f, (m, -1.5, 1.5)).evalf().epsilon_eq(g.evalf(), 1e-10)
 
+
 fac = factorial
 
 

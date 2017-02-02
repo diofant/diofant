@@ -246,6 +246,7 @@ def dmp_fateman_poly_F_3(n, K):
 
     return dmp_mul(f, h, n, K), dmp_mul(g, h, n, K), h
 
+
 # A few useful polynomials from Wang's paper ('78).
 
 from diofant.polys.rings import ring

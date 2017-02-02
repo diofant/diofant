@@ -19,8 +19,8 @@ class Prufer(Basic):
     ==========
 
     .. [1] http://mathworld.wolfram.com/LabeledTree.html
-
     """
+
     _prufer_repr = None
     _tree_repr = None
     _nodes = None

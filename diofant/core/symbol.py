@@ -198,6 +198,7 @@ class Symbol(BaseSymbol):
 
     :mod:`diofant.core.assumptions`
     """
+
     pass
 
 
@@ -324,6 +325,7 @@ class Wild(BaseSymbol):
 
     Symbol
     """
+
     is_Wild = True
 
     def __new__(cls, name, exclude=(), properties=(), **assumptions):

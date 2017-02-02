@@ -166,6 +166,7 @@ class ModularInteger(DomainElement):
     def invert(self):
         return self.__class__(self._invert(self.val))
 
+
 _modular_integer_cache = {}
 
 

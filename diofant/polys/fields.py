@@ -37,6 +37,7 @@ def sfield(exprs, *symbols, **options):
     """Construct a field deriving generators and domain from options and input expressions. """
     raise NotImplementedError
 
+
 _field_cache = {}
 
 

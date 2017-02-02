@@ -101,6 +101,7 @@ class vectorized_lambdify:
     Check numpy bug http://projects.scipy.org/numpy/ticket/1013 to know what
     types of errors to expect.
     """
+
     def __init__(self, args, expr):
         self.args = args
         self.expr = expr
@@ -522,7 +523,8 @@ class Lambdifier:
 
     def translate_str(self, estr):
         """Translate substrings of estr using in order the dictionaries in
-        dict_tuple_str."""
+        dict_tuple_str.
+        """
         for pattern, repl in self.dict_str.items():
                 estr = re.sub(pattern, repl, estr)
         return estr
@@ -534,7 +536,8 @@ class Lambdifier:
         function is surrounded by a float((...).evalf()).
 
         The use of float is necessary as np.<function>(diofant.Float(..)) raises an
-        error."""
+        error.
+        """
         if func_name in self.dict_fun:
             new_name = self.dict_fun[func_name]
             argstr = self.tree2str_translate(argtree)
@@ -557,7 +560,8 @@ class Lambdifier:
         namespace. All other modules are imported only as a module name. That way
         the namespace is not poluted and rests quite small. It probably causes much
         more variable lookups and so it takes more time, but there are no tests on
-        that for the moment."""
+        that for the moment.
+        """
         if expr is None:
             return {}
         else:
@@ -604,7 +608,8 @@ class Lambdifier:
     @staticmethod
     def diofant_atoms_namespace(expr):
         """For no real reason this function is separated from
-        diofant_expression_namespace. It can be moved to it."""
+        diofant_expression_namespace. It can be moved to it.
+        """
         atoms = expr.atoms(Dummy, Symbol, NumberSymbol, I, zoo, oo)
         d = {}
         for a in atoms:

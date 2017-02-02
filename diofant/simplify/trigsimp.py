@@ -732,7 +732,8 @@ def trigsimp_old(expr, **opts):
 def _dotrig(a, b):
     """Helper to tell whether ``a`` and ``b`` have the same sorts
     of symbols in them -- no need to test hyperbolic patterns against
-    expressions that have no hyperbolics in them."""
+    expressions that have no hyperbolics in them.
+    """
     return a.func == b.func and (
         a.has(TrigonometricFunction) and b.has(TrigonometricFunction) or
         a.has(HyperbolicFunction) and b.has(HyperbolicFunction))
@@ -1175,7 +1176,8 @@ def _futrig(e, **kwargs):
 
 def _is_Expr(e):
     """_eapply helper to tell whether ``e`` and all its args
-    are Exprs."""
+    are Exprs.
+    """
     if not isinstance(e, Expr):
         return False
     return all(_is_Expr(i) for i in e.args)
@@ -1183,7 +1185,8 @@ def _is_Expr(e):
 
 def _eapply(func, e, cond=None):
     """Apply ``func`` to ``e`` if all args are Exprs else only
-    apply it to those args that *are* Exprs."""
+    apply it to those args that *are* Exprs.
+    """
     if not isinstance(e, Expr):
         return e
     if _is_Expr(e) or not e.args:

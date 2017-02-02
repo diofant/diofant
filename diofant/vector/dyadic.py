@@ -15,7 +15,6 @@ class Dyadic(BasisDependent):
 
     .. [1] http://en.wikipedia.org/wiki/Dyadic_tensor
     .. [2] Kane, T., Levinson, D. Dynamics Theory and Applications. 1985 McGraw-Hill
-
     """
 
     _op_priority = 13.0
@@ -174,6 +173,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
     """
     Class to denote a base dyadic tensor component.
     """
+
     def __new__(cls, vector1, vector2):
         Vector = diofant.vector.Vector
         BaseVector = diofant.vector.BaseVector
@@ -266,6 +266,7 @@ def _dyad_div(one, other):
         raise TypeError("Cannot divide two dyadics")
     else:
         return DyadicMul(one, Pow(other, S.NegativeOne))
+
 
 Dyadic._expr_type = Dyadic
 Dyadic._mul_func = DyadicMul

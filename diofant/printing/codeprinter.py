@@ -14,6 +14,7 @@ class AssignmentError(Exception):
     """
     Raised if an assignment variable for a loop is missing.
     """
+
     pass
 
 
@@ -304,15 +305,17 @@ class CodePrinter(StrPrinter):
     def _format_code(self, lines):
         """Take in a list of lines of code, and format them accordingly.
 
-        This may include indenting, wrapping long lines, etc..."""
+        This may include indenting, wrapping long lines, etc...
+        """
         raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")
+                                  "subclass of CodePrinter.")  # pragma: no cover
 
     def _get_loop_opening_ending(self, indices):
         """Returns a tuple (open_lines, close_lines) containing lists
-        of codelines"""
+        of codelines
+        """
         raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")
+                                  "subclass of CodePrinter.")  # pragma: no cover
 
     def _print_Assignment(self, expr):
         from diofant.functions.elementary.piecewise import Piecewise

@@ -36,6 +36,9 @@ def test_point():
     p4 = Point(1, 1)
     p5 = Point(0, 1)
 
+    assert p1.origin == p3
+    assert p1.ambient_dimension == 2
+
     assert p1 in p1
     assert p1 not in p2
     assert p2.y == y2

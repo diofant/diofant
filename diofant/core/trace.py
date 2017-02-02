@@ -14,10 +14,8 @@ def _is_scalar(e):
     # sympify to set proper attributes
     e = sympify(e)
     if isinstance(e, Expr):
-        if (e.is_Integer or e.is_Float or
-            e.is_Rational or e.is_Number or
-            (e.is_Symbol and e.is_commutative)
-                ):
+        if (e.is_Integer or e.is_Float or e.is_Rational or e.is_Number or
+                (e.is_Symbol and e.is_commutative)):
             return True
 
     return False
@@ -97,8 +95,8 @@ class Tr(Expr):
     >>> m = Matrix([[1,2],[1,1]])
     >>> Tr(m)
     2
-
     """
+
     def __new__(cls, *args):
         """ Construct a Trace object.
 

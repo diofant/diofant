@@ -22,6 +22,7 @@ class NotIterable:
     true when iterable() is called on its instances. I.e. avoid infinite loop
     when calling e.g. list() on the instance
     """
+
     pass
 
 
@@ -429,6 +430,7 @@ def ordered(seq, keys=None, default=True, warn=False):
         for v in d[k]:
             yield v
         d.pop(k)
+
 
 if sys.version_info >= (3, 5):
     from math import gcd

@@ -70,6 +70,7 @@ class Point(GeometryEntity):
     >>> print(Point(0.5, 0.25, evaluate=False))
     Point2D(0.5, 0.25)
     """
+
     def __new__(cls, *args, **kwargs):
         evaluate = kwargs.get('evaluate', global_evaluate[0])
 
@@ -210,7 +211,8 @@ class Point(GeometryEntity):
     @property
     def origin(self):
         """A point of all zeros of the same ambient dimension
-        as the current point"""
+        as the current point
+        """
         return Point([0]*len(self))
 
     @property
@@ -222,7 +224,8 @@ class Point(GeometryEntity):
     def ambient_dimension(self):
         """The dimension of the ambient space the point is in.
         I.e., if the point is in R^n, the ambient dimension
-        will be n"""
+        will be n
+        """
         return len(self)
 
     def distance(self, p):
@@ -393,7 +396,8 @@ class Point(GeometryEntity):
 
     def __sub__(self, other):
         """Subtract two points, or subtract a factor from this point's
-        coordinates."""
+        coordinates.
+        """
         return self + (-other)
 
     def __mul__(self, factor):
@@ -465,8 +469,8 @@ class Point2D(Point):
     Point2D(1/2, 1/4)
     >>> print(Point2D(0.5, 0.25, evaluate=False))
     Point2D(0.5, 0.25)
-
     """
+
     def __new__(cls, *args, **kwargs):
         eval = kwargs.get('evaluate', global_evaluate[0])
         check = True
@@ -755,8 +759,8 @@ class Point3D(Point):
     Point3D(1/2, 1/4, 2)
     >>> print(Point3D(0.5, 0.25, 3, evaluate=False))
     Point3D(0.5, 0.25, 3)
-
     """
+
     def __new__(cls, *args, **kwargs):
         eval = kwargs.get('evaluate', global_evaluate[0])
         if isinstance(args[0], (Point, Point3D)):

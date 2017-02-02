@@ -7,7 +7,8 @@ import inspect
 
 def conserve_mpmath_dps(func):
     """After the function finishes, resets the value of mpmath.mp.dps to
-    the value it had before the function was run."""
+    the value it had before the function was run.
+    """
     import functools
     import mpmath
 
@@ -39,8 +40,8 @@ class no_attrs_in_subclass:
     True
     >>> hasattr(B, 'x')
     False
-
     """
+
     def __init__(self, cls, f):
         self.cls = cls
         self.f = f
@@ -55,7 +56,8 @@ class no_attrs_in_subclass:
 
 def doctest_depends_on(exe=None, modules=None, disable_viewers=None):
     """Adds metadata about the dependencies which need to be met for doctesting
-    the docstrings of the decorated objects."""
+    the docstrings of the decorated objects.
+    """
 
     def depends_on_deco(fn):
         fn._doctest_depends_on = dict(exe=exe, modules=modules,

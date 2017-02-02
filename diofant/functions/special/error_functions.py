@@ -1,5 +1,6 @@
 """ This module contains various functions that are special cases
-of incomplete gamma functions. It should probably be renamed. """
+of incomplete gamma functions. It should probably be renamed.
+"""
 
 from diofant.core import Add, S, sympify, cacheit, pi, I, Integer, Rational
 from diofant.core.function import Function, ArgumentIndexError
@@ -2130,8 +2131,8 @@ class fresnels(FresnelIntegral):
     .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelS
     .. [5] The converging factors for the fresnel integrals
             by John W. Wrench Jr. and Vicki Alley
-
     """
+
     _trigfunc = sin
     _sign = -S.One
 
@@ -2264,6 +2265,7 @@ class fresnelc(FresnelIntegral):
     .. [5] The converging factors for the fresnel integrals
             by John W. Wrench Jr. and Vicki Alley
     """
+
     _trigfunc = cos
     _sign = S.One
 

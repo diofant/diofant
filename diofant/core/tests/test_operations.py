@@ -17,6 +17,7 @@ def test_flatten():
 
 class join(LatticeOp):
     """Simplest possible Lattice class."""
+
     zero = Integer(0)
     identity = Integer(1)
 

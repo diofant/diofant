@@ -204,6 +204,7 @@ def entails(expr, formula_set={}):
 
 class KB:
     """Base class for all knowledge bases"""
+
     def __init__(self, sentence=None):
         self.clauses_ = set()
         if sentence:

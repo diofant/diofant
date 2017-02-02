@@ -37,6 +37,7 @@ class MatrixError(Exception):
 
 class ShapeError(ValueError, MatrixError):
     """Wrong matrix shape"""
+
     pass
 
 
@@ -59,6 +60,7 @@ class DeferredVector(Symbol, NotIterable):
     >>> func( [1, 2, 3] )
     (3, 6)
     """
+
     def __getitem__(self, i):
         if i == -0:
             i = 0
@@ -3735,15 +3737,6 @@ class MatrixBase(DefaultPrinting):
             P[:, j] = Pcols_new[j]
 
         return type(self)(P), Jcells
-
-    def _jordan_split(self, algebraical, geometrical):
-        """Return a list of integers with sum equal to 'algebraical'
-        and length equal to 'geometrical'"""
-        n1 = algebraical // geometrical
-        res = [n1]*geometrical
-        res[len(res) - 1] += algebraical % geometrical
-        assert sum(res) == algebraical
-        return res
 
     def has(self, *patterns):
         """Test whether any subexpression matches any of the patterns.

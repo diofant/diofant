@@ -153,8 +153,8 @@ class Pow(Expr):
     .. [1] http://en.wikipedia.org/wiki/Exponentiation
     .. [2] http://en.wikipedia.org/wiki/Exponentiation#Zero_to_the_power_of_zero
     .. [3] http://en.wikipedia.org/wiki/Indeterminate_forms
-
     """
+
     is_Pow = True
 
     @cacheit
@@ -233,7 +233,8 @@ class Pow(Expr):
             # helper functions ===========================
             def _half(e):
                 """Return True if the exponent has a literal 2 as the
-                denominator, else None."""
+                denominator, else None.
+                """
                 if getattr(e, 'q', None) == 2:
                     return True
                 n, d = e.as_numer_denom()
@@ -242,7 +243,8 @@ class Pow(Expr):
 
             def _n2(e):
                 """Return ``e`` evaluated to a Number with 2 significant
-                digits, else None."""
+                digits, else None.
+                """
                 try:
                     rv = e.evalf(2, strict=True)
                     if rv.is_Number:
@@ -1339,6 +1341,7 @@ class Pow(Expr):
             return
 
         return e.equals(0)
+
 
 from .add import Add
 from .numbers import Integer

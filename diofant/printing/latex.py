@@ -1219,7 +1219,7 @@ class LatexPrinter(Printer):
             s += '; '
             if len(expr.variables) > 1:
                 s += self._print(expr.variables)
-            elif len(expr.variables):
+            else:
                 s += self._print(expr.variables[0])
             s += r'\rightarrow{}'
             if len(expr.point) > 1:
@@ -1856,8 +1856,3 @@ def latex(expr, **settings):
     """
 
     return LatexPrinter(settings).doprint(expr)
-
-
-def print_latex(expr, **settings):
-    """Prints LaTeX representation of the given expression."""
-    print(latex(expr, **settings))

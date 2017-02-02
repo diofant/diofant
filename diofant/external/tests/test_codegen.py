@@ -256,6 +256,7 @@ def is_feasible(language, commands):
     except AssertionError:
         return False
 
+
 valid_lang_commands = []
 invalid_lang_compilers = []
 for lang, compiler in combinations_lang_compiler:

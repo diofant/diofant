@@ -150,6 +150,7 @@ def fuzzy_or(args):
 
 class Logic:
     """Logical expression"""
+
     # {} 'op' -> LogicClass
     op_2class = {}
 

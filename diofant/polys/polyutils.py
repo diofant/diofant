@@ -387,6 +387,7 @@ def expr_from_dict(rep, *gens):
 
     return Add(*result)
 
+
 parallel_dict_from_basic = parallel_dict_from_expr
 dict_from_basic = dict_from_expr
 basic_from_dict = expr_from_dict

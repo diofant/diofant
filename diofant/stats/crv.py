@@ -27,6 +27,7 @@ class ContinuousDomain(RandomDomain):
 
     Represented using symbols and Intervals.
     """
+
     is_Continuous = True
 
     def as_boolean(self):
@@ -39,6 +40,7 @@ class SingleContinuousDomain(ContinuousDomain, SingleDomain):
 
     Represented using a single symbol and interval.
     """
+
     def integrate(self, expr, variables=None, **kwargs):
         if variables is None:
             variables = self.symbols
@@ -399,6 +401,7 @@ class ProductContinuousPSpace(ProductPSpace, ContinuousPSpace):
     """
     A collection of independent continuous probability spaces
     """
+
     @property
     def pdf(self):
         p = Mul(*[space.pdf for space in self.spaces])

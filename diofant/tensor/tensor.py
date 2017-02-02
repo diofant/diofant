@@ -752,6 +752,7 @@ class _TensorDataLazyEvaluator(CantSympify):
     computed until they are accessed by reading the ``.data`` property
     associated to the tensor expression.
     """
+
     _substitutions_dict = dict()
     _substitutions_dict_tensmul = dict()
 
@@ -1144,6 +1145,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                 data = vsympify(numpy.array(data))
         return data
 
+
 _tensor_data_substitution_dict = _TensorDataLazyEvaluator()
 
 
@@ -1167,6 +1169,7 @@ class _TensorManager:
     groups commute with those with ``comm=0``; by default they
     do not commute with any other group.
     """
+
     def __init__(self):
         self._comm_init()
 
@@ -1601,7 +1604,6 @@ class TensorIndex(Basic):
 
     Dummy indices have a name with head given by ``tensortype._dummy_fmt``
 
-
     Examples
     ========
 
@@ -1631,6 +1633,7 @@ class TensorIndex(Basic):
     >>> A(i0)*B(-i0)
     A(L_0)*B(-L_0)
     """
+
     def __new__(cls, name, tensortype, is_up=True):
         if isinstance(name, str):
             name_symbol = Symbol(name)
@@ -1745,6 +1748,7 @@ class TensorSymmetry(Basic):
     >>> S2 = TensorType([Lorentz]*2, sym2)
     >>> V = S2('V')
     """
+
     def __new__(cls, *args, **kw_args):
         if len(args) == 1:
             base, generators = args[0]
@@ -1882,6 +1886,7 @@ class TensorType(Basic):
     >>> S2 = TensorType([Lorentz]*2, sym2)
     >>> V = S2('V')
     """
+
     is_commutative = False
 
     def __new__(cls, index_types, symmetry, **kw_args):
@@ -2158,6 +2163,7 @@ class TensorHead(Basic):
     >>> P**2
     E**2 - p_x**2 - p_y**2 - p_z**2
     """
+
     is_commutative = False
 
     def __new__(cls, name, typ, comm=0, matrix_behavior=0, **kw_args):

@@ -24,7 +24,8 @@ f = Function('f')
 def diff_test(i):
     """Return the set of symbols, s, which were used in testing that
     i.diff(s) agrees with i.doit().diff(s). If there is an error then
-    the assertion will fail, causing the test to fail."""
+    the assertion will fail, causing the test to fail.
+    """
     syms = i.free_symbols
     for s in syms:
         assert (i.diff(s).doit() - i.doit().diff(s)).expand() == 0
@@ -533,8 +534,8 @@ def test_subs5():
     e = Integral(exp(-x**2), (x, x))
     assert e.subs(x, 5) == Integral(exp(-x**2), (x, 5))
     e = Integral(exp(x), x)
-    assert (e.subs(x, 1) - e.subs(x, 0) - Integral(exp(x), (x, 0, 1))
-        ).doit().is_zero
+    assert (e.subs(x, 1) - e.subs(x, 0) -
+            Integral(exp(x), (x, 0, 1))).doit().is_zero
 
 
 def test_subs6():

@@ -19,6 +19,7 @@ class stringPict:
     """An ASCII picture.
     The pictures are represented as a list of equal length strings.
     """
+
     # special value for stringPict.below
     LINE = 'line'
 
@@ -329,6 +330,7 @@ class prettyForm(stringPict):
         OPEN this is an open object: parenthesize if added, multiplied, or
              powered (example: Piecewise)
     """
+
     ATOM, FUNC, DIV, POW, MUL, ADD, NEG, OPEN = range(8)
 
     def __init__(self, s, baseline=0, binding=0, unicode=None):

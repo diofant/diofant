@@ -557,7 +557,8 @@ class Hyper_Function(Expr):
 
     def difficulty(self, func):
         """ Estimate how many steps it takes to reach ``func`` from self.
-        Return -1 if impossible. """
+        Return -1 if impossible.
+        """
         if self.gamma != func.gamma:
             return -1
         oabuckets, obbuckets, abuckets, bbuckets = [sift(params, _mod1) for
@@ -1235,6 +1236,7 @@ class MeijerUnShiftB(Operator):
 
 class MeijerUnShiftC(Operator):
     """ Decrement a lower b index. """
+
     # XXX this is "essentially" the same as MeijerUnShiftA. This "essentially"
     #     can be made rigorous using the functional equation G(1/z) = G'(z),
     #     where G' denotes a G function of slightly altered parameters.
@@ -1286,6 +1288,7 @@ class MeijerUnShiftC(Operator):
 
 class MeijerUnShiftD(Operator):
     """ Increment a lower a index. """
+
     # XXX This is essentially the same as MeijerUnShiftA.
     #     See comment at MeijerUnShiftC.
 
@@ -1361,7 +1364,8 @@ class ReduceOrder(Operator):
     @classmethod
     def _meijer(cls, b, a, sign):
         """ Cancel b + sign*s and a + sign*s
-        This is for meijer G functions. """
+        This is for meijer G functions.
+        """
         b = sympify(b)
         a = sympify(a)
         n = b - a
@@ -1698,7 +1702,8 @@ def try_shifted_sum(func, z):
 
 def try_polynomial(func, z):
     """ Recognise polynomial cases. Returns None if not such a case.
-    Requires order to be fully reduced. """
+    Requires order to be fully reduced.
+    """
     abuckets, bbuckets = sift(func.ap, _mod1), sift(func.bq, _mod1)
     a0 = abuckets[Integer(0)]
     b0 = bbuckets[Integer(0)]
@@ -1954,6 +1959,7 @@ def hyperexpand_special(ap, bq, z):
     #      investigate what algorithms exist
     return hyper(ap, bq, z_)
 
+
 _collection = None
 
 
@@ -2201,6 +2207,7 @@ def devise_plan_meijer(fro, to, z):
         raise NotImplementedError('Could not devise plan.')
     ops.reverse()
     return ops
+
 
 _meijercollection = None
 

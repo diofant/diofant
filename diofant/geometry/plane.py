@@ -44,8 +44,8 @@ class Plane(GeometryEntity):
     Plane(Point3D(1, 1, 1), (-1, 2, -1))
     >>> Plane(Point3D(1, 1, 1), normal_vector=(1,4,7))
     Plane(Point3D(1, 1, 1), (1, 4, 7))
-
     """
+
     def __new__(cls, p1, a=None, b=None, **kwargs):
         p1 = Point3D(p1)
         if a and b:

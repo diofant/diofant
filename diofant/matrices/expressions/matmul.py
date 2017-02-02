@@ -25,6 +25,7 @@ class MatMul(MatrixExpr):
     >>> MatMul(A, B, C)
     A*B*C
     """
+
     is_MatMul = True
 
     def _eval_is_commutative(self):
@@ -223,6 +224,7 @@ def factor_in_front(mul):
     if factor != 1:
         return newmul(factor, *matrices)
     return mul
+
 
 rules = (any_zeros, remove_ids, xxinv, unpack, rm_id(lambda x: x == 1),
          merge_explicit, factor_in_front, flatten)

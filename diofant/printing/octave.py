@@ -37,6 +37,7 @@ class OctaveCodePrinter(CodePrinter):
     """
     A printer to convert expressions to strings of Octave/Matlab code.
     """
+
     printmethod = "_octave"
     language = "Octave"
 

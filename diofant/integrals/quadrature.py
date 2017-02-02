@@ -72,7 +72,7 @@ def gauss_legendre(n, n_digits):
     p = legendre_poly(n, x, polys=True)
     pd = p.diff(x)
     xi = []
-    w  = []
+    w = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
@@ -144,10 +144,10 @@ def gauss_laguerre(n, n_digits):
     .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/laguerre_rule/laguerre_rule.html
     """
     x = Dummy("x")
-    p  = laguerre_poly(n, x, polys=True)
+    p = laguerre_poly(n, x, polys=True)
     p1 = laguerre_poly(n+1, x, polys=True)
     xi = []
-    w  = []
+    w = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
@@ -220,10 +220,10 @@ def gauss_hermite(n, n_digits):
     .. [3] http://people.sc.fsu.edu/~jburkardt/cpp_src/gen_hermite_rule/gen_hermite_rule.html
     """
     x = Dummy("x")
-    p  = hermite_poly(n, x, polys=True)
+    p = hermite_poly(n, x, polys=True)
     p1 = hermite_poly(n-1, x, polys=True)
     xi = []
-    w  = []
+    w = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
@@ -301,7 +301,7 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     p1 = laguerre_poly(n-1, x, alpha=alpha, polys=True)
     p2 = laguerre_poly(n-1, x, alpha=alpha+1, polys=True)
     xi = []
-    w  = []
+    w = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
@@ -375,7 +375,7 @@ def gauss_chebyshev_t(n, n_digits):
     """
     x = Dummy("x")
     xi = []
-    w  = []
+    w = []
     for i in range(1, n + 1):
         xi.append((cos((2*i-S.One)/(2*n)*S.Pi)).n(n_digits))
         w.append((S.Pi/n).n(n_digits))
@@ -447,7 +447,7 @@ def gauss_chebyshev_u(n, n_digits):
     """
     x = Dummy("x")
     xi = []
-    w  = []
+    w = []
     for i in range(1, n + 1):
         xi.append((cos(i/(n+S.One)*S.Pi)).n(n_digits))
         w.append((S.Pi/(n+S.One)*sin(i*S.Pi/(n+S.One))**2).n(n_digits))
@@ -528,7 +528,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     pd = p.diff(x)
     pn = jacobi_poly(n+1, alpha, beta, x, polys=True)
     xi = []
-    w  = []
+    w = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))

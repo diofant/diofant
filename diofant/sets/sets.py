@@ -28,6 +28,7 @@ class Set(Basic):
     sets by the :class:`Union` class. The empty set is represented by the
     :class:`EmptySet` class and available as a singleton as ``S.EmptySet``.
     """
+
     is_number = False
     is_iterable = False
     is_interval = False
@@ -527,6 +528,7 @@ class ProductSet(Set):
 
     .. [1] http://en.wikipedia.org/wiki/Cartesian_product
     """
+
     is_ProductSet = True
 
     def __new__(cls, *sets, **assumptions):
@@ -1078,6 +1080,7 @@ class Union(Set, EvalfMixin):
 
     .. [1] http://en.wikipedia.org/wiki/Union_%28set_theory%29
     """
+
     is_Union = True
 
     def __new__(cls, *args, **kwargs):
@@ -1286,6 +1289,7 @@ class Intersection(Set):
 
     .. [1] http://en.wikipedia.org/wiki/Intersection_%28set_theory%29
     """
+
     is_Intersection = True
 
     def __new__(cls, *args, **kwargs):
@@ -1488,6 +1492,7 @@ class EmptySet(Set, metaclass=Singleton):
 
     .. [1] http://en.wikipedia.org/wiki/Empty_set
     """
+
     is_EmptySet = True
     is_FiniteSet = True
 
@@ -1601,6 +1606,7 @@ class FiniteSet(Set, EvalfMixin):
 
     .. [1] http://en.wikipedia.org/wiki/Finite_set
     """
+
     is_FiniteSet = True
     is_iterable = True
 

@@ -73,6 +73,8 @@ def standard_deviation(X, condition=None, **kwargs):
     sqrt(p*(-p + 1))
     """
     return sqrt(variance(X, condition, **kwargs))
+
+
 std = standard_deviation
 
 

@@ -303,7 +303,8 @@ class Piecewise(Function):
         Under normal use, we return the expr,cond pairs in increasing order
         along the real axis corresponding to the symbol sym.  If targetcond
         is given, we return a list of (lowerbound, upperbound) pairs for
-        this condition."""
+        this condition.
+        """
         from diofant.solvers.inequalities import solve_univariate_inequality
         default = None
         int_expr = []

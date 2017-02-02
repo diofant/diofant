@@ -7,7 +7,8 @@ from diofant import (
     Pow, Product, QQ, RR, Rational, Ray, RootOf, RootSum, S,
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
-    Interval, Union, Integer, Float, Complement, Intersection)
+    Interval, Union, Integer, Float, Complement, Intersection,
+    MatrixSymbol)
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2_r
 from diofant.functions import (
@@ -2543,7 +2544,7 @@ def test_pretty_matrix():
 
 
 def test_Adjoint():
-    from diofant.matrices import Adjoint, Inverse, MatrixSymbol, Transpose
+    from diofant.matrices import Adjoint, Inverse, Transpose
     X = MatrixSymbol('X', 2, 2)
     Y = MatrixSymbol('Y', 2, 2)
     assert pretty(Adjoint(X)) == " +\nX "
@@ -4830,3 +4831,9 @@ def test_sympyissue_9877():
 
 def test_BaseVectorField():
     assert upretty(BaseVectorField(R2_r, 1)) == '∂_y'
+
+
+def test_MatrixElement():
+    X = MatrixSymbol('X', 2, 2)
+    n = Symbol('n', integer=True)
+    assert pretty(X[n, 0]) == 'X[n, 0]'

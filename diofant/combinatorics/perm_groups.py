@@ -113,8 +113,8 @@ class PermutationGroup(Basic):
     [12] http://en.wikipedia.org/wiki/Nilpotent_group
 
     [13] http://www.math.colostate.edu/~hulpke/CGT/cgtnotes.pdf
-
     """
+
     is_group = True
 
     def __new__(cls, *args, **kwargs):
@@ -3107,7 +3107,7 @@ class PermutationGroup(Basic):
             # accorndingly
             c[l] += 1
             if l == 0:
-                gamma  = sorted_orbits[l][c[l]]
+                gamma = sorted_orbits[l][c[l]]
             else:
                 gamma = computed_words[l - 1]._array_form.index(sorted_orbits[l][c[l]])
 
@@ -3371,5 +3371,6 @@ def _stabilizer(degree, generators, alpha):
                 if schreier_gen not in stab_gens:
                     stab_gens.append(schreier_gen)
     return [_af_new(x) for x in stab_gens]
+
 
 PermGroup = PermutationGroup

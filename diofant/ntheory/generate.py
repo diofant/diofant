@@ -188,6 +188,7 @@ class Sieve:
             self.extend_to_no(n)
             return self._list[n - 1]
 
+
 # Generate a global object for repeated use in trial division etc
 sieve = Sieve()
 
