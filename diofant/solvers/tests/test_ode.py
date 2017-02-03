@@ -2755,6 +2755,9 @@ def test_2nd_power_series_ordinary():
     assert classify_ode(eq) == ('2nd_power_series_ordinary',)
     assert dsolve(eq) == Eq(f(x), C2*(
         x**4/8 - x**2/2 + 1) + C1*x*(-x**2/3 + 1) + O(x**6))
+    # for coverage
+    assert classify_ode(f(x).diff(x, 2) +
+                        sin(x)*(f(x).diff(x)) + f(x)) == ()
 
     eq = f(x).diff(x, 2) + f(x).diff(x) - x*f(x)
     assert classify_ode(eq) == ('2nd_power_series_ordinary',)
