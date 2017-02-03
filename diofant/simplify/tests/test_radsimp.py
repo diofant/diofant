@@ -150,6 +150,9 @@ def test_radsimp():
     eq = sqrt(x)/y**2
     assert radsimp(eq) == eq
 
+    assert (radsimp(1/(1 + r2/3 + r3/5 + r5 + sqrt(r7))) ==
+            15/(3*sqrt(3) + 5*sqrt(2) + 15 + 15*root(7, 4) + 15*sqrt(5)))
+
 
 def test_radsimp_sympyissue_6313():
     c, p = symbols('c p', positive=True)
