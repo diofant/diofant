@@ -36,7 +36,7 @@ def sqrt_depth(p):
     if p.is_Atom:
         return 0
     elif p.is_Add or p.is_Mul:
-        return max([sqrt_depth(x) for x in p.args], key=default_sort_key)
+        return max((sqrt_depth(x) for x in p.args), key=default_sort_key)
     elif is_sqrt(p):
         return sqrt_depth(p.base) + 1
     else:
@@ -806,7 +806,7 @@ def unrad(eq, *syms, **flags):
     for t in args:
         if _take(t, False):
             common = set(t.as_poly().gens).intersection(rads)
-            key = tuple(sorted([drad[i] for i in common]))
+            key = tuple(sorted(drad[i] for i in common))
         else:
             key = ()
         rterms.setdefault(key, []).append(t)

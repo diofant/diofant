@@ -45,6 +45,7 @@ Developer changes
 
 * Enabled docstring testing with flake8, see `#408 <https://github.com/diofant/diofant/pull/408>`_.
 * Use only relative imports in the codebase, see `#421 <https://github.com/diofant/diofant/pull/421>`_.
+* Enabled flake8-comprehensions plugin, see `#420 <https://github.com/diofant/diofant/pull/420>`_.
 
 Issues closed
 =============
@@ -77,7 +78,7 @@ Issues closed
 * `sympy/sympy#6807 <https://github.com/sympy/sympy/issues/6807>`_ atoms does not work correctly in the otherwise case of Piecewise
 * `sympy/sympy#12114 <https://github.com/sympy/sympy/issues/12114>`_ solve() leads to ZeroDivisionError: polynomial division
 
-.. last pr: #419
+.. last pr: #420
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

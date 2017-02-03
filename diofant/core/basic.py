@@ -362,8 +362,7 @@ class Basic(object):
         {I*pi, 2*sin(y + I*pi)}
         """
         if types:
-            types = tuple(
-                [t if isinstance(t, type) else type(t) for t in types])
+            types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
             types = (Atom,)
         result = set()
@@ -706,12 +705,12 @@ class Basic(object):
                     d.setdefault(ops, []).append((o, n))
                 newseq = []
                 for k in sorted(d.keys(), reverse=True):
-                    newseq.extend(
-                        sorted([v[0] for v in d[k]], key=default_sort_key))
+                    newseq.extend(sorted((v[0] for v in d[k]),
+                                         key=default_sort_key))
                 sequence = [(k, sequence[k]) for k in newseq]
                 del newseq, d
             else:
-                sequence = sorted([(k, v) for (k, v) in sequence.items()],
+                sequence = sorted(((k, v) for (k, v) in sequence.items()),
                                   key=default_sort_key)
 
         if kwargs.pop('simultaneous', False):  # XXX should this be the default for dict subs?

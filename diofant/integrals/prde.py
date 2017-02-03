@@ -117,7 +117,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
             "'base'}, not %s." % case)
 
     nb = order_at(ba, p, DE.t) - order_at(bd, p, DE.t)
-    nc = min([order_at(Ga, p, DE.t) - order_at(Gd, p, DE.t) for Ga, Gd in G])
+    nc = min(order_at(Ga, p, DE.t) - order_at(Gd, p, DE.t) for Ga, Gd in G)
     n = min(0, nc - min(0, nb))
     if not nb:
         # Possible cancellation.
@@ -184,8 +184,8 @@ def prde_linear_constraints(a, b, G, DE):
     d = Poly(d, field=True)
     Q = [(ga*(d).quo(gd)).div(d) for ga, gd in G]
 
-    if not all([ri.is_zero for _, ri in Q]):
-        N = max([ri.degree(DE.t) for _, ri in Q])
+    if not all(ri.is_zero for _, ri in Q):
+        N = max(ri.degree(DE.t) for _, ri in Q)
         M = Matrix(N + 1, m, lambda i, j: Q[j][1].nth(i))
     else:
         M = Matrix()  # No constraints, return the empty matrix.
@@ -314,7 +314,7 @@ def prde_no_cancel_b_large(b, Q, n, DE):
         dc = -1
         M = zeros(0, 2)
     else:
-        dc = max([qi.degree(t) for qi in Q])
+        dc = max(qi.degree(t) for qi in Q)
         M = Matrix(dc + 1, m, lambda i, j: Q[j].nth(i))
     A, u = constant_system(M, zeros(dc + 1, 1), DE)
     c = eye(m)
@@ -353,7 +353,7 @@ def prde_no_cancel_b_small(b, Q, n, DE):
             dc = -1
             M = Matrix()
         else:
-            dc = max([qi.degree(DE.t) for qi in Q])
+            dc = max(qi.degree(DE.t) for qi in Q)
             M = Matrix(dc + 1, m, lambda i, j: Q[j].nth(i))
         A, u = constant_system(M, zeros(dc + 1, 1), DE)
         c = eye(m)
@@ -423,8 +423,8 @@ def limited_integrate_reduce(fa, fd, G, DE):
         hs = reduce(lambda i, j: i.lcm(j), (ds,) + Es)  # lcm(ds, es1, ..., esm)
         a = hn*hs
         b = -derivation(hn, DE) - (hn*derivation(hs, DE)).quo(hs)
-        mu = min(order_at_oo(fa, fd, DE.t), min([order_at_oo(ga, gd, DE.t) for
-            ga, gd in G]))
+        mu = min(order_at_oo(fa, fd, DE.t), min(order_at_oo(ga, gd, DE.t)
+                                                for ga, gd in G))
         # So far, all the above are also nonlinear or Liouvillian, but if this
         # changes, then this will need to be updated to call bound_degree()
         # as per the docstring of this function (DE.case == 'other_linear').

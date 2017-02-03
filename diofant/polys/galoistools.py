@@ -2215,4 +2215,4 @@ def gf_csolve(f, n):
     for pool in pools:
         perms = [x + [y] for x in perms for y in pool]
     dist_factors = [pow(p, e) for p, e in P.items()]
-    return sorted([gf_crt(per, dist_factors, ZZ) for per in perms])
+    return sorted(gf_crt(per, dist_factors, ZZ) for per in perms)

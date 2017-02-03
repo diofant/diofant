@@ -322,15 +322,14 @@ class Order(Expr):
                     point = self.point[0]
             if expr.expr == self.expr:
                 # O(1) + O(1), O(1) + O(1, x), etc.
-                return all([x in self.args[1:] for x in expr.args[1:]])
+                return all(x in self.args[1:] for x in expr.args[1:])
             if expr.expr.is_Add:
-                return all([self.contains(x) for x in expr.expr.args])
+                return all(self.contains(x) for x in expr.expr.args)
             if self.expr.is_Add and point == S.Zero:
-                return any([self.func(x, *self.args[1:]).contains(expr)
-                            for x in self.expr.args])
+                return any(self.func(x, *self.args[1:]).contains(expr)
+                           for x in self.expr.args)
             if self.variables and expr.variables:
-                common_symbols = tuple(
-                    [s for s in self.variables if s in expr.variables])
+                common_symbols = tuple(s for s in self.variables if s in expr.variables)
             elif self.variables:
                 common_symbols = self.variables
             else:

@@ -1228,7 +1228,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
 
     if inf is None or sup is None:
         n, lc = dup_degree(f), abs(dup_LC(f, F))
-        B = 2*max([ F.quo(abs(c), lc) for c in f ])
+        B = 2*max(F.quo(abs(c), lc) for c in f)
 
     if inf is None:
         (u, v) = (-B, -B)
@@ -1542,7 +1542,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     f = dup_convert(f, K, F)
 
     n, lc = dup_degree(f), abs(dup_LC(f, F))
-    B = 2*max([ F.quo(abs(c), lc) for c in f ])
+    B = 2*max(F.quo(abs(c), lc) for c in f)
 
     (u, v), (s, t) = (-B, F.zero), (B, B)
 

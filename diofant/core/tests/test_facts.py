@@ -15,8 +15,8 @@ U = None
 def test_deduce_alpha_implications():
     def D(i):
         I = deduce_alpha_implications(i)
-        P = rules_2prereq(dict(
-            ((k, True), {(v, True) for v in S}) for k, S in I.items()))
+        P = rules_2prereq({(k, True): {(v, True) for v in S}
+                           for k, S in I.items()})
         return I, P
 
     # transitivity

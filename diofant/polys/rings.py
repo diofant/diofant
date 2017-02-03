@@ -1508,7 +1508,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not self:
             return -oo
         else:
-            return max([monom[i] for monom in self.itermonoms()])
+            return max(monom[i] for monom in self.itermonoms())
 
     def degrees(self):
         """
@@ -1532,7 +1532,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not self:
             return -oo
         else:
-            return min([monom[i] for monom in self.itermonoms()])
+            return min(monom[i] for monom in self.itermonoms())
 
     def tail_degrees(self):
         """

@@ -993,8 +993,7 @@ def bottom_up(rv, F, atoms=False, nonbasic=False):
     """
     try:
         if rv.args:
-            args = tuple([bottom_up(a, F, atoms, nonbasic)
-                for a in rv.args])
+            args = tuple(bottom_up(a, F, atoms, nonbasic) for a in rv.args)
             if args != rv.args:
                 rv = rv.func(*args)
             rv = F(rv)

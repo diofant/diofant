@@ -1117,8 +1117,7 @@ class MatrixBase(DefaultPrinting):
         """
 
         if types:
-            types = tuple(
-                [t if isinstance(t, type) else type(t) for t in types])
+            types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
             types = (Atom,)
         result = set()

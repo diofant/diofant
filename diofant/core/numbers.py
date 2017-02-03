@@ -867,8 +867,7 @@ class Float(Number):
         if isinstance(other, Float):
             r = self/other
             if r == int(r):
-                prec = max([prec_to_dps(i)
-                    for i in (self._prec, other._prec)])
+                prec = max(prec_to_dps(i) for i in (self._prec, other._prec))
                 return Float(0, prec)
         if isinstance(other, Number):
             rhs, prec = other._as_mpf_op(self._prec)

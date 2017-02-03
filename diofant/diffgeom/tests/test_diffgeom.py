@@ -236,7 +236,7 @@ def test_sympyissue_11799():
 
     f = Function('f')
     g = [[f(x[0], x[1])**2, 0], [0, f(x[0], x[1])**2]]
-    metric = sum([g[i][j]*TP(dx[i], dx[j]) for i in range(n) for j in range(n)])
+    metric = sum(g[i][j]*TP(dx[i], dx[j]) for i in range(n) for j in range(n))
 
     R = metric_to_Riemann_components(metric)
     d = Symbol('d')

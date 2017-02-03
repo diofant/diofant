@@ -47,7 +47,7 @@ def _construct_simple(coeffs, opt):
         if reals:
             # Use the maximum precision of all coefficients for the RR's
             # precision
-            max_prec = max([c._prec for c in coeffs])
+            max_prec = max(c._prec for c in coeffs)
             domain = RealField(prec=max_prec)
         else:
             if opt.field or rationals:

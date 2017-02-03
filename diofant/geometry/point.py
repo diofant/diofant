@@ -85,9 +85,8 @@ class Point(GeometryEntity):
         # Turn any Floats into rationals and simplify
         # any expressions before we instantiate
         if evaluate:
-            coords = coords.xreplace(dict(
-                [(f, simplify(nsimplify(f, rational=True)))
-                for f in coords.atoms(Float)]))
+            coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
+                                      for f in coords.atoms(Float)})
         if len(coords) == 2:
             return Point2D(coords, **kwargs)
         if len(coords) == 3:
@@ -486,9 +485,8 @@ class Point2D(Point):
             if any(a.is_number and im(a) for a in coords):
                 raise ValueError('Imaginary args not permitted.')
         if eval:
-            coords = coords.xreplace(dict(
-                [(f, simplify(nsimplify(f, rational=True)))
-                for f in coords.atoms(Float)]))
+            coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
+                                      for f in coords.atoms(Float)})
         return GeometryEntity.__new__(cls, *coords)
 
     def __contains__(self, item):
@@ -772,9 +770,8 @@ class Point3D(Point):
         if len(coords) == 2:
             coords += (S.Zero,)
         if eval:
-            coords = coords.xreplace(dict(
-                [(f, simplify(nsimplify(f, rational=True)))
-                for f in coords.atoms(Float)]))
+            coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
+                                      for f in coords.atoms(Float)})
         return GeometryEntity.__new__(cls, *coords)
 
     def __contains__(self, item):

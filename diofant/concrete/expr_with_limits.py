@@ -372,17 +372,17 @@ class AddWithLimits(ExprWithLimits):
         return obj
 
     def _eval_adjoint(self):
-        if all([x.is_extended_real for x in flatten(self.limits)]):
+        if all(x.is_extended_real for x in flatten(self.limits)):
             return self.func(self.function.adjoint(), *self.limits)
         return
 
     def _eval_conjugate(self):
-        if all([x.is_extended_real for x in flatten(self.limits)]):
+        if all(x.is_extended_real for x in flatten(self.limits)):
             return self.func(self.function.conjugate(), *self.limits)
         return
 
     def _eval_transpose(self):
-        if all([x.is_extended_real for x in flatten(self.limits)]):
+        if all(x.is_extended_real for x in flatten(self.limits)):
             return self.func(self.function.transpose(), *self.limits)
         return
 

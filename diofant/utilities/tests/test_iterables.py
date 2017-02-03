@@ -308,12 +308,12 @@ def test_multiset_partitions():
            ('m', 'py', 's', 'y'), ('m', 'p', 'syy'),
            ('m', 'p', 'sy', 'y'), ('m', 'p', 's', 'yy'),
            ('m', 'p', 's', 'y', 'y')]
-    assert list(tuple("".join(part) for part in p)
-                for p in multiset_partitions('sympy')) == ans
+    assert [tuple("".join(part) for part in p)
+            for p in multiset_partitions('sympy')] == ans
     factorings = [[24], [8, 3], [12, 2], [4, 6], [4, 2, 3],
                   [6, 2, 2], [2, 2, 2, 3]]
-    assert list(factoring_visitor(p, [2, 3]) for
-                p in multiset_partitions_taocp([3, 1])) == factorings
+    assert [factoring_visitor(p, [2, 3])
+            for p in multiset_partitions_taocp([3, 1])] == factorings
 
 
 def test_multiset_combinations():

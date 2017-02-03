@@ -387,8 +387,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
             collected[key] = val + order_term
 
     if func is not None:
-        collected = dict(
-            [(key, func(val)) for key, val in collected.items()])
+        collected = {key: func(val) for key, val in collected.items()}
 
     if evaluate:
         return Add(*[key*val for key, val in collected.items()])
@@ -813,7 +812,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                 # in general, only 4 terms can be removed with repeated squaring
                 # but other considerations can guide selection of radical terms
                 # so that radicals are removed
-                if all([x.is_Integer and (y**2).is_Rational for x, y in rterms]):
+                if all(x.is_Integer and (y**2).is_Rational for x, y in rterms):
                     nd, d = rad_rationalize(S.One, Add._from_args(
                         [sqrt(x)*y for x, y in rterms]))
                     n *= nd

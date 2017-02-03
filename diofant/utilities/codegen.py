@@ -1258,7 +1258,7 @@ class OctaveCodeGen(CodeGen):
     def _declare_globals(self, routine):
         if not routine.global_vars:
             return []
-        s = " ".join(sorted([self._get_symbol(g) for g in routine.global_vars]))
+        s = " ".join(sorted(self._get_symbol(g) for g in routine.global_vars))
         return ["global " + s + "\n"]
 
     def _declare_locals(self, routine):

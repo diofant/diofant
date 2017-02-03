@@ -1288,7 +1288,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
             [f(x).diff(x, 2), f(x).diff(x), f(x)]).match(deq)
         ordinary = False
         if r and r[a3] != 0:
-            if all([r[key].is_polynomial() for key in r]):
+            if all(r[key].is_polynomial() for key in r):
                 p = cancel(r[b3]/r[a3])  # Used below
                 q = cancel(r[c3]/r[a3])  # Used below
                 point = kwargs.get('x0', 0)
@@ -2721,7 +2721,7 @@ def constantsimp(expr, constants):
         xes = list(xe.free_symbols)
         if not xes:
             continue
-        if all([expr.count(c) == xe.count(c) for c in xes]):
+        if all(expr.count(c) == xe.count(c) for c in xes):
             xes.sort(key=str)
             expr = expr.subs(xe, xes[0])
 
@@ -4654,7 +4654,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
 
     chareq = Poly(chareq, symbol)
     chareqroots = [RootOf(chareq, k) for k in range(chareq.degree())]
-    chareq_is_complex = not all([i.is_extended_real for i in chareq.all_coeffs()])
+    chareq_is_complex = not all(i.is_extended_real for i in chareq.all_coeffs())
 
     # A generator of constants
     constants = list(get_numbered_constants(eq, num=chareq.degree()*2))

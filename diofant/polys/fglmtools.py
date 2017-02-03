@@ -88,7 +88,7 @@ def _update(s, _lambda, P):
     """
     Update ``P`` such that for the updated `P'` `P' v = e_{s}`.
     """
-    k = min([j for j in range(s, len(_lambda)) if _lambda[j] != 0])
+    k = min(j for j in range(s, len(_lambda)) if _lambda[j] != 0)
 
     for r in range(len(_lambda)):
         if r != k:
