@@ -3346,9 +3346,6 @@ class TensMul(TensExpr):
                     is_canon_bp = kw_args.get('is_canon_bp', arg._is_canon_bp)
             tids = reduce(lambda a, b: a*b, tids_list)
 
-        if any(isinstance(arg, TensAdd) for arg in args):
-            add_args = TensAdd._tensAdd_flatten(args)
-            return TensAdd(*add_args)
         coeff = reduce(lambda a, b: a*b, [S.One] + [arg for arg in args if not isinstance(arg, TensExpr)])
         args = tids.get_tensors()
         if coeff != 1:
