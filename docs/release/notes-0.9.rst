@@ -38,6 +38,7 @@ Minor changes
 * Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`, see `#400 <https://github.com/diofant/diofant/pull/400>`_.
 * Sorting of symbolic quadratic roots now same as in :class:`~diofant.polys.rootoftools.RootOf` for numerical coefficients, see `#400 <https://github.com/diofant/diofant/pull/400>`_.
 * Support simple first-order DAE with :func:`~diofant.solvers.ode.dsolve` helper :func:`~diofant.solvers.ode.ode_lie_group`, see `#413 <https://github.com/diofant/diofant/pull/413>`_.
+* Add support for limits of relational expressions, see `#414 <https://github.com/diofant/diofant/pull/414>`_.
 
 Developer changes
 =================
@@ -71,8 +72,10 @@ Issues closed
 * `sympy/sympy#7457 <https://github.com/sympy/sympy/issues/7457>`_ TypeError when using both multiprocessing and gmpy
 * `#309 <https://github.com/diofant/diofant/issues/309>`_ Missing solution for trivial ODE f(t).diff(t)**2 - 1
 * `sympy/sympy#12115 <https://github.com/diofant/diofant/issues/12115>`_ Cannot access imported submodules in `sympy.core`
+* `sympy/sympy#4315 <https://github.com/diofant/diofant/issues/4315>`_ series expansion of piecewise fails
+* `sympy/sympy#6807 <https://github.com/diofant/diofant/issues/6807>`_ atoms does not work correctly in the otherwise case of Piecewise
 
-.. last pr: #416
+.. last pr: #414
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

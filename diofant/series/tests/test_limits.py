@@ -107,6 +107,9 @@ def test_basic5():
                 return S.NaN
     assert limit(my(x), x, oo) == Limit(my(x), x, oo)
 
+    assert limit(4/x > 8, x, 0)  # relational test
+    assert limit(my(x) > 0, x, oo) == Limit(my(x) > 0, x, oo)
+
     # from https://groups.google.com/forum/#!topic/sympy/LkTMQKC_BOw
     # fix bisected to ade6d20 and c459d18
     a = Symbol('a', positive=True)

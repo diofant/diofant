@@ -1,5 +1,5 @@
-from diofant.core import S, Symbol, sympify, Expr, Rational, Float, PoleError
-from diofant.core.symbol import Dummy
+from diofant.core import (S, Symbol, Dummy, sympify, Expr, Rational,
+                          Float, PoleError)
 from diofant.functions.elementary.trigonometric import sin, cos
 from .order import Order
 from .gruntz import limitinf
@@ -162,6 +162,15 @@ class Limit(Expr):
 
         if z0 is S.NaN:
             return S.NaN
+
+        if e.is_Relational:
+            ll = limit(e.lhs, z, z0, dir)
+            rl = limit(e.rhs, z, z0, dir)
+
+            if any(isinstance(a, Limit) for a in [ll, rl]):
+                return self
+            else:
+                return e.func(ll, rl)
 
         if e.has(Order):
             e = e.expand()
