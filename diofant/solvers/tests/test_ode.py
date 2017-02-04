@@ -2792,6 +2792,11 @@ def test_2nd_power_series_regular():
     eq = x*(f(x).diff(x, 2)) - f(x).diff(x) + 4*x**3*f(x)
     assert dsolve(eq) == Eq(f(x), C2*(-x**4/2 + 1) + C1*x**2 + O(x**6))
 
+    eq = x**3*(f(x).diff(x, 2)) - 3*x*(f(x).diff(x)) + (4*x + 4)*f(x)
+    assert '2nd_power_series_regular' not in classify_ode(eq, init={f(0): 1})
+    eq = x**3*(f(x).diff(x, 2)) - 3*x*2*(f(x).diff(x)) + 4*f(x)
+    assert '2nd_power_series_regular' not in classify_ode(eq, init={f(0): 1})
+
 
 def test_sympyissue_7093():
     sol = [Eq(f(x), C1 - 2*x*sqrt(x**3)/5), Eq(f(x), C1 + 2*x*sqrt(x**3)/5)]

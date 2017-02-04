@@ -1086,15 +1086,11 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
             value = boundary.get('f0val', C1)
             check = cancel(r[d]/r[e])
             check1 = check.subs({x: point, y: value})
-            if not check1.has(oo) and not check1.has(zoo) and \
-               not check1.has(nan) and not check1.has(-oo):
-                check2 = (check1.diff(x)).subs({x: point, y: value})
-                if not check2.has(oo) and not check2.has(zoo) and \
-                   not check2.has(nan) and not check2.has(-oo):
-                    rseries = r.copy()
-                    rseries.update({'terms': terms, 'f0': point, 'f0val': value})
-                    matching_hints["1st_power_series"] = rseries
-
+            check2 = (check1.diff(x)).subs({x: point, y: value})
+            if not check1.has(oo, zoo, nan) and not check2.has(oo, zoo, nan):
+                rseries = r.copy()
+                rseries.update({'terms': terms, 'f0': point, 'f0val': value})
+                matching_hints["1st_power_series"] = rseries
             r3.update(r)
             # Exact Differential Equation: P(x, y) + Q(x, y)*y' = 0 where
             # dP/dy == dQ/dx
@@ -1297,11 +1293,9 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                 q = cancel(r[c3]/r[a3])  # Used below
                 point = kwargs.get('x0', 0)
                 check = p.subs(x, point)
-                if not check.has(oo) and not check.has(nan) and \
-                   not check.has(zoo) and not check.has(-oo):
+                if not check.has(oo, zoo, nan):
                     check = q.subs(x, point)
-                    if not check.has(oo) and not check.has(nan) and \
-                       not check.has(zoo) and not check.has(-oo):
+                    if not check.has(oo, zoo, nan):
                         ordinary = True
                         r.update({'a3': a3, 'b3': b3, 'c3': c3, 'x0': point, 'terms': terms})
                         matching_hints["2nd_power_series_ordinary"] = r
@@ -1312,12 +1306,10 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                 if not ordinary:
                     p = cancel((x - point)*p)
                     check = p.subs(x, point)
-                    if not check.has(oo) and not check.has(nan) and \
-                       not check.has(zoo) and not check.has(-oo):
+                    if not check.has(oo, zoo, nan):
                         q = cancel(((x - point)**2)*q)
                         check = q.subs(x, point)
-                        if not check.has(oo) and not check.has(nan) and \
-                           not check.has(zoo) and not check.has(-oo):
+                        if not check.has(oo, zoo, nan):
                             coeff_dict = {'p': p, 'q': q, 'x0': point, 'terms': terms}
                             matching_hints["2nd_power_series_regular"] = coeff_dict
 
@@ -4553,7 +4545,7 @@ def ode_1st_power_series(eq, func, order, match):
     series = value
     if terms > 1:
         hc = h.subs({x: point, y: value})
-        if hc.has(oo) or hc.has(nan) or hc.has(zoo):
+        if hc.has(oo, zoo, nan):
             # Derivative does not exist, not analytic
             return Eq(f(x), oo)
         elif hc:
@@ -4563,7 +4555,7 @@ def ode_1st_power_series(eq, func, order, match):
         Fnew = F.diff(x) + F.diff(y)*h
         Fnewc = Fnew.subs({x: point, y: value})
         # Same logic as above
-        if Fnewc.has(oo) or Fnewc.has(nan) or Fnewc.has(-oo) or Fnewc.has(zoo):
+        if Fnewc.has(oo, zoo, nan):
             return Eq(f(x), oo)
         series += Fnewc*((x - point)**factcount)/factorial(factcount)
         F = Fnew
