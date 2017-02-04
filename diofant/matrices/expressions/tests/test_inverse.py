@@ -2,7 +2,7 @@ import pytest
 
 from diofant.core import symbols
 from diofant.matrices.expressions import MatrixSymbol, Inverse
-from diofant.matrices import eye, Identity, ShapeError
+from diofant.matrices import eye, Identity, ShapeError, det
 
 __all__ = ()
 
@@ -38,3 +38,5 @@ def test_inverse():
 
     assert Inverse(eye(3)).doit() == eye(3)
     assert Inverse(eye(3)).doit(deep=False) == eye(3)
+
+    assert det(Inverse(C)) == 1/det(C)
