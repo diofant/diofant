@@ -1243,7 +1243,7 @@ class Ray(LinearEntity):
         if pt is not None and angle is None:
             try:
                 p2 = Point(pt)
-            except NotImplementedError:
+            except ValueError:
                 from ...utilities import filldedent
                 raise ValueError(filldedent('''
                     The 2nd argument was not a valid Point; if

@@ -3,7 +3,7 @@ import itertools
 import pytest
 
 from diofant import (Rational, Float, S, Symbol, cos, oo, pi,
-                     simplify, sin, sqrt, symbols, acos)
+                     simplify, sin, sqrt, symbols, acos, I)
 from diofant.functions.elementary.trigonometric import tan
 from diofant.geometry import (Circle, GeometryError, Line, Point, Ray,
                               Segment, Triangle, intersection,
@@ -134,6 +134,7 @@ def test_line_geom():
     assert feq(Line.angle_between(l1, l1_1).evalf(), pi.evalf()/4)
 
     # Testing Rays and Segments (very similar to Lines)
+    pytest.raises(ValueError, lambda: Ray((1, 1), I))
     assert Ray((1, 1), angle=pi/4) == Ray((1, 1), (2, 2))
     assert Ray((1, 1), angle=pi/2) == Ray((1, 1), (1, 2))
     assert Ray((1, 1), angle=-pi/2) == Ray((1, 1), (1, 0))
