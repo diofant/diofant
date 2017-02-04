@@ -2,16 +2,17 @@
 of incomplete gamma functions. It should probably be renamed.
 """
 
-from diofant.core import Add, S, sympify, cacheit, pi, I, Integer, Rational
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.functions.combinatorial.factorials import factorial
-from diofant.functions.elementary.integers import floor
-from diofant.functions.elementary.miscellaneous import sqrt, root
-from diofant.functions.elementary.exponential import exp, log
-from diofant.functions.elementary.complexes import polar_lift
-from diofant.functions.elementary.hyperbolic import cosh, sinh
-from diofant.functions.elementary.trigonometric import cos, sin
-from diofant.functions.special.hyper import hyper, meijerg
+from ...core import (Add, S, sympify, cacheit, pi, I, Integer,
+                     Rational, Function, expand_mul, EulerGamma, Pow)
+from ...core.function import ArgumentIndexError
+from ..combinatorial.factorials import factorial
+from ..elementary.integers import floor
+from ..elementary.miscellaneous import sqrt, root
+from ..elementary.exponential import exp, log
+from ..elementary.complexes import polar_lift
+from ..elementary.hyperbolic import cosh, sinh
+from ..elementary.trigonometric import cos, sin
+from .hyper import hyper, meijerg
 
 # TODO series expansions
 # TODO see the "Note:" in Ei
@@ -158,7 +159,7 @@ class erf(Function):
             return False
 
     def _eval_rewrite_as_uppergamma(self, z):
-        from diofant import uppergamma
+        from .gamma_functions import uppergamma
         return sqrt(z**2)/z*(S.One - uppergamma(S.Half, z**2)/sqrt(S.Pi))
 
     def _eval_rewrite_as_fresnels(self, z):
@@ -188,7 +189,7 @@ class erf(Function):
         return -I*erfi(I*z)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -372,14 +373,14 @@ class erfc(Function):
         return S.One - 2*z/sqrt(pi)*hyper([S.Half], [3*S.Half], -z**2)
 
     def _eval_rewrite_as_uppergamma(self, z):
-        from diofant import uppergamma
+        from .gamma_functions import uppergamma
         return S.One - sqrt(z**2)/z*(S.One - uppergamma(S.Half, z**2)/sqrt(S.Pi))
 
     def _eval_rewrite_as_expint(self, z):
         return S.One - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(S.Pi)
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -553,7 +554,7 @@ class erfi(Function):
         return 2*z/sqrt(pi)*hyper([S.Half], [3*S.Half], z**2)
 
     def _eval_rewrite_as_uppergamma(self, z):
-        from diofant import uppergamma
+        from .gamma_functions import uppergamma
         return sqrt(-z**2)/z*(uppergamma(S.Half, -z**2)/sqrt(S.Pi) - S.One)
 
     def _eval_rewrite_as_expint(self, z):
@@ -704,7 +705,7 @@ class erf2(Function):
         return erf(y).rewrite(hyper) - erf(x).rewrite(hyper)
 
     def _eval_rewrite_as_uppergamma(self, x, y):
-        from diofant import uppergamma
+        from .gamma_functions import uppergamma
         return (sqrt(y**2)/y*(S.One - uppergamma(S.Half, y**2)/sqrt(S.Pi)) -
             sqrt(x**2)/x*(S.One - uppergamma(S.Half, x**2)/sqrt(S.Pi)))
 
@@ -1057,7 +1058,7 @@ class Ei(Function):
             return Ei(nz) + 2*I*pi*n
 
     def fdiff(self, argindex=1):
-        from diofant import unpolarify
+        from .. import unpolarify
         arg = unpolarify(self.args[0])
         if argindex == 1:
             return exp(arg)/arg
@@ -1070,7 +1071,7 @@ class Ei(Function):
         return Function._eval_evalf(self, prec)
 
     def _eval_rewrite_as_uppergamma(self, z):
-        from diofant import uppergamma
+        from .gamma_functions import uppergamma
         # XXX this does not currently work usefully because uppergamma
         #     immediately turns into expint
         return -uppergamma(0, polar_lift(-1)*z) - I*pi
@@ -1205,8 +1206,7 @@ class expint(Function):
 
     @classmethod
     def eval(cls, nu, z):
-        from diofant import (unpolarify, expand_mul, uppergamma, exp, gamma,
-                           factorial)
+        from .. import unpolarify, uppergamma, exp, gamma, factorial
         nu2 = unpolarify(nu)
         if nu != nu2:
             return expint(nu2, z)
@@ -1227,7 +1227,7 @@ class expint(Function):
             return (exp(2*I*pi*nu*n) - 1)*z**(nu - 1)*gamma(1 - nu) + expint(nu, z)
 
     def fdiff(self, argindex):
-        from diofant import meijerg
+        from .hyper import meijerg
         nu, z = self.args
         if argindex == 1:
             return -z**(nu - 1)*meijerg([], [1, 1], [0, 0, 1 - nu], [], z)
@@ -1237,11 +1237,11 @@ class expint(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_uppergamma(self, nu, z):
-        from diofant import uppergamma
+        from .gamma_functions import uppergamma
         return z**(nu - 1)*uppergamma(1 - nu, z)
 
     def _eval_rewrite_as_Ei(self, nu, z):
-        from diofant import exp_polar, unpolarify, exp, factorial
+        from .. import exp_polar, unpolarify, exp, factorial
         if nu == 1:
             return -Ei(z*exp_polar(-I*pi)) - I*pi
         elif nu.is_Integer and nu > 1:
@@ -1415,7 +1415,7 @@ class li(Function):
         return Ei(log(z))
 
     def _eval_rewrite_as_uppergamma(self, z):
-        from diofant import uppergamma
+        from .gamma_functions import uppergamma
         return (-uppergamma(0, -log(z)) +
                 S.Half*(log(log(z)) - log(S.One/log(z))) - log(-log(z)))
 
@@ -1563,7 +1563,7 @@ class TrigonometricIntegral(Function):
         return 2*pi*I*n*cls._trigfunc(0) + cls(nz)
 
     def fdiff(self, argindex=1):
-        from diofant import unpolarify
+        from .. import unpolarify
         arg = unpolarify(self.args[0])
         if argindex == 1:
             return self._trigfunc(arg)/arg
@@ -1572,12 +1572,11 @@ class TrigonometricIntegral(Function):
         return self._eval_rewrite_as_expint(z).rewrite(Ei)
 
     def _eval_rewrite_as_uppergamma(self, z):
-        from diofant import uppergamma
+        from .gamma_functions import uppergamma
         return self._eval_rewrite_as_expint(z).rewrite(uppergamma)
 
     def _eval_nseries(self, x, n, logx):
         # NOTE this is fairly inefficient
-        from diofant import log, EulerGamma, Pow
         n += 1
         if self.args[0].subs(x, 0) != 0:
             return super(TrigonometricIntegral, self)._eval_nseries(x, n, logx)
@@ -1854,7 +1853,7 @@ class Shi(TrigonometricIntegral):
         return I*Si(z)*sign
 
     def _eval_rewrite_as_expint(self, z):
-        from diofant import exp_polar
+        from .. import exp_polar
         # XXX should we polarify z?
         return (E1(z) - E1(exp_polar(I*pi)*z))/2 - I*pi/2
 
@@ -1950,7 +1949,7 @@ class Chi(TrigonometricIntegral):
         return Ci(z) + I*pi/2*sign
 
     def _eval_rewrite_as_expint(self, z):
-        from diofant import exp_polar
+        from .. import exp_polar
         return -I*pi/2 - (E1(z) + E1(exp_polar(I*pi)*z))/2
 
     def _latex(self, printer, exp=None):
@@ -2160,7 +2159,7 @@ class fresnels(FresnelIntegral):
                 * meijerg([], [1], [Rational(3, 4)], [Rational(1, 4), 0], -pi**2*z**4/16))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order
+        from ...series import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2293,7 +2292,7 @@ class fresnelc(FresnelIntegral):
                 * meijerg([], [1], [Rational(1, 4)], [Rational(3, 4), 0], -pi**2*z**4/16))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order
+        from ...series import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2335,7 +2334,7 @@ class _erfs(Function):
             return r
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order
+        from ...series import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2382,7 +2381,7 @@ class _eis(Function):
     """
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order
+        from ...series import Order
         if args0[0] != S.Infinity:
             return super(_erfs, self)._eval_aseries(n, args0, x, logx)
 

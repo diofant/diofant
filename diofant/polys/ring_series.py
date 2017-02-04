@@ -4,11 +4,11 @@ import math
 
 from mpmath.libmp.libintmath import ifac, giant_steps
 
-from diofant.polys.domains import QQ
-from diofant.polys.rings import PolyElement
-from diofant.polys.monomials import monomial_min, monomial_mul
-from diofant.core.numbers import Rational
-from diofant.core.compatibility import as_int
+from .domains import QQ
+from .rings import PolyElement
+from .monomials import monomial_min, monomial_mul
+from ..core import Rational
+from ..core.compatibility import as_int
 
 
 def _invert_monoms(p1):

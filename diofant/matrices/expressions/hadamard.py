@@ -1,8 +1,8 @@
 from strategies import condition, exhaust, do_one
 
-from diofant.core import Mul, sympify
-from diofant.core.strategies import unpack, flatten
-from diofant.matrices.expressions.matexpr import MatrixExpr, ShapeError
+from ...core import Mul, sympify
+from ...core.strategies import unpack, flatten
+from .matexpr import MatrixExpr, ShapeError
 
 
 def hadamard_product(*matrices):
@@ -63,7 +63,7 @@ class HadamardProduct(MatrixExpr):
         return Mul(*[arg._entry(i, j) for arg in self.args])
 
     def _eval_transpose(self):
-        from diofant.matrices.expressions.transpose import transpose
+        from .transpose import transpose
         return HadamardProduct(*list(map(transpose, self.args)))
 
     def doit(self, **ignored):

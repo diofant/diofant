@@ -1,8 +1,9 @@
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.dyadic import Dyadic
-from diofant.vector.vector import Vector, BaseVector
-from diofant.vector.scalar import BaseScalar
-from diofant import sympify, diff, integrate, Integer
+from .coordsysrect import CoordSysCartesian
+from .dyadic import Dyadic
+from .vector import Vector, BaseVector
+from .scalar import BaseScalar
+from ..core import sympify, diff, Integer
+from ..integrals import integrate
 
 
 def express(expr, system, system2=None, variables=False):

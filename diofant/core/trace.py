@@ -5,7 +5,7 @@ from .add import Add
 from .mul import Mul
 from .power import Pow
 from .sympify import sympify
-from diofant.matrices import Matrix
+from ..matrices import Matrix
 
 
 def _is_scalar(e):

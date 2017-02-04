@@ -2,8 +2,8 @@ import builtins
 import os
 import sys
 
-from diofant.printing import latex, sstrrepr, pretty
-from diofant.printing.printer import Printer
+from ..printing import latex, sstrrepr, pretty
+from ..printing.printer import Printer
 
 
 def _init_python_printing(stringify_func):

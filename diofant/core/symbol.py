@@ -10,7 +10,7 @@ from .expr import Expr, AtomicExpr
 from .cache import cacheit
 from .function import FunctionClass
 from .logic import fuzzy_bool
-from diofant.logic.boolalg import Boolean
+from ..logic.boolalg import Boolean
 
 
 class BaseSymbol(AtomicExpr, Boolean):
@@ -133,7 +133,7 @@ class BaseSymbol(AtomicExpr, Boolean):
 
         diofant.core.expr.Expr.as_real_imag
         """
-        from diofant import im, re
+        from ..functions import im, re
         if hints.get('ignore') == self:
             return
         else:

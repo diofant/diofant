@@ -156,7 +156,7 @@ class Mul(AssocOp):
             you should only consider them when your code is highly performance
             sensitive.
         """
-        from diofant.series.order import Order
+        from ..series.order import Order
 
         rv = None
         if len(seq) == 2:
@@ -687,7 +687,8 @@ class Mul(AssocOp):
 
         diofant.core.expr.Expr.as_real_imag
         """
-        from diofant import Abs, expand_mul, im, re
+        from .function import expand_mul
+        from ..functions import Abs, im, re
         other = []
         coeffr = []
         coeffi = []
@@ -758,7 +759,7 @@ class Mul(AssocOp):
         return Add.make_args(added)  # it may have collapsed down to one term
 
     def _eval_expand_mul(self, **hints):
-        from diofant import fraction
+        from ..simplify import fraction
 
         # Handle things like 1/(x*(x + 1)), which are automatically converted
         # to 1/x*1/(x + 1)
@@ -851,7 +852,7 @@ class Mul(AssocOp):
 
     def _matches(self, expr, repl_dict={}):
         # weed out negative one prefixes#
-        from diofant import Wild
+        from .symbol import Wild
         sign = 1
         a, b = self.as_two_terms()
         if a is S.NegativeOne:
@@ -1209,11 +1210,11 @@ class Mul(AssocOp):
             return False
 
     def _eval_subs(self, old, new):
-        from diofant.core import Integer
-        from diofant.functions.elementary.complexes import sign
-        from diofant.ntheory.factor_ import multiplicity
-        from diofant.simplify.powsimp import powdenest
-        from diofant.simplify.radsimp import fraction
+        from . import Integer
+        from ..functions.elementary.complexes import sign
+        from ..ntheory.factor_ import multiplicity
+        from ..simplify.powsimp import powdenest
+        from ..simplify.radsimp import fraction
 
         if not old.is_Mul:
             return
@@ -1473,7 +1474,7 @@ class Mul(AssocOp):
         return co_residual*self2.func(*margs)*self2.func(*nc)
 
     def _eval_nseries(self, x, n, logx):
-        from diofant import powsimp
+        from ..simplify import powsimp
         terms = [t.nseries(x, n=n, logx=logx) for t in self.args]
         return powsimp(self.func(*terms).expand(), combine='exp', deep=True)
 
@@ -1593,7 +1594,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
     >>> _keep_coeff(Integer(-1), x + y, sign=True)
     -(x + y)
     """
-    from diofant.core import Integer
+    from . import Integer
 
     if not coeff.is_Number:
         if factors.is_Number:
@@ -1627,7 +1628,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
 
 
 def expand_2arg(e):
-    from diofant.simplify.simplify import bottom_up
+    from ..simplify.simplify import bottom_up
 
     def do(e):
         if e.is_Mul:

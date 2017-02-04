@@ -2,20 +2,20 @@
 
 from functools import reduce
 
-from diofant.core import S, I, pi, oo, ilcm, Mod, Integer, Rational
-from diofant.core.function import Function, Derivative, ArgumentIndexError
-from diofant.core.containers import Tuple
-from diofant.core.mul import Mul
-from diofant.core.symbol import Dummy
-from diofant.functions import (sqrt, exp, log, sin, cos, asin, atan,
-                               sinh, cosh, asinh, acosh, atanh, acoth)
+import mpmath
+
+from ...core import (S, I, pi, oo, ilcm, Mod, Integer, Rational,
+                     Function, Derivative, Tuple, Mul, Ne, Expr, Dummy)
+from ...core.function import ArgumentIndexError
+from .. import (sqrt, exp, log, sin, cos, asin, atan, sinh, cosh,
+                asinh, acosh, atanh, acoth)
 
 
 class TupleArg(Tuple):
     def limit(self, x, xlim, dir='+'):
         """ Compute limit x->xlim.
         """
-        from diofant.series.limits import limit
+        from ...series import limit
         return TupleArg(*[limit(f, x, xlim, dir) for f in self.args])
 
 
@@ -39,7 +39,7 @@ def _prep_tuple(v):
     >>> _prep_tuple((7, 8, 9))
     (7, 8, 9)
     """
-    from diofant import unpolarify
+    from .. import unpolarify
     return TupleArg(*[unpolarify(x) for x in v])
 
 
@@ -183,7 +183,7 @@ class hyper(TupleParametersBase):
 
     @classmethod
     def eval(cls, ap, bq, z):
-        from diofant import unpolarify
+        from .. import unpolarify
         if len(ap) <= len(bq):
             nz = unpolarify(z)
             if z != nz:
@@ -198,7 +198,8 @@ class hyper(TupleParametersBase):
         return fac*hyper(nap, nbq, self.argument)
 
     def _eval_expand_func(self, **hints):
-        from diofant import gamma, hyperexpand
+        from .gamma_functions import gamma
+        from ...simplify import hyperexpand
         if len(self.ap) == 2 and len(self.bq) == 1 and self.argument == 1:
             a, b = self.ap
             c = self.bq[0]
@@ -206,8 +207,8 @@ class hyper(TupleParametersBase):
         return hyperexpand(self)
 
     def _eval_rewrite_as_Sum(self, ap, bq, z):
-        from diofant.functions import factorial, RisingFactorial, Piecewise
-        from diofant import Sum
+        from .. import factorial, RisingFactorial, Piecewise
+        from ...concrete import Sum
         n = Dummy("n", integer=True)
         rfap = Tuple(*[RisingFactorial(a, n) for a in ap])
         rfbq = Tuple(*[RisingFactorial(b, n) for b in bq])
@@ -287,7 +288,8 @@ class hyper(TupleParametersBase):
     @property
     def convergence_statement(self):
         """ Return a condition on z under which the series converges. """
-        from diofant import And, Or, re, Ne, oo
+        from ...logic import And, Or
+        from .. import re
         R = self.radius_of_convergence
         if R == 0:
             return False
@@ -302,7 +304,7 @@ class hyper(TupleParametersBase):
         return Or(c1, c2, c3)
 
     def _eval_simplify(self, ratio, measure):
-        from diofant.simplify.hyperexpand import hyperexpand
+        from ...simplify import hyperexpand
         return hyperexpand(self)
 
 
@@ -601,7 +603,7 @@ class meijerg(TupleParametersBase):
             return 2*pi*alpha
 
     def _eval_expand_func(self, **hints):
-        from diofant import hyperexpand
+        from ...simplify import hyperexpand
         return hyperexpand(self)
 
     def _eval_evalf(self, prec):
@@ -612,9 +614,7 @@ class meijerg(TupleParametersBase):
         # less than (say) n*pi, we put r=1/n, compute z' = root(z, n)
         # (carefully so as not to loose the branch information), and evaluate
         # G(z'**(1/r)) = G(z'**n) = G(z).
-        from diofant.functions import exp_polar, ceiling
-        from diofant import Expr
-        import mpmath
+        from .. import exp_polar, ceiling
         z = self.argument
         znum = self.argument._eval_evalf(prec)
         if znum.has(exp_polar):
@@ -641,7 +641,7 @@ class meijerg(TupleParametersBase):
 
     def integrand(self, s):
         """ Get the defining integrand D(s). """
-        from diofant import gamma
+        from .gamma_functions import gamma
         return self.argument**s \
             * Mul(*(gamma(b - s) for b in self.bm)) \
             * Mul(*(gamma(1 - a + s) for a in self.an)) \
@@ -719,7 +719,7 @@ class HyperRep(Function):
 
     @classmethod
     def eval(cls, *args):
-        from diofant import unpolarify
+        from .. import unpolarify
         newargs = tuple(map(unpolarify, args[:-1])) + args[-1:]
         if args != newargs:
             return cls(*newargs)
@@ -745,7 +745,7 @@ class HyperRep(Function):
         raise NotImplementedError  # pragma: no cover
 
     def _eval_rewrite_as_nonrep(self, *args):
-        from diofant import Piecewise
+        from .. import Piecewise
         x, n = self.args[-1].extract_branch_factor(allow_half=True)
         minus = False
         newargs = self.args[:-1] + (x,)

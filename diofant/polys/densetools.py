@@ -2,33 +2,18 @@
 
 from math import ceil as _ceil, log as _log
 
-from diofant.polys.densebasic import (
-    dup_strip, dmp_strip,
-    dup_convert, dmp_convert,
-    dup_degree, dmp_degree,
-    dmp_to_dict,
-    dmp_from_dict,
-    dup_LC, dmp_LC, dmp_ground_LC,
-    dup_TC, dmp_TC,
-    dmp_zero, dmp_ground,
-    dmp_zero_p,
-    dup_to_raw_dict, dup_from_raw_dict,
-    dmp_zeros)
-from diofant.polys.densearith import (
-    dup_add_term, dmp_add_term,
-    dup_lshift,
-    dup_add, dmp_add,
-    dup_sub, dmp_sub,
-    dup_mul, dmp_mul,
-    dup_sqr,
-    dup_div,
-    dup_rem, dmp_rem,
-    dmp_expand,
-    dup_mul_ground, dmp_mul_ground,
-    dup_quo_ground, dmp_quo_ground,
-    dup_exquo_ground, dmp_exquo_ground)
-from diofant.polys.polyerrors import MultivariatePolynomialError, DomainError
-from diofant.utilities import variations
+from .densebasic import (dup_strip, dmp_strip, dup_convert, dmp_convert,
+                         dup_degree, dmp_degree, dmp_to_dict, dmp_from_dict,
+                         dup_LC, dmp_LC, dmp_ground_LC, dup_TC, dmp_TC,
+                         dmp_zero, dmp_ground, dmp_zero_p, dup_to_raw_dict,
+                         dup_from_raw_dict, dmp_zeros)
+from .densearith import (dup_add_term, dmp_add_term, dup_lshift, dup_add,
+                         dmp_add, dup_sub, dmp_sub, dup_mul, dmp_mul,
+                         dup_sqr, dup_div, dup_rem, dmp_rem, dmp_expand,
+                         dup_mul_ground, dmp_mul_ground, dup_quo_ground,
+                         dmp_quo_ground, dup_exquo_ground, dmp_exquo_ground)
+from .polyerrors import MultivariatePolynomialError, DomainError
+from ..utilities import variations
 
 
 def dup_integrate(f, m, K):
@@ -568,7 +553,7 @@ def dup_content(f, K):
     >>> R.dup_content(f)
     2
     """
-    from diofant.polys.domains import QQ
+    from .domains import QQ
 
     if not f:
         return K.zero
@@ -609,7 +594,7 @@ def dmp_ground_content(f, u, K):
     >>> R.dmp_ground_content(f)
     2
     """
-    from diofant.polys.domains import QQ
+    from .domains import QQ
 
     if not u:
         return dup_content(f, K)

@@ -1,9 +1,6 @@
-from diofant.combinatorics.permutations import (Permutation, _af_rmul,
-                                                _af_invert, _af_new)
-from diofant.combinatorics.perm_groups import (PermutationGroup, _orbit,
-                                               _orbit_transversal)
-from diofant.combinatorics.util import (_distribute_gens_by_base,
-                                        _orbits_transversals_from_bsgs)
+from .permutations import Permutation, _af_rmul, _af_invert, _af_new
+from .perm_groups import PermutationGroup, _orbit, _orbit_transversal
+from .util import _distribute_gens_by_base, _orbits_transversals_from_bsgs
 
 """
     References for tensor canonicalization:
@@ -750,7 +747,7 @@ def canonicalize(g, dummies, msym, *v):
     >>> canonicalize(g, dummies, [0, 0], t0, t1)
     [0, 2, 4, 1, 6, 8, 10, 3, 11, 7, 12, 5, 13, 9, 15, 14]
     """
-    from diofant.combinatorics.testutil import canonicalize_naive
+    from .testutil import canonicalize_naive
     if not isinstance(msym, list):
         if msym not in [0, 1, None]:
             raise ValueError('msym must be 0, 1 or None')

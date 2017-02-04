@@ -2,69 +2,38 @@
 
 from math import ceil as _ceil, log as _log
 
-from diofant.polys.galoistools import (
-    gf_from_int_poly, gf_to_int_poly,
-    gf_lshift, gf_add_mul, gf_mul,
-    gf_div, gf_rem,
-    gf_gcdex,
-    gf_sqf_p,
-    gf_factor_sqf, gf_factor)
-from diofant.polys.densebasic import (
-    dup_LC, dmp_LC, dmp_ground_LC,
-    dup_TC,
-    dup_convert, dmp_convert,
-    dup_degree, dmp_degree,
-    dmp_degree_in, dmp_degree_list,
-    dmp_from_dict,
-    dmp_zero_p,
-    dmp_one,
-    dmp_nest, dmp_raise,
-    dup_strip,
-    dmp_ground,
-    dup_inflate,
-    dmp_exclude, dmp_include,
-    dmp_inject, dmp_eject,
-    dup_terms_gcd, dmp_terms_gcd)
-from diofant.polys.densearith import (
-    dup_neg, dmp_neg,
-    dup_add, dmp_add,
-    dup_sub, dmp_sub,
-    dup_mul, dmp_mul,
-    dup_sqr,
-    dmp_pow,
-    dup_div, dmp_div,
-    dup_quo, dmp_quo,
-    dmp_expand,
-    dmp_add_mul,
-    dup_sub_mul, dmp_sub_mul,
-    dup_lshift,
-    dup_max_norm, dmp_max_norm,
-    dup_l1_norm,
-    dup_mul_ground, dmp_mul_ground,
-    dup_quo_ground, dmp_quo_ground)
-from diofant.polys.densetools import (
-    dup_clear_denoms, dmp_clear_denoms,
-    dup_trunc, dmp_ground_trunc,
-    dup_content,
-    dup_monic, dmp_ground_monic,
-    dup_primitive, dmp_ground_primitive,
-    dmp_eval_tail,
-    dmp_eval_in, dmp_diff_eval_in,
-    dmp_compose,
-    dup_shift, dup_mirror)
-from diofant.polys.euclidtools import (
-    dmp_primitive,
-    dup_inner_gcd, dmp_inner_gcd)
-from diofant.polys.sqfreetools import (
-    dup_sqf_p,
-    dup_sqf_norm, dmp_sqf_norm,
-    dup_sqf_part, dmp_sqf_part)
-from diofant.polys.polyutils import _sort_factors
-from diofant.polys.polyconfig import query
-from diofant.polys.polyerrors import (
-    ExtraneousFactors, DomainError, CoercionFailed, EvaluationFailed)
-from diofant.ntheory import nextprime, isprime, factorint
-from diofant.utilities import subsets
+from .galoistools import (gf_from_int_poly, gf_to_int_poly, gf_lshift,
+                          gf_add_mul, gf_mul, gf_div, gf_rem, gf_gcdex,
+                          gf_sqf_p, gf_factor_sqf, gf_factor)
+from .densebasic import (dup_LC, dmp_LC, dmp_ground_LC, dup_TC,
+                         dup_convert, dmp_convert, dup_degree, dmp_degree,
+                         dmp_degree_in, dmp_degree_list, dmp_from_dict,
+                         dmp_zero_p, dmp_one, dmp_nest, dmp_raise,
+                         dup_strip, dmp_ground, dup_inflate, dmp_exclude,
+                         dmp_include, dmp_inject, dmp_eject, dup_terms_gcd,
+                         dmp_terms_gcd)
+from .densearith import (dup_neg, dmp_neg, dup_add, dmp_add, dup_sub,
+                         dmp_sub, dup_mul, dmp_mul, dup_sqr, dmp_pow,
+                         dup_div, dmp_div, dup_quo, dmp_quo, dmp_expand,
+                         dmp_add_mul, dup_sub_mul, dmp_sub_mul, dup_lshift,
+                         dup_max_norm, dmp_max_norm, dup_l1_norm,
+                         dup_mul_ground, dmp_mul_ground, dup_quo_ground,
+                         dmp_quo_ground)
+from .densetools import (dup_clear_denoms, dmp_clear_denoms, dup_trunc,
+                         dmp_ground_trunc, dup_content, dup_monic,
+                         dmp_ground_monic, dup_primitive,
+                         dmp_ground_primitive, dmp_eval_tail, dmp_eval_in,
+                         dmp_diff_eval_in, dmp_compose, dup_shift,
+                         dup_mirror)
+from .euclidtools import dmp_primitive, dup_inner_gcd, dmp_inner_gcd
+from .sqfreetools import (dup_sqf_p, dup_sqf_norm, dmp_sqf_norm,
+                          dup_sqf_part, dmp_sqf_part)
+from .polyutils import _sort_factors
+from .polyconfig import query
+from .polyerrors import (ExtraneousFactors, DomainError, CoercionFailed,
+                         EvaluationFailed)
+from ..ntheory import nextprime, isprime, factorint
+from ..utilities import subsets
 
 
 def dup_trial_division(f, factors, K):
@@ -905,7 +874,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
     .. [1] [Wang78]_
     .. [2] [Geddes92]_
     """
-    from diofant.utilities.randtest import _randint
+    from ..utilities.randtest import _randint
 
     randint = _randint(seed)
 

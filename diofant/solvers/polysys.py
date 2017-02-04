@@ -2,15 +2,15 @@
 
 import collections
 
-from diofant.core import S
-from diofant.matrices import Matrix
-from diofant.polys import Poly, groebner, sring
-from diofant.polys.polytools import parallel_poly_from_expr
-from diofant.polys.polyerrors import (ComputationFailed,
-                                      PolificationFailed, CoercionFailed)
-from diofant.polys.solvers import solve_lin_sys
-from diofant.simplify import rcollect, simplify
-from diofant.utilities import default_sort_key, postfixes
+from ..core import S
+from ..matrices import Matrix
+from ..polys import Poly, groebner, sring
+from ..polys.polytools import parallel_poly_from_expr
+from ..polys.polyerrors import (ComputationFailed, PolificationFailed,
+                                CoercionFailed)
+from ..polys.solvers import solve_lin_sys
+from ..simplify import rcollect, simplify
+from ..utilities import default_sort_key, postfixes
 
 
 __all__ = ('solve_linear_system', 'solve_poly_system')

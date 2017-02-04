@@ -1,10 +1,9 @@
 """Implementation of :class:`PythonRationalField` class. """
 
-from diofant.polys.domains.rationalfield import RationalField
-from diofant.polys.domains.groundtypes import (PythonInteger, PythonRational,
-                                               DiofantRational)
-from diofant.polys.polyerrors import CoercionFailed
-from diofant.utilities import public
+from .rationalfield import RationalField
+from .groundtypes import PythonInteger, PythonRational, DiofantRational
+from ..polyerrors import CoercionFailed
+from ...utilities import public
 
 
 @public
@@ -21,7 +20,7 @@ class PythonRationalField(RationalField):
 
     def get_ring(self):
         """Returns ring associated with ``self``. """
-        from diofant.polys.domains import PythonIntegerRing
+        from . import PythonIntegerRing
         return PythonIntegerRing()
 
     def to_diofant(self, a):
@@ -33,7 +32,7 @@ class PythonRationalField(RationalField):
         if a.is_Rational:
             return PythonRational(a.p, a.q)
         elif a.is_Float:
-            from diofant.polys.domains import RR
+            from . import RR
             p, q = RR.to_rational(a)
             return PythonRational(int(p), int(q))
         else:

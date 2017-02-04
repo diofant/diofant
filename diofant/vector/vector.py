@@ -1,12 +1,11 @@
-from diofant.core.assumptions import StdFactKB
-from diofant.core import S, Pow, Symbol, Basic
-from diofant.core.numbers import Integer
-from diofant.core.expr import AtomicExpr
-from diofant import diff as df, sqrt, ImmutableMatrix as Matrix
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.basisdependent import (BasisDependent, BasisDependentAdd,
-                                           BasisDependentMul, BasisDependentZero)
-from diofant.vector.dyadic import BaseDyadic, Dyadic, DyadicAdd
+from ..core.assumptions import StdFactKB
+from ..core import S, Pow, Symbol, Integer, AtomicExpr, diff
+from ..functions import sqrt
+from ..matrices import ImmutableMatrix
+from .coordsysrect import CoordSysCartesian
+from .basisdependent import (BasisDependent, BasisDependentAdd,
+                             BasisDependentMul, BasisDependentZero)
+from .dyadic import BaseDyadic, Dyadic, DyadicAdd
 
 
 class Vector(BasisDependent):
@@ -90,7 +89,9 @@ class Vector(BasisDependent):
 
         """
 
-        from diofant.vector.functions import express
+        from .functions import express
+        from .deloperator import Del
+
         # Check special cases
         if isinstance(other, Dyadic):
             if isinstance(self, VectorZero):
@@ -100,7 +101,7 @@ class Vector(BasisDependent):
                 vect_dot = k.args[0].dot(self)
                 outvec += vect_dot * v * k.args[1]
             return outvec
-        from diofant.vector.deloperator import Del
+
         if not isinstance(other, Vector) and not isinstance(other, Del):
             raise TypeError(str(other) + " is not a vector, dyadic or " +
                             "del operator")
@@ -109,9 +110,9 @@ class Vector(BasisDependent):
         if isinstance(other, Del):
             def directional_derivative(field):
                 field = express(field, other.system, variables=True)
-                out = self.dot(other._i) * df(field, other._x)
-                out += self.dot(other._j) * df(field, other._y)
-                out += self.dot(other._k) * df(field, other._z)
+                out = self.dot(other._i) * diff(field, other._x)
+                out += self.dot(other._j) * diff(field, other._y)
+                out += self.dot(other._k) * diff(field, other._z)
                 if out == 0 and isinstance(field, Vector):
                     out = Vector.zero
                 return out
@@ -279,8 +280,8 @@ class Vector(BasisDependent):
 
         """
 
-        return Matrix([self.dot(unit_vec) for unit_vec in
-                       system.base_vectors()])
+        return ImmutableMatrix([self.dot(unit_vec)
+                                for unit_vec in system.base_vectors()])
 
     def separate(self):
         """

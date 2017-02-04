@@ -1,9 +1,10 @@
 """ Riemann zeta and related function. """
 
-from diofant.core import Function, S, sympify, pi, Integer
-from diofant.core.function import ArgumentIndexError
-from diofant.functions.combinatorial.numbers import bernoulli, factorial, harmonic
-from diofant.functions.elementary.exponential import log, exp
+from ...core import (Function, S, sympify, pi, Integer, I, Add,
+                     Dummy, expand_mul)
+from ...core.function import ArgumentIndexError
+from ..combinatorial.numbers import bernoulli, factorial, harmonic
+from ..elementary.exponential import log, exp, exp_polar
 
 
 ###############################################################################
@@ -114,7 +115,8 @@ class lerchphi(Function):
     """
 
     def _eval_expand_func(self, **hints):
-        from diofant import exp, I, floor, Add, Poly, Dummy, exp_polar, unpolarify
+        from ...polys import Poly
+        from .. import floor, unpolarify
         z, s, a = self.args
         if z == 1:
             return zeta(s, a)
@@ -275,7 +277,7 @@ class polylog(Function):
 
     @classmethod
     def eval(cls, s, z):
-        from diofant import unpolarify
+        from .. import unpolarify
         if z == 1:
             return zeta(s)
         elif z == -1:
@@ -299,7 +301,6 @@ class polylog(Function):
         return z*lerchphi(z, s, 1)
 
     def _eval_expand_func(self, **hints):
-        from diofant import log, expand_mul, Dummy, exp_polar, I
         s, z = self.args
         if s == 1:
             return -log(1 + exp_polar(-I*pi)*z)
@@ -492,7 +493,7 @@ class _zetas(Function):
         return zeta(log(s))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order, Add
+        from ...series import Order
         point = args0[0]
 
         # Expansion at oo

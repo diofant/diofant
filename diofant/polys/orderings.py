@@ -2,9 +2,8 @@
 
 __all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
 
-from diofant.core.containers import Tuple
-from diofant.core.symbol import Symbol
-from diofant.core.compatibility import iterable
+from ..core import Tuple, Symbol
+from ..core.compatibility import iterable
 
 
 class MonomialOrder:

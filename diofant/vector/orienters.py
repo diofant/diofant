@@ -1,8 +1,6 @@
-from diofant.core.basic import Basic
-from diofant import (sympify, eye, sin, cos, rot_axis1, rot_axis2,
-                     rot_axis3, ImmutableMatrix as Matrix, Symbol)
-from diofant.core.cache import cacheit
-import diofant.vector
+from ..core import Basic, cacheit, sympify, Symbol
+from ..functions import sin, cos
+from ..matrices import eye, rot_axis1, rot_axis2, rot_axis3, ImmutableMatrix
 
 
 class Orienter(Basic):
@@ -24,7 +22,9 @@ class AxisOrienter(Orienter):
     """
 
     def __new__(cls, angle, axis):
-        if not isinstance(axis, diofant.vector.Vector):
+        from .vector import Vector
+
+        if not isinstance(axis, Vector):
             raise TypeError("axis should be a Vector")
         angle = sympify(angle)
 
@@ -79,14 +79,16 @@ class AxisOrienter(Orienter):
             is to be computed
         """
 
-        axis = diofant.vector.express(self.axis, system).normalize()
+        from .functions import express
+
+        axis = express(self.axis, system).normalize()
         axis = axis.to_matrix(system)
         theta = self.angle
         parent_orient = ((eye(3) - axis * axis.T) * cos(theta) +
-                Matrix([[0, -axis[2], axis[1]],
-                        [axis[2], 0, -axis[0]],
-                    [-axis[1], axis[0], 0]]) * sin(theta) +
-            axis * axis.T)
+                         ImmutableMatrix([[0, -axis[2], axis[1]],
+                                          [axis[2], 0, -axis[0]],
+                                          [-axis[1], axis[0], 0]]) *
+                         sin(theta) + axis * axis.T)
         parent_orient = parent_orient.T
         return parent_orient
 
@@ -306,18 +308,18 @@ class QuaternionOrienter(Orienter):
         q1 = sympify(q1)
         q2 = sympify(q2)
         q3 = sympify(q3)
-        parent_orient = (Matrix([[q0 ** 2 + q1 ** 2 - q2 ** 2 -
-                                  q3 ** 2,
-                                  2 * (q1 * q2 - q0 * q3),
-                                  2 * (q0 * q2 + q1 * q3)],
-                                 [2 * (q1 * q2 + q0 * q3),
-                                  q0 ** 2 - q1 ** 2 +
-                                  q2 ** 2 - q3 ** 2,
-                                  2 * (q2 * q3 - q0 * q1)],
-                                 [2 * (q1 * q3 - q0 * q2),
-                                  2 * (q0 * q1 + q2 * q3),
-                                  q0 ** 2 - q1 ** 2 -
-                                  q2 ** 2 + q3 ** 2]]))
+        parent_orient = (ImmutableMatrix([[q0 ** 2 + q1 ** 2 - q2 ** 2 -
+                                           q3 ** 2,
+                                           2 * (q1 * q2 - q0 * q3),
+                                           2 * (q0 * q2 + q1 * q3)],
+                                          [2 * (q1 * q2 + q0 * q3),
+                                           q0 ** 2 - q1 ** 2 +
+                                           q2 ** 2 - q3 ** 2,
+                                           2 * (q2 * q3 - q0 * q1)],
+                                          [2 * (q1 * q3 - q0 * q2),
+                                           2 * (q0 * q1 + q2 * q3),
+                                           q0 ** 2 - q1 ** 2 -
+                                           q2 ** 2 + q3 ** 2]]))
         parent_orient = parent_orient.T
 
         obj = super(QuaternionOrienter, cls).__new__(cls, q0, q1, q2, q3)
@@ -388,10 +390,10 @@ class QuaternionOrienter(Orienter):
 def _rot(axis, angle):
     """DCM for simple axis 1, 2 or 3 rotations. """
     if axis == 1:
-        return Matrix(rot_axis1(angle).T)
+        return ImmutableMatrix(rot_axis1(angle).T)
     elif axis == 2:
-        return Matrix(rot_axis2(angle).T)
+        return ImmutableMatrix(rot_axis2(angle).T)
     elif axis == 3:
-        return Matrix(rot_axis3(angle).T)
+        return ImmutableMatrix(rot_axis3(angle).T)
     else:  # pragma: no cover
         raise NotImplementedError

@@ -1,6 +1,7 @@
-from diofant.stats.drv import SingleDiscreteDistribution, SingleDiscretePSpace
-from diofant import factorial, exp, S, sympify
-from diofant.stats.rv import _value_check
+from .drv import SingleDiscreteDistribution, SingleDiscretePSpace
+from ..core import S, sympify
+from ..functions import factorial, exp
+from .rv import _value_check
 
 __all__ = ('Geometric', 'Poisson')
 

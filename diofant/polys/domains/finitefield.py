@@ -1,11 +1,11 @@
 """Implementation of :class:`FiniteField` class. """
 
-from diofant.polys.domains.field import Field
-from diofant.polys.domains.simpledomain import SimpleDomain
-from diofant.polys.domains.groundtypes import DiofantInteger
-from diofant.polys.domains.modularinteger import ModularIntegerFactory
-from diofant.polys.polyerrors import CoercionFailed
-from diofant.utilities import public
+from .field import Field
+from .simpledomain import SimpleDomain
+from .groundtypes import DiofantInteger
+from .modularinteger import ModularIntegerFactory
+from ..polyerrors import CoercionFailed
+from ...utilities import public
 
 
 @public

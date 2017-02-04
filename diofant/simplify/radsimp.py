@@ -1,16 +1,15 @@
 from collections import defaultdict
 
-from diofant import DIOFANT_DEBUG
-from diofant.core.compatibility import iterable, ordered, default_sort_key
-from diofant.core import (expand_power_base, sympify, Add, S, Mul,
-                          Derivative, Pow, symbols, expand_mul)
-from diofant.core.numbers import Rational
-from diofant.core.exprtools import Factors, gcd_terms
-from diofant.core.mul import _keep_coeff, _unevaluated_Mul
-from diofant.core.function import _mexpand
-from diofant.functions import sqrt, log
-from diofant.polys import gcd
-from diofant.simplify.sqrtdenest import sqrtdenest
+from .. import DIOFANT_DEBUG
+from ..core.compatibility import iterable, ordered, default_sort_key
+from ..core import (expand_power_base, sympify, Add, S, Mul, Derivative,
+                    Pow, symbols, expand_mul, Rational, gcd_terms)
+from ..core.exprtools import Factors
+from ..core.mul import _keep_coeff, _unevaluated_Mul
+from ..core.function import _mexpand
+from ..functions import sqrt, log
+from ..polys import gcd
+from .sqrtdenest import sqrtdenest
 
 
 def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_term=True):
@@ -684,7 +683,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
     1/(a + b*sqrt(c))
 
     """
-    from diofant.simplify.simplify import signsimp
+    from .simplify import signsimp
 
     syms = symbols("a:d A:D")
 
@@ -736,7 +735,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
         # Handle first reduces to the case
         # expr = 1/d, where d is an add, or d is base**p/2.
         # We do this by recursively calling handle on each piece.
-        from diofant.simplify.simplify import nsimplify
+        from .simplify import nsimplify
 
         n, d = fraction(expr)
 
@@ -823,7 +822,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                     keep = False
                 break
 
-            from diofant.simplify.powsimp import powsimp, powdenest
+            from .powsimp import powsimp, powdenest
 
             num = powsimp(_num(rterms))
             n *= num

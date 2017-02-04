@@ -1,9 +1,9 @@
-from diofant.core import Basic, Integer, Tuple, Dict, S, sympify, Expr
-from diofant.core.sympify import converter as sympify_converter
-from diofant.matrices.matrices import MatrixBase
-from diofant.matrices.dense import DenseMatrix
-from diofant.matrices.sparse import SparseMatrixBase, MutableSparseMatrix
-from diofant.matrices.expressions import MatrixExpr
+from ..core import Basic, Integer, Tuple, Dict, S, sympify, Expr
+from ..core.sympify import converter as sympify_converter
+from .matrices import MatrixBase
+from .dense import DenseMatrix
+from .sparse import SparseMatrixBase, MutableSparseMatrix
+from .expressions import MatrixExpr
 
 
 def sympify_matrix(arg):

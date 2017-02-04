@@ -1,10 +1,9 @@
 from random import randint
 
-from diofant.core.singleton import S
-from diofant.core.numbers import igcd, igcdex
-from diofant.core.compatibility import as_int
-from diofant.core.function import Function
-from diofant.utilities.iterables import cantor_product
+from ..core import S, igcd, Function
+from ..core.numbers import igcdex
+from ..core.compatibility import as_int
+from ..utilities.iterables import cantor_product
 from .primetest import isprime
 from .factor_ import factorint, trailing, totient
 
@@ -270,8 +269,8 @@ def sqrt_mod_iter(a, p, domain=int):
     >>> list(sqrt_mod_iter(11, 43))
     [21, 22]
     """
-    from diofant.polys.galoistools import gf_crt1, gf_crt2
-    from diofant.polys.domains import ZZ
+    from ..polys.galoistools import gf_crt1, gf_crt2
+    from ..polys.domains import ZZ
     a, p = as_int(a), abs(as_int(p))
     if isprime(p):
         a = a % p
@@ -336,8 +335,7 @@ def _sqrt_mod_prime_power(a, p, k):
     >>> _sqrt_mod_prime_power(11, 43, 1)
     [21, 22]
     """
-    from diofant.core.numbers import igcdex
-    from diofant.polys.domains import ZZ
+    from ..polys.domains import ZZ
 
     pk = p**k
     a = a % pk
@@ -681,7 +679,6 @@ def nthroot_mod(a, n, p, all_roots=False):
     >>> nthroot_mod(68, 3, 109)
     23
     """
-    from diofant.core.numbers import igcdex
     if n == 2:
         return sqrt_mod(a, p, all_roots)
     f = totient(p)

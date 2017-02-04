@@ -1,9 +1,8 @@
-from diofant.core import S, sympify, diff, Rational
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.core.relational import Eq
-from diofant.polys.polyerrors import PolynomialError
-from diofant.functions.elementary.complexes import im, sign
-from diofant.functions.elementary.piecewise import Piecewise
+from ...core import S, sympify, diff, Rational, Function, Eq
+from ...core.function import ArgumentIndexError
+from ...polys.polyerrors import PolynomialError
+from ..elementary.complexes import im, sign
+from ..elementary.piecewise import Piecewise
 
 ###############################################################################
 # ############################## DELTA FUNCTION ############################# #
@@ -93,7 +92,7 @@ class DiracDelta(Function):
         diofant.functions.special.delta_functions.DiracDelta.is_simple
         diofant.functions.special.delta_functions.DiracDelta
         """
-        from diofant.polys.polyroots import roots
+        from ...polys import roots
 
         if not self.args[0].has(x) or (len(self.args) > 1 and self.args[1] != 0 ):
             return self

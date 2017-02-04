@@ -2,11 +2,11 @@
 
 from textwrap import dedent
 
-from diofant.core import S, Mul, Tuple, sympify
-from diofant.core.compatibility import iterable
-from diofant.polys.polyutils import dict_from_expr
-from diofant.polys.polyerrors import ExactQuotientFailed
-from diofant.utilities import public
+from ..core import S, Mul, Tuple, sympify
+from ..core.compatibility import iterable
+from .polyutils import dict_from_expr
+from .polyerrors import ExactQuotientFailed
+from ..utilities import public
 
 
 @public
@@ -85,7 +85,7 @@ def monomial_count(V, N):
     6
 
     """
-    from diofant import factorial
+    from ..functions import factorial
     return factorial(V + N) / factorial(V) / factorial(N)
 
 

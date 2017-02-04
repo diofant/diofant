@@ -60,30 +60,29 @@ It is described in great(er) detail in the Sphinx documentation.
 from collections import defaultdict
 from itertools import product, chain
 
-from diofant import DIOFANT_DEBUG
-from diofant.core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
-                          EulerGamma, oo, zoo, expand_func, Add, nan,
-                          Expr, Integer, Rational)
-from diofant.core.mod import Mod
-from diofant.core.compatibility import default_sort_key
-from diofant.utilities.iterables import sift
-from diofant.functions import (exp, sqrt, root, log, lowergamma, cos, besseli,
-                               gamma, uppergamma, expint, erf, sin, besselj, Ei,
-                               Ci, Si, Shi, sinh, cosh, Chi, fresnels, fresnelc,
-                               polar_lift, exp_polar, floor, ceiling, rf,
-                               factorial, lerchphi, Piecewise, re, elliptic_k,
-                               elliptic_e)
-from diofant.functions.special.hyper import (
-    hyper, HyperRep_atanh,
-    HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
-    HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
-    HyperRep_cosasin, HyperRep_sinasin, meijerg)
-from diofant.simplify import simplify
-from diofant.functions.elementary.complexes import polarify, unpolarify
-from diofant.simplify.powsimp import powdenest
-from diofant.polys import poly, Poly
-from diofant.series import residue
-from diofant.printing import sstr
+from .. import DIOFANT_DEBUG
+from ..core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
+                    EulerGamma, oo, zoo, expand_func, Add, nan,
+                    Expr, Integer, Rational, Mod)
+from ..core.compatibility import default_sort_key
+from ..utilities.iterables import sift
+from ..functions import (exp, sqrt, root, log, lowergamma, cos, besseli,
+                         gamma, uppergamma, expint, erf, sin, besselj, Ei,
+                         Ci, Si, Shi, sinh, cosh, Chi, fresnels, fresnelc,
+                         polar_lift, exp_polar, floor, ceiling, rf,
+                         factorial, lerchphi, Piecewise, re, elliptic_k,
+                         elliptic_e, polarify, unpolarify)
+from ..functions.special.hyper import (hyper, HyperRep_atanh, HyperRep_power1,
+                                       HyperRep_power2, HyperRep_log1,
+                                       HyperRep_asin1, HyperRep_asin2,
+                                       HyperRep_sqrts1, HyperRep_sqrts2,
+                                       HyperRep_log2, HyperRep_cosasin,
+                                       HyperRep_sinasin, meijerg)
+from .simplify import simplify
+from .powsimp import powdenest
+from ..polys import poly, Poly
+from ..series import residue
+from ..printing import sstr
 
 # function to define "buckets"
 
@@ -105,7 +104,7 @@ def _mod1(x):
 # leave add formulae at the top for easy reference
 def add_formulae(formulae):
     """ Create our knowledge base. """
-    from diofant.matrices import Matrix
+    from ..matrices import Matrix
 
     a, b, c, z = symbols('a b c, z', cls=Dummy)
 
@@ -394,7 +393,7 @@ def add_formulae(formulae):
 
 
 def add_meijerg_formulae(formulae):
-    from diofant.matrices import Matrix
+    from ..matrices import Matrix
 
     a, b, c, z = list(map(Dummy, 'abcz'))
     rho = Dummy('rho')
@@ -693,7 +692,7 @@ class Formula:
            closed_form = C B
            z d/dz B = M B.
         """
-        from diofant.matrices import Matrix, eye, zeros
+        from ..matrices import Matrix, eye, zeros
 
         afactors = [_x + a for a in self.func.ap]
         bfactors = [_x + b - 1 for b in self.func.bq]
@@ -744,7 +743,7 @@ class Formula:
         instantiations need not actually match, or be valid!
 
         """
-        from diofant.solvers import solve
+        from ..solvers import solve
         ap = func.ap
         bq = func.bq
         if len(ap) != len(self.func.ap) or len(bq) != len(self.func.bq):
@@ -1742,8 +1741,8 @@ def try_lerchphi(func):
     # section 18.
     # We don't need to implement the reduction to polylog here, this
     # is handled by expand_func.
-    from diofant.matrices import Matrix, zeros
-    from diofant.polys import apart
+    from ..matrices import Matrix, zeros
+    from ..polys import apart
 
     # First we need to figure out if the summation coefficient is a rational
     # function of the summation index, and construct that rational function.
@@ -1873,7 +1872,7 @@ def build_hypergeometric_formula(func):
     # would have kicked in. However, `ap` could be empty. In this case we can
     # use a different basis.
     # I'm not aware of a basis that works in all cases.
-    from diofant import zeros, Matrix, eye
+    from ..matrices import zeros, Matrix, eye
     z = Dummy('z')
     if func.ap:
         afactors = [_x + a for a in func.ap]
@@ -1978,7 +1977,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
         rewrite = 'nonrepsmall'
 
     def carryout_plan(f, ops):
-        from diofant import eye
+        from ..matrices import eye
 
         C = apply_operators(f.C.subs(f.z, z0), ops,
                             make_derivative_operator(f.M.subs(f.z, z0), z0))

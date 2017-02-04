@@ -2,18 +2,18 @@ from strategies import exhaust, condition, do_one
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
-from diofant.core import S, Add, sympify, Expr
-from diofant.core.strategies import unpack
-from diofant.utilities import sift
-from diofant.matrices.expressions.matexpr import MatrixExpr, ZeroMatrix, Identity
-from diofant.matrices.expressions.matmul import MatMul
-from diofant.matrices.expressions.matadd import MatAdd
-from diofant.matrices.expressions.transpose import Transpose, transpose
-from diofant.matrices.expressions.trace import Trace
-from diofant.matrices.expressions.determinant import Determinant
-from diofant.matrices.expressions.slice import MatrixSlice
-from diofant.matrices.expressions.inverse import Inverse
-from diofant.matrices import ShapeError
+from ...core import S, Add, sympify, Expr
+from ...core.strategies import unpack
+from ...utilities import sift
+from .matexpr import MatrixExpr, ZeroMatrix, Identity
+from .matmul import MatMul
+from .matadd import MatAdd
+from .transpose import Transpose, transpose
+from .trace import Trace
+from .determinant import Determinant
+from .slice import MatrixSlice
+from .inverse import Inverse
+from .. import ShapeError
 
 
 class BlockMatrix(MatrixExpr):
@@ -43,7 +43,7 @@ class BlockMatrix(MatrixExpr):
     """
 
     def __new__(cls, *args):
-        from diofant.matrices.immutable import ImmutableMatrix
+        from ..immutable import ImmutableMatrix
         args = map(sympify, args)
         mat = ImmutableMatrix(*args)
 
@@ -98,7 +98,7 @@ class BlockMatrix(MatrixExpr):
         return self + other
 
     def _eval_transpose(self):
-        from diofant.matrices import Matrix
+        from .. import Matrix
         # Flip all the individual matrices
         matrices = [transpose(matrix) for matrix in self.blocks]
         # Make a copy
@@ -201,7 +201,7 @@ class BlockDiagMatrix(BlockMatrix):
 
     @property
     def blocks(self):
-        from diofant.matrices.immutable import ImmutableMatrix
+        from ..immutable import ImmutableMatrix
         mats = self.args
         data = [[mats[i] if i == j else ZeroMatrix(mats[i].rows, mats[j].cols)
                         for j in range(len(mats))]
@@ -363,7 +363,7 @@ def bc_inverse(expr):
 
 
 def blockinverse_1x1(expr):
-    from diofant.matrices import Matrix
+    from .. import Matrix
 
     if isinstance(expr.arg, BlockMatrix) and expr.arg.blockshape == (1, 1):
         mat = Matrix([[expr.arg.blocks[0].inverse()]])
@@ -393,7 +393,7 @@ def deblock(B):
 
     bb = B.blocks.applyfunc(wrap)  # everything is a block
 
-    from diofant.matrices import Matrix
+    from .. import Matrix
     try:
         MM = Matrix(0, sum(bb[0, i].blocks.shape[1] for i in range(bb.shape[1])), [])
         for row in range(0, bb.shape[0]):

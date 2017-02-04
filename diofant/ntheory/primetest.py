@@ -80,8 +80,8 @@ def mr(n, bases):
     >>> mr(479001599, [31, 73])
     True
     """
-    from diofant.ntheory.factor_ import trailing
-    from diofant.polys.domains import ZZ
+    from .factor_ import trailing
+    from ..polys.domains import ZZ
 
     n = int(n)
     if n < 2:
@@ -246,7 +246,7 @@ def _mr_safe_helper(_s):
         that is added so someone can easily see whether that line satisfies
         the requirements of mr_safe (see docstring there for details).
         """
-        from diofant.ntheory.factor_ import factorint, trailing
+        from .factor_ import factorint, trailing
 
         factors = []
         tot = 0

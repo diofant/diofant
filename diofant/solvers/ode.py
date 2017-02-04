@@ -229,37 +229,29 @@ of those tests will surely fail.
 from collections import defaultdict
 from itertools import islice
 
-from diofant.core import Add, S, Mul, Pow, oo
-from diofant.core.compatibility import ordered, iterable, is_sequence
-from diofant.core.containers import Tuple
-from diofant.core.exprtools import factor_terms
-from diofant.core.expr import AtomicExpr, Expr
-from diofant.core.function import (Function, Derivative, AppliedUndef, diff,
-                                   expand, expand_mul, Subs, _mexpand)
-from diofant.core.multidimensional import vectorize
-from diofant.core.numbers import NaN, zoo, I, Number, Integer
-from diofant.core.relational import Equality, Eq
-from diofant.core.symbol import Symbol, Wild, Dummy, symbols
-from diofant.core.sympify import sympify
-from diofant.logic.boolalg import BooleanAtom
-from diofant.functions import (cos, exp, im, log, re, sin, tan, sqrt,
-                               atan2, conjugate)
-from diofant.functions.combinatorial.factorials import factorial
-from diofant.integrals.integrals import Integral, integrate
-from diofant.matrices import wronskian, Matrix, BlockDiagMatrix, eye, zeros
-from diofant.polys import Poly, RootOf, terms_gcd, PolynomialError, lcm
-from diofant.polys.polyroots import roots_quartic
-from diofant.polys.polytools import cancel, degree, div
-from diofant.series import Order
-from diofant.series.series import series
-from diofant.simplify import (collect, logcombine, powsimp, separatevars,
-                              simplify, trigsimp, posify, cse)
-from diofant.simplify.powsimp import powdenest
-from diofant.simplify.radsimp import collect_const
-from diofant.solvers import solve
-from diofant.solvers.pde import pdsolve
-from diofant.utilities import numbered_symbols, default_sort_key, sift
-from diofant.solvers.deutils import _preprocess, ode_order, _desolve
+from ..core import (Add, S, Mul, Pow, oo, Tuple, factor_terms, AtomicExpr,
+                    Expr, Function, Derivative, diff, expand, expand_mul,
+                    Subs, nan, zoo, I, Number, Integer, Equality, Eq,
+                    Symbol, Wild, Dummy, symbols, sympify)
+from ..core.compatibility import ordered, iterable, is_sequence
+from ..core.function import AppliedUndef, _mexpand
+from ..core.multidimensional import vectorize
+from ..logic.boolalg import BooleanAtom
+from ..functions import (cos, exp, im, log, re, sin, tan, sqrt, atan2,
+                         conjugate, factorial)
+from ..integrals import Integral, integrate
+from ..matrices import wronskian, Matrix, BlockDiagMatrix, eye, zeros
+from ..polys import Poly, RootOf, terms_gcd, PolynomialError, lcm
+from ..polys.polyroots import roots_quartic
+from ..polys.polytools import cancel, degree, div
+from ..series import Order, series
+from ..simplify import (collect, logcombine, powsimp, separatevars,
+                        simplify, trigsimp, posify, cse, powdenest,
+                        collect_const)
+from .solvers import solve
+from .pde import pdsolve
+from ..utilities import numbered_symbols, default_sort_key, sift
+from .deutils import _preprocess, ode_order, _desolve
 
 #: This is a list of hints in the order that they should be preferred by
 #: :py:meth:`~diofant.solvers.ode.classify_ode`. In general, hints earlier in the
@@ -1094,15 +1086,11 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
             value = boundary.get('f0val', C1)
             check = cancel(r[d]/r[e])
             check1 = check.subs({x: point, y: value})
-            if not check1.has(oo) and not check1.has(zoo) and \
-               not check1.has(NaN) and not check1.has(-oo):
-                check2 = (check1.diff(x)).subs({x: point, y: value})
-                if not check2.has(oo) and not check2.has(zoo) and \
-                   not check2.has(NaN) and not check2.has(-oo):
-                    rseries = r.copy()
-                    rseries.update({'terms': terms, 'f0': point, 'f0val': value})
-                    matching_hints["1st_power_series"] = rseries
-
+            check2 = (check1.diff(x)).subs({x: point, y: value})
+            if not check1.has(oo, zoo, nan) and not check2.has(oo, zoo, nan):
+                rseries = r.copy()
+                rseries.update({'terms': terms, 'f0': point, 'f0val': value})
+                matching_hints["1st_power_series"] = rseries
             r3.update(r)
             # Exact Differential Equation: P(x, y) + Q(x, y)*y' = 0 where
             # dP/dy == dQ/dx
@@ -1305,11 +1293,9 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                 q = cancel(r[c3]/r[a3])  # Used below
                 point = kwargs.get('x0', 0)
                 check = p.subs(x, point)
-                if not check.has(oo) and not check.has(NaN) and \
-                   not check.has(zoo) and not check.has(-oo):
+                if not check.has(oo, zoo, nan):
                     check = q.subs(x, point)
-                    if not check.has(oo) and not check.has(NaN) and \
-                       not check.has(zoo) and not check.has(-oo):
+                    if not check.has(oo, zoo, nan):
                         ordinary = True
                         r.update({'a3': a3, 'b3': b3, 'c3': c3, 'x0': point, 'terms': terms})
                         matching_hints["2nd_power_series_ordinary"] = r
@@ -1320,12 +1306,10 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                 if not ordinary:
                     p = cancel((x - point)*p)
                     check = p.subs(x, point)
-                    if not check.has(oo) and not check.has(NaN) and \
-                       not check.has(zoo) and not check.has(-oo):
+                    if not check.has(oo, zoo, nan):
                         q = cancel(((x - point)**2)*q)
                         check = q.subs(x, point)
-                        if not check.has(oo) and not check.has(NaN) and \
-                           not check.has(zoo) and not check.has(-oo):
+                        if not check.has(oo, zoo, nan):
                             coeff_dict = {'p': p, 'q': q, 'x0': point, 'terms': terms}
                             matching_hints["2nd_power_series_regular"] = coeff_dict
 
@@ -4561,7 +4545,7 @@ def ode_1st_power_series(eq, func, order, match):
     series = value
     if terms > 1:
         hc = h.subs({x: point, y: value})
-        if hc.has(oo) or hc.has(NaN) or hc.has(zoo):
+        if hc.has(oo, zoo, nan):
             # Derivative does not exist, not analytic
             return Eq(f(x), oo)
         elif hc:
@@ -4571,7 +4555,7 @@ def ode_1st_power_series(eq, func, order, match):
         Fnew = F.diff(x) + F.diff(y)*h
         Fnewc = Fnew.subs({x: point, y: value})
         # Same logic as above
-        if Fnewc.has(oo) or Fnewc.has(NaN) or Fnewc.has(-oo) or Fnewc.has(zoo):
+        if Fnewc.has(oo, zoo, nan):
             return Eq(f(x), oo)
         series += Fnewc*((x - point)**factcount)/factorial(factcount)
         F = Fnew

@@ -2,10 +2,8 @@
 opportunities.
 """
 
-from diofant.core import Add, Basic, Mul
-from diofant.core.basic import preorder_traversal
-from diofant.core.singleton import S
-from diofant.utilities.iterables import default_sort_key
+from ..core import Add, Basic, Mul, preorder_traversal, S
+from ..utilities.iterables import default_sort_key
 
 
 def sub_pre(e):

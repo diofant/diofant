@@ -1,6 +1,5 @@
-from diofant.core.symbol import Symbol
-from diofant.core.numbers import Integer
-from diofant.printing.pretty.stringpict import prettyForm
+from ..core import Symbol, Integer
+from ..printing.pretty.stringpict import prettyForm
 
 
 class BaseScalar(Symbol):
@@ -12,10 +11,11 @@ class BaseScalar(Symbol):
     """
 
     def __new__(cls, name, index, system, pretty_str, latex_str):
+        from .coordsysrect import CoordSysCartesian
+
         name = str(name)
         pretty_str = str(pretty_str)
         latex_str = str(latex_str)
-        from diofant.vector.coordsysrect import CoordSysCartesian
         obj = super(BaseScalar, cls).__new__(cls, name)
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")

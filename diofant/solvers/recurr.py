@@ -49,21 +49,16 @@ For the sake of completeness, `f(n)` can be:
 
 from collections import defaultdict
 
-from diofant.core.singleton import S
-from diofant.core.numbers import Rational
-from diofant.core.symbol import Symbol, Wild, Dummy
-from diofant.core.relational import Equality
-from diofant.core.add import Add
-from diofant.core.mul import Mul
-from diofant.core import sympify
-from diofant.simplify import simplify, hypersimp, hypersimilar
-from diofant.solvers import solve, solve_undetermined_coeffs
-from diofant.polys import Poly, quo, gcd, gcd_list, lcm_list, roots, resultant
-from diofant.functions import binomial, factorial, FallingFactorial, RisingFactorial
-from diofant.matrices import Matrix, casoratian
-from diofant.concrete import product
-from diofant.core.compatibility import default_sort_key
-from diofant.utilities.iterables import numbered_symbols
+from ..core import (S, Rational, Symbol, Wild, Dummy, Equality, Add,
+                    Mul, sympify)
+from ..simplify import simplify, hypersimp, hypersimilar
+from .solvers import solve, solve_undetermined_coeffs
+from ..polys import Poly, quo, gcd, gcd_list, lcm_list, roots, resultant
+from ..functions import binomial, factorial, FallingFactorial, RisingFactorial
+from ..matrices import Matrix, casoratian
+from ..concrete import product
+from ..core.compatibility import default_sort_key
+from ..utilities import numbered_symbols
 
 
 def rsolve_poly(coeffs, f, n, **hints):

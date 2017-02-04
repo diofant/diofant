@@ -2,8 +2,8 @@
 
 from functools import reduce
 
-from diofant.plotting.intervalmath import interval
-from diofant.external import import_module
+from .interval_arithmetic import interval
+from ...external import import_module
 
 
 def Abs(x):

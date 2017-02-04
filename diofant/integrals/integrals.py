@@ -1,24 +1,14 @@
-from diofant.concrete.expr_with_limits import AddWithLimits
-from diofant.core.add import Add
-from diofant.core.basic import Basic
-from diofant.core.compatibility import is_sequence
-from diofant.core.containers import Tuple
-from diofant.core.expr import Expr
-from diofant.core.function import diff
-from diofant.core.numbers import oo
-from diofant.core.relational import Eq
-from diofant.core.singleton import S
-from diofant.core.symbol import Dummy, Symbol, Wild
-from diofant.core.sympify import sympify
-from diofant.integrals.trigonometry import trigintegrate
-from diofant.integrals.meijerint import meijerint_definite, meijerint_indefinite
-from diofant.utilities.misc import filldedent
-from diofant.polys import Poly, PolynomialError
-from diofant.functions import Piecewise, sqrt, sign, piecewise_fold
-from diofant.functions.elementary.exponential import log
-from diofant.series import limit
-from diofant.series.order import Order
-from diofant.matrices import MatrixBase
+from ..concrete.expr_with_limits import AddWithLimits
+from ..core import (Add, Basic, Tuple, Expr, diff, oo, Eq, S,
+                    Dummy, Symbol, Wild, sympify)
+from ..core.compatibility import is_sequence
+from .trigonometry import trigintegrate
+from .meijerint import meijerint_definite, meijerint_indefinite
+from ..utilities import filldedent
+from ..polys import Poly, PolynomialError
+from ..functions import Piecewise, sqrt, sign, piecewise_fold, log
+from ..series import limit, Order
+from ..matrices import MatrixBase
 
 
 class Integral(AddWithLimits):
@@ -245,7 +235,8 @@ class Integral(AddWithLimits):
         diofant.concrete.expr_with_limits.ExprWithLimits.as_dummy : Replace integration variables with dummy ones
         """
 
-        from diofant.solvers.solvers import solve, posify
+        from ..solvers import solve
+        from ..simplify import posify
         d = Dummy('d')
 
         xfree = x.free_symbols.intersection(self.variables)
@@ -448,7 +439,7 @@ class Integral(AddWithLimits):
                     try:
                         res = meijerint_definite(function, x, a, b)
                     except NotImplementedError:
-                        from diofant.integrals.meijerint import _debug
+                        from .meijerint import _debug
                         _debug('NotImplementedError from meijerint_definite')
                         res = None
                     if res is not None:
@@ -711,10 +702,10 @@ class Integral(AddWithLimits):
              is to implement enough of the Risch and Meijer G-function methods
              so that this can be deleted.
         """
-        from diofant.integrals.deltafunctions import deltaintegrate
-        from diofant.integrals.heurisch import heurisch, heurisch_wrapper
-        from diofant.integrals.rationaltools import ratint
-        from diofant.integrals.risch import risch_integrate
+        from .deltafunctions import deltaintegrate
+        from .heurisch import heurisch, heurisch_wrapper
+        from .rationaltools import ratint
+        from .risch import risch_integrate
 
         if risch:
             try:
@@ -866,7 +857,7 @@ class Integral(AddWithLimits):
                 try:
                     h = meijerint_indefinite(g, x)
                 except NotImplementedError:
-                    from diofant.integrals.meijerint import _debug
+                    from .meijerint import _debug
                     _debug('NotImplementedError from meijerint_definite')
                     res = None
                 if h is not None:
@@ -1216,7 +1207,7 @@ def line_integrate(field, curve, vars):
     diofant.integrals.integrals.integrate
     diofant.integrals.integrals.Integral
     """
-    from diofant.geometry import Curve
+    from ..geometry import Curve
     F = sympify(field)
     if not F:
         raise ValueError(

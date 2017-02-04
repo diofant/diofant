@@ -1,5 +1,5 @@
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.functions.special.gamma_functions import gamma, digamma
+from ...core.function import Function, ArgumentIndexError
+from .gamma_functions import gamma, digamma
 
 ###############################################################################
 # ########################## COMPLETE BETA  FUNCTION ######################## #

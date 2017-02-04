@@ -7,8 +7,7 @@ from tokenize import (tokenize, untokenize, TokenError,
                       NUMBER, STRING, NAME, OP, ENDMARKER)
 from keyword import iskeyword
 
-from diofant.core.symbol import Symbol
-from diofant.core.basic import Basic
+from ..core import Symbol, Basic
 
 
 def _token_splittable(token):

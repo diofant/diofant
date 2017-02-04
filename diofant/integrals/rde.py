@@ -24,12 +24,10 @@ Manuel Bronstein.  See also the docstring of risch.py.
 from functools import reduce
 from operator import mul
 
-from diofant.core import oo
-from diofant.core.symbol import Dummy
-from diofant.polys import Poly, gcd, ZZ, cancel
-from diofant.integrals.risch import (gcdex_diophantine, frac_in, derivation,
-                                     splitfactor, NonElementaryIntegralException,
-                                     DecrementLevel)
+from ..core import oo, Dummy
+from ..polys import Poly, gcd, ZZ, cancel
+from .risch import (gcdex_diophantine, frac_in, derivation, splitfactor,
+                    NonElementaryIntegralException, DecrementLevel)
 
 # TODO: Add messages to NonElementaryIntegralException errors
 
@@ -186,7 +184,7 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
 
     This constitutes step 2 of the outline given in the rde.py docstring.
     """
-    from diofant.integrals.prde import parametric_log_deriv
+    from .prde import parametric_log_deriv
     # TODO: finish writing this and write tests
 
     if case == 'auto':
@@ -267,8 +265,8 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
 
     This constitutes step 3 of the outline given in the rde.py docstring.
     """
-    from diofant.integrals.prde import (parametric_log_deriv, limited_integrate,
-        is_log_deriv_k_t_radical_in_field)
+    from .prde import (parametric_log_deriv, limited_integrate,
+                       is_log_deriv_k_t_radical_in_field)
     # TODO: finish writing this and write tests
 
     if case == 'auto':
@@ -535,7 +533,7 @@ def cancel_primitive(b, c, n, DE):
     has no solution of degree at most n in k[t], or a solution q in k[t] of
     this equation with deg(q) <= n.
     """
-    from diofant.integrals.prde import is_log_deriv_k_t_radical_in_field
+    from .prde import is_log_deriv_k_t_radical_in_field
 
     with DecrementLevel(DE):
         ba, bd = frac_in(b, DE.t)
@@ -582,7 +580,7 @@ def cancel_exp(b, c, n, DE):
     has no solution of degree at most n in k[t], or a solution q in k[t] of
     this equation with deg(q) <= n.
     """
-    from diofant.integrals.prde import parametric_log_deriv
+    from .prde import parametric_log_deriv
 
     eta = DE.d.quo(Poly(DE.t, DE.t)).as_expr()
 
@@ -639,8 +637,7 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
     For parametric=False, cQ is c, a Poly; for parametric=True, cQ is Q ==
     [q1, ..., qm], a list of Polys.
     """
-    from diofant.integrals.prde import (prde_no_cancel_b_large,
-        prde_no_cancel_b_small)
+    from .prde import prde_no_cancel_b_large, prde_no_cancel_b_small
 
     # No cancellation
     if not b.is_zero and (DE.case == 'base' or

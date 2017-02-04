@@ -7,20 +7,18 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
-from mpmath import bernfrac, workprec
+from mpmath import bernfrac, workprec, mp
 from mpmath.libmp import ifib as _ifib
 
-from diofant.core import S, Rational, Integer, Add, Dummy
-from diofant.core.compatibility import as_int, DIOFANT_INTS
-from diofant.core.cache import cacheit
-from diofant.core.function import Function, expand_mul
-from diofant.core.numbers import E, pi
-from diofant.core.relational import LessThan, StrictGreaterThan
-from diofant.functions.combinatorial.factorials import binomial, factorial
-from diofant.functions.elementary.exponential import log
-from diofant.functions.elementary.integers import floor
-from diofant.functions.elementary.trigonometric import sin, cos, cot
-from diofant.utilities.memoization import recurrence_memo
+from ...core import (S, Rational, Integer, Add, Dummy, cacheit, Function,
+                     expand_mul, E, pi, LessThan, StrictGreaterThan, Expr,
+                     prod)
+from ...core.compatibility import as_int, DIOFANT_INTS
+from .factorials import binomial, factorial
+from ..elementary.exponential import log
+from ..elementary.integers import floor
+from ..elementary.trigonometric import sin, cos, cot
+from ...utilities.memoization import recurrence_memo
 
 
 def _product(a, b):
@@ -110,7 +108,7 @@ class fibonacci(Function):
                 return cls._fibpoly(n).subs(_sym, sym)
 
     def _eval_rewrite_as_sqrt(self, n, sym=None):
-        from diofant.functions import sqrt
+        from .. import sqrt
         if sym is None:
             return (S.GoldenRatio**n - cos(S.Pi*n)/S.GoldenRatio**n)/sqrt(5)
 
@@ -451,7 +449,7 @@ class bell(Function):
                 return r
 
     def _eval_rewrite_as_Sum(self, n, k_sym=None, symbols=None):
-        from diofant import Sum
+        from ...concrete import Sum
         if (k_sym is not None) or (symbols is not None):
             return self
 
@@ -605,7 +603,7 @@ class harmonic(Function):
 
     @classmethod
     def eval(cls, n, m=None):
-        from diofant import zeta
+        from .. import zeta
         if m is S.One:
             return cls(n)
         if m is None:
@@ -636,26 +634,26 @@ class harmonic(Function):
             return cls._functions[m](int(n))
 
     def _eval_rewrite_as_polygamma(self, n, m=1):
-        from diofant.functions.special.gamma_functions import polygamma
+        from .. import polygamma
         return S.NegativeOne**m/factorial(m - 1) * (polygamma(m - 1, 1) - polygamma(m - 1, n + 1))
 
     def _eval_rewrite_as_digamma(self, n, m=1):
-        from diofant.functions.special.gamma_functions import polygamma
+        from .. import polygamma
         return self.rewrite(polygamma)
 
     def _eval_rewrite_as_trigamma(self, n, m=1):
-        from diofant.functions.special.gamma_functions import polygamma
+        from .. import polygamma
         return self.rewrite(polygamma)
 
     def _eval_rewrite_as_Sum(self, n, m=None):
-        from diofant import Sum
+        from ...concrete import Sum
         k = Dummy("k", integer=True)
         if m is None:
             m = S.One
         return Sum(k**(-m), (k, 1, n))
 
     def _eval_expand_func(self, **hints):
-        from diofant import Sum
+        from ...concrete import Sum
         n = self.args[0]
         m = self.args[1] if len(self.args) == 2 else 1
 
@@ -688,11 +686,11 @@ class harmonic(Function):
         return self
 
     def _eval_rewrite_as_tractable(self, n, m=1):
-        from diofant import polygamma
+        from .. import polygamma
         return self.rewrite(polygamma).rewrite("tractable", deep=True)
 
     def _eval_evalf(self, prec):
-        from diofant import polygamma
+        from .. import polygamma
         if all(i.is_number for i in self.args):
             return self.rewrite(polygamma)._eval_evalf(prec)
 
@@ -756,13 +754,12 @@ class euler(Function):
         if m.is_odd:
             return S.Zero
         if m.is_Integer and m.is_nonnegative:
-            from mpmath import mp
             m = m._to_mpmath(mp.prec)
             res = mp.eulernum(m, exact=True)
             return Integer(res)
 
     def _eval_rewrite_as_Sum(self, arg):
-        from diofant import Sum
+        from ...concrete import Sum
         if arg.is_even:
             k = Dummy("k", integer=True)
             j = Dummy("j", integer=True)
@@ -776,8 +773,6 @@ class euler(Function):
         m = self.args[0]
 
         if m.is_Integer and m.is_nonnegative:
-            from mpmath import mp
-            from diofant import Expr
             m = m._to_mpmath(prec)
             with workprec(prec):
                 res = mp.eulernum(m)
@@ -878,7 +873,7 @@ class catalan(Function):
 
     @classmethod
     def eval(cls, n):
-        from diofant import gamma
+        from .. import gamma
         if (n.is_Integer and n.is_nonnegative) or \
            (n.is_noninteger and n.is_negative):
             return 4**n*gamma(n + S.Half)/(gamma(S.Half)*gamma(n + 2))
@@ -890,7 +885,7 @@ class catalan(Function):
                 return -S.Half
 
     def fdiff(self, argindex=1):
-        from diofant import polygamma, log
+        from .. import polygamma, log
         n = self.args[0]
         return catalan(n)*(polygamma(0, n + Rational(1, 2)) - polygamma(0, n + 2) + log(4))
 
@@ -901,23 +896,23 @@ class catalan(Function):
         return factorial(2*n) / (factorial(n+1) * factorial(n))
 
     def _eval_rewrite_as_gamma(self, n):
-        from diofant import gamma
+        from .. import gamma
         # The gamma function allows to generalize Catalan numbers to complex n
         return 4**n*gamma(n + S.Half)/(gamma(S.Half)*gamma(n + 2))
 
     def _eval_rewrite_as_hyper(self, n):
-        from diofant import hyper
+        from .. import hyper
         return hyper([1 - n, -n], [2], 1)
 
     def _eval_rewrite_as_Product(self, n):
-        from diofant import Product
+        from ...concrete import Product
         if not (n.is_integer and n.is_nonnegative):
             return self
         k = Dummy('k', integer=True, positive=True)
         return Product((n + k) / k, (k, 2, n))
 
     def _eval_evalf(self, prec):
-        from diofant import gamma
+        from .. import gamma
         if self.args[0].is_number:
             return self.rewrite(gamma)._eval_evalf(prec)
 
@@ -1115,8 +1110,7 @@ def nP(n, k=None, replacement=False):
 
 @cacheit
 def _nP(n, k=None, replacement=False):
-    from diofant.functions.combinatorial.factorials import factorial
-    from diofant.core.mul import prod
+    from .factorials import factorial
 
     if k == 0:
         return 1
@@ -1282,8 +1276,7 @@ def nC(n, k=None, replacement=False):
 
     diofant.utilities.iterables.multiset_combinations
     """
-    from diofant.functions.combinatorial.factorials import binomial
-    from diofant.core.mul import prod
+    from .factorials import binomial
 
     if isinstance(n, DIOFANT_INTS):
         if k is None:
@@ -1534,7 +1527,7 @@ def nT(n, k=None):
     diofant.utilities.iterables.multiset_partitions
 
     """
-    from diofant.utilities.enumerative import MultisetPartitionTraverser
+    from ...utilities.enumerative import MultisetPartitionTraverser
 
     if isinstance(n, DIOFANT_INTS):
         # assert n >= 0

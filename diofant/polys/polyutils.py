@@ -3,10 +3,10 @@
 from collections import defaultdict
 import re
 
-from diofant.polys.polyerrors import PolynomialError, GeneratorsNeeded, GeneratorsError
-from diofant.polys.polyoptions import build_options
-from diofant.core.exprtools import decompose_power
-from diofant.core import S, Add, Mul, Pow, expand_mul, expand_multinomial
+from .polyerrors import PolynomialError, GeneratorsNeeded, GeneratorsError
+from .polyoptions import build_options
+from ..core.exprtools import decompose_power
+from ..core import S, Add, Mul, Pow, expand_mul, expand_multinomial
 
 _gens_order = {
     'a': 301, 'b': 302, 'c': 303, 'd': 304,

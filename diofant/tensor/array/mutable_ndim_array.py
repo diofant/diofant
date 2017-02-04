@@ -1,4 +1,4 @@
-from diofant.tensor.array.ndim_array import NDimArray
+from .ndim_array import NDimArray
 
 
 class MutableNDimArray(NDimArray):

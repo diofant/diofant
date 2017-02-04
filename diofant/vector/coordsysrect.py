@@ -1,10 +1,9 @@
-from diofant.core.basic import Basic
-from diofant.vector.scalar import BaseScalar
-from diofant import eye, trigsimp, ImmutableMatrix as Matrix, Symbol
-from diofant.core.cache import cacheit
-from diofant.vector.orienters import (Orienter, AxisOrienter, BodyOrienter,
-                                      SpaceOrienter, QuaternionOrienter)
-import diofant.vector
+from ..core import Basic, Symbol, cacheit
+from .scalar import BaseScalar
+from ..matrices import eye, ImmutableMatrix
+from ..simplify import trigsimp
+from .orienters import (Orienter, AxisOrienter, BodyOrienter,
+                        SpaceOrienter, QuaternionOrienter)
 
 
 class CoordSysCartesian(Basic):
@@ -41,20 +40,20 @@ class CoordSysCartesian(Basic):
             Iterables of 3 strings each, with custom names for base
             vectors and base scalars of the new system respectively.
             Used for simple str printing.
-
         """
 
+        from .vector import Vector, BaseVector
+        from .point import Point
+        from .deloperator import Del
+
         name = str(name)
-        Vector = diofant.vector.Vector
-        BaseVector = diofant.vector.BaseVector
-        Point = diofant.vector.Point
 
         # If orientation information has been provided, store
         # the rotation matrix accordingly
         if rotation_matrix is None:
-            parent_orient = Matrix(eye(3))
+            parent_orient = ImmutableMatrix(eye(3))
         else:
-            if not isinstance(rotation_matrix, Matrix):
+            if not isinstance(rotation_matrix, ImmutableMatrix):
                 raise TypeError("rotation_matrix should be an Immutable" +
                                 "Matrix instance")
             parent_orient = rotation_matrix
@@ -136,7 +135,6 @@ class CoordSysCartesian(Basic):
                             pretty_scalars[2], latex_scalars[2])
 
         # Assign a Del operator instance
-        from diofant.vector.deloperator import Del
         obj._delop = Del(obj)
 
         # Assign params
@@ -234,7 +232,8 @@ class CoordSysCartesian(Basic):
 
         """
 
-        from diofant.vector.functions import _path
+        from .functions import _path
+
         if not isinstance(other, CoordSysCartesian):
             raise TypeError(str(other) +
                             " is not a CoordSysCartesian")
@@ -313,7 +312,7 @@ class CoordSysCartesian(Basic):
             relocated_scalars.append(x - origin_coords[i])
 
         vars_matrix = (self.rotation_matrix(other) *
-                       Matrix(relocated_scalars))
+                       ImmutableMatrix(relocated_scalars))
         mapping = {}
         for i, x in enumerate(self.base_scalars()):
             mapping[x] = trigsimp(vars_matrix[i])
@@ -429,7 +428,7 @@ class CoordSysCartesian(Basic):
             else:
                 final_matrix = orienters.rotation_matrix()
         else:
-            final_matrix = Matrix(eye(3))
+            final_matrix = ImmutableMatrix(eye(3))
             for orienter in orienters:
                 if isinstance(orienter, AxisOrienter):
                     final_matrix *= orienter.rotation_matrix(self)

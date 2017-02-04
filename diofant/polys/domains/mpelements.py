@@ -7,8 +7,8 @@ from mpmath.libmp import (MPZ_ONE, fzero, fone, finf, fninf, fnan,
                           from_str, to_rational)
 from mpmath.rational import mpq
 
-from diofant.polys.domains.domainelement import DomainElement
-from diofant.utilities import public
+from .domainelement import DomainElement
+from ...utilities import public
 
 
 @public

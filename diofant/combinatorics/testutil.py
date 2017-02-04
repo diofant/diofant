@@ -1,5 +1,5 @@
-from diofant.combinatorics.util import _distribute_gens_by_base
-from diofant.combinatorics import Permutation
+from .util import _distribute_gens_by_base
+from .permutations import Permutation
 
 rmul = Permutation.rmul
 
@@ -31,7 +31,7 @@ def _cmp_perm_lists(first, second):
 
 
 def _naive_list_centralizer(self, other, af=False):
-    from diofant.combinatorics.perm_groups import PermutationGroup
+    from .perm_groups import PermutationGroup
     """
     Return a list of elements for the centralizer of a subgroup/set/element.
 
@@ -54,7 +54,7 @@ def _naive_list_centralizer(self, other, af=False):
     diofant.combinatorics.perm_groups.centralizer
 
     """
-    from diofant.combinatorics.permutations import _af_commutes_with
+    from .permutations import _af_commutes_with
     if hasattr(other, 'generators'):
         elements = list(self.generate_dimino(af=True))
         gens = [x._array_form for x in other.generators]
@@ -103,7 +103,7 @@ def _verify_bsgs(group, base, gens):
     diofant.combinatorics.perm_groups.PermutationGroup.schreier_sims
 
     """
-    from diofant.combinatorics.perm_groups import PermutationGroup
+    from .perm_groups import PermutationGroup
     strong_gens_distr = _distribute_gens_by_base(base, gens)
     current_stabilizer = group
     for i in range(len(base)):
@@ -153,7 +153,6 @@ def _verify_centralizer(group, arg, centr=None):
 
 
 def _verify_normal_closure(group, arg, closure=None):
-    from diofant.combinatorics.perm_groups import PermutationGroup
     """
     Verify the normal closure of a subgroup/subset/element in a group.
 
@@ -175,8 +174,9 @@ def _verify_normal_closure(group, arg, closure=None):
     ========
 
     diofant.combinatorics.perm_groups.PermutationGroup.normal_closure
-
     """
+    from .perm_groups import PermutationGroup
+
     if closure is None:
         closure = group.normal_closure(arg)
     conjugates = set()
@@ -224,9 +224,9 @@ def canonicalize_naive(g, dummies, sym, *v):
     >>> canonicalize_naive(g, [2, 3], 0, (base2, gens2, 2, 0))
     [0, 2, 1, 3, 4, 5]
     """
-    from diofant.combinatorics.perm_groups import PermutationGroup
-    from diofant.combinatorics.tensor_can import gens_products, dummy_sgs
-    from diofant.combinatorics.permutations import Permutation, _af_rmul
+    from .perm_groups import PermutationGroup
+    from .tensor_can import gens_products, dummy_sgs
+    from .permutations import Permutation, _af_rmul
     v1 = []
     for i in range(len(v)):
         base_i, gens_i, n_i, sym_i = v[i]
@@ -292,8 +292,8 @@ def graph_certificate(gr):
     >>> c1 == c2
     True
     """
-    from diofant.combinatorics.permutations import _af_invert
-    from diofant.combinatorics.tensor_can import get_symmetric_group_sgs, canonicalize
+    from .permutations import _af_invert
+    from .tensor_can import get_symmetric_group_sgs, canonicalize
     items = list(gr.items())
     items.sort(key=lambda x: len(x[1]), reverse=True)
     pvert = [x[0] for x in items]

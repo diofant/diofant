@@ -1,4 +1,4 @@
-from diofant.logic.boolalg import BooleanFunction
+from ..logic.boolalg import BooleanFunction
 
 
 class Contains(BooleanFunction):

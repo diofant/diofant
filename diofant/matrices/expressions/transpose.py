@@ -1,6 +1,6 @@
-from diofant import Basic
-from diofant.functions import adjoint, conjugate
-from diofant.matrices.expressions.matexpr import MatrixExpr
+from ...core import Basic
+from ...functions import adjoint, conjugate
+from .matexpr import MatrixExpr
 
 
 class Transpose(MatrixExpr):
@@ -65,7 +65,7 @@ class Transpose(MatrixExpr):
         return Trace(self.arg)  # Trace(X.T) => Trace(X)
 
     def _eval_determinant(self):
-        from diofant.matrices.expressions.determinant import det
+        from .determinant import det
         return det(self.arg)
 
 

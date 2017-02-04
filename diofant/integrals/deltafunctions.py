@@ -1,6 +1,6 @@
-from diofant.core import Mul
-from diofant.functions import DiracDelta, Heaviside
-from diofant.core.compatibility import default_sort_key
+from ..core import Mul
+from ..functions import DiracDelta, Heaviside
+from ..core.compatibility import default_sort_key
 
 
 def change_mul(node, x):
@@ -132,8 +132,8 @@ def deltaintegrate(f, x):
     if not f.has(DiracDelta):
         return
 
-    from diofant.integrals import Integral, integrate
-    from diofant.solvers import solve
+    from .integrals import Integral, integrate
+    from ..solvers import solve
 
     # g(x) = DiracDelta(h(x))
     if f.func == DiracDelta:

@@ -1,8 +1,8 @@
 from collections import defaultdict
 
-from diofant.core import Basic
-from diofant.core.compatibility import iterable, as_int
-from diofant.utilities.iterables import flatten
+from ..core import Basic
+from ..core.compatibility import iterable, as_int
+from ..utilities import flatten
 
 
 class Prufer(Basic):

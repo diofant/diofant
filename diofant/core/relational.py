@@ -8,7 +8,7 @@ from .function import _coeff_isneg
 from .symbol import Dummy, Symbol
 from .sympify import _sympify
 from .evaluate import global_evaluate
-from diofant.logic.boolalg import Boolean
+from ..logic.boolalg import Boolean
 
 __all__ = (
     'Rel', 'Eq', 'Ne', 'Lt', 'Le', 'Gt', 'Ge',
@@ -225,7 +225,7 @@ class Relational(Boolean, Expr, EvalfMixin):
         {0}
 
         """
-        from diofant.solvers.inequalities import solve_univariate_inequality
+        from ..solvers.inequalities import solve_univariate_inequality
         syms = self.free_symbols
 
         if len(syms) == 1:

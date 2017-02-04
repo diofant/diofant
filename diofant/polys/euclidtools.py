@@ -1,48 +1,27 @@
 """Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences. """
 
-from diofant.polys.densebasic import (
-    dup_strip, dmp_raise,
-    dmp_zero, dmp_one, dmp_ground,
-    dmp_one_p, dmp_zero_p,
-    dmp_zeros,
-    dup_degree, dmp_degree, dmp_degree_in,
-    dup_LC, dmp_LC, dmp_ground_LC,
-    dmp_multi_deflate, dmp_inflate,
-    dup_convert, dmp_convert,
-    dmp_apply_pairs)
-from diofant.polys.densearith import (
-    dup_sub_mul,
-    dup_neg, dmp_neg,
-    dmp_add,
-    dmp_sub,
-    dup_mul, dmp_mul,
-    dmp_pow,
-    dup_div, dmp_div,
-    dup_rem,
-    dup_quo, dmp_quo,
-    dup_prem, dmp_prem,
-    dup_mul_ground, dmp_mul_ground,
-    dmp_mul_term,
-    dup_quo_ground, dmp_quo_ground,
-    dup_max_norm, dmp_max_norm)
-from diofant.polys.densetools import (
-    dup_clear_denoms, dmp_clear_denoms,
-    dup_diff, dmp_diff,
-    dup_eval, dmp_eval, dmp_eval_in,
-    dup_trunc, dmp_ground_trunc,
-    dup_monic, dmp_ground_monic,
-    dup_primitive, dmp_ground_primitive,
-    dup_extract, dmp_ground_extract)
-from diofant.polys.galoistools import (
-    gf_int, gf_crt)
-from diofant.polys.polyerrors import (
-    MultivariatePolynomialError,
-    HeuristicGCDFailed,
-    HomomorphismFailed,
-    NotInvertible,
-    DomainError)
-from diofant.polys.polyconfig import query
-from diofant.ntheory import nextprime
+from .densebasic import (dup_strip, dmp_raise, dmp_zero, dmp_one,
+                         dmp_ground, dmp_one_p, dmp_zero_p, dmp_zeros,
+                         dup_degree, dmp_degree, dmp_degree_in,
+                         dup_LC, dmp_LC, dmp_ground_LC, dmp_multi_deflate,
+                         dmp_inflate, dup_convert, dmp_convert,
+                         dmp_apply_pairs)
+from .densearith import (dup_sub_mul, dup_neg, dmp_neg, dmp_add, dmp_sub,
+                         dup_mul, dmp_mul, dmp_pow, dup_div, dmp_div,
+                         dup_rem, dup_quo, dmp_quo, dup_prem, dmp_prem,
+                         dup_mul_ground, dmp_mul_ground, dmp_mul_term,
+                         dup_quo_ground, dmp_quo_ground, dup_max_norm,
+                         dmp_max_norm)
+from .densetools import (dup_clear_denoms, dmp_clear_denoms, dup_diff,
+                         dmp_diff, dup_eval, dmp_eval, dmp_eval_in,
+                         dup_trunc, dmp_ground_trunc, dup_monic,
+                         dmp_ground_monic, dup_primitive, dmp_ground_primitive,
+                         dup_extract, dmp_ground_extract)
+from .galoistools import gf_int, gf_crt
+from .polyerrors import (MultivariatePolynomialError, HeuristicGCDFailed,
+                         HomomorphismFailed, NotInvertible, DomainError)
+from .polyconfig import query
+from ..ntheory import nextprime
 
 
 def dup_half_gcdex(f, g, K):

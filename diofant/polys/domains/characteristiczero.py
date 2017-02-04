@@ -1,7 +1,7 @@
 """Implementaton of :class:`CharacteristicZero` class. """
 
-from diofant.polys.domains.domain import Domain
-from diofant.utilities import public
+from .domain import Domain
+from ...utilities import public
 
 
 @public

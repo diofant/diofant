@@ -1,6 +1,5 @@
-from diofant.core import (S, Symbol, Dummy, sympify, Expr, Rational,
-                          Float, PoleError)
-from diofant.functions.elementary.trigonometric import sin, cos
+from ..core import S, Symbol, Dummy, sympify, Expr, Rational, Float, PoleError
+from ..functions.elementary.trigonometric import sin, cos
 from .order import Order
 from .gruntz import limitinf
 

@@ -1,9 +1,7 @@
-from diofant.core.basic import Basic
-from diofant.vector.vector import Vector
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.functions import _path
-from diofant import Symbol
-from diofant.core.cache import cacheit
+from ..core import Basic, Symbol, cacheit
+from .vector import Vector
+from .coordsysrect import CoordSysCartesian
+from .functions import _path
 
 
 class Point(Basic):

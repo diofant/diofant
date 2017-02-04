@@ -2,11 +2,9 @@
 
 import re
 
-from diofant.core import S, Basic, sympify
-from diofant.utilities import numbered_symbols, topological_sort, public
-from diofant.utilities.iterables import has_dups
-from diofant.polys.polyerrors import GeneratorsError, OptionError, FlagError
-import diofant.polys
+from ..core import S, Basic, sympify
+from ..utilities import numbered_symbols, topological_sort, public, has_dups
+from .polyerrors import GeneratorsError, OptionError, FlagError
 
 __all__ = ["Options"]
 
@@ -349,11 +347,13 @@ class Order(Option, metaclass=OptionType):
 
     @classmethod
     def default(cls):
-        return diofant.polys.orderings.lex
+        from .orderings import lex
+        return lex
 
     @classmethod
     def preprocess(cls, order):
-        return diofant.polys.orderings.monomial_key(order)
+        from .orderings import monomial_key
+        return monomial_key(order)
 
 
 class Field(BooleanOption, metaclass=OptionType):
@@ -406,19 +406,20 @@ class Domain(Option, metaclass=OptionType):
 
     @classmethod
     def preprocess(cls, domain):
-        if isinstance(domain, diofant.polys.domains.Domain):
+        from . import domains
+        if isinstance(domain, domains.Domain):
             return domain
         elif hasattr(domain, 'to_domain'):
             return domain.to_domain()
         elif isinstance(domain, str):
             if domain in ['Z', 'ZZ']:
-                return diofant.polys.domains.ZZ
+                return domains.ZZ
 
             if domain in ['Q', 'QQ']:
-                return diofant.polys.domains.QQ
+                return domains.QQ
 
             if domain == 'EX':
-                return diofant.polys.domains.EX
+                return domains.EX
 
             r = cls._re_realfield.match(domain)
 
@@ -426,9 +427,9 @@ class Domain(Option, metaclass=OptionType):
                 _, _, prec = r.groups()
 
                 if prec is None:
-                    return diofant.polys.domains.RR
+                    return domains.RR
                 else:
-                    return diofant.polys.domains.RealField(int(prec))
+                    return domains.RealField(int(prec))
 
             r = cls._re_complexfield.match(domain)
 
@@ -436,14 +437,14 @@ class Domain(Option, metaclass=OptionType):
                 _, _, prec = r.groups()
 
                 if prec is None:
-                    return diofant.polys.domains.CC
+                    return domains.CC
                 else:
-                    return diofant.polys.domains.ComplexField(int(prec))
+                    return domains.ComplexField(int(prec))
 
             r = cls._re_finitefield.match(domain)
 
             if r is not None:
-                return diofant.polys.domains.FF(int(r.groups()[1]))
+                return domains.FF(int(r.groups()[1]))
 
             r = cls._re_polynomial.match(domain)
 
@@ -453,9 +454,9 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
-                    return diofant.polys.domains.ZZ.poly_ring(*gens)
+                    return domains.ZZ.poly_ring(*gens)
                 else:
-                    return diofant.polys.domains.QQ.poly_ring(*gens)
+                    return domains.QQ.poly_ring(*gens)
 
             r = cls._re_fraction.match(domain)
 
@@ -465,26 +466,27 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
-                    return diofant.polys.domains.ZZ.frac_field(*gens)
+                    return domains.ZZ.frac_field(*gens)
                 else:
-                    return diofant.polys.domains.QQ.frac_field(*gens)
+                    return domains.QQ.frac_field(*gens)
 
             r = cls._re_algebraic.match(domain)
 
             if r is not None:
                 gens = list(map(sympify, r.groups()[1].split(',')))
-                return diofant.polys.domains.QQ.algebraic_field(*gens)
+                return domains.QQ.algebraic_field(*gens)
 
         raise OptionError('expected a valid domain specification, got %s' % domain)
 
     @classmethod
     def postprocess(cls, options):
+        from . import domains
         if 'gens' in options and 'domain' in options and options['domain'].is_Composite and \
                 (set(options['domain'].symbols) & set(options['gens'])):
             raise GeneratorsError(
                 "ground domain and generators interfere together")
         elif ('gens' not in options or not options['gens']) and \
-                'domain' in options and options['domain'] == diofant.polys.domains.EX:
+                'domain' in options and options['domain'] == domains.EX:
             raise GeneratorsError("you have to provide generators because EX domain was requested")
 
 
@@ -547,8 +549,9 @@ class Extension(Option, metaclass=OptionType):
 
     @classmethod
     def postprocess(cls, options):
+        from . import domains
         if 'extension' in options and options['extension'] is not True:
-            options['domain'] = diofant.polys.domains.QQ.algebraic_field(
+            options['domain'] = domains.QQ.algebraic_field(
                 *options['extension'])
 
 
@@ -572,10 +575,11 @@ class Modulus(Option, metaclass=OptionType):
 
     @classmethod
     def postprocess(cls, options):
+        from . import domains
         if 'modulus' in options:
             modulus = options['modulus']
             symmetric = options.get('symmetric', True)
-            options['domain'] = diofant.polys.domains.FF(modulus, symmetric)
+            options['domain'] = domains.FF(modulus, symmetric)
 
 
 class Symmetric(BooleanOption, metaclass=OptionType):

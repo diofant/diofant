@@ -2,19 +2,15 @@ import itertools
 
 from mpmath import mpi, mpf
 
-from diofant.core.sympify import _sympify, sympify
-from diofant.core.basic import Basic
-from diofant.core.expr import Expr
-from diofant.core.singleton import Singleton, S
-from diofant.core.evalf import EvalfMixin
-from diofant.core.numbers import Float
-from diofant.core.compatibility import iterable, ordered
-from diofant.core.evaluate import global_evaluate
-from diofant.core.mul import Mul
-from diofant.core.relational import Eq
-from diofant.sets.contains import Contains
-from diofant.logic.boolalg import And, Or, Not, true, false
-from diofant.utilities import subsets
+from ..core import sympify, Basic, Expr, S, Float, Mul, Eq
+from ..core.sympify import _sympify
+from ..core.singleton import Singleton
+from ..core.evalf import EvalfMixin
+from ..core.compatibility import iterable, ordered
+from ..core.evaluate import global_evaluate
+from .contains import Contains
+from ..logic import And, Or, Not, true, false
+from ..utilities import subsets
 
 
 class Set(Basic):
@@ -452,7 +448,7 @@ class Set(Basic):
         raise NotImplementedError()  # pragma: no cover
 
     def _eval_imageset(self, f):
-        from diofant.sets.fancysets import ImageSet
+        from .fancysets import ImageSet
         return ImageSet(f, self)
 
     @property
@@ -622,7 +618,7 @@ class ProductSet(Set):
         return all(set.is_iterable for set in self.sets)
 
     def __iter__(self):
-        from diofant.utilities.iterables import cantor_product
+        from ..utilities.iterables import cantor_product
         if self.is_iterable:
             return cantor_product(*self.sets)
         else:
@@ -863,7 +859,7 @@ class Interval(Set, EvalfMixin):
         See Set._union for docstring
         """
         if other.is_Interval and self._is_comparable(other):
-            from diofant.functions.elementary.miscellaneous import Min, Max
+            from ..functions import Min, Max
             # Non-overlapping intervals
             end = Min(self.end, other.end)
             start = Max(self.start, other.start)
@@ -914,11 +910,11 @@ class Interval(Set, EvalfMixin):
         return _sympify(expr)
 
     def _eval_imageset(self, f):
-        from diofant.functions.elementary.miscellaneous import Min, Max
-        from diofant.solvers import solve
-        from diofant.core.function import diff, Lambda
-        from diofant.series import limit
-        from diofant.calculus.singularities import singularities
+        from ..functions import Min, Max
+        from ..solvers import solve
+        from ..core import diff, Lambda
+        from ..series import limit
+        from ..calculus.singularities import singularities
         # TODO: handle functions with infinitely many solutions (eg, sin, tan)
         # TODO: handle multivariate functions
 
@@ -1165,14 +1161,14 @@ class Union(Set, EvalfMixin):
     def _inf(self):
         # We use Min so that sup is meaningful in combination with symbolic
         # interval end points.
-        from diofant.functions.elementary.miscellaneous import Min
+        from ..functions import Min
         return Min(*[set.inf for set in self.args])
 
     @property
     def _sup(self):
         # We use Max so that sup is meaningful in combination with symbolic
         # end points.
-        from diofant.functions.elementary.miscellaneous import Max
+        from ..functions import Max
         return Max(*[set.sup for set in self.args])
 
     def _contains(self, other):
@@ -1727,12 +1723,12 @@ class FiniteSet(Set, EvalfMixin):
 
     @property
     def _inf(self):
-        from diofant.functions.elementary.miscellaneous import Min
+        from ..functions import Min
         return Min(*self)
 
     @property
     def _sup(self):
-        from diofant.functions.elementary.miscellaneous import Max
+        from ..functions import Max
         return Max(*self)
 
     @property
@@ -1844,8 +1840,8 @@ def imageset(*args):
 
     diofant.sets.fancysets.ImageSet
     """
-    from diofant.core import Dummy, Lambda
-    from diofant.sets.fancysets import ImageSet
+    from ..core import Dummy, Lambda
+    from .fancysets import ImageSet
     if len(args) == 3:
         f = Lambda(*args[:2])
     else:

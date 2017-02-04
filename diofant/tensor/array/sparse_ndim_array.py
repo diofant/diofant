@@ -1,9 +1,11 @@
 import functools
 
-from diofant.core.sympify import _sympify
-from diofant import S, Dict, flatten, SparseMatrix, Expr, Tuple
-from diofant.tensor.array.mutable_ndim_array import MutableNDimArray
-from diofant.tensor.array.ndim_array import NDimArray
+from ...core.sympify import _sympify
+from ...core import S, Dict, Expr, Tuple
+from ...matrices import SparseMatrix
+from ...utilities import flatten
+from .mutable_ndim_array import MutableNDimArray
+from .ndim_array import NDimArray
 
 
 class SparseNDimArray(NDimArray):

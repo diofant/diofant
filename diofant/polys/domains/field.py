@@ -1,8 +1,8 @@
 """Implementation of :class:`Field` class. """
 
-from diofant.polys.domains.ring import Ring
-from diofant.polys.polyerrors import NotReversible, DomainError
-from diofant.utilities import public
+from .ring import Ring
+from ..polyerrors import NotReversible, DomainError
+from ...utilities import public
 
 
 @public

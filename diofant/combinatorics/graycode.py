@@ -1,6 +1,6 @@
 import random
 
-from diofant.core import Basic
+from ..core import Basic
 
 
 class GrayCode(Basic):

@@ -1,15 +1,15 @@
 from collections import defaultdict
 from functools import reduce
 
-from diofant.core.function import expand_log, count_ops
-from diofant.core import sympify, Basic, Dummy, S, Add, Mul, Pow, expand_mul, factor_terms
-from diofant.core.compatibility import ordered, default_sort_key
-from diofant.core.numbers import Integer, Rational
-from diofant.core.mul import prod, _keep_coeff
-from diofant.core.rules import Transform
-from diofant.functions import exp_polar, exp, log, root, polarify, unpolarify
-from diofant.polys import lcm, gcd
-from diofant.ntheory.factor_ import multiplicity
+from ..core import (sympify, Basic, Dummy, S, Add, Mul, Pow, expand_mul,
+                    factor_terms, expand_log, count_ops, Integer,
+                    Rational, prod)
+from ..core.compatibility import ordered, default_sort_key
+from ..core.mul import _keep_coeff
+from ..core.rules import Transform
+from ..functions import exp_polar, exp, log, root, polarify, unpolarify
+from ..polys import lcm, gcd
+from ..ntheory import multiplicity
 
 
 def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
@@ -97,7 +97,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     x*y*sqrt(x*sqrt(y))
 
     """
-    from diofant.matrices.expressions.matexpr import MatrixSymbol
+    from ..matrices import MatrixSymbol
 
     def recurse(arg, **kwargs):
         _deep = kwargs.get('deep', deep)
@@ -573,7 +573,7 @@ def powdenest(eq, force=False, polar=False):
     >>> powdenest((n**i)**x, force=True)
     (n**i)**x
     """
-    from diofant.simplify.simplify import posify
+    from .simplify import posify
 
     if force:
         eq, rep = posify(eq)
@@ -597,7 +597,7 @@ def _denest_pow(eq):
     This is a helper function for powdenest that performs the actual
     transformation.
     """
-    from diofant.simplify.simplify import logcombine
+    from .simplify import logcombine
 
     b, e = eq.as_base_exp()
     if b.is_Pow and e != 1:

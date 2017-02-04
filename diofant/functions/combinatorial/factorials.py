@@ -1,19 +1,17 @@
 from math import sqrt as _sqrt
 from functools import reduce
 
-from diofant.core import S, sympify, Dummy
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.core.logic import fuzzy_and
-from diofant.core.numbers import Integer
-from diofant.ntheory import sieve
-from diofant.core.cache import cacheit
+from ...core import S, sympify, Dummy, Function, Integer, cacheit
+from ...core.function import ArgumentIndexError
+from ...core.logic import fuzzy_and
+from ...ntheory import sieve
 
 
 class CombinatorialFunction(Function):
     """Base class for combinatorial functions. """
 
     def _eval_simplify(self, ratio, measure):
-        from diofant.simplify.simplify import combsimp
+        from ...simplify import combsimp
         expr = combsimp(self)
         if measure(expr) <= ratio*measure(self):
             return expr
@@ -77,7 +75,7 @@ class factorial(CombinatorialFunction):
     """
 
     def fdiff(self, argindex=1):
-        from diofant import gamma, polygamma
+        from .. import gamma, polygamma
         if argindex == 1:
             return gamma(self.args[0] + 1)*polygamma(0, self.args[0] + 1)
         else:
@@ -164,15 +162,15 @@ class factorial(CombinatorialFunction):
                     return Integer(result)
 
     def _eval_rewrite_as_gamma(self, n):
-        from diofant import gamma
+        from .. import gamma
         return gamma(n + 1)
 
     def _eval_rewrite_as_tractable(self, n):
-        from diofant import loggamma, exp
+        from .. import loggamma, exp
         return exp(loggamma(n + 1))
 
     def _eval_rewrite_as_Product(self, n):
-        from diofant import Product
+        from ...concrete import Product
         if n.is_nonnegative and n.is_integer:
             i = Dummy('i', integer=True)
             return Product(i, (i, 1, n))
@@ -276,7 +274,7 @@ class subfactorial(CombinatorialFunction):
             return True
 
     def _eval_rewrite_as_uppergamma(self, n):
-        from diofant import uppergamma
+        from .. import uppergamma
         return uppergamma(n + 1, -1)/S.Exp1
 
     def _eval_is_nonnegative(self):
@@ -450,7 +448,7 @@ class RisingFactorial(CombinatorialFunction):
                         return 1/reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
 
     def _eval_rewrite_as_gamma(self, x, k):
-        from diofant import gamma
+        from .. import gamma
         return gamma(x + k) / gamma(x)
 
     def _eval_rewrite_as_tractable(self, x, k):
@@ -524,7 +522,7 @@ class FallingFactorial(CombinatorialFunction):
                         return 1/reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
 
     def _eval_rewrite_as_gamma(self, x, k):
-        from diofant import gamma
+        from .. import gamma
         return (-1)**k * gamma(-x + k) / gamma(-x)
 
     def _eval_is_integer(self):
@@ -615,7 +613,7 @@ class binomial(CombinatorialFunction):
     """
 
     def fdiff(self, argindex=1):
-        from diofant import polygamma
+        from .. import polygamma
         if argindex == 1:
             # http://functions.wolfram.com/GammaBetaErf/Binomial/20/01/01/
             n, k = self.args
@@ -720,7 +718,7 @@ class binomial(CombinatorialFunction):
         return factorial(n)/(factorial(k)*factorial(n - k))
 
     def _eval_rewrite_as_gamma(self, n, k):
-        from diofant import gamma
+        from .. import gamma
         return gamma(n + 1)/(gamma(k + 1)*gamma(n - k + 1))
 
     def _eval_rewrite_as_tractable(self, n, k):

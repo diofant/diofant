@@ -9,9 +9,9 @@ diofant.utilities.codegen. The codegen module can be used to generate complete
 source code files that are compilable without further modifications.
 """
 
-from diofant.core import S
-from diofant.printing.codeprinter import CodePrinter, Assignment
-from diofant.printing.precedence import precedence
+from ..core import S
+from .codeprinter import CodePrinter, Assignment
+from .precedence import precedence
 
 # dictionary mapping diofant function to (argument_conditions, C_function).
 # Used in CCodePrinter._print_Function(self)
@@ -208,7 +208,7 @@ class CCodePrinter(CodePrinter):
             return ": ".join(ecpairs) + last_line + " ".join([")"*len(ecpairs)])
 
     def _print_ITE(self, expr):
-        from diofant.functions import Piecewise
+        from ..functions import Piecewise
         _piecewise = Piecewise((expr.args[1], expr.args[0]), (expr.args[2], True))
         return self._print(_piecewise)
 

@@ -2,10 +2,10 @@
 
 import math
 
-from diofant.polys.domains.ring import Ring
-from diofant.polys.domains.simpledomain import SimpleDomain
-from diofant.polys.domains.characteristiczero import CharacteristicZero
-from diofant.utilities import public
+from .ring import Ring
+from .simpledomain import SimpleDomain
+from .characteristiczero import CharacteristicZero
+from ...utilities import public
 
 
 @public
@@ -22,7 +22,7 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
 
     def get_field(self):
         """Returns a field associated with ``self``. """
-        from diofant.polys.domains import QQ
+        from . import QQ
         return QQ
 
     def algebraic_field(self, *extension):

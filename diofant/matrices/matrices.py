@@ -2,25 +2,17 @@ import collections
 from functools import reduce
 from types import FunctionType
 
-from diofant.core.add import Add
-from diofant.core.basic import Basic, Atom
-from diofant.core.expr import Expr
-from diofant.core.function import count_ops
-from diofant.core.logic import fuzzy_and
-from diofant.core.power import Pow
-from diofant.core.symbol import Symbol, Dummy, symbols
-from diofant.core.numbers import Integer, ilcm, Rational, Float
-from diofant.core.singleton import S
-from diofant.core.sympify import sympify
-from diofant.core.compatibility import (is_sequence, default_sort_key,
-                                        NotIterable, as_int)
-from diofant.polys import PurePoly, roots, cancel, gcd
-from diofant.simplify import simplify as _simplify, signsimp, nsimplify
-from diofant.utilities.iterables import flatten
-from diofant.functions.elementary.miscellaneous import sqrt, Max, Min
-from diofant.functions import exp, factorial
-from diofant.printing.defaults import DefaultPrinting
-from diofant.printing import sstr
+from ..core import (Add, Basic, Atom, Expr, count_ops, Pow, Symbol, Dummy,
+                    symbols, Integer, ilcm, Rational, Float, S, sympify)
+from ..core.logic import fuzzy_and
+from ..core.compatibility import (is_sequence, default_sort_key,
+                                  NotIterable, as_int)
+from ..polys import PurePoly, roots, cancel, gcd
+from ..simplify import simplify as _simplify, signsimp, nsimplify
+from ..utilities import flatten
+from ..functions import sqrt, Max, Min, exp, factorial
+from ..printing.defaults import DefaultPrinting
+from ..printing import sstr
 
 
 def _iszero(x):
@@ -131,7 +123,7 @@ class MatrixBase(DefaultPrinting):
         [1, 1/2]])
 
         """
-        from diofant.matrices.sparse import SparseMatrixBase
+        from .sparse import SparseMatrixBase
 
         flat_list = None
 
@@ -270,7 +262,7 @@ class MatrixBase(DefaultPrinting):
         [0, 0, 4, 0],
         [2, 2, 4, 2]])
         """
-        from diofant.matrices import Matrix
+        from . import Matrix
 
         is_slice = isinstance(key, slice)
         i, j = key = self.key2ij(key)
@@ -343,7 +335,7 @@ class MatrixBase(DefaultPrinting):
         [0, 1]])
 
         """
-        from diofant.ntheory import totient
+        from ..ntheory import totient
         if not self.is_square:
             raise NonSquareMatrixError()
         N = self.cols
@@ -524,8 +516,8 @@ class MatrixBase(DefaultPrinting):
         return self._new(self.rows, self.cols, [a*i for i in self._mat])
 
     def __pow__(self, num):
-        from diofant.matrices import eye, diag, MutableMatrix
-        from diofant import binomial
+        from . import eye, diag, MutableMatrix
+        from ..functions import binomial
 
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -692,7 +684,7 @@ class MatrixBase(DefaultPrinting):
 
     def _format_str(self, printer=None):
         if not printer:
-            from diofant.printing.str import StrPrinter
+            from ..printing.str import StrPrinter
             printer = StrPrinter()
         # Handle zero dimensions:
         if self.rows == 0 or self.cols == 0:
@@ -702,11 +694,11 @@ class MatrixBase(DefaultPrinting):
         return "Matrix([\n%s])" % self.table(printer, rowsep=',\n')
 
     def _repr_pretty_(self, p, cycle):
-        from diofant.printing import pretty
+        from ..printing import pretty
         p.text(pretty(self))
 
     def _repr_latex_(self):
-        from diofant.printing import latex
+        from ..printing import latex
         return latex(self, mode='equation')
 
     def cholesky(self):
@@ -1394,7 +1386,7 @@ class MatrixBase(DefaultPrinting):
         LUdecomposition_Simple
         LUsolve
         """
-        from diofant.matrices import SparseMatrix
+        from . import SparseMatrix
         zeros = SparseMatrix.zeros
         eye = SparseMatrix.eye
 
@@ -1720,7 +1712,7 @@ class MatrixBase(DefaultPrinting):
         multiply
         multiply_elementwise
         """
-        from diofant.matrices import Matrix
+        from . import Matrix
 
         if not isinstance(b, MatrixBase):
             if is_sequence(b):
@@ -1768,7 +1760,7 @@ class MatrixBase(DefaultPrinting):
         dot
         multiply
         """
-        from diofant.matrices import matrix_multiply_elementwise
+        from . import matrix_multiply_elementwise
 
         return matrix_multiply_elementwise(self, b)
 
@@ -1958,7 +1950,7 @@ class MatrixBase(DefaultPrinting):
             if nr == 1:
                 res = exp(l)
             else:
-                from diofant import eye
+                from . import eye
                 # extract the diagonal part
                 d = b[0, 0]*eye(nr)
                 # and the nilpotent part
@@ -1972,7 +1964,7 @@ class MatrixBase(DefaultPrinting):
             return(res)
 
         blocks = list(map(_jblock_exponential, cells))
-        from diofant.matrices import diag
+        from . import diag
         eJ = diag(* blocks)
         # n = self.rows
         ret = P*eJ*P.inv()
@@ -2645,7 +2637,7 @@ class MatrixBase(DefaultPrinting):
         inverse_LU
         inverse_ADJ
         """
-        from diofant.matrices import Matrix
+        from . import Matrix
 
         if not self.is_square:
             raise NonSquareMatrixError("A Matrix must be square to invert.")
@@ -2750,7 +2742,7 @@ class MatrixBase(DefaultPrinting):
     def nullspace(self, simplify=False):
         """Returns list of vectors (Matrix objects) that span nullspace of self
         """
-        from diofant.matrices import zeros
+        from . import zeros
 
         simpfunc = simplify if isinstance(
             simplify, FunctionType) else _simplify
@@ -2840,7 +2832,7 @@ class MatrixBase(DefaultPrinting):
         berkowitz_charpoly
         berkowitz_eigenvals
         """
-        from diofant.matrices import zeros
+        from . import zeros
 
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -2993,7 +2985,7 @@ class MatrixBase(DefaultPrinting):
         evaluated with evalf. If it is desired to removed small imaginary
         portions during the evalf step, pass a value for the ``chop`` flag.
         """
-        from diofant.matrices import eye
+        from . import eye
 
         simplify = flags.get('simplify', True)
         primitive = bool(flags.get('simplify', False))
@@ -3240,7 +3232,7 @@ class MatrixBase(DefaultPrinting):
 
         vec
         """
-        from diofant.matrices import zeros
+        from . import zeros
 
         c = self.cols
         if c != self.rows:
@@ -3354,7 +3346,7 @@ class MatrixBase(DefaultPrinting):
         is_diagonalizable
 
         """
-        from diofant.matrices import diag
+        from . import diag
 
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -3450,7 +3442,7 @@ class MatrixBase(DefaultPrinting):
 
     def jordan_cell(self, eigenval, n):
         n = int(n)
-        from diofant.matrices import MutableMatrix
+        from . import MutableMatrix
         out = MutableMatrix.zeros(n)
         for i in range(n-1):
             out[i, i] = eigenval
@@ -3518,7 +3510,7 @@ class MatrixBase(DefaultPrinting):
 
                 # although multiplicity=4 and geometrical=2 are the same for this matrix.
 
-                from diofant.matrices import MutableMatrix
+                from . import MutableMatrix
                 I = MutableMatrix.eye(self.rows)
                 l = eigenval
                 M = (self-l*I)
@@ -3667,7 +3659,7 @@ class MatrixBase(DefaultPrinting):
         jordan_cells
         """
         P, Jcells = self.jordan_cells()
-        from diofant.matrices import diag
+        from . import diag
         J = diag(*Jcells)
         return P, type(self)(J)
 
@@ -3715,7 +3707,7 @@ class MatrixBase(DefaultPrinting):
         Jcells = []
         Pcols_new = []
         jordan_block_structures = self._jordan_block_structure()
-        from diofant.matrices import MutableMatrix
+        from . import MutableMatrix
 
         # Order according to default_sort_key, this makes sure the order is the same as in .diagonalize():
         for eigenval in (sorted(jordan_block_structures.keys(), key=default_sort_key)):
@@ -3768,8 +3760,8 @@ class MatrixBase(DefaultPrinting):
         so that the dual is a covariant second rank tensor.
 
         """
-        from diofant import LeviCivita
-        from diofant.matrices import zeros
+        from ..functions import LeviCivita
+        from . import zeros
 
         M, n = self[:, :], self.rows
         work = zeros(n)
@@ -3855,7 +3847,7 @@ class MatrixBase(DefaultPrinting):
             raise ShapeError(
                 "`self` and `rhs` must have the same number of rows.")
 
-        from diofant.matrices import MutableMatrix
+        from . import MutableMatrix
         newmat = MutableMatrix.zeros(self.rows, self.cols + rhs.cols)
         newmat[:, :self.cols] = self
         newmat[:, self.cols:] = rhs
@@ -3888,7 +3880,7 @@ class MatrixBase(DefaultPrinting):
             raise ShapeError(
                 "`self` and `bott` must have the same number of columns.")
 
-        from diofant.matrices import MutableMatrix
+        from . import MutableMatrix
         newmat = MutableMatrix.zeros(self.rows + bott.rows, self.cols)
         newmat[:self.rows, :] = self
         newmat[self.rows:, :] = bott
@@ -3971,7 +3963,7 @@ class MatrixBase(DefaultPrinting):
         if self.rows != mti.rows:
             raise ShapeError("self and mti must have the same number of rows.")
 
-        from diofant.matrices import MutableMatrix
+        from . import MutableMatrix
         newmat = MutableMatrix.zeros(self.rows, self.cols + mti.cols)
         i, j = pos, pos + mti.cols
         newmat[:, :i] = self[:, :i]
@@ -4121,7 +4113,7 @@ class MatrixBase(DefaultPrinting):
         .. [1] https://en.wikipedia.org/wiki/Moore-Penrose_pseudoinverse#Obtaining_all_solutions_of_a_linear_system
 
         """
-        from diofant.matrices import eye
+        from . import eye
         A = self
         A_pinv = self.pinv()
         if arbitrary_matrix is None:
@@ -4197,7 +4189,7 @@ def mgamma(mu, lower=False):
 
     .. [1] http://en.wikipedia.org/wiki/Gamma_matrices
     """
-    from diofant import Matrix
+    from . import Matrix
     if mu not in [0, 1, 2, 3, 5]:
         raise IndexError("Invalid Dirac index")
     if mu == 0:

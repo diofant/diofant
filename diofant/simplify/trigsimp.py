@@ -4,21 +4,19 @@ from functools import reduce
 from strategies.core import identity
 from strategies.tree import greedy
 
-from diofant.core.cache import cacheit
-from diofant.core import (sympify, Basic, S, Expr, expand_mul, factor_terms,
-                          Mul, Pow, Dummy, igcd, FunctionClass, Add, symbols,
-                          Wild, expand)
-from diofant.core.compatibility import iterable
-from diofant.core.numbers import I, Integer
-from diofant.core.function import count_ops, _mexpand
-from diofant.functions.elementary.trigonometric import TrigonometricFunction
-from diofant.functions.elementary.hyperbolic import HyperbolicFunction
-from diofant.functions import sin, cos, exp, cosh, tanh, sinh, tan, cot, coth
-from diofant.polys.polyerrors import PolificationFailed
-from diofant.polys.polytools import groebner
-from diofant.polys.domains import ZZ
-from diofant.polys import Poly, factor, cancel, parallel_poly_from_expr
-from diofant.utilities.misc import debug
+from ..core import (sympify, Basic, S, Expr, expand_mul, factor_terms, Mul,
+                    Pow, Dummy, igcd, FunctionClass, Add, symbols, Wild,
+                    expand, cacheit, I, Integer, count_ops)
+from ..core.compatibility import iterable
+from ..core.function import _mexpand
+from ..functions.elementary.trigonometric import TrigonometricFunction
+from ..functions.elementary.hyperbolic import HyperbolicFunction
+from ..functions import sin, cos, exp, cosh, tanh, sinh, tan, cot, coth
+from ..polys.polyerrors import PolificationFailed
+from ..polys.polytools import groebner
+from ..polys.domains import ZZ
+from ..polys import Poly, factor, cancel, parallel_poly_from_expr
+from ..utilities.misc import debug
 
 
 def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
@@ -369,7 +367,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
     # If our fraction is a polynomial in the free generators, simplify all
     # coefficients separately:
 
-    from diofant.simplify.ratsimp import ratsimpmodprime
+    from .ratsimp import ratsimpmodprime
 
     if freegens and pdenom.has_only_gens(*set(gens).intersection(pdenom.gens)):
         num = Poly(num, gens=gens+freegens).eject(*gens)
@@ -467,8 +465,8 @@ def trigsimp(expr, **opts):
     tanh(x)**7
 
     """
-    from diofant.simplify.fu import fu
-    from diofant.matrices.expressions.matexpr import MatrixExpr
+    from .fu import fu
+    from ..matrices import MatrixExpr
 
     expr = sympify(expr)
 
@@ -527,8 +525,8 @@ def exptrigsimp(expr, simplify=True):
     >>> exptrigsimp(cosh(z) - sinh(z))
     E**(-z)
     """
-    from diofant.simplify.fu import hyper_as_trig, TR2i
-    from diofant.simplify.simplify import bottom_up
+    from .fu import hyper_as_trig, TR2i
+    from .simplify import bottom_up
 
     def exp_trig(e):
         # select the better of e, and e rewritten in terms of exp or trig
@@ -937,7 +935,7 @@ def _trigsimp(expr, deep=False):
 @cacheit
 def __trigsimp(expr, deep=False):
     """recursive helper for trigsimp"""
-    from diofant.simplify.fu import TR10i
+    from .fu import TR10i
 
     if _trigpat is None:
         _trigpats()
@@ -1086,8 +1084,8 @@ def futrig(e, **kwargs):
     cosh(x)
 
     """
-    from diofant.simplify.fu import hyper_as_trig
-    from diofant.simplify.simplify import bottom_up
+    from .fu import hyper_as_trig
+    from .simplify import bottom_up
 
     e = sympify(e)
 
@@ -1112,11 +1110,9 @@ def futrig(e, **kwargs):
 
 def _futrig(e, **kwargs):
     """Helper for futrig."""
-    from diofant.simplify.fu import (
-        TR1, TR2, TR3, TR2i, TR10, L, TR10i,
-        TR8, TR6, TR15, TR16, TR111, TR5, TRmorrie, TR11, TR14, TR22,
-        TR12)
-    from diofant.core.compatibility import _nodes
+    from .fu import (TR1, TR2, TR3, TR2i, TR10, L, TR10i, TR8, TR6, TR15,
+                     TR16, TR111, TR5, TRmorrie, TR11, TR14, TR22, TR12)
+    from ..core.compatibility import _nodes
 
     if not e.has(TrigonometricFunction):
         return e

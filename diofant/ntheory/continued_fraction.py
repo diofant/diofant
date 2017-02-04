@@ -1,4 +1,4 @@
-from diofant.core.numbers import Integer, Rational
+from ..core import Integer, Rational
 
 
 def continued_fraction_periodic(p, q, d=0):
@@ -58,8 +58,8 @@ def continued_fraction_periodic(p, q, d=0):
     .. [2] K. Rosen. Elementary Number theory and its applications.
            Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
     """
-    from diofant.core.compatibility import as_int
-    from diofant.functions import sqrt
+    from ..core.compatibility import as_int
+    from ..functions import sqrt
 
     p, q, d = list(map(as_int, [p, q, d]))
     sd = sqrt(d)
@@ -134,8 +134,8 @@ def continued_fraction_reduce(cf):
 
     continued_fraction_periodic
     """
-    from diofant.core.symbol import Dummy
-    from diofant.solvers import solve
+    from ..core import Dummy
+    from ..solvers import solve
 
     period = []
     x = Dummy('x')
@@ -194,7 +194,7 @@ def continued_fraction_iterator(x):
 
     .. [1] http://en.wikipedia.org/wiki/Continued_fraction
     """
-    from diofant.functions import floor
+    from ..functions import floor
 
     while True:
         i = floor(x)

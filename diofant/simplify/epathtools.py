@@ -1,6 +1,6 @@
 """Tools for manipulation of expressions using paths. """
 
-from diofant.core import Basic
+from ..core import Basic
 
 
 class EPath:

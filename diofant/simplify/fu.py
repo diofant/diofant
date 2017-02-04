@@ -187,25 +187,18 @@ from collections import defaultdict
 from strategies.tree import greedy
 from strategies.core import identity, debug
 
-from diofant.simplify.simplify import bottom_up
-from diofant.core.sympify import sympify
-from diofant.functions.elementary.trigonometric import (
-    cos, sin, tan, cot, sec, csc, sqrt, TrigonometricFunction)
-from diofant.functions.elementary.hyperbolic import (
-    cosh, sinh, tanh, coth, HyperbolicFunction)
-from diofant.core.compatibility import ordered
-from diofant.core.expr import Expr
-from diofant.core.mul import Mul
-from diofant.core.power import Pow
-from diofant.core.function import expand_mul
-from diofant.core.add import Add
-from diofant.core.symbol import Dummy
-from diofant.core.exprtools import Factors, gcd_terms, factor_terms
-from diofant.core.basic import S
-from diofant.core.numbers import Integer, pi, I
-from diofant.polys.polytools import factor
-from diofant.ntheory.factor_ import perfect_power
-from diofant import DIOFANT_DEBUG
+from .simplify import bottom_up
+from ..core import (sympify, Expr, Mul, Pow, expand_mul, Add, Dummy, S,
+                    Integer, pi, I, gcd_terms, factor_terms)
+from ..functions import (cos, sin, tan, cot, sec, csc, sqrt, cosh,
+                         sinh, tanh, coth)
+from ..functions.elementary.trigonometric import TrigonometricFunction
+from ..functions.elementary.hyperbolic import HyperbolicFunction
+from ..core.compatibility import ordered
+from ..core.exprtools import Factors
+from ..polys.polytools import factor
+from ..ntheory import perfect_power
+from .. import DIOFANT_DEBUG
 
 
 # ================== Fu-like tools ===========================
@@ -408,7 +401,7 @@ def TR3(rv):
     -cos(x)
 
     """
-    from diofant.simplify.simplify import signsimp
+    from .simplify import signsimp
 
     # Negative argument (already automatic for funcs like sin(-x) -> -sin(x)
     # but more complicated expressions can use it, too). Also, trig angles
@@ -1065,7 +1058,7 @@ def TR12i(rv):
     >>> TR12i(eq.expand())
     -3*tan(a + b)*tan(a + c)/(2*(tan(a) + tan(b) - 1))
     """
-    from diofant import factor
+    from ..polys import factor
 
     def f(rv):
         if not (rv.is_Add or rv.is_Mul or rv.is_Pow):
@@ -2114,8 +2107,8 @@ def hyper_as_trig(rv):
 
     http://en.wikipedia.org/wiki/Hyperbolic_function
     """
-    from diofant.simplify.simplify import signsimp
-    from diofant.simplify.radsimp import collect
+    from .simplify import signsimp
+    from .radsimp import collect
 
     # mask off trig functions
     trigs = rv.atoms(TrigonometricFunction)

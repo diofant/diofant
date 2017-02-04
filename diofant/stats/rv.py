@@ -12,13 +12,17 @@ diofant.stats.frv
 diofant.stats.rv_interface
 """
 
-from diofant import (S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
-                     Equality, solve, Lambda, DiracDelta, Integer, sympify)
-from diofant.core.relational import Relational
-from diofant.logic.boolalg import Boolean
-from diofant.sets.sets import FiniteSet, ProductSet
+from ..core import (S, Expr, Symbol, Tuple, Add, Eq, Equality, Lambda,
+                    Integer, sympify)
+from ..core.relational import Relational
+from ..logic import And
+from ..logic.boolalg import Boolean
+from ..functions import DiracDelta
+from ..sets import FiniteSet, ProductSet
+from ..solvers import solve
+from ..utilities import lambdify
 
-from diofant.abc import x
+from ..abc import x
 
 
 class RandomDomain(Expr):
@@ -283,10 +287,10 @@ class ProductPSpace(PSpace):
             raise ValueError("Overlapping Random Variables")
 
         if all(space.is_Finite for space in spaces):
-            from diofant.stats.frv import ProductFinitePSpace
+            from .frv import ProductFinitePSpace
             cls = ProductFinitePSpace
         if all(space.is_Continuous for space in spaces):
-            from diofant.stats.crv import ProductContinuousPSpace
+            from .crv import ProductContinuousPSpace
             cls = ProductContinuousPSpace
 
         obj = Expr.__new__(cls, *FiniteSet(*spaces))
@@ -359,10 +363,10 @@ class ProductDomain(RandomDomain):
         domains2 = FiniteSet(*domains2)
 
         if all(domain.is_Finite for domain in domains2):
-            from diofant.stats.frv import ProductFiniteDomain
+            from .frv import ProductFiniteDomain
             cls = ProductFiniteDomain
         if all(domain.is_Continuous for domain in domains2):
-            from diofant.stats.crv import ProductContinuousDomain
+            from .crv import ProductContinuousDomain
             cls = ProductContinuousDomain
 
         return Expr.__new__(cls, *domains2)

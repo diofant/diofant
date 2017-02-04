@@ -1,7 +1,7 @@
 from .matexpr import MatrixExpr, ShapeError, Identity, ZeroMatrix
-from diofant.core.sympify import _sympify
-from diofant.matrices import MatrixBase
-from diofant.core import S
+from ...core.sympify import _sympify
+from .. import MatrixBase
+from ...core import S
 
 
 class MatPow(MatrixExpr):

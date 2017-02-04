@@ -151,7 +151,7 @@ def test_print_builtins():
     assert app.user_ns['a'][0]['text/plain'] == r'False'
 
     app.run_cell("init_printing(no_global=True)")
-    app.run_cell("a = format(set([Symbol('pi')]))")
+    app.run_cell("a = format({Symbol('pi')})")
     assert app.user_ns['a'][0]['text/plain'] == '{\N{GREEK SMALL LETTER PI}}'
 
     app.run_cell("init_printing(use_unicode=False)")

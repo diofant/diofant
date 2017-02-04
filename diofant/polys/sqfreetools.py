@@ -1,33 +1,17 @@
 """Square-free decomposition algorithms and related tools. """
 
-from diofant.polys.densebasic import (
-    dup_strip,
-    dup_LC, dmp_ground_LC,
-    dmp_zero_p,
-    dmp_ground,
-    dup_degree, dmp_degree,
-    dmp_raise, dmp_inject,
-    dup_convert)
-from diofant.polys.densearith import (
-    dup_neg, dmp_neg,
-    dup_sub, dmp_sub,
-    dup_mul,
-    dup_quo, dmp_quo,
-    dup_mul_ground, dmp_mul_ground)
-from diofant.polys.densetools import (
-    dup_diff, dmp_diff,
-    dup_shift, dmp_compose,
-    dup_monic, dmp_ground_monic,
-    dup_primitive, dmp_ground_primitive)
-from diofant.polys.euclidtools import (
-    dup_inner_gcd, dmp_inner_gcd,
-    dup_gcd, dmp_gcd,
-    dmp_resultant)
-from diofant.polys.galoistools import (
-    gf_sqf_list, gf_sqf_part)
-from diofant.polys.polyerrors import (
-    MultivariatePolynomialError,
-    DomainError)
+from .densebasic import (dup_strip, dup_LC, dmp_ground_LC, dmp_zero_p,
+                         dmp_ground, dup_degree, dmp_degree, dmp_raise,
+                         dmp_inject, dup_convert)
+from .densearith import (dup_neg, dmp_neg, dup_sub, dmp_sub, dup_mul,
+                         dup_quo, dmp_quo, dup_mul_ground, dmp_mul_ground)
+from .densetools import (dup_diff, dmp_diff, dup_shift, dmp_compose,
+                         dup_monic, dmp_ground_monic, dup_primitive,
+                         dmp_ground_primitive)
+from .euclidtools import (dup_inner_gcd, dmp_inner_gcd, dup_gcd, dmp_gcd,
+                          dmp_resultant)
+from .galoistools import gf_sqf_list, gf_sqf_part
+from .polyerrors import MultivariatePolynomialError, DomainError
 
 
 def dup_sqf_p(f, K):

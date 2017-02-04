@@ -1,5 +1,5 @@
-from diofant.matrices.expressions import MatrixExpr
-from diofant.core import S
+from .matexpr import MatrixExpr
+from ...core import S
 
 
 class DiagonalMatrix(MatrixExpr):

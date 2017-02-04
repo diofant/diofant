@@ -1,9 +1,8 @@
 import inspect
 from functools import partial
 
-from diofant.external import import_module
-from diofant.printing.printer import Printer
-import diofant
+from ..external import import_module
+from .printer import Printer
 
 theano = import_module('theano')
 if theano:
@@ -11,53 +10,61 @@ if theano:
     tt = theano.tensor
     from theano.sandbox import linalg as tlinalg
 
+    from .. import (Add, Mul, Abs, sign, ceiling, floor, log, exp, sqrt,
+                    cos, acos, sin, asin, tan, atan, atan2, cosh, acosh,
+                    sinh, asinh, tanh, atanh, re, im, arg, erf, gamma,
+                    loggamma, Pow, Eq, StrictGreaterThan, StrictLessThan,
+                    LessThan, GreaterThan, And, Or, Max, Min, MatAdd,
+                    HadamardProduct, Trace, Determinant, Inverse, Transpose,
+                    Basic, Piecewise)
+
     mapping = {
-        diofant.Add: tt.add,
-        diofant.Mul: tt.mul,
-        diofant.Abs: tt.abs_,
-        diofant.sign: tt.sgn,
-        diofant.ceiling: tt.ceil,
-        diofant.floor: tt.floor,
-        diofant.log: tt.log,
-        diofant.exp: tt.exp,
-        diofant.sqrt: tt.sqrt,
-        diofant.cos: tt.cos,
-        diofant.acos: tt.arccos,
-        diofant.sin: tt.sin,
-        diofant.asin: tt.arcsin,
-        diofant.tan: tt.tan,
-        diofant.atan: tt.arctan,
-        diofant.atan2: tt.arctan2,
-        diofant.cosh: tt.cosh,
-        diofant.acosh: tt.arccosh,
-        diofant.sinh: tt.sinh,
-        diofant.asinh: tt.arcsinh,
-        diofant.tanh: tt.tanh,
-        diofant.atanh: tt.arctanh,
-        diofant.re: tt.real,
-        diofant.im: tt.imag,
-        diofant.arg: tt.angle,
-        diofant.erf: tt.erf,
-        diofant.gamma: tt.gamma,
-        diofant.loggamma: tt.gammaln,
-        diofant.Pow: tt.pow,
-        diofant.Eq: tt.eq,
-        diofant.StrictGreaterThan: tt.gt,
-        diofant.StrictLessThan: tt.lt,
-        diofant.LessThan: tt.le,
-        diofant.GreaterThan: tt.ge,
-        diofant.And: tt.and_,
-        diofant.Or: tt.or_,
-        diofant.Max: tt.maximum,  # Diofant accept >2 inputs, Theano only 2
-        diofant.Min: tt.minimum,  # Diofant accept >2 inputs, Theano only 2
+        Add: tt.add,
+        Mul: tt.mul,
+        Abs: tt.abs_,
+        sign: tt.sgn,
+        ceiling: tt.ceil,
+        floor: tt.floor,
+        log: tt.log,
+        exp: tt.exp,
+        sqrt: tt.sqrt,
+        cos: tt.cos,
+        acos: tt.arccos,
+        sin: tt.sin,
+        asin: tt.arcsin,
+        tan: tt.tan,
+        atan: tt.arctan,
+        atan2: tt.arctan2,
+        cosh: tt.cosh,
+        acosh: tt.arccosh,
+        sinh: tt.sinh,
+        asinh: tt.arcsinh,
+        tanh: tt.tanh,
+        atanh: tt.arctanh,
+        re: tt.real,
+        im: tt.imag,
+        arg: tt.angle,
+        erf: tt.erf,
+        gamma: tt.gamma,
+        loggamma: tt.gammaln,
+        Pow: tt.pow,
+        Eq: tt.eq,
+        StrictGreaterThan: tt.gt,
+        StrictLessThan: tt.lt,
+        LessThan: tt.le,
+        GreaterThan: tt.ge,
+        And: tt.and_,
+        Or: tt.or_,
+        Max: tt.maximum,  # Diofant accept >2 inputs, Theano only 2
+        Min: tt.minimum,  # Diofant accept >2 inputs, Theano only 2
 
         # Matrices
-        diofant.MatAdd: tt.Elemwise(ts.add),
-        diofant.HadamardProduct: tt.Elemwise(ts.mul),
-        diofant.Trace: tlinalg.trace,
-        diofant.Determinant: tlinalg.det,
-        diofant.Inverse: tlinalg.matrix_inverse,
-        diofant.Transpose: tt.DimShuffle((False, False), [1, 0]),
+        MatAdd: tt.Elemwise(ts.add),
+        HadamardProduct: tt.Elemwise(ts.mul),
+        Trace: tlinalg.trace,
+        Determinant: tlinalg.det,
+        Inverse: tlinalg.matrix_inverse,
+        Transpose: tt.DimShuffle((False, False), [1, 0]),
     }
 
 
@@ -144,7 +151,7 @@ class TheanoPrinter(Printer):
 
     def _print_slice(self, expr, **kwargs):
         return slice(*[self._print(i, **kwargs)
-                        if isinstance(i, diofant.Basic) else i
+                        if isinstance(i, Basic) else i
                         for i in (expr.start, expr.stop, expr.step)])
 
     def _print_Pi(self, expr, **kwargs):
@@ -162,7 +169,7 @@ class TheanoPrinter(Printer):
                              np.nan)
         return tt.switch(self._print(cond, **kwargs),
                          self._print(e, **kwargs),
-                         self._print(diofant.Piecewise(*expr.args[1:]), **kwargs))
+                         self._print(Piecewise(*expr.args[1:]), **kwargs))
 
     def _print_Rational(self, expr, **kwargs):
         return tt.true_div(self._print(expr.p, **kwargs),
@@ -172,7 +179,7 @@ class TheanoPrinter(Printer):
         return expr.p
 
     def _print_factorial(self, expr, **kwargs):
-        return self._print(diofant.gamma(expr.args[0] + 1), **kwargs)
+        return self._print(gamma(expr.args[0] + 1), **kwargs)
 
     def _print_Derivative(self, deriv, **kwargs):
         rv = self._print(deriv.expr, **kwargs)

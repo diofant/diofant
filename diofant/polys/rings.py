@@ -4,27 +4,25 @@ from functools import reduce
 from operator import add, mul, lt, le, gt, ge
 from types import GeneratorType
 
-from diofant.core.expr import Expr
-from diofant.core.symbol import Symbol, symbols as _symbols
-from diofant.core.numbers import igcd, oo
-from diofant.core.sympify import CantSympify, sympify
-from diofant.core.compatibility import is_sequence
-from diofant.ntheory.multinomial import multinomial_coefficients
-from diofant.polys.monomials import MonomialOps
-from diofant.polys.orderings import lex
-from diofant.polys.heuristicgcd import heugcd
-from diofant.polys.compatibility import IPolys
-from diofant.polys.polyutils import expr_from_dict, _dict_reorder, _parallel_dict_from_expr
-from diofant.polys.polyerrors import (CoercionFailed, GeneratorsError, GeneratorsNeeded,
-                                      ExactQuotientFailed, MultivariatePolynomialError)
-from diofant.polys.domains.domainelement import DomainElement
-from diofant.polys.domains.polynomialring import PolynomialRing
-from diofant.polys.polyoptions import Domain as DomainOpt, Order as OrderOpt, build_options
-from diofant.polys.densebasic import dmp_to_dict, dmp_from_dict
-from diofant.polys.constructor import construct_domain
-from diofant.printing.defaults import DefaultPrinting
-from diofant.utilities import public
-from diofant.utilities.magic import pollute
+from ..core import Expr, Symbol, symbols as _symbols, igcd, oo, sympify
+from ..core.sympify import CantSympify
+from ..core.compatibility import is_sequence
+from ..ntheory import multinomial_coefficients
+from .monomials import MonomialOps
+from .orderings import lex
+from .heuristicgcd import heugcd
+from .compatibility import IPolys
+from .polyutils import expr_from_dict, _dict_reorder, _parallel_dict_from_expr
+from .polyerrors import (CoercionFailed, GeneratorsError, GeneratorsNeeded,
+                         ExactQuotientFailed, MultivariatePolynomialError)
+from .domains.domainelement import DomainElement
+from .domains.polynomialring import PolynomialRing
+from .polyoptions import Domain as DomainOpt, Order as OrderOpt, build_options
+from .densebasic import dmp_to_dict, dmp_from_dict
+from .constructor import construct_domain
+from ..printing.defaults import DefaultPrinting
+from ..utilities import public
+from ..utilities.magic import pollute
 
 
 @public
@@ -405,7 +403,7 @@ class PolyRing(DefaultPrinting, IPolys):
         return PolynomialRing(self)
 
     def to_field(self):
-        from diofant.polys.fields import FracField
+        from .fields import FracField
         return FracField(self.symbols, self.domain, self.order)
 
     @property

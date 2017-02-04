@@ -1,6 +1,6 @@
 """Tools for applying functions to specified parts of expressions. """
 
-from diofant.core import sympify
+from ..core import sympify
 
 
 def use(expr, func, level=0, args=(), kwargs={}):

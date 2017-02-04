@@ -1,10 +1,10 @@
 """Implementation of :class:`ExpressionDomain` class. """
 
-from diofant.polys.domains.field import Field
-from diofant.polys.domains.simpledomain import SimpleDomain
-from diofant.polys.domains.characteristiczero import CharacteristicZero
-from diofant.core import sympify, SympifyError
-from diofant.utilities import public
+from .field import Field
+from .simpledomain import SimpleDomain
+from .characteristiczero import CharacteristicZero
+from ...core import sympify, SympifyError
+from ...utilities import public
 
 
 @public
@@ -117,11 +117,11 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
             return self.ex != 0
 
         def gcd(self, other):
-            from diofant.polys import gcd
+            from .. import gcd
             return self.__class__(gcd(self.ex, self.__class__(other).ex))
 
         def lcm(self, other):
-            from diofant.polys import lcm
+            from .. import lcm
             return self.__class__(lcm(self.ex, self.__class__(other).ex))
 
     dtype = Expression

@@ -6,13 +6,13 @@ Plane
 
 """
 
-from diofant.core import S, Dummy, Symbol, Rational
-from diofant.core.compatibility import is_sequence
-from diofant.functions.elementary.trigonometric import acos, asin, sqrt
-from diofant.matrices import Matrix
-from diofant.polys.polytools import cancel
-from diofant.solvers import solve
-from diofant.utilities.misc import filldedent
+from ..core import S, Dummy, Symbol, Rational
+from ..core.compatibility import is_sequence
+from ..functions import acos, asin, sqrt
+from ..matrices import Matrix
+from ..polys import cancel
+from ..solvers import solve
+from ..utilities import filldedent
 from .entity import GeometryEntity
 from .point import Point, Point3D
 from .line3d import LinearEntity3D, Line3D, Segment3D, Ray3D
@@ -201,8 +201,8 @@ class Plane(GeometryEntity):
         Point3D(1, 1, 1)
 
         """
-        from diofant.geometry.line import LinearEntity
-        from diofant.geometry.line3d import LinearEntity3D
+        from .line import LinearEntity
+        from .line3d import LinearEntity3D
         if not isinstance(line, (LinearEntity, LinearEntity3D)):
             raise NotImplementedError('Enter a linear entity only')
         a, b = self.projection(line.p1), self.projection(line.p2)
@@ -241,7 +241,7 @@ class Plane(GeometryEntity):
         True
 
         """
-        from diofant.geometry.line3d import LinearEntity3D
+        from .line3d import LinearEntity3D
         if isinstance(l, LinearEntity3D):
             a = l.direction_ratio
             b = self.normal_vector
@@ -279,9 +279,8 @@ class Plane(GeometryEntity):
         >>> b = Plane(Point3D(2, 2, 2), normal_vector=(-1, 2, -1))
         >>> a.is_perpendicular(b)
         True
-
         """
-        from diofant.geometry.line3d import LinearEntity3D
+        from .line3d import LinearEntity3D
         if isinstance(l, LinearEntity3D):
             a = Matrix(l.direction_ratio)
             b = Matrix(self.normal_vector)
@@ -331,9 +330,8 @@ class Plane(GeometryEntity):
         >>> c = Line3D(Point3D(2, 3, 1), Point3D(1, 2, 2))
         >>> a.distance(c)
         0
-
         """
-        from diofant.geometry.line3d import LinearEntity3D
+        from .line3d import LinearEntity3D
         x, y, z = map(Dummy, 'xyz')
         if self.intersection(o) != []:
             return S.Zero
@@ -389,9 +387,8 @@ class Plane(GeometryEntity):
         >>> b = Line3D(Point3D(1, 3, 4), Point3D(2, 2, 2))
         >>> a.angle_between(b)
         -asin(sqrt(21)/6)
-
         """
-        from diofant.geometry.line3d import LinearEntity3D
+        from .line3d import LinearEntity3D
         if isinstance(o, LinearEntity3D):
             a = Matrix(self.normal_vector)
             b = Matrix(o.direction_ratio)
@@ -609,9 +606,8 @@ class Plane(GeometryEntity):
         =======
 
         Point3D
-
         """
-        from diofant import cos, sin
+        from ..functions import cos, sin
         t = t or Dummy('t')
         x, y, z = self.normal_vector
         a, b, c = self.p1.args
@@ -653,10 +649,9 @@ class Plane(GeometryEntity):
         >>> e = Plane(Point3D(2, 0, 0), normal_vector=(3, 4, -3))
         >>> d.intersection(e)
         [Line3D(Point3D(78/23, -24/23, 0), Point3D(147/23, 321/23, 23))]
-
         """
-        from diofant.geometry.line3d import LinearEntity3D
-        from diofant.geometry.line import LinearEntity
+        from .line3d import LinearEntity3D
+        from .line import LinearEntity
         if isinstance(o, (Point, Point3D)):
             if o in self:
                 return [Point3D(o)]
@@ -709,8 +704,8 @@ class Plane(GeometryEntity):
                     return [Line3D(Point3D(0, h[y], h[z]), direction_ratio=c)]
 
     def __contains__(self, o):
-        from diofant.geometry.line3d import LinearEntity3D
-        from diofant.geometry.line import LinearEntity
+        from .line3d import LinearEntity3D
+        from .line import LinearEntity
         x, y, z = map(Dummy, 'xyz')
         k = self.equation(x, y, z)
         if isinstance(o, Point):

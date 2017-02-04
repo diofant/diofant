@@ -1,13 +1,11 @@
-from diofant import pi, I
-from diofant.core.singleton import S
-from diofant.core import Dummy, sympify
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.functions import assoc_legendre
-from diofant.functions.elementary.trigonometric import sin, cos, cot
-from diofant.functions.combinatorial.factorials import factorial
-from diofant.functions.elementary.complexes import Abs
-from diofant.functions.elementary.exponential import exp
-from diofant.functions.elementary.miscellaneous import sqrt
+from ...core import pi, I, S, Dummy, sympify, Function
+from ...core.function import ArgumentIndexError
+from .polynomials import assoc_legendre
+from ..elementary.trigonometric import sin, cos, cot
+from ..combinatorial.factorials import factorial
+from ..elementary.complexes import Abs
+from ..elementary.exponential import exp
+from ..elementary.miscellaneous import sqrt
 
 _x = Dummy("dummy_for_spherical_harmonics")
 
@@ -183,7 +181,7 @@ class Ynm(Function):
 
     def _eval_rewrite_as_cos(self, n, m, theta, phi):
         # This method can be expensive due to extensive use of simplification!
-        from diofant.simplify import simplify, trigsimp
+        from ...simplify import simplify, trigsimp
         # TODO: Make sure n \in N
         # TODO: Assert |m| <= n ortherwise we should return 0
         term = simplify(self.expand(func=True))
@@ -225,7 +223,7 @@ def Ynm_c(n, m, theta, phi):
     .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
     .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
     """
-    from diofant import conjugate
+    from .. import conjugate
     return conjugate(Ynm(n, m, theta, phi))
 
 

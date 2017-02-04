@@ -12,7 +12,7 @@ from .function import (_coeff_isneg, expand_complex, expand_multinomial,
 from .logic import fuzzy_or
 from .compatibility import as_int
 from .evaluate import global_evaluate
-from diofant.utilities.iterables import sift
+from ..utilities.iterables import sift
 
 
 def integer_nthroot(y, n):
@@ -161,7 +161,7 @@ class Pow(Expr):
     def __new__(cls, b, e, evaluate=None):
         if evaluate is None:
             evaluate = global_evaluate[0]
-        from diofant.functions.elementary.exponential import exp_polar
+        from ..functions.elementary.exponential import exp_polar
 
         b = _sympify(b)
         e = _sympify(e)
@@ -184,7 +184,9 @@ class Pow(Expr):
             else:
                 # recognize base as E
                 if not e.is_Atom and b is not S.Exp1 and b.func is not exp_polar:
-                    from diofant import numer, denom, log, sign, im, factor_terms
+                    from .exprtools import factor_terms
+                    from ..functions import log, sign, im
+                    from ..simplify import numer, denom
                     c, ex = factor_terms(e, sign=False).as_coeff_Mul()
                     den = denom(ex)
                     if den.func is log and den.args[0] == b:
@@ -219,7 +221,7 @@ class Pow(Expr):
         return 4, 2, cls.__name__
 
     def _eval_power(self, other):
-        from diofant import Abs, arg, exp, floor, im, log, re, sign
+        from ..functions import Abs, arg, exp, floor, im, log, re, sign
         b, e = self.as_base_exp()
         if b is S.NaN:
             return (b**e)**other  # let __new__ handle it
@@ -312,7 +314,7 @@ class Pow(Expr):
             return self.base.is_even
 
     def _eval_is_positive(self):
-        from diofant import log
+        from ..functions import log
         if self.base == self.exp:
             if self.base.is_nonnegative:
                 return True
@@ -390,7 +392,8 @@ class Pow(Expr):
                 return True
 
     def _eval_is_extended_real(self):
-        from diofant import arg, log, Mul
+        from .mul import Mul
+        from ..functions import arg, log
 
         if self.base is S.Exp1:
             if self.exp.is_extended_real:
@@ -453,12 +456,12 @@ class Pow(Expr):
             return i.is_integer
 
     def _eval_is_complex(self):
-        from diofant import log
+        from ..functions import log
         if self.base.is_complex:
             return (log(self.base)*self.exp).is_complex
 
     def _eval_is_imaginary(self):
-        from diofant import arg, log
+        from ..functions import arg, log
 
         if self.base.is_imaginary:
             if self.exp.is_integer:
@@ -502,7 +505,8 @@ class Pow(Expr):
         return self.base.is_polar
 
     def _eval_subs(self, old, new):
-        from diofant import log, Symbol
+        from .symbol import Symbol
+        from ..functions import log
 
         def _check(ct1, ct2, old):
             """Return bool, pow where, if bool is True, then the exponent of
@@ -595,7 +599,7 @@ class Pow(Expr):
         return b, e
 
     def _eval_adjoint(self):
-        from diofant.functions.elementary.complexes import adjoint
+        from ..functions.elementary.complexes import adjoint
         i, p = self.exp.is_integer, self.base.is_positive
         if i:
             return adjoint(self.base)**self.exp
@@ -607,7 +611,7 @@ class Pow(Expr):
                 return adjoint(expanded)
 
     def _eval_conjugate(self):
-        from diofant.functions.elementary.complexes import conjugate as c
+        from ..functions.elementary.complexes import conjugate as c
         i, p = self.exp.is_integer, self.base.is_positive
         if i:
             return c(self.base)**self.exp
@@ -619,7 +623,7 @@ class Pow(Expr):
                 return c(expanded)
 
     def _eval_transpose(self):
-        from diofant.functions.elementary.complexes import transpose
+        from ..functions.elementary.complexes import transpose
         i, p = self.exp.is_integer, self.base.is_complex
         if p:
             return self.base**self.exp
@@ -844,8 +848,8 @@ class Pow(Expr):
                 # p = [x,y]; n = 3
                 # so now it's easy to get the correct result -- we get the
                 # coefficients first:
-                from diofant import multinomial_coefficients
-                from diofant.polys.polyutils import basic_from_dict
+                from ..ntheory import multinomial_coefficients
+                from ..polys.polyutils import basic_from_dict
                 expansion_dict = multinomial_coefficients(len(p), n)
                 # in our example: {(3, 0): 1, (1, 2): 3, (0, 3): 1, (2, 1): 3}
                 # and now construct the expression.
@@ -887,8 +891,8 @@ class Pow(Expr):
 
         diofant.core.expr.Expr.as_real_imag
         """
-        from diofant import arg, cos, sin
-        from diofant.polys.polytools import poly
+        from ..functions import arg, cos, sin
+        from ..polys.polytools import poly
 
         if self.exp.is_Integer:
             exp = self.exp
@@ -945,7 +949,7 @@ class Pow(Expr):
 
             return rp*cos(tp), rp*sin(tp)
         elif self.base is S.Exp1:
-            from diofant import exp
+            from ..functions import exp
             re, im = self.exp.as_real_imag()
             if deep:
                 re = re.expand(deep, **hints)
@@ -953,7 +957,7 @@ class Pow(Expr):
             c, s = cos(im), sin(im)
             return exp(re)*c, exp(re)*s
         else:
-            from diofant import re, im
+            from ..functions import re, im
             if deep:
                 hints['complex'] = False
 
@@ -966,7 +970,7 @@ class Pow(Expr):
                 return re(self), im(self)
 
     def _eval_derivative(self, s):
-        from diofant import log
+        from ..functions import log
         dbase = self.base.diff(s)
         dexp = self.exp.diff(s)
         return self * (dexp * log(self.base) + dbase * self.exp/self.base)
@@ -1136,7 +1140,9 @@ class Pow(Expr):
         return d
 
     def _eval_nseries(self, x, n, logx):
-        from diofant import exp, log, Order, powsimp, limit, floor, arg
+        from ..functions import exp, log, floor, arg
+        from ..series import Order, limit
+        from ..simplify import powsimp
         if self.base is S.Exp1:
             e_series = self.exp.nseries(x, n=n, logx=logx)
             if e_series.is_Order:
@@ -1194,7 +1200,8 @@ class Pow(Expr):
             return powsimp(pow_series, deep=True, combine='exp')
 
     def _eval_as_leading_term(self, x):
-        from diofant import exp, log, Order
+        from ..functions import exp, log
+        from ..series import Order
         if not self.exp.has(x):
             return self.func(self.base.as_leading_term(x), self.exp)
         elif self.base is S.Exp1:
@@ -1212,19 +1219,19 @@ class Pow(Expr):
             return exp(self.exp*log(self.base)).as_leading_term(x)
 
     def _eval_rewrite_as_sin(self, base, exp):
-        from diofant import sin
+        from ..functions import sin
         if self.base is S.Exp1:
             I = S.ImaginaryUnit
             return sin(I*self.exp + S.Pi/2) - I*sin(I*self.exp)
 
     def _eval_rewrite_as_cos(self, base, exp):
-        from diofant import cos
+        from ..functions import cos
         if self.base is S.Exp1:
             I = S.ImaginaryUnit
             return cos(I*self.exp) + I*cos(I*self.exp + S.Pi/2)
 
     def _eval_rewrite_as_tanh(self, base, exp):
-        from diofant import tanh
+        from ..functions import tanh
         if self.base is S.Exp1:
             return (1 + tanh(self.exp/2))/(1 - tanh(self.exp/2))
 

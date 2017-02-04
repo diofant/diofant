@@ -5,24 +5,22 @@ from math import log as mathlog
 from mpmath import mpf, mpc, findroot, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
-from diofant.core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
-                          sympify, Rational, Dummy)
-from diofant.core.evaluate import global_evaluate
-from diofant.core.cache import cacheit
-from diofant.core.function import AppliedUndef
-from diofant.functions.elementary.miscellaneous import root as _root
-from diofant.polys.polytools import Poly, PurePoly, factor
-from diofant.polys.rationaltools import together
-from diofant.polys.polyfuncs import symmetrize, viete
-from diofant.polys.rootisolation import (dup_isolate_complex_roots_sqf,
-                                         dup_isolate_real_roots_sqf)
-from diofant.polys.polyroots import (roots_linear, roots_quadratic,
-                                     roots_binomial, preprocess_roots, roots)
-from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                      GeneratorsNeeded, PolynomialError,
-                                      DomainError)
-from diofant.polys.domains import QQ
-from diofant.utilities import lambdify, public
+from ..core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
+                    sympify, Rational, Dummy, cacheit)
+from ..core.evaluate import global_evaluate
+from ..core.function import AppliedUndef
+from ..functions import root as _root
+from .polytools import Poly, PurePoly, factor
+from .rationaltools import together
+from .polyfuncs import symmetrize, viete
+from .rootisolation import (dup_isolate_complex_roots_sqf,
+                            dup_isolate_real_roots_sqf)
+from .polyroots import (roots_linear, roots_quadratic, roots_binomial,
+                        preprocess_roots, roots)
+from .polyerrors import (MultivariatePolynomialError, GeneratorsNeeded,
+                         PolynomialError, DomainError)
+from .domains import QQ
+from ..utilities import lambdify, public
 
 
 def _ispow2(i):
@@ -225,7 +223,7 @@ class RootOf(Expr):
 
     @classmethod
     def _separate_imaginary_from_complex(cls, complexes):
-        from diofant.utilities.iterables import sift
+        from ..utilities import sift
 
         def is_imag(c):
             """

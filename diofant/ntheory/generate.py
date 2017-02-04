@@ -10,7 +10,7 @@ from bisect import bisect
 from array import array as _array
 
 from .primetest import isprime
-from diofant.core.compatibility import as_int
+from ..core.compatibility import as_int
 
 
 def _arange(a, b):
@@ -115,7 +115,7 @@ class Sieve:
         >>> print([i for i in sieve.primerange(7, 18)])
         [7, 11, 13, 17]
         """
-        from diofant.functions.elementary.integers import ceiling
+        from ..functions import ceiling
 
         # wrapping ceiling in int will raise an error if there was a problem
         # determining whether the expression was exactly an integer or not
@@ -151,7 +151,7 @@ class Sieve:
         >>> sieve.search(23)
         (9, 9)
         """
-        from diofant.functions.elementary.integers import ceiling
+        from ..functions import ceiling
 
         # wrapping ceiling in int will raise an error if there was a problem
         # determining whether the expression was exactly an integer or not
@@ -330,7 +330,7 @@ def prevprime(n):
     nextprime : Return the ith prime greater than n
     primerange : Generates all primes in a given range
     """
-    from diofant.functions.elementary.integers import ceiling
+    from ..functions import ceiling
 
     # wrapping ceiling in int will raise an error if there was a problem
     # determining whether the expression was exactly an integer or not
@@ -413,7 +413,7 @@ def primerange(a, b):
     Sieve.primerange : return range from already computed primes
                        or extend the sieve to contain the requested range.
     """
-    from diofant.functions.elementary.integers import ceiling
+    from ..functions import ceiling
 
     # if we already have the range, return it
     if b <= sieve._list[-1]:

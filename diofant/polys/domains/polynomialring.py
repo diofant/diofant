@@ -1,9 +1,9 @@
 """Implementation of :class:`PolynomialRing` class. """
 
-from diofant.polys.domains.ring import Ring
-from diofant.polys.domains.compositedomain import CompositeDomain
-from diofant.polys.polyerrors import CoercionFailed, GeneratorsError
-from diofant.utilities import public
+from .ring import Ring
+from .compositedomain import CompositeDomain
+from ..polyerrors import CoercionFailed, GeneratorsError
+from ...utilities import public
 
 
 @public
@@ -16,7 +16,7 @@ class PolynomialRing(Ring, CompositeDomain):
     has_assoc_Field = True
 
     def __init__(self, domain_or_ring, symbols=None, order=None):
-        from diofant.polys.rings import PolyRing
+        from ..rings import PolyRing
 
         if isinstance(domain_or_ring, PolyRing) and symbols is None and order is None:
             ring = domain_or_ring

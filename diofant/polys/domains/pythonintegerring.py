@@ -1,11 +1,11 @@
 """Implementaton of :class:`PythonIntegerRing` class. """
 
-from diofant.polys.domains.integerring import IntegerRing
-from diofant.polys.domains.groundtypes import (
-    PythonInteger, DiofantInteger, python_sqrt,
-    python_factorial, python_gcdex, python_gcd, python_lcm)
-from diofant.polys.polyerrors import CoercionFailed
-from diofant.utilities import public
+from .integerring import IntegerRing
+from .groundtypes import (PythonInteger, DiofantInteger, python_sqrt,
+                          python_factorial, python_gcdex, python_gcd,
+                          python_lcm)
+from ..polyerrors import CoercionFailed
+from ...utilities import public
 
 
 @public

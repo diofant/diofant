@@ -1,28 +1,20 @@
 from itertools import permutations
 from functools import reduce
 
-from diofant.core.add import Add
-from diofant.core.basic import Basic
-from diofant.core.mul import Mul
-from diofant.core.symbol import Wild, Dummy
-from diofant.core.basic import sympify
-from diofant.core.numbers import Rational, pi
-from diofant.core.relational import Eq
-from diofant.core.singleton import S
-from diofant.functions import exp, sin, cos, tan, cot, asin, atan
-from diofant.functions import log, sinh, cosh, tanh, coth, asinh, acosh
-from diofant.functions import sqrt, erf, erfi, li, Ei
-from diofant.functions.elementary.exponential import LambertW
-from diofant.functions.elementary.piecewise import Piecewise
-from diofant.logic.boolalg import And
-from diofant.utilities.iterables import uniq
-from diofant.polys import quo, gcd, lcm, factor, cancel, PolynomialError
-from diofant.polys.monomials import itermonomials
-from diofant.polys.polyroots import root_factors
-from diofant.polys.rings import PolyRing
-from diofant.polys.solvers import solve_lin_sys
-from diofant.polys.constructor import construct_domain
-from diofant.core.compatibility import ordered
+from ..core import (Add, Basic, Mul, Wild, Dummy, sympify, Rational, pi,
+                    Eq, S)
+from ..functions import (exp, sin, cos, tan, cot, asin, atan,
+                         log, sinh, cosh, tanh, coth, asinh, acosh,
+                         sqrt, erf, erfi, li, Ei, LambertW, Piecewise)
+from ..logic import And
+from ..utilities.iterables import uniq
+from ..polys import quo, gcd, lcm, factor, cancel, PolynomialError
+from ..polys.monomials import itermonomials
+from ..polys.polyroots import root_factors
+from ..polys.rings import PolyRing
+from ..polys.solvers import solve_lin_sys
+from ..polys.constructor import construct_domain
+from ..core.compatibility import ordered
 
 
 def components(f, x):
@@ -114,7 +106,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     diofant.integrals.heurisch.heurisch
     """
-    from diofant.solvers.solvers import solve, denoms
+    from ..solvers.solvers import solve, denoms
     f = sympify(f)
     if x not in f.free_symbols:
         return f*x

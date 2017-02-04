@@ -1,10 +1,10 @@
 """Gosper's algorithm for hypergeometric summation. """
 
-from diofant.core import S, Dummy, symbols, Integer
-from diofant.core.compatibility import is_sequence
-from diofant.polys import Poly, parallel_poly_from_expr, factor
-from diofant.solvers import solve
-from diofant.simplify import hypersimp
+from ..core import S, Dummy, symbols, Integer
+from ..core.compatibility import is_sequence
+from ..polys import Poly, parallel_poly_from_expr, factor
+from ..solvers import solve
+from ..simplify import hypersimp
 
 
 def gosper_normal(f, g, n, polys=True):

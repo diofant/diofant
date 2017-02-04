@@ -104,8 +104,8 @@ See the appropriate docstrings for a detailed explanation of the output.
 #      - Idx with stepsize != 1
 #      - Idx with step determined by function call
 
-from diofant.core import Expr, Tuple, Dummy, Symbol, sympify, S
-from diofant.core.compatibility import is_sequence, NotIterable
+from ..core import Expr, Tuple, Dummy, Symbol, sympify, S
+from ..core.compatibility import is_sequence, NotIterable
 
 
 class IndexException(Exception):
@@ -131,7 +131,7 @@ class Indexed(Expr):
     is_commutative = True
 
     def __new__(cls, base, *args, **kw_args):
-        from diofant.utilities.misc import filldedent
+        from ..utilities import filldedent
 
         if not args:
             raise IndexException("Indexed needs at least one index.")
@@ -221,7 +221,7 @@ class Indexed(Expr):
         >>> B[i, j].shape
         (m, m)
         """
-        from diofant.utilities.misc import filldedent
+        from ..utilities import filldedent
 
         if self.base.shape:
             return self.base.shape
@@ -483,7 +483,7 @@ class Idx(Expr):
     is_integer = True
 
     def __new__(cls, label, range=None, **kw_args):
-        from diofant.utilities.misc import filldedent
+        from ..utilities import filldedent
 
         if isinstance(label, str):
             label = Symbol(label, integer=True)

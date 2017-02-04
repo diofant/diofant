@@ -1,18 +1,17 @@
 """Functions for generating interesting polynomials, e.g. for benchmarking. """
 
-from diofant.core import Add, Mul, Symbol, sympify, Dummy, symbols
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.core.singleton import S
-from diofant.polys.polytools import Poly, PurePoly
-from diofant.polys.polyutils import _analyze_gens
-from diofant.polys.polyclasses import DMP
-from diofant.polys.densebasic import (dmp_zero, dmp_one, dmp_ground,
-                                      dup_from_raw_dict, dmp_raise, dup_random)
-from diofant.polys.densearith import dmp_add_term, dmp_neg, dmp_mul, dmp_sqr
-from diofant.polys.factortools import dup_zz_cyclotomic_poly
-from diofant.polys.domains import ZZ
-from diofant.ntheory import nextprime
-from diofant.utilities import subsets, public
+from ..core import Add, Mul, Symbol, sympify, Dummy, symbols, S
+from ..functions import sqrt
+from .polytools import Poly, PurePoly
+from .polyutils import _analyze_gens
+from .polyclasses import DMP
+from .densebasic import (dmp_zero, dmp_one, dmp_ground, dup_from_raw_dict,
+                         dmp_raise, dup_random)
+from .densearith import dmp_add_term, dmp_neg, dmp_mul, dmp_sqr
+from .factortools import dup_zz_cyclotomic_poly
+from .domains import ZZ
+from ..ntheory import nextprime
+from ..utilities import subsets, public
 
 
 @public
@@ -249,7 +248,7 @@ def dmp_fateman_poly_F_3(n, K):
 
 # A few useful polynomials from Wang's paper ('78).
 
-from diofant.polys.rings import ring
+from .rings import ring
 
 
 def _f_0():

@@ -7,19 +7,17 @@ import re
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from diofant.core import S, Add, Symbol
-from diofant.core.function import _coeff_isneg
-from diofant.core.sympify import SympifyError
-from diofant.core.alphabets import greeks
-from diofant.core.operations import AssocOp
-from diofant.core.relational import Relational
-from diofant.logic.boolalg import true
-# diofant.printing imports
+from ..core import S, Add, Symbol, SympifyError
+from ..core.function import _coeff_isneg
+from ..core.alphabets import greeks
+from ..core.operations import AssocOp
+from ..core.relational import Relational
+from ..logic import true
 from .printer import Printer
 from .conventions import split_super_sub, requires_partial
 from .precedence import precedence, PRECEDENCE
-from diofant.core.compatibility import default_sort_key
-from diofant.utilities.iterables import has_variety
+from ..core.compatibility import default_sort_key
+from ..utilities import has_variety
 
 # Hand-picked functions which can be used directly in both LaTeX and MathJax
 # Complete list at http://www.mathjax.org/docs/1.1/tex.html#supported-latex-commands
@@ -203,7 +201,9 @@ class LatexPrinter(Printer):
         specifies that this expr is the last to appear in a Mul.
         ``first=True`` specifies that this expr is the first to appear in a Mul.
         """
-        from diofant import Integral, Piecewise, Product, Sum
+        from ..functions import Piecewise
+        from ..concrete import Product, Sum
+        from ..integrals import Integral
 
         if expr.is_Add:
             return True
@@ -276,7 +276,7 @@ class LatexPrinter(Printer):
         return tex
 
     def _print_Cycle(self, expr):
-        from diofant.combinatorics.permutations import Permutation, Cycle
+        from ..combinatorics import Permutation, Cycle
         if not expr or (isinstance(expr, Permutation) and not expr.list()):
             return r"\left( \right)"
         expr_perm = Permutation(expr).cyclic_form
@@ -319,7 +319,7 @@ class LatexPrinter(Printer):
         else:
             tex = ""
 
-        from diofant.simplify import fraction
+        from ..simplify import fraction
         numer, denom = fraction(expr, exact=True)
         separator = self._settings['mul_symbol_latex']
         numbersep = self._settings['mul_symbol_latex_numbers']
@@ -478,7 +478,7 @@ class LatexPrinter(Printer):
         return tex
 
     def _print_BasisDependent(self, expr):
-        from diofant.vector import Vector
+        from ..vector import Vector
 
         o1 = []
         if expr == expr.zero:
@@ -777,7 +777,7 @@ class LatexPrinter(Printer):
         return self._do_exponent(tex, exp)
 
     def _print_Not(self, e):
-        from diofant import Equivalent, Implies
+        from ..logic import Equivalent, Implies
         if isinstance(e.args[0], Equivalent):
             return self._print_Equivalent(e.args[0], r"\not\equiv")
         if isinstance(e.args[0], Implies):
@@ -1340,7 +1340,7 @@ class LatexPrinter(Printer):
 
     def _print_Transpose(self, expr):
         mat = expr.arg
-        from diofant.matrices import MatrixSymbol
+        from ..matrices import MatrixSymbol
         if not isinstance(mat, MatrixSymbol):
             return r"\left(%s\right)^T" % self._print(mat)
         else:
@@ -1348,7 +1348,7 @@ class LatexPrinter(Printer):
 
     def _print_Adjoint(self, expr):
         mat = expr.arg
-        from diofant.matrices import MatrixSymbol
+        from ..matrices import MatrixSymbol
         if not isinstance(mat, MatrixSymbol):
             return r"\left(%s\right)^\dag" % self._print(mat)
         else:
@@ -1360,7 +1360,8 @@ class LatexPrinter(Printer):
         return tex
 
     def _print_MatMul(self, expr):
-        from diofant import Add, MatAdd, HadamardProduct
+        from ..core import Add
+        from ..matrices import MatAdd, HadamardProduct
 
         def parens(x):
             if isinstance(x, (Add, MatAdd, HadamardProduct)):
@@ -1369,7 +1370,8 @@ class LatexPrinter(Printer):
         return ' '.join(map(parens, expr.args))
 
     def _print_HadamardProduct(self, expr):
-        from diofant import Add, MatAdd, MatMul
+        from ..core import Add
+        from ..matrices import MatAdd, MatMul
 
         def parens(x):
             if isinstance(x, (Add, MatAdd, MatMul)):
@@ -1379,7 +1381,7 @@ class LatexPrinter(Printer):
 
     def _print_MatPow(self, expr):
         base, exp = expr.base, expr.exp
-        from diofant.matrices import MatrixSymbol
+        from ..matrices import MatrixSymbol
         if not isinstance(base, MatrixSymbol):
             return r"\left(%s\right)^{%s}" % (self._print(base), self._print(exp))
         else:

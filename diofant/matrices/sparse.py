@@ -2,12 +2,11 @@ import copy
 from collections import defaultdict
 import collections
 
-from diofant.core.containers import Dict
-from diofant.core.compatibility import is_sequence, as_int
-from diofant.core.logic import fuzzy_and
-from diofant.core.singleton import S
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.utilities.iterables import uniq
+from ..core import Dict, S
+from ..core.compatibility import is_sequence, as_int
+from ..core.logic import fuzzy_and
+from ..functions import sqrt
+from ..utilities.iterables import uniq
 from .matrices import MatrixBase, ShapeError, a2idx
 
 
@@ -17,7 +16,7 @@ class SparseMatrixBase(MatrixBase):
     """
 
     def __init__(self, *args):
-        from diofant.matrices import Matrix
+        from . import Matrix
 
         if len(args) == 1 and isinstance(args[0], SparseMatrixBase):
             self.rows = args[0].rows
@@ -889,7 +888,7 @@ class SparseMatrixBase(MatrixBase):
         True
         """
 
-        from diofant.core.numbers import nan, oo
+        from ..core import nan, oo
         if not self.is_symmetric():
             raise ValueError('Cholesky decomposition applies only to '
                 'symmetric matrices.')
@@ -928,7 +927,7 @@ class SparseMatrixBase(MatrixBase):
         True
 
         """
-        from diofant.core.numbers import nan, oo
+        from ..core import nan, oo
         if not self.is_symmetric():
             raise ValueError('LDL decomposition applies only to '
                 'symmetric matrices.')
@@ -1444,7 +1443,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         return A
 
     def copyin_list(self, key, value):
-        from diofant.matrices import Matrix
+        from . import Matrix
 
         if not is_sequence(value):
             raise TypeError("`value` must be of type list or tuple.")

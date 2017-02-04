@@ -1,12 +1,12 @@
 """Implementation of :class:`RealField` class. """
 
-from diofant.polys.domains.field import Field
-from diofant.polys.domains.simpledomain import SimpleDomain
-from diofant.polys.domains.characteristiczero import CharacteristicZero
-from diofant.polys.domains.mpelements import MPContext
-from diofant.polys.polyerrors import DomainError, CoercionFailed
-from diofant.core.numbers import Float
-from diofant.utilities import public
+from .field import Field
+from .simpledomain import SimpleDomain
+from .characteristiczero import CharacteristicZero
+from .mpelements import MPContext
+from ..polyerrors import DomainError, CoercionFailed
+from ...core import Float
+from ...utilities import public
 
 
 @public
@@ -103,7 +103,7 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
 
     def get_exact(self):
         """Returns an exact domain associated with ``self``. """
-        from diofant.polys.domains import QQ
+        from . import QQ
         return QQ
 
     def gcd(self, a, b):

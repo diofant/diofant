@@ -3,14 +3,14 @@ from operator import add
 
 from strategies import condition, exhaust, do_one
 
-from diofant.core import Add, sympify, Expr
-from diofant.core.logic import _fuzzy_group
-from diofant.functions import adjoint
-from diofant.matrices.matrices import MatrixBase
-from diofant.matrices.expressions.transpose import transpose
-from diofant.core.strategies import rm_id, unpack, flatten, sort, glom
-from diofant.matrices.expressions.matexpr import MatrixExpr, ShapeError, ZeroMatrix
-from diofant.utilities import default_sort_key, sift
+from ...core import Add, sympify, Expr
+from ...core.logic import _fuzzy_group
+from ...functions import adjoint
+from ..matrices import MatrixBase
+from .transpose import transpose
+from ...core.strategies import rm_id, unpack, flatten, sort, glom
+from .matexpr import MatrixExpr, ShapeError, ZeroMatrix
+from ...utilities import default_sort_key, sift
 
 
 class MatAdd(MatrixExpr):

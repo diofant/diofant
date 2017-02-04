@@ -1,6 +1,5 @@
 import keyword as kw
 
-import diofant
 from .repr import ReprPrinter
 from .str import StrPrinter
 
@@ -26,6 +25,7 @@ class PythonPrinter(ReprPrinter, StrPrinter):
             setattr(PythonPrinter, f_name, f)
 
     def _print_Function(self, expr):
+        import diofant
         func = expr.func.__name__
         if not hasattr(diofant, func) and func not in self.functions:
             self.functions.append(func)
@@ -43,6 +43,7 @@ def python(expr, **settings):
     """Return Python interpretation of passed expression
     (can be passed to the exec() function without any modifications)
     """
+    from ..core import Symbol, Function
 
     printer = PythonPrinter(settings)
     exprp = printer.doprint(expr)
@@ -58,8 +59,7 @@ def python(expr, **settings):
                 newsymbolname += "_"
                 if (newsymbolname not in printer.symbols and
                         newsymbolname not in printer.functions):
-                    renamings[diofant.Symbol(
-                        symbolname)] = diofant.Symbol(newsymbolname)
+                    renamings[Symbol(symbolname)] = Symbol(newsymbolname)
                     break
         result += newsymbolname + ' = Symbol(\'' + symbolname + '\')\n'
 
@@ -71,8 +71,7 @@ def python(expr, **settings):
                 newfunctionname += "_"
                 if (newfunctionname not in printer.symbols and
                         newfunctionname not in printer.functions):
-                    renamings[diofant.Function(
-                        functionname)] = diofant.Function(newfunctionname)
+                    renamings[Function(functionname)] = Function(newfunctionname)
                     break
         result += newfunctionname + ' = Function(\'' + functionname + '\')\n'
 

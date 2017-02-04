@@ -1,8 +1,8 @@
 """Inference in propositional logic"""
 
-from diofant.logic.boolalg import And, Not, conjuncts, to_cnf
-from diofant.core.compatibility import ordered
-from diofant.core.sympify import sympify
+from .boolalg import And, Not, conjuncts, to_cnf
+from ..core.compatibility import ordered
+from ..core import sympify
 
 
 def literal_symbol(literal):
@@ -74,10 +74,10 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     """
     expr = to_cnf(expr)
     if algorithm == "dpll":
-        from diofant.logic.algorithms.dpll import dpll_satisfiable
+        from .algorithms.dpll import dpll_satisfiable
         return dpll_satisfiable(expr)
     elif algorithm == "dpll2":
-        from diofant.logic.algorithms.dpll2 import dpll_satisfiable
+        from .algorithms.dpll2 import dpll_satisfiable
         return dpll_satisfiable(expr, all_models)
     else:  # pragma: no cover
         raise NotImplementedError
@@ -143,8 +143,8 @@ def pl_true(expr, model={}, deep=False):
     False
     """
 
-    from diofant.core.symbol import Symbol
-    from diofant.logic.boolalg import BooleanFunction
+    from ..core import Symbol
+    from .boolalg import BooleanFunction
     boolean = (True, False)
 
     def _validate(expr):

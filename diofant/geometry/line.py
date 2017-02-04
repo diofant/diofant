@@ -6,24 +6,19 @@ LinearEntity
 Line
 Ray
 Segment
-
 """
 
-from diofant.core import S, sympify, Dummy
-from diofant.core.exprtools import factor_terms
-from diofant.core.relational import Eq
-from diofant.functions.elementary.trigonometric import (acos,
-                                                        _pi_coeff as pi_coeff,
-                                                        sqrt, tan)
-from diofant.functions.elementary.piecewise import Piecewise
-from diofant.logic.boolalg import And
-from diofant.simplify.simplify import simplify
-from diofant.solvers import solve
-from diofant.geometry.exceptions import GeometryError
+from ..core import S, sympify, Dummy, factor_terms, Eq
+from ..functions import acos, sqrt, tan, Piecewise
+from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
+from ..logic import And
+from ..simplify import simplify
+from ..solvers import solve
+from .exceptions import GeometryError
 from .entity import GeometryEntity, GeometrySet
 from .point import Point
 from .util import _symbol
-from diofant.core.compatibility import is_sequence
+from ..core.compatibility import is_sequence
 
 # TODO: this should be placed elsewhere and reused in other modules
 
@@ -1248,8 +1243,8 @@ class Ray(LinearEntity):
         if pt is not None and angle is None:
             try:
                 p2 = Point(pt)
-            except NotImplementedError:
-                from diofant.utilities.misc import filldedent
+            except ValueError:
+                from ...utilities import filldedent
                 raise ValueError(filldedent('''
                     The 2nd argument was not a valid Point; if
                     it was meant to be an angle it should be

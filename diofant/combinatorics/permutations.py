@@ -4,12 +4,12 @@ from functools import reduce
 
 from mpmath.libmp.libintmath import ifac
 
-from diofant.core import Basic
-from diofant.core.compatibility import is_sequence
-from diofant.utilities.iterables import (flatten, has_variety, minlex,
-                                         has_dups, runs)
-from diofant.polys.polytools import lcm
-from diofant.matrices import zeros
+from ..core import Basic
+from ..core.compatibility import is_sequence
+from ..utilities import flatten, has_variety, has_dups
+from ..utilities.iterables import minlex, runs
+from ..polys import lcm
+from ..matrices import zeros
 
 
 def _af_rmul(a, b):

@@ -1,14 +1,17 @@
-from diofant import S, pi, I, Rational, Wild, cacheit, sympify, Integer
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.core.power import Pow
-from diofant.functions.combinatorial.factorials import factorial
-from diofant.functions.elementary.exponential import exp
-from diofant.functions.elementary.trigonometric import sin, cos, csc, cot
-from diofant.functions.elementary.complexes import Abs
-from diofant.functions.elementary.miscellaneous import sqrt, root
-from diofant.functions.elementary.complexes import re, im
-from diofant.functions.special.gamma_functions import gamma
-from diofant.functions.special.hyper import hyper
+from mpmath import besseljzero, mp, workprec
+from mpmath.libmp.libmpf import dps_to_prec
+
+from ...core import (S, pi, I, Rational, Wild, cacheit, sympify, Integer,
+                     Function, Pow, Expr, Add)
+from ...core.function import ArgumentIndexError
+from ..combinatorial.factorials import factorial
+from ..elementary.exponential import exp
+from ..elementary.trigonometric import sin, cos, csc, cot
+from ..elementary.complexes import Abs
+from ..elementary.miscellaneous import sqrt, root
+from ..elementary.complexes import re, im
+from .gamma_functions import gamma
+from .hyper import hyper
 
 # TODO
 # o Scorer functions G1 and G2
@@ -74,7 +77,7 @@ class BesselBase(Function):
         return self
 
     def _eval_simplify(self, ratio, measure):
-        from diofant.simplify.simplify import besselsimp
+        from ...simplify import besselsimp
         return besselsimp(self)
 
 
@@ -170,7 +173,7 @@ class besselj(BesselBase):
                 return I**(nu)*besseli(nu, newz)
 
         # branch handling:
-        from diofant import unpolarify, exp
+        from .. import unpolarify
         if nu.is_integer:
             newz = unpolarify(z)
             if newz != z:
@@ -184,7 +187,7 @@ class besselj(BesselBase):
             return besselj(nnu, z)
 
     def _eval_rewrite_as_besseli(self, nu, z):
-        from diofant import polar_lift, exp
+        from .. import polar_lift
         return exp(I*pi*nu/2)*besseli(nu, polar_lift(-I)*z)
 
     def _eval_rewrite_as_bessely(self, nu, z):
@@ -339,7 +342,7 @@ class besseli(BesselBase):
                 return I**(-nu)*besselj(nu, -newz)
 
         # branch handling:
-        from diofant import unpolarify, exp
+        from .. import unpolarify
         if nu.is_integer:
             newz = unpolarify(z)
             if newz != z:
@@ -353,7 +356,7 @@ class besseli(BesselBase):
             return besseli(nnu, z)
 
     def _eval_rewrite_as_besselj(self, nu, z):
-        from diofant import polar_lift, exp
+        from .. import polar_lift
         return exp(-I*pi*nu/2)*besselj(nu, polar_lift(I)*z)
 
     def _eval_rewrite_as_bessely(self, nu, z):
@@ -536,7 +539,7 @@ class hankel2(BesselBase):
             return hankel1(self.order.conjugate(), z.conjugate())
 
 
-from diofant.polys.orthopolys import spherical_bessel_fn as fn
+from ...polys.orthopolys import spherical_bessel_fn as fn
 
 
 class SphericalBesselBase(BesselBase):
@@ -709,9 +712,6 @@ def jn_zeros(n, k, method="diofant", dps=15):
     from math import pi
 
     if method == "diofant":
-        from mpmath import besseljzero
-        from mpmath.libmp.libmpf import dps_to_prec
-        from diofant import Expr
         prec = dps_to_prec(dps)
         return [Expr._from_mpmath(besseljzero(sympify(n + 0.5)._to_mpmath(prec),
                                               int(l)), prec)
@@ -1130,7 +1130,8 @@ class _airyais(Function):
         return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order, Add, combsimp
+        from ...simplify import combsimp
+        from ...series import Order
         point = args0[0]
 
         if point is S.Infinity:
@@ -1158,7 +1159,8 @@ class _airybis(Function):
         return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order, Add, combsimp
+        from ...simplify import combsimp
+        from ...series import Order
         point = args0[0]
 
         if point is S.Infinity:
@@ -1274,8 +1276,6 @@ class airyaiprime(AiryBase):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_evalf(self, prec):
-        from mpmath import mp, workprec
-        from diofant import Expr
         z = self.args[0]._to_mpmath(prec)
         with workprec(prec):
             res = mp.airyai(z, derivative=1)
@@ -1427,8 +1427,6 @@ class airybiprime(AiryBase):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_evalf(self, prec):
-        from mpmath import mp, workprec
-        from diofant import Expr
         z = self.args[0]._to_mpmath(prec)
         with workprec(prec):
             res = mp.airybi(z, derivative=1)

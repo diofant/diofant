@@ -30,7 +30,7 @@ class Add(AssocOp):
         diofant.core.mul.Mul.flatten
 
         """
-        from diofant.series.order import Order
+        from ..series.order import Order
 
         rv = None
         if len(seq) == 2:
@@ -325,7 +325,7 @@ class Add(AssocOp):
         Returns lhs - rhs, but treats arguments like symbols, so things like
         oo - oo return 0, instead of a nan.
         """
-        from diofant import oo, I, expand_mul
+        from . import oo, I, expand_mul
         if lhs == oo and rhs == oo or lhs == oo*I and rhs == oo*I:
             return S.Zero
         return expand_mul(lhs - rhs)
@@ -584,7 +584,7 @@ class Add(AssocOp):
         >>> (x + x**2).extract_leading_order(x)
         ((x, O(x)),)
         """
-        from diofant import Order
+        from ..series import Order
         lst = []
         symbols = list(symbols if is_sequence(symbols) else [symbols])
         point = [0]*len(symbols)
@@ -628,7 +628,7 @@ class Add(AssocOp):
         return self.func(*re_part), self.func(*im_part)
 
     def _eval_as_leading_term(self, x):
-        from diofant import factor_terms
+        from . import factor_terms
 
         expr = self.func(*[t.as_leading_term(x) for t in self.args]).removeO()
         if not expr:

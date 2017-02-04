@@ -12,9 +12,9 @@ refactoring.
 
 from functools import reduce
 
-from diofant.core.function import Function
-from diofant.functions import Piecewise
-from diofant.tensor.indexed import Idx, Indexed
+from ..core import Function
+from ..functions import Piecewise
+from .indexed import Idx, Indexed
 
 
 class IndexConformanceException(Exception):

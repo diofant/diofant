@@ -1,14 +1,10 @@
-from diofant.concrete.expr_with_limits import AddWithLimits
-from diofant.concrete.expr_with_intlimits import ExprWithIntLimits
-from diofant.core.function import Derivative, Function
-from diofant.core.relational import Eq
-from diofant.core.singleton import S
-from diofant.core.symbol import (Dummy, Wild)
-from diofant.concrete.gosper import gosper_sum
-from diofant.functions.elementary.piecewise import Piecewise
-from diofant.polys import apart, PolynomialError
-from diofant.solvers import solve
-from diofant.core.numbers import Integer
+from .expr_with_limits import AddWithLimits
+from .expr_with_intlimits import ExprWithIntLimits
+from ..core import Derivative, Function, Eq, S, Dummy, Wild, Integer
+from .gosper import gosper_sum
+from ..functions import Piecewise
+from ..polys import apart, PolynomialError
+from ..solvers import solve
 
 
 class Sum(AddWithLimits, ExprWithIntLimits):
@@ -214,7 +210,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             return NotImplementedError('Lower and upper bound expected.')
 
     def _eval_simplify(self, ratio, measure):
-        from diofant.simplify.simplify import sum_simplify
+        from ..simplify.simplify import sum_simplify
         return sum_simplify(self)
 
     def euler_maclaurin(self, m=0, n=0, eps=0, eval_integral=True):
@@ -260,8 +256,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         With a nonzero eps specified, the summation is ended
         as soon as the remainder term is less than the epsilon.
         """
-        from diofant.functions import bernoulli, factorial
-        from diofant.integrals import Integral
+        from ..functions import bernoulli, factorial
+        from ..integrals import Integral
 
         m = int(m)
         n = int(n)
@@ -428,9 +424,10 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
         """
-        from diofant import expand_func, gamma, factor, Mul
-        from diofant.polys import together
-        from diofant.simplify import collect
+        from ..core import expand_func, Mul
+        from ..functions import gamma
+        from ..polys import together, factor
+        from ..simplify import collect
 
         if len(self.variables) > 1:
             raise ValueError
@@ -597,8 +594,8 @@ def telescopic(L, R, limits):
 
 
 def eval_sum(f, limits):
-    from diofant.concrete.delta import deltasummation, _has_simple_delta
-    from diofant.functions import KroneckerDelta
+    from .delta import deltasummation, _has_simple_delta
+    from ..functions import KroneckerDelta
 
     (i, a, b) = limits
     if f is S.Zero:
@@ -630,7 +627,7 @@ def eval_sum(f, limits):
 
 
 def eval_sum_direct(expr, limits):
-    from diofant.core import Add
+    from ..core import Add
     (i, a, b) = limits
 
     dif = b - a
@@ -638,7 +635,7 @@ def eval_sum_direct(expr, limits):
 
 
 def eval_sum_symbolic(f, limits):
-    from diofant.functions import harmonic, bernoulli
+    from ..functions import harmonic, bernoulli
 
     f_orig = f
     (i, a, b) = limits
@@ -725,9 +722,9 @@ def eval_sum_symbolic(f, limits):
 
 def _eval_sum_hyper(f, i, a):
     """ Returns (res, cond). Sums from a to oo. """
-    from diofant.functions import hyper
-    from diofant.simplify import hyperexpand, hypersimp, fraction, simplify
-    from diofant.polys.polytools import Poly, factor
+    from ..functions import hyper
+    from ..simplify import hyperexpand, hypersimp, fraction, simplify
+    from ..polys import Poly, factor
 
     if a != 0:
         return _eval_sum_hyper(f.subs(i, i + a), i, 0)
@@ -779,7 +776,7 @@ def _eval_sum_hyper(f, i, a):
 
 
 def eval_sum_hyper(f, i_a_b):
-    from diofant.logic.boolalg import And
+    from ..logic import And
 
     i, a, b = i_a_b
 

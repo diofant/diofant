@@ -1,11 +1,10 @@
 """Groebner bases algorithms. """
 
-from diofant.polys.monomials import (monomial_mul, monomial_lcm,
-                                     monomial_divides, term_div)
-from diofant.polys.orderings import lex
-from diofant.polys.polyerrors import DomainError
-from diofant.polys.polyconfig import query
-from diofant.core.symbol import Dummy
+from .monomials import monomial_mul, monomial_lcm, monomial_divides, term_div
+from .orderings import lex
+from .polyerrors import DomainError
+from .polyconfig import query
+from ..core import Dummy
 
 
 def groebner(seq, ring, method=None):

@@ -3,18 +3,17 @@
 from functools import reduce
 from operator import add, mul, lt, le, gt, ge
 
-from diofant.core.expr import Expr
-from diofant.core.symbol import Symbol
-from diofant.core.sympify import CantSympify, sympify
-from diofant.polys.rings import PolyElement
-from diofant.polys.orderings import lex
-from diofant.polys.polyerrors import CoercionFailed
-from diofant.polys.domains.domainelement import DomainElement
-from diofant.polys.domains.polynomialring import PolynomialRing
-from diofant.polys.domains.fractionfield import FractionField
-from diofant.printing.defaults import DefaultPrinting
-from diofant.utilities import public
-from diofant.utilities.magic import pollute
+from ..core import Expr, Symbol, sympify
+from ..core.sympify import CantSympify
+from .rings import PolyElement
+from .orderings import lex
+from .polyerrors import CoercionFailed
+from .domains.domainelement import DomainElement
+from .domains.polynomialring import PolynomialRing
+from .domains.fractionfield import FractionField
+from ..printing.defaults import DefaultPrinting
+from ..utilities import public
+from ..utilities.magic import pollute
 
 
 @public
@@ -45,7 +44,7 @@ class FracField(DefaultPrinting):
     """Multivariate distributed rational function field. """
 
     def __new__(cls, symbols, domain, order=lex):
-        from diofant.polys.rings import PolyRing
+        from .rings import PolyRing
         ring = PolyRing(symbols, domain, order)
         symbols = ring.symbols
         ngens = ring.ngens
@@ -189,7 +188,7 @@ class FracField(DefaultPrinting):
         return FractionField(self)
 
     def to_ring(self):
-        from diofant.polys.rings import PolyRing
+        from .rings import PolyRing
         return PolyRing(self.symbols, self.domain, self.order)
 
 

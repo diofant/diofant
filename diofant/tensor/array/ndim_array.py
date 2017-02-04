@@ -1,6 +1,7 @@
 import collections
 
-from diofant import Matrix, Integer, sympify
+from ...core import Integer, sympify
+from ...matrices import Matrix
 
 
 class NDimArray:

@@ -1,8 +1,7 @@
-from diofant.core import Basic, Integer
-from diofant.core.function import Derivative
-from diofant.vector.vector import Vector
-from diofant.vector.functions import express
-from diofant.vector.coordsysrect import CoordSysCartesian
+from ..core import Basic, Integer, Derivative
+from .vector import Vector
+from .functions import express
+from .coordsysrect import CoordSysCartesian
 
 
 class Del(Basic):

@@ -1,12 +1,12 @@
 """High-level polynomials manipulation functions. """
 
-from diofant.polys.polytools import poly_from_expr, parallel_poly_from_expr, Poly
-from diofant.polys.polyoptions import allowed_flags
-from diofant.polys.specialpolys import symmetric_poly, interpolating_poly
-from diofant.polys.polyerrors import (PolificationFailed, ComputationFailed,
-                                      MultivariatePolynomialError)
-from diofant.utilities import numbered_symbols, take, public
-from diofant.core import S, Basic, Add, Mul
+from .polytools import poly_from_expr, parallel_poly_from_expr, Poly
+from .polyoptions import allowed_flags
+from .specialpolys import symmetric_poly, interpolating_poly
+from .polyerrors import (PolificationFailed, ComputationFailed,
+                         MultivariatePolynomialError)
+from ..utilities import numbered_symbols, take, public
+from ..core import S, Basic, Add, Mul
 
 
 @public

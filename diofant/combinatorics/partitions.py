@@ -1,11 +1,11 @@
 from collections import defaultdict
 
-from diofant.core import Basic, Dict, sympify
-from diofant.core.compatibility import as_int, default_sort_key
-from diofant.functions.combinatorial.numbers import bell
-from diofant.matrices import zeros
-from diofant.sets.sets import FiniteSet
-from diofant.utilities.iterables import has_dups, flatten, group
+from ..core import Basic, Dict, sympify
+from ..core.compatibility import as_int, default_sort_key
+from ..functions import bell
+from ..matrices import zeros
+from ..sets import FiniteSet
+from ..utilities import has_dups, flatten, group
 
 
 class Partition(FiniteSet):
@@ -559,7 +559,7 @@ def random_integer_partition(n, seed=None):
     >>> random_integer_partition(1)
     [1]
     """
-    from diofant.utilities.randtest import _randint
+    from ..utilities.randtest import _randint
 
     n = as_int(n)
     if n < 1:

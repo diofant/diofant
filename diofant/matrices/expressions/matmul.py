@@ -1,14 +1,13 @@
 from strategies import exhaust, do_one
 from strategies.core import typed
 
-from diofant.core import Mul, sympify, Add, Number, Expr
-from diofant.core.logic import _fuzzy_group
-from diofant.functions import adjoint
-from diofant.matrices.expressions.transpose import transpose
-from diofant.core.strategies import rm_id, unpack, flatten
-from diofant.matrices.expressions.matexpr import (MatrixExpr, ShapeError,
-                                                  Identity, ZeroMatrix)
-from diofant.matrices.matrices import MatrixBase
+from ...core import Mul, sympify, Add, Number, Expr
+from ...core.logic import _fuzzy_group
+from ...functions import adjoint
+from .transpose import transpose
+from ...core.strategies import rm_id, unpack, flatten
+from .matexpr import MatrixExpr, ShapeError, Identity, ZeroMatrix
+from ..matrices import MatrixBase
 
 
 class MatMul(MatrixExpr):
@@ -58,9 +57,9 @@ class MatMul(MatrixExpr):
         X = head
         Y = MatMul(*tail)
 
-        from diofant.core.symbol import Dummy
-        from diofant.concrete.summations import Sum
-        from diofant.matrices import ImmutableMatrix
+        from ...core import Dummy
+        from ...concrete import Sum
+        from .. import ImmutableMatrix
         k = Dummy('k', integer=True)
         if X.has(ImmutableMatrix) or Y.has(ImmutableMatrix):
             return coeff*Add(*[X[i, k]*Y[k, j] for k in range(X.cols)])
@@ -93,7 +92,7 @@ class MatMul(MatrixExpr):
             raise NotImplementedError("Can't simplify any further")
 
     def _eval_determinant(self):
-        from diofant.matrices.expressions.determinant import Determinant
+        from .determinant import Determinant
         factor, matrices = self.as_coeff_matrices()
         square_matrices = only_squares(*matrices)
         return factor**self.rows * Mul(*list(map(Determinant, square_matrices)))
@@ -104,7 +103,7 @@ class MatMul(MatrixExpr):
                 arg.inverse() if isinstance(arg, MatrixExpr) else arg**-1
                 for arg in self.args[::-1]]).doit()
         except ShapeError:
-            from diofant.matrices.expressions.inverse import Inverse
+            from .inverse import Inverse
             return Inverse(self)
 
     def doit(self, **kwargs):

@@ -32,7 +32,7 @@ The module uses numpy for speed which cannot be achieved with mpmath.
 # module based suffers the same problems as that of floating point
 # arithmetic.
 
-from diofant.simplify.simplify import nsimplify
+from ...simplify import nsimplify
 
 
 class interval:

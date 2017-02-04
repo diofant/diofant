@@ -8,15 +8,15 @@ Ray3D
 Segment3D
 """
 
-from diofant.core import S, Dummy, nan
-from diofant.functions.elementary.trigonometric import acos
-from diofant.simplify.simplify import simplify
-from diofant.solvers import solve
-from diofant.geometry.exceptions import GeometryError
+from ..core import S, Dummy, nan
+from ..functions import acos
+from ..simplify import simplify
+from ..solvers import solve
+from .exceptions import GeometryError
 from .entity import GeometryEntity
 from .point import Point3D
 from .util import _symbol
-from diofant.core.compatibility import is_sequence
+from ..core.compatibility import is_sequence
 
 
 class LinearEntity3D(GeometryEntity):

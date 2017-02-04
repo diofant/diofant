@@ -1,20 +1,20 @@
 from itertools import permutations
 from functools import reduce
 
-from diofant.matrices import Matrix
-from diofant.core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
-                          Mul, Add, symbols, Tuple)
-from diofant.core.numbers import Zero
-from diofant.solvers import solve
-from diofant.functions import factorial
-from diofant.simplify import simplify
-from diofant.combinatorics import Permutation
+from ..matrices import Matrix
+from ..core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
+                    Mul, Add, symbols, Tuple)
+from ..core.numbers import Zero
+from ..solvers import solve
+from ..functions import factorial
+from ..simplify import simplify
+from ..combinatorics import Permutation
 
 # TODO you are a bit excessive in the use of Dummies
 # TODO dummy point, literal field
 # TODO too often one needs to call doit or simplify on the output, check the
 # tests and find out why
-from diofant.tensor.array import ImmutableDenseNDimArray
+from ..tensor.array import ImmutableDenseNDimArray
 
 
 class Manifold(Basic):

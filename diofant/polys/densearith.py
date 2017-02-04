@@ -1,14 +1,9 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from diofant.polys.densebasic import (
-    dup_slice,
-    dup_LC, dmp_LC,
-    dup_degree, dmp_degree,
-    dup_strip, dmp_strip,
-    dmp_zero_p, dmp_zero,
-    dmp_one_p, dmp_one,
-    dmp_ground, dmp_zeros)
-from diofant.polys.polyerrors import (ExactQuotientFailed, PolynomialDivisionFailed)
+from .densebasic import (dup_slice, dup_LC, dmp_LC, dup_degree, dmp_degree,
+                         dup_strip, dmp_strip, dmp_zero_p, dmp_zero,
+                         dmp_one_p, dmp_one, dmp_ground, dmp_zeros)
+from .polyerrors import (ExactQuotientFailed, PolynomialDivisionFailed)
 
 
 def dup_add_term(f, c, i, K):

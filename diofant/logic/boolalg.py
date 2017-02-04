@@ -5,15 +5,15 @@ Boolean algebra module for Diofant
 from collections import defaultdict
 from itertools import combinations, product
 
-from diofant.core.basic import Basic, Atom
-from diofant.core.expr import Expr
-from diofant.core.cache import cacheit
-from diofant.core.numbers import Number
-from diofant.core.operations import LatticeOp
-from diofant.core.function import Application, Derivative
-from diofant.core.compatibility import ordered
-from diofant.core.sympify import converter, _sympify, sympify
-from diofant.core.singleton import Singleton, S
+from ..core import Basic, Atom
+from ..core.expr import Expr
+from ..core import cacheit
+from ..core.numbers import Number
+from ..core.operations import LatticeOp
+from ..core.function import Application, Derivative
+from ..core.compatibility import ordered
+from ..core.sympify import converter, _sympify, sympify
+from ..core.singleton import Singleton, S
 
 
 class Boolean(Expr):
@@ -68,8 +68,8 @@ class Boolean(Expr):
         >>> Not(And(A, Not(A))).equals(Or(B, Not(B)))
         False
         """
-        from diofant.logic.inference import satisfiable
-        from diofant.core.relational import Relational
+        from .inference import satisfiable
+        from ..core.relational import Relational
 
         other = sympify(other)
 
@@ -236,7 +236,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
         >>> false.as_set()
         EmptySet()
         """
-        from diofant.sets.sets import EmptySet
+        from ..sets import EmptySet
         return EmptySet()
 
 
@@ -353,7 +353,7 @@ class And(LatticeOp, BooleanFunction):
         >>> And(x<2, x>-2).as_set()
         (-2, 2)
         """
-        from diofant.sets.sets import Intersection
+        from ..sets import Intersection
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
         else:  # pragma: no cover
@@ -424,7 +424,7 @@ class Or(LatticeOp, BooleanFunction):
         >>> Or(x>2, x<-2).as_set()
         (-oo, -2) U (2, oo)
         """
-        from diofant.sets.sets import Union
+        from ..sets import Union
         if len(self.free_symbols) == 1:
             return Union(*[arg.as_set() for arg in self.args])
         else:  # pragma: no cover
@@ -483,9 +483,8 @@ class Not(BooleanFunction):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import (
-            Equality, GreaterThan, LessThan,
-            StrictGreaterThan, StrictLessThan, Unequality)
+        from ..core import (Equality, GreaterThan, LessThan,
+                            StrictGreaterThan, StrictLessThan, Unequality)
         if isinstance(arg, Number) or arg in (True, False):
             return false if arg else true
         if arg.is_Not:
@@ -825,7 +824,7 @@ class Equivalent(BooleanFunction):
     """
 
     def __new__(cls, *args, **options):
-        from diofant.core.relational import Relational
+        from ..core.relational import Relational
         args = [_sympify(arg) for arg in args]
 
         argset = set(args)
@@ -1587,7 +1586,7 @@ def simplify_logic(expr, form=None, deep=True):
             if expr.xreplace(dict(zip(variables, t))):
                 truthtable.append(t)
         if deep:
-            from diofant.simplify.simplify import simplify
+            from ..simplify import simplify
             variables = [simplify(v) for v in variables]
         if form == 'dnf' or \
            (form is None and len(truthtable) >= (2 ** (len(variables) - 1))):

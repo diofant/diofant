@@ -1,14 +1,15 @@
-from diofant.core import Add, S, sympify, oo, pi, Dummy
-from diofant.core.function import Function, ArgumentIndexError
-from diofant.core.numbers import Rational, Integer
-from diofant.core.power import Pow
+from mpmath import mp, workprec
+
+from ...core import (Add, S, sympify, oo, pi, Dummy, Function, Rational,
+                     Integer, Pow, I, Expr)
+from ...core.function import ArgumentIndexError
 from .zeta_functions import zeta
 from .error_functions import erf
-from diofant.functions.elementary.exponential import exp, log
-from diofant.functions.elementary.integers import ceiling, floor
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.combinatorial.numbers import bernoulli, harmonic
-from diofant.functions.combinatorial.factorials import factorial, rf, RisingFactorial
+from ..elementary.exponential import exp, log
+from ..elementary.integers import ceiling, floor
+from ..elementary.miscellaneous import sqrt
+from ..combinatorial.numbers import bernoulli, harmonic
+from ..combinatorial.factorials import factorial, rf, RisingFactorial
 
 
 ###############################################################################
@@ -246,7 +247,8 @@ class lowergamma(Function):
     """
 
     def fdiff(self, argindex=2):
-        from diofant import meijerg, unpolarify
+        from .hyper import meijerg
+        from .. import unpolarify
         if argindex == 2:
             a, z = self.args
             return exp(-unpolarify(z))*z**(a - 1)
@@ -275,7 +277,7 @@ class lowergamma(Function):
         #    where lowergamma_unbranched(s, x) is an entire function (in fact
         #    of both s and x), i.e.
         #    lowergamma(s, exp(2*I*pi*n)*x) = exp(2*pi*I*n*a)*lowergamma(a, x)
-        from diofant import unpolarify, I
+        from .. import unpolarify
         nx, n = x.extract_branch_factor()
         if a.is_integer and a.is_positive:
             nx = unpolarify(x)
@@ -303,8 +305,6 @@ class lowergamma(Function):
                     return (cls(a + 1, x) + x**a * exp(-x))/a
 
     def _eval_evalf(self, prec):
-        from mpmath import mp, workprec
-        from diofant import Expr
         a = self.args[0]._to_mpmath(prec)
         z = self.args[1]._to_mpmath(prec)
         with workprec(prec):
@@ -320,7 +320,7 @@ class lowergamma(Function):
         return gamma(s) - uppergamma(s, x)
 
     def _eval_rewrite_as_expint(self, s, x):
-        from diofant import expint
+        from .error_functions import expint
         if s.is_integer and s.is_nonpositive:
             return self
         return self.rewrite(uppergamma).rewrite(expint)
@@ -391,7 +391,8 @@ class uppergamma(Function):
     """
 
     def fdiff(self, argindex=2):
-        from diofant import meijerg, unpolarify
+        from .hyper import meijerg
+        from .. import unpolarify
         if argindex == 2:
             a, z = self.args
             return -exp(-unpolarify(z))*z**(a - 1)
@@ -402,8 +403,6 @@ class uppergamma(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_evalf(self, prec):
-        from mpmath import mp, workprec
-        from diofant import Expr
         a = self.args[0]._to_mpmath(prec)
         z = self.args[1]._to_mpmath(prec)
         with workprec(prec):
@@ -412,7 +411,8 @@ class uppergamma(Function):
 
     @classmethod
     def eval(cls, a, z):
-        from diofant import unpolarify, I, expint
+        from .error_functions import expint
+        from .. import unpolarify
         if z.is_Number:
             if z is S.Infinity:
                 return S.Zero
@@ -458,7 +458,7 @@ class uppergamma(Function):
         return gamma(s) - lowergamma(s, x)
 
     def _eval_rewrite_as_expint(self, s, x):
-        from diofant import expint
+        from .error_functions import expint
         return expint(1 - s, x)*x**s
 
 
@@ -574,7 +574,7 @@ class polygamma(Function):
                 return True
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order
+        from ...series import Order
         if args0[1] != oo or not \
                 (self.args[0].is_Integer and self.args[0].is_nonnegative):
             return super(polygamma, self)._eval_aseries(n, args0, x, logx)
@@ -617,7 +617,7 @@ class polygamma(Function):
     @classmethod
     def eval(cls, n, z):
         n, z = list(map(sympify, (n, z)))
-        from diofant import unpolarify
+        from .. import unpolarify
 
         if n.is_integer:
             if n.is_nonnegative:
@@ -714,7 +714,7 @@ class polygamma(Function):
                 return S.NegativeOne**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))
 
     def _eval_as_leading_term(self, x):
-        from diofant import Order
+        from ...series import Order
         n, z = [a.as_leading_term(x) for a in self.args]
         o = Order(z, x)
         if n == 0 and o.contains(1/x):
@@ -854,7 +854,7 @@ class loggamma(Function):
             return S.ComplexInfinity
 
     def _eval_expand_func(self, **hints):
-        from diofant import Sum
+        from ...concrete import Sum
         z = self.args[0]
 
         if z.is_Rational:
@@ -880,7 +880,7 @@ class loggamma(Function):
         return super(loggamma, self)._eval_nseries(x, n, logx)
 
     def _eval_aseries(self, n, args0, x, logx):
-        from diofant import Order
+        from ...series import Order
         if args0[0] != oo:
             return super(loggamma, self)._eval_aseries(n, args0, x, logx)
         z = self.args[0]

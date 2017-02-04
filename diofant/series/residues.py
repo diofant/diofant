@@ -1,4 +1,4 @@
-from diofant import sympify, Integer, Mul
+from ..core import sympify, Integer, Mul
 
 
 def residue(expr, x, x0):
@@ -40,7 +40,8 @@ def residue(expr, x, x0):
     # For the definition of a resultant, see section 1.4 (and any
     # previous sections for more review).
 
-    from diofant import collect, Order
+    from ..simplify import collect
+    from .order import Order
 
     expr = sympify(expr)
     if x0 != 0:

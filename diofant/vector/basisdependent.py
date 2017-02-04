@@ -1,9 +1,9 @@
-from diofant.simplify import simplify as simp, trigsimp as tsimp
-from diofant.core.decorators import call_highest_priority, _sympifyit
-from diofant.core.assumptions import StdFactKB
-from diofant import factor as fctr, diff as df, Integral
-from diofant.core import Add, Mul, count_ops, Integer
-from diofant.core.expr import Expr
+from ..simplify import simplify, trigsimp
+from ..core.decorators import call_highest_priority, _sympifyit
+from ..core.assumptions import StdFactKB
+from ..core import Add, Mul, count_ops, Integer, Expr, diff
+from ..polys import factor
+from ..integrals import Integral
 
 
 class BasisDependent(Expr):
@@ -62,27 +62,27 @@ class BasisDependent(Expr):
         """
         Implements the Diofant simplify routine for this quantity.
 
-        simplify's documentation
-        ========================
+        See Also
+        ========
 
+        diofant.simplify.simplify.simplify
         """
-        simp_components = [simp(v, ratio, measure) * k for
+        simp_components = [simplify(v, ratio, measure) * k for
                            k, v in self.components.items()]
         return self._add_func(*simp_components)
-    simplify.__doc__ += simp.__doc__
 
     def trigsimp(self, **opts):
         """
         Implements the Diofant trigsimp routine, for this quantity.
 
-        trigsimp's documentation
-        ========================
+        See Also
+        ========
 
+        diofant.simplify.trigsimp.trigsimp
         """
-        trig_components = [tsimp(v, **opts) * k for
+        trig_components = [trigsimp(v, **opts) * k for
                            k, v in self.components.items()]
         return self._add_func(*trig_components)
-    trigsimp.__doc__ += tsimp.__doc__
 
     def _eval_simplify(self, ratio, measure):
         return self.simplify(ratio, measure)
@@ -103,14 +103,14 @@ class BasisDependent(Expr):
         Implements the Diofant factor routine, on the scalar parts
         of a basis-dependent expression.
 
-        factor's documentation
-        ========================
+        See Also
+        ========
 
+        diofant.polys.polytools.factor
         """
-        fctr_components = [fctr(v, *args, **kwargs) * k for
+        fctr_components = [factor(v, *args, **kwargs) * k for
                            k, v in self.components.items()]
         return self._add_func(*fctr_components)
-    factor.__doc__ += fctr.__doc__
 
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product. """
@@ -120,17 +120,17 @@ class BasisDependent(Expr):
         """
         Implements the Diofant diff routine, for vectors.
 
-        diff's documentation
-        ========================
+        See Also
+        ========
 
+        diofant.core.function.diff
         """
         for x in args:
             if isinstance(x, BasisDependent):
                 raise TypeError("Invalid arg for differentiation")
-        diff_components = [df(v, *args, **kwargs) * k for
+        diff_components = [diff(v, *args, **kwargs) * k for
                            k, v in self.components.items()]
         return self._add_func(*diff_components)
-    diff.__doc__ += df.__doc__
 
     def doit(self, **hints):
         """Calls .doit() on each term in the Dyadic"""

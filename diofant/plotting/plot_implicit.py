@@ -28,14 +28,14 @@ import warnings
 from .plot import BaseSeries, Plot
 from .experimental_lambdify import experimental_lambdify, vectorized_lambdify
 from .intervalmath import interval
-from diofant.core.relational import (Equality, GreaterThan, LessThan,
-                                     Relational, StrictLessThan, StrictGreaterThan)
-from diofant import Eq, Tuple, sympify, Symbol, Dummy
-from diofant.external import import_module
-from diofant.logic.boolalg import BooleanFunction
-from diofant.polys.polyutils import _sort_gens
-from diofant.utilities.decorator import doctest_depends_on
-from diofant.utilities.iterables import flatten
+from ..core.relational import (Equality, GreaterThan, LessThan,
+                               Relational, StrictLessThan, StrictGreaterThan)
+from ..core import Eq, Tuple, sympify, Symbol, Dummy
+from ..external import import_module
+from ..logic.boolalg import BooleanFunction
+from ..polys.polyutils import _sort_gens
+from ..utilities.decorator import doctest_depends_on
+from ..utilities import flatten
 
 
 class ImplicitSeries(BaseSeries):

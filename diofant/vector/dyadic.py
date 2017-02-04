@@ -1,9 +1,7 @@
-from diofant.vector.basisdependent import (BasisDependent, BasisDependentAdd,
-                                           BasisDependentMul, BasisDependentZero)
-from diofant.core import S, Pow, Integer
-from diofant.core.expr import AtomicExpr
-from diofant import ImmutableMatrix as Matrix
-import diofant.vector
+from .basisdependent import (BasisDependent, BasisDependentAdd,
+                             BasisDependentMul, BasisDependentZero)
+from ..core import S, Pow, Integer, AtomicExpr
+from ..matrices import ImmutableMatrix
 
 
 class Dyadic(BasisDependent):
@@ -55,10 +53,10 @@ class Dyadic(BasisDependent):
         (N.i|N.j)
         >>> D1.dot(N.j)
         N.i
-
         """
 
-        Vector = diofant.vector.Vector
+        from .vector import Vector
+
         if isinstance(other, BasisDependentZero):
             return Vector.zero
         elif isinstance(other, Vector):
@@ -102,10 +100,10 @@ class Dyadic(BasisDependent):
         >>> d = N.i.outer(N.i)
         >>> d.cross(N.j)
         (N.i|N.k)
-
         """
 
-        Vector = diofant.vector.Vector
+        from .vector import Vector
+
         if other == Vector.zero:
             return Dyadic.zero
         elif isinstance(other, Vector):
@@ -165,8 +163,8 @@ class Dyadic(BasisDependent):
         if second_system is None:
             second_system = system
 
-        return Matrix([i.dot(self).dot(j) for i in system for j in
-                      second_system]).reshape(3, 3)
+        return ImmutableMatrix([i.dot(self).dot(j) for i in system for j in
+                                second_system]).reshape(3, 3)
 
 
 class BaseDyadic(Dyadic, AtomicExpr):
@@ -175,9 +173,8 @@ class BaseDyadic(Dyadic, AtomicExpr):
     """
 
     def __new__(cls, vector1, vector2):
-        Vector = diofant.vector.Vector
-        BaseVector = diofant.vector.BaseVector
-        VectorZero = diofant.vector.VectorZero
+        from .vector import Vector, BaseVector, VectorZero
+
         # Verify arguments
         if not isinstance(vector1, (BaseVector, VectorZero)) or \
                not isinstance(vector2, (BaseVector, VectorZero)):

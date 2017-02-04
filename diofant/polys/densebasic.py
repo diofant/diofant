@@ -2,10 +2,9 @@
 
 import random
 
-from diofant.core import igcd
-from diofant import oo
-from diofant.polys.monomials import monomial_min, monomial_div
-from diofant.polys.orderings import monomial_key
+from ..core import igcd, oo
+from .monomials import monomial_min, monomial_div
+from .orderings import monomial_key
 
 
 def poly_LC(f, K):

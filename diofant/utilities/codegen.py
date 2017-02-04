@@ -80,16 +80,16 @@ from io import StringIO
 import os
 import textwrap
 
-from diofant import __version__ as diofant_version
-from diofant.core import Dummy, Symbol, S, Expr, Tuple, Equality, Function
-from diofant.core.compatibility import is_sequence
-from diofant.printing.codeprinter import AssignmentError
-from diofant.printing.ccode import ccode, CCodePrinter
-from diofant.printing.fcode import fcode, FCodePrinter
-from diofant.printing.octave import octave_code, OctaveCodePrinter
-from diofant.tensor import Idx, Indexed, IndexedBase
-from diofant.matrices import (MatrixSymbol, ImmutableMatrix, MatrixBase,
-                              MatrixExpr, MatrixSlice)
+from .. import __version__ as diofant_version
+from ..core import Dummy, Symbol, S, Expr, Tuple, Equality, Function
+from ..core.compatibility import is_sequence
+from ..printing.codeprinter import AssignmentError
+from ..printing.ccode import ccode, CCodePrinter
+from ..printing.fcode import fcode, FCodePrinter
+from ..printing.octave import octave_code, OctaveCodePrinter
+from ..tensor import Idx, Indexed, IndexedBase
+from ..matrices import (MatrixSymbol, ImmutableMatrix, MatrixBase,
+                        MatrixExpr, MatrixSlice)
 
 
 __all__ = (

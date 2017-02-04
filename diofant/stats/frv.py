@@ -11,13 +11,13 @@ diofant.stats.crv
 from itertools import product
 import random
 
-from diofant import (Expr, Symbol, cacheit, sympify, Mul,
-                     And, Or, Tuple, Piecewise, Eq, Lambda)
-from diofant.sets.sets import FiniteSet
-from diofant.stats.rv import (RandomDomain, ProductDomain, ConditionalDomain,
-                              PSpace, ProductPSpace, SinglePSpace, random_symbols,
-                              sumsets, rv_subs, NamedArgsMixin)
-from diofant.core.containers import Dict
+from ..core import Expr, Symbol, cacheit, sympify, Mul, Tuple, Dict, Eq, Lambda
+from ..logic import And, Or
+from ..functions import Piecewise
+from ..sets import FiniteSet
+from .rv import (RandomDomain, ProductDomain, ConditionalDomain, PSpace,
+                 ProductPSpace, SinglePSpace, random_symbols, sumsets,
+                 rv_subs, NamedArgsMixin)
 
 
 class FiniteDensity(dict):

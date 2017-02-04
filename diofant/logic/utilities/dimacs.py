@@ -5,8 +5,8 @@ www.cs.ubc.ca/~hoos/SATLIB/Benchmarks/SAT/satformat.ps
 
 import re
 
-from diofant.core import Symbol
-from diofant.logic.boolalg import And, Or
+from ...core import Symbol
+from ..boolalg import And, Or
 
 
 def load(s):

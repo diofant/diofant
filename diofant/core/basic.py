@@ -202,7 +202,7 @@ class Basic(object):
 
         .. [1] http://docs.python.org/dev/reference/datamodel.html#object.__hash__
         """
-        from diofant import Pow
+        from . import Pow
         if self is other:
             return True
 
@@ -278,19 +278,19 @@ class Basic(object):
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
     # regardless of the global setting.  See issue sympy/sympy#5487.
     def __repr__(self):
-        from diofant.printing import srepr
+        from ..printing import srepr
         return srepr(self, order=None)
 
     def __str__(self):
-        from diofant.printing import sstr
+        from ..printing import sstr
         return sstr(self, order=None)
 
     def _repr_pretty_(self, p, cycle):
-        from diofant.printing import pretty
+        from ..printing import pretty
         p.text(pretty(self))
 
     def _repr_latex_(self):
-        from diofant.printing import latex
+        from ..printing import latex
         return latex(self, mode='equation')
 
     def atoms(self, *types):
@@ -404,7 +404,7 @@ class Basic(object):
         >>> Lambda(x, 2*x).canonical_variables
         {x: 0_}
         """
-        from diofant import Symbol
+        from . import Symbol
         try:
             V = self.variables
         except AttributeError:
@@ -531,7 +531,7 @@ class Basic(object):
         >>> (x**2 + sin(y)).as_poly(x, y) is None
         True
         """
-        from diofant.polys import Poly, PolynomialError
+        from ..polys import Poly, PolynomialError
 
         try:
             return Poly(self, *gens, **args)
@@ -658,9 +658,9 @@ class Basic(object):
         diofant.core.evalf.EvalfMixin.evalf: calculates the given formula to
                                            a desired level of precision
         """
-        from diofant.core.containers import Dict
-        from diofant.utilities import default_sort_key
-        from diofant import Dummy, Symbol
+        from .containers import Dict
+        from ..utilities import default_sort_key
+        from .symbol import Dummy, Symbol
 
         unordered = False
         if len(args) == 1:
@@ -671,7 +671,7 @@ class Basic(object):
                 unordered = True
                 sequence = sequence.items()
             elif not iterable(sequence):
-                from diofant.utilities.misc import filldedent
+                from ..utilities.misc import filldedent
                 raise ValueError(filldedent("""
                    When a single argument is passed to subs
                    it should be a dictionary of old: new pairs or an iterable
@@ -957,7 +957,7 @@ class Basic(object):
 
     def _has(self, pattern):
         """Helper for .has()"""
-        from diofant.core.function import UndefinedFunction, Function
+        from .function import UndefinedFunction, Function
         if isinstance(pattern, UndefinedFunction):
             return any(f.func == pattern or f == pattern
             for f in self.atoms(Function, UndefinedFunction))
@@ -1099,8 +1099,8 @@ class Basic(object):
         xreplace: exact node replacement in expr tree; also capable of
                   using matching rules
         """
-        from diofant.core.symbol import Dummy
-        from diofant.simplify.simplify import bottom_up
+        from .symbol import Dummy
+        from ..simplify.simplify import bottom_up
 
         try:
             query = sympify(query)
@@ -1298,7 +1298,7 @@ class Basic(object):
         >>> (p*q**r).xreplace(e.match(p*q**r))
         4*x**2
         """
-        from diofant import signsimp
+        from ..simplify import signsimp
         pattern = sympify(pattern)
         s = signsimp(self)
         p = signsimp(pattern)
@@ -1312,7 +1312,7 @@ class Basic(object):
 
     def count_ops(self, visual=None):
         """wrapper for count_ops that returns the operation count."""
-        from diofant import count_ops
+        from .function import count_ops
         return count_ops(self, visual)
 
     def doit(self, **hints):
@@ -1474,7 +1474,7 @@ class Atom(Basic):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-        from diofant.core import S
+        from . import S
         return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
 
     def _eval_simplify(self, ratio, measure):

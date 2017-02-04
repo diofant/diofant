@@ -2,8 +2,10 @@
 be displayed in the sphinx documentation.
 """
 
-from diofant.integrals.meijerint import _create_lookup_table
-from diofant import latex, Eq, Add, Symbol, default_sort_key
+from .meijerint import _create_lookup_table
+from ..core import Eq, Add, Symbol
+from ..core.compatibility import default_sort_key
+from ..printing import latex
 
 t = {}
 _create_lookup_table(t)

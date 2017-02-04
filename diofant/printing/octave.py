@@ -11,10 +11,10 @@ complete source code files.
 
 from re import search
 
-from diofant.core import Mul, Pow, S, Rational
-from diofant.core.mul import _keep_coeff
-from diofant.printing.codeprinter import CodePrinter, Assignment
-from diofant.printing.precedence import precedence
+from ..core import Mul, Pow, S, Rational
+from ..core.mul import _keep_coeff
+from .codeprinter import CodePrinter, Assignment
+from .precedence import precedence
 
 # List of known functions.  First, those that have the same name in
 # Diofant and Octave.   This is almost certainly incomplete!
@@ -204,8 +204,8 @@ class OctaveCodePrinter(CodePrinter):
             return super(OctaveCodePrinter, self)._print_NumberSymbol(expr)
 
     def _print_Assignment(self, expr):
-        from diofant.functions.elementary.piecewise import Piecewise
-        from diofant.tensor.indexed import IndexedBase
+        from ..functions import Piecewise
+        from ..tensor.indexed import IndexedBase
         # Copied from codeprinter, but remove special MatrixSymbol treatment
         lhs = expr.lhs
         rhs = expr.rhs
@@ -271,7 +271,7 @@ class OctaveCodePrinter(CodePrinter):
                                 rowsep=';\n', colsep=' ')
 
     def _print_SparseMatrix(self, A):
-        from diofant.matrices import Matrix
+        from ..matrices import Matrix
         L = A.col_list()
         # make row vectors of the indices and entries
         I = Matrix([[k[0] + 1 for k in L]])
@@ -336,13 +336,13 @@ class OctaveCodePrinter(CodePrinter):
 
     # Note: as of 2015, Octave doesn't have spherical Bessel functions
     def _print_jn(self, expr):
-        from diofant.functions import sqrt, besselj
+        from ..functions import sqrt, besselj
         x = expr.argument
         expr2 = sqrt(S.Pi/(2*x))*besselj(expr.order + S.Half, x)
         return self._print(expr2)
 
     def _print_yn(self, expr):
-        from diofant.functions import sqrt, bessely
+        from ..functions import sqrt, bessely
         x = expr.argument
         expr2 = sqrt(S.Pi/(2*x))*bessely(expr.order + S.Half, x)
         return self._print(expr2)

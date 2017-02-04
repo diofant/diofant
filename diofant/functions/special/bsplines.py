@@ -1,6 +1,6 @@
-from diofant.core import S, sympify
-from diofant.functions import Piecewise, piecewise_fold
-from diofant.sets.sets import Interval
+from ...core import S, sympify
+from .. import Piecewise, piecewise_fold
+from ...sets import Interval
 
 
 def _add_splines(c, b1, d, b2):

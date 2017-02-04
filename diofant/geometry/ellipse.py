@@ -7,19 +7,16 @@ Contains
 
 import random
 
-from diofant.core import S, sympify, pi
-from diofant.core.logic import fuzzy_bool
-from diofant.core.numbers import oo, Rational
-from diofant.core.symbol import Dummy
-from diofant.simplify import simplify, trigsimp
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.elementary.trigonometric import cos, sin
-from diofant.geometry.exceptions import GeometryError
-from diofant.polys import Poly, PolynomialError, DomainError
-from diofant.polys.polyutils import _nsort, _not_a_coeff
-from diofant.solvers import solve
-from diofant.utilities.iterables import uniq
-from diofant.utilities.misc import filldedent
+from ..core import S, sympify, pi, oo, Rational, Dummy
+from ..core.logic import fuzzy_bool
+from ..simplify import simplify, trigsimp
+from ..functions import sqrt, cos, sin
+from .exceptions import GeometryError
+from ..polys import Poly, PolynomialError, DomainError
+from ..polys.polyutils import _nsort, _not_a_coeff
+from ..solvers import solve
+from ..utilities.iterables import uniq
+from ..utilities import filldedent
 from .entity import GeometryEntity, GeometrySet
 from .point import Point
 from .line import LinearEntity, Line
@@ -333,7 +330,7 @@ class Ellipse(GeometrySet):
         12*Integral(sqrt((-8*_x**2/9 + 1)/(-_x**2 + 1)), (_x, 0, 1))
 
         """
-        from diofant import Integral
+        from ..integrals import Integral
         if self.eccentricity == 1:
             return 2*pi*self.hradius
         else:
@@ -974,7 +971,7 @@ class Ellipse(GeometrySet):
         times) until a valid point is obtained.
 
         """
-        from diofant import sin, cos, Rational
+        from ..functions import sin, cos
         t = _symbol('t')
         x, y = self.arbitrary_point(t).args
         # get a random value in [-1, 1) corresponding to cos(t)

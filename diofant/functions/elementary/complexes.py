@@ -1,14 +1,13 @@
-from diofant.core import S, Add, Mul, sympify, Symbol, Dummy
-from diofant.core.exprtools import factor_terms
-from diofant.core.function import (Function, Derivative, ArgumentIndexError,
-                                   AppliedUndef)
-from diofant.core.numbers import pi, Rational
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.functions.elementary.piecewise import Piecewise
-from diofant.core.expr import Expr
-from diofant.core.relational import Eq
-from diofant.functions.elementary.exponential import exp, exp_polar, log
-from diofant.functions.elementary.trigonometric import atan2
+from ...core import (S, Add, Mul, sympify, Symbol, Dummy, factor_terms,
+                     Function, Derivative, Expr, pi, I, oo, Rational,
+                     Eq, Tuple)
+from ...core.function import ArgumentIndexError, AppliedUndef
+from .miscellaneous import sqrt
+from .piecewise import Piecewise
+from .exponential import exp, exp_polar, log
+from .trigonometric import atan2
+from ...logic.boolalg import BooleanAtom
+
 
 ###############################################################################
 # ####################### REAL and IMAGINARY PARTS ########################## #
@@ -300,11 +299,11 @@ class sign(Function):
 
     def _eval_derivative(self, x):
         if self.args[0].is_extended_real:
-            from diofant.functions.special.delta_functions import DiracDelta
+            from ..special.delta_functions import DiracDelta
             return 2 * Derivative(self.args[0], x, evaluate=True) \
                 * DiracDelta(self.args[0])
         elif self.args[0].is_imaginary:
-            from diofant.functions.special.delta_functions import DiracDelta
+            from ..special.delta_functions import DiracDelta
             return 2 * Derivative(self.args[0], x, evaluate=True) \
                 * DiracDelta(-S.ImaginaryUnit * self.args[0])
 
@@ -339,7 +338,7 @@ class sign(Function):
             return Piecewise((1, arg > 0), (-1, arg < 0), (0, True))
 
     def _eval_rewrite_as_Heaviside(self, arg):
-        from diofant import Heaviside
+        from .. import Heaviside
         if arg.is_extended_real:
             return Heaviside(arg)*2-1
 
@@ -415,7 +414,7 @@ class Abs(Function):
 
     @classmethod
     def eval(cls, arg):
-        from diofant.simplify.simplify import signsimp
+        from ...simplify import signsimp
         if hasattr(arg, '_eval_Abs'):
             obj = arg._eval_Abs()
             if obj is not None:
@@ -467,10 +466,10 @@ class Abs(Function):
                     return S.Infinity
             if arg.is_extended_real is not True and arg.is_imaginary is None:
                 if all(a.is_extended_real or a.is_imaginary or (S.ImaginaryUnit*a).is_extended_real for a in arg.args):
-                    from diofant import expand_mul
+                    from ...core import expand_mul
                     return sqrt(expand_mul(arg*arg.conjugate()))
         if arg.is_extended_real is not True and arg.is_imaginary is False:
-            from diofant import expand_mul
+            from ...core import expand_mul
             return sqrt(expand_mul(arg*arg.conjugate()))
 
     def _eval_is_integer(self):
@@ -530,7 +529,7 @@ class Abs(Function):
     def _eval_rewrite_as_Heaviside(self, arg):
         # Note this only holds for real arg (since Heaviside is not defined
         # for complex arguments).
-        from diofant import Heaviside
+        from .. import Heaviside
         if arg.is_extended_real:
             return arg*(Heaviside(arg) - Heaviside(-arg))
 
@@ -539,7 +538,6 @@ class Abs(Function):
             return Piecewise((arg, arg >= 0), (-arg, True))
 
     def _eval_rewrite_as_sign(self, arg):
-        from diofant import sign
         return arg/sign(arg)
 
 
@@ -702,7 +700,7 @@ class adjoint(Function):
         return tex
 
     def _pretty(self, printer, *args):
-        from diofant.printing.pretty.stringpict import prettyForm
+        from ...printing.pretty.stringpict import prettyForm
         pform = printer._print(self.args[0], *args)
         if printer._use_unicode:
             pform = pform**prettyForm('\N{DAGGER}')
@@ -749,7 +747,8 @@ class polar_lift(Function):
 
     @classmethod
     def eval(cls, arg):
-        from diofant import exp_polar, pi, I, arg as argument
+        from .exponential import exp_polar
+        from .complexes import arg as argument
         if arg.is_number and (arg.is_finite or arg.is_extended_real):
             ar = argument(arg)
             # In general we want to affirm that something is known,
@@ -844,7 +843,8 @@ class periodic_argument(Function):
         # logarithm, and then reduce.
         # NOTE evidently this means it is a rather bad idea to use this with
         # period != 2*pi and non-polar numbers.
-        from diofant import ceiling, oo, atan2, atan, polar_lift, pi, Mul
+        from .integers import ceiling
+        from .trigonometric import atan2, atan
         if not period.is_positive:
             return
         if period == oo and isinstance(ar, principal_branch):
@@ -868,7 +868,7 @@ class periodic_argument(Function):
                 return unbranched - n
 
     def _eval_evalf(self, prec):
-        from diofant import ceiling, oo
+        from .integers import ceiling
         z, period = self.args
         if period == oo:
             unbranched = periodic_argument._getunbranched(z)
@@ -884,7 +884,6 @@ class periodic_argument(Function):
 
 
 def unbranched_argument(arg):
-    from diofant import oo
     return periodic_argument(arg, oo)
 
 
@@ -919,7 +918,6 @@ class principal_branch(Function):
 
     @classmethod
     def eval(cls, x, period):
-        from diofant import oo, exp_polar, I, Mul, polar_lift
         if isinstance(x, polar_lift):
             return principal_branch(x.args[0], period)
         if period == oo:
@@ -965,7 +963,7 @@ class principal_branch(Function):
             return exp_polar(arg*I)*abs(c)
 
     def _eval_evalf(self, prec):
-        from diofant import exp, pi, I
+        from .exponential import exp
         z, period = self.args
         p = periodic_argument(z, period)._eval_evalf(prec)
         if abs(p) > pi or p == -pi:
@@ -974,9 +972,7 @@ class principal_branch(Function):
 
 
 def _polarify(eq, lift, pause=False):
-    from diofant import Integral
-    from diofant.core.containers import Tuple
-    from diofant.logic.boolalg import BooleanAtom
+    from ...integrals import Integral
 
     if isinstance(eq, Tuple):
         return eq.func(*[_polarify(arg, lift, pause=False) for arg in eq.args])

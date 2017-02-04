@@ -23,11 +23,11 @@ class Mod(Function):
 
     @classmethod
     def eval(cls, p, q):
-        from diofant.core.add import Add
-        from diofant.core.mul import Mul
-        from diofant.core.singleton import S
-        from diofant.core.exprtools import gcd_terms
-        from diofant.polys.polytools import gcd
+        from .add import Add
+        from .mul import Mul
+        from .singleton import S
+        from .exprtools import gcd_terms
+        from ..polys.polytools import gcd
 
         def doit(p, q):
             """Try to return p % q if both are numbers or +/-p is known

@@ -1,6 +1,8 @@
 import re
 
-from diofant import sympify, Sum, product, sin, cos
+from ..core import sympify
+from ..concrete import Sum, product
+from ..functions import sin, cos
 
 
 class MaximaHelpers:

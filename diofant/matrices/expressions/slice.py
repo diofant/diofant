@@ -1,6 +1,6 @@
-from diofant.matrices.expressions.matexpr import MatrixExpr
-from diofant import Tuple, S, Expr
-from diofant.functions.elementary.integers import floor
+from .matexpr import MatrixExpr
+from ...core import Tuple, S, Expr
+from ...functions import floor
 
 
 def normalize(i, parentsize):

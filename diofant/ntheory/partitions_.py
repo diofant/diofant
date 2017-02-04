@@ -5,8 +5,8 @@ from mpmath.libmp import (fzero, from_man_exp, from_int, from_rational,
                           mpf_div, mpf_sub, mpf_add, mpf_sqrt, mpf_pi,
                           mpf_cosh_sinh, pi_fixed, mpf_cos)
 
-from diofant.core.numbers import igcd
-from diofant.utilities.misc import debug
+from ..core.numbers import igcd
+from ..utilities.misc import debug
 
 
 __all__ = ('npartitions')

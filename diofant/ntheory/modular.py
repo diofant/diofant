@@ -1,11 +1,11 @@
 from functools import reduce
 
-from diofant.core.numbers import igcdex, igcd
-from diofant.core.mul import prod
-from diofant.core.compatibility import as_int
-from diofant.ntheory.primetest import isprime
-from diofant.polys.domains import ZZ
-from diofant.polys.galoistools import gf_crt, gf_crt1, gf_crt2
+from ..core.numbers import igcdex, igcd
+from ..core.mul import prod
+from ..core.compatibility import as_int
+from .primetest import isprime
+from ..polys.domains import ZZ
+from ..polys.galoistools import gf_crt, gf_crt1, gf_crt2
 
 
 def symmetric_residue(a, m):

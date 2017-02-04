@@ -10,15 +10,17 @@ diofant.stats.frv
 
 import random
 
-from diofant.stats.rv import (RandomDomain, SingleDomain, ConditionalDomain,
-                              ProductDomain, PSpace, SinglePSpace, random_symbols,
-                              ProductPSpace, NamedArgsMixin)
-from diofant.functions.special.delta_functions import DiracDelta
-from diofant import (Interval, symbols, sympify, Dummy, Mul,
-                     Integral, And, Or, Piecewise, solve, cacheit, integrate,
-                     oo, Lambda, Expr, S)
-from diofant.solvers.inequalities import reduce_rational_inequalities
-from diofant.polys.polyerrors import PolynomialError
+from .rv import (RandomDomain, SingleDomain, ConditionalDomain,
+                 ProductDomain, PSpace, SinglePSpace, random_symbols,
+                 ProductPSpace, NamedArgsMixin)
+from ..functions import DiracDelta, Piecewise
+from ..core import symbols, sympify, Dummy, Mul, cacheit, oo, Lambda, Expr, S
+from ..logic import And, Or
+from ..sets import Interval
+from ..integrals import integrate, Integral
+from ..solvers import solve
+from ..solvers.inequalities import reduce_rational_inequalities
+from ..polys.polyerrors import PolynomialError
 
 
 class ContinuousDomain(RandomDomain):
@@ -308,7 +310,7 @@ class ContinuousPSpace(PSpace):
         # Other cases can be turned into univariate case
         # by computing a density handled by density computation
         except NotImplementedError:
-            from diofant.stats.rv import density
+            from .rv import density
             expr = condition.lhs - condition.rhs
             dens = density(expr, **kwargs)
             if not isinstance(dens, ContinuousDistribution):

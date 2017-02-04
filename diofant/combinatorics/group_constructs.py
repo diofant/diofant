@@ -1,6 +1,6 @@
-from diofant.combinatorics.perm_groups import PermutationGroup
-from diofant.combinatorics.permutations import Permutation
-from diofant.utilities.iterables import uniq
+from .perm_groups import PermutationGroup
+from .permutations import Permutation
+from ..utilities.iterables import uniq
 
 _af_new = Permutation._af_new
 

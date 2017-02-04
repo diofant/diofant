@@ -2,31 +2,27 @@ from collections import defaultdict
 
 import mpmath
 
-from diofant.core import (Basic, S, Add, Mul, Pow,
-                          Symbol, sympify, expand_mul, expand_func,
-                          Dummy, Expr, factor_terms,
-                          expand_power_exp)
-from diofant.core.compatibility import iterable, ordered, as_int
-from diofant.core.numbers import Float, I, pi, Rational, Integer
-from diofant.core.function import expand_log, count_ops, _mexpand
-from diofant.core.rules import Transform
-from diofant.core.evaluate import global_evaluate
-from diofant.functions import (gamma, exp, sqrt, log, exp_polar,
-                               piecewise_fold)
-from diofant.functions.elementary.hyperbolic import HyperbolicFunction
-from diofant.functions.elementary.integers import ceiling
-from diofant.functions.elementary.complexes import unpolarify
-from diofant.functions.elementary.trigonometric import TrigonometricFunction
-from diofant.functions.combinatorial.factorials import CombinatorialFunction
-from diofant.functions.special.bessel import besselj, besseli, besselk, jn, bessely
-from diofant.utilities.iterables import has_variety
-from diofant.simplify.radsimp import radsimp, fraction
-from diofant.simplify.trigsimp import trigsimp, exptrigsimp
-from diofant.simplify.powsimp import powsimp
-from diofant.simplify.cse_opts import sub_pre, sub_post
-from diofant.simplify.sqrtdenest import sqrtdenest
-from diofant.simplify.combsimp import combsimp
-from diofant.polys import (together, cancel, factor)
+from ..core import (Basic, S, Add, Mul, Pow, Symbol, sympify, expand_mul,
+                    expand_func, Dummy, Expr, factor_terms, expand_power_exp,
+                    Float, I, pi, Rational, Integer, expand_log, count_ops)
+from ..core.compatibility import iterable, ordered, as_int
+from ..core.function import _mexpand
+from ..core.rules import Transform
+from ..core.evaluate import global_evaluate
+from ..functions import (gamma, exp, sqrt, log, exp_polar, piecewise_fold,
+                         ceiling, unpolarify, besselj, besseli, besselk,
+                         jn, bessely)
+from ..functions.elementary.hyperbolic import HyperbolicFunction
+from ..functions.elementary.trigonometric import TrigonometricFunction
+from ..functions.combinatorial.factorials import CombinatorialFunction
+from ..utilities import has_variety
+from .radsimp import radsimp, fraction
+from .trigsimp import trigsimp, exptrigsimp
+from .powsimp import powsimp
+from .cse_opts import sub_pre, sub_post
+from .sqrtdenest import sqrtdenest
+from .combsimp import combsimp
+from ..polys import together, cancel, factor
 
 
 def separatevars(expr, symbols=[], dict=False, force=False):
@@ -198,8 +194,8 @@ def _nthroot_solve(p, n, prec):
     helper function for ``nthroot``
     It denests ``p**Rational(1, n)`` using its minimal polynomial
     """
-    from diofant.polys.numberfields import _minimal_polynomial_sq
-    from diofant.solvers import solve
+    from ..polys.numberfields import _minimal_polynomial_sq
+    from ..solvers import solve
     while n % 2 == 0:
         p = sqrtdenest(sqrt(p))
         n = n // 2
@@ -597,9 +593,9 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     original_expr = expr = signsimp(expr)
 
-    from diofant.simplify.hyperexpand import hyperexpand
-    from diofant.functions.special.bessel import BesselBase
-    from diofant import Sum, Product
+    from .hyperexpand import hyperexpand
+    from ..functions.special.bessel import BesselBase
+    from ..concrete import Sum, Product
 
     if not isinstance(expr, Basic) or not expr.args:  # XXX: temporary hack
         return expr
@@ -1104,7 +1100,7 @@ def besselsimp(expr):
 
 def sum_simplify(s):
     """Main function for Sum simplification"""
-    from diofant.concrete.summations import Sum
+    from ..concrete import Sum
 
     terms = Add.make_args(s)
     s_t = []  # Sum Terms
@@ -1160,7 +1156,7 @@ def sum_simplify(s):
 
 def sum_add(self, other, method=0):
     """Helper function for Sum simplification"""
-    from diofant.concrete.summations import Sum
+    from ..concrete import Sum
 
     if type(self) == type(other):
         if method == 0:
@@ -1187,7 +1183,7 @@ def sum_add(self, other, method=0):
 
 def product_simplify(s):
     """Main function for Product simplification"""
-    from diofant.concrete.products import Product
+    from ..concrete import Product
 
     terms = Mul.make_args(s)
     p_t = []  # Product Terms
@@ -1221,7 +1217,7 @@ def product_simplify(s):
 
 def product_mul(self, other, method=0):
     """Helper function for Product simplification"""
-    from diofant.concrete.products import Product
+    from ..concrete import Product
 
     if type(self) == type(other):
         if method == 0:

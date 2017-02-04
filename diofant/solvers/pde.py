@@ -37,18 +37,16 @@ from functools import reduce
 from itertools import combinations_with_replacement
 import operator
 
-from diofant.simplify import simplify
-from diofant.core import Add
-from diofant.core.compatibility import is_sequence
-from diofant.core.function import Function, expand, AppliedUndef, Subs
-from diofant.core.relational import Equality, Eq
-from diofant.core.symbol import Symbol, Wild, symbols
-from diofant.functions import exp
-from diofant.integrals.integrals import Integral
-from diofant.utilities.iterables import has_dups
-from diofant.solvers.deutils import _preprocess, ode_order, _desolve
-from diofant.solvers.solvers import solve
-from diofant.simplify.radsimp import collect
+from ..simplify import simplify, collect
+from ..core import (Add, Function, expand, Subs, Equality, Eq, Symbol,
+                    Wild, symbols)
+from ..core.compatibility import is_sequence
+from ..core.function import AppliedUndef
+from ..functions import exp
+from ..integrals import Integral
+from ..utilities import has_dups
+from .deutils import _preprocess, ode_order, _desolve
+from .solvers import solve
 
 allhints = (
     "1st_linear_constant_coeff_homogeneous",
@@ -715,8 +713,8 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
       Math 124A - Fall 2010, pp.7
 
     """
-    from diofant.integrals.integrals import integrate
-    from diofant.solvers.ode import dsolve
+    from ..integrals import integrate
+    from .ode import dsolve
 
     xi, eta = symbols("xi eta")
     f = func.func

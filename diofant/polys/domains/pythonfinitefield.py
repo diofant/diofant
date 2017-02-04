@@ -1,8 +1,8 @@
 """Implementation of :class:`PythonFiniteField` class. """
 
-from diofant.polys.domains.finitefield import FiniteField
-from diofant.polys.domains.pythonintegerring import PythonIntegerRing
-from diofant.utilities import public
+from .finitefield import FiniteField
+from .pythonintegerring import PythonIntegerRing
+from ...utilities import public
 
 
 @public

@@ -39,30 +39,27 @@ Examples
 __all__ = []
 
 from . import rv_interface
-from .rv_interface import (
-    cdf, covariance, density, dependent, E, given, independent, P, pspace,
-    random_symbols, sample, sample_iter, skewness, std, variance, where,
-    correlation, moment, cmoment, smoment, sampling_density,
-)
+from .rv_interface import (cdf, covariance, density, dependent, E, given,
+                           independent, P, pspace, random_symbols, sample,
+                           sample_iter, skewness, std, variance, where,
+                           correlation, moment, cmoment, smoment,
+                           sampling_density)
 __all__.extend(rv_interface.__all__)
 
 from . import frv_types
-from .frv_types import (
-    Bernoulli, Binomial, Coin, Die, DiscreteUniform, FiniteRV, Hypergeometric,
-    Rademacher,
-)
+from .frv_types import (Bernoulli, Binomial, Coin, Die, DiscreteUniform,
+                        FiniteRV, Hypergeometric, Rademacher)
 __all__.extend(frv_types.__all__)
 
 from . import crv_types
-from .crv_types import (
-    ContinuousRV,
-    Arcsin, Benini, Beta, BetaPrime, Cauchy, Chi, ChiNoncentral, ChiSquared,
-    Dagum, Erlang, Exponential, FDistribution, FisherZ, Frechet, Gamma,
-    GammaInverse, Kumaraswamy, Laplace, Logistic, LogNormal, Maxwell,
-    Nakagami, Normal, Pareto, QuadraticU, RaisedCosine, Rayleigh,
-    StudentT, Triangular, Uniform, UniformSum, VonMises, Weibull,
-    WignerSemicircle
-)
+from .crv_types import (ContinuousRV, Arcsin, Benini, Beta, BetaPrime,
+                        Cauchy, Chi, ChiNoncentral, ChiSquared,
+                        Dagum, Erlang, Exponential, FDistribution, FisherZ,
+                        Frechet, Gamma, GammaInverse, Kumaraswamy, Laplace,
+                        Logistic, LogNormal, Maxwell, Nakagami, Normal,
+                        Pareto, QuadraticU, RaisedCosine, Rayleigh,
+                        StudentT, Triangular, Uniform, UniformSum,
+                        VonMises, Weibull, WignerSemicircle)
 __all__.extend(crv_types.__all__)
 
 from . import drv_types

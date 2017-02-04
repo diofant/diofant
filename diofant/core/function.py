@@ -51,7 +51,7 @@ from .sympify import sympify
 from .containers import Tuple, Dict
 from .logic import fuzzy_and
 from .evaluate import global_evaluate
-from diofant.utilities.iterables import uniq
+from ..utilities.iterables import uniq
 
 
 def _coeff_isneg(a):
@@ -168,7 +168,7 @@ class FunctionClass(ManagedProperties):
         >>> len(f(1).args)
         1
         """
-        from diofant.sets.sets import FiniteSet
+        from ..sets.sets import FiniteSet
         # XXX it would be nice to handle this in __init__ but there are import
         # problems with trying to import FiniteSet there
         return FiniteSet(*self._nargs) if self._nargs else S.Naturals0
@@ -195,8 +195,8 @@ class Application(Expr, metaclass=FunctionClass):
 
     @cacheit
     def __new__(cls, *args, **options):
-        from diofant.sets.fancysets import Naturals0
-        from diofant.sets.sets import FiniteSet
+        from ..sets.fancysets import Naturals0
+        from ..sets.sets import FiniteSet
 
         args = list(map(sympify, args))
         evaluate = options.pop('evaluate', global_evaluate[0])
@@ -414,7 +414,7 @@ class Function(Application, Expr):
     @classmethod
     def class_key(cls):
         """Nice order of classes."""
-        from diofant.sets.fancysets import Naturals0
+        from ..sets.fancysets import Naturals0
         funcs = {
             'log': 11,
             'sin': 20,
@@ -444,7 +444,7 @@ class Function(Application, Expr):
         fname = self.func.__name__
         try:
             if not hasattr(mpmath, fname):
-                from diofant.utilities.lambdify import MPMATH_TRANSLATIONS
+                from ..utilities.lambdify import MPMATH_TRANSLATIONS
                 fname = MPMATH_TRANSLATIONS[fname]
             func = getattr(mpmath, fname)
         except (AttributeError, KeyError):
@@ -522,7 +522,7 @@ class Function(Application, Expr):
         be called directly; derived classes can overwrite this to implement
         asymptotic expansions.
         """
-        from diofant.utilities.misc import filldedent
+        from ..utilities.misc import filldedent
         raise PoleError(filldedent('''
             Asymptotic expansion of %s around %s is
             not implemented.''' % (type(self), args0)))
@@ -549,12 +549,12 @@ class Function(Application, Expr):
         -1/x - log(x)/x + log(x)/2 + O(1)
 
         """
-        from diofant import Order
-        from diofant.sets.sets import FiniteSet
+        from ..series import Order
+        from ..sets.sets import FiniteSet
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
         if any(isinstance(t, Expr) and t.is_finite is False for t in args0):
-            from diofant import oo, zoo, nan
+            from .numbers import oo, zoo, nan
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
             a = [t.compute_leading_term(x, logx=logx) for t in args]
@@ -661,7 +661,7 @@ class Function(Application, Expr):
         argument whose leading term vanishes as x -> 0 might be encountered.
         See, for example, cos._eval_as_leading_term.
         """
-        from diofant import Order
+        from ..series import Order
         args = [a.as_leading_term(x) for a in self.args]
         o = Order(1, x)
         if any(x in a.free_symbols and o.contains(a) for a in args):
@@ -768,7 +768,7 @@ class WildFunction(Function, AtomicExpr):
     include = set()
 
     def __init__(self, name, **assumptions):
-        from diofant.sets.sets import Set, FiniteSet
+        from ..sets.sets import Set, FiniteSet
         self.name = name
         nargs = assumptions.pop('nargs', S.Naturals0)
         if not isinstance(nargs, Set):
@@ -1001,7 +1001,7 @@ class Derivative(Expr):
         if not variables:
             variables = expr.free_symbols
             if len(variables) != 1:
-                from diofant.utilities.misc import filldedent
+                from ..utilities.misc import filldedent
                 raise ValueError(filldedent('''
                     The variable(s) of differentiation
                     must be supplied to differentiate %s''' % expr))
@@ -1033,7 +1033,7 @@ class Derivative(Expr):
                     i += 1
 
             if i == iwas:  # didn't get an update because of bad input
-                from diofant.utilities.misc import filldedent
+                from ..utilities.misc import filldedent
                 last_digit = int(str(count)[-1])
                 ordinal = 'st' if last_digit == 1 else 'nd' if last_digit == 2 else 'rd' if last_digit == 3 else 'th'
                 raise ValueError(filldedent('''
@@ -1143,8 +1143,8 @@ class Derivative(Expr):
                 )
 
         if nderivs > 1 and assumptions.get('simplify', True):
-            from diofant.core.exprtools import factor_terms
-            from diofant.simplify.simplify import signsimp
+            from .exprtools import factor_terms
+            from ..simplify.simplify import signsimp
             expr = factor_terms(signsimp(expr))
         return expr
 
@@ -1258,7 +1258,7 @@ class Derivative(Expr):
         into the normal evalf. For now, we need a special method.
         """
         import mpmath
-        from diofant.core.expr import Expr
+        from .expr import Expr
         if len(self.free_symbols) != 1 or len(self.variables) != 1:
             raise NotImplementedError('partials and higher order derivatives')
         z = list(self.free_symbols)[0]
@@ -1375,7 +1375,7 @@ class Lambda(Expr):
     is_Function = True
 
     def __new__(cls, variables, expr):
-        from diofant.sets.sets import FiniteSet
+        from ..sets.sets import FiniteSet
         try:
             for v in variables if iterable(variables) else [variables]:
                 if not v.is_Symbol:
@@ -1502,7 +1502,7 @@ class Subs(Expr):
     """
 
     def __new__(cls, expr, variables, point, **assumptions):
-        from diofant import Symbol
+        from .symbol import Symbol
         if not is_sequence(variables, Tuple):
             variables = [variables]
         variables = list(sympify(variables))
@@ -1524,7 +1524,7 @@ class Subs(Expr):
         # to give a variable-independent expression
         pre = "_"
         pts = sorted(set(point), key=default_sort_key)
-        from diofant.printing import StrPrinter
+        from ..printing import StrPrinter
 
         class CustomStrPrinter(StrPrinter):
             def _print_Dummy(self, expr):
@@ -2289,9 +2289,10 @@ def count_ops(expr, visual=False):
     2*ADD + SIN
 
     """
-    from diofant import Integral, Symbol
-    from diofant.simplify.radsimp import fraction
-    from diofant.logic.boolalg import BooleanFunction
+    from .symbol import Symbol
+    from ..integrals import Integral
+    from ..simplify.radsimp import fraction
+    from ..logic.boolalg import BooleanFunction
 
     expr = sympify(expr)
 
@@ -2436,8 +2437,8 @@ def nfloat(expr, n=15, exponent=False):
     x**4.0 + y**0.5
 
     """
-    from diofant.core.power import Pow
-    from diofant.polys.rootoftools import RootOf
+    from .power import Pow
+    from ..polys.rootoftools import RootOf
 
     if iterable(expr, exclude=(str,)):
         if isinstance(expr, (dict, Dict)):
