@@ -16,7 +16,7 @@ def test_solve_poly_system():
 
     pytest.raises(ComputationFailed, lambda: solve_poly_system([0, 1]))
 
-    assert solve_poly_system([y - x, y - x - 1], x, y) is None
+    assert solve_poly_system([y - x, y - x - 1], x, y) == []
 
     assert solve_poly_system([y - x**2, y + x**2], x, y) == [{x: 0, y: 0}]
 

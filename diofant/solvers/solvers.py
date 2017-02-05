@@ -31,7 +31,7 @@ from ..simplify.fu import TR1
 from ..matrices import Matrix, zeros
 from ..polys import roots, cancel, factor, Poly, together, degree
 from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
-from ..utilities import lambdify, filldedent, flatten
+from ..utilities import lambdify, filldedent, flatten, subsets
 from ..utilities.iterables import uniq, generate_bell
 from .polysys import solve_linear_system, solve_poly_system
 from .inequalities import reduce_inequalities
@@ -1460,31 +1460,22 @@ def _solve_system(exprs, symbols, **flags):
 
         else:
             if len(symbols) > len(polys):
-                from ..utilities import subsets
-
                 free = set().union(*[p.free_symbols for p in polys])
-                free = list(ordered(free.intersection(symbols)))
-                got_s = set()
+                free = list(ordered(free & set(symbols)))
+                solved_syms = set()
                 result = []
                 for syms in subsets(free, len(polys)):
                     try:
                         res = solve_poly_system(polys, *syms)
-                        if res:
-                            for r in res:
-                                skip = False
-                                for r1 in r.values():
-                                    if got_s and any([ss in r1.free_symbols
-                                                      for ss in got_s]):
-                                        # sol depends on previously
-                                        # solved symbols: discard it
-                                        skip = True
-                                if not skip:
-                                    got_s.update(syms)
-                                    result.append(r)
+                        for r in res:
+                            if not any(solved_syms & v.free_symbols
+                                       for v in r.values()):
+                                solved_syms.update(syms)
+                                result.append(r)
                     except NotImplementedError:  # pragma: no cover
                         pass
-                if got_s:
-                    solved_syms = list(got_s)
+                if solved_syms:
+                    solved_syms = list(solved_syms)
                 else:  # pragma: no cover
                     raise NotImplementedError('no valid subset found')
             else:

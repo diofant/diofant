@@ -153,7 +153,7 @@ def solve_biquadratic(f, g, opt):
     G = groebner([f, g])
 
     if len(G) == 1 and G[0].is_ground:
-        return
+        return []
 
     if len(G) != 2:
         raise SolveFailed
@@ -254,7 +254,7 @@ def solve_generic(polys, opt):
         basis = groebner(system, gens, polys=True)
 
         if len(basis) == 1 and basis[0].is_ground:
-            return
+            return []
 
         univariate = list(filter(_is_univariate, basis))
 
@@ -295,7 +295,4 @@ def solve_generic(polys, opt):
     except CoercionFailed:  # pragma: no cover
         raise NotImplementedError
 
-    if result is not None:
-        return sorted(result, key=default_sort_key)
-    else:
-        return
+    return sorted(result, key=default_sort_key)
