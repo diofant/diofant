@@ -60,8 +60,9 @@ def test_solve_poly_system():
     assert (solve_poly_system([x + x*y - 3, y + x*y - 4], x, y) ==
             [{x: -3, y: -2}, {x: 1, y: 2}])
 
-    pytest.raises(NotImplementedError,
-                  lambda: solve_poly_system([x**3 - y**3], x, y))
+    assert (solve_poly_system([x**3 - y**3], x, y) ==
+            [{x: y}, {x: y*(-1/2 - sqrt(3)*I/2)}, {x: y*(-1/2 + sqrt(3)*I/2)}])
+
     pytest.raises(PolynomialError, lambda: solve_poly_system([1/x], x))
 
     assert (solve_poly_system([x**6 + x - 1], x) ==

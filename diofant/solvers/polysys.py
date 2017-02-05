@@ -10,7 +10,7 @@ from ..polys.polyerrors import (ComputationFailed, PolificationFailed,
                                 CoercionFailed)
 from ..polys.solvers import solve_lin_sys
 from ..simplify import rcollect, simplify
-from ..utilities import default_sort_key
+from ..utilities import default_sort_key, subsets
 
 
 __all__ = ('solve_linear_system', 'solve_poly_system')
@@ -241,8 +241,16 @@ def solve_generic(polys, opt):
             return []
 
         if not basis.is_zero_dimensional:
-            raise NotImplementedError("only zero-dimensional systems "
-                                      "supported (finite number of solutions)")
+            solutions = []
+            solved_syms = set()
+            for syms in subsets(gens, min(len(system), len(basis))):
+                res = _solve_reduced_system(system, syms)
+                for r in res:
+                    if not any(solved_syms & v.free_symbols
+                               for v in r.values()):
+                        solved_syms.update(syms)
+                        solutions.append(r)
+            return solutions
 
         f = basis[-1]
         gens = f.gens
