@@ -325,10 +325,11 @@ class Add(AssocOp):
         Returns lhs - rhs, but treats arguments like symbols, so things like
         oo - oo return 0, instead of a nan.
         """
-        from . import oo, I, expand_mul
+        from . import oo, I
+        from ..simplify import signsimp
         if lhs == oo and rhs == oo or lhs == oo*I and rhs == oo*I:
             return S.Zero
-        return expand_mul(lhs - rhs)
+        return signsimp(lhs - rhs)
 
     @cacheit
     def as_two_terms(self):
