@@ -158,7 +158,7 @@ def test_simplify_measure():
     assert measure2(simplify(expr2, measure=measure2)) <= measure2(expr2)
 
 
-def test_simplify_issue_1308():
+def test_simplify_sympyissue_4407():
     assert simplify(exp(-Rational(1, 2)) + exp(-Rational(3, 2))) == \
         (1 + E)*exp(-Rational(3, 2))
 

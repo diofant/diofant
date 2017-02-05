@@ -197,7 +197,7 @@ def test_real_imag():
     assert ((1 + 2*I)*(1 + 3*I)).as_real_imag() == (-5, 5)
 
 
-def test_pow_issue_1724():
+def test_pow_sympyissue_4823():
     e = (-1)**Rational(1, 3)
     assert e.conjugate().n() == e.n().conjugate()
     e = (Rational(-2, 3) - (Rational(-29, 54) + sqrt(93)/18)**Rational(1, 3)

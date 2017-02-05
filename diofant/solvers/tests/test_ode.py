@@ -2156,7 +2156,7 @@ def test_sympyissue_4825():
         {'default': None, 'order': 0}
 
 
-def test_constant_renumber_order_issue_5308():
+def test_constant_renumber_order_sympyissue_5308():
     from diofant.utilities.iterables import variations
 
     assert constant_renumber(C1*x + C2*y, "C", 1, 2) == \

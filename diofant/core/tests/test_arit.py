@@ -210,7 +210,7 @@ def test_pow_E():
     assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).n()), S.Exp1)
 
 
-def test_pow_issue_3516():
+def test_pow_sympyissue_3516():
     assert 4**Rational(1, 4) == sqrt(2)
 
 
