@@ -8,14 +8,17 @@ from diofant import (
     Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
     erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow, expand_log,
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
-    root, simplify, atan2, arg, SparseMatrix, Tuple, oo, E, cbrt)
+    root, simplify, atan2, arg, SparseMatrix, Tuple, oo, E, cbrt, sech)
 from diofant.core.function import nfloat
-from diofant.solvers import solve_linear_system, solve_undetermined_coeffs
+from diofant.solvers import solve_undetermined_coeffs
 from diofant.solvers.solvers import _invert, checksol, posify
 from diofant.polys.rootoftools import RootOf
 from diofant.utilities.randtest import verify_numerically as tn
+from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 
-from diofant.abc import a, b, c, x, y, z, t, q, m
+from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l,
+                         m, n, o, p, q, r, x, y, z, t)
+
 
 __all__ = ()
 
@@ -262,7 +265,6 @@ def test_solve_nonlinear():
 
 
 def test_sympyissue_8666():
-    x = symbols('x')
     assert solve(Eq(x**2 - 1/(x**2 - 4), 4 - 1/(x**2 - 4)), x) == []
     assert solve(Eq(x + 1/x, 1/x), x) == []
 
@@ -276,22 +278,12 @@ def test_sympyissue_7190():
 
 
 def test_linear_system():
-    x, y, z, t, n = symbols('x, y, z, t, n')
-
     assert solve([x - 1, x - y, x - 2*y, y - 1], [x, y]) == []
 
     assert solve([x - 1, x - y, x - 2*y, x - 1], [x, y]) == []
     assert solve([x - 1, x - 1, x - y, x - 2*y], [x, y]) == []
 
     assert solve([x + 5*y - 2, -3*x + 6*y - 15], x, y) == {x: -3, y: 1}
-
-    M = Matrix([[0, 0, n*(n + 1), (n + 1)**2, 0],
-                [n + 1, n + 1, -2*n - 1, -(n + 1), 0],
-                [-1, 0, 1, 0, 0]])
-
-    assert solve_linear_system(M, x, y, z, t) == \
-        {x: -t - t/n, z: -t - t/n, y: 0}
-
     assert solve([x + y + z + t, -z - t], x, y, z, t) == {x: -y, z: -t}
 
 
@@ -483,7 +475,6 @@ def test_sympyissue_3725():
 
 
 def test_sympyissue_3870():
-    a, b, c, d = symbols('a b c d')
     A = Matrix(2, 2, [a, b, c, d])
     B = Matrix(2, 2, [0, 2, -3, 0])
     C = Matrix(2, 2, [1, 2, 3, 4])
@@ -684,7 +675,6 @@ def test_sympyissue_4671_4463_4467():
 
 
 def test_sympyissue_5132():
-    r, t = symbols('r,t')
     assert (set(solve([r - x**2 - y**2, tan(t) - y/x], [x, y])) ==
             {(-sqrt(r*sin(t)**2)/tan(t), -sqrt(r*sin(t)**2)),
              (sqrt(r*sin(t)**2)/tan(t), sqrt(r*sin(t)**2))})
@@ -785,8 +775,6 @@ def test_sympyissue_4463():
 
 
 def test_sympyissue_5114():
-    a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r = symbols('a:r')
-
     # there is no 'a' in the equation set but this is how the
     # problem was originally posed
     syms = a, b, c, f, h, k, n
@@ -1166,9 +1154,6 @@ def test_sympyissue_6989():
 
 
 def test_lambert_multivariate():
-    from diofant.abc import a, x, y
-    from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
-
     assert _filtered_gens(Poly(x + 1/x + exp(x) + y), x) == {x, exp(x)}
     assert _lambert(x, x) == []
     assert solve((x**2 - 2*x + 1).subs(x, log(x) + 3*x)) == [LambertW(3*S.Exp1)/3]
@@ -1222,7 +1207,6 @@ def test_lambert_multivariate():
 
 @pytest.mark.xfail
 def test_other_lambert():
-    from diofant.abc import x
     assert solve(3*sin(x) - x*sin(3), x) == [3]
     assert set(solve(3*log(x) - x*log(3))) == {3, -3*LambertW(-log(3)/3)/log(3)}
     a = Rational(6, 5)
@@ -1249,7 +1233,6 @@ def test_rewrite_trig():
 @pytest.mark.xfail
 def test_rewrite_trigh():
     # if this import passes then the test below should also pass
-    from diofant import sech
     assert solve(sinh(x) + sech(x)) == [
         2*atanh(-S.Half + sqrt(5)/2 - sqrt(-2*sqrt(5) + 2)/2),
         2*atanh(-S.Half + sqrt(5)/2 + sqrt(-2*sqrt(5) + 2)/2),
@@ -1295,7 +1278,6 @@ def test_sympyissue_5114_6611():
     # Also check that the solution is relatively small.
     # Note: the system in issue sympy/sympy#6611 solves in about 5 seconds and has
     # an op-count of 138336 (with simplify=False).
-    b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r = symbols('b:r')
     eqs = Matrix([
         [b - c/d + r/d], [c*(1/g + 1/e + 1/d) - f/g - r/d],
         [-c/g + f*(1/j + 1/i + 1/g) - h/i], [-f/i + h*(1/m + 1/l + 1/i) - k/m],
@@ -1427,7 +1409,6 @@ def test_sympyissue_11538():
 
 
 def test_sympyissue_12114():
-    a, b, c, d, e, f, g = symbols('a,b,c,d,e,f,g')
     terms = (1 + a*b + d*e, 1 + a*c + d*f, 1 + b*c + e*f,
              g - a**2 - d**2, g - b**2 - e**2, g - c**2 - f**2)
     s = solve(terms, [a, b, c, d, e, f, g])

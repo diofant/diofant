@@ -2,13 +2,23 @@
 
 import pytest
 
-from diofant import flatten, I, Integer, Poly, QQ, Rational, S, sqrt, symbols
+from diofant import (flatten, I, Integer, Poly, QQ, Rational, S, sqrt,
+                     symbols, Matrix)
 from diofant.polys import PolynomialError, ComputationFailed, RootOf
-from diofant.solvers.polysys import solve_poly_system
+from diofant.solvers.polysys import solve_linear_system, solve_poly_system
 
-from diofant.abc import x, y, z
+from diofant.abc import x, y, z, t, n
 
 __all__ = ()
+
+
+def test_solve_linear_system():
+    M = Matrix([[0, 0, n*(n + 1), (n + 1)**2, 0],
+                [n + 1, n + 1, -2*n - 1, -(n + 1), 0],
+                [-1, 0, 1, 0, 0]])
+
+    assert solve_linear_system(M, x, y, z, t) == {x: -t - t/n,
+                                                  z: -t - t/n, y: 0}
 
 
 def test_solve_poly_system():
