@@ -603,7 +603,7 @@ def test_sympyissue_3539():
     assert (6/x**2).match(a/x) == {a: 6/x}
 
 
-def test_gh_issue_2711():
+def test_sympyissue_2711():
     x = Symbol('x')
     f = meijerg(((), ()), ((0,), ()), x)
     a = Wild('a')

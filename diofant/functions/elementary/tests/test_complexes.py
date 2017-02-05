@@ -298,7 +298,7 @@ def test_as_real_imag():
 
 
 @pytest.mark.xfail
-def test_sign_issue_3068():
+def test_sign_sympyissue_6167():
     n = pi**1000
     i = int(n)
     assert (n - i).round() == 1  # doesn't hang
@@ -703,7 +703,7 @@ def test_sympyissue_4754_derivative_conjugate():
     assert (f(y).conjugate()).diff(y) == -(f(y).diff(y)).conjugate()
 
 
-def test_derivatives_issue_4757():
+def test_derivatives_sympyissue_4757():
     x = Symbol('x', extended_real=True)
     y = Symbol('y', imaginary=True)
     f = Function('f')

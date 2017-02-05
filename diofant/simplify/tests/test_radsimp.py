@@ -151,7 +151,7 @@ def test_radsimp():
     assert radsimp(eq) == eq
 
 
-def test_radsimp_issue_3214():
+def test_radsimp_sympyissue_6313():
     c, p = symbols('c p', positive=True)
     s = sqrt(c**2 - p**2)
     b = (c + I*p - s)/(c + I*p + s)

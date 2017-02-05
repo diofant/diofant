@@ -295,7 +295,7 @@ def test_experimental_lambify():
 
 @disable_print
 @pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
-def test_append_issue_7140():
+def test_append_sympyissue_7140():
     x = Symbol('x')
     p1 = plot(x)
     p2 = plot(x**2)

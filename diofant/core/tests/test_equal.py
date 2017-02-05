@@ -65,11 +65,7 @@ def test_cmp_bug2():
     assert (Symbol != t)
 
 
-def test_cmp_issue_4357():
-    """ Check that Basic subclasses can be compared with sympifiable objects.
-
-    https://github.com/sympy/sympy/issues/4357
-    """
+def test_cmp_sympyissue_4357():
     assert not (Symbol == 1)
     assert (Symbol != 1)
     assert not (Symbol == 'x')

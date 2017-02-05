@@ -405,9 +405,7 @@ def test_evalf_integrals():
     assert NS(Integral(x, (x, y))) == 'Integral(x, (x, y))'
 
 
-def test_evalf_issue_939():
-    # https://github.com/sympy/sympy/issues/4038
-
+def test_evalf_sympyissue_4038():
     # The output form of an integral may differ by a step function between
     # revisions, making this test a bit useless. This can't be said about
     # other two tests. For now, all values of this evaluation are used here,

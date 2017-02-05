@@ -1564,7 +1564,7 @@ def test_jordan_form():
     assert m == J
 
 
-def test_jordan_form_complex_issue_9274():
+def test_jordan_form_complex_sympyissue_9274():
     A = Matrix([[ 2,  4,  1,  0],
                 [-4,  2,  0,  1],
                 [ 0,  0,  2,  4],
@@ -2133,7 +2133,7 @@ def test_zero_dimension_multiply():
     assert zeros(0, 3)*zeros(3, 0) == Matrix()
 
 
-def test_slice_issue_2884():
+def test_slice_sympyissue_5983():
     m = Matrix(2, 2, range(4))
     assert m[1, :] == Matrix([[2, 3]])
     assert m[-1, :] == Matrix([[2, 3]])
@@ -2143,7 +2143,7 @@ def test_slice_issue_2884():
     pytest.raises(IndexError, lambda: m[2, 2])
 
 
-def test_slice_issue_3401():
+def test_slice_sympyissue_6500():
     assert zeros(0, 3)[:, -1].shape == (0, 1)
     assert zeros(3, 0)[0, :] == Matrix(1, 0, [])
 

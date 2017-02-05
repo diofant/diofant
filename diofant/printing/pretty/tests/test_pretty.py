@@ -1,3 +1,5 @@
+import warnings
+
 import pytest
 
 from diofant import (
@@ -268,8 +270,7 @@ def test_upretty_subs_missing_in_24():
     assert upretty( Symbol('F_x') ) == 'Fₓ'
 
 
-def test_missing_in_2X_issue_9047():
-    import warnings
+def test_missing_in_2X_sympyissue_9047():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         assert upretty( Symbol('F_h') ) == 'Fₕ'

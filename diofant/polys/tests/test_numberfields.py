@@ -241,7 +241,7 @@ def test_minpoly_compose():
                   88704*x**6 - 8640*x**4 + 324*x**2 - 3)
 
 
-def test_minpoly_issue_7113():
+def test_minpoly_sympyissue_7113():
     # see discussion in https://github.com/sympy/sympy/pull/2234
     from diofant.simplify.simplify import nsimplify
     r = nsimplify(pi, tolerance=0.000000001)
@@ -250,7 +250,7 @@ def test_minpoly_issue_7113():
     2734577732179183863586489182929671773182898498218854181690460140337930774573792597743853652058046464
 
 
-def test_minpoly_issue_7574():
+def test_minpoly_sympyissue_7574():
     ex = -(-1)**Rational(1, 3) + (-1)**Rational(2, 3)
     assert minimal_polynomial(ex, x) == x + 1
 

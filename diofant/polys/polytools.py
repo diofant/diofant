@@ -6357,8 +6357,8 @@ class GroebnerBasis(Basic):
         if not ring.domain.is_Exact:
             raise ValueError('Domain must be exact, got %s' % ring.domain)
 
-        for i, poly in enumerate(polys):
-            polys[i] = ring.from_dict(poly.rep.to_dict())
+        polys = [ring.from_dict(_.rep.to_dict())
+                 for _ in polys if not _.is_zero]
 
         G = _groebner(polys, ring, method=opt.method)
         G = [Poly._from_dict(g, opt) for g in G]

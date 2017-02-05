@@ -2,13 +2,23 @@
 
 import pytest
 
-from diofant import flatten, I, Integer, Poly, QQ, Rational, S, sqrt, symbols
+from diofant import (flatten, I, Integer, Poly, QQ, Rational, S, sqrt,
+                     symbols, Matrix)
 from diofant.polys import PolynomialError, ComputationFailed, RootOf
-from diofant.solvers.polysys import solve_poly_system
+from diofant.solvers.polysys import solve_linear_system, solve_poly_system
 
-from diofant.abc import x, y, z
+from diofant.abc import x, y, z, t, n
 
 __all__ = ()
+
+
+def test_solve_linear_system():
+    M = Matrix([[0, 0, n*(n + 1), (n + 1)**2, 0],
+                [n + 1, n + 1, -2*n - 1, -(n + 1), 0],
+                [-1, 0, 1, 0, 0]])
+
+    assert solve_linear_system(M, x, y, z, t) == {x: -t - t/n,
+                                                  z: -t - t/n, y: 0}
 
 
 def test_solve_poly_system():
@@ -16,7 +26,7 @@ def test_solve_poly_system():
 
     pytest.raises(ComputationFailed, lambda: solve_poly_system([0, 1]))
 
-    assert solve_poly_system([y - x, y - x - 1], x, y) is None
+    assert solve_poly_system([y - x, y - x - 1], x, y) == []
 
     assert solve_poly_system([y - x**2, y + x**2], x, y) == [{x: 0, y: 0}]
 
@@ -100,16 +110,18 @@ def test_solve_biquadratic():
     assert all(len(r.find(query)) == 1 for r in flatten(result))
 
 
-def test_solve_issue_3686():
+def test_solve_sympyissue_6785():
     roots = solve_poly_system([((x - 5)**2/250000 +
-                                (y - Rational(5, 10))**2/250000) - 1, x], x, y)
+                                (y - Rational(5, 10))**2/250000) - 1, x],
+                              x, y)
     assert roots == [{x: 0, y: Rational(1, 2) + 15*sqrt(1111)},
                      {x: 0, y: Rational(1, 2) - 15*sqrt(1111)}]
 
 
 @pytest.mark.xfail
-def test_solve_issue_3686_1():
-    roots = solve_poly_system([((x - 5)**2/250000 + (y - 5.0/10)**2/250000) - 1, x], x, y)
+def test_solve_sympyissue_6785_RR():
+    roots = solve_poly_system([((x - 5)**2/250000 +
+                                (y - 5.0/10)**2/250000) - 1, x], x, y)
     # TODO: does this really have to be so complicated?!
     assert len(roots) == 2
     assert roots[0][x] == 0

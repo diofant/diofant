@@ -390,7 +390,7 @@ def test_add():
     assert e.subs(-y + 1, x) == ans
 
 
-def test_subs_issue_4009():
+def test_subs_sympyissue_4009():
     assert (I*Symbol('a')).subs(1, 2) == I*Symbol('a')
 
 
@@ -667,7 +667,7 @@ def test_sympyissue_11159():
     assert exp0.subs(exp1, exp0) == E**4
 
 
-def test_RootOf_issue_10092():
+def test_RootOf_sympyissue_10092():
     x = Symbol('x', real=True)
     eq = x**3 - 17*x**2 + 81*x - 118
     r = RootOf(eq, 0)
