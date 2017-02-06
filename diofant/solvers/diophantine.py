@@ -230,7 +230,7 @@ def classify_diop(eq):
     else:
         var = list(eq.free_symbols)
         var.sort(key=default_sort_key)
-        coeff = dict(reversed(t.as_independent(*var)) for t in eq.args)
+        coeff = {v: k for k, v in (t.as_independent(*var) for t in eq.args)}
 
     for c in coeff:
         if not isinstance(coeff[c], Integer):
@@ -1585,7 +1585,7 @@ def _find_DN(var, coeff):
 
     simplified = _mexpand(Subs(eq, (x, y), (u, v)).doit())
 
-    coeff = dict(reversed(t.as_independent(*[X, Y])) for t in simplified.args)
+    coeff = {v: k for k, v in (t.as_independent(X, Y) for t in simplified.args)}
 
     for term in [X**2, Y**2, Integer(1)]:
         if term not in coeff.keys():

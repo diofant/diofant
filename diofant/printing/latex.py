@@ -213,8 +213,8 @@ class LatexPrinter(Printer):
             if not first and _coeff_isneg(expr):
                 return True
 
-        if (not last and any([expr.has(x) for
-                              x in (Integral, Piecewise, Product, Sum)])):
+        if (not last and any(expr.has(x) for
+                             x in (Integral, Piecewise, Product, Sum))):
             return True
 
         return False

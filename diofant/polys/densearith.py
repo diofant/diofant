@@ -1674,7 +1674,7 @@ def dmp_max_norm(f, u, K):
 
     v = u - 1
 
-    return max([ dmp_max_norm(c, v, K) for c in f ])
+    return max(dmp_max_norm(c, v, K) for c in f)
 
 
 def dup_l1_norm(f, K):

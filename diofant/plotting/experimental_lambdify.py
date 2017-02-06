@@ -217,7 +217,7 @@ class Lambdifier:
 
         # Constructing the argument string
         # - check
-        if not all([isinstance(a, (Dummy, Symbol)) for a in args]):
+        if not all(isinstance(a, (Dummy, Symbol)) for a in args):
             raise ValueError('The arguments must be Symbols.')
         # - use numbered symbols
         syms = numbered_symbols(exclude=expr.free_symbols)

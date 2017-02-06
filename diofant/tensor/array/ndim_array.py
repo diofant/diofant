@@ -133,7 +133,7 @@ class NDimArray:
         if isinstance(shape, (int, Integer)):
             shape = (shape,)
 
-        if any([not isinstance(dim, (int, Integer)) for dim in shape]):
+        if any(not isinstance(dim, (int, Integer)) for dim in shape):
             raise TypeError("Shape should contain integers only.")
 
         return tuple(shape), iterable

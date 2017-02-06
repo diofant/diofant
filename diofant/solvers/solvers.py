@@ -1062,7 +1062,7 @@ def _solve(f, *symbols, **flags):
                 # no need to check but we should simplify if desired
                 if flags.get('simplify', True):
                     d = simplify(d)
-                if got_s and any([ss in d.free_symbols for ss in got_s]):
+                if got_s and any(ss in d.free_symbols for ss in got_s):
                     # sol depends on previously solved symbols: discard it
                     continue
                 got_s.add(n)
@@ -1075,7 +1075,7 @@ def _solve(f, *symbols, **flags):
             try:
                 soln = _solve(f, s, **flags)
                 for sol in soln:
-                    if got_s and any([ss in sol.free_symbols for ss in got_s]):
+                    if got_s and any(ss in sol.free_symbols for ss in got_s):
                         # sol depends on previously solved symbols: discard it
                         continue
                     got_s.add(s)
@@ -1544,7 +1544,7 @@ def _solve_system(exprs, symbols, **flags):
                     # result in the new result list; use copy since the
                     # solution for s in being added in-place
                     for sol in soln:
-                        if got_s and any([ss in sol.free_symbols for ss in got_s]):
+                        if got_s and any(ss in sol.free_symbols for ss in got_s):
                             # sol depends on previously solved symbols: discard it
                             continue
                         rnew = r.copy()

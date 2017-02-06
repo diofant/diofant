@@ -101,8 +101,8 @@ class Partition(FiniteSet):
         [[1], [2, 3]]
         """
         if self._partition is None:
-            self._partition = sorted([sorted(p, key=default_sort_key)
-                                      for p in self.args])
+            self._partition = sorted(sorted(p, key=default_sort_key)
+                                     for p in self.args)
         return self._partition
 
     def __add__(self, other):
@@ -232,7 +232,7 @@ class Partition(FiniteSet):
         for i, part in enumerate(partition):
             for j in part:
                 rgs[j] = i
-        return tuple(rgs[i] for i in sorted([i for p in partition for i in p],
+        return tuple(rgs[i] for i in sorted((i for p in partition for i in p),
                                             key=default_sort_key))
 
     @classmethod

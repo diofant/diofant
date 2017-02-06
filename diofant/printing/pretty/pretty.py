@@ -785,7 +785,7 @@ class PrettyPrinter(Printer):
                                                   + ' ' + vectstrs[i])
                         o1[i] = tempstr
                 o1 = [x.split('\n') for x in o1]
-                n_newlines = max([len(x) for x in o1])
+                n_newlines = max(len(x) for x in o1)
                 for parts in o1:
                     lengths.append(len(parts[0]))
                     for j in range(n_newlines):
@@ -824,7 +824,7 @@ class PrettyPrinter(Printer):
         len_args = len(pexpr.args)
 
         # max widths
-        maxw = [max([P[i, j].width() for i in range(len_args)])
+        maxw = [max(P[i, j].width() for i in range(len_args))
                 for j in range(2)]
 
         # FIXME: Refactor this code and matrix into some tabular environment.

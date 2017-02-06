@@ -689,7 +689,7 @@ class cos(TrigonometricFunction):
                 raise ValueError("n has to be greater than 0")
             if n == 1 or 0 == n % 2:
                 return False
-            primes = dict( [(p, 0) for p in cst_table_some ] )
+            primes = {p: 0 for p in cst_table_some}
             assert 1 not in primes
             for p_i in primes:
                 while 0 == n % p_i:

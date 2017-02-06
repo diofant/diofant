@@ -279,7 +279,7 @@ def test_matplotlib_advanced_2():
 
 
 # Tests for exception handling in experimental_lambdify
-def test_experimental_lambify():
+def test_experimental_lambdify():
     x = Symbol('x')
     f = lambdify([x], Max(x, 5))
     # XXX should f be tested? If f(2) is attempted, an
@@ -291,6 +291,8 @@ def test_experimental_lambify():
     x = Symbol('x-3')
     f = lambdify([x], x + 1)
     assert f(1) == 2
+
+    pytest.raises(ValueError, lambda: lambdify([1], x))
 
 
 @disable_print

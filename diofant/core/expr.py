@@ -87,8 +87,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             else:
                 args = expr.args
 
-            args = tuple(
-                [ default_sort_key(arg, order=order) for arg in args ])
+            args = tuple(default_sort_key(arg, order=order) for arg in args)
 
         args = (len(args), tuple(args))
         exp = exp.sort_key(order=order)

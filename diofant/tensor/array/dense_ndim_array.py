@@ -29,8 +29,7 @@ class DenseNDimArray(NDimArray):
         3
 
         """
-        if isinstance(index, tuple) and any([isinstance(i, slice) for i in index]):
-
+        if isinstance(index, tuple) and any(isinstance(i, slice) for i in index):
             def slice_expand(s, dim):
                 if not isinstance(s, slice):
                     return s,

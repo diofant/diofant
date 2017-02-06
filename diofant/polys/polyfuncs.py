@@ -95,7 +95,7 @@ def symmetrize(F, *gens, **args):
 
             for i, (monom, coeff) in enumerate(f.terms()):
                 if all(monom[i] >= monom[i + 1] for i in indices):
-                    height = max([ n*m for n, m in zip(weights, monom) ])
+                    height = max(n*m for n, m in zip(weights, monom))
 
                     if height > _height:
                         _height, _monom, _coeff = height, monom, coeff

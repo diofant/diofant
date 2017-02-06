@@ -218,7 +218,7 @@ def _buchberger(f, ring):
 
     while F:
         # select p with minimum monomial according to the monomial ordering
-        h = min([f[x] for x in F], key=lambda f: order(f.LM))
+        h = min((f[x] for x in F), key=lambda f: order(f.LM))
         ih = I[h]
         F.remove(ih)
         G, CP = update(G, CP, ih)

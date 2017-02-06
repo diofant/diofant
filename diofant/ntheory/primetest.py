@@ -260,8 +260,9 @@ def _mr_safe_helper(_s):
             factors = '== bases'
         else:
             factors = str(factors)
-        return ' # %s stot = %s clear %s' % tuple(
-            [str(x).replace('L', '') for x in (list(bases), tot, factors)])
+        return ' # %s stot = %s clear %s' % tuple(str(x).replace('L', '')
+                                                  for x in (list(bases), tot,
+                                                            factors))
 
     _r = [int(_x) for _x in _s.split('[')[1].split(']')[0].split(',')]
     return _info(_r)

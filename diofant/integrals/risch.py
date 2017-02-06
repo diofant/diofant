@@ -1217,7 +1217,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
             H.append((s, h))
 
-    b = all([not cancel(i.as_expr()).has(DE.t, z) for i, _ in Np])
+    b = all(not cancel(i.as_expr()).has(DE.t, z) for i, _ in Np)
 
     return H, b
 

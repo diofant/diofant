@@ -808,9 +808,9 @@ class _TensorDataLazyEvaluator(CantSympify):
                 if srch in self._substitutions_dict_tensmul:
                     return self._substitutions_dict_tensmul[srch]
             data_list = [self.data_tensmul_from_tensorhead(i, i.components[0]) for i in tensmul_list]
-            if all([i is None for i in data_list]):
+            if all(i is None for i in data_list):
                 return
-            if any([i is None for i in data_list]):
+            if any(i is None for i in data_list):
                 raise ValueError("Mixing tensors with associated components "
                                  "data with tensors without components data")
             data_result, tensmul_result = self.data_product_tensors(data_list, tensmul_list)
@@ -819,9 +819,9 @@ class _TensorDataLazyEvaluator(CantSympify):
         if isinstance(key, TensAdd):
             sumvar = S.Zero
             data_list = [i.data for i in key.args]
-            if all([i is None for i in data_list]):
+            if all(i is None for i in data_list):
                 return
-            if any([i is None for i in data_list]):
+            if any(i is None for i in data_list):
                 raise ValueError("Mixing tensors with associated components "
                                  "data with tensors without components data")
             for i in data_list:
@@ -3094,7 +3094,7 @@ class Tensor(TensExpr):
 
     @property
     def free_args(self):
-        return sorted([x[0] for x in self.free])
+        return sorted(x[0] for x in self.free)
 
     def perm2tensor(self, g, canon_bp=False):
         """
@@ -3335,7 +3335,7 @@ class TensMul(TensExpr):
         args = TensMul._flatten(args)
 
         is_canon_bp = kw_args.get('is_canon_bp', False)
-        if not any([isinstance(arg, TensExpr) for arg in args]):
+        if not any(isinstance(arg, TensExpr) for arg in args):
             tids = TIDS([], [], [])
         else:
             tids_list = [arg._tids for arg in args if isinstance(arg, (Tensor, TensMul))]
@@ -3346,9 +3346,6 @@ class TensMul(TensExpr):
                     is_canon_bp = kw_args.get('is_canon_bp', arg._is_canon_bp)
             tids = reduce(lambda a, b: a*b, tids_list)
 
-        if any([isinstance(arg, TensAdd) for arg in args]):
-            add_args = TensAdd._tensAdd_flatten(args)
-            return TensAdd(*add_args)
         coeff = reduce(lambda a, b: a*b, [S.One] + [arg for arg in args if not isinstance(arg, TensExpr)])
         args = tids.get_tensors()
         if coeff != 1:
@@ -3387,7 +3384,7 @@ class TensMul(TensExpr):
 
     @property
     def free_args(self):
-        return sorted([x[0] for x in self.free])
+        return sorted(x[0] for x in self.free)
 
     @property
     def components(self):
