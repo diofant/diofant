@@ -2,13 +2,14 @@ import pytest
 
 from diofant import (abc, Add, cos, Derivative, diff, exp, Float, Function,
                      I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt,
-                     Symbol, symbols, Wild, pi, meijerg)
+                     Symbol, symbols, Wild, pi, meijerg, WildFunction)
+
+from diofant.abc import x, y, a, b, c, gamma, mu
 
 __all__ = ()
 
 
 def test_symbol():
-    x = Symbol('x')
     a, b, c, p, q = map(Wild, 'abcpq')
 
     e = x
@@ -23,7 +24,6 @@ def test_symbol():
 
 
 def test_add():
-    x, y, a, b, c = map(Symbol, 'xyabc')
     p, q, r = map(Wild, 'pqr')
 
     e = a + b
@@ -52,7 +52,6 @@ def test_add():
 
 
 def test_power():
-    x, y, a, b, c = map(Symbol, 'xyabc')
     p, q, r = map(Wild, 'pqr')
 
     e = (x + y)**a
@@ -71,8 +70,6 @@ def test_power():
 
 
 def test_match_exclude():
-    x = Symbol('x')
-    y = Symbol('y')
     p = Wild("p")
     q = Wild("q")
     r = Wild("r")
@@ -114,7 +111,6 @@ def test_match_exclude():
 
 
 def test_mul():
-    x, y, a, b, c = map(Symbol, 'xyabc')
     p, q = map(Wild, 'pq')
 
     e = 4*x
@@ -140,7 +136,6 @@ def test_mul():
 
 
 def test_mul_noncommutative():
-    x, y = symbols('x y')
     A, B = symbols('A B', commutative=False)
     u, v = symbols('u v', cls=Wild)
     w = Wild('w', commutative=False)
@@ -174,7 +169,6 @@ def test_mul_noncommutative():
 
 
 def test_complex():
-    a, b, c = map(Symbol, 'abc')
     x, y = map(Wild, 'xy')
 
     assert (1 + I).match(x + I) == {x: 1}
@@ -187,8 +181,6 @@ def test_complex():
 
 
 def test_functions():
-    from diofant.core.function import WildFunction
-    x = Symbol('x')
     g = WildFunction('g')
     p = Wild('p')
     q = Wild('q')
@@ -202,8 +194,6 @@ def test_functions():
 
 @pytest.mark.xfail
 def test_functions_X1():
-    from diofant.core.function import WildFunction
-    x = Symbol('x')
     g = WildFunction('g')
     p = Wild('p')
     q = Wild('q')
@@ -213,7 +203,6 @@ def test_functions_X1():
 
 
 def test_interface():
-    x, y = map(Symbol, 'xy')
     p, q = map(Wild, 'pq')
 
     assert (x + 1).match(p + 1) == {p: x}
@@ -227,7 +216,6 @@ def test_interface():
 
 
 def test_derivative1():
-    x, y = map(Symbol, 'xy')
     p, q = map(Wild, 'pq')
 
     f = Function('f', nargs=1)
@@ -242,7 +230,6 @@ def test_derivative1():
 
 def test_derivative_bug1():
     f = Function("f")
-    x = Symbol("x")
     a = Wild("a", exclude=[f, x])
     b = Wild("b", exclude=[f])
     pattern = a * Derivative(f(x), x, x) + b
@@ -254,7 +241,6 @@ def test_derivative_bug1():
 
 def test_derivative2():
     f = Function("f")
-    x = Symbol("x")
     a = Wild("a", exclude=[f, x])
     b = Wild("b", exclude=[f])
     e = Derivative(f(x), x)
@@ -275,7 +261,6 @@ def test_match_deriv_bug1():
     n = Function('n')
     l = Function('l')
 
-    x = Symbol('x')
     p = Wild('p')
 
     e = diff(l(x), x)/x - diff(diff(n(x), x), x)/2 - \
@@ -287,41 +272,35 @@ def test_match_deriv_bug1():
 
 
 def test_match_bug2():
-    x, y = map(Symbol, 'xy')
     p, q, r = map(Wild, 'pqr')
     res = (x + y).match(p + q + r)
     assert (p + q + r).subs(res) == x + y
 
 
 def test_match_bug3():
-    x, a, b = map(Symbol, 'xab')
     p = Wild('p')
     assert (b*x*exp(a*x)).match(x*exp(p*x)) is None
 
 
 def test_match_bug4():
-    x = Symbol('x')
     p = Wild('p')
     e = x
     assert e.match(-p*x) == {p: -1}
 
 
 def test_match_bug5():
-    x = Symbol('x')
     p = Wild('p')
     e = -x
     assert e.match(-p*x) == {p: 1}
 
 
 def test_match_bug6():
-    x = Symbol('x')
     p = Wild('p')
     e = x
     assert e.match(3*p*x) == {p: Rational(1)/3}
 
 
 def test_match_polynomial():
-    x = Symbol('x')
     a = Wild('a', exclude=[x])
     b = Wild('b', exclude=[x])
     c = Wild('c', exclude=[x])
@@ -336,7 +315,6 @@ def test_match_polynomial():
 
 
 def test_exclude():
-    x, y, a = map(Symbol, 'xya')
     p = Wild('p', exclude=[1, x])
     q = Wild('q')
     r = Wild('r', exclude=[sin, y])
@@ -368,7 +346,6 @@ def test_floats():
 
 def test_Derivative_bug1():
     f = Function("f")
-    x = abc.x
     a = Wild("a", exclude=[f(x)])
     b = Wild("b", exclude=[f(x)])
     eq = f(x).diff(x)
@@ -399,7 +376,6 @@ def test_match_wild_wild():
 
 
 def test_combine_inverse():
-    x, y = symbols("x y")
     assert Mul._combine_inverse(x*I*y, x*I) == y
     assert Mul._combine_inverse(x*I*y, y*I) == x
     assert Mul._combine_inverse(oo*I*y, y*I) == oo
@@ -409,7 +385,6 @@ def test_combine_inverse():
 
 
 def test_sympyissue_3773():
-    x = symbols('x')
     z, phi, r = symbols('z phi r')
     c, A, B, N = symbols('c A B N', cls=Wild)
     l = Wild('l', exclude=(0,))
@@ -431,7 +406,6 @@ def test_sympyissue_3773():
 
 
 def test_sympyissue_3883():
-    from diofant.abc import gamma, mu, x
     f = (-gamma * (x - mu)**2 - log(gamma) + log(2*pi))/2
     a, b, c = symbols('a b c', cls=Wild, exclude=(gamma,))
 
@@ -447,7 +421,6 @@ def test_sympyissue_3883():
 
 
 def test_sympyissue_4418():
-    x = Symbol('x')
     a, b, c = symbols('a b c', cls=Wild, exclude=(x,))
     f, g = symbols('f g', cls=Function)
 
@@ -461,7 +434,6 @@ def test_sympyissue_4418():
 
 def test_sympyissue_4700():
     f = Function('f')
-    x = Symbol('x')
     a, b = symbols('a b', cls=Wild, exclude=(f(x),))
 
     p = a*f(x) + b
@@ -478,7 +450,6 @@ def test_sympyissue_4700():
 
 def test_sympyissue_5168():
     a, b, c = symbols('a b c', cls=Wild)
-    x = Symbol('x')
     f = Function('f')
 
     assert x.match(a) == {a: x}
@@ -503,7 +474,6 @@ def test_sympyissue_5168():
 
 
 def test_sympyissue_4559():
-    x = Symbol('x')
     e = Symbol('e')
     w = Wild('w', exclude=[x])
     y = Wild('y')
@@ -554,7 +524,6 @@ def test_sympyissue_4559():
 
 def test_sympyissue_4883():
     a = Wild('a')
-    x = Symbol('x')
 
     e = [i**2 for i in (x - 2, 2 - x)]
     p = [i**2 for i in (x - a, a - x)]
@@ -564,8 +533,6 @@ def test_sympyissue_4883():
 
 
 def test_sympyissue_4319():
-    x, y = symbols('x y')
-
     p = -x*(Rational(1, 8) - y)
     ans = {S.Zero, y - Rational(1, 8)}
 
@@ -583,28 +550,24 @@ def test_sympyissue_4319():
 
 def test_sympyissue_3778():
     p, c, q = symbols('p c q', cls=Wild)
-    x = Symbol('x')
 
     assert (sin(x)**2).match(sin(p)*sin(q)*c) == {q: x, c: 1, p: x}
     assert (2*sin(x)).match(sin(p) + sin(q) + c) == {q: x, c: 0, p: x}
 
 
 def test_sympyissue_6103():
-    x = Symbol('x')
     a = Wild('a')
     assert (-I*x*oo).match(I*a*oo) == {a: -x}
 
 
 def test_sympyissue_3539():
     a = Wild('a')
-    x = Symbol('x')
     assert (x - 2).match(a - x) is None
     assert (6/x).match(a*x) is None
     assert (6/x**2).match(a/x) == {a: 6/x}
 
 
 def test_sympyissue_2711():
-    x = Symbol('x')
     f = meijerg(((), ()), ((0,), ()), x)
     a = Wild('a')
     b = Wild('b')
@@ -614,3 +577,13 @@ def test_sympyissue_2711():
     assert f.find(a + b) == \
         {meijerg(((), ()), ((S.Zero,), ()), x), x, S.Zero}
     assert f.find(a**2) == {meijerg(((), ()), ((S.Zero,), ()), x), x}
+
+
+@pytest.mark.xfail
+def test_diofantissue_423():
+    a1, b1, c1, d1, a2, b2, c2, d2 = symbols('a1 b1 c1 d1 a2 b2 c2 d2',
+                                             cls=Wild, exclude=[x])
+    pat = (a1*x + b1)/(c1*x + d1) + (a2*x + b2)/(c2*x + d2)
+    expr = (2*x + 9)/(x + 4) + (4*x + 3)/(5*x + 12)
+    ans = {a1: 2, a2: 4, b1: 9, b2: 3, c1: 1, c2: 5, d1: 4, d2: 12}
+    assert expr.match(pat) == ans
