@@ -435,8 +435,6 @@ def trigsimp(expr, **opts):
     If 'combined', first run the groebner basis algorithm with small
     default parameters, then run the 'matching' algorithm. 'fu' runs the
     collection of trigonometric transformations described by Fu, et al.
-    (see the `fu` docstring).
-
 
     Examples
     ========
@@ -464,6 +462,10 @@ def trigsimp(expr, **opts):
     >>> trigsimp(t)
     tanh(x)**7
 
+    See Also
+    ========
+
+    diofant.simplify.fu.fu
     """
     from .fu import fu
     from ..matrices import MatrixExpr
@@ -616,9 +618,9 @@ def trigsimp_old(expr, **opts):
     are forwarded to ``trigsimp_groebner``, please refer to its docstring.
     If 'combined', first run the groebner basis algorithm with small
     default parameters, then run the 'matching' algorithm. 'fu' runs the
-    collection of trigonometric transformations described by Fu, et al.
-    (see the `fu` docstring) while `futrig` runs a subset of Fu-transforms
-    that mimic the behavior of `trigsimp`.
+    collection of trigonometric transformations described by Fu, et al.,
+    while `futrig` runs a subset of Fu-transfoms that mimic the behavior
+    of `trigsimp`.
 
     compare:
     - show input and output from `trigsimp` and `futrig` when different,
@@ -650,6 +652,11 @@ def trigsimp_old(expr, **opts):
           futrig: tan(x)**2
     cot(x)**(-2)
 
+    See Also
+    ========
+
+    diofant.simplify.fu.fu
+    futrig
     """
     old = expr
     first = opts.pop('first', True)

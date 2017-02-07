@@ -3170,9 +3170,11 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
 
     Where `u_2 g(u_2) + h(u_2) \ne 0` and `f(x) \ne 0`.
 
-    See also the docstrings of
-    :py:meth:`~diofant.solvers.ode.ode_1st_homogeneous_coeff_best` and
-    :py:meth:`~diofant.solvers.ode.ode_1st_homogeneous_coeff_subs_dep_div_indep`.
+    See Also
+    ========
+
+    diofant.solvers.ode.ode_1st_homogeneous_coeff_best
+    diofant.solvers.ode.ode_1st_homogeneous_coeff_subs_dep_div_indep
 
     Examples
     ========

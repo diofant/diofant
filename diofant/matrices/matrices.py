@@ -923,8 +923,7 @@ class MatrixBase(DefaultPrinting):
         """Return the least-square fit to the data.
 
         By default the cholesky_solve routine is used (method='CH'); other
-        methods of matrix inversion can be used. To find out which are
-        available, see the docstring of the .inv() method.
+        methods of matrix inversion can be used.
 
         Examples
         ========
@@ -972,6 +971,10 @@ class MatrixBase(DefaultPrinting):
         >>> (S*xy - r).norm().n(2)
         1.5
 
+        See Also
+        ========
+
+        inv
         """
         if method == 'CH':
             return self.cholesky_solve(rhs)
@@ -981,7 +984,10 @@ class MatrixBase(DefaultPrinting):
     def solve(self, rhs, method='GE'):
         """Return solution to self*soln = rhs using given inversion method.
 
-        For a list of possible inversion methods, see the .inv() docstring.
+        See Also
+        ========
+
+        inv
         """
         if not self.is_square:
             if self.rows < self.cols:

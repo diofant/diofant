@@ -85,6 +85,15 @@ trigsimp
 ^^^^^^^^
 .. autofunction:: trigsimp
 
+futrig
+^^^^^^
+.. autofunction:: futrig
+
+fu
+^^
+.. module:: diofant.simplify.fu
+.. autofunction:: fu
+
 Power simplification
 --------------------
 .. module:: diofant.simplify.powsimp

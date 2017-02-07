@@ -46,7 +46,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
     This function uses __import__() to import the module.  To pass additional
     options to __import__(), use the __import__kwargs keyword argument.  For
     example, to import a submodule A.B, you must pass a nonempty fromlist option
-    to __import__.  See the docstring of __import__().
+    to __import__.
 
     This catches ImportError to determine if the module is not installed.  To
     catch additional errors, pass them as a tuple to the catch keyword
@@ -85,6 +85,11 @@ def import_module(module, min_module_version=None, min_python_version=None,
     >>> matplotlib = import_module('matplotlib',
     ...                            __import__kwargs={'fromlist':['pyplot']},
     ...                            catch=(RuntimeError,))
+
+    See Also
+    ========
+
+    __import__
     """
     warn_old_version = True if DIOFANT_DEBUG else warn_old_version
     warn_not_installed = True if DIOFANT_DEBUG else warn_not_installed

@@ -132,8 +132,8 @@ def fuzzy_or(args):
     """
     Or in fuzzy logic. Returns True (any True), False (all False), or None
 
-    See the docstrings of fuzzy_and and fuzzy_not for more info.  fuzzy_or is
-    related to the two by the standard De Morgan's law.
+    Examples
+    ========
 
     >>> from diofant.core.logic import fuzzy_or
     >>> fuzzy_or([True, False])
@@ -144,6 +144,11 @@ def fuzzy_or(args):
     False
     >>> print(fuzzy_or([False, None]))
     None
+
+    See Also
+    ========
+
+    fuzzy_and, fuzzy_not
     """
     return fuzzy_not(fuzzy_and(fuzzy_not(i) for i in args))
 

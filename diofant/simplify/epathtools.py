@@ -20,8 +20,10 @@ class EPath:
         selector  ::= range | query range?
         path      ::= "/" selector ("/" selector)*
 
-    See the docstring of the epath() function.
+    See Also
+    ========
 
+    epath
     """
 
     def __new__(cls, path):

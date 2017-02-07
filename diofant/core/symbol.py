@@ -604,8 +604,10 @@ def var(names, **args):
     >>> x.is_extended_real and y.is_extended_real
     True
 
-    See :func:`symbols` documentation for more details on what kinds of
-    arguments can be passed to :func:`var`.
+    See Also
+    ========
+
+    symbols
     """
     def traverse(symbols, frame):
         """Recursively inject symbols to the global namespace. """

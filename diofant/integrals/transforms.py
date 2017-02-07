@@ -286,10 +286,11 @@ class MellinTransform(IntegralTransform):
     """
     Class representing unevaluated Mellin transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute Mellin transforms, see the :func:`mellin_transform`
-    docstring.
+    IntegralTransform
+    mellin_transform
     """
 
     _name = 'Mellin'
@@ -769,10 +770,11 @@ class InverseMellinTransform(IntegralTransform):
     """
     Class representing unevaluated inverse Mellin transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute inverse Mellin transforms, see the
-    :func:`inverse_mellin_transform` docstring.
+    IntegralTransform
+    inverse_mellin_transform
     """
 
     _name = 'Inverse Mellin'
@@ -1063,10 +1065,11 @@ class LaplaceTransform(IntegralTransform):
     """
     Class representing unevaluated Laplace transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute Laplace transforms, see the :func:`laplace_transform`
-    docstring.
+    IntegralTransform
+    laplace_transform
     """
 
     _name = 'Laplace'
@@ -1206,10 +1209,11 @@ class InverseLaplaceTransform(IntegralTransform):
     """
     Class representing unevaluated inverse Laplace transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute inverse Laplace transforms, see the
-    :func:`inverse_laplace_transform` docstring.
+    IntegralTransform
+    inverse_laplace_transform
     """
 
     _name = 'Inverse Laplace'
@@ -1336,10 +1340,11 @@ class FourierTransform(FourierTypeTransform):
     """
     Class representing unevaluated Fourier transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute Fourier transforms, see the :func:`fourier_transform`
-    docstring.
+    IntegralTransform
+    fourier_transform
     """
 
     _name = 'Fourier'
@@ -1388,10 +1393,11 @@ class InverseFourierTransform(FourierTypeTransform):
     """
     Class representing unevaluated inverse Fourier transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute inverse Fourier transforms, see the
-    :func:`inverse_fourier_transform` docstring.
+    IntegralTransform
+    inverse_fourier_transform
     """
 
     _name = 'Inverse Fourier'
@@ -1499,10 +1505,11 @@ class SineTransform(SineCosineTypeTransform):
     """
     Class representing unevaluated sine transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute sine transforms, see the :func:`sine_transform`
-    docstring.
+    IntegralTransform
+    sine_transform
     """
 
     _name = 'Sine'
@@ -1552,10 +1559,11 @@ class InverseSineTransform(SineCosineTypeTransform):
     """
     Class representing unevaluated inverse sine transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute inverse sine transforms, see the
-    :func:`inverse_sine_transform` docstring.
+    IntegralTransform
+    inverse_sine_transform
     """
 
     _name = 'Inverse Sine'
@@ -1606,10 +1614,11 @@ class CosineTransform(SineCosineTypeTransform):
     """
     Class representing unevaluated cosine transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute cosine transforms, see the :func:`cosine_transform`
-    docstring.
+    IntegralTransform
+    cosine_transform
     """
 
     _name = 'Cosine'
@@ -1659,10 +1668,11 @@ class InverseCosineTransform(SineCosineTypeTransform):
     """
     Class representing unevaluated inverse cosine transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute inverse cosine transforms, see the
-    :func:`inverse_cosine_transform` docstring.
+    IntegralTransform
+    inverse_cosine_transform
     """
 
     _name = 'Inverse Cosine'
@@ -1766,10 +1776,11 @@ class HankelTransform(HankelTypeTransform):
     """
     Class representing unevaluated Hankel transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute Hankel transforms, see the :func:`hankel_transform`
-    docstring.
+    IntegralTransform
+    hankel_transform
     """
 
     _name = 'Hankel'
@@ -1822,10 +1833,11 @@ class InverseHankelTransform(HankelTypeTransform):
     """
     Class representing unevaluated inverse Hankel transforms.
 
-    For usage of this class, see the :class:`~diofant.integrals.transforms.IntegralTransform` docstring.
+    See Also
+    ========
 
-    For how to compute inverse Hankel transforms, see the
-    :func:`inverse_hankel_transform` docstring.
+    IntegralTransform
+    inverse_hankel_transform
     """
 
     _name = 'Inverse Hankel'

@@ -62,14 +62,17 @@ def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
 def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True):
     """ List of strings for all expr->expr.arg pairs
 
-    See the docstring of dotprint for explanations of the options.
-
     >>> from diofant.printing.dot import dotedges
     >>> from diofant.abc import x
     >>> for e in dotedges(x+2):
     ...     print(e)
     "Add(Symbol('x'), Integer(2))_()" -> "Integer(2)_(0,)";
     "Add(Symbol('x'), Integer(2))_()" -> "Symbol('x')_(1,)";
+
+    See Also
+    ========
+
+    dotprint
     """
     if atom(expr):
         return []
