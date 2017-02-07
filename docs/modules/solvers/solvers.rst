@@ -28,13 +28,13 @@ is the symbol that we want to solve the equation for.
 
 .. autofunction:: diofant.solvers.solvers.checksol
 
-Ordinary Differential equations (ODEs)
---------------------------------------
+Ordinary Differential equations
+-------------------------------
 
 See :ref:`ode-docs`.
 
-Partial Differential Equations (PDEs)
--------------------------------------
+Partial Differential Equations
+------------------------------
 
 See :ref:`pde-docs`.
 
@@ -65,8 +65,8 @@ Systems of Polynomial Equations
 
 .. autofunction:: diofant.solvers.polysys.solve_poly_system
 
-Diophantine Equations (DEs)
----------------------------
+Diophantine Equations
+---------------------
 
 See :ref:`diophantine-docs`
 
