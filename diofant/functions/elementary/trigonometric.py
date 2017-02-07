@@ -2185,7 +2185,7 @@ class asec(InverseTrigonometricFunction):
     .. math::
         \lim_{z \to 0}-i*(log(-\sqrt{1 - z^2} + 1) / z)
 
-    simplifies to :math:`-i*log(z/2 + O(z^3))` which ultimately evaluates to
+    simplifies to `-i*log(z/2 + O(z^3))` which ultimately evaluates to
     ``zoo``.
 
     As ``asex(x)`` = ``asec(1/x)``, a similar argument can be given for

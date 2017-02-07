@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.core import (S, pi, oo, symbols, Function, Rational, Integer,
-                          Tuple, Symbol, I, sympify)
+                          Tuple, Symbol, I)
 from diofant.core import EulerGamma, GoldenRatio, Catalan, Lambda
 from diofant.functions import Piecewise, sqrt, ceiling, exp, sin, cos
 from diofant.utilities.lambdify import implemented_function
@@ -319,8 +319,8 @@ def test_octave_not_supported():
 
 def test_trick_indent_with_end_else_words():
     # words starting with "end" or "else" do not confuse the indenter
-    t1 = sympify('endless')
-    t2 = sympify('elsewhere')
+    t1 = Symbol('endless')
+    t2 = Symbol('elsewhere')
     pw = Piecewise((t1, x < 0), (t2, x <= 1), (1, True))
     assert mcode(pw, inline=False) == (
         "if (x < 0)\n"

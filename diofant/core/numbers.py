@@ -1032,7 +1032,7 @@ class Rational(Number):
     Examples
     ========
 
-    >>> from diofant import Rational, nsimplify, sympify, pi
+    >>> from diofant import Rational, nsimplify, pi
     >>> Rational(3)
     3
     >>> Rational(1, 2)
@@ -1066,12 +1066,9 @@ class Rational(Number):
     >>> Rational(".1")
     1/10
 
-    The conversion of other types of strings can be handled by
-    the sympify() function, and conversion of floats to expressions
-    or simple fractions can be handled with nsimplify:
+    The conversion of floats to expressions or simple fractions can
+    be handled with nsimplify:
 
-    >>> sympify('3**2/10')  # general expressions
-    9/10
     >>> nsimplify(.3)  # numbers that have a simple form
     3/10
 

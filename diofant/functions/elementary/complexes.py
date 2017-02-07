@@ -597,7 +597,7 @@ class conjugate(Function):
     is given by changing the sign of the imaginary part.
 
     Thus, the conjugate of the complex number
-    :math:`a + i b` (where a and b are real numbers) is :math:`a - i b`
+    `a + i b` (where a and b are real numbers) is `a - i b`
 
     Examples
     ========

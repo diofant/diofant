@@ -140,7 +140,7 @@ class exp_polar(Function):
 
 def exp(arg, **kwargs):
     """
-    The exponential function, :math:`e^x`.
+    The exponential function, `e^x`.
 
     See Also
     ========

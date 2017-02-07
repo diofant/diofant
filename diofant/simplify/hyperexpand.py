@@ -2427,8 +2427,9 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
             c0 = 2
         if expr.has(oo, zoo, -oo, nan):
             # XXX this actually should not happen, but consider
-            # sympify('meijerg(((0, -1/2, 0, -1/2, 1/2), ()), ((0,),
-            #                  (-1/2, -1/2, -1/2, -1)), exp_polar(I*pi))/4')
+            # meijerg(((0, -S.Half, 0, -S.Half, S.Half), ()),
+            #          ((0,), (-S.Half, -S.Half, -S.Half, -1)),
+            #          exp_polar(I*pi))/4
             c0 = 3
         return c0, expr.count(hyper), expr.count_ops()
 

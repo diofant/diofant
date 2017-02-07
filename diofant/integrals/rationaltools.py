@@ -8,9 +8,9 @@ from ..polys import Poly, resultant, ZZ, RootSum, roots, cancel
 def ratint(f, x, **flags):
     """Performs indefinite integration of rational functions.
 
-    Given a field :math:`K` and a rational function :math:`f = p/q`,
-    where :math:`p` and :math:`q` are polynomials in :math:`K[x]`,
-    returns a function :math:`g` such that :math:`f = g'`.
+    Given a field `K` and a rational function `f = p/q`,
+    where `p` and `q` are polynomials in `K[x]`,
+    returns a function `g` such that `f = g'`.
 
     >>> from diofant.integrals.rationaltools import ratint
     >>> from diofant.abc import x

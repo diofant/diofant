@@ -4711,8 +4711,14 @@ def test_pretty_Contains():
 
 
 def test_sympyissue_8292():
-    from diofant.core import sympify
-    e = sympify('((x+x**4)/(x-1))-(2*(x-1)**4/(x-1)**4)', evaluate=False)
+    e = Add(Mul(Add(x**4, x),
+                Pow(Add(x, -1, evaluate=False), -1,
+                    evaluate=False),
+                evaluate=False),
+            Mul(-2, Pow(Add(x, -1, evaluate=False), -4, evaluate=False),
+                Pow(Add(x, -1, evaluate=False), 4, evaluate=False),
+                evaluate=False),
+            evaluate=False)
     ucode_str = \
 """\
            4    4    \n\
@@ -4753,8 +4759,10 @@ def test_sympyissue_4335():
 
 
 def test_sympyissue_8344():
-    from diofant.core import sympify
-    e = sympify('2*x*y**2/1**2 + 1', evaluate=False)
+    e = Add(Mul(2, x, y**2,
+                Pow(Pow(1, 2, evaluate=False),
+                    -1, evaluate=False), evaluate=False),
+            1, evaluate=False)
     ucode_str = \
 """\
      2    \n\

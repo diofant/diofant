@@ -7,7 +7,7 @@ from diofant import (
     gamma, GoldenRatio, hyper, hypersimp, I, Integral, integrate, log,
     logcombine, Matrix, Mul, nsimplify, oo, pi, Piecewise,
     posify, rad, Rational, S, separatevars, signsimp, simplify,
-    sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan,
+    sin, sinh, solve, sqrt, Symbol, symbols, tan,
     zoo, Sum, Lt, Integer, sstr, Number, cancel,
     besselj, besseli, exp_polar, cosine_transform)
 from diofant.core.mul import _keep_coeff
@@ -129,14 +129,18 @@ def test_simplify_complex():
 
 def test_simplify_ratio():
     # roots of x**3-3*x+5
-    roots = ['(1/2 - sqrt(3)*I/2)*(sqrt(21)/2 + 5/2)**(1/3) + 1/((1/2 - '
-             'sqrt(3)*I/2)*(sqrt(21)/2 + 5/2)**(1/3))',
-             '1/((1/2 + sqrt(3)*I/2)*(sqrt(21)/2 + 5/2)**(1/3)) + '
-             '(1/2 + sqrt(3)*I/2)*(sqrt(21)/2 + 5/2)**(1/3)',
-             '-(sqrt(21)/2 + 5/2)**(1/3) - 1/(sqrt(21)/2 + 5/2)**(1/3)']
+    roots = [(S.Half - sqrt(3)*I/2) *
+             (sqrt(21)/2 + Rational(5, 2))**Rational(1, 3) +
+             1/((S.Half - sqrt(3)*I/2)*(sqrt(21)/2 +
+                                        Rational(5, 2))**Rational(1, 3)),
+             1/((S.Half + sqrt(3)*I/2) *
+             (sqrt(21)/2 + Rational(5, 2))**Rational(1, 3)) +
+             (S.Half + sqrt(3)*I/2)*(sqrt(21)/2 +
+                                     Rational(5, 2))**Rational(1, 3),
+             -(sqrt(21)/2 + Rational(5, 2))**Rational(1, 3) -
+             1/(sqrt(21)/2 + Rational(5, 2))**Rational(1, 3)]
 
     for root in roots:
-        root = sympify(root)
         assert count_ops(simplify(root, ratio=1)) <= count_ops(root)
         # If ratio=oo, simplify() is always applied:
         assert simplify(root, ratio=oo) is not root
@@ -298,13 +302,12 @@ def test_nsimplify():
     assert nsimplify(1 - GoldenRatio) == (1 - sqrt(5))/2
     assert nsimplify((1 + sqrt(5))/4, [GoldenRatio]) == GoldenRatio/2
     assert nsimplify(2/GoldenRatio, [GoldenRatio]) == 2*GoldenRatio - 2
-    assert nsimplify(exp(5*pi*I/3, evaluate=False)) == \
-        sympify('1/2 - sqrt(3)*I/2')
-    assert nsimplify(sin(3*pi/5, evaluate=False)) == \
-        sympify('sqrt(sqrt(5)/8 + 5/8)')
+    assert nsimplify(exp(5*pi*I/3, evaluate=False)) == S.Half - sqrt(3)*I/2
+    assert nsimplify(sin(3*pi/5, evaluate=False)) == sqrt(sqrt(5)/8 +
+                                                          Rational(5, 8))
     assert nsimplify(sqrt(atan('1', evaluate=False))*(2 + I), [pi]) == \
         sqrt(pi) + sqrt(pi)/2*I
-    assert nsimplify(2 + exp(2*atan('1/4')*I)) == sympify('49/17 + 8*I/17')
+    assert nsimplify(2 + exp(2*atan('1/4')*I)) == Rational(49, 17) + 8*I/17
     assert nsimplify(pi, tolerance=0.01) == Rational(22, 7)
     assert nsimplify(pi, tolerance=0.001) == Rational(355, 113)
     assert nsimplify(0.33333, tolerance=1e-4) == Rational(1, 3)
@@ -313,8 +316,8 @@ def test_nsimplify():
         2**Rational(1, 3)
     assert nsimplify(x + .5, rational=True) == Rational(1, 2) + x
     assert nsimplify(1/.3 + x, rational=True) == Rational(10, 3) + x
-    assert nsimplify(log(3).n(), rational=True) == \
-        sympify('109861228866811/100000000000000')
+    assert nsimplify(log(3).n(), rational=True) == Rational(109861228866811,
+                                                            100000000000000)
     assert nsimplify(Float(0.272198261287950), [pi, log(2)]) == pi*log(2)/8
     assert nsimplify(Float(0.272198261287950).n(3), [pi, log(2)]) == \
         -pi/4 - log(2) + Rational(7, 4)

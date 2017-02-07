@@ -7,8 +7,8 @@ The ``integrals`` module in Diofant implements methods to calculate definite and
 
 Principal method in this module is :func:`~diofant.integrals.integrals.integrate`
 
-  - ``integrate(f, x)`` returns the indefinite integral :math:`\int f\,dx`
-  - ``integrate(f, (x, a, b))`` returns the definite integral :math:`\int_{a}^{b} f\,dx`
+  - ``integrate(f, x)`` returns the indefinite integral `\int f\,dx`
+  - ``integrate(f, (x, a, b))`` returns the definite integral `\int_{a}^{b} f\,dx`
 
 Examples
 --------

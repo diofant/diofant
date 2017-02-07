@@ -152,7 +152,7 @@ def Arcsin(name, a=0, b=1):
     .. math::
         f(x) := \frac{1}{\pi\sqrt{(x-a)(b-x)}}
 
-    with :math:`x \in [a,b]`. It must hold that :math:`-\infty < a < b < \infty`.
+    with `x \in [a,b]`. It must hold that `-\infty < a < b < \infty`.
 
     Parameters
     ==========
@@ -292,7 +292,7 @@ def Beta(name, alpha, beta):
     .. math::
         f(x) := \frac{x^{\alpha-1}(1-x)^{\beta-1}} {\mathrm{B}(\alpha,\beta)}
 
-    with :math:`x \in [0,1]`.
+    with `x \in [0,1]`.
 
     Parameters
     ==========
@@ -359,7 +359,7 @@ def BetaPrime(name, alpha, beta):
     .. math::
         f(x) := \frac{x^{\alpha-1} (1+x)^{-\alpha -\beta}}{B(\alpha,\beta)}
 
-    with :math:`x > 0`.
+    with `x > 0`.
 
     Parameters
     ==========
@@ -478,7 +478,7 @@ def Chi(name, k):
     .. math::
         f(x) := \frac{2^{1-k/2}x^{k-1}e^{-x^2/2}}{\Gamma(k/2)}
 
-    with :math:`x \geq 0`.
+    with `x \geq 0`.
 
     Parameters
     ==========
@@ -598,7 +598,7 @@ def ChiSquared(name, k):
         f(x) := \frac{1}{2^{\frac{k}{2}}\Gamma\left(\frac{k}{2}\right)}
                 x^{\frac{k}{2}-1} e^{-\frac{x}{2}}
 
-    with :math:`x \geq 0`.
+    with `x \geq 0`.
 
     Parameters
     ==========
@@ -661,7 +661,7 @@ def Dagum(name, p, a, b):
         f(x) := \frac{a p}{x} \left( \frac{\left(\tfrac{x}{b}\right)^{a p}}
                 {\left(\left(\tfrac{x}{b}\right)^a + 1 \right)^{p+1}} \right)
 
-    with :math:`x > 0`.
+    with `x > 0`.
 
     Parameters
     ==========
@@ -712,7 +712,7 @@ def Erlang(name, k, l):
     .. math::
         f(x) := \frac{\lambda^k x^{k-1} e^{-\lambda x}}{(k-1)!}
 
-    with :math:`x \in [0,\infty]`.
+    with `x \in [0,\infty]`.
 
     Parameters
     ==========
@@ -881,7 +881,7 @@ def FDistribution(name, d1, d2):
                 {(d_1 x + d_2)^{d_1 + d_2}}}}
                 {x \mathrm{B} \left(\frac{d_1}{2}, \frac{d_2}{2}\right)}
 
-    with :math:`x > 0`.
+    with `x > 0`.
 
     .. TODO - What do these parameters mean?
 
@@ -1026,14 +1026,14 @@ def Frechet(name, a, s=1, m=0):
         f(x) := \frac{\alpha}{s} \left(\frac{x-m}{s}\right)^{-1-\alpha}
                  e^{-(\frac{x-m}{s})^{-\alpha}}
 
-    with :math:`x \geq m`.
+    with `x \geq m`.
 
     Parameters
     ==========
 
-    a : Real number, :math:`a \in \left(0, \infty\right)` the shape
-    s : Real number, :math:`s \in \left(0, \infty\right)` the scale
-    m : Real number, :math:`m \in \left(-\infty, \infty\right)` the minimum
+    a : Real number, `a \in \left(0, \infty\right)` the shape
+    s : Real number, `s \in \left(0, \infty\right)` the scale
+    m : Real number, `m \in \left(-\infty, \infty\right)` the minimum
 
     Returns
     =======
@@ -1095,7 +1095,7 @@ def Gamma(name, k, theta):
     .. math::
         f(x) := \frac{1}{\Gamma(k) \theta^k} x^{k - 1} e^{-\frac{x}{\theta}}
 
-    with :math:`x \in [0,1]`.
+    with `x \in [0,1]`.
 
     Parameters
     ==========
@@ -1185,7 +1185,7 @@ def GammaInverse(name, a, b):
         f(x) := \frac{\beta^\alpha}{\Gamma(\alpha)} x^{-\alpha - 1}
                 \exp\left(\frac{-\beta}{x}\right)
 
-    with :math:`x > 0`.
+    with `x > 0`.
 
     Parameters
     ==========
@@ -1255,7 +1255,7 @@ def Kumaraswamy(name, a, b):
     .. math::
         f(x) := a b x^{a-1} (1-x^a)^{b-1}
 
-    with :math:`x \in [0,1]`.
+    with `x \in [0,1]`.
 
     Parameters
     ==========
@@ -1434,13 +1434,13 @@ def LogNormal(name, mean, std):
         f(x) := \frac{1}{x\sqrt{2\pi\sigma^2}}
                 e^{-\frac{\left(\ln x-\mu\right)^2}{2\sigma^2}}
 
-    with :math:`x \geq 0`.
+    with `x \geq 0`.
 
     Parameters
     ==========
 
     mu : Real number, the log-scale
-    sigma : Real number, :math:`\sigma^2 > 0` a shape
+    sigma : Real number, `\sigma^2 > 0` a shape
 
     Returns
     =======
@@ -1508,7 +1508,7 @@ def Maxwell(name, a):
     .. math::
         f(x) := \sqrt{\frac{2}{\pi}} \frac{x^2 e^{-x^2/(2a^2)}}{a^3}
 
-    with :math:`x \geq 0`.
+    with `x \geq 0`.
 
     .. TODO - what does the parameter mean?
 
@@ -1575,7 +1575,7 @@ def Nakagami(name, mu, omega):
         f(x) := \frac{2\mu^\mu}{\Gamma(\mu)\omega^\mu} x^{2\mu-1}
                 \exp\left(-\frac{\mu}{\omega}x^2 \right)
 
-    with :math:`x > 0`.
+    with `x > 0`.
 
     Parameters
     ==========
@@ -1659,7 +1659,7 @@ def Normal(name, mean, std):
     ==========
 
     mu : Real number, the mean
-    sigma : Real number, :math:`\sigma^2 > 0` the variance
+    sigma : Real number, `\sigma^2 > 0` the variance
 
     Returns
     =======
@@ -1745,7 +1745,7 @@ def Pareto(name, xm, alpha):
     .. math::
         f(x) := \frac{\alpha\,x_m^\alpha}{x^{\alpha+1}}
 
-    with :math:`x \in [x_m,\infty]`.
+    with `x \in [x_m,\infty]`.
 
     Parameters
     ==========
@@ -1810,13 +1810,13 @@ def QuadraticU(name, a, b):
     .. math::
         f(x) := \alpha (x-\beta)^2
 
-    with :math:`x \in [a,b]`.
+    with `x \in [a,b]`.
 
     Parameters
     ==========
 
     a : Real number
-    b : Real number, :math:`a < b`
+    b : Real number, `a < b`
 
     Returns
     =======
@@ -1886,7 +1886,7 @@ def RaisedCosine(name, mu, s):
     .. math::
         f(x) := \frac{1}{2s}\left(1+\cos\left(\frac{x-\mu}{s}\pi\right)\right)
 
-    with :math:`x \in [\mu-s,\mu+s]`.
+    with `x \in [\mu-s,\mu+s]`.
 
     Parameters
     ==========
@@ -1952,7 +1952,7 @@ def Rayleigh(name, sigma):
     .. math ::
         f(x) := \frac{x}{\sigma^2} e^{-x^2/2\sigma^2}
 
-    with :math:`x > 0`.
+    with `x > 0`.
 
     Parameters
     ==========
@@ -2094,9 +2094,9 @@ def Triangular(name, a, b, c):
     Parameters
     ==========
 
-    a : Real number, :math:`a \in \left(-\infty, \infty\right)`
-    b : Real number, :math:`a < b`
-    c : Real number, :math:`a \leq c \leq b`
+    a : Real number, `a \in \left(-\infty, \infty\right)`
+    b : Real number, `a < b`
+    c : Real number, `a \leq c \leq b`
 
     Returns
     =======
@@ -2188,13 +2188,13 @@ def Uniform(name, left, right):
                   0               & \text{otherwise}
                 \end{cases}
 
-    with :math:`x \in [a,b]`.
+    with `x \in [a,b]`.
 
     Parameters
     ==========
 
-    a : Real number, :math:`-\infty < a` the left boundary
-    b : Real number, :math:`a < b < \infty` the right boundary
+    a : Real number, `-\infty < a` the left boundary
+    b : Real number, `a < b < \infty` the right boundary
 
     Returns
     =======
@@ -2339,7 +2339,7 @@ def VonMises(name, mu, k):
     .. math::
         f(x) := \frac{e^{\kappa\cos(x-\mu)}}{2\pi I_0(\kappa)}
 
-    with :math:`x \in [0,2\pi]`.
+    with `x \in [0,2\pi]`.
 
     Parameters
     ==========
@@ -2418,7 +2418,7 @@ def Weibull(name, alpha, beta):
     Parameters
     ==========
 
-    lambda : Real number, :math:`\lambda > 0` a scale
+    lambda : Real number, `\lambda > 0` a scale
     k : Real number, `k > 0` a shape
 
     Returns
@@ -2482,7 +2482,7 @@ def WignerSemicircle(name, R):
     .. math::
         f(x) := \frac2{\pi R^2}\,\sqrt{R^2-x^2}
 
-    with :math:`x \in [-R,R]`.
+    with `x \in [-R,R]`.
 
     Parameters
     ==========

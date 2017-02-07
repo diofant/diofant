@@ -72,8 +72,8 @@ class hyper(TupleParametersBase):
     possible domain.
 
     The hypergeometric function depends on two vectors of parameters, called
-    the numerator parameters :math:`a_p`, and the denominator parameters
-    :math:`b_q`. It also has an argument :math:`z`. The series definition is
+    the numerator parameters `a_p`, and the denominator parameters
+    `b_q`. It also has an argument `z`. The series definition is
 
     .. math ::
         {}_pF_q\left(\begin{matrix} a_1, \ldots, a_p \\ b_1, \ldots, b_q \end{matrix}
@@ -81,22 +81,22 @@ class hyper(TupleParametersBase):
         = \sum_{n=0}^\infty \frac{(a_1)_n \ldots (a_p)_n}{(b_1)_n \ldots (b_q)_n}
                             \frac{z^n}{n!},
 
-    where :math:`(a)_n = (a)(a+1)\ldots(a+n-1)` denotes the rising factorial.
+    where `(a)_n = (a)(a+1)\ldots(a+n-1)` denotes the rising factorial.
 
-    If one of the :math:`b_q` is a non-positive integer then the series is
+    If one of the `b_q` is a non-positive integer then the series is
     undefined unless one of the `a_p` is a larger (i.e. smaller in
-    magnitude) non-positive integer. If none of the :math:`b_q` is a
-    non-positive integer and one of the :math:`a_p` is a non-positive
+    magnitude) non-positive integer. If none of the `b_q` is a
+    non-positive integer and one of the `a_p` is a non-positive
     integer, then the series reduces to a polynomial. To simplify the
-    following discussion, we assume that none of the :math:`a_p` or
-    :math:`b_q` is a non-positive integer. For more details, see the
+    following discussion, we assume that none of the `a_p` or
+    `b_q` is a non-positive integer. For more details, see the
     references.
 
-    The series converges for all :math:`z` if :math:`p \le q`, and thus
-    defines an entire single-valued function in this case. If :math:`p =
-    q+1` the series converges for :math:`|z| < 1`, and can be continued
-    analytically into a half-plane. If :math:`p > q+1` the series is
-    divergent for all :math:`z`.
+    The series converges for all `z` if `p \le q`, and thus
+    defines an entire single-valued function in this case. If `p =
+    q+1` the series converges for `|z| < 1`, and can be continued
+    analytically into a half-plane. If `p > q+1` the series is
+    divergent for all `z`.
 
     Note: The hypergeometric function constructor currently does *not* check
     if the parameters actually yield a well-defined function.
@@ -104,7 +104,7 @@ class hyper(TupleParametersBase):
     Examples
     ========
 
-    The parameters :math:`a_p` and :math:`b_q` can be passed as arbitrary
+    The parameters `a_p` and `b_q` can be passed as arbitrary
     iterables, for example:
 
     >>> from diofant.functions import hyper
@@ -316,9 +316,9 @@ class meijerg(TupleParametersBase):
 
     The Meijer G-function depends on four sets of parameters. There are
     "*numerator parameters*"
-    :math:`a_1, \ldots, a_n` and :math:`a_{n+1}, \ldots, a_p`, and there are
+    `a_1, \ldots, a_n` and `a_{n+1}, \ldots, a_p`, and there are
     "*denominator parameters*"
-    :math:`b_1, \ldots, b_m` and :math:`b_{m+1}, \ldots, b_q`.
+    `b_1, \ldots, b_m` and `b_{m+1}, \ldots, b_q`.
     Confusingly, it is traditionally denoted as follows (note the position
     of `m`, `n`, `p`, `q`, and how they relate to the lengths of the four
     parameter vectors):
@@ -339,13 +339,13 @@ class meijerg(TupleParametersBase):
          \prod_{j=1}^n \Gamma(1 - a_j + s)}{\prod_{j=m+1}^q \Gamma(1- b_j +s)
          \prod_{j=n+1}^p \Gamma(a_j - s)} z^s \mathrm{d}s,
 
-    where :math:`\Gamma(z)` is the gamma function. There are three possible
+    where `\Gamma(z)` is the gamma function. There are three possible
     contours which we will not describe in detail here (see the references).
     If the integral converges along more than one of them the definitions
-    agree. The contours all separate the poles of :math:`\Gamma(1-a_j+s)`
-    from the poles of :math:`\Gamma(b_k-s)`, so in particular the G function
-    is undefined if :math:`a_j - b_k \in \mathbb{Z}_{>0}` for some
-    :math:`j \le n` and :math:`k \le m`.
+    agree. The contours all separate the poles of `\Gamma(1-a_j+s)`
+    from the poles of `\Gamma(b_k-s)`, so in particular the G function
+    is undefined if `a_j - b_k \in \mathbb{Z}_{>0}` for some
+    `j \le n` and `k \le m`.
 
     The conditions under which one of the contours yields a convergent integral
     are complicated and we do not state them here, see the references.

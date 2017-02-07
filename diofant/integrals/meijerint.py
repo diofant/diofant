@@ -2009,7 +2009,7 @@ def _meijerint_definite_4(f, x, only_double=False):
 def meijerint_inversion(f, x, t):
     r"""
     Compute the inverse laplace transform
-    :math:\int_{c+i\infty}^{c-i\infty} f(x) e^{tx) dx,
+    `\int_{c+i\infty}^{c-i\infty} f(x) e^{tx) dx`,
     for real c larger than the real part of all singularities of f.
     Note that ``t`` is always assumed real and positive.
 

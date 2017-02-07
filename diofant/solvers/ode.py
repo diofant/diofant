@@ -6205,9 +6205,9 @@ def lie_heuristic_abaco2_unique_unknown(match, comp=False):
 
        If not, then check if
 
-       a] :math:`\xi = -R,\eta = 1`
+       a] `\xi = -R,\eta = 1`
 
-       b] :math:`\xi = 1, \eta = -\frac{1}{R}`
+       b] `\xi = 1, \eta = -\frac{1}{R}`
 
        are solutions.
 

@@ -81,7 +81,7 @@ The Problem
 -----------
 
 Prove the third rule -
-:math:`\nabla \cdot (f \vec v) = f (\nabla \cdot \vec v) + \vec v \cdot (\nabla f)`
+`\nabla \cdot (f \vec v) = f (\nabla \cdot \vec v) + \vec v \cdot (\nabla f)`
 
 Solution
 --------
@@ -91,15 +91,15 @@ Start with a coordinate system
   >>> from diofant.vector import CoordSysCartesian
   >>> C = CoordSysCartesian('C')
 
-The scalar field :math:`f` and the measure numbers of the vector field
-:math:`\vec v` are all functions of the coordinate variables of the
+The scalar field `f` and the measure numbers of the vector field
+`\vec v` are all functions of the coordinate variables of the
 coordinate system in general.
 Hence, define Diofant functions that way.
 
   >>> from diofant import symbols, Function
   >>> v1, v2, v3, f = symbols('v1 v2 v3 f', cls=Function)
 
-``v1``, ``v2`` and ``v3`` are the :math:`X`, :math:`Y` and :math:`Z`
+``v1``, ``v2`` and ``v3`` are the `X`, `Y` and `Z`
 components of the vector field respectively.
 
 Define the vector field as ``vfield`` and the scalar field as ``sfield``.
