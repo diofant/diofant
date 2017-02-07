@@ -2404,7 +2404,7 @@ def test_pinv_solve():
     B = Matrix([12, 13])
     assert A.pinv_solve(B) == A.cholesky_solve(B)
     assert A.pinv_solve(B) == A.LDLsolve(B)
-    assert A.pinv_solve(B) == Matrix([sympify('-43/26'), sympify('71/26')])
+    assert A.pinv_solve(B) == Matrix([Rational(-43, 26), Rational(71, 26)])
     assert A * A.pinv() * B == B
     # Fully determined, with two-dimensional B matrix.
     B = Matrix([[12, 13, 14], [15, 16, 17]])
