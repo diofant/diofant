@@ -3,7 +3,7 @@ from functools import reduce
 
 from ..core import (sympify, Basic, Dummy, S, Add, Mul, Pow, expand_mul,
                     factor_terms, expand_log, count_ops, Integer,
-                    Rational, prod)
+                    Rational, prod, cacheit)
 from ..core.compatibility import ordered, default_sort_key
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
@@ -12,6 +12,7 @@ from ..polys import lcm, gcd
 from ..ntheory import multiplicity
 
 
+@cacheit
 def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     """
     reduces expression by combining powers with similar bases and exponents.
