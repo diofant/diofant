@@ -160,7 +160,8 @@ def test_core_symbol():
     # testing variable in this file since after this test the symbol
     # having the same name will be cached as noncommutative
     for c in (Dummy, Dummy("x", commutative=False), Symbol,
-              Symbol("_issue_3130", commutative=False), Wild, Wild("x")):
+              Symbol("_sympyissue_6229", commutative=False),
+              Wild, Wild("x")):
         check(c)
 
 
