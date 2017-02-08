@@ -579,7 +579,6 @@ def test_sympyissue_2711():
     assert f.find(a**2) == {meijerg(((), ()), ((S.Zero,), ()), x), x}
 
 
-@pytest.mark.xfail
 def test_diofantissue_423():
     a1, b1, c1, d1, a2, b2, c2, d2 = symbols('a1 b1 c1 d1 a2 b2 c2 d2',
                                              cls=Wild, exclude=[x])

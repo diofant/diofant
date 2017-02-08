@@ -77,8 +77,9 @@ Issues closed
 * `sympy/sympy#4315 <https://github.com/sympy/sympy/issues/4315>`_ series expansion of piecewise fails
 * `sympy/sympy#6807 <https://github.com/sympy/sympy/issues/6807>`_ atoms does not work correctly in the otherwise case of Piecewise
 * `sympy/sympy#12114 <https://github.com/sympy/sympy/issues/12114>`_ solve() leads to ZeroDivisionError: polynomial division
+* `#423 <https://github.com/diofant/diofant/issues/423>`_ Problem with expr match by template (a1*x + b1)/(c1*x + d1) + (a2*x + b2)/(c2*x + d2)
 
-.. last pr: #420
+.. last pr: #424
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
