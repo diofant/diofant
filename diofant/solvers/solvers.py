@@ -11,28 +11,28 @@ from ..core.compatibility import (iterable, is_sequence, ordered,
                                   default_sort_key)
 from ..core import (sympify, S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow,
                     expand_mul, expand_multinomial, expand_log, Derivative,
-                    Function, expand_power_exp, Lambda, nfloat, ilcm, Float,
-                    Integer, Ge, factor_terms, preorder_traversal)
+                    Function, expand_power_exp, Lambda, nfloat, Float,
+                    Integer, Ge, preorder_traversal)
 from ..core.assumptions import check_assumptions
-from ..core.function import AppliedUndef, UndefinedFunction, _mexpand
+from ..core.function import AppliedUndef
 from ..integrals import Integral
 from ..core.relational import Relational
 from ..logic import And, Or
 from ..logic.boolalg import BooleanAtom
-from ..functions import (log, exp, LambertW, cos, sin, tan, acos, asin, atan,
+from ..functions import (log, exp, cos, sin, tan, acos, asin, atan,
                          Abs, re, im, arg, sqrt, atan2, piecewise_fold,
                          Piecewise)
 from ..functions.elementary.trigonometric import (TrigonometricFunction,
                                                   HyperbolicFunction)
 from ..simplify import (simplify, collect, powsimp, posify, powdenest,
                         nsimplify, denom, logcombine)
-from ..simplify.sqrtdenest import sqrt_depth, unrad
+from ..simplify.sqrtdenest import unrad
 from ..simplify.fu import TR1
 from ..matrices import Matrix, zeros
-from ..polys import roots, cancel, factor, Poly, together, degree
+from ..polys import roots, cancel, factor, Poly, together
 from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
-from ..utilities import lambdify, filldedent, flatten, subsets
-from ..utilities.iterables import uniq, generate_bell
+from ..utilities import filldedent, subsets
+from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
 from .inequalities import reduce_inequalities
 

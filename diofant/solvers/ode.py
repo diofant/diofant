@@ -240,14 +240,13 @@ from ..logic.boolalg import BooleanAtom
 from ..functions import (cos, exp, im, log, re, sin, tan, sqrt, atan2,
                          conjugate, factorial)
 from ..integrals import Integral, integrate
-from ..matrices import wronskian, Matrix, BlockDiagMatrix, eye, zeros
+from ..matrices import wronskian, Matrix, BlockDiagMatrix
 from ..polys import Poly, RootOf, terms_gcd, PolynomialError, lcm
 from ..polys.polyroots import roots_quartic
 from ..polys.polytools import cancel, degree, div
 from ..series import Order, series
 from ..simplify import (collect, logcombine, powsimp, separatevars,
-                        simplify, trigsimp, posify, cse, powdenest,
-                        collect_const)
+                        simplify, trigsimp, posify, cse, collect_const)
 from .solvers import solve
 from .pde import pdsolve
 from ..utilities import numbered_symbols, default_sort_key, sift

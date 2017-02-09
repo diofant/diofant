@@ -1255,7 +1255,7 @@ class EvalfMixin:
                 tanh-sinh quadrature is used. For oscillatory
                 integrals on an infinite interval, try quad='osc'.
         """
-        from .numbers import Float, Number
+        from .numbers import Float
         n = n if n is not None else 15
 
         if subs and is_sequence(subs):

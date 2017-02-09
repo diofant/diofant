@@ -1,8 +1,7 @@
 from .sympify import _sympify, sympify
-from .basic import Basic, _aresame
+from .basic import _aresame
 from .cache import cacheit
 from .compatibility import ordered
-from .logic import _fuzzy_group
 from .evaluate import global_evaluate
 from .expr import Expr
 

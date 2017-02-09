@@ -3,7 +3,7 @@ from functools import reduce
 from types import FunctionType
 
 from ..core import (Add, Basic, Atom, Expr, count_ops, Pow, Symbol, Dummy,
-                    symbols, Integer, ilcm, Rational, Float, S, sympify)
+                    symbols, Integer, ilcm, Float, S, sympify)
 from ..core.logic import fuzzy_and
 from ..core.compatibility import (is_sequence, default_sort_key,
                                   NotIterable, as_int)

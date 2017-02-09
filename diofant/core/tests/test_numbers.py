@@ -1020,9 +1020,9 @@ def test_bug_sqrt():
 
 def test_pi_Pi():
     """Test that pi (instance) is imported, but Pi (class) is not"""
-    from diofant import pi
+    from diofant import pi  # noqa: F401
     with pytest.raises(ImportError):
-        from diofant import Pi
+        from diofant import Pi  # noqa: F401
 
 
 def test_no_len():

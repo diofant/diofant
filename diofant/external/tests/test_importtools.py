@@ -1,5 +1,3 @@
-import warnings
-
 import pytest
 
 from diofant.core.compatibility import HAS_GMPY

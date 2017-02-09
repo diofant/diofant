@@ -3296,7 +3296,7 @@ def _mag(x):
 from .mul import Mul
 from .add import Add
 from .power import Pow
-from .function import Derivative, Function
+from .function import Function
 from .mod import Mod
 from .exprtools import factor_terms
 from .numbers import Integer, Rational

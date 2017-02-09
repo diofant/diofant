@@ -10,7 +10,7 @@ from ..polys.polyerrors import (ComputationFailed, PolificationFailed,
                                 CoercionFailed)
 from ..polys.solvers import solve_lin_sys
 from ..simplify import rcollect, simplify
-from ..utilities import default_sort_key, postfixes
+from ..utilities import default_sort_key
 
 
 __all__ = ('solve_linear_system', 'solve_poly_system')

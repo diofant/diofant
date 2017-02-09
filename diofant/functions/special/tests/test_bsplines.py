@@ -4,7 +4,7 @@ from diofant.functions import bspline_basis_set, bspline_basis
 from diofant import Piecewise, Interval
 from diofant import Rational
 
-from diofant.abc import x, y
+from diofant.abc import x
 
 __all__ = ()
 

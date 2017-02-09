@@ -5,7 +5,7 @@ Boolean algebra module for Diofant
 from collections import defaultdict
 from itertools import combinations, product
 
-from ..core import Basic, Atom
+from ..core import Atom
 from ..core.expr import Expr
 from ..core import cacheit
 from ..core.numbers import Number

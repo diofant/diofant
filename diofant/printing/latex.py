@@ -276,7 +276,7 @@ class LatexPrinter(Printer):
         return tex
 
     def _print_Cycle(self, expr):
-        from ..combinatorics import Permutation, Cycle
+        from ..combinatorics import Permutation
         if not expr or (isinstance(expr, Permutation) and not expr.list()):
             return r"\left( \right)"
         expr_perm = Permutation(expr).cyclic_form

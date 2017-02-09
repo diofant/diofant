@@ -9,7 +9,6 @@ from .operations import AssocOp
 from .cache import cacheit
 from .logic import fuzzy_not, _fuzzy_group, fuzzy_and
 from .compatibility import default_sort_key
-from .expr import Expr
 
 # internal marker to indicate:
 #   "there are still non-commutative objects -- don't forget to process them"
