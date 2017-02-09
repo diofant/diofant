@@ -9,7 +9,7 @@ from diofant import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
                      Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
                      simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
                      sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
-                     im, polar_lift, meijerg, Min, Max)
+                     im, polar_lift, meijerg, Min, Max, sign)
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically
@@ -1176,3 +1176,7 @@ def test_definite_integrals_abs():
 def test_sympyissue_12081():
     assert isinstance(integrate(x**(-Rational(3, 2))*exp(-x),
                                 (x, 0, oo)), Integral)
+
+
+def test_sympyissue_7163():
+    integrate((sign(x - 1) - sign(x - 2))*cos(x), x)  # not raises
