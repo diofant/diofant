@@ -4,7 +4,7 @@ from functools import reduce
 
 from mpmath.libmp.libintmath import ifac
 
-from ..core import Basic
+from ..core import Basic, Tuple, sympify
 from ..core.compatibility import is_sequence
 from ..utilities import flatten, has_variety, has_dups
 from ..utilities.iterables import minlex, runs
@@ -893,7 +893,8 @@ class Permutation(Basic):
             # but do allow the permutation size to be increased
             aform.extend(list(range(len(aform), size)))
         size = len(aform)
-        obj = Basic.__new__(cls, aform)
+        args = Tuple(*[sympify(_) for _ in aform])
+        obj = Basic.__new__(cls, args)
         obj._array_form = aform
         obj._size = size
         return obj
@@ -918,7 +919,7 @@ class Permutation(Basic):
         Permutation([2, 1, 3, 0])
 
         """
-        p = Basic.__new__(Perm, perm)
+        p = Basic.__new__(Perm, Tuple(perm))
         p._array_form = perm
         p._size = len(perm)
         return p
@@ -2270,7 +2271,7 @@ class Permutation(Basic):
         >>> p = Permutation(2)
         >>> Permutation.print_cyclic = False
         >>> while p:
-        ...     print('%s %s %s' % (repr(p), p.inversion_vector(), p.rank()))
+        ...     print('%s %s %s' % (str(p), p.inversion_vector(), p.rank()))
         ...     p = p.next_lex()
         ...
         Permutation([0, 1, 2]) [0, 0] 0

@@ -353,7 +353,7 @@ class IntegerPartition(Basic):
         if any(i < 1 for i in partition):
             raise ValueError("The summands must all be positive.")
 
-        obj = Basic.__new__(cls, integer, partition)
+        obj = Basic.__new__(cls, sympify(integer), sympify(partition))
         obj.partition = list(partition)
         obj.integer = integer
         return obj

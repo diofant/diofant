@@ -3,7 +3,7 @@ from functools import reduce
 
 from ..matrices import Matrix
 from ..core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
-                    Mul, Add, symbols, Tuple)
+                    Mul, Add, symbols, Tuple, Integer)
 from ..core.numbers import Zero
 from ..solvers import solve
 from ..functions import factorial
@@ -395,7 +395,7 @@ class Point(Basic):
     def __init__(self, coord_sys, coords):
         super(Point, self).__init__()
         self._coord_sys = coord_sys
-        self._coords = Matrix(coords)
+        self._coords = Matrix(coords).as_immutable()
         self._args = self._coord_sys, self._coords
 
     def coords(self, to_sys=None):
@@ -1000,8 +1000,8 @@ class BaseCovarDerivativeOp(Expr):
     def __init__(self, coord_sys, index, christoffel):
         super(BaseCovarDerivativeOp, self).__init__()
         self._coord_sys = coord_sys
-        self._index = index
-        self._christoffel = christoffel
+        self._index = Integer(index)
+        self._christoffel = ImmutableDenseNDimArray(christoffel)
         self._args = self._coord_sys, self._index, self._christoffel
 
     def __call__(self, field):
@@ -1075,7 +1075,7 @@ class CovarDerivativeOp(Expr):
                              'respect to vector fields. The supplied argument '
                              'was not a vector field.')
         self._wrt = wrt
-        self._christoffel = christoffel
+        self._christoffel = ImmutableDenseNDimArray(christoffel)
         self._args = self._wrt, self._christoffel
 
     def __call__(self, field):
