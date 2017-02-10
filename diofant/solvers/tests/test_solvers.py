@@ -11,7 +11,7 @@ from diofant import (
     root, simplify, atan2, arg, Tuple, oo, E, sech)
 from diofant.core.function import nfloat
 from diofant.solvers import solve_undetermined_coeffs
-from diofant.solvers.solvers import _invert, checksol
+from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
 from diofant.polys.rootoftools import RootOf
 from diofant.utilities.randtest import verify_numerically as tn
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
@@ -1001,12 +1001,16 @@ def test_high_order_roots():
 def test_minsolve_linear_system():
     def count(dic):
         return len([x for x in dic.values() if x == 0])
-    assert count(solve([x + y + z, y + z + a + t], particular=True, quick=True)) \
-        == 3
-    assert count(solve([x + y + z, y + z + a + t], particular=True, quick=False)) \
-        == 3
-    assert count(solve([x + y + z, y + z + a], particular=True, quick=True)) == 1
-    assert count(solve([x + y + z, y + z + a], particular=True, quick=False)) == 2
+
+    m = Matrix([[0, 0, 1, 1, 1, 0], [1, 1, 0, 1, 1, 0]])
+    v = (a, t, x, y, z)
+    assert count(minsolve_linear_system(m, *v, quick=True)) == 3
+    assert count(minsolve_linear_system(m, *v)) == 3
+
+    m = Matrix([[0, 1, 1, 1, 0], [1, 0, 1, 1, 0]])
+    v = (a, x, y, z)
+    assert count(minsolve_linear_system(m, *v, quick=True)) == 1
+    assert count(minsolve_linear_system(m, *v)) == 2
 
 
 def test_real_roots():

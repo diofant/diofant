@@ -271,13 +271,6 @@ def solve(f, *symbols, **flags):
             with polys. If rational=None, Floats will be recast as
             rationals but the answer will be recast as Floats. If the
             flag is False then nothing will be done to the Floats.
-        'particular=True (default is False)'
-            instructs solve to try to find a particular solution to a linear
-            system with as many zeros as possible; this is very expensive
-        'quick=True (default is False)'
-            when using particular=True, use a fast heuristic instead to find a
-            solution with many zeros (instead of using the very slow method
-            guaranteed to find the largest number of zeros possible)
         'cubics=True (default)'
             return explicit solutions when cubic expressions are encountered
         'quartics=True (default)'
@@ -1379,11 +1372,8 @@ def _solve_system(exprs, symbols, **flags):
                     except ValueError:
                         matrix[i, m] = -coeff
 
-            # returns a dictionary ({symbols: values}) or None
-            if flags.pop('particular', False):
-                result = minsolve_linear_system(matrix, *symbols, **flags)
-            else:
-                result = solve_linear_system(matrix, *symbols, **flags)
+            # returns a dictionary {symbols: values} or None
+            result = solve_linear_system(matrix, *symbols, **flags)
             if failed:
                 if result:
                     solved_syms = list(result.keys())
