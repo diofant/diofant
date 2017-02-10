@@ -243,8 +243,6 @@ def solve(f, *symbols, **flags):
     * flags
         'dict'=True (default is False)
             return list (perhaps empty) of solution mappings
-        'set'=True (default is False)
-            return list of symbols and set of tuple(s) of solution(s)
         'exclude=[] (default)'
             don't try to solve for any of the free symbols in exclude;
             if expressions are given, the free symbols in them will
@@ -309,11 +307,6 @@ def solve(f, *symbols, **flags):
         >>> solve([x - 3, y - 1], dict=True)
         [{x: 3, y: 1}]
 
-    * to get a list of symbols and set of solution(s) use flag set=True
-
-        >>> solve([x**2 - 3, y - 1], set=True)
-        ([x, y], {(-sqrt(3), 1), (sqrt(3), 1)})
-
     * single expression and single symbol that is in the expression
 
         >>> solve(x - y, x)
@@ -324,10 +317,6 @@ def solve(f, *symbols, **flags):
         [3]
         >>> solve(Poly(x - 3), x)
         [3]
-        >>> solve(x**2 - y**2, x, set=True)
-        ([x], {(-y,), (y,)})
-        >>> solve(x**4 - 1, x, set=True)
-        ([x], {(-1,), (1,), (-I,), (I,)})
 
     * single expression with no symbol that is in the expression
 
@@ -365,8 +354,6 @@ def solve(f, *symbols, **flags):
           [x + f(x)]
           >>> solve(f(x).diff(x) - f(x) - x, f(x))
           [-x + Derivative(f(x), x)]
-          >>> solve(x + exp(x)**2, exp(x), set=True)
-          ([E**x], {(-sqrt(-x),), (sqrt(-x),)})
 
           >>> from diofant import Indexed, IndexedBase, Tuple, sqrt
           >>> A = IndexedBase('A')
@@ -449,11 +436,6 @@ def solve(f, *symbols, **flags):
 
                 >>> solve([x + 3, x - 3])
                 []
-
-        * when the system is not linear
-
-            >>> solve([x**2 + y -2, y**2 - 4], x, y, set=True)
-            ([x, y], {(-2, -2), (0, 2), (2, -2)})
 
         * if no symbols are given, all free symbols will be selected and a list
           of mappings returned
@@ -889,10 +871,7 @@ def solve(f, *symbols, **flags):
         warn = flags.get('warn', False)
         got_None = []  # solutions for which one or more symbols gave None
         no_False = []  # solutions for which no symbols gave False
-        if type(solution) is tuple:
-            # this has already been checked and is in as_set form
-            return solution
-        elif type(solution) is list:
+        if type(solution) is list:
             if type(solution[0]) is tuple:
                 for sol in solution:
                     for symb, val in zip(symbols, sol):
@@ -965,13 +944,12 @@ def solve(f, *symbols, **flags):
     ###########################################################################
 
     as_dict = flags.get('dict', False)
-    as_set = flags.get('set', False)
 
-    if not as_set and isinstance(solution, list):
+    if isinstance(solution, list):
         # Make sure that a list of solutions is ordered in a canonical way.
         solution.sort(key=default_sort_key)
 
-    if not as_dict and not as_set:
+    if not as_dict:
         return solution or []
 
     # return a list of mappings or []
@@ -990,11 +968,6 @@ def solve(f, *symbols, **flags):
             solution = [{symbols[0]: s} for s in solution]
     if as_dict:
         return solution
-    assert as_set
-    if not solution:
-        return [], set()
-    k = list(ordered(solution[0].keys()))
-    return k, {tuple(s[ki] for ki in k) for s in solution}
 
 
 def _solve(f, *symbols, **flags):

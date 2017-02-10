@@ -187,6 +187,11 @@ def test_solve_polynomial1():
 
 def test_solve_polynomial2():
     assert solve(4, x) == []
+    assert solve([x**2 - 3, y - 1]) == [{x: -sqrt(3), y: 1},
+                                        {x: sqrt(3), y: 1}]
+    assert solve(x**4 - 1, x) == [-1, 1, -I, I]
+    assert solve([x**2 + y - 2, y**2 - 4], x, y) == [(-2, -2), (0, 2),
+                                                     (0, 2), (2, -2)]
 
 
 def test_solve_polynomial_cv_1a():
@@ -567,10 +572,9 @@ def test_sympyissue_4793():
     eq = 4*3**(5*x + 2) - 7
     ans = solve(eq, x)
     assert len(ans) == 5 and all(eq.subs(x, a).n(chop=True) == 0 for a in ans)
-    assert solve(log(x**2) - y**2/exp(x), x, y, set=True) == \
-        ([y], {
-            (-sqrt(exp(x)*log(x**2)),),
-            (sqrt(exp(x)*log(x**2)),)})
+    assert solve(log(x**2) - y**2/exp(x),
+                 x, y) == [{y: -sqrt(exp(x)*log(x**2))},
+                           {y: sqrt(exp(x)*log(x**2))}]
     assert solve(x**2*z**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
     assert solve((x - 1)/(1 + 1/(x - 1))) == []
     assert solve(x**(y*z) - x, x) == [1]
@@ -691,14 +695,12 @@ def test_sympyissue_5132():
     assert set(solve([exp(x) - sin(y), y**2 - 4], [x, y])) == \
         {(log(-sin(2)), -Integer(2)), (log(sin(2)), Integer(2))}
     eqs = [exp(x)**2 - sin(y) + z**2, 1/exp(y) - 3]
-    assert solve(eqs, set=True) == \
-        ([x, y], {
-        (log(-sqrt(-z**2 - sin(log(3)))), -log(3)),
-        (log(sqrt(-z**2 - sin(log(3)))), -log(3))})
-    assert solve(eqs, x, z, set=True) == \
-        ([x], {
-        (log(-sqrt(-z**2 + sin(y))),),
-        (log(sqrt(-z**2 + sin(y))),)})
+    assert solve(eqs) == [{x: log(-sqrt(-z**2 - sin(log(3)))),
+                           y: -log(3)},
+                          {x: log(sqrt(-z**2 - sin(log(3)))),
+                           y: -log(3)}]
+    assert solve(eqs, x, z) == [{x: log(-sqrt(-z**2 + sin(y)))},
+                                {x: log(sqrt(-z**2 + sin(y)))}]
     assert set(solve(eqs, x, y)) == \
         {
             (log(-sqrt(-z**2 - sin(log(3)))), -log(3)),
@@ -708,19 +710,19 @@ def test_sympyissue_5132():
             (-log(3), -sqrt(-exp(2*x) - sin(log(3)))),
         (-log(3), sqrt(-exp(2*x) - sin(log(3))))}
     eqs = [exp(x)**2 - sin(y) + z, 1/exp(y) - 3]
-    assert solve(eqs, set=True) == ([x, y], {
-        (log(-sqrt(-z - sin(log(3)))), -log(3)),
-        (log(sqrt(-z - sin(log(3)))), -log(3))})
-    assert solve(eqs, x, z, set=True) == ([x], {
-        (log(-sqrt(-z + sin(y))),),
-        (log(sqrt(-z + sin(y))),)})
+    assert solve(eqs) == [{x: log(-sqrt(-z - sin(log(3)))),
+                           y: -log(3)},
+                          {x: log(sqrt(-z - sin(log(3)))),
+                           y: -log(3)}]
+    assert solve(eqs, x, z) == [{x: log(-sqrt(-z + sin(y)))},
+                                {x: log(sqrt(-z + sin(y)))}]
     assert set(solve(eqs, x, y)) == {
         (log(-sqrt(-z - sin(log(3)))), -log(3)),
         (log(sqrt(-z - sin(log(3)))), -log(3))}
     assert solve(eqs, z, y) == \
         [(-exp(2*x) - sin(log(3)), -log(3))]
-    assert solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), set=True) == (
-        [x, y], {(Integer(1), Integer(3)), (Integer(3), Integer(1))})
+    assert solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4)) == [{x: 1, y: 3},
+                                                                {x: 3, y: 1}]
     assert set(solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), x, y)) == \
         {(Integer(1), Integer(3)), (Integer(3), Integer(1))}
 
@@ -836,17 +838,14 @@ def test_sympyissue_5901():
         {f(x): 3*D}
     assert solve([f(x) - 3*f(x).diff(x), f(x)**2 - y + 4], f(x), y) == \
         [{f(x): 3*D, y: 9*D**2 + 4}]
-    assert (solve(-f(a)**2*g(a)**2 + f(a)**2*h(a)**2 + g(a).diff(a),
-                  h(a), g(a), set=True) ==
-            ([g(a)], {(-sqrt(h(a)**2 + G/f(a)**2),),
-             (sqrt(h(a)**2 + G/f(a)**2),)}))
+    assert solve(-f(a)**2*g(a)**2 + f(a)**2*h(a)**2 + g(a).diff(a),
+                 h(a), g(a)) == [{g(a): -sqrt(h(a)**2 + G/f(a)**2)},
+                                 {g(a): sqrt(h(a)**2 + G/f(a)**2)}]
     eqs = [f(x)**2 + g(x) - 2*f(x).diff(x), g(x)**2 - 4]
-    assert solve(eqs, f(x), g(x), set=True) == \
-        ([f(x), g(x)], {
-        (-sqrt(2*D - 2), Integer(2)),
-        (sqrt(2*D - 2), Integer(2)),
-        (-sqrt(2*D + 2), -Integer(2)),
-        (sqrt(2*D + 2), -Integer(2))})
+    assert solve(eqs, f(x), g(x)) == [{f(x): -sqrt(2*D - 2), g(x): 2},
+                                      {f(x): sqrt(2*D - 2), g(x): 2},
+                                      {f(x): -sqrt(2*D + 2), g(x): -2},
+                                      {f(x): sqrt(2*D + 2), g(x): -2}]
 
     # the underlying problem was in solve_linear that was not masking off
     # anything but a Mul or Add; it now raises an error if it gets anything
@@ -1231,11 +1230,16 @@ def test_errorinverses():
 def test_sympyissue_2725():
     R = Symbol('R')
     eq = sqrt(2)*R*sqrt(1/(R + 1)) + (R + 1)*(sqrt(2)*sqrt(1/(R + 1)) - 1)
-    sol = solve(eq, R, set=True)[1]
-    assert sol == {(Rational(5, 3) + (-Rational(1, 2) - sqrt(3)*I/2)*(Rational(251, 27) +
-        sqrt(111)*I/9)**Rational(1, 3) + 40/(9*((-Rational(1, 2) - sqrt(3)*I/2)*(Rational(251, 27) +
-        sqrt(111)*I/9)**Rational(1, 3))),), (Rational(5, 3) + 40/(9*(Rational(251, 27) +
-        sqrt(111)*I/9)**Rational(1, 3)) + (Rational(251, 27) + sqrt(111)*I/9)**Rational(1, 3),)}
+    sol = solve(eq, R, dict=True)
+    assert sol == [{R: Rational(5, 3) + (-Rational(1, 2) -
+                        sqrt(3)*I/2)*(Rational(251, 27) +
+                        sqrt(111)*I/9)**Rational(1, 3) +
+                        40/(9*((-Rational(1, 2) -
+                            sqrt(3)*I/2)*(Rational(251, 27) +
+                                sqrt(111)*I/9)**Rational(1, 3)))},
+                    {R: Rational(5, 3) + 40/(9*(Rational(251, 27) +
+                        sqrt(111)*I/9)**Rational(1, 3)) +
+                        (Rational(251, 27) + sqrt(111)*I/9)**Rational(1, 3)}]
 
 
 def test_sympyissue_5114_6611():
