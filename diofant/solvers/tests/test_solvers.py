@@ -726,7 +726,7 @@ def test_sympyissue_5335():
            x + y - conc]
     sym = [x, y, a0]
     # there are 4 solutions but only two are valid
-    assert len(solve(eqs, sym, manual=True, minimal=True, simplify=False)) == 2
+    assert len(solve(eqs, sym, minimal=True, simplify=False)) == 2
 
 
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
@@ -784,67 +784,35 @@ def test_sympyissue_5114():
         h*(1/i + 1/l + 1/m) - f/i - k/m,
         k*(1/m + 1/o + 1/p) - h/m - n/p,
         n*(1/p + 1/q) - k/p]
-    assert len(solve(eqs, syms, manual=True, check=False, simplify=False)) == 1
+    assert len(solve(eqs, syms, dict=True, check=False, simplify=False)) == 1
 
 
 def test_sympyissue_5849():
     I1, I2, I3, I4, I5, I6 = symbols('I1:7')
     dI1, dI4, dQ2, dQ4, Q2, Q4 = symbols('dI1,dI4,dQ2,dQ4,Q2,Q4')
 
-    e = (
-        I1 - I2 - I3,
-        I3 - I4 - I5,
-        I4 + I5 - I6,
-        -I1 + I2 + I6,
-        -2*I1 - 2*I3 - 2*I5 - 3*I6 - dI1/2 + 12,
-        -I4 + dQ4,
-        -I2 + dQ2,
-        2*I3 + 2*I5 + 3*I6 - Q2,
-        I4 - 2*I5 + 2*Q4 + dI4
-    )
+    e = (I1 - I2 - I3,
+         I3 - I4 - I5,
+         I4 + I5 - I6,
+         -I1 + I2 + I6,
+         -2*I1 - 2*I3 - 2*I5 - 3*I6 - dI1/2 + 12,
+         -I4 + dQ4,
+         -I2 + dQ2,
+         2*I3 + 2*I5 + 3*I6 - Q2,
+         I4 - 2*I5 + 2*Q4 + dI4)
+    e = tuple(_.subs(I3, I6) for _ in e)
 
-    ans = [{
-           dQ4: I3 - I5,
-    dI1: -4*I2 - 8*I3 - 4*I5 - 6*I6 + 24,
-    I4: I3 - I5,
-    dQ2: I2,
-    Q2: 2*I3 + 2*I5 + 3*I6,
-    I1: I2 + I3,
-    Q4: -I3/2 + 3*I5/2 - dI4/2}]
-    v = I1, I4, Q2, Q4, dI1, dI4, dQ2, dQ4
-    assert solve(e, *v, **dict(manual=True, check=False)) == ans
-    assert solve(e, *v, **dict(manual=True)) == []
-    # the matrix solver (tested below) doesn't like this because it produces
-    # a zero row in the matrix. Is this related to issue sympy/sympy#4551?
-    assert [ei.subs(
-        ans[0]) for ei in e] == [0, 0, I3 - I6, -I3 + I6, 0, 0, 0, 0, 0]
-
-
-@pytest.mark.xfail
-def test_sympyissue_5849_matrix():
-    """Same as test_sympyissue_5849 but solved with the matrix solver."""
-    I1, I2, I3, I4, I5, I6 = symbols('I1:7')
-    dI1, dI4, dQ2, dQ4, Q2, Q4 = symbols('dI1,dI4,dQ2,dQ4,Q2,Q4')
-
-    e = (
-        I1 - I2 - I3,
-        I3 - I4 - I5,
-        I4 + I5 - I6,
-        -I1 + I2 + I6,
-        -2*I1 - 2*I3 - 2*I5 - 3*I6 - dI1/2 + 12,
-        -I4 + dQ4,
-        -I2 + dQ2,
-        2*I3 + 2*I5 + 3*I6 - Q2,
-        I4 - 2*I5 + 2*Q4 + dI4
-    )
-    assert solve(e, I1, I4, Q2, Q4, dI1, dI4, dQ2, dQ4) == {
-        dI4: -I3 + 3*I5 - 2*Q4,
-        dI1: -4*I2 - 8*I3 - 4*I5 - 6*I6 + 24,
-        dQ2: I2,
-        I1: I2 + I3,
-        Q2: 2*I3 + 2*I5 + 3*I6,
-        dQ4: I3 - I5,
-        I4: I3 - I5}
+    ans = [{dQ4: I3 - I5,
+            dI1: -4*I2 - 8*I3 - 4*I5 - 6*I6 + 24,
+            I4: I3 - I5,
+            dQ2: I2,
+            Q2: 2*I3 + 2*I5 + 3*I6,
+            I1: I2 + I3,
+            Q4: -I3/2 + 3*I5/2 - dI4/2}]
+    ans = [{k: v.subs(I3, I6) for k, v in ans[0].items()}]
+    syms = I1, I4, Q2, Q4, dI1, dI4, dQ2, dQ4
+    assert solve(e, *syms, dict=True) == ans
+    assert [_.subs(ans[0]) for _ in e] == [0]*9
 
 
 def test_sympyissue_5901():
@@ -1064,8 +1032,8 @@ def test_overdetermined():
     x = symbols('x', extended_real=True)
     eqs = [Abs(4*x - 7) - 5, Abs(3 - 8*x) - 1]
     assert solve(eqs, x) == [(S.Half,)]
-    assert solve(eqs, x, manual=True) == [(S.Half,)]
-    assert solve(eqs, x, manual=True, check=False) == [(S.Half,), (Integer(3),)]
+    assert solve(eqs, x) == [(S.Half,)]
+    assert solve(eqs, x, check=False) == [(S.Half,), (Integer(3),)]
 
 
 def test_sympyissue_6605():
@@ -1393,10 +1361,9 @@ def test_sympyissue_8828():
 
     A = solve(F, v)
     B = solve(G, v)
-    C = solve(G, v, manual=True)
 
-    p, q, r = [{tuple(i.evalf(2) for i in j) for j in R} for R in [A, B, C]]
-    assert p == q == r
+    p, q = [{tuple(i.evalf(2) for i in j) for j in R} for R in [A, B]]
+    assert p == q
 
 
 def test_sympyissue_10391():

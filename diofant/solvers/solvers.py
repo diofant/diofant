@@ -273,9 +273,6 @@ def solve(f, *symbols, **flags):
             with polys. If rational=None, Floats will be recast as
             rationals but the answer will be recast as Floats. If the
             flag is False then nothing will be done to the Floats.
-        'manual=True (default is False)'
-            do not use the polys/matrix method to solve a system of
-            equations, solve them one at a time as you might "manually"
         'implicit=True (default is False)'
             allows solve to return a solution for a pattern in terms of
             other functions that contain that pattern; this is only
@@ -1411,7 +1408,6 @@ def _solve_system(exprs, symbols, **flags):
     failed = []
     result = False
     linear = False
-    manual = flags.get('manual', False)
     checkdens = check = flags.get('check', True)
 
     for j, g in enumerate(exprs):
@@ -1419,9 +1415,6 @@ def _solve_system(exprs, symbols, **flags):
         i, d = _invert(g, *symbols)
         g = d - i
         g = g.as_numer_denom()[0]
-        if manual:
-            failed.append(g)
-            continue
 
         poly = g.as_poly(*symbols, extension=True)
 
