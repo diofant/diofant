@@ -582,7 +582,7 @@ def test_sympyissue_4793():
     pytest.raises(NotImplementedError, lambda: solve(2**x - exp(x) - 3))
 
 
-def test_PR1964():
+def test_sympypull_1964():
     # issue sympy/sympy#5171
     assert solve(sqrt(x)) == solve(sqrt(x**3)) == [0]
     assert solve(sqrt(x - 1)) == [1]
