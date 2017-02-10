@@ -21,7 +21,7 @@ from ..logic import And, Or
 from ..logic.boolalg import BooleanAtom
 from ..functions import (log, exp, cos, sin, tan, acos, asin, atan,
                          Abs, re, im, arg, sqrt, atan2, piecewise_fold,
-                         Piecewise)
+                         Piecewise, Min, Max)
 from ..functions.elementary.trigonometric import (TrigonometricFunction,
                                                   HyperbolicFunction)
 from ..simplify import (simplify, collect, powsimp, posify, powdenest,
@@ -577,6 +577,10 @@ def solve(f, *symbols, **flags):
         # rewrite hyperbolics in terms of exp
         f[i] = f[i].replace(lambda w: isinstance(w, HyperbolicFunction),
                 lambda w: w.rewrite(exp))
+
+        # replace min/max:
+        f[i] = f[i].replace(lambda w: isinstance(w, (Min, Max)),
+                            lambda w: w.rewrite(Piecewise))
 
         # if we have a Matrix, we need to iterate over its elements again
         if f[i].is_Matrix:

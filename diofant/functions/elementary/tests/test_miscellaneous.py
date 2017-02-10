@@ -1,14 +1,9 @@
 import pytest
 
-from diofant.core.function import Function
-from diofant.core.numbers import I, oo, Rational
-from diofant.core.singleton import S
-from diofant.core.symbol import Symbol
-from diofant.functions.elementary.miscellaneous import (sqrt, cbrt, root,
-                                                        Min, Max, real_root)
-from diofant.functions.elementary.trigonometric import cos, sin
-from diofant.functions.elementary.integers import floor, ceiling
-from diofant.functions.special.delta_functions import Heaviside
+from diofant.core import Function, I, oo, Rational, S, Symbol, symbols, Eq
+from diofant.logic import true, false
+from diofant.functions import (sqrt, cbrt, root, Min, Max, real_root,
+                               Piecewise, cos, sin, floor, ceiling, Heaviside)
 
 __all__ = ()
 
@@ -252,3 +247,10 @@ def test_rewrite_MaxMin_as_Heaviside():
         x*Heaviside(-2*x)*Heaviside(-x - 2) - \
         x*Heaviside(2*x)*Heaviside(x - 2) \
         - 2*Heaviside(-x + 2)*Heaviside(x + 2)
+
+
+def test_rewrite_as_Piecewise():
+    x, y = symbols('x, y', real=True)
+    assert (Max(x, y).rewrite(Piecewise) ==
+            x*Piecewise((1, x - y > 0), (S.Half, Eq(x - y, 0)), (0, true)) +
+            y*Piecewise((1, -x + y > 0), (S.Half, Eq(-x + y, 0)), (0, true)))
