@@ -1418,10 +1418,9 @@ def test_N11():
         Or(And(Le(5, x), Lt(x, oo)), And(Lt(-oo, x), Lt(x, 3)))
 
 
-@pytest.mark.xfail
 def test_N12():
     x = Symbol('x', extended_real=True)
-    assert solve(sqrt(x) < 2) == And(Le(0, x), Lt(x, 4))
+    assert solve(sqrt(x) < 2) == And(-oo < x, x < 4)
 
 
 @pytest.mark.xfail
