@@ -1194,14 +1194,11 @@ def test_rewrite_trig():
                                            -2*atan(-sqrt(5) + 2)]
 
 
-@pytest.mark.xfail
 def test_rewrite_trigh():
-    # if this import passes then the test below should also pass
-    assert solve(sinh(x) + sech(x)) == [
-        2*atanh(-S.Half + sqrt(5)/2 - sqrt(-2*sqrt(5) + 2)/2),
-        2*atanh(-S.Half + sqrt(5)/2 + sqrt(-2*sqrt(5) + 2)/2),
-        2*atanh(-sqrt(5)/2 - S.Half + sqrt(2 + 2*sqrt(5))/2),
-        2*atanh(-sqrt(2 + 2*sqrt(5))/2 - sqrt(5)/2 - S.Half)]
+    assert solve(sinh(x) + sech(x)) == [log(sqrt(-2 + sqrt(5))) + I*pi,
+                                        log(-I*sqrt(2 + sqrt(5))),
+                                        log(I*sqrt(2 + sqrt(5))),
+                                        log(sqrt(-2 + sqrt(5)))]
 
 
 def test_uselogcombine():
