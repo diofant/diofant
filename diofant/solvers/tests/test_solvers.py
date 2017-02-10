@@ -104,7 +104,6 @@ def test_solve_args():
     # implicit symbol to solve for
     assert set(solve(x**2 - 4)) == {Integer(2), -Integer(2)}
     assert solve([x + y - 3, x - y - 5]) == {x: 4, y: -1}
-    assert solve(x - exp(x), x, implicit=True) == [exp(x)]
     # no symbol to solve for
     assert solve(42) == []
     assert solve([1, 2]) == []
@@ -867,15 +866,6 @@ def test_sympyissue_5901():
 
     assert set(solve(x + exp(x)**2, exp(x))) == \
         {-sqrt(-x), sqrt(-x)}
-    assert solve(x + exp(x), x, implicit=True) == \
-        [-exp(x)]
-    assert solve(cos(x) - sin(x), x, implicit=True) == []
-    assert solve(x - sin(x), x, implicit=True) == \
-        [sin(x)]
-    assert solve(x**2 + x - 3, x, implicit=True) == \
-        [-x**2 + 3]
-    assert solve(x**2 + x - 3, x**2, implicit=True) == \
-        [-x + 3]
 
 
 def test_sympyissue_5912():

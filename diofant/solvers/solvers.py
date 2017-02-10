@@ -273,11 +273,6 @@ def solve(f, *symbols, **flags):
             with polys. If rational=None, Floats will be recast as
             rationals but the answer will be recast as Floats. If the
             flag is False then nothing will be done to the Floats.
-        'implicit=True (default is False)'
-            allows solve to return a solution for a pattern in terms of
-            other functions that contain that pattern; this is only
-            needed if the pattern is inside of some invertible function
-            like cos, exp, ....
         'particular=True (default is False)'
             instructs solve to try to find a particular solution to a linear
             system with as many zeros as possible; this is very expensive
@@ -378,13 +373,6 @@ def solve(f, *symbols, **flags):
           >>> eqs = Tuple(A[1] + A[2] - 3, A[1] - A[2] + 1)
           >>> solve(eqs, eqs.atoms(Indexed))
           {A[1]: 1, A[2]: 2}
-
-        * To solve for a *symbol* implicitly, use 'implicit=True':
-
-            >>> solve(x + exp(x), x)
-            [-LambertW(1)]
-            >>> solve(x + exp(x), x, implicit=True)
-            [-E**x]
 
         * It is possible to solve for anything that can be targeted with
           subs:
@@ -613,8 +601,6 @@ def solve(f, *symbols, **flags):
                         is_sequence(symbols[0], include=GeneratorType)))
     f, symbols = (_sympified_list(w) for w in [f, symbols])
 
-    implicit = flags.get('implicit', False)
-
     # preprocess equation(s)
     ###########################################################################
     for i, fi in enumerate(f):
@@ -803,12 +789,9 @@ def solve(f, *symbols, **flags):
         for p in pot:
             if not isinstance(p, Expr) or isinstance(p, Piecewise):
                 pass
-            elif (isinstance(p, bool) or
-                    not p.args or
-                    p in symset or
-                    p.is_Add or p.is_Mul or
-                    p.is_Pow and not implicit or
-                    p.is_Function and not implicit) and p.func not in (re, im):
+            elif (isinstance(p, bool) or not p.args or p in symset or
+                  p.is_Add or p.is_Mul or p.is_Pow or
+                  p.is_Function) and p.func not in (re, im):
                 continue
             elif p not in seen:
                 seen.add(p)
