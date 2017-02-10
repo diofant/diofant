@@ -17,8 +17,6 @@ from ..core.assumptions import check_assumptions
 from ..core.function import AppliedUndef
 from ..integrals import Integral
 from ..core.relational import Relational
-from ..logic import And, Or
-from ..logic.boolalg import BooleanAtom
 from ..functions import (log, exp, cos, sin, tan, acos, asin, atan,
                          Abs, re, im, arg, sqrt, atan2, piecewise_fold,
                          Piecewise, Min, Max)
@@ -34,7 +32,6 @@ from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
 from ..utilities import filldedent, subsets
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
-from .inequalities import reduce_inequalities
 
 
 def denoms(eq, symbols=None):
@@ -227,9 +224,8 @@ def solve(f, *symbols, **flags):
     Input is formed as:
 
     * f
-        - a single Expr or Poly that must be zero,
+        - a single Expr that must be zero
         - an Equality
-        - a Relational expression or boolean
         - iterable of one or more of the above
 
     * symbols (object(s) to solve for) specified as
@@ -287,11 +283,6 @@ def solve(f, *symbols, **flags):
         >>> from diofant import solve, Poly, Eq, Function, exp, I, sqrt
         >>> from diofant.abc import x, y, z, a, b
         >>> f = Function('f')
-
-    * boolean or univariate Relational
-
-        >>> solve(x < 3)
-        And(-oo < x, x < 3)
 
     * to always get a list of solution mappings, use flag dict=True
 
@@ -405,13 +396,6 @@ def solve(f, *symbols, **flags):
 
     * iterable of one or more of the above
 
-        * involving relationals or bools
-
-            >>> solve([x < 3, x - 2])
-            Eq(x, 2)
-            >>> solve([x > 3, x - 2])
-            false
-
         * when the system is linear
 
             * with a solution
@@ -462,10 +446,6 @@ def solve(f, *symbols, **flags):
         >>> pos = Symbol("pos", positive=True)
         >>> solve(pos**2 - 1)
         [1]
-
-
-    Assumptions aren't checked when `solve()` input involves
-    relationals or bools.
 
     When the solutions are checked, those that make any denominator zero
     are automatically excluded. If you do not want to exclude such solutions
@@ -548,6 +528,7 @@ def solve(f, *symbols, **flags):
 
     diofant.solvers.recurr.rsolve : solving recurrence equations
     diofant.solvers.ode.dsolve : solving differential equations
+    diofant.solvers.inequalities.reduce_inequalities
     """
     # keeping track of how f was passed since if it is a list
     # a dictionary of results will be returned.
@@ -571,8 +552,6 @@ def solve(f, *symbols, **flags):
                 f[i] = Add(fi.lhs, -fi.rhs, evaluate=False)
         elif isinstance(fi, Poly):
             f[i] = fi.as_expr()
-        elif isinstance(fi, (bool, BooleanAtom)) or fi.is_Relational:
-            return reduce_inequalities(f, symbols=symbols)
 
         # rewrite hyperbolics in terms of exp
         f[i] = f[i].replace(lambda w: isinstance(w, HyperbolicFunction),
@@ -916,16 +895,6 @@ def solve(f, *symbols, **flags):
                 no_False = solution
                 if a_None:
                     got_None.append(solution)
-
-        elif isinstance(solution, (Relational, And, Or)):
-            if len(symbols) != 1:
-                raise ValueError("Length should be 1")
-            if warn and symbols[0]._assumptions:
-                warnings.warn(filldedent("""
-                    \tWarning: assumptions about variable '%s' are
-                    not handled currently.""" % symbols[0]))
-            # TODO: check also variable assumptions for inequalities
-
         else:
             raise TypeError('Unrecognized solution')  # improve the checker
 

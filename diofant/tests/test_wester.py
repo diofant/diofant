@@ -1400,60 +1400,60 @@ def test_N8():
 
 def test_N9():
     x = Symbol('x', extended_real=True)
-    assert solve(abs(x - 1) > 2) == Or(And(Lt(-oo, x), Lt(x, -1)),
-                                           And(Lt(3, x), Lt(x, oo)))
+    assert reduce_inequalities(abs(x - 1) > 2) == Or(And(Lt(-oo, x), Lt(x, -1)),
+                                                     And(Lt(3, x), Lt(x, oo)))
 
 
 def test_N10():
     x = Symbol('x', extended_real=True)
     p = (x - 1)*(x - 2)*(x - 3)*(x - 4)*(x - 5)
-    assert solve(expand(p) < 0) == Or(
-        And(Lt(-oo, x), Lt(x, 1)), And(Lt(2, x), Lt(x, 3)),
-        And(Lt(4, x), Lt(x, 5)))
+    assert (reduce_inequalities(expand(p) < 0) ==
+            Or(And(Lt(-oo, x), Lt(x, 1)), And(Lt(2, x), Lt(x, 3)),
+               And(Lt(4, x), Lt(x, 5))))
 
 
 def test_N11():
     x = Symbol('x', extended_real=True)
-    assert solve(6/(x - 3) <= 3) == \
-        Or(And(Le(5, x), Lt(x, oo)), And(Lt(-oo, x), Lt(x, 3)))
+    assert reduce_inequalities(6/(x - 3) <= 3) == Or(And(Le(5, x), Lt(x, oo)),
+                                                     And(Lt(-oo, x), Lt(x, 3)))
 
 
 def test_N12():
     x = Symbol('x', extended_real=True)
-    assert solve(sqrt(x) < 2) == And(-oo < x, x < 4)
+    assert reduce_inequalities(sqrt(x) < 2) == And(-oo < x, x < 4)
 
 
 @pytest.mark.xfail
 def test_N13():
     # raises NotImplementedError: can't reduce [sin(x) < 2]
     x = Symbol('x', extended_real=True)
-    assert solve(sin(x) < 2) == []  # S.Reals not found
+    assert reduce_inequalities(sin(x) < 2) == []  # S.Reals not found
 
 
 @pytest.mark.xfail
 def test_N14():
     # raises NotImplementedError: can't reduce [sin(x) < 1]
     x = Symbol('x', extended_real=True)
-    assert (solve(sin(x) < 1) == Ne(x, pi/2))
+    assert (reduce_inequalities(sin(x) < 1) == Ne(x, pi/2))
 
 
 @pytest.mark.xfail
 def test_N15():
     r, t = symbols('r t', extended_real=True)
     # raises NotImplementedError: only univariate inequalities are supported
-    solve(abs(2*r*(cos(t) - 1) + 1) <= 1, r)
+    reduce_inequalities(abs(2*r*(cos(t) - 1) + 1) <= 1, r)
 
 
 @pytest.mark.xfail
 def test_N16():
     r, t = symbols('r t', extended_real=True)
-    solve((r**2)*((cos(t) - 4)**2)*sin(t)**2 < 9, r)
+    reduce_inequalities((r**2)*((cos(t) - 4)**2)*sin(t)**2 < 9, r)
 
 
 @pytest.mark.xfail
 def test_N17():
     # raises NotImplementedError: only univariate inequalities are supported
-    assert solve((x + y > 0, x - y < 0)) == (abs(x) < y)
+    assert reduce_inequalities((x + y > 0, x - y < 0)) == (abs(x) < y)
 
 
 def test_O1():
