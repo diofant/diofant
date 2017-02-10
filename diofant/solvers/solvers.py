@@ -536,21 +536,6 @@ def solve(f, *symbols, **flags):
         [RootOf(x**3 - x + 1, x, 0), RootOf(x**3 - x + 1, x, 1),
          RootOf(x**3 - x + 1, x, 2)]
 
-        If the expression is multivariate, no solution might be returned:
-
-        >>> solve(x**3 - x + a, x, cubics=False)
-        [RootOf(a + x**3 - x, x, 0), RootOf(a + x**3 - x, x, 1),
-         RootOf(a + x**3 - x, x, 2)]
-
-    Sometimes solutions will be obtained even when a flag is False because the
-    expression could be factored. In the following example, the equation can
-    be factored as the product of a linear and a quadratic factor so explicit
-    solutions (which did not require solving a cubic expression) are obtained:
-
-        >>> eq = x**3 + 3*x**2 + x - 1
-        >>> solve(eq, cubics=False)
-        [-1, -1 + sqrt(2), -sqrt(2) - 1]
-
     *Solving equations involving radicals*
 
     Because of Diofant's use of the principle root (issue sympy/sympy#8789), some solutions

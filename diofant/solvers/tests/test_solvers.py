@@ -177,6 +177,13 @@ def test_solve_polynomial1():
         {sqrt(1 + sqrt(a)), -sqrt(1 + sqrt(a)),
              sqrt(1 - sqrt(a)), -sqrt(1 - sqrt(a))}
 
+    assert solve(x**3 - x + a, x,
+                 cubics=False) == [RootOf(x**3 - x + a, x, 0),
+                                   RootOf(x**3 - x + a, x, 1),
+                                   RootOf(x**3 - x + a, x, 2)]
+    assert solve(x**3 + 3*x**2 + x - 1, cubics=False) == [-1, -1 + sqrt(2),
+                                                          -sqrt(2) - 1]
+
 
 def test_solve_polynomial2():
     assert solve(4, x) == []
