@@ -73,7 +73,7 @@ def _coeff_isneg(a):
 
     """
 
-    if a.is_Mul:
+    if a.is_Mul or a.is_MatMul:
         a = a.args[0]
     return a.is_Number and a.is_negative
 

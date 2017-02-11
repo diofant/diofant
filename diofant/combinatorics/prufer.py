@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from ..core import Basic
+from ..core import Basic, sympify, Tuple
 from ..core.compatibility import iterable, as_int
 from ..utilities import flatten
 
@@ -321,7 +321,7 @@ class Prufer(Basic):
 
         >>> from diofant.combinatorics.prufer import Prufer
         >>> Prufer.unrank(0, 4)
-        Prufer([0, 0])
+        Prufer((0, 0))
 
         """
         n, rank = as_int(n), as_int(rank)
@@ -350,15 +350,22 @@ class Prufer(Basic):
         present:
 
         >>> Prufer([[0, 1], [0, 2], [0, 3]], 4)
-        Prufer([[0, 1], [0, 2], [0, 3]], 4)
+        Prufer(((0, 1), (0, 2), (0, 3)), 4)
 
         A Prufer object can be constructed from a Prufer sequence:
 
         >>> b = Prufer([1, 3])
         >>> b.tree_repr
         [[0, 1], [1, 3], [2, 3]]
-
         """
+        newargs = []
+        for a in args:
+            if iterable(a):
+                newargs.append(Tuple(*[Tuple(*_) if iterable(_)
+                                       else sympify(_) for _ in a]))
+            else:
+                newargs.append(sympify(a))
+        args = newargs
         ret_obj = Basic.__new__(cls, *args, **kw_args)
         args = [list(args[0])]
         if args[0] and iterable(args[0][0]):
@@ -418,7 +425,7 @@ class Prufer(Basic):
         36
         >>> b = a.prev()
         >>> b
-        Prufer([1, 2, 0])
+        Prufer((1, 2, 0))
         >>> b.rank
         35
 

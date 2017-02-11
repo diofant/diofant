@@ -1356,7 +1356,16 @@ class LatexPrinter(Printer):
 
     def _print_MatAdd(self, expr):
         terms = list(expr.args)
-        tex = " + ".join(map(self._print, terms))
+        tex = ""
+        for i, term in enumerate(terms):
+            if i == 0:
+                pass
+            elif _coeff_isneg(term):
+                tex += " - "
+                term = -term
+            else:
+                tex += " + "
+            tex += self._print(term)
         return tex
 
     def _print_MatMul(self, expr):

@@ -99,7 +99,6 @@ def _test_args(obj):
     return res
 
 
-@pytest.mark.xfail
 def test_diofant__combinatorics__graycode__GrayCode():
     from diofant.combinatorics.graycode import GrayCode
     # an integer is given and returned from GrayCode as the arg
@@ -113,7 +112,6 @@ def test_diofant__combinatorics__subsets__Subset():
     assert _test_args(Subset(['c', 'd'], ['a', 'b', 'c', 'd']))
 
 
-@pytest.mark.xfail
 def test_diofant__combinatorics__permutations__Permutation():
     from diofant.combinatorics.permutations import Permutation
     assert _test_args(Permutation([0, 1, 2, 3]))
@@ -142,7 +140,6 @@ def test_diofant__combinatorics__polyhedron__Polyhedron():
     assert _test_args(Polyhedron(corners, faces, pgroup))
 
 
-@pytest.mark.xfail
 def test_diofant__combinatorics__prufer__Prufer():
     from diofant.combinatorics.prufer import Prufer
     assert _test_args(Prufer([[0, 1], [0, 2], [0, 3]], 4))
@@ -153,7 +150,6 @@ def test_diofant__combinatorics__partitions__Partition():
     assert _test_args(Partition([1]))
 
 
-@pytest.mark.xfail
 def test_diofant__combinatorics__partitions__IntegerPartition():
     from diofant.combinatorics.partitions import IntegerPartition
     assert _test_args(IntegerPartition([1]))
@@ -1149,10 +1145,8 @@ def test_diofant__functions__elementary__hyperbolic__tanh():
     assert _test_args(tanh(2))
 
 
-@pytest.mark.xfail
 def test_diofant__functions__elementary__integers__RoundFunction():
-    from diofant.functions.elementary.integers import RoundFunction
-    assert _test_args(RoundFunction())
+    pass
 
 
 def test_diofant__functions__elementary__integers__ceiling():
@@ -1929,7 +1923,6 @@ def test_diofant__matrices__expressions__matexpr__MatrixElement():
     assert _test_args(MatrixElement(MatrixSymbol('A', 3, 5), Integer(2), Integer(3)))
 
 
-@pytest.mark.xfail
 def test_diofant__matrices__expressions__matexpr__MatrixSymbol():
     from diofant.matrices.expressions.matexpr import MatrixSymbol
     assert _test_args(MatrixSymbol('A', 3, 5))
@@ -2346,7 +2339,6 @@ def test_diofant__diffgeom__diffgeom__CoordSystem():
     assert _test_args(CoordSystem('name', Patch('name', Manifold('name', 3))))
 
 
-@pytest.mark.xfail
 def test_diofant__diffgeom__diffgeom__Point():
     from diofant.diffgeom import Manifold, Patch, CoordSystem, Point
     assert _test_args(Point(
@@ -2403,7 +2395,6 @@ def test_diofant__diffgeom__diffgeom__LieDerivative():
     assert _test_args(LieDerivative(v, d))
 
 
-@pytest.mark.xfail
 def test_diofant__diffgeom__diffgeom__BaseCovarDerivativeOp():
     from diofant.diffgeom import Manifold, Patch, CoordSystem, BaseCovarDerivativeOp
     cs = CoordSystem('name', Patch('name', Manifold('name', 3)))

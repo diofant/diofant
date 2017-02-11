@@ -26,7 +26,7 @@ def test_doit_args():
     assert MatAdd(A, MatPow(B, 2)).doit() == A + B**2
     assert MatAdd(A, MatMul(A, B)).doit() == A + A*B
     assert (MatAdd(A, X, MatMul(A, B), Y, MatAdd(2*A, B)).doit() ==
-            MatAdd(3*A + A*B + B, X, Y))
+            MatAdd(X, Y, 3*A + A*B + B))
 
 
 def test_is_commutative():

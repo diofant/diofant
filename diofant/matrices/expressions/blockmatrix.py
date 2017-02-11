@@ -29,17 +29,17 @@ class BlockMatrix(MatrixExpr):
     >>> Y = MatrixSymbol('Y', m ,m)
     >>> Z = MatrixSymbol('Z', n, m)
     >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m,n), Y]])
-    >>> print(B)
+    >>> B
     Matrix([
     [X, Z],
     [0, Y]])
 
     >>> C = BlockMatrix([[Identity(n), Z]])
-    >>> print(C)
+    >>> C
     Matrix([[I, Z]])
 
-    >>> print(block_collapse(C*B))
-    Matrix([[X, Z*Y + Z]])
+    >>> block_collapse(C*B)
+    Matrix([[X, Z + Z*Y]])
     """
 
     def __new__(cls, *args):
@@ -256,17 +256,17 @@ def block_collapse(expr):
     >>> Y = MatrixSymbol('Y', m ,m)
     >>> Z = MatrixSymbol('Z', n, m)
     >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
-    >>> print(B)
+    >>> B
     Matrix([
     [X, Z],
     [0, Y]])
 
     >>> C = BlockMatrix([[Identity(n), Z]])
-    >>> print(C)
+    >>> C
     Matrix([[I, Z]])
 
-    >>> print(block_collapse(C*B))
-    Matrix([[X, Z*Y + Z]])
+    >>> block_collapse(C*B)
+    Matrix([[X, Z + Z*Y]])
     """
     def hasbm(expr):
         return isinstance(expr, MatrixExpr) and expr.has(BlockMatrix)

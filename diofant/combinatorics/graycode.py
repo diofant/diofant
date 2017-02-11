@@ -1,6 +1,6 @@
 import random
 
-from ..core import Basic
+from ..core import Basic, Integer
 
 
 class GrayCode(Basic):
@@ -82,7 +82,7 @@ class GrayCode(Basic):
             raise ValueError(
                 'Gray code dimension must be a positive integer, not %i' % n)
         n = int(n)
-        args = (n,) + args
+        args = (Integer(n),) + args
         obj = Basic.__new__(cls, *args)
         if 'start' in kw_args:
             obj._current = kw_args["start"]
@@ -143,7 +143,7 @@ class GrayCode(Basic):
         >>> a.n
         5
         """
-        return self.args[0]
+        return int(self.args[0])
 
     def generate_gray(self, **hints):
         """
