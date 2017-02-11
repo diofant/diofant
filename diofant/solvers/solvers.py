@@ -219,61 +219,57 @@ def checksol(f, symbol, sol=None, **flags):
 
 
 def solve(f, *symbols, **flags):
-    r"""Algebraically solves equations and systems of equations.
+    r"""Algebraically solves equation or system of equations.
 
-    Input is formed as:
+    Parameters
+    ==========
 
-    * f
-        - a single Expr that must be zero
-        - an Equality
-        - iterable of one or more of the above
+    f : Expr, Equality or iterable of above
+        All expressions are assumed to be equal to 0.
 
-    * symbols (object(s) to solve for) specified as
-        - none given (other non-numeric objects will be used)
-        - single symbol
-        - denested list of symbols
-          e.g. solve(f, x, y)
-        - ordered iterable of symbols
-          e.g. solve(f, [x, y])
+    \*symbols : tuple
+        If none symbols given (empty tuple), free symbols
+        of expressions will be used.
 
-    * flags
-        'dict'=True (default is False)
-            return list (perhaps empty) of solution mappings
-        'exclude=[] (default)'
-            don't try to solve for any of the free symbols in exclude;
-            if expressions are given, the free symbols in them will
-            be extracted automatically.
-        'check=True (default)'
+    \*\*flags : dict
+        A dictionary of following parameters:
+
+        dict : bool, optional
+            Return list of solution mappings, default is False.
+        exclude : iterable, optional
+            Don't try to solve for any of the symbols in
+            exclude.  Default is [].
+        check : bool, optional
             If False, don't do any testing of solutions. This can be
             useful if one wants to include solutions that make any
-            denominator zero.
-        'numerical=True (default)'
-            do a fast numerical check if ``f`` has only one symbol.
-        'minimal=True (default is False)'
-            a very fast, minimal testing.
-        'warn=True (default is False)'
-            show a warning if checksol() could not conclude.
-        'simplify=True (default)'
-            simplify all but polynomials of order 3 or greater before
-            returning them and (if check is not False) use the
-            general simplify function on the solutions and the
-            expression obtained when they are substituted into the
-            function which should be zero
-        'force=True (default is False)'
-            make positive all symbols without assumptions regarding sign.
-        'rational=True (default)'
-            recast Floats as Rational; if this option is not used, the
-            system containing floats may fail to solve because of issues
-            with polys. If rational=None, Floats will be recast as
-            rationals but the answer will be recast as Floats. If the
-            flag is False then nothing will be done to the Floats.
-        'cubics=True (default)'
-            return explicit solutions when cubic expressions are encountered
-        'quartics=True (default)'
-            return explicit solutions when quartic expressions are encountered
-        'quintics=True (default)'
-            return explicit solutions (if possible) when quintic expressions
-            are encountered
+            denominator zero.  Default is True.
+        numerical : bool, optional
+            If enabled (default), do a fast numerical check
+            if ``f`` has only one symbol.
+        minimal : bool, optional
+            A very fast, minimal testing.  Default is False.
+        warn : bool, optional
+            Show a warning if :func:`~diofant.solvers.solvers.checksol`
+            could not conclude.  Default is False.
+        simplify : bool, optional
+            Enable simplification (default) for all but polynomials of
+            order 3 or greater before returning them and (if check is
+            not False) use the general simplify function on the solutions
+            and the expression obtained when they are substituted into the
+            function which should be zero.
+        force : bool, optional
+            Make positive all symbols without assumptions regarding
+            sign.  Default is False.
+        rational : bool or None, optional
+            If True (default), recast Floats as Rational.  If None,
+            Floats will be recast as rationals but the answer will be
+            recast as Floats.  If the flag is False then nothing
+            will be done to the Floats.
+        cubics, quartics, quintics : bool, optional
+            Return explicit solutions when, respectively, cubic,
+            quartic or quintic expressions are encountered.  Default is
+            True.  If False, :class:`~diofant.polys.rootoftools.RootOf`
+            instances will be returned instead.
 
     Examples
     ========
