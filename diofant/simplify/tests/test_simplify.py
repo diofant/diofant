@@ -7,9 +7,9 @@ from diofant import (
     gamma, GoldenRatio, hyper, hypersimp, I, Integral, integrate, log,
     logcombine, Matrix, Mul, nsimplify, oo, pi, Piecewise,
     posify, rad, Rational, S, separatevars, signsimp, simplify,
-    sin, sinh, solve, sqrt, Symbol, symbols, tan,
-    zoo, Sum, Lt, Integer, sstr, Number, cancel,
-    besselj, besseli, exp_polar, cosine_transform)
+    sin, sinh, solve, sqrt, Symbol, symbols, tan, sqrtdenest,
+    zoo, Sum, Lt, Integer, sstr, Number, cancel, combsimp,
+    besselj, besseli, exp_polar, cosine_transform, MatrixSymbol)
 from diofant.core.mul import _keep_coeff
 from diofant.simplify.simplify import nthroot
 
@@ -596,3 +596,17 @@ def test_sympyissue_9398():
 
     assert simplify(f) != 0
     assert simplify(f*I) != 0
+
+
+def test_sympyissue_6249():
+    A = MatrixSymbol('A', 3, 3)
+    B = MatrixSymbol('B', 3, 3)
+    p = A*B - B*A
+    assert cancel(p) == p
+    assert combsimp(p) == p
+    assert factor(p) == p
+    assert separatevars(p) == p
+    assert sqrtdenest(p) == p
+
+    M = MatrixSymbol('M', 2, 1)
+    assert simplify(M[0]/2) == M[0]/2

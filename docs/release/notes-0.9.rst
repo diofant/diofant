@@ -80,6 +80,8 @@ Issues closed
 * `#423 <https://github.com/diofant/diofant/issues/423>`_ Problem with expr match by template (a1*x + b1)/(c1*x + d1) + (a2*x + b2)/(c2*x + d2)
 * `#66 <https://github.com/diofant/diofant/issues/66>`_ polys todo
 * `sympy/sympy#5169 <https://github.com/sympy/sympy/issues/5169>`_ All elements of .args should be Basic
+* `sympy/sympy#6249 <https://github.com/sympy/sympy/issues/6249>`_ Problems with MatrixSymbol and simplifying functions
+* `sympy/sympy#6426 <https://github.com/sympy/sympy/issues/6426>`_ test_args.py should also test rebuilability
 
 .. last pr: #415
 
