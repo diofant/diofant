@@ -8,7 +8,8 @@ from diofant import (
     Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
     erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow, expand_log,
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
-    root, simplify, atan2, arg, Tuple, oo, E, sech)
+    root, simplify, atan2, arg, Tuple, oo, E, sech, IndexedBase, Mul,
+    real_root, Indexed)
 from diofant.core.function import nfloat
 from diofant.solvers import solve_undetermined_coeffs
 from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
@@ -140,6 +141,10 @@ def test_solve_args():
     assert solve([(x + y)**2 - 4, x + y - 2]) == [{x: -y + 2}]
     # - linear
     assert solve((x + y - 2, 2*x + 2*y - 4)) == {x: -y + 2}
+    # iterable with one equation
+    assert solve([x - 3], x, dict=True) == [{x: 3}]
+    # XXX one eq doesn't have symbol
+    assert solve([x - y, y - 3], x) == {x: y}
 
 
 def test_solve_polynomial1():
@@ -187,11 +192,15 @@ def test_solve_polynomial1():
 
 def test_solve_polynomial2():
     assert solve(4, x) == []
+    assert solve(x - 3, y) == []
     assert solve([x**2 - 3, y - 1]) == [{x: -sqrt(3), y: 1},
                                         {x: sqrt(3), y: 1}]
     assert solve(x**4 - 1, x) == [-1, 1, -I, I]
     assert solve([x**2 + y - 2, y**2 - 4], x, y) == [(-2, -2), (0, 2),
                                                      (0, 2), (2, -2)]
+
+    assert solve(z**2*x**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
+    assert solve(z**2*x - z**2*y**2) == [{x: y**2}, {z: 0}]
 
 
 def test_solve_polynomial_cv_1a():
@@ -219,6 +228,28 @@ def test_solve_polynomial_cv_2():
     assert solve(x + 1/x - 1, x) in \
         [[ Rational(1, 2) + I*sqrt(3)/2, Rational(1, 2) - I*sqrt(3)/2],
          [ Rational(1, 2) - I*sqrt(3)/2, Rational(1, 2) + I*sqrt(3)/2]]
+
+
+def test_solve_qubics():
+    assert solve(x**3 - x + 1) == [-1/((-Rational(1, 2) -
+                                        sqrt(3)*I/2)*(3*sqrt(69)/2 +
+                                            Rational(27, 2))**Rational(1, 3)) -
+                                   (-Rational(1, 2) -
+                                    sqrt(3)*I/2)*(3*sqrt(69)/2 +
+                                    Rational(27, 2))**Rational(1, 3)/3,
+                                   Mul(-1, -Rational(1, 2) +
+                                     sqrt(3)*I/2, evaluate=False)*(3*sqrt(69)/2 +
+                                         Rational(27, 2))**Rational(1, 3)/3 -
+                                     1/((-Rational(1, 2) +
+                                         sqrt(3)*I/2)*(3*sqrt(69)/2 +
+                                             Rational(27, 2))**Rational(1, 3)),
+                                    -(3*sqrt(69)/2 +
+                                      Rational(27, 2))**Rational(1, 3)/3 -
+                                    1/(3*sqrt(69)/2 +
+                                        Rational(27, 2))**Rational(1, 3)]
+    assert solve(x**3 - x + 1, cubics=False) == [RootOf(x**3 - x + 1, x, 0),
+                                                 RootOf(x**3 - x + 1, x, 1),
+                                                 RootOf(x**3 - x + 1, x, 2)]
 
 
 def test_quintics_1():
@@ -268,6 +299,10 @@ def test_solve_rational():
     """Test solve for rational functions"""
     assert solve( ( x - y**3 )/( (y**2)*sqrt(1 - y**2) ), x) == [y**3]
 
+    eq = x**2*(1/x - z**2/x)
+    assert solve(eq, x) == []
+    assert solve(eq, x, check=False) == [0]
+
 
 def test_solve_nonlinear():
     assert solve(x**2 - y**2, x, y) == [{x: -y}, {x: y}]
@@ -295,13 +330,33 @@ def test_linear_system():
     assert solve([x - 1, x - 1, x - y, x - 2*y], [x, y]) == []
 
     assert solve([x + 5*y - 2, -3*x + 6*y - 15], x, y) == {x: -3, y: 1}
+    assert solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z) == {x: -3, y: 1}
+
     assert solve([x + y + z + t, -z - t], x, y, z, t) == {x: -y, z: -t}
+    assert solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y) == {x: -5*y + 2,
+                                                             z: 21*y - 6}
+
+    assert solve([x + 3, x - 3]) == []
 
 
 def test_linear_system_function():
     a = Function('a')
     assert solve([a(0, 0) + a(0, 1) + a(1, 0) + a(1, 1), -a(1, 0) - a(1, 1)],
         a(0, 0), a(0, 1), a(1, 0), a(1, 1)) == {a(1, 0): -a(1, 1), a(0, 0): -a(0, 1)}
+
+
+def test_solve_radicals():
+    eq = root(x**3 - 3*x**2, 3) + 1 - x
+    assert solve(eq) == []  # wrong!
+    assert solve(eq, check=False) == [Rational(1, 3)]
+
+    eq = root(x, 3) - root(x, 5) + Rational(1, 7)
+    assert solve(eq) == [RootOf(7*x**5 - 7*x**3 + 1, x, 1)**15,
+                         RootOf(7*x**5 - 7*x**3 + 1, x, 2)**15]
+
+    # XXX is this correct?
+    sol = solve(eq, check=False)
+    assert abs(real_root(eq.subs(x, sol[0])).n(2)).epsilon_eq(0)
 
 
 # Note: multiple solutions exist for some of these equations, so the tests
@@ -311,6 +366,9 @@ def test_linear_system_function():
 
 def test_solve_transcendental():
     from diofant.abc import a, b
+
+    assert solve(sin(x)/x) == [pi]  # 0 is excluded
+    assert solve(sin(x)/x, check=False) == [0, pi]
 
     assert solve(exp(x) - 3, x) == [log(3)]
     assert set(solve((a*x + b)*(exp(x) - 3), x)) == {-b/a, log(3)}
@@ -436,6 +494,35 @@ def test_solve_transcendental():
                                        RootOf((-1)**Rational(2, 3)*x**5 -
                                               (-1)**Rational(2, 5)*x**3 -
                                               v, x, 4)**15]
+
+
+def test_solve_for_exprs():
+    f = Function('f')
+    df = f(x).diff(x)
+
+    assert solve(f(x) - x, f(x)) == [x]
+    assert solve(f(x).diff(x) - f(x) - x, f(x).diff(x)) == [x + f(x)]
+    assert solve(f(x).diff(x) - f(x) - x, f(x)) == [-x + df]
+
+    A = IndexedBase('A')
+    eqs = Tuple(A[1] + A[2] - 3, A[1] - A[2] + 1)
+    assert solve(eqs, eqs.atoms(Indexed)) == {A[1]: 1, A[2]: 2}
+
+    assert solve(x + 2 + sqrt(3), x + 2) == [-sqrt(3)]
+    assert solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2) == {y: -2 + sqrt(3),
+                                                             x + 2: -sqrt(3)}
+
+    eqs = (x*y + 3*y + sqrt(3), x + 4 + y)
+    assert solve(eqs, y, x + 2) == {y: -sqrt(3)/(x + 3),
+                                    x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}
+    assert solve(eqs, y*x, x) == {x: -y - 4, x*y: -3*y - sqrt(3)}
+
+    assert solve(sqrt(2) - 1, 1, check=False) == [sqrt(2)]
+    assert solve(x - y + 1, 1) == [x/(y - 1)]  # /!\ -1 is targeted, too
+    assert [_.subs(z, -1)
+            for _ in solve((x - y + 1).subs(-1, z), 1)] == [-x + y]
+
+    assert solve([x - 2, x**2 + f(x)], {f(x), x}) == [{x: 2, f(x): -4}]
 
 
 def test_solve_for_functions_derivatives():
