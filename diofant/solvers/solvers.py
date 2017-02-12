@@ -240,9 +240,10 @@ def solve(f, *symbols, **flags):
             Don't try to solve for any of the symbols in
             exclude.  Default is [].
         check : bool, optional
-            If False, don't do any testing of solutions. This can be
-            useful if one wants to include solutions that make any
-            denominator zero.  Default is True.
+            If False, don't do any testing of solutions.  Default is
+            True, i.e. the solutions are checked and those that doesn't
+            satisfy given assumpsions on symbols solved for or make any
+            denominator zero - are automatically excluded.
         numerical : bool, optional
             If enabled (default), do a fast numerical check
             if ``f`` has only one symbol.
@@ -524,7 +525,7 @@ def solve(f, *symbols, **flags):
 
     diofant.solvers.recurr.rsolve : solving recurrence equations
     diofant.solvers.ode.dsolve : solving differential equations
-    diofant.solvers.inequalities.reduce_inequalities
+    diofant.solvers.inequalities.reduce_inequalities : solving inequalities
     """
     # keeping track of how f was passed since if it is a list
     # a dictionary of results will be returned.
