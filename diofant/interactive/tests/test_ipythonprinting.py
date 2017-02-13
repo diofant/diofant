@@ -77,7 +77,7 @@ def test_printing():
     app.run_cell("ip = get_ipython()")
     app.run_cell("inst = ip.instance()")
     app.run_cell("format = inst.display_formatter.format")
-    app.run_cell("from diofant import Symbol")
+    app.run_cell("from diofant import Symbol, QQ, sqrt")
     app.run_cell("from diofant import init_printing")
 
     # Printing by default
@@ -163,6 +163,15 @@ def test_print_builtins():
     app.run_cell("a = format({Symbol('pi'): 3.14, Symbol('n_i'): 3})")
     text = app.user_ns['a'][0]['text/plain']
     pytest.raises(KeyError, lambda: app.user_ns['a'][0]['text/latex'])
+
+    # something to test default pretty/latex printing
+    app.run_cell("init_printing()")
+    app.run_cell("inst.display_formatter.formatters['text/latex'].enabled = True")
+    app.run_cell("a = format(QQ.algebraic_field(sqrt(2)))")
+    text = app.user_ns['a'][0]['text/plain']
+    latex = app.user_ns['a'][0]['text/latex']
+    assert text == "QQ<sqrt(2)>"
+    assert latex == r"\begin{equation}QQ<sqrt(2)>\end{equation}"
 
 
 @pytest.mark.skipif(ipython is None, reason="no IPython")

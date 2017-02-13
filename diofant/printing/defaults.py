@@ -18,3 +18,11 @@ class DefaultPrinting:
     def __repr__(self):
         from .repr import srepr
         return srepr(self, order=None)
+
+    def _repr_pretty_(self, p, cycle):
+        from .pretty import pretty
+        p.text(pretty(self))
+
+    def _repr_latex_(self):
+        from .latex import latex
+        return latex(self, mode='equation')
