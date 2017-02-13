@@ -114,6 +114,7 @@ def test_RootOf_attributes():
     r = RootOf(x**3 + y*x + 1, x, 0)
     assert isinstance(r, RootOf) and r.expr == x**3 + y*x + 1
     assert r.free_symbols == {y}
+    assert r.is_number is False
 
 
 def test_RootOf___eq__():
@@ -167,6 +168,14 @@ def test_RootOf_is_real():
 
 def test_RootOf_is_complex():
     assert RootOf(x**3 + x + 3, 0).is_complex is True
+    assert RootOf(x**3 + y*x + 3, x, 0).is_complex is None
+
+    assert RootOf(x**3 + y*x + 3, x, 0).is_commutative
+
+
+def test_RootOf_is_algebraic():
+    assert RootOf(x**3 + x + 3, 0).is_algebraic is True
+    assert RootOf(x**3 + y*x + 3, x, 0).is_algebraic is None
 
 
 def test_RootOf_subs():

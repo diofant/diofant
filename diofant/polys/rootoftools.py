@@ -36,8 +36,7 @@ _complexes_cache = {}
 class RootOf(Expr):
     """Represents ``k``-th root of a univariate polynomial. """
 
-    is_complex = True
-    is_number = True
+    is_commutative = True
 
     def __new__(cls, f, x, index=None, radicals=True, expand=True,
                 evaluate=None):
@@ -140,6 +139,18 @@ class RootOf(Expr):
         except KeyError:
             pass
     _eval_is_extended_real = _eval_is_real
+
+    def _eval_is_complex(self):
+        if all(_.is_complex for _ in self.poly.coeffs()):
+            return True
+
+    def _eval_is_algebraic(self):
+        if all(_.is_algebraic for _ in self.poly.coeffs()):
+            return True
+
+    @property
+    def is_number(self):
+        return not self.free_symbols
 
     @classmethod
     def real_roots(cls, poly, radicals=True):
