@@ -1815,6 +1815,9 @@ class AlgebraicNumber(Expr):
         elif expr.is_AlgebraicNumber:
             minpoly, root = expr.minpoly, expr.root
         else:
+            if expr.free_symbols:
+                raise ValueError("Not a number: %s" % expr)
+
             minpoly, root = minimal_polynomial(
                 expr, args.get('gen'), polys=True), expr
 
@@ -1822,14 +1825,13 @@ class AlgebraicNumber(Expr):
 
         if not isinstance(coeffs, ANP):
             rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
-            coeffs = Tuple(*coeffs)
         else:
             rep = DMP.from_list(coeffs.to_list(), 0, dom)
-            coeffs = Tuple(*coeffs.to_list())
 
         if rep.degree() >= minpoly.degree():
             rep = rep.rem(minpoly.rep)
 
+        coeffs = Tuple(*rep.all_coeffs())
         sargs = (root, coeffs)
 
         if alias is not None:
@@ -1845,6 +1847,10 @@ class AlgebraicNumber(Expr):
         obj.minpoly = minpoly
 
         return obj
+
+    @property
+    def free_symbols(self):
+        return set()
 
     def _eval_evalf(self, prec):
         return self.as_expr()._evalf(prec)
@@ -1872,7 +1878,7 @@ class AlgebraicNumber(Expr):
 
     def coeffs(self):
         """Returns all Diofant coefficients of an algebraic number. """
-        return [ self.rep.domain.to_diofant(c) for c in self.rep.all_coeffs() ]
+        return [self.rep.domain.to_diofant(c) for c in self.rep.all_coeffs()]
 
     def native_coeffs(self):
         """Returns all native coefficients of an algebraic number. """
