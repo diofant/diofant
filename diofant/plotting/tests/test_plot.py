@@ -6,13 +6,15 @@ import sys
 
 import pytest
 
-from diofant import (pi, sin, cos, Symbol, Integral, summation, sqrt, log,
-                     oo, LambertW, I, meijerg, exp_polar, Max)
+from diofant import (pi, sin, cos, Integral, summation, sqrt, log,
+                     oo, LambertW, I, meijerg, exp_polar, Max, real_root,
+                     Piecewise, And)
 from diofant.plotting import (plot, plot_parametric, plot3d_parametric_line,
                               plot3d, plot3d_parametric_surface)
 from diofant.plotting.plot import unset_show
-from diofant.plotting.experimental_lambdify import lambdify
 from diofant.external import import_module
+
+from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -64,10 +66,6 @@ def test_matplotlib_intro():
     try:
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
-
-        x = Symbol('x')
-        y = Symbol('y')
-        z = Symbol('z')
 
         p = plot(x)
         p = plot(x*sin(x), x*cos(x))
@@ -169,10 +167,6 @@ def test_matplotlib_colors():
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
 
-        x = Symbol('x')
-        y = Symbol('y')
-        z = Symbol('z')
-
         p = plot(sin(x))
         p[0].line_color = lambda a: a
         p.save(tmp_file('%s_colors_line_arity1' % name))
@@ -222,16 +216,13 @@ def test_matplotlib_colors():
 
 
 @pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
+@pytest.mark.xfail
 @pytest.mark.slow
 def test_matplotlib_advanced():
     """Examples from the 'advanced' notebook."""
     try:
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
-
-        x = Symbol('x')
-        y = Symbol('y')
-        z = Symbol('z')
 
         s = summation(1/x**y, (x, 1, oo))
         p = plot(s, (y, 2, 10))
@@ -261,15 +252,13 @@ def test_matplotlib_advanced():
 
 
 @pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
+@pytest.mark.xfail
 @pytest.mark.slow
 def test_matplotlib_advanced_2():
     """More examples from the 'advanced' notebook."""
     try:
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
-
-        x = Symbol('x')
-        y = Symbol('y')
 
         i = Integral(log((sin(x)**2 + 1)*sqrt(x**2 + 1)), (x, 0, y))
         p = plot(i, (y, 1, 5))
@@ -278,27 +267,9 @@ def test_matplotlib_advanced_2():
         TmpFileManager.cleanup()
 
 
-# Tests for exception handling in experimental_lambdify
-def test_experimental_lambdify():
-    x = Symbol('x')
-    f = lambdify([x], Max(x, 5))
-    # XXX should f be tested? If f(2) is attempted, an
-    # error is raised because a complex produced during wrapping of the arg
-    # is being compared with an int.
-    assert Max(2, 5) == 5
-    assert Max(5, 7) == 7
-
-    x = Symbol('x-3')
-    f = lambdify([x], x + 1)
-    assert f(1) == 2
-
-    pytest.raises(ValueError, lambda: lambdify([1], x))
-
-
 @disable_print
 @pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_append_sympyissue_7140():
-    x = Symbol('x')
     p1 = plot(x)
     p2 = plot(x**2)
     p3 = plot(x + 2)
@@ -312,3 +283,31 @@ def test_append_sympyissue_7140():
 
     with pytest.raises(TypeError):
         p1.append(p2._series)
+
+
+@disable_print
+@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
+def test_sympyissue_11461():
+    try:
+        name = 'test'
+        tmp_file = TmpFileManager.tmp_file
+
+        p = plot(real_root((log(x/(x-2))), 3), (x, 3, 4))
+        p.save(tmp_file('%s_11461' % name))
+    finally:
+        TmpFileManager.cleanup()
+
+
+@disable_print
+@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
+def test_sympyissue_10925():
+    try:
+        name = 'test'
+        tmp_file = TmpFileManager.tmp_file
+
+        f = Piecewise((-1, x < -1), (x, And(-1 <= x, x < 0)),
+                      (x**2, And(0 <= x, x < 1)), (x**3, True))
+        p = plot(f, (x, -3, 3))
+        p.save(tmp_file('%s_10925' % name))
+    finally:
+        TmpFileManager.cleanup()
