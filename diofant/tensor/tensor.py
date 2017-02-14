@@ -2905,7 +2905,10 @@ class TensAdd(TensExpr):
         Notes
         =====
 
-        see the ``TensorIndexType`` docstring for the contraction conventions
+        See Also
+        ========
+
+        TensorIndexType
         """
 
         args = [contract_metric(x, g) for x in self.args]
@@ -3615,7 +3618,10 @@ class TensMul(TensExpr):
         Notes
         =====
 
-        see the ``TensorIndexType`` docstring for the contraction conventions
+        See Also
+        ========
+
+        TensorIndexType
 
         Examples
         ========

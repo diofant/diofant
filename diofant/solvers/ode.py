@@ -240,14 +240,13 @@ from ..logic.boolalg import BooleanAtom
 from ..functions import (cos, exp, im, log, re, sin, tan, sqrt, atan2,
                          conjugate, factorial)
 from ..integrals import Integral, integrate
-from ..matrices import wronskian, Matrix, BlockDiagMatrix, eye, zeros
+from ..matrices import wronskian, Matrix, BlockDiagMatrix
 from ..polys import Poly, RootOf, terms_gcd, PolynomialError, lcm
 from ..polys.polyroots import roots_quartic
 from ..polys.polytools import cancel, degree, div
 from ..series import Order, series
 from ..simplify import (collect, logcombine, powsimp, separatevars,
-                        simplify, trigsimp, posify, cse, powdenest,
-                        collect_const)
+                        simplify, trigsimp, posify, cse, collect_const)
 from .solvers import solve
 from .pde import pdsolve
 from ..utilities import numbered_symbols, default_sort_key, sift
@@ -3170,9 +3169,11 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
 
     Where `u_2 g(u_2) + h(u_2) \ne 0` and `f(x) \ne 0`.
 
-    See also the docstrings of
-    :py:meth:`~diofant.solvers.ode.ode_1st_homogeneous_coeff_best` and
-    :py:meth:`~diofant.solvers.ode.ode_1st_homogeneous_coeff_subs_dep_div_indep`.
+    See Also
+    ========
+
+    diofant.solvers.ode.ode_1st_homogeneous_coeff_best
+    diofant.solvers.ode.ode_1st_homogeneous_coeff_subs_dep_div_indep
 
     Examples
     ========

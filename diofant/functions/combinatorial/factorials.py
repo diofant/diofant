@@ -3,7 +3,6 @@ from functools import reduce
 
 from ...core import S, sympify, Dummy, Function, Integer, cacheit
 from ...core.function import ArgumentIndexError
-from ...core.logic import fuzzy_and
 from ...ntheory import sieve
 
 

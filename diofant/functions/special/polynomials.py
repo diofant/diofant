@@ -11,7 +11,6 @@ from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import binomial, factorial, RisingFactorial
 from ..elementary.complexes import re
 from ..elementary.exponential import exp
-from ..elementary.integers import floor
 from ..elementary.miscellaneous import sqrt
 from ..elementary.trigonometric import cos
 from .gamma_functions import gamma

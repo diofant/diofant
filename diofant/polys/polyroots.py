@@ -3,7 +3,7 @@
 from functools import reduce
 import math
 
-from ..core import (Dummy, Symbol, symbols, S, I, pi, Mul, Pow, Eq, sympify,
+from ..core import (Dummy, Symbol, symbols, S, I, pi, Mul, Eq, sympify,
                     Rational, igcd, comp, Integer, Float, factor_terms)
 from ..core.compatibility import ordered
 from ..core.mul import expand_2arg

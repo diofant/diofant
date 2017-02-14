@@ -9,8 +9,7 @@ from diofant.solvers.diophantine import (diop_solve, diop_DN, diop_bf_DN, length
                                          prime_as_sum_of_two_squares, partition,
                                          power_representation)
 
-from diofant import (symbols, Integer, Matrix, simplify, Subs, factor_list,
-                     S, igcd, Symbol, Add)
+from diofant import symbols, Integer, Matrix, simplify, Subs, factor_list
 from diofant.core.function import _mexpand
 from diofant.functions.elementary.trigonometric import sin
 from diofant.utilities import default_sort_key

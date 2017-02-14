@@ -6277,9 +6277,6 @@ def groebner(F, *gens, **args):
     used to compute the basis. Allowed orders are ``lex``, ``grlex`` and
     ``grevlex``. If no order is specified, it defaults to ``lex``.
 
-    For more information on Groebner bases, see the references and the docstring
-    of `solve_poly_system()`.
-
     Examples
     ========
 
@@ -6317,6 +6314,11 @@ def groebner(F, *gens, **args):
 
     .. [1] [Buchberger01]_
     .. [2] [Cox97]_
+
+    See Also
+    ========
+
+    diofant.solvers.polysys.solve_poly_system
     """
     return GroebnerBasis(F, *gens, **args)
 

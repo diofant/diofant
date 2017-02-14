@@ -942,8 +942,7 @@ class SparseMatrixBase(MatrixBase):
         """Return the least-square fit to the data.
 
         By default the cholesky_solve routine is used (method='CH'); other
-        methods of matrix inversion can be used. To find out which are
-        available, see the docstring of the .inv() method.
+        methods of matrix inversion can be used.
 
         Examples
         ========
@@ -991,6 +990,10 @@ class SparseMatrixBase(MatrixBase):
         >>> (S*xy - r).norm().n(2)
         1.5
 
+        See Also
+        ========
+
+        diofant.matrices.matrices.MatrixBase.inv
         """
         t = self.T
         return (t*self).inv(method=method)*t*rhs
@@ -998,7 +1001,10 @@ class SparseMatrixBase(MatrixBase):
     def solve(self, rhs, method='LDL'):
         """Return solution to self*soln = rhs using given inversion method.
 
-        For a list of possible inversion methods, see the .inv() docstring.
+        See Also
+        ========
+
+        diofant.matrices.matrices.MatrixBase.inv
         """
         if not self.is_square:
             if self.rows < self.cols:

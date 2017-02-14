@@ -7,7 +7,6 @@ from .singleton import S
 from .operations import AssocOp
 from .cache import cacheit
 from .numbers import ilcm, igcd
-from .expr import Expr
 
 
 class Add(AssocOp):

@@ -1,7 +1,6 @@
 from collections import defaultdict
 from itertools import (combinations, permutations, product,
                        combinations_with_replacement)
-import random
 from operator import gt
 
 from ..core import Basic, S

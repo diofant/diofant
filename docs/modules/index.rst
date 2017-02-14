@@ -39,11 +39,7 @@ access any Diofant module, or use this contens:
    simplify/simplify.rst
    simplify/hyperexpand.rst
    stats.rst
-   solvers/ode.rst
-   solvers/pde.rst
-   solvers/solvers.rst
-   solvers/diophantine.rst
-   solvers/inequalities.rst
+   solvers/index.rst
    tensor/index.rst
    utilities/index.rst
    parsing.rst

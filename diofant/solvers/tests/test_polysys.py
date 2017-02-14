@@ -2,8 +2,7 @@
 
 import pytest
 
-from diofant import (flatten, I, Integer, Poly, QQ, Rational, S, sqrt,
-                     symbols, Matrix)
+from diofant import flatten, I, Poly, Rational, S, sqrt, symbols, Matrix
 from diofant.polys import PolynomialError, ComputationFailed, RootOf
 from diofant.solvers.polysys import solve_linear_system, solve_poly_system
 

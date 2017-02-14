@@ -3,8 +3,7 @@
 import pytest
 
 from diofant.polys.domains import QQ, ZZ
-from diofant.polys.polyerrors import (ExactQuotientFailed, CoercionFailed,
-                                      NotReversible, GeneratorsNeeded)
+from diofant.polys.polyerrors import CoercionFailed, GeneratorsNeeded
 from diofant.polys.orderings import build_product_order
 
 from diofant.abc import x, y

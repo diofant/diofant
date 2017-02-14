@@ -1,9 +1,6 @@
-import random
-
 from ..core import Expr, sympify, symbols, Dummy, Lambda, S, cacheit
 from ..concrete import Sum, summation
 from ..functions import Piecewise
-from ..solvers import solve
 from .rv import NamedArgsMixin, SinglePSpace, SingleDomain
 
 

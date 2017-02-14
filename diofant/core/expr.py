@@ -44,10 +44,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         temporarily converts the non-Symbol vars in Symbols when performing
         the differentiation.
 
-        Note, see the docstring of Derivative for how this should work
-        mathematically.  In particular, note that expr.subs(yourclass, Symbol)
-        should be well-defined on a structural level, or this will lead to
-        inconsistent results.
+        Notes
+        =====
+
+        The expr.subs(yourclass, Symbol) should be well-defined on a
+        structural level, or this will lead to inconsistent results.
 
         Examples
         ========
@@ -61,6 +62,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ...
         >>> (2*MyClass()).diff(MyClass())
         2
+
+        See Also
+        ========
+
+        diofant.core.function.Derivative
         """
         return False
 
@@ -3290,7 +3296,7 @@ def _mag(x):
 from .mul import Mul
 from .add import Add
 from .power import Pow
-from .function import Derivative, Function
+from .function import Function
 from .mod import Mod
 from .exprtools import factor_terms
 from .numbers import Integer, Rational

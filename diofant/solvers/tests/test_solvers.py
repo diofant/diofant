@@ -3,15 +3,15 @@ import os
 import pytest
 
 from diofant import (
-    Abs, And, Derivative, Dummy, Eq, Float, Function, Gt, I, Integral,
+    Abs, And, Derivative, Eq, Float, Function, Gt, I, Integral,
     LambertW, Lt, Matrix, Or, Piecewise, Poly, Rational, S, Symbol,
     Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
     erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow, expand_log,
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
-    root, simplify, atan2, arg, SparseMatrix, Tuple, oo, E, cbrt, sech)
+    root, simplify, atan2, arg, Tuple, oo, E, sech)
 from diofant.core.function import nfloat
 from diofant.solvers import solve_undetermined_coeffs
-from diofant.solvers.solvers import _invert, checksol, posify
+from diofant.solvers.solvers import _invert, checksol
 from diofant.polys.rootoftools import RootOf
 from diofant.utilities.randtest import verify_numerically as tn
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert

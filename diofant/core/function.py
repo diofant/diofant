@@ -938,7 +938,6 @@ class Derivative(Expr):
         0
 
     Note, any class can allow derivatives to be taken with respect to itself.
-    See the docstring of Expr._diff_wrt.
 
     Examples
     ========
@@ -967,7 +966,6 @@ class Derivative(Expr):
         >>> Derivative(f(g(x)), x, evaluate=True)
         Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1),
                                             (_xi_1,), (g(x),))
-
     """
 
     is_Derivative = True
@@ -2143,8 +2141,6 @@ def expand_power_base(expr, deep=True, force=False):
     """
     Wrapper around expand that only uses the power_base hint.
 
-    See the expand docstring for more information.
-
     A wrapper to expand(power_base=True) which separates a power with a base
     that is a Mul into a product of powers, without performing any other
     expansions, provided that assumptions about the power's base and exponent
@@ -2197,6 +2193,11 @@ def expand_power_base(expr, deep=True, force=False):
     2**(z + 1)*y**(z + 1)
     >>> ((2*y)**(1+z)).expand()
     2*2**z*y*y**z
+
+    See Also
+    ========
+
+    expand
     """
     return sympify(expr).expand(deep=deep, log=False, mul=False,
         power_exp=False, power_base=True, multinomial=False,
@@ -2207,8 +2208,6 @@ def expand_power_exp(expr, deep=True):
     """
     Wrapper around expand that only uses the power_exp hint.
 
-    See the expand docstring for more information.
-
     Examples
     ========
 
@@ -2216,6 +2215,11 @@ def expand_power_exp(expr, deep=True):
     >>> from diofant.abc import x, y
     >>> expand_power_exp(x**(y + 2))
     x**2*x**y
+
+    See Also
+    ========
+
+    expand
     """
     return sympify(expr).expand(deep=deep, complex=False, basic=False,
     log=False, mul=False, power_exp=True, power_base=False, multinomial=False)

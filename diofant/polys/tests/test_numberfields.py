@@ -647,7 +647,13 @@ def test_AlgebraicNumber():
     assert b.args == (sqrt(2), Tuple(1, 0), Symbol('alpha'))
 
     a = AlgebraicNumber(sqrt(2), [1, 2, 3])
-    assert a.args == (sqrt(2), Tuple(1, 2, 3))
+    assert a.args == (sqrt(2), Tuple(2, 5))
+
+    pytest.raises(ValueError, lambda: AlgebraicNumber(RootOf(x**3 + y*x + 1,
+                                                             x, 0)))
+
+    a = AlgebraicNumber(RootOf(x**3 + 2*x - 1, x, 1), alias='alpha')
+    assert a.free_symbols == set()
 
 
 def test_to_algebraic_integer():

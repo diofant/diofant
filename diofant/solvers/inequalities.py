@@ -6,7 +6,7 @@ from ..sets import Interval, FiniteSet, Union
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
 from ..logic import And
-from ..polys import Poly, PolynomialError, parallel_poly_from_expr
+from ..polys import Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
 from ..utilities import filldedent
 

@@ -259,7 +259,10 @@ class CoordSystem(Basic):
     def coord_tuple_transform_to(self, to_sys, coords):
         """Transform ``coords`` to coord system ``to_sys``.
 
-        See the docstring of ``CoordSystem`` for examples.
+        See Also
+        ========
+
+        CoordSystem
         """
         coords = Matrix(coords)
         if self != to_sys:
@@ -282,7 +285,10 @@ class CoordSystem(Basic):
 
         Takes a point and returns its coordinate in this coordinate system.
 
-        See the docstring of ``CoordSystem`` for examples.
+        See Also
+        ========
+
+        CoordSystem
         """
         return BaseScalarField(self, coord_index)
 
@@ -299,7 +305,10 @@ class CoordSystem(Basic):
         The basis vector field for this coordinate system. It is also an
         operator on scalar fields.
 
-        See the docstring of ``CoordSystem`` for examples.
+        See Also
+        ========
+
+        CoordSystem
         """
         return BaseVectorField(self, coord_index)
 
@@ -316,7 +325,10 @@ class CoordSystem(Basic):
         The basis one-form field for this coordinate system. It is also an
         operator on vector fields.
 
-        See the docstring of ``CoordSystem`` for examples.
+        See Also
+        ========
+
+        CoordSystem
         """
         return Differential(self.coord_function(coord_index))
 
@@ -334,14 +346,20 @@ class CoordSystem(Basic):
     def point(self, coords):
         """Create a ``Point`` with coordinates given in this coord system.
 
-        See the docstring of ``CoordSystem`` for examples.
+        See Also
+        ========
+
+        CoordSystem
         """
         return Point(self, coords)
 
     def point_to_coords(self, point):
         """Calculate the coordinates of a point in this coord system.
 
-        See the docstring of ``CoordSystem`` for examples.
+        See Also
+        ========
+
+        CoordSystem
         """
         return point.coords(self)
 

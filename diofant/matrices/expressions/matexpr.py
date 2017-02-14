@@ -1,6 +1,6 @@
 from functools import wraps
 
-from ...core import (S, Symbol, Tuple, Integer, Basic, Expr,
+from ...core import (S, Symbol, Tuple, Integer, Expr,
                      SympifyError, sympify, AtomicExpr)
 from ...core.assumptions import StdFactKB
 from ...core.logic import fuzzy_bool

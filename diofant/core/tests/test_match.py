@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (abc, Add, cos, Derivative, diff, exp, Float, Function,
+from diofant import (Add, cos, Derivative, diff, exp, Float, Function,
                      I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt,
                      Symbol, symbols, Wild, pi, meijerg, WildFunction)
 
