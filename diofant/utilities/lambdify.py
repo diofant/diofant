@@ -101,7 +101,7 @@ MODULES = {
     "diofant": (DIOFANT, DIOFANT_DEFAULT, {}, (
         "from diofant.functions import *",
         "from diofant.matrices import *",
-        "from diofant import Integral, pi, oo, nan, zoo, E, I",)),
+        "from diofant import Sum, Integral, pi, oo, nan, zoo, E, I",)),
     "numexpr": (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
                 ("import_module('numexpr')", )),
 }
