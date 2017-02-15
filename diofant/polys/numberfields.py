@@ -719,17 +719,13 @@ def _minpoly_groebner(ex, x, cls):
                 if ex.base.is_Add:
                     return True
         if ex.is_Mul:
-            hit = True
-            a = []
             for p in ex.args:
                 if p.is_Add:
                     return False
                 if p.is_Pow:
                     if p.base.is_Add and p.exp > 0:
                         return False
-
-            if hit:
-                return True
+            return True
         return False
 
     inverted = False
