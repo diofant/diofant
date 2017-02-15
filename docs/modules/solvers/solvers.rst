@@ -7,6 +7,8 @@ Algebraic equations
 
 .. autofunction:: diofant.solvers.solvers.solve_undetermined_coeffs
 
+.. autofunction:: diofant.solvers.solvers.minsolve_linear_system
+
 .. autofunction:: diofant.solvers.solvers.checksol
 
 
