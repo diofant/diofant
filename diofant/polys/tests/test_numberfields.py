@@ -89,6 +89,10 @@ def test_minimal_polynomial():
     assert minimal_polynomial(sqrt(a/2 + 17), x) == 2*x**4 - 68*x**2 + 577
     assert minimal_polynomial(sqrt(b/2 + 17), x) == 4*x**4 - 136*x**2 + 1153
 
+    # issue diofant/diofant#431
+    theta = AlgebraicNumber(sqrt(2), (S.Half, 17))
+    assert minimal_polynomial(theta, x) == 2*x**2 - 68*x + 577
+
     a, b = sqrt(2)/3 + 7, AlgebraicNumber(sqrt(2)/3 + 7)
 
     f = 81*x**8 - 2268*x**6 - 4536*x**5 + 22644*x**4 + 63216*x**3 - \

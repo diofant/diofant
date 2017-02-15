@@ -647,7 +647,6 @@ def _minpoly_groebner(ex, x, cls):
     >>> from diofant.abc import x
     >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=False)
     x**2 - 2*x - 1
-
     """
     from .polytools import degree
     from ..core import expand_multinomial
@@ -656,6 +655,9 @@ def _minpoly_groebner(ex, x, cls):
     mapping, symbols, replace = {}, {}, []
 
     def update_mapping(ex, exp, base=None):
+        if ex in mapping:
+            return symbols[ex]
+
         a = next(generator)
         symbols[ex] = a
 
@@ -669,16 +671,11 @@ def _minpoly_groebner(ex, x, cls):
     def bottom_up_scan(ex):
         if ex.is_Atom:
             if ex is S.ImaginaryUnit:
-                if ex not in mapping:
-                    return update_mapping(ex, 2, 1)
-                else:
-                    return symbols[ex]
+                return update_mapping(ex, 2, 1)
             elif ex.is_Rational:
                 return ex
-        elif ex.is_Add:
-            return Add(*[ bottom_up_scan(g) for g in ex.args ])
-        elif ex.is_Mul:
-            return Mul(*[ bottom_up_scan(g) for g in ex.args ])
+        elif ex.is_Add or ex.is_Mul:
+            return ex.func(*[bottom_up_scan(g) for g in ex.args])
         elif ex.is_Pow:
             if ex.exp.is_Rational:
                 if ex.exp < 0 and ex.base.is_Add:
@@ -687,31 +684,28 @@ def _minpoly_groebner(ex, x, cls):
 
                     alg = ex.base - coeff
 
-                    # XXX: turn this into eval()
-                    inverse = invert(elt.gen + coeff, elt).as_expr()
-                    base = inverse.subs(elt.gen, alg).expand()
+                    inverse = invert(elt.gen + coeff, elt)
+                    base = inverse.eval(alg).expand()
 
                     if ex.exp == -1:
                         return bottom_up_scan(base)
                     else:
                         ex = base**(-ex.exp)
                 if not ex.exp.is_Integer:
-                    base, exp = (
-                        ex.base**ex.exp.p).expand(), Rational(1, ex.exp.q)
+                    base, exp = ((ex.base**ex.exp.p).expand(),
+                                 Rational(1, ex.exp.q))
                 else:
                     base, exp = ex.base, ex.exp
                 base = bottom_up_scan(base)
                 expr = base**exp
 
-                if expr not in mapping:
-                    return update_mapping(expr, 1/exp, -base)
-                else:
-                    return symbols[expr]
+                return update_mapping(expr, 1/exp, -base)
         elif ex.is_AlgebraicNumber:
-            if ex.root not in mapping:
+            if ex.coeffs() == [1, 0]:
                 return update_mapping(ex.root, ex.minpoly)
             else:
-                return symbols[ex.root]
+                base = AlgebraicNumber(ex.root)
+                return bottom_up_scan(ex.as_poly().eval(base))
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 
@@ -740,7 +734,7 @@ def _minpoly_groebner(ex, x, cls):
 
     inverted = False
     ex = expand_multinomial(ex)
-    if ex.is_AlgebraicNumber:
+    if ex.is_AlgebraicNumber and ex.coeffs() == [1, 0]:
         return ex.minpoly.as_expr(x)
     elif ex.is_Rational:
         result = ex.q*x - ex.p
