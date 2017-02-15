@@ -728,28 +728,26 @@ def _minpoly_groebner(ex, x, cls):
             return True
         return False
 
-    inverted = False
     ex = expand_multinomial(ex)
-    if ex.is_AlgebraicNumber and ex.coeffs() == [1, 0]:
+
+    if ex.is_Rational:
+        return ex.q*x - ex.p
+    elif ex.is_AlgebraicNumber and ex.coeffs() == [1, 0]:
         return ex.minpoly.as_expr(x)
-    elif ex.is_Rational:
-        result = ex.q*x - ex.p
     else:
         inverted = simpler_inverse(ex)
         if inverted:
             ex = ex**-1
-        res = None
+
         if ex.is_Pow and (1/ex.exp).is_Integer:
             n = 1/ex.exp
-            res = _minimal_polynomial_sq(ex.base, n, x)
-
+            result = _minimal_polynomial_sq(ex.base, n, x)
         elif _is_sum_surds(ex):
-            res = _minimal_polynomial_sq(ex, S.One, x)
+            result = _minimal_polynomial_sq(ex, S.One, x)
+        else:
+            result = None
 
-        if res is not None:
-            result = res
-
-        if res is None:
+        if result is None:
             bus = bottom_up_scan(ex)
             F = [x - bus] + list(mapping.values())
             G = groebner(F, list(symbols.values()) + [x], order='lex')
@@ -757,12 +755,13 @@ def _minpoly_groebner(ex, x, cls):
             _, factors = factor_list(G[-1])
             # by construction G[-1] has root `ex`
             result = _choose_factor(factors, x, ex)
-    if inverted:
-        result = _invertx(result, x)
-        if result.coeff(x**degree(result, x)) < 0:
-            result = expand_mul(-result)
 
-    return result
+        if inverted:
+            result = _invertx(result, x)
+            if result.coeff(x**degree(result, x)) < 0:
+                result = expand_mul(-result)
+
+        return result
 
 
 minpoly = minimal_polynomial
