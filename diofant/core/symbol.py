@@ -16,7 +16,52 @@ from ..logic.boolalg import Boolean
 class BaseSymbol(AtomicExpr, Boolean):
     """Abstract class for Symbols.
 
-    Do not instantiate this, use Symbol, Dummy or Wild.
+    Do not instantiate this, use derived classes.
+
+    Notes
+    =====
+
+    We introduce this class to prevent "flipping" of arguments
+    for "rich comparison" methods [1]_.  There is no swapped-argument
+    versions of these methods, like :meth:`~object.__add__` vs
+    :meth:`~object.__radd__`, rather e.g. :meth:`~object.__lt__` and
+    :meth:`~object.__gt__` are each other's reflection.
+
+    According to the documentation [1]_, if the operands of such
+    method are of different types, and right operand’s type is a direct or
+    indirect subclass of the left operand’s type, the reflected method
+    of the right operand has priority, otherwise the left operand’s
+    method has priority.
+
+    Thus, simple class hierarhy, where :class:`Symbol` is a parent
+    class for both :class:`Dummy` and :class:`Wild` isn't possible,
+    if we want to avoid silent switching to the reflected methods
+    for rich comparisons of parent and child.  See also sympy/sympy#7951.
+
+    Examples
+    ========
+
+    We illustrate the "flipping" problem, by using here
+    BaseSymbol in place of ordinary Symbol:
+
+    >>> from diofant.core.symbol import Wild, BaseSymbol as Symbol
+
+    >>> p = Wild('p')
+    >>> x = Symbol('x')
+    >>> x < p
+    p_ > x
+
+    See Also
+    ========
+
+    Symbol
+    Dummy
+    Wild
+
+    References
+    ==========
+
+    .. [1] https://docs.python.org/3/reference/datamodel.html#object.__lt__
     """
 
     is_comparable = False
@@ -197,6 +242,8 @@ class Symbol(BaseSymbol):
     ========
 
     :mod:`diofant.core.assumptions`
+    Dummy
+    Wild
     """
 
     pass
