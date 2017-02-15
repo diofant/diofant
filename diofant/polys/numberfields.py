@@ -607,10 +607,8 @@ def minimal_polynomial(ex, x=None, **args):
     if ex.is_number:
         # not sure if it's always needed but try it for numbers (issue sympy/sympy#8354)
         ex = _mexpand(ex, recursive=True)
-    for expr in preorder_traversal(ex):
-        if expr.is_AlgebraicNumber:
-            compose = False
-            break
+    if any(e.is_AlgebraicNumber for e in preorder_traversal(ex)):
+        compose = False
 
     if x is not None:
         x, cls = sympify(x), Poly
