@@ -32,6 +32,9 @@ Backwards-incompatible changes
 * Removed ``pager_print()`` and ``print_fcode()``, see `#411 <https://github.com/diofant/diofant/pull/411>`_.
 * "Increase" precision of Floats with :meth:`~diofant.core.evalf.EvalfMixin.evalf` now disallowed, see `#380 <https://github.com/diofant/diofant/pull/380>`_.
 * Removed ``experimental_lambdify()`` and ``intervalmath`` module from plotting package, see `#384 <https://github.com/diofant/diofant/pull/384>`_.
+* Removed :func:`~diofant.solvers.solvers.solve` flags ``set``, ``manual`` and ``implicit``, see `#426 <https://github.com/diofant/diofant/pull/426>`_.
+* Removed support for ``particular`` and ``quick`` options of :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.solvers.minsolve_linear_system` instead, see `#426 <https://github.com/diofant/diofant/pull/426>`_.
+* Removed support for inequalities in :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.inequalities.reduce_inequalities` instead, see `#426 <https://github.com/diofant/diofant/pull/426>`_.
 
 Minor changes
 =============
@@ -41,6 +44,7 @@ Minor changes
 * Sorting of symbolic quadratic roots now same as in :class:`~diofant.polys.rootoftools.RootOf` for numerical coefficients, see `#400 <https://github.com/diofant/diofant/pull/400>`_.
 * Support simple first-order DAE with :func:`~diofant.solvers.ode.dsolve` helper :func:`~diofant.solvers.ode.ode_lie_group`, see `#413 <https://github.com/diofant/diofant/pull/413>`_.
 * Add support for limits of relational expressions, see `#414 <https://github.com/diofant/diofant/pull/414>`_.
+* Support rewriting :class:`~diofant.functions.elementary.miscellaneous.Min` and :class:`~diofant.functions.elementary.miscellaneous.Max` as :class:`~diofant.functions.elementary.piecewise.Piecewise`, this allow solving more piecewise equations, see `#426 <https://github.com/diofant/diofant/pull/426>`_.
 
 Developer changes
 =================
@@ -87,8 +91,10 @@ Issues closed
 * `sympy/sympy#11461 <https://github.com/sympy/sympy/issues/11461>`_ NameError: name 'Ne' is not defined plotting real_root((log(x/(x-2))), 3)
 * `sympy/sympy#10925 <https://github.com/sympy/sympy/issues/10925>`_ plot doesn't work with Piecewise
 * `#336 <https://github.com/diofant/diofant/issues/336>`_ Drop diofant/plotting/experimental_lambdify.py
+* `#371 <https://github.com/diofant/diofant/issues/371>`_ Better documentation for BaseSymbol
+* `#432 <https://github.com/diofant/diofant/issues/432>`_ Permission to use your patches in SymPy
 
-.. last pr: #283
+.. last pr: #426
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
