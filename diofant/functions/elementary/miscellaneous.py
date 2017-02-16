@@ -454,6 +454,10 @@ class MinMaxBase(LatticeOp):
     def is_extended_real(self):
         return fuzzy_and(arg.is_extended_real for arg in self.args)
 
+    def _eval_rewrite_as_Piecewise(self, *args):
+        from .. import Heaviside, Piecewise
+        return self.rewrite(Heaviside).rewrite(Piecewise)
+
 
 class Max(MinMaxBase, Application):
     """Return, if possible, the maximum value of the list.

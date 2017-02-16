@@ -261,12 +261,12 @@ def test_sympyissue_8235():
         Or(And(-oo < x, x <= Integer(-1)), And(Integer(1) <= x, x < oo))
 
     eq = x**8 + x - 9  # we want RootOf solns here
-    sol = solve(eq >= 0)
+    sol = reduce_inequalities(eq >= 0)
     tru = Or(And(RootOf(eq, 1) <= x, x < oo), And(-oo < x, x <= RootOf(eq, 0)))
     assert sol == tru
 
     # recast vanilla as real
-    assert solve(sqrt((-x + 1)**2) < 1) == And(Integer(0) < x, x < 2)
+    assert reduce_inequalities(sqrt((-x + 1)**2) < 1) == And(Integer(0) < x, x < 2)
 
 
 def test_sympyissue_5526():
@@ -314,7 +314,7 @@ def test_solve_univariate_inequality():
 
 def test_slow_general_univariate():
     r = RootOf(x**5 - x**2 + 1, 0)
-    assert solve(sqrt(x) + 1/root(x, 3) > 1) == \
+    assert reduce_inequalities(sqrt(x) + 1/root(x, 3) > 1) == \
         Or(And(Integer(0) < x, x < r**6), And(r**6 < x, x < oo))
 
 

@@ -596,6 +596,7 @@ class StrPrinter(Printer):
 
     def _print_Symbol(self, expr):
         return expr.name
+    _print_BaseSymbol = _print_Symbol
     _print_MatrixSymbol = _print_Symbol
     _print_RandomSymbol = _print_Symbol
 

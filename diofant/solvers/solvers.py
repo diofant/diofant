@@ -17,11 +17,9 @@ from ..core.assumptions import check_assumptions
 from ..core.function import AppliedUndef
 from ..integrals import Integral
 from ..core.relational import Relational
-from ..logic import And, Or
-from ..logic.boolalg import BooleanAtom
 from ..functions import (log, exp, cos, sin, tan, acos, asin, atan,
                          Abs, re, im, arg, sqrt, atan2, piecewise_fold,
-                         Piecewise)
+                         Piecewise, Min, Max)
 from ..functions.elementary.trigonometric import (TrigonometricFunction,
                                                   HyperbolicFunction)
 from ..simplify import (simplify, collect, powsimp, posify, powdenest,
@@ -34,7 +32,6 @@ from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
 from ..utilities import filldedent, subsets
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
-from .inequalities import reduce_inequalities
 
 
 def denoms(eq, symbols=None):
@@ -222,79 +219,58 @@ def checksol(f, symbol, sol=None, **flags):
 
 
 def solve(f, *symbols, **flags):
-    r"""Algebraically solves equations and systems of equations.
+    r"""Algebraically solves equation or system of equations.
 
-    Input is formed as:
+    Parameters
+    ==========
 
-    * f
-        - a single Expr or Poly that must be zero,
-        - an Equality
-        - a Relational expression or boolean
-        - iterable of one or more of the above
+    f : Expr, Equality or iterable of above
+        All expressions are assumed to be equal to 0.
 
-    * symbols (object(s) to solve for) specified as
-        - none given (other non-numeric objects will be used)
-        - single symbol
-        - denested list of symbols
-          e.g. solve(f, x, y)
-        - ordered iterable of symbols
-          e.g. solve(f, [x, y])
+    \*symbols : tuple
+        If none symbols given (empty tuple), free symbols
+        of expressions will be used.
 
-    * flags
-        'dict'=True (default is False)
-            return list (perhaps empty) of solution mappings
-        'set'=True (default is False)
-            return list of symbols and set of tuple(s) of solution(s)
-        'exclude=[] (default)'
-            don't try to solve for any of the free symbols in exclude;
-            if expressions are given, the free symbols in them will
-            be extracted automatically.
-        'check=True (default)'
-            If False, don't do any testing of solutions. This can be
-            useful if one wants to include solutions that make any
-            denominator zero.
-        'numerical=True (default)'
-            do a fast numerical check if ``f`` has only one symbol.
-        'minimal=True (default is False)'
-            a very fast, minimal testing.
-        'warn=True (default is False)'
-            show a warning if checksol() could not conclude.
-        'simplify=True (default)'
-            simplify all but polynomials of order 3 or greater before
-            returning them and (if check is not False) use the
-            general simplify function on the solutions and the
-            expression obtained when they are substituted into the
-            function which should be zero
-        'force=True (default is False)'
-            make positive all symbols without assumptions regarding sign.
-        'rational=True (default)'
-            recast Floats as Rational; if this option is not used, the
-            system containing floats may fail to solve because of issues
-            with polys. If rational=None, Floats will be recast as
-            rationals but the answer will be recast as Floats. If the
-            flag is False then nothing will be done to the Floats.
-        'manual=True (default is False)'
-            do not use the polys/matrix method to solve a system of
-            equations, solve them one at a time as you might "manually"
-        'implicit=True (default is False)'
-            allows solve to return a solution for a pattern in terms of
-            other functions that contain that pattern; this is only
-            needed if the pattern is inside of some invertible function
-            like cos, exp, ....
-        'particular=True (default is False)'
-            instructs solve to try to find a particular solution to a linear
-            system with as many zeros as possible; this is very expensive
-        'quick=True (default is False)'
-            when using particular=True, use a fast heuristic instead to find a
-            solution with many zeros (instead of using the very slow method
-            guaranteed to find the largest number of zeros possible)
-        'cubics=True (default)'
-            return explicit solutions when cubic expressions are encountered
-        'quartics=True (default)'
-            return explicit solutions when quartic expressions are encountered
-        'quintics=True (default)'
-            return explicit solutions (if possible) when quintic expressions
-            are encountered
+    \*\*flags : dict
+        A dictionary of following parameters:
+
+        dict : bool, optional
+            Return list of solution mappings, default is False.
+        exclude : iterable, optional
+            Don't try to solve for any of the symbols in
+            exclude.  Default is [].
+        check : bool, optional
+            If False, don't do any testing of solutions.  Default is
+            True, i.e. the solutions are checked and those that doesn't
+            satisfy given assumpsions on symbols solved for or make any
+            denominator zero - are automatically excluded.
+        numerical : bool, optional
+            If enabled (default), do a fast numerical check
+            if ``f`` has only one symbol.
+        minimal : bool, optional
+            A very fast, minimal testing.  Default is False.
+        warn : bool, optional
+            Show a warning if :func:`~diofant.solvers.solvers.checksol`
+            could not conclude.  Default is False.
+        simplify : bool, optional
+            Enable simplification (default) for all but polynomials of
+            order 3 or greater before returning them and (if check is
+            not False) use the general simplify function on the solutions
+            and the expression obtained when they are substituted into the
+            function which should be zero.
+        force : bool, optional
+            Make positive all symbols without assumptions regarding
+            sign.  Default is False.
+        rational : bool or None, optional
+            If True (default), recast Floats as Rational.  If None,
+            Floats will be recast as rationals but the answer will be
+            recast as Floats.  If the flag is False then nothing
+            will be done to the Floats.
+        cubics, quartics, quintics : bool, optional
+            Return explicit solutions when, respectively, cubic,
+            quartic or quintic expressions are encountered.  Default is
+            True.  If False, :class:`~diofant.polys.rootoftools.RootOf`
+            instances will be returned instead.
 
     Examples
     ========
@@ -305,22 +281,12 @@ def solve(f, *symbols, **flags):
         >>> from diofant.abc import x, y, z, a, b
         >>> f = Function('f')
 
-    * boolean or univariate Relational
-
-        >>> solve(x < 3)
-        And(-oo < x, x < 3)
-
     * to always get a list of solution mappings, use flag dict=True
 
         >>> solve(x - 3, dict=True)
         [{x: 3}]
         >>> solve([x - 3, y - 1], dict=True)
         [{x: 3, y: 1}]
-
-    * to get a list of symbols and set of solution(s) use flag set=True
-
-        >>> solve([x**2 - 3, y - 1], set=True)
-        ([x, y], {(-sqrt(3), 1), (sqrt(3), 1)})
 
     * single expression and single symbol that is in the expression
 
@@ -332,10 +298,6 @@ def solve(f, *symbols, **flags):
         [3]
         >>> solve(Poly(x - 3), x)
         [3]
-        >>> solve(x**2 - y**2, x, set=True)
-        ([x], {(-y,), (y,)})
-        >>> solve(x**4 - 1, x, set=True)
-        ([x], {(-1,), (1,), (-I,), (I,)})
 
     * single expression with no symbol that is in the expression
 
@@ -373,21 +335,12 @@ def solve(f, *symbols, **flags):
           [x + f(x)]
           >>> solve(f(x).diff(x) - f(x) - x, f(x))
           [-x + Derivative(f(x), x)]
-          >>> solve(x + exp(x)**2, exp(x), set=True)
-          ([E**x], {(-sqrt(-x),), (sqrt(-x),)})
 
           >>> from diofant import Indexed, IndexedBase, Tuple, sqrt
           >>> A = IndexedBase('A')
           >>> eqs = Tuple(A[1] + A[2] - 3, A[1] - A[2] + 1)
           >>> solve(eqs, eqs.atoms(Indexed))
           {A[1]: 1, A[2]: 2}
-
-        * To solve for a *symbol* implicitly, use 'implicit=True':
-
-            >>> solve(x + exp(x), x)
-            [-LambertW(1)]
-            >>> solve(x + exp(x), x, implicit=True)
-            [-E**x]
 
         * It is possible to solve for anything that can be targeted with
           subs:
@@ -440,13 +393,6 @@ def solve(f, *symbols, **flags):
 
     * iterable of one or more of the above
 
-        * involving relationals or bools
-
-            >>> solve([x < 3, x - 2])
-            Eq(x, 2)
-            >>> solve([x > 3, x - 2])
-            false
-
         * when the system is linear
 
             * with a solution
@@ -464,11 +410,6 @@ def solve(f, *symbols, **flags):
 
                 >>> solve([x + 3, x - 3])
                 []
-
-        * when the system is not linear
-
-            >>> solve([x**2 + y -2, y**2 - 4], x, y, set=True)
-            ([x, y], {(-2, -2), (0, 2), (2, -2)})
 
         * if no symbols are given, all free symbols will be selected and a list
           of mappings returned
@@ -502,10 +443,6 @@ def solve(f, *symbols, **flags):
         >>> pos = Symbol("pos", positive=True)
         >>> solve(pos**2 - 1)
         [1]
-
-
-    Assumptions aren't checked when `solve()` input involves
-    relationals or bools.
 
     When the solutions are checked, those that make any denominator zero
     are automatically excluded. If you do not want to exclude such solutions
@@ -551,21 +488,6 @@ def solve(f, *symbols, **flags):
         [RootOf(x**3 - x + 1, x, 0), RootOf(x**3 - x + 1, x, 1),
          RootOf(x**3 - x + 1, x, 2)]
 
-        If the expression is multivariate, no solution might be returned:
-
-        >>> solve(x**3 - x + a, x, cubics=False)
-        [RootOf(a + x**3 - x, x, 0), RootOf(a + x**3 - x, x, 1),
-         RootOf(a + x**3 - x, x, 2)]
-
-    Sometimes solutions will be obtained even when a flag is False because the
-    expression could be factored. In the following example, the equation can
-    be factored as the product of a linear and a quadratic factor so explicit
-    solutions (which did not require solving a cubic expression) are obtained:
-
-        >>> eq = x**3 + 3*x**2 + x - 1
-        >>> solve(eq, cubics=False)
-        [-1, -1 + sqrt(2), -sqrt(2) - 1]
-
     *Solving equations involving radicals*
 
     Because of Diofant's use of the principle root (issue sympy/sympy#8789), some solutions
@@ -603,6 +525,7 @@ def solve(f, *symbols, **flags):
 
     diofant.solvers.recurr.rsolve : solving recurrence equations
     diofant.solvers.ode.dsolve : solving differential equations
+    diofant.solvers.inequalities.reduce_inequalities : solving inequalities
     """
     # keeping track of how f was passed since if it is a list
     # a dictionary of results will be returned.
@@ -616,8 +539,6 @@ def solve(f, *symbols, **flags):
                         is_sequence(symbols[0], include=GeneratorType)))
     f, symbols = (_sympified_list(w) for w in [f, symbols])
 
-    implicit = flags.get('implicit', False)
-
     # preprocess equation(s)
     ###########################################################################
     for i, fi in enumerate(f):
@@ -628,12 +549,14 @@ def solve(f, *symbols, **flags):
                 f[i] = Add(fi.lhs, -fi.rhs, evaluate=False)
         elif isinstance(fi, Poly):
             f[i] = fi.as_expr()
-        elif isinstance(fi, (bool, BooleanAtom)) or fi.is_Relational:
-            return reduce_inequalities(f, symbols=symbols)
 
         # rewrite hyperbolics in terms of exp
         f[i] = f[i].replace(lambda w: isinstance(w, HyperbolicFunction),
                 lambda w: w.rewrite(exp))
+
+        # replace min/max:
+        f[i] = f[i].replace(lambda w: isinstance(w, (Min, Max)),
+                            lambda w: w.rewrite(Piecewise))
 
         # if we have a Matrix, we need to iterate over its elements again
         if f[i].is_Matrix:
@@ -806,12 +729,9 @@ def solve(f, *symbols, **flags):
         for p in pot:
             if not isinstance(p, Expr) or isinstance(p, Piecewise):
                 pass
-            elif (isinstance(p, bool) or
-                    not p.args or
-                    p in symset or
-                    p.is_Add or p.is_Mul or
-                    p.is_Pow and not implicit or
-                    p.is_Function and not implicit) and p.func not in (re, im):
+            elif (isinstance(p, bool) or not p.args or p in symset or
+                  p.is_Add or p.is_Mul or p.is_Pow or
+                  p.is_Function) and p.func not in (re, im):
                 continue
             elif p not in seen:
                 seen.add(p)
@@ -924,10 +844,7 @@ def solve(f, *symbols, **flags):
         warn = flags.get('warn', False)
         got_None = []  # solutions for which one or more symbols gave None
         no_False = []  # solutions for which no symbols gave False
-        if type(solution) is tuple:
-            # this has already been checked and is in as_set form
-            return solution
-        elif type(solution) is list:
+        if type(solution) is list:
             if type(solution[0]) is tuple:
                 for sol in solution:
                     for symb, val in zip(symbols, sol):
@@ -975,16 +892,6 @@ def solve(f, *symbols, **flags):
                 no_False = solution
                 if a_None:
                     got_None.append(solution)
-
-        elif isinstance(solution, (Relational, And, Or)):
-            if len(symbols) != 1:
-                raise ValueError("Length should be 1")
-            if warn and symbols[0]._assumptions:
-                warnings.warn(filldedent("""
-                    \tWarning: assumptions about variable '%s' are
-                    not handled currently.""" % symbols[0]))
-            # TODO: check also variable assumptions for inequalities
-
         else:
             raise TypeError('Unrecognized solution')  # improve the checker
 
@@ -1000,13 +907,12 @@ def solve(f, *symbols, **flags):
     ###########################################################################
 
     as_dict = flags.get('dict', False)
-    as_set = flags.get('set', False)
 
-    if not as_set and isinstance(solution, list):
+    if isinstance(solution, list):
         # Make sure that a list of solutions is ordered in a canonical way.
         solution.sort(key=default_sort_key)
 
-    if not as_dict and not as_set:
+    if not as_dict:
         return solution or []
 
     # return a list of mappings or []
@@ -1025,11 +931,6 @@ def solve(f, *symbols, **flags):
             solution = [{symbols[0]: s} for s in solution]
     if as_dict:
         return solution
-    assert as_set
-    if not solution:
-        return [], set()
-    k = list(ordered(solution[0].keys()))
-    return k, {tuple(s[ki] for ki in k) for s in solution}
 
 
 def _solve(f, *symbols, **flags):
@@ -1411,7 +1312,6 @@ def _solve_system(exprs, symbols, **flags):
     failed = []
     result = False
     linear = False
-    manual = flags.get('manual', False)
     checkdens = check = flags.get('check', True)
 
     for j, g in enumerate(exprs):
@@ -1419,9 +1319,6 @@ def _solve_system(exprs, symbols, **flags):
         i, d = _invert(g, *symbols)
         g = d - i
         g = g.as_numer_denom()[0]
-        if manual:
-            failed.append(g)
-            continue
 
         poly = g.as_poly(*symbols, extension=True)
 
@@ -1445,11 +1342,8 @@ def _solve_system(exprs, symbols, **flags):
                     except ValueError:
                         matrix[i, m] = -coeff
 
-            # returns a dictionary ({symbols: values}) or None
-            if flags.pop('particular', False):
-                result = minsolve_linear_system(matrix, *symbols, **flags)
-            else:
-                result = solve_linear_system(matrix, *symbols, **flags)
+            # returns a dictionary {symbols: values} or None
+            result = solve_linear_system(matrix, *symbols, **flags)
             if failed:
                 if result:
                     solved_syms = list(result.keys())

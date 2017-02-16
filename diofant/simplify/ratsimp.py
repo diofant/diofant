@@ -58,7 +58,8 @@ def ratsimpmodprime(expr, G, *gens, **args):
     http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.163.6984
     (specifically, the second algorithm)
     """
-    from ..solvers import solve
+    from ..matrices import Matrix, zeros
+    from ..solvers.solvers import minsolve_linear_system
 
     quick = args.pop('quick', True)
     polynomial = args.pop('polynomial', False)
@@ -158,7 +159,10 @@ def ratsimpmodprime(expr, G, *gens, **args):
                         order=opt.order, polys=True)[1]
 
             S = Poly(r, gens=opt.gens).coeffs()
-            sol = solve(S, Cs + Ds, particular=True, quick=True)
+            Sv = Cs + Ds
+            Sm = zeros(len(S), len(Sv) + 1)
+            Sm[:, :-1] = Matrix([[a.diff(b) for b in Sv] for a in S])
+            sol = minsolve_linear_system(Sm, *Sv, quick=True)
 
             if sol and not all(s == 0 for s in sol.values()):
                 c = c_hat.subs(sol)
@@ -205,7 +209,9 @@ def ratsimpmodprime(expr, G, *gens, **args):
         debug('Looking for best minimal solution. Got: %s' % len(allsol))
         newsol = []
         for c_hat, d_hat, S, ng in allsol:
-            sol = solve(S, ng, particular=True, quick=False)
+            Sm = zeros(len(S), len(ng) + 1)
+            Sm[:, :-1] = Matrix([[a.diff(b) for b in ng] for a in S])
+            sol = minsolve_linear_system(Sm, *ng)
             newsol.append((c_hat.subs(sol), d_hat.subs(sol)))
         c, d = min(newsol, key=lambda x: len(x[0].terms()) + len(x[1].terms()))
 

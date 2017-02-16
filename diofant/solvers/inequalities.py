@@ -485,7 +485,7 @@ def _reduce_inequalities(inequalities, symbols):
 
 def reduce_inequalities(inequalities, symbols=[]):
     """
-    Reduce a system of inequalities with rational coefficients.
+    Reduces a system of inequalities or equations.
 
     Examples
     ========
@@ -497,6 +497,11 @@ def reduce_inequalities(inequalities, symbols=[]):
     -3 <= x
     >>> reduce_inequalities(0 <= x + y*2 - 1, [x])
     -2*y + 1 <= x
+
+    See Also
+    ========
+
+    diofant.solvers.solvers.solve : solve algebraic equations
     """
     if not iterable(inequalities):
         inequalities = [inequalities]

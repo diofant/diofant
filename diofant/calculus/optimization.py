@@ -4,7 +4,7 @@ from ..core.compatibility import is_sequence, ordered
 from ..series import limit
 from ..functions import Min
 from ..matrices import Matrix, zeros, eye
-from ..solvers import solve
+from ..solvers import solve, reduce_inequalities
 from ..calculus import singularities
 
 
@@ -78,7 +78,7 @@ def minimize(f, *v):
 
     if dim == 1:
         if constraints:
-            dom = solve(constraints, *v).as_set()
+            dom = reduce_inequalities(constraints, *v).as_set()
         else:
             dom = Interval(-oo, oo, True, True)**len(v)
         return minimize_univariate(obj, v[0], dom)
