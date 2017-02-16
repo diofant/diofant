@@ -2,7 +2,7 @@ import pytest
 
 from diofant.core import (S, pi, oo, symbols, Function,
                           Rational, Integer, Tuple, Derivative,
-                          Eq, Ne, Le, Gt)
+                          Eq, Ne, Le, Gt, AlgebraicNumber)
 from diofant.integrals import Integral
 from diofant.concrete import Sum
 from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
@@ -171,3 +171,10 @@ def test_Piecewise():
 def test_RootOf():
     p = Poly(x**3 + y*x + 1, x)
     assert mcode(RootOf(p, 0)) == 'Root[#^3 + #*y + 1 &, 1]'
+
+
+def test_AlgebraicNumber():
+    r = RootOf(x**7 + 3*x - 1, 3)
+    a = AlgebraicNumber(r, (1, 2, 3, 0, 1))
+    assert mcode(a) == ('AlgebraicNumber[Root[#^7 + 3*# - 1 &, 4],'
+                        ' {1, 0, 3, 2, 1}]')

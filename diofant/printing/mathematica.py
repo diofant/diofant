@@ -160,6 +160,11 @@ class MCodePrinter(CodePrinter):
                                                                Symbol('#'))),
                                    self.doprint(expr.index + 1))
 
+    def _print_AlgebraicNumber(self, expr):
+        coeffs = list(reversed(expr.coeffs()))
+        return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.root),
+                                            self.doprint(coeffs))
+
 
 def mathematica_code(expr, **settings):
     r"""Converts an expr to a string of the Wolfram Mathematica code
