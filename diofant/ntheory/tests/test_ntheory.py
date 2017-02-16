@@ -108,6 +108,8 @@ def test_perfect_power():
     assert perfect_power(2**3*5**5) is False
     assert perfect_power(2*13**4) is False
     assert perfect_power(2**5*3**3) is False
+    assert perfect_power(25751251501**3, big=False) == (25751251501, 3)
+    assert perfect_power(2575122501**3, big=False) == (2575122501, 3)
 
 
 def test_isprime():
@@ -314,14 +316,21 @@ def test_factorint():
     assert factorint(16, limit=2) == {2: 4}
     assert factorint(124, limit=3) == {2: 2, 31: 1}
     assert factorint(4*31**2, limit=3) == {2: 2, 31: 2}
+    assert factorint(10201, limit=100) == {101: 2}
     p1 = nextprime(2**32)
     p2 = nextprime(2**16)
     p3 = nextprime(p2)
     assert factorint(p1*p2*p3) == {p1: 1, p2: 1, p3: 1}
     assert factorint(13*17*19, limit=15) == {13: 1, 17*19: 1}
     assert factorint(1951*15013*15053, limit=2000) == {225990689: 1, 1951: 1}
-    assert factorint(primorial(17) + 1, use_pm1=0) == \
-        {int(19026377261): 1, 3467: 1, 277: 1, 105229: 1}
+    assert factorint(primorial(17) + 1, use_pm1=0) == {19026377261: 1,
+                                                       3467: 1, 277: 1,
+                                                       105229: 1}
+    assert factorint(34376910917, use_pm1=0, use_rho=0) == {131101: 1,
+                                                            262217: 1}
+    assert factorint(34376910917, use_pm1=0) == {131101: 1, 262217: 1}
+    assert factorint(34376910917, use_rho=0) == {131101: 1, 262217: 1}
+
     # when prime b is closer than approx sqrt(8*p) to prime p then they are
     # "close" and have a trivial factorization
     a = nextprime(2**2**8)  # 78 digits
@@ -362,6 +371,35 @@ def test_factorint():
     assert factorint((p1*p2**2)**3) == {p1: 3, p2: 6}
     # Test for non integer input
     pytest.raises(ValueError, lambda: factorint(4.5))
+
+
+def test_factorint_verbose(capsys):
+    out = """Factoring 10201
+Trial division with ints [2 ... 100] and fail_max=600
+Exceeded limit: 100
+Check for termination
+\t101 ** 1
+Factorization is complete.
+"""
+    factorint(10201, limit=100, verbose=True)
+    assert capsys.readouterr()[0] == out
+
+    out = """Factoring 34376910917
+Trial division with ints [2 ... 32768] and fail_max=600
+Check for termination
+Trial division with primes [1805 ... 3610]
+Trial division with primes [3610 ... 7220]
+Trial division with primes [7220 ... 14440]
+Trial division with primes [14440 ... 28880]
+Trial division with primes [28880 ... 57760]
+Trial division with primes [57760 ... 115520]
+Trial division with primes [115520 ... 185411]
+\t131101 ** 1
+Check for termination
+Factorization is complete.
+"""
+    factorint(131101*262217, use_pm1=0, use_rho=0, verbose=True)
+    assert capsys.readouterr()[0] == out
 
 
 def test_divisors_and_divisor_count():
@@ -503,6 +541,7 @@ def test_residue():
     assert sqrt_mod(3, -13) == 4
     assert sqrt_mod(6, 23) == 11
     assert sqrt_mod(345, 690) == 345
+    assert sqrt_mod(9, 18) == 3
 
     for p in range(3, 100):
         d = defaultdict(list)
@@ -551,6 +590,9 @@ def test_residue():
     assert type(next(sqrt_mod_iter(9, 27))) is int
     assert isinstance(next(sqrt_mod_iter(9, 27, ZZ)), type(ZZ(1)))
     assert isinstance(next(sqrt_mod_iter(1, 7, ZZ)), type(ZZ(1)))
+
+    assert list(sqrt_mod_iter(4, 919, ZZ)) == [2, 917]
+    assert list(sqrt_mod_iter(6, 146, ZZ)) == [88, 58]
 
     assert is_nthpow_residue(2, 1, 5)
     assert not is_nthpow_residue(2, 2, 5)
