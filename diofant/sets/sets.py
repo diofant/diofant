@@ -1374,7 +1374,7 @@ class Intersection(Set):
         args = flatten(args)
 
         if len(args) == 0:
-            raise TypeError("Intersection expected at least one argument")
+            return S.UniversalSet
 
         args = list(ordered(args, Set._infimum_key))
 

@@ -224,7 +224,8 @@ def test_complement():
 
 def test_intersection():
     pytest.raises(TypeError, lambda: Intersection(1))
-    pytest.raises(TypeError, lambda: Intersection())
+
+    assert Intersection() == S.UniversalSet
 
     assert Interval(0, 2).intersection(Interval(1, 2)) == Interval(1, 2)
     assert Interval(0, 2).intersection(Interval(1, 2, True)) == \
