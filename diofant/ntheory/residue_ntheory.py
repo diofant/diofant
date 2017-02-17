@@ -112,11 +112,11 @@ def primitive_root(p):
             return
 
         # case p = 2*p1**k, p1 prime
-        for p1, e1 in f.items():
+        for p1, e1 in f.items():  # pragma: no branch
             if p1 != 2:
                 break
         i = 1
-        while i < p:
+        while i < p:  # pragma: no branch
             i += 2
             if i % p1 == 0:
                 continue
@@ -135,7 +135,7 @@ def primitive_root(p):
             if is_primitive_root(g, p1**2):
                 return g
             else:
-                for i in range(2, g + p1 + 1):
+                for i in range(2, g + p1 + 1):  # pragma: no branch
                     if igcd(i, p) == 1 and is_primitive_root(i, p):
                         return i
 
@@ -337,6 +337,8 @@ def _sqrt_mod_prime_power(a, p, k):
     """
     from ..polys.domains import ZZ
 
+    assert k > 0
+
     pk = p**k
     a = a % pk
 
@@ -355,8 +357,8 @@ def _sqrt_mod_prime_power(a, p, k):
             else:
                 b = pow(4*a, (p - 5) // 8, p)
                 x = (2*a*b) % p
-                if pow(x, 2, p) == a:
-                    res = x
+                assert pow(x, 2, p) == a
+                res = x
         else:
             res = _sqrt_mod_tonelli_shanks(a, p)
 
@@ -364,67 +366,65 @@ def _sqrt_mod_prime_power(a, p, k):
         # sort to get always the same result
         return sorted([ZZ(res), ZZ(p - res)])
 
-    if k > 1:
-        f = factorint(a)
-        # see Ref.[2]
-        if p == 2:
-            if a % 8 != 1:
-                return
-            if k <= 3:
-                s = set()
-                for i in range(0, pk, 4):
-                    s.add(1 + i)
-                    s.add(-1 + i)
-                return list(s)
-            # according to Ref.[2] for k > 2 there are two solutions
-            # (mod 2**k-1), that is four solutions (mod 2**k), which can be
-            # obtained from the roots of x**2 = 0 (mod 8)
-            rv = [ZZ(1), ZZ(3), ZZ(5), ZZ(7)]
-            # hensel lift them to solutions of x**2 = 0 (mod 2**k)
-            # if r**2 - a = 0 mod 2**nx but not mod 2**(nx+1)
-            # then r + 2**(nx - 1) is a root mod 2**(nx+1)
-            n = 3
-            res = []
-            for r in rv:
-                nx = n
-                while nx < k:
-                    r1 = (r**2 - a) >> nx
-                    if r1 % 2:
-                        r = r + (1 << (nx - 1))
-                    # assert (r**2 - a)% (1 << (nx + 1)) == 0
-                    nx += 1
-                if r not in res:
-                    res.append(r)
-                x = r + (1 << (k - 1))
-                # assert (x**2 - a) % pk == 0
-                if x < (1 << nx) and x not in res:
-                    if (x**2 - a) % pk == 0:
-                        res.append(x)
-            return res
-        rv = _sqrt_mod_prime_power(a, p, 1)
-        if not rv:
+    f = factorint(a)
+    # see Ref.[2]
+    if p == 2:
+        if a % 8 != 1:
             return
-        r = rv[0]
+        if k <= 3:
+            s = set()
+            for i in range(0, pk, 4):
+                s.add(1 + i)
+                s.add(-1 + i)
+            return list(s)
+        # according to Ref.[2] for k > 2 there are two solutions
+        # (mod 2**k-1), that is four solutions (mod 2**k), which can be
+        # obtained from the roots of x**2 = 0 (mod 8)
+        rv = [ZZ(1), ZZ(3), ZZ(5), ZZ(7)]
+        # hensel lift them to solutions of x**2 = 0 (mod 2**k)
+        # if r**2 - a = 0 mod 2**nx but not mod 2**(nx+1)
+        # then r + 2**(nx - 1) is a root mod 2**(nx+1)
+        n = 3
+        res = []
+        for r in rv:
+            nx = n
+            while nx < k:
+                r1 = (r**2 - a) >> nx
+                if r1 % 2:
+                    r = r + (1 << (nx - 1))
+                assert (r**2 - a) % (1 << (nx + 1)) == 0
+                nx += 1
+            if r not in res:
+                res.append(r)
+            x = r + (1 << (k - 1))
+            assert (x**2 - a) % pk == 0
+            if x < (1 << nx) and x not in res:
+                res.append(x)
+        return res
+    rv = _sqrt_mod_prime_power(a, p, 1)
+    if not rv:
+        return
+    r = rv[0]
+    fr = r**2 - a
+    # hensel lifting with Newton iteration, see Ref.[3] chapter 9
+    # with f(x) = x**2 - a; one has f'(a) != 0 (mod p) for p != 2
+    n = 1
+    px = p
+    while 1:
+        n1 = n
+        n1 *= 2
+        if n1 > k:
+            break
+        n = n1
+        px = px**2
+        frinv = igcdex(2*r, px)[0]
+        r = (r - fr*frinv) % px
         fr = r**2 - a
-        # hensel lifting with Newton iteration, see Ref.[3] chapter 9
-        # with f(x) = x**2 - a; one has f'(a) != 0 (mod p) for p != 2
-        n = 1
-        px = p
-        while 1:
-            n1 = n
-            n1 *= 2
-            if n1 > k:
-                break
-            n = n1
-            px = px**2
-            frinv = igcdex(2*r, px)[0]
-            r = (r - fr*frinv) % px
-            fr = r**2 - a
-        if n < k:
-            px = p**k
-            frinv = igcdex(2*r, px)[0]
-            r = (r - fr*frinv) % px
-        return [r, px - r]
+    if n < k:
+        px = p**k
+        frinv = igcdex(2*r, px)[0]
+        r = (r - fr*frinv) % px
+    return [r, px - r]
 
 
 def _sqrt_mod1(a, p, n):
@@ -493,12 +493,12 @@ def _sqrt_mod1(a, p, n):
                     i = 0
                     while i < pn:
                         x = (r << m) + i
-                        if x not in s:
-                            s.add(x)
-                            yield x
+                        assert x not in s
+                        s.add(x)
+                        yield x
                         i += pnm
             return _iter2()
-        if n - r > 2:
+        else:  # n - r > 2
             res = _sqrt_mod_prime_power(a1, p, n - r)
             if res is None:
                 return
@@ -532,9 +532,9 @@ def _sqrt_mod1(a, p, n):
                 i = 0
                 while i < pnm:
                     x = ((rx + i) % pn)
-                    if x not in s:
-                        s.add(x)
-                        yield x*pm
+                    assert x not in s
+                    s.add(x)
+                    yield x*pm
                     i += pnr
 
         return _iter4()
@@ -635,7 +635,7 @@ def _nthroot_mod1(s, q, p, all_roots):
         # used a naive implementation
         # TODO implement using Ref [1]
         pr = 1
-        for t in range(p):
+        for t in range(p):  # pragma: no branch
             if pr == s1:
                 break
             pr = pr*h % p
@@ -643,10 +643,10 @@ def _nthroot_mod1(s, q, p, all_roots):
         g2 = pow(g, z*t, p)
         g3 = igcdex(g2, p)[0]
         r = r1*g3 % p
-        # assert pow(r, q, p) == s
+        assert pow(r, q, p) == s
     res = [r]
     h = pow(g, (p - 1) // q, p)
-    # assert pow(h, q, p) == 1
+    assert pow(h, q, p) == 1
     hx = r
     for i in range(q - 1):
         hx = (hx*h) % p
