@@ -710,6 +710,8 @@ def _minpoly_groebner(ex, x, cls):
                 else:
                     res += coeff
             return res
+        elif isinstance(ex, RootOf) and ex.poly.domain.is_ZZ:
+            return update_mapping(ex, ex.poly)
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 
