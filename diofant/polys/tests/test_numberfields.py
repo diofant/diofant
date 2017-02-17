@@ -34,6 +34,11 @@ def test_minimal_polynomial():
     assert minimal_polynomial( 1, x) == x - 1
     assert minimal_polynomial( 7, x) == x - 7
 
+    assert minimal_polynomial(Rational(1, 3), x, compose=False) == 3*x - 1
+
+    pytest.raises(NotAlgebraic,
+                  lambda: minimal_polynomial(pi, x, compose=False))
+
     assert minimal_polynomial(sqrt(2), x) == x**2 - 2
     assert minimal_polynomial(sqrt(5), x) == x**2 - 5
     assert minimal_polynomial(sqrt(6), x) == x**2 - 6
@@ -58,6 +63,11 @@ def test_minimal_polynomial():
     assert minimal_polynomial(sqrt(2) + sqrt(3), x) == x**4 - 10*x**2 + 1
     assert minimal_polynomial(
         sqrt(2) + sqrt(3) + sqrt(6), x) == x**4 - 22*x**2 - 48*x - 23
+
+    e = 1/sqrt(sqrt(1 + sqrt(3)) - 4)
+    assert minimal_polynomial(e, x) == minimal_polynomial(e, x, compose=False)
+    assert minimal_polynomial(e, x) == (222*x**8 + 240*x**6 +
+                                        94*x**4 + 16*x**2 + 1)
 
     a = 1 - 9*sqrt(2) + 7*sqrt(3)
 
@@ -88,6 +98,10 @@ def test_minimal_polynomial():
 
     assert minimal_polynomial(sqrt(a/2 + 17), x) == 2*x**4 - 68*x**2 + 577
     assert minimal_polynomial(sqrt(b/2 + 17), x) == 4*x**4 - 136*x**2 + 1153
+
+    # issue diofant/diofant#431
+    theta = AlgebraicNumber(sqrt(2), (S.Half, 17))
+    assert minimal_polynomial(theta, x) == 2*x**2 - 68*x + 577
 
     a, b = sqrt(2)/3 + 7, AlgebraicNumber(sqrt(2)/3 + 7)
 

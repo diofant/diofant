@@ -93,8 +93,10 @@ Issues closed
 * `#336 <https://github.com/diofant/diofant/issues/336>`_ Drop diofant/plotting/experimental_lambdify.py
 * `#371 <https://github.com/diofant/diofant/issues/371>`_ Better documentation for BaseSymbol
 * `#432 <https://github.com/diofant/diofant/issues/432>`_ Permission to use your patches in SymPy
+* `#431 <https://github.com/diofant/diofant/issues/431>`_ minpoly() is wrong for AlgebraicNumber's with coeffs != (1, 0)
+* `sympy/sympy#12180 <https://github.com/sympy/sympy/issues/12180>`_ Confusing output from sympy.solve
 
-.. last pr: #426
+.. last pr: #433
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
