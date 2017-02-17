@@ -5,7 +5,7 @@ from functools import reduce
 from mpmath import pslq, mp
 
 from ..core import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
-                    Dummy, expand_mul, I, pi, GoldenRatio)
+                    Dummy, expand_mul, I, pi, GoldenRatio, Integer)
 from ..functions import cos, sin, sqrt
 from .polytools import (Poly, PurePoly, sqf_norm, invert, factor_list,
                         groebner, resultant, degree, poly_from_expr,
@@ -701,11 +701,15 @@ def _minpoly_groebner(ex, x, cls):
 
                 return update_mapping(expr, 1/exp, -base)
         elif ex.is_AlgebraicNumber:
-            if ex.coeffs() == [1, 0]:
-                return update_mapping(ex.root, ex.minpoly)
-            else:
-                base = AlgebraicNumber(ex.root)
-                return bottom_up_scan(ex.as_poly().eval(base))
+            base = update_mapping(ex.root, ex.minpoly)
+            res = Integer(0)
+            for exp, coeff in ex.rep.terms():
+                exp = Integer(exp[0])
+                if exp:
+                    res += coeff*update_mapping(base**exp, 1, -base**exp)
+                else:
+                    res += coeff
+            return res
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 
@@ -730,38 +734,33 @@ def _minpoly_groebner(ex, x, cls):
 
     ex = expand_multinomial(ex)
 
-    if ex.is_Rational:
-        return ex.q*x - ex.p
-    elif ex.is_AlgebraicNumber and ex.coeffs() == [1, 0]:
-        return ex.minpoly.as_expr(x)
+    inverted = simpler_inverse(ex)
+    if inverted:
+        ex = ex**-1
+
+    if ex.is_Pow and (1/ex.exp).is_Integer:
+        n = 1/ex.exp
+        result = _minimal_polynomial_sq(ex.base, n, x)
+    elif _is_sum_surds(ex):
+        result = _minimal_polynomial_sq(ex, S.One, x)
     else:
-        inverted = simpler_inverse(ex)
-        if inverted:
-            ex = ex**-1
+        result = None
 
-        if ex.is_Pow and (1/ex.exp).is_Integer:
-            n = 1/ex.exp
-            result = _minimal_polynomial_sq(ex.base, n, x)
-        elif _is_sum_surds(ex):
-            result = _minimal_polynomial_sq(ex, S.One, x)
-        else:
-            result = None
+    if result is None:
+        bus = bottom_up_scan(ex)
+        F = [x - bus] + list(mapping.values())
+        G = groebner(F, list(symbols.values()) + [x], order='lex')
 
-        if result is None:
-            bus = bottom_up_scan(ex)
-            F = [x - bus] + list(mapping.values())
-            G = groebner(F, list(symbols.values()) + [x], order='lex')
+        _, factors = factor_list(G[-1])
+        # by construction G[-1] has root `ex`
+        result = _choose_factor(factors, x, ex)
 
-            _, factors = factor_list(G[-1])
-            # by construction G[-1] has root `ex`
-            result = _choose_factor(factors, x, ex)
+    if inverted:
+        result = _invertx(result, x)
+        if result.coeff(x**degree(result, x)) < 0:
+            result = expand_mul(-result)
 
-        if inverted:
-            result = _invertx(result, x)
-            if result.coeff(x**degree(result, x)) < 0:
-                result = expand_mul(-result)
-
-        return result
+    return result
 
 
 minpoly = minimal_polynomial

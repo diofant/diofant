@@ -103,6 +103,11 @@ def test_minimal_polynomial():
     theta = AlgebraicNumber(sqrt(2), (S.Half, 17))
     assert minimal_polynomial(theta, x) == 2*x**2 - 68*x + 577
 
+    theta = AlgebraicNumber(RootOf(x**7 + x - 1, x, 3), (1, 2, 0, 0, 1))
+    assert minimal_polynomial(theta, x) == (x**7 - 7*x**6 + 19*x**5 -
+                                            27*x**4 + 63*x**3 - 115*x**2 +
+                                            82*x - 147)
+
     a, b = sqrt(2)/3 + 7, AlgebraicNumber(sqrt(2)/3 + 7)
 
     f = 81*x**8 - 2268*x**6 - 4536*x**5 + 22644*x**4 + 63216*x**3 - \
