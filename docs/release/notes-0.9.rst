@@ -94,6 +94,7 @@ Issues closed
 * `#371 <https://github.com/diofant/diofant/issues/371>`_ Better documentation for BaseSymbol
 * `#432 <https://github.com/diofant/diofant/issues/432>`_ Permission to use your patches in SymPy
 * `#431 <https://github.com/diofant/diofant/issues/431>`_ minpoly() is wrong for AlgebraicNumber's with coeffs != (1, 0)
+* `sympy/sympy#12180 <https://github.com/sympy/sympy/issues/12180>`_ Confusing output from sympy.solve
 
 .. last pr: #433
 

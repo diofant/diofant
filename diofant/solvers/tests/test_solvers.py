@@ -1490,3 +1490,11 @@ def test_sympyissue_12114():
                   b: -sqrt(3)*f/2 + sqrt(-f**2 + 2)/2, c: -sqrt(-f**2 + 2),
                   d: -f/2 + sqrt(-3*f**2 + 6)/2,
                   e: -f/2 - sqrt(3)*sqrt(-f**2 + 2)/2, g: 2}]
+
+
+def test_sympyissue_12180():
+    e1, e2 = x - y*b, x*a - y
+    assert (solve(e1, [x, y], dict=True) ==
+            solve(e1, x, y, dict=True) == [{x: y*b}])
+    assert (solve(e2, [x, y], dict=True) ==
+            solve(e2, x, y, dict=True) == [{x: y/a}])
