@@ -993,7 +993,7 @@ def to_nnf(expr, simplify=True):
     Converts expr to Negation Normal Form.
     A logical expression is in Negation Normal Form (NNF) if it
     contains only And, Or and Not, and Not is applied only to literals.
-    If simpify is True, the result contains no redundant clauses.
+    If simplify is True, the result contains no redundant clauses.
 
     Examples
     ========
@@ -1074,7 +1074,7 @@ def is_nnf(expr, simplified=True):
     Checks if expr is in Negation Normal Form.
     A logical expression is in Negation Normal Form (NNF) if it
     contains only And, Or and Not, and Not is applied only to literals.
-    If simpified is True, checks if result contains no redundant clauses.
+    If simplified is True, checks if result contains no redundant clauses.
 
     Examples
     ========
