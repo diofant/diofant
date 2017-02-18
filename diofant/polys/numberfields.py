@@ -631,11 +631,11 @@ def minimal_polynomial(ex, x=None, **args):
     if not dom.is_QQ:
         raise NotImplementedError("groebner method only works for QQ")
 
-    result = _minpoly_groebner(ex, x, cls)
+    result = _minpoly_groebner(ex, x)
     return cls(result, x, field=True) if polys else result.collect(x)
 
 
-def _minpoly_groebner(ex, x, cls):
+def _minpoly_groebner(ex, x):
     """
     Computes the minimal polynomial of an algebraic number
     using Groebner bases
@@ -678,28 +678,15 @@ def _minpoly_groebner(ex, x, cls):
             return ex.func(*[bottom_up_scan(g) for g in ex.args])
         elif ex.is_Pow:
             if ex.exp.is_Rational:
-                if ex.exp < 0 and ex.base.is_Add:
-                    coeff, terms = ex.base.as_coeff_add()
-                    elt, _ = primitive_element(terms, polys=True)
-
-                    alg = ex.base - coeff
-
-                    inverse = invert(elt.gen + coeff, elt)
-                    base = inverse.eval(alg).expand()
-
-                    if ex.exp == -1:
-                        return bottom_up_scan(base)
-                    else:
-                        ex = base**(-ex.exp)
-                if not ex.exp.is_Integer:
-                    base, exp = ((ex.base**ex.exp.p).expand(),
-                                 Rational(1, ex.exp.q))
+                base, exp = ex.base, ex.exp
+                if exp.is_nonnegative:
+                    if exp.is_noninteger:
+                        base, exp = base**exp.p, Rational(1, exp.q)
+                    base = bottom_up_scan(base)
                 else:
-                    base, exp = ex.base, ex.exp
-                base = bottom_up_scan(base)
-                expr = base**exp
-
-                return update_mapping(expr, 1/exp, -base)
+                    bmp = PurePoly(_minpoly_groebner(1/base, x), x)
+                    base, exp = update_mapping(1/base, bmp), -exp
+                return update_mapping(ex, exp.q, -base**exp.p)
         elif ex.is_AlgebraicNumber:
             base = update_mapping(ex.root, ex.minpoly)
             res = Integer(0)
@@ -715,14 +702,15 @@ def _minpoly_groebner(ex, x, cls):
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 
-    ex = expand_multinomial(ex)
+    if ex.is_Pow and ex.exp.is_negative:
+        n, d = S.One, bottom_up_scan(1/ex)
+    else:
+        n, d = bottom_up_scan(ex), S.One
 
-    bus = bottom_up_scan(ex)
-    F = [x - bus] + list(mapping.values())
+    F = [d*x - n] + list(mapping.values())
     G = groebner(F, list(symbols.values()) + [x], order='lex')
 
-    _, factors = factor_list(G[-1])
-    # by construction G[-1] has root `ex`
+    _, factors = factor_list(G[-1])  # by construction G[-1] has root `ex`
     return _choose_factor(factors, x, ex)
 
 
