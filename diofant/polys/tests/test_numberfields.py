@@ -3,16 +3,13 @@
 import pytest
 
 from diofant import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
-                     pi, cos, sin, exp, Integer, GoldenRatio, solve)
-from diofant.polys.numberfields import (
-    minimal_polynomial,
-    primitive_element,
-    is_isomorphism_possible,
-    field_isomorphism_pslq,
-    field_isomorphism,
-    to_number_field,
-    AlgebraicNumber,
-    isolate, IntervalPrinter)
+                     pi, cos, sin, exp, Integer, GoldenRatio, solve, root)
+from diofant.polys.numberfields import (minimal_polynomial, primitive_element,
+                                        is_isomorphism_possible,
+                                        field_isomorphism_pslq,
+                                        field_isomorphism, to_number_field,
+                                        AlgebraicNumber, isolate,
+                                        IntervalPrinter)
 from diofant.polys.polyerrors import (IsomorphismFailed, NotAlgebraic,
                                       GeneratorsError)
 from diofant.polys.polyclasses import DMP
@@ -38,6 +35,8 @@ def test_minimal_polynomial():
 
     pytest.raises(NotAlgebraic,
                   lambda: minimal_polynomial(pi, x, compose=False))
+    pytest.raises(NotAlgebraic,
+                  lambda: minimal_polynomial(sin(sqrt(2)), x, compose=False))
 
     assert minimal_polynomial(sqrt(2), x) == x**2 - 2
     assert minimal_polynomial(sqrt(5), x) == x**2 - 5
@@ -108,6 +107,15 @@ def test_minimal_polynomial():
     assert ans == (x**7 - 7*x**6 + 19*x**5 - 27*x**4 + 63*x**3 -
                    115*x**2 + 82*x - 147)
     assert minimal_polynomial(theta.as_expr(), x, compose=False) == ans
+    theta = AlgebraicNumber(RootOf(x**5 + 5*x - 1, x, 2), (1, -1, 1))
+    ans = (x**30 - 15*x**28 - 10*x**27 + 135*x**26 + 330*x**25 - 705*x**24 -
+           150*x**23 + 3165*x**22 - 6850*x**21 + 7182*x**20 + 3900*x**19 +
+           4435*x**18 + 11970*x**17 - 259725*x**16 - 18002*x**15 +
+           808215*x**14 - 200310*x**13 - 647115*x**12 + 299280*x**11 -
+           1999332*x**10 + 910120*x**9 + 2273040*x**8 - 5560320*x**7 +
+           5302000*x**6 - 2405376*x**5 + 1016640*x**4 - 804480*x**3 +
+           257280*x**2 - 53760*x + 1280)
+    assert minimal_polynomial(sqrt(theta) + root(theta, 3), x) == ans
 
     a, b = sqrt(2)/3 + 7, AlgebraicNumber(sqrt(2)/3 + 7)
 
