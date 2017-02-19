@@ -243,6 +243,12 @@ def test__eval_product():
     # issue sympy/sympy#4810
     assert product(2**i, (i, 1, n)) == 2**(n/2 + n**2/2)
 
+    assert (product((i - 1)*(i**6 + i - 1), (i, n, m)) ==
+            rf(n - 1, m - n + 1)*product(i**6 + i - 1, (i, n, m)))
+
+    assert (product(log(i)**2*cos(i)**3, (i, n, m)) ==
+            Product(log(i)**2*cos(i)**3, (i, n, m)))
+
 
 def test_product_pow():
     # issue sympy/sympy#4817
@@ -358,6 +364,8 @@ def test_reverse_order():
            Product(x*y, (x, b + 1, a - 1), (y, 6, 1))
     assert Product(x*y, (x, a, b), (y, 2, 5)).reverse_order(y, x) == \
            Product(x*y, (x, b + 1, a - 1), (y, 6, 1))
+    p = Product(x, (x, 0, 3))
+    assert p.reverse_order(10) == p
 
 
 def test_reorder_limit():
