@@ -2475,14 +2475,11 @@ class TensExpr(Basic):
     def __rpow__(self, other):
         raise NotImplementedError
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         raise NotImplementedError
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         raise NotImplementedError()
-
-    __truediv__ = __div__
-    __rtruediv__ = __rdiv__
 
     @doctest_depends_on(modules=('numpy',))
     def get_matrix(self):
@@ -2871,20 +2868,17 @@ class TensAdd(TensExpr):
     def __rmul__(self, other):
         return self*other
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         other = sympify(other)
         if isinstance(other, TensExpr):
             raise ValueError('cannot divide by a tensor')
         return TensAdd(*(x/other for x in self.args))
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         raise ValueError('cannot divide by a tensor')
 
     def __getitem__(self, item):
         return self.data[item]
-
-    __truediv__ = __div__
-    __truerdiv__ = __rdiv__
 
     def contract_delta(self, delta):
         args = [x.contract_delta(delta) for x in self.args]
@@ -3231,12 +3225,12 @@ class Tensor(TensExpr):
     def __rmul__(self, other):
         return TensMul(other, self)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, TensExpr):
             raise ValueError('cannot divide by a tensor')
         return TensMul(self, S.One/other, is_canon_bp=self.is_canon_bp)
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         raise ValueError('cannot divide by a tensor')
 
     def __add__(self, other):
@@ -3250,9 +3244,6 @@ class Tensor(TensExpr):
 
     def __rsub__(self, other):
         return TensAdd(other, self)
-
-    __truediv__ = __div__
-    __rtruediv__ = __rdiv__
 
     def __neg__(self):
         return TensMul(S.NegativeOne, self)
@@ -3536,7 +3527,7 @@ class TensMul(TensExpr):
         tmul = TensMul.from_TIDS(coeff, self._tids)
         return tmul
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         other = sympify(other)
         if isinstance(other, TensExpr):
             raise ValueError('cannot divide by a tensor')
@@ -3544,14 +3535,11 @@ class TensMul(TensExpr):
         tmul = TensMul.from_TIDS(coeff, self._tids, is_canon_bp=self._is_canon_bp)
         return tmul
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         raise ValueError('cannot divide by a tensor')
 
     def __getitem__(self, item):
         return self.data[item]
-
-    __truediv__ = __div__
-    __truerdiv__ = __rdiv__
 
     def sorted_components(self):
         """

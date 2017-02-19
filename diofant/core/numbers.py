@@ -372,15 +372,13 @@ class Number(AtomicExpr):
         return AtomicExpr.__mul__(self, other)
 
     @_sympifyit('other', NotImplemented)
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, Number):
             if other is S.NaN:
                 return S.NaN
             elif other is S.Infinity or other is S.NegativeInfinity:
                 return S.Zero
-        return AtomicExpr.__div__(self, other)
-
-    __truediv__ = __div__
+        return AtomicExpr.__truediv__(self, other)
 
     def __eq__(self, other):
         raise NotImplementedError('%s needs .__eq__() method' %
@@ -850,13 +848,11 @@ class Float(Number):
         return Number.__mul__(self, other)
 
     @_sympifyit('other', NotImplemented)
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, Number) and other != 0:
             rhs, prec = other._as_mpf_op(self._prec)
             return Float._new(mlib.mpf_div(self._mpf_, rhs, prec, rnd), prec)
-        return Number.__div__(self, other)
-
-    __truediv__ = __div__
+        return Number.__truediv__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __mod__(self, other):
@@ -1205,7 +1201,7 @@ class Rational(Number):
             return Number.__mul__(self, other)
 
     @_sympifyit('other', NotImplemented)
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, Rational):
             if self.p and other.p == S.Zero:
                 return S.ComplexInfinity
@@ -1214,9 +1210,7 @@ class Rational(Number):
         elif isinstance(other, Float):
             return self*(1/other)
         else:
-            return Number.__div__(self, other)
-
-    __truediv__ = __div__
+            return Number.__truediv__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __mod__(self, other):
@@ -2230,7 +2224,7 @@ class Infinity(Number, metaclass=Singleton):
     __rmul__ = __mul__
 
     @_sympifyit('other', NotImplemented)
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, Number):
             if other is S.Infinity or \
                 other is S.NegativeInfinity or \
@@ -2250,8 +2244,6 @@ class Infinity(Number, metaclass=Singleton):
                 else:
                     return S.NegativeInfinity
         return NotImplemented
-
-    __truediv__ = __div__
 
     def __abs__(self):
         return S.Infinity
@@ -2435,7 +2427,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
     __rmul__ = __mul__
 
     @_sympifyit('other', NotImplemented)
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, Number):
             if other is S.Infinity or \
                 other is S.NegativeInfinity or \
@@ -2456,8 +2448,6 @@ class NegativeInfinity(Number, metaclass=Singleton):
                 else:
                     return S.Infinity
         return NotImplemented
-
-    __truediv__ = __div__
 
     def __abs__(self):
         return S.Infinity
@@ -2631,10 +2621,8 @@ class NaN(Number, metaclass=Singleton):
         return self
 
     @_sympifyit('other', NotImplemented)
-    def __div__(self, other):
+    def __truediv__(self, other):
         return self
-
-    __truediv__ = __div__
 
     def _as_mpf_val(self, prec):
         return _mpf_nan

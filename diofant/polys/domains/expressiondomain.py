@@ -104,9 +104,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         def __rtruediv__(self, other):
             return self.simplify(self.__class__(other).ex/self.ex)
 
-        __div__ = __truediv__
-        __rdiv__ = __rtruediv__
-
         def __eq__(self, other):
             return self.ex == self.__class__(other).ex
 

@@ -20,11 +20,11 @@ class Field(Ring):
         return self
 
     def exquo(self, a, b):
-        """Exact quotient of ``a`` and ``b``, implies ``__div__``.  """
+        """Exact quotient of ``a`` and ``b``, implies ``__truediv__``.  """
         return a / b
 
     def quo(self, a, b):
-        """Quotient of ``a`` and ``b``, implies ``__div__``. """
+        """Quotient of ``a`` and ``b``, implies ``__truediv__``. """
         return a / b
 
     def rem(self, a, b):
@@ -32,7 +32,7 @@ class Field(Ring):
         return self.zero
 
     def div(self, a, b):
-        """Division of ``a`` and ``b``, implies ``__div__``. """
+        """Division of ``a`` and ``b``, implies ``__truediv__``. """
         return a / b, self.zero
 
     def gcd(self, a, b):

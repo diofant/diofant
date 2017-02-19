@@ -106,7 +106,6 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     __sub__ = MatrixBase.__sub__
     __rsub__ = MatrixBase.__rsub__
     __neg__ = MatrixBase.__neg__
-    __div__ = MatrixBase.__div__
     __truediv__ = MatrixBase.__truediv__
 
 

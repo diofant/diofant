@@ -3824,15 +3824,12 @@ class Poly(Expr):
         return other.quo(self)
 
     @_sympifyit('other', NotImplemented)
-    def __div__(self, other):
+    def __truediv__(self, other):
         return self.as_expr()/other.as_expr()
 
     @_sympifyit('other', NotImplemented)
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         return other.as_expr()/self.as_expr()
-
-    __truediv__ = __div__
-    __rtruediv__ = __rdiv__
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):

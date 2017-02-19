@@ -267,7 +267,7 @@ class NDimArray:
         result_list = [other*i for i in self]
         return type(self)(result_list, self.shape)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, (collections.Iterable, NDimArray, Matrix)):
             raise ValueError("scalar expected")
         other = sympify(other)
@@ -301,5 +301,3 @@ class NDimArray:
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    __truediv__ = __div__

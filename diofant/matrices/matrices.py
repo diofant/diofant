@@ -579,11 +579,8 @@ class MatrixBase(DefaultPrinting):
     def __radd__(self, other):
         return self + other
 
-    def __div__(self, other):
-        return self*(S.One / other)
-
     def __truediv__(self, other):
-        return self.__div__(other)
+        return self*(S.One / other)
 
     def __neg__(self):
         return -1*self
