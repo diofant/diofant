@@ -493,6 +493,18 @@ def test_dmp_ext_factor():
         (anp([QQ(2)]), [(anp([QQ(1)])*x + anp([QQ(-1), QQ(0)])*y, 1),
                         (anp([QQ(1)])*x + anp([QQ( 1), QQ(0)])*y, 1)])
 
+    # issue sympy/sympy#5786
+    R,  x, y, z, t = ring("x, y, z, t", QQ.algebraic_field(I))
+
+    def anp(x):
+        return ANP(x, [QQ(1), QQ(0), QQ(1)], QQ)
+
+    f = (anp([-QQ(1), QQ(0)])*t*x + anp([-QQ(1)])*t*y +
+         anp([QQ(1)])*x*z + anp([-QQ(1), QQ(0)])*y*z)
+    assert (R.dmp_ext_factor(f) ==
+            (anp([QQ(1)]), [(anp([QQ(1)])*z + anp([-QQ(1), QQ(0)])*t, 1),
+                            (anp([QQ(1)])*x + anp([-QQ(1), QQ(0)])*y, 1)]))
+
 
 def test_dup_factor_list():
     R, x = ring("x", ZZ)
