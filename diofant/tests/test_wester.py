@@ -26,7 +26,8 @@ from diofant import (
     continued_fraction_periodic as cf_p, continued_fraction_convergents as cf_c,
     continued_fraction_reduce as cf_r, FiniteSet, elliptic_e, elliptic_f,
     powsimp, hessian, wronskian, fibonacci, sign, Lambda, Piecewise, Subs,
-    residue, Derivative, logcombine, Symbol, Integer, Complement, RootOf, Max)
+    residue, Derivative, logcombine, Symbol, Integer, Complement, RootOf, Max,
+    primitive_root, minimize)
 from diofant.functions.combinatorial.numbers import stirling
 from diofant.functions.special.zeta_functions import zeta
 from diofant.integrals.deltafunctions import deltaintegrate
@@ -204,10 +205,6 @@ def test_C23():
     assert 2 * oo - 3 == oo
 
 
-@pytest.mark.xfail
-def test_C24():
-    raise NotImplementedError("2**aleph_null == aleph_1")
-
 # D. Numerical Analysis
 
 
@@ -229,52 +226,9 @@ def test_D4():
 
 
 @pytest.mark.xfail
-def test_D5():
-    raise NotImplementedError("cubic_spline([1, 2, 4, 5], [1, 4, 2, 3], x)(3) == 27/8")
-
-
-@pytest.mark.xfail
-def test_D6():
-    raise NotImplementedError("translate sum(a[i]*x**i, (i,1,n)) to FORTRAN")
-
-
-@pytest.mark.xfail
-def test_D7():
-    raise NotImplementedError("translate sum(a[i]*x**i, (i,1,n)) to C")
-
-
-@pytest.mark.xfail
-def test_D8():
-    # One way is to cheat by converting the sum to a string,
-    # and replacing the '[' and ']' with ''.
-    # E.g., horner(sympify(str(_).replace('[','').replace(']','')))
-    raise NotImplementedError("apply Horner's rule to sum(a[i]*x**i, (i,1,5))")
-
-
-@pytest.mark.xfail
-def test_D9():
-    raise NotImplementedError("translate D8 to FORTRAN")
-
-
-@pytest.mark.xfail
-def test_D10():
-    raise NotImplementedError("translate D8 to C")
-
-
-@pytest.mark.xfail
-def test_D11():
-    # Is there a way to use count_ops?
-    raise NotImplementedError("flops(sum(product(f[i][k], (i,1,k)), (k,1,n)))")
-
-
-@pytest.mark.xfail
 def test_D12():
     assert (mpi(-4, 2) * x + mpi(1, 3)) ** 2 == mpi(-8, 16)*x**2 + mpi(-24, 12)*x + mpi(1, 9)
 
-
-@pytest.mark.xfail
-def test_D13():
-    raise NotImplementedError("discretize a PDE: diff(f(x,t),t) == diff(diff(f(x,t),x),x)")
 
 # E. Statistics
 #   See scipy; all of this is numerical.
@@ -329,14 +283,9 @@ def test_G1():
     assert list(primerange(999983, 1000004)) == [999983, 1000003]
 
 
-@pytest.mark.xfail
 def test_G2():
-    raise NotImplementedError("find the primitive root of 191 == 19")
+    assert primitive_root(191) == 19
 
-
-@pytest.mark.xfail
-def test_G3():
-    raise NotImplementedError("(a+b)**p mod p == a**p + b**p mod p; p prime")
 
 # ... G14 Modular equations are not implemented.
 
@@ -500,18 +449,6 @@ def test_H19():
     assert Poly(a - 1).invert(Poly(a**2 - 2)) == a + 1
 
 
-@pytest.mark.xfail
-def test_H20():
-    raise NotImplementedError("let a**2==2; (x**3 + (a-2)*x**2 - "
-        + "(2*a+3)*x - 3*a) / (x**2-2) = (x**2 - 2*x - 3) / (x-a)")
-
-
-@pytest.mark.xfail
-def test_H21():
-    raise NotImplementedError("evaluate (b+c)**4 assuming b**3==2, c**2==3. \
-                              Answer is 2*b + 8*c + 18*b**2 + 12*b*c + 9")
-
-
 def test_H22():
     assert factor(x**4 - 3*x**2 + 1, modulus=5) == (x - 2)**2 * (x + 2)**2
 
@@ -551,12 +488,6 @@ def test_H27():
 
 
 @pytest.mark.xfail
-def test_H28():
-    raise NotImplementedError("expand ((1 - c**2)**5 * (1 - s**2)**5 * "
-        + "(c**2 + s**2)**10) with c**2 + s**2 = 1. Answer is c**10*s**10.")
-
-
-@pytest.mark.xfail
 def test_H29():
     assert factor(4*x**2 - 21*x*y + 20*y**2, modulus=3) == (x + y)*(x - y)
 
@@ -571,12 +502,6 @@ def test_H31():
     f = (x**2 + 2*x + 3)/(x**3 + 4*x**2 + 5*x + 2)
     g = 2 / (x + 1)**2 - 2 / (x + 1) + 3 / (x + 2)
     assert apart(f) == g
-
-
-@pytest.mark.xfail
-def test_H32():  # issue sympy/sympy#6558
-    raise NotImplementedError("[A*B*C - (A*B*C)**(-1)]*A*C*B (product \
-                              of a non-commuting product and its inverse)")
 
 
 # I. Trigonometry
@@ -602,11 +527,6 @@ def test_I4():
 @pytest.mark.xfail
 def test_I5():
     assert sin((n**5/5 + n**4/2 + n**3/3 - n/30) * pi) == 0
-
-
-@pytest.mark.xfail
-def test_I6():
-    raise NotImplementedError("assuming -3*pi<x<-5*pi/2, abs(cos(x)) == -cos(x), abs(sin(x)) == -sin(x)")
 
 
 @pytest.mark.xfail
@@ -654,11 +574,6 @@ def test_J1():
 
 def test_J2():
     assert diff(elliptic_e(x, y**2), y) == (elliptic_e(x, y**2) - elliptic_f(x, y**2))/y
-
-
-@pytest.mark.xfail
-def test_J3():
-    raise NotImplementedError("Jacobi elliptic functions: diff(dn(u,k), u) == -k**2*sn(u,k)*cn(u,k)")
 
 
 def test_J4():
@@ -712,23 +627,8 @@ def test_J14():
 
 
 @pytest.mark.xfail
-def test_J15():
-    raise NotImplementedError("F((n+2)/2,-(n-2)/2,R(3,2),sin(z)**2) == sin(n*z)/(n*sin(z)*cos(z)); F(.) is hypergeometric function")
-
-
-@pytest.mark.xfail
-def test_J16():
-    raise NotImplementedError("diff(zeta(x), x) @ x=0 == -log(2*pi)/2")
-
-
-@pytest.mark.xfail
 def test_J17():
     assert deltaintegrate(f((x + 2)/5)*DiracDelta((x - 2)/3) - g(x)*diff(DiracDelta(x - 1), x), (x, 0, 3))
-
-
-@pytest.mark.xfail
-def test_J18():
-    raise NotImplementedError("define an antisymmetric function")
 
 
 # K. The Complex Domain
@@ -888,12 +788,6 @@ def test_M8():
     # infinite number of solutions.
     # x = {log(sqrt(z) - 1), log(sqrt(z) + 1) + i pi} [+ n 2 pi i, + n 2 pi i]
     # where n is an arbitrary integer.  See url of detailed output above.
-
-
-@pytest.mark.xfail
-def test_M9():
-    x = symbols('x', complex=True)
-    raise NotImplementedError("solve(exp(2-x**2)-exp(-x),x) has complex solutions.")
 
 
 def test_M10():
@@ -1424,34 +1318,29 @@ def test_N12():
 
 @pytest.mark.xfail
 def test_N13():
-    # raises NotImplementedError: can't reduce [sin(x) < 2]
-    x = Symbol('x', extended_real=True)
-    assert reduce_inequalities(sin(x) < 2) == []  # S.Reals not found
+    x = Symbol('x', real=True)
+    reduce_inequalities(sin(x) < 2)
 
 
-@pytest.mark.xfail
 def test_N14():
-    # raises NotImplementedError: can't reduce [sin(x) < 1]
-    x = Symbol('x', extended_real=True)
-    assert (reduce_inequalities(sin(x) < 1) == Ne(x, pi/2))
+    x = Symbol('x', real=True)
+    assert reduce_inequalities(sin(x) < 1) == Or(pi/2 < x, x < pi/2)
 
 
 @pytest.mark.xfail
 def test_N15():
-    r, t = symbols('r t', extended_real=True)
-    # raises NotImplementedError: only univariate inequalities are supported
+    r, t = symbols('r t', real=True)
     reduce_inequalities(abs(2*r*(cos(t) - 1) + 1) <= 1, r)
 
 
 @pytest.mark.xfail
 def test_N16():
-    r, t = symbols('r t', extended_real=True)
+    r, t = symbols('r t', real=True)
     reduce_inequalities((r**2)*((cos(t) - 4)**2)*sin(t)**2 < 9, r)
 
 
 @pytest.mark.xfail
 def test_N17():
-    # raises NotImplementedError: only univariate inequalities are supported
     assert reduce_inequalities((x + y > 0, x - y < 0)) == (abs(x) < y)
 
 
@@ -1485,13 +1374,6 @@ def test_O10():
                               [Rational(-423, 706)]])]
 
 
-@pytest.mark.xfail
-def test_P1():
-    raise NotImplementedError("Matrix property/function to extract Nth \
-diagonal not implemented. See Matlab diag(A,k) \
-http://www.mathworks.de/de/help/symbolic/diag.html")
-
-
 def test_P2():
     M = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     M.row_del(1)
@@ -1523,11 +1405,6 @@ def test_P3():
                         [21, 22, 23, 24, 23, 24],
                         [31, 32, 33, 34, 43, 42],
                         [41, 42, 43, 44, 13, 12]])
-
-
-@pytest.mark.xfail
-def test_P4():
-    raise NotImplementedError("Block matrix diagonalization not supported")
 
 
 @pytest.mark.xfail
@@ -1586,13 +1463,9 @@ def test_P10():
                           [2 + 3*I, 6]])
 
 
-@pytest.mark.xfail
 def test_P11():
-    # raises NotImplementedError("Matrix([[x,y],[1,x*y]]).inv()
-    #   not simplifying to extract common factor")
-    assert Matrix([[x, y],
-                   [1, x*y]]).inv() == (1/(x**2 - 1))*Matrix([[x, -1],
-                                                              [-1/y, x/y]])
+    assert (simplify(Matrix([[x, y], [1, x*y]]).inv()) ==
+            Matrix([[x, -1], [-1/y, x/y]])/(x**2 - 1))
 
 
 def test_P12():
@@ -1677,11 +1550,6 @@ def test_P19():
                        + w*y**3*z**2 - w*y**2*z**3 - x**3*y**2*z + x**3*y*z**2
                        + x**2*y**3*z - x**2*y*z**3 - x*y**3*z**2 + x*y**2*z**3
                        )
-
-
-@pytest.mark.xfail
-def test_P20():
-    raise NotImplementedError("Matrix minimal polynomial not supported")
 
 
 def test_P21():
@@ -1801,18 +1669,6 @@ def test_P27():
                                             [          1]])])]
 
 
-@pytest.mark.xfail
-def test_P28():
-    raise NotImplementedError("Generalized eigenvectors not supported \
-https://github.com/sympy/sympy/issues/5293")
-
-
-@pytest.mark.xfail
-def test_P29():
-    raise NotImplementedError("Generalized eigenvectors not supported \
-https://github.com/sympy/sympy/issues/5293")
-
-
 def test_P30():
     M = Matrix([[1,  0,  0,  1, -1],
                 [0,  1, -2,  3, -3],
@@ -1825,11 +1681,6 @@ def test_P30():
                         [0,  0, 1, 0, 0],
                         [0,  0, 0, 1, 1],
                         [0,  0, 0, 0, 1]])
-
-
-@pytest.mark.xfail
-def test_P31():
-    raise NotImplementedError("Smith normal form not implemented")
 
 
 def test_P32():
@@ -1902,20 +1753,7 @@ def test_P38():
     M = Matrix([[0, 1, 0],
                 [0, 0, 0],
                 [0, 0, 0]])
-    # raises NotImplementedError: Implemented only for diagonalizable matrices
     assert all(e in (S.NaN, S.ComplexInfinity) for e in M**Rational(1, 2))
-
-
-@pytest.mark.xfail
-def test_P39():
-    """
-    M=Matrix([
-        [1, 1],
-        [2, 2],
-        [3, 3]])
-    M.SVD()
-    """
-    raise NotImplementedError("Singular value decomposition not implemented")
 
 
 def test_P40():
@@ -1994,28 +1832,6 @@ def test_R3():
     # returns -((-1)**n*factorial(2*n)
     #           - (factorial(n))**2)*exp_polar(-I*pi)/(factorial(n))**2
     assert T2 == (-1)**n*binomial(2*n, n)
-
-
-@pytest.mark.xfail
-def test_R4():
-    # Macsyma indefinite sum test case:
-    # (c15) /* Check whether the full Gosper algorithm is implemented
-    #    => 1/2^(n + 1) binomial(n, k - 1) */
-    # closedform(indefsum(binomial(n, k)/2^n - binomial(n + 1, k)/2^(n + 1), k));
-    #  Time= 2690 msecs
-    #                       (- n + k - 1) binomial(n + 1, k)
-    # (d15)               - --------------------------------
-    #                                                      n
-    #                                    2 2  (n + 1)
-    #
-    # (c16) factcomb(makefact(%));
-    #  Time= 220 msecs
-    #                                  n!
-    # (d16)                     ----------------
-    #                                 n
-    #                           2 k! 2  (n - k)!
-    #  Might be possible after fixing https://github.com/sympy/sympy/pull/1879
-    raise NotImplementedError("Indefinite sum not supported")
 
 
 @pytest.mark.xfail
@@ -2301,8 +2117,6 @@ def test_T8():
 @pytest.mark.xfail
 def test_T9():
     z, k = symbols('z k', extended_real=True, positive=True)
-    # raises NotImplementedError:
-    #           Don't know how to calculate the mrv of '(1, k)'
     assert limit(hyper((1, k), (1,), z/k), k, oo) == exp(z)
 
 
@@ -2314,7 +2128,6 @@ def test_T10():
 @pytest.mark.xfail
 def test_T11():
     n, k = symbols('n k', integer=True, positive=True)
-    # raises NotImplementedError
     assert limit(n**x/(x*product((1 + x/k), (k, 1, n))), n, oo) == gamma(x)
 
 
@@ -2358,15 +2171,6 @@ def test_U4():
     x = symbols('x', extended_real=True)
     diff(x**n, x, n)
     assert diff(x**n, x, n).rewrite(factorial) == factorial(n)
-
-
-@pytest.mark.xfail
-def test_U5():
-    # https://github.com/sympy/sympy/issues/6681
-    # f(g(x)).diff(x,2) returns Derivative(g(x), x)**2*Subs(Derivative(
-    #  f(_xi_1), _xi_1, _xi_1), (_xi_1,), (g(x),)) + Derivative(g(x), x, x)*
-    #  Subs(Derivative(f(_xi_1), _xi_1), (_xi_1,), (g(x),))
-    raise NotImplementedError("f(g(t)).diff(t,2) Subs not performed")
 
 
 @pytest.mark.xfail
@@ -2425,39 +2229,29 @@ def test_U9():
 
 
 def test_U10():
-    # see issue sympy/sympy#2519:
     assert residue((z**3 + 5)/((z**4 - 1)*(z + 1)), z, -1) == Rational(-9, 4)
 
 
-@pytest.mark.xfail
 def test_U13():
-    # assert minimize(x**4 - x + 1, x)== -3*2**Rational(1,3)/8 + 1
-    raise NotImplementedError("minimize() not supported")
+    assert minimize(x**4 - x + 1, x)[0] == -3*2**Rational(1, 3)/8 + 1
 
 
 @pytest.mark.xfail
 def test_U14():
-    # f = 1/(x**2 + y**2 + 1)
-    # assert [minimize(f), maximize(f)] == [0,1]
-    raise NotImplementedError("minimize(), maximize() not supported")
-
-
-@pytest.mark.xfail
-def test_U15():
-    raise NotImplementedError("minimize() not supported and also solve does \
-not support multivariate inequalities")
-
-
-@pytest.mark.xfail
-def test_U16():
-    raise NotImplementedError("minimize() not supported in Diofant and also \
-solve does not support multivariate inequalities")
+    f = 1/(x**2 + y**2 + 1)
+    assert [minimize(f, x, y)[0], maximize(f, x, y)[0]] == [0, 1]
 
 
 @pytest.mark.xfail
 def test_U17():
-    raise NotImplementedError("Linear programming, symbolic simplex not \
-supported in Diofant")
+    x1, x2, x3, x4 = symbols('x1:5')
+    assert minimize([4*x1 - x2 + 2*x3 - 2*x4,
+                     2*x1 + x2 + x3 + x4 <= 10,
+                     x1 - 2*x2 - x3 + x4 >= 4,
+                     x1 + x2 + 3*x3 - x4 >= 4,
+                     x1 >= 0, x2 >= 0, x3 >= 0,
+                     x4 >= 0], x1, x2,
+                     x3, x4) == (4, {x1: 2, x2: 0, x3: 2, x4: 4})
 
 
 @pytest.mark.xfail
@@ -2503,23 +2297,6 @@ def test_V7():
     assert r1.simplify() == -3*x/2 + sinh(x)**3/(2*cosh(x)) + 3*tanh(x)/2
 
 
-@pytest.mark.xfail
-def test_V8_V9():
-    # Macsyma test case:
-    # (c27) /* This example involves several symbolic parameters
-    #    => 1/sqrt(b^2 - a^2) log([sqrt(b^2 - a^2) tan(x/2) + a + b]/
-    #                             [sqrt(b^2 - a^2) tan(x/2) - a - b])   (a^2 < b^2)
-    #       [Gradshteyn and Ryzhik 2.553(3)] */
-    #  assume(b^2 > a^2)$
-    # (c28) integrate(1/(a + b*cos(x)), x);
-    # (c29) trigsimp(ratsimp(diff(%, x)));
-    #                         1
-    # (d29)             ------------
-    #                   b cos(x) + a
-    raise NotImplementedError(
-        "Integrate with assumption not supported")
-
-
 def test_V10():
     assert integrate(1/(3 + 3*cos(x) + 4*sin(x)), x) == log(tan(x/2) + Rational(3, 4))/4
 
@@ -2559,18 +2336,6 @@ def test_V14():
 def test_V15():
     r1 = integrate(x*acot(x/y), x)
     assert simplify(r1 - (x*y + (x**2 + y**2)*acot(x/y))/2) == 0
-
-
-@pytest.mark.xfail
-def test_V16():
-    # test case in Mathematica syntax:
-    # In[53]:= Integrate[Cos[5*x]*CosIntegral[2*x], x]
-    #          CosIntegral[2 x] Sin[5 x]   -SinIntegral[3 x] - SinIntegral[7 x]
-    # Out[53]= ------------------------- + ------------------------------------
-    #                      5                                10
-    # cosine Integral function not supported
-    # http://reference.wolfram.com/mathematica/ref/CosIntegral.html
-    raise NotImplementedError("cosine integral function not supported")
 
 
 @pytest.mark.slow
@@ -2634,16 +2399,6 @@ def test_W7():
     a = symbols('a', extended_real=True, positive=True)
     r1 = integrate(cos(x)/(x**2 + a**2), (x, -oo, oo))
     assert r1.simplify() == pi*exp(-a)/a
-
-
-@pytest.mark.xfail
-def test_W8():
-    # Test case in Mathematica:
-    # In[19]:= Integrate[t^(a - 1)/(1 + t), {t, 0, Infinity},
-    #                    Assumptions -> 0 < a < 1]
-    # Out[19]= Pi Csc[a Pi]
-    raise NotImplementedError(
-        "Integrate with assumption 0 < a < 1 not supported")
 
 
 @pytest.mark.xfail
@@ -2711,13 +2466,6 @@ def test_W17():
 
 def test_W18():
     assert integrate((besselj(1, x)/x)**2, (x, 0, oo)) == 4/(3*pi)
-
-
-@pytest.mark.xfail
-def test_W19():
-    # integrate(cos_int(x)*bessel_j[0](2*sqrt(7*x)), x, 0, inf);
-    # Expected result is cos 7 - 1)/7   [Gradshteyn and Ryzhik 6.782(3)]
-    raise NotImplementedError("cosine integral function not supported")
 
 
 @pytest.mark.xfail
@@ -2832,12 +2580,8 @@ def test_X5():
     #             (h[c d] + b g'[b d] + a  f''[a d]) (-d + x) + O[-d + x]
     h = Function('h')
     a, b, c, d = symbols('a b c d', extended_real=True)
-    # series() raises NotImplementedError:
-    # The _eval_nseries method should be added to <class
-    # 'diofant.core.function.Subs'> to give terms up to O(x**n) at x=0
     series(diff(f(a*x), x) + g(b*x) + integrate(h(c*y), (y, 0, x)),
            x, x0=d, n=2)
-    # assert missing, until exception is removed
 
 
 def test_X6():
@@ -2924,130 +2668,6 @@ def test_X16():
     # Multivariate Taylor series expansion => 1 - (x^2 + 2 x y + y^2)/2 + O(x^4)
     assert (series(cos(x + y), x + y, x0=0, n=4) == 1 - (x + y)**2/2 +
             O(x**4 + x**3*y + x**2*y**2 + x*y**3 + y**4, x, y))
-
-
-@pytest.mark.xfail
-def test_X17():
-    # Power series (compute the general formula)
-    # (c41) powerseries(log(sin(x)/x), x, 0);
-    # /aquarius/data2/opt/local/macsyma_422/library1/trgred.so being loaded.
-    #              inf
-    #              ====     i1  2 i1          2 i1
-    #              \        (- 1)   2      bern(2 i1) x
-    # (d41)               >        ------------------------------
-    #              /             2 i1 (2 i1)!
-    #              ====
-    #              i1 = 1
-    raise NotImplementedError("Formal power series not supported")
-
-
-@pytest.mark.xfail
-def test_X18():
-    # Power series (compute the general formula). Maple FPS:
-    # > FormalPowerSeries(exp(-x)*sin(x), x = 0);
-    #                        infinity
-    #                         -----    (1/2 k)                k
-    #                          \      2        sin(3/4 k Pi) x
-    #                           )     -------------------------
-    #                          /                 k!
-    #                         -----
-    raise NotImplementedError("Formal power series not supported")
-
-
-@pytest.mark.xfail
-def test_X19():
-    # (c45) /* Derive an explicit Taylor series solution of y as a function of
-    # x from the following implicit relation:
-    #    y = x - 1 + (x - 1)^2/2 + 2/3 (x - 1)^3 + (x - 1)^4 +
-    #        17/10 (x - 1)^5 + ...
-    #    */
-    # x = sin(y) + cos(y);
-    # Time= 0 msecs
-    # (d45)                   x = sin(y) + cos(y)
-    #
-    # (c46) taylor_revert(%, y, 7);
-    raise NotImplementedError("Solve using series not supported. \
-Inverse Taylor series expansion also not supported")
-
-
-@pytest.mark.xfail
-def test_X20():
-    # Pade (rational function) approximation => (2 - x)/(2 + x)
-    # > numapprox[pade](exp(-x), x = 0, [1, 1]);
-    # bytes used=9019816, alloc=3669344, time=13.12
-    #                                    1 - 1/2 x
-    #                                    ---------
-    #                                    1 + 1/2 x
-    # mpmath support numeric Pade approximant but there is
-    # no symbolic implementation in Diofant
-    # http://en.wikipedia.org/wiki/Pad%C3%A9_approximant
-    raise NotImplementedError("Symbolic Pade approximant not supported")
-
-
-@pytest.mark.xfail
-def test_X21():
-    # (c48) /* Fourier series of f(x) of period 2 p over the interval [-p, p]
-    #    => - (2 p / pi) sum( (-1)^n sin(n pi x / p) / n, n = 1..infinity ) */
-    # assume(p > 0)$
-    # Time= 0 msecs
-    #
-    # (c49) fourier_series(x, x, p);
-    # /aquarius/data2/opt/local/macsyma_422/share/fourier.so being loaded.
-    # (e49)                      a  = 0
-    #                       0
-    #
-    # (e50)                     a    = 0
-    #                      %nn
-    #
-    #                          %nn
-    #                       2 (- 1)    p
-    # (e51)                  b      = - ------------
-    #                   %nn       %pi %nn
-    #
-    # Time= 4540 msecs
-    #                inf            %nn     %pi %nn x
-    #                ====       (- 1)    sin(---------)
-    #                \                p
-    #                2 p  >       -----------------------
-    #                /             %nn
-    #                ====
-    #                %nn = 1
-    # (d51)              - -----------------------------------
-    #                        %pi
-    raise NotImplementedError("Fourier series not supported")
-
-
-@pytest.mark.xfail
-def test_X22():
-    # (c52) /* => p / 2
-    #    - (2 p / pi^2) sum( [1 - (-1)^n] cos(n pi x / p) / n^2,
-    #                        n = 1..infinity ) */
-    # fourier_series(abs(x), x, p);
-    #                       p
-    # (e52)                      a  = -
-    #                       0      2
-    #
-    #                       %nn
-    #                   (2 (- 1)    - 2) p
-    # (e53)                a    = ------------------
-    #                 %nn         2    2
-    #                       %pi  %nn
-    #
-    # (e54)                     b    = 0
-    #                      %nn
-    #
-    # Time= 5290 msecs
-    #            inf           %nn            %pi %nn x
-    #            ====       (2 (- 1)    - 2) cos(---------)
-    #            \                    p
-    #          p  >       -------------------------------
-    #            /               2
-    #            ====                %nn
-    #            %nn = 1                     p
-    # (d54)          ----------------------------------------- + -
-    #                       2                 2
-    #                    %pi
-    raise NotImplementedError("Fourier series not supported")
 
 
 def test_Y1():
@@ -3161,18 +2781,6 @@ def test_Y12():
     # https://github.com/sympy/sympy/issues/7182
     F, _, _ = mellin_transform(besselj(3, x)/x**3, x, s)
     assert F == -2**(s - 4)*gamma(s/2)/gamma(-s/2 + 4)
-
-
-@pytest.mark.xfail
-def test_Y13():
-    # Z[H(t - m T)] => z/[z^m (z - 1)] (H is the Heaviside (unit step) function)
-    raise NotImplementedError("z-transform not supported")
-
-
-@pytest.mark.xfail
-def test_Y14():
-    # Z[H(t - m T)] => z/[z^m (z - 1)] (H is the Heaviside (unit step) function)
-    raise NotImplementedError("z-transform not supported")
 
 
 def test_Z1():
