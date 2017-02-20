@@ -2781,11 +2781,8 @@ def test_W25():
     assert (i2 - pi*a/2).simplify() == 0
 
 
-@pytest.mark.xfail
 def test_W26():
-    x, y = symbols('x y', extended_real=True)
-    # integrate(abs(y - x**2), (y,0,2)) raises ValueError: gamma function pole
-    # https://github.com/sympy/sympy/issues/7165
+    x, y = symbols('x y', real=True)
     assert integrate(integrate(abs(y - x**2), (y, 0, 2)),
                      (x, -1, 1)) == Rational(46, 15)
 
