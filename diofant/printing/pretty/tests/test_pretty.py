@@ -3981,6 +3981,34 @@ k = ─────                                \n\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+    n = Symbol('n', integer=True)
+    expr = Sum(-1/(n**3 - 1), (n, -oo, -3))
+    ascii_str = """\
+   -3         \n\
+ ____         \n\
+ \   `        \n\
+  \      -1   \n\
+   \    ------\n\
+   /     3    \n\
+  /     n  - 1\n\
+ /___,        \n\
+n = -oo       \
+"""
+    ucode_str = """\
+  -3         \n\
+ ____        \n\
+ ╲           \n\
+  ╲     -1   \n\
+   ╲   ──────\n\
+   ╱    3    \n\
+  ╱    n  - 1\n\
+ ╱           \n\
+ ‾‾‾‾        \n\
+n = -∞       \
+"""
+    assert pretty(expr) == ascii_str
+    assert upretty(expr) == ucode_str
+
 
 def test_pretty_Subs():
     f = Function('f')
