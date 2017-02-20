@@ -3175,3 +3175,20 @@ def test_noncommutative():
 def test_to_rational_coeffs():
     assert to_rational_coeffs(
         Poly(x**3 + y*x**2 + sqrt(y), x, domain='EX')) is None
+
+
+def test_sympyissue_9607():
+    assert (factor(1e-20*x - 7.292115e-5) ==
+            Mul(Float('1.0'),
+                Float('9.9999999999999995e-21', 15)*x +
+                Float('-7.2921149999999999e-5', 15), evaluate=False))
+
+
+def test_sympyissue_8754():
+    z = 0.0001*(x*(x + (4.0*y))) + 0.0001*(y*(x + (4.0*y)))
+    w = expand(z)
+    v = factor(w)
+    assert v == Mul(Float('10000.0'), Float('0.0001')*x + Float('0.0001')*y,
+                    Float('0.0001')*x + Float('0.00040000000000000002', 15)*y,
+                    evaluate=False)
+    assert expand(v) == w
