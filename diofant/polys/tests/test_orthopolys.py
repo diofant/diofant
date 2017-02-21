@@ -3,15 +3,10 @@
 import pytest
 
 from diofant import Poly, S, Rational as Q
-from diofant.polys.orthopolys import (
-    jacobi_poly,
-    gegenbauer_poly,
-    chebyshevt_poly,
-    chebyshevu_poly,
-    hermite_poly,
-    legendre_poly,
-    laguerre_poly,
-)
+from diofant.polys.orthopolys import (jacobi_poly, gegenbauer_poly,
+                                      chebyshevt_poly, chebyshevu_poly,
+                                      hermite_poly, legendre_poly,
+                                      laguerre_poly, spherical_bessel_fn)
 
 from diofant.abc import x, a, b
 
@@ -141,3 +136,8 @@ def test_laguerre_poly():
 
     assert laguerre_poly(1).dummy_eq(-x + 1)
     assert laguerre_poly(1, polys=True) == Poly(-x + 1)
+
+
+def test_spherical_bessel_fn():
+    assert spherical_bessel_fn(1, x) == x**(-2)
+    assert spherical_bessel_fn(1, polys=True)(1/x) == x**(-2)
