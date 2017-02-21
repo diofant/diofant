@@ -16,6 +16,7 @@ C0, C1, C2 = symbols('C0,C1,C2')
 
 def test_rsolve_poly():
     assert rsolve_poly([-1, -1, 1], 0, n) == 0
+    assert rsolve_poly([-1, -1, 1], 0, n, symbols=True) == (0, [])
     assert rsolve_poly([-1, -1, 1], 1, n) == -1
 
     assert rsolve_poly([-1, n + 1], n, n) == 1
@@ -25,6 +26,8 @@ def test_rsolve_poly():
 
     assert rsolve_poly([-1, 1], n**5 + n**3, n) == \
         C0 - n**3 / 2 - n**5 / 2 + n**2 / 6 + n**6 / 6 + 2*n**4 / 3
+
+    assert rsolve_poly([1, 1], sqrt(n), n) is None
 
 
 def test_rsolve_ratio():
@@ -38,6 +41,8 @@ def test_rsolve_ratio():
         (Rational(1, 2))*(C2*(-3 + 2*n)/(-1 + n**2)),
         (Rational(1, 2))*(C2*( 3 - 2*n)/( 1 - n**2)),
     ]
+
+    assert rsolve_ratio([1, 1], sqrt(n), n) is None
 
 
 def test_rsolve_hyper():
@@ -78,6 +83,9 @@ def test_rsolve_hyper():
         C0*(-Rational(1, 2) - sqrt(3)*I/2)**n + C1*(-Rational(1, 2) + sqrt(3)*I/2)**n
 
     assert rsolve_hyper([1, -2*n/a - 2/a, 1], 0, n) == 0
+
+    assert rsolve_hyper([1, 1], sqrt(n), n) is None
+    assert rsolve_hyper([1, 1], n + sqrt(n), n) is None
 
 
 def recurrence_term(c, f):
