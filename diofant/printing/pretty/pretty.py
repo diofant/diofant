@@ -470,15 +470,10 @@ class PrettyPrinter(Printer):
         sign_height = 0
 
         for lim in expr.limits:
-            if len(lim) == 3:
-                prettyUpper = self._print(lim[2])
-                prettyLower = self._print(Equality(lim[0], lim[1]))
-            elif len(lim) == 2:
-                prettyUpper = self._print("")
-                prettyLower = self._print(Equality(lim[0], lim[1]))
-            elif len(lim) == 1:
-                prettyUpper = self._print("")
-                prettyLower = self._print(lim[0])
+            assert len(lim) == 3  # no support for indefinite sums yet
+            prettyUpper = self._print(lim[2])
+            prettyLower = self._print(Equality(lim[0], lim[1],
+                                               evaluate=False))
 
             max_upper = max(max_upper, prettyUpper.height())
 

@@ -281,9 +281,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 term = f.subs(i, a)
                 if term:
                     test = abs(term.evalf(3)) < eps
-                    if test == S.true:
-                        return s, abs(term)
-                    elif not (test == S.false):
+                    if not (test == S.false):
                         # a symbolic Relational class, can't go further
                         return term, S.Zero
                 s += term
@@ -311,10 +309,11 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         for k in range(1, n + 2):
             ga, gb = fpoint(g)
             term = bernoulli(2*k)/factorial(2*k)*(gb - ga)
-            if (eps and term and abs(term.evalf(3)) < eps) or (k > n):
+            if eps and term and abs(term.evalf(3)) < eps:
                 break
-            s += term
-            g = g.diff(i, 2, simplify=False)
+            if k <= n:
+                s += term
+                g = g.diff(i, 2, simplify=False)
         return s + iterm, abs(term)
 
     def reverse_order(self, *indices):
@@ -468,7 +467,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             numer = Mul(*[t for t in factor(numer).as_coeff_mul()[1] if t.has(a)])
 
             if not numer.is_rational_function(n, k):
-                raise ValueError()
+                raise ValueError
 
             z = collect(numer, k)
             eq = z.as_poly(k).all_coeffs()
@@ -559,38 +558,19 @@ def telescopic(L, R, limits):
     if L.is_Add or R.is_Add:
         return
 
-    # We want to solve(L.subs(i, i + m) + R, m)
-    # First we try a simple match since this does things that
-    # solve doesn't do, e.g. solve(f(k+m)-f(k), m) fails
-
     k = Wild("k")
     sol = (-R).match(L.subs(i, i + k))
-    s = None
-    if sol and k in sol:
+    if sol:
         s = sol[k]
-        if not (s.is_Integer and L.subs(i, i + s) == -R):
-            # sometimes match fail(f(x+2).match(-f(x+k))->{k: -2 - 2x}))
-            s = None
+    else:
+        return
 
-    # But there are things that match doesn't do that solve
-    # can do, e.g. determine that 1/(x + m) = 1/(1 - x) when m = 1
-
-    if s is None:
-        m = Dummy('m')
-        try:
-            sol = solve(L.subs(i, i + m) + R, m) or []
-        except NotImplementedError:
-            return
-        sol = [si for si in sol if si.is_Integer and
-               (L.subs(i, i + si) + R).expand().is_zero]
-        if len(sol) != 1:
-            return
-        s = sol[0]
-
-    if s < 0:
+    if s.is_negative:
         return telescopic_direct(R, L, abs(s), (i, a, b))
-    elif s > 0:
+    elif s.is_positive:
         return telescopic_direct(L, R, s, (i, a, b))
+    else:
+        return
 
 
 def eval_sum(f, limits):
@@ -750,8 +730,6 @@ def _eval_sum_hyper(f, i, a):
             if fac.is_Pow:
                 mul = fac.exp
                 fac = fac.base
-                if not mul.is_Integer:
-                    return
             p = Poly(fac, i)
             if p.degree() != 1:
                 return
@@ -802,22 +780,15 @@ def eval_sum_hyper(f, i_a_b):
                 return
             return Piecewise((res1 - res2, cond), (old_sum, True))
 
-    if a == S.NegativeInfinity:
-        res1 = _eval_sum_hyper(f.subs(i, -i), i, 1)
-        res2 = _eval_sum_hyper(f, i, 0)
-        if res1 is None or res2 is None:
-            return
-
-    # Now b == oo, a != -oo
-    res = _eval_sum_hyper(f, i, a)
-    if res is not None:
-        r, c = res
-        if c == S.false:
-            if r.is_number:
+    if a != S.NegativeInfinity:
+        # Now b == oo, a != -oo
+        res = _eval_sum_hyper(f, i, a)
+        if res is not None:
+            r, c = res
+            if c == S.false:
                 f = f.subs(i, Dummy('i', integer=True, positive=True) + a)
-                if f.is_positive or f.is_zero:
+                if f.is_nonnegative:
                     return S.Infinity
-                elif f.is_negative:
-                    return S.NegativeInfinity
-            return
-        return Piecewise(res, (old_sum, True))
+                else:
+                    return
+            return Piecewise(res, (old_sum, True))

@@ -1,7 +1,8 @@
 from diofant.concrete import Sum
 from diofant.concrete.delta import deltaproduct as dp, deltasummation as ds
 from diofant.core import Eq, symbols, oo, Integer
-from diofant.functions import KroneckerDelta as KD, Piecewise, piecewise_fold
+from diofant.functions import (KroneckerDelta as KD, Piecewise,
+                               piecewise_fold, exp)
 from diofant.logic import And
 
 __all__ = ()
@@ -28,6 +29,8 @@ def test_deltaproduct_basic():
     assert dp(KD(i, j), (j, 1, k)) == KD(i, 1)*KD(k, 1) + KD(k, 0)
     assert dp(KD(i, j), (j, k, 3)) == KD(i, 3)*KD(k, 3) + KD(k, 4)
     assert dp(KD(i, j), (j, k, l)) == KD(i, l)*KD(k, l) + KD(k, l + 1)
+    assert dp(KD(i, 1), (i, j**2, k**2)) == (KD(1, j**2)*KD(j**2, k**2) +
+                                             KD(k**2, j**2 - 1))
 
 
 def test_deltaproduct_mul_x_kd():
@@ -271,6 +274,11 @@ def test_deltasummation_basic_numerical():
 
 
 def test_deltasummation_basic_symbolic():
+    assert ds(KD(exp(i), 0), (i, 1, 3)) == 0
+    assert ds(KD(exp(i), 0), (i, -1, 3)) == 0
+    assert ds(KD(exp(i), 1), (i, 0, 3)) == 1
+    assert ds(KD(exp(i), 1), (i, 1, 3)) == 0
+    assert ds(KD(exp(i), 1), (i, -10, 3)) == 1
     assert ds(KD(i, j), (j, 1, 3)) == \
         Piecewise((1, And(Integer(1) <= i, i <= 3)), (0, True))
     assert ds(KD(i, j), (j, 1, 1)) == Piecewise((1, Eq(i, 1)), (0, True))

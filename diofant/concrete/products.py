@@ -259,13 +259,16 @@ class Product(ExprWithIntLimits):
             for r, m in all_roots.items():
                 M += m
                 A *= RisingFactorial(a - r, n - a + 1)**m
-                Q *= (n - r)**m
+                Q *= (k - r)**m
 
-            if M < poly.degree():
-                arg = quo(poly, Q.as_poly(k))
+            if M < poly.degree() and M > 0:
+                arg = quo(poly, Q.as_poly(k)).as_expr(k)
                 B = self.func(arg, (k, a, n)).doit()
 
-            return poly.LC()**(n - a + 1) * A * B
+            if M > 0:
+                return poly.LC()**(n - a + 1) * A * B
+            else:
+                return
 
         elif term.is_Add:
             p, q = term.as_numer_denom()

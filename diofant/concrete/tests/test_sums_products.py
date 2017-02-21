@@ -1,10 +1,11 @@
 import pytest
 
-from diofant import (
-    Abs, And, binomial, Catalan, cos, Derivative, E, Eq, exp, EulerGamma,
-    factorial, Function, harmonic, I, Integral, KroneckerDelta, log, nan,
-    Ne, Or, oo, pi, Piecewise, Product, product, Rational, S, simplify, sqrt,
-    Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod, Integer)
+from diofant import (Abs, And, binomial, Catalan, cos, Derivative, E, Eq,
+                     exp, EulerGamma, factorial, Function, harmonic, I,
+                     Integral, KroneckerDelta, log, nan, sin, Ne, Or, oo,
+                     pi, Piecewise, Product, product, Rational, S, simplify,
+                     sqrt, Sum, summation, Symbol, symbols, sympify, zeta,
+                     gamma, Le, Mod, Integer)
 from diofant.concrete.summations import telescopic
 
 from diofant.abc import a, b, c, d, k, m, x, y, z
@@ -286,6 +287,11 @@ def test_other_sums():
     assert summation(f, (m, -Rational(3, 2), Rational(3, 2))).expand() == g
     assert summation(f, (m, -1.5, 1.5)).evalf().epsilon_eq(g.evalf(), 1e-10)
 
+    assert summation(n**x, (n, 1, oo)) == Sum(n**x, (n, 1, oo))
+
+    f = Function('f')
+    assert summation(f(n)*f(k), (k, m, n)) == Sum(f(n)*f(k), (k, m, n))
+
 
 fac = factorial
 
@@ -473,6 +479,9 @@ def test_telescopic_sums():
         telescopic(1/k, -k/(1 + k), (k, n - 1, n))
 
     assert Sum(1/x/(x - 1), (x, a, b)).doit().simplify() == ((b - a + 1)/(b*(a - 1)))
+
+    assert summation(f(k) - f(k - 1), (k, m, n)) == f(n) - f(m - 1)
+    assert isinstance(summation(f(k) - f(k - x), (k, m, n)), Sum)
 
 
 def test_sum_reconstruct():
@@ -778,12 +787,13 @@ def test_reverse_order():
         Sum(x*y, (x, b + 1, a - 1), (y, 6, 1))
 
 
-@pytest.mark.slow
 def test_findrecur():
     pytest.raises(ValueError, lambda: Sum(x*y, (x, 0, 2),
                                           (y, 0, 2)).findrecur())
     pytest.raises(ValueError, lambda: Sum(x*y, (x, 0, 2)).findrecur())
     pytest.raises(ValueError, lambda: Sum(x, (x, 0, oo)).findrecur())
+    pytest.raises(ValueError, lambda: Sum(sin(x*y)/(x**2 + 1),
+                                          (x, 0, oo)).findrecur())
 
     n, k = symbols("n, k", integer=True)
     F = symbols("F", cls=Function)

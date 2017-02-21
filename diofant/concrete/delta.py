@@ -1,4 +1,4 @@
-from ..core import Add, Mul, S, Dummy, Integer, cacheit, Eq
+from ..core import Add, Mul, S, Dummy, Integer, cacheit
 from ..core.compatibility import default_sort_key
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold
 from ..polys import factor
@@ -57,8 +57,7 @@ def _extract_delta(expr, index):
         return None, expr
     if isinstance(expr, KroneckerDelta):
         return expr, Integer(1)
-    if not expr.is_Mul:
-        raise ValueError("Incorrect expr")
+    assert expr.is_Mul
     delta = None
     terms = []
 
@@ -134,13 +133,10 @@ def _simplify_delta(expr):
     """Rewrite a KroneckerDelta's indices in its simplest form. """
     from ..solvers import solve
     if isinstance(expr, KroneckerDelta):
-        try:
-            slns = solve(expr.args[0] - expr.args[1], dict=True)
-            if slns and len(slns) == 1:
-                return Mul(*[KroneckerDelta(*(key, value))
-                            for key, value in slns[0].items()])
-        except NotImplementedError:
-            pass
+        slns = solve(expr.args[0] - expr.args[1], dict=True)
+        if slns and len(slns) == 1:
+            return Mul(*[KroneckerDelta(*(key, value))
+                         for key, value in slns[0].items()])
     return expr
 
 
@@ -157,7 +153,7 @@ def deltaproduct(f, limit):
     """
     from .products import product
 
-    if ((limit[2] - limit[1]) < 0) is S.true:
+    if ((limit[2] - limit[1]) < 0) == S.true:
         return S.One
 
     if not f.has(KroneckerDelta):
@@ -173,21 +169,25 @@ def deltaproduct(f, limit):
             else:
                 terms.append(arg)
         newexpr = f.func(*terms)
-        k = Dummy("kprime", integer=True)
+        result = deltaproduct(newexpr, limit)
         if isinstance(limit[1], int) and isinstance(limit[2], int):
-            result = deltaproduct(newexpr, limit) + sum(
-                deltaproduct(newexpr, (limit[0], limit[1], ik - 1)) *
-                delta.subs(limit[0], ik) *
-                deltaproduct(newexpr, (limit[0], ik + 1, limit[2])) for ik in range(int(limit[1]), int(limit[2] + 1))
-            )
+            result += sum(deltaproduct(newexpr,
+                                       (limit[0], limit[1], ik - 1)) *
+                          delta.subs(limit[0], ik) *
+                          deltaproduct(newexpr,
+                                       (limit[0], ik + 1, limit[2]))
+                          for ik in range(int(limit[1]), int(limit[2] + 1)))
         else:
-            result = deltaproduct(newexpr, limit) + deltasummation(
-                deltaproduct(newexpr, (limit[0], limit[1], k - 1)) *
-                delta.subs(limit[0], k) *
-                deltaproduct(newexpr, (limit[0], k + 1, limit[2])),
-                (k, limit[1], limit[2]),
-                no_piecewise=_has_simple_delta(newexpr, limit[0])
-            )
+            k = Dummy("kprime", integer=True)
+            result += deltasummation(deltaproduct(newexpr,
+                                                  (limit[0],
+                                                   limit[1], k - 1)) *
+                                     delta.subs(limit[0], k) *
+                                     deltaproduct(newexpr, (limit[0],
+                                                            k + 1, limit[2])),
+                                     (k, limit[1], limit[2]),
+                                     no_piecewise=_has_simple_delta(newexpr,
+                                                                    limit[0]))
         return _remove_multiple_delta(result)
 
     delta, _ = _extract_delta(f, limit[0])
@@ -195,15 +195,12 @@ def deltaproduct(f, limit):
     if not delta:
         g = _expand_delta(f, limit[0])
         if f != g:
-            try:
-                return factor(deltaproduct(g, limit))
-            except AssertionError:
-                return deltaproduct(g, limit)
+            return factor(deltaproduct(g, limit))
         return product(f, limit)
 
-    c = Eq(limit[2], limit[1] - 1)
-    return _remove_multiple_delta(f.subs(limit[0], limit[1])*KroneckerDelta(limit[2], limit[1])) + \
-        S.One*_simplify_delta(KroneckerDelta(limit[2], limit[1] - 1))
+    return (_remove_multiple_delta(f.subs(limit[0], limit[1]) *
+                                   KroneckerDelta(limit[2], limit[1])) +
+            _simplify_delta(KroneckerDelta(limit[2], limit[1] - 1)))
 
 
 @cacheit
@@ -212,8 +209,8 @@ def deltasummation(f, limit, no_piecewise=False):
 
     The idea for summation is the following:
 
-    - If we are dealing with a KroneckerDelta expression, i.e. KroneckerDelta(g(x), j),
-      we try to simplify it.
+    - If we are dealing with a KroneckerDelta expression, i.e.
+      KroneckerDelta(g(x), j), we try to simplify it.
 
       If we could simplify it, then we sum the resulting expression.
       We already know we can sum a simplified expression, because only
@@ -225,8 +222,8 @@ def deltasummation(f, limit, no_piecewise=False):
          taking care if we are dealing with a Derivative or with a proper
          KroneckerDelta.
 
-      2) The expression is not simple (i.e. KroneckerDelta(cos(x))): we can do
-         nothing at all.
+      2) The expression is not simple (i.e. KroneckerDelta(cos(x))): we
+         can do nothing at all.
 
     - If the expr is a multiplication expr having a KroneckerDelta term:
 
@@ -234,8 +231,8 @@ def deltasummation(f, limit, no_piecewise=False):
 
       If the expansion did work, then we try to sum the expansion.
 
-      If not, we try to extract a simple KroneckerDelta term, then we have two
-      cases:
+      If not, we try to extract a simple KroneckerDelta term, then we
+      have two cases:
 
       1) We have a simple KroneckerDelta term, so we return the summation.
 
@@ -255,7 +252,8 @@ def deltasummation(f, limit, no_piecewise=False):
     Piecewise((1, 0 <= i), (0, true))
     >>> deltasummation(KroneckerDelta(i, k), (k, 1, 3))
     Piecewise((1, And(1 <= i, i <= 3)), (0, true))
-    >>> deltasummation(k*KroneckerDelta(i, j)*KroneckerDelta(j, k), (k, -oo, oo))
+    >>> deltasummation(k*KroneckerDelta(i, j)*KroneckerDelta(j, k),
+    ...                (k, -oo, oo))
     j*KroneckerDelta(i, j)
     >>> deltasummation(j*KroneckerDelta(i, j), (j, -oo, oo))
     i
@@ -272,7 +270,7 @@ def deltasummation(f, limit, no_piecewise=False):
     from .summations import summation
     from ..solvers import solve
 
-    if ((limit[2] - limit[1]) < 0) is S.true:
+    if ((limit[2] - limit[1]) < 0) == S.true:
         return S.Zero
 
     if not f.has(KroneckerDelta):
@@ -282,24 +280,20 @@ def deltasummation(f, limit, no_piecewise=False):
 
     g = _expand_delta(f, x)
     if g.is_Add:
-        return piecewise_fold(
-            g.func(*[deltasummation(h, limit, no_piecewise) for h in g.args]))
+        return piecewise_fold(g.func(*[deltasummation(h, limit,
+                                                      no_piecewise)
+                                       for h in g.args]))
 
     # try to extract a simple KroneckerDelta term
     delta, expr = _extract_delta(g, x)
 
     if not delta:
         return summation(f, limit)
-
     solns = solve(delta.args[0] - delta.args[1], x)
-    if len(solns) == 0:
-        return S.Zero
-    elif len(solns) != 1:
-        return Sum(f, limit)
+    assert len(solns) == 1
     value = solns[0]
     if no_piecewise:
         return expr.subs(x, value)
-    return Piecewise(
-        (expr.subs(x, value), Interval(*limit[1:3]).as_relational(value)),
-        (S.Zero, True)
-    )
+    return Piecewise((expr.subs(x, value),
+                      Interval(*limit[1:3]).as_relational(value)),
+                     (S.Zero, True))
