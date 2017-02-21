@@ -410,9 +410,6 @@ class TIDS(CantSympify):
         from ..printing import sstr
         return "TIDS({0}, {1}, {2})".format(sstr(self.components), sstr(self.free), sstr(self.dum))
 
-    def __repr__(self):
-        return self.__str__()
-
     def sorted_components(self):
         """
         Returns a ``TIDS`` with sorted components
@@ -986,20 +983,6 @@ class _TensorDataLazyEvaluator(CantSympify):
         )
         return contracted_ndarray
 
-    @staticmethod
-    def add_tensor_mul(prod, f, g):
-        def mul_function():
-            return _TensorDataLazyEvaluator._contract_ndarray(f.free, g.free, f.data, g.data)
-
-        _TensorDataLazyEvaluator._substitutions_dict[prod] = mul_function()
-
-    @staticmethod
-    def add_tensor_add(addition, f, g):
-        def add_function():
-            return f.data + g.data
-
-        _TensorDataLazyEvaluator._substitutions_dict[addition] = add_function()
-
     def add_metric_data(self, metric, data):
         """
         Assign data to the ``metric`` tensor. The metric tensor behaves in an
@@ -1083,30 +1066,6 @@ class _TensorDataLazyEvaluator(CantSympify):
             for ax1, ax2 in zip(axes1, axes2):
                 data = numpy.trace(data, axis1=ax1, axis2=ax2)
         return data
-
-    @staticmethod
-    def _sort_data_axes(old, new):
-        numpy = import_module('numpy')
-
-        new_data = old.data.copy()
-
-        old_free = [i[0] for i in old.free]
-        new_free = [i[0] for i in new.free]
-
-        for i in range(len(new_free)):
-            for j in range(i, len(old_free)):
-                if old_free[j] == new_free[i]:
-                    old_free[i], old_free[j] = old_free[j], old_free[i]
-                    new_data = numpy.swapaxes(new_data, i, j)
-                    break
-        return new_data
-
-    @staticmethod
-    def add_rearrange_tensmul_parts(new_tensmul, old_tensmul):
-        def sorted_compo():
-            return _TensorDataLazyEvaluator._sort_data_axes(old_tensmul, new_tensmul)
-
-        _TensorDataLazyEvaluator._substitutions_dict[new_tensmul] = sorted_compo()
 
     @staticmethod
     @doctest_depends_on(modules=('numpy',))
@@ -1447,12 +1406,6 @@ class TensorIndexType(Basic):
         return self._auto_left
 
     @property
-    def auto_index(self):
-        if not hasattr(self, '_auto_index'):
-            self._auto_index = TensorIndex("auto_index", self)
-        return self._auto_index
-
-    @property
     def data(self):
         return _tensor_data_substitution_dict[self]
 
@@ -1493,8 +1446,6 @@ class TensorIndexType(Basic):
     def data(self):
         if self in _tensor_data_substitution_dict:
             del _tensor_data_substitution_dict[self]
-        if self.metric in _tensor_data_substitution_dict:
-            del _tensor_data_substitution_dict[self.metric]
 
     @property
     def name(self):
@@ -1515,10 +1466,6 @@ class TensorIndexType(Basic):
     @property
     def epsilon(self):
         return self._epsilon
-
-    @property
-    def dummy_fmt(self):
-        return self._dummy_fmt
 
     def get_kronecker_delta(self):
         sym2 = TensorSymmetry(get_symmetric_group_sgs(2))
@@ -1542,34 +1489,6 @@ class TensorIndexType(Basic):
         return self.name
 
     __repr__ = __str__
-
-    def _components_data_full_destroy(self):
-        """
-        EXPERIMENTAL: do not rely on this API method.
-
-        This destroys components data associated to the ``TensorIndexType``, if
-        any, specifically:
-
-        * metric tensor data
-        * Kronecker tensor data
-        """
-        if self in _tensor_data_substitution_dict:
-            del _tensor_data_substitution_dict[self]
-
-        def delete_tensmul_data(key):
-            if key in _tensor_data_substitution_dict._substitutions_dict_tensmul:
-                del _tensor_data_substitution_dict._substitutions_dict_tensmul[key]
-
-        # delete metric data:
-        delete_tensmul_data((self.metric, True, True))
-        delete_tensmul_data((self.metric, True, False))
-        delete_tensmul_data((self.metric, False, True))
-        delete_tensmul_data((self.metric, False, False))
-
-        # delete delta tensor data:
-        delta = self.get_kronecker_delta()
-        if delta in _tensor_data_substitution_dict:
-            del _tensor_data_substitution_dict[delta]
 
 
 @doctest_depends_on(modules=('numpy',))
@@ -2378,24 +2297,6 @@ class TensorHead(Basic):
     def __iter__(self):
         return self.data.flatten().__iter__()
 
-    def _components_data_full_destroy(self):
-        """
-        EXPERIMENTAL: do not rely on this API method.
-
-        Destroy components data associated to the ``TensorHead`` object, this
-        checks for attached components data, and destroys components data too.
-        """
-        # do not garbage collect Kronecker tensor (it should be done by
-        # ``TensorIndexType`` garbage collection)
-        if self.name == "KD":
-            return
-
-        # the data attached to a tensor must be deleted only by the TensorHead
-        # destructor. If the TensorHead is deleted, it means that there are no
-        # more instances of that tensor anywhere.
-        if self in _tensor_data_substitution_dict:
-            del _tensor_data_substitution_dict[self]
-
 
 @doctest_depends_on(modules=('numpy',))
 class TensExpr(Basic):
@@ -2447,9 +2348,6 @@ class TensExpr(Basic):
         raise NotImplementedError
 
     def __mul__(self, other):
-        raise NotImplementedError
-
-    def __rmul__(self, other):
         raise NotImplementedError
 
     def __pow__(self, other):
@@ -2540,22 +2438,9 @@ class TensExpr(Basic):
                 for i in range(rows):
                     mat_list[i] = self[i]
             return Matrix(mat_list)
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError(
                 "missing multidimensional reduction to matrix.")
-
-    def _eval_simplify(self, ratio, measure):
-        # this is a way to simplify a tensor expression.
-
-        # This part walks for all `TensorHead`s appearing in the tensor expr
-        # and looks for `simplify_this_type`, to specifically act on a subexpr
-        # containing one type of `TensorHead` instance only:
-        expr = self
-        for i in list(set(self.components)):
-            if hasattr(i, 'simplify_this_type'):
-                expr = i.simplify_this_type(expr)
-        # TODO: missing feature, perform metric contraction.
-        return expr
 
 
 @doctest_depends_on(modules=('numpy',))
@@ -3013,21 +2898,6 @@ class TensAdd(TensExpr):
     def data(self):
         return _tensor_data_substitution_dict[self]
 
-    @data.setter
-    def data(self, data):
-        # TODO: check data compatibility with properties of tensor.
-        _tensor_data_substitution_dict[self] = data
-
-    @data.deleter
-    def data(self):
-        if self in _tensor_data_substitution_dict:
-            del _tensor_data_substitution_dict[self]
-
-    def __iter__(self):
-        if not self.data:
-            raise ValueError("No iteration on abstract tensors")
-        return self.data.flatten().__iter__()
-
 
 @doctest_depends_on(modules=('numpy',))
 class Tensor(TensExpr):
@@ -3130,20 +3000,11 @@ class Tensor(TensExpr):
     def split(self):
         return [self]
 
-    def expand(self):
-        return self
-
-    def sorted_components(self):
-        return self
-
     def get_indices(self):
         """
         Get a list of indices, corresponding to those of the tensor.
         """
         return self._tids.get_indices()
-
-    def as_base_exp(self):
-        return self, S.One
 
     def substitute_indices(self, *index_tuples):
         return substitute_indices(self, *index_tuples)
@@ -3209,13 +3070,6 @@ class Tensor(TensExpr):
         # TODO: check data compatibility with properties of tensor.
         _tensor_data_substitution_dict[self] = data
 
-    @data.deleter
-    def data(self):
-        if self in _tensor_data_substitution_dict:
-            del _tensor_data_substitution_dict[self]
-        if self.metric in _tensor_data_substitution_dict:
-            del _tensor_data_substitution_dict[self.metric]
-
     def __mul__(self, other):
         if isinstance(other, TensAdd):
             return TensAdd(*[self*arg for arg in other.args])
@@ -3241,9 +3095,6 @@ class Tensor(TensExpr):
 
     def __sub__(self, other):
         return TensAdd(self, -other)
-
-    def __rsub__(self, other):
-        return TensAdd(other, self)
 
     def __neg__(self):
         return TensMul(S.NegativeOne, self)
@@ -3275,9 +3126,6 @@ class Tensor(TensExpr):
     def contract_metric(self, metric):
         tids, sign = get_tids(self).contract_metric(metric)
         return TensMul.from_TIDS(sign, tids)
-
-    def contract_delta(self, metric):
-        return self.contract_metric(metric)
 
 
 @doctest_depends_on(modules=('numpy',))
@@ -3535,9 +3383,6 @@ class TensMul(TensExpr):
         tmul = TensMul.from_TIDS(coeff, self._tids, is_canon_bp=self._is_canon_bp)
         return tmul
 
-    def __rtruediv__(self, other):
-        raise ValueError('cannot divide by a tensor')
-
     def __getitem__(self, item):
         return self.data[item]
 
@@ -3716,14 +3561,6 @@ class TensMul(TensExpr):
         if dat is None:
             return
         return self.coeff * dat
-
-    @data.setter
-    def data(self, data):
-        raise ValueError("Not possible to set component data to a tensor expression")
-
-    @data.deleter
-    def data(self):
-        raise ValueError("Not possible to delete component data to a tensor expression")
 
     def __iter__(self):
         if self.data is None:
