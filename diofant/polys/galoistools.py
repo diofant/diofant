@@ -3,7 +3,6 @@
 from random import uniform
 from math import ceil as _ceil, sqrt as _sqrt
 
-from ..core.compatibility import DIOFANT_INTS
 from ..core import prod
 from .polyutils import _sort_factors
 from .polyconfig import query
@@ -239,14 +238,8 @@ def gf_from_dict(f, p, K):
     """
     n, h = max(f.keys()), []
 
-    if isinstance(n, DIOFANT_INTS):
-        for k in range(n, -1, -1):
-            h.append(f.get(k, K.zero) % p)
-    else:
-        (n,) = n
-
-        for k in range(n, -1, -1):
-            h.append(f.get((k,), K.zero) % p)
+    for k in range(n, -1, -1):
+        h.append(f.get(k, K.zero) % p)
 
     return gf_trunc(h, p)
 
@@ -1318,6 +1311,11 @@ def gf_irred_p_ben_or(f, p, K):
     True
     >>> gf_irred_p_ben_or(ZZ.map([3, 2, 4]), 5, ZZ)
     False
+
+    References
+    ==========
+
+    .. [1] [BenOr81]_
     """
     n = gf_degree(f)
 
@@ -1410,12 +1408,7 @@ def gf_irreducible_p(f, p, K):
     """
     method = query('GF_IRRED_METHOD')
 
-    if method is not None:
-        irred = _irred_methods[method](f, p, K)
-    else:
-        irred = gf_irred_p_rabin(f, p, K)
-
-    return irred
+    return _irred_methods[method](f, p, K)
 
 
 def gf_sqf_p(f, p, K):
@@ -1539,8 +1532,8 @@ def gf_sqf_list(f, p, K, all=False):
         else:
             break
 
-    if all:
-        raise ValueError("'all=True' is not supported yet")
+    if all:  # pragma: no cover
+        raise NotImplementedError("'all=True' is not supported yet")
 
     return lc, factors
 
@@ -1977,7 +1970,7 @@ _factor_methods = {
 }
 
 
-def gf_factor_sqf(f, p, K, method=None):
+def gf_factor_sqf(f, p, K):
     """
     Factor a square-free polynomial ``f`` in ``GF(p)[x]``.
 
@@ -1994,14 +1987,9 @@ def gf_factor_sqf(f, p, K, method=None):
     if gf_degree(f) < 1:
         return lc, []
 
-    method = method or query('GF_FACTOR_METHOD')
+    method = query('GF_FACTOR_METHOD')
 
-    if method is not None:
-        factors = _factor_methods[method](f, p, K)
-    else:
-        factors = gf_zassenhaus(f, p, K)
-
-    return lc, factors
+    return lc, _factor_methods[method](f, p, K)
 
 
 def gf_factor(f, p, K):

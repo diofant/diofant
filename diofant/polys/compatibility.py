@@ -1146,8 +1146,8 @@ class IPolys:
         factors = gf_shoup(self.to_gf_dense(f), self.domain.mod, self.domain.domain)
         return [ self.from_gf_dense(g) for g in factors ]
 
-    def gf_factor_sqf(self, f, method=None):
-        coeff, factors = gf_factor_sqf(self.to_gf_dense(f), self.domain.mod, self.domain.domain, method=method)
+    def gf_factor_sqf(self, f):
+        coeff, factors = gf_factor_sqf(self.to_gf_dense(f), self.domain.mod, self.domain.domain)
         return coeff, [ self.from_gf_dense(g) for g in factors ]
 
     def gf_factor(self, f):
