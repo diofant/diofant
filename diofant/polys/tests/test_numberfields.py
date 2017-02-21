@@ -37,6 +37,8 @@ def test_minimal_polynomial():
                   lambda: minimal_polynomial(pi, x, compose=False))
     pytest.raises(NotAlgebraic,
                   lambda: minimal_polynomial(sin(sqrt(2)), x, compose=False))
+    pytest.raises(NotAlgebraic,
+                  lambda: minimal_polynomial(2**pi, x, compose=False))
 
     assert minimal_polynomial(sqrt(2), x) == x**2 - 2
     assert minimal_polynomial(sqrt(5), x) == x**2 - 5

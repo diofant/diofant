@@ -715,54 +715,15 @@ def _minpoly_groebner(ex, x, cls):
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 
-    def simpler_inverse(ex):
-        """
-        Returns True if it is more likely that the minimal polynomial
-        algorithm works better with the inverse
-        """
-        if ex.is_Pow:
-            if (1/ex.exp).is_integer and ex.exp < 0:
-                if ex.base.is_Add:
-                    return True
-        if ex.is_Mul:
-            for p in ex.args:
-                if p.is_Add:
-                    return False
-                if p.is_Pow:
-                    if p.base.is_Add and p.exp > 0:
-                        return False
-            return True
-        return False
-
     ex = expand_multinomial(ex)
 
-    inverted = simpler_inverse(ex)
-    if inverted:
-        ex = ex**-1
+    bus = bottom_up_scan(ex)
+    F = [x - bus] + list(mapping.values())
+    G = groebner(F, list(symbols.values()) + [x], order='lex')
 
-    if ex.is_Pow and (1/ex.exp).is_Integer:
-        n = 1/ex.exp
-        result = _minimal_polynomial_sq(ex.base, n, x)
-    elif _is_sum_surds(ex):
-        result = _minimal_polynomial_sq(ex, S.One, x)
-    else:
-        result = None
-
-    if result is None:
-        bus = bottom_up_scan(ex)
-        F = [x - bus] + list(mapping.values())
-        G = groebner(F, list(symbols.values()) + [x], order='lex')
-
-        _, factors = factor_list(G[-1])
-        # by construction G[-1] has root `ex`
-        result = _choose_factor(factors, x, ex)
-
-    if inverted:
-        result = _invertx(result, x)
-        if result.coeff(x**degree(result, x)) < 0:
-            result = expand_mul(-result)
-
-    return result
+    _, factors = factor_list(G[-1])
+    # by construction G[-1] has root `ex`
+    return _choose_factor(factors, x, ex)
 
 
 minpoly = minimal_polynomial
