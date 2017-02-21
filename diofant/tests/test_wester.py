@@ -487,12 +487,11 @@ def test_H17():
     assert simplify(factor(expand(p1 * p2)) - p1*p2) == 0
 
 
-@pytest.mark.xfail
 def test_H18():
-    # Factor over complex rationals.
-    test = factor(4*x**4 + 8*x**3 + 77*x**2 + 18*x + 53)
-    good = (2*x + 3*I)*(2*x - 3*I)*(x + 1 - 4*I)(x + 1 + 4*I)
-    assert test == good
+    e = 4*x**4 + 8*x**3 + 77*x**2 + 18*x + 153
+    assert (factor(e, extension=I) ==
+            Mul(4, x - 3*I/2, x + 3*I/2, x + 1 - 4*I, x + 1 + 4*I,
+                evaluate=False))
 
 
 def test_H19():
