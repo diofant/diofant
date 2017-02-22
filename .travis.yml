@@ -4,11 +4,13 @@ cache: pip
 python:
   - 3.6
 env:
-  - SPLIT=1/5
-  - SPLIT=2/5
-  - SPLIT=3/5
-  - SPLIT=4/5
-  - SPLIT=5/5
+  - SPLIT=1/7
+  - SPLIT=2/7
+  - SPLIT=3/7
+  - SPLIT=4/7
+  - SPLIT=5/7
+  - SPLIT=6/7
+  - SPLIT=7/7
 addons:
   apt:
     packages:
@@ -22,15 +24,19 @@ addons:
 matrix:
   include:
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/5'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/7'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/5'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/7'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/5'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/7'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/5'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/7'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/5'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/7'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='6/7'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='7/7'
     - python: 3.5
       env: COVERAGE='on' EXTRA='on'
       install:
