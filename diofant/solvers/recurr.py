@@ -621,11 +621,12 @@ def rsolve_hyper(coeffs, f, n, **hints):
             if z.is_zero:
                 continue
 
-            (C, s) = rsolve_poly([ polys[i]*z**i for i in range(r + 1) ], 0, n, symbols=True)
+            sol, syms = rsolve_poly([polys[i]*z**i for i in range(r + 1)],
+                                     0, n, symbols=True)
+            sol = sol.collect(syms)
+            sol = [sol.coeff(_) for _ in syms]
 
-            if C is not None and C is not S.Zero:
-                symbols |= set(s)
-
+            for C in sol:
                 ratio = z * A * C.subs(n, n + 1) / B / C
                 ratio = simplify(ratio)
 

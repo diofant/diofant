@@ -98,8 +98,9 @@ Issues closed
 * `sympy/sympy#5786 <https://github.com/sympy/sympy/issues/5786>`_ factor(extension=[I]) gives wrong results
 * `sympy/sympy#9607 <https://github.com/sympy/sympy/issues/9607>`_ factor - incorrect result
 * `sympy/sympy#8754 <https://github.com/sympy/sympy/issues/8754>`_ Problem factoring trivial polynomial
+* `sympy/sympy#8697 <https://github.com/sympy/sympy/issues/8697>`_ rsolve fails to find solutions to some higer order recurrence relations
 
-.. last pr: #440
+.. last pr: #442
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

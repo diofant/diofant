@@ -207,8 +207,8 @@ def test_rsolve_raises():
 
 def test_sympyissue_6844():
     f = y(n + 2) - y(n + 1) + y(n)/4
-    assert rsolve(f, y(n)) == 2**(-n)*(C0 + C1*n)
-    assert rsolve(f, y(n), {y(0): 0, y(1): 1}) == 2*2**(-n)*n
+    assert rsolve(f, y(n)) == 2**(-n + 1)*C1*n + 2**(-n)*C0
+    assert rsolve(f, y(n), {y(0): 0, y(1): 1}) == 2**(1 - n)*n
 
 
 def test_diofantissue_294():
@@ -219,3 +219,20 @@ def test_diofantissue_294():
                                                     n - Rational(5, 2))
     # issue sympy/sympy#7055
     assert rsolve(-2*y(n) + y(n + 1) + n - 1, y(n)) == 2**n*C0 + n
+
+
+def test_sympyissue_8697():
+    a = Function('a')
+    eq = a(n + 3) - a(n + 2) - a(n + 1) + a(n)
+    assert rsolve(eq, a(n)) == (-1)**n*C1 + C0 + C2*n
+    eq2 = a(n + 3) + 3*a(n + 2) + 3*a(n + 1) + a(n)
+    assert (rsolve(eq2, a(n)) ==
+            (-1)**n*C0 + (-1)**(n + 1)*C1*n + (-1)**(n + 1)*C2*n**2)
+
+    assert rsolve(a(n) - 2*a(n - 3) + 5*a(n - 2) - 4*a(n - 1),
+                  a(n), {a(0): 1, a(1): 3, a(2): 8}) == 3*2**n - n - 2
+
+    # From issue thread (but not related to the problem, fixed before):
+    assert rsolve(a(n) - 2*a(n - 1) - n, a(n), {a(0): 1}) == 3*2**n - n - 2
+    assert (rsolve(a(n + 2) - 5*a(n + 1) + 6*a(n) - n, a(n)) ==
+            2**n*C0 + 3**n*C1 + n/2 + Rational(3, 4))
