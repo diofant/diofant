@@ -2,7 +2,6 @@ language: python
 sudo: false
 cache: pip
 python:
-  - 3.5
   - 3.6
 env:
   - SPLIT=1/5
