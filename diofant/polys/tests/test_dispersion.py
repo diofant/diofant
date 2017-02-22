@@ -45,6 +45,10 @@ def test_dispersion():
     assert sorted(dispersionset(gp, fp)) == []
     assert dispersion(gp, fp) == -oo
 
+    fp = poly(x**2 + 2*x - 1, x)
+    gp = poly(x**2 + 2*x + 3, x)
+    assert dispersionset(fp, gp) == set()
+
     fp = poly(x*(3*x**2+a)*(x-2536)*(x**3+a), x)
     gp = fp.as_expr().subs(x, x-345).as_poly(x)
     assert sorted(dispersionset(fp, gp)) == [345, 2881]

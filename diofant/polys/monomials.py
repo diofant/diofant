@@ -451,7 +451,7 @@ class Monomial:
 
         return self.rebuild(monomial_mul(self.exponents, exponents))
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, Monomial):
             exponents = other.exponents
         elif isinstance(other, (tuple, Tuple)):
@@ -466,7 +466,7 @@ class Monomial:
         else:
             raise ExactQuotientFailed(self, Monomial(other))
 
-    __floordiv__ = __truediv__ = __div__
+    __floordiv__ = __truediv__
 
     def __pow__(self, other):
         n = int(other)

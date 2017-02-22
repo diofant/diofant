@@ -544,10 +544,6 @@ class DenseMatrix(MatrixBase):
     def __rmul__(self, other):
         return super(DenseMatrix, self).__rmul__(_force_mutable(other))
 
-    @call_highest_priority('__div__')
-    def __div__(self, other):
-        return super(DenseMatrix, self).__div__(_force_mutable(other))
-
     @call_highest_priority('__truediv__')
     def __truediv__(self, other):
         return super(DenseMatrix, self).__truediv__(_force_mutable(other))
