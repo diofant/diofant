@@ -123,5 +123,5 @@ a theoretical foundation for implementing polynomials manipulation module.
     Journal of Symbolic Computation, Volume 16, Issue 4, 1993, Pages 355-376
     http://www.sciencedirect.com/science/article/pii/S0747717183710539
 
-.. [BenOr81] Probabilistic algorithms in finite fields.  In Proc. 22nd IEEE
-    Symp. FoundationsComputer Science (1981), pp. 394-398.
+.. [BenOr81] M. Ben-Or, Probabilistic algorithms in finite fields.  In
+    Proc. 22nd IEEE Symp. FoundationsComputer Science (1981), pp. 394-398.
