@@ -511,6 +511,8 @@ class StrPrinter(Printer):
             rv = '-0.' + rv[3:]
         elif rv.startswith('.0'):
             rv = '0.' + rv[2:]
+        elif rv.startswith('+'):
+            rv = rv[1:]
         return rv
 
     def _print_Relational(self, expr):
