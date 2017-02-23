@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (hyper, meijerg, S, Tuple, pi, I, exp, log,
+from diofant import (hyper, meijerg, S, Tuple, pi, I, exp, log, Float,
                      cos, sqrt, symbols, oo, Derivative, gamma, O, Rational)
 from diofant.series.limits import limit
 from diofant.utilities.randtest import (random_complex_number as randcplx,
@@ -344,3 +344,7 @@ def test_limits():
            O(k**6)  # issue sympy/sympy#6350
     assert limit(meijerg((), (), (1,), (0,), -x), x, 0) == \
             meijerg(((), ()), ((1,), (0,)), 0)  # issue sympy/sympy#6052
+
+
+def test_hyper_evalf():
+    assert hyper((-1, 1), (-1,), 1).n() == Float('2.0')
