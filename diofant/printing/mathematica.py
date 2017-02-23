@@ -165,6 +165,9 @@ class MCodePrinter(CodePrinter):
         return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.root),
                                             self.doprint(coeffs))
 
+    def _print_Dummy(self, expr):
+        return "Subscript[%s, %s]" % (expr.name, expr.dummy_index)
+
 
 def mathematica_code(expr, **settings):
     r"""Converts an expr to a string of the Wolfram Mathematica code
