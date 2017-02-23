@@ -125,3 +125,6 @@ a theoretical foundation for implementing polynomials manipulation module.
 
 .. [BenOr81] M. Ben-Or, Probabilistic algorithms in finite fields.  In
     Proc. 22nd IEEE Symp. FoundationsComputer Science (1981), pp. 394-398.
+
+.. [Adams94] W. Adams and P. Loustaunau, An Introduction to Groebner Bases.
+    AMS, Providence, Rhode Island., pp. 97-101, 1994.

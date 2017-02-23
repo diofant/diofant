@@ -647,6 +647,11 @@ def _minpoly_groebner(ex, x):
     >>> from diofant.abc import x
     >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=False)
     x**2 - 2*x - 1
+
+    References
+    ==========
+
+    .. [1] [Adams94]_
     """
     from .polytools import degree
     from ..core import expand_multinomial
