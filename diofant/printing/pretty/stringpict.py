@@ -359,7 +359,7 @@ class prettyForm(stringPict):
             result.append(arg)
         return prettyForm(binding=prettyForm.ADD, *stringPict.next(*result))
 
-    def __div__(self, den, slashed=False):
+    def __truediv__(self, den, slashed=False):
         """Make a pretty division; stacked or slashed.
         """
         if slashed:
@@ -377,9 +377,6 @@ class prettyForm(stringPict):
             num,
             stringPict.LINE,
             den))
-
-    def __truediv__(self, o):
-        return self.__div__(o)
 
     def __mul__(self, *others):
         """Make a pretty multiplication.

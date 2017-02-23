@@ -1344,11 +1344,9 @@ def test_Add_is_irrational():
 @pytest.mark.xfail
 def test_sympyissue_3531():
     class MightyNumeric(tuple):
-        def __rdiv__(self, other):
-            return "something"
-
         def __rtruediv__(self, other):
             return "something"
+
     assert sympify(1)/MightyNumeric((1, 2)) == "something"
 
 

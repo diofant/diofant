@@ -400,12 +400,10 @@ class Point(GeometryEntity):
         factor = sympify(factor)
         return Point([simplify(x*factor) for x in self.args])
 
-    def __div__(self, divisor):
+    def __truediv__(self, divisor):
         """Divide point's coordinates by a factor."""
         divisor = sympify(divisor)
         return Point([simplify(x/divisor) for x in self.args])
-
-    __truediv__ = __div__
 
     def __neg__(self):
         """Negate the point."""

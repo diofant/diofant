@@ -24,6 +24,7 @@ def test_construct_domain():
 
     assert construct_domain([3.14, sqrt(2)], extension=None) == (EX, [EX(3.14), EX(sqrt(2))])
     assert construct_domain([3.14, sqrt(2)], extension=True) == (EX, [EX(3.14), EX(sqrt(2))])
+    assert construct_domain([sqrt(2), 3.14], extension=True) == (EX, [EX(sqrt(2)), EX(3.14)])
 
     assert construct_domain([1, sqrt(2)], extension=None) == (EX, [EX(1), EX(sqrt(2))])
 

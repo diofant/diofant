@@ -33,12 +33,6 @@ class DummyNumber:
             return other + self.number
         return NotImplemented
 
-    def __truediv__(self, other):
-        return self.__div__(other)
-
-    def __rtruediv__(self, other):
-        return self.__rdiv__(other)
-
     def __add__(self, other):
         if isinstance(other, (int, float, DummyNumber)):
             return self.number + other
@@ -64,12 +58,12 @@ class DummyNumber:
             return self.number * other
         return NotImplemented
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         if isinstance(other, (int, float)):
             return other / self.number
         return NotImplemented
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, (int, float, DummyNumber)):
             return self.number / other
         return NotImplemented

@@ -122,3 +122,6 @@ a theoretical foundation for implementing polynomials manipulation module.
 .. [Man93] Yiu-Kwong Man, "On Computing Closed Forms for Indefinite Summations",
     Journal of Symbolic Computation, Volume 16, Issue 4, 1993, Pages 355-376
     http://www.sciencedirect.com/science/article/pii/S0747717183710539
+
+.. [BenOr81] Probabilistic algorithms in finite fields.  In Proc. 22nd IEEE
+    Symp. FoundationsComputer Science (1981), pp. 394-398.

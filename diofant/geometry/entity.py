@@ -267,9 +267,6 @@ class GeometryEntity(Basic):
     def __rmul__(self, a):
         return a.__mul__(self)
 
-    def __rdiv__(self, a):
-        return a.__div__(self)
-
     def __str__(self):
         """String representation of a GeometryEntity."""
         from ..printing import sstr

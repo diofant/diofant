@@ -451,6 +451,9 @@ def test_gf_irreducible_p():
     assert gf_irred_p_rabin(ZZ.map([7, 3]), 11, ZZ) is True
     assert gf_irred_p_rabin(ZZ.map([7, 3, 1]), 11, ZZ) is False
 
+    assert gf_irred_p_ben_or(ZZ.map([2, 3, 4, 5, 6]), 13, ZZ) is False
+    assert gf_irred_p_ben_or(ZZ.map([2, 3, 4, 5, 8]), 13, ZZ) is True
+
     config.setup('GF_IRRED_METHOD', 'ben-or')
 
     assert gf_irreducible_p(ZZ.map([7]), 11, ZZ) is True

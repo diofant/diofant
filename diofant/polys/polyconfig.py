@@ -6,6 +6,7 @@ _default_config = {
     'USE_COLLINS_RESULTANT':      False,
     'USE_SIMPLIFY_GCD':           True,
     'USE_HEU_GCD':                True,
+    'HEU_GCD_MAX':                6,
 
     'USE_IRREDUCIBLE_IN_FACTOR':  False,
     'USE_CYCLOTOMIC_FACTOR':      True,

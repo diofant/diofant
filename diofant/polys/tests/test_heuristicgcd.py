@@ -1,6 +1,10 @@
+import pytest
+
 from diofant.polys.rings import ring
 from diofant.polys.domains import ZZ
 from diofant.polys.heuristicgcd import heugcd
+from diofant.polys.polyerrors import HeuristicGCDFailed
+from diofant.polys.polyconfig import using
 
 __all__ = ()
 
@@ -62,6 +66,9 @@ def test_heugcd_univariate_integers():
     cfg = 1
 
     assert heugcd(f, g) == (h, cff, cfg)
+
+    with using(heu_gcd_max=0):
+        pytest.raises(HeuristicGCDFailed, lambda: heugcd(f, g))
 
 
 def test_heugcd_multivariate_integers():

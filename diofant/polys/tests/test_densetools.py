@@ -100,6 +100,9 @@ def test_dmp_integrate_in():
         dmp_swap(
             dmp_integrate(dmp_swap(f, 0, 2, 3, QQ), 3, 3, QQ), 0, 2, 3, QQ)
 
+    pytest.raises(IndexError, lambda: dmp_integrate_in(f, 2, -1, 3, QQ))
+    pytest.raises(IndexError, lambda: dmp_integrate_in(f, 2, 1, 0, QQ))
+
 
 def test_dup_diff():
     assert dup_diff([], 1, ZZ) == []
@@ -171,6 +174,9 @@ def test_dmp_diff_in():
     assert dmp_diff_in(f_6, 3, 2, 3, ZZ) == \
         dmp_swap(dmp_diff(dmp_swap(f_6, 0, 2, 3, ZZ), 3, 3, ZZ), 0, 2, 3, ZZ)
 
+    pytest.raises(IndexError, lambda: dmp_diff_in(f_6, 2, -1, 3, ZZ))
+    pytest.raises(IndexError, lambda: dmp_diff_in(f_6, 2, 1, 0, ZZ))
+
 
 def test_dup_eval():
     assert dup_eval([], 7, ZZ) == 0
@@ -209,6 +215,9 @@ def test_dmp_eval_in():
     assert dmp_eval_in(f, -2, 2, 2, ZZ) == \
         [[45], [], [], [-9, -1, 0, -44]]
 
+    pytest.raises(IndexError, lambda: dmp_eval_in(f, -2, -1, 2, ZZ))
+    pytest.raises(IndexError, lambda: dmp_eval_in(f, -2, 2, 0, ZZ))
+
 
 def test_dmp_eval_tail():
     assert dmp_eval_tail([[]], [1], 1, ZZ) == []
@@ -239,6 +248,8 @@ def test_dmp_eval_tail():
 def test_dmp_diff_eval_in():
     assert dmp_diff_eval_in(f_6, 2, 7, 1, 3, ZZ) == \
         dmp_eval(dmp_diff(dmp_swap(f_6, 0, 1, 3, ZZ), 2, 3, ZZ), 7, 3, ZZ)
+
+    pytest.raises(IndexError, lambda: dmp_diff_eval_in(f_6, 2, 7, 4, 3, ZZ))
 
 
 def test_dup_revert():

@@ -61,11 +61,11 @@ class GMPYRationalField(RationalField):
         return GMPYRational(*K0.to_rational(a))
 
     def exquo(self, a, b):
-        """Exact quotient of `a` and `b`, implies `__div__`.  """
+        """Exact quotient of `a` and `b`, implies `__truediv__`.  """
         return GMPYRational(gmpy_qdiv(a, b))
 
     def quo(self, a, b):
-        """Quotient of `a` and `b`, implies `__div__`. """
+        """Quotient of `a` and `b`, implies `__truediv__`. """
         return GMPYRational(gmpy_qdiv(a, b))
 
     def rem(self, a, b):
@@ -73,7 +73,7 @@ class GMPYRationalField(RationalField):
         return self.zero
 
     def div(self, a, b):
-        """Division of `a` and `b`, implies `__div__`. """
+        """Division of `a` and `b`, implies `__truediv__`. """
         return GMPYRational(gmpy_qdiv(a, b)), self.zero
 
     def numer(self, a):

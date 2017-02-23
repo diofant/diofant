@@ -43,16 +43,13 @@ class Higher(Expr):
     def __rpow__(self, other):
         return self.result
 
-    @call_highest_priority('__rdiv__')
-    def __div__(self, other):
+    @call_highest_priority('__rtruediv__')
+    def __truediv__(self, other):
         return self.result
 
-    @call_highest_priority('__div__')
-    def __rdiv__(self, other):
+    @call_highest_priority('__truediv__')
+    def __rtruediv__(self, other):
         return self.result
-
-    __truediv__ = __div__
-    __rtruediv__ = __rdiv__
 
 
 class Lower(Higher):

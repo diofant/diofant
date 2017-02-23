@@ -1250,8 +1250,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def __rtruediv__(self, other):
         return NotImplemented
 
-    __floordiv__ = __div__ = __truediv__
-    __rfloordiv__ = __rdiv__ = __rtruediv__
+    __floordiv__ = __truediv__
+    __rfloordiv__ = __rtruediv__
 
     # TODO: use // (__floordiv__) for exquo()?
 

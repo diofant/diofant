@@ -107,7 +107,7 @@ def dmp_integrate_in(f, m, j, u, K):
     x*y + y**2
     """
     if j < 0 or j > u:
-        raise IndexError("0 <= j <= u expected, got %s" % (u, j))
+        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
     return _rec_integrate_in(f, m, u, 0, j, K)
 
@@ -947,8 +947,7 @@ def _dup_right_decompose(f, s, K):
             if not n + j - i in f:
                 continue
 
-            if not s - j in g:
-                continue
+            assert s - j in g
 
             fc, gc = f[n + j - i], g[s - j]
             coeff += (i - r*j)*fc*gc
@@ -983,12 +982,10 @@ def _dup_decompose(f, K):
             continue
 
         h = _dup_right_decompose(f, s, K)
+        g = _dup_left_decompose(f, h, K)
 
-        if h is not None:
-            g = _dup_left_decompose(f, h, K)
-
-            if g is not None:
-                return g, h
+        if g is not None:
+            return g, h
 
     return
 

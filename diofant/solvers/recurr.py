@@ -111,7 +111,6 @@ def rsolve_poly(coeffs, f, n, **hints):
            14 (1992), 243-264.
 
     .. [3] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996.
-
     """
     f = sympify(f)
 
@@ -703,7 +702,6 @@ def rsolve(f, y, init=None):
     ========
 
     rsolve_poly, rsolve_ratio, rsolve_hyper
-
     """
     if isinstance(f, Equality):
         f = f.lhs - f.rhs
@@ -775,11 +773,9 @@ def rsolve(f, y, init=None):
                 if k.is_Function and k.func == y.func:
                     i = int(k.args[0])
                 else:
-                    raise ValueError("Integer or term '%s(Integer)' expected, got '%s'" % (y.func, k))
-            try:
-                eq = solution.limit(n, i) - v
-            except NotImplementedError:
-                eq = solution.subs(n, i) - v
+                    raise ValueError("Integer or term '%s(Integer)' "
+                                     "expected, got '%s'" % (y.func, k))
+            eq = solution.limit(n, i) - v
             equations.append(eq)
 
         result = solve(equations, *symbols)

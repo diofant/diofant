@@ -166,17 +166,14 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return Pow(other, self)
 
     @_sympifyit('other', NotImplemented)
-    @call_highest_priority('__rdiv__')
-    def __div__(self, other):
+    @call_highest_priority('__rtruediv__')
+    def __truediv__(self, other):
         return Mul(self, Pow(other, S.NegativeOne))
 
     @_sympifyit('other', NotImplemented)
-    @call_highest_priority('__div__')
-    def __rdiv__(self, other):
+    @call_highest_priority('__truediv__')
+    def __rtruediv__(self, other):
         return Mul(other, Pow(self, S.NegativeOne))
-
-    __truediv__ = __div__
-    __rtruediv__ = __rdiv__
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rmod__')

@@ -834,7 +834,7 @@ class DMP(CantSympify):
                         pass
                 return NotImplemented
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, DMP):
             return self.exquo(other)
         else:
@@ -850,7 +850,7 @@ class DMP(CantSympify):
                         pass
                 return NotImplemented
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         if isinstance(other, DMP):
             return other.exquo(self)
         elif self.ring is not None:
@@ -859,9 +859,6 @@ class DMP(CantSympify):
             except (CoercionFailed, NotImplementedError):
                 pass
         return NotImplemented
-
-    __truediv__ = __div__
-    __rtruediv__ = __rdiv__
 
     def __rmul__(self, other):
         return self.__mul__(other)
@@ -1293,7 +1290,7 @@ class DMF(CantSympify):
     def __pow__(self, n):
         return self.pow(n)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, (DMP, DMF)):
             return self.quo(other)
 
@@ -1309,15 +1306,12 @@ class DMF(CantSympify):
                     pass
             return NotImplemented
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         r = self.invert(check=False)*other
         if self.ring and r not in self.ring:
             from .polyerrors import ExactQuotientFailed
             raise ExactQuotientFailed(other, self, self.ring)
         return r
-
-    __truediv__ = __div__
-    __rtruediv__ = __rdiv__
 
     def __eq__(self, other):
         try:
@@ -1588,7 +1582,7 @@ class ANP(CantSympify):
     def __mod__(self, other):
         return self.rem(other)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, ANP):
             return self.quo(other)
         else:
@@ -1596,8 +1590,6 @@ class ANP(CantSympify):
                 return self.quo(self.per(other))
             except (CoercionFailed, TypeError):
                 return NotImplemented
-
-    __truediv__ = __div__
 
     def __eq__(self, other):
         try:

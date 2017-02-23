@@ -36,11 +36,9 @@ class BasisDependent(Expr):
         return self._mul_func(Integer(-1), self)
 
     @_sympifyit('other', NotImplemented)
-    @call_highest_priority('__rdiv__')
-    def __div__(self, other):
+    @call_highest_priority('__rtruediv__')
+    def __truediv__(self, other):
         return self._div_helper(other)
-
-    __truediv__ = __div__
 
     def evalf(self, prec=None, **options):
         """

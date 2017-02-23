@@ -1,12 +1,14 @@
 """Tests for Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences. """
 
+import pytest
+
 from diofant.polys.rings import ring
 from diofant.polys.domains import ZZ, QQ, RR
-from diofant.polys.specialpolys import (
-    f_polys,
-    dmp_fateman_poly_F_1,
-    dmp_fateman_poly_F_2,
-    dmp_fateman_poly_F_3)
+from diofant.polys.specialpolys import (f_polys, dmp_fateman_poly_F_1,
+                                        dmp_fateman_poly_F_2,
+                                        dmp_fateman_poly_F_3)
+from diofant.polys.polyerrors import HeuristicGCDFailed
+from diofant.polys.polyconfig import using
 
 __all__ = ()
 
@@ -413,6 +415,9 @@ def test_dup_gcd():
 
     assert R.dup_zz_heu_gcd(f, g) == (h, cff, cfg)
 
+    with using(heu_gcd_max=0):
+        pytest.raises(HeuristicGCDFailed, lambda: R.dup_zz_heu_gcd(f, g))
+
 
 def test_dmp_gcd():
     R,  x, y = ring("x,y", ZZ)
@@ -464,6 +469,9 @@ def test_dmp_gcd():
 
     f, g = x + 1, 2*x**2 + 4*x + 2
     assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (x + 1, 1, 2*x + 2)
+
+    with using(heu_gcd_max=0):
+        pytest.raises(HeuristicGCDFailed, lambda: R.dmp_zz_heu_gcd(f, g))
 
     R, x, y, z, u = ring("x,y,z,u", ZZ)
 

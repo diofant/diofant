@@ -528,7 +528,6 @@ def test_checksysodesol():
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
 
-@pytest.mark.slow
 def test_nonlinear_3eq_order1():
     x, y, z = symbols('x, y, z', cls=Function)
     t = Symbol('t')
@@ -2568,7 +2567,6 @@ def test_heuristic2():
     assert checkinfsol(eq, i)[0]
 
 
-@pytest.mark.slow
 def test_heuristic3():
     y = Symbol('y')
     xi = Function('xi')
