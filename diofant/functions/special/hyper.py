@@ -307,6 +307,14 @@ class hyper(TupleParametersBase):
         from ...simplify import hyperexpand
         return hyperexpand(self)
 
+    def _eval_evalf(self, prec):
+        z = self.argument._to_mpmath(prec)
+        ap = [a._to_mpmath(prec) for a in self.ap]
+        bp = [b._to_mpmath(prec) for b in self.bq]
+        with mpmath.workprec(prec):
+            res = mpmath.hyper(ap, bp, z, eliminate=False)
+        return Expr._from_mpmath(res, prec)
+
 
 class meijerg(TupleParametersBase):
     r"""

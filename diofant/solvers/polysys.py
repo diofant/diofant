@@ -231,22 +231,6 @@ def solve_generic(polys, opt):
     >>> solve_generic([a, b], NewOption)
     [{x: 0, y: 0}, {x: 1/4, y: -1/16}]
     """
-    def _is_univariate(f):
-        """Returns True if 'f' is univariate in its last variable. """
-        for monom in f.monoms():
-            if any(m > 0 for m in monom[:-1]):
-                return False
-
-        return True
-
-    def _subs_root(f, gen, zero):
-        """Replace generator with a root so that the result is nice. """
-        p = f.as_expr({gen: zero})
-
-        if f.degree(gen) >= 2:
-            p = p.expand(deep=False)
-
-        return p
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems. """
@@ -256,14 +240,11 @@ def solve_generic(polys, opt):
         if len(basis) == 1 and basis[0].is_ground:
             return []
 
-        univariate = list(filter(_is_univariate, basis))
-
-        if len(univariate) == 1:
-            f = univariate.pop()
-        else:
+        if not basis.is_zero_dimensional:
             raise NotImplementedError("only zero-dimensional systems "
                                       "supported (finite number of solutions)")
 
+        f = basis[-1]
         gens = f.gens
         gen = gens[-1]
 
@@ -279,9 +260,9 @@ def solve_generic(polys, opt):
             new_gens = gens[:-1]
 
             for b in basis[:-1]:
-                eq = _subs_root(b, gen, zero)
+                eq = b.eval(gen, zero)
 
-                if eq is not S.Zero:
+                if not eq.is_zero:
                     new_system.append(eq)
 
             for solution in _solve_reduced_system(new_system, new_gens):
