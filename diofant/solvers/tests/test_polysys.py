@@ -109,6 +109,16 @@ def test_solve_biquadratic():
     assert len(result) == 2 and all(len(r) == 2 for r in result)
     assert all(len(r.find(query)) == 1 for r in flatten(result))
 
+    eqs = [y**2 - 4 + x, y*2 + 3*x - 7]
+    assert solve_poly_system(eqs, x, y) == [{x: Rational(11, 9),
+                                             y: Rational(5, 3)},
+                                            {x: 3, y: -1}]
+    eqs = [y + x**2 - 3, -y + x - 4]
+    assert solve_poly_system(eqs, x, y) == [{x: -S.Half + sqrt(29)/2,
+                                             y: Rational(-9, 2) + sqrt(29)/2},
+                                            {x: -sqrt(29)/2 - S.Half,
+                                             y: Rational(-9, 2) - sqrt(29)/2}]
+
 
 def test_solve_sympyissue_6785():
     roots = solve_poly_system([((x - 5)**2/250000 +

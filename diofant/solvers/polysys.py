@@ -112,69 +112,7 @@ def solve_poly_system(seq, *gens, **args):
     except PolificationFailed as exc:
         raise ComputationFailed('solve_poly_system', len(seq), exc)
 
-    if len(polys) == len(opt.gens) == 2:
-        f, g = polys
-
-        a, b = f.degree_list()
-        c, d = g.degree_list()
-
-        if a <= 2 and b <= 2 and c <= 2 and d <= 2:
-            try:
-                return solve_biquadratic(f, g, opt)
-            except SolveFailed:
-                pass
-
     return solve_generic(polys, opt)
-
-
-def solve_biquadratic(f, g, opt):
-    """
-    Solve a system of two bivariate quadratic polynomial equations.
-
-    Examples
-    ========
-
-    >>> from diofant.polys import Options, Poly
-    >>> from diofant.abc import x, y
-
-    >>> NewOption = Options((x, y), {'domain': 'ZZ'})
-
-    >>> a = Poly(y**2 - 4 + x, y, x, domain='ZZ')
-    >>> b = Poly(y*2 + 3*x - 7, y, x, domain='ZZ')
-    >>> solve_biquadratic(a, b, NewOption)
-    [{x: 1/3, y: 3}, {x: 41/27, y: 11/9}]
-
-    >>> a = Poly(y + x**2 - 3, y, x, domain='ZZ')
-    >>> b = Poly(-y + x - 4, y, x, domain='ZZ')
-    >>> solve_biquadratic(a, b, NewOption)
-    [{x: -sqrt(29)/2 + 7/2, y: -sqrt(29)/2 - 1/2},
-     {x: sqrt(29)/2 + 7/2, y: -1/2 + sqrt(29)/2}]
-    """
-    G = groebner([f, g])
-
-    if len(G) == 1 and G[0].is_ground:
-        return []
-
-    if len(G) != 2:
-        raise SolveFailed
-
-    p, q = G
-    x, y = opt.gens
-
-    p = Poly(p, x, expand=False)
-    q = q.ltrim(-1)
-
-    p_roots = [rcollect(expr, y) for expr in roots(p).keys()]
-    q_roots = list(roots(q).keys())
-
-    solutions = []
-
-    for q_root in q_roots:
-        for p_root in p_roots:
-            solution = {x: p_root.subs(y, q_root), y: q_root}
-            solutions.append(solution)
-
-    return sorted(solutions, key=default_sort_key)
 
 
 def solve_generic(polys, opt):

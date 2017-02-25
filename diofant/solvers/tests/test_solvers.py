@@ -199,8 +199,7 @@ def test_solve_polynomial2():
     assert solve([x**2 - 3, y - 1]) == [{x: -sqrt(3), y: 1},
                                         {x: sqrt(3), y: 1}]
     assert solve(x**4 - 1, x) == [-1, 1, -I, I]
-    assert solve([x**2 + y - 2, y**2 - 4], x, y) == [(-2, -2), (0, 2),
-                                                     (0, 2), (2, -2)]
+    assert solve([x**2 + y - 2, y**2 - 4], x, y) == [(-2, -2), (0, 2), (2, -2)]
 
     assert solve(z**2*x**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
     assert solve(z**2*x - z**2*y**2) == [{x: y**2}, {z: 0}]
@@ -934,10 +933,10 @@ def test_sympyissue_5901():
                  h(a), g(a)) == [{g(a): -sqrt(h(a)**2 + G/f(a)**2)},
                                  {g(a): sqrt(h(a)**2 + G/f(a)**2)}]
     eqs = [f(x)**2 + g(x) - 2*f(x).diff(x), g(x)**2 - 4]
-    assert solve(eqs, f(x), g(x)) == [{f(x): -sqrt(2*D - 2), g(x): 2},
-                                      {f(x): sqrt(2*D - 2), g(x): 2},
-                                      {f(x): -sqrt(2*D + 2), g(x): -2},
-                                      {f(x): sqrt(2*D + 2), g(x): -2}]
+    assert solve(eqs, f(x), g(x)) == [{f(x): -sqrt(2)*sqrt(D - 1), g(x): 2},
+                                      {f(x): sqrt(2)*sqrt(D - 1), g(x): 2},
+                                      {f(x): -sqrt(2)*sqrt(D + 1), g(x): -2},
+                                      {f(x): sqrt(2)*sqrt(D + 1), g(x): -2}]
 
     # the underlying problem was in solve_linear that was not masking off
     # anything but a Mul or Add; it now raises an error if it gets anything
