@@ -20,6 +20,7 @@ from diofant.functions import (
     lowergamma, meijerg, sin, sqrt, subfactorial, tan, uppergamma,
     elliptic_k, elliptic_f, elliptic_e, elliptic_pi, DiracDelta)
 from diofant.printing.pretty import pretty as xpretty, pprint
+from diofant.printing.pretty.pretty_symbology import xobj, U
 from diofant.core.trace import Tr
 
 __all__ = ()
@@ -319,6 +320,11 @@ def test_upretty_modifiers():
     assert upretty( Symbol('alphadothat_nVECDOT__tTildePrime') ) == 'α̇̂_n⃗̇__t̃′'
     assert upretty( Symbol('x_dot') ) == 'x_dot'
     assert upretty( Symbol('x__dot') ) == 'x__dot'
+
+
+def test_symbology():
+    pytest.raises(ValueError, lambda: xobj('', 0))
+    assert U('NO SUCH SYMBOL') is None
 
 
 def test_pretty_atom():
