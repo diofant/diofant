@@ -5,7 +5,7 @@ from ..external import import_module
 from .printer import Printer
 
 theano = import_module('theano')
-if theano:
+if theano:  # pragma: no branch
     ts = theano.scalar
     tt = theano.tensor
     from theano.sandbox import linalg as tlinalg
@@ -105,9 +105,6 @@ class TheanoPrinter(Printer):
         children = [self._print(arg, **kwargs) for arg in expr.args]
         return op(*children)
 
-    def _print_Number(self, n, **kwargs):
-        return eval(str(n))
-
     def _print_MatrixSymbol(self, X, dtypes={}, **kwargs):
         dtype = dtypes.get(X, 'floatX')
         key = (X.name, dtype, type(X))
@@ -119,14 +116,8 @@ class TheanoPrinter(Printer):
             return value
 
     def _print_DenseMatrix(self, X, **kwargs):
-        try:
-            tt.stacklists
-        except AttributeError:
-            raise NotImplementedError(
-                "Matrix translation not yet supported in this version of Theano")
-        else:
-            return tt.stacklists([[self._print(arg, **kwargs) for arg in L]
-                                         for L in X.tolist()])
+        return tt.stacklists([[self._print(arg, **kwargs) for arg in L]
+                              for L in X.tolist()])
     _print_ImmutableMatrix = _print_DenseMatrix
 
     def _print_MatMul(self, expr, **kwargs):
@@ -153,9 +144,6 @@ class TheanoPrinter(Printer):
         return slice(*[self._print(i, **kwargs)
                         if isinstance(i, Basic) else i
                         for i in (expr.start, expr.stop, expr.step)])
-
-    def _print_Pi(self, expr, **kwargs):
-        return 3.141592653589793
 
     def _print_Exp1(self, expr, **kwargs):
         return 2.718281828459045
@@ -200,7 +188,7 @@ global_cache = {}
 
 
 def theano_code(expr, cache=global_cache, **kwargs):
-    if not theano:
+    if not theano:  # pragma: no cover
         raise ImportError("theano is required for theano_code")
     return TheanoPrinter(cache=cache, settings={}).doprint(expr, **kwargs)
 
@@ -224,7 +212,7 @@ def dim_handling(inputs, dim=None, dims={}, broadcastables={}, keys=(),
 
 def theano_function(inputs, outputs, dtypes={}, cache=None, **kwargs):
     """ Create Theano function from Diofant expressions """
-    if not theano:
+    if not theano:  # pragma: no cover
         raise ImportError("theano is required for theano_function")
     cache = {} if cache is None else cache
     broadcastables = dim_handling(inputs, **kwargs)
