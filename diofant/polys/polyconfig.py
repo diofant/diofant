@@ -1,6 +1,9 @@
 """Configuration utilities for polynomial manipulation algorithms. """
 
-from contextlib import contextmanager
+import ast
+import contextlib
+import os
+
 
 _default_config = {
     'USE_COLLINS_RESULTANT':      False,
@@ -25,7 +28,7 @@ _default_config = {
 _current_config = {}
 
 
-@contextmanager
+@contextlib.contextmanager
 def using(**kwargs):
     for k, v in kwargs.items():
         setup(k, v)
@@ -53,18 +56,18 @@ def query(key):
 
 def configure():
     """Initialized configuration of polys module. """
-    from os import getenv
-
     for key, default in _default_config.items():
-        value = getenv('DIOFANT_' + key)
+        _current_config[key] = default
 
+        value = os.getenv('DIOFANT_' + key)
         if value is not None:
             try:
-                _current_config[key] = eval(value)
-            except NameError:
-                _current_config[key] = value
-        else:
-            _current_config[key] = default
+                value = ast.literal_eval(value)
+            except (SyntaxError, ValueError):
+                pass
+            else:
+                if type(value) is type(default):
+                    _current_config[key] = value
 
 
 configure()
