@@ -340,8 +340,7 @@ class factorial2(CombinatorialFunction):
                     return n * (S.NegativeOne) ** ((1 - n) / 2) / factorial2(-n)
                 elif n.is_even:
                     raise ValueError("argument must be nonnegative or odd")
-
-            if n.is_nonnegative:
+            else:
                 if n.is_even:
                     k = n / 2
                     return 2 ** k * factorial(k)
@@ -628,45 +627,42 @@ class binomial(CombinatorialFunction):
 
     @classmethod
     def _eval(cls, n, k):
-        # n.is_Number and k.is_Integer and k != 1 and n != k
-        if k.is_Integer:
-            if n.is_Integer and n >= 0:
-                n, k = int(n), int(k)
+        assert n.is_Number and k.is_Integer and k != 1 and n != k
+        if n.is_Integer and n >= 0:
+            n, k = int(n), int(k)
 
-                if k > n:
-                    return S.Zero
-                elif k > n // 2:
-                    k = n - k
+            if k > n // 2:
+                k = n - k
 
-                M, result = int(_sqrt(n)), 1
+            M, result = int(_sqrt(n)), 1
 
-                for prime in sieve.primerange(2, n + 1):
-                    if prime > n - k:
+            for prime in sieve.primerange(2, n + 1):
+                if prime > n - k:
+                    result *= prime
+                elif prime > n // 2:
+                    continue
+                elif prime > M:
+                    if n % prime < k % prime:
                         result *= prime
-                    elif prime > n // 2:
-                        continue
-                    elif prime > M:
-                        if n % prime < k % prime:
-                            result *= prime
-                    else:
-                        N, K = n, k
-                        exp = a = 0
+                else:
+                    N, K = n, k
+                    exp = a = 0
 
-                        while N > 0:
-                            a = int((N % prime) < (K % prime + a))
-                            N, K = N // prime, K // prime
-                            exp = a + exp
+                    while N > 0:
+                        a = int((N % prime) < (K % prime + a))
+                        N, K = N // prime, K // prime
+                        exp = a + exp
 
-                        if exp > 0:
-                            result *= prime**exp
-                return Integer(result)
-            else:
-                d = result = n - k + 1
-                for i in range(2, k + 1):
-                    d += 1
-                    result *= d
-                    result /= i
-                return result
+                    if exp > 0:
+                        result *= prime**exp
+            return Integer(result)
+        else:
+            d = result = n - k + 1
+            for i in range(2, k + 1):
+                d += 1
+                result *= d
+                result /= i
+            return result
 
     @classmethod
     def eval(cls, n, k):
@@ -686,13 +682,11 @@ class binomial(CombinatorialFunction):
 
     def _eval_expand_func(self, **hints):
         """
-        Function to expand binomial(n,k) when m is positive integer
-        Also,
-        n is self.args[0] and k is self.args[1] while using binomial(n, k)
+        Function to expand binomial(n,k) when n is positive integer
         """
         n = self.args[0]
         if n.is_Number:
-            return binomial(*self.args)
+            return self.func(*self.args)
 
         k = self.args[1]
         if k.is_Add and n in k.args:
@@ -701,17 +695,15 @@ class binomial(CombinatorialFunction):
         if k.is_Integer:
             if k == S.Zero:
                 return S.One
-            elif k < 0:
-                return S.Zero
-            else:
+            elif k > 0:
                 n = self.args[0]
                 result = n - k + 1
                 for i in range(2, k + 1):
                     result *= n - k + i
                     result /= i
                 return result
-        else:
-            return binomial(*self.args)
+
+        return self.func(*self.args)
 
     def _eval_rewrite_as_factorial(self, n, k):
         return factorial(n)/(factorial(k)*factorial(n - k))
