@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (diff, Integral, Limit, sin, Symbol, Integer, Rational, cos,
-                     tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh,
-                     atanh, E, I, oo, pi, GoldenRatio, EulerGamma, Sum,
-                     Eq, Ne, Ge, Lt, Float)
+from diofant import (diff, Integral, Limit, sin, Symbol, Integer, Rational,
+                     cos, tan, asin, acos, atan, sinh, cosh, tanh, asinh,
+                     acosh, atanh, E, I, oo, pi, GoldenRatio, EulerGamma,
+                     Sum, Eq, Ne, Ge, Lt, Float, Matrix, Basic)
 from diofant.printing.mathml import mathml, MathMLPrinter
 
 __all__ = ()
@@ -33,6 +33,13 @@ def test_mathml_core():
         assert nodes[1].childNodes[0].nodeValue == 'x'
         assert nodes[2].childNodes[0].nodeValue == '1'
 
+    mml_1 = mp._print(x - y)
+    assert mml_1.nodeName == 'apply'
+    nodes = mml_1.childNodes
+    assert nodes[0].nodeName == 'minus'
+    assert nodes[1].childNodes[0].nodeValue == 'x'
+    assert nodes[2].childNodes[0].nodeValue == 'y'
+
     mml_2 = mp._print(x**2)
     assert mml_2.nodeName == 'apply'
     nodes = mml_2.childNodes
@@ -46,12 +53,35 @@ def test_mathml_core():
     assert nodes[1].childNodes[0].nodeValue == '2'
     assert nodes[2].childNodes[0].nodeValue == 'x'
 
+    mml_3 = mp._print(-2*x)
+    assert mml_3.nodeName == 'apply'
+    nodes = mml_3.childNodes
+    assert nodes[0].nodeName == 'minus'
+    assert nodes[1].nodeName == 'apply'
+    assert nodes[1].childNodes[1].childNodes[0].nodeValue == '2'
+    assert nodes[1].childNodes[2].childNodes[0].nodeValue == 'x'
+
     mml = mp._print(Float(1.0, 2)*x)
     assert mml.nodeName == 'apply'
     nodes = mml.childNodes
     assert nodes[0].nodeName == 'times'
     assert nodes[1].childNodes[0].nodeValue == '1.0'
     assert nodes[2].childNodes[0].nodeValue == 'x'
+
+
+def test_matrix():
+    m = Matrix([[1, 2], [3, 4]])
+    mml = mp._print(m)
+    assert mml.nodeName == 'matrix'
+    assert mml.childNodes[0].nodeName == 'matrixrow'
+    assert mml.childNodes[0].childNodes[0].childNodes[0].nodeValue == '1'
+
+
+def test_basic():
+    b = Basic(x, y)
+    mml = mp._print(b)
+    assert mml.nodeName == 'basic'
+    assert mml.childNodes[0].childNodes[0].nodeValue == 'x'
 
 
 def test_mathml_functions():
@@ -87,12 +117,28 @@ def test_mathml_limits():
 
 def test_mathml_integrals():
     integrand = x
+    mml_intd = mp._print(integrand).toxml()
     mml_1 = mp._print(Integral(integrand, (x, 0, 1)))
     assert mml_1.childNodes[0].nodeName == 'int'
     assert mml_1.childNodes[1].nodeName == 'bvar'
     assert mml_1.childNodes[2].nodeName == 'lowlimit'
     assert mml_1.childNodes[3].nodeName == 'uplimit'
-    assert mml_1.childNodes[4].toxml() == mp._print(integrand).toxml()
+    assert mml_1.childNodes[4].toxml() == mml_intd
+    mml_1 = mp._print(Integral(integrand, (x, 1)))
+    assert mml_1.childNodes[0].nodeName == 'int'
+    assert mml_1.childNodes[1].nodeName == 'bvar'
+    assert mml_1.childNodes[2].nodeName == 'uplimit'
+    assert mml_1.childNodes[3].toxml() == mml_intd
+    mml_1 = mp._print(Integral(integrand, (x,)))
+    assert mml_1.childNodes[0].nodeName == 'int'
+    assert mml_1.childNodes[1].nodeName == 'bvar'
+    assert mml_1.childNodes[2].toxml() == mml_intd
+    mml_1 = mp._print(Integral(integrand, (x,), (y,)))
+    assert mml_1.childNodes[0].nodeName == 'int'
+    assert mml_1.childNodes[1].nodeName == 'bvar'
+    assert mml_1.childNodes[2].childNodes[0].nodeName == 'int'
+    assert mml_1.childNodes[2].childNodes[1].nodeName == 'bvar'
+    assert mml_1.childNodes[2].childNodes[2].toxml() == mml_intd
 
 
 def test_mathml_sums():
@@ -125,6 +171,16 @@ def test_mathml_add():
     assert mml.childNodes[1].childNodes[1].nodeName == 'apply'
 
 
+def test_mathml_pow():
+    mml = mp._print(x**Rational(1, 3))
+    assert mml.childNodes[0].nodeName == 'root'
+    assert mml.childNodes[1].nodeName == 'degree'
+    assert mml.childNodes[1].childNodes[0].nodeName == 'ci'
+    mml = mp._print(x**Rational(1, 2))
+    assert mml.childNodes[0].nodeName == 'root'
+    assert mml.childNodes[1].nodeName == 'ci'
+
+
 def test_mathml_Rational():
     mml_1 = mp._print(Rational(1, 1))
     """should just return a number"""
@@ -143,6 +199,11 @@ def test_mathml_constants():
 
     mml = mp._print(oo)
     assert mml.nodeName == 'infinity'
+
+    mml = mp._print(-oo)
+    assert mml.nodeName == 'apply'
+    assert mml.childNodes[0].nodeName == 'minus'
+    assert mml.childNodes[1].nodeName == 'infinity'
 
     mml = mp._print(pi)
     assert mml.nodeName == 'pi'
@@ -417,16 +478,3 @@ def test_mathml_order():
 
 def test_settings():
     pytest.raises(TypeError, lambda: mathml(Symbol("x"), method="garbage"))
-
-
-def test_toprettyxml_hooking():
-    # test that the patch doesn't influence the behavior of the standard library
-    import xml.dom.minidom
-    doc = xml.dom.minidom.parseString(
-        "<apply><plus/><ci>x</ci><cn>1</cn></apply>")
-    prettyxml_old = doc.toprettyxml()
-
-    mp.apply_patch()
-    mp.restore_patch()
-
-    assert prettyxml_old == doc.toprettyxml()

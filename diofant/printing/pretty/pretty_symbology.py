@@ -2,33 +2,26 @@
 
 import sys
 import warnings
+import unicodedata
 
 from ..conventions import split_super_sub
 from ...core.alphabets import greeks
 
 unicode_warnings = ''
 
+
 # first, setup unicodedate environment
-try:
-    import unicodedata
+def U(name):
+    """unicode character by name or None if not found"""
+    try:
+        u = unicodedata.lookup(name)
+    except KeyError:
+        u = None
 
-    def U(name):
-        """unicode character by name or None if not found"""
-        try:
-            u = unicodedata.lookup(name)
-        except KeyError:
-            u = None
+        global unicode_warnings
+        unicode_warnings += 'No \'%s\' in unicodedata\n' % name
 
-            global unicode_warnings
-            unicode_warnings += 'No \'%s\' in unicodedata\n' % name
-
-        return u
-
-except ImportError:
-    unicode_warnings += 'No unicodedata available\n'
-
-    def U(name):
-        return
+    return u
 
 
 # prefix conventions when constructing tables
@@ -52,15 +45,6 @@ def pretty_use_unicode(flag=None):
     if flag is None:
         return _use_unicode
 
-    # we know that some letters are not supported in Python 2.X so
-    # ignore those warnings. Remove this when 2.X support is dropped.
-    if unicode_warnings:
-        known = ['LATIN SUBSCRIPT SMALL LETTER %s' % i for i in 'HKLMNPST']
-        unicode_warnings = '\n'.join([
-            l for l in unicode_warnings.splitlines() if not any(
-            i in l for i in known)])
-    # ------------ end of 2.X warning filtering
-
     if flag and unicode_warnings:
         # print warnings (if any) on first unicode usage
         warnings.warn(unicode_warnings)
@@ -74,32 +58,7 @@ def pretty_use_unicode(flag=None):
 def pretty_try_use_unicode():
     """See if unicode output is available and leverage it if possible"""
 
-    try:
-        symbols = []
-
-        # see, if we can represent greek alphabet
-        symbols.extend(greek_unicode.values())
-
-        # and atoms
-        symbols += atoms_table.values()
-
-        for s in symbols:
-            if s is None:
-                return  # common symbols not present!
-
-            encoding = getattr(sys.stdout, 'encoding', None)
-
-            # this happens when e.g. stdout is redirected through a pipe, or is
-            # e.g. a cStringIO.StringO
-            if encoding is None:
-                return  # sys.stdout has no encoding
-
-            # try to encode
-            s.encode(encoding)
-
-    except UnicodeEncodeError:
-        pass
-    else:
+    if sys.stdout.encoding == 'UTF-8':  # pragma: no branch
         pretty_use_unicode(True)
 
 
@@ -268,14 +227,6 @@ def HLO(symb):
 
 def CLO(symb):
     return U('%s LOWER CORNER' % symb_2txt[symb])
-
-
-def TOP(symb):
-    return U('%s TOP' % symb_2txt[symb])
-
-
-def BOT(symb):
-    return U('%s BOTTOM' % symb_2txt[symb])
 
 
 # {} '('  ->  (extension, start, end, middle) 1-character
@@ -529,14 +480,11 @@ atoms_table = {
 }
 
 
-def pretty_atom(atom_name, default=None):
+def pretty_atom(atom_name):
     """return pretty representation of an atom"""
     if _use_unicode:
         return atoms_table[atom_name]
     else:
-        if default is not None:
-            return default
-
         raise KeyError('only unicode')  # send it default printer
 
 

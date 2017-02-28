@@ -271,9 +271,13 @@ def test_DenseMatrix():
 def test_AppliedUndef():
     t = sy.Symbol('t')
     f = sy.Function('f')
-    ft = theano_code(f(t))
+    cache = {}
+    ft = theano_code(f(t), cache=cache)
     assert isinstance(ft, tt.TensorVariable)
     assert ft.name == 'f_t'
+
+    assert theano_code(f(t), cache=cache) is ft
+    assert theano_code(f(t), cache={}) is not ft
 
 
 def test_bad_keyword_args_raise_error():

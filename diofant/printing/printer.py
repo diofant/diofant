@@ -152,7 +152,7 @@ class Printer:
             self._settings.update(settings)
 
             if len(self._settings) > len(self._default_settings):
-                for key in self._settings:
+                for key in self._settings:  # pragma: no branch
                     if key not in self._default_settings:
                         raise TypeError("Unknown setting '%s'." % key)
 
@@ -161,7 +161,7 @@ class Printer:
         self._print_level = 0
 
         numpy = import_module("numpy")
-        if numpy is not None:
+        if numpy is not None:  # pragma: no cover
             formatter = {'numpystr': str}
             numpy.set_printoptions(formatter=formatter)
 

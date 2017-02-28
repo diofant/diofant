@@ -3,6 +3,7 @@ import pytest
 from diofant import (S, Symbol, symbols, factorial, factorial2, binomial,
                      rf, ff, gamma, polygamma, EulerGamma, O, pi, nan, exp,
                      oo, zoo, simplify, expand_func, Product, loggamma)
+from diofant.core.function import ArgumentIndexError
 from diofant.functions.combinatorial.factorials import subfactorial
 from diofant.functions.special.gamma_functions import uppergamma
 
@@ -24,6 +25,7 @@ def test_rf_eval_apply():
 
     assert rf(oo, -6) == oo
     assert rf(-oo, -7) == oo
+    assert rf(-oo, 2) == oo
 
     assert rf(x, 0) == 1
     assert rf(x, 1) == x
@@ -63,6 +65,7 @@ def test_ff_eval_apply():
 
     assert ff(oo, -6) == oo
     assert ff(-oo, -7) == oo
+    assert ff(-oo, 2) == oo
 
     assert ff(x, 0) == 1
     assert ff(x, 1) == x
@@ -137,6 +140,8 @@ def test_factorial_diff():
     assert factorial(n**2).diff(n) == \
         2*n*gamma(1 + n**2)*polygamma(0, 1 + n**2)
 
+    pytest.raises(ArgumentIndexError, lambda: factorial(n).fdiff(2))
+
 
 def test_factorial_series():
     n = Symbol('n', integer=True)
@@ -151,6 +156,7 @@ def test_factorial_rewrite():
 
     assert factorial(n).rewrite(gamma) == gamma(n + 1)
     assert str(factorial(k).rewrite(Product)) == 'Product(_i, (_i, 1, k))'
+    assert factorial(n).rewrite(Product).func is factorial
     assert factorial(n).rewrite('tractable') == exp(loggamma(n + 1))
 
 
@@ -163,6 +169,12 @@ def test_factorial2():
     assert factorial2(8) == 384
     assert factorial2(n).func == factorial2
     factorial2(S.Half)  # issue sympy/sympy#10388
+
+    assert factorial2(oo).func is factorial2
+
+    pytest.raises(ValueError, lambda: factorial2(-2))
+    nn = Symbol('nn', negative=True)
+    assert factorial2(-S.Half).func is factorial2
 
     # The following is exhaustive
     tt = Symbol('tt', integer=True, nonnegative=True)
@@ -263,6 +275,10 @@ def test_binomial():
     assert binomial(n, 3).func == binomial
     assert binomial(n, 3).expand(func=True) == n**3/6 - n**2/2 + n/3
     assert expand_func(binomial(n, 3)) == n*(n - 2)*(n - 1)/6
+    assert expand_func(binomial(1, 2, evaluate=False)) == 0
+    assert expand_func(binomial(n, 0, evaluate=False)) == 1
+    assert expand_func(binomial(n, -1, evaluate=False)).func is binomial
+    assert expand_func(binomial(n, k)).func is binomial
     assert binomial(n, n) == 1
     assert binomial(n, n + 1).func == binomial  # e.g. (-1, 0) == 1
     assert binomial(kp, kp + 1) == 0
@@ -295,6 +311,8 @@ def test_binomial_diff():
         3*k**2*(-polygamma(
             0, 1 + k**3) + polygamma(0, 1 + n**2 - k**3))*binomial(n**2, k**3)
 
+    pytest.raises(ArgumentIndexError, lambda: binomial(n, k).fdiff(3))
+
 
 def test_binomial_rewrite():
     n = Symbol('n', integer=True)
@@ -318,6 +336,7 @@ def test_subfactorial():
     assert all(subfactorial(i) == ans for i, ans in enumerate(
         [1, 0, 1, 2, 9, 44, 265, 1854, 14833, 133496]))
     assert subfactorial(oo) == oo
+    assert subfactorial(S.Half).func is subfactorial
     assert subfactorial(nan) == nan
 
     x = Symbol('x')

@@ -158,6 +158,10 @@ def test_print_builtins():
     app.run_cell("a = format(Symbol('pi'))")
     assert app.user_ns['a'][0]['text/plain'] == 'pi'
 
+    app.run_cell("init_printing(order=None)")  # this will fallback to defaults
+    app.run_cell("a = format(Symbol('pi'))")
+    assert app.user_ns['a'][0]['text/plain'] == 'π'
+
     app.run_cell("init_printing()")
     app.run_cell("inst.display_formatter.formatters['text/latex'].enabled = False")
     app.run_cell("a = format({Symbol('pi'): 3.14, Symbol('n_i'): 3})")
