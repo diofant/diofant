@@ -102,11 +102,6 @@ class MathMLPrinter(Printer):
             return x
 
         coeff, terms = expr.as_coeff_mul()
-        if coeff is S.One and len(terms) == 1:
-            # XXX since the negative coefficient has been handled, I don't
-            # thing a coeff of 1 can remain
-            return self._print(terms[0])
-
         terms = Mul._from_args(terms).as_ordered_factors()
 
         x = self.dom.createElement('apply')
@@ -147,7 +142,7 @@ class MathMLPrinter(Printer):
 
     def _print_MatrixBase(self, m):
         x = self.dom.createElement('matrix')
-        for i in range(m.lines):
+        for i in range(m.rows):
             x_r = self.dom.createElement('matrixrow')
             for j in range(m.cols):
                 x_r.appendChild(self._print(m[i, j]))
@@ -209,7 +204,7 @@ class MathMLPrinter(Printer):
     def _print_Infinity(self, e):
         return self.dom.createElement('infinity')
 
-    def _print_Negative_Infinity(self, e):
+    def _print_NegativeInfinity(self, e):
         x = self.dom.createElement('apply')
         x.appendChild(self.dom.createElement('minus'))
         x.appendChild(self.dom.createElement('infinity'))
@@ -230,7 +225,7 @@ class MathMLPrinter(Printer):
                 up_elem = self.dom.createElement('uplimit')
                 up_elem.appendChild(self._print(limits[0][2]))
                 x.appendChild(up_elem)
-            if len(limits[0]) == 2:
+            elif len(limits[0]) == 2:
                 up_elem = self.dom.createElement('uplimit')
                 up_elem.appendChild(self._print(limits[0][1]))
                 x.appendChild(up_elem)
@@ -357,14 +352,6 @@ class MathMLPrinter(Printer):
 
     def _print_Basic(self, e):
         x = self.dom.createElement(self.mathml_tag(e))
-        for arg in e:
-            x.appendChild(self._print(arg))
-        return x
-
-    def _print_AssocOp(self, e):
-        x = self.dom.createElement('apply')
-        x_1 = self.dom.createElement(self.mathml_tag(e))
-        x.appendChild(x_1)
         for arg in e.args:
             x.appendChild(self._print(arg))
         return x
