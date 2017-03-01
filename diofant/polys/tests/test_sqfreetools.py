@@ -2,8 +2,10 @@
 
 import pytest
 
+from diofant.core import I
 from diofant.polys.rings import ring
 from diofant.polys.domains import FF, ZZ, QQ
+from diofant.polys.polyerrors import DomainError, MultivariatePolynomialError
 from diofant.polys.specialpolys import f_polys
 
 __all__ = ()
@@ -84,6 +86,8 @@ def test_dup_sqf():
 
     assert R.drop(x).dup_sqf_list(res) == (45796, [(h, 3)])
 
+    pytest.raises(DomainError, lambda: R.dup_sqf_norm(x**2 - 1))
+
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
     assert R.dup_sqf_list_include(t**3*x**2) == [(t**3, 1), (x, 2)]
@@ -133,11 +137,21 @@ def test_dmp_sqf():
     assert R.dmp_sqf_list(f) == (-1, [(x**3 + x**2 + x + 1, 1), (x - 1, 2)])
     assert R.dmp_sqf_list_include(f) == [(-x**3 - x**2 - x - 1, 1), (x - 1, 2)]
 
+    pytest.raises(DomainError, lambda: R.dmp_sqf_norm(x**2 + y**2))
+    pytest.raises(MultivariatePolynomialError,
+                  lambda: R.dmp_gff_list(x**2 + y**2))
+
     f = -x**2 + 2*x - 1
     assert R.dmp_sqf_list_include(f) == [(-1, 1), (x - 1, 2)]
 
     R, x, y = ring("x,y", FF(2))
     pytest.raises(NotImplementedError, lambda: R.dmp_sqf_list(y**2 + 1))
+    pytest.raises(NotImplementedError,
+                  lambda: R.dmp_sqf_part(x**3 + 2*x**2*y + x*y**2))
+
+    R, x, y = ring("x,y", QQ.algebraic_field(I))
+    assert R.dmp_sqf_list(x**2 + 2*I*x - 1) == (R.one.to_dense()[0][0],
+                                                [(x + I, 2)])
 
 
 def test_dup_gff_list():
