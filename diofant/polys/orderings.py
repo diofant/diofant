@@ -17,7 +17,7 @@ class MonomialOrder:
         return self.alias
 
     def __call__(self, monomial):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def __eq__(self, other):
         return self.__class__ == other.__class__
@@ -166,7 +166,6 @@ class InverseOrder(MonomialOrder):
             return False
         if self.O.is_global is False:
             return True
-        return
 
     def __eq__(self, other):
         return isinstance(other, InverseOrder) and other.O == self.O
@@ -245,9 +244,7 @@ class _ItemGetter:
         return tuple(m[idx] for idx in self.seq)
 
     def __eq__(self, other):
-        if not isinstance(other, _ItemGetter):
-            return False
-        return self.seq == other.seq
+        return isinstance(other, _ItemGetter) and self.seq == other.seq
 
     def __hash__(self):
         return hash((type(self).__name__,) + self.seq)
