@@ -55,10 +55,8 @@ def symmetrize(F, *gens, **args):
         result = []
 
         for expr in exc.exprs:
-            if expr.is_Number:
-                result.append((expr, S.Zero))
-            else:
-                raise ComputationFailed('symmetrize', len(F), exc)
+            assert expr.is_Number
+            result.append((expr, S.Zero))
         else:
             if not iterable:
                 result, = result
@@ -257,9 +255,6 @@ def viete(f, roots=None, *gens, **args):
 
     """
     allowed_flags(args, [])
-
-    if isinstance(roots, Basic):
-        gens, roots = (roots,) + gens, None
 
     try:
         f, opt = poly_from_expr(f, *gens, **args)
