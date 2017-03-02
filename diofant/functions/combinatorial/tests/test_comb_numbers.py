@@ -49,6 +49,9 @@ def test_bernoulli():
     assert isinstance(bernoulli(2 * m + 1), bernoulli)
     assert bernoulli(2 * n + 1) == 0
 
+    pytest.raises(ValueError, lambda: bernoulli(-20))
+    assert bernoulli(l, x).func is bernoulli
+
 
 def test_fibonacci():
     assert [fibonacci(n) for n in range(-3, 5)] == [2, -1, 1, 0, 1, 1, 2, 3]
@@ -63,6 +66,11 @@ def test_fibonacci():
 
     assert fibonacci(x).rewrite(sqrt) == (S.GoldenRatio**x - cos(S.Pi*x)/S.GoldenRatio**x)/sqrt(5)
     assert fibonacci(x).rewrite('tractable') == fibonacci(x).rewrite(sqrt)
+
+    pytest.raises(ValueError, lambda: fibonacci(-2, x))
+
+    n = Symbol('n', integer=True)
+    assert fibonacci(n, x).rewrite(sqrt).func is fibonacci
 
 
 def test_bell():
@@ -101,6 +109,8 @@ def test_bell():
     # For negative numbers, the formula does not hold
     m = Symbol('m', integer=True)
     assert bell(-1).evalf() == bell(m).rewrite(Sum).evalf(subs={m: -1})
+
+    assert bell(m, x).rewrite(Sum).func is bell
 
 
 def test_harmonic():
@@ -222,6 +232,8 @@ def test_harmonic_rewrite_polygamma():
     assert expand_func(harmonic(n-4)) == harmonic(n) - 1/(n - 1) - 1/(n - 2) - 1/(n - 3) - 1/n
 
     assert harmonic(n, m).rewrite("tractable") == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite("tractable")
+
+    assert expand_func(harmonic(n, 2)).func is harmonic
 
 
 @pytest.mark.xfail

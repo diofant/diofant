@@ -97,10 +97,11 @@ class fibonacci(Function):
     def eval(cls, n, sym=None):
         if n.is_Integer:
             n = int(n)
-            if n < 0:
-                return S.NegativeOne**(n + 1) * fibonacci(-n)
             if sym is None:
-                return Integer(cls._fib(n))
+                if n < 0:
+                    return S.NegativeOne**(n + 1) * fibonacci(-n)
+                else:
+                    return Integer(cls._fib(n))
             else:
                 if n < 1:
                     raise ValueError("Fibonacci polynomials are defined "
@@ -616,12 +617,10 @@ class harmonic(Function):
             # TODO: Fix for symbolic values of m
             if m.is_negative:
                 return S.NaN
-            elif LessThan(m, S.One):
+            elif m <= 1:
                 return S.Infinity
-            elif StrictGreaterThan(m, S.One):
-                return zeta(m)
             else:
-                return cls
+                return zeta(m)
 
         if n.is_Integer and n.is_nonnegative and m.is_Integer:
             if n == 0:
