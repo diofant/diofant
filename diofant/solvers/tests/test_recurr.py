@@ -250,3 +250,8 @@ def test_sympyissue_8697():
 def test_diofantissue_451():
     assert rsolve(y(n) - 2*y(n - 1) - 3**n, y(n),
                   {y(0): 1}) == 3**(n+1) - 2*2**n
+
+
+def test_diofantissue_456():
+    assert rsolve(y(n) - 2*y(n - 1) - 3**n*n,
+                  y(n), {y(0): 1}) == 7*2**n + 3**(n + 1)*(n - 2)

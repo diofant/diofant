@@ -544,6 +544,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             coeff, polys = S.One, coeffs[:]
             denoms = [ S.One ] * (r + 1)
 
+            g = simplify(g)
             s = hypersimp(g, n)
 
             for j in range(1, r + 1):
