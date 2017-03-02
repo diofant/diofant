@@ -146,6 +146,9 @@ def test_solve_args():
     # XXX one eq doesn't have symbol
     assert solve([x - y, y - 3], x) == {x: y}
 
+    pytest.raises(ValueError, lambda: solve([x**2 * y**2 <= x**2 * y,
+                                             x**2 * y**2 > x**2 * y]))
+
 
 def test_solve_polynomial1():
     assert solve(3*x - 2, x) == [Rational(2, 3)]

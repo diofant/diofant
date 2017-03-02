@@ -547,6 +547,9 @@ def solve(f, *symbols, **flags):
                 f[i] = fi.lhs - fi.rhs
             else:
                 f[i] = Add(fi.lhs, -fi.rhs, evaluate=False)
+        elif isinstance(fi, Relational):
+            raise ValueError("Only expressions or equalities "
+                             "supported, got %s" % fi)
         elif isinstance(fi, Poly):
             f[i] = fi.as_expr()
 
