@@ -101,8 +101,9 @@ Issues closed
 * `sympy/sympy#8697 <https://github.com/sympy/sympy/issues/8697>`_ rsolve fails to find solutions to some higer order recurrence relations
 * `#445 <https://github.com/diofant/diofant/issues/445>`_ Clarify the license of Diofant
 * `#451 <https://github.com/diofant/diofant/issues/451>`_ rsolve should handle hypergeometric inhomogeneous terms
+* `#450 <https://github.com/diofant/diofant/issues/450>`_ How to run from the repo without installing anything?
 
-.. last pr: #452
+.. last pr: #455
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
