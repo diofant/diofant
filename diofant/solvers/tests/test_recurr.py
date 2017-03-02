@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Eq, factorial, Function, Lambda, rf, S, sqrt, symbols,
-                     I, expand_func, binomial, gamma, Rational)
+                     I, expand_func, binomial, gamma, Rational, sin)
 from diofant.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
                                     rsolve_ratio)
 
@@ -202,15 +202,16 @@ def test_rsolve():
 def test_rsolve_raises():
     x = Function('x')
     pytest.raises(ValueError, lambda: rsolve(y(n) - y(k + 1), y(n)))
-    pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1), x(n)))
-    pytest.raises(ValueError, lambda: rsolve(y(n) - x(n + 1), y(n)))
+    pytest.raises(NotImplementedError, lambda: rsolve(y(n) - y(n + 1), x(n)))
+    pytest.raises(NotImplementedError, lambda: rsolve(y(n) - x(n + 1), y(n)))
     pytest.raises(ValueError, lambda: rsolve(y(n) - sqrt(n)*y(n + 1), y(n)))
     pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1), y(n), {x(0): 0}))
-    pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1) + y(n - 1)**2, y(n)))
+    pytest.raises(NotImplementedError, lambda: rsolve(y(n) - y(n + 1) + y(n - 1)**2, y(n)))
+    pytest.raises(NotImplementedError, lambda: rsolve(y(n) - sin(n), y(n)))
 
     # sympy/sympy#11063
-    pytest.raises(ValueError, lambda: rsolve(y(n + 1, a) - y(n, 2*a),
-                                             y(n, a), {y(0, a): a}))
+    pytest.raises(NotImplementedError, lambda: rsolve(y(n + 1, a) - y(n, 2*a),
+                                                      y(n, a), {y(0, a): a}))
 
 
 def test_sympyissue_6844():
@@ -244,3 +245,8 @@ def test_sympyissue_8697():
     assert rsolve(a(n) - 2*a(n - 1) - n, a(n), {a(0): 1}) == 3*2**n - n - 2
     assert (rsolve(a(n + 2) - 5*a(n + 1) + 6*a(n) - n, a(n)) ==
             2**n*C0 + 3**n*C1 + n/2 + Rational(3, 4))
+
+
+def test_diofantissue_451():
+    assert rsolve(y(n) - 2*y(n - 1) - 3**n, y(n),
+                  {y(0): 1}) == 3**(n+1) - 2*2**n

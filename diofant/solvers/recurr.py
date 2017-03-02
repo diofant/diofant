@@ -726,11 +726,15 @@ def rsolve(f, y, init=None):
         else:
             i_term = h*c
             if i_term.find(y.func(Wild('k'))):
-                raise ValueError("Linear recurrence for '%s' expected, got '%s'" % (y.func, f))
+                raise NotImplementedError("Linear recurrence for '%s' "
+                                          "expected, got '%s'" % (y.func, f))
             i_part -= i_term
 
-    if not i_part.is_rational_function(n):
-        raise ValueError("Inhomogeneous part should be a rational function of '%s', got '%s'" % (n, i_part))
+    if not i_part.is_zero:
+        if not all(p.is_hypergeometric(n) for p in i_part.as_coeff_add(n)[1]):
+            raise NotImplementedError("Inhomogeneous part should be a sum of "
+                                      "hypergeometric terms in '%s', got "
+                                      "'%s'" % (n, i_part))
 
     k_min, k_max = min(h_part.keys()), max(h_part.keys())
 
