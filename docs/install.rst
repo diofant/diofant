@@ -3,9 +3,8 @@
 Installation
 ------------
 
-The Diofant can be installed on virtually any computer with Python 3.4
-or above.  Diofant requires `setuptools`_.  You can install latest
-release with pip::
+The Diofant can be installed on any computer with Python 3.4
+or above.  You can install latest release with pip::
 
     $ pip install diofant
 
@@ -29,6 +28,10 @@ be sure to install from git::
     $ git clone git://github.com/diofant/diofant.git
     $ cd diofant
     $ pip install -e .[develop,docs]
+
+.. note::
+
+    Diofant requires `setuptools`_ for installation from sources.
 
 Run Diofant
 ===========
