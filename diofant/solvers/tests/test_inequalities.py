@@ -338,3 +338,10 @@ def test_sympyissue_10196():
 
 def test_sympyissue_10268():
     assert reduce_inequalities(log(x) < 300) == And(-oo < x, x < E**300)
+
+
+def test_diofantissue_453():
+    x = Symbol('x', real=True)
+    assert isolve(abs((x - 1)/(x - 5)) <= Rational(1, 3),
+                  x) == And(Integer(-1) <= x, x <= 2)
+    assert solve(abs((x - 1)/(x - 5)) - Rational(1, 3), x) == [-1, 2]
