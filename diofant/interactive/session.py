@@ -3,7 +3,7 @@ import builtins
 
 
 class IntegerWrapper(ast.NodeTransformer):
-    """Wraps all integers in a call to Integer()"""
+    """Wraps all integers in a call to Integer."""
 
     def visit_Num(self, node):
         if isinstance(node.n, int):

@@ -15,8 +15,8 @@ or to install also extra dependencies::
 
 .. tip::
 
-    You could use `pyvenv`_ to create isolated Python environment
-    first, instead of installing everything system-wide.
+    Use `pyvenv`_ to create isolated Python environment first,
+    instead of installing everything system-wide.
 
 .. _installation-src:
 
@@ -41,10 +41,11 @@ ones below::
     >>> ((1 + x)**(1/x)).limit(x, 0)
     E
 
-However, we recommend using `IPython`_ for working interactively.  Use
-input transformations from the module :mod:`diofant.interactive`, that
-could reduce boilerplate while interacting with Diofant due to the
-Python language syntax.
+.. tip::
+
+    Use `IPython`_ for interactive work.  Please refer to the
+    documentation of module :mod:`diofant.interactive` for details
+    of available configuration settings.
 
 For a starter guide on using Diofant, refer to the :ref:`tutorial`.
 

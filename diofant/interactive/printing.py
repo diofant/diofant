@@ -61,6 +61,12 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     \*\*settings : dict
         A dictionary of default settings for printers.
 
+    Notes
+    =====
+
+    This function runs automatically for wildcard imports (e.g.
+    for ``from diofant import *``) in interactive sessions.
+
     Examples
     ========
 
