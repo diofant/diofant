@@ -305,7 +305,7 @@ class Piecewise(Function):
         is given, we return a list of (lowerbound, upperbound) pairs for
         this condition.
         """
-        from ...solvers import solve_univariate_inequality
+        from ...solvers.inequalities import solve_univariate_inequality
         default = None
         int_expr = []
         expr_cond = []
