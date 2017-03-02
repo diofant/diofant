@@ -159,7 +159,7 @@ def dup_gf_sqf_part(f, K):
     return dup_convert(g, K.domain, K)
 
 
-def dmp_gf_sqf_part(f, K):
+def dmp_gf_sqf_part(f, u, K):  # pragma: no cover
     """Compute square-free part of ``f`` in ``GF(p)[X]``. """
     raise NotImplementedError('multivariate polynomials over finite fields')
 

@@ -58,6 +58,10 @@ def test__nsort():
     d = symbols("d", extended_real=True)
     assert _nsort((d,)) == [d]
     assert _nsort((d,), separated=True) == [[d], []]
+    c = symbols("c", complex=True, real=False)
+    assert _nsort((c,)) == [c]
+    assert _nsort((c,), separated=True) == [[], [c]]
+    assert _nsort((I, Q(1)), separated=True) == ([Q(1)], [I])
 
 
 def test__sort_gens():

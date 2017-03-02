@@ -3,7 +3,7 @@
 import pytest
 
 from diofant.polys.orderings import (
-    monomial_key, lex, grlex, grevlex, ilex, igrlex,
+    monomial_key, lex, grlex, grevlex, ilex, igrlex, MonomialOrder,
     LexOrder, InverseOrder, ProductOrder, build_product_order)
 from diofant.core import Integer
 
@@ -96,9 +96,15 @@ def test_InverseOrder():
     assert ilex != igrlex
     assert ilex == InverseOrder(LexOrder())
 
+    iilex = InverseOrder(ilex)
+    assert iilex.is_global is True
+
+    assert InverseOrder(MonomialOrder()).is_global is None
+
 
 def test_ProductOrder():
     P = ProductOrder((grlex, lambda m: m[:2]), (grlex, lambda m: m[2:]))
+    assert P != lex
     assert P((1, 3, 3, 4, 5)) > P((2, 1, 5, 5, 5))
     assert str(P) == "ProductOrder(grlex, grlex)"
     assert P.is_global is True

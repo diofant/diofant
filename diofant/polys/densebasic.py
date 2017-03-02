@@ -425,7 +425,7 @@ def dmp_to_tuple(f, u):
     ((1,), (1, 2))
     """
     if not u:
-        return tuple(f)
+        return dup_to_tuple(f)
     v = u - 1
 
     return tuple(dmp_to_tuple(c, v) for c in f)
@@ -1516,7 +1516,7 @@ def dup_terms_gcd(f, K):
 
     i = 0
 
-    for c in reversed(f):
+    for c in reversed(f):  # pragma: no branch
         if not c:
             i += 1
         else:

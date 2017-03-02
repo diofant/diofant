@@ -37,16 +37,15 @@ def _nsort(roots, separated=False):
         r = list(roots)[0]
         if r.is_extended_real:
             return [[r], []]
-        elif r.is_extended_real is False:
-            if r.is_complex is not None:
-                return [[], [r]]
-    if not all(r.is_number for r in roots):
+        elif r.is_real is False and r.is_complex:
+            return [[], [r]]
+    if not all(r.is_number for r in roots):  # pragma: no cover
         raise NotImplementedError
     # see issue sympy/sympy#6137:
     # get the real part of the evaluated real and imaginary parts of each root
     key = [[i.n(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
     # make sure the parts were computed with precision
-    if any(i._prec == 1 for k in key for i in k):
+    if any(i._prec == 1 for k in key for i in k):  # pragma: no cover
         raise NotImplementedError("could not compute root with precision")
     # insert a key to indicate if the root has an imaginary part
     key = [(1 if i else 0, r, i) for r, i in key]
@@ -69,13 +68,9 @@ def _sort_gens(gens, **args):
     """Sort generators in a reasonably intelligent way. """
     opt = build_options(args)
 
-    gens_order, wrt = {}, None
-
-    if opt is not None:
-        gens_order, wrt = {}, opt.wrt
-
-        for i, gen in enumerate(opt.sort):
-            gens_order[gen] = i + 1
+    gens_order, wrt = {}, opt.wrt
+    for i, gen in enumerate(opt.sort):
+        gens_order[gen] = i + 1
 
     def order_key(gen):
         gen = str(gen)
@@ -349,21 +344,8 @@ def dict_from_expr(expr, **args):
 
 def _dict_from_expr(expr, opt):
     """Transform an expression into a multinomial form. """
-
-    def _is_expandable_pow(expr):
-        return (expr.is_Pow and expr.exp.is_positive and expr.exp.is_Integer
-                and expr.base.is_Add)
-
     if opt.expand is not False:
         expr = expr.expand()
-        # TODO: Integrate this into expand() itself
-        while any(_is_expandable_pow(i) or i.is_Mul and
-            any(_is_expandable_pow(j) for j in i.args) for i in
-                Add.make_args(expr)):
-
-            expr = expand_multinomial(expr)
-        while any(i.is_Mul and any(j.is_Add for j in i.args) for i in Add.make_args(expr)):
-            expr = expand_mul(expr)
 
     if opt.gens:
         rep, gens = _dict_from_expr_if_gens(expr, opt)

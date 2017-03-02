@@ -1,5 +1,7 @@
 """Tests for dense recursive polynomials' basic tools. """
 
+import random
+
 import pytest
 
 from diofant.polys.densebasic import (
@@ -34,7 +36,7 @@ from diofant.polys.densebasic import (
     dmp_inject, dmp_eject,
     dup_terms_gcd, dmp_terms_gcd,
     dmp_list_terms, dmp_apply_pairs,
-    dup_slice,
+    dup_slice, dmp_slice,
     dup_random)
 
 from diofant.polys.specialpolys import f_polys
@@ -181,6 +183,8 @@ def test_dmp_validate():
     assert dmp_validate([[0], [], [0], [1], [0]]) == ([[1], []], 1)
 
     pytest.raises(ValueError, lambda: dmp_validate([[0], 0, [0], [1], [0]]))
+    pytest.raises(TypeError, lambda: dmp_validate([[], [0, QQ(1, 2)],
+                                                   [1]], ZZ))
 
 
 def test_dup_reverse():
@@ -627,6 +631,7 @@ def test_dup_terms_gcd():
     assert dup_terms_gcd([], ZZ) == (0, [])
     assert dup_terms_gcd([1, 0, 1], ZZ) == (0, [1, 0, 1])
     assert dup_terms_gcd([1, 0, 1, 0], ZZ) == (1, [1, 0, 1])
+    assert dup_terms_gcd([1, 3, 1, 4, 2, 0], ZZ) == (1, [1, 3, 1, 4, 2])
 
 
 def test_dmp_terms_gcd():
@@ -681,6 +686,14 @@ def test_dmp_apply_pairs():
     assert dmp_apply_pairs(
         [[1], [2, 3]], [[4, 5], [6]], h, [], 1, ZZ) == [[5], [18]]
 
+    def h2(x, y, z):
+        return 2*x + y - z
+
+    f = [[1], [2, 3, 4], [5]]
+    g = [[3], [2, 1]]
+    assert dmp_apply_pairs(f, g, h2, (1,), 1, ZZ) == [[1], [3, 5, 10], [1, 10]]
+    assert dmp_apply_pairs(g, f, h2, (1,), 1, ZZ) == [[1, 2, 9], [3, 6]]
+
 
 def test_dup_slice():
     f = [1, 2, 3, 4]
@@ -703,6 +716,18 @@ def test_dup_slice():
     assert dup_slice([1, 2], 0, 3, ZZ) == [1, 2]
 
 
+def test_dmp_slice():
+    f = [[1], [2, 3, 4]]
+    assert dmp_slice(f, 1, 2, 1, ZZ) == f
+    assert dmp_slice(f, 2, 1, 1, ZZ) == [[2, 3, 5]]
+
+    g = [1, 2, 3, 4]
+    assert dmp_slice(g, 0, 0, 0, ZZ) == dup_slice(g, 0, 0, ZZ)
+    assert dmp_slice(g, 0, 3, 0, ZZ) == dup_slice(g, 0, 3, ZZ)
+
+    pytest.raises(IndexError, lambda: dmp_slice(g, 0, 0, -1, ZZ))
+
+
 def test_dup_random():
     f = dup_random(0, -10, 10, ZZ)
 
@@ -723,3 +748,6 @@ def test_dup_random():
 
     assert dup_degree(f) == 3
     assert all(-40 <= c <= 40 for c in f)
+
+    random.seed(11)
+    assert dup_random(10, -1, 1, ZZ) == [1, 1, 0, 0, 1, 1, -1, -1, 1, 0, 1]
