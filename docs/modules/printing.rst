@@ -14,7 +14,7 @@ Printer Class
 
 The main class responsible for printing is ``Printer`` (see also its
 `source code
-<https://github.com/sympy/sympy/blob/master/sympy/printing/printer.py>`_):
+<https://github.com/diofant/diofant/blob/master/diofant/printing/printer.py>`_):
 
 .. autoclass:: Printer
     :members: doprint, _print, set_global_settings, order
