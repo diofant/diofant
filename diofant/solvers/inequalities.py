@@ -11,6 +11,9 @@ from ..polys.polyutils import _nsort
 from ..utilities import filldedent
 
 
+__all__ = ('reduce_inequalities',)
+
+
 def solve_poly_inequality(poly, rel):
     """
     Solve a polynomial inequality with rational coefficients.

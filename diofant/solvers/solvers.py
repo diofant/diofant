@@ -547,6 +547,9 @@ def solve(f, *symbols, **flags):
                 f[i] = fi.lhs - fi.rhs
             else:
                 f[i] = Add(fi.lhs, -fi.rhs, evaluate=False)
+        elif isinstance(fi, Relational):
+            raise ValueError("Only expressions or equalities "
+                             "supported, got %s" % fi)
         elif isinstance(fi, Poly):
             f[i] = fi.as_expr()
 
@@ -1016,7 +1019,7 @@ def _solve(f, *symbols, **flags):
     elif f.is_Piecewise:
         result = set()
         for n, (expr, cond) in enumerate(f.args):
-            candidates = _solve(expr, *symbols, **flags)
+            candidates = _solve(piecewise_fold(expr), *symbols, **flags)
             for candidate in candidates:
                 if candidate in result:
                     continue
