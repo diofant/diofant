@@ -111,8 +111,6 @@ Issues closed
 * :sympyissue:`9832` ``x**2 < oo`` returns ``True`` but ``x < oo`` un-evaluated for real ``x``
 * :sympyissue:`9053` ``MatMul(2, Matrix(...)).doit()`` doesn't do it
 * :sympyissue:`9052` ``trace(2*A) != 2*Trace(A)`` because LHS still has an MatMul
-* :sympyissue:`9053` ``MatMul(2, Matrix(...)).doit()`` doesn't do it
-* :sympyissue:`9052` ``trace(2*A) != 2*Trace(A)`` because LHS still has an MatMul
 * :sympyissue:`9533` Logical operators in octave_code
 * :sympyissue:`9545` ``Mod(zoo, 0)`` causes RunTime Error
 * :sympyissue:`9652` Fail in plot_implicit test on OSX 10.8.5
@@ -235,8 +233,7 @@ Issues closed
 * :sympyissue:`11553` Polynomial solve with GoldenRatio causes Traceback
 * :sympyissue:`8045` make all NaN is_* properties that are now None -> False (including is_complex)
 * :issue:`34` assumptions todo
-* :issue:`203` Add changelog (in sphinx docs)
-* :sympyissue:`11553` Polynomial solve with GoldenRatio causes Traceback
+* :issue:`230` Add changelog (in sphinx docs)
 * :sympyissue:`11602` Replace \dots with \ldots or \cdots
 * :sympyissue:`4720` Initial conditions in dsolve()
 * :sympyissue:`11623` Wrong groebner basis
@@ -300,7 +297,6 @@ Issues closed
 * :sympyissue:`8825` Can't use both weakref's & cache
 * :sympyissue:`8635` limit(x**n-x**(n-k), x, oo) sometimes raises NotImplementedError
 * :sympyissue:`8157` Non-informative error raised when computing limit of cos(n*pi)
-* :sympyissue:`7872` Substitution in Order fails
 * :sympyissue:`7599` Addition of expression and order term fails
 * :sympyissue:`6179` wrong order in series
 * :sympyissue:`5415` limit involving multi-arg function (polygamma) fails
