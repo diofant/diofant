@@ -7,311 +7,307 @@ Diofant 0.8
 New features
 ============
 
-* MrvAsympt algorithm to find asymptotic expansion, see :func:`~diofant.core.expr.Expr.aseries` method and `#6 <https://github.com/diofant/diofant/pull/6>`_.  Thanks to Avichal Dayal.
-* :func:`~diofant.concrete.summations.Sum.findrecur` method to find recurrence relations (with Sister Celine's algorithm), see `#15 <https://github.com/diofant/diofant/pull/15>`_.
-* Support for :class:`~diofant.core.power.Pow`/:class:`~diofant.functions.elementary.exponential.log` branch-cuts in limits, see `#140 <https://github.com/diofant/diofant/pull/140>`_.
-* Added basic optimization package, see :func:`~diofant.calculus.optimization.minimize` and `#108 <https://github.com/diofant/diofant/pull/108>`_.
-* Cartesian product of iterables using Cantor pairing, see :func:`~diofant.utilities.iterables.cantor_product` and `#276 <https://github.com/diofant/diofant/pull/276>`_.
-* :class:`~diofant.sets.fancysets.Rationals` set, `#255 <https://github.com/diofant/diofant/pull/255>`_.
-* New simple and robust solver for systems of linear ODEs, see `#286 <https://github.com/diofant/diofant/pull/286>`_.  Thanks to Colin B. Macdonald.
-* Added mutable/immutable N-dim arrays, sparse and dense, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
-* :func:`~diofant.solvers.ode.dsolve` now support initial conditions for ODEs, see `#307 <https://github.com/diofant/diofant/pull/307>`_.  Thanks to Aaron Meurer.
+* MrvAsympt algorithm to find asymptotic expansion, see :func:`~diofant.core.expr.Expr.aseries` method and :pull:`6`.  Thanks to Avichal Dayal.
+* :func:`~diofant.concrete.summations.Sum.findrecur` method to find recurrence relations (with Sister Celine's algorithm), see :pull:`15`.
+* Support for :class:`~diofant.core.power.Pow`/:class:`~diofant.functions.elementary.exponential.log` branch-cuts in limits, see :pull:`140`.
+* Added basic optimization package, see :func:`~diofant.calculus.optimization.minimize` and :pull:`108`.
+* Cartesian product of iterables using Cantor pairing, see :func:`~diofant.utilities.iterables.cantor_product` and :pull:`276`.
+* :class:`~diofant.sets.fancysets.Rationals` set, :pull:`255`.
+* New simple and robust solver for systems of linear ODEs, see :pull:`286`.  Thanks to Colin B. Macdonald.
+* Added mutable/immutable N-dim arrays, sparse and dense, see :pull:`275`.
+* :func:`~diofant.solvers.ode.dsolve` now support initial conditions for ODEs, see :pull:`307`.  Thanks to Aaron Meurer.
 
 Major changes
 =============
 
-* Depend on setuptools, see `#44 <https://github.com/diofant/diofant/pull/44>`_.
-* :mod:`The Gruntz Algorithm <diofant.series.gruntz>` reimplemented correctly, see `#68 <https://github.com/diofant/diofant/pull/68>`_.
-* Replaced ``exp(x)`` with ``E**x`` internally, see `#79 <https://github.com/diofant/diofant/pull/79>`_.
-* Used :func:`~diofant.printing.repr.srepr` instead of :func:`~diofant.printing.str.sstr` for :meth:`~object.__repr__` printing, see `#39 <https://github.com/diofant/diofant/pull/39>`_.
-* Major cleanup for series methods, see `#187 <https://github.com/diofant/diofant/pull/187>`_.
-* Depend on cachetools to implement caching, see `#72 <https://github.com/diofant/diofant/pull/72>`_ and `#209 <https://github.com/diofant/diofant/pull/209>`_.
-* Assumption system (old) was validated (`#316 <https://github.com/diofant/diofant/pull/316>`_ and `#334 <https://github.com/diofant/diofant/pull/334>`_) and improved:
+* Depend on setuptools, see :pull:`44`.
+* :mod:`The Gruntz Algorithm <diofant.series.gruntz>` reimplemented correctly, see :pull:`68`.
+* Replaced ``exp(x)`` with ``E**x`` internally, see :pull:`79`.
+* Used :func:`~diofant.printing.repr.srepr` instead of :func:`~diofant.printing.str.sstr` for :meth:`~object.__repr__` printing, see :pull:`39`.
+* Major cleanup for series methods, see :pull:`187`.
+* Depend on cachetools to implement caching, see :pull:`72` and :pull:`209`.
+* Assumption system (old) was validated (:pull:`316` and :pull:`334`) and improved:
 
-    * 0 now is imaginary, see `#8 <https://github.com/diofant/diofant/pull/8>`_
-    * extended_real fact added, reals are finite now, see `#36 <https://github.com/diofant/diofant/pull/36>`_
-    * complex are finite now, see `#42 <https://github.com/diofant/diofant/pull/42>`_.
-    * added docstrings for assumption properties, see `#354 <https://github.com/diofant/diofant/pull/554>`_.
+    * 0 now is imaginary, see :pull:`8`
+    * extended_real fact added, reals are finite now, see :pull:`36`
+    * complex are finite now, see :pull:`42`.
+    * added docstrings for assumption properties, see :pull:`354`.
 
 Backwards-incompatible changes
 ==============================
 
-* Removed physics submodule, see `#23 <https://github.com/diofant/diofant/pull/23>`_.
-* Removed galgebra submodule, see `#45 <https://github.com/diofant/diofant/pull/45>`_.
-* Removed pyglet plotting, see `#50 <https://github.com/diofant/diofant/pull/50>`_.
-* Removed TextBackend from plotting, see `#67 <https://github.com/diofant/diofant/pull/67>`_.
-* Removed SageMath support, see `#84 <https://github.com/diofant/diofant/pull/84>`_.
-* Removed unify submodule, see `#88 <https://github.com/diofant/diofant/pull/88>`_.
-* Removed crypto submodule, see `#102 <https://github.com/diofant/diofant/pull/102>`_.
-* Removed print_gtk, see `#114 <https://github.com/diofant/diofant/pull/114>`_.
-* Unbundle strategies module, see `#103 <https://github.com/diofant/diofant/pull/103>`_.
-* Removed "old" argument for match/matches, see `#141 <https://github.com/diofant/diofant/pull/141>`_.
-* Removed when_multiple kwarg in Piecewise, see `#156 <https://github.com/diofant/diofant/pull/156>`_.
-* Support for Python 2 was removed, see `#160 <https://github.com/diofant/diofant/pull/160>`_.
-* Removed core.py, see `#60 <https://github.com/diofant/diofant/pull/60>`_ and `#164 <https://github.com/diofant/diofant/pull/164>`_.
-* Removed S(foo) syntax, see `#115 <https://github.com/diofant/diofant/pull/115>`_.
-* Removed (new) assumptions submodule, see `#122 <https://github.com/diofant/diofant/pull/122>`_.
-* Removed undocumented Symbol.__call__, see `#201 <https://github.com/diofant/diofant/pull/201>`_
-* Removed categories and liealgebras submodules, see `#280 <https://github.com/diofant/diofant/pull/280>`_.
-* Rename module sympy -> diofant, see `#315 <https://github.com/diofant/diofant/pull/315>`_.
-* Use gmpy2, drop gmpy support, see `#292 <https://github.com/diofant/diofant/pull/292>`_.
-* Removed redundant dom properties in polys, see `#308 <https://github.com/diofant/diofant/pull/308>`_.
-* Removed manualintegrate function, see `#279 <https://github.com/diofant/diofant/pull/279>`_.
+* Removed physics submodule, see :pull:`23`.
+* Removed galgebra submodule, see :pull:`45`.
+* Removed pyglet plotting, see :pull:`50`.
+* Removed TextBackend from plotting, see :pull:`67`.
+* Removed SageMath support, see :pull:`84`.
+* Removed unify submodule, see :pull:`88`.
+* Removed crypto submodule, see :pull:`102`.
+* Removed print_gtk, see :pull:`114`.
+* Unbundle strategies module, see :pull:`103`.
+* Removed "old" argument for match/matches, see :pull:`141`.
+* Removed when_multiple kwarg in Piecewise, see :pull:`156`.
+* Support for Python 2 was removed, see :pull:`160`.
+* Removed core.py, see :pull:`60` and :pull:`164`.
+* Removed S(foo) syntax, see :pull:`115`.
+* Removed (new) assumptions submodule, see :pull:`122`.
+* Removed undocumented Symbol.__call__, see :pull:`201`
+* Removed categories and liealgebras submodules, see :pull:`280`.
+* Rename module sympy -> diofant, see :pull:`315`.
+* Use gmpy2, drop gmpy support, see :pull:`292`.
+* Removed redundant dom properties in polys, see :pull:`308`.
+* Removed manualintegrate function, see :pull:`279`.
 
 Minor changes
 =============
 
-* Add support for bidirectional limits, see `#10 <https://github.com/diofant/diofant/pull/10>`_.
-* Reimplement :class:`~diofant.functions.elementary.trigonometric.cot`, see `#113 <https://github.com/diofant/diofant/pull/113>`_.
-* A better implementation of :func:`~diofant.calculus.singularities.singularities`, see `#147 <https://github.com/diofant/diofant/pull/147>`_.
-* Fix "flip" of arguments in relational expressions, see `#30 <https://github.com/diofant/diofant/pull/30>`_.
-* Make Gosper code use new dispersion algorithm, see `#205 <https://github.com/diofant/diofant/pull/205>`_.  Thanks to Raoul Bourquin.
-* Consolidate code for solving linear systems, see `#253 <https://github.com/diofant/diofant/pull/253>`_.
-* Hacks for automatic symbols and wrapping int's replaced with AST transformers, see `#278 <https://github.com/diofant/diofant/pull/278>`_ and `#167 <https://github.com/diofant/diofant/pull/167>`_.
-* Build correct inhomogeneous solution in :func:`~diofant.solvers.recurr.rsolve_hyper`, see `#298 <https://github.com/diofant/diofant/pull/298>`_.
-* Evaluate matrix powers for non-diagonalizable matrices, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
-* Support non-orthogonal Jordan blocks, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
-* Make risch_integrate(x**x, x) work, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
-* Support CPython 3.6, see `#337 <https://github.com/diofant/diofant/pull/337>`_ and `#356 <https://github.com/diofant/diofant/pull/356>`_.
+* Add support for bidirectional limits, see :pull:`10`.
+* Reimplement :class:`~diofant.functions.elementary.trigonometric.cot`, see :pull:`113`.
+* A better implementation of :func:`~diofant.calculus.singularities.singularities`, see :pull:`147`.
+* Fix "flip" of arguments in relational expressions, see :pull:`30`.
+* Make Gosper code use new dispersion algorithm, see :pull:`205`.  Thanks to Raoul Bourquin.
+* Consolidate code for solving linear systems, see :pull:`253`.
+* Hacks for automatic symbols and wrapping int's replaced with AST transformers, see :pull:`278` and :pull:`167`.
+* Build correct inhomogeneous solution in :func:`~diofant.solvers.recurr.rsolve_hyper`, see :pull:`298`.
+* Evaluate matrix powers for non-diagonalizable matrices, see :pull:`275`.
+* Support non-orthogonal Jordan blocks, see :pull:`275`.
+* Make risch_integrate(x**x, x) work, see :pull:`275`.
+* Support CPython 3.6, see :pull:`337` and :pull:`356`.
 
 Developer changes
 =================
 
-* Unbundle numpydoc, see `#26 <https://github.com/diofant/diofant/pull/26>`_.
-* Deprecate AUTHORS file, all credits go to the aboutus.rst, see `#87 <https://github.com/diofant/diofant/pull/87>`_.
-* Use python's :func:`~tokenize.tokenize`, see `#120 <https://github.com/diofant/diofant/pull/120>`_.
-* Drop using bundled pytest fork, depend on pytest for testing, see `#38 <https://github.com/diofant/diofant/pull/38>`_, `#152 <https://github.com/diofant/diofant/pull/152>`_, `#91 <https://github.com/diofant/diofant/pull/91>`_, `#48 <https://github.com/diofant/diofant/pull/48>`_, `#90 <https://github.com/diofant/diofant/pull/90>`_, `#96 <https://github.com/diofant/diofant/pull/96>`_ and `#99 <https://github.com/diofant/diofant/pull/99>`_.
-* Adopt No Code Of Conduct, see `#212 <https://github.com/diofant/diofant/pull/212>`_.
-* Measure code coverage, enable codecov.io reports.  See `#217 <https://github.com/diofant/diofant/pull/217>`_.
-* Adopt pep8 (`#2 <https://github.com/diofant/diofant/pull/2>`_) and then flake8 (`#214 <https://github.com/diofant/diofant/pull/214>`_) for code quality testing.
-* Add regression tests with DIOFANT_USE_CACHE=False `#323 <https://github.com/diofant/diofant/pull/323>`_.
-* Add interface tests, see `#219 <https://github.com/diofant/diofant/pull/219>`_ and `#307 <https://github.com/diofant/diofant/pull/307>`_.
-* Test for no DeprecationWarning in the codebase, see `#356 <https://github.com/diofant/diofant/pull/356>`_.
+* Unbundle numpydoc, see :pull:`26`.
+* Deprecate AUTHORS file, all credits go to the aboutus.rst, see :pull:`87`.
+* Use python's :func:`~tokenize.tokenize`, see :pull:`120`.
+* Drop using bundled pytest fork, depend on pytest for testing, see :pull:`38`, :pull:`152`, :pull:`91`, :pull:`48`, :pull:`90`, :pull:`96` and :pull:`99`.
+* Adopt No Code Of Conduct, see :pull:`212`.
+* Measure code coverage, enable codecov.io reports.  See :pull:`217`.
+* Adopt pep8 (:pull:`2`) and then flake8 (:pull:`214`) for code quality testing.
+* Add regression tests with DIOFANT_USE_CACHE=False :pull:`323`.
+* Add interface tests, see :pull:`219` and :pull:`307`.
+* Test for no DeprecationWarning in the codebase, see :pull:`356`.
 
 Issues closed
 =============
 
-* `#3 <https://github.com/diofant/diofant/issues/3>`_ Set up documentation on the readthedocs
-* `#20 <https://github.com/diofant/diofant/issues/20>`_ Add CONTRIBUTING.rst
-* `#24 <https://github.com/diofant/diofant/issues/24>`_ Remove support for some python versions
-* `#46 <https://github.com/diofant/diofant/issues/46>`_ Use rtd theme locally
-* `#55 <https://github.com/diofant/diofant/issues/55>`_ limit((x+exp(x))/(x-1), x, -oo) should be 1
-* `#56 <https://github.com/diofant/diofant/issues/56>`_ gruntz((ln(x)-1)**(1-sqrt(x)), x, E) should be oo
-* `sympy/sympy#9351 <https://github.com/sympy/sympy/issues/9351>`_ order-1 series wrong with non-zero expansion point
-* `#16 <https://github.com/diofant/diofant/issues/16>`_ solveset(sinh(x)) doesn't returns all solutions
-* `#22 <https://github.com/diofant/diofant/issues/22>`_ Use py.test for testing
-* `sympy/sympy#9034 <https://github.com/sympy/sympy/issues/9034>`_ Unicode printing problem with mixture of logs and powers
-* `sympy/sympy#7927 <https://github.com/sympy/sympy/issues/7927>`_ pretty print incorrect result with powers of sin
-* `sympy/sympy#9283 <https://github.com/sympy/sympy/issues/9283>`_ KroneckerDelta(p, 0) raises IndexError
-* `sympy/sympy#9274 <https://github.com/sympy/sympy/issues/9274>`_ Wrong Jordan form: complex eigenvalues w/ geo. mult. > alg. mult.
-* `sympy/sympy#9398 <https://github.com/sympy/sympy/issues/9398>`_ Simplify of small imaginary number yields 0
-* `sympy/sympy#7259 <https://github.com/sympy/sympy/issues/7259>`_ LambertW has no series expansion at x=0 (nan)
-* `#21 <https://github.com/diofant/diofant/issues/21>`_ Remove unsupported and obsoleted modules
-* `#124 <https://github.com/diofant/diofant/issues/124>`_ exp(n*x).subs({exp(x): x}) doesn't work for integer symbol n
-* `sympy/sympy#9832 <https://github.com/sympy/sympy/issues/9832>`_ ``x**2 < oo`` returns ``True`` but ``x < oo`` un-evaluated for real ``x``
-* `sympy/sympy#9053 <https://github.com/sympy/sympy/issues/9053>`_ ``MatMul(2, Matrix(...)).doit()`` doesn't do it
-* `sympy/sympy#9052 <https://github.com/sympy/sympy/issues/9052>`_ ``trace(2*A) != 2*Trace(A)`` because LHS still has an MatMul
-* `sympy/sympy#9053 <https://github.com/sympy/sympy/issues/9053>`_ ``MatMul(2, Matrix(...)).doit()`` doesn't do it
-* `sympy/sympy#9052 <https://github.com/sympy/sympy/issues/9052>`_ ``trace(2*A) != 2*Trace(A)`` because LHS still has an MatMul
-* `sympy/sympy#9533 <https://github.com/sympy/sympy/issues/9533>`_ Logical operators in octave_code
-* `sympy/sympy#9545 <https://github.com/sympy/sympy/issues/9545>`_ ``Mod(zoo, 0)`` causes RunTime Error
-* `sympy/sympy#9652 <https://github.com/sympy/sympy/issues/9652>`_ Fail in plot_implicit test on OSX 10.8.5
-* `sympy/sympy#8432 <https://github.com/sympy/sympy/issues/8432>`_ Tests fail, seems like Cython is not configured to compile with numpy correctly
-* `sympy/sympy#9542 <https://github.com/sympy/sympy/issues/9542>`_ codegen octave global vars should print "global foo" at top of function
-* `sympy/sympy#9326 <https://github.com/sympy/sympy/issues/9326>`_ Bug with Dummy
-* `sympy/sympy#9413 <https://github.com/sympy/sympy/issues/9413>`_ Circularity in assumptions of products
-* `sympy/sympy#8840 <https://github.com/sympy/sympy/issues/8840>`_ sympy fails to construct (1 + x)*x with disabled cache
-* `sympy/sympy#4898 <https://github.com/sympy/sympy/issues/4898>`_ Replace exp(x) with E**x internally
-* `#138 <https://github.com/diofant/diofant/issues/138>`_ Wrong polylog.eval for z=-1
-* `sympy/sympy#10195 <https://github.com/sympy/sympy/issues/10195>`_ Simplification bug on alternating series.
-* `#143 <https://github.com/diofant/diofant/issues/143>`_ powsimp((-1)**(odd/2)) != ImaginaryUnit
-* `sympy/sympy#10196 <https://github.com/sympy/sympy/issues/10196>`_ reduce_inequalities error
-* `sympy/sympy#10198 <https://github.com/sympy/sympy/issues/10198>`_ solving abs with negative powers
-* `sympy/sympy#7917 <https://github.com/sympy/sympy/issues/7917>`_ Implement cot as a ReciprocalTrigonometricFunction
-* `sympy/sympy#8649 <https://github.com/sympy/sympy/issues/8649>`_ If t is transcendental, t**n is determined (wrongly) to be non-integer
-* `#74 <https://github.com/diofant/diofant/issues/74>`_ Trivial limit's of sign fails
-* `#31 <https://github.com/diofant/diofant/issues/31>`_ Wrong automatical cancelation of expr with O terms
-* `sympy/sympy#5641 <https://github.com/sympy/sympy/issues/5641>`_ Compatibility with py.test
-* `sympy/sympy#10258 <https://github.com/sympy/sympy/issues/10258>`_ Relational involving Piecewise evaluates incorrectly as True
-* `sympy/sympy#10205 <https://github.com/sympy/sympy/issues/10205>`_ 10203: handle Eq and Ne with _solve_inequality
-* `sympy/sympy#10268 <https://github.com/sympy/sympy/issues/10268>`_ solving inequality involving exp fails for large values
-* `sympy/sympy#10237 <https://github.com/sympy/sympy/issues/10237>`_ improper inequality reduction
-* `sympy/sympy#10255 <https://github.com/sympy/sympy/issues/10255>`_ solving a Relational involving Piecewise fails
-* `sympy/sympy#10290 <https://github.com/sympy/sympy/issues/10290>`_ Computing series where the free variable is not just a symbol is broken
-* `sympy/sympy#10304 <https://github.com/sympy/sympy/issues/10304>`_ Equality involving expression with known real part and 0 should evaluate
-* `#148 <https://github.com/diofant/diofant/issues/148>`_ Drop py2 support?
-* `sympy/sympy#9471 <https://github.com/sympy/sympy/issues/9471>`_ Wrong limit with log and constant in exponent
-* `sympy/sympy#9449 <https://github.com/sympy/sympy/issues/9449>`_ limit fails with "maximum recursion depth exceeded" / Python crash
-* `sympy/sympy#8462 <https://github.com/sympy/sympy/issues/8462>`_ Trivial bounds on binomial coefficients
-* `sympy/sympy#9917 <https://github.com/sympy/sympy/issues/9917>`_ O(n*sin(n) + 1, (n, oo)) returns O(n*sin(n), (n, oo))
-* `sympy/sympy#7383 <https://github.com/sympy/sympy/issues/7383>`_ Integration error
-* `sympy/sympy#7098 <https://github.com/sympy/sympy/issues/7098>`_ Incorrect expression resulting from integral evaluation
-* `sympy/sympy#10323 <https://github.com/sympy/sympy/issues/10323>`_ bad ceiling(sqrt(big integer))
-* `sympy/sympy#10326 <https://github.com/sympy/sympy/issues/10326>`_ Interval(-oo, oo) contains oo
-* `sympy/sympy#10095 <https://github.com/sympy/sympy/issues/10095>`_ simplify((1/(2*E))**oo) returns `nan`
-* `sympy/sympy#4187 <https://github.com/sympy/sympy/issues/4187>`_ integrate(log(x)*exp(x), (x, 0, oo)) should return -EulerGamma
-* `sympy/sympy#10383 <https://github.com/sympy/sympy/issues/10383>`_ det of empty matrix is 1
-* `sympy/sympy#10382 <https://github.com/sympy/sympy/issues/10382>`_ limit(fibonacci(n + 1)/fibonacci(n), n, oo) does not give GoldenRatio
-* `sympy/sympy#10388 <https://github.com/sympy/sympy/issues/10388>`_ ``factorial2`` runs into ``RunTimeError`` for non-integer
-* `sympy/sympy#10391 <https://github.com/sympy/sympy/issues/10391>`_ solve((2*x + 8)*exp(-6*x), x) can't find any solution
-* `#32 <https://github.com/diofant/diofant/issues/32>`_ repr printing oddness
-* `sympy/sympy#8241 <https://github.com/sympy/sympy/issues/8241>`_ Wrong assumption/result in a parametric limit
-* `sympy/sympy#3539 <https://github.com/sympy/sympy/issues/3539>`_ Symbol.__call__ should not create a Function
-* `#203 <https://github.com/diofant/diofant/issues/203>`_ Wrong hyperexpand(hyper((-6, -7, -5), (-6, -6), 1))
-* `sympy/sympy#7216 <https://github.com/sympy/sympy/issues/7216>`_ Limits involving branch cuts of elementary functions not handled
-* `#19 <https://github.com/diofant/diofant/issues/19>`_ Remove obsoleted/redundant docs
-* `sympy/sympy#10503 <https://github.com/sympy/sympy/issues/10503>`_ Series return an incorrect result
-* `#210 <https://github.com/diofant/diofant/issues/210>`_ Incorrect nseries for cos(x**6)
-* `sympy/sympy#10567 <https://github.com/sympy/sympy/issues/10567>`_ Integral(v,t).doit() differs from integrate(v,t)
-* `sympy/sympy#9075 <https://github.com/sympy/sympy/issues/9075>`_ sympy.limit yields incorrect result
-* `sympy/sympy#10610 <https://github.com/sympy/sympy/issues/10610>`_ limit(3**n*3**(-n - 1)*(n + 1)**2/n**2, n, oo) is wrong
-* `#238 <https://github.com/diofant/diofant/issues/238>`_ Wrong coeff in \*_factor_list with RR domain
-* `#236 <https://github.com/diofant/diofant/issues/236>`_ simplify(summation(n/((n+2)*(n+4)*(n+8)), (n, 1, oo))) returns 521/25200
-* `sympy/sympy#4173 <https://github.com/sympy/sympy/issues/4173>`_ implement maximize([x**(1/x), x>0], x)
-* `sympy/sympy#10803 <https://github.com/sympy/sympy/issues/10803>`_ Bad pretty printing of power of Limit
-* `sympy/sympy#10836 <https://github.com/sympy/sympy/issues/10836>`_ Latex generation error for .series expansion for \rightarrow term
-* `#241 <https://github.com/diofant/diofant/issues/241>`_ Wrong hyperexpand(hyper((2, 3, 5, 9, 1), (1, 4, 6, 10), 1))
-* `#172 <https://github.com/diofant/diofant/issues/172>`_ limit(sin(x)**15,x,0,'-') is slow
-* `sympy/sympy#9558 <https://github.com/sympy/sympy/issues/9558>`_ Bug with limit
-* `#251 <https://github.com/diofant/diofant/issues/251>`_ Random MemoryError in test_gruntz_eval_special
-* `sympy/sympy#4949 <https://github.com/sympy/sympy/issues/4949>`_ solve_linear_system contains duplicate rref algorithm
-* `#213 <https://github.com/diofant/diofant/issues/213>`_ Consolidate all code for solving linear systems
-* `sympy/sympy#5952 <https://github.com/sympy/sympy/issues/5952>`_ Standard sets (ZZ, QQ, RR, etc.) for the sets module
-* `sympy/sympy#9608 <https://github.com/sympy/sympy/issues/9608>`_ Partition can't be ordered
-* `sympy/sympy#10961 <https://github.com/sympy/sympy/issues/10961>`_ fractional order Laguerre gives wrong result
-* `sympy/sympy#10976 <https://github.com/sympy/sympy/issues/10976>`_ incorrect answer for limit involving erf
-* `sympy/sympy#10995 <https://github.com/sympy/sympy/issues/10995>`_ acot(-x) evaluation
-* `sympy/sympy#11011 <https://github.com/sympy/sympy/issues/11011>`_ Scientific notation should be delimited for LaTeX
-* `#263 <https://github.com/diofant/diofant/issues/263>`_ Workaround decreased coverage due to randomness
-* `sympy/sympy#11062 <https://github.com/sympy/sympy/issues/11062>`_ Error while simplifying equations containing csc and sec using trigsimp_groebner
-* `sympy/sympy#10804 <https://github.com/sympy/sympy/issues/10804>`_ 1/limit(airybi(x)*root(x, 4)*exp(-2*x**(S(3)/2)/3), x, oo)**2 is wrong
-* `sympy/sympy#11063 <https://github.com/sympy/sympy/issues/11063>`_ Some wrong answers from rsolve
-* `#282 <https://github.com/diofant/diofant/issues/282>`_ Random test failure in master (minimize tests)
-* `sympy/sympy#9480 <https://github.com/sympy/sympy/issues/9480>`_ Matrix.rank() incorrect results
-* `#288 <https://github.com/diofant/diofant/issues/288>`_ Wrong rank for matrix with det = 0
-* `sympy/sympy#10497 <https://github.com/sympy/sympy/issues/10497>`_ next(iter(S.Integers*S.Integers)) hangs (expected (0, 0), ...)
-* `sympy/sympy#5383 <https://github.com/sympy/sympy/issues/5383>`_ Calculate limit error
-* `sympy/sympy#11270 <https://github.com/sympy/sympy/issues/11270>`_ Limit erroneously reported as infinity
-* `#296 <https://github.com/diofant/diofant/issues/296>`_ limit produces bad results with Floats
-* `sympy/sympy#5172 <https://github.com/sympy/sympy/issues/5172>`_ limit() throws TypeError: an integer is required
-* `sympy/sympy#7055 <https://github.com/sympy/sympy/issues/7055>`_ Failures in rsolve_hyper from test_rsolve_bulk()
-* `sympy/sympy#11261 <https://github.com/sympy/sympy/issues/11261>`_ Recursion solver fails
-* `#294 <https://github.com/diofant/diofant/issues/294>`_ Wrong rsolve(f(n)-f(n-1)-2*f(n-2)-2*n, f(n))
-* `sympy/sympy#11313 <https://github.com/sympy/sympy/issues/11313>`_ Series of Derivative
-* `#293 <https://github.com/diofant/diofant/issues/293>`_ classify_sysode should be modified to support mass matrix case in LODE
-* `#65 <https://github.com/diofant/diofant/issues/65>`_ Docs todo
-* `#215 <https://github.com/diofant/diofant/issues/215>`_ Replace test_code_quality.py with flake8/pep8 tests
-* `sympy/sympy#11290 <https://github.com/sympy/sympy/issues/11290>`_ 1st_exact_Integral wrong result
-* `sympy/sympy#10761 <https://github.com/sympy/sympy/issues/10761>`_ (1/(x**-2 + x**-3)).series(x, 0) gives wrong result
-* `#312 <https://github.com/diofant/diofant/issues/312>`_ Mod(-x, 2*x) should be x, not -x
-* `sympy/sympy#10024 <https://github.com/sympy/sympy/issues/10024>`_ Eq( Mod(x, 2*pi), 0 ) evaluates to False
-* `sympy/sympy#7985 <https://github.com/sympy/sympy/issues/7985>`_ Indexed should work with subs on a container
-* `sympy/sympy#9637 <https://github.com/sympy/sympy/issues/9637>`_ ``S.Reals - FiniteSet(n)`` returns ``EmptySet - FiniteSet(n)``
-* `sympy/sympy#10003 <https://github.com/sympy/sympy/issues/10003>`_ P(X < -1) of ExponentialDistribution
-* `sympy/sympy#10052 <https://github.com/sympy/sympy/issues/10052>`_ P(X < oo ) for any Continuous Distribution raises AttributeError
-* `sympy/sympy#10063 <https://github.com/sympy/sympy/issues/10063>`_ Integer raised to Float power does not evaluate
-* `sympy/sympy#10075 <https://github.com/sympy/sympy/issues/10075>`_ X.pdf(x) for Symbol x returns 0
-* `sympy/sympy#9823 <https://github.com/sympy/sympy/issues/9823>`_ Matrix power of identity matrix fails
-* `sympy/sympy#10156 <https://github.com/sympy/sympy/issues/10156>`_ do not use `has` to test against self.variables when factoring Sum
-* `sympy/sympy#10113 <https://github.com/sympy/sympy/issues/10113>`_ imageset(lambda x: x**2/(x**2 - 4), S.Reals) returns (1, ∞)
-* `sympy/sympy#10020 <https://github.com/sympy/sympy/issues/10020>`_ oo**I raises RunTimeError
-* `sympy/sympy#10240 <https://github.com/sympy/sympy/issues/10240>`_ Not(And(x>2, x<3)) does not evaluate
-* `sympy/sympy#8510 <https://github.com/sympy/sympy/issues/8510>`_ Differentiation of general functions
-* `sympy/sympy#10220 <https://github.com/sympy/sympy/issues/10220>`_ Matrix.jordan_cells() fails
-* `sympy/sympy#10092 <https://github.com/sympy/sympy/issues/10092>`_ subs into inequality involving RootOf raises GeneratorsNeeded
-* `sympy/sympy#10161 <https://github.com/sympy/sympy/issues/10161>`_ factor gives an invalid expression
-* `sympy/sympy#10243 <https://github.com/sympy/sympy/issues/10243>`_ Run the examples during automated testing or at release
-* `sympy/sympy#10274 <https://github.com/sympy/sympy/issues/10274>`_ The helpers kwarg in autowrap method is probably broken.
-* `sympy/sympy#10210 <https://github.com/sympy/sympy/issues/10210>`_ LaTex printing of Cycle
-* `sympy/sympy#9539 <https://github.com/sympy/sympy/issues/9539>`_ diophantine(6\*k + 9\*n + 20\*m - x) gives TypeError: unsupported operand type(s) for \*: 'NoneType' and 'Symbol'
-* `sympy/sympy#11407 <https://github.com/sympy/sympy/issues/11407>`_ Series expansion of the square root gives wrong result
-* `sympy/sympy#11413 <https://github.com/sympy/sympy/issues/11413>`_ Wrong result from Matrix norm
-* `sympy/sympy#11434 <https://github.com/sympy/sympy/issues/11434>`_ Matrix rank() produces wrong result
-* `#135 <https://github.com/diofant/diofant/issues/135>`_ Rename project and adapt imports (sympy -> diofant)
-* `#129 <https://github.com/diofant/diofant/issues/129>`_ Use gmpy2 in travis, get rid of gmpy support
-* `#133 <https://github.com/diofant/diofant/issues/133>`_ Test regressions with cache on/off
-* `#220 <https://github.com/diofant/diofant/issues/220>`_ Update docs/aboutus.rst with more actual info (and move this file?)
-* `sympy/sympy#11526 <https://github.com/sympy/sympy/issues/11526>`_ Different result of limit after simplify
-* `sympy/sympy#11553 <https://github.com/sympy/sympy/issues/11553>`_ Polynomial solve with GoldenRatio causes Traceback
-* `sympy/sympy#8045 <https://github.com/sympy/sympy/issues/8045>`_ make all NaN is_* properties that are now None -> False (including is_complex)
-* `#34 <https://github.com/diofant/diofant/issues/34>`_ assumptions todo
-* `#203 <https://github.com/diofant/diofant/issues/203>`_ Add changelog (in sphinx docs)
-* `sympy/sympy#11553 <https://github.com/sympy/sympy/issues/11553>`_ Polynomial solve with GoldenRatio causes Traceback
-* `sympy/sympy#11602 <https://github.com/sympy/sympy/issues/11602>`_ Replace \dots with \ldots or \cdots
-* `sympy/sympy#4720 <https://github.com/sympy/sympy/issues/4720>`_ Initial conditions in dsolve()
-* `sympy/sympy#11623 <https://github.com/sympy/sympy/issues/11623>`_ Wrong groebner basis
-* `sympy/sympy#10292 <https://github.com/sympy/sympy/issues/10292>`_ poly cannot generically be rebuilt from its args
-* `#333 <https://github.com/diofant/diofant/issues/333>`_ Expose docs for diofant.interactive (both entry-level and api)
-* `#218 <https://github.com/diofant/diofant/issues/218>`_ Remove manualintegrate?
-* `sympy/sympy#6572 <https://github.com/sympy/sympy/issues/6572>`_ Remove "#doctest: +SKIP" comments on valid docstrings
-* `sympy/sympy#10134 <https://github.com/sympy/sympy/issues/10134>`_ Remove "raise StopIteration"
-* `#329 <https://github.com/diofant/diofant/issues/329>`_ Drop examples/
-* `sympy/sympy#11672 <https://github.com/sympy/sympy/issues/11672>`_ limit(Rational(-1,2)**k, k, oo) fails
-* `#338 <https://github.com/diofant/diofant/issues/338>`_ Rosetta stone for dev's
-* `#351 <https://github.com/diofant/diofant/issues/351>`_ Test on CPython 3.6
-* `#352 <https://github.com/diofant/diofant/issues/352>`_ Enable testing for DeprecationWarning's
-* `sympy/sympy#11678 <https://github.com/sympy/sympy/issues/11678>`_ Invalid limit of floating point matrix power
-* `sympy/sympy#11746 <https://github.com/sympy/sympy/issues/11746>`_ undesired (wrong) substition behavior in sympy?
-* `sympy/sympy#3904 <https://github.com/sympy/sympy/issues/3904>`_ missing docstrings in core
-* `#364 <https://github.com/diofant/diofant/issues/364>`_ Random test failure in combinatorics
-* `sympy/sympy#3112 <https://github.com/sympy/sympy/issues/3112>`_ Asymptotic expansion
-* `sympy/sympy#9173 <https://github.com/sympy/sympy/issues/9173>`_ Series/limit fails unless expression is simplified first.
-* `sympy/sympy#9808 <https://github.com/sympy/sympy/issues/9808>`_ Complements with symbols should remain unevaluated
-* `sympy/sympy#9341 <https://github.com/sympy/sympy/issues/9341>`_ Cancelling very long polynomial expression
-* `sympy/sympy#9908 <https://github.com/sympy/sympy/issues/9908>`_ Sum(1/(n**3 - 1), (n, -oo, -2)).doit() raise UnboundLocalVariable
-* `sympy/sympy#6171 <https://github.com/sympy/sympy/issues/6171>`_ Limit of a piecewise function
-* `sympy/sympy#9276 <https://github.com/sympy/sympy/issues/9276>`_ ./bin/diagnose_imports: does it work at all?!
-* `sympy/sympy#10201 <https://github.com/sympy/sympy/issues/10201>`_ Solution of "first order linear non-homogeneous ODE-System" is wrong
-* `sympy/sympy#9057 <https://github.com/sympy/sympy/issues/9057>`_ segfault on printing Integral of phi(t)
-* `sympy/sympy#11159 <https://github.com/sympy/sympy/issues/11159>`_ Substitution with E fails
-* `sympy/sympy#2839 <https://github.com/sympy/sympy/issues/2839>`_ init_session(auto_symbols=True) and init_session(auto_int_to_Integer=True) do not work
-* `sympy/sympy#11081 <https://github.com/sympy/sympy/issues/11081>`_ where possible, use python fractions for Rational
-* `sympy/sympy#10974 <https://github.com/sympy/sympy/issues/10974>`_ solvers.py contains BOM character
-* `sympy/sympy#10806 <https://github.com/sympy/sympy/issues/10806>`_ LaTeX printer: Integral not surrounded in brackets
-* `sympy/sympy#10801 <https://github.com/sympy/sympy/issues/10801>`_ Make limit work with binomial
-* `sympy/sympy#9549 <https://github.com/sympy/sympy/issues/9549>`_ series expansion: (x**2 + x + 1)/(x**3 + x**2) about oo gives wrong result
-* `sympy/sympy#4231 <https://github.com/sympy/sympy/issues/4231>`_ add a test for complex integral from wikipedia
-* `sympy/sympy#8634 <https://github.com/sympy/sympy/issues/8634>`_ limit(x**n, x, -oo) is sometimes wrong
-* `sympy/sympy#8481 <https://github.com/sympy/sympy/issues/8481>`_ Wrong error raised trying to calculate limit of Poisson PMF
-* `sympy/sympy#9956 <https://github.com/sympy/sympy/issues/9956>`_ Union(Interval(-oo, oo), FiniteSet(1)) not evaluated
-* `sympy/sympy#9747 <https://github.com/sympy/sympy/issues/9747>`_ test_piecewise_lambdify fails locally
-* `sympy/sympy#7853 <https://github.com/sympy/sympy/issues/7853>`_ Deprecation of lambdify converting `Matrix` -> `numpy.matrix`
-* `sympy/sympy#9634 <https://github.com/sympy/sympy/issues/9634>`_ Repeated example in the docstring of hermite
-* `sympy/sympy#8500 <https://github.com/sympy/sympy/issues/8500>`_ Using and operator vs fuzzy_and while querying assumptions
-* `sympy/sympy#9192 <https://github.com/sympy/sympy/issues/9192>`_ O(y + 1) = O(1)
-* `sympy/sympy#7130 <https://github.com/sympy/sympy/issues/7130>`_ Definite integral returns an answer with indefinite integrals
-* `sympy/sympy#8514 <https://github.com/sympy/sympy/issues/8514>`_ Inverse Laplace transform of a simple function fails after updating from 0.7.5 to 0.7.6
-* `sympy/sympy#9334 <https://github.com/sympy/sympy/issues/9334>`_ Numexpr must be string argument to lambdify
-* `sympy/sympy#8229 <https://github.com/sympy/sympy/issues/8229>`_ limit((x**Rational(1,4)-2)/(sqrt(x)-4)**Rational(2, 3), x, 16) NotImplementedError
-* `sympy/sympy#8061 <https://github.com/sympy/sympy/issues/8061>`_ limit(4**(acos(1/(1+x**2))**2)/log(1+x, 4), x, 0) raises NotImplementedError
-* `sympy/sympy#7872 <https://github.com/sympy/sympy/issues/7872>`_ Substitution in Order fails
-* `sympy/sympy#3496 <https://github.com/sympy/sympy/issues/3496>`_ limits for complex variables
-* `sympy/sympy#2929 <https://github.com/sympy/sympy/issues/2929>`_ limit((x*exp(x))/(exp(x)-1), x, -oo) gives -oo
-* `sympy/sympy#8203 <https://github.com/sympy/sympy/issues/8203>`_ Why is oo real?
-* `sympy/sympy#7649 <https://github.com/sympy/sympy/issues/7649>`_ S.Zero.is_imaginary should be True?
-* `sympy/sympy#7256 <https://github.com/sympy/sympy/issues/7256>`_ use old assumptions in code
-* `sympy/sympy#6783 <https://github.com/sympy/sympy/issues/6783>`_ Get rid of confusing assumptions
-* `sympy/sympy#5662 <https://github.com/sympy/sympy/issues/5662>`_ AssocOp._eval_template_is_attr is wrong or misused
-* `sympy/sympy#5295 <https://github.com/sympy/sympy/issues/5295>`_ Document assumptions
-* `sympy/sympy#4856 <https://github.com/sympy/sympy/issues/4856>`_ coding style
-* `sympy/sympy#4555 <https://github.com/sympy/sympy/issues/4555>`_ use pyflakes to identify simple bugs in sympy and fix them
-* `sympy/sympy#5773 <https://github.com/sympy/sympy/issues/5773>`_ Remove the cmp_to_key() helper function
-* `sympy/sympy#5484 <https://github.com/sympy/sympy/issues/5484>`_ use sort_key instead of old comparison system
-* `sympy/sympy#8825 <https://github.com/sympy/sympy/issues/8825>`_ Can't use both weakref's & cache
-* `sympy/sympy#8635 <https://github.com/sympy/sympy/issues/8635>`_ limit(x**n-x**(n-k), x, oo) sometimes raises NotImplementedError
-* `sympy/sympy#8157 <https://github.com/sympy/sympy/issues/8157>`_ Non-informative error raised when computing limit of cos(n*pi)
-* `sympy/sympy#7872 <https://github.com/sympy/sympy/issues/7872>`_ Substitution in Order fails
-* `sympy/sympy#7599 <https://github.com/sympy/sympy/issues/7599>`_ Addition of expression and order term fails
-* `sympy/sympy#6179 <https://github.com/sympy/sympy/issues/6179>`_ wrong order in series
-* `sympy/sympy#5415 <https://github.com/sympy/sympy/issues/5415>`_ limit involving multi-arg function (polygamma) fails
-* `sympy/sympy#2865 <https://github.com/sympy/sympy/issues/2865>`_ gruntz doesn't work properly for big-O with point!=0
-* `sympy/sympy#5907 <https://github.com/sympy/sympy/issues/5907>`_ integrate(1/(x**2 + a**2)**2, x) is wrong if a is real
-* `sympy/sympy#11722 <https://github.com/sympy/sympy/issues/11722>`_ series() calculation up to O(t**k) returns invalid coefficients for t**k * log(t)
-* `#347 <https://github.com/diofant/diofant/issues/347>`_ Search & mention more closed SymPy issues
-* `sympy/sympy#8804 <https://github.com/sympy/sympy/issues/8804>`_ series expansion of 1/x ignores order parameter
-* `sympy/sympy#10728 <https://github.com/sympy/sympy/issues/10728>`_ Dummy(commutative=False).is_zero -> False
-* `#360 <https://github.com/diofant/diofant/issues/360>`_ Fix "short" references to issues
-* `#328 <https://github.com/diofant/diofant/issues/328>`_ Final proofreading of entry-level sphinx docs
+* :issue:`3` Set up documentation on the readthedocs
+* :issue:`20` Add CONTRIBUTING.rst
+* :issue:`24` Remove support for some python versions
+* :issue:`46` Use rtd theme locally
+* :issue:`55` limit((x+exp(x))/(x-1), x, -oo) should be 1
+* :issue:`56` gruntz((ln(x)-1)**(1-sqrt(x)), x, E) should be oo
+* :sympyissue:`9351` order-1 series wrong with non-zero expansion point
+* :issue:`16` solveset(sinh(x)) doesn't returns all solutions
+* :issue:`22` Use py.test for testing
+* :sympyissue:`9034` Unicode printing problem with mixture of logs and powers
+* :sympyissue:`7927` pretty print incorrect result with powers of sin
+* :sympyissue:`9283` KroneckerDelta(p, 0) raises IndexError
+* :sympyissue:`9274` Wrong Jordan form: complex eigenvalues w/ geo. mult. > alg. mult.
+* :sympyissue:`9398` Simplify of small imaginary number yields 0
+* :sympyissue:`7259` LambertW has no series expansion at x=0 (nan)
+* :issue:`21` Remove unsupported and obsoleted modules
+* :issue:`124` exp(n*x).subs({exp(x): x}) doesn't work for integer symbol n
+* :sympyissue:`9832` ``x**2 < oo`` returns ``True`` but ``x < oo`` un-evaluated for real ``x``
+* :sympyissue:`9053` ``MatMul(2, Matrix(...)).doit()`` doesn't do it
+* :sympyissue:`9052` ``trace(2*A) != 2*Trace(A)`` because LHS still has an MatMul
+* :sympyissue:`9533` Logical operators in octave_code
+* :sympyissue:`9545` ``Mod(zoo, 0)`` causes RunTime Error
+* :sympyissue:`9652` Fail in plot_implicit test on OSX 10.8.5
+* :sympyissue:`8432` Tests fail, seems like Cython is not configured to compile with numpy correctly
+* :sympyissue:`9542` codegen octave global vars should print "global foo" at top of function
+* :sympyissue:`9326` Bug with Dummy
+* :sympyissue:`9413` Circularity in assumptions of products
+* :sympyissue:`8840` sympy fails to construct (1 + x)*x with disabled cache
+* :sympyissue:`4898` Replace exp(x) with E**x internally
+* :issue:`138` Wrong polylog.eval for z=-1
+* :sympyissue:`10195` Simplification bug on alternating series.
+* :issue:`143` powsimp((-1)**(odd/2)) != ImaginaryUnit
+* :sympyissue:`10196` reduce_inequalities error
+* :sympyissue:`10198` solving abs with negative powers
+* :sympyissue:`7917` Implement cot as a ReciprocalTrigonometricFunction
+* :sympyissue:`8649` If t is transcendental, t**n is determined (wrongly) to be non-integer
+* :issue:`74` Trivial limit's of sign fails
+* :issue:`31` Wrong automatical cancelation of expr with O terms
+* :sympyissue:`5641` Compatibility with py.test
+* :sympyissue:`10258` Relational involving Piecewise evaluates incorrectly as True
+* :sympyissue:`10205` 10203: handle Eq and Ne with _solve_inequality
+* :sympyissue:`10268` solving inequality involving exp fails for large values
+* :sympyissue:`10237` improper inequality reduction
+* :sympyissue:`10255` solving a Relational involving Piecewise fails
+* :sympyissue:`10290` Computing series where the free variable is not just a symbol is broken
+* :sympyissue:`10304` Equality involving expression with known real part and 0 should evaluate
+* :issue:`148` Drop py2 support?
+* :sympyissue:`9471` Wrong limit with log and constant in exponent
+* :sympyissue:`9449` limit fails with "maximum recursion depth exceeded" / Python crash
+* :sympyissue:`8462` Trivial bounds on binomial coefficients
+* :sympyissue:`9917` O(n*sin(n) + 1, (n, oo)) returns O(n*sin(n), (n, oo))
+* :sympyissue:`7383` Integration error
+* :sympyissue:`7098` Incorrect expression resulting from integral evaluation
+* :sympyissue:`10323` bad ceiling(sqrt(big integer))
+* :sympyissue:`10326` Interval(-oo, oo) contains oo
+* :sympyissue:`10095` simplify((1/(2*E))**oo) returns `nan`
+* :sympyissue:`4187` integrate(log(x)*exp(x), (x, 0, oo)) should return -EulerGamma
+* :sympyissue:`10383` det of empty matrix is 1
+* :sympyissue:`10382` limit(fibonacci(n + 1)/fibonacci(n), n, oo) does not give GoldenRatio
+* :sympyissue:`10388` ``factorial2`` runs into ``RunTimeError`` for non-integer
+* :sympyissue:`10391` solve((2*x + 8)*exp(-6*x), x) can't find any solution
+* :issue:`32` repr printing oddness
+* :sympyissue:`8241` Wrong assumption/result in a parametric limit
+* :sympyissue:`3539` Symbol.__call__ should not create a Function
+* :issue:`203` Wrong hyperexpand(hyper((-6, -7, -5), (-6, -6), 1))
+* :sympyissue:`7216` Limits involving branch cuts of elementary functions not handled
+* :issue:`19` Remove obsoleted/redundant docs
+* :sympyissue:`10503` Series return an incorrect result
+* :issue:`210` Incorrect nseries for cos(x**6)
+* :sympyissue:`10567` Integral(v,t).doit() differs from integrate(v,t)
+* :sympyissue:`9075` sympy.limit yields incorrect result
+* :sympyissue:`10610` limit(3**n*3**(-n - 1)*(n + 1)**2/n**2, n, oo) is wrong
+* :issue:`238` Wrong coeff in \*_factor_list with RR domain
+* :issue:`236` simplify(summation(n/((n+2)*(n+4)*(n+8)), (n, 1, oo))) returns 521/25200
+* :sympyissue:`4173` implement maximize([x**(1/x), x>0], x)
+* :sympyissue:`10803` Bad pretty printing of power of Limit
+* :sympyissue:`10836` Latex generation error for .series expansion for \rightarrow term
+* :issue:`241` Wrong hyperexpand(hyper((2, 3, 5, 9, 1), (1, 4, 6, 10), 1))
+* :issue:`172` limit(sin(x)**15,x,0,'-') is slow
+* :sympyissue:`9558` Bug with limit
+* :issue:`251` Random MemoryError in test_gruntz_eval_special
+* :sympyissue:`4949` solve_linear_system contains duplicate rref algorithm
+* :issue:`213` Consolidate all code for solving linear systems
+* :sympyissue:`5952` Standard sets (ZZ, QQ, RR, etc.) for the sets module
+* :sympyissue:`9608` Partition can't be ordered
+* :sympyissue:`10961` fractional order Laguerre gives wrong result
+* :sympyissue:`10976` incorrect answer for limit involving erf
+* :sympyissue:`10995` acot(-x) evaluation
+* :sympyissue:`11011` Scientific notation should be delimited for LaTeX
+* :issue:`263` Workaround decreased coverage due to randomness
+* :sympyissue:`11062` Error while simplifying equations containing csc and sec using trigsimp_groebner
+* :sympyissue:`10804` 1/limit(airybi(x)*root(x, 4)*exp(-2*x**(S(3)/2)/3), x, oo)**2 is wrong
+* :sympyissue:`11063` Some wrong answers from rsolve
+* :issue:`282` Random test failure in master (minimize tests)
+* :sympyissue:`9480` Matrix.rank() incorrect results
+* :issue:`288` Wrong rank for matrix with det = 0
+* :sympyissue:`10497` next(iter(S.Integers*S.Integers)) hangs (expected (0, 0), ...)
+* :sympyissue:`5383` Calculate limit error
+* :sympyissue:`11270` Limit erroneously reported as infinity
+* :issue:`296` limit produces bad results with Floats
+* :sympyissue:`5172` limit() throws TypeError: an integer is required
+* :sympyissue:`7055` Failures in rsolve_hyper from test_rsolve_bulk()
+* :sympyissue:`11261` Recursion solver fails
+* :issue:`294` Wrong rsolve(f(n)-f(n-1)-2*f(n-2)-2*n, f(n))
+* :sympyissue:`11313` Series of Derivative
+* :issue:`293` classify_sysode should be modified to support mass matrix case in LODE
+* :issue:`65` Docs todo
+* :issue:`215` Replace test_code_quality.py with flake8/pep8 tests
+* :sympyissue:`11290` 1st_exact_Integral wrong result
+* :sympyissue:`10761` (1/(x**-2 + x**-3)).series(x, 0) gives wrong result
+* :issue:`312` Mod(-x, 2*x) should be x, not -x
+* :sympyissue:`10024` Eq( Mod(x, 2*pi), 0 ) evaluates to False
+* :sympyissue:`7985` Indexed should work with subs on a container
+* :sympyissue:`9637` ``S.Reals - FiniteSet(n)`` returns ``EmptySet - FiniteSet(n)``
+* :sympyissue:`10003` P(X < -1) of ExponentialDistribution
+* :sympyissue:`10052` P(X < oo ) for any Continuous Distribution raises AttributeError
+* :sympyissue:`10063` Integer raised to Float power does not evaluate
+* :sympyissue:`10075` X.pdf(x) for Symbol x returns 0
+* :sympyissue:`9823` Matrix power of identity matrix fails
+* :sympyissue:`10156` do not use `has` to test against self.variables when factoring Sum
+* :sympyissue:`10113` imageset(lambda x: x**2/(x**2 - 4), S.Reals) returns (1, ∞)
+* :sympyissue:`10020` oo**I raises RunTimeError
+* :sympyissue:`10240` Not(And(x>2, x<3)) does not evaluate
+* :sympyissue:`8510` Differentiation of general functions
+* :sympyissue:`10220` Matrix.jordan_cells() fails
+* :sympyissue:`10092` subs into inequality involving RootOf raises GeneratorsNeeded
+* :sympyissue:`10161` factor gives an invalid expression
+* :sympyissue:`10243` Run the examples during automated testing or at release
+* :sympyissue:`10274` The helpers kwarg in autowrap method is probably broken.
+* :sympyissue:`10210` LaTex printing of Cycle
+* :sympyissue:`9539` diophantine(6\*k + 9\*n + 20\*m - x) gives TypeError: unsupported operand type(s) for \*: 'NoneType' and 'Symbol'
+* :sympyissue:`11407` Series expansion of the square root gives wrong result
+* :sympyissue:`11413` Wrong result from Matrix norm
+* :sympyissue:`11434` Matrix rank() produces wrong result
+* :issue:`135` Rename project and adapt imports (sympy -> diofant)
+* :issue:`129` Use gmpy2 in travis, get rid of gmpy support
+* :issue:`133` Test regressions with cache on/off
+* :issue:`220` Update docs/aboutus.rst with more actual info (and move this file?)
+* :sympyissue:`11526` Different result of limit after simplify
+* :sympyissue:`11553` Polynomial solve with GoldenRatio causes Traceback
+* :sympyissue:`8045` make all NaN is_* properties that are now None -> False (including is_complex)
+* :issue:`34` assumptions todo
+* :issue:`230` Add changelog (in sphinx docs)
+* :sympyissue:`11602` Replace \dots with \ldots or \cdots
+* :sympyissue:`4720` Initial conditions in dsolve()
+* :sympyissue:`11623` Wrong groebner basis
+* :sympyissue:`10292` poly cannot generically be rebuilt from its args
+* :issue:`333` Expose docs for diofant.interactive (both entry-level and api)
+* :issue:`218` Remove manualintegrate?
+* :sympyissue:`6572` Remove "#doctest: +SKIP" comments on valid docstrings
+* :sympyissue:`10134` Remove "raise StopIteration"
+* :issue:`329` Drop examples/
+* :sympyissue:`11672` limit(Rational(-1,2)**k, k, oo) fails
+* :issue:`338` Rosetta stone for dev's
+* :issue:`351` Test on CPython 3.6
+* :issue:`352` Enable testing for DeprecationWarning's
+* :sympyissue:`11678` Invalid limit of floating point matrix power
+* :sympyissue:`11746` undesired (wrong) substition behavior in sympy?
+* :sympyissue:`3904` missing docstrings in core
+* :issue:`364` Random test failure in combinatorics
+* :sympyissue:`3112` Asymptotic expansion
+* :sympyissue:`9173` Series/limit fails unless expression is simplified first.
+* :sympyissue:`9808` Complements with symbols should remain unevaluated
+* :sympyissue:`9341` Cancelling very long polynomial expression
+* :sympyissue:`9908` Sum(1/(n**3 - 1), (n, -oo, -2)).doit() raise UnboundLocalVariable
+* :sympyissue:`6171` Limit of a piecewise function
+* :sympyissue:`9276` ./bin/diagnose_imports: does it work at all?!
+* :sympyissue:`10201` Solution of "first order linear non-homogeneous ODE-System" is wrong
+* :sympyissue:`9057` segfault on printing Integral of phi(t)
+* :sympyissue:`11159` Substitution with E fails
+* :sympyissue:`2839` init_session(auto_symbols=True) and init_session(auto_int_to_Integer=True) do not work
+* :sympyissue:`11081` where possible, use python fractions for Rational
+* :sympyissue:`10974` solvers.py contains BOM character
+* :sympyissue:`10806` LaTeX printer: Integral not surrounded in brackets
+* :sympyissue:`10801` Make limit work with binomial
+* :sympyissue:`9549` series expansion: (x**2 + x + 1)/(x**3 + x**2) about oo gives wrong result
+* :sympyissue:`4231` add a test for complex integral from wikipedia
+* :sympyissue:`8634` limit(x**n, x, -oo) is sometimes wrong
+* :sympyissue:`8481` Wrong error raised trying to calculate limit of Poisson PMF
+* :sympyissue:`9956` Union(Interval(-oo, oo), FiniteSet(1)) not evaluated
+* :sympyissue:`9747` test_piecewise_lambdify fails locally
+* :sympyissue:`7853` Deprecation of lambdify converting `Matrix` -> `numpy.matrix`
+* :sympyissue:`9634` Repeated example in the docstring of hermite
+* :sympyissue:`8500` Using and operator vs fuzzy_and while querying assumptions
+* :sympyissue:`9192` O(y + 1) = O(1)
+* :sympyissue:`7130` Definite integral returns an answer with indefinite integrals
+* :sympyissue:`8514` Inverse Laplace transform of a simple function fails after updating from 0.7.5 to 0.7.6
+* :sympyissue:`9334` Numexpr must be string argument to lambdify
+* :sympyissue:`8229` limit((x**Rational(1,4)-2)/(sqrt(x)-4)**Rational(2, 3), x, 16) NotImplementedError
+* :sympyissue:`8061` limit(4**(acos(1/(1+x**2))**2)/log(1+x, 4), x, 0) raises NotImplementedError
+* :sympyissue:`7872` Substitution in Order fails
+* :sympyissue:`3496` limits for complex variables
+* :sympyissue:`2929` limit((x*exp(x))/(exp(x)-1), x, -oo) gives -oo
+* :sympyissue:`8203` Why is oo real?
+* :sympyissue:`7649` S.Zero.is_imaginary should be True?
+* :sympyissue:`7256` use old assumptions in code
+* :sympyissue:`6783` Get rid of confusing assumptions
+* :sympyissue:`5662` AssocOp._eval_template_is_attr is wrong or misused
+* :sympyissue:`5295` Document assumptions
+* :sympyissue:`4856` coding style
+* :sympyissue:`4555` use pyflakes to identify simple bugs in sympy and fix them
+* :sympyissue:`5773` Remove the cmp_to_key() helper function
+* :sympyissue:`5484` use sort_key instead of old comparison system
+* :sympyissue:`8825` Can't use both weakref's & cache
+* :sympyissue:`8635` limit(x**n-x**(n-k), x, oo) sometimes raises NotImplementedError
+* :sympyissue:`8157` Non-informative error raised when computing limit of cos(n*pi)
+* :sympyissue:`7599` Addition of expression and order term fails
+* :sympyissue:`6179` wrong order in series
+* :sympyissue:`5415` limit involving multi-arg function (polygamma) fails
+* :sympyissue:`2865` gruntz doesn't work properly for big-O with point!=0
+* :sympyissue:`5907` integrate(1/(x**2 + a**2)**2, x) is wrong if a is real
+* :sympyissue:`11722` series() calculation up to O(t**k) returns invalid coefficients for t**k * log(t)
+* :issue:`347` Search & mention more closed SymPy issues
+* :sympyissue:`8804` series expansion of 1/x ignores order parameter
+* :sympyissue:`10728` Dummy(commutative=False).is_zero -> False
+* :issue:`360` Fix "short" references to issues
+* :issue:`328` Final proofreading of entry-level sphinx docs
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.8.0+is%3Aclosed>`_

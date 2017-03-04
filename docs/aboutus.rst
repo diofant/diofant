@@ -2,9 +2,8 @@ About
 =====
 
 The `Diofant`_ project is a fork of the `SymPy`_, started by Sergey B
-Kirpichev, last reqular SymPy's commit is `cbdd072
-<https://github.com/diofant/diofant/commit/cbdd072>`_, (22 Feb 2015).
-The git history goes back to 2007, when development was in svn.
+Kirpichev, last reqular SymPy's commit is :commit:`cbdd072`, (22 Feb
+2015).  The git history goes back to 2007, when development was in svn.
 
 The project was named after the Diophantus of Alexandria.  His
 "Arithmetica" is one of the earliest known texts that use symbols in

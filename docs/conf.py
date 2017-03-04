@@ -27,7 +27,7 @@ warnings.simplefilter('error', UserWarning)
 # coming with Sphinx (named 'sphinx.addons.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
               'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.autosummary',
-              'sphinx.ext.intersphinx']
+              'sphinx.ext.intersphinx', 'sphinx.ext.extlinks']
 
 numpydoc_show_class_members = False
 numpydoc_class_members_toctree = False
@@ -122,6 +122,14 @@ graphviz_output_format = 'svg'
 intersphinx_mapping = {
     'python3': ('https://docs.python.org/3/', None),
     'numpy': ('https://docs.scipy.org/doc/numpy', None),
+}
+
+extlinks = {
+    'issue': ('https://github.com/diofant/diofant/issues/%s', '#'),
+    'pull': ('https://github.com/diofant/diofant/pull/%s', '#'),
+    'commit': ('https://github.com/diofant/diofant/commit/%s', ''),
+    'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#'),
+    'sympypull': ('https://github.com/sympy/dsympy/pull/%s', 'sympy/sympy#'),
 }
 
 # RTD theme support:
