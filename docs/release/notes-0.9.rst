@@ -103,8 +103,9 @@ Issues closed
 * :issue:`451` rsolve should handle hypergeometric inhomogeneous terms
 * :issue:`450` How to run from the repo without installing anything?
 * :issue:`453` Solve the rational inequality abs((x-1)/(x-5)) <= 1/3
+* :issue:`456` rsolve(f(n)-2*f(n-1)-3**n*n, f(n),[1]) fails with AttributeError
 
-.. last pr: #458
+.. last pr: #457
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
