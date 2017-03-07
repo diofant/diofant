@@ -4,7 +4,8 @@ from diofant import (Add, cos, Derivative, diff, exp, Float, Function,
                      I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt,
                      Symbol, symbols, Wild, pi, meijerg, WildFunction)
 
-from diofant.abc import x, y, a, b, c, gamma, mu
+from diofant.abc import x, y, a, b, c, gamma, mu, C, X, Y, Z, R, T
+
 
 __all__ = ()
 
@@ -586,3 +587,15 @@ def test_diofantissue_423():
     expr = (2*x + 9)/(x + 4) + (4*x + 3)/(5*x + 12)
     ans = {a1: 2, a2: 4, b1: 9, b2: 3, c1: 1, c2: 5, d1: 4, d2: 12}
     assert expr.match(pat) == ans
+
+
+def test_sympyissue_8694():
+    theta1, theta2, rho = symbols("theta1, theta2, rho")
+    S1, C1 = sin(theta1), cos(theta1)
+    X1 = Wild("X1", exclude=[rho, theta1, theta2])
+    Y1 = Wild("Y1", exclude=[rho, theta1, theta2])
+    Z1 = Wild("Z1", exclude=[rho, theta1, theta2])
+    eq = -Y + (-X + Z)*cos(theta1) + (X + Y)*sin(theta1)
+    assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z - X, Y1: X + Y, Z1: -Y}
+    eq = -Y + Z*cos(theta1) + (X + Y)*sin(theta1)
+    assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z, Y1: X + Y, Z1: -Y}
