@@ -5,7 +5,7 @@ from functools import reduce
 from mpmath import pslq, mp
 
 from ..core import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
-                    Dummy, expand_mul, I, pi, GoldenRatio)
+                    Dummy, expand_mul, I, pi, GoldenRatio, Integer)
 from ..functions import cos, sin, sqrt
 from .polytools import (Poly, PurePoly, sqf_norm, invert, factor_list,
                         groebner, resultant, degree, poly_from_expr,
@@ -631,11 +631,11 @@ def minimal_polynomial(ex, x=None, **args):
     if not dom.is_QQ:
         raise NotImplementedError("groebner method only works for QQ")
 
-    result = _minpoly_groebner(ex, x, cls)
+    result = _minpoly_groebner(ex, x)
     return cls(result, x, field=True) if polys else result.collect(x)
 
 
-def _minpoly_groebner(ex, x, cls):
+def _minpoly_groebner(ex, x):
     """
     Computes the minimal polynomial of an algebraic number
     using Groebner bases
@@ -647,6 +647,11 @@ def _minpoly_groebner(ex, x, cls):
     >>> from diofant.abc import x
     >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=False)
     x**2 - 2*x - 1
+
+    References
+    ==========
+
+    .. [1] [Adams94]_
     """
     from .polytools import degree
     from ..core import expand_multinomial
@@ -678,90 +683,40 @@ def _minpoly_groebner(ex, x, cls):
             return ex.func(*[bottom_up_scan(g) for g in ex.args])
         elif ex.is_Pow:
             if ex.exp.is_Rational:
-                if ex.exp < 0 and ex.base.is_Add:
-                    coeff, terms = ex.base.as_coeff_add()
-                    elt, _ = primitive_element(terms, polys=True)
-
-                    alg = ex.base - coeff
-
-                    inverse = invert(elt.gen + coeff, elt)
-                    base = inverse.eval(alg).expand()
-
-                    if ex.exp == -1:
-                        return bottom_up_scan(base)
-                    else:
-                        ex = base**(-ex.exp)
-                if not ex.exp.is_Integer:
-                    base, exp = ((ex.base**ex.exp.p).expand(),
-                                 Rational(1, ex.exp.q))
+                base, exp = ex.base, ex.exp
+                if exp.is_nonnegative:
+                    if exp.is_noninteger:
+                        base, exp = base**exp.p, Rational(1, exp.q)
+                    base = bottom_up_scan(base)
                 else:
-                    base, exp = ex.base, ex.exp
-                base = bottom_up_scan(base)
-                expr = base**exp
-
-                return update_mapping(expr, 1/exp, -base)
+                    bmp = PurePoly(_minpoly_groebner(1/base, x), x)
+                    base, exp = update_mapping(1/base, bmp), -exp
+                return update_mapping(ex, exp.q, -base**exp.p)
         elif ex.is_AlgebraicNumber:
-            if ex.coeffs() == [1, 0]:
-                return update_mapping(ex.root, ex.minpoly)
-            else:
-                base = AlgebraicNumber(ex.root)
-                return bottom_up_scan(ex.as_poly().eval(base))
+            base = update_mapping(ex.root, ex.minpoly)
+            res = Integer(0)
+            for exp, coeff in ex.rep.terms():
+                exp = Integer(exp[0])
+                if exp:
+                    res += coeff*update_mapping(base**exp, 1, -base**exp)
+                else:
+                    res += coeff
+            return res
+        elif isinstance(ex, RootOf) and ex.poly.domain.is_ZZ:
+            return update_mapping(ex, ex.poly)
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 
-    def simpler_inverse(ex):
-        """
-        Returns True if it is more likely that the minimal polynomial
-        algorithm works better with the inverse
-        """
-        if ex.is_Pow:
-            if (1/ex.exp).is_integer and ex.exp < 0:
-                if ex.base.is_Add:
-                    return True
-        if ex.is_Mul:
-            for p in ex.args:
-                if p.is_Add:
-                    return False
-                if p.is_Pow:
-                    if p.base.is_Add and p.exp > 0:
-                        return False
-            return True
-        return False
-
-    ex = expand_multinomial(ex)
-
-    if ex.is_Rational:
-        return ex.q*x - ex.p
-    elif ex.is_AlgebraicNumber and ex.coeffs() == [1, 0]:
-        return ex.minpoly.as_expr(x)
+    if ex.is_Pow and ex.exp.is_negative:
+        n, d = S.One, bottom_up_scan(1/ex)
     else:
-        inverted = simpler_inverse(ex)
-        if inverted:
-            ex = ex**-1
+        n, d = bottom_up_scan(ex), S.One
 
-        if ex.is_Pow and (1/ex.exp).is_Integer:
-            n = 1/ex.exp
-            result = _minimal_polynomial_sq(ex.base, n, x)
-        elif _is_sum_surds(ex):
-            result = _minimal_polynomial_sq(ex, S.One, x)
-        else:
-            result = None
+    F = [d*x - n] + list(mapping.values())
+    G = groebner(F, list(symbols.values()) + [x], order='lex')
 
-        if result is None:
-            bus = bottom_up_scan(ex)
-            F = [x - bus] + list(mapping.values())
-            G = groebner(F, list(symbols.values()) + [x], order='lex')
-
-            _, factors = factor_list(G[-1])
-            # by construction G[-1] has root `ex`
-            result = _choose_factor(factors, x, ex)
-
-        if inverted:
-            result = _invertx(result, x)
-            if result.coeff(x**degree(result, x)) < 0:
-                result = expand_mul(-result)
-
-        return result
+    _, factors = factor_list(G[-1])  # by construction G[-1] has root `ex`
+    return _choose_factor(factors, x, ex)
 
 
 minpoly = minimal_polynomial

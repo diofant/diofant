@@ -45,6 +45,7 @@ Minor changes
 * Support simple first-order DAE with :func:`~diofant.solvers.ode.dsolve` helper :func:`~diofant.solvers.ode.ode_lie_group`, see :pull:`413`.
 * Add support for limits of relational expressions, see :pull:`414`.
 * Support rewriting :class:`~diofant.functions.elementary.miscellaneous.Min` and :class:`~diofant.functions.elementary.miscellaneous.Max` as :class:`~diofant.functions.elementary.piecewise.Piecewise`, this allow solving more piecewise equations, see :pull:`426`.
+* :func:`~diofant.polys.numberfields.minimal_polynomial` fixed to support generic :class:`~diofant.core.numbers.AlgebraicNumber`'s, see :pull:`433` and :pull:`438`.
 
 Developer changes
 =================

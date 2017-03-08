@@ -1,6 +1,6 @@
 import pytest
 
-from diofant.core import (S, pi, oo, symbols, Function,
+from diofant.core import (S, pi, oo, symbols, Function, Dummy,
                           Rational, Integer, Tuple, Derivative,
                           Eq, Ne, Le, Gt, AlgebraicNumber)
 from diofant.integrals import Integral
@@ -33,6 +33,12 @@ def test_Rational():
     assert mcode(Rational(-3, -7)) == "3/7"
     assert mcode(x + Rational(3, 7)) == "x + 3/7"
     assert mcode(Rational(3, 7)*x) == "(3/7)*x"
+
+
+def test_symbols():
+    assert mcode(x) == "x"
+    d = Dummy("d")
+    assert mcode(d) == "Subscript[d, %s]" % d.dummy_index
 
 
 def test_Function():

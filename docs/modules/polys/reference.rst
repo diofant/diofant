@@ -98,14 +98,15 @@ Algebraic number fields
 .. currentmodule:: diofant.polys.numberfields
 
 .. autofunction:: minimal_polynomial
-.. autofunction:: minpoly
+
+.. function:: minpoly
+
+    alias of :func:`minimal_polynomial`
+
 .. autofunction:: primitive_element
 .. autofunction:: field_isomorphism
 .. autofunction:: to_number_field
 .. autofunction:: isolate
-
-.. autoclass:: AlgebraicNumber
-   :members:
 
 Monomials encoded as tuples
 ===========================

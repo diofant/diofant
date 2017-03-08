@@ -3,16 +3,13 @@
 import pytest
 
 from diofant import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
-                     pi, cos, sin, exp, Integer, GoldenRatio, solve)
-from diofant.polys.numberfields import (
-    minimal_polynomial,
-    primitive_element,
-    is_isomorphism_possible,
-    field_isomorphism_pslq,
-    field_isomorphism,
-    to_number_field,
-    AlgebraicNumber,
-    isolate, IntervalPrinter)
+                     pi, cos, sin, exp, Integer, GoldenRatio, solve, root)
+from diofant.polys.numberfields import (minimal_polynomial, primitive_element,
+                                        is_isomorphism_possible,
+                                        field_isomorphism_pslq,
+                                        field_isomorphism, to_number_field,
+                                        AlgebraicNumber, isolate,
+                                        IntervalPrinter)
 from diofant.polys.polyerrors import (IsomorphismFailed, NotAlgebraic,
                                       GeneratorsError)
 from diofant.polys.polyclasses import DMP
@@ -38,6 +35,10 @@ def test_minimal_polynomial():
 
     pytest.raises(NotAlgebraic,
                   lambda: minimal_polynomial(pi, x, compose=False))
+    pytest.raises(NotAlgebraic,
+                  lambda: minimal_polynomial(sin(sqrt(2)), x, compose=False))
+    pytest.raises(NotAlgebraic,
+                  lambda: minimal_polynomial(2**pi, x, compose=False))
 
     assert minimal_polynomial(sqrt(2), x) == x**2 - 2
     assert minimal_polynomial(sqrt(5), x) == x**2 - 5
@@ -103,6 +104,37 @@ def test_minimal_polynomial():
     theta = AlgebraicNumber(sqrt(2), (S.Half, 17))
     assert minimal_polynomial(theta, x) == 2*x**2 - 68*x + 577
 
+    theta = AlgebraicNumber(RootOf(x**7 + x - 1, x, 3), (1, 2, 0, 0, 1))
+    ans = minimal_polynomial(theta, x)
+    assert ans == (x**7 - 7*x**6 + 19*x**5 - 27*x**4 + 63*x**3 -
+                   115*x**2 + 82*x - 147)
+    assert minimal_polynomial(theta.as_expr(), x, compose=False) == ans
+    theta = AlgebraicNumber(RootOf(x**5 + 5*x - 1, x, 2), (1, -1, 1))
+    ans = (x**30 - 15*x**28 - 10*x**27 + 135*x**26 + 330*x**25 - 705*x**24 -
+           150*x**23 + 3165*x**22 - 6850*x**21 + 7182*x**20 + 3900*x**19 +
+           4435*x**18 + 11970*x**17 - 259725*x**16 - 18002*x**15 +
+           808215*x**14 - 200310*x**13 - 647115*x**12 + 299280*x**11 -
+           1999332*x**10 + 910120*x**9 + 2273040*x**8 - 5560320*x**7 +
+           5302000*x**6 - 2405376*x**5 + 1016640*x**4 - 804480*x**3 +
+           257280*x**2 - 53760*x + 1280)
+    assert minimal_polynomial(sqrt(theta) + root(theta, 3), x) == ans
+    theta = sqrt(1 + 1/(AlgebraicNumber(RootOf(x**3 + 4*x - 15, x, 1),
+                                        (1, 0, 1)) +
+                        1/(sqrt(3) +
+                           AlgebraicNumber(RootOf(x**3 - x + 1, x, 0),
+                                           (1, 2, -1)))))
+    ans = (2262264837876687263*x**36 - 38939909597855051866*x**34 +
+           315720420314462950715*x**32 - 1601958657418182606114*x**30 +
+           5699493671077371036494*x**28 - 15096777696140985506150*x**26 +
+           30847690820556462893974*x**24 - 49706549068200640994022*x**22 +
+           64013601241426223813103*x**20 - 66358713088213594372990*x**18 +
+           55482571280904904971976*x**16 - 37309340229165533529076*x**14 +
+           20016999328983554519040*x**12 - 8446273798231518826782*x**10 +
+           2738866994867366499481*x**8 - 657825125060873756424*x**6 +
+           110036313740049140508*x**4 - 11416087328869938298*x**2 +
+           551322649782053543)
+    assert minimal_polynomial(theta, x) == ans
+
     a, b = sqrt(2)/3 + 7, AlgebraicNumber(sqrt(2)/3 + 7)
 
     f = 81*x**8 - 2268*x**6 - 4536*x**5 + 22644*x**4 + 63216*x**3 - \
@@ -113,6 +145,9 @@ def test_minimal_polynomial():
 
     assert minimal_polynomial(
         a**Q(3, 2), x) == 729*x**4 - 506898*x**2 + 84604519
+
+    a = AlgebraicNumber(RootOf(x**3 + x - 1, x, 0))
+    assert minimal_polynomial(1/a**2, x) == x**3 - x**2 - 2*x - 1
 
     # issue sympy/sympy#5994
     eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
