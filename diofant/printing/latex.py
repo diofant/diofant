@@ -877,14 +877,6 @@ class LatexPrinter(Printer):
         else:
             return r"\Pi%s" % tex
 
-    def _print_gamma(self, expr, exp=None):
-        tex = r"\left(%s\right)" % self._print(expr.args[0])
-
-        if exp is not None:
-            return r"\Gamma^{%s}%s" % (exp, tex)
-        else:
-            return r"\Gamma%s" % tex
-
     def _print_uppergamma(self, expr, exp=None):
         tex = r"\left(%s, %s\right)" % (self._print(expr.args[0]),
                                         self._print(expr.args[1]))
@@ -1318,9 +1310,6 @@ class LatexPrinter(Printer):
     _print_ImmutableMatrix = _print_MatrixBase
     _print_Matrix = _print_MatrixBase
 
-    def _print_MatrixElement(self, expr):
-        return self._print(expr.parent) + '_{%s, %s}' % (expr.i, expr.j)
-
     def _print_MatrixSlice(self, expr):
         def latexslice(x):
             x = list(x)
@@ -1470,14 +1459,7 @@ class LatexPrinter(Printer):
             return r" \times ".join(self._print(set) for set in p.sets)
 
     def _print_RandomDomain(self, d):
-        try:
-            return 'Domain: ' + self._print(d.as_boolean())
-        except Exception:
-            try:
-                return ('Domain: ' + self._print(d.symbols) + ' in ' +
-                        self._print(d.set))
-            except:
-                return 'Domain on ' + self._print(d.symbols)
+        return 'Domain: ' + self._print(d.as_boolean())
 
     def _print_FiniteSet(self, s):
         items = sorted(s.args, key=default_sort_key)
@@ -1502,22 +1484,18 @@ class LatexPrinter(Printer):
               + r"\right\}")
 
     def _print_Interval(self, i):
-        if i.start == i.end:
-            return r"\left\{%s\right\}" % self._print(i.start)
-
+        if i.left_open:
+            left = '('
         else:
-            if i.left_open:
-                left = '('
-            else:
-                left = '['
+            left = '['
 
-            if i.right_open:
-                right = ')'
-            else:
-                right = ']'
+        if i.right_open:
+            right = ')'
+        else:
+            right = ']'
 
-            return r"\left%s%s, %s\right%s" % \
-                   (left, self._print(i.start), self._print(i.end), right)
+        return r"\left%s%s, %s\right%s" % (left, self._print(i.start),
+                                           self._print(i.end), right)
 
     def _print_Union(self, u):
         return r" \cup ".join([self._print(i) for i in u.args])
@@ -1590,21 +1568,13 @@ class LatexPrinter(Printer):
         domain = "domain=%s" % self._print(poly.get_domain())
 
         args = ", ".join([expr] + gens + [domain])
-        if cls in accepted_latex_functions:
-            tex = r"\%s {\left (%s \right )}" % (cls, args)
-        else:
-            tex = r"\operatorname{%s}{\left( %s \right)}" % (cls, args)
-
-        return tex
+        return r"\operatorname{%s}{\left( %s \right)}" % (cls, args)
 
     def _print_RootOf(self, root):
         cls = root.__class__.__name__
         expr = self._print(root.expr)
         index = root.index
-        if cls in accepted_latex_functions:
-            return r"\%s {\left(%s, %d\right)}" % (cls, expr, index)
-        else:
-            return r"\operatorname{%s} {\left(%s, %d\right)}" % (cls, expr, index)
+        return r"\operatorname{%s} {\left(%s, %d\right)}" % (cls, expr, index)
 
     def _print_RootSum(self, expr):
         cls = expr.__class__.__name__
@@ -1613,10 +1583,7 @@ class LatexPrinter(Printer):
         if expr.fun is not S.IdentityFunction:
             args.append(self._print(expr.fun))
 
-        if cls in accepted_latex_functions:
-            return r"\%s {\left(%s\right)}" % (cls, ", ".join(args))
-        else:
-            return r"\operatorname{%s} {\left(%s\right)}" % (cls, ", ".join(args))
+        return r"\operatorname{%s} {\left(%s\right)}" % (cls, ", ".join(args))
 
     def _print_PolyElement(self, poly):
         mul_symbol = self._settings['mul_symbol_latex']
@@ -1666,18 +1633,6 @@ class LatexPrinter(Printer):
     def _print_InverseCosineTransform(self, expr):
         return r"\mathcal{COS}^{-1}_{%s}\left[%s\right]\left(%s\right)" % (self._print(expr.args[1]), self._print(expr.args[0]), self._print(expr.args[2]))
 
-    def _print_DMP(self, p):
-        try:
-            if p.ring is not None:
-                # TODO incorporate order
-                return self._print(p.ring.to_diofant(p))
-        except SympifyError:
-            pass
-        return self._print(repr(p))
-
-    def _print_DMF(self, p):
-        return self._print_DMP(p)
-
     def _print_BaseScalarField(self, field):
         string = field._coord_sys._names[field._index]
         return r'\boldsymbol{\mathrm{%s}}' % self._print(Symbol(string))
@@ -1693,8 +1648,6 @@ class LatexPrinter(Printer):
             return r'\mathrm{d}%s' % self._print(Symbol(string))
         else:
             return 'd(%s)' % self._print(field)
-            string = self._print(field)
-            return r'\mathrm{d}\left(%s\right)' % string
 
     def _print_Tr(self, p):
         # Todo: Handle indices

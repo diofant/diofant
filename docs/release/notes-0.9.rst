@@ -105,6 +105,7 @@ Issues closed
 * :issue:`450` How to run from the repo without installing anything?
 * :issue:`453` Solve the rational inequality abs((x-1)/(x-5)) <= 1/3
 * :issue:`456` rsolve(f(n)-2*f(n-1)-3**n*n, f(n),[1]) fails with AttributeError
+* :sympyissue:`8694` Match fail
 
 .. last pr: #457
 
