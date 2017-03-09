@@ -16,7 +16,10 @@ from diofant import (
     meijerg, oo, polar_lift, polylog, re, root, sin, sqrt, symbols,
     uppergamma, zeta, subfactorial, totient, elliptic_k, elliptic_f,
     elliptic_e, elliptic_pi, cos, tan, Wild, true, false, Equivalent, Not,
-    Contains, divisor_sigma, SymmetricDifference, Dummy, QQ)
+    Contains, divisor_sigma, SymmetricDifference, Dummy, QQ, airyai,
+    airybi, airyaiprime, airybiprime, BlockMatrix, MatrixSymbol, ZeroMatrix,
+    Identity, Intersection, FF, CC)
+from diofant.functions import euler
 from diofant.abc import mu, tau
 from diofant.printing.latex import latex, translate
 from diofant.functions import DiracDelta, Heaviside, KroneckerDelta, LeviCivita
@@ -24,7 +27,7 @@ from diofant.logic import Implies
 from diofant.logic.boolalg import And, Or, Xor
 from diofant.core.trace import Tr
 from diofant.combinatorics.permutations import Cycle, Permutation
-from diofant.diffgeom import (Manifold, Patch, TensorProduct,
+from diofant.diffgeom import (Manifold, Patch, TensorProduct, Differential,
                               metric_to_Christoffel_2nd, CovarDerivativeOp)
 from diofant.diffgeom.rn import R2, R2_r
 
@@ -120,6 +123,7 @@ def test_latex_basic():
         r"z_i \vee \left(x_i \wedge y_i\right)"
     assert latex(Implies(x, y), symbol_names={x: "x_i", y: "y_i"}) == \
         r"x_i \Rightarrow y_i"
+    assert latex(Tuple(x, y)) == r'\left ( x, \quad y\right )'
 
 
 def test_latex_builtins():
@@ -233,30 +237,43 @@ def test_latex_functions():
         r"\sin^{-1} {x^{2}}"
 
     assert latex(factorial(k)) == r"k!"
+    assert latex(factorial(k)**2) == r'k!^{2}'
     assert latex(factorial(-k)) == r"\left(- k\right)!"
 
     assert latex(subfactorial(k)) == r"!k"
+    assert latex(subfactorial(k)**2) == r'!k^{2}'
     assert latex(subfactorial(-k)) == r"!\left(- k\right)"
 
     assert latex(factorial2(k)) == r"k!!"
     assert latex(factorial2(-k)) == r"\left(- k\right)!!"
+    assert latex(factorial2(k)**2) == r'k!!^{2}'
 
     assert latex(binomial(2, k)) == r"{\binom{2}{k}}"
+    assert latex(binomial(2, k)**3) == r'{\binom{2}{k}}^{3}'
 
     assert latex(FallingFactorial(3, k)) == r"{\left(3\right)}_{k}"
+    assert (latex(FallingFactorial(3, k)**2) ==
+            r'\left({\left(3\right)}_{k}\right)^{2}')
     assert latex(RisingFactorial(3, k)) == r"{3}^{\left(k\right)}"
+    assert (latex(FallingFactorial(3, k)**2) ==
+            r'\left({\left(3\right)}_{k}\right)^{2}')
 
     assert latex(floor(x)) == r"\lfloor{x}\rfloor"
+    assert latex(floor(x)**2) == r"\lfloor{x}\rfloor^{2}"
     assert latex(ceiling(x)) == r"\lceil{x}\rceil"
+    assert latex(ceiling(x)**2) == r"\lceil{x}\rceil^{2}"
     assert latex(Min(x, 2, x**3)) == r"\min\left(2, x, x^{3}\right)"
     assert latex(Min(x, y)**2) == r"\min\left(x, y\right)^{2}"
     assert latex(Max(x, 2, x**3)) == r"\max\left(2, x, x^{3}\right)"
     assert latex(Max(x, y)**2) == r"\max\left(x, y\right)^{2}"
     assert latex(Abs(x)) == r"\left|{x}\right|"
     assert latex(re(x)) == r"\Re{x}"
+    assert latex(re(x)**3) == r"\left(\Re{x}\right)^{3}"
     assert latex(re(x + y)) == r"\Re{x} + \Re{y}"
     assert latex(im(x)) == r"\Im{x}"
+    assert latex(im(x)**3) == r"\left(\Im{x}\right)^{3}"
     assert latex(conjugate(x)) == r"\overline{x}"
+    assert latex(conjugate(x)**3) == r'\overline{x}^{3}'
     assert latex(gamma(x)) == r"\Gamma{\left(x \right)}"
     w = Wild('w')
     assert latex(gamma(w)) == r"\Gamma{\left(w \right)}"
@@ -268,7 +285,9 @@ def test_latex_functions():
     assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( 0, \quad 0\right )\right)"
     assert latex(Order(x, (x, oo), (y, oo))) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( \infty, \quad \infty\right )\right)"
     assert latex(lowergamma(x, y)) == r'\gamma\left(x, y\right)'
+    assert latex(lowergamma(x, y)**3) == r'\gamma^{3}\left(x, y\right)'
     assert latex(uppergamma(x, y)) == r'\Gamma\left(x, y\right)'
+    assert latex(uppergamma(x, y)**3) == r'\Gamma^{3}\left(x, y\right)'
 
     assert latex(cot(x)) == r'\cot{\left (x \right )}'
     assert latex(coth(x)) == r'\coth{\left (x \right )}'
@@ -307,6 +326,7 @@ def test_latex_functions():
     assert latex(Ei(x)) == r'\operatorname{Ei}{\left (x \right )}'
     assert latex(Ei(x)**2) == r'\operatorname{Ei}^{2}{\left (x \right )}'
     assert latex(expint(x, y)**2) == r'\operatorname{E}_{x}^{2}\left(y\right)'
+    assert latex(expint(x, y)) == r'\operatorname{E}_{x}\left(y\right)'
     assert latex(Shi(x)**2) == r'\operatorname{Shi}^{2}{\left (x \right )}'
     assert latex(Si(x)**2) == r'\operatorname{Si}^{2}{\left (x \right )}'
     assert latex(Ci(x)**2) == r'\operatorname{Ci}^{2}{\left (x \right )}'
@@ -364,6 +384,17 @@ def test_latex_functions():
     # even when it is referred to without an argument
     assert latex(fjlkd) == r'\operatorname{fjlkd}'
 
+    assert latex(airyai(x)) == r'Ai\left(x\right)'
+    assert latex(airyai(x)**3) == r'Ai^{3}\left(x\right)'
+    assert latex(airybi(x)) == r'Bi\left(x\right)'
+    assert latex(airybi(x)**3) == r'Bi^{3}\left(x\right)'
+    assert latex(airyaiprime(x)) == r'Ai^\prime\left(x\right)'
+    assert latex(airyaiprime(x)**2) == r'{Ai^\prime}^{2}\left(x\right)'
+    assert latex(airybiprime(x)) == r'Bi^\prime\left(x\right)'
+    assert latex(airybiprime(x)**2) == r'{Bi^\prime}^{2}\left(x\right)'
+
+    assert latex(euler(x)) == r'E_{x}'
+
 
 def test_hyper_printing():
     from diofant import pi
@@ -374,9 +405,15 @@ def test_hyper_printing():
         r'{G_{4, 5}^{2, 3}\left(\begin{matrix} \pi, \pi, x & 1 \\0, 1 & 1, 2, \frac{3}{\pi} \end{matrix} \middle| {z} \right)}'
     assert latex(meijerg(Tuple(), Tuple(1), (0,), Tuple(), z)) == \
         r'{G_{1, 1}^{1, 0}\left(\begin{matrix}  & 1 \\0 &  \end{matrix} \middle| {z} \right)}'
+    assert latex(latex(meijerg(Tuple(), Tuple(1), (0,), Tuple(), z)**2)) == \
+        r'{{G_{1, 1}^{1, 0}\left(\begin{matrix}  & 1 \\0 &  ' \
+        r'\end{matrix} \middle| {z} \right)}}^{2}'
     assert latex(hyper((x, 2), (3,), z)) == \
         r'{{}_{2}F_{1}\left(\begin{matrix} x, 2 ' \
         r'\\ 3 \end{matrix}\middle| {z} \right)}'
+    assert latex(hyper((x, 2), (3,), z)**3) == \
+        r'{{{}_{2}F_{1}\left(\begin{matrix}' \
+        r' x, 2 \\ 3 \end{matrix}\middle| {z} \right)}}^{3}'
     assert latex(hyper(Tuple(), Tuple(1), z)) == \
         r'{{}_{0}F_{1}\left(\begin{matrix}  ' \
         r'\\ 1 \end{matrix}\middle| {z} \right)}'
@@ -501,6 +538,9 @@ def test_latex_sets():
     assert latex(s(*range(1, 6))) == r"\left\{1, 2, 3, 4, 5\right\}"
     assert latex(s(*range(1, 13))) == \
         r"\left\{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12\right\}"
+
+    assert (latex(Intersection(s(x), Interval(y, 2))) ==
+            r'\left\{x\right\} \cap \left[y, 2\right]')
 
 
 def test_latex_Range():
@@ -675,6 +715,9 @@ def test_latex_KroneckerDelta():
     # issue sympy/sympy#6578
     assert latex(KroneckerDelta(x + 1, y)) == r"\delta_{y, x + 1}"
 
+    assert (latex(Pow(KroneckerDelta(x, y), 2, evaluate=False)) ==
+            r'\left(\delta_{x y}\right)^{2}')
+
 
 def test_latex_LeviCivita():
     assert latex(LeviCivita(x, y, z)) == r"\varepsilon_{x y z}"
@@ -729,6 +772,16 @@ def test_latex_Matrix():
     assert latex(M2) == \
         r'\left[\begin{array}{ccccccccccc}' \
         r'0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\end{array}\right]'
+
+    n, m, l = symbols('n,m,l')
+    X = MatrixSymbol('X', n, n)
+    Y = MatrixSymbol('Y', m, m)
+    Z = MatrixSymbol('Z', n, m)
+    B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
+    assert latex(B) == r'\left[\begin{matrix}X & Z' \
+                       r'\\\mathbb{0} & Y\end{matrix}\right]'
+
+    assert latex(Identity(3)) == r'\mathbb{I}'
 
 
 def test_latex_matrix_with_functions():
@@ -875,6 +928,11 @@ def test_latex_Poly():
         r"\operatorname{Poly}{\left( 2.0 x + 1.0 y, x, y, domain=\mathbb{R} \right)}"
 
 
+def test_latex_domains():
+    assert latex(FF(2)) == r'\mathbb{F}_{2}'
+    assert latex(CC) == r'\mathbb{C}'
+
+
 def test_latex_RootOf():
     assert latex(RootOf(x**5 + x + 3, 0)) == \
         r"\operatorname{RootOf} {\left(x^{5} + x + 3, 0\right)}"
@@ -909,7 +967,6 @@ def test_custom_symbol_names():
 
 
 def test_matAdd():
-    from diofant import MatrixSymbol
     from diofant.printing.latex import LatexPrinter
     C = MatrixSymbol('C', 5, 5)
     B = MatrixSymbol('B', 5, 5)
@@ -921,7 +978,6 @@ def test_matAdd():
 
 
 def test_matMul():
-    from diofant import MatrixSymbol
     from diofant.printing.latex import LatexPrinter
     A = MatrixSymbol('A', 5, 5)
     B = MatrixSymbol('B', 5, 5)
@@ -939,9 +995,8 @@ def test_matMul():
 
 
 def test_latex_MatrixSlice():
-    from diofant.matrices.expressions import MatrixSymbol
     assert latex(MatrixSymbol('X', 10, 10)[:5, 1:9:2]) == \
-            r'X\left[:5, 1:9:2\right]'
+        r'X\left[:5, 1:9:2\right]'
     assert latex(MatrixSymbol('X', 10, 10)[5, :5:2]) == \
             r'X\left[5, :5:2\right]'
 
@@ -1004,7 +1059,7 @@ def test_Tr():
 
 
 def test_Adjoint():
-    from diofant.matrices import MatrixSymbol, Adjoint, Inverse, Transpose
+    from diofant.matrices import Adjoint, Inverse, Transpose
     X = MatrixSymbol('X', 2, 2)
     Y = MatrixSymbol('Y', 2, 2)
     assert latex(Adjoint(X)) == r'X^\dag'
@@ -1021,7 +1076,7 @@ def test_Adjoint():
 
 
 def test_Hadamard():
-    from diofant.matrices import MatrixSymbol, HadamardProduct
+    from diofant.matrices import HadamardProduct
     X = MatrixSymbol('X', 2, 2)
     Y = MatrixSymbol('Y', 2, 2)
     assert latex(HadamardProduct(X, Y*Y)) == r'X \circ \left(Y Y\right)'
@@ -1047,6 +1102,10 @@ def test_boolean_args_order():
 
     expr = Xor(*syms)
     assert latex(expr) == 'a \\veebar b \\veebar c \\veebar d \\veebar e \\veebar f'
+
+
+def test_booleans():
+    assert latex(Not(And(x, y))) == r'\neg (x \wedge y)'
 
 
 def test_imaginary():
@@ -1274,6 +1333,8 @@ def test_Pow():
     assert (latex(Float('1.453e4500')**x) ==
             r"\left(1.453 \cdot 10^{4500}\right)^{x}")
 
+    assert latex(1/sqrt(x)) == r'\frac{1}{\sqrt{x}}'
+
 
 def test_sympyissue_7180():
     assert latex(Equivalent(x, y)) == r"x \equiv y"
@@ -1320,3 +1381,9 @@ def test_diffgeom():
                                    TensorProduct(R2.dy, R2.dy))
     cvd = CovarDerivativeOp(R2.x*R2.e_x, ch)
     assert latex(cvd) == r'\mathbb{\nabla}_{\boldsymbol{\mathrm{x}} \partial_{x}}'
+
+    g = Function('g')
+    s_field = g(R2.x, R2.y)
+    dg = Differential(s_field)
+    assert latex(dg) == r'd(g{\left (\boldsymbol{\mathrm{x}},' \
+                        r'\boldsymbol{\mathrm{y}} \right )})'
