@@ -480,11 +480,14 @@ atoms_table = {
 }
 
 
-def pretty_atom(atom_name):
+def pretty_atom(atom_name, default=None):
     """return pretty representation of an atom"""
     if _use_unicode:
         return atoms_table[atom_name]
     else:
+        if default is not None:
+            return default
+
         raise KeyError('only unicode')  # send it default printer
 
 
