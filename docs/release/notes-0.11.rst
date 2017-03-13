@@ -182,3 +182,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18997` Incorrect limit result involving Abs, returns expression involving a symbol
 * :sympyissue:`18992` Possibly incorrect limit related to Stirling's formula
 * :sympyissue:`19026` Bug in Limit
+* :sympyissue:`12303` Ellipse comparison with other geometric entities throws an error
