@@ -18,7 +18,7 @@ from diofant import (
     elliptic_e, elliptic_pi, cos, tan, Wild, true, false, Equivalent, Not,
     Contains, divisor_sigma, SymmetricDifference, Dummy, QQ, airyai,
     airybi, airyaiprime, airybiprime, BlockMatrix, MatrixSymbol, ZeroMatrix,
-    Identity, Intersection, FF, CC)
+    Identity, Intersection, FF, CC, acot)
 from diofant.functions import euler
 from diofant.abc import mu, tau
 from diofant.printing.latex import latex, translate
@@ -92,6 +92,8 @@ def test_latex_basic():
     assert latex(1.5e20*x) == r"1.5 \cdot 10^{20} x"
     assert latex(1.5e20*x, mul_symbol='dot') == r"1.5 \cdot 10^{20} \cdot x"
     assert latex(1.5e20*x, mul_symbol='times') == r"1.5 \times 10^{20} \times x"
+
+    assert latex(x*y, order='none') == 'x y'
 
     assert latex(1/sin(x)) == r"\frac{1}{\sin{\left (x \right )}}"
     assert latex(sin(x)**-1) == r"\frac{1}{\sin{\left (x \right )}}"
@@ -235,6 +237,10 @@ def test_latex_functions():
     assert latex(asin(x**2), inv_trig_style="power",
                  fold_func_brackets=True) == \
         r"\sin^{-1} {x^{2}}"
+    pytest.raises(ValueError, lambda: latex(asin(x)**2,
+                                            inv_trig_style="spam"))
+    assert (latex(acot(x)**2, fold_func_brackets=True) ==
+            r'\operatorname{acot}^{2}x')
 
     assert latex(factorial(k)) == r"k!"
     assert latex(factorial(k)**2) == r'k!^{2}'
@@ -254,9 +260,13 @@ def test_latex_functions():
     assert latex(FallingFactorial(3, k)) == r"{\left(3\right)}_{k}"
     assert (latex(FallingFactorial(3, k)**2) ==
             r'\left({\left(3\right)}_{k}\right)^{2}')
+    assert (latex(FallingFactorial(x, 1/y)) ==
+            r'{\left(x\right)}_{\left(\frac{1}{y}\right)}')
     assert latex(RisingFactorial(3, k)) == r"{3}^{\left(k\right)}"
-    assert (latex(FallingFactorial(3, k)**2) ==
-            r'\left({\left(3\right)}_{k}\right)^{2}')
+    assert (latex(RisingFactorial(3, k)**2) ==
+            r'\left({3}^{\left(k\right)}\right)^{2}')
+    assert (latex(RisingFactorial(1/x, y)) ==
+            r'{\left(\frac{1}{x}\right)}^{\left(y\right)}')
 
     assert latex(floor(x)) == r"\lfloor{x}\rfloor"
     assert latex(floor(x)**2) == r"\lfloor{x}\rfloor^{2}"
@@ -267,11 +277,14 @@ def test_latex_functions():
     assert latex(Max(x, 2, x**3)) == r"\max\left(2, x, x^{3}\right)"
     assert latex(Max(x, y)**2) == r"\max\left(x, y\right)^{2}"
     assert latex(Abs(x)) == r"\left|{x}\right|"
+    assert latex(Abs(x)**3) == r'\left|{x}\right|^{3}'
     assert latex(re(x)) == r"\Re{x}"
     assert latex(re(x)**3) == r"\left(\Re{x}\right)^{3}"
     assert latex(re(x + y)) == r"\Re{x} + \Re{y}"
+    assert latex(re(1/x, evaluate=False)) == r'\Re {\left (\frac{1}{x} \right )}'
     assert latex(im(x)) == r"\Im{x}"
     assert latex(im(x)**3) == r"\left(\Im{x}\right)^{3}"
+    assert latex(im(1/x, evaluate=False)) == r'\Im {\left ( \frac{1}{x} \right )}'
     assert latex(conjugate(x)) == r"\overline{x}"
     assert latex(conjugate(x)**3) == r'\overline{x}^{3}'
     assert latex(gamma(x)) == r"\Gamma{\left(x \right)}"
@@ -497,6 +510,7 @@ def test_latex_derivatives():
 
 
 def test_latex_subs():
+    assert latex(Subs(x, x, 1)) == r'\left. x \right|_{\substack{ x=1 }}'
     assert latex(Subs(x*y, (
         x, y), (1, 2))) == r'\left. x y \right|_{\substack{ x=1\\ y=2 }}'
 
@@ -736,6 +750,8 @@ def test_mode():
         expr, mode='equation*') == '\\begin{equation*}x + y\\end{equation*}'
     assert latex(
         expr, mode='equation') == '\\begin{equation}x + y\\end{equation}'
+
+    pytest.raises(ValueError, lambda: latex(expr, mode='spam'))
 
 
 def test_latex_Piecewise():
@@ -1316,6 +1332,9 @@ def test_Mul():
     assert latex(e) == r'2 x + 2'
     e = Mul(1, 1, evaluate=False)
     assert latex(e) == r'1 \cdot 1'
+
+    e = x*(z - 1 + x + 1/(x - y))/(x - y)
+    assert latex(e) == r'\frac{x}{x - y} \left(x + z - 1 + \frac{1}{x - y}\right)'
 
 
 def test_Add():
