@@ -10,7 +10,7 @@ from diofant import (
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
     Interval, Union, Integer, Float, Complement, Intersection,
-    MatrixSymbol)
+    MatrixSymbol, AlgebraicNumber)
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2_r
 from diofant.functions import (
@@ -4880,3 +4880,15 @@ def test_MatrixElement():
     X = MatrixSymbol('X', 2, 2)
     n = Symbol('n', integer=True)
     assert pretty(X[n, 0]) == 'X[n, 0]'
+
+
+def test_AlgebraicNumber():
+    a = AlgebraicNumber(sqrt(2), (1, 1))
+    b = AlgebraicNumber(sqrt(2), (1, 1), alias="theta")
+    ucode_str = \
+"""\
+      ___\n\
+1 + ╲╱ 2 \
+"""
+    assert upretty(a) == ucode_str
+    assert upretty(b) == "θ + 1"
