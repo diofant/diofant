@@ -573,6 +573,7 @@ def test_simplify():
     d = -(3*2**pi)**(1/pi) + 2*3**(1/pi)
     assert d.is_real
     assert simplify(Eq(1 + I*d, 0)) is False
+    assert simplify(Ne(1 + I*d, 0)) is True
 
 
 def test_equals():

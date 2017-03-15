@@ -170,36 +170,34 @@ class Relational(Boolean, Expr, EvalfMixin):
                 return l
 
     def _eval_simplify(self, ratio, measure):
-        r = self
-        r = r.func(r.lhs.simplify(ratio=ratio, measure=measure),
-                   r.rhs.simplify(ratio=ratio, measure=measure))
-        if r not in (S.true, S.false):
-            if isinstance(r.lhs, Expr) and isinstance(r.rhs, Expr):
-                dif = r.lhs - r.rhs
-                # We want a Number to compare with zero and be sure to get a
-                # True/False answer.  Check if we can deduce that dif is
-                # definitively zero or non-zero.  If non-zero, replace with an
-                # approximation.  If .equals(0) gives None, cannot be deduced.
-                if not dif.has(Dummy, Symbol):
-                    know = dif.equals(0)
-                    if know:
-                        dif = S.Zero
-                    elif know is False:
-                        if r.func is Eq:
-                            return False
-                        elif r.func is Ne:
-                            return True
-                        else:
-                            for prec in giant_steps(2, TARGET):
-                                ndif = dif.evalf(prec)
-                                if ndif._prec != 1:
-                                    break
-                            if ndif._prec > 1:
+        r = self.func(self.lhs.simplify(ratio=ratio, measure=measure),
+                      self.rhs.simplify(ratio=ratio, measure=measure))
+
+        if r.is_Relational:
+            dif = r.lhs - r.rhs
+            # We want a Number to compare with zero and be sure to get a
+            # True/False answer.  Check if we can deduce that dif is
+            # definitively zero or non-zero.  If non-zero, replace with an
+            # approximation.  If .equals(0) gives None, cannot be deduced.
+            if not dif.has(Dummy, Symbol):
+                know = dif.equals(0)
+                if know:
+                    dif = S.Zero
+                elif know is False:
+                    if r.func is Eq:
+                        return False
+                    elif r.func is Ne:
+                        return True
+                    else:
+                        for prec in giant_steps(2, TARGET):
+                            ndif = dif.evalf(prec)
+                            if ndif._prec != 1:
                                 dif = ndif
-                # Can definitively compare a Number to zero, if appropriate.
-                if dif.is_Number and dif.is_extended_real:
-                    # Always T/F (we never return an expression w/ the evalf)
-                    r = r.func._eval_relation(dif, S.Zero)
+                                break
+            # Can definitively compare a Number to zero, if appropriate.
+            if dif.is_Number and dif.is_extended_real:
+                # Always T/F (we never return an expression w/ the evalf)
+                r = r.func._eval_relation(dif, S.Zero)
 
         r = r.canonical
         if measure(r) < ratio*measure(self):
