@@ -1179,6 +1179,12 @@ class Rational(Number):
             return Rational(self.p*other.q + self.q*other.p, self.q*other.q)
         elif isinstance(other, Float):
             return other + self
+        elif isinstance(other, AlgebraicNumber):
+            from ..polys.polyclasses import DMP
+            me = DMP.from_diofant_list((self,), 0,
+                                       other.minpoly.get_domain())
+            coeffs = other.rep + me
+            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__add__(self, other)
 
@@ -1188,6 +1194,12 @@ class Rational(Number):
             return Rational(self.p*other.q - self.q*other.p, self.q*other.q)
         elif isinstance(other, Float):
             return -other + self
+        elif isinstance(other, AlgebraicNumber):
+            from ..polys.polyclasses import DMP
+            me = DMP.from_diofant_list((self,), 0,
+                                       other.minpoly.get_domain())
+            coeffs = me - other.rep
+            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__sub__(self, other)
 
@@ -1197,6 +1209,12 @@ class Rational(Number):
             return Rational(self.p*other.p, self.q*other.q)
         elif isinstance(other, Float):
             return other*self
+        elif isinstance(other, AlgebraicNumber):
+            from ..polys.polyclasses import DMP
+            me = DMP.from_diofant_list((self,), 0,
+                                       other.minpoly.get_domain())
+            coeffs = me * other.rep
+            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__mul__(self, other)
 
@@ -1268,8 +1286,6 @@ class Rational(Number):
 
         if self.is_negative and expt.is_even:
             return (-self)**expt
-
-        return
 
     def _as_mpf_val(self, prec):
         return mlib.from_rational(self.p, self.q, prec, rnd)
@@ -1845,6 +1861,58 @@ class AlgebraicNumber(Expr):
     @property
     def free_symbols(self):
         return set()
+
+    def _eval_power(self, expt):
+        from ..polys.polyclasses import ANP
+        if expt.is_Integer:
+            expt = int(expt)
+            if expt >= 0:
+                coeffs = self.rep**expt
+            else:
+                coeffs = ANP(self.rep.to_dict(), self.minpoly.rep,
+                             self.rep.domain)**expt
+            return self.func(self, coeffs.to_tuple(), self.alias)
+
+    @_sympifyit('other', NotImplemented)
+    def __add__(self, other):
+        if isinstance(other, Rational):
+            from ..polys.polyclasses import DMP
+            other = DMP.from_diofant_list((other,), 0,
+                                          self.minpoly.get_domain())
+            coeffs = self.rep + other
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif (isinstance(other, AlgebraicNumber) and
+              self.minpoly == other.minpoly and self.root == other.root):
+            coeffs = self.rep + other.rep
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        else:
+            return Number.__add__(self, other)
+
+    @_sympifyit('other', NotImplemented)
+    def __sub__(self, other):
+        if isinstance(other, Rational):
+            from ..polys.polyclasses import DMP
+            other = DMP.from_diofant_list((other,), 0,
+                                          self.minpoly.get_domain())
+            coeffs = self.rep - other
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif (isinstance(other, AlgebraicNumber) and
+              self.minpoly == other.minpoly and self.root == other.root):
+            coeffs = self.rep - other.rep
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        else:
+            return Number.__sub__(self, other)
+
+    @_sympifyit('other', NotImplemented)
+    def __mul__(self, other):
+        if isinstance(other, Rational):
+            from ..polys.polyclasses import DMP
+            other = DMP.from_diofant_list((other,), 0,
+                                          self.minpoly.get_domain())
+            coeffs = self.rep * other
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        else:
+            return Number.__mul__(self, other)
 
     def _eval_evalf(self, prec):
         return self.as_expr()._evalf(prec)

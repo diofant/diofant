@@ -97,6 +97,8 @@ def test_minimal_polynomial():
     assert minimal_polynomial(a, x, polys=True) == Poly(x**2 - 2)
     assert minimal_polynomial(b, x, polys=True) == Poly(x**2 - 3)
 
+    assert minimal_polynomial(sqrt(a), x, polys=True) == Poly(x**4 - 2)
+    assert minimal_polynomial(a + 1, x, polys=True) == Poly(x**2 - 2*x - 1)
     assert minimal_polynomial(sqrt(a/2 + 17), x) == 2*x**4 - 68*x**2 + 577
     assert minimal_polynomial(sqrt(b/2 + 17), x) == 4*x**4 - 136*x**2 + 1153
 
@@ -703,6 +705,38 @@ def test_AlgebraicNumber():
 
     a = AlgebraicNumber(RootOf(x**3 + 2*x - 1, x, 1), alias='alpha')
     assert a.free_symbols == set()
+
+    # integer powers:
+    assert a**0 == 1
+    assert a**2 == AlgebraicNumber(a, (1, 0, 0), alias='alpha')
+    assert a**5 == AlgebraicNumber(a, (1, 0, 0, 0, 0, 0), alias='alpha')
+    assert a**110 == AlgebraicNumber(a, ([1] + [0]*110), alias='alpha')
+    assert (a**pi).is_Pow
+
+    b = AlgebraicNumber(sqrt(2), (1, 0), alias='theta')
+    c = b + 1
+    assert c**2 == 2*b + 3
+    assert c**5 == 29*b + 41
+    assert c**-2 == 3 - 2*b
+    assert c**-11 == 5741*b - 8119
+
+    # arithmetics
+    assert a**3 == -2*a + 1 == a*(-2) + 1 == 1 + (-2)*a == 1 - 2*a
+    assert a**5 == a**2 + 4*a - 2
+    assert a**4 == -2*a**2 + a == a - 2*a**2
+    assert a**110 == (-2489094528619081871*a**2 + 3737645722703173544*a -
+                      1182958048412500088)
+
+    assert a + a == 2*a
+    assert 2*a - a == a
+    assert Integer(1) - a == (-a) + 1
+
+    assert (a + pi).is_Add
+    assert (pi + a).is_Add
+    assert (a - pi).is_Add
+    assert (pi - a).is_Add
+    assert (a*pi).is_Mul
+    assert (pi*a).is_Mul
 
 
 def test_to_algebraic_integer():
