@@ -1802,7 +1802,66 @@ converter[int] = Integer
 
 
 class AlgebraicNumber(Expr):
-    """Class for representing algebraic numbers in Diofant. """
+    r"""Class for algebraic numbers in Diofant.
+
+    Represents the algebraic number in the field `\mathbb Q[\theta]`
+    given by
+
+    .. math::
+        c_n \theta^n + c_{n-1} \theta^{n-1} + \dots + c_0
+
+    Parameters
+    ==========
+
+    expr : Expr
+        A generator `\theta` for the algebraic number.
+
+    coeffs : tuple, optional
+        A tuple of rational coefficients `(c_n, c_{n-1},\dots,c_0)`.
+        The default is ``(1, 0)``.
+
+    alias : Symbol, optional
+        Alias to denote the generator `\theta`.
+
+    Examples
+    ========
+
+    >>> from diofant import AlgebraicNumber, sqrt, RootOf
+    >>> from diofant.abc import x
+
+    >>> a = AlgebraicNumber(sqrt(3), alias='a')
+
+    Numbers in the same field are automatically combined by
+    arithmetic operations.
+
+    >>> a + 1
+    a + 1
+    >>> _ + a
+    2*a + 1
+
+    Powers with integer exponents also automatically evaluated and
+    the coefficient list reduced accordingly to the degree of the minimal
+    polynomial of `\theta`.
+
+    >>> _**3
+    30*a + 37
+    >>> 1/a
+    a/3
+
+    The generator `\theta` can be any algebraic number, represented in terms
+    of radicals or RootOf objects.
+
+    >>> b = AlgebraicNumber(RootOf(x**7 - x + 1, x, 1), (1, 2, -1), 'b')
+    >>> b
+    b**2 + 2*b - 1
+    >>> b**7
+    490*b**6 - 119*b**5 - 196*b**4 - 203*b**3 - 265*b**2 + 637*b - 198
+
+    See Also
+    ========
+
+    diofant.polys.rootoftools.RootOf
+    """
 
     is_AlgebraicNumber = True
     is_algebraic = True
