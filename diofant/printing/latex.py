@@ -79,9 +79,6 @@ modifier_dict = {
     # Faces
     'bold': lambda s: r'\boldsymbol{'+s+r'}',
     'bm': lambda s: r'\boldsymbol{'+s+r'}',
-    'cal': lambda s: r'\mathcal{'+s+r'}',
-    'scr': lambda s: r'\mathscr{'+s+r'}',
-    'frak': lambda s: r'\mathfrak{'+s+r'}',
     # Brackets
     'norm': lambda s: r'\left\|{'+s+r'}\right\|',
     'avg': lambda s: r'\left\langle{'+s+r'}\right\rangle',
@@ -113,12 +110,14 @@ class LatexPrinter(Printer):
     def __init__(self, settings=None):
         Printer.__init__(self, settings)
 
-        if 'mode' in self._settings:
-            valid_modes = ['inline', 'plain', 'equation',
-                           'equation*']
-            if self._settings['mode'] not in valid_modes:
-                raise ValueError("'mode' must be one of 'inline', 'plain', "
-                    "'equation' or 'equation*'")
+        valid_modes = ['inline', 'plain', 'equation', 'equation*']
+        if self._settings['mode'] not in valid_modes:
+            raise ValueError("'mode' must be one of 'inline', 'plain', "
+                             "'equation' or 'equation*'")
+        if self._settings['inv_trig_style'] not in ['power', 'full',
+                                                    'abbreviated']:
+            raise ValueError("'inv_trig_style' must be one of 'power', 'full'"
+                             "or 'abbreviated'")
 
         if self._settings['fold_short_frac'] is None and \
                 self._settings['mode'] == 'inline':
@@ -169,29 +168,6 @@ class LatexPrinter(Printer):
                                           and expr.is_Rational is False
                                           and not expr.is_Float)))
 
-    def _needs_function_brackets(self, expr):
-        """
-        Returns True if the expression needs to be wrapped in brackets when
-        passed as an argument to a function, False otherwise. This is a more
-        liberal version of _needs_brackets, in that many expressions which need
-        to be wrapped in brackets when added/subtracted/raised to a power do
-        not need them when passed to a function. Such an example is a*b.
-        """
-        if not self._needs_brackets(expr):
-            return False
-        else:
-            # Muls of the form a*b*c... can be folded
-            if expr.is_Mul and not self._mul_is_clean(expr):
-                return True
-            # Pows which don't need brackets can be folded
-            elif expr.is_Pow and not self._pow_is_clean(expr):
-                return True
-            # Add and Function always need brackets
-            elif expr.is_Add or expr.is_Function:
-                return True
-            else:
-                return False
-
     def _needs_mul_brackets(self, expr, first=False, last=False):
         """
         Returns True if the expression needs to be wrapped in brackets when
@@ -228,15 +204,6 @@ class LatexPrinter(Printer):
         if expr.is_Relational:
             return True
         return False
-
-    def _mul_is_clean(self, expr):
-        for arg in expr.args:
-            if arg.is_Function:
-                return False
-        return True
-
-    def _pow_is_clean(self, expr):
-        return not self._needs_brackets(expr.base)
 
     def _do_exponent(self, expr, exp):
         if exp is not None:
@@ -555,7 +522,7 @@ class LatexPrinter(Printer):
         expr, old, new = subs.args
         latex_expr = self._print(expr)
         latex_old = (self._print(e) for e in old)
-        latex_new = (self._print(e) for e in new)
+        latex_new = (self._print(e) for e in new)  # pragma: no branch
         latex_subs = r'\\ '.join(
             e[0] + '=' + e[1] for e in zip(latex_old, latex_new))
         return r'\left. %s \right|_{\substack{ %s }}' % (latex_expr, latex_subs)
@@ -638,60 +605,53 @@ class LatexPrinter(Printer):
         """
         func = expr.func.__name__
 
-        if hasattr(self, '_print_' + func):
-            return getattr(self, '_print_' + func)(expr, exp)
+        args = [ str(self._print(arg)) for arg in expr.args ]
+        # How inverse trig functions should be displayed, formats are:
+        # abbreviated: asin, full: arcsin, power: sin^-1
+        inv_trig_style = self._settings['inv_trig_style']
+        # If we are dealing with a power-style inverse trig function
+        inv_trig_power_case = False
+        # If it is applicable to fold the argument brackets
+        can_fold_brackets = (self._settings['fold_func_brackets'] and
+                             len(args) == 1)
+
+        inv_trig_table = ["asin", "acos", "atan", "acot"]
+
+        # If the function is an inverse trig function, handle the style
+        if func in inv_trig_table:
+            if inv_trig_style == "abbreviated":
+                func = func
+            elif inv_trig_style == "full":
+                func = "arc" + func[1:]
+            else:  # inv_trig_style == "power":
+                func = func[1:]
+                inv_trig_power_case = True
+
+                # Can never fold brackets if we're raised to a power
+                if exp is not None:
+                    can_fold_brackets = False
+
+        if inv_trig_power_case:
+            name = r"\%s^{-1}" % func
+        elif exp is not None:
+            name = r'%s^{%s}' % (self._hprint_Function(func), exp)
         else:
-            args = [ str(self._print(arg)) for arg in expr.args ]
-            # How inverse trig functions should be displayed, formats are:
-            # abbreviated: asin, full: arcsin, power: sin^-1
-            inv_trig_style = self._settings['inv_trig_style']
-            # If we are dealing with a power-style inverse trig function
-            inv_trig_power_case = False
-            # If it is applicable to fold the argument brackets
-            can_fold_brackets = self._settings['fold_func_brackets'] and \
-                len(args) == 1 and \
-                not self._needs_function_brackets(expr.args[0])
+            name = self._hprint_Function(func)
 
-            inv_trig_table = ["asin", "acos", "atan", "acot"]
-
-            # If the function is an inverse trig function, handle the style
-            if func in inv_trig_table:
-                if inv_trig_style == "abbreviated":
-                    func = func
-                elif inv_trig_style == "full":
-                    func = "arc" + func[1:]
-                elif inv_trig_style == "power":
-                    func = func[1:]
-                    inv_trig_power_case = True
-
-                    # Can never fold brackets if we're raised to a power
-                    if exp is not None:
-                        can_fold_brackets = False
-
-            if inv_trig_power_case:
-                if func in accepted_latex_functions:
-                    name = r"\%s^{-1}" % func
-                else:
-                    name = r"\operatorname{%s}^{-1}" % func
-            elif exp is not None:
-                name = r'%s^{%s}' % (self._hprint_Function(func), exp)
+        if can_fold_brackets:
+            if func in accepted_latex_functions:
+                # Wrap argument safely to avoid parse-time conflicts
+                # with the function name itself
+                name += r" {%s}"
             else:
-                name = self._hprint_Function(func)
+                name += r"%s"
+        else:
+            name += r"{\left (%s \right )}"
 
-            if can_fold_brackets:
-                if func in accepted_latex_functions:
-                    # Wrap argument safely to avoid parse-time conflicts
-                    # with the function name itself
-                    name += r" {%s}"
-                else:
-                    name += r"%s"
-            else:
-                name += r"{\left (%s \right )}"
+        if inv_trig_power_case and exp is not None:
+            name += r"^{%s}" % exp
 
-            if inv_trig_power_case and exp is not None:
-                name += r"^{%s}" % exp
-
-            return name % ",".join(args)
+        return name % ",".join(args)
 
     def _print_UndefinedFunction(self, expr):
         return self._hprint_Function(str(expr))
@@ -1566,7 +1526,6 @@ class LatexPrinter(Printer):
         expr = self._print(poly.as_expr())
         gens = list(map(self._print, poly.gens))
         domain = "domain=%s" % self._print(poly.get_domain())
-
         args = ", ".join([expr] + gens + [domain])
         return r"\operatorname{%s}{\left( %s \right)}" % (cls, args)
 
@@ -1579,10 +1538,7 @@ class LatexPrinter(Printer):
     def _print_RootSum(self, expr):
         cls = expr.__class__.__name__
         args = [self._print(expr.expr)]
-
-        if expr.fun is not S.IdentityFunction:
-            args.append(self._print(expr.fun))
-
+        args.append(self._print(expr.fun))
         return r"\operatorname{%s} {\left(%s\right)}" % (cls, ", ".join(args))
 
     def _print_PolyElement(self, poly):
