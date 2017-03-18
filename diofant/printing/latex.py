@@ -89,6 +89,12 @@ modifier_dict = {
 greek_letters_set = frozenset(greeks)
 
 
+_between_two_numbers_p = (
+    re.compile(r'[0-9][} ]*$'),  # search
+    re.compile(r'[{ ]*[-+0-9]'),  # match
+)
+
+
 class LatexPrinter(Printer):
     printmethod = "_latex"
 
@@ -246,7 +252,11 @@ class LatexPrinter(Printer):
         from ..combinatorics import Permutation
         if not expr or (isinstance(expr, Permutation) and not expr.list()):
             return r"\left( \right)"
-        expr_perm = Permutation(expr).cyclic_form
+        expr = Permutation(expr)
+        expr_perm = expr.cyclic_form
+        siz = expr.size
+        if expr.array_form[-1] == siz - 1:
+            expr_perm = expr_perm + [[siz - 1]]
         term_tex = ''
         for i in expr_perm:
             term_tex += str(i).replace(',', r"\;")
@@ -309,8 +319,8 @@ class LatexPrinter(Printer):
                                                 last=(i == len(args) - 1)):
                         term_tex = r"\left(%s\right)" % term_tex
 
-                    if re.search("[0-9][} ]*$", last_term_tex) and \
-                            re.match("[{ ]*[-+0-9]", term_tex):
+                    if _between_two_numbers_p[0].search(last_term_tex) and \
+                            _between_two_numbers_p[1].match(term_tex):
                         # between two numbers
                         _tex += numbersep
                     elif _tex:
@@ -1193,6 +1203,8 @@ class LatexPrinter(Printer):
     _print_MatrixSymbol = _print_Symbol
 
     def _deal_with_super_sub(self, string):
+        if '{' in string:
+            return string
 
         name, supers, subs = split_super_sub(string)
 

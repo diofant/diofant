@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import I, Rational, Float, Symbol, pi, sqrt
-from diofant.geometry import Line, Point, Point3D, Line3D
+from diofant.geometry import Line, Point, Point2D, Point3D, Line3D
 from diofant.matrices import Matrix
 
 __all__ = ()
@@ -229,6 +229,14 @@ def test_point3D():
     # Test __sub__
     p_2d = Point(0, 0)
     pytest.raises(ValueError, lambda: (p - p_2d))
+
+
+def test_Point2D():
+    p1 = Point2D(1, 5)
+    p2 = Point2D(4, 2.5)
+    p3 = Point2D(6.1, 3.5)
+    assert p1.distance(p2) == sqrt(61)/2
+    assert p2.distance(p3) == sqrt(541)/10
 
 
 def test_sympyissue_9214():

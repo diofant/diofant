@@ -1230,6 +1230,7 @@ def test_sympyissue_5300():
 
 
 def test_as_coeff_Mul():
+    assert S.Zero.as_coeff_Mul() == (S.One, S.Zero)
     assert Integer(3).as_coeff_Mul() == (Integer(3), Integer(1))
     assert Rational(3, 4).as_coeff_Mul() == (Rational(3, 4), Integer(1))
     assert Float(5.0).as_coeff_Mul() == (Float(5.0), Integer(1))
@@ -1631,6 +1632,10 @@ def test_float_0():
 def test_float_0_fail():
     assert Float(0.0)*x == Float(0.0)
     assert (x + Float(0.0)).is_Add
+
+
+def test_invert():
+    assert (x**2 - 1).invert(2*x - 1) == Rational(-4, 3)
 
 
 def test_sympyissue_6325():

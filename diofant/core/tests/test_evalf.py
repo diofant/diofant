@@ -5,7 +5,8 @@ import pytest
 from diofant import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
                      fibonacci, floor, Function, GoldenRatio, I, Integral,
                      integrate, log, Mul, N, oo, pi, Pow, product, Product,
-                     Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol, Float)
+                     Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol,
+                     Float, Min, re, im)
 from diofant.core.evalf import (complex_accuracy, PrecisionExhausted,
                                 scaled_zero, as_mpmath)
 
@@ -505,3 +506,21 @@ def test_diofantissue_161():
     n = sin(1)**2 + cos(1)**2 - 1
     f = n.evalf()
     assert f.evalf()._prec == 1
+
+
+def test_AssocOp_Function():
+    e = Min(-sqrt(3)*cos(pi/18)/6 +
+            re(1/((-S.Half - sqrt(3)*I/2)*(Rational(1, 6) +
+                  sqrt(3)*I/18)**Rational(1, 3)))/3 + sin(pi/18)/2 + 2 +
+            I*(-cos(pi/18)/2 - sqrt(3)*sin(pi/18)/6 +
+               im(1/((-S.Half - sqrt(3)*I/2)*(Rational(1, 6) +
+                                              sqrt(3)*I/18)**Rational(1, 3)))/3),
+            re(1/((-S.Half + sqrt(3)*I/2)*(Rational(1, 6) + sqrt(3)*I/18)**Rational(1, 3)))/3 -
+            sqrt(3)*cos(pi/18)/6 - sin(pi/18)/2 + 2 +
+            I*(im(1/((-S.Half + sqrt(3)*I/2)*(Rational(1, 6) +
+                                              sqrt(3)*I/18)**Rational(1, 3)))/3 -
+               sqrt(3)*sin(pi/18)/6 + cos(pi/18)/2))
+    # the following should not raise a recursion error; it
+    # should raise a value error because the first arg computes
+    # a non-comparable (prec=1) imaginary part
+    pytest.raises(ValueError, lambda: e._eval_evalf(2))

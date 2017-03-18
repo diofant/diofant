@@ -6,7 +6,7 @@ import pytest
 
 from diofant import (Symbol, exp, Integer, Float, sin, Poly, Lambda,
                      Function, I, S, sqrt, Rational, Tuple, Matrix,
-                     Add, Mul, Pow, Or, true, false, Abs, pi, Xor)
+                     Add, Mul, Pow, Or, true, false, Abs, pi, Xor, Range)
 from diofant.core.sympify import sympify, _sympify, SympifyError
 from diofant.core.decorators import _sympifyit
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -453,3 +453,8 @@ def test_sympyissue_8821_highprec_from_str():
     s = str(pi.evalf(128))
     p = sympify(s)
     assert Abs(sin(p)) < 1e-127
+
+
+def test_Range():
+    assert sympify(range(10)) == Range(10)
+    assert _sympify(range(10)) == Range(10)

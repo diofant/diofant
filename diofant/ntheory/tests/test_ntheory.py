@@ -16,7 +16,7 @@ from diofant.ntheory import (isprime, n_order, is_primitive_root,
                              is_nthpow_residue, nthroot_mod, sqrt_mod_iter, mobius,
                              divisor_sigma)
 from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
-from diofant.ntheory.factor_ import (smoothness, smoothness_p,
+from diofant.ntheory.factor_ import (smoothness, smoothness_p, factorrat,
                                      antidivisors, antidivisor_count, core)
 from diofant.ntheory.generate import cycle_length
 from diofant.ntheory.primetest import _mr_safe_helper, mr
@@ -954,3 +954,10 @@ def test_core():
 
     pytest.raises(ValueError, lambda: core(-1))
     pytest.raises(ValueError, lambda: core(1, 0))
+
+
+def test_factorrat():
+    assert str(factorrat(Rational(12, 1), visual=True)) == '2**2*3**1'
+    assert str(factorrat(Rational(1, 1), visual=True)) == '1'
+    assert str(factorrat(Rational(25, 14), visual=True)) == '5**2/(2*7)'
+    assert str(factorrat(Rational(-25, 14)/9, visual=True)) == '-5**2/(2*3**2*7)'

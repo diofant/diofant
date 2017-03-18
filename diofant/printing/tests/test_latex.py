@@ -146,6 +146,8 @@ def test_latex_permutation():
     assert latex(Permutation(1, 2, 4)) == r"\left( 1\; 2\; 4\right)"
     assert latex(Permutation(1, 2)(4, 5, 6)) == r"\left( 1\; 2\right)\left( 4\; 5\; 6\right)"
     assert latex(Permutation()) == r"\left( \right)"
+    assert latex(Permutation(2, 4)*Permutation(5)) == r"\left( 2\; 4\right)\left( 5\right)"
+    assert latex(Permutation(5)) == r"\left( 5\right)"
 
 
 def test_latex_Float():
@@ -1406,3 +1408,10 @@ def test_diffgeom():
     dg = Differential(s_field)
     assert latex(dg) == r'd(g{\left (\boldsymbol{\mathrm{x}},' \
                         r'\boldsymbol{\mathrm{y}} \right )})'
+
+
+def test_sympyissue_10489():
+    latexSymbolWithBrace = 'C_{x_{0}}'
+    s = Symbol(latexSymbolWithBrace)
+    assert latex(s) == latexSymbolWithBrace
+    assert latex(cos(s)) == r'\cos{\left (C_{x_{0}} \right )}'

@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import pytest
 
 from diofant import (Matrix, Tuple, symbols, sympify, Basic, Dict, S,
@@ -155,6 +157,17 @@ def test_Dict():
     # Test creating a Dict from a Dict.
     d = Dict({x: 1, y: 2, z: 3})
     assert d == Dict(d)
+
+    # Test for supporting defaultdict
+    d = defaultdict(int)
+    assert d[x] == 0
+    assert d[y] == 0
+    assert d[z] == 0
+    assert Dict(d)
+    d = Dict(d)
+    assert len(d) == 3
+    assert set(d.keys()) == {x, y, z}
+    assert set(d.values()) == {0, 0, 0}
 
 
 def test_sympyissue_5788():

@@ -10,7 +10,7 @@ from diofant import (
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
     Interval, Union, Integer, Float, Complement, Intersection,
-    MatrixSymbol, AlgebraicNumber)
+    Trace, MatrixSymbol, AlgebraicNumber)
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2_r
 from diofant.functions import (
@@ -23,11 +23,13 @@ from diofant.printing.pretty import pretty as xpretty, pprint
 from diofant.printing.pretty.pretty_symbology import xobj, U
 from diofant.core.trace import Tr
 
+from diofant.abc import a, b, x, y, z, k, w
+
 __all__ = ()
 
-a, b, x, y, z, k = symbols('a,b,x,y,z,k')
 th = Symbol('theta')
 ph = Symbol('phi')
+
 
 """
 Expressions whose pretty-printing is tested here:
@@ -2584,6 +2586,41 @@ def test_Adjoint():
         "    T\n⎛ †⎞ \n⎝X ⎠ "
 
 
+def test_pretty_Trace():
+    # issue sympy/sympy#9044
+    X = Matrix([[1, 2], [3, 4]])
+    Y = Matrix([[2, 4], [6, 8]])
+    ascii_str_1 = \
+"""\
+  /[1  2]\\
+tr|[    ]|
+  \[3  4]/\
+"""
+    ucode_str_1 = \
+"""\
+  ⎛⎡1  2⎤⎞
+tr⎜⎢    ⎥⎟
+  ⎝⎣3  4⎦⎠\
+"""
+    ascii_str_2 = \
+"""\
+  /[1  2]\     /[2  4]\\
+tr|[    ]| + tr|[    ]|
+  \[3  4]/     \[6  8]/\
+"""
+    ucode_str_2 = \
+"""\
+  ⎛⎡1  2⎤⎞     ⎛⎡2  4⎤⎞
+tr⎜⎢    ⎥⎟ + tr⎜⎢    ⎥⎟
+  ⎝⎣3  4⎦⎠     ⎝⎣6  8⎦⎠\
+"""
+    assert pretty(Trace(X)) == ascii_str_1
+    assert upretty(Trace(X)) == ucode_str_1
+
+    assert pretty(Trace(X) + Trace(Y)) == ascii_str_2
+    assert upretty(Trace(X) + Trace(Y)) == ucode_str_2
+
+
 def test_pretty_piecewise():
     expr = Piecewise((x, x < 1), (x**2, True))
     ascii_str = \
@@ -3089,12 +3126,37 @@ frozenset({x , x*y})\
     assert upretty(Range(-2, -oo, -1)) == ucode_str
 
 
+def test_pretty_Union():
+    a, b = Interval(2, 3), Interval(4, 7)
+    ucode_str = '[2, 3] ∪ [4, 7]'
+    ascii_str = '[2, 3] U [4, 7]'
+    assert upretty(Union(a, b)) == ucode_str
+    assert pretty(Union(a, b)) == ascii_str
+
+
+def test_pretty_Intersection():
+    a, b = Interval(x, y), Interval(z, w)
+    ucode_str = '[x, y] ∩ [z, w]'
+    ascii_str = '[x, y] n [z, w]'
+    assert upretty(Intersection(a, b)) == ucode_str
+    assert pretty(Intersection(a, b)) == ascii_str
+
+
 def test_ProductSet_paranthesis():
     from diofant import FiniteSet
     ucode_str = '([4, 7] × {1, 2}) ∪ ([2, 3] × [4, 7])'
 
     a, b, c = Interval(2, 3), Interval(4, 7), Interval(1, 9)
     assert upretty(Union(a*b, b*FiniteSet(1, 2))) == ucode_str
+
+
+def test_sympyissue_10413():
+    ascii_str = '[2, 3] x [4, 7]'
+    ucode_str = '[2, 3] × [4, 7]'
+
+    a, b = Interval(2, 3), Interval(4, 7)
+    assert pretty(a*b) == ascii_str
+    assert upretty(a*b) == ucode_str
 
 
 def test_pretty_limits():
@@ -4892,3 +4954,8 @@ def test_AlgebraicNumber():
 """
     assert upretty(a) == ucode_str
     assert upretty(b) == "θ + 1"
+
+
+def test_sympyissue_11801():
+    assert pretty(Symbol("")) == ""
+    assert upretty(Symbol("")) == ""

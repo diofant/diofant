@@ -7,10 +7,10 @@ import pytest
 from diofant import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
                      S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
                      Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
-                     AlgebraicNumber, simplify)
+                     AlgebraicNumber, simplify, sin)
 from diofant.core.power import integer_nthroot
 from diofant.core.numbers import (igcd, ilcm, igcdex, seterr,
-                                  mpf_norm, comp)
+                                  mpf_norm, comp, mod_inverse)
 
 __all__ = ()
 
@@ -448,6 +448,9 @@ def test_Float():
 
     assert '{0:.3f}'.format(Float(4.236622)) == '4.237'
     assert '{0:.35f}'.format(Float(pi.n(40), 40)) == '3.14159265358979323846264338327950288'
+
+    assert Float(oo) == Float('+inf')
+    assert Float(-oo) == Float('-inf')
 
 
 def test_Float_default_to_highprec_from_str():
@@ -1059,7 +1062,7 @@ def test_Integer_factors():
     def F(i):
         return Integer(i).factors()
 
-    assert F(1) == {1: 1}
+    assert F(1) == {}
     assert F(2) == {2: 1}
     assert F(3) == {3: 1}
     assert F(4) == {2: 2}
@@ -1120,10 +1123,6 @@ def test_Rational_factors():
     assert F(2, 9) == {2: 1, 3: -2}
     assert F(2, 15) == {2: 1, 3: -1, 5: -1}
     assert F(6, 10) == {3: 1, 5: -1}
-    assert str(F(12, 1, visual=True)) == '2**2*3**1'
-    assert str(F(1, 1, visual=True)) == '1'
-    assert str(F(25, 14, visual=True)) == '5**2/(2*7)'
-    assert str(F(-25, 14*9, visual=True)) == '-5**2/(2*3**2*7)'
 
 
 def test_sympyissue_4107():
@@ -1498,3 +1497,31 @@ def test_sympyissue_10020():
     assert (-oo)**(-1 + I) is S.Zero
     assert oo**t == Pow(oo, t, evaluate=False)
     assert (-oo)**t == Pow(-oo, t, evaluate=False)
+
+
+def test_invert_numbers():
+    assert Integer(2).invert(5) == 3
+    assert Integer(2).invert(Integer(5)/2) == S.Half
+    assert Integer(2).invert(5.) == 3
+    assert Integer(2).invert(Integer(5)) == 3
+    assert Integer(2.).invert(5) == 3
+    assert sqrt(2).invert(5) == 1/sqrt(2)
+    assert sqrt(2).invert(sqrt(3)) == 1/sqrt(2)
+
+
+def test_mod_inverse():
+    assert mod_inverse(3, 11) == 4
+    assert mod_inverse(5, 11) == 9
+    assert mod_inverse(21124921, 521512) == 7713
+    assert mod_inverse(124215421, 5125) == 2981
+    assert mod_inverse(214, 12515) == 1579
+    assert mod_inverse(5823991, 3299) == 1442
+    assert mod_inverse(123, 44) == 39
+    assert mod_inverse(2, 5) == 3
+    assert mod_inverse(-2, 5) == -3
+    x = Symbol('x')
+    assert Integer(2).invert(x) == S.Half
+    pytest.raises(TypeError, lambda: mod_inverse(2, x))
+    pytest.raises(ValueError, lambda: mod_inverse(2, S.Half))
+    pytest.raises(ValueError, lambda: mod_inverse(2, cos(1)**2 + sin(1)**2))
+    pytest.raises(ValueError, lambda: mod_inverse(2, 1))

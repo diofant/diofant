@@ -2,7 +2,7 @@ from ..core import Basic, S, Lambda, Integer, Rational
 from ..core.compatibility import as_int
 from .sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from ..core.singleton import Singleton
-from ..core.sympify import _sympify
+from ..core.sympify import _sympify, converter
 from ..utilities.iterables import cantor_product
 
 
@@ -347,6 +347,9 @@ class Range(Set):
 
     def __new__(cls, *args):
         from ..functions import ceiling
+        if len(args) == 1 and isinstance(args[0], range):
+            args = args[0].start, args[0].stop, args[0].step
+
         # expand range
         slc = slice(*args)
         start, stop, step = slc.start or 0, slc.stop, slc.step or 1
@@ -463,3 +466,6 @@ class Range(Set):
     @property
     def _boundary(self):
         return self
+
+
+converter[range] = Range

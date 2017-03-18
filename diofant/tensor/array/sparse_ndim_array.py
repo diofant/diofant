@@ -1,11 +1,12 @@
 import functools
+import itertools
 
 from ...core.sympify import _sympify
 from ...core import S, Dict, Expr, Tuple
 from ...matrices import SparseMatrix
 from ...utilities import flatten
 from .mutable_ndim_array import MutableNDimArray
-from .ndim_array import NDimArray
+from .ndim_array import NDimArray, ImmutableNDimArray
 
 
 class SparseNDimArray(NDimArray):
@@ -31,12 +32,30 @@ class SparseNDimArray(NDimArray):
         2
 
         """
-        index = self._parse_index(index)
+        # `index` is a tuple with one or more slices:
+        if isinstance(index, tuple) and any(isinstance(i, slice) for i in index):
 
-        if index in self._sparse_array:
-            return self._sparse_array[index]
+            def slice_expand(s, dim):
+                if not isinstance(s, slice):
+                        return (s,)
+                start, stop, step = s.indices(dim)
+                return [start + i*step for i in range((stop-start)//step)]
+
+            sl_factors = [slice_expand(i, dim) for (i, dim) in zip(index, self.shape)]
+            eindices = itertools.product(*sl_factors)
+            array = [self._sparse_array.get(self._parse_index(i), S.Zero) for i in eindices]
+            nshape = [len(el) for i, el in enumerate(sl_factors) if isinstance(index[i], slice)]
+            return type(self)(array, nshape)
         else:
-            return S.Zero
+            # `index` is a single slice:
+            if isinstance(index, slice):
+                start, stop, step = index.indices(self._loop_size)
+                retvec = [self._sparse_array.get(ind, S.Zero) for ind in range(start, stop, step)]
+                return retvec
+            # `index` is a number or a tuple without any slice:
+            else:
+                index = self._parse_index(index)
+                return self._sparse_array.get(index, S.Zero)
 
     @classmethod
     def zeros(cls, *shape):
@@ -77,7 +96,7 @@ class SparseNDimArray(NDimArray):
         return iterator()
 
 
-class ImmutableSparseNDimArray(SparseNDimArray, Expr):
+class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
 
     def __new__(cls, *args, **kwargs):
 

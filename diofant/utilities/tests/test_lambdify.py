@@ -5,7 +5,8 @@ import pytest
 
 from diofant import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
                      Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
-                     oo, I, Abs, Function, true, false, And, Or, Not, sympify, ITE)
+                     oo, I, Abs, Function, true, false, And, Or, Not, sympify,
+                     ITE, Min, Max)
 from diofant.printing.lambdarepr import LambdaPrinter
 from diofant.utilities.lambdify import implemented_function
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -583,3 +584,9 @@ def test_sympyissue_2790():
 def test_ITE():
     assert lambdify((x, y, z), ITE(x, y, z))(True, 5, 3) == 5
     assert lambdify((x, y, z), ITE(x, y, z))(False, 5, 3) == 3
+
+
+def test_Min_Max():
+    # see sympy/sympy#10375
+    assert lambdify((x, y, z), Min(x, y, z))(1, 2, 3) == 1
+    assert lambdify((x, y, z), Max(x, y, z))(1, 2, 3) == 3

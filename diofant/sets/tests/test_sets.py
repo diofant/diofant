@@ -445,11 +445,15 @@ def test_contains():
     assert Interval(0, 2, False, True).contains(2) is S.false
     assert Interval(0, 2, True, True).contains(0) is S.false
     assert Interval(0, 2, True, True).contains(2) is S.false
+
     # issue sympy/sympy#10326
     assert S.Reals.contains(oo) is S.false
     assert S.Reals.contains(-oo) is S.false
     assert Interval(-oo, oo, True).contains(oo) is S.true
     assert Interval(-oo, oo).contains(-oo) is S.true
+    bad = [EmptySet(), FiniteSet(1), Interval(1, 2), S.ComplexInfinity,
+           S.ImaginaryUnit, S.Infinity, S.NaN, S.NegativeInfinity]
+    assert all(i not in Interval(0, 5) for i in bad)
 
     assert FiniteSet(1, 2, 3).contains(2) is S.true
     assert FiniteSet(1, 2, x).contains(x) is S.true
@@ -969,3 +973,24 @@ def test_sympyissue_9808():
             Complement(FiniteSet(y), FiniteSet(1), evaluate=False))
     assert (Complement(FiniteSet(1, 2, x), FiniteSet(x, y, 2, 3)) ==
             Complement(FiniteSet(1), FiniteSet(y), evaluate=False))
+
+
+def test_sympyissue_10337():
+    assert (FiniteSet(2) == 3) is False
+    assert (FiniteSet(2) != 3) is True
+
+    pytest.raises(TypeError, lambda: FiniteSet(2) < 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) <= 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) > 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) >= 3)
+
+
+def test_sympyissue_9447():
+    a = Interval(0, 1) + Interval(2, 3)
+    assert (Complement(S.UniversalSet, a) ==
+            Complement(S.UniversalSet,
+                       Union(Interval(0, 1), Interval(2, 3)), evaluate=False))
+    # issue sympy/sympy#10305:
+    assert (Complement(S.Naturals, a) ==
+            Complement(S.Naturals,
+                       Union(Interval(0, 1), Interval(2, 3)), evaluate=False))

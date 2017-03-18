@@ -1,4 +1,4 @@
-from ...core import Expr
+from ...core import sympify, Expr
 from ..matrices import MatrixBase
 from .matexpr import ShapeError
 
@@ -22,6 +22,7 @@ class Trace(Expr):
     is_Trace = True
 
     def __new__(cls, mat):
+        mat = sympify(mat)
         if not mat.is_Matrix:
             raise TypeError("input to Trace, %s, is not a matrix" % str(mat))
 

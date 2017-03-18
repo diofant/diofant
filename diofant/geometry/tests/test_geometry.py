@@ -326,6 +326,14 @@ def test_ellipse_geom():
     assert e.rotate(pi, (1, 2)) == Ellipse(Point(2, 4), 2, 1)
     pytest.raises(NotImplementedError, lambda: e.rotate(pi/3))
 
+    # Circle rotation tests (issue sympy/sympy#11743)
+    cir = Circle(Point(1, 0), 1)
+    assert cir.rotate(pi/2) == Circle(Point(0, 1), 1)
+    assert cir.rotate(pi/3) == Circle(Point(S.Half, sqrt(3)/2), 1)
+    assert cir.rotate(pi/3, Point(1, 0)) == Circle(Point(1, 0), 1)
+    assert cir.rotate(pi/3, Point(0, 1)) == Circle(Point(S.Half + sqrt(3)/2,
+                                                         S.Half + sqrt(3)/2), 1)
+
     # transformations
     c = Circle((1, 1), 2)
     assert c.scale(-1) == Circle((-1, 1), 2)
@@ -399,6 +407,8 @@ def test_polygon():
     assert p5.encloses_point(Point(1, 3))
     assert p5.encloses_point(Point(0, 0)) is False
     assert p5.encloses_point(Point(4, 0)) is False
+    assert p1.encloses(Circle(Point(2.5, 2.5), 5)) is False
+    assert p1.encloses(Ellipse(Point(2.5, 2), 5, 6)) is False
     p5.plot_interval('x') == [x, 0, 1]
     assert p5.distance(
         Polygon(Point(10, 10), Point(14, 14), Point(10, 14))) == 6 * sqrt(2)

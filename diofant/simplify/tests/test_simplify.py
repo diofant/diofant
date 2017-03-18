@@ -9,7 +9,8 @@ from diofant import (
     posify, rad, Rational, S, separatevars, signsimp, simplify,
     sin, sinh, solve, sqrt, Symbol, symbols, tan, sqrtdenest,
     zoo, Sum, Lt, Integer, sstr, Number, cancel, combsimp,
-    besselj, besseli, exp_polar, cosine_transform, MatrixSymbol)
+    besselj, besseli, exp_polar, cosine_transform, MatrixSymbol,
+    sign)
 from diofant.core.mul import _keep_coeff
 from diofant.simplify.simplify import nthroot
 
@@ -345,6 +346,13 @@ def test_nsimplify():
     assert nsimplify(Float(2e-8)) == Rational(1, 50000000)
     # issue sympy/sympy#7322 direct test
     assert nsimplify(1e-42, rational=True) != 0
+    # issue sympy/sympy#10336
+    inf = Float('inf')
+    infs = (-oo, oo, inf, -inf)
+    for i in infs:
+        ans = sign(i)*oo
+        assert nsimplify(i) == ans
+        assert nsimplify(i + x) == x + ans
 
 
 def test_sympyissue_9448():

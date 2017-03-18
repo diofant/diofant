@@ -3141,6 +3141,22 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..polys import cancel
         return cancel(self, *gens, **args)
 
+    def invert(self, g, *gens, **args):
+        """Return the multiplicative inverse of ``self`` mod ``g``
+        where ``self`` (and ``g``) may be symbolic expressions).
+
+        See Also
+        ========
+
+        diofant.core.numbers.mod_inverse
+        diofant.polys.polytools.invert
+        """
+        from ..polys.polytools import invert
+        from .numbers import mod_inverse
+        if self.is_number and getattr(g, 'is_number', True):
+            return mod_inverse(self, g)
+        return invert(self, g, *gens, **args)
+
     def round(self, p=0):
         """Return x rounded to the given decimal place.
 

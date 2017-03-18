@@ -1891,6 +1891,9 @@ class Poly(Expr):
         """
         Returns the leading monomial of ``self``.
 
+        The leading monomial signifies the the monomial having the highest
+        power of the principal generator in the polynomial expression.
+
         Examples
         ========
 
@@ -1920,6 +1923,9 @@ class Poly(Expr):
     def LT(self, order=None):
         """
         Returns the leading term of ``self``.
+
+        The leading term signifies the term having the highest power
+        of the principal generator in the polynomial expression.
 
         Examples
         ========
@@ -2331,7 +2337,31 @@ class Poly(Expr):
         return per(result)
 
     def revert(self, n):
-        """Compute ``self**(-1)`` mod ``x**n``. """
+        """
+        Compute ``self**(-1)`` mod ``x**n``.
+
+        Examples
+        ========
+
+        >>> from diofant import Poly
+        >>> from diofant.abc import x
+
+        >>> Poly(1, x).revert(2)
+        Poly(1, x, domain='ZZ')
+
+        >>> Poly(1 + x, x).revert(1)
+        Poly(1, x, domain='ZZ')
+
+        >>> Poly(x**2 - 1, x).revert(1)
+        Traceback (most recent call last):
+        ...
+        NotReversible: only unity is reversible in a ring
+
+        >>> Poly(1/x, x).revert(1)
+        Traceback (most recent call last):
+        ...
+        PolynomialError: 1/x contains an element of the generators set
+        """
         if hasattr(self.rep, 'revert'):
             result = self.rep.revert(int(n))
         else:  # pragma: no cover
@@ -4615,6 +4645,7 @@ def invert(f, g, *gens, **args):
     ========
 
     >>> from diofant import invert
+    >>> from diofant.core.numbers import mod_inverse, Integer
     >>> from diofant.abc import x
 
     >>> invert(x**2 - 1, 2*x - 1)
@@ -4625,6 +4656,18 @@ def invert(f, g, *gens, **args):
     ...
     NotInvertible: zero divisor
 
+    For more efficient inversion of Rationals,
+    use the ``mod_inverse`` function:
+
+    >>> mod_inverse(3, 5)
+    2
+    >>> (Integer(2)/5).invert(Integer(7)/3)
+    5/2
+
+    See Also
+    ========
+
+    diofant.core.numbers.mod_inverse
     """
     options.allowed_flags(args, ['auto', 'polys'])
 
@@ -5478,7 +5521,8 @@ def _symbolic_factor_list(expr, opt, method):
     """Helper function for :func:`_symbolic_factor`. """
     coeff, factors = S.One, []
 
-    args = [i._eval_factor() if hasattr(i, '_eval_factor') else i for i in Mul.make_args(expr)]
+    args = [i._eval_factor() if hasattr(i, '_eval_factor') else i
+        for i in Mul.make_args(expr)]
     for arg in args:
         if arg.is_Number:
             coeff *= arg

@@ -1,7 +1,7 @@
 import collections
 
-from ...core import Integer, sympify
-from ...matrices import Matrix
+from ...core import Integer, sympify, Expr
+from ...matrices import MatrixBase
 
 
 class NDimArray:
@@ -70,7 +70,7 @@ class NDimArray:
         real_index = 0
         # check if input index can exist in current indexing
         for i in range(self._rank):
-            if index[i] > self.shape[i]:
+            if index[i] >= self.shape[i]:
                 raise ValueError('Index ' + str(index) + ' out of border')
             real_index = real_index*self.shape[i] + index[i]
 
@@ -85,7 +85,7 @@ class NDimArray:
         return tuple(index)
 
     def _setter_iterable_check(self, value):
-        if isinstance(value, (collections.Iterable, Matrix, NDimArray)):
+        if isinstance(value, (collections.Iterable, MatrixBase, NDimArray)):
             raise NotImplementedError  # pragma: no cover
 
     @classmethod
@@ -111,16 +111,17 @@ class NDimArray:
             shape = ()
             iterable = ()
 
-        # Construct N-dim array from another N-dim array:
+        # Construction from another `NDimArray`:
         elif shape is None and isinstance(iterable, NDimArray):
             shape = iterable.shape
+            iterable = list(iterable)
 
         # Construct N-dim array from an iterable (numpy arrays included):
         elif shape is None and isinstance(iterable, collections.Iterable):
             iterable, shape = cls._scan_iterable_shape(iterable)
 
         # Construct N-dim array from a Matrix:
-        elif shape is None and isinstance(iterable, Matrix):
+        elif shape is None and isinstance(iterable, MatrixBase):
             shape = iterable.shape
 
         # Construct NDimArray(iterable, shape)
@@ -184,6 +185,37 @@ class NDimArray:
 
         """
         return self._rank
+
+    def diff(self, *args):
+        """
+        Calculate the derivative of each element in the array.
+
+        Examples
+        ========
+
+        >>> from diofant.tensor.array import ImmutableDenseNDimArray
+        >>> from diofant.abc import x, y
+        >>> M = ImmutableDenseNDimArray([[x, y], [1, x*y]])
+        >>> M.diff(x)
+        [[1, 0], [0, y]]
+
+        """
+        return type(self)(map(lambda x: x.diff(*args), self), self.shape)
+
+    def applyfunc(self, f):
+        """Apply a function to each element of the N-dim array.
+
+        Examples
+        ========
+
+        >>> from diofant.tensor.array import ImmutableDenseNDimArray
+        >>> m = ImmutableDenseNDimArray([i*2+j for i in range(2) for j in range(2)], (2, 2))
+        >>> m
+        [[0, 1], [2, 3]]
+        >>> m.applyfunc(lambda i: 2*i)
+        [[0, 2], [4, 6]]
+        """
+        return type(self)(map(f, self), self.shape)
 
     def __str__(self):
         """Returns string, allows to use standard functions print() and str().
@@ -254,25 +286,28 @@ class NDimArray:
         return type(self)(result_list, self.shape)
 
     def __mul__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, Matrix)):
-            raise ValueError("scalar expected")
+        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
+            raise ValueError("scalar expected, use tensorproduct(...) for tensorial product")
         other = sympify(other)
         result_list = [i*other for i in self]
         return type(self)(result_list, self.shape)
 
     def __rmul__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, Matrix)):
-            raise ValueError("scalar expected")
+        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
+            raise ValueError("scalar expected, use tensorproduct(...) for tensorial product")
         other = sympify(other)
         result_list = [other*i for i in self]
         return type(self)(result_list, self.shape)
 
     def __truediv__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, Matrix)):
+        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
             raise ValueError("scalar expected")
         other = sympify(other)
         result_list = [i/other for i in self]
         return type(self)(result_list, self.shape)
+
+    def __rtruediv__(self, other):
+        return NotImplemented
 
     def __eq__(self, other):
         """
@@ -301,3 +336,7 @@ class NDimArray:
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+
+class ImmutableNDimArray(NDimArray, Expr):
+    _op_priority = 11.0

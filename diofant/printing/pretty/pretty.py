@@ -594,6 +594,13 @@ class PrettyPrinter(Printer):
     _print_ImmutableMatrix = _print_MatrixBase
     _print_Matrix = _print_MatrixBase
 
+    def _print_Trace(self, e):
+        D = self._print(e.arg)
+        D = prettyForm(*D.parens('(', ')'))
+        D.baseline = D.height()//2
+        D = prettyForm(*D.left('\n'*(0) + 'tr'))
+        return D
+
     def _print_MatrixElement(self, expr):
         from ...matrices import MatrixSymbol
         if (isinstance(expr.parent, MatrixSymbol)
@@ -1339,7 +1346,7 @@ class PrettyPrinter(Printer):
         if len(p.sets) > 1 and not has_variety(p.sets):
             return self._print(Pow(p.sets[0], len(p.sets), evaluate=False))
         else:
-            prod_char = "\N{MULTIPLICATION SIGN}"
+            prod_char = "\N{MULTIPLICATION SIGN}" if self._use_unicode else 'x'
             return self._print_seq(p.sets, None, None, ' %s ' % prod_char,
                                    parenthesize=lambda set: set.is_Union or
                                    set.is_Intersection or set.is_ProductSet)
@@ -1388,7 +1395,7 @@ class PrettyPrinter(Printer):
 
     def _print_Intersection(self, u):
 
-        delimiter = ' %s ' % pretty_atom('Intersection')
+        delimiter = ' %s ' % pretty_atom('Intersection', 'n')
 
         return self._print_seq(u.args, None, None, delimiter,
                                parenthesize=lambda set: set.is_ProductSet or
@@ -1396,7 +1403,7 @@ class PrettyPrinter(Printer):
 
     def _print_Union(self, u):
 
-        union_delimiter = ' %s ' % pretty_atom('Union')
+        union_delimiter = ' %s ' % pretty_atom('Union', 'U')
 
         return self._print_seq(u.args, None, None, union_delimiter,
                                parenthesize=lambda set: set.is_ProductSet or

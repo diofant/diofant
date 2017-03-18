@@ -185,7 +185,7 @@ class Set(Basic):
             return Union(o - self for o in other.args)
 
         elif isinstance(other, Complement):
-            return Complement(other.args[0], Union(other.args[1], self))
+            return Complement(other.args[0], Union(other.args[1], self), evaluate=False)
 
         elif isinstance(other, EmptySet):
             return S.EmptySet
@@ -428,6 +428,23 @@ class Set(Basic):
 
     @property
     def is_open(self):
+        """
+        Test if a set is open.
+
+        A set is open if it has an empty intersection with its boundary.
+
+        Examples
+        ========
+
+        >>> from diofant import S
+        >>> S.Reals.is_open
+        True
+
+        See Also
+        ========
+
+        boundary
+        """
         if not Intersection(self, self.boundary):
             return True
 
@@ -891,7 +908,7 @@ class Interval(Set, EvalfMixin):
         return FiniteSet(self.start, self.end)
 
     def _contains(self, other):
-        if not isinstance(other, Expr):
+        if not isinstance(other, Expr) or other in (S.NaN, S.ComplexInfinity):
             return false
 
         if other.is_extended_real is False:
@@ -1756,15 +1773,23 @@ class FiniteSet(Set, EvalfMixin):
         return self.func(*[self.func(*s) for s in subsets(self.args)])
 
     def __ge__(self, other):
+        if not isinstance(other, Set):
+            raise TypeError("Invalid comparison of set with %s" % repr(other))
         return other.is_subset(self)
 
     def __gt__(self, other):
+        if not isinstance(other, Set):
+            raise TypeError("Invalid comparison of set with %s" % repr(other))
         return self.is_proper_superset(other)
 
     def __le__(self, other):
+        if not isinstance(other, Set):
+            raise TypeError("Invalid comparison of set with %s" % repr(other))
         return self.is_subset(other)
 
     def __lt__(self, other):
+        if not isinstance(other, Set):
+            raise TypeError("Invalid comparison of set with %s" % repr(other))
         return self.is_proper_subset(other)
 
 
