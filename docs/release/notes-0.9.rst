@@ -107,8 +107,26 @@ Issues closed
 * :issue:`453` Solve the rational inequality abs((x-1)/(x-5)) <= 1/3
 * :issue:`456` rsolve(f(n)-2*f(n-1)-3**n*n, f(n),[1]) fails with AttributeError
 * :sympyissue:`8694` Match fail
+* :sympyissue:`8710` geometry's encloses method fails for non-polygons
+* :sympyissue:`10337` bad Boolean args not rejected
+* :sympyissue:`9447` sets.Complement fails on certain Unions
+* :sympyissue:`10305` Complement Of Universal Subsets
+* :sympyissue:`10413` ascii pprint of ProductSet uses non-ascii multiplication symbol
+* :sympyissue:`10414` ``pprint(Union, use_unicode=False)`` raises error (but ``str(Union)`` works)
+* :sympyissue:`10375` lambdify on sympy.Min does not work with NumPy
+* :sympyissue:`10433`  Dict does not accept collections.defaultdict
+* :sympyissue:`9044` pretty printing: `Trace` could be improved (and LaTeX)
+* :sympyissue:`10445` Improper integral does not evaluate
+* :sympyissue:`10379` dsolve() converts floats to integers/rationals
+* :sympyissue:`10633` Eq(True, False) doesn't evaluate
+* :sympyissue:`7163` integrate((sign(x - 1) - sign(x - 2))*cos(x), x) raises TypeError: doit() got an unexpected keyword argument 'manual'
+* :sympyissue:`11881` ZeroDivisionError: pole in hypergeometric series random test failure
+* :sympyissue:`11801` Exception when printing Symbol('')
+* :sympyissue:`11911` typo in docs of printing
+* :sympyissue:`10489` Mathematical Symbol does not seem to serialize correctly LaTeX printer
+* :sympyissue:`10336` nsimplify problems with `oo` and `inf`
 
-.. last pr: #457
+.. last pr: #390
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
