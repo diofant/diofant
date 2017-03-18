@@ -1179,6 +1179,12 @@ class Rational(Number):
             return Rational(self.p*other.q + self.q*other.p, self.q*other.q)
         elif isinstance(other, Float):
             return other + self
+        elif isinstance(other, AlgebraicNumber):
+            from ..polys.polyclasses import DMP
+            me = DMP.from_diofant_list((self,), 0,
+                                       other.minpoly.get_domain())
+            coeffs = other.rep + me
+            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__add__(self, other)
 
@@ -1188,6 +1194,12 @@ class Rational(Number):
             return Rational(self.p*other.q - self.q*other.p, self.q*other.q)
         elif isinstance(other, Float):
             return -other + self
+        elif isinstance(other, AlgebraicNumber):
+            from ..polys.polyclasses import DMP
+            me = DMP.from_diofant_list((self,), 0,
+                                       other.minpoly.get_domain())
+            coeffs = me - other.rep
+            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__sub__(self, other)
 
@@ -1197,6 +1209,12 @@ class Rational(Number):
             return Rational(self.p*other.p, self.q*other.q)
         elif isinstance(other, Float):
             return other*self
+        elif isinstance(other, AlgebraicNumber):
+            from ..polys.polyclasses import DMP
+            me = DMP.from_diofant_list((self,), 0,
+                                       other.minpoly.get_domain())
+            coeffs = me * other.rep
+            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__mul__(self, other)
 
@@ -1268,8 +1286,6 @@ class Rational(Number):
 
         if self.is_negative and expt.is_even:
             return (-self)**expt
-
-        return
 
     def _as_mpf_val(self, prec):
         return mlib.from_rational(self.p, self.q, prec, rnd)
@@ -1786,7 +1802,66 @@ converter[int] = Integer
 
 
 class AlgebraicNumber(Expr):
-    """Class for representing algebraic numbers in Diofant. """
+    r"""Class for algebraic numbers in Diofant.
+
+    Represents the algebraic number in the field `\mathbb Q[\theta]`
+    given by
+
+    .. math::
+        c_n \theta^n + c_{n-1} \theta^{n-1} + \dots + c_0
+
+    Parameters
+    ==========
+
+    expr : Expr
+        A generator `\theta` for the algebraic number.
+
+    coeffs : tuple, optional
+        A tuple of rational coefficients `(c_n, c_{n-1},\dots,c_0)`.
+        The default is ``(1, 0)``.
+
+    alias : Symbol, optional
+        Alias to denote the generator `\theta`.
+
+    Examples
+    ========
+
+    >>> from diofant import AlgebraicNumber, sqrt, RootOf
+    >>> from diofant.abc import x
+
+    >>> a = AlgebraicNumber(sqrt(3), alias='a')
+
+    Numbers in the same field are automatically combined by
+    arithmetic operations.
+
+    >>> a + 1
+    a + 1
+    >>> _ + a
+    2*a + 1
+
+    Powers with integer exponents also automatically evaluated and
+    the coefficient list reduced accordingly to the degree of the minimal
+    polynomial of `\theta`.
+
+    >>> _**3
+    30*a + 37
+    >>> 1/a
+    a/3
+
+    The generator `\theta` can be any algebraic number, represented in terms
+    of radicals or RootOf objects.
+
+    >>> b = AlgebraicNumber(RootOf(x**7 - x + 1, x, 1), (1, 2, -1), 'b')
+    >>> b
+    b**2 + 2*b - 1
+    >>> b**7
+    490*b**6 - 119*b**5 - 196*b**4 - 203*b**3 - 265*b**2 + 637*b - 198
+
+    See Also
+    ========
+
+    diofant.polys.rootoftools.RootOf
+    """
 
     is_AlgebraicNumber = True
     is_algebraic = True
@@ -1845,6 +1920,58 @@ class AlgebraicNumber(Expr):
     @property
     def free_symbols(self):
         return set()
+
+    def _eval_power(self, expt):
+        from ..polys.polyclasses import ANP
+        if expt.is_Integer:
+            expt = int(expt)
+            if expt >= 0:
+                coeffs = self.rep**expt
+            else:
+                coeffs = ANP(self.rep.to_dict(), self.minpoly.rep,
+                             self.rep.domain)**expt
+            return self.func(self, coeffs.to_tuple(), self.alias)
+
+    @_sympifyit('other', NotImplemented)
+    def __add__(self, other):
+        if isinstance(other, Rational):
+            from ..polys.polyclasses import DMP
+            other = DMP.from_diofant_list((other,), 0,
+                                          self.minpoly.get_domain())
+            coeffs = self.rep + other
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif (isinstance(other, AlgebraicNumber) and
+              self.minpoly == other.minpoly and self.root == other.root):
+            coeffs = self.rep + other.rep
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        else:
+            return Number.__add__(self, other)
+
+    @_sympifyit('other', NotImplemented)
+    def __sub__(self, other):
+        if isinstance(other, Rational):
+            from ..polys.polyclasses import DMP
+            other = DMP.from_diofant_list((other,), 0,
+                                          self.minpoly.get_domain())
+            coeffs = self.rep - other
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif (isinstance(other, AlgebraicNumber) and
+              self.minpoly == other.minpoly and self.root == other.root):
+            coeffs = self.rep - other.rep
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        else:
+            return Number.__sub__(self, other)
+
+    @_sympifyit('other', NotImplemented)
+    def __mul__(self, other):
+        if isinstance(other, Rational):
+            from ..polys.polyclasses import DMP
+            other = DMP.from_diofant_list((other,), 0,
+                                          self.minpoly.get_domain())
+            coeffs = self.rep * other
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        else:
+            return Number.__mul__(self, other)
 
     def _eval_evalf(self, prec):
         return self.as_expr()._evalf(prec)
