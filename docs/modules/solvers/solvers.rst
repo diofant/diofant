@@ -17,6 +17,4 @@ Systems of Polynomial Equations
 
 .. autofunction:: diofant.solvers.solvers.solve_linear_system
 
-.. autofunction:: diofant.solvers.polysys.solve_biquadratic
-
 .. autofunction:: diofant.solvers.polysys.solve_poly_system

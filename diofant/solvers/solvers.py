@@ -1356,32 +1356,9 @@ def _solve_system(exprs, symbols, **flags):
                 linear = True
 
         else:
-            if len(symbols) > len(polys):
-                free = set().union(*[p.free_symbols for p in polys])
-                free = list(ordered(free & set(symbols)))
-                solved_syms = set()
-                result = []
-                for syms in subsets(free, len(polys)):
-                    try:
-                        res = solve_poly_system(polys, *syms)
-                        for r in res:
-                            if not any(solved_syms & v.free_symbols
-                                       for v in r.values()):
-                                solved_syms.update(syms)
-                                result.append(r)
-                    except NotImplementedError:  # pragma: no cover
-                        pass
-                if solved_syms:
-                    solved_syms = list(solved_syms)
-                else:  # pragma: no cover
-                    raise NotImplementedError('no valid subset found')
-            else:
-                try:
-                    result = solve_poly_system(polys, *symbols)
-                    solved_syms = symbols
-                except NotImplementedError:
-                    failed.extend([g.as_expr() for g in polys])
-                    solved_syms = []
+            result = solve_poly_system(polys, *symbols)
+            solved_syms = list(set().union(*[{k for k in r.keys()}
+                                             for r in result]))
 
     if result:
         if type(result) is dict:

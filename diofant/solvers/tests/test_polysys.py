@@ -60,8 +60,9 @@ def test_solve_poly_system():
     assert (solve_poly_system([x + x*y - 3, y + x*y - 4], x, y) ==
             [{x: -3, y: -2}, {x: 1, y: 2}])
 
-    pytest.raises(NotImplementedError,
-                  lambda: solve_poly_system([x**3 - y**3], x, y))
+    assert (solve_poly_system([x**3 - y**3], x, y) ==
+            [{x: y}, {x: y*(-1/2 - sqrt(3)*I/2)}, {x: y*(-1/2 + sqrt(3)*I/2)}])
+
     pytest.raises(PolynomialError, lambda: solve_poly_system([1/x], x))
 
     assert (solve_poly_system([x**6 + x - 1], x) ==
@@ -108,6 +109,16 @@ def test_solve_biquadratic():
     assert len(result) == 2 and all(len(r) == 2 for r in result)
     assert all(len(r.find(query)) == 1 for r in flatten(result))
 
+    eqs = [y**2 - 4 + x, y*2 + 3*x - 7]
+    assert solve_poly_system(eqs, x, y) == [{x: Rational(11, 9),
+                                             y: Rational(5, 3)},
+                                            {x: 3, y: -1}]
+    eqs = [y + x**2 - 3, -y + x - 4]
+    assert solve_poly_system(eqs, x, y) == [{x: -S.Half + sqrt(29)/2,
+                                             y: Rational(-9, 2) + sqrt(29)/2},
+                                            {x: -sqrt(29)/2 - S.Half,
+                                             y: Rational(-9, 2) - sqrt(29)/2}]
+
 
 def test_solve_sympyissue_6785():
     roots = solve_poly_system([((x - 5)**2/250000 +
@@ -127,3 +138,18 @@ def test_solve_sympyissue_6785_RR():
     assert roots[0][y].epsilon_eq(-499.474999374969, 1e12)
     assert roots[1][x] == 0
     assert roots[1][y].epsilon_eq(500.474999374969, 1e12)
+
+
+def test_sympyissue_12345():
+    eqs = (x**2 - y - sqrt(2), x**2 + x*y - y**2)
+    r0, r1, r2, r3 = Poly(y**4 - 3*y**3 + y**2*(-3*sqrt(2) + 1) +
+                          2*sqrt(2)*y + 2, y).all_roots()
+    sol = [{x: sqrt(2)*r0**3/2 - 3*sqrt(2)*r0**2/2 - 2*r0 + sqrt(2)*r0/2 + 1,
+            y: r0},
+           {x: sqrt(2)*r1**3/2 - 3*sqrt(2)*r1**2/2 - 2*r1 + sqrt(2)*r1/2 + 1,
+            y: r1},
+           {x: sqrt(2)*r2**3/2 - 3*sqrt(2)*r2**2/2 - 2*r2 + sqrt(2)*r2/2 + 1,
+            y: r2},
+           {x: sqrt(2)*r3**3/2 - 3*sqrt(2)*r3**2/2 - 2*r3 + sqrt(2)*r3/2 + 1,
+            y: r3}]
+    assert solve_poly_system(eqs, x, y) == sol

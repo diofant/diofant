@@ -22,7 +22,7 @@ Backwards-incompatible changes
 * :func:`~diofant.core.assumptions.check_assumptions` was moved to :mod:`~diofant.core.assumptions`, see :pull:`387`.
 * ``nsolve()`` function was removed, see :pull:`387`.
 * :attr:`~diofant.core.expr.Expr.is_comparable` and :meth:`~diofant.core.expr.Expr.is_hypergeometric` moved to :class:`~diofant.core.expr.Expr`, see :pull:`391`.
-* Removed ``solve_triangulated()`` function, :func:`~diofant.solvers.polysys.solve_biquadratic` and :func:`~diofant.solvers.polysys.solve_poly_system` now use :class:`dict` as output, see :pull:`389`.
+* Removed ``solve_triangulated()`` and ``solve_biquadratic()`` functions, :func:`~diofant.solvers.polysys.solve_poly_system` now use :class:`dict` as output, see :pull:`389` and :pull:`448`.
 * Dropped support for solving undetermined coefficients in :func:`~diofant.solvers.solvers.solve`, see :pull:`389`.
 * Drop ``intersect()`` alias for :meth:`~diofant.sets.sets.Set.intersection`, see :pull:`396`.
 * Drop ``interactive_traversal()``, see :pull:`395`.
@@ -125,8 +125,9 @@ Issues closed
 * :sympyissue:`11911` typo in docs of printing
 * :sympyissue:`10489` Mathematical Symbol does not seem to serialize correctly LaTeX printer
 * :sympyissue:`10336` nsimplify problems with `oo` and `inf`
+* :sympyissue:`12345` nonlinsolve (solve_biquadratic) gives no solution with radical
 
-.. last pr: #390
+.. last pr: #448
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
