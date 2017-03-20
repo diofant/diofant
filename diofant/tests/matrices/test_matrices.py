@@ -250,7 +250,7 @@ def test_determinant():
     for M in [Matrix(), Matrix([[1]])]:
         assert (
             M.det() ==
-            M.det_bareis() ==
+            M.det_bareiss() ==
             M.berkowitz_det() ==
             M.det_LU_decomposition() ==
             1)
@@ -258,20 +258,20 @@ def test_determinant():
     M = Matrix(( (-3,  2),
                  ( 8, -5) ))
 
-    assert M.det(method='bareis') == -1
+    assert M.det(method='bareiss') == -1
     assert M.det(method='berkowitz') == -1
 
     M = Matrix(( (x,   1),
                  (y, 2*y) ))
 
-    assert M.det(method='bareis') == 2*x*y - y
+    assert M.det(method='bareiss') == 2*x*y - y
     assert M.det(method='berkowitz') == 2*x*y - y
 
     M = Matrix(( (1, 1, 1),
                  (1, 2, 3),
                  (1, 3, 6) ))
 
-    assert M.det(method='bareis') == 1
+    assert M.det(method='bareiss') == 1
     assert M.det(method='berkowitz') == 1
 
     M = Matrix(( ( 3, -2,  0, 5),
@@ -279,7 +279,7 @@ def test_determinant():
                  ( 0, -2,  5, 0),
                  ( 5,  0,  3, 4) ))
 
-    assert M.det(method='bareis') == -289
+    assert M.det(method='bareiss') == -289
     assert M.det(method='berkowitz') == -289
 
     M = Matrix(( ( 1,  2,  3,  4),
@@ -287,7 +287,7 @@ def test_determinant():
                  ( 9, 10, 11, 12),
                  (13, 14, 15, 16) ))
 
-    assert M.det(method='bareis') == 0
+    assert M.det(method='bareiss') == 0
     assert M.det(method='berkowitz') == 0
 
     M = Matrix(( (3, 2, 0, 0, 0),
@@ -296,7 +296,7 @@ def test_determinant():
                  (0, 0, 0, 3, 2),
                  (2, 0, 0, 0, 3) ))
 
-    assert M.det(method='bareis') == 275
+    assert M.det(method='bareiss') == 275
     assert M.det(method='berkowitz') == 275
 
     M = Matrix(( (1, 0,  1,  2, 12),
@@ -305,7 +305,7 @@ def test_determinant():
                  (3, 2, -1,  1,  8),
                  (1, 1,  1,  0,  6) ))
 
-    assert M.det(method='bareis') == -55
+    assert M.det(method='bareiss') == -55
     assert M.det(method='berkowitz') == -55
 
     M = Matrix(( (-5,  2,  3,  4,  5),
@@ -314,7 +314,7 @@ def test_determinant():
                  ( 1,  2,  3, -2,  5),
                  ( 1,  2,  3,  4, -1) ))
 
-    assert M.det(method='bareis') == 11664
+    assert M.det(method='bareiss') == 11664
     assert M.det(method='berkowitz') == 11664
 
     M = Matrix(( ( 2,  7, -1, 3, 2),
@@ -323,14 +323,14 @@ def test_determinant():
                  (-3, -2,  4, 5, 3),
                  ( 1,  0,  0, 0, 1) ))
 
-    assert M.det(method='bareis') == 123
+    assert M.det(method='bareiss') == 123
     assert M.det(method='berkowitz') == 123
 
     M = Matrix(( (x, y, z),
                  (1, 0, 0),
                  (y, z, x) ))
 
-    assert M.det(method='bareis') == z**2 - x*y
+    assert M.det(method='bareiss') == z**2 - x*y
     assert M.det(method='berkowitz') == z**2 - x*y
 
 
@@ -1716,7 +1716,7 @@ def test_errors():
     pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det())
     pytest.raises(ValueError,
                   lambda: Matrix([[1, 2], [3, 4]]).det(method='Not a real method'))
-    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det_bareis())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det_bareiss())
     pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).berkowitz())
     pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).berkowitz_det())
     pytest.raises(ValueError,
