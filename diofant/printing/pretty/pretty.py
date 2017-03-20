@@ -678,7 +678,7 @@ class PrettyPrinter(Printer):
     def _print_BasisDependent(self, expr):
         from ...vector import Vector
 
-        if not self._use_unicode:
+        if not self._use_unicode:  # pragma: no cover
             raise NotImplementedError("ASCII pretty printing of BasisDependent is not implemented")
 
         orig_self = self
@@ -717,10 +717,6 @@ class PrettyPrinter(Printer):
                             o1.append(arg_str + ' ' + k._pretty_form)
                         vectstrs.append(k._pretty_form)
 
-                if o1[0].startswith(" + "):
-                    o1[0] = o1[0][3:]
-                elif o1[0].startswith(" "):
-                    o1[0] = o1[0][1:]
                 # Fixing the newlines
                 lengths = []
                 strs = ['']
@@ -953,8 +949,7 @@ class PrettyPrinter(Printer):
         pl = prettyForm(*pp.right(', ', pq))
 
         ht = F.baseline - above - 2
-        if ht > 0:
-            pu = prettyForm(*pu.below('\n'*ht))
+        pu = prettyForm(*pu.below('\n'*ht))
         p = prettyForm(*pu.below(pl))
 
         F.baseline = above
@@ -1343,13 +1338,10 @@ class PrettyPrinter(Printer):
             return self.emptyPrinter(expr)
 
     def _print_ProductSet(self, p):
-        if len(p.sets) > 1 and not has_variety(p.sets):
-            return self._print(Pow(p.sets[0], len(p.sets), evaluate=False))
-        else:
-            prod_char = "\N{MULTIPLICATION SIGN}" if self._use_unicode else 'x'
-            return self._print_seq(p.sets, None, None, ' %s ' % prod_char,
-                                   parenthesize=lambda set: set.is_Union or
-                                   set.is_Intersection or set.is_ProductSet)
+        prod_char = "\N{MULTIPLICATION SIGN}" if self._use_unicode else 'x'
+        return self._print_seq(p.sets, None, None, ' %s ' % prod_char,
+                               parenthesize=lambda set: set.is_Union or
+                               set.is_Intersection or set.is_ProductSet)
 
     def _print_FiniteSet(self, s):
         items = sorted(s.args, key=default_sort_key)
@@ -1377,21 +1369,17 @@ class PrettyPrinter(Printer):
         return self._print_seq(printset, '{', '}', ', ' )
 
     def _print_Interval(self, i):
-        if i.start == i.end:
-            return self._print_seq(i.args[:1], '{', '}')
-
+        if i.left_open:
+            left = '('
         else:
-            if i.left_open:
-                left = '('
-            else:
-                left = '['
+            left = '['
 
-            if i.right_open:
-                right = ')'
-            else:
-                right = ']'
+        if i.right_open:
+            right = ')'
+        else:
+            right = ']'
 
-            return self._print_seq(i.args[:2], left, right)
+        return self._print_seq(i.args[:2], left, right)
 
     def _print_Intersection(self, u):
 

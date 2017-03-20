@@ -10,7 +10,7 @@ from diofant import (
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
     Interval, Union, Integer, Float, Complement, Intersection,
-    Trace, MatrixSymbol, AlgebraicNumber)
+    Trace, MatrixSymbol, AlgebraicNumber, Order, RealField)
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2_r
 from diofant.functions import (
@@ -3449,6 +3449,15 @@ def test_pretty_Boolean():
     assert pretty(expr) == "Equivalent(x, y)"
     assert upretty(expr) == "x ≡ y"
 
+    expr = ~(x & y)
+    assert upretty(expr) == "¬(x ∧ y)"
+
+    expr = x & (y | z)
+    assert upretty(expr) == "x ∧ (y ∨ z)"
+
+    expr = (y | z) & (x | z)
+    assert upretty(expr) == "(x ∨ z) ∧ (y ∨ z)"
+
 
 def test_pretty_Domain():
     expr = FF(23)
@@ -3470,6 +3479,8 @@ def test_pretty_Domain():
 
     assert pretty(expr) == "RR"
     assert upretty(expr) == "ℝ"
+
+    assert upretty(RealField(prec=100)) == "ℝ₁₀₀"
 
     expr = QQ[x]
 
@@ -4137,6 +4148,7 @@ def test_pretty_Subs():
 def test_gammas():
     assert upretty(lowergamma(x, y)) == "γ(x, y)"
     assert upretty(uppergamma(x, y)) == "Γ(x, y)"
+    assert pretty(uppergamma(x, y)) == "uppergamma(x, y)"
     assert xpretty(gamma(x), use_unicode=True) == 'Γ(x)'
 
 
@@ -4770,11 +4782,17 @@ def test_pretty_Add():
     assert pretty(eq) == '0 + 0'
     assert upretty(eq) == '0 + 0'
 
+    eq = Add(y, x, evaluate=False)
+    assert upretty(eq, order='none') == 'y + x'
+
 
 def test_pretty_Mul():
     eq = Mul(1, 1, evaluate=False)
     assert pretty(eq) == '1*1'
     assert upretty(eq) == '1⋅1'
+
+    eq = Mul(y, x, evaluate=False)
+    assert upretty(eq, order='none') == 'y⋅x'
 
 
 def test_sympyissue_7179():
@@ -4959,3 +4977,7 @@ def test_AlgebraicNumber():
 def test_sympyissue_11801():
     assert pretty(Symbol("")) == ""
     assert upretty(Symbol("")) == ""
+
+
+def test_Order():
+    assert upretty(O(1)) == "O(1)"

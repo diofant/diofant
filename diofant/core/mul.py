@@ -856,63 +856,6 @@ class Mul(AssocOp):
                 repl_dict = a.matches(self.func(*nc2), repl_dict)
         return repl_dict or None
 
-    def _matches(self, expr, repl_dict={}):
-        # weed out negative one prefixes#
-        from .symbol import Wild
-        sign = 1
-        a, b = self.as_two_terms()
-        if a is S.NegativeOne:
-            if b.is_Mul:
-                sign = -sign
-            else:
-                # the remainder, b, is not a Mul anymore
-                return b.matches(-expr, repl_dict)
-        expr = sympify(expr)
-        if expr.is_Mul and expr.args[0] is S.NegativeOne:
-            expr = -expr
-            sign = -sign
-
-        if not expr.is_Mul:
-            # expr can only match if it matches b and a matches +/- 1
-            if len(self.args) == 2:
-                # quickly test for equality
-                if b == expr:
-                    return a.matches(Rational(sign), repl_dict)
-                # do more expensive match
-                dd = b.matches(expr, repl_dict)
-                if dd is None:
-                    return
-                dd = a.matches(Rational(sign), dd)
-                return dd
-            return
-
-        d = repl_dict.copy()
-
-        # weed out identical terms
-        pp = list(self.args)
-        ee = list(expr.args)
-        for p in self.args:
-            if p in expr.args:
-                ee.remove(p)
-                pp.remove(p)
-
-        # only one symbol left in pattern -> match the remaining expression
-        if len(pp) == 1 and isinstance(pp[0], Wild):
-            if len(ee) == 1:
-                d[pp[0]] = sign * ee[0]
-            else:
-                d[pp[0]] = sign * expr.func(*ee)
-            return d
-
-        if len(ee) != len(pp):
-            return
-
-        for p, e in zip(pp, ee):
-            d = p.xreplace(d).matches(e, d)
-            if d is None:
-                return
-        return d
-
     @staticmethod
     def _combine_inverse(lhs, rhs):
         """
