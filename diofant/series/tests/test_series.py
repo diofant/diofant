@@ -199,3 +199,9 @@ def test_sympyissue_11722():
 def test_sympyissue_11884():
     assert O(x).subs(x, x - 1) + 1 == 1 + O(x - 1, (x, 1))
     assert cos(x).series(x, x0=1, n=1) == cos(1) + O(x - 1, (x, 1))
+
+
+def test_sympyissue_12375():
+    s = (x + 1).series(x, 2, 1)
+    assert s == 3 + O(x - 2, (x, 2))
+    assert s.removeO() == 3
