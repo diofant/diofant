@@ -12,4 +12,5 @@ development work they do here in a user friendly format.
    :maxdepth: 1
    :reversed:
 
-   notes-*
+   sympy
+   notes-0.[89]*
