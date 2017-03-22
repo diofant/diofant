@@ -17,7 +17,7 @@ class MathMLPrinter(Printer):
     References
     ==========
 
-    * http://www.w3.org/TR/MathML2/
+    * https://www.w3.org/TR/MathML3/
 
     """
 
