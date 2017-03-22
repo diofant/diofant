@@ -183,3 +183,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18992` Possibly incorrect limit related to Stirling's formula
 * :sympyissue:`19026` Bug in Limit
 * :sympyissue:`12303` Ellipse comparison with other geometric entities throws an error
+* :sympyissue:`11986` Typo Error in mathml.py
