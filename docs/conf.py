@@ -129,7 +129,7 @@ extlinks = {
     'pull': ('https://github.com/diofant/diofant/pull/%s', '#'),
     'commit': ('https://github.com/diofant/diofant/commit/%s', ''),
     'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#'),
-    'sympypull': ('https://github.com/sympy/dsympy/pull/%s', 'sympy/sympy#'),
+    'sympypull': ('https://github.com/sympy/sympy/pull/%s', 'sympy/sympy#'),
 }
 
 # RTD theme support:
