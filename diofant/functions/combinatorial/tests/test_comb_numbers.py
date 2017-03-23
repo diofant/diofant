@@ -10,9 +10,9 @@ from diofant.functions import (bernoulli, harmonic, bell, fibonacci, lucas, eule
                                digamma, trigamma, polygamma, factorial, sin,
                                cos, cot, zeta)
 
-__all__ = ()
+from diofant.abc import x
 
-x = Symbol('x')
+__all__ = ()
 
 
 def test_bernoulli():
@@ -58,6 +58,7 @@ def test_fibonacci():
     assert fibonacci(100) == 354224848179261915075
     assert [lucas(n) for n in range(-3, 5)] == [-4, 3, -1, 2, 1, 3, 4, 7]
     assert lucas(100) == 792070839848372253127
+    assert lucas(x) == lucas(x, evaluate=False)
 
     assert fibonacci(1, x) == 1
     assert fibonacci(2, x) == x
@@ -235,6 +236,10 @@ def test_harmonic_rewrite_polygamma():
 
     assert expand_func(harmonic(n, 2)).func is harmonic
 
+    assert expand_func(harmonic(n + S.Half)) == expand_func(harmonic(n + S.Half))
+    assert expand_func(harmonic(-S.Half)) == harmonic(-S.Half)
+    assert expand_func(harmonic(x)) == harmonic(x)
+
 
 @pytest.mark.xfail
 def test_harmonic_limit_fail():
@@ -288,6 +293,7 @@ def test_euler():
 
     assert euler(20).evalf() == 370371188237525.0
     assert euler(20, evaluate=False).evalf() == 370371188237525.0
+    assert euler(S.Half).evalf() == euler(S.Half)
 
     assert euler(n).rewrite(Sum) == euler(n)
     # XXX: Not sure what the guy who wrote this test was trying to do with the _j and _k stuff
@@ -339,11 +345,15 @@ def test_genocchi():
     for n, g in enumerate(genocchis):
         assert genocchi(n + 1) == g
 
+    assert genocchi(Symbol('z', zero=True) + 1) == 1
+    pytest.raises(ValueError, lambda: genocchi(S.Half))
+
     m = Symbol('m', integer=True)
     n = Symbol('n', integer=True, positive=True)
 
     assert genocchi(m) == genocchi(m)
     assert genocchi(n).rewrite(bernoulli) == 2 * (1 - 2 ** n) * bernoulli(n)
+    assert genocchi(x).rewrite(bernoulli) == genocchi(x)
 
     assert genocchi(2*n).is_odd
     assert genocchi(2*n + 1, evaluate=False).is_odd is None
@@ -483,6 +493,7 @@ def test_nC_nP_nT():
             0, 1, 255, 3025, 7770, 6951, 2646, 462, 36, 1]
     assert stirling(3, 4, kind=1) == stirling(3, 4, kind=1) == 0
     pytest.raises(ValueError, lambda: stirling(-2, 2))
+    pytest.raises(ValueError, lambda: stirling(9, 1, kind=3))
 
     def delta(p):
         if len(p) == 1:
@@ -500,6 +511,7 @@ def test_nC_nP_nT():
     assert nP('aabc', 5) == 0
     assert nC(4, 2, replacement=True) == nC('abcdd', 2, replacement=True) == \
         len(list(multiset_combinations('aabbccdd', 2))) == 10
+    assert nC(4, replacement=True) == 70
     assert nC('abcdd') == sum(nC('abcdd', i) for i in range(6)) == 24
     assert nC(list('abcdd'), 4) == 4
     assert nT('aaaa') == nT(4) == len(list(partitions(4))) == 5
@@ -507,11 +519,14 @@ def test_nC_nP_nT():
     assert nC('aabb'*3, 3) == 4  # aaa, bbb, abb, baa
     assert dict(_AOP_product((4, 1, 1, 1))) == {
         0: 1, 1: 4, 2: 7, 3: 8, 4: 8, 5: 7, 6: 4, 7: 1}
+    assert nT(_multiset_histogram('abc')) == 5
+    assert nT(_multiset_histogram('a')) == 1
     # the following was the first t that showed a problem in a previous form of
     # the function, so it's not as random as it may appear
     t = (3, 9, 4, 6, 6, 5, 5, 2, 10, 4)
     assert sum(_AOP_product(t)[i] for i in range(55)) == 58212000
     pytest.raises(ValueError, lambda: _multiset_histogram({1: 'a'}))
+    pytest.raises(ValueError, lambda: nC(4, -2))
 
 
 def test_sympyissue_8496():
