@@ -1215,8 +1215,12 @@ def _winding_number(T, field):
 
 
 def _roots_bound(f, F):
-    lc = abs(dup_LC(f, F))
-    return 2*max(F.quo(abs(c), lc) for c in f)
+    from ..functions import ceiling, root
+    n, lc = dup_degree(f), abs(dup_LC(f, F))
+    B = max(root(F.quo(abs(c), lc), s if s else 1)
+            for s, c in enumerate(f[:-1]))
+    B = 2*max(B, root(F.quo(abs(f[-1]), 2*lc), n))
+    return F.from_diofant(ceiling(100*B)/100)
 
 
 def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):

@@ -2524,8 +2524,10 @@ def test_intervals():
     assert all(re(a) < re(r) < re(b) and im(
         a) < im(r) < im(b) for (a, b), r in zip(complex_part, nroots(f)))
 
-    assert complex_part == [(-Rational(40, 7) - 40*I/7, 0), (-Rational(40, 7), 40*I/7),
-                            (-40*I/7, Rational(40, 7)), (0, Rational(40, 7) + 40*I/7)]
+    assert complex_part == [(QQ(-543, 100) - 543*I/100, 0),
+                            (QQ(-543, 100), 543*I/100),
+                            (-543*I/100, QQ(543, 100)),
+                            (0, QQ(543, 100) + 543*I/100)]
 
     real_part, complex_part = intervals(f, all=True, sqf=True, eps=Rational(1, 10))
 
