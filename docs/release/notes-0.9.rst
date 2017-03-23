@@ -127,8 +127,14 @@ Issues closed
 * :sympyissue:`10336` nsimplify problems with `oo` and `inf`
 * :sympyissue:`12345` nonlinsolve (solve_biquadratic) gives no solution with radical
 * :issue:`361` Fill release notes for old (SymPy) versions
+* :sympyissue:`12375` sympy.series() is broken?
+* :issue:`469` MatrixExpr `as_explicit` cannot work when dimensions are symbolic
+* :sympyissue:`5514` Poly(x, x) * I != I * Poly(x, x)
+* :sympyissue:`12398` Limits With abs in certain cases remains unevaluated
+* :sympyissue:`12400` polytool.poly() can't raise polynomial to negative power?
+* :issue:`466` Test failure for new theano version
 
-.. last pr: #410
+.. last pr: #467
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
