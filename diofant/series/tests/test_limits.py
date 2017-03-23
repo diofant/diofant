@@ -191,6 +191,12 @@ def test_abs():
     assert limit(abs(cos(x)), x, 0) == 1
     assert limit(abs(sin(x + 1)), x, 0) == sin(1)
 
+    # sympy/sympy#12398
+    assert limit(abs(log(n)/n**3), n, oo) == 0
+    expr = abs(log(n)/n**3)
+    expr2 = expr.subs(n, n + 1)
+    assert limit(n*(expr/expr2 - Integer(1)), n, oo) == 3
+
 
 def test_heuristic():
     x = Symbol("x", extended_real=True)
