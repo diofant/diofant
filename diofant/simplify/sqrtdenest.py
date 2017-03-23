@@ -681,7 +681,7 @@ def unrad(eq, *syms, **flags):
             # XXX - uncovered
             oldp, olde = cov
             if Poly(e, p).degree(p) in (1, 2):
-                cov[:] = [p, olde.subs(oldp, solve(e, p, **uflags)[0])]
+                cov[:] = [p, olde.subs(oldp, solve(e, p, **uflags)[0][p])]
             else:
                 raise NotImplementedError
         else:
@@ -839,9 +839,9 @@ def unrad(eq, *syms, **flags):
             x = list(x)[0]
             try:
                 inv = solve(covsym**lcm - b, x, **uflags)
-                if not inv or any(isinstance(s, RootOf) for s in inv):
+                if not inv or any(isinstance(s[x], RootOf) for s in inv):
                     raise NotImplementedError
-                eq = poly.as_expr().subs(b, covsym**lcm).subs(x, inv[0])
+                eq = poly.as_expr().subs(b, covsym**lcm).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
                 return _canonical(eq, cov)
             except NotImplementedError:
@@ -872,17 +872,16 @@ def unrad(eq, *syms, **flags):
                     for x in syms:
                         try:
                             sol = solve(c, x, **uflags)
-                            if not sol or any(isinstance(s, RootOf) for s in sol):
+                            if not sol or any(isinstance(s[x], RootOf) for s in sol):
                                 raise NotImplementedError
-                            neweq = r0.subs(x, sol[0]) + covsym*r1/_rads1 + \
-                                others
+                            neweq = r0.subs(sol[0]) + covsym*r1/_rads1 + others
                             tmp = unrad(neweq, covsym)
                             if tmp:
                                 eq, newcov = tmp
                                 if newcov:
                                     newp, newc = newcov
-                                    _cov(newp, c.subs(covsym,
-                                        solve(newc, covsym, **uflags)[0]))
+                                    _cov(newp, c.subs(solve(newc, covsym,
+                                                            **uflags)[0]))
                                 else:
                                     _cov(covsym, c)
                             else:

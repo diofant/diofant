@@ -500,11 +500,11 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
     if q.degree(DE.t) > B:
         eqs = [p.nth(i) - c1*q.nth(i) for i in range(B + 1, C + 1)]
         s = solve(eqs, c1)
-        if not s or not s[c1].is_Rational:
+        if not s or not s[0][c1].is_Rational:
             # deg(q) > B, no solution for c.
             return
 
-        N, M = s[c1].as_numer_denom()  # N and M are integers
+        N, M = s[0][c1].as_numer_denom()  # N and M are integers
         N, M = Poly(N, DE.t), Poly(M, DE.t)
 
         nfmwa = N*fa*wd - M*wa*fd
@@ -541,11 +541,11 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
 
     eqs = [r1.nth(i) - c1*r2.nth(i) for i in range(z.degree(DE.t))]
     s = solve(eqs, c1)
-    if not s or not s[c1].is_Rational:
+    if not s or not s[0][c1].is_Rational:
         # deg(q) <= B, no solution for c.
         return
 
-    M, N = s[c1].as_numer_denom()
+    M, N = s[0][c1].as_numer_denom()
 
     nfmwa = N.as_poly(DE.t)*fa*wd - M.as_poly(DE.t)*wa*fd
     nfmwd = fd*wd

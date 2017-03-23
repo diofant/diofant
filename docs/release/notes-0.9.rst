@@ -14,6 +14,7 @@ Major changes
 =============
 
 * Assumptions (old) moved from :class:`~diofant.core.basic.Basic` to :class:`~diofant.core.expr.Expr`, see :pull:`311`.
+* :func:`~diofant.solvers.solvers.solve` now return :class:`list` of :class:`dict`'s, see :pull:`473`.
 
 Backwards-incompatible changes
 ==============================
@@ -134,8 +135,9 @@ Issues closed
 * :sympyissue:`12398` Limits With abs in certain cases remains unevaluated
 * :sympyissue:`12400` polytool.poly() can't raise polynomial to negative power?
 * :issue:`466` Test failure for new theano version
+* :issue:`33` Output from solve() should be consistent
 
-.. last pr: #479
+.. last pr: #473
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

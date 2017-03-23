@@ -234,8 +234,6 @@ def solve(f, *symbols, **flags):
     \*\*flags : dict
         A dictionary of following parameters:
 
-        dict : bool, optional
-            Return list of solution mappings, default is False.
         exclude : iterable, optional
             Don't try to solve for any of the symbols in
             exclude.  Default is [].
@@ -281,23 +279,16 @@ def solve(f, *symbols, **flags):
         >>> from diofant.abc import x, y, z, a, b
         >>> f = Function('f')
 
-    * to always get a list of solution mappings, use flag dict=True
-
-        >>> solve(x - 3, dict=True)
-        [{x: 3}]
-        >>> solve([x - 3, y - 1], dict=True)
-        [{x: 3, y: 1}]
-
     * single expression and single symbol that is in the expression
 
         >>> solve(x - y, x)
-        [y]
+        [{x: y}]
         >>> solve(x - 3, x)
-        [3]
+        [{x: 3}]
         >>> solve(Eq(x, 3), x)
-        [3]
+        [{x: 3}]
         >>> solve(Poly(x - 3), x)
-        [3]
+        [{x: 3}]
 
     * single expression with no symbol that is in the expression
 
@@ -314,7 +305,7 @@ def solve(f, *symbols, **flags):
           given as an iterable of length > 1 -- a list of mappings will be returned.
 
             >>> solve(x - 3)
-            [3]
+            [{x: 3}]
             >>> solve(x**2 - y**2)
             [{x: -y}, {x: y}]
             >>> solve(z**2*x**2 - z**2*y**2)
@@ -330,44 +321,44 @@ def solve(f, *symbols, **flags):
       subs method.
 
           >>> solve(f(x) - x, f(x))
-          [x]
+          [{f(x): x}]
           >>> solve(f(x).diff(x) - f(x) - x, f(x).diff(x))
-          [x + f(x)]
+          [{Derivative(f(x), x): x + f(x)}]
           >>> solve(f(x).diff(x) - f(x) - x, f(x))
-          [-x + Derivative(f(x), x)]
+          [{f(x): -x + Derivative(f(x), x)}]
 
           >>> from diofant import Indexed, IndexedBase, Tuple, sqrt
           >>> A = IndexedBase('A')
           >>> eqs = Tuple(A[1] + A[2] - 3, A[1] - A[2] + 1)
           >>> solve(eqs, eqs.atoms(Indexed))
-          {A[1]: 1, A[2]: 2}
+          [{A[1]: 1, A[2]: 2}]
 
         * It is possible to solve for anything that can be targeted with
           subs:
 
             >>> solve(x + 2 + sqrt(3), x + 2)
-            [-sqrt(3)]
+            [{x + 2: -sqrt(3)}]
             >>> solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2)
-            {y: -2 + sqrt(3), x + 2: -sqrt(3)}
+            [{y: -2 + sqrt(3), x + 2: -sqrt(3)}]
 
         * Nothing heroic is done in this implicit solving so you may end up
           with a symbol still in the solution:
 
             >>> eqs = (x*y + 3*y + sqrt(3), x + 4 + y)
             >>> solve(eqs, y, x + 2)
-            {y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}
+            [{y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}]
             >>> solve(eqs, y*x, x)
-            {x: -y - 4, x*y: -3*y - sqrt(3)}
+            [{x: -y - 4, x*y: -3*y - sqrt(3)}]
 
         * if you attempt to solve for a number remember that the number
           you have obtained does not necessarily mean that the value is
           equivalent to the expression obtained:
 
             >>> solve(sqrt(2) - 1, 1, check=False)
-            [sqrt(2)]
+            [{1: sqrt(2)}]
             >>> solve(x - y + 1, 1)  # /!\ -1 is targeted, too
-            [x/(y - 1)]
-            >>> [_.subs(z, -1) for _ in solve((x - y + 1).subs(-1, z), 1)]
+            [{1: x/(y - 1)}]
+            >>> [_[1].subs(z, -1) for _ in solve((x - y + 1).subs(-1, z), 1)]
             [-x + y]
 
         * To solve for a function within a derivative, use dsolve.
@@ -398,13 +389,13 @@ def solve(f, *symbols, **flags):
             * with a solution
 
                 >>> solve([x - 3], x)
-                {x: 3}
+                [{x: 3}]
                 >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y)
-                {x: -3, y: 1}
+                [{x: -3, y: 1}]
                 >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z)
-                {x: -3, y: 1}
+                [{x: -3, y: 1}]
                 >>> solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y)
-                {x: -5*y + 2, z: 21*y - 6}
+                [{x: -5*y + 2, z: 21*y - 6}]
 
             * without a solution
 
@@ -424,7 +415,7 @@ def solve(f, *symbols, **flags):
           implicitly in terms of variables that were not of interest
 
             >>> solve([x - y, y - 3], x)
-            {x: y}
+            [{x: y}]
 
     Notes
     =====
@@ -436,13 +427,13 @@ def solve(f, *symbols, **flags):
         >>> from diofant import Symbol, solve
         >>> x = Symbol("x")
         >>> solve(x**2 - 1)
-        [-1, 1]
+        [{x: -1}, {x: 1}]
 
     By using the positive tag only one solution will be returned:
 
         >>> pos = Symbol("pos", positive=True)
         >>> solve(pos**2 - 1)
-        [1]
+        [{pos: 1}]
 
     When the solutions are checked, those that make any denominator zero
     are automatically excluded. If you do not want to exclude such solutions
@@ -450,14 +441,14 @@ def solve(f, *symbols, **flags):
 
         >>> from diofant import sin, limit
         >>> solve(sin(x)/x)  # 0 is excluded
-        [pi]
+        [{x: pi}]
 
     If check=False then a solution to the numerator being zero is found: x = 0.
     In this case, this is a spurious solution since sin(x)/x has the well known
     limit (without dicontinuity) of 1 at x = 0:
 
         >>> solve(sin(x)/x, check=False)
-        [0, pi]
+        [{x: 0}, {x: pi}]
 
     In the following case, however, the limit exists and is equal to the the
     value of x = 0 that is excluded when check=True:
@@ -466,7 +457,7 @@ def solve(f, *symbols, **flags):
         >>> solve(eq, x)
         []
         >>> solve(eq, x, check=False)
-        [0]
+        [{x: 0}]
         >>> limit(eq, x, 0, '-')
         0
         >>> limit(eq, x, 0, '+')
@@ -479,14 +470,14 @@ def solve(f, *symbols, **flags):
     instances will be returned instead:
 
         >>> solve(x**3 - x + 1)
-        [-1/((-1/2 - sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)) - (-1/2 -
-        sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)/3, -(-1/2 +
-        sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)/3 - 1/((-1/2 +
-        sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)), -(3*sqrt(69)/2 +
-        27/2)**(1/3)/3 - 1/(3*sqrt(69)/2 + 27/2)**(1/3)]
+        [{x: -1/((-1/2 - sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)) - (-1/2 -
+          sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)/3},
+         {x: -(-1/2 + sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)/3 - 1/((-1/2 +
+          sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3))},
+         {x: -(3*sqrt(69)/2 + 27/2)**(1/3)/3 - 1/(3*sqrt(69)/2 + 27/2)**(1/3)}]
         >>> solve(x**3 - x + 1, cubics=False)
-        [RootOf(x**3 - x + 1, x, 0), RootOf(x**3 - x + 1, x, 1),
-         RootOf(x**3 - x + 1, x, 2)]
+        [{x: RootOf(x**3 - x + 1, x, 0)}, {x: RootOf(x**3 - x + 1, x, 1)},
+         {x: RootOf(x**3 - x + 1, x, 2)}]
 
     *Solving equations involving radicals*
 
@@ -498,7 +489,7 @@ def solve(f, *symbols, **flags):
         >>> solve(eq)
         []
         >>> solve(eq, check=False)
-        [1/3]
+        [{x: 1/3}]
 
     In the above example there is only a single solution to the equation. Other
     expressions will yield spurious roots which must be checked manually;
@@ -508,16 +499,16 @@ def solve(f, *symbols, **flags):
         >>> from diofant import real_root, Rational
         >>> eq = root(x, 3) - root(x, 5) + Rational(1, 7)
         >>> solve(eq)
-        [RootOf(7*_p**5 - 7*_p**3 + 1, _p, 1)**15,
-         RootOf(7*_p**5 - 7*_p**3 + 1, _p, 2)**15]
+        [{x: RootOf(7*_p**5 - 7*_p**3 + 1, _p, 1)**15},
+         {x: RootOf(7*_p**5 - 7*_p**3 + 1, _p, 2)**15}]
         >>> sol = solve(eq, check=False)
-        >>> [abs(eq.subs(x,i).n(2)) for i in sol]
+        >>> [abs(eq.subs(i).n(2)) for i in sol]
         [0.48, 0.e-110, 0.e-110, 0.052, 0.052]
 
         The first solution is negative so real_root must be used to see that
         it satisfies the expression:
 
-        >>> abs(real_root(eq.subs(x, sol[0])).n(2))
+        >>> abs(real_root(eq.subs(sol[0])).n(2))
         0.e-110
 
     See Also
@@ -590,7 +581,6 @@ def solve(f, *symbols, **flags):
                 for p in pot:
                     if not (p.is_number or p.is_Add or p.is_Mul) or \
                             isinstance(p, AppliedUndef):
-                        flags['dict'] = True  # better show symbols
                         symbols.add(p)
                         pot.skip()  # don't go any deeper
         symbols = list(symbols)
@@ -650,7 +640,6 @@ def solve(f, *symbols, **flags):
             symbols.extend([re(s), im(s)])
         if bare_f:
             bare_f = False
-        flags['dict'] = True
     # end of real/imag handling  -----------------------------
 
     symbols = list(uniq(symbols))
@@ -821,18 +810,6 @@ def solve(f, *symbols, **flags):
                 solution[i] = {swap_sym[k]: v.subs(swap_sym)
                                for k, v in sol.items()}
 
-    # undo the dictionary solutions returned when the system was only partially
-    # solved with poly-system if all symbols are present
-    if (
-            not flags.get('dict', False) and
-            solution and
-            ordered_symbols and
-            type(solution) is not dict and
-            type(solution[0]) is dict and
-            all(s in solution[0] for s in symbols)
-    ):
-        solution = [tuple(r[s].subs(r) for s in symbols) for r in solution]
-
     # Get assumptions about symbols, to filter solutions.
     # Note that if assumptions about a solution can't be verified, it is still
     # returned.
@@ -909,14 +886,9 @@ def solve(f, *symbols, **flags):
     # done
     ###########################################################################
 
-    as_dict = flags.get('dict', False)
-
     if isinstance(solution, list):
         # Make sure that a list of solutions is ordered in a canonical way.
         solution.sort(key=default_sort_key)
-
-    if not as_dict:
-        return solution or []
 
     # return a list of mappings or []
     if not solution:
@@ -932,8 +904,8 @@ def solve(f, *symbols, **flags):
             if len(symbols) != 1:
                 raise ValueError("Length should be 1")
             solution = [{symbols[0]: s} for s in solution]
-    if as_dict:
-        return solution
+
+    return solution
 
 
 def _solve(f, *symbols, **flags):
@@ -1641,7 +1613,7 @@ def minsolve_linear_system(system, *symbols, **flags):
             if len(k.free_symbols) != 1:
                 determined[x] = Integer(0)
             else:
-                val = solve(k)[0]
+                val = solve(k)[0][x]
                 if val == 0 and all(v.subs(x, val) == 0 for v in s.values()):
                     determined[x] = Integer(1)
                 else:
@@ -1721,7 +1693,10 @@ def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
         # consecutive powers in the input expressions have
         # been successfully collected, so solve remaining
         # system using Gaussian elimination algorithm
-        return solve(system, *coeffs, **flags)
+        sol = solve(system, *coeffs, **flags)
+        if sol:
+            sol = sol[0]
+        return sol
     else:
         return  # no solutions
 

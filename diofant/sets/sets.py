@@ -980,8 +980,9 @@ class Interval(Set, EvalfMixin):
         if len(sing) == 0:
             solns = solve(diff(expr, var), var)
 
-            extr = [_start, _end] + [f(x) for x in solns
-                                     if x.is_extended_real and x in self]
+            extr = [_start, _end] + [f(x[var]) for x in solns
+                                     if (x[var].is_extended_real and
+                                         x[var] in self)]
             start, end = Min(*extr), Max(*extr)
 
             left_open, right_open = False, False

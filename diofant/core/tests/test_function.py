@@ -644,7 +644,8 @@ def test_nfloat():
     # issue sympy/sympy#6342
     lamda = Symbol('lamda')
     f = x*lamda + lamda**3*(x/2 + Rational(1, 2)) + lamda**2 + Rational(1, 4)
-    assert not any(a.free_symbols for a in solve(f.subs(x, -0.139)))
+    assert not any(a[lamda].free_symbols
+                   for a in solve(f.subs(x, -0.139)))
 
     # issue sympy/sympy#6632
     assert nfloat(-100000*sqrt(2500000001) + 5000000001) == \

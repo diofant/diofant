@@ -589,7 +589,7 @@ def minimal_polynomial(ex, x=None, **args):
     x - sqrt(2)
     >>> minimal_polynomial(sqrt(2) + sqrt(3), x)
     x**4 - 10*x**2 + 1
-    >>> minimal_polynomial(solve(x**3 + x + 3)[0], x)
+    >>> minimal_polynomial(solve(x**3 + x + 3)[0][x], x)
     x**3 + x + 3
     >>> minimal_polynomial(sqrt(y), x)
     x**2 - y

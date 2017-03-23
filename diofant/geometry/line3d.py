@@ -448,7 +448,7 @@ class LinearEntity3D(GeometryEntity):
         b = [i - j for i, j in zip(p.args, a.args)]
         c = sum(i*j for i, j in zip(b, self.direction_ratio))
         d = solve(c, t)
-        e = a.subs(t, d[0])
+        e = a.subs(d[0])
         return Line3D(p, e)
 
     def perpendicular_segment(self, p):
@@ -501,7 +501,7 @@ class LinearEntity3D(GeometryEntity):
         b = [i - j for i, j in zip(p.args, a.args)]
         c = sum(i*j for i, j in zip(b, self.direction_ratio))
         d = solve(c, t)
-        e = a.subs(t, d[0])
+        e = a.subs(d[0])
         return Segment3D(p, e)
 
     def projection(self, o):
@@ -699,8 +699,8 @@ class LinearEntity3D(GeometryEntity):
                 a = self.arbitrary_point(t1)
                 b = o.arbitrary_point(t2)
                 dx = a.x - b.x
-                c = solve([dx, a.y - b.y], t)
-                d = solve([dx, a.z - b.z], t)
+                c = solve([dx, a.y - b.y], t)[0]
+                d = solve([dx, a.z - b.z], t)[0]
                 if len(c) == 1 and len(d) == 1:
                     return []
                 e = a.subs(t1, c[t1])

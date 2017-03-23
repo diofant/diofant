@@ -155,6 +155,7 @@ def continued_fraction_reduce(cf):
     if period:
         y = Dummy('y')
         solns = solve(continued_fraction_reduce(period + [y]) - y, y)
+        solns = [s[y] for s in solns]
         solns.sort()
         pure = solns[-1]
         return a.subs(x, pure).radsimp()

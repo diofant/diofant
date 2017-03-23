@@ -1479,7 +1479,7 @@ def test_equals():
 
     # issue sympy/sympy#6829
     # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3)
-    # z = eq.subs(x, solve(eq, x)[0])
+    # z = eq.subs(solve(eq, x)[0])
     q = symbols('q')
     z = (q*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
     Rational(13, 12))/2 - sqrt((2*q - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -

@@ -45,12 +45,12 @@ def singularities(f, x):
         guess = guess.union(*[singularities(a, x) for a in f.args])
     elif f.func is Pow:
         if f.exp.is_number and f.exp.is_negative:
-            guess = {v for v in solve(f.base, x) if v.is_real}
+            guess = {s[x] for s in solve(f.base, x) if s[x].is_real}
         else:
             guess |= singularities(log(f.base)*f.exp, x)
     elif f.func in (log, sign) and len(f.args) == 1:
         guess |= singularities(f.args[0], x)
-        guess |= {v for v in solve(f.args[0], x) if v.is_real}
+        guess |= {s[x] for s in solve(f.args[0], x) if s[x].is_real}
     else:  # pragma: no cover
         raise NotImplementedError
 

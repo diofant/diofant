@@ -248,11 +248,12 @@ def test_unrad1():
     eq = sqrt(x) + sqrt(x + 1) + sqrt(1 - sqrt(x))
     assert check(unrad(eq),
         (16*x**2 - 9*x, []))
-    assert set(solve(eq, check=False)) == {Integer(0), Rational(9, 16)}
+    assert {s[x] for s in solve(eq, check=False)} == {0, Rational(9, 16)}
     assert solve(eq) == []
     # but this one really does have those solutions
-    assert set(solve(sqrt(x) - sqrt(x + 1) + sqrt(1 - sqrt(x)))) == \
-        {S.Zero, Rational(9, 16)}
+    assert ({s[x] for s in solve(sqrt(x) - sqrt(x + 1) +
+                                 sqrt(1 - sqrt(x)))} ==
+            {S.Zero, Rational(9, 16)})
 
     assert check(unrad(sqrt(x) + root(x + 1, 3) + 2*sqrt(y), y),
                  (2*sqrt(x)*(x + 1)**Rational(1, 3) + x - 4*y +
@@ -266,27 +267,27 @@ def test_unrad1():
 
     # http://tutorial.math.lamar.edu/
     #        Classes/Alg/SolveRadicalEqns.aspx#Solve_Rad_Ex2_a
-    assert solve(Eq(x, sqrt(x + 6))) == [3]
-    assert solve(Eq(x + sqrt(x - 4), 4)) == [4]
+    assert solve(Eq(x, sqrt(x + 6))) == [{x: 3}]
+    assert solve(Eq(x + sqrt(x - 4), 4)) == [{x: 4}]
     assert solve(Eq(1, x + sqrt(2*x - 3))) == []
-    assert set(solve(Eq(sqrt(5*x + 6) - 2, x))) == {-Integer(1), Integer(2)}
-    assert set(solve(Eq(sqrt(2*x - 1) - sqrt(x - 4), 2))) == {Integer(5), Integer(13)}
-    assert solve(Eq(sqrt(x + 7) + 2, sqrt(3 - x))) == [-6]
+    assert {s[x] for s in solve(Eq(sqrt(5*x + 6) - 2, x))} == {-1, 2}
+    assert {s[x] for s in solve(Eq(sqrt(2*x - 1) - sqrt(x - 4), 2))} == {5, 13}
+    assert solve(Eq(sqrt(x + 7) + 2, sqrt(3 - x))) == [{x: -6}]
     # http://www.purplemath.com/modules/solverad.htm
-    assert solve((2*x - 5)**Rational(1, 3) - 3) == [16]
-    assert set(solve(x + 1 - root(x**4 + 4*x**3 - x, 4))) == \
-        {-Rational(1, 2), -Rational(1, 3)}
-    assert set(solve(sqrt(2*x**2 - 7) - (3 - x))) == {-Integer(8), Integer(2)}
-    assert solve(sqrt(2*x + 9) - sqrt(x + 1) - sqrt(x + 4)) == [0]
-    assert solve(sqrt(x + 4) + sqrt(2*x - 1) - 3*sqrt(x - 1)) == [5]
-    assert solve(sqrt(x)*sqrt(x - 7) - 12) == [16]
-    assert solve(sqrt(x - 3) + sqrt(x) - 3) == [4]
-    assert solve(sqrt(9*x**2 + 4) - (3*x + 2)) == [0]
-    assert solve(sqrt(x) - 2 - 5) == [49]
+    assert solve((2*x - 5)**Rational(1, 3) - 3) == [{x: 16}]
+    assert {s[x] for s in solve(x + 1 - root(x**4 + 4*x**3 - x, 4))} == {-Rational(1, 2),
+                                                                         -Rational(1, 3)}
+    assert {s[x] for s in solve(sqrt(2*x**2 - 7) - (3 - x))} == {-8, 2}
+    assert solve(sqrt(2*x + 9) - sqrt(x + 1) - sqrt(x + 4)) == [{x: 0}]
+    assert solve(sqrt(x + 4) + sqrt(2*x - 1) - 3*sqrt(x - 1)) == [{x: 5}]
+    assert solve(sqrt(x)*sqrt(x - 7) - 12) == [{x: 16}]
+    assert solve(sqrt(x - 3) + sqrt(x) - 3) == [{x: 4}]
+    assert solve(sqrt(9*x**2 + 4) - (3*x + 2)) == [{x: 0}]
+    assert solve(sqrt(x) - 2 - 5) == [{x: 49}]
     assert solve(sqrt(x - 3) - sqrt(x) - 3) == []
-    assert solve(sqrt(x - 1) - x + 7) == [10]
-    assert solve(sqrt(x - 2) - 5) == [27]
-    assert solve(sqrt(17*x - sqrt(x**2 - 5)) - 7) == [3]
+    assert solve(sqrt(x - 1) - x + 7) == [{x: 10}]
+    assert solve(sqrt(x - 2) - 5) == [{x: 27}]
+    assert solve(sqrt(17*x - sqrt(x**2 - 5)) - 7) == [{x: 3}]
     assert solve(sqrt(x) - sqrt(x - 1) + sqrt(sqrt(x))) == []
 
     # don't posify the expression in unrad and do use _mexpand
@@ -294,7 +295,7 @@ def test_unrad1():
     p = posify(z)[0]
     assert solve(p) == []
     assert solve(z) == []
-    assert solve(z + 6*I) == [-Rational(1, 11)]
+    assert solve(z + 6*I) == [{x: -Rational(1, 11)}]
     assert solve(p + 6*I) == []
     # issue sympy/sympy#8622
     assert unrad((root(x + 1, 5) - root(x, 3))) == (
@@ -306,7 +307,7 @@ def test_unrad1():
     # for coverage
     assert check(unrad(sqrt(x) + root(x, 3) + y),
         (s**3 + s**2 + y, [s, s**6 - x]))
-    assert solve(sqrt(x) + root(x, 3) - 2) == [1]
+    assert solve(sqrt(x) + root(x, 3) - 2) == [{x: 1}]
     pytest.raises(NotImplementedError, lambda:
                   solve(sqrt(x) + root(x, 3) + root(x + 1, 5) - 2))
     # fails through a different code path
@@ -339,15 +340,15 @@ def test_unrad1():
 
     # the simplify flag should be reset to False for unrad results;
     # if it's not then this next test will take a long time
-    assert solve(root(x, 3) + root(x, 5) - 2) == [1]
+    assert solve(root(x, 3) + root(x, 5) - 2) == [{x: 1}]
     eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
     assert check(unrad(eq),
         ((5*x - 4)*(3125*x**3 + 37100*x**2 + 100800*x - 82944), []))
-    ans = [Rational(4, 5), Rational(-1484, 375) +
-           172564/(140625*(114*sqrt(12657)/78125 +
-           Rational(12459439, 52734375))**Rational(1, 3)) +
-           4*(114*sqrt(12657)/78125 +
-           Rational(12459439, 52734375))**Rational(1, 3)]
+    ans = [{x: Rational(4, 5)},
+           {x: Rational(-1484, 375) + 172564/(140625*(114*sqrt(12657)/78125 +
+               Rational(12459439, 52734375))**Rational(1, 3)) +
+               4*(114*sqrt(12657)/78125 +
+                  Rational(12459439, 52734375))**Rational(1, 3)}]
     assert solve(eq) == ans
     # duplicate radical handling
     assert check(unrad(sqrt(x + root(x + 1, 3)) - root(x + 1, 3) - 2),
@@ -384,18 +385,21 @@ def test_unrad1():
     # composite
     assert len(solve(sqrt(y)*x + x**3 - 1, x)) == 3
     assert len(solve(-512*y**3 + 1344*(x + 2)**Rational(1, 3)*y**2 -
-        1176*(x + 2)**Rational(2, 3)*y - 169*x + 686, y, _unrad=False)) == 3
+                     1176*(x + 2)**Rational(2, 3)*y -
+                     169*x + 686, y, _unrad=False)) == 3
 
     # watch out for when the cov doesn't involve the symbol of interest
     eq = -x + (7*y/8 - (27*x/2 + 27*sqrt(x**2)/2)**Rational(1, 3)/3)**3 - 1
     assert solve(eq, y) == [
-        4*2**Rational(2, 3)*(27*x + 27*sqrt(x**2))**Rational(1, 3)/21 - (-Rational(1, 2) -
+        {y: 4*2**Rational(2, 3)*(27*x + 27*sqrt(x**2))**Rational(1, 3)/21 - (-Rational(1, 2) -
         sqrt(3)*I/2)*(-6912*x/343 + sqrt((-13824*x/343 - Rational(13824, 343))**2)/2 -
-        Rational(6912, 343))**Rational(1, 3)/3, 4*2**Rational(2, 3)*(27*x + 27*sqrt(x**2))**Rational(1, 3)/21 -
+        Rational(6912, 343))**Rational(1, 3)/3},
+        {y: 4*2**Rational(2, 3)*(27*x + 27*sqrt(x**2))**Rational(1, 3)/21 -
         (-Rational(1, 2) + sqrt(3)*I/2)*(-6912*x/343 + sqrt((-13824*x/343 -
-        Rational(13824, 343))**2)/2 - Rational(6912, 343))**Rational(1, 3)/3, 4*2**Rational(2, 3)*(27*x +
+        Rational(13824, 343))**2)/2 - Rational(6912, 343))**Rational(1, 3)/3},
+        {y: 4*2**Rational(2, 3)*(27*x +
         27*sqrt(x**2))**Rational(1, 3)/21 - (-6912*x/343 + sqrt((-13824*x/343 -
-        Rational(13824, 343))**2)/2 - Rational(6912, 343))**Rational(1, 3)/3]
+        Rational(13824, 343))**2)/2 - Rational(6912, 343))**Rational(1, 3)/3}]
 
     eq = root(x + 1, 3) - (root(x, 3) + root(x, 5))
     assert check(unrad(eq),
@@ -423,7 +427,7 @@ def test_unrad1():
 
     ans = solve(sqrt(x) + sqrt(x + 1) -
                 sqrt(1 - x) - sqrt(2 + x))
-    assert len(ans) == 1 and NS(ans[0])[:4] == '0.73'
+    assert len(ans) == 1 and NS(ans[0][x])[:4] == '0.73'
     # the fence optimization problem
     # https://github.com/sympy/sympy/issues/4793#issuecomment-36994519
     F = symbols('F')
@@ -431,25 +435,31 @@ def test_unrad1():
     ans = 2*F/7 - sqrt(2)*F/14
     X = solve(eq, x, check=False)
     for xi in reversed(X):  # reverse since currently, ans is the 2nd one
-        Y = solve((x*y).subs(x, xi).diff(y), y, simplify=False, check=False)
-        if any((a - ans).expand().is_zero for a in Y):
+        Y = solve((x*y).subs(xi).diff(y), y,
+                  simplify=False, check=False)
+        if any((a[y] - ans).expand().is_zero for a in Y):
             break
     else:
         assert None  # no answer was found
-    assert solve(sqrt(x + 1) + root(x, 3) - 2) == (
-        [(-11/(9*(Rational(47, 54) + sqrt(93)/6)**Rational(1, 3)) +
-         Rational(1, 3) + (Rational(47, 54) + sqrt(93)/6)**Rational(1, 3))**3])
-    assert solve(sqrt(sqrt(x + 1)) + x**Rational(1, 3) - 2) == (
-        [(-sqrt(-2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-          6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 2) +
-          121/(4*sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-          2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))))/2 +
-            sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-          2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))/2 +
-          Rational(9, 4))**3])
-    assert solve(sqrt(x) + root(sqrt(x) + 1, 3) - 2) == (
-        [(-(Rational(81, 2) + 3*sqrt(741)/2)**Rational(1, 3)/3 +
-            (Rational(81, 2) + 3*sqrt(741)/2)**Rational(-1, 3) + 2)**2])
+    assert (solve(sqrt(x + 1) + root(x, 3) - 2) ==
+            [{x: (-11/(9*(Rational(47, 54) + sqrt(93)/6)**Rational(1, 3)) +
+                  Rational(1, 3) + (Rational(47, 54) +
+                                    sqrt(93)/6)**Rational(1, 3))**3}])
+    assert (solve(sqrt(sqrt(x + 1)) + x**Rational(1, 3) - 2) ==
+            [{x: (-sqrt(-2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+                        6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+                        Rational(17, 2) +
+                        121/(4*sqrt(-6/(Rational(-1, 16) +
+                                        sqrt(6913)/16)**Rational(1, 3) +
+                                    2*(Rational(-1, 16) +
+                                       sqrt(6913)/16)**Rational(1, 3) +
+                                    Rational(17, 4))))/2 +
+                  sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+                       2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+                       Rational(17, 4))/2 + Rational(9, 4))**3}])
+    assert (solve(sqrt(x) + root(sqrt(x) + 1, 3) - 2) ==
+            [{x: (-(Rational(81, 2) + 3*sqrt(741)/2)**Rational(1, 3)/3 +
+                  (Rational(81, 2) + 3*sqrt(741)/2)**Rational(-1, 3) + 2)**2}])
     eq = (-x + (Rational(1, 2) - sqrt(3)*I/2)*(3*x**3/2 - x*(3*x**2 - 34)/2 +
           sqrt((-3*x**3 + x*(3*x**2 - 34) + 90)**2/4 - Rational(39304, 27)) -
           45)**Rational(1, 3) + 34/(3*(Rational(1, 2) - sqrt(3)*I/2)*(3*x**3/2 -
@@ -473,13 +483,14 @@ def test_unrad_slow():
     # this has roots with multiplicity > 1; there should be no
     # repeats in roots obtained, however
     eq = (sqrt(1 + sqrt(1 - 4*x**2)) - x*((1 + sqrt(1 + 2*sqrt(1 - 4*x**2)))))
-    assert solve(eq) == [S.Half]
+    assert solve(eq) == [{x: S.Half}]
 
 
 @pytest.mark.xfail
 def test_unrad_fail():
     # this only works if we check real_root(eq.subs(x, Rational(1, 3)))
     # but checksol doesn't work like that
-    assert solve(root(x**3 - 3*x**2, 3) + 1 - x) == [Rational(1, 3)]
-    assert solve(root(x + 1, 3) + root(x**2 - 2, 5) + 1) == [
-        -1, -1 + RootOf(x**5 + x**4 + 5*x**3 + 8*x**2 + 10*x + 5, 0)**3]
+    assert solve(root(x**3 - 3*x**2, 3) + 1 - x) == [{x: Rational(1, 3)}]
+    assert (solve(root(x + 1, 3) + root(x**2 - 2, 5) + 1) ==
+            [{x: -1}, {x: -1 + RootOf(x**5 + x**4 + 5*x**3 +
+                                      8*x**2 + 10*x + 5, 0)**3}])

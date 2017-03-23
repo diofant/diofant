@@ -421,7 +421,7 @@ def test_H14():
 
 
 def test_H15():
-    assert simplify((Mul(*[x - r for r in solve(x**3 + x**2 - 7)]))) == x**3 + x**2 - 7
+    assert simplify((Mul(*[x - r[x] for r in solve(x**3 + x**2 - 7)]))) == x**3 + x**2 - 7
 
 
 def test_H16():
@@ -746,17 +746,17 @@ def test_M2():
     # The roots of this equation should all be real. Note that this
     # doesn't test that they are correct.
     sol = solve(3*x**3 - 18*x**2 + 33*x - 19, x)
-    assert all(s.expand(complex=True).is_extended_real for s in sol)
+    assert all(s[x].expand(complex=True).is_extended_real for s in sol)
 
 
 @pytest.mark.xfail
 def test_M5():
-    assert solve(x**6 - 9*x**4 - 4*x**3 + 27*x**2 - 36*x - 23, x) == [2**(1/3) + sqrt(3), 2**(1/3) - sqrt(3), +sqrt(3) - 1/2**(2/3) + I*sqrt(3)/2**(2/3), +sqrt(3) - 1/2**(2/3) - I*sqrt(3)/2**(2/3), -sqrt(3) - 1/2**(2/3) + I*sqrt(3)/2**(2/3), -sqrt(3) - 1/2**(2/3) - I*sqrt(3)/2**(2/3)]
+    assert solve(x**6 - 9*x**4 - 4*x**3 + 27*x**2 - 36*x - 23, x) == [{x: 2**(1/3) + sqrt(3)}, {x: 2**(1/3) - sqrt(3)}, {x: sqrt(3) - 1/2**(2/3) + I*sqrt(3)/2**(2/3)}, {x: sqrt(3) - 1/2**(2/3) - I*sqrt(3)/2**(2/3)}, {x: -sqrt(3) - 1/2**(2/3) + I*sqrt(3)/2**(2/3)}, {x: -sqrt(3) - 1/2**(2/3) - I*sqrt(3)/2**(2/3)}]
 
 
 def test_M6():
-    assert set(solve(x**7 - 1, x)) == \
-        {cos(n*2*pi/7) + I*sin(n*2*pi/7) for n in range(0, 7)}
+    assert ({s[x] for s in solve(x**7 - 1, x)} ==
+            {cos(n*2*pi/7) + I*sin(n*2*pi/7) for n in range(0, 7)})
     # The paper asks for exp terms, but sin's and cos's may be acceptable;
     # if the results are simplified, exp terms appear for all but
     # -sin(pi/14) - I*cos(pi/14) and -sin(pi/14) + I*cos(pi/14) which
@@ -765,8 +765,8 @@ def test_M6():
 
 def test_M7():
     sol = solve(x**8 - 8*x**7 + 34*x**6 - 92*x**5 + 175*x**4 - 236*x**3 +
-        226*x**2 - 140*x + 46, x)
-    assert [s.simplify() for s in sol] == [
+                226*x**2 - 140*x + 46, x)
+    assert [s[x].simplify() for s in sol] == [
         1 - sqrt(-6 - 2*I*sqrt(3 + 4*sqrt(3)))/2,
         1 + sqrt(-6 - 2*I*sqrt(3 + 4*sqrt(3)))/2,
         1 - sqrt(-6 + 2*I*sqrt(3 + 4*sqrt(3)))/2,
@@ -780,8 +780,8 @@ def test_M7():
 @pytest.mark.xfail  # There are an infinite number of solutions.
 def test_M8():
     z = symbols('z', complex=True)
-    assert set(solve(exp(2*x) + 2*exp(x) + 1 - z, x)) == \
-        {log(1 + z - 2*sqrt(z))/2, log(1 + z + 2*sqrt(z))/2}
+    assert ({s[x] for s in solve(exp(2*x) + 2*exp(x) + 1 - z, x)} ==
+            {log(1 + z - 2*sqrt(z))/2, log(1 + z + 2*sqrt(z))/2})
     # This one could be simplified better (the 1/2 could be pulled into the log
     # as a sqrt, and the function inside the log can be factored as a square,
     # giving [log(sqrt(z) - 1), log(sqrt(z) + 1)]). Also, there should be an
@@ -791,51 +791,52 @@ def test_M8():
 
 
 def test_M10():
-    assert solve(exp(x) - x, x) == [-LambertW(-1)]
+    assert solve(exp(x) - x, x) == [{x: -LambertW(-1)}]
 
 
 @pytest.mark.xfail
 def test_M11():
-    assert solve(x**x - x, x) == [-1, 1]
+    assert solve(x**x - x, x) == [{x: -1}, {x: 1}]
 
 
 def test_M12():
     # TODO: x = [-1, 2*(+/-asinh(1)*I + n*pi}, 3*(pi/6 + n*pi/3)]
     assert solve((x + 1)*(sin(x)**2 + 1)**2*cos(3*x)**3, x) == [
-        -1, pi/6, pi/2,
-        - I*log(1 + sqrt(2)),      I*log(1 + sqrt(2)),
-        pi - I*log(1 + sqrt(2)), pi + I*log(1 + sqrt(2)),
+        {x: -1}, {x: pi/6}, {x: pi/2},
+        {x: -I*log(1 + sqrt(2))}, {x: I*log(1 + sqrt(2))},
+        {x: pi - I*log(1 + sqrt(2))}, {x: pi + I*log(1 + sqrt(2))},
     ]
 
 
 def test_M13():
-    assert solve(sin(x) - cos(x), x) == [-3*pi/4, pi/4]
+    assert solve(sin(x) - cos(x), x) == [{x: -3*pi/4}, {x: pi/4}]
 
 
 def test_M14():
-    assert solve(tan(x) - 1, x) == [pi/4]
+    assert solve(tan(x) - 1, x) == [{x: pi/4}]
 
 
 def test_M15():
-    assert solve(sin(x) - S.Half) == [pi/6, 5*pi/6]
+    assert solve(sin(x) - S.Half) == [{x: pi/6}, {x: 5*pi/6}]
 
 
 def test_M16():
-    assert solve(sin(x) - tan(x), x) == [0, -pi, pi, 2*pi]
+    assert solve(sin(x) - tan(x), x) == [{x: 0}, {x: -pi},
+                                                    {x: pi}, {x: 2*pi}]
 
 
 @pytest.mark.xfail
 def test_M17():
-    assert solve(asin(x) - atan(x), x) == [0]
+    assert solve(asin(x) - atan(x), x) == [{x: 0}]
 
 
 @pytest.mark.xfail
 def test_M18():
-    assert solve(acos(x) - atan(x), x) == [sqrt((sqrt(5) - 1)/2)]
+    assert solve(acos(x) - atan(x), x) == [{x: sqrt((sqrt(5) - 1)/2)}]
 
 
 def test_M19():
-    assert solve((x - 2)/x**R(1, 3), x) == [2]
+    assert solve((x - 2)/x**R(1, 3), x) == [{x: 2}]
 
 
 def test_M20():
@@ -843,35 +844,35 @@ def test_M20():
 
 
 def test_M21():
-    assert solve(x + sqrt(x) - 2) == [1]
+    assert solve(x + sqrt(x) - 2) == [{x: 1}]
 
 
 @pytest.mark.slow
 def test_M22():
-    assert solve(2*sqrt(x) + 3*x**R(1, 4) - 2) == [R(1, 16)]
+    assert solve(2*sqrt(x) + 3*x**R(1, 4) - 2) == [{x: R(1, 16)}]
 
 
 def test_M23():
     x = symbols('x', complex=True)
 
     assert solve(x - 1/sqrt(1 + x**2)) == [
-        -I*sqrt(S.Half + sqrt(5)/2), sqrt(-S.Half + sqrt(5)/2)]
+        {x: -I*sqrt(S.Half + sqrt(5)/2)}, {x: sqrt(-S.Half + sqrt(5)/2)}]
 
 
 def test_M24():
     solution = solve(1 - binomial(m, 2)*2**k, k)
     answer = log(2/(m*(m - 1)), 2)
-    assert solution[0].expand() == answer.expand()
+    assert solution[0][k].expand() == answer.expand()
 
 
 def test_M25():
     a, b, c, d = symbols(':d', positive=True)
     x = symbols('x')
-    assert solve(a*b**x - c*d**x, x)[0].expand() == (log(c/a)/log(b/d)).expand()
+    assert solve(a*b**x - c*d**x, x)[0][x].expand() == (log(c/a)/log(b/d)).expand()
 
 
 def test_M26():
-    assert solve(sqrt(log(x)) - log(sqrt(x))) == [1, exp(4)]
+    assert solve(sqrt(log(x)) - log(sqrt(x))) == [{x: 1}, {x: exp(4)}]
 
 
 @pytest.mark.xfail
@@ -880,8 +881,8 @@ def test_M27():
     b = symbols('b', real=True)
     with assuming(sin(cos(1/E**2) + 1) + b > 0):
         assert (solve(log(acos(asin(x**R(2, 3) - b) - 1)) + 2, x) ==
-                [-b - sin(1 + cos(1/e**2))**R(3/2),
-                 b + sin(1 + cos(1/e**2))**R(3/2)])
+                [{x: -b - sin(1 + cos(1/e**2))**R(3/2)},
+                 {x: b + sin(1 + cos(1/e**2))**R(3/2)}])
 
 
 @pytest.mark.xfail
@@ -892,25 +893,25 @@ def test_M28():
 
 def test_M29():
     x = symbols('x', real=True)
-    assert solve(abs(x - 1) - 2) == [-1, 3]
+    assert solve(abs(x - 1) - 2) == [{x: -1}, {x: 3}]
 
 
 def test_M30():
     x = symbols('x', real=True)
-    assert solve(abs(2*x + 5) - abs(x - 2), x) == [-7, -1]
+    assert solve(abs(2*x + 5) - abs(x - 2), x) == [{x: -7}, {x: -1}]
 
 
 def test_M31():
     x = symbols('x', real=True)
-    assert solve(1 - abs(x) - Max(-x - 2, x - 2), x) == [-Rational(3, 2),
-                                                         Rational(3, 2)]
+    assert solve(1 - abs(x) - Max(-x - 2, x - 2), x) == [{x: -Rational(3, 2)},
+                                                         {x: Rational(3, 2)}]
 
 
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 @pytest.mark.slow
 @pytest.mark.xfail
 def test_M32():
-    assert solve(Max(2 - x**2, x) - Max(-x, (x**3)/9), x) == [-1, 3]
+    assert solve(Max(2 - x**2, x) - Max(-x, (x**3)/9), x) == [{x: -1}, {x: 3}]
 
 
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
@@ -919,27 +920,27 @@ def test_M32():
 def test_M33():
     x = Symbol('x', real=True)
     assert (solve(Max(2 - x**2, x) - x**3/9) ==
-            [-3, RootOf(-18 + 9*x**2 + x**3, x, 1), 3])
+            [{x: -3}, {x: RootOf(-18 + 9*x**2 + x**3, x, 1)}, {x: 3}])
 
 
 @pytest.mark.xfail
 def test_M34():
     z = symbols('z', complex=True)
-    assert solve((1 + I) * z + (2 - I) * conjugate(z) + 3*I, z) == [2 + 3*I]
+    assert solve((1 + I) * z + (2 - I) * conjugate(z) + 3*I, z) == [{z: 2 + 3*I}]
 
 
 def test_M35():
     x, y = symbols('x y', real=True)
-    assert solve((3*x - 2*y - I*y + 3*I).as_real_imag()) == {y: 3, x: 2}
+    assert solve((3*x - 2*y - I*y + 3*I).as_real_imag()) == [{y: 3, x: 2}]
 
 
 @pytest.mark.xfail
 def test_M36():
-    assert solve(f**2 + f - 2, x) == [Eq(f(x), 1), Eq(f(x), -2)]
+    solve(f**2 + f - 2, x)
 
 
 def test_M37():
-    assert solve([x + y + z - 6, 2*x + y + 2*z - 10, x + 3*y + z - 10 ]) == {x: -z + 4, y: 2}
+    assert solve([x + y + z - 6, 2*x + y + 2*z - 10, x + 3*y + z - 10]) == [{x: -z + 4, y: 2}]
 
 
 @pytest.mark.slow
@@ -1003,7 +1004,7 @@ def test_M39():
     x, y, z = symbols('x y z', complex=True)
     assert (solve((x**2*y + 3*y*z - 4,
                    -3*x**2*z + 2*y**2 + 1,
-                   2*y*z**2 - z**2 - 1), check=False, dict=True) ==
+                   2*y*z**2 - z**2 - 1), check=False) ==
             [{x: -1, y: 1, z: 1}, {x: 1, y: 1, z: 1},
              {x: -sqrt(6)*sqrt((-19 + 48*RootOf(6*z**5 - 6*z**4 - 9*z**3 -
                                                 7*z**2 - 3*z - 1, 1) -
@@ -2196,7 +2197,8 @@ def test_U8():
     eq = cos(x*y) + x
     eq = eq.subs(y, f(x))
     #  If Diofant had implicit_diff() function this hack could be avoided
-    assert (solve((f(x) - eq).diff(x), f(x).diff(x))[0].subs(f(x), y) ==
+    assert (solve((f(x) - eq).diff(x),
+                  f(x).diff(x))[0][f(x).diff(x)].subs(f(x), y) ==
             (-y*sin(x*y) + 1)/(x*sin(x*y) + 1))
 
 
@@ -2824,7 +2826,7 @@ def test_Z4():
 def test_Z5():
     eq = Derivative(f(x), x, 2) + 4*f(x) - sin(2*x)
     sol = dsolve(eq, f(x), init={f(0): 0, f(x).diff(x).subs(x, 0): 0})
-    assert solve(sol, f(x))[0] == -x*cos(2*x)/4 + sin(2*x)/8
+    assert solve(sol, f(x))[0][f(x)] == -x*cos(2*x)/4 + sin(2*x)/8
 
 
 @pytest.mark.xfail

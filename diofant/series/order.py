@@ -382,7 +382,7 @@ class Order(Expr):
                     if point != self.point[i]:
                         from ..solvers import solve
                         d = Dummy()
-                        res = solve(old - new.subs(var, d), d, dict=True)
+                        res = solve(old - new.subs(var, d), d)
                         point = d.subs(res[0]).limit(old, self.point[i])
                     newvars[i] = var
                     newpt[i] = point

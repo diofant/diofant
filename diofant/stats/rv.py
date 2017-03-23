@@ -514,7 +514,7 @@ def given(expr, condition=None, **kwargs):
             not isinstance(pspace(expr).domain, ConditionalDomain)):
         rv = tuple(condsymbols)[0]
         results = solve(condition, rv)
-        return sum(expr.subs(rv, res) for res in results)
+        return sum(expr.subs(res) for res in results)
 
     # Get full probability space of both the expression and the condition
     fullspace = pspace(Tuple(expr, condition))

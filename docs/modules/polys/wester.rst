@@ -402,7 +402,7 @@ equations. Or we can use :func:`~diofant.solvers.solvers.solve` to achieve this 
 way::
 
     >>> solve([f, s**2 + c**2 - 1], c, s)
-    [(-1, 0), (0, -1), (0, 1), (1, 0)]
+    [{c: -1, s: 0}, {c: 0, s: -1}, {c: 0, s: 1}, {c: 1, s: 0}]
 
 Multivariate factoring over algebraic numbers
 ---------------------------------------------

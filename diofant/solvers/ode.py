@@ -780,7 +780,7 @@ def solve_init(sols, funcs, constants, init):
                 subs_sols.append(sol2)
 
     try:
-        solved_constants = solve(subs_sols, constants, dict=True)
+        solved_constants = solve(subs_sols, constants)
     except NotImplementedError:  # pragma: no cover
         solved_constants = []
 
@@ -1922,7 +1922,8 @@ def check_nonlinear_3eq_order1(eq, func, func_coef):
         num1, den1 = r1[a].as_numer_denom()
         num2, den2 = r2[b].as_numer_denom()
         num3, den3 = r3[c].as_numer_denom()
-        if solve([num1*u - den1*(v - w), num2*v - den2*(w - u), num3*w - den3*(u - v)], [u, v]):
+        if solve([num1*u - den1*(v - w), num2*v - den2*(w - u),
+                  num3*w - den3*(u - v)], [u, v]):
             return 'type1'
     r = eq[0].match(diff(x(t), t) - y(t)*z(t)*f)
     if r:
@@ -1933,7 +1934,8 @@ def check_nonlinear_3eq_order1(eq, func, func_coef):
         num1, den1 = r1[a].as_numer_denom()
         num2, den2 = r2[b].as_numer_denom()
         num3, den3 = r3[c].as_numer_denom()
-        if solve([num1*u - den1*(v - w), num2*v - den2*(w - u), num3*w - den3*(u - v)], [u, v]):
+        if solve([num1*u - den1*(v - w), num2*v - den2*(w - u),
+                  num3*w - den3*(u - v)], [u, v]):
             return 'type2'
 
 
@@ -2024,7 +2026,7 @@ def checksysodesol(eqs, sols, func=None):
             solved = solve(sol, sol_func)
             if not solved:
                 raise NotImplementedError
-            dictsol[sol_func] = solved
+            dictsol[sol_func] = solved[0][sol_func]
         if sol.lhs == sol_func:
             dictsol[sol_func] = sol.rhs
         if sol.rhs == sol_func:
@@ -2188,7 +2190,7 @@ def odesimp(eq, func, order, constants, hint):
             # specific normal form: rational expression with numerator
             # expanded, but with combined exponential functions (at
             # least in this setup all tests pass).
-            eq = [Eq(f(x), _expand(t)) for t in eqsol]
+            eq = [Eq(f(x), _expand(t[func])) for t in eqsol]
 
         # special simplification of the lhs.
         if hint.startswith("1st_homogeneous_coeff"):
@@ -2299,13 +2301,13 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
     solved = sol.lhs == func and not sol.rhs.has(func)
     if solve_for_func and not solved:
         solved = solve(sol, func)
-        if solved and not any(isinstance(_, RootOf) for _ in solved):
+        if solved and not any(isinstance(_[func], RootOf) for _ in solved):
             if len(solved) == 1:
-                result = checkodesol(ode, Eq(func, solved[0]),
-                    order=order, solve_for_func=False)
+                result = checkodesol(ode, Eq(func, solved[0][func]),
+                                     order=order, solve_for_func=False)
             else:
-                result = checkodesol(ode, [Eq(func, t) for t in solved],
-                order=order, solve_for_func=False)
+                result = checkodesol(ode, [Eq(func, t[func]) for t in solved],
+                                     order=order, solve_for_func=False)
             return result
 
     s = True
@@ -2374,7 +2376,7 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
                         testnum += 1
                         break
                     else:
-                        diffsols[i] = sdf[0]
+                        diffsols[i] = sdf[0][func.diff(x, i)]
                 else:
                     # This is what the solution says df/dx should be.
                     diffsols[i] = diffsols[i - 1].diff(x)
@@ -3666,8 +3668,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
         else:
             maxf = max(fargs, key=lambda x: x.args[0])
             sol = solve(teq, maxf)
-            if isinstance(sol, list):
-                sol = sol[0]
+            sol = sol[0][maxf]
             finaldict[maxf] = sol
 
     # Finding the recurrence relation in terms of the largest term.
@@ -3680,8 +3681,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
         startiter = -minf.args[0].as_independent(n)[0]
     lhs = maxf
     rhs = solve(req, maxf)
-    if isinstance(rhs, list):
-        rhs = rhs[0]
+    rhs = rhs[0][maxf]
 
     # Checking how many values are already present
     tcounter = len([t for t in finaldict.values() if t])
@@ -3789,19 +3789,19 @@ def ode_2nd_power_series_regular(eq, func, order, match):
     p0, q0 = indicial
     sollist = solve(m*(m - 1) + m*p0 + q0, m)
     if sollist and isinstance(sollist, list) and \
-       all(sol.is_extended_real for sol in sollist):
+       all(sol[m].is_extended_real for sol in sollist):
         serdict1 = {}
         serdict2 = {}
         if len(sollist) == 1:
             # Only one series solution exists in this case.
-            m1 = m2 = sollist.pop()
+            m1 = m2 = sollist.pop()[m]
             if terms-m1-1 <= 0:
                 return Eq(f(x), Order(terms))
             serdict1 = _frobenius(terms-m1-1, m1, p0, q0, p, q, x0, x, C0)
 
         else:
-            m1 = sollist[0]
-            m2 = sollist[1]
+            m1 = sollist[0][m]
+            m2 = sollist[1][m]
             if m1 < m2:
                 m1, m2 = m2, m1
             # Irrespective of whether m1 - m2 is an integer or not, one
@@ -4872,6 +4872,8 @@ def _solve_undetermined_coefficients(eq, func, order, match):
             "Could not solve `%s` using the "
             "method of undetermined coefficients "
             "(unable to solve for coefficients)." % eq)
+    else:
+        coeffvals = coeffvals[0]
 
     psol = trialfunc.subs(coeffvals)
 
@@ -5273,7 +5275,7 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
                     raise NotImplementedError("Infinitesimals for the "
                         "first order ODE could not be found")
                 else:
-                    h = sol[0]  # Find infinitesimals for one solution
+                    h = sol[0][df]  # Find infinitesimals for one solution
 
             y = Dummy('y')
             h = h.subs(func, y)
@@ -5366,9 +5368,9 @@ def ode_lie_group(eq, func, order, match):
                                       str(eq) + " by the lie group method")
         else:
             if len(sol) > 1:
-                return [dsolve(df - _, func) for _ in sol]
+                return [dsolve(df - _[df], func) for _ in sol]
             y = Dummy("y")
-            h = sol[0].subs(func, y)
+            h = sol[0][df].subs(func, y)
 
     if xis is not None and etas is not None:
         inf = [{xi(x, f(x)): sympify(xis), eta(x, f(x)): sympify(etas)}]
@@ -5412,7 +5414,7 @@ def ode_lie_group(eq, func, order, match):
                 rcoord = newcoord[0]
                 scoord = newcoord[-1]
                 try:
-                    sol = solve([r - rcoord, s - scoord], x, y, dict=True)
+                    sol = solve([r - rcoord, s - scoord], x, y)
                 except NotImplementedError:
                     continue
                 else:
@@ -5435,15 +5437,15 @@ def ode_lie_group(eq, func, order, match):
                                 tempsol.append(deq)
                             else:
                                 if len(sdeq) == 1:
-                                    return Eq(f(x), sdeq.pop())
+                                    return Eq(f(x), sdeq[0][y])
                                 else:
-                                    return [Eq(f(x), sol) for sol in sdeq]
+                                    return [Eq(f(x), sol[y]) for sol in sdeq]
 
                     elif denom:  # (ds/dr) is zero which means s is constant
-                        return Eq(f(x), solve(scoord - C1, y)[0])
+                        return Eq(f(x), solve(scoord - C1, y)[0][y])
 
                     elif num:  # (dr/ds) is zero which means r is constant
-                        return Eq(f(x), solve(rcoord - C1, y)[0])
+                        return Eq(f(x), solve(rcoord - C1, y)[0][y])
 
     # If nothing works, return solution as it is, without solving for y
     if tempsol:
@@ -5613,7 +5615,7 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
                         raise NotImplementedError("Infinitesimals for the "
                             "first order ODE could not be found")
                     else:
-                        h = sol[0]  # Find infinitesimals for one solution
+                        h = sol[0][df]  # Find infinitesimals for one solution
                 y = Dummy("y")
                 h = h.subs(func, y)
 
@@ -6051,8 +6053,8 @@ def lie_heuristic_function_sum(match, comp=False):
                         sol = solve(check, k)
                         if sol:
                             sol = sol[0]
-                            fx = fx.subs(k, sol)
-                            gy = (gy/k)*sol
+                            fx = fx.subs(sol)
+                            gy = (gy/k)*sol[k]
                         else:
                             continue
                     if odefac == hinv:  # Inverse ODE
@@ -6546,7 +6548,9 @@ def _linear_2eq_order1_type2(x, y, t, r, eq):
     r['k2'] = -r['k2']
     if (r['a']*r['d'] - r['b']*r['c']) != 0:
         x0, y0 = symbols('x0, y0', cls=Dummy)
-        sol = solve((r['a']*x0+r['b']*y0+r['k1'], r['c']*x0+r['d']*y0+r['k2']), x0, y0)
+        sol = solve((r['a']*x0+r['b']*y0+r['k1'],
+                     r['c']*x0+r['d']*y0+r['k2']), x0, y0)
+        sol = sol[0]
         psol = [sol[x0], sol[y0]]
     elif (r['a']*r['d'] - r['b']*r['c']) == 0 and (r['a']**2+r['b']**2) > 0:
         k = r['c']/r['a']
@@ -6962,7 +6966,9 @@ def _linear_2eq_order2_type2(x, y, t, r, eq):
     """
     x0, y0 = symbols('x0, y0')
     if r['c1']*r['d2'] - r['c2']*r['d1'] != 0:
-        sol = solve((r['c1']*x0+r['d1']*y0+r['e1'], r['c2']*x0+r['d2']*y0+r['e2']), x0, y0)
+        sol = solve((r['c1']*x0+r['d1']*y0+r['e1'],
+                     r['c2']*x0+r['d2']*y0+r['e2']), x0, y0)
+        sol = sol[0]
         psol = [sol[x0], sol[y0]]
     elif r['c1']*r['d2'] - r['c2']*r['d1'] == 0 and (r['c1']**2 + r['d1']**2) > 0:
         k = r['c2']/r['c1']
@@ -7498,8 +7504,8 @@ def _nonlinear_2eq_order1_type1(x, y, t, eq):
     sol2 = solve(Integral(1/(g*F.subs(u, phi)), v).doit() - t - C2, v)
     sol = []
     for sols in sol2:
-        sol.append(Eq(x(t), phi.subs(v, sols)))
-        sol.append(Eq(y(t), sols))
+        sol.append(Eq(x(t), phi.subs(sols)))
+        sol.append(Eq(y(t), sols[v]))
     return sol
 
 
@@ -7544,8 +7550,8 @@ def _nonlinear_2eq_order1_type2(x, y, t, eq):
     sol2 = solve(Integral(1/(g*F.subs(u, phi)), v).doit() - t - C2, v)
     sol = []
     for sols in sol2:
-        sol.append(Eq(x(t), phi.subs(v, sols)))
-        sol.append(Eq(y(t), sols))
+        sol.append(Eq(x(t), phi.subs(sols)))
+        sol.append(Eq(y(t), sols[v]))
     return sol
 
 
@@ -7581,8 +7587,8 @@ def _nonlinear_2eq_order1_type3(x, y, t, eq):
         sol1 = solve(Integral(1/F.subs(v(u), sol2s.rhs), u).doit() - t - C2, u)
     sol = []
     for sols in sol1:
-        sol.append(Eq(x(t), sols))
-        sol.append(Eq(y(t), (sol2s.rhs).subs(u, sols)))
+        sol.append(Eq(x(t), sols[u]))
+        sol.append(Eq(y(t), (sol2s.rhs).subs(sols)))
     return sol
 
 
@@ -7628,9 +7634,9 @@ def _nonlinear_2eq_order1_type4(x, y, t, eq):
     sol2r = solve(Integral(F2/F1, u).doit() - Integral(G1/G2, v).doit() - C1, v)
     sol = []
     for sols in sol1r:
-        sol.append(Eq(y(t), dsolve(diff(V(t), t) - F2.subs(u, sols).subs(v, V(t))*G2.subs(v, V(t))*phi.subs(u, sols).subs(v, V(t))).rhs))
+        sol.append(Eq(y(t), dsolve(diff(V(t), t) - F2.subs(sols).subs(v, V(t))*G2.subs(v, V(t))*phi.subs(sols).subs(v, V(t))).rhs))
     for sols in sol2r:
-        sol.append(Eq(x(t), dsolve(diff(U(t), t) - F1.subs(u, U(t))*G1.subs(v, sols).subs(u, U(t))*phi.subs(v, sols).subs(u, U(t))).rhs))
+        sol.append(Eq(x(t), dsolve(diff(U(t), t) - F1.subs(u, U(t))*G1.subs(sols).subs(u, U(t))*phi.subs(sols).subs(u, U(t))).rhs))
     return set(sol)
 
 
@@ -7722,7 +7728,7 @@ def _nonlinear_3eq_order1_type1(x, y, z, t, eq):
     n1, d1 = r[p].as_numer_denom()
     n2, d2 = r[q].as_numer_denom()
     n3, d3 = r[s].as_numer_denom()
-    val = solve([n1*u-d1*v+d1*w, d2*u+n2*v-d2*w, d3*u-d3*v-n3*w], [u, v])
+    val = solve([n1*u-d1*v+d1*w, d2*u+n2*v-d2*w, d3*u-d3*v-n3*w], [u, v])[0]
     vals = [val[v], val[u]]
     c = lcm(vals[0].as_numer_denom()[1], vals[1].as_numer_denom()[1])
     b = vals[0].subs(w, c)
@@ -7778,7 +7784,7 @@ def _nonlinear_3eq_order1_type2(x, y, z, t, eq):
     n1, d1 = r[p].as_numer_denom()
     n2, d2 = r[q].as_numer_denom()
     n3, d3 = r[s].as_numer_denom()
-    val = solve([n1*u - d1*v + d1*w, d2*u + n2*v - d2*w, -d3*u + d3*v + n3*w], [u, v])
+    val = solve([n1*u - d1*v + d1*w, d2*u + n2*v - d2*w, -d3*u + d3*v + n3*w], [u, v])[0]
     vals = [val[v], val[u]]
     c = lcm(vals[0].as_numer_denom()[1], vals[1].as_numer_denom()[1])
     a = vals[0].subs(w, c)

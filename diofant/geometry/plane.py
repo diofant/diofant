@@ -619,7 +619,7 @@ class Plane(GeometryEntity):
             return Point3D(a, b + cos(t), c + sin(t))
         m = Dummy()
         p = self.projection(Point3D(self.p1.x + cos(t), self.p1.y + sin(t), 0)*m)
-        return p.xreplace({m: solve(p.distance(self.p1) - 1, m)[0]})
+        return p.xreplace({m: solve(p.distance(self.p1) - 1, m)[0][m]})
 
     def intersection(self, o):
         """ The intersection with other geometrical entity.
@@ -678,7 +678,7 @@ class Plane(GeometryEntity):
                 if not c:
                     return []
                 else:
-                    p = a.subs(t, c[0])
+                    p = a.subs(t, c[0][t])
                     if p not in self:
                         return []  # e.g. a segment might not intersect a plane
                     return [p]
@@ -694,13 +694,16 @@ class Plane(GeometryEntity):
                 d = self.equation(x, y, z)
                 e = o.equation(x, y, z)
                 f = solve((d.subs(z, 0), e.subs(z, 0)), [x, y])
-                if len(f) == 2:
+                if f and len(f[0]) == 2:
+                    f = f[0]
                     return [Line3D(Point3D(f[x], f[y], 0), direction_ratio=c)]
                 g = solve((d.subs(y, 0), e.subs(y, 0)), [x, z])
-                if len(g) == 2:
+                if g and len(g[0]) == 2:
+                    g = g[0]
                     return [Line3D(Point3D(g[x], 0, g[z]), direction_ratio=c)]
                 h = solve((d.subs(x, 0), e.subs(x, 0)), [y, z])
-                if len(h) == 2:
+                if h and len(h[0]) == 2:
+                    h = h[0]
                     return [Line3D(Point3D(0, h[y], h[z]), direction_ratio=c)]
 
     def __contains__(self, o):

@@ -252,7 +252,7 @@ class CoordSystem(Basic):
         # As it is at the moment this is an ugly hack for changing the format
         inv_from = [i.as_dummy() for i in from_coords]
         inv_to = solve([t[0] - t[1] for t in zip(inv_from, to_exprs)],
-                       list(from_coords), dict=True)
+                       list(from_coords))
         inv_to = [inv_to[0][fc] for fc in from_coords]
         return Matrix(inv_from), Matrix(inv_to)
 

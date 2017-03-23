@@ -178,6 +178,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
         s = set()
 
         for soln in l:
+            soln = list(soln.values())[0]
             if isinstance(soln, Integer):
                 s.add((soln,))
         return s
@@ -776,8 +777,9 @@ def _diop_quadratic(var, coeff, t):
 
             if e*sqrt(c)*D - sqrt(a)*E == 0:
                 z = symbols("z", extended_real=True)
-                roots = solve(sqrt(a)*g*z**2 + D*z + sqrt(a)*F)
+                roots = solve(sqrt(a)*g*z**2 + D*z + sqrt(a)*F, z)
                 for root in roots:
+                    root = root[z]
                     if isinstance(root, Integer):
                         l.add((diop_solve(sqrt(a)*x + e*sqrt(c)*y - root)[0], diop_solve(sqrt(a)*x + e*sqrt(c)*y - root)[1]))
 
