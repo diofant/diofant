@@ -6684,9 +6684,10 @@ def poly(expr, *gens, **args):
             for factor in Mul.make_args(term):
                 if factor.is_Add:
                     poly_factors.append(_poly(factor, opt))
-                elif factor.is_Pow and factor.base.is_Add and factor.exp.is_Integer:
-                    poly_factors.append(
-                        _poly(factor.base, opt).pow(factor.exp))
+                elif (factor.is_Pow and factor.base.is_Add and
+                      factor.exp.is_Integer and factor.exp >= 0):
+                    poly_factors.append(_poly(factor.base,
+                                              opt).pow(factor.exp))
                 else:
                     factors.append(factor)
 
