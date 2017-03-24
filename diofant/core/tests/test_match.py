@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Add, cos, Derivative, diff, exp, Float, Function,
-                     I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt,
+                     I, Integer, log, Mul, oo, Rational, S, sin, sqrt,
                      Symbol, symbols, Wild, pi, meijerg, WildFunction)
 
 from diofant.abc import x, y, a, b, c, gamma, mu, C, X, Y, Z, R, T
@@ -132,8 +132,8 @@ def test_mul():
     e = exp(x)
     assert e.match(x**p*exp(x*q)) == {p: 0, q: 1}
 
-    e = I*Poly(x, x)
-    assert e.match(I*p) == {p: Poly(x, x)}
+    e = I*x
+    assert e.match(I*p) == {p: x}
 
 
 def test_mul_noncommutative():

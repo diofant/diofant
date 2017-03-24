@@ -757,17 +757,6 @@ class euler(Function):
             res = mp.eulernum(m, exact=True)
             return Integer(res)
 
-    def _eval_rewrite_as_Sum(self, arg):
-        from ...concrete import Sum
-        if arg.is_even:
-            k = Dummy("k", integer=True)
-            j = Dummy("j", integer=True)
-            n = self.args[0] / 2
-            Em = (S.ImaginaryUnit * Sum(Sum(binomial(k, j) * ((-1)**j * (k - 2*j)**(2*n + 1)) /
-                  (2**k*S.ImaginaryUnit**k * k), (j, 0, k)), (k, 1, 2*n + 1)))
-
-            return Em
-
     def _eval_evalf(self, prec):
         m = self.args[0]
 
@@ -877,10 +866,10 @@ class catalan(Function):
            (n.is_noninteger and n.is_negative):
             return 4**n*gamma(n + S.Half)/(gamma(S.Half)*gamma(n + 2))
 
-        if (n.is_integer and n.is_negative):
+        if n.is_integer and n.is_negative:
             if (n + 1).is_negative:
                 return S.Zero
-            if (n + 1).is_zero:
+            else:
                 return -S.Half
 
     def fdiff(self, argindex=1):
@@ -1128,7 +1117,7 @@ def _nP(n, k=None, replacement=False):
         else:
             # assert k >= 0
             return _product(n - k + 1, n)
-    elif isinstance(n, _MultisetHistogram):
+    elif isinstance(n, _MultisetHistogram):  # pragma: no branch
         if k is None:
             return sum(_nP(n, i, replacement) for i in range(n[_N] + 1))
         elif replacement:

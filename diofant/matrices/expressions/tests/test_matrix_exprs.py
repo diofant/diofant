@@ -1,11 +1,12 @@
 import pytest
 
-from diofant.core import S, symbols, Add, Mul, Integer
+from diofant.core import S, symbols, Add, Mul, Integer, Eq
 from diofant.functions import transpose, sin, cos, sqrt
 from diofant.simplify import simplify
-from diofant.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd, MatMul,
-                              MatPow, Matrix, MatrixExpr, MatrixSymbol, ShapeError,
-                              ZeroMatrix, Transpose, Adjoint)
+from diofant.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd,
+                              MatMul, MatPow, Matrix, MatrixExpr,
+                              MatrixSymbol, ShapeError, ZeroMatrix,
+                              Transpose, Adjoint)
 
 __all__ = ()
 
@@ -249,3 +250,10 @@ def test_Zero_power():
     assert z2**3 == MatPow(z2, 3).doit()
     assert z2**0 == Identity(3)
     pytest.raises(ValueError, lambda: MatPow(z2, -1).doit())
+
+
+def test_diofantissue_469():
+    A = MatrixSymbol("A", n, n)
+    B = MatrixSymbol("B", n, n)
+    expr = Eq(A, B)
+    assert simplify(expr) == expr

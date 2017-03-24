@@ -302,7 +302,8 @@ class MatrixExpr(Expr):
         >>> Identity(3).equals(eye(3))
         True
         """
-        return self.as_explicit().equals(other)
+        if all(x.is_Integer for x in self.shape):
+            return self.as_explicit().equals(other)
 
     def canonicalize(self):
         return self

@@ -3133,6 +3133,9 @@ def test_poly():
     assert poly(x + y, x, y) == Poly(x + y, x, y)
     assert poly(x + y, y, x) == Poly(x + y, y, x)
 
+    # issue sympy/sympy#12400
+    assert poly(1/(1 + sqrt(2)), x) == Poly(1/(1 + sqrt(2)), x, domain=EX)
+
 
 def test_keep_coeff():
     u = Mul(2, x + 1, evaluate=False)
@@ -3148,10 +3151,8 @@ def test_keep_coeff():
     assert _keep_coeff(x + 1, Integer(2)) == u
 
 
-@pytest.mark.xfail
 def test_poly_matching_consistency():
-    # Test for this issue:
-    # https://github.com/sympy/sympy/issues/5514
+    # Test for sympy/sympy#5514
     assert I * Poly(x, x) == Poly(I*x, x)
     assert Poly(x, x) * I == Poly(I*x, x)
 

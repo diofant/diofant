@@ -2551,6 +2551,12 @@ def test_pretty_matrix():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+    A = MatrixSymbol('A', 3, 3)
+    B = MatrixSymbol('B', 3, 3)
+    C = MatrixSymbol('C', 3, 3)
+    expr = A*(B + C)
+    assert upretty(expr) == "A⋅(B + C)"
+
 
 def test_Adjoint():
     from diofant.matrices import Adjoint, Inverse, Transpose
@@ -3511,6 +3517,9 @@ def test_pretty_Domain():
 
     assert pretty(expr) == "QQ[x, y, order=ilex]"
     assert upretty(expr) == "ℚ[x, y, order=ilex]"
+
+    expr = ZZ.frac_field(x, y, order=grlex)
+    assert upretty(expr) == "ℤ(x, y, order=grlex)"
 
 
 def test_pretty_prec():
@@ -4960,6 +4969,14 @@ def test_MatrixElement():
     X = MatrixSymbol('X', 2, 2)
     n = Symbol('n', integer=True)
     assert pretty(X[n, 0]) == 'X[n, 0]'
+
+    ucode_str = \
+"""\
+⎡X₀₀  1⎤\n\
+⎢      ⎥\n\
+⎣ 2   3⎦\
+"""
+    assert upretty(Matrix([[X[0, 0], 1], [2, 3]])) == ucode_str
 
 
 def test_AlgebraicNumber():

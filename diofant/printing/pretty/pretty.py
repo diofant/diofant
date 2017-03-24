@@ -664,15 +664,6 @@ class PrettyPrinter(Printer):
         pform = pform**(self._print(expr.exp))
         return pform
 
-    def _print_HadamardProduct(self, expr):
-        from ...matrices import MatAdd, MatMul
-        if self._use_unicode:
-            delim = pretty_atom('Ring')
-        else:
-            delim = '.*'
-        return self._print_seq(expr.args, None, None, delim,
-                parenthesize=lambda x: isinstance(x, (MatAdd, MatMul)))
-
     _print_MatrixSymbol = _print_Symbol
 
     def _print_BasisDependent(self, expr):
@@ -1001,12 +992,12 @@ class PrettyPrinter(Printer):
 
     def _print_Order(self, expr):
         pform = self._print(expr.expr)
-        if (expr.point and any(p != S.Zero for p in expr.point)) or \
-           len(expr.variables) > 1:
+        if ((expr.point and any(p != S.Zero for p in expr.point)) or
+                len(expr.variables) > 1):
             pform = prettyForm(*pform.right("; "))
             if len(expr.variables) > 1:
                 pform = prettyForm(*pform.right(self._print(expr.variables)))
-            elif len(expr.variables):
+            else:
                 pform = prettyForm(*pform.right(self._print(expr.variables[0])))
             if self._use_unicode:
                 pform = prettyForm(*pform.right(" \N{RIGHTWARDS ARROW} "))
