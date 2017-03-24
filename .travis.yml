@@ -45,7 +45,6 @@ matrix:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
         - py.test --cov diofant diofant/polys
-      after_success: codecov
 before_install:
   - |
     mkdir -p $HOME/.local
