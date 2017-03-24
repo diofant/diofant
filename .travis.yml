@@ -81,7 +81,7 @@ deploy:
   server: https://pypi.python.org/pypi
   on:
     python: 3.4
-    condition: -z "${COVERAGE}" && "${SPLIT}" = "1/5"
+    condition: -z "${COVERAGE}" && "${SPLIT}" = "1/5" && "${TRAVIS_EVENT_TYPE}" != "cron"
     tags: true
 notifications:
   email: false
