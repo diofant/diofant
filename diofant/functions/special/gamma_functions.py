@@ -445,8 +445,7 @@ class uppergamma(Function):
                     return b*cls(b, z) + z**b * exp(-z)
                 elif b.is_Integer:
                     return expint(-b, z)*unpolarify(z)**(b + 1)
-
-                if not a.is_Integer:
+                else:
                     return (cls(a + 1, z) - z**a * exp(-z))/a
 
     def _eval_conjugate(self):
@@ -657,7 +656,7 @@ class polygamma(Function):
                     z0 = z - n
                     if z0 in lookup:
                         return lookup[z0] + Add(*[1/(z0 + k) for k in range(n)])
-                elif z < 0:
+                else:  # z < 0
                     n = floor(1 - z)
                     z0 = z + n
                     if z0 in lookup:
@@ -787,14 +786,15 @@ class loggamma(Function):
     The loggamma function obeys the mirror symmetry
     if `x \in \mathbb{C} \setminus \{-\infty, 0\}`:
 
-    >>> from diofant.abc import x
     >>> from diofant import conjugate
-    >>> conjugate(loggamma(x))
-    loggamma(conjugate(x))
+    >>> c = Symbol('c', complex=True, extended_real=False)
+    >>> conjugate(loggamma(c))
+    loggamma(conjugate(c))
 
     Differentiation with respect to x is supported:
 
     >>> from diofant import diff
+    >>> from diofant.abc import x
     >>> diff(loggamma(x), x)
     polygamma(0, x)
 
@@ -863,12 +863,12 @@ class loggamma(Function):
             # Split z as n + p/q with p < q
             n = p // q
             p = p - n*q
-            if p.is_positive and q.is_positive and p < q:
-                k = Dummy("k")
-                if n.is_positive:
-                    return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
-                elif n.is_negative:
-                    return loggamma(p / q) - n*log(q) + S.Pi*S.ImaginaryUnit*n - Sum(log(k*q - p), (k, 1, -n))
+            assert p.is_positive and q.is_positive and p < q
+            k = Dummy("k")
+            if n.is_positive:
+                return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
+            elif n.is_negative:
+                return loggamma(p / q) - n*log(q) + S.Pi*S.ImaginaryUnit*n - Sum(log(k*q - p), (k, 1, -n))
 
         return self
 
@@ -904,7 +904,7 @@ class loggamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[0]
-        if z not in (S.Zero, S.NegativeInfinity):
+        if (z.is_extended_real and z.is_nonpositive) is False:
             return self.func(z.conjugate())
 
     def fdiff(self, argindex=1):
