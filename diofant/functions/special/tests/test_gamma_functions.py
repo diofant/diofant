@@ -197,6 +197,7 @@ def test_polygamma():
     assert polygamma(0, -I*oo) == oo
     assert polygamma(1, oo) == 0
     assert polygamma(5, oo) == 0
+    assert polygamma(n, oo) == polygamma(n, oo, evaluate=False)
 
     assert polygamma(0, -9) == zoo
 
@@ -207,6 +208,8 @@ def test_polygamma():
 
     assert polygamma(0, 1) == -EulerGamma
     assert polygamma(0, 7) == Rational(49, 20) - EulerGamma
+    assert polygamma(0, -Rational(3, 11)) == polygamma(0, -Rational(3, 11),
+                                                       evaluate=False)
 
     assert polygamma(1, 1) == pi**2/6
     assert polygamma(1, 2) == pi**2/6 - 1
@@ -243,6 +246,7 @@ def test_polygamma():
     ni = Symbol("n", integer=True)
     assert polygamma(ni, x).rewrite(harmonic) == (-1)**(ni + 1)*(-harmonic(x - 1, ni + 1)
                                                                  + zeta(ni + 1))*factorial(ni)
+    assert polygamma(x, y).rewrite(harmonic) == polygamma(x, y)
 
     # Polygamma of non-negative integer order is unbranched:
     from diofant import exp_polar
@@ -308,6 +312,8 @@ def test_polygamma_expand_func():
     assert e.expand(func=True) == e
     e = polygamma(3, x + y + Rational(3, 4))
     assert e.expand(func=True, basic=False) == e
+    e = polygamma(n, x)
+    assert e.expand(func=True) == e
 
 
 def test_loggamma():
@@ -381,7 +387,11 @@ def test_loggamma():
         pi**4*x**4/360 + x**5*polygamma(4, 1)/120 + O(x**6)
     assert s1 == loggamma(x).rewrite('intractable').series(x)
 
-    assert conjugate(loggamma(x)) == loggamma(conjugate(x))
+    assert conjugate(loggamma(x)) == conjugate(loggamma(x), evaluate=False)
+    p = Symbol('p', positive=True)
+    c = Symbol('c', complex=True, extended_real=False)
+    assert conjugate(loggamma(p)) == loggamma(p)
+    assert conjugate(loggamma(c)) == loggamma(conjugate(c))
     assert conjugate(loggamma(0)) == conjugate(loggamma(0))
     assert conjugate(loggamma(1)) == loggamma(conjugate(1))
     assert conjugate(loggamma(-oo)) == conjugate(loggamma(-oo))

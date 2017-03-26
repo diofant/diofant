@@ -45,7 +45,6 @@ matrix:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
         - py.test --cov diofant diofant/polys
-      after_success: codecov
 before_install:
   - |
     mkdir -p $HOME/.local
@@ -81,7 +80,7 @@ deploy:
   server: https://pypi.python.org/pypi
   on:
     python: 3.4
-    condition: -z "${COVERAGE}" && "${SPLIT}" = "1/5"
+    condition: -z "${COVERAGE}" && "${SPLIT}" = "1/7" && "${TRAVIS_EVENT_TYPE}" != "cron"
     tags: true
 notifications:
   email: false

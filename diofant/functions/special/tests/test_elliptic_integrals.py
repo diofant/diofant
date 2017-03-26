@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (S, Symbol, pi, I, oo, zoo, sin, sqrt, tan, gamma,
-                     atanh, hyper, meijerg, O, Rational)
+                     atanh, hyper, meijerg, O, Rational, conjugate)
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.elliptic_integrals import (elliptic_k as K,
                                                           elliptic_f as F,
@@ -38,6 +38,7 @@ def test_K():
     assert K(zi).conjugate() == K(zi.conjugate())
     zr = Symbol('z', extended_real=True, negative=True)
     assert K(zr).conjugate() == K(zr)
+    assert K(z).conjugate() == conjugate(K(z), evaluate=False)
 
     assert K(z).rewrite(hyper) == \
         (pi/2)*hyper((S.Half, S.Half), (S.One,), z)
@@ -71,6 +72,7 @@ def test_F():
     assert F(z, mi).conjugate() == F(z.conjugate(), mi.conjugate())
     mr = Symbol('m', extended_real=True, negative=True)
     assert F(z, mr).conjugate() == F(z.conjugate(), mr)
+    assert F(z, m).conjugate() == conjugate(F(z, m), evaluate=False)
 
     assert F(z, m).series(z) == \
         z + z**5*(3*m**2/40 - m/30) + m*z**3/6 + O(z**6)
@@ -106,6 +108,8 @@ def test_E():
     mr = Symbol('m', extended_real=True, negative=True)
     assert E(z, mr).conjugate() == E(z.conjugate(), mr)
     assert E(mr).conjugate() == E(mr)
+    assert E(z, m).conjugate() == conjugate(E(z, m))
+    assert E(z).conjugate() == conjugate(E(z))
 
     assert E(z).rewrite(hyper) == (pi/2)*hyper((-S.Half, S.Half), (S.One,), z)
     assert E(z, m).rewrite(hyper) == E(z, m)
@@ -150,6 +154,7 @@ def test_P():
         Symbol('m', extended_real=True, negative=True)
     assert P(nr, z, mr).conjugate() == P(nr, z.conjugate(), mr)
     assert P(n, m).conjugate() == P(n.conjugate(), m.conjugate())
+    assert P(n, z, m).conjugate() == conjugate(P(n, z, m))
 
     assert P(n, z, m).diff(n) == (E(z, m) + (m - n)*F(z, m)/n +
         (n**2 - m)*P(n, z, m)/n - n*sqrt(1 -
