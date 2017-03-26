@@ -52,8 +52,8 @@ class PythonRationalField(RationalField):
 
     def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY `mpq` object to `dtype`. """
-        return PythonRational(PythonInteger(a.numer()),
-                              PythonInteger(a.denom()))
+        return PythonRational(PythonInteger(a.numerator),
+                              PythonInteger(a.denominator))
 
     def from_RealField(self, a, K0):
         """Convert a mpmath `mpf` object to `dtype`. """
