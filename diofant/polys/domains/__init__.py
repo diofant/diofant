@@ -87,13 +87,8 @@ _GROUND_TYPES_MAP = {
     'python': (FF_python, ZZ_python(), QQ_python()),
 }
 
-try:
-    FF, ZZ, QQ = _GROUND_TYPES_MAP[GROUND_TYPES]
-except KeyError:
-    raise ValueError("invalid ground types: %s" % GROUND_TYPES)
-
+FF, ZZ, QQ = _GROUND_TYPES_MAP[GROUND_TYPES]
 GF = FF
-
 EX = ExpressionDomain()
 
 __all__.extend([
