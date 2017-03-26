@@ -189,8 +189,6 @@ class lerchphi(Function):
         res = self._eval_expand_func()
         if res.has(target):
             return res
-        else:
-            return self
 
     def _eval_rewrite_as_zeta(self, z, s, a):
         return self._eval_rewrite_helper(z, s, a, zeta)
@@ -484,8 +482,6 @@ class zeta(Function):
     def _eval_rewrite_as_tractable(self, s, a=1):
         if len(self.args) == 1:
             return _zetas(exp(s))
-        else:
-            return self
 
 
 class _zetas(Function):

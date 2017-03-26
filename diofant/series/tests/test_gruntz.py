@@ -353,6 +353,9 @@ def test_limit():
     # issue sympy/sympy#10382
     assert gruntz(fibonacci(x + 1)/fibonacci(x), x) == GoldenRatio
 
+    assert gruntz(zeta(x), x) == 1
+    assert gruntz(zeta(m)*zeta(x), x) == zeta(m)
+
 
 def test_I():
     from diofant.functions import sign

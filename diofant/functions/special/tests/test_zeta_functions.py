@@ -1,6 +1,9 @@
+import pytest
+
 from diofant import (Symbol, zeta, nan, Rational, Float, pi, dirichlet_eta, log,
-                     zoo, expand_func, polylog, lerchphi, exp, sqrt, I,
-                     exp_polar, polar_lift, O, Derivative)
+                     oo, zoo, expand_func, polylog, lerchphi, exp, sqrt, I,
+                     exp_polar, polar_lift, O, Derivative, S, PoleError)
+from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.zeta_functions import _zetas
 from diofant.utilities.randtest import (test_derivative_numerically as td,
                                         random_complex_number as randcplx,
@@ -17,6 +20,8 @@ s = Symbol('s')
 def test_zeta_eval():
     assert zeta(nan) == nan
     assert zeta(x, nan) == nan
+
+    assert zeta(oo) == 1
 
     assert zeta(0) == Rational(-1, 2)
     assert zeta(0, x) == Rational(1, 2) - x
@@ -63,10 +68,15 @@ def test_zeta_eval():
     assert zeta(
         3).evalf(20).epsilon_eq(Float("1.2020569031595942854", 20), 1e-19)
 
+    assert zeta(S.Half) == zeta(S.Half, evaluate=False)
+
 
 def test__zetas():
-    assert _zetas(1/x).nseries(x) == \
-        1 + x**log(7) + x**log(6) + x**log(5) + x**log(4) + x**log(3) + x**log(2) + O(x**log(6))
+    assert _zetas(1/x).nseries(x, n=0) == O(1, x)
+    assert _zetas(1/x).nseries(x) == (1 + x**log(7) + x**log(6) + x**log(5) +
+                                      x**log(4) + x**log(3) + x**log(2) +
+                                      O(x**log(6)))
+    pytest.raises(PoleError, lambda: _zetas(-1/x).nseries(x, n=2))
 
 
 def test_zeta_series():
@@ -85,6 +95,8 @@ def test_dirichlet_eta_eval():
 def test_rewriting():
     assert dirichlet_eta(x).rewrite(zeta) == (1 - 2**(1 - x))*zeta(x)
     assert zeta(x).rewrite(dirichlet_eta) == dirichlet_eta(x)/(1 - 2**(1 - x))
+    assert zeta(z, 2).rewrite(dirichlet_eta) == zeta(z, 2)
+    assert zeta(z, 2).rewrite('tractable') == zeta(z, 2)
     assert tn(dirichlet_eta(x), dirichlet_eta(x).rewrite(zeta), x)
     assert tn(zeta(x), zeta(x).rewrite(dirichlet_eta), x)
 
@@ -94,14 +106,19 @@ def test_rewriting():
     assert lerchphi(1, x, a).rewrite(zeta) == zeta(x, a)
     assert z*lerchphi(z, s, 1).rewrite(polylog) == polylog(s, z)
 
+    assert lerchphi(z, s, a).rewrite(zeta) == lerchphi(z, s, a)
+
 
 def test_derivatives():
     assert zeta(x, a).diff(x) == Derivative(zeta(x, a), x)
     assert zeta(x, a).diff(a) == -x*zeta(x + 1, a)
+    assert zeta(z).diff(z) == Derivative(zeta(z), z)
     assert lerchphi(
         z, s, a).diff(z) == (lerchphi(z, s - 1, a) - a*lerchphi(z, s, a))/z
+    pytest.raises(ArgumentIndexError, lambda: lerchphi(z, s, a).fdiff(4))
     assert lerchphi(z, s, a).diff(a) == -s*lerchphi(z, s + 1, a)
     assert polylog(s, z).diff(z) == polylog(s - 1, z)/z
+    pytest.raises(ArgumentIndexError, lambda: polylog(s, z).fdiff(3))
 
     b = randcplx()
     c = randcplx()
