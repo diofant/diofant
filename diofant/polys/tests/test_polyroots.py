@@ -321,6 +321,8 @@ def test_roots0():
     assert roots(x**9, x) == {S.Zero: 9}
     assert roots(((x - 2)*(x + 3)*(x - 4)).expand(), x) == {-Integer(3): 1, Integer(2): 1, Integer(4): 1}
 
+    assert roots(x**2 - 2*x + 1, x, auto=False) == {1: 2}
+
     assert roots(2*x + 1, x) == {-S.Half: 1}
     assert roots((2*x + 1)**2, x) == {-S.Half: 2}
     assert roots((2*x + 1)**5, x) == {-S.Half: 5}

@@ -118,7 +118,7 @@ def gosper_term(f, n):
     d = max(D)
 
     coeffs = symbols('c:%s' % (d + 1), cls=Dummy)
-    domain = A.get_domain().inject(*coeffs)
+    domain = A.domain.inject(*coeffs)
 
     x = Poly(coeffs, n, domain=domain)
     H = A*x.shift(1) - B*x - C

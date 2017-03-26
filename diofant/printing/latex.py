@@ -1537,7 +1537,7 @@ class LatexPrinter(Printer):
         cls = poly.__class__.__name__
         expr = self._print(poly.as_expr())
         gens = list(map(self._print, poly.gens))
-        domain = "domain=%s" % self._print(poly.get_domain())
+        domain = "domain=%s" % self._print(poly.domain)
         args = ", ".join([expr] + gens + [domain])
         return r"\operatorname{%s}{\left( %s \right)}" % (cls, args)
 

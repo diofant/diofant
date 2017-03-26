@@ -274,7 +274,7 @@ class Poly(Expr):
     @property
     def domain(self):
         """Get the ground domain of ``self``. """
-        return self.get_domain()
+        return self.rep.domain
 
     @property
     def zero(self):
@@ -405,10 +405,6 @@ class Poly(Expr):
         opt = options.build_options(self.gens, {'domain': domain})
         return self.per(self.rep.convert(opt.domain))
 
-    def get_domain(self):
-        """Get the ground domain of ``self``. """
-        return self.rep.domain
-
     def set_modulus(self, modulus):
         """
         Set the modulus of ``self``.
@@ -440,7 +436,7 @@ class Poly(Expr):
         2
 
         """
-        domain = self.get_domain()
+        domain = self.domain
 
         if domain.is_FiniteField:
             return Integer(domain.characteristic())
@@ -508,7 +504,7 @@ class Poly(Expr):
             return self
 
         if x in self.gens and y not in self.gens:
-            dom = self.get_domain()
+            dom = self.domain
 
             if not dom.is_Composite or y not in dom.symbols:
                 gens = list(self.gens)
@@ -2019,7 +2015,7 @@ class Poly(Expr):
         if not f.rep.domain.has_Field:
             return S.One, f
 
-        dom = f.get_domain()
+        dom = f.domain
         if dom.has_assoc_Ring:
             dom = f.rep.domain.get_ring()
 
@@ -2216,7 +2212,7 @@ class Poly(Expr):
                 raise DomainError("can't evaluate at %s in %s" % (a, f.rep.domain))
             else:
                 a_domain, [a] = construct_domain([a])
-                new_domain = f.get_domain().unify_with_symbols(a_domain, f.gens)
+                new_domain = f.domain.unify_with_symbols(a_domain, f.gens)
 
                 f = f.set_domain(new_domain)
                 a = new_domain.convert(a, a_domain)
@@ -3869,7 +3865,7 @@ class Poly(Expr):
 
         if not g.is_Poly:
             try:
-                g = f.__class__(g, f.gens, domain=f.get_domain())
+                g = f.__class__(g, f.gens, domain=f.domain)
             except (PolynomialError, DomainError, CoercionFailed):
                 return False
 
@@ -3945,7 +3941,7 @@ class PurePoly(Poly):
 
         if not g.is_Poly:
             try:
-                g = f.__class__(g, f.gens, domain=f.get_domain())
+                g = f.__class__(g, f.gens, domain=f.domain)
             except (PolynomialError, DomainError, CoercionFailed):
                 return False
 
@@ -5761,7 +5757,7 @@ def to_rational_coeffs(f):
                     return False
         return has_sq
 
-    if f.get_domain().is_EX and _has_square_roots(f):
+    if f.domain.is_EX and _has_square_roots(f):
         f1 = f.monic()
         r = _try_rescale(f, f1)
         if r:
