@@ -2,6 +2,7 @@
 
 import pytest
 
+from diofant import sqrt
 from diofant.polys.domains import QQ, ZZ
 from diofant.polys.polyerrors import CoercionFailed, GeneratorsNeeded
 from diofant.polys.orderings import build_product_order
@@ -9,6 +10,9 @@ from diofant.polys.orderings import build_product_order
 from diofant.abc import x, y
 
 __all__ = ()
+
+
+ALG = QQ.algebraic_field(sqrt(2), sqrt(3))
 
 
 def test_build_order():
@@ -66,6 +70,11 @@ def test_conversion():
     assert G.convert(x) == G.convert(L.convert(x), L)
     pytest.raises(CoercionFailed, lambda: G.convert(L.convert(1/(1 + x)), L))
 
+    R = ALG.poly_ring(x, y)
+    assert R.convert(ALG.new(1), ALG) == R.new(1)
+    pytest.raises(CoercionFailed,
+                  lambda: R.convert(ALG.new(1), QQ.algebraic_field(sqrt(2))))
+
 
 def test_units():
     R = QQ.poly_ring(x)
@@ -87,3 +96,15 @@ def test_units():
 def test_poly_frac():
     pytest.raises(GeneratorsNeeded, lambda: QQ.poly_ring())
     pytest.raises(GeneratorsNeeded, lambda: QQ.frac_field())
+
+
+def test_methods():
+    R = QQ.poly_ring(x)
+    X = R.convert(x)
+
+    assert R.is_nonpositive(-X) is True
+    assert R.is_positive(X) is True
+
+    assert R.gcdex(X**3 - X, X**2) == (-1, X, X)
+
+    assert R.factorial(3) == 6

@@ -138,4 +138,4 @@ class PolynomialRing(Ring, CompositeDomain):
 
     def factorial(self, a):
         """Returns factorial of `a`. """
-        return self.dtype(self.domain.factorial(a))
+        return self.new(self.domain.factorial(a))
