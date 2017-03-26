@@ -500,6 +500,9 @@ def test_Domain_convert():
     assert F3.convert(2.0) == F3.dtype(2)
     pytest.raises(CoercionFailed, lambda: F3.convert(2.1))
 
+    assert RR.convert(CC(1)) == RR(1)
+    pytest.raises(CoercionFailed, lambda: RR.convert(CC(1, 2)))
+
 
 def test_PolynomialRing__init():
     pytest.raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
