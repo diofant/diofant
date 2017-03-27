@@ -444,14 +444,14 @@ else:
 # HAS_GMPY contains the major version number of gmpy.
 
 GROUND_TYPES = os.getenv('DIOFANT_GROUND_TYPES', 'auto').lower()
-HAS_GMPY = 0
 
-if GROUND_TYPES != 'python':
-    gmpy = import_module('gmpy2', min_module_version='2.0.0',
-                         module_version_attr='version',
-                         module_version_attr_call_args=())
-    if gmpy:
-        HAS_GMPY = 2
+gmpy = import_module('gmpy2', min_module_version='2.0.0',
+                     module_version_attr='version',
+                     module_version_attr_call_args=())
+if gmpy:
+    HAS_GMPY = 2
+else:
+    HAS_GMPY = 0
 
 if GROUND_TYPES == 'auto':
     if HAS_GMPY:

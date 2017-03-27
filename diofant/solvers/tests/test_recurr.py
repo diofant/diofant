@@ -110,7 +110,6 @@ def test_rsolve_bulk():
                                                       [0, 0, 0])).expand() == p
 
 
-@pytest.mark.slow
 def test_rsolve():
     f = y(n + 2) - y(n + 1) - y(n)
     h = sqrt(5)*(S.Half + S.Half*sqrt(5))**n \

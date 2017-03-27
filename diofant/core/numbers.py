@@ -1260,7 +1260,7 @@ class Rational(Number):
         elif isinstance(other, AlgebraicNumber):
             from ..polys.polyclasses import DMP
             me = DMP.from_diofant_list((self,), 0,
-                                       other.minpoly.get_domain())
+                                       other.minpoly.domain)
             coeffs = other.rep + me
             return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
@@ -1275,7 +1275,7 @@ class Rational(Number):
         elif isinstance(other, AlgebraicNumber):
             from ..polys.polyclasses import DMP
             me = DMP.from_diofant_list((self,), 0,
-                                       other.minpoly.get_domain())
+                                       other.minpoly.domain)
             coeffs = me - other.rep
             return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
@@ -1290,7 +1290,7 @@ class Rational(Number):
         elif isinstance(other, AlgebraicNumber):
             from ..polys.polyclasses import DMP
             me = DMP.from_diofant_list((self,), 0,
-                                       other.minpoly.get_domain())
+                                       other.minpoly.domain)
             coeffs = me * other.rep
             return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
@@ -1945,7 +1945,7 @@ class AlgebraicNumber(Expr):
             minpoly, root = minimal_polynomial(
                 expr, args.get('gen'), polys=True), expr
 
-        dom = minpoly.get_domain()
+        dom = minpoly.domain
 
         if not isinstance(coeffs, ANP):
             rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
@@ -1992,7 +1992,7 @@ class AlgebraicNumber(Expr):
         if isinstance(other, Rational):
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
-                                          self.minpoly.get_domain())
+                                          self.minpoly.domain)
             coeffs = self.rep + other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
         elif (isinstance(other, AlgebraicNumber) and
@@ -2007,7 +2007,7 @@ class AlgebraicNumber(Expr):
         if isinstance(other, Rational):
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
-                                          self.minpoly.get_domain())
+                                          self.minpoly.domain)
             coeffs = self.rep - other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
         elif (isinstance(other, AlgebraicNumber) and
@@ -2022,7 +2022,7 @@ class AlgebraicNumber(Expr):
         if isinstance(other, Rational):
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
-                                          self.minpoly.get_domain())
+                                          self.minpoly.domain)
             coeffs = self.rep * other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
         else:

@@ -152,7 +152,7 @@ def apart_undetermined_coeffs(P, Q):
             partial.append((coeffs, q, f, i))
             symbols.extend(coeffs)
 
-    dom = Q.get_domain().inject(*symbols)
+    dom = Q.domain.inject(*symbols)
     F = Poly(0, Q.gen, domain=dom)
 
     for i, (coeffs, q, f, k) in enumerate(partial):

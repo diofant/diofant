@@ -861,7 +861,7 @@ def splitfactor(p, DE, coefficientD=False, z=None):
     if z:
         kinv.append(z)
 
-    One = Poly(1, DE.t, domain=p.get_domain())
+    One = Poly(1, DE.t, domain=p.domain)
     Dp = derivation(p, DE, coefficientD=coefficientD)
     # XXX: Is this right?
     if p.is_zero:

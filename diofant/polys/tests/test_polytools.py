@@ -335,7 +335,7 @@ def test_Poly__new__():
     assert Poly({(2, 1): 1, (1, 2): 2, (1, 1): 3}, x, y) == \
         Poly(x**2*y + 2*x*y**2 + 3*x*y, x, y)
 
-    assert Poly(x**2 + 1, extension=I).get_domain() == QQ.algebraic_field(I)
+    assert Poly(x**2 + 1, extension=I).domain == QQ.algebraic_field(I)
 
     f = 3*x**5 - x**4 + x**3 - x**2 + 65538
 
@@ -346,7 +346,7 @@ def test_Poly__new__():
         Poly(3*x**5 + 65536*x**4 + x**3 + 65536*x**2 + 1, x,
              modulus=65537, symmetric=False)
 
-    assert isinstance(Poly(x**2 + x + 1.0).get_domain(), RealField)
+    assert isinstance(Poly(x**2 + x + 1.0).domain, RealField)
 
 
 def test_Poly__args():
@@ -549,24 +549,26 @@ def test_PurePoly__eq__():
     assert f.eq(g, strict=True) is False
     assert f.ne(g, strict=True) is True
 
+    assert f.eq(1) is False
+
 
 def test_PurePoly_Poly():
     assert isinstance(PurePoly(Poly(x**2 + 1)), PurePoly) is True
     assert isinstance(Poly(PurePoly(x**2 + 1)), Poly) is True
 
 
-def test_Poly_get_domain():
-    assert Poly(2*x).get_domain() == ZZ
+def test_Poly_domain():
+    assert Poly(2*x).domain == ZZ
 
-    assert Poly(2*x, domain='ZZ').get_domain() == ZZ
-    assert Poly(2*x, domain='QQ').get_domain() == QQ
+    assert Poly(2*x, domain='ZZ').domain == ZZ
+    assert Poly(2*x, domain='QQ').domain == QQ
 
-    assert Poly(x/2).get_domain() == QQ
+    assert Poly(x/2).domain == QQ
 
     pytest.raises(CoercionFailed, lambda: Poly(x/2, domain='ZZ'))
-    assert Poly(x/2, domain='QQ').get_domain() == QQ
+    assert Poly(x/2, domain='QQ').domain == QQ
 
-    assert isinstance(Poly(0.2*x).get_domain(), RealField)
+    assert isinstance(Poly(0.2*x).domain, RealField)
 
 
 def test_Poly_set_domain():
@@ -1357,28 +1359,28 @@ def test_Poly_l1_norm():
 def test_Poly_clear_denoms():
     coeff, poly = Poly(x + 2, x).clear_denoms()
     assert coeff == 1 and poly == Poly(
-        x + 2, x, domain='ZZ') and poly.get_domain() == ZZ
+        x + 2, x, domain='ZZ') and poly.domain == ZZ
 
     coeff, poly = Poly(x/2 + 1, x).clear_denoms()
     assert coeff == 2 and poly == Poly(
-        x + 2, x, domain='QQ') and poly.get_domain() == QQ
+        x + 2, x, domain='QQ') and poly.domain == QQ
 
     coeff, poly = Poly(x/2 + 1, x).clear_denoms(convert=True)
     assert coeff == 2 and poly == Poly(
-        x + 2, x, domain='ZZ') and poly.get_domain() == ZZ
+        x + 2, x, domain='ZZ') and poly.domain == ZZ
 
     coeff, poly = Poly(x/y + 1, x).clear_denoms(convert=True)
     assert coeff == y and poly == Poly(
-        x + y, x, domain='ZZ[y]') and poly.get_domain() == ZZ[y]
+        x + y, x, domain='ZZ[y]') and poly.domain == ZZ[y]
 
     coeff, poly = Poly(x/3 + sqrt(2), x, domain='EX').clear_denoms()
     assert coeff == 3 and poly == Poly(
-        x + 3*sqrt(2), x, domain='EX') and poly.get_domain() == EX
+        x + 3*sqrt(2), x, domain='EX') and poly.domain == EX
 
     coeff, poly = Poly(
         x/3 + sqrt(2), x, domain='EX').clear_denoms(convert=True)
     assert coeff == 3 and poly == Poly(
-        x + 3*sqrt(2), x, domain='EX') and poly.get_domain() == EX
+        x + 3*sqrt(2), x, domain='EX') and poly.domain == EX
 
 
 def test_Poly_rat_clear_denoms():
@@ -1699,13 +1701,13 @@ def test_div():
     f, g = Poly(x**2), Poly(x)
 
     q, r = f.div(g)
-    assert q.get_domain().is_ZZ and r.get_domain().is_ZZ
+    assert q.domain.is_ZZ and r.domain.is_ZZ
     r = f.rem(g)
-    assert r.get_domain().is_ZZ
+    assert r.domain.is_ZZ
     q = f.quo(g)
-    assert q.get_domain().is_ZZ
+    assert q.domain.is_ZZ
     q = f.exquo(g)
-    assert q.get_domain().is_ZZ
+    assert q.domain.is_ZZ
 
 
 def test_gcdex():

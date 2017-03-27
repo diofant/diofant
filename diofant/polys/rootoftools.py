@@ -59,7 +59,7 @@ class RootOf(Expr):
             raise PolynomialError("only univariate polynomials are allowed")
 
         degree = poly.degree()
-        dom = poly.get_domain()
+        dom = poly.domain
 
         if degree <= 0:
             raise PolynomialError("can't construct RootOf object for %s" % f)
@@ -93,7 +93,7 @@ class RootOf(Expr):
             return roots[index]
 
         coeff, poly = preprocess_roots(poly)
-        dom = poly.get_domain()
+        dom = poly.domain
 
         if dom.is_ZZ:
             root = cls._indexed_root(poly, index)
@@ -495,13 +495,13 @@ class RootOf(Expr):
     @classmethod
     def _preprocess_roots(cls, poly):
         """Take heroic measures to make ``poly`` compatible with ``RootOf``. """
-        dom = poly.get_domain()
+        dom = poly.domain
 
         if not dom.is_Exact:
             poly = poly.to_exact()
 
         coeff, poly = preprocess_roots(poly)
-        dom = poly.get_domain()
+        dom = poly.domain
 
         if not dom.is_ZZ and poly.LC().is_nonzero is False:
             raise NotImplementedError("sorted roots not supported over %s" % dom)

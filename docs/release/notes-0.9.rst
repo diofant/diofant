@@ -35,6 +35,7 @@ Backwards-incompatible changes
 * Removed :func:`~diofant.solvers.solvers.solve` flags ``set``, ``manual`` and ``implicit``, see :pull:`426`.
 * Removed support for ``particular`` and ``quick`` options of :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.solvers.minsolve_linear_system` instead, see :pull:`426`.
 * Removed support for inequalities in :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.inequalities.reduce_inequalities` instead, see :pull:`426`.
+* Removed ``get_domain()`` method of :class:`~diofant.polys.polytools.Poly`, use :attr:`~diofant.polys.polytools.Poly.domain` property instead, see :pull:`479`.
 
 Minor changes
 =============
@@ -134,7 +135,7 @@ Issues closed
 * :sympyissue:`12400` polytool.poly() can't raise polynomial to negative power?
 * :issue:`466` Test failure for new theano version
 
-.. last pr: #467
+.. last pr: #479
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

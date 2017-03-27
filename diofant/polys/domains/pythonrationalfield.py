@@ -1,7 +1,8 @@
 """Implementation of :class:`PythonRationalField` class. """
 
 from .rationalfield import RationalField
-from .groundtypes import PythonInteger, PythonRational, DiofantRational
+from .groundtypes import (PythonInteger, PythonRational, DiofantRational,
+                          python_factorial)
 from ..polyerrors import CoercionFailed
 from ...utilities import public
 
@@ -52,8 +53,8 @@ class PythonRationalField(RationalField):
 
     def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY `mpq` object to `dtype`. """
-        return PythonRational(PythonInteger(a.numer()),
-                              PythonInteger(a.denom()))
+        return PythonRational(PythonInteger(a.numerator),
+                              PythonInteger(a.denominator))
 
     def from_RealField(self, a, K0):
         """Convert a mpmath `mpf` object to `dtype`. """
@@ -67,3 +68,7 @@ class PythonRationalField(RationalField):
     def denom(self, a):
         """Returns denominator of `a`. """
         return a.denominator
+
+    def factorial(self, a):
+        """Returns factorial of `a`. """
+        return PythonRational(python_factorial(int(a)))

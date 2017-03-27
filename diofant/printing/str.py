@@ -431,7 +431,7 @@ class StrPrinter(Printer):
         try:
             format += ", modulus=%s" % expr.get_modulus()
         except PolynomialError:
-            format += ", domain='%s'" % expr.get_domain()
+            format += ", domain='%s'" % expr.domain
 
         format += ")"
 

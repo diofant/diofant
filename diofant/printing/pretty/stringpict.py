@@ -271,7 +271,7 @@ class stringPict:
         return False
 
     def __hash__(self):
-        return super(stringPict, self).__hash__()
+        return hash((tuple(self.picture), self.baseline, self.binding))
 
     def __str__(self):
         return str.join('\n', self.picture)
@@ -280,7 +280,7 @@ class stringPict:
         return self.picture[index]
 
     def __len__(self):
-        return len(self.s)
+        return len(self.picture)
 
 
 class prettyForm(stringPict):
@@ -317,8 +317,6 @@ class prettyForm(stringPict):
         Addition of negative numbers is simplified.
         """
         arg = self
-        if arg.binding > prettyForm.NEG:
-            arg = stringPict(*arg.parens())
         result = [arg]
         for arg in others:
             # add parentheses for weak binders
@@ -330,16 +328,9 @@ class prettyForm(stringPict):
             result.append(arg)
         return prettyForm(binding=prettyForm.ADD, *stringPict.next(*result))
 
-    def __truediv__(self, den, slashed=False):
-        """Make a pretty division; stacked or slashed.
-        """
-        if slashed:
-            raise NotImplementedError("Can't do slashed fraction yet")
+    def __truediv__(self, den):
+        """Make a pretty division."""
         num = self
-        if num.binding == prettyForm.DIV:
-            num = stringPict(*num.parens())
-        if den.binding == prettyForm.DIV:
-            den = stringPict(*den.parens())
 
         if num.binding == prettyForm.NEG:
             num = num.right(" ")[0]
@@ -377,10 +368,9 @@ class prettyForm(stringPict):
             # if there is a - sign in front of all
             # This test was failing to catch a prettyForm.__mul__(prettyForm("-1", 0, 6)) being negative
             bin = prettyForm.NEG
-            if result[0] == '-':
-                right = result[1]
-                if right.picture[right.baseline][0] == '-':
-                    result[0] = '- '
+            right = result[1]
+            if right.picture[right.baseline][0] == '-':
+                result[0] = '- '
         else:
             bin = prettyForm.MUL
         return prettyForm(binding=bin, *stringPict.next(*result))
