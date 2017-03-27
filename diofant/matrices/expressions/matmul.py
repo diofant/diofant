@@ -52,8 +52,6 @@ class MatMul(MatrixExpr):
             return coeff * matrices[0][i, j]
 
         head, tail = matrices[0], matrices[1:]
-        if len(tail) == 0:
-            raise ValueError("lenth of tail cannot be 0")
         X = head
         Y = MatMul(*tail)
 
