@@ -22,7 +22,7 @@ def test_adjoint():
     assert conjugate(Adjoint(A)) == Transpose(A)
     assert transpose(Adjoint(A)) == Adjoint(Transpose(A))
 
-    assert Adjoint(eye(3)).doit() == eye(3)
+    assert Adjoint(eye(3)).doit() == Adjoint(eye(3)).doit(deep=False) == eye(3)
 
     assert Adjoint(Integer(5)).doit() == Integer(5)
 
