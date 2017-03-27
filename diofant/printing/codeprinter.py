@@ -164,15 +164,14 @@ class CodePrinter(StrPrinter):
         # involves looping over array elements and possibly storing results in temporary
         # variables or accumulate it in the assign_to object.
 
-        if self._settings.get('contract', True):
-            from ..tensor import get_contraction_structure
-            # Setup loops over non-dummy indices  --  all terms need these
-            indices = self._get_expression_indices(expr, assign_to)
-            # Setup loops over dummy indices  --  each term needs separate treatment
-            dummies = get_contraction_structure(expr)
-        else:
-            indices = []
-            dummies = {None: (expr,)}
+        assert self._settings['contract']
+
+        from ..tensor import get_contraction_structure
+        # Setup loops over non-dummy indices  --  all terms need these
+        indices = self._get_expression_indices(expr, assign_to)
+        # Setup loops over dummy indices  --  each term needs separate treatment
+        dummies = get_contraction_structure(expr)
+
         openloop, closeloop = self._get_loop_opening_ending(indices)
 
         # terms with no summations first
@@ -187,8 +186,8 @@ class CodePrinter(StrPrinter):
         lines = []
         if text != lhs_printed:
             lines.extend(openloop)
-            if assign_to is not None:
-                text = self._get_statement("%s = %s" % (lhs_printed, text))
+            assert assign_to is not None
+            text = self._get_statement("%s = %s" % (lhs_printed, text))
             lines.append(text)
             lines.extend(closeloop)
 
@@ -201,7 +200,7 @@ class CodePrinter(StrPrinter):
 
                 for term in dummies[d]:
                     if term in dummies and not ([list(f.keys()) for f in dummies[term]]
-                            == [[None] for f in dummies[term]]):
+                            == [[None] for f in dummies[term]]):  # pragma: no cover
                         # If one factor in the term has it's own internal
                         # contractions, those must be computed first.
                         # (temporary variables?)
@@ -220,12 +219,8 @@ class CodePrinter(StrPrinter):
                         # lhs, and raise an exception if it does, as that
                         # syntax is currently undefined.  FIXME: What would be
                         # a good interpretation?
-                        if assign_to is None:
-                            raise AssignmentError(
-                                "need assignment variable for loops")
-                        if term.has(assign_to):
-                            raise ValueError("FIXME: lhs present in rhs,\
-                                this is undefined in CodePrinter")
+                        assert assign_to is not None
+                        assert not term.has(assign_to)
 
                         lines.extend(openloop)
                         lines.extend(openloop_d)
@@ -371,8 +366,9 @@ class CodePrinter(StrPrinter):
                 for cond, func in cond_func:
                     if cond(*expr.args):
                         break
-            if func is not None:
-                return "%s(%s)" % (func, self.stringify(expr.args, ", "))
+                else:
+                    return self._print_not_supported(expr)
+            return "%s(%s)" % (func, self.stringify(expr.args, ", "))
         elif hasattr(expr, '_imp_') and isinstance(expr._imp_, Lambda):
             # inlined function
             return self._print(expr._imp_(*expr.args))
