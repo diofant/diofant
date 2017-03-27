@@ -1,10 +1,10 @@
 import pytest
 
-from diofant.core import (pi, oo, symbols, Rational, Integer,
+from diofant.core import (pi, oo, symbols, Rational, Integer, Mul,
                           GoldenRatio, EulerGamma, Catalan, Lambda, Dummy, Eq)
 from diofant.functions import (Piecewise, sin, cos, Abs, exp, ceiling, sqrt,
                                gamma, sign, elliptic_e)
-from diofant.logic import ITE
+from diofant.logic import ITE, Equivalent
 from diofant.printing.ccode import CCodePrinter
 from diofant.utilities.lambdify import implemented_function
 from diofant.tensor import IndexedBase, Idx
@@ -78,6 +78,12 @@ def test_ccode_functions():
     assert ccode(elliptic_e(x)) == ("// Not supported in C:\n"
                                     "// elliptic_e\nelliptic_e(x)")
 
+    n = symbols('n', integer=True)
+    assert ccode(Abs(n)) == '// Not supported in C:\n// Abs\nAbs(n)'
+    assert ccode(Abs(x)) == 'fabs(x)'
+
+    pytest.raises(TypeError, lambda: ccode(sin(x), assign_to=1))
+
 
 def test_ccode_inline_function():
     x = symbols('x')
@@ -122,6 +128,10 @@ def test_ccode_boolean():
     assert ccode(x | y | z) == "x || y || z"
     assert ccode((x & y) | z) == "z || x && y"
     assert ccode((x | y) & z) == "z && (x || y)"
+
+    assert ccode(x ^ y) == '// Not supported in C:\n// Xor\nXor(x, y)'
+    assert ccode(Equivalent(x, y)) == ('// Not supported in C:\n// '
+                                       'Equivalent\nEquivalent(x, y)')
 
 
 def test_ccode_Piecewise():
@@ -258,6 +268,18 @@ def test_ccode_loops_matrix_vector():
     )
     c = ccode(A[i, j]*x[j], assign_to=y[i])
     assert c == s
+
+    pytest.raises(ValueError, lambda: ccode(A[i, j]*x[j], assign_to=x[j]))
+
+    s2 = ('for (int i=0; i<m; i++){\n'
+          '   y[i] = 0;\n'
+          '}\n'
+          'for (int i=0; i<m; i++){\n'
+          '   for (int i=0; i<m; i++){\n'
+          '      y[i] = y[i] + A[m*i + i];\n'
+          '   }\n}')
+    c = ccode(A[i, i], assign_to=y[i])
+    assert c == s2
 
 
 def test_dummy_loops():
@@ -481,3 +503,8 @@ def test_ccode_sign():
 
     expr = sign(cos(x))
     assert ccode(expr) == '(((cos(x)) > 0) - ((cos(x)) < 0))'
+
+
+def test_mul():
+    assert ccode(Mul(y, x, evaluate=False), order='none') == 'y*x'
+    assert ccode(x/((x + y)*z)) == 'x/(z*(x + y))'
