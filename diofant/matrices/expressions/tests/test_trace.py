@@ -72,6 +72,7 @@ def test_Trace_MatPow_doit():
 
 def test_Trace_doit_deep_False():
     X = Matrix([[1, 2], [3, 4]])
+    assert Trace(X).doit(deep=False) == 5
     q = MatPow(X, 2)
     assert Trace(q).doit(deep=False).arg == q
     q = MatAdd(X, 2*X)
