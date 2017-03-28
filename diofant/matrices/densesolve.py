@@ -41,8 +41,7 @@ def row_echelon(matlist, K):
         if (result_matlist[i][i] != 1 and result_matlist[i][i] != 0):
             rowmul(result_matlist, i, 1/result_matlist[i][i], K)
         for j in range(i + 1, nrow):
-            if (result_matlist[j][i] != 0):
-                rowadd(result_matlist, j, i, -result_matlist[j][i], K)
+            rowadd(result_matlist, j, i, -result_matlist[j][i], K)
     return result_matlist
 
 
