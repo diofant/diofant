@@ -507,6 +507,11 @@ def test_Domain_convert():
     pytest.raises(CoercionFailed, lambda: QQ.convert(ALG.new([1, 1]), ALG))
 
 
+def test_arithmetics():
+    assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
+    assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
+
+
 def test_PolynomialRing__init():
     pytest.raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
 
