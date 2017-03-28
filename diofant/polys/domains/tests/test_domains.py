@@ -575,6 +575,8 @@ def test_Domain__algebraic_field():
 
     pytest.raises(DomainError, lambda: AlgebraicField(ZZ, sqrt(2)))
 
+    assert alg.characteristic() == 0
+
 
 def test_PolynomialRing_from_FractionField():
     F,  x, y = field("x,y", ZZ)
