@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.polys.polyerrors import CoercionFailed
-from diofant.polys.domains import FF, QQ_python
+from diofant.polys.domains import FF, QQ_python, QQ_gmpy, PythonRational
 from diofant.external import import_module
 
 __all__ = ()
@@ -19,3 +19,5 @@ def test_convert():
 
     assert QQ_python().convert(gmpy.mpz(3)) == QQ_python().dtype(3)
     assert QQ_python().convert(gmpy.mpq(2, 3)) == QQ_python().dtype(2, 3)
+
+    assert QQ_gmpy().convert(PythonRational(2, 3)) == QQ_gmpy().dtype(2, 3)
