@@ -15,12 +15,18 @@ D = MatrixSymbol('D', n, n)
 E = MatrixSymbol('E', m, n)
 
 
+def test_matpow():
+    pytest.raises(TypeError, lambda: MatPow(1, 1))
+
+
 def test_entry():
     from diofant.concrete import Sum
     assert MatPow(A, 1)[0, 0] == A[0, 0]
     assert MatPow(C, 0)[0, 0] == 1
     assert MatPow(C, 0)[0, 1] == 0
     assert isinstance(MatPow(C, 2)[0, 0], Sum)
+
+    pytest.raises(NotImplementedError, lambda: MatPow(C, -1)[0, 0])
 
 
 def test_as_explicit_symbol():
@@ -66,6 +72,7 @@ def test_doit_nonsquare_MatrixSymbol():
 
 def test_doit_square_MatrixSymbol_symsize():
     assert MatPow(C, 0).doit() == Identity(n)
+    assert MatPow(C, 0).doit(deep=False) == Identity(n)
     assert MatPow(C, 1).doit() == C
     for r in [2, -1, pi]:
         assert MatPow(C, r).doit() == MatPow(C, r)

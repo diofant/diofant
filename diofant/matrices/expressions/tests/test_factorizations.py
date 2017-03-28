@@ -1,4 +1,5 @@
-from diofant.matrices.expressions.factorizations import lu, LofCholesky, qr, svd
+from diofant.matrices.expressions.factorizations import (lu, LofCholesky,
+                                                         qr, svd, eig)
 from diofant import Symbol, MatrixSymbol
 
 __all__ = ()
@@ -24,3 +25,8 @@ def test_QR():
 def test_svd():
     U, S, V = svd(X)
     assert U.shape == S.shape == V.shape == X.shape
+
+
+def test_eig():
+    E, V = eig(X)
+    assert E.shape == V.shape == X.shape

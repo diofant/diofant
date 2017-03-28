@@ -68,14 +68,6 @@ class GMPYRationalField(RationalField):
         """Quotient of `a` and `b`, implies `__truediv__`. """
         return GMPYRational(gmpy_qdiv(a, b))
 
-    def rem(self, a, b):
-        """Remainder of `a` and `b`, implies nothing.  """
-        return self.zero
-
-    def div(self, a, b):
-        """Division of `a` and `b`, implies `__truediv__`. """
-        return GMPYRational(gmpy_qdiv(a, b)), self.zero
-
     def numer(self, a):
         """Returns numerator of `a`. """
         return a.numerator

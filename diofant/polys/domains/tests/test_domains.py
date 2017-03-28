@@ -7,6 +7,7 @@ from diofant.polys.domains import ZZ, QQ, RR, CC, FF, GF, EX
 from diofant.polys.domains.domainelement import DomainElement
 from diofant.polys.domains.groundtypes import PythonRational
 from diofant.polys.domains.realfield import RealField
+from diofant.polys.domains.algebraicfield import AlgebraicField
 from diofant.polys.rings import ring
 from diofant.polys.fields import field
 from diofant.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
@@ -506,6 +507,14 @@ def test_Domain_convert():
     assert QQ.convert(ALG.new(1), ALG) == QQ(1)
     pytest.raises(CoercionFailed, lambda: QQ.convert(ALG.new([1, 1]), ALG))
 
+    assert ZZ.convert(ALG.new(1), ALG) == ZZ(1)
+    pytest.raises(CoercionFailed, lambda: ZZ.convert(ALG.new([1, 1]), ALG))
+
+
+def test_arithmetics():
+    assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
+    assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
+
 
 def test_PolynomialRing__init():
     pytest.raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
@@ -558,6 +567,15 @@ def test_Domain__algebraic_field():
     alg = alg.algebraic_field(sqrt(3))
     assert alg.ext.minpoly == Poly(x**4 - 10*x**2 + 1)
     assert alg.domain == QQ
+
+    assert alg.is_nonpositive(alg([-1, 1])) is True
+    assert alg.is_nonnegative(alg([2, -1])) is True
+
+    assert alg.numer(alg(1)) == alg(1)
+
+    pytest.raises(DomainError, lambda: AlgebraicField(ZZ, sqrt(2)))
+
+    assert alg.characteristic() == 0
 
 
 def test_PolynomialRing_from_FractionField():

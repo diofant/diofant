@@ -1,8 +1,13 @@
-from diofant.matrices.densesolve import LU_solve, rref_solve, cholesky_solve
+from diofant.matrices.densesolve import (LU, LU_solve, rref_solve,
+                                         cholesky_solve)
 from diofant import Dummy
 from diofant import QQ
 
 __all__ = ()
+
+
+def test_LU():
+    LU([[1, 1], [0, 0]], QQ) == ([[1, 0], [0, 1]], [[1, 1], [0, 0]])
 
 
 def test_LU_solve():

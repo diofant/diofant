@@ -24,6 +24,7 @@ def test_transpose():
     assert conjugate(Transpose(A)) == Adjoint(A)
 
     assert Transpose(eye(3)).doit() == eye(3)
+    assert Transpose(eye(3)).doit(deep=False) == eye(3)
 
     assert Transpose(Integer(5)).doit() == Integer(5)
 

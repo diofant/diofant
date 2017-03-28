@@ -1,10 +1,12 @@
+import pytest
 from strategies.core import null_safe
 
 from diofant.core import I, symbols, Basic
 from diofant.functions import adjoint, transpose
-from diofant.matrices import (Identity, Inverse, Matrix, MatrixSymbol, ZeroMatrix,
-                              eye, ImmutableMatrix)
+from diofant.matrices import (Identity, Inverse, Matrix, MatrixSymbol,
+                              ZeroMatrix, eye, ImmutableMatrix)
 from diofant.matrices.expressions import Adjoint, Transpose, det, MatPow
+from diofant.matrices.expressions.matexpr import ShapeError
 from diofant.matrices.expressions.matmul import (factor_in_front, remove_ids,
                                                  MatMul, xxinv, any_zeros,
                                                  unpack, only_squares)
@@ -76,6 +78,8 @@ def test_only_squares():
     assert only_squares(C, D) == [C, D]
     assert only_squares(C, A, A.T, D) == [C, A*A.T, D]
 
+    pytest.raises(RuntimeError, lambda: only_squares(C, A))
+
 
 def test_determinant():
     assert det(2*C) == 2**n*det(C)
@@ -116,3 +120,8 @@ def test_collapse_MatrixBase():
     A = Matrix([[1, 1], [1, 1]])
     B = Matrix([[1, 2], [3, 4]])
     assert MatMul(A, B).doit() == ImmutableMatrix([[4, 6], [4, 6]])
+
+
+def test_matmul_new():
+    pytest.raises(ShapeError, lambda: MatMul(A, C))
+    MatMul(A, C, check=False)  # not raises

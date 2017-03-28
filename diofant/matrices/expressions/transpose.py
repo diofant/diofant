@@ -32,13 +32,10 @@ class Transpose(MatrixExpr):
 
     def doit(self, **hints):
         arg = self.arg
-        if hints.get('deep', True) and isinstance(arg, Basic):
+        if hints.get('deep', True):
             arg = arg.doit(**hints)
-        try:
-            result = arg._eval_transpose()
-            return result if result is not None else Transpose(arg)
-        except AttributeError:
-            return Transpose(arg)
+        result = arg._eval_transpose()
+        return result if result is not None else Transpose(arg)
 
     @property
     def arg(self):

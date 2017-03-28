@@ -1,4 +1,7 @@
+import pytest
+
 from diofant.matrices.expressions import MatrixSymbol, MatAdd, MatPow, MatMul
+from diofant.matrices.expressions.matexpr import ShapeError
 from diofant.matrices import eye, ImmutableMatrix
 from diofant import Basic
 
@@ -10,6 +13,11 @@ Y = MatrixSymbol('Y', 2, 2)
 
 def test_sort_key():
     assert MatAdd(Y, X).doit().args == (X, Y)
+
+
+def test_matadd():
+    pytest.raises(ShapeError, lambda: X + eye(1))
+    MatAdd(X, eye(1), check=False)  # not raises
 
 
 def test_matadd_sympify():
@@ -25,6 +33,7 @@ def test_doit_args():
     B = ImmutableMatrix([[2, 3], [4, 5]])
     assert MatAdd(A, MatPow(B, 2)).doit() == A + B**2
     assert MatAdd(A, MatMul(A, B)).doit() == A + A*B
+    assert MatAdd(A, A).doit(deep=False) == 2*A
     assert (MatAdd(A, X, MatMul(A, B), Y, MatAdd(2*A, B)).doit() ==
             MatAdd(X, Y, 3*A + A*B + B))
 

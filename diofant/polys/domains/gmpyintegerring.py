@@ -33,10 +33,6 @@ class GMPYIntegerRing(IntegerRing):
         else:
             raise CoercionFailed("expected an integer, got %s" % a)
 
-    def from_FF_python(self, a, K0):
-        """Convert ``ModularInteger(int)`` to GMPY's ``mpz``. """
-        return GMPYInteger(a.to_int())
-
     def from_ZZ_python(self, a, K0):
         """Convert Python's ``int`` to GMPY's ``mpz``. """
         return GMPYInteger(a)

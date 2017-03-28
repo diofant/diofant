@@ -93,10 +93,15 @@ class Domain(DefaultPrinting):
         if self.of_type(element):
             return element
 
-        from . import PythonIntegerRing, GMPYIntegerRing, GMPYRationalField, RealField, ComplexField
+        from . import (PythonIntegerRing, GMPYIntegerRing, GMPYRationalField,
+                       RealField, ComplexField, PythonRationalField,
+                       PythonRational)
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())
+
+        if isinstance(element, PythonRational):
+            return self.convert_from(element, PythonRationalField())
 
         if HAS_GMPY:
             integers = GMPYIntegerRing()

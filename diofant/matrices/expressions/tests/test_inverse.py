@@ -17,6 +17,7 @@ E = MatrixSymbol('E', m, n)
 def test_inverse():
     pytest.raises(ShapeError, lambda: Inverse(A))
     pytest.raises(ShapeError, lambda: Inverse(A*B))
+    pytest.raises(TypeError, lambda: Inverse(1))
 
     assert Inverse(C).shape == (n, n)
     assert Inverse(A*E).shape == (n, n)
