@@ -66,3 +66,4 @@ def test_slice_of_slice():
 def test_negative_index():
     X = MatrixSymbol('x', 10, 10)
     assert X[-1, :] == X[9, :]
+    assert X[2:-1, :] == X[2:9, :]

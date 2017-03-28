@@ -58,8 +58,6 @@ class MatrixSlice(MatrixExpr):
     def __new__(cls, parent, rowslice, colslice):
         rowslice = normalize(rowslice, parent.shape[0])
         colslice = normalize(colslice, parent.shape[1])
-        if not (len(rowslice) == len(colslice) == 3):
-            raise IndexError()
         if ((0 > rowslice[0]) is S.true or
                 (parent.shape[0] < rowslice[1]) is S.true or
                 (0 > colslice[0]) is S.true or
@@ -94,8 +92,7 @@ def slice_of_slice(s, t):
     step = step1 * step2
     stop = start1 + step1*stop2
 
-    if stop > stop1:
-        raise IndexError()
+    assert stop <= stop1
 
     return start, stop, step
 
