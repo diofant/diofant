@@ -9,6 +9,7 @@ n, m, l, k, p = symbols('n m l k p', integer=True)
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', m, l)
 C = MatrixSymbol('C', n, n)
+D = MatrixSymbol('D', n, n)
 
 
 def test_adjoint():
@@ -34,3 +35,4 @@ def test_adjoint():
     assert Adjoint(Sq)[0, 1] == conjugate(Sq[1, 0])
 
     assert Adjoint(A*B).doit() == Adjoint(B) * Adjoint(A)
+    assert Adjoint(C + D).doit() == Adjoint(C) + Adjoint(D)
