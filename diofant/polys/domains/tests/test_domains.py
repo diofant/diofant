@@ -507,6 +507,9 @@ def test_Domain_convert():
     assert QQ.convert(ALG.new(1), ALG) == QQ(1)
     pytest.raises(CoercionFailed, lambda: QQ.convert(ALG.new([1, 1]), ALG))
 
+    assert ZZ.convert(ALG.new(1), ALG) == ZZ(1)
+    pytest.raises(CoercionFailed, lambda: ZZ.convert(ALG.new([1, 1]), ALG))
+
 
 def test_arithmetics():
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
