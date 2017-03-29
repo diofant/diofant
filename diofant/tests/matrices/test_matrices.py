@@ -1125,6 +1125,10 @@ def test_is_upper():
     a = Matrix([[1], [2], [3]])
     assert a.is_upper is False
 
+    # issue sympy/sympy#12452
+    a = zeros(4, 2)
+    assert a.is_upper is True
+
 
 def test_is_lower():
     a = Matrix([[1, 2, 3]])
@@ -1785,6 +1789,10 @@ def test_hessenberg():
 
     A = Matrix([[3, 4, 1], [2, 4, 5], [3, 1, 2]])
     assert not A.is_upper_hessenberg
+
+    # issue sympy/sympy#12452
+    A = zeros(5, 2)
+    assert A.is_upper_hessenberg
 
 
 def test_cholesky():

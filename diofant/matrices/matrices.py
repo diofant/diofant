@@ -2051,7 +2051,7 @@ class MatrixBase(DefaultPrinting):
         """
         return all(self[i, j].is_zero
                    for i in range(1, self.rows)
-                   for j in range(i))
+                   for j in range(min(i, self.cols)))
 
     @property
     def is_lower(self):
@@ -2165,7 +2165,7 @@ class MatrixBase(DefaultPrinting):
         """
         return all(self[i, j].is_zero
                    for i in range(2, self.rows)
-                   for j in range(i - 1))
+                   for j in range(min(self.cols, i - 1)))
 
     @property
     def is_lower_hessenberg(self):

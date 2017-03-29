@@ -186,3 +186,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`12303` Ellipse comparison with other geometric entities throws an error
 * :sympyissue:`11986` Typo Error in mathml.py
 * :sympyissue:`12361` Misspelling of "Bareiss" in Matrix module
+* :sympyissue:`12452` is_upper() raises IndexError for tall matrices
