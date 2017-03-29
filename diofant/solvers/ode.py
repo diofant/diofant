@@ -2021,16 +2021,12 @@ def checksysodesol(eqs, sols, func=None):
     dictsol = dict()
     for sol in sols:
         sol_func = list(sol.atoms(AppliedUndef))[0]
-        if not (sol.lhs == sol_func and not sol.rhs.has(sol_func)) and not (
-        sol.rhs == sol_func and not sol.lhs.has(sol_func)):
-            solved = solve(sol, sol_func)
-            if not solved:
-                raise NotImplementedError
-            dictsol[sol_func] = solved[0][sol_func]
         if sol.lhs == sol_func:
             dictsol[sol_func] = sol.rhs
-        if sol.rhs == sol_func:
+        elif sol.rhs == sol_func:
             dictsol[sol_func] = sol.lhs
+        else:  # pragma: no cover
+            raise NotImplementedError
     checkeq = []
     for eq in eqs:
         for func in funcs:
@@ -5444,8 +5440,8 @@ def ode_lie_group(eq, func, order, match):
                     elif denom:  # (ds/dr) is zero which means s is constant
                         return Eq(f(x), solve(scoord - C1, y)[0][y])
 
-                    elif num:  # (dr/ds) is zero which means r is constant
-                        return Eq(f(x), solve(rcoord - C1, y)[0][y])
+                    else:  # pragma: no cover
+                        raise NotImplementedError
 
     # If nothing works, return solution as it is, without solving for y
     if tempsol:
@@ -6049,14 +6045,8 @@ def lie_heuristic_function_sum(match, comp=False):
                     if not check:
                         fx = fx.subs(k, 1)
                         gy = (gy/k)
-                    else:
-                        sol = solve(check, k)
-                        if sol:
-                            sol = sol[0]
-                            fx = fx.subs(sol)
-                            gy = (gy/k)*sol[k]
-                        else:
-                            continue
+                    else:  # pragma: no cover
+                        raise NotImplementedError
                     if odefac == hinv:  # Inverse ODE
                         fx = fx.subs(x, y)
                         gy = gy.subs(y, x)
