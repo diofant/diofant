@@ -2019,16 +2019,12 @@ def checksysodesol(eqs, sols, func=None):
     dictsol = dict()
     for sol in sols:
         sol_func = list(sol.atoms(AppliedUndef))[0]
-        if not (sol.lhs == sol_func and not sol.rhs.has(sol_func)) and not (
-        sol.rhs == sol_func and not sol.lhs.has(sol_func)):
-            solved = solve(sol, sol_func)
-            if not solved:
-                raise NotImplementedError
-            dictsol[sol_func] = solved
         if sol.lhs == sol_func:
             dictsol[sol_func] = sol.rhs
-        if sol.rhs == sol_func:
+        elif sol.rhs == sol_func:
             dictsol[sol_func] = sol.lhs
+        else:  # pragma: no cover
+            raise NotImplementedError
     checkeq = []
     for eq in eqs:
         for func in funcs:

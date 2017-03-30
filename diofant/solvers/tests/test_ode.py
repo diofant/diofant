@@ -407,6 +407,9 @@ def test_checksysodesol():
     Eq(y(t), -6*sqrt(3)*C1*exp(-6*sqrt(3)*t) + 6*sqrt(3)*C2*exp(6*sqrt(3)*t))]
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
+    # with change lhs to rhs:
+    assert checksysodesol(eq, [_.reversed for _ in sol]) == (True, [0, 0])
+
     eq = (Eq(diff(x(t), t), 2*x(t) + 4*y(t)), Eq(diff(y(t), t), 12*x(t) + 41*y(t)))
     sol = [Eq(x(t), 4*C1*exp(t*(-sqrt(1713)/2 + Rational(43, 2))) + 4*C2*exp(t*(sqrt(1713)/2 +
     Rational(43, 2)))), Eq(y(t), C1*(-sqrt(1713)/2 + Rational(39, 2))*exp(t*(-sqrt(1713)/2 +
