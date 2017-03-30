@@ -2678,7 +2678,6 @@ def test_series():
     assert dsolve(eq, hint='1st_power_series', init={f(2): 2}, n=3) == sol
 
 
-@pytest.mark.slow
 def test_lie_group():
     C1 = Symbol("C1")
     x = Symbol("x")  # assuming x is real generates an error!
