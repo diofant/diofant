@@ -597,7 +597,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         used to return True or False.
         """
         from ..simplify.simplify import nsimplify, simplify
-        from ..solvers.solvers import solve
+        from ..polys.numberfields import minimal_polynomial
+        from .function import count_ops
 
         other = sympify(other)
         if self == other:
@@ -643,28 +644,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # to be zero -- we try to prove it via minimal_polynomial.
         if diff.is_number:
             approx = diff.nsimplify()
-            if not approx:
-                # try to prove via self-consistency
-                surds = [s for s in diff.atoms(Pow) if s.args[0].is_Integer]
-                # it seems to work better to try big ones first
-                surds.sort(key=lambda x: -x.args[0])
-                for s in surds:
-                    try:
-                        # simplify is False here -- this expression has already
-                        # been identified as being hard to identify as zero;
-                        # we will handle the checking ourselves using nsimplify
-                        # to see if we are in the right ballpark or not and if so
-                        # *then* the simplification will be attempted.
-                        sol = solve(diff, s, check=False, simplify=False)
-                        if sol:
-                            if s in sol:
-                                return True
-                            if s.is_real and any(nsimplify(si, [s]) == s
-                                                 and simplify(si) == s
-                                                 for si in sol):
-                                return True
-                    except NotImplementedError:  # pragma: no cover
-                        pass
+            if not approx and diff.is_algebraic and count_ops(self) < 75:
+                try:
+                    if minimal_polynomial(self).is_Symbol:
+                        return True
+                except NotImplementedError:  # pragma: no cover
+                    pass
 
         # diff has not simplified to zero; constant is either None, True
         # or the number with significance (prec != 1) that was randomly
