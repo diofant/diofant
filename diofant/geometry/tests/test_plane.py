@@ -197,3 +197,26 @@ def test_plane():
 
     assert sstr([i.n(2) for i in p2.intersection(l2)]) == \
            '[Point3D(4.0, -0.89, 2.3)]'
+
+
+def test_plane2():
+    p1 = Plane(Point3D(0, 0, 0), normal_vector=(1, 0, 0))
+    p2 = Plane(Point3D(0, 0, 0), normal_vector=(1, 0, -1))
+    assert p1.intersection(p2) == [Line3D(Point3D(0, 0, 0), Point3D(0, 1, 0))]
+
+    p1 = Plane(Point3D(0, 0, 1), normal_vector=(0, -5, 3))
+    p2 = Plane(Point3D(0, 0, 2), normal_vector=(0, -5, -3))
+    assert p1.intersection(p2) == [Line3D(Point3D(0, 3/10, 3/2),
+                                   Point3D(30, 3/10, 3/2))]
+
+    p1 = Point3D(0, 0, 0)
+    p2 = Point3D(1, 1, 1)
+    p3 = Point3D(1, 2, 3)
+    pl3 = Plane(p1, p2, p3)
+    # get a segment that does not intersect the plane which is also
+    # parallel to pl3's normal veector
+    t = Dummy()
+    r = pl3.random_point()
+    a = pl3.perpendicular_line(r).arbitrary_point(t)
+    s = Segment3D(a.subs(t, 1), a.subs(t, 2))
+    assert s.p1 not in pl3 and s.p2 not in pl3

@@ -702,7 +702,7 @@ class Plane(GeometryEntity):
                     g = g[0]
                     return [Line3D(Point3D(g[x], 0, g[z]), direction_ratio=c)]
                 h = solve((d.subs(x, 0), e.subs(x, 0)), [y, z])
-                if h and len(h[0]) == 2:
+                if h and len(h[0]) == 2:  # pragma: no branch
                     h = h[0]
                     return [Line3D(Point3D(0, h[y], h[z]), direction_ratio=c)]
 
