@@ -184,6 +184,35 @@ def test_sympyissue_5653():
         sqrt(2 + sqrt(2 + sqrt(2)))) == sqrt(2 + sqrt(2 + sqrt(2)))
 
 
+def test_unrad0():
+    s = symbols('s', cls=Dummy)
+
+    # checkers to deal with possibility of answer coming
+    # back with a sign change (cf issue sympy/sympy#5203)
+    def check(rv, ans):
+        assert bool(rv[1]) == bool(ans[1])
+        if ans[1]:
+            return s_check(rv, ans)
+        e = rv[0].expand()
+        a = ans[0].expand()
+        return e in [a, -a] and rv[1] == ans[1]
+
+    def s_check(rv, ans):
+        # get the dummy
+        rv = list(rv)
+        d = rv[0].atoms(Dummy)
+        reps = list(zip(d, [s]*len(d)))
+        # replace s with this dummy
+        rv = (rv[0].subs(reps).expand(), [rv[1][0].subs(reps), rv[1][1].subs(reps)])
+        ans = (ans[0].subs(reps).expand(), [ans[1][0].subs(reps), ans[1][1].subs(reps)])
+        return str(rv[0]) in [str(ans[0]), str(-ans[0])] and \
+            str(rv[1]) == str(ans[1])
+
+    assert check(unrad(sqrt(x) - root(x + 1, 3)*sqrt(x + 2) + 2),
+        (s**10 + 8*s**8 + 24*s**6 - 12*s**5 - 22*s**4 - 160*s**3 - 212*s**2 -
+        192*s - 56, [s, s**2 - x]))
+
+
 @pytest.mark.slow
 def test_unrad1():
     pytest.raises(NotImplementedError, lambda:
@@ -313,9 +342,6 @@ def test_unrad1():
     # fails through a different code path
     pytest.raises(NotImplementedError, lambda: solve(-sqrt(2) + cosh(x)/x))
     # unrad some
-    assert check(unrad(sqrt(x) - root(x + 1, 3)*sqrt(x + 2) + 2),
-        (s**10 + 8*s**8 + 24*s**6 - 12*s**5 - 22*s**4 - 160*s**3 - 212*s**2 -
-        192*s - 56, [s, s**2 - x]))
     e = root(x + 1, 3) + root(x, 3)
     assert unrad(e) == (2*x + 1, [])
     eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
