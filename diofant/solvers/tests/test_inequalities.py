@@ -344,4 +344,4 @@ def test_diofantissue_453():
     x = Symbol('x', real=True)
     assert isolve(abs((x - 1)/(x - 5)) <= Rational(1, 3),
                   x) == And(Integer(-1) <= x, x <= 2)
-    assert solve(abs((x - 1)/(x - 5)) - Rational(1, 3), x) == [-1, 2]
+    assert solve(abs((x - 1)/(x - 5)) - Rational(1, 3), x) == [{x: -1}, {x: 2}]

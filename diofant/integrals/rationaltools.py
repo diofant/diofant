@@ -155,7 +155,7 @@ def ratint_ratpart(f, g, x):
 
     H = f - A.diff()*v + A*(u.diff()*v).quo(u) - B*u
 
-    result = solve(H.coeffs(), C_coeffs)
+    result = solve(H.coeffs(), C_coeffs)[0]
 
     A = A.as_expr().subs(result)
     B = B.as_expr().subs(result)

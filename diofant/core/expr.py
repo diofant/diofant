@@ -657,10 +657,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         # *then* the simplification will be attempted.
                         sol = solve(diff, s, check=False, simplify=False)
                         if sol:
-                            if s in sol:
+                            if any(s in list(_.values()) for _ in sol):
                                 return True
-                            if s.is_real and any(nsimplify(si, [s]) == s
-                                                 and simplify(si) == s
+                            if s.is_real and any(nsimplify(si[s], [s]) == s
+                                                 and simplify(si[s]) == s
                                                  for si in sol):
                                 return True
                     except NotImplementedError:  # pragma: no cover

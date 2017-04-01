@@ -143,17 +143,18 @@ def test_RootOf___eval_Eq__():
     assert Eq(r, I) is S.false
     assert Eq(r, f(0)) is S.false
     assert Eq(r, f(0)) is S.false
-    sol = solve(r.expr)
+    sol = solve(r.expr, x)
     for s in sol:
-        if s.is_real:
-            assert Eq(r, s) is S.false
+        if s[x].is_real:
+            assert Eq(r, s[x]) is S.false
     r = RootOf(r.expr, 0)
     for s in sol:
-        if s.is_real:
-            assert Eq(r, s) is S.true
-    eq = (x**3 + x + 1)
-    assert [Eq(RootOf(eq, i), j) for i in range(3) for j in solve(eq)] == \
-        [False, False, True, False, True, False, True, False, False]
+        if s[x].is_real:
+            assert Eq(r, s[x]) is S.true
+    eq = x**3 + x + 1
+    assert ([Eq(RootOf(eq, i), j[x])
+            for i in range(3) for j in solve(eq)] ==
+            [False, False, True, False, True, False, True, False, False])
     assert Eq(RootOf(eq, 0), 1 + S.ImaginaryUnit) is S.false
 
 
@@ -244,7 +245,7 @@ def test_RootOf_evalf():
     r = RootOf(legendre_poly(64, x), 7)
     assert r.n(2) == r.n(100).n(2)
     # issue sympy/sympy#8617
-    ans = [w.n(2) for w in solve(x**3 - x - 4)]
+    ans = [w[x].n(2) for w in solve(x**3 - x - 4)]
     assert RootOf(exp(x)**3 - exp(x) - 4, 0).n(2) in ans
     # issue sympy/sympy#9019
     r0 = RootOf(x**2 + 1, 0, radicals=False)

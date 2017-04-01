@@ -264,7 +264,7 @@ class ImageSet(Set):
         solns = solve(L.expr - other, L.variables[0])
 
         for soln in solns:
-            if soln in self.base_set:
+            if soln[L.variables[0]] in self.base_set:
                 return S.true
         return S.false
 

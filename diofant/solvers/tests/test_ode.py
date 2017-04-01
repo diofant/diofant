@@ -407,6 +407,9 @@ def test_checksysodesol():
     Eq(y(t), -6*sqrt(3)*C1*exp(-6*sqrt(3)*t) + 6*sqrt(3)*C2*exp(6*sqrt(3)*t))]
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
+    # with change lhs to rhs:
+    assert checksysodesol(eq, [_.reversed for _ in sol]) == (True, [0, 0])
+
     eq = (Eq(diff(x(t), t), 2*x(t) + 4*y(t)), Eq(diff(y(t), t), 12*x(t) + 41*y(t)))
     sol = [Eq(x(t), 4*C1*exp(t*(-sqrt(1713)/2 + Rational(43, 2))) + 4*C2*exp(t*(sqrt(1713)/2 +
     Rational(43, 2)))), Eq(y(t), C1*(-sqrt(1713)/2 + Rational(39, 2))*exp(t*(-sqrt(1713)/2 +
@@ -959,6 +962,9 @@ def test_classify_sysode():
     'is_linear': True, 'eq': [-20*y(t) + 20*z(t) + 3*Derivative(x(t), t), 15*x(t) - 15*z(t) + 4*Derivative(y(t), t),
     -12*x(t) + 12*y(t) + 5*Derivative(z(t), t)], 'order': {z(t): 1, y(t): 1, x(t): 1}}
     assert classify_sysode(eq16) == sol16
+
+    eq17 = (4*diff(x(t), t) + 2*y(t)*z(t), diff(y(t), t) - z(t)*x(t), 5*diff(z(t), t) - x(t)*y(t))
+    assert classify_sysode(eq17)['type_of_equation'] is None
 
 
 def test_solve_init():
@@ -2675,7 +2681,6 @@ def test_series():
     assert dsolve(eq, hint='1st_power_series', init={f(2): 2}, n=3) == sol
 
 
-@pytest.mark.slow
 def test_lie_group():
     C1 = Symbol("C1")
     x = Symbol("x")  # assuming x is real generates an error!

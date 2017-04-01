@@ -384,6 +384,8 @@ def solve_univariate_inequality(expr, gen, relational=True):
         singularities = []
         for d in denoms(e):
             singularities.extend(solve(d, gen))
+    solns = [s[gen] for s in solns]
+    singularities = [s[gen] for s in singularities]
 
     include_x = expr.func(0, 0)
 

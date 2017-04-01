@@ -157,8 +157,9 @@ Find `\lim_{x\to 0^+}\frac{\sin{(x)}}{x}`.
 Solve `x^2 - 2 = 0`.
 
    >>> solve(x**2 - 2, x)
-   ⎡   ___    ___⎤
-   ⎣-╲╱ 2 , ╲╱ 2 ⎦
+   ⎡⎧      ___⎫  ⎧     ___⎫⎤
+   ⎢⎨x: -╲╱ 2 ⎬, ⎨x: ╲╱ 2 ⎬⎥
+   ⎣⎩         ⎭  ⎩        ⎭⎦
 
 Solve the differential equation `f'' - f = e^x`.
 

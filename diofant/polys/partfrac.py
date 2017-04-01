@@ -167,7 +167,7 @@ def apart_undetermined_coeffs(P, Q):
         system.append(coeff - P.nth(k))
 
     from ..solvers import solve
-    solution = solve(system, symbols)
+    solution = solve(system, symbols)[0]
 
     for h, f, k in partial:
         h = h.as_expr().subs(solution)

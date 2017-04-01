@@ -321,6 +321,8 @@ def rsolve_poly(coeffs, f, n, **hints):
                         return S.Zero
                 else:
                     return
+            else:
+                solutions = solutions[0]
         else:
             solutions = {}
 
@@ -788,6 +790,6 @@ def rsolve(f, y, init=None):
         if not result:
             return
         else:
-            solution = solution.subs(result)
+            solution = solution.subs(result[0])
 
     return solution

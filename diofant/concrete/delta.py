@@ -116,7 +116,7 @@ def _remove_multiple_delta(expr):
             newargs.append(arg)
     if not eqs:
         return expr
-    solns = solve(eqs, dict=True)
+    solns = solve(eqs)
     if len(solns) == 0:
         return S.Zero
     elif len(solns) == 1:
@@ -133,7 +133,7 @@ def _simplify_delta(expr):
     """Rewrite a KroneckerDelta's indices in its simplest form. """
     from ..solvers import solve
     if isinstance(expr, KroneckerDelta):
-        slns = solve(expr.args[0] - expr.args[1], dict=True)
+        slns = solve(expr.args[0] - expr.args[1])
         if slns and len(slns) == 1:
             return Mul(*[KroneckerDelta(*(key, value))
                          for key, value in slns[0].items()])
@@ -291,7 +291,7 @@ def deltasummation(f, limit, no_piecewise=False):
         return summation(f, limit)
     solns = solve(delta.args[0] - delta.args[1], x)
     assert len(solns) == 1
-    value = solns[0]
+    value = solns[0][x]
     if no_piecewise:
         return expr.subs(x, value)
     return Piecewise((expr.subs(x, value),

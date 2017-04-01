@@ -781,7 +781,7 @@ class Formula:
                         repl0[a] += _n
                         for expr in exprs:
                             for target in bucket[mod]:
-                                n0, = solve(expr.xreplace(repl0) - target, _n)
+                                n0 = solve(expr.xreplace(repl0) - target, _n)[0][_n]
                                 if n0.free_symbols:
                                     raise ValueError("Value should not be true")
                                 vals.append(n0)
