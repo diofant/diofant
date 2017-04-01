@@ -313,7 +313,8 @@ def test_piecewise_solve():
 @pytest.mark.xfail
 def test_piecewise_solve2():
     f = Piecewise(((x - 2)**2, x >= 0), (0, True))
-    assert solve(f, x) == [{x: 2}, {x: Interval(0, oo, True, True)}]
+    C0 = Symbol('C0', negative=True)
+    assert solve(f, x) == [{x: 2}, {x: C0}]
 
 
 def test_piecewise_fold():
