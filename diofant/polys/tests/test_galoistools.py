@@ -31,7 +31,8 @@ from diofant.polys.polyerrors import ExactQuotientFailed
 
 from diofant.polys import polyconfig as config
 
-from diofant.polys.domains import ZZ
+from diofant.polys.domains import ZZ, FF
+from diofant.polys.rings import ring
 from diofant import pi, nextprime
 
 __all__ = ()
@@ -838,6 +839,10 @@ def test_gf_factor():
     config.setup('GF_FACTOR_METHOD', 'other')
     pytest.raises(KeyError, lambda: gf_factor([1, 1], 11, ZZ))
     config.setup('GF_FACTOR_METHOD')
+
+    # IPoly interface:
+    R, t = ring("t", FF(11))
+    assert R.gf_factor_sqf(2*t + 3) == (2, [t + 7])
 
 
 def test_gf_csolve():
