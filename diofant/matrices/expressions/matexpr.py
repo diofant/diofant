@@ -4,26 +4,10 @@ from ...core import (S, Symbol, Tuple, Integer, Expr,
                      SympifyError, sympify, AtomicExpr)
 from ...core.assumptions import StdFactKB
 from ...core.logic import fuzzy_bool
-from ...core.decorators import call_highest_priority
+from ...core.decorators import call_highest_priority, _sympifyit
 from ...functions import conjugate, adjoint
 from .. import ShapeError
 from ...simplify import simplify
-
-
-def _sympifyit(arg, retval=None):
-    # This version of _sympifyit sympifies MutableMatrix objects
-    def deco(func):
-        @wraps(func)
-        def __sympifyit_wrapper(a, b):
-            try:
-                b = sympify(b, strict=True)
-                return func(a, b)
-            except SympifyError:
-                return retval
-
-        return __sympifyit_wrapper
-
-    return deco
 
 
 class MatrixExpr(Expr):
@@ -69,7 +53,7 @@ class MatrixExpr(Expr):
         return MatMul(S.NegativeOne, self).doit()
 
     def __abs__(self):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__radd__')
@@ -118,7 +102,7 @@ class MatrixExpr(Expr):
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__pow__')
-    def __rpow__(self, other):
+    def __rpow__(self, other):  # pragma: no cover
         raise NotImplementedError("Matrix Power not defined")
 
     @_sympifyit('other', NotImplemented)
@@ -169,9 +153,9 @@ class MatrixExpr(Expr):
         from .adjoint import Adjoint
         return Adjoint(self)
 
-    def _entry(self, i, j):
-        raise NotImplementedError(
-            "Indexing not implemented for %s" % self.__class__.__name__)
+    def _entry(self, i, j):  # pragma: no cover
+        raise NotImplementedError("Indexing not implemented "
+                                  "for %s" % self.__class__.__name__)
 
     def adjoint(self):
         return adjoint(self)
@@ -398,9 +382,6 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
         else:
             return self
 
-    def _eval_simplify(self, **kwargs):
-        return self
-
 
 class Identity(MatrixExpr):
     """The Matrix Identity I - multiplicative identity
@@ -500,10 +481,6 @@ class ZeroMatrix(MatrixExpr):
 
     def __bool__(self):
         return False
-
-
-def matrix_symbols(expr):
-    return [sym for sym in expr.free_symbols if sym.is_Matrix]
 
 
 from .matmul import MatMul

@@ -7,6 +7,10 @@ from diofant.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd,
                               MatMul, MatPow, Matrix, MatrixExpr,
                               MatrixSymbol, ShapeError, ZeroMatrix,
                               Transpose, Adjoint)
+from diofant.matrices.expressions.matexpr import MatrixElement
+from diofant.external import import_module
+
+numpy = import_module('numpy')
 
 __all__ = ()
 
@@ -155,7 +159,8 @@ def test_MatrixSymbol():
     X = MatrixSymbol('X', n, m)
     assert X.shape == (n, m)
     pytest.raises(TypeError, lambda: MatrixSymbol('X', n, m)(t))  # issue sympy/sympy#5855
-    assert X.doit() == X
+    assert X.doit() == X.doit(deep=False) == X
+    assert X.canonicalize() == X
 
 
 def test_dense_conversion():
@@ -221,6 +226,7 @@ def test_MatrixElement_doit():
     u = MatrixSymbol('u', 2, 1)
     v = ImmutableMatrix([3, 5])
     assert u[0, 0].subs(u, v).doit() == v[0, 0]
+    assert u[0, 0].subs(u, v).doit(deep=False) == v[0, 0]
 
 
 def test_identity_powers():
@@ -257,3 +263,9 @@ def test_diofantissue_469():
     B = MatrixSymbol("B", n, n)
     expr = Eq(A, B)
     assert simplify(expr) == expr
+
+
+@pytest.mark.skipif(numpy is None, reason="Couldn't import numpy.")
+def test_array_coeersion():
+    A = MatrixSymbol('A', 2, 2)
+    assert numpy.array(A)[1][0] == MatrixElement(A, 1, 0)

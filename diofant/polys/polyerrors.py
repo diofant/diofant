@@ -8,7 +8,7 @@ class BasePolynomialError(Exception):
     """Base class for polynomial related exceptions. """
 
     def new(self, *args):
-        raise NotImplementedError("abstract base class")
+        raise NotImplementedError("abstract base class")  # pragma: no cover
 
 
 @public

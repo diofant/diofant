@@ -20,8 +20,8 @@ def test_adjoint():
     assert adjoint(Adjoint(A)) == A
     assert isinstance(Adjoint(Adjoint(A)), Adjoint)
 
-    assert conjugate(Adjoint(A)) == Transpose(A)
-    assert transpose(Adjoint(A)) == Adjoint(Transpose(A))
+    assert conjugate(Adjoint(A)) == Transpose(A) == Adjoint(A).conjugate()
+    assert transpose(Adjoint(A)) == Adjoint(Transpose(A)) == Transpose(A).adjoint()
 
     assert Adjoint(eye(3)).doit() == Adjoint(eye(3)).doit(deep=False) == eye(3)
 
