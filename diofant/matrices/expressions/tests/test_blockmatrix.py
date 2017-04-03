@@ -23,11 +23,13 @@ b2 = BlockMatrix([[G], [H]])
 
 def test_bc_matmul():
     assert bc_matmul(H*b1*b2*G) == BlockMatrix([[(H*G*G + H*H*H)*G]])
+    assert bc_matmul(H*G) == H*G
 
 
 def test_bc_matadd():
     assert bc_matadd(BlockMatrix([[G, H]]) + BlockMatrix([[H, H]])) == \
         BlockMatrix([[G+H, H+H]])
+    assert bc_matadd(A + B) == A + B
 
 
 def test_bc_transpose():
@@ -40,8 +42,11 @@ def test_bc_dist_diag():
     B = MatrixSymbol('B', m, m)
     C = MatrixSymbol('C', l, l)
     X = BlockDiagMatrix(A, B, C)
+    D = MatrixSymbol('D', l, l)
+    Y = BlockDiagMatrix(A, B, D)
 
-    assert bc_dist(X+X).equals(BlockDiagMatrix(2*A, 2*B, 2*C))
+    assert bc_dist(X + X).equals(BlockDiagMatrix(2*A, 2*B, 2*C))
+    assert bc_dist(X + Y) == X + Y
 
 
 def test_block_plus_ident():
@@ -49,9 +54,12 @@ def test_block_plus_ident():
     B = MatrixSymbol('B', n, m)
     C = MatrixSymbol('C', m, n)
     D = MatrixSymbol('D', m, m)
+    E = MatrixSymbol('E', n, n)
     X = BlockMatrix([[A, B], [C, D]])
     assert bc_block_plus_ident(X+Identity(m+n)) == \
             BlockDiagMatrix(Identity(n), Identity(m)) + X
+    assert bc_block_plus_ident(A + Identity(n)) == A + Identity(n)
+    assert bc_block_plus_ident(A + E) == A + E
 
 
 def test_BlockMatrix():
@@ -110,6 +118,13 @@ def test_BlockMatrix_trace():
     assert trace(X) == trace(A) + trace(D)
 
 
+def test_BlockMatrix_equals():
+    A, B, C, D = [MatrixSymbol(s, 3, 3) for s in 'ABCD']
+    X = BlockMatrix([[A, B], [C, D]])
+    assert X.equals(X) is True
+    assert X.equals(Matrix([1, 2])) is False
+
+
 def test_BlockMatrix_Determinant():
     A, B, C, D = [MatrixSymbol(s, 3, 3) for s in 'ABCD']
     X = BlockMatrix([[A, B], [C, D]])
@@ -156,6 +171,7 @@ def test_BlockDiagMatrix():
     X = BlockDiagMatrix(A, B, C)
     Y = BlockDiagMatrix(A, 2*B, 3*C)
 
+    assert X.diag == (A, B, C)
     assert X.blocks[1, 1] == B
     assert X.shape == (n + m + l, n + m + l)
     assert all(X.blocks[i, j].is_ZeroMatrix if i != j else X.blocks[i, j] in [A, B, C]
