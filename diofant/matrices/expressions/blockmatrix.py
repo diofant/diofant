@@ -52,7 +52,7 @@ class BlockMatrix(MatrixExpr):
 
     @property
     def shape(self):
-        numrows = numcols = 0
+        numrows = numcols = S.Zero
         M = self.blocks
         for i in range(M.shape[0]):
             numrows += M[i, 0].shape[0]
@@ -111,8 +111,8 @@ class BlockMatrix(MatrixExpr):
         if self.rowblocksizes == self.colblocksizes:
             return Add(*[Trace(self.blocks[i, i])
                         for i in range(self.blockshape[0])])
-        raise NotImplementedError(
-            "Can't perform trace of irregular blockshape")
+        raise NotImplementedError("Can't perform trace of irregular "
+                                  "blockshape")  # pragma: no cover
 
     def _eval_determinant(self):
         return Determinant(self)
@@ -142,12 +142,12 @@ class BlockMatrix(MatrixExpr):
 
     def _entry(self, i, j):
         # Find row entry
-        for row_block, numrows in enumerate(self.rowblocksizes):
+        for row_block, numrows in enumerate(self.rowblocksizes):  # pragma: no branch
             if (i < numrows) is not S.false:
                 break
             else:
                 i -= numrows
-        for col_block, numcols in enumerate(self.colblocksizes):
+        for col_block, numcols in enumerate(self.colblocksizes):  # pragma: no branch
             if (j < numcols) is not S.false:
                 break
             else:
@@ -173,7 +173,7 @@ class BlockMatrix(MatrixExpr):
     def equals(self, other):
         if self == other:
             return True
-        if (isinstance(other, BlockMatrix) and self.blocks == other.blocks):
+        if isinstance(other, BlockMatrix) and self.blocks == other.blocks:
             return True
         return super(BlockMatrix, self).equals(other)
 
@@ -278,10 +278,7 @@ def block_collapse(expr):
              Inverse: bc_inverse,
              BlockMatrix: do_one([bc_unpack, deblock])})))))
     result = rule(expr)
-    try:
-        return result.doit()
-    except AttributeError:
-        return result
+    return result.doit()
 
 
 def bc_unpack(expr):
@@ -356,31 +353,16 @@ def bc_transpose(expr):
 
 
 def bc_inverse(expr):
-    expr2 = blockinverse_1x1(expr)
-    if expr != expr2:
-        return expr2
     return blockinverse_2x2(Inverse(reblock_2x2(expr.arg)))
 
 
-def blockinverse_1x1(expr):
-    from .. import Matrix
-
-    if isinstance(expr.arg, BlockMatrix) and expr.arg.blockshape == (1, 1):
-        mat = Matrix([[expr.arg.blocks[0].inverse()]])
-        return BlockMatrix(mat)
-    return expr
-
-
 def blockinverse_2x2(expr):
-    if isinstance(expr.arg, BlockMatrix) and expr.arg.blockshape == (2, 2):
-        # Cite: The Matrix Cookbook Section 9.1.3
-        [[A, B],
-         [C, D]] = expr.arg.blocks.tolist()
+    # Cite: The Matrix Cookbook Section 9.1.3
+    [[A, B],
+     [C, D]] = expr.arg.blocks.tolist()
 
-        return BlockMatrix([[ (A - B*D.I*C).I,  (-A).I*B*(D - C*A.I*B).I],
-                            [-(D - C*A.I*B).I*C*A.I,     (D - C*A.I*B).I]])
-    else:
-        return expr
+    return BlockMatrix([[ (A - B*D.I*C).I,  (-A).I*B*(D - C*A.I*B).I],
+                        [-(D - C*A.I*B).I*C*A.I,     (D - C*A.I*B).I]])
 
 
 def deblock(B):
@@ -394,17 +376,14 @@ def deblock(B):
     bb = B.blocks.applyfunc(wrap)  # everything is a block
 
     from .. import Matrix
-    try:
-        MM = Matrix(0, sum(bb[0, i].blocks.shape[1] for i in range(bb.shape[1])), [])
-        for row in range(0, bb.shape[0]):
-            M = Matrix(bb[row, 0].blocks)
-            for col in range(1, bb.shape[1]):
-                M = M.row_join(bb[row, col].blocks)
-            MM = MM.col_join(M)
+    MM = Matrix(0, sum(bb[0, i].blocks.shape[1] for i in range(bb.shape[1])), [])
+    for row in range(0, bb.shape[0]):
+        M = Matrix(bb[row, 0].blocks)
+        for col in range(1, bb.shape[1]):
+            M = M.row_join(bb[row, col].blocks)
+        MM = MM.col_join(M)
 
-        return BlockMatrix(MM)
-    except ShapeError:
-        return B
+    return BlockMatrix(MM)
 
 
 def reblock_2x2(B):
