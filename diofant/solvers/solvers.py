@@ -778,10 +778,6 @@ def solve(f, *symbols, **flags):
                 if type(solution[0]) is dict:
                     solution = [_do_dict(s) for s in solution]
                     break
-                elif type(solution[0]) is tuple:
-                    solution = [tuple(v.subs(non_inverts) for v in s)
-                                for s in solution]
-                    break
                 else:
                     solution = [v.subs(non_inverts) for v in solution]
                     break
@@ -825,17 +821,7 @@ def solve(f, *symbols, **flags):
         got_None = []  # solutions for which one or more symbols gave None
         no_False = []  # solutions for which no symbols gave False
         if type(solution) is list:
-            if type(solution[0]) is tuple:
-                for sol in solution:
-                    for symb, val in zip(symbols, sol):
-                        test = check_assumptions(val, **symb._assumptions)
-                        if test is False:
-                            break
-                        if test is None:
-                            got_None.append(sol)
-                    else:
-                        no_False.append(sol)
-            elif type(solution[0]) is dict:
+            if type(solution[0]) is dict:
                 for sol in solution:
                     a_None = False
                     for symb, val in sol.items():
@@ -896,8 +882,6 @@ def solve(f, *symbols, **flags):
     else:
         if isinstance(solution, dict):
             solution = [solution]
-        elif iterable(solution[0]):
-            solution = [dict(zip(symbols, s)) for s in solution]
         elif isinstance(solution[0], dict):
             pass
         else:
