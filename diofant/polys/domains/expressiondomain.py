@@ -174,6 +174,11 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         """Convert a ``EX`` object to ``dtype``. """
         return a
 
+    def from_AlgebraicField(self, a, K0):
+        """Convert a ``ANP`` object to ``dtype``. """
+        from ...core.numbers import AlgebraicNumber
+        return self(AlgebraicNumber(K0.ext, a).as_expr())
+
     def get_ring(self):
         """Returns a ring associated with ``self``. """
         return self  # XXX: EX is not a ring but we don't have much choice here.

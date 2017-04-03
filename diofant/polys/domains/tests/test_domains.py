@@ -510,6 +510,8 @@ def test_Domain_convert():
     assert ZZ.convert(ALG.new(1), ALG) == ZZ(1)
     pytest.raises(CoercionFailed, lambda: ZZ.convert(ALG.new([1, 1]), ALG))
 
+    assert EX.convert(ALG.new([1, 1]), ALG) == sqrt(2) + sqrt(3) + 1
+
 
 def test_arithmetics():
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
