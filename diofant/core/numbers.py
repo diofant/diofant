@@ -2025,6 +2025,10 @@ class AlgebraicNumber(Expr):
                                           self.minpoly.domain)
             coeffs = self.rep * other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif (isinstance(other, AlgebraicNumber) and
+              self.minpoly == other.minpoly and self.root == other.root):
+            coeffs = self.rep * other.rep
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
         else:
             return Number.__mul__(self, other)
 

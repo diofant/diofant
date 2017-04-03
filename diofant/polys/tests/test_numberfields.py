@@ -738,6 +738,10 @@ def test_AlgebraicNumber():
     assert (a*pi).is_Mul
     assert (pi*a).is_Mul
 
+    a = AlgebraicNumber(sqrt(2), (5, 7))
+    b = AlgebraicNumber(sqrt(2), (-4, -6))
+    assert a*b == AlgebraicNumber(sqrt(2), (-58, -82))
+
 
 def test_to_algebraic_integer():
     a = AlgebraicNumber(sqrt(3), gen=x).to_algebraic_integer()
