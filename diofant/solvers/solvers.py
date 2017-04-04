@@ -618,8 +618,7 @@ def solve(f, *symbols, **flags):
 
         # arg
         _arg = [a for a in fi.atoms(arg) if a.has(*symbols)]
-        fi = fi.xreplace(dict(zip(_arg,
-            (atan(im(a.args[0])/re(a.args[0])) for a in _arg))))
+        fi = fi.xreplace({a: atan(im(a.args[0])/re(a.args[0])) for a in _arg})
 
         # save changes
         f[i] = fi
@@ -733,7 +732,7 @@ def solve(f, *symbols, **flags):
                     continue
             pot.skip()
     del seen
-    non_inverts = dict(zip(non_inverts, (Dummy() for d in non_inverts)))
+    non_inverts = {d: Dummy() for d in non_inverts}
     f = [fi.subs(non_inverts) for fi in f]
 
     non_inverts = [(v, k.subs(swap_sym)) for k, v in non_inverts.items()]
@@ -1208,10 +1207,7 @@ def _solve(f, *symbols, **flags):
     if result is False:
         # try unrad
         if flags.pop('_unrad', True):
-            try:
-                u = unrad(f_num, symbol)
-            except (ValueError, NotImplementedError):
-                u = False
+            u = unrad(f_num, symbol)
             if u:
                 eq, cov = u
                 if cov:
@@ -1219,10 +1215,7 @@ def _solve(f, *symbols, **flags):
                     inv = _solve(ieq, symbol, **flags)[0]
                     rv = {inv.subs(isym, xi) for xi in _solve(eq, isym, **flags)}
                 else:
-                    try:
-                        rv = set(_solve(eq, symbol, **flags))
-                    except NotImplementedError:
-                        rv = None
+                    rv = set(_solve(eq, symbol, **flags))
                 if rv is not None:
                     result = list(ordered(rv))
                     # if the flag wasn't set then unset it since unrad results
@@ -1754,10 +1747,8 @@ def _tsolve(eq, sym, **flags):
                 # f(x)**g(x) only has solutions where f(x) == 0 and g(x) != 0 at
                 # the same place
                 sol_base = _solve(lhs.base, sym, **flags)
-                if not sol_base:
-                    return sol_base  # no solutions to remove so return now
-                return list(ordered(set(sol_base) - set(
-                    _solve(lhs.exp, sym, **flags))))
+                return list(ordered(set(sol_base) -
+                            set(_solve(lhs.exp, sym, **flags))))
             elif (rhs is not S.Zero and
                         lhs.base.is_positive and
                         lhs.exp.is_extended_real):

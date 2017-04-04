@@ -1347,6 +1347,8 @@ def test_piecewise():
     # if no symbol is given the piecewise detection must still work
     assert solve(Piecewise((x - 2, Gt(x, 2)), (2 - x, True)) - 3) == [{x: -1}, {x: 5}]
 
+    assert solve(abs(y)*x - 1, x) == [{x: 1/abs(y)}]
+
 
 def test_real_imag_splitting():
     a, b = symbols('a b', extended_real=True)
