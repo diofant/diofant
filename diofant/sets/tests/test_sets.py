@@ -996,3 +996,9 @@ def test_sympyissue_9447():
     assert (Complement(S.Naturals, a) ==
             Complement(S.Naturals,
                        Union(Interval(0, 1), Interval(2, 3)), evaluate=False))
+
+
+def test_sympyissue_9706():
+    assert Interval(-oo, 0).closure == Interval(-oo, 0)
+    assert Interval(0, oo).closure == Interval(0, oo)
+    assert Interval(-oo, oo).closure == Interval(-oo, oo)
