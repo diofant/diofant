@@ -143,8 +143,6 @@ def test_solve_args():
     assert solve((x + y - 2, 2*x + 2*y - 4)) == [{x: -y + 2}]
     # iterable with one equation
     assert solve([x - 3], x) == [{x: 3}]
-    # XXX one eq doesn't have symbol
-    assert solve([x - y, y - 3], x) == [{x: y}]
 
     pytest.raises(ValueError, lambda: solve([x**2 * y**2 <= x**2 * y,
                                              x**2 * y**2 > x**2 * y]))
@@ -1347,11 +1345,13 @@ def test_piecewise():
     # if no symbol is given the piecewise detection must still work
     assert solve(Piecewise((x - 2, Gt(x, 2)), (2 - x, True)) - 3) == [{x: -1}, {x: 5}]
 
+    assert solve(abs(y)*x - 1, x) == [{x: 1/abs(y)}]
+
 
 def test_real_imag_splitting():
     a, b = symbols('a b', extended_real=True)
     assert solve(sqrt(a**2 + b**2) - 3, a) == [{a: -sqrt(-b**2 + 9)},
-                                                          {a: sqrt(-b**2 + 9)}]
+                                               {a: +sqrt(-b**2 + 9)}]
     a, b = symbols('a b', imaginary=True)
     assert solve(sqrt(a**2 + b**2) - 3, a) == []
 
@@ -1494,3 +1494,8 @@ def test_sympyissue_12180():
             solve(e1, x, y) == [{x: y*b}])
     assert (solve(e2, [x, y]) ==
             solve(e2, x, y) == [{x: y/a}])
+
+
+def test_diofantissue_427():
+    assert solve([1 + y, x - y], x) == []
+    assert solve([x - y, y - 3], x) == []

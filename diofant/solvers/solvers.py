@@ -130,7 +130,10 @@ def checksol(f, symbol, sol=None, **flags):
 
     if sol and not f.has(*list(sol.keys())):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
-        return
+        if f.is_Number:
+            return f.is_zero
+        else:
+            return
 
     illegal = {S.NaN,
                S.ComplexInfinity,
@@ -410,13 +413,6 @@ def solve(f, *symbols, **flags):
             >>> solve([x - 2, x**2 + f(x)], {f(x), x})
             [{x: 2, f(x): -4}]
 
-        * if any equation doesn't depend on the symbol(s) given it will be
-          eliminated from the equation set and an answer may be given
-          implicitly in terms of variables that were not of interest
-
-            >>> solve([x - y, y - 3], x)
-            [{x: y}]
-
     Notes
     =====
 
@@ -618,8 +614,7 @@ def solve(f, *symbols, **flags):
 
         # arg
         _arg = [a for a in fi.atoms(arg) if a.has(*symbols)]
-        fi = fi.xreplace(dict(zip(_arg,
-            (atan(im(a.args[0])/re(a.args[0])) for a in _arg))))
+        fi = fi.xreplace({a: atan(im(a.args[0])/re(a.args[0])) for a in _arg})
 
         # save changes
         f[i] = fi
@@ -671,46 +666,6 @@ def solve(f, *symbols, **flags):
     # this is needed in the next two events
     symset = set(symbols)
 
-    # get rid of equations that have no symbols of interest; we don't
-    # try to solve them because the user didn't ask and they might be
-    # hard to solve; this means that solutions may be given in terms
-    # of the eliminated equations e.g. solve((x-y, y-3), x) -> {x: y}
-    newf = []
-    for fi in f:
-        # let the solver handle equations that..
-        # - have no symbols but are expressions
-        # - have symbols of interest
-        # - have no symbols of interest but are constant
-        # but when an expression is not constant and has no symbols of
-        # interest, it can't change what we obtain for a solution from
-        # the remaining equations so we don't include it; and if it's
-        # zero it can be removed and if it's not zero, there is no
-        # solution for the equation set as a whole
-        #
-        # The reason for doing this filtering is to allow an answer
-        # to be obtained to queries like solve((x - y, y), x); without
-        # this mod the return value is []
-        ok = False
-        if fi.has(*symset):
-            ok = True
-        else:
-            free = fi.free_symbols
-            if not free:
-                if fi.is_Number:
-                    if fi.is_zero:
-                        continue
-                    return []
-                ok = True
-            else:
-                if fi.is_constant():
-                    ok = True
-        if ok:
-            newf.append(fi)
-    if not newf:
-        return []
-    f = newf
-    del newf
-
     # mask off any Object that we aren't going to invert: Derivative,
     # Integral, etc... so that solving for anything that they contain will
     # give an implicit solution
@@ -733,7 +688,7 @@ def solve(f, *symbols, **flags):
                     continue
             pot.skip()
     del seen
-    non_inverts = dict(zip(non_inverts, (Dummy() for d in non_inverts)))
+    non_inverts = {d: Dummy() for d in non_inverts}
     f = [fi.subs(non_inverts) for fi in f]
 
     non_inverts = [(v, k.subs(swap_sym)) for k, v in non_inverts.items()]
@@ -778,10 +733,6 @@ def solve(f, *symbols, **flags):
                 if type(solution[0]) is dict:
                     solution = [_do_dict(s) for s in solution]
                     break
-                elif type(solution[0]) is tuple:
-                    solution = [tuple(v.subs(non_inverts) for v in s)
-                                for s in solution]
-                    break
                 else:
                     solution = [v.subs(non_inverts) for v in solution]
                     break
@@ -825,17 +776,7 @@ def solve(f, *symbols, **flags):
         got_None = []  # solutions for which one or more symbols gave None
         no_False = []  # solutions for which no symbols gave False
         if type(solution) is list:
-            if type(solution[0]) is tuple:
-                for sol in solution:
-                    for symb, val in zip(symbols, sol):
-                        test = check_assumptions(val, **symb._assumptions)
-                        if test is False:
-                            break
-                        if test is None:
-                            got_None.append(sol)
-                    else:
-                        no_False.append(sol)
-            elif type(solution[0]) is dict:
+            if type(solution[0]) is dict:
                 for sol in solution:
                     a_None = False
                     for symb, val in sol.items():
@@ -896,8 +837,6 @@ def solve(f, *symbols, **flags):
     else:
         if isinstance(solution, dict):
             solution = [solution]
-        elif iterable(solution[0]):
-            solution = [dict(zip(symbols, s)) for s in solution]
         elif isinstance(solution[0], dict):
             pass
         else:
@@ -1224,10 +1163,7 @@ def _solve(f, *symbols, **flags):
     if result is False:
         # try unrad
         if flags.pop('_unrad', True):
-            try:
-                u = unrad(f_num, symbol)
-            except (ValueError, NotImplementedError):
-                u = False
+            u = unrad(f_num, symbol)
             if u:
                 eq, cov = u
                 if cov:
@@ -1235,10 +1171,7 @@ def _solve(f, *symbols, **flags):
                     inv = _solve(ieq, symbol, **flags)[0]
                     rv = {inv.subs(isym, xi) for xi in _solve(eq, isym, **flags)}
                 else:
-                    try:
-                        rv = set(_solve(eq, symbol, **flags))
-                    except NotImplementedError:
-                        rv = None
+                    rv = set(_solve(eq, symbol, **flags))
                 if rv is not None:
                     result = list(ordered(rv))
                     # if the flag wasn't set then unset it since unrad results
@@ -1770,10 +1703,8 @@ def _tsolve(eq, sym, **flags):
                 # f(x)**g(x) only has solutions where f(x) == 0 and g(x) != 0 at
                 # the same place
                 sol_base = _solve(lhs.base, sym, **flags)
-                if not sol_base:
-                    return sol_base  # no solutions to remove so return now
-                return list(ordered(set(sol_base) - set(
-                    _solve(lhs.exp, sym, **flags))))
+                return list(ordered(set(sol_base) -
+                            set(_solve(lhs.exp, sym, **flags))))
             elif (rhs is not S.Zero and
                         lhs.base.is_positive and
                         lhs.exp.is_extended_real):

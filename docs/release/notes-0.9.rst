@@ -136,8 +136,9 @@ Issues closed
 * :sympyissue:`12400` polytool.poly() can't raise polynomial to negative power?
 * :issue:`466` Test failure for new theano version
 * :issue:`33` Output from solve() should be consistent
+* :issue:`427` Inconsistency for parametric solutions with solve()
 
-.. last pr: #485
+.. last pr: #486
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
