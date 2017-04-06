@@ -130,7 +130,10 @@ def checksol(f, symbol, sol=None, **flags):
 
     if sol and not f.has(*list(sol.keys())):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
-        return
+        if f.is_Number:
+            return f.is_zero
+        else:
+            return
 
     illegal = {S.NaN,
                S.ComplexInfinity,
@@ -410,13 +413,6 @@ def solve(f, *symbols, **flags):
             >>> solve([x - 2, x**2 + f(x)], {f(x), x})
             [{x: 2, f(x): -4}]
 
-        * if any equation doesn't depend on the symbol(s) given it will be
-          eliminated from the equation set and an answer may be given
-          implicitly in terms of variables that were not of interest
-
-            >>> solve([x - y, y - 3], x)
-            [{x: y}]
-
     Notes
     =====
 
@@ -669,46 +665,6 @@ def solve(f, *symbols, **flags):
 
     # this is needed in the next two events
     symset = set(symbols)
-
-    # get rid of equations that have no symbols of interest; we don't
-    # try to solve them because the user didn't ask and they might be
-    # hard to solve; this means that solutions may be given in terms
-    # of the eliminated equations e.g. solve((x-y, y-3), x) -> {x: y}
-    newf = []
-    for fi in f:
-        # let the solver handle equations that..
-        # - have no symbols but are expressions
-        # - have symbols of interest
-        # - have no symbols of interest but are constant
-        # but when an expression is not constant and has no symbols of
-        # interest, it can't change what we obtain for a solution from
-        # the remaining equations so we don't include it; and if it's
-        # zero it can be removed and if it's not zero, there is no
-        # solution for the equation set as a whole
-        #
-        # The reason for doing this filtering is to allow an answer
-        # to be obtained to queries like solve((x - y, y), x); without
-        # this mod the return value is []
-        ok = False
-        if fi.has(*symset):
-            ok = True
-        else:
-            free = fi.free_symbols
-            if not free:
-                if fi.is_Number:
-                    if fi.is_zero:
-                        continue
-                    return []
-                ok = True
-            else:
-                if fi.is_constant():
-                    ok = True
-        if ok:
-            newf.append(fi)
-    if not newf:
-        return []
-    f = newf
-    del newf
 
     # mask off any Object that we aren't going to invert: Derivative,
     # Integral, etc... so that solving for anything that they contain will
