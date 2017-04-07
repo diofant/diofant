@@ -14,7 +14,7 @@ def poly_LC(f, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> poly_LC([], ZZ)
     0
@@ -34,7 +34,7 @@ def poly_TC(f, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> poly_TC([], ZZ)
     0
@@ -58,7 +58,7 @@ def dmp_ground_LC(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[1], [2, 3]]])
 
@@ -79,7 +79,7 @@ def dmp_ground_TC(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[1], [2, 3]]])
 
@@ -100,7 +100,7 @@ def dmp_true_LT(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[4], [2, 0], [3, 0, 0]])
 
@@ -130,7 +130,7 @@ def dup_degree(f):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 2, 0, 3])
 
@@ -151,7 +151,7 @@ def dmp_degree(f, u):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_degree([[[]]], 2)
     -oo
@@ -184,7 +184,7 @@ def dmp_degree_in(f, j, u):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[2], [1, 2, 3]])
 
@@ -219,7 +219,7 @@ def dmp_degree_list(f, u):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1], [1, 2, 3]])
     >>> dmp_degree_list(f, 1)
@@ -345,7 +345,7 @@ def dup_reverse(f):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 2, 3, 0])
     >>> dup_reverse(f)
@@ -361,7 +361,7 @@ def dup_copy(f):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 2, 3, 0])
     >>> dup_copy([1, 2, 3, 0])
@@ -377,7 +377,7 @@ def dmp_copy(f, u):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1], [1, 2]])
     >>> dmp_copy(f, 1)
@@ -400,7 +400,7 @@ def dup_to_tuple(f):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 2, 3, 0])
     >>> dup_copy([1, 2, 3, 0])
@@ -418,7 +418,7 @@ def dmp_to_tuple(f, u):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1], [1, 2]])
     >>> dmp_to_tuple(f, 1)
@@ -438,7 +438,7 @@ def dup_normal(f, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dup_normal([0, 1.5, 2, 3], ZZ)
     [1, 2, 3]
@@ -453,7 +453,7 @@ def dmp_normal(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_normal([[], [0, 1.5, 2]], 1, ZZ)
     [[1, 2]]
@@ -474,7 +474,7 @@ def dup_convert(f, K0, K1):
     ========
 
     >>> from diofant.polys.rings import ring
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> R, x = ring("x", ZZ)
 
@@ -497,7 +497,7 @@ def dmp_convert(f, u, K0, K1):
     ========
 
     >>> from diofant.polys.rings import ring
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> R, x = ring("x", ZZ)
 
@@ -524,7 +524,7 @@ def dup_from_diofant(f, K):
     ========
 
     >>> from diofant import Integer
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dup_from_diofant([Integer(1), Integer(2)], ZZ)
     [1, 2]
@@ -540,7 +540,7 @@ def dmp_from_diofant(f, u, K):
     ========
 
     >>> from diofant import Integer
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_from_diofant([[Integer(1)], [Integer(2)]], 1, ZZ)
     [[1], [2]]
@@ -560,7 +560,7 @@ def dup_nth(f, n, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 2, 3])
     >>> dup_nth(f, 0, ZZ)
@@ -583,7 +583,7 @@ def dmp_nth(f, n, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1], [2], [3]])
     >>> dmp_nth(f, 0, 1, ZZ)
@@ -606,7 +606,7 @@ def dmp_ground_nth(f, N, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1], [2, 3]])
     >>> dmp_ground_nth(f, (0, 1), 1, ZZ)
@@ -675,7 +675,7 @@ def dmp_one_p(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_one_p([[[ZZ(1)]]], 2, ZZ)
     True
@@ -690,7 +690,7 @@ def dmp_one(u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_one(2, ZZ)
     [[[1]]]
@@ -753,7 +753,7 @@ def dmp_zeros(n, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_zeros(3, 2, ZZ)
     [[[[]]], [[[]]], [[[]]]]
@@ -776,7 +776,7 @@ def dmp_grounds(c, n, u):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_grounds(ZZ(4), 3, 2)
     [[[[4]]], [[[4]]], [[[4]]]]
@@ -799,7 +799,7 @@ def dmp_negative_p(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_negative_p([[ZZ(1)], [-ZZ(1)]], 1, ZZ)
     False
@@ -816,7 +816,7 @@ def dmp_positive_p(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_positive_p([[ZZ(1)], [-ZZ(1)]], 1, ZZ)
     True
@@ -833,7 +833,7 @@ def dup_from_dict(f, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dup_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, ZZ)
     [1, 0, 5, 0, 7]
@@ -864,7 +864,7 @@ def dup_from_raw_dict(f, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dup_from_raw_dict({0: ZZ(7), 2: ZZ(5), 4: ZZ(1)}, ZZ)
     [1, 0, 5, 0, 7]
@@ -887,7 +887,7 @@ def dmp_from_dict(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
     [[1, 0], [], [2, 3]]
@@ -1007,7 +1007,7 @@ def dmp_swap(f, i, j, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[2], [1, 0]], []])
 
@@ -1040,7 +1040,7 @@ def dmp_permute(f, P, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[2], [1, 0]], []])
 
@@ -1069,7 +1069,7 @@ def dmp_nest(f, l, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_nest([[ZZ(1)]], 2, ZZ)
     [[[[1]]]]
@@ -1090,7 +1090,7 @@ def dmp_raise(f, l, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[], [1, 2]])
 
@@ -1120,7 +1120,7 @@ def dup_deflate(f, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 0, 0, 1, 0, 0, 1])
 
@@ -1151,7 +1151,7 @@ def dmp_deflate(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 0, 0, 2], [], [3, 0, 0, 4]])
 
@@ -1193,7 +1193,7 @@ def dup_multi_deflate(polys, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 0, 2, 0, 3])
     >>> g = ZZ.map([4, 0, 0])
@@ -1230,7 +1230,7 @@ def dmp_multi_deflate(polys, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 0, 0, 2], [], [3, 0, 0, 4]])
     >>> g = ZZ.map([[1, 0, 2], [], [3, 0, 4]])
@@ -1284,7 +1284,7 @@ def dup_inflate(f, m, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 1, 1])
 
@@ -1334,7 +1334,7 @@ def dmp_inflate(f, M, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 2], [3, 4]])
 
@@ -1359,7 +1359,7 @@ def dmp_exclude(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[1]], [[1], [2]]])
 
@@ -1403,7 +1403,7 @@ def dmp_include(f, J, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1], [1, 2]])
 
@@ -1436,7 +1436,7 @@ def dmp_inject(f, u, K, front=False):
     ========
 
     >>> from diofant.polys.rings import ring
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> R, x,y = ring("x,y", ZZ)
 
@@ -1470,7 +1470,7 @@ def dmp_eject(f, u, K, front=False):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dmp_eject([[[1]], [[1], [2]]], 2, ZZ['x', 'y'])
     [1, x + 2]
@@ -1504,7 +1504,7 @@ def dup_terms_gcd(f, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 0, 1, 0, 0])
 
@@ -1532,7 +1532,7 @@ def dmp_terms_gcd(f, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 0], [1, 0, 0], [], []])
 
@@ -1582,7 +1582,7 @@ def dmp_list_terms(f, u, K, order=None):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 1], [2, 3]])
 
@@ -1612,7 +1612,7 @@ def dup_apply_pairs(f, g, h, args, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> h = lambda x, y, z: 2*x + y - z
 
@@ -1642,7 +1642,7 @@ def dmp_apply_pairs(f, g, h, args, u, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> h = lambda x, y, z: 2*x + y - z
 
@@ -1725,7 +1725,7 @@ def dup_random(n, a, b, K):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> dup_random(3, -10, 10, ZZ) #doctest: +SKIP
     [-2, -8, 9, -4]

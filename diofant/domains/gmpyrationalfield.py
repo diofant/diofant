@@ -3,8 +3,8 @@
 from .rationalfield import RationalField
 from .groundtypes import (GMPYRational, DiofantRational, gmpy_numer,
                           gmpy_denom, gmpy_factorial, gmpy_qdiv)
-from ..polyerrors import CoercionFailed
-from ...utilities import public
+from ..polys.polyerrors import CoercionFailed
+from ..utilities import public
 
 
 @public

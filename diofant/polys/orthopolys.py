@@ -6,7 +6,7 @@ from .constructor import construct_domain
 from .polytools import Poly, PurePoly
 from .polyclasses import DMP
 from .densearith import dup_mul, dup_mul_ground, dup_lshift, dup_sub, dup_add
-from .domains import ZZ, QQ
+from ..domains import ZZ, QQ
 
 
 def dup_jacobi(n, a, b, K):

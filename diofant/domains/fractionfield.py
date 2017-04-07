@@ -2,8 +2,8 @@
 
 from .field import Field
 from .compositedomain import CompositeDomain
-from ..polyerrors import CoercionFailed, GeneratorsError
-from ...utilities import public
+from ..polys.polyerrors import CoercionFailed, GeneratorsError
+from ..utilities import public
 
 
 @public
@@ -16,7 +16,7 @@ class FractionField(Field, CompositeDomain):
     has_assoc_Field = True
 
     def __init__(self, domain_or_field, symbols=None, order=None):
-        from ..fields import FracField
+        from ..polys.fields import FracField
 
         if isinstance(domain_or_field, FracField) and symbols is None and order is None:
             field = domain_or_field

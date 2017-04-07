@@ -15,7 +15,7 @@ from .polyerrors import (IsomorphismFailed, CoercionFailed, NotAlgebraic,
 from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
 from .polyutils import dict_from_expr, expr_from_dict
-from .domains import ZZ, QQ
+from ..domains import ZZ, QQ
 from .orthopolys import dup_chebyshevt
 from .rings import ring
 from .ring_series import rs_compose_add
@@ -596,7 +596,7 @@ def minimal_polynomial(ex, x=None, **args):
 
     """
     from .polytools import degree
-    from .domains import FractionField
+    from ..domains import FractionField
     from ..core import preorder_traversal
 
     compose = args.get('compose', True)

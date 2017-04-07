@@ -45,8 +45,8 @@ from diofant.polys.polyerrors import (
     FlagError)
 from diofant.polys.polyclasses import DMP
 from diofant.polys.fields import field
-from diofant.polys.domains import FF, ZZ, QQ, RR, EX
-from diofant.polys.domains.realfield import RealField
+from diofant.domains import FF, ZZ, QQ, RR, EX
+from diofant.domains.realfield import RealField
 from diofant.polys.orderings import lex, grlex, grevlex
 from diofant import (
     S, Integer, Rational, Float, Mul, Symbol, sqrt, Piecewise, Derivative, Sum,

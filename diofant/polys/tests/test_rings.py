@@ -7,7 +7,7 @@ import pytest
 
 from diofant.polys.rings import ring, sring, PolyRing, PolyElement
 from diofant.polys.fields import field, FracField
-from diofant.polys.domains import ZZ, QQ, RR, FF, EX
+from diofant.domains import ZZ, QQ, RR, FF, EX
 from diofant.polys.orderings import lex, grlex
 from diofant.polys.polyerrors import (GeneratorsError, GeneratorsNeeded,
                                       ExactQuotientFailed,

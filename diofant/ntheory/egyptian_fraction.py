@@ -176,7 +176,7 @@ def egypt_takenouchi(x, y):
 
 
 def egypt_golomb(x, y):
-    from ..polys.domains import ZZ
+    from ..domains import ZZ
     if x == 1:
         return [y]
     xp = ZZ.invert(int(x), int(y))

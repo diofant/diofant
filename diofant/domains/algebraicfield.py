@@ -3,10 +3,10 @@
 from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
-from ..polyclasses import ANP
-from ..polyerrors import (CoercionFailed, DomainError, NotAlgebraic,
-                          IsomorphismFailed)
-from ...utilities import public
+from ..polys.polyclasses import ANP
+from ..polys.polyerrors import (CoercionFailed, DomainError, NotAlgebraic,
+                                IsomorphismFailed)
+from ..utilities import public
 
 
 @public
@@ -25,7 +25,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         if not dom.is_QQ:
             raise DomainError("ground domain must be a rational field")
 
-        from ..numberfields import to_number_field
+        from ..polys.numberfields import to_number_field
 
         self.orig_ext = ext
         self.ext = to_number_field(ext)
@@ -59,7 +59,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
-        from ..numberfields import AlgebraicNumber
+        from ..polys.numberfields import AlgebraicNumber
         return AlgebraicNumber(self.ext, a).as_expr()
 
     def from_diofant(self, a):
@@ -69,7 +69,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         except CoercionFailed:
             pass
 
-        from ..numberfields import to_number_field
+        from ..polys.numberfields import to_number_field
 
         try:
             return self(to_number_field(a, self.ext).native_coeffs())

@@ -2,7 +2,7 @@
 
 from .finitefield import FiniteField
 from .pythonintegerring import PythonIntegerRing
-from ...utilities import public
+from ..utilities import public
 
 
 @public

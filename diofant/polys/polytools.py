@@ -26,7 +26,7 @@ from .polyerrors import (OperationNotSupported, DomainError,
                          PolificationFailed, ComputationFailed,
                          GeneratorsError)
 from ..utilities import group, sift, public
-from .domains import FF, QQ, ZZ
+from ..domains import FF, QQ, ZZ
 from .constructor import construct_domain
 from . import polyoptions as options
 from ..core.compatibility import iterable

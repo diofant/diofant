@@ -3,8 +3,8 @@
 from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
-from ...core import sympify, SympifyError
-from ...utilities import public
+from ..core import sympify, SympifyError
+from ..utilities import public
 
 
 @public
@@ -114,11 +114,11 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
             return self.ex != 0
 
         def gcd(self, other):
-            from .. import gcd
+            from ..polys import gcd
             return self.__class__(gcd(self.ex, self.__class__(other).ex))
 
         def lcm(self, other):
-            from .. import lcm
+            from ..polys import lcm
             return self.__class__(lcm(self.ex, self.__class__(other).ex))
 
     dtype = Expression
@@ -176,7 +176,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
 
     def from_AlgebraicField(self, a, K0):
         """Convert a ``ANP`` object to ``dtype``. """
-        from ...core.numbers import AlgebraicNumber
+        from ..core.numbers import AlgebraicNumber
         return self(AlgebraicNumber(K0.ext, a).as_expr())
 
     def get_ring(self):

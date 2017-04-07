@@ -1,8 +1,8 @@
 """Tests for tools for constructing domains for expressions. """
 
 from diofant.polys.constructor import construct_domain
-from diofant.polys.domains import ZZ, QQ, RR, EX
-from diofant.polys.domains.realfield import RealField
+from diofant.domains import ZZ, QQ, RR, EX
+from diofant.domains.realfield import RealField
 from diofant import sqrt, sin, Float, Integer, Rational, E, GoldenRatio
 
 from diofant.abc import x, y

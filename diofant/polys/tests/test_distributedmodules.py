@@ -9,7 +9,7 @@ from diofant.polys.distributedmodules import (
     sdm_nf_buchberger, sdm_nf_buchberger_reduced
 )
 from diofant.polys.orderings import lex, grlex, InverseOrder
-from diofant.polys.domains import QQ
+from diofant.domains import QQ
 
 from diofant.abc import x, y, z
 

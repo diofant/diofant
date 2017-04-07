@@ -2,7 +2,8 @@
 
 from ..core import S, Symbol, symbols, I, Lambda, Dummy, Integer
 from ..functions import log, atan
-from ..polys import Poly, resultant, ZZ, RootSum, roots, cancel
+from ..domains import ZZ
+from ..polys import Poly, resultant, RootSum, roots, cancel
 
 
 def ratint(f, x, **flags):

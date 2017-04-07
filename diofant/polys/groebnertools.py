@@ -529,7 +529,8 @@ def f5_reduce(f, B):
     A polynomial that is reducible in the usual sense need not be
     F5-reducible, e.g.:
 
-    >>> from diofant.polys import ring, QQ, lex
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import ring, lex
 
     >>> R, x,y,z = ring("x,y,z", QQ, lex)
 

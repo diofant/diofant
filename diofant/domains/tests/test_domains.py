@@ -3,11 +3,11 @@
 import pytest
 
 from diofant import sqrt, sin, oo, Poly, Float, Integer, Rational
-from diofant.polys.domains import ZZ, QQ, RR, CC, FF, GF, EX
-from diofant.polys.domains.domainelement import DomainElement
-from diofant.polys.domains.groundtypes import PythonRational
-from diofant.polys.domains.realfield import RealField
-from diofant.polys.domains.algebraicfield import AlgebraicField
+from diofant.domains import ZZ, QQ, RR, CC, FF, GF, EX
+from diofant.domains.domainelement import DomainElement
+from diofant.domains.groundtypes import PythonRational
+from diofant.domains.realfield import RealField
+from diofant.domains.algebraicfield import AlgebraicField
 from diofant.polys.rings import ring
 from diofant.polys.fields import field
 from diofant.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,

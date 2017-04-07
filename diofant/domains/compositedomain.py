@@ -1,8 +1,8 @@
 """Implementation of :class:`CompositeDomain` class. """
 
 from .domain import Domain
-from ..polyerrors import GeneratorsError
-from ...utilities import public
+from ..polys.polyerrors import GeneratorsError
+from ..utilities import public
 
 
 @public

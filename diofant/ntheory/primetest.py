@@ -81,7 +81,7 @@ def mr(n, bases):
     True
     """
     from .factor_ import trailing
-    from ..polys.domains import ZZ
+    from ..domains import ZZ
 
     n = int(n)
     if n < 2:

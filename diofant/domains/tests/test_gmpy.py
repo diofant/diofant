@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.polys.polyerrors import CoercionFailed
-from diofant.polys.domains import (FF, QQ_python, QQ_gmpy, ZZ_gmpy,
+from diofant.domains import (FF, QQ_python, QQ_gmpy, ZZ_gmpy,
                                    PythonRational)
 from diofant.external import import_module
 

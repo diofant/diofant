@@ -34,7 +34,7 @@ from diofant.polys.densearith import (
 
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
-from diofant.polys.domains import FF, ZZ, QQ
+from diofant.domains import FF, ZZ, QQ
 
 __all__ = ()
 

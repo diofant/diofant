@@ -4,9 +4,9 @@ from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
 from .mpelements import MPContext
-from ..polyerrors import DomainError, CoercionFailed
-from ...core import Float
-from ...utilities import public
+from ..polys.polyerrors import DomainError, CoercionFailed
+from ..core import Float
+from ..utilities import public
 
 
 @public

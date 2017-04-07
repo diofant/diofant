@@ -29,7 +29,8 @@ def heugcd(f, g):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x,y, = ring("x,y", ZZ)
 

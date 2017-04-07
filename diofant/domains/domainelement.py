@@ -1,6 +1,6 @@
 """Trait for implementing domain elements. """
 
-from ...utilities import public
+from ..utilities import public
 
 
 @public

@@ -8,9 +8,9 @@ from ..core.sympify import CantSympify
 from .rings import PolyElement
 from .orderings import lex
 from .polyerrors import CoercionFailed
-from .domains.domainelement import DomainElement
-from .domains.polynomialring import PolynomialRing
-from .domains.fractionfield import FractionField
+from ..domains.domainelement import DomainElement
+from ..domains.polynomialring import PolynomialRing
+from ..domains.fractionfield import FractionField
 from ..printing.defaults import DefaultPrinting
 from ..utilities import public
 from ..utilities.magic import pollute
@@ -506,7 +506,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y, z = field("x,y,z", ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)

@@ -16,7 +16,7 @@ from diofant.polys.polyerrors import (
     GeneratorsNeeded,
     PolynomialError)
 from diofant.polys import factor
-from diofant.polys.domains import ZZ
+from diofant.domains import ZZ
 
 __all__ = ()
 

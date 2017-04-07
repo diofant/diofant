@@ -3,8 +3,8 @@
 from .polyutils import parallel_dict_from_basic
 from .polyoptions import build_options
 from .polyerrors import GeneratorsNeeded
-from .domains import ZZ, QQ, RR, EX
-from .domains.realfield import RealField
+from ..domains import ZZ, QQ, RR, EX
+from ..domains.realfield import RealField
 from ..utilities import public
 from ..core import sympify
 

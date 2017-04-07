@@ -40,7 +40,7 @@ from diofant.polys.densebasic import (
     dup_random)
 
 from diofant.polys.specialpolys import f_polys
-from diofant.polys.domains import ZZ, QQ
+from diofant.domains import ZZ, QQ
 from diofant.polys.rings import ring
 from diofant import oo, Integer, Rational
 

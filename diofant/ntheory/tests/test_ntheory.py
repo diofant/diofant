@@ -27,7 +27,7 @@ from diofant.ntheory.continued_fraction import (continued_fraction_periodic as c
                                                 continued_fraction_reduce as cf_r)
 from diofant.ntheory.egyptian_fraction import egyptian_fraction
 from diofant.core.add import Add
-from diofant.polys.domains import ZZ
+from diofant.domains import ZZ
 from diofant.utilities.iterables import capture
 from diofant.utilities.randtest import random_complex_number
 from diofant.ntheory.multinomial import multinomial_coefficients_iterator

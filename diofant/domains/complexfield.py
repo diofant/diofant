@@ -1,12 +1,12 @@
 """Implementation of :class:`ComplexField` class. """
 
-from ...core import Float, I
-from ...utilities import public
+from ..core import Float, I
+from ..utilities import public
 from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
 from .mpelements import MPContext
-from ..polyerrors import DomainError, CoercionFailed
+from ..polys.polyerrors import DomainError, CoercionFailed
 
 
 @public

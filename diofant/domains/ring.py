@@ -1,8 +1,8 @@
 """Implementation of :class:`Ring` class. """
 
 from .domain import Domain
-from ..polyerrors import ExactQuotientFailed, NotInvertible, NotReversible
-from ...utilities import public
+from ..polys.polyerrors import ExactQuotientFailed, NotInvertible, NotReversible
+from ..utilities import public
 
 
 @public
