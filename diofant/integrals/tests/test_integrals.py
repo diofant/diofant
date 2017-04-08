@@ -1180,3 +1180,9 @@ def test_sympyissue_12081():
 
 def test_sympyissue_7163():
     integrate((sign(x - 1) - sign(x - 2))*cos(x), x)  # not raises
+
+
+def test_sympyissue_12221():
+    e = sqrt(1 - x)/x
+    r = 2*I*(-sqrt(2) - asin(sqrt(3)/3) + asin(sqrt(5)/5) + 2)
+    assert integrate(e, (x, 3, 5)).simplify() == r

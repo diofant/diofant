@@ -137,8 +137,9 @@ Issues closed
 * :issue:`466` Test failure for new theano version
 * :issue:`33` Output from solve() should be consistent
 * :issue:`427` Inconsistency for parametric solutions with solve()
+* :sympyissue:`12221` Issue with definite piecewise integration
 
-.. last pr: #486
+.. last pr: #488
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
