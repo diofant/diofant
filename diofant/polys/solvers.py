@@ -35,12 +35,11 @@ def solve_lin_sys(eqs, ring):
     elif pivots[-1] == len(ring.gens):
         return
     elif len(pivots) == len(ring.gens):
-        sol = [ring.ground_new(s) for s in echelon[:, -1]]
-        return dict(zip(ring.gens, sol))
+        sols = dict(zip(ring.gens, echelon[:, -1]))
     else:
         sols = {}
         for i, p in enumerate(pivots):
             vect = RawMatrix([[-x] for x in ring.gens[p+1:]] + [[ring.one]])
             sols[ring.gens[p]] = (echelon[i, p + 1:]*vect)[0]
 
-        return sols
+    return {k: ring.ring_new(v) for k, v in sols.items()}
