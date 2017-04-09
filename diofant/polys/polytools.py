@@ -3718,7 +3718,7 @@ class Poly(Expr):
     @property
     def is_cyclotomic(self):
         """
-        Returns ``True`` if ``self`` is a cyclotomic polnomial.
+        Returns ``True`` if ``self`` is a cyclotomic polynomial.
 
         Examples
         ========

@@ -15,7 +15,7 @@ functions to compute square roots.  We might do something like this
    3.0
 
 Here we got the exact answer --- 9 is a perfect square --- but usually
-it will be an appoximate result
+it will be an approximate result
 
    >>> math.sqrt(8)
    2.8284271247461903

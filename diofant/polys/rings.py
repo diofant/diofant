@@ -1602,7 +1602,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         raise ValueError("expected a monomial, got %s" % element)
 
     def const(self):
-        """Returns the constant coeffcient. """
+        """Returns the constant coefficient. """
         return self._get_coeff(self.ring.zero_monom)
 
     @property

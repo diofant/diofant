@@ -243,7 +243,7 @@ def solve(f, *symbols, **flags):
         check : bool, optional
             If False, don't do any testing of solutions.  Default is
             True, i.e. the solutions are checked and those that doesn't
-            satisfy given assumpsions on symbols solved for or make any
+            satisfy given assumptions on symbols solved for or make any
             denominator zero - are automatically excluded.
         numerical : bool, optional
             If enabled (default), do a fast numerical check
@@ -441,7 +441,7 @@ def solve(f, *symbols, **flags):
 
     If check=False then a solution to the numerator being zero is found: x = 0.
     In this case, this is a spurious solution since sin(x)/x has the well known
-    limit (without dicontinuity) of 1 at x = 0:
+    limit (without discontinuity) of 1 at x = 0:
 
         >>> solve(sin(x)/x, check=False)
         [{x: 0}, {x: pi}]
