@@ -4,10 +4,11 @@ from .rationalfield import RationalField
 from .groundtypes import (PythonInteger, PythonRational, DiofantRational,
                           python_factorial)
 from ..polys.polyerrors import CoercionFailed
-from ..utilities import public
 
 
-@public
+__all__ = ('PythonRationalField',)
+
+
 class PythonRationalField(RationalField):
     """Rational field based on Python rational number type. """
 

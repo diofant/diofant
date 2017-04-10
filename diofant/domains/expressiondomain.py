@@ -4,10 +4,11 @@ from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
 from ..core import sympify, SympifyError
-from ..utilities import public
 
 
-@public
+__all__ = ('ExpressionDomain',)
+
+
 class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     """A class for arbitrary expressions. """
 

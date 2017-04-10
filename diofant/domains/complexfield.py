@@ -1,7 +1,6 @@
 """Implementation of :class:`ComplexField` class. """
 
 from ..core import Float, I
-from ..utilities import public
 from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
@@ -9,7 +8,9 @@ from .mpelements import MPContext
 from ..polys.polyerrors import DomainError, CoercionFailed
 
 
-@public
+__all__ = ('ComplexField',)
+
+
 class ComplexField(Field, CharacteristicZero, SimpleDomain):
     """Complex numbers up to the given precision. """
 

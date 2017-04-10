@@ -1,10 +1,11 @@
 """Implementaton of :class:`CharacteristicZero` class. """
 
 from .domain import Domain
-from ..utilities import public
 
 
-@public
+__all__ = ('CharacteristicZero',)
+
+
 class CharacteristicZero(Domain):
     """Domain that has infinite number of elements. """
 

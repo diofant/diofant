@@ -1,10 +1,11 @@
 """Implementation of :class:`SimpleDomain` class. """
 
 from .domain import Domain
-from ..utilities import public
 
 
-@public
+__all__ = ('SimpleDomain',)
+
+
 class SimpleDomain(Domain):
     """Base class for simple domains, e.g. ZZ, QQ. """
 

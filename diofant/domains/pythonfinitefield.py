@@ -2,10 +2,11 @@
 
 from .finitefield import FiniteField
 from .pythonintegerring import PythonIntegerRing
-from ..utilities import public
 
 
-@public
+__all__ = ('PythonFiniteField',)
+
+
 class PythonFiniteField(FiniteField):
     """Finite field based on Python's integers. """
 

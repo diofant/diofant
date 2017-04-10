@@ -2,10 +2,11 @@
 
 from .ring import Ring
 from ..polys.polyerrors import NotReversible, DomainError
-from ..utilities import public
 
 
-@public
+__all__ = ('Field',)
+
+
 class Field(Ring):
     """Represents a field domain. """
 
