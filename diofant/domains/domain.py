@@ -289,7 +289,7 @@ class Domain(DefaultPrinting):
             return K1
 
         if self.is_AlgebraicField and K1.is_AlgebraicField:
-            return self.__class__(self.domain.unify(K1.domain), *_unify_gens(self.orig_ext, K1.orig_ext))
+            return self.__class__(self.domain.unify(K1.domain), *_unify_gens(self.gens, K1.gens))
         elif self.is_AlgebraicField:
             return self
         elif K1.is_AlgebraicField:
