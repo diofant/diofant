@@ -140,8 +140,9 @@ Issues closed
 * :issue:`427` Inconsistency for parametric solutions with solve()
 * :sympyissue:`12221` Issue with definite piecewise integration
 * :issue:`471` polys/domains should be a top-level module
+* :sympyissue:`12522` BooleanTrue and Boolean False should have simplify method
 
-.. last pr: #487
+.. last pr: #489
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
