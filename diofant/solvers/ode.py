@@ -268,6 +268,18 @@ from .solvers import solve
 #: ``best``, and ``all_Integral`` meta-hints should not be included in this
 #: list, but ``_best`` and ``_Integral`` hints should be included.
 allhints = (
+    "separable_Integral",
+    "1st_exact_Integral",
+    "1st_linear_Integral",
+    "Bernoulli_Integral",
+    "1st_homogeneous_coeff_subs_indep_div_dep_Integral",
+    "1st_homogeneous_coeff_subs_dep_div_indep_Integral",
+    "almost_linear_Integral",
+    "linear_coefficients_Integral",
+    "separable_reduced_Integral",
+    "nth_linear_constant_coeff_variation_of_parameters_Integral",
+    "nth_linear_euler_eq_nonhomogeneous_variation_of_parameters_Integral",
+    "Liouville_Integral",
     "separable",
     "1st_exact",
     "1st_linear",
@@ -290,18 +302,6 @@ allhints = (
     "Liouville",
     "2nd_power_series_ordinary",
     "2nd_power_series_regular",
-    "separable_Integral",
-    "1st_exact_Integral",
-    "1st_linear_Integral",
-    "Bernoulli_Integral",
-    "1st_homogeneous_coeff_subs_indep_div_dep_Integral",
-    "1st_homogeneous_coeff_subs_dep_div_indep_Integral",
-    "almost_linear_Integral",
-    "linear_coefficients_Integral",
-    "separable_reduced_Integral",
-    "nth_linear_constant_coeff_variation_of_parameters_Integral",
-    "nth_linear_euler_eq_nonhomogeneous_variation_of_parameters_Integral",
-    "Liouville_Integral",
 )
 
 lie_heuristics = (
