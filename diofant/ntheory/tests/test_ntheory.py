@@ -4,7 +4,7 @@ import pytest
 
 from diofant import (Sieve, binomial_coefficients, binomial_coefficients_list,
                      multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
-                     summation, factorial as fac, pi, GoldenRatio as phi, sqrt)
+                     summation, factorial as fac, pi, GoldenRatio as Phi, sqrt)
 from diofant.core.numbers import Integer, Rational
 from diofant.ntheory import (isprime, n_order, is_primitive_root,
                              is_quad_residue, legendre_symbol, jacobi_symbol,
@@ -892,7 +892,7 @@ def test_continued_fraction():
             res.append(t)
         return res
 
-    assert take(phi) == [1, 1, 1, 1, 1, 1, 1]
+    assert take(Phi) == [1, 1, 1, 1, 1, 1, 1]
     assert take(pi) == [3, 7, 15, 1, 292, 1, 1]
 
     assert list(cf_i(Rational(17, 12))) == [1, 2, 2, 2]

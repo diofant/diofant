@@ -494,10 +494,10 @@ class DenseMatrix(MatrixBase):
     def as_immutable(self):
         """Returns an Immutable version of this Matrix
         """
-        from .immutable import ImmutableMatrix as cls
+        from .immutable import ImmutableMatrix
         if self.rows and self.cols:
-            return cls._new(self.tolist())
-        return cls._new(self.rows, self.cols, [])
+            return ImmutableMatrix._new(self.tolist())
+        return ImmutableMatrix._new(self.rows, self.cols, [])
 
     @classmethod
     def zeros(cls, r, c=None):
@@ -1241,7 +1241,7 @@ def zeros(r, c=None, cls=None):
     diofant.matrices.dense.diag
     """
     if cls is None:
-        from . import Matrix as cls
+        from . import Matrix as cls  # noqa: N813
     return cls.zeros(r, c)
 
 
@@ -1256,7 +1256,7 @@ def eye(n, cls=None):
     diofant.matrices.dense.ones
     """
     if cls is None:
-        from . import Matrix as cls
+        from . import Matrix as cls  # noqa: N813
     return cls.eye(n)
 
 
@@ -1351,7 +1351,7 @@ def diag(*values, **kwargs):
 
     cls = kwargs.pop('cls', None)
     if cls is None:
-        from . import Matrix as cls
+        from . import Matrix as cls  # noqa: N813
 
     if kwargs:
         raise ValueError('unrecognized keyword%s: %s' % (
