@@ -24,7 +24,7 @@ from ..core.numbers import (
     Rational as DiofantRational)
 
 if HAS_GMPY:
-    from gmpy2 import (
+    from gmpy2 import (  # noqa: N812
         mpz as GMPYInteger,
         mpq as GMPYRational,
         fac as gmpy_factorial,
