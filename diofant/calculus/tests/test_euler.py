@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import Symbol, Function, Derivative as D, Eq, cos, sin
+from diofant import Symbol, Function, diff, Eq, cos, sin
 from diofant.calculus.euler import euler_equations as euler
 
 __all__ = ()
@@ -11,41 +11,41 @@ def test_euler_interface():
     y = Symbol('y')
     t = Symbol('t')
     pytest.raises(TypeError, lambda: euler())
-    pytest.raises(TypeError, lambda: euler(D(x(t), t)*y(t), [x(t), y]))
-    pytest.raises(ValueError, lambda: euler(D(x(t), t)*x(y), [x(t), x(y)]))
-    pytest.raises(TypeError, lambda: euler(D(x(t), t)**2, x(0)))
+    pytest.raises(TypeError, lambda: euler(diff(x(t), t)*y(t), [x(t), y]))
+    pytest.raises(ValueError, lambda: euler(diff(x(t), t)*x(y), [x(t), x(y)]))
+    pytest.raises(TypeError, lambda: euler(diff(x(t), t)**2, x(0)))
     pytest.raises(TypeError, lambda: euler(1, y))
-    assert euler(D(x(t), t)**2/2, {x(t)}) == [Eq(-D(x(t), t, t))]
-    assert euler(D(x(t), t)**2/2, x(t), {t}) == [Eq(-D(x(t), t, t))]
+    assert euler(diff(x(t), t)**2/2, {x(t)}) == [Eq(-diff(x(t), t, t))]
+    assert euler(diff(x(t), t)**2/2, x(t), {t}) == [Eq(-diff(x(t), t, t))]
 
 
 def test_euler_pendulum():
     x = Function('x')
     t = Symbol('t')
-    L = D(x(t), t)**2/2 + cos(x(t))
-    assert euler(L, x(t), t) == [Eq(-sin(x(t)) - D(x(t), t, t))]
+    L = diff(x(t), t)**2/2 + cos(x(t))
+    assert euler(L, x(t), t) == [Eq(-sin(x(t)) - diff(x(t), t, t))]
 
 
 def test_euler_henonheiles():
     x = Function('x')
     y = Function('y')
     t = Symbol('t')
-    L = sum(D(z(t), t)**2/2 - z(t)**2/2 for z in [x, y])
+    L = sum(diff(z(t), t)**2/2 - z(t)**2/2 for z in [x, y])
     L += -x(t)**2*y(t) + y(t)**3/3
     assert euler(L, [x(t), y(t)], t) == [Eq(-2*x(t)*y(t) - x(t) -
-                                            D(x(t), t, t)),
+                                            diff(x(t), t, t)),
                                          Eq(-x(t)**2 + y(t)**2 -
-                                            y(t) - D(y(t), t, t))]
+                                            y(t) - diff(y(t), t, t))]
 
 
 def test_euler_sineg():
     psi = Function('psi')
     t = Symbol('t')
     x = Symbol('x')
-    L = D(psi(t, x), t)**2/2 - D(psi(t, x), x)**2/2 + cos(psi(t, x))
+    L = diff(psi(t, x), t)**2/2 - diff(psi(t, x), x)**2/2 + cos(psi(t, x))
     assert euler(L, psi(t, x), [t, x]) == [Eq(-sin(psi(t, x)) -
-                                              D(psi(t, x), t, t) +
-                                              D(psi(t, x), x, x))]
+                                              diff(psi(t, x), t, t) +
+                                              diff(psi(t, x), x, x))]
 
 
 def test_euler_high_order():
@@ -55,13 +55,13 @@ def test_euler_high_order():
     x = Function('x')
     y = Function('y')
     t = Symbol('t')
-    L = (m*D(x(t), t)**2/2 + m*D(y(t), t)**2/2 -
-         k*D(x(t), t)*D(y(t), t, t) + k*D(y(t), t)*D(x(t), t, t))
-    assert euler(L, [x(t), y(t)]) == [Eq(2*k*D(y(t), t, t, t) -
-                                         m*D(x(t), t, t)),
-                                      Eq(-2*k*D(x(t), t, t, t) -
-                                         m*D(y(t), t, t))]
+    L = (m*diff(x(t), t)**2/2 + m*diff(y(t), t)**2/2 -
+         k*diff(x(t), t)*diff(y(t), t, t) + k*diff(y(t), t)*diff(x(t), t, t))
+    assert euler(L, [x(t), y(t)]) == [Eq(2*k*diff(y(t), t, t, t) -
+                                         m*diff(x(t), t, t)),
+                                      Eq(-2*k*diff(x(t), t, t, t) -
+                                         m*diff(y(t), t, t))]
 
     w = Symbol('w')
-    L = D(x(t, w), t, w)**2/2
-    assert euler(L) == [Eq(D(x(t, w), t, t, w, w))]
+    L = diff(x(t, w), t, w)**2/2
+    assert euler(L) == [Eq(diff(x(t, w), t, t, w, w))]

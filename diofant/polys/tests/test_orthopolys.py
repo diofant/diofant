@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import Poly, S, Rational as Q
+from diofant import Poly, S, Rational as Q  # noqa: N814
 from diofant.polys.orthopolys import (jacobi_poly, gegenbauer_poly,
                                       chebyshevt_poly, chebyshevu_poly,
                                       hermite_poly, legendre_poly,
