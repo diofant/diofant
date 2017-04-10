@@ -4,7 +4,7 @@ from ..core.numbers import igcdex, igcd
 from ..core.mul import prod
 from ..core.compatibility import as_int
 from .primetest import isprime
-from ..polys.domains import ZZ
+from ..domains import ZZ
 from ..polys.galoistools import gf_crt, gf_crt1, gf_crt2
 
 

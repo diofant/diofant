@@ -31,7 +31,7 @@ from diofant.polys.polyerrors import ExactQuotientFailed
 
 from diofant.polys import polyconfig as config
 
-from diofant.polys.domains import ZZ, FF
+from diofant.domains import ZZ, FF
 from diofant.polys.rings import ring
 from diofant import pi, nextprime
 

@@ -53,13 +53,13 @@ from diofant.polys.polytools import Poly, PurePoly
 from diofant.polys.polyclasses import DMP, DMF, ANP
 from diofant.polys.rings import PolyRing
 from diofant.polys.fields import FracField
-from diofant.polys.domains.groundtypes import PythonRational
-from diofant.polys.domains.pythonfinitefield import PythonFiniteField
-from diofant.polys.domains.mpelements import MPContext
-from diofant.polys.domains.pythonintegerring import PythonIntegerRing
-from diofant.polys.domains.pythonrationalfield import PythonRationalField
-from diofant.polys.domains.algebraicfield import AlgebraicField
-from diofant.polys.domains.expressiondomain import ExpressionDomain
+from diofant.domains.groundtypes import PythonRational
+from diofant.domains.pythonfinitefield import PythonFiniteField
+from diofant.domains.mpelements import MPContext
+from diofant.domains.pythonintegerring import PythonIntegerRing
+from diofant.domains.pythonrationalfield import PythonRationalField
+from diofant.domains.algebraicfield import AlgebraicField
+from diofant.domains.expressiondomain import ExpressionDomain
 from diofant.polys.numberfields import AlgebraicNumber
 from diofant.polys.orderings import (LexOrder, GradedLexOrder,
                                      ReversedGradedLexOrder, ProductOrder,
@@ -373,8 +373,8 @@ def test_pickling_polys_domains():
         check(c)
 
     if HAS_GMPY:
-        from diofant.polys.domains.gmpyintegerring import GMPYIntegerRing
-        from diofant.polys.domains.gmpyrationalfield import GMPYRationalField
+        from diofant.domains.gmpyintegerring import GMPYIntegerRing
+        from diofant.domains.gmpyrationalfield import GMPYRationalField
 
         # TODO: fix pickling of ModularInteger
         # for c in (GMPYFiniteField, GMPYFiniteField(17)):

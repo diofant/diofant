@@ -2,7 +2,7 @@
 
 from .finitefield import FiniteField
 from .gmpyintegerring import GMPYIntegerRing
-from ...utilities import public
+from ..utilities import public
 
 
 @public

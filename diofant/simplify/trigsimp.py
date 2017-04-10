@@ -14,7 +14,7 @@ from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions import sin, cos, exp, cosh, tanh, sinh, tan, cot, coth
 from ..polys.polyerrors import PolificationFailed
 from ..polys.polytools import groebner
-from ..polys.domains import ZZ
+from ..domains import ZZ
 from ..polys import Poly, factor, cancel, parallel_poly_from_expr
 from ..utilities.misc import debug
 

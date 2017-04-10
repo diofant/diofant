@@ -340,7 +340,8 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> f = x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1
@@ -525,7 +526,8 @@ def dup_zz_factor(f, K):
 
     Consider polynomial `f = 2*x**4 - 2`::
 
-        >>> from diofant.polys import ring, ZZ
+        >>> from diofant.domains import ZZ
+        >>> from diofant.polys import ring
 
         >>> R, x = ring("x", ZZ)
 
@@ -1006,7 +1008,8 @@ def dmp_zz_factor(f, u, K):
 
     Consider polynomial `f = 2*(x**2 - y**2)`::
 
-        >>> from diofant.polys import ring, ZZ
+        >>> from diofant.domains import ZZ
+        >>> from diofant.polys import ring
 
         >>> R, x,y = ring("x,y", ZZ)
 

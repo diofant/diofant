@@ -25,7 +25,8 @@ def dup_sturm(f, K):
     Examples
     ========
 
-    >>> from diofant.polys import ring, QQ
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
     >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)

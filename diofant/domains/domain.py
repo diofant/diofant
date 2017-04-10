@@ -1,13 +1,13 @@
 """Implementation of :class:`Domain` class. """
 
 from .domainelement import DomainElement
-from ...core import Basic, sympify
-from ...core.compatibility import HAS_GMPY, is_sequence
-from ..polyerrors import UnificationFailed, CoercionFailed, DomainError
-from ..orderings import lex
-from ..polyutils import _unify_gens
-from ...utilities import default_sort_key, public
-from ...printing.defaults import DefaultPrinting
+from ..core import Basic, sympify
+from ..core.compatibility import HAS_GMPY, is_sequence
+from ..polys.polyerrors import UnificationFailed, CoercionFailed, DomainError
+from ..polys.orderings import lex
+from ..polys.polyutils import _unify_gens
+from ..utilities import default_sort_key, public
+from ..printing.defaults import DefaultPrinting
 
 
 @public

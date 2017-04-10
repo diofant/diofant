@@ -3,7 +3,7 @@
 from diofant.functions import sqrt
 from diofant.polys.rings import ring
 from diofant.polys.fields import field
-from diofant.polys.domains import ZZ, QQ
+from diofant.domains import ZZ, QQ
 from diofant.polys.solvers import solve_lin_sys
 
 __all__ = ()

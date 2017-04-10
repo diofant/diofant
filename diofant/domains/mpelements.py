@@ -8,7 +8,7 @@ from mpmath.libmp import (MPZ_ONE, fzero, fone, finf, fninf, fnan,
 from mpmath.rational import mpq
 
 from .domainelement import DomainElement
-from ...utilities import public
+from ..utilities import public
 
 
 @public

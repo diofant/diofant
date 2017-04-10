@@ -11,7 +11,7 @@ from diofant.polys.groebnertools import (
 from diofant.polys.fglmtools import _representing_matrices
 from diofant.polys.orderings import lex, grlex
 from diofant.polys.rings import ring
-from diofant.polys.domains import ZZ, QQ
+from diofant.domains import ZZ, QQ
 from diofant.polys import polyconfig as config
 
 __all__ = ()

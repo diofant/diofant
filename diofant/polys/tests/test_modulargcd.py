@@ -1,5 +1,5 @@
 from diofant.polys.rings import ring
-from diofant.polys.domains import ZZ, QQ, AlgebraicField
+from diofant.domains import ZZ, QQ, AlgebraicField
 from diofant.polys.modulargcd import (
     modgcd_univariate,
     modgcd_bivariate,

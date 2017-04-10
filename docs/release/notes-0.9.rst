@@ -15,6 +15,7 @@ Major changes
 
 * Assumptions (old) moved from :class:`~diofant.core.basic.Basic` to :class:`~diofant.core.expr.Expr`, see :pull:`311`.
 * :func:`~diofant.solvers.solvers.solve` now return :class:`list` of :class:`dict`'s, see :pull:`473`.
+* ``diofant.polys.domains`` module is now top-level module :mod:`~diofant.domains`, see :pull:`487`.
 
 Backwards-incompatible changes
 ==============================
@@ -138,8 +139,9 @@ Issues closed
 * :issue:`33` Output from solve() should be consistent
 * :issue:`427` Inconsistency for parametric solutions with solve()
 * :sympyissue:`12221` Issue with definite piecewise integration
+* :issue:`471` polys/domains should be a top-level module
 
-.. last pr: #488
+.. last pr: #487
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

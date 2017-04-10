@@ -13,7 +13,7 @@ from diofant.polys.numberfields import (minimal_polynomial, primitive_element,
 from diofant.polys.polyerrors import (IsomorphismFailed, NotAlgebraic,
                                       GeneratorsError)
 from diofant.polys.polyclasses import DMP
-from diofant.polys.domains import QQ
+from diofant.domains import QQ
 from diofant.polys.rootoftools import RootOf
 from diofant.polys.polytools import degree
 

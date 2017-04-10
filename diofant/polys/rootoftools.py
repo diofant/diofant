@@ -19,7 +19,7 @@ from .polyroots import (roots_linear, roots_quadratic, roots_binomial,
                         preprocess_roots, roots)
 from .polyerrors import (MultivariatePolynomialError, GeneratorsNeeded,
                          PolynomialError, DomainError)
-from .domains import QQ
+from ..domains import QQ
 from ..utilities import lambdify, public
 
 

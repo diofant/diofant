@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.polys.rings import ring
-from diofant.polys.domains import ZZ
+from diofant.domains import ZZ
 from diofant.polys.heuristicgcd import heugcd
 from diofant.polys.polyerrors import HeuristicGCDFailed
 from diofant.polys.polyconfig import using

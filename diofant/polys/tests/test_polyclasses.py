@@ -3,7 +3,7 @@
 import pytest
 
 from diofant.polys.polyclasses import DMP, DMF, ANP
-from diofant.polys.domains import ZZ, QQ
+from diofant.domains import ZZ, QQ
 from diofant.polys.specialpolys import f_polys
 from diofant.polys.polyerrors import ExactQuotientFailed
 

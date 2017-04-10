@@ -38,10 +38,6 @@ from . import polyroots
 __all__.extend(polyroots.__all__)
 from .polyroots import *  # noqa: F403
 
-from . import domains
-__all__.extend(domains.__all__)
-from .domains import *  # noqa: F403
-
 from . import constructor
 __all__.extend(constructor.__all__)
 from .constructor import *  # noqa: F403

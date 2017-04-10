@@ -1,7 +1,7 @@
 """Implementation of :class:`SimpleDomain` class. """
 
 from .domain import Domain
-from ...utilities import public
+from ..utilities import public
 
 
 @public

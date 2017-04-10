@@ -4,8 +4,8 @@ from .field import Field
 from .simpledomain import SimpleDomain
 from .groundtypes import DiofantInteger
 from .modularinteger import ModularIntegerFactory
-from ..polyerrors import CoercionFailed
-from ...utilities import public
+from ..polys.polyerrors import CoercionFailed
+from ..utilities import public
 
 
 @public

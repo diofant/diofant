@@ -80,7 +80,7 @@ CC = ComplexField()
 
 from .groundtypes import PythonRational
 
-from ...core.compatibility import GROUND_TYPES
+from ..core.compatibility import GROUND_TYPES
 
 _GROUND_TYPES_MAP = {
     'gmpy': (FF_gmpy, ZZ_gmpy(), QQ_gmpy()),

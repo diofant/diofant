@@ -3,8 +3,8 @@
 from .integerring import IntegerRing
 from .groundtypes import (GMPYInteger, DiofantInteger, gmpy_factorial,
                           gmpy_gcdex, gmpy_gcd, gmpy_lcm, gmpy_sqrt)
-from ..polyerrors import CoercionFailed
-from ...utilities import public
+from ..polys.polyerrors import CoercionFailed
+from ..utilities import public
 
 
 @public

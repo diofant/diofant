@@ -3,7 +3,7 @@
 import pytest
 
 from diofant.polys.rings import ring
-from diofant.polys.domains import ZZ, QQ, EX
+from diofant.domains import ZZ, QQ, EX
 from diofant.polys.polyerrors import DomainError, RefinementFailed
 
 __all__ = ()
