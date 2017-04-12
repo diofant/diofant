@@ -181,6 +181,8 @@ def test_RootOf_is_algebraic():
 
 def test_RootOf_subs():
     assert RootOf(x**3 + x + 1, 0).subs(x, y) == RootOf(y**3 + y + 1, 0)
+    eq = -x + RootOf(y**3 - x**3 + 3*x**2, y, 0, evaluate=False) + 1
+    assert eq.subs(x, Rational(1, 3)) == 0
 
 
 def test_RootOf_diff():
