@@ -9,7 +9,7 @@ from ..core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
                     sympify, Rational, Dummy, cacheit)
 from ..core.evaluate import global_evaluate
 from ..core.function import AppliedUndef
-from ..functions import root as _root
+from ..functions import root as _root, sign
 from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
 from .polyfuncs import symmetrize, viete
@@ -479,18 +479,24 @@ class RootOf(Expr):
     @cacheit
     def _roots_trivial(cls, poly, radicals):
         """Compute roots in linear, quadratic and binomial cases. """
-        if poly.degree() == 1:
+        n = poly.degree()
+
+        if n == 1:
             return roots_linear(poly)
 
         if not radicals:
             return
 
-        if poly.degree() == 2:
+        if n == 2:
             return roots_quadratic(poly)
-        elif poly.length() == 2 and poly.TC():
-            return roots_binomial(poly)
-        else:
-            return
+        elif poly.length() == 2 and poly.coeff_monomial(1):
+            if not poly.free_symbols_in_domain:
+                return roots_binomial(poly)
+            elif all(sign(_) in (-1, 1) for _ in poly.coeffs()):
+                lc, tc = poly.LC(), poly.TC()
+                x, r = poly.gen, _root(abs(tc/lc), n)
+                poly = Poly(x**n + sign(lc*tc), x)
+                return [r*_ for _ in cls._roots_trivial(poly, radicals)]
 
     @classmethod
     def _preprocess_roots(cls, poly):
