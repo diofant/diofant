@@ -27,7 +27,7 @@ from ..simplify import (simplify, collect, powsimp, posify, powdenest,
 from ..simplify.sqrtdenest import unrad
 from ..simplify.fu import TR1
 from ..matrices import Matrix, zeros
-from ..polys import roots, cancel, factor, Poly, together
+from ..polys import roots, cancel, factor, Poly, together, RootOf
 from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
 from ..utilities import filldedent, subsets
 from ..utilities.iterables import uniq
@@ -677,8 +677,8 @@ def solve(f, *symbols, **flags):
             if not isinstance(p, Expr) or isinstance(p, Piecewise):
                 pass
             elif (isinstance(p, bool) or not p.args or p in symset or
-                  p.is_Add or p.is_Mul or p.is_Pow or
-                  p.is_Function) and p.func not in (re, im):
+                  p.is_Add or p.is_Mul or p.is_Pow or p.is_Function or
+                  isinstance(p, RootOf)) and p.func not in (re, im):
                 continue
             elif p not in seen:
                 seen.add(p)
