@@ -8,8 +8,7 @@ from diofant.domains.domainelement import DomainElement
 from diofant.domains.groundtypes import PythonRational
 from diofant.domains.realfield import RealField
 from diofant.domains.algebraicfield import AlgebraicField
-from diofant.polys.rings import ring
-from diofant.polys.fields import field
+from diofant.polys import ring, field, RootOf
 from diofant.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
                                       GeneratorsError, CoercionFailed,
                                       NotInvertible, DomainError)
@@ -259,6 +258,17 @@ def test_Domain_unify_algebraic():
 
     assert sqrt5.unify(sqrt7.frac_field(x, y)) == sqrt57.frac_field(x, y)
     assert sqrt5.frac_field(x, y).unify(sqrt7) == sqrt57.frac_field(x, y)
+
+    sqrt2 = QQ.algebraic_field(sqrt(2))
+    r = RootOf(x**7 - x + 1, x, 0)
+    rootof = QQ.algebraic_field(r)
+    ans = QQ.algebraic_field(r + sqrt(2))
+    assert sqrt2.unify(rootof) == rootof.unify(sqrt2) == ans
+
+    # here domain created from tuple, not Expr
+    p = Poly(x**3 - sqrt(2)*x - 1, x, extension=True)
+    sqrt2 = p.domain
+    assert sqrt2.unify(rootof) == rootof.unify(sqrt2) == ans
 
 
 def test_Domain_unify_with_symbols():

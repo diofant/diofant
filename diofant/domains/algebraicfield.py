@@ -27,13 +27,12 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
         from ..polys.numberfields import to_number_field
 
-        self.orig_ext = ext
         self.ext = to_number_field(ext)
         self.mod = self.ext.minpoly.rep
         self.domain = dom
 
         self.ngens = 1
-        self.symbols = self.gens = (self.ext,)
+        self.symbols = self.gens = (self.ext.as_expr(),)
         self.unit = self([dom(1), dom(0)])
 
         self.zero = self.dtype.zero(self.mod.rep, dom)
