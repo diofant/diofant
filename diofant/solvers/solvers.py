@@ -268,10 +268,11 @@ def solve(f, *symbols, **flags):
             recast as Floats.  If the flag is False then nothing
             will be done to the Floats.
         cubics, quartics, quintics : bool, optional
-            Return explicit solutions when, respectively, cubic,
-            quartic or quintic expressions are encountered.  Default is
-            True.  If False, :class:`~diofant.polys.rootoftools.RootOf`
-            instances will be returned instead.
+            Return explicit solutions (with radicals, which can be quite
+            long) when, respectively, cubic, quartic or quintic expressions
+            are encountered.  Default is True.  If False,
+            :class:`~diofant.polys.rootoftools.RootOf` instances will
+            be returned instead.
 
     Examples
     ========
@@ -458,22 +459,6 @@ def solve(f, *symbols, **flags):
         0
         >>> limit(eq, x, 0, '+')
         0
-
-    *Disabling high-order, explicit solutions*
-
-    When solving polynomial expressions, one might not want explicit solutions
-    (which can be quite long). If the expression is univariate, RootOf
-    instances will be returned instead:
-
-        >>> solve(x**3 - x + 1)
-        [{x: -1/((-1/2 - sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)) - (-1/2 -
-          sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)/3},
-         {x: -(-1/2 + sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)/3 - 1/((-1/2 +
-          sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3))},
-         {x: -(3*sqrt(69)/2 + 27/2)**(1/3)/3 - 1/(3*sqrt(69)/2 + 27/2)**(1/3)}]
-        >>> solve(x**3 - x + 1, cubics=False)
-        [{x: RootOf(x**3 - x + 1, x, 0)}, {x: RootOf(x**3 - x + 1, x, 1)},
-         {x: RootOf(x**3 - x + 1, x, 2)}]
 
     See Also
     ========
