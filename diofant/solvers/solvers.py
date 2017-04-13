@@ -475,38 +475,6 @@ def solve(f, *symbols, **flags):
         [{x: RootOf(x**3 - x + 1, x, 0)}, {x: RootOf(x**3 - x + 1, x, 1)},
          {x: RootOf(x**3 - x + 1, x, 2)}]
 
-    *Solving equations involving radicals*
-
-    Because of Diofant's use of the principle root (issue sympy/sympy#8789), some solutions
-    to radical equations will be missed unless check=False:
-
-        >>> from diofant import root
-        >>> eq = root(x**3 - 3*x**2, 3) + 1 - x
-        >>> solve(eq)
-        []
-        >>> solve(eq, check=False)
-        [{x: 1/3}]
-
-    In the above example there is only a single solution to the equation. Other
-    expressions will yield spurious roots which must be checked manually;
-    roots which give a negative argument to odd-powered radicals will also need
-    special checking:
-
-        >>> from diofant import real_root, Rational
-        >>> eq = root(x, 3) - root(x, 5) + Rational(1, 7)
-        >>> solve(eq)
-        [{x: RootOf(7*_p**5 - 7*_p**3 + 1, _p, 1)**15},
-         {x: RootOf(7*_p**5 - 7*_p**3 + 1, _p, 2)**15}]
-        >>> sol = solve(eq, check=False)
-        >>> [abs(eq.subs(i).n(2)) for i in sol]
-        [0.48, 0.e-110, 0.e-110, 0.052, 0.052]
-
-        The first solution is negative so real_root must be used to see that
-        it satisfies the expression:
-
-        >>> abs(real_root(eq.subs(sol[0])).n(2))
-        0.e-110
-
     See Also
     ========
 
