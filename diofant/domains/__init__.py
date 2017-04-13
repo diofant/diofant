@@ -1,70 +1,39 @@
 """Implementation of mathematical domains. """
 
-__all__ = []
-
 from . import domain
-__all__.extend(domain.__all__)
-from .domain import *  # noqa: F403
-
 from . import finitefield
-__all__.extend(finitefield.__all__)
-from .finitefield import *  # noqa: F403
-
 from . import integerring
-__all__.extend(integerring.__all__)
-from .integerring import *  # noqa: F403
-
 from . import rationalfield
-__all__.extend(rationalfield.__all__)
-from .rationalfield import *  # noqa: F403
-
 from . import realfield
-__all__.extend(realfield.__all__)
-from .realfield import *  # noqa: F403
-
 from . import complexfield
-__all__.extend(complexfield.__all__)
-from .complexfield import *  # noqa: F403
-
 from . import pythonfinitefield
-__all__.extend(pythonfinitefield.__all__)
-from .pythonfinitefield import *  # noqa: F403
-
 from . import gmpyfinitefield
-__all__.extend(gmpyfinitefield.__all__)
-from .gmpyfinitefield import *  # noqa: F403
-
 from . import pythonintegerring
-__all__.extend(pythonintegerring.__all__)
-from .pythonintegerring import *  # noqa: F403
-
 from . import gmpyintegerring
-__all__.extend(gmpyintegerring.__all__)
-from .gmpyintegerring import *  # noqa: F403
-
 from . import pythonrationalfield
-__all__.extend(pythonrationalfield.__all__)
-from .pythonrationalfield import *  # noqa: F403
-
 from . import gmpyrationalfield
-__all__.extend(gmpyrationalfield.__all__)
-from .gmpyrationalfield import *  # noqa: F403
-
 from . import algebraicfield
-__all__.extend(algebraicfield.__all__)
-from .algebraicfield import *  # noqa: F403
-
 from . import polynomialring
-__all__.extend(polynomialring.__all__)
-from .polynomialring import *  # noqa: F403
-
 from . import fractionfield
-__all__.extend(fractionfield.__all__)
-from .fractionfield import *  # noqa: F403
-
 from . import expressiondomain
-__all__.extend(expressiondomain.__all__)
-from .expressiondomain import *  # noqa: F403
+
+from .domain import Domain
+from .finitefield import FiniteField
+from .integerring import IntegerRing
+from .rationalfield import RationalField
+from .realfield import RealField
+from .complexfield import ComplexField
+from .pythonfinitefield import PythonFiniteField
+from .gmpyfinitefield import GMPYFiniteField
+from .pythonintegerring import PythonIntegerRing
+from .gmpyintegerring import GMPYIntegerRing
+from .pythonrationalfield import PythonRationalField
+from .gmpyrationalfield import GMPYRationalField
+from .algebraicfield import AlgebraicField
+from .polynomialring import PolynomialRing
+from .fractionfield import FractionField
+from .expressiondomain import ExpressionDomain
+from .groundtypes import PythonRational
 
 FF_python = PythonFiniteField
 FF_gmpy = GMPYFiniteField
@@ -78,22 +47,15 @@ QQ_gmpy = GMPYRationalField
 RR = RealField()
 CC = ComplexField()
 
-from .groundtypes import PythonRational
-
 from ..core.compatibility import GROUND_TYPES
 
-_GROUND_TYPES_MAP = {
-    'gmpy': (FF_gmpy, ZZ_gmpy(), QQ_gmpy()),
-    'python': (FF_python, ZZ_python(), QQ_python()),
-}
+_GROUND_TYPES_MAP = {'gmpy': (FF_gmpy, ZZ_gmpy(), QQ_gmpy()),
+                     'python': (FF_python, ZZ_python(), QQ_python())}
 
 FF, ZZ, QQ = _GROUND_TYPES_MAP[GROUND_TYPES]
 GF = FF
 EX = ExpressionDomain()
 
-__all__.extend([
-    "FF_python", "FF_gmpy",
-    "ZZ_python", "ZZ_gmpy",
-    "QQ_python", "QQ_gmpy",
-    "GF", "FF", "ZZ", "QQ", "RR", "CC", "EX",
-])
+# Remove clash with functions of polys module:
+del ring
+del field

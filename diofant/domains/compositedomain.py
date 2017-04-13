@@ -2,10 +2,11 @@
 
 from .domain import Domain
 from ..polys.polyerrors import GeneratorsError
-from ..utilities import public
 
 
-@public
+__all__ = ('CompositeDomain',)
+
+
 class CompositeDomain(Domain):
     """Base class for composite domains, e.g. ZZ[x], ZZ(X). """
 

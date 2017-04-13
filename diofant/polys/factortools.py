@@ -335,7 +335,7 @@ def dup_zz_irreducible_p(f, K):
 
 def dup_cyclotomic_p(f, K, irreducible=False):
     """
-    Efficiently test if ``f`` is a cyclotomic polnomial.
+    Efficiently test if ``f`` is a cyclotomic polynomial.
 
     Examples
     ========
@@ -410,7 +410,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
 
 
 def dup_zz_cyclotomic_poly(n, K):
-    """Efficiently generate n-th cyclotomic polnomial. """
+    """Efficiently generate n-th cyclotomic polynomial. """
     h = [K.one, -K.one]
 
     for p, k in factorint(n).items():
@@ -478,7 +478,7 @@ def dup_zz_cyclotomic_factor(f, K):
 
 
 def dup_zz_factor_sqf(f, K):
-    """Factor square-free (non-primitive) polyomials in `Z[x]`. """
+    """Factor square-free (non-primitive) polynomials in `Z[x]`. """
     cont, g = dup_primitive(f, K)
 
     n = dup_degree(g)

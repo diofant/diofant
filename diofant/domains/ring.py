@@ -2,10 +2,11 @@
 
 from .domain import Domain
 from ..polys.polyerrors import ExactQuotientFailed, NotInvertible, NotReversible
-from ..utilities import public
 
 
-@public
+__all__ = ('Ring',)
+
+
 class Ring(Domain):
     """Represents a ring domain. """
 

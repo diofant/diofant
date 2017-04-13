@@ -4,7 +4,7 @@ from diofant.combinatorics.named_groups import (SymmetricGroup, CyclicGroup,
                                                 AbelianGroup, RubikGroup)
 from diofant.combinatorics.permutations import Permutation
 from diofant.combinatorics.generators import rubik_cube_generators
-from diofant.combinatorics.polyhedron import tetrahedron as Tetra, cube
+from diofant.combinatorics.polyhedron import tetrahedron as tetra, cube
 from diofant.combinatorics.testutil import (_verify_bsgs, _verify_centralizer,
                                             _verify_normal_closure)
 
@@ -441,7 +441,7 @@ def test_minimal_block():
     S = SymmetricGroup(6)
     assert S.minimal_block([0, 1]) == [0, 0, 0, 0, 0, 0]
 
-    assert Tetra.pgroup.minimal_block([0, 1]) == [0, 0, 0, 0]
+    assert tetra.pgroup.minimal_block([0, 1]) == [0, 0, 0, 0]
 
 
 def test_max_div():
@@ -478,7 +478,7 @@ def test_transitivity_degree():
 
 
 def test_schreier_sims_random():
-    assert sorted(Tetra.pgroup.base) == [0, 1]
+    assert sorted(tetra.pgroup.base) == [0, 1]
 
     S = SymmetricGroup(3)
     base = [0, 1]

@@ -4,10 +4,11 @@ from .rationalfield import RationalField
 from .groundtypes import (GMPYRational, DiofantRational, gmpy_numer,
                           gmpy_denom, gmpy_factorial, gmpy_qdiv)
 from ..polys.polyerrors import CoercionFailed
-from ..utilities import public
 
 
-@public
+__all__ = ('GMPYRationalField',)
+
+
 class GMPYRationalField(RationalField):
     """Rational field based on GMPY mpq class. """
 

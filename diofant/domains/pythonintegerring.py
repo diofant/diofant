@@ -5,10 +5,11 @@ from .groundtypes import (PythonInteger, DiofantInteger, python_sqrt,
                           python_factorial, python_gcdex, python_gcd,
                           python_lcm)
 from ..polys.polyerrors import CoercionFailed
-from ..utilities import public
 
 
-@public
+__all__ = ('PythonIntegerRing',)
+
+
 class PythonIntegerRing(IntegerRing):
     """Integer ring based on Python's ``int`` type. """
 

@@ -1,9 +1,8 @@
 """Trait for implementing domain elements. """
 
-from ..utilities import public
+__all__ = ('DomainElement',)
 
 
-@public
 class DomainElement:
     """
     Represents an element of a domain.

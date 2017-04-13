@@ -5,10 +5,11 @@ from .simpledomain import SimpleDomain
 from .groundtypes import DiofantInteger
 from .modularinteger import ModularIntegerFactory
 from ..polys.polyerrors import CoercionFailed
-from ..utilities import public
 
 
-@public
+__all__ = ('FiniteField',)
+
+
 class FiniteField(Field, SimpleDomain):
     """General class for finite fields. """
 

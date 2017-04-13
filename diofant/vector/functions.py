@@ -162,7 +162,7 @@ def divergence(vect, coord_sys):
         The vector operand
 
     coord_sys : CoordSysCartesian
-        The cooordinate system to calculate the divergence in
+        The coordinate system to calculate the divergence in
 
     Examples
     ========

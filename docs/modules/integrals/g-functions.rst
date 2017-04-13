@@ -135,7 +135,7 @@ is recognised to be analytic, then we can try to compute the mellin-transform of
 `f(ax)` for a parameter `a`, and deduce the G-function expression by analytic
 continuation. (Checking for analyticity is easy. Since we can only deal with a
 certain subset of functions anyway, we only have to filter out those which are
-not analyitc.)
+not analytic.)
 
 The function ``_rewrite_single`` does the table lookup and recursive mellin
 transform. The functions ``_rewrite1`` and ``_rewrite2`` respectively use

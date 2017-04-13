@@ -8,10 +8,11 @@ from mpmath.libmp import (MPZ_ONE, fzero, fone, finf, fninf, fnan,
 from mpmath.rational import mpq
 
 from .domainelement import DomainElement
-from ..utilities import public
 
 
-@public
+__all__ = ('RealElement', 'ComplexElement', 'MPContext')
+
+
 class RealElement(_mpf, DomainElement):
     """An element of a real domain. """
 
@@ -24,7 +25,6 @@ class RealElement(_mpf, DomainElement):
         return self.context._parent
 
 
-@public
 class ComplexElement(_mpc, DomainElement):
     """An element of a complex domain. """
 
@@ -40,7 +40,6 @@ class ComplexElement(_mpc, DomainElement):
 new = object.__new__
 
 
-@public
 class MPContext(PythonMPContext):
 
     def __init__(self, prec=53, dps=None, tol=None):

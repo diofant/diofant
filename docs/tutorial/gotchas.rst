@@ -50,7 +50,7 @@ chance to get to them.
    :class:`~diofant.core.numbers.Integer` automatically.
 
 The universal solution is using correct Diofant numeric class to
-construct numbers explicitely.  For example,
+construct numbers explicitly.  For example,
 :class:`~diofant.core.numbers.Rational` in the above example
 
     >>> x**Rational(3, 2)

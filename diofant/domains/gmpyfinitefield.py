@@ -2,10 +2,11 @@
 
 from .finitefield import FiniteField
 from .gmpyintegerring import GMPYIntegerRing
-from ..utilities import public
 
 
-@public
+__all__ = ('GMPYFiniteField',)
+
+
 class GMPYFiniteField(FiniteField):
     """Finite field based on GMPY integers. """
 

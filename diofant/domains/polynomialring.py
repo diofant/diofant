@@ -3,10 +3,11 @@
 from .ring import Ring
 from .compositedomain import CompositeDomain
 from ..polys.polyerrors import CoercionFailed, GeneratorsError
-from ..utilities import public
 
 
-@public
+__all__ = ('PolynomialRing',)
+
+
 class PolynomialRing(Ring, CompositeDomain):
     """A class for representing multivariate polynomial rings. """
 

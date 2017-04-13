@@ -3,7 +3,7 @@ import itertools
 import pytest
 
 from diofant import (symbols, Dummy, simplify, Equality, S, Interval,
-                     oo, EmptySet, Integer, Unequality, Union)
+                     oo, EmptySet, Integer, Unequality, Union, Eq)
 from diofant.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                    Nand, Nor, Not, Or, POSform, SOPform, Xor,
                                    conjuncts, disjuncts, distribute_or_over_and,
@@ -714,3 +714,9 @@ def test_sympyissue_8975():
     x = symbols('x')
     assert Or(And(-oo < x, x <= -2), And(2 <= x, x < oo)).as_set() == \
         Interval(-oo, -2, True) + Interval(2, oo, False, True)
+
+
+def test_sympyissue_12522():
+    assert Eq(1, 1).simplify() is true
+    assert true.simplify() is true
+    assert false.simplify() is false

@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative as D, Eq, exp, sin, tan,
+from diofant import (diff, Eq, exp, sin, tan,
                      Function, Symbol, symbols, cos, log, Integer)
 from diofant.solvers.pde import (pde_separate_add, pde_separate_mul,
                                  pdsolve, classify_pde, checkpdesol,
@@ -15,9 +15,9 @@ def test_pde_separate_add():
     x, y, z, t = symbols("x,y,z,t")
     F, T, X, Y, Z, u = map(Function, 'FTXYZu')
 
-    eq = Eq(D(u(x, t), x), D(u(x, t), t)*exp(u(x, t)))
+    eq = Eq(diff(u(x, t), x), diff(u(x, t), t)*exp(u(x, t)))
     res = pde_separate_add(eq, u(x, t), [X(x), T(t)])
-    assert res == [D(X(x), x)*exp(-X(x)), D(T(t), t)*exp(T(t))]
+    assert res == [diff(X(x), x)*exp(-X(x)), diff(T(t), t)*exp(T(t))]
 
 
 def test_pde_separate_mul():
@@ -28,7 +28,7 @@ def test_pde_separate_mul():
     r, theta, z = symbols('r,theta,z')
 
     # Something simple :)
-    eq = Eq(D(F(x, y, z), x) + D(F(x, y, z), y) + D(F(x, y, z), z))
+    eq = Eq(diff(F(x, y, z), x) + diff(F(x, y, z), y) + diff(F(x, y, z), z))
 
     # Duplicate arguments in functions
     pytest.raises(ValueError, lambda: pde_separate_mul(eq, F(x, y, z), [X(x), u(z, z)]))
@@ -38,49 +38,49 @@ def test_pde_separate_mul():
     pytest.raises(ValueError, lambda: pde_separate_mul(eq, F(x, y, z), [X(t), Y(x, y)]))
 
     assert pde_separate_mul(eq, F(x, y, z), [Y(y), u(x, z)]) == \
-        [D(Y(y), y)/Y(y), -D(u(x, z), x)/u(x, z) - D(u(x, z), z)/u(x, z)]
+        [diff(Y(y), y)/Y(y), -diff(u(x, z), x)/u(x, z) - diff(u(x, z), z)/u(x, z)]
     assert pde_separate_mul(eq, F(x, y, z), [X(x), Y(y), Z(z)]) == \
-        [D(X(x), x)/X(x), -D(Z(z), z)/Z(z) - D(Y(y), y)/Y(y)]
+        [diff(X(x), x)/X(x), -diff(Z(z), z)/Z(z) - diff(Y(y), y)/Y(y)]
 
     # wave equation
-    wave = Eq(D(u(x, t), t, t), c**2*D(u(x, t), x, x))
+    wave = Eq(diff(u(x, t), t, t), c**2*diff(u(x, t), x, x))
     res = pde_separate_mul(wave, u(x, t), [X(x), T(t)])
-    assert res == [D(X(x), x, x)/X(x), D(T(t), t, t)/(c**2*T(t))]
+    assert res == [diff(X(x), x, x)/X(x), diff(T(t), t, t)/(c**2*T(t))]
 
     # Laplace equation in cylindrical coords
-    eq = Eq(1/r * D(Phi(r, theta, z), r) + D(Phi(r, theta, z), r, 2) +
-            1/r**2 * D(Phi(r, theta, z), theta, 2) + D(Phi(r, theta, z), z, 2))
+    eq = Eq(1/r * diff(Phi(r, theta, z), r) + diff(Phi(r, theta, z), r, 2) +
+            1/r**2 * diff(Phi(r, theta, z), theta, 2) + diff(Phi(r, theta, z), z, 2))
     # Separate z
     res = pde_separate_mul(eq, Phi(r, theta, z), [Z(z), u(theta, r)])
-    assert res == [D(Z(z), z, z)/Z(z),
-            -D(u(theta, r), r, r)/u(theta, r) -
-        D(u(theta, r), r)/(r*u(theta, r)) -
-        D(u(theta, r), theta, theta)/(r**2*u(theta, r))]
+    assert res == [diff(Z(z), z, z)/Z(z),
+            -diff(u(theta, r), r, r)/u(theta, r) -
+        diff(u(theta, r), r)/(r*u(theta, r)) -
+        diff(u(theta, r), theta, theta)/(r**2*u(theta, r))]
     # Lets use the result to create a new equation...
     eq = Eq(res[1], c)
     # ...and separate theta...
     res = pde_separate_mul(eq, u(theta, r), [T(theta), R(r)])
-    assert res == [D(T(theta), theta, theta)/T(theta),
-            -r*D(R(r), r)/R(r) - r**2*D(R(r), r, r)/R(r) - c*r**2]
+    assert res == [diff(T(theta), theta, theta)/T(theta),
+            -r*diff(R(r), r)/R(r) - r**2*diff(R(r), r, r)/R(r) - c*r**2]
     # ...or r...
     res = pde_separate_mul(eq, u(theta, r), [R(r), T(theta)])
-    assert res == [r*D(R(r), r)/R(r) + r**2*D(R(r), r, r)/R(r) + c*r**2,
-            -D(T(theta), theta, theta)/T(theta)]
+    assert res == [r*diff(R(r), r)/R(r) + r**2*diff(R(r), r, r)/R(r) + c*r**2,
+            -diff(T(theta), theta, theta)/T(theta)]
 
     # Laplace eq in spherical coordinates
     r, phi, theta, C1 = symbols("r,phi,theta,C1")
     Xi = Function('Xi')
     R, Phi, Theta, u = map(Function, ['R', 'Phi', 'Theta', 'u'])
-    eq = Eq(D(Xi(r, phi, theta), r, 2) + 2/r * D(Xi(r, phi, theta), r) +
-            1/(r**2 * sin(phi)**2) * D(Xi(r, phi, theta), theta, 2) +
-            cos(phi)/(r**2 * sin(phi)) * D(Xi(r, phi, theta), phi) +
-            1/r**2 * D(Xi(r, phi, theta), phi, 2))
+    eq = Eq(diff(Xi(r, phi, theta), r, 2) + 2/r * diff(Xi(r, phi, theta), r) +
+            1/(r**2 * sin(phi)**2) * diff(Xi(r, phi, theta), theta, 2) +
+            cos(phi)/(r**2 * sin(phi)) * diff(Xi(r, phi, theta), phi) +
+            1/r**2 * diff(Xi(r, phi, theta), phi, 2))
     res_theta = pde_separate(eq, Xi(r, phi, theta), [Theta(theta), u(r, phi)])
     eq_left = Eq(res_theta[1], -C1)
     res_theta = pde_separate(eq_left, u(r, phi), [Phi(phi), R(r)])
-    assert (res_theta == [-3*C1/sin(phi)**2 + 3*D(Phi(phi), phi, phi)/Phi(phi) +
-                          3*D(Phi(phi), phi)/(Phi(phi)*tan(phi)),
-                          -3*r**2*D(R(r), r, r)/R(r) - 6*r*D(R(r), r)/R(r)])
+    assert (res_theta == [-3*C1/sin(phi)**2 + 3*diff(Phi(phi), phi, phi)/Phi(phi) +
+                          3*diff(Phi(phi), phi)/(Phi(phi)*tan(phi)),
+                          -3*r**2*diff(R(r), r, r)/R(r) - 6*r*diff(R(r), r)/R(r)])
 
 
 def test_pde_classify():

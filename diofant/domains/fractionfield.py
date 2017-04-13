@@ -3,10 +3,11 @@
 from .field import Field
 from .compositedomain import CompositeDomain
 from ..polys.polyerrors import CoercionFailed, GeneratorsError
-from ..utilities import public
 
 
-@public
+__all__ = ('FractionField',)
+
+
 class FractionField(Field, CompositeDomain):
     """A class for representing multivariate rational function fields. """
 

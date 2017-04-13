@@ -2,15 +2,16 @@
 
 from .domainelement import DomainElement
 from ..core import Basic, sympify
-from ..core.compatibility import HAS_GMPY, is_sequence
+from ..core.compatibility import HAS_GMPY, is_sequence, default_sort_key
 from ..polys.polyerrors import UnificationFailed, CoercionFailed, DomainError
 from ..polys.orderings import lex
 from ..polys.polyutils import _unify_gens
-from ..utilities import default_sort_key, public
 from ..printing.defaults import DefaultPrinting
 
 
-@public
+__all__ = ('Domain',)
+
+
 class Domain(DefaultPrinting):
     """Represents an abstract domain. """
 

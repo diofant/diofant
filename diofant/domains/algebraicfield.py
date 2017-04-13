@@ -6,10 +6,11 @@ from .characteristiczero import CharacteristicZero
 from ..polys.polyclasses import ANP
 from ..polys.polyerrors import (CoercionFailed, DomainError, NotAlgebraic,
                                 IsomorphismFailed)
-from ..utilities import public
 
 
-@public
+__all__ = ('AlgebraicField',)
+
+
 class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     """A class for representing algebraic number fields. """
 

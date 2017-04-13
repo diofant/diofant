@@ -6,10 +6,11 @@ from .characteristiczero import CharacteristicZero
 from .mpelements import MPContext
 from ..polys.polyerrors import DomainError, CoercionFailed
 from ..core import Float
-from ..utilities import public
 
 
-@public
+__all__ = ('RealField',)
+
+
 class RealField(Field, CharacteristicZero, SimpleDomain):
     """Real numbers up to the given precision. """
 
