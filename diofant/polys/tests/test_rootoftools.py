@@ -7,7 +7,7 @@ from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.polys.polyerrors import (MultivariatePolynomialError,
                                       GeneratorsNeeded, PolynomialError)
 from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                     Function, Eq, solve, legendre_poly, Symbol, root)
+                     Function, Eq, solve, legendre_poly, Symbol, root, Pow)
 
 from diofant.abc import a, b, x, y, z, r
 
@@ -179,6 +179,14 @@ def test_RootOf_is_complex():
 def test_RootOf_is_algebraic():
     assert RootOf(x**3 + x + 3, 0).is_algebraic is True
     assert RootOf(x**3 + y*x + 3, x, 0).is_algebraic is None
+
+
+def test_RootOf_power():
+    e = RootOf(y**3 - x, y, 0)
+    assert e**3 == x
+    assert e**2 == Pow(e, 2, evaluate=False)
+    e2 = RootOf(y**3 - x*y, y, 0)
+    assert e2**3 == Pow(e2, 3, evaluate=False)
 
 
 def test_RootOf_subs():

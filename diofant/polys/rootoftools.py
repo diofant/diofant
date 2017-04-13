@@ -148,6 +148,11 @@ class RootOf(Expr):
         if all(_.is_algebraic for _ in self.poly.coeffs()):
             return True
 
+    def _eval_power(self, expt):
+        p = self.poly
+        if p.degree() == expt and p.length() == 2 and p.TC():
+            return -p.TC()/p.LC()
+
     @property
     def is_number(self):
         return not self.free_symbols
