@@ -9,7 +9,7 @@ from ..core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
                     sympify, Rational, Dummy, cacheit)
 from ..core.evaluate import global_evaluate
 from ..core.function import AppliedUndef
-from ..functions import root as _root
+from ..functions import root as _root, sign
 from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
 from .polyfuncs import symmetrize, viete
@@ -147,6 +147,11 @@ class RootOf(Expr):
     def _eval_is_algebraic(self):
         if all(_.is_algebraic for _ in self.poly.coeffs()):
             return True
+
+    def _eval_power(self, expt):
+        p = self.poly
+        if p.degree() == expt and p.length() == 2 and p.TC():
+            return -p.TC()/p.LC()
 
     @property
     def is_number(self):
@@ -479,18 +484,24 @@ class RootOf(Expr):
     @cacheit
     def _roots_trivial(cls, poly, radicals):
         """Compute roots in linear, quadratic and binomial cases. """
-        if poly.degree() == 1:
+        n = poly.degree()
+
+        if n == 1:
             return roots_linear(poly)
 
         if not radicals:
             return
 
-        if poly.degree() == 2:
+        if n == 2:
             return roots_quadratic(poly)
-        elif poly.length() == 2 and poly.TC():
-            return roots_binomial(poly)
-        else:
-            return
+        elif poly.length() == 2 and poly.coeff_monomial(1):
+            if not poly.free_symbols_in_domain:
+                return roots_binomial(poly)
+            elif all(sign(_) in (-1, 1) for _ in poly.coeffs()):
+                lc, tc = poly.LC(), poly.TC()
+                x, r = poly.gen, _root(abs(tc/lc), n)
+                poly = Poly(x**n + sign(lc*tc), x)
+                return [r*_ for _ in cls._roots_trivial(poly, radicals)]
 
     @classmethod
     def _preprocess_roots(cls, poly):
@@ -550,8 +561,11 @@ class RootOf(Expr):
             _complexes_cache[self.poly][self.index - reals_count] = interval
 
     def _eval_subs(self, old, new):
-        # don't allow subs to change anything
-        return self
+        if old in self.free_symbols:
+            return self.func(self.poly.subs(old, new), *self.args[1:])
+        else:
+            # don't allow subs to change anything
+            return self
 
     def _eval_evalf(self, prec):
         """Evaluate this complex root to the given precision. """

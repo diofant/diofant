@@ -7,7 +7,7 @@ from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.polys.polyerrors import (MultivariatePolynomialError,
                                       GeneratorsNeeded, PolynomialError)
 from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                     Function, Eq, solve, legendre_poly, Symbol)
+                     Function, Eq, solve, legendre_poly, Symbol, root, Pow)
 
 from diofant.abc import a, b, x, y, z, r
 
@@ -92,7 +92,9 @@ def test_RootOf___new__():
     assert RootOf(Poly(x**2 - y, x), 0) == -sqrt(y)
     assert RootOf(Poly(x**2 - y, x), 1) == sqrt(y)
 
-    assert RootOf(Poly(x**3 - y, x), 0) == y**Rational(1, 3)
+    assert isinstance(RootOf(x**3 - y, x, 0), RootOf)
+    p = Symbol('p', positive=True)
+    assert RootOf(x**3 - p, x, 0) == root(p, 3)*RootOf(x**3 - 1, x, 0)
 
     assert RootOf(y*x**3 + y*x + 2*y, x, 0) == -1
 
@@ -179,8 +181,18 @@ def test_RootOf_is_algebraic():
     assert RootOf(x**3 + y*x + 3, x, 0).is_algebraic is None
 
 
+def test_RootOf_power():
+    e = RootOf(y**3 - x, y, 0)
+    assert e**3 == x
+    assert e**2 == Pow(e, 2, evaluate=False)
+    e2 = RootOf(y**3 - x*y, y, 0)
+    assert e2**3 == Pow(e2, 3, evaluate=False)
+
+
 def test_RootOf_subs():
     assert RootOf(x**3 + x + 1, 0).subs(x, y) == RootOf(y**3 + y + 1, 0)
+    eq = -x + RootOf(y**3 - x**3 + 3*x**2, y, 0) + 1
+    assert eq.subs(x, Rational(1, 3)) == 0
 
 
 def test_RootOf_diff():

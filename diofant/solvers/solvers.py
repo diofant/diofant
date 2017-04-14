@@ -27,7 +27,7 @@ from ..simplify import (simplify, collect, powsimp, posify, powdenest,
 from ..simplify.sqrtdenest import unrad
 from ..simplify.fu import TR1
 from ..matrices import Matrix, zeros
-from ..polys import roots, cancel, factor, Poly, together
+from ..polys import roots, cancel, factor, Poly, together, RootOf
 from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
 from ..utilities import filldedent, subsets
 from ..utilities.iterables import uniq
@@ -268,10 +268,11 @@ def solve(f, *symbols, **flags):
             recast as Floats.  If the flag is False then nothing
             will be done to the Floats.
         cubics, quartics, quintics : bool, optional
-            Return explicit solutions when, respectively, cubic,
-            quartic or quintic expressions are encountered.  Default is
-            True.  If False, :class:`~diofant.polys.rootoftools.RootOf`
-            instances will be returned instead.
+            Return explicit solutions (with radicals, which can be quite
+            long) when, respectively, cubic, quartic or quintic expressions
+            are encountered.  Default is True.  If False,
+            :class:`~diofant.polys.rootoftools.RootOf` instances will
+            be returned instead.
 
     Examples
     ========
@@ -459,54 +460,6 @@ def solve(f, *symbols, **flags):
         >>> limit(eq, x, 0, '+')
         0
 
-    *Disabling high-order, explicit solutions*
-
-    When solving polynomial expressions, one might not want explicit solutions
-    (which can be quite long). If the expression is univariate, RootOf
-    instances will be returned instead:
-
-        >>> solve(x**3 - x + 1)
-        [{x: -1/((-1/2 - sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)) - (-1/2 -
-          sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)/3},
-         {x: -(-1/2 + sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3)/3 - 1/((-1/2 +
-          sqrt(3)*I/2)*(3*sqrt(69)/2 + 27/2)**(1/3))},
-         {x: -(3*sqrt(69)/2 + 27/2)**(1/3)/3 - 1/(3*sqrt(69)/2 + 27/2)**(1/3)}]
-        >>> solve(x**3 - x + 1, cubics=False)
-        [{x: RootOf(x**3 - x + 1, x, 0)}, {x: RootOf(x**3 - x + 1, x, 1)},
-         {x: RootOf(x**3 - x + 1, x, 2)}]
-
-    *Solving equations involving radicals*
-
-    Because of Diofant's use of the principle root (issue sympy/sympy#8789), some solutions
-    to radical equations will be missed unless check=False:
-
-        >>> from diofant import root
-        >>> eq = root(x**3 - 3*x**2, 3) + 1 - x
-        >>> solve(eq)
-        []
-        >>> solve(eq, check=False)
-        [{x: 1/3}]
-
-    In the above example there is only a single solution to the equation. Other
-    expressions will yield spurious roots which must be checked manually;
-    roots which give a negative argument to odd-powered radicals will also need
-    special checking:
-
-        >>> from diofant import real_root, Rational
-        >>> eq = root(x, 3) - root(x, 5) + Rational(1, 7)
-        >>> solve(eq)
-        [{x: RootOf(7*_p**5 - 7*_p**3 + 1, _p, 1)**15},
-         {x: RootOf(7*_p**5 - 7*_p**3 + 1, _p, 2)**15}]
-        >>> sol = solve(eq, check=False)
-        >>> [abs(eq.subs(i).n(2)) for i in sol]
-        [0.48, 0.e-110, 0.e-110, 0.052, 0.052]
-
-        The first solution is negative so real_root must be used to see that
-        it satisfies the expression:
-
-        >>> abs(real_root(eq.subs(sol[0])).n(2))
-        0.e-110
-
     See Also
     ========
 
@@ -677,8 +630,8 @@ def solve(f, *symbols, **flags):
             if not isinstance(p, Expr) or isinstance(p, Piecewise):
                 pass
             elif (isinstance(p, bool) or not p.args or p in symset or
-                  p.is_Add or p.is_Mul or p.is_Pow or
-                  p.is_Function) and p.func not in (re, im):
+                  p.is_Add or p.is_Mul or p.is_Pow or p.is_Function or
+                  isinstance(p, RootOf)) and p.func not in (re, im):
                 continue
             elif p not in seen:
                 seen.add(p)

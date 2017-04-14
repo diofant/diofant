@@ -3298,13 +3298,13 @@ def test_pretty_RootOf():
     expr = RootOf(x**5 + 11*x - 2, 0)
     ascii_str = \
 """\
-      / 5              \\\n\
-RootOf\\x  + 11*x - 2, 0/\
+      / 5                 \\\n\
+RootOf\\x  + 11*x - 2, x, 0/\
 """
     ucode_str = \
 """\
-      ⎛ 5              ⎞\n\
-RootOf⎝x  + 11⋅x - 2, 0⎠\
+      ⎛ 5                 ⎞\n\
+RootOf⎝x  + 11⋅x - 2, x, 0⎠\
 """
 
     assert pretty(expr) == ascii_str

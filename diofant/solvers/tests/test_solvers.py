@@ -347,12 +347,12 @@ def test_linear_system_function():
 
 def test_solve_radicals():
     eq = root(x**3 - 3*x**2, 3) + 1 - x
-    assert solve(eq) == []  # wrong!
+    assert solve(eq) == []
     assert solve(eq, check=False) == [{x: Rational(1, 3)}]
 
     eq = root(x, 3) - root(x, 5) + Rational(1, 7)
     assert solve(eq) == [{x: RootOf(7*x**5 - 7*x**3 + 1, x, 1)**15},
-                                    {x: RootOf(7*x**5 - 7*x**3 + 1, x, 2)**15}]
+                         {x: RootOf(7*x**5 - 7*x**3 + 1, x, 2)**15}]
 
     # XXX is this correct?
     sol = solve(eq, check=False)
