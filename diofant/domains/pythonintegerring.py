@@ -57,8 +57,8 @@ class PythonIntegerRing(IntegerRing):
 
     def from_QQ_gmpy(self, a, K0):
         """Convert GMPY's ``mpq`` to Python's ``int``. """
-        if a.denom() == 1:
-            return PythonInteger(a.numer())
+        if a.denominator == 1:
+            return PythonInteger(a.numerator)
 
     def from_RealField(self, a, K0):
         """Convert mpmath's ``mpf`` to Python's ``int``. """

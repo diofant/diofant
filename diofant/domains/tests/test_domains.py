@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import sqrt, sin, oo, Poly, Float, Integer, Rational
-from diofant.domains import ZZ, QQ, RR, CC, FF, GF, EX, QQ_python
+from diofant.domains import ZZ, QQ, RR, CC, FF, GF, EX, QQ_python, ZZ_python
 from diofant.domains.domainelement import DomainElement
 from diofant.domains.groundtypes import PythonRational
 from diofant.domains.realfield import RealField
@@ -526,6 +526,9 @@ def test_Domain_convert():
     a2 = ALG2.from_diofant(sqrt(2))
     a = ALG.convert(a2, ALG2)
     assert a.rep == [QQ(1, 2), 0, -QQ(9, 2), 0]
+
+    assert ZZ_python().convert(3.0) == ZZ_python().dtype(3)
+    pytest.raises(CoercionFailed, lambda: ZZ_python().convert(3.2))
 
 
 def test_arithmetics():
