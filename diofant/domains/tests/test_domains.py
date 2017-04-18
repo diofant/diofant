@@ -529,8 +529,15 @@ def test_Domain_convert():
 
 
 def test_arithmetics():
+    assert ZZ.rem(ZZ(2), ZZ(3)) == 2
+    assert ZZ.div(ZZ(2), ZZ(3)) == (0, 2)
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
+
+
+def test_Ring():
+    assert ZZ.numer(ZZ(3)) == 3
+    assert ZZ.denom(ZZ(3)) == 1
 
 
 def test_PolynomialRing__init():
