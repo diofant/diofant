@@ -97,6 +97,9 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         """Convert a mpmath ``mpf`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
+    def from_AlgebraicField(self, a, K0):
+        return self.from_diofant(K0.to_diofant(a))
+
     def get_ring(self):
         """Returns a ring associated with ``self``. """
         raise DomainError('there is no ring associated with %s' % self)

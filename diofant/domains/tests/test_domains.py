@@ -522,6 +522,11 @@ def test_Domain_convert():
 
     assert EX.convert(ALG.new([1, 1]), ALG) == sqrt(2) + sqrt(3) + 1
 
+    ALG2 = QQ.algebraic_field(sqrt(2))
+    a2 = ALG2.from_diofant(sqrt(2))
+    a = ALG.convert(a2, ALG2)
+    assert a.rep == [QQ(1, 2), 0, -QQ(9, 2), 0]
+
 
 def test_arithmetics():
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
