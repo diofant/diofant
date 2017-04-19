@@ -38,7 +38,7 @@ extra_reqs = {'exports': ['numpy', 'scipy', 'Theano'],
               }
 extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
                          'flake8-docstrings', 'pep8-naming',
-                         'flake8-comprehensions',
+                         'pydocstyle!=2.0.0', 'flake8-comprehensions',
                          'pytest-cov', 'coverage'] + setup_reqs
 
 setup(name='Diofant',
