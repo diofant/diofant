@@ -3,7 +3,7 @@ import pytest
 from diofant import (Symbol, gamma, I, oo, nan, zoo, factorial, sqrt, Rational,
                      log, Integer, polygamma, EulerGamma, pi, uppergamma, S,
                      expand_func, loggamma, sin, cos, O, lowergamma, exp, erf,
-                     exp_polar, harmonic, zeta, conjugate, trigamma)
+                     exp_polar, harmonic, zeta, conjugate, trigamma, im)
 from diofant.core.function import ArgumentIndexError
 from diofant.utilities.randtest import (test_derivative_numerically as td,
                                         random_complex_number as randcplx,
@@ -448,3 +448,8 @@ def test_sympyissue_8524():
     assert gamma(r).is_positive is None
     assert gamma(e + S.Half).is_positive is True
     assert gamma(e - S.Half).is_positive is False
+
+
+def test_sympyissue_12569():
+    assert polygamma(0, I).is_real is not True
+    assert im(polygamma(0, I)) != 0
