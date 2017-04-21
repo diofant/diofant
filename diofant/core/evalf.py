@@ -1225,7 +1225,7 @@ def evalf(x, prec, options):
 
 
 class EvalfMixin:
-    """Mixin class adding evalf capabililty."""
+    """Mixin class adding evalf capability."""
 
     def evalf(self, n=15, subs=None, maxn=100, chop=False, strict=False, quad=None):
         """

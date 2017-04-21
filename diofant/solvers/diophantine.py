@@ -508,7 +508,7 @@ def _diop_linear(var, coeff, param):
 
     for any integral values of 't_0', 't_1'; as required.
 
-    This method is generalised for many variables, below.
+    This method is generalized for many variables, below.
 
     """
 

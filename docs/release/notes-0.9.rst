@@ -7,7 +7,7 @@ Not Released Yet
 New features
 ============
 
-* Polynomial solvers now express all available solutions with :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`400`.  Only zero-dimentional systems are supported, however.
+* Polynomial solvers now express all available solutions with :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`400`.  Only zero-dimensional systems are supported, however.
 * Support solving linear programming problems, see :pull:`283`.
 
 Major changes

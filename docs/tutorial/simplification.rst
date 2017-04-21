@@ -242,7 +242,7 @@ Assumptions
 ===========
 
 By default, Diofant performs all calculations assuming that symbols
-are commutative with respect to the mutliplication.  This assumption
+are commutative with respect to the multiplication.  This assumption
 makes it easier to treat mathematical problems in full generality.
 
     >>> sqrt(x**2)

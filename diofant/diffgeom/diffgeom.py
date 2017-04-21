@@ -442,7 +442,7 @@ class BaseScalarField(Expr):
     The use of the scalar field after its definition is independent of the
     coordinate system in which it was defined, however due to limitations in
     the simplification routines you may arrive at more complicated
-    expression if you use unappropriate coordinate systems.
+    expression if you use inappropriate coordinate systems.
 
     You can build complicated scalar fields by just building up Diofant
     expressions containing ``BaseScalarField`` instances.
@@ -526,7 +526,7 @@ class BaseVectorField(Expr):
     The use of the vector field after its definition is independent of the
     coordinate system in which it was defined, however due to limitations in the
     simplification routines you may arrive at more complicated expression if you
-    use unappropriate coordinate systems.
+    use inappropriate coordinate systems.
 
     Examples
     ========
@@ -1143,7 +1143,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
     param
         the argument of the function `\gamma` from R to the curve
     start_point
-        the point which coresponds to `\gamma(0)`
+        the point which corresponds to `\gamma(0)`
     n
         the order to which to expand
     coord_sys
@@ -1255,7 +1255,7 @@ def intcurve_diffequ(vector_field, param, start_point, coord_sys=None):
     param
         the argument of the function `\gamma` from R to the curve
     start_point
-        the point which coresponds to `\gamma(0)`
+        the point which corresponds to `\gamma(0)`
     coord_sys
         the coordinate system in which to give the equations
 

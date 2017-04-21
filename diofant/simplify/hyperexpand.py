@@ -2005,7 +2005,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     # TODO
     # The following would be possible:
     # *) PFD Duplication (see Kelly Roach's paper)
-    # *) In a similar spirit, try_lerchphi() can be generalised considerably.
+    # *) In a similar spirit, try_lerchphi() can be generalized considerably.
 
     global _collection
     if _collection is None:

@@ -180,7 +180,7 @@ def sign(e, x):
         large and zero if `e` is *constantly* zero for `x\to\infty`.
 
         The result of this function is currently undefined if `e` changes
-        sign arbitarily often at infinity (e.g. `\sin(x)`).
+        sign arbitrarily often at infinity (e.g. `\sin(x)`).
     """
     if not e.has(x):
         return sgn(e).simplify()
