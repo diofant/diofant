@@ -141,8 +141,10 @@ Issues closed
 * :sympyissue:`12221` Issue with definite piecewise integration
 * :issue:`471` polys/domains should be a top-level module
 * :sympyissue:`12522` BooleanTrue and Boolean False should have simplify method
+* :sympyissue:`12555` limit((3**x + 2 * x**10) / (x**10 + E**x), x, -oo) gives 0 instead of 2
+* :sympyissue:`12569` problem with polygamma or im
 
-.. last pr: #489
+.. last pr: #494
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_
