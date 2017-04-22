@@ -555,3 +555,7 @@ def test_sympyissue_2865():
 
 def test_sympyissue_11879():
     assert limit(((x + y)**n - x**n)/y, y, 0).powsimp() == n*x**(n-1)
+
+
+def test_sympyissue_12555():
+    assert limit((3**x + 2*x**10)/(x**10 + E**x), x, -oo) == 2

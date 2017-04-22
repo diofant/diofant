@@ -236,12 +236,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         re, im = result.as_real_imag()
         return complex(float(re), float(im))
 
+    @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
         from .relational import GreaterThan
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
@@ -254,12 +251,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return sympify(dif.is_nonnegative)
         return GreaterThan(self, other, evaluate=False)
 
+    @_sympifyit('other', NotImplemented)
     def __le__(self, other):
         from .relational import LessThan
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
@@ -272,12 +266,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return sympify(dif.is_nonpositive)
         return LessThan(self, other, evaluate=False)
 
+    @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
         from .relational import StrictGreaterThan
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
@@ -290,12 +281,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return sympify(dif.is_positive)
         return StrictGreaterThan(self, other, evaluate=False)
 
+    @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
         from .relational import StrictLessThan
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)

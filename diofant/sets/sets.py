@@ -170,7 +170,7 @@ class Set(Basic):
 
             # XXX: this doesn't work if the dimentions of the sets isn't same.
             # A - B is essentially same as A if B has a different
-            # dimentionality than A
+            # dimensionality than A
             switch_sets = ProductSet(FiniteSet(o, o - s) for s, o in
                                      zip(self.sets, other.sets))
             product_sets = (ProductSet(*set) for set in switch_sets)

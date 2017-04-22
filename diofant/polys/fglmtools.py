@@ -12,7 +12,7 @@ def matrix_fglm(F, ring, O_to):
     References
     ==========
 
-    .. [1] J.C. Faugere, P. Gianni, D. Lazard, T. Mora (1994). Efficient
+    .. [1] J.C. Faugère, P. Gianni, D. Lazard, T. Mora (1994). Efficient
            Computation of Zero-dimensional Groebner Bases by Change
            of Ordering.
     """
