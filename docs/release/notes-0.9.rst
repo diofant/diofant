@@ -143,6 +143,7 @@ Issues closed
 * :sympyissue:`12522` BooleanTrue and Boolean False should have simplify method
 * :sympyissue:`12555` limit((3**x + 2 * x**10) / (x**10 + E**x), x, -oo) gives 0 instead of 2
 * :sympyissue:`12569` problem with polygamma or im
+* :sympyissue:`12578` Taylor expansion wrong (likely because of wrong substitution at point of evaluation?)
 
 .. last pr: #494
 
