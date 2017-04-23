@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import sqrt, sin, oo, Poly, Float, Integer, Rational
-from diofant.domains import ZZ, QQ, RR, CC, FF, GF, EX
+from diofant.domains import ZZ, QQ, RR, CC, FF, GF, EX, QQ_python, ZZ_python
 from diofant.domains.domainelement import DomainElement
 from diofant.domains.groundtypes import PythonRational
 from diofant.domains.realfield import RealField
@@ -527,10 +527,23 @@ def test_Domain_convert():
     a = ALG.convert(a2, ALG2)
     assert a.rep == [QQ(1, 2), 0, -QQ(9, 2), 0]
 
+    assert ZZ_python().convert(3.0) == ZZ_python().dtype(3)
+    pytest.raises(CoercionFailed, lambda: ZZ_python().convert(3.2))
+
 
 def test_arithmetics():
+    assert ZZ.rem(ZZ(2), ZZ(3)) == 2
+    assert ZZ.div(ZZ(2), ZZ(3)) == (0, 2)
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
+
+    QQp = QQ_python()
+    assert QQp.factorial(QQp(7, 2)) == 6
+
+
+def test_Ring():
+    assert ZZ.numer(ZZ(3)) == 3
+    assert ZZ.denom(ZZ(3)) == 1
 
 
 def test_PolynomialRing__init():

@@ -1,3 +1,5 @@
+import pytest
+
 from diofant.core import (Rational, Symbol, S, Float, Integer, Number,
                           Pow, Basic, I, nan, pi, symbols, oo, zoo, E)
 from diofant.core.tests.test_evalf import NS
@@ -5,6 +7,8 @@ from diofant.functions.elementary.miscellaneous import sqrt, cbrt
 from diofant.functions.elementary.exponential import exp, log
 from diofant.functions.elementary.trigonometric import sin, cos
 from diofant.series.order import O
+
+from diofant.abc import a, b, c, x, y
 
 __all__ = ()
 
@@ -38,14 +42,12 @@ def test_negative_real():
 
 
 def test_expand():
-    x = Symbol('x')
     assert (2**(-1 - x)).expand() == Rational(1, 2)*2**(-x)
 
 
 def test_sympyissue_3449():
     # test if powers are simplified correctly
     # see also issue sympy/sympy#3995
-    x = Symbol('x')
     assert ((x**Rational(1, 3))**Rational(2)) == x**Rational(2, 3)
     assert (
         (x**Rational(3))**Rational(2, 5)) == (x**Rational(3))**Rational(2, 5)
@@ -159,8 +161,6 @@ def test_sympyissue_4362():
     eq = eqn(nneg, dneg, -pow)
     assert eq.is_Pow and eq.as_numer_denom() == ((-dneg)**pow, (-nneg)**pow)
 
-    x = Symbol('x')
-    y = Symbol('y')
     assert ((1/(1 + x/3))**(-S.One)).as_numer_denom() == (3 + x, 3)
     notp = Symbol('notp', positive=False)  # not positive does not imply real
     b = ((1 + x/notp)**-2)
@@ -189,8 +189,6 @@ def test_sympyissue_4362():
 
 def test_Pow_signs():
     """Cf. issues sympy/sympy#4595 and sympy/sympy#5250"""
-    x = Symbol('x')
-    y = Symbol('y')
     n = Symbol('n', even=True)
     assert (3 - y)**2 != (y - 3)**2
     assert (3 - y)**n != (y - 3)**n
@@ -206,8 +204,6 @@ def test_power_with_noncommutative_mul_as_base():
 
 
 def test_zero():
-    x = Symbol('x')
-    y = Symbol('y')
     assert 0**x != 0
     assert 0**(2*x) == 0**x
     assert 0**(1.0*x) == 0**x
@@ -222,7 +218,6 @@ def test_zero():
 
 
 def test_pow_as_base_exp():
-    x = Symbol('x')
     assert (S.Infinity**(2 - x)).as_base_exp() == (S.Infinity, 2 - x)
     assert (S.Infinity**(x - 2)).as_base_exp() == (S.Infinity, x - 2)
     p = S.Half**x
@@ -232,8 +227,6 @@ def test_pow_as_base_exp():
 
 
 def test_sympyissue_6100():
-    x = Symbol('x')
-    y = Symbol('y')
     assert x**1.0 == x
     assert x == x**1.0
     assert S.true != x**1.0
@@ -263,16 +256,12 @@ def test_sympyissue_6208():
 
 
 def test_sympyissue_6990():
-    x = Symbol('x')
-    a = Symbol('a')
-    b = Symbol('b')
     assert (sqrt(a + b*x + x**2)).series(x, 0, 3).removeO() == \
         b*x/(2*sqrt(a)) + x**2*(1/(2*sqrt(a)) -
         b**2/(8*a**Rational(3, 2))) + sqrt(a)
 
 
 def test_sympyissue_6068():
-    x = Symbol('x')
     assert sqrt(sin(x)).series(x, 0, 8) == \
         sqrt(x) - x**Rational(5, 2)/12 + x**Rational(9, 2)/1440 - \
         x**Rational(13, 2)/24192 + O(x**8)
@@ -287,19 +276,15 @@ def test_sympyissue_6068():
 
 
 def test_sympyissue_6782():
-    x = Symbol('x')
     assert sqrt(sin(x**3)).series(x, 0, 7) == x**Rational(3, 2) + O(x**7)
     assert sqrt(sin(x**4)).series(x, 0, 3) == x**2 + O(x**3)
 
 
 def test_sympyissue_6653():
-    x = Symbol('x')
     assert (1 / sqrt(1 + sin(x**2))).series(x, 0, 3) == 1 - x**2/2 + O(x**3)
 
 
 def test_sympyissue_6429():
-    x = Symbol('x')
-    c = Symbol('c')
     f = (c**2 + x)**(0.5)
     assert f.series(x, x0=0, n=1) == (c**2)**0.5 + O(x)
     assert f.taylor_term(0, x) == (c**2)**0.5
@@ -359,3 +344,13 @@ def test_sympyissue_10095():
     assert ((2*E)**oo).as_numer_denom() == ((2*E)**oo, 1)
     e = Pow(1, oo, evaluate=False)
     assert e.as_numer_denom() == (e, S.One)
+
+
+@pytest.mark.slow
+def test_sympyissue_12578():
+    s = (1 - ((x - 1/x)/2)**(-4))**Rational(1, 8)
+    assert s.series(x, n=17) == (1 - 2*x**4 - 8*x**6 - 34*x**8 -
+                                 152*x**10 - 714*x**12 - 3472*x**14 -
+                                 17318*x**16 + O(x**17))
+    d10 = s.diff(x, 10)
+    assert d10.limit(x, 0) == -551577600
