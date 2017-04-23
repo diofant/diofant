@@ -144,6 +144,7 @@ Issues closed
 * :sympyissue:`12555` limit((3**x + 2 * x**10) / (x**10 + E**x), x, -oo) gives 0 instead of 2
 * :sympyissue:`12569` problem with polygamma or im
 * :sympyissue:`12578` Taylor expansion wrong (likely because of wrong substitution at point of evaluation?)
+* :sympyissue:`12582` Can't solve integrate(abs(x**2-3*x), (x, -15, 15))
 
 .. last pr: #494
 

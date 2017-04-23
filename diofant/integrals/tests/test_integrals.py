@@ -1186,3 +1186,7 @@ def test_sympyissue_12221():
     e = sqrt(1 - x)/x
     r = 2*I*(-sqrt(2) - asin(sqrt(3)/3) + asin(sqrt(5)/5) + 2)
     assert integrate(e, (x, 3, 5)).simplify() == r
+
+
+def test_sympyissue_12582():
+    assert integrate(abs(x**2 - 3*x), (x, -15, 15)) == 2259
