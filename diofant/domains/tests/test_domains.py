@@ -642,6 +642,15 @@ def test_FractionField_from_PolynomialRing():
     assert F.to_domain().from_PolynomialRing(f, R.to_domain()) == 3*X**2 + 5*Y**2
     assert F.to_domain().from_PolynomialRing(g, R.to_domain()) == (5*X**2 + 3*Y**2)/15
 
+    RALG,  u, v = ring("u,v", ALG)
+    pytest.raises(CoercionFailed,
+                  lambda: F.to_domain().convert(3*u**2 + 5*sqrt(2)*v**2))
+
+
+def test_FractionField_convert():
+    F,  X, Y = field("x,y", QQ)
+    F.to_domain().convert(QQ_python()(1, 3)) == F.one/3
+
 
 def test_FF_of_type():
     assert FF(3).of_type(FF(3)(1)) is True
