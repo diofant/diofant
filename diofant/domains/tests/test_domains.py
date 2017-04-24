@@ -45,6 +45,12 @@ def test_Domain_interface():
     pytest.raises(DomainError, lambda: CC.get_ring())
     pytest.raises(DomainError, lambda: CC.get_exact())
 
+    assert str(EX(1)) == 'EX(1)'
+
+    assert EX(1).as_expr() == Integer(1)
+    assert bool(EX(1)) is True
+    assert bool(EX(0)) is False
+
 
 def test_Domain_unify():
     F3 = GF(3)
@@ -559,6 +565,24 @@ def test_arithmetics():
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2
 
+    assert EX(Rational(2, 3)).numer() == 2
+    assert EX(Rational(2, 3)).denom() == 3
+
+    assert abs(EX(-2)) == 2
+
+    assert -EX(2) == -2
+    assert 2 + EX(3) == EX(3) + 2 == 5
+    assert 2 - EX(3) == EX(2) - 3 == -1
+    assert 2*EX(3) == EX(3)*2 == 6
+    assert 2/EX(3) == EX(2)/3 == EX(Rational(2, 3))
+    assert EX(2)**2 == 4
+
+    pytest.raises(TypeError, lambda: EX(2) + object())
+    pytest.raises(TypeError, lambda: EX(2) - object())
+    pytest.raises(TypeError, lambda: EX(2)*object())
+    pytest.raises(TypeError, lambda: EX(2)**object())
+    pytest.raises(TypeError, lambda: EX(2)/object())
+
 
 def test_Ring():
     assert ZZ.numer(ZZ(3)) == 3
@@ -680,6 +704,8 @@ def test_FF_of_type():
 def test___eq__():
     assert not QQ[x] == ZZ[x]
     assert not QQ.frac_field(x) == ZZ.frac_field(x)
+
+    assert EX(1) != EX(2)
 
 
 def test_RealField_from_diofant():
@@ -891,3 +917,13 @@ def test_almosteq():
 
 def test_to_diofant():
     assert CC.to_diofant(1 - 2j) == 1 - 2*I
+
+
+def test_EX():
+    assert EX.is_positive(EX(2))
+    assert EX.is_nonnegative(EX(2))
+    assert EX.is_negative(EX(-1))
+    assert EX.is_nonpositive(EX(-1))
+
+    assert EX.numer(EX(1)/2) == 1
+    assert EX.denom(EX(1)/2) == 2
