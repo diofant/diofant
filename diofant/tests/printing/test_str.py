@@ -3,10 +3,10 @@
 import pytest
 
 from diofant import (QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan, Complement,
-                     Derivative, Dict, Dummy, E, Equivalent, EulerGamma, Expr,
-                     FiniteSet, Float, Function, GoldenRatio, I, Integer,
+                     Derivative, Dict, Dummy, E, Eq, Equivalent, EulerGamma,
+                     Expr, FiniteSet, Float, Function, GoldenRatio, I, Integer,
                      Integral, Interval, Lambda, Limit, Matrix, MatrixSymbol,
-                     Mul, O, Poly, Pow, Rational, Rel, RootOf, RootSum, S,
+                     Mul, Ne, O, Poly, Pow, Rational, Rel, RootOf, RootSum, S,
                      SparseMatrix, StrPrinter, Sum, Symbol,
                      SymmetricDifference, Tuple, Wild, WildFunction, Xor,
                      ZeroMatrix, cbrt, cos, exp, factor, factorial, factorial2,
@@ -522,6 +522,8 @@ def test_Relational():
     assert str(Rel(x, y, '<')) == 'x < y'
     assert str(Rel(x + y, y, '==')) == 'Eq(x + y, y)'
     assert str(Rel(x, y, '!=')) == 'Ne(x, y)'
+    assert str(Eq(x, 1) | Eq(x, 2)) == 'Eq(x, 1) | Eq(x, 2)'
+    assert str(Ne(x, 1) & Ne(x, 2)) == 'Ne(x, 1) & Ne(x, 2)'
 
 
 def test_RootOf():
@@ -679,7 +681,7 @@ def test_RandomDomain():
     assert str(where(X > 0)) == 'Domain: (0 < x1) & (x1 < oo)'
 
     D = Die('d1', 6)
-    assert str(where(D > 4)) == 'Domain: (Eq(d1, 5)) | (Eq(d1, 6))'
+    assert str(where(D > 4)) == 'Domain: Eq(d1, 5) | Eq(d1, 6)'
 
     A = Exponential('a', 1)
     B = Exponential('b', 1)
