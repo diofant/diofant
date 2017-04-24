@@ -2,11 +2,12 @@
 
 import pytest
 
-from diofant import sqrt, sin, oo, Poly, Float, Integer, Rational
+from diofant import sqrt, sin, oo, Poly, Float, Integer, Rational, I
 from diofant.domains import ZZ, QQ, RR, CC, FF, GF, EX, QQ_python, ZZ_python
 from diofant.domains.domainelement import DomainElement
 from diofant.domains.groundtypes import PythonRational
 from diofant.domains.realfield import RealField
+from diofant.domains.complexfield import ComplexField
 from diofant.domains.algebraicfield import AlgebraicField
 from diofant.polys import ring, field, RootOf
 from diofant.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
@@ -30,6 +31,9 @@ def test_Domain_interface():
     assert RR(1).parent() is RR
     assert CC(1).parent() is CC
 
+    assert RR.has_default_precision
+    assert CC.has_default_precision
+
     RR3 = RealField(prec=53, dps=3)
     assert str(RR3(1.7611107002)) == '1.76'
 
@@ -37,6 +41,9 @@ def test_Domain_interface():
     assert RealField(tol=0.1).tolerance == 0.1
     assert RealField(tol="0.1").tolerance == 0.1
     pytest.raises(ValueError, lambda: RealField(tol=object()))
+
+    pytest.raises(DomainError, lambda: CC.get_ring())
+    pytest.raises(DomainError, lambda: CC.get_exact())
 
 
 def test_Domain_unify():
@@ -535,6 +542,10 @@ def test_Domain_convert():
     assert ZZ_python().convert(3.0) == ZZ_python().dtype(3)
     pytest.raises(CoercionFailed, lambda: ZZ_python().convert(3.2))
 
+    assert CC.convert(QQ_python()(1, 2)) == CC(0.5)
+    CC01 = ComplexField(tol=0.1)
+    assert CC.convert(CC01(0.3)) == CC(0.3)
+
 
 def test_arithmetics():
     assert ZZ.rem(ZZ(2), ZZ(3)) == 2
@@ -544,6 +555,9 @@ def test_arithmetics():
 
     QQp = QQ_python()
     assert QQp.factorial(QQp(7, 2)) == 6
+
+    assert CC.gcd(CC(1), CC(2)) == 1
+    assert CC.lcm(CC(1), CC(2)) == 2
 
 
 def test_Ring():
@@ -873,3 +887,7 @@ def test_almosteq():
 
     assert RR.almosteq(5, RR(2), 1) is True
     assert RR._context.almosteq(RR(2), 1, None, 1) is True
+
+
+def test_to_diofant():
+    assert CC.to_diofant(1 - 2j) == 1 - 2*I

@@ -2,7 +2,7 @@ import pytest
 
 from diofant.polys.polyerrors import CoercionFailed
 from diofant.domains import (FF, QQ_python, QQ_gmpy, ZZ_gmpy,
-                             FF_gmpy, PythonRational, ZZ_python)
+                             FF_gmpy, PythonRational, ZZ_python, CC)
 from diofant.external import import_module
 
 __all__ = ()
@@ -35,3 +35,6 @@ def test_convert():
     assert ZZ_python().convert(gmpy.mpq(3, 1)) == ZZ_python().dtype(3)
     pytest.raises(CoercionFailed,
                   lambda: ZZ_python().convert(gmpy.mpq(3, 2)))
+
+    assert CC.convert(gmpy.mpz(3)) == CC(3)
+    assert CC.convert(gmpy.mpq(1, 2)) == CC(0.5)
