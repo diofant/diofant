@@ -595,6 +595,8 @@ def test_2arg_hack():
     ans = Mul(2, y + 1, evaluate=False)
     assert (2*x*(y + 1)).subs(x, 1, hack2=True) == ans
     assert (2*(y + 1 + N)).subs(N, 0, hack2=True) == ans
+    assert Mul(1, x, evaluate=False).subs(x, 2, hack2=True) == 2
+    assert Mul(1, x, evaluate=False).subs(x, y, hack2=True) == y
 
 
 @pytest.mark.xfail
