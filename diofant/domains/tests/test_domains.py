@@ -33,6 +33,11 @@ def test_Domain_interface():
     RR3 = RealField(prec=53, dps=3)
     assert str(RR3(1.7611107002)) == '1.76'
 
+    assert RealField(tol=3).tolerance == 3.0
+    assert RealField(tol=0.1).tolerance == 0.1
+    assert RealField(tol="0.1").tolerance == 0.1
+    pytest.raises(ValueError, lambda: RealField(tol=object()))
+
 
 def test_Domain_unify():
     F3 = GF(3)
@@ -865,3 +870,6 @@ def test_almosteq():
     assert CC.almosteq(2, CC(3)) is False
     assert CC.almosteq(2, CC(2.5), 0.1) is False
     assert CC.almosteq(2, CC(2.5), 1.0) is True
+
+    assert RR.almosteq(5, RR(2), 1) is True
+    assert RR._context.almosteq(RR(2), 1, None, 1) is True
