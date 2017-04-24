@@ -473,28 +473,13 @@ def test_solve_transcendental():
     v = expr1.subs(x, -3)
     eq = Eq(expr, v)
     eq1 = Eq(expr1, v)
-    assert (solve(eq, check=False) ==
-            [{x: RootOf(-x**5 + x**3 + v, x, 0)**15},
-             {x: RootOf(-x**5 + x**3 + v, x, 1)**15},
-             {x: RootOf(-x**5 + x**3 + v, x, 2)**15},
-             {x: RootOf(-x**5 + x**3 + v, x, 3)**15},
-             {x: RootOf(-x**5 + x**3 + v, x, 4)**15}])
-    assert (solve(eq1, check=False) ==
-            [{x: RootOf((-1)**Rational(2, 3)*x**5 -
-                        (-1)**Rational(2, 5)*x**3 -
-                        v, x, 0)**15},
-             {x: RootOf((-1)**Rational(2, 3)*x**5 -
-                        (-1)**Rational(2, 5)*x**3 -
-                        v, x, 1)**15},
-             {x: RootOf((-1)**Rational(2, 3)*x**5 -
-                        (-1)**Rational(2, 5)*x**3 -
-                        v, x, 2)**15},
-             {x: RootOf((-1)**Rational(2, 3)*x**5 -
-                        (-1)**Rational(2, 5)*x**3 -
-                        v, x, 3)**15},
-             {x: RootOf((-1)**Rational(2, 3)*x**5 -
-                        (-1)**Rational(2, 5)*x**3 -
-                        v, x, 4)**15}])
+    assert solve(eq, check=False) == [{x: _**15}
+                                      for _ in Poly(-x**5 + x**3 + v,
+                                                    x).all_roots()]
+    assert solve(eq1, check=False) == [{x: _**15}
+                                       for _ in Poly((-1)**Rational(2, 3)*x**5 -
+                                                     (-1)**Rational(2, 5)*x**3 -
+                                                     v, x).all_roots()]
 
 
 def test_solve_for_exprs():
