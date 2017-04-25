@@ -578,6 +578,7 @@ def test_simplify():
 
 def test_equals():
     f = Function('f')
+    assert Eq(x, 1).equals(1) is not True
     assert Eq(x, 1).equals(Eq(x*(y + 1) - x*y - x + 1, x))
     assert Eq(x, y).equals(x < y, True) is False
     assert Eq(x, f(1)).equals(Eq(x, f(2)), True) == f(1) - f(2)
@@ -585,7 +586,8 @@ def test_equals():
     assert Eq(x, f(1)).equals(Eq(f(2), x), True) == f(1) - f(2)
     assert Eq(f(1), x).equals(Eq(x, f(2)), True) == f(1) - f(2)
     assert Eq(w, x).equals(Eq(y, z), True) is False
-    assert Eq(f(1), f(2)).equals(Eq(f(3), f(4)), True) == f(1) - f(3)
+    assert Eq(f(1), f(2)).equals(Eq(f(3), f(4)), True) == f(1) - f(3) + f(4) - f(2)
+    assert Eq(f(1), f(2)).equals(Eq(f(3), f(4))) is None
     assert (x < y).equals(y > x, True) is True
     assert (x < y).equals(y >= x, True) is False
     assert (x < y).equals(z < y, True) is False
