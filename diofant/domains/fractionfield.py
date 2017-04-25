@@ -86,11 +86,6 @@ class FractionField(Field, CompositeDomain):
         """Convert a mpmath `mpf` object to `dtype`. """
         return self(self.domain.convert(a, K0))
 
-    def from_AlgebraicField(self, a, K0):
-        """Convert an algebraic number to ``dtype``. """
-        if self.domain == K0:
-            return self.new(a)
-
     def from_PolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """
         try:

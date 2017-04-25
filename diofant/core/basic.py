@@ -1,6 +1,5 @@
 """Base class for all the objects in Diofant"""
 
-from inspect import getmro
 from itertools import zip_longest
 
 from .cache import cacheit
@@ -430,23 +429,13 @@ class Basic(object):
         >>> (x + Lambda(y, 2*y)).rcall(z)
         x + 2*z
         """
-        return Basic._recursive_call(self, args)
-
-    @staticmethod
-    def _recursive_call(expr_to_call, on_args):
-        def the_call_method_is_overridden(expr):
-            for cls in getmro(type(expr)):
-                if '__call__' in cls.__dict__:
-                    return cls != Basic
-
-        if callable(expr_to_call) and the_call_method_is_overridden(expr_to_call):
-            return expr_to_call(*on_args)
-        elif expr_to_call.args:
-            args = [Basic._recursive_call(
-                sub, on_args) for sub in expr_to_call.args]
-            return type(expr_to_call)(*args)
+        if callable(self) and hasattr(self, '__call__'):
+            return self(*args)
+        elif self.args:
+            newargs = [sub.rcall(*args) for sub in self.args]
+            return type(self)(*newargs)
         else:
-            return expr_to_call
+            return self
 
     @property
     def func(self):
@@ -815,8 +804,6 @@ class Basic(object):
             hit = False
             args = list(self.args)
             for i, arg in enumerate(args):
-                if not hasattr(arg, '_eval_subs'):
-                    continue
                 arg = arg._subs(old, new, **hints)
                 if not _aresame(arg, args[i]):
                     hit = True
@@ -958,20 +945,18 @@ class Basic(object):
     def _has(self, pattern):
         """Helper for .has()"""
         from .function import UndefinedFunction, Function
-        if isinstance(pattern, UndefinedFunction):
-            return any(f.func == pattern or f == pattern
-            for f in self.atoms(Function, UndefinedFunction))
 
         pattern = sympify(pattern)
-        if isinstance(pattern, type):
-            return any(isinstance(arg, pattern)
-            for arg in preorder_traversal(self))
 
-        try:
+        if isinstance(pattern, UndefinedFunction):
+            return any(pattern in (f, f.func)
+                       for f in self.atoms(Function, UndefinedFunction))
+        elif isinstance(pattern, type):
+            return any(isinstance(arg, pattern)
+                       for arg in preorder_traversal(self))
+        else:
             match = pattern._has_matcher()
             return any(match(arg) for arg in preorder_traversal(self))
-        except AttributeError:
-            return any(arg == pattern for arg in preorder_traversal(self))
 
     def _has_matcher(self):
         """Helper for .has()"""
