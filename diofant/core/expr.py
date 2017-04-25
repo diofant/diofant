@@ -6,7 +6,7 @@ from mpmath.libmp import mpf_log, prec_to_dps
 from .sympify import sympify, _sympify, SympifyError
 from .basic import Basic, Atom
 from .singleton import S
-from .evalf import EvalfMixin, pure_complex
+from .evalf import EvalfMixin, pure_complex, PrecisionExhausted
 from .decorators import _sympifyit, call_highest_priority
 from .cache import cacheit
 from .compatibility import as_int, default_sort_key
@@ -2409,20 +2409,16 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> (I*exp_polar(I*pi*2)).is_comparable
         False
         """
-        is_real = self.is_extended_real
-        if is_real is False:
+        if self.is_extended_real is False:
             return False
-        is_number = self.is_number
-        if is_number is False:
+        try:
+            v = self.evalf(2, strict=True)
+        except PrecisionExhausted:
+            return None if self.is_number else False
+        r, i = v.as_real_imag()
+        if not r.is_Number or not i.is_Number:
             return False
-        n, i = self.n().as_real_imag()
-        if not i.is_Number or not n.is_Number:
-            return False
-        if i._prec > 1 or i._prec == -1:
-            if i:
-                return False
-            elif not i and (n._prec > 1 or n._prec == -1):
-                return True
+        return not bool(i)
 
     ###################################################################################
     # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
