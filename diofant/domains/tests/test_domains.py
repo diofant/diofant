@@ -583,6 +583,22 @@ def test_arithmetics():
     pytest.raises(TypeError, lambda: EX(2)**object())
     pytest.raises(TypeError, lambda: EX(2)/object())
 
+    F11 = FF(11)
+    assert +F11(2) == F11(2)
+    assert F11(5) + 7 == 7 + F11(5) == F11(1)
+    assert F11(5) - 7 == 5 - F11(7) == F11(9)
+    assert F11(5)*7 == 7*F11(5) == F11(2)
+    assert F11(5)/9 == 5/F11(9) == F11(3)
+    assert F11(4) % 9 == 4 % F11(9) == F11(4)
+
+    pytest.raises(TypeError, lambda: F11(2) + object())
+    pytest.raises(TypeError, lambda: F11(2) - object())
+    pytest.raises(TypeError, lambda: F11(2)*object())
+    pytest.raises(TypeError, lambda: F11(2)**object())
+    pytest.raises(TypeError, lambda: F11(2)/object())
+    pytest.raises(TypeError, lambda: F11(2) % object())
+    pytest.raises(TypeError, lambda: object() % F11(2))
+
 
 def test_Ring():
     assert ZZ.numer(ZZ(3)) == 3
@@ -706,6 +722,10 @@ def test___eq__():
     assert not QQ.frac_field(x) == ZZ.frac_field(x)
 
     assert EX(1) != EX(2)
+
+    F11 = FF(11)
+    assert F11(2) != F11(3)
+    assert F11(2) != object()
 
 
 def test_RealField_from_diofant():
