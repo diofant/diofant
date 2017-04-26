@@ -178,7 +178,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             # True/False answer.  Check if we can deduce that dif is
             # definitively zero or non-zero.  If non-zero, replace with an
             # approximation.  If .equals(0) gives None, cannot be deduced.
-            if not dif.has(Dummy, Symbol):
+            if dif.is_number:
                 know = dif.equals(0)
                 if know:
                     dif = S.Zero
