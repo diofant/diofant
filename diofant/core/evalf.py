@@ -774,7 +774,7 @@ def evalf_piecewise(expr, prec, options):
 def evalf_bernoulli(expr, prec, options):
     arg = expr.args[0]
     if not arg.is_Integer:
-        raise ValueError("Bernoulli number index must be an integer")
+        raise NotImplementedError
     n = int(arg)
     b = mpf_bernoulli(n, prec, rnd)
     if b == fzero:

@@ -305,8 +305,11 @@ class lowergamma(Function):
                     return (cls(a + 1, x) + x**a * exp(-x))/a
 
     def _eval_evalf(self, prec):
-        a = self.args[0]._to_mpmath(prec)
-        z = self.args[1]._to_mpmath(prec)
+        try:
+            a = self.args[0]._to_mpmath(prec)
+            z = self.args[1]._to_mpmath(prec)
+        except ValueError:
+            return
         with workprec(prec):
             res = mp.gammainc(a, 0, z)
         return Expr._from_mpmath(res, prec)
@@ -403,8 +406,11 @@ class uppergamma(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_evalf(self, prec):
-        a = self.args[0]._to_mpmath(prec)
-        z = self.args[1]._to_mpmath(prec)
+        try:
+            a = self.args[0]._to_mpmath(prec)
+            z = self.args[1]._to_mpmath(prec)
+        except ValueError:
+            return
         with workprec(prec):
             res = mp.gammainc(a, z, mp.inf)
         return Expr._from_mpmath(res, prec)
