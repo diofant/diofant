@@ -1066,9 +1066,10 @@ class Ei(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_evalf(self, prec):
-        if (self.args[0]/polar_lift(-1)).is_positive:
-            return Function._eval_evalf(self, prec) + (I*pi)._eval_evalf(prec)
-        return Function._eval_evalf(self, prec)
+        v = Function._eval_evalf(self, prec)
+        if (self.args[0]/polar_lift(-1)).is_positive and v:
+            return v + (I*pi)._eval_evalf(prec)
+        return v
 
     def _eval_rewrite_as_uppergamma(self, z):
         from .gamma_functions import uppergamma
