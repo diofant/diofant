@@ -2788,6 +2788,8 @@ class NaN(Number, metaclass=Singleton):
     is_comparable = False
     is_finite = False
     is_number = True
+    is_zero = False
+    is_extended_real = False
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
