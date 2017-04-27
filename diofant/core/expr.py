@@ -671,43 +671,35 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         if self.is_number:
             try:
-                # check to see that we can get a value
-                n2 = self._eval_evalf(2)
-                if n2 is None or n2._prec == 1:
-                    raise AttributeError
-                if n2 == S.NaN:
-                    raise AttributeError
-            except (AttributeError, ValueError):
+                v = self.evalf(2, strict=True)
+                if v is S.NaN:
+                    raise PrecisionExhausted
+            except PrecisionExhausted:
+                if self.is_algebraic and not self.has(Function):
+                    if count_ops(self) > 75:
+                        return
+                    try:
+                        return minimal_polynomial(self).is_Symbol
+                    except (NotAlgebraic, NotImplementedError):
+                        pass
                 return
-            r, i = self.evalf(2).as_real_imag()
-            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+            r, i = v.as_real_imag()
+            if r.is_Number and i.is_Number:
                 if r != 0 or i != 0:
                     return False
-            elif (r._prec == 1 and (not i or i._prec == 1) and
-                  self.is_algebraic and not self.has(Function)):
-                if count_ops(self) > 75:
-                    return
-                try:
-                    if minimal_polynomial(self).is_Symbol:
-                        return True
-                except (NotAlgebraic, NotImplementedError):
-                    pass
 
     def _eval_is_positive(self):
         if self.is_number:
             if self.is_extended_real is False:
                 return False
             try:
-                # check to see that we can get a value
-                n2 = self._eval_evalf(2)
-                if n2 is None or n2._prec == 1:
-                    raise AttributeError
-                if n2 == S.NaN:
-                    raise AttributeError
-            except (AttributeError, ValueError):
+                v = self.evalf(2, strict=True)
+                if v is S.NaN:
+                    raise PrecisionExhausted
+            except PrecisionExhausted:
                 return
-            r, i = self.evalf(2).as_real_imag()
-            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+            r, i = v.as_real_imag()
+            if r.is_Number and i.is_Number:
                 return bool(not i and r > 0)
 
     def _eval_is_negative(self):
@@ -715,16 +707,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if self.is_extended_real is False:
                 return False
             try:
-                # check to see that we can get a value
-                n2 = self._eval_evalf(2)
-                if n2 is None or n2._prec == 1:
-                    raise AttributeError
-                if n2 == S.NaN:
-                    raise AttributeError
-            except (AttributeError, ValueError):
+                v = self.evalf(2, strict=True)
+                if v is S.NaN:
+                    raise PrecisionExhausted
+            except PrecisionExhausted:
                 return
-            r, i = self.evalf(2).as_real_imag()
-            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+            r, i = v.as_real_imag()
+            if r.is_Number and i.is_Number:
                 return bool(not i and r < 0)
 
     def _eval_interval(self, x, a, b):
