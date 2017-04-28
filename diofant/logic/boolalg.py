@@ -1,5 +1,5 @@
 """
-Boolean algebra module for Diofant
+Boolean algebra module for Diofant.
 """
 
 from collections import defaultdict
@@ -20,27 +20,27 @@ class Boolean(Expr):
     """A boolean object is an object for which logic operations make sense."""
 
     def __and__(self, other):
-        """Overloading for & operator"""
+        """Overloading for & operator."""
         return And(self, other)
 
     __rand__ = __and__
 
     def __or__(self, other):
-        """Overloading for |"""
+        """Overloading for | operator."""
         return Or(self, other)
 
     __ror__ = __or__
 
     def __invert__(self):
-        """Overloading for ~"""
+        """Overloading for ~ operator."""
         return Not(self)
 
     def __rshift__(self, other):
-        """Overloading for >>"""
+        """Overloading for >> operator."""
         return Implies(self, other)
 
     def __lshift__(self, other):
-        """Overloading for <<"""
+        """Overloading for << operator."""
         return Implies(other, self)
 
     __rrshift__ = __lshift__
@@ -115,7 +115,7 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
 
     "If the boolean in question can be replaced by an arbitrary symbolic
     ``Boolean``, like ``Or(x, y)`` or ``x > 1``, use ``S.true``.
-    Otherwise, use ``True``"
+    Otherwise, use ``True``".
 
     In other words, use ``S.true`` only on those contexts where the
     boolean is being used as a symbolic representation of truth.
@@ -198,7 +198,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
     Notes
     =====
 
-    See note in :py:class`~diofant.logic.boolalg.BooleanTrue`
+    See note in :py:class`~diofant.logic.boolalg.BooleanTrue`.
 
     Examples
     ========
@@ -253,8 +253,9 @@ converter[bool] = lambda x: S.true if x else S.false
 
 
 class BooleanFunction(Application, Boolean):
-    """Boolean function is a function that lives in a boolean space
-    It is used as base class for And, Or, Not, etc.
+    """Boolean function is a function that lives in a boolean space.
+
+    This is used as base class for And, Or, Not, etc.
     """
 
     is_Boolean = True
@@ -435,11 +436,10 @@ class Or(LatticeOp, BooleanFunction):
 
 class Not(BooleanFunction):
     """
-    Logical Not function (negation)
+    Logical Not function (negation).
 
-
-    Returns True if the statement is False
-    Returns False if the statement is True
+    Returns True if the statement is False.
+    Returns False if the statement is True.
 
     Examples
     ========
@@ -464,13 +464,13 @@ class Not(BooleanFunction):
     Notes
     =====
 
-    - The ``~`` operator is provided as a convenience, but note that its use
-      here is different from its normal use in Python, which is bitwise
-      not. In particular, ``~a`` and ``Not(a)`` will be different if ``a`` is
-      an integer. Furthermore, since bools in Python subclass from ``int``,
-      ``~True`` is the same as ``~1`` which is ``-2``, which has a boolean
-      value of True.  To avoid this issue, use the Diofant boolean types
-      ``true`` and ``false``.
+    The ``~`` operator is provided as a convenience, but note that its use
+    here is different from its normal use in Python, which is bitwise
+    not. In particular, ``~a`` and ``Not(a)`` will be different if ``a`` is
+    an integer. Furthermore, since bools in Python subclass from ``int``,
+    ``~True`` is the same as ``~1`` which is ``-2``, which has a boolean
+    value of True.  To avoid this issue, use the Diofant boolean types
+    ``true`` and ``false``.
 
     >>> from diofant import true
     >>> ~True
@@ -561,7 +561,6 @@ class Not(BooleanFunction):
 class Xor(BooleanFunction):
     """
     Logical XOR (exclusive OR) function.
-
 
     Returns True if an odd number of the arguments are True and the rest are
     False.
@@ -666,8 +665,8 @@ class Nand(BooleanFunction):
     It evaluates its arguments in order, giving True immediately if any
     of them are False, and False if they are all True.
 
-    Returns True if any of the arguments are False
-    Returns False if all arguments are True
+    Returns True if any of the arguments are False.
+    Returns False if all arguments are True.
 
     Examples
     ========
@@ -695,8 +694,8 @@ class Nor(BooleanFunction):
     It evaluates its arguments in order, giving False immediately if any
     of them are True, and True if they are all False.
 
-    Returns False if any argument is True
-    Returns True if all arguments are False
+    Returns False if any argument is True.
+    Returns True if all arguments are False.
 
     Examples
     ========
@@ -729,7 +728,7 @@ class Implies(BooleanFunction):
     A implies B is equivalent to !A v B
 
     Accepts two Boolean arguments; A and B.
-    Returns False if A is True and B is False
+    Returns False if A is True and B is False.
     Returns True otherwise.
 
     Examples
@@ -805,7 +804,7 @@ class Equivalent(BooleanFunction):
     """
     Equivalence relation.
 
-    Equivalent(A, B) is True iff A and B are both True or both False
+    Equivalent(A, B) is True iff A and B are both True or both False.
 
     Returns True if all of the arguments are logically equivalent.
     Returns False otherwise.
@@ -880,7 +879,7 @@ class ITE(BooleanFunction):
     If then else clause.
 
     ITE(A, B, C) evaluates and returns the result of B if A is true
-    else it returns the result of C
+    else it returns the result of C.
 
     Examples
     ========
@@ -1043,7 +1042,7 @@ def to_nnf(expr, simplify=True):
 def to_cnf(expr, simplify=False):
     """
     Convert a propositional logical sentence s to conjunctive normal form.
-    That is, of the form ((A | ~B | ...) & (B | C | ...) & ...)
+    That is, of the form ((A | ~B | ...) & (B | C | ...) & ...).
     If simplify is True, the expr is evaluated to its simplest CNF form.
 
     Examples
@@ -1055,7 +1054,6 @@ def to_cnf(expr, simplify=False):
     And(Or(D, Not(A)), Or(D, Not(B)))
     >>> to_cnf((A | B) & (A | ~A), True)
     Or(A, B)
-
     """
     expr = sympify(expr)
     if not isinstance(expr, BooleanFunction):
@@ -1075,7 +1073,7 @@ def to_cnf(expr, simplify=False):
 def to_dnf(expr, simplify=False):
     """
     Convert a propositional logical sentence s to disjunctive normal form.
-    That is, of the form ((A & ~B & ...) | (B & C & ...) | ...)
+    That is, of the form ((A & ~B & ...) | (B & C & ...) | ...).
     If simplify is True, the expr is evaluated to its simplest DNF form.
 
     Examples
@@ -1087,7 +1085,6 @@ def to_dnf(expr, simplify=False):
     Or(And(A, B), And(B, C))
     >>> to_dnf((A & B) | (A & ~B) | (B & C) | (~B & C), True)
     Or(A, C)
-
     """
     expr = sympify(expr)
     if not isinstance(expr, BooleanFunction):
@@ -1165,7 +1162,6 @@ def is_cnf(expr):
     True
     >>> is_cnf((A & B) | C)
     False
-
     """
     return _is_form(expr, And, Or)
 
@@ -1187,7 +1183,6 @@ def is_dnf(expr):
     True
     >>> is_dnf(A & (B | C))
     False
-
     """
     return _is_form(expr, Or, And)
 
@@ -1195,7 +1190,6 @@ def is_dnf(expr):
 def _is_form(expr, function1, function2):
     """
     Test whether or not an expression is of the required form.
-
     """
     expr = sympify(expr)
 
@@ -1533,7 +1527,6 @@ def _find_predicates(expr):
 
     A logical predicate is defined here as anything within a BooleanFunction
     that is not a BooleanFunction itself.
-
     """
     if not isinstance(expr, BooleanFunction):
         return {expr}
@@ -1688,7 +1681,7 @@ def bool_map(bool1, bool2):
         And(x, Not(y), Or(w, Not(z))).
 
         Basic.match is not robust enough (see issue sympy/sympy#4835) so this is
-        a workaround that is valid for simplified boolean expressions
+        a workaround that is valid for simplified boolean expressions.
         """
 
         # do some quick checks
