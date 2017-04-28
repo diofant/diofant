@@ -2992,6 +2992,9 @@ def test_groebner():
                                     0.072*y**2 + 0.036*x*y + 0.05*y - 1.423],
                                    [x, y]))
 
+    G = groebner([x**3 - y**3], x, y, order='grlex')
+    pytest.raises(NotImplementedError, lambda: G.fglm('lex'))
+
 
 def test_fglm():
     F = [a + b + c + d, a*b + a*d + b*c + b*d, a*b*c + a*b*d + a*c*d + b*c*d, a*b*c*d - 1]
