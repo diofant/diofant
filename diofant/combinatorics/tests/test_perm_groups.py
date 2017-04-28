@@ -1,3 +1,5 @@
+import pytest
+
 from diofant.combinatorics.perm_groups import PermutationGroup
 from diofant.combinatorics.named_groups import (SymmetricGroup, CyclicGroup,
                                                 DihedralGroup, AlternatingGroup,
@@ -342,6 +344,8 @@ def test_rubik1():
 
     G = RubikGroup(2)
     assert G.order() == 3674160
+
+    pytest.raises(ValueError, lambda: RubikGroup(0))
 
 
 def test_rubik():
