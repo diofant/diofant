@@ -480,7 +480,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
         main expression needs to call a specialized function it should be put
         in the ``helpers`` iterable. Autowrap will then make sure that the
         compiled main expression can link to the helper routine. Items should
-        be tuples with (<funtion_name>, <diofant_expression>, <arguments>). It
+        be tuples with (<function_name>, <diofant_expression>, <arguments>). It
         is mandatory to supply an argument sequence to helper routines.
 
     Examples
@@ -821,7 +821,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
         main expression needs to call a specialized function it should be put
         in the ``helpers`` iterable. Autowrap will then make sure that the
         compiled main expression can link to the helper routine. Items should
-        be tuples with (<funtion_name>, <diofant_expression>, <arguments>). It
+        be tuples with (<function_name>, <diofant_expression>, <arguments>). It
         is mandatory to supply an argument sequence to helper routines.
 
     Notes

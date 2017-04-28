@@ -1,19 +1,19 @@
-"""Implementation of matrix FGLM Groebner basis conversion algorithm. """
+"""Implementation of matrix FGLM Gröbner basis conversion algorithm. """
 
 from .monomials import monomial_mul, monomial_div
 
 
 def matrix_fglm(F, ring, O_to):
     """
-    Converts the reduced Groebner basis ``F`` of a zero-dimensional
-    ideal w.r.t. ``O_from`` to a reduced Groebner basis
+    Converts the reduced Gröbner basis ``F`` of a zero-dimensional
+    ideal w.r.t. ``O_from`` to a reduced Gröbner basis
     w.r.t. ``O_to``.
 
     References
     ==========
 
     .. [1] J.C. Faugère, P. Gianni, D. Lazard, T. Mora (1994). Efficient
-           Computation of Zero-dimensional Groebner Bases by Change
+           Computation of Zero-dimensional Gröbner Bases by Change
            of Ordering.
     """
     domain = ring.domain

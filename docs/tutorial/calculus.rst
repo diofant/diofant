@@ -292,7 +292,7 @@ do
     >>> limit(1/x, x, 0, dir='-')
     -∞
 
-You can also evaluate bidirectional limie
+You can also evaluate bidirectional limit
 
     >>> limit(sin(x)/x, x, 0, dir='real')
     1

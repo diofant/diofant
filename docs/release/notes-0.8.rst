@@ -128,7 +128,7 @@ Issues closed
 * :sympyissue:`7917` Implement cot as a ReciprocalTrigonometricFunction
 * :sympyissue:`8649` If t is transcendental, t**n is determined (wrongly) to be non-integer
 * :issue:`74` Trivial limit's of sign fails
-* :issue:`31` Wrong automatical cancelation of expr with O terms
+* :issue:`31` Wrong automatical cancellation of expr with O terms
 * :sympyissue:`5641` Compatibility with py.test
 * :sympyissue:`10258` Relational involving Piecewise evaluates incorrectly as True
 * :sympyissue:`10205` 10203: handle Eq and Ne with _solve_inequality

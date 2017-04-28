@@ -638,7 +638,7 @@ def minimal_polynomial(ex, x=None, **args):
 def _minpoly_groebner(ex, x):
     """
     Computes the minimal polynomial of an algebraic number
-    using Groebner bases
+    using Gröbner bases
 
     Examples
     ========

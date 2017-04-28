@@ -2824,7 +2824,7 @@ class MatrixBase(DefaultPrinting):
 
            [2] M. Keber, Division-Free computation of sub-resultants
                using Bezout matrices, Tech. Report MPI-I-2006-1-006,
-               Saarbrucken, 2006
+               Saarbrücken, 2006
 
         See Also
         ========
