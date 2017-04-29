@@ -624,7 +624,7 @@ def test_is_commutative():
 def test_is_zero():
     for func in [Sum, Product]:
         assert func(0, (x, 1, 1)).is_zero is True
-        assert func(x, (x, 1, 1)).is_zero is None
+        assert func(x, (x, 1, 1)).is_zero is not True
 
 
 def test_is_number():
