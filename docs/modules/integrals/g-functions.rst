@@ -451,7 +451,7 @@ particular the inner integral has to converge. Also, for our identification of
 the final integral as a Fox H / Meijer G-function to be correct, the poles of
 the newly obtained gamma function must be separated properly.
 
-It is easy to check that the inner integal converges absolutely for
+It is easy to check that the inner integral converges absolutely for
 `\Re(as) < -1`. Thus the contour `L` has to run left of the line `\Re(as) = -1`.
 Under this condition, the poles of the newly-introduced gamma function are
 separated properly.

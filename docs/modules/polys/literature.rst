@@ -51,7 +51,7 @@ a theoretical foundation for implementing polynomials manipulation module.
 .. [Cox97] D. Cox, J. Little, D. O'Shea, Ideals, Varieties and
     Algorithms, Springer, Second Edition, 1997
 
-.. [Ajwa95] I.A. Ajwa, Z. Liu, P.S. Wang, Groebner Bases Algorithm,
+.. [Ajwa95] I.A. Ajwa, Z. Liu, P.S. Wang, Gröbner Bases Algorithm,
     https://citeseer.ist.psu.edu/myciteseer/login, 1995
 
 .. [Bose03] N.K. Bose, B. Buchberger, J.P. Guiver, Multidimensional
@@ -64,7 +64,7 @@ a theoretical foundation for implementing polynomials manipulation module.
     decomposition of rational functions, Proceedings ISSAC '93,
     ACM Press, Kiev, Ukraine, 1993, pp. 157--160
 
-.. [Buchberger01] B. Buchberger, Groebner Bases: A Short Introduction for
+.. [Buchberger01] B. Buchberger, Gröbner Bases: A Short Introduction for
     Systems Theorists,  In: R. Moreno-Diaz,  B. Buchberger,
     J. L. Freire, Proceedings of EUROCAST'01, February, 2001
 
@@ -126,5 +126,5 @@ a theoretical foundation for implementing polynomials manipulation module.
 .. [BenOr81] M. Ben-Or, Probabilistic algorithms in finite fields.  In
     Proc. 22nd IEEE Symp. FoundationsComputer Science (1981), pp. 394-398.
 
-.. [Adams94] W. Adams and P. Loustaunau, An Introduction to Groebner Bases.
+.. [Adams94] W. Adams and P. Loustaunau, An Introduction to Gröbner Bases.
     AMS, Providence, Rhode Island., pp. 97-101, 1994.

@@ -1465,7 +1465,7 @@ def minsolve_linear_system(system, *symbols, **flags):
     Find a particular solution to a linear system.
 
     In particular, try to find a solution with the minimal possible number
-    of non-zero variables. This is a very computationally hard prolem.
+    of non-zero variables. This is a very computationally hard problem.
     If ``quick=True``, a heuristic is used. Otherwise a naive algorithm with
     exponential complexity is used.
     """

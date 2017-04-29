@@ -253,7 +253,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             >>> Sum(k, (k, 2, b)).doit()
             b**2/2 + b/2 - 1
 
-        With a nonzero eps specified, the summation is ended
+        With a nonzero `eps` specified, the summation is ended
         as soon as the remainder term is less than the epsilon.
         """
         from ..functions import bernoulli, factorial

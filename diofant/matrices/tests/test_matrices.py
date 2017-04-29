@@ -5,7 +5,7 @@ import pytest
 from diofant import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
                      PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
                      simplify, sin, sqrt, symbols, sympify,
-                     trigsimp, sstr, Function)
+                     trigsimp, sstr, Function, Basic)
 from diofant.matrices.matrices import (ShapeError, MatrixError,
                                        NonSquareMatrixError, DeferredVector)
 from diofant.matrices import (
@@ -502,6 +502,7 @@ def test_random():
     M = randMatrix(3, 3)
     M = randMatrix(3, 3, seed=3)
     M = randMatrix(3, 4, 0, 150)
+    M = randMatrix(3, symmetric=True, percent=50)
     M = randMatrix(3, symmetric=True)
     S = M.copy()
     S.simplify()
@@ -623,6 +624,8 @@ def test_inverse():
     assert A.inv(method="LU") == Ainv
     assert A.inv(method="ADJ") == Ainv
 
+    pytest.raises(ValueError, lambda: A.inv(method="SPAM"))
+
     # test that immutability is not a problem
     cls = ImmutableMatrix
     m = cls([[48, 49, 31],
@@ -694,6 +697,10 @@ def test_jacobian_hessian():
         [     0, 6*y**2, 2*x],
         [6*y**2,    2*x, 2*y],
         [   2*x,    2*y,   0]])
+
+    pytest.raises(ValueError, lambda: hessian(Basic(), Matrix([x, y])))
+    pytest.raises(ValueError, lambda: hessian(f, Matrix([x, y]),
+                                              Matrix([Basic(), y])))
 
 
 def test_QR():
@@ -1307,6 +1314,8 @@ def test_diag():
         [0, 3, 0, 0],
         [0, 0, 4, 5]])
 
+    pytest.raises(ValueError, lambda: diag(1, 2, 3, spam=123))
+
 
 def test_get_diag_blocks1():
     a = Matrix([[1, 2], [2, 3]])
@@ -1820,9 +1829,11 @@ def test_lower_triangular_solve():
     A = Matrix([[1, 0], [0, 1]])
     B = Matrix([[x, y], [y, x]])
     C = Matrix([[4, 8], [2, 9]])
+    S = Matrix([[0, 0], [0, 1]])
 
     assert A.lower_triangular_solve(B) == B
     assert A.lower_triangular_solve(C) == C
+    pytest.raises(ValueError, lambda: S.lower_triangular_solve(B))
 
 
 def test_upper_triangular_solve():
@@ -1838,9 +1849,11 @@ def test_upper_triangular_solve():
     A = Matrix([[1, 0], [0, 1]])
     B = Matrix([[x, y], [y, x]])
     C = Matrix([[2, 4], [3, 8]])
+    S = Matrix([[0, 0], [0, 1]])
 
     assert A.upper_triangular_solve(B) == B
     assert A.upper_triangular_solve(C) == C
+    pytest.raises(ValueError, lambda: S.upper_triangular_solve(B))
 
 
 def test_diagonal_solve():
@@ -2120,6 +2133,9 @@ def test_GramSchmidt():
     assert GramSchmidt([Matrix([3, 1]), Matrix([2, 2])], True) == [
         Matrix([3*sqrt(10)/10, sqrt(10)/10]),
         Matrix([-sqrt(10)/10, 3*sqrt(10)/10])]
+
+    pytest.raises(ValueError, lambda: GramSchmidt([Matrix([1, 2]),
+                                                   Matrix([2, 4])]))
 
 
 def test_casoratian():
