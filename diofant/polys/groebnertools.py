@@ -33,12 +33,8 @@ def groebner(seq, ring, method=None):
     domain, orig = ring.domain, None
 
     if not domain.has_Field or not domain.has_assoc_Field:
-        try:
-            orig, ring = ring, ring.clone(domain=domain.get_field())
-        except DomainError:
-            raise DomainError("can't compute a Gröbner basis over %s" % domain)
-        else:
-            seq = [ s.set_ring(ring) for s in seq ]
+        orig, ring = ring, ring.clone(domain=domain.get_field())
+        seq = [s.set_ring(ring) for s in seq]
 
     G = _groebner(seq, ring)
 
