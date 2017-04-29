@@ -211,7 +211,7 @@ def test_PropKB():
 
 
 def test_propKB_tolerant():
-    """"tolerant to bad input"""
+    """tolerant to bad input"""
     kb = PropKB()
     assert kb.ask(B) is False
 
