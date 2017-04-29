@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant.domains import FF, QQ, ZZ
+from diofant.domains import FF, QQ, RR, ZZ
 from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_add_mul, dmp_add_term, dmp_div,
                                       dmp_expand, dmp_exquo, dmp_exquo_ground,
@@ -19,7 +19,8 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dup_rr_div, dup_rshift, dup_sqr, dup_sub,
                                       dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
-from diofant.polys.polyerrors import ExactQuotientFailed
+from diofant.polys.polyerrors import (ExactQuotientFailed,
+                                      PolynomialDivisionFailed)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -890,6 +891,10 @@ def test_dmp_ff_div():
     r = [[QQ(2, 1), QQ(0, 1), QQ(0, 1)]]
 
     assert dmp_ff_div(f, g, 1, QQ) == (q, r)
+
+    pytest.raises(PolynomialDivisionFailed,
+                  lambda: dmp_ff_div([RR(2.0)],
+                                     [RR(-1.8438812457236466e-19)], 0, RR))
 
 
 def test_dmp_div():
