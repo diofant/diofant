@@ -674,7 +674,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 v = self.evalf(2, strict=True)
                 if v is S.NaN:
                     raise PrecisionExhausted
-            except PrecisionExhausted:
+            except (PrecisionExhausted, ValueError):
                 if self.is_algebraic and not self.has(Function):
                     if count_ops(self) > 75:
                         return
@@ -696,7 +696,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 v = self.evalf(2, strict=True)
                 if v is S.NaN:
                     raise PrecisionExhausted
-            except PrecisionExhausted:
+            except (PrecisionExhausted, ValueError):
                 return
             r, i = v.as_real_imag()
             if r.is_Number and i.is_Number:
@@ -710,7 +710,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 v = self.evalf(2, strict=True)
                 if v is S.NaN:
                     raise PrecisionExhausted
-            except PrecisionExhausted:
+            except (PrecisionExhausted, ValueError):
                 return
             r, i = v.as_real_imag()
             if r.is_Number and i.is_Number:
