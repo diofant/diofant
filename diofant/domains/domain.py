@@ -46,9 +46,6 @@ class Domain(DefaultPrinting):
     rep = None
     alias = None
 
-    def __init__(self):
-        raise NotImplementedError
-
     def __str__(self):
         return self.rep
 
@@ -77,12 +74,10 @@ class Domain(DefaultPrinting):
             method = "from_" + base.__class__.__name__
 
         _convert = getattr(self, method)
+        result = _convert(element, base)
 
-        if _convert is not None:
-            result = _convert(element, base)
-
-            if result is not None:
-                return result
+        if result is not None:
+            return result
 
         raise CoercionFailed("can't convert %s of type %s from %s to %s" % (element, type(element), base, self))
 
@@ -124,24 +119,11 @@ class Domain(DefaultPrinting):
         if isinstance(element, DomainElement):
             return self.convert_from(element, element.parent())
 
-        # TODO: implement this in from_ methods
-        if self.is_Numerical and getattr(element, 'is_ground', False):
-            return self.convert(element.LC())
-
         if isinstance(element, Basic):
             try:
                 return self.from_diofant(element)
             except (TypeError, ValueError):
                 pass
-        else:  # TODO: remove this branch
-            if not is_sequence(element):
-                try:
-                    element = sympify(element)
-
-                    if isinstance(element, Basic):
-                        return self.from_diofant(element)
-                except (TypeError, ValueError):
-                    pass
 
         raise CoercionFailed("can't convert %s of type %s to %s" % (element, type(element), self))
 
@@ -158,48 +140,12 @@ class Domain(DefaultPrinting):
 
         return True
 
-    def to_diofant(self, a):
-        """Convert ``a`` to a Diofant object. """
-        raise NotImplementedError
-
-    def from_diofant(self, a):
-        """Convert a Diofant object to ``dtype``. """
-        raise NotImplementedError
-
     def from_FF_python(self, a, K0):
         """Convert ``ModularInteger(int)`` to ``dtype``. """
         return
 
-    def from_ZZ_python(self, a, K0):
-        """Convert a Python ``int`` object to ``dtype``. """
-        return
-
-    def from_QQ_python(self, a, K0):
-        """Convert a Python ``Fraction`` object to ``dtype``. """
-        return
-
     def from_FF_gmpy(self, a, K0):
         """Convert ``ModularInteger(mpz)`` to ``dtype``. """
-        return
-
-    def from_ZZ_gmpy(self, a, K0):
-        """Convert a GMPY ``mpz`` object to ``dtype``. """
-        return
-
-    def from_QQ_gmpy(self, a, K0):
-        """Convert a GMPY ``mpq`` object to ``dtype``. """
-        return
-
-    def from_RealField(self, a, K0):
-        """Convert a real element object to ``dtype``. """
-        return
-
-    def from_ComplexField(self, a, K0):
-        """Convert a complex element to ``dtype``. """
-        return
-
-    def from_AlgebraicField(self, a, K0):
-        """Convert an algebraic number to ``dtype``. """
         return
 
     def from_PolynomialRing(self, a, K0):
@@ -210,10 +156,6 @@ class Domain(DefaultPrinting):
     def from_FractionField(self, a, K0):
         """Convert a rational function to ``dtype``. """
         return
-
-    def from_ExpressionDomain(self, a, K0):
-        """Convert a ``EX`` object to ``dtype``. """
-        return self.from_diofant(a.ex)
 
     def unify_with_symbols(self, K1, symbols):
         if (self.is_Composite and (set(self.symbols) & set(symbols))) or (K1.is_Composite and (set(K1.symbols) & set(symbols))):
@@ -308,9 +250,8 @@ class Domain(DefaultPrinting):
 
         if self.is_FiniteField and K1.is_FiniteField:
             return self.__class__(max(self.mod, K1.mod, key=default_sort_key))
-
-        from . import EX
-        return EX
+        else:  # pragma: no cover
+            raise NotImplementedError
 
     def __eq__(self, other):
         """Returns ``True`` if two domains are equivalent. """
@@ -332,14 +273,6 @@ class Domain(DefaultPrinting):
 
         return result
 
-    def get_ring(self):
-        """Returns a ring associated with ``self``. """
-        raise DomainError('there is no ring associated with %s' % self)
-
-    def get_field(self):
-        """Returns a field associated with ``self``. """
-        raise DomainError('there is no field associated with %s' % self)
-
     def get_exact(self):
         """Returns an exact domain associated with ``self``. """
         return self
@@ -360,18 +293,6 @@ class Domain(DefaultPrinting):
         """Returns a fraction field, i.e. `K(X)`. """
         from .fractionfield import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
-
-    def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `K(\alpha, \ldots)`. """
-        raise DomainError("can't create algebraic field over %s" % self)
-
-    def inject(self, *symbols):
-        """Inject generators into this domain. """
-        raise NotImplementedError
-
-    def is_zero(self, a):
-        """Returns True if ``a`` is zero. """
-        return not a
 
     def is_one(self, a):
         """Returns True if ``a`` is one. """
@@ -397,70 +318,10 @@ class Domain(DefaultPrinting):
         """Absolute value of ``a``, implies ``__abs__``. """
         return abs(a)
 
-    def neg(self, a):
-        """Returns ``a`` negated, implies ``__neg__``. """
-        return -a
-
-    def pos(self, a):
-        """Returns ``a`` positive, implies ``__pos__``. """
-        return +a
-
-    def add(self, a, b):
-        """Sum of ``a`` and ``b``, implies ``__add__``.  """
-        return a + b
-
-    def sub(self, a, b):
-        """Difference of ``a`` and ``b``, implies ``__sub__``.  """
-        return a - b
-
-    def mul(self, a, b):
-        """Product of ``a`` and ``b``, implies ``__mul__``.  """
-        return a * b
-
-    def pow(self, a, b):
-        """Raise ``a`` to power ``b``, implies ``__pow__``.  """
-        return a ** b
-
-    def exquo(self, a, b):
-        """Exact quotient of ``a`` and ``b``, implies something. """
-        raise NotImplementedError
-
-    def quo(self, a, b):
-        """Quotient of ``a`` and ``b``, implies something.  """
-        raise NotImplementedError
-
-    def rem(self, a, b):
-        """Remainder of ``a`` and ``b``, implies ``__mod__``.  """
-        raise NotImplementedError
-
-    def div(self, a, b):
-        """Division of ``a`` and ``b``, implies something. """
-        raise NotImplementedError
-
-    def invert(self, a, b):
-        """Returns inversion of ``a mod b``, implies something. """
-        raise NotImplementedError
-
-    def revert(self, a):
-        """Returns ``a**(-1)`` if possible. """
-        raise NotImplementedError
-
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        raise NotImplementedError
-
-    def denom(self, a):
-        """Returns denominator of ``a``. """
-        raise NotImplementedError
-
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``. """
         s, t, h = self.gcdex(a, b)
         return s, h
-
-    def gcdex(self, a, b):
-        """Extended GCD of ``a`` and ``b``. """
-        raise NotImplementedError
 
     def cofactors(self, a, b):
         """Returns GCD and cofactors of ``a`` and ``b``. """
@@ -468,39 +329,3 @@ class Domain(DefaultPrinting):
         cfa = self.quo(a, gcd)
         cfb = self.quo(b, gcd)
         return gcd, cfa, cfb
-
-    def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``. """
-        raise NotImplementedError
-
-    def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``. """
-        raise NotImplementedError
-
-    def log(self, a, b):
-        """Returns b-base logarithm of ``a``. """
-        raise NotImplementedError
-
-    def sqrt(self, a):
-        """Returns square root of ``a``. """
-        raise NotImplementedError
-
-    def evalf(self, a, prec=None, **options):
-        """Returns numerical approximation of ``a``. """
-        return self.to_diofant(a).evalf(prec, **options)
-
-    n = evalf
-
-    def real(self, a):
-        return a
-
-    def imag(self, a):
-        return self.zero
-
-    def almosteq(self, a, b, tolerance=None):
-        """Check if ``a`` and ``b`` are almost equal. """
-        return a == b
-
-    def characteristic(self):
-        """Return the characteristic of this domain. """
-        raise NotImplementedError('characteristic()')

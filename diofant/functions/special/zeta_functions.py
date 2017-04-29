@@ -64,7 +64,7 @@ class lerchphi(Function):
     References
     ==========
 
-    .. [1] Bateman, H.; Erdelyi, A. (1953), Higher Transcendental Functions,
+    .. [1] Bateman, H.; Erdélyi, A. (1953), Higher Transcendental Functions,
            Vol. I, New York: McGraw-Hill. Section 1.11.
     .. [2] http://dlmf.nist.gov/25.14
     .. [3] http://en.wikipedia.org/wiki/Lerch_transcendent

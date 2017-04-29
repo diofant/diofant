@@ -13,11 +13,12 @@ from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
                                            unit_propagate_int_repr)
 from diofant.logic.algorithms.dpll2 import dpll_satisfiable as dpll2_satisfiable
 
+from diofant.abc import A, B, C, x, y
+
 __all__ = ()
 
 
 def test_literal():
-    A, B = symbols('A,B')
     assert literal_symbol(True) is True
     assert literal_symbol(False) is False
     assert literal_symbol(A) is A
@@ -27,7 +28,6 @@ def test_literal():
 
 
 def test_find_pure_symbol():
-    A, B, C = symbols('A,B,C')
     assert find_pure_symbol([A], [A]) == (A, True)
     assert find_pure_symbol([A, B], [~A | B, ~B | A]) == (None, None)
     assert find_pure_symbol([A, B, C], [ A | ~B, ~B | ~C, C | A]) == (A, True)
@@ -52,7 +52,6 @@ def test_find_pure_symbol_int_repr():
 
 
 def test_unit_clause():
-    A, B, C = symbols('A,B,C')
     assert find_unit_clause([A], {}) == (A, True)
     assert find_unit_clause([A, ~A], {}) == (A, True)  # Wrong ??
     assert find_unit_clause([A | B], {A: True}) == (B, True)
@@ -73,12 +72,10 @@ def test_unit_clause_int_repr():
     assert find_unit_clause_int_repr(map(set,
         [[1, 2, 3], [3, -3], [1, 2]]), {1: True}) == (2, True)
 
-    A, B, C = symbols('A,B,C')
     assert find_unit_clause([A | B | C, B | ~C, A ], {}) == (A, True)
 
 
 def test_unit_propagate():
-    A, B, C = symbols('A,B,C')
     assert unit_propagate([A | B], A) == []
     assert unit_propagate([A | B, ~A | C, ~C | B, A], A) == [C, ~C | B, A]
 
@@ -91,12 +88,10 @@ def test_unit_propagate_int_repr():
 
 def test_dpll():
     """This is also tested in test_dimacs"""
-    A, B, C = symbols('A,B,C')
     assert dpll([A | B], [A, B], {A: True, B: True}) == {A: True, B: True}
 
 
 def test_dpll_satisfiable():
-    A, B, C = symbols('A,B,C')
     assert dpll_satisfiable( A & ~A ) is False
     assert dpll_satisfiable( A & ~B ) == {A: True, B: False}
     assert dpll_satisfiable(
@@ -112,7 +107,6 @@ def test_dpll_satisfiable():
 
 
 def test_dpll2_satisfiable():
-    A, B, C = symbols('A,B,C')
     assert dpll2_satisfiable( A & ~A ) is False
     assert dpll2_satisfiable( A & ~B ) == {A: True, B: False}
     assert dpll2_satisfiable(
@@ -135,12 +129,10 @@ def test_dpll2_satisfiable():
 
 
 def test_satisfiable():
-    A, B, C = symbols('A,B,C')
     assert satisfiable(A & (A >> B) & ~B) is False
 
 
 def test_valid():
-    A, B, C = symbols('A,B,C')
     assert valid(A >> (B >> A)) is True
     assert valid((A >> (B >> C)) >> ((A >> B) >> (A >> C))) is True
     assert valid((~B >> ~A) >> (A >> B)) is True
@@ -149,7 +141,6 @@ def test_valid():
 
 
 def test_pl_true():
-    A, B, C = symbols('A,B,C')
     assert pl_true(True) is True
     assert pl_true( A & B, {A: True, B: True}) is True
     assert pl_true( A | B, {A: True}) is True
@@ -189,7 +180,6 @@ def test_pl_true_wrong_input():
 
 
 def test_entails():
-    A, B, C = symbols('A, B, C')
     assert entails(A, [A >> B, ~B]) is False
     assert entails(B, [Equivalent(A, B), A]) is True
     assert entails((A >> B) >> (~A >> ~B)) is False
@@ -197,7 +187,6 @@ def test_entails():
 
 
 def test_PropKB():
-    A, B, C = symbols('A,B,C')
     kb = PropKB()
     assert kb.ask(A >> B) is False
     assert kb.ask(A >> (B >> A)) is True
@@ -222,15 +211,12 @@ def test_PropKB():
 
 
 def test_propKB_tolerant():
-    """"tolerant to bad input"""
+    """tolerant to bad input"""
     kb = PropKB()
-    A, B, C = symbols('A,B,C')
     assert kb.ask(B) is False
 
 
 def test_satisfiable_non_symbols():
-    x, y = symbols('x y')
-
     class zero(Boolean):
         pass
 
@@ -258,7 +244,6 @@ def test_satisfiable_bool():
 
 
 def test_satisfiable_all_models():
-    from diofant.abc import A, B
     assert next(satisfiable(False, all_models=True)) is False
     assert list(satisfiable((A >> ~A) & A, all_models=True)) == [False]
     assert list(satisfiable(True, all_models=True)) == [{true: true}]

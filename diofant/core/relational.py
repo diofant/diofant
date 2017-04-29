@@ -447,9 +447,9 @@ class GreaterThan(_Greater):
     Extended Summary
     ================
 
-    The ``*Than`` classes represent inequal relationships, where the left-hand
+    The ``*Than`` classes represent unequal relationships, where the left-hand
     side is generally bigger or smaller than the right-hand side.  For example,
-    the GreaterThan class represents an inequal relationship where the
+    the GreaterThan class represents an unequal relationship where the
     left-hand side is at least as big as the right side, if not bigger.  In
     mathematical notation:
 

@@ -105,6 +105,13 @@ def test_Domain_unify():
     assert unify(CC, ZZ.frac_field(x)) == CC.frac_field(x)
     assert unify(CC, EX) == EX
 
+    CC2 = ComplexField(prec=20)
+    assert unify(CC, CC2) == unify(CC2, CC) == ComplexField(prec=CC.precision,
+                                                            tol=CC2.tolerance)
+    RR2 = RealField(prec=20)
+    assert unify(RR, RR2) == unify(RR2, RR) == RealField(prec=RR.precision,
+                                                         tol=RR2.tolerance)
+
     assert unify(ZZ[x], F3) == ZZ[x]
     assert unify(ZZ[x], ZZ) == ZZ[x]
     assert unify(ZZ[x], QQ) == QQ[x]
@@ -551,6 +558,9 @@ def test_Domain_convert():
     assert CC.convert(QQ_python()(1, 2)) == CC(0.5)
     CC01 = ComplexField(tol=0.1)
     assert CC.convert(CC01(0.3)) == CC(0.3)
+
+    assert RR.convert(complex(2 + 0j)) == RR(2)
+    pytest.raises(CoercionFailed, lambda: RR.convert(complex(2 + 3j)))
 
 
 def test_arithmetics():

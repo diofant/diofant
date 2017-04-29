@@ -203,7 +203,7 @@ class ExprWithLimits(Expr):
         >>> Integral(x, (x, x, y), (y, x, y)).as_dummy()
         Integral(_x, (_x, x, _y), (_y, x, y))
 
-        If the object supperts the "integral at" limit ``(x,)`` it
+        If the object supports the "integral at" limit ``(x,)`` it
         is not treated as a dummy, but the explicit form, ``(x, x)``
         of length 2 does treat the variable as a dummy.
 

@@ -246,7 +246,7 @@ def test_Integer_new():
 
 
 def test_Rational_new():
-    """"
+    """
     Test for Rational constructor
     """
     _test_rational_new(Rational)
@@ -282,7 +282,7 @@ def test_Rational_new():
 
 
 def test_Number_new():
-    """"
+    """
     Test for Number constructor
     """
     # Expected behavior on numbers and strings

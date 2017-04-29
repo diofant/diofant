@@ -294,7 +294,7 @@ Sparse polynomials are represented as dictionaries.
 In commutative algebra, one often studies not only polynomials, but also
 *modules* over polynomial rings. The polynomial manipulation module provides
 rudimentary low-level support for finitely generated free modules. This is
-mainly used for Groebner basis computations (see there), so manipulation
+mainly used for Gröbner basis computations (see there), so manipulation
 functions are only provided to the extend needed. They carry the prefix
 ``sdm_``. Note that in examples, the generators of the free module are called
 `f_1, f_2, \ldots`.
@@ -597,13 +597,13 @@ Polynomial factorization in characteristic zero:
 .. autofunction:: dmp_factor_list_include
 .. autofunction:: dmp_irreducible_p
 
-Groebner basis algorithms
-*************************
+Gröbner basis algorithms
+************************
 
-Groebner bases can be used to answer many problems in computational
+Gröbner bases can be used to answer many problems in computational
 commutative algebra. Their computation in rather complicated, and very
 performance-sensitive. We present here various low-level implementations of
-Groebner basis computation algorithms; please see the previous section of the
+Gröbner basis computation algorithms; please see the previous section of the
 manual for usage.
 
 .. currentmodule:: diofant.polys.groebnertools
@@ -619,7 +619,7 @@ manual for usage.
 
 .. autofunction:: matrix_fglm
 
-Groebner basis algorithms for modules are also provided:
+Gröbner basis algorithms for modules are also provided:
 
 .. currentmodule:: diofant.polys.distributedmodules
 

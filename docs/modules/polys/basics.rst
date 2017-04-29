@@ -181,8 +181,8 @@ with rational coefficients::
              2
     (x + 2*y)
 
-Groebner bases
---------------
+Gröbner bases
+-------------
 
 Buchberger's algorithm is implemented, supporting various monomial orders::
 
