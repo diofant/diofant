@@ -831,6 +831,9 @@ def test_powers():
     # Test that this is fast
     assert integer_nthroot(2, 10**10) == (1, False)
 
+    pytest.raises(ValueError, lambda: integer_nthroot(-1, 2))
+    pytest.raises(ValueError, lambda: integer_nthroot(2, 0))
+
 
 def test_integer_nthroot_overflow():
     assert integer_nthroot(10**(50*50), 50) == (10**50, True)
