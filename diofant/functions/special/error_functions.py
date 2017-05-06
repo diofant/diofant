@@ -1567,6 +1567,8 @@ class TrigonometricIntegral(Function):
         arg = unpolarify(self.args[0])
         if argindex == 1:
             return self._trigfunc(arg)/arg
+        else:
+            raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_Ei(self, z):
         return self._eval_rewrite_as_expint(z).rewrite(Ei)
