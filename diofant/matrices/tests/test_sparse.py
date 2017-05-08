@@ -15,6 +15,7 @@ def test_sparse_matrix():
 
     # creation args
     pytest.raises(TypeError, lambda: SparseMatrix(1, 2))
+    pytest.raises(ValueError, lambda: SparseMatrix(2, 2, (1, 3, 4, 5, 6)))
 
     a = SparseMatrix((
         (1, 0),
@@ -323,6 +324,7 @@ def test_sparse_matrix():
         [2, 3 + I],
         [4,     5]
     ])
+    assert a*0 == Matrix([[0, 0], [0, 0]])
 
     # col join
     assert a.col_join(sparse_eye(2)) == SparseMatrix([
@@ -430,6 +432,12 @@ def test_sparse_matrix():
     assert SparseMatrix.eye(2).nnz() == 2
 
 
+def test_eq():
+    A = SparseMatrix(((1, 2), (3, 4)))
+    assert A != 1
+    assert A != zeros(2, 1)
+
+
 def test_transpose():
     assert SparseMatrix(((1, 2), (3, 4))).transpose() == \
         SparseMatrix(((1, 3), (2, 4)))
@@ -457,18 +465,34 @@ def test_add():
 
 def test_errors():
     pytest.raises(ValueError, lambda: SparseMatrix(1.4, 2, lambda i, j: 0))
+    pytest.raises(ValueError, lambda: SparseMatrix(2, 2, 1))
     pytest.raises(TypeError, lambda: SparseMatrix([1, 2, 3], [1, 2]))
     pytest.raises(ValueError, lambda: SparseMatrix([[1, 2], [3, 4]])[(1, 2, 3)])
     pytest.raises(IndexError, lambda: SparseMatrix([[1, 2], [3, 4]])[5])
     pytest.raises(ValueError, lambda: SparseMatrix([[1, 2], [3, 4]])[1, 2, 3])
     pytest.raises(TypeError,
-        lambda: SparseMatrix([[1, 2], [3, 4]]).copyin_list([0, 1], set()))
-    pytest.raises(
-        IndexError, lambda: SparseMatrix([[1, 2], [3, 4]])[1, 2])
+                  lambda: SparseMatrix([[1, 2],
+                                        [3, 4]]).copyin_list([0, 1], set()))
+    pytest.raises(IndexError, lambda: SparseMatrix([[1, 2], [3, 4]])[1, 2])
     pytest.raises(TypeError, lambda: SparseMatrix([1, 2, 3]).cross(1))
     pytest.raises(IndexError, lambda: SparseMatrix(1, 2, [1, 2])[3])
     pytest.raises(ShapeError,
-        lambda: SparseMatrix(1, 2, [1, 2]) + SparseMatrix(2, 1, [2, 1]))
+                  lambda: SparseMatrix(1, 2,
+                                       [1, 2]) + SparseMatrix(2, 1, [2, 1]))
+    pytest.raises(IndexError, lambda: SparseMatrix([1, 2, 3])[3, 0])
+    pytest.raises(TypeError, lambda: SparseMatrix([1, 2, 3]).applyfunc(1))
+    pytest.raises(ValueError, lambda: SparseMatrix([1, 2, 3]).reshape(2, 2))
+    pytest.raises(ValueError,
+                  lambda: SparseMatrix([[2, 3], [4, 1]]).cholesky())
+    pytest.raises(ValueError,
+                  lambda: SparseMatrix([[2, 3], [4, 1]]).LDLdecomposition())
+    pytest.raises(ValueError, lambda: SparseMatrix([[2, 3], [4, 1]]).add(1))
+    pytest.raises(ShapeError,
+                  lambda: SparseMatrix([[1, 2],
+                                        [3, 4]]).row_join(Matrix([[1, 2]])))
+    pytest.raises(ShapeError,
+                  lambda: SparseMatrix([[1, 2],
+                                        [3, 4]]).col_join(Matrix([1, 2])))
 
 
 def test_len():
@@ -569,3 +593,9 @@ def test_hermitian():
     assert a.is_hermitian is None
     a[0, 1] = a[1, 0]*I
     assert a.is_hermitian is False
+
+
+def test_fill():
+    a = SparseMatrix([[0, I], [-I, 0]])
+    a.fill(0)
+    assert a == Matrix([[0, 0], [0, 0]])

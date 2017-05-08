@@ -55,6 +55,9 @@ class SparseMatrixBase(MatrixBase):
                         value = self._sympify(flat_list[i*self.cols + j])
                         if value:
                             self._smat[(i, j)] = value
+            else:
+                raise ValueError("Third argument must be a callable,"
+                                 " dictionary or sequence.")
         else:
             # handle full matrix forms with _handle_creation_inputs
             r, c, _list = Matrix._handle_creation_inputs(*args)
@@ -105,7 +108,7 @@ class SparseMatrixBase(MatrixBase):
         return self._smat.get((i, j), S.Zero)
 
     def __setitem__(self, key, value):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def copy(self):
         return self._new(self.rows, self.cols, self._smat)
@@ -138,8 +141,6 @@ class SparseMatrixBase(MatrixBase):
         """
         if not self.rows:
             return []
-        if not self.cols:
-            return [[] for i in range(self.rows)]
         I, J = self.shape
         return [[self[i, j] for j in range(J)] for i in range(I)]
 
@@ -339,11 +340,7 @@ class SparseMatrixBase(MatrixBase):
         M = self.zeros(*self.shape)
         if scalar:
             for i in self._smat:
-                v = scalar*self._smat[i]
-                if v:
-                    M._smat[i] = v
-                else:
-                    M._smat.pop(i, None)
+                M._smat[i] = scalar*self._smat[i]
         return M
 
     def __mul__(self, other):
@@ -392,8 +389,6 @@ class SparseMatrixBase(MatrixBase):
         ...  isinstance(S*A, SparseMatrix) == False)
         True
         """
-        if isinstance(other, MatrixBase):
-            return other*other._new(self)
         return self.scalar_multiply(other)
 
     def __add__(self, other):
@@ -423,10 +418,8 @@ class SparseMatrixBase(MatrixBase):
             return self.add(other)
         elif isinstance(other, MatrixBase):
             return other._new(other + self)
-        else:
-            raise NotImplementedError(
-                "Cannot add %s to %s" %
-                tuple(c.__class__.__name__ for c in (other, self)))
+        else:  # pragma: no cover
+            return NotImplemented
 
     def __neg__(self):
         """Negate all elements of self.
@@ -1058,9 +1051,9 @@ class SparseMatrixBase(MatrixBase):
             solve = M._LDL_solve
         elif method == "CH":
             solve = M._cholesky_solve
-        else:
-            raise NotImplementedError(
-                'Method may be "CH" or "LDL", not %s.' % method)
+        else:  # pragma: no cover
+            raise NotImplementedError('Method may be "CH" or '
+                                      '"LDL", not %s.' % method)
         rv = M.hstack(*[solve(I[:, i]) for i in range(I.cols)])
         if not sym:
             scale = (r1*rv[:, 0])[0, 0]
@@ -1073,7 +1066,7 @@ class SparseMatrixBase(MatrixBase):
                 return False
             if isinstance(other, SparseMatrixBase):
                 return self._smat == other._smat
-            elif isinstance(other, MatrixBase):
+            else:
                 return self._smat == MutableSparseMatrix(other)._smat
         except AttributeError:
             return False
