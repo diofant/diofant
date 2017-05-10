@@ -19,6 +19,18 @@ def test_dup_sturm():
     assert R.dup_sturm(f) == [f, 3*x**2 - 4*x + 3, -QQ(10, 9)*x + QQ(13, 3), -QQ(3303, 100)]
 
 
+def test_dup_root_upper_bound():
+    R, x = ring("x", ZZ)
+
+    assert R.dup_root_upper_bound(-x - 1) is None
+
+
+def test_dup_root_lower_bound():
+    R, x = ring("x", ZZ)
+
+    assert R.dup_root_lower_bound(-x - 1) is None
+
+
 def test_dup_refine_real_root():
     R, x = ring("x", ZZ)
     f = x**2 - 2
