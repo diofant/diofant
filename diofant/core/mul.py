@@ -304,9 +304,9 @@ class Mul(AssocOp):
                             elif b.is_negative:
                                 neg1e += e
                                 b = -b
-                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             if b is not S.One:
                                 pnum_rat.setdefault(b, []).append(e)
+                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         elif b.is_positive or e.is_integer:
                             num_exp.append((b, e))
