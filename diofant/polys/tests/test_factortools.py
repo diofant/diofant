@@ -3,7 +3,7 @@
 import pytest
 
 from diofant.polys.rings import ring
-from diofant.polys.domains import FF, ZZ, QQ, RR, EX
+from diofant.domains import FF, ZZ, QQ, RR, EX
 from diofant.polys import polyconfig as config
 from diofant.polys.polyerrors import DomainError
 from diofant.polys.polyclasses import ANP

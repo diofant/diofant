@@ -1,11 +1,12 @@
 """Implementation of :class:`Ring` class. """
 
 from .domain import Domain
-from ..polyerrors import ExactQuotientFailed, NotInvertible, NotReversible
-from ...utilities import public
+from ..polys.polyerrors import ExactQuotientFailed, NotInvertible, NotReversible
 
 
-@public
+__all__ = ('Ring',)
+
+
 class Ring(Domain):
     """Represents a ring domain. """
 

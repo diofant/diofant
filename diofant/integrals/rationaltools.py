@@ -2,7 +2,8 @@
 
 from ..core import S, Symbol, symbols, I, Lambda, Dummy, Integer
 from ..functions import log, atan
-from ..polys import Poly, resultant, ZZ, RootSum, roots, cancel
+from ..domains import ZZ
+from ..polys import Poly, resultant, RootSum, roots, cancel
 
 
 def ratint(f, x, **flags):
@@ -155,7 +156,7 @@ def ratint_ratpart(f, g, x):
 
     H = f - A.diff()*v + A*(u.diff()*v).quo(u) - B*u
 
-    result = solve(H.coeffs(), C_coeffs)
+    result = solve(H.coeffs(), C_coeffs)[0]
 
     A = A.as_expr().subs(result)
     B = B.as_expr().subs(result)

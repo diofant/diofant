@@ -2,11 +2,12 @@
 
 from .field import Field
 from .compositedomain import CompositeDomain
-from ..polyerrors import CoercionFailed, GeneratorsError
-from ...utilities import public
+from ..polys.polyerrors import CoercionFailed, GeneratorsError
 
 
-@public
+__all__ = ('FractionField',)
+
+
 class FractionField(Field, CompositeDomain):
     """A class for representing multivariate rational function fields. """
 
@@ -16,7 +17,7 @@ class FractionField(Field, CompositeDomain):
     has_assoc_Field = True
 
     def __init__(self, domain_or_field, symbols=None, order=None):
-        from ..fields import FracField
+        from ..polys.fields import FracField
 
         if isinstance(domain_or_field, FracField) and symbols is None and order is None:
             field = domain_or_field
@@ -84,11 +85,6 @@ class FractionField(Field, CompositeDomain):
     def from_RealField(self, a, K0):
         """Convert a mpmath `mpf` object to `dtype`. """
         return self(self.domain.convert(a, K0))
-
-    def from_AlgebraicField(self, a, K0):
-        """Convert an algebraic number to ``dtype``. """
-        if self.domain == K0:
-            return self.new(a)
 
     def from_PolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """

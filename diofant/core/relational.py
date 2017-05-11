@@ -151,9 +151,8 @@ class Relational(Boolean, Expr, EvalfMixin):
                 e = (l, r, lr, rl)
                 if all(i is False for i in e):
                     return False
-                for i in e:
-                    if i not in (True, False):
-                        return i
+                if failing_expression:
+                    return a.lhs - a.rhs - b.lhs + b.rhs
             else:
                 if b.func != a.func:
                     b = b.reversed
@@ -189,7 +188,8 @@ class Relational(Boolean, Expr, EvalfMixin):
                     elif r.func is Ne:
                         return True
                     else:
-                        for prec in giant_steps(2, TARGET):
+                        # XXX workaround for diofant/diofant#499
+                        for prec in giant_steps(2, TARGET):  # pragma: no branch
                             ndif = dif.evalf(prec)
                             if ndif._prec != 1:
                                 dif = ndif
@@ -324,10 +324,6 @@ class Equality(Relational):
 
         return Relational.__new__(cls, lhs, rhs, **options)
 
-    @classmethod
-    def _eval_relation(cls, lhs, rhs):
-        return _sympify(lhs == rhs)
-
 
 Eq = Equality
 
@@ -377,10 +373,6 @@ class Unequality(Relational):
 
         return Relational.__new__(cls, lhs, rhs, **options)
 
-    @classmethod
-    def _eval_relation(cls, lhs, rhs):
-        return _sympify(lhs != rhs)
-
 
 Ne = Unequality
 
@@ -407,12 +399,7 @@ class _Inequality(Relational):
             # nor a subclass was able to reduce to boolean or raise an
             # exception).  In that case, it must call us with
             # `evaluate=False` to prevent infinite recursion.
-            r = cls._eval_relation(lhs, rhs)
-            if r is not None:
-                return r
-            # Note: not sure r could be None, perhaps we never take this
-            # path?  In principle, could use this to shortcut out if a
-            # class realizes the inequality cannot be evaluated further.
+            return cls._eval_relation(lhs, rhs)
 
         # make a "non-evaluated" Expr for the inequality
         return Relational.__new__(cls, lhs, rhs, **options)
@@ -460,9 +447,9 @@ class GreaterThan(_Greater):
     Extended Summary
     ================
 
-    The ``*Than`` classes represent inequal relationships, where the left-hand
+    The ``*Than`` classes represent unequal relationships, where the left-hand
     side is generally bigger or smaller than the right-hand side.  For example,
-    the GreaterThan class represents an inequal relationship where the
+    the GreaterThan class represents an unequal relationship where the
     left-hand side is at least as big as the right side, if not bigger.  In
     mathematical notation:
 

@@ -15,7 +15,7 @@ functions to compute square roots.  We might do something like this
    3.0
 
 Here we got the exact answer --- 9 is a perfect square --- but usually
-it will be an appoximate result
+it will be an approximate result
 
    >>> math.sqrt(8)
    2.8284271247461903
@@ -157,8 +157,9 @@ Find `\lim_{x\to 0^+}\frac{\sin{(x)}}{x}`.
 Solve `x^2 - 2 = 0`.
 
    >>> solve(x**2 - 2, x)
-   ⎡   ___    ___⎤
-   ⎣-╲╱ 2 , ╲╱ 2 ⎦
+   ⎡⎧      ___⎫  ⎧     ___⎫⎤
+   ⎢⎨x: -╲╱ 2 ⎬, ⎨x: ╲╱ 2 ⎬⎥
+   ⎣⎩         ⎭  ⎩        ⎭⎦
 
 Solve the differential equation `f'' - f = e^x`.
 

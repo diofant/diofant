@@ -2,12 +2,13 @@
 
 import operator
 
-from ..polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailed
 from .domainelement import DomainElement
-from ...utilities import public
 
 
-@public
+__all__ = ('ModularInteger',)
+
+
 class ModularInteger(DomainElement):
     """A class representing a modular integer. """
 

@@ -68,7 +68,7 @@ def idiff(eq, y, x, n=1):
     eq = eq.subs(f)
     derivs = {}
     for i in range(n):
-        yp = solve(eq.diff(x), dydx)[0].subs(derivs)
+        yp = solve(eq.diff(x), dydx)[0][dydx].subs(derivs)
         if i == n - 1:
             return yp.subs([(v, k) for k, v in f.items()])
         derivs[dydx] = yp

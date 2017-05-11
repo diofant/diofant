@@ -190,7 +190,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
         if not inverse_cdf or len(inverse_cdf) != 1:
             raise NotImplementedError("Could not invert CDF")
 
-        return Lambda(z, inverse_cdf[0])
+        return Lambda(z, inverse_cdf[0][x])
 
     @cacheit
     def compute_cdf(self, **kwargs):
@@ -395,7 +395,7 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
         if not gs:
             raise ValueError("Can not solve %s for %s" % (expr, self.value))
         fx = self.compute_density(self.value)
-        fy = sum(fx(g) * abs(g.diff(y)) for g in gs)
+        fy = sum(fx(g[self.value]) * abs(g[self.value].diff(y)) for g in gs)
         return Lambda(y, fy)
 
 

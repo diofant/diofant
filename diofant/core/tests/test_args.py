@@ -1337,25 +1337,25 @@ def test_diofant__functions__special__bessel__airybiprime():
 
 
 def test_diofant__functions__special__elliptic_integrals__elliptic_k():
-    from diofant.functions.special.elliptic_integrals import elliptic_k as K
-    assert _test_args(K(x))
+    from diofant.functions.special.elliptic_integrals import elliptic_k
+    assert _test_args(elliptic_k(x))
 
 
 def test_diofant__functions__special__elliptic_integrals__elliptic_f():
-    from diofant.functions.special.elliptic_integrals import elliptic_f as F
-    assert _test_args(F(x, y))
+    from diofant.functions.special.elliptic_integrals import elliptic_f
+    assert _test_args(elliptic_f(x, y))
 
 
 def test_diofant__functions__special__elliptic_integrals__elliptic_e():
-    from diofant.functions.special.elliptic_integrals import elliptic_e as E
-    assert _test_args(E(x))
-    assert _test_args(E(x, y))
+    from diofant.functions.special.elliptic_integrals import elliptic_e
+    assert _test_args(elliptic_e(x))
+    assert _test_args(elliptic_e(x, y))
 
 
 def test_diofant__functions__special__elliptic_integrals__elliptic_pi():
-    from diofant.functions.special.elliptic_integrals import elliptic_pi as P
-    assert _test_args(P(x, y))
-    assert _test_args(P(x, y, z))
+    from diofant.functions.special.elliptic_integrals import elliptic_pi
+    assert _test_args(elliptic_pi(x, y))
+    assert _test_args(elliptic_pi(x, y, z))
 
 
 def test_diofant__functions__special__delta_functions__DiracDelta():

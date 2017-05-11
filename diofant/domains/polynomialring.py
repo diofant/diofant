@@ -2,11 +2,12 @@
 
 from .ring import Ring
 from .compositedomain import CompositeDomain
-from ..polyerrors import CoercionFailed, GeneratorsError
-from ...utilities import public
+from ..polys.polyerrors import CoercionFailed, GeneratorsError
 
 
-@public
+__all__ = ('PolynomialRing',)
+
+
 class PolynomialRing(Ring, CompositeDomain):
     """A class for representing multivariate polynomial rings. """
 
@@ -16,7 +17,7 @@ class PolynomialRing(Ring, CompositeDomain):
     has_assoc_Field = True
 
     def __init__(self, domain_or_ring, symbols=None, order=None):
-        from ..rings import PolyRing
+        from ..polys.rings import PolyRing
 
         if isinstance(domain_or_ring, PolyRing) and symbols is None and order is None:
             ring = domain_or_ring

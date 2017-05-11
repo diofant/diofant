@@ -1,8 +1,9 @@
 """Tests for low-level linear systems solver. """
 
+from diofant.functions import sqrt
 from diofant.polys.rings import ring
 from diofant.polys.fields import field
-from diofant.polys.domains import ZZ, QQ
+from diofant.domains import ZZ, QQ
 from diofant.polys.solvers import solve_lin_sys
 
 __all__ = ()
@@ -15,6 +16,16 @@ def test_solve_lin_sys_2x2_one():
     sol = {x1: QQ(5, 3), x2: QQ(10, 3)}
     _sol = solve_lin_sys(eqs, domain)
     assert _sol == sol and all(isinstance(s, domain.dtype) for s in _sol)
+
+
+def test_solve_lin_sys_2x2_2():
+    domain = QQ.algebraic_field(sqrt(2))
+    coeff_ring, A0, A1 = ring('A:2', domain)
+    R, x = ring('x', coeff_ring)
+    expr = (A1 - sqrt(2))*R.one
+    sol = solve_lin_sys(expr.coeffs(), coeff_ring)
+    assert all(isinstance(s, coeff_ring.dtype) for s in sol.values())
+    assert sol == {A1: coeff_ring.from_expr(sqrt(2))}
 
 
 def test_solve_lin_sys_2x4_none():

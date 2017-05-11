@@ -3,10 +3,11 @@
 from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
-from ...utilities import public
 
 
-@public
+__all__ = ('RationalField',)
+
+
 class RationalField(Field, CharacteristicZero, SimpleDomain):
     """General class for rational fields. """
 

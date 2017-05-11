@@ -6,7 +6,7 @@ from ..ntheory import nextprime
 from ..ntheory.modular import crt
 from .galoistools import gf_gcd, gf_from_dict, gf_gcdex, gf_div, gf_lcm
 from .polyerrors import ModularGCDFailed
-from .domains import PolynomialRing
+from ..domains import PolynomialRing
 from ..core import Dummy
 
 
@@ -122,7 +122,8 @@ def _chinese_remainder_reconstruction_univariate(hp, hq, p, q):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x = ring("x", ZZ)
     >>> p = 3
@@ -184,7 +185,8 @@ def modgcd_univariate(f, g):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x = ring("x", ZZ)
 
@@ -303,7 +305,8 @@ def _primitive(f, p):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
     >>> p = 3
@@ -359,7 +362,8 @@ def _deg(f):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -406,7 +410,8 @@ def _LC(f):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -561,7 +566,8 @@ def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
     >>> p = 3
@@ -725,7 +731,8 @@ def modgcd_bivariate(f, g):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -906,7 +913,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     polynomials `f` and `g` at `x_{k-1} = a` for suitable
     `a \in \mathbb{Z}_p` and then calls itself recursively to compute the GCD
     in `\mathbb{Z}_p[x_0, \ldots, x_{k-2}]`. If these recursive calls are
-    succsessful for enough evaluation points, the GCD in `k` variables is
+    successful for enough evaluation points, the GCD in `k` variables is
     interpolated, otherwise the algorithm returns ``None``. Every time a GCD
     or a content is computed, their degrees are compared with the bounds. If
     a degree greater then the bound is encountered, then the current call
@@ -1084,7 +1091,8 @@ def modgcd_multivariate(f, g):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -1848,7 +1856,8 @@ def _func_field_modgcd_m(f, g, minpoly):
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
     >>> R, x, z = ring('x, z', ZZ)
     >>> minpoly = (z**2 - 2).drop(0)
@@ -2164,7 +2173,8 @@ def func_field_modgcd(f, g):
     Examples
     ========
 
-    >>> from diofant.polys import AlgebraicField, QQ, ring
+    >>> from diofant.domains import AlgebraicField, QQ
+    >>> from diofant.polys import ring
     >>> from diofant import sqrt
 
     >>> A = AlgebraicField(QQ, sqrt(2))

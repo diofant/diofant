@@ -8,10 +8,11 @@ from mpmath.libmp import (MPZ_ONE, fzero, fone, finf, fninf, fnan,
 from mpmath.rational import mpq
 
 from .domainelement import DomainElement
-from ...utilities import public
 
 
-@public
+__all__ = ('RealElement', 'ComplexElement', 'MPContext')
+
+
 class RealElement(_mpf, DomainElement):
     """An element of a real domain. """
 
@@ -24,7 +25,6 @@ class RealElement(_mpf, DomainElement):
         return self.context._parent
 
 
-@public
 class ComplexElement(_mpc, DomainElement):
     """An element of a complex domain. """
 
@@ -40,7 +40,6 @@ class ComplexElement(_mpc, DomainElement):
 new = object.__new__
 
 
-@public
 class MPContext(PythonMPContext):
 
     def __init__(self, prec=53, dps=None, tol=None):
@@ -91,9 +90,6 @@ class MPContext(PythonMPContext):
         eps = (0, MPZ_ONE, 1 - self.prec, 1)
         return mpf_mul(hundred, eps)
 
-    def make_tol(self):
-        return self.make_mpf(self._make_tol())
-
     def _convert_tol(self, tol):
         if isinstance(tol, int_types):
             return from_int(tol)
@@ -108,10 +104,6 @@ class MPContext(PythonMPContext):
 
     def _convert_fallback(self, x, strings):
         raise TypeError("cannot create mpf from " + str(x))
-
-    @property
-    def _repr_digits(self):
-        return repr_dps(self._prec)
 
     @property
     def _str_digits(self):
@@ -150,7 +142,7 @@ class MPContext(PythonMPContext):
     def almosteq(self, s, t, rel_eps=None, abs_eps=None):
         t = self.convert(t)
         if abs_eps is None and rel_eps is None:
-            rel_eps = abs_eps = self.tolerance or self.make_tol()
+            rel_eps = abs_eps = self.tolerance
         if abs_eps is None:
             abs_eps = self.convert(rel_eps)
         elif rel_eps is None:

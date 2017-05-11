@@ -9,7 +9,7 @@ from .densebasic import (dmp_zero, dmp_one, dmp_ground, dup_from_raw_dict,
                          dmp_raise, dup_random)
 from .densearith import dmp_add_term, dmp_neg, dmp_mul, dmp_sqr
 from .factortools import dup_zz_cyclotomic_poly
-from .domains import ZZ
+from ..domains import ZZ
 from ..ntheory import nextprime
 from ..utilities import subsets, public
 

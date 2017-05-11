@@ -5,10 +5,11 @@ from diofant.polys.distributedmodules import (
     sdm_add, sdm_LM, sdm_LT, sdm_mul_term, sdm_zero, sdm_deg,
     sdm_LC, sdm_from_dict,
     sdm_spoly, sdm_ecart, sdm_nf_mora, sdm_groebner,
-    sdm_from_vector, sdm_to_vector, sdm_monomial_lcm
+    sdm_from_vector, sdm_to_vector, sdm_monomial_lcm,
+    sdm_nf_buchberger, sdm_nf_buchberger_reduced
 )
 from diofant.polys.orderings import lex, grlex, InverseOrder
-from diofant.polys.domains import QQ
+from diofant.domains import QQ
 
 from diofant.abc import x, y, z
 
@@ -38,6 +39,7 @@ def test_sdm_monomial_divides():
 
 
 def test_sdm_LC():
+    assert sdm_LC([], QQ) == QQ(0)
     assert sdm_LC([((1, 2, 3), QQ(5))], QQ) == QQ(5)
 
 
@@ -127,6 +129,36 @@ def test_sdm_nf_mora():
         sdm_nf_mora(f, [f2, f1], lex, QQ) == \
         [((1, 0, 1, 1), QQ(1)), ((1, 0, 0, 1), QQ(-1)), ((0, 1, 1, 0), QQ(-1)),
          ((0, 1, 0, 1), QQ(1))]
+
+
+def test_sdm_nf_buchberger():
+    f = sdm_from_dict({(1, 2, 1, 1): QQ(1), (1, 1, 2, 1): QQ(1),
+                (1, 0, 2, 1): QQ(1), (1, 0, 0, 3): QQ(1), (1, 1, 1, 0): QQ(1)},
+        grlex)
+    f1 = sdm_from_dict({(1, 1, 1, 0): QQ(1), (1, 0, 2, 0): QQ(1),
+                        (1, 0, 0, 0): QQ(-1)}, grlex)
+    f2 = sdm_from_dict({(1, 1, 1, 0): QQ(1)}, grlex)
+    (id0, id1, id2) = [sdm_from_dict({(i, 0, 0, 0): QQ(1)}, grlex)
+                       for i in range(3)]
+
+    assert sdm_nf_buchberger(f, [f1, f2], grlex, QQ) == [((1, 0, 2, 1), 1),
+                                                         ((1, 0, 0, 3), 1),
+                                                         ((1, 1, 1, 0), 1),
+                                                         ((1, 1, 0, 1), 1)]
+    assert sdm_nf_buchberger(f, [f1, f2], grlex, QQ,
+                             phantom=(id0, [id1, id2])) == ([((1, 0, 2, 1), 1),
+                                                             ((1, 0, 0, 3), 1),
+                                                             ((1, 1, 1, 0), 1),
+                                                             ((1, 1, 0, 1), 1)],
+                                                            [((1, 1, 0, 1), -1),
+                                                             ((0, 0, 0, 0), 1)])
+
+    assert sdm_nf_buchberger_reduced(f, [f1, f2],
+                                     grlex, QQ) == [((1, 0, 2, 1), 1),
+                                                    ((1, 0, 0, 3), 1),
+                                                    ((1, 1, 0, 1), 1),
+                                                    ((1, 0, 2, 0), -1),
+                                                    ((1, 0, 0, 0), 1)]
 
 
 def test_conversion():

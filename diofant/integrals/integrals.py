@@ -287,12 +287,12 @@ class Integral(AddWithLimits):
             soln = solve(u - x, xvar, check=False)
             if not soln:
                 raise ValueError('no solution for solve(F(x) - f(u), x)')
-            f = [fi.subs(uvar, d) for fi in soln]
+            f = [fi[xvar].subs(uvar, d) for fi in soln]
         else:
             f = [u.subs(uvar, d)]
             pdiff, reps = posify(u - x)
             puvar = uvar.subs([(v, k) for k, v in reps.items()])
-            soln = [s.subs(reps) for s in solve(pdiff, puvar)]
+            soln = [s[puvar].subs(reps) for s in solve(pdiff, puvar)]
             if not soln:
                 raise ValueError('no solution for solve(F(x) - f(u), u)')
             F = [fi.subs(xvar, d) for fi in soln]

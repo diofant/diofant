@@ -8,7 +8,8 @@ from diofant import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp
                      subfactorial, true, false, Equivalent, Xor, Complement,
                      SymmetricDifference, MatrixSymbol, And)
 from diofant.core import Expr
-from diofant.polys import Poly, RootOf, RootSum, groebner, ring, field, ZZ, QQ, lex, grlex
+from diofant.domains import ZZ, QQ
+from diofant.polys import Poly, RootOf, RootSum, groebner, ring, field, lex, grlex
 from diofant.geometry import Point, Circle
 from diofant.printing import sstr, sstrrepr, StrPrinter
 from diofant.core.trace import Tr
@@ -664,7 +665,7 @@ def test_FiniteSet():
 
 
 def test_PrettyPoly():
-    from diofant.polys.domains import QQ
+    from diofant.domains import QQ
     F = QQ.frac_field(x, y)
     R = QQ[x, y]
     assert sstr(F.convert(x/(x + y))) == sstr(x/(x + y))

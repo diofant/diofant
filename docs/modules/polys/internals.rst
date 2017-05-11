@@ -42,82 +42,6 @@ the current implementation, to work in rings like `k[X][Y]`. This would create
 even more layers. For this reason, working in the isomorphic ring `k[X, Y]`
 is preferred.
 
-Domains
-=======
-
-.. currentmodule:: diofant.polys.domains
-
-Here we document the various implemented ground domains. There are three
-types: abstract domains, concrete domains, and "implementation domains".
-Abstract domains cannot be (usefully) instantiated at all, and just collect
-together functionality shared by many other domains. Concrete domains are
-those meant to be instantiated and used in the polynomial manipulation
-algorithms. In some cases, there are various possible ways to implement the
-data type the domain provides. For example, depending on what libraries are
-available on the system, the integers are implemented either using the python
-built-in integers, or using gmpy. Note that various aliases are created
-automatically depending on the libraries available. As such e.g. ``ZZ`` always
-refers to the most efficient implementation of the integer ring available.
-
-Abstract Domains
-****************
-
-.. autoclass:: diofant.polys.domains.domain.Domain
-   :members:
-
-.. autoclass:: diofant.polys.domains.field.Field
-   :members:
-
-.. autoclass:: diofant.polys.domains.ring.Ring
-   :members:
-
-.. autoclass:: diofant.polys.domains.simpledomain.SimpleDomain
-   :members:
-
-.. autoclass:: diofant.polys.domains.compositedomain.CompositeDomain
-   :members:
-
-Concrete Domains
-****************
-
-.. autoclass:: FiniteField
-   :members:
-
-.. autoclass:: IntegerRing
-   :members:
-
-.. autoclass:: PolynomialRing
-   :members:
-
-.. autoclass:: RationalField
-   :members:
-
-.. currentmodule:: diofant.polys.polyclasses
-.. autoclass:: diofant.polys.domains.AlgebraicField
-   :members:
-.. currentmodule:: diofant.polys.domains
-
-.. autoclass:: FractionField
-   :members:
-
-.. autoclass:: RealField
-   :members:
-
-.. autoclass:: ExpressionDomain
-   :members:
-
-Implementation Domains
-**********************
-
-.. autoclass:: PythonFiniteField
-.. autoclass:: GMPYFiniteField
-
-.. autoclass:: PythonIntegerRing
-.. autoclass:: GMPYIntegerRing
-
-.. autoclass:: PythonRationalField
-.. autoclass:: GMPYRationalField
-
 Level One
 =========
 
@@ -370,7 +294,7 @@ Sparse polynomials are represented as dictionaries.
 In commutative algebra, one often studies not only polynomials, but also
 *modules* over polynomial rings. The polynomial manipulation module provides
 rudimentary low-level support for finitely generated free modules. This is
-mainly used for Groebner basis computations (see there), so manipulation
+mainly used for Gröbner basis computations (see there), so manipulation
 functions are only provided to the extend needed. They carry the prefix
 ``sdm_``. Note that in examples, the generators of the free module are called
 `f_1, f_2, \ldots`.
@@ -673,13 +597,13 @@ Polynomial factorization in characteristic zero:
 .. autofunction:: dmp_factor_list_include
 .. autofunction:: dmp_irreducible_p
 
-Groebner basis algorithms
-*************************
+Gröbner basis algorithms
+************************
 
-Groebner bases can be used to answer many problems in computational
+Gröbner bases can be used to answer many problems in computational
 commutative algebra. Their computation in rather complicated, and very
 performance-sensitive. We present here various low-level implementations of
-Groebner basis computation algorithms; please see the previous section of the
+Gröbner basis computation algorithms; please see the previous section of the
 manual for usage.
 
 .. currentmodule:: diofant.polys.groebnertools
@@ -695,7 +619,7 @@ manual for usage.
 
 .. autofunction:: matrix_fglm
 
-Groebner basis algorithms for modules are also provided:
+Gröbner basis algorithms for modules are also provided:
 
 .. currentmodule:: diofant.polys.distributedmodules
 

@@ -101,7 +101,7 @@ Major Changes
 
   - A new module ``agca`` was started which seeks to support computations in
     commutative algebra (and eventually algebraic geometry) in the style of
-    Macaulay2 and Singular. Currently there is support for computing Groebner
+    Macaulay2 and Singular. Currently there is support for computing Gröbner
     bases of modules over a (generalized) polynomial ring over a field. Based on
     this, there are algorithms for various standard problems in commutative
     algebra, e.g., computing intersections of submodules, equality tests in

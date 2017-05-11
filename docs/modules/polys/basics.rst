@@ -181,8 +181,8 @@ with rational coefficients::
              2
     (x + 2*y)
 
-Groebner bases
---------------
+Gröbner bases
+-------------
 
 Buchberger's algorithm is implemented, supporting various monomial orders::
 
@@ -204,20 +204,20 @@ polynomials and to solve some systems of polynomial equations::
     >>> from diofant import roots, solve_poly_system
 
     >>> solve(x**3 + 2*x + 3, x)
-               ____          ____
-         1   \/ 11 *I  1   \/ 11 *I
-    [-1, - - --------, - + --------]
-         2      2      2      2
+                        ____               ____
+                  1   \/ 11 *I       1   \/ 11 *I
+    [{x: -1}, {x: - - --------}, {x: - + --------}]
+                  2      2           2      2
 
     >>> p = Symbol('p')
     >>> q = Symbol('q')
 
     >>> solve(x**2 + p*x + q, x)
-              __________           __________
-             /  2                 /  2
-       p   \/  p  - 4*q     p   \/  p  - 4*q
-    [- - - -------------, - - + -------------]
-       2         2          2         2
+                  __________                __________
+                 /  2                      /  2
+           p   \/  p  - 4*q          p   \/  p  - 4*q
+    [{x: - - - -------------}, {x: - - + -------------}]
+           2         2               2         2
 
     >>> solve_poly_system([y - x, x - 5], x, y)
     [{x: 5, y: 5}]

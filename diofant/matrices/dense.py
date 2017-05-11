@@ -85,7 +85,7 @@ class DenseMatrix(MatrixBase):
             return self._mat[a2idx(key)]
 
     def __setitem__(self, key, value):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     @property
     def is_Identity(self):
@@ -344,8 +344,6 @@ class DenseMatrix(MatrixBase):
                     ans = self[i, j].equals(other[i, j], failing_expression)
                     if ans is False:
                         return False
-                    elif ans is not True and rv is True:
-                        rv = ans
             return rv
         except AttributeError:
             return False
@@ -358,7 +356,7 @@ class DenseMatrix(MatrixBase):
                 return False
             if isinstance(other, Matrix):
                 return self._mat == other._mat
-            elif isinstance(other, MatrixBase):
+            elif isinstance(other, MatrixBase):  # pragma: no branch
                 return self._mat == Matrix(other)._mat
         except AttributeError:
             return False
@@ -401,7 +399,7 @@ class DenseMatrix(MatrixBase):
         for j in range(rhs.cols):
             for i in range(self.rows):
                 if self[i, i] == 0:
-                    raise TypeError("Matrix must be non-singular.")
+                    raise ValueError("Matrix must be non-singular.")
                 X[i, j] = (rhs[i, j] - sum(self[i, k]*X[k, j]
                     for k in range(i))) / self[i, i]
         return self._new(X)
@@ -494,10 +492,10 @@ class DenseMatrix(MatrixBase):
     def as_immutable(self):
         """Returns an Immutable version of this Matrix
         """
-        from .immutable import ImmutableMatrix as cls
+        from .immutable import ImmutableMatrix
         if self.rows and self.cols:
-            return cls._new(self.tolist())
-        return cls._new(self.rows, self.cols, [])
+            return ImmutableMatrix._new(self.tolist())
+        return ImmutableMatrix._new(self.rows, self.cols, [])
 
     @classmethod
     def zeros(cls, r, c=None):
@@ -523,17 +521,9 @@ class DenseMatrix(MatrixBase):
     def __add__(self, other):
         return super(DenseMatrix, self).__add__(_force_mutable(other))
 
-    @call_highest_priority('__add__')
-    def __radd__(self, other):
-        return super(DenseMatrix, self).__radd__(_force_mutable(other))
-
     @call_highest_priority('__rsub__')
     def __sub__(self, other):
         return super(DenseMatrix, self).__sub__(_force_mutable(other))
-
-    @call_highest_priority('__sub__')
-    def __rsub__(self, other):
-        return super(DenseMatrix, self).__rsub__(_force_mutable(other))
 
     @call_highest_priority('__rmul__')
     def __mul__(self, other):
@@ -551,10 +541,6 @@ class DenseMatrix(MatrixBase):
     @call_highest_priority('__rpow__')
     def __pow__(self, other):
         return super(DenseMatrix, self).__pow__(other)
-
-    @call_highest_priority('__pow__')
-    def __rpow__(self, other):
-        raise NotImplementedError("Matrix Power not defined")
 
 
 def _force_mutable(x):
@@ -1241,7 +1227,7 @@ def zeros(r, c=None, cls=None):
     diofant.matrices.dense.diag
     """
     if cls is None:
-        from . import Matrix as cls
+        from . import Matrix as cls  # noqa: N813
     return cls.zeros(r, c)
 
 
@@ -1256,7 +1242,7 @@ def eye(n, cls=None):
     diofant.matrices.dense.ones
     """
     if cls is None:
-        from . import Matrix as cls
+        from . import Matrix as cls  # noqa: N813
     return cls.eye(n)
 
 
@@ -1351,7 +1337,7 @@ def diag(*values, **kwargs):
 
     cls = kwargs.pop('cls', None)
     if cls is None:
-        from . import Matrix as cls
+        from . import Matrix as cls  # noqa: N813
 
     if kwargs:
         raise ValueError('unrecognized keyword%s: %s' % (
@@ -1480,14 +1466,14 @@ def hessian(f, varlist, constraints=[]):
             raise ShapeError("`len(varlist)` must not be zero.")
     else:
         raise ValueError("Improper variable list in hessian function")
-    if not getattr(f, 'diff'):
+    if not getattr(f, 'diff', None):
         # check differentiability
         raise ValueError("Function `f` (%s) is not differentiable" % f)
     m = len(constraints)
     N = m + n
     out = zeros(N)
     for k, g in enumerate(constraints):
-        if not getattr(g, 'diff'):
+        if not getattr(g, 'diff', None):
             # check differentiability
             raise ValueError("Function `f` (%s) is not differentiable" % f)
         for i in range(n):

@@ -45,8 +45,8 @@ from diofant.polys.polyerrors import (
     FlagError)
 from diofant.polys.polyclasses import DMP
 from diofant.polys.fields import field
-from diofant.polys.domains import FF, ZZ, QQ, RR, EX
-from diofant.polys.domains.realfield import RealField
+from diofant.domains import FF, ZZ, QQ, RR, EX
+from diofant.domains.realfield import RealField
 from diofant.polys.orderings import lex, grlex, grevlex
 from diofant import (
     S, Integer, Rational, Float, Mul, Symbol, sqrt, Piecewise, Derivative, Sum,
@@ -2991,6 +2991,9 @@ def test_groebner():
                   lambda: groebner([0.144*x*y + 0.018*x**2 + 0.05*x - 1.577,
                                     0.072*y**2 + 0.036*x*y + 0.05*y - 1.423],
                                    [x, y]))
+
+    G = groebner([x**3 - y**3], x, y, order='grlex')
+    pytest.raises(NotImplementedError, lambda: G.fglm('lex'))
 
 
 def test_fglm():

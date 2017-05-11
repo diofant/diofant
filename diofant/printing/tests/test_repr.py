@@ -5,7 +5,8 @@ from diofant import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
                      Symbol, Dummy, Wild, AlgebraicNumber, sqrt, root)
 from diofant.geometry import Point, Ellipse
 from diofant.printing.repr import srepr
-from diofant.polys import ring, field, ZZ, QQ, lex, grlex
+from diofant.domains import ZZ, QQ
+from diofant.polys import ring, field, lex, grlex
 
 __all__ = ()
 

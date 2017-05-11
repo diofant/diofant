@@ -8,7 +8,7 @@ from diofant.polys.polyoptions import (
     Frac, Formal, Polys, Include, All, Gen, Symbols, Method)
 
 from diofant.polys.orderings import lex
-from diofant.polys.domains import FF, GF, ZZ, QQ, EX
+from diofant.domains import FF, GF, ZZ, QQ, EX
 from diofant.polys.polyerrors import OptionError, GeneratorsError
 
 from diofant import Integer, Symbol, I, sqrt

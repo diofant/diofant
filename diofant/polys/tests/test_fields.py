@@ -4,7 +4,7 @@ import pytest
 
 from diofant.polys.fields import field, FracField
 from diofant.polys.rings import ring
-from diofant.polys.domains import ZZ, QQ
+from diofant.domains import ZZ, QQ
 from diofant.polys.orderings import lex
 
 from diofant.core import symbols

@@ -1,11 +1,12 @@
 """Implementation of :class:`Field` class. """
 
 from .ring import Ring
-from ..polyerrors import NotReversible, DomainError
-from ...utilities import public
+from ..polys.polyerrors import NotReversible, DomainError
 
 
-@public
+__all__ = ('Field',)
+
+
 class Field(Ring):
     """Represents a field domain. """
 
@@ -42,7 +43,7 @@ class Field(Ring):
         This definition of GCD over fields allows to clear denominators
         in `primitive()`.
 
-        >>> from diofant.polys.domains import QQ
+        >>> from diofant.domains import QQ
         >>> from diofant import Rational, gcd, primitive
         >>> from diofant.abc import x
 
@@ -67,7 +68,7 @@ class Field(Ring):
         """
         Returns LCM of ``a`` and ``b``.
 
-        >>> from diofant.polys.domains import QQ
+        >>> from diofant.domains import QQ
         >>> from diofant import Rational, lcm
 
         >>> QQ.lcm(QQ(2, 3), QQ(4, 9))

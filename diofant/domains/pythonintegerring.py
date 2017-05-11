@@ -4,11 +4,12 @@ from .integerring import IntegerRing
 from .groundtypes import (PythonInteger, DiofantInteger, python_sqrt,
                           python_factorial, python_gcdex, python_gcd,
                           python_lcm)
-from ..polyerrors import CoercionFailed
-from ...utilities import public
+from ..polys.polyerrors import CoercionFailed
 
 
-@public
+__all__ = ('PythonIntegerRing',)
+
+
 class PythonIntegerRing(IntegerRing):
     """Integer ring based on Python's ``int`` type. """
 
@@ -56,8 +57,8 @@ class PythonIntegerRing(IntegerRing):
 
     def from_QQ_gmpy(self, a, K0):
         """Convert GMPY's ``mpq`` to Python's ``int``. """
-        if a.denom() == 1:
-            return PythonInteger(a.numer())
+        if a.denominator == 1:
+            return PythonInteger(a.numerator)
 
     def from_RealField(self, a, K0):
         """Convert mpmath's ``mpf`` to Python's ``int``. """

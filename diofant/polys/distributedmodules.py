@@ -137,7 +137,7 @@ def sdm_monomial_divides(A, B):
 # The actual distributed modules code.
 
 def sdm_LC(f, K):
-    """Returns the leading coeffcient of ``f``. """
+    """Returns the leading coefficient of ``f``. """
     if not f:
         return K.zero
     else:
@@ -155,7 +155,8 @@ def sdm_from_dict(d, O):
 
     Here ``O`` is the monomial order to use.
 
-    >>> from diofant.polys import QQ, lex
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import lex
 
     >>> dic = {(1, 1, 0): QQ(1), (1, 0, 0): QQ(2), (0, 1, 0): QQ(0)}
     >>> sdm_from_dict(dic, lex)
@@ -188,7 +189,8 @@ def sdm_add(f, g, O, K):
 
     `(xy f_1) + (f_2) = f_2 + xy f_1`
 
-    >>> from diofant.polys import lex, QQ
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import lex
 
     >>> sdm_add([((1, 1, 1), QQ(1))], [((2, 0, 0), QQ(1))], lex, QQ)
     [((2, 0, 0), 1), ((1, 1, 1), 1)]
@@ -233,7 +235,8 @@ def sdm_LM(f):
     Examples
     ========
 
-    >>> from diofant.polys import QQ, lex
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import lex
 
     >>> dic = {(1, 2, 3): QQ(1), (4, 0, 0): QQ(1), (4, 0, 1): QQ(1)}
     >>> sdm_LM(sdm_from_dict(dic, lex))
@@ -251,7 +254,8 @@ def sdm_LT(f):
     Examples
     ========
 
-    >>> from diofant.polys import QQ, lex
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import lex
 
     >>> dic = {(1, 2, 3): QQ(1), (4, 0, 0): QQ(2), (4, 0, 1): QQ(3)}
     >>> sdm_LT(sdm_from_dict(dic, lex))
@@ -272,7 +276,8 @@ def sdm_mul_term(f, term, O, K):
 
     `0 f_1 = 0`
 
-    >>> from diofant.polys import lex, QQ
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import lex
 
     >>> sdm_mul_term([((1, 0, 0), QQ(1))], ((0, 0), QQ(0)), lex, QQ)
     []
@@ -338,8 +343,9 @@ def sdm_from_vector(vec, O, K, **opts):
     Examples
     ========
 
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import lex
     >>> from diofant.abc import x, y, z
-    >>> from diofant.polys import QQ, lex
 
     >>> sdm_from_vector([x**2+y**2, 2*z], lex, QQ)
     [((1, 0, 0, 1), 2), ((0, 2, 0, 0), 1), ((0, 0, 2, 0), 1)]
@@ -363,8 +369,8 @@ def sdm_to_vector(f, gens, K, n=None):
     Examples
     ========
 
+    >>> from diofant.domains import QQ
     >>> from diofant.abc import x, y, z
-    >>> from diofant.polys import QQ, lex
     >>> f = [((1, 0, 0, 1), QQ(2)), ((0, 2, 0, 0), QQ(1)), ((0, 0, 2, 0), QQ(1))]
     >>> sdm_to_vector(f, [x, y, z], QQ)
     [x**2 + y**2, 2*z]
@@ -406,7 +412,8 @@ def sdm_spoly(f, g, O, K, phantom=None):
     Examples
     ========
 
-    >>> from diofant.polys import QQ, lex
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import lex
 
     >>> f = [((2, 1, 1), QQ(1)), ((1, 0, 1), QQ(1))]
     >>> g = [((2, 3, 0), QQ(1))]

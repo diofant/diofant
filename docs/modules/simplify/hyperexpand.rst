@@ -478,7 +478,7 @@ expressed as a linear combination of lower order derivatives. The matrix
 `B` contains the basis `\{B_0, B_1, \ldots\}` and is of shape
 `n \times 1`. The best way to get `B_i` is to take the first
 `n = \max(p, q+1)` derivatives of the expression for `{}_p F_q`
-and take out usefull pieces. In our case we find that
+and take out useful pieces. In our case we find that
 `n = \max{\left(1, 2+1\right)} = 3`. For computing the derivatives,
 we have to use the operator `z\frac{\mathrm{d}}{\mathrm{d}z}`. The
 first basis element `B_0` is set to the expression for `{}_1 F_2`

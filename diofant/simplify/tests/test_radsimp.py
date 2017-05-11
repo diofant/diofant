@@ -5,7 +5,7 @@ from diofant import (sqrt, Derivative, symbols, collect, Function, factor,
                      sin, rcollect, Mul, radsimp, diff, root, Symbol,
                      Rational, exp, Integer)
 
-from diofant.core.mul import _unevaluated_Mul as umul
+from diofant.core.mul import _unevaluated_Mul as UMul
 from diofant.simplify.radsimp import (collect_sqrt,
                                       fraction_expand)
 
@@ -140,11 +140,11 @@ def test_radsimp():
 
     # issue sympy/sympy#7408
     eq = sqrt(x)/sqrt(y)
-    assert radsimp(eq) == umul(sqrt(x), sqrt(y), 1/y)
+    assert radsimp(eq) == UMul(sqrt(x), sqrt(y), 1/y)
     assert radsimp(eq, symbolic=False) == eq
 
     # issue sympy/sympy#7498
-    assert radsimp(sqrt(x)/sqrt(y)**3) == umul(sqrt(x), sqrt(y**3), 1/y**3)
+    assert radsimp(sqrt(x)/sqrt(y)**3) == UMul(sqrt(x), sqrt(y**3), 1/y**3)
 
     # for coverage
     eq = sqrt(x)/y**2

@@ -495,8 +495,8 @@ def test_sympyissue_4559():
     # Note that solve will give
     # multiple roots but match only gives one:
     #
-    # >>> solve(x**r-y**2,y)
-    # [-x**(r/2), x**(r/2)]
+    # >>> solve(x**r - y**2, y)
+    # [{y: -x**(r/2)}, {y: x**(r/2)}]
 
     r = Symbol('r', rational=True)
     assert (x**r).match(y**2) == {y: x**(r/2)}

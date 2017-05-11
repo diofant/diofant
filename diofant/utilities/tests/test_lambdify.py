@@ -13,14 +13,14 @@ from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.external import import_module
 import diofant
 
+from diofant.abc import w, x, y, z
+
 __all__ = ()
 
 MutableDenseMatrix = Matrix
 
 numpy = import_module('numpy')
 numexpr = import_module('numexpr')
-
-w, x, y, z, a, b = symbols('w,x,y,z,a,b')
 
 # ================= Test different arguments =======================
 
@@ -184,6 +184,7 @@ def test_numexpr_printer():
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 @pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_sympyissue_9334():
+    a, b = symbols('a, b')
     expr = b*a - sqrt(a**2)
     a, b = sorted(expr.free_symbols, key=lambda s: s.name)
     func_numexpr = lambdify((a, b), expr, modules=[numexpr], dummify=False)

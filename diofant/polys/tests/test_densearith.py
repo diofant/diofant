@@ -34,7 +34,7 @@ from diofant.polys.densearith import (
 
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
-from diofant.polys.domains import FF, ZZ, QQ
+from diofant.domains import FF, ZZ, QQ
 
 __all__ = ()
 
@@ -102,6 +102,9 @@ def test_dmp_sub_term():
         dup_sub_term([ZZ(1), ZZ(1), ZZ(1)], ZZ(1), 2, ZZ)
     assert dmp_sub_term(f_0, [[]], 3, 2, ZZ) == f_0
     assert dmp_sub_term(F_0, [[]], 3, 2, QQ) == F_0
+
+    f = [[ZZ(2)], [ZZ(1), ZZ(0)], [ZZ(1)]]
+    assert dmp_sub_term(f, [ZZ(2)], 3, 1, ZZ) == [[-2], [2], [1, 0], [1]]
 
 
 def test_dup_mul_term():
@@ -712,6 +715,8 @@ def test_dup_pow():
     assert dup_pow([], 1, ZZ) == []
     assert dup_pow([], 7, ZZ) == []
 
+    pytest.raises(ValueError, lambda: dup_pow([ZZ(1)], -1, ZZ))
+
     assert dup_pow([ZZ(1)], 0, ZZ) == [ZZ(1)]
     assert dup_pow([ZZ(1)], 1, ZZ) == [ZZ(1)]
     assert dup_pow([ZZ(1)], 7, ZZ) == [ZZ(1)]
@@ -748,6 +753,8 @@ def test_dmp_pow():
     assert dmp_pow([[ZZ(1)]], 1, 1, ZZ) == [[ZZ(1)]]
     assert dmp_pow([[ZZ(1)]], 7, 1, ZZ) == [[ZZ(1)]]
 
+    pytest.raises(ValueError, lambda: dmp_pow([[ZZ(1)]], -1, 1, ZZ))
+
     assert dmp_pow([[QQ(3, 7)]], 0, 1, QQ) == [[QQ(1, 1)]]
     assert dmp_pow([[QQ(3, 7)]], 1, 1, QQ) == [[QQ(3, 7)]]
     assert dmp_pow([[QQ(3, 7)]], 7, 1, QQ) == [[QQ(2187, 823543)]]
@@ -769,6 +776,8 @@ def test_dup_pdiv():
     assert dup_prem(f, g, ZZ) == r
 
     pytest.raises(ExactQuotientFailed, lambda: dup_pexquo(f, g, ZZ))
+    pytest.raises(ZeroDivisionError, lambda: dup_pdiv(f, [], ZZ))
+    pytest.raises(ZeroDivisionError, lambda: dup_prem(f, [], ZZ))
 
     f = dup_normal([3, 1, 1, 5], QQ)
     g = dup_normal([5, -3, 1], QQ)
@@ -777,6 +786,8 @@ def test_dup_pdiv():
     r = dup_normal([52, 111], QQ)
 
     assert dup_pdiv(f, g, QQ) == (q, r)
+    assert dup_pdiv(g, f, QQ) == ([], [QQ(5, 1), QQ(-3, 1), QQ(1, 1)])
+    assert dup_prem(g, f, QQ) == [QQ(5, 1), QQ(-3, 1), QQ(1, 1)]
     assert dup_pquo(f, g, QQ) == q
     assert dup_prem(f, g, QQ) == r
 
@@ -794,6 +805,8 @@ def test_dmp_pdiv():
     assert dmp_pquo(f, g, 1, ZZ) == q
     assert dmp_prem(f, g, 1, ZZ) == r
 
+    pytest.raises(ZeroDivisionError, lambda: dmp_pdiv(f, [], 1, ZZ))
+    pytest.raises(ZeroDivisionError, lambda: dmp_prem(f, [], 1, ZZ))
     pytest.raises(ExactQuotientFailed, lambda: dmp_pexquo(f, g, 1, ZZ))
 
     f = dmp_normal([[1], [], [1, 0, 0]], 1, ZZ)
@@ -803,6 +816,8 @@ def test_dmp_pdiv():
     r = dmp_normal([[8, 0, 0]], 1, ZZ)
 
     assert dmp_pdiv(f, g, 1, ZZ) == (q, r)
+    assert dmp_pdiv(g, f, 1, ZZ) == ([[]], [[ZZ(2)], [ZZ(-2), ZZ(0)]])
+    assert dmp_prem(g, f, 1, ZZ) == [[ZZ(2)], [ZZ(-2), ZZ(0)]]
     assert dmp_pquo(f, g, 1, ZZ) == q
     assert dmp_prem(f, g, 1, ZZ) == r
 

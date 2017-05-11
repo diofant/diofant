@@ -135,7 +135,7 @@ is recognised to be analytic, then we can try to compute the mellin-transform of
 `f(ax)` for a parameter `a`, and deduce the G-function expression by analytic
 continuation. (Checking for analyticity is easy. Since we can only deal with a
 certain subset of functions anyway, we only have to filter out those which are
-not analyitc.)
+not analytic.)
 
 The function ``_rewrite_single`` does the table lookup and recursive mellin
 transform. The functions ``_rewrite1`` and ``_rewrite2`` respectively use
@@ -451,7 +451,7 @@ particular the inner integral has to converge. Also, for our identification of
 the final integral as a Fox H / Meijer G-function to be correct, the poles of
 the newly obtained gamma function must be separated properly.
 
-It is easy to check that the inner integal converges absolutely for
+It is easy to check that the inner integral converges absolutely for
 `\Re(as) < -1`. Thus the contour `L` has to run left of the line `\Re(as) = -1`.
 Under this condition, the poles of the newly-introduced gamma function are
 separated properly.

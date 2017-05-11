@@ -3,7 +3,7 @@
 import pytest
 
 from diofant.polys.rings import ring
-from diofant.polys.domains import ZZ, QQ, RR
+from diofant.domains import ZZ, QQ, RR
 from diofant.polys.specialpolys import (f_polys, dmp_fateman_poly_F_1,
                                         dmp_fateman_poly_F_2,
                                         dmp_fateman_poly_F_3)

@@ -170,7 +170,7 @@ class Set(Basic):
 
             # XXX: this doesn't work if the dimentions of the sets isn't same.
             # A - B is essentially same as A if B has a different
-            # dimentionality than A
+            # dimensionality than A
             switch_sets = ProductSet(FiniteSet(o, o - s) for s, o in
                                      zip(self.sets, other.sets))
             product_sets = (ProductSet(*set) for set in switch_sets)
@@ -980,8 +980,9 @@ class Interval(Set, EvalfMixin):
         if len(sing) == 0:
             solns = solve(diff(expr, var), var)
 
-            extr = [_start, _end] + [f(x) for x in solns
-                                     if x.is_extended_real and x in self]
+            extr = [_start, _end] + [f(x[var]) for x in solns
+                                     if (x[var].is_extended_real and
+                                         x[var] in self)]
             start, end = Min(*extr), Max(*extr)
 
             left_open, right_open = False, False

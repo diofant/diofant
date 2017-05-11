@@ -12,6 +12,7 @@ del os
 from .core import *  # noqa: F403
 from .logic import *  # noqa: F403
 from .polys import *  # noqa: F403
+from .domains import *  # noqa: F403
 from .series import *  # noqa: F403
 from .functions import *  # noqa: F403
 from .ntheory import *  # noqa: F403

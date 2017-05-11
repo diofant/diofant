@@ -7,24 +7,24 @@ import fractions
 
 import mpmath.libmp as mlib
 
-from ...core.compatibility import HAS_GMPY
+from ..core.compatibility import HAS_GMPY
 
 PythonInteger = builtins.int
 PythonReal = builtins.float
 PythonComplex = builtins.complex
 PythonRational = fractions.Fraction
 
-from ...core.numbers import (
+from ..core.numbers import (
     igcdex as python_gcdex,
     igcd as python_gcd,
     ilcm as python_lcm)
-from ...core.numbers import (
+from ..core.numbers import (
     Float as DiofantReal,
     Integer as DiofantInteger,
     Rational as DiofantRational)
 
 if HAS_GMPY:
-    from gmpy2 import (
+    from gmpy2 import (  # noqa: N812
         mpz as GMPYInteger,
         mpq as GMPYRational,
         fac as gmpy_factorial,

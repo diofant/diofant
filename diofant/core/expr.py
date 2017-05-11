@@ -236,12 +236,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         re, im = result.as_real_imag()
         return complex(float(re), float(im))
 
+    @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
         from .relational import GreaterThan
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
@@ -254,12 +251,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return sympify(dif.is_nonnegative)
         return GreaterThan(self, other, evaluate=False)
 
+    @_sympifyit('other', NotImplemented)
     def __le__(self, other):
         from .relational import LessThan
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
@@ -272,12 +266,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return sympify(dif.is_nonpositive)
         return LessThan(self, other, evaluate=False)
 
+    @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
         from .relational import StrictGreaterThan
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
@@ -290,12 +281,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return sympify(dif.is_positive)
         return StrictGreaterThan(self, other, evaluate=False)
 
+    @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
         from .relational import StrictLessThan
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
@@ -657,10 +645,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         # *then* the simplification will be attempted.
                         sol = solve(diff, s, check=False, simplify=False)
                         if sol:
-                            if s in sol:
+                            if any(s in list(_.values()) for _ in sol):
                                 return True
-                            if s.is_real and any(nsimplify(si, [s]) == s
-                                                 and simplify(si) == s
+                            if s.is_real and any(nsimplify(si[s], [s]) == s
+                                                 and simplify(si[s]) == s
                                                  for si in sol):
                                 return True
                     except NotImplementedError:  # pragma: no cover
@@ -1029,7 +1017,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         self is treated as a Mul and the ordering of the factors is maintained.
         If ``cset`` is True the commutative factors will be returned in a set.
         If there were repeated factors (as may happen with an unevaluated Mul)
-        then an error will be raised unless it is explicitly supressed by
+        then an error will be raised unless it is explicitly suppressed by
         setting ``warn`` to False.
 
         Note: -1 is always separated from a Number unless split_1 is False.
@@ -2746,9 +2734,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         at an early level and may provide nicer and more useful results.
 
         If the most rapidly varying subexpression of a given expression f is f itself,
-        the algorithm tries to find a normalised representation of the mrv set and rewrites f
-        using this normalised representation.
-        Use the ``bound`` parameter to give limit on rewriting coefficients in its normalised form.
+        the algorithm tries to find a normalized representation of the mrv set and rewrites f
+        using this normalized representation.
+        Use the ``bound`` parameter to give limit on rewriting coefficients in its normalized form.
 
         If the expansion contains an order term, it will be either ``O(x**(-n))`` or ``O(w**(-n))``
         where ``w`` belongs to the most rapidly varying expression of ``self``.

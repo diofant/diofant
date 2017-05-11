@@ -1,21 +1,22 @@
-"""Implementation of :class:`ComplexField` class. """
+"""Implementation of :class:`RealField` class. """
 
-from ...core import Float, I
-from ...utilities import public
 from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
 from .mpelements import MPContext
-from ..polyerrors import DomainError, CoercionFailed
+from ..polys.polyerrors import DomainError, CoercionFailed
+from ..core import Float
 
 
-@public
-class ComplexField(Field, CharacteristicZero, SimpleDomain):
-    """Complex numbers up to the given precision. """
+__all__ = ('RealField',)
 
-    rep = 'CC'
 
-    is_ComplexField = is_CC = True
+class RealField(Field, CharacteristicZero, SimpleDomain):
+    """Real numbers up to the given precision. """
+
+    rep = 'RR'
+
+    is_RealField = is_RR = True
 
     is_Exact = False
     is_Numerical = True
@@ -46,12 +47,12 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
         context._parent = self
         self._context = context
 
-        self.dtype = context.mpc
+        self.dtype = context.mpf
         self.zero = self.dtype(0)
         self.one = self.dtype(1)
 
     def __eq__(self, other):
-        return (isinstance(other, ComplexField)
+        return (isinstance(other, RealField)
            and self.precision == other.precision
            and self.tolerance == other.tolerance)
 
@@ -60,17 +61,16 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
 
     def to_diofant(self, element):
         """Convert ``element`` to Diofant number. """
-        return Float(element.real, self.dps) + I*Float(element.imag, self.dps)
+        return Float(element, self.dps)
 
     def from_diofant(self, expr):
         """Convert Diofant's number to ``dtype``. """
         number = expr.evalf(n=self.dps)
-        real, imag = number.as_real_imag()
 
-        if real.is_Number and imag.is_Number:
-            return self.dtype(real, imag)
+        if number.is_Number:
+            return self.dtype(number)
         else:
-            raise CoercionFailed("expected complex number, got %s" % expr)
+            raise CoercionFailed("expected real number, got %s" % expr)
 
     def from_ZZ_python(self, element, base):
         return self.dtype(element)
@@ -85,21 +85,27 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
         return self.dtype(int(element.numerator)) / int(element.denominator)
 
     def from_RealField(self, element, base):
-        return self.dtype(element)
-
-    def from_ComplexField(self, element, base):
         if self == base:
             return element
         else:
             return self.dtype(element)
 
+    def from_ComplexField(self, element, base):
+        if not element.imag:
+            return self.dtype(element.real)
+
+    def to_rational(self, element, limit=True):
+        """Convert a real number to rational number. """
+        return self._context.to_rational(element, limit)
+
     def get_ring(self):
         """Returns a ring associated with ``self``. """
-        raise DomainError("there is no ring associated with %s" % self)
+        raise DomainError('there is no ring associated with %s' % self)
 
     def get_exact(self):
         """Returns an exact domain associated with ``self``. """
-        raise DomainError("there is no exact domain associated with %s" % self)
+        from . import QQ
+        return QQ
 
     def gcd(self, a, b):
         """Returns GCD of ``a`` and ``b``. """

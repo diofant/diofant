@@ -282,30 +282,30 @@ def test_piecewise_simplify():
 def test_piecewise_solve():
     abs2 = Piecewise((-x, x <= 0), (x, x > 0))
     f = abs2.subs(x, x - 2)
-    assert solve(f, x) == [2]
-    assert solve(f - 1, x) == [1, 3]
+    assert solve(f, x) == [{x: 2}]
+    assert solve(f - 1, x) == [{x: 1}, {x: 3}]
 
     f = Piecewise(((x - 2)**2, x >= 0), (1, True))
-    assert solve(f, x) == [2]
+    assert solve(f, x) == [{x: 2}]
 
     g = Piecewise(((x - 5)**5, x >= 4), (f, True))
-    assert solve(g, x) == [2, 5]
+    assert solve(g, x) == [{x: 2}, {x: 5}]
 
     g = Piecewise(((x - 5)**5, x >= 4), (f, x < 4))
-    assert solve(g, x) == [2, 5]
+    assert solve(g, x) == [{x: 2}, {x: 5}]
 
     g = Piecewise(((x - 5)**5, x >= 2), (f, x < 2))
-    assert solve(g, x) == [5]
+    assert solve(g, x) == [{x: 5}]
 
     g = Piecewise(((x - 5)**5, x >= 2), (f, True))
-    assert solve(g, x) == [5]
+    assert solve(g, x) == [{x: 5}]
 
     g = Piecewise(((x - 5)**5, x >= 2), (f, True), (10, False))
-    assert solve(g, x) == [5]
+    assert solve(g, x) == [{x: 5}]
 
     g = Piecewise(((x - 5)**5, x >= 2),
                   (-x + 2, x - 2 <= 0), (x - 2, x - 2 > 0))
-    assert solve(g, x) == [5]
+    assert solve(g, x) == [{x: 5}]
 
 # See issue sympy/sympy#4352 (enhance the solver to handle inequalities).
 
@@ -313,7 +313,8 @@ def test_piecewise_solve():
 @pytest.mark.xfail
 def test_piecewise_solve2():
     f = Piecewise(((x - 2)**2, x >= 0), (0, True))
-    assert solve(f, x) == [2, Interval(0, oo, True, True)]
+    C0 = Symbol('C0', negative=True)
+    assert solve(f, x) == [{x: 2}, {x: C0}]
 
 
 def test_piecewise_fold():

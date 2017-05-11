@@ -25,7 +25,8 @@ def dup_sturm(f, K):
     Examples
     ========
 
-    >>> from diofant.polys import ring, QQ
+    >>> from diofant.domains import QQ
+    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
     >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)
@@ -1214,6 +1215,11 @@ def _winding_number(T, field):
     return int(sum(field(*_values[t][i]) for t, i in T) / field(2))
 
 
+def _roots_bound(f, F):
+    n, lc = dup_degree(f), abs(dup_LC(f, F))
+    return 2*max(F.quo(abs(c), lc) for c in f)
+
+
 def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm. """
     if not K.is_ZZ and not K.is_QQ:
@@ -1227,8 +1233,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     f = dup_convert(f, K, F)
 
     if inf is None or sup is None:
-        n, lc = dup_degree(f), abs(dup_LC(f, F))
-        B = 2*max(F.quo(abs(c), lc) for c in f)
+        B = _roots_bound(f, F)
 
     if inf is None:
         (u, v) = (-B, -B)
@@ -1541,8 +1546,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
     f = dup_convert(f, K, F)
 
-    n, lc = dup_degree(f), abs(dup_LC(f, F))
-    B = 2*max(F.quo(abs(c), lc) for c in f)
+    B = _roots_bound(f, F)
 
     (u, v), (s, t) = (-B, F.zero), (B, B)
 

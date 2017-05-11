@@ -698,12 +698,14 @@ class Ellipse(GeometrySet):
 
             # handle horizontal and vertical tangent lines
             if len(tangent_points) == 1:
-                assert tangent_points[0][
-                    0] == p.x or tangent_points[0][1] == p.y
+                assert (tangent_points[0][x] == p.x or
+                        tangent_points[0][y] == p.y)
                 return [Line(p, p + Point(1, 0)), Line(p, p + Point(0, 1))]
 
             # others
-            return [Line(p, tangent_points[0]), Line(p, tangent_points[1])]
+            p1 = (tangent_points[0][x], tangent_points[0][y])
+            p2 = (tangent_points[1][x], tangent_points[1][y])
+            return [Line(p, p1), Line(p, p2)]
 
     def is_tangent(self, o):
         """Is `o` tangent to the ellipse?
@@ -824,15 +826,17 @@ class Ellipse(GeometrySet):
         norm = -1/dydx
         slope = Line(p, (x, y)).slope
         seq = slope - norm
-        yis = solve(seq, y)[0]
+        yis = solve(seq, y)[0][y]
         xeq = eq.subs(y, yis).as_numer_denom()[0].expand()
         if len(xeq.free_symbols) == 1:
             try:
                 # this is so much faster, it's worth a try
                 xsol = Poly(xeq, x).real_roots()
             except (DomainError, PolynomialError, NotImplementedError):
-                xsol = _nsort(solve(xeq, x), separated=True)[0]
-            points = [Point(i, solve(eq.subs(x, i), y)[0]) for i in xsol]
+                xsol = _nsort([s[x] for s in solve(xeq, x)],
+                              separated=True)[0]
+            points = [Point(i, solve(eq.subs(x, i), y)[0][y])
+                      for i in xsol]
         else:
             raise NotImplementedError(
                 'intersections for the general ellipse are not supported')
@@ -1074,7 +1078,7 @@ class Ellipse(GeometrySet):
         y = Dummy('y', extended_real=True)
         seq = self.equation(x, y)
         oeq = o.equation(x, y)
-        result = solve([seq, oeq], [x, y])
+        result = [(s[x], s[y]) for s in solve([seq, oeq], [x, y])]
         return [Point(*r) for r in list(uniq(result))]
 
     def intersection(self, o):

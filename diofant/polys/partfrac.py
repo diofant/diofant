@@ -167,7 +167,7 @@ def apart_undetermined_coeffs(P, Q):
         system.append(coeff - P.nth(k))
 
     from ..solvers import solve
-    solution = solve(system, symbols)
+    solution = solve(system, symbols)[0]
 
     for h, f, k in partial:
         h = h.as_expr().subs(solution)
@@ -471,7 +471,7 @@ def assemble_partfrac_list(partial_list):
             func = Lambda(an, nu/de**ex)
             pfd += RootSum(r, func, auto=False, quadratic=False)
         else:
-            # Assemble in case the roots are given explicitely by a list of algebraic numbers
+            # Assemble in case the roots are given explicitly by a list of algebraic numbers
             for root in r:
                 pfd += nf(root)/df(root)**ex
 

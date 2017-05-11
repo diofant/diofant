@@ -4,7 +4,7 @@ import pytest
 
 from diofant.polys.rings import vring
 from diofant.polys.fields import vfield
-from diofant.polys.domains import QQ
+from diofant.domains import QQ
 
 __all__ = ()
 

@@ -13,7 +13,7 @@ from diofant.polys.numberfields import (minimal_polynomial, primitive_element,
 from diofant.polys.polyerrors import (IsomorphismFailed, NotAlgebraic,
                                       GeneratorsError)
 from diofant.polys.polyclasses import DMP
-from diofant.polys.domains import QQ
+from diofant.domains import QQ
 from diofant.polys.rootoftools import RootOf
 from diofant.polys.polytools import degree
 
@@ -738,6 +738,10 @@ def test_AlgebraicNumber():
     assert (a*pi).is_Mul
     assert (pi*a).is_Mul
 
+    a = AlgebraicNumber(sqrt(2), (5, 7))
+    b = AlgebraicNumber(sqrt(2), (-4, -6))
+    assert a*b == AlgebraicNumber(sqrt(2), (-58, -82))
+
 
 def test_to_algebraic_integer():
     a = AlgebraicNumber(sqrt(3), gen=x).to_algebraic_integer()
@@ -839,4 +843,4 @@ def test_minpoly_domain():
 
 def test_sympyissue_11553():
     eqs = (x + y + 1, x + GoldenRatio)
-    assert solve(eqs, x, y) == {x: -GoldenRatio, y: -1 + GoldenRatio}
+    assert solve(eqs, x, y) == [{x: -GoldenRatio, y: -1 + GoldenRatio}]

@@ -83,7 +83,7 @@ Major changes
   - Iterated derivatives are pretty printed in a concise way.
   - Fix a bug with integrating functions with multiple DiracDeltas.
   - Add support for ``Matrix.norm()`` that works for Matrices (not just vectors).
-  - Improvements to the Groebner bases algorithm.
+  - Improvements to the Gröbner bases algorithm.
   - Plot.saveimage now supports a StringIO outfile
   - Expr.as_ordered_terms now supports non lex orderings.
   - diff now canonicalizes the order of differentiation symbols.  This is

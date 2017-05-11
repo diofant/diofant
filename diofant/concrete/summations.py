@@ -253,7 +253,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             >>> Sum(k, (k, 2, b)).doit()
             b**2/2 + b/2 - 1
 
-        With a nonzero eps specified, the summation is ended
+        With a nonzero `eps` specified, the summation is ended
         as soon as the remainder term is less than the epsilon.
         """
         from ..functions import bernoulli, factorial
@@ -471,7 +471,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
             z = collect(numer, k)
             eq = z.as_poly(k).all_coeffs()
-            sols = dict(solve(eq, *x))
+            sols = dict(*solve(eq, *x))
 
         y = sum(a(i, j)*F(n - j, k - i) for i in range(I) for j in range(J))
         y = y.subs(sols).subs(map(lambda a: (a, 1), x))

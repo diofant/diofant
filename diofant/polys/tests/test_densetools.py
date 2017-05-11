@@ -33,7 +33,7 @@ from diofant.polys.polyerrors import (
     NotReversible,
     DomainError)
 from diofant.polys.specialpolys import f_polys
-from diofant.polys.domains import FF, ZZ, QQ, EX
+from diofant.domains import FF, ZZ, QQ, EX
 from diofant.polys.rings import ring
 from diofant import I, sin, Rational
 

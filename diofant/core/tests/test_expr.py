@@ -597,6 +597,7 @@ def test_replace():
     f = log(sin(x)) + tan(sin(x**2))
 
     assert f.replace(sin, cos) == log(cos(x)) + tan(cos(x**2))
+    pytest.raises(TypeError, lambda: f.replace(sin, x))
     assert f.replace(
         sin, lambda a: sin(2*a)) == log(sin(2*x)) + tan(sin(2*x**2))
 
@@ -606,11 +607,13 @@ def test_replace():
     assert f.replace(sin(a), cos(a)) == log(cos(x)) + tan(cos(x**2))
     assert f.replace(
         sin(a), lambda a: sin(2*a)) == log(sin(2*x)) + tan(sin(2*x**2))
+    pytest.raises(TypeError, lambda: f.replace(sin(a), None))
     # test exact
     assert (2*x).replace(a*x + b, b - a, exact=True) == 2*x
     assert (2*x).replace(a*x + b, b - a) == 2/x
     assert (2*x).replace(a*x + b, lambda a, b: b - a, exact=True) == 2*x
     assert (2*x).replace(a*x + b, lambda a, b: b - a) == 2/x
+    assert (2*x - 1).replace(a*x + b, lambda a, b: b - a, exact=True) == -3
 
     g = 2*sin(x**3)
 
@@ -626,6 +629,11 @@ def test_replace():
         (2*x*(2*x*y + 1), {x*(2*x*y + 1): 2*x*(2*x*y + 1), x*y: 2*x*y})
     assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y, map=True) == \
         (sin(x), {sin(x): sin(x)/y})
+    assert (y*sin(x)).replace(sin,
+                              lambda expr: sin(expr)/y,
+                              map=True,
+                              simultaneous=False) == (sin(x)/y,
+                                                      {sin(x): sin(x)/y})
     # if not simultaneous then y*sin(x) -> y*sin(x)/y = sin(x) -> sin(x)/y
     assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y,
         simultaneous=False) == sin(x)/y
@@ -641,12 +649,16 @@ def test_replace():
         2*((2*x*y + 1)*(4*x*y + 1))})
     assert x.replace(x, y) == y
     assert (x + 1).replace(1, 2) == x + 2
+    pytest.raises(TypeError, lambda: e.replace(cond, x))
 
     # https://groups.google.com/forum/#!topic/sympy/8wCgeC95tz0
     n1, n2, n3 = symbols('n1:4', commutative=False)
     f = Function('f')
     assert (n1*f(n2)).replace(f, lambda x: x) == n1*n2
     assert (n3*f(n2)).replace(f, lambda x: x) == n3*n2
+
+    # for test coverage
+    pytest.raises(TypeError, lambda: x.replace(None, y))
 
 
 def test_find():
@@ -1479,7 +1491,7 @@ def test_equals():
 
     # issue sympy/sympy#6829
     # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3)
-    # z = eq.subs(x, solve(eq, x)[0])
+    # z = eq.subs(solve(eq, x)[0])
     q = symbols('q')
     z = (q*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
     Rational(13, 12))/2 - sqrt((2*q - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -

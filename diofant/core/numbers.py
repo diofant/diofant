@@ -241,7 +241,7 @@ def mod_inverse(a, m):
     >>> mod_inverse(-3, 11)
     -4
 
-    When there is a commono factor between the numerators of
+    When there is a common factor between the numerators of
     ``a`` and ``m`` the inverse does not exist:
 
     >>> mod_inverse(2, 4)
@@ -2024,6 +2024,10 @@ class AlgebraicNumber(Expr):
             other = DMP.from_diofant_list((other,), 0,
                                           self.minpoly.domain)
             coeffs = self.rep * other
+            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif (isinstance(other, AlgebraicNumber) and
+              self.minpoly == other.minpoly and self.root == other.root):
+            coeffs = self.rep * other.rep
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
         else:
             return Number.__mul__(self, other)

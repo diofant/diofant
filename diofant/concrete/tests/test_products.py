@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (symbols, Symbol, product, factorial, rf, sqrt, cos,
                      Function, Product, Rational, Sum, oo, exp, log, S,
-                     simplify, KroneckerDelta as KD)
+                     simplify, KroneckerDelta as Kd)
 from diofant.concrete.expr_with_intlimits import ReorderError
 
 __all__ = ()
@@ -202,8 +202,8 @@ def test_simple_products():
     assert product(2, (n, 1, oo)) == oo
     assert product(-1, (n, 1, oo)).func is Product
 
-    assert product(KD(n, m), (m, 1, 3)) == 0
-    assert product(KD(n, m), (m, 1, 1)) == KD(n, 1)
+    assert product(Kd(n, m), (m, 1, 3)) == 0
+    assert product(Kd(n, m), (m, 1, 1)) == Kd(n, 1)
 
 
 def test_multiple_products():

@@ -545,7 +545,7 @@ def roots_quintic(f):
     a, b = symbols('a b', cls=Dummy)
     _sol = _solve( sol**5 - a - I*b, sol)
     for i in range(5):
-        _sol[i] = factor(_sol[i])
+        _sol[i] = factor(_sol[i][sol])
     R1 = R1.as_real_imag()
     R2 = R2.as_real_imag()
     R3 = R3.as_real_imag()

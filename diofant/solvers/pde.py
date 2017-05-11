@@ -630,7 +630,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     e = -match[match['e']]
     expterm = exp(-d/(b**2 + c**2)*xi)
     functerm = solvefun(eta)
-    solvedict = solve((b*x + c*y - xi, c*x - b*y - eta), x, y)
+    solvedict = solve((b*x + c*y - xi, c*x - b*y - eta), x, y)[0]
     # Integral should remain as it is in terms of xi,
     # doit() should be done in _handle_Integral.
     genterm = (1/(b**2 + c**2))*Integral(
@@ -752,8 +752,8 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     solsym = sol.free_symbols - h.free_symbols - {x, y}
     if len(solsym) == 1:
         solsym = solsym.pop()
-        etat = (solve(sol, solsym)[0]).subs(dummy(x), y)
-        ysub = solve(eta - etat, y)[0]
+        etat = (solve(sol, solsym)[0][solsym]).subs(dummy(x), y)
+        ysub = solve(eta - etat, y)[0][y]
         deq = (b*(f(x).diff(x)) + d*f(x) - e).subs(y, ysub)
         final = (dsolve(deq, f(x), hint='1st_linear')).rhs
         if isinstance(final, list):

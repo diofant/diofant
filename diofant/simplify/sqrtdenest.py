@@ -677,15 +677,10 @@ def unrad(eq, *syms, **flags):
     uflags = dict(check=False, simplify=False)
 
     def _cov(p, e):
-        if cov:
-            # XXX - uncovered
-            oldp, olde = cov
-            if Poly(e, p).degree(p) in (1, 2):
-                cov[:] = [p, olde.subs(oldp, solve(e, p, **uflags)[0])]
-            else:
-                raise NotImplementedError
-        else:
+        if not cov:
             cov[:] = [p, e]
+        else:  # pragma: no cover
+            raise NotImplementedError
 
     def _canonical(eq, cov):
         if cov:
@@ -839,12 +834,13 @@ def unrad(eq, *syms, **flags):
             x = list(x)[0]
             try:
                 inv = solve(covsym**lcm - b, x, **uflags)
-                if not inv or any(isinstance(s, RootOf) for s in inv):
+                if not inv or any(isinstance(s[x], RootOf)
+                                  for s in inv):  # pragma: no cover
                     raise NotImplementedError
-                eq = poly.as_expr().subs(b, covsym**lcm).subs(x, inv[0])
+                eq = poly.as_expr().subs(b, covsym**lcm).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
                 return _canonical(eq, cov)
-            except NotImplementedError:
+            except NotImplementedError:  # pragma: no cover
                 pass
         else:
             # no longer consider integer powers as generators
@@ -872,19 +868,17 @@ def unrad(eq, *syms, **flags):
                     for x in syms:
                         try:
                             sol = solve(c, x, **uflags)
-                            if not sol or any(isinstance(s, RootOf) for s in sol):
+                            if not sol or any(isinstance(s[x], RootOf)
+                                              for s in sol):  # pragma: no cover
                                 raise NotImplementedError
-                            neweq = r0.subs(x, sol[0]) + covsym*r1/_rads1 + \
-                                others
+                            neweq = r0.subs(sol[0]) + covsym*r1/_rads1 + others
                             tmp = unrad(neweq, covsym)
                             if tmp:
                                 eq, newcov = tmp
-                                if newcov:
-                                    newp, newc = newcov
-                                    _cov(newp, c.subs(covsym,
-                                        solve(newc, covsym, **uflags)[0]))
-                                else:
+                                if not newcov:
                                     _cov(covsym, c)
+                                else:  # pragma: no cover
+                                    raise NotImplementedError
                             else:
                                 eq = neweq
                                 _cov(covsym, c)

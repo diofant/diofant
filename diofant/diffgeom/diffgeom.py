@@ -252,7 +252,7 @@ class CoordSystem(Basic):
         # As it is at the moment this is an ugly hack for changing the format
         inv_from = [i.as_dummy() for i in from_coords]
         inv_to = solve([t[0] - t[1] for t in zip(inv_from, to_exprs)],
-                       list(from_coords), dict=True)
+                       list(from_coords))
         inv_to = [inv_to[0][fc] for fc in from_coords]
         return Matrix(inv_from), Matrix(inv_to)
 
@@ -442,7 +442,7 @@ class BaseScalarField(Expr):
     The use of the scalar field after its definition is independent of the
     coordinate system in which it was defined, however due to limitations in
     the simplification routines you may arrive at more complicated
-    expression if you use unappropriate coordinate systems.
+    expression if you use inappropriate coordinate systems.
 
     You can build complicated scalar fields by just building up Diofant
     expressions containing ``BaseScalarField`` instances.
@@ -526,7 +526,7 @@ class BaseVectorField(Expr):
     The use of the vector field after its definition is independent of the
     coordinate system in which it was defined, however due to limitations in the
     simplification routines you may arrive at more complicated expression if you
-    use unappropriate coordinate systems.
+    use inappropriate coordinate systems.
 
     Examples
     ========
@@ -1143,7 +1143,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
     param
         the argument of the function `\gamma` from R to the curve
     start_point
-        the point which coresponds to `\gamma(0)`
+        the point which corresponds to `\gamma(0)`
     n
         the order to which to expand
     coord_sys
@@ -1255,7 +1255,7 @@ def intcurve_diffequ(vector_field, param, start_point, coord_sys=None):
     param
         the argument of the function `\gamma` from R to the curve
     start_point
-        the point which coresponds to `\gamma(0)`
+        the point which corresponds to `\gamma(0)`
     coord_sys
         the coordinate system in which to give the equations
 

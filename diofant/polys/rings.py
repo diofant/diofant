@@ -15,8 +15,8 @@ from .compatibility import IPolys
 from .polyutils import expr_from_dict, _dict_reorder, _parallel_dict_from_expr
 from .polyerrors import (CoercionFailed, GeneratorsError, GeneratorsNeeded,
                          ExactQuotientFailed, MultivariatePolynomialError)
-from .domains.domainelement import DomainElement
-from .domains.polynomialring import PolynomialRing
+from ..domains.domainelement import DomainElement
+from ..domains.polynomialring import PolynomialRing
 from .polyoptions import Domain as DomainOpt, Order as OrderOpt, build_options
 from .densebasic import dmp_to_dict, dmp_from_dict
 from .constructor import construct_domain
@@ -33,13 +33,13 @@ def ring(symbols, domain, order=lex):
     ==========
 
     symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`~diofant.polys.domains.domain.Domain` or coercible
+    domain : :class:`~diofant.domains.domain.Domain` or coercible
     order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
 
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
     >>> from diofant.polys.orderings import lex
 
     >>> R, x, y, z = ring("x,y,z", ZZ, lex)
@@ -62,13 +62,13 @@ def vring(symbols, domain, order=lex):
     ==========
 
     symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`~diofant.polys.domains.domain.Domain` or coercible
+    domain : :class:`~diofant.domains.domain.Domain` or coercible
     order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
 
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
     >>> from diofant.polys.orderings import lex
 
     >>> vring("x,y,z", ZZ, lex)
@@ -98,7 +98,7 @@ def sring(exprs, *symbols, **options):
     ========
 
     >>> from diofant.core import symbols
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
     >>> from diofant.polys.orderings import lex
 
     >>> x, y, z = symbols("x,y,z")
@@ -421,7 +421,7 @@ class PolyRing(DefaultPrinting, IPolys):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> R, x = ring("x", ZZ)
         >>> R.add([ x**2 + 2*i + 3 for i in range(4) ])
@@ -446,7 +446,7 @@ class PolyRing(DefaultPrinting, IPolys):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> R, x = ring("x", ZZ)
         >>> R.mul([ x**2 + 2*i + 3 for i in range(4) ])
@@ -514,7 +514,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> R, x, y = ring('x, y', ZZ)
         >>> p = (x + y)**2
@@ -580,7 +580,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p1 = (x + y)**2 + (x - y)**2
@@ -837,7 +837,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> (x + y)**2 + (x - y)**2
@@ -909,7 +909,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p1 = x + y**2
@@ -961,7 +961,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y
@@ -986,7 +986,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import QQ
+        >>> from diofant.domains import QQ
 
         >>> _, x, y = ring('x, y', QQ)
         >>> p1 = x + y
@@ -1033,7 +1033,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y
@@ -1060,7 +1060,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y**2
@@ -1144,7 +1144,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y**2
@@ -1300,7 +1300,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> f = x**3
@@ -1429,7 +1429,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x**4 + 2*y
@@ -1471,7 +1471,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y, z = ring('x, y, z', ZZ)
         >>> p1 = x**4 + 2*y
@@ -1551,7 +1551,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y, z = ring('x, y, z', ZZ)
         >>> p = x**4 + x**3*y + x**2*z**2 + z**7
@@ -1578,7 +1578,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y, z = ring("x,y,z", ZZ)
         >>> f = 3*x**2*y - x*y*z + 7*z**3 + 23
@@ -1602,7 +1602,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         raise ValueError("expected a monomial, got %s" % element)
 
     def const(self):
-        """Returns the constant coeffcient. """
+        """Returns the constant coefficient. """
         return self._get_coeff(self.ring.zero_monom)
 
     @property
@@ -1624,7 +1624,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> (3*x*y + y**2).leading_monom()
@@ -1650,7 +1650,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> (3*x*y + y**2).leading_term()
@@ -1684,7 +1684,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
         >>> from diofant.polys.orderings import lex, grlex
 
         >>> _, x, y = ring("x, y", ZZ, lex)
@@ -1708,7 +1708,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
         >>> from diofant.polys.orderings import lex, grlex
 
         >>> _, x, y = ring("x, y", ZZ, lex)
@@ -1732,7 +1732,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
         >>> from diofant.polys.orderings import lex, grlex
 
         >>> _, x, y = ring("x, y", ZZ, lex)
@@ -1777,7 +1777,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y**2
@@ -2072,7 +2072,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys import ring, ZZ
+        >>> from diofant.domains import ZZ
+        >>> from diofant.polys import ring
         >>> R, x,y = ring("x,y", ZZ)
 
         >>> (2*x**2 - 2).cancel(x**2 - 2*x + 1)
@@ -2127,7 +2128,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from diofant.polys.domains import ZZ
+        >>> from diofant.domains import ZZ
 
         >>> _, x, y = ring("x,y", ZZ)
         >>> p = x + x**2*y**3

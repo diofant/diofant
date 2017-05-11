@@ -121,7 +121,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     slns = []
     for d in denoms(res):
         try:
-            slns += solve(d, dict=True, exclude=(x,))
+            slns += solve(d, exclude=(x,))
         except NotImplementedError:
             pass
     if not slns:
@@ -131,7 +131,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     slns0 = []
     for d in denoms(f):
         try:
-            slns0 += solve(d, dict=True, exclude=(x,))
+            slns0 += solve(d, exclude=(x,))
         except NotImplementedError:
             pass
     slns = [s for s in slns if s not in slns0]
@@ -141,7 +141,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         eqs = []
         for sub_dict in slns:
             eqs.extend([Eq(key, value) for key, value in sub_dict.items()])
-        slns = solve(eqs, dict=True, exclude=(x,)) + slns
+        slns = solve(eqs, exclude=(x,)) + slns
     # For each case listed in the list slns, we reevaluate the integral.
     pairs = []
     for sub_dict in slns:
@@ -498,7 +498,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
         # TODO: Currently it's better to use symbolic expressions here instead
         # of rational functions, because it's simpler and FracElement doesn't
-        # give big speed improvement yet. This is because cancelation is slow
+        # give big speed improvement yet. This is because cancellation is slow
         # due to slow polynomial GCD algorithms. If this gets improved then
         # revise this code.
         candidate = poly_part/poly_denom + Add(*log_part)

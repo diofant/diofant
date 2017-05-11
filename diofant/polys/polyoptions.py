@@ -75,7 +75,7 @@ class Options(dict):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> from diofant.abc import x, y, z
 
@@ -406,7 +406,7 @@ class Domain(Option, metaclass=OptionType):
 
     @classmethod
     def preprocess(cls, domain):
-        from . import domains
+        from .. import domains
         if isinstance(domain, domains.Domain):
             return domain
         elif hasattr(domain, 'to_domain'):
@@ -480,7 +480,7 @@ class Domain(Option, metaclass=OptionType):
 
     @classmethod
     def postprocess(cls, options):
-        from . import domains
+        from .. import domains
         if 'gens' in options and 'domain' in options and options['domain'].is_Composite and \
                 (set(options['domain'].symbols) & set(options['gens'])):
             raise GeneratorsError(
@@ -549,7 +549,7 @@ class Extension(Option, metaclass=OptionType):
 
     @classmethod
     def postprocess(cls, options):
-        from . import domains
+        from .. import domains
         if 'extension' in options and options['extension'] is not True:
             options['domain'] = domains.QQ.algebraic_field(
                 *options['extension'])
@@ -575,7 +575,7 @@ class Modulus(Option, metaclass=OptionType):
 
     @classmethod
     def postprocess(cls, options):
-        from . import domains
+        from .. import domains
         if 'modulus' in options:
             modulus = options['modulus']
             symmetric = options.get('symmetric', True)
@@ -729,7 +729,7 @@ def allowed_flags(args, flags):
     Examples
     ========
 
-    >>> from diofant.polys.domains import ZZ
+    >>> from diofant.domains import ZZ
 
     >>> allowed_flags({'domain': ZZ}, [])
 

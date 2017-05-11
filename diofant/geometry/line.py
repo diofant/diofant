@@ -1129,10 +1129,10 @@ class Line(LinearEntity):
             x, y = Dummy(), Dummy()
             eq = self.equation(x, y)
             if not eq.has(y):
-                return (solve(eq, x)[0] - o.x).equals(0)
+                return (solve(eq, x)[0][x] - o.x).equals(0)
             if not eq.has(x):
-                return (solve(eq, y)[0] - o.y).equals(0)
-            return (solve(eq.subs(x, o.x), y)[0] - o.y).equals(0)
+                return (solve(eq, y)[0][y] - o.y).equals(0)
+            return (solve(eq.subs(x, o.x), y)[0][y] - o.y).equals(0)
         elif not isinstance(o, LinearEntity):
             return False
         elif isinstance(o, Line):
@@ -1751,9 +1751,9 @@ class Segment(LinearEntity):
                 t = Dummy('t')
                 x, y = self.arbitrary_point(t).args
                 if self.p1.x != self.p2.x:
-                    ti = solve(x - other.x, t)[0]
+                    ti = solve(x - other.x, t)[0][t]
                 else:
-                    ti = solve(y - other.y, t)[0]
+                    ti = solve(y - other.y, t)[0][t]
                 if ti.is_number:
                     return 0 <= ti <= 1
                 return

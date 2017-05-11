@@ -4,7 +4,7 @@ import pytest
 
 from diofant import (Sieve, binomial_coefficients, binomial_coefficients_list,
                      multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
-                     summation, factorial as fac, pi, GoldenRatio as phi, sqrt)
+                     summation, factorial as fac, pi, GoldenRatio as Phi, sqrt)
 from diofant.core.numbers import Integer, Rational
 from diofant.ntheory import (isprime, n_order, is_primitive_root,
                              is_quad_residue, legendre_symbol, jacobi_symbol,
@@ -27,7 +27,7 @@ from diofant.ntheory.continued_fraction import (continued_fraction_periodic as c
                                                 continued_fraction_reduce as cf_r)
 from diofant.ntheory.egyptian_fraction import egyptian_fraction
 from diofant.core.add import Add
-from diofant.polys.domains import ZZ
+from diofant.domains import ZZ
 from diofant.utilities.iterables import capture
 from diofant.utilities.randtest import random_complex_number
 from diofant.ntheory.multinomial import multinomial_coefficients_iterator
@@ -892,7 +892,7 @@ def test_continued_fraction():
             res.append(t)
         return res
 
-    assert take(phi) == [1, 1, 1, 1, 1, 1, 1]
+    assert take(Phi) == [1, 1, 1, 1, 1, 1, 1]
     assert take(pi) == [3, 7, 15, 1, 292, 1, 1]
 
     assert list(cf_i(Rational(17, 12))) == [1, 2, 2, 2]

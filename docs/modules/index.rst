@@ -13,7 +13,7 @@ Most of the things are already documented though in this document, that is
 automatically generated using Diofant's docstrings.
 
 Click the  "modules" (:ref:`modindex`) link in the top right corner to easily
-access any Diofant module, or use this contens:
+access any Diofant module, or use this contents:
 
 .. toctree::
    :maxdepth: 2
@@ -28,6 +28,7 @@ access any Diofant module, or use this contens:
    geometry/index.rst
    integrals/integrals.rst
    logic.rst
+   domains.rst
    matrices/index.rst
    polys/index.rst
    printing.rst

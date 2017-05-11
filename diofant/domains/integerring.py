@@ -5,10 +5,11 @@ import math
 from .ring import Ring
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
-from ...utilities import public
 
 
-@public
+__all__ = ('IntegerRing',)
+
+
 class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
     """General class for integer rings. """
 

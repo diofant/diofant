@@ -67,7 +67,7 @@ def minimize(f, *v):
     is_linear = is_polynomial and all(p.is_linear for p in polys)
 
     # Eliminate equalities, in the linear case for now
-    elims = solve([c for c in constraints if c.func is Eq], *v, dict=True)
+    elims = solve([c for c in constraints if c.func is Eq], *v)
     if elims and is_linear:
         elims = elims[0]
         res, sol = minimize([obj.subs(elims)] +
@@ -147,6 +147,7 @@ def minimize_univariate(f, x, dom):
                     extr[s] = m
 
         for p in solve(diff(f, x), x):
+            p = p[x]
             if p in dom:
                 extr[p] = f.subs(x, p)
     elif dom.is_FiniteSet:

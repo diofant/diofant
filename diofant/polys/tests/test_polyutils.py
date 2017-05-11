@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (Integer, sin, cos, sqrt, symbols, pi, Eq,
+from diofant import (Integer, sin, cos, sqrt, symbols, pi, Eq,  # noqa: N814
                      Integral, exp, Mul, Abs, Rational as Q, I)
 from diofant.polys.polyutils import (
     _nsort,
@@ -16,7 +16,7 @@ from diofant.polys.polyerrors import (
     GeneratorsNeeded,
     PolynomialError)
 from diofant.polys import factor
-from diofant.polys.domains import ZZ
+from diofant.domains import ZZ
 
 __all__ = ()
 

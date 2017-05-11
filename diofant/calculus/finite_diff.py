@@ -38,7 +38,7 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
         0 corresponds to interpolation.
     x_list: sequence
         Sequence of (unique) values for the independent variable.
-        It is usefull (but not necessary) to order x_list from
+        It is useful (but not necessary) to order x_list from
         nearest to farest from x0; see examples below.
     x0: Number or Symbol
         Root or value of the independent variable for which the finite

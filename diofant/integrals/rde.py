@@ -25,7 +25,8 @@ from functools import reduce
 from operator import mul
 
 from ..core import oo, Dummy
-from ..polys import Poly, gcd, ZZ, cancel
+from ..domains import ZZ
+from ..polys import Poly, gcd, cancel
 from .risch import (gcdex_diophantine, frac_in, derivation, splitfactor,
                     NonElementaryIntegralException, DecrementLevel)
 

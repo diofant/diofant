@@ -335,12 +335,13 @@ def dup_zz_irreducible_p(f, K):
 
 def dup_cyclotomic_p(f, K, irreducible=False):
     """
-    Efficiently test if ``f`` is a cyclotomic polnomial.
+    Efficiently test if ``f`` is a cyclotomic polynomial.
 
     Examples
     ========
 
-    >>> from diofant.polys import ring, ZZ
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> f = x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1
@@ -409,7 +410,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
 
 
 def dup_zz_cyclotomic_poly(n, K):
-    """Efficiently generate n-th cyclotomic polnomial. """
+    """Efficiently generate n-th cyclotomic polynomial. """
     h = [K.one, -K.one]
 
     for p, k in factorint(n).items():
@@ -477,7 +478,7 @@ def dup_zz_cyclotomic_factor(f, K):
 
 
 def dup_zz_factor_sqf(f, K):
-    """Factor square-free (non-primitive) polyomials in `Z[x]`. """
+    """Factor square-free (non-primitive) polynomials in `Z[x]`. """
     cont, g = dup_primitive(f, K)
 
     n = dup_degree(g)
@@ -525,7 +526,8 @@ def dup_zz_factor(f, K):
 
     Consider polynomial `f = 2*x**4 - 2`::
 
-        >>> from diofant.polys import ring, ZZ
+        >>> from diofant.domains import ZZ
+        >>> from diofant.polys import ring
 
         >>> R, x = ring("x", ZZ)
 
@@ -1006,7 +1008,8 @@ def dmp_zz_factor(f, u, K):
 
     Consider polynomial `f = 2*(x**2 - y**2)`::
 
-        >>> from diofant.polys import ring, ZZ
+        >>> from diofant.domains import ZZ
+        >>> from diofant.polys import ring
 
         >>> R, x,y = ring("x,y", ZZ)
 

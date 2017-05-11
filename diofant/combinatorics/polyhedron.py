@@ -773,7 +773,7 @@ def _pgroup_calcs():
                 count = 1
                 if si == '0':
                     p = _f0
-                elif si == '1':
+                else:
                     p = _f1
             rv.extend([p]*count)
         return Permutation.rmul(*rv)

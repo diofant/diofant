@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import sqrt
-from diofant.polys.domains import QQ, ZZ
+from diofant.domains import QQ, ZZ
 from diofant.polys.polyerrors import CoercionFailed, GeneratorsNeeded
 from diofant.polys.orderings import build_product_order
 
@@ -108,3 +108,10 @@ def test_methods():
     assert R.gcdex(X**3 - X, X**2) == (-1, X, X)
 
     assert R.factorial(3) == 6
+
+    F = QQ.frac_field(y)
+    Y = F.convert(y)
+    assert F.is_nonpositive(-Y) is True
+    assert F.is_nonnegative(Y) is True
+
+    assert F.factorial(3) == 6

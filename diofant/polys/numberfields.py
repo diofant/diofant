@@ -15,7 +15,7 @@ from .polyerrors import (IsomorphismFailed, CoercionFailed, NotAlgebraic,
 from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
 from .polyutils import dict_from_expr, expr_from_dict
-from .domains import ZZ, QQ
+from ..domains import ZZ, QQ
 from .orthopolys import dup_chebyshevt
 from .rings import ring
 from .ring_series import rs_compose_add
@@ -589,14 +589,14 @@ def minimal_polynomial(ex, x=None, **args):
     x - sqrt(2)
     >>> minimal_polynomial(sqrt(2) + sqrt(3), x)
     x**4 - 10*x**2 + 1
-    >>> minimal_polynomial(solve(x**3 + x + 3)[0], x)
+    >>> minimal_polynomial(solve(x**3 + x + 3)[0][x], x)
     x**3 + x + 3
     >>> minimal_polynomial(sqrt(y), x)
     x**2 - y
 
     """
     from .polytools import degree
-    from .domains import FractionField
+    from ..domains import FractionField
     from ..core import preorder_traversal
 
     compose = args.get('compose', True)
@@ -638,7 +638,7 @@ def minimal_polynomial(ex, x=None, **args):
 def _minpoly_groebner(ex, x):
     """
     Computes the minimal polynomial of an algebraic number
-    using Groebner bases
+    using Gröbner bases
 
     Examples
     ========

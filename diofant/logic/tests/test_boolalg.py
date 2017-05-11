@@ -3,7 +3,7 @@ import itertools
 import pytest
 
 from diofant import (symbols, Dummy, simplify, Equality, S, Interval,
-                     oo, EmptySet, Integer, Unequality, Union)
+                     oo, EmptySet, Integer, Unequality, Union, Eq)
 from diofant.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                    Nand, Nor, Not, Or, POSform, SOPform, Xor,
                                    conjuncts, disjuncts, distribute_or_over_and,
@@ -12,9 +12,9 @@ from diofant.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                    to_cnf, to_dnf, to_int_repr, bool_map, true,
                                    false, BooleanAtom, is_literal, BooleanFunction)
 
-__all__ = ()
+from diofant.abc import A, B, C, D, a, b, c, w, x, y, z
 
-A, B, C, D = symbols('A,B,C,D')
+__all__ = ()
 
 
 def test_overloading():
@@ -195,7 +195,6 @@ def test_simplification():
     """
     set1 = [[0, 0, 1], [0, 1, 1], [1, 0, 0], [1, 1, 0]]
     set2 = [[0, 0, 0], [0, 1, 0], [1, 0, 1], [1, 1, 1]]
-    from diofant.abc import w, x, y, z
     assert SOPform([x, y, z], set1) == Or(And(Not(x), z), And(Not(z), x))
     assert Not(SOPform([x, y, z], set2)) == Not(Or(And(Not(x), Not(z)), And(x, z)))
     assert POSform([x, y, z], set1 + set2) is true
@@ -254,7 +253,6 @@ def test_bool_map():
 
     minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
         [1, 1, 1, 1]]
-    from diofant.abc import a, b, c, w, x, y, z
     assert bool_map(Not(Not(a)), a) == (a, {a: a})
     assert bool_map(SOPform([w, x, y, z], minterms),
         POSform([w, x, y, z], minterms)) == \
@@ -336,7 +334,6 @@ def test_double_negation():
 # test methods
 
 def test_eliminate_implications():
-    from diofant.abc import A, B, C, D
     assert eliminate_implications(Implies(A, B, evaluate=False)) == (~A) | B
     assert eliminate_implications(
         A >> (C >> Not(B))) == Or(Or(Not(B), Not(C)), Not(A))
@@ -441,7 +438,6 @@ def test_to_int_repr():
 
 
 def test_is_nnf():
-    from diofant.abc import A, B
     assert is_nnf(true) is True
     assert is_nnf(A) is True
     assert is_nnf(~A) is True
@@ -454,7 +450,6 @@ def test_is_nnf():
 
 
 def test_is_cnf():
-    x, y, z = symbols('x,y,z')
     assert is_cnf(x) is True
     assert is_cnf(x | y | z) is True
     assert is_cnf(x & y & z) is True
@@ -463,7 +458,6 @@ def test_is_cnf():
 
 
 def test_is_dnf():
-    x, y, z = symbols('x,y,z')
     assert is_dnf(x) is True
     assert is_dnf(x | y | z) is True
     assert is_dnf(x & y & z) is True
@@ -493,7 +487,6 @@ def test_ITE():
 
 def test_ITE_diff():
     # analogous to Piecewise.diff
-    x = symbols('x')
     assert ITE(x > 0, x**2, x).diff(x) == ITE(x > 0, 2*x, 1)
 
 
@@ -526,8 +519,6 @@ def test_operators():
 
 
 def test_true_false():
-    x = symbols('x')
-
     assert true is S.true
     assert false is S.false
     assert true is not True
@@ -660,8 +651,6 @@ def test_true_false():
 
 
 def test_bool_as_set():
-    x = symbols('x')
-
     assert And(x <= 2, x >= -2).as_set() == Interval(-2, 2)
     assert Or(x >= 2, x <= -2).as_set() == (Interval(-oo, -2, True) +
                                             Interval(2, oo, False, True))
@@ -675,8 +664,6 @@ def test_bool_as_set():
 
 @pytest.mark.xfail
 def test_multivariate_bool_as_set():
-    x, y = symbols('x,y')
-
     assert And(x >= 0, y >= 0).as_set() == Interval(0, oo)*Interval(0, oo)
     assert Or(x >= 0, y >= 0).as_set() == S.Reals*S.Reals - \
         Interval(-oo, 0, True, True)*Interval(-oo, 0, True, True)
@@ -703,7 +690,6 @@ def test_canonical_atoms():
 
 
 def test_sympyissue_8777():
-    x = symbols('x')
     assert And(x > 2, x < oo).as_set() == Interval(2, oo, True, True)
     assert And(x >= 1, x < oo).as_set() == Interval(1, oo, False, True)
     assert (x < oo).as_set() == Interval(-oo, oo, True, True)
@@ -711,6 +697,11 @@ def test_sympyissue_8777():
 
 
 def test_sympyissue_8975():
-    x = symbols('x')
     assert Or(And(-oo < x, x <= -2), And(2 <= x, x < oo)).as_set() == \
         Interval(-oo, -2, True) + Interval(2, oo, False, True)
+
+
+def test_sympyissue_12522():
+    assert Eq(1, 1).simplify() is true
+    assert true.simplify() is true
+    assert false.simplify() is false

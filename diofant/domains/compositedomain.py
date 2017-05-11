@@ -1,11 +1,12 @@
 """Implementation of :class:`CompositeDomain` class. """
 
 from .domain import Domain
-from ..polyerrors import GeneratorsError
-from ...utilities import public
+from ..polys.polyerrors import GeneratorsError
 
 
-@public
+__all__ = ('CompositeDomain',)
+
+
 class CompositeDomain(Domain):
     """Base class for composite domains, e.g. ZZ[x], ZZ(X). """
 

@@ -13,7 +13,7 @@ This section covers equations solving.
 
     Any expression in input, that not in an
     :class:`~diofant.core.relational.Eq` is automatically assumed to
-    equal 0 by the solving functions.
+    be equal to 0 by the solving functions.
 
 Algebraic Equations
 ===================
@@ -24,10 +24,9 @@ The main function for solving algebraic equations is
 When solving a single equation, the output is a list of the solutions.
 
     >>> solve(x**2 - x, x)
-    [0, 1]
+    [{x: 0}, {x: 1}]
 
-If no solutions are found, an empty list is returned, or
-:exc:`NotImplementedError` is raised.
+If no solutions are found, an empty list is returned.
 
     >>> solve(exp(x), x)
     []
@@ -35,24 +34,16 @@ If no solutions are found, an empty list is returned, or
 :func:`~diofant.solvers.solvers.solve` can also solve systems of equations.
 
     >>> solve([x - y + 2, x + y - 3], [x, y])
-    {x: 1/2, y: 5/2}
+    [{x: 1/2, y: 5/2}]
     >>> solve([x*y - 7, x + y - 6], [x, y])
-    ⎡⎛    ___        ___    ⎞  ⎛  ___          ___    ⎞⎤
-    ⎣⎝- ╲╱ 2  + 3, ╲╱ 2  + 3⎠, ⎝╲╱ 2  + 3, - ╲╱ 2  + 3⎠⎦
-
-If you want a dictionary output, pass ``dict=True``.
-
-   >>> solve([x - y + 2, x + y - 3], [x, y], dict=True)
-   [{x: 1/2, y: 5/2}]
-   >>> solve([x*y - 7, x + y - 6], [x, y], dict=True)
-   ⎡⎧       ___           ___    ⎫  ⎧     ___             ___    ⎫⎤
-   ⎢⎨x: - ╲╱ 2  + 3, y: ╲╱ 2  + 3⎬, ⎨x: ╲╱ 2  + 3, y: - ╲╱ 2  + 3⎬⎥
-   ⎣⎩                            ⎭  ⎩                            ⎭⎦
+    ⎡⎧       ___           ___    ⎫  ⎧     ___             ___    ⎫⎤
+    ⎢⎨x: - ╲╱ 2  + 3, y: ╲╱ 2  + 3⎬, ⎨x: ╲╱ 2  + 3, y: - ╲╱ 2  + 3⎬⎥
+    ⎣⎩                            ⎭  ⎩                            ⎭⎦
 
 :func:`~diofant.solvers.solvers.solve` reports each solution only once.
 
     >>> solve(x**3 - 6*x**2 + 9*x, x)
-    [0, 3]
+    [{x: 0}, {x: 3}]
 
 To get the solutions of a polynomial including multiplicity use
 :func:`~diofant.polys.polyroots.roots`.

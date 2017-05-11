@@ -208,6 +208,7 @@ def _nthroot_solve(p, n, prec):
         return
     sols = solve(f, x)
     for sol in sols:
+        sol = sol[x]
         if abs(sol - pn).n() < 1./10**prec:
             sol = sqrtdenest(sol)
             if _mexpand(sol**n) == p:
@@ -305,11 +306,11 @@ def posify(eq):
 
     >>> eq = x**2 - 4
     >>> solve(eq, x)
-    [-2, 2]
+    [{x: -2}, {x: 2}]
     >>> eq_x, reps = posify([eq, x]); eq_x
     [_x**2 - 4, _x]
     >>> solve(*eq_x)
-    [2]
+    [{_x: 2}]
     """
     eq = sympify(eq)
     if iterable(eq):

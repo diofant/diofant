@@ -270,7 +270,7 @@ def sqrt_mod_iter(a, p, domain=int):
     [21, 22]
     """
     from ..polys.galoistools import gf_crt1, gf_crt2
-    from ..polys.domains import ZZ
+    from ..domains import ZZ
     a, p = as_int(a), abs(as_int(p))
     if isprime(p):
         a = a % p
@@ -335,7 +335,7 @@ def _sqrt_mod_prime_power(a, p, k):
     >>> _sqrt_mod_prime_power(11, 43, 1)
     [21, 22]
     """
-    from ..polys.domains import ZZ
+    from ..domains import ZZ
 
     assert k > 0
 

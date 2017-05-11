@@ -1,6 +1,6 @@
 import pytest
 
-from diofant.polys.domains import QQ
+from diofant.domains import QQ
 from diofant.polys.rings import ring
 from diofant.polys.ring_series import (
     _invert_monoms, rs_integrate,

@@ -3,13 +3,14 @@
 from .field import Field
 from .simpledomain import SimpleDomain
 from .characteristiczero import CharacteristicZero
-from ..polyclasses import ANP
-from ..polyerrors import (CoercionFailed, DomainError, NotAlgebraic,
-                          IsomorphismFailed)
-from ...utilities import public
+from ..polys.polyclasses import ANP
+from ..polys.polyerrors import (CoercionFailed, DomainError, NotAlgebraic,
+                                IsomorphismFailed)
 
 
-@public
+__all__ = ('AlgebraicField',)
+
+
 class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     """A class for representing algebraic number fields. """
 
@@ -25,15 +26,14 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         if not dom.is_QQ:
             raise DomainError("ground domain must be a rational field")
 
-        from ..numberfields import to_number_field
+        from ..polys.numberfields import to_number_field
 
-        self.orig_ext = ext
         self.ext = to_number_field(ext)
         self.mod = self.ext.minpoly.rep
         self.domain = dom
 
         self.ngens = 1
-        self.symbols = self.gens = (self.ext,)
+        self.symbols = self.gens = (self.ext.as_expr(),)
         self.unit = self([dom(1), dom(0)])
 
         self.zero = self.dtype.zero(self.mod.rep, dom)
@@ -59,7 +59,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
-        from ..numberfields import AlgebraicNumber
+        from ..polys.numberfields import AlgebraicNumber
         return AlgebraicNumber(self.ext, a).as_expr()
 
     def from_diofant(self, a):
@@ -69,7 +69,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         except CoercionFailed:
             pass
 
-        from ..numberfields import to_number_field
+        from ..polys.numberfields import to_number_field
 
         try:
             return self(to_number_field(a, self.ext).native_coeffs())
@@ -96,6 +96,9 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     def from_RealField(self, a, K0):
         """Convert a mpmath ``mpf`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
+
+    def from_AlgebraicField(self, a, K0):
+        return self.from_diofant(K0.to_diofant(a))
 
     def get_ring(self):
         """Returns a ring associated with ``self``. """

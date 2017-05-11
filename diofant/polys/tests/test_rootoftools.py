@@ -7,7 +7,7 @@ from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.polys.polyerrors import (MultivariatePolynomialError,
                                       GeneratorsNeeded, PolynomialError)
 from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                     Function, Eq, solve, legendre_poly, Symbol)
+                     Function, Eq, solve, legendre_poly, Symbol, root, Pow)
 
 from diofant.abc import a, b, x, y, z, r
 
@@ -92,7 +92,9 @@ def test_RootOf___new__():
     assert RootOf(Poly(x**2 - y, x), 0) == -sqrt(y)
     assert RootOf(Poly(x**2 - y, x), 1) == sqrt(y)
 
-    assert RootOf(Poly(x**3 - y, x), 0) == y**Rational(1, 3)
+    assert isinstance(RootOf(x**3 - y, x, 0), RootOf)
+    p = Symbol('p', positive=True)
+    assert RootOf(x**3 - p, x, 0) == root(p, 3)*RootOf(x**3 - 1, x, 0)
 
     assert RootOf(y*x**3 + y*x + 2*y, x, 0) == -1
 
@@ -143,17 +145,18 @@ def test_RootOf___eval_Eq__():
     assert Eq(r, I) is S.false
     assert Eq(r, f(0)) is S.false
     assert Eq(r, f(0)) is S.false
-    sol = solve(r.expr)
+    sol = solve(r.expr, x)
     for s in sol:
-        if s.is_real:
-            assert Eq(r, s) is S.false
+        if s[x].is_real:
+            assert Eq(r, s[x]) is S.false
     r = RootOf(r.expr, 0)
     for s in sol:
-        if s.is_real:
-            assert Eq(r, s) is S.true
-    eq = (x**3 + x + 1)
-    assert [Eq(RootOf(eq, i), j) for i in range(3) for j in solve(eq)] == \
-        [False, False, True, False, True, False, True, False, False]
+        if s[x].is_real:
+            assert Eq(r, s[x]) is S.true
+    eq = x**3 + x + 1
+    assert ([Eq(RootOf(eq, i), j[x])
+            for i in range(3) for j in solve(eq)] ==
+            [False, False, True, False, True, False, True, False, False])
     assert Eq(RootOf(eq, 0), 1 + S.ImaginaryUnit) is S.false
 
 
@@ -178,8 +181,18 @@ def test_RootOf_is_algebraic():
     assert RootOf(x**3 + y*x + 3, x, 0).is_algebraic is None
 
 
+def test_RootOf_power():
+    e = RootOf(y**3 - x, y, 0)
+    assert e**3 == x
+    assert e**2 == Pow(e, 2, evaluate=False)
+    e2 = RootOf(y**3 - x*y, y, 0)
+    assert e2**3 == Pow(e2, 3, evaluate=False)
+
+
 def test_RootOf_subs():
     assert RootOf(x**3 + x + 1, 0).subs(x, y) == RootOf(y**3 + y + 1, 0)
+    eq = -x + RootOf(y**3 - x**3 + 3*x**2, y, 0) + 1
+    assert eq.subs(x, Rational(1, 3)) == 0
 
 
 def test_RootOf_diff():
@@ -244,7 +257,7 @@ def test_RootOf_evalf():
     r = RootOf(legendre_poly(64, x), 7)
     assert r.n(2) == r.n(100).n(2)
     # issue sympy/sympy#8617
-    ans = [w.n(2) for w in solve(x**3 - x - 4)]
+    ans = [w[x].n(2) for w in solve(x**3 - x - 4)]
     assert RootOf(exp(x)**3 - exp(x) - 4, 0).n(2) in ans
     # issue sympy/sympy#9019
     r0 = RootOf(x**2 + 1, 0, radicals=False)

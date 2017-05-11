@@ -1,10 +1,12 @@
+import pytest
+
 from diofant.combinatorics.perm_groups import PermutationGroup
 from diofant.combinatorics.named_groups import (SymmetricGroup, CyclicGroup,
                                                 DihedralGroup, AlternatingGroup,
                                                 AbelianGroup, RubikGroup)
 from diofant.combinatorics.permutations import Permutation
-from diofant.combinatorics.generators import rubik_cube_generators
-from diofant.combinatorics.polyhedron import tetrahedron as Tetra, cube
+from diofant.combinatorics.generators import rubik_cube_generators, rubik
+from diofant.combinatorics.polyhedron import tetrahedron as tetra, cube
 from diofant.combinatorics.testutil import (_verify_bsgs, _verify_centralizer,
                                             _verify_normal_closure)
 
@@ -343,6 +345,12 @@ def test_rubik1():
     G = RubikGroup(2)
     assert G.order() == 3674160
 
+    pytest.raises(ValueError, lambda: RubikGroup(0))
+    pytest.raises(ValueError, lambda: rubik(1))
+
+    G = RubikGroup(3)
+    assert G.order() == 43252003274489856000
+
 
 def test_rubik():
     G = PermutationGroup(rubik_cube_generators())
@@ -441,7 +449,7 @@ def test_minimal_block():
     S = SymmetricGroup(6)
     assert S.minimal_block([0, 1]) == [0, 0, 0, 0, 0, 0]
 
-    assert Tetra.pgroup.minimal_block([0, 1]) == [0, 0, 0, 0]
+    assert tetra.pgroup.minimal_block([0, 1]) == [0, 0, 0, 0]
 
 
 def test_max_div():
@@ -478,7 +486,7 @@ def test_transitivity_degree():
 
 
 def test_schreier_sims_random():
-    assert sorted(Tetra.pgroup.base) == [0, 1]
+    assert sorted(tetra.pgroup.base) == [0, 1]
 
     S = SymmetricGroup(3)
     base = [0, 1]

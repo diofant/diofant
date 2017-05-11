@@ -145,7 +145,7 @@ def _lambert(eq, x):
 
         solns = solve(X1 - u, x)
         for i, tmp in enumerate(solns):
-            solns[i] = tmp.subs(u, rhs)
+            solns[i] = tmp[x].subs(u, rhs)
             sol.append(solns[i])
     return sol
 
@@ -284,12 +284,11 @@ def bivariate_type(f, x, y, **kwargs):
     (x + y, _u**2 - 3, _u)
     >>> uxy, pu, u = _
     >>> usol = solve(pu, u); usol
-    [sqrt(3)]
-    >>> [solve(uxy - s) for s in solve(pu, u)]
+    [{_u: sqrt(3)}]
+    >>> [solve(uxy - s[u]) for s in solve(pu, u)]
     [[{x: -y + sqrt(3)}]]
     >>> all(eq.subs(s).equals(0) for sol in _ for s in sol)
     True
-
     """
 
     u = Dummy('u', positive=True)

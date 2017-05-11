@@ -121,7 +121,7 @@ def solve_generic(polys, opt):
 
     Returns all possible solutions over C[x_1, x_2, ..., x_m] of a
     set F = { f_1, f_2, ..., f_n } of polynomial equations,  using
-    Groebner basis approach. For now only zero-dimensional systems
+    Gröbner basis approach. For now only zero-dimensional systems
     are supported, which means F can have at most a finite number
     of solutions.
 
@@ -129,7 +129,7 @@ def solve_generic(polys, opt):
     of F with respect to an elimination order  (here lexicographic
     order is used), G and F generate the same ideal, they have the
     same set of solutions. By the elimination property,  if G is a
-    reduced, zero-dimensional Groebner basis, then there exists an
+    reduced, zero-dimensional Gröbner basis, then there exists an
     univariate polynomial in G (in its last variable). This can be
     solved by computing its roots. Substituting all computed roots
     for the last (eliminated) variable in other elements of G, new
@@ -139,7 +139,7 @@ def solve_generic(polys, opt):
     References
     ==========
 
-    .. [Buchberger01] B. Buchberger, Groebner Bases: A Short
+    .. [Buchberger01] B. Buchberger, Gröbner Bases: A Short
     Introduction for Systems Theorists, In: R. Moreno-Diaz,
     B. Buchberger, J.L. Freire, Proceedings of EUROCAST'01,
     February, 2001
