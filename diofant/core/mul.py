@@ -170,8 +170,19 @@ class Mul(AssocOp):
                     if r is not S.One and a*r is S.One:
                         rv = [b], [], None
                     else:
-                        # leave the Mul as a Mul
-                        rv = [cls(a*r, b, evaluate=False)], [], None
+                        if b.is_commutative and a == -1:
+                            r, b = b.as_coeff_Add()
+                            bargs = [_keep_coeff(a, bi)
+                                     for bi in Add.make_args(b)]
+                            bargs.sort(key=default_sort_key)
+                            ar = a*r
+                            if ar:
+                                bargs.insert(0, ar)
+                            bargs = [Add._from_args(bargs)]
+                            rv = bargs, [], None
+                        else:
+                            # leave the Mul as a Mul
+                            rv = [cls(a*r, b, evaluate=False)], [], None
             if rv:
                 return rv
 
