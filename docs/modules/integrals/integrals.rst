@@ -149,10 +149,6 @@ The class `Integral` represents an unevaluated integral and has some methods tha
 .. autoclass:: diofant.integrals.transforms.InverseHankelTransform
    :members:
 
-TODO and Bugs
--------------
-There are still lots of functions that Diofant does not know how to integrate. For bugs related to this module, see https://github.com/sympy/sympy/issues?q=label%3AIntegration
-
 Numeric Integrals
 =================
 
