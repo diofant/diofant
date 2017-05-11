@@ -1737,11 +1737,6 @@ class RealInterval:
         return rv
 
     @property
-    def dx(self):
-        """Return width of the real isolating interval. """
-        return self.b - self.a
-
-    @property
     def center(self):
         """Return the center of the real isolating interval. """
         return (self.a + self.b)/2
@@ -1771,22 +1766,6 @@ class RealInterval:
             expr, other = expr._inner_refine(), other._inner_refine()
 
         return expr, other
-
-    def refine_size(self, dx):
-        """Refine an isolating interval until it is of sufficiently small size. """
-        expr = self
-        while not (expr.dx < dx):
-            expr = expr._inner_refine()
-
-        return expr
-
-    def refine_step(self, steps=1):
-        """Perform several steps of real root refinement algorithm. """
-        expr = self
-        for _ in range(steps):
-            expr = expr._inner_refine()
-
-        return expr
 
     def refine(self):
         """Perform one step of real root refinement algorithm. """
@@ -1835,16 +1814,6 @@ class ComplexInterval:
             return self.b[1]
         else:
             return -self.a[1]
-
-    @property
-    def dx(self):
-        """Return width of the complex isolating interval. """
-        return self.b[0] - self.a[0]
-
-    @property
-    def dy(self):
-        """Return height of the complex isolating interval. """
-        return self.b[1] - self.a[1]
 
     @property
     def center(self):
@@ -1905,24 +1874,6 @@ class ComplexInterval:
             expr, other = expr._inner_refine(), other._inner_refine()
 
         return expr, other
-
-    def refine_size(self, dx, dy=None):
-        """Refine an isolating interval until it is of sufficiently small size. """
-        if dy is None:
-            dy = dx
-        expr = self
-        while not (expr.dx < dx and expr.dy < dy):
-            expr = expr._inner_refine()
-
-        return expr
-
-    def refine_step(self, steps=1):
-        """Perform several steps of complex root refinement algorithm. """
-        expr = self
-        for _ in range(steps):
-            expr = expr._inner_refine()
-
-        return expr
 
     def refine(self):
         """Perform one step of complex root refinement algorithm. """

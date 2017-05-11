@@ -83,6 +83,7 @@ def test_erf_evalf():
 
 def test__erfs():
     assert _erfs(z).diff(z) == -2/sqrt(S.Pi) + 2*z*_erfs(z)
+    pytest.raises(ArgumentIndexError, lambda: _erfs(x).fdiff(2))
 
     assert _erfs(1/z).series(z) == \
         z/sqrt(pi) - z**3/(2*sqrt(pi)) + 3*z**5/(4*sqrt(pi)) + O(z**6)
@@ -233,6 +234,7 @@ def test_erf2():
     assert erf2(x, y).rewrite('erfi') == I*(erfi(I*x) - erfi(I*y))
 
     pytest.raises(ArgumentIndexError, lambda: erfi(x).fdiff(3))
+    pytest.raises(ArgumentIndexError, lambda: erf2(x, y).fdiff(3))
 
 
 def test_erfinv():
@@ -246,6 +248,8 @@ def test_erfinv():
     assert erfinv(x).diff() == sqrt(pi)*exp(erfinv(x)**2)/2
 
     assert erfinv(z).rewrite('erfcinv') == erfcinv(1-z)
+
+    pytest.raises(ArgumentIndexError, lambda: erfinv(x).fdiff(2))
 
 
 def test_erfinv_evalf():
@@ -261,6 +265,8 @@ def test_erfcinv():
 
     assert erfcinv(z).rewrite('erfinv') == erfinv(1-z)
 
+    pytest.raises(ArgumentIndexError, lambda: erfcinv(x).fdiff(2))
+
 
 def test_erf2inv():
     assert erf2inv(0, 0) == S.Zero
@@ -271,6 +277,8 @@ def test_erf2inv():
 
     assert erf2inv(x, y).diff(x) == exp(-x**2 + erf2inv(x, y)**2)
     assert erf2inv(x, y).diff(y) == sqrt(pi)*exp(erf2inv(x, y)**2)/2
+
+    pytest.raises(ArgumentIndexError, lambda: erf2inv(x, y).fdiff(3))
 
 
 # NOTE we multiply by exp_polar(I*pi) and need this to be on the principal
@@ -337,6 +345,8 @@ def test_ei():
     assert Ei(x).series(x) == EulerGamma + log(x) + x + x**2/4 + \
         x**3/18 + x**4/96 + x**5/600 + O(x**6)
 
+    pytest.raises(ArgumentIndexError, lambda: Ei(x).fdiff(2))
+
 
 def test_expint():
     assert mytn(expint(x, y), expint(x, y).rewrite(uppergamma),
@@ -387,9 +397,12 @@ def test_expint():
         z**3*(log(z)/6 - Rational(11, 36) + EulerGamma/6) - z**4/24 + \
         z**5/240 + O(z**6)
 
+    pytest.raises(ArgumentIndexError, lambda: expint(x, y).fdiff(3))
+
 
 def test__eis():
     assert _eis(z).diff(z) == -_eis(z) + 1/z
+    pytest.raises(ArgumentIndexError, lambda: _eis(x).fdiff(2))
 
     assert _eis(1/z).series(z) == \
         z + z**2 + 2*z**3 + 6*z**4 + 24*z**5 + O(z**6)
@@ -435,6 +448,7 @@ def test_li():
     assert isinstance(li(z), li)
 
     assert diff(li(z), z) == 1/log(z)
+    pytest.raises(ArgumentIndexError, lambda: li(z).fdiff(2))
 
     assert conjugate(li(z)) == li(conjugate(z))
     assert conjugate(li(-zr)) == li(-zr)
@@ -466,6 +480,7 @@ def test_Li():
     assert isinstance(Li(z), Li)
 
     assert diff(Li(z), z) == 1/log(z)
+    pytest.raises(ArgumentIndexError, lambda: Li(z).fdiff(2))
 
     assert Li(z).rewrite(li) == li(z) - li(2)
 
@@ -511,6 +526,8 @@ def test_si():
     assert Si(sin(x)).nseries(x, n=5) == x - 2*x**3/9 + 17*x**5/450 + O(x**7)
     assert Si(x).series(x, 1, n=3) == \
         Si(1) + (x - 1)*sin(1) + (x - 1)**2*(-sin(1)/2 + cos(1)/2) + O((x - 1)**3, (x, 1))
+
+    pytest.raises(ArgumentIndexError, lambda: Si(z).fdiff(2))
 
 
 def test_ci():
@@ -613,6 +630,8 @@ def test_fresnel():
     assert conjugate(fresnelc(z)) == fresnelc(conjugate(z))
 
     assert fresnelc(z).diff(z) == cos(pi*z**2/2)
+    pytest.raises(ArgumentIndexError, lambda: fresnels(z).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: fresnelc(z).fdiff(2))
 
     assert fresnelc(z).rewrite(erf) == (S.One - I)/4 * (
         erf((S.One + I)/2*sqrt(pi)*z) + I*erf((S.One - I)/2*sqrt(pi)*z))
