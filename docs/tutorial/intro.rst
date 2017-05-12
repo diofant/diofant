@@ -164,10 +164,11 @@ Solve `x^2 - 2 = 0`.
 Solve the differential equation `f'' - f = e^x`.
 
    >>> f = symbols('f', cls=Function)
-   >>> dsolve(Eq(f(x).diff(x, 2) - f(x), exp(x)), f(x))
-           x ⎛     x⎞    -x
-   f(x) = ℯ ⋅⎜C₂ + ─⎟ + ℯ  ⋅C₁
-             ⎝     2⎠
+   >>> dsolve(Eq(f(x).diff(x, 2) - f(x), exp(x)), f(x)).doit()
+                            ⎛   2⋅x     ⎞
+           x ⎛     x⎞    -x ⎜  ℯ        ⎟
+   f(x) = ℯ ⋅⎜C₂ + ─⎟ + ℯ  ⋅⎜- ──── + C₁⎟
+             ⎝     2⎠       ⎝   4       ⎠
 
 Find the eigenvalues of `\left[\begin{smallmatrix}1 & 2\\2 &
 2\end{smallmatrix}\right]`.
