@@ -747,8 +747,8 @@ class _TensorDataLazyEvaluator(CantSympify):
     associated to the tensor expression.
     """
 
-    _substitutions_dict = dict()
-    _substitutions_dict_tensmul = dict()
+    _substitutions_dict = {}
+    _substitutions_dict_tensmul = {}
 
     def __getitem__(self, key):
         dat = self._get(key)
@@ -2147,7 +2147,7 @@ class TensorHead(Basic):
         return '%s(%s)' % (self.name, ','.join([str(x) for x in self.index_types]))
 
     def _check_auto_matrix_indices_in_call(self, *indices):
-        matrix_behavior_kinds = dict()
+        matrix_behavior_kinds = {}
 
         if len(indices) != len(self.index_types):
             if not self._matrix_behavior:

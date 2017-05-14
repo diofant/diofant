@@ -789,7 +789,7 @@ def test_visual_factorint():
     assert type(forty2) == Mul
     assert str(forty2) == '2**1*3**1*7**1'
     assert factorint(1, visual=True) is S.One
-    no = dict(evaluate=False)
+    no = {'evaluate': False}
     assert factorint(42**2, visual=True) == Mul(Pow(2, 2, **no),
                                                 Pow(3, 2, **no),
                                                 Pow(7, 2, **no), **no)
@@ -823,7 +823,7 @@ def test_visual_io():
     assert [fi(th, visual=0) for th in [d, m, n]] == [m, d, d]
 
     # test reevaluation
-    no = dict(evaluate=False)
+    no = {'evaluate': False}
     assert sm({4: 2}, visual=False) == sm(16)
     assert sm(Mul(*[Pow(k, v, **no) for k, v in {4: 2, 2: 6}.items()], **no),
               visual=False) == sm(2**10)

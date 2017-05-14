@@ -1458,7 +1458,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
 
     # find all the functions if not given
-    order = dict()
+    order = {}
     if funcs == [None]:
         funcs = []
         for eqs in eq:
@@ -1473,7 +1473,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     funcs = list(ordered((set(funcs))))
     if len(funcs) < len(eq):
         raise ValueError("Number of functions given is less than number of equations %s" % funcs)
-    func_dict = dict()
+    func_dict = {}
     for func in funcs:
         max_order = order[func]
         for eq_ in eq:
@@ -1575,7 +1575,7 @@ def check_linear_2eq_order1(eq, func, func_coef):
     y = func[1].func
     fc = func_coef
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
-    r = dict()
+    r = {}
     # for equations Eq(a1*diff(x(t),t), b1*x(t) + c1*y(t) + d1)
     # and Eq(a2*diff(y(t),t), b2*x(t) + c2*y(t) + d2)
     r['a1'] = fc[0, x(t), 1]
@@ -1653,7 +1653,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
     y = func[1].func
     fc = func_coef
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
-    r = dict()
+    r = {}
     a = Wild('a', exclude=[1/t])
     b = Wild('b', exclude=[1/t**2])
     u = Wild('u', exclude=[t, t**2])
@@ -1759,7 +1759,7 @@ def check_linear_3eq_order1(eq, func, func_coef):
     z = func[2].func
     fc = func_coef
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
-    r = dict()
+    r = {}
     r['a1'] = fc[0, x(t), 1]
     r['a2'] = fc[1, y(t), 1]
     r['a3'] = fc[2, z(t), 1]
@@ -2018,7 +2018,7 @@ def checksysodesol(eqs, sols, func=None):
     if len(funcs) != len({sol.lhs for sol in sols}):
         raise ValueError("number of solutions provided does not match the number of equations")
     t = funcs[0].args[0]
-    dictsol = dict()
+    dictsol = {}
     for sol in sols:
         sol_func = list(sol.atoms(AppliedUndef))[0]
         if sol.lhs == sol_func:
@@ -6337,7 +6337,7 @@ def sysode_linear_2eq_order1(match_):
     fc = match_['func_coeff']
     eq = match_['eq']
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    r = dict()
+    r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(2):
         eqs = 0
@@ -6763,7 +6763,7 @@ def sysode_linear_2eq_order2(match_):
     fc = match_['func_coeff']
     eq = match_['eq']
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    r = dict()
+    r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(2):
         eqs = 0
@@ -7304,7 +7304,7 @@ def sysode_linear_3eq_order1(match_):
     fc = match_['func_coeff']
     eq = match_['eq']
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    r = dict()
+    r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(3):
         eqs = 0

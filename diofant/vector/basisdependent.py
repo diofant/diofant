@@ -270,7 +270,7 @@ class BasisDependentZero(BasisDependent):
         obj = super(BasisDependentZero, cls).__new__(cls)
         # Pre-compute a specific hash value for the zero vector
         # Use the same one always
-        obj._hash = tuple([Integer(0), cls]).__hash__()
+        obj._hash = (Integer(0), cls).__hash__()
         return obj
 
     def __hash__(self):

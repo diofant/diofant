@@ -118,7 +118,7 @@ def merge_solution(var, var_t, solution):
 
     for val, symb in zip(l, var):
         if check_assumptions(val, **symb._assumptions) is False:
-            return tuple()
+            return ()
 
     return tuple(l)
 
@@ -396,13 +396,13 @@ def _diop_linear(var, coeff, param):
     if len(var) == 1:
         if coeff[var[0]] == 0:
             if c == 0:
-                return tuple([params[0]])
+                return params[0],
             else:
-                return tuple([None])
+                return None,
         elif divisible(c, coeff[var[0]]):
-            return tuple([c/coeff[var[0]]])
+            return c/coeff[var[0]],
         else:
-            return tuple([None])
+            return None,
 
     """
     base_solution_linear() can solve diophantine equations of the form:
@@ -1741,7 +1741,7 @@ def _diop_ternary_quadratic(_var, coeff):
             E = coeff[y*z]
             F = coeff[z**2]
 
-            _coeff = dict()
+            _coeff = {}
 
             _coeff[x**2] = 4*A**2
             _coeff[y**2] = 4*A*D - B**2
@@ -1837,7 +1837,7 @@ def _transformation_to_normal(var, coeff):
             E = coeff[y*z]
             F = coeff[z**2]
 
-            _coeff = dict()
+            _coeff = {}
 
             _coeff[x**2] = 4*A**2
             _coeff[y**2] = 4*A*D - B**2
@@ -2586,11 +2586,11 @@ def partition(n, k=None, zeros=False):
         Available: http://jeromekelleher.net/partitions.php
     """
     if n < 1:
-        yield tuple()
+        yield ()
 
     if k is not None:
         if k < 1:
-            yield tuple()
+            yield ()
 
         elif k > n:
             if zeros:
@@ -2598,7 +2598,7 @@ def partition(n, k=None, zeros=False):
                     for t in partition(n, i):
                         yield (t,) + (0,) * (k - i)
             else:
-                yield tuple()
+                yield ()
 
         else:
             a = [1 for i in range(k)]
@@ -2854,7 +2854,7 @@ def power_representation(n, p, k, zeros=False):
         if perfect_power(n):
             yield (perfect_power(n)[0],)
         else:
-            yield tuple()
+            yield ()
 
     elif p == 1:
         for t in partition(n, k, zeros):

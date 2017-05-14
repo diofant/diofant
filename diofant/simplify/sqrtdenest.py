@@ -674,7 +674,7 @@ def unrad(eq, *syms, **flags):
 
     _inv_error = 'cannot get an analytical solution for the inversion'
 
-    uflags = dict(check=False, simplify=False)
+    uflags = {'check': False, 'simplify': False}
 
     def _cov(p, e):
         if not cov:
@@ -739,7 +739,7 @@ def unrad(eq, *syms, **flags):
     _take = flags.setdefault('_take', _take)
 
     cov, nwas, rpt = [flags.setdefault(k, v) for k, v in
-        sorted(dict(cov=[], n=None, rpt=0).items())]
+                      sorted({'cov': [], 'n': None, 'rpt': 0}.items())]
 
     # preconditioning
     eq = powdenest(factor_terms(eq, radical=True))
@@ -973,7 +973,7 @@ def unrad(eq, *syms, **flags):
                   new_depth is not None and new_depth == depth and rpt > 3):
         raise NotImplementedError('Cannot remove all radicals')
 
-    flags.update(dict(cov=cov, n=len(rterms), rpt=rpt))
+    flags.update({'cov': cov, 'n': len(rterms), 'rpt': rpt})
     neq = unrad(eq, *syms, **flags)
     if neq:
         eq, cov = neq

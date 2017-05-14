@@ -559,7 +559,7 @@ class Subset(Basic):
                 if not sb:
                     break
         else:
-            return list()
+            return []
         return [d[bi] for bi in b]
 
 

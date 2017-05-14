@@ -116,7 +116,7 @@ def test_tuple_wrapper():
 
 
 def test_iterable_is_sequence():
-    ordered = [list(), tuple(), Tuple(), Matrix([[]])]
+    ordered = [[], (), Tuple(), Matrix([[]])]
     unordered = [set()]
     not_diofant_iterable = [{}, '']
     assert all(is_sequence(i) for i in ordered)

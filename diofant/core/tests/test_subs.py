@@ -459,7 +459,7 @@ def test_subs_dict():
     a, b, c, d, e = symbols('a b c d e')
     z = symbols('z')
 
-    assert (2*x + y + z).subs(dict(x=1, y=2)) == 4 + z
+    assert (2*x + y + z).subs({x: 1, y: 2}) == 4 + z
 
     l = [(sin(x), 2), (x, 1)]
     assert (sin(x)).subs(l) == \
@@ -529,7 +529,7 @@ def test_sympyissue_6079():
 
 def test_sympyissue_4680():
     N = Symbol('N')
-    assert N.subs(dict(N=3)) == 3
+    assert N.subs({N: 3}) == 3
 
 
 def test_sympyissue_6158():
