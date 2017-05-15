@@ -43,7 +43,7 @@ def minimize(f, *v):
     if not v:
         v = obj.free_symbols
         if not v:
-            return obj, dict()
+            return obj, {}
     v = list(ordered(v))
     dim = len(v)
 

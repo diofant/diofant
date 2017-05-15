@@ -158,7 +158,7 @@ def opt_cse(exprs, order='canonical'):
     >>> opt_subs
     {x**(-2): 1/(x**2)}
     """
-    opt_subs = dict()
+    opt_subs = {}
 
     adds = set()
     muls = set()
@@ -273,7 +273,7 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
         expressions where speed is a concern, use the setting order='none'.
     """
     if opt_subs is None:
-        opt_subs = dict()
+        opt_subs = {}
 
     # Find repeated sub-expressions
 
@@ -310,7 +310,7 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
 
     replacements = []
 
-    subs = dict()
+    subs = {}
 
     def _rebuild(expr):
 
@@ -457,7 +457,7 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
     del temp
 
     if optimizations is None:
-        optimizations = list()
+        optimizations = []
     elif optimizations == 'basic':
         optimizations = basic_optimizations
 

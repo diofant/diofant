@@ -490,7 +490,7 @@ def test_pickling_polys_errors():
 
 @pytest.mark.xfail
 def test_pickling_polys_options():
-    for c in (Options, Options((), dict(domain='ZZ', polys=False))):
+    for c in (Options, Options((), {'domain': 'ZZ', 'polys': False})):
         check(c)
 
 # TODO: def test_pickling_polys_rootisolation():
