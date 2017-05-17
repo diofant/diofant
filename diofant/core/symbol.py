@@ -170,20 +170,6 @@ class BaseSymbol(AtomicExpr, Boolean):
         """Return a Dummy having the same name and same assumptions as self."""
         return Dummy(self.name, **self._assumptions.generator)
 
-    def as_real_imag(self, deep=True, **hints):
-        """Return real and imaginary part of self.
-
-        See Also
-        ========
-
-        diofant.core.expr.Expr.as_real_imag
-        """
-        from ..functions import im, re
-        if hints.get('ignore') == self:
-            return
-        else:
-            return re(self), im(self)
-
     def is_constant(self, *wrt, **flags):
         """Test if self is constant.
 
