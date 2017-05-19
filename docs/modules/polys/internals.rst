@@ -622,7 +622,6 @@ manual for usage.
 .. autofunction:: red_groebner
 .. autofunction:: is_groebner
 .. autofunction:: is_minimal
-.. autofunction:: is_reduced
 
 .. currentmodule:: diofant.polys.fglmtools
 

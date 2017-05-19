@@ -433,42 +433,6 @@ def critical_pair(f, g, ring):
         return Sign(fr), um, f, Sign(gr), vm, g
 
 
-def cp_cmp(c, d):
-    """
-    Compare two critical pairs c and d.
-
-    c < d iff
-        - lbp(c[0], _, Num(c[2]) < lbp(d[0], _, Num(d[2])) (this
-        corresponds to um_c * f_c and um_d * f_d)
-    or
-        - lbp(c[0], _, Num(c[2]) >< lbp(d[0], _, Num(d[2])) and
-        lbp(c[3], _, Num(c[5])) < lbp(d[3], _, Num(d[5])) (this
-        corresponds to vm_c * g_c and vm_d * g_d)
-
-    c > d otherwise
-    """
-    zero = Polyn(c[2]).ring.zero
-
-    c0 = lbp(c[0], zero, Num(c[2]))
-    d0 = lbp(d[0], zero, Num(d[2]))
-
-    r = lbp_cmp(c0, d0)
-
-    if r == -1:
-        return -1
-    if r == 0:
-        c1 = lbp(c[3], zero, Num(c[5]))
-        d1 = lbp(d[3], zero, Num(d[5]))
-
-        r = lbp_cmp(c1, d1)
-
-        if r == -1:
-            return -1
-        # if r == 0:
-        #    return 0
-    return 1
-
-
 def cp_key(c, ring):
     """
     Key for comparing critical pairs.
@@ -730,7 +694,7 @@ def is_groebner(G, ring):
     """
     for i in range(len(G)):
         for j in range(i + 1, len(G)):
-            s = spoly(G[i], G[j])
+            s = spoly(G[i], G[j], ring)
             s = s.rem(G)
             if s:
                 return False
@@ -754,27 +718,6 @@ def is_minimal(G, ring):
         for h in G[:i] + G[i + 1:]:
             if monomial_divides(h.LM, g.LM):
                 return False
-
-    return True
-
-
-def is_reduced(G, ring):
-    """
-    Checks if G is a reduced Gröbner basis.
-    """
-    order = ring.order
-    domain = ring.domain
-
-    G.sort(key=lambda g: order(g.LM))
-
-    for i, g in enumerate(G):
-        if g.LC != domain.one:
-            return False
-
-        for term in g:
-            for h in G[:i] + G[i + 1:]:
-                if monomial_divides(h.LM, term[0]):
-                    return False
 
     return True
 
