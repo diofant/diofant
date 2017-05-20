@@ -291,9 +291,9 @@ def prde_no_cancel_b_large(b, Q, n, DE):
 
     Given a derivation D on k[t], n in ZZ, and b, q1, ..., qm in k[t] with
     b != 0 and either D == d/dt or deg(b) > max(0, deg(D) - 1), returns
-    h1, ..., hr in k[r] and a matrix A with coefficients in Const(k) such that
+    h1, ..., hr in k[t] and a matrix A with coefficients in Const(k) such that
     if c1, ..., cm in Const(k) and q in k[t] satisfy deg(q) <= n and
-    Dq + b*Q == Sum(ci*qi, (i, 1, m)), then q = Sum(dj*hj, (j, 1, r)), where
+    Dq + b*q == Sum(ci*qi, (i, 1, m)), then q = Sum(dj*hj, (j, 1, r)), where
     d1, ..., dr in Const(k) and A*Matrix([[c1, ..., cm, d1, ..., dr]]).T == 0.
     """
     db = b.degree(DE.t)
