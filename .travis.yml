@@ -45,6 +45,7 @@ matrix:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
         - py.test --cov diofant diofant/polys
+        - DIOFANT_GROUND_TYPES="gmpy" py.test --cov diofant diofant/domains
 before_install:
   - |
     mkdir -p $HOME/.local
