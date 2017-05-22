@@ -552,14 +552,6 @@ class RootOf(Expr):
             reals_count = len(_reals_cache[self.poly])
             return _complexes_cache[self.poly][self.index - reals_count]
 
-    def _set_interval(self, interval):
-        """Internal function for updating isolation interval in cache. """
-        if self.is_real:
-            _reals_cache[self.poly][self.index] = interval
-        else:
-            reals_count = len(_reals_cache[self.poly])
-            _complexes_cache[self.poly][self.index - reals_count] = interval
-
     def _eval_subs(self, old, new):
         if old in self.free_symbols:
             return self.func(self.poly.subs(old, new), *self.args[1:])
