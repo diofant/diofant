@@ -15,6 +15,7 @@ env:
 addons:
   apt:
     packages:
+      - libmpc-dev
       - libmpfr-dev
       - libgmp-dev
       - libatlas-dev
@@ -48,17 +49,6 @@ matrix:
         - py.test --cov diofant diofant/polys
         - DIOFANT_GROUND_TYPES="gmpy" py.test --cov diofant diofant/domains
 before_install:
-  - |
-    mkdir -p $HOME/.local
-    wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz
-    tar xzvf mpc-1.0.2.tar.gz
-    pushd mpc-1.0.2
-    ./configure --prefix=$HOME/.local
-    make all install
-    popd
-    export CPATH=$HOME/.local/include
-    export LIBRARY_PATH=$HOME/.local/lib
-    export LD_LIBRARY_PATH=$HOME/.local/lib
   - pip install --upgrade pip setuptools pytest codecov
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]
