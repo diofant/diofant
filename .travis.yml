@@ -47,7 +47,12 @@ matrix:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
         - py.test --cov diofant diofant/polys
-        - DIOFANT_GROUND_TYPES="gmpy" py.test --cov diofant diofant/domains
+    - python: 3.5
+      env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
+      install:
+        - travis_wait pip install .[exports,develop]
+      script:
+        - py.test --cov diofant diofant/domains
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
