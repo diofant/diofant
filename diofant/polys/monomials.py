@@ -260,13 +260,9 @@ def term_div(a, b, domain):
     if domain.has_Field:
         if monom is not None:
             return monom, domain.quo(a_lc, b_lc)
-        else:
-            return
     else:
         if not (monom is None or a_lc % b_lc):
             return monom, domain.quo(a_lc, b_lc)
-        else:
-            return
 
 
 class MonomialOps:
@@ -454,7 +450,7 @@ class Monomial:
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
-            return NotImplementedError
+            return NotImplemented
 
         return self.rebuild(monomial_mul(self.exponents, exponents))
 
@@ -464,7 +460,7 @@ class Monomial:
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
-            return NotImplementedError
+            return NotImplemented
 
         result = monomial_div(self.exponents, exponents)
 

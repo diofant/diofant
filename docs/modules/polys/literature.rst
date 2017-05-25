@@ -72,12 +72,6 @@ a theoretical foundation for implementing polynomials manipulation module.
     Systems and Algorithms for Algebraic Computation, Academic Press, London,
     1988, pp. 124--128
 
-.. [Greuel2008] G.-M. Greuel, Gerhard Pfister, A Singular Introduction to
-    Commutative Algebra, Springer, 2008
-
-.. [Atiyah69] M.F. Atiyah, I.G. MacDonald, Introduction to Commutative Algebra,
-    Addison-Wesley, 1969
-
 .. [Collins67] G.E. Collins, Subresultants and Reduced Polynomial
    Remainder Sequences. J. ACM 14 (1967) 128-142
 

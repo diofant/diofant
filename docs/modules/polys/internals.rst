@@ -196,6 +196,10 @@ may be slightly more efficient.)
 .. autofunction:: dmp_clear_denoms
 .. autofunction:: dmp_revert
 
+.. currentmodule:: diofant.polys.rootisolation
+
+.. autofunction:: dup_sturm
+
 Manipulation of dense, univariate polynomials with finite field coefficients
 ****************************************************************************
 .. currentmodule:: diofant.polys.galoistools
@@ -263,10 +267,13 @@ fields.
 .. autofunction:: gf_berlekamp
 .. autofunction:: gf_zassenhaus
 .. autofunction:: gf_shoup
+.. autofunction:: gf_ddf_shoup
 .. autofunction:: gf_factor_sqf
 .. autofunction:: gf_factor
 .. autofunction:: gf_value
 .. autofunction:: gf_csolve
+.. autofunction:: gf_irred_p_ben_or
+.. autofunction:: gf_edf_shoup
 
 Manipulation of sparse, distributed polynomials and vectors
 ***********************************************************
@@ -435,7 +442,7 @@ extra processing effort. Besides, the method only works with fraction fields
 of unique factorization domains, excluding, for example, the general number
 fields.
 
-Collins [Collins67] realized that the so-called *subresultant polynomials*
+Collins [Collins67]_ realized that the so-called *subresultant polynomials*
 of a pair of polynomials also form a generalized remainder sequence.
 The coefficients of these polynomials
 are expressible as determinants in the coefficients of the given
@@ -534,13 +541,13 @@ formulas
 in terms of the leading coefficients of `f_1,\ldots,f_{i-1}`, working
 in the field `K`.
 
-Brown and Traub [BrownTraub71] later developed a recursive procedure
+Brown and Traub [BrownTraub71]_ later developed a recursive procedure
 for computing the coefficients `\gamma_i`. Their algorithm deals with elements
 of the domain `A` exclusively (assuming `f,g\in A[X]`). However, in the
 abnormal case there was a problem, a division in `A`
 which could only be conjectured to be exact.
 
-This was subsequently justified by Brown [Brown78] who showed that
+This was subsequently justified by Brown [Brown78]_ who showed that
 the result of the division is, in fact, a scalar subresultant.
 More specifically, the constant appearing in the computation of `f_i` is
 `s_{n_{i-2}}(f,g)` (Theorem 3).
@@ -609,11 +616,12 @@ manual for usage.
 .. currentmodule:: diofant.polys.groebnertools
 
 .. autofunction:: groebner
+.. autofunction:: buchberger
+.. autofunction:: f5b
 .. autofunction:: spoly
 .. autofunction:: red_groebner
 .. autofunction:: is_groebner
 .. autofunction:: is_minimal
-.. autofunction:: is_reduced
 
 .. currentmodule:: diofant.polys.fglmtools
 
@@ -676,6 +684,9 @@ Modular GCD
 .. autofunction:: modgcd_multivariate
 .. autofunction:: func_field_modgcd
 .. autofunction:: _modgcd_multivariate_p
+
+.. autofunction:: trial_division
+.. autofunction:: integer_rational_reconstruction
 
 Manipulation of power series
 ****************************************************************************

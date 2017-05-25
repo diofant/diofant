@@ -29,10 +29,3 @@ Vector API
     api/classes.rst
     api/orienterclasses.rst
     api/vectorfunctions.rst
-
-References for Vector
-================================
-
-.. [Dyadics] http://en.wikipedia.org/wiki/Dyadics
-.. [DyadicProducts] http://en.wikipedia.org/wiki/Dyadic_product
-.. [DelOperator] http://en.wikipedia.org/wiki/Del
