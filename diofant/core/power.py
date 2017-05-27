@@ -76,7 +76,10 @@ def integer_nthroot(y, n):
 
 class Pow(Expr):
     """
-    Defines the expression x**y as "x raised to a power y"
+    Defines the expression x**y as "x raised to a power y".
+
+    For complex numbers `x` and `y`, ``Pow`` gives the principal
+    value of `exp(y*log(x))`.
 
     Singleton definitions involving (0, 1, -1, oo, -oo, I, -I):
 
