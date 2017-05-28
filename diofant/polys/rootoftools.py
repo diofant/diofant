@@ -574,15 +574,6 @@ class RootOf(Expr):
             except KeyError:
                 return super(Expr, self)._eval_evalf(prec)
 
-            if not self.is_extended_real:
-                # For complex intervals, we need to keep refining until the
-                # imaginary interval is disjunct with other roots, that is,
-                # until both ends get refined.
-                ay = interval.ay
-                by = interval.by
-                while interval.ay == ay or interval.by == by:
-                    interval = interval.refine()
-
             while True:
                 if self.is_extended_real:
                     a = mpf(str(interval.a))
@@ -596,23 +587,10 @@ class RootOf(Expr):
                     bx = mpf(str(interval.bx))
                     ay = mpf(str(interval.ay))
                     by = mpf(str(interval.by))
-                    if ax == bx and ay == by:
-                        # the sign of the imaginary part will be assigned
-                        # according to the desired index using the fact that
-                        # roots are sorted with negative imag parts coming
-                        # before positive (and all imag roots coming after real
-                        # roots)
-                        deg = self.poly.degree()
-                        i = self.index  # a positive attribute after creation
-                        if (deg - i) % 2:
-                            if ay < 0:
-                                ay = -ay
-                        else:
-                            if ay > 0:
-                                ay = -ay
-                        root = mpc(ax, ay)
-                        break
                     x0 = mpc(*map(str, interval.center))
+                    if ax == bx and ay == by:
+                        root = x0
+                        break
 
                 try:
                     root = findroot(func, x0)
@@ -628,13 +606,15 @@ class RootOf(Expr):
                     if self.is_extended_real:
                         if (a <= root <= b):
                             break
-                    elif (ax <= root.real <= bx and ay <= root.imag <= by):
+                    elif (ax <= root.real <= bx and ay <= root.imag <= by
+                          and (interval.ay > 0 or interval.by < 0)):
                         break
                 except ValueError:
                     pass
                 interval = interval.refine()
 
-        return Float._new(root.real._mpf_, prec) + I*Float._new(root.imag._mpf_, prec)
+        return (Float._new(root.real._mpf_, prec) +
+                I*Float._new(root.imag._mpf_, prec))
 
     def eval_rational(self, tol):
         """
