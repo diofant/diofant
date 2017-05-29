@@ -621,9 +621,7 @@ class RootOf(Expr):
         """
         Returns a Rational approximation to ``self`` with the tolerance ``tol``.
 
-        This method uses bisection, which is very robust and it will always
-        converge. The returned Rational instance will be at most 'tol' from the
-        exact root.
+        The returned instance will be at most 'tol' from the exact root.
 
         The following example first obtains Rational approximation to 1e-7
         accuracy for all roots of the 4-th order Legendre polynomial, and then
@@ -644,9 +642,11 @@ class RootOf(Expr):
             raise NotImplementedError("eval_rational() only works for real polynomials so far")
         func = lambdify(self.poly.gen, self.expr)
         interval = self.interval
+        while interval.b - interval.a > tol:
+            interval = interval.refine()
         a = Rational(str(interval.a))
         b = Rational(str(interval.b))
-        return bisect(func, a, b, tol)
+        return (a + b)/2
 
     def _eval_Eq(self, other):
         # RootOf represents a Root, so if other is that root, it should set
@@ -892,38 +892,3 @@ class RootSum(Expr):
         var, expr = self.fun.args
         func = Lambda(var, expr.diff(x))
         return self.new(self.poly, func, self.auto)
-
-
-def bisect(f, a, b, tol):
-    """
-    Implements bisection. This function is used in RootOf.eval_rational() and
-    it needs to be robust.
-
-    Examples
-    ========
-
-    >>> from diofant import Rational
-
-    >>> bisect(lambda x: x**2-1, -10, 0, Rational(1, 10)**2)
-    -1025/1024
-    >>> bisect(lambda x: x**2-1, -10, 0, Rational(1, 10)**4)
-    -131075/131072
-    """
-    a = sympify(a)
-    b = sympify(b)
-    fa = f(a)
-    fb = f(b)
-    if fa * fb >= 0:
-        raise ValueError("bisect: f(a) and f(b) must have opposite signs")
-    while (b - a > tol):
-        c = (a + b)/2
-        fc = f(c)
-        if (fc == 0):
-            return c  # We need to make sure f(c) is not zero below
-        if (fa * fc < 0):
-            b = c
-            fb = fc
-        else:
-            a = c
-            fa = fc
-    return (a + b)/2
