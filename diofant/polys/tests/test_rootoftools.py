@@ -274,10 +274,10 @@ def test_RootOf_evalf():
 def test_RootOf_evalf_caching_bug():
     r = RootOf(x**5 - 5*x + 12, 1)
     r.n()
-    a = r._get_interval()
+    a = r.interval
     r = RootOf(x**5 - 5*x + 12, 1)
     r.n()
-    b = r._get_interval()
+    b = r.interval
     assert a == b
 
 

@@ -544,7 +544,8 @@ class RootOf(Expr):
 
         return roots
 
-    def _get_interval(self):
+    @property
+    def interval(self):
         """Internal function for retrieving isolation interval from cache. """
         if self.is_real:
             return _reals_cache[self.poly][self.index]
@@ -570,7 +571,7 @@ class RootOf(Expr):
                 func = lambdify(g, self.expr)
 
             try:
-                interval = self._get_interval()
+                interval = self.interval
             except KeyError:
                 return super(Expr, self)._eval_evalf(prec)
 
@@ -642,7 +643,7 @@ class RootOf(Expr):
         if not self.is_extended_real:
             raise NotImplementedError("eval_rational() only works for real polynomials so far")
         func = lambdify(self.poly.gen, self.expr)
-        interval = self._get_interval()
+        interval = self.interval
         a = Rational(str(interval.a))
         b = Rational(str(interval.b))
         return bisect(func, a, b, tol)
@@ -666,7 +667,7 @@ class RootOf(Expr):
         s = self.is_extended_real, self.is_imaginary
         if o != s and None not in o and None not in s:
             return S.false
-        i = self._get_interval()
+        i = self.interval
         was = i.a, i.b
         need = [True]*2
         # make sure it would be distinct from others
