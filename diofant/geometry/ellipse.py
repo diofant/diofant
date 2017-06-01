@@ -928,15 +928,6 @@ class Ellipse(GeometrySet):
         diofant.geometry.point.Point
         arbitrary_point : Returns parameterized point on ellipse
 
-        Notes
-        -----
-
-        A random point may not appear to be on the ellipse, ie, `p in e` may
-        return False. This is because the coordinates of the point will be
-        floating point values, and when these values are substituted into the
-        equation for the ellipse the result may not be zero because of floating
-        point rounding error.
-
         Examples
         ========
 
@@ -955,6 +946,12 @@ class Ellipse(GeometrySet):
 
         Notes
         =====
+
+        A random point may not appear to be on the ellipse, ie, `p in e` may
+        return False. This is because the coordinates of the point will be
+        floating point values, and when these values are substituted into the
+        equation for the ellipse the result may not be zero because of floating
+        point rounding error.
 
         An arbitrary_point with a random value of t substituted into it may
         not test as being on the ellipse because the expression tested that
