@@ -949,7 +949,7 @@ def roots(f, *gens, **flags):
 
     if not f.is_ground:
         if not f.domain.is_Exact:
-            for r in f.nroots():
+            for r in f.nroots(n=f.domain.dps):
                 _update_dict(result, r, 1)
         elif f.degree() == 1:
             result[roots_linear(f)[0]] = 1
