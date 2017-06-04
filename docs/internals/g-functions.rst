@@ -1,3 +1,5 @@
+.. _meijerg-label:
+
 Computing Integrals using Meijer G-Functions
 ********************************************
 

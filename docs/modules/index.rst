@@ -22,8 +22,6 @@ access any Diofant module, or use this contents:
    combinatorics/index.rst
    ntheory.rst
    concrete.rst
-   evalf.rst
-   numeric-computation.rst
    functions/index.rst
    geometry/index.rst
    integrals/integrals.rst
@@ -34,11 +32,9 @@ access any Diofant module, or use this contents:
    printing.rst
    interactive.rst
    plotting.rst
-   rewriting.rst
    series.rst
    sets.rst
    simplify/simplify.rst
-   simplify/hyperexpand.rst
    stats.rst
    solvers/index.rst
    tensor/index.rst

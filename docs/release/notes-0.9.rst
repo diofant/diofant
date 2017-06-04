@@ -147,6 +147,7 @@ Issues closed
 * :sympyissue:`12582` Can't solve integrate(abs(x**2-3*x), (x, -15, 15))
 * :sympyissue:`12747` Missing constant coefficient in Taylor series of degree 1
 * :sympyissue:`12769` Slow limit() calculation?!
+* :issue:`375` Separate user-level API and documentation of internals
 
 .. last pr: #494
 
