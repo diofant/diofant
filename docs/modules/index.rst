@@ -24,7 +24,7 @@ access any Diofant module, or use this contents:
    concrete.rst
    functions/index.rst
    geometry/index.rst
-   integrals/integrals.rst
+   integrals.rst
    logic.rst
    domains.rst
    matrices/index.rst
