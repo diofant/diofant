@@ -121,7 +121,7 @@ class ReprPrinter(Printer):
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)
         r = mlib.to_str(expr._mpf_, repr_dps(expr._prec))
-        return "%s('%s', prec=%i)" % (expr.__class__.__name__, r, dps)
+        return "%s('%s', dps=%i)" % (expr.__class__.__name__, r, dps)
 
     def _print_Symbol(self, expr):
         d = expr._assumptions.generator

@@ -715,7 +715,7 @@ class Float(Number):
 
     is_Float = True
 
-    def __new__(cls, num, prec=None):
+    def __new__(cls, num, dps=None):
         if isinstance(num, str):
             num = num.replace(' ', '')
             if num.startswith('.') and len(num) > 1:
@@ -733,7 +733,7 @@ class Float(Number):
         elif isinstance(num, mpmath.mpf):
             num = num._mpf_
 
-        if prec is None:
+        if dps is None:
             dps = 15
             if isinstance(num, Float):
                 return num
@@ -748,7 +748,7 @@ class Float(Number):
                     if num.is_Integer and isint:
                         dps = max(dps, len(str(num).lstrip('-')))
                     dps = max(15, dps)
-        elif prec == '':
+        elif dps == '':
             if not isinstance(num, str):
                 raise ValueError('The null string can only be used when '
                 'the number to Float is passed as a string or an integer.')
@@ -766,8 +766,6 @@ class Float(Number):
                     ok = True
             if ok is None:
                 raise ValueError('string-float not recognized: %s' % num)
-        else:
-            dps = prec
 
         prec = mlib.libmpf.dps_to_prec(dps)
         if isinstance(num, float):

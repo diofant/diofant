@@ -519,9 +519,9 @@ def test_sympyissue_11678():
                 [1./2, 0, 1./2],
                 [1./4, 0, 3./4]])
     e = (p**x).applyfunc(lambda i: limit(i, x, oo))
-    assert e == Matrix([[Float('0.36363636363636359', prec=15),
-                         Float('0.090909090909090898', prec=15),
-                         Float('0.54545454545454541', prec=15)]]*3)
+    assert e == Matrix([[Float('0.36363636363636359', dps=15),
+                         Float('0.090909090909090898', dps=15),
+                         Float('0.54545454545454541', dps=15)]]*3)
 
 
 def test_sympyissue_8635():
