@@ -1,52 +1,28 @@
 """Tests of tools for setting up interactive IPython sessions. """
 
 import ast
-import sys
-
-import pytest
 
 from diofant.interactive.session import IntegerWrapper
 
 __all__ = ()
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 5),
-                    reason="XXX python3.5 api changes")
 def test_IntegerWrapper():
     tree = ast.parse('1/3')
-    dump = ("Module(body=[Expr(value=BinOp(left=Call(func=Name(id='Integer', "
-            "ctx=Load()), args=[Num(n=1)], keywords=[], starargs=None, "
-            "kwargs=None), op=Div(), right=Call(func=Name(id='Integer', "
-            "ctx=Load()), args=[Num(n=3)], keywords=[], starargs=None, "
-            "kwargs=None)))])")
-    tree = IntegerWrapper().visit(tree)
-    assert ast.dump(tree) == dump
-
     tree2 = ast.parse('Integer(1)/Integer(3)')
-    tree_new = IntegerWrapper().visit(tree2)
+    dump = ast.dump(tree2)
+    tree_new = IntegerWrapper().visit(tree)
     assert ast.dump(tree_new) == dump
-    dump3 = ("Module(body=[Expr(value=Call(func=Name(id='f', ctx=Load()), "
-             "args=[Call(func=Name(id='Integer', ctx=Load()), args=[Num(n=1)], "
-             "keywords=[], starargs=None, kwargs=None)], keywords=[], "
-             "starargs=None, kwargs=None))])")
+
+    tree2_new = IntegerWrapper().visit(tree2)
+    assert ast.dump(tree2_new) == dump
 
     tree3 = ast.parse('f(1)')
-    tree_new = IntegerWrapper().visit(tree3)
-    assert ast.dump(tree_new) == dump3
-    tree_new2 = IntegerWrapper().visit(tree_new)
-    assert ast.dump(tree_new2) == dump3
+    dump3 = ast.dump(ast.parse('f(Integer(1))'))
+    tree3_new = IntegerWrapper().visit(tree3)
+    assert ast.dump(tree3_new) == dump3
 
     tree4 = ast.parse('sin(1/5).n()')
-    dump4 = ("Module(body=[Expr(value=Call(func=Attribute(value=Call("
-             "func=Name(id='sin', ctx=Load()), args=[BinOp(left=Call("
-             "func=Name(id='Integer', ctx=Load()), args=[Num(n=1)], "
-             "keywords=[], starargs=None, kwargs=None), op=Div(), "
-             "right=Call(func=Name(id='Integer', ctx=Load()), "
-             "args=[Num(n=5)], keywords=[], starargs=None, kwargs=None))], "
-             "keywords=[], starargs=None, kwargs=None), attr='n', "
-             "ctx=Load()), args=[], keywords=[], "
-             "starargs=None, kwargs=None))])")
-    tree_new = IntegerWrapper().visit(tree4)
-    assert ast.dump(tree_new) == dump4
-    tree_new2 = IntegerWrapper().visit(tree_new)
-    assert ast.dump(tree_new2) == dump4
+    dump4 = ast.dump(ast.parse('sin(Integer(1)/Integer(5)).n()'))
+    tree4_new = IntegerWrapper().visit(tree4)
+    assert ast.dump(tree4_new) == dump4
