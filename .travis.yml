@@ -4,6 +4,7 @@ sudo: false
 cache: pip
 python:
   - 3.6
+  - pypy3.5-5.7.1-beta
 env:
   - SPLIT=1/7
   - SPLIT=2/7
