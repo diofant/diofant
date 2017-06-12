@@ -443,7 +443,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                 # Randomly sample to avoid aliasing.
                 random = 0.45 + np.random.rand() * 0.1
                 xnew = p[0] + random * (q[0] - p[0])
-                ynew = f(xnew)
+                ynew = f(xnew).real
                 new_point = np.array([xnew, ynew])
 
                 # Maximum depth
@@ -477,8 +477,8 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                 else:
                     list_segments.append([p, q])
 
-            f_start = f(self.start)
-            f_end = f(self.end)
+            f_start = f(self.start).real
+            f_end = f(self.end).real
             sample([self.start, f_start], [self.end, f_end], 0)
             return list_segments
 
