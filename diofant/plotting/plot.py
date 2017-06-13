@@ -184,6 +184,13 @@ class Plot:
         self._backend = self.backend(self)
         self._backend.save(path)
 
+    def close(self):
+        if hasattr(self, '_backend'):
+            self._backend.close()
+
+    def __del__(self):
+        self.close()
+
     def __str__(self):
         series_strs = [('[%d]: ' % i) + str(s)
                        for i, s in enumerate(self._series)]
