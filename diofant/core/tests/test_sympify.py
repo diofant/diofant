@@ -210,11 +210,9 @@ def test_lambda():
     assert sympify('lambda x, y: 2*x+y') == Lambda([x, y], 2*x + y)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 5),
-                    reason="XXX python3.5 api changes")
 def test_lambda_raises():
-    pytest.raises(SympifyError, lambda: sympify("lambda *args: args"))  # args argument error
-    pytest.raises(SympifyError, lambda: sympify("lambda **kwargs: kwargs[0]"))  # kwargs argument error
+    pytest.raises(NotImplementedError, lambda: sympify("lambda *args: args"))  # args argument error
+    pytest.raises(NotImplementedError, lambda: sympify("lambda **kwargs: kwargs"))  # kwargs argument error
     pytest.raises(SympifyError, lambda: sympify("lambda x = 1: x"))    # Keyword argument error
     with pytest.raises(SympifyError):
         _sympify('lambda: 1')
