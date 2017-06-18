@@ -1311,11 +1311,12 @@ class Rational(Number):
         if isinstance(other, Rational):
             n = (self.p*other.q) // (other.p*self.q)
             return Rational(self.p*other.q - n*other.p*self.q, self.q*other.q)
-        if isinstance(other, Float):
+        elif isinstance(other, Float):
             # calculate mod with Rationals, *then* round the answer
             return Float(self.__mod__(Rational(other)),
                 prec_to_dps(other._prec))
-        return Number.__mod__(self, other)
+        else:
+            return Number.__mod__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __rmod__(self, other):
@@ -1325,19 +1326,15 @@ class Rational(Number):
 
     def _eval_power(self, expt):
         if isinstance(expt, Number):
-            if isinstance(expt, Float):
-                return self._eval_evalf(expt._prec)**expt
             if expt.is_negative:
                 # (3/4)**-2 -> (4/3)**2
                 ne = -expt
                 if (ne is S.One):
                     return Rational(self.q, self.p)
                 if self.is_negative:
-                    if expt.q != 1:
-                        return -(S.NegativeOne)**((expt.p % expt.q) /
-                               Integer(expt.q))*Rational(self.q, -self.p)**ne
-                    else:
-                        return S.NegativeOne**ne*Rational(self.q, -self.p)**ne
+                    return -((S.NegativeOne)**((expt.p % expt.q) /
+                                              Integer(expt.q)) *
+                             Rational(self.q, -self.p)**ne)
                 else:
                     return Rational(self.q, self.p)**ne
             if expt is S.Infinity:  # -oo already caught by test for negative
@@ -1348,10 +1345,12 @@ class Rational(Number):
                     # (-3/2)**oo -> oo + I*oo
                     return S.Infinity + S.Infinity*S.ImaginaryUnit
                 return S.Zero
-            if isinstance(expt, Integer):
+            if isinstance(expt, Float):
+                return self._eval_evalf(expt._prec)**expt
+            elif isinstance(expt, Integer):
                 # (4/3)**2 -> 4**2 / 3**2
                 return Rational(self.p**expt.p, self.q**expt.p)
-            if isinstance(expt, Rational):
+            else:  # Rational
                 if self.p != 1:
                     # (4/3)**(5/6) -> 4**(5/6)*3**(-5/6)
                     return Integer(self.p)**expt*Integer(self.q)**(-expt)
@@ -1359,9 +1358,6 @@ class Rational(Number):
                 return Integer(self.q)**Rational(
                 expt.p*(expt.q - 1), expt.q) / \
                     Integer(self.q)**Integer(expt.p)
-
-        if self.is_negative and expt.is_even:
-            return (-self)**expt
 
     def _as_mpf_val(self, prec):
         return mlib.from_rational(self.p, self.q, prec, rnd)
@@ -1487,8 +1483,6 @@ class Rational(Number):
     def gcd(self, other):
         """Compute GCD of `self` and `other`. """
         if isinstance(other, Rational):
-            if other is S.Zero:
-                return other
             return Rational(
                 Integer(igcd(self.p, other.p)),
                 Integer(ilcm(self.q, other.q)))
