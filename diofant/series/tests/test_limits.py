@@ -7,7 +7,7 @@ from diofant import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                      acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
                      cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
                      Function, subfactorial, PoleError, Integer, Float,
-                     diff, simplify, Matrix, sinh, polygamma)
+                     diff, simplify, Matrix, sinh, polygamma, symbols)
 from diofant.series.limits import heuristics
 from diofant.series.order import O
 
@@ -559,3 +559,19 @@ def test_sympyissue_11879():
 
 def test_sympyissue_12555():
     assert limit((3**x + 2*x**10)/(x**10 + E**x), x, -oo) == 2
+
+
+def test_sympyissue_12769():
+    r, z, x = symbols('r,z,x', real=True)
+    a, b, s0, K, F0, s, T = symbols('a,b,s0,K,F0,s,T',
+                                    positive=True, real=True)
+    fx = (F0**b*K**b*r*s0 -
+          sqrt((F0**2*K**(2*b)*a**2*(b - 1) +
+                F0**(2*b)*K**2*a**2*(b - 1) +
+                F0**(2*b)*K**(2*b)*s0**2*(b - 1)*(b**2 - 2*b + 1) -
+                2*F0**(2*b)*K**(b + 1)*a*r*s0*(b**2 - 2*b + 1) +
+                2*F0**(b + 1)*K**(2*b)*a*r*s0*(b**2 - 2*b + 1) -
+                2*F0**(b + 1)*K**(b + 1)*a**2*(b - 1))/((b - 1)*(b**2 - 2*b + 1))))*(b*r - b - r + 1)
+    assert limit(fx, K, F0) == (F0**(2*b)*b*r**2*s0 - 2*F0**(2*b)*b*r*s0 +
+                                F0**(2*b)*b*s0 - F0**(2*b)*r**2*s0 +
+                                2*F0**(2*b)*r*s0 - F0**(2*b)*s0)

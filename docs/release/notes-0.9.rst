@@ -145,6 +145,8 @@ Issues closed
 * :sympyissue:`12569` problem with polygamma or im
 * :sympyissue:`12578` Taylor expansion wrong (likely because of wrong substitution at point of evaluation?)
 * :sympyissue:`12582` Can't solve integrate(abs(x**2-3*x), (x, -15, 15))
+* :sympyissue:`12747` Missing constant coefficient in Taylor series of degree 1
+* :sympyissue:`12769` Slow limit() calculation?!
 
 .. last pr: #494
 
