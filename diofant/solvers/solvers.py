@@ -1006,7 +1006,7 @@ def _solve(f, *symbols, **flags):
                     if not ftry.has(symbol):
                         cv_sols = _solve(ftry, t, **flags)
                         cv_inv = _solve(t - f1, symbol, **flags)[0]
-                        sols = list()
+                        sols = []
                         for sol in cv_sols:
                             sols.append(cv_inv.subs(t, sol))
                         result = list(ordered(sols))
@@ -1039,7 +1039,7 @@ def _solve(f, *symbols, **flags):
                         _expand).subs(u, t)
                     if not ftry.has(symbol):
                         soln = _solve(ftry, t, **flags)
-                        sols = list()
+                        sols = []
                         for sol in soln:
                             for i in inv:
                                 sols.append(i.subs(t, sol))

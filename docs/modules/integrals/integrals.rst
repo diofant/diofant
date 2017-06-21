@@ -149,26 +149,24 @@ The class `Integral` represents an unevaluated integral and has some methods tha
 .. autoclass:: diofant.integrals.transforms.InverseHankelTransform
    :members:
 
-TODO and Bugs
--------------
-There are still lots of functions that Diofant does not know how to integrate. For bugs related to this module, see https://github.com/sympy/sympy/issues?q=label%3AIntegration
-
 Numeric Integrals
 =================
 
 Diofant has functions to calculate points and weights for Gaussian quadrature of
 any order and any precision:
 
-.. autofunction:: diofant.integrals.quadrature.gauss_legendre
+.. module:: diofant.integrals.quadrature
 
-.. autofunction:: diofant.integrals.quadrature.gauss_laguerre
+.. autofunction:: gauss_legendre
 
-.. autofunction:: diofant.integrals.quadrature.gauss_hermite
+.. autofunction:: gauss_laguerre
 
-.. autofunction:: diofant.integrals.quadrature.gauss_gen_laguerre
+.. autofunction:: gauss_hermite
 
-.. autofunction:: diofant.integrals.quadrature.gauss_chebyshev_t
+.. autofunction:: gauss_gen_laguerre
 
-.. autofunction:: diofant.integrals.quadrature.gauss_chebyshev_u
+.. autofunction:: gauss_chebyshev_t
 
-.. autofunction:: diofant.integrals.quadrature.gauss_jacobi
+.. autofunction:: gauss_chebyshev_u
+
+.. autofunction:: gauss_jacobi

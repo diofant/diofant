@@ -631,11 +631,11 @@ def minimal_polynomial(ex, x=None, **args):
     if not dom.is_QQ:
         raise NotImplementedError("groebner method only works for QQ")
 
-    result = _minpoly_groebner(ex, x)
+    result = minpoly_groebner(ex, x)
     return cls(result, x, field=True) if polys else result.collect(x)
 
 
-def _minpoly_groebner(ex, x):
+def minpoly_groebner(ex, x):
     """
     Computes the minimal polynomial of an algebraic number
     using Gröbner bases
@@ -689,7 +689,7 @@ def _minpoly_groebner(ex, x):
                         base, exp = base**exp.p, Rational(1, exp.q)
                     base = bottom_up_scan(base)
                 else:
-                    bmp = PurePoly(_minpoly_groebner(1/base, x), x)
+                    bmp = PurePoly(minpoly_groebner(1/base, x), x)
                     base, exp = update_mapping(1/base, bmp), -exp
                 return update_mapping(ex, exp.q, -base**exp.p)
         elif ex.is_AlgebraicNumber:

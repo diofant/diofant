@@ -65,7 +65,7 @@ Common Subexpression Detection and Collection
 
 Before evaluating a large expression, it is often useful to identify common
 subexpressions, collect them and evaluate them at once. This is implemented
-in the ``cse`` function. Examples::
+in the :func:`~diofant.simplify.cse_main.cse` function. Examples::
 
     >>> from diofant import cse, sqrt, sin, pprint
     >>> from diofant.abc import x
@@ -101,7 +101,3 @@ However, these optimizations can be very slow for large expressions. Moreover,
 if speed is a concern, one can pass the option ``order='none'``. Order of
 terms will then be dependent on hashing algorithm implementation, but speed
 will be greatly improved.
-
-More information:
-
-.. autofunction:noindex: cse

@@ -124,7 +124,8 @@ def gosper_term(f, n):
     H = A*x.shift(1) - B*x - C
 
     solution = solve(H.coeffs(), coeffs)
-    solution = dict(*solution)
+    if solution:
+        solution = solution[0]
 
     x = x.as_expr().subs(solution)
 

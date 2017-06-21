@@ -1,4 +1,5 @@
 language: python
+dist: trusty
 sudo: false
 cache: pip
 python:
@@ -14,6 +15,7 @@ env:
 addons:
   apt:
     packages:
+      - libmpc-dev
       - libmpfr-dev
       - libgmp-dev
       - libatlas-dev
@@ -45,18 +47,13 @@ matrix:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
         - py.test --cov diofant diofant/polys
+    - python: 3.5
+      env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
+      install:
+        - travis_wait pip install .[exports,develop]
+      script:
+        - py.test --cov diofant diofant/domains
 before_install:
-  - |
-    mkdir -p $HOME/.local
-    wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz
-    tar xzvf mpc-1.0.2.tar.gz
-    pushd mpc-1.0.2
-    ./configure --prefix=$HOME/.local
-    make all install
-    popd
-    export CPATH=$HOME/.local/include
-    export LIBRARY_PATH=$HOME/.local/lib
-    export LD_LIBRARY_PATH=$HOME/.local/lib
   - pip install --upgrade pip setuptools pytest codecov
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]

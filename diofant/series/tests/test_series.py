@@ -205,3 +205,7 @@ def test_sympyissue_12375():
     s = (x + 1).series(x, 2, 1)
     assert s == 3 + O(x - 2, (x, 2))
     assert s.removeO() == 3
+
+
+def test_sympyissue_12747():
+    assert exp(x).series(x, y, n=1) == exp(y) + O(x - y, (x, y))

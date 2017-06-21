@@ -674,9 +674,6 @@ class Basic(object):
         for i in range(len(sequence)):
             o, n = sequence[i]
             so, sn = sympify(o), sympify(n)
-            if not isinstance(so, Basic):
-                if type(o) is str:
-                    so = Symbol(o)
             sequence[i] = (so, sn)
             if _aresame(so, sn):
                 sequence[i] = None

@@ -511,7 +511,7 @@ class Number(AtomicExpr):
         """
         # a -> c*t
         if self.is_Rational or not kwargs.pop('rational', True):
-            return self, tuple()
+            return self, ()
         elif self.is_negative:
             return S.NegativeOne, (-self,)
         return S.One, (self,)
@@ -526,7 +526,7 @@ class Number(AtomicExpr):
         """
         # a -> c + t
         if self.is_Rational:
-            return self, tuple()
+            return self, ()
         return S.Zero, (self,)
 
     def as_coeff_Mul(self, rational=False):

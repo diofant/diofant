@@ -362,7 +362,7 @@ class MultisetPartitionTraverser():
     Has methods to ``enumerate`` and ``count`` the partitions of a multiset.
 
     This implements a refactored and extended version of Knuth's algorithm
-    7.1.2.5M [AOCP]_."
+    7.1.2.5M [AOCP]_.
 
     The enumeration methods of this class are generators and return
     data structures which can be interpreted by the same visitor
@@ -804,6 +804,11 @@ class MultisetPartitionTraverser():
         The implementation is based, in part, on the answer given to
         exercise 69, in Knuth [AOCP]_.
 
+        References
+        ==========
+
+        .. [AOCP] Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
+           Part 1, of The Art of Computer Programming, by Donald Knuth.
         """
 
         # Keep track of iterations which do not yield a partition.
@@ -1059,6 +1064,12 @@ class MultisetPartitionTraverser():
         their brain, it should be possible to construct one by
         memoizing with a histogram of counts rather than a single
         count, and combining the histograms.
+
+        References
+        ==========
+
+        .. [AOCP] Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
+           Part 1, of The Art of Computer Programming, by Donald Knuth.
         """
         # number of partitions so far in the enumeration
         self.pcount = 0

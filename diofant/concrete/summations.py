@@ -471,7 +471,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
             z = collect(numer, k)
             eq = z.as_poly(k).all_coeffs()
-            sols = dict(*solve(eq, *x))
+            sols = solve(eq, *x)[0]
 
         y = sum(a(i, j)*F(n - j, k - i) for i in range(I) for j in range(J))
         y = y.subs(sols).subs(map(lambda a: (a, 1), x))

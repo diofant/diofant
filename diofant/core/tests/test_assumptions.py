@@ -817,7 +817,7 @@ def test_sanitize_assumptions():
         assert x.is_positive is False
         assert cls('', extended_real=True, positive=None).is_positive is None
         pytest.raises(ValueError, lambda: cls('', commutative=None))
-    pytest.raises(ValueError, lambda: Symbol._sanitize(dict(commutative=None)))
+    pytest.raises(ValueError, lambda: Symbol._sanitize({'commutative': None}))
 
 
 def test_special_assumptions():

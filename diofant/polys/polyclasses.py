@@ -908,22 +908,6 @@ class DMP(CantSympify):
         return (isinstance(other, self.__class__) and self.lev == other.lev
                            and self.domain == other.domain and self.rep == other.rep)
 
-    def __lt__(self, other):
-        _, _, _, F, G = self.unify(other)
-        return F.__lt__(G)
-
-    def __le__(self, other):
-        _, _, _, F, G = self.unify(other)
-        return F.__le__(G)
-
-    def __gt__(self, other):
-        _, _, _, F, G = self.unify(other)
-        return F.__gt__(G)
-
-    def __ge__(self, other):
-        _, _, _, F, G = self.unify(other)
-        return F.__ge__(G)
-
     def __bool__(self):
         return not dmp_zero_p(self.rep, self.lev)
 
@@ -1347,22 +1331,6 @@ class DMF(CantSympify):
 
         return True
 
-    def __lt__(self, other):
-        _, _, _, F, G = self.frac_unify(other)
-        return F.__lt__(G)
-
-    def __le__(self, other):
-        _, _, _, F, G = self.frac_unify(other)
-        return F.__le__(G)
-
-    def __gt__(self, other):
-        _, _, _, F, G = self.frac_unify(other)
-        return F.__gt__(G)
-
-    def __ge__(self, other):
-        _, _, _, F, G = self.frac_unify(other)
-        return F.__ge__(G)
-
     def __bool__(self):
         return not dmp_zero_p(self.num, self.lev)
 
@@ -1484,7 +1452,7 @@ class ANP(CantSympify):
         return per(dup_rem(dup_mul(F, G, dom), mod, dom))
 
     def pow(self, n):
-        """Raise ``self`` to a non-negative power ``n``. """
+        """Raise ``self`` to an integer power ``n``. """
         if isinstance(n, int):
             if n < 0:
                 F, n = dup_invert(self.rep, self.mod, self.domain), -n
@@ -1610,18 +1578,6 @@ class ANP(CantSympify):
     def __lt__(self, other):
         _, _, F, G, _ = self.unify(other)
         return F.__lt__(G)
-
-    def __le__(self, other):
-        _, _, F, G, _ = self.unify(other)
-        return F.__le__(G)
-
-    def __gt__(self, other):
-        _, _, F, G, _ = self.unify(other)
-        return F.__gt__(G)
-
-    def __ge__(self, other):
-        _, _, F, G, _ = self.unify(other)
-        return F.__ge__(G)
 
     def __bool__(self):
         return bool(self.rep)

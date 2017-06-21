@@ -72,11 +72,6 @@ parallel, thus proving that PQ || SR.
 Third product rule for Del operator
 ===================================
 
-See
----
-
-.. [WikiDel] http://en.wikipedia.org/wiki/Del
-
 The Problem
 -----------
 

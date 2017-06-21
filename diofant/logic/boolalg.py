@@ -260,9 +260,6 @@ class BooleanFunction(Application, Boolean):
 
     is_Boolean = True
 
-    def __call__(self, *args):
-        return self.func(*[arg(*args) for arg in self.args])
-
     def _eval_simplify(self, ratio, measure):
         return simplify_logic(self)
 
@@ -602,10 +599,10 @@ class Xor(BooleanFunction):
         obj = super(Xor, cls).__new__(cls, *args, **kwargs)
         for arg in super(Xor, obj).args:
             if isinstance(arg, Number) or arg in (True, False):
-                if arg:
-                    arg = true
-                else:
+                if not arg:
                     continue
+                else:
+                    arg = true
             if isinstance(arg, Xor):
                 for a in arg.args:
                     argset.remove(a) if a in argset else argset.add(a)
@@ -790,7 +787,7 @@ class Implies(BooleanFunction):
         elif A.is_Relational and B.is_Relational:
             if A.canonical == B.canonical:
                 return S.true
-            if (~A).canonical == B.canonical:
+            elif (~A).canonical == B.canonical:
                 return B
         else:
             return Expr.__new__(cls, *args)
@@ -1333,8 +1330,6 @@ def _convert_to_varsSOP(minterm, variables):
             temp.append(Not(variables[i]))
         elif m == 1:
             temp.append(variables[i])
-        else:
-            pass  # ignore the 3s
     return And(*temp)
 
 
@@ -1349,8 +1344,6 @@ def _convert_to_varsPOS(maxterm, variables):
             temp.append(Not(variables[i]))
         elif m == 0:
             temp.append(variables[i])
-        else:
-            pass  # ignore the 3s
     return Or(*temp)
 
 
@@ -1582,7 +1575,7 @@ def simplify_logic(expr, form=None, deep=True):
         if form == 'dnf' or \
            (form is None and len(truthtable) >= (2 ** (len(variables) - 1))):
             return SOPform(variables, truthtable)
-        elif form == 'cnf' or form is None:
+        elif form == 'cnf' or form is None:  # pragma: no branch
             return POSform(variables, truthtable)
     else:
         raise ValueError("form can be cnf or dnf only")
@@ -1612,7 +1605,7 @@ def _finger(eq):
     So y and x have unique fingerprints, but a and b do not.
     """
     f = eq.free_symbols
-    d = dict(zip(f, ([0] * 5 for fi in f)))
+    d = {fi: [0] * 5 for fi in f}
     for a in eq.args:
         if a.is_Symbol:
             d[a][0] += 1
@@ -1698,18 +1691,16 @@ def bool_map(bool1, bool2):
 
         # more quick checks
         if len(f1) != len(f2):
-            return False
+            return
 
         # assemble the match dictionary if possible
         matchdict = {}
         for k in f1.keys():
-            if k not in f2:
-                return False
-            if len(f1[k]) != len(f2[k]):
-                return False
+            if k not in f2 or len(f1[k]) != len(f2[k]):
+                return
             for i, x in enumerate(f1[k]):
                 matchdict[x] = f2[k][i]
-        return matchdict
+        return matchdict if matchdict else None
 
     a = simplify_logic(bool1)
     b = simplify_logic(bool2)

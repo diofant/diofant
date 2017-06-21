@@ -81,6 +81,13 @@ def test_sinh():
 
     pytest.raises(ArgumentIndexError, lambda: sinh(x).fdiff(2))
 
+    a, b = symbols('a b', extended_real=True)
+    z = a + b*I
+    for deep in [True, False]:
+        assert sinh(z).as_real_imag(deep=deep) == (sinh(a)*cos(b),
+                                                   cosh(a)*sin(b))
+        assert sinh(a).as_real_imag(deep=deep) == (sinh(a), 0)
+
 
 def test_sinh_series():
     assert sinh(x).series(x, 0, 10) == \
@@ -153,6 +160,13 @@ def test_cosh():
     assert cosh(x).is_finite is None
 
     pytest.raises(ArgumentIndexError, lambda: cosh(x).fdiff(2))
+
+    a, b = symbols('a b', extended_real=True)
+    z = a + b*I
+    for deep in [True, False]:
+        assert cosh(z).as_real_imag(deep=deep) == (cosh(a)*cos(b),
+                                                   sinh(a)*sin(b))
+        assert cosh(a).as_real_imag(deep=deep) == (cosh(a), 0)
 
 
 def test_cosh_series():
@@ -228,6 +242,14 @@ def test_tanh():
 
     pytest.raises(ArgumentIndexError, lambda: tanh(x).fdiff(2))
 
+    a, b = symbols('a b', extended_real=True)
+    z = a + b*I
+    for deep in [True, False]:
+        d = sinh(a)**2 + cos(b)**2
+        assert tanh(z).as_real_imag(deep=deep) == (sinh(a)*cosh(a)/d,
+                                                   sin(b)*cos(b)/d)
+        assert tanh(a).as_real_imag(deep=deep) == (tanh(a), 0)
+
 
 def test_tanh_series():
     assert tanh(x).series(x, 0, 10) == \
@@ -295,6 +317,14 @@ def test_coth():
     assert coth(k*pi*I) == -cot(k*pi)*I
 
     pytest.raises(ArgumentIndexError, lambda: coth(x).fdiff(2))
+
+    a, b = symbols('a b', extended_real=True)
+    z = a + b*I
+    for deep in [True, False]:
+        d = sinh(a)**2 + sin(b)**2
+        assert coth(z).as_real_imag(deep=deep) == (sinh(a)*cosh(a)/d,
+                                                   -sin(b)*cos(b)/d)
+        assert coth(a).as_real_imag(deep=deep) == (coth(a), 0)
 
 
 def test_coth_series():

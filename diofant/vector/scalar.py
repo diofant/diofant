@@ -29,8 +29,8 @@ class BaseScalar(Symbol):
         obj._system = system
 
         # Change the args for the object
-        obj._args = tuple([Symbol(name), Integer(index), system,
-                           Symbol(pretty_str), Symbol(latex_str)])
+        obj._args = (Symbol(name), Integer(index), system,
+                     Symbol(pretty_str), Symbol(latex_str))
 
         return obj
 

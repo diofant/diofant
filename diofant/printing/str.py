@@ -19,7 +19,7 @@ class StrPrinter(Printer):
         "full_prec": "auto",
     }
 
-    _relationals = dict()
+    _relationals = {}
 
     def parenthesize(self, item, level):
         if precedence(item) <= level:

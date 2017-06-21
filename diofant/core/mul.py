@@ -306,6 +306,7 @@ class Mul(AssocOp):
                                 b = -b
                             if b is not S.One:
                                 pnum_rat.setdefault(b, []).append(e)
+                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         elif b.is_positive or e.is_integer:
                             num_exp.append((b, e))
@@ -1192,7 +1193,7 @@ class Mul(AssocOp):
             noncommutatives come back as a list [(b**e, Rational)]
             """
 
-            (c, nc) = (defaultdict(int), list())
+            (c, nc) = (defaultdict(int), [])
             for a in Mul.make_args(eq):
                 a = powdenest(a)
                 (b, e) = base_exp(a)

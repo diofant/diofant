@@ -145,8 +145,8 @@ def test_sympyify_iterables():
     ans = [Rational(3, 10), Rational(1, 5)]
     assert sympify(['.3', '.2'], rational=True) == ans
     assert sympify({'.3', '.2'}, rational=True) == set(ans)
-    assert sympify(tuple(['.3', '.2']), rational=True) == Tuple(*ans)
-    assert sympify(dict(x=0, y=1)) == {x: 0, y: 1}
+    assert sympify(('.3', '.2'), rational=True) == Tuple(*ans)
+    assert sympify({x: 0, y: 1}) == {x: 0, y: 1}
     assert sympify(['1', '2', ['3', '4']]) == [Integer(1), Integer(2), [Integer(3), Integer(4)]]
 
 

@@ -99,6 +99,9 @@ def test_Xor():
     assert Xor(A < 1, A >= 1, B) == Xor(0, 1, B) == Xor(1, 0, B)
     e = A > 1
     assert Xor(e, e.canonical) == Xor(0, 0) == Xor(1, 1)
+    e = Integer(1) < A
+    assert e != e.canonical and Xor(e, e.canonical) is S.false
+    assert Xor(A > 1, B > C) == Xor(A > 1, B > C, evaluate=False)
 
 
 def test_Not():
@@ -158,6 +161,7 @@ def test_Implies():
     assert (A < 1) >> (A >= 1) == (A >= 1)
     assert (A < 1) >> (Integer(1) > A) is true
     assert A >> A is true
+    assert ((A < 1) >> (B >= 1)) == Implies(A < 1, B >= 1, evaluate=False)
 
 
 def test_Equivalent():
@@ -178,6 +182,7 @@ def test_Equivalent():
     assert Equivalent(A < 1, A >= 1, 0) is false
     assert Equivalent(A < 1, A >= 1, 1) is false
     assert Equivalent(A < 1, Integer(1) > A) == Equivalent(1, 1) == Equivalent(0, 0)
+    assert Equivalent(A < 1, B >= 1) == Equivalent(B >= 1, A < 1, evaluate=False)
 
 
 def test_equals():
@@ -224,6 +229,10 @@ def test_simplification():
     e = And(A, x**2 - x)
     assert simplify_logic(e) == And(A, x*(x - 1))
     assert simplify_logic(e, deep=False) == e
+    pytest.raises(ValueError, lambda: simplify_logic(A & (B | C), form='spam'))
+    e = x & y ^ z | (z ^ x)
+    assert simplify_logic(e) in [(x & ~z) | (z & ~x) | (z & ~y),
+                                 (x & ~y) | (x & ~z) | (z & ~x)]
 
     # check input
     ans = SOPform([x, y], [[1, 0]])
@@ -258,11 +267,16 @@ def test_bool_map():
         POSform([w, x, y, z], minterms)) == \
         (And(Or(Not(w), y), Or(Not(x), y), z), {x: x, w: w, z: z, y: y})
     assert bool_map(SOPform([x, z, y], [[1, 0, 1]]),
-                    SOPform([a, b, c], [[1, 0, 1]])) is not S.false
+                    SOPform([a, b, c], [[1, 0, 1]])) is not False
     function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
     function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     assert bool_map(function1, function2) == \
         (function1, {y: a, z: b})
+    assert bool_map(And(x, Not(y)), Or(y, Not(x))) is False
+    assert bool_map(And(x, Not(y)), And(y, Not(x), z)) is False
+    assert bool_map(And(x, Not(y)), And(Or(y, z), Not(x))) is False
+    assert bool_map(Or(And(Not(y), a), And(Not(y), b), And(x, y)),
+                    Or(x, y, a)) is False
 
 
 def test_bool_symbol():
@@ -455,6 +469,8 @@ def test_is_cnf():
     assert is_cnf(x & y & z) is True
     assert is_cnf((x | y) & z) is True
     assert is_cnf((x & y) | z) is False
+    assert is_cnf(x & y & (z | ~(x ^ y))) is False
+    assert is_cnf(x & y & (z | (x ^ y))) is False
 
 
 def test_is_dnf():

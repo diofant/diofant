@@ -5601,7 +5601,7 @@ def _generic_factor_list(expr, gens, args, method):
         if fq and not opt.frac:
             raise PolynomialError("a polynomial expected, got %s" % expr)
 
-        _opt = opt.clone(dict(expand=True))
+        _opt = opt.clone({'expand': True})
 
         for factors in (fp, fq):
             for i, (f, k) in enumerate(factors):
@@ -6278,7 +6278,7 @@ def reduced(f, G, *gens, **args):
     retract = False
 
     if opt.auto and domain.has_Ring and not domain.has_Field:
-        opt = opt.clone(dict(domain=domain.get_field()))
+        opt = opt.clone({'domain': domain.get_field()})
         retract = True
 
     from .rings import ring
@@ -6546,10 +6546,7 @@ class GroebnerBasis(Basic):
         polys = list(self._basis)
         domain = opt.domain
 
-        opt = opt.clone(dict(
-            domain=domain.get_field(),
-            order=dst_order,
-        ))
+        opt = opt.clone({'domain': domain.get_field(), 'order': dst_order})
 
         from .rings import ring
         _ring, *_ = ring(opt.gens, opt.domain, src_order)
@@ -6604,7 +6601,7 @@ class GroebnerBasis(Basic):
         retract = False
 
         if auto and domain.has_Ring and not domain.has_Field:
-            opt = opt.clone(dict(domain=domain.get_field()))
+            opt = opt.clone({'domain': domain.get_field()})
             retract = True
 
         from .rings import ring

@@ -166,10 +166,9 @@ def test_roots_quartic():
     eq = Poly(y*x**4 + x**3 - x + z, x)
     ans = roots_quartic(eq)
     assert all(type(i) == Piecewise for i in ans)
-    reps = (
-        dict(y=-Rational(1, 3), z=-Rational(1, 4)),  # 4 real
-        dict(y=-Rational(1, 3), z=-Rational(1, 2)),  # 2 real
-        dict(y=-Rational(1, 3), z=-2))  # 0 real
+    reps = ({y: -Rational(1, 3), z: -Rational(1, 4)},  # 4 real
+            {y: -Rational(1, 3), z: -Rational(1, 2)},  # 2 real
+            {y: -Rational(1, 3), z: -2})  # 0 real
     for rep in reps:
         sol = roots_quartic(Poly(eq.subs(rep), x))
         assert all(verify_numerically(w.subs(rep) - s, 0) for w, s in zip(ans, sol))

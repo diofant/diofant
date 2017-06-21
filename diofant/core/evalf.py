@@ -645,7 +645,7 @@ def evalf_trig(v, prec, options):
         func = mpf_cos
     elif v.func is sin:
         func = mpf_sin
-    else:  # pagma: no cover
+    else:  # pragma: no cover
         raise NotImplementedError
     arg = v.args[0]
     # 20 extra bits is possibly overkill. It does make the need
@@ -661,7 +661,7 @@ def evalf_trig(v, prec, options):
             return fone, None, prec, None
         elif v.func is sin:
             return None, None, None, None
-        else:  # pragme: no cover
+        else:  # pragma: no cover
             raise NotImplementedError
     # For trigonometric functions, we are interested in the
     # fixed-point (absolute) accuracy of the argument.

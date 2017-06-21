@@ -138,7 +138,7 @@ class IntegralTransform(Function):
                 return res
             try:
                 extra = self._collapse_extra(extra)
-                return tuple([res]) + tuple(extra)
+                return (res,) + tuple(extra)
             except IntegralTransformError:
                 pass
 
