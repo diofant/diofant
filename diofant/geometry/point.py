@@ -7,6 +7,8 @@ Point2D
 Point3D
 """
 
+import itertools
+
 from ..core import Add, Float, Integer, Tuple, sympify
 from ..core.compatibility import iterable
 from ..core.evaluate import global_evaluate
@@ -184,7 +186,13 @@ class Point(GeometryEntity):
         # if the vectors self and other are linearly dependent, then they must
         # be scalar multiples of each other
         m = Matrix([self.args, other.args])
-        return m.rank() < 2
+        for i, j in itertools.combinations(range(m.cols), 2):
+            d = Matrix([m[:, i].T, m[:, j].T]).T
+            d = d.det().simplify()
+            if d != 0:
+                return False
+        else:
+            return True
 
     @property
     def length(self):
