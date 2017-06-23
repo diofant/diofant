@@ -7,6 +7,8 @@ Not Released Yet
 New features
 ============
 
+* Support unevaluated :class:`~diofant.matrices.expressions.Rank` expressions for symbolic matrices, see :pull:`409`.
+
 Major changes
 =============
 

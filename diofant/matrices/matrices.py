@@ -2718,15 +2718,28 @@ class MatrixBase(DefaultPrinting):
 
         >>> m = Matrix([[1, 2], [x, 1 - 1/x]])
         >>> m.rank()
-        2
+         Rank(Matrix([
+         [1,       2],
+         [x, 1 - 1/x]]))
         >>> n = Matrix(3, 3, range(1, 10))
         >>> n.rank()
         2
 
         """
-        row_reduced = self.rref(iszerofunc=iszerofunc, simplify=simplify)
-        rank = len(row_reduced[-1])
-        return rank
+        from .expressions import rank
+        return rank(self)
+
+    def _eval_rank(self):
+        def iszero(x):
+            c = x.is_constant()
+            if c:
+                r = x.equals(0)
+                if r is not None:  # pragma: no branch
+                    return r
+            raise NotImplementedError("Zero-decision problem for %s" % x)
+
+        row_reduced = self.rref(iszerofunc=iszero)
+        return len(row_reduced[-1])
 
     def nullspace(self, simplify=False):
         """Returns list of vectors (Matrix objects) that span nullspace of self."""

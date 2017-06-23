@@ -20,6 +20,6 @@ from .expressions import (MatrixSlice, BlockDiagMatrix,  # noqa: F401
                           Trace, Transpose, ZeroMatrix, blockcut,
                           block_collapse, Adjoint, hadamard_product,
                           HadamardProduct, Determinant, det, DiagonalMatrix,
-                          DiagonalOf, trace)
+                          DiagonalOf, trace, Rank, rank)
 
 Matrix = MutableMatrix

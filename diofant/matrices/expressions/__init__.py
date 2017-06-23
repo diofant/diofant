@@ -16,3 +16,4 @@ from .transpose import Transpose  # noqa: F401
 from .adjoint import Adjoint  # noqa: F401
 from .hadamard import hadamard_product, HadamardProduct  # noqa: F401
 from .diagonal import DiagonalMatrix, DiagonalOf  # noqa: F401
+from .rank import Rank, rank  # noqa: F401
