@@ -1785,6 +1785,12 @@ def test_diofant__matrices__expressions__determinant__Determinant():
     assert _test_args(Determinant(MatrixSymbol('A', 3, 3)))
 
 
+def test_diofant__matrices__expressions__rank__Rank():
+    from diofant.matrices.expressions.rank import Rank
+    from diofant.matrices.expressions import MatrixSymbol
+    assert _test_args(Rank(MatrixSymbol('A', 3, 3)))
+
+
 def test_diofant__matrices__expressions__funcmatrix__FunctionMatrix():
     i, j = symbols('i,j')
     assert _test_args(FunctionMatrix(3, 3, Lambda((i, j), i - j) ))

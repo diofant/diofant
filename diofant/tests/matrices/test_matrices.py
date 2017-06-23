@@ -9,11 +9,11 @@ from diofant import (Abs, Basic, E, Float, Function, I, Integer, Max, Min, N,
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.matrices import (GramSchmidt, ImmutableMatrix,
-                              ImmutableSparseMatrix, Matrix, SparseMatrix,
-                              casoratian, diag, eye, hessian, jordan_cell,
-                              matrix_multiply_elementwise, ones, randMatrix,
-                              rot_axis1, rot_axis2, rot_axis3, vandermonde,
-                              wronskian, zeros)
+                              ImmutableSparseMatrix, Matrix, Rank,
+                              SparseMatrix, casoratian, diag, eye, hessian,
+                              jordan_cell, matrix_multiply_elementwise, ones,
+                              randMatrix, rot_axis1, rot_axis2, rot_axis3,
+                              vandermonde, wronskian, zeros)
 from diofant.matrices.matrices import (DeferredVector, MatrixError,
                                        NonSquareMatrixError, ShapeError,
                                        mgamma)
@@ -2411,11 +2411,16 @@ def test_simplify_immutable():
 
 def test_rank():
     m = Matrix([[1, 2], [x, 1 - 1/x]])
-    assert m.rank() == 2
+    assert m.rank() == Rank(m)
     n = Matrix(3, 3, range(1, 10))
     assert n.rank() == 2
     p = zeros(3)
     assert p.rank() == 0
+
+    # issue diofant/diofant#287
+    m = Matrix([[1, 1], [1, x]])
+    assert m.rank() != 2
+    assert m.subs({x: 1}).rank() == 1
 
 
 def test_rank_regression_from_so():
@@ -2640,7 +2645,7 @@ def test_sympyissue_11434():
                 [dx, dy, dx*t0, dy*t0, 1],
                 [ex, ey, 2*ex*t1 - ex*t0, 2*ey*t1 - ey*t0, 0]])
     assert M.det() == 0
-    assert M.rank() == 4
+    assert M.rank() == Rank(M)
 
 
 def test_solve_least_squares():

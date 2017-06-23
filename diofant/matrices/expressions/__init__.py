@@ -11,6 +11,7 @@ from .matadd import MatAdd
 from .matexpr import Identity, MatrixExpr, MatrixSymbol, ZeroMatrix
 from .matmul import MatMul
 from .matpow import MatPow
+from .rank import Rank, rank
 from .slice import MatrixSlice
 from .trace import Trace, trace
 from .transpose import Transpose

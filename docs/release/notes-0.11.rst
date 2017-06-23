@@ -8,6 +8,7 @@ New features
 ============
 
 * Added :func:`~diofant.ntheory.residue_ntheory.discrete_log` to compute discrete logarithms, see :pull:`785`.  Thanks to Gabriel Orisaka.
+* Support unevaluated :class:`~diofant.matrices.expressions.Rank` expressions for symbolic matrices, see :pull:`409`.
 
 Major changes
 =============

@@ -11,9 +11,9 @@ from .dense import (GramSchmidt, MutableDenseMatrix, MutableMatrix, casoratian,
 from .expressions import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
                           DiagonalMatrix, DiagonalOf, FunctionMatrix,
                           HadamardProduct, Identity, Inverse, MatAdd, MatMul,
-                          MatPow, MatrixExpr, MatrixSlice, MatrixSymbol, Trace,
-                          Transpose, ZeroMatrix, block_collapse, blockcut, det,
-                          hadamard_product, trace)
+                          MatPow, MatrixExpr, MatrixSlice, MatrixSymbol, Rank,
+                          Trace, Transpose, ZeroMatrix, block_collapse,
+                          blockcut, det, hadamard_product, rank, trace)
 from .immutable import (ImmutableDenseMatrix, ImmutableMatrix,
                         ImmutableSparseMatrix)
 from .matrices import (DeferredVector, MatrixBase, NonSquareMatrixError,
