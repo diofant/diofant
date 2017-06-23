@@ -125,6 +125,7 @@ def test_multiplication():
     ))
 
     c = a*b
+    assert c == a.multiply(b)
     assert c[0, 0] == 7
     assert c[0, 1] == 2
     assert c[1, 0] == 6
@@ -2413,6 +2414,8 @@ def test_pinv():
         assert AAp.H == AAp
         assert ApA.H == ApA
 
+    assert zeros(3).pinv() == zeros(3)
+
 
 def test_pinv_solve():
     # Fully determined system (unique result, identical to other solvers).
@@ -2591,3 +2594,12 @@ def test_sympyissue_11434():
                 [ex, ey, 2*ex*t1 - ex*t0, 2*ey*t1 - ey*t0, 0]])
     assert M.det() == 0
     assert M.rank() == 4
+
+
+def test_solve_least_squares():
+    M = Matrix([[1, 2], [2, 3], [3, 4]])
+    r = M.solve_least_squares(Matrix([8, 14, 18]))
+    ans = Matrix([[Rational(5, 3)], [Rational(10, 3)]])
+    assert r == ans
+    r = M.solve_least_squares(Matrix([8, 14, 18]), method=None)
+    assert r == ans
