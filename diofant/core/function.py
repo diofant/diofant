@@ -12,8 +12,6 @@ There are three types of functions implemented in Diofant:
        with dummy variables) but have no name:
            f = Lambda(x, exp(x)*x)
            f = Lambda((x, y), exp(x)*y)
-    The fourth type of functions are composites, like (sin + cos)(x); these work in
-    Diofant core, but are not yet part of Diofant.
 
     Examples
     ========
