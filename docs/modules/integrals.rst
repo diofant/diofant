@@ -80,12 +80,7 @@ There is a general method for calculating antiderivatives of elementary function
 Diofant currently uses a simplified version of the Risch algorithm, called the *Risch-Norman algorithm*. This algorithm is much faster, but may fail to find an antiderivative, although it is still very powerful. Diofant also uses pattern matching and heuristics to speed up evaluation of some types of integrals, e.g. polynomials.
 
 For non-elementary definite integrals, Diofant uses so-called Meijer G-functions.
-Details are described here:
-
-.. toctree::
-   :maxdepth: 1
-
-   g-functions.rst
+Details are described :ref:`here <meijerg-label>`.
 
 API reference
 -------------

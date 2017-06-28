@@ -385,7 +385,7 @@ class RootOf(Expr):
         """Map initial real root index to an index in a factor where the root belongs. """
         i = 0
 
-        for j, (_, factor, k) in enumerate(reals):
+        for j, (_, factor, k) in enumerate(reals):  # pragma: no branch
             if index < i + k:
                 poly, index = factor, 0
 
@@ -402,7 +402,7 @@ class RootOf(Expr):
         """Map initial complex root index to an index in a factor where the root belongs. """
         index, i = index, 0
 
-        for j, (_, factor, k) in enumerate(complexes):
+        for j, (_, factor, k) in enumerate(complexes):  # pragma: no branch
             if index < i + k:
                 poly, index = factor, 0
 
@@ -533,8 +533,6 @@ class RootOf(Expr):
     @classmethod
     def _get_roots(cls, method, poly, radicals):
         """Return postprocessed roots of specified kind. """
-        if not poly.is_univariate:
-            raise PolynomialError("only univariate polynomials are allowed")
 
         coeff, poly = cls._preprocess_roots(poly)
         roots = []
@@ -774,8 +772,6 @@ class RootSum(Expr):
     @classmethod
     def new(cls, poly, func, auto=True):
         """Construct new ``RootSum`` instance. """
-        if not func.expr.has(*func.variables):
-            return func.expr
 
         rational = cls._is_func_rational(poly, func)
 
@@ -870,9 +866,6 @@ class RootSum(Expr):
         return True
 
     def doit(self, **hints):
-        if not hints.get('roots', True):
-            return self
-
         _roots = roots(self.poly, multiple=True)
 
         if len(_roots) < self.poly.degree():
