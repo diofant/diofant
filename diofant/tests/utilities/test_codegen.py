@@ -63,6 +63,9 @@ def test_empty_c_code():
     code_gen = CCodeGen()
     source = get_string(code_gen.dump_c, [])
     assert source == "#include \"file.h\"\n#include <math.h>\n"
+    code_gen = CCodeGen(preprocessor_statements="")
+    source = get_string(code_gen.dump_c, [])
+    assert source == "#include \"file.h\"\n"
 
 
 def test_empty_c_code_with_comment():

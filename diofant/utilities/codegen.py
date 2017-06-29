@@ -461,6 +461,8 @@ class Result(Variable, ResultBase):
 class CodeGen:
     """Abstract class for the code generators."""
 
+    printer = None  # will be set to an instance of a CodePrinter subclass
+
     def __init__(self, project="project"):
         """Initialize a code generator.
 
@@ -686,6 +688,16 @@ class CodeGen:
         if code_lines:
             f.write(code_lines)
 
+    def _printer_method_with_settings(self, method, settings=None, *args, **kwargs):
+        settings = settings or {}
+        ori = {k: self.printer._settings[k] for k in settings}
+        for k, v in settings.items():
+            self.printer._settings[k] = v
+        result = getattr(self.printer, method)(*args, **kwargs)
+        for k, v in ori.items():
+            self.printer._settings[k] = v
+        return result
+
 
 class CodeGenError(Exception):
     pass
@@ -715,6 +727,15 @@ class CCodeGen(CodeGen):
 
     code_extension = "c"
     interface_extension = "h"
+
+    def __init__(self, project="project", printer=None,
+                 preprocessor_statements=None, cse=False):
+        super(CCodeGen, self).__init__(project=project, cse=cse)
+        self.printer = printer or CCodePrinter()
+
+        self.preprocessor_statements = preprocessor_statements
+        if preprocessor_statements is None:
+            self.preprocessor_statements = ['#include <math.h>\n']
 
     def _get_header(self):
         """Writes a common header for the generated files."""
@@ -755,8 +776,8 @@ class CCodeGen(CodeGen):
 
     def _preprocessor_statements(self, prefix):
         code_lines = []
-        code_lines.append("#include \"%s.h\"\n" % os.path.basename(prefix))
-        code_lines.append("#include <math.h>\n")
+        code_lines.append('#include "{}.h"\n'.format(os.path.basename(prefix)))
+        code_lines.extend(self.preprocessor_statements)
         return code_lines
 
     def _get_routine_opening(self, routine):
