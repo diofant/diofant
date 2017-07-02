@@ -86,15 +86,19 @@ def test_matplotlib_intro():
 
         p[2] = plot(x**2, (x, -2, 3))
         p.save(tmp_file('%s_plot_setitem' % name))
+        del p
 
         p = plot(sin(x), (x, -2*pi, 4*pi))
         p.save(tmp_file('%s_line_explicit' % name))
+        del p
 
         p = plot(sin(x))
         p.save(tmp_file('%s_line_default_range' % name))
+        del p
 
         p = plot((x**2, (x, -5, 5)), (x**3, (x, -3, 3)))
         p.save(tmp_file('%s_line_multiple_range' % name))
+        del p
 
         pytest.raises(ValueError, lambda: plot(x, y))
 
@@ -106,56 +110,69 @@ def test_matplotlib_intro():
         # Single plot with range.
         p = plot_parametric(sin(x), cos(x), (x, -5, 5))
         p.save(tmp_file('%s_parametric_range' % name))
+        del p
 
         # Multiple plots with same range.
         p = plot_parametric((sin(x), cos(x)), (x, sin(x)))
         p.save(tmp_file('%s_parametric_multiple' % name))
+        del p
 
         # Multiple plots with different ranges.
         p = plot_parametric((sin(x), cos(x), (x, -3, 3)), (x, sin(x), (x, -5, 5)))
         p.save(tmp_file('%s_parametric_multiple_ranges' % name))
+        del p
 
         # depth of recursion specified.
         p = plot_parametric(x, sin(x), depth=13)
         p.save(tmp_file('%s_recursion_depth' % name))
+        del p
 
         # No adaptive sampling.
         p = plot_parametric(cos(x), sin(x), adaptive=False, nb_of_points=500)
         p.save(tmp_file('%s_adaptive' % name))
+        del p
 
         # 3d parametric plots
         p = plot3d_parametric_line(sin(x), cos(x), x)
         p.save(tmp_file('%s_3d_line' % name))
+        del p
 
         p = plot3d_parametric_line(
             (sin(x), cos(x), x, (x, -5, 5)), (cos(x), sin(x), x, (x, -3, 3)))
         p.save(tmp_file('%s_3d_line_multiple' % name))
+        del p
 
         p = plot3d_parametric_line(sin(x), cos(x), x, nb_of_points=30)
         p.save(tmp_file('%s_3d_line_points' % name))
+        del p
 
         # 3d surface single plot.
         p = plot3d(x * y)
         p.save(tmp_file('%s_surface' % name))
+        del p
 
         # Multiple 3D plots with same range.
         p = plot3d(-x * y, x * y, (x, -5, 5))
         p.save(tmp_file('%s_surface_multiple' % name))
+        del p
 
         # Multiple 3D plots with different ranges.
         p = plot3d(
             (x * y, (x, -3, 3), (y, -3, 3)), (-x * y, (x, -3, 3), (y, -3, 3)))
         p.save(tmp_file('%s_surface_multiple_ranges' % name))
+        del p
 
         # Single Parametric 3D plot
         p = plot3d_parametric_surface(sin(x + y), cos(x - y), x - y)
         p.save(tmp_file('%s_parametric_surface' % name))
+        del p
 
         # Multiple Parametric 3D plots.
         p = plot3d_parametric_surface(
             (x*sin(z), x*cos(z), z, (x, -5, 5), (z, -5, 5)),
             (sin(x + y), cos(x - y), x - y, (x, -5, 5), (y, -5, 5)))
         p.save(tmp_file('%s_parametric_surface' % name))
+        del p
     finally:
         TmpFileManager.cleanup()
 
@@ -183,6 +200,7 @@ def test_matplotlib_colors():
 
         p[0].line_color = lambda a, b: b
         p.save(tmp_file('%s_colors_param_line_arity2b' % name))
+        del p
 
         p = plot3d_parametric_line(sin(x) + 0.1*sin(x)*cos(7*x),
             cos(x) + 0.1*cos(x)*cos(7*x), 0.1*sin(7*x), (x, 0, 2*pi))
@@ -192,6 +210,7 @@ def test_matplotlib_colors():
         p.save(tmp_file('%s_colors_3d_line_arity2' % name))
         p[0].line_color = lambda a, b, c: c
         p.save(tmp_file('%s_colors_3d_line_arity3' % name))
+        del p
 
         p = plot3d(sin(x)*y, (x, 0, 6*pi), (y, -5, 5))
         p[0].surface_color = lambda a: a
@@ -202,6 +221,7 @@ def test_matplotlib_colors():
         p.save(tmp_file('%s_colors_surface_arity3a' % name))
         p[0].surface_color = lambda a, b, c: sqrt((a - 3*pi)**2 + b**2)
         p.save(tmp_file('%s_colors_surface_arity3b' % name))
+        del p
 
         p = plot3d_parametric_surface(x * cos(4 * y), x * sin(4 * y), y,
             (x, -1, 1), (y, -1, 1))
@@ -211,6 +231,7 @@ def test_matplotlib_colors():
         p.save(tmp_file('%s_colors_param_surf_arity2' % name))
         p[0].surface_color = lambda a, b, c: sqrt(a**2 + b**2 + c**2)
         p.save(tmp_file('%s_colors_param_surf_arity3' % name))
+        del p
     finally:
         TmpFileManager.cleanup()
 
@@ -294,6 +315,7 @@ def test_sympyissue_11461():
 
         p = plot(real_root((log(x/(x-2))), 3), (x, 3, 4))
         p.save(tmp_file('%s_11461' % name))
+        del p
     finally:
         TmpFileManager.cleanup()
 
@@ -309,5 +331,6 @@ def test_sympyissue_10925():
                       (x**2, And(0 <= x, x < 1)), (x**3, True))
         p = plot(f, (x, -3, 3))
         p.save(tmp_file('%s_10925' % name))
+        del p
     finally:
         TmpFileManager.cleanup()
