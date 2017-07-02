@@ -15,6 +15,3 @@ function and many related functions.
 
 .. automodule:: diofant.series.residues
    :members:
-
-.. automodule:: diofant.series.gruntz
-   :members:

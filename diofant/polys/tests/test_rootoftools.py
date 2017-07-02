@@ -107,6 +107,8 @@ def test_RootOf___new__():
     assert e.poly == PurePoly(x**2 - 4, x)
     assert e.index == 1
 
+    assert RootOf(x**7 - 0.1*x + 1, x, 0) == RootOf(10*x**7 - x + 10, x, 0)
+
 
 def test_RootOf_attributes():
     r = RootOf(x**3 + x + 3, 0)
@@ -285,6 +287,7 @@ def test_RootOf_real_roots():
     assert Poly(x**5 + x + 1).real_roots() == [RootOf(x**3 - x**2 + 1, 0)]
     assert Poly(x**5 + x + 1).real_roots(radicals=False) == [RootOf(
         x**3 - x**2 + 1, 0)]
+    assert Poly(x**7 - 0.1*x + 1, x).real_roots() == [RootOf(10*x**7 - x + 10, x, 0)]
 
 
 def test_RootOf_all_roots():
@@ -320,6 +323,9 @@ def test_RootOf_eval_rational():
         "0.33998104358485626",
         "0.86113631159405258",
     ]
+
+    pytest.raises(NotImplementedError,
+                  lambda: RootOf(x**3 + x + 3, 1).eval_rational(1e-3))
 
 
 def test_RootSum___new__():
@@ -368,6 +374,10 @@ def test_RootSum___new__():
         RootSum(x**3 + x + 1, Lambda(x, tan(a*x)))
     assert RootSum(a**3*x**3 + a*x + 1, tan, x) == \
         RootSum(x**3 + x + 1, Lambda(x, tan(x/a)))
+
+    assert isinstance(RootSum(x**7 + 2*x + 1,
+                              Lambda(x, log(x))).doit(),
+                      RootSum)
 
 
 def test_RootSum_free_symbols():

@@ -822,16 +822,16 @@ def test_reflect():
     poly_pent = Polygon(*pent.vertices)
     assert rpent.center == pent.center.reflect(l)
     assert [w.n(3) for w in rpent.vertices] == \
-        [Point2D(Float('-0.585815', prec=3),
-                 Float('4.27051', prec=3)),
-         Point2D(Float('-1.69409', prec=3),
-                 Float('4.66211', prec=3)),
-         Point2D(Float('-2.40918', prec=3),
-                 Float('3.72949', prec=3)),
-         Point2D(Float('-1.74292', prec=3),
-                 Float('2.76123', prec=3)),
-         Point2D(Float('-0.615967', prec=3),
-                 Float('3.0957', prec=3))]
+        [Point2D(Float('-0.585815', dps=3),
+                 Float('4.27051', dps=3)),
+         Point2D(Float('-1.69409', dps=3),
+                 Float('4.66211', dps=3)),
+         Point2D(Float('-2.40918', dps=3),
+                 Float('3.72949', dps=3)),
+         Point2D(Float('-1.74292', dps=3),
+                 Float('2.76123', dps=3)),
+         Point2D(Float('-0.615967', dps=3),
+                 Float('3.0957', dps=3))]
     assert pent.area.equals(-rpent.area)
 
 

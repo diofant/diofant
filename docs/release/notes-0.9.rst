@@ -38,6 +38,7 @@ Backwards-incompatible changes
 * Removed support for ``particular`` and ``quick`` options of :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.solvers.minsolve_linear_system` instead, see :pull:`426`.
 * Removed support for inequalities in :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.inequalities.reduce_inequalities` instead, see :pull:`426`.
 * Removed ``get_domain()`` method of :class:`~diofant.polys.polytools.Poly`, use :attr:`~diofant.polys.polytools.Poly.domain` property instead, see :pull:`479`.
+* Renamed 'prec' argument of Float to 'dps', see :pull:`510`.
 
 Minor changes
 =============
@@ -147,6 +148,7 @@ Issues closed
 * :sympyissue:`12582` Can't solve integrate(abs(x**2-3*x), (x, -15, 15))
 * :sympyissue:`12747` Missing constant coefficient in Taylor series of degree 1
 * :sympyissue:`12769` Slow limit() calculation?!
+* :issue:`375` Separate user-level API and documentation of internals
 
 .. last pr: #494
 

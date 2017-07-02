@@ -41,8 +41,8 @@ def test_interval_arguments():
 
 def test_interval_evalf():
     assert (Interval(E, pi).evalf() ==
-            Interval(Float('2.7182818284590451', prec=15),
-                     Float('3.1415926535897931', prec=15), false, false))
+            Interval(Float('2.7182818284590451', dps=15),
+                     Float('3.1415926535897931', dps=15), false, false))
 
 
 def test_interval_symbolic_end_points():
@@ -125,8 +125,8 @@ def test_union():
     pytest.raises(TypeError, lambda: iter(Union(FiniteSet(1, 2), Interval(0, 1))))
 
     assert (Union(FiniteSet(E), FiniteSet(pi), evaluate=False).evalf() ==
-            FiniteSet(Float('2.7182818284590451', prec=15),
-                      Float('3.1415926535897931', prec=15)))
+            FiniteSet(Float('2.7182818284590451', dps=15),
+                      Float('3.1415926535897931', dps=15)))
 
 
 def test_difference():
@@ -616,8 +616,8 @@ def test_finite_basic():
     assert A > AandB and B > AandB
 
     assert (FiniteSet(pi, E).evalf() ==
-            FiniteSet(Float('2.7182818284590451', prec=15),
-                      Float('3.1415926535897931', prec=15)))
+            FiniteSet(Float('2.7182818284590451', dps=15),
+                      Float('3.1415926535897931', dps=15)))
 
 
 def test_powerset():

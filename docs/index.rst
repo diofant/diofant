@@ -15,6 +15,7 @@ Contents:
    install.rst
    tutorial/index.rst
    modules/index.rst
+   internals/index.rst
    guide.rst
    aboutus.rst
    release/index.rst
