@@ -150,6 +150,7 @@ Issues closed
 * :sympyissue:`12769` Slow limit() calculation?!
 * :issue:`375` Separate user-level API and documentation of internals
 * :issue:`358` Use pytest-warnings?
+* :issue:`350` Pretty printing in pdf docs looks bad
 
 .. last pr: #494
 
