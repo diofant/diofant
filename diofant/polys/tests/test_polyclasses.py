@@ -5,7 +5,7 @@ import pytest
 from diofant.polys.polyclasses import DMP, DMF, ANP
 from diofant.domains import ZZ, QQ
 from diofant.polys.specialpolys import f_polys
-from diofant.polys.polyerrors import ExactQuotientFailed
+from diofant.polys.polyerrors import ExactQuotientFailed, PolynomialError
 
 __all__ = ()
 
@@ -31,10 +31,13 @@ def test_DMP___init__():
     assert f.domain == ZZ
     assert f.lev == 1
 
+    assert f == DMP.from_monoms_coeffs(f.monoms(), f.coeffs(), f.lev, f.domain)
+
 
 def test_DMP___eq__():
-    assert DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ) == \
-        DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
+    f = DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
+    assert f == f
+    assert f.eq(f)
 
     assert DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ) == \
         DMP([[QQ(1), QQ(2)], [QQ(3)]], QQ)
@@ -42,6 +45,7 @@ def test_DMP___eq__():
         DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
 
     assert DMP([[[ZZ(1)]]], ZZ) != DMP([[ZZ(1)]], ZZ)
+    assert DMP([[[ZZ(1)]]], ZZ).ne(DMP([[ZZ(1)]], ZZ))
     assert DMP([[ZZ(1)]], ZZ) != DMP([[[ZZ(1)]]], ZZ)
 
 
@@ -153,6 +157,7 @@ def test_DMP_arithmetics():
 
     assert divmod(f, g) == (q, r)
     assert f // g == q
+    assert f // 2 == DMP([[0], [], [0, 0, 0]], QQ)
     assert f % g == r
 
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -166,6 +171,7 @@ def test_DMP_functionality():
     assert f.degree() == 2
     assert f.degree_list() == (2, 2)
     assert f.total_degree() == 2
+    pytest.raises(TypeError, lambda: f.degree("spam"))
 
     assert f.LC() == ZZ(1)
     assert f.TC() == ZZ(0)
@@ -180,14 +186,15 @@ def test_DMP_functionality():
 
     assert f.diff(m=1, j=0) == u
     assert f.diff(m=1, j=1) == u
-
     pytest.raises(TypeError, lambda: f.diff(m='x', j=0))
+    pytest.raises(TypeError, lambda: f.diff(j="spam"))
 
     u = DMP([1, 2, 1], ZZ)
     v = DMP([1, 2, 1], ZZ)
 
     assert f.eval(a=1, j=0) == u
     assert f.eval(a=1, j=1) == v
+    pytest.raises(TypeError, lambda: f.eval(a=1, j="spam"))
 
     assert f.eval(1).eval(1) == ZZ(4)
 
@@ -255,6 +262,20 @@ def test_DMP_functionality():
 
     pytest.raises(ValueError, lambda: f.decompose())
     pytest.raises(ValueError, lambda: f.sturm())
+
+    pytest.raises(PolynomialError, lambda: f.all_coeffs())
+    pytest.raises(PolynomialError, lambda: f.all_monoms())
+    pytest.raises(PolynomialError, lambda: f.all_terms())
+
+    pytest.raises(ValueError, lambda: f.revert(1))
+    pytest.raises(ValueError, lambda: f.shift(1))
+    pytest.raises(ValueError, lambda: f.gff_list())
+    pytest.raises(PolynomialError, lambda: f.intervals())
+    pytest.raises(PolynomialError, lambda: f.refine_root(1, 2))
+
+    assert f.integrate() == DMP([[QQ(1, 3)], [QQ(1, 1)], [QQ(3, 1)], []], QQ)
+    pytest.raises(TypeError, lambda: f.integrate(m="spam"))
+    pytest.raises(TypeError, lambda: f.integrate(j="spam"))
 
 
 def test_DMP_exclude():
@@ -368,6 +389,13 @@ def test_DMF_properties():
     assert DMF([[1]], ZZ).is_one is True
 
     assert DMF(([[1]], [[2]]), ZZ).is_one is False
+
+    assert DMF.zero(0, ZZ) == DMF(0, ZZ, 0)
+    assert DMF.one(0, ZZ) == DMF(1, ZZ, 0)
+
+    f = DMF(([[1], [1, 0]], [[1, 0], []]), ZZ)
+    assert f.numer() == DMP([[1], [1, 0]], ZZ)
+    assert f.denom() == DMP([[1, 0], []], ZZ)
 
 
 def test_DMF_arithmetics():

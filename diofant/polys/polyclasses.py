@@ -387,11 +387,7 @@ class DMP(CantSympify):
     def exquo(self, other):
         """Computes polynomial exact quotient of ``self`` and ``other``. """
         lev, dom, per, F, G = self.unify(other)
-        res = per(dmp_exquo(F, G, lev, dom))
-        if self.ring and res not in self.ring:
-            from .polyerrors import ExactQuotientFailed
-            raise ExactQuotientFailed(self, other, self.ring)
-        return res
+        return per(dmp_exquo(F, G, lev, dom))
 
     def degree(self, j=0):
         """Returns the leading degree of ``self`` in ``x_j``. """
@@ -784,16 +780,7 @@ class DMP(CantSympify):
 
     def __add__(self, other):
         if not isinstance(other, DMP):
-            try:
-                other = self.per(dmp_ground(self.domain.convert(other), self.lev))
-            except TypeError:
-                return NotImplemented
-            except (CoercionFailed, NotImplementedError):
-                if self.ring is not None:
-                    try:
-                        other = self.ring.convert(other)
-                    except (CoercionFailed, NotImplementedError):
-                        return NotImplemented
+            other = self.per(dmp_ground(self.domain.convert(other), self.lev))
 
         return self.add(other)
 
@@ -802,16 +789,7 @@ class DMP(CantSympify):
 
     def __sub__(self, other):
         if not isinstance(other, DMP):
-            try:
-                other = self.per(dmp_ground(self.domain.convert(other), self.lev))
-            except TypeError:
-                return NotImplemented
-            except (CoercionFailed, NotImplementedError):
-                if self.ring is not None:
-                    try:
-                        other = self.ring.convert(other)
-                    except (CoercionFailed, NotImplementedError):
-                        return NotImplemented
+            other = self.per(dmp_ground(self.domain.convert(other), self.lev))
 
         return self.sub(other)
 
@@ -822,43 +800,7 @@ class DMP(CantSympify):
         if isinstance(other, DMP):
             return self.mul(other)
         else:
-            try:
-                return self.mul_ground(other)
-            except TypeError:
-                return NotImplemented
-            except (CoercionFailed, NotImplementedError):
-                if self.ring is not None:
-                    try:
-                        return self.mul(self.ring.convert(other))
-                    except (CoercionFailed, NotImplementedError):
-                        pass
-                return NotImplemented
-
-    def __truediv__(self, other):
-        if isinstance(other, DMP):
-            return self.exquo(other)
-        else:
-            try:
-                return self.mul_ground(other)
-            except TypeError:
-                return NotImplemented
-            except (CoercionFailed, NotImplementedError):
-                if self.ring is not None:
-                    try:
-                        return self.exquo(self.ring.convert(other))
-                    except (CoercionFailed, NotImplementedError):
-                        pass
-                return NotImplemented
-
-    def __rtruediv__(self, other):
-        if isinstance(other, DMP):
-            return other.exquo(self)
-        elif self.ring is not None:
-            try:
-                return self.ring.convert(other).exquo(self)
-            except (CoercionFailed, NotImplementedError):
-                pass
-        return NotImplemented
+            return self.mul_ground(other)
 
     def __rmul__(self, other):
         return self.__mul__(other)
@@ -876,10 +818,7 @@ class DMP(CantSympify):
         if isinstance(other, DMP):
             return self.quo(other)
         else:
-            try:
-                return self.quo_ground(other)
-            except TypeError:
-                return NotImplemented
+            return self.quo_ground(other)
 
     def __eq__(self, other):
         try:
@@ -910,11 +849,6 @@ class DMP(CantSympify):
 
     def __bool__(self):
         return not dmp_zero_p(self.rep, self.lev)
-
-
-def init_normal_DMF(num, den, lev, dom):
-    return DMF(dmp_normal(num, lev, dom),
-               dmp_normal(den, lev, dom), dom, lev)
 
 
 class DMF(CantSympify):
