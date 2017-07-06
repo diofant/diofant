@@ -50,6 +50,9 @@ def test_mod():
     assert (a % 2).round(15) == 0.6
     assert (a % 0.5).round(15) == 0.1
 
+    a = Rational(7, 2)
+    assert (a % pi) == a - pi
+
     p = Symbol('p', infinite=True)
 
     assert zoo % 0 == nan
