@@ -29,7 +29,7 @@ with open('diofant/__init__.py') as f:
             __version__ = m.group(1)
 
 setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner']
-extra_reqs = {'exports': ['numpy!=1.13.0', 'scipy', 'Theano'],
+extra_reqs = {'exports': ['numpy!=1.13.0,!=1.13.1', 'scipy', 'Theano'],
               'gmpy': ['gmpy2>2.0.3'],
               'plot': ['pyparsing!=2.1.2', 'matplotlib'],
               'interactive': ['ipython>=2.3.0'],
