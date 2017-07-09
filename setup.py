@@ -7,16 +7,7 @@ a collection of enhancements to the standard Python distutils.
 """
 
 import re
-import sys
 from setuptools import setup, find_packages
-
-
-# Make sure I have the right Python version.  We can drop this
-# when setuptools 24.2.1 enter into the Debian stable.
-if sys.version_info[:2] < (3, 4):
-    print('Diofant requires Python 3.4 or newer. '
-          'Python %d.%d detected' % sys.version_info[:2])
-    sys.exit(-1)
 
 
 with open('diofant/__init__.py') as f:
