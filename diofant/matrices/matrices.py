@@ -842,7 +842,7 @@ class MatrixBase(DefaultPrinting):
         elif self.rows >= self.cols:
             L = (self.T*self)._cholesky()
             rhs = self.T*rhs
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Under-determined System.")
         Y = L._lower_triangular_solve(rhs)
         return (L.T)._upper_triangular_solve(Y)
@@ -910,7 +910,7 @@ class MatrixBase(DefaultPrinting):
         elif self.rows >= self.cols:
             L, D = (self.T*self).LDLdecomposition()
             rhs = self.T*rhs
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Under-determined System.")
         Y = L._lower_triangular_solve(rhs)
         Z = D._diagonal_solve(Y)
@@ -977,32 +977,6 @@ class MatrixBase(DefaultPrinting):
             return self.cholesky_solve(rhs)
         t = self.T
         return (t*self).inv(method=method)*t*rhs
-
-    def solve(self, rhs, method='GE'):
-        """Return solution to self*soln = rhs using given inversion method.
-
-        See Also
-        ========
-
-        inv
-        """
-        if not self.is_square:
-            if self.rows < self.cols:
-                raise ValueError('Under-determined system.')
-            elif self.rows > self.cols:
-                raise ValueError('For over-determined system, M, having '
-                    'more rows than columns, try M.solve_least_squares(rhs).')
-        else:
-            return self.inv(method=method)*rhs
-
-    def __mathml__(self):
-        mml = ""
-        for i in range(self.rows):
-            mml += "<matrixrow>"
-            for j in range(self.cols):
-                mml += self[i, j].__mathml__()
-            mml += "</matrixrow>"
-        return "<matrix>" + mml + "</matrix>"
 
     def extract(self, rowsList, colsList):
         """Return a submatrix by specifying a list of rows and columns.
@@ -1212,9 +1186,6 @@ class MatrixBase(DefaultPrinting):
         """
         return self.applyfunc(lambda x: x.simplify(ratio, measure))
     _eval_simplify = simplify
-
-    def doit(self, **kwargs):
-        return self
 
     def print_nonzero(self, symb="X"):
         """Shows location of non-zero entries for fast shape lookup.
@@ -1610,9 +1581,9 @@ class MatrixBase(DefaultPrinting):
             # normalize it
             R[j, j] = tmp.norm()
             Q[:, j] = tmp / R[j, j]
-            if Q[:, j].norm() != 1:
-                raise NotImplementedError(
-                    "Could not normalize the vector %d." % j)
+            if Q[:, j].norm() != 1:  # pragma: no cover
+                raise NotImplementedError("Couldn't normalize the "
+                                          "vector %d." % j)
             for i in range(j):
                 R[i, j] = Q[:, i].dot(mat[:, j])
         return cls(Q), cls(R)
@@ -1834,10 +1805,7 @@ class MatrixBase(DefaultPrinting):
 
             # Otherwise generalize the 2-norm, Sum(x_i**ord)**(1/ord)
             # Note that while useful this is not mathematically a norm
-            try:
-                return Pow(Add(*(abs(i)**ord for i in vals)), Integer(1) / ord)
-            except (NotImplementedError, TypeError):
-                raise ValueError("Expected order to be Number, Symbol, oo")
+            return Pow(Add(*(abs(i)**ord for i in vals)), Integer(1) / ord)
 
         # Matrix Norms
         else:
@@ -1854,7 +1822,7 @@ class MatrixBase(DefaultPrinting):
                 # Reshape as vector and send back to norm function
                 return self.vec().norm(ord=2)
 
-            else:
+            else:  # pragma: no cover
                 raise NotImplementedError("Matrix Norms under development")
 
     def normalized(self):
@@ -1938,12 +1906,9 @@ class MatrixBase(DefaultPrinting):
     def exp(self):
         """Return the exponentiation of a square matrix."""
         if not self.is_square:
-            raise NonSquareMatrixError(
-                "Exponentiation is valid only for square matrices")
-        try:
-            P, cells = self.jordan_cells()
-        except MatrixError:
-            raise NotImplementedError("Exponentiation is implemented only for matrices for which the Jordan normal form can be computed")
+            raise NonSquareMatrixError("Exponentiation is valid only "
+                                       "for square matrices")
+        P, cells = self.jordan_cells()
 
         def _jblock_exponential(b):
             # This function computes the matrix exponential for one single Jordan block
@@ -2770,10 +2735,10 @@ class MatrixBase(DefaultPrinting):
                     if simplify:
                         v = simpfunc(v)
                     if v:
-                        if j in pivots:
+                        if j in pivots:  # pragma: no cover
                             # XXX: Is this the correct error?
-                            raise NotImplementedError(
-                                "Could not compute the nullspace of `self`.")
+                            raise NotImplementedError("Couldn't compute the "
+                                                      "nullspace of `self`.")
                         basis[basiskey.index(j)][i, 0] = -v
         return [self._new(b) for b in basis]
 
@@ -3015,12 +2980,7 @@ class MatrixBase(DefaultPrinting):
             # whether tmp.is_symbolic() is True or False, it is possible that
             # the basis will come back as [] in which case simplification is
             # necessary.
-            if not basis:
-                # The nullspace routine failed, try it again with simplification
-                basis = tmp.nullspace(simplify=simplify)
-                if not basis:
-                    raise NotImplementedError(
-                        "Can't evaluate eigenvector for eigenvalue %s" % r)
+
             if primitive:
                 # the relationship A*e = lambda*e will still hold if we change the
                 # eigenvector; so if simplify is True we tidy up any normalization
@@ -4029,15 +3989,10 @@ class MatrixBase(DefaultPrinting):
         # Trivial case: pseudoinverse of all-zero matrix is its transpose.
         if A.is_zero:
             return AH
-        try:
-            if self.rows >= self.cols:
-                return (AH * A).inv() * AH
-            else:
-                return AH * (A * AH).inv()
-        except ValueError:
-            # Matrix is not full rank, so A*AH cannot be inverted.
-            raise NotImplementedError('Rank-deficient matrices are not yet '
-                                      'supported.')
+        if self.rows >= self.cols:
+            return (AH * A).inv() * AH
+        else:
+            return AH * (A * AH).inv()
 
     def pinv_solve(self, B, arbitrary_matrix=None):
         """Solve Ax = B using the Moore-Penrose pseudoinverse.

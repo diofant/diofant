@@ -1603,13 +1603,7 @@ class Integer(Rational):
         if isinstance(other, int):
             return Tuple(*(divmod(other, self.p)))
         else:
-            try:
-                other = Number(other)
-            except TypeError:
-                msg = "unsupported operand type(s) for divmod(): '%s' and '%s'"
-                oname = type(other).__name__
-                sname = type(self).__name__
-                raise TypeError(msg % (oname, sname))
+            other = Number(other)
             return Number.__divmod__(other, self)
 
     # TODO make it decorator + bytecodehacks?
@@ -1744,11 +1738,6 @@ class Integer(Rational):
             return S.Infinity + S.ImaginaryUnit*S.Infinity
         if expt is S.NegativeInfinity:
             return Rational(1, self)**S.Infinity
-        if not isinstance(expt, Number):
-            # simplify when expt is even
-            # (-2)**k --> 2**k
-            if self.is_negative and expt.is_even:
-                return (-self)**expt
         if isinstance(expt, Float):
             # Rational knows how to exponentiate by a Float
             return super(Integer, self)._eval_power(expt)
@@ -1761,11 +1750,8 @@ class Integer(Rational):
             # invert base and change sign on exponent
             ne = -expt
             if self.is_negative:
-                if expt.q != 1:
-                    return -(S.NegativeOne)**((expt.p % expt.q) /
-                            Integer(expt.q))*Rational(1, -self)**ne
-                else:
-                    return (S.NegativeOne)**ne*Rational(1, -self)**ne
+                return -((S.NegativeOne)**((expt.p % expt.q) /
+                         Integer(expt.q))*Rational(1, -self)**ne)
             else:
                 return Rational(1, self.p)**ne
         # see if base is a perfect root, sqrt(4) --> 2
@@ -2188,9 +2174,6 @@ class One(IntegerConstant, metaclass=Singleton):
     def __neg__():
         return S.NegativeOne
 
-    def _eval_power(self, expt):
-        return self
-
     @staticmethod
     def factors(limit=None, use_trial=True, use_rho=False, use_pm1=False,
                 verbose=False, visual=False):
@@ -2237,20 +2220,15 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
         return S.One
 
     def _eval_power(self, expt):
-        if expt.is_odd:
-            return S.NegativeOne
-        if expt.is_even:
-            return S.One
         if isinstance(expt, Number):
             if isinstance(expt, Float):
                 return Float(-1.0)**expt
-            if expt is S.NaN:
+            elif expt in (S.Infinity, S.NegativeInfinity):
                 return S.NaN
-            if expt is S.Infinity or expt is S.NegativeInfinity:
-                return S.NaN
-            if expt is S.Half:
+            elif expt is S.Half:
                 return S.ImaginaryUnit
-            if isinstance(expt, Rational):
+            else:
+                assert isinstance(expt, Rational)
                 if expt.q == 2:
                     return S.ImaginaryUnit**Integer(expt.p)
                 i, r = divmod(expt.p, expt.q)
@@ -2259,20 +2237,14 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
         if isinstance(expt, Add):
             # Handle (-1)**((-1)**n/2 + m/2)
             e2 = 2*expt
-            if e2.is_even:
-                if e2.could_extract_minus_sign():
-                    e2 *= self
-            if e2.is_Add:
-                i, p = e2.as_two_terms()
-                if p.is_Pow and p.base is S.NegativeOne:
-                    if p.exp.is_integer:
-                        i = (i + 1)/2
-                        if i.is_even:
-                            return self**p.exp
-                        elif i.is_odd:
-                            return self**(p.exp + 1)
-                        else:
-                            return self**(p.exp + i)
+            if e2.is_even and e2.could_extract_minus_sign():
+                e2 *= self
+            assert e2.is_Add
+            i, p = e2.as_two_terms()
+            if p.is_Pow and p.base is S.NegativeOne and p.exp.is_integer:
+                i = (i + 1)/2
+                if i.is_even:
+                    return self**p.exp
 
 
 class Half(RationalConstant, metaclass=Singleton):
@@ -2454,20 +2426,16 @@ class Infinity(Number, metaclass=Singleton):
             return S.Infinity
         if expt.is_negative:
             return S.Zero
-        if expt is S.NaN:
-            return S.NaN
-        elif expt is S.ComplexInfinity:
+        if expt is S.ComplexInfinity:
             return S.NaN
         if expt.is_real is False and expt.is_number:
             expt_real = re(expt)
             if expt_real.is_positive:
                 return S.ComplexInfinity
-            if expt_real.is_negative:
+            elif expt_real.is_negative:
                 return S.Zero
-            if expt_real.is_zero:
+            elif expt_real.is_zero:
                 return S.NaN
-
-            return self**expt.evalf()
 
     def _as_mpf_val(self, prec):
         return mlib.finf
@@ -2591,7 +2559,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
             if other is S.Zero or other is S.NaN:
                 return S.NaN
             elif other.is_Float:
-                if other is S.NaN or other.is_zero:
+                if other.is_zero:
                     return S.NaN
                 elif other.is_positive:
                     return Float('-inf')
@@ -2661,12 +2629,6 @@ class NegativeInfinity(Number, metaclass=Singleton):
                 expt is S.Infinity or \
                     expt is S.NegativeInfinity:
                 return S.NaN
-
-            if isinstance(expt, Integer) and expt.is_positive:
-                if expt.is_odd:
-                    return S.NegativeInfinity
-                else:
-                    return S.Infinity
 
             return S.NegativeOne**expt*S.Infinity**expt
 
@@ -2877,17 +2839,12 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
         return S.ComplexInfinity
 
     def _eval_power(self, expt):
-        if expt is S.ComplexInfinity:
+        if expt in (S.Zero, S.ComplexInfinity):
             return S.NaN
-
-        if isinstance(expt, Number):
-            if expt is S.Zero:
-                return S.NaN
-            else:
-                if expt.is_positive:
-                    return S.ComplexInfinity
-                else:
-                    return S.Zero
+        elif expt.is_positive:
+            return S.ComplexInfinity
+        elif expt.is_negative:
+            return S.Zero
 
 
 zoo = S.ComplexInfinity
@@ -2933,13 +2890,6 @@ class NumberSymbol(AtomicExpr):
         if self is other:
             return S.false
         if isinstance(other, Number):
-            approx = self.approximation_interval(other.__class__)
-            if approx is not None:
-                l, u = approx
-                if other < l:
-                    return S.false
-                if other > u:
-                    return S.true
             return _sympify(self.evalf() < other)
         if other.is_extended_real and other.is_number:
             other = other.evalf()
