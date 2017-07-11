@@ -151,6 +151,7 @@ Issues closed
 * :issue:`375` Separate user-level API and documentation of internals
 * :issue:`358` Use pytest-warnings?
 * :issue:`350` Pretty printing in pdf docs looks bad
+* :sympyissue:`12942` Remove x**1.0 == x hack from core
 
 .. last pr: #494
 
