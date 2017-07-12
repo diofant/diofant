@@ -53,7 +53,7 @@ class RootOf(Expr):
         else:
             raise ValueError("expected an integer root index, got %s" % index)
 
-        poly = PurePoly(f, x, greedy=False, expand=expand)
+        poly = PurePoly(f, x, expand=expand)
 
         if not poly.is_univariate:
             raise PolynomialError("only univariate polynomials are allowed")

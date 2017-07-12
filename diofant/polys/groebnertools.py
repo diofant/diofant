@@ -75,11 +75,13 @@ def buchberger(f, ring):
     .. [2] [Giovini91]_
     .. [3] [Ajwa95]_
     .. [4] [Cox97]_
+    .. [5] [BeckerWeispfenning93]_, page 232
 
-    Algorithm used: an improved version of Buchberger's algorithm
-    as presented in T. Becker, V. Weispfenning, Gröbner Bases: A
-    Computational Approach to Commutative Algebra, Springer, 1993,
-    page 232.
+    Notes
+    =====
+
+    Used an improved version of Buchberger's algorithm
+    as presented in [5]_.
     """
     order = ring.order
     domain = ring.domain
@@ -256,8 +258,9 @@ def buchberger(f, ring):
 
 def spoly(p1, p2, ring):
     """
-    Compute LCM(LM(p1), LM(p2))/LM(p1)*p1 - LCM(LM(p1), LM(p2))/LM(p2)*p2
-    This is the S-poly provided p1 and p2 are monic
+    Compute LCM(LM(p1), LM(p2))/LM(p1)*p1 - LCM(LM(p1), LM(p2))/LM(p2)*p2.
+
+    This is the S-poly, provided p1 and p2 are monic
     """
     LM1 = p1.LM
     LM2 = p2.LM
@@ -557,14 +560,12 @@ def f5b(F, ring):
     .. [1] Yao Sun, Dingkang Wang: "A New Proof for the Correctness of F5
            (F5-Like) Algorithm", http://arxiv.org/abs/1004.0084
            (specifically v4).
-
-    Thomas Becker, Volker Weispfenning, Gröbner bases: A computational
-    approach to commutative algebra, 1993, p. 203, 216
+    .. [2] [BeckerWeispfenning93]_, pp. 203, 216.
     """
     order = ring.order
     domain = ring.domain
 
-    # reduce polynomials (like in Mario Pernici's implementation) (Becker, Weispfenning, p. 203)
+    # reduce polynomials (Becker, Weispfenning, p. 203)
     B = F
     while True:
         F = B
@@ -658,10 +659,15 @@ def f5b(F, ring):
 
 def red_groebner(G, ring):
     """
-    Compute reduced Gröbner basis, from BeckerWeispfenning93, p. 216
+    Compute reduced Gröbner basis [1]_.
 
     Selects a subset of generators, that already generate the ideal
     and computes a reduced Gröbner basis for them.
+
+    References
+    ==========
+
+    .. [1] [BeckerWeispfenning93], page 216.
     """
     def reduction(P):
         """

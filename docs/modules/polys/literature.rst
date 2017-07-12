@@ -122,3 +122,6 @@ a theoretical foundation for implementing polynomials manipulation module.
 
 .. [Adams94] W. Adams and P. Loustaunau, An Introduction to Gröbner Bases.
     AMS, Providence, Rhode Island., pp. 97-101, 1994.
+
+.. [BeckerWeispfenning93] Thomas Becker, Volker Weispfenning, Gröbner
+    bases: A computational approach to commutative algebra, 1993.

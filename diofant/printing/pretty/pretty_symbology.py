@@ -7,8 +7,6 @@ import unicodedata
 from ..conventions import split_super_sub
 from ...core.alphabets import greeks
 
-unicode_warnings = ''
-
 
 # first, setup unicodedate environment
 def U(name):
@@ -17,9 +15,6 @@ def U(name):
         u = unicodedata.lookup(name)
     except KeyError:
         u = None
-
-        global unicode_warnings
-        unicode_warnings += 'No \'%s\' in unicodedata\n' % name
 
     return u
 
@@ -41,14 +36,8 @@ _use_unicode = False
 def pretty_use_unicode(flag=None):
     """Set whether pretty-printer should use unicode by default"""
     global _use_unicode
-    global unicode_warnings
     if flag is None:
         return _use_unicode
-
-    if flag and unicode_warnings:
-        # print warnings (if any) on first unicode usage
-        warnings.warn(unicode_warnings)
-        unicode_warnings = ''
 
     use_unicode_prev = _use_unicode
     _use_unicode = flag

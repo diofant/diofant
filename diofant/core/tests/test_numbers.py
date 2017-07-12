@@ -50,6 +50,9 @@ def test_mod():
     assert (a % 2).round(15) == 0.6
     assert (a % 0.5).round(15) == 0.1
 
+    a = Rational(7, 2)
+    assert (a % pi) == a - pi
+
     p = Symbol('p', infinite=True)
 
     assert zoo % 0 == nan
@@ -538,6 +541,7 @@ def test_Infinity():
     assert -oo/-2 == oo
     assert oo*2 == oo
     assert -oo*2 == -oo
+    assert -oo*Float(0.0) == nan
     assert oo*-2 == -oo
     assert 2/oo == 0
     assert 2/-oo == 0
@@ -583,6 +587,7 @@ def test_Infinity():
     assert float(1) + -oo == Float('-inf')
     assert float(1) - oo == Float('-inf')
     assert float(1) - -oo == Float('inf')
+    assert oo*float(0) == nan
 
     assert Float('nan') == nan
     assert nan*1.0 == nan
@@ -624,6 +629,9 @@ def test_Infinity():
     assert nan - S.One == nan
     assert nan/S.One == nan
     assert -oo - S.One == -oo
+
+    e = (I + cos(1)**2 + sin(1)**2 - 1)
+    assert oo**e == Pow(oo, e, evaluate=False)
 
 
 def test_Infinity_2():
@@ -899,6 +907,7 @@ def test_powers_Integer():
     assert (-3) ** Rational(-2, 3) == \
         -(-1)**Rational(1, 3)*3**Rational(1, 3)/3
 
+    assert S.One.factors(visual=True) == S.One
     assert Integer(1234).factors() == {617: 1, 2: 1}
     assert Rational(2*3, 3*5*7).factors() == {2: 1, 5: -1, 7: -1}
 
@@ -935,6 +944,10 @@ def test_powers_Integer():
     assert Integer(-2)**Symbol('', even=True) == \
         Integer(2)**Symbol('', even=True)
     assert (-1)**Float(.5) == 1.0*I
+
+    n = Symbol('n', integer=True)
+    e = (-1)**n/2 + Rational(5, 2)
+    assert (-1)**e == Pow(-1, e, evaluate=False)
 
 
 def test_powers_Rational():
@@ -1234,6 +1247,11 @@ def test_relational():
     assert (x != cos) is True
     assert (x == cos) is False
 
+    r = Symbol('r', extended_real=True)
+    assert (oo > r) == Gt(oo, r)
+    assert (oo <= r) == Le(oo, r)
+    assert (oo >= r) is S.true
+
 
 def test_Integer_as_index():
     assert 'hello'[Integer(2):] == 'llo'
@@ -1412,6 +1430,11 @@ def test_approximation_interval():
     assert Catalan.approximation_interval(Rational) == (Rational(9, 10), 1)
     assert Catalan.approximation_interval(Float) is None
 
+    assert pi.approximation_interval(Integer) == (3, 4)
+    assert pi.approximation_interval(Rational) == (Rational(223, 71),
+                                                   Rational(22, 7))
+    assert pi.approximation_interval(Float) is None
+
 
 def test_sympyissue_6640():
     from mpmath.libmp.libmpf import finf, fninf
@@ -1454,6 +1477,7 @@ def test_simplify_AlgebraicNumber():
     A = AlgebraicNumber
     e = 3**Rational(1, 6)*(3 + (135 + 78*sqrt(3))**Rational(2, 3))/(45 + 26*sqrt(3))**Rational(1, 3)
     assert simplify(A(e)) == A(12)  # wester test_C20
+    assert simplify(A(12)) == A(12)
 
     e = (41 + 29*sqrt(2))**Rational(1, 5)
     assert simplify(A(e)) == A(1 + sqrt(2))  # wester test_C21
