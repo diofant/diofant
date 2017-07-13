@@ -474,6 +474,9 @@ def test_diofantissue_75():
     assert gruntz(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
     assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) == +oo
 
+    assert gruntz(abs(log(2 + 1/x)) - log(2 + 1/x), x) == 0
+    assert gruntz(abs(log(2 - 1/x)) - log(2 - 1/x), x) == 0
+
 
 def test_sympyissue_8241():
     e = x/log(x)**(log(x)/(m*log(log(x))))

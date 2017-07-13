@@ -152,6 +152,7 @@ Issues closed
 * :issue:`358` Use pytest-warnings?
 * :issue:`350` Pretty printing in pdf docs looks bad
 * :sympyissue:`12942` Remove x**1.0 == x hack from core
+* :issue:`75` limit(abs(ln(x))-ln(x), x, 2, '-') runs endless
 
 .. last pr: #494
 
