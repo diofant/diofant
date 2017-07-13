@@ -12,8 +12,6 @@ There are three types of functions implemented in Diofant:
        with dummy variables) but have no name:
            f = Lambda(x, exp(x)*x)
            f = Lambda((x, y), exp(x)*y)
-    The fourth type of functions are composites, like (sin + cos)(x); these work in
-    Diofant core, but are not yet part of Diofant.
 
     Examples
     ========
@@ -97,20 +95,18 @@ class FunctionClass(ManagedProperties):
     """
 
     def __init__(self, *args, **kwargs):
-        if hasattr(self, 'eval'):
-            evalargspec = inspect.getfullargspec(self.eval)
-            if evalargspec.varargs:
-                evalargs = None
-            else:
-                evalargs = len(evalargspec.args) - 1  # subtract 1 for cls
-                if evalargspec.defaults:
-                    # if there are default args then they are optional; the
-                    # fewest args will occur when all defaults are used and
-                    # the most when none are used (i.e. all args are given)
-                    evalargs = tuple(range(
-                        evalargs - len(evalargspec.defaults), evalargs + 1))
-        else:
+        assert hasattr(self, 'eval')
+        evalargspec = inspect.getfullargspec(self.eval)
+        if evalargspec.varargs:
             evalargs = None
+        else:
+            evalargs = len(evalargspec.args) - 1  # subtract 1 for cls
+            if evalargspec.defaults:
+                # if there are default args then they are optional; the
+                # fewest args will occur when all defaults are used and
+                # the most when none are used (i.e. all args are given)
+                evalargs = tuple(range(evalargs - len(evalargspec.defaults),
+                                       evalargs + 1))
         # honor kwarg value or class-defined value before using
         # the number of arguments in the eval function (if present)
         nargs = kwargs.pop('nargs', self.__dict__.get('nargs', evalargs))
@@ -777,7 +773,7 @@ class WildFunction(Function, AtomicExpr):
             # Canonicalize nargs here.  See also FunctionClass.
             if is_sequence(nargs):
                 nargs = tuple(ordered(set(nargs)))
-            elif nargs is not None:
+            else:
                 nargs = (as_int(nargs),)
             nargs = FiniteSet(*nargs)
         self.nargs = nargs
@@ -1259,7 +1255,7 @@ class Derivative(Expr):
         """
         import mpmath
         from .expr import Expr
-        if len(self.free_symbols) != 1 or len(self.variables) != 1:
+        if len(self.free_symbols) != 1 or len(self.variables) != 1:  # pragma: no cover
             raise NotImplementedError('partials and higher order derivatives')
         z = list(self.free_symbols)[0]
 
@@ -1442,14 +1438,6 @@ class Lambda(Expr):
 
     def _hashable_content(self):
         return self.expr.xreplace(self.canonical_variables),
-
-    @property
-    def is_identity(self):
-        """Return ``True`` if this ``Lambda`` is an identity function. """
-        if len(self.args) == 2:
-            return self.args[0] == self.args[1]
-        else:
-            return
 
 
 class Subs(Expr):
@@ -2389,21 +2377,15 @@ def count_ops(expr, visual=False):
 
     elif not isinstance(expr, Basic):
         ops = []
-    else:  # it's Basic not isinstance(expr, Expr):
-        if not isinstance(expr, Basic):
-            raise TypeError("Invalid type of expr")
-        else:
-            ops = []
-            args = [expr]
-            while args:
-                a = args.pop()
-                if a.args:
-                    o = Symbol(a.func.__name__.upper())
-                    if a.is_Boolean:
-                        ops.append(o*(len(a.args)-1))
-                    else:
-                        ops.append(o)
-                    args.extend(a.args)
+    else:
+        ops = []
+        args = [expr]
+        while args:
+            a = args.pop()
+            if a.args:
+                o = Symbol(a.func.__name__.upper())
+                ops.append(o)
+                args.extend(a.args)
 
     if not ops:
         if visual:

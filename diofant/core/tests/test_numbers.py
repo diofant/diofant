@@ -27,6 +27,8 @@ def test_seterr():
     pytest.raises(ValueError, lambda: S.Zero/S.Zero)
     seterr(divide=False)
     assert S.Zero / S.Zero == S.NaN
+    seterr(divide=False)
+    assert S.Zero / S.Zero == S.NaN
 
 
 def test_mod():
@@ -100,6 +102,8 @@ def test_mod():
     assert Integer(10) % 4 == Integer(2)
     assert 15 % Integer(4) == Integer(3)
 
+    assert (Float(1) % zoo) is nan
+
 
 def test_divmod():
     assert divmod(Integer(12), Integer(8)) == Tuple(1, 4)
@@ -166,6 +170,8 @@ def test_divmod():
     assert divmod(Integer(-3), Integer(2)) == (-2, 1)
     assert divmod(Integer(-3), 2) == (-2, 1)
 
+    pytest.raises(ZeroDivisionError, lambda: divmod(oo, 0))
+
 
 def test_igcd():
     assert igcd(0, 0) == 0
@@ -206,9 +212,13 @@ def test_ilcm():
 
 
 def test_igcdex():
+    assert igcdex(0, 0) == (0, 1, 0)
+    assert igcdex(-2, 0) == (-1, 0, 2)
+    assert igcdex(0, -2) == (0, -1, 2)
     assert igcdex(2, 3) == (-1, 1, 1)
     assert igcdex(10, 12) == (-1, 1, 2)
     assert igcdex(100, 2004) == (-20, 1, 4)
+    assert igcdex(100, -2004) == (-20, -1, 4)
 
 
 def _strictly_equal(a, b):
@@ -454,6 +464,11 @@ def test_Float():
 
     assert Float(oo) == Float('+inf')
     assert Float(-oo) == Float('-inf')
+
+    pytest.raises(ValueError, lambda: Float('inf', dps=''))
+
+    assert Float(0)**2 is S.Zero
+    assert Float(0)**t == Pow(Float(0), t, evaluate=False)
 
 
 def test_Float_default_to_highprec_from_str():
@@ -1252,6 +1267,9 @@ def test_relational():
     assert (oo <= r) == Le(oo, r)
     assert (oo >= r) is S.true
 
+    assert (Float(3.0) >= pi) is S.false
+    assert (Float(3.0) <= pi) is S.true
+
 
 def test_Integer_as_index():
     assert 'hello'[Integer(2):] == 'llo'
@@ -1510,6 +1528,7 @@ def test_comp():
     assert comp(sqrt(2).n(2), Float(1.4, 2), '')
     pytest.raises(ValueError, lambda: comp(sqrt(2).n(2), 1.4, ''))
     assert comp(sqrt(2).n(2), Float(1.4, 3), '') is False
+    pytest.raises(ValueError, lambda: comp('123', '123'))
 
 
 def test_sympyissue_10063():

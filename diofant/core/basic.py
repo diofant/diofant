@@ -202,18 +202,12 @@ class Basic(object):
 
         .. [1] http://docs.python.org/dev/reference/datamodel.html#object.__hash__
         """
-        from . import Pow
         if self is other:
             return True
 
         from .function import AppliedUndef
 
         if type(self) is not type(other):
-            # issue sympy/sympy#6100 a**1.0 == a like a**2.0 == a**2
-            if isinstance(self, Pow) and self.exp == 1:
-                return self.base == other
-            if isinstance(other, Pow) and other.exp == 1:
-                return self == other.base
             try:
                 other = _sympify(other)
             except SympifyError:

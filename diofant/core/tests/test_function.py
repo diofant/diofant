@@ -137,6 +137,8 @@ def test_nargs():
     p = Function('g', nargs=(1, 2))(1)
     assert p.args == (1,) and p.nargs == FiniteSet(1, 2)
 
+    pytest.raises(ValueError, lambda: sin(x, no_such_option=1))
+
 
 def test_Lambda():
     e = Lambda(x, x**2)
@@ -482,6 +484,13 @@ def test_fdiff_argument_index_error():
     mf = myfunc(x)
     assert mf.diff(x) == Derivative(mf, x)
     pytest.raises(TypeError, lambda: myfunc(x, x))
+
+    pytest.raises(ArgumentIndexError, lambda: f(x).fdiff(2))
+
+    with pytest.raises(ArgumentIndexError) as err:
+        sin(x).fdiff(2)
+    assert str(err.value) == ("Invalid operation with argument number 2 "
+                              "for Function sin(x)")
 
 
 def test_deriv_wrt_function():
