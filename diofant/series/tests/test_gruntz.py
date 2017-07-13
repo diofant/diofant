@@ -461,9 +461,9 @@ def test_diofantissue_74():
     from diofant.functions import sign
     assert gruntz(sign(log(1 + 1/x)), x) == +1
     assert gruntz(sign(log(1 - 1/x)), x) == -1
-    assert gruntz(sign(sin( 1/x)), x) == +1
+    assert gruntz(sign(sin(+1/x)), x) == +1
     assert gruntz(sign(sin(-1/x)), x) == -1
-    assert gruntz(sign(tan( 1/x)), x) == +1
+    assert gruntz(sign(tan(+1/x)), x) == +1
     assert gruntz(sign(tan(-1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 + 1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 - 1/x)), x) == +1
