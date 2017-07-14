@@ -461,9 +461,9 @@ def test_diofantissue_74():
     from diofant.functions import sign
     assert gruntz(sign(log(1 + 1/x)), x) == +1
     assert gruntz(sign(log(1 - 1/x)), x) == -1
-    assert gruntz(sign(sin( 1/x)), x) == +1
+    assert gruntz(sign(sin(+1/x)), x) == +1
     assert gruntz(sign(sin(-1/x)), x) == -1
-    assert gruntz(sign(tan( 1/x)), x) == +1
+    assert gruntz(sign(tan(+1/x)), x) == +1
     assert gruntz(sign(tan(-1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 + 1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 - 1/x)), x) == +1
@@ -473,6 +473,9 @@ def test_diofantissue_75():
     assert gruntz(abs(log(x)), x) == oo
     assert gruntz(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
     assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) == +oo
+
+    assert gruntz(abs(log(2 + 1/x)) - log(2 + 1/x), x) == 0
+    assert gruntz(abs(log(2 - 1/x)) - log(2 - 1/x), x) == 0
 
 
 def test_sympyissue_8241():

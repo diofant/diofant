@@ -69,7 +69,7 @@ from functools import reduce
 
 from ..core import S, Dummy, Mul, Add, evaluate, Float, cacheit
 from ..core.compatibility import ordered
-from ..functions import log, exp, sign as sgn
+from ..functions import log, exp, sign as sgn, Abs
 
 
 def compare(a, b, x):
@@ -220,6 +220,13 @@ def limitinf(e, x):
 
     # Rewrite e in terms of tractable functions only:
     e = e.rewrite('tractable', deep=True)
+
+    def transform_abs(f):
+        s = sgn(limitinf(f.args[0], x))
+        return s*f.args[0] if s in (1, -1) else f
+
+    e = e.replace(lambda f: isinstance(f, Abs) and f.has(x),
+                  transform_abs)
 
     if not e.has(x):
         # This is a bit of a heuristic for nice results.  We always rewrite

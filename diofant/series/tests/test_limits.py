@@ -240,7 +240,7 @@ def test_doit2():
 
 
 def test_sympyissue_3792():
-    assert limit( (1 - cos(x))/x**2, x, Rational(1, 2)) == 4 - 4*cos(Rational(1, 2))
+    assert limit((1 - cos(x))/x**2, x, Rational(1, 2)) == 4 - 4*cos(Rational(1, 2))
     assert limit(sin(sin(x + 1) + 1), x, 0) == sin(1 + sin(1))
     assert limit(abs(sin(x + 1) + 1), x, 0) == 1 + sin(1)
 
