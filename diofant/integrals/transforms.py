@@ -113,7 +113,7 @@ class IntegralTransform(Function):
         if try_directly:
             try:
                 return self._compute_transform(self.function,
-                    self.function_variable, self.transform_variable, **hints)
+                                               self.function_variable, self.transform_variable, **hints)
             except IntegralTransformError:
                 pass
 
@@ -521,7 +521,7 @@ def _rewrite_gamma(f, s, a, b):
             not common_coefficient.is_extended_real):
         raise IntegralTransformError("Gamma", None, "Nonrational multiplier")
     s_multiplier = common_coefficient/reduce(ilcm, [Integer(x.q)
-                                             for x in s_multipliers], Integer(1))
+                                                    for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
         if len(s_multipliers) == 0:
             s_multiplier = common_coefficient
@@ -808,7 +808,7 @@ class InverseMellinTransform(IntegralTransform):
         for f in postorder_traversal(F):
             if f.is_Function and f.has(s) and f.func not in _allowed:
                 raise IntegralTransformError('Inverse Mellin', F,
-                                     'Component %s not recognised.' % f)
+                                             'Component %s not recognised.' % f)
         strip = self.fundamental_strip
         return _inverse_mellin_transform(F, s, x, strip, **hints)
 
@@ -1026,7 +1026,7 @@ def _laplace_transform(f, t, s_, simplify=True):
                     continue
                 if soln.lts == t:
                     raise IntegralTransformError('Laplace', f,
-                                         'convergence not in half-plane?')
+                                                 'convergence not in half-plane?')
                 else:
                     a_ = Min(soln.lts, a_)
             if a_ != oo:
@@ -1170,7 +1170,7 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
             f, cond = f.args[0]
             if f.has(Integral):
                 raise IntegralTransformError('Inverse Laplace', f,
-                                     'inversion integral of unrecognised form.')
+                                             'inversion integral of unrecognised form.')
         else:
             cond = True
         f = f.replace(Piecewise, pw_simp)

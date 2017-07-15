@@ -178,7 +178,7 @@ class MatrixBase(DefaultPrinting):
                             ncol.add(1)
                 if len(ncol) > 1:
                     raise ValueError("Got rows of variable lengths: %s" %
-                        sorted(ncol))
+                                     sorted(ncol))
                 cols = ncol.pop() if ncol else 0
                 rows = len(in_mat) if cols else 0
                 if rows:
@@ -202,7 +202,7 @@ class MatrixBase(DefaultPrinting):
                 for i in range(rows):
                     flat_list.extend(
                         [cls._sympify(op(cls._sympify(i), cls._sympify(j)))
-                        for j in range(cols)])
+                         for j in range(cols)])
 
             # Matrix(2, 2, [1, 2, 3, 4])
             elif len(args) == 3 and is_sequence(args[2]):
@@ -504,11 +504,11 @@ class MatrixBase(DefaultPrinting):
             blst = B.T.tolist()
             alst = A.tolist()
             return classof(A, B)._new(A.rows, B.cols, lambda i, j:
-                reduce(lambda k, l: k + l,
-                    [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
+                                      reduce(lambda k, l: k + l,
+                                             [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
         else:
             return self._new(self.rows, self.cols,
-                [i*other for i in self._mat])
+                             [i*other for i in self._mat])
 
     def __rmul__(self, a):
         if getattr(a, 'is_Matrix', False):
@@ -1021,7 +1021,7 @@ class MatrixBase(DefaultPrinting):
         rowsList = [a2idx(k, self.rows) for k in rowsList]
         colsList = [a2idx(k, self.cols) for k in colsList]
         return self._new(len(rowsList), len(colsList),
-                lambda i, j: flat_list[rowsList[i]*cols + colsList[j]])
+                         lambda i, j: flat_list[rowsList[i]*cols + colsList[j]])
 
     def key2bounds(self, keys):
         """Converts a key with potentially mixed types of keys (integer and slice)
@@ -1067,7 +1067,7 @@ class MatrixBase(DefaultPrinting):
             if not len(key) == 2:
                 raise TypeError('key must be a sequence of length 2')
             return [a2idx(i, n) if not isinstance(i, slice) else i
-                for i, n in zip(key, self.shape)]
+                    for i, n in zip(key, self.shape)]
         elif isinstance(key, slice):
             return key.indices(len(self))[:2]
         else:
@@ -1152,7 +1152,7 @@ class MatrixBase(DefaultPrinting):
         return self.applyfunc(lambda x: x.xreplace(rule))
 
     def expand(self, deep=True, modulus=None, power_base=True, power_exp=True,
-            mul=True, log=True, multinomial=True, basic=True, **hints):
+               mul=True, log=True, multinomial=True, basic=True, **hints):
         """Apply core.function.expand to each entry of the matrix.
 
         Examples
@@ -1168,7 +1168,7 @@ class MatrixBase(DefaultPrinting):
         """
         return self.applyfunc(lambda x: x.expand(
                               deep, modulus, power_base, power_exp, mul, log, multinomial, basic,
-        **hints))
+                              **hints))
 
     def simplify(self, ratio=1.7, measure=count_ops):
         """Apply simplify to each element of the matrix.
@@ -1401,7 +1401,7 @@ class MatrixBase(DefaultPrinting):
         adjugate
         """
         out = self._new(self.rows, self.cols, lambda i, j:
-                self.cofactor(i, j, method))
+                        self.cofactor(i, j, method))
         return out
 
     def minorEntry(self, i, j, method="berkowitz"):
@@ -1416,7 +1416,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not 0 <= i < self.rows or not 0 <= j < self.cols:
             raise ValueError("`i` and `j` must satisfy 0 <= i < `self.rows` " +
-                "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
+                             "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
         return self.minorMatrix(i, j).det(method)
 
     def minorMatrix(self, i, j):
@@ -1431,7 +1431,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not 0 <= i < self.rows or not 0 <= j < self.cols:
             raise ValueError("`i` and `j` must satisfy 0 <= i < `self.rows` " +
-                "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
+                             "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
         M = self.as_mutable()
         M.row_del(i)
         M.col_del(j)
@@ -1648,7 +1648,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not is_sequence(b):
             raise TypeError("`b` must be an ordered iterable or Matrix, not %s." %
-                type(b))
+                            type(b))
         if not (self.rows * self.cols == b.rows * b.cols == 3):
             raise ShapeError("Dimensions incorrect for cross product.")
         else:
@@ -1694,7 +1694,7 @@ class MatrixBase(DefaultPrinting):
                 return self.dot(Matrix(b))
             else:
                 raise TypeError("`b` must be an ordered iterable or Matrix, not %s." %
-                type(b))
+                                type(b))
 
         mat = self
         if mat.cols == b.rows:
@@ -2065,8 +2065,8 @@ class MatrixBase(DefaultPrinting):
         is_upper_hessenberg
         """
         return all(self[i, j].is_zero
-            for i in range(1, self.rows)
-            for j in range(i))
+                   for i in range(1, self.rows)
+                   for j in range(i))
 
     @property
     def is_lower(self):
@@ -2112,8 +2112,8 @@ class MatrixBase(DefaultPrinting):
         is_lower_hessenberg
         """
         return all(self[i, j].is_zero
-            for i in range(self.rows)
-            for j in range(i + 1, self.cols))
+                   for i in range(self.rows)
+                   for j in range(i + 1, self.cols))
 
     @property
     def is_hermitian(self):
@@ -2182,8 +2182,8 @@ class MatrixBase(DefaultPrinting):
         is_upper
         """
         return all(self[i, j].is_zero
-            for i in range(2, self.rows)
-            for j in range(i - 1))
+                   for i in range(2, self.rows)
+                   for j in range(i - 1))
 
     @property
     def is_lower_hessenberg(self):
@@ -2213,8 +2213,8 @@ class MatrixBase(DefaultPrinting):
         is_lower
         """
         return all(self[i, j].is_zero
-            for i in range(self.rows)
-            for j in range(i + 2, self.cols))
+                   for i in range(self.rows)
+                   for j in range(i + 2, self.cols))
 
     def is_symbolic(self):
         """Checks if any elements contain Symbols.
@@ -2932,7 +2932,7 @@ class MatrixBase(DefaultPrinting):
         if flags.pop('rational', True):
             if any(v.has(Float) for v in mat):
                 mat = mat._new(mat.rows, mat.cols,
-                    [nsimplify(v, rational=True) for v in mat])
+                               [nsimplify(v, rational=True) for v in mat])
 
         flags.pop('simplify', None)  # pop unsupported flag
         return mat.berkowitz_eigenvals(**flags)
@@ -3090,7 +3090,7 @@ class MatrixBase(DefaultPrinting):
         diff
         """
         return self._new(self.rows, self.cols,
-                lambda i, j: self[i, j].integrate(*args))
+                         lambda i, j: self[i, j].integrate(*args))
 
     def limit(self, *args):
         """Calculate the limit of each element in the matrix.
@@ -3113,7 +3113,7 @@ class MatrixBase(DefaultPrinting):
         diff
         """
         return self._new(self.rows, self.cols,
-                lambda i, j: self[i, j].limit(*args))
+                         lambda i, j: self[i, j].limit(*args))
 
     def diff(self, *args):
         """Calculate the derivative of each element in the matrix.
@@ -3136,7 +3136,7 @@ class MatrixBase(DefaultPrinting):
         limit
         """
         return self._new(self.rows, self.cols,
-                lambda i, j: self[i, j].diff(*args))
+                         lambda i, j: self[i, j].diff(*args))
 
     def vec(self):
         """Return the Matrix converted into a one column matrix by stacking columns

@@ -300,19 +300,19 @@ def test_deriv1():
     assert (f(x)**3).diff(x) == 3*f(x)**2*f(x).diff(x)
     assert (
         f(2*x)**3).diff(x) == 6*f(2*x)**2*Subs(Derivative(f(x), x), Tuple(x),
-            Tuple(2*x))
+                                               Tuple(2*x))
 
     assert f(2 + x).diff(x) == Subs(Derivative(f(x), x), Tuple(x), Tuple(x + 2))
     assert f(2 + 3*x).diff(x) == 3*Subs(Derivative(f(x), x), Tuple(x),
-            Tuple(3*x + 2))
+                                        Tuple(3*x + 2))
     assert f(3*sin(x)).diff(x) == 3*cos(x)*Subs(Derivative(f(x), x),
-            Tuple(x), Tuple(3*sin(x)))
+                                                Tuple(x), Tuple(3*sin(x)))
 
     # See issue sympy/sympy#8510
     assert f(x, x + z).diff(x) == Subs(Derivative(f(y, x + z), y), Tuple(y), Tuple(x)) \
-            + Subs(Derivative(f(x, y), y), Tuple(y), Tuple(x + z))
+        + Subs(Derivative(f(x, y), y), Tuple(y), Tuple(x + z))
     assert f(x, x**2).diff(x) == Subs(Derivative(f(y, x**2), y), Tuple(y), Tuple(x)) \
-            + 2*x*Subs(Derivative(f(x, y), y), Tuple(y), Tuple(x**2))
+        + 2*x*Subs(Derivative(f(x, y), y), Tuple(y), Tuple(x**2))
 
 
 def test_deriv2():
@@ -455,9 +455,9 @@ def test_sympyissue_5399():
         # every symbol is followed by symbol or int
         # every number is followed by a symbol
         return (all(a[i + 1].is_Symbol or a[i + 1].is_Integer
-            for i in s_at if i + 1 < len(a)) and
-            all(a[i + 1].is_Symbol
-            for i in n_at if i + 1 < len(a)))
+                    for i in s_at if i + 1 < len(a)) and
+                all(a[i + 1].is_Symbol
+                    for i in n_at if i + 1 < len(a)))
     eq = x**10*y**8
     for a in subsets(args):
         for v in variations(a, len(a)):

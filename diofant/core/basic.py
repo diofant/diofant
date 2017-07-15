@@ -1315,7 +1315,7 @@ class Basic(object):
         """
         if hints.get('deep', True):
             terms = [term.doit(**hints) if isinstance(term, Basic) else term
-                                         for term in self.args]
+                     for term in self.args]
             return self.func(*terms)
         else:
             return self
@@ -1328,8 +1328,8 @@ class Basic(object):
 
         if hints.get('deep', True):
             args = [a._eval_rewrite(pattern, rule, **hints)
-                        if isinstance(a, Basic) else a
-                        for a in self.args]
+                    if isinstance(a, Basic) else a
+                    for a in self.args]
         else:
             args = self.args
 
@@ -1463,7 +1463,7 @@ class Atom(Basic):
         # since there are no args. So the calling routine should be checking
         # to see that this property is not called for Atoms.
         raise AttributeError('Atoms have no args. It might be necessary'
-        ' to make a check for Atoms in the calling code.')
+                             ' to make a check for Atoms in the calling code.')
 
 
 def _aresame(a, b):

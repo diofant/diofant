@@ -603,7 +603,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     if not isinstance(expr, (Add, Mul, Pow, exp_polar)):
         return expr.func(*[simplify(x, ratio=ratio, measure=measure, fu=fu)
-                         for x in expr.args])
+                           for x in expr.args])
 
     # TODO: Apply different strategies, considering expression pattern:
     # is it a purely rational function? Is there any trigonometric function?...
@@ -790,8 +790,8 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     # was given
     if tolerance is None:
         tolerance = 10**-min([15] +
-             [mpmath.libmp.libmpf.prec_to_dps(n._prec)
-             for n in expr.atoms(Float)])
+                             [mpmath.libmp.libmpf.prec_to_dps(n._prec)
+                              for n in expr.atoms(Float)])
     # XXX should prec be set independent of tolerance or should it be computed
     # from tolerance?
     prec = 30
@@ -824,7 +824,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
                     return Rational(-int(rat[1]), int(rat[0]))
             mpmath.mp.dps = prec
             newexpr = mpmath.identify(xv, constants=constants_dict,
-                tol=tolerance, full=full)
+                                      tol=tolerance, full=full)
             if not newexpr:
                 raise ValueError
             if full:
@@ -908,7 +908,7 @@ def logcombine(expr, force=False):
             # bool to tell whether the leading ``a`` in ``a*log(x)``
             # could appear as log(x**a)
             return (a is not S.NegativeOne and  # -1 *could* go, but we disallow
-                (a.is_extended_real or force and a.is_extended_real is not False))
+                    (a.is_extended_real or force and a.is_extended_real is not False))
 
         def goodlog(l):
             # bool to tell whether log ``l``'s argument can combine with others
@@ -1068,10 +1068,10 @@ def besselsimp(expr):
     ifactors = [I, exp_polar(I*pi/2), exp_polar(-I*pi/2)]
     expr = expr.replace(
         besselj, replacer(besselj,
-        torewrite(besselj, besseli), ifactors))
+                          torewrite(besselj, besseli), ifactors))
     expr = expr.replace(
         besseli, replacer(besseli,
-        torewrite(besseli, besselj), ifactors))
+                          torewrite(besseli, besselj), ifactors))
 
     minusfactors = [-1, exp_polar(I*pi)]
     expr = expr.replace(

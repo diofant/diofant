@@ -87,9 +87,9 @@ def test_plane():
     assert s.p1 not in pl3 and s.p2 not in pl3
     assert pl3.projection_line(s).equals(r)
     assert pl3.projection_line(Segment(Point(1, 0), Point(1, 1))) == \
-               Segment3D(Point3D(5/6, 1/3, -1/6), Point3D(7/6, 2/3, 1/6))
+        Segment3D(Point3D(5/6, 1/3, -1/6), Point3D(7/6, 2/3, 1/6))
     assert pl6.projection_line(Ray(Point(1, 0), Point(1, 1))) == \
-               Ray3D(Point3D(14/3, 11/3, 11/3), Point3D(13/3, 13/3, 10/3))
+        Ray3D(Point3D(14/3, 11/3, 11/3), Point3D(13/3, 13/3, 10/3))
     assert pl3.perpendicular_line(r.args) == pl3.perpendicular_line(r)
 
     assert pl3.is_parallel(pl6) is False
@@ -122,7 +122,7 @@ def test_plane():
     assert are_coplanar(l1, l2, l3) is False
     assert are_coplanar(l1) is False
     assert are_coplanar(Point3D(2, 7, 2), Point3D(0, 0, 2),
-        Point3D(1, 1, 2), Point3D(1, 2, 2))
+                        Point3D(1, 1, 2), Point3D(1, 2, 2))
     assert are_coplanar(Plane(p1, p2, p3), Plane(p1, p3, p2))
     assert Plane.are_concurrent(pl3, pl4, pl5) is False
     assert Plane.are_concurrent(pl6) is False
@@ -167,7 +167,7 @@ def test_plane():
     assert pl3.intersection(Line3D(Point3D(1, 2, 4), Point3D(4, 4, 2))) == [
         Point3D(2, 8/3, 10/3)]
     assert (pl3.intersection(Plane(Point3D(6, 0, 0),
-                             normal_vector=(2, -5, 3))) ==
+                                   normal_vector=(2, -5, 3))) ==
             [Line3D(Point3D(-24, -12, 0), Point3D(-25, -13, -1))])
     assert pl6.intersection(Ray3D(Point3D(2, 3, 1), Point3D(1, 3, 4))) == [
         Point3D(-1, 3, 10)]
@@ -196,7 +196,7 @@ def test_plane():
                 Float(0.0)))
 
     assert sstr([i.n(2) for i in p2.intersection(l2)]) == \
-           '[Point3D(4.0, -0.89, 2.3)]'
+        '[Point3D(4.0, -0.89, 2.3)]'
 
 
 def test_plane2():
@@ -207,7 +207,7 @@ def test_plane2():
     p1 = Plane(Point3D(0, 0, 1), normal_vector=(0, -5, 3))
     p2 = Plane(Point3D(0, 0, 2), normal_vector=(0, -5, -3))
     assert p1.intersection(p2) == [Line3D(Point3D(0, 3/10, 3/2),
-                                   Point3D(30, 3/10, 3/2))]
+                                          Point3D(30, 3/10, 3/2))]
 
     p1 = Point3D(0, 0, 0)
     p2 = Point3D(1, 1, 1)

@@ -3335,12 +3335,12 @@ class Poly(Expr):
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
         else:
             coeffs = [coeff.evalf(n=n).as_real_imag()
-                    for coeff in self.all_coeffs()]
+                      for coeff in self.all_coeffs()]
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
             except TypeError:
                 raise DomainError("Numerical domain expected, got %s" %
-                        self.rep.domain)
+                                  self.rep.domain)
 
         dps = mpmath.mp.dps
         mpmath.mp.dps = n
@@ -3355,11 +3355,11 @@ class Poly(Expr):
             # Mpmath puts real roots first, then complex ones (as does all_roots)
             # so we make sure this convention holds here, too.
             roots = list(map(sympify,
-                sorted(roots, key=lambda r: (1 if r.imag else 0, r.real, r.imag))))
+                             sorted(roots, key=lambda r: (1 if r.imag else 0, r.real, r.imag))))
         except NoConvergence:
             raise NoConvergence(
                 'convergence to root failed; try n < %s or maxsteps > %s' % (
-                n, maxsteps))
+                    n, maxsteps))
         finally:
             mpmath.mp.dps = dps
 
@@ -5520,7 +5520,7 @@ def _symbolic_factor_list(expr, opt, method):
     coeff, factors = S.One, []
 
     args = [i._eval_factor() if hasattr(i, '_eval_factor') else i
-        for i in Mul.make_args(expr)]
+            for i in Mul.make_args(expr)]
     for arg in args:
         if arg.is_Number:
             coeff *= arg
@@ -5748,7 +5748,7 @@ def to_rational_coeffs(f):
             for x in Add.make_args(y):
                 f = Factors(x).factors
                 r = [wx.q for b, wx in f.items() if
-                    b.is_number and wx.is_Rational and wx.q >= 2]
+                     b.is_number and wx.is_Rational and wx.q >= 2]
                 if not r:
                     continue
                 if min(r) == 2:
@@ -5992,7 +5992,7 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
             sup = opt.domain.convert(sup)
 
         intervals = dup_isolate_real_roots_list(polys, opt.domain,
-            eps=eps, inf=inf, sup=sup, strict=strict, fast=fast)
+                                                eps=eps, inf=inf, sup=sup, strict=strict, fast=fast)
 
         result = []
 

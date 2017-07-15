@@ -201,22 +201,22 @@ class NumExprPrinter(LambdaPrinter):
 
     # blacklist all Matrix printing
     _print_SparseMatrix = \
-    _print_MutableSparseMatrix = \
-    _print_ImmutableSparseMatrix = \
-    _print_Matrix = \
-    _print_DenseMatrix = \
-    _print_MutableDenseMatrix = \
-    _print_ImmutableMatrix = \
-    _print_ImmutableDenseMatrix = \
-    _print_MatrixSymbol = \
-    blacklisted
+        _print_MutableSparseMatrix = \
+        _print_ImmutableSparseMatrix = \
+        _print_Matrix = \
+        _print_DenseMatrix = \
+        _print_MutableDenseMatrix = \
+        _print_ImmutableMatrix = \
+        _print_ImmutableDenseMatrix = \
+        _print_MatrixSymbol = \
+        blacklisted
     # blacklist some python expressions
     _print_list = \
-    _print_tuple = \
-    _print_Tuple = \
-    _print_dict = \
-    _print_Dict = \
-    blacklisted
+        _print_tuple = \
+        _print_Tuple = \
+        _print_dict = \
+        _print_Dict = \
+        blacklisted
 
     def doprint(self, expr):
         lstr = super(NumExprPrinter, self).doprint(expr)

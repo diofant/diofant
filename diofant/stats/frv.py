@@ -263,7 +263,7 @@ class FinitePSpace(PSpace):
         sorted_items = sorted(items, key=lambda val_cumprob: val_cumprob[1])
         if python_float:
             sorted_items = [(v, float(cum_prob))
-                    for v, cum_prob in sorted_items]
+                            for v, cum_prob in sorted_items]
         return sorted_items
 
     def integrate(self, expr, rvs=None):
@@ -339,7 +339,7 @@ class ProductFinitePSpace(ProductPSpace, FinitePSpace):
     @cacheit
     def _density(self):
         proditer = product(*[iter(space._density.items())
-            for space in self.spaces])
+                             for space in self.spaces])
         d = {}
         for items in proditer:
             elems, probs = list(zip(*items))

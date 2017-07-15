@@ -219,9 +219,9 @@ def test_hyper_unpolarify():
 @pytest.mark.slow
 def test_hyperrep():
     from diofant.functions.special.hyper import (HyperRep, HyperRep_atanh,
-        HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
-        HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
-        HyperRep_cosasin, HyperRep_sinasin)
+                                                 HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
+                                                 HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
+                                                 HyperRep_cosasin, HyperRep_sinasin)
     # First test the base class works.
     from diofant import Piecewise, exp_polar
     a, b, c, d, z = symbols('a b c d z')
@@ -338,12 +338,12 @@ def test_meijerg_eval():
 def test_limits():
     k, x = symbols('k, x')
     assert hyper((1,), (Rational(4, 3), Rational(5, 3)), k**2).series(k) == \
-           hyper((1,), (Rational(4, 3), Rational(5, 3)), 0) + \
-           9*k**2*hyper((2,), (Rational(7, 3), Rational(8, 3)), 0)/20 + \
-           81*k**4*hyper((3,), (Rational(10, 3), Rational(11, 3)), 0)/1120 + \
-           O(k**6)  # issue sympy/sympy#6350
+        hyper((1,), (Rational(4, 3), Rational(5, 3)), 0) + \
+        9*k**2*hyper((2,), (Rational(7, 3), Rational(8, 3)), 0)/20 + \
+        81*k**4*hyper((3,), (Rational(10, 3), Rational(11, 3)), 0)/1120 + \
+        O(k**6)  # issue sympy/sympy#6350
     assert limit(meijerg((), (), (1,), (0,), -x), x, 0) == \
-            meijerg(((), ()), ((1,), (0,)), 0)  # issue sympy/sympy#6052
+        meijerg(((), ()), ((1,), (0,)), 0)  # issue sympy/sympy#6052
 
 
 def test_hyper_evalf():

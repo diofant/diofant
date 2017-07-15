@@ -61,10 +61,10 @@ def test_Znm():
 
     assert Znm(0, 0, th, ph) == Ynm(0, 0, th, ph)
     assert Znm(1, -1, th, ph) == (-sqrt(2)*I*(Ynm(1, 1, th, ph)
-                                  - exp(-2*I*ph)*Ynm(1, 1, th, ph))/2)
+                                              - exp(-2*I*ph)*Ynm(1, 1, th, ph))/2)
     assert Znm(1, 0, th, ph) == Ynm(1, 0, th, ph)
     assert Znm(1, 1, th, ph) == (sqrt(2)*(Ynm(1, 1, th, ph)
-                                 + exp(-2*I*ph)*Ynm(1, 1, th, ph))/2)
+                                          + exp(-2*I*ph)*Ynm(1, 1, th, ph))/2)
     assert Znm(0, 0, th, ph).expand(func=True) == 1/(2*sqrt(pi))
     assert Znm(1, -1, th, ph).expand(func=True) == (sqrt(3)*I*sin(th)*exp(I*ph)/(4*sqrt(pi))
                                                     - sqrt(3)*I*sin(th)*exp(-I*ph)/(4*sqrt(pi)))

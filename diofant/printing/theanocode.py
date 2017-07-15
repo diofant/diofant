@@ -136,14 +136,14 @@ class TheanoPrinter(Printer):
     def _print_BlockMatrix(self, expr, **kwargs):
         nrows, ncols = expr.blocks.shape
         blocks = [[self._print(expr.blocks[r, c], **kwargs)
-                        for c in range(ncols)]
-                        for r in range(nrows)]
+                   for c in range(ncols)]
+                  for r in range(nrows)]
         return tt.join(0, *[tt.join(1, *row) for row in blocks])
 
     def _print_slice(self, expr, **kwargs):
         return slice(*[self._print(i, **kwargs)
-                        if isinstance(i, Basic) else i
-                        for i in (expr.start, expr.stop, expr.step)])
+                       if isinstance(i, Basic) else i
+                       for i in (expr.start, expr.stop, expr.step)])
 
     def _print_Exp1(self, expr, **kwargs):
         return 2.718281828459045
@@ -194,7 +194,7 @@ def theano_code(expr, cache=global_cache, **kwargs):
 
 
 def dim_handling(inputs, dim=None, dims={}, broadcastables={}, keys=(),
-        **kwargs):
+                 **kwargs):
     """ Handle various input types for dimensions in tensor_wrap
 
     See Also:

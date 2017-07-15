@@ -57,7 +57,7 @@ def test_block_plus_ident():
     E = MatrixSymbol('E', n, n)
     X = BlockMatrix([[A, B], [C, D]])
     assert bc_block_plus_ident(X+Identity(m+n)) == \
-            BlockDiagMatrix(Identity(n), Identity(m)) + X
+        BlockDiagMatrix(Identity(n), Identity(m)) + X
     assert bc_block_plus_ident(A + Identity(n)) == A + Identity(n)
     assert bc_block_plus_ident(A + E) == A + E
 
@@ -143,7 +143,7 @@ def test_squareBlockMatrix():
     assert X.is_square
 
     assert (block_collapse(X + Identity(m + n)) ==
-        BlockMatrix([[A + Identity(n), B], [C, D + Identity(m)]]))
+            BlockMatrix([[A + Identity(n), B], [C, D + Identity(m)]]))
     Q = X + Identity(m + n)
 
     assert (X + MatrixSymbol('Q', n + m, n + m)).is_MatAdd
@@ -175,7 +175,7 @@ def test_BlockDiagMatrix():
     assert X.blocks[1, 1] == B
     assert X.shape == (n + m + l, n + m + l)
     assert all(X.blocks[i, j].is_ZeroMatrix if i != j else X.blocks[i, j] in [A, B, C]
-            for i in range(3) for j in range(3))
+               for i in range(3) for j in range(3))
     assert X.__class__(*X.args) == X
 
     assert isinstance(block_collapse(X.I * X), Identity)
@@ -212,8 +212,8 @@ def test_blockcut():
 
 def test_reblock_2x2():
     B = BlockMatrix([[MatrixSymbol('A_%d%d' % (i, j), 2, 2)
-                            for j in range(3)]
-                            for i in range(3)])
+                      for j in range(3)]
+                     for i in range(3)])
     assert B.blocks.shape == (3, 3)
 
     BB = reblock_2x2(B)

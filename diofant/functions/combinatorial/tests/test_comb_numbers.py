@@ -156,53 +156,53 @@ def test_harmonic_rational():
 
     Heee = harmonic(ne + pe/qe)
     Aeee = (-log(10) + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-             + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 13944145/Integer(4720968))
+            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
+            + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 13944145/Integer(4720968))
 
     Heeo = harmonic(ne + pe/qo)
     Aeeo = (-log(26) + 2*log(sin(3*pi/13))*cos(4*pi/13) + 2*log(sin(2*pi/13))*cos(32*pi/13)
-             + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
-             - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2 - 2*log(sin(pi/13))*cos(3*pi/13)
-             + 2422020029/Integer(702257080))
+            + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
+            - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2 - 2*log(sin(pi/13))*cos(3*pi/13)
+            + 2422020029/Integer(702257080))
 
     Heoe = harmonic(ne + po/qe)
     Aeoe = (-log(20) + 2*(1/Integer(4) + sqrt(5)/4)*log(-1/Integer(4) + sqrt(5)/4)
-             + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
-             + 11818877030/Integer(4286604231) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
+            + 11818877030/Integer(4286604231) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
 
     Heoo = harmonic(ne + po/qo)
     Aeoo = (-log(26) + 2*log(sin(3*pi/13))*cos(54*pi/13) + 2*log(sin(4*pi/13))*cos(6*pi/13)
-             + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
-             - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
-             - 2*log(sin(2*pi/13))*cos(3*pi/13) + 11669332571/Integer(3628714320))
+            + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
+            - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
+            - 2*log(sin(2*pi/13))*cos(3*pi/13) + 11669332571/Integer(3628714320))
 
     Hoee = harmonic(no + pe/qe)
     Aoee = (-log(10) + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-             + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 779405/Integer(277704))
+            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
+            + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 779405/Integer(277704))
 
     Hoeo = harmonic(no + pe/qo)
     Aoeo = (-log(26) + 2*log(sin(3*pi/13))*cos(4*pi/13) + 2*log(sin(2*pi/13))*cos(32*pi/13)
-             + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
-             - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2
-             - 2*log(sin(pi/13))*cos(3*pi/13) + 53857323/Integer(16331560))
+            + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
+            - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2
+            - 2*log(sin(pi/13))*cos(3*pi/13) + 53857323/Integer(16331560))
 
     Hooe = harmonic(no + po/qe)
     Aooe = (-log(20) + 2*(1/Integer(4) + sqrt(5)/4)*log(-1/Integer(4) + sqrt(5)/4)
-             + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
-             + 486853480/Integer(186374097) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
+            + 486853480/Integer(186374097) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
 
     Hooo = harmonic(no + po/qo)
     Aooo = (-log(26) + 2*log(sin(3*pi/13))*cos(54*pi/13) + 2*log(sin(4*pi/13))*cos(6*pi/13)
-             + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
-             - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
-             - 2*log(sin(2*pi/13))*cos(3*pi/13) + 383693479/Integer(125128080))
+            + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
+            - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
+            - 2*log(sin(2*pi/13))*cos(3*pi/13) + 383693479/Integer(125128080))
 
     H = [Heee, Heeo, Heoe, Heoo, Hoee, Hoeo, Hooe, Hooo]
     A = [Aeee, Aeeo, Aeoe, Aeoo, Aoee, Aoeo, Aooe, Aooo]
@@ -456,41 +456,41 @@ def test_nC_nP_nT():
         stirling(4, i, kind=1) for i in range(5)]
     # http://oeis.org/A008275
     assert [stirling(n, k, signed=1)
-        for n in range(10) for k in range(1, n + 1)] == [
-            1, -1,
-            1, 2, -3,
-            1, -6, 11, -6,
-            1, 24, -50, 35, -10,
-            1, -120, 274, -225, 85, -15,
-            1, 720, -1764, 1624, -735, 175, -21,
-            1, -5040, 13068, -13132, 6769, -1960, 322, -28,
-            1, 40320, -109584, 118124, -67284, 22449, -4536, 546, -36, 1]
+            for n in range(10) for k in range(1, n + 1)] == [
+        1, -1,
+        1, 2, -3,
+        1, -6, 11, -6,
+        1, 24, -50, 35, -10,
+        1, -120, 274, -225, 85, -15,
+        1, 720, -1764, 1624, -735, 175, -21,
+        1, -5040, 13068, -13132, 6769, -1960, 322, -28,
+        1, 40320, -109584, 118124, -67284, 22449, -4536, 546, -36, 1]
     # http://en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
     assert [stirling(n, k, kind=1)
-        for n in range(10) for k in range(n+1)] == [
-            1,
-            0, 1,
-            0, 1, 1,
-            0, 2, 3, 1,
-            0, 6, 11, 6, 1,
-            0, 24, 50, 35, 10, 1,
-            0, 120, 274, 225, 85, 15, 1,
-            0, 720, 1764, 1624, 735, 175, 21, 1,
-            0, 5040, 13068, 13132, 6769, 1960, 322, 28, 1,
-            0, 40320, 109584, 118124, 67284, 22449, 4536, 546, 36, 1]
+            for n in range(10) for k in range(n+1)] == [
+        1,
+        0, 1,
+        0, 1, 1,
+        0, 2, 3, 1,
+        0, 6, 11, 6, 1,
+        0, 24, 50, 35, 10, 1,
+        0, 120, 274, 225, 85, 15, 1,
+        0, 720, 1764, 1624, 735, 175, 21, 1,
+        0, 5040, 13068, 13132, 6769, 1960, 322, 28, 1,
+        0, 40320, 109584, 118124, 67284, 22449, 4536, 546, 36, 1]
     # http://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
     assert [stirling(n, k, kind=2)
-        for n in range(10) for k in range(n+1)] == [
-            1,
-            0, 1,
-            0, 1, 1,
-            0, 1, 3, 1,
-            0, 1, 7, 6, 1,
-            0, 1, 15, 25, 10, 1,
-            0, 1, 31, 90, 65, 15, 1,
-            0, 1, 63, 301, 350, 140, 21, 1,
-            0, 1, 127, 966, 1701, 1050, 266, 28, 1,
-            0, 1, 255, 3025, 7770, 6951, 2646, 462, 36, 1]
+            for n in range(10) for k in range(n+1)] == [
+        1,
+        0, 1,
+        0, 1, 1,
+        0, 1, 3, 1,
+        0, 1, 7, 6, 1,
+        0, 1, 15, 25, 10, 1,
+        0, 1, 31, 90, 65, 15, 1,
+        0, 1, 63, 301, 350, 140, 21, 1,
+        0, 1, 127, 966, 1701, 1050, 266, 28, 1,
+        0, 1, 255, 3025, 7770, 6951, 2646, 462, 36, 1]
     assert stirling(3, 4, kind=1) == stirling(3, 4, kind=1) == 0
     pytest.raises(ValueError, lambda: stirling(-2, 2))
     pytest.raises(ValueError, lambda: stirling(9, 1, kind=3))

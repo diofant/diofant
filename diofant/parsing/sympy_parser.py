@@ -171,7 +171,7 @@ def _implicit_multiplication(tokens, local_dict, global_dict):
     for tok, nextTok in zip(tokens, tokens[1:]):
         result.append(tok)
         if (isinstance(tok, AppliedFunction) and
-              isinstance(nextTok, AppliedFunction)):
+                isinstance(nextTok, AppliedFunction)):
             result.append((OP, '*'))
         elif (isinstance(tok, AppliedFunction) and
               nextTok[0] == OP and nextTok[1] == '('):
@@ -230,8 +230,8 @@ def _implicit_application(tokens, local_dict, global_dict):
     for tok, nextTok in zip(tokens, tokens[1:]):
         result.append(tok)
         if (tok[0] == NAME and
-              nextTok[0] != OP and
-              nextTok[0] != ENDMARKER):
+            nextTok[0] != OP and
+                nextTok[0] != ENDMARKER):
             if _token_callable(tok, local_dict, global_dict, nextTok):
                 result.append((OP, '('))
                 appendParen += 1
@@ -602,7 +602,7 @@ def auto_number(tokens, local_dict, global_dict):
                 postfix = [(OP, '*'), (NAME, 'I')]
 
             if '.' in number or (('e' in number or 'E' in number) and
-                    not (number.startswith('0x') or number.startswith('0X'))):
+                                 not (number.startswith('0x') or number.startswith('0X'))):
                 seq = [(NAME, 'Float'), (OP, '('),
                        (NUMBER, repr(str(number))), (OP, ')')]
             else:

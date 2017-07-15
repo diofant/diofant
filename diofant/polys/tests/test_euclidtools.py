@@ -208,8 +208,8 @@ def test_dmp_subresultants():
     g = x**2 - x*u - x*v + u*v
 
     r = y**2*z**2 - 3*y**2*z*u - 3*y**2*z*v + 9*y**2*u*v - 2*y*z**2*u \
-      - 2*y*z**2*v + 6*y*z*u**2 + 12*y*z*u*v + 6*y*z*v**2 - 18*y*u**2*v \
-      - 18*y*u*v**2 + 4*z**2*u*v - 12*z*u**2*v - 12*z*u*v**2 + 36*u**2*v**2
+        - 2*y*z**2*v + 6*y*z*u**2 + 12*y*z*u*v + 6*y*z*v**2 - 18*y*u**2*v \
+        - 18*y*u*v**2 + 4*z**2*u*v - 12*z*u**2*v - 12*z*u*v**2 + 36*u**2*v**2
 
     assert R.dmp_zz_collins_resultant(f, g) == r.drop(x)
 
@@ -219,9 +219,9 @@ def test_dmp_subresultants():
     g = x**2 - x*u - x*v + u*v
 
     r = QQ(1, 36)*y**2*z**2 - QQ(1, 12)*y**2*z*u - QQ(1, 12)*y**2*z*v + QQ(1, 4)*y**2*u*v \
-      - QQ(1, 18)*y*z**2*u - QQ(1, 18)*y*z**2*v + QQ(1, 6)*y*z*u**2 + QQ(1, 3)*y*z*u*v \
-      + QQ(1, 6)*y*z*v**2 - QQ(1, 2)*y*u**2*v - QQ(1, 2)*y*u*v**2 + QQ(1, 9)*z**2*u*v \
-      - QQ(1, 3)*z*u**2*v - QQ(1, 3)*z*u*v**2 + u**2*v**2
+        - QQ(1, 18)*y*z**2*u - QQ(1, 18)*y*z**2*v + QQ(1, 6)*y*z*u**2 + QQ(1, 3)*y*z*u*v \
+        + QQ(1, 6)*y*z*v**2 - QQ(1, 2)*y*u**2*v - QQ(1, 2)*y*u*v**2 + QQ(1, 9)*z**2*u*v \
+        - QQ(1, 3)*z*u**2*v - QQ(1, 3)*z*u*v**2 + u**2*v**2
 
     assert R.dmp_qq_collins_resultant(f, g) == r.drop(x)
 
@@ -493,12 +493,12 @@ def test_dmp_gcd():
     H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     H, cff, cfg = R.dmp_rr_prs_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
 
@@ -506,7 +506,7 @@ def test_dmp_gcd():
     H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     R, x, y, z, u, v, a, b = ring("x,y,z,u,v,a,b", ZZ)
 
@@ -514,7 +514,7 @@ def test_dmp_gcd():
     H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     R, x, y, z, u, v, a, b, c, d = ring("x,y,z,u,v,a,b,c,d", ZZ)
 
@@ -522,7 +522,7 @@ def test_dmp_gcd():
     H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     R, x, y, z = ring("x,y,z", ZZ)
 
@@ -530,23 +530,23 @@ def test_dmp_gcd():
     H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     H, cff, cfg = R.dmp_rr_prs_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     f, g, h = map(R.from_dense, dmp_fateman_poly_F_3(2, ZZ))
     H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     H, cff, cfg = R.dmp_rr_prs_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
 
@@ -554,7 +554,7 @@ def test_dmp_gcd():
     H, cff, cfg = R.dmp_inner_gcd(f, g)
 
     assert H == h and R.dmp_mul(H, cff) == f \
-                  and R.dmp_mul(H, cfg) == g
+        and R.dmp_mul(H, cfg) == g
 
     R, x, y = ring("x,y", QQ)
 

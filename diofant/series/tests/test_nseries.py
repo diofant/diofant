@@ -289,7 +289,7 @@ def test_sympyissue_3515():
 
 def test_sympyissue_3505():
     e = sin(x)**(-4)*(sqrt(cos(x))*sin(x)**2 -
-        cos(x)**Rational(1, 3)*sin(x)**2)
+                      cos(x)**Rational(1, 3)*sin(x)**2)
     assert e.nseries(x, n=8) == -Rational(1)/12 - 7*x**2/288 - \
         43*x**4/10368 + O(x**6)
 
@@ -369,13 +369,13 @@ def test_series3():
 def test_bug4():
     e = x/(w**4 + x**2*w**4 + 2*x*w**4)*w**4
     assert e.nseries(w, n=2).simplify() in [x/(1 + 2*x + x**2),
-        1/(1 + x/2 + 1/x/2)/2, 1/x/(1 + 2/x + x**(-2))]
+                                            1/(1 + x/2 + 1/x/2)/2, 1/x/(1 + 2/x + x**(-2))]
 
 
 def test_bug5():
     e = (-log(w) + log(1 + w*log(x)))**(-2)*w**(-2)*((-log(w) +
-        log(1 + x*w))*(-log(w) + log(1 + w*log(x)))*w - x*(-log(w) +
-        log(1 + w*log(x)))*w)
+                                                      log(1 + x*w))*(-log(w) + log(1 + w*log(x)))*w - x*(-log(w) +
+                                                                                                         log(1 + w*log(x)))*w)
     assert e.nseries(w, n=1, logx=l) == (x/l + 1)/w + O(1, w)
     assert e.nseries(w, n=2, logx=l) == x*log(x)/l**2 + log(x)/l - \
         x/l + (1 + x/l)/w + O(w)

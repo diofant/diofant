@@ -207,11 +207,11 @@ def test_dup_zz_factor():
              (216*x**4 + 31*x**2 - 27, 1)])
 
     f = -29802322387695312500000000000000000000*x**25 \
-      + 2980232238769531250000000000000000*x**20 \
-      + 1743435859680175781250000000000*x**15 \
-      + 114142894744873046875000000*x**10 \
-      - 210106372833251953125*x**5 \
-      + 95367431640625
+        + 2980232238769531250000000000000000*x**20 \
+        + 1743435859680175781250000000000*x**15 \
+        + 114142894744873046875000000*x**10 \
+        - 210106372833251953125*x**5 \
+        + 95367431640625
 
     assert R.dup_zz_factor(f) == \
         (-95367431640625, [(5*x - 1, 1),
@@ -557,7 +557,7 @@ def test_dup_factor_list():
 
     assert R.dup_factor_list(f) == \
         (4*t, [(x, 1),
-             (x + t, 1)])
+               (x + t, 1)])
 
     Rt, t = ring("t", QQ)
     R, x = ring("x", Rt)
@@ -566,7 +566,7 @@ def test_dup_factor_list():
 
     assert R.dup_factor_list(f) == \
         (QQ(1, 2)*t, [(x, 1),
-                    (x + t, 1)])
+                      (x + t, 1)])
 
     R, x = ring("x", QQ.algebraic_field(I))
 
@@ -667,7 +667,7 @@ def test_dmp_factor_list():
 
     assert R.dmp_factor_list(f) == \
         (4*t, [(x, 1),
-             (x + t, 1)])
+               (x + t, 1)])
 
     Rt, t = ring("t", QQ)
     R, x, y = ring("x,y", Rt)
@@ -675,7 +675,7 @@ def test_dmp_factor_list():
 
     assert R.dmp_factor_list(f) == \
         (QQ(1, 2)*t, [(x, 1),
-                    (x + t, 1)])
+                      (x + t, 1)])
 
     R, x, y = ring("x,y", FF(2))
     pytest.raises(NotImplementedError, lambda: R.dmp_factor_list(x**2 + y**2))

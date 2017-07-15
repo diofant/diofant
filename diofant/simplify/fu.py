@@ -307,11 +307,11 @@ def TR2i(rv, half=False):
             # initial filtering of factors
             return (
                 (e.is_integer or k.is_positive) and (
-                k.func in (sin, cos) or (half and
-                k.is_Add and
-                len(k.args) >= 2 and
-                any(any(ai.func is cos or ai.is_Pow and ai.base is cos
-                for ai in Mul.make_args(a)) for a in k.args))))
+                    k.func in (sin, cos) or (half and
+                                             k.is_Add and
+                                             len(k.args) >= 2 and
+                                             any(any(ai.func is cos or ai.is_Pow and ai.base is cos
+                                                     for ai in Mul.make_args(a)) for a in k.args))))
 
         n = n.as_powers_dict()
         ndone = [(k, n.pop(k)) for k in list(n.keys()) if not ok(k, n[k])]
@@ -369,7 +369,7 @@ def TR2i(rv, half=False):
                     k.args[1].func is cos:
                 a = sin(k.args[1].args[0], evaluate=False)
                 if a in d and d[a] == n[k] and (d[a].is_integer or
-                        a.is_positive):
+                                                a.is_positive):
                     t.append(tan(a.args[0]/2)**-n[k])
                     n[k] = d[a] = None
 
@@ -911,7 +911,7 @@ def TR10i(rv):
                                     break
             if args:
                 rv = Add(*(args + [Add(*[_f for _f in v if _f])
-                    for v in byrad.values()]))
+                                   for v in byrad.values()]))
             else:
                 rv = do(rv)  # final pass to resolve any new inducible pairs
                 break

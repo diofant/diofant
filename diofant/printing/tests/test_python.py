@@ -101,7 +101,7 @@ def test_python_functions():
     assert python(Abs(x)) == "x = Symbol('x')\ne = Abs(x)"
     assert python(
         Abs(x/(x**2 + 1))) in ["x = Symbol('x')\ne = Abs(x/(1 + x**2))",
-            "x = Symbol('x')\ne = Abs(x/(x**2 + 1))"]
+                               "x = Symbol('x')\ne = Abs(x/(x**2 + 1))"]
 
     # Univariate/Multivariate functions
     f = Function('f')

@@ -193,12 +193,12 @@ def test_expand_arit():
 
     e = (x*(y + z))**(x*(y + z))*(x + y)
     assert e.expand(power_exp=False, power_base=False) == x*(x*y + x *
-                    z)**(x*y + x*z) + y*(x*y + x*z)**(x*y + x*z)
+                                                             z)**(x*y + x*z) + y*(x*y + x*z)**(x*y + x*z)
     assert e.expand(power_exp=False, power_base=False, deep=False) == x * \
         (x*(y + z))**(x*(y + z)) + y*(x*(y + z))**(x*(y + z))
     e = (x*(y + z))**z
     assert e.expand(power_base=True, mul=True, deep=True) in [x**z*(y +
-                    z)**z, (x*y + x*z)**z]
+                                                                    z)**z, (x*y + x*z)**z]
     assert ((2*y)**z).expand() == 2**z*y**z
     p = Symbol('p', positive=True)
     assert sqrt(-x).expand().is_Pow
@@ -270,8 +270,8 @@ def test_sympyissues_5919_6830():
         (1 + 4*A + 6*A**2 + 4*A**3 + A**4) + 1)
     assert expand_multinomial((1 + (y + x)*p)**3) == (
         (x + y)*(1 + 2*A + A**2)*3 + (x**2 + 2*x*y + y**2)*(1 + 4*A +
-        6*A**2 + 4*A**3 + A**4)*3 + (x**3 + 3*x**2*y + 3*x*y**2 + y**3)*(1 + 6*A
-        + 15*A**2 + 20*A**3 + 15*A**4 + 6*A**5 + A**6) + 1)
+                                                            6*A**2 + 4*A**3 + A**4)*3 + (x**3 + 3*x**2*y + 3*x*y**2 + y**3)*(1 + 6*A
+                                                                                                                             + 15*A**2 + 20*A**3 + 15*A**4 + 6*A**5 + A**6) + 1)
     # unevaluate powers
     eq = (Pow((x + 1)*((A + 1)**2), 2, evaluate=False))
     # - in this case the base is not an Add so no further

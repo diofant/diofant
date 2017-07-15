@@ -155,13 +155,13 @@ def test_elliptic_pi():
     assert elliptic_pi(n, z, m).conjugate() == conjugate(elliptic_pi(n, z, m))
 
     assert elliptic_pi(n, z, m).diff(n) == (elliptic_e(z, m) + (m - n)*elliptic_f(z, m)/n +
-        (n**2 - m)*elliptic_pi(n, z, m)/n - n*sqrt(1 -
-            m*sin(z)**2)*sin(2*z)/(2*(1 - n*sin(z)**2)))/(2*(m - n)*(n - 1))
+                                            (n**2 - m)*elliptic_pi(n, z, m)/n - n*sqrt(1 -
+                                                                                       m*sin(z)**2)*sin(2*z)/(2*(1 - n*sin(z)**2)))/(2*(m - n)*(n - 1))
     assert elliptic_pi(n, z, m).diff(z) == 1/(sqrt(1 - m*sin(z)**2)*(1 - n*sin(z)**2))
     assert elliptic_pi(n, z, m).diff(m) == (elliptic_e(z, m)/(m - 1) + elliptic_pi(n, z, m) -
-        m*sin(2*z)/(2*(m - 1)*sqrt(1 - m*sin(z)**2)))/(2*(n - m))
+                                            m*sin(2*z)/(2*(m - 1)*sqrt(1 - m*sin(z)**2)))/(2*(n - m))
     assert elliptic_pi(n, m).diff(n) == (elliptic_e(m) + (m - n)*elliptic_k(m)/n +
-        (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
+                                         (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
     assert elliptic_pi(n, m).diff(m) == (elliptic_e(m)/(m - 1) + elliptic_pi(n, m))/(2*(n - m))
     rx, ry = randcplx(), randcplx()
     assert td(elliptic_pi(n, rx, ry), n)

@@ -188,7 +188,7 @@ def test_no_metric_symmetry():
 def test_canonicalize1():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Lorentz)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Lorentz)
     sym1 = tensorsymmetry([1])
     base3, gens3 = get_symmetric_group_sgs(3)
     sym2 = tensorsymmetry([1]*2)
@@ -278,7 +278,7 @@ def test_canonicalize1():
     # T_c = -A^{d0 d1 d2} * A_{d0 d1}^d3 * B_{d2 d3}
     Spinor = TensorIndexType('Spinor', metric=1, dummy_fmt='S')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Spinor)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Spinor)
     S3 = TensorType([Spinor]*3, sym3)
     S2a = TensorType([Spinor]*2, sym2a)
     A = S3('A', 1)
@@ -293,7 +293,7 @@ def test_canonicalize1():
     # T_c = A^{d0 d1 d2} * A_{d0 d1 d3} * B_d2^d3
     Mat = TensorIndexType('Mat', metric=None, dummy_fmt='M')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Mat)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Mat)
     S3 = TensorType([Mat]*3, sym3)
     S2a = TensorType([Mat]*2, sym2a)
     A = S3('A', 1)
@@ -309,7 +309,7 @@ def test_canonicalize1():
     S2a = TensorType([Lorentz]*2, sym2a)
     S3a = TensorType([Lorentz]*3, sym3a)
     alpha, beta, gamma, mu, nu, rho = \
-      tensor_indices('alpha,beta,gamma,mu,nu,rho', Lorentz)
+        tensor_indices('alpha,beta,gamma,mu,nu,rho', Lorentz)
     Gamma = S1('Gamma', 2)
     Gamma2 = S2a('Gamma', 2)
     Gamma3 = S3a('Gamma', 2)
@@ -354,7 +354,7 @@ def test_bug_correction_tensor_indices():
 def test_riemann_invariants():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11 = \
-            tensor_indices('d0:12', Lorentz)
+        tensor_indices('d0:12', Lorentz)
     # R^{d0 d1}_{d1 d0}; ord = [d0,-d0,d1,-d1]
     # T_c = -R^{d0 d1}_{d0 d1}
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
@@ -419,7 +419,7 @@ def test_canonicalize2():
     D = Symbol('D')
     Eucl = TensorIndexType('Eucl', metric=0, dim=D, dummy_fmt='E')
     i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14 = \
-            tensor_indices('i0:15', Eucl)
+        tensor_indices('i0:15', Eucl)
     A = tensorhead('A', [Eucl]*3, [[3]])
 
     # two examples from Cvitanovic, Group Theory page 59

@@ -46,10 +46,10 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
         # TODO: support discrete sets with non integer stepsizes
         if evaluate:
             return summation(expr * self.pdf(var),
-                         (var, self.set.inf, self.set.sup), **kwargs)
+                             (var, self.set.inf, self.set.sup), **kwargs)
         else:
             return Sum(expr * self.pdf(var),
-                         (var, self.set.inf, self.set.sup), **kwargs)
+                       (var, self.set.inf, self.set.sup), **kwargs)
 
     def __call__(self, *args):
         return self.pdf(*args)
@@ -80,7 +80,7 @@ class SingleDiscretePSpace(SinglePSpace):
         x = self.value.symbol
         try:
             return self.distribution.expectation(expr, x, evaluate=False,
-                    **kwargs)
+                                                 **kwargs)
         except Exception:
             return Sum(expr * self.pdf, (x, self.set.inf, self.set.sup),
-                    **kwargs)
+                       **kwargs)

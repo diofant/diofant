@@ -523,8 +523,8 @@ class Abs(Function):
             return Derivative(self.args[0], x, evaluate=True) \
                 * sign(conjugate(self.args[0]))
         return (re(self.args[0]) * Derivative(re(self.args[0]), x,
-            evaluate=True) + im(self.args[0]) * Derivative(im(self.args[0]),
-                x, evaluate=True)) / Abs(self.args[0])
+                                              evaluate=True) + im(self.args[0]) * Derivative(im(self.args[0]),
+                                                                                             x, evaluate=True)) / Abs(self.args[0])
 
     def _eval_rewrite_as_Heaviside(self, arg):
         # Note this only holds for real arg (since Heaviside is not defined
@@ -567,7 +567,7 @@ class arg(Function):
             c, arg_ = factor_terms(arg).as_coeff_Mul()
             if arg_.is_Mul:
                 arg_ = Mul(*[a if (sign(a) not in (-1, 1)) else
-                    sign(a) for a in arg_.args])
+                             sign(a) for a in arg_.args])
             arg_ = sign(c)*arg_
         else:
             arg_ = arg
@@ -583,7 +583,7 @@ class arg(Function):
     def _eval_derivative(self, t):
         x, y = re(self.args[0]), im(self.args[0])
         return (x * Derivative(y, t, evaluate=True) - y *
-                    Derivative(x, t, evaluate=True)) / (x**2 + y**2)
+                Derivative(x, t, evaluate=True)) / (x**2 + y**2)
 
     def _eval_rewrite_as_atan2(self, arg):
         x, y = re(self.args[0]), im(self.args[0])
@@ -1082,14 +1082,14 @@ def _unpolarify(eq, exponents_only, pause=False):
     if eq.is_Pow and eq.base is not S.Exp1:
         expo = _unpolarify(eq.exp, exponents_only)
         base = _unpolarify(eq.base, exponents_only,
-            not (expo.is_integer and not pause))
+                           not (expo.is_integer and not pause))
         return base**expo
     elif eq.is_Pow and eq.base is S.Exp1:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
 
     if eq.is_Function and getattr(eq.func, 'unbranched', False):
         return eq.func(*[_unpolarify(x, exponents_only, exponents_only)
-            for x in eq.args])
+                         for x in eq.args])
 
     return eq.func(*[_unpolarify(x, exponents_only, True) for x in eq.args])
 

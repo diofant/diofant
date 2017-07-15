@@ -216,7 +216,7 @@ def add_formulae(formulae):
                             + cosh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
                   * exp(-I*pi/4)/(2*root(z, 4)),
                   sqrt(pi)*root(z, 4)*(sinh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
-                                      + I*cosh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
+                                       + I*cosh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
                   * exp(-I*pi/4)/2,
                   1 ]),
          Matrix([[1, 0, 0]]),
@@ -289,8 +289,8 @@ def add_formulae(formulae):
                  * besseli(a - Rational(3, 2), sqrt(z)),
                  z**(Rational(3, 2) - a)*besseli(a - Rational(3, 2), sqrt(z))**2]),
          Matrix([[-gamma(a + S.Half)**2/4**(S.Half - a),
-                 2*gamma(a - S.Half)*gamma(a + S.Half)/4**(1 - a),
-                 0]]),
+                  2*gamma(a - S.Half)*gamma(a + S.Half)/4**(1 - a),
+                  0]]),
          Matrix([[1 - 2*a, 1, 0], [z/2, S.Half - a, S.Half], [0, z, 0]]))
     addb([S.Half], [b, 2 - b],
          pi*(1 - b)/sin(pi*b) *
@@ -508,7 +508,7 @@ class Hyper_Function(Expr):
 
     def _hashable_content(self):
         return super(Hyper_Function, self)._hashable_content() + (self.ap,
-                self.bq)
+                                                                  self.bq)
 
     def __call__(self, arg):
         return hyper(self.ap, self.bq, arg)
@@ -561,7 +561,7 @@ class Hyper_Function(Expr):
         if self.gamma != func.gamma:
             return -1
         oabuckets, obbuckets, abuckets, bbuckets = [sift(params, _mod1) for
-                params in (self.ap, self.bq, func.ap, func.bq)]
+                                                    params in (self.ap, self.bq, func.ap, func.bq)]
 
         diff = 0
         for bucket, obucket in [(abuckets, oabuckets), (bbuckets, obbuckets)]:
@@ -756,7 +756,7 @@ class Formula:
                 symbol_values.append(bq)
             else:
                 raise ValueError("At least one of the parameters of the "
-                        "formula must be equal to %s" % (a,))
+                                 "formula must be equal to %s" % (a,))
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
@@ -767,7 +767,7 @@ class Formula:
         _n = Dummy()
         for repl in base_repl:
             symb_a, symb_b = [sift(params, lambda x: _mod1(x.xreplace(repl)))
-                for params in [self.func.ap, self.func.bq]]
+                              for params in [self.func.ap, self.func.bq]]
             for bucket, obucket in [(abuckets, symb_a), (bbuckets, symb_b)]:
                 for mod in set(list(bucket.keys()) + list(obucket.keys())):
                     if (mod not in bucket) or (mod not in obucket) \
@@ -862,7 +862,7 @@ class FormulaCollection:
         possible.sort(key=lambda x: x[0])
         for _, repl, f, func2 in possible:
             f2 = Formula(func2, f.z, None, [], f.B.subs(repl),
-                    f.C.subs(repl), f.M.subs(repl))
+                         f.C.subs(repl), f.M.subs(repl))
             if not any(e.has(S.NaN, oo, -oo, zoo) for e in [f2.B, f2.M, f2.C]):
                 return f2
         else:
@@ -1183,7 +1183,7 @@ class MeijerUnShiftA(Operator):
 
     def __str__(self):
         return '<Decrement upper b index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
-                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
+                                                                     sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftB(Operator):
@@ -1230,7 +1230,7 @@ class MeijerUnShiftB(Operator):
 
     def __str__(self):
         return '<Increment upper a index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
-                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
+                                                                     sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftC(Operator):
@@ -1282,7 +1282,7 @@ class MeijerUnShiftC(Operator):
 
     def __str__(self):
         return '<Decrement lower b index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
-                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
+                                                                     sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftD(Operator):
@@ -1332,7 +1332,7 @@ class MeijerUnShiftD(Operator):
 
     def __str__(self):
         return '<Increment lower a index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
-                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
+                                                                     sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class ReduceOrder(Operator):
@@ -1560,7 +1560,7 @@ def devise_plan(target, origin, z):
     <Increment upper -2.>
     """
     abuckets, bbuckets, nabuckets, nbbuckets = [sift(params, _mod1) for
-            params in (target.ap, target.bq, origin.ap, origin.bq)]
+                                                params in (target.ap, target.bq, origin.ap, origin.bq)]
 
     if len(list(abuckets.keys())) != len(list(nabuckets.keys())) or \
             len(list(bbuckets.keys())) != len(list(nbbuckets.keys())):
@@ -1610,7 +1610,7 @@ def devise_plan(target, origin, z):
             raise ValueError('%s not reachable from %s' % (target, origin))
 
         al, nal, bk, nbk = [sorted(w, key=default_sort_key)
-            for w in [al, nal, bk, nbk]]
+                            for w in [al, nal, bk, nbk]]
 
         def others(dic, key):
             l = []

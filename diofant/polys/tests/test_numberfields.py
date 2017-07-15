@@ -153,8 +153,8 @@ def test_minimal_polynomial():
 
     # issue sympy/sympy#5994
     eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
-          sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
-          sqrt(15)*I/28800000)**Rational(1, 3))))
+                                                     sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
+                                                                                                sqrt(15)*I/28800000)**Rational(1, 3))))
     assert minimal_polynomial(eq, x) == 8000*x**2 - 1
 
     ex = 1 + sqrt(2) + sqrt(3)
@@ -185,7 +185,7 @@ def test_minimal_polynomial():
     assert minimal_polynomial(1 + sqrt(2)*I, x, compose=False) == x**2 - 2*x + 3
     assert minimal_polynomial(1/(1 + sqrt(2)) + 1, x, compose=False) == x**2 - 2
     assert minimal_polynomial(sqrt(2)*I + I*(1 + sqrt(2)), x,
-            compose=False) == x**4 + 18*x**2 + 49
+                              compose=False) == x**4 + 18*x**2 + 49
 
 
 def test_minimal_polynomial_hi_prec():
@@ -211,8 +211,8 @@ def test_minimal_polynomial_sq():
 def test_minpoly_compose():
     # issue sympy/sympy#6868
     eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
-          sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
-          sqrt(15)*I/28800000)**Rational(1, 3))))
+                                                     sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
+                                                                                                sqrt(15)*I/28800000)**Rational(1, 3))))
     mp = minimal_polynomial(eq + 3, x)
     assert mp == 8000*x**2 - 48000*x + 71999
 
@@ -224,7 +224,7 @@ def test_minpoly_compose():
         770912*x**4 - 268432*x**2 + 28561
     mp = minimal_polynomial(cos(pi/7) + sqrt(2), x)
     assert mp == 64*x**6 - 64*x**5 - 432*x**4 + 304*x**3 + 712*x**2 - \
-            232*x - 239
+        232*x - 239
     mp = minimal_polynomial(exp(I*pi/7) + sqrt(2), x)
     assert mp == x**12 - 2*x**11 - 9*x**10 + 16*x**9 + 43*x**8 - 70*x**7 - 97*x**6 + 126*x**5 + 211*x**4 - 212*x**3 - 37*x**2 + 142*x + 127
 
@@ -236,7 +236,7 @@ def test_minpoly_compose():
         770912*x**4 - 268432*x**2 + 28561
     mp = minimal_polynomial(cos(pi/7) + sqrt(2), x)
     assert mp == 64*x**6 - 64*x**5 - 432*x**4 + 304*x**3 + 712*x**2 - \
-            232*x - 239
+        232*x - 239
     mp = minimal_polynomial(exp(I*pi/7) + sqrt(2), x)
     assert mp == x**12 - 2*x**11 - 9*x**10 + 16*x**9 + 43*x**8 - 70*x**7 - 97*x**6 + 126*x**5 + 211*x**4 - 212*x**3 - 37*x**2 + 142*x + 127
 
@@ -252,7 +252,7 @@ def test_minpoly_compose():
     assert mp == x**3 + 2*x**2 - x - 1
     assert minimal_polynomial(-1/(2*cos(pi/7)), x) == x**3 + 2*x**2 - x - 1
     assert minimal_polynomial(sin(2*pi/15), x) == \
-            256*x**8 - 448*x**6 + 224*x**4 - 32*x**2 + 1
+        256*x**8 - 448*x**6 + 224*x**4 - 32*x**2 + 1
     assert minimal_polynomial(sin(5*pi/14), x) == 8*x**3 - 4*x**2 - 4*x + 1
     assert minimal_polynomial(cos(pi/15), x) == 16*x**4 + 8*x**3 - 16*x**2 - 8*x + 1
 
@@ -268,7 +268,7 @@ def test_minpoly_compose():
     assert minimal_polynomial(exp(I*pi/10), x) == x**8 - x**6 + x**4 - x**2 + 1
     assert minimal_polynomial(sin(pi/9), x) == 64*x**6 - 96*x**4 + 36*x**2 - 3
     assert minimal_polynomial(sin(pi/11), x) == 1024*x**10 - 2816*x**8 + \
-            2816*x**6 - 1232*x**4 + 220*x**2 - 11
+        2816*x**6 - 1232*x**4 + 220*x**2 - 11
 
     ex = 2**Rational(1, 3)*exp(Rational(2, 3)*I*pi)
     assert minimal_polynomial(ex, x) == x**3 - 2
@@ -279,7 +279,7 @@ def test_minpoly_compose():
 
     # issue sympy/sympy#5934
     ex = 1/(-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
-        24*sqrt(10)*sqrt(-sqrt(5) + 5))**2) + 1
+                                     24*sqrt(10)*sqrt(-sqrt(5) + 5))**2) + 1
     pytest.raises(ZeroDivisionError, lambda: minimal_polynomial(ex, x))
 
     ex = sqrt(1 + 2**Rational(1, 3)) + sqrt(1 + 2**Rational(1, 4)) + sqrt(2)
@@ -298,7 +298,7 @@ def test_minpoly_sympyissue_7113():
     r = nsimplify(pi, tolerance=0.000000001)
     mp = minimal_polynomial(r, x)
     assert mp == 1768292677839237920489538677417507171630859375*x**109 - \
-    2734577732179183863586489182929671773182898498218854181690460140337930774573792597743853652058046464
+        2734577732179183863586489182929671773182898498218854181690460140337930774573792597743853652058046464
 
 
 def test_minpoly_sympyissue_7574():
@@ -319,13 +319,13 @@ def test_primitive_element():
         [sqrt(2)], x, ex=True) == (x**2 - 2, [1], [[1, 0]])
     assert primitive_element([sqrt(2), sqrt(3)], x, ex=True) == \
         (x**4 - 10*x**2 + 1, [1, 1], [[Q(1, 2), 0, -Q(9, 2), 0], [-
-         Q(1, 2), 0, Q(11, 2), 0]])
+                                                                  Q(1, 2), 0, Q(11, 2), 0]])
 
     assert primitive_element(
         [sqrt(2)], x, ex=True, polys=True) == (Poly(x**2 - 2), [1], [[1, 0]])
     assert primitive_element([sqrt(2), sqrt(3)], x, ex=True, polys=True) == \
         (Poly(x**4 - 10*x**2 + 1), [1, 1], [[Q(1, 2), 0, -Q(9, 2),
-         0], [-Q(1, 2), 0, Q(11, 2), 0]])
+                                             0], [-Q(1, 2), 0, Q(11, 2), 0]])
 
     assert primitive_element([sqrt(2)], polys=True) == (Poly(x**2 - 2), [1])
 
@@ -814,7 +814,7 @@ def test_minpoly_fraction_field():
 
     # this is (sqrt(1 + x**3)/x).integrate(x).diff(x) - sqrt(1 + x**3)/x
     a = sqrt(x)/sqrt(1 + x**(-3)) - sqrt(x**3 + 1)/x + 1/(x**Rational(5, 2) *
-        (1 + x**(-3))**Rational(3, 2)) + 1/(x**Rational(11, 2)*(1 + x**(-3))**Rational(3, 2))
+                                                          (1 + x**(-3))**Rational(3, 2)) + 1/(x**Rational(11, 2)*(1 + x**(-3))**Rational(3, 2))
 
     assert minimal_polynomial(a, y) == y
 
@@ -827,7 +827,7 @@ def test_minpoly_fraction_field():
 @pytest.mark.slow
 def test_minpoly_fraction_field_slow():
     assert minimal_polynomial(minimal_polynomial(sqrt(x**Rational(1, 5) - 1),
-        y).subs(y, sqrt(x**Rational(1, 5) - 1)), z) == z
+                                                 y).subs(y, sqrt(x**Rational(1, 5) - 1)), z) == z
 
 
 def test_minpoly_domain():
@@ -836,7 +836,7 @@ def test_minpoly_domain():
     assert minimal_polynomial(sqrt(8), x, domain=QQ.algebraic_field(sqrt(2))) == \
         x - 2*sqrt(2)
     assert minimal_polynomial(sqrt(Rational(3, 2)), x,
-        domain=QQ.algebraic_field(sqrt(2))) == 2*x**2 - 3
+                              domain=QQ.algebraic_field(sqrt(2))) == 2*x**2 - 3
 
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(y, x, domain=QQ))
 

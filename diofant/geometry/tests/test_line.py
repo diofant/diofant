@@ -127,7 +127,7 @@ def test_line_geom():
     assert l1.projection(p1_1) == p1
     assert l3.projection(p2) == Point(x1, 1)
     pytest.raises(GeometryError, lambda: Line(Point(0, 0), Point(1, 0))
-           .projection(Circle(Point(0, 0), 1)))
+                  .projection(Circle(Point(0, 0), 1)))
 
     # Finding angles
     l1_1 = Line(p1, Point(5, 0))
@@ -146,9 +146,9 @@ def test_line_geom():
     assert Ray((1, 1), angle=4.0*pi) == Ray((1, 1), (2, 1))
     assert Ray((1, 1), angle=0) == Ray((1, 1), (2, 1))
     assert Ray((1, 1), angle=4.05*pi) == Ray(Point(1, 1),
-               Point(2, -sqrt(5)*sqrt(2*sqrt(5) + 10)/4 - sqrt(2*sqrt(5) + 10)/4 + 2 + sqrt(5)))
+                                             Point(2, -sqrt(5)*sqrt(2*sqrt(5) + 10)/4 - sqrt(2*sqrt(5) + 10)/4 + 2 + sqrt(5)))
     assert Ray((1, 1), angle=4.02*pi) == Ray(Point(1, 1),
-               Point(2, 1 + tan(4.02*pi)))
+                                             Point(2, 1 + tan(4.02*pi)))
     assert Ray((1, 1), angle=5) == Ray((1, 1), (2, 1 + tan(5)))
     pytest.raises(ValueError, lambda: Ray((1, 1), 1))
 
@@ -385,7 +385,7 @@ def test_line3d():
 
     # Parallelity
     assert l1.parallel_line(p1_1) == Line3D(Point3D(x1, x1, x1),
-        Point3D(x1 + 1, x1 + 1, x1 + 1))
+                                            Point3D(x1 + 1, x1 + 1, x1 + 1))
     assert l1.parallel_line(p1_1.args) == \
         Line3D(Point3D(x1, x1, x1), Point3D(x1 + 1, x1 + 1, x1 + 1))
 
@@ -607,7 +607,7 @@ def test_line_intersection():
             Point(0, 0),
             Point(8, 0),
             Point(-4*cos(19*pi/90)/sin(2*pi/45),
-            4*sqrt(3)*cos(19*pi/90)/sin(2*pi/45)))
+                  4*sqrt(3)*cos(19*pi/90)/sin(2*pi/45)))
     assert Line((0, 0), (1, 1)).intersection(Ray((1, 0), (1, 2))) == \
         [Point(1, 1)]
     assert Line((0, 0), (1, 1)).intersection(Segment((1, 0), (1, 2))) == \

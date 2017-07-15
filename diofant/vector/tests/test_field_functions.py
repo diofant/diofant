@@ -58,7 +58,7 @@ def test_del_operator():
             divergence(v, C))
     assert delop & v == delop.dot(v)
     assert delop.dot(1/(x*y*z) * (i + j + k), doit=True) == \
-           - 1 / (x*y*z**2) - 1 / (x*y**2*z) - 1 / (x**2*y*z)
+        - 1 / (x*y*z**2) - 1 / (x*y**2*z) - 1 / (x**2*y*z)
     v = x*i + y*j + z*k
     assert (delop & v == Derivative(C.x, C.x) +
             Derivative(C.y, C.y) + Derivative(C.z, C.z))
@@ -132,7 +132,7 @@ def test_product_rules():
     # Second product rule
     lhs = delop(u & v).doit()
     rhs = ((u ^ (delop ^ v)) + (v ^ (delop ^ u)) +
-          ((u & delop)(v)) + ((v & delop)(u))).doit()
+           ((u & delop)(v)) + ((v & delop)(u))).doit()
     assert simplify(lhs) == simplify(rhs)
 
     # Third product rule
@@ -153,7 +153,7 @@ def test_product_rules():
     # Sixth product rule
     lhs = (delop ^ (u ^ v)).doit()
     rhs = ((u * (delop & v) - v * (delop & u) +
-           (v & delop)(u) - (u & delop)(v))).doit()
+            (v & delop)(u) - (u & delop)(v))).doit()
     assert simplify(lhs) == simplify(rhs)
 
 

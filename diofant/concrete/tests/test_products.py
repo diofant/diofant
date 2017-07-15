@@ -278,8 +278,8 @@ def test_simplify():
     y, t, b, c = symbols('y, t, b, c', integer=True)
 
     assert simplify(Product(x*y, (x, n, m), (y, a, k)) *
-        Product(y, (x, n, m), (y, a, k))) == \
-            Product(x*y**2, (x, n, m), (y, a, k))
+                    Product(y, (x, n, m), (y, a, k))) == \
+        Product(x*y**2, (x, n, m), (y, a, k))
     assert simplify(3 * y * Product(x, (x, n, m)) * Product(x, (x, m + 1, a))) \
         == 3 * y * Product(x, (x, n, a))
     assert simplify(Product(x, (x, k + 1, a)) * Product(x, (x, n, k))) == \
@@ -287,11 +287,11 @@ def test_simplify():
     assert simplify(Product(x, (x, k + 1, a)) * Product(x + 1, (x, n, k))) == \
         Product(x, (x, k + 1, a)) * Product(x + 1, (x, n, k))
     assert simplify(Product(x, (t, a, b)) * Product(y, (t, a, b)) *
-        Product(x, (t, b+1, c))) == Product(x*y, (t, a, b)) * \
-            Product(x, (t, b+1, c))
+                    Product(x, (t, b+1, c))) == Product(x*y, (t, a, b)) * \
+        Product(x, (t, b+1, c))
     assert simplify(Product(x, (t, a, b)) * Product(x, (t, b+1, c)) *
-        Product(y, (t, a, b))) == Product(x*y, (t, a, b)) * \
-            Product(x, (t, b+1, c))
+                    Product(y, (t, a, b))) == Product(x*y, (t, a, b)) * \
+        Product(x, (t, b+1, c))
 
 
 def test_change_index():
@@ -347,23 +347,23 @@ def test_reverse_order():
 
     assert Product(x, (x, 0, 3)).reverse_order(0) == Product(1/x, (x, 4, -1))
     assert Product(x*y, (x, 1, 5), (y, 0, 6)).reverse_order(0, 1) == \
-           Product(x*y, (x, 6, 0), (y, 7, -1))
+        Product(x*y, (x, 6, 0), (y, 7, -1))
     assert Product(x, (x, 1, 2)).reverse_order(0) == Product(1/x, (x, 3, 0))
     assert Product(x, (x, 1, 3)).reverse_order(0) == Product(1/x, (x, 4, 0))
     assert Product(x, (x, 1, a)).reverse_order(0) == Product(1/x, (x, a + 1, 0))
     assert Product(x, (x, a, 5)).reverse_order(0) == Product(1/x, (x, 6, a - 1))
     assert Product(x, (x, a + 1, a + 5)).reverse_order(0) == \
-           Product(1/x, (x, a + 6, a))
+        Product(1/x, (x, a + 6, a))
     assert Product(x, (x, a + 1, a + 2)).reverse_order(0) == \
-           Product(1/x, (x, a + 3, a))
+        Product(1/x, (x, a + 3, a))
     assert Product(x, (x, a + 1, a + 1)).reverse_order(0) == \
-           Product(1/x, (x, a + 2, a))
+        Product(1/x, (x, a + 2, a))
     assert Product(x, (x, a, b)).reverse_order(0) == Product(1/x, (x, b + 1, a - 1))
     assert Product(x, (x, a, b)).reverse_order(x) == Product(1/x, (x, b + 1, a - 1))
     assert Product(x*y, (x, a, b), (y, 2, 5)).reverse_order(x, 1) == \
-           Product(x*y, (x, b + 1, a - 1), (y, 6, 1))
+        Product(x*y, (x, b + 1, a - 1), (y, 6, 1))
     assert Product(x*y, (x, a, b), (y, 2, 5)).reverse_order(y, x) == \
-           Product(x*y, (x, b + 1, a - 1), (y, 6, 1))
+        Product(x*y, (x, b + 1, a - 1), (y, 6, 1))
     p = Product(x, (x, 0, 3))
     assert p.reverse_order(10) == p
 

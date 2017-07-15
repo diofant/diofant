@@ -72,7 +72,7 @@ def _preprocess(expr, func=None, hint='_Integral'):
         funcs = set().union(*[d.atoms(AppliedUndef) for d in derivs])
         if len(funcs) != 1:
             raise ValueError('The function cannot be '
-                'automatically detected for %s.' % expr)
+                             'automatically detected for %s.' % expr)
         func = funcs.pop()
     fvars = set(func.args)
     if hint is None:
@@ -205,7 +205,7 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
     # recursive calls.
     if kwargs.get('classify', True):
         hints = classifier(eq, func, dict=True, init=init, xi=xi, eta=eta,
-        n=terms, x0=x0, prep=prep)
+                           n=terms, x0=x0, prep=prep)
 
     else:
         # Here is what all this means:
@@ -230,8 +230,8 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
 
     if hint == 'default':
         return _desolve(eq, func, init=init, hint=hints['default'], simplify=simplify,
-                      prep=prep, x0=x0, classify=False, order=hints['order'],
-                      match=hints[hints['default']], xi=xi, eta=eta, n=terms, type=type)
+                        prep=prep, x0=x0, classify=False, order=hints['order'],
+                        match=hints[hints['default']], xi=xi, eta=eta, n=terms, type=type)
     elif hint in ('all', 'all_Integral', 'best'):
         retdict = {}
         failedhints = {}
@@ -248,7 +248,7 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
                     gethints.remove(k)
         for i in gethints:
             sol = _desolve(eq, func, init=init, hint=i, x0=x0, simplify=simplify, prep=prep,
-                classify=False, n=terms, order=hints['order'], match=hints[i], type=type)
+                           classify=False, n=terms, order=hints['order'], match=hints[i], type=type)
             retdict[i] = sol
         retdict['all'] = True
         retdict['eq'] = eq

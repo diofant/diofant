@@ -271,7 +271,7 @@ class Piecewise(Function):
                 else:
                     for i in range(len(values)):
                         newargs.append((values[i], (c == S.true and i == len(values) - 1) or
-                            And(rep >= intervals[i][0], rep <= intervals[i][1])))
+                                        And(rep >= intervals[i][0], rep <= intervals[i][1])))
             return self.func(*newargs)
 
         # Determine what intervals the expr,cond pairs affect.

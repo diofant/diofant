@@ -145,7 +145,7 @@ def test_log():
     p = 1 + x + 2*x**2/3
     p1 = rs_log(p, x, 9)
     assert p1 == -17*x**8/648 + 13*x**7/189 - 11*x**6/162 - x**5/45 + \
-      7*x**4/36 - x**3/3 + x**2/6 + x
+        7*x**4/36 - x**3/3 + x**2/6 + x
     p2 = rs_series_inversion(p, x, 9)
     p3 = rs_log(p2, x, 9)
     assert p3 == -p1

@@ -190,7 +190,7 @@ def test_generate():
     assert list(primerange(2, 7)) == [2, 3, 5]
     assert list(primerange(2, 10)) == [2, 3, 5, 7]
     assert list(primerange(1050, 1100)) == [1051, 1061,
-        1063, 1069, 1087, 1091, 1093, 1097]
+                                            1063, 1069, 1087, 1091, 1093, 1097]
     s = Sieve()
     for i in range(30, 2350, 376):
         for j in range(2, 5096, 1139):
@@ -497,8 +497,8 @@ def test_residue():
     pytest.raises(ValueError, lambda: is_primitive_root(3, 6))
 
     assert [primitive_root(i) for i in range(2, 31)] == [1, 2, 3, 2, 5, 3,
-       None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5,
-       None, 2, 7, 2, None, 2, None]
+                                                         None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5,
+                                                         None, 2, 7, 2, None, 2, None]
 
     for p in primerange(3, 100):
         it = _primitive_root_prime_iter(p)
@@ -534,7 +534,7 @@ def test_residue():
     assert quadratic_residues(12) == [0, 1, 4, 9]
     assert quadratic_residues(13) == [0, 1, 3, 4, 9, 10, 12]
     assert [len(quadratic_residues(i)) for i in range(1, 20)] == \
-      [1, 2, 2, 2, 3, 4, 4, 3, 4, 6, 6, 4, 7, 8, 6, 4, 9, 8, 10]
+        [1, 2, 2, 2, 3, 4, 4, 3, 4, 6, 6, 4, 7, 8, 6, 4, 9, 8, 10]
 
     assert list(sqrt_mod_iter(6, 2)) == [0]
     assert sqrt_mod(3, 13) == 4
@@ -561,11 +561,11 @@ def test_residue():
     assert sqrt_mod(9, 3**5, True) == [3, 78, 84, 159, 165, 240]
     assert sqrt_mod(81, 3**4, True) == [0, 9, 18, 27, 36, 45, 54, 63, 72]
     assert sqrt_mod(81, 3**5, True) == [9, 18, 36, 45, 63, 72, 90, 99, 117,
-            126, 144, 153, 171, 180, 198, 207, 225, 234]
+                                        126, 144, 153, 171, 180, 198, 207, 225, 234]
     assert sqrt_mod(81, 3**6, True) == [9, 72, 90, 153, 171, 234, 252, 315,
-            333, 396, 414, 477, 495, 558, 576, 639, 657, 720]
+                                        333, 396, 414, 477, 495, 558, 576, 639, 657, 720]
     assert sqrt_mod(81, 3**7, True) == [9, 234, 252, 477, 495, 720, 738, 963,
-            981, 1206, 1224, 1449, 1467, 1692, 1710, 1935, 1953, 2178]
+                                        981, 1206, 1224, 1449, 1467, 1692, 1710, 1935, 1953, 2178]
 
     for a, p in [(26214400, 32768000000), (26214400, 16384000000),
                  (262144, 1048576), (87169610025, 163443018796875),
@@ -695,11 +695,11 @@ def test_multinomial_coefficients():
     assert multinomial_coefficients(2, 1) == {(0, 1): 1, (1, 0): 1}
     assert multinomial_coefficients(2, 2) == {(2, 0): 1, (0, 2): 1, (1, 1): 2}
     assert multinomial_coefficients(2, 3) == {(3, 0): 1, (1, 2): 3, (0, 3): 1,
-            (2, 1): 3}
+                                              (2, 1): 3}
     assert multinomial_coefficients(3, 1) == {(1, 0, 0): 1, (0, 1, 0): 1,
-            (0, 0, 1): 1}
+                                              (0, 0, 1): 1}
     assert multinomial_coefficients(3, 2) == {(0, 1, 1): 2, (0, 0, 2): 1,
-            (1, 1, 0): 2, (0, 2, 0): 1, (1, 0, 1): 2, (2, 0, 0): 1}
+                                              (1, 1, 0): 2, (0, 2, 0): 1, (1, 0, 1): 2, (2, 0, 0): 1}
     mc = multinomial_coefficients(4, 2)
     assert mc == {(0, 0, 0, 2): 1, (0, 0, 1, 1): 2, (0, 0, 2, 0): 1,
                   (0, 1, 0, 1): 2, (0, 1, 1, 0): 2, (0, 2, 0, 0): 1,
@@ -707,8 +707,8 @@ def test_multinomial_coefficients():
                   (2, 0, 0, 0): 1}
     mc = multinomial_coefficients(3, 3)
     assert mc == {(2, 1, 0): 3, (0, 3, 0): 1,
-            (1, 0, 2): 3, (0, 2, 1): 3, (0, 1, 2): 3, (3, 0, 0): 1,
-        (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
+                  (1, 0, 2): 3, (0, 2, 1): 3, (0, 1, 2): 3, (3, 0, 0): 1,
+                  (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
     assert dict(multinomial_coefficients_iterator(2, 0)) == {(0, 0): 1}
     assert dict(
         multinomial_coefficients_iterator(2, 1)) == {(0, 1): 1, (1, 0): 1}
@@ -718,7 +718,7 @@ def test_multinomial_coefficients():
     it = multinomial_coefficients_iterator(7, 2)
     assert [next(it) for i in range(4)] == \
         [((2, 0, 0, 0, 0, 0, 0), 1), ((1, 1, 0, 0, 0, 0, 0), 2),
-      ((0, 2, 0, 0, 0, 0, 0), 1), ((1, 0, 1, 0, 0, 0, 0), 2)]
+         ((0, 2, 0, 0, 0, 0, 0), 1), ((1, 0, 1, 0, 0, 0, 0), 2)]
 
 
 def test_sympyissue_4356():

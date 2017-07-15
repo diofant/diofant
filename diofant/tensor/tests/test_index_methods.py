@@ -141,11 +141,11 @@ def test_contraction_structure_Mul_and_Pow():
         (i,): {ij_exp_kki},
         ij_exp_kki: [{
                      None: {exp(y[i]*y[k, k])},
-                exp(y[i]*y[k, k]): [{
-                    None: {y[i]*y[k, k]},
-                    y[i]*y[k, k]: [{(k,): {y[k, k]}}]
-                }]}
-        ]
+                     exp(y[i]*y[k, k]): [{
+                         None: {y[i]*y[k, k]},
+                         y[i]*y[k, k]: [{(k,): {y[k, k]}}]
+                     }]}
+                     ]
     }
     assert result == expected
 

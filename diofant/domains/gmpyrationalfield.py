@@ -29,7 +29,7 @@ class GMPYRationalField(RationalField):
     def to_diofant(self, a):
         """Convert `a` to a Diofant object. """
         return DiofantRational(int(gmpy_numer(a)),
-                             int(gmpy_denom(a)))
+                               int(gmpy_denom(a)))
 
     def from_diofant(self, a):
         """Convert Diofant's Integer to `dtype`. """

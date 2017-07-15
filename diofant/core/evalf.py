@@ -281,8 +281,8 @@ def check_target(expr, result, prec):
     a = complex_accuracy(result)
     if a < prec:
         raise PrecisionExhausted("Failed to distinguish the expression: \n\n%s\n\n"
-            "from zero. Try simplifying the input, using chop=True, or providing "
-            "a higher maxn for evalf" % (expr))
+                                 "from zero. Try simplifying the input, using chop=True, or providing "
+                                 "a higher maxn for evalf" % (expr))
 
 
 ############################################################################
@@ -371,7 +371,7 @@ def add_terms(terms, prec, target_prec):
     sum_bc = bitcount(sum_man)
     sum_accuracy = sum_exp + sum_bc - absolute_error
     r = normalize(sum_sign, sum_man, sum_exp, sum_bc, target_prec,
-        rnd), sum_accuracy
+                  rnd), sum_accuracy
     return r
 
 
@@ -861,7 +861,7 @@ def do_integral(expr, prec, options):
                 m = func.match(sin(A*x + B)*D)
             if not m:
                 raise ValueError("An integrand of the form sin(A*x+B)*f(x) "
-                  "or cos(A*x+B)*f(x) is required for oscillatory quadrature")
+                                 "or cos(A*x+B)*f(x) is required for oscillatory quadrature")
             period = as_mpmath(2*S.Pi/m[A], prec + 15, options)
             result = quadosc(f, [xlow, xhigh], period=period)
             # XXX: quadosc does not do error detection yet
@@ -1078,7 +1078,7 @@ def evalf_sum(expr, prec, options):
         for i in range(1, 5):
             m = n = 2**i * prec
             s, err = expr.euler_maclaurin(m=m, n=n, eps=eps,
-                eval_integral=False)
+                                          eval_integral=False)
             err = err.evalf()
             if err <= eps:
                 break

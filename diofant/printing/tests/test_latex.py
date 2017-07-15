@@ -436,7 +436,7 @@ def test_hyper_printing():
 
 def test_latex_bessel():
     from diofant.functions.special.bessel import (besselj, bessely, besseli,
-            besselk, hankel1, hankel2, jn, yn)
+                                                  besselk, hankel1, hankel2, jn, yn)
     from diofant.abc import z
     assert latex(besselj(n, z**2)**k) == r'J^{k}_{n}\left(z^{2}\right)'
     assert latex(bessely(n, z)) == r'Y_{n}\left(z\right)'
@@ -588,7 +588,7 @@ def test_latex_union():
 
 def test_latex_symmetric_difference():
     assert latex(SymmetricDifference(Interval(2, 5), Interval(4, 7),
-        evaluate=False)) == r'\left[2, 5\right] \triangle \left[4, 7\right]'
+                                     evaluate=False)) == r'\left[2, 5\right] \triangle \left[4, 7\right]'
 
 
 def test_latex_Complement():
@@ -1009,14 +1009,14 @@ def test_matMul():
     assert l._print_MatMul(-sqrt(2)*A) == r'- \sqrt{2} A'
     assert l._print_MatMul(2*sqrt(2)*x*A) == r'2 \sqrt{2} x A'
     assert l._print_MatMul(-2*A*(A + 2*B)) in [r'-2 A \left(A + 2 B\right)',
-        r'-2 A \left(2 B + A\right)']
+                                               r'-2 A \left(2 B + A\right)']
 
 
 def test_latex_MatrixSlice():
     assert latex(MatrixSymbol('X', 10, 10)[:5, 1:9:2]) == \
         r'X\left[:5, 1:9:2\right]'
     assert latex(MatrixSymbol('X', 10, 10)[5, :5:2]) == \
-            r'X\left[5, :5:2\right]'
+        r'X\left[5, :5:2\right]'
 
 
 def test_latex_RandomDomain():

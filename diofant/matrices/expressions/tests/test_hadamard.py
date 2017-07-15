@@ -21,7 +21,7 @@ def test_HadamardProduct():
     pytest.raises(TypeError, lambda: HadamardProduct(A, 1))
 
     assert HadamardProduct(A, 2*B, -A)[1, 1] == \
-            -2 * A[1, 1] * B[1, 1] * A[1, 1]
+        -2 * A[1, 1] * B[1, 1] * A[1, 1]
 
     mix = HadamardProduct(Z*A, B)*C
     assert mix.shape == (n, k)
@@ -39,7 +39,7 @@ def test_mixed_indexing():
     Z = MatrixSymbol('Z', 2, 2)
 
     assert (X*HadamardProduct(Y, Z))[0, 0] == \
-            X[0, 0]*Y[0, 0]*Z[0, 0] + X[0, 1]*Y[1, 0]*Z[1, 0]
+        X[0, 0]*Y[0, 0]*Z[0, 0] + X[0, 1]*Y[1, 0]*Z[1, 0]
 
 
 def test_canonicalize():

@@ -207,7 +207,7 @@ def test_simplification():
     assert SOPform([Dummy(), Dummy(), Dummy()], set1 + set2) is true
 
     minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
-        [1, 1, 1, 1]]
+                [1, 1, 1, 1]]
     dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
     assert (
         SOPform([w, x, y, z], minterms, dontcares) ==
@@ -220,12 +220,12 @@ def test_simplification():
     assert simplify_logic((A & B) | (A & C)) == ans
     assert simplify_logic(Implies(A, B)) == Or(Not(A), B)
     assert simplify_logic(Equivalent(A, B)) == \
-           Or(And(A, B), And(Not(A), Not(B)))
+        Or(And(A, B), And(Not(A), Not(B)))
     assert simplify_logic(And(Equality(A, 2), C)) == And(Equality(A, 2), C)
     assert simplify_logic(And(Equality(A, 2), A)) == And(Equality(A, 2), A)
     assert simplify_logic(And(Equality(A, B), C)) == And(Equality(A, B), C)
     assert simplify_logic(Or(And(Equality(A, 3), B), And(Equality(A, 3), C))) \
-           == And(Equality(A, 3), Or(B, C))
+        == And(Equality(A, 3), Or(B, C))
     e = And(A, x**2 - x)
     assert simplify_logic(e) == And(A, x*(x - 1))
     assert simplify_logic(e, deep=False) == e
@@ -261,10 +261,10 @@ def test_bool_map():
     """
 
     minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
-        [1, 1, 1, 1]]
+                [1, 1, 1, 1]]
     assert bool_map(Not(Not(a)), a) == (a, {a: a})
     assert bool_map(SOPform([w, x, y, z], minterms),
-        POSform([w, x, y, z], minterms)) == \
+                    POSform([w, x, y, z], minterms)) == \
         (And(Or(Not(w), y), Or(Not(x), y), z), {x: x, w: w, z: z, y: y})
     assert bool_map(SOPform([x, z, y], [[1, 0, 1]]),
                     SOPform([a, b, c], [[1, 0, 1]])) is not False
@@ -393,18 +393,18 @@ def test_to_nnf():
     assert to_nnf(A >> B) == ~A | B
     assert to_nnf(Equivalent(A, B, C)) == (~A | B) & (~B | C) & (~C | A)
     assert to_nnf(A ^ B ^ C) == \
-            (A | B | C) & (~A | ~B | C) & (A | ~B | ~C) & (~A | B | ~C)
+        (A | B | C) & (~A | ~B | C) & (A | ~B | ~C) & (~A | B | ~C)
     assert to_nnf(ITE(A, B, C)) == (~A | B) & (A | C)
     assert to_nnf(Not(A | B | C)) == ~A & ~B & ~C
     assert to_nnf(Not(A & B & C)) == ~A | ~B | ~C
     assert to_nnf(Not(A >> B)) == A & ~B
     assert to_nnf(Not(Equivalent(A, B, C))) == And(Or(A, B, C), Or(~A, ~B, ~C))
     assert to_nnf(Not(A ^ B ^ C)) == \
-            (~A | B | C) & (A | ~B | C) & (A | B | ~C) & (~A | ~B | ~C)
+        (~A | B | C) & (A | ~B | C) & (A | B | ~C) & (~A | ~B | ~C)
     assert to_nnf(Not(ITE(A, B, C))) == (~A | ~B) & (A | ~C)
     assert to_nnf((A >> B) ^ (B >> A)) == (A & ~B) | (~A & B)
     assert to_nnf((A >> B) ^ (B >> A), False) == \
-            (~A | ~B | A | B) & ((A & ~B) | (~A & B))
+        (~A | ~B | A | B) & ((A & ~B) | (~A & B))
 
 
 def test_to_cnf():
@@ -417,7 +417,7 @@ def test_to_cnf():
 
     assert to_cnf(Equivalent(A, B)) == And(Or(A, Not(B)), Or(B, Not(A)))
     assert to_cnf(Equivalent(A, B & C)) == \
-           (~A | B) & (~A | C) & (~B | ~C | A)
+        (~A | B) & (~A | C) & (~B | ~C | A)
     assert to_cnf(Equivalent(A, B | C), True) == \
         And(Or(Not(B), A), Or(Not(C), A), Or(B, C, Not(A)))
 
@@ -431,9 +431,9 @@ def test_to_dnf():
     assert to_dnf(A >> (B & C)) == (~A) | (B & C)
 
     assert to_dnf(Equivalent(A, B), True) == \
-           Or(And(A, B), And(Not(A), Not(B)))
+        Or(And(A, B), And(Not(A), Not(B)))
     assert to_dnf(Equivalent(A, B & C), True) == \
-           Or(And(A, B, C), And(Not(A), Not(B)), And(Not(A), Not(C)))
+        Or(And(A, B, C), And(Not(A), Not(B)), And(Not(A), Not(C)))
 
 
 def test_to_int_repr():

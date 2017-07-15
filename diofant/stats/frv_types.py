@@ -132,7 +132,7 @@ class DieDistribution(SingleFiniteDistribution):
             i = Dummy('i', integer=True, positive=True)
             return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
         raise ValueError("'x' expected as an argument of type 'number' or 'symbol', "
-                        "not %s" % (type(x)))
+                         "not %s" % (type(x)))
 
 
 def Die(name, sides=6):
@@ -267,9 +267,9 @@ class HypergeometricDistribution(SingleFiniteDistribution):
         N, m, n = self.N, self.m, self.n
         N, m, n = list(map(sympify, (N, m, n)))
         density = {sympify(k):
-                        Rational(binomial(m, k) * binomial(N - m, n - k),
-                                 binomial(N, n))
-                        for k in range(max(0, n + m - N), min(m, n) + 1)}
+                   Rational(binomial(m, k) * binomial(N - m, n - k),
+                            binomial(N, n))
+                   for k in range(max(0, n + m - N), min(m, n) + 1)}
         return density
 
     @property

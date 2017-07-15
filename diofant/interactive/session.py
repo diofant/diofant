@@ -41,8 +41,8 @@ class AutomaticSymbols(ast.NodeTransformer):
             assign = ast.Assign(targets=[ast.Name(id=v, ctx=ast.Store())],
                                 value=ast.Call(func=ast.Name(id='Symbol',
                                                              ctx=ast.Load()),
-                                args=[ast.Str(s=v)], keywords=[],
-                                starargs=None, kwargs=None))
+                                               args=[ast.Str(s=v)], keywords=[],
+                                               starargs=None, kwargs=None))
             node.body.insert(0, assign)
 
         newnode = ast.Module(body=node.body)

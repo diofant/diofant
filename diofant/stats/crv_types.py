@@ -202,7 +202,7 @@ class BeniniDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         alpha, beta, sigma = self.alpha, self.beta, self.sigma
         return (exp(-alpha*log(x/sigma) - beta*log(x/sigma)**2)
-               * (alpha/x + 2*beta*log(x/sigma)/x))
+                * (alpha/x + 2*beta*log(x/sigma)/x))
 
 
 def Benini(name, alpha, beta, sigma):
@@ -867,7 +867,7 @@ class FDistributionDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         d1, d2 = self.d1, self.d2
         return (sqrt((d1*x)**d1*d2**d2 / (d1*x+d2)**(d1+d2))
-               / (x * beta_fn(d1/2, d2/2)))
+                / (x * beta_fn(d1/2, d2/2)))
 
 
 def FDistribution(name, d1, d2):
@@ -938,7 +938,7 @@ class FisherZDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         d1, d2 = self.d1, self.d2
         return (2*d1**(d1/2)*d2**(d2/2) / beta_fn(d1/2, d2/2) *
-               exp(d1*x) / (d1*exp(2*x)+d2)**((d1+d2)/2))
+                exp(d1*x) / (d1*exp(2*x)+d2)**((d1+d2)/2))
 
 
 def FisherZ(name, d1, d2):

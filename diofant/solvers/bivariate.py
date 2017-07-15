@@ -56,8 +56,8 @@ def _mostfunc(lhs, func, X=None):
     E**x
     """
     fterms = [tmp for tmp in lhs.atoms(func) if (not X or
-        X.is_Symbol and X in tmp.free_symbols or
-        not X.is_Symbol and tmp.has(X))]
+                                                 X.is_Symbol and X in tmp.free_symbols or
+                                                 not X.is_Symbol and tmp.has(X))]
     if len(fterms) == 1:
         return fterms[0]
     elif fterms:
@@ -180,7 +180,7 @@ def _solve_lambert(f, symbol, gens):
 
     lamcheck = [tmp for tmp in gens
                 if (tmp.func in [exp, log] or
-                (tmp.is_Pow and symbol in tmp.exp.free_symbols))]
+                    (tmp.is_Pow and symbol in tmp.exp.free_symbols))]
     if not lamcheck:
         raise NotImplementedError()
 

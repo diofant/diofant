@@ -164,7 +164,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
 
     # See the docstring of _desolve for more details.
     hints = _desolve(eq, func=func,
-        hint=hint, simplify=True, type='pde', **kwargs)
+                     hint=hint, simplify=True, type='pde', **kwargs)
     eq = hints.pop('eq', False)
     all_ = hints.pop('all', False)
 
@@ -175,11 +175,11 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
         failed_hints = {}
         gethints = classify_pde(eq, dict=True)
         pdedict.update({'order': gethints['order'],
-            'default': gethints['default']})
+                        'default': gethints['default']})
         for hint in hints:
             try:
                 rv = _helper_simplify(eq, hint, hints[hint]['func'],
-                    hints[hint]['order'], hints[hint][hint], solvefun)
+                                      hints[hint]['order'], hints[hint][hint], solvefun)
             except NotImplementedError as detail:  # pragma: no cover
                 failed_hints[hint] = detail
             else:
@@ -189,7 +189,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
 
     else:
         return _helper_simplify(eq, hints['hint'],
-            hints['func'], hints['order'], hints[hints['hint']], solvefun)
+                                hints['func'], hints['order'], hints[hints['hint']], solvefun)
 
 
 def _helper_simplify(eq, hint, func, order, match, solvefun):
@@ -205,7 +205,7 @@ def _helper_simplify(eq, hint, func, order, match, solvefun):
     else:
         solvefunc = globals()["pde_" + hint]
     return _handle_Integral(solvefunc(eq, func, order,
-        match, solvefun), func, order, hint)
+                                      match, solvefun), func, order, hint)
 
 
 def _handle_Integral(expr, func, order, hint):

@@ -320,8 +320,8 @@ def test_log_expand():
     x, y, z = symbols('x,y,z', positive=True)
     assert log(x*(y + z)).expand(mul=False) == log(x) + log(y + z)
     assert log(log(x**2)*log(y*z)).expand() in [log(2*log(x)*log(y) +
-        2*log(x)*log(z)), log(log(x)*log(z) + log(y)*log(x)) + log(2),
-        log((log(y) + log(z))*log(x)) + log(2)]
+                                                    2*log(x)*log(z)), log(log(x)*log(z) + log(y)*log(x)) + log(2),
+                                                log((log(y) + log(z))*log(x)) + log(2)]
     assert log(x**log(x**2)).expand(deep=False) == log(x)*log(x**2)
     assert log(x**log(x**2)).expand() == 2*log(x)**2
     assert (log(x*(y + z))*(x + y)), expand(mul=True, log=True) == y*log(
@@ -467,7 +467,7 @@ def test_log_product():
     f, g = Function('f'), Function('g')
     assert simplify(log(Product(x**i, (i, 1, n)))) == Sum(i*log(x), (i, 1, n))
     assert simplify(log(Product(x**i*y**j, (i, 1, n), (j, 1, m)))) == \
-            log(Product(x**i*y**j, (i, 1, n), (j, 1, m)))
+        log(Product(x**i*y**j, (i, 1, n), (j, 1, m)))
 
     expr = log(Product(-2, (n, 0, 4)))
     assert simplify(expr) == expr

@@ -19,7 +19,7 @@ from diofant import S
 sy = diofant
 from diofant.abc import x, y, z
 from diofant.printing.theanocode import (theano_code, dim_handling,
-        theano_function)
+                                         theano_function)
 
 
 def fgraph_of(*exprs):
@@ -165,7 +165,7 @@ def test_theano_function_numpy():
     assert np.linalg.norm(f([1, 2], [3, 4]) - np.asarray([4, 6])) < 1e-9
 
     f = theano_function([x, y], [x+y], dtypes={x: 'float64', y: 'float64'},
-                                     dim=1)
+                        dim=1)
     xx = np.arange(3).astype('float64')
     yy = 2*np.arange(3).astype('float64')
     assert np.linalg.norm(f(xx, yy) - 3*np.arange(3)) < 1e-9
@@ -174,7 +174,7 @@ def test_theano_function_numpy():
 def test_theano_function_kwargs():
     import numpy as np
     f = theano_function([x, y, z], [x+y], dim=1, on_unused_input='ignore',
-            dtypes={x: 'float64', y: 'float64', z: 'float64'})
+                        dtypes={x: 'float64', y: 'float64', z: 'float64'})
     assert np.linalg.norm(f([1, 2], [3, 4], [0, 0]) - np.asarray([4, 6])) < 1e-9
 
     f = theano_function([x, y, z], [x+y],
@@ -189,7 +189,7 @@ def test_theano_function_kwargs():
 def test_slice():
     assert theano_code(slice(1, 2, 3)) == slice(1, 2, 3)
     assert str(theano_code(slice(1, x, 3), dtypes={x: 'int32'})) ==\
-           str(slice(1, xt, 3))
+        str(slice(1, xt, 3))
 
 
 def test_MatrixSlice():

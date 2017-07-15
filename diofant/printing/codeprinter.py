@@ -153,7 +153,7 @@ class CodePrinter(StrPrinter):
         else:
             lines = self._format_code(lines)
             result = (self._number_symbols, self._not_supported,
-                    "\n".join(lines))
+                      "\n".join(lines))
         del self._not_supported
         del self._number_symbols
         return result
@@ -200,7 +200,7 @@ class CodePrinter(StrPrinter):
 
                 for term in dummies[d]:
                     if term in dummies and not ([list(f.keys()) for f in dummies[term]]
-                            == [[None] for f in dummies[term]]):  # pragma: no cover
+                                                == [[None] for f in dummies[term]]):  # pragma: no cover
                         # If one factor in the term has it's own internal
                         # contractions, those must be computed first.
                         # (temporary variables?)
@@ -242,7 +242,7 @@ class CodePrinter(StrPrinter):
             rinds = linds
         if rinds != linds:
             raise ValueError("lhs indices must match non-dummy"
-                    " rhs indices in %s" % expr)
+                             " rhs indices in %s" % expr)
 
         return self._sort_optimized(rinds, assign_to)
 
@@ -334,7 +334,7 @@ class CodePrinter(StrPrinter):
                 lines.append(code0)
             return "\n".join(lines)
         elif self._settings["contract"] and (lhs.has(IndexedBase) or
-                rhs.has(IndexedBase)):
+                                             rhs.has(IndexedBase)):
             # Here we check if there is looping to be done, and if so
             # print the required loops.
             return self._doprint_loops(rhs, lhs)
@@ -379,7 +379,7 @@ class CodePrinter(StrPrinter):
         # A Number symbol that is not implemented here or with _printmethod
         # is registered and evaluated
         self._number_symbols.add((expr,
-            self._print(expr.evalf(self._settings["precision"]))))
+                                  self._print(expr.evalf(self._settings["precision"]))))
         return str(expr)
 
     def _print_Dummy(self, expr):
@@ -404,26 +404,26 @@ class CodePrinter(StrPrinter):
     def _print_And(self, expr):
         PREC = precedence(expr)
         return (" %s " % self._operators['and']).join(self.parenthesize(a, PREC)
-                for a in sorted(expr.args, key=default_sort_key))
+                                                      for a in sorted(expr.args, key=default_sort_key))
 
     def _print_Or(self, expr):
         PREC = precedence(expr)
         return (" %s " % self._operators['or']).join(self.parenthesize(a, PREC)
-                for a in sorted(expr.args, key=default_sort_key))
+                                                     for a in sorted(expr.args, key=default_sort_key))
 
     def _print_Xor(self, expr):
         if self._operators.get('xor') is None:
             return self._print_not_supported(expr)
         PREC = precedence(expr)
         return (" %s " % self._operators['xor']).join(self.parenthesize(a, PREC)
-                for a in expr.args)
+                                                      for a in expr.args)
 
     def _print_Equivalent(self, expr):
         if self._operators.get('equivalent') is None:
             return self._print_not_supported(expr)
         PREC = precedence(expr)
         return (" %s " % self._operators['equivalent']).join(self.parenthesize(a, PREC)
-                for a in expr.args)
+                                                             for a in expr.args)
 
     def _print_Not(self, expr):
         PREC = precedence(expr)

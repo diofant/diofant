@@ -294,7 +294,7 @@ class CythonCodeWrapper(CodeWrapper):
 
             # C Function Header Import
             headers.append(self.pyx_header.format(header_file=prefix,
-                    prototype=prototype))
+                                                  prototype=prototype))
 
             # Partition the C function arguments into categories
             py_rets, py_args, py_loc, py_inf = self._partition_args(routine.arguments)
@@ -326,7 +326,7 @@ class CythonCodeWrapper(CodeWrapper):
                 body = body + '    return ' + rets
 
             functions.append(self.pyx_func.format(name=name, arg_string=arg_string,
-                    declarations=declarations, body=body))
+                                                  declarations=declarations, body=body))
 
         # Write text to file
         if self._need_numpy:
@@ -415,7 +415,7 @@ class F2PyCodeWrapper(CodeWrapper):
 
 def _get_code_wrapper_class(backend):
     wrappers = {'F2PY': F2PyCodeWrapper, 'CYTHON': CythonCodeWrapper,
-        'DUMMY': DummyWrapper}
+                'DUMMY': DummyWrapper}
     return wrappers[backend.upper()]
 
 

@@ -354,7 +354,7 @@ class sin(TrigonometricFunction):
                     return (-1)**((n - 1)/2)*chebyshevt(n, sin(x))
                 else:
                     return expand_mul((-1)**(n/2 - 1)*cos(x)*chebyshevu(n -
-                        1, sin(x)), deep=False)
+                                                                        1, sin(x)), deep=False)
             pi_coeff = _pi_coeff(arg)
             if pi_coeff is not None:
                 if pi_coeff.is_Rational:
@@ -676,8 +676,8 @@ class cos(TrigonometricFunction):
             3: S.Half,
             5: (sqrt(5) + 1)/4,
             17: sqrt((15 + sqrt(17))/32 + sqrt(2)*(sqrt(17 - sqrt(17)) +
-                sqrt(sqrt(2)*(-8*sqrt(17 + sqrt(17)) - (1 - sqrt(17))
-                * sqrt(17 - sqrt(17))) + 6*sqrt(17) + 34))/32)
+                                                   sqrt(sqrt(2)*(-8*sqrt(17 + sqrt(17)) - (1 - sqrt(17))
+                                                                 * sqrt(17 - sqrt(17))) + 6*sqrt(17) + 34))/32)
             # 65537 and 257 are the only other known Fermat primes
             # Please add if you would like them
         }

@@ -93,13 +93,13 @@ def test_B4():
 
 def test_C1():
     assert (factorial(50) ==
-        30414093201713378043612608166064768844377641568960512000000000000)
+            30414093201713378043612608166064768844377641568960512000000000000)
 
 
 def test_C2():
     assert (factorint(factorial(50)) == {2: 47, 3: 22, 5: 12, 7: 8,
-        11: 4, 13: 3, 17: 2, 19: 2, 23: 2, 29: 1, 31: 1, 37: 1,
-        41: 1, 43: 1, 47: 1})
+                                         11: 4, 13: 3, 17: 2, 19: 2, 23: 2, 29: 1, 31: 1, 37: 1,
+                                         41: 1, 43: 1, 47: 1})
 
 
 def test_C3():
@@ -196,7 +196,7 @@ def test_C21():
 @pytest.mark.xfail
 def test_C22():
     test = simplify(((6 - 4*sqrt(2))*log(3 - 2*sqrt(2)) + (3 - 2*sqrt(2))*log(17
-        - 12*sqrt(2)) + 32 - 24*sqrt(2)) / (48*sqrt(2) - 72))
+                                                                              - 12*sqrt(2)) + 32 - 24*sqrt(2)) / (48*sqrt(2) - 72))
     good = sqrt(2)/3 - log(sqrt(2) - 1)/3
     assert test == good
 
@@ -408,15 +408,15 @@ def test_H14():
     p = (x + 1) ** 20
     ep = expand(p)
     assert ep == (1 + 20*x + 190*x**2 + 1140*x**3 + 4845*x**4 + 15504*x**5
-        + 38760*x**6 + 77520*x**7 + 125970*x**8 + 167960*x**9 + 184756*x**10
-        + 167960*x**11 + 125970*x**12 + 77520*x**13 + 38760*x**14 + 15504*x**15
-        + 4845*x**16 + 1140*x**17 + 190*x**18 + 20*x**19 + x**20)
+                  + 38760*x**6 + 77520*x**7 + 125970*x**8 + 167960*x**9 + 184756*x**10
+                  + 167960*x**11 + 125970*x**12 + 77520*x**13 + 38760*x**14 + 15504*x**15
+                  + 4845*x**16 + 1140*x**17 + 190*x**18 + 20*x**19 + x**20)
     dep = diff(ep, x)
     assert dep == (20 + 380*x + 3420*x**2 + 19380*x**3 + 77520*x**4
-        + 232560*x**5 + 542640*x**6 + 1007760*x**7 + 1511640*x**8 + 1847560*x**9
-        + 1847560*x**10 + 1511640*x**11 + 1007760*x**12 + 542640*x**13
-        + 232560*x**14 + 77520*x**15 + 19380*x**16 + 3420*x**17 + 380*x**18
-        + 20*x**19)
+                   + 232560*x**5 + 542640*x**6 + 1007760*x**7 + 1511640*x**8 + 1847560*x**9
+                   + 1847560*x**10 + 1511640*x**11 + 1007760*x**12 + 542640*x**13
+                   + 232560*x**14 + 77520*x**15 + 19380*x**16 + 3420*x**17 + 380*x**18
+                   + 20*x**19)
     assert factor(dep) == 20*(1 + x)**19
 
 
@@ -426,9 +426,9 @@ def test_H15():
 
 def test_H16():
     assert factor(x**100 - 1) == ((x - 1)*(x + 1)*(x**2 + 1)*(x**4 - x**3
-        + x**2 - x + 1)*(x**4 + x**3 + x**2 + x + 1)*(x**8 - x**6 + x**4
-        - x**2 + 1)*(x**20 - x**15 + x**10 - x**5 + 1)*(x**20 + x**15 + x**10
-        + x**5 + 1)*(x**40 - x**30 + x**20 - x**10 + 1))
+                                                              + x**2 - x + 1)*(x**4 + x**3 + x**2 + x + 1)*(x**8 - x**6 + x**4
+                                                                                                            - x**2 + 1)*(x**20 - x**15 + x**10 - x**5 + 1)*(x**20 + x**15 + x**10
+                                                                                                                                                            + x**5 + 1)*(x**40 - x**30 + x**20 - x**10 + 1))
 
 
 @pytest.mark.slow
@@ -656,7 +656,7 @@ def test_K4():
 def test_K5():
     x, y = symbols('x, y', extended_real=True)
     assert tan(x + I*y).expand(complex=True) == (sin(2*x)/(cos(2*x) +
-        cosh(2*y)) + I*sinh(2*y)/(cos(2*x) + cosh(2*y)))
+                                                           cosh(2*y)) + I*sinh(2*y)/(cos(2*x) + cosh(2*y)))
 
 
 def test_K6():
@@ -726,7 +726,7 @@ def test_L7():
 @pytest.mark.xfail
 def test_L8():
     assert simplify((4*x + 4*sqrt(x) + 1)**(sqrt(x)/(2*sqrt(x) + 1))
-        * (2*sqrt(x) + 1)**(1/(2*sqrt(x) + 1)) - 2*sqrt(x) - 1) == 0
+                    * (2*sqrt(x) + 1)**(1/(2*sqrt(x) + 1)) - 2*sqrt(x) - 1) == 0
 
 
 @pytest.mark.xfail
@@ -822,7 +822,7 @@ def test_M15():
 
 def test_M16():
     assert solve(sin(x) - tan(x), x) == [{x: 0}, {x: -pi},
-                                                    {x: pi}, {x: 2*pi}]
+                                         {x: pi}, {x: 2*pi}]
 
 
 @pytest.mark.xfail
@@ -1152,13 +1152,13 @@ def test_O10():
                               [3],
                               [5]]),
                               Matrix([
-                              [Rational(23, 19)],
-                              [Rational(63, 19)],
-                              [Rational(-47, 19)]]),
+                                  [Rational(23, 19)],
+                                  [Rational(63, 19)],
+                                  [Rational(-47, 19)]]),
                               Matrix([
-                              [Rational(1692, 353)],
-                              [Rational(-1551, 706)],
-                              [Rational(-423, 706)]])]
+                                  [Rational(1692, 353)],
+                                  [Rational(-1551, 706)],
+                                  [Rational(-423, 706)]])]
 
 
 def test_P2():
@@ -1184,7 +1184,7 @@ def test_P3():
     A222 = A[(3, 0), (2, 1)]   # unsupported raises exception
     A22 = BlockMatrix([A221, A222])
     B = BlockMatrix([[A11, A12],
-                    [A21, A22]])
+                     [A21, A22]])
     assert B == Matrix([[12, 13, 14, 13, 11, 14],
                         [22, 22, 24, 23, 21, 24],
                         [32, 33, 34, 43, 41, 44],
@@ -1430,30 +1430,30 @@ def test_P27():
                 [0,  0, 0, a, 0],
                 [0, -2, 0, 0, 2]])
     assert M.eigenvects() == [(a, 3, [Matrix([[1],
-                                       [0],
-        [0],
-        [0],
-        [0]]),
-        Matrix([[0],
-                                       [0],
-                                       [1],
-                                       [0],
-                                       [0]]),
-        Matrix([[0],
-                                       [0],
-                                       [0],
-                                       [1],
-                                       [0]])]),
-        (1 - I, 1, [Matrix([[          0],
-                                            [-1/(-1 + I)],
-                                            [          0],
-                                            [          0],
-                                            [          1]])]),
-        (1 + I, 1, [Matrix([[          0],
-                                            [-1/(-1 - I)],
-                                            [          0],
-                                            [          0],
-                                            [          1]])])]
+                                              [0],
+                                              [0],
+                                              [0],
+                                              [0]]),
+                                      Matrix([[0],
+                                              [0],
+                                              [1],
+                                              [0],
+                                              [0]]),
+                                      Matrix([[0],
+                                              [0],
+                                              [0],
+                                              [1],
+                                              [0]])]),
+                              (1 - I, 1, [Matrix([[          0],
+                                                  [-1/(-1 + I)],
+                                                  [          0],
+                                                  [          0],
+                                                  [          1]])]),
+                              (1 + I, 1, [Matrix([[          0],
+                                                  [-1/(-1 - I)],
+                                                  [          0],
+                                                  [          0],
+                                                  [          1]])])]
 
 
 def test_P30():
@@ -1553,7 +1553,7 @@ def test_P40():
 def test_P41():
     r, t = symbols('r t', extended_real=True)
     assert hessian(r**2*sin(t), (r, t)) == Matrix([[  2*sin(t),   2*r*cos(t)],
-                                                 [2*r*cos(t), -r**2*sin(t)]])
+                                                   [2*r*cos(t), -r**2*sin(t)]])
 
 
 def test_P42():
@@ -1566,7 +1566,7 @@ def test_P43():
     r, t = symbols('r t', extended_real=True)
     M = Matrix([r*cos(t), r*sin(t)])
     assert __my_jacobian(M, [r, t]) == Matrix([[cos(t), -r*sin(t)],
-                                             [sin(t),  r*cos(t)]])
+                                               [sin(t),  r*cos(t)]])
 
 
 def test_P44():
@@ -1879,13 +1879,13 @@ def test_T3():
 
 def test_T4():
     assert limit((exp(x*exp(-x)/(exp(-x) + exp(-2*x**2/(x + 1))))
-                 - exp(x))/x, x, oo) == -exp(2)
+                  - exp(x))/x, x, oo) == -exp(2)
 
 
 @pytest.mark.slow
 def test_T5():
     assert limit(x*log(x)*log(x*exp(x) - x**2)**2/log(log(x**2
-                 + 2*exp(exp(3*x**3*log(x))))), x, oo) == Rational(1, 3)
+                                                          + 2*exp(exp(3*x**3*log(x))))), x, oo) == Rational(1, 3)
 
 
 def test_T6():
@@ -2039,7 +2039,7 @@ def test_U17():
                      x1 + x2 + 3*x3 - x4 >= 4,
                      x1 >= 0, x2 >= 0, x3 >= 0,
                      x4 >= 0], x1, x2,
-                     x3, x4) == (4, {x1: 2, x2: 0, x3: 2, x4: 4})
+                    x3, x4) == (4, {x1: 2, x2: 0, x3: 2, x4: 4})
 
 
 @pytest.mark.xfail
@@ -2118,7 +2118,7 @@ def test_V14():
     r1 = integrate(log(abs(x**2 - y**2)), x)
     # Piecewise result does not simplify to the desired result.
     assert (r1.simplify() == x*log(abs(x**2 - y**2))
-                            + y*log(x + y) - y*log(x - y) - 2*x)
+            + y*log(x + y) - y*log(x - y) - 2*x)
 
 
 def test_V15():
@@ -2131,7 +2131,7 @@ def test_V15():
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_V17():
     r1 = integrate((diff(f(x), x)*g(x)
-                   - f(x)*diff(g(x), x))/(f(x)**2 - g(x)**2), x)
+                    - f(x)*diff(g(x), x))/(f(x)**2 - g(x)**2), x)
     # integral not calculated
     assert simplify(r1 - (f(x) - g(x))/(f(x) + g(x))/2) == 0
 
@@ -2249,7 +2249,7 @@ def test_W16():
 def test_W17():
     a, b = symbols('a b', extended_real=True, positive=True)
     assert integrate(exp(-a*x)*besselj(0, b*x),
-                 (x, 0, oo)) == 1/(b*sqrt(a**2/b**2 + 1))
+                     (x, 0, oo)) == 1/(b*sqrt(a**2/b**2 + 1))
 
 
 def test_W18():
@@ -2266,7 +2266,7 @@ def test_W20():
 
 def test_W21():
     assert abs(N(integrate(x**2*polylog(3, 1/(x + 1)), (x, 0, 1)))
-        - 0.210882859565594) < 1e-15
+               - 0.210882859565594) < 1e-15
 
 
 def test_W22():
@@ -2377,7 +2377,7 @@ def test_X6():
     # expected result => (B A - A B) t^2/2 + O(t^3)   [Stanly Steinberg]
     a, b = symbols('a b', commutative=False, scalar=False)
     assert (series(exp((a + b)*x) - exp(a*x) * exp(b*x), x, x0=0, n=3) ==
-              x**2*(-a*b/2 + b*a/2) + O(x**3))
+            x**2*(-a*b/2 + b*a/2) + O(x**3))
 
 
 def test_X7():
@@ -2507,7 +2507,7 @@ def test_Y5_Y6():
     F, _, _ = laplace_transform(diff(y(t), t, 2)
                                 + y(t)
                                 - 4*(Heaviside(t - 1)
-                                - Heaviside(t - 2)), t, s)
+                                     - Heaviside(t - 2)), t, s)
     # Laplace transform for diff() not calculated
     # https://github.com/sympy/sympy/issues/7176
     assert (F == s**2*LaplaceTransform(y(t), t, s) - s
@@ -2603,10 +2603,10 @@ def test_Z4():
     # raises ValueError: Polynomial or rational function expected,
     #     got '(c**2 - c**n)/(c - c**n)
     s = rsolve(r(n) - ((1 + c - c**(n-1) - c**(n+1))/(1 - c**n)*r(n - 1)
-                   - c*(1 - c**(n-2))/(1 - c**(n-1))*r(n - 2) + 1),
-           r(n), {r(1): 1, r(2): (2 + 2*c + c**2)/(1 + c)})
+                       - c*(1 - c**(n-2))/(1 - c**(n-1))*r(n - 2) + 1),
+               r(n), {r(1): 1, r(2): (2 + 2*c + c**2)/(1 + c)})
     assert (s - (c*(n + 1)*(c*(n + 1) - 2*c - 2) +
-             (n + 1)*c**2 + 2*c - n)/((c-1)**3*(c+1)) == 0)
+                 (n + 1)*c**2 + 2*c - n)/((c-1)**3*(c+1)) == 0)
 
 
 def test_Z5():

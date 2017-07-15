@@ -45,7 +45,7 @@ def test_apart_symbolic():
     f = a*x**4 + (2*b + 2*a*c)*x**3 + (4*b*c - a**2 + a*c**2)*x**2 + \
         (-2*a*b + 2*b*c**2)*x - b**2
     g = a**2*x**4 + (2*a*b + 2*c*a**2)*x**3 + (4*a*b*c + b**2 +
-        a**2*c**2)*x**2 + (2*c*b**2 + 2*a*b*c**2)*x + b**2*c**2
+                                               a**2*c**2)*x**2 + (2*c*b**2 + 2*a*b*c**2)*x + b**2*c**2
 
     assert apart(f/g, x) == 1/a - 1/(x + c)**2 - b**2/(a*(a*x + b)**2)
 
@@ -78,16 +78,16 @@ def test_apart_full():
     assert apart(f, full=False) == f
     assert apart(f, full=True) == \
         RootSum(x**3 + x + 1,
-        Lambda(a, (6*a**2/31 - 9*a/31 + Rational(4, 31))/(x - a)), auto=False)
+                Lambda(a, (6*a**2/31 - 9*a/31 + Rational(4, 31))/(x - a)), auto=False)
 
     f = 1/(x**5 + 1)
 
     assert apart(f, full=False) == \
         (-Rational(1, 5))*((x**3 - 2*x**2 + 3*x - 4)/(x**4 - x**3 + x**2 -
-         x + 1)) + (Rational(1, 5))/(x + 1)
+                                                      x + 1)) + (Rational(1, 5))/(x + 1)
     assert apart(f, full=True) == \
         -RootSum(x**4 - x**3 + x**2 - x + 1,
-        Lambda(a, a/(x - a)), auto=False)/5 + (Rational(1, 5))/(x + 1)
+                 Lambda(a, a/(x - a)), auto=False)/5 + (Rational(1, 5))/(x + 1)
 
 
 def test_apart_undetermined_coeffs():
@@ -114,21 +114,21 @@ def test_apart_list():
 
     f = (-2*x - 2*x**2) / (3*x**2 - 6*x)
     assert apart_list(f, x, dummies=numbered_symbols("w")) == (-1,
-        Poly(Rational(2, 3), x, domain='QQ'),
-        [(Poly(w0 - 2, w0, domain='ZZ'), Lambda(_a, 2), Lambda(_a, -_a + x), 1)])
+                                                               Poly(Rational(2, 3), x, domain='QQ'),
+                                                               [(Poly(w0 - 2, w0, domain='ZZ'), Lambda(_a, 2), Lambda(_a, -_a + x), 1)])
 
     assert apart_list(2/(x**2-2), x, dummies=numbered_symbols("w")) == (1,
-                                      Poly(0, x, domain='ZZ'),
-        [(Poly(w0**2 - 2, w0, domain='ZZ'),
-                                        Lambda(_a, _a/2),
-                                        Lambda(_a, -_a + x), 1)])
+                                                                        Poly(0, x, domain='ZZ'),
+                                                                        [(Poly(w0**2 - 2, w0, domain='ZZ'),
+                                                                          Lambda(_a, _a/2),
+                                                                            Lambda(_a, -_a + x), 1)])
 
     f = 36 / (x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2)
     assert apart_list(f, x, dummies=numbered_symbols("w")) == (1,
-                             Poly(0, x, domain='ZZ'),
-        [(Poly(w0 - 2, w0, domain='ZZ'), Lambda(_a, 4), Lambda(_a, -_a + x), 1),
-                              (Poly(w1**2 - 1, w1, domain='ZZ'), Lambda(_a, -3*_a - 6), Lambda(_a, -_a + x), 2),
-                              (Poly(w2 + 1, w2, domain='ZZ'), Lambda(_a, -4), Lambda(_a, -_a + x), 1)])
+                                                               Poly(0, x, domain='ZZ'),
+                                                               [(Poly(w0 - 2, w0, domain='ZZ'), Lambda(_a, 4), Lambda(_a, -_a + x), 1),
+                                                                   (Poly(w1**2 - 1, w1, domain='ZZ'), Lambda(_a, -3*_a - 6), Lambda(_a, -_a + x), 2),
+                                                                   (Poly(w2 + 1, w2, domain='ZZ'), Lambda(_a, -4), Lambda(_a, -_a + x), 1)])
 
 
 def test_assemble_partfrac_list():

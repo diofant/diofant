@@ -56,7 +56,7 @@ class CantSympify:
 
 
 def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
-        evaluate=None):
+            evaluate=None):
     """Converts an arbitrary expression to a type that can be used inside Diofant.
 
     For example, it will convert Python ints into instance of diofant.Rational,

@@ -30,10 +30,10 @@ def test_radsimp():
         (-sqrt(30) + 2*sqrt(3) + 3*sqrt(2), 12)
     assert fraction(radsimp(1/(1 + r2 + r3 + r5))) == (
         (-34*sqrt(10) - 26*sqrt(15) - 55*sqrt(3) - 61*sqrt(2) + 14*sqrt(30) +
-        93 + 46*sqrt(6) + 53*sqrt(5), 71))
+         93 + 46*sqrt(6) + 53*sqrt(5), 71))
     assert fraction(radsimp(1/(r2 + r3 + r5 + r7))) == (
         (-50*sqrt(42) - 133*sqrt(5) - 34*sqrt(70) - 145*sqrt(3) + 22*sqrt(105)
-        + 185*sqrt(2) + 62*sqrt(30) + 135*sqrt(7), 215))
+         + 185*sqrt(2) + 62*sqrt(30) + 135*sqrt(7), 215))
     z = radsimp(1/(1 + r2/3 + r3/5 + r5 + r7))
     assert len((3616791619821680643598*z).args) == 16
     assert radsimp(1/z) == 1/z
@@ -42,24 +42,24 @@ def test_radsimp():
         sqrt(2)/6
     assert radsimp(1/(r2*a + r3 + r5 + r7)) == (
         (8*sqrt(2)*a**7 - 8*sqrt(7)*a**6 - 8*sqrt(5)*a**6 - 8*sqrt(3)*a**6 -
-        180*sqrt(2)*a**5 + 8*sqrt(30)*a**5 + 8*sqrt(42)*a**5 + 8*sqrt(70)*a**5
-        - 24*sqrt(105)*a**4 + 84*sqrt(3)*a**4 + 100*sqrt(5)*a**4 +
-        116*sqrt(7)*a**4 - 72*sqrt(70)*a**3 - 40*sqrt(42)*a**3 -
-        8*sqrt(30)*a**3 + 782*sqrt(2)*a**3 - 462*sqrt(3)*a**2 -
-        302*sqrt(7)*a**2 - 254*sqrt(5)*a**2 + 120*sqrt(105)*a**2 -
-        795*sqrt(2)*a - 62*sqrt(30)*a + 82*sqrt(42)*a + 98*sqrt(70)*a -
-        118*sqrt(105) + 59*sqrt(7) + 295*sqrt(5) + 531*sqrt(3))/(16*a**8 -
-        480*a**6 + 3128*a**4 - 6360*a**2 + 3481))
+         180*sqrt(2)*a**5 + 8*sqrt(30)*a**5 + 8*sqrt(42)*a**5 + 8*sqrt(70)*a**5
+         - 24*sqrt(105)*a**4 + 84*sqrt(3)*a**4 + 100*sqrt(5)*a**4 +
+         116*sqrt(7)*a**4 - 72*sqrt(70)*a**3 - 40*sqrt(42)*a**3 -
+         8*sqrt(30)*a**3 + 782*sqrt(2)*a**3 - 462*sqrt(3)*a**2 -
+         302*sqrt(7)*a**2 - 254*sqrt(5)*a**2 + 120*sqrt(105)*a**2 -
+         795*sqrt(2)*a - 62*sqrt(30)*a + 82*sqrt(42)*a + 98*sqrt(70)*a -
+         118*sqrt(105) + 59*sqrt(7) + 295*sqrt(5) + 531*sqrt(3))/(16*a**8 -
+                                                                  480*a**6 + 3128*a**4 - 6360*a**2 + 3481))
     assert radsimp(1/(r2*a + r2*b + r3 + r7)) == (
         (sqrt(2)*a*(a + b)**2 - 5*sqrt(2)*a + sqrt(42)*a + sqrt(2)*b*(a +
-        b)**2 - 5*sqrt(2)*b + sqrt(42)*b - sqrt(7)*(a + b)**2 - sqrt(3)*(a +
-        b)**2 - 2*sqrt(3) + 2*sqrt(7))/(2*a**4 + 8*a**3*b + 12*a**2*b**2 -
-        20*a**2 + 8*a*b**3 - 40*a*b + 2*b**4 - 20*b**2 + 8))
+                                                                      b)**2 - 5*sqrt(2)*b + sqrt(42)*b - sqrt(7)*(a + b)**2 - sqrt(3)*(a +
+                                                                                                                                       b)**2 - 2*sqrt(3) + 2*sqrt(7))/(2*a**4 + 8*a**3*b + 12*a**2*b**2 -
+                                                                                                                                                                       20*a**2 + 8*a*b**3 - 40*a*b + 2*b**4 - 20*b**2 + 8))
     assert radsimp(1/(r2*a + r2*b + r2*c + r2*d)) == \
         sqrt(2)/(2*a + 2*b + 2*c + 2*d)
     assert radsimp(1/(1 + r2*a + r2*b + r2*c + r2*d)) == (
         (sqrt(2)*a + sqrt(2)*b + sqrt(2)*c + sqrt(2)*d - 1)/(2*a**2 + 4*a*b +
-        4*a*c + 4*a*d + 2*b**2 + 4*b*c + 4*b*d + 2*c**2 + 4*c*d + 2*d**2 - 1))
+                                                             4*a*c + 4*a*d + 2*b**2 + 4*b*c + 4*b*d + 2*c**2 + 4*c*d + 2*d**2 - 1))
     assert radsimp((y**2 - x)/(y - sqrt(x))) == \
         sqrt(x) + y
     assert radsimp(-(y**2 - x)/(y - sqrt(x))) == \
@@ -72,7 +72,7 @@ def test_radsimp():
     assert radsimp(e) == x*(3 + 3*sqrt(2))*(3*x - 3*sqrt(y))
     assert radsimp(1/e) == (
         (-9*x + 9*sqrt(2)*x - 9*sqrt(y) + 9*sqrt(2)*sqrt(y))/(9*x*(9*x**2 -
-        9*y)))
+                                                                   9*y)))
     assert radsimp(1 + 1/(1 + sqrt(3))) == \
         Mul(S.Half, -1 + sqrt(3), evaluate=False) + 1
     A = symbols("A", commutative=False)
@@ -97,23 +97,23 @@ def test_radsimp():
     # from issue sympy/sympy#5934
     eq = (
         (-240*sqrt(2)*sqrt(sqrt(5) + 5)*sqrt(8*sqrt(5) + 40) -
-        360*sqrt(2)*sqrt(-8*sqrt(5) + 40)*sqrt(-sqrt(5) + 5) -
-        120*sqrt(10)*sqrt(-8*sqrt(5) + 40)*sqrt(-sqrt(5) + 5) +
-        120*sqrt(2)*sqrt(-sqrt(5) + 5)*sqrt(8*sqrt(5) + 40) +
-        120*sqrt(2)*sqrt(-8*sqrt(5) + 40)*sqrt(sqrt(5) + 5) +
-        120*sqrt(10)*sqrt(-sqrt(5) + 5)*sqrt(8*sqrt(5) + 40) +
-        120*sqrt(10)*sqrt(-8*sqrt(5) + 40)*sqrt(sqrt(5) + 5))/(-36000 -
-        7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
-        24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
+         360*sqrt(2)*sqrt(-8*sqrt(5) + 40)*sqrt(-sqrt(5) + 5) -
+         120*sqrt(10)*sqrt(-8*sqrt(5) + 40)*sqrt(-sqrt(5) + 5) +
+         120*sqrt(2)*sqrt(-sqrt(5) + 5)*sqrt(8*sqrt(5) + 40) +
+         120*sqrt(2)*sqrt(-8*sqrt(5) + 40)*sqrt(sqrt(5) + 5) +
+         120*sqrt(10)*sqrt(-sqrt(5) + 5)*sqrt(8*sqrt(5) + 40) +
+         120*sqrt(10)*sqrt(-8*sqrt(5) + 40)*sqrt(sqrt(5) + 5))/(-36000 -
+                                                                7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
+                                                                                24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
     assert radsimp(eq) is S.NaN  # it's 0/0
 
     # work with normal form
     e = 1/sqrt(sqrt(7)/7 + 2*sqrt(2) + 3*sqrt(3) + 5*sqrt(5)) + 3
     assert radsimp(e) == (
         -sqrt(sqrt(7) + 14*sqrt(2) + 21*sqrt(3) +
-        35*sqrt(5))*(-11654899*sqrt(35) - 1577436*sqrt(210) - 1278438*sqrt(15)
-        - 1346996*sqrt(10) + 1635060*sqrt(6) + 5709765 + 7539830*sqrt(14) +
-        8291415*sqrt(21))/1300423175 + 3)
+              35*sqrt(5))*(-11654899*sqrt(35) - 1577436*sqrt(210) - 1278438*sqrt(15)
+                           - 1346996*sqrt(10) + 1635060*sqrt(6) + 5709765 + 7539830*sqrt(14) +
+                           8291415*sqrt(21))/1300423175 + 3)
 
     # obey power rules
     base = sqrt(3) - sqrt(2)
@@ -181,7 +181,7 @@ def test_collect_1():
 def test_collect_2():
     """Collect with respect to a sum"""
     assert collect(a*(cos(x) + sin(x)) + b*(cos(x) + sin(x)),
-        sin(x) + cos(x)) == (a + b)*(cos(x) + sin(x))
+                   sin(x) + cos(x)) == (a + b)*(cos(x) + sin(x))
 
 
 def test_collect_3():
@@ -282,7 +282,7 @@ def test_rcollect():
 def test_collect_func_xfail():
     # XXX: this test will pass when automatic constant distribution is removed (issue sympy/sympy#4596)
     assert collect(f, x, factor, evaluate=False) == {S.One: (a + 1)**3,
-                   x: 3*(a + 1)**2, x**2: 3*(a + 1), x**3: 1}
+                                                     x: 3*(a + 1)**2, x**2: 3*(a + 1), x**3: 1}
 
 
 @pytest.mark.xfail

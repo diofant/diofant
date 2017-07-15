@@ -462,7 +462,7 @@ def test_diofant__sets__sets__Complement():
 def test_diofant__sets__sets__SymmetricDifference():
     from diofant.sets.sets import FiniteSet, SymmetricDifference
     assert _test_args(SymmetricDifference(FiniteSet(1, 2, 3),
-           FiniteSet(2, 3, 4)))
+                                          FiniteSet(2, 3, 4)))
 
 
 def test_diofant__core__trace__Tr():
@@ -542,7 +542,7 @@ def test_diofant__stats__crv__ProductContinuousDomain():
 
 def test_diofant__stats__crv__ConditionalContinuousDomain():
     from diofant.stats.crv import (SingleContinuousDomain,
-            ConditionalContinuousDomain)
+                                   ConditionalContinuousDomain)
     D = SingleContinuousDomain(x, Interval(-oo, oo))
     assert _test_args(ConditionalContinuousDomain(D, x > 0))
 

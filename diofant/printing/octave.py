@@ -88,7 +88,7 @@ class OctaveCodePrinter(CodePrinter):
         for i in indices:
             # Octave arrays start at 1 and end at dimension
             var, start, stop = map(self._print,
-                    [i.label, i.lower + 1, i.upper + 1])
+                                   [i.label, i.lower + 1, i.upper + 1])
             open_lines.append("for %s = %s:%s" % (var, start, stop))
             close_lines.append("end")
         return open_lines, close_lines
@@ -221,7 +221,7 @@ class OctaveCodePrinter(CodePrinter):
             temp = Piecewise(*zip(expressions, conditions))
             return self._print(temp)
         if self._settings["contract"] and (lhs.has(IndexedBase) or
-                rhs.has(IndexedBase)):
+                                           rhs.has(IndexedBase)):
             # Here we check if there is looping to be done, and if so
             # print the required loops.
             return self._doprint_loops(rhs, lhs)
@@ -278,7 +278,7 @@ class OctaveCodePrinter(CodePrinter):
         J = Matrix([[k[1] + 1 for k in L]])
         AIJ = Matrix([[k[2] for k in L]])
         return "sparse(%s, %s, %s, %s, %s)" % (self._print(I), self._print(J),
-                                            self._print(AIJ), A.rows, A.cols)
+                                               self._print(AIJ), A.rows, A.cols)
 
     # FIXME: Str/CodePrinter could define each of these to call the _print
     # method from higher up the class hierarchy (see _print_NumberSymbol).

@@ -19,7 +19,7 @@ def test_fuzzy_group():
             None if None in i else (True if all(j for j in i) else False))
         assert _fuzzy_group(i, quick_exit=True) is (
             None if (i.count(False) > 1) else (None if None in i else (
-            True if all(j for j in i) else False)))
+                True if all(j for j in i) else False)))
 
 
 def test_fuzzy_not():

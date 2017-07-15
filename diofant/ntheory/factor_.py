@@ -13,7 +13,7 @@ from ..core.evalf import bitcount
 from ..core.compatibility import as_int, DIOFANT_INTS
 
 small_trailing = [i and max(int(not i % 2**j) and j for j in range(1, 8))
-    for i in range(256)]
+                  for i in range(256)]
 
 
 def smoothness(n):
@@ -929,7 +929,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                                verbose=verbose, visual=False)
     elif isinstance(n, Mul):
         factordict = {int(k): int(v) for k, v in
-                           list(n.as_powers_dict().items())}
+                      list(n.as_powers_dict().items())}
     elif isinstance(n, dict):
         factordict = n
     if factordict and (isinstance(n, Mul) or isinstance(n, dict)):
@@ -1522,7 +1522,7 @@ class divisor_sigma(Function):
                 raise ValueError("n must be a positive integer")
             else:
                 return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
-                           else e + 1 for p, e in factorint(n).items()])
+                             else e + 1 for p, e in factorint(n).items()])
 
 
 def core(n, t=2):

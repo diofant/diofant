@@ -106,8 +106,8 @@ def test_sdm_ecart():
 
 def test_sdm_nf_mora():
     f = sdm_from_dict({(1, 2, 1, 1): QQ(1), (1, 1, 2, 1): QQ(1),
-                (1, 0, 2, 1): QQ(1), (1, 0, 0, 3): QQ(1), (1, 1, 1, 0): QQ(1)},
-        grlex)
+                       (1, 0, 2, 1): QQ(1), (1, 0, 0, 3): QQ(1), (1, 1, 1, 0): QQ(1)},
+                      grlex)
     f1 = sdm_from_dict({(1, 1, 1, 0): QQ(1), (1, 0, 2, 0): QQ(1),
                         (1, 0, 0, 0): QQ(-1)}, grlex)
     f2 = sdm_from_dict({(1, 1, 1, 0): QQ(1)}, grlex)
@@ -133,8 +133,8 @@ def test_sdm_nf_mora():
 
 def test_sdm_nf_buchberger():
     f = sdm_from_dict({(1, 2, 1, 1): QQ(1), (1, 1, 2, 1): QQ(1),
-                (1, 0, 2, 1): QQ(1), (1, 0, 0, 3): QQ(1), (1, 1, 1, 0): QQ(1)},
-        grlex)
+                       (1, 0, 2, 1): QQ(1), (1, 0, 0, 3): QQ(1), (1, 1, 1, 0): QQ(1)},
+                      grlex)
     f1 = sdm_from_dict({(1, 1, 1, 0): QQ(1), (1, 0, 2, 0): QQ(1),
                         (1, 0, 0, 0): QQ(-1)}, grlex)
     f2 = sdm_from_dict({(1, 1, 1, 0): QQ(1)}, grlex)

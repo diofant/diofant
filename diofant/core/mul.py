@@ -774,7 +774,7 @@ class Mul(AssocOp):
         n, d = fraction(expr)
         if d.is_Mul:
             n, d = [i._eval_expand_mul(**hints) if i.is_Mul else i
-                for i in (n, d)]
+                    for i in (n, d)]
             expr = n/d
             if not expr.is_Mul:
                 return expr
@@ -1345,7 +1345,7 @@ class Mul(AssocOp):
                             if cdid:
                                 ndo = min(cdid, ndo)
                             nc[i] = Pow(new, ndo)*rejoin(nc[i][0],
-                                    nc[i][1] - ndo*old_nc[0][1])
+                                                         nc[i][1] - ndo*old_nc[0][1])
                         else:
                             ndo = 1
 

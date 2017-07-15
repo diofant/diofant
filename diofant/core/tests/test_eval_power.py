@@ -168,7 +168,7 @@ def test_sympyissue_4362():
     assert (b**(-S.One)).as_numer_denom() == ((notp + x)**2, notp**2)
     nonp = Symbol('nonp', nonpositive=True)
     assert (((1 + x/nonp)**-2)**(-S.One)).as_numer_denom() == ((-nonp -
-            x)**2, nonp**2)
+                                                                x)**2, nonp**2)
 
     n = Symbol('n', negative=True)
     assert (x**n).as_numer_denom() == (1, x**-n)
@@ -258,7 +258,7 @@ def test_sympyissue_6208():
 def test_sympyissue_6990():
     assert (sqrt(a + b*x + x**2)).series(x, 0, 3).removeO() == \
         b*x/(2*sqrt(a)) + x**2*(1/(2*sqrt(a)) -
-        b**2/(8*a**Rational(3, 2))) + sqrt(a)
+                                b**2/(8*a**Rational(3, 2))) + sqrt(a)
 
 
 def test_sympyissue_6068():

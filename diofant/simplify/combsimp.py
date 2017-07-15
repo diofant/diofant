@@ -63,19 +63,19 @@ def combsimp(expr):
     as_binomial = expr.has(binomial)
 
     expr = expr.replace(binomial,
-        lambda n, k: _rf((n - k + 1).expand(), k.expand())/_rf(1, k.expand()))
+                        lambda n, k: _rf((n - k + 1).expand(), k.expand())/_rf(1, k.expand()))
     expr = expr.replace(factorial,
-        lambda n: _rf(1, n.expand()))
+                        lambda n: _rf(1, n.expand()))
     expr = expr.rewrite(gamma)
     expr = expr.replace(gamma,
-        lambda n: _rf(1, (n - 1).expand()))
+                        lambda n: _rf(1, (n - 1).expand()))
 
     if as_gamma:
         expr = expr.replace(_rf,
-            lambda a, b: gamma(a + b)/gamma(a))
+                            lambda a, b: gamma(a + b)/gamma(a))
     else:
         expr = expr.replace(_rf,
-            lambda a, b: binomial(a + b - 1, b)*gamma(b + 1))
+                            lambda a, b: binomial(a + b - 1, b)*gamma(b + 1))
 
     def rule(n, k):
         coeff, rewrite = S.One, False

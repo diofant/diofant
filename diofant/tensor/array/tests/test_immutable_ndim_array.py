@@ -229,7 +229,7 @@ def test_arithmetic():
     f2 /= 5
     assert f1 == f2
     assert f1[0, 0] == f1[0, 1] == f1[0, 2] == f1[1, 0] == f1[1, 1] == \
-    f1[1, 2] == f1[2, 0] == f1[2, 1] == f1[2, 2] == Rational(3, 5)
+        f1[1, 2] == f1[2, 0] == f1[2, 1] == f1[2, 2] == Rational(3, 5)
 
     assert type(a) == type(b) == type(c1) == type(c2) == type(d1) == type(d2) \
         == type(e1) == type(e2) == type(e3) == type(f1)

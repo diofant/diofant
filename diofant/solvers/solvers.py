@@ -495,7 +495,7 @@ def solve(f, *symbols, **flags):
 
         # rewrite hyperbolics in terms of exp
         f[i] = f[i].replace(lambda w: isinstance(w, HyperbolicFunction),
-                lambda w: w.rewrite(exp))
+                            lambda w: w.rewrite(exp))
 
         # replace min/max:
         f[i] = f[i].replace(lambda w: isinstance(w, (Min, Max)),
@@ -560,9 +560,9 @@ def solve(f, *symbols, **flags):
                 continue
             if a.args[0].is_extended_real is None and a.args[0].is_imaginary is not True:
                 raise NotImplementedError('solving %s when the argument '
-                    'is not real or imaginary.' % a)
+                                          'is not real or imaginary.' % a)
             reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
-                piece(a.args[0]*S.ImaginaryUnit)))
+                         piece(a.args[0]*S.ImaginaryUnit)))
         fi = fi.subs(reps)
 
         # arg
@@ -774,7 +774,7 @@ def solve(f, *symbols, **flags):
             warnings.warn(filldedent("""
                 \tWarning: assumptions concerning following solution(s)
                 can't be checked:""" + '\n\t' +
-                ', '.join(str(s) for s in got_None)))
+                                     ', '.join(str(s) for s in got_None)))
 
     #
     # done
@@ -983,7 +983,7 @@ def _solve(f, *symbols, **flags):
                 funcs = {b for b in bases if b.is_Function}
 
                 trig = {_ for _ in funcs if
-                    isinstance(_, TrigonometricFunction)}
+                        isinstance(_, TrigonometricFunction)}
                 other = funcs - trig
                 if not other and len(funcs.intersection(trig)) > 1:
                     newf = TR1(f_num).rewrite(tan)
@@ -1075,7 +1075,7 @@ def _solve(f, *symbols, **flags):
                     except NotImplementedError:  # pragma: no cover
                         if not flags.get('incomplete', True):
                                 raise NotImplementedError(
-                                filldedent('''
+                                    filldedent('''
     Neither high-order multivariate polynomials
     nor sorting of EX-domain polynomials is supported.
     If you want to see any results, pass keyword incomplete=True to
@@ -1304,11 +1304,11 @@ def _solve_system(exprs, symbols, **flags):
 
     if checkdens:
         result = [r for r in result
-            if not any(checksol(d, r, **flags) for d in dens)]
+                  if not any(checksol(d, r, **flags) for d in dens)]
 
     if check and not linear:
         result = [r for r in result
-            if not any(checksol(e, r, **flags) is False for e in exprs)]
+                  if not any(checksol(e, r, **flags) is False for e in exprs)]
 
     result = [r for r in result if r]
     if linear and result:
@@ -1444,7 +1444,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
                     if dens is None:
                         dens = denoms(eq, symbols)
                     if not any(checksol(di, {xi: vi}, minimal=True) is True
-                              for di in dens):
+                               for di in dens):
                         # simplify any trivial integral
                         irep = [(i, i.doit()) for i in vi.atoms(Integral) if
                                 i.function.is_number]
@@ -1657,10 +1657,10 @@ def _tsolve(eq, sym, **flags):
                 # the same place
                 sol_base = _solve(lhs.base, sym, **flags)
                 return list(ordered(set(sol_base) -
-                            set(_solve(lhs.exp, sym, **flags))))
+                                    set(_solve(lhs.exp, sym, **flags))))
             elif (rhs is not S.Zero and
-                        lhs.base.is_positive and
-                        lhs.exp.is_extended_real):
+                  lhs.base.is_positive and
+                  lhs.exp.is_extended_real):
                 return _solve(lhs.exp*log(lhs.base) - log(rhs), sym, **flags)
             elif lhs.base == 0 and rhs == 1:
                 return _solve(lhs.exp, sym, **flags)
@@ -1720,7 +1720,7 @@ def _tsolve(eq, sym, **flags):
                         if inversion:
                             sol = _solve(p, u, **flags)
                             return list(ordered({i.subs(u, s)
-                                for i in inversion for s in sol}))
+                                                 for i in inversion for s in sol}))
                     except NotImplementedError:
                         pass
                 else:
