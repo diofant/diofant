@@ -7,7 +7,7 @@ from ...core.rules import Transform
 from ...core.compatibility import as_int
 from ...core.logic import fuzzy_and
 from .integers import floor
-from ...logic import And
+from ...logic import And, Or
 
 
 class IdentityFunction(Lambda, metaclass=Singleton):
@@ -393,15 +393,13 @@ class MinMaxBase(LatticeOp):
             is_newzero = True
             localzeros_ = list(localzeros)
             for z in localzeros_:
-                if id(v) == id(z):
+                assert v != z
+                con = cls._is_connected(v, z)
+                if con:
                     is_newzero = False
-                else:
-                    con = cls._is_connected(v, z)
-                    if con:
-                        is_newzero = False
-                        if con is True or con == cls:
-                            localzeros.remove(z)
-                            localzeros.update([v])
+                    if con is True or con == cls:
+                        localzeros.remove(z)
+                        localzeros.update([v])
             if is_newzero:
                 localzeros.update([v])
         return localzeros
@@ -414,18 +412,10 @@ class MinMaxBase(LatticeOp):
         def hit(v, t, f):
             if not v.is_Relational:
                 return t if v else f
-        if x == y:
-            return True
-        r = hit(x >= y, Max, Min)
+        r = hit(Or(x >= y, y <= x), Max, Min)
         if r is not None:
             return r
-        r = hit(y <= x, Max, Min)
-        if r is not None:
-            return r
-        r = hit(x <= y, Min, Max)
-        if r is not None:
-            return r
-        r = hit(y >= x, Min, Max)
+        r = hit(Or(x <= y, y >= x), Min, Max)
         if r is not None:
             return r
         return False
@@ -439,10 +429,7 @@ class MinMaxBase(LatticeOp):
             da = a.diff(s)
             if da is S.Zero:
                 continue
-            try:
-                df = self.fdiff(i)
-            except ArgumentIndexError:
-                df = Function.fdiff(self, i)
+            df = self.fdiff(i)
             l.append(df * da)
         return Add(*l)
 

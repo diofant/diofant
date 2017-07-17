@@ -4,6 +4,7 @@ from diofant.core import Function, I, oo, Rational, S, Symbol, symbols, Eq
 from diofant.logic import true, false
 from diofant.functions import (sqrt, cbrt, root, Min, Max, real_root,
                                Piecewise, cos, sin, floor, ceiling, Heaviside)
+from diofant.core.function import ArgumentIndexError
 
 __all__ = ()
 
@@ -100,6 +101,8 @@ def test_Min():
     assert Min(0, -x, 1 - 2*x).diff(x) == -Heaviside(x + Min(0, -2*x + 1)) \
         - 2*Heaviside(2*x + Min(0, -x) - 1)
 
+    pytest.raises(ArgumentIndexError, lambda: Min(1, x).fdiff(3))
+
     a, b = Symbol('a', extended_real=True), Symbol('b', extended_real=True)
     # a and b are both real, Min(a, b) should be real
     assert Min(a, b).is_extended_real
@@ -159,6 +162,8 @@ def test_Max():
     assert Max(x**2, 1 + x, 1).diff(x) == \
         2*x*Heaviside(x**2 - Max(1, x + 1)) \
         + Heaviside(x - Max(1, x**2) + 1)
+
+    pytest.raises(ArgumentIndexError, lambda: Max(1, x).fdiff(3))
 
     a, b = Symbol('a', extended_real=True), Symbol('b', extended_real=True)
     # a and b are both real, Max(a, b) should be real
