@@ -31,17 +31,6 @@ class ExprCondPair(Tuple):
         return self.args[1]
 
     @property
-    def free_symbols(self):
-        """
-        Return the free symbols of this pair.
-        """
-        # Overload Basic.free_symbols because self.args[1] may contain non-Basic
-        result = self.expr.free_symbols
-        if hasattr(self.cond, 'free_symbols'):
-            result |= self.cond.free_symbols
-        return result
-
-    @property
     def is_commutative(self):
         return self.expr.is_commutative
 
@@ -169,15 +158,13 @@ class Piecewise(Function):
         newargs = []
         for e, c in self.args:
             if hints.get('deep', True):
-                if isinstance(e, Basic):
-                    e = e.doit(**hints)
-                if isinstance(c, Basic):
-                    c = c.doit(**hints)
+                e = e.doit(**hints)
+                c = c.doit(**hints)
             newargs.append((e, c))
         return self.func(*newargs)
 
     def _eval_as_leading_term(self, x):
-        for e, c in self.args:
+        for e, c in self.args:  # pragma: no branch
             if c == S.true or c.subs(x, 0) == S.true:
                 return e.as_leading_term(x)
 
@@ -256,16 +243,13 @@ class Piecewise(Function):
                     elif ((b >= lower) is S.true) and ((b <= upper) is S.true):
                         rep = a
                         val = e._eval_interval(sym, a, b)
-                    else:
+                    else:  # pragma: no cover
                         raise NotImplementedError(
                             """The evaluation of a Piecewise interval when both the lower
                             and the upper limit are symbolic is not yet implemented.""")
                     values.append(val)
                 if len(set(values)) == 1:
-                    try:
-                        c = c.subs(sym, rep)
-                    except AttributeError:
-                        pass
+                    c = c.subs(sym, rep)
                     e = values[0]
                     newargs.append((e, c))
                 else:
@@ -345,18 +329,16 @@ class Piecewise(Function):
                         upper = Min(cond2.gts, upper)
                     elif cond2.gts == sym:
                         lower = Max(cond2.lts, lower)
-                    else:
+                    else:  # pragma: no cover
                         raise NotImplementedError(
                             "Unable to handle interval evaluation of expression.")
             else:
-                if sym not in [cond.lts, cond.gts]:
-                    cond = solve_univariate_inequality(cond, sym)
                 lower, upper = cond.lts, cond.gts  # part 1: initialize with givens
                 if cond.lts == sym:                # part 1a: expand the side ...
                     lower = S.NegativeInfinity   # e.g. x <= 0 ---> -oo <= 0
                 elif cond.gts == sym:            # part 1a: ... that can be expanded
                     upper = S.Infinity           # e.g. x >= 0 --->  oo >= 0
-                else:
+                else:  # pragma: no cover
                     raise NotImplementedError(
                         "Unable to handle interval evaluation of expression.")
 
@@ -459,10 +441,7 @@ class Piecewise(Function):
         """
         args = list(self.args)
         for i, (e, c) in enumerate(args):
-            if isinstance(c, bool):
-                pass
-            elif isinstance(c, Basic):
-                c = c._subs(old, new)
+            c = c._subs(old, new)
             if c != S.false:
                 e = e._subs(old, new)
             args[i] = e, c

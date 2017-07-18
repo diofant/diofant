@@ -31,6 +31,7 @@ def test_piecewise():
     assert Piecewise((x, True)) == x
     pytest.raises(TypeError, lambda: Piecewise(x))
     pytest.raises(TypeError, lambda: Piecewise((x, x**2)))
+    assert Piecewise((0, Eq(z, 0, evaluate=False)), (1, True)) == 1
 
     # Test subs
     p = Piecewise((-1, x < -1), (x**2, x < 0), (log(x), x >= 0))
