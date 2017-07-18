@@ -120,10 +120,12 @@ def test_gruntz_other():
     assert gruntz(sqrt(log(x + 1)) - sqrt(log(x)), x) == 0  # p12, 2.5
     y = Symbol('y')
     assert gruntz(((1 + 1/x)**y - 1)*x, x) == y  # p12, 2.6
-    # TODO: p13, 2.7
     n = Symbol('n', integer=True)
     assert gruntz(x**n/exp(x), x) == 0  # p14, 2.9
     assert gruntz((1 + 1/x)*x - 1/log(1 + 1/x), x) == S.Half  # p15, 2.10
+    m = Symbol('m', integer=True)
+    assert gruntz((root(1 + 1/x, n) - 1)/(root(1 + 1/x, m) - 1),
+                  x) == m/n  # p13, 2.7
 
 
 def test_gruntz_hyperbolic():
