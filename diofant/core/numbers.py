@@ -1,6 +1,7 @@
 import decimal
 import fractions
 import math
+import numbers
 import re as regex
 from collections import defaultdict
 
@@ -1456,6 +1457,17 @@ class Rational(Number):
             return -self, S.NegativeOne
         return S.One, self
 
+    @property
+    def numerator(self):
+        return self.p
+
+    @property
+    def denominator(self):
+        return self.q
+
+
+numbers.Rational.register(Rational)
+
 
 class Integer(Rational):
 
@@ -1754,6 +1766,9 @@ class Integer(Rational):
 
     def __rfloordiv__(self, other):
         return Integer(Integer(other).p // self.p)
+
+
+numbers.Integral.register(Integer)
 
 
 # Add sympify converters
