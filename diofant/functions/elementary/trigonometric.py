@@ -1,14 +1,15 @@
-from ...core import (Add, sympify, cacheit, Function, S, Rational,
-                     Integer, Symbol, expand_mul)
+from ...core import (Add, Function, Integer, Rational, S, Symbol, cacheit,
+                     expand_mul, sympify)
 from ...core.function import ArgumentIndexError
 from ...core.logic import fuzzy_and, fuzzy_not
 from ...core.numbers import igcdex
-from ..combinatorial.factorials import factorial, RisingFactorial
-from .miscellaneous import sqrt
-from .exponential import log, exp
-from .hyperbolic import (acoth, asinh, atanh, cosh, coth,
-                         HyperbolicFunction, sinh, tanh, csch, sech)
 from ...utilities import numbered_symbols
+from ..combinatorial.factorials import RisingFactorial, factorial
+from .exponential import exp, log
+from .hyperbolic import (HyperbolicFunction, acoth, asinh, atanh, cosh, coth,
+                         csch, sech, sinh, tanh)
+from .miscellaneous import sqrt
+
 
 ###############################################################################
 # ######################## TRIGONOMETRIC FUNCTIONS ########################## #

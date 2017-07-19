@@ -1,11 +1,11 @@
 import pytest
 
-from diofant.core import symbols, S, Pow, Function
-from diofant.functions import exp
-from diofant.tensor.indexed import Idx, IndexedBase
-from diofant.tensor.index_methods import IndexConformanceException
-
 from diofant import get_contraction_structure, get_indices
+from diofant.core import Function, Pow, S, symbols
+from diofant.functions import exp
+from diofant.tensor.index_methods import IndexConformanceException
+from diofant.tensor.indexed import Idx, IndexedBase
+
 
 __all__ = ()
 

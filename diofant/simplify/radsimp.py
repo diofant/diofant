@@ -1,13 +1,13 @@
 from collections import defaultdict
 
 from .. import DIOFANT_DEBUG
-from ..core.compatibility import iterable, ordered, default_sort_key
-from ..core import (expand_power_base, sympify, Add, S, Mul, Derivative,
-                    Pow, symbols, expand_mul, Rational, gcd_terms)
+from ..core import (Add, Derivative, Mul, Pow, Rational, S, expand_mul,
+                    expand_power_base, gcd_terms, symbols, sympify)
+from ..core.compatibility import default_sort_key, iterable, ordered
 from ..core.exprtools import Factors
-from ..core.mul import _keep_coeff, _unevaluated_Mul
 from ..core.function import _mexpand
-from ..functions import sqrt, log
+from ..core.mul import _keep_coeff, _unevaluated_Mul
+from ..functions import log, sqrt
 from ..polys import gcd
 from .sqrtdenest import sqrtdenest
 

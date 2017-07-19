@@ -4,8 +4,9 @@ import warnings
 
 import pytest
 
-from diofant.core.cache import clear_cache, USE_CACHE
+from diofant.core.cache import USE_CACHE, clear_cache
 from diofant.core.compatibility import GROUND_TYPES
+
 
 sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
 

@@ -2,17 +2,17 @@ import inspect
 
 import pytest
 
-from diofant import (Lambda, Symbol, Function, Derivative, Subs, sqrt,
-                     log, exp, Rational, Float, sin, cos, acos, diff, I, re, im,
-                     E, expand, pi, O, Sum, S, polygamma, loggamma, expint,
-                     Tuple, Dummy, Eq, Expr, symbols, nfloat, Integer)
+from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
+                     Integer, Lambda, O, Rational, S, Subs, Sum, Symbol, Tuple,
+                     acos, cos, diff, exp, expand, expint, im, log, loggamma,
+                     nfloat, pi, polygamma, re, sin, sqrt, symbols)
+from diofant.abc import t, w, x, y, z
+from diofant.core.cache import clear_cache
 from diofant.core.function import PoleError, _mexpand
 from diofant.sets.sets import FiniteSet
 from diofant.solvers import solve
 from diofant.utilities.iterables import subsets, variations
-from diofant.core.cache import clear_cache
 
-from diofant.abc import t, w, x, y, z
 
 __all__ = ()
 

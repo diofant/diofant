@@ -1,7 +1,8 @@
 import pytest
 
-from diofant import (symbols, MatrixSymbol, MatPow, BlockMatrix,
-                     Identity, ZeroMatrix, ImmutableMatrix, eye, Sum)
+from diofant import (BlockMatrix, Identity, ImmutableMatrix, MatPow,
+                     MatrixSymbol, Sum, ZeroMatrix, eye, symbols)
+
 
 __all__ = ()
 

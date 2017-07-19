@@ -1,12 +1,12 @@
 from collections import defaultdict
 from functools import reduce
 
-from .compatibility import is_sequence, default_sort_key
-from .logic import _fuzzy_group
-from .singleton import S
-from .operations import AssocOp
 from .cache import cacheit
-from .numbers import ilcm, igcd
+from .compatibility import default_sort_key, is_sequence
+from .logic import _fuzzy_group
+from .numbers import igcd, ilcm
+from .operations import AssocOp
+from .singleton import S
 
 
 class Add(AssocOp):
@@ -29,6 +29,7 @@ class Add(AssocOp):
         diofant.core.mul.Mul.flatten
 
         """
+        from .mul import Mul
         from ..series.order import Order
 
         rv = None
@@ -364,6 +365,8 @@ class Add(AssocOp):
 
         diofant.core.expr.Expr.as_numer_denom
         """
+        from .mul import Mul, _keep_coeff
+
         # clear rational denominator
         content, expr = self.primitive()
         ncon, dcon = content.as_numer_denom()
@@ -703,6 +706,8 @@ class Add(AssocOp):
 
         diofant.polys.polytools.primitive
         """
+        from .mul import _keep_coeff
+        from .numbers import Rational
 
         terms = []
         inf = False
@@ -765,6 +770,9 @@ class Add(AssocOp):
 
         diofant.core.expr.Expr.as_content_primitive
         """
+        from .mul import Mul, _keep_coeff, prod
+        from .numbers import Rational
+
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()
         if radical and prim.is_Add:
@@ -813,7 +821,3 @@ class Add(AssocOp):
     @property
     def _sorted_args(self):
         return tuple(sorted(self.args, key=default_sort_key))
-
-
-from .mul import Mul, _keep_coeff, prod
-from .numbers import Rational

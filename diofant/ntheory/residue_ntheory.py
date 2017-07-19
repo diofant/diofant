@@ -1,11 +1,11 @@
 from random import randint
 
-from ..core import S, igcd, Function
-from ..core.numbers import igcdex
+from ..core import Function, S, igcd
 from ..core.compatibility import as_int
+from ..core.numbers import igcdex
 from ..utilities.iterables import cantor_product
+from .factor_ import factorint, totient, trailing
 from .primetest import isprime
-from .factor_ import factorint, trailing, totient
 
 
 def n_order(a, n):

@@ -2,13 +2,14 @@
 
 import pytest
 
-from diofant.polys.rings import ring
-from diofant.domains import FF, ZZ, QQ, RR, EX
+from diofant import I, nextprime, sin, sqrt
+from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.polys import polyconfig as config
-from diofant.polys.polyerrors import DomainError
 from diofant.polys.polyclasses import ANP
+from diofant.polys.polyerrors import DomainError
+from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys, w_polys
-from diofant import nextprime, sin, sqrt, I
+
 
 __all__ = ()
 

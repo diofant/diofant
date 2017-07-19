@@ -10,17 +10,17 @@ diofant.stats.frv
 
 import random
 
-from .rv import (RandomDomain, SingleDomain, ConditionalDomain,
-                 ProductDomain, PSpace, SinglePSpace, random_symbols,
-                 ProductPSpace, NamedArgsMixin)
+from ..core import Dummy, Expr, Lambda, Mul, S, cacheit, oo, symbols, sympify
 from ..functions import DiracDelta, Piecewise
-from ..core import symbols, sympify, Dummy, Mul, cacheit, oo, Lambda, Expr, S
+from ..integrals import Integral, integrate
 from ..logic import And, Or
+from ..polys.polyerrors import PolynomialError
 from ..sets import Interval
-from ..integrals import integrate, Integral
 from ..solvers import solve
 from ..solvers.inequalities import reduce_rational_inequalities
-from ..polys.polyerrors import PolynomialError
+from .rv import (ConditionalDomain, NamedArgsMixin, ProductDomain,
+                 ProductPSpace, PSpace, RandomDomain, SingleDomain,
+                 SinglePSpace, random_symbols)
 
 
 class ContinuousDomain(RandomDomain):

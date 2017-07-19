@@ -1,14 +1,14 @@
 from collections import defaultdict
-from itertools import (combinations, permutations, product,
-                       combinations_with_replacement)
+from itertools import (combinations, combinations_with_replacement,
+                       permutations, product)
 from operator import gt
 
 from ..core import Basic, S
 # this is the logical location of these functions
 from ..core.compatibility import (as_int, default_sort_key, is_sequence,
                                   iterable, ordered)
-from .enumerative import (multiset_partitions_taocp, list_visitor,
-                          MultisetPartitionTraverser)
+from .enumerative import (MultisetPartitionTraverser, list_visitor,
+                          multiset_partitions_taocp)
 
 
 def flatten(iterable, levels=None, cls=None):

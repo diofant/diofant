@@ -1,20 +1,19 @@
-from itertools import permutations
 from functools import reduce
+from itertools import permutations
 
-from ..core import (Add, Basic, Mul, Wild, Dummy, sympify, Rational, pi,
-                    Eq, S)
-from ..functions import (exp, sin, cos, tan, cot, asin, atan,
-                         log, sinh, cosh, tanh, coth, asinh, acosh,
-                         sqrt, erf, erfi, li, Ei, LambertW, Piecewise)
+from ..core import Add, Basic, Dummy, Eq, Mul, Rational, S, Wild, pi, sympify
+from ..core.compatibility import ordered
+from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
+                         cos, cosh, cot, coth, erf, erfi, exp, li, log, sin,
+                         sinh, sqrt, tan, tanh)
 from ..logic import And
-from ..utilities.iterables import uniq
-from ..polys import quo, gcd, lcm, factor, cancel, PolynomialError
+from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
+from ..polys.constructor import construct_domain
 from ..polys.monomials import itermonomials
 from ..polys.polyroots import root_factors
 from ..polys.rings import PolyRing
 from ..polys.solvers import solve_lin_sys
-from ..polys.constructor import construct_domain
-from ..core.compatibility import ordered
+from ..utilities.iterables import uniq
 
 
 def components(f, x):

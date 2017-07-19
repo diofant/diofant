@@ -1,8 +1,12 @@
-from diofant.combinatorics.permutations import Permutation, Perm
-from diofant.combinatorics.tensor_can import (perm_af_direct_product, dummy_sgs,
-                                              riemann_bsgs, get_symmetric_group_sgs,
-                                              canonicalize, bsgs_direct_product)
-from diofant.combinatorics.testutil import canonicalize_naive, graph_certificate
+from diofant.combinatorics.permutations import Perm, Permutation
+from diofant.combinatorics.tensor_can import (bsgs_direct_product,
+                                              canonicalize, dummy_sgs,
+                                              get_symmetric_group_sgs,
+                                              perm_af_direct_product,
+                                              riemann_bsgs)
+from diofant.combinatorics.testutil import (canonicalize_naive,
+                                            graph_certificate)
+
 
 __all__ = ()
 

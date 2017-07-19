@@ -48,8 +48,9 @@ attributes of objects/classes.
 
 from random import shuffle
 
-from .facts import FactRules, FactKB
+from .facts import FactKB, FactRules
 from .sympify import sympify
+
 
 _assume_rules = FactRules([
     'integer        ->  rational',

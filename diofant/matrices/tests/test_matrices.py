@@ -2,22 +2,23 @@ import collections
 
 import pytest
 
-from diofant import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
-                     PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
-                     simplify, sin, sqrt, symbols, sympify,
-                     trigsimp, sstr, Function, Basic)
-from diofant.matrices.matrices import (ShapeError, MatrixError,
-                                       NonSquareMatrixError, DeferredVector)
-from diofant.matrices import (
-    GramSchmidt, ImmutableMatrix, ImmutableSparseMatrix, Matrix,
-    SparseMatrix, casoratian, diag, eye, hessian,
-    matrix_multiply_elementwise, ones, randMatrix, rot_axis1, rot_axis2,
-    rot_axis3, wronskian, zeros, vandermonde)
-from diofant.core.compatibility import iterable
-from diofant.utilities.iterables import flatten, capture
-from diofant.external import import_module
-
+from diofant import (Abs, Basic, Dummy, E, Float, Function, I, Integer, Max,
+                     Min, N, Poly, Pow, PurePoly, Rational, S, Symbol, cos,
+                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
+                     trigsimp)
 from diofant.abc import x, y, z
+from diofant.core.compatibility import iterable
+from diofant.external import import_module
+from diofant.matrices import (GramSchmidt, ImmutableMatrix,
+                              ImmutableSparseMatrix, Matrix, SparseMatrix,
+                              casoratian, diag, eye, hessian,
+                              matrix_multiply_elementwise, ones, randMatrix,
+                              rot_axis1, rot_axis2, rot_axis3, vandermonde,
+                              wronskian, zeros)
+from diofant.matrices.matrices import (DeferredVector, MatrixError,
+                                       NonSquareMatrixError, ShapeError)
+from diofant.utilities.iterables import capture, flatten
+
 
 __all__ = ()
 

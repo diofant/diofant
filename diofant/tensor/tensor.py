@@ -32,14 +32,13 @@ lowered when the tensor is put in canonical form.
 from collections import defaultdict
 from functools import reduce
 
-from ..combinatorics.tensor_can import (get_symmetric_group_sgs,
-                                        bsgs_direct_product, canonicalize,
-                                        riemann_bsgs)
-from ..core import Basic, sympify, Add, S, Tuple, Symbol, symbols, Rational
+from ..combinatorics.tensor_can import (bsgs_direct_product, canonicalize,
+                                        get_symmetric_group_sgs, riemann_bsgs)
+from ..core import Add, Basic, Rational, S, Symbol, Tuple, symbols, sympify
 from ..core.sympify import CantSympify
 from ..external import import_module
+from ..matrices import Matrix, eye
 from ..utilities.decorator import doctest_depends_on
-from ..matrices import eye, Matrix
 
 
 class TIDS(CantSympify):

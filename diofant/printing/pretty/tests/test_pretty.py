@@ -2,28 +2,30 @@ import warnings
 
 import pytest
 
-from diofant import (
-    Add, And, Basic, Derivative, Dict, Eq, Equivalent, FF,
-    FiniteSet, Function, Ge, Gt, I, Implies, Integral,
-    Lambda, Le, Limit, Lt, Matrix, Mul, Nand, Ne, Nor, Not, O, Or,
-    Pow, Product, QQ, RR, Rational, Ray, RootOf, RootSum, S,
-    Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
-    groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
-    Interval, Union, Integer, Float, Complement, Intersection,
-    Trace, MatrixSymbol, AlgebraicNumber, Order, RealField)
+from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
+                     Complement, Contains, Derivative, Dict, Eq, Equivalent,
+                     FiniteSet, Float, Function, Ge, Gt, I, Implies, Integer,
+                     Integral, Intersection, Interval, Lambda, Le, Limit, Lt,
+                     Matrix, MatrixSymbol, Mul, Nand, Ne, Nor, Not, O, Or,
+                     Order, Pow, Product, Range, Rational, Ray, RealField,
+                     RootOf, RootSum, S, Segment, Subs, Sum, Symbol, Trace,
+                     Tuple, Union, Xor, conjugate, grlex, groebner, ilex, oo,
+                     pi, symbols)
+from diofant.abc import a, b, k, w, x, y, z
+from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2_r
-from diofant.functions import (
-    Abs, Chi, Ci, Ei, KroneckerDelta,
-    Piecewise, Shi, Si, atan2, binomial, catalan, ceiling, cos,
-    euler, exp, expint, factorial, factorial2, floor, gamma, hyper, log,
-    lowergamma, meijerg, sin, sqrt, subfactorial, tan, uppergamma,
-    elliptic_k, elliptic_f, elliptic_e, elliptic_pi, DiracDelta)
-from diofant.printing.pretty import pretty as xpretty, pprint
-from diofant.printing.pretty.pretty_symbology import xobj, U
-from diofant.core.trace import Tr
+from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, KroneckerDelta,
+                               Piecewise, Shi, Si, atan2, binomial, catalan,
+                               ceiling, cos, elliptic_e, elliptic_f,
+                               elliptic_k, elliptic_pi, euler, exp, expint,
+                               factorial, factorial2, floor, gamma, hyper, log,
+                               lowergamma, meijerg, sin, sqrt, subfactorial,
+                               tan, uppergamma)
+from diofant.printing.pretty import pretty as xpretty
+from diofant.printing.pretty import pprint
+from diofant.printing.pretty.pretty_symbology import U, xobj
 
-from diofant.abc import a, b, x, y, z, k, w
 
 __all__ = ()
 

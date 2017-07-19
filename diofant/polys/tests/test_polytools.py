@@ -2,61 +2,43 @@
 
 import pytest
 
-from diofant.polys.polytools import (
-    Poly, PurePoly, poly,
-    parallel_poly_from_expr,
-    degree, degree_list,
-    LC, LM, LT,
-    pdiv, prem, pquo, pexquo,
-    div, rem, quo, exquo,
-    half_gcdex, gcdex, invert,
-    subresultants,
-    resultant, discriminant,
-    terms_gcd, cofactors,
-    gcd, gcd_list,
-    lcm, lcm_list,
-    trunc,
-    monic, content, primitive,
-    compose, decompose,
-    sturm,
-    gff_list, gff,
-    sqf_norm, sqf_part, sqf_list, sqf,
-    factor_list, factor,
-    intervals, refine_root, count_roots,
-    real_roots, nroots, ground_roots,
-    nth_power_roots_poly,
-    cancel, reduced, groebner,
-    GroebnerBasis, is_zero_dimensional,
-    _torational_factor_list,
-    to_rational_coeffs)
-from diofant.polys.polyerrors import (
-    MultivariatePolynomialError,
-    ExactQuotientFailed,
-    PolificationFailed,
-    ComputationFailed,
-    UnificationFailed,
-    RefinementFailed,
-    GeneratorsNeeded,
-    GeneratorsError,
-    PolynomialError,
-    CoercionFailed,
-    DomainError,
-    OptionError,
-    FlagError)
-from diofant.polys.polyclasses import DMP
-from diofant.polys.fields import field
-from diofant.domains import FF, ZZ, QQ, RR, EX
-from diofant.domains.realfield import RealField
-from diofant.polys.orderings import lex, grlex, grevlex
-from diofant import (
-    S, Integer, Rational, Float, Mul, Symbol, sqrt, Piecewise, Derivative, Sum,
-    exp, sin, tanh, expand, oo, I, pi, re, im, RootOf, Eq, Tuple, Expr, diff)
+from diofant import (Derivative, Eq, Expr, Float, I, Integer, Mul, Piecewise,
+                     Rational, RootOf, S, Sum, Symbol, Tuple, diff, exp,
+                     expand, im, oo, pi, re, sin, sqrt, tanh)
+from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
+from diofant.domains import EX, FF, QQ, RR, ZZ
+from diofant.domains.realfield import RealField
 from diofant.matrices import MatrixSymbol
+from diofant.polys.fields import field
+from diofant.polys.orderings import grevlex, grlex, lex
+from diofant.polys.polyclasses import DMP
+from diofant.polys.polyerrors import (CoercionFailed, ComputationFailed,
+                                      DomainError, ExactQuotientFailed,
+                                      FlagError, GeneratorsError,
+                                      GeneratorsNeeded,
+                                      MultivariatePolynomialError, OptionError,
+                                      PolificationFailed, PolynomialError,
+                                      RefinementFailed, UnificationFailed)
+from diofant.polys.polytools import (LC, LM, LT, GroebnerBasis, Poly, PurePoly,
+                                     _torational_factor_list, cancel,
+                                     cofactors, compose, content, count_roots,
+                                     decompose, degree, degree_list,
+                                     discriminant, div, exquo, factor,
+                                     factor_list, gcd, gcd_list, gcdex, gff,
+                                     gff_list, groebner, ground_roots,
+                                     half_gcdex, intervals, invert,
+                                     is_zero_dimensional, lcm, lcm_list, monic,
+                                     nroots, nth_power_roots_poly,
+                                     parallel_poly_from_expr, pdiv, pexquo,
+                                     poly, pquo, prem, primitive, quo,
+                                     real_roots, reduced, refine_root, rem,
+                                     resultant, sqf, sqf_list, sqf_norm,
+                                     sqf_part, sturm, subresultants, terms_gcd,
+                                     to_rational_coeffs, trunc)
 
-from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 
 __all__ = ()
 

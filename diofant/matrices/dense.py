@@ -1,8 +1,8 @@
 import itertools
 import random
 
-from ..core import Basic, count_ops, S, Symbol, sympify
-from ..core.compatibility import is_sequence, as_int
+from ..core import Basic, S, Symbol, count_ops, sympify
+from ..core.compatibility import as_int, is_sequence
 from ..core.decorators import call_highest_priority
 from ..functions import cos, sin, sqrt
 from ..simplify import simplify as _simplify

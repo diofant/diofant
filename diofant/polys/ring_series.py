@@ -2,13 +2,13 @@
 
 import math
 
-from mpmath.libmp.libintmath import ifac, giant_steps
+from mpmath.libmp.libintmath import giant_steps, ifac
 
-from ..domains import QQ
-from .rings import PolyElement
-from .monomials import monomial_min, monomial_mul
 from ..core import Rational
 from ..core.compatibility import as_int
+from ..domains import QQ
+from .monomials import monomial_min, monomial_mul
+from .rings import PolyElement
 
 
 def _invert_monoms(p1):

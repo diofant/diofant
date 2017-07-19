@@ -3,9 +3,11 @@ You can find lots of cnf files in
 ftp://dimacs.rutgers.edu/pub/challenge/satisfiability/benchmarks/cnf/
 """
 
-from diofant.logic.utilities.dimacs import load
 from diofant.logic.algorithms.dpll import dpll_satisfiable
-from diofant.logic.algorithms.dpll2 import dpll_satisfiable as dpll2_satisfiable
+from diofant.logic.algorithms.dpll2 import \
+    dpll_satisfiable as dpll2_satisfiable
+from diofant.logic.utilities.dimacs import load
+
 
 __all__ = ()
 

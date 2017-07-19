@@ -1,12 +1,12 @@
 import pytest
 
-from diofant import (adjoint, And, Basic, conjugate, diff, expand, Eq,
-                     Function, I, Integral, integrate, Interval, lambdify,
-                     log, Max, Min, oo, Or, pi, Piecewise, piecewise_fold,
-                     Rational, solve, symbols, transpose, sin, cos, exp,
-                     Abs, Not, Symbol, sympify, Gt, O)
+from diofant import (Abs, And, Basic, Eq, Function, Gt, I, Integral, Interval,
+                     Max, Min, Not, O, Or, Piecewise, Rational, Symbol,
+                     adjoint, conjugate, cos, diff, exp, expand, integrate,
+                     lambdify, log, oo, pi, piecewise_fold, sin, solve,
+                     symbols, sympify, transpose)
+from diofant.abc import t, x, y
 
-from diofant.abc import x, y, t
 
 __all__ = ()
 

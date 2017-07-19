@@ -1,14 +1,14 @@
 import pytest
 
-from diofant import (Symbol, Dummy, diff, Derivative, Rational, roots, S, sqrt,
-                     hyper, cos, gamma, conjugate, factorial, pi, oo, exp,
-                     zoo, binomial, RisingFactorial, legendre, assoc_legendre,
-                     chebyshevu, chebyshevt, chebyshevt_root, chebyshevu_root,
-                     laguerre, assoc_laguerre, laguerre_poly, hermite,
-                     gegenbauer, jacobi, jacobi_normalized)
+from diofant import (Derivative, Dummy, Rational, RisingFactorial, S, Symbol,
+                     assoc_laguerre, assoc_legendre, binomial, chebyshevt,
+                     chebyshevt_root, chebyshevu, chebyshevu_root, conjugate,
+                     cos, diff, exp, factorial, gamma, gegenbauer, hermite,
+                     hyper, jacobi, jacobi_normalized, laguerre, laguerre_poly,
+                     legendre, oo, pi, roots, sqrt, zoo)
+from diofant.abc import a, alpha, b, k, m, n, x
 from diofant.core.function import ArgumentIndexError
 
-from diofant.abc import a, b, n, m, k, x, alpha
 
 __all__ = ()
 

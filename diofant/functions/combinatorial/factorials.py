@@ -1,7 +1,7 @@
-from math import sqrt as _sqrt
 from functools import reduce
+from math import sqrt as _sqrt
 
-from ...core import S, sympify, Dummy, Function, Integer, cacheit
+from ...core import Dummy, Function, Integer, S, cacheit, sympify
 from ...core.function import ArgumentIndexError
 from ...ntheory import sieve
 

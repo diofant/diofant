@@ -6,10 +6,10 @@ from mpmath.libmp.libintmath import ifac
 
 from ..core import Basic, Tuple, sympify
 from ..core.compatibility import is_sequence
-from ..utilities import flatten, has_variety, has_dups
-from ..utilities.iterables import minlex, runs
-from ..polys import lcm
 from ..matrices import zeros
+from ..polys import lcm
+from ..utilities import flatten, has_dups, has_variety
+from ..utilities.iterables import minlex, runs
 
 
 def _af_rmul(a, b):

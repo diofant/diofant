@@ -8,15 +8,15 @@ Ray3D
 Segment3D
 """
 
-from ..core import S, Dummy, nan
+from ..core import Dummy, S, nan
+from ..core.compatibility import is_sequence
 from ..functions import acos
 from ..simplify import simplify
 from ..solvers import solve
-from .exceptions import GeometryError
 from .entity import GeometryEntity
+from .exceptions import GeometryError
 from .point import Point3D
 from .util import _symbol
-from ..core.compatibility import is_sequence
 
 
 class LinearEntity3D(GeometryEntity):

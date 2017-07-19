@@ -1,13 +1,15 @@
 import pytest
 
-from diofant.core import Symbol, Function, Float, Rational, Integer, I, Mul, Pow
+from diofant.core import (Float, Function, I, Integer, Mul, Pow, Rational,
+                          Symbol)
 from diofant.functions import exp, sin
 from diofant.logic import And
+from diofant.parsing.sympy_parser import (TokenError, implicit_multiplication,
+                                          parse_expr, rationalize,
+                                          split_symbols,
+                                          standard_transformations)
 from diofant.series import Limit
 
-from diofant.parsing.sympy_parser import (parse_expr, standard_transformations,
-                                          rationalize, TokenError, split_symbols,
-                                          implicit_multiplication)
 
 __all__ = ()
 

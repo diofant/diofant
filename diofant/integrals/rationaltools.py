@@ -1,9 +1,9 @@
 """This module implements tools for integrating rational functions. """
 
-from ..core import S, Symbol, symbols, I, Lambda, Dummy, Integer
-from ..functions import log, atan
+from ..core import Dummy, I, Integer, Lambda, S, Symbol, symbols
 from ..domains import ZZ
-from ..polys import Poly, resultant, RootSum, roots, cancel
+from ..functions import atan, log
+from ..polys import Poly, RootSum, cancel, resultant, roots
 
 
 def ratint(f, x, **flags):

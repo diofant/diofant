@@ -1,10 +1,10 @@
 import pytest
 
-from diofant.core import oo, E, S, Eq, Rational
-from diofant.calculus.optimization import minimize, maximize, simplex
+from diofant.abc import x, y, z
+from diofant.calculus.optimization import maximize, minimize, simplex
+from diofant.core import E, Eq, Rational, S, oo
 from diofant.functions import exp, sign, sqrt
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 

@@ -1,8 +1,8 @@
 """Implementation of :class:`RationalField` class. """
 
+from .characteristiczero import CharacteristicZero
 from .field import Field
 from .simpledomain import SimpleDomain
-from .characteristiczero import CharacteristicZero
 
 
 __all__ = ('RationalField',)

@@ -11,10 +11,11 @@ complete source code files.
 
 from re import search
 
-from ..core import Mul, Pow, S, Rational
+from ..core import Mul, Pow, Rational, S
 from ..core.mul import _keep_coeff
-from .codeprinter import CodePrinter, Assignment
+from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
+
 
 # List of known functions.  First, those that have the same name in
 # Diofant and Octave.   This is almost certainly incomplete!

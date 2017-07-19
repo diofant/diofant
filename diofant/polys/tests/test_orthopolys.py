@@ -2,13 +2,14 @@
 
 import pytest
 
-from diofant import Poly, S, Rational as Q  # noqa: N814
-from diofant.polys.orthopolys import (jacobi_poly, gegenbauer_poly,
-                                      chebyshevt_poly, chebyshevu_poly,
-                                      hermite_poly, legendre_poly,
-                                      laguerre_poly, spherical_bessel_fn)
+from diofant import Rational as Q  # noqa: N814
+from diofant import Poly, S
+from diofant.abc import a, b, x
+from diofant.polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
+                                      gegenbauer_poly, hermite_poly,
+                                      jacobi_poly, laguerre_poly,
+                                      legendre_poly, spherical_bessel_fn)
 
-from diofant.abc import x, a, b
 
 __all__ = ()
 

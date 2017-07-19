@@ -1,6 +1,12 @@
 import pytest
 
+import diofant
+from diofant import S
+from diofant.abc import x, y, z
 from diofant.external import import_module
+from diofant.printing.theanocode import (dim_handling, theano_code,
+                                         theano_function)
+
 
 __all__ = ()
 
@@ -14,12 +20,7 @@ else:
     # py.test will not execute any tests now
     disabled = True
 
-import diofant
-from diofant import S
 sy = diofant
-from diofant.abc import x, y, z
-from diofant.printing.theanocode import (theano_code, dim_handling,
-                                         theano_function)
 
 
 def fgraph_of(*exprs):

@@ -1,12 +1,13 @@
 import pytest
 
-from diofant import symbols, FiniteSet
-from diofant.combinatorics.polyhedron import (Polyhedron, tetrahedron,
-                                              cube as square, octahedron,
-                                              dodecahedron, icosahedron,
-                                              cube_faces)
-from diofant.combinatorics.permutations import Permutation
+from diofant import FiniteSet, symbols
 from diofant.combinatorics.perm_groups import PermutationGroup
+from diofant.combinatorics.permutations import Permutation
+from diofant.combinatorics.polyhedron import cube as square
+from diofant.combinatorics.polyhedron import (Polyhedron, cube_faces,
+                                              dodecahedron, icosahedron,
+                                              octahedron, tetrahedron)
+
 
 __all__ = ()
 

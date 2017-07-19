@@ -1,6 +1,6 @@
 from ..core import Mul
-from ..functions import DiracDelta, Heaviside
 from ..core.compatibility import default_sort_key
+from ..functions import DiracDelta, Heaviside
 
 
 def change_mul(node, x):

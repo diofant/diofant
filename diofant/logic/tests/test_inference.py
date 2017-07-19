@@ -3,17 +3,21 @@
 import pytest
 
 from diofant import symbols
-from diofant.logic.boolalg import And, Implies, Equivalent, true, false, Boolean
-from diofant.logic.inference import (literal_symbol, pl_true, satisfiable, valid,
-                                     entails, PropKB)
-from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
-                                           find_pure_symbol, find_unit_clause,
-                                           unit_propagate, find_pure_symbol_int_repr,
-                                           find_unit_clause_int_repr,
-                                           unit_propagate_int_repr)
-from diofant.logic.algorithms.dpll2 import dpll_satisfiable as dpll2_satisfiable
-
 from diofant.abc import A, B, C, x, y
+from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
+                                           find_pure_symbol,
+                                           find_pure_symbol_int_repr,
+                                           find_unit_clause,
+                                           find_unit_clause_int_repr,
+                                           unit_propagate,
+                                           unit_propagate_int_repr)
+from diofant.logic.algorithms.dpll2 import \
+    dpll_satisfiable as dpll2_satisfiable
+from diofant.logic.boolalg import (And, Boolean, Equivalent, Implies, false,
+                                   true)
+from diofant.logic.inference import (PropKB, entails, literal_symbol, pl_true,
+                                     satisfiable, valid)
+
 
 __all__ = ()
 

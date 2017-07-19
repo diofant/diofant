@@ -1,10 +1,9 @@
 import pytest
 
-from diofant import (Add, cos, Derivative, diff, exp, Float, Function,
-                     I, Integer, log, Mul, oo, Rational, S, sin, sqrt,
-                     Symbol, symbols, Wild, pi, meijerg, WildFunction)
-
-from diofant.abc import x, y, a, b, c, gamma, mu, C, X, Y, Z, R, T
+from diofant import (Add, Derivative, Float, Function, I, Integer, Mul,
+                     Rational, S, Symbol, Wild, WildFunction, cos, diff, exp,
+                     log, meijerg, oo, pi, sin, sqrt, symbols)
+from diofant.abc import C, R, T, X, Y, Z, a, b, c, gamma, mu, x, y
 
 
 __all__ = ()

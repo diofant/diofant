@@ -1,8 +1,9 @@
 from diofant.core import S
-from diofant.integrals.quadrature import (gauss_legendre, gauss_laguerre,
-                                          gauss_hermite, gauss_gen_laguerre,
-                                          gauss_chebyshev_t, gauss_chebyshev_u,
-                                          gauss_jacobi)
+from diofant.integrals.quadrature import (gauss_chebyshev_t, gauss_chebyshev_u,
+                                          gauss_gen_laguerre, gauss_hermite,
+                                          gauss_jacobi, gauss_laguerre,
+                                          gauss_legendre)
+
 
 __all__ = ()
 

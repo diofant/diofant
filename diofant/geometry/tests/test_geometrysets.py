@@ -1,6 +1,7 @@
 from diofant import Rational, Symbol
 from diofant.geometry import Circle, Line, Point, Polygon, Segment
-from diofant.sets import FiniteSet, Union, Intersection, EmptySet
+from diofant.sets import EmptySet, FiniteSet, Intersection, Union
+
 
 __all__ = ()
 

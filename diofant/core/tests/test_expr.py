@@ -1,16 +1,17 @@
 import pytest
 
-from diofant import (Add, Basic, S, Symbol, Wild, Float, Integer, Rational, I,
-                     sin, cos, tan, exp, log, nan, oo, sqrt, symbols, Integral,
-                     sympify, WildFunction, Poly, Function, Derivative, Number,
-                     pi, NumberSymbol, zoo, Piecewise, Mul, Pow, nsimplify,
-                     ratsimp, trigsimp, radsimp, powsimp, simplify, together,
-                     collect, factorial, apart, combsimp, factor, cancel, Tuple,
-                     default_sort_key, DiracDelta, gamma, Dummy, Sum, E,
-                     exp_polar, expand, diff, O, Heaviside, Si, Max)
+from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
+                     Function, Heaviside, I, Integer, Integral, Max, Mul,
+                     Number, NumberSymbol, O, Piecewise, Poly, Pow, Rational,
+                     S, Si, Sum, Symbol, Tuple, Wild, WildFunction, apart,
+                     cancel, collect, combsimp, cos, default_sort_key, diff,
+                     exp, exp_polar, expand, factor, factorial, gamma, log,
+                     nan, nsimplify, oo, pi, powsimp, radsimp, ratsimp,
+                     simplify, sin, sqrt, symbols, sympify, tan, together,
+                     trigsimp, zoo)
+from diofant.abc import a, b, c, n, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 
-from diofant.abc import a, b, c, n, t, u, x, y, z
 
 __all__ = ()
 

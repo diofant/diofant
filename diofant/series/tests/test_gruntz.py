@@ -8,13 +8,14 @@ complex part, because it needs to calculate a limit to return the result.
 
 import pytest
 
-from diofant import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
-                     S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh, airyai,
-                     airybi, coth, sinh, tanh, digamma, Integer, Ei, EulerGamma,
-                     Mul, Pow, Add, li, Li, tan, acosh, factorial, binomial,
-                     root, fibonacci, GoldenRatio, Limit)
-from diofant.series.gruntz import (compare, mrv, rewrite,
-                                   mrv_leadterm, limitinf as gruntz, sign)
+from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
+                     Limit, Mul, Pow, Rational, S, Symbol, acosh, acot, airyai,
+                     airybi, atan, binomial, cos, cosh, coth, digamma, erf,
+                     exp, factorial, fibonacci, gamma, li, log, loggamma, oo,
+                     pi, root, sin, sinh, sqrt, tan, tanh, zeta)
+from diofant.series.gruntz import limitinf as gruntz
+from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite, sign
+
 
 __all__ = ()
 

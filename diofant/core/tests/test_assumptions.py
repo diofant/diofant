@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import I, sqrt, log, exp, sin, asin
-from diofant.core import (Symbol, S, Rational, Integer, Dummy,
-                          Wild, Pow, Float, Mod, pi)
+from diofant import I, asin, exp, log, simplify, sin, sqrt
+from diofant.core import (Dummy, Float, Integer, Mod, Pow, Rational, S, Symbol,
+                          Wild, pi)
 from diofant.core.facts import InconsistentAssumptions
-from diofant import simplify
+
 
 __all__ = ()
 

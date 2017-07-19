@@ -1,7 +1,7 @@
+from ..core import AtomicExpr, Integer, Pow, S
+from ..matrices import ImmutableMatrix
 from .basisdependent import (BasisDependent, BasisDependentAdd,
                              BasisDependentMul, BasisDependentZero)
-from ..core import S, Pow, Integer, AtomicExpr
-from ..matrices import ImmutableMatrix
 
 
 class Dyadic(BasisDependent):

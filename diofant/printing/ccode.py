@@ -10,8 +10,9 @@ source code files that are compilable without further modifications.
 """
 
 from ..core import S
-from .codeprinter import CodePrinter, Assignment
+from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
+
 
 # dictionary mapping diofant function to (argument_conditions, C_function).
 # Used in CCodePrinter._print_Function(self)

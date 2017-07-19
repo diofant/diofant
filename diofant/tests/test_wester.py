@@ -9,46 +9,50 @@ import os
 from itertools import islice, takewhile
 
 import mpmath
-from mpmath import mpi, mpc
 import pytest
+from mpmath import mpc, mpi
 
-from diofant import (
-    Rational, symbols, factorial, sqrt, log, exp, oo, zoo,
-    product, binomial, rf, pi, gamma, igcd, factorint, radsimp, combsimp,
-    npartitions, totient, primerange, factor, simplify, gcd, resultant, expand,
-    I, trigsimp, tan, sin, cos, cot, diff, nan, limit, EulerGamma, polygamma,
-    bernoulli, hyper, hyperexpand, besselj, asin, assoc_legendre, Function, re,
-    im, DiracDelta, chebyshevt, legendre_poly, polylog, series, O,
-    atan, sinh, cosh, tanh, floor, ceiling, solve, asinh, acot, csc, sec,
-    LambertW, N, apart, sqrtdenest, factorial2, powdenest, Mul, S, ZZ,
-    Poly, expand_func, E, And, Or, Ne, Eq, Le, Lt, reduce_inequalities,
-    AlgebraicNumber, continued_fraction_iterator as cf_i,
-    continued_fraction_periodic as cf_p, continued_fraction_convergents as cf_c,
-    continued_fraction_reduce as cf_r, FiniteSet, elliptic_e, elliptic_f,
-    powsimp, hessian, wronskian, fibonacci, sign, Lambda, Piecewise, Subs,
-    residue, Derivative, logcombine, Symbol, Integer, Complement, RootOf, Max,
-    primitive_root, minimize)
-from diofant.functions.combinatorial.numbers import stirling
-from diofant.functions.special.zeta_functions import zeta
-from diofant.integrals.deltafunctions import deltaintegrate
-from diofant.utilities.iterables import partitions
-from diofant.matrices import Matrix, GramSchmidt, eye
-from diofant.matrices.expressions.blockmatrix import BlockMatrix, block_collapse
-from diofant.matrices.expressions import MatrixSymbol, ZeroMatrix
-from diofant.polys.rings import vring
-from diofant.polys.fields import vfield
-from diofant.polys.solvers import solve_lin_sys
+from diofant import continued_fraction_convergents as cf_c
+from diofant import continued_fraction_iterator as cf_i
+from diofant import continued_fraction_periodic as cf_p
+from diofant import continued_fraction_reduce as cf_r
+from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
+                     DiracDelta, E, Eq, EulerGamma, FiniteSet, Function, I,
+                     Integer, Lambda, LambertW, Le, Lt, Max, Mul, N, Ne, O, Or,
+                     Piecewise, Poly, Rational, RootOf, S, Subs, Symbol, acot,
+                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
+                     besselj, binomial, ceiling, chebyshevt, combsimp, cos,
+                     cosh, cot, csc, diff, elliptic_e, elliptic_f, exp, expand,
+                     expand_func, factor, factorial, factorial2, factorint,
+                     fibonacci, floor, gamma, gcd, hessian, hyper, hyperexpand,
+                     igcd, im, legendre_poly, limit, log, logcombine, minimize,
+                     nan, npartitions, oo, pi, polygamma, polylog, powdenest,
+                     powsimp, primerange, primitive_root, product, radsimp, re,
+                     reduce_inequalities, residue, resultant, rf, sec, series,
+                     sign, simplify, sin, sinh, solve, sqrt, sqrtdenest,
+                     symbols, tan, tanh, totient, trigsimp, wronskian, zoo)
 from diofant.concrete import Sum
 from diofant.concrete.products import Product
-from diofant.integrals import integrate
-from diofant.integrals.transforms import (
-    laplace_transform, inverse_laplace_transform, LaplaceTransform,
-    fourier_transform, mellin_transform)
-from diofant.functions.special.error_functions import erf
-from diofant.functions.special.delta_functions import Heaviside
-from diofant.solvers.recurr import rsolve
-from diofant.solvers.ode import dsolve
 from diofant.core.relational import Equality
+from diofant.functions.combinatorial.numbers import stirling
+from diofant.functions.special.delta_functions import Heaviside
+from diofant.functions.special.error_functions import erf
+from diofant.functions.special.zeta_functions import zeta
+from diofant.integrals import integrate
+from diofant.integrals.deltafunctions import deltaintegrate
+from diofant.integrals.transforms import (LaplaceTransform, fourier_transform,
+                                          inverse_laplace_transform,
+                                          laplace_transform, mellin_transform)
+from diofant.matrices import GramSchmidt, Matrix, eye
+from diofant.matrices.expressions import MatrixSymbol, ZeroMatrix
+from diofant.matrices.expressions.blockmatrix import (BlockMatrix,
+                                                      block_collapse)
+from diofant.polys.fields import vfield
+from diofant.polys.rings import vring
+from diofant.polys.solvers import solve_lin_sys
+from diofant.solvers.ode import dsolve
+from diofant.solvers.recurr import rsolve
+from diofant.utilities.iterables import partitions
 
 
 __all__ = ()

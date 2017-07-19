@@ -6,10 +6,10 @@ The containers implemented in this module are subclassed to Basic.
 They are supposed to work seamlessly within the Diofant framework.
 """
 
+from ..utilities.iterables import iterable
 from .basic import Basic
 from .compatibility import as_int
-from .sympify import sympify, converter
-from ..utilities.iterables import iterable
+from .sympify import converter, sympify
 
 
 class Tuple(Basic):

@@ -1,13 +1,13 @@
 """ Elliptic integrals. """
 
-from ...core import S, pi, I, Rational, Function
+from ...core import Function, I, Rational, S, pi
 from ...core.function import ArgumentIndexError
-from ..elementary.hyperbolic import atanh
-from ..elementary.trigonometric import sin, tan
-from ..elementary.miscellaneous import sqrt
 from ..elementary.complexes import sign
-from .hyper import hyper, meijerg
+from ..elementary.hyperbolic import atanh
+from ..elementary.miscellaneous import sqrt
+from ..elementary.trigonometric import sin, tan
 from .gamma_functions import gamma
+from .hyper import hyper, meijerg
 
 
 class elliptic_k(Function):

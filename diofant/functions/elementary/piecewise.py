@@ -1,9 +1,9 @@
-from ...core import Basic, S, Function, diff, Tuple, Dummy, Expr, Equality
-from ...core.relational import Relational
-from .miscellaneous import Max, Min
-from ...logic import And, Not, Or, true, false
-from ...logic.boolalg import Boolean, distribute_and_over_or
+from ...core import Basic, Dummy, Equality, Expr, Function, S, Tuple, diff
 from ...core.compatibility import default_sort_key
+from ...core.relational import Relational
+from ...logic import And, Not, Or, false, true
+from ...logic.boolalg import Boolean, distribute_and_over_or
+from .miscellaneous import Max, Min
 
 
 class ExprCondPair(Tuple):

@@ -2,10 +2,11 @@
 
 import pytest
 
-from diofant.polys.polyclasses import DMP, DMF, ANP
-from diofant.domains import ZZ, QQ
-from diofant.polys.specialpolys import f_polys
+from diofant.domains import QQ, ZZ
+from diofant.polys.polyclasses import ANP, DMF, DMP
 from diofant.polys.polyerrors import ExactQuotientFailed, PolynomialError
+from diofant.polys.specialpolys import f_polys
+
 
 __all__ = ()
 

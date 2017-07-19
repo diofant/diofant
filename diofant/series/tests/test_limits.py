@@ -3,15 +3,15 @@ import os
 
 import pytest
 
-from diofant import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
-                     acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
-                     cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
-                     Function, subfactorial, PoleError, Integer, Float,
-                     diff, simplify, Matrix, sinh, polygamma, symbols)
+from diofant import (E, Float, Function, I, Integer, Integral, Limit, Matrix,
+                     Piecewise, PoleError, Rational, S, Sum, Symbol, acos,
+                     atan, ceiling, cos, cot, diff, exp, floor, gamma,
+                     integrate, limit, log, oo, pi, polygamma, sign, simplify,
+                     sin, sinh, sqrt, subfactorial, symbols, tan)
+from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
 
-from diofant.abc import a, b, c, x, y, z, n
 
 __all__ = ()
 

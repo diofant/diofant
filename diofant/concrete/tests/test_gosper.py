@@ -1,9 +1,10 @@
 """Tests for Gosper's algorithm for hypergeometric summation. """
 
-from diofant import (binomial, factorial, gamma, Poly, Rational,
-                     simplify, sqrt, Symbol, pi)
+from diofant import (Poly, Rational, Symbol, binomial, factorial, gamma, pi,
+                     simplify, sqrt)
 from diofant.abc import a, b, j, k, m, n, r, x
 from diofant.concrete.gosper import gosper_normal, gosper_sum, gosper_term
+
 
 __all__ = ()
 

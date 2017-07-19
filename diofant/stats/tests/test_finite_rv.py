@@ -1,16 +1,16 @@
 import pytest
 
-from diofant import (FiniteSet, S, Symbol, sqrt, symbols, simplify, Eq, cos,
-                     And, Tuple, Or, Dict, sympify, binomial, cancel,
-                     Rational, Integer)
-from diofant.stats import (DiscreteUniform, Die, Bernoulli, Coin, Binomial,
-                           Hypergeometric, Rademacher, P, E, variance, covariance,
-                           skewness, sample, density, where, FiniteRV, pspace, cdf,
-                           correlation, moment, cmoment, smoment)
-from diofant.stats.frv_types import DieDistribution
-from diofant.matrices import Matrix
-
+from diofant import (And, Dict, Eq, FiniteSet, Integer, Or, Rational, S,
+                     Symbol, Tuple, binomial, cancel, cos, simplify, sqrt,
+                     symbols, sympify)
 from diofant.abc import p, x
+from diofant.matrices import Matrix
+from diofant.stats import (Bernoulli, Binomial, Coin, Die, DiscreteUniform, E,
+                           FiniteRV, Hypergeometric, P, Rademacher, cdf,
+                           cmoment, correlation, covariance, density, moment,
+                           pspace, sample, skewness, smoment, variance, where)
+from diofant.stats.frv_types import DieDistribution
+
 
 __all__ = ()
 

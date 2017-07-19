@@ -33,23 +33,23 @@ import inspect
 import mpmath
 import mpmath.libmp as mlib
 
+from ..utilities.iterables import uniq
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import (iterable, is_sequence, as_int, ordered,
-                            default_sort_key)
+from .compatibility import (as_int, default_sort_key, is_sequence, iterable,
+                            ordered)
+from .containers import Dict, Tuple
 from .decorators import _sympifyit
-from .expr import Expr, AtomicExpr
-from .numbers import Rational, Float
+from .evaluate import global_evaluate
+from .expr import AtomicExpr, Expr
+from .logic import fuzzy_and
+from .numbers import Float, Rational
 from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
 from .sympify import sympify
-from .containers import Tuple, Dict
-from .logic import fuzzy_and
-from .evaluate import global_evaluate
-from ..utilities.iterables import uniq
 
 
 def _coeff_isneg(a):
@@ -547,6 +547,7 @@ class Function(Application, Expr):
         -1/x - log(x)/x + log(x)/2 + O(1)
 
         """
+        from .symbol import Dummy
         from ..series import Order
         from ..sets.sets import FiniteSet
         args = self.args
@@ -632,6 +633,8 @@ class Function(Application, Expr):
         """
         Returns the first derivative of the function.
         """
+        from .symbol import Dummy
+
         if not (1 <= argindex <= len(self.args)):
             raise ArgumentIndexError(self, argindex)
 
@@ -989,6 +992,7 @@ class Derivative(Expr):
             return False
 
     def __new__(cls, expr, *variables, **assumptions):
+        from .symbol import Dummy
 
         expr = sympify(expr)
 
@@ -2420,6 +2424,7 @@ def nfloat(expr, n=15, exponent=False):
 
     """
     from .power import Pow
+    from .symbol import Dummy
     from ..polys.rootoftools import RootOf
 
     if iterable(expr, exclude=(str,)):
@@ -2461,6 +2466,3 @@ def nfloat(expr, n=15, exponent=False):
     return rv.xreplace(Transform(
         lambda x: x.func(*nfloat(x.args, n, exponent)),
         lambda x: isinstance(x, Function)))
-
-
-from .symbol import Dummy

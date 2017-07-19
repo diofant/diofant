@@ -1,15 +1,14 @@
-from itertools import permutations
 from functools import reduce
+from itertools import permutations
 
-from ..matrices import Matrix
-from ..core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
-                    Mul, Add, symbols, Tuple, Integer)
-from ..core.numbers import Zero
-from ..solvers import solve
-from ..functions import factorial
-from ..simplify import simplify
 from ..combinatorics import Permutation
-
+from ..core import (Add, Basic, Dummy, Expr, Function, Integer, Mul, Pow,
+                    Tuple, diff, symbols, sympify)
+from ..core.numbers import Zero
+from ..functions import factorial
+from ..matrices import Matrix
+from ..simplify import simplify
+from ..solvers import solve
 # TODO you are a bit excessive in the use of Dummies
 # TODO dummy point, literal field
 # TODO too often one needs to call doit or simplify on the output, check the

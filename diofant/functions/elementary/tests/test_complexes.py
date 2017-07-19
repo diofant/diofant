@@ -1,14 +1,15 @@
 import pytest
 
-from diofant import (
-    Abs, adjoint, arg, atan2, conjugate, cos, DiracDelta, E, exp, expand,
-    Expr, Function, Heaviside, I, im, log, nan, oo, pi, Rational, re, S,
-    sign, sin, sqrt, Symbol, symbols, transpose, zoo, exp_polar, Piecewise,
-    Interval, comp, Integral, Matrix, polar_lift, polarify, simplify,
-    unpolarify, principal_branch, gamma, erf, tanh, uppergamma, Eq, Ne,
-    periodic_argument, unbranched_argument)
-
+from diofant import (Abs, DiracDelta, E, Eq, Expr, Function, Heaviside, I,
+                     Integral, Interval, Matrix, Ne, Piecewise, Rational, S,
+                     Symbol, adjoint, arg, atan2, comp, conjugate, cos, erf,
+                     exp, exp_polar, expand, gamma, im, log, nan, oo,
+                     periodic_argument, pi, polar_lift, polarify,
+                     principal_branch, re, sign, simplify, sin, sqrt, symbols,
+                     tanh, transpose, unbranched_argument, unpolarify,
+                     uppergamma, zoo)
 from diofant.abc import x, y, z
+
 
 __all__ = ()
 

@@ -1,7 +1,7 @@
-from diofant.parsing.maxima import parse_maxima
-from diofant import Rational, Abs, Symbol, sin, cos, E, oo, log, factorial
-
+from diofant import Abs, E, Rational, Symbol, cos, factorial, log, oo, sin
 from diofant.abc import x
+from diofant.parsing.maxima import parse_maxima
+
 
 __all__ = ()
 

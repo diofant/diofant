@@ -1,5 +1,6 @@
-from diofant.parsing.mathematica import mathematica
 from diofant import sympify
+from diofant.parsing.mathematica import mathematica
+
 
 __all__ = ()
 

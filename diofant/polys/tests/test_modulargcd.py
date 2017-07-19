@@ -1,15 +1,12 @@
-from diofant.polys.rings import ring
-from diofant.domains import ZZ, QQ, AlgebraicField
-from diofant.polys.modulargcd import (
-    modgcd_univariate,
-    modgcd_bivariate,
-    _chinese_remainder_reconstruction_multivariate,
-    modgcd_multivariate,
-    _to_ZZ_poly,
-    _to_ANP_poly,
-    func_field_modgcd,
-    _func_field_modgcd_m)
 from diofant import sqrt
+from diofant.domains import QQ, ZZ, AlgebraicField
+from diofant.polys.modulargcd import (_chinese_remainder_reconstruction_multivariate,
+                                      _func_field_modgcd_m, _to_ANP_poly,
+                                      _to_ZZ_poly, func_field_modgcd,
+                                      modgcd_bivariate, modgcd_multivariate,
+                                      modgcd_univariate)
+from diofant.polys.rings import ring
+
 
 __all__ = ()
 

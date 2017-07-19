@@ -1,14 +1,14 @@
-from ...core import S, Mul, Rational, Pow, Equality, Symbol, SympifyError, Add
+from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol, SympifyError
 from ...core.function import _coeff_isneg
-from ...utilities import group, has_variety, default_sort_key
+from ...utilities import default_sort_key, group, has_variety
+from ..conventions import requires_partial
 from ..printer import Printer
 from ..str import sstr
-from ..conventions import requires_partial
+from .pretty_symbology import (annotated, greek_unicode, hobj, pretty_atom,
+                               pretty_symbol, pretty_try_use_unicode,
+                               pretty_use_unicode, vobj, xobj, xsym)
 from .stringpict import prettyForm, stringPict
-from .pretty_symbology import (hobj, vobj, xobj, xsym, pretty_symbol,
-                               pretty_atom, pretty_use_unicode,
-                               pretty_try_use_unicode, greek_unicode,
-                               annotated)
+
 
 # rename for usage from outside
 pprint_use_unicode = pretty_use_unicode

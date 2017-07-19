@@ -1,9 +1,10 @@
 import pytest
 
-from diofant import (Symbol, sqrt, pi, sin, cos, cot, exp, I,
-                     diff, conjugate, factorial, assoc_legendre)
+from diofant import (I, Symbol, assoc_legendre, conjugate, cos, cot, diff, exp,
+                     factorial, pi, sin, sqrt)
 from diofant.core.function import ArgumentIndexError
-from diofant.functions.special.spherical_harmonics import Ynm, Znm, Ynm_c
+from diofant.functions.special.spherical_harmonics import Ynm, Ynm_c, Znm
+
 
 __all__ = ()
 

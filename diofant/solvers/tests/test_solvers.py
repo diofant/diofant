@@ -2,23 +2,22 @@ import os
 
 import pytest
 
-from diofant import (
-    Abs, And, Derivative, Eq, Float, Function, Gt, I, Integral,
-    LambertW, Lt, Matrix, Or, Piecewise, Poly, Rational, S, Symbol,
-    Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
-    erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow, expand_log,
-    sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
-    root, simplify, atan2, arg, Tuple, oo, E, sech, IndexedBase, Mul,
-    real_root, Indexed)
+from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
+                     Indexed, IndexedBase, Integer, Integral, LambertW, Lt,
+                     Matrix, Mul, Or, Piecewise, Poly, Pow, Rational, S,
+                     Symbol, Tuple, Wild, acos, arg, asin, atan, atan2, atanh,
+                     cos, cosh, diff, erf, erfc, erfcinv, erfinv, exp,
+                     expand_log, im, log, oo, pi, re, real_root, root, sec,
+                     sech, simplify, sin, sinh, solve, solve_linear, sqrt,
+                     sstr, symbols, sympify, tan, tanh)
+from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
+                         t, x, y, z)
 from diofant.core.function import nfloat
-from diofant.solvers import solve_undetermined_coeffs
-from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
 from diofant.polys.rootoftools import RootOf
-from diofant.utilities.randtest import verify_numerically as tn
+from diofant.solvers import solve_undetermined_coeffs
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
-
-from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l,
-                         m, n, o, p, q, r, x, y, z, t)
+from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
+from diofant.utilities.randtest import verify_numerically as tn
 
 
 __all__ = ()

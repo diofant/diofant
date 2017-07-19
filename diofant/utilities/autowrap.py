@@ -67,20 +67,20 @@ When is this module NOT the best approach?
 
 _doctest_depends_on = {'exe': ('f2py', 'gfortran', 'gcc'), 'modules': ('numpy',)}
 
-import sys
 import os
 import shutil
+import sys
 import tempfile
-from subprocess import STDOUT, CalledProcessError, check_output
 from string import Template
+from subprocess import STDOUT, CalledProcessError, check_output
 
-from ..core import cacheit, Lambda, Eq, Dummy, Symbol
+from ..core import Dummy, Eq, Lambda, Symbol, cacheit
 from ..tensor import Idx, IndexedBase
-from .codegen import (make_routine, get_code_generator, OutputArgument,
-                      InOutArgument, InputArgument, CodeGenArgumentListError,
-                      Result, ResultBase, CCodeGen)
-from .lambdify import implemented_function
+from .codegen import (CCodeGen, CodeGenArgumentListError, InOutArgument,
+                      InputArgument, OutputArgument, Result, ResultBase,
+                      get_code_generator, make_routine)
 from .decorator import doctest_depends_on
+from .lambdify import implemented_function
 
 
 class CodeWrapError(Exception):

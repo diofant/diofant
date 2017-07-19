@@ -2,21 +2,20 @@
 
 from collections import defaultdict
 
+from ..utilities.iterables import common_prefix, common_suffix, variations
 from .add import Add
-from .compatibility import (iterable, is_sequence, DIOFANT_INTS,
-                            default_sort_key, ordered)
-from .mul import Mul, _keep_coeff
-from .power import Pow
 from .basic import Basic, preorder_traversal
+from .compatibility import (DIOFANT_INTS, default_sort_key, is_sequence,
+                            iterable, ordered)
+from .containers import Dict, Tuple
+from .coreerrors import NonCommutativeExpression
 from .expr import Expr
-from .sympify import sympify
-from .numbers import Rational, Integer, Number, I
+from .mul import Mul, _keep_coeff
+from .numbers import I, Integer, Number, Rational
+from .power import Pow
 from .singleton import S
 from .symbol import Dummy
-from .coreerrors import NonCommutativeExpression
-from .containers import Tuple, Dict
-from ..utilities.iterables import (common_prefix, common_suffix,
-                                   variations)
+from .sympify import sympify
 
 
 def _isnumber(i):

@@ -6,7 +6,7 @@ Plane
 
 """
 
-from ..core import S, Dummy, Symbol, Rational
+from ..core import Dummy, Rational, S, Symbol
 from ..core.compatibility import is_sequence
 from ..functions import acos, asin, sqrt
 from ..matrices import Matrix
@@ -14,9 +14,9 @@ from ..polys import cancel
 from ..solvers import solve
 from ..utilities import filldedent
 from .entity import GeometryEntity
+from .line import Line, Ray, Segment
+from .line3d import Line3D, LinearEntity3D, Ray3D, Segment3D
 from .point import Point, Point3D
-from .line3d import LinearEntity3D, Line3D, Segment3D, Ray3D
-from .line import Line, Segment, Ray
 
 
 class Plane(GeometryEntity):

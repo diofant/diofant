@@ -76,20 +76,20 @@ unsurmountable issues that can only be tackled with dedicated code generator:
 
 """
 
-from io import StringIO
 import os
 import textwrap
+from io import StringIO
 
 from .. import __version__ as diofant_version
-from ..core import Dummy, Symbol, S, Expr, Tuple, Equality, Function
+from ..core import Dummy, Equality, Expr, Function, S, Symbol, Tuple
 from ..core.compatibility import is_sequence
+from ..matrices import (ImmutableMatrix, MatrixBase, MatrixExpr, MatrixSlice,
+                        MatrixSymbol)
+from ..printing.ccode import CCodePrinter, ccode
 from ..printing.codeprinter import AssignmentError
-from ..printing.ccode import ccode, CCodePrinter
-from ..printing.fcode import fcode, FCodePrinter
-from ..printing.octave import octave_code, OctaveCodePrinter
+from ..printing.fcode import FCodePrinter, fcode
+from ..printing.octave import OctaveCodePrinter, octave_code
 from ..tensor import Idx, Indexed, IndexedBase
-from ..matrices import (MatrixSymbol, ImmutableMatrix, MatrixBase,
-                        MatrixExpr, MatrixSlice)
 
 
 __all__ = (

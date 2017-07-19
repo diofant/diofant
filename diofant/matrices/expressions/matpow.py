@@ -1,7 +1,8 @@
-from .matexpr import MatrixExpr, ShapeError, Identity, ZeroMatrix
-from ...core.sympify import _sympify
 from .. import MatrixBase
 from ...core import S
+from ...core.sympify import _sympify
+from .matexpr import Identity, MatrixExpr, ShapeError, ZeroMatrix
+from .matmul import MatMul
 
 
 class MatPow(MatrixExpr):
@@ -72,6 +73,3 @@ class MatPow(MatrixExpr):
         elif exp is S.One:
             return base
         return MatPow(base, exp)
-
-
-from .matmul import MatMul

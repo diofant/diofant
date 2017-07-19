@@ -2,11 +2,11 @@
 
 from textwrap import dedent
 
-from ..core import S, Mul, Tuple, sympify
+from ..core import Mul, S, Tuple, sympify
 from ..core.compatibility import iterable
-from .polyutils import dict_from_expr
-from .polyerrors import ExactQuotientFailed
 from ..utilities import public
+from .polyerrors import ExactQuotientFailed
+from .polyutils import dict_from_expr
 
 
 @public

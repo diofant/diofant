@@ -5,15 +5,14 @@ Boolean algebra module for Diofant.
 from collections import defaultdict
 from itertools import combinations, product
 
-from ..core import Atom
+from ..core import Atom, cacheit
+from ..core.compatibility import ordered
 from ..core.expr import Expr
-from ..core import cacheit
+from ..core.function import Application, Derivative
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
-from ..core.function import Application, Derivative
-from ..core.compatibility import ordered
-from ..core.sympify import converter, _sympify, sympify
-from ..core.singleton import Singleton, S
+from ..core.singleton import S, Singleton
+from ..core.sympify import _sympify, converter, sympify
 
 
 class Boolean(Expr):

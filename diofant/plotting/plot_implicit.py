@@ -11,15 +11,15 @@ diofant.plotting.plot
 
 import warnings
 
-from .plot import BaseSeries, Plot
-from ..core.relational import (Equality, GreaterThan, LessThan,
-                               Relational, StrictLessThan, StrictGreaterThan)
-from ..core import Eq, Tuple, sympify, Symbol, Dummy
+from ..core import Dummy, Eq, Symbol, Tuple, sympify
+from ..core.relational import (Equality, GreaterThan, LessThan, Relational,
+                               StrictGreaterThan, StrictLessThan)
 from ..external import import_module
 from ..logic.boolalg import BooleanFunction
 from ..polys.polyutils import _sort_gens
-from ..utilities.decorator import doctest_depends_on
 from ..utilities import flatten, lambdify
+from ..utilities.decorator import doctest_depends_on
+from .plot import BaseSeries, Plot
 
 
 def vectorized_lambdify(args, expr):

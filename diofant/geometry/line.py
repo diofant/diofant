@@ -8,17 +8,18 @@ Ray
 Segment
 """
 
-from ..core import S, sympify, Dummy, factor_terms, Eq
-from ..functions import acos, sqrt, tan, Piecewise
+from ..core import Dummy, Eq, S, factor_terms, sympify
+from ..core.compatibility import is_sequence
+from ..functions import Piecewise, acos, sqrt, tan
 from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
 from ..logic import And
 from ..simplify import simplify
 from ..solvers import solve
-from .exceptions import GeometryError
 from .entity import GeometryEntity, GeometrySet
+from .exceptions import GeometryError
 from .point import Point
 from .util import _symbol
-from ..core.compatibility import is_sequence
+
 
 # TODO: this should be placed elsewhere and reused in other modules
 

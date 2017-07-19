@@ -1,8 +1,9 @@
 """ Unit tests for Hyper_Function"""
 
-from diofant.core import symbols, Dummy, Tuple, Rational
+from diofant.core import Dummy, Rational, Tuple, symbols
 from diofant.functions import hyper
 from diofant.simplify.hyperexpand import Hyper_Function
+
 
 __all__ = ()
 

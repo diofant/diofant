@@ -1,16 +1,16 @@
 import itertools
-import string
 import re as _re
+import string
 
+from ..logic.boolalg import Boolean
 from .assumptions import StdFactKB
 from .basic import Basic
-from .sympify import sympify
-from .singleton import S
-from .expr import Expr, AtomicExpr
 from .cache import cacheit
+from .expr import AtomicExpr, Expr
 from .function import FunctionClass
 from .logic import fuzzy_bool
-from ..logic.boolalg import Boolean
+from .singleton import S
+from .sympify import sympify
 
 
 class BaseSymbol(AtomicExpr, Boolean):

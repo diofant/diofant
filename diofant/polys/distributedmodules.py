@@ -28,10 +28,11 @@ The main reference for this file is [SCA],
 
 from itertools import permutations
 
-from .monomials import monomial_mul, monomial_lcm, monomial_div, monomial_deg
+from ..core import S, sympify
+from .monomials import monomial_deg, monomial_div, monomial_lcm, monomial_mul
 from .polytools import Poly
 from .polyutils import parallel_dict_from_expr
-from ..core import S, sympify
+
 
 # Additional monomial tools.
 

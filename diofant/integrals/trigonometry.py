@@ -1,5 +1,6 @@
-from ..core import cacheit, Dummy, Eq, Integer, Rational, S, Wild
-from ..functions import binomial, sin, cos, Piecewise
+from ..core import Dummy, Eq, Integer, Rational, S, Wild, cacheit
+from ..functions import Piecewise, binomial, cos, sin
+
 
 # TODO sin(a*x)*cos(b*x) -> sin((a+b)x) + sin((a-b)x) ?
 

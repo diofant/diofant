@@ -1,5 +1,5 @@
+from ...core import Expr, Integer
 from ...core.sympify import _sympify
-from ...core import Integer, Expr
 from .matexpr import ShapeError
 from .matpow import MatPow
 

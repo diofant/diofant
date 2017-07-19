@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (hyper, meijerg, S, Tuple, pi, I, exp, log, Float,
-                     cos, sqrt, symbols, oo, Derivative, gamma, O, Rational)
+from diofant import (Derivative, Float, I, O, Rational, S, Tuple, cos, exp,
+                     gamma, hyper, log, meijerg, oo, pi, sqrt, symbols)
+from diofant.abc import k, x, z
 from diofant.series.limits import limit
-from diofant.utilities.randtest import (random_complex_number as randcplx,
-                                        verify_numerically as tn,
-                                        test_derivative_numerically as td)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_numerically as tn
 
-from diofant.abc import x, z, k
 
 __all__ = ()
 

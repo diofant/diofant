@@ -2,17 +2,18 @@
 of incomplete gamma functions. It should probably be renamed.
 """
 
-from ...core import (Add, S, sympify, cacheit, pi, I, Integer,
-                     Rational, Function, expand_mul, EulerGamma, Pow)
+from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational, S,
+                     cacheit, expand_mul, pi, sympify)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import factorial
-from ..elementary.integers import floor
-from ..elementary.miscellaneous import sqrt, root
-from ..elementary.exponential import exp, log
 from ..elementary.complexes import polar_lift
+from ..elementary.exponential import exp, log
 from ..elementary.hyperbolic import cosh, sinh
+from ..elementary.integers import floor
+from ..elementary.miscellaneous import root, sqrt
 from ..elementary.trigonometric import cos, sin
 from .hyper import hyper, meijerg
+
 
 # TODO series expansions
 # TODO see the "Note:" in Ei

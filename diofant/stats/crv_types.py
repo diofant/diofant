@@ -41,15 +41,17 @@ WignerSemicircle
 
 import random
 
-from ..core import pi, S, Dummy, sympify, Eq, Lambda, Expr, oo, Rational
 from ..concrete import Sum
+from ..core import Dummy, Eq, Expr, Lambda, Rational, S, oo, pi, sympify
+from ..functions import beta as beta_fn
+from ..functions import (Abs, Piecewise, besseli, binomial, cos, exp,
+                         factorial, floor, gamma, log, sqrt)
 from ..logic import And
-from ..functions import (beta as beta_fn, cos, exp, besseli, log, sqrt,
-                         binomial, factorial, floor, Abs, gamma, Piecewise)
 from ..sets import Interval
-from .crv import (SingleContinuousPSpace, SingleContinuousDistribution,
-                  ContinuousDistributionHandmade)
+from .crv import (ContinuousDistributionHandmade, SingleContinuousDistribution,
+                  SingleContinuousPSpace)
 from .rv import _value_check
+
 
 __all__ = ('ContinuousRV',
            'Arcsin',

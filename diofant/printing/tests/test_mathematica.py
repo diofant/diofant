@@ -1,19 +1,18 @@
 import pytest
 
-from diofant.core import (S, pi, oo, symbols, Function, Dummy,
-                          Rational, Integer, Tuple, Derivative,
-                          Eq, Ne, Le, Gt, AlgebraicNumber)
-from diofant.integrals import Integral
+from diofant import mathematica_code as mcode
 from diofant.concrete import Sum
-from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
-                               Min, Max, Piecewise, binomial,
-                               log, tan, cot, asin, acos, atan, sinh, cosh,
-                               tanh, coth, sech, csch, erfc)
+from diofant.core import (AlgebraicNumber, Derivative, Dummy, Eq, Function, Gt,
+                          Integer, Le, Ne, Rational, S, Tuple, oo, pi, symbols)
+from diofant.functions import (Max, Min, Piecewise, acos, asin, atan, atanh,
+                               binomial, cos, cosh, cot, coth, csch, erfc, exp,
+                               hyper, log, meijerg, sech, sign, sin, sinh, tan,
+                               tanh)
+from diofant.integrals import Integral
+from diofant.logic import Or, false, true
 from diofant.matrices import Matrix
-from diofant.logic import Or, true, false
 from diofant.polys import Poly, RootOf
 
-from diofant import mathematica_code as mcode
 
 __all__ = ()
 

@@ -1,14 +1,14 @@
 import pytest
 
-from diofant.core import S, symbols, Add, Mul, Integer, Eq
-from diofant.functions import transpose, sin, cos, sqrt
-from diofant.simplify import simplify
-from diofant.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd,
-                              MatMul, MatPow, Matrix, MatrixExpr,
-                              MatrixSymbol, ShapeError, ZeroMatrix,
-                              Transpose, Adjoint)
-from diofant.matrices.expressions.matexpr import MatrixElement
+from diofant.core import Add, Eq, Integer, Mul, S, symbols
 from diofant.external import import_module
+from diofant.functions import cos, sin, sqrt, transpose
+from diofant.matrices import (Adjoint, Identity, ImmutableMatrix, Inverse,
+                              MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
+                              MatrixSymbol, ShapeError, Transpose, ZeroMatrix)
+from diofant.matrices.expressions.matexpr import MatrixElement
+from diofant.simplify import simplify
+
 
 numpy = import_module('numpy')
 

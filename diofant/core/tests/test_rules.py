@@ -2,6 +2,7 @@ import pytest
 
 from diofant.core.rules import Transform
 
+
 __all__ = ()
 
 

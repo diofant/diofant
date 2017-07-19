@@ -1,7 +1,7 @@
 from diofant.combinatorics.graycode import (GrayCode, bin_to_gray,
-                                            random_bitstring,
                                             get_subset_from_bitstring,
-                                            graycode_subsets)
+                                            graycode_subsets, random_bitstring)
+
 
 __all__ = ()
 

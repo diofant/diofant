@@ -1,7 +1,8 @@
 import pytest
 
-from diofant import (Symbol, Rational, cos, sin, tan, cot, exp, log, Function,
-                     Derivative, Expr, symbols, pi, I, S)
+from diofant import (Derivative, Expr, Function, I, Rational, S, Symbol, cos,
+                     cot, exp, log, pi, sin, symbols, tan)
+
 
 __all__ = ()
 

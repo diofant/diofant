@@ -1,6 +1,7 @@
-from diofant import (Symbol, sqrt, I, Integer, Rational, cos, sin, im, re,
-                     Abs, exp, sinh, cosh, tan, tanh, conjugate, sign, cot,
-                     coth, pi, symbols, expand_complex)
+from diofant import (Abs, I, Integer, Rational, Symbol, conjugate, cos, cosh,
+                     cot, coth, exp, expand_complex, im, pi, re, sign, sin,
+                     sinh, sqrt, symbols, tan, tanh)
+
 
 __all__ = ()
 

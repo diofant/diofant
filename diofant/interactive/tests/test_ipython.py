@@ -2,8 +2,8 @@
 
 import ast
 
-from diofant.interactive.session import (IntegerWrapper,
-                                         IntegerDivisionWrapper)
+from diofant.interactive.session import IntegerDivisionWrapper, IntegerWrapper
+
 
 __all__ = ()
 

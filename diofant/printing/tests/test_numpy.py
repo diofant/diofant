@@ -1,7 +1,7 @@
-from diofant import Piecewise, MatrixSymbol, Equality, Unequality, Mod
+from diofant import Equality, MatrixSymbol, Mod, Piecewise, Unequality
+from diofant.abc import a, b, x
 from diofant.printing.lambdarepr import NumPyPrinter
 
-from diofant.abc import x, a, b
 
 __all__ = ()
 

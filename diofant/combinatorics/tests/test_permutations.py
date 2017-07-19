@@ -2,8 +2,9 @@ from itertools import permutations
 
 import pytest
 
-from diofant.combinatorics.permutations import (Permutation, _af_parity,
-                                                _af_rmul, _af_rmuln, Cycle)
+from diofant.combinatorics.permutations import (Cycle, Permutation, _af_parity,
+                                                _af_rmul, _af_rmuln)
+
 
 __all__ = ()
 

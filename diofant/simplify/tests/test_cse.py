@@ -2,15 +2,15 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Pow, Symbol, exp, sqrt, symbols, sympify, cse,
-                     Matrix, cos, sin, Eq, Function, Tuple, RootOf,
-                     IndexedBase, Idx, Piecewise, O, Rational, true)
-from diofant.simplify.cse_opts import sub_pre, sub_post
+from diofant import (Add, Eq, Function, Idx, IndexedBase, Matrix, O, Piecewise,
+                     Pow, Rational, RootOf, Symbol, Tuple, cos, cse, exp, sin,
+                     sqrt, symbols, sympify, true)
 from diofant.functions.special.hyper import meijerg
+from diofant.matrices import (ImmutableDenseMatrix, ImmutableSparseMatrix,
+                              MutableDenseMatrix, MutableSparseMatrix)
 from diofant.simplify import cse_main, cse_opts
-from diofant.matrices import (MutableDenseMatrix,
-                              MutableSparseMatrix, ImmutableDenseMatrix,
-                              ImmutableSparseMatrix)
+from diofant.simplify.cse_opts import sub_post, sub_pre
+
 
 __all__ = ()
 

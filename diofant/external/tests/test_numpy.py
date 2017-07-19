@@ -7,12 +7,13 @@
 
 import mpmath
 
-from diofant import (Rational, Symbol, list2numpy, matrix2numpy, sin, Float,
-                     Matrix, lambdify, symarray, symbols, Integer)
 import diofant
+from diofant import (Float, Integer, Matrix, Rational, Symbol, lambdify,
+                     list2numpy, matrix2numpy, sin, symarray, symbols)
 from diofant.abc import x, y, z
-from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.external import import_module
+from diofant.utilities.decorator import conserve_mpmath_dps
+
 
 __all__ = ()
 

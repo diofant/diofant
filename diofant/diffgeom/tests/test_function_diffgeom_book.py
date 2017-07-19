@@ -1,9 +1,10 @@
+from diofant.core import Derivative, Function, symbols
+from diofant.diffgeom import Differential, WedgeProduct, intcurve_series
 from diofant.diffgeom.rn import R2, R2_p, R2_r, R3_r
-from diofant.diffgeom import intcurve_series, Differential, WedgeProduct
-from diofant.core import symbols, Function, Derivative
-from diofant.simplify import trigsimp, simplify
-from diofant.functions import sqrt, atan2, sin, cos
+from diofant.functions import atan2, cos, sin, sqrt
 from diofant.matrices import Matrix
+from diofant.simplify import simplify, trigsimp
+
 
 __all__ = ()
 

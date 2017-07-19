@@ -1,8 +1,9 @@
 import pytest
 
 from diofant.core import symbols
-from diofant.matrices import ShapeError, MatrixSymbol
+from diofant.matrices import MatrixSymbol, ShapeError
 from diofant.matrices.expressions import HadamardProduct, hadamard_product
+
 
 __all__ = ()
 

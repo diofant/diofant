@@ -1,12 +1,14 @@
 import pytest
 
 from diofant.domains import QQ
+from diofant.polys.ring_series import (_has_constant_term, _invert_monoms,
+                                       rs_compose_add, rs_exp, rs_hadamard_exp,
+                                       rs_integrate, rs_log, rs_mul, rs_newton,
+                                       rs_pow, rs_series_from_list,
+                                       rs_series_inversion, rs_square,
+                                       rs_trunc)
 from diofant.polys.rings import ring
-from diofant.polys.ring_series import (
-    _invert_monoms, rs_integrate,
-    rs_trunc, rs_mul, rs_square, rs_pow, _has_constant_term,
-    rs_series_inversion, rs_series_from_list, rs_exp, rs_log, rs_newton,
-    rs_hadamard_exp, rs_compose_add)
+
 
 __all__ = ()
 

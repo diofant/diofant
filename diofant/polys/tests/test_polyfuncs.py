@@ -2,12 +2,12 @@
 
 import pytest
 
-from diofant.polys.polyfuncs import symmetrize, horner, interpolate, viete
-from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                      ComputationFailed)
 from diofant import symbols
-
 from diofant.abc import a, b, c, d, e, x, y, z
+from diofant.polys.polyerrors import (ComputationFailed,
+                                      MultivariatePolynomialError)
+from diofant.polys.polyfuncs import horner, interpolate, symmetrize, viete
+
 
 __all__ = ()
 

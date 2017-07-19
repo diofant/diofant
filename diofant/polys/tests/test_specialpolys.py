@@ -2,22 +2,15 @@
 
 import pytest
 
-from diofant import Poly, ZZ, symbols
-
-from diofant.polys.specialpolys import (
-    swinnerton_dyer_poly,
-    cyclotomic_poly,
-    symmetric_poly,
-    random_poly,
-    interpolating_poly,
-    fateman_poly_F_1,
-    dmp_fateman_poly_F_1,
-    fateman_poly_F_2,
-    dmp_fateman_poly_F_2,
-    fateman_poly_F_3,
-    dmp_fateman_poly_F_3)
-
+from diofant import ZZ, Poly, symbols
 from diofant.abc import x, y, z
+from diofant.polys.specialpolys import (cyclotomic_poly, dmp_fateman_poly_F_1,
+                                        dmp_fateman_poly_F_2,
+                                        dmp_fateman_poly_F_3, fateman_poly_F_1,
+                                        fateman_poly_F_2, fateman_poly_F_3,
+                                        interpolating_poly, random_poly,
+                                        swinnerton_dyer_poly, symmetric_poly)
+
 
 __all__ = ()
 

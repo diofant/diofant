@@ -1,9 +1,9 @@
-from ..core import Basic, S, Lambda, Integer, Rational
+from ..core import Basic, Integer, Lambda, Rational, S
 from ..core.compatibility import as_int
-from .sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from ..core.singleton import Singleton
 from ..core.sympify import _sympify, converter
 from ..utilities.iterables import cantor_product
+from .sets import EmptySet, FiniteSet, Intersection, Interval, Set
 
 
 class Naturals(Set, metaclass=Singleton):

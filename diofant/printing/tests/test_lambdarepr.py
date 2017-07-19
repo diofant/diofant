@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import sin, Matrix, Interval, Piecewise, And, Or, Not, false
+from diofant import And, Interval, Matrix, Not, Or, Piecewise, false, sin
+from diofant.abc import x, y, z
 from diofant.printing.lambdarepr import lambdarepr
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 

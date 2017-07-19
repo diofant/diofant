@@ -4,25 +4,34 @@ from textwrap import dedent
 
 import pytest
 
-from diofant import (symbols, Integral, Tuple, Dummy, Basic, default_sort_key,
-                     Matrix, factorial, true, Integer)
-from diofant.combinatorics import RGS_enum, RGS_unrank, Permutation
-from diofant.utilities.iterables import (
-    _partition, _set_partitions, binary_partitions, bracelets, capture,
-    common_prefix, common_suffix, dict_merge, filter_symbols,
-    flatten, generate_bell, generate_derangements, generate_involutions,
-    generate_oriented_forest, group, has_dups, kbins, minlex, multiset,
-    multiset_combinations, multiset_partitions,
-    multiset_permutations, necklaces, numbered_symbols, ordered, partitions,
-    permutations, postfixes, postorder_traversal, prefixes, reshape,
-    rotate_left, rotate_right, runs, sift, subsets, take, topological_sort,
-    unflatten, uniq, variations, cantor_product)
+from diofant import (Basic, Dummy, Integer, Integral, Matrix, Tuple,
+                     default_sort_key, factorial, symbols, true)
+from diofant.abc import w, x, y, z
+from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
+from diofant.core.singleton import S
+from diofant.functions.elementary.piecewise import ExprCondPair, Piecewise
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
-from diofant.core.singleton import S
-from diofant.functions.elementary.piecewise import Piecewise, ExprCondPair
+from diofant.utilities.iterables import (_partition, _set_partitions,
+                                         binary_partitions, bracelets,
+                                         cantor_product, capture,
+                                         common_prefix, common_suffix,
+                                         dict_merge, filter_symbols, flatten,
+                                         generate_bell, generate_derangements,
+                                         generate_involutions,
+                                         generate_oriented_forest, group,
+                                         has_dups, kbins, minlex, multiset,
+                                         multiset_combinations,
+                                         multiset_partitions,
+                                         multiset_permutations, necklaces,
+                                         numbered_symbols, ordered, partitions,
+                                         permutations, postfixes,
+                                         postorder_traversal, prefixes,
+                                         reshape, rotate_left, rotate_right,
+                                         runs, sift, subsets, take,
+                                         topological_sort, unflatten, uniq,
+                                         variations)
 
-from diofant.abc import w, x, y, z
 
 __all__ = ()
 

@@ -1,10 +1,10 @@
-from .expr_with_limits import AddWithLimits
-from .expr_with_intlimits import ExprWithIntLimits
-from ..core import Derivative, Function, Eq, S, Dummy, Wild, Integer
-from .gosper import gosper_sum
+from ..core import Derivative, Dummy, Eq, Function, Integer, S, Wild
 from ..functions import Piecewise
-from ..polys import apart, PolynomialError
+from ..polys import PolynomialError, apart
 from ..solvers import solve
+from .expr_with_intlimits import ExprWithIntLimits
+from .expr_with_limits import AddWithLimits
+from .gosper import gosper_sum
 
 
 class Sum(AddWithLimits, ExprWithIntLimits):

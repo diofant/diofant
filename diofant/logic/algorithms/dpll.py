@@ -9,9 +9,9 @@ References:
 """
 
 from ...core.compatibility import default_sort_key
-from ..boolalg import (Or, Not, conjuncts, disjuncts, to_cnf,
-                       to_int_repr, _find_predicates)
-from ..inference import pl_true, literal_symbol
+from ..boolalg import (Not, Or, _find_predicates, conjuncts, disjuncts, to_cnf,
+                       to_int_repr)
+from ..inference import literal_symbol, pl_true
 
 
 def dpll_satisfiable(expr):

@@ -1,6 +1,7 @@
-from diofant.matrices.densetools import eye
-from diofant.matrices.densearith import add, sub, mulmatmat, mulmatscaler
 from diofant import ZZ
+from diofant.matrices.densearith import add, mulmatmat, mulmatscaler, sub
+from diofant.matrices.densetools import eye
+
 
 __all__ = ()
 

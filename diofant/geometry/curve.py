@@ -5,7 +5,7 @@ Contains
 Curve
 """
 
-from ..core import sympify, Tuple
+from ..core import Tuple, sympify
 from ..core.compatibility import is_sequence
 from .entity import GeometryEntity, GeometrySet
 from .point import Point

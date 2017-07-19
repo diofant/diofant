@@ -33,20 +33,21 @@ more information on each (run help(pde)):
 
 """
 
+import operator
 from functools import reduce
 from itertools import combinations_with_replacement
-import operator
 
-from ..simplify import simplify, collect
-from ..core import (Add, Function, expand, Subs, Equality, Eq, Symbol,
-                    Wild, symbols, S)
+from ..core import (Add, Eq, Equality, Function, S, Subs, Symbol, Wild, expand,
+                    symbols)
 from ..core.compatibility import is_sequence
 from ..core.function import AppliedUndef
 from ..functions import exp
 from ..integrals import Integral
-from ..utilities import has_dups, filldedent
-from .deutils import _preprocess, ode_order, _desolve
+from ..simplify import collect, simplify
+from ..utilities import filldedent, has_dups
+from .deutils import _desolve, _preprocess, ode_order
 from .solvers import solve
+
 
 allhints = (
     "1st_linear_constant_coeff_homogeneous",

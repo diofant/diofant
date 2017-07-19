@@ -12,17 +12,16 @@ diofant.stats.frv
 diofant.stats.rv_interface
 """
 
-from ..core import (S, Expr, Symbol, Tuple, Add, Eq, Equality, Lambda,
-                    Integer, sympify)
+from ..abc import x
+from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, S, Symbol, Tuple,
+                    sympify)
 from ..core.relational import Relational
+from ..functions import DiracDelta
 from ..logic import And
 from ..logic.boolalg import Boolean
-from ..functions import DiracDelta
 from ..sets import FiniteSet, ProductSet
 from ..solvers import solve
 from ..utilities import lambdify
-
-from ..abc import x
 
 
 class RandomDomain(Expr):

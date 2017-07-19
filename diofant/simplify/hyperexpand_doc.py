@@ -2,10 +2,11 @@
 be displayed in the sphinx documentation.
 """
 
-from .hyperexpand import FormulaCollection
 from ..core import Eq
 from ..functions import hyper
 from ..printing import latex
+from .hyperexpand import FormulaCollection
+
 
 c = FormulaCollection()
 

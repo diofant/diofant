@@ -1,5 +1,5 @@
-from .str import StrPrinter
 from ..utilities import default_sort_key
+from .str import StrPrinter
 
 
 class LambdaPrinter(StrPrinter):

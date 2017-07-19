@@ -8,9 +8,9 @@ as attributes of the coordinate systems (eg `R2_r.x` and `R2_p.theta`), or by
 using the usual `coord_sys.coord_function(index, name)` interface.
 """
 
-from .diffgeom import Manifold, Patch, CoordSystem
 from ..core import Dummy
-from ..functions import sqrt, atan2, acos, sin, cos
+from ..functions import acos, atan2, cos, sin, sqrt
+from .diffgeom import CoordSystem, Manifold, Patch
 
 
 ###############################################################################

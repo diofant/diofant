@@ -1,9 +1,9 @@
-from ..core import Basic, Integer, Tuple, Dict, S, sympify, Expr
+from ..core import Basic, Dict, Expr, Integer, S, Tuple, sympify
 from ..core.sympify import converter as sympify_converter
-from .matrices import MatrixBase
 from .dense import DenseMatrix
-from .sparse import SparseMatrixBase, MutableSparseMatrix
 from .expressions import MatrixExpr
+from .matrices import MatrixBase
+from .sparse import MutableSparseMatrix, SparseMatrixBase
 
 
 def sympify_matrix(arg):

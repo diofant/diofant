@@ -1,8 +1,8 @@
 """Inference in propositional logic"""
 
-from .boolalg import And, Not, conjuncts, to_cnf
-from ..core.compatibility import ordered
 from ..core import sympify
+from ..core.compatibility import ordered
+from .boolalg import And, Not, conjuncts, to_cnf
 
 
 def literal_symbol(literal):

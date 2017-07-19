@@ -1,17 +1,20 @@
 """Tests for sparse distributed modules. """
 
-from diofant.polys.distributedmodules import (
-    sdm_monomial_mul, sdm_monomial_deg, sdm_monomial_divides,
-    sdm_add, sdm_LM, sdm_LT, sdm_mul_term, sdm_zero, sdm_deg,
-    sdm_LC, sdm_from_dict,
-    sdm_spoly, sdm_ecart, sdm_nf_mora, sdm_groebner,
-    sdm_from_vector, sdm_to_vector, sdm_monomial_lcm,
-    sdm_nf_buchberger, sdm_nf_buchberger_reduced
-)
-from diofant.polys.orderings import lex, grlex, InverseOrder
-from diofant.domains import QQ
-
 from diofant.abc import x, y, z
+from diofant.domains import QQ
+from diofant.polys.distributedmodules import (sdm_add, sdm_deg, sdm_ecart,
+                                              sdm_from_dict, sdm_from_vector,
+                                              sdm_groebner, sdm_LC, sdm_LM,
+                                              sdm_LT, sdm_monomial_deg,
+                                              sdm_monomial_divides,
+                                              sdm_monomial_lcm,
+                                              sdm_monomial_mul, sdm_mul_term,
+                                              sdm_nf_buchberger,
+                                              sdm_nf_buchberger_reduced,
+                                              sdm_nf_mora, sdm_spoly,
+                                              sdm_to_vector, sdm_zero)
+from diofant.polys.orderings import InverseOrder, grlex, lex
+
 
 __all__ = ()
 

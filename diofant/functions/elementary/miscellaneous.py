@@ -1,13 +1,13 @@
-from ...core import (S, sympify, Add, Tuple, Lambda, Expr, Mul, Rational,
-                     Pow, Equality, Dummy)
-from ...core.operations import LatticeOp, ShortCircuit
-from ...core.function import Application, ArgumentIndexError
-from ...core.singleton import Singleton
-from ...core.rules import Transform
+from ...core import (Add, Dummy, Equality, Expr, Lambda, Mul, Pow, Rational, S,
+                     Tuple, sympify)
 from ...core.compatibility import as_int
+from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
-from .integers import floor
+from ...core.operations import LatticeOp, ShortCircuit
+from ...core.rules import Transform
+from ...core.singleton import Singleton
 from ...logic import And, Or
+from .integers import floor
 
 
 class IdentityFunction(Lambda, metaclass=Singleton):

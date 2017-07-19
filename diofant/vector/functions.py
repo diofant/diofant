@@ -1,9 +1,9 @@
+from ..core import Integer, diff, sympify
+from ..integrals import integrate
 from .coordsysrect import CoordSysCartesian
 from .dyadic import Dyadic
-from .vector import Vector, BaseVector
 from .scalar import BaseScalar
-from ..core import sympify, diff, Integer
-from ..integrals import integrate
+from .vector import BaseVector, Vector
 
 
 def express(expr, system, system2=None, variables=False):

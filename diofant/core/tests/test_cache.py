@@ -1,11 +1,11 @@
 import pytest
 
+from diofant.abc import x
+from diofant.core.cache import CACHE, cacheit, clear_cache, print_cache
 from diofant.core.compatibility import ordered
 from diofant.core.symbol import Symbol, symbols
-from diofant.core.cache import cacheit, CACHE, print_cache, clear_cache
 from diofant.printing.str import sstr
 
-from diofant.abc import x
 
 __all__ = ()
 

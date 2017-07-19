@@ -1,6 +1,6 @@
+from ...core import I, S
+from ...functions import exp, sqrt
 from .matexpr import MatrixExpr
-from ...core import S, I
-from ...functions import sqrt, exp
 
 
 class DFT(MatrixExpr):

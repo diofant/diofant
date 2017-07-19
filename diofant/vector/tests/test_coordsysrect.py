@@ -1,14 +1,15 @@
 import pytest
 
+from diofant import ImmutableMatrix as Matrix
+from diofant import Symbol, cos, pi, simplify, sin, symbols, zeros
 from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.scalar import BaseScalar
-from diofant import (sin, cos, pi, ImmutableMatrix as Matrix,
-                     symbols, simplify, zeros, Symbol)
 from diofant.vector.functions import express
-from diofant.vector.point import Point
-from diofant.vector.vector import Vector
 from diofant.vector.orienters import (AxisOrienter, BodyOrienter,
-                                      SpaceOrienter, QuaternionOrienter)
+                                      QuaternionOrienter, SpaceOrienter)
+from diofant.vector.point import Point
+from diofant.vector.scalar import BaseScalar
+from diofant.vector.vector import Vector
+
 
 __all__ = ()
 

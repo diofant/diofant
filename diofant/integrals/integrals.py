@@ -1,14 +1,14 @@
 from ..concrete.expr_with_limits import AddWithLimits
-from ..core import (Add, Basic, Tuple, Expr, diff, oo, Eq, S,
-                    Dummy, Symbol, Wild, sympify)
+from ..core import (Add, Basic, Dummy, Eq, Expr, S, Symbol, Tuple, Wild, diff,
+                    oo, sympify)
 from ..core.compatibility import is_sequence
-from .trigonometry import trigintegrate
-from .meijerint import meijerint_definite, meijerint_indefinite
-from ..utilities import filldedent
-from ..polys import Poly, PolynomialError
-from ..functions import Piecewise, sqrt, sign, piecewise_fold, log
-from ..series import limit, Order
+from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..matrices import MatrixBase
+from ..polys import Poly, PolynomialError
+from ..series import Order, limit
+from ..utilities import filldedent
+from .meijerint import meijerint_definite, meijerint_indefinite
+from .trigonometry import trigintegrate
 
 
 class Integral(AddWithLimits):

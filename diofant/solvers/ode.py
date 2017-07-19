@@ -229,28 +229,29 @@ of those tests will surely fail.
 from collections import defaultdict
 from itertools import islice
 
-from ..core import (Add, S, Mul, Pow, oo, Tuple, factor_terms, AtomicExpr,
-                    Expr, Function, Derivative, diff, expand, expand_mul,
-                    Subs, nan, zoo, I, Number, Integer, Equality, Eq,
-                    Symbol, Wild, Dummy, symbols, sympify)
-from ..core.compatibility import ordered, iterable, is_sequence
+from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
+                    Function, I, Integer, Mul, Number, Pow, S, Subs, Symbol,
+                    Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
+                    oo, symbols, sympify, zoo)
+from ..core.compatibility import is_sequence, iterable, ordered
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
-from ..logic.boolalg import BooleanAtom
-from ..functions import (cos, exp, im, log, re, sin, tan, sqrt, atan2,
-                         conjugate, factorial)
+from ..functions import (atan2, conjugate, cos, exp, factorial, im, log, re,
+                         sin, sqrt, tan)
 from ..integrals import Integral, integrate
-from ..matrices import wronskian, Matrix, BlockDiagMatrix
-from ..polys import Poly, RootOf, terms_gcd, PolynomialError, lcm
+from ..logic.boolalg import BooleanAtom
+from ..matrices import BlockDiagMatrix, Matrix, wronskian
+from ..polys import Poly, PolynomialError, RootOf, lcm, terms_gcd
 from ..polys.polyroots import roots_quartic
 from ..polys.polytools import cancel, degree, div
 from ..series import Order, series
-from ..simplify import (collect, logcombine, powsimp, separatevars,
-                        simplify, trigsimp, posify, cse, collect_const)
-from .solvers import solve
+from ..simplify import (collect, collect_const, cse, logcombine, posify,
+                        powsimp, separatevars, simplify, trigsimp)
+from ..utilities import default_sort_key, numbered_symbols, sift
+from .deutils import _desolve, _preprocess, ode_order
 from .pde import pdsolve
-from ..utilities import numbered_symbols, default_sort_key, sift
-from .deutils import _preprocess, ode_order, _desolve
+from .solvers import solve
+
 
 #: This is a list of hints in the order that they should be preferred by
 #: :py:meth:`~diofant.solvers.ode.classify_ode`. In general, hints earlier in the

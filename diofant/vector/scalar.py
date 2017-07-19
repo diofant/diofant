@@ -1,4 +1,4 @@
-from ..core import Symbol, Integer
+from ..core import Integer, Symbol
 from ..printing.pretty.stringpict import prettyForm
 
 

@@ -1,7 +1,7 @@
 from collections import defaultdict
 
-from ..core import Basic, sympify, Tuple
-from ..core.compatibility import iterable, as_int
+from ..core import Basic, Tuple, sympify
+from ..core.compatibility import as_int, iterable
 from ..utilities import flatten
 
 

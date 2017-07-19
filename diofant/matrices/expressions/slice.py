@@ -1,6 +1,6 @@
-from .matexpr import MatrixExpr
-from ...core import Tuple, S, Expr
+from ...core import Expr, S, Tuple
 from ...functions import floor
+from .matexpr import MatrixExpr
 
 
 def normalize(i, parentsize):

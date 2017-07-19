@@ -2,17 +2,16 @@
 
 import pytest
 
-from diofant.polys.monomials import (itermonomials, monomial_count,
-                                     monomial_mul, monomial_div,
-                                     monomial_gcd, monomial_lcm,
-                                     monomial_max, monomial_min,
-                                     monomial_divides, Monomial,
-                                     monomial_pow, term_div)
-from diofant.polys.polyerrors import ExactQuotientFailed
-from diofant.core import Integer
-from diofant.domains import ZZ, QQ
-
 from diofant.abc import a, b, c, x, y, z
+from diofant.core import Integer
+from diofant.domains import QQ, ZZ
+from diofant.polys.monomials import (Monomial, itermonomials, monomial_count,
+                                     monomial_div, monomial_divides,
+                                     monomial_gcd, monomial_lcm, monomial_max,
+                                     monomial_min, monomial_mul, monomial_pow,
+                                     term_div)
+from diofant.polys.polyerrors import ExactQuotientFailed
+
 
 __all__ = ()
 

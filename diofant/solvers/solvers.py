@@ -3,32 +3,32 @@ This module contain solvers for all kinds of equations,
 algebraic or transcendental.
 """
 
-from types import GeneratorType
-from collections import defaultdict
 import warnings
+from collections import defaultdict
+from types import GeneratorType
 
-from ..core.compatibility import (iterable, is_sequence, ordered,
-                                  default_sort_key)
-from ..core import (sympify, S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow,
-                    expand_mul, expand_multinomial, expand_log, Derivative,
-                    Function, expand_power_exp, Lambda, nfloat, Float,
-                    Integer, Ge, preorder_traversal)
+from ..core import (Add, Derivative, Dummy, Equality, Expr, Float, Function,
+                    Ge, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
+                    expand_mul, expand_multinomial, expand_power_exp, nfloat,
+                    preorder_traversal, sympify)
 from ..core.assumptions import check_assumptions
+from ..core.compatibility import (default_sort_key, is_sequence, iterable,
+                                  ordered)
 from ..core.function import AppliedUndef
-from ..integrals import Integral
 from ..core.relational import Relational
-from ..functions import (log, exp, cos, sin, tan, acos, asin, atan,
-                         Abs, re, im, arg, sqrt, atan2, piecewise_fold,
-                         Piecewise, Min, Max)
-from ..functions.elementary.trigonometric import (TrigonometricFunction,
-                                                  HyperbolicFunction)
-from ..simplify import (simplify, collect, powsimp, posify, powdenest,
-                        nsimplify, denom, logcombine)
-from ..simplify.sqrtdenest import unrad
-from ..simplify.fu import TR1
+from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
+                         atan2, cos, exp, im, log, piecewise_fold, re, sin,
+                         sqrt, tan)
+from ..functions.elementary.trigonometric import (HyperbolicFunction,
+                                                  TrigonometricFunction)
+from ..integrals import Integral
 from ..matrices import Matrix, zeros
-from ..polys import roots, cancel, factor, Poly, together, RootOf
+from ..polys import Poly, RootOf, cancel, factor, roots, together
 from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
+from ..simplify import (collect, denom, logcombine, nsimplify, posify,
+                        powdenest, powsimp, simplify)
+from ..simplify.fu import TR1
+from ..simplify.sqrtdenest import unrad
 from ..utilities import filldedent, subsets
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
@@ -1620,6 +1620,8 @@ def _tsolve(eq, sym, **flags):
     >>> tsolve(log(x) + 2*x, x)
     [LambertW(2)/2]
     """
+    from .bivariate import bivariate_type, _solve_lambert, _filtered_gens
+
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []
     if eq in flags['tsolve_saw']:
@@ -1908,6 +1910,3 @@ def _invert(eq, *symbols, **kwargs):
         if lhs == was:
             break
     return rhs, lhs
-
-
-from .bivariate import bivariate_type, _solve_lambert, _filtered_gens

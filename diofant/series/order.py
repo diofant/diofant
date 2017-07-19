@@ -1,5 +1,5 @@
-from ..core import (S, sympify, Expr, Symbol, Dummy, Add, Mul,
-                    cacheit, expand_power_base, expand_log, Tuple)
+from ..core import (Add, Dummy, Expr, Mul, S, Symbol, Tuple, cacheit,
+                    expand_log, expand_power_base, sympify)
 from ..core.compatibility import default_sort_key, is_sequence
 from ..utilities.iterables import uniq
 

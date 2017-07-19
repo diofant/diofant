@@ -7,10 +7,9 @@ The dense matrix is stored as a list of lists.
 
 import copy
 
-from .densetools import col, eye, augment
-from .densetools import rowadd, rowmul, conjugate_transpose
 from ..core import var
 from ..functions import sqrt
+from .densetools import augment, col, conjugate_transpose, eye, rowadd, rowmul
 
 
 def row_echelon(matlist, K):

@@ -1,20 +1,20 @@
+import errno
+import os
+import sys
 from functools import wraps
 from tempfile import NamedTemporaryFile
-import os
-import errno
-import sys
 
 import pytest
 
-from diofant import (pi, sin, cos, Integral, summation, sqrt, log,
-                     oo, LambertW, I, meijerg, exp_polar, Max, real_root,
-                     Piecewise, And)
-from diofant.plotting import (plot, plot_parametric, plot3d_parametric_line,
-                              plot3d, plot3d_parametric_surface)
-from diofant.plotting.plot import unset_show
-from diofant.external import import_module
-
+from diofant import (And, I, Integral, LambertW, Max, Piecewise, cos,
+                     exp_polar, log, meijerg, oo, pi, real_root, sin, sqrt,
+                     summation)
 from diofant.abc import x, y, z
+from diofant.external import import_module
+from diofant.plotting import (plot, plot3d, plot3d_parametric_line,
+                              plot3d_parametric_surface, plot_parametric)
+from diofant.plotting.plot import unset_show
+
 
 __all__ = ()
 

@@ -14,7 +14,9 @@
 
 import os
 import warnings
+
 import diofant
+
 
 # This turns numpydoc's section warnings to exceptions,
 # see numpy/numpydoc#58.

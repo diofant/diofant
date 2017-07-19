@@ -4,6 +4,7 @@ from functools import partial
 from ..external import import_module
 from .printer import Printer
 
+
 theano = import_module('theano')
 if theano:  # pragma: no branch
     ts = theano.scalar

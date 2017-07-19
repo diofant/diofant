@@ -5,9 +5,9 @@ import collections
 from ..core import S
 from ..matrices import Matrix
 from ..polys import Poly, groebner, sring
+from ..polys.polyerrors import (CoercionFailed, ComputationFailed,
+                                PolificationFailed)
 from ..polys.polytools import parallel_poly_from_expr
-from ..polys.polyerrors import (ComputationFailed, PolificationFailed,
-                                CoercionFailed)
 from ..polys.solvers import solve_lin_sys
 from ..simplify import rcollect, simplify
 from ..utilities import default_sort_key, subsets

@@ -4,13 +4,11 @@ Generating and counting primes.
 """
 
 import random
-from bisect import bisect
-# Using arrays for sieving instead of lists greatly reduces
-# memory consumption
 from array import array as _array
+from bisect import bisect
 
-from .primetest import isprime
 from ..core.compatibility import as_int
+from .primetest import isprime
 
 
 def _arange(a, b):

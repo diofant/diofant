@@ -1,17 +1,18 @@
 import pytest
 
-from diofant.core import (S, pi, oo, symbols, Function, Rational, Integer,
-                          Tuple, Symbol, I)
-from diofant.core import EulerGamma, GoldenRatio, Catalan, Lambda
-from diofant.functions import Piecewise, sqrt, ceiling, exp, sin, cos
-from diofant.utilities.lambdify import implemented_function
-from diofant.matrices import (eye, Matrix, MatrixSymbol, Identity,
-                              HadamardProduct, SparseMatrix)
-from diofant.functions.special.bessel import (jn, yn, besselj, bessely, besseli,
-                                              besselk, hankel1, hankel2, airyai,
-                                              airybi, airyaiprime, airybiprime)
-from diofant import octave_code
 from diofant import octave_code as mcode
+from diofant.core import (Catalan, EulerGamma, Function, GoldenRatio, I,
+                          Integer, Lambda, Rational, S, Symbol, Tuple, oo, pi,
+                          symbols)
+from diofant.functions import Piecewise, ceiling, cos, exp, sin, sqrt
+from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
+                                              airybiprime, besseli, besselj,
+                                              besselk, bessely, hankel1,
+                                              hankel2, jn, yn)
+from diofant.matrices import (HadamardProduct, Identity, Matrix, MatrixSymbol,
+                              SparseMatrix, eye)
+from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 
@@ -80,7 +81,7 @@ def test_mix_number_mult_symbols():
     assert mcode(3*x*y) == "3*x.*y"
     assert mcode(3*pi*x*y) == "3*pi*x.*y"
     assert mcode(x/y) == "x./y"
-    assert octave_code(x*y**-2) == "x./y.^2"
+    assert mcode(x*y**-2) == "x./y.^2"
     assert mcode(3*x/y) == "3*x./y"
     assert mcode(x*y/z) == "x.*y./z"
     assert mcode(x/y*z) == "x.*z./y"
@@ -361,12 +362,12 @@ def test_sparse():
 def test_specfun():
     n = Symbol('n')
     for f in [besselj, bessely, besseli, besselk]:
-        assert octave_code(f(n, x)) == f.__name__ + '(n, x)'
-    assert octave_code(hankel1(n, x)) == 'besselh(n, 1, x)'
-    assert octave_code(hankel2(n, x)) == 'besselh(n, 2, x)'
-    assert octave_code(airyai(x)) == 'airy(0, x)'
-    assert octave_code(airyaiprime(x)) == 'airy(1, x)'
-    assert octave_code(airybi(x)) == 'airy(2, x)'
-    assert octave_code(airybiprime(x)) == 'airy(3, x)'
-    assert octave_code(jn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*besselj(n + 1/2, x)/2'
-    assert octave_code(yn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*bessely(n + 1/2, x)/2'
+        assert mcode(f(n, x)) == f.__name__ + '(n, x)'
+    assert mcode(hankel1(n, x)) == 'besselh(n, 1, x)'
+    assert mcode(hankel2(n, x)) == 'besselh(n, 2, x)'
+    assert mcode(airyai(x)) == 'airy(0, x)'
+    assert mcode(airyaiprime(x)) == 'airy(1, x)'
+    assert mcode(airybi(x)) == 'airy(2, x)'
+    assert mcode(airybiprime(x)) == 'airy(3, x)'
+    assert mcode(jn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*besselj(n + 1/2, x)/2'
+    assert mcode(yn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*bessely(n + 1/2, x)/2'

@@ -1,16 +1,17 @@
-from ..core import (igcd, symbols, S, Integer, Wild, Symbol, Add, Mul,
-                    sympify, Subs, ilcm, Rational, Eq, integer_nthroot)
-from ..polys import Poly, factor_list
-from ..matrices import Matrix
-from ..functions import sign, ceiling, floor, sqrt
+from ..core import (Add, Eq, Integer, Mul, Rational, S, Subs, Symbol, Wild,
+                    igcd, ilcm, integer_nthroot, symbols, sympify)
+from ..core.assumptions import check_assumptions
 from ..core.function import _mexpand
+from ..core.numbers import igcdex
+from ..functions import ceiling, floor, sign, sqrt
+from ..matrices import Matrix
+from ..ntheory import (divisors, factorint, isprime, nextprime, perfect_power,
+                       sqrt_mod)
+from ..polys import Poly, factor_list
 from ..simplify.radsimp import rad_rationalize
 from ..utilities import default_sort_key, numbered_symbols
-from ..core.numbers import igcdex
-from ..ntheory import (sqrt_mod, divisors, factorint, perfect_power,
-                       isprime, nextprime)
-from ..core.assumptions import check_assumptions
 from .solvers import solve
+
 
 __all__ = ('diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_solution_linear',
            'diop_quadratic', 'diop_DN', 'cornacchia', 'diop_bf_DN', 'transformation_to_DN', 'find_DN',

@@ -1,8 +1,8 @@
-from ...core import S, sympify, cacheit, Function
+from ...core import Function, S, cacheit, sympify
 from ...core.function import ArgumentIndexError, _coeff_isneg
-from .miscellaneous import sqrt
+from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
-from ..combinatorial.factorials import factorial, RisingFactorial
+from .miscellaneous import sqrt
 
 
 def _rewrite_hyperbolics_as_exp(expr):

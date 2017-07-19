@@ -1,10 +1,10 @@
+from ..core import AtomicExpr, Integer, Pow, S, Symbol, diff
 from ..core.assumptions import StdFactKB
-from ..core import S, Pow, Symbol, Integer, AtomicExpr, diff
 from ..functions import sqrt
 from ..matrices import ImmutableMatrix
-from .coordsysrect import CoordSysCartesian
 from .basisdependent import (BasisDependent, BasisDependentAdd,
                              BasisDependentMul, BasisDependentZero)
+from .coordsysrect import CoordSysCartesian
 from .dyadic import BaseDyadic, Dyadic, DyadicAdd
 
 

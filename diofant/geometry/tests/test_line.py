@@ -2,14 +2,15 @@ import itertools
 
 import pytest
 
-from diofant import (Rational, Float, S, Symbol, cos, oo, pi,
-                     simplify, sin, sqrt, symbols, acos, I)
+from diofant import (Float, I, Rational, S, Symbol, acos, cos, oo, pi,
+                     simplify, sin, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
-from diofant.geometry import (Circle, GeometryError, Line, Point, Ray,
-                              Segment, Triangle, intersection,
-                              Point3D, Line3D, Ray3D, Segment3D, Plane)
+from diofant.geometry import (Circle, GeometryError, Line, Line3D, Plane,
+                              Point, Point3D, Ray, Ray3D, Segment, Segment3D,
+                              Triangle, intersection)
 from diofant.geometry.line import Undecidable
 from diofant.geometry.polygon import _asa as asa
+
 
 __all__ = ()
 

@@ -19,9 +19,9 @@ Rn is a GeometrySet representing n-dimensional Euclidean space. R2 and
 R3 are currently the only ambient spaces implemented.
 """
 
+from ..core import Basic, Dummy, Tuple, oo, sympify
 from ..core.compatibility import is_sequence
-from ..core import Basic, Tuple, sympify, Dummy, oo
-from ..functions import cos, sin, atan
+from ..functions import atan, cos, sin
 from ..matrices import eye
 from ..sets import Set
 

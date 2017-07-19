@@ -1,17 +1,18 @@
 from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
-from ...core import (S, pi, I, Rational, Wild, cacheit, sympify, Integer,
-                     Function, Pow, Expr, Add)
+from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, S, Wild,
+                     cacheit, pi, sympify)
 from ...core.function import ArgumentIndexError
+from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
+from ..elementary.complexes import Abs, im, re
 from ..elementary.exponential import exp
-from ..elementary.trigonometric import sin, cos, csc, cot
-from ..elementary.complexes import Abs
-from ..elementary.miscellaneous import sqrt, root
-from ..elementary.complexes import re, im
+from ..elementary.miscellaneous import root, sqrt
+from ..elementary.trigonometric import cos, cot, csc, sin
 from .gamma_functions import gamma
 from .hyper import hyper
+
 
 # TODO
 # o Scorer functions G1 and G2
@@ -537,9 +538,6 @@ class hankel2(BesselBase):
         z = self.argument
         if (z.is_extended_real and z.is_negative) is False:
             return hankel1(self.order.conjugate(), z.conjugate())
-
-
-from ...polys.orthopolys import spherical_bessel_fn as fn
 
 
 class SphericalBesselBase(BesselBase):

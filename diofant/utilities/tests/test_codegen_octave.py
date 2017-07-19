@@ -2,12 +2,12 @@ from io import StringIO
 
 import pytest
 
-from diofant.core import S, symbols, Eq, pi, Catalan, EulerGamma, Function
-from diofant import Piecewise
-from diofant import Equality
+import diofant
+from diofant import Equality, Piecewise
+from diofant.core import Catalan, Eq, EulerGamma, Function, S, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.utilities.codegen import OctaveCodeGen, codegen, make_routine
-import diofant
+
 
 __all__ = ()
 

@@ -1,7 +1,7 @@
-from ..core import Add, Mul, Expr, Equality, S, Dummy, Symbol, sympify, Tuple
-from ..sets.sets import Interval
+from ..core import Add, Dummy, Equality, Expr, Mul, S, Symbol, Tuple, sympify
 from ..core.compatibility import is_sequence
 from ..functions import piecewise_fold
+from ..sets.sets import Interval
 from ..utilities import flatten, sift
 
 

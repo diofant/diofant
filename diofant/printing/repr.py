@@ -9,8 +9,8 @@ relation eval(srepr(expr))=expr holds in an appropriate environment.
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps, repr_dps
 
-from ..core.function import AppliedUndef
 from ..core.compatibility import default_sort_key
+from ..core.function import AppliedUndef
 from .printer import Printer
 
 

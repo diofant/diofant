@@ -1,8 +1,8 @@
-from diofant import (symbols, I, atan, log, Poly, sqrt,
-                     simplify, integrate, Integer, Rational)
-from diofant.integrals.rationaltools import ratint, ratint_logpart, log_to_atan
+from diofant import (I, Integer, Poly, Rational, atan, integrate, log,
+                     simplify, sqrt, symbols)
+from diofant.abc import a, b, t, x
+from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
 
-from diofant.abc import a, b, x, t
 
 __all__ = ()
 

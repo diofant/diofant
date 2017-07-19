@@ -4,18 +4,18 @@ from functools import reduce
 from strategies.core import identity
 from strategies.tree import greedy
 
-from ..core import (sympify, Basic, S, Expr, expand_mul, factor_terms, Mul,
-                    Pow, Dummy, igcd, FunctionClass, Add, symbols, Wild,
-                    expand, cacheit, I, Integer, count_ops)
+from ..core import (Add, Basic, Dummy, Expr, FunctionClass, I, Integer, Mul,
+                    Pow, S, Wild, cacheit, count_ops, expand, expand_mul,
+                    factor_terms, igcd, symbols, sympify)
 from ..core.compatibility import iterable
 from ..core.function import _mexpand
-from ..functions.elementary.trigonometric import TrigonometricFunction
+from ..domains import ZZ
+from ..functions import cos, cosh, cot, coth, exp, sin, sinh, tan, tanh
 from ..functions.elementary.hyperbolic import HyperbolicFunction
-from ..functions import sin, cos, exp, cosh, tanh, sinh, tan, cot, coth
+from ..functions.elementary.trigonometric import TrigonometricFunction
+from ..polys import Poly, cancel, factor, parallel_poly_from_expr
 from ..polys.polyerrors import PolificationFailed
 from ..polys.polytools import groebner
-from ..domains import ZZ
-from ..polys import Poly, factor, cancel, parallel_poly_from_expr
 from ..utilities.misc import debug
 
 

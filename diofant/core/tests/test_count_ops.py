@@ -1,8 +1,9 @@
-from diofant import (symbols, sin, exp, cos, Derivative, Integral, Basic,
-                     count_ops, S, And, I, pi, Eq, Or, Not, Xor, Nand, Nor,
-                     Implies, Equivalent, MatrixSymbol, Symbol, ITE,
-                     Integer, Rational)
+from diofant import (ITE, And, Basic, Derivative, Eq, Equivalent, I, Implies,
+                     Integer, Integral, MatrixSymbol, Nand, Nor, Not, Or,
+                     Rational, S, Symbol, Xor, cos, count_ops, exp, pi, sin,
+                     symbols)
 from diofant.core.containers import Tuple
+
 
 __all__ = ()
 

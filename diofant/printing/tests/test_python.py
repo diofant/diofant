@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (Symbol, symbols, oo, limit, Rational, Integral, Derivative,
-                     log, exp, sqrt, pi, Function, sin, Eq, Ge, Le, Gt, Lt, Ne,
-                     Abs, conjugate, I, Matrix)
-
+from diofant import (Abs, Derivative, Eq, Function, Ge, Gt, I, Integral, Le,
+                     Lt, Matrix, Ne, Rational, Symbol, conjugate, exp, limit,
+                     log, oo, pi, sin, sqrt, symbols)
 from diofant.printing.python import python
+
 
 __all__ = ()
 

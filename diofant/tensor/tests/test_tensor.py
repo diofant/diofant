@@ -2,17 +2,19 @@ import pytest
 
 from diofant import Matrix, eye
 from diofant.combinatorics import Permutation
-from diofant.core import S, Rational, Symbol, Basic, Integer
+from diofant.core import Basic, Integer, Rational, S, Symbol
 from diofant.core.containers import Tuple
 from diofant.core.symbol import symbols
 from diofant.external import import_module
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.printing.pretty.pretty import pretty
-from diofant.tensor.tensor import (TensorIndexType, tensor_indices, TensorSymmetry,
-                                   get_symmetric_group_sgs, TensorType, TensorIndex,
-                                   tensor_mul, TensAdd, riemann_cyclic_replace,
-                                   riemann_cyclic, TensMul, tensorsymmetry,
-                                   tensorhead, TensorManager, TensExpr, TIDS)
+from diofant.tensor.tensor import (TIDS, TensAdd, TensExpr, TensMul,
+                                   TensorIndex, TensorIndexType, TensorManager,
+                                   TensorSymmetry, TensorType,
+                                   get_symmetric_group_sgs, riemann_cyclic,
+                                   riemann_cyclic_replace, tensor_indices,
+                                   tensor_mul, tensorhead, tensorsymmetry)
+
 
 __all__ = ()
 

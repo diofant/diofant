@@ -5,15 +5,15 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (S, symbols, Symbol, Wild, Rational, sqrt, powsimp, sin, cos,
-                     pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root,
-                     Integer)
-from diofant.polys import Poly, cyclotomic_poly, intervals, nroots, RootOf
-from diofant.polys.polyroots import (
-    root_factors, roots_linear,
-    roots_quadratic, roots_cubic, roots_quartic, roots_cyclotomic,
-    roots_binomial, preprocess_roots, roots)
+from diofant import (ZZ, I, Integer, Interval, Piecewise, Rational, S, Symbol,
+                     Wild, acos, cos, exp, im, pi, powsimp, re, root, sin,
+                     sqrt, symbols)
+from diofant.polys import Poly, RootOf, cyclotomic_poly, intervals, nroots
 from diofant.polys.orthopolys import legendre_poly
+from diofant.polys.polyroots import (preprocess_roots, root_factors, roots,
+                                     roots_binomial, roots_cubic,
+                                     roots_cyclotomic, roots_linear,
+                                     roots_quadratic, roots_quartic)
 from diofant.polys.polyutils import _nsort
 from diofant.utilities.randtest import verify_numerically
 

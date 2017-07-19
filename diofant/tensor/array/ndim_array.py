@@ -1,6 +1,6 @@
 import collections
 
-from ...core import Integer, sympify, Expr
+from ...core import Expr, Integer, sympify
 from ...matrices import MatrixBase
 
 

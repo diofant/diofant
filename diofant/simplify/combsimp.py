@@ -1,7 +1,7 @@
-from ..core import Function, S, Mul, Pow, Add, Integer, Rational
-from ..core.compatibility import ordered, default_sort_key
-from ..functions import binomial, factorial, gamma, sqrt, sin
-from ..polys import factor, cancel
+from ..core import Add, Function, Integer, Mul, Pow, Rational, S
+from ..core.compatibility import default_sort_key, ordered
+from ..functions import binomial, factorial, gamma, sin, sqrt
+from ..polys import cancel, factor
 from ..utilities.iterables import sift, uniq
 
 

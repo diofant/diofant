@@ -1,9 +1,8 @@
-from diofant import (
-    Rational, combsimp, factorial, gamma, binomial, Symbol, pi, S,
-    sin, exp, powsimp, sqrt, FallingFactorial, RisingFactorial,
-    simplify, symbols, cos, rf)
+from diofant import (FallingFactorial, Rational, RisingFactorial, S, Symbol,
+                     binomial, combsimp, cos, exp, factorial, gamma, pi,
+                     powsimp, rf, simplify, sin, sqrt, symbols)
+from diofant.abc import k, n, x, y
 
-from diofant.abc import x, y, n, k
 
 __all__ = ()
 

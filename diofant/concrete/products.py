@@ -1,8 +1,8 @@
 from ..core import Mul, S
-from .expr_with_intlimits import ExprWithIntLimits
 from ..functions import exp, log
 from ..polys import quo, roots
 from ..simplify import powsimp
+from .expr_with_intlimits import ExprWithIntLimits
 
 
 class Product(ExprWithIntLimits):

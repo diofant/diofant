@@ -1,8 +1,8 @@
 """Useful utility decorators. """
 
+import inspect
 import sys
 import types
-import inspect
 
 
 def conserve_mpmath_dps(func):

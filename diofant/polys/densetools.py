@@ -1,19 +1,20 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from math import ceil as _ceil, log as _log
+from math import ceil as _ceil
+from math import log as _log
 
-from .densebasic import (dup_strip, dmp_strip, dup_convert, dmp_convert,
-                         dup_degree, dmp_degree, dmp_to_dict, dmp_from_dict,
-                         dup_LC, dmp_LC, dmp_ground_LC, dup_TC, dmp_TC,
-                         dmp_zero, dmp_ground, dmp_zero_p, dup_to_raw_dict,
-                         dup_from_raw_dict, dmp_zeros)
-from .densearith import (dup_add_term, dmp_add_term, dup_lshift, dup_add,
-                         dmp_add, dup_sub, dmp_sub, dup_mul, dmp_mul,
-                         dup_sqr, dup_div, dup_rem, dmp_rem, dmp_expand,
-                         dup_mul_ground, dmp_mul_ground, dup_quo_ground,
-                         dmp_quo_ground, dup_exquo_ground, dmp_exquo_ground)
-from .polyerrors import MultivariatePolynomialError, DomainError
 from ..utilities import variations
+from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
+                         dmp_mul, dmp_mul_ground, dmp_quo_ground, dmp_rem,
+                         dmp_sub, dup_add, dup_add_term, dup_div,
+                         dup_exquo_ground, dup_lshift, dup_mul, dup_mul_ground,
+                         dup_quo_ground, dup_rem, dup_sqr, dup_sub)
+from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
+                         dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
+                         dmp_zero, dmp_zero_p, dmp_zeros, dup_convert,
+                         dup_degree, dup_from_raw_dict, dup_LC, dup_strip,
+                         dup_TC, dup_to_raw_dict)
+from .polyerrors import DomainError, MultivariatePolynomialError
 
 
 def dup_integrate(f, m, K):

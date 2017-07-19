@@ -2,8 +2,9 @@
 
 import pytest
 
-from diofant.core import Symbol, Integer, Rational
+from diofant.core import Integer, Rational, Symbol
 from diofant.external import import_module
+
 
 __all__ = ()
 

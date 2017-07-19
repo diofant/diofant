@@ -1,11 +1,11 @@
-from .containers import Tuple
-from .compatibility import default_sort_key
-from .expr import Expr
+from ..matrices import Matrix
 from .add import Add
+from .compatibility import default_sort_key
+from .containers import Tuple
+from .expr import Expr
 from .mul import Mul
 from .power import Pow
 from .sympify import sympify
-from ..matrices import Matrix
 
 
 def _is_scalar(e):

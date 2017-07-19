@@ -1,17 +1,17 @@
 import pytest
 
-from diofant import (sin, cos, atan2, log, exp, gamma, conjugate, sqrt,
-                     factorial, Integral, Piecewise, Add, diff, symbols,
-                     Integer, Float, Dummy, Eq, Function, Rational, Lambda,
-                     Catalan, EulerGamma, E, GoldenRatio, I, pi)
-from diofant.core.relational import Relational
-from diofant.logic.boolalg import And, Or, Not, Equivalent, Xor
-from diofant.printing.fcode import fcode, FCodePrinter
-from diofant.tensor import IndexedBase, Idx
-from diofant.utilities.lambdify import implemented_function
-from diofant.matrices import Matrix, MatrixSymbol
-
+from diofant import (Add, Catalan, Dummy, E, Eq, EulerGamma, Float, Function,
+                     GoldenRatio, I, Integer, Integral, Lambda, Piecewise,
+                     Rational, atan2, conjugate, cos, diff, exp, factorial,
+                     gamma, log, pi, sin, sqrt, symbols)
 from diofant.abc import x, y, z
+from diofant.core.relational import Relational
+from diofant.logic.boolalg import And, Equivalent, Not, Or, Xor
+from diofant.matrices import Matrix, MatrixSymbol
+from diofant.printing.fcode import FCodePrinter, fcode
+from diofant.tensor import Idx, IndexedBase
+from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 

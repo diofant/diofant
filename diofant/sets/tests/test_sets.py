@@ -1,14 +1,14 @@
-from mpmath import mpi
 import pytest
+from mpmath import mpi
 
-from diofant import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
-                     LessThan, Max, Min, And, Or, Eq, Le, Lt,
-                     Float, FiniteSet, Intersection, imageset, I, true, false,
-                     ProductSet, sqrt, Complement, EmptySet, sin, cos, Lambda,
-                     ImageSet, pi, Pow, Contains, Sum, RootOf, log, E,
-                     SymmetricDifference, Integer, Rational, Piecewise)
-
+from diofant import (And, Complement, Contains, E, EmptySet, Eq, FiniteSet,
+                     Float, I, ImageSet, Integer, Intersection, Interval,
+                     Lambda, Le, LessThan, Lt, Max, Min, Or, Piecewise, Pow,
+                     ProductSet, Rational, RootOf, S, Set, Sum, Symbol,
+                     SymmetricDifference, Union, cos, false, imageset, log,
+                     nan, oo, pi, sin, sqrt, sympify, true)
 from diofant.abc import a, b, x, y, z
+
 
 __all__ = ()
 

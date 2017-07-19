@@ -1,10 +1,11 @@
 import pytest
 
-from diofant.printing.codeprinter import CodePrinter, Assignment
 from diofant.core import symbols
 from diofant.core.symbol import Dummy
-from diofant.matrices import MatrixSymbol, Matrix
-from diofant.tensor import IndexedBase, Idx
+from diofant.matrices import Matrix, MatrixSymbol
+from diofant.printing.codeprinter import Assignment, CodePrinter
+from diofant.tensor import Idx, IndexedBase
+
 
 __all__ = ()
 

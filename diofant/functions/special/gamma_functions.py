@@ -1,15 +1,15 @@
 from mpmath import mp, workprec
 
-from ...core import (Add, S, sympify, oo, pi, Dummy, Function, Rational,
-                     Integer, Pow, I, Expr)
+from ...core import (Add, Dummy, Expr, Function, I, Integer, Pow, Rational, S,
+                     oo, pi, sympify)
 from ...core.function import ArgumentIndexError
-from .zeta_functions import zeta
-from .error_functions import erf
+from ..combinatorial.factorials import RisingFactorial, factorial, rf
+from ..combinatorial.numbers import bernoulli, harmonic
 from ..elementary.exponential import exp, log
 from ..elementary.integers import ceiling, floor
 from ..elementary.miscellaneous import sqrt
-from ..combinatorial.numbers import bernoulli, harmonic
-from ..combinatorial.factorials import factorial, rf, RisingFactorial
+from .error_functions import erf
+from .zeta_functions import zeta
 
 
 ###############################################################################

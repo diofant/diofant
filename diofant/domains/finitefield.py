@@ -1,10 +1,10 @@
 """Implementation of :class:`FiniteField` class. """
 
+from ..polys.polyerrors import CoercionFailed
 from .field import Field
-from .simpledomain import SimpleDomain
 from .groundtypes import DiofantInteger
 from .modularinteger import ModularIntegerFactory
-from ..polys.polyerrors import CoercionFailed
+from .simpledomain import SimpleDomain
 
 
 __all__ = ('FiniteField',)

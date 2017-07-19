@@ -1,6 +1,7 @@
 from ..ntheory import isprime
 from .permutations import Permutation, _af_invert, _af_rmul
 
+
 rmul = Permutation.rmul
 _af_new = Permutation._af_new
 

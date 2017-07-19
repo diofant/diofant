@@ -3,10 +3,11 @@ from tempfile import NamedTemporaryFile
 
 import pytest
 
-from diofant import (plot_implicit, cos, Symbol, symbols, Eq, sin, re, And,
-                     Or, exp, I, tan, pi)
-from diofant.plotting.plot import unset_show
+from diofant import (And, Eq, I, Or, Symbol, cos, exp, pi, plot_implicit, re,
+                     sin, symbols, tan)
 from diofant.external import import_module
+from diofant.plotting.plot import unset_show
+
 
 __all__ = ()
 

@@ -1,6 +1,7 @@
-from diofant.matrices.expressions.factorizations import (lu, LofCholesky,
-                                                         qr, svd, eig)
-from diofant import Symbol, MatrixSymbol
+from diofant import MatrixSymbol, Symbol
+from diofant.matrices.expressions.factorizations import (LofCholesky, eig, lu,
+                                                         qr, svd)
+
 
 __all__ = ()
 

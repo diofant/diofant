@@ -1,12 +1,12 @@
 """Algorithms for partial fraction decomposition of rational functions. """
 
 from . import Poly, RootSum, cancel, factor
-from .polytools import parallel_poly_from_expr
-from .polyoptions import allowed_flags, set_defaults
+from ..core import (Add, Dummy, Function, Integer, Lambda, S,
+                    preorder_traversal, sympify)
+from ..utilities import numbered_symbols, public, take
 from .polyerrors import PolynomialError
-from ..core import (S, Add, sympify, Function, Lambda, Dummy, Integer,
-                    preorder_traversal)
-from ..utilities import numbered_symbols, take, public
+from .polyoptions import allowed_flags, set_defaults
+from .polytools import parallel_poly_from_expr
 
 
 @public

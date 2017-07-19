@@ -1,5 +1,6 @@
-from ...core.function import Function, ArgumentIndexError
-from .gamma_functions import gamma, digamma
+from ...core.function import ArgumentIndexError, Function
+from .gamma_functions import digamma, gamma
+
 
 ###############################################################################
 # ########################## COMPLETE BETA  FUNCTION ######################## #

@@ -1,10 +1,10 @@
-from ..core import Add, expand_log, Pow, S, Dummy
+from ..core import Add, Dummy, Pow, S, expand_log
 from ..core.compatibility import ordered
+from ..core.function import _mexpand
 from ..functions import LambertW, exp, log, root
 from ..polys.polytools import Poly, factor
-from ..core.function import _mexpand
-from ..simplify import separatevars, collect
-from .solvers import solve, _invert
+from ..simplify import collect, separatevars
+from .solvers import _invert, solve
 
 
 def _filtered_gens(poly, symbol):

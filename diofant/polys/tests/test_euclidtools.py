@@ -2,13 +2,14 @@
 
 import pytest
 
-from diofant.polys.rings import ring
-from diofant.domains import ZZ, QQ, RR
-from diofant.polys.specialpolys import (f_polys, dmp_fateman_poly_F_1,
-                                        dmp_fateman_poly_F_2,
-                                        dmp_fateman_poly_F_3)
-from diofant.polys.polyerrors import HeuristicGCDFailed
+from diofant.domains import QQ, RR, ZZ
 from diofant.polys.polyconfig import using
+from diofant.polys.polyerrors import HeuristicGCDFailed
+from diofant.polys.rings import ring
+from diofant.polys.specialpolys import (dmp_fateman_poly_F_1,
+                                        dmp_fateman_poly_F_2,
+                                        dmp_fateman_poly_F_3, f_polys)
+
 
 __all__ = ()
 

@@ -1,9 +1,8 @@
-from diofant import (
-    powsimp, symbols, MatrixSymbol, sqrt, pi, Mul, gamma, Function,
-    I, exp, simplify, sin, E, log, hyper, Symbol, Dummy, powdenest,
-    root, Rational)
+from diofant import (Dummy, E, Function, I, MatrixSymbol, Mul, Rational,
+                     Symbol, exp, gamma, hyper, log, pi, powdenest, powsimp,
+                     root, simplify, sin, sqrt, symbols)
+from diofant.abc import a, b, c, x, y, z
 
-from diofant.abc import x, y, z, a, b, c
 
 __all__ = ()
 
