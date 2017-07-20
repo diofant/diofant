@@ -22,7 +22,7 @@ class AutomaticSymbols(ast.NodeTransformer):
     """Add missing Symbol definitions automatically."""
 
     def __init__(self):
-        super(AutomaticSymbols, self).__init__()
+        super().__init__()
         self.names = []
 
     def visit_Module(self, node):
