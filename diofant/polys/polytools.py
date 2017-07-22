@@ -1022,7 +1022,7 @@ class Poly(Expr):
         if not dom.is_Numerical:
             raise DomainError("can't eject generators over %s" % dom)
 
-        n, k = len(self.gens), len(gens)
+        k = len(gens)
 
         if self.gens[:k] == gens:
             _gens, front = self.gens[k:], True
@@ -5731,7 +5731,7 @@ def to_rational_coeffs(f):
             else:
                 args = [c]
             sifted = sift(args, lambda z: z.is_rational)
-            c1, c2 = sifted[True], sifted[False]
+            c2 = sifted[False]
             alpha = -func(*c2)/n
             f2 = f1.shift(alpha)
             return alpha, f2

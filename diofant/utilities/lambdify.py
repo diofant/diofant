@@ -294,9 +294,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     from .iterables import flatten
 
     # If the user hasn't specified any modules, use what is available.
-    module_provided = True
     if modules is None:
-        module_provided = False
         # Use either numpy (if available) or python.math where possible.
         # XXX: This leads to different behaviour on different systems and
         #      might be the reason for irreproducible errors.

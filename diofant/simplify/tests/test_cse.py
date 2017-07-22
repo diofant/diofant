@@ -285,7 +285,6 @@ def test_cse_Indexed():
     len_y = 5
     y = IndexedBase('y', shape=(len_y,))
     x = IndexedBase('x', shape=(len_y,))
-    Dy = IndexedBase('Dy', shape=(len_y-1,))
     i = Idx('i', len_y-1)
 
     expr1 = (y[i+1]-y[i])/(x[i+1]-x[i])
@@ -337,7 +336,7 @@ def test_name_conflict_cust_symbols():
 def test_symbols_exhausted_error():
     l = cos(x+y)+x+y+cos(w+y)+sin(w+y)
     sym = [x, y, z]
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError):
         cse(l, symbols=sym)
 
 

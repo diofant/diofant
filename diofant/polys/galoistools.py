@@ -1754,7 +1754,7 @@ def gf_edf_zassenhaus(f, n, p, K):
     .. [1] [Gathen99]_
     .. [2] [Geddes92]_
     """
-    factors, q = [f], int(p)
+    factors = [f]
 
     if gf_degree(f) <= n:
         return factors

@@ -398,7 +398,7 @@ def test_sympyissue_5673():
     assert e.is_comparable is False
     assert e.is_positive is not True
     e2 = 1 - 1/(1 - exp(-1000))
-    assert e.is_positive is not True
+    assert e2.is_positive is not True
     e3 = -2 + exp(exp(LambertW(log(2)))*LambertW(log(2)))
     assert e3.is_nonzero is not True
 
@@ -464,7 +464,6 @@ def test_log_product():
     i, j = symbols('i,j', positive=True, integer=True)
     x, y = symbols('x,y', positive=True)
     from diofant.concrete import Product, Sum
-    f, g = Function('f'), Function('g')
     assert simplify(log(Product(x**i, (i, 1, n)))) == Sum(i*log(x), (i, 1, n))
     assert simplify(log(Product(x**i*y**j, (i, 1, n), (j, 1, m)))) == \
         log(Product(x**i*y**j, (i, 1, n), (j, 1, m)))

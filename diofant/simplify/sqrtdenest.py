@@ -672,8 +672,6 @@ def unrad(eq, *syms, **flags):
     from ..polys.rootoftools import RootOf
     from ..solvers import solve
 
-    _inv_error = 'cannot get an analytical solution for the inversion'
-
     uflags = {'check': False, 'simplify': False}
 
     def _cov(p, e):

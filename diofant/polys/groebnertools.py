@@ -84,7 +84,6 @@ def buchberger(f, ring):
     as presented in [5]_.
     """
     order = ring.order
-    domain = ring.domain
 
     monomial_mul = ring.monomial_mul
     monomial_div = ring.monomial_div
@@ -563,7 +562,6 @@ def f5b(F, ring):
     .. [2] [BeckerWeispfenning93]_, pp. 203, 216.
     """
     order = ring.order
-    domain = ring.domain
 
     # reduce polynomials (Becker, Weispfenning, p. 203)
     B = F

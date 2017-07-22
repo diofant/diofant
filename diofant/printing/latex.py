@@ -680,7 +680,6 @@ class LatexPrinter(Printer):
         else:
             symbols = self._print(tuple(symbols))
 
-        args = (symbols, self._print(expr))
         tex = r"\left( %s \mapsto %s \right)" % (symbols, self._print(expr))
 
         return tex

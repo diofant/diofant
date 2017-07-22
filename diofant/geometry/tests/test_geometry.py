@@ -819,7 +819,6 @@ def test_reflect():
     pent = RegularPolygon((1, 2), 1, 5)
     l = Line((0, pi), slope=sqrt(2))
     rpent = pent.reflect(l)
-    poly_pent = Polygon(*pent.vertices)
     assert rpent.center == pent.center.reflect(l)
     assert [w.n(3) for w in rpent.vertices] == \
         [Point2D(Float('-0.585815', dps=3),

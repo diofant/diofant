@@ -771,7 +771,6 @@ def _diop_quadratic(var, coeff, t):
             g = igcd(A, C)
             g = abs(g) * sign(A)
             a = A // g
-            b = B // g
             c = C // g
             e = sign(B/A)
 
@@ -1271,7 +1270,6 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     sol = []
     a = diop_DN(D, 1)
     u = a[0][0]
-    v = a[0][1]
 
     if abs(N) == 1:
         return diop_DN(D, N)
@@ -2861,7 +2859,6 @@ def power_representation(n, p, k, zeros=False):
             yield t
 
     else:
-        l = []
         a = integer_nthroot(n, p)[0]
 
         for t in pow_rep_recursive(a, k, n, [], p):

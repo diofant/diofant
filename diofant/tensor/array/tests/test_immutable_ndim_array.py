@@ -312,7 +312,6 @@ def test_op_priority():
     assert e1 == ImmutableDenseNDimArray([1+x, 2+2*x, 3+3*x])
     assert e1 == e2
 
-    sd = ImmutableSparseNDimArray([1, 2, 3])
     e3 = (1+x)*md
     e4 = md*(1+x)
     assert e3 == ImmutableDenseNDimArray([1+x, 2+2*x, 3+3*x])

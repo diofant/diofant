@@ -144,7 +144,7 @@ def test_squareBlockMatrix():
 
     assert (block_collapse(X + Identity(m + n)) ==
             BlockMatrix([[A + Identity(n), B], [C, D + Identity(m)]]))
-    Q = X + Identity(m + n)
+    X + Identity(m + n)
 
     assert (X + MatrixSymbol('Q', n + m, n + m)).is_MatAdd
     assert (X * MatrixSymbol('Q', n + m, n + m)).is_MatMul

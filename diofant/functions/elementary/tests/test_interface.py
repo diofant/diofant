@@ -69,6 +69,4 @@ def test_function_series3():
             if arg == 0:
                 return sympify(0)
 
-    e = tanh(x)
-    f = mytanh(x)
     assert tanh(x).series(x, 0, 6) == mytanh(x).series(x, 0, 6)

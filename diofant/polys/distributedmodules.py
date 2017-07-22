@@ -701,7 +701,7 @@ def sdm_groebner(G, NF, O, K, extended=False):
     # Now carry out the buchberger algorithm.
     while P:
         i, j, s, t = P.pop()
-        f, sf, g, sg = S[i], Sugars[i], S[j], Sugars[j]
+        f, g = S[i], S[j]
         if extended:
             sp, coeff = sdm_spoly(f, g, O, K,
                                   phantom=(coefficients[i], coefficients[j]))

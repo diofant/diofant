@@ -115,7 +115,7 @@ class DieDistribution(SingleFiniteDistribution):
     @property
     @cacheit
     def dict(self):
-        sides = as_int(self.sides)
+        as_int(self.sides)
         return super(DieDistribution, self).dict
 
     @property

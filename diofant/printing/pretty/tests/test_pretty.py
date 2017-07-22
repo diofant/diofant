@@ -3087,7 +3087,6 @@ def test_any_object_in_sequence():
 
 
 def test_pretty_sets():
-    s = FiniteSet
     assert pretty(FiniteSet(x*y, x**2)) == \
         """\
   2      \n\
@@ -3152,7 +3151,7 @@ def test_ProductSet_paranthesis():
     from diofant import FiniteSet
     ucode_str = '([4, 7] × {1, 2}) ∪ ([2, 3] × [4, 7])'
 
-    a, b, c = Interval(2, 3), Interval(4, 7), Interval(1, 9)
+    a, b = Interval(2, 3), Interval(4, 7)
     assert upretty(Union(a*b, b*FiniteSet(1, 2))) == ucode_str
 
 

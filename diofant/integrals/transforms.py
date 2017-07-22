@@ -559,10 +559,10 @@ def _rewrite_gamma(f, s, a, b):
         fact, is_numer = args.pop()
         if is_numer:
             ugammas, lgammas = numer_gammas, denom_gammas
-            ufacs, lfacs = facs, dfacs
+            ufacs = facs
         else:
             ugammas, lgammas = denom_gammas, numer_gammas
-            ufacs, lfacs = dfacs, facs
+            ufacs = dfacs
 
         def linear_arg(arg):
             """ Test if arg is of form a*s+b, raise exception if not. """
@@ -986,7 +986,6 @@ def _laplace_transform(f, t, s_, simplify=True):
         a = -oo
         aux = True
         conds = conjuncts(to_cnf(conds))
-        u = Dummy('u', extended_real=True)
         p, q, w1, w2, w3, w4, w5 = symbols(
             'p q w1 w2 w3 w4 w5', cls=Wild, exclude=[s])
         for c in conds:

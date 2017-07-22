@@ -184,7 +184,6 @@ class FCodePrinter(CodePrinter):
                 mixed.append(arg)
         if len(pure_imaginary) > 0:
             if len(mixed) > 0:
-                PREC = precedence(expr)
                 term = Add(*mixed)
                 t = self._print(term)
                 if t.startswith('-'):

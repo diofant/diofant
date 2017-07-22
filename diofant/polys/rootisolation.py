@@ -246,7 +246,7 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
 def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
     """Refine real root's approximating interval to the given precision. """
     if K.is_QQ:
-        (_, f), K = dup_clear_denoms(f, K, convert=True), K.get_ring()
+        f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
     elif not K.is_ZZ:
         raise DomainError("real root refinement not supported over %s" % K)
 
@@ -502,7 +502,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
     if K.is_QQ:
-        (_, f), K = dup_clear_denoms(f, K, convert=True), K.get_ring()
+        f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
@@ -1216,7 +1216,7 @@ def _winding_number(T, field):
 
 
 def _roots_bound(f, F):
-    n, lc = dup_degree(f), abs(dup_LC(f, F))
+    lc = abs(dup_LC(f, F))
     return 2*max(F.quo(abs(c), lc) for c in f)
 
 
@@ -1540,9 +1540,9 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
         return []
 
     if K.is_ZZ:
-        R, F = K, K.get_field()
+        F = K.get_field()
     else:
-        R, F = K.get_ring(), K
+        F = K
 
     f = dup_convert(f, K, F)
 

@@ -693,7 +693,6 @@ def test_diofant__stats__frv__ConditionalFiniteDomain():
 def test_diofant__stats__frv__FinitePSpace():
     from diofant.stats.frv import FinitePSpace, SingleFiniteDomain
     xd = SingleFiniteDomain(x, {1, 2, 3, 4, 5, 6})
-    p = 1.0/6
     xd = SingleFiniteDomain(x, {1, 2})
     assert _test_args(FinitePSpace(xd, {(x, 1): S.Half, (x, 2): S.Half}))
 

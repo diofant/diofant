@@ -189,13 +189,11 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
         from .ode import classify_ode, allhints
         classifier = classify_ode
         string = 'ODE '
-        dummy = ''
 
     elif type == 'pde':
         from .pde import classify_pde, allhints
         classifier = classify_pde
         string = 'PDE '
-        dummy = 'p'
 
     else:  # pragma: no cover
         return NotImplementedError
@@ -234,7 +232,6 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
                         match=hints[hints['default']], xi=xi, eta=eta, n=terms, type=type)
     elif hint in ('all', 'all_Integral', 'best'):
         retdict = {}
-        failedhints = {}
         gethints = set(hints) - {'order', 'default', 'ordered_hints'}
         if hint == 'all_Integral':
             for i in hints:

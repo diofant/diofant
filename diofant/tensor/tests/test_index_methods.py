@@ -20,7 +20,6 @@ def test_trivial_indices():
 
 def test_get_indices_Indexed():
     x = IndexedBase('x')
-    y = IndexedBase('y')
     i, j = Idx('i'), Idx('j')
     assert get_indices(x[i, j]) == ({i, j}, {})
     assert get_indices(x[j, i]) == ({j, i}, {})
@@ -52,7 +51,7 @@ def test_get_indices_exceptions():
 def test_scalar_broadcast():
     x = IndexedBase('x')
     y = IndexedBase('y')
-    i, j = Idx('i'), Idx('j')
+    i = Idx('i')
     assert get_indices(x[i] + y[i, i]) == ({i}, {})
 
 
@@ -111,7 +110,7 @@ def test_get_contraction_structure_complex():
 def test_contraction_structure_simple_Pow():
     x = IndexedBase('x')
     y = IndexedBase('y')
-    i, j, k = Idx('i'), Idx('j'), Idx('k')
+    i, j = Idx('i'), Idx('j')
     ii_jj = x[i, i]**y[j, j]
     assert get_contraction_structure(ii_jj) == {
         None: {ii_jj},
@@ -153,7 +152,7 @@ def test_contraction_structure_Mul_and_Pow():
 def test_contraction_structure_Add_in_Pow():
     x = IndexedBase('x')
     y = IndexedBase('y')
-    i, j, k = Idx('i'), Idx('j'), Idx('k')
+    i, j = Idx('i'), Idx('j')
     s_ii_jj_s = (1 + x[i, i])**(1 + y[j, j])
     expected = {
         None: {s_ii_jj_s},
@@ -193,7 +192,7 @@ def test_ufunc_support():
     g = Function('g')
     x = IndexedBase('x')
     y = IndexedBase('y')
-    i, j, k = Idx('i'), Idx('j'), Idx('k')
+    i, j = Idx('i'), Idx('j')
     a = symbols('a')
 
     assert get_indices(f(x[i])) == ({i}, {})

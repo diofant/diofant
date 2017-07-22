@@ -224,7 +224,6 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         to appear in terms. Similarly for hyperbolic functions. For tan(n*x),
         sin(n*x) and cos(n*x) are guaranteed.
         """
-        gens = []
         I = []
         y = Dummy('y')
         for fn, coeff in terms:
@@ -480,7 +479,6 @@ def trigsimp(expr, **opts):
     old = opts.pop('old', False)
     if not old:
         opts.pop('deep', None)
-        recursive = opts.pop('recursive', None)
         method = opts.pop('method', 'matching')
     else:
         method = 'old'

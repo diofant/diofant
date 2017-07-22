@@ -487,7 +487,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                 #                          V
             irreducibles |= set(root_factors(poly, z, filter=field))
 
-        log_coeffs, log_part = [], []
+        log_part = []
         B = _symbols('B', len(irreducibles))
 
         # Note: the ordering matters here

@@ -80,8 +80,8 @@ def test_trig():
 def test_many():
     expr = sy.exp(x**2 + sy.cos(y)) * sy.log(2*z)
     comp = theano_code(expr)
-    expected = tt.exp(xt**2 + tt.cos(yt)) * tt.log(2*zt)
-    # assert theq(comp, expected)
+    expected = 2.718281828459045**(xt**2 + tt.cos(yt)) * tt.log(2*zt)
+    assert theq(comp, expected)
 
 
 def test_dtype():
@@ -201,12 +201,19 @@ def test_MatrixSlice():
     # assert tuple(Yt.owner.op.idx_list) == (slice(1,2,3), slice(4,5,6))
     assert Yt.owner.inputs[0] == theano_code(X)
 
+
+@pytest.mark.xfail
+def test_MatrixSlice_1():
+    n = diofant.Symbol('n', integer=True)
+    X = diofant.MatrixSymbol('X', n, n)
+
+    Y = X[1:2:3, 4:5:6]
     k = diofant.Symbol('k')
     kt = theano_code(k, dtypes={k: 'int32'})
     start, stop, step = 4, k, 2
     Y = X[start:stop:step]
     Yt = theano_code(Y, dtypes={n: 'int32', k: 'int32'})
-    # assert Yt.owner.op.idx_list[0].stop == kt
+    assert Yt.owner.op.idx_list[0].stop == kt
 
 
 @pytest.mark.xfail
@@ -294,7 +301,7 @@ def test_cache():
 
 def test_Piecewise():
     # A piecewise linear
-    xt, yt = theano_code(x), theano_code(y)
+    xt = theano_code(x)
     expr = sy.Piecewise((0, x < 0), (x, x < 2), (1, True))  # ___/III
     result = theano_code(expr)
     assert result.owner.op == tt.switch

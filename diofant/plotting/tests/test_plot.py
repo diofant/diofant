@@ -293,7 +293,6 @@ def test_matplotlib_advanced_2():
 def test_append_sympyissue_7140():
     p1 = plot(x)
     p2 = plot(x**2)
-    p3 = plot(x + 2)
 
     # append a series
     p2.append(p1[0])

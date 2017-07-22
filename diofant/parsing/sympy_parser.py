@@ -590,7 +590,6 @@ def auto_number(tokens, local_dict, global_dict):
 
     """
     result = []
-    prevtoken = ''
 
     for toknum, tokval in tokens:
         if toknum == NUMBER:

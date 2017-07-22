@@ -73,7 +73,7 @@ class ExprWithLimits(Expr):
             if len(free) != 1:
                 raise ValueError(
                     "specify dummy variables for %s" % function)
-            limits, orientation = [Tuple(s) for s in free], 1
+            limits = [Tuple(s) for s in free]
 
         # denest any nested calls
         while cls == type(function):

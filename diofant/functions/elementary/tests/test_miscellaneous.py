@@ -121,12 +121,7 @@ def test_Max():
     from diofant.abc import x, y, z
     n = Symbol('n', negative=True)
     n_ = Symbol('n_', negative=True)
-    nn = Symbol('nn', nonnegative=True)
-    nn_ = Symbol('nn_', nonnegative=True)
     p = Symbol('p', positive=True)
-    p_ = Symbol('p_', positive=True)
-    np = Symbol('np', nonpositive=True)
-    np_ = Symbol('np_', nonpositive=True)
     r = Symbol('r', extended_real=True)
 
     assert Max(5, 4) == 5

@@ -701,7 +701,6 @@ def _real_to_rational(expr, tolerance=None):
     sqrt(x)/10 + 19/25
 
     """
-    inf = Float('inf')
     p = expr
     reps = {}
     reduce_num = None

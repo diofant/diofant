@@ -1416,7 +1416,6 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
                              ''' % (bad, eg)))
         symbols = free.intersection(symbols)
     symbols = symbols.difference(exclude)
-    dfree = d.free_symbols
 
     # derivatives are easy to do but tricky to analyze to see if they are going
     # to disallow a linear solution, so for simplicity we just evaluate the
@@ -1697,7 +1696,6 @@ def _tsolve(eq, sym, **flags):
                 gisimp = powdenest(expand_power_exp(gi))
                 if gisimp.is_Pow and sym in gisimp.exp.free_symbols:
                     up_or_log.add(gi)
-        down = g.difference(up_or_log)
         eq_down = expand_log(expand_power_exp(eq)).subs(
             dict(zip(up_or_log, [0]*len(up_or_log))))
         eq = expand_power_exp(factor(eq_down, deep=True) + (eq - eq_down))

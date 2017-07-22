@@ -403,7 +403,6 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
     dsgsx = []
     for i in range(num_types):
         dsgsx.extend(dummy_sgs(dumx[i], sym[i], num_dummies))
-    ginv = _af_invert(g)
     idn = list(range(size))
     # TAB = list of entries (s, d, h) where h = _af_rmuln(d,g,s)
     # for short, in the following d*g*s means _af_rmuln(d,g,s)
@@ -444,7 +443,6 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
         else:
             deltap = [p_i]
         TAB1 = []
-        nTAB = len(TAB)
         while TAB:
             s, d, h = TAB.pop()
             if min(md[h[x]] for x in deltab) != p_i:
@@ -502,7 +500,6 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
         # if TAB contains equal permutations, keep only one of them;
         # if TAB contains equal permutations up to the sign, return 0
         TAB1.sort(key=lambda x: x[-1])
-        nTAB1 = len(TAB1)
         prev = [0] * size
         while TAB1:
             s, d, h = TAB1.pop()
@@ -575,13 +572,11 @@ def canonical_free(base, gens, g, num_free):
         return g[:]
 
     transversals = get_transversals(base, gens)
-    m = len(base)
     for x in sorted(g[:-2]):
         if x not in base:
             base.append(x)
     h = g
     for i, transv in enumerate(transversals):
-        b = base[i]
         h_i = [size]*num_free
         # find the element s in transversals[i] such that
         # _af_rmul(h, s) has its free elements with the lowest position in h
@@ -826,7 +821,6 @@ def canonicalize(g, dummies, msym, *v):
     size, sbase, sgens = gens_products(*v1)
 
     # reduce the permutations getting rid of the free indices
-    pos_dummies = [g1.index(x) for x in flat_dummies]
     pos_free = [g1.index(x) for x in range(num_free)]
     size_red = size - num_free
     g1_red = [x - num_free for x in g1 if x in flat_dummies]

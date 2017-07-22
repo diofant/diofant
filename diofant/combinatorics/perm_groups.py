@@ -1151,7 +1151,6 @@ class PermutationGroup(Basic):
         """
         r = self._r
         gens = [p._array_form for p in self.generators]
-        gens_inv = [_af_invert(p) for p in gens]
         set_commutators = set()
         degree = self._degree
         rng = list(range(degree))
@@ -3263,7 +3262,6 @@ def _orbits(degree, generators):
     [{0, 1, 2}]
     """
 
-    seen = set()  # elements that have already appeared in orbits
     orbs = []
     sorted_I = list(range(degree))
     I = set(sorted_I)

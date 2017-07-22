@@ -635,6 +635,7 @@ def test_sympyissue_6252():
     assert not expr.has(hyper)
     # XXX the expression is a mess, but actually upon differentiation and
     # putting in numerical values seems to work...
+    assert not anti.has(hyper)
 
 
 def test_sympyissue_6348():

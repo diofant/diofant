@@ -540,7 +540,6 @@ def test_subs5():
 
 
 def test_subs6():
-    b = symbols('b')
     e = Integral(x*y, (x, f(x), f(y)))
     assert e.subs(x, 1) == Integral(x*y, (x, f(1), f(y)))
     assert e.subs(y, 1) == Integral(x, (x, f(x), f(1)))

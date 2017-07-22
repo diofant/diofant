@@ -129,14 +129,14 @@ def dotest(s):
 
 def test_basic():
     def j(a, b):
-        x = a
-        x = +a
-        x = -a
-        x = a + b
-        x = a - b
-        x = a*b
-        x = a/b
-        x = a**b
+        a
+        +a
+        -a
+        a + b
+        a - b
+        a*b
+        a/b
+        a**b
     assert dotest(j)
 
 

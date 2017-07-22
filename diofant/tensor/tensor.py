@@ -2649,8 +2649,8 @@ class TensAdd(TensExpr):
                         a.append(t)
                 # move x to prev
                 op = 1
-                pprev, prev = prev, x
-                pprev_coeff, prev_coeff = prev_coeff, get_coeff(x)
+                prev = x
+                prev_coeff = get_coeff(x)
                 changed = False
         # if the case op=0 prev was not stored; store it now
         # in the case op=1 x was not stored; store it now (as prev)

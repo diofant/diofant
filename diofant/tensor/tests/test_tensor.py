@@ -118,7 +118,6 @@ def test_canonicalize_no_dummies():
     a, b, c, d = tensor_indices('a, b, c, d', Lorentz)
     sym1 = tensorsymmetry([1])
     sym2 = tensorsymmetry([1]*2)
-    sym2a = tensorsymmetry([2])
 
     # A commuting
     # A^c A^b A^a
@@ -442,7 +441,6 @@ def test_canonicalize3():
     D = Symbol('D')
     Spinor = TensorIndexType('Spinor', dim=D, metric=True, dummy_fmt='S')
     a0, a1, a2, a3, a4 = tensor_indices('a0:5', Spinor)
-    C = Spinor.metric
     chi, psi = tensorhead('chi,psi', [Spinor], [[1]], 1)
 
     t = chi(a1)*psi(a0)
@@ -496,7 +494,6 @@ def test_indices():
 
 
 def test_tensorsymmetry():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     sym = tensorsymmetry([1]*2)
     sym1 = TensorSymmetry(get_symmetric_group_sgs(2))
     assert sym == sym1
@@ -666,7 +663,6 @@ def test_mul():
     from diofant.abc import x
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
-    sym = tensorsymmetry([1]*2)
     t = TensMul.from_data(S.One, [], [], [])
     assert str(t) == '1'
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
@@ -752,7 +748,6 @@ def test_substitute_indices():
 def test_riemann_cyclic_replace():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     m0, m1, m2, m3 = tensor_indices('m:4', Lorentz)
-    symr = tensorsymmetry([2, 2])
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
     t = R(m0, m2, m1, m3)
     t1 = riemann_cyclic_replace(t)
@@ -1009,7 +1004,6 @@ def test_metric_contract3():
 def test_epsilon():
     Lorentz = TensorIndexType('Lorentz', dim=4, dummy_fmt='L')
     a, b, c, d, e = tensor_indices('a,b,c,d,e', Lorentz)
-    g = Lorentz.metric
     epsilon = Lorentz.epsilon
     p, q, r, s = tensorhead('p,q,r,s', [Lorentz], [[1]])
 
@@ -1148,7 +1142,7 @@ def test_TensorManager():
     TensorManager.clear()
     assert TensorManager.comm == [{0: 0, 1: 0, 2: 0}, {0: 0, 1: 1, 2: None}, {0: 0, 1: None}]
     assert GHsymbol not in TensorManager._comm_symbols2i
-    nh = TensorManager.comm_symbols2i(GHsymbol)
+    TensorManager.comm_symbols2i(GHsymbol)
     assert GHsymbol in TensorManager._comm_symbols2i
 
 

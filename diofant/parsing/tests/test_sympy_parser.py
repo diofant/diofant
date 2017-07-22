@@ -72,7 +72,6 @@ def test_sympyissue_2515():
 
 
 def test_sympyissue_7663():
-    x = Symbol('x')
     e = '2*(x+1)'
     assert parse_expr(e, evaluate=0) == parse_expr(e, evaluate=False)
 

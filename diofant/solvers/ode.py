@@ -1473,7 +1473,6 @@ def classify_sysode(eq, funcs=None, **kwargs):
     funcs = list(ordered((set(funcs))))
     if len(funcs) < len(eq):
         raise ValueError("Number of functions given is less than number of equations %s" % funcs)
-    func_dict = {}
     for func in funcs:
         max_order = order[func]
         for eq_ in eq:
@@ -1886,7 +1885,6 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
     num, denum = ((r1[f].subs(x(t), u).subs(y(t), v))/(r2[g].subs(x(t), u).subs(y(t), v))).as_numer_denom()
     R1 = num.match(f1*g1)
     R2 = denum.match(f2*g2)
-    phi = (r1[f].subs(x(t), u).subs(y(t), v))/num
     if R1 and R2:
         return 'type4'
     return
@@ -1907,9 +1905,6 @@ def check_nonlinear_3eq_order1(eq, func, func_coef):
     b = Wild('b', exclude=[x(t), y(t), z(t), t])
     c = Wild('c', exclude=[x(t), y(t), z(t), t])
     f = Wild('f')
-    F1 = Wild('F1')
-    F2 = Wild('F2')
-    F3 = Wild('F3')
     for i in range(3):
         eqs = 0
         for terms in Add.make_args(eq[i]):
@@ -2017,7 +2012,6 @@ def checksysodesol(eqs, sols, func=None):
             raise ValueError("solutions should have one function only")
     if len(funcs) != len({sol.lhs for sol in sols}):
         raise ValueError("number of solutions provided does not match the number of equations")
-    t = funcs[0].args[0]
     dictsol = {}
     for sol in sols:
         sol_func = list(sol.atoms(AppliedUndef))[0]
@@ -2943,7 +2937,6 @@ def ode_1st_exact(eq, func, order, match):
            Dover 1963, pp. 73.
     """
     x = func.args[0]
-    f = func.func
     r = match  # d+e*diff(f(x),x)
     e = r[r['e']]
     d = r[r['d']]
@@ -3758,10 +3751,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
     x = func.args[0]
     f = func.func
     C0, C1 = get_numbered_constants(eq, num=2)
-    n = Dummy("n")
     m = Dummy("m")  # for solving the indicial equation
-    s = Wild("s")
-    k = Wild("k", exclude=[x])
     x0 = match.get('x0')
     terms = match.get('terms', 5)
     p = match['p']
@@ -3838,7 +3828,6 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
     d = Dummy("d")
     numsyms = numbered_symbols("C", start=0)
     numsyms = [next(numsyms) for i in range(n + 1)]
-    C0 = Symbol("C0")
     serlist = []
     for ser in [p, q]:
         # Order term not present
@@ -5348,8 +5337,6 @@ def ode_lie_group(eq, func, order, match):
     df = func.diff(x)
     xi = Function("xi")
     eta = Function("eta")
-    a = Wild('a', exclude=[df])
-    b = Wild('b', exclude=[df])
     xis = match.pop('xi')
     etas = match.pop('eta')
 
@@ -5931,7 +5918,6 @@ def lie_heuristic_chi(match, comp=False):
     """
 
     h = match['h']
-    hx = match['hx']
     hy = match['hy']
     func = match['func']
     x = func.args[0]
@@ -6019,8 +6005,6 @@ def lie_heuristic_function_sum(match, comp=False):
 
     xieta = []
     h = match['h']
-    hx = match['hx']
-    hy = match['hy']
     func = match['func']
     hinv = match['hinv']
     x = func.args[0]
@@ -6104,7 +6088,6 @@ def lie_heuristic_abaco2_similar(match, comp=False):
 
     """
 
-    xieta = []
     h = match['h']
     hx = match['hx']
     hy = match['hy']
@@ -6206,12 +6189,10 @@ def lie_heuristic_abaco2_unique_unknown(match, comp=False):
 
     """
 
-    xieta = []
     h = match['h']
     hx = match['hx']
     hy = match['hy']
     func = match['func']
-    hinv = match['hinv']
     x = func.args[0]
     y = match['y']
     xi = Function('xi')(x, func)
@@ -6279,12 +6260,10 @@ def lie_heuristic_linear(match, comp=False):
       ODE Patterns, pp. 10 - pp. 12
 
     """
-    xieta = []
     h = match['h']
     hx = match['hx']
     hy = match['hy']
     func = match['func']
-    hinv = match['hinv']
     x = func.args[0]
     y = match['y']
     xi = Function('xi')(x, func)
@@ -7675,8 +7654,6 @@ def sysode_nonlinear_3eq_order1(match_):
     y = match_['func'][1].func
     z = match_['func'][2].func
     eq = match_['eq']
-    fc = match_['func_coeff']
-    func = match_['func']
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     if match_['type_of_equation'] == 'type1':
         sol = _nonlinear_3eq_order1_type1(x, y, z, t, eq)

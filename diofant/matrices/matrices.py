@@ -2954,7 +2954,6 @@ class MatrixBase(DefaultPrinting):
         """
         from . import eye
 
-        simplify = flags.get('simplify', True)
         primitive = bool(flags.get('simplify', False))
         chop = flags.pop('chop', False)
 

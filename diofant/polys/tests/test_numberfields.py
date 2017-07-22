@@ -653,7 +653,6 @@ def test_AlgebraicNumber():
     assert a == b
 
     c = AlgebraicNumber(sqrt(2), gen=x)
-    d = AlgebraicNumber(sqrt(2), gen=x)
 
     assert a == b
     assert a == c

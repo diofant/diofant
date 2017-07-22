@@ -726,7 +726,6 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
     To handle the case where we are given Df, not f, use
     is_log_deriv_k_t_radical_in_field().
     """
-    H = []
     if Df:
         dfa, dfd = (fd*derivation(fa, DE) - fa*derivation(fd, DE)).cancel(fd**2,
                                                                           include=True)

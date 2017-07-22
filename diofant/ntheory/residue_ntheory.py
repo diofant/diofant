@@ -366,7 +366,6 @@ def _sqrt_mod_prime_power(a, p, k):
         # sort to get always the same result
         return sorted([ZZ(res), ZZ(p - res)])
 
-    f = factorint(a)
     # see Ref.[2]
     if p == 2:
         if a % 8 != 1:
@@ -626,10 +625,8 @@ def _nthroot_mod1(s, q, p, all_roots):
         f1 = igcdex(-f, q)[0] % q
         z = f*f1
         x = (1 + z) // q
-        w = pow(g, z, p)
         r1 = pow(s, x, p)
         s1 = pow(s, f, p)
-        y = pow(g, f, p)
         h = pow(g, f*q, p)
         # find t discrete log of s1 base h, h**x = s1 mod p
         # used a naive implementation

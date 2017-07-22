@@ -351,8 +351,6 @@ class ProductDomain(RandomDomain):
     is_ProductDomain = True
 
     def __new__(cls, *domains):
-        symbols = sumsets([domain.symbols for domain in domains])
-
         # Flatten any product of products
         domains2 = []
         for domain in domains:

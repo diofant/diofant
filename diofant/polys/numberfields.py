@@ -158,7 +158,6 @@ def _minimal_polynomial_sq(p, n, x):
     """
     p = sympify(p)
     n = sympify(n)
-    r = _is_sum_surds(p)
     if not n.is_Integer or not n > 0 or not _is_sum_surds(p):
         return
     pn = p**Rational(1, n)
@@ -439,7 +438,6 @@ def _minpoly_exp(ex, x):
     Returns the minimal polynomial of ``exp(ex)``
     """
     c, a = ex.exp.as_coeff_Mul()
-    p = sympify(c.p)
     q = sympify(c.q)
     if a == I*pi:
         if c.is_rational:
@@ -657,7 +655,7 @@ def minpoly_groebner(ex, x):
     from ..core import expand_multinomial
 
     generator = numbered_symbols('a', cls=Dummy)
-    mapping, symbols, replace = {}, {}, []
+    mapping, symbols = {}, {}
 
     def update_mapping(ex, exp, base=None):
         if ex in mapping:

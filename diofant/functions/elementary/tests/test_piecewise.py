@@ -339,7 +339,6 @@ def test_piecewise_fold():
 def test_piecewise_fold_piecewise_in_cond():
     p1 = Piecewise((cos(x), x < 0), (0, True))
     p2 = Piecewise((0, Eq(p1, 0)), (p1 / Abs(p1), True))
-    p3 = piecewise_fold(p2)
     assert(p2.subs(x, -pi/2) == 0.0)
     assert(p2.subs(x, 1) == 0.0)
     assert(p2.subs(x, -pi/4) == 1.0)
@@ -353,7 +352,8 @@ def test_piecewise_fold_piecewise_in_cond():
     p5 = Piecewise((1, x < 0), (3, True))
     p6 = Piecewise((1, x < 1), (3, True))
     p7 = piecewise_fold(Piecewise((1, p5 < p6), (0, True)))
-    assert(Piecewise((1, And(Not(x < 1), x < 0)), (0, True)))
+    assert p7
+    assert Piecewise((1, And(Not(x < 1), x < 0)), (0, True))
 
 
 @pytest.mark.xfail

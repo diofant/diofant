@@ -835,7 +835,6 @@ def test_classify_sysode():
     z1 = diff(z(t), t)
     x2 = diff(x(t), t, t)
     y2 = diff(y(t), t, t)
-    z2 = diff(z(t), t, t)
 
     eq1 = (Eq(diff(x(t), t), 5*t*x(t) + 2*y(t)), Eq(diff(y(t), t), 2*x(t) + 5*t*y(t)))
     sol1 = {'no_of_equation': 2, 'func_coeff': {(0, x(t), 0): -5*t, (1, x(t), 1): 0, (0, x(t), 1): 1,
@@ -2513,7 +2512,6 @@ def test_sympyissue_6989():
 
 def test_heuristic1():
     y, a, b, c, a4, a3, a2, a1, a0 = symbols("y a b c a4 a3 a2 a1 a0")
-    y = Symbol('y')
     f = Function('f')
     xi = Function('xi')
     eta = Function('eta')
@@ -2560,7 +2558,6 @@ def test_sympyissue_6247():
 
 
 def test_heuristic2():
-    y = Symbol('y')
     xi = Function('xi')
     eta = Function('eta')
     df = f(x).diff(x)
@@ -2574,7 +2571,6 @@ def test_heuristic2():
 
 
 def test_heuristic3():
-    y = Symbol('y')
     xi = Function('xi')
     eta = Function('eta')
     a, b = symbols("a b")
@@ -2592,8 +2588,6 @@ def test_heuristic3():
 
 def test_heuristic_4():
     y, a = symbols("y a")
-    xi = Function('xi')
-    eta = Function('eta')
 
     eq = x*(f(x).diff(x)) + 1 - f(x)**2
     i = infinitesimals(eq, hint='chi')
@@ -2649,9 +2643,6 @@ def test_heuristic_abaco2_unique_unknown():
 
 
 def test_heuristic_linear():
-    xi = Function('xi')
-    eta = Function('eta')
-    F = Function('F')
     a, b, m, n = symbols("a b m n")
 
     eq = x**(n*(m + 1) - m)*(f(x).diff(x)) - a*f(x)**n - b*x**(n*(m + 1))
@@ -2721,7 +2712,6 @@ def test_lie_group():
 
 
 def test_user_infinitesimals():
-    C2 = Symbol("C2")
     x = Symbol("x")  # assuming x is real generates an error
     eq = x*(f(x).diff(x)) + 1 - f(x)**2
     sol = dsolve(eq, hint='lie_group', xi=sqrt(f(x) - 1)/sqrt(f(x) + 1),

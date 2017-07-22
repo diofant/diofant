@@ -35,8 +35,6 @@ def test_plane():
     p1 = Point3D(0, 0, 0)
     p2 = Point3D(1, 1, 1)
     p3 = Point3D(1, 2, 3)
-    p4 = Point3D(x, x, x)
-    p5 = Point3D(y, y, y)
 
     pl3 = Plane(p1, p2, p3)
     pl4 = Plane(p1, normal_vector=(1, 1, 1))

@@ -859,7 +859,6 @@ class Integral(AddWithLimits):
                 except NotImplementedError:
                     from .meijerint import _debug
                     _debug('NotImplementedError from meijerint_definite')
-                    res = None
                 if h is not None:
                     parts.append(coeff * h)
                     continue

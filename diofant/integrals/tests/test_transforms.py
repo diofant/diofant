@@ -70,7 +70,6 @@ def test_mellin_transform_fail():
     MT = mellin_transform
 
     bpos = symbols('b', positive=True)
-    bneg = symbols('b', negative=True)
 
     expr = (sqrt(x + b**2) + b)**a/sqrt(x + b**2)
     # TODO does not work with bneg, argument wrong. Needs changes to matching.

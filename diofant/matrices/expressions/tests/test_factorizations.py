@@ -15,6 +15,7 @@ def test_LU():
 
 def test_Cholesky():
     L = LofCholesky(X)
+    assert L.shape == X.shape
 
 
 def test_QR():

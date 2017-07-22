@@ -157,8 +157,6 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     Eq(f(x, y), E**(-2*x/13 - 3*y/13)*F(3*x - 2*y))
     """
 
-    given_hint = hint  # hint given by the user.
-
     if not solvefun:
         solvefun = Function('F')
 
@@ -452,9 +450,6 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     # Convert solution into an equation
     if not isinstance(sol, Equality):
         sol = Eq(func, sol)
-
-    # Try solving for the function
-    solved = sol.lhs == func and not sol.rhs.has(func)
 
     # try direct substitution of the solution into the PDE and simplify
     if sol.lhs == func:
@@ -777,9 +772,7 @@ def _simplify_variable_coeff(sol, syms, func, funcarg):
         final = sol.subs(sym, func(funcarg))
 
     else:
-        fname = func.__name__
         for key, sym in enumerate(syms):
-            tempfun = Function(fname + str(key))
             final = sol.subs(sym, func(funcarg))
 
     return simplify(final.subs(eta, funcarg))

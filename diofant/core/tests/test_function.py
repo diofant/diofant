@@ -462,7 +462,7 @@ def test_sympyissue_5399():
     for a in subsets(args):
         for v in variations(a, len(a)):
             if ok(v):
-                noraise = eq.diff(*v)
+                eq.diff(*v)   # not raises
             else:
                 pytest.raises(ValueError, lambda: eq.diff(*v))
 

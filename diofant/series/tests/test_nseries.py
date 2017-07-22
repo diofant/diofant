@@ -361,7 +361,6 @@ def test_series2():
 
 def test_series3():
     w = Symbol("w", extended_real=True)
-    x = Symbol("x", extended_real=True)
     e = w**(-6)*(w**3*tan(w) - w**3*sin(w))
     assert e.nseries(w, n=5) == Rational(1, 2) + O(w**2)
 
