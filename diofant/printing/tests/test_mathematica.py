@@ -8,7 +8,7 @@ from diofant.concrete import Sum
 from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
                                Min, Max, Piecewise, binomial,
                                log, tan, cot, asin, acos, atan, sinh, cosh,
-                               tanh, coth, sech, csch)
+                               tanh, coth, sech, csch, erfc)
 from diofant.matrices import Matrix
 from diofant.logic import Or, true, false
 from diofant.polys import Poly, RootOf
@@ -70,6 +70,7 @@ def test_Function():
     assert mcode(coth(x)) == "Coth[x]"
     assert mcode(sech(x)) == "Sech[x]"
     assert mcode(csch(x)) == "Csch[x]"
+    assert mcode(erfc(x)) == "Erfc[x]"
 
     class myfunc1(Function):
         @classmethod
