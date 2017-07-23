@@ -2738,8 +2738,15 @@ class MatrixBase(DefaultPrinting):
                     return r
             raise NotImplementedError("Zero-decision problem for %s" % x)
 
-        row_reduced = self.rref(iszerofunc=iszero)
-        return len(row_reduced[-1])
+        try:
+            row_reduced = self.rref(iszerofunc=iszero)
+            return len(row_reduced[-1])
+        except NotImplementedError:
+            if self.shape == (2, 2):
+                if self.det().equals(0):
+                    if sum(_**2 for _ in self).simplify().is_nonzero:
+                        return Integer(1)
+            raise
 
     def nullspace(self, simplify=False):
         """Returns list of vectors (Matrix objects) that span nullspace of self."""
