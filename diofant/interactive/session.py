@@ -18,6 +18,21 @@ class IntegerWrapper(ast.NodeTransformer):
         return self.generic_visit(node)
 
 
+class IntegerDivisionWrapper(ast.NodeTransformer):
+    """Wrap all int divisions in a call to Rational."""
+
+    def visit_BinOp(self, node):
+        if (isinstance(node.op, ast.Div) and
+                isinstance(node.left, ast.Num) and
+                isinstance(node.left.n, int) and
+                isinstance(node.right, ast.Num) and
+                isinstance(node.right.n, int)):
+            return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
+                            args=[node.left, node.right], keywords=[],
+                            starargs=None, kwargs=None)
+        return self.generic_visit(node)
+
+
 class AutomaticSymbols(ast.NodeTransformer):
     """Add missing Symbol definitions automatically."""
 
