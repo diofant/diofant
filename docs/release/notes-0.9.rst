@@ -153,6 +153,8 @@ Issues closed
 * :issue:`350` Pretty printing in pdf docs looks bad
 * :sympyissue:`12942` Remove x**1.0 == x hack from core
 * :issue:`75` limit(abs(ln(x))-ln(x), x, 2, '-') runs endless
+* :issue:`462` Poor performance for very simple matching rule
+* :sympyissue:`12238` match can take a long time (possibly forever)
 
 .. last pr: #494
 
