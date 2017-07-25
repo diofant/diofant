@@ -28,6 +28,7 @@ There are three types of functions implemented in Diofant:
 import collections
 import inspect
 
+import matchpy
 import mpmath
 import mpmath.libmp as mlib
 
@@ -197,6 +198,9 @@ class Application(Expr, metaclass=FunctionClass):
         # WildFunction (and anything else like it) may have nargs defined
         # and we throw that value away here
         options.pop('nargs', None)
+
+        options.pop('min_count', 1)
+        options.pop('fixed_size', True)
 
         if options:
             raise ValueError("Unknown options: %s" % options)
@@ -663,7 +667,7 @@ UndefinedFunction.__eq__ = lambda s, o: (isinstance(o, s.__class__) and
                                          (s.class_key() == o.class_key()))
 
 
-class WildFunction(Function, AtomicExpr):
+class WildFunction(Function, AtomicExpr, matchpy.Wildcard):
     """
     A WildFunction function matches any function (with its arguments).
 
@@ -710,7 +714,8 @@ class WildFunction(Function, AtomicExpr):
 
     include = set()
 
-    def __init__(self, name, **assumptions):
+    def __init__(self, name, min_length=1,
+                 fixed_size=True, **assumptions):
         from ..sets.sets import Set, FiniteSet
         self.name = name
         nargs = assumptions.pop('nargs', S.Naturals0)
@@ -722,6 +727,7 @@ class WildFunction(Function, AtomicExpr):
                 nargs = as_int(nargs),
             nargs = FiniteSet(*nargs)
         self.nargs = nargs
+        matchpy.Wildcard.__init__(self, min_length, fixed_size, name)
 
     def _matches(self, expr, repl_dict={}):
         """Helper method for match()
@@ -2348,3 +2354,6 @@ def nfloat(expr, n=15, exponent=False):
     return rv.xreplace(Transform(
         lambda x: x.func(*nfloat(x.args, n, exponent)),
         lambda x: isinstance(x, Function)))
+
+
+matchpy.Operation.register(Function)

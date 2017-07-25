@@ -1,5 +1,6 @@
 import math
 
+import matchpy
 from mpmath.libmp import sqrtrem as mpmath_sqrtrem
 
 from ..logic import true
@@ -1321,3 +1322,6 @@ class Pow(Expr):
                 # sqrt(2)*sqrt(1 + sqrt(5))
                 return c, self.func(_keep_coeff(m, t), e)
         return Integer(1), self.func(b, e)
+
+
+matchpy.Operation.register(Pow)

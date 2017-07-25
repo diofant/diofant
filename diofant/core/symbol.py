@@ -2,6 +2,8 @@ import itertools
 import re as _re
 import string
 
+import matchpy
+
 from ..logic.boolalg import Boolean
 from .assumptions import StdFactKB
 from .cache import cacheit
@@ -287,7 +289,7 @@ class Dummy(BaseSymbol):
         return BaseSymbol._hashable_content(self) + (self.dummy_index,)
 
 
-class Wild(BaseSymbol):
+class Wild(BaseSymbol, matchpy.Wildcard):
     """A Wild symbol matches anything, whatever is not explicitly excluded.
 
     Examples
@@ -358,25 +360,36 @@ class Wild(BaseSymbol):
 
     is_Wild = True
 
-    def __new__(cls, name, exclude=(), properties=(), **assumptions):
+    def __new__(cls, name, exclude=(), properties=(), min_count=1,
+                fixed_size=True, **assumptions):
         exclude = tuple(sympify(x) for x in exclude)
         properties = tuple(properties)
         cls._sanitize(assumptions, cls)
-        return Wild.__xnew__(cls, name, exclude, properties, **assumptions)
+        return Wild.__xnew__(cls, name, exclude, properties,
+                             min_count, fixed_size, **assumptions)
+
+    def __init__(self, name, exclude=(), properties=(), min_count=1,
+                 fixed_size=True, **assumptions):
+        matchpy.Wildcard.__init__(self, min_count, fixed_size, name)
 
     def __getnewargs__(self):
-        return self.name, self.exclude, self.properties
+        return (self.name, self.exclude, self.properties,
+                self.min_count, self.fixed_size)
 
     @staticmethod
     @cacheit
-    def __xnew__(cls, name, exclude, properties, **assumptions):
+    def __xnew__(cls, name, exclude, properties, min_count,
+                 fixed_size, **assumptions):
         obj = BaseSymbol.__xnew__(cls, name, **assumptions)
         obj.exclude = exclude
         obj.properties = properties
         return obj
 
     def _hashable_content(self):
-        return super()._hashable_content() + (self.exclude, self.properties)
+        return (super()._hashable_content() + (self.exclude, self.properties,
+                                               self.min_count, self.fixed_size))
+
+    __copy__ = None
 
     # TODO add check against another Wild
     def _matches(self, expr, repl_dict={}):

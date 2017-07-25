@@ -1,6 +1,8 @@
 from collections import defaultdict
 from functools import reduce
 
+import matchpy
+
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
@@ -816,3 +818,6 @@ class Add(AssocOp):
     @property
     def _sorted_args(self):
         return tuple(sorted(self.args, key=default_sort_key))
+
+
+matchpy.CommutativeOperation.register(Add)

@@ -3,6 +3,8 @@
 from collections import Mapping, defaultdict
 from itertools import zip_longest
 
+import matchpy
+
 from .cache import cacheit
 from .compatibility import iterable, ordered
 from .decorators import _sympifyit
@@ -1290,3 +1292,18 @@ class preorder_traversal:
 
     def __iter__(self):
         return self
+
+
+@matchpy.create_operation_expression.register(Basic)
+def _new(op, args, variable_name=True):
+    return type(op)(*args)
+
+
+@matchpy.op_iter.register(Basic)
+def _iter(a):
+    return a.args
+
+
+@matchpy.op_len.register(Basic)
+def _len(a):
+    return len(a.args)

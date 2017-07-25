@@ -1,3 +1,4 @@
+import matchpy
 import pytest
 
 from diofant import (Add, Derivative, FiniteSet, Float, Function, I, Integer,
@@ -620,3 +621,14 @@ def test_diofantissue_462():
     tmpl = a11*x**2 + 2*a12*x*y + a22*y**2 + 2*a13*x + 2*a23*y + a33
     assert eq.match(tmpl) == {a11: -1, a12: 6, a22: -36, a13: -4,
                               a23: Rational(-1, 2), a33: -4}
+
+
+def test_matchpy1():
+    x_ = Wild('x')
+    p = matchpy.Pattern(x_**2)
+    m = list(matchpy.match(x**2, p))
+    assert m == [{'x': x}]
+    assert matchpy.substitute(p.expression, *m) == x**2
+    y_ = Wild('y')
+    p2 = matchpy.Pattern(x_ + y_)
+    assert len(list(matchpy.match(x + 2*y, p2))) == 2

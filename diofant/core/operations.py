@@ -1,3 +1,5 @@
+import matchpy
+
 from .basic import _aresame
 from .cache import cacheit
 from .compatibility import ordered
@@ -348,6 +350,10 @@ class AssocOp(Expr):
             return expr.args
         else:
             return expr,
+
+
+matchpy.Operation.register(AssocOp)
+matchpy.AssociativeOperation.register(AssocOp)
 
 
 class ShortCircuit(Exception):

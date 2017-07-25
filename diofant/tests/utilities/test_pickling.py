@@ -145,7 +145,7 @@ def test_core_symbol():
     # having the same name will be cached as noncommutative
     for c in (Dummy, Dummy("x", commutative=False), Symbol,
               Symbol("_sympyissue_6229", commutative=False),
-              Wild, Wild("x")):
+              Wild, Wild("x"), Wild("x", fixed_size=False)):
         check(c)
 
 
