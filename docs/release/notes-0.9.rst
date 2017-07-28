@@ -156,6 +156,7 @@ Issues closed
 * :issue:`75` limit(abs(ln(x))-ln(x), x, 2, '-') runs endless
 * :issue:`462` Poor performance for very simple matching rule
 * :sympyissue:`12238` match can take a long time (possibly forever)
+* :sympyissue:`4269` ordering of classes
 
 .. last pr: #494
 
