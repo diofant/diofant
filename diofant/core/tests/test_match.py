@@ -599,3 +599,16 @@ def test_sympyissue_8694():
     assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z - X, Y1: X + Y, Z1: -Y}
     eq = -Y + Z*cos(theta1) + (X + Y)*sin(theta1)
     assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z, Y1: X + Y, Z1: -Y}
+
+
+def test_diofantissue_462():
+    w = Wild('w', exclude=[x])
+    assert (-x).match(2*w*x) == {w: Rational(-1, 2)}
+    assert (-x**2).match(2*w*x**2) == {w: Rational(-1, 2)}
+    # see also sympy/sympy#12238
+    a11, a12, a22, a13, a23, a33 = symbols('a11 a12 a22 a13 a23 a33',
+                                           exclude=[x, y], cls=Wild)
+    eq = -x**2 + 12*x*y - 8*x - 36*y**2 - y - 4
+    tmpl = a11*x**2 + 2*a12*x*y + a22*y**2 + 2*a13*x + 2*a23*y + a33
+    assert eq.match(tmpl) == {a11: -1, a12: 6, a22: -36, a13: -4,
+                              a23: Rational(-1, 2), a33: -4}
