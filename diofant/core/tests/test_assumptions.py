@@ -862,7 +862,7 @@ def test_sympyissue_4149():
             [False, True, False, True])
 
     # tests from the PR sympy/sympy#7887:
-    e = -sqrt(3)*I/2 + Float(0.866025403784439, prec=20)*I
+    e = -sqrt(3)*I/2 + Float(0.866025403784439, dps=20)*I
     assert e.is_extended_real is False
     assert e.is_imaginary
 
