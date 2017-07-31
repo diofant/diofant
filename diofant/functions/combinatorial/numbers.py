@@ -339,17 +339,17 @@ class bell(Function):
     The second kind of Bell polynomials (are sometimes called "partial" Bell
     polynomials or incomplete Bell polynomials) are defined as
 
-    .. math:: B_{n,k}(x_1, x_2,\ldotsc x_{n-k+1}) =
-            \sum_{j_1+j_2+j_2+\ldotsb=k \atop j_1+2j_2+3j_2+\ldotsb=n}
-                \frac{n!}{j_1!j_2!\ldotsb j_{n-k+1}!}
+    .. math:: B_{n,k}(x_1, x_2,\dotsc x_{n-k+1}) =
+            \sum_{j_1+j_2+j_2+\dotsb=k \atop j_1+2j_2+3j_2+\dotsb=n}
+                \frac{n!}{j_1!j_2!\dotsb j_{n-k+1}!}
                 \left(\frac{x_1}{1!} \right)^{j_1}
-                \left(\frac{x_2}{2!} \right)^{j_2} \ldotsb
+                \left(\frac{x_2}{2!} \right)^{j_2} \dotsb
                 \left(\frac{x_{n-k+1}}{(n-k+1)!} \right) ^{j_{n-k+1}}.
 
     * bell(n) gives the `n^{th}` Bell number, `B_n`.
     * bell(n, x) gives the `n^{th}` Bell polynomial, `B_n(x)`.
     * bell(n, k, (x1, x2, ...)) gives Bell polynomials of the second kind,
-      `B_{n,k}(x_1, x_2, \ldotsc, x_{n-k+1})`.
+      `B_{n,k}(x_1, x_2, \dotsc, x_{n-k+1})`.
 
     Notes
     =====
@@ -416,9 +416,9 @@ class bell(Function):
 
         Calculated by recurrence formula:
 
-        .. math:: B_{n,k}(x_1, x_2, \ldotsc, x_{n-k+1}) =
+        .. math:: B_{n,k}(x_1, x_2, \dotsc, x_{n-k+1}) =
                 \sum_{m=1}^{n-k+1}
-                \x_m \binom{n-1}{m-1} B_{n-m,k-1}(x_1, x_2, \ldotsc, x_{n-m-k})
+                \x_m \binom{n-1}{m-1} B_{n-m,k-1}(x_1, x_2, \dotsc, x_{n-m-k})
 
         where
             B_{0,0} = 1;

@@ -184,7 +184,7 @@ class AssocOp(Expr):
                 return
             newpattern = self.func(*wild_part)
             newexpr = self._combine_inverse(expr, exact)
-            if expr.is_Add or expr.is_Mul:
+            if all(isinstance(e, AssocOp) for e in [expr, newexpr]):
                 if newexpr.count_ops() > expr.count_ops():
                     return
             return newpattern.matches(newexpr, repl_dict)

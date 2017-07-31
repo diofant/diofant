@@ -78,6 +78,8 @@ htmlhelp_basename = 'Diofantdoc'
 # Options for LaTeX output
 # ------------------------
 
+latex_engine = 'xelatex'
+
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual], toctree_only).
 # toctree_only is set to True so that the start file document itself is not included in the
@@ -92,6 +94,10 @@ latex_elements = {
     'fontenc': r'''
 \usepackage{bm}
 \usepackage{amssymb}
+\usepackage{fontspec}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
 ''',
     'fontpkg':   '',
     'inputenc':  '',
