@@ -2,10 +2,10 @@
 Numbers listed with the tests refer to problem numbers in the book
 "Anti-demidovich, problemas resueltos, Ed. URSS"
 """
-from diofant import (limit, oo, sqrt, Rational, log, exp, cos, sin,
-                     tan, pi, asin, together, root)
-
+from diofant import (Rational, asin, cos, exp, limit, log, oo, pi, root, sin,
+                     sqrt, tan, together)
 from diofant.abc import a, h, m, n, x
+
 
 __all__ = ()
 

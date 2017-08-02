@@ -1,6 +1,6 @@
 """Tools for manipulation of rational expressions. """
 
-from ..core import Add, sympify, gcd_terms
+from ..core import Add, gcd_terms, sympify
 from ..utilities import public
 
 

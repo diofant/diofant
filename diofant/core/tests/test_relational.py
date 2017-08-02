@@ -1,18 +1,18 @@
 import random
-from operator import gt, lt, ge, le
+from operator import ge, gt, le, lt
 
 import pytest
 
-from diofant import (S, Symbol, nan, oo, I, pi, Float, And, Or, Not,
-                     Implies, Xor, zoo, sqrt, Rational, simplify, Function,
-                     Wild, Integer, floor, ceiling)
-from diofant.core.relational import (Relational, Equality, Unequality,
-                                     GreaterThan, LessThan, StrictGreaterThan,
-                                     StrictLessThan, Rel, Eq, Lt, Le,
-                                     Gt, Ge, Ne)
-from diofant.sets.sets import Interval, FiniteSet
+from diofant import (And, Float, Function, I, Implies, Integer, Not, Or,
+                     Rational, S, Symbol, Wild, Xor, ceiling, floor, nan, oo,
+                     pi, simplify, sqrt, zoo)
+from diofant.abc import t, w, x, y, z
+from diofant.core.relational import (Eq, Equality, Ge, GreaterThan, Gt, Le,
+                                     LessThan, Lt, Ne, Rel, Relational,
+                                     StrictGreaterThan, StrictLessThan,
+                                     Unequality)
+from diofant.sets.sets import FiniteSet, Interval
 
-from diofant.abc import w, x, y, z, t
 
 __all__ = ()
 

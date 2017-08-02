@@ -24,11 +24,12 @@ Manuel Bronstein.  See also the docstring of risch.py.
 from functools import reduce
 from operator import mul
 
-from ..core import oo, Dummy
+from ..core import Dummy, oo
 from ..domains import ZZ
-from ..polys import Poly, gcd, cancel
-from .risch import (gcdex_diophantine, frac_in, derivation, splitfactor,
-                    NonElementaryIntegralException, DecrementLevel)
+from ..polys import Poly, cancel, gcd
+from .risch import (DecrementLevel, NonElementaryIntegralException, derivation,
+                    frac_in, gcdex_diophantine, splitfactor)
+
 
 # TODO: Add messages to NonElementaryIntegralException errors
 

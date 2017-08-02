@@ -1,9 +1,9 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from .densebasic import (dup_slice, dup_LC, dmp_LC, dup_degree, dmp_degree,
-                         dup_strip, dmp_strip, dmp_zero_p, dmp_zero,
-                         dmp_one_p, dmp_one, dmp_ground, dmp_zeros)
-from .polyerrors import (ExactQuotientFailed, PolynomialDivisionFailed)
+from .densebasic import (dmp_degree, dmp_ground, dmp_LC, dmp_one, dmp_one_p,
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros,
+                         dup_degree, dup_LC, dup_slice, dup_strip)
+from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
 def dup_add_term(f, c, i, K):

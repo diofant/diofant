@@ -3,9 +3,9 @@
 from itertools import zip_longest
 
 from .cache import cacheit
-from .sympify import _sympify, sympify, SympifyError
 from .compatibility import iterable, ordered
 from .singleton import S
+from .sympify import SympifyError, _sympify, sympify
 
 
 class Basic(object):

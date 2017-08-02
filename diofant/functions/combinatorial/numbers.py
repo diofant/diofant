@@ -7,18 +7,18 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
-from mpmath import bernfrac, workprec, mp
+from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
-from ...core import (S, Rational, Integer, Add, Dummy, cacheit, Function,
-                     expand_mul, E, pi, LessThan, StrictGreaterThan, Expr,
+from ...core import (Add, Dummy, E, Expr, Function, Integer, LessThan,
+                     Rational, S, StrictGreaterThan, cacheit, expand_mul, pi,
                      prod)
-from ...core.compatibility import as_int, DIOFANT_INTS
-from .factorials import binomial, factorial
+from ...core.compatibility import DIOFANT_INTS, as_int
+from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
 from ..elementary.integers import floor
-from ..elementary.trigonometric import sin, cos, cot
-from ...utilities.memoization import recurrence_memo
+from ..elementary.trigonometric import cos, cot, sin
+from .factorials import binomial, factorial
 
 
 def _product(a, b):

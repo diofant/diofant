@@ -26,18 +26,17 @@ from the names used in Bronstein's book.
 
 from functools import reduce
 
-from ..core import (sympify, Lambda, oo, Integer, ilcm, Mul, Pow, Eq,
-                    S, Symbol, Dummy)
-from ..core.compatibility import ordered, default_sort_key
-from .heurisch import _symbols
-from ..functions import (acos, acot, asin, atan, cos, cot, exp, log,
-                         Piecewise, sin, tan, sinh, cosh, tanh, coth)
-from .integrals import Integral, integrate
-from ..polys import (gcd, cancel, PolynomialError, Poly,
-                     reduced, RootSum, DomainError, real_roots)
-from ..utilities import numbered_symbols
-
 from ..abc import z
+from ..core import (Dummy, Eq, Integer, Lambda, Mul, Pow, S, Symbol, ilcm, oo,
+                    sympify)
+from ..core.compatibility import default_sort_key, ordered
+from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
+                         coth, exp, log, sin, sinh, tan, tanh)
+from ..polys import (DomainError, Poly, PolynomialError, RootSum, cancel, gcd,
+                     real_roots, reduced)
+from ..utilities import numbered_symbols
+from .heurisch import _symbols
+from .integrals import Integral, integrate
 
 
 def integer_powers(exprs):

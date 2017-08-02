@@ -7,19 +7,19 @@ Contains
 
 import random
 
-from ..core import S, sympify, pi, oo, Rational, Dummy
+from ..core import Dummy, Rational, S, oo, pi, sympify
 from ..core.logic import fuzzy_bool
+from ..functions import cos, sin, sqrt
+from ..polys import DomainError, Poly, PolynomialError
+from ..polys.polyutils import _not_a_coeff, _nsort
 from ..simplify import simplify, trigsimp
-from ..functions import sqrt, cos, sin
-from .exceptions import GeometryError
-from ..polys import Poly, PolynomialError, DomainError
-from ..polys.polyutils import _nsort, _not_a_coeff
 from ..solvers import solve
-from ..utilities.iterables import uniq
 from ..utilities import filldedent
+from ..utilities.iterables import uniq
 from .entity import GeometryEntity, GeometrySet
+from .exceptions import GeometryError
+from .line import Line, LinearEntity
 from .point import Point
-from .line import LinearEntity, Line
 from .util import _symbol, idiff
 
 
@@ -744,6 +744,7 @@ class Ellipse(GeometrySet):
         True
 
         """
+        from .polygon import Polygon
         inter = None
         if isinstance(o, Ellipse):
             inter = self.intersection(o)
@@ -1471,6 +1472,3 @@ class Circle(Ellipse):
         c = self.center
         c = c.reflect(line)
         return self.func(c, -self.radius)
-
-
-from .polygon import Polygon

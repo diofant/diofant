@@ -2,10 +2,11 @@ from copy import copy
 
 import pytest
 
-from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
-from diofant import Symbol, Rational, SparseMatrix
+from diofant import Rational, SparseMatrix, Symbol
 from diofant.matrices import Matrix
+from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
 from diofant.tensor.array.sparse_ndim_array import MutableSparseNDimArray
+
 
 __all__ = ()
 

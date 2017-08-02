@@ -1,6 +1,6 @@
-from diofant import sin, cos, exp, tanh, E, S, O
-
+from diofant import E, O, S, cos, exp, sin, tanh
 from diofant.abc import x, y
+
 
 __all__ = ()
 

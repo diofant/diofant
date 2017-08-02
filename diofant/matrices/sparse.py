@@ -1,9 +1,9 @@
+import collections
 import copy
 from collections import defaultdict
-import collections
 
 from ..core import Dict, S
-from ..core.compatibility import is_sequence, as_int
+from ..core.compatibility import as_int, is_sequence
 from ..core.logic import fuzzy_and
 from ..functions import sqrt
 from ..utilities.iterables import uniq

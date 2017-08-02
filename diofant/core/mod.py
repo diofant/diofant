@@ -1,5 +1,5 @@
-from .numbers import nan
 from .function import Function
+from .numbers import nan
 
 
 class Mod(Function):

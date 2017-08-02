@@ -1,21 +1,20 @@
 import pytest
 
-from diofant import (
-    Abs, acos, Add, atan, Basic, binomial, besselsimp, cos, cosh,
-    count_ops, diff, E, Eq, erf, exp, expand,
-    expand_multinomial, factor, factorial, Float, Function,
-    gamma, GoldenRatio, hyper, hypersimp, I, Integral, integrate, log,
-    logcombine, Matrix, Mul, nsimplify, oo, pi, Piecewise,
-    posify, rad, Rational, S, separatevars, signsimp, simplify,
-    sin, sinh, solve, sqrt, Symbol, symbols, tan, sqrtdenest,
-    zoo, Sum, Lt, Integer, sstr, Number, cancel, combsimp,
-    besselj, besseli, exp_polar, cosine_transform, MatrixSymbol,
-    sign)
+from diofant import (Abs, Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
+                     Integer, Integral, Lt, Matrix, MatrixSymbol, Mul, Number,
+                     Piecewise, Rational, S, Sum, Symbol, acos, atan, besseli,
+                     besselj, besselsimp, binomial, cancel, combsimp, cos,
+                     cosh, cosine_transform, count_ops, diff, erf, exp,
+                     exp_polar, expand, expand_multinomial, factor, factorial,
+                     gamma, hyper, hypersimp, integrate, log, logcombine,
+                     nsimplify, oo, pi, posify, rad, separatevars, sign,
+                     signsimp, simplify, sin, sinh, solve, sqrt, sqrtdenest,
+                     sstr, symbols, tan, zoo)
+from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
+                         y, z)
 from diofant.core.mul import _keep_coeff
 from diofant.simplify.simplify import nthroot
 
-from diofant.abc import (x, y, z, t, a, b, c, d, e, f, g, h, i, r,
-                         R, k, n, m, w, s)
 
 __all__ = ()
 

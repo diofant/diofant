@@ -2,15 +2,15 @@
 
 import pytest
 
-from diofant import Poly, symbols, oo, I, Rational
+from diofant import I, Poly, Rational, oo, symbols
+from diofant.abc import n, t, x, z
+from diofant.integrals.rde import (bound_degree, cancel_exp, cancel_primitive,
+                                   no_cancel_equal, normal_denom, order_at,
+                                   order_at_oo, rischDE, solve_poly_rde, spde,
+                                   special_denom, weak_normalizer)
 from diofant.integrals.risch import (DifferentialExtension,
                                      NonElementaryIntegralException)
-from diofant.integrals.rde import (order_at, order_at_oo, weak_normalizer,
-                                   normal_denom, special_denom, bound_degree,
-                                   spde, solve_poly_rde, no_cancel_equal,
-                                   cancel_primitive, cancel_exp, rischDE)
 
-from diofant.abc import x, t, z, n
 
 __all__ = ()
 

@@ -1,13 +1,13 @@
 """Tools for solving inequalities and systems of inequalities. """
 
-from ..core import Symbol, Dummy, Integer, Eq, Ge, Lt, S
+from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol
 from ..core.compatibility import iterable
-from ..sets import Interval, FiniteSet, Union
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
 from ..logic import And
 from ..polys import Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
+from ..sets import FiniteSet, Interval, Union
 from ..utilities import filldedent
 
 

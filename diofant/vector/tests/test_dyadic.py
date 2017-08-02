@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (sin, cos, symbols, pi, ImmutableMatrix as Matrix,
-                     simplify)
-from diofant.vector import (CoordSysCartesian, Vector, Dyadic,
-                            DyadicAdd, DyadicMul, DyadicZero,
-                            BaseDyadic, express)
+from diofant import ImmutableMatrix as Matrix
+from diofant import cos, pi, simplify, sin, symbols
+from diofant.vector import (BaseDyadic, CoordSysCartesian, Dyadic, DyadicAdd,
+                            DyadicMul, DyadicZero, Vector, express)
+
 
 __all__ = ()
 

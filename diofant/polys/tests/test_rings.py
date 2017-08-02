@@ -5,15 +5,16 @@ from operator import add, mul
 
 import pytest
 
-from diofant.polys.rings import ring, sring, PolyRing, PolyElement
-from diofant.polys.fields import field, FracField
-from diofant.domains import ZZ, QQ, RR, FF, EX
-from diofant.polys.orderings import lex, grlex
-from diofant.polys.polyerrors import (GeneratorsError, GeneratorsNeeded,
-                                      ExactQuotientFailed,
-                                      MultivariatePolynomialError, CoercionFailed)
+from diofant import oo, pi, sqrt
 from diofant.core import Symbol, symbols
-from diofant import sqrt, pi, oo
+from diofant.domains import EX, FF, QQ, RR, ZZ
+from diofant.polys.fields import FracField, field
+from diofant.polys.orderings import grlex, lex
+from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
+                                      GeneratorsError, GeneratorsNeeded,
+                                      MultivariatePolynomialError)
+from diofant.polys.rings import PolyElement, PolyRing, ring, sring
+
 
 __all__ = ()
 

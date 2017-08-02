@@ -1,11 +1,11 @@
 """Implementation of :class:`RealField` class. """
 
-from .field import Field
-from .simpledomain import SimpleDomain
-from .characteristiczero import CharacteristicZero
-from .mpelements import MPContext
-from ..polys.polyerrors import DomainError, CoercionFailed
 from ..core import Float
+from ..polys.polyerrors import CoercionFailed, DomainError
+from .characteristiczero import CharacteristicZero
+from .field import Field
+from .mpelements import MPContext
+from .simpledomain import SimpleDomain
 
 
 __all__ = ('RealField',)

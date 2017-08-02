@@ -12,12 +12,13 @@ Binomial
 Hypergeometric
 """
 
-from ..core.compatibility import as_int
-from ..core.logic import fuzzy_not, fuzzy_and
-from .frv import (SingleFinitePSpace, SingleFiniteDistribution)
 from ..concrete import Sum
-from ..core import S, sympify, Rational, cacheit, Integer, Dict, Expr, Dummy
-from ..functions import binomial, KroneckerDelta
+from ..core import Dict, Dummy, Expr, Integer, Rational, S, cacheit, sympify
+from ..core.compatibility import as_int
+from ..core.logic import fuzzy_and, fuzzy_not
+from ..functions import KroneckerDelta, binomial
+from .frv import SingleFiniteDistribution, SingleFinitePSpace
+
 
 __all__ = ('FiniteRV', 'DiscreteUniform', 'Die', 'Bernoulli', 'Coin',
            'Binomial', 'Hypergeometric')

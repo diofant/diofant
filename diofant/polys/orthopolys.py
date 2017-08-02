@@ -1,12 +1,12 @@
 """Efficient functions for generating orthogonal polynomials. """
 
 from ..core import Dummy
+from ..domains import QQ, ZZ
 from ..utilities import public
 from .constructor import construct_domain
-from .polytools import Poly, PurePoly
+from .densearith import dup_add, dup_lshift, dup_mul, dup_mul_ground, dup_sub
 from .polyclasses import DMP
-from .densearith import dup_mul, dup_mul_ground, dup_lshift, dup_sub, dup_add
-from ..domains import ZZ, QQ
+from .polytools import Poly, PurePoly
 
 
 def dup_jacobi(n, a, b, K):

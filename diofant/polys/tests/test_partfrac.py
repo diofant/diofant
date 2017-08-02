@@ -4,12 +4,13 @@ functions.
 
 import pytest
 
-from diofant.polys.partfrac import (apart_undetermined_coeffs, apart,
-                                    apart_list, assemble_partfrac_list)
-from diofant import (Poly, E, pi, I, Eq, RootSum, Lambda, Rational,
-                     Symbol, Dummy, factor, together, sqrt, Expr)
+from diofant import (Dummy, E, Eq, Expr, I, Lambda, Poly, Rational, RootSum,
+                     Symbol, factor, pi, sqrt, together)
+from diofant.abc import a, b, c, x, y
+from diofant.polys.partfrac import (apart, apart_list,
+                                    apart_undetermined_coeffs,
+                                    assemble_partfrac_list)
 
-from diofant.abc import x, y, a, b, c
 
 __all__ = ()
 

@@ -67,9 +67,10 @@ References
 
 from functools import reduce
 
-from ..core import S, Dummy, Mul, Add, evaluate, Float, cacheit
+from ..core import Add, Dummy, Float, Mul, S, cacheit, evaluate
 from ..core.compatibility import ordered
-from ..functions import log, exp, sign as sgn, Abs
+from ..functions import sign as sgn
+from ..functions import Abs, exp, log
 
 
 def compare(a, b, x):

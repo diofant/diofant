@@ -1,8 +1,8 @@
 from itertools import combinations_with_replacement
 
-from ..core import symbols, Add, Dummy, Rational
-from ..polys import (cancel, ComputationFailed, parallel_poly_from_expr,
-                     reduced, Poly)
+from ..core import Add, Dummy, Rational, symbols
+from ..polys import (ComputationFailed, Poly, cancel, parallel_poly_from_expr,
+                     reduced)
 from ..polys.monomials import Monomial, monomial_div
 from ..polys.polyerrors import PolificationFailed
 from ..utilities.misc import debug

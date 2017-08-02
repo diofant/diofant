@@ -1,5 +1,5 @@
+from ...core import Expr, sympify
 from .matexpr import MatrixExpr
-from ...core import sympify, Expr
 
 
 class FunctionMatrix(MatrixExpr):

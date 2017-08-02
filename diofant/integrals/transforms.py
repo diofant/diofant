@@ -1,17 +1,19 @@
 """ Integral Transforms """
 
-from itertools import repeat
 from functools import reduce, wraps
+from itertools import repeat
 
-from ..core import (S, sympify, Function, oo, Integer, Rational, Dummy,
-                    Add, expand_mul, Mul, pi, expand, I)
-from .integrals import integrate, Integral
-from .meijerint import _dummy
-from ..logic import to_cnf, Or, And
+from ..core import (Add, Dummy, Function, I, Integer, Mul, Rational, S, expand,
+                    expand_mul, oo, pi, sympify)
+from ..functions import cos, sin, sqrt
+from ..logic import And, Or, to_cnf
 from ..logic.boolalg import conjuncts, disjuncts
-from ..simplify import simplify
-from ..utilities import default_sort_key
 from ..matrices import MatrixBase
+from ..simplify import simplify
+from ..solvers.inequalities import solve_univariate_inequality
+from ..utilities import default_sort_key
+from .integrals import Integral, integrate
+from .meijerint import _dummy
 
 
 ##########################################################################
@@ -159,9 +161,6 @@ class IntegralTransform(Function):
 
     def _eval_rewrite_as_Integral(self, *args):
         return self.as_integral
-
-
-from ..solvers.inequalities import solve_univariate_inequality
 
 
 def _simplify(expr, doit):
@@ -1444,8 +1443,6 @@ def inverse_fourier_transform(F, k, x, **hints):
 ##########################################################################
 # Fourier Sine and Cosine Transform
 ##########################################################################
-
-from ..functions import sin, cos, sqrt
 
 
 @_noconds_(True)

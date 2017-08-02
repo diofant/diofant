@@ -3,9 +3,9 @@ This test file tests the Diofant function interface, that people use to create
 their own new functions. It should be as easy as possible.
 """
 
-from diofant import Function, sympify, sin, cos, limit, tanh
-
+from diofant import Function, cos, limit, sin, sympify, tanh
 from diofant.abc import x
+
 
 __all__ = ()
 

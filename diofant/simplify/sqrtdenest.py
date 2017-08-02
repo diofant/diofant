@@ -1,11 +1,11 @@
-from ..functions import sqrt, sign, root, log
-from ..core import (S, sympify, Mul, Add, Expr, factor_terms, ilcm,
-                    expand_mul, Dummy, count_ops)
+from ..core import (Add, Dummy, Expr, Mul, S, count_ops, expand_mul,
+                    factor_terms, ilcm, sympify)
 from ..core.compatibility import ordered
-from ..polys import Poly, PolynomialError, degree, cancel
 from ..core.function import _mexpand
-from .powsimp import powdenest
+from ..functions import log, root, sign, sqrt
+from ..polys import Poly, PolynomialError, cancel, degree
 from ..utilities import default_sort_key
+from .powsimp import powdenest
 
 
 def is_sqrt(expr):

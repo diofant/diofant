@@ -1,11 +1,11 @@
-from ..core import oo, nan, diff, sympify, S, Ne, Ge, Gt, Eq, Lt
-from ..sets import Interval
-from ..core.compatibility import is_sequence, ordered
-from ..series import limit
-from ..functions import Min
-from ..matrices import Matrix, zeros, eye
-from ..solvers import solve, reduce_inequalities
 from ..calculus import singularities
+from ..core import Eq, Ge, Gt, Lt, Ne, S, diff, nan, oo, sympify
+from ..core.compatibility import is_sequence, ordered
+from ..functions import Min
+from ..matrices import Matrix, eye, zeros
+from ..series import limit
+from ..sets import Interval
+from ..solvers import reduce_inequalities, solve
 
 
 __all__ = ('minimize', 'maximize')

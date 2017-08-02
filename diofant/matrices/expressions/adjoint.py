@@ -1,7 +1,7 @@
 from ...core import Basic
 from ...functions import adjoint, conjugate
-from .transpose import transpose
 from .matexpr import MatrixExpr
+from .transpose import transpose
 
 
 class Adjoint(MatrixExpr):

@@ -1,6 +1,7 @@
-from ..core import S, Dummy, pi, Rational
-from ..functions import factorial, sin, cos, sqrt, gamma
-from ..polys.orthopolys import legendre_poly, laguerre_poly, hermite_poly, jacobi_poly
+from ..core import Dummy, Rational, S, pi
+from ..functions import cos, factorial, gamma, sin, sqrt
+from ..polys.orthopolys import (hermite_poly, jacobi_poly, laguerre_poly,
+                                legendre_poly)
 from ..polys.rootoftools import RootOf
 
 

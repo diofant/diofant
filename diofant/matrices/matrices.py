@@ -2,17 +2,18 @@ import collections
 from functools import reduce
 from types import FunctionType
 
-from ..core import (Add, Basic, Atom, Expr, count_ops, Pow, Symbol, Dummy,
-                    symbols, Integer, ilcm, Float, S, sympify)
+from ..core import (Add, Atom, Basic, Dummy, Expr, Float, Integer, Pow, S,
+                    Symbol, count_ops, ilcm, symbols, sympify)
+from ..core.compatibility import (NotIterable, as_int, default_sort_key,
+                                  is_sequence)
 from ..core.logic import fuzzy_and
-from ..core.compatibility import (is_sequence, default_sort_key,
-                                  NotIterable, as_int)
-from ..polys import PurePoly, roots, cancel, gcd
-from ..simplify import simplify as _simplify, signsimp, nsimplify
-from ..utilities import flatten
-from ..functions import sqrt, Max, Min, exp, factorial
-from ..printing.defaults import DefaultPrinting
+from ..functions import Max, Min, exp, factorial, sqrt
+from ..polys import PurePoly, cancel, gcd, roots
 from ..printing import sstr
+from ..printing.defaults import DefaultPrinting
+from ..simplify import simplify as _simplify
+from ..simplify import nsimplify, signsimp
+from ..utilities import flatten
 
 
 def _iszero(x):

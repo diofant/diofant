@@ -3,33 +3,32 @@
 import mpmath
 from mpmath.libmp.libhyper import NoConvergence
 
-from ..core import (S, Basic, Expr, I, Integer, Add, Mul, Dummy,
-                    Tuple, Symbol, preorder_traversal, sympify, Derivative)
+from . import polyoptions as options
+from ..core import (Add, Basic, Derivative, Dummy, Expr, I, Integer, Mul, S,
+                    Symbol, Tuple, preorder_traversal, sympify)
+from ..core.compatibility import iterable
+from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
-from ..core.decorators import _sympifyit
+from ..domains import FF, QQ, ZZ
 from ..logic.boolalg import BooleanAtom
-from .polyclasses import DMP
-from .polyutils import (basic_from_dict, _sort_gens, _unify_gens,
-                        _dict_reorder, _dict_from_expr,
-                        _parallel_dict_from_expr)
-from .rationaltools import together
-from .rootisolation import dup_isolate_real_roots_list
-from .groebnertools import groebner as _groebner
+from ..utilities import group, public, sift
+from .constructor import construct_domain
 from .fglmtools import matrix_fglm
+from .groebnertools import groebner as _groebner
 from .monomials import Monomial
 from .orderings import monomial_key
-from .polyerrors import (OperationNotSupported, DomainError,
-                         CoercionFailed, UnificationFailed,
-                         GeneratorsNeeded, PolynomialError,
-                         MultivariatePolynomialError, ExactQuotientFailed,
-                         PolificationFailed, ComputationFailed,
-                         GeneratorsError)
-from ..utilities import group, sift, public
-from ..domains import FF, QQ, ZZ
-from .constructor import construct_domain
-from . import polyoptions as options
-from ..core.compatibility import iterable
+from .polyclasses import DMP
+from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
+                         ExactQuotientFailed, GeneratorsError,
+                         GeneratorsNeeded, MultivariatePolynomialError,
+                         OperationNotSupported, PolificationFailed,
+                         PolynomialError, UnificationFailed)
+from .polyutils import (_dict_from_expr, _dict_reorder,
+                        _parallel_dict_from_expr, _sort_gens, _unify_gens,
+                        basic_from_dict)
+from .rationaltools import together
+from .rootisolation import dup_isolate_real_roots_list
 
 
 @public

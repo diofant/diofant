@@ -1,6 +1,7 @@
+from diofant import Symbol
 from diofant.matrices.expressions import MatrixSymbol
 from diofant.matrices.expressions.diagonal import DiagonalMatrix, DiagonalOf
-from diofant import Symbol
+
 
 __all__ = ()
 

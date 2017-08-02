@@ -5,7 +5,7 @@ from ..core.compatibility import as_int, default_sort_key
 from ..functions import bell
 from ..matrices import zeros
 from ..sets import FiniteSet
-from ..utilities import has_dups, flatten, group
+from ..utilities import flatten, group, has_dups
 
 
 class Partition(FiniteSet):

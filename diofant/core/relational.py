@@ -1,14 +1,16 @@
 from mpmath.libmp.libintmath import giant_steps
 
+from ..logic.boolalg import Boolean, BooleanAtom
 from .basic import S
 from .compatibility import ordered
+from .evalf import DEFAULT_MAXPREC as TARGET
+from .evalf import EvalfMixin
+from .evaluate import global_evaluate
 from .expr import Expr
-from .evalf import EvalfMixin, DEFAULT_MAXPREC as TARGET
 from .function import _coeff_isneg
 from .symbol import Dummy, Symbol
 from .sympify import _sympify
-from .evaluate import global_evaluate
-from ..logic.boolalg import Boolean, BooleanAtom
+
 
 __all__ = (
     'Rel', 'Eq', 'Ne', 'Lt', 'Le', 'Gt', 'Ge',

@@ -5,9 +5,10 @@ should serve as a set of test cases.
 
 import pytest
 
-from diofant import (acos, cos, cosh, Eq, exp, Function, I, Integral, log, Pow,
-                     sin, sinh, sqrt, Symbol, Integer)
+from diofant import (Eq, Function, I, Integer, Integral, Pow, Symbol, acos,
+                     cos, cosh, exp, log, sin, sinh, sqrt)
 from diofant.solvers.ode import constant_renumber, constantsimp
+
 
 __all__ = ()
 

@@ -2,42 +2,33 @@
 
 import pytest
 
-from diofant.polys.densebasic import (
-    dup_normal, dmp_normal,
-    dup_from_raw_dict,
-    dmp_convert, dmp_swap)
-from diofant.polys.densearith import dmp_mul_ground
-from diofant.polys.densetools import (
-    dup_clear_denoms, dmp_clear_denoms,
-    dup_integrate, dmp_integrate, dmp_integrate_in,
-    dup_diff, dmp_diff, dmp_diff_in,
-    dup_eval, dmp_eval, dmp_eval_in,
-    dmp_eval_tail, dmp_diff_eval_in,
-    dup_trunc, dmp_trunc, dmp_ground_trunc,
-    dup_monic, dmp_ground_monic,
-    dup_content, dmp_ground_content,
-    dup_primitive, dmp_ground_primitive,
-    dup_extract, dmp_ground_extract,
-    dup_real_imag,
-    dup_mirror, dup_scale, dup_shift,
-    dup_transform,
-    dup_compose, dmp_compose,
-    dup_decompose,
-    dmp_lift,
-    dup_sign_variations,
-    dup_revert, dmp_revert)
-from diofant.polys.polyclasses import ANP
-from diofant.polys.polyerrors import (
-    MultivariatePolynomialError,
-    ExactQuotientFailed,
-    NotReversible,
-    DomainError)
-from diofant.polys.specialpolys import f_polys
-from diofant.domains import FF, ZZ, QQ, EX
-from diofant.polys.rings import ring
-from diofant import I, sin, Rational
-
+from diofant import I, Rational, sin
 from diofant.abc import x
+from diofant.domains import EX, FF, QQ, ZZ
+from diofant.polys.densearith import dmp_mul_ground
+from diofant.polys.densebasic import (dmp_convert, dmp_normal, dmp_swap,
+                                      dup_from_raw_dict, dup_normal)
+from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
+                                      dmp_diff_eval_in, dmp_diff_in, dmp_eval,
+                                      dmp_eval_in, dmp_eval_tail,
+                                      dmp_ground_content, dmp_ground_extract,
+                                      dmp_ground_monic, dmp_ground_primitive,
+                                      dmp_ground_trunc, dmp_integrate,
+                                      dmp_integrate_in, dmp_lift, dmp_revert,
+                                      dmp_trunc, dup_clear_denoms, dup_compose,
+                                      dup_content, dup_decompose, dup_diff,
+                                      dup_eval, dup_extract, dup_integrate,
+                                      dup_mirror, dup_monic, dup_primitive,
+                                      dup_real_imag, dup_revert, dup_scale,
+                                      dup_shift, dup_sign_variations,
+                                      dup_transform, dup_trunc)
+from diofant.polys.polyclasses import ANP
+from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
+                                      MultivariatePolynomialError,
+                                      NotReversible)
+from diofant.polys.rings import ring
+from diofant.polys.specialpolys import f_polys
+
 
 __all__ = ()
 

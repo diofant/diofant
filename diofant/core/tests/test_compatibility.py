@@ -1,10 +1,10 @@
 import pytest
 
-from diofant.core.compatibility import (default_sort_key, as_int, ordered,
-                                        iterable)
+from diofant.abc import x
+from diofant.core.compatibility import (as_int, default_sort_key, iterable,
+                                        ordered)
 from diofant.core.singleton import S
 
-from diofant.abc import x
 
 __all__ = ()
 

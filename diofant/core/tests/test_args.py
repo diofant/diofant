@@ -2,18 +2,21 @@
 
 # NOTE: keep tests sorted by (module, class name) key.
 
+import inspect
+import io
 import os
 import re
 import warnings
-import io
-import inspect
 
 import pytest
 
-from diofant import Basic, S, symbols, sqrt, sin, oo, Interval, exp, Integer
+from diofant import Basic, Integer, Interval, S, exp, oo, sin, sqrt, symbols
+from diofant.abc import x, y, z
+from diofant.matrices.expressions import MatrixSymbol
+from diofant.stats.crv_types import NormalDistribution
+from diofant.stats.frv_types import DieDistribution
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -517,9 +520,7 @@ def test_diofant__sets__contains__Contains():
 # STATS
 
 
-from diofant.stats.crv_types import NormalDistribution
 nd = NormalDistribution(0, 1)
-from diofant.stats.frv_types import DieDistribution
 die = DieDistribution(6)
 
 
@@ -2010,7 +2011,6 @@ def test_diofant__matrices__expressions__fourier__IDFT():
     assert _test_args(IDFT(Integer(2)))
 
 
-from diofant.matrices.expressions import MatrixSymbol
 X = MatrixSymbol('X', 10, 10)
 
 

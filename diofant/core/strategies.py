@@ -5,8 +5,9 @@ This file assumes knowledge of Basic and little else.
 
 from strategies.dispatch import dispatch
 
-from .basic import Basic, Atom
 from ..utilities.iterables import sift
+from .basic import Atom, Basic
+
 
 __all__ = ('arguments', 'operator', 'term', 'rm_id',
            'glom', 'flatten', 'unpack', 'sort')

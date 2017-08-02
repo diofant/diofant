@@ -2,14 +2,14 @@ import itertools
 
 import pytest
 
-from diofant.sets.fancysets import ImageSet, Range
+from diofant import (Abs, Basic, I, Integer, Lambda, Rational, S, Symbol, cos,
+                     exp, log, oo, pi, sin, sqrt, symbols, tan)
+from diofant.abc import m, n, t, x, y
 from diofant.sets.contains import Contains
-from diofant.sets.sets import (FiniteSet, Interval, imageset, EmptySet,
-                               Intersection, Set)
-from diofant import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,
-                     Integer, Rational, sqrt, tan, log, Abs, exp, I)
+from diofant.sets.fancysets import ImageSet, Range
+from diofant.sets.sets import (EmptySet, FiniteSet, Intersection, Interval,
+                               Set, imageset)
 
-from diofant.abc import x, y, n, m, t
 
 __all__ = ()
 

@@ -2,17 +2,21 @@ from math import log as _log
 
 from mpmath.libmp import sqrtrem as mpmath_sqrtrem
 
-from .sympify import _sympify
-from .cache import cacheit
-from .singleton import S
-from .expr import Expr
-from .evalf import PrecisionExhausted
-from .function import (_coeff_isneg, expand_complex, expand_multinomial,
-                       expand_mul)
-from .logic import fuzzy_or
-from .compatibility import as_int
-from .evaluate import global_evaluate
 from ..utilities.iterables import sift
+from .add import Add
+from .cache import cacheit
+from .compatibility import as_int
+from .evalf import PrecisionExhausted
+from .evaluate import global_evaluate
+from .expr import Expr
+from .function import (_coeff_isneg, expand_complex, expand_mul,
+                       expand_multinomial)
+from .logic import fuzzy_or
+from .mul import Mul, _keep_coeff
+from .numbers import Integer
+from .singleton import S
+from .symbol import Dummy, symbols
+from .sympify import _sympify
 
 
 def integer_nthroot(y, n):
@@ -1351,9 +1355,3 @@ class Pow(Expr):
             return
 
         return e.equals(0)
-
-
-from .add import Add
-from .numbers import Integer
-from .mul import Mul, _keep_coeff
-from .symbol import Dummy, symbols

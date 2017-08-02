@@ -1,13 +1,14 @@
 import pytest
 
-from diofant import (Symbol, zeta, nan, Rational, Float, pi, dirichlet_eta, log,
-                     oo, zoo, expand_func, polylog, lerchphi, exp, sqrt, I,
-                     exp_polar, polar_lift, O, Derivative, S, PoleError)
+from diofant import (Derivative, Float, I, O, PoleError, Rational, S, Symbol,
+                     dirichlet_eta, exp, exp_polar, expand_func, lerchphi, log,
+                     nan, oo, pi, polar_lift, polylog, sqrt, zeta, zoo)
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.zeta_functions import _zetas
-from diofant.utilities.randtest import (test_derivative_numerically as td,
-                                        random_complex_number as randcplx,
-                                        verify_numerically as tn)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_numerically as tn
+
 
 __all__ = ()
 

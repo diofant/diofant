@@ -1,4 +1,4 @@
-from ..core import Add, Mul, S, Dummy, Integer, cacheit
+from ..core import Add, Dummy, Integer, Mul, S, cacheit
 from ..core.compatibility import default_sort_key
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold
 from ..polys import factor

@@ -1,7 +1,7 @@
 from ..core import Basic, Symbol, cacheit
-from .vector import Vector
 from .coordsysrect import CoordSysCartesian
 from .functions import _path
+from .vector import Vector
 
 
 class Point(Basic):

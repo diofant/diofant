@@ -1,15 +1,19 @@
 """Most of these tests come from the examples in Bronstein's book."""
 
-from diofant import Poly, Matrix, symbols, Rational
+from diofant import Matrix, Poly, Rational, symbols
+from diofant.abc import n, t, x
+from diofant.integrals.prde import (constant_system, is_deriv_k,
+                                    is_log_deriv_k_t_radical,
+                                    is_log_deriv_k_t_radical_in_field,
+                                    limited_integrate,
+                                    limited_integrate_reduce,
+                                    parametric_log_deriv_heu,
+                                    prde_linear_constraints,
+                                    prde_no_cancel_b_large,
+                                    prde_no_cancel_b_small, prde_normal_denom,
+                                    prde_spde, prde_special_denom)
 from diofant.integrals.risch import DifferentialExtension
-from diofant.integrals.prde import (
-    prde_normal_denom, prde_special_denom,
-    prde_linear_constraints, constant_system, prde_spde, prde_no_cancel_b_large,
-    prde_no_cancel_b_small, limited_integrate_reduce, limited_integrate,
-    is_deriv_k, is_log_deriv_k_t_radical, parametric_log_deriv_heu,
-    is_log_deriv_k_t_radical_in_field)
 
-from diofant.abc import x, t, n
 
 __all__ = ()
 

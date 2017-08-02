@@ -1,6 +1,7 @@
-from diofant import (cos, DiracDelta, Heaviside, Function, pi, sin,
-                     symbols, Integer, Rational)
+from diofant import (DiracDelta, Function, Heaviside, Integer, Rational, cos,
+                     pi, sin, symbols)
 from diofant.integrals.deltafunctions import change_mul, deltaintegrate
+
 
 __all__ = ()
 

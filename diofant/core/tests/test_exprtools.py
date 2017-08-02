@@ -2,15 +2,15 @@
 
 import pytest
 
-from diofant import (S, Add, sin, Mul, Symbol, oo, Integral, sqrt, Tuple, I,
-                     Interval, O, symbols, simplify, collect, Sum, Basic, Dict,
-                     root, exp, cos, Integer, Float, Rational)
-from diofant.core.exprtools import (decompose_power, Factors, Term, _gcd_terms,
-                                    gcd_terms, factor_terms, factor_nc)
+from diofant import (Add, Basic, Dict, Float, I, Integer, Integral, Interval,
+                     Mul, O, Rational, S, Sum, Symbol, Tuple, collect, cos,
+                     exp, oo, root, simplify, sin, sqrt, symbols)
+from diofant.abc import a, b, t, x, y, z
+from diofant.core.exprtools import (Factors, Term, _gcd_terms, decompose_power,
+                                    factor_nc, factor_terms, gcd_terms)
 from diofant.core.mul import _keep_coeff as _keep_coeff
 from diofant.simplify.cse_opts import sub_pre
 
-from diofant.abc import a, b, t, x, y, z
 
 __all__ = ()
 

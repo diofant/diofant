@@ -5,11 +5,11 @@ A Printer for generating readable representation of most diofant classes.
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import S, Rational, Pow, Mul
+from ..core import Mul, Pow, Rational, S
 from ..core.mul import _keep_coeff
-from .printer import Printer
-from .precedence import precedence, PRECEDENCE
 from ..utilities import default_sort_key
+from .precedence import PRECEDENCE, precedence
+from .printer import Printer
 
 
 class StrPrinter(Printer):

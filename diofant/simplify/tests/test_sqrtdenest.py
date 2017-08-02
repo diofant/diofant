@@ -1,11 +1,12 @@
 import pytest
 
-from diofant import (S, sqrt, root, symbols, Dummy, sqrtdenest, I, cosh,
-                     Integral, cos, Rational, solve, Integer, Eq,
-                     posify, sstr, sympify)
-from diofant.simplify.sqrtdenest import _subsets as subsets, unrad
+from diofant import (Dummy, Eq, I, Integer, Integral, Rational, S, cos, cosh,
+                     posify, root, solve, sqrt, sqrtdenest, sstr, symbols,
+                     sympify)
+from diofant.abc import a, b, c, d, t, x, y
+from diofant.simplify.sqrtdenest import _subsets as subsets
+from diofant.simplify.sqrtdenest import unrad
 
-from diofant.abc import x, y, a, b, c, d, t
 
 __all__ = ()
 

@@ -8,16 +8,16 @@ diofant.stats.rv
 diofant.stats.crv
 """
 
-from itertools import product
 import random
+from itertools import product
 
-from ..core import Expr, Symbol, cacheit, sympify, Mul, Tuple, Dict, Eq, Lambda
-from ..logic import And, Or
+from ..core import Dict, Eq, Expr, Lambda, Mul, Symbol, Tuple, cacheit, sympify
 from ..functions import Piecewise
+from ..logic import And, Or
 from ..sets import FiniteSet
-from .rv import (RandomDomain, ProductDomain, ConditionalDomain, PSpace,
-                 ProductPSpace, SinglePSpace, random_symbols, sumsets,
-                 rv_subs, NamedArgsMixin)
+from .rv import (ConditionalDomain, NamedArgsMixin, ProductDomain,
+                 ProductPSpace, PSpace, RandomDomain, SinglePSpace,
+                 random_symbols, rv_subs, sumsets)
 
 
 class FiniteDensity(dict):

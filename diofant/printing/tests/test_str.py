@@ -1,20 +1,23 @@
 import pytest
 
-from diofant import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
-                     factorial, factorial2, Function, GoldenRatio, I, Integer, Integral,
-                     Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Pow, Rational, Float, Rel,
-                     S, sin, SparseMatrix, sqrt, summation, Sum, Symbol, symbols, Wild,
-                     WildFunction, zeta, zoo, Dummy, Dict, Tuple, FiniteSet, factor,
-                     subfactorial, true, false, Equivalent, Xor, Complement,
-                     SymmetricDifference, MatrixSymbol, And)
+from diofant import (Abs, Add, And, Catalan, Complement, Derivative, Dict,
+                     Dummy, E, Equivalent, EulerGamma, FiniteSet, Float,
+                     Function, GoldenRatio, I, Integer, Integral, Interval,
+                     Lambda, Limit, Matrix, MatrixSymbol, Mul, O, Pow,
+                     Rational, Rel, S, SparseMatrix, Sum, Symbol,
+                     SymmetricDifference, Tuple, Wild, WildFunction, Xor, cos,
+                     exp, factor, factorial, factorial2, false, nan, oo, pi,
+                     sin, sqrt, subfactorial, summation, symbols, true, zeta,
+                     zoo)
+from diofant.abc import w, x, y, z
 from diofant.core import Expr
-from diofant.domains import ZZ, QQ
-from diofant.polys import Poly, RootOf, RootSum, groebner, ring, field, lex, grlex
-from diofant.geometry import Point, Circle
-from diofant.printing import sstr, sstrrepr, StrPrinter
 from diofant.core.trace import Tr
+from diofant.domains import QQ, ZZ
+from diofant.geometry import Circle, Point
+from diofant.polys import (Poly, RootOf, RootSum, field, grlex, groebner, lex,
+                           ring)
+from diofant.printing import StrPrinter, sstr, sstrrepr
 
-from diofant.abc import x, y, z, w
 
 __all__ = ()
 

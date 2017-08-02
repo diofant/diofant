@@ -22,15 +22,15 @@ if you care at all about performance. A new backend instance is initialized
 every time you call ``show()`` and the old one is left to the garbage collector.
 """
 
-from inspect import getfullargspec
-from collections import Callable
 import warnings
+from collections import Callable
+from inspect import getfullargspec
 
-from ..core import sympify, Expr, Tuple, Dummy, Symbol
+from ..core import Dummy, Expr, Symbol, Tuple, sympify
 from ..external import import_module
+from ..utilities import lambdify
 from ..utilities.decorator import doctest_depends_on
 from ..utilities.iterables import is_sequence
-from ..utilities import lambdify
 
 
 def vectorized_lambdify(args, expr):

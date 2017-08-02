@@ -2,22 +2,22 @@
 
 import pytest
 
-from diofant import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
-                     pi, cos, sin, exp, Integer, GoldenRatio, solve, root)
-from diofant.polys.numberfields import (minimal_polynomial, primitive_element,
-                                        is_isomorphism_possible,
-                                        field_isomorphism_pslq,
-                                        field_isomorphism, to_number_field,
-                                        AlgebraicNumber, isolate,
-                                        IntervalPrinter)
-from diofant.polys.polyerrors import (IsomorphismFailed, NotAlgebraic,
-                                      GeneratorsError)
-from diofant.polys.polyclasses import DMP
-from diofant.domains import QQ
-from diofant.polys.rootoftools import RootOf
-from diofant.polys.polytools import degree
-
+from diofant import (GoldenRatio, I, Integer, Poly, Rational, S, Symbol, Tuple,
+                     cos, exp, expand, oo, pi, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
+from diofant.domains import QQ
+from diofant.polys.numberfields import (AlgebraicNumber, IntervalPrinter,
+                                        field_isomorphism,
+                                        field_isomorphism_pslq,
+                                        is_isomorphism_possible, isolate,
+                                        minimal_polynomial, primitive_element,
+                                        to_number_field)
+from diofant.polys.polyclasses import DMP
+from diofant.polys.polyerrors import (GeneratorsError, IsomorphismFailed,
+                                      NotAlgebraic)
+from diofant.polys.polytools import degree
+from diofant.polys.rootoftools import RootOf
+
 
 __all__ = ()
 

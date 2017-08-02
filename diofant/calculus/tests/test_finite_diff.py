@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import Integer, Rational, Function
-from diofant.calculus.finite_diff import (apply_finite_diff,
-                                          finite_diff_weights, as_finite_diff)
+from diofant import Function, Integer, Rational
+from diofant.abc import h, x, y
+from diofant.calculus.finite_diff import (apply_finite_diff, as_finite_diff,
+                                          finite_diff_weights)
 
-from diofant.abc import x, y, h
 
 __all__ = ()
 

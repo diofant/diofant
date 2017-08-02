@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (symbols, Symbol, sinh, nan, oo, zoo, pi,
-                     asinh, acosh, log, sqrt, coth, I, cot, E, tanh,
-                     tan, cosh, cos, S, sin, Rational, atanh, acoth,
-                     O, exp, sech, sec, csch)
-from diofant.core.function import ArgumentIndexError
-from diofant.functions.elementary.hyperbolic import ReciprocalHyperbolicFunction
-
+from diofant import (E, I, O, Rational, S, Symbol, acosh, acoth, asinh, atanh,
+                     cos, cosh, cot, coth, csch, exp, log, nan, oo, pi, sec,
+                     sech, sin, sinh, sqrt, symbols, tan, tanh, zoo)
 from diofant.abc import x, y
+from diofant.core.function import ArgumentIndexError
+from diofant.functions.elementary.hyperbolic import \
+    ReciprocalHyperbolicFunction
+
 
 __all__ = ()
 

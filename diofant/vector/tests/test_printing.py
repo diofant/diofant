@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import Integral, latex, Function
 from diofant import pretty as xpretty
+from diofant import Function, Integral, latex
+from diofant.abc import a, b, c
 from diofant.vector import CoordSysCartesian, Vector, express
 
-from diofant.abc import a, b, c
 
 __all__ = ()
 

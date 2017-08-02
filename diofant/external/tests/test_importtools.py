@@ -3,6 +3,7 @@ import pytest
 from diofant.core.compatibility import HAS_GMPY
 from diofant.external import import_module
 
+
 __all__ = ()
 
 # fixes issue that arose in addressing issue sympy/sympy#6533

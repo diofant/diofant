@@ -1,5 +1,6 @@
-from diofant.matrices.sparsetools import _doktocsr, _csrtodok
 from diofant import SparseMatrix
+from diofant.matrices.sparsetools import _csrtodok, _doktocsr
+
 
 __all__ = ()
 

@@ -4,16 +4,16 @@ import sys
 import mpmath
 import pytest
 
-from diofant import (Symbol, exp, Integer, Float, sin, Poly, Lambda,
-                     Function, I, S, sqrt, Rational, Tuple, Matrix,
-                     Add, Mul, Pow, Or, true, false, Abs, pi, Xor, Range)
-from diofant.core.sympify import sympify, _sympify, SympifyError
-from diofant.core.decorators import _sympifyit
-from diofant.utilities.decorator import conserve_mpmath_dps
-from diofant.geometry import Point, Line
+from diofant import (Abs, Add, Float, Function, I, Integer, Lambda, Matrix,
+                     Mul, Or, Poly, Pow, Range, Rational, S, Symbol, Tuple,
+                     Xor, exp, false, pi, sin, sqrt, true)
+from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
+from diofant.core.decorators import _sympifyit
+from diofant.core.sympify import SympifyError, _sympify, sympify
+from diofant.geometry import Line, Point
+from diofant.utilities.decorator import conserve_mpmath_dps
 
-from diofant.abc import x, y, _clash, _clash1, _clash2
 
 __all__ = ()
 

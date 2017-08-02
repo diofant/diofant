@@ -2,16 +2,18 @@ import os
 
 import pytest
 
-from diofant import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
-                     Dummy, Eq, erf, erfi, exp, Function, I, E, Integral, LambertW,
-                     Pow, log, O, pi, Rational, RootOf, simplify, sin, sqrt, sstr,
-                     Symbol, Subs, tan, asin, sinh, Piecewise, symbols, Poly,
-                     Integer, Abs)
-from diofant.solvers.ode import (_undetermined_coefficients_match, checkodesol,
-                                 classify_ode, classify_sysode, constant_renumber,
-                                 constantsimp, homogeneous_order, infinitesimals,
-                                 checkinfsol, checksysodesol, solve_init)
+from diofant import (Abs, Derivative, Dummy, E, Eq, Function, I, Integer,
+                     Integral, LambertW, O, Piecewise, Poly, Pow, Rational,
+                     RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan, cos,
+                     diff, dsolve, erf, erfi, exp, log, pi, simplify, sin,
+                     sinh, sqrt, sstr, symbols, tan)
 from diofant.solvers.deutils import ode_order
+from diofant.solvers.ode import (_undetermined_coefficients_match, checkinfsol,
+                                 checkodesol, checksysodesol, classify_ode,
+                                 classify_sysode, constant_renumber,
+                                 constantsimp, homogeneous_order,
+                                 infinitesimals, solve_init)
+
 
 __all__ = ()
 

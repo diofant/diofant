@@ -1,12 +1,11 @@
-from ...core import (S, Add, Mul, sympify, Symbol, Dummy, factor_terms,
-                     Function, Derivative, Expr, pi, I, oo, Rational,
-                     Eq, Tuple)
-from ...core.function import ArgumentIndexError, AppliedUndef
+from ...core import (Add, Derivative, Dummy, Eq, Expr, Function, I, Mul,
+                     Rational, S, Symbol, Tuple, factor_terms, oo, pi, sympify)
+from ...core.function import AppliedUndef, ArgumentIndexError
+from ...logic.boolalg import BooleanAtom
+from .exponential import exp, exp_polar, log
 from .miscellaneous import sqrt
 from .piecewise import Piecewise
-from .exponential import exp, exp_polar, log
 from .trigonometric import atan2
-from ...logic.boolalg import BooleanAtom
 
 
 ###############################################################################

@@ -26,19 +26,20 @@ The main references for this are:
     Gordon and Breach Science Publisher
 """
 
-from ..core import (oo, S, pi, Expr, Pow, sympify, factor_terms,
-                    expand, expand_mul, expand_power_base, Add, Mul,
-                    Integer, Rational, cacheit, Dummy, Wild, Function,
-                    symbols, Eq, I, Ne, nan, zoo, Tuple)
-from ..core.compatibility import ordered, default_sort_key
-from ..simplify import hyperexpand, powdenest, collect
-from ..logic import And, Or, Not
+from ..core import (Add, Dummy, Eq, Expr, Function, I, Integer, Mul, Ne, Pow,
+                    Rational, S, Tuple, Wild, cacheit, expand, expand_mul,
+                    expand_power_base, factor_terms, nan, oo, pi, symbols,
+                    sympify, zoo)
+from ..core.compatibility import default_sort_key, ordered
+from ..functions import Heaviside, Piecewise, meijerg, piecewise_fold
+from ..functions.elementary.hyperbolic import (HyperbolicFunction,
+                                               _rewrite_hyperbolics_as_exp)
+from ..logic import And, Not, Or
 from ..logic.boolalg import BooleanAtom
-from ..functions import Heaviside, Piecewise, piecewise_fold, meijerg
-from ..functions.elementary.hyperbolic import (_rewrite_hyperbolics_as_exp,
-                                               HyperbolicFunction)
+from ..simplify import collect, hyperexpand, powdenest
 from ..utilities.iterables import multiset_partitions
 from ..utilities.misc import debug as _debug
+
 
 # keep this at top for easy reference
 z = Dummy('z')

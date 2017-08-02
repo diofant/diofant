@@ -58,31 +58,32 @@ It is described in great(er) detail in the Sphinx documentation.
 #
 
 from collections import defaultdict
-from itertools import product, chain
+from itertools import chain, product
 
 from .. import DIOFANT_DEBUG
-from ..core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
-                    EulerGamma, oo, zoo, expand_func, Add, nan,
-                    Expr, Integer, Rational, Mod)
+from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
+                    Rational, S, Tuple, expand, expand_func, nan, oo, pi,
+                    symbols, sympify, zoo)
 from ..core.compatibility import default_sort_key
-from ..utilities.iterables import sift
-from ..functions import (exp, sqrt, root, log, lowergamma, cos, besseli,
-                         gamma, uppergamma, expint, erf, sin, besselj, Ei,
-                         Ci, Si, Shi, sinh, cosh, Chi, fresnels, fresnelc,
-                         polar_lift, exp_polar, floor, ceiling, rf,
-                         factorial, lerchphi, Piecewise, re, elliptic_k,
-                         elliptic_e, polarify, unpolarify)
-from ..functions.special.hyper import (hyper, HyperRep_atanh, HyperRep_power1,
-                                       HyperRep_power2, HyperRep_log1,
-                                       HyperRep_asin1, HyperRep_asin2,
-                                       HyperRep_sqrts1, HyperRep_sqrts2,
-                                       HyperRep_log2, HyperRep_cosasin,
-                                       HyperRep_sinasin, meijerg)
-from .simplify import simplify
-from .powsimp import powdenest
-from ..polys import poly, Poly
-from ..series import residue
+from ..functions import (Chi, Ci, Ei, Piecewise, Shi, Si, besseli, besselj,
+                         ceiling, cos, cosh, elliptic_e, elliptic_k, erf, exp,
+                         exp_polar, expint, factorial, floor, fresnelc,
+                         fresnels, gamma, lerchphi, log, lowergamma,
+                         polar_lift, polarify, re, rf, root, sin, sinh, sqrt,
+                         unpolarify, uppergamma)
+from ..functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
+                                       HyperRep_atanh, HyperRep_cosasin,
+                                       HyperRep_log1, HyperRep_log2,
+                                       HyperRep_power1, HyperRep_power2,
+                                       HyperRep_sinasin, HyperRep_sqrts1,
+                                       HyperRep_sqrts2, hyper, meijerg)
+from ..polys import Poly, poly
 from ..printing import sstr
+from ..series import residue
+from ..utilities.iterables import sift
+from .powsimp import powdenest
+from .simplify import simplify
+
 
 # function to define "buckets"
 

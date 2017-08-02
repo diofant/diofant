@@ -7,17 +7,18 @@ import re
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import S, Add, Symbol, SympifyError
-from ..core.function import _coeff_isneg
+from ..core import Add, S, Symbol, SympifyError
 from ..core.alphabets import greeks
+from ..core.compatibility import default_sort_key
+from ..core.function import _coeff_isneg
 from ..core.operations import AssocOp
 from ..core.relational import Relational
 from ..logic import true
-from .printer import Printer
-from .conventions import split_super_sub, requires_partial
-from .precedence import precedence, PRECEDENCE
-from ..core.compatibility import default_sort_key
 from ..utilities import has_variety
+from .conventions import requires_partial, split_super_sub
+from .precedence import PRECEDENCE, precedence
+from .printer import Printer
+
 
 # Hand-picked functions which can be used directly in both LaTeX and MathJax
 # Complete list at http://www.mathjax.org/docs/1.1/tex.html#supported-latex-commands

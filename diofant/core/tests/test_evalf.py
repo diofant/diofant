@@ -1,16 +1,16 @@
+import pytest
 from mpmath import inf, ninf
 from mpmath.libmp.libmpf import from_float
-import pytest
 
-from diofant import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
-                     fibonacci, floor, Function, GoldenRatio, I, Integral,
-                     integrate, log, Mul, N, oo, pi, Pow, product, Product,
-                     Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol,
-                     Float, Min, re, im)
-from diofant.core.evalf import (complex_accuracy, PrecisionExhausted,
-                                scaled_zero, as_mpmath)
-
+from diofant import (Abs, Add, E, Eq, Float, Function, GoldenRatio, I,
+                     Integral, Min, Mul, N, Pow, Product, Rational, S, Sum,
+                     Symbol, atan, ceiling, cos, exp, factorial, fibonacci,
+                     floor, im, integrate, log, oo, pi, product, re, sin, sqrt,
+                     sstr, sympify)
 from diofant.abc import n, x, y
+from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
+                                complex_accuracy, scaled_zero)
+
 
 __all__ = ()
 

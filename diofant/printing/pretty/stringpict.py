@@ -12,7 +12,7 @@ TODO:
       top/center/bottom alignment options for left/right
 """
 
-from .pretty_symbology import hobj, vobj, xsym, pretty_use_unicode
+from .pretty_symbology import hobj, pretty_use_unicode, vobj, xsym
 
 
 class stringPict:

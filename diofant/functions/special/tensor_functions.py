@@ -1,5 +1,6 @@
-from ...core import Function, S, Integer, prod
-from ...utilities import has_dups, default_sort_key
+from ...core import Function, Integer, S, prod
+from ...utilities import default_sort_key, has_dups
+
 
 ###############################################################################
 # #################### Kronecker Delta, Levi-Civita etc. #################### #

@@ -1,11 +1,11 @@
 import pytest
 
-from diofant.core import symbols, Symbol, Tuple, Dict, oo, Basic
+# import test:
+from diofant import Idx, Indexed, IndexedBase
+from diofant.core import Basic, Dict, Symbol, Tuple, oo, symbols
 from diofant.core.compatibility import iterable
 from diofant.tensor.indexed import IndexException
 
-# import test:
-from diofant import IndexedBase, Idx, Indexed
 
 __all__ = ()
 

@@ -2,15 +2,15 @@ import string
 
 import pytest
 
-from diofant import (Symbol, symbols, Dummy, S, Sum, Rational, oo, pi, I,
-                     expand_func, diff, EulerGamma, cancel, re, im,
-                     Product, Integer, sstr)
-from diofant.functions import (bernoulli, harmonic, bell, fibonacci, lucas, euler,
-                               catalan, genocchi, binomial, gamma, sqrt, hyper, log,
-                               digamma, trigamma, polygamma, factorial, sin,
-                               cos, cot, zeta)
-
+from diofant import (Dummy, EulerGamma, I, Integer, Product, Rational, S, Sum,
+                     Symbol, cancel, diff, expand_func, im, oo, pi, re, sstr,
+                     symbols)
 from diofant.abc import x
+from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
+                               digamma, euler, factorial, fibonacci, gamma,
+                               genocchi, harmonic, hyper, log, lucas,
+                               polygamma, sin, sqrt, trigamma, zeta)
+
 
 __all__ = ()
 

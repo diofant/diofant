@@ -3,7 +3,7 @@
 import random
 
 from ..core import igcd, oo
-from .monomials import monomial_min, monomial_div
+from .monomials import monomial_div, monomial_min
 from .orderings import monomial_key
 
 

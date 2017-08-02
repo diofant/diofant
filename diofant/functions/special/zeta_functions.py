@@ -1,10 +1,10 @@
 """ Riemann zeta and related function. """
 
-from ...core import (Function, S, sympify, pi, Integer, I, Add,
-                     Dummy, expand_mul)
+from ...core import (Add, Dummy, Function, I, Integer, S, expand_mul, pi,
+                     sympify)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
-from ..elementary.exponential import log, exp, exp_polar
+from ..elementary.exponential import exp, exp_polar, log
 
 
 ###############################################################################

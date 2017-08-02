@@ -1,14 +1,16 @@
 import pytest
 
+from diofant.combinatorics.generators import rubik, rubik_cube_generators
+from diofant.combinatorics.named_groups import (AbelianGroup, AlternatingGroup,
+                                                CyclicGroup, DihedralGroup,
+                                                RubikGroup, SymmetricGroup)
 from diofant.combinatorics.perm_groups import PermutationGroup
-from diofant.combinatorics.named_groups import (SymmetricGroup, CyclicGroup,
-                                                DihedralGroup, AlternatingGroup,
-                                                AbelianGroup, RubikGroup)
 from diofant.combinatorics.permutations import Permutation
-from diofant.combinatorics.generators import rubik_cube_generators, rubik
-from diofant.combinatorics.polyhedron import tetrahedron as tetra, cube
+from diofant.combinatorics.polyhedron import tetrahedron as tetra
+from diofant.combinatorics.polyhedron import cube
 from diofant.combinatorics.testutil import (_verify_bsgs, _verify_centralizer,
                                             _verify_normal_closure)
+
 
 __all__ = ()
 

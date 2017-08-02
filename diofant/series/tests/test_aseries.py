@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (S, Symbol, symbols, exp, log, sqrt, O, oo, sin,
-                     cos, PoleError)
-
+from diofant import (O, PoleError, S, Symbol, cos, exp, log, oo, sin, sqrt,
+                     symbols)
 from diofant.abc import x
+
 
 __all__ = ()
 

@@ -184,21 +184,21 @@ http://www.sosmath.com/trig/Trig5/trig5/pdf/pdf.html gives a formula sheet.
 
 from collections import defaultdict
 
+from strategies.core import debug, identity
 from strategies.tree import greedy
-from strategies.core import identity, debug
 
-from .simplify import bottom_up
-from ..core import (sympify, Expr, Mul, Pow, expand_mul, Add, Dummy, S,
-                    Integer, pi, I, gcd_terms, factor_terms)
-from ..functions import (cos, sin, tan, cot, sec, csc, sqrt, cosh,
-                         sinh, tanh, coth)
-from ..functions.elementary.trigonometric import TrigonometricFunction
-from ..functions.elementary.hyperbolic import HyperbolicFunction
+from .. import DIOFANT_DEBUG
+from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, S, expand_mul,
+                    factor_terms, gcd_terms, pi, sympify)
 from ..core.compatibility import ordered
 from ..core.exprtools import Factors
-from ..polys.polytools import factor
+from ..functions import (cos, cosh, cot, coth, csc, sec, sin, sinh, sqrt, tan,
+                         tanh)
+from ..functions.elementary.hyperbolic import HyperbolicFunction
+from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..ntheory import perfect_power
-from .. import DIOFANT_DEBUG
+from ..polys.polytools import factor
+from .simplify import bottom_up
 
 
 # ================== Fu-like tools ===========================

@@ -6,9 +6,10 @@ lambda functions which can be used to calculate numerical values very fast.
 import inspect
 import textwrap
 
-from ..external import import_module
 from ..core.compatibility import is_sequence, iterable
+from ..external import import_module
 from .decorator import doctest_depends_on
+
 
 # These are the namespaces the lambda functions will use.
 MATH = {}

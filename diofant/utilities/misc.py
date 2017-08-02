@@ -1,7 +1,7 @@
 """Miscellaneous stuff that doesn't really fit anywhere else."""
 
 import sys
-from textwrap import fill, dedent
+from textwrap import dedent, fill
 
 
 def filldedent(s, w=70):

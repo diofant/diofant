@@ -1,10 +1,9 @@
 """Tools for applying functions to specified parts of expressions. """
 
+from diofant import I, expand, factor
+from diofant.abc import x, y
 from diofant.simplify.traversaltools import use
 
-from diofant import expand, factor, I
-
-from diofant.abc import x, y
 
 __all__ = ()
 

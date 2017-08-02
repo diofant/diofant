@@ -1,8 +1,9 @@
-from ...core import S, sympify, diff, Rational, Function, Eq
+from ...core import Eq, Function, Rational, S, diff, sympify
 from ...core.function import ArgumentIndexError
 from ...polys.polyerrors import PolynomialError
 from ..elementary.complexes import im, sign
 from ..elementary.piecewise import Piecewise
+
 
 ###############################################################################
 # ############################## DELTA FUNCTION ############################# #

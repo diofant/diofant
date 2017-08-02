@@ -3,6 +3,7 @@ import warnings
 from diofant.core.decorators import deprecated
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
+
 __all__ = ()
 
 

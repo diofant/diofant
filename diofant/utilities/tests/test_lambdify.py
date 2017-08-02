@@ -3,17 +3,17 @@ import math
 import mpmath
 import pytest
 
-from diofant import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
-                     Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
-                     oo, I, Abs, Function, true, false, And, Or, Not, sympify,
-                     ITE, Min, Max)
-from diofant.printing.lambdarepr import LambdaPrinter
-from diofant.utilities.lambdify import implemented_function
-from diofant.utilities.decorator import conserve_mpmath_dps
-from diofant.external import import_module
 import diofant
-
+from diofant import (ITE, Abs, And, Float, Function, I, Integral, Lambda,
+                     Matrix, Max, Min, Not, Or, Piecewise, Rational, acos,
+                     acosh, cos, exp, false, lambdify, oo, pi, sin, sqrt,
+                     symbols, sympify, tan, true)
 from diofant.abc import w, x, y, z
+from diofant.external import import_module
+from diofant.printing.lambdarepr import LambdaPrinter
+from diofant.utilities.decorator import conserve_mpmath_dps
+from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 

@@ -7,21 +7,25 @@ from collections import defaultdict
 
 import mpmath
 import mpmath.libmp as mlib
-from mpmath.libmp import mpf_pow, mpf_pi, mpf_e, phi_fixed
 from mpmath.ctx_mp import mpnumeric
-from mpmath.libmp.libmpf import (finf as _mpf_inf, fninf as _mpf_ninf,
-                                 fnan as _mpf_nan, fzero as _mpf_zero,
-                                 _normalize as mpf_normalize, prec_to_dps)
+from mpmath.libmp import mpf_e, mpf_pi, mpf_pow, phi_fixed
+from mpmath.libmp.libmpf import _normalize as mpf_normalize
+from mpmath.libmp.libmpf import finf as _mpf_inf
+from mpmath.libmp.libmpf import fnan as _mpf_nan
+from mpmath.libmp.libmpf import fninf as _mpf_ninf
+from mpmath.libmp.libmpf import fzero as _mpf_zero
+from mpmath.libmp.libmpf import prec_to_dps
 
-from .containers import Tuple
-from .sympify import converter, sympify, _sympify, SympifyError
-from .singleton import S, Singleton
-from .expr import Expr, AtomicExpr
-from .decorators import _sympifyit
-from .cache import cacheit, clear_cache
-from .logic import fuzzy_not
-from .compatibility import as_int, HAS_GMPY, DIOFANT_INTS, gcd
 from ..utilities import filldedent
+from .cache import cacheit, clear_cache
+from .compatibility import DIOFANT_INTS, HAS_GMPY, as_int, gcd
+from .containers import Tuple
+from .decorators import _sympifyit
+from .expr import AtomicExpr, Expr
+from .logic import fuzzy_not
+from .singleton import S, Singleton
+from .sympify import SympifyError, _sympify, converter, sympify
+
 
 rnd = mlib.round_nearest
 

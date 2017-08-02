@@ -7,14 +7,14 @@ Point2D
 Point3D
 """
 
-from ..core import S, sympify, Tuple, Float, Add
+from ..core import Add, Float, S, Tuple, sympify
 from ..core.compatibility import iterable
-from ..simplify import simplify, nsimplify
-from .exceptions import GeometryError
-from ..functions import sqrt, im
-from .entity import GeometryEntity
-from ..matrices import Matrix
 from ..core.evaluate import global_evaluate
+from ..functions import im, sqrt
+from ..matrices import Matrix
+from ..simplify import nsimplify, simplify
+from .entity import GeometryEntity
+from .exceptions import GeometryError
 
 
 class Point(GeometryEntity):

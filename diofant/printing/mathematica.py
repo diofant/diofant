@@ -5,8 +5,9 @@ Mathematica code printer
 import types
 
 from .codeprinter import CodePrinter
-from .str import StrPrinter
 from .precedence import precedence
+from .str import StrPrinter
+
 
 # Used in MCodePrinter._print_Function(self)
 known_functions = {

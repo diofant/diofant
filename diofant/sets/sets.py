@@ -1,16 +1,16 @@
 import itertools
 
-from mpmath import mpi, mpf
+from mpmath import mpf, mpi
 
-from ..core import sympify, Basic, Expr, S, Float, Mul, Eq
-from ..core.sympify import _sympify
-from ..core.singleton import Singleton
-from ..core.evalf import EvalfMixin
+from ..core import Basic, Eq, Expr, Float, Mul, S, sympify
 from ..core.compatibility import iterable, ordered
+from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
-from .contains import Contains
-from ..logic import And, Or, Not, true, false
+from ..core.singleton import Singleton
+from ..core.sympify import _sympify
+from ..logic import And, Not, Or, false, true
 from ..utilities import subsets
+from .contains import Contains
 
 
 class Set(Basic):

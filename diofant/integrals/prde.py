@@ -17,17 +17,16 @@ each function for more information.
 
 from functools import reduce
 
-from ..core import Dummy, ilcm, Add, Mul, Pow, Integer
-from ..matrices import Matrix, zeros, eye
+from ..core import Add, Dummy, Integer, Mul, Pow, ilcm
+from ..matrices import Matrix, eye, zeros
+from ..polys import Poly, cancel, lcm, sqf_list
 from ..solvers import solve
-from ..polys import Poly, lcm, cancel, sqf_list
-from .risch import (gcdex_diophantine, frac_in, derivation,
-                    NonElementaryIntegralException, residue_reduce,
-                    splitfactor, residue_reduce_derivation, DecrementLevel,
-                    recognize_log_derivative)
-from .rde import (order_at, order_at_oo, weak_normalizer, bound_degree,
-                  spde, solve_poly_rde)
 from ..utilities.misc import debug
+from .rde import (bound_degree, order_at, order_at_oo, solve_poly_rde, spde,
+                  weak_normalizer)
+from .risch import (DecrementLevel, NonElementaryIntegralException, derivation,
+                    frac_in, gcdex_diophantine, recognize_log_derivative,
+                    residue_reduce, residue_reduce_derivation, splitfactor)
 
 
 def prde_normal_denom(fa, fd, G, DE):

@@ -1,16 +1,17 @@
 import decimal
 
 import mpmath
-from mpmath import mpf
 import pytest
+from mpmath import mpf
 
-from diofant import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
-                     S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
-                     Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
-                     AlgebraicNumber, simplify, sin)
+from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
+                     GoldenRatio, Gt, I, Integer, Le, Lt, Mul, Number, Pow,
+                     Rational, S, Symbol, Tuple, cos, exp, factorial, latex,
+                     log, nan, oo, pi, simplify, sin, sqrt, zoo)
+from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
+                                  mpf_norm, seterr)
 from diofant.core.power import integer_nthroot
-from diofant.core.numbers import (igcd, ilcm, igcdex, seterr,
-                                  mpf_norm, comp, mod_inverse)
+
 
 __all__ = ()
 

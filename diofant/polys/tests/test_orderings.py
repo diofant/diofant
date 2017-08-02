@@ -2,12 +2,13 @@
 
 import pytest
 
-from diofant.polys.orderings import (
-    monomial_key, lex, grlex, grevlex, ilex, igrlex, MonomialOrder,
-    LexOrder, InverseOrder, ProductOrder, build_product_order)
+from diofant.abc import t, x, y, z
 from diofant.core import Integer
+from diofant.polys.orderings import (InverseOrder, LexOrder, MonomialOrder,
+                                     ProductOrder, build_product_order,
+                                     grevlex, grlex, igrlex, ilex, lex,
+                                     monomial_key)
 
-from diofant.abc import x, y, z, t
 
 __all__ = ()
 

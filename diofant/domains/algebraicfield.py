@@ -1,11 +1,11 @@
 """Implementation of :class:`AlgebraicField` class. """
 
+from ..polys.polyclasses import ANP
+from ..polys.polyerrors import (CoercionFailed, DomainError, IsomorphismFailed,
+                                NotAlgebraic)
+from .characteristiczero import CharacteristicZero
 from .field import Field
 from .simpledomain import SimpleDomain
-from .characteristiczero import CharacteristicZero
-from ..polys.polyclasses import ANP
-from ..polys.polyerrors import (CoercionFailed, DomainError, NotAlgebraic,
-                                IsomorphismFailed)
 
 
 __all__ = ('AlgebraicField',)

@@ -1,18 +1,20 @@
 import pytest
 
-from diofant.solvers.diophantine import (diop_solve, diop_DN, diop_bf_DN, length,
-                                         transformation_to_DN, find_DN, equivalent,
-                                         square_factor, pairwise_prime, descent,
-                                         ldescent, diophantine,
-                                         transformation_to_normal, sum_of_four_squares,
-                                         sum_of_three_squares,
-                                         prime_as_sum_of_two_squares, partition,
-                                         power_representation)
-
-from diofant import symbols, Integer, Matrix, simplify, Subs, factor_list
+from diofant import Integer, Matrix, Subs, factor_list, simplify, symbols
 from diofant.core.function import _mexpand
 from diofant.functions.elementary.trigonometric import sin
+from diofant.solvers.diophantine import (descent, diop_bf_DN, diop_DN,
+                                         diop_solve, diophantine, equivalent,
+                                         find_DN, ldescent, length,
+                                         pairwise_prime, partition,
+                                         power_representation,
+                                         prime_as_sum_of_two_squares,
+                                         square_factor, sum_of_four_squares,
+                                         sum_of_three_squares,
+                                         transformation_to_DN,
+                                         transformation_to_normal)
 from diofant.utilities import default_sort_key
+
 
 __all__ = ()
 

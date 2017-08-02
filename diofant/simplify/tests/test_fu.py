@@ -1,14 +1,15 @@
-from diofant import (
-    Add, Mul, S, Symbol, cos, cot, pi, I, sin, sqrt, tan, root,
-    powsimp, symbols, sinh, cosh, tanh, coth, Dummy, Rational)
-from diofant.simplify.fu import (
-    L, TR1, TR10, TR10i, TR11, TR12, TR12i, TR13, TR14, TR15, TR16,
-    TR111, TR2, TR2i, TR3, TR5, TR6, TR7, TR8, TR9, TRmorrie, _TR56 as T,
-    hyper_as_trig, csc, fu, process_common_addends, sec, trig_split,
-    as_f_sign_1)
+from diofant import (Add, Dummy, I, Mul, Rational, S, Symbol, cos, cosh, cot,
+                     coth, pi, powsimp, root, sin, sinh, sqrt, symbols, tan,
+                     tanh)
+from diofant.abc import a, b, c, x, y, z
+from diofant.simplify.fu import _TR56 as T
+from diofant.simplify.fu import (TR1, TR2, TR3, TR5, TR6, TR7, TR8, TR9, TR10,
+                                 TR11, TR12, TR13, TR14, TR15, TR16, TR111, L,
+                                 TR2i, TR10i, TR12i, TRmorrie, as_f_sign_1,
+                                 csc, fu, hyper_as_trig,
+                                 process_common_addends, sec, trig_split)
 from diofant.utilities.randtest import verify_numerically
 
-from diofant.abc import a, b, c, x, y, z
 
 __all__ = ()
 

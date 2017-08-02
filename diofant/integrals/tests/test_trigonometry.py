@@ -1,6 +1,7 @@
 from diofant.core import Eq, Rational, Symbol
-from diofant.functions import sin, cos, tan, csc, sec, cot, log, Piecewise
+from diofant.functions import Piecewise, cos, cot, csc, log, sec, sin, tan
 from diofant.integrals.trigonometry import trigintegrate
+
 
 __all__ = ()
 

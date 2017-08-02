@@ -59,6 +59,7 @@ Developer changes
 * Enabled docstring testing with flake8, see :pull:`408`.
 * Use only relative imports in the codebase, see :pull:`421`.
 * Enabled flake8-comprehensions plugin, see :pull:`420`.
+* Sort imports with `isort <https://pypi.python.org/pypi/isort>`_, see :pull:`520`.
 
 Issues closed
 =============

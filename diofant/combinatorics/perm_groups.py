@@ -1,18 +1,20 @@
 from itertools import islice
-from random import randrange, choice
 from math import log
+from random import choice, randrange
 
 from ..core import Basic
-from .permutations import (Permutation, _af_commutes_with, _af_invert,
-                           _af_rmul, _af_rmuln, _af_pow, Cycle)
-from .util import (_check_cycles_alt_sym, _distribute_gens_by_base,
-                   _orbits_transversals_from_bsgs, _handle_precomputed_bsgs,
-                   _base_ordering, _strong_gens_from_distr, _strip, _strip_af)
 from ..functions import factorial
 from ..ntheory import sieve
 from ..utilities import has_variety
 from ..utilities.iterables import is_sequence, uniq
 from ..utilities.randtest import _randrange
+from .permutations import (Cycle, Permutation, _af_commutes_with, _af_invert,
+                           _af_pow, _af_rmul, _af_rmuln)
+from .util import (_base_ordering, _check_cycles_alt_sym,
+                   _distribute_gens_by_base, _handle_precomputed_bsgs,
+                   _orbits_transversals_from_bsgs, _strip, _strip_af,
+                   _strong_gens_from_distr)
+
 
 rmul = Permutation.rmul_with_af
 _af_new = Permutation._af_new

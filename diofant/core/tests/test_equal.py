@@ -1,4 +1,5 @@
-from diofant import Symbol, Dummy, Rational, exp
+from diofant import Dummy, Rational, Symbol, exp
+
 
 __all__ = ()
 

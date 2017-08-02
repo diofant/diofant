@@ -1,15 +1,17 @@
 import pytest
 
-from diofant import (S, Symbol, pi, I, oo, zoo, sin, sqrt, tan, gamma,
-                     atanh, hyper, meijerg, O, Rational, conjugate)
+from diofant import (I, O, Rational, S, Symbol, atanh, conjugate, gamma, hyper,
+                     meijerg, oo, pi, sin, sqrt, tan, zoo)
+from diofant.abc import m, n, z
 from diofant.core.function import ArgumentIndexError
-from diofant.functions.special.elliptic_integrals import (elliptic_k, elliptic_f,
-                                                          elliptic_e, elliptic_pi)
-from diofant.utilities.randtest import (test_derivative_numerically as td,
-                                        random_complex_number as randcplx,
-                                        verify_numerically as tn)
+from diofant.functions.special.elliptic_integrals import (elliptic_e,
+                                                          elliptic_f,
+                                                          elliptic_k,
+                                                          elliptic_pi)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_numerically as tn
 
-from diofant.abc import z, m, n
 
 __all__ = ()
 

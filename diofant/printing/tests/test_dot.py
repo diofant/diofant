@@ -1,8 +1,8 @@
-from diofant.printing.dot import (styleof, attrprint, dotnode,
-                                  dotedges, dotprint)
-from diofant import Symbol, Integer, Basic, Expr
-
+from diofant import Basic, Expr, Integer, Symbol
 from diofant.abc import x
+from diofant.printing.dot import (attrprint, dotedges, dotnode, dotprint,
+                                  styleof)
+
 
 __all__ = ()
 

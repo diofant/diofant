@@ -1,19 +1,19 @@
-from strategies import exhaust, condition, do_one
+from strategies import condition, do_one, exhaust
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
-from ...core import S, Add, sympify, Expr
+from .. import ShapeError
+from ...core import Add, Expr, S, sympify
 from ...core.strategies import unpack
 from ...utilities import sift
-from .matexpr import MatrixExpr, ZeroMatrix, Identity
-from .matmul import MatMul
-from .matadd import MatAdd
-from .transpose import Transpose, transpose
-from .trace import Trace
 from .determinant import Determinant
-from .slice import MatrixSlice
 from .inverse import Inverse
-from .. import ShapeError
+from .matadd import MatAdd
+from .matexpr import Identity, MatrixExpr, ZeroMatrix
+from .matmul import MatMul
+from .slice import MatrixSlice
+from .trace import Trace
+from .transpose import Transpose, transpose
 
 
 class BlockMatrix(MatrixExpr):

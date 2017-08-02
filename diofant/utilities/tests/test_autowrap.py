@@ -1,19 +1,20 @@
 # Tests that require installed backends go into
 # diofant/test_external/test_autowrap
 
-from io import StringIO
 import os
-import tempfile
 import shutil
+import tempfile
+from io import StringIO
 
 import pytest
 
-from diofant.utilities.autowrap import (autowrap, binary_function,
-                                        CythonCodeWrapper,
-                                        UfuncifyCodeWrapper, CodeWrapper)
+from diofant.core import Eq, symbols
+from diofant.utilities.autowrap import (CodeWrapper, CythonCodeWrapper,
+                                        UfuncifyCodeWrapper, autowrap,
+                                        binary_function)
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                        make_routine)
-from diofant.core import symbols, Eq
+
 
 __all__ = ()
 

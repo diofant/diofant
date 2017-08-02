@@ -1,15 +1,13 @@
 import pytest
 
-from diofant import (sqrt, Derivative, symbols, collect, Function, factor,
-                     Wild, S, collect_const, log, fraction, I, cos, Add, O,
-                     sin, rcollect, Mul, radsimp, diff, root, Symbol,
-                     Rational, exp, Integer)
-
+from diofant import (Add, Derivative, Function, I, Integer, Mul, O, Rational,
+                     S, Symbol, Wild, collect, collect_const, cos, diff, exp,
+                     factor, fraction, log, radsimp, rcollect, root, sin, sqrt,
+                     symbols)
+from diofant.abc import a, b, c, d, f, t, x, y, z
 from diofant.core.mul import _unevaluated_Mul as UMul
-from diofant.simplify.radsimp import (collect_sqrt,
-                                      fraction_expand)
+from diofant.simplify.radsimp import collect_sqrt, fraction_expand
 
-from diofant.abc import x, y, z, t, a, b, c, d, f
 
 __all__ = ()
 

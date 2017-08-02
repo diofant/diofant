@@ -1,11 +1,10 @@
 import pytest
 
+from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
+                         s, t, u, v, w, x, y, z)
 from diofant.tensor.array import Array
+from diofant.tensor.array.arrayop import tensorcontraction, tensorproduct
 
-from diofant.tensor.array.arrayop import tensorproduct, tensorcontraction
-
-from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o,
-                         p, q, r, s, t, u, v, w, x, y, z)
 
 __all__ = ()
 

@@ -1,7 +1,7 @@
-from diofant.core.evaluate import evaluate
-from diofant.core import Mul, Add
-
 from diofant.abc import x, y
+from diofant.core import Add, Mul
+from diofant.core.evaluate import evaluate
+
 
 __all__ = ()
 

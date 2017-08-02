@@ -1,7 +1,8 @@
 """Implementation of :class:`Ring` class. """
 
+from ..polys.polyerrors import (ExactQuotientFailed, NotInvertible,
+                                NotReversible)
 from .domain import Domain
-from ..polys.polyerrors import ExactQuotientFailed, NotInvertible, NotReversible
 
 
 __all__ = ('Ring',)

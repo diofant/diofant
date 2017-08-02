@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (Function, Derivative, diff, sin, pi,
-                     log, Integer, Rational, S)
+from diofant import (Derivative, Function, Integer, Rational, S, diff, log, pi,
+                     sin)
+from diofant.abc import x, y, z
 from diofant.core.multidimensional import vectorize
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 

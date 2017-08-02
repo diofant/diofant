@@ -1,25 +1,23 @@
 import pytest
 
-from diofant.stats import (P, E, where, density, variance, covariance, skewness,
-                           given, pspace, cdf, ContinuousRV, sample,
-                           Arcsin, Benini, Beta, BetaPrime, Cauchy,
-                           Chi, ChiSquared,
-                           ChiNoncentral, Dagum, Erlang, Exponential,
-                           FDistribution, FisherZ, Frechet, Gamma, GammaInverse,
-                           Kumaraswamy, Laplace, Logistic,
-                           LogNormal, Maxwell, Nakagami, Normal, Pareto,
-                           QuadraticU, RaisedCosine, Rayleigh, StudentT,
-                           Triangular, Uniform, UniformSum, VonMises, Weibull,
-                           WignerSemicircle, correlation, moment, cmoment,
-                           smoment)
-from diofant import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf, oo,
-                     Eq, log, lowergamma, Sum, symbols, sqrt, And, gamma, beta,
-                     Piecewise, Integral, sin, cos, besseli, factorial, binomial,
-                     floor, expand_func, Integer, Rational)
+from diofant import (Abs, And, Eq, Integer, Integral, Interval, N, Piecewise,
+                     Rational, S, Sum, Symbol, besseli, beta, binomial, cos,
+                     erf, exp, expand_func, factorial, floor, gamma, log,
+                     lowergamma, oo, pi, simplify, sin, sqrt, symbols)
+from diofant.abc import x, y, z
+from diofant.stats import (Arcsin, Benini, Beta, BetaPrime, Cauchy, Chi,
+                           ChiNoncentral, ChiSquared, ContinuousRV, Dagum, E,
+                           Erlang, Exponential, FDistribution, FisherZ,
+                           Frechet, Gamma, GammaInverse, Kumaraswamy, Laplace,
+                           Logistic, LogNormal, Maxwell, Nakagami, Normal, P,
+                           Pareto, QuadraticU, RaisedCosine, Rayleigh,
+                           StudentT, Triangular, Uniform, UniformSum, VonMises,
+                           Weibull, WignerSemicircle, cdf, cmoment,
+                           correlation, covariance, density, given, moment,
+                           pspace, sample, skewness, smoment, variance, where)
 from diofant.stats.crv_types import NormalDistribution
 from diofant.stats.rv import ProductPSpace
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 

@@ -1,11 +1,11 @@
 """Tests for tools for constructing domains for expressions. """
 
-from diofant.polys.constructor import construct_domain
-from diofant.domains import ZZ, QQ, RR, EX
-from diofant.domains.realfield import RealField
-from diofant import sqrt, sin, Float, Integer, Rational, E, GoldenRatio
-
+from diofant import E, Float, GoldenRatio, Integer, Rational, sin, sqrt
 from diofant.abc import x, y
+from diofant.domains import EX, QQ, RR, ZZ
+from diofant.domains.realfield import RealField
+from diofant.polys.constructor import construct_domain
+
 
 __all__ = ()
 

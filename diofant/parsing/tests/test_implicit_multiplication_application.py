@@ -1,11 +1,15 @@
 import pytest
 
 import diofant
-from diofant.parsing.sympy_parser import (parse_expr, standard_transformations,
-                                          convert_xor, implicit_multiplication_application,
-                                          implicit_multiplication, implicit_application,
-                                          function_exponentiation, split_symbols,
-                                          split_symbols_custom, _token_splittable)
+from diofant.parsing.sympy_parser import (_token_splittable, convert_xor,
+                                          function_exponentiation,
+                                          implicit_application,
+                                          implicit_multiplication,
+                                          implicit_multiplication_application,
+                                          parse_expr, split_symbols,
+                                          split_symbols_custom,
+                                          standard_transformations)
+
 
 __all__ = ()
 

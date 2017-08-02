@@ -1,10 +1,11 @@
 """Tests for low-level linear systems solver. """
 
+from diofant.domains import QQ, ZZ
 from diofant.functions import sqrt
-from diofant.polys.rings import ring
 from diofant.polys.fields import field
-from diofant.domains import ZZ, QQ
+from diofant.polys.rings import ring
 from diofant.polys.solvers import solve_lin_sys
+
 
 __all__ = ()
 

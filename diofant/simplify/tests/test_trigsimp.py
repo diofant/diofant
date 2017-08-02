@@ -1,11 +1,11 @@
 import pytest
 
-from diofant import (symbols, sin, simplify, cos, trigsimp, tan, csc,
-                     exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
-                     S, integrate, I, Matrix, Symbol, coth, pi, log,
-                     count_ops, sqrt, E, expand, Piecewise, Rational)
+from diofant import (E, I, Matrix, Piecewise, Rational, S, Subs, Symbol, cos,
+                     cosh, cot, coth, count_ops, csc, diff, exp, expand,
+                     exptrigsimp, integrate, log, pi, simplify, sin, sinh,
+                     sqrt, symbols, tan, tanh, trigsimp)
+from diofant.abc import a, b, x, y, z
 
-from diofant.abc import x, y, z, a, b
 
 __all__ = ()
 

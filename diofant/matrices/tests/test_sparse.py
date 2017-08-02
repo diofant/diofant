@@ -1,7 +1,8 @@
 import pytest
 
-from diofant import Symbol, I, Rational, PurePoly
-from diofant.matrices import Matrix, SparseMatrix, eye, zeros, ShapeError
+from diofant import I, PurePoly, Rational, Symbol
+from diofant.matrices import Matrix, ShapeError, SparseMatrix, eye, zeros
+
 
 __all__ = ()
 

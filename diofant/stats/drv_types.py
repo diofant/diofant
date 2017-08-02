@@ -1,7 +1,8 @@
-from .drv import SingleDiscreteDistribution, SingleDiscretePSpace
 from ..core import S, sympify
-from ..functions import factorial, exp
+from ..functions import exp, factorial
+from .drv import SingleDiscreteDistribution, SingleDiscretePSpace
 from .rv import _value_check
+
 
 __all__ = ('Geometric', 'Poisson')
 

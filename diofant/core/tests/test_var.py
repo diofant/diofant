@@ -2,7 +2,8 @@
 
 import pytest
 
-from diofant import Symbol, var, Function, FunctionClass
+from diofant import Function, FunctionClass, Symbol, var
+
 
 __all__ = ()
 

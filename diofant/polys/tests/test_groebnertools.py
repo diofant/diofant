@@ -2,18 +2,18 @@
 
 import pytest
 
-from diofant.polys.groebnertools import (groebner, sig, sig_key, lbp,
-                                         lbp_key, critical_pair, cp_key,
-                                         is_rewritable_or_comparable,
-                                         Sign, Polyn, Num, s_poly,
-                                         f5_reduce, groebner_lcm,
-                                         groebner_gcd, is_groebner,
-                                         is_minimal)
-from diofant.polys.fglmtools import _representing_matrices
-from diofant.polys.orderings import lex, grlex
-from diofant.polys.rings import ring
-from diofant.domains import ZZ, QQ
+from diofant.domains import QQ, ZZ
 from diofant.polys import polyconfig as config
+from diofant.polys.fglmtools import _representing_matrices
+from diofant.polys.groebnertools import (Num, Polyn, Sign, cp_key,
+                                         critical_pair, f5_reduce, groebner,
+                                         groebner_gcd, groebner_lcm,
+                                         is_groebner, is_minimal,
+                                         is_rewritable_or_comparable, lbp,
+                                         lbp_key, s_poly, sig, sig_key)
+from diofant.polys.orderings import grlex, lex
+from diofant.polys.rings import ring
+
 
 __all__ = ()
 

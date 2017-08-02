@@ -1,11 +1,11 @@
 """Symbolic primitives + unicode/ASCII abstraction for pretty.py"""
 
 import sys
-import warnings
 import unicodedata
+import warnings
 
-from ..conventions import split_super_sub
 from ...core.alphabets import greeks
+from ..conventions import split_super_sub
 
 
 # first, setup unicodedate environment

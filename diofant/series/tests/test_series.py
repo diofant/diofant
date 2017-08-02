@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (sin, cos, exp, E, series, oo, Derivative, O, Integral,
-                     Function, log, sqrt, Symbol, Subs, pi, symbols,
-                     Rational, Integer)
-
+from diofant import (Derivative, E, Function, Integer, Integral, O, Rational,
+                     Subs, Symbol, cos, exp, log, oo, pi, series, sin, sqrt,
+                     symbols)
 from diofant.abc import x, y
+
 
 __all__ = ()
 

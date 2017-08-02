@@ -1,6 +1,6 @@
-from ..core import sympify, Add, Mul, Pow, PoleError
-from ..series.limits import Limit
+from ..core import Add, Mul, PoleError, Pow, sympify
 from ..functions import log, sign
+from ..series.limits import Limit
 from ..solvers import solve
 
 

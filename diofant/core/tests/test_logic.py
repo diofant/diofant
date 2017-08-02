@@ -2,8 +2,9 @@ import itertools
 
 import pytest
 
-from diofant.core.logic import (fuzzy_not, Logic, And, Or, Not, fuzzy_and,
-                                fuzzy_or, _fuzzy_group)
+from diofant.core.logic import (And, Logic, Not, Or, _fuzzy_group, fuzzy_and,
+                                fuzzy_not, fuzzy_or)
+
 
 __all__ = ()
 

@@ -1,5 +1,5 @@
-from ..core import S
 from . import Poly
+from ..core import S
 
 
 def dispersionset(p, q=None, *gens, **args):

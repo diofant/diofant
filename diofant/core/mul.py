@@ -1,14 +1,15 @@
-from collections import defaultdict
 import operator
+from collections import defaultdict
 from functools import reduce
 
-from .sympify import sympify
 from .basic import Basic
-from .singleton import S
-from .operations import AssocOp
 from .cache import cacheit
-from .logic import fuzzy_not, _fuzzy_group, fuzzy_and
 from .compatibility import default_sort_key
+from .logic import _fuzzy_group, fuzzy_and, fuzzy_not
+from .operations import AssocOp
+from .singleton import S
+from .sympify import sympify
+
 
 # internal marker to indicate:
 #   "there are still non-commutative objects -- don't forget to process them"

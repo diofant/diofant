@@ -1,9 +1,9 @@
 """Implementation of :class:`ExpressionDomain` class. """
 
+from ..core import SympifyError, sympify
+from .characteristiczero import CharacteristicZero
 from .field import Field
 from .simpledomain import SimpleDomain
-from .characteristiczero import CharacteristicZero
-from ..core import sympify, SympifyError
 
 
 __all__ = ('ExpressionDomain',)

@@ -1,6 +1,7 @@
-from .perm_groups import PermutationGroup
 from .group_constructs import DirectProduct
+from .perm_groups import PermutationGroup
 from .permutations import Permutation
+
 
 _af_new = Permutation._af_new
 

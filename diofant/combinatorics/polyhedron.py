@@ -1,10 +1,11 @@
 from ..core import Basic, Tuple
-from ..sets import FiniteSet
 from ..core.compatibility import as_int
-from .permutations import Permutation
-from .perm_groups import PermutationGroup
-from ..utilities import unflatten, flatten
+from ..sets import FiniteSet
+from ..utilities import flatten, unflatten
 from ..utilities.iterables import minlex
+from .perm_groups import PermutationGroup
+from .permutations import Permutation
+
 
 rmul = Permutation.rmul
 

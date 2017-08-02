@@ -1,21 +1,21 @@
 """Algorithms for computing symbolic roots of polynomials. """
 
-from functools import reduce
 import math
+from functools import reduce
 
-from ..core import (Dummy, Symbol, symbols, S, I, pi, Mul, Eq, sympify,
-                    Rational, igcd, comp, Integer, Float, factor_terms)
+from ..core import (Dummy, Eq, Float, I, Integer, Mul, Rational, S, Symbol,
+                    comp, factor_terms, igcd, pi, symbols, sympify)
 from ..core.compatibility import ordered
 from ..core.mul import expand_2arg
+from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
 from ..ntheory import divisors, isprime, nextprime
-from ..functions import exp, sqrt, im, cos, acos, Piecewise, root
-from .polytools import Poly, cancel, factor, gcd_list, discriminant
-from .specialpolys import cyclotomic_poly
-from .polyerrors import PolynomialError, GeneratorsNeeded, DomainError
-from .polyquinticconst import PolyQuintic
-from .rationaltools import together
-from ..simplify import simplify, powsimp
+from ..simplify import powsimp, simplify
 from ..utilities import public
+from .polyerrors import DomainError, GeneratorsNeeded, PolynomialError
+from .polyquinticconst import PolyQuintic
+from .polytools import Poly, cancel, discriminant, factor, gcd_list
+from .rationaltools import together
+from .specialpolys import cyclotomic_poly
 
 
 def roots_linear(f):

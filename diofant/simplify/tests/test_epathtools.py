@@ -2,10 +2,10 @@
 
 import pytest
 
-from diofant.simplify.epathtools import epath, EPath
-from diofant import sin, cos, E
+from diofant import E, cos, sin
+from diofant.abc import t, x, y, z
+from diofant.simplify.epathtools import EPath, epath
 
-from diofant.abc import x, y, z, t
 
 __all__ = ()
 

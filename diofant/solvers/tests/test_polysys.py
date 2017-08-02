@@ -2,11 +2,11 @@
 
 import pytest
 
-from diofant import flatten, I, Poly, Rational, S, sqrt, symbols, Matrix
-from diofant.polys import PolynomialError, ComputationFailed, RootOf
+from diofant import I, Matrix, Poly, Rational, S, flatten, sqrt, symbols
+from diofant.abc import n, t, x, y, z
+from diofant.polys import ComputationFailed, PolynomialError, RootOf
 from diofant.solvers.polysys import solve_linear_system, solve_poly_system
 
-from diofant.abc import x, y, z, t, n
 
 __all__ = ()
 

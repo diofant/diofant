@@ -1,9 +1,9 @@
 from ..core import Basic, Symbol, cacheit
-from .scalar import BaseScalar
-from ..matrices import eye, ImmutableMatrix
+from ..matrices import ImmutableMatrix, eye
 from ..simplify import trigsimp
-from .orienters import (Orienter, AxisOrienter, BodyOrienter,
-                        SpaceOrienter, QuaternionOrienter)
+from .orienters import (AxisOrienter, BodyOrienter, Orienter,
+                        QuaternionOrienter, SpaceOrienter)
+from .scalar import BaseScalar
 
 
 class CoordSysCartesian(Basic):

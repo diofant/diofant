@@ -1,6 +1,7 @@
 # this module tests that diofant works with true division turned on
 
-from diofant import Rational, Symbol, Float
+from diofant import Float, Rational, Symbol
+
 
 __all__ = ()
 

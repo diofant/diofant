@@ -4,11 +4,12 @@ of Basic or Atom.
 
 import pytest
 
-from diofant.core.basic import Basic, Atom, preorder_traversal
+from diofant import Lambda, cos, sin
+from diofant.core.basic import Atom, Basic, preorder_traversal
+from diofant.core.compatibility import default_sort_key
 from diofant.core.singleton import S, Singleton
 from diofant.core.symbol import symbols
-from diofant.core.compatibility import default_sort_key
-from diofant import sin, cos, Lambda
+
 
 __all__ = ()
 

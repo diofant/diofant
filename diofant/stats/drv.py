@@ -1,7 +1,7 @@
-from ..core import Expr, sympify, symbols, Dummy, Lambda, S, cacheit
 from ..concrete import Sum, summation
+from ..core import Dummy, Expr, Lambda, S, cacheit, symbols, sympify
 from ..functions import Piecewise
-from .rv import NamedArgsMixin, SinglePSpace, SingleDomain
+from .rv import NamedArgsMixin, SingleDomain, SinglePSpace
 
 
 class SingleDiscreteDistribution(Expr, NamedArgsMixin):

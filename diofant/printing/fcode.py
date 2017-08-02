@@ -19,9 +19,10 @@ the responsibility for generating properly cased Fortran code to the user.
 
 import string
 
-from ..core import S, Add, N, Function
-from .codeprinter import CodePrinter, Assignment
+from ..core import Add, Function, N, S
+from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
+
 
 known_functions = {
     "sin": "sin",

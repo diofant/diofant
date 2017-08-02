@@ -1,13 +1,15 @@
 import pytest
 
-from diofant import (symbols, expand, expand_func, nan, oo, Float, conjugate,
-                     diff, re, im, Abs, O, exp_polar, polar_lift, limit,
-                     Symbol, I, integrate, S, sqrt, sin, cos, sinh, cosh, Integer,
-                     exp, log, pi, EulerGamma, erf, erfc, erfi, erf2, erfinv, Rational,
-                     erfcinv, erf2inv, gamma, uppergamma, Ei, expint, E1, li,
-                     Li, Si, Ci, Shi, Chi, fresnels, fresnelc, hyper, meijerg)
-from diofant.functions.special.error_functions import _erfs, _eis
+from diofant import (E1, Abs, Chi, Ci, Ei, EulerGamma, Float, I, Integer, Li,
+                     O, Rational, S, Shi, Si, Symbol, conjugate, cos, cosh,
+                     diff, erf, erf2, erf2inv, erfc, erfcinv, erfi, erfinv,
+                     exp, exp_polar, expand, expand_func, expint, fresnelc,
+                     fresnels, gamma, hyper, im, integrate, li, limit, log,
+                     meijerg, nan, oo, pi, polar_lift, re, sin, sinh, sqrt,
+                     symbols, uppergamma)
 from diofant.core.function import ArgumentIndexError
+from diofant.functions.special.error_functions import _eis, _erfs
+
 
 __all__ = ()
 

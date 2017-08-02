@@ -1,13 +1,12 @@
 import functools
-
 import itertools
 
-from ...core.sympify import _sympify
 from ...core import Basic, Tuple
+from ...core.sympify import _sympify
 from ...matrices import Matrix
 from ...utilities import flatten
 from .mutable_ndim_array import MutableNDimArray
-from .ndim_array import NDimArray, ImmutableNDimArray
+from .ndim_array import ImmutableNDimArray, NDimArray
 
 
 class DenseNDimArray(NDimArray):

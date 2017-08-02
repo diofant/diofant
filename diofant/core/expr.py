@@ -3,14 +3,14 @@ from functools import reduce
 
 from mpmath.libmp import mpf_log, prec_to_dps
 
-from .sympify import sympify, _sympify, SympifyError
-from .basic import Basic, Atom
-from .singleton import S
-from .evalf import EvalfMixin, pure_complex
-from .decorators import _sympifyit, call_highest_priority
+from .assumptions import ManagedProperties
+from .basic import Atom, Basic
 from .cache import cacheit
 from .compatibility import as_int, default_sort_key
-from .assumptions import ManagedProperties
+from .decorators import _sympifyit, call_highest_priority
+from .evalf import EvalfMixin, pure_complex
+from .singleton import S
+from .sympify import SympifyError, _sympify, sympify
 
 
 class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):

@@ -1,13 +1,13 @@
 """Transform a string with Python-like source code into Diofant expression. """
 
 import ast
-from io import BytesIO
 import unicodedata
-from tokenize import (tokenize, untokenize, TokenError,
-                      NUMBER, STRING, NAME, OP, ENDMARKER)
+from io import BytesIO
 from keyword import iskeyword
+from tokenize import (ENDMARKER, NAME, NUMBER, OP, STRING, TokenError,
+                      tokenize, untokenize)
 
-from ..core import Symbol, Basic
+from ..core import Basic, Symbol
 
 
 def _token_splittable(token):

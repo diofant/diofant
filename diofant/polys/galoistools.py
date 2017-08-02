@@ -1,13 +1,14 @@
 """Dense univariate polynomials with coefficients in Galois fields. """
 
+from math import ceil as _ceil
+from math import sqrt as _sqrt
 from random import uniform
-from math import ceil as _ceil, sqrt as _sqrt
 
 from ..core import prod
-from .polyutils import _sort_factors
+from ..ntheory import factorint
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
-from ..ntheory import factorint
+from .polyutils import _sort_factors
 
 
 def gf_crt(U, M, K=None):

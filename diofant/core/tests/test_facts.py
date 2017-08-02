@@ -1,9 +1,10 @@
 import pytest
 
-from diofant.core.facts import (deduce_alpha_implications, Prover,
-                                apply_beta_to_alpha_route, rules_2prereq,
-                                FactRules, FactKB, InconsistentAssumptions)
-from diofant.core.logic import And, Or, Not
+from diofant.core.facts import (FactKB, FactRules, InconsistentAssumptions,
+                                Prover, apply_beta_to_alpha_route,
+                                deduce_alpha_implications, rules_2prereq)
+from diofant.core.logic import And, Not, Or
+
 
 __all__ = ()
 

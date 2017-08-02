@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (diff, Eq, exp, sin, tan,
-                     Function, Symbol, symbols, cos, log, Integer)
-from diofant.solvers.pde import (pde_separate_add, pde_separate_mul,
-                                 pdsolve, classify_pde, checkpdesol,
-                                 pde_separate)
+from diofant import (Eq, Function, Integer, Symbol, cos, diff, exp, log, sin,
+                     symbols, tan)
+from diofant.solvers.pde import (checkpdesol, classify_pde, pde_separate,
+                                 pde_separate_add, pde_separate_mul, pdsolve)
+
 
 __all__ = ()
 

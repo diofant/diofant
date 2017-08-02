@@ -49,16 +49,16 @@ For the sake of completeness, `f(n)` can be:
 
 from collections import defaultdict
 
-from ..core import (S, Rational, Symbol, Wild, Dummy, Equality, Add,
-                    Mul, sympify)
-from ..simplify import simplify, hypersimp, hypersimilar
-from .solvers import solve, solve_undetermined_coeffs
-from ..polys import Poly, quo, gcd, gcd_list, lcm_list, roots, resultant
-from ..functions import binomial, factorial, FallingFactorial, RisingFactorial
-from ..matrices import Matrix, casoratian
 from ..concrete import product
+from ..core import (Add, Dummy, Equality, Mul, Rational, S, Symbol, Wild,
+                    sympify)
 from ..core.compatibility import default_sort_key
+from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
+from ..matrices import Matrix, casoratian
+from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
+from ..simplify import hypersimilar, hypersimp, simplify
 from ..utilities import numbered_symbols
+from .solvers import solve, solve_undetermined_coeffs
 
 
 def rsolve_poly(coeffs, f, n, **hints):

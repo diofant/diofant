@@ -8,10 +8,11 @@ Mathematica notebook:
 http://www.emba.uvm.edu/~ddummit/quintics/quintics.nb
 """
 
-from ..core import Dummy, I, Rational, N
-from .polytools import Poly
+from ..core import Dummy, I, N, Rational
 from ..functions import sqrt
 from ..utilities import public
+from .polytools import Poly
+
 
 x = Dummy('dummy_for_polyquinticconst')
 

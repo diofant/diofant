@@ -1,16 +1,16 @@
 from functools import reduce
 from operator import add
 
-from strategies import condition, exhaust, do_one
+from strategies import condition, do_one, exhaust
 
-from ...core import Add, sympify, Expr
+from ...core import Add, Expr, sympify
 from ...core.logic import _fuzzy_group
+from ...core.strategies import flatten, glom, rm_id, sort, unpack
 from ...functions import adjoint
-from ..matrices import MatrixBase
-from .transpose import transpose
-from ...core.strategies import rm_id, unpack, flatten, sort, glom
-from .matexpr import MatrixExpr, ShapeError, ZeroMatrix
 from ...utilities import default_sort_key, sift
+from ..matrices import MatrixBase
+from .matexpr import MatrixExpr, ShapeError, ZeroMatrix
+from .transpose import transpose
 
 
 class MatAdd(MatrixExpr):

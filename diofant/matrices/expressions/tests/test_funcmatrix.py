@@ -1,4 +1,5 @@
-from diofant import symbols, FunctionMatrix, MatrixExpr, Lambda, Matrix
+from diofant import FunctionMatrix, Lambda, Matrix, MatrixExpr, symbols
+
 
 __all__ = ()
 

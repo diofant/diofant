@@ -1,9 +1,11 @@
 import pytest
 
-from diofant.core import symbols, pi, S
-from diofant.matrices import Identity, MatrixSymbol, ImmutableMatrix, ZeroMatrix
-from diofant.matrices.expressions import MatPow, MatAdd, MatMul
+from diofant.core import S, pi, symbols
+from diofant.matrices import (Identity, ImmutableMatrix, MatrixSymbol,
+                              ZeroMatrix)
+from diofant.matrices.expressions import MatAdd, MatMul, MatPow
 from diofant.matrices.expressions.matexpr import ShapeError
+
 
 __all__ = ()
 

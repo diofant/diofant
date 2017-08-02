@@ -2,14 +2,15 @@
 
 import pytest
 
+from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, S, Symbol,
+                     exp, legendre_poly, log, root, solve, sqrt, tan)
+from diofant.abc import a, b, r, x, y, z
+from diofant.polys.polyerrors import (GeneratorsNeeded,
+                                      MultivariatePolynomialError,
+                                      PolynomialError)
 from diofant.polys.polytools import Poly, PurePoly
 from diofant.polys.rootoftools import RootOf, RootSum
-from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                      GeneratorsNeeded, PolynomialError)
-from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                     Function, Eq, solve, legendre_poly, Symbol, root, Pow)
 
-from diofant.abc import a, b, x, y, z, r
 
 __all__ = ()
 

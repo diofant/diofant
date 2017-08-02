@@ -2,27 +2,27 @@ from collections import defaultdict
 
 import mpmath
 
-from ..core import (Basic, S, Add, Mul, Pow, Symbol, sympify, expand_mul,
-                    expand_func, Dummy, Expr, factor_terms, expand_power_exp,
-                    Float, I, pi, Rational, Integer, expand_log, count_ops)
-from ..core.compatibility import iterable, ordered, as_int
+from ..core import (Add, Basic, Dummy, Expr, Float, I, Integer, Mul, Pow,
+                    Rational, S, Symbol, count_ops, expand_func, expand_log,
+                    expand_mul, expand_power_exp, factor_terms, pi, sympify)
+from ..core.compatibility import as_int, iterable, ordered
+from ..core.evaluate import global_evaluate
 from ..core.function import _mexpand
 from ..core.rules import Transform
-from ..core.evaluate import global_evaluate
-from ..functions import (gamma, exp, sqrt, log, exp_polar, piecewise_fold,
-                         ceiling, unpolarify, besselj, besseli, besselk,
-                         jn, bessely)
+from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
+                         exp_polar, gamma, jn, log, piecewise_fold, sqrt,
+                         unpolarify)
+from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
-from ..functions.combinatorial.factorials import CombinatorialFunction
+from ..polys import cancel, factor, together
 from ..utilities import has_variety
-from .radsimp import radsimp, fraction
-from .trigsimp import trigsimp, exptrigsimp
-from .powsimp import powsimp
-from .cse_opts import sub_pre, sub_post
-from .sqrtdenest import sqrtdenest
 from .combsimp import combsimp
-from ..polys import together, cancel, factor
+from .cse_opts import sub_post, sub_pre
+from .powsimp import powsimp
+from .radsimp import fraction, radsimp
+from .sqrtdenest import sqrtdenest
+from .trigsimp import exptrigsimp, trigsimp
 
 
 def separatevars(expr, symbols=[], dict=False, force=False):

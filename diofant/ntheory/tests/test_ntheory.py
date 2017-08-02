@@ -2,35 +2,43 @@ from collections import defaultdict
 
 import pytest
 
-from diofant import (Sieve, binomial_coefficients, binomial_coefficients_list,
-                     multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
-                     summation, factorial as fac, pi, GoldenRatio as Phi, sqrt)
-from diofant.core.numbers import Integer, Rational
-from diofant.ntheory import (isprime, n_order, is_primitive_root,
-                             is_quad_residue, legendre_symbol, jacobi_symbol,
-                             npartitions, totient, factorint, primefactors, divisors,
-                             randprime, nextprime, prevprime, primerange, primepi,
-                             prime, pollard_rho, perfect_power, multiplicity,
-                             trailing, divisor_count, primorial, pollard_pm1,
-                             sqrt_mod, primitive_root, quadratic_residues,
-                             is_nthpow_residue, nthroot_mod, sqrt_mod_iter, mobius,
-                             divisor_sigma)
-from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
-from diofant.ntheory.factor_ import (smoothness, smoothness_p, factorrat,
-                                     antidivisors, antidivisor_count, core)
-from diofant.ntheory.generate import cycle_length
-from diofant.ntheory.primetest import _mr_safe_helper, mr
-from diofant.ntheory.modular import crt, crt1, crt2, solve_congruence
-from diofant.ntheory.continued_fraction import (continued_fraction_periodic as cf_p,
-                                                continued_fraction_iterator as cf_i,
-                                                continued_fraction_convergents as cf_c,
-                                                continued_fraction_reduce as cf_r)
-from diofant.ntheory.egyptian_fraction import egyptian_fraction
+from diofant import GoldenRatio as Phi
+from diofant import factorial as fac
+from diofant import (Mul, Pow, S, Sieve, Symbol, binomial_coefficients,
+                     binomial_coefficients_list, multinomial_coefficients, pi,
+                     sieve, sqrt, summation)
 from diofant.core.add import Add
+from diofant.core.numbers import Integer, Rational
 from diofant.domains import ZZ
+from diofant.ntheory import (divisor_count, divisor_sigma, divisors, factorint,
+                             is_nthpow_residue, is_primitive_root,
+                             is_quad_residue, isprime, jacobi_symbol,
+                             legendre_symbol, mobius, multiplicity, n_order,
+                             nextprime, npartitions, nthroot_mod,
+                             perfect_power, pollard_pm1, pollard_rho,
+                             prevprime, prime, primefactors, primepi,
+                             primerange, primitive_root, primorial,
+                             quadratic_residues, randprime, sqrt_mod,
+                             sqrt_mod_iter, totient, trailing)
+from diofant.ntheory.continued_fraction import \
+    continued_fraction_convergents as cf_c
+from diofant.ntheory.continued_fraction import \
+    continued_fraction_iterator as cf_i
+from diofant.ntheory.continued_fraction import \
+    continued_fraction_periodic as cf_p
+from diofant.ntheory.continued_fraction import \
+    continued_fraction_reduce as cf_r
+from diofant.ntheory.egyptian_fraction import egyptian_fraction
+from diofant.ntheory.factor_ import (antidivisor_count, antidivisors, core,
+                                     factorrat, smoothness, smoothness_p)
+from diofant.ntheory.generate import cycle_length
+from diofant.ntheory.modular import crt, crt1, crt2, solve_congruence
+from diofant.ntheory.multinomial import multinomial_coefficients_iterator
+from diofant.ntheory.primetest import _mr_safe_helper, mr
+from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
 from diofant.utilities.iterables import capture
 from diofant.utilities.randtest import random_complex_number
-from diofant.ntheory.multinomial import multinomial_coefficients_iterator
+
 
 __all__ = ()
 

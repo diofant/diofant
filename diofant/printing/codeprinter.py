@@ -1,10 +1,10 @@
-from ..core import Add, Mul, Pow, S, Basic, Lambda, Symbol, sympify
+from ..core import Add, Basic, Lambda, Mul, Pow, S, Symbol, sympify
 from ..core.compatibility import default_sort_key
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
-from .str import StrPrinter
-from .precedence import precedence
 from ..core.sympify import _sympify
+from .precedence import precedence
+from .str import StrPrinter
 
 
 class AssignmentError(Exception):

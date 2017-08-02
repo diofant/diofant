@@ -1,39 +1,38 @@
 """Polynomial factorization routines in characteristic zero. """
 
-from math import ceil as _ceil, log as _log
+from math import ceil as _ceil
+from math import log as _log
 
-from .galoistools import (gf_from_int_poly, gf_to_int_poly, gf_lshift,
-                          gf_add_mul, gf_mul, gf_div, gf_rem, gf_gcdex,
-                          gf_sqf_p, gf_factor_sqf, gf_factor)
-from .densebasic import (dup_LC, dmp_LC, dmp_ground_LC, dup_TC,
-                         dup_convert, dmp_convert, dup_degree, dmp_degree,
-                         dmp_degree_in, dmp_degree_list, dmp_from_dict,
-                         dmp_zero_p, dmp_one, dmp_nest, dmp_raise,
-                         dup_strip, dmp_ground, dup_inflate, dmp_exclude,
-                         dmp_include, dmp_inject, dmp_eject, dup_terms_gcd,
-                         dmp_terms_gcd)
-from .densearith import (dup_neg, dmp_neg, dup_add, dmp_add, dup_sub,
-                         dmp_sub, dup_mul, dmp_mul, dup_sqr, dmp_pow,
-                         dup_div, dmp_div, dup_quo, dmp_quo, dmp_expand,
-                         dmp_add_mul, dup_sub_mul, dmp_sub_mul, dup_lshift,
-                         dup_max_norm, dmp_max_norm, dup_l1_norm,
-                         dup_mul_ground, dmp_mul_ground, dup_quo_ground,
-                         dmp_quo_ground)
-from .densetools import (dup_clear_denoms, dmp_clear_denoms, dup_trunc,
-                         dmp_ground_trunc, dup_content, dup_monic,
-                         dmp_ground_monic, dup_primitive,
-                         dmp_ground_primitive, dmp_eval_tail, dmp_eval_in,
-                         dmp_diff_eval_in, dmp_compose, dup_shift,
-                         dup_mirror)
-from .euclidtools import dmp_primitive, dup_inner_gcd, dmp_inner_gcd
-from .sqfreetools import (dup_sqf_p, dup_sqf_norm, dmp_sqf_norm,
-                          dup_sqf_part, dmp_sqf_part)
-from .polyutils import _sort_factors
-from .polyconfig import query
-from .polyerrors import (ExtraneousFactors, DomainError, CoercionFailed,
-                         EvaluationFailed)
-from ..ntheory import nextprime, isprime, factorint
+from ..ntheory import factorint, isprime, nextprime
 from ..utilities import subsets
+from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
+                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
+                         dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
+                         dmp_sub_mul, dup_add, dup_div, dup_l1_norm,
+                         dup_lshift, dup_max_norm, dup_mul, dup_mul_ground,
+                         dup_neg, dup_quo, dup_quo_ground, dup_sqr, dup_sub,
+                         dup_sub_mul)
+from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
+                         dmp_degree_list, dmp_eject, dmp_exclude,
+                         dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
+                         dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
+                         dmp_terms_gcd, dmp_zero_p, dup_convert, dup_degree,
+                         dup_inflate, dup_LC, dup_strip, dup_TC, dup_terms_gcd)
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
+                         dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
+                         dmp_ground_primitive, dmp_ground_trunc,
+                         dup_clear_denoms, dup_content, dup_mirror, dup_monic,
+                         dup_primitive, dup_shift, dup_trunc)
+from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_inner_gcd
+from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
+                          gf_from_int_poly, gf_gcdex, gf_lshift, gf_mul,
+                          gf_rem, gf_sqf_p, gf_to_int_poly)
+from .polyconfig import query
+from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
+                         ExtraneousFactors)
+from .polyutils import _sort_factors
+from .sqfreetools import (dmp_sqf_norm, dmp_sqf_part, dup_sqf_norm, dup_sqf_p,
+                          dup_sqf_part)
 
 
 def dup_trial_division(f, factors, K):

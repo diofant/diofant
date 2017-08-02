@@ -1,12 +1,14 @@
 import pytest
 
-from diofant import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
-                     S, WildFunction, ImmutableMatrix, sin, true, false, ones,
-                     Symbol, Dummy, Wild, AlgebraicNumber, sqrt, root)
-from diofant.geometry import Point, Ellipse
+from diofant import (Abs, AlgebraicNumber, Dummy, Float, Function,
+                     ImmutableMatrix, Integer, Matrix, Rational, S, Symbol,
+                     Wild, WildFunction, false, ones, root, sin, sqrt, symbols,
+                     true)
+from diofant.domains import QQ, ZZ
+from diofant.geometry import Ellipse, Point
+from diofant.polys import field, grlex, lex, ring
 from diofant.printing.repr import srepr
-from diofant.domains import ZZ, QQ
-from diofant.polys import ring, field, lex, grlex
+
 
 __all__ = ()
 

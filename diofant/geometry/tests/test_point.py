@@ -1,8 +1,9 @@
 import pytest
 
-from diofant import I, Rational, Float, Symbol, pi, sqrt
-from diofant.geometry import Line, Point, Point2D, Point3D, Line3D
+from diofant import Float, I, Rational, Symbol, pi, sqrt
+from diofant.geometry import Line, Line3D, Point, Point2D, Point3D
 from diofant.matrices import Matrix
+
 
 __all__ = ()
 

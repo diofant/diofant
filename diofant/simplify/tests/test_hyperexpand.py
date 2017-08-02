@@ -2,21 +2,23 @@ from random import randrange
 
 import pytest
 
-from diofant.simplify.hyperexpand import (ShiftA, ShiftB, UnShiftA, UnShiftB,
-                                          MeijerShiftA, MeijerShiftB, MeijerShiftC, MeijerShiftD,
-                                          MeijerUnShiftA, MeijerUnShiftB, MeijerUnShiftC,
-                                          MeijerUnShiftD,
-                                          ReduceOrder, reduce_order, apply_operators,
-                                          devise_plan, make_derivative_operator, Formula,
-                                          hyperexpand, Hyper_Function, G_Function,
-                                          reduce_order_meijer,
-                                          build_hypergeometric_formula)
-from diofant import (hyper, I, S, meijerg, Piecewise, Rational, Integer,
-                     cos, sin, log, exp, asin, lowergamma, atanh, besseli,
-                     gamma, sqrt, pi, erf, exp_polar, Tuple)
+from diofant import (I, Integer, Piecewise, Rational, S, Tuple, asin, atanh,
+                     besseli, cos, erf, exp, exp_polar, gamma, hyper, log,
+                     lowergamma, meijerg, pi, sin, sqrt)
+from diofant.abc import a, b, c, z
+from diofant.simplify.hyperexpand import (Formula, G_Function, Hyper_Function,
+                                          MeijerShiftA, MeijerShiftB,
+                                          MeijerShiftC, MeijerShiftD,
+                                          MeijerUnShiftA, MeijerUnShiftB,
+                                          MeijerUnShiftC, MeijerUnShiftD,
+                                          ReduceOrder, ShiftA, ShiftB,
+                                          UnShiftA, UnShiftB, apply_operators,
+                                          build_hypergeometric_formula,
+                                          devise_plan, hyperexpand,
+                                          make_derivative_operator,
+                                          reduce_order, reduce_order_meijer)
 from diofant.utilities.randtest import verify_numerically as tn
 
-from diofant.abc import z, a, b, c
 
 __all__ = ()
 

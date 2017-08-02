@@ -1,14 +1,14 @@
 import pytest
 
-from diofant import (Abs, And, binomial, Catalan, cos, Derivative, E, Eq,
-                     exp, EulerGamma, factorial, Function, harmonic, I,
-                     Integral, KroneckerDelta, log, nan, sin, Ne, Or, oo,
-                     pi, Piecewise, Product, product, Rational, S, simplify,
-                     sqrt, Sum, summation, Symbol, symbols, sympify, zeta,
-                     gamma, Le, Mod, Integer)
+from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma,
+                     Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
+                     Ne, Or, Piecewise, Product, Rational, S, Sum, Symbol,
+                     binomial, cos, exp, factorial, gamma, harmonic, log, nan,
+                     oo, pi, product, simplify, sin, sqrt, summation, symbols,
+                     sympify, zeta)
+from diofant.abc import a, b, c, d, k, m, x, y, z
 from diofant.concrete.summations import telescopic
 
-from diofant.abc import a, b, c, d, k, m, x, y, z
 
 __all__ = ()
 

@@ -1,13 +1,14 @@
-import tempfile
 import os
+import tempfile
 
 import pytest
 
 import diofant
-from diofant import symbols, Eq
+from diofant import Eq, symbols
 from diofant.external import import_module
-from diofant.tensor import IndexedBase, Idx
-from diofant.utilities.autowrap import autowrap, ufuncify, CodeWrapError
+from diofant.tensor import Idx, IndexedBase
+from diofant.utilities.autowrap import CodeWrapError, autowrap, ufuncify
+
 
 __all__ = ()
 

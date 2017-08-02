@@ -1,19 +1,19 @@
 import pytest
 
-from diofant import (meijerg, I, integrate, Integral, oo, gamma, cosh,
-                     hyperexpand, exp, simplify, sqrt, pi, erf, sin, cos,
-                     exp_polar, polygamma, hyper, log, expand_func, Integer,
-                     Rational, nan)
-from diofant.integrals.meijerint import (_rewrite_single, _rewrite1,
-                                         meijerint_indefinite, _inflate_g,
-                                         _create_lookup_table,
+from diofant import (I, Integer, Integral, Rational, cos, cosh, erf, exp,
+                     exp_polar, expand_func, gamma, hyper, hyperexpand,
+                     integrate, log, meijerg, nan, oo, pi, polygamma, simplify,
+                     sin, sqrt)
+from diofant.abc import a, b, c, d, s, t, x, y, z
+from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
+                                         _rewrite1, _rewrite_single,
                                          meijerint_definite,
+                                         meijerint_indefinite,
                                          meijerint_inversion)
 from diofant.utilities import default_sort_key
-from diofant.utilities.randtest import (verify_numerically,
-                                        random_complex_number as randcplx)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import verify_numerically
 
-from diofant.abc import x, y, a, b, c, d, s, t, z
 
 __all__ = ()
 

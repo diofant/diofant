@@ -2,19 +2,20 @@ import warnings
 
 import pytest
 
-from diofant import (Abs, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
-                     sqrt, symbols, Derivative)
+from diofant import (Abs, Derivative, Dummy, Float, Rational, S, Symbol, cos,
+                     oo, pi, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
-from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
-                              Polygon, Ray, RegularPolygon, Segment, Triangle,
-                              are_similar, convex_hull, intersection, Point2D,
-                              centroid)
+from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
+                              Point, Point2D, Polygon, Ray, RegularPolygon,
+                              Segment, Triangle, are_similar, centroid,
+                              convex_hull, intersection)
 from diofant.geometry.entity import rotate, scale, translate
-from diofant.geometry.polygon import rad, deg
+from diofant.geometry.polygon import deg, rad
 from diofant.geometry.util import idiff
 from diofant.integrals.integrals import Integral
 from diofant.solvers.solvers import solve
 from diofant.utilities.randtest import verify_numerically
+
 
 __all__ = ()
 

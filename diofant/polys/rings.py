@@ -1,28 +1,31 @@
 """Sparse polynomial rings. """
 
 from functools import reduce
-from operator import add, mul, lt, le, gt, ge
+from operator import add, ge, gt, le, lt, mul
 from types import GeneratorType
 
-from ..core import Expr, Symbol, symbols as _symbols, igcd, oo, sympify
-from ..core.sympify import CantSympify
+from ..core import symbols as _symbols
+from ..core import Expr, Symbol, igcd, oo, sympify
 from ..core.compatibility import is_sequence
-from ..ntheory import multinomial_coefficients
-from .monomials import MonomialOps
-from .orderings import lex
-from .heuristicgcd import heugcd
-from .compatibility import IPolys
-from .polyutils import expr_from_dict, _dict_reorder, _parallel_dict_from_expr
-from .polyerrors import (CoercionFailed, GeneratorsError, GeneratorsNeeded,
-                         ExactQuotientFailed, MultivariatePolynomialError)
+from ..core.sympify import CantSympify
 from ..domains.domainelement import DomainElement
 from ..domains.polynomialring import PolynomialRing
-from .polyoptions import Domain as DomainOpt, Order as OrderOpt, build_options
-from .densebasic import dmp_to_dict, dmp_from_dict
-from .constructor import construct_domain
+from ..ntheory import multinomial_coefficients
 from ..printing.defaults import DefaultPrinting
 from ..utilities import public
 from ..utilities.magic import pollute
+from .compatibility import IPolys
+from .constructor import construct_domain
+from .densebasic import dmp_from_dict, dmp_to_dict
+from .heuristicgcd import heugcd
+from .monomials import MonomialOps
+from .orderings import lex
+from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
+                         GeneratorsNeeded, MultivariatePolynomialError)
+from .polyoptions import Domain as DomainOpt
+from .polyoptions import Order as OrderOpt
+from .polyoptions import build_options
+from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
 
 
 @public

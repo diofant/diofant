@@ -1,9 +1,9 @@
 """Implementaton of :class:`GMPYRationalField` class. """
 
-from .rationalfield import RationalField
-from .groundtypes import (GMPYRational, DiofantRational, gmpy_numer,
-                          gmpy_denom, gmpy_factorial, gmpy_qdiv)
 from ..polys.polyerrors import CoercionFailed
+from .groundtypes import (DiofantRational, GMPYRational, gmpy_denom,
+                          gmpy_factorial, gmpy_numer, gmpy_qdiv)
+from .rationalfield import RationalField
 
 
 __all__ = ('GMPYRationalField',)

@@ -2,15 +2,15 @@ from io import StringIO
 
 import pytest
 
-from diofant.core import symbols, Eq, pi, Catalan, Lambda, Dummy
-from diofant import erf, Integral
-from diofant import Equality
+from diofant import Equality, Integral, erf
+from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
-from diofant.utilities.codegen import (codegen, make_routine, CCodeGen,
-                                       InputArgument, CodeGenError, FCodeGen,
-                                       CodeGenArgumentListError,
-                                       OutputArgument, InOutArgument)
+from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
+                                       CodeGenError, FCodeGen, InOutArgument,
+                                       InputArgument, OutputArgument, codegen,
+                                       make_routine)
 from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 

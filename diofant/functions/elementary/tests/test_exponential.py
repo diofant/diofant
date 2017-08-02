@@ -1,12 +1,12 @@
 import pytest
 
-from diofant import (symbols, log, Float, nan, oo, zoo, I, pi, E, O, exp,
-                     Symbol, LambertW, sqrt, Rational, expand_log, S, sign,
-                     conjugate, Integer, sin, cos, sinh, cosh, tanh,
-                     exp_polar, re, Function, simplify, arg)
+from diofant import (E, Float, Function, I, Integer, LambertW, O, Rational, S,
+                     Symbol, arg, conjugate, cos, cosh, exp, exp_polar,
+                     expand_log, log, nan, oo, pi, re, sign, simplify, sin,
+                     sinh, sqrt, symbols, tanh, zoo)
+from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 

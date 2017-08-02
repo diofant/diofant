@@ -6,9 +6,12 @@ combinatorial polynomials.
 
 """
 
-from ...core import (S, Rational, Integer, Function, Dummy)
+from ...core import Dummy, Function, Integer, Rational, S
 from ...core.function import ArgumentIndexError
-from ..combinatorial.factorials import binomial, factorial, RisingFactorial
+from ...polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
+                                 gegenbauer_poly, hermite_poly, jacobi_poly,
+                                 laguerre_poly, legendre_poly)
+from ..combinatorial.factorials import RisingFactorial, binomial, factorial
 from ..elementary.complexes import re
 from ..elementary.exponential import exp
 from ..elementary.miscellaneous import sqrt
@@ -16,10 +19,6 @@ from ..elementary.trigonometric import cos
 from .gamma_functions import gamma
 from .hyper import hyper
 
-from ...polys.orthopolys import (jacobi_poly, gegenbauer_poly,
-                                 chebyshevt_poly, chebyshevu_poly,
-                                 laguerre_poly, hermite_poly,
-                                 legendre_poly)
 
 _x = Dummy('dummy_for_special_polynomials')
 

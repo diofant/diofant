@@ -2,13 +2,13 @@ import random
 
 from mpmath import sqrt
 
+from ..core import Dummy
+from ..domains import PolynomialRing
 from ..ntheory import nextprime
 from ..ntheory.modular import crt
-from .galoistools import gf_gcd, gf_from_dict, gf_gcdex, gf_div, gf_lcm
-from .polyerrors import ModularGCDFailed
-from ..domains import PolynomialRing
-from ..core import Dummy
 from ..utilities import public
+from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
+from .polyerrors import ModularGCDFailed
 
 
 def _trivial_gcd(f, g):

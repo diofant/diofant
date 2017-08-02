@@ -2,10 +2,11 @@ from itertools import zip_longest
 
 import pytest
 
-from diofant.utilities.enumerative import (list_visitor,
-                                           MultisetPartitionTraverser,
+from diofant.utilities.enumerative import (MultisetPartitionTraverser,
+                                           list_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import _set_partitions
+
 
 __all__ = ()
 

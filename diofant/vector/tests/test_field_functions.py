@@ -1,17 +1,18 @@
 import pytest
 
+from diofant import cos, sin
 from diofant.core.function import Derivative
-from diofant.vector.vector import Vector
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.simplify import simplify
-from diofant.core.symbol import symbols
 from diofant.core.numbers import Integer
-from diofant import sin, cos
+from diofant.core.symbol import symbols
+from diofant.simplify import simplify
+from diofant.vector.coordsysrect import CoordSysCartesian
+from diofant.vector.deloperator import Del
 from diofant.vector.functions import (curl, divergence, gradient,
                                       is_conservative, is_solenoidal,
                                       scalar_potential,
                                       scalar_potential_difference)
-from diofant.vector.deloperator import Del
+from diofant.vector.vector import Vector
+
 
 __all__ = ()
 

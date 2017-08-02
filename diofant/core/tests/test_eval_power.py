@@ -1,14 +1,14 @@
 import pytest
 
-from diofant.core import (Rational, Symbol, S, Float, Integer, Number,
-                          Pow, Basic, I, nan, pi, symbols, oo, zoo, E)
+from diofant.abc import a, b, c, x, y
+from diofant.core import (Basic, E, Float, I, Integer, Number, Pow, Rational,
+                          S, Symbol, nan, oo, pi, symbols, zoo)
 from diofant.core.tests.test_evalf import NS
-from diofant.functions.elementary.miscellaneous import sqrt, cbrt
 from diofant.functions.elementary.exponential import exp, log
-from diofant.functions.elementary.trigonometric import sin, cos
+from diofant.functions.elementary.miscellaneous import cbrt, sqrt
+from diofant.functions.elementary.trigonometric import cos, sin
 from diofant.series.order import O
 
-from diofant.abc import a, b, c, x, y
 
 __all__ = ()
 

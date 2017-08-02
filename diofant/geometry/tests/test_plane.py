@@ -1,9 +1,10 @@
 import pytest
 
-from diofant import Dummy, Rational, Float, Symbol, pi, sstr, sqrt, asin
-from diofant.geometry import (Line, Point, Ray, Segment,
-                              Point3D, Line3D, Ray3D, Segment3D, Plane)
+from diofant import Dummy, Float, Rational, Symbol, asin, pi, sqrt, sstr
+from diofant.geometry import (Line, Line3D, Plane, Point, Point3D, Ray, Ray3D,
+                              Segment, Segment3D)
 from diofant.geometry.util import are_coplanar
+
 
 __all__ = ()
 
