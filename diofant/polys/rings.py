@@ -1174,7 +1174,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def __divmod__(self, other):
         ring = self.ring
-        p = ring.zero
 
         if not other:
             raise ZeroDivisionError("polynomial division")
@@ -1200,7 +1199,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def __mod__(self, other):
         ring = self.ring
-        p = ring.zero
 
         if not other:
             raise ZeroDivisionError("polynomial division")
@@ -1226,7 +1224,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def __truediv__(self, other):
         ring = self.ring
-        p = ring.zero
 
         if not other:
             raise ZeroDivisionError("polynomial division")
@@ -1315,7 +1312,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         y**6
         """
         ring = self.ring
-        domain = ring.domain
         ret_single = False
         if isinstance(fv, PolyElement):
             ret_single = True
@@ -1371,7 +1367,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             raise ZeroDivisionError("polynomial division")
         ring = f.ring
         domain = ring.domain
-        order = ring.order
         zero = domain.zero
         monomial_mul = ring.monomial_mul
         r = ring.zero

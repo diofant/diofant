@@ -86,7 +86,7 @@ class Partition(FiniteSet):
             members = self.members
         else:
             members = tuple(sorted(self.members,
-                             key=lambda w: default_sort_key(w, order)))
+                                   key=lambda w: default_sort_key(w, order)))
         return tuple(map(default_sort_key, (self.size, members, self.rank)))
 
     @property

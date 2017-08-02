@@ -1,6 +1,7 @@
 import decimal
 import fractions
 import math
+import numbers
 import re as regex
 from collections import defaultdict
 
@@ -706,7 +707,7 @@ class Float(Number):
         elif dps == '':
             if not isinstance(num, str):
                 raise ValueError('The null string can only be used when '
-                'the number to Float is passed as a string or an integer.')
+                                 'the number to Float is passed as a string or an integer.')
             ok = None
             if _literal_float(num):
                 try:
@@ -885,7 +886,7 @@ class Float(Number):
         if isinstance(other, Rational) and other.q != 1:
             # calculate mod with Rationals, *then* round the result
             return Float(Rational.__mod__(Rational(self), other),
-                prec_to_dps(self._prec))
+                         prec_to_dps(self._prec))
         if isinstance(other, Float):
             r = self/other
             if r == int(r):
@@ -1240,7 +1241,7 @@ class Rational(Number):
         elif isinstance(other, Float):
             # calculate mod with Rationals, *then* round the answer
             return Float(self.__mod__(Rational(other)),
-                prec_to_dps(other._prec))
+                         prec_to_dps(other._prec))
         else:
             return Number.__mod__(self, other)
 
@@ -1259,7 +1260,7 @@ class Rational(Number):
                     return Rational(self.q, self.p)
                 if self.is_negative:
                     return -((S.NegativeOne)**((expt.p % expt.q) /
-                                              Integer(expt.q)) *
+                                               Integer(expt.q)) *
                              Rational(self.q, -self.p)**ne)
                 else:
                     return Rational(self.q, self.p)**ne
@@ -1282,7 +1283,7 @@ class Rational(Number):
                     return Integer(self.p)**expt*Integer(self.q)**(-expt)
                 # as the above caught negative self.p, now self is positive
                 return Integer(self.q)**Rational(
-                expt.p*(expt.q - 1), expt.q) / \
+                    expt.p*(expt.q - 1), expt.q) / \
                     Integer(self.q)**Integer(expt.p)
 
     def _as_mpf_val(self, prec):
@@ -1455,6 +1456,17 @@ class Rational(Number):
                 return self, S.One
             return -self, S.NegativeOne
         return S.One, self
+
+    @property
+    def numerator(self):
+        return self.p
+
+    @property
+    def denominator(self):
+        return self.q
+
+
+numbers.Rational.register(Rational)
 
 
 class Integer(Rational):
@@ -1677,7 +1689,7 @@ class Integer(Rational):
             ne = -expt
             if self.is_negative:
                 return -((S.NegativeOne)**((expt.p % expt.q) /
-                         Integer(expt.q))*Rational(1, -self)**ne)
+                                           Integer(expt.q))*Rational(1, -self)**ne)
             else:
                 return Rational(1, self.p)**ne
         # see if base is a perfect root, sqrt(4) --> 2
@@ -1754,6 +1766,9 @@ class Integer(Rational):
 
     def __rfloordiv__(self, other):
         return Integer(Integer(other).p // self.p)
+
+
+numbers.Integral.register(Integer)
 
 
 # Add sympify converters

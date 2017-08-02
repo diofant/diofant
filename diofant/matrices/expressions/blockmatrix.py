@@ -110,7 +110,7 @@ class BlockMatrix(MatrixExpr):
     def _eval_trace(self):
         if self.rowblocksizes == self.colblocksizes:
             return Add(*[Trace(self.blocks[i, i])
-                        for i in range(self.blockshape[0])])
+                         for i in range(self.blockshape[0])])
         raise NotImplementedError("Can't perform trace of irregular "
                                   "blockshape")  # pragma: no cover
 
@@ -204,8 +204,8 @@ class BlockDiagMatrix(BlockMatrix):
         from ..immutable import ImmutableMatrix
         mats = self.args
         data = [[mats[i] if i == j else ZeroMatrix(mats[i].rows, mats[j].cols)
-                        for j in range(len(mats))]
-                        for i in range(len(mats))]
+                 for j in range(len(mats))]
+                for i in range(len(mats))]
         return ImmutableMatrix(data)
 
     @property
@@ -310,9 +310,9 @@ def bc_block_plus_ident(expr):
 
     blocks = [arg for arg in expr.args if isinstance(arg, BlockMatrix)]
     if (blocks and all(b.structurally_equal(blocks[0]) for b in blocks)
-               and blocks[0].is_structurally_symmetric):
+            and blocks[0].is_structurally_symmetric):
         block_id = BlockDiagMatrix(*[Identity(k)
-                                        for k in blocks[0].rowblocksizes])
+                                     for k in blocks[0].rowblocksizes])
         return MatAdd(block_id * len(idents), *blocks).doit()
 
     return expr
@@ -324,7 +324,7 @@ def bc_dist(expr):
     if factor != 1 and isinstance(unpack(mat), BlockMatrix):
         B = unpack(mat).blocks
         return BlockMatrix([[factor * B[i, j] for j in range(B.cols)]
-                                              for i in range(B.rows)])
+                            for i in range(B.rows)])
     return expr
 
 
@@ -427,4 +427,4 @@ def blockcut(expr, rowsizes, colsizes):
     colbounds = bounds(colsizes)
     return BlockMatrix([[MatrixSlice(expr, rowbound, colbound)
                          for colbound in colbounds]
-                         for rowbound in rowbounds])
+                        for rowbound in rowbounds])

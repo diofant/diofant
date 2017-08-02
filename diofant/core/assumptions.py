@@ -94,11 +94,11 @@ _assume_rules = FactRules([
 _assume_defined = frozenset(_assume_rules.defined_facts.copy())
 _assume_docs = {
     'commutative':
-"""
+    """
 Test if self commutes with any other object wrt multiplication operation.
 """,
     'polar':
-"""
+    """
 Test if self can have values from the Riemann surface of the logarithm.
 
 See Also
@@ -107,7 +107,7 @@ See Also
 diofant.functions.elementary.exponential.exp_polar
 """,
     'complex':
-"""
+    """
 Test if self can have only values from the set of complex numbers.
 
 See Also
@@ -116,7 +116,7 @@ See Also
 is_real
 """,
     'real':
-"""
+    """
 Test if self can have only values from the set of real numbers [1]_.
 
 See Also
@@ -130,7 +130,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Real_number
 """,
     'imaginary':
-"""
+    """
 Test if self is an imaginary number [1]_.
 
 I.e. that it can be written as a real number multiplied by
@@ -142,7 +142,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Imaginary_number
 """,
     'extended_real':
-"""
+    """
 Test if self can have only values on the extended real number line [1]_.
 
 See Also
@@ -156,16 +156,16 @@ References
 .. [1] http://en.wikipedia.org/wiki/Extended_real_number_line
 """,
     'integer':
-"""
+    """
 Test if self can have only values from the set of integers.
 """,
     'noninteger':
-"""
+    """
 Test if self can have only values from the subset of real numbers,
 that aren't integers.
 """,
     'odd':
-"""
+    """
 Test if self can have only values from the set of odd integers [1]_.
 
 See Also
@@ -179,7 +179,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
 """,
     'even':
-"""
+    """
 Test if self can have only values from the set of even integers [1]_.
 
 See Also
@@ -193,7 +193,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
 """,
     'prime':
-"""
+    """
 Test if self is a natural number greater than ``1`` that has
 no positive divisors other than ``1`` and itself.  See [1]_.
 
@@ -203,7 +203,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Prime_number
 """,
     'composite':
-"""
+    """
 Test if self is a positive integer that has at least one positive
 divisor other than ``1`` or the number itself.  See [1]_.
 
@@ -213,7 +213,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Composite_number
 """,
     'zero':
-"""
+    """
 Test if self is zero.
 
 See Also
@@ -222,7 +222,7 @@ See Also
 is_nonzero
 """,
     'nonzero':
-"""
+    """
 Test if self is nonzero.
 
 See Also
@@ -231,11 +231,11 @@ See Also
 is_zero
 """,
     'rational':
-"""
+    """
 Test if self can have only values from the set of rationals.
 """,
     'algebraic':
-"""
+    """
 Test if self can have only values from the set of algebraic numbers [1]_.
 
 References
@@ -244,7 +244,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Algebraic_number
 """,
     'transcendental':
-"""
+    """
 Test if self can have only values from the set of transcendental numbers [1]_.
 
 References
@@ -253,7 +253,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Transcendental_number
 """,
     'irrational':
-"""
+    """
 Test if self value cannot be represented exactly by Rational, see [1]_.
 
 References
@@ -262,7 +262,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Irrational_number
 """,
     'finite':
-"""
+    """
 Test if self absolute value is bounded.  See [1]_.
 
 References
@@ -272,7 +272,7 @@ References
 
 """,
     'infinite':
-"""
+    """
 Test if self absolute value can be arbitrarily large.  See [1]_, [2]_.
 
 References
@@ -282,7 +282,7 @@ References
 .. [2] http://docs.scipy.org/doc/numpy/reference/generated/numpy.isfinite.html
 """,
     'negative':
-"""
+    """
 Test if self can have only negative values [1]_.
 
 References
@@ -291,7 +291,7 @@ References
 .. [1] http://en.wikipedia.org/wiki/Negative_number
 """,
     'nonnegative':
-"""
+    """
 Test if self can have only nonnegative values [1]_.
 
 See Also
@@ -305,19 +305,19 @@ References
 .. [1] http://en.wikipedia.org/wiki/Negative_number
 """,
     'positive':
-"""
+    """
 Test if self can have only positive values.
 """,
     'nonpositive':
-"""
+    """
 Test if self can have only nonpositive values.
 """,
     'hermitian':
-"""
+    """
 Test if self belongs to the field of hermitian operators.
 """,
     'antihermitian':
-"""
+    """
 Test if self belongs to the field of antihermitian operators.
 """,
 }

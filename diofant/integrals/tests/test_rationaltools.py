@@ -77,7 +77,7 @@ def test_ratint():
 
     assert ratint(1/(x**3 + 1), x) == \
         -log(1 - x + x**2)/6 + log(1 + x)/3 + sqrt(3)*atan(-sqrt(3)
-             / 3 + 2*x*sqrt(3)/3)/3
+                                                           / 3 + 2*x*sqrt(3)/3)/3
 
     assert ratint(1/(x**2 + x + 1), x, extended_real=False) == \
         -I*3**half*log(half + x - half*I*3**half)/3 + \

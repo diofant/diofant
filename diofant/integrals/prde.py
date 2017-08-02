@@ -114,7 +114,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
         return a, B, G, Poly(1, DE.t)
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
-            "'base'}, not %s." % case)
+                         "'base'}, not %s." % case)
 
     nb = order_at(ba, p, DE.t) - order_at(bd, p, DE.t)
     nc = min(order_at(Ga, p, DE.t) - order_at(Gd, p, DE.t) for Ga, Gd in G)
@@ -248,10 +248,10 @@ def constant_system(A, u, DE):
                 Ri = A[i, :]
                 # Rm+1; m = A.rows
                 Rm1 = Ri.applyfunc(lambda x: derivation(x, DE, basic=True) /
-                    derivation(A[i, j], DE, basic=True))
+                                   derivation(A[i, j], DE, basic=True))
                 Rm1 = Rm1.applyfunc(cancel)
                 um1 = cancel(derivation(u[i], DE, basic=True) /
-                    derivation(A[i, j], DE, basic=True))
+                             derivation(A[i, j], DE, basic=True))
 
                 for s in range(A.rows):
                     # A[s, :] = A[s, :] - A[s, i]*A[:, m+1]
@@ -373,7 +373,7 @@ def param_rischDE(fa, fd, G, DE):
     A, B, G, hs = prde_special_denom(a, ba, bd, G, DE)
     g = gcd(A, B)
     A, B, G = A.quo(g), B.quo(g), [gia.cancel(gid*g, include=True) for
-        gia, gid in G]
+                                   gia, gid in G]
     Q, M = prde_linear_constraints(A, B, G, DE)
     M, _ = constant_system(M, zeros(M.rows, 1), DE)
     # Reduce number of constants at this point
@@ -446,14 +446,14 @@ def limited_integrate(fa, fd, G, DE):
     V = [g] + V
     g = A.gcd(B)
     A, B, V = A.quo(g), B.quo(g), [via.cancel(vid*g, include=True) for
-        via, vid in V]
+                                   via, vid in V]
     Q, M = prde_linear_constraints(A, B, V, DE)
     M, _ = constant_system(M, zeros(M.rows, 1), DE)
     l = M.nullspace()
     if M == Matrix() or len(l) > 1:
         # Continue with param_rischDE()
         raise NotImplementedError("param_rischDE() is required to solve this "
-            "integral.")
+                                  "integral.")
     elif len(l) == 0:
         raise NonElementaryIntegralException
     elif len(l) == 1:
@@ -510,7 +510,7 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
         nfmwa = N*fa*wd - M*wa*fd
         nfmwd = fd*wd
         Qv = is_log_deriv_k_t_radical_in_field(N*fa*wd - M*wa*fd, fd*wd, DE,
-            'auto')
+                                               'auto')
         if Qv is None:
             # (N*f - M*w) is not the logarithmic derivative of a k(t)-radical.
             return
@@ -534,7 +534,7 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
 
     if not z.has(DE.t):
         raise NotImplementedError("parametric_log_deriv_heu() "
-            "heuristic failed: z in k.")
+                                  "heuristic failed: z in k.")
 
     u1, r1 = (fa*l.quo(fd)).div(z)  # (l*f).div(z)
     u2, r2 = (wa*l.quo(wd)).div(z)  # (l*w).div(z)
@@ -634,11 +634,11 @@ def is_deriv_k(fa, fd, DE):
         if [i for i in DE.cases if i == 'tan'] or \
                 {i for i in DE.cases if i == 'primitive'} - set(DE.L_K):
             raise NotImplementedError("Real version of the structure "
-                "theorems with hypertangent support is not yet implemented.")
+                                      "theorems with hypertangent support is not yet implemented.")
 
         # TODO: What should really be done in this case?
         raise NotImplementedError("Nonelementary extensions not supported "
-            "in the structure theorems.")
+                                  "in the structure theorems.")
 
     E_part = [DE.D[i].quo(Poly(DE.T[i], DE.T[i])).as_expr() for i in DE.E_K]
     L_part = [DE.D[i].as_expr() for i in DE.L_K]
@@ -657,7 +657,7 @@ def is_deriv_k(fa, fd, DE):
     else:
         if not all(i.is_Rational for i in u):
             raise NotImplementedError("Cannot work with non-rational "
-                "coefficients in this case.")
+                                      "coefficients in this case.")
         else:
             terms = DE.E_args + [DE.T[i] for i in DE.L_K]
             ans = list(zip(terms, u))
@@ -726,10 +726,9 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
     To handle the case where we are given Df, not f, use
     is_log_deriv_k_t_radical_in_field().
     """
-    H = []
     if Df:
         dfa, dfd = (fd*derivation(fa, DE) - fa*derivation(fd, DE)).cancel(fd**2,
-            include=True)
+                                                                          include=True)
     else:
         dfa, dfd = fa, fd
 
@@ -738,11 +737,11 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
         if [i for i in DE.cases if i == 'tan'] or \
                 {i for i in DE.cases if i == 'primitive'} - set(DE.L_K):
             raise NotImplementedError("Real version of the structure "
-                "theorems with hypertangent support is not yet implemented.")
+                                      "theorems with hypertangent support is not yet implemented.")
 
         # TODO: What should really be done in this case?
         raise NotImplementedError("Nonelementary extensions not supported "
-            "in the structure theorems.")
+                                  "in the structure theorems.")
 
     E_part = [DE.D[i].quo(Poly(DE.T[i], DE.T[i])).as_expr() for i in DE.E_K]
     L_part = [DE.D[i].as_expr() for i in DE.L_K]
@@ -763,7 +762,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             # log(2)/log(3). Also, there should be an option to continue
             # anyway, even if the result might potentially be wrong.
             raise NotImplementedError("Cannot work with non-rational "
-                "coefficients in this case.")
+                                      "coefficients in this case.")
         else:
             n = reduce(ilcm, [i.as_numer_denom()[1] for i in u])
             u *= n
@@ -775,7 +774,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             # constant.  We now find the log of that constant.
             argterms = DE.E_args + [DE.T[i] for i in DE.L_K]
             const = cancel(fa.as_expr()/fd.as_expr() -
-                Add(*[Mul(i, j/n) for i, j in zip(argterms, u)]))
+                           Add(*[Mul(i, j/n) for i, j in zip(argterms, u)]))
 
             return ans, result, n, const
 
@@ -823,7 +822,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
     # Note: this might be empty, but everything below should work find in that
     # case (it should be the same as if it were [[1, 1]])
     residueterms = [(H[j][1].subs(z, i), i) for j in range(len(H)) for
-        i in residues[j]]
+                    i in residues[j]]
 
     # TODO: finish writing this and write tests
 
@@ -874,7 +873,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
 
     elif case == 'tan':
         raise NotImplementedError("The hypertangent case is "
-        "not yet implemented for is_log_deriv_k_t_radical_in_field()")
+                                  "not yet implemented for is_log_deriv_k_t_radical_in_field()")
 
     elif case in ['other_linear', 'other_nonlinear']:
         # XXX: If these are supported by the structure theorems, change to NotImplementedError.
@@ -882,10 +881,10 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
 
     else:
         raise ValueError("case must be one of {'primitive', 'exp', 'tan', "
-        "'base', 'auto'}, not %s" % case)
+                         "'base', 'auto'}, not %s" % case)
 
     common_denom = reduce(ilcm, [i.as_numer_denom()[1] for i in [j for _, j in
-        residueterms]] + [n], Integer(1))
+                                                                 residueterms]] + [n], Integer(1))
     residueterms = [(i, j*common_denom) for i, j in residueterms]
     m = common_denom//n
     if common_denom != n*m:  # Verify exact division

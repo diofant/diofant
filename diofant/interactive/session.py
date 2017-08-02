@@ -18,11 +18,26 @@ class IntegerWrapper(ast.NodeTransformer):
         return self.generic_visit(node)
 
 
+class IntegerDivisionWrapper(ast.NodeTransformer):
+    """Wrap all int divisions in a call to Rational."""
+
+    def visit_BinOp(self, node):
+        if (isinstance(node.op, ast.Div) and
+                isinstance(node.left, ast.Num) and
+                isinstance(node.left.n, int) and
+                isinstance(node.right, ast.Num) and
+                isinstance(node.right.n, int)):
+            return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
+                            args=[node.left, node.right], keywords=[],
+                            starargs=None, kwargs=None)
+        return self.generic_visit(node)
+
+
 class AutomaticSymbols(ast.NodeTransformer):
     """Add missing Symbol definitions automatically."""
 
     def __init__(self):
-        super(AutomaticSymbols, self).__init__()
+        super().__init__()
         self.names = []
 
     def visit_Module(self, node):
@@ -41,8 +56,8 @@ class AutomaticSymbols(ast.NodeTransformer):
             assign = ast.Assign(targets=[ast.Name(id=v, ctx=ast.Store())],
                                 value=ast.Call(func=ast.Name(id='Symbol',
                                                              ctx=ast.Load()),
-                                args=[ast.Str(s=v)], keywords=[],
-                                starargs=None, kwargs=None))
+                                               args=[ast.Str(s=v)], keywords=[],
+                                               starargs=None, kwargs=None))
             node.body.insert(0, assign)
 
         newnode = ast.Module(body=node.body)

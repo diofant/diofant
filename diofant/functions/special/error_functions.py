@@ -212,7 +212,7 @@ class erf(Function):
         sq = -y**2/x**2
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
-                    self.func(x + x*sqrt(sq)))
+                                   self.func(x + x*sqrt(sq)))
         return re, im
 
 
@@ -403,7 +403,7 @@ class erfc(Function):
         sq = -y**2/x**2
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
-                    self.func(x + x*sqrt(sq)))
+                                   self.func(x + x*sqrt(sq)))
         return re, im
 
 
@@ -575,7 +575,7 @@ class erfi(Function):
         sq = -y**2/x**2
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
-                    self.func(x + x*sqrt(sq)))
+                                   self.func(x + x*sqrt(sq)))
         return re, im
 
 
@@ -707,7 +707,7 @@ class erf2(Function):
     def _eval_rewrite_as_uppergamma(self, x, y):
         from .gamma_functions import uppergamma
         return (sqrt(y**2)/y*(S.One - uppergamma(S.Half, y**2)/sqrt(S.Pi)) -
-            sqrt(x**2)/x*(S.One - uppergamma(S.Half, x**2)/sqrt(S.Pi)))
+                sqrt(x**2)/x*(S.One - uppergamma(S.Half, x**2)/sqrt(S.Pi)))
 
     def _eval_rewrite_as_expint(self, x, y):
         return erf(y).rewrite(expint) - erf(x).rewrite(expint)
@@ -2048,7 +2048,7 @@ class FresnelIntegral(Function):
         sq = -y**2/x**2
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
-                self.func(x + x*sqrt(sq)))
+                                   self.func(x + x*sqrt(sq)))
         return re, im
 
 
@@ -2173,8 +2173,8 @@ class fresnels(FresnelIntegral):
                  (2**(2*k + 2) * z**(4*k + 3) * 2**(2*k)*factorial(2*k))
                  for k in range(0, n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
-                 (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
-                for k in range(1, n)]
+                             (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
+                             for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [-sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
@@ -2306,8 +2306,8 @@ class fresnelc(FresnelIntegral):
                  (2**(2*k + 2) * z**(4*k + 3) * 2**(2*k)*factorial(2*k))
                  for k in range(0, n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
-                 (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
-                for k in range(1, n)]
+                             (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
+                             for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [ sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
@@ -2343,7 +2343,7 @@ class _erfs(Function):
         if point is S.Infinity:
             z = self.args[0]
             l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
-                    factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
+                 factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
             return (Add(*l))._eval_nseries(x, n, logx) + o
@@ -2354,7 +2354,7 @@ class _erfs(Function):
             z = self.args[0]
             # TODO: is the series really correct?
             l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
-                    factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
+                 factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
             return (Add(*l))._eval_nseries(x, n, logx) + o

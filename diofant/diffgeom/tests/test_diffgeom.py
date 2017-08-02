@@ -219,7 +219,7 @@ def test_schwarzschild():
     assert all(ricci[i, j] == 0 for i in range(4) for j in range(4) if i != j)
     R = Symbol('R')
     eq1 = simplify((ricci[0, 0]/exp(2*f(r) - 2*g(r)) +
-                   ricci[1, 1])*r/2).subs(r, R).doit()
+                    ricci[1, 1])*r/2).subs(r, R).doit()
     assert eq1 == f(R).diff(R) + g(R).diff(R)
     eq2 = simplify(ricci[1, 1].replace(g, lambda x: -f(x)).replace(r, R).doit())
     assert eq2 == -2*f(R).diff(R)**2 - f(R).diff(R, 2) - 2*f(R).diff(R)/R

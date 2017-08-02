@@ -831,7 +831,7 @@ def test_special_assumptions():
 def test_inconsistent():
     # cf. issues sympy/sympy#5795 and sympy/sympy#5545
     pytest.raises(InconsistentAssumptions, lambda: Symbol('x', extended_real=True,
-           commutative=False))
+                                                          commutative=False))
 
 
 def test_sympyissue_6631():

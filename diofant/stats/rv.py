@@ -351,8 +351,6 @@ class ProductDomain(RandomDomain):
     is_ProductDomain = True
 
     def __new__(cls, *domains):
-        symbols = sumsets([domain.symbols for domain in domains])
-
         # Flatten any product of products
         domains2 = []
         for domain in domains:
@@ -621,12 +619,12 @@ def probability(condition, given_condition=None, numsamples=None,
     if given_condition is not None and \
             not isinstance(given_condition, (Relational, Boolean)):
         raise ValueError("%s is not a relational or combination of relationals"
-                % (given_condition))
+                         % (given_condition))
     if given_condition is S.false:
         return S.Zero
     if not isinstance(condition, (Relational, Boolean)):
         raise ValueError("%s is not a relational or combination of relationals"
-                % (condition))
+                         % (condition))
     if condition is S.true:
         return S.One
     if condition is S.false:
@@ -634,7 +632,7 @@ def probability(condition, given_condition=None, numsamples=None,
 
     if numsamples:
         return sampling_P(condition, given_condition, numsamples=numsamples,
-                **kwargs)
+                          **kwargs)
     if given_condition is not None:  # If there is a condition
         # Recompute on new conditional expr
         return probability(given(condition, given_condition, **kwargs), **kwargs)

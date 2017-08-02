@@ -113,8 +113,7 @@ class sinh(HyperbolicFunction):
             return S.Zero
         else:
             x = sympify(x)
-
-            if len(previous_terms) > 2:
+            if len(previous_terms) >= 2:
                 p = previous_terms[-2]
                 return p * x**2 / (n*(n - 1))
             else:
@@ -144,11 +143,8 @@ class sinh(HyperbolicFunction):
         re_part, im_part = self.as_real_imag(deep=deep, **hints)
         return re_part + im_part*S.ImaginaryUnit
 
-    def _eval_expand_trig(self, deep=True, **hints):
-        if deep:
-            arg = self.args[0].expand(deep, **hints)
-        else:
-            arg = self.args[0]
+    def _eval_expand_trig(self, **hints):
+        arg = self.args[0]
         x = None
         if arg.is_Add:  # TODO, implement more if deep stuff here
             x, y = arg.as_two_terms()
@@ -263,7 +259,7 @@ class cosh(HyperbolicFunction):
         else:
             x = sympify(x)
 
-            if len(previous_terms) > 2:
+            if len(previous_terms) >= 2:
                 p = previous_terms[-2]
                 return p * x**2 / (n*(n - 1))
             else:
@@ -292,10 +288,7 @@ class cosh(HyperbolicFunction):
         return re_part + im_part*S.ImaginaryUnit
 
     def _eval_expand_trig(self, deep=True, **hints):
-        if deep:
-            arg = self.args[0].expand(deep, **hints)
-        else:
-            arg = self.args[0]
+        arg = self.args[0]
         x = None
         if arg.is_Add:  # TODO, implement more if deep stuff here
             x, y = arg.as_two_terms()
@@ -630,8 +623,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         # Special handling for rewrite functions. If reciprocal rewrite returns
         # unmodified expression, then return None
         t = self._call_reciprocal(method_name, arg)
-        if t is not None and t != self._reciprocal_of(arg):
-            return 1/t
+        assert t is not None and t != self._reciprocal_of(arg)
+        return 1/t
 
     def _eval_rewrite_as_exp(self, arg):
         return self._rewrite_reciprocal("_eval_rewrite_as_exp", arg)

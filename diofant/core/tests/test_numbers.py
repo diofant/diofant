@@ -286,6 +286,9 @@ def test_Rational_new():
     pytest.raises(TypeError, lambda: Rational('3**3'))
     pytest.raises(TypeError, lambda: Rational('1/2 + 2/3'))
 
+    assert Rational(2, 4).numerator == 1
+    assert Rational(2, 4).denominator == 2
+
     # handle fractions.Fraction instances
     try:
         import fractions

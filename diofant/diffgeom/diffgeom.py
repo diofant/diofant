@@ -1594,7 +1594,7 @@ def metric_to_Riemann_components(expr):
                     for nu in indices]
                    for mu in indices]
                   for sig in indices]
-                     for rho in indices]
+                 for rho in indices]
     riemann_b = [[[[Add(*[ch_2nd[rho, l, mu]*ch_2nd[l, sig, nu] - ch_2nd[rho, l, nu]*ch_2nd[l, sig, mu] for l in indices])
                     for nu in indices]
                    for mu in indices]
@@ -1602,7 +1602,7 @@ def metric_to_Riemann_components(expr):
                  for rho in indices]
     riemann = [[[[riemann_a[rho][sig][mu][nu] + riemann_b[rho][sig][mu][nu]
                   for nu in indices]
-                     for mu in indices]
+                 for mu in indices]
                 for sig in indices]
                for rho in indices]
     return ImmutableDenseNDimArray(riemann)

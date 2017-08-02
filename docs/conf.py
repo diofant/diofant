@@ -119,7 +119,7 @@ latex_domain_indices = False
 
 texinfo_documents = [
     (master_doc, 'diofant', 'Diofant Documentation', 'Diofant Development Team',
-   'Diofant', 'Computer algebra system (CAS) in Python', 'Programming', 1),
+     'Diofant', 'Computer algebra system (CAS) in Python', 'Programming', 1),
 ]
 
 # Use svg for graphviz

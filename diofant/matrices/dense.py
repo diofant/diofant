@@ -129,7 +129,7 @@ class DenseMatrix(MatrixBase):
         if not self.cols:
             return [[] for i in range(self.rows)]
         return [self._mat[i: i + self.cols]
-            for i in range(0, len(self), self.cols)]
+                for i in range(0, len(self), self.cols)]
 
     def row(self, i):
         """Elementary row selector.
@@ -236,7 +236,7 @@ class DenseMatrix(MatrixBase):
         D: Dirac conjugation
         """
         out = self._new(self.rows, self.cols,
-                lambda i, j: self[i, j].conjugate())
+                        lambda i, j: self[i, j].conjugate())
         return out
 
     def _eval_adjoint(self):
@@ -370,9 +370,9 @@ class DenseMatrix(MatrixBase):
         for i in range(self.rows):
             for j in range(i):
                 L[i, j] = (1 / L[j, j])*(self[i, j] -
-                    sum(L[i, k]*L[j, k] for k in range(j)))
+                                         sum(L[i, k]*L[j, k] for k in range(j)))
             L[i, i] = sqrt(self[i, i] -
-                    sum(L[i, k]**2 for k in range(i)))
+                           sum(L[i, k]**2 for k in range(i)))
         return self._new(L)
 
     def _LDLdecomposition(self):
@@ -387,7 +387,7 @@ class DenseMatrix(MatrixBase):
                 L[i, j] = (1 / D[j, j])*(self[i, j] - sum(
                     L[i, k]*L[j, k]*D[k, k] for k in range(j)))
             D[i, i] = self[i, i] - sum(L[i, k]**2*D[k, k]
-                for k in range(i))
+                                       for k in range(i))
         return self._new(L), self._new(D)
 
     def _lower_triangular_solve(self, rhs):
@@ -401,7 +401,7 @@ class DenseMatrix(MatrixBase):
                 if self[i, i] == 0:
                     raise ValueError("Matrix must be non-singular.")
                 X[i, j] = (rhs[i, j] - sum(self[i, k]*X[k, j]
-                    for k in range(i))) / self[i, i]
+                                           for k in range(i))) / self[i, i]
         return self._new(X)
 
     def _upper_triangular_solve(self, rhs):
@@ -414,7 +414,7 @@ class DenseMatrix(MatrixBase):
                 if self[i, i] == 0:
                     raise ValueError("Matrix must be non-singular.")
                 X[i, j] = (rhs[i, j] - sum(self[i, k]*X[k, j]
-                    for k in range(i + 1, self.rows))) / self[i, i]
+                                           for k in range(i + 1, self.rows))) / self[i, i]
         return self._new(X)
 
     def _diagonal_solve(self, rhs):
@@ -658,8 +658,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         dr, dc = rhi - rlo, chi - clo
         if shape != (dr, dc):
             raise ShapeError(filldedent("The Matrix `value` doesn't have the "
-                "same dimensions "
-                "as the in sub-Matrix given by `key`."))
+                                        "same dimensions "
+                                        "as the in sub-Matrix given by `key`."))
 
         for i in range(value.rows):
             for j in range(value.cols):
@@ -1193,7 +1193,7 @@ def matrix_multiply_elementwise(A, B):
         raise ShapeError()
     shape = A.shape
     return classof(A, B)._new(shape[0], shape[1],
-        lambda i, j: A[i, j]*B[i, j])
+                              lambda i, j: A[i, j]*B[i, j])
 
 
 def ones(r, c=None):

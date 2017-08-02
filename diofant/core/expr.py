@@ -2970,7 +2970,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     @cacheit
     def expand(self, deep=True, modulus=None, power_base=True, power_exp=True,
-            mul=True, log=True, multinomial=True, basic=True, **hints):
+               mul=True, log=True, multinomial=True, basic=True, **hints):
         """Expand an expression using hints.
 
         See Also
@@ -2981,7 +2981,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify.radsimp import fraction
 
         hints.update(power_base=power_base, power_exp=power_exp, mul=mul,
-           log=log, multinomial=multinomial, basic=basic)
+                     log=log, multinomial=multinomial, basic=basic)
 
         expr = self
         if hints.pop('frac', False):

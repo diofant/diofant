@@ -118,7 +118,6 @@ def test_canonicalize_no_dummies():
     a, b, c, d = tensor_indices('a, b, c, d', Lorentz)
     sym1 = tensorsymmetry([1])
     sym2 = tensorsymmetry([1]*2)
-    sym2a = tensorsymmetry([2])
 
     # A commuting
     # A^c A^b A^a
@@ -188,7 +187,7 @@ def test_no_metric_symmetry():
 def test_canonicalize1():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Lorentz)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Lorentz)
     sym1 = tensorsymmetry([1])
     base3, gens3 = get_symmetric_group_sgs(3)
     sym2 = tensorsymmetry([1]*2)
@@ -278,7 +277,7 @@ def test_canonicalize1():
     # T_c = -A^{d0 d1 d2} * A_{d0 d1}^d3 * B_{d2 d3}
     Spinor = TensorIndexType('Spinor', metric=1, dummy_fmt='S')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Spinor)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Spinor)
     S3 = TensorType([Spinor]*3, sym3)
     S2a = TensorType([Spinor]*2, sym2a)
     A = S3('A', 1)
@@ -293,7 +292,7 @@ def test_canonicalize1():
     # T_c = A^{d0 d1 d2} * A_{d0 d1 d3} * B_d2^d3
     Mat = TensorIndexType('Mat', metric=None, dummy_fmt='M')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Mat)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Mat)
     S3 = TensorType([Mat]*3, sym3)
     S2a = TensorType([Mat]*2, sym2a)
     A = S3('A', 1)
@@ -309,7 +308,7 @@ def test_canonicalize1():
     S2a = TensorType([Lorentz]*2, sym2a)
     S3a = TensorType([Lorentz]*3, sym3a)
     alpha, beta, gamma, mu, nu, rho = \
-      tensor_indices('alpha,beta,gamma,mu,nu,rho', Lorentz)
+        tensor_indices('alpha,beta,gamma,mu,nu,rho', Lorentz)
     Gamma = S1('Gamma', 2)
     Gamma2 = S2a('Gamma', 2)
     Gamma3 = S3a('Gamma', 2)
@@ -354,7 +353,7 @@ def test_bug_correction_tensor_indices():
 def test_riemann_invariants():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11 = \
-            tensor_indices('d0:12', Lorentz)
+        tensor_indices('d0:12', Lorentz)
     # R^{d0 d1}_{d1 d0}; ord = [d0,-d0,d1,-d1]
     # T_c = -R^{d0 d1}_{d0 d1}
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
@@ -419,7 +418,7 @@ def test_canonicalize2():
     D = Symbol('D')
     Eucl = TensorIndexType('Eucl', metric=0, dim=D, dummy_fmt='E')
     i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14 = \
-            tensor_indices('i0:15', Eucl)
+        tensor_indices('i0:15', Eucl)
     A = tensorhead('A', [Eucl]*3, [[3]])
 
     # two examples from Cvitanovic, Group Theory page 59
@@ -442,7 +441,6 @@ def test_canonicalize3():
     D = Symbol('D')
     Spinor = TensorIndexType('Spinor', dim=D, metric=True, dummy_fmt='S')
     a0, a1, a2, a3, a4 = tensor_indices('a0:5', Spinor)
-    C = Spinor.metric
     chi, psi = tensorhead('chi,psi', [Spinor], [[1]], 1)
 
     t = chi(a1)*psi(a0)
@@ -496,7 +494,6 @@ def test_indices():
 
 
 def test_tensorsymmetry():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     sym = tensorsymmetry([1]*2)
     sym1 = TensorSymmetry(get_symmetric_group_sgs(2))
     assert sym == sym1
@@ -666,7 +663,6 @@ def test_mul():
     from diofant.abc import x
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
-    sym = tensorsymmetry([1]*2)
     t = TensMul.from_data(S.One, [], [], [])
     assert str(t) == '1'
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
@@ -752,7 +748,6 @@ def test_substitute_indices():
 def test_riemann_cyclic_replace():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     m0, m1, m2, m3 = tensor_indices('m:4', Lorentz)
-    symr = tensorsymmetry([2, 2])
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
     t = R(m0, m2, m1, m3)
     t1 = riemann_cyclic_replace(t)
@@ -1009,7 +1004,6 @@ def test_metric_contract3():
 def test_epsilon():
     Lorentz = TensorIndexType('Lorentz', dim=4, dummy_fmt='L')
     a, b, c, d, e = tensor_indices('a,b,c,d,e', Lorentz)
-    g = Lorentz.metric
     epsilon = Lorentz.epsilon
     p, q, r, s = tensorhead('p,q,r,s', [Lorentz], [[1]])
 
@@ -1148,7 +1142,7 @@ def test_TensorManager():
     TensorManager.clear()
     assert TensorManager.comm == [{0: 0, 1: 0, 2: 0}, {0: 0, 1: 1, 2: None}, {0: 0, 1: None}]
     assert GHsymbol not in TensorManager._comm_symbols2i
-    nh = TensorManager.comm_symbols2i(GHsymbol)
+    TensorManager.comm_symbols2i(GHsymbol)
     assert GHsymbol in TensorManager._comm_symbols2i
 
 

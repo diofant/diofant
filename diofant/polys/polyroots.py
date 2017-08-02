@@ -328,7 +328,7 @@ def roots_quartic(f):
 
             # sort it out once they know the values of the coefficients
             return [Piecewise((a1, Eq(p, 0)), (a2, True))
-                for a1, a2 in zip(_ans(y1), _ans(y2))]
+                    for a1, a2 in zip(_ans(y1), _ans(y2))]
 
 
 def roots_binomial(f):
@@ -570,7 +570,6 @@ def roots_quintic(f):
             break
 
     u, v = quintic.uv(theta, d)
-    sqrt5 = math.sqrt(5)
 
     # Now we have various Res values. Each will be a list of five
     # values. We have to pick one r value from those five for each Res
@@ -853,7 +852,7 @@ def roots(f, *gens, **flags):
                         b = Mul(*npow_bases)
                         B = Dummy()
                         d = roots(Poly(expr - con + B**n*Mul(*others), *gens,
-                            **flags), *gens, **flags)
+                                       **flags), *gens, **flags)
                         rv = {}
                         for k, v in d.items():
                             rv[k.subs(B, b)] = v

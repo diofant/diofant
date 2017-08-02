@@ -501,7 +501,7 @@ class LatexPrinter(Printer):
 
         if dim == 1:
             tex = r"\frac{%s}{%s %s}" % (diff_symbol, diff_symbol,
-                self._print(expr.variables[0]))
+                                         self._print(expr.variables[0]))
         else:
             multiplicity, i, tex = [], 1, ""
             current = expr.variables[0]
@@ -680,7 +680,6 @@ class LatexPrinter(Printer):
         else:
             symbols = self._print(tuple(symbols))
 
-        args = (symbols, self._print(expr))
         tex = r"\left( %s \mapsto %s \right)" % (symbols, self._print(expr))
 
         return tex
@@ -1238,7 +1237,7 @@ class LatexPrinter(Printer):
         }
 
         return "%s %s %s" % (self._print(expr.lhs),
-            charmap[expr.rel_op], self._print(expr.rhs))
+                             charmap[expr.rel_op], self._print(expr.rhs))
 
     def _print_Piecewise(self, expr):
         ecpairs = [r"%s & \text{for}\: %s" % (self._print(e), self._print(c))
@@ -1452,8 +1451,8 @@ class LatexPrinter(Printer):
             printset = tuple(s)
 
         return (r"\left\{"
-              + r", ".join(self._print(el) for el in printset)
-              + r"\right\}")
+                + r", ".join(self._print(el) for el in printset)
+                + r"\right\}")
 
     def _print_Interval(self, i):
         if i.left_open:
@@ -1628,7 +1627,7 @@ class LatexPrinter(Printer):
     def _print_divisor_sigma(self, expr, exp=None):
         if len(expr.args) == 2:
             tex = r"_%s\left(%s\right)" % tuple(map(self._print,
-                                                (expr.args[1], expr.args[0])))
+                                                    (expr.args[1], expr.args[0])))
         else:
             tex = r"\left(%s\right)" % self._print(expr.args[0])
         if exp is not None:

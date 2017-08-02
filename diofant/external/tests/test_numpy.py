@@ -30,16 +30,16 @@ else:
 
 def test_systematic_basic():
     def s(diofant_object, numpy_array):
-        x = diofant_object + numpy_array
-        x = numpy_array + diofant_object
-        x = diofant_object - numpy_array
-        x = numpy_array - diofant_object
-        x = diofant_object * numpy_array
-        x = numpy_array * diofant_object
-        x = diofant_object / numpy_array
-        x = numpy_array / diofant_object
-        x = diofant_object ** numpy_array
-        x = numpy_array ** diofant_object
+        diofant_object + numpy_array
+        numpy_array + diofant_object
+        diofant_object - numpy_array
+        numpy_array - diofant_object
+        diofant_object * numpy_array
+        numpy_array * diofant_object
+        diofant_object / numpy_array
+        numpy_array / diofant_object
+        diofant_object ** numpy_array
+        numpy_array ** diofant_object
     x = Symbol("x")
     y = Symbol("y")
     diofant_objs = [

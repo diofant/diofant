@@ -19,7 +19,7 @@ from diofant import S
 sy = diofant
 from diofant.abc import x, y, z
 from diofant.printing.theanocode import (theano_code, dim_handling,
-        theano_function)
+                                         theano_function)
 
 
 def fgraph_of(*exprs):
@@ -80,8 +80,8 @@ def test_trig():
 def test_many():
     expr = sy.exp(x**2 + sy.cos(y)) * sy.log(2*z)
     comp = theano_code(expr)
-    expected = tt.exp(xt**2 + tt.cos(yt)) * tt.log(2*zt)
-    # assert theq(comp, expected)
+    expected = 2.718281828459045**(xt**2 + tt.cos(yt)) * tt.log(2*zt)
+    assert theq(comp, expected)
 
 
 def test_dtype():
@@ -165,7 +165,7 @@ def test_theano_function_numpy():
     assert np.linalg.norm(f([1, 2], [3, 4]) - np.asarray([4, 6])) < 1e-9
 
     f = theano_function([x, y], [x+y], dtypes={x: 'float64', y: 'float64'},
-                                     dim=1)
+                        dim=1)
     xx = np.arange(3).astype('float64')
     yy = 2*np.arange(3).astype('float64')
     assert np.linalg.norm(f(xx, yy) - 3*np.arange(3)) < 1e-9
@@ -174,7 +174,7 @@ def test_theano_function_numpy():
 def test_theano_function_kwargs():
     import numpy as np
     f = theano_function([x, y, z], [x+y], dim=1, on_unused_input='ignore',
-            dtypes={x: 'float64', y: 'float64', z: 'float64'})
+                        dtypes={x: 'float64', y: 'float64', z: 'float64'})
     assert np.linalg.norm(f([1, 2], [3, 4], [0, 0]) - np.asarray([4, 6])) < 1e-9
 
     f = theano_function([x, y, z], [x+y],
@@ -189,7 +189,7 @@ def test_theano_function_kwargs():
 def test_slice():
     assert theano_code(slice(1, 2, 3)) == slice(1, 2, 3)
     assert str(theano_code(slice(1, x, 3), dtypes={x: 'int32'})) ==\
-           str(slice(1, xt, 3))
+        str(slice(1, xt, 3))
 
 
 def test_MatrixSlice():
@@ -201,12 +201,19 @@ def test_MatrixSlice():
     # assert tuple(Yt.owner.op.idx_list) == (slice(1,2,3), slice(4,5,6))
     assert Yt.owner.inputs[0] == theano_code(X)
 
+
+@pytest.mark.xfail
+def test_MatrixSlice_1():
+    n = diofant.Symbol('n', integer=True)
+    X = diofant.MatrixSymbol('X', n, n)
+
+    Y = X[1:2:3, 4:5:6]
     k = diofant.Symbol('k')
     kt = theano_code(k, dtypes={k: 'int32'})
     start, stop, step = 4, k, 2
     Y = X[start:stop:step]
     Yt = theano_code(Y, dtypes={n: 'int32', k: 'int32'})
-    # assert Yt.owner.op.idx_list[0].stop == kt
+    assert Yt.owner.op.idx_list[0].stop == kt
 
 
 @pytest.mark.xfail
@@ -294,7 +301,7 @@ def test_cache():
 
 def test_Piecewise():
     # A piecewise linear
-    xt, yt = theano_code(x), theano_code(y)
+    xt = theano_code(x)
     expr = sy.Piecewise((0, x < 0), (x, x < 2), (1, True))  # ___/III
     result = theano_code(expr)
     assert result.owner.op == tt.switch

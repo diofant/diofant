@@ -63,9 +63,9 @@ def test_quadratic_simple_hyperbolic_case():
     assert diop_solve(-13*x*y + 2*x - 4*y - 54) == {(Integer(27), Integer(0))}
     assert diop_solve(-27*x*y - 30*x - 12*y - 54) == {(-Integer(14), -Integer(1))}
     assert diop_solve(2*x*y + 5*x + 56*y + 7) == {(-Integer(161), -Integer(3)),
-        (-Integer(47), -Integer(6)), (-Integer(35), -Integer(12)), (-Integer(29), -Integer(69)),
-        (-Integer(27), Integer(64)), (-Integer(21), Integer(7)), (-Integer(9), Integer(1)),
-        (Integer(105), -Integer(2))}
+                                                  (-Integer(47), -Integer(6)), (-Integer(35), -Integer(12)), (-Integer(29), -Integer(69)),
+                                                  (-Integer(27), Integer(64)), (-Integer(21), Integer(7)), (-Integer(9), Integer(1)),
+                                                  (Integer(105), -Integer(2))}
     assert diop_solve(6*x*y + 9*x + 2*y + 3) == set()
     assert diop_solve(x*y + x + y + 1) == {(-Integer(1), t), (t, -Integer(1))}
     assert diophantine(48*x*y)
@@ -189,8 +189,8 @@ def test_DN():
 
     assert diop_DN(13, 27) == [(220, 61), (40, 11), (768, 213), (12, 3)]
     assert set(diop_DN(157, 12)) == \
-    {(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)),
-        (Integer(483790960), Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))}
+        {(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)),
+         (Integer(483790960), Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))}
     assert diop_DN(13, 25) == [(3245, 900)]
     assert diop_DN(192, 18) == []
     assert diop_DN(23, 13) == [(-6, 1), (6, 1)]
@@ -278,7 +278,7 @@ def test_find_DN():
 def test_ldescent():
     # Equations which have solutions
     u = ([(13, 23), (3, -11), (41, -113), (4, -7), (-7, 4), (91, -3), (1, 1), (1, -1),
-        (4, 32), (17, 13), (123689, 1), (19, -570)])
+          (4, 32), (17, 13), (123689, 1), (19, -570)])
     for a, b in u:
         w, x, y = ldescent(a, b)
         assert a*x**2 + b*y**2 == w**2

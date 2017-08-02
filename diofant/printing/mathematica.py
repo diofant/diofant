@@ -28,6 +28,7 @@ known_functions = {
     "meijerg": [(lambda *x: True, "MeijerG")],
     "hyper": [(lambda *x: True, "HypergeometricPFQ")],
     "binomial": [(lambda n, k: True, "Binomial")],
+    "erfc": [(lambda x: True, "Erfc")],
 }
 
 

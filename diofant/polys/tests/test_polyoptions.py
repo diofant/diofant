@@ -215,10 +215,10 @@ def test_Domain_preprocess():
 
 def test_Domain_postprocess():
     pytest.raises(GeneratorsError, lambda: Domain.postprocess({'gens': (x, y),
-           'domain': ZZ[y, z]}))
+                                                               'domain': ZZ[y, z]}))
 
     pytest.raises(GeneratorsError, lambda: Domain.postprocess({'gens': (),
-           'domain': EX}))
+                                                               'domain': EX}))
     pytest.raises(GeneratorsError, lambda: Domain.postprocess({'domain': EX}))
 
 

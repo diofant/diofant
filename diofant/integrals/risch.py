@@ -96,7 +96,7 @@ def integer_powers(exprs):
     newterms = {}
     for term in terms:
         common_denom = reduce(ilcm, [i.as_numer_denom()[1] for _, i in
-            terms[term]])
+                                     terms[term]])
         newterm = term/common_denom
         newmults = [(i, j*common_denom) for i, j in terms[term]]
         newterms[newterm] = newmults
@@ -182,7 +182,7 @@ class DifferentialExtension:
         if extension:
             if 'D' not in extension:
                 raise ValueError("At least the key D must be included with "
-                    "the extension flag to DifferentialExtension.")
+                                 "the extension flag to DifferentialExtension.")
             for attr in extension:
                 setattr(self, attr, extension[attr])
 
@@ -191,13 +191,13 @@ class DifferentialExtension:
             return
         elif f is None or x is None:
             raise ValueError("Either both f and x or a manual extension must "
-            "be given.")
+                             "be given.")
 
         from .prde import is_deriv_k
 
         if handle_first not in ['log', 'exp']:
             raise ValueError("handle_first must be 'log' or 'exp', not %s." %
-                str(handle_first))
+                             str(handle_first))
 
         # f will be the original function, self.f might change if we reset
         # (e.g., we pull out a constant from an exponential)
@@ -240,8 +240,8 @@ class DifferentialExtension:
                 # We couldn't find a new extension on the last pass, so I guess
                 # we can't do it.
                 raise NotImplementedError("Couldn't find an elementary "
-                    "transcendental extension for %s.  Try using a " % str(f) +
-                    "manual extension with the extension flag.")
+                                          "transcendental extension for %s.  Try using a " % str(f) +
+                                          "manual extension with the extension flag.")
 
             # Pre-preparsing.
             #################
@@ -277,16 +277,16 @@ class DifferentialExtension:
             # TODO: This probably doesn't need to be completely recomputed at
             # each pass.
             exps = update(exps, {a for a in self.newf.atoms(Pow) if a.base is S.Exp1},
-                lambda i: i.exp.is_rational_function(*self.T) and
-                i.exp.has(*self.T))
+                          lambda i: i.exp.is_rational_function(*self.T) and
+                          i.exp.has(*self.T))
             pows = update(pows, {a for a in self.newf.atoms(Pow) if a.base is not S.Exp1},
-                lambda i: i.exp.is_rational_function(*self.T) and
-                i.exp.has(*self.T))
+                          lambda i: i.exp.is_rational_function(*self.T) and
+                          i.exp.has(*self.T))
             numpows = update(numpows, set(pows),
-                lambda i: not i.base.has(*self.T))
+                             lambda i: not i.base.has(*self.T))
             sympows = update(sympows, set(pows) - set(numpows),
-                lambda i: i.base.is_rational_function(*self.T) and
-                not i.exp.is_Integer)
+                             lambda i: i.base.is_rational_function(*self.T) and
+                             not i.exp.is_Integer)
 
             # The easiest way to deal with non-base E powers is to convert them
             # into base E, integrate, and then convert back.
@@ -299,7 +299,7 @@ class DifferentialExtension:
                 if i in sympows:
                     if i.exp.is_Rational:
                         raise NotImplementedError("Algebraic extensions are "
-                            "not supported (%s)." % str(i))
+                                                  "not supported (%s)." % str(i))
                     # We can add a**b only if log(a) in the extension, because
                     # a**b == exp(b*log(a)).
                     basea, based = frac_in(i.base, self.t)
@@ -346,13 +346,13 @@ class DifferentialExtension:
 
             atoms = self.newf.atoms(log)
             logs = update(logs, atoms,
-                lambda i: i.args[0].is_rational_function(*self.T) and
-                i.args[0].has(*self.T))
+                          lambda i: i.args[0].is_rational_function(*self.T) and
+                          i.args[0].has(*self.T))
             symlogs = update(symlogs, atoms,
-                lambda i: i.has(*self.T) and i.args[0].is_Pow and
-                i.args[0].base.is_rational_function(*self.T) and
-                not i.args[0].base is S.Exp1 and
-                not i.args[0].exp.is_Integer)
+                             lambda i: i.has(*self.T) and i.args[0].is_Pow and
+                             i.args[0].base.is_rational_function(*self.T) and
+                             not i.args[0].base is S.Exp1 and
+                             not i.args[0].exp.is_Integer)
 
             # We can handle things like log(x**y) by converting it to y*log(x)
             # This will fix not only symbolic exponents of the argument, but any
@@ -455,8 +455,8 @@ class DifferentialExtension:
                     self.newf = self.newf.xreplace({exp(arg): exp(const)*Mul(*[
                         u**power for u, power in ans])})
                     self.newf = self.newf.xreplace({exp(p*exparg):
-                        exp(const*p) * Mul(*[u**power for u, power in ans])
-                        for exparg, p in others})
+                                                    exp(const*p) * Mul(*[u**power for u, power in ans])
+                                                    for exparg, p in others})
                     # TODO: Add something to backsubs to put exp(const*p)
                     # back together.
 
@@ -484,20 +484,20 @@ class DifferentialExtension:
                     if const or len(ans) > 1:
                         rad = Mul(*[term**(power/n) for term, power in ans])
                         self.newf = self.newf.xreplace({exp(p*exparg):
-                            exp(const*p)*rad for exparg, p in others})
+                                                        exp(const*p)*rad for exparg, p in others})
                         self.newf = self.newf.xreplace(dict(zip(reversed(self.T),
-                            reversed([f(self.x) for f in self.Tfuncs]))))
+                                                                reversed([f(self.x) for f in self.Tfuncs]))))
                         restart = True
                         break
                     else:
                         # TODO: give algebraic dependence in error string
                         raise NotImplementedError("Cannot integrate over "
-                            "algebraic extensions.")
+                                                  "algebraic extensions.")
 
             else:
                 arga, argd = frac_in(arg, self.t)
                 darga = (argd*derivation(Poly(arga, self.t), self) -
-                    arga*derivation(Poly(argd, self.t), self))
+                         arga*derivation(Poly(argd, self.t), self))
                 dargd = argd**2
                 darga, dargd = darga.cancel(dargd, include=True)
                 darg = darga.as_expr()/dargd.as_expr()
@@ -506,7 +506,7 @@ class DifferentialExtension:
                 self.E_args.append(arg)
                 self.E_K.append(len(self.T) - 1)
                 self.D.append(darg.as_poly(self.t, expand=False)*Poly(self.t,
-                    self.t, expand=False))
+                                                                      self.t, expand=False))
                 if dummy:
                     i = Dummy("i")
                 else:
@@ -552,7 +552,7 @@ class DifferentialExtension:
             else:
                 arga, argd = frac_in(arg, self.t)
                 darga = (argd*derivation(Poly(arga, self.t), self) -
-                    arga*derivation(Poly(argd, self.t), self))
+                         arga*derivation(Poly(argd, self.t), self))
                 dargd = argd**2
                 darg = darga.as_expr()/dargd.as_expr()
                 self.t = next(self.ts)
@@ -560,7 +560,7 @@ class DifferentialExtension:
                 self.L_args.append(arg)
                 self.L_K.append(len(self.T) - 1)
                 self.D.append(cancel(darg.as_expr()/arg).as_poly(self.t,
-                    expand=False))
+                                                                 expand=False))
                 if dummy:
                     i = Dummy("i")
                 else:
@@ -621,7 +621,7 @@ class DifferentialExtension:
         """
         if self.level >= -1:
             raise ValueError("The level of the differential extension cannot "
-                "be incremented any further.")
+                             "be incremented any further.")
 
         self.level += 1
         self.t = self.T[self.level]
@@ -639,7 +639,7 @@ class DifferentialExtension:
         """
         if self.level <= -len(self.T):
             raise ValueError("The level of the differential extension cannot "
-                "be decremented any further.")
+                             "be decremented any further.")
 
         self.level -= 1
         self.t = self.T[self.level]
@@ -765,7 +765,7 @@ def as_poly_1t(p, t, z):
         raise NotImplementedError(e)
     # Compute the negative degree parts.
     one_t_part = Poly.from_list(reversed(one_t_part.rep.rep), *one_t_part.gens,
-        domain=one_t_part.domain)
+                                domain=one_t_part.domain)
     if 0 < r < oo:
         one_t_part *= Poly(t**r, t)
 
@@ -773,7 +773,7 @@ def as_poly_1t(p, t, z):
     if pd.nth(d):
         one_t_part *= Poly(1/pd.nth(d), z, expand=False)
     ans = t_part.as_poly(t, z, expand=False) + one_t_part.as_poly(t, z,
-        expand=False)
+                                                                  expand=False)
 
     return ans
 
@@ -910,7 +910,7 @@ def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
 
     for pi, i in p_sqf:
         Si = pi.as_poly(*kkinv).gcd(derivation(pi, DE,
-            coefficientD=coefficientD, basic=basic).as_poly(*kkinv)).as_poly(DE.t)
+                                               coefficientD=coefficientD, basic=basic).as_poly(*kkinv)).as_poly(DE.t)
         pi = Poly(pi, DE.t)
         Si = Poly(Si, DE.t)
         Ni = pi.exquo(Si)
@@ -1013,7 +1013,7 @@ def polynomial_reduce(p, DE):
     while p.degree(DE.t) >= DE.d.degree(DE.t):
         m = p.degree(DE.t) - DE.d.degree(DE.t) + 1
         q0 = Poly(DE.t**m, DE.t).mul(Poly(p.as_poly(DE.t).LC() /
-            (m*DE.d.LC()), DE.t))
+                                          (m*DE.d.LC()), DE.t))
         q += q0
         p = p - derivation(q0, DE)
 
@@ -1201,7 +1201,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
             for a, j in h_lc_sqf:
                 h = Poly(h, DE.t, field=True).exquo(Poly(gcd(a, s**j, *kkinv),
-                    DE.t))
+                                                         DE.t))
 
             s = Poly(s, z).monic()
 
@@ -1244,7 +1244,7 @@ def residue_reduce_derivation(H, DE, z):
     # TODO: verify that this is correct for multiple extensions
     i = Dummy('i')
     return sympify(sum((RootSum(a[0].as_poly(z), Lambda(i, i*derivation(a[1],
-        DE).as_expr().subs(z, i)/a[1].as_expr().subs(z, i))) for a in H)))
+                                                                        DE).as_expr().subs(z, i)/a[1].as_expr().subs(z, i))) for a in H)))
 
 
 def integrate_primitive_polynomial(p, DE):
@@ -1313,21 +1313,21 @@ def integrate_primitive(a, d, DE, z=None):
     g2, b = residue_reduce(h[0], h[1], DE, z=z)
     if not b:
         i = cancel(a.as_expr()/d.as_expr() - (g1[1]*derivation(g1[0], DE) -
-            g1[0]*derivation(g1[1], DE)).as_expr()/(g1[1]**2).as_expr() -
-            residue_reduce_derivation(g2, DE, z))
+                                              g1[0]*derivation(g1[1], DE)).as_expr()/(g1[1]**2).as_expr() -
+                   residue_reduce_derivation(g2, DE, z))
         i = NonElementaryIntegral(cancel(i).subs(s), DE.x)
         return ((g1[0].as_expr()/g1[1].as_expr()).subs(s) +
                 residue_reduce_to_basic(g2, DE, z), i, b)
 
     # h - Dg2 + r
     p = cancel(h[0].as_expr()/h[1].as_expr() - residue_reduce_derivation(g2,
-        DE, z) + r[0].as_expr()/r[1].as_expr())
+                                                                         DE, z) + r[0].as_expr()/r[1].as_expr())
     p = p.as_poly(DE.t)
 
     q, i, b = integrate_primitive_polynomial(p, DE)
 
     ret = ((g1[0].as_expr()/g1[1].as_expr() + q.as_expr()).subs(s) +
-        residue_reduce_to_basic(g2, DE, z))
+           residue_reduce_to_basic(g2, DE, z))
     if not b:
         # TODO: This does not do the right thing when b is False
         i = NonElementaryIntegral(cancel(i.as_expr()).subs(s), DE.x)
@@ -1408,8 +1408,8 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
     g2, b = residue_reduce(h[0], h[1], DE, z=z)
     if not b:
         i = cancel(a.as_expr()/d.as_expr() - (g1[1]*derivation(g1[0], DE) -
-            g1[0]*derivation(g1[1], DE)).as_expr()/(g1[1]**2).as_expr() -
-            residue_reduce_derivation(g2, DE, z))
+                                              g1[0]*derivation(g1[1], DE)).as_expr()/(g1[1]**2).as_expr() -
+                   residue_reduce_derivation(g2, DE, z))
         i = NonElementaryIntegral(cancel(i.subs(s)), DE.x)
         return ((g1[0].as_expr()/g1[1].as_expr()).subs(s) +
                 residue_reduce_to_basic(g2, DE, z), i, b)
@@ -1417,7 +1417,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
     # p should be a polynomial in t and 1/t, because Sirr == k[t, 1/t]
     # h - Dg2 + r
     p = cancel(h[0].as_expr()/h[1].as_expr() - residue_reduce_derivation(g2,
-        DE, z) + r[0].as_expr()/r[1].as_expr())
+                                                                         DE, z) + r[0].as_expr()/r[1].as_expr())
     pp = as_poly_1t(p, DE.t, z)
 
     qa, qd, b = integrate_hyperexponential_polynomial(pp, DE, z)
@@ -1425,7 +1425,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
     i = pp.nth(0, 0)
 
     ret = ((g1[0].as_expr()/g1[1].as_expr()).subs(s)
-        + residue_reduce_to_basic(g2, DE, z))
+           + residue_reduce_to_basic(g2, DE, z))
 
     qas = qa.as_expr().subs(s)
     qds = qd.as_expr().subs(s)
@@ -1494,7 +1494,7 @@ def integrate_nonlinear_no_specials(a, d, DE, z=None):
     # Because f has no specials, this should be a polynomial in t, or else
     # there is a bug.
     p = cancel(h[0].as_expr()/h[1].as_expr() - residue_reduce_derivation(g2,
-        DE, z).as_expr() + r[0].as_expr()/r[1].as_expr()).as_poly(DE.t)
+                                                                         DE, z).as_expr() + r[0].as_expr()/r[1].as_expr()).as_poly(DE.t)
     q1, q2 = polynomial_reduce(p, DE)
 
     if q2.as_expr().has(DE.t):
@@ -1503,7 +1503,7 @@ def integrate_nonlinear_no_specials(a, d, DE, z=None):
         b = True
 
     ret = (cancel(g1[0].as_expr()/g1[1].as_expr() + q1.as_expr()).subs(s) +
-        residue_reduce_to_basic(g2, DE, z))
+           residue_reduce_to_basic(g2, DE, z))
     return ret, b
 
 
@@ -1683,7 +1683,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
             i = Integer(0)
         else:
             raise NotImplementedError("Only exponential and logarithmic "
-            "extensions are currently supported.")
+                                      "extensions are currently supported.")
 
         result += ans
         if b:

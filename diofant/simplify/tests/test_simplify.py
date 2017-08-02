@@ -113,7 +113,7 @@ def test_simplify_other():
     # f = exp(-I*(k*sqrt(t) + x/(2*sqrt(t)))**2)
     # ans = integrate(f, (k, -oo, oo), conds='none')
     ans = (I*(-pi*x*exp(-3*I*pi/4 + I*x**2/(4*t))*erf(x*exp(-3*I*pi/4) /
-              (2*sqrt(t)))/(2*sqrt(t)) + pi*x*exp(-3*I*pi/4 + I*x**2/(4*t)) /
+                                                      (2*sqrt(t)))/(2*sqrt(t)) + pi*x*exp(-3*I*pi/4 + I*x**2/(4*t)) /
               (2*sqrt(t)))*exp(-I*x**2/(4*t))/(sqrt(pi)*x) - I*sqrt(pi) *
            (-erf(x*exp(I*pi/4)/(2*sqrt(t))) + 1)*exp(I*pi/4)/(2*sqrt(t)))
     assert simplify(ans) == -(-1)**Rational(3, 4)*sqrt(pi)/sqrt(t)
@@ -135,7 +135,7 @@ def test_simplify_ratio():
              1/((S.Half - sqrt(3)*I/2)*(sqrt(21)/2 +
                                         Rational(5, 2))**Rational(1, 3)),
              1/((S.Half + sqrt(3)*I/2) *
-             (sqrt(21)/2 + Rational(5, 2))**Rational(1, 3)) +
+                (sqrt(21)/2 + Rational(5, 2))**Rational(1, 3)) +
              (S.Half + sqrt(3)*I/2)*(sqrt(21)/2 +
                                      Rational(5, 2))**Rational(1, 3),
              -(sqrt(21)/2 + Rational(5, 2))**Rational(1, 3) -

@@ -664,8 +664,8 @@ class Pow(Expr):
         # that don't have an _eval_expand method
         if nc:
             nc = [i._eval_expand_power_base(**hints)
-                if hasattr(i, '_eval_expand_power_base') else i
-                for i in nc]
+                  if hasattr(i, '_eval_expand_power_base') else i
+                  for i in nc]
 
             if e.is_Integer:
                 if e.is_positive:
@@ -864,7 +864,7 @@ class Pow(Expr):
                     multi = (base**(n - 1))._eval_expand_multinomial()
                     if multi.is_Add:
                         return Add(*[f*g for f in base.args
-                            for g in multi.args])
+                                     for g in multi.args])
                     else:
                         # XXX can this ever happen if base was an Add?
                         return Add(*[f*multi for f in base.args])
@@ -995,7 +995,7 @@ class Pow(Expr):
 
         if self.base.has(*syms):
             return bool(self.base._eval_is_polynomial(syms) and
-                self.exp.is_Integer and (self.exp >= 0))
+                        self.exp.is_Integer and (self.exp >= 0))
         else:
             return True
 
@@ -1038,7 +1038,7 @@ class Pow(Expr):
             return self.base.is_algebraic
         elif self.base.is_algebraic and self.exp.is_algebraic:
             if ((self.base.is_nonzero and (self.base - 1).is_nonzero)
-                 or self.base.is_irrational):
+                    or self.base.is_irrational):
                 return self.exp.is_rational
 
     def _eval_is_rational_function(self, syms):

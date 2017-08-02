@@ -9,7 +9,7 @@ __all__ = ()
 
 def test_render():
     ustr = \
-"""\
+        """\
      3     5      \n\
     x     x     ⎛ \n\
 x - ── + ─── + O⎝x\n\

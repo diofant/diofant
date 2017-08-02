@@ -263,7 +263,7 @@ class ContinuousPSpace(PSpace):
         domain_symbols = frozenset(rv.symbol for rv in rvs)
 
         return self.domain.integrate(self.pdf * expr,
-                domain_symbols, **kwargs)
+                                     domain_symbols, **kwargs)
 
     def compute_density(self, expr, **kwargs):
         # Common case Density(X) where X in self.values
@@ -422,10 +422,10 @@ def reduce_rational_inequalities_wrap(condition, var):
         return _reduce_inequalities([[condition]], var, relational=False)
     if condition.__class__ is Or:
         return _reduce_inequalities([list(condition.args)],
-                var, relational=False)
+                                    var, relational=False)
     if condition.__class__ is And:
         intervals = [_reduce_inequalities([[arg]], var, relational=False)
-            for arg in condition.args]
+                     for arg in condition.args]
         I = intervals[0]
         for i in intervals:
             I = I.intersection(i)

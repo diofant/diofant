@@ -122,7 +122,7 @@ def test_Permutation():
 
     s = Permutation([0, 4, 1, 3, 2])
     assert s.parity() == 0
-    _ = s.cyclic_form  # needed to create a value for _cyclic_form
+    s.cyclic_form  # needed to create a value for _cyclic_form
     assert len(s._cyclic_form) != s.size and s.parity() == 0
     assert not s.is_odd
     assert s.is_even
@@ -239,7 +239,7 @@ def test_ranking():
     q = Permutation([[1, 2, 3, 5, 6], [0, 4]])
     a = [Permutation.unrank_trotterjohnson(4, i).array_form for i in range(5)]
     assert a == [[0, 1, 2, 3], [0, 1, 3, 2], [0, 3, 1, 2], [3, 0, 1,
-        2], [3, 0, 2, 1] ]
+                                                            2], [3, 0, 2, 1] ]
     assert [Permutation(pa).rank_trotterjohnson() for pa in a] == list(range(5))
     assert Permutation([0, 1, 2, 3]).next_trotterjohnson() == \
         Permutation([0, 1, 3, 2])

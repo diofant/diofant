@@ -120,7 +120,7 @@ def try_run(commands):
     null = open(os.devnull, 'w')
     for command in commands:
         retcode = subprocess.call(command, stdout=null, shell=True,
-                stderr=subprocess.STDOUT)
+                                  stderr=subprocess.STDOUT)
         if retcode != 0:
             return False
     return True
@@ -251,7 +251,7 @@ def is_feasible(language, commands):
     ]
     try:
         run_test("is_feasible", [routine], numerical_tests, language, commands,
-                friendly=False)
+                 friendly=False)
         return True
     except AssertionError:
         return False

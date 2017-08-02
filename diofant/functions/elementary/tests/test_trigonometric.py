@@ -783,7 +783,7 @@ def test_acos_series():
 def test_acos_rewrite():
     assert acos(x).rewrite(log) == pi/2 + I*log(I*x + sqrt(1 - x**2))
     assert acos(x).rewrite(atan) == \
-           atan(sqrt(1 - x**2)/x) + (pi/2)*(1 - x*sqrt(1/x**2))
+        atan(sqrt(1 - x**2)/x) + (pi/2)*(1 - x*sqrt(1/x**2))
     assert acos(0).rewrite(atan) == S.Pi/2
     assert acos(0.5).rewrite(atan) == acos(0.5).rewrite(log)
     assert acos(x).rewrite(asin) == S.Pi/2 - asin(x)
@@ -1162,9 +1162,9 @@ def test_real_imag():
         assert cos(
             z).as_real_imag(deep=deep) == (cos(a)*cosh(b), -sin(a)*sinh(b))
         assert tan(z).as_real_imag(deep=deep) == (sin(2*a)/(cos(2*a) +
-            cosh(2*b)), sinh(2*b)/(cos(2*a) + cosh(2*b)))
+                                                            cosh(2*b)), sinh(2*b)/(cos(2*a) + cosh(2*b)))
         assert cot(z).as_real_imag(deep=deep) == (-sin(2*a)/(cos(2*a) -
-            cosh(2*b)), -sinh(2*b)/(cos(2*a) - cosh(2*b)))
+                                                             cosh(2*b)), -sinh(2*b)/(cos(2*a) - cosh(2*b)))
         assert sin(a).as_real_imag(deep=deep) == (sin(a), 0)
         assert cos(a).as_real_imag(deep=deep) == (cos(a), 0)
         assert tan(a).as_real_imag(deep=deep) == (tan(a), 0)
@@ -1248,10 +1248,10 @@ def test_sec():
     assert sec(z).conjugate() == sec(conjugate(z))
 
     assert (sec(z).as_real_imag() ==
-    (cos(re(z))*cosh(im(z))/(sin(re(z))**2*sinh(im(z))**2 +
-                             cos(re(z))**2*cosh(im(z))**2),
-     sin(re(z))*sinh(im(z))/(sin(re(z))**2*sinh(im(z))**2 +
-                             cos(re(z))**2*cosh(im(z))**2)))
+            (cos(re(z))*cosh(im(z))/(sin(re(z))**2*sinh(im(z))**2 +
+                                     cos(re(z))**2*cosh(im(z))**2),
+             sin(re(z))*sinh(im(z))/(sin(re(z))**2*sinh(im(z))**2 +
+                                     cos(re(z))**2*cosh(im(z))**2)))
 
     assert sec(x).expand(trig=True) == 1/cos(x)
     assert sec(2*x).expand(trig=True) == 1/(2*cos(x)**2 - 1)
@@ -1323,7 +1323,7 @@ def test_csc():
             (sin(re(z))*cosh(im(z))/(sin(re(z))**2*cosh(im(z))**2 +
                                      cos(re(z))**2*sinh(im(z))**2),
              -cos(re(z))*sinh(im(z))/(sin(re(z))**2*cosh(im(z))**2 +
-                          cos(re(z))**2*sinh(im(z))**2)))
+                                      cos(re(z))**2*sinh(im(z))**2)))
 
     assert csc(x).expand(trig=True) == 1/sin(x)
     assert csc(2*x).expand(trig=True) == 1/(2*sin(x)*cos(x))
@@ -1340,7 +1340,7 @@ def test_csc():
     assert series(csc(x), x, x0=pi/2, n=6) == \
         1 + (x - pi/2)**2/2 + 5*(x - pi/2)**4/24 + O((x - pi/2)**6, (x, pi/2))
     assert series(csc(x), x, x0=0, n=6) == \
-            1/x + x/6 + 7*x**3/360 + 31*x**5/15120 + O(x**6)
+        1/x + x/6 + 7*x**3/360 + 31*x**5/15120 + O(x**6)
 
     assert csc(x).diff(x) == -cot(x)*csc(x)
 

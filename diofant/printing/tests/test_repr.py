@@ -191,9 +191,9 @@ def test_PolyRing():
     sT(ring("x,y", QQ, grlex)[0], "PolyRing((Symbol('x'), Symbol('y')), "
                                   "%s, GradedLexOrder())" % repr(QQ))
     sT(ring("x,y,z", ZZ["t"], lex)[0],
-            "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), "
-            "PolynomialRing(PolyRing((Symbol('t'),), "
-            "%s, LexOrder())), LexOrder())" % repr(ZZ))
+       "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), "
+       "PolynomialRing(PolyRing((Symbol('t'),), "
+       "%s, LexOrder())), LexOrder())" % repr(ZZ))
 
 
 def test_FracField():
@@ -202,9 +202,9 @@ def test_FracField():
     sT(field("x,y", QQ, grlex)[0], "FracField((Symbol('x'), Symbol('y')), "
                                    "%s, GradedLexOrder())" % repr(QQ))
     sT(field("x,y,z", ZZ["t"], lex)[0],
-            "FracField((Symbol('x'), Symbol('y'), Symbol('z')), "
-            "PolynomialRing(PolyRing((Symbol('t'),), %s, "
-            "LexOrder())), LexOrder())" % repr(ZZ))
+       "FracField((Symbol('x'), Symbol('y'), Symbol('z')), "
+       "PolynomialRing(PolyRing((Symbol('t'),), %s, "
+       "LexOrder())), LexOrder())" % repr(ZZ))
 
 
 def test_PolyElement():

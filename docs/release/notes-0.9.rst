@@ -51,6 +51,7 @@ Minor changes
 * Support rewriting :class:`~diofant.functions.elementary.miscellaneous.Min` and :class:`~diofant.functions.elementary.miscellaneous.Max` as :class:`~diofant.functions.elementary.piecewise.Piecewise`, this allow solving more piecewise equations, see :pull:`426`.
 * :func:`~diofant.polys.numberfields.minimal_polynomial` fixed to support generic :class:`~diofant.core.numbers.AlgebraicNumber`'s, see :pull:`433` and :pull:`438`.
 * :class:`~diofant.core.numbers.AlgebraicNumber` now support arithmetic operations and exponentiation with integer exponents, see :pull:`428` and :pull:`485`.
+* Add AST transformation :class:`~diofant.interactive.session.IntegerDivisionWrapper` to wrap integer division, see :pull:`519`.
 
 Developer changes
 =================
@@ -155,6 +156,7 @@ Issues closed
 * :issue:`75` limit(abs(ln(x))-ln(x), x, 2, '-') runs endless
 * :issue:`462` Poor performance for very simple matching rule
 * :sympyissue:`12238` match can take a long time (possibly forever)
+* :sympyissue:`4269` ordering of classes
 
 .. last pr: #494
 

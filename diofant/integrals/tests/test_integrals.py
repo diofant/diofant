@@ -377,7 +377,7 @@ def test_evalf_integrals():
         NS('pi/sqrt(3) * log(2*pi**(5/6) / gamma(1/6))', 15)
     # http://mathworld.wolfram.com/AhmedsIntegral.html
     assert NS(Integral(atan(sqrt(x**2 + 2))/(sqrt(x**2 + 2)*(x**2 + 1)), (x,
-              0, 1)), 15) == NS(5*pi**2/96, 15)
+                                                                          0, 1)), 15) == NS(5*pi**2/96, 15)
     # http://mathworld.wolfram.com/AbelsIntegral.html
     assert NS(Integral(x/((exp(pi*x) - exp(
         -pi*x))*(x**2 + 1)), (x, 0, oo)), 15) == NS('log(2)/2-1/4', 15)
@@ -438,7 +438,7 @@ def test_integrate_DiracDelta():
     assert integrate(DiracDelta(x)**2, (x, -oo, oo)) == DiracDelta(0)
     # issue sympy/sympy#4522
     assert integrate(integrate((4 - 4*x + x*y - 4*y) *
-        DiracDelta(x)*DiracDelta(y - 1), (x, 0, 1)), (y, 0, 1)) == 0
+                               DiracDelta(x)*DiracDelta(y - 1), (x, 0, 1)), (y, 0, 1)) == 0
     # issue sympy/sympy#5729
     p = exp(-(x**2 + y**2))/pi
     assert integrate(p*DiracDelta(x - 10*y), (x, -oo, oo), (y, -oo, oo)) == \
@@ -540,7 +540,6 @@ def test_subs5():
 
 
 def test_subs6():
-    b = symbols('b')
     e = Integral(x*y, (x, f(x), f(y)))
     assert e.subs(x, 1) == Integral(x*y, (x, f(1), f(y)))
     assert e.subs(y, 1) == Integral(x, (x, f(x), f(1)))
@@ -555,7 +554,7 @@ def test_subs7():
     e = Integral(x, (x, 1, y), (y, 1, 2))
     assert e.subs({x: 1, y: 2}) == e
     e = Integral(sin(x) + sin(y), (x, sin(x), sin(y)),
-                                  (y, 1, 2))
+                 (y, 1, 2))
     assert e.subs(sin(y), 1) == e
     assert e.subs(sin(x), 1) == Integral(sin(x) + sin(y), (x, 1, sin(y)),
                                          (y, 1, 2))
@@ -670,9 +669,9 @@ def test_sympyissue_4884():
     assert integrate(sqrt(x)*(1 + x)) == \
         Piecewise(
             (2*sqrt(x)*(x + 1)**2/5 - 2*sqrt(x)*(x + 1)/15 - 4*sqrt(x)/15,
-            Abs(x + 1) > 1),
+             Abs(x + 1) > 1),
             (2*I*sqrt(-x)*(x + 1)**2/5 - 2*I*sqrt(-x)*(x + 1)/15 -
-            4*I*sqrt(-x)/15, True))
+             4*I*sqrt(-x)/15, True))
     assert integrate(x**x*(1 + log(x))) == x**x
 
 
@@ -824,7 +823,7 @@ def test_sympyissue_4890():
 def test_sympyissue_4376():
     n = Symbol('n', integer=True, positive=True)
     assert simplify(integrate(n*(x**(1/n) - 1), (x, 0, S.Half)) -
-                (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
+                    (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
 
 
 @pytest.mark.slow
@@ -1083,16 +1082,16 @@ def test_sympyissue_2708():
 def test_sympyissue_8368():
     assert integrate(exp(-s*x)*cosh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), Abs(s**2) < 1),
-        (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
-        ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
-        And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
-        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
-        1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
+                                (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
+                                                                                    ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
+                   And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
+                       cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
+                       1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
                                 (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
                                 (meijerg(((0,), (-S.Half, S.Half)),
-                                                ((0, S.Half), (-S.Half,)),
+                                         ((0, S.Half), (-S.Half,)),
                                          polar_lift(s)**2), True)),
                    And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
                        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),

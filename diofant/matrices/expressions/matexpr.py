@@ -241,8 +241,8 @@ class MatrixExpr(Expr):
         """
         from ..immutable import ImmutableMatrix
         return ImmutableMatrix([[    self[i, j]
-                            for j in range(self.cols)]
-                            for i in range(self.rows)])
+                                     for j in range(self.cols)]
+                                for i in range(self.rows)])
 
     def as_mutable(self):
         """

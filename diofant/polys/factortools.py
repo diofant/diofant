@@ -634,7 +634,7 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
         d = dup_LC(h, K)*cs
 
         for i in reversed(range(len(E))):
-            k, e, (t, _) = 0, E[i], T[i]
+            k, e, t = 0, E[i], T[i][0]
 
             while not (d % e):
                 d, k = d//e, k + 1
@@ -975,7 +975,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
             raise ExtraneousFactors(
                 "we need to restart algorithm with better parameters")
 
-    negative, result = 0, []
+    result = []
 
     for f in factors:
         _, f = dmp_ground_primitive(f, u, K)
@@ -1102,7 +1102,7 @@ def dmp_ext_factor(f, u, K):
     factors = dmp_factor_list_include(r, u, K.domain)
 
     if len(factors) == 1:
-        coeff, factors = lc, [f]
+        factors = [f]
     else:
         H = dmp_raise([K.one, s*K.unit], u, 0, K)
 

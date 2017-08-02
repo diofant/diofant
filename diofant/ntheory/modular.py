@@ -87,7 +87,7 @@ def crt(m, v, symmetric=False, check=True):
     if check:
         if not all(v % m == result % m for v, m in zip(v, m)):
             result = solve_congruence(*list(zip(v, m)),
-                    check=False, symmetric=symmetric)
+                                      check=False, symmetric=symmetric)
             if result is None:
                 return result
             result, mm = result

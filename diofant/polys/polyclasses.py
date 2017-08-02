@@ -845,7 +845,7 @@ class DMP(CantSympify):
 
     def _strict_eq(self, other):
         return (isinstance(other, self.__class__) and self.lev == other.lev
-                           and self.domain == other.domain and self.rep == other.rep)
+                and self.domain == other.domain and self.rep == other.rep)
 
     def __bool__(self):
         return not dmp_zero_p(self.rep, self.lev)

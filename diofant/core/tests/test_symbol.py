@@ -98,8 +98,6 @@ def test_no_len():
 
 
 def test_ineq_unequal():
-    S = sympify
-
     x, y, z = symbols('x,y,z')
 
     e = (

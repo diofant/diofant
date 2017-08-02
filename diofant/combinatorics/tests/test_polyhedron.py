@@ -15,7 +15,7 @@ rmul = Permutation.rmul
 
 def test_polyhedron():
     pytest.raises(ValueError, lambda: Polyhedron(list('ab'),
-        pgroup=[Permutation([0])]))
+                                                 pgroup=[Permutation([0])]))
     pgroup = [Permutation([[0, 7, 2, 5], [6, 1, 4, 3]]),
               Permutation([[0, 7, 1, 6], [5, 2, 4, 3]]),
               Permutation([[3, 6, 0, 5], [4, 1, 7, 2]]),

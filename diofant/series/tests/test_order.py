@@ -12,7 +12,7 @@ __all__ = ()
 def test_caching_bug():
     # needs to be a first test, so that all caches are clean
     # cache it
-    e = O(w)
+    O(w)
     # and test that this won't raise an exception
     O(w**(-1/x/log(3)*log(5)), w)
 
@@ -230,9 +230,9 @@ def test_leading_order():
 
 def test_leading_order2():
     assert set((2 + pi + x**2).extract_leading_order(x)) == {(pi, O(1, x)),
-        (Integer(2), O(1, x))}
+                                                             (Integer(2), O(1, x))}
     assert set((2*x + pi*x + x**2).extract_leading_order(x)) == {(2*x, O(x)),
-        (x*pi, O(x))}
+                                                                 (x*pi, O(x))}
 
 
 def test_order_leadterm():

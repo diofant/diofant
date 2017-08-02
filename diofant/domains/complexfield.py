@@ -53,8 +53,8 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
 
     def __eq__(self, other):
         return (isinstance(other, ComplexField)
-           and self.precision == other.precision
-           and self.tolerance == other.tolerance)
+                and self.precision == other.precision
+                and self.tolerance == other.tolerance)
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.precision, self.tolerance))

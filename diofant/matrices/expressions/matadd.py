@@ -30,7 +30,7 @@ class MatAdd(MatrixExpr):
 
     def _eval_is_commutative(self):
         return _fuzzy_group((a.is_commutative for a in self.args),
-                             quick_exit=True)
+                            quick_exit=True)
 
     def __new__(cls, *args, **kwargs):
         args = list(map(sympify, args))

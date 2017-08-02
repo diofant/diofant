@@ -93,6 +93,10 @@ def test_sinh_series():
     assert sinh(x).series(x, 0, 10) == \
         x + x**3/6 + x**5/120 + x**7/5040 + x**9/362880 + O(x**10)
 
+    assert sinh(x).taylor_term(1, x) == x
+    assert sinh(x).taylor_term(3, x) == x**3/6
+    assert sinh(x).taylor_term(3, x, *(x, 0)) == sinh(x).taylor_term(3, x)
+
 
 def test_cosh():
     k = Symbol('k', integer=True)
@@ -172,6 +176,10 @@ def test_cosh():
 def test_cosh_series():
     assert cosh(x).series(x, 0, 10) == \
         1 + x**2/2 + x**4/24 + x**6/720 + x**8/40320 + O(x**10)
+
+    assert cosh(x).taylor_term(0, x) == 1
+    assert cosh(x).taylor_term(2, x) == x**2/2
+    assert cosh(x).taylor_term(2, x, *(1, 0)) == cosh(x).taylor_term(2, x)
 
 
 def test_tanh():
@@ -707,11 +715,11 @@ def test_complex():
         assert coth(z).expand(complex=True, deep=deep) == sinh(a)*cosh(
             a)/(sin(b)**2 + sinh(a)**2) - I*sin(b)*cos(b)/(sin(b)**2 + sinh(a)**2)
         assert csch(z).expand(complex=True, deep=deep) == cos(b) * sinh(a) / (sin(b)**2
-            * cosh(a)**2 + cos(b)**2 * sinh(a)**2) - I*sin(b) * cosh(a) / (sin(b)**2
-            * cosh(a)**2 + cos(b)**2 * sinh(a)**2)
+                                                                              * cosh(a)**2 + cos(b)**2 * sinh(a)**2) - I*sin(b) * cosh(a) / (sin(b)**2
+                                                                                                                                             * cosh(a)**2 + cos(b)**2 * sinh(a)**2)
         assert sech(z).expand(complex=True, deep=deep) == cos(b) * cosh(a) / (sin(b)**2
-            * sinh(a)**2 + cos(b)**2 * cosh(a)**2) - I*sin(b) * sinh(a) / (sin(b)**2
-            * sinh(a)**2 + cos(b)**2 * cosh(a)**2)
+                                                                              * sinh(a)**2 + cos(b)**2 * cosh(a)**2) - I*sin(b) * sinh(a) / (sin(b)**2
+                                                                                                                                             * sinh(a)**2 + cos(b)**2 * cosh(a)**2)
 
 
 def test_complex_2899():

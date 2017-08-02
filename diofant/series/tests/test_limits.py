@@ -401,7 +401,7 @@ def test_factorial():
 
 def test_sympyissue_6560():
     e = 5*x**3/4 - 3*x/4 + (y*(3*x**2/2 - Rational(1, 2)) +
-        35*x**4/8 - 15*x**2/4 + Rational(3, 8))/(2*(y + 1))
+                            35*x**4/8 - 15*x**2/4 + Rational(3, 8))/(2*(y + 1))
     assert limit(e, y, oo) == (5*x**3 + 3*x**2 - 3*x - 1)/4
 
 
@@ -410,7 +410,7 @@ def test_sympyissue_5172():
     p = Symbol('p', positive=True)
     m = Symbol('m', negative=True)
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
-        (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
+            (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs(c, c + 1)
     assert limit(expr.subs(c, m), n, oo) == 1
     assert limit(expr.subs(c, p), n, oo).simplify() == \

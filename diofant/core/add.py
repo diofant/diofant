@@ -111,7 +111,7 @@ class Add(AssocOp):
             elif o.is_Pow:
                 b, e = o.as_base_exp()
                 if b.is_Number and (e.is_Integer or
-                                   (e.is_Rational and e.is_negative)):
+                                    (e.is_Rational and e.is_negative)):
                     seq.append(b**e)
                     continue
                 c, s = S.One, o
@@ -390,7 +390,7 @@ class Add(AssocOp):
         # assemble single numerator and denominator
         denoms, numers = [list(i) for i in zip(*iter(nd.items()))]
         n, d = self.func(*[Mul(*(denoms[:i] + [numers[i]] + denoms[i + 1:]))
-                   for i in range(len(numers))]), Mul(*denoms)
+                           for i in range(len(numers))]), Mul(*denoms)
 
         return _keep_coeff(ncon, n), _keep_coeff(dcon, d)
 
@@ -542,7 +542,7 @@ class Add(AssocOp):
                 if old_set < self_set:
                     ret_set = self_set - old_set
                     return self.func(new, coeff_self, -coeff_old,
-                               *[s._subs(old, new) for s in ret_set])
+                                     *[s._subs(old, new) for s in ret_set])
 
                 args_old = self.func.make_args(
                     -terms_old)     # (a+b+c+d).subs(-b-c,x) -> a-x+d
@@ -550,7 +550,7 @@ class Add(AssocOp):
                 if old_set < self_set:
                     ret_set = self_set - old_set
                     return self.func(-new, coeff_self, coeff_old,
-                               *[s._subs(old, new) for s in ret_set])
+                                     *[s._subs(old, new) for s in ret_set])
 
     def removeO(self):
         """Removes the additive O(..) symbol.
@@ -625,7 +625,7 @@ class Add(AssocOp):
         >>> ((1 + 2*I)*(1 + 3*I)).as_real_imag()
         (-5, 5)
         """
-        sargs, terms = self.args, []
+        sargs = self.args
         re_part, im_part = [], []
         for term in sargs:
             re, im = term.as_real_imag(deep=deep)

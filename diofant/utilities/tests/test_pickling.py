@@ -344,13 +344,13 @@ def test_pickling_polys_elements():
     for c in (PythonRational, PythonRational(1, 7)):
         check(c)
 
-    gf = PythonFiniteField(17)
+    # gf = PythonFiniteField(17)
 
     # TODO: fix pickling of ModularInteger
     # for c in (gf.dtype, gf(5)):
     #     check(c)
 
-    mp = MPContext()
+    # mp = MPContext()
 
     # TODO: fix pickling of RealElement
     # for c in (mp.mpf, mp.mpf(1.0)):

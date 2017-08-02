@@ -364,7 +364,6 @@ def gauss_chebyshev_t(n, n_digits):
     .. [1] http://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
     .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev1_rule/chebyshev1_rule.html
     """
-    x = Dummy("x")
     xi = []
     w = []
     for i in range(1, n + 1):
@@ -435,7 +434,6 @@ def gauss_chebyshev_u(n, n_digits):
     .. [1] http://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
     .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev2_rule/chebyshev2_rule.html
     """
-    x = Dummy("x")
     xi = []
     w = []
     for i in range(1, n + 1):

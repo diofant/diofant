@@ -771,7 +771,6 @@ def _diop_quadratic(var, coeff, t):
             g = igcd(A, C)
             g = abs(g) * sign(A)
             a = A // g
-            b = B // g
             c = C // g
             e = sign(B/A)
 
@@ -879,7 +878,7 @@ def _diop_quadratic(var, coeff, t):
 
             else:
                 L = ilcm((P[0]).q, ilcm((P[1]).q, ilcm((P[2]).q,
-                         ilcm((P[3]).q, ilcm((Q[0]).q, (Q[1]).q)))))
+                                                       ilcm((P[3]).q, ilcm((Q[0]).q, (Q[1]).q)))))
 
                 k = 1
 
@@ -1271,7 +1270,6 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     sol = []
     a = diop_DN(D, 1)
     u = a[0][0]
-    v = a[0][1]
 
     if abs(N) == 1:
         return diop_DN(D, N)
@@ -2715,9 +2713,9 @@ def sum_of_three_squares(n):
         Available: http://www.schorn.ch/howto.html
     """
     special = {1: (1, 0, 0), 2: (1, 1, 0), 3: (1, 1, 1), 10: (1, 3, 0), 34: (3, 3, 4), 58: (3, 7, 0),
-        85: (6, 7, 0), 130: (3, 11, 0), 214: (3, 6, 13), 226: (8, 9, 9), 370: (8, 9, 15),
-        526: (6, 7, 21), 706: (15, 15, 16), 730: (1, 27, 0), 1414: (6, 17, 33), 1906: (13, 21, 36),
-        2986: (21, 32, 39), 9634: (56, 57, 57)}
+               85: (6, 7, 0), 130: (3, 11, 0), 214: (3, 6, 13), 226: (8, 9, 9), 370: (8, 9, 15),
+               526: (6, 7, 21), 706: (15, 15, 16), 730: (1, 27, 0), 1414: (6, 17, 33), 1906: (13, 21, 36),
+               2986: (21, 32, 39), 9634: (56, 57, 57)}
 
     v = 0
 
@@ -2861,7 +2859,6 @@ def power_representation(n, p, k, zeros=False):
             yield t
 
     else:
-        l = []
         a = integer_nthroot(n, p)[0]
 
         for t in pow_rep_recursive(a, k, n, [], p):

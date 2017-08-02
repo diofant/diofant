@@ -214,7 +214,7 @@ class hyper(TupleParametersBase):
         rfbq = Tuple(*[RisingFactorial(b, n) for b in bq])
         coeff = Mul(*rfap) / Mul(*rfbq)
         return Piecewise((Sum(coeff * z**n / factorial(n), (n, 0, oo)),
-                         self.convergence_statement), (self, True))
+                          self.convergence_statement), (self, True))
 
     @property
     def argument(self):
@@ -638,7 +638,7 @@ class meijerg(TupleParametersBase):
         # Convert all args to mpf or mpc
         try:
             [z, r, ap, bq] = [arg._to_mpmath(prec)
-                    for arg in [znum, 1/n, self.args[0], self.args[1]]]
+                              for arg in [znum, 1/n, self.args[0], self.args[1]]]
         except ValueError:
             return
 

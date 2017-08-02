@@ -224,7 +224,6 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         to appear in terms. Similarly for hyperbolic functions. For tan(n*x),
         sin(n*x) and cos(n*x) are guaranteed.
         """
-        gens = []
         I = []
         y = Dummy('y')
         for fn, coeff in terms:
@@ -480,7 +479,6 @@ def trigsimp(expr, **opts):
     old = opts.pop('old', False)
     if not old:
         opts.pop('deep', None)
-        recursive = opts.pop('recursive', None)
         method = opts.pop('method', 'matching')
     else:
         method = 'old'
@@ -503,7 +501,7 @@ def trigsimp(expr, **opts):
         'matching': (lambda x: futrig(x)),
         'groebner': (lambda x: groebnersimp(x, **opts)),
         'combined': (lambda x: futrig(groebnersimp(x,
-                               polynomial=True, hints=[2, tan]))),
+                                                   polynomial=True, hints=[2, tan]))),
         'old': lambda x: trigsimp_old(x, **opts)}[method]
 
     return trigsimpfunc(expr)
@@ -712,8 +710,8 @@ def trigsimp_old(expr, **opts):
         'matching': (lambda x, d: _trigsimp(x, d)),
         'groebner': (lambda x, d: groebnersimp(x, d, **opts)),
         'combined': (lambda x, d: _trigsimp(groebnersimp(x,
-                                       d, polynomial=True, hints=[2, tan]),
-                                   d))}[method]
+                                                         d, polynomial=True, hints=[2, tan]),
+                                            d))}[method]
 
     if recursive:
         w, g = cse(expr)
@@ -827,7 +825,7 @@ def _trigpats():
     )
 
     _trigpat = (a, b, c, d, matchers_division, matchers_add,
-        matchers_identity, artifacts)
+                matchers_identity, artifacts)
     return _trigpat
 
 
@@ -947,7 +945,7 @@ def __trigsimp(expr, deep=False):
     if _trigpat is None:
         _trigpats()
     a, b, c, d, matchers_division, matchers_add, \
-    matchers_identity, artifacts = _trigpat
+        matchers_identity, artifacts = _trigpat
 
     if expr.is_Mul:
         # do some simplifications like sin/cos -> tan:
@@ -1136,42 +1134,42 @@ def _futrig(e, **kwargs):
         return x.has(TrigonometricFunction)
 
     tree = [identity,
-        (
-        TR3,  # canonical angles
-        TR1,  # sec-csc -> cos-sin
-        TR12,  # expand tan of sum
-        lambda x: _eapply(factor, x, trigs),
-        TR2,  # tan-cot -> sin-cos
-        [identity, lambda x: _eapply(_mexpand, x, trigs)],
-        TR2i,  # sin-cos ratio -> tan
-        lambda x: _eapply(lambda i: factor(i.normal()), x, trigs),
-        TR14,  # factored identities
-        TR5,  # sin-pow -> cos_pow
-        TR10,  # sin-cos of sums -> sin-cos prod
-        TR11, TR6,  # reduce double angles and rewrite cos pows
-        lambda x: _eapply(factor, x, trigs),
-        TR14,  # factored powers of identities
-        [identity, lambda x: _eapply(_mexpand, x, trigs)],
-        TRmorrie,
-        TR10i,  # sin-cos products > sin-cos of sums
-        [identity, TR8],  # sin-cos products -> sin-cos of sums
-        [identity, lambda x: TR2i(TR2(x))],  # tan -> sin-cos -> tan
-        [
-            lambda x: _eapply(expand_mul, TR5(x), trigs),
-            lambda x: _eapply(
-                expand_mul, TR15(x), trigs)],  # pos/neg powers of sin
-        [
-            lambda x:  _eapply(expand_mul, TR6(x), trigs),
-            lambda x:  _eapply(
-                expand_mul, TR16(x), trigs)],  # pos/neg powers of cos
-        TR111,  # tan, sin, cos to neg power -> cot, csc, sec
-        [identity, TR2i],  # sin-cos ratio to tan
-        [identity, lambda x: _eapply(
-            expand_mul, TR22(x), trigs)],  # tan-cot to sec-csc
-        TR1, TR2, TR2i,
-        [identity, lambda x: _eapply(
-            factor_terms, TR12(x), trigs)],  # expand tan of sum
-        )]
+            (
+                TR3,  # canonical angles
+                TR1,  # sec-csc -> cos-sin
+                TR12,  # expand tan of sum
+                lambda x: _eapply(factor, x, trigs),
+                TR2,  # tan-cot -> sin-cos
+                [identity, lambda x: _eapply(_mexpand, x, trigs)],
+                TR2i,  # sin-cos ratio -> tan
+                lambda x: _eapply(lambda i: factor(i.normal()), x, trigs),
+                TR14,  # factored identities
+                TR5,  # sin-pow -> cos_pow
+                TR10,  # sin-cos of sums -> sin-cos prod
+                TR11, TR6,  # reduce double angles and rewrite cos pows
+                lambda x: _eapply(factor, x, trigs),
+                TR14,  # factored powers of identities
+                [identity, lambda x: _eapply(_mexpand, x, trigs)],
+                TRmorrie,
+                TR10i,  # sin-cos products > sin-cos of sums
+                [identity, TR8],  # sin-cos products -> sin-cos of sums
+                [identity, lambda x: TR2i(TR2(x))],  # tan -> sin-cos -> tan
+                [
+                    lambda x: _eapply(expand_mul, TR5(x), trigs),
+                    lambda x: _eapply(
+                        expand_mul, TR15(x), trigs)],  # pos/neg powers of sin
+                [
+                    lambda x:  _eapply(expand_mul, TR6(x), trigs),
+                    lambda x:  _eapply(
+                        expand_mul, TR16(x), trigs)],  # pos/neg powers of cos
+                TR111,  # tan, sin, cos to neg power -> cot, csc, sec
+                [identity, TR2i],  # sin-cos ratio to tan
+                [identity, lambda x: _eapply(
+                    expand_mul, TR22(x), trigs)],  # tan-cot to sec-csc
+                TR1, TR2, TR2i,
+                [identity, lambda x: _eapply(
+                    factor_terms, TR12(x), trigs)],  # expand tan of sum
+            )]
     e = greedy(tree, objective=Lops)(e)
 
     return coeff*e

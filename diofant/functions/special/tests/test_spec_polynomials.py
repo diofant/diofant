@@ -63,8 +63,8 @@ def test_jacobi():
          "_k + 1), (_k, 0, n - 1))")
 
     assert jacobi_normalized(n, a, b, x) == \
-           (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
-                                    / ((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1))))
+        (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
+                                 / ((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1))))
 
     pytest.raises(ValueError, lambda: jacobi(-2.1, a, b, x))
     pytest.raises(ValueError, lambda: jacobi(Dummy(positive=True, integer=True), 1, 2, oo))
@@ -311,7 +311,7 @@ def test_assoc_laguerre():
         (x**2/2 - (alpha + 2)*x + (alpha + 2)*(alpha + 1)/2).expand()
     assert assoc_laguerre(3, alpha, x).expand() == \
         (-x**3/6 + (alpha + 3)*x**2/2 - (alpha + 2)*(alpha + 3)*x/2 +
-        (alpha + 1)*(alpha + 2)*(alpha + 3)/6).expand()
+         (alpha + 1)*(alpha + 2)*(alpha + 3)/6).expand()
 
     # Test the lowest 10 polynomials with laguerre_poly, to make sure it works:
     for i in range(10):

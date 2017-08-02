@@ -1029,7 +1029,7 @@ def test_Poly_as_dict():
     assert Poly(x**2 + 3, x, y, z).as_dict() == {(2, 0, 0): 1, (0, 0, 0): 3}
 
     assert Poly(3*x**2*y*z**3 + 4*x*y + 5*x*z).as_dict() == {(2, 1, 3): 3,
-                (1, 1, 0): 4, (1, 0, 1): 5}
+                                                             (1, 1, 0): 4, (1, 0, 1): 5}
 
 
 def test_Poly_as_expr():
@@ -2145,11 +2145,11 @@ def test_sturm():
     pytest.raises(DomainError, lambda: sturm(f, auto=False))
 
     f = Poly(Integer(1024)/(15625*pi**8)*x**5
-           - Integer(4096)/(625*pi**8)*x**4
-           + Integer(32)/(15625*pi**4)*x**3
-           - Integer(128)/(625*pi**4)*x**2
-           + Rational(1, 62500)*x
-           - Rational(1, 625), x, domain='ZZ(pi)')
+             - Integer(4096)/(625*pi**8)*x**4
+             + Integer(32)/(15625*pi**4)*x**3
+             - Integer(128)/(625*pi**4)*x**2
+             + Rational(1, 62500)*x
+             - Rational(1, 625), x, domain='ZZ(pi)')
 
     assert sturm(f) == \
         [Poly(x**3 - 100*x**2 + pi**4/64*x - 25*pi**4/16, x, domain='ZZ(pi)'),
@@ -2358,7 +2358,7 @@ def test_factor():
         (x**2 + x + 1)*(x**9 - x**8 + x**6 - x**5 + x**3 - x**2 + 1)
     assert factor(x**11 + x + 1, modulus=65537, symmetric=False) == \
         (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
-         x**3 + 65536*x**2 + 1)
+                        x**3 + 65536*x**2 + 1)
 
     f = x/pi + x*sin(x)/pi
     g = y/(pi**2 + 2*pi + 1) + y*sin(x)/(pi**2 + 2*pi + 1)
@@ -2380,7 +2380,7 @@ def test_factor():
     assert factor(f, x) == 3
 
     assert factor(1/(x**2 + 2*x + 1/x) - 1) == -((1 - x + 2*x**2 +
-                  x**3)/(1 + 2*x**2 + x**3))
+                                                  x**3)/(1 + 2*x**2 + x**3))
 
     assert factor(f, expand=False) == f
     pytest.raises(PolynomialError, lambda: factor(f, x, expand=False))
@@ -2399,8 +2399,8 @@ def test_factor():
 
     # issue sympy/sympy#5917
     e = (-2*x*(-x + 1)*(x - 1)*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2)*(x**2*(x -
-    1) - x*(x - 1) - x) - (-2*x**2*(x - 1)**2 - x*(-x + 1)*(-x*(-x + 1) +
-    x*(x - 1)))*(x**2*(x - 1)**4 - x*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2)))
+                                                                           1) - x*(x - 1) - x) - (-2*x**2*(x - 1)**2 - x*(-x + 1)*(-x*(-x + 1) +
+                                                                                                                                   x*(x - 1)))*(x**2*(x - 1)**4 - x*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2)))
     assert factor(e) == 0
 
     # deep option
@@ -2430,14 +2430,14 @@ def test_factor_large():
 
     assert factor(f) == \
         (x + 1)*(x - y)**200000*(x + y)**200000*(x**6 - x**5 +
-         x**4 - x**3 + x**2 - x + 1)
+                                                 x**4 - x**3 + x**2 - x + 1)
     assert factor(g, gaussian=True) == \
         (x + 1)*(x - I*y)**200000*(x + I*y)**200000*(x**6 - x**5 +
-         x**4 - x**3 + x**2 - x + 1)
+                                                     x**4 - x**3 + x**2 - x + 1)
 
     assert factor_list(f) == \
         (1, [(x + 1, 1), (x - y, 200000), (x + y, 200000), (x**6 -
-         x**5 + x**4 - x**3 + x**2 - x + 1, 1)])
+                                                            x**5 + x**4 - x**3 + x**2 - x + 1, 1)])
     assert factor_list(g, gaussian=True) == \
         (1, [(x + 1, 1), (x - I*y, 200000), (x + I*y, 200000), (
             x**6 - x**5 + x**4 - x**3 + x**2 - x + 1, 1)])
@@ -2508,7 +2508,7 @@ def test_intervals():
 
     assert intervals([x + 1, x + 2, x - 1, x + 1, 1, x - 1, x - 1, (x - 2)**2]) == \
         [((-2, -2), {1: 1}), ((-1, -1), {0: 1, 3: 1}), ((1, 1), {2:
-          1, 5: 1, 6: 1}), ((2, 2), {7: 2})]
+                                                                 1, 5: 1, 6: 1}), ((2, 2), {7: 2})]
 
     f, g, h = x**2 - 2, x**4 - 4*x**2 + 4, x - 1
 
@@ -2870,7 +2870,7 @@ def test_cancel():
     P = tanh(x - 3.0)
     Q = tanh(x + 3.0)
     f = ((-2*P**2 + 2)*(-P**2 + 1)*Q**2/2 + (-2*P**2 + 2)*(-2*Q**2 + 2)*P*Q - (-2*P**2 + 2)*P**2*Q**2 + (-2*Q**2 + 2)*(-Q**2 + 1)*P**2/2 - (-2*Q**2 + 2)*P**2*Q**2)/(2*sqrt(P**2*Q**2 + 0.0001)) \
-      + (-(-2*P**2 + 2)*P*Q**2/2 - (-2*Q**2 + 2)*P**2*Q/2)*((-2*P**2 + 2)*P*Q**2/2 + (-2*Q**2 + 2)*P**2*Q/2)/(2*(P**2*Q**2 + 0.0001)**Rational(3, 2))
+        + (-(-2*P**2 + 2)*P*Q**2/2 - (-2*Q**2 + 2)*P**2*Q/2)*((-2*P**2 + 2)*P*Q**2/2 + (-2*Q**2 + 2)*P**2*Q/2)/(2*(P**2*Q**2 + 0.0001)**Rational(3, 2))
     assert cancel(f).is_Mul
 
     # issue sympy/sympy#7022
@@ -3012,8 +3012,8 @@ def test_fglm():
     assert G.fglm(lex) == B
 
     F = [9*x**8 + 36*x**7 - 32*x**6 - 252*x**5 - 78*x**4 + 468*x**3 + 288*x**2 - 108*x + 9,
-        -72*t*x**7 - 252*t*x**6 + 192*t*x**5 + 1260*t*x**4 + 312*t*x**3 - 404*t*x**2 - 576*t*x +
-        108*t - 72*x**7 - 256*x**6 + 192*x**5 + 1280*x**4 + 312*x**3 - 576*x + 96]
+         -72*t*x**7 - 252*t*x**6 + 192*t*x**5 + 1260*t*x**4 + 312*t*x**3 - 404*t*x**2 - 576*t*x +
+         108*t - 72*x**7 - 256*x**6 + 192*x**5 + 1280*x**4 + 312*x**3 - 576*x + 96]
     G = groebner(F, t, x, order=grlex)
 
     B = [
@@ -3118,7 +3118,7 @@ def test_poly():
     assert poly(x*(
         y + z)**2 - x - 1) == Poly(x*y**2 + 2*x*y*z + x*z**2 - x - 1, x, y, z)
     assert poly(2*x*(y + z)**2 - x - 1) == Poly(2*x*y**2 + 4*x*y*z + 2 *
-                x*z**2 - x - 1, x, y, z)
+                                                x*z**2 - x - 1, x, y, z)
 
     assert poly(x*y + (x + y)**2 + (x + z)**2) == \
         Poly(2*x*z + 3*x*y + y**2 + z**2 + 2*x**2, x, y, z)

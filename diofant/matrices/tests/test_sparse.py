@@ -110,13 +110,13 @@ def test_sparse_matrix():
     S.row_del(1)
     assert S == SparseMatrix([
                              [1, 0, 0],
-    [0, 0, 1]])
+                             [0, 0, 1]])
     S = sparse_eye(3)
     S.col_del(1)
     assert S == SparseMatrix([
                              [1, 0],
-    [0, 0],
-    [0, 1]])
+                             [0, 0],
+                             [0, 1]])
     S = SparseMatrix.eye(3)
     S[2, 1] = 2
     S.col_swap(1, 0)
@@ -374,7 +374,7 @@ def test_sparse_matrix():
     # first test reduced row-ech form
 
     M = SparseMatrix([[5, 7, 2, 1],
-               [1, 6, 2, -1]])
+                      [1, 6, 2, -1]])
     out, tmp = M.rref()
     assert out == Matrix([[1, 0, -R(2)/23, R(13)/23],
                           [0, 1,  R(8)/23, R(-6)/23]])

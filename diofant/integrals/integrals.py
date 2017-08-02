@@ -446,7 +446,7 @@ class Integral(AddWithLimits):
                         f, cond = res
                         if conds == 'piecewise':
                             ret = Piecewise((f, cond),
-                                          (self.func(function, (x, a, b)), True))
+                                            (self.func(function, (x, a, b)), True))
                         elif conds == 'separate':
                             if len(self.limits) != 1:
                                 raise ValueError('conds=separate not supported in '
@@ -859,7 +859,6 @@ class Integral(AddWithLimits):
                 except NotImplementedError:
                     from .meijerint import _debug
                     _debug('NotImplementedError from meijerint_definite')
-                    res = None
                 if h is not None:
                     parts.append(coeff * h)
                     continue

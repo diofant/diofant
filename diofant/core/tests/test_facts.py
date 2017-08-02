@@ -22,7 +22,7 @@ def test_deduce_alpha_implications():
     # transitivity
     I, P = D([('a', 'b'), ('b', 'c')])
     assert I == {'a': {'b', 'c'}, 'b': {'c'}, Not('b'):
-        {Not('a')}, Not('c'): {Not('a'), Not('b')}}
+                 {Not('a')}, Not('c'): {Not('a'), Not('b')}}
     assert P == {'a': {'b', 'c'}, 'b': {'a', 'c'}, 'c': {'a', 'b'}}
 
     # Duplicate entry
@@ -40,7 +40,7 @@ def test_deduce_alpha_implications():
     pytest.raises(ValueError, lambda: D([('a', Not('a'))]))
     pytest.raises(ValueError, lambda: D([('a', 'b'), ('b', Not('a'))]))
     pytest.raises(ValueError, lambda: D([('a', 'b'), ('b', 'c'), ('b', 'na'),
-           ('na', Not('a'))]))
+                                         ('na', Not('a'))]))
 
     # see if it handles implications with negations
     I, P = D([('a', Not('b')), ('c', 'b')])
@@ -54,20 +54,20 @@ def test_deduce_alpha_implications():
     # Long deductions
     I, P = D([('a', 'b'), ('b', 'c'), ('c', 'd'), ('d', 'e')])
     assert I == {'a': {'b', 'c', 'd', 'e'}, 'b': {'c', 'd', 'e'},
-        'c': {'d', 'e'}, 'd': {'e'}, Not('b'): {Not('a')},
-        Not('c'): {Not('a'), Not('b')}, Not('d'): {Not('a'), Not('b'),
-            Not('c')}, Not('e'): {Not('a'), Not('b'), Not('c'), Not('d')}}
+                 'c': {'d', 'e'}, 'd': {'e'}, Not('b'): {Not('a')},
+                 Not('c'): {Not('a'), Not('b')}, Not('d'): {Not('a'), Not('b'),
+                                                            Not('c')}, Not('e'): {Not('a'), Not('b'), Not('c'), Not('d')}}
     assert P == {'a': {'b', 'c', 'd', 'e'}, 'b': {'a', 'c', 'd',
-        'e'}, 'c': {'a', 'b', 'd', 'e'}, 'd': {'a', 'b', 'c', 'e'},
-        'e': {'a', 'b', 'c', 'd'}}
+                                                  'e'}, 'c': {'a', 'b', 'd', 'e'}, 'd': {'a', 'b', 'c', 'e'},
+                 'e': {'a', 'b', 'c', 'd'}}
 
     # something related to real-world
     I, P = D([('rat', 'real'), ('int', 'rat')])
 
     assert I == {'int': {'rat', 'real'}, 'rat': {'real'},
-        Not('real'): {Not('rat'), Not('int')}, Not('rat'): {Not('int')}}
+                 Not('real'): {Not('rat'), Not('int')}, Not('rat'): {Not('int')}}
     assert P == {'rat': {'int', 'real'}, 'real': {'int', 'rat'},
-        'int': {'rat', 'real'}}
+                 'int': {'rat', 'real'}}
 
 
 # TODO move me to appropriate place
@@ -118,21 +118,21 @@ def test_apply_beta_to_alpha_route():
     A = {'x': {'a', 'b'}, 'c': {'d'}}
     B = [(And('a', 'b'), 'c')]
     assert APPLY(A, B) == {'x': ({'a', 'b', 'c', 'd'}, []),
-        'c': ({'d'}, []), 'a': Q(0), 'b': Q(0)}
+                           'c': ({'d'}, []), 'a': Q(0), 'b': Q(0)}
 
     # x -> a b      &(a,b) -> c     --  x -> a b c d e
     # c -> d        &(c,d) -> e         c -> d e
     A = {'x': {'a', 'b'}, 'c': {'d'}}
     B = [(And('a', 'b'), 'c'), (And('c', 'd'), 'e')]
     assert APPLY(A, B) == {'x': ({'a', 'b', 'c', 'd', 'e'}, []),
-        'c': ({'d', 'e'}, []), 'a': Q(0), 'b': Q(0), 'd': Q(1)}
+                           'c': ({'d', 'e'}, []), 'a': Q(0), 'b': Q(0), 'd': Q(1)}
 
     # x -> a b      &(a,y) -> z     --  x -> a b y z
     #               &(a,b) -> y
     A = {'x': {'a', 'b'}}
     B = [(And('a', 'y'), 'z'), (And('a', 'b'), 'y')]
     assert APPLY(A, B) == {'x': ({'a', 'b', 'y', 'z'}, []),
-        'a': (set(), [0, 1]), 'y': Q(0), 'b': Q(1)}
+                           'a': (set(), [0, 1]), 'y': Q(0), 'b': Q(1)}
 
     # x -> a b      &(a,~b) -> c    --  x -> a b
     A = {'x': {'a', 'b'}}
@@ -156,7 +156,7 @@ def test_apply_beta_to_alpha_route():
     A = {'x': {'a', 'b'}, 'c': {'p', 'a'}}
     B = [(And('a', 'b'), 'c')]
     assert APPLY(A, B) == {'x': ({'a', 'b', 'c', 'p'}, []),
-        'c': ({'p', 'a'}, []), 'a': Q(0), 'b': Q(0)}
+                           'c': ({'p', 'a'}, []), 'a': Q(0), 'b': Q(0)}
 
 
 def test_FactRules_parse():
@@ -284,24 +284,24 @@ def test_FactRules_deduce_multiple2():
 
     # --- key tests below ---
     assert D({'neg': F, 'zero': F, 'pos': F}) == {'real': F, 'neg': F,
-             'zero': F, 'pos': F}
+                                                  'zero': F, 'pos': F}
     assert D({'real': T, 'neg': F}) == {'real': T, 'neg': F}
     assert D({'real': T, 'zero': F}) == {'real': T, 'zero': F}
     assert D({'real': T, 'pos': F}) == {'real': T, 'pos': F}
 
     assert D({'real': T,           'zero': F, 'pos': F}) == {'real': T,
-             'neg': T, 'zero': F, 'pos': F}
+                                                             'neg': T, 'zero': F, 'pos': F}
     assert D({'real': T, 'neg': F,            'pos': F}) == {'real': T,
-             'neg': F, 'zero': T, 'pos': F}
+                                                             'neg': F, 'zero': T, 'pos': F}
     assert D({'real': T, 'neg': F, 'zero': F          }) == {'real': T,
-             'neg': F, 'zero': F, 'pos': T}
+                                                             'neg': F, 'zero': F, 'pos': T}
 
     assert D({'neg': T, 'zero': F, 'pos': F}) == {'real': T, 'neg': T,
-             'zero': F, 'pos': F}
+                                                  'zero': F, 'pos': F}
     assert D({'neg': F, 'zero': T, 'pos': F}) == {'real': T, 'neg': F,
-             'zero': T, 'pos': F}
+                                                  'zero': T, 'pos': F}
     assert D({'neg': F, 'zero': F, 'pos': T}) == {'real': T, 'neg': F,
-             'zero': F, 'pos': T}
+                                                  'zero': F, 'pos': T}
 
 
 def test_FactRules_deduce_base():

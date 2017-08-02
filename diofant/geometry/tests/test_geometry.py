@@ -179,14 +179,14 @@ def test_ellipse_geom():
 
     assert Ellipse(Point(5, 5), 2, 1).tangent_lines(Point(0, 0)) == \
         [Line(Point(0, 0), Point(77/25, 132/25)),
-     Line(Point(0, 0), Point(33/5, 22/5))]
+         Line(Point(0, 0), Point(33/5, 22/5))]
     assert Ellipse(Point(5, 5), 2, 1).tangent_lines(Point(3, 4)) == \
         [Line(Point(3, 4), Point(4, 4)), Line(Point(3, 4), Point(3, 5))]
     assert Circle(Point(5, 5), 2).tangent_lines(Point(3, 3)) == \
         [Line(Point(3, 3), Point(4, 3)), Line(Point(3, 3), Point(3, 4))]
     assert Circle(Point(5, 5), 2).tangent_lines(Point(5 - 2*sqrt(2), 5)) == \
         [Line(Point(5 - 2*sqrt(2), 5), Point(5 - sqrt(2), 5 - sqrt(2))),
-     Line(Point(5 - 2*sqrt(2), 5), Point(5 - sqrt(2), 5 + sqrt(2))), ]
+         Line(Point(5 - 2*sqrt(2), 5), Point(5 - sqrt(2), 5 + sqrt(2))), ]
 
     e = Ellipse(Point(0, 0), 2, 1)
     assert e.normal_lines(Point(0, 0)) == \
@@ -300,7 +300,7 @@ def test_ellipse_geom():
     e = Ellipse((1, 2), 3, 2)
     assert e.tangent_lines(Point(10, 0)) == \
         [Line(Point(10, 0), Point(1, 0)),
-        Line(Point(10, 0), Point(14/5, 18/5))]
+         Line(Point(10, 0), Point(14/5, 18/5))]
 
     # encloses_point
     e = Ellipse((0, 0), 1, 2)
@@ -362,9 +362,9 @@ def test_polygon():
     pytest.raises(GeometryError, lambda: Polygon((0, 0), (1, 0), (0, 1), (1, 1)))
     # remove multiple collinear points
     assert Polygon(Point(-4, 15), Point(-11, 15), Point(-15, 15),
-        Point(-15, 33/5), Point(-15, -87/10), Point(-15, -15),
-        Point(-42/5, -15), Point(-2, -15), Point(7, -15), Point(15, -15),
-        Point(15, -3), Point(15, 10), Point(15, 15)) == \
+                   Point(-15, 33/5), Point(-15, -87/10), Point(-15, -15),
+                   Point(-42/5, -15), Point(-2, -15), Point(7, -15), Point(15, -15),
+                   Point(15, -3), Point(15, 10), Point(15, 15)) == \
         Polygon(Point(-15, -15), Point(15, -15), Point(15, 15), Point(-15, 15))
 
     p1 = Polygon(
@@ -417,9 +417,9 @@ def test_polygon():
     warnings.filterwarnings(
         "error", message="Polygons may intersect producing erroneous output")
     pytest.raises(UserWarning,
-           lambda: Polygon(Point(0, 0), Point(1, 0),
-           Point(1, 1)).distance(
-           Polygon(Point(0, 0), Point(0, 1), Point(1, 1))))
+                  lambda: Polygon(Point(0, 0), Point(1, 0),
+                                  Point(1, 1)).distance(
+                      Polygon(Point(0, 0), Point(0, 1), Point(1, 1))))
     warnings.filterwarnings(
         "ignore", message="Polygons may intersect producing erroneous output")
     assert hash(p5) == hash(Polygon(Point(0, 0), Point(4, 4), Point(0, 4)))
@@ -438,7 +438,7 @@ def test_polygon():
     p1 = RegularPolygon(Point(0, 0), 10, 5)
     p2 = RegularPolygon(Point(0, 0), 5, 5)
     pytest.raises(GeometryError, lambda: RegularPolygon(Point(0, 0), Point(0,
-           1), Point(1, 1)))
+                                                                           1), Point(1, 1)))
     pytest.raises(GeometryError, lambda: RegularPolygon(Point(0, 0), 1, 2))
     pytest.raises(ValueError, lambda: RegularPolygon(Point(0, 0), 1, 2.5))
 
@@ -606,11 +606,11 @@ def test_polygon():
     # p1.distance(p2) emits a warning
     # First, test the warning
     warnings.filterwarnings("error",
-        message="Polygons may intersect producing erroneous output")
+                            message="Polygons may intersect producing erroneous output")
     pytest.raises(UserWarning, lambda: p1.distance(p2))
     # now test the actual output
     warnings.filterwarnings("ignore",
-        message="Polygons may intersect producing erroneous output")
+                            message="Polygons may intersect producing erroneous output")
     assert p1.distance(p2) == half/2
 
     assert p1.distance(p3) == sqrt(2)/2
@@ -619,8 +619,8 @@ def test_polygon():
 
 def test_convex_hull():
     p = [Point(-5, -1), Point(-2, 1), Point(-2, -1), Point(-1, -3),
-        Point(0, 0), Point(1, 1), Point(2, 2), Point(2, -1), Point(3, 1),
-        Point(4, -1), Point(6, 2)]
+         Point(0, 0), Point(1, 1), Point(2, 2), Point(2, -1), Point(3, 1),
+         Point(4, -1), Point(6, 2)]
     ch = Polygon(p[0], p[3], p[9], p[10], p[6], p[1])
     # test handling of duplicate points
     p.append(p[3])
@@ -640,8 +640,8 @@ def test_convex_hull():
 
     # collection of items
     assert convex_hull(*[Point(0, 0),
-                        Segment(Point(1, 0), Point(1, 1)),
-                        RegularPolygon(Point(2, 0), 2, 4)]) == \
+                         Segment(Point(1, 0), Point(1, 1)),
+                         RegularPolygon(Point(2, 0), 2, 4)]) == \
         Polygon(Point(0, 0), Point(2, -2), Point(4, 0), Point(2, 2))
 
 
@@ -673,13 +673,13 @@ def test_subs():
     assert Point(1, 2).subs({(1, 2)}) == Point(2, 2)
     pytest.raises(ValueError, lambda: Point(1, 2).subs(1))
     pytest.raises(ValueError, lambda: Point(1, 1).subs((Point(1, 1), Point(1,
-           2)), 1, 2))
+                                                                           2)), 1, 2))
 
 
 def test_encloses():
     # square with a dimpled left side
     s = Polygon(Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1),
-        Point(S.Half, S.Half))
+                Point(S.Half, S.Half))
     # the following is True if the polygon isn't treated as closing on itself
     assert s.encloses(Point(0, S.Half)) is False
     assert s.encloses(Point(S.Half, S.Half)) is False  # it's a vertex
@@ -819,7 +819,6 @@ def test_reflect():
     pent = RegularPolygon((1, 2), 1, 5)
     l = Line((0, pi), slope=sqrt(2))
     rpent = pent.reflect(l)
-    poly_pent = Polygon(*pent.vertices)
     assert rpent.center == pent.center.reflect(l)
     assert [w.n(3) for w in rpent.vertices] == \
         [Point2D(Float('-0.585815', dps=3),

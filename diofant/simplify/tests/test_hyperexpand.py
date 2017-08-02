@@ -213,7 +213,7 @@ def op(f):
 
 def test_plan():
     assert devise_plan(Hyper_Function([0], ()),
-            Hyper_Function([0], ()), z) == []
+                       Hyper_Function([0], ()), z) == []
     with pytest.raises(ValueError):
         devise_plan(Hyper_Function([1], ()), Hyper_Function((), ()), z)
     with pytest.raises(ValueError):
@@ -228,15 +228,15 @@ def test_plan():
 
     h2 = hyper((a1 + 1, a2), [b1], z)
     assert tn(apply_operators(h,
-        devise_plan(Hyper_Function((a1 + 1, a2), [b1]),
-            Hyper_Function((a1, a2), [b1]), z), op),
-        h2, z)
+                              devise_plan(Hyper_Function((a1 + 1, a2), [b1]),
+                                          Hyper_Function((a1, a2), [b1]), z), op),
+              h2, z)
 
     h2 = hyper((a1 + 1, a2 - 1), [b1], z)
     assert tn(apply_operators(h,
-        devise_plan(Hyper_Function((a1 + 1, a2 - 1), [b1]),
-            Hyper_Function((a1, a2), [b1]), z), op),
-        h2, z)
+                              devise_plan(Hyper_Function((a1 + 1, a2 - 1), [b1]),
+                                          Hyper_Function((a1, a2), [b1]), z), op),
+              h2, z)
 
 
 def test_plan_derivatives():
@@ -367,10 +367,10 @@ def test_meijerg_expand():
     # wikipedia
     assert hyperexpand(meijerg([1], [], [], [0], z)) == \
         Piecewise((0, abs(z) < 1), (1, abs(1/z) < 1),
-                 (meijerg([1], [], [], [0], z), True))
+                  (meijerg([1], [], [], [0], z), True))
     assert hyperexpand(meijerg([], [1], [0], [], z)) == \
         Piecewise((1, abs(z) < 1), (0, abs(1/z) < 1),
-                 (meijerg([], [1], [0], [], z), True))
+                  (meijerg([], [1], [0], [], z), True))
 
     # The Special Functions and their Approximations
     assert can_do_meijer([], [], [a + b/2], [a, a - b/2, a + S.Half])
@@ -419,7 +419,7 @@ def test_meijerg_lookup():
 
     assert hyperexpand(meijerg([a], [], [a, a, a - Rational(1, 2)], [], z)) == \
         -sqrt(pi)*z**(a - Rational(1, 2))*(2*cos(2*sqrt(z))*(Si(2*sqrt(z)) - pi/2)
-                                   - 2*sin(2*sqrt(z))*Ci(2*sqrt(z))) == \
+                                           - 2*sin(2*sqrt(z))*Ci(2*sqrt(z))) == \
         hyperexpand(meijerg([a], [], [a, a - Rational(1, 2), a], [], z)) == \
         hyperexpand(meijerg([a], [], [a - Rational(1, 2), a, a], [], z))
     assert can_do_meijer([a - 1], [], [a + 2, a - Rational(3, 2), a + 1], [])
@@ -561,11 +561,11 @@ def test_lerchphi():
     assert hyperexpand(hyper([1] + [a]*10, [a + 1]*10, z)/a**10) == \
         lerchphi(z, 10, a)
     assert combsimp(hyperexpand(meijerg([0, 1 - a], [], [0],
-        [-a], exp_polar(-I*pi)*z))) == lerchphi(z, 1, a)
+                                        [-a], exp_polar(-I*pi)*z))) == lerchphi(z, 1, a)
     assert combsimp(hyperexpand(meijerg([0, 1 - a, 1 - a], [], [0],
-        [-a, -a], exp_polar(-I*pi)*z))) == lerchphi(z, 2, a)
+                                        [-a, -a], exp_polar(-I*pi)*z))) == lerchphi(z, 2, a)
     assert combsimp(hyperexpand(meijerg([0, 1 - a, 1 - a, 1 - a], [], [0],
-        [-a, -a, -a], exp_polar(-I*pi)*z))) == lerchphi(z, 3, a)
+                                        [-a, -a, -a], exp_polar(-I*pi)*z))) == lerchphi(z, 3, a)
 
     assert hyperexpand(z*hyper([1, 1], [2], z)) == -log(1 + -z)
     assert hyperexpand(z*hyper([1, 1, 1], [2, 2], z)) == polylog(2, z)
@@ -600,7 +600,7 @@ def test_partial_simp():
     # First test that hypergeometric function formulae work.
     a, b, c, d, e = (randcplx() for _ in range(5))
     for func in [Hyper_Function([a, b, c], [d, e]),
-            Hyper_Function([], [a, b, c, d, e])]:
+                 Hyper_Function([], [a, b, c, d, e])]:
         f = build_hypergeometric_formula(func)
         z = f.z
         assert f.closed_form == func(z)

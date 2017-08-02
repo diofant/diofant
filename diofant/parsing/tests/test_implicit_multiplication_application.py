@@ -38,9 +38,9 @@ def test_implicit_multiplication():
     application = ['sin x', 'cos 2*x', 'sin cos x']
     for case in application:
         pytest.raises(SyntaxError,
-               lambda: parse_expr(case, transformations=transformations2))
+                      lambda: parse_expr(case, transformations=transformations2))
     pytest.raises(TypeError,
-           lambda: parse_expr('sin**2(x)', transformations=transformations2))
+                  lambda: parse_expr('sin**2(x)', transformations=transformations2))
 
 
 def test_implicit_application():
@@ -62,9 +62,9 @@ def test_implicit_application():
     multiplication = ['x y', 'x sin x', '2x']
     for case in multiplication:
         pytest.raises(SyntaxError,
-               lambda: parse_expr(case, transformations=transformations2))
+                      lambda: parse_expr(case, transformations=transformations2))
     pytest.raises(TypeError,
-           lambda: parse_expr('sin**2(x)', transformations=transformations2))
+                  lambda: parse_expr('sin**2(x)', transformations=transformations2))
 
 
 def test_function_exponentiation():
@@ -84,7 +84,7 @@ def test_function_exponentiation():
                       'cos 2*x', 'sin cos x']
     for case in other_implicit:
         pytest.raises(SyntaxError,
-               lambda: parse_expr(case, transformations=transformations2))
+                      lambda: parse_expr(case, transformations=transformations2))
 
     assert parse_expr('x**2', local_dict={ 'x': diofant.Symbol('x') },
                       transformations=transformations2) == parse_expr('x**2')

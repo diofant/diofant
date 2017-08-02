@@ -205,7 +205,7 @@ def DihedralGroup(n):
         return PermutationGroup([Permutation([1, 0])])
     if n == 2:
         return PermutationGroup([Permutation([1, 0, 3, 2]),
-               Permutation([2, 3, 0, 1]), Permutation([3, 2, 1, 0])])
+                                 Permutation([2, 3, 0, 1]), Permutation([3, 2, 1, 0])])
 
     a = list(range(1, n))
     a.append(0)

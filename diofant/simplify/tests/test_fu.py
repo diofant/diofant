@@ -167,13 +167,13 @@ def test_TR10i():
     assert TR10i(sqrt(2)*cos(x)*x + sqrt(6)*sin(x)*x) == \
         2*sqrt(2)*x*sin(x + pi/6)
     assert TR10i(cos(x)/sqrt(6) + sin(x)/sqrt(2) +
-            cos(x)/sqrt(6)/3 + sin(x)/sqrt(2)/3) == 4*sqrt(6)*sin(x + pi/6)/9
+                 cos(x)/sqrt(6)/3 + sin(x)/sqrt(2)/3) == 4*sqrt(6)*sin(x + pi/6)/9
     assert TR10i(cos(x)/sqrt(6) + sin(x)/sqrt(2) +
-            cos(y)/sqrt(6)/3 + sin(y)/sqrt(2)/3) == \
+                 cos(y)/sqrt(6)/3 + sin(y)/sqrt(2)/3) == \
         sqrt(6)*sin(x + pi/6)/3 + sqrt(6)*sin(y + pi/6)/9
     assert TR10i(cos(x) + sqrt(3)*sin(x) + 2*sqrt(3)*cos(x + pi/6)) == 4*cos(x)
     assert TR10i(cos(x) + sqrt(3)*sin(x) +
-            2*sqrt(3)*cos(x + pi/6) + 4*sin(x)) == 4*sqrt(2)*sin(x + pi/4)
+                 2*sqrt(3)*cos(x + pi/6) + 4*sin(x)) == 4*sqrt(2)*sin(x + pi/4)
     assert TR10i(cos(2)*sin(3) + sin(2)*cos(4)) == \
         sin(2)*cos(4) + sin(3)*cos(2)
 
@@ -278,7 +278,7 @@ def test_objective():
     assert fu(sin(x)/cos(x), measure=lambda x: x.count_ops()) == \
         tan(x)
     assert fu(sin(x)/cos(x), measure=lambda x: -x.count_ops()) == \
-            sin(x)/cos(x)
+        sin(x)/cos(x)
 
 
 def test_process_common_addends():
@@ -287,7 +287,7 @@ def test_process_common_addends():
     def do(x):
         return Add(*[i**(i % 2) for i in x.args])
     process_common_addends(Add(*[1, 2, 3, 4], evaluate=False), do,
-        key2=lambda x: x % 2, key1=False) == 1**1 + 3**1 + 2**0 + 4**0
+                           key2=lambda x: x % 2, key1=False) == 1**1 + 3**1 + 2**0 + 4**0
 
 
 def test_trig_split():
@@ -309,7 +309,7 @@ def test_trig_split():
     assert trig_split(cos(x)/sqrt(6), sin(x)/sqrt(2), two=True) == \
         (sqrt(6)/3, 1, 1, x, pi/6, False)
     assert trig_split(-sqrt(6)*cos(x)*sin(y),
-            -sqrt(2)*sin(x)*sin(y), two=True) == \
+                      -sqrt(2)*sin(x)*sin(y), two=True) == \
         (-2*sqrt(2)*sin(y), 1, 1, x, pi/3, False)
 
     assert trig_split(cos(x), sin(x)) is None

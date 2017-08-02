@@ -159,7 +159,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             degree_poly += terms[i][0]*FallingFactorial(x, i)
 
     nni_roots = list(roots(degree_poly, x, filter='Z',
-        predicate=lambda r: r >= 0).keys())
+                           predicate=lambda r: r >= 0).keys())
 
     if nni_roots:
         N = [max(nni_roots)]
@@ -205,7 +205,7 @@ def rsolve_poly(coeffs, f, n, **hints):
         U = N + A + b + 1
 
         nni_roots = list(roots(polys[r], filter='Z',
-            predicate=lambda r: r >= 0).keys())
+                               predicate=lambda r: r >= 0).keys())
 
         if nni_roots != []:
             a = max(nni_roots) + 1
@@ -420,7 +420,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
         res = quo(p, q, h)
 
     nni_roots = list(roots(res, h, filter='Z',
-        predicate=lambda r: r >= 0).keys())
+                           predicate=lambda r: r >= 0).keys())
 
     if not nni_roots:
         return rsolve_poly(coeffs, f, n, **hints)
@@ -624,7 +624,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 continue
 
             sol, syms = rsolve_poly([polys[i]*z**i for i in range(r + 1)],
-                                     0, n, symbols=True)
+                                    0, n, symbols=True)
             sol = sol.collect(syms)
             sol = [sol.coeff(_) for _ in syms]
 

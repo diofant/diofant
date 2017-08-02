@@ -177,7 +177,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
 
         # Verify arguments
         if not isinstance(vector1, (BaseVector, VectorZero)) or \
-               not isinstance(vector2, (BaseVector, VectorZero)):
+                not isinstance(vector2, (BaseVector, VectorZero)):
             raise TypeError("BaseDyadic cannot be composed of non-base " +
                             "vectors")
         # Handle special case of zero vector
@@ -190,7 +190,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
         obj._components = {obj: Integer(1)}
         obj._sys = vector1._sys
         obj._pretty_form = ('(' + vector1._pretty_form + '|' +
-                             vector2._pretty_form + ')')
+                            vector2._pretty_form + ')')
         obj._latex_form = ('(' + vector1._latex_form + "{|}" +
                            vector2._latex_form + ')')
 

@@ -93,7 +93,7 @@ def bspline_basis(d, knots, n, x, close=True):
     if d == 0:
         result = Piecewise(
             (S.One, Interval(knots[n], knots[n + 1], False,
-             not close).contains(x)),
+                             not close).contains(x)),
             (0, True)
         )
     elif d > 0:

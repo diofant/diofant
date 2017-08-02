@@ -2,7 +2,8 @@
 
 import ast
 
-from diofant.interactive.session import IntegerWrapper
+from diofant.interactive.session import (IntegerWrapper,
+                                         IntegerDivisionWrapper)
 
 __all__ = ()
 
@@ -26,3 +27,20 @@ def test_IntegerWrapper():
     dump4 = ast.dump(ast.parse('sin(Integer(1)/Integer(5)).n()'))
     tree4_new = IntegerWrapper().visit(tree4)
     assert ast.dump(tree4_new) == dump4
+
+    tree5 = ast.parse('1.2/3')
+    dump5 = ast.dump(ast.parse('1.2/Integer(3)'))
+    tree5_new = IntegerWrapper().visit(tree5)
+    assert ast.dump(tree5_new) == dump5
+
+
+def test_IntegerDivisionWrapper():
+    tree = ast.parse('1/3')
+    tree2 = ast.parse('Rational(1, 3)')
+    dump = ast.dump(tree2)
+    tree_new = IntegerDivisionWrapper().visit(tree)
+    assert ast.dump(tree_new) == dump
+
+    tree = ast.parse('1 + 3')
+    tree_new = IntegerDivisionWrapper().visit(tree)
+    assert ast.dump(tree_new) == ast.dump(tree)

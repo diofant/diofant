@@ -1705,7 +1705,7 @@ def necklaces(n, k, free=False):
 
     """
     return uniq(minlex(i, directed=not free) for i in
-        variations(list(range(k)), n, repetition=True))
+                variations(list(range(k)), n, repetition=True))
 
 
 def bracelets(n, k):

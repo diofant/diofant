@@ -86,7 +86,7 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
 
 
 template = \
-"""digraph{
+    """digraph{
 
 # Graph style
 %(graphstyle)s

@@ -431,6 +431,7 @@ def test_namespace_order():
     if1 = lambdify(x, f(x), modules=(n1, "diofant"))
     assert if1(1) == 'first f'
     if2 = lambdify(x, g(x), modules=(n2, "diofant"))
+    assert if2(1) == 'function g'
     # previously gave 'second f'
     assert if1(1) == 'first f'
 
@@ -449,7 +450,7 @@ def test_imps():
     func = diofant.Function('myfunc')
     assert not hasattr(func, '_imp_')
     my_f = implemented_function(func, lambda x: 2*x)
-    assert hasattr(func, '_imp_')
+    assert hasattr(func, '_imp_') and hasattr(my_f, '_imp_')
     # Error for functions with same name and different implementation
     f2 = implemented_function("f", lambda x: x + 101)
     pytest.raises(ValueError, lambda: lambdify(x, f(f2(x))))

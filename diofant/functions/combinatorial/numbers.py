@@ -105,7 +105,7 @@ class fibonacci(Function):
             else:
                 if n < 1:
                     raise ValueError("Fibonacci polynomials are defined "
-                       "only for positive integer indices.")
+                                     "only for positive integer indices.")
                 return cls._fibpoly(n).subs(_sym, sym)
 
     def _eval_rewrite_as_sqrt(self, n, sym=None):
@@ -677,8 +677,8 @@ class harmonic(Function):
                     k = Dummy("k")
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
                     t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
-                                   log(sin((pi * k) / q)),
-                                   (k, 1, floor((q - 1) / Integer(2))))
+                                 log(sin((pi * k) / q)),
+                                 (k, 1, floor((q - 1) / Integer(2))))
                     t3 = (pi / 2) * cot((pi * p) / q) + log(2 * q)
                     return t1 + t2 - t3
 

@@ -450,7 +450,6 @@ def _swap(f, i):
     Make the variable `x_i` the leading one in a multivariate polynomial `f`.
     """
     ring = f.ring
-    k = ring.ngens
     fswap = ring.zero
     for monom, coeff in f.iterterms():
         monomswap = (monom[i],) + monom[:i] + monom[i+1:]
@@ -828,7 +827,7 @@ def modgcd_bivariate(f, g):
         degdelta = delta.degree()
 
         N = min(degyf - degcontfp, degyg - degcontgp,
-            ybound - ycontbound + degdelta) + 1
+                ybound - ycontbound + degdelta) + 1
 
         if p < N:
             continue
@@ -1486,12 +1485,8 @@ def trial_division(f, h, minpoly, p=None):
     .. [1] [Hoeij02]_
     """
     ring = f.ring
-    domain = ring.domain
-
     zxring = ring.clone(symbols=(ring.symbols[1], ring.symbols[0]))
-
     minpoly = minpoly.set_ring(ring)
-
     rem = f
 
     degrem = rem.degree()
@@ -1681,7 +1676,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
 
             for coeff in h.itercoeffs():
                 den = dom.ring.from_dense(gf_lcm(den.to_dense(), coeff.denom.to_dense(),
-                        p, dom.domain))
+                                                 p, dom.domain))
 
         else:
             dom = qring.domain.domain.field
@@ -1690,7 +1685,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
             for coeff in h.itercoeffs():
                 for c in coeff.itercoeffs():
                     den = dom.ring.from_dense(gf_lcm(den.to_dense(), c.denom.to_dense(),
-                            p, dom.domain))
+                                                     p, dom.domain))
 
         den = qring.domain_new(den.trunc_ground(p))
         h = ring(h.mul_ground(den).as_expr()).trunc_ground(p)

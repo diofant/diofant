@@ -469,8 +469,8 @@ def _reduce_inequalities(inequalities, symbols):
             poly_part.setdefault(gen, []).append((expr, rel))
         else:
             components = expr.find(lambda u:
-                u.has(gen) and (
-                u.is_Function or u.is_Pow and not u.exp.is_Integer))
+                                   u.has(gen) and (
+                                       u.is_Function or u.is_Pow and not u.exp.is_Integer))
             if components and all(isinstance(i, Abs) or isinstance(i, Piecewise) for i in components):
                 pw_part.setdefault(gen, []).append((expr, rel))
             else:

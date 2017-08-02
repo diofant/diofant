@@ -63,7 +63,7 @@ def _create_lookup_table(table):
 
     def add(formula, an, ap, bm, bq, arg=t, fac=Integer(1), cond=True, hint=True):
         table.setdefault(_mytype(formula, z), []).append((formula,
-                                     [(fac, meijerg(an, ap, bm, bq, arg))], cond, hint))
+                                                          [(fac, meijerg(an, ap, bm, bq, arg))], cond, hint))
 
     def addi(formula, inst, cond, hint=True):
         table.setdefault(
@@ -185,7 +185,7 @@ def _create_lookup_table(table):
                              fresnels, fresnelc)
     addi(Ei(t),
          constant(-I*pi) + [(Integer(-1), meijerg([], [1], [0, 0], [],
-                  t*polar_lift(-1)))],
+                                                  t*polar_lift(-1)))],
          True)
 
     # Section 8.4.12
@@ -604,11 +604,11 @@ def _condsimp(cond):
         # The next two obviously are instances of a general pattern, but it is
         # easier to spell out the few cases we care about.
         (And(abs(unbranched_argument(p)) <= pi,
-           abs(unbranched_argument(exp_polar(-2*pi*I)*p)) <= pi),
-       Eq(unbranched_argument(exp_polar(-I*pi)*p), 0)),
+             abs(unbranched_argument(exp_polar(-2*pi*I)*p)) <= pi),
+         Eq(unbranched_argument(exp_polar(-I*pi)*p), 0)),
         (And(abs(unbranched_argument(p)) <= pi/2,
-           abs(unbranched_argument(exp_polar(-pi*I)*p)) <= pi/2),
-       Eq(unbranched_argument(exp_polar(-I*pi/2)*p), 0)),
+             abs(unbranched_argument(exp_polar(-pi*I)*p)) <= pi/2),
+         Eq(unbranched_argument(exp_polar(-I*pi/2)*p), 0)),
         (Or(p <= q, And(p < q, r)), p <= q)
     ]
     while change:
@@ -733,7 +733,6 @@ def _check_antecedents_1(g, x, helper=False):
     delta = g.delta
     eta, _ = _get_coeff_exp(g.argument, x)
     m, n, p, q = sympify([len(g.bm), len(g.an), len(g.ap), len(g.bq)])
-    xi = m + n - p
 
     if p > q:
         def tr(l):
@@ -980,9 +979,9 @@ def _check_antecedents(g1, g2, x):
     c6 = And(*[(u - v)*re(1 + i - 1) - re(rho) > -Rational(3, 2) for i in g2.an])
     c7 = And(*[(u - v)*re(1 + i) - re(rho) > -Rational(3, 2) for i in g2.bm])
     c8 = (abs(phi) + 2*re((rho - 1)*(q - p) + (v - u)*(q - p) + (mu -
-          1)*(v - u)) > 0)
+                                                                 1)*(v - u)) > 0)
     c9 = (abs(phi) - 2*re((rho - 1)*(q - p) + (v - u)*(q - p) + (mu -
-          1)*(v - u)) > 0)
+                                                                 1)*(v - u)) > 0)
     c10 = (abs(arg(sigma)) < bstar*pi)
     c11 = Eq(abs(arg(sigma)), bstar*pi)
     c12 = (abs(arg(omega)) < cstar*pi)
@@ -1023,8 +1022,8 @@ def _check_antecedents(g1, g2, x):
             tmp = abs(arg_(1 - zso))
             return False if tmp is S.NaN else tmp < pi
         c14_alt = And(Eq(phi, 0), cstar - 1 + bstar <= 0,
-                  Or(And(Ne(zso, 1), _cond()),
-                     And(re(mu + rho + q - p) < 1, Eq(zso, 1))))
+                      Or(And(Ne(zso, 1), _cond()),
+                         And(re(mu + rho + q - p) < 1, Eq(zso, 1))))
 
         # Since r=k=l=1, in our case there is c14_alt which is the same as calling
         # us with (g1, g2) = (g2, g1). The conditions below enumerate all cases

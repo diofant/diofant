@@ -683,7 +683,7 @@ def _pgroup_calcs():
             reorder = unflatten([c[j] for j in flat_faces], n)
             # make them canonical
             reorder = [tuple(map(as_int,
-                       minlex(f, directed=False, is_set=True)))
+                                 minlex(f, directed=False, is_set=True)))
                        for f in reorder]
             # map face to vertex: the resulting list of vertices are the
             # permutation that we seek for the double
@@ -720,7 +720,7 @@ def _pgroup_calcs():
 
     # U, D, F, B, L, R = up, down, front, back, left, right
     _c_pgroup = [Permutation(p) for p in
-        [
+                 [
         [1, 2, 3, 0, 5, 6, 7, 4],  # cw from top, U
         [4, 0, 3, 7, 5, 1, 2, 6],  # cw from F face
         [4, 5, 1, 0, 7, 6, 2, 3],  # cw from R face
@@ -758,7 +758,7 @@ def _pgroup_calcs():
         (0, 1, 6, 10, 5), (1, 2, 7, 11, 6), (2, 3, 8, 12, 7),  # upper 5
         (3, 4, 9, 13, 8), (0, 4, 9, 14, 5),
         (5, 10, 16, 15, 14), (6, 10, 16, 17, 11), (7, 11, 17, 18,
-          12),  # lower 5
+                                                   12),  # lower 5
         (8, 12, 18, 19, 13), (9, 13, 19, 15, 14),
         (15, 16, 17, 18, 19)  # bottom
     ]
@@ -814,8 +814,8 @@ def _pgroup_calcs():
             dodecahedron, dodecahedron_faces, _dodeca_pgroup))
 
     return (tetrahedron, cube, octahedron, dodecahedron, icosahedron,
-        tetrahedron_faces, cube_faces, octahedron_faces,
-        dodecahedron_faces, icosahedron_faces)
+            tetrahedron_faces, cube_faces, octahedron_faces,
+            dodecahedron_faces, icosahedron_faces)
 
 
 (tetrahedron, cube, octahedron, dodecahedron, icosahedron,

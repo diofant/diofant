@@ -44,9 +44,9 @@ def test_postorder_traversal():
         [expr], keys=default_sort_key)) == expected + [[expr]]
 
     assert list(postorder_traversal(Integral(x**2, (x, 0, 1)),
-        keys=default_sort_key)) == [
-            2, x, x**2, 0, 1, x, Tuple(x, 0, 1),
-            Integral(x**2, Tuple(x, 0, 1))
+                                    keys=default_sort_key)) == [
+        2, x, x**2, 0, 1, x, Tuple(x, 0, 1),
+        Integral(x**2, Tuple(x, 0, 1))
     ]
     assert list(postorder_traversal(('abc', ('d', 'ef')))) == [
         'abc', 'd', 'ef', ('d', 'ef'), ('abc', ('d', 'ef'))]
@@ -95,7 +95,7 @@ def test_group():
 
     assert group([1, 1, 2, 2, 2, 1, 3, 3]) == [[1, 1], [2, 2, 2], [1], [3, 3]]
     assert group([1, 1, 2, 2, 2, 1, 3, 3], multiple=False) == [(1, 2),
-                 (2, 3), (1, 1), (3, 2)]
+                                                               (2, 3), (1, 1), (3, 2)]
 
 
 def test_subsets():
@@ -431,10 +431,10 @@ def test_partitions():
 
 def test_binary_partitions():
     assert [i[:] for i in binary_partitions(10)] == [[8, 2], [8, 1, 1],
-        [4, 4, 2], [4, 4, 1, 1], [4, 2, 2, 2], [4, 2, 2, 1, 1],
-        [4, 2, 1, 1, 1, 1], [4, 1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2],
-        [2, 2, 2, 2, 1, 1], [2, 2, 2, 1, 1, 1, 1], [2, 2, 1, 1, 1, 1, 1, 1],
-        [2, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+                                                     [4, 4, 2], [4, 4, 1, 1], [4, 2, 2, 2], [4, 2, 2, 1, 1],
+                                                     [4, 2, 1, 1, 1, 1], [4, 1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2],
+                                                     [2, 2, 2, 2, 1, 1], [2, 2, 2, 1, 1, 1, 1], [2, 2, 1, 1, 1, 1, 1, 1],
+                                                     [2, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
     assert len([j[:] for j in binary_partitions(16)]) == 36
 
@@ -467,10 +467,10 @@ def test_involutions():
 def test_derangements():
     assert len(list(generate_derangements(list(range(6))))) == 265
     assert ''.join(''.join(i) for i in generate_derangements('abcde')) == (
-    'badecbaecdbcaedbcdeabceadbdaecbdeacbdecabeacdbedacbedcacabedcadebcaebd'
-    'cdaebcdbeacdeabcdebaceabdcebadcedabcedbadabecdaebcdaecbdcaebdcbeadceab'
-    'dcebadeabcdeacbdebacdebcaeabcdeadbceadcbecabdecbadecdabecdbaedabcedacb'
-    'edbacedbca')
+        'badecbaecdbcaedbcdeabceadbdaecbdeacbdecabeacdbedacbedcacabedcadebcaebd'
+        'cdaebcdbeacdeabcdebaceabdcebadcedabcedbadabecdaebcdaecbdcaebdcbeadceab'
+        'dcebadeabcdeacbdebacdebcaeabcdeadbceadcbecabdecbadecdabecdbaedabcedacb'
+        'edbacedbca')
     assert list(generate_derangements([0, 1, 2, 3])) == [
         [1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1],
         [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1], [3, 2, 1, 0]]
@@ -484,7 +484,7 @@ def test_necklaces():
     m = []
     for i in range(1, 8):
         m.append((
-        i, count(i, 2, 0), count(i, 2, 1), count(i, 3, 1)))
+            i, count(i, 2, 0), count(i, 2, 1), count(i, 3, 1)))
     assert Matrix(m) == Matrix([
         [1,   2,   2,   3],
         [2,   3,   3,   6],
@@ -522,11 +522,11 @@ def test_bracelets():
 
 def test_generate_oriented_forest():
     assert list(generate_oriented_forest(5)) == [[0, 1, 2, 3, 4],
-        [0, 1, 2, 3, 3], [0, 1, 2, 3, 2], [0, 1, 2, 3, 1], [0, 1, 2, 3, 0],
-        [0, 1, 2, 2, 2], [0, 1, 2, 2, 1], [0, 1, 2, 2, 0], [0, 1, 2, 1, 2],
-        [0, 1, 2, 1, 1], [0, 1, 2, 1, 0], [0, 1, 2, 0, 1], [0, 1, 2, 0, 0],
-        [0, 1, 1, 1, 1], [0, 1, 1, 1, 0], [0, 1, 1, 0, 1], [0, 1, 1, 0, 0],
-        [0, 1, 0, 1, 0], [0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
+                                                 [0, 1, 2, 3, 3], [0, 1, 2, 3, 2], [0, 1, 2, 3, 1], [0, 1, 2, 3, 0],
+                                                 [0, 1, 2, 2, 2], [0, 1, 2, 2, 1], [0, 1, 2, 2, 0], [0, 1, 2, 1, 2],
+                                                 [0, 1, 2, 1, 1], [0, 1, 2, 1, 0], [0, 1, 2, 0, 1], [0, 1, 2, 0, 0],
+                                                 [0, 1, 1, 1, 1], [0, 1, 1, 1, 0], [0, 1, 1, 0, 1], [0, 1, 1, 0, 0],
+                                                 [0, 1, 0, 1, 0], [0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
     assert len(list(generate_oriented_forest(10))) == 1842
 
 
@@ -572,7 +572,7 @@ def test_ordered():
     assert list(ordered(seq, keys, default=False, warn=False)) == \
         [[1], [2], [1, 2, 1], [0, 3, 1], [1, 1, 3]]
     pytest.raises(ValueError, lambda:
-           list(ordered(seq, keys, default=False, warn=True)))
+                  list(ordered(seq, keys, default=False, warn=True)))
 
 
 def test_runs():

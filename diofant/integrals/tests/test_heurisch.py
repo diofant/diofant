@@ -99,7 +99,7 @@ def test_heurisch_trigonometric():
 
     assert heurisch(x*sin(7*x), x) == sin(7*x) / 49 - x*cos(7*x) / 7
     assert heurisch(1/pi/4 * x**2*cos(x), x) == 1/pi/4*(x**2*sin(x) -
-                    2*sin(x) + 2*x*cos(x))
+                                                        2*sin(x) + 2*x*cos(x))
 
     assert heurisch(acos(x/4) * asin(x/4), x) == 2*x - (sqrt(16 - x**2))*asin(x/4) \
         + (sqrt(16 - x**2))*acos(x/4) + x*asin(x/4)*acos(x/4)
@@ -155,8 +155,8 @@ def test_heurisch_symbolic_coeffs_1130():
         (-I*log(x - I*sqrt(y))/(2*sqrt(y)) + I*log(x + I*sqrt(y))/(2*sqrt(y)), True))
     y = Symbol('y', positive=True)
     assert heurisch_wrapper(1/(x**2 + y), x) in [I/sqrt(y)*log(x + sqrt(-y))/2 -
-    I/sqrt(y)*log(x - sqrt(-y))/2, I*log(x + I*sqrt(y)) /
-        (2*sqrt(y)) - I*log(x - I*sqrt(y))/(2*sqrt(y))]
+                                                 I/sqrt(y)*log(x - sqrt(-y))/2, I*log(x + I*sqrt(y)) /
+                                                 (2*sqrt(y)) - I*log(x - I*sqrt(y))/(2*sqrt(y))]
 
 
 def test_heurisch_hacking():

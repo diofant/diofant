@@ -232,7 +232,7 @@ class Subset(Basic):
         next_gray, prev_gray
         """
         unranked_code = GrayCode.unrank(self.superset_size,
-                                       (self.rank_gray + k) % self.cardinality)
+                                        (self.rank_gray + k) % self.cardinality)
         return Subset.subset_from_bitlist(self.superset,
                                           unranked_code)
 

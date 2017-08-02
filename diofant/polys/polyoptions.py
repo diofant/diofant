@@ -497,7 +497,7 @@ class Split(BooleanOption, metaclass=OptionType):
 
     requires = []
     excludes = ['field', 'greedy', 'domain', 'gaussian', 'extension',
-        'modulus', 'symmetric']
+                'modulus', 'symmetric']
 
     @classmethod
     def postprocess(cls, options):
@@ -512,7 +512,7 @@ class Gaussian(BooleanOption, metaclass=OptionType):
 
     requires = []
     excludes = ['field', 'greedy', 'domain', 'split', 'extension',
-        'modulus', 'symmetric']
+                'modulus', 'symmetric']
 
     @classmethod
     def postprocess(cls, options):
@@ -528,7 +528,7 @@ class Extension(Option, metaclass=OptionType):
 
     requires = []
     excludes = ['greedy', 'domain', 'split', 'gaussian', 'modulus',
-        'symmetric']
+                'symmetric']
 
     @classmethod
     def preprocess(cls, extension):

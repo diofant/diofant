@@ -355,7 +355,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     else:
         if not rewrite:
             result = heurisch(f, x, rewrite=True, hints=hints,
-                unnecessary_permutations=unnecessary_permutations)
+                              unnecessary_permutations=unnecessary_permutations)
 
             if result is not None:
                 return indep*result
@@ -457,7 +457,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     poly_coeffs = _symbols('A', len(monoms))
 
     poly_part = Add(*[ poly_coeffs[i]*monomial
-        for i, monomial in enumerate(ordered(monoms)) ])
+                       for i, monomial in enumerate(ordered(monoms)) ])
 
     reducibles = set()
 
@@ -487,7 +487,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                 #                          V
             irreducibles |= set(root_factors(poly, z, filter=field))
 
-        log_coeffs, log_part = [], []
+        log_part = []
         B = _symbols('B', len(irreducibles))
 
         # Note: the ordering matters here

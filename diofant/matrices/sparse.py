@@ -472,7 +472,7 @@ class SparseMatrixBase(MatrixBase):
         """
         if not isinstance(other, SparseMatrixBase):
             raise ValueError('only use add with %s, not %s' %
-                tuple(c.__class__.__name__ for c in (self, other)))
+                             tuple(c.__class__.__name__ for c in (self, other)))
         if self.shape != other.shape:
             raise ShapeError()
         M = self.copy()
@@ -575,11 +575,11 @@ class SparseMatrixBase(MatrixBase):
         """
         if simplify:
             return all((k[1], k[0]) in self._smat and
-                not (self[k] - self[(k[1], k[0])]).simplify()
-                for k in self._smat)
+                       not (self[k] - self[(k[1], k[0])]).simplify()
+                       for k in self._smat)
         else:
             return all((k[1], k[0]) in self._smat and
-                self[k] == self[(k[1], k[0])] for k in self._smat)
+                       self[k] == self[(k[1], k[0])] for k in self._smat)
 
     def has(self, *patterns):
         """Test whether any subexpression matches any of the patterns.
@@ -884,11 +884,11 @@ class SparseMatrixBase(MatrixBase):
         from ..core import nan, oo
         if not self.is_symmetric():
             raise ValueError('Cholesky decomposition applies only to '
-                'symmetric matrices.')
+                             'symmetric matrices.')
         M = self.as_mutable()._cholesky_sparse()
         if M.has(nan) or M.has(oo):
             raise ValueError('Cholesky decomposition applies only to '
-                'positive-definite matrices')
+                             'positive-definite matrices')
         return self._new(M)
 
     def LDLdecomposition(self):
@@ -923,11 +923,11 @@ class SparseMatrixBase(MatrixBase):
         from ..core import nan, oo
         if not self.is_symmetric():
             raise ValueError('LDL decomposition applies only to '
-                'symmetric matrices.')
+                             'symmetric matrices.')
         L, D = self.as_mutable()._LDL_sparse()
         if L.has(nan) or L.has(oo) or D.has(nan) or D.has(oo):
             raise ValueError('LDL decomposition applies only to '
-                'positive-definite matrices')
+                             'positive-definite matrices')
 
         return self._new(L), self._new(D)
 
@@ -1004,7 +1004,7 @@ class SparseMatrixBase(MatrixBase):
                 raise ValueError('Under-determined system.')
             elif self.rows > self.cols:
                 raise ValueError('For over-determined system, M, having '
-                    'more rows than columns, try M.solve_least_squares(rhs).')
+                                 'more rows than columns, try M.solve_least_squares(rhs).')
         else:
             return self.inv(method=method)*rhs
 
@@ -1586,7 +1586,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         else:
             v = self._sympify(value)
             self._smat = {(i, j): v
-                for i in range(self.rows) for j in range(self.cols)}
+                          for i in range(self.rows) for j in range(self.cols)}
 
 
 #:

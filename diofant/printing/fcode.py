@@ -119,7 +119,7 @@ class FCodePrinter(CodePrinter):
         for i in indices:
             # fortran arrays start at 1 and end at dimension
             var, start, stop = map(self._print,
-                    [i.label, i.lower + 1, i.upper + 1])
+                                   [i.label, i.lower + 1, i.upper + 1])
             open_lines.append("do %s = %s, %s" % (var, start, stop))
             close_lines.append("end do")
         return open_lines, close_lines
@@ -184,7 +184,6 @@ class FCodePrinter(CodePrinter):
                 mixed.append(arg)
         if len(pure_imaginary) > 0:
             if len(mixed) > 0:
-                PREC = precedence(expr)
                 term = Add(*mixed)
                 t = self._print(term)
                 if t.startswith('-'):

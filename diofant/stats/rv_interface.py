@@ -137,7 +137,7 @@ def correlation(X, Y, condition=None, **kwargs):
     1/sqrt(1 + lambda**(-2))
     """
     return covariance(X, Y, condition, **kwargs)/(std(X, condition, **kwargs)
-     * std(Y, condition, **kwargs))
+                                                  * std(Y, condition, **kwargs))
 
 
 def cmoment(X, n, condition=None, **kwargs):

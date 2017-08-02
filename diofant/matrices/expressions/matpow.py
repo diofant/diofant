@@ -41,7 +41,7 @@ class MatPow(MatrixExpr):
             # A = MatMul(*[T for k in range(-A.exp)])
             else:
                 raise NotImplementedError(("(%d, %d) entry" % (int(i), int(j)))
-                    + " of matrix power either not defined or not implemented")
+                                          + " of matrix power either not defined or not implemented")
         return A._entry(i, j)
 
     def _eval_is_commutative(self):

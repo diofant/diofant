@@ -182,7 +182,7 @@ def test_fcode_precedence():
     assert fcode(Or(x < y, y < x + 1), source_format="free") == \
         "x < y .or. y < x + 1"
     assert fcode(Xor(x < y, y < x + 1, evaluate=False),
-        source_format="free") == "x < y .neqv. y < x + 1"
+                 source_format="free") == "x < y .neqv. y < x + 1"
     assert fcode(Equivalent(x < y, y < x + 1), source_format="free") == \
         "x < y .eqv. y < x + 1"
 
@@ -244,9 +244,9 @@ def test_fcode_Xlogical():
     assert fcode(Xor(Not(x), y, evaluate=False), source_format="free") == \
         "y .neqv. .not. x"
     assert fcode(Xor(Not(x), Not(y), evaluate=False),
-        source_format="free") == ".not. x .neqv. .not. y"
+                 source_format="free") == ".not. x .neqv. .not. y"
     assert fcode(Not(Xor(x, y, evaluate=False), evaluate=False),
-        source_format="free") == ".not. (x .neqv. y)"
+                 source_format="free") == ".not. (x .neqv. y)"
     # binary Equivalent
     assert fcode(Equivalent(x, y), source_format="free") == "x .eqv. y"
     assert fcode(Equivalent(x, Not(y)), source_format="free") == \
@@ -256,7 +256,7 @@ def test_fcode_Xlogical():
     assert fcode(Equivalent(Not(x), Not(y)), source_format="free") == \
         ".not. x .eqv. .not. y"
     assert fcode(Not(Equivalent(x, y), evaluate=False),
-        source_format="free") == ".not. (x .eqv. y)"
+                 source_format="free") == ".not. (x .eqv. y)"
     # mixed And/Equivalent
     assert fcode(Equivalent(And(y, z), x), source_format="free") == \
         "x .eqv. y .and. z"
@@ -285,17 +285,17 @@ def test_fcode_Xlogical():
         "z .or. (x .eqv. y)"
     # mixed Xor/Equivalent
     assert fcode(Equivalent(Xor(y, z, evaluate=False), x),
-        source_format="free") == "x .eqv. (y .neqv. z)"
+                 source_format="free") == "x .eqv. (y .neqv. z)"
     assert fcode(Equivalent(Xor(z, x, evaluate=False), y),
-        source_format="free") == "y .eqv. (x .neqv. z)"
+                 source_format="free") == "y .eqv. (x .neqv. z)"
     assert fcode(Equivalent(Xor(x, y, evaluate=False), z),
-        source_format="free") == "z .eqv. (x .neqv. y)"
+                 source_format="free") == "z .eqv. (x .neqv. y)"
     assert fcode(Xor(Equivalent(y, z), x, evaluate=False),
-        source_format="free") == "x .neqv. (y .eqv. z)"
+                 source_format="free") == "x .neqv. (y .eqv. z)"
     assert fcode(Xor(Equivalent(z, x), y, evaluate=False),
-        source_format="free") == "y .neqv. (x .eqv. z)"
+                 source_format="free") == "y .neqv. (x .eqv. z)"
     assert fcode(Xor(Equivalent(x, y), z, evaluate=False),
-        source_format="free") == "z .neqv. (x .eqv. y)"
+                 source_format="free") == "z .neqv. (x .eqv. y)"
     # mixed And/Xor
     assert fcode(Xor(And(y, z), x, evaluate=False), source_format="free") == \
         "x .neqv. y .and. z"

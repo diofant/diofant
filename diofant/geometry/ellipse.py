@@ -106,7 +106,7 @@ class Ellipse(GeometrySet):
 
         if len(list(filter(None, (hradius, vradius, eccentricity)))) != 2:
             raise ValueError('Exactly two arguments of "hradius", '
-                '"vradius", and "eccentricity" must not be None."')
+                             '"vradius", and "eccentricity" must not be None."')
 
         if eccentricity is not None:
             if hradius is None:
@@ -883,7 +883,7 @@ class Ellipse(GeometrySet):
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
             raise ValueError(filldedent('Symbol %s already appears in object '
-                'and cannot be used as a parameter.' % t.name))
+                                        'and cannot be used as a parameter.' % t.name))
         return Point(self.center.x + self.hradius*cos(t),
                      self.center.y + self.vradius*sin(t))
 
