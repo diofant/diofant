@@ -205,19 +205,13 @@ class Basic(object):
         if self is other:
             return True
 
-        from .function import AppliedUndef
-
-        if type(self) is not type(other):
+        if type(self) != type(other):
             try:
                 other = _sympify(other)
             except SympifyError:
                 return False    # diofant != other
 
-            if isinstance(self, AppliedUndef) and isinstance(other,
-                                                             AppliedUndef):
-                if self.class_key() != other.class_key():
-                    return False
-            elif type(self) is not type(other):
+            if type(self) != type(other):
                 return False
 
         return self._hashable_content() == other._hashable_content()
