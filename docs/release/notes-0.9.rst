@@ -158,6 +158,7 @@ Issues closed
 * :issue:`462` Poor performance for very simple matching rule
 * :sympyissue:`12238` match can take a long time (possibly forever)
 * :sympyissue:`4269` ordering of classes
+* :sympyissue:`13081` Some comparisons between rational and irrational numbers are incorrect
 
 .. last pr: #494
 

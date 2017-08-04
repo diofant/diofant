@@ -1575,3 +1575,13 @@ def test_mod_inverse():
     pytest.raises(ValueError, lambda: mod_inverse(2, S.Half))
     pytest.raises(ValueError, lambda: mod_inverse(2, cos(1)**2 + sin(1)**2))
     pytest.raises(ValueError, lambda: mod_inverse(2, 1))
+
+
+def test_sympyissue_13081():
+    r = Rational(905502432259640373, 288230376151711744)
+    assert (pi < r) is S.true
+    assert (r > pi) is S.true
+    r2 = Rational(472202503979844695356573871761845338575143343779448489867569357017941709222155070092152068445390137810467671349,
+                  150306725297525326584926758194517569752043683130132471725266622178061377607334940381676735896625196994043838464)
+    assert (r2 < pi) is S.true
+    assert (r2 > pi) is S.false
