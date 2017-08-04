@@ -4,6 +4,7 @@ from itertools import zip_longest
 
 from .cache import cacheit
 from .compatibility import iterable, ordered
+from .decorators import _sympifyit
 from .singleton import S
 from .sympify import SympifyError, _sympify, sympify
 
@@ -181,6 +182,7 @@ class Basic(object):
         args = len(args), tuple(inner_key(arg) for arg in args)
         return self.class_key(), args, S.One.sort_key(), S.One
 
+    @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
         """Return a boolean indicating whether a == b on the basis of
         their symbolic trees.
@@ -206,13 +208,7 @@ class Basic(object):
             return True
 
         if type(self) != type(other):
-            try:
-                other = _sympify(other)
-            except SympifyError:
-                return False    # diofant != other
-
-            if type(self) != type(other):
-                return False
+            return False
 
         return self._hashable_content() == other._hashable_content()
 
@@ -945,7 +941,7 @@ class Basic(object):
 
     def _has_matcher(self):
         """Helper for .has()"""
-        return self.__eq__
+        return lambda x: self == x
 
     def replace(self, query, value, map=False, simultaneous=True, exact=False):
         """Replace matching subexpressions of ``self`` with ``value``.
