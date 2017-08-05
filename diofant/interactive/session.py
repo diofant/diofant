@@ -22,11 +22,13 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
     """Wrap all int divisions in a call to Rational."""
 
     def visit_BinOp(self, node):
+        def is_integer(x):
+            return ((isinstance(x, ast.Num) and isinstance(x.n, int)) or
+                    (isinstance(x, ast.UnaryOp) and
+                     isinstance(x.op, ast.USub) and is_integer(x.operand)))
+
         if (isinstance(node.op, ast.Div) and
-                isinstance(node.left, ast.Num) and
-                isinstance(node.left.n, int) and
-                isinstance(node.right, ast.Num) and
-                isinstance(node.right.n, int)):
+                all(is_integer(_) for _ in [node.left, node.right])):
             return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
                             args=[node.left, node.right], keywords=[],
                             starargs=None, kwargs=None)
