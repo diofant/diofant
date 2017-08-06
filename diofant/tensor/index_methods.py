@@ -65,12 +65,6 @@ def _get_indices_Mul(expr, return_dummies=False):
     inds, dummies = _remove_repeated(inds)
 
     symmetry = {}
-    for s in syms:
-        for pair in s:
-            if pair in symmetry:
-                symmetry[pair] *= s[pair]
-            else:
-                symmetry[pair] = s[pair]
 
     if return_dummies:
         return inds, symmetry, dummies
@@ -159,11 +153,9 @@ def _get_indices_Add(expr):
 
     if not all(x == non_scalars[0] for x in non_scalars[1:]):
         raise IndexConformanceException("Indices are not consistent: %s" % expr)
-    if not reduce(lambda x, y: x != y or y, syms):
-        symmetries = syms[0]
-    else:
-        # FIXME: search for symmetries
-        symmetries = {}
+
+    # FIXME: search for symmetries
+    symmetries = {}
 
     return non_scalars[0], symmetries
 
@@ -244,9 +236,6 @@ def get_indices(expr):
         elif expr.is_Pow:
             return _get_indices_Pow(expr)
 
-        elif isinstance(expr, Piecewise):
-            # FIXME:  No support for Piecewise yet
-            return set(), {}
         elif isinstance(expr, Function):
             # Support ufunc like behaviour by returning indices from arguments.
             # Functions do not interpret repeated indices across argumnts
@@ -257,11 +246,9 @@ def get_indices(expr):
                 ind0 |= ind
             return ind0, sym
 
-        # this test is expensive, so it should be at the end
-        elif not expr.has(Indexed):
-            return set(), {}
-        raise NotImplementedError(
-            "FIXME: No specialized handling of type %s" % type(expr))
+        else:  # pragma: no cover
+            raise NotImplementedError("No specialized handling of "
+                                      "type %s" % type(expr))
 
 
 def get_contraction_structure(expr):
@@ -414,9 +401,6 @@ def get_contraction_structure(expr):
                     result[key] = d[key]
         return result
 
-    elif isinstance(expr, Piecewise):
-        # FIXME:  No support for Piecewise yet
-        return {None: expr}
     elif isinstance(expr, Function):
         # Collect non-trivial contraction structures in each argument
         # We do not report repeated indices in separate arguments as a
@@ -431,8 +415,6 @@ def get_contraction_structure(expr):
             d[expr] = deeplist
         return d
 
-    # this test is expensive, so it should be at the end
-    elif not expr.has(Indexed):
-        return {None: {expr}}
-    raise NotImplementedError(
-        "FIXME: No specialized handling of type %s" % type(expr))
+    else:  # pragma: no cover
+        raise NotImplementedError("No specialized handling of "
+                                  "type %s" % type(expr))
