@@ -970,7 +970,7 @@ class Float(Number):
     @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
         if isinstance(other, NumberSymbol):
-            return other.__le__(self)
+            return other.__lt__(self)
         if other.is_comparable:
             other = other.evalf()
         if isinstance(other, Number) and other is not S.NaN:
@@ -981,7 +981,7 @@ class Float(Number):
     @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
         if isinstance(other, NumberSymbol):
-            return other.__lt__(self)
+            return other.__le__(self)
         if other.is_comparable:
             other = other.evalf()
         if isinstance(other, Number) and other is not S.NaN:
@@ -992,7 +992,7 @@ class Float(Number):
     @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
         if isinstance(other, NumberSymbol):
-            return other.__ge__(self)
+            return other.__gt__(self)
         if other.is_extended_real and other.is_number:
             other = other.evalf()
         if isinstance(other, Number) and other is not S.NaN:
@@ -1003,7 +1003,7 @@ class Float(Number):
     @_sympifyit('other', NotImplemented)
     def __le__(self, other):
         if isinstance(other, NumberSymbol):
-            return other.__gt__(self)
+            return other.__ge__(self)
         if other.is_extended_real and other.is_number:
             other = other.evalf()
         if isinstance(other, Number) and other is not S.NaN:
@@ -1323,7 +1323,7 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
         if isinstance(other, NumberSymbol):
-            return other.__le__(self)
+            return other.__lt__(self)
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
@@ -1338,7 +1338,7 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
         if isinstance(other, NumberSymbol):
-            return other.__lt__(self)
+            return other.__le__(self)
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
@@ -1353,7 +1353,7 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
         if isinstance(other, NumberSymbol):
-            return other.__ge__(self)
+            return other.__gt__(self)
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
@@ -1369,7 +1369,7 @@ class Rational(Number):
     def __le__(self, other):
         expr = self
         if isinstance(other, NumberSymbol):
-            return other.__gt__(self)
+            return other.__ge__(self)
         elif isinstance(other, Number):
             if isinstance(other, Rational):
                 return _sympify(bool(self.p*other.q <= self.q*other.p))
