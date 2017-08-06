@@ -121,10 +121,17 @@ def test_sparse_matrix():
     S = SparseMatrix.eye(3)
     S[2, 1] = 2
     S.col_swap(1, 0)
-    assert S == SparseMatrix([
-        [0, 1, 0],
-        [1, 0, 0],
-        [2, 0, 1]])
+    assert S == SparseMatrix([[0, 1, 0],
+                              [1, 0, 0],
+                              [2, 0, 1]])
+    S.row_swap(0, 1)
+    assert S == SparseMatrix([[1, 0, 0],
+                              [0, 1, 0],
+                              [2, 0, 1]])
+    S.col_swap(0, 1)
+    assert S == SparseMatrix([[0, 1, 0],
+                              [1, 0, 0],
+                              [0, 2, 1]])
 
     a = SparseMatrix(1, 2, [1, 2])
     b = a.copy()
@@ -337,6 +344,7 @@ def test_sparse_matrix():
 
     # symmetric
     assert not a.is_symmetric(simplify=False)
+    assert sparse_eye(3).is_symmetric(simplify=False)
 
     # test_cofactor
     assert sparse_eye(3) == sparse_eye(3).cofactorMatrix()
@@ -494,6 +502,10 @@ def test_errors():
     pytest.raises(ShapeError,
                   lambda: SparseMatrix([[1, 2],
                                         [3, 4]]).col_join(Matrix([1, 2])))
+    pytest.raises(ShapeError,
+                  lambda: SparseMatrix([[1, 2],
+                                        [3, 4]]).copyin_matrix([1, 0],
+                                                               Matrix([1, 2])))
 
 
 def test_len():
@@ -580,6 +592,11 @@ def test_sparse_solve():
     assert A*s == A[:, 0]
     s = A.solve_least_squares(A[:, 0], 'LDL')
     assert A*s == A[:, 0]
+
+    pytest.raises(ValueError, lambda: SparseMatrix([[1, 0, 1],
+                                                    [0, 0, 1]]).solve([1, 1]))
+    pytest.raises(ValueError, lambda: SparseMatrix([[1, 0], [0, 0],
+                                                    [2, 1]]).solve([1, 1, 1]))
 
 
 def test_hermitian():
