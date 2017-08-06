@@ -16,7 +16,8 @@ from diofant.matrices import (GramSchmidt, ImmutableMatrix,
                               rot_axis1, rot_axis2, rot_axis3, vandermonde,
                               wronskian, zeros)
 from diofant.matrices.matrices import (DeferredVector, MatrixError,
-                                       NonSquareMatrixError, ShapeError)
+                                       NonSquareMatrixError, ShapeError,
+                                       mgamma)
 from diofant.utilities.iterables import capture, flatten
 
 
@@ -2604,3 +2605,29 @@ def test_solve_least_squares():
     assert r == ans
     r = M.solve_least_squares(Matrix([8, 14, 18]), method=None)
     assert r == ans
+
+
+def test_mgamma():
+    assert mgamma(0) == Matrix(((1, 0, 0, 0),
+                                (0, 1, 0, 0),
+                                (0, 0, -1, 0),
+                                (0, 0, 0, -1)))
+    assert mgamma(1) == Matrix(((0, 0, 0, 1),
+                                (0, 0, 1, 0),
+                                (0, -1, 0, 0),
+                                (-1, 0, 0, 0)))
+    assert mgamma(2) == Matrix(((0, 0, 0, -I),
+                                (0, 0, I, 0),
+                                (0, I, 0, 0),
+                                (-I, 0, 0, 0)))
+    assert mgamma(3) == Matrix(((0, 0, 1, 0),
+                                (0, 0, 0, -1),
+                                (-1, 0, 0, 0),
+                                (0, 1, 0, 0)))
+    assert mgamma(5) == Matrix(((0, 0, 1, 0),
+                                (0, 0, 0, 1),
+                                (1, 0, 0, 0),
+                                (0, 1, 0, 0)))
+    assert mgamma(0, lower=True) == mgamma(0)
+    assert mgamma(1, lower=True) == -mgamma(1)
+    pytest.raises(IndexError, lambda: mgamma(4))

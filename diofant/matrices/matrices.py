@@ -2,7 +2,7 @@ import collections
 from functools import reduce
 from types import FunctionType
 
-from ..core import (Add, Atom, Basic, Dummy, Expr, Float, Integer, Pow, S,
+from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow, S,
                     Symbol, count_ops, ilcm, symbols, sympify)
 from ..core.compatibility import (NotIterable, as_int, default_sort_key,
                                   is_sequence)
@@ -3054,17 +3054,6 @@ class MatrixBase(DefaultPrinting):
         singularvalues = self.singular_values()
         return Max(*singularvalues) / Min(*singularvalues)
 
-    def __getattr__(self, attr):
-        if attr in ('diff', 'integrate', 'limit'):
-            def doit(*args):
-                def item_doit(item):
-                    return getattr(item, attr)(*args)
-                return self.applyfunc(item_doit)
-            return doit
-        else:
-            raise AttributeError(
-                "%s has no attribute %s." % (self.__class__.__name__, attr))
-
     def integrate(self, *args):
         """Integrate each element of the matrix.
 
@@ -4101,14 +4090,6 @@ def classof(A, B):
             return A.__class__
         else:
             return B.__class__
-    except Exception:
-        pass
-    try:
-        import numpy
-        if isinstance(A, numpy.ndarray):
-            return B.__class__
-        if isinstance(B, numpy.ndarray):
-            return A.__class__
     except Exception:
         pass
     raise TypeError("Incompatible classes %s, %s" % (A.__class__, B.__class__))

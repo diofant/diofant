@@ -886,9 +886,7 @@ class SparseMatrixBase(MatrixBase):
             raise ValueError('Cholesky decomposition applies only to '
                              'symmetric matrices.')
         M = self.as_mutable()._cholesky_sparse()
-        if M.has(nan) or M.has(oo):
-            raise ValueError('Cholesky decomposition applies only to '
-                             'positive-definite matrices')
+        assert not M.has(nan, oo)
         return self._new(M)
 
     def LDLdecomposition(self):
@@ -925,10 +923,7 @@ class SparseMatrixBase(MatrixBase):
             raise ValueError('LDL decomposition applies only to '
                              'symmetric matrices.')
         L, D = self.as_mutable()._LDL_sparse()
-        if L.has(nan) or L.has(oo) or D.has(nan) or D.has(oo):
-            raise ValueError('LDL decomposition applies only to '
-                             'positive-definite matrices')
-
+        assert not L.has(nan, oo) and not D.has(nan, oo)
         return self._new(L), self._new(D)
 
     def solve_least_squares(self, rhs, method='LDL'):
@@ -1002,7 +997,7 @@ class SparseMatrixBase(MatrixBase):
         if not self.is_square:
             if self.rows < self.cols:
                 raise ValueError('Under-determined system.')
-            elif self.rows > self.cols:
+            else:
                 raise ValueError('For over-determined system, M, having '
                                  'more rows than columns, try M.solve_least_squares(rhs).')
         else:

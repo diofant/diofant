@@ -7,6 +7,7 @@ from diofant.matrices import (Adjoint, Identity, ImmutableMatrix, Inverse,
                               MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
                               MatrixSymbol, ShapeError, Transpose, ZeroMatrix)
 from diofant.matrices.expressions.matexpr import MatrixElement
+from diofant.matrices.expressions.slice import MatrixSlice
 from diofant.simplify import simplify
 
 
@@ -205,6 +206,8 @@ def test_indexing():
     A[1, 2]
     A[l, k]
     A[l+1, k+1]
+
+    assert A[:] == MatrixSlice(A, (0, n, 1), (0, m, 1))
 
 
 def test_single_indexing():
