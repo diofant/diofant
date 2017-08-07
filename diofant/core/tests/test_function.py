@@ -749,4 +749,4 @@ def test_sympyissue_12005():
     assert e4.diff(y) == S.Zero
     e5 = Subs(Derivative(f(x), x), (y, z), (y, z))
     assert e5.diff(x) == Derivative(f(x), x, x)
-    assert f(g(x)).diff(g(x), g(x)) == Subs(Derivative(Function('f')(y), y, y), (y,), (g(x),))
+    assert f(g(x)).diff(g(x), g(x)) == Subs(Derivative(f(y), y, y), (y,), (g(x),))

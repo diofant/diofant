@@ -159,6 +159,7 @@ Issues closed
 * :sympyissue:`12238` match can take a long time (possibly forever)
 * :sympyissue:`4269` ordering of classes
 * :sympyissue:`13081` Some comparisons between rational and irrational numbers are incorrect
+* :sympyissue:`13078` Return NotImplemented, not False, upon rich comparison with unknown type
 
 .. last pr: #494
 

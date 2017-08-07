@@ -108,6 +108,9 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     __neg__ = MatrixBase.__neg__
     __truediv__ = MatrixBase.__truediv__
 
+    __eq__ = DenseMatrix.__eq__
+    __hash__ = Expr.__hash__
+
 
 # This is included after the class definition as a workaround for issue sympy/sympy#7213.
 # See https://github.com/sympy/sympy/issues/7213
