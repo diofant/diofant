@@ -7,6 +7,7 @@ from diofant import (Abs, Derivative, Dummy, E, Eq, Function, I, Integer,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan, cos,
                      diff, dsolve, erf, erfi, exp, log, pi, simplify, sin,
                      sinh, sqrt, sstr, symbols, tan)
+from diofant.abc import A
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_undetermined_coefficients_match, checkinfsol,
                                  checkodesol, checksysodesol, classify_ode,
@@ -2132,7 +2133,6 @@ def test_unexpanded_Liouville_ODE():
 
 
 def test_sympyissue_4785():
-    from diofant.abc import A
     eq = x + A*(x + diff(f(x), x) + f(x)) + diff(f(x), x) + f(x) + 2
     assert classify_ode(eq, f(x)) == ('1st_linear', 'almost_linear',
                                       '1st_power_series', 'lie_group',

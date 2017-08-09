@@ -1,6 +1,7 @@
 import pytest
 
 from diofant import Matrix, eye
+from diofant.abc import x
 from diofant.combinatorics import Permutation
 from diofant.core import Basic, Integer, Rational, S, Symbol
 from diofant.core.containers import Tuple
@@ -662,7 +663,6 @@ def test_add2():
 
 
 def test_mul():
-    from diofant.abc import x
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
     t = TensMul.from_data(S.One, [], [], [])

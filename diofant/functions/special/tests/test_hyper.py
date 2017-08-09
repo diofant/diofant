@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Derivative, Float, I, O, Rational, S, Tuple, cos, exp,
                      gamma, hyper, log, meijerg, oo, pi, sqrt, symbols)
-from diofant.abc import k, x, z
+from diofant.abc import a, b, c, d, k, l, s, x, z
 from diofant.series.limits import limit
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import test_derivative_numerically as td
@@ -53,7 +53,6 @@ def test_hyper():
 
 def test_expand_func():
     # evaluation at 1 of Gauss' hypergeometric function:
-    from diofant.abc import a, b, c
     from diofant import gamma, expand_func
     a1, b1, c1 = randcplx(), randcplx(), randcplx() + 5
     assert expand_func(hyper([a, b], [c], 1)) == \
@@ -170,7 +169,6 @@ def test_meijer():
         meijerg([a1], [a2], [b1], [b2], pl(z))
 
     # integrand
-    from diofant.abc import a, b, c, d, s
     assert meijerg([a], [b], [c], [d], z).integrand(s) == \
         z**s*gamma(c - s)*gamma(-a + s + 1)/(gamma(b - s)*gamma(-d + s + 1))
 
@@ -307,7 +305,6 @@ def test_hyperrep():
 
 def test_meijerg_eval():
     from diofant import besseli, exp_polar
-    from diofant.abc import l
     a = randcplx()
     arg = x*exp_polar(k*pi*I)
     expr1 = pi*meijerg([[], [(a + 1)/2]], [[a/2], [-a/2, (a + 1)/2]], arg**2/4)

@@ -6,7 +6,7 @@ from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
                      Integer, Lambda, O, Rational, S, Subs, Sum, Symbol, Tuple,
                      acos, cos, diff, exp, expand, expint, floor, im, log,
                      loggamma, nfloat, pi, polygamma, re, sin, sqrt, symbols)
-from diofant.abc import t, w, x, y, z
+from diofant.abc import a, b, t, w, x, y, z
 from diofant.core.cache import clear_cache
 from diofant.core.function import PoleError, _mexpand
 from diofant.sets.sets import FiniteSet
@@ -666,7 +666,6 @@ def test_nfloat():
 
 
 def test_sympyissue_7068():
-    from diofant.abc import a, b
     f = Function('f')
     y1 = Dummy('y')
     y2 = Dummy('y')
@@ -681,7 +680,6 @@ def test_sympyissue_7068():
 
 
 def test_sympyissue_7231():
-    from diofant.abc import a
     ans1 = f(x).series(x, a)
     _xi_1 = ans1.atoms(Dummy).pop()
     res = (f(a) + (-a + x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1,), (a,)) +
@@ -699,7 +697,6 @@ def test_sympyissue_7231():
 
 def test_sympyissue_7687():
     from diofant.core.function import Function
-    from diofant.abc import x
     f = Function('f')(x)
     ff = Function('f')(x)
     match_with_cache = ff.matches(f)
@@ -724,7 +721,6 @@ def test_sympyissue_7688():
 
 
 def test_mexpand():
-    from diofant.abc import x
     assert _mexpand(None) is None
     assert _mexpand(1) is S.One
     assert _mexpand(x*(x + 1)**2) == (x*(x + 1)**2).expand()

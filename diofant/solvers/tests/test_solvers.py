@@ -364,8 +364,7 @@ def test_solve_radicals():
 
 
 def test_solve_transcendental():
-    from diofant.abc import a, b
-
+    a, b = symbols('a, b')
     assert solve(sin(x)/x) == [{x: pi}]  # 0 is excluded
     assert solve(sin(x)/x, check=False) == [{x: 0}, {x: pi}]
 

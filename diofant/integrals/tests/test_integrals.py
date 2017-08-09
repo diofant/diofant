@@ -10,6 +10,7 @@ from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
                      integrate, log, meijerg, nan, oo, pi, polar_lift, re,
                      sign, simplify, sin, sinh, sqrt, sstr, symbols, sympify,
                      tan, tanh, trigsimp)
+from diofant.abc import a, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically
@@ -17,7 +18,7 @@ from diofant.utilities.randtest import verify_numerically
 
 __all__ = ()
 
-x, y, a, t, x_1, x_2, z, s = symbols('x y a t x_1 x_2 z s')
+x_1, x_2 = symbols('x_1 x_2')
 n = Symbol('n', integer=True)
 f = Function('f')
 
@@ -677,7 +678,6 @@ def test_sympyissue_4884():
 
 
 def test_is_number():
-    from diofant.abc import x, y, z
     from diofant import cos, sin
     assert Integral(x).is_number is False
     assert Integral(1, x).is_number is False
@@ -731,7 +731,6 @@ def test_symbols():
 
 
 def test_is_zero():
-    from diofant.abc import x, m
     assert Integral(0, (x, 1, x)).is_zero
     assert Integral(1, (x, 1, 1)).is_zero
     assert Integral(1, (x, m)).is_zero is None
@@ -756,7 +755,6 @@ def test_is_real():
 
 
 def test_series():
-    from diofant.abc import x
     i = Integral(cos(x), (x, x))
     e = i.lseries(x)
     s1 = i.nseries(x, n=8).removeO().doit()
@@ -789,7 +787,6 @@ def test_sympyissue_4100():
 
 
 def test_sympyissue_5167():
-    from diofant.abc import w, x, y, z
     f = Function('f')
     assert Integral(Integral(f(x), x), x) == Integral(f(x), x, x)
     assert Integral(f(x)).args == (f(x), Tuple(x))
@@ -864,7 +861,6 @@ def test_sympyissue_3940():
         sqrt(pi)*exp(c)*exp(-b**2/(4*a))*erfi(sqrt(a)*x + b/(2*sqrt(a)))/(2*sqrt(a))
 
     from diofant import expand_mul
-    from diofant.abc import k
     assert expand_mul(integrate(exp(-x**2)*exp(I*k*x), (x, -oo, oo))) == \
         sqrt(pi)*exp(-k**2/4)
     a, d = symbols('a d', positive=True)

@@ -11,7 +11,7 @@ import warnings
 import pytest
 
 from diofant import Basic, Integer, Interval, S, exp, oo, sin, sqrt, symbols
-from diofant.abc import x, y, z
+from diofant.abc import a, b, c, w, x, y, z
 from diofant.matrices.expressions import MatrixSymbol
 from diofant.stats.crv_types import NormalDistribution
 from diofant.stats.frv_types import DieDistribution
@@ -129,7 +129,6 @@ def test_diofant__combinatorics__perm_groups__PermutationGroup():
 def test_diofant__combinatorics__polyhedron__Polyhedron():
     from diofant.combinatorics.permutations import Permutation
     from diofant.combinatorics.polyhedron import Polyhedron
-    from diofant.abc import w, x, y, z
     pgroup = [Permutation([[0, 1, 2], [3]]),
               Permutation([[0, 1, 3], [2]]),
               Permutation([[0, 2, 3], [1]]),
@@ -2485,7 +2484,6 @@ def test_diofant__vector__vector__VectorAdd():
     from diofant.vector.vector import VectorAdd, VectorMul
     from diofant.vector.coordsysrect import CoordSysCartesian
     C = CoordSysCartesian('C')
-    from diofant.abc import a, b, c, x, y, z
     v1 = a*C.i + b*C.j + c*C.k
     v2 = x*C.i + y*C.j + z*C.k
     assert _test_args(VectorAdd(v1, v2))
@@ -2496,7 +2494,6 @@ def test_diofant__vector__vector__VectorMul():
     from diofant.vector.vector import VectorMul
     from diofant.vector.coordsysrect import CoordSysCartesian
     C = CoordSysCartesian('C')
-    from diofant.abc import a
     assert _test_args(VectorMul(a, C.i))
 
 

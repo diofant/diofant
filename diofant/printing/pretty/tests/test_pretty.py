@@ -11,7 +11,7 @@ from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
                      RootOf, RootSum, S, Segment, Subs, Sum, Symbol, Trace,
                      Tuple, Union, Xor, conjugate, grlex, groebner, ilex, oo,
                      pi, symbols)
-from diofant.abc import a, b, k, w, x, y, z
+from diofant.abc import a, b, k, lamda, m, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2_r
@@ -3579,8 +3579,7 @@ def test_settings():
 
 
 def test_pretty_sum():
-    from diofant.abc import x, a, b, k, m, n
-
+    n = Symbol('n')
     expr = Sum(k**k, (k, 0, n))
     ascii_str = \
         """\
@@ -4937,7 +4936,6 @@ def test_sympyissue_7927():
 
 
 def test_sympyissue_6134():
-    from diofant.abc import lamda, t
     phi = Function('phi')
 
     e = lamda*x*Integral(phi(t)*pi*sin(pi*t), (t, 0, 1)) + lamda*x**2*Integral(phi(t)*2*pi*sin(2*pi*t), (t, 0, 1))

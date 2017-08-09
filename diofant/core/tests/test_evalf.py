@@ -6,8 +6,8 @@ from diofant import (Abs, Add, E, Eq, Float, Function, GoldenRatio, I,
                      Integral, Min, Mul, N, Pow, Product, Rational, S, Sum,
                      Symbol, atan, ceiling, cos, exp, factorial, fibonacci,
                      floor, im, integrate, log, oo, pi, product, re, sin, sqrt,
-                     sstr, sympify)
-from diofant.abc import n, x, y
+                     sstr, sympify, zoo)
+from diofant.abc import H, n, x, y
 from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
                                 complex_accuracy, scaled_zero)
 
@@ -467,8 +467,6 @@ def test_sympyissue_6632_evalf():
 
 
 def test_sympyissue_4945():
-    from diofant.abc import H
-    from diofant import zoo
     assert (H/0).evalf(subs={H: 1}) == zoo*H
 
 

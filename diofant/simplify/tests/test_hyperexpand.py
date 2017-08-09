@@ -611,8 +611,10 @@ def test_partial_simp():
         for func1, func2 in zip(deriv1, deriv2):
             assert tn(func1, func2, z)
 
+
+def test_partial_simp2():
     # Now test that formulae are partially simplified.
-    from diofant.abc import a, b, z
+    c, d, e = (randcplx() for _ in range(3))
     assert hyperexpand(hyper([3, a], [1, b], z)) == \
         (-a*b/2 + a*z/2 + 2*a)*hyper([a + 1], [b], z) \
         + (a*b/2 - 2*a + 1)*hyper([a], [b], z)

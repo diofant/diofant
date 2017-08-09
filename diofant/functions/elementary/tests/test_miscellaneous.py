@@ -1,5 +1,6 @@
 import pytest
 
+from diofant.abc import x, y, z
 from diofant.core import Eq, Function, I, Rational, S, Symbol, oo, symbols
 from diofant.core.function import ArgumentIndexError
 from diofant.functions import (Heaviside, Max, Min, Piecewise, cbrt, ceiling,
@@ -11,7 +12,6 @@ __all__ = ()
 
 
 def test_Min():
-    from diofant.abc import x, y, z
     n = Symbol('n', negative=True)
     n_ = Symbol('n_', negative=True)
     nn = Symbol('nn', nonnegative=True)
@@ -119,7 +119,6 @@ def test_Min():
 
 
 def test_Max():
-    from diofant.abc import x, y, z
     n = Symbol('n', negative=True)
     n_ = Symbol('n_', negative=True)
     p = Symbol('p', positive=True)
@@ -182,7 +181,6 @@ def test_sympyissue_8413():
 
 
 def test_root():
-    from diofant.abc import x
     n = Symbol('n', integer=True)
     k = Symbol('k', integer=True)
 
@@ -233,7 +231,6 @@ def test_real_root():
 
 
 def test_rewrite_MaxMin_as_Heaviside():
-    from diofant.abc import x
     assert Max(0, x).rewrite(Heaviside) == x*Heaviside(x)
     assert Max(3, x).rewrite(Heaviside) == x*Heaviside(x - 3) + \
         3*Heaviside(-x + 3)

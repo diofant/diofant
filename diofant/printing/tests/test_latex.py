@@ -417,7 +417,6 @@ def test_latex_functions():
 
 def test_hyper_printing():
     from diofant import pi
-    from diofant.abc import x, z
 
     assert latex(meijerg(Tuple(pi, pi, x), Tuple(1),
                          (0, 1), Tuple(1, 2, 3/pi), z)) == \
@@ -441,7 +440,6 @@ def test_hyper_printing():
 def test_latex_bessel():
     from diofant.functions.special.bessel import (besselj, bessely, besseli,
                                                   besselk, hankel1, hankel2, jn, yn)
-    from diofant.abc import z
     assert latex(besselj(n, z**2)**k) == r'J^{k}_{n}\left(z^{2}\right)'
     assert latex(bessely(n, z)) == r'Y_{n}\left(z\right)'
     assert latex(besseli(n, z)) == r'I_{n}\left(z\right)'
@@ -455,7 +453,6 @@ def test_latex_bessel():
 
 def test_latex_fresnel():
     from diofant.functions.special.error_functions import (fresnels, fresnelc)
-    from diofant.abc import z
     assert latex(fresnels(z)) == r'S\left(z\right)'
     assert latex(fresnelc(z)) == r'C\left(z\right)'
     assert latex(fresnels(z)**2) == r'S^{2}\left(z\right)'
