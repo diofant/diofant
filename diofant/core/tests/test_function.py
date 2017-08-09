@@ -4,8 +4,8 @@ import pytest
 
 from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
                      Integer, Lambda, O, Rational, S, Subs, Sum, Symbol, Tuple,
-                     acos, cos, diff, exp, expand, expint, im, log, loggamma,
-                     nfloat, pi, polygamma, re, sin, sqrt, symbols)
+                     acos, cos, diff, exp, expand, expint, floor, im, log,
+                     loggamma, nfloat, pi, polygamma, re, sin, sqrt, symbols)
 from diofant.abc import t, w, x, y, z
 from diofant.core.cache import clear_cache
 from diofant.core.function import PoleError, _mexpand
@@ -750,3 +750,15 @@ def test_sympyissue_12005():
     e5 = Subs(Derivative(f(x), x), (y, z), (y, z))
     assert e5.diff(x) == Derivative(f(x), x, x)
     assert f(g(x)).diff(g(x), g(x)) == Subs(Derivative(f(y), y, y), (y,), (g(x),))
+
+
+def test_sympyissue_13098():
+    assert floor(log(Float('9.9999999000000006'), 10)) == 0
+    assert floor(log(Float('9.9999999899999992'), 10)) == 0
+    assert floor(log(Float(('15.9999999999999999999999999999999999'
+                            '99999999999999999999001'), dps=56), 2)) == 4
+    assert floor(log(Float('16.0'), 2)) == 4
+    assert floor(log(Float('99.99999999999999999999999007',
+                           dps=25), 10)) == 2
+    assert floor(log(Float('999.99999000000003'), 10)) == 2
+    assert floor(log(Float('999.999999'), 10)) == 2
