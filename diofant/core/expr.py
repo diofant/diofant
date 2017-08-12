@@ -10,7 +10,7 @@ from .compatibility import as_int, default_sort_key
 from .decorators import _sympifyit, call_highest_priority
 from .evalf import EvalfMixin, pure_complex
 from .singleton import S
-from .sympify import SympifyError, _sympify, sympify
+from .sympify import SympifyError, sympify
 
 
 class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):

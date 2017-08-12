@@ -9,7 +9,7 @@ from .evaluate import global_evaluate
 from .expr import Expr
 from .function import _coeff_isneg
 from .symbol import Dummy, Symbol
-from .sympify import _sympify
+from .sympify import sympify
 
 
 __all__ = (
@@ -296,8 +296,8 @@ class Equality(Relational):
     is_Equality = True
 
     def __new__(cls, lhs, rhs=0, **options):
-        lhs = _sympify(lhs)
-        rhs = _sympify(rhs)
+        lhs = sympify(lhs, strict=True)
+        rhs = sympify(rhs, strict=True)
 
         evaluate = options.pop('evaluate', global_evaluate[0])
 
@@ -322,7 +322,7 @@ class Equality(Relational):
             if isinstance(lhs, Expr) and isinstance(rhs, Expr):
                 r = (lhs - rhs).is_zero
                 if r is not None:
-                    return _sympify(r)
+                    return sympify(r, strict=True)
 
         return Relational.__new__(cls, lhs, rhs, **options)
 
@@ -363,8 +363,8 @@ class Unequality(Relational):
     rel_op = '!='
 
     def __new__(cls, lhs, rhs, **options):
-        lhs = _sympify(lhs)
-        rhs = _sympify(rhs)
+        lhs = sympify(lhs, strict=True)
+        rhs = sympify(rhs, strict=True)
 
         evaluate = options.pop('evaluate', global_evaluate[0])
 
@@ -387,8 +387,8 @@ class _Inequality(Relational):
     """
 
     def __new__(cls, lhs, rhs, **options):
-        lhs = _sympify(lhs)
-        rhs = _sympify(rhs)
+        lhs = sympify(lhs, strict=True)
+        rhs = sympify(rhs, strict=True)
 
         evaluate = options.pop('evaluate', global_evaluate[0])
 
@@ -689,7 +689,7 @@ class GreaterThan(_Greater):
 
     @classmethod
     def _eval_relation(cls, lhs, rhs):
-        return _sympify(lhs >= rhs)
+        return sympify(lhs >= rhs, strict=True)
 
 
 Ge = GreaterThan
@@ -702,7 +702,7 @@ class LessThan(_Less):
 
     @classmethod
     def _eval_relation(cls, lhs, rhs):
-        return _sympify(lhs <= rhs)
+        return sympify(lhs <= rhs, strict=True)
 
 
 Le = LessThan
@@ -715,7 +715,7 @@ class StrictGreaterThan(_Greater):
 
     @classmethod
     def _eval_relation(cls, lhs, rhs):
-        return _sympify(lhs > rhs)
+        return sympify(lhs > rhs, strict=True)
 
 
 Gt = StrictGreaterThan
@@ -728,7 +728,7 @@ class StrictLessThan(_Less):
 
     @classmethod
     def _eval_relation(cls, lhs, rhs):
-        return _sympify(lhs < rhs)
+        return sympify(lhs < rhs, strict=True)
 
 
 Lt = StrictLessThan

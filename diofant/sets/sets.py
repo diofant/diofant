@@ -7,7 +7,6 @@ from ..core.compatibility import iterable, ordered
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
-from ..core.sympify import _sympify
 from ..logic import And, Not, Or, false, true
 from ..utilities import subsets
 from .contains import Contains
@@ -699,10 +698,10 @@ class Interval(Set, EvalfMixin):
 
     def __new__(cls, start, end, left_open=False, right_open=False):
 
-        start = _sympify(start)
-        end = _sympify(end)
-        left_open = _sympify(left_open)
-        right_open = _sympify(right_open)
+        start = sympify(start, strict=True)
+        end = sympify(end, strict=True)
+        left_open = sympify(left_open, strict=True)
+        right_open = sympify(right_open, strict=True)
 
         if not all(isinstance(a, (type(true), type(false)))
                    for a in [left_open, right_open]):
@@ -924,7 +923,7 @@ class Interval(Set, EvalfMixin):
         else:
             expr = And(expr, other <= self.end)
 
-        return _sympify(expr)
+        return sympify(expr, strict=True)
 
     def _eval_imageset(self, f):
         from ..functions import Min, Max

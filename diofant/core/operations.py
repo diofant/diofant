@@ -3,7 +3,7 @@ from .cache import cacheit
 from .compatibility import ordered
 from .evaluate import global_evaluate
 from .expr import Expr
-from .sympify import _sympify, sympify
+from .sympify import sympify
 
 
 class AssocOp(Expr):
@@ -21,7 +21,7 @@ class AssocOp(Expr):
     @cacheit
     def __new__(cls, *args, **options):
         from ..series import Order
-        args = list(map(_sympify, args))
+        args = [sympify(a, strict=True) for a in args]
 
         if not options.pop('evaluate', global_evaluate[0]):
             return cls._from_args(args)
@@ -389,7 +389,7 @@ class LatticeOp(AssocOp):
     is_commutative = True
 
     def __new__(cls, *args, **options):
-        args = (_sympify(arg) for arg in args)
+        args = (sympify(arg, strict=True) for arg in args)
 
         if options.pop('evaluate', global_evaluate[0]):
             try:

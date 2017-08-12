@@ -1,5 +1,5 @@
 from ...core import Expr, Integer
-from ...core.sympify import _sympify
+from ...core.sympify import sympify
 from .matexpr import ShapeError
 from .matpow import MatPow
 
@@ -32,7 +32,7 @@ class Inverse(MatPow):
     exp = Integer(-1)
 
     def __new__(cls, mat):
-        mat = _sympify(mat)
+        mat = sympify(mat, strict=True)
         if not mat.is_Matrix:
             raise TypeError("mat should be a matrix")
         if not mat.is_square:

@@ -1,6 +1,6 @@
 from .. import MatrixBase
 from ...core import S
-from ...core.sympify import _sympify
+from ...core.sympify import sympify
 from .matexpr import Identity, MatrixExpr, ShapeError, ZeroMatrix
 from .matmul import MatMul
 
@@ -8,10 +8,10 @@ from .matmul import MatMul
 class MatPow(MatrixExpr):
 
     def __new__(cls, base, exp):
-        base = _sympify(base)
+        base = sympify(base, strict=True)
         if not base.is_Matrix:
             raise TypeError("Function parameter should be a matrix")
-        exp = _sympify(exp)
+        exp = sympify(exp, strict=True)
         return super(MatPow, cls).__new__(cls, base, exp)
 
     @property

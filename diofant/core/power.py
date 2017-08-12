@@ -16,7 +16,7 @@ from .mul import Mul, _keep_coeff
 from .numbers import Integer
 from .singleton import S
 from .symbol import Dummy, symbols
-from .sympify import _sympify
+from .sympify import sympify
 
 
 def integer_nthroot(y, n):
@@ -170,8 +170,8 @@ class Pow(Expr):
             evaluate = global_evaluate[0]
         from ..functions.elementary.exponential import exp_polar
 
-        b = _sympify(b)
-        e = _sympify(e)
+        b = sympify(b, strict=True)
+        e = sympify(e, strict=True)
         if evaluate:
             if e is S.Zero:
                 return S.One
@@ -1114,7 +1114,7 @@ class Pow(Expr):
 
         diofant.core.basic.Basic.matches
         """
-        expr = _sympify(expr)
+        expr = sympify(expr, strict=True)
 
         # special case, pattern = 1 and expr.exp can match to 0
         if expr is S.One:
