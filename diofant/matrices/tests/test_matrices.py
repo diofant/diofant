@@ -456,6 +456,9 @@ def test_submatrix_assignment():
                         (9, 10, 11, 12),
                         (13, 14, 15, 16)))
 
+    with pytest.raises(ValueError):
+        m[:, 1] = object()
+
 
 def test_extract():
     m = Matrix(4, 3, lambda i, j: i*3 + j)
@@ -2112,7 +2115,9 @@ def test_rotation_matrices():
 
 def test_DeferredVector():
     assert str(DeferredVector("vector")[4]) == "vector[4]"
+    assert repr(DeferredVector("vector")) == "DeferredVector('vector')"
     assert sympify(DeferredVector("d")) == DeferredVector("d")
+    pytest.raises(IndexError, lambda: DeferredVector('X')[-1])
 
 
 def test_DeferredVector_not_iterable():
