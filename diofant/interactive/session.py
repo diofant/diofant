@@ -2,22 +2,6 @@ import ast
 import builtins
 
 
-class IntegerWrapper(ast.NodeTransformer):
-    """Wraps all integers in a call to Integer."""
-
-    def visit_Num(self, node):
-        if isinstance(node.n, int):
-            return ast.Call(func=ast.Name(id='Integer', ctx=ast.Load()),
-                            args=[node], keywords=[],
-                            starargs=None, kwargs=None)
-        return node
-
-    def visit_Call(self, node):
-        if isinstance(node.func, ast.Name) and node.func.id == "Integer":
-            return node
-        return self.generic_visit(node)
-
-
 class IntegerDivisionWrapper(ast.NodeTransformer):
     """Wrap all int divisions in a call to Rational."""
 
