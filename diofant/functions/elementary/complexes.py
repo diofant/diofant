@@ -691,22 +691,6 @@ class adjoint(Function):
     def _eval_transpose(self):
         return conjugate(self.args[0])
 
-    def _latex(self, printer, exp=None, *args):
-        arg = printer._print(self.args[0])
-        tex = r'%s^{\dag}' % arg
-        if exp:
-            tex = r'\left(%s\right)^{%s}' % (tex, printer._print(exp))
-        return tex
-
-    def _pretty(self, printer, *args):
-        from ...printing.pretty.stringpict import prettyForm
-        pform = printer._print(self.args[0], *args)
-        if printer._use_unicode:
-            pform = pform**prettyForm('\N{DAGGER}')
-        else:
-            pform = pform**prettyForm('+')
-        return pform
-
 ###############################################################################
 # ############# HANDLING OF POLAR NUMBERS ################################### #
 ###############################################################################
@@ -865,17 +849,6 @@ class periodic_argument(Function):
             n = ceiling(unbranched/period - Rational(1, 2))*period
             if not n.has(ceiling):
                 return unbranched - n
-
-    def _eval_evalf(self, prec):
-        from .integers import ceiling
-        z, period = self.args
-        if period == oo:
-            unbranched = periodic_argument._getunbranched(z)
-            if unbranched is None:
-                return self
-            return unbranched._eval_evalf(prec)
-        ub = periodic_argument(z, oo)._eval_evalf(prec)
-        return (ub - ceiling(ub/period - Rational(1, 2))*period)._eval_evalf(prec)
 
     def _eval_is_real(self):
         if self.args[1].is_real and self.args[1].is_positive:
