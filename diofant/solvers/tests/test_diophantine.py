@@ -1,6 +1,7 @@
 import pytest
 
 from diofant import Integer, Matrix, Subs, factor_list, simplify, symbols
+from diofant.abc import a, b, c, d, e, f, g, h, i
 from diofant.core.function import _mexpand
 from diofant.functions.elementary.trigonometric import sin
 from diofant.solvers.diophantine import (descent, diop_bf_DN, diop_DN,
@@ -425,8 +426,6 @@ def test_diophantine():
 
 
 def test_general_pythagorean():
-    from diofant.abc import a, b, c, d, e
-
     assert check_solutions(a**2 + b**2 + c**2 - d**2)
     assert check_solutions(a**2 + 4*b**2 + 4*c**2 - d**2)
     assert check_solutions(9*a**2 + 4*b**2 + 4*c**2 - d**2)
@@ -437,8 +436,6 @@ def test_general_pythagorean():
 
 
 def test_diop_general_sum_of_squares():
-    from diofant.abc import a, b, c, d, e, f, g, h, i
-
     assert check_solutions(a**2 + b**2 + c**2 - 5)
     assert check_solutions(a**2 + b**2 + c**2 - 57)
     assert check_solutions(a**2 + b**2 + c**2 - 349560695)

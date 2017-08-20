@@ -1,5 +1,6 @@
 import pytest
 
+from diofant.abc import x
 from diofant.combinatorics.partitions import (IntegerPartition, Partition,
                                               RGS_enum, RGS_rank, RGS_unrank,
                                               random_integer_partition)
@@ -12,8 +13,6 @@ __all__ = ()
 
 
 def test_partition():
-    from diofant.abc import x
-
     pytest.raises(ValueError, lambda: Partition(*range(3)))
     pytest.raises(ValueError, lambda: Partition([1, 1, 2]))
 

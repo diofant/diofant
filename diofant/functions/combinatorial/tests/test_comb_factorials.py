@@ -3,6 +3,7 @@ import pytest
 from diofant import (EulerGamma, O, Product, S, Symbol, binomial, exp,
                      expand_func, factorial, factorial2, ff, gamma, loggamma,
                      nan, oo, pi, polygamma, rf, simplify, symbols, zoo)
+from diofant.abc import x
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.combinatorial.factorials import subfactorial
 from diofant.functions.special.gamma_functions import uppergamma
@@ -328,7 +329,6 @@ def test_binomial_rewrite():
 @pytest.mark.xfail
 def test_factorial_simplify_fail():
     # simplify(factorial(x + 1).diff(x) - ((x + 1)*factorial(x)).diff(x))) == 0
-    from diofant.abc import x
     assert simplify(x*polygamma(0, x + 1) - x*polygamma(0, x + 2) +
                     polygamma(0, x + 1) - polygamma(0, x + 2) + 1) == 0
 

@@ -1523,8 +1523,6 @@ def test_random():
 
 
 def test_round():
-    from diofant.abc import x
-
     assert Float('0.1249999').round(2) == 0.12
     d20 = 12345678901234567890
     ans = Integer(d20).round(2)

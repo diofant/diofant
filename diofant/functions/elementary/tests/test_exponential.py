@@ -4,7 +4,7 @@ from diofant import (E, Float, Function, I, Integer, LambertW, O, Rational, S,
                      Symbol, arg, conjugate, cos, cosh, exp, exp_polar,
                      expand_log, log, nan, oo, pi, re, sign, simplify, sin,
                      sinh, sqrt, symbols, tanh, zoo)
-from diofant.abc import x, y, z
+from diofant.abc import m, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 
 
@@ -460,7 +460,6 @@ def test_polar():
 
 
 def test_log_product():
-    from diofant.abc import n, m
     i, j = symbols('i,j', positive=True, integer=True)
     x, y = symbols('x,y', positive=True)
     from diofant.concrete import Product, Sum

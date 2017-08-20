@@ -2,7 +2,7 @@ import functools
 import itertools
 
 from ...core import Dict, Expr, S, Tuple
-from ...core.sympify import _sympify
+from ...core.sympify import sympify
 from ...matrices import SparseMatrix
 from ...utilities import flatten
 from .mutable_ndim_array import MutableNDimArray
@@ -101,7 +101,7 @@ class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
     def __new__(cls, *args, **kwargs):
 
         shape, flat_list = cls._handle_ndarray_creation_inputs(*args, **kwargs)
-        shape = Tuple(*map(_sympify, shape))
+        shape = Tuple(*(sympify(x, strict=True) for x in shape))
         loop_size = functools.reduce(lambda x, y: x*y, shape) if shape else 0
 
         # Sparse array:
@@ -111,7 +111,7 @@ class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
             sparse_array = {}
             for i, el in enumerate(flatten(flat_list)):
                 if el != 0:
-                    sparse_array[i] = _sympify(el)
+                    sparse_array[i] = sympify(el, strict=True)
 
         sparse_array = Dict(sparse_array)
 
@@ -146,7 +146,7 @@ class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
 
         for i, el in enumerate(flatten(flat_list)):
             if el != 0:
-                self._sparse_array[i] = _sympify(el)
+                self._sparse_array[i] = sympify(el, strict=True)
 
         return self
 
@@ -166,7 +166,7 @@ class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
 
         """
         index = self._parse_index(index)
-        value = _sympify(value)
+        value = sympify(value, strict=True)
 
         if value == 0 and index in self._sparse_array:
             self._sparse_array.pop(index)

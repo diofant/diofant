@@ -5,6 +5,7 @@ from diofant import (Abs, I, Integer, O, Rational, S, Symbol, besseli, besselj,
                      gamma, hankel1, hankel2, hyper, jn, jn_zeros, oo, pi,
                      series, sin, sinh, sqrt, symbols, yn)
 from diofant.abc import k, n, x, z
+from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
                                               airybiprime, fn)
 from diofant.utilities.randtest import random_complex_number as randcplx
@@ -37,6 +38,13 @@ def test_diff():
     assert hankel1(n, z).diff(z) == hankel1(n - 1, z)/2 - hankel1(n + 1, z)/2
     assert hankel2(n, z).diff(z) == hankel2(n - 1, z)/2 - hankel2(n + 1, z)/2
 
+    pytest.raises(ArgumentIndexError, lambda: besselj(n, z).fdiff(3))
+    pytest.raises(ArgumentIndexError, lambda: jn(n, z).fdiff(3))
+    pytest.raises(ArgumentIndexError, lambda: airyai(z).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: airybi(z).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: airyaiprime(z).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: airybiprime(z).fdiff(2))
+
 
 def test_rewrite():
     from diofant import polar_lift, exp, I
@@ -47,6 +55,12 @@ def test_rewrite():
         exp(-I*n*pi/2)*besselj(n, polar_lift(I)*z)
     assert besselj(n, z).rewrite(besseli) == \
         exp(I*n*pi/2)*besseli(n, polar_lift(-I)*z)
+    assert besselj(2, z).rewrite(bessely) == besselj(2, z)
+    assert bessely(2, z).rewrite(besselj) == bessely(2, z)
+    assert bessely(2, z).rewrite(besseli) == bessely(2, z)
+    assert besselk(2, z).rewrite(besseli) == besselk(2, z)
+    assert besselk(2, z).rewrite(besselj) == besselk(2, z)
+    assert besselk(2, z).rewrite(bessely) == besselk(2, z)
 
     nu = randcplx()
 
@@ -71,6 +85,7 @@ def test_expand():
         sqrt(2)*sin(z)/(sqrt(pi)*sqrt(z))
     assert expand_func(bessely(Rational(1, 2), z).rewrite(yn)) == \
         -sqrt(2)*cos(z)/(sqrt(pi)*sqrt(z))
+    assert expand_func(besselj(I, z)) == besselj(I, z)
 
     # XXX: teach sin/cos to work around arguments like
     # x*exp_polar(I*pi*n/2).  Then change besselsimp -> expand_func

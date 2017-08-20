@@ -6,6 +6,7 @@ from diofant import (E, FiniteSet, Float, Heaviside, I, Integer, Matrix, O,
                      cos, cosh, cot, coth, csc, csch, diff, exp, gcd, im, log,
                      nan, oo, pi, re, sec, sech, series, simplify, sin, sinh,
                      sqrt, symbols, tan, tanh, zoo)
+from diofant.core.function import ArgumentIndexError
 
 
 __all__ = ()
@@ -130,6 +131,8 @@ def test_sin():
             e = abs( float(sin(x)) - sin(float(x)) )
             assert e < 1e-12
 
+    assert sin(z).taylor_term(3, z, *(z, 0)) == -z**3/6
+
 
 def test_sin_cos():
     for d in [1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 24, 30, 40, 60, 120]:  # list is not exhaustive...
@@ -167,6 +170,7 @@ def test_sin_rewrite():
     assert sin(cot(x)).rewrite(
         exp).subs(x, 3).n() == sin(x).rewrite(exp).subs(x, cot(3)).n()
     assert sin(log(x)).rewrite(Pow) == I*x**-I / 2 - I*x**I / 2
+    assert sin(x).rewrite(Pow) == sin(x)
     assert sin(x).rewrite(csc) == 1/csc(x)
 
 
@@ -181,6 +185,7 @@ def test_sin_expansion():
     assert sin(4*x).expand(trig=True) == -8*sin(x)**3*cos(x) + 4*sin(x)*cos(x)
     assert sin(2).expand(trig=True) == 2*sin(1)*cos(1)
     assert sin(3).expand(trig=True) == -4*sin(1)**3 + 3*sin(1)
+    assert sin(k*pi/2).expand(trig=True) == sin(k*pi/2)
 
 
 def test_trig_symmetry():
@@ -323,6 +328,9 @@ def test_cos():
             e = abs( float(cos(x)) - cos(float(x)) )
             assert e < 1e-12
 
+    assert cos(z).taylor_term(2, z, *(1, 0)) == -z**2/2
+    pytest.raises(ArgumentIndexError, lambda: cos(z).fdiff(2))
+
 
 def test_sympyissue_6190():
     c = Float('123456789012345678901234567890.25', '')
@@ -370,6 +378,7 @@ def test_cos_expansion():
     assert cos(4*x).expand(trig=True) == 8*cos(x)**4 - 8*cos(x)**2 + 1
     assert cos(2).expand(trig=True) == 2*cos(1)**2 - 1
     assert cos(3).expand(trig=True) == 4*cos(1)**3 - 3*cos(1)
+    assert cos(k*pi/2).expand(trig=True) == cos(k*pi/2)
 
 
 def test_tan():
@@ -465,6 +474,8 @@ def test_tan():
 
     assert tan(15*pi/14) == tan(pi/14)
     assert tan(-15*pi/14) == -tan(pi/14)
+
+    pytest.raises(ArgumentIndexError, lambda: tan(x).fdiff(2))
 
 
 def test_tan_series():
@@ -604,6 +615,8 @@ def test_cot():
 
     assert cot(x).subs(x, 3*pi) == zoo
 
+    pytest.raises(ArgumentIndexError, lambda: cot(x).fdiff(2))
+
 
 def test_cot_series():
     assert cot(x).series(x, 0, 9) == \
@@ -707,6 +720,8 @@ def test_asin():
     assert asin(Rational(-1, 7), evaluate=False).is_positive is False
     assert asin(p).is_positive is None
 
+    pytest.raises(ArgumentIndexError, lambda: asin(x).fdiff(2))
+
 
 def test_asin_series():
     assert asin(x).series(x, 0, 9) == \
@@ -771,6 +786,8 @@ def test_acos():
     z = Symbol('z')
     assert acos(z).conjugate() != acos(conjugate(z))
 
+    pytest.raises(ArgumentIndexError, lambda: acos(x).fdiff(2))
+
 
 def test_acos_series():
     assert acos(x).series(x, 0, 8) == \
@@ -779,6 +796,8 @@ def test_acos_series():
     t5 = acos(x).taylor_term(5, x)
     assert t5 == -3*x**5/40
     assert acos(x).taylor_term(7, x, t5, 0) == -5*x**7/112
+    assert acos(x).taylor_term(0, x) == pi/2
+    assert acos(x).taylor_term(2, x) == 0
 
 
 def test_acos_rewrite():
@@ -821,6 +840,8 @@ def test_atan():
     assert atan(z).is_rational
     assert atan(rn).is_rational is False
     assert atan(x).is_rational is None
+
+    pytest.raises(ArgumentIndexError, lambda: atan(x).fdiff(2))
 
 
 def test_atan_rewrite():
@@ -897,6 +918,8 @@ def test_atan2():
     assert simplify(diff(atan2(y, x).rewrite(log), x)) == -y/(x**2 + y**2)
     assert simplify(diff(atan2(y, x).rewrite(log), y)) == x/(x**2 + y**2)
 
+    pytest.raises(ArgumentIndexError, lambda: atan2(x, y).fdiff(3))
+
 
 def test_acot():
     assert acot(nan) == nan
@@ -924,6 +947,8 @@ def test_acot():
     q = Symbol('q', rational=True)
     assert acot(q).is_rational is False
     assert acot(x).is_rational is None
+
+    pytest.raises(ArgumentIndexError, lambda: acot(x).fdiff(2))
 
 
 def test_acot_rewrite():
@@ -1283,6 +1308,8 @@ def test_sec():
     assert sec(z).taylor_term(6, z) == 61*z**6/720
     assert sec(z).taylor_term(5, z) == 0
 
+    pytest.raises(ArgumentIndexError, lambda: sec(x).fdiff(2))
+
 
 def test_csc():
     x = symbols('x', extended_real=True)
@@ -1345,9 +1372,12 @@ def test_csc():
 
     assert csc(x).diff(x) == -cot(x)*csc(x)
 
+    assert csc(x).taylor_term(0, x) == 1/x
     assert csc(x).taylor_term(2, x) == 0
     assert csc(x).taylor_term(3, x) == 7*x**3/360
     assert csc(x).taylor_term(5, x) == 31*x**5/15120
+
+    pytest.raises(ArgumentIndexError, lambda: csc(x).fdiff(2))
 
 
 def test_asec():
@@ -1370,6 +1400,8 @@ def test_asec():
     assert asec(x).rewrite(acot) == (2*acot(x - sqrt(x**2 - 1)) - pi/2)*sqrt(x**2)/x
     assert asec(x).rewrite(acsc) == -acsc(x) + pi/2
 
+    pytest.raises(ArgumentIndexError, lambda: asec(x).fdiff(2))
+
 
 def test_acsc():
     assert acsc(nan) == nan
@@ -1388,6 +1420,8 @@ def test_acsc():
     assert acsc(x).rewrite(atan) == (-atan(sqrt(x**2 - 1)) + pi/2)*sqrt(x**2)/x
     assert acsc(x).rewrite(acot) == (-acot(1/sqrt(x**2 - 1)) + pi/2)*sqrt(x**2)/x
     assert acsc(x).rewrite(asec) == -asec(x) + pi/2
+
+    pytest.raises(ArgumentIndexError, lambda: acsc(x).fdiff(2))
 
 
 @pytest.mark.xfail

@@ -3,6 +3,7 @@ from copy import copy
 import pytest
 
 from diofant import Rational, SparseMatrix, Symbol
+from diofant.abc import x, y, z
 from diofant.matrices import Matrix
 from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
 from diofant.tensor.array.sparse_ndim_array import MutableSparseNDimArray
@@ -308,8 +309,6 @@ def test_slices():
 
 
 def test_diff():
-    from diofant.abc import x, y, z
-
     md = MutableDenseNDimArray([[x, y], [x*z, x*y*z]])
     assert md.diff(x) == MutableDenseNDimArray([[1, 0], [z, y*z]])
 

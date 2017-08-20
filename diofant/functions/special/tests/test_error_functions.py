@@ -73,6 +73,8 @@ def test_erf():
 
     pytest.raises(ArgumentIndexError, lambda: erf(x).fdiff(2))
 
+    assert erf(x).taylor_term(3, x, *(2*x/sqrt(pi), 0)) == -2*x**3/3/sqrt(pi)
+
 
 def test_erf_series():
     assert erf(x).series(x, 0, 7) == 2*x/sqrt(pi) - \
@@ -108,6 +110,7 @@ def test_erfc():
 
     assert erfc(-x) == Integer(2) - erfc(x)
     assert erfc(erfcinv(x)) == x
+    assert erfc(erfinv(x)) == 1 - x
 
     assert erfc(I).is_extended_real is False
     assert erfc(w).is_extended_real is True
@@ -137,6 +140,10 @@ def test_erfc():
           re(x)*Abs(im(x))/(2*im(x)*Abs(re(x)))))
 
     pytest.raises(ArgumentIndexError, lambda: erfc(x).fdiff(2))
+
+    assert erfc(x).taylor_term(3, x, *(-2*x/sqrt(pi), 0)) == 2*x**3/3/sqrt(pi)
+
+    assert erfc(x).limit(x, oo) == 0
 
 
 def test_erfc_series():
@@ -192,6 +199,10 @@ def test_erfi():
 
     pytest.raises(ArgumentIndexError, lambda: erfi(x).fdiff(2))
 
+    assert erfi(x).taylor_term(3, x, *(2*x/sqrt(pi), 0)) == 2*x**3/3/sqrt(pi)
+
+    assert erfi(x).limit(x, oo) == oo
+
 
 def test_erfi_series():
     assert erfi(x).series(x, 0, 7) == 2*x/sqrt(pi) + \
@@ -241,6 +252,7 @@ def test_erf2():
 
 def test_erfinv():
     assert erfinv(0) == 0
+    assert erfinv(-1) == S.NegativeInfinity
     assert erfinv(1) == S.Infinity
     assert erfinv(nan) == S.NaN
 
@@ -276,6 +288,8 @@ def test_erf2inv():
     assert erf2inv(1, 0) == S.One
     assert erf2inv(0, y) == erfinv(y)
     assert erf2inv(oo, y) == erfcinv(-y)
+    assert erf2inv(x, 0) == x
+    assert erf2inv(x, oo) == erfinv(x)
 
     assert erf2inv(x, y).diff(x) == exp(-x**2 + erf2inv(x, y)**2)
     assert erf2inv(x, y).diff(y) == sqrt(pi)*exp(erf2inv(x, y)**2)/2

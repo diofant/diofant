@@ -2,7 +2,6 @@ from ..core import Add, Basic, Lambda, Mul, Pow, S, Symbol, sympify
 from ..core.compatibility import default_sort_key
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
-from ..core.sympify import _sympify
 from .precedence import precedence
 from .str import StrPrinter
 
@@ -56,8 +55,8 @@ class Assignment(Relational):
     def __new__(cls, lhs, rhs=0, **assumptions):
         from ..matrices.expressions.matexpr import MatrixElement, MatrixSymbol
         from ..tensor import Indexed
-        lhs = _sympify(lhs)
-        rhs = _sympify(rhs)
+        lhs = sympify(lhs, strict=True)
+        rhs = sympify(rhs, strict=True)
         # Tuple of things that can be on the lhs of an assignment
         assignable = (Symbol, MatrixSymbol, MatrixElement, Indexed)
         if not isinstance(lhs, assignable):
@@ -127,7 +126,7 @@ class CodePrinter(StrPrinter):
         if assign_to:
             expr = Assignment(assign_to, expr)
         else:
-            # _sympify is not enough b/c it errors on iterables
+            # non-strict sympify is not enough b/c it errors on iterables
             expr = sympify(expr)
 
         # keep a set of expressions that are not strictly translatable to Code

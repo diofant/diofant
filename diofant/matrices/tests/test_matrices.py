@@ -6,7 +6,7 @@ from diofant import (Abs, Basic, Dummy, E, Float, Function, I, Integer, Max,
                      Min, N, Poly, Pow, PurePoly, Rational, S, Symbol, cos,
                      exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
                      trigsimp)
-from diofant.abc import x, y, z
+from diofant.abc import a, b, c, d, n, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.external import import_module
 from diofant.matrices import (GramSchmidt, ImmutableMatrix,
@@ -184,7 +184,6 @@ def test_power():
     assert (A**Rational(1, 2))**2 == A
 
     assert Matrix([[1, 0], [1, 1]])**S.Half == Matrix([[1, 0], [S.Half, 1]])
-    from diofant.abc import a, b, n
     assert Matrix([[1, a], [0, 1]])**n == Matrix([[1, a*n], [0, 1]])
     assert Matrix([[b, a], [0, b]])**n == Matrix([[b**n, a*b**(n - 1)*n], [0, b**n]])
     assert Matrix([[a, 1, 0], [0, a, 1], [0, 0, a]])**n == Matrix([
@@ -456,6 +455,9 @@ def test_submatrix_assignment():
                         (0, 6, 7, 8),
                         (9, 10, 11, 12),
                         (13, 14, 15, 16)))
+
+    with pytest.raises(ValueError):
+        m[:, 1] = object()
 
 
 def test_extract():
@@ -2113,7 +2115,9 @@ def test_rotation_matrices():
 
 def test_DeferredVector():
     assert str(DeferredVector("vector")[4]) == "vector[4]"
+    assert repr(DeferredVector("vector")) == "DeferredVector('vector')"
     assert sympify(DeferredVector("d")) == DeferredVector("d")
+    pytest.raises(IndexError, lambda: DeferredVector('X')[-1])
 
 
 def test_DeferredVector_not_iterable():
@@ -2362,7 +2366,6 @@ def test_simplify_immutable():
 
 
 def test_rank():
-    from diofant.abc import x
     m = Matrix([[1, 2], [x, 1 - 1/x]])
     assert m.rank() == 2
     n = Matrix(3, 3, range(1, 10))
@@ -2391,7 +2394,6 @@ def test_replace_map():
 
 
 def test_atoms():
-    from diofant.abc import x
     m = Matrix([[1, 2], [x, 1 - 1/x]])
     assert m.atoms() == {Integer(1), Integer(2), Integer(-1), x}
     assert m.atoms(Symbol) == {x}
@@ -2399,7 +2401,6 @@ def test_atoms():
 
 @pytest.mark.slow
 def test_pinv():
-    from diofant.abc import a, b, c, d
     # Pseudoinverse of an invertible matrix is the inverse.
     A1 = Matrix([[a, b], [c, d]])
     assert simplify(A1.pinv()) == simplify(A1.inv())

@@ -362,8 +362,7 @@ class besseli(BesselBase):
 
     def _eval_rewrite_as_bessely(self, nu, z):
         aj = self._eval_rewrite_as_besselj(*self.args)
-        if aj:
-            return aj.rewrite(bessely)
+        return aj.rewrite(bessely)
 
     def _eval_rewrite_as_jn(self, nu, z):
         return self._eval_rewrite_as_besselj(*self.args).rewrite(jn)
@@ -441,11 +440,6 @@ class besselk(BesselBase):
         aj = self._eval_rewrite_as_besselj(*self.args)
         if aj:
             return aj.rewrite(bessely)
-
-    def _eval_rewrite_as_yn(self, nu, z):
-        ay = self._eval_rewrite_as_bessely(*self.args)
-        if ay:
-            return ay.rewrite(yn)
 
     def _eval_is_extended_real(self):
         nu, z = self.args
@@ -553,11 +547,11 @@ class SphericalBesselBase(BesselBase):
 
     def _expand(self, **hints):
         """ Expand self into a polynomial. Nu is guaranteed to be Integer. """
-        raise NotImplementedError('expansion')
+        raise NotImplementedError('expansion')  # pragma: no cover
 
     def _rewrite(self):
         """ Rewrite self in terms of ordinary Bessel functions. """
-        raise NotImplementedError('rewriting')
+        raise NotImplementedError('rewriting')  # pragma: no cover
 
     def _eval_expand_func(self, **hints):
         if self.order.is_Integer:
@@ -726,13 +720,13 @@ def jn_zeros(n, k, method="diofant", dps=15):
 
         def f(x):
             return spherical_jn(n, x)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError("Unknown method.")
 
     def solver(f, x):
         if method == "scipy":
             root = newton(f, x)
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Unknown method.")
         return root
 

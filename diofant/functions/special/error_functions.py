@@ -124,9 +124,6 @@ class erf(Function):
         if arg.func is erfcinv:
             return S.One - arg.args[0]
 
-        if arg.func is erf2inv and arg.args[0] is S.Zero:
-            return arg.args[1]
-
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(S.ImaginaryUnit)
         if t is S.Infinity or t is S.NegativeInfinity:
@@ -144,7 +141,7 @@ class erf(Function):
         else:
             x = sympify(x)
             k = floor((n - 1)/Integer(2))
-            if len(previous_terms) > 2:
+            if len(previous_terms) >= 2:
                 return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
                 return 2*(-1)**k * x**n/(n*factorial(k)*sqrt(S.Pi))
@@ -335,7 +332,7 @@ class erfc(Function):
         else:
             x = sympify(x)
             k = floor((n - 1)/Integer(2))
-            if len(previous_terms) > 2:
+            if len(previous_terms) >= 2:
                 return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
                 return -2*(-1)**k * x**n/(n*factorial(k)*sqrt(S.Pi))
@@ -505,8 +502,6 @@ class erfi(Function):
                 return I*nz.args[0]
             if nz.func is erfcinv:
                 return I*(S.One - nz.args[0])
-            if nz.func is erf2inv and nz.args[0] is S.Zero:
-                return I*nz.args[1]
 
     @staticmethod
     @cacheit
@@ -516,7 +511,7 @@ class erfi(Function):
         else:
             x = sympify(x)
             k = floor((n - 1)/Integer(2))
-            if len(previous_terms) > 2:
+            if len(previous_terms) >= 2:
                 return previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
                 return 2 * x**n/(n*factorial(k)*sqrt(S.Pi))

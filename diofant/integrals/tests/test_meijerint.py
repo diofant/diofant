@@ -342,7 +342,6 @@ def test_linear_subs():
 @pytest.mark.slow
 def test_probability():
     # various integrals from probability theory
-    from diofant.abc import x, y
     from diofant import symbols, Symbol, Abs, expand_mul, combsimp, powsimp, sin
     mu1, mu2 = symbols('mu1 mu2', real=True, nonzero=True)
     sigma1, sigma2 = symbols('sigma1 sigma2', real=True,

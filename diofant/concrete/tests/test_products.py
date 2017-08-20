@@ -8,7 +8,7 @@ from diofant.concrete.expr_with_intlimits import ReorderError
 
 __all__ = ()
 
-a, k, n, m, x = symbols('a,k,n,m,x', integer=True)
+a, i, k, n, m, x = symbols('a,i,k,n,m,x', integer=True)
 f = Function('f')
 
 
@@ -237,7 +237,6 @@ def test_special_products():
 
 
 def test__eval_product():
-    from diofant.abc import i, n
     # issue sympy/sympy#4809
     a = Function('a')
     assert product(2*a(i), (i, 1, n)) == 2**n * Product(a(i), (i, 1, n))

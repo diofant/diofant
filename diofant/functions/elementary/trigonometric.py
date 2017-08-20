@@ -225,11 +225,8 @@ class sin(TrigonometricFunction):
             if pi_coeff.is_integer:
                 return S.Zero
 
-            if (2*pi_coeff).is_integer:
-                if pi_coeff.is_even:
-                    return S.Zero
-                elif pi_coeff.is_even is False:
-                    return S.NegativeOne**(pi_coeff - S.Half)
+            if (2*pi_coeff).is_odd:
+                return S.NegativeOne**(pi_coeff - S.Half)
 
             if not pi_coeff.is_Rational:
                 narg = pi_coeff*S.Pi
@@ -237,9 +234,10 @@ class sin(TrigonometricFunction):
                     return cls(narg)
                 return
 
-            # https://github.com/sympy/sympy/issues/6048
-            # transform a sine to a cosine, to avoid redundant code
-            if pi_coeff.is_Rational:
+            else:
+                # https://github.com/sympy/sympy/issues/6048
+                # transform a sine to a cosine, to avoid redundant code
+
                 x = pi_coeff % 2
                 if x > 1:
                     return -cls((x % 1)*S.Pi)
@@ -285,7 +283,7 @@ class sin(TrigonometricFunction):
         else:
             x = sympify(x)
 
-            if len(previous_terms) > 2:
+            if len(previous_terms) >= 2:
                 p = previous_terms[-2]
                 return -p * x**2 / (n*(n - 1))
             else:
@@ -293,8 +291,6 @@ class sin(TrigonometricFunction):
 
     def _eval_rewrite_as_exp(self, arg):
         I = S.ImaginaryUnit
-        if isinstance(arg, TrigonometricFunction) or isinstance(arg, HyperbolicFunction):
-            arg = arg.func(arg.args[0]).rewrite(exp)
         return (exp(arg*I) - exp(-arg*I)) / (2*I)
 
     def _eval_rewrite_as_Pow(self, arg):
@@ -488,11 +484,8 @@ class cos(TrigonometricFunction):
             if pi_coeff.is_integer:
                 return (S.NegativeOne)**pi_coeff
 
-            if (2*pi_coeff).is_integer:
-                if pi_coeff.is_even:
-                    return (S.NegativeOne)**(pi_coeff/2)
-                elif pi_coeff.is_even is False:
-                    return S.Zero
+            if (2*pi_coeff).is_odd:
+                return S.Zero
 
             if not pi_coeff.is_Rational:
                 narg = pi_coeff*S.Pi
@@ -500,18 +493,18 @@ class cos(TrigonometricFunction):
                     return cls(narg)
                 return
 
-            # cosine formula #####################
-            # https://github.com/sympy/sympy/issues/6048
-            # explicit calculations are preformed for
-            # cos(k pi/n) for n = 8,10,12,15,20,24,30,40,60,120
-            # Some other exact values like cos(k pi/240) can be
-            # calculated using a partial-fraction decomposition
-            # by calling cos( X ).rewrite(sqrt)
-            cst_table_some = {
-                3: S.Half,
-                5: (sqrt(5) + 1)/4,
-            }
-            if pi_coeff.is_Rational:
+            else:
+
+                # cosine formula #####################
+                # https://github.com/sympy/sympy/issues/6048
+                # explicit calculations are preformed for
+                # cos(k pi/n) for n = 8,10,12,15,20,24,30,40,60,120
+                # Some other exact values like cos(k pi/240) can be
+                # calculated using a partial-fraction decomposition
+                # by calling cos( X ).rewrite(sqrt)
+                cst_table_some = {3: S.Half,
+                                  5: (sqrt(5) + 1)/4}
+
                 q = pi_coeff.q
                 p = pi_coeff.p % (2*q)
                 if p > q:
@@ -591,7 +584,7 @@ class cos(TrigonometricFunction):
         else:
             x = sympify(x)
 
-            if len(previous_terms) > 2:
+            if len(previous_terms) >= 2:
                 p = previous_terms[-2]
                 return -p * x**2 / (n*(n - 1))
             else:
@@ -599,8 +592,6 @@ class cos(TrigonometricFunction):
 
     def _eval_rewrite_as_exp(self, arg):
         I = S.ImaginaryUnit
-        if isinstance(arg, TrigonometricFunction) or isinstance(arg, HyperbolicFunction):
-            arg = arg.func(arg.args[0]).rewrite(exp)
         return (exp(arg*I) + exp(-arg*I)) / 2
 
     def _eval_rewrite_as_Pow(self, arg):

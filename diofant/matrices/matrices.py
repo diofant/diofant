@@ -4158,7 +4158,7 @@ def mgamma(mu, lower=False):
             (-1, 0, 0, 0),
             (0, 1, 0, 0)
         )
-    elif mu == 5:
+    else:  # mu == 5
         mat = (
             (0, 0, 1, 0),
             (0, 0, 0, 1),

@@ -19,11 +19,10 @@ def evaluate(x):
     ========
 
     >>> from diofant.abc import x
-    >>> from diofant.core.evaluate import evaluate
-    >>> print(x + x)
+    >>> x + x
     2*x
     >>> with evaluate(False):
-    ...     print(x + x)
+    ...     x + x
     x + x
     """
 

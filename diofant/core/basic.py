@@ -6,7 +6,7 @@ from .cache import cacheit
 from .compatibility import iterable, ordered
 from .decorators import _sympifyit
 from .singleton import S
-from .sympify import SympifyError, _sympify, sympify
+from .sympify import SympifyError, sympify
 
 
 class Basic(object):

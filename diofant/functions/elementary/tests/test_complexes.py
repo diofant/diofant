@@ -9,6 +9,7 @@ from diofant import (Abs, DiracDelta, E, Eq, Expr, Function, Heaviside, I,
                      tanh, transpose, unbranched_argument, unpolarify,
                      uppergamma, zoo)
 from diofant.abc import x, y, z
+from diofant.core.function import ArgumentIndexError
 
 
 __all__ = ()
@@ -354,6 +355,8 @@ def test_Abs():
 
     x = Symbol('x', imaginary=True)
     assert Abs(x).diff(x) == -sign(x)
+
+    pytest.raises(ArgumentIndexError, lambda: Abs(z).fdiff(2))
 
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when you can and when you cannot prove an

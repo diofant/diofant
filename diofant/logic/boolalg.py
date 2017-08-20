@@ -12,7 +12,7 @@ from ..core.function import Application, Derivative
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
 from ..core.singleton import S, Singleton
-from ..core.sympify import _sympify, converter, sympify
+from ..core.sympify import converter, sympify
 
 
 class Boolean(Expr):
@@ -820,7 +820,7 @@ class Equivalent(BooleanFunction):
 
     def __new__(cls, *args, **options):
         from ..core.relational import Relational
-        args = [_sympify(arg) for arg in args]
+        args = [sympify(arg, strict=True) for arg in args]
 
         argset = set(args)
         for x in args:

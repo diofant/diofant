@@ -2,7 +2,7 @@ import functools
 import itertools
 
 from ...core import Basic, Tuple
-from ...core.sympify import _sympify
+from ...core.sympify import sympify
 from ...matrices import Matrix
 from ...utilities import flatten
 from .mutable_ndim_array import MutableNDimArray
@@ -118,7 +118,7 @@ class ImmutableDenseNDimArray(DenseNDimArray, ImmutableNDimArray):
     @classmethod
     def _new(cls, *args, **kwargs):
         shape, flat_list = cls._handle_ndarray_creation_inputs(*args, **kwargs)
-        shape = Tuple(*map(_sympify, shape))
+        shape = Tuple(*(sympify(x, strict=True) for x in shape))
         flat_list = flatten(flat_list)
         flat_list = Tuple(*flat_list)
         self = Basic.__new__(cls, flat_list, shape, **kwargs)
@@ -167,6 +167,6 @@ class MutableDenseNDimArray(DenseNDimArray, MutableNDimArray):
         """
         index = self._parse_index(index)
         self._setter_iterable_check(value)
-        value = _sympify(value)
+        value = sympify(value, strict=True)
 
         self._array[index] = value

@@ -5,6 +5,7 @@ import pytest
 from diofant import (Add, Eq, Function, Idx, IndexedBase, Matrix, O, Piecewise,
                      Pow, Rational, RootOf, Symbol, Tuple, cos, cse, exp, sin,
                      sqrt, symbols, sympify, true)
+from diofant.abc import a, b, w, x, y, z
 from diofant.functions.special.hyper import meijerg
 from diofant.matrices import (ImmutableDenseMatrix, ImmutableSparseMatrix,
                               MutableDenseMatrix, MutableSparseMatrix)
@@ -14,7 +15,6 @@ from diofant.simplify.cse_opts import sub_post, sub_pre
 
 __all__ = ()
 
-w, x, y, z = symbols('w,x,y,z')
 x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12 = symbols('x:13')
 
 
@@ -251,7 +251,6 @@ def test_postprocess():
 
 def test_sympyissue_4499():
     # previously, this gave 16 constants
-    from diofant.abc import a, b
     B = Function('B')
     G = Function('G')
     t = Tuple(*
