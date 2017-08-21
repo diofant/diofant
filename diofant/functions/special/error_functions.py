@@ -1215,7 +1215,7 @@ class expint(Function):
         if n == 0:
             return
         if nu.is_integer:
-            if (nu > 0) is not S.true:
+            if not nu.is_positive:
                 return
             return expint(nu, z) \
                 - 2*pi*I*n*(-1)**(nu - 1)/factorial(nu - 1)*unpolarify(z)**(nu - 1)
@@ -1261,14 +1261,10 @@ class expint(Function):
     _eval_rewrite_as_Shi = _eval_rewrite_as_Si
 
     def _eval_nseries(self, x, n, logx):
-        if not self.args[0].has(x):
-            nu = self.args[0]
-            if nu == 1:
-                f = self._eval_rewrite_as_Si(*self.args)
-                return f._eval_nseries(x, n, logx)
-            elif nu.is_Integer and nu > 1:
-                f = self._eval_rewrite_as_Ei(*self.args)
-                return f._eval_nseries(x, n, logx)
+        nu = self.args[0]
+        if not nu.has(x) and nu.is_Integer and nu.is_positive:
+            f = self._eval_rewrite_as_Ei(*self.args)
+            return f._eval_nseries(x, n, logx)
         return super(expint, self)._eval_nseries(x, n, logx)
 
 
@@ -1568,10 +1564,6 @@ class TrigonometricIntegral(Function):
 
     def _eval_rewrite_as_Ei(self, z):
         return self._eval_rewrite_as_expint(z).rewrite(Ei)
-
-    def _eval_rewrite_as_uppergamma(self, z):
-        from .gamma_functions import uppergamma
-        return self._eval_rewrite_as_expint(z).rewrite(uppergamma)
 
     def _eval_nseries(self, x, n, logx):
         # NOTE this is fairly inefficient
@@ -1951,8 +1943,6 @@ class Chi(TrigonometricIntegral):
         return -I*pi/2 - (E1(z) + E1(exp_polar(I*pi)*z))/2
 
     def _latex(self, printer, exp=None):
-        if len(self.args) != 1:
-            raise ValueError("Arg length should be 1")
         if exp:
             return r'\operatorname{Chi}^{%s}{\left (%s \right )}' \
                 % (printer._print(exp), printer._print(self.args[0]))
@@ -2004,8 +1994,6 @@ class FresnelIntegral(Function):
         # if any were extracted automatically
         if z is S.Infinity:
             return S.Half
-        elif z is I*S.Infinity:
-            return cls._sign*I*S.Half
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -2020,7 +2008,7 @@ class FresnelIntegral(Function):
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
 
-    def _as_real_imag(self, deep=True, **hints):
+    def as_real_imag(self, deep=True, **hints):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
@@ -2028,19 +2016,16 @@ class FresnelIntegral(Function):
             else:
                 return self, S.Zero
         if deep:
-            re, im = self.args[0].expand(deep, **hints).as_real_imag()
+            x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
-            re, im = self.args[0].as_real_imag()
-        return re, im
+            x, y = self.args[0].as_real_imag()
 
-    def as_real_imag(self, deep=True, **hints):
         # Fresnel S
         # http://functions.wolfram.com/06.32.19.0003.01
         # http://functions.wolfram.com/06.32.19.0006.01
         # Fresnel C
         # http://functions.wolfram.com/06.33.19.0003.01
         # http://functions.wolfram.com/06.33.19.0006.01
-        x, y = self._as_real_imag(deep=deep, **hints)
         sq = -y**2/x**2
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
@@ -2140,7 +2125,7 @@ class fresnels(FresnelIntegral):
             return S.Zero
         else:
             x = sympify(x)
-            if len(previous_terms) > 1:
+            if len(previous_terms) >= 1:
                 p = previous_terms[-1]
                 return (-pi**2*x**4*(4*n - 1)/(8*n*(2*n + 1)*(4*n + 3))) * p
             else:
@@ -2273,7 +2258,7 @@ class fresnelc(FresnelIntegral):
             return S.Zero
         else:
             x = sympify(x)
-            if len(previous_terms) > 1:
+            if len(previous_terms) >= 1:
                 p = previous_terms[-1]
                 return (-pi**2*x**4*(4*n - 3)/(8*n*(2*n - 1)*(4*n + 1))) * p
             else:
@@ -2368,9 +2353,6 @@ class _erfs(Function):
     def _eval_rewrite_as_intractable(self, z):
         return (S.One - erf(z))*exp(z**2)
 
-    def _eval_evalf(self, prec):
-        return self.rewrite('intractable').evalf(prec)
-
 
 class _eis(Function):
     r"""
@@ -2381,7 +2363,7 @@ class _eis(Function):
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
         if args0[0] != S.Infinity:
-            return super(_erfs, self)._eval_aseries(n, args0, x, logx)
+            return super(_eis, self)._eval_aseries(n, args0, x, logx)
 
         z = self.args[0]
         l = [ factorial(k) * (1/z)**(k + 1) for k in range(0, n) ]
