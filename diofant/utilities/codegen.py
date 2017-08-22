@@ -95,7 +95,7 @@ from ..tensor import Idx, Indexed, IndexedBase
 __all__ = (
     # description of routines
     "Routine", "DataType", "default_datatypes", "get_default_datatype",
-    "Argument", "InputArgument", "Result",
+    "Argument", "InputArgument", "OutputArgument", "Result",
     # routines -> code
     "CodeGen", "CCodeGen", "FCodeGen", "OctaveCodeGen",
     # friendly functions
