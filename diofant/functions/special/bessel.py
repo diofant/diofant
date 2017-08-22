@@ -756,7 +756,7 @@ class AiryBase(Function):
         if self.args[0].is_extended_real:
             return True
 
-    def _as_real_imag(self, deep=True, **hints):
+    def as_real_imag(self, deep=True, **hints):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
@@ -764,21 +764,14 @@ class AiryBase(Function):
             else:
                 return self, S.Zero
         if deep:
-            re, im = self.args[0].expand(deep, **hints).as_real_imag()
+            x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
-            re, im = self.args[0].as_real_imag()
-        return re, im
+            x, y = self.args[0].as_real_imag()
 
-    def as_real_imag(self, deep=True, **hints):
-        x, y = self._as_real_imag(deep=deep, **hints)
         sq = -y**2/x**2
         re = S.Half*(self.func(x+x*sqrt(sq))+self.func(x-x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x-x*sqrt(sq)) - self.func(x+x*sqrt(sq)))
         return re, im
-
-    def _eval_expand_complex(self, deep=True, **hints):
-        re_part, im_part = self.as_real_imag(deep=deep, **hints)
-        return re_part + im_part*S.ImaginaryUnit
 
 
 class airyai(AiryBase):
@@ -891,13 +884,7 @@ class airyai(AiryBase):
             return S.Zero
         else:
             x = sympify(x)
-            if len(previous_terms) > 1:
-                p = previous_terms[-1]
-                return ((3**Rational(1, 3)*x)**(-n)*(3**Rational(1, 3)*x)**(n + 1)*sin(pi*(2*n/3 + Rational(4, 3)))*factorial(n) *
-                        gamma(n/3 + Rational(2, 3))/(sin(pi*(2*n/3 + Rational(2, 3)))*factorial(n + 1)*gamma(n/3 + Rational(1, 3))) * p)
-            else:
-                return (S.One/(3**Rational(2, 3)*pi) * gamma((n+S.One)/Integer(3)) * sin(2*pi*(n+S.One)/Integer(3)) /
-                        factorial(n) * (root(3, 3)*x)**n)
+            return (S.One/(3**Rational(2, 3)*pi) * gamma((n+S.One)/Integer(3)) * sin(2*pi*(n+S.One)/Integer(3)) / factorial(n) * (root(3, 3)*x)**n)
 
     def _eval_rewrite_as_besselj(self, z):
         ot = Rational(1, 3)
@@ -945,6 +932,7 @@ class airyai(AiryBase):
                     pf = (d * z**n)**m / (d**m * z**(m*n))
                     newarg = c * d**m * z**(m*n)
                     return S.Half * ((pf + S.One)*airyai(newarg) - (pf - S.One)/sqrt(3)*airybi(newarg))
+        return self.func(*self.args)
 
 
 class airybi(AiryBase):
@@ -1059,13 +1047,7 @@ class airybi(AiryBase):
             return S.Zero
         else:
             x = sympify(x)
-            if len(previous_terms) > 1:
-                p = previous_terms[-1]
-                return (3**Rational(1, 3)*x * Abs(sin(2*pi*(n + S.One)/Integer(3))) * factorial((n - S.One)/Integer(3)) /
-                        ((n + S.One) * Abs(cos(2*pi*(n + S.Half)/Integer(3))) * factorial((n - 2)/Integer(3))) * p)
-            else:
-                return (S.One/(root(3, 6)*pi) * gamma((n + S.One)/Integer(3)) * Abs(sin(2*pi*(n + S.One)/Integer(3))) /
-                        factorial(n) * (root(3, 3)*x)**n)
+            return (S.One/(root(3, 6)*pi) * gamma((n + S.One)/Integer(3)) * Abs(sin(2*pi*(n + S.One)/Integer(3))) / factorial(n) * (root(3, 3)*x)**n)
 
     def _eval_rewrite_as_besselj(self, z):
         ot = Rational(1, 3)
@@ -1115,6 +1097,7 @@ class airybi(AiryBase):
                     pf = (d * z**n)**m / (d**m * z**(m*n))
                     newarg = c * d**m * z**(m*n)
                     return S.Half * (sqrt(3)*(S.One - pf)*airyai(newarg) + (S.One + pf)*airybi(newarg))
+        return self.func(*self.args)
 
 
 class _airyais(Function):
@@ -1320,6 +1303,7 @@ class airyaiprime(AiryBase):
                     pf = (d**m * z**(n*m)) / (d * z**n)**m
                     newarg = c * d**m * z**(n*m)
                     return S.Half * ((pf + S.One)*airyaiprime(newarg) + (pf - S.One)/sqrt(3)*airybiprime(newarg))
+        return self.func(*self.args)
 
 
 class airybiprime(AiryBase):
@@ -1471,3 +1455,4 @@ class airybiprime(AiryBase):
                     pf = (d**m * z**(n*m)) / (d * z**n)**m
                     newarg = c * d**m * z**(n*m)
                     return S.Half * (sqrt(3)*(pf - S.One)*airyaiprime(newarg) + (pf + S.One)*airybiprime(newarg))
+        return self.func(*self.args)
