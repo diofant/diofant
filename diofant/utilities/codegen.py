@@ -143,8 +143,9 @@ class Routine:
             Results and OutputArguments and when you should use each is
             language-specific.
 
-        local_vars : list of Symbols
-            These are used internally by the routine.
+        local_vars : list of Results
+            These are variables that will be defined at the beginning of the
+            function.
 
         global_vars : list of Symbols
             Variables which will not be passed into the function.
@@ -170,10 +171,18 @@ class Routine:
                 raise ValueError("Unknown Routine result: %s" % r)
             symbols.update(r.expr.free_symbols)
 
+        local_symbols = set()
+        for r in local_vars:
+            if isinstance(r, Result):
+                symbols.update(r.expr.free_symbols)
+                local_symbols.add(r.name)
+            else:
+                local_symbols.add(r)
+
         # Check that all symbols in the expressions are covered by
         # InputArguments/InOutArguments---subset because user could
         # specify additional (unused) InputArguments or local_vars.
-        notcovered = symbols.difference(input_symbols | local_vars | global_vars)
+        notcovered = symbols.difference(input_symbols | local_symbols | global_vars)
         if notcovered != set():
             raise ValueError("Symbols needed for output are not in input " +
                              ", ".join([str(x) for x in notcovered]))
