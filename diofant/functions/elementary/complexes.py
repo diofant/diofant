@@ -845,7 +845,7 @@ class periodic_argument(Function):
             return
         if period == oo:
             return unbranched
-        if period != oo:
+        else:
             n = ceiling(unbranched/period - Rational(1, 2))*period
             if not n.has(ceiling):
                 return unbranched - n

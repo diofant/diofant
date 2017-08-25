@@ -636,11 +636,8 @@ class meijerg(TupleParametersBase):
         znum = znum**(Integer(1)/n)*exp(I*branch / n)
 
         # Convert all args to mpf or mpc
-        try:
-            [z, r, ap, bq] = [arg._to_mpmath(prec)
-                              for arg in [znum, 1/n, self.args[0], self.args[1]]]
-        except ValueError:
-            return
+        [z, r, ap, bq] = [arg._to_mpmath(prec)
+                          for arg in [znum, 1/n, self.args[0], self.args[1]]]
 
         with mpmath.workprec(prec):
             v = mpmath.meijerg(ap, bq, z, r)

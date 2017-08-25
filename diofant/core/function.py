@@ -619,12 +619,13 @@ class Function(Application, Expr):
             return e1.nseries(x, n=n, logx=logx)
         arg = self.args[0]
         f_series = order = S.Zero
-        i, term = 0, None
+        i, terms = 0, []
         while order == 0 or i <= n:
+            term = self.taylor_term(i, arg, *terms)
+            term = term.nseries(x, n=n, logx=logx)
+            terms.append(term)
             if term:
                 f_series += term
-            term = self.taylor_term(i, arg, term)
-            term = term.nseries(x, n=n, logx=logx)
             order = Order(term, x)
             i += 1
         return f_series + order

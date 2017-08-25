@@ -1,19 +1,19 @@
 import pytest
 
-from diofant import (E1, Abs, Chi, Ci, Ei, EulerGamma, Float, I, Integer, Li,
-                     O, Rational, S, Shi, Si, Symbol, conjugate, cos, cosh,
-                     diff, erf, erf2, erf2inv, erfc, erfcinv, erfi, erfinv,
-                     exp, exp_polar, expand, expand_func, expint, fresnelc,
-                     fresnels, gamma, hyper, im, integrate, li, limit, log,
-                     meijerg, nan, oo, pi, polar_lift, re, sin, sinh, sqrt,
-                     symbols, uppergamma)
+from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
+                     Li, Limit, O, Rational, S, Shi, Si, Symbol, conjugate,
+                     cos, cosh, diff, erf, erf2, erf2inv, erfc, erfcinv, erfi,
+                     erfinv, exp, exp_polar, expand, expand_func, expint,
+                     fresnelc, fresnels, gamma, hyper, im, integrate, li,
+                     limit, log, meijerg, nan, oo, pi, polar_lift, re, sign,
+                     sin, sinh, sqrt, symbols, uppergamma)
+from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.error_functions import _eis, _erfs
 
 
 __all__ = ()
 
-x, y, z = symbols('x,y,z')
 w = Symbol("w", extended_real=True)
 n = Symbol("n", integer=True)
 
@@ -64,12 +64,18 @@ def test_erf():
     assert limit((1 - erf(x))*exp(x**2)*sqrt(pi)*x, x, oo) == 1
     assert limit(((1 - erf(x))*exp(x**2)*sqrt(pi)*x - 1)*2*x**2, x, oo) == -1
 
+    l = Limit((1 - erf(y/x))*exp(y**2/x**2), x, 0)
+    assert l.doit() == l  # cover _erfs._eval_aseries
+
     assert erf(x).as_real_imag() == \
         ((erf(re(x) - I*re(x)*Abs(im(x))/Abs(re(x)))/2 +
           erf(re(x) + I*re(x)*Abs(im(x))/Abs(re(x)))/2,
           I*(erf(re(x) - I*re(x)*Abs(im(x))/Abs(re(x))) -
              erf(re(x) + I*re(x)*Abs(im(x))/Abs(re(x)))) *
           re(x)*Abs(im(x))/(2*im(x)*Abs(re(x)))))
+    assert erf(x).as_real_imag() == erf(x).as_real_imag(deep=False)
+    assert erf(w).as_real_imag() == (erf(w), 0)
+    assert erf(w).as_real_imag() == erf(w).as_real_imag(deep=False)
 
     pytest.raises(ArgumentIndexError, lambda: erf(x).fdiff(2))
 
@@ -138,6 +144,9 @@ def test_erfc():
           I*(erfc(re(x) - I*re(x)*Abs(im(x))/Abs(re(x))) -
              erfc(re(x) + I*re(x)*Abs(im(x))/Abs(re(x)))) *
           re(x)*Abs(im(x))/(2*im(x)*Abs(re(x)))))
+    assert erfc(x).as_real_imag(deep=False) == erfc(x).as_real_imag()
+    assert erfc(w).as_real_imag() == (erfc(w), 0)
+    assert erfc(w).as_real_imag(deep=False) == erfc(w).as_real_imag()
 
     pytest.raises(ArgumentIndexError, lambda: erfc(x).fdiff(2))
 
@@ -196,6 +205,9 @@ def test_erfi():
           I*(erfi(re(x) - I*re(x)*Abs(im(x))/Abs(re(x))) -
              erfi(re(x) + I*re(x)*Abs(im(x))/Abs(re(x)))) *
           re(x)*Abs(im(x))/(2*im(x)*Abs(re(x)))))
+    assert erfi(x).as_real_imag(deep=False) == erfi(x).as_real_imag()
+    assert erfi(w).as_real_imag() == (erfi(w), 0)
+    assert erfi(w).as_real_imag(deep=False) == erfi(w).as_real_imag()
 
     pytest.raises(ArgumentIndexError, lambda: erfi(x).fdiff(2))
 
@@ -358,8 +370,10 @@ def test_ei():
     assert Ei(log(x)).rewrite(li) == li(x)
     assert Ei(2*log(x)).rewrite(li) == li(x**2)
 
-    assert Ei(x).series(x) == EulerGamma + log(x) + x + x**2/4 + \
-        x**3/18 + x**4/96 + x**5/600 + O(x**6)
+    assert Ei(x).series(x) == (EulerGamma + log(x) + x + x**2/4 +
+                               x**3/18 + x**4/96 + x**5/600 + O(x**6))
+    assert Ei(1 + x).series(x) == (Ei(1) + E*x + E*x**3/6 - E*x**4/12 +
+                                   3*E*x**5/40 + O(x**6))
 
     pytest.raises(ArgumentIndexError, lambda: Ei(x).fdiff(2))
 
@@ -391,8 +405,12 @@ def test_expint():
         x**(y - 1)*(exp(-2*I*pi*y) - 1)*gamma(-y + 1) + expint(y, x)
     assert expint(2, x*exp_polar(2*I*pi)) == 2*I*pi*x + expint(2, x)
     assert expint(2, x*exp_polar(-2*I*pi)) == -2*I*pi*x + expint(2, x)
-    assert expint(1, x).rewrite(Ei).rewrite(expint) == expint(1, x)
+    assert (expint(n, x*exp_polar(2*I*pi)) ==
+            expint(n, x*exp_polar(2*I*pi), evaluate=False))
 
+    assert expint(1, x).rewrite(Ei).rewrite(expint) == expint(1, x)
+    assert (expint(2, x, evaluate=False).rewrite(Shi) ==
+            expint(2, x, evaluate=False))
     assert mytn(E1(x), E1(x).rewrite(Shi), Shi(x) - Chi(x), x)
     assert mytn(E1(polar_lift(I)*x), E1(polar_lift(I)*x).rewrite(Si),
                 -Ci(x) + I*Si(x) - I*pi/2, x)
@@ -412,6 +430,10 @@ def test_expint():
     assert expint(4, z).series(z) == Rational(1, 3) - z/2 + z**2/2 + \
         z**3*(log(z)/6 - Rational(11, 36) + EulerGamma/6) - z**4/24 + \
         z**5/240 + O(z**6)
+    assert (expint(x, x).series(x, x0=1, n=2) ==
+            expint(1, 1) + (x - 1)*(-meijerg(((), (1, 1)),
+                                             ((0, 0, 0), ()), 1) - 1/E) +
+            O((x - 1)**2, (x, 1)))
 
     pytest.raises(ArgumentIndexError, lambda: expint(x, y).fdiff(3))
 
@@ -436,6 +458,9 @@ def test__eis():
 
     assert _eis(z).series(z, n=2) == EulerGamma + log(z) + z*(-log(z) -
                                                               EulerGamma + 1) + z**2*(log(z)/2 - Rational(3, 4) + EulerGamma/2) + O(z**2)
+
+    l = Limit(Ei(y/x)/exp(y/x), x, 0)
+    assert l.doit() == l  # cover _eis._eval_aseries
 
 
 def tn_arg(func):
@@ -612,6 +637,12 @@ def test_fresnel():
     assert fresnels(z).series(z, n=15) == \
         pi*z**3/6 - pi**3*z**7/336 + pi**5*z**11/42240 + O(z**15)
 
+    assert fresnels(y/z).limit(z, 0) == fresnels(oo*sign(y))
+
+    assert fresnels(x).taylor_term(-1, z) == 0
+    assert fresnels(x).taylor_term(1, z, *(pi*z**3/6,)) == -pi**3*z**7/336
+    assert fresnels(x).taylor_term(1, z) == -pi**3*z**7/336
+
     assert fresnels(w).is_extended_real is True
     assert fresnels(z).is_extended_real is None
 
@@ -621,6 +652,9 @@ def test_fresnel():
           I*(fresnels(re(z) - I*re(z)*Abs(im(z))/Abs(re(z))) -
              fresnels(re(z) + I*re(z)*Abs(im(z))/Abs(re(z)))) *
           re(z)*Abs(im(z))/(2*im(z)*Abs(re(z)))))
+    assert fresnels(z).as_real_imag(deep=False) == fresnels(z).as_real_imag()
+    assert fresnels(w).as_real_imag() == (fresnels(w), 0)
+    assert fresnels(w).as_real_imag(deep=False) == fresnels(w).as_real_imag()
 
     assert fresnels(2 + 3*I).as_real_imag() == (
         fresnels(2 + 3*I)/2 + fresnels(2 - 3*I)/2,
@@ -655,8 +689,14 @@ def test_fresnel():
     assert fresnelc(z).rewrite(hyper) == \
         z * hyper([S.One/4], [S.One/2, Rational(5, 4)], -pi**2*z**4/16)
 
+    assert fresnelc(x).taylor_term(-1, z) == 0
+    assert fresnelc(x).taylor_term(1, z, *(z,)) == -pi**2*z**5/40
+    assert fresnelc(x).taylor_term(1, z) == -pi**2*z**5/40
+
     assert fresnelc(z).series(z, n=15) == \
         z - pi**2*z**5/40 + pi**4*z**9/3456 - pi**6*z**13/599040 + O(z**15)
+
+    assert fresnelc(y/z).limit(z, 0) == fresnelc(oo*sign(y))
 
     # issue sympy/sympy#6510
     assert fresnels(z).series(z, S.Infinity) == \
