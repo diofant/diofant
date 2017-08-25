@@ -171,15 +171,8 @@ class Basic(object):
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
         """
 
-        # XXX: remove this when issue sympy/sympy#5169 is fixed
-        def inner_key(arg):
-            if isinstance(arg, Basic):
-                return arg.sort_key(order)
-            else:
-                return arg
-
-        args = self._sorted_args
-        args = len(args), tuple(inner_key(arg) for arg in args)
+        args = len(self.args), tuple(arg.sort_key(order)
+                                     for arg in self._sorted_args)
         return self.class_key(), args, S.One.sort_key(), S.One
 
     @_sympifyit('other', NotImplemented)
