@@ -504,17 +504,6 @@ class Basic(object):
         except PolynomialError:
             pass
 
-    def as_content_primitive(self, radical=False):
-        """A stub to allow Basic args (like Tuple) to be skipped when computing
-        the content and primitive components of an expression.
-
-        See Also
-        ========
-
-        diofant.core.expr.Expr.as_content_primitive
-        """
-        return S.One, self
-
     def subs(self, *args, **kwargs):
         """
         Substitutes old for new in an expression after sympifying args.
