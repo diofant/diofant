@@ -107,46 +107,6 @@ class Basic(object):
         """
         return self._args
 
-    def compare(self, other):
-        """
-        Return -1, 0, 1 if the object is smaller, equal, or greater than other.
-
-        Not in the mathematical sense. If the object is of a different type
-        from the "other" then their classes are ordered according to
-        the sorted_classes list.
-
-        Examples
-        ========
-
-        >>> from diofant.abc import x, y
-        >>> x.compare(y)
-        -1
-        >>> x.compare(x)
-        0
-        >>> y.compare(x)
-        1
-        """
-        if self is other:
-            return 0
-        n1 = self.__class__.__name__
-        n2 = other.__class__.__name__
-        c = (n1 > n2) - (n1 < n2)
-        if c:
-            return c
-
-        st = self._hashable_content()
-        ot = other._hashable_content()
-        for l, r in zip(st, ot):
-            l = Basic(*l) if isinstance(l, frozenset) else l
-            r = Basic(*r) if isinstance(r, frozenset) else r
-            if isinstance(l, Basic):
-                c = l.compare(r)
-            else:
-                c = (l > r) - (l < r)
-            if c:
-                return c
-        return 0
-
     @classmethod
     def class_key(cls):
         """Nice order of classes. """
@@ -179,8 +139,6 @@ class Basic(object):
     def __eq__(self, other):
         """Return a boolean indicating whether a == b on the basis of
         their symbolic trees.
-
-        This is the same as a.compare(b) == 0 but faster.
 
         Notes
         =====
