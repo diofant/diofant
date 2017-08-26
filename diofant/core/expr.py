@@ -1362,6 +1362,31 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         return self
 
+    def as_poly(self, *gens, **args):
+        """Converts ``self`` to a polynomial or returns ``None``.
+
+        Examples
+        ========
+
+        >>> from diofant import sin
+        >>> from diofant.abc import x, y
+
+        >>> (x**2 + x*y).as_poly()
+        Poly(x**2 + x*y, x, y, domain='ZZ')
+
+        >>> (x**2 + x*y).as_poly(x, y)
+        Poly(x**2 + x*y, x, y, domain='ZZ')
+
+        >>> (x**2 + sin(y)).as_poly(x, y) is None
+        True
+        """
+        from ..polys import Poly, PolynomialError
+
+        try:
+            return Poly(self, *gens, **args)
+        except PolynomialError:
+            pass
+
     def as_coefficient(self, expr):
         """Extracts symbolic coefficient at the given expression.
 

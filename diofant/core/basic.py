@@ -479,31 +479,6 @@ class Basic(object):
         """
         return self.args
 
-    def as_poly(self, *gens, **args):
-        """Converts ``self`` to a polynomial or returns ``None``.
-
-        Examples
-        ========
-
-        >>> from diofant import sin
-        >>> from diofant.abc import x, y
-
-        >>> (x**2 + x*y).as_poly()
-        Poly(x**2 + x*y, x, y, domain='ZZ')
-
-        >>> (x**2 + x*y).as_poly(x, y)
-        Poly(x**2 + x*y, x, y, domain='ZZ')
-
-        >>> (x**2 + sin(y)).as_poly(x, y) is None
-        True
-        """
-        from ..polys import Poly, PolynomialError
-
-        try:
-            return Poly(self, *gens, **args)
-        except PolynomialError:
-            pass
-
     def subs(self, *args, **kwargs):
         """
         Substitutes old for new in an expression after sympifying args.
