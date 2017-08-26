@@ -1,7 +1,8 @@
-from .rv import (probability, expectation, density, where, given, pspace, cdf,
-                 sample, sample_iter, random_symbols, independent, dependent,
-                 sampling_density)
 from ..functions import sqrt
+from .rv import (cdf, density, dependent, expectation, given, independent,
+                 probability, pspace, random_symbols, sample, sample_iter,
+                 sampling_density, where)
+
 
 __all__ = ('P', 'E', 'density', 'where', 'given', 'sample', 'cdf', 'pspace',
            'sample_iter', 'variance', 'std', 'skewness', 'covariance',
@@ -137,7 +138,7 @@ def correlation(X, Y, condition=None, **kwargs):
     1/sqrt(1 + lambda**(-2))
     """
     return covariance(X, Y, condition, **kwargs)/(std(X, condition, **kwargs)
-     * std(Y, condition, **kwargs))
+                                                  * std(Y, condition, **kwargs))
 
 
 def cmoment(X, n, condition=None, **kwargs):

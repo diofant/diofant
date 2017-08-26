@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function,
-                     Derivative, abc, Integer, Eq, symbols, Add, I, Float,
-                     log, Rational, Lambda, atan2, cse, cot, tan, S, Tuple,
-                     Basic, Dict, Piecewise, oo, Mul, factor, nsimplify,
-                     zoo, Subs, E, RootOf, Min)
+from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
+                     Integer, Lambda, Min, Mul, Piecewise, Rational, RootOf, S,
+                     Subs, Symbol, Tuple, Wild, abc, atan2, cos, cot, cse, exp,
+                     factor, log, nsimplify, oo, pi, sin, sqrt, symbols, tan,
+                     zoo)
+from diofant.abc import x, y, z
 from diofant.core.basic import _aresame
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -172,7 +172,7 @@ def test_subs_dict1():
     test = (c2**2*q2p*c3 + c1**2*s2**2*q2p*c3 + s1**2*s2**2*q2p*c3
             - c1**2*q1p*c2*s3 - s1**2*q1p*c2*s3)
     assert (test.subs({c1**2: 1 - s1**2, c2**2: 1 - s2**2, c3**3: 1 - s3**2})
-        == c3*q2p*(1 - s2**2) + c3*q2p*s2**2*(1 - s1**2)
+            == c3*q2p*(1 - s2**2) + c3*q2p*s2**2*(1 - s1**2)
             - c2*q1p*s3*(1 - s1**2) + c3*q2p*s1**2*s2**2 - c2*q1p*s3*s1**2)
 
 
@@ -459,7 +459,7 @@ def test_subs_dict():
     a, b, c, d, e = symbols('a b c d e')
     z = symbols('z')
 
-    assert (2*x + y + z).subs(dict(x=1, y=2)) == 4 + z
+    assert (2*x + y + z).subs({x: 1, y: 2}) == 4 + z
 
     l = [(sin(x), 2), (x, 1)]
     assert (sin(x)).subs(l) == \
@@ -529,7 +529,7 @@ def test_sympyissue_6079():
 
 def test_sympyissue_4680():
     N = Symbol('N')
-    assert N.subs(dict(N=3)) == 3
+    assert N.subs({N: 3}) == 3
 
 
 def test_sympyissue_6158():
@@ -540,7 +540,6 @@ def test_sympyissue_6158():
 
 
 def test_Function_subs():
-    from diofant.abc import x, y
     f, g, h, i = symbols('f g h i', cls=Function)
     p = Piecewise((g(f(x, y)), x < -1), (g(x), x <= 1))
     assert p.subs(g, h) == Piecewise((h(f(x, y)), x < -1), (h(x), x <= 1))

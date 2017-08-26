@@ -5,7 +5,7 @@ from ..core.compatibility import as_int, default_sort_key
 from ..functions import bell
 from ..matrices import zeros
 from ..sets import FiniteSet
-from ..utilities import has_dups, flatten, group
+from ..utilities import flatten, group, has_dups
 
 
 class Partition(FiniteSet):
@@ -86,7 +86,7 @@ class Partition(FiniteSet):
             members = self.members
         else:
             members = tuple(sorted(self.members,
-                             key=lambda w: default_sort_key(w, order)))
+                                   key=lambda w: default_sort_key(w, order)))
         return tuple(map(default_sort_key, (self.size, members, self.rank)))
 
     @property

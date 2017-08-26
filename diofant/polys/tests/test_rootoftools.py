@@ -2,14 +2,15 @@
 
 import pytest
 
+from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, S, Symbol,
+                     exp, legendre_poly, log, root, solve, sqrt, tan)
+from diofant.abc import a, b, r, x, y, z
+from diofant.polys.polyerrors import (GeneratorsNeeded,
+                                      MultivariatePolynomialError,
+                                      PolynomialError)
 from diofant.polys.polytools import Poly, PurePoly
 from diofant.polys.rootoftools import RootOf, RootSum
-from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                      GeneratorsNeeded, PolynomialError)
-from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                     Function, Eq, solve, legendre_poly, Symbol, root, Pow)
 
-from diofant.abc import a, b, x, y, z, r
 
 __all__ = ()
 
@@ -107,6 +108,8 @@ def test_RootOf___new__():
     assert e.poly == PurePoly(x**2 - 4, x)
     assert e.index == 1
 
+    assert RootOf(x**7 - 0.1*x + 1, x, 0) == RootOf(10*x**7 - x + 10, x, 0)
+
 
 def test_RootOf_attributes():
     r = RootOf(x**3 + x + 3, 0)
@@ -155,7 +158,7 @@ def test_RootOf___eval_Eq__():
             assert Eq(r, s[x]) is S.true
     eq = x**3 + x + 1
     assert ([Eq(RootOf(eq, i), j[x])
-            for i in range(3) for j in solve(eq)] ==
+             for i in range(3) for j in solve(eq)] ==
             [False, False, True, False, True, False, True, False, False])
     assert Eq(RootOf(eq, 0), 1 + S.ImaginaryUnit) is S.false
 
@@ -246,8 +249,8 @@ def test_RootOf_evalf():
     # issue sympy/sympy#6393
     assert str(RootOf(x**5 + 2*x**4 + x**3 - 68719476736, 0).n(3)) == '147.'
     eq = (531441*x**11 + 3857868*x**10 + 13730229*x**9 + 32597882*x**8 +
-        55077472*x**7 + 60452000*x**6 + 32172064*x**5 - 4383808*x**4 -
-        11942912*x**3 - 1506304*x**2 + 1453312*x + 512)
+          55077472*x**7 + 60452000*x**6 + 32172064*x**5 - 4383808*x**4 -
+          11942912*x**3 - 1506304*x**2 + 1453312*x + 512)
     a, b = RootOf(eq, 1).n(2).as_real_imag()
     c, d = RootOf(eq, 2).n(2).as_real_imag()
     assert a == c
@@ -274,10 +277,10 @@ def test_RootOf_evalf():
 def test_RootOf_evalf_caching_bug():
     r = RootOf(x**5 - 5*x + 12, 1)
     r.n()
-    a = r._get_interval()
+    a = r.interval
     r = RootOf(x**5 - 5*x + 12, 1)
     r.n()
-    b = r._get_interval()
+    b = r.interval
     assert a == b
 
 
@@ -285,6 +288,7 @@ def test_RootOf_real_roots():
     assert Poly(x**5 + x + 1).real_roots() == [RootOf(x**3 - x**2 + 1, 0)]
     assert Poly(x**5 + x + 1).real_roots(radicals=False) == [RootOf(
         x**3 - x**2 + 1, 0)]
+    assert Poly(x**7 - 0.1*x + 1, x).real_roots() == [RootOf(10*x**7 - x + 10, x, 0)]
 
 
 def test_RootOf_all_roots():
@@ -320,6 +324,9 @@ def test_RootOf_eval_rational():
         "0.33998104358485626",
         "0.86113631159405258",
     ]
+
+    pytest.raises(NotImplementedError,
+                  lambda: RootOf(x**3 + x + 3, 1).eval_rational(1e-3))
 
 
 def test_RootSum___new__():
@@ -368,6 +375,10 @@ def test_RootSum___new__():
         RootSum(x**3 + x + 1, Lambda(x, tan(a*x)))
     assert RootSum(a**3*x**3 + a*x + 1, tan, x) == \
         RootSum(x**3 + x + 1, Lambda(x, tan(x/a)))
+
+    assert isinstance(RootSum(x**7 + 2*x + 1,
+                              Lambda(x, log(x))).doit(),
+                      RootSum)
 
 
 def test_RootSum_free_symbols():

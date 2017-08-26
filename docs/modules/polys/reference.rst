@@ -103,6 +103,8 @@ Algebraic number fields
 
     alias of :func:`minimal_polynomial`
 
+.. autofunction:: minpoly_groebner
+
 .. autofunction:: primitive_element
 .. autofunction:: field_isomorphism
 .. autofunction:: to_number_field

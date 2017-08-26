@@ -1,11 +1,11 @@
 """Tests for tools for constructing domains for expressions. """
 
-from diofant.polys.constructor import construct_domain
-from diofant.domains import ZZ, QQ, RR, EX
-from diofant.domains.realfield import RealField
-from diofant import sqrt, sin, Float, Integer, Rational, E, GoldenRatio
-
+from diofant import E, Float, GoldenRatio, Integer, Rational, sin, sqrt
 from diofant.abc import x, y
+from diofant.domains import EX, QQ, RR, ZZ
+from diofant.domains.realfield import RealField
+from diofant.polys.constructor import construct_domain
+
 
 __all__ = ()
 
@@ -115,7 +115,7 @@ def test_precision():
     f1 = Float("1.01")
     f2 = Float("1.0000000000000000000001")
     for x in [1, 1e-2, 1e-6, 1e-13, 1e-14, 1e-16, 1e-20, 1e-100, 1e-300,
-            f1, f2]:
+              f1, f2]:
         result = construct_domain([x])
         y = float(result[1][0])
         assert abs(x - y)/x < 1e-14  # Test relative accuracy

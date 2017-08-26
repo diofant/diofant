@@ -1,8 +1,8 @@
-from diofant import (symbols, I, atan, log, Poly, sqrt,
-                     simplify, integrate, Integer, Rational)
-from diofant.integrals.rationaltools import ratint, ratint_logpart, log_to_atan
+from diofant import (I, Integer, Poly, Rational, atan, integrate, log,
+                     simplify, sqrt, symbols)
+from diofant.abc import a, b, t, x
+from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
 
-from diofant.abc import a, b, x, t
 
 __all__ = ()
 
@@ -77,7 +77,7 @@ def test_ratint():
 
     assert ratint(1/(x**3 + 1), x) == \
         -log(1 - x + x**2)/6 + log(1 + x)/3 + sqrt(3)*atan(-sqrt(3)
-             / 3 + 2*x*sqrt(3)/3)/3
+                                                           / 3 + 2*x*sqrt(3)/3)/3
 
     assert ratint(1/(x**2 + x + 1), x, extended_real=False) == \
         -I*3**half*log(half + x - half*I*3**half)/3 + \

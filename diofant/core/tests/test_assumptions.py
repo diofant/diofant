@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import I, sqrt, log, exp, sin, asin
-from diofant.core import (Symbol, S, Rational, Integer, Dummy,
-                          Wild, Pow, Float, Mod, pi)
+from diofant import I, asin, exp, log, simplify, sin, sqrt
+from diofant.core import (Dummy, Float, Integer, Mod, Pow, Rational, S, Symbol,
+                          Wild, pi)
 from diofant.core.facts import InconsistentAssumptions
-from diofant import simplify
+
 
 __all__ = ()
 
@@ -817,7 +817,7 @@ def test_sanitize_assumptions():
         assert x.is_positive is False
         assert cls('', extended_real=True, positive=None).is_positive is None
         pytest.raises(ValueError, lambda: cls('', commutative=None))
-    pytest.raises(ValueError, lambda: Symbol._sanitize(dict(commutative=None)))
+    pytest.raises(ValueError, lambda: Symbol._sanitize({'commutative': None}))
 
 
 def test_special_assumptions():
@@ -831,7 +831,7 @@ def test_special_assumptions():
 def test_inconsistent():
     # cf. issues sympy/sympy#5795 and sympy/sympy#5545
     pytest.raises(InconsistentAssumptions, lambda: Symbol('x', extended_real=True,
-           commutative=False))
+                                                          commutative=False))
 
 
 def test_sympyissue_6631():

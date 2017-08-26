@@ -1,12 +1,13 @@
 import pytest
 
-from diofant import symbols, FiniteSet
-from diofant.combinatorics.polyhedron import (Polyhedron, tetrahedron,
-                                              cube as square, octahedron,
-                                              dodecahedron, icosahedron,
-                                              cube_faces)
-from diofant.combinatorics.permutations import Permutation
+from diofant import FiniteSet, symbols
 from diofant.combinatorics.perm_groups import PermutationGroup
+from diofant.combinatorics.permutations import Permutation
+from diofant.combinatorics.polyhedron import cube as square
+from diofant.combinatorics.polyhedron import (Polyhedron, cube_faces,
+                                              dodecahedron, icosahedron,
+                                              octahedron, tetrahedron)
+
 
 __all__ = ()
 
@@ -15,7 +16,7 @@ rmul = Permutation.rmul
 
 def test_polyhedron():
     pytest.raises(ValueError, lambda: Polyhedron(list('ab'),
-        pgroup=[Permutation([0])]))
+                                                 pgroup=[Permutation([0])]))
     pgroup = [Permutation([[0, 7, 2, 5], [6, 1, 4, 3]]),
               Permutation([[0, 7, 1, 6], [5, 2, 4, 3]]),
               Permutation([[3, 6, 0, 5], [4, 1, 7, 2]]),

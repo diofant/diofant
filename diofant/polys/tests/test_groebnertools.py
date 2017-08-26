@@ -2,17 +2,18 @@
 
 import pytest
 
-from diofant.polys.groebnertools import (
-    groebner, sig, sig_key,
-    lbp, lbp_key, critical_pair,
-    cp_key, is_rewritable_or_comparable,
-    Sign, Polyn, Num, s_poly, f5_reduce,
-    groebner_lcm, groebner_gcd)
-from diofant.polys.fglmtools import _representing_matrices
-from diofant.polys.orderings import lex, grlex
-from diofant.polys.rings import ring
-from diofant.domains import ZZ, QQ
+from diofant.domains import QQ, ZZ
 from diofant.polys import polyconfig as config
+from diofant.polys.fglmtools import _representing_matrices
+from diofant.polys.groebnertools import (Num, Polyn, Sign, cp_key,
+                                         critical_pair, f5_reduce, groebner,
+                                         groebner_gcd, groebner_lcm,
+                                         is_groebner, is_minimal,
+                                         is_rewritable_or_comparable, lbp,
+                                         lbp_key, s_poly, sig, sig_key)
+from diofant.polys.orderings import grlex, lex
+from diofant.polys.rings import ring
+
 
 __all__ = ()
 
@@ -22,7 +23,11 @@ def _do_test_groebner():
     f = x**2 + 2*x*y**2
     g = x*y + 2*y**3 - 1
 
-    assert groebner([f, g], R) == [x, y**3 - QQ(1, 2)]
+    assert not is_groebner([f, g], R)
+    ans = [x, y**3 - QQ(1, 2)]
+    assert groebner([f, g], R) == ans
+    assert is_groebner(ans, R)
+    assert is_minimal(ans, R)
 
     R,  y, x = ring("y,x", QQ, lex)
     f = 2*x**2*y + y**2
@@ -122,6 +127,10 @@ def _do_test_groebner():
         x - 4*y**7 + 8*y**5 - 7*y**3 + 3*y,
         y**8 - 2*y**6 + QQ(3, 2)*y**4 - QQ(1, 2)*y**2 + QQ(1, 16),
     ]
+
+    b = [y**2 + x*y + x**2, y + x, y, x**2, x]
+    assert is_groebner(b, R)
+    assert not is_minimal(b, R)
 
 
 def test_groebner_buchberger():
@@ -527,6 +536,9 @@ def test_groebner_lcm():
 
     assert groebner_lcm(f, g) == h
 
+    Rz,  X, Y, Z = ring("x,y,z", QQ)
+    pytest.raises(ValueError, lambda: groebner_lcm(x, X))
+
 
 def test_groebner_gcd():
     R,  x, y, z = ring("x,y,z", ZZ)
@@ -538,3 +550,6 @@ def test_groebner_gcd():
 
     assert groebner_gcd(x**2 - y**2, x - y) == x - y
     assert groebner_gcd(2*x**2 - 2*y**2, 2*x - 2*y) == x - y
+
+    Rz,  X, Y, Z = ring("x,y,z", ZZ)
+    pytest.raises(ValueError, lambda: groebner_gcd(x, X))

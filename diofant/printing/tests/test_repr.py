@@ -1,12 +1,14 @@
 import pytest
 
-from diofant import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
-                     S, WildFunction, ImmutableMatrix, sin, true, false, ones,
-                     Symbol, Dummy, Wild, AlgebraicNumber, sqrt, root)
-from diofant.geometry import Point, Ellipse
+from diofant import (Abs, AlgebraicNumber, Dummy, Float, Function,
+                     ImmutableMatrix, Integer, Matrix, Rational, S, Symbol,
+                     Wild, WildFunction, false, ones, root, sin, sqrt, symbols,
+                     true)
+from diofant.domains import QQ, ZZ
+from diofant.geometry import Ellipse, Point
+from diofant.polys import field, grlex, lex, ring
 from diofant.printing.repr import srepr
-from diofant.domains import ZZ, QQ
-from diofant.polys import ring, field, lex, grlex
+
 
 __all__ = ()
 
@@ -120,12 +122,12 @@ def test_AlgebraicNumber():
 
 
 def test_Float():
-    sT(Float('1.23', prec=3), "Float('1.22998', prec=3)")
-    sT(Float('1.23456789', prec=9), "Float('1.23456788994', prec=9)")
-    sT(Float('1.234567890123456789', prec=19),
-       "Float('1.234567890123456789013', prec=19)")
+    sT(Float('1.23', dps=3), "Float('1.22998', dps=3)")
+    sT(Float('1.23456789', dps=9), "Float('1.23456788994', dps=9)")
+    sT(Float('1.234567890123456789', dps=19),
+       "Float('1.234567890123456789013', dps=19)")
     sT(Float(
-        '0.60038617995049726', 15), "Float('0.60038617995049726', prec=15)")
+        '0.60038617995049726', 15), "Float('0.60038617995049726', dps=15)")
 
 
 def test_Symbol():
@@ -191,9 +193,9 @@ def test_PolyRing():
     sT(ring("x,y", QQ, grlex)[0], "PolyRing((Symbol('x'), Symbol('y')), "
                                   "%s, GradedLexOrder())" % repr(QQ))
     sT(ring("x,y,z", ZZ["t"], lex)[0],
-            "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), "
-            "PolynomialRing(PolyRing((Symbol('t'),), "
-            "%s, LexOrder())), LexOrder())" % repr(ZZ))
+       "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), "
+       "PolynomialRing(PolyRing((Symbol('t'),), "
+       "%s, LexOrder())), LexOrder())" % repr(ZZ))
 
 
 def test_FracField():
@@ -202,9 +204,9 @@ def test_FracField():
     sT(field("x,y", QQ, grlex)[0], "FracField((Symbol('x'), Symbol('y')), "
                                    "%s, GradedLexOrder())" % repr(QQ))
     sT(field("x,y,z", ZZ["t"], lex)[0],
-            "FracField((Symbol('x'), Symbol('y'), Symbol('z')), "
-            "PolynomialRing(PolyRing((Symbol('t'),), %s, "
-            "LexOrder())), LexOrder())" % repr(ZZ))
+       "FracField((Symbol('x'), Symbol('y'), Symbol('z')), "
+       "PolynomialRing(PolyRing((Symbol('t'),), %s, "
+       "LexOrder())), LexOrder())" % repr(ZZ))
 
 
 def test_PolyElement():

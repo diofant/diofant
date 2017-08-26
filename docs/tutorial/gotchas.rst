@@ -45,9 +45,9 @@ chance to get to them.
 .. tip::
 
    While working in the IPython console, you could use
-   :class:`~diofant.interactive.session.IntegerWrapper` AST
-   transformer to wrap all integer literals with
-   :class:`~diofant.core.numbers.Integer` automatically.
+   :class:`~diofant.interactive.session.IntegerDivisionWrapper` AST
+   transformer to wrap all integer divisions with
+   :class:`~diofant.core.numbers.Rational` automatically.
 
 The universal solution is using correct Diofant numeric class to
 construct numbers explicitly.  For example,

@@ -1,11 +1,11 @@
 import pytest
 
-from diofant.core import symbols, S, Pow, Function
-from diofant.functions import exp
-from diofant.tensor.indexed import Idx, IndexedBase
-from diofant.tensor.index_methods import IndexConformanceException
-
 from diofant import get_contraction_structure, get_indices
+from diofant.core import Function, Pow, S, symbols
+from diofant.functions import exp
+from diofant.tensor.index_methods import IndexConformanceException
+from diofant.tensor.indexed import Idx, IndexedBase
+
 
 __all__ = ()
 
@@ -16,11 +16,11 @@ def test_trivial_indices():
     assert get_indices(x*y) == (set(), {})
     assert get_indices(x + y) == (set(), {})
     assert get_indices(x**y) == (set(), {})
+    assert get_indices(None) == (set(), {})
 
 
 def test_get_indices_Indexed():
     x = IndexedBase('x')
-    y = IndexedBase('y')
     i, j = Idx('i'), Idx('j')
     assert get_indices(x[i, j]) == ({i, j}, {})
     assert get_indices(x[j, i]) == ({j, i}, {})
@@ -52,7 +52,7 @@ def test_get_indices_exceptions():
 def test_scalar_broadcast():
     x = IndexedBase('x')
     y = IndexedBase('y')
-    i, j = Idx('i'), Idx('j')
+    i = Idx('i')
     assert get_indices(x[i] + y[i, i]) == ({i}, {})
 
 
@@ -87,12 +87,15 @@ def test_get_contraction_structure_basic():
     x = IndexedBase('x')
     y = IndexedBase('y')
     i, j = Idx('i'), Idx('j')
+    f = Function('f')
     assert get_contraction_structure(x[i]*y[j]) == {None: {x[i]*y[j]}}
     assert get_contraction_structure(x[i] + y[j]) == {None: {x[i], y[j]}}
     assert get_contraction_structure(x[i]*y[i]) == {(i,): {x[i]*y[i]}}
     assert get_contraction_structure(
         1 + x[i]*y[i]) == {None: {S.One}, (i,): {x[i]*y[i]}}
     assert get_contraction_structure(x[i]**y[i]) == {None: {x[i]**y[i]}}
+    assert (get_contraction_structure(f(x[i, i])) ==
+            {None: {f(x[i, i])}, f(x[i, i]): [{(i,): {x[i, i]}}]})
 
 
 def test_get_contraction_structure_complex():
@@ -111,7 +114,7 @@ def test_get_contraction_structure_complex():
 def test_contraction_structure_simple_Pow():
     x = IndexedBase('x')
     y = IndexedBase('y')
-    i, j, k = Idx('i'), Idx('j'), Idx('k')
+    i, j = Idx('i'), Idx('j')
     ii_jj = x[i, i]**y[j, j]
     assert get_contraction_structure(ii_jj) == {
         None: {ii_jj},
@@ -141,11 +144,11 @@ def test_contraction_structure_Mul_and_Pow():
         (i,): {ij_exp_kki},
         ij_exp_kki: [{
                      None: {exp(y[i]*y[k, k])},
-                exp(y[i]*y[k, k]): [{
-                    None: {y[i]*y[k, k]},
-                    y[i]*y[k, k]: [{(k,): {y[k, k]}}]
-                }]}
-        ]
+                     exp(y[i]*y[k, k]): [{
+                         None: {y[i]*y[k, k]},
+                         y[i]*y[k, k]: [{(k,): {y[k, k]}}]
+                     }]}
+                     ]
     }
     assert result == expected
 
@@ -153,7 +156,7 @@ def test_contraction_structure_Mul_and_Pow():
 def test_contraction_structure_Add_in_Pow():
     x = IndexedBase('x')
     y = IndexedBase('y')
-    i, j, k = Idx('i'), Idx('j'), Idx('k')
+    i, j = Idx('i'), Idx('j')
     s_ii_jj_s = (1 + x[i, i])**(1 + y[j, j])
     expected = {
         None: {s_ii_jj_s},
@@ -193,7 +196,7 @@ def test_ufunc_support():
     g = Function('g')
     x = IndexedBase('x')
     y = IndexedBase('y')
-    i, j, k = Idx('i'), Idx('j'), Idx('k')
+    i, j = Idx('i'), Idx('j')
     a = symbols('a')
 
     assert get_indices(f(x[i])) == ({i}, {})

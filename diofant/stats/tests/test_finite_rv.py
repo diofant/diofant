@@ -1,16 +1,16 @@
 import pytest
 
-from diofant import (FiniteSet, S, Symbol, sqrt, symbols, simplify, Eq, cos,
-                     And, Tuple, Or, Dict, sympify, binomial, cancel,
-                     Rational, Integer)
-from diofant.stats import (DiscreteUniform, Die, Bernoulli, Coin, Binomial,
-                           Hypergeometric, Rademacher, P, E, variance, covariance,
-                           skewness, sample, density, where, FiniteRV, pspace, cdf,
-                           correlation, moment, cmoment, smoment)
-from diofant.stats.frv_types import DieDistribution
-from diofant.matrices import Matrix
-
+from diofant import (And, Dict, Eq, FiniteSet, Integer, Or, Rational, S,
+                     Symbol, Tuple, binomial, cancel, cos, simplify, sqrt,
+                     symbols, sympify)
 from diofant.abc import p, x
+from diofant.matrices import Matrix
+from diofant.stats import (Bernoulli, Binomial, Coin, Die, DiscreteUniform, E,
+                           FiniteRV, Hypergeometric, P, Rademacher, cdf,
+                           cmoment, correlation, covariance, density, moment,
+                           pspace, sample, skewness, smoment, variance, where)
+from diofant.stats.frv_types import DieDistribution
+
 
 __all__ = ()
 
@@ -42,7 +42,7 @@ def test_discreteuniform():
         assert P(Y >= x) == Rational(5 - x, 10)
 
     assert dict(density(Die('D', 6)).items()) == \
-           dict(density(DiscreteUniform('U', range(1, 7))).items())
+        dict(density(DiscreteUniform('U', range(1, 7))).items())
 
 
 def test_dice():
@@ -107,7 +107,7 @@ def test_domains():
     assert d.condition == (x > y)
     d = where(And(X > Y, Y > 3))
     assert d.as_boolean() == Or(And(Eq(x, 5), Eq(y, 4)), And(Eq(x, 6),
-        Eq(y, 5)), And(Eq(x, 6), Eq(y, 4)))
+                                                             Eq(y, 5)), And(Eq(x, 6), Eq(y, 4)))
     assert len(d.elements) == 3
 
     assert len(pspace(X + Y).domain.elements) == 36
@@ -123,7 +123,7 @@ def test_domains():
         *[Dict({X.symbol: i}) for i in range(1, 7)])
 
     assert where(X > Y).dict == FiniteSet(*[Dict({X.symbol: i, Y.symbol: j})
-            for i in range(1, 7) for j in range(1, 7) if i > j])
+                                            for i in range(1, 7) for j in range(1, 7) if i > j])
 
 
 def test_dice_bayes():
@@ -173,7 +173,7 @@ def test_coins():
     H, T = symbols('H, T')
     assert P(Eq(C, D)) == S.Half
     assert density(Tuple(C, D)) == {(H, H): S.One/4, (H, T): S.One/4,
-            (T, H): S.One/4, (T, T): S.One/4}
+                                    (T, H): S.One/4, (T, T): S.One/4}
     assert dict(density(C).items()) == {H: S.Half, T: S.Half}
 
     F = Coin('F', S.One/10)
@@ -234,7 +234,7 @@ def test_hypergeometric_numeric():
                 # Only test for skewness when defined
                 if N > 2 and 0 < m < N and n < N:
                     assert skewness(X) == simplify((N - 2*m)*sqrt(N - 1)*(N - 2*n)
-                        / (sqrt(n*m*(N - m)*(N - n))*(N - 2)))
+                                                   / (sqrt(n*m*(N - m)*(N - n))*(N - 2)))
 
 
 def test_rademacher():

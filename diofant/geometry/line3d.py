@@ -8,15 +8,15 @@ Ray3D
 Segment3D
 """
 
-from ..core import S, Dummy, nan
+from ..core import Dummy, S, nan
+from ..core.compatibility import is_sequence
 from ..functions import acos
 from ..simplify import simplify
 from ..solvers import solve
-from .exceptions import GeometryError
 from .entity import GeometryEntity
+from .exceptions import GeometryError
 from .point import Point3D
 from .util import _symbol
-from ..core.compatibility import is_sequence
 
 
 class LinearEntity3D(GeometryEntity):
@@ -752,7 +752,7 @@ class LinearEntity3D(GeometryEntity):
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
             raise ValueError('Symbol %s already appears in object '
-            'and cannot be used as a parameter.' % t.name)
+                             'and cannot be used as a parameter.' % t.name)
         x = simplify(self.p1.x + t*(self.p2.x - self.p1.x))
         y = simplify(self.p1.y + t*(self.p2.y - self.p1.y))
         z = simplify(self.p1.z + t*(self.p2.z - self.p1.z))
@@ -844,7 +844,7 @@ class Line3D(LinearEntity3D):
                          p1.z + direction_ratio[2])
         else:
             raise ValueError('A 2nd Point or keyword "direction_ratio" must '
-            'be used.')
+                             'be used.')
 
         return LinearEntity3D.__new__(cls, p1, pt, **kwargs)
 
@@ -1045,7 +1045,7 @@ class Ray3D(LinearEntity3D):
                          p1.z + direction_ratio[2])
         else:
             raise ValueError('A 2nd Point or keyword "direction_ratio" must'
-            'be used.')
+                             'be used.')
 
         return LinearEntity3D.__new__(cls, p1, pt, **kwargs)
 

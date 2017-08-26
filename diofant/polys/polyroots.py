@@ -1,21 +1,21 @@
 """Algorithms for computing symbolic roots of polynomials. """
 
-from functools import reduce
 import math
+from functools import reduce
 
-from ..core import (Dummy, Symbol, symbols, S, I, pi, Mul, Eq, sympify,
-                    Rational, igcd, comp, Integer, Float, factor_terms)
+from ..core import (Dummy, Eq, Float, I, Integer, Mul, Rational, S, Symbol,
+                    comp, factor_terms, igcd, pi, symbols, sympify)
 from ..core.compatibility import ordered
 from ..core.mul import expand_2arg
+from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
 from ..ntheory import divisors, isprime, nextprime
-from ..functions import exp, sqrt, im, cos, acos, Piecewise, root
-from .polytools import Poly, cancel, factor, gcd_list, discriminant
-from .specialpolys import cyclotomic_poly
-from .polyerrors import PolynomialError, GeneratorsNeeded, DomainError
-from .polyquinticconst import PolyQuintic
-from .rationaltools import together
-from ..simplify import simplify, powsimp
+from ..simplify import powsimp, simplify
 from ..utilities import public
+from .polyerrors import DomainError, GeneratorsNeeded, PolynomialError
+from .polyquinticconst import PolyQuintic
+from .polytools import Poly, cancel, discriminant, factor, gcd_list
+from .rationaltools import together
+from .specialpolys import cyclotomic_poly
 
 
 def roots_linear(f):
@@ -328,7 +328,7 @@ def roots_quartic(f):
 
             # sort it out once they know the values of the coefficients
             return [Piecewise((a1, Eq(p, 0)), (a2, True))
-                for a1, a2 in zip(_ans(y1), _ans(y2))]
+                    for a1, a2 in zip(_ans(y1), _ans(y2))]
 
 
 def roots_binomial(f):
@@ -570,7 +570,6 @@ def roots_quintic(f):
             break
 
     u, v = quintic.uv(theta, d)
-    sqrt5 = math.sqrt(5)
 
     # Now we have various Res values. Each will be a list of five
     # values. We have to pick one r value from those five for each Res
@@ -853,7 +852,7 @@ def roots(f, *gens, **flags):
                         b = Mul(*npow_bases)
                         B = Dummy()
                         d = roots(Poly(expr - con + B**n*Mul(*others), *gens,
-                            **flags), *gens, **flags)
+                                       **flags), *gens, **flags)
                         rv = {}
                         for k, v in d.items():
                             rv[k.subs(B, b)] = v
@@ -949,7 +948,7 @@ def roots(f, *gens, **flags):
 
     if not f.is_ground:
         if not f.domain.is_Exact:
-            for r in f.nroots():
+            for r in f.nroots(n=f.domain.dps):
                 _update_dict(result, r, 1)
         elif f.degree() == 1:
             result[roots_linear(f)[0]] = 1

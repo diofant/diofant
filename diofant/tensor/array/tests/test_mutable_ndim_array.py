@@ -2,10 +2,12 @@ from copy import copy
 
 import pytest
 
-from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
-from diofant import Symbol, Rational, SparseMatrix
+from diofant import Rational, SparseMatrix, Symbol
+from diofant.abc import x, y, z
 from diofant.matrices import Matrix
+from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
 from diofant.tensor.array.sparse_ndim_array import MutableSparseNDimArray
+
 
 __all__ = ()
 
@@ -245,7 +247,7 @@ def test_arithmetic():
     f2 /= 5
     assert f1 == f2
     assert f1[0, 0] == f1[0, 1] == f1[0, 2] == f1[1, 0] == f1[1, 1] == \
-    f1[1, 2] == f1[2, 0] == f1[2, 1] == f1[2, 2] == Rational(3, 5)
+        f1[1, 2] == f1[2, 0] == f1[2, 1] == f1[2, 2] == Rational(3, 5)
 
     assert type(a) == type(b) == type(c1) == type(c2) == type(d1) == type(d2) \
         == type(e1) == type(e2) == type(e3) == type(f1)
@@ -307,8 +309,6 @@ def test_slices():
 
 
 def test_diff():
-    from diofant.abc import x, y, z
-
     md = MutableDenseNDimArray([[x, y], [x*z, x*y*z]])
     assert md.diff(x) == MutableDenseNDimArray([[1, 0], [z, y*z]])
 

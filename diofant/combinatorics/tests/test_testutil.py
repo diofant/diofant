@@ -1,12 +1,14 @@
 from random import shuffle
 
-from diofant.combinatorics.named_groups import (SymmetricGroup, AlternatingGroup,
-                                                CyclicGroup)
-from diofant.combinatorics.testutil import (_verify_bsgs, _cmp_perm_lists,
-                                            _naive_list_centralizer, _verify_centralizer,
-                                            _verify_normal_closure)
-from diofant.combinatorics.permutations import Permutation
+from diofant.combinatorics.named_groups import (AlternatingGroup, CyclicGroup,
+                                                SymmetricGroup)
 from diofant.combinatorics.perm_groups import PermutationGroup
+from diofant.combinatorics.permutations import Permutation
+from diofant.combinatorics.testutil import (_cmp_perm_lists,
+                                            _naive_list_centralizer,
+                                            _verify_bsgs, _verify_centralizer,
+                                            _verify_normal_closure)
+
 
 __all__ = ()
 

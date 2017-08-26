@@ -1,6 +1,6 @@
 from ..core import Mul
-from ..functions import DiracDelta, Heaviside
 from ..core.compatibility import default_sort_key
+from ..functions import DiracDelta, Heaviside
 
 
 def change_mul(node, x):
@@ -55,7 +55,7 @@ def change_mul(node, x):
             new_args.append(arg.func(arg.base, arg.exp - 1))
             arg = arg.base
         if dirac is None and (arg.func is DiracDelta and arg.is_simple(x)
-                and (len(arg.args) <= 1 or arg.args[1] == 0)):
+                              and (len(arg.args) <= 1 or arg.args[1] == 0)):
             dirac = arg
         else:
             new_args.append(arg)
@@ -146,7 +146,7 @@ def deltaintegrate(f, x):
                     return Heaviside(f.args[0])
                 else:
                     return (DiracDelta(f.args[0], f.args[1] - 1) /
-                        f.args[0].as_poly().LC())
+                            f.args[0].as_poly().LC())
         else:  # let's try to integrate the simplified expression
             fh = integrate(h, x)
             return fh

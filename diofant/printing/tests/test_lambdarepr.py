@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import sin, Matrix, Interval, Piecewise, And, Or, Not, false
+from diofant import And, Interval, Matrix, Not, Or, Piecewise, false, sin
+from diofant.abc import x, y, z
 from diofant.printing.lambdarepr import lambdarepr
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -105,8 +105,8 @@ def test_piecewise():
     l = lambdarepr(p)
     eval(h + l)
     assert l == ("((1) if (x >= 1) else (((2) if (x >= 2) else (((3) if "
-        "(x >= 3) else (((4) if (x >= 4) else (((5) if (x >= 5) else (((6) if "
-        "(True) else None)))))))))))")
+                 "(x >= 3) else (((4) if (x >= 4) else (((5) if (x >= 5) else (((6) if "
+                 "(True) else None)))))))))))")
 
     p = Piecewise(
         (1, x <= 1),
@@ -133,8 +133,8 @@ def test_piecewise():
     l = lambdarepr(p)
     eval(h + l)
     assert l == ("((1) if (x > 1) else (((2) if (x > 2) else (((3) if "
-        "(x > 3) else (((4) if (x > 4) else (((5) if (x > 5) else (((6) if "
-        "(True) else None)))))))))))")
+                 "(x > 3) else (((4) if (x > 4) else (((5) if (x > 5) else (((6) if "
+                 "(True) else None)))))))))))")
 
     p = Piecewise(
         (1, x < 1),

@@ -3,9 +3,10 @@
 from itertools import zip_longest
 
 from .cache import cacheit
-from .sympify import _sympify, sympify, SympifyError
 from .compatibility import iterable, ordered
+from .decorators import _sympifyit
 from .singleton import S
+from .sympify import SympifyError, sympify
 
 
 class Basic(object):
@@ -181,6 +182,7 @@ class Basic(object):
         args = len(args), tuple(inner_key(arg) for arg in args)
         return self.class_key(), args, S.One.sort_key(), S.One
 
+    @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
         """Return a boolean indicating whether a == b on the basis of
         their symbolic trees.
@@ -202,29 +204,11 @@ class Basic(object):
 
         .. [1] http://docs.python.org/dev/reference/datamodel.html#object.__hash__
         """
-        from . import Pow
         if self is other:
             return True
 
-        from .function import AppliedUndef
-
-        if type(self) is not type(other):
-            # issue sympy/sympy#6100 a**1.0 == a like a**2.0 == a**2
-            if isinstance(self, Pow) and self.exp == 1:
-                return self.base == other
-            if isinstance(other, Pow) and other.exp == 1:
-                return self == other.base
-            try:
-                other = _sympify(other)
-            except SympifyError:
-                return False    # diofant != other
-
-            if isinstance(self, AppliedUndef) and isinstance(other,
-                                                             AppliedUndef):
-                if self.class_key() != other.class_key():
-                    return False
-            elif type(self) is not type(other):
-                return False
+        if type(self) != type(other):
+            return False
 
         return self._hashable_content() == other._hashable_content()
 
@@ -674,9 +658,6 @@ class Basic(object):
         for i in range(len(sequence)):
             o, n = sequence[i]
             so, sn = sympify(o), sympify(n)
-            if not isinstance(so, Basic):
-                if type(o) is str:
-                    so = Symbol(o)
             sequence[i] = (so, sn)
             if _aresame(so, sn):
                 sequence[i] = None
@@ -960,7 +941,7 @@ class Basic(object):
 
     def _has_matcher(self):
         """Helper for .has()"""
-        return self.__eq__
+        return lambda x: self == x
 
     def replace(self, query, value, map=False, simultaneous=True, exact=False):
         """Replace matching subexpressions of ``self`` with ``value``.
@@ -1324,7 +1305,7 @@ class Basic(object):
         """
         if hints.get('deep', True):
             terms = [term.doit(**hints) if isinstance(term, Basic) else term
-                                         for term in self.args]
+                     for term in self.args]
             return self.func(*terms)
         else:
             return self
@@ -1337,8 +1318,8 @@ class Basic(object):
 
         if hints.get('deep', True):
             args = [a._eval_rewrite(pattern, rule, **hints)
-                        if isinstance(a, Basic) else a
-                        for a in self.args]
+                    if isinstance(a, Basic) else a
+                    for a in self.args]
         else:
             args = self.args
 
@@ -1472,7 +1453,7 @@ class Atom(Basic):
         # since there are no args. So the calling routine should be checking
         # to see that this property is not called for Atoms.
         raise AttributeError('Atoms have no args. It might be necessary'
-        ' to make a check for Atoms in the calling code.')
+                             ' to make a check for Atoms in the calling code.')
 
 
 def _aresame(a, b):

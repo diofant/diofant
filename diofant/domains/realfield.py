@@ -1,11 +1,11 @@
 """Implementation of :class:`RealField` class. """
 
-from .field import Field
-from .simpledomain import SimpleDomain
-from .characteristiczero import CharacteristicZero
-from .mpelements import MPContext
-from ..polys.polyerrors import DomainError, CoercionFailed
 from ..core import Float
+from ..polys.polyerrors import CoercionFailed, DomainError
+from .characteristiczero import CharacteristicZero
+from .field import Field
+from .mpelements import MPContext
+from .simpledomain import SimpleDomain
 
 
 __all__ = ('RealField',)
@@ -53,8 +53,8 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
 
     def __eq__(self, other):
         return (isinstance(other, RealField)
-           and self.precision == other.precision
-           and self.tolerance == other.tolerance)
+                and self.precision == other.precision
+                and self.tolerance == other.tolerance)
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.precision, self.tolerance))

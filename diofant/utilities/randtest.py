@@ -1,11 +1,11 @@
 """ Helpers for randomized testing """
 
-from random import uniform
 import random
+from random import uniform
 
-from ..core import I, Tuple, Symbol, comp
+from ..core import I, Symbol, Tuple, comp
+from ..core.compatibility import as_int, is_sequence
 from ..simplify import nsimplify
-from ..core.compatibility import is_sequence, as_int
 
 
 def random_complex_number(a=2, b=-1, c=3, d=1, rational=True):

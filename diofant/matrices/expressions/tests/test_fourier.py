@@ -1,8 +1,8 @@
-from diofant import pi, I, Abs, simplify, exp, sqrt
+from diofant import Abs, I, exp, pi, simplify, sqrt
+from diofant.abc import i, j, n
+from diofant.matrices import Identity, Matrix, det
 from diofant.matrices.expressions.fourier import DFT, IDFT
-from diofant.matrices import det, Matrix, Identity
 
-from diofant.abc import n, i, j
 
 __all__ = ()
 

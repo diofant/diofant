@@ -9,8 +9,8 @@ relation eval(srepr(expr))=expr holds in an appropriate environment.
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps, repr_dps
 
-from ..core.function import AppliedUndef
 from ..core.compatibility import default_sort_key
+from ..core.function import AppliedUndef
 from .printer import Printer
 
 
@@ -121,7 +121,7 @@ class ReprPrinter(Printer):
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)
         r = mlib.to_str(expr._mpf_, repr_dps(expr._prec))
-        return "%s('%s', prec=%i)" % (expr.__class__.__name__, r, dps)
+        return "%s('%s', dps=%i)" % (expr.__class__.__name__, r, dps)
 
     def _print_Symbol(self, expr):
         d = expr._assumptions.generator
@@ -148,7 +148,7 @@ class ReprPrinter(Printer):
 
     def _print_PolyRing(self, ring):
         return "%s(%s, %s, %s)" % (ring.__class__.__name__,
-            self._print(ring.symbols), self._print(ring.domain), self._print(ring.order))
+                                   self._print(ring.symbols), self._print(ring.domain), self._print(ring.order))
 
     def _print_GMPYIntegerRing(self, expr):
         return "%s()" % expr.__class__.__name__
@@ -164,7 +164,7 @@ class ReprPrinter(Printer):
 
     def _print_FracField(self, field):
         return "%s(%s, %s, %s)" % (field.__class__.__name__,
-            self._print(field.symbols), self._print(field.domain), self._print(field.order))
+                                   self._print(field.symbols), self._print(field.domain), self._print(field.order))
 
     def _print_PolyElement(self, poly):
         terms = list(poly.terms())

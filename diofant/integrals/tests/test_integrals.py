@@ -2,21 +2,23 @@ import sys
 
 import pytest
 
-from diofant import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
-                     cos, sinh, cosh, tanh, Derivative, diff, DiracDelta, E,
-                     exp, erf, erfi, EulerGamma, factor, Function, I,
-                     Integral, integrate, Interval, Lambda, LambertW, log,
-                     Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
-                     simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
-                     sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
-                     im, polar_lift, meijerg, Min, Max, sign)
+from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
+                     EulerGamma, Function, I, Integer, Integral, Interval,
+                     Lambda, LambertW, Matrix, Max, Min, Ne, O, Piecewise,
+                     Poly, Rational, S, Sum, Symbol, Tuple, acos, acosh, asin,
+                     asinh, atan, cos, cosh, diff, erf, erfi, exp, factor, im,
+                     integrate, log, meijerg, nan, oo, pi, polar_lift, re,
+                     sign, simplify, sin, sinh, sqrt, sstr, symbols, sympify,
+                     tan, tanh, trigsimp)
+from diofant.abc import a, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically
 
+
 __all__ = ()
 
-x, y, a, t, x_1, x_2, z, s = symbols('x y a t x_1 x_2 z s')
+x_1, x_2 = symbols('x_1 x_2')
 n = Symbol('n', integer=True)
 f = Function('f')
 
@@ -377,7 +379,7 @@ def test_evalf_integrals():
         NS('pi/sqrt(3) * log(2*pi**(5/6) / gamma(1/6))', 15)
     # http://mathworld.wolfram.com/AhmedsIntegral.html
     assert NS(Integral(atan(sqrt(x**2 + 2))/(sqrt(x**2 + 2)*(x**2 + 1)), (x,
-              0, 1)), 15) == NS(5*pi**2/96, 15)
+                                                                          0, 1)), 15) == NS(5*pi**2/96, 15)
     # http://mathworld.wolfram.com/AbelsIntegral.html
     assert NS(Integral(x/((exp(pi*x) - exp(
         -pi*x))*(x**2 + 1)), (x, 0, oo)), 15) == NS('log(2)/2-1/4', 15)
@@ -438,7 +440,7 @@ def test_integrate_DiracDelta():
     assert integrate(DiracDelta(x)**2, (x, -oo, oo)) == DiracDelta(0)
     # issue sympy/sympy#4522
     assert integrate(integrate((4 - 4*x + x*y - 4*y) *
-        DiracDelta(x)*DiracDelta(y - 1), (x, 0, 1)), (y, 0, 1)) == 0
+                               DiracDelta(x)*DiracDelta(y - 1), (x, 0, 1)), (y, 0, 1)) == 0
     # issue sympy/sympy#5729
     p = exp(-(x**2 + y**2))/pi
     assert integrate(p*DiracDelta(x - 10*y), (x, -oo, oo), (y, -oo, oo)) == \
@@ -540,7 +542,6 @@ def test_subs5():
 
 
 def test_subs6():
-    b = symbols('b')
     e = Integral(x*y, (x, f(x), f(y)))
     assert e.subs(x, 1) == Integral(x*y, (x, f(1), f(y)))
     assert e.subs(y, 1) == Integral(x, (x, f(x), f(1)))
@@ -555,7 +556,7 @@ def test_subs7():
     e = Integral(x, (x, 1, y), (y, 1, 2))
     assert e.subs({x: 1, y: 2}) == e
     e = Integral(sin(x) + sin(y), (x, sin(x), sin(y)),
-                                  (y, 1, 2))
+                 (y, 1, 2))
     assert e.subs(sin(y), 1) == e
     assert e.subs(sin(x), 1) == Integral(sin(x) + sin(y), (x, 1, sin(y)),
                                          (y, 1, 2))
@@ -670,14 +671,13 @@ def test_sympyissue_4884():
     assert integrate(sqrt(x)*(1 + x)) == \
         Piecewise(
             (2*sqrt(x)*(x + 1)**2/5 - 2*sqrt(x)*(x + 1)/15 - 4*sqrt(x)/15,
-            Abs(x + 1) > 1),
+             Abs(x + 1) > 1),
             (2*I*sqrt(-x)*(x + 1)**2/5 - 2*I*sqrt(-x)*(x + 1)/15 -
-            4*I*sqrt(-x)/15, True))
+             4*I*sqrt(-x)/15, True))
     assert integrate(x**x*(1 + log(x))) == x**x
 
 
 def test_is_number():
-    from diofant.abc import x, y, z
     from diofant import cos, sin
     assert Integral(x).is_number is False
     assert Integral(1, x).is_number is False
@@ -731,7 +731,6 @@ def test_symbols():
 
 
 def test_is_zero():
-    from diofant.abc import x, m
     assert Integral(0, (x, 1, x)).is_zero
     assert Integral(1, (x, 1, 1)).is_zero
     assert Integral(1, (x, m)).is_zero is None
@@ -755,13 +754,12 @@ def test_is_real():
     assert Integral(1/(x - 1), (x, -1, 1)).is_real is not True
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 5),
-                    reason="XXX python3.5 api changes")
 def test_series():
-    from diofant.abc import x
     i = Integral(cos(x), (x, x))
     e = i.lseries(x)
-    assert i.nseries(x, n=8).removeO() == Add(*[next(e) for j in range(4)])
+    s1 = i.nseries(x, n=8).removeO().doit()
+    s2 = Add(*[next(e) for j in range(4)])
+    assert s1 == s2
 
 
 def test_sympyissue_4403():
@@ -789,7 +787,6 @@ def test_sympyissue_4100():
 
 
 def test_sympyissue_5167():
-    from diofant.abc import w, x, y, z
     f = Function('f')
     assert Integral(Integral(f(x), x), x) == Integral(f(x), x, x)
     assert Integral(f(x)).args == (f(x), Tuple(x))
@@ -824,7 +821,7 @@ def test_sympyissue_4890():
 def test_sympyissue_4376():
     n = Symbol('n', integer=True, positive=True)
     assert simplify(integrate(n*(x**(1/n) - 1), (x, 0, S.Half)) -
-                (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
+                    (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
 
 
 @pytest.mark.slow
@@ -864,7 +861,6 @@ def test_sympyissue_3940():
         sqrt(pi)*exp(c)*exp(-b**2/(4*a))*erfi(sqrt(a)*x + b/(2*sqrt(a)))/(2*sqrt(a))
 
     from diofant import expand_mul
-    from diofant.abc import k
     assert expand_mul(integrate(exp(-x**2)*exp(I*k*x), (x, -oo, oo))) == \
         sqrt(pi)*exp(-k**2/4)
     a, d = symbols('a d', positive=True)
@@ -1083,16 +1079,16 @@ def test_sympyissue_2708():
 def test_sympyissue_8368():
     assert integrate(exp(-s*x)*cosh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), Abs(s**2) < 1),
-        (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
-        ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
-        And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
-        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
-        1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
+                                (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
+                                                                                    ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
+                   And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
+                       cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
+                       1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
                                 (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
                                 (meijerg(((0,), (-S.Half, S.Half)),
-                                                ((0, S.Half), (-S.Half,)),
+                                         ((0, S.Half), (-S.Half,)),
                                          polar_lift(s)**2), True)),
                    And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
                        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),

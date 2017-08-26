@@ -7,10 +7,9 @@ The dense matrix is stored as a list of lists.
 
 import copy
 
-from .densetools import col, eye, augment
-from .densetools import rowadd, rowmul, conjugate_transpose
 from ..core import var
 from ..functions import sqrt
+from .densetools import augment, col, conjugate_transpose, eye, rowadd, rowmul
 
 
 def row_echelon(matlist, K):
@@ -394,7 +393,6 @@ def forward_substitution(lower_triangle, variable, constant, K):
     """
     copy_lower_triangle = copy.deepcopy(lower_triangle)
     nrow = len(copy_lower_triangle)
-    result = []
     for i in range(nrow):
         a = K.zero
         for j in range(i):
@@ -438,7 +436,6 @@ def backward_substitution(upper_triangle, variable, constant, K):
     """
     copy_upper_triangle = copy.deepcopy(upper_triangle)
     nrow = len(copy_upper_triangle)
-    result = []
     for i in reversed(range(nrow)):
         a = K.zero
         for j in reversed(range(i + 1, nrow)):

@@ -6,9 +6,12 @@ combinatorial polynomials.
 
 """
 
-from ...core import (S, Rational, Integer, Function, Dummy)
+from ...core import Dummy, Function, Integer, Rational, S
 from ...core.function import ArgumentIndexError
-from ..combinatorial.factorials import binomial, factorial, RisingFactorial
+from ...polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
+                                 gegenbauer_poly, hermite_poly, jacobi_poly,
+                                 laguerre_poly, legendre_poly)
+from ..combinatorial.factorials import RisingFactorial, binomial, factorial
 from ..elementary.complexes import re
 from ..elementary.exponential import exp
 from ..elementary.miscellaneous import sqrt
@@ -16,10 +19,6 @@ from ..elementary.trigonometric import cos
 from .gamma_functions import gamma
 from .hyper import hyper
 
-from ...polys.orthopolys import (jacobi_poly, gegenbauer_poly,
-                                 chebyshevt_poly, chebyshevu_poly,
-                                 laguerre_poly, hermite_poly,
-                                 legendre_poly)
 
 _x = Dummy('dummy_for_special_polynomials')
 
@@ -173,7 +172,7 @@ class jacobi(OrthogonalPolynomial):
             k = Dummy("k")
             f1 = 1 / (a + b + n + k + 1)
             f2 = (-1)**(n - k) * ((a + b + 2*k + 1) * RisingFactorial(a + k + 1, n - k) /
-                  ((n - k) * RisingFactorial(a + b + k + 1, n - k)))
+                                  ((n - k) * RisingFactorial(a + b + k + 1, n - k)))
             return Sum(f1 * (jacobi(n, a, b, x) + f2*jacobi(k, a, b, x)), (k, 0, n - 1))
         elif argindex == 4:
             # Diff wrt x
@@ -364,7 +363,7 @@ class gegenbauer(OrthogonalPolynomial):
             n, a, x = self.args
             k = Dummy("k")
             factor1 = 2 * (1 + (-1)**(n - k)) * (k + a) / ((k +
-                           n + 2*a) * (n - k))
+                                                            n + 2*a) * (n - k))
             factor2 = 2*(k + 1) / ((k + 2*a) * (2*k + 2*a + 1)) + \
                 2 / (k + n + 2*a)
             kern = factor1*gegenbauer(k, a, x) + factor2*gegenbauer(n, a, x)
@@ -622,7 +621,7 @@ class chebyshevt_root(Function):
     def eval(cls, n, k):
         if not ((0 <= k) and (k < n)):
             raise ValueError("must have 0 <= k < n, "
-                "got k = %s and n = %s" % (k, n))
+                             "got k = %s and n = %s" % (k, n))
         return cos(S.Pi*(2*k + 1)/(2*n))
 
 
@@ -661,7 +660,7 @@ class chebyshevu_root(Function):
     def eval(cls, n, k):
         if not ((0 <= k) and (k < n)):
             raise ValueError("must have 0 <= k < n, "
-                "got k = %s and n = %s" % (k, n))
+                             "got k = %s and n = %s" % (k, n))
         return cos(S.Pi*(k + 1)/(n + 1))
 
 ############################################################################

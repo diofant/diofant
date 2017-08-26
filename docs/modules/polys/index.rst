@@ -22,5 +22,4 @@ and multivariate factorization over algebraic number domains.
     basics.rst
     wester.rst
     reference.rst
-    internals.rst
     literature.rst

@@ -1,5 +1,6 @@
-from diofant.matrices.densetools import trace, transpose, eye, rowswap
 from diofant import ZZ
+from diofant.matrices.densetools import eye, rowswap, trace, transpose
+
 
 __all__ = ()
 

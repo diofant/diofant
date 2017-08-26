@@ -2,10 +2,11 @@
 
 import pytest
 
-from diofant.polys.polyclasses import DMP, DMF, ANP
-from diofant.domains import ZZ, QQ
+from diofant.domains import QQ, ZZ
+from diofant.polys.polyclasses import ANP, DMF, DMP
+from diofant.polys.polyerrors import ExactQuotientFailed, PolynomialError
 from diofant.polys.specialpolys import f_polys
-from diofant.polys.polyerrors import ExactQuotientFailed
+
 
 __all__ = ()
 
@@ -31,10 +32,13 @@ def test_DMP___init__():
     assert f.domain == ZZ
     assert f.lev == 1
 
+    assert f == DMP.from_monoms_coeffs(f.monoms(), f.coeffs(), f.lev, f.domain)
+
 
 def test_DMP___eq__():
-    assert DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ) == \
-        DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
+    f = DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
+    assert f == f
+    assert f.eq(f)
 
     assert DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ) == \
         DMP([[QQ(1), QQ(2)], [QQ(3)]], QQ)
@@ -42,6 +46,7 @@ def test_DMP___eq__():
         DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
 
     assert DMP([[[ZZ(1)]]], ZZ) != DMP([[ZZ(1)]], ZZ)
+    assert DMP([[[ZZ(1)]]], ZZ).ne(DMP([[ZZ(1)]], ZZ))
     assert DMP([[ZZ(1)]], ZZ) != DMP([[[ZZ(1)]]], ZZ)
 
 
@@ -153,6 +158,7 @@ def test_DMP_arithmetics():
 
     assert divmod(f, g) == (q, r)
     assert f // g == q
+    assert f // 2 == DMP([[0], [], [0, 0, 0]], QQ)
     assert f % g == r
 
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -166,6 +172,7 @@ def test_DMP_functionality():
     assert f.degree() == 2
     assert f.degree_list() == (2, 2)
     assert f.total_degree() == 2
+    pytest.raises(TypeError, lambda: f.degree("spam"))
 
     assert f.LC() == ZZ(1)
     assert f.TC() == ZZ(0)
@@ -180,14 +187,15 @@ def test_DMP_functionality():
 
     assert f.diff(m=1, j=0) == u
     assert f.diff(m=1, j=1) == u
-
     pytest.raises(TypeError, lambda: f.diff(m='x', j=0))
+    pytest.raises(TypeError, lambda: f.diff(j="spam"))
 
     u = DMP([1, 2, 1], ZZ)
     v = DMP([1, 2, 1], ZZ)
 
     assert f.eval(a=1, j=0) == u
     assert f.eval(a=1, j=1) == v
+    pytest.raises(TypeError, lambda: f.eval(a=1, j="spam"))
 
     assert f.eval(1).eval(1) == ZZ(4)
 
@@ -256,11 +264,25 @@ def test_DMP_functionality():
     pytest.raises(ValueError, lambda: f.decompose())
     pytest.raises(ValueError, lambda: f.sturm())
 
+    pytest.raises(PolynomialError, lambda: f.all_coeffs())
+    pytest.raises(PolynomialError, lambda: f.all_monoms())
+    pytest.raises(PolynomialError, lambda: f.all_terms())
+
+    pytest.raises(ValueError, lambda: f.revert(1))
+    pytest.raises(ValueError, lambda: f.shift(1))
+    pytest.raises(ValueError, lambda: f.gff_list())
+    pytest.raises(PolynomialError, lambda: f.intervals())
+    pytest.raises(PolynomialError, lambda: f.refine_root(1, 2))
+
+    assert f.integrate() == DMP([[QQ(1, 3)], [QQ(1, 1)], [QQ(3, 1)], []], QQ)
+    pytest.raises(TypeError, lambda: f.integrate(m="spam"))
+    pytest.raises(TypeError, lambda: f.integrate(j="spam"))
+
 
 def test_DMP_exclude():
     f = [[[[[[[[[[[[[[[[[[[[[[[[[[1]], [[]]]]]]]]]]]]]]]]]]]]]]]]]]
     J = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-        18, 19, 20, 21, 22, 24, 25]
+         18, 19, 20, 21, 22, 24, 25]
 
     assert DMP(f, ZZ).exclude() == (J, DMP([1, 0], ZZ))
     assert DMP([[1], [1, 0]], ZZ).exclude() == ([], DMP([[1], [1, 0]], ZZ))
@@ -369,6 +391,13 @@ def test_DMF_properties():
 
     assert DMF(([[1]], [[2]]), ZZ).is_one is False
 
+    assert DMF.zero(0, ZZ) == DMF(0, ZZ, 0)
+    assert DMF.one(0, ZZ) == DMF(1, ZZ, 0)
+
+    f = DMF(([[1], [1, 0]], [[1, 0], []]), ZZ)
+    assert f.numer() == DMP([[1], [1, 0]], ZZ)
+    assert f.denom() == DMP([[1, 0], []], ZZ)
+
 
 def test_DMF_arithmetics():
     f = DMF([[7], [-9]], ZZ)
@@ -448,6 +477,14 @@ def test_ANP___eq__():
     assert (a != b) is True
 
 
+def test_ANP_to_dict():
+    mod = [QQ(1), QQ(0), QQ(1)]
+
+    a = ANP([QQ(1), QQ(1)], mod, QQ)
+    assert a.to_dict() == {(0,): QQ(1), (1,): QQ(1)}
+    assert a.to_diofant_dict() == {(0,): 1, (1,): 1}
+
+
 def test_ANP___bool__():
     assert bool(ANP([], [QQ(1), QQ(0), QQ(1)], QQ)) is False
     assert bool(ANP([QQ(1)], [QQ(1), QQ(0), QQ(1)], QQ)) is True
@@ -461,6 +498,10 @@ def test_ANP_properties():
 
     assert ANP([QQ(1)], mod, QQ).is_one is True
     assert ANP([QQ(2)], mod, QQ).is_one is False
+
+    a = ANP([QQ(1), -QQ(1), QQ(2)], mod, QQ)
+    assert a.LC() == 1
+    assert a.TC() == 2
 
 
 def test_ANP_arithmetics():
@@ -491,12 +532,17 @@ def test_ANP_arithmetics():
     assert a.mul(b) == a*b == c
     assert b.mul(a) == b*a == c
 
+    c = ANP([QQ(11, 10), -QQ(1, 5), -QQ(3, 5)], mod, QQ)
+    d = ANP([], mod, QQ)
+    assert a.div(b) == divmod(a, b) == (c, d)
+    assert a.rem(b) == a % b == d
+
     c = ANP([QQ(-1, 43), QQ(9, 43), QQ(5, 43)], mod, QQ)
 
     assert a.pow(0) == a**(0) == ANP(1, mod, QQ)
     assert a.pow(1) == a**(1) == a
-
     assert a.pow(-1) == a**(-1) == c
+    pytest.raises(TypeError, lambda: a.pow(QQ(1, 2)))
 
     assert a.quo(a) == a.mul(a.pow(-1)) == a*a**(-1) == ANP(1, mod, QQ)
 
@@ -520,7 +566,7 @@ def test___hash__():
     assert DMF(
         ([[1, 2], [3]], [[1]]), ZZ) == DMF(([[int(1), int(2)], [int(3)]], [[int(1)]]), ZZ)
     assert hash(DMF(([[1, 2], [3]], [[1]]), ZZ)) == hash(DMF(([[int(1),
-                int(2)], [int(3)]], [[int(1)]]), ZZ))
+                                                                int(2)], [int(3)]], [[int(1)]]), ZZ))
     assert ANP([1, 1], [1, 0, 1], ZZ) == ANP([int(1), int(1)], [int(1), int(0), int(1)], ZZ)
     assert hash(
         ANP([1, 1], [1, 0, 1], ZZ)) == hash(ANP([int(1), int(1)], [int(1), int(0), int(1)], ZZ))

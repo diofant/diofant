@@ -3,10 +3,11 @@ from tempfile import NamedTemporaryFile
 
 import pytest
 
-from diofant import (plot_implicit, cos, Symbol, symbols, Eq, sin, re, And,
-                     Or, exp, I, tan, pi)
-from diofant.plotting.plot import unset_show
+from diofant import (And, Eq, I, Or, Symbol, cos, exp, pi, plot_implicit, re,
+                     sin, symbols, tan)
 from diofant.external import import_module
+from diofant.plotting.plot import unset_show
+
 
 __all__ = ()
 
@@ -21,19 +22,18 @@ def tmp_file(name=''):
 def plot_and_save(name):
     x = Symbol('x')
     y = Symbol('y')
-    z = Symbol('z')
     # implicit plot tests
     plot_implicit(Eq(y, cos(x)), (x, -5, 5), (y, -2, 2)).save(tmp_file(name))
     plot_implicit(Eq(y**2, x**3 - x), (x, -5, 5),
-            (y, -4, 4)).save(tmp_file(name))
+                  (y, -4, 4)).save(tmp_file(name))
     plot_implicit(y > 1 / x, (x, -5, 5),
-            (y, -2, 2)).save(tmp_file(name))
+                  (y, -2, 2)).save(tmp_file(name))
     plot_implicit(y < 1 / tan(x), (x, -5, 5),
-            (y, -2, 2)).save(tmp_file(name))
+                  (y, -2, 2)).save(tmp_file(name))
     plot_implicit(y >= 2 * sin(x) * cos(x), (x, -5, 5),
-            (y, -2, 2)).save(tmp_file(name))
+                  (y, -2, 2)).save(tmp_file(name))
     plot_implicit(y <= x**2, (x, -3, 3),
-            (y, -1, 5)).save(tmp_file(name))
+                  (y, -1, 5)).save(tmp_file(name))
 
     # Test all input args for plot_implicit
     plot_implicit(Eq(y**2, x**3 - x)).save(tmp_file())

@@ -1,16 +1,16 @@
 import itertools
-import string
 import re as _re
+import string
 
+from ..logic.boolalg import Boolean
 from .assumptions import StdFactKB
 from .basic import Basic
-from .sympify import sympify
-from .singleton import S
-from .expr import Expr, AtomicExpr
 from .cache import cacheit
+from .expr import AtomicExpr, Expr
 from .function import FunctionClass
 from .logic import fuzzy_bool
-from ..logic.boolalg import Boolean
+from .singleton import S
+from .sympify import sympify
 
 
 class BaseSymbol(AtomicExpr, Boolean):
@@ -169,20 +169,6 @@ class BaseSymbol(AtomicExpr, Boolean):
     def as_dummy(self):
         """Return a Dummy having the same name and same assumptions as self."""
         return Dummy(self.name, **self._assumptions.generator)
-
-    def as_real_imag(self, deep=True, **hints):
-        """Return real and imaginary part of self.
-
-        See Also
-        ========
-
-        diofant.core.expr.Expr.as_real_imag
-        """
-        from ..functions import im, re
-        if hints.get('ignore') == self:
-            return
-        else:
-            return re(self), im(self)
 
     def is_constant(self, *wrt, **flags):
         """Test if self is constant.

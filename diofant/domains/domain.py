@@ -1,12 +1,12 @@
 """Implementation of :class:`Domain` class. """
 
-from .domainelement import DomainElement
 from ..core import Basic, sympify
-from ..core.compatibility import HAS_GMPY, is_sequence, default_sort_key
-from ..polys.polyerrors import UnificationFailed, CoercionFailed, DomainError
+from ..core.compatibility import HAS_GMPY, default_sort_key, is_sequence
 from ..polys.orderings import lex
+from ..polys.polyerrors import CoercionFailed, DomainError, UnificationFailed
 from ..polys.polyutils import _unify_gens
 from ..printing.defaults import DefaultPrinting
+from .domainelement import DomainElement
 
 
 __all__ = ('Domain',)
@@ -203,7 +203,7 @@ class Domain(DefaultPrinting):
 
             if ((self.is_FractionField and K1.is_PolynomialRing or
                  K1.is_FractionField and self.is_PolynomialRing) and
-                 (not self_ground.has_Field or not K1_ground.has_Field) and domain.has_Field):
+                    (not self_ground.has_Field or not K1_ground.has_Field) and domain.has_Field):
                 domain = domain.get_ring()
 
             if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):

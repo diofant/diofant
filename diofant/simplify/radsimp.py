@@ -1,13 +1,13 @@
 from collections import defaultdict
 
 from .. import DIOFANT_DEBUG
-from ..core.compatibility import iterable, ordered, default_sort_key
-from ..core import (expand_power_base, sympify, Add, S, Mul, Derivative,
-                    Pow, symbols, expand_mul, Rational, gcd_terms)
+from ..core import (Add, Derivative, Mul, Pow, Rational, S, expand_mul,
+                    expand_power_base, gcd_terms, symbols, sympify)
+from ..core.compatibility import default_sort_key, iterable, ordered
 from ..core.exprtools import Factors
-from ..core.mul import _keep_coeff, _unevaluated_Mul
 from ..core.function import _mexpand
-from ..functions import sqrt, log
+from ..core.mul import _keep_coeff, _unevaluated_Mul
+from ..functions import log, sqrt
 from ..polys import gcd
 from .sqrtdenest import sqrtdenest
 
@@ -276,8 +276,8 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
                     if (term.match(elem) is not None and
                             (t_sym == e_sym or t_sym is not None and
-                            e_sym is not None and
-                            t_sym.match(e_sym) is not None)):
+                             e_sym is not None and
+                             t_sym.match(e_sym) is not None)):
                         if exact is False:
                             # we don't have to be exact so find common exponent
                             # for both expression's term and pattern's element
@@ -572,7 +572,7 @@ def collect_const(expr, *vars, **kwargs):
                 fwas = f.factors.copy()
                 fnow = q.factors
                 if not any(k in fwas and fwas[k].is_Integer and not
-                        fnow[k].is_Integer for k in fnow):
+                           fnow[k].is_Integer for k in fnow):
                     terms[v].append(q.as_expr())
                     continue
             terms[S.One].append(m)
@@ -693,20 +693,20 @@ def radsimp(expr, symbolic=True, max_terms=4):
         if len(rterms) == 2:
             reps = dict(zip([A, a, B, b], [j for i in rterms for j in i]))
             return (
-            sqrt(A)*a - sqrt(B)*b).xreplace(reps)
+                sqrt(A)*a - sqrt(B)*b).xreplace(reps)
         if len(rterms) == 3:
             reps = dict(zip([A, a, B, b, C, c], [j for i in rterms for j in i]))
             return (
-            (sqrt(A)*a + sqrt(B)*b - sqrt(C)*c)*(2*sqrt(A)*sqrt(B)*a*b - A*a**2 -
-            B*b**2 + C*c**2)).xreplace(reps)
+                (sqrt(A)*a + sqrt(B)*b - sqrt(C)*c)*(2*sqrt(A)*sqrt(B)*a*b - A*a**2 -
+                                                     B*b**2 + C*c**2)).xreplace(reps)
         elif len(rterms) == 4:
             reps = dict(zip([A, a, B, b, C, c, D, d], [j for i in rterms for j in i]))
             return ((sqrt(A)*a + sqrt(B)*b - sqrt(C)*c - sqrt(D)*d)*(2*sqrt(A)*sqrt(B)*a*b
-                - A*a**2 - B*b**2 - 2*sqrt(C)*sqrt(D)*c*d + C*c**2 +
-                D*d**2)*(-8*sqrt(A)*sqrt(B)*sqrt(C)*sqrt(D)*a*b*c*d + A**2*a**4 -
-                2*A*B*a**2*b**2 - 2*A*C*a**2*c**2 - 2*A*D*a**2*d**2 + B**2*b**4 -
-                2*B*C*b**2*c**2 - 2*B*D*b**2*d**2 + C**2*c**4 - 2*C*D*c**2*d**2 +
-                D**2*d**4)).xreplace(reps)
+                                                                     - A*a**2 - B*b**2 - 2*sqrt(C)*sqrt(D)*c*d + C*c**2 +
+                                                                     D*d**2)*(-8*sqrt(A)*sqrt(B)*sqrt(C)*sqrt(D)*a*b*c*d + A**2*a**4 -
+                                                                              2*A*B*a**2*b**2 - 2*A*C*a**2*c**2 - 2*A*D*a**2*d**2 + B**2*b**4 -
+                                                                              2*B*C*b**2*c**2 - 2*B*D*b**2*d**2 + C**2*c**4 - 2*C*D*c**2*d**2 +
+                                                                              D**2*d**4)).xreplace(reps)
         elif len(rterms) == 1:
             return sqrt(rterms[0][0])
         else:

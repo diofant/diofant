@@ -10,9 +10,9 @@ are_coplanar
 are_similar
 """
 
-from ..core import Dummy, Symbol, Function
-from ..solvers import solve
+from ..core import Dummy, Function, Symbol
 from ..core.compatibility import is_sequence
+from ..solvers import solve
 
 
 def idiff(eq, y, x, n=1):

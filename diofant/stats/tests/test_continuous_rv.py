@@ -1,25 +1,23 @@
 import pytest
 
-from diofant.stats import (P, E, where, density, variance, covariance, skewness,
-                           given, pspace, cdf, ContinuousRV, sample,
-                           Arcsin, Benini, Beta, BetaPrime, Cauchy,
-                           Chi, ChiSquared,
-                           ChiNoncentral, Dagum, Erlang, Exponential,
-                           FDistribution, FisherZ, Frechet, Gamma, GammaInverse,
-                           Kumaraswamy, Laplace, Logistic,
-                           LogNormal, Maxwell, Nakagami, Normal, Pareto,
-                           QuadraticU, RaisedCosine, Rayleigh, StudentT,
-                           Triangular, Uniform, UniformSum, VonMises, Weibull,
-                           WignerSemicircle, correlation, moment, cmoment,
-                           smoment)
-from diofant import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf, oo,
-                     Eq, log, lowergamma, Sum, symbols, sqrt, And, gamma, beta,
-                     Piecewise, Integral, sin, cos, besseli, factorial, binomial,
-                     floor, expand_func, Integer, Rational)
+from diofant import (Abs, And, Eq, Integer, Integral, Interval, N, Piecewise,
+                     Rational, S, Sum, Symbol, besseli, beta, binomial, cos,
+                     erf, exp, expand_func, factorial, floor, gamma, log,
+                     lowergamma, oo, pi, simplify, sin, sqrt, symbols)
+from diofant.abc import x, y, z
+from diofant.stats import (Arcsin, Benini, Beta, BetaPrime, Cauchy, Chi,
+                           ChiNoncentral, ChiSquared, ContinuousRV, Dagum, E,
+                           Erlang, Exponential, FDistribution, FisherZ,
+                           Frechet, Gamma, GammaInverse, Kumaraswamy, Laplace,
+                           Logistic, LogNormal, Maxwell, Nakagami, Normal, P,
+                           Pareto, QuadraticU, RaisedCosine, Rayleigh,
+                           StudentT, Triangular, Uniform, UniformSum, VonMises,
+                           Weibull, WignerSemicircle, cdf, cmoment,
+                           correlation, covariance, density, given, moment,
+                           pspace, sample, skewness, smoment, variance, where)
 from diofant.stats.crv_types import NormalDistribution
 from diofant.stats.rv import ProductPSpace
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -306,7 +304,7 @@ def test_gamma():
     assert density(X)(x) == x**(k - 1)*theta**(-k)*exp(-x/theta)/gamma(k)
     assert cdf(X, meijerg=True)(z) == Piecewise(
         (-k*lowergamma(k, 0)/gamma(k + 1) +
-                k*lowergamma(k, z/theta)/gamma(k + 1), z >= 0),
+         k*lowergamma(k, z/theta)/gamma(k + 1), z >= 0),
         (0, True))
     # assert simplify(variance(X)) == k*theta**2  # handled numerically below
     assert E(X) == moment(X, 1)
@@ -373,7 +371,7 @@ def test_lognormal():
 
     X = LogNormal('x', mu, sigma)
     assert density(X)(x) == (sqrt(2)*exp(-(-mu + log(x))**2
-                                    / (2*sigma**2))/(2*x*sqrt(pi)*sigma))
+                                         / (2*sigma**2))/(2*x*sqrt(pi)*sigma))
 
     X = LogNormal('x', 0, 1)  # Mean 0, standard deviation 1
     assert density(X)(x) == sqrt(2)*exp(-log(x)**2/2)/(2*x*sqrt(pi))
@@ -385,7 +383,7 @@ def test_maxwell():
     X = Maxwell('x', a)
 
     assert density(X)(x) == (sqrt(2)*x**2*exp(-x**2/(2*a**2)) /
-        (sqrt(pi)*a**3))
+                             (sqrt(pi)*a**3))
     assert E(X) == 2*sqrt(2)*a/sqrt(pi)
     assert simplify(variance(X)) == a**2*(-8 + 3*pi)/pi
 
@@ -398,9 +396,9 @@ def test_nakagami():
     assert density(X)(x) == (2*x**(2*mu - 1)*mu**mu*omega**(-mu)
                              * exp(-x**2*mu/omega)/gamma(mu))
     assert simplify(E(X, meijerg=True)) == (sqrt(mu)*sqrt(omega)
-           * gamma(mu + S.Half)/gamma(mu + 1))
+                                            * gamma(mu + S.Half)/gamma(mu + 1))
     assert simplify(variance(X, meijerg=True)) == (
-    omega - omega*gamma(mu + Rational(1, 2))**2/(gamma(mu)*gamma(mu + 1)))
+        omega - omega*gamma(mu + Rational(1, 2))**2/(gamma(mu)*gamma(mu + 1)))
 
 
 def test_pareto():
@@ -433,7 +431,7 @@ def test_raised_cosine():
 
     X = RaisedCosine("x", mu, s)
     assert density(X)(x) == (Piecewise(((cos(pi*(x - mu)/s) + 1)/(2*s),
-                          And(x <= mu + s, mu - s <= x)), (0, True)))
+                                        And(x <= mu + s, mu - s <= x)), (0, True)))
 
 
 def test_rayleigh():
@@ -472,7 +470,7 @@ def test_quadratic_u():
 
     X = QuadraticU("x", a, b)
     assert density(X)(x) == (Piecewise((12*(x - a/2 - b/2)**2/(-a + b)**3,
-                          And(x <= b, a <= x)), (0, True)))
+                                        And(x <= b, a <= x)), (0, True)))
 
 
 def test_uniform():
@@ -511,7 +509,7 @@ def test_uniformsum():
 
     X = UniformSum('x', n)
     assert density(X)(x) == (Sum((-1)**_k*(-_k + x)**(n - 1)
-                             * binomial(n, _k), (_k, 0, floor(x)))/factorial(n - 1))
+                                 * binomial(n, _k), (_k, 0, floor(x)))/factorial(n - 1))
 
 
 def test_von_mises():
@@ -597,8 +595,8 @@ def test_unevaluated():
 
     assert P(X > 0, X**2 < 1, evaluate=False) == (
         Integral(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi) *
-            Integral(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)),
-                (x, -1, 1))), (x, 0, 1)))
+                                       Integral(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)),
+                                                (x, -1, 1))), (x, 0, 1)))
 
 
 def test_probability_unevaluated():
@@ -641,7 +639,7 @@ def test_conjugate_priors():
     mu = Normal('mu', 2, 3)
     x = Normal('x', mu, 1)
     assert isinstance(simplify(density(mu, Eq(x, y), evaluate=False)(z)),
-            Integral)
+                      Integral)
 
 
 def test_difficult_univariate():

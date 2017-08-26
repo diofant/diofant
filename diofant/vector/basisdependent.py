@@ -1,9 +1,9 @@
-from ..simplify import simplify, trigsimp
-from ..core.decorators import call_highest_priority, _sympifyit
+from ..core import Add, Expr, Integer, Mul, count_ops, diff
 from ..core.assumptions import StdFactKB
-from ..core import Add, Mul, count_ops, Integer, Expr, diff
-from ..polys import factor
+from ..core.decorators import _sympifyit, call_highest_priority
 from ..integrals import Integral
+from ..polys import factor
+from ..simplify import simplify, trigsimp
 
 
 class BasisDependent(Expr):
@@ -270,7 +270,7 @@ class BasisDependentZero(BasisDependent):
         obj = super(BasisDependentZero, cls).__new__(cls)
         # Pre-compute a specific hash value for the zero vector
         # Use the same one always
-        obj._hash = tuple([Integer(0), cls]).__hash__()
+        obj._hash = (Integer(0), cls).__hash__()
         return obj
 
     def __hash__(self):

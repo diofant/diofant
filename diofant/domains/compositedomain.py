@@ -1,7 +1,7 @@
 """Implementation of :class:`CompositeDomain` class. """
 
-from .domain import Domain
 from ..polys.polyerrors import GeneratorsError
+from .domain import Domain
 
 
 __all__ = ('CompositeDomain',)

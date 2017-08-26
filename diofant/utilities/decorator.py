@@ -1,8 +1,8 @@
 """Useful utility decorators. """
 
+import inspect
 import sys
 import types
-import inspect
 
 
 def conserve_mpmath_dps(func):
@@ -60,8 +60,8 @@ def doctest_depends_on(exe=None, modules=None, disable_viewers=None):
     """
 
     def depends_on_deco(fn):
-        fn._doctest_depends_on = dict(exe=exe, modules=modules,
-                                      disable_viewers=disable_viewers)
+        fn._doctest_depends_on = {'exe': exe, 'modules': modules,
+                                  'disable_viewers': disable_viewers}
 
         # once we drop py2.5 support and use class decorators this evaluates
         # to True

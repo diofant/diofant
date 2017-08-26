@@ -1,9 +1,10 @@
 import pytest
 
-from diofant.polys.polyerrors import CoercionFailed
-from diofant.domains import (FF, QQ_python, QQ_gmpy, ZZ_gmpy,
-                             FF_gmpy, PythonRational, ZZ_python, CC)
+from diofant.domains import (CC, FF, FF_gmpy, PythonRational, QQ_gmpy,
+                             QQ_python, ZZ_gmpy, ZZ_python)
 from diofant.external import import_module
+from diofant.polys.polyerrors import CoercionFailed
+
 
 __all__ = ()
 

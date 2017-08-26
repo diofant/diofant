@@ -1,15 +1,15 @@
 from collections import defaultdict
 from functools import reduce
 
-from ..core import (sympify, Basic, Dummy, S, Add, Mul, Pow, expand_mul,
-                    factor_terms, expand_log, count_ops, Integer,
-                    Rational, prod, cacheit)
-from ..core.compatibility import ordered, default_sort_key
+from ..core import (Add, Basic, Dummy, Integer, Mul, Pow, Rational, S, cacheit,
+                    count_ops, expand_log, expand_mul, factor_terms, prod,
+                    sympify)
+from ..core.compatibility import default_sort_key, ordered
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
-from ..functions import exp_polar, exp, log, root, polarify, unpolarify
-from ..polys import lcm, gcd
+from ..functions import exp, exp_polar, log, polarify, root, unpolarify
 from ..ntheory import multiplicity
+from ..polys import gcd, lcm
 
 
 @cacheit

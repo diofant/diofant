@@ -1,4 +1,4 @@
-from diofant.polys.polyconfig import query, configure
+from diofant.polys.polyconfig import configure, query
 
 
 def test_configure(monkeypatch):

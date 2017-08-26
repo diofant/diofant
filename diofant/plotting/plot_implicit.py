@@ -11,15 +11,15 @@ diofant.plotting.plot
 
 import warnings
 
-from .plot import BaseSeries, Plot
-from ..core.relational import (Equality, GreaterThan, LessThan,
-                               Relational, StrictLessThan, StrictGreaterThan)
-from ..core import Eq, Tuple, sympify, Symbol, Dummy
+from ..core import Dummy, Eq, Symbol, Tuple, sympify
+from ..core.relational import (Equality, GreaterThan, LessThan, Relational,
+                               StrictGreaterThan, StrictLessThan)
 from ..external import import_module
 from ..logic.boolalg import BooleanFunction
 from ..polys.polyutils import _sort_gens
-from ..utilities.decorator import doctest_depends_on
 from ..utilities import flatten, lambdify
+from ..utilities.decorator import doctest_depends_on
+from .plot import BaseSeries, Plot
 
 
 def vectorized_lambdify(args, expr):
@@ -32,8 +32,8 @@ class ImplicitSeries(BaseSeries):
     is_implicit = True
 
     def __init__(self, expr, var_start_end_x, var_start_end_y,
-            has_equality, use_interval_math, depth, nb_of_points,
-            line_color):
+                 has_equality, use_interval_math, depth, nb_of_points,
+                 line_color):
         super(ImplicitSeries, self).__init__()
         self.expr = sympify(expr)
         self.var_x = sympify(var_start_end_x[0])
@@ -73,7 +73,7 @@ class ImplicitSeries(BaseSeries):
             expr = self.expr.rhs - self.expr.lhs
         else:
             raise NotImplementedError("The expression is not supported for "
-                                    "plotting in uniform meshed plot.")
+                                      "plotting in uniform meshed plot.")
         np = import_module('numpy')
         xarray = np.linspace(self.start_x, self.end_x, self.nb_of_points)
         yarray = np.linspace(self.start_y, self.end_y, self.nb_of_points)
@@ -251,8 +251,8 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
         depth = 0
 
     series_argument = ImplicitSeries(expr, var_start_end_x, var_start_end_y,
-                                    has_equality, use_interval, depth,
-                                    nb_of_points, line_color)
+                                     has_equality, use_interval, depth,
+                                     nb_of_points, line_color)
     show = kwargs.pop('show', True)
 
     # set the x and y limits

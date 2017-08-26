@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (Symbol, Interval, symbols, Eq, cos, And, Tuple,
-                     integrate, oo, sin, Sum, Basic, DiracDelta)
-from diofant.stats import (Die, Normal, Exponential, P, E, variance,
-                           density, given, independent, dependent, where,
-                           pspace, random_symbols, sample)
-from diofant.stats.rv import ProductPSpace, rs_swap, Density, NamedArgsMixin
-
+from diofant import (And, Basic, DiracDelta, Eq, Interval, Sum, Symbol, Tuple,
+                     cos, integrate, oo, sin, symbols)
 from diofant.abc import x
+from diofant.stats import (Die, E, Exponential, Normal, P, density, dependent,
+                           given, independent, pspace, random_symbols, sample,
+                           variance, where)
+from diofant.stats.rv import Density, NamedArgsMixin, ProductPSpace, rs_swap
+
 
 __all__ = ()
 

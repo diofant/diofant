@@ -1,16 +1,17 @@
-from ..core import (igcd, symbols, S, Integer, Wild, Symbol, Add, Mul,
-                    sympify, Subs, ilcm, Rational, Eq, integer_nthroot)
-from ..polys import Poly, factor_list
-from ..matrices import Matrix
-from ..functions import sign, ceiling, floor, sqrt
+from ..core import (Add, Eq, Integer, Mul, Rational, S, Subs, Symbol, Wild,
+                    igcd, ilcm, integer_nthroot, symbols, sympify)
+from ..core.assumptions import check_assumptions
 from ..core.function import _mexpand
+from ..core.numbers import igcdex
+from ..functions import ceiling, floor, sign, sqrt
+from ..matrices import Matrix
+from ..ntheory import (divisors, factorint, isprime, nextprime, perfect_power,
+                       sqrt_mod)
+from ..polys import Poly, factor_list
 from ..simplify.radsimp import rad_rationalize
 from ..utilities import default_sort_key, numbered_symbols
-from ..core.numbers import igcdex
-from ..ntheory import (sqrt_mod, divisors, factorint, perfect_power,
-                       isprime, nextprime)
-from ..core.assumptions import check_assumptions
 from .solvers import solve
+
 
 __all__ = ('diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_solution_linear',
            'diop_quadratic', 'diop_DN', 'cornacchia', 'diop_bf_DN', 'transformation_to_DN', 'find_DN',
@@ -118,7 +119,7 @@ def merge_solution(var, var_t, solution):
 
     for val, symb in zip(l, var):
         if check_assumptions(val, **symb._assumptions) is False:
-            return tuple()
+            return ()
 
     return tuple(l)
 
@@ -396,13 +397,13 @@ def _diop_linear(var, coeff, param):
     if len(var) == 1:
         if coeff[var[0]] == 0:
             if c == 0:
-                return tuple([params[0]])
+                return params[0],
             else:
-                return tuple([None])
+                return None,
         elif divisible(c, coeff[var[0]]):
-            return tuple([c/coeff[var[0]]])
+            return c/coeff[var[0]],
         else:
-            return tuple([None])
+            return None,
 
     """
     base_solution_linear() can solve diophantine equations of the form:
@@ -771,7 +772,6 @@ def _diop_quadratic(var, coeff, t):
             g = igcd(A, C)
             g = abs(g) * sign(A)
             a = A // g
-            b = B // g
             c = C // g
             e = sign(B/A)
 
@@ -879,7 +879,7 @@ def _diop_quadratic(var, coeff, t):
 
             else:
                 L = ilcm((P[0]).q, ilcm((P[1]).q, ilcm((P[2]).q,
-                         ilcm((P[3]).q, ilcm((Q[0]).q, (Q[1]).q)))))
+                                                       ilcm((P[3]).q, ilcm((Q[0]).q, (Q[1]).q)))))
 
                 k = 1
 
@@ -1271,7 +1271,6 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     sol = []
     a = diop_DN(D, 1)
     u = a[0][0]
-    v = a[0][1]
 
     if abs(N) == 1:
         return diop_DN(D, N)
@@ -1741,7 +1740,7 @@ def _diop_ternary_quadratic(_var, coeff):
             E = coeff[y*z]
             F = coeff[z**2]
 
-            _coeff = dict()
+            _coeff = {}
 
             _coeff[x**2] = 4*A**2
             _coeff[y**2] = 4*A*D - B**2
@@ -1837,7 +1836,7 @@ def _transformation_to_normal(var, coeff):
             E = coeff[y*z]
             F = coeff[z**2]
 
-            _coeff = dict()
+            _coeff = {}
 
             _coeff[x**2] = 4*A**2
             _coeff[y**2] = 4*A*D - B**2
@@ -2586,11 +2585,11 @@ def partition(n, k=None, zeros=False):
         Available: http://jeromekelleher.net/partitions.php
     """
     if n < 1:
-        yield tuple()
+        yield ()
 
     if k is not None:
         if k < 1:
-            yield tuple()
+            yield ()
 
         elif k > n:
             if zeros:
@@ -2598,7 +2597,7 @@ def partition(n, k=None, zeros=False):
                     for t in partition(n, i):
                         yield (t,) + (0,) * (k - i)
             else:
-                yield tuple()
+                yield ()
 
         else:
             a = [1 for i in range(k)]
@@ -2715,9 +2714,9 @@ def sum_of_three_squares(n):
         Available: http://www.schorn.ch/howto.html
     """
     special = {1: (1, 0, 0), 2: (1, 1, 0), 3: (1, 1, 1), 10: (1, 3, 0), 34: (3, 3, 4), 58: (3, 7, 0),
-        85: (6, 7, 0), 130: (3, 11, 0), 214: (3, 6, 13), 226: (8, 9, 9), 370: (8, 9, 15),
-        526: (6, 7, 21), 706: (15, 15, 16), 730: (1, 27, 0), 1414: (6, 17, 33), 1906: (13, 21, 36),
-        2986: (21, 32, 39), 9634: (56, 57, 57)}
+               85: (6, 7, 0), 130: (3, 11, 0), 214: (3, 6, 13), 226: (8, 9, 9), 370: (8, 9, 15),
+               526: (6, 7, 21), 706: (15, 15, 16), 730: (1, 27, 0), 1414: (6, 17, 33), 1906: (13, 21, 36),
+               2986: (21, 32, 39), 9634: (56, 57, 57)}
 
     v = 0
 
@@ -2854,14 +2853,13 @@ def power_representation(n, p, k, zeros=False):
         if perfect_power(n):
             yield (perfect_power(n)[0],)
         else:
-            yield tuple()
+            yield ()
 
     elif p == 1:
         for t in partition(n, k, zeros):
             yield t
 
     else:
-        l = []
         a = integer_nthroot(n, p)[0]
 
         for t in pow_rep_recursive(a, k, n, [], p):

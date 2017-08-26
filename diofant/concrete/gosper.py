@@ -1,10 +1,10 @@
 """Gosper's algorithm for hypergeometric summation. """
 
-from ..core import S, Dummy, symbols, Integer
+from ..core import Dummy, Integer, S, symbols
 from ..core.compatibility import is_sequence
-from ..polys import Poly, parallel_poly_from_expr, factor
-from ..solvers import solve
+from ..polys import Poly, factor, parallel_poly_from_expr
 from ..simplify import hypersimp
+from ..solvers import solve
 
 
 def gosper_normal(f, g, n, polys=True):
@@ -124,7 +124,8 @@ def gosper_term(f, n):
     H = A*x.shift(1) - B*x - C
 
     solution = solve(H.coeffs(), coeffs)
-    solution = dict(*solution)
+    if solution:
+        solution = solution[0]
 
     x = x.as_expr().subs(solution)
 

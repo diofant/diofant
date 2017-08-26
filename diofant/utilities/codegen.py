@@ -76,20 +76,20 @@ unsurmountable issues that can only be tackled with dedicated code generator:
 
 """
 
-from io import StringIO
 import os
 import textwrap
+from io import StringIO
 
 from .. import __version__ as diofant_version
-from ..core import Dummy, Symbol, S, Expr, Tuple, Equality, Function
+from ..core import Dummy, Equality, Expr, Function, S, Symbol, Tuple
 from ..core.compatibility import is_sequence
+from ..matrices import (ImmutableMatrix, MatrixBase, MatrixExpr, MatrixSlice,
+                        MatrixSymbol)
+from ..printing.ccode import CCodePrinter, ccode
 from ..printing.codeprinter import AssignmentError
-from ..printing.ccode import ccode, CCodePrinter
-from ..printing.fcode import fcode, FCodePrinter
-from ..printing.octave import octave_code, OctaveCodePrinter
+from ..printing.fcode import FCodePrinter, fcode
+from ..printing.octave import OctaveCodePrinter, octave_code
 from ..tensor import Idx, Indexed, IndexedBase
-from ..matrices import (MatrixSymbol, ImmutableMatrix, MatrixBase,
-                        MatrixExpr, MatrixSlice)
 
 
 __all__ = (
@@ -308,7 +308,7 @@ class Variable:
             return self._datatype[language.upper()]
         except KeyError:
             raise CodeGenError("Has datatypes for languages: %s" %
-                    ", ".join(self._datatype))
+                               ", ".join(self._datatype))
 
 
 class Argument(Variable):
@@ -720,7 +720,7 @@ class CCodeGen(CodeGen):
         code_lines = []
         code_lines.append("/" + "*"*78 + '\n')
         tmp = header_comment % {"version": diofant_version,
-            "project": self.project}
+                                "project": self.project}
         for line in tmp.splitlines():
             code_lines.append(" *%s*\n" % line.center(76))
         code_lines.append(" " + "*"*78 + "/\n")
@@ -797,13 +797,13 @@ class CCodeGen(CodeGen):
 
             try:
                 constants, not_c, c_expr = ccode(result.expr, human=False,
-                        assign_to=assign_to, dereference=dereference)
+                                                 assign_to=assign_to, dereference=dereference)
             except AssignmentError:
                 assign_to = result.result_var
                 code_lines.append(
                     "%s %s;\n" % (result.get_datatype('c'), str(assign_to)))
                 constants, not_c, c_expr = ccode(result.expr, human=False,
-                        assign_to=assign_to, dereference=dereference)
+                                                 assign_to=assign_to, dereference=dereference)
 
             for name, value in sorted(constants, key=str):
                 code_lines.append("double const %s = %s;\n" % (name, value))
@@ -903,7 +903,7 @@ class FCodeGen(CodeGen):
         code_lines = []
         code_lines.append("!" + "*"*78 + '\n')
         tmp = header_comment % {"version": diofant_version,
-            "project": self.project}
+                                "project": self.project}
         for line in tmp.splitlines():
             code_lines.append("!*%s*\n" % line.center(76))
         code_lines.append("!" + "*"*78 + '\n')
@@ -926,7 +926,7 @@ class FCodeGen(CodeGen):
             code_list.append("subroutine")
 
         args = ", ".join("%s" % self._get_symbol(arg.name)
-                        for arg in routine.arguments)
+                         for arg in routine.arguments)
 
         call_sig = "{0}({1})\n".format(routine.name, args)
         # Fortran 95 requires all lines be less than 132 characters, so wrap
@@ -1021,7 +1021,7 @@ class FCodeGen(CodeGen):
                 assign_to = result.result_var
 
             constants, not_fortran, f_expr = fcode(result.expr,
-                assign_to=assign_to, source_format='free', human=False)
+                                                   assign_to=assign_to, source_format='free', human=False)
 
             for obj, v in sorted(constants, key=str):
                 t = get_default_datatype(obj)
@@ -1049,7 +1049,7 @@ class FCodeGen(CodeGen):
             orig_case = {str(x) for x in r.variables}
             if len(lowercase) < len(orig_case):
                 raise CodeGenError("Fortran ignores case. Got symbols: %s" %
-                        (", ".join([str(var) for var in r.variables])))
+                                   (", ".join([str(var) for var in r.variables])))
         self.dump_code(routines, f, prefix, header, empty)
     dump_f95.extension = code_extension
     dump_f95.__doc__ = CodeGen.dump_code.__doc__
@@ -1207,7 +1207,7 @@ class OctaveCodeGen(CodeGen):
         """Writes a common header for the generated files."""
         code_lines = []
         tmp = header_comment % {"version": diofant_version,
-            "project": self.project}
+                                "project": self.project}
         for line in tmp.splitlines():
             if line == '':
                 code_lines.append("%\n")
@@ -1277,7 +1277,7 @@ class OctaveCodeGen(CodeGen):
                 raise CodeGenError("unexpected object in Routine results")
 
             constants, not_supported, oct_expr = octave_code(result.expr,
-                assign_to=assign_to, human=False)
+                                                             assign_to=assign_to, human=False)
 
             for obj, v in sorted(constants, key=str):
                 declarations.append(

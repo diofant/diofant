@@ -1,4 +1,4 @@
-from ...core import sympify, Expr
+from ...core import Expr, sympify
 from ..matrices import MatrixBase
 from .matexpr import ShapeError
 

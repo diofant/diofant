@@ -2,12 +2,12 @@
 A MathML printer.
 """
 
-from ..core import sympify, S, Mul
-from ..core.function import _coeff_isneg
+from ..core import Mul, S, sympify
 from ..core.alphabets import greeks
-from .printer import Printer
+from ..core.function import _coeff_isneg
+from .conventions import requires_partial, split_super_sub
 from .pretty.pretty_symbology import greek_unicode
-from .conventions import split_super_sub, requires_partial
+from .printer import Printer
 
 
 class MathMLPrinter(Printer):
@@ -263,9 +263,6 @@ class MathMLPrinter(Printer):
                 mi = self.dom.createElement('mml:mi')
                 mi.appendChild(self.dom.createTextNode(items[0]))
                 return mi
-
-        # translate name, supers and subs to unicode characters
-        greek_letters = set(greeks)  # make a copy
 
         def translate(s):
             if s in greek_unicode:

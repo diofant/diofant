@@ -1,9 +1,9 @@
+import collections
 import copy
 from collections import defaultdict
-import collections
 
 from ..core import Dict, S
-from ..core.compatibility import is_sequence, as_int
+from ..core.compatibility import as_int, is_sequence
 from ..core.logic import fuzzy_and
 from ..functions import sqrt
 from ..utilities.iterables import uniq
@@ -55,6 +55,9 @@ class SparseMatrixBase(MatrixBase):
                         value = self._sympify(flat_list[i*self.cols + j])
                         if value:
                             self._smat[(i, j)] = value
+            else:
+                raise ValueError("Third argument must be a callable,"
+                                 " dictionary or sequence.")
         else:
             # handle full matrix forms with _handle_creation_inputs
             r, c, _list = Matrix._handle_creation_inputs(*args)
@@ -105,7 +108,7 @@ class SparseMatrixBase(MatrixBase):
         return self._smat.get((i, j), S.Zero)
 
     def __setitem__(self, key, value):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def copy(self):
         return self._new(self.rows, self.cols, self._smat)
@@ -138,8 +141,6 @@ class SparseMatrixBase(MatrixBase):
         """
         if not self.rows:
             return []
-        if not self.cols:
-            return [[] for i in range(self.rows)]
         I, J = self.shape
         return [[self[i, j] for j in range(J)] for i in range(I)]
 
@@ -339,11 +340,7 @@ class SparseMatrixBase(MatrixBase):
         M = self.zeros(*self.shape)
         if scalar:
             for i in self._smat:
-                v = scalar*self._smat[i]
-                if v:
-                    M._smat[i] = v
-                else:
-                    M._smat.pop(i, None)
+                M._smat[i] = scalar*self._smat[i]
         return M
 
     def __mul__(self, other):
@@ -392,8 +389,6 @@ class SparseMatrixBase(MatrixBase):
         ...  isinstance(S*A, SparseMatrix) == False)
         True
         """
-        if isinstance(other, MatrixBase):
-            return other*other._new(self)
         return self.scalar_multiply(other)
 
     def __add__(self, other):
@@ -423,10 +418,8 @@ class SparseMatrixBase(MatrixBase):
             return self.add(other)
         elif isinstance(other, MatrixBase):
             return other._new(other + self)
-        else:
-            raise NotImplementedError(
-                "Cannot add %s to %s" %
-                tuple(c.__class__.__name__ for c in (other, self)))
+        else:  # pragma: no cover
+            return NotImplemented
 
     def __neg__(self):
         """Negate all elements of self.
@@ -479,7 +472,7 @@ class SparseMatrixBase(MatrixBase):
         """
         if not isinstance(other, SparseMatrixBase):
             raise ValueError('only use add with %s, not %s' %
-                tuple(c.__class__.__name__ for c in (self, other)))
+                             tuple(c.__class__.__name__ for c in (self, other)))
         if self.shape != other.shape:
             raise ShapeError()
         M = self.copy()
@@ -582,11 +575,11 @@ class SparseMatrixBase(MatrixBase):
         """
         if simplify:
             return all((k[1], k[0]) in self._smat and
-                not (self[k] - self[(k[1], k[0])]).simplify()
-                for k in self._smat)
+                       not (self[k] - self[(k[1], k[0])]).simplify()
+                       for k in self._smat)
         else:
             return all((k[1], k[0]) in self._smat and
-                self[k] == self[(k[1], k[0])] for k in self._smat)
+                       self[k] == self[(k[1], k[0])] for k in self._smat)
 
     def has(self, *patterns):
         """Test whether any subexpression matches any of the patterns.
@@ -891,11 +884,9 @@ class SparseMatrixBase(MatrixBase):
         from ..core import nan, oo
         if not self.is_symmetric():
             raise ValueError('Cholesky decomposition applies only to '
-                'symmetric matrices.')
+                             'symmetric matrices.')
         M = self.as_mutable()._cholesky_sparse()
-        if M.has(nan) or M.has(oo):
-            raise ValueError('Cholesky decomposition applies only to '
-                'positive-definite matrices')
+        assert not M.has(nan, oo)
         return self._new(M)
 
     def LDLdecomposition(self):
@@ -930,12 +921,9 @@ class SparseMatrixBase(MatrixBase):
         from ..core import nan, oo
         if not self.is_symmetric():
             raise ValueError('LDL decomposition applies only to '
-                'symmetric matrices.')
+                             'symmetric matrices.')
         L, D = self.as_mutable()._LDL_sparse()
-        if L.has(nan) or L.has(oo) or D.has(nan) or D.has(oo):
-            raise ValueError('LDL decomposition applies only to '
-                'positive-definite matrices')
-
+        assert not L.has(nan, oo) and not D.has(nan, oo)
         return self._new(L), self._new(D)
 
     def solve_least_squares(self, rhs, method='LDL'):
@@ -1009,9 +997,9 @@ class SparseMatrixBase(MatrixBase):
         if not self.is_square:
             if self.rows < self.cols:
                 raise ValueError('Under-determined system.')
-            elif self.rows > self.cols:
+            else:
                 raise ValueError('For over-determined system, M, having '
-                    'more rows than columns, try M.solve_least_squares(rhs).')
+                                 'more rows than columns, try M.solve_least_squares(rhs).')
         else:
             return self.inv(method=method)*rhs
 
@@ -1058,9 +1046,9 @@ class SparseMatrixBase(MatrixBase):
             solve = M._LDL_solve
         elif method == "CH":
             solve = M._cholesky_solve
-        else:
-            raise NotImplementedError(
-                'Method may be "CH" or "LDL", not %s.' % method)
+        else:  # pragma: no cover
+            raise NotImplementedError('Method may be "CH" or '
+                                      '"LDL", not %s.' % method)
         rv = M.hstack(*[solve(I[:, i]) for i in range(I.cols)])
         if not sym:
             scale = (r1*rv[:, 0])[0, 0]
@@ -1073,7 +1061,7 @@ class SparseMatrixBase(MatrixBase):
                 return False
             if isinstance(other, SparseMatrixBase):
                 return self._smat == other._smat
-            elif isinstance(other, MatrixBase):
+            else:
                 return self._smat == MutableSparseMatrix(other)._smat
         except AttributeError:
             return False
@@ -1593,7 +1581,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         else:
             v = self._sympify(value)
             self._smat = {(i, j): v
-                for i in range(self.rows) for j in range(self.cols)}
+                          for i in range(self.rows) for j in range(self.cols)}
 
 
 #:

@@ -2,10 +2,11 @@
 be displayed in the sphinx documentation.
 """
 
-from .meijerint import _create_lookup_table
-from ..core import Eq, Add, Symbol
+from ..core import Add, Eq, Symbol
 from ..core.compatibility import default_sort_key
 from ..printing import latex
+from .meijerint import _create_lookup_table
+
 
 t = {}
 _create_lookup_table(t)

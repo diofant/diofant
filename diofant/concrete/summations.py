@@ -1,10 +1,10 @@
-from .expr_with_limits import AddWithLimits
-from .expr_with_intlimits import ExprWithIntLimits
-from ..core import Derivative, Function, Eq, S, Dummy, Wild, Integer
-from .gosper import gosper_sum
+from ..core import Derivative, Dummy, Eq, Function, Integer, S, Wild
 from ..functions import Piecewise
-from ..polys import apart, PolynomialError
+from ..polys import PolynomialError, apart
 from ..solvers import solve
+from .expr_with_intlimits import ExprWithIntLimits
+from .expr_with_limits import AddWithLimits
+from .gosper import gosper_sum
 
 
 class Sum(AddWithLimits, ExprWithIntLimits):
@@ -471,7 +471,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
             z = collect(numer, k)
             eq = z.as_poly(k).all_coeffs()
-            sols = dict(*solve(eq, *x))
+            sols = solve(eq, *x)[0]
 
         y = sum(a(i, j)*F(n - j, k - i) for i in range(I) for j in range(J))
         y = y.subs(sols).subs(map(lambda a: (a, 1), x))

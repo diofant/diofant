@@ -1,12 +1,12 @@
 import pytest
 
-from diofant import (adjoint, And, Basic, conjugate, diff, expand, Eq,
-                     Function, I, Integral, integrate, Interval, lambdify,
-                     log, Max, Min, oo, Or, pi, Piecewise, piecewise_fold,
-                     Rational, solve, symbols, transpose, sin, cos, exp,
-                     Abs, Not, Symbol, sympify, Gt, O)
+from diofant import (Abs, And, Basic, Eq, Function, Gt, I, Integral, Interval,
+                     Max, Min, Not, O, Or, Piecewise, Rational, Symbol,
+                     adjoint, conjugate, cos, diff, exp, expand, integrate,
+                     lambdify, log, oo, pi, piecewise_fold, sin, solve,
+                     symbols, sympify, transpose)
+from diofant.abc import t, x, y
 
-from diofant.abc import x, y, t
 
 __all__ = ()
 
@@ -31,6 +31,7 @@ def test_piecewise():
     assert Piecewise((x, True)) == x
     pytest.raises(TypeError, lambda: Piecewise(x))
     pytest.raises(TypeError, lambda: Piecewise((x, x**2)))
+    assert Piecewise((0, Eq(z, 0, evaluate=False)), (1, True)) == 1
 
     # Test subs
     p = Piecewise((-1, x < -1), (x**2, x < 0), (log(x), x >= 0))
@@ -176,12 +177,12 @@ def test_piecewise_integrate():
     assert integrate(g, (x, 1, y)).subs(y, -5) == -Rational(1, 2)
     assert integrate(g, (x, y, -5)).subs(y, 1) == -Rational(1, 2)
     assert integrate(g, (x, -5, y)) == Piecewise((0, y < 0),
-        (y**2/2, y <= 1), (y - 0.5, True))
+                                                 (y**2/2, y <= 1), (y - 0.5, True))
     assert integrate(g, (x, y, 1)) == Piecewise((0.5, y < 0),
-        (0.5 - y**2/2, y <= 1), (1 - y, True))
+                                                (0.5 - y**2/2, y <= 1), (1 - y, True))
 
     g = Piecewise((1 - x, Interval(0, 1).contains(x)),
-        (1 + x, Interval(-1, 0).contains(x)), (0, True))
+                  (1 + x, Interval(-1, 0).contains(x)), (0, True))
     assert integrate(g, (x, -5, 1)) == 1
     assert integrate(g, (x, -5, y)).subs(y, 1) == 1
     assert integrate(g, (x, y, 1)).subs(y, -5) == 1
@@ -205,9 +206,9 @@ def test_piecewise_integrate():
     assert integrate(g, (x, 1, y)).subs(y, -5) == -1
     assert integrate(g, (x, y, -5)).subs(y, 1) == -1
     assert integrate(g, (x, -5, y)) == Piecewise((0, y <= -1), (1, y >= 1),
-        (-y**2/2 + y + 0.5, y > 0), (y**2/2 + y + 0.5, True))
+                                                 (-y**2/2 + y + 0.5, y > 0), (y**2/2 + y + 0.5, True))
     assert integrate(g, (x, y, 1)) == Piecewise((1, y <= -1), (0, y >= 1),
-        (y**2/2 - y + 0.5, y > 0), (-y**2/2 - y + 0.5, True))
+                                                (y**2/2 - y + 0.5, y > 0), (-y**2/2 - y + 0.5, True))
 
 
 def test_piecewise_integrate_inequality_conditions():
@@ -338,7 +339,6 @@ def test_piecewise_fold():
 def test_piecewise_fold_piecewise_in_cond():
     p1 = Piecewise((cos(x), x < 0), (0, True))
     p2 = Piecewise((0, Eq(p1, 0)), (p1 / Abs(p1), True))
-    p3 = piecewise_fold(p2)
     assert(p2.subs(x, -pi/2) == 0.0)
     assert(p2.subs(x, 1) == 0.0)
     assert(p2.subs(x, -pi/4) == 1.0)
@@ -352,7 +352,8 @@ def test_piecewise_fold_piecewise_in_cond():
     p5 = Piecewise((1, x < 0), (3, True))
     p6 = Piecewise((1, x < 1), (3, True))
     p7 = piecewise_fold(Piecewise((1, p5 < p6), (0, True)))
-    assert(Piecewise((1, And(Not(x < 1), x < 0)), (0, True)))
+    assert p7
+    assert Piecewise((1, And(Not(x < 1), x < 0)), (0, True))
 
 
 @pytest.mark.xfail
@@ -360,7 +361,7 @@ def test_piecewise_fold_piecewise_in_cond_2():
     p1 = Piecewise((cos(x), x < 0), (0, True))
     p2 = Piecewise((0, Eq(p1, 0)), (1 / p1, True))
     p3 = Piecewise((0, Or(And(Eq(cos(x), 0), x < 0), Not(x < 0))),
-        (1 / cos(x), True))
+                   (1 / cos(x), True))
     assert(piecewise_fold(p2) == p3)
 
 
@@ -369,7 +370,7 @@ def test_piecewise_fold_expand():
 
     p2 = piecewise_fold(expand((1 - x)*p1))
     assert p2 == Piecewise((1 - x, Interval(0, 1, False, True).contains(x)),
-        (Piecewise((-x, Interval(0, 1, False, True).contains(x)), (0, True)), True))
+                           (Piecewise((-x, Interval(0, 1, False, True).contains(x)), (0, True)), True))
 
     p2 = expand(piecewise_fold((1 - x)*p1))
     assert p2 == Piecewise(

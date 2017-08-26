@@ -2,8 +2,9 @@
 
 import pytest
 
-from diofant.core import Symbol, Integer, Rational
+from diofant.core import Integer, Rational, Symbol
 from diofant.external import import_module
+
 
 __all__ = ()
 
@@ -23,20 +24,21 @@ def init_ipython_session():
 
 
 @pytest.mark.skipif(ipython is None, reason="no IPython")
-def test_int_to_Integer():
+def test_wrap_int_divisions():
     app = init_ipython_session()
     app.run_cell("ip = get_ipython()")
-    app.run_cell("from diofant import Integer")
-    app.run_cell("from diofant.interactive.session import IntegerWrapper")
-    app.run_cell("ip.ast_transformers.append(IntegerWrapper())")
+    app.run_cell("from diofant import Rational")
+    app.run_cell("from diofant.interactive.session import IntegerDivisionWrapper")
+    app.run_cell("ip.ast_transformers.clear()")
+    app.run_cell("ip.ast_transformers.append(IntegerDivisionWrapper())")
 
     app.run_cell("a = 1")
-    assert isinstance(app.user_ns['a'], Integer)
+    assert isinstance(app.user_ns['a'], int)
 
     app.run_cell("a = 1/2")
     assert isinstance(app.user_ns['a'], Rational)
     app.run_cell("a = 1")
-    assert isinstance(app.user_ns['a'], Integer)
+    assert isinstance(app.user_ns['a'], int)
     app.run_cell("a = int(1)")
     assert isinstance(app.user_ns['a'], int)
     app.run_cell("a = (1/\n2)")
@@ -48,6 +50,7 @@ def test_automatic_symbols():
     app = init_ipython_session()
     app.run_cell("ip = get_ipython()")
     app.run_cell("from diofant.interactive.session import AutomaticSymbols")
+    app.run_cell("ip.ast_transformers.clear()")
     app.run_cell("ip.ast_transformers.append(AutomaticSymbols())")
     app.run_cell("from diofant import Symbol, factorial")
 

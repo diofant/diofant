@@ -2,22 +2,15 @@
 
 import pytest
 
-from diofant import Poly, ZZ, symbols
-
-from diofant.polys.specialpolys import (
-    swinnerton_dyer_poly,
-    cyclotomic_poly,
-    symmetric_poly,
-    random_poly,
-    interpolating_poly,
-    fateman_poly_F_1,
-    dmp_fateman_poly_F_1,
-    fateman_poly_F_2,
-    dmp_fateman_poly_F_2,
-    fateman_poly_F_3,
-    dmp_fateman_poly_F_3)
-
+from diofant import ZZ, Poly, symbols
 from diofant.abc import x, y, z
+from diofant.polys.specialpolys import (cyclotomic_poly, dmp_fateman_poly_F_1,
+                                        dmp_fateman_poly_F_2,
+                                        dmp_fateman_poly_F_3, fateman_poly_F_1,
+                                        fateman_poly_F_2, fateman_poly_F_3,
+                                        interpolating_poly, random_poly,
+                                        swinnerton_dyer_poly, symmetric_poly)
+
 
 __all__ = ()
 
@@ -26,17 +19,23 @@ def test_swinnerton_dyer_poly():
     pytest.raises(ValueError, lambda: swinnerton_dyer_poly(0, x))
 
     assert swinnerton_dyer_poly(1, x, polys=True) == Poly(x**2 - 2)
+    assert swinnerton_dyer_poly(1, polys=True) == Poly(x**2 - 2)
 
     assert swinnerton_dyer_poly(1, x) == x**2 - 2
     assert swinnerton_dyer_poly(2, x) == x**4 - 10*x**2 + 1
-    assert swinnerton_dyer_poly(
-        3, x) == x**8 - 40*x**6 + 352*x**4 - 960*x**2 + 576
+    assert swinnerton_dyer_poly(3, x) == (x**8 - 40*x**6 +
+                                          352*x**4 - 960*x**2 + 576)
+    assert swinnerton_dyer_poly(4, x) == (x**16 - 136*x**14 + 6476*x**12 -
+                                          141912*x**10 + 1513334*x**8 -
+                                          7453176*x**6 + 13950764*x**4 -
+                                          5596840*x**2 + 46225)
 
 
 def test_cyclotomic_poly():
     pytest.raises(ValueError, lambda: cyclotomic_poly(0, x))
 
     assert cyclotomic_poly(1, x, polys=True) == Poly(x - 1)
+    assert cyclotomic_poly(1, polys=True) == Poly(x - 1)
 
     assert cyclotomic_poly(1, x) == x - 1
     assert cyclotomic_poly(2, x) == x + 1

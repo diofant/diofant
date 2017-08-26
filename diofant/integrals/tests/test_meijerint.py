@@ -1,19 +1,19 @@
 import pytest
 
-from diofant import (meijerg, I, integrate, Integral, oo, gamma, cosh,
-                     hyperexpand, exp, simplify, sqrt, pi, erf, sin, cos,
-                     exp_polar, polygamma, hyper, log, expand_func, Integer,
-                     Rational, nan)
-from diofant.integrals.meijerint import (_rewrite_single, _rewrite1,
-                                         meijerint_indefinite, _inflate_g,
-                                         _create_lookup_table,
+from diofant import (I, Integer, Integral, Rational, cos, cosh, erf, exp,
+                     exp_polar, expand_func, gamma, hyper, hyperexpand,
+                     integrate, log, meijerg, nan, oo, pi, polygamma, simplify,
+                     sin, sqrt)
+from diofant.abc import a, b, c, d, s, t, x, y, z
+from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
+                                         _rewrite1, _rewrite_single,
                                          meijerint_definite,
+                                         meijerint_indefinite,
                                          meijerint_inversion)
 from diofant.utilities import default_sort_key
-from diofant.utilities.randtest import (verify_numerically,
-                                        random_complex_number as randcplx)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import verify_numerically
 
-from diofant.abc import x, y, a, b, c, d, s, t, z
 
 __all__ = ()
 
@@ -111,11 +111,11 @@ def test_recursive():
     e = integrate(r, (x, 0, oo), meijerg=True)
     assert simplify(e.expand()) == (
         sqrt(2)*sqrt(pi)*(
-        (erf(sqrt(2)*(a + b)/2) + 1)*exp(-a**2/2 + a*b - b**2/2))/4)
+            (erf(sqrt(2)*(a + b)/2) + 1)*exp(-a**2/2 + a*b - b**2/2))/4)
     e = integrate(exp(-(x - a)**2)*exp(-(x - b)**2)*exp(c*x), (x, 0, oo), meijerg=True)
     assert simplify(e) == (
         sqrt(2)*sqrt(pi)*(erf(sqrt(2)*(2*a + 2*b + c)/4) + 1)*exp(-a**2 - b**2
-        + (2*a + 2*b + c)**2/8)/4)
+                                                                  + (2*a + 2*b + c)**2/8)/4)
     assert simplify(integrate(exp(-(x - a - b - c)**2), (x, 0, oo), meijerg=True)) == \
         sqrt(pi)/2*(1 + erf(a + b + c))
     assert simplify(integrate(exp(-(x + a + b + c)**2), (x, 0, oo), meijerg=True)) == \
@@ -194,10 +194,10 @@ def test_meijerint():
     a, b, s = symbols('a b s')
     from diofant import And, re
     assert meijerint_definite(meijerg([], [], [a/2], [-a/2], x/4)
-                  * meijerg([], [], [b/2], [-b/2], x/4)*x**(s - 1), x, 0, oo) == \
+                              * meijerg([], [], [b/2], [-b/2], x/4)*x**(s - 1), x, 0, oo) == \
         (4*2**(2*s - 2)*gamma(-2*s + 1)*gamma(a/2 + b/2 + s)
          / (gamma(-a/2 + b/2 - s + 1)*gamma(a/2 - b/2 - s + 1)
-           * gamma(a/2 + b/2 - s + 1)),
+            * gamma(a/2 + b/2 - s + 1)),
             And(0 < -2*re(4*s) + 8, 0 < re(a/2 + b/2 + s), re(2*s) < 1))
 
     # test a bug
@@ -218,7 +218,7 @@ def test_meijerint():
     alpha = symbols('alpha', positive=True)
     assert meijerint_definite((2 - x)**alpha*sin(alpha/x), x, 0, 2) == \
         (sqrt(pi)*alpha*gamma(alpha + 1)*meijerg(((), (alpha/2 + Rational(1, 2),
-        alpha/2 + 1)), ((0, 0, Rational(1, 2)), (-Rational(1, 2),)), alpha**Integer(2)/16)/4, True)
+                                                       alpha/2 + 1)), ((0, 0, Rational(1, 2)), (-Rational(1, 2),)), alpha**Integer(2)/16)/4, True)
 
     # test a bug related to 3016
     a, s = symbols('a s', positive=True)
@@ -229,10 +229,10 @@ def test_meijerint():
 def test_bessel():
     from diofant import besselj, besseli
     assert simplify(integrate(besselj(a, z)*besselj(b, z)/z, (z, 0, oo),
-                     meijerg=True, conds='none')) == \
+                              meijerg=True, conds='none')) == \
         2*sin(pi*(a/2 - b/2))/(pi*(a - b)*(a + b))
     assert simplify(integrate(besselj(a, z)*besselj(a, z)/z, (z, 0, oo),
-                     meijerg=True, conds='none')) == 1/(2*a)
+                              meijerg=True, conds='none')) == 1/(2*a)
 
     # TODO more orthogonality integrals
 
@@ -327,7 +327,7 @@ def test_branch_bug():
     from diofant import powdenest, lowergamma
     # TODO combsimp cannot prove that the factor is unity
     assert powdenest(integrate(erf(x**3), x, meijerg=True).diff(x),
-           polar=True) == 2*erf(x**3)*gamma(Rational(2, 3))/3/gamma(Rational(5, 3))
+                     polar=True) == 2*erf(x**3)*gamma(Rational(2, 3))/3/gamma(Rational(5, 3))
     assert integrate(erf(x**3), x, meijerg=True) == \
         2*x*erf(x**3)*gamma(Rational(2, 3))/(3*gamma(Rational(5, 3))) \
         - 2*gamma(Rational(2, 3))*lowergamma(Rational(2, 3), x**6)/(3*sqrt(pi)*gamma(Rational(5, 3)))
@@ -342,7 +342,6 @@ def test_linear_subs():
 @pytest.mark.slow
 def test_probability():
     # various integrals from probability theory
-    from diofant.abc import x, y
     from diofant import symbols, Symbol, Abs, expand_mul, combsimp, powsimp, sin
     mu1, mu2 = symbols('mu1 mu2', real=True, nonzero=True)
     sigma1, sigma2 = symbols('sigma1 sigma2', real=True,
@@ -394,7 +393,7 @@ def test_probability():
         res1 = integrate(expr*exponential(x, rate)*normal(y, mu1, sigma1),
                          (x, 0, oo), (y, -oo, oo), meijerg=True)
         res2 = integrate(expr*exponential(x, rate)*normal(y, mu1, sigma1),
-                        (y, -oo, oo), (x, 0, oo), meijerg=True)
+                         (y, -oo, oo), (x, 0, oo), meijerg=True)
         assert expand_mul(res1) == expand_mul(res2)
         return res1
 
@@ -446,7 +445,7 @@ def test_probability():
     assert simplify(integrate(x**2*chisquared, (x, 0, oo), meijerg=True)) == \
         k*(k + 2)
     assert combsimp(integrate(((x - k)/sqrt(2*k))**3*chisquared, (x, 0, oo),
-                    meijerg=True)) == 2*sqrt(2)/sqrt(k)
+                              meijerg=True)) == 2*sqrt(2)/sqrt(k)
 
     # Dagum distribution
     a, b, p = symbols('a b p', positive=True)
@@ -490,7 +489,7 @@ def test_probability():
     # Levi
     c = Symbol('c', positive=True)
     assert integrate(sqrt(c/2/pi)*exp(-c/2/(x - mu))/(x - mu)**Rational(3, 2),
-                    (x, mu, oo)) == 1
+                     (x, mu, oo)) == 1
     # higher moments oo
 
     # log-logistic
@@ -533,14 +532,14 @@ def test_probability():
     # misc tests
     k = Symbol('k', positive=True)
     assert combsimp(expand_mul(integrate(log(x)*x**(k - 1)*exp(-x)/gamma(k),
-                              (x, 0, oo)))) == polygamma(0, k)
+                                         (x, 0, oo)))) == polygamma(0, k)
 
 
 @pytest.mark.slow
 def test_expint():
     """ Test various exponential integrals. """
     from diofant import (expint, unpolarify, Symbol, Ci, Si, Shi, Chi,
-                       sin, cos, sinh, cosh, Ei)
+                         sin, cos, sinh, cosh, Ei)
     assert simplify(integrate(exp(-z*x)/x**y,
                               (x, 1, oo),
                               meijerg=True,
@@ -594,8 +593,8 @@ def test_expint():
 
 def test_messy():
     from diofant import (laplace_transform, Si, Shi, Chi, atan, Piecewise,
-                       acoth, E1, besselj, acosh, asin, And, re,
-                       fourier_transform, sqrt)
+                         acoth, E1, besselj, acosh, asin, And, re,
+                         fourier_transform, sqrt)
     assert laplace_transform(Si(x), x, s) == ((-atan(s) + pi/2)/s, 0, True)
 
     assert laplace_transform(Shi(x), x, s) == (acoth(s)/s, 1, True)
@@ -635,6 +634,7 @@ def test_sympyissue_6252():
     assert not expr.has(hyper)
     # XXX the expression is a mess, but actually upon differentiation and
     # putting in numerical values seems to work...
+    assert not anti.has(hyper)
 
 
 def test_sympyissue_6348():

@@ -1,9 +1,9 @@
-from diofant.stats.drv_types import (PoissonDistribution, GeometricDistribution,
-                                     Poisson)
 from diofant import S, Sum
-from diofant.stats import E, variance, density
-
 from diofant.abc import x
+from diofant.stats import E, density, variance
+from diofant.stats.drv_types import (GeometricDistribution, Poisson,
+                                     PoissonDistribution)
+
 
 __all__ = ()
 

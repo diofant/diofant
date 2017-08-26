@@ -28,7 +28,7 @@ def deprecated(**decorator_kwargs):
 
 
 def _sympifyit(arg, retval=None):
-    """decorator to smartly _sympify function arguments
+    """decorator to smartly sympify function arguments
 
     @_sympifyit('other', NotImplemented)
     def add(self, other):
@@ -39,7 +39,7 @@ def _sympifyit(arg, retval=None):
     If it is not, the code is likely to catch an exception, then other will
     be explicitly _sympified, and the whole code restarted.
 
-    if _sympify(arg) fails, NotImplemented will be returned
+    if sympify(arg, strict=True) fails, NotImplemented will be returned
 
     see: __sympifyit
     """
@@ -50,7 +50,7 @@ def _sympifyit(arg, retval=None):
 
 
 def __sympifyit(func, arg, retval=None):
-    """decorator to _sympify `arg` argument for function `func`
+    """decorator to sympify `arg` argument for function `func`
 
     don't use directly -- use _sympifyit instead
     """

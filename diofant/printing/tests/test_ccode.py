@@ -1,16 +1,16 @@
 import pytest
 
-from diofant.core import (pi, oo, symbols, Rational, Integer, Mul,
-                          GoldenRatio, EulerGamma, Catalan, Lambda, Dummy, Eq)
-from diofant.functions import (Piecewise, sin, cos, Abs, exp, ceiling, sqrt,
-                               gamma, sign, elliptic_e)
-from diofant.logic import ITE, Equivalent
-from diofant.printing.ccode import CCodePrinter
-from diofant.utilities.lambdify import implemented_function
-from diofant.tensor import IndexedBase, Idx
-from diofant.matrices import Matrix, MatrixSymbol
-
 from diofant import ccode
+from diofant.core import (Catalan, Dummy, Eq, EulerGamma, GoldenRatio, Integer,
+                          Lambda, Mul, Rational, oo, pi, symbols)
+from diofant.functions import (Abs, Piecewise, ceiling, cos, elliptic_e, exp,
+                               gamma, sign, sin, sqrt)
+from diofant.logic import ITE, Equivalent
+from diofant.matrices import Matrix, MatrixSymbol
+from diofant.printing.ccode import CCodePrinter
+from diofant.tensor import Idx, IndexedBase
+from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 

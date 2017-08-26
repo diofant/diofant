@@ -1,6 +1,7 @@
-from diofant.matrices.densetools import eye
-from diofant.matrices.densearith import add, sub, mulmatmat, mulmatscaler
 from diofant import ZZ
+from diofant.matrices.densearith import add, mulmatmat, mulmatscaler, sub
+from diofant.matrices.densetools import eye
+
 
 __all__ = ()
 
@@ -34,7 +35,6 @@ def test_sub():
 def test_mulmatmat():
     a = [[ZZ(3), ZZ(4)], [ZZ(5), ZZ(6)]]
     b = [[ZZ(1), ZZ(2)], [ZZ(7), ZZ(8)]]
-    c = eye(2, ZZ)
     d = [[ZZ(6)], [ZZ(7)]]
 
     assert mulmatmat(a, b, ZZ) == [[ZZ(31), ZZ(38)], [ZZ(47), ZZ(58)]]

@@ -2,12 +2,12 @@ from io import StringIO
 
 import pytest
 
-from diofant.core import S, symbols, Eq, pi, Catalan, EulerGamma, Function
-from diofant import Piecewise
-from diofant import Equality
+import diofant
+from diofant import Equality, Piecewise
+from diofant.core import Catalan, Eq, EulerGamma, Function, S, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.utilities.codegen import OctaveCodeGen, codegen, make_routine
-import diofant
+
 
 __all__ = ()
 
@@ -290,7 +290,7 @@ def test_m_filename_match_first_fcn():
     name_expr = [ ("foo", [2*x, 3*y]), ("bar", [y**2, 4*y]) ]
     pytest.raises(ValueError,
                   lambda: codegen(name_expr,
-                                "Octave", prefix="bar", header=False, empty=False))
+                                  "Octave", prefix="bar", header=False, empty=False))
 
 
 def test_m_matrix_named():
@@ -362,7 +362,7 @@ def test_m_results_matrix_named_ordered():
     expr3 = Equality(B, 2*x)
     name_expr = ("test", [expr1, expr2, expr3])
     result, = codegen(name_expr, "Octave", header=False, empty=False,
-                     argument_sequence=(x, z, y))
+                      argument_sequence=(x, z, y))
     source = result[1]
     expected = (
         "function [C, A, B] = test(x, z, y)\n"

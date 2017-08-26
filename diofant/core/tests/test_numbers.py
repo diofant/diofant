@@ -1,16 +1,17 @@
 import decimal
 
 import mpmath
-from mpmath import mpf
 import pytest
+from mpmath import mpf
 
-from diofant import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
-                     S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
-                     Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
-                     AlgebraicNumber, simplify, sin)
+from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
+                     GoldenRatio, Gt, I, Integer, Le, Lt, Mul, Number, Pow,
+                     Rational, S, Symbol, Tuple, cos, exp, factorial, latex,
+                     log, nan, oo, pi, simplify, sin, sqrt, zoo)
+from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
+                                  mpf_norm, seterr)
 from diofant.core.power import integer_nthroot
-from diofant.core.numbers import (igcd, ilcm, igcdex, seterr,
-                                  mpf_norm, comp, mod_inverse)
+
 
 __all__ = ()
 
@@ -25,6 +26,8 @@ def same_and_same_prec(a, b):
 def test_seterr():
     seterr(divide=True)
     pytest.raises(ValueError, lambda: S.Zero/S.Zero)
+    seterr(divide=False)
+    assert S.Zero / S.Zero == S.NaN
     seterr(divide=False)
     assert S.Zero / S.Zero == S.NaN
 
@@ -49,6 +52,9 @@ def test_mod():
     assert (a % .2) == 0
     assert (a % 2).round(15) == 0.6
     assert (a % 0.5).round(15) == 0.1
+
+    a = Rational(7, 2)
+    assert (a % pi) == a - pi
 
     p = Symbol('p', infinite=True)
 
@@ -96,6 +102,8 @@ def test_mod():
     assert Integer(3).__rmod__(Integer(10)) == Integer(1)
     assert Integer(10) % 4 == Integer(2)
     assert 15 % Integer(4) == Integer(3)
+
+    assert (Float(1) % zoo) is nan
 
 
 def test_divmod():
@@ -163,6 +171,8 @@ def test_divmod():
     assert divmod(Integer(-3), Integer(2)) == (-2, 1)
     assert divmod(Integer(-3), 2) == (-2, 1)
 
+    pytest.raises(ZeroDivisionError, lambda: divmod(oo, 0))
+
 
 def test_igcd():
     assert igcd(0, 0) == 0
@@ -203,9 +213,13 @@ def test_ilcm():
 
 
 def test_igcdex():
+    assert igcdex(0, 0) == (0, 1, 0)
+    assert igcdex(-2, 0) == (-1, 0, 2)
+    assert igcdex(0, -2) == (0, -1, 2)
     assert igcdex(2, 3) == (-1, 1, 1)
     assert igcdex(10, 12) == (-1, 1, 2)
     assert igcdex(100, 2004) == (-20, 1, 4)
+    assert igcdex(100, -2004) == (-20, -1, 4)
 
 
 def _strictly_equal(a, b):
@@ -272,6 +286,9 @@ def test_Rational_new():
     assert Rational(1, 0) == S.ComplexInfinity
     pytest.raises(TypeError, lambda: Rational('3**3'))
     pytest.raises(TypeError, lambda: Rational('1/2 + 2/3'))
+
+    assert Rational(2, 4).numerator == 1
+    assert Rational(2, 4).denominator == 2
 
     # handle fractions.Fraction instances
     try:
@@ -452,6 +469,11 @@ def test_Float():
     assert Float(oo) == Float('+inf')
     assert Float(-oo) == Float('-inf')
 
+    pytest.raises(ValueError, lambda: Float('inf', dps=''))
+
+    assert Float(0)**2 is S.Zero
+    assert Float(0)**t == Pow(Float(0), t, evaluate=False)
+
 
 def test_Float_default_to_highprec_from_str():
     s = str(pi.evalf(128))
@@ -538,6 +560,7 @@ def test_Infinity():
     assert -oo/-2 == oo
     assert oo*2 == oo
     assert -oo*2 == -oo
+    assert -oo*Float(0.0) == nan
     assert oo*-2 == -oo
     assert 2/oo == 0
     assert 2/-oo == 0
@@ -583,6 +606,7 @@ def test_Infinity():
     assert float(1) + -oo == Float('-inf')
     assert float(1) - oo == Float('-inf')
     assert float(1) - -oo == Float('inf')
+    assert oo*float(0) == nan
 
     assert Float('nan') == nan
     assert nan*1.0 == nan
@@ -624,6 +648,9 @@ def test_Infinity():
     assert nan - S.One == nan
     assert nan/S.One == nan
     assert -oo - S.One == -oo
+
+    e = (I + cos(1)**2 + sin(1)**2 - 1)
+    assert oo**e == Pow(oo, e, evaluate=False)
 
 
 def test_Infinity_2():
@@ -831,6 +858,9 @@ def test_powers():
     # Test that this is fast
     assert integer_nthroot(2, 10**10) == (1, False)
 
+    pytest.raises(ValueError, lambda: integer_nthroot(-1, 2))
+    pytest.raises(ValueError, lambda: integer_nthroot(2, 0))
+
 
 def test_integer_nthroot_overflow():
     assert integer_nthroot(10**(50*50), 50) == (10**50, True)
@@ -896,6 +926,7 @@ def test_powers_Integer():
     assert (-3) ** Rational(-2, 3) == \
         -(-1)**Rational(1, 3)*3**Rational(1, 3)/3
 
+    assert S.One.factors(visual=True) == S.One
     assert Integer(1234).factors() == {617: 1, 2: 1}
     assert Rational(2*3, 3*5*7).factors() == {2: 1, 5: -1, 7: -1}
 
@@ -932,6 +963,10 @@ def test_powers_Integer():
     assert Integer(-2)**Symbol('', even=True) == \
         Integer(2)**Symbol('', even=True)
     assert (-1)**Float(.5) == 1.0*I
+
+    n = Symbol('n', integer=True)
+    e = (-1)**n/2 + Rational(5, 2)
+    assert (-1)**e == Pow(-1, e, evaluate=False)
 
 
 def test_powers_Rational():
@@ -1231,6 +1266,14 @@ def test_relational():
     assert (x != cos) is True
     assert (x == cos) is False
 
+    r = Symbol('r', extended_real=True)
+    assert (oo > r) == Gt(oo, r)
+    assert (oo <= r) == Le(oo, r)
+    assert (oo >= r) is S.true
+
+    assert (Float(3.0) >= pi) is S.false
+    assert (Float(3.0) <= pi) is S.true
+
 
 def test_Integer_as_index():
     assert 'hello'[Integer(2):] == 'llo'
@@ -1409,6 +1452,11 @@ def test_approximation_interval():
     assert Catalan.approximation_interval(Rational) == (Rational(9, 10), 1)
     assert Catalan.approximation_interval(Float) is None
 
+    assert pi.approximation_interval(Integer) == (3, 4)
+    assert pi.approximation_interval(Rational) == (Rational(223, 71),
+                                                   Rational(22, 7))
+    assert pi.approximation_interval(Float) is None
+
 
 def test_sympyissue_6640():
     from mpmath.libmp.libmpf import finf, fninf
@@ -1451,6 +1499,7 @@ def test_simplify_AlgebraicNumber():
     A = AlgebraicNumber
     e = 3**Rational(1, 6)*(3 + (135 + 78*sqrt(3))**Rational(2, 3))/(45 + 26*sqrt(3))**Rational(1, 3)
     assert simplify(A(e)) == A(12)  # wester test_C20
+    assert simplify(A(12)) == A(12)
 
     e = (41 + 29*sqrt(2))**Rational(1, 5)
     assert simplify(A(e)) == A(1 + sqrt(2))  # wester test_C21
@@ -1483,6 +1532,7 @@ def test_comp():
     assert comp(sqrt(2).n(2), Float(1.4, 2), '')
     pytest.raises(ValueError, lambda: comp(sqrt(2).n(2), 1.4, ''))
     assert comp(sqrt(2).n(2), Float(1.4, 3), '') is False
+    pytest.raises(ValueError, lambda: comp('123', '123'))
 
 
 def test_sympyissue_10063():
@@ -1525,3 +1575,99 @@ def test_mod_inverse():
     pytest.raises(ValueError, lambda: mod_inverse(2, S.Half))
     pytest.raises(ValueError, lambda: mod_inverse(2, cos(1)**2 + sin(1)**2))
     pytest.raises(ValueError, lambda: mod_inverse(2, 1))
+
+
+def test_sympyissue_13081():
+    r = Rational(905502432259640373, 288230376151711744)
+    assert (pi < r) is S.true
+    assert (r > pi) is S.true
+    r2 = Rational(472202503979844695356573871761845338575143343779448489867569357017941709222155070092152068445390137810467671349,
+                  150306725297525326584926758194517569752043683130132471725266622178061377607334940381676735896625196994043838464)
+    assert (r2 < pi) is S.true
+    assert (r2 > pi) is S.false
+
+
+def test_comparisons_with_unknown_type():
+    class Foo(object):
+        """
+        Class that is unaware of Basic, and relies on both classes returning
+        the NotImplemented singleton for equivalence to evaluate to False, and
+        the other comparisons to raise a TypeError.
+        """
+
+    ni, nf, nr = Integer(3), Float(1.0), Rational(1, 3)
+    foo = Foo()
+
+    for n in ni, nf, nr, oo:
+        assert n != foo
+        assert foo != n
+        assert not n == foo
+        assert not foo == n
+        pytest.raises(TypeError, lambda: n < foo)
+        pytest.raises(TypeError, lambda: foo > n)
+        pytest.raises(TypeError, lambda: n > foo)
+        pytest.raises(TypeError, lambda: foo < n)
+        pytest.raises(TypeError, lambda: n <= foo)
+        pytest.raises(TypeError, lambda: foo >= n)
+        pytest.raises(TypeError, lambda: n >= foo)
+        pytest.raises(TypeError, lambda: foo <= n)
+
+    class Bar(object):
+        """
+        Class that considers itself greater than any instance of Number except
+        Infinity, and relies on the NotImplemented singleton for symmetric
+        relations.
+        """
+
+        def __eq__(self, other):
+            if isinstance(other, Number):
+                return False
+            return NotImplemented
+
+        def __ne__(self, other):
+            return not self == other
+
+        def __lt__(self, other):
+            if other is oo:
+                return True
+            if isinstance(other, Number):
+                return False
+            return NotImplemented
+
+        def __le__(self, other):
+            return self < other or self == other
+
+        def __gt__(self, other):
+            return not self <= other
+
+        def __ge__(self, other):
+            return not self < other
+
+    bar = Bar()
+
+    for n in ni, nf, nr:
+        assert n != bar
+        assert bar != n
+        assert not n == bar
+        assert not bar == n
+        assert n < bar
+        assert bar > n
+        assert not n > bar
+        assert not bar < n
+        assert n <= bar
+        assert bar >= n
+        assert not n >= bar
+        assert not bar <= n
+
+    assert oo != bar
+    assert bar != oo
+    assert not oo == bar
+    assert not bar == oo
+    assert not oo < bar
+    assert not bar > oo
+    assert oo > bar
+    assert bar < oo
+    assert not oo <= bar
+    assert not bar >= oo
+    assert oo >= bar
+    assert bar <= oo

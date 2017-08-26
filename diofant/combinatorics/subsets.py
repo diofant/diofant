@@ -50,10 +50,12 @@ class Subset(Basic):
         2
         """
         if len(subset) > len(superset):
-            raise ValueError('Invalid arguments have been provided. The superset must be larger than the subset.')
+            raise ValueError("Invalid arguments have been provided. The "
+                             "superset must be larger than the subset.")
         for elem in subset:
             if elem not in superset:
-                raise ValueError('The superset provided is invalid as it does not contain the element %i' % elem)
+                raise ValueError("The superset provided is invalid as it "
+                                 "does not contain the element %s" % elem)
         obj = Basic.__new__(cls)
         obj._subset = subset
         obj._superset = superset
@@ -230,7 +232,7 @@ class Subset(Basic):
         next_gray, prev_gray
         """
         unranked_code = GrayCode.unrank(self.superset_size,
-                                       (self.rank_gray + k) % self.cardinality)
+                                        (self.rank_gray + k) % self.cardinality)
         return Subset.subset_from_bitlist(self.superset,
                                           unranked_code)
 
@@ -485,8 +487,6 @@ class Subset(Basic):
         subset_from_bitlist
         """
         bitlist = ['0'] * len(superset)
-        if type(subset) is Subset:
-            subset = subset.args[0]
         for i in Subset.subset_indices(subset, superset):
             bitlist[i] = '1'
         return ''.join(bitlist)
@@ -559,7 +559,7 @@ class Subset(Basic):
                 if not sb:
                     break
         else:
-            return list()
+            return []
         return [d[bi] for bi in b]
 
 

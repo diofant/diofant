@@ -1,7 +1,7 @@
-from math import sqrt as _sqrt
 from functools import reduce
+from math import sqrt as _sqrt
 
-from ...core import S, sympify, Dummy, Function, Integer, cacheit
+from ...core import Dummy, Function, Integer, S, cacheit, sympify
 from ...core.function import ArgumentIndexError
 from ...ntheory import sieve
 
@@ -616,12 +616,12 @@ class binomial(CombinatorialFunction):
             # http://functions.wolfram.com/GammaBetaErf/Binomial/20/01/01/
             n, k = self.args
             return binomial(n, k)*(polygamma(0, n + 1) -
-                polygamma(0, n - k + 1))
+                                   polygamma(0, n - k + 1))
         elif argindex == 2:
             # http://functions.wolfram.com/GammaBetaErf/Binomial/20/01/02/
             n, k = self.args
             return binomial(n, k)*(polygamma(0, n - k + 1) -
-                polygamma(0, k + 1))
+                                   polygamma(0, k + 1))
         else:
             raise ArgumentIndexError(self, argindex)
 

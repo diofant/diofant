@@ -1,16 +1,17 @@
 import pytest
 
-from diofant import (Add, Basic, S, Symbol, Wild, Float, Integer, Rational, I,
-                     sin, cos, tan, exp, log, nan, oo, sqrt, symbols, Integral,
-                     sympify, WildFunction, Poly, Function, Derivative, Number,
-                     pi, NumberSymbol, zoo, Piecewise, Mul, Pow, nsimplify,
-                     ratsimp, trigsimp, radsimp, powsimp, simplify, together,
-                     collect, factorial, apart, combsimp, factor, cancel, Tuple,
-                     default_sort_key, DiracDelta, gamma, Dummy, Sum, E,
-                     exp_polar, expand, diff, O, Heaviside, Si, Max)
+from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
+                     Function, Heaviside, I, Integer, Integral, Max, Mul,
+                     Number, NumberSymbol, O, Piecewise, Poly, Pow, Rational,
+                     S, Si, Sum, Symbol, Tuple, Wild, WildFunction, apart,
+                     cancel, collect, combsimp, cos, default_sort_key, diff,
+                     exp, exp_polar, expand, factor, factorial, gamma, log,
+                     nan, nsimplify, oo, pi, powsimp, radsimp, ratsimp,
+                     simplify, sin, sqrt, symbols, sympify, tan, together,
+                     trigsimp, zoo)
+from diofant.abc import a, b, c, n, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 
-from diofant.abc import a, b, c, n, t, u, x, y, z
 
 __all__ = ()
 
@@ -129,14 +130,14 @@ def dotest(s):
 
 def test_basic():
     def j(a, b):
-        x = a
-        x = +a
-        x = -a
-        x = a + b
-        x = a - b
-        x = a*b
-        x = a/b
-        x = a**b
+        a
+        +a
+        -a
+        a + b
+        a - b
+        a*b
+        a/b
+        a**b
     assert dotest(j)
 
 
@@ -636,17 +637,17 @@ def test_replace():
                                                       {sin(x): sin(x)/y})
     # if not simultaneous then y*sin(x) -> y*sin(x)/y = sin(x) -> sin(x)/y
     assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y,
-        simultaneous=False) == sin(x)/y
+                              simultaneous=False) == sin(x)/y
     assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e) == O(1, x)
     assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e,
-        simultaneous=False) == x**2/2 + O(x**3)
+                                    simultaneous=False) == x**2/2 + O(x**3)
     assert (x*(x*y + 3)).replace(lambda x: x.is_Mul, lambda x: 2 + x) == \
         x*(x*y + 5) + 2
     e = (x*y + 1)*(2*x*y + 1) + 1
     assert e.replace(cond, func, map=True) == (
         2*((2*x*y + 1)*(4*x*y + 1)) + 1,
         {2*x*y: 4*x*y, x*y: 2*x*y, (2*x*y + 1)*(4*x*y + 1):
-        2*((2*x*y + 1)*(4*x*y + 1))})
+         2*((2*x*y + 1)*(4*x*y + 1))})
     assert x.replace(x, y) == y
     assert (x + 1).replace(1, 2) == x + 2
     pytest.raises(TypeError, lambda: e.replace(cond, x))
@@ -1494,21 +1495,21 @@ def test_equals():
     # z = eq.subs(solve(eq, x)[0])
     q = symbols('q')
     z = (q*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-    Rational(13, 12))/2 - sqrt((2*q - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
-    Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 -
-    Rational(2197, 13824))**Rational(1, 3) - Rational(13, 6))/2 - Rational(1, 4)) + q/4 + (-sqrt(-2*(-(q
-    - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q
-    - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-    Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-    Rational(13, 6))/2 - Rational(1, 4))**4 + (-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
-    Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q -
-    Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-    Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-    Rational(13, 6))/2 - Rational(1, 4))**3 + 2*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
-    Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q -
-    Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-    Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-    Rational(13, 6))/2 - Rational(1, 4))**2 - Rational(1, 3))
+                  Rational(13, 12))/2 - sqrt((2*q - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
+                                                                             Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 -
+                                                                                                                                             Rational(2197, 13824))**Rational(1, 3) - Rational(13, 6))/2 - Rational(1, 4)) + q/4 + (-sqrt(-2*(-(q
+                                                                                                                                                                                                                                                - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q
+                                                                                                                                                                                                                                                                                                                                                       - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+                                                                                                                                                                                                                                                                                                                                                                              Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+                                                                                                                                                                                                                                                                                                                                                      Rational(13, 6))/2 - Rational(1, 4))**4 + (-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
+                                                                                                                                                                                                                                                                                                                                                                                                           Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q -
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Rational(13, 6))/2 - Rational(1, 4))**3 + 2*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q -
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          Rational(13, 6))/2 - Rational(1, 4))**2 - Rational(1, 3))
     assert z.equals(0)
 
 
@@ -1522,8 +1523,6 @@ def test_random():
 
 
 def test_round():
-    from diofant.abc import x
-
     assert Float('0.1249999').round(2) == 0.12
     d20 = 12345678901234567890
     ans = Integer(d20).round(2)

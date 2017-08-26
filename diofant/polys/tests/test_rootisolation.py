@@ -2,9 +2,10 @@
 
 import pytest
 
-from diofant.polys.rings import ring
-from diofant.domains import ZZ, QQ, EX
+from diofant.domains import EX, QQ, ZZ
 from diofant.polys.polyerrors import DomainError, RefinementFailed
+from diofant.polys.rings import ring
+
 
 __all__ = ()
 
@@ -17,6 +18,18 @@ def test_dup_sturm():
 
     f = x**3 - 2*x**2 + 3*x - 5
     assert R.dup_sturm(f) == [f, 3*x**2 - 4*x + 3, -QQ(10, 9)*x + QQ(13, 3), -QQ(3303, 100)]
+
+
+def test_dup_root_upper_bound():
+    R, x = ring("x", ZZ)
+
+    assert R.dup_root_upper_bound(-x - 1) is None
+
+
+def test_dup_root_lower_bound():
+    R, x = ring("x", ZZ)
+
+    assert R.dup_root_lower_bound(-x - 1) is None
 
 
 def test_dup_refine_real_root():
@@ -199,10 +212,10 @@ def test_dup_isolate_real_roots_sqf():
     a, b, c, d = 10000090000001, 2000100003, 10000300007, 10000005000008
 
     f = 20001600074001600021*x**4 \
-      + 1700135866278935491773999857*x**3 \
-      - 2000179008931031182161141026995283662899200197*x**2 \
-      - 800027600594323913802305066986600025*x \
-      + 100000950000540000725000008
+        + 1700135866278935491773999857*x**3 \
+        - 2000179008931031182161141026995283662899200197*x**2 \
+        - 800027600594323913802305066986600025*x \
+        + 100000950000540000725000008
 
     assert R.dup_isolate_real_roots_sqf(f) == \
         [(-a, -a), (-1, 0), (0, 1), (d, d)]
@@ -282,7 +295,7 @@ def test_dup_isolate_real_roots():
     assert R.dup_isolate_real_roots(-x**2 + 2) == I
 
     f = 16*x**14 - 96*x**13 + 24*x**12 + 936*x**11 - 1599*x**10 - 2880*x**9 + 9196*x**8 \
-      + 552*x**7 - 21831*x**6 + 13968*x**5 + 21690*x**4 - 26784*x**3 - 2916*x**2 + 15552*x - 5832
+        + 552*x**7 - 21831*x**6 + 13968*x**5 + 21690*x**4 - 26784*x**3 - 2916*x**2 + 15552*x - 5832
     g = R.dup_sqf_part(f)
 
     assert R.dup_isolate_real_roots(f) == \
@@ -451,12 +464,10 @@ c, d = ( QQ(0),  QQ(0)), (QQ(1), QQ(1))
 def test_dup_count_complex_roots_1():
     R, x = ring("x", ZZ)
 
-    # z-1
     f = x - 1
     assert R.dup_count_complex_roots(f, a, b) == 1
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # z+1
     f = x + 1
     assert R.dup_count_complex_roots(f, a, b) == 1
     assert R.dup_count_complex_roots(f, c, d) == 0
@@ -465,23 +476,19 @@ def test_dup_count_complex_roots_1():
 def test_dup_count_complex_roots_2():
     R, x = ring("x", ZZ)
 
-    # (z-1)*(z)
-    f = x**2 - x
+    f = (x - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-1)*(-z)
-    f = -x**2 + x
+    f = (x - 1)*(-x)
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z+1)*(z)
-    f = x**2 + x
+    f = (x + 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z+1)*(-z)
-    f = -x**2 - x
+    f = (x + 1)*(-x)
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 1
 
@@ -489,18 +496,15 @@ def test_dup_count_complex_roots_2():
 def test_dup_count_complex_roots_3():
     R, x = ring("x", ZZ)
 
-    # (z-1)*(z+1)
     f = x**2 - 1
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-1)*(z+1)*(z)
-    f = x**3 - x
+    f = (x**2 - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-1)*(z+1)*(-z)
-    f = -x**3 + x
+    f = (x**2 - 1)*(-x)
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 2
 
@@ -508,48 +512,39 @@ def test_dup_count_complex_roots_3():
 def test_dup_count_complex_roots_4():
     R, x = ring("x", ZZ)
 
-    # (z-I)*(z+I)
     f = x**2 + 1
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I)*(z+I)*(z)
-    f = x**3 + x
+    f = (x**2 + 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I)*(z+I)*(-z)
-    f = -x**3 - x
+    f = (x**2 + 1)*(-x)
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I)*(z+I)*(z-1)
-    f = x**3 - x**2 + x - 1
+    f = (x**2 + 1)*(x - 1)
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I)*(z+I)*(z-1)*(z)
-    f = x**4 - x**3 + x**2 - x
+    f = (x**2 + 1)*(x - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 3
 
-    # (z-I)*(z+I)*(z-1)*(-z)
-    f = -x**4 + x**3 - x**2 + x
+    f = (x**2 + 1)*(x - 1)*(-x)
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 3
 
-    # (z-I)*(z+I)*(z-1)*(z+1)
-    f = x**4 - 1
+    f = (x**2 + 1)*(x**2 - 1)
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I)*(z+I)*(z-1)*(z+1)*(z)
-    f = x**5 - x
+    f = (x**2 + 1)*(x**2 - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 5
     assert R.dup_count_complex_roots(f, c, d) == 3
 
-    # (z-I)*(z+I)*(z-1)*(z+1)*(-z)
-    f = -x**5 + x
+    f = (x**2 + 1)*(x**2 - 1)*(-x)
     assert R.dup_count_complex_roots(f, a, b) == 5
     assert R.dup_count_complex_roots(f, c, d) == 3
 
@@ -557,38 +552,31 @@ def test_dup_count_complex_roots_4():
 def test_dup_count_complex_roots_5():
     R, x = ring("x", ZZ)
 
-    # (z-I+1)*(z+I+1)
-    f = x**2 + 2*x + 2
+    f = (x + 1)**2 + 1
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 0
 
-    # (z-I+1)*(z+I+1)*(z-1)
-    f = x**3 + x**2 - 2
+    f = ((x + 1)**2 + 1)*(x - 1)
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I+1)*(z+I+1)*(z-1)*z
-    f = x**4 + x**3 - 2*x
+    f = ((x + 1)**2 + 1)*(x - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I+1)*(z+I+1)*(z+1)
-    f = x**3 + 3*x**2 + 4*x + 2
+    f = ((x + 1)**2 + 1)*(x + 1)
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 0
 
-    # (z-I+1)*(z+I+1)*(z+1)*z
-    f = x**4 + 3*x**3 + 4*x**2 + 2*x
+    f = ((x + 1)**2 + 1)*(x + 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I+1)*(z+I+1)*(z-1)*(z+1)
-    f = x**4 + 2*x**3 + x**2 - 2*x - 2
+    f = ((x + 1)**2 + 1)*(x**2 - 1)
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I+1)*(z+I+1)*(z-1)*(z+1)*z
-    f = x**5 + 2*x**4 + x**3 - 2*x**2 - 2*x
+    f = ((x + 1)**2 + 1)*(x**2 - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 5
     assert R.dup_count_complex_roots(f, c, d) == 2
 
@@ -596,38 +584,31 @@ def test_dup_count_complex_roots_5():
 def test_dup_count_complex_roots_6():
     R, x = ring("x", ZZ)
 
-    # (z-I-1)*(z+I-1)
-    f = x**2 - 2*x + 2
+    f = (x - 1)**2 + 1
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I-1)*(z+I-1)*(z-1)
-    f = x**3 - 3*x**2 + 4*x - 2
+    f = ((x - 1)**2 + 1)*(x - 1)
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I-1)*(z+I-1)*(z-1)*z
-    f = x**4 - 3*x**3 + 4*x**2 - 2*x
+    f = ((x - 1)**2 + 1)*(x - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 3
 
-    # (z-I-1)*(z+I-1)*(z+1)
-    f = x**3 - x**2 + 2
+    f = ((x - 1)**2 + 1)*(x + 1)
     assert R.dup_count_complex_roots(f, a, b) == 3
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I-1)*(z+I-1)*(z+1)*z
-    f = x**4 - x**3 + 2*x
+    f = ((x - 1)**2 + 1)*(x + 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I-1)*(z+I-1)*(z-1)*(z+1)
-    f = x**4 - 2*x**3 + x**2 + 2*x - 2
+    f = ((x - 1)**2 + 1)*(x**2 - 1)
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I-1)*(z+I-1)*(z-1)*(z+1)*z
-    f = x**5 - 2*x**4 + x**3 + 2*x**2 - 2*x
+    f = ((x - 1)**2 + 1)*(x**2 - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 5
     assert R.dup_count_complex_roots(f, c, d) == 3
 
@@ -635,53 +616,43 @@ def test_dup_count_complex_roots_6():
 def test_dup_count_complex_roots_7():
     R, x = ring("x", ZZ)
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)
-    f = x**4 + 4
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z-2)
-    f = x**5 - 2*x**4 + 4*x - 8
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x - 2)
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z**2-2)
-    f = x**6 - 2*x**4 + 4*x**2 - 8
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x**2 - 2)
     assert R.dup_count_complex_roots(f, a, b) == 4
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z-1)
-    f = x**5 - x**4 + 4*x - 4
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x - 1)
     assert R.dup_count_complex_roots(f, a, b) == 5
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z-1)*z
-    f = x**6 - x**5 + 4*x**2 - 4*x
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 6
     assert R.dup_count_complex_roots(f, c, d) == 3
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z+1)
-    f = x**5 + x**4 + 4*x + 4
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x + 1)
     assert R.dup_count_complex_roots(f, a, b) == 5
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z+1)*z
-    f = x**6 + x**5 + 4*x**2 + 4*x
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x + 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 6
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z-1)*(z+1)
-    f = x**6 - x**4 + 4*x**2 - 4
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x**2 - 1)
     assert R.dup_count_complex_roots(f, a, b) == 6
     assert R.dup_count_complex_roots(f, c, d) == 2
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z-1)*(z+1)*z
-    f = x**7 - x**5 + 4*x**3 - 4*x
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x**2 - 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 7
     assert R.dup_count_complex_roots(f, c, d) == 3
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z-1)*(z+1)*(z-I)*(z+I)
-    f = x**8 + 3*x**4 - 4
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x**2 - 1)*(x**2 + 1)
     assert R.dup_count_complex_roots(f, a, b) == 8
     assert R.dup_count_complex_roots(f, c, d) == 3
 
@@ -689,13 +660,11 @@ def test_dup_count_complex_roots_7():
 def test_dup_count_complex_roots_8():
     R, x = ring("x", ZZ)
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z-1)*(z+1)*(z-I)*(z+I)*z
-    f = x**9 + 3*x**5 - 4*x
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x**2 - 1)*(x**2 + 1)*x
     assert R.dup_count_complex_roots(f, a, b) == 9
     assert R.dup_count_complex_roots(f, c, d) == 4
 
-    # (z-I-1)*(z+I-1)*(z-I+1)*(z+I+1)*(z-1)*(z+1)*(z-I)*(z+I)*(z**2-2)*z
-    f = x**11 - 2*x**9 + 3*x**7 - 6*x**5 - 4*x**3 + 8*x
+    f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x**2 - 1)*(x**2 + 1)*(x**2 - 2)*x
     assert R.dup_count_complex_roots(f, a, b) == 9
     assert R.dup_count_complex_roots(f, c, d) == 4
 
@@ -703,8 +672,7 @@ def test_dup_count_complex_roots_8():
 def test_dup_count_complex_roots_implicit():
     R, x = ring("x", ZZ)
 
-    # z*(z-1)*(z+1)*(z-I)*(z+I)
-    f = x**5 - x
+    f = (x**2 + 1)*(x**2 - 1)*x
 
     assert R.dup_count_complex_roots(f) == 5
 
@@ -715,8 +683,7 @@ def test_dup_count_complex_roots_implicit():
 def test_dup_count_complex_roots_exclude():
     R, x = ring("x", ZZ)
 
-    # z*(z-1)*(z+1)*(z-I)*(z+I)
-    f = x**5 - x
+    f = (x**2 + 1)*(x**2 - 1)*x
 
     a, b = (-QQ(1), QQ(0)), (QQ(1), QQ(1))
 

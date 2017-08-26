@@ -1,26 +1,31 @@
 import decimal
 import fractions
 import math
+import numbers
 import re as regex
 from collections import defaultdict
 
 import mpmath
 import mpmath.libmp as mlib
-from mpmath.libmp import mpf_pow, mpf_pi, mpf_e, phi_fixed
 from mpmath.ctx_mp import mpnumeric
-from mpmath.libmp.libmpf import (finf as _mpf_inf, fninf as _mpf_ninf,
-                                 fnan as _mpf_nan, fzero as _mpf_zero,
-                                 _normalize as mpf_normalize, prec_to_dps)
+from mpmath.libmp import mpf_e, mpf_pi, mpf_pow, phi_fixed
+from mpmath.libmp.libmpf import _normalize as mpf_normalize
+from mpmath.libmp.libmpf import finf as _mpf_inf
+from mpmath.libmp.libmpf import fnan as _mpf_nan
+from mpmath.libmp.libmpf import fninf as _mpf_ninf
+from mpmath.libmp.libmpf import fzero as _mpf_zero
+from mpmath.libmp.libmpf import prec_to_dps
 
-from .containers import Tuple
-from .sympify import converter, sympify, _sympify, SympifyError
-from .singleton import S, Singleton
-from .expr import Expr, AtomicExpr
-from .decorators import _sympifyit
-from .cache import cacheit, clear_cache
-from .logic import fuzzy_not
-from .compatibility import as_int, HAS_GMPY, DIOFANT_INTS, gcd
 from ..utilities import filldedent
+from .cache import cacheit, clear_cache
+from .compatibility import DIOFANT_INTS, HAS_GMPY, as_int, gcd
+from .containers import Tuple
+from .decorators import _sympifyit
+from .expr import AtomicExpr, Expr
+from .logic import fuzzy_not
+from .singleton import S, Singleton
+from .sympify import SympifyError, converter, sympify
+
 
 rnd = mlib.round_nearest
 
@@ -51,8 +56,6 @@ def comp(z1, z2, tol=None):
         return True
     if not tol:
         if tol is None:
-            if type(z2) is str and getattr(z1, 'is_Number', False):
-                return str(z1) == z2
             a, b = Float(z1), Float(z2)
             return int(abs(a - b)*10**prec_to_dps(
                 min(a._prec, b._prec)))*2 <= 1
@@ -112,8 +115,7 @@ def seterr(divide=False):
 
 def _decimal_to_Rational_prec(dec):
     """Convert an ordinary decimal instance to a Rational."""
-    if not dec.is_finite():
-        raise TypeError("dec must be finite, got %s." % dec)
+    assert dec.is_finite()
     s, d, e = dec.as_tuple()
     prec = len(d)
     if e >= 0:  # it's an integer
@@ -337,11 +339,7 @@ class Number(AtomicExpr):
         from .containers import Tuple
         from ..functions.elementary.complexes import sign
 
-        try:
-            other = Number(other)
-        except TypeError:
-            msg = "unsupported operand type(s) for divmod(): '%s' and '%s'"
-            raise TypeError(msg % (type(self).__name__, type(other).__name__))
+        other = Number(other)
         if not other:
             raise ZeroDivisionError('modulo by zero')
         if self.is_Integer and other.is_Integer:
@@ -353,20 +351,16 @@ class Number(AtomicExpr):
         return Tuple(w, r)
 
     def __rdivmod__(self, other):
-        try:
-            other = Number(other)
-        except TypeError:
-            msg = "unsupported operand type(s) for divmod(): '%s' and '%s'"
-            raise TypeError(msg % (type(other).__name__, type(self).__name__))
+        other = Number(other)
         return divmod(other, self)
 
     def __round__(self, *args):
         return round(float(self), *args)
 
-    def _as_mpf_val(self, prec):
+    def _as_mpf_val(self, prec):  # pragma: no cover
         """Evaluation of mpf tuple accurate to at least prec bits."""
         raise NotImplementedError('%s needs ._as_mpf_val() method' %
-            (self.__class__.__name__))
+                                  (self.__class__.__name__))
 
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)
@@ -400,50 +394,50 @@ class Number(AtomicExpr):
     def __add__(self, other):
         if self is S.Zero:
             return other
-        if isinstance(other, Number):
-            if other is S.NaN:
-                return S.NaN
-            elif other is S.Infinity:
-                return S.Infinity
-            elif other is S.NegativeInfinity:
-                return S.NegativeInfinity
-        return AtomicExpr.__add__(self, other)
+        if other is S.NaN:
+            return S.NaN
+        elif other is S.Infinity:
+            return S.Infinity
+        elif other is S.NegativeInfinity:
+            return S.NegativeInfinity
+        else:
+            return AtomicExpr.__add__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
-        if isinstance(other, Number):
-            if other is S.NaN:
-                return S.NaN
-            elif other is S.Infinity:
-                return S.NegativeInfinity
-            elif other is S.NegativeInfinity:
-                return S.Infinity
-        return AtomicExpr.__sub__(self, other)
+        if other is S.NaN:
+            return S.NaN
+        elif other is S.Infinity:
+            return S.NegativeInfinity
+        elif other is S.NegativeInfinity:
+            return S.Infinity
+        else:
+            return AtomicExpr.__sub__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if self is S.One:
             return other
-        if isinstance(other, Number):
-            if other is S.NaN:
+        if other is S.NaN:
+            return S.NaN
+        elif other is S.Infinity:
+            if self.is_zero:
                 return S.NaN
-            elif other is S.Infinity:
-                if self.is_zero:
-                    return S.NaN
-                elif self.is_positive:
-                    return S.Infinity
-                else:
-                    return S.NegativeInfinity
-            elif other is S.NegativeInfinity:
-                if self.is_zero:
-                    return S.NaN
-                elif self.is_positive:
-                    return S.NegativeInfinity
-                else:
-                    return S.Infinity
+            elif self.is_positive:
+                return S.Infinity
+            else:
+                return S.NegativeInfinity
+        elif other is S.NegativeInfinity:
+            if self.is_zero:
+                return S.NaN
+            elif self.is_positive:
+                return S.NegativeInfinity
+            else:
+                return S.Infinity
         elif isinstance(other, Tuple):
             return NotImplemented
-        return AtomicExpr.__mul__(self, other)
+        else:
+            return AtomicExpr.__mul__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
@@ -453,40 +447,6 @@ class Number(AtomicExpr):
             elif other is S.Infinity or other is S.NegativeInfinity:
                 return S.Zero
         return AtomicExpr.__truediv__(self, other)
-
-    def __eq__(self, other):
-        raise NotImplementedError('%s needs .__eq__() method' %
-            (self.__class__.__name__))
-
-    def __lt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
-        raise NotImplementedError('%s needs .__lt__() method' %
-            (self.__class__.__name__))
-
-    def __le__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
-        raise NotImplementedError('%s needs .__le__() method' %
-            (self.__class__.__name__))
-
-    def __gt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
-        return _sympify(other).__lt__(self)
-
-    def __ge__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
-        return _sympify(other).__le__(self)
 
     def __hash__(self):
         return super(Number, self).__hash__()
@@ -511,7 +471,7 @@ class Number(AtomicExpr):
         """
         # a -> c*t
         if self.is_Rational or not kwargs.pop('rational', True):
-            return self, tuple()
+            return self, ()
         elif self.is_negative:
             return S.NegativeOne, (-self,)
         return S.One, (self,)
@@ -526,7 +486,7 @@ class Number(AtomicExpr):
         """
         # a -> c + t
         if self.is_Rational:
-            return self, tuple()
+            return self, ()
         return S.Zero, (self,)
 
     def as_coeff_Mul(self, rational=False):
@@ -715,7 +675,7 @@ class Float(Number):
 
     is_Float = True
 
-    def __new__(cls, num, prec=None):
+    def __new__(cls, num, dps=None):
         if isinstance(num, str):
             num = num.replace(' ', '')
             if num.startswith('.') and len(num) > 1:
@@ -733,7 +693,7 @@ class Float(Number):
         elif isinstance(num, mpmath.mpf):
             num = num._mpf_
 
-        if prec is None:
+        if dps is None:
             dps = 15
             if isinstance(num, Float):
                 return num
@@ -748,10 +708,10 @@ class Float(Number):
                     if num.is_Integer and isint:
                         dps = max(dps, len(str(num).lstrip('-')))
                     dps = max(15, dps)
-        elif prec == '':
+        elif dps == '':
             if not isinstance(num, str):
                 raise ValueError('The null string can only be used when '
-                'the number to Float is passed as a string or an integer.')
+                                 'the number to Float is passed as a string or an integer.')
             ok = None
             if _literal_float(num):
                 try:
@@ -766,8 +726,6 @@ class Float(Number):
                     ok = True
             if ok is None:
                 raise ValueError('string-float not recognized: %s' % num)
-        else:
-            dps = prec
 
         prec = mlib.libmpf.dps_to_prec(dps)
         if isinstance(num, float):
@@ -779,13 +737,12 @@ class Float(Number):
                 _mpf_ = mlib.from_str(str(num), prec, rnd)
             elif num.is_nan():
                 _mpf_ = _mpf_nan
-            elif num.is_infinite():
+            else:
+                assert num.is_infinite()
                 if num > 0:
                     _mpf_ = _mpf_inf
                 else:
                     _mpf_ = _mpf_ninf
-            else:
-                raise ValueError("unexpected decimal value %s" % str(num))
         elif isinstance(num, Rational):
             _mpf_ = mlib.from_rational(num.p, num.q, prec, rnd)
         elif isinstance(num, tuple) and len(num) in (3, 4):
@@ -859,11 +816,7 @@ class Float(Number):
         return mpmath.mpf(self._mpf_)
 
     def _as_mpf_val(self, prec):
-        from ..utilities.misc import debug
-        rv = mpf_norm(self._mpf_, prec)
-        if rv != self._mpf_ and self._prec == prec:
-            debug(self._mpf_, rv)
-        return rv
+        return mpf_norm(self._mpf_, prec)
 
     def _as_mpf_op(self, prec):
         return self._mpf_, max(prec, self._prec)
@@ -937,7 +890,7 @@ class Float(Number):
         if isinstance(other, Rational) and other.q != 1:
             # calculate mod with Rationals, *then* round the result
             return Float(Rational.__mod__(Rational(self), other),
-                prec_to_dps(self._prec))
+                         prec_to_dps(self._prec))
         if isinstance(other, Float):
             r = self/other
             if r == int(r):
@@ -947,15 +900,6 @@ class Float(Number):
             rhs, prec = other._as_mpf_op(self._prec)
             return Float._new(mlib.mpf_mod(self._mpf_, rhs, prec, rnd), prec)
         return Number.__mod__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __rmod__(self, other):
-        if isinstance(other, Float):
-            return other.__mod__(self)
-        if isinstance(other, Number):
-            rhs, prec = other._as_mpf_op(self._prec)
-            return Float._new(mlib.mpf_mod(rhs, self._mpf_, prec, rnd), prec)
-        return Number.__rmod__(self, other)
 
     def _eval_power(self, expt):
         """
@@ -1001,13 +945,10 @@ class Float(Number):
         if isinstance(other, float):
             # coerce to Float at same precision
             o = Float(other)
-            try:
-                ompf = o._as_mpf_val(self._prec)
-            except ValueError:
-                return False
+            ompf = o._as_mpf_val(self._prec)
             return bool(mlib.mpf_eq(self._mpf_, ompf))
         try:
-            other = _sympify(other)
+            other = sympify(other, strict=True)
         except SympifyError:
             return False    # diofant != other  -->  not ==
         if isinstance(other, NumberSymbol):
@@ -1026,60 +967,52 @@ class Float(Number):
             return bool(mlib.mpf_eq(self._mpf_, ompf))
         return False    # Float != non-Number
 
+    @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
-        if isinstance(other, NumberSymbol):
-            return other.__le__(self)
-        if other.is_comparable:
-            other = other.evalf()
-        if isinstance(other, Number) and other is not S.NaN:
-            return _sympify(bool(
-                mlib.mpf_gt(self._mpf_, other._as_mpf_val(self._prec))))
-        return Expr.__gt__(self, other)
-
-    def __ge__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
         if isinstance(other, NumberSymbol):
             return other.__lt__(self)
         if other.is_comparable:
             other = other.evalf()
         if isinstance(other, Number) and other is not S.NaN:
-            return _sympify(bool(
-                mlib.mpf_ge(self._mpf_, other._as_mpf_val(self._prec))))
-        return Expr.__ge__(self, other)
+            return sympify(bool(mlib.mpf_gt(self._mpf_,
+                                            other._as_mpf_val(self._prec))),
+                           strict=True)
+        return Expr.__gt__(self, other)
 
-    def __lt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
+    @_sympifyit('other', NotImplemented)
+    def __ge__(self, other):
         if isinstance(other, NumberSymbol):
-            return other.__ge__(self)
-        if other.is_extended_real and other.is_number:
+            return other.__le__(self)
+        if other.is_comparable:
             other = other.evalf()
         if isinstance(other, Number) and other is not S.NaN:
-            return _sympify(bool(
-                mlib.mpf_lt(self._mpf_, other._as_mpf_val(self._prec))))
-        return Expr.__lt__(self, other)
+            return sympify(bool(mlib.mpf_ge(self._mpf_,
+                                            other._as_mpf_val(self._prec))),
+                           strict=True)
+        return Expr.__ge__(self, other)
 
-    def __le__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
+    @_sympifyit('other', NotImplemented)
+    def __lt__(self, other):
         if isinstance(other, NumberSymbol):
             return other.__gt__(self)
         if other.is_extended_real and other.is_number:
             other = other.evalf()
         if isinstance(other, Number) and other is not S.NaN:
-            return _sympify(bool(
-                mlib.mpf_le(self._mpf_, other._as_mpf_val(self._prec))))
+            return sympify(bool(mlib.mpf_lt(self._mpf_,
+                                            other._as_mpf_val(self._prec))),
+                           strict=True)
+        return Expr.__lt__(self, other)
+
+    @_sympifyit('other', NotImplemented)
+    def __le__(self, other):
+        if isinstance(other, NumberSymbol):
+            return other.__ge__(self)
+        if other.is_extended_real and other.is_number:
+            other = other.evalf()
+        if isinstance(other, Number) and other is not S.NaN:
+            return sympify(bool(mlib.mpf_le(self._mpf_,
+                                            other._as_mpf_val(self._prec))),
+                           strict=True)
         return Expr.__le__(self, other)
 
     def __hash__(self):
@@ -1313,11 +1246,12 @@ class Rational(Number):
         if isinstance(other, Rational):
             n = (self.p*other.q) // (other.p*self.q)
             return Rational(self.p*other.q - n*other.p*self.q, self.q*other.q)
-        if isinstance(other, Float):
+        elif isinstance(other, Float):
             # calculate mod with Rationals, *then* round the answer
             return Float(self.__mod__(Rational(other)),
-                prec_to_dps(other._prec))
-        return Number.__mod__(self, other)
+                         prec_to_dps(other._prec))
+        else:
+            return Number.__mod__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __rmod__(self, other):
@@ -1327,19 +1261,15 @@ class Rational(Number):
 
     def _eval_power(self, expt):
         if isinstance(expt, Number):
-            if isinstance(expt, Float):
-                return self._eval_evalf(expt._prec)**expt
             if expt.is_negative:
                 # (3/4)**-2 -> (4/3)**2
                 ne = -expt
                 if (ne is S.One):
                     return Rational(self.q, self.p)
                 if self.is_negative:
-                    if expt.q != 1:
-                        return -(S.NegativeOne)**((expt.p % expt.q) /
-                               Integer(expt.q))*Rational(self.q, -self.p)**ne
-                    else:
-                        return S.NegativeOne**ne*Rational(self.q, -self.p)**ne
+                    return -((S.NegativeOne)**((expt.p % expt.q) /
+                                               Integer(expt.q)) *
+                             Rational(self.q, -self.p)**ne)
                 else:
                     return Rational(self.q, self.p)**ne
             if expt is S.Infinity:  # -oo already caught by test for negative
@@ -1350,20 +1280,19 @@ class Rational(Number):
                     # (-3/2)**oo -> oo + I*oo
                     return S.Infinity + S.Infinity*S.ImaginaryUnit
                 return S.Zero
-            if isinstance(expt, Integer):
+            if isinstance(expt, Float):
+                return self._eval_evalf(expt._prec)**expt
+            elif isinstance(expt, Integer):
                 # (4/3)**2 -> 4**2 / 3**2
                 return Rational(self.p**expt.p, self.q**expt.p)
-            if isinstance(expt, Rational):
+            else:  # Rational
                 if self.p != 1:
                     # (4/3)**(5/6) -> 4**(5/6)*3**(-5/6)
                     return Integer(self.p)**expt*Integer(self.q)**(-expt)
                 # as the above caught negative self.p, now self is positive
                 return Integer(self.q)**Rational(
-                expt.p*(expt.q - 1), expt.q) / \
+                    expt.p*(expt.q - 1), expt.q) / \
                     Integer(self.q)**Integer(expt.p)
-
-        if self.is_negative and expt.is_even:
-            return (-self)**expt
 
     def _as_mpf_val(self, prec):
         return mlib.from_rational(self.p, self.q, prec, rnd)
@@ -1380,11 +1309,8 @@ class Rational(Number):
             return -(-p//q)
         return p//q
 
+    @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            return False    # diofant != other  -->  not ==
         if isinstance(other, NumberSymbol):
             if other.is_irrational:
                 return False
@@ -1398,74 +1324,70 @@ class Rational(Number):
                 return mlib.mpf_eq(self._as_mpf_val(other._prec), other._mpf_)
         return False
 
+    @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
-        if isinstance(other, NumberSymbol):
-            return other.__le__(self)
-        expr = self
-        if isinstance(other, Number):
-            if isinstance(other, Rational):
-                return _sympify(bool(self.p*other.q > self.q*other.p))
-            if isinstance(other, Float):
-                return _sympify(bool(mlib.mpf_gt(
-                    self._as_mpf_val(other._prec), other._mpf_)))
-        elif other.is_number and other.is_extended_real:
-            expr, other = Integer(self.p), self.q*other
-        return Expr.__gt__(expr, other)
-
-    def __ge__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
         if isinstance(other, NumberSymbol):
             return other.__lt__(self)
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return _sympify(bool(self.p*other.q >= self.q*other.p))
+                return sympify(bool(self.p*other.q > self.q*other.p),
+                               strict=True)
             if isinstance(other, Float):
-                return _sympify(bool(mlib.mpf_ge(
-                    self._as_mpf_val(other._prec), other._mpf_)))
+                return sympify(bool(mlib.mpf_gt(self._as_mpf_val(other._prec),
+                                                other._mpf_)),
+                               strict=True)
+        elif other.is_number and other.is_extended_real:
+            expr, other = Integer(self.p), self.q*other
+        return Expr.__gt__(expr, other)
+
+    @_sympifyit('other', NotImplemented)
+    def __ge__(self, other):
+        if isinstance(other, NumberSymbol):
+            return other.__le__(self)
+        expr = self
+        if isinstance(other, Number):
+            if isinstance(other, Rational):
+                return sympify(bool(self.p*other.q >= self.q*other.p),
+                               strict=True)
+            if isinstance(other, Float):
+                return sympify(bool(mlib.mpf_ge(self._as_mpf_val(other._prec),
+                                                other._mpf_)),
+                               strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.p), self.q*other
         return Expr.__ge__(expr, other)
 
+    @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
         if isinstance(other, NumberSymbol):
-            return other.__ge__(self)
+            return other.__gt__(self)
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return _sympify(bool(self.p*other.q < self.q*other.p))
+                return sympify(bool(self.p*other.q < self.q*other.p),
+                               strict=True)
             if isinstance(other, Float):
-                return _sympify(bool(mlib.mpf_lt(
-                    self._as_mpf_val(other._prec), other._mpf_)))
+                return sympify(bool(mlib.mpf_lt(self._as_mpf_val(other._prec),
+                                                other._mpf_)),
+                               strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.p), self.q*other
         return Expr.__lt__(expr, other)
 
+    @_sympifyit('other', NotImplemented)
     def __le__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
         expr = self
         if isinstance(other, NumberSymbol):
-            return other.__gt__(self)
+            return other.__ge__(self)
         elif isinstance(other, Number):
             if isinstance(other, Rational):
-                return _sympify(bool(self.p*other.q <= self.q*other.p))
+                return sympify(bool(self.p*other.q <= self.q*other.p),
+                               strict=True)
             if isinstance(other, Float):
-                return _sympify(bool(mlib.mpf_le(
-                    self._as_mpf_val(other._prec), other._mpf_)))
+                return sympify(bool(mlib.mpf_le(self._as_mpf_val(other._prec),
+                                                other._mpf_)),
+                               strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.p), self.q*other
         return Expr.__le__(expr, other)
@@ -1489,8 +1411,6 @@ class Rational(Number):
     def gcd(self, other):
         """Compute GCD of `self` and `other`. """
         if isinstance(other, Rational):
-            if other is S.Zero:
-                return other
             return Rational(
                 Integer(igcd(self.p, other.p)),
                 Integer(ilcm(self.q, other.q)))
@@ -1537,6 +1457,17 @@ class Rational(Number):
                 return self, S.One
             return -self, S.NegativeOne
         return S.One, self
+
+    @property
+    def numerator(self):
+        return self.p
+
+    @property
+    def denominator(self):
+        return self.q
+
+
+numbers.Rational.register(Rational)
 
 
 class Integer(Rational):
@@ -1611,13 +1542,7 @@ class Integer(Rational):
         if isinstance(other, int):
             return Tuple(*(divmod(other, self.p)))
         else:
-            try:
-                other = Number(other)
-            except TypeError:
-                msg = "unsupported operand type(s) for divmod(): '%s' and '%s'"
-                oname = type(other).__name__
-                sname = type(self).__name__
-                raise TypeError(msg % (oname, sname))
+            other = Number(other)
             return Number.__divmod__(other, self)
 
     # TODO make it decorator + bytecodehacks?
@@ -1678,40 +1603,28 @@ class Integer(Rational):
             return (self.p == other.p)
         return Rational.__eq__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
         if isinstance(other, Integer):
-            return _sympify(self.p > other.p)
+            return sympify(self.p > other.p, strict=True)
         return Rational.__gt__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
         if isinstance(other, Integer):
-            return _sympify(self.p < other.p)
+            return sympify(self.p < other.p, strict=True)
         return Rational.__lt__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
         if isinstance(other, Integer):
-            return _sympify(self.p >= other.p)
+            return sympify(self.p >= other.p, strict=True)
         return Rational.__ge__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __le__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
         if isinstance(other, Integer):
-            return _sympify(self.p <= other.p)
+            return sympify(self.p <= other.p, strict=True)
         return Rational.__le__(self, other)
 
     def __hash__(self):
@@ -1752,11 +1665,6 @@ class Integer(Rational):
             return S.Infinity + S.ImaginaryUnit*S.Infinity
         if expt is S.NegativeInfinity:
             return Rational(1, self)**S.Infinity
-        if not isinstance(expt, Number):
-            # simplify when expt is even
-            # (-2)**k --> 2**k
-            if self.is_negative and expt.is_even:
-                return (-self)**expt
         if isinstance(expt, Float):
             # Rational knows how to exponentiate by a Float
             return super(Integer, self)._eval_power(expt)
@@ -1769,11 +1677,8 @@ class Integer(Rational):
             # invert base and change sign on exponent
             ne = -expt
             if self.is_negative:
-                if expt.q != 1:
-                    return -(S.NegativeOne)**((expt.p % expt.q) /
-                            Integer(expt.q))*Rational(1, -self)**ne
-                else:
-                    return (S.NegativeOne)**ne*Rational(1, -self)**ne
+                return -((S.NegativeOne)**((expt.p % expt.q) /
+                                           Integer(expt.q))*Rational(1, -self)**ne)
             else:
                 return Rational(1, self.p)**ne
         # see if base is a perfect root, sqrt(4) --> 2
@@ -1850,6 +1755,9 @@ class Integer(Rational):
 
     def __rfloordiv__(self, other):
         return Integer(Integer(other).p // self.p)
+
+
+numbers.Integral.register(Integer)
 
 
 # Add sympify converters
@@ -2196,9 +2104,6 @@ class One(IntegerConstant, metaclass=Singleton):
     def __neg__():
         return S.NegativeOne
 
-    def _eval_power(self, expt):
-        return self
-
     @staticmethod
     def factors(limit=None, use_trial=True, use_rho=False, use_pm1=False,
                 verbose=False, visual=False):
@@ -2245,20 +2150,15 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
         return S.One
 
     def _eval_power(self, expt):
-        if expt.is_odd:
-            return S.NegativeOne
-        if expt.is_even:
-            return S.One
         if isinstance(expt, Number):
             if isinstance(expt, Float):
                 return Float(-1.0)**expt
-            if expt is S.NaN:
+            elif expt in (S.Infinity, S.NegativeInfinity):
                 return S.NaN
-            if expt is S.Infinity or expt is S.NegativeInfinity:
-                return S.NaN
-            if expt is S.Half:
+            elif expt is S.Half:
                 return S.ImaginaryUnit
-            if isinstance(expt, Rational):
+            else:
+                assert isinstance(expt, Rational)
                 if expt.q == 2:
                     return S.ImaginaryUnit**Integer(expt.p)
                 i, r = divmod(expt.p, expt.q)
@@ -2267,20 +2167,14 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
         if isinstance(expt, Add):
             # Handle (-1)**((-1)**n/2 + m/2)
             e2 = 2*expt
-            if e2.is_even:
-                if e2.could_extract_minus_sign():
-                    e2 *= self
-            if e2.is_Add:
-                i, p = e2.as_two_terms()
-                if p.is_Pow and p.base is S.NegativeOne:
-                    if p.exp.is_integer:
-                        i = (i + 1)/2
-                        if i.is_even:
-                            return self**p.exp
-                        elif i.is_odd:
-                            return self**(p.exp + 1)
-                        else:
-                            return self**(p.exp + i)
+            if e2.is_even and e2.could_extract_minus_sign():
+                e2 *= self
+            assert e2.is_Add
+            i, p = e2.as_two_terms()
+            if p.is_Pow and p.base is S.NegativeOne and p.exp.is_integer:
+                i = (i + 1)/2
+                if i.is_even:
+                    return self**p.exp
 
 
 class Half(RationalConstant, metaclass=Singleton):
@@ -2462,20 +2356,16 @@ class Infinity(Number, metaclass=Singleton):
             return S.Infinity
         if expt.is_negative:
             return S.Zero
-        if expt is S.NaN:
-            return S.NaN
-        elif expt is S.ComplexInfinity:
+        if expt is S.ComplexInfinity:
             return S.NaN
         if expt.is_real is False and expt.is_number:
             expt_real = re(expt)
             if expt_real.is_positive:
                 return S.ComplexInfinity
-            if expt_real.is_negative:
+            elif expt_real.is_negative:
                 return S.Zero
-            if expt_real.is_zero:
+            elif expt_real.is_zero:
                 return S.NaN
-
-            return self**expt.evalf()
 
     def _as_mpf_val(self, prec):
         return mlib.finf
@@ -2486,20 +2376,14 @@ class Infinity(Number, metaclass=Singleton):
     def __eq__(self, other):
         return other is S.Infinity
 
+    @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
         if other.is_extended_real:
             return S.false
         return Expr.__lt__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __le__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
         if other.is_extended_real:
             if other.is_finite or other is S.NegativeInfinity:
                 return S.false
@@ -2509,11 +2393,8 @@ class Infinity(Number, metaclass=Singleton):
                 return S.true
         return Expr.__le__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
         if other.is_extended_real:
             if other.is_finite or other is S.NegativeInfinity:
                 return S.true
@@ -2523,11 +2404,8 @@ class Infinity(Number, metaclass=Singleton):
                 return S.false
         return Expr.__gt__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
         if other.is_extended_real:
             return S.true
         return Expr.__ge__(self, other)
@@ -2599,7 +2477,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
             if other is S.Zero or other is S.NaN:
                 return S.NaN
             elif other.is_Float:
-                if other is S.NaN or other.is_zero:
+                if other.is_zero:
                     return S.NaN
                 elif other.is_positive:
                     return Float('-inf')
@@ -2670,12 +2548,6 @@ class NegativeInfinity(Number, metaclass=Singleton):
                     expt is S.NegativeInfinity:
                 return S.NaN
 
-            if isinstance(expt, Integer) and expt.is_positive:
-                if expt.is_odd:
-                    return S.NegativeInfinity
-                else:
-                    return S.Infinity
-
             return S.NegativeOne**expt*S.Infinity**expt
 
     def _as_mpf_val(self, prec):
@@ -2687,11 +2559,8 @@ class NegativeInfinity(Number, metaclass=Singleton):
     def __eq__(self, other):
         return other is S.NegativeInfinity
 
+    @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
         if other.is_extended_real:
             if other.is_finite or other is S.Infinity:
                 return S.true
@@ -2701,29 +2570,20 @@ class NegativeInfinity(Number, metaclass=Singleton):
                 return S.false
         return Expr.__lt__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __le__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
         if other.is_extended_real:
             return S.true
         return Expr.__le__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
         if other.is_extended_real:
             return S.false
         return Expr.__gt__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
         if other.is_extended_real:
             if other.is_finite or other is S.Infinity:
                 return S.false
@@ -2885,17 +2745,12 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
         return S.ComplexInfinity
 
     def _eval_power(self, expt):
-        if expt is S.ComplexInfinity:
+        if expt in (S.Zero, S.ComplexInfinity):
             return S.NaN
-
-        if isinstance(expt, Number):
-            if expt is S.Zero:
-                return S.NaN
-            else:
-                if expt.is_positive:
-                    return S.ComplexInfinity
-                else:
-                    return S.Zero
+        elif expt.is_positive:
+            return S.ComplexInfinity
+        elif expt.is_negative:
+            return S.Zero
 
 
 zoo = S.ComplexInfinity
@@ -2921,11 +2776,8 @@ class NumberSymbol(AtomicExpr):
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)
 
+    @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            return False    # diofant != other  -->  not ==
         if self is other:
             return True
         if isinstance(other, Number) and self.is_irrational:
@@ -2933,57 +2785,29 @@ class NumberSymbol(AtomicExpr):
 
         return False    # NumberSymbol != non-(Number|self)
 
+    @_sympifyit('other', NotImplemented)
     def __lt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s < %s" % (self, other))
         if self is other:
             return S.false
-        if isinstance(other, Number):
-            approx = self.approximation_interval(other.__class__)
-            if approx is not None:
-                l, u = approx
-                if other < l:
-                    return S.false
-                if other > u:
-                    return S.true
-            return _sympify(self.evalf() < other)
-        if other.is_extended_real and other.is_number:
-            other = other.evalf()
-            return _sympify(self.evalf() < other)
         return Expr.__lt__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __le__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s <= %s" % (self, other))
         if self is other:
             return S.true
-        if other.is_extended_real and other.is_number:
-            other = other.evalf()
-        if isinstance(other, Number):
-            return _sympify(self.evalf() <= other)
         return Expr.__le__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s > %s" % (self, other))
-        r = _sympify((-self) < (-other))
+        r = sympify((-self) < (-other), strict=True)
         if r in (S.true, S.false):
             return r
         else:
             return Expr.__gt__(self, other)
 
+    @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
-        try:
-            other = _sympify(other)
-        except SympifyError:
-            raise TypeError("Invalid comparison %s >= %s" % (self, other))
-        r = _sympify((-self) <= (-other))
+        r = sympify((-self) <= (-other), strict=True)
         if r in (S.true, S.false):
             return r
         else:

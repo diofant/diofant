@@ -1,10 +1,10 @@
+from ..core import AtomicExpr, Integer, Pow, S, Symbol, diff
 from ..core.assumptions import StdFactKB
-from ..core import S, Pow, Symbol, Integer, AtomicExpr, diff
 from ..functions import sqrt
 from ..matrices import ImmutableMatrix
-from .coordsysrect import CoordSysCartesian
 from .basisdependent import (BasisDependent, BasisDependentAdd,
                              BasisDependentMul, BasisDependentZero)
+from .coordsysrect import CoordSysCartesian
 from .dyadic import BaseDyadic, Dyadic, DyadicAdd
 
 
@@ -193,8 +193,8 @@ class Vector(BasisDependent):
             return (mat[0][0] * (mat[1][1] * mat[2][2] - mat[1][2] *
                                  mat[2][1])
                     + mat[0][1] * (mat[1][2] * mat[2][0] - mat[1][0] *
-                    mat[2][2]) + mat[0][2] * (mat[1][0] * mat[2][1] -
-                    mat[1][1] * mat[2][0]))
+                                   mat[2][2]) + mat[0][2] * (mat[1][0] * mat[2][1] -
+                                                             mat[1][1] * mat[2][0]))
 
         outvec = Vector.zero
         for system, vect in other.separate().items():

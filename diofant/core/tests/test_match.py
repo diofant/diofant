@@ -1,10 +1,9 @@
 import pytest
 
-from diofant import (Add, cos, Derivative, diff, exp, Float, Function,
-                     I, Integer, log, Mul, oo, Rational, S, sin, sqrt,
-                     Symbol, symbols, Wild, pi, meijerg, WildFunction)
-
-from diofant.abc import x, y, a, b, c, gamma, mu, C, X, Y, Z, R, T
+from diofant import (Add, Derivative, Float, Function, I, Integer, Mul,
+                     Rational, S, Symbol, Wild, WildFunction, cos, diff, exp,
+                     log, meijerg, oo, pi, sin, sqrt, symbols)
+from diofant.abc import C, R, T, X, Y, Z, a, b, c, gamma, mu, x, y
 
 
 __all__ = ()
@@ -418,7 +417,7 @@ def test_sympyissue_3883():
     g2 = Wild('g2', exclude=[gamma])
     g3 = Wild('g3', exclude=[gamma])
     assert f.expand().match(g1 * log(gamma) + g2 * gamma + g3) == \
-    {g3: log(2)/2 + log(pi)/2, g1: -Rational(1, 2), g2: -mu**2/2 + mu*x - x**2/2}
+        {g3: log(2)/2 + log(pi)/2, g1: -Rational(1, 2), g2: -mu**2/2 + mu*x - x**2/2}
 
 
 def test_sympyissue_4418():
@@ -574,7 +573,7 @@ def test_sympyissue_2711():
     b = Wild('b')
 
     assert f.find(a) == {(S.Zero,), ((), ()), ((S.Zero,), ()), x, S.Zero,
-                             (), meijerg(((), ()), ((S.Zero,), ()), x)}
+                         (), meijerg(((), ()), ((S.Zero,), ()), x)}
     assert f.find(a + b) == \
         {meijerg(((), ()), ((S.Zero,), ()), x), x, S.Zero}
     assert f.find(a**2) == {meijerg(((), ()), ((S.Zero,), ()), x), x}
@@ -599,3 +598,16 @@ def test_sympyissue_8694():
     assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z - X, Y1: X + Y, Z1: -Y}
     eq = -Y + Z*cos(theta1) + (X + Y)*sin(theta1)
     assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z, Y1: X + Y, Z1: -Y}
+
+
+def test_diofantissue_462():
+    w = Wild('w', exclude=[x])
+    assert (-x).match(2*w*x) == {w: Rational(-1, 2)}
+    assert (-x**2).match(2*w*x**2) == {w: Rational(-1, 2)}
+    # see also sympy/sympy#12238
+    a11, a12, a22, a13, a23, a33 = symbols('a11 a12 a22 a13 a23 a33',
+                                           exclude=[x, y], cls=Wild)
+    eq = -x**2 + 12*x*y - 8*x - 36*y**2 - y - 4
+    tmpl = a11*x**2 + 2*a12*x*y + a22*y**2 + 2*a13*x + 2*a23*y + a33
+    assert eq.match(tmpl) == {a11: -1, a12: 6, a22: -36, a13: -4,
+                              a23: Rational(-1, 2), a33: -4}

@@ -1,6 +1,7 @@
 # this module tests that diofant works with true division turned on
 
-from diofant import Rational, Symbol, Float
+from diofant import Float, Rational, Symbol
+
 
 __all__ = ()
 
@@ -30,14 +31,14 @@ def dotest(s):
 
 def test_basic():
     def s(a, b):
-        x = a
-        x = +a
-        x = -a
-        x = a + b
-        x = a - b
-        x = a*b
-        x = a/b
-        x = a**b
+        a
+        +a
+        -a
+        a + b
+        a - b
+        a*b
+        a/b
+        a**b
     assert dotest(s)
 
 

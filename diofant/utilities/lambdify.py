@@ -6,9 +6,10 @@ lambda functions which can be used to calculate numerical values very fast.
 import inspect
 import textwrap
 
-from ..external import import_module
 from ..core.compatibility import is_sequence, iterable
+from ..external import import_module
 from .decorator import doctest_depends_on
+
 
 # These are the namespaces the lambda functions will use.
 MATH = {}
@@ -154,7 +155,7 @@ def _import(module, reload="False"):
 
 @doctest_depends_on(modules=('numpy'))
 def lambdify(args, expr, modules=None, printer=None, use_imps=True,
-        dummify=True):
+             dummify=True):
     """
     Returns a lambda function for fast calculation of numerical values.
 
@@ -294,9 +295,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     from .iterables import flatten
 
     # If the user hasn't specified any modules, use what is available.
-    module_provided = True
     if modules is None:
-        module_provided = False
         # Use either numpy (if available) or python.math where possible.
         # XXX: This leads to different behaviour on different systems and
         #      might be the reason for irreproducible errors.
@@ -356,7 +355,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         else:
             # It's an iterable. Try to get name by inspection of calling frame.
             name_list = [var_name for var_name, var_val in callers_local_vars
-                    if var_val is var]
+                         if var_val is var]
             if len(name_list) == 1:
                 names.append(name_list[0])
             else:
@@ -486,7 +485,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
         import re
         dum_args = [str(Dummy(str(i))) for i in range(len(args))]
         iter_args = ','.join([i if isiter(a) else i
-            for i, a in zip(dum_args, args)])
+                              for i, a in zip(dum_args, args)])
         lstr = lambdastr(flatten(args), expr, printer=printer, dummify=dummify)
         flat = '__flatten_args__'
         rv = 'lambda %s: (%s)(*list(%s([%s])))' % (

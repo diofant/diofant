@@ -8,10 +8,11 @@ Here we test the extent to which they cooperate
 import pytest
 
 from diofant import symbols
-from diofant.matrices import (Matrix, MatrixSymbol, eye, Identity,
-                              ImmutableMatrix)
-from diofant.matrices.expressions import MatrixExpr, MatAdd
+from diofant.matrices import (Identity, ImmutableMatrix, Matrix, MatrixSymbol,
+                              eye)
+from diofant.matrices.expressions import MatAdd, MatrixExpr
 from diofant.matrices.matrices import classof
+
 
 __all__ = ()
 

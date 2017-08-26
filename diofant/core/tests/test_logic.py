@@ -2,8 +2,9 @@ import itertools
 
 import pytest
 
-from diofant.core.logic import (fuzzy_not, Logic, And, Or, Not, fuzzy_and,
-                                fuzzy_or, _fuzzy_group)
+from diofant.core.logic import (And, Logic, Not, Or, _fuzzy_group, fuzzy_and,
+                                fuzzy_not, fuzzy_or)
+
 
 __all__ = ()
 
@@ -19,7 +20,7 @@ def test_fuzzy_group():
             None if None in i else (True if all(j for j in i) else False))
         assert _fuzzy_group(i, quick_exit=True) is (
             None if (i.count(False) > 1) else (None if None in i else (
-            True if all(j for j in i) else False)))
+                True if all(j for j in i) else False)))
 
 
 def test_fuzzy_not():

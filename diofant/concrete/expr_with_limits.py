@@ -1,7 +1,7 @@
-from ..core import Add, Mul, Expr, Equality, S, Dummy, Symbol, sympify, Tuple
-from ..sets.sets import Interval
+from ..core import Add, Dummy, Equality, Expr, Mul, S, Symbol, Tuple, sympify
 from ..core.compatibility import is_sequence
 from ..functions import piecewise_fold
+from ..sets.sets import Interval
 from ..utilities import flatten, sift
 
 
@@ -59,7 +59,7 @@ class ExprWithLimits(Expr):
             lhs = function.lhs
             rhs = function.rhs
             return Equality(cls(lhs, *symbols, **assumptions),
-                cls(rhs, *symbols, **assumptions))
+                            cls(rhs, *symbols, **assumptions))
         function = piecewise_fold(function)
 
         if function is S.NaN:
@@ -73,7 +73,7 @@ class ExprWithLimits(Expr):
             if len(free) != 1:
                 raise ValueError(
                     "specify dummy variables for %s" % function)
-            limits, orientation = [Tuple(s) for s in free], 1
+            limits = [Tuple(s) for s in free]
 
         # denest any nested calls
         while cls == type(function):
@@ -340,7 +340,7 @@ class AddWithLimits(ExprWithLimits):
             lhs = function.lhs
             rhs = function.rhs
             return Equality(cls(lhs, *symbols, **assumptions),
-                cls(rhs, *symbols, **assumptions))
+                            cls(rhs, *symbols, **assumptions))
         function = piecewise_fold(function)
 
         if function is S.NaN:
@@ -391,9 +391,9 @@ class AddWithLimits(ExprWithLimits):
             summand = self.function.factor(**hints)
             if summand.is_Mul:
                 out = sift(summand.args, lambda w: w.is_commutative
-                    and not set(self.variables) & w.free_symbols)
+                           and not set(self.variables) & w.free_symbols)
                 return Mul(*out[True])*self.func(Mul(*out[False]),
-                    *self.limits)
+                                                 *self.limits)
         else:
             summand = self.func(self.function, self.limits[0:-1]).factor()
             if not summand.has(self.variables[-1]):

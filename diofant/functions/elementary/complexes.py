@@ -1,12 +1,11 @@
-from ...core import (S, Add, Mul, sympify, Symbol, Dummy, factor_terms,
-                     Function, Derivative, Expr, pi, I, oo, Rational,
-                     Eq, Tuple)
-from ...core.function import ArgumentIndexError, AppliedUndef
+from ...core import (Add, Derivative, Dummy, Eq, Expr, Function, I, Mul,
+                     Rational, S, Symbol, Tuple, factor_terms, oo, pi, sympify)
+from ...core.function import AppliedUndef, ArgumentIndexError
+from ...logic.boolalg import BooleanAtom
+from .exponential import exp, exp_polar, log
 from .miscellaneous import sqrt
 from .piecewise import Piecewise
-from .exponential import exp, exp_polar, log
 from .trigonometric import atan2
-from ...logic.boolalg import BooleanAtom
 
 
 ###############################################################################
@@ -523,8 +522,8 @@ class Abs(Function):
             return Derivative(self.args[0], x, evaluate=True) \
                 * sign(conjugate(self.args[0]))
         return (re(self.args[0]) * Derivative(re(self.args[0]), x,
-            evaluate=True) + im(self.args[0]) * Derivative(im(self.args[0]),
-                x, evaluate=True)) / Abs(self.args[0])
+                                              evaluate=True) + im(self.args[0]) * Derivative(im(self.args[0]),
+                                                                                             x, evaluate=True)) / Abs(self.args[0])
 
     def _eval_rewrite_as_Heaviside(self, arg):
         # Note this only holds for real arg (since Heaviside is not defined
@@ -567,7 +566,7 @@ class arg(Function):
             c, arg_ = factor_terms(arg).as_coeff_Mul()
             if arg_.is_Mul:
                 arg_ = Mul(*[a if (sign(a) not in (-1, 1)) else
-                    sign(a) for a in arg_.args])
+                             sign(a) for a in arg_.args])
             arg_ = sign(c)*arg_
         else:
             arg_ = arg
@@ -583,7 +582,7 @@ class arg(Function):
     def _eval_derivative(self, t):
         x, y = re(self.args[0]), im(self.args[0])
         return (x * Derivative(y, t, evaluate=True) - y *
-                    Derivative(x, t, evaluate=True)) / (x**2 + y**2)
+                Derivative(x, t, evaluate=True)) / (x**2 + y**2)
 
     def _eval_rewrite_as_atan2(self, arg):
         x, y = re(self.args[0]), im(self.args[0])
@@ -691,22 +690,6 @@ class adjoint(Function):
 
     def _eval_transpose(self):
         return conjugate(self.args[0])
-
-    def _latex(self, printer, exp=None, *args):
-        arg = printer._print(self.args[0])
-        tex = r'%s^{\dag}' % arg
-        if exp:
-            tex = r'\left(%s\right)^{%s}' % (tex, printer._print(exp))
-        return tex
-
-    def _pretty(self, printer, *args):
-        from ...printing.pretty.stringpict import prettyForm
-        pform = printer._print(self.args[0], *args)
-        if printer._use_unicode:
-            pform = pform**prettyForm('\N{DAGGER}')
-        else:
-            pform = pform**prettyForm('+')
-        return pform
 
 ###############################################################################
 # ############# HANDLING OF POLAR NUMBERS ################################### #
@@ -862,21 +845,10 @@ class periodic_argument(Function):
             return
         if period == oo:
             return unbranched
-        if period != oo:
+        else:
             n = ceiling(unbranched/period - Rational(1, 2))*period
             if not n.has(ceiling):
                 return unbranched - n
-
-    def _eval_evalf(self, prec):
-        from .integers import ceiling
-        z, period = self.args
-        if period == oo:
-            unbranched = periodic_argument._getunbranched(z)
-            if unbranched is None:
-                return self
-            return unbranched._eval_evalf(prec)
-        ub = periodic_argument(z, oo)._eval_evalf(prec)
-        return (ub - ceiling(ub/period - Rational(1, 2))*period)._eval_evalf(prec)
 
     def _eval_is_real(self):
         if self.args[1].is_real and self.args[1].is_positive:
@@ -1082,14 +1054,14 @@ def _unpolarify(eq, exponents_only, pause=False):
     if eq.is_Pow and eq.base is not S.Exp1:
         expo = _unpolarify(eq.exp, exponents_only)
         base = _unpolarify(eq.base, exponents_only,
-            not (expo.is_integer and not pause))
+                           not (expo.is_integer and not pause))
         return base**expo
     elif eq.is_Pow and eq.base is S.Exp1:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
 
     if eq.is_Function and getattr(eq.func, 'unbranched', False):
         return eq.func(*[_unpolarify(x, exponents_only, exponents_only)
-            for x in eq.args])
+                         for x in eq.args])
 
     return eq.func(*[_unpolarify(x, exponents_only, True) for x in eq.args])
 

@@ -1,8 +1,8 @@
 import re
 
-from ..core import sympify
 from ..concrete import Sum, product
-from ..functions import sin, cos
+from ..core import sympify
+from ..functions import cos, sin
 
 
 class MaximaHelpers:

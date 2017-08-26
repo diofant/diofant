@@ -1,14 +1,14 @@
 from ..concrete.expr_with_limits import AddWithLimits
-from ..core import (Add, Basic, Tuple, Expr, diff, oo, Eq, S,
-                    Dummy, Symbol, Wild, sympify)
+from ..core import (Add, Basic, Dummy, Eq, Expr, S, Symbol, Tuple, Wild, diff,
+                    oo, sympify)
 from ..core.compatibility import is_sequence
-from .trigonometry import trigintegrate
-from .meijerint import meijerint_definite, meijerint_indefinite
-from ..utilities import filldedent
-from ..polys import Poly, PolynomialError
-from ..functions import Piecewise, sqrt, sign, piecewise_fold, log
-from ..series import limit, Order
+from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..matrices import MatrixBase
+from ..polys import Poly, PolynomialError
+from ..series import Order, limit
+from ..utilities import filldedent
+from .meijerint import meijerint_definite, meijerint_indefinite
+from .trigonometry import trigintegrate
 
 
 class Integral(AddWithLimits):
@@ -446,7 +446,7 @@ class Integral(AddWithLimits):
                         f, cond = res
                         if conds == 'piecewise':
                             ret = Piecewise((f, cond),
-                                          (self.func(function, (x, a, b)), True))
+                                            (self.func(function, (x, a, b)), True))
                         elif conds == 'separate':
                             if len(self.limits) != 1:
                                 raise ValueError('conds=separate not supported in '
@@ -859,7 +859,6 @@ class Integral(AddWithLimits):
                 except NotImplementedError:
                     from .meijerint import _debug
                     _debug('NotImplementedError from meijerint_definite')
-                    res = None
                 if h is not None:
                     parts.append(coeff * h)
                     continue

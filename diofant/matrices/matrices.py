@@ -2,17 +2,18 @@ import collections
 from functools import reduce
 from types import FunctionType
 
-from ..core import (Add, Basic, Atom, Expr, count_ops, Pow, Symbol, Dummy,
-                    symbols, Integer, ilcm, Float, S, sympify)
+from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow, S,
+                    Symbol, count_ops, ilcm, symbols, sympify)
+from ..core.compatibility import (NotIterable, as_int, default_sort_key,
+                                  is_sequence)
 from ..core.logic import fuzzy_and
-from ..core.compatibility import (is_sequence, default_sort_key,
-                                  NotIterable, as_int)
-from ..polys import PurePoly, roots, cancel, gcd
-from ..simplify import simplify as _simplify, signsimp, nsimplify
-from ..utilities import flatten
-from ..functions import sqrt, Max, Min, exp, factorial
-from ..printing.defaults import DefaultPrinting
+from ..functions import Max, Min, exp, factorial, sqrt
+from ..polys import PurePoly, cancel, gcd, roots
 from ..printing import sstr
+from ..printing.defaults import DefaultPrinting
+from ..simplify import simplify as _simplify
+from ..simplify import nsimplify, signsimp
+from ..utilities import flatten
 
 
 def _iszero(x):
@@ -178,7 +179,7 @@ class MatrixBase(DefaultPrinting):
                             ncol.add(1)
                 if len(ncol) > 1:
                     raise ValueError("Got rows of variable lengths: %s" %
-                        sorted(ncol))
+                                     sorted(ncol))
                 cols = ncol.pop() if ncol else 0
                 rows = len(in_mat) if cols else 0
                 if rows:
@@ -202,7 +203,7 @@ class MatrixBase(DefaultPrinting):
                 for i in range(rows):
                     flat_list.extend(
                         [cls._sympify(op(cls._sympify(i), cls._sympify(j)))
-                        for j in range(cols)])
+                         for j in range(cols)])
 
             # Matrix(2, 2, [1, 2, 3, 4])
             elif len(args) == 3 and is_sequence(args[2]):
@@ -504,11 +505,11 @@ class MatrixBase(DefaultPrinting):
             blst = B.T.tolist()
             alst = A.tolist()
             return classof(A, B)._new(A.rows, B.cols, lambda i, j:
-                reduce(lambda k, l: k + l,
-                    [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
+                                      reduce(lambda k, l: k + l,
+                                             [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
         else:
             return self._new(self.rows, self.cols,
-                [i*other for i in self._mat])
+                             [i*other for i in self._mat])
 
     def __rmul__(self, a):
         if getattr(a, 'is_Matrix', False):
@@ -842,7 +843,7 @@ class MatrixBase(DefaultPrinting):
         elif self.rows >= self.cols:
             L = (self.T*self)._cholesky()
             rhs = self.T*rhs
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Under-determined System.")
         Y = L._lower_triangular_solve(rhs)
         return (L.T)._upper_triangular_solve(Y)
@@ -910,7 +911,7 @@ class MatrixBase(DefaultPrinting):
         elif self.rows >= self.cols:
             L, D = (self.T*self).LDLdecomposition()
             rhs = self.T*rhs
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Under-determined System.")
         Y = L._lower_triangular_solve(rhs)
         Z = D._diagonal_solve(Y)
@@ -978,32 +979,6 @@ class MatrixBase(DefaultPrinting):
         t = self.T
         return (t*self).inv(method=method)*t*rhs
 
-    def solve(self, rhs, method='GE'):
-        """Return solution to self*soln = rhs using given inversion method.
-
-        See Also
-        ========
-
-        inv
-        """
-        if not self.is_square:
-            if self.rows < self.cols:
-                raise ValueError('Under-determined system.')
-            elif self.rows > self.cols:
-                raise ValueError('For over-determined system, M, having '
-                    'more rows than columns, try M.solve_least_squares(rhs).')
-        else:
-            return self.inv(method=method)*rhs
-
-    def __mathml__(self):
-        mml = ""
-        for i in range(self.rows):
-            mml += "<matrixrow>"
-            for j in range(self.cols):
-                mml += self[i, j].__mathml__()
-            mml += "</matrixrow>"
-        return "<matrix>" + mml + "</matrix>"
-
     def extract(self, rowsList, colsList):
         """Return a submatrix by specifying a list of rows and columns.
         Negative indices can be given. All indices must be in the range
@@ -1047,7 +1022,7 @@ class MatrixBase(DefaultPrinting):
         rowsList = [a2idx(k, self.rows) for k in rowsList]
         colsList = [a2idx(k, self.cols) for k in colsList]
         return self._new(len(rowsList), len(colsList),
-                lambda i, j: flat_list[rowsList[i]*cols + colsList[j]])
+                         lambda i, j: flat_list[rowsList[i]*cols + colsList[j]])
 
     def key2bounds(self, keys):
         """Converts a key with potentially mixed types of keys (integer and slice)
@@ -1093,7 +1068,7 @@ class MatrixBase(DefaultPrinting):
             if not len(key) == 2:
                 raise TypeError('key must be a sequence of length 2')
             return [a2idx(i, n) if not isinstance(i, slice) else i
-                for i, n in zip(key, self.shape)]
+                    for i, n in zip(key, self.shape)]
         elif isinstance(key, slice):
             return key.indices(len(self))[:2]
         else:
@@ -1178,7 +1153,7 @@ class MatrixBase(DefaultPrinting):
         return self.applyfunc(lambda x: x.xreplace(rule))
 
     def expand(self, deep=True, modulus=None, power_base=True, power_exp=True,
-            mul=True, log=True, multinomial=True, basic=True, **hints):
+               mul=True, log=True, multinomial=True, basic=True, **hints):
         """Apply core.function.expand to each entry of the matrix.
 
         Examples
@@ -1194,7 +1169,7 @@ class MatrixBase(DefaultPrinting):
         """
         return self.applyfunc(lambda x: x.expand(
                               deep, modulus, power_base, power_exp, mul, log, multinomial, basic,
-        **hints))
+                              **hints))
 
     def simplify(self, ratio=1.7, measure=count_ops):
         """Apply simplify to each element of the matrix.
@@ -1212,9 +1187,6 @@ class MatrixBase(DefaultPrinting):
         """
         return self.applyfunc(lambda x: x.simplify(ratio, measure))
     _eval_simplify = simplify
-
-    def doit(self, **kwargs):
-        return self
 
     def print_nonzero(self, symb="X"):
         """Shows location of non-zero entries for fast shape lookup.
@@ -1430,7 +1402,7 @@ class MatrixBase(DefaultPrinting):
         adjugate
         """
         out = self._new(self.rows, self.cols, lambda i, j:
-                self.cofactor(i, j, method))
+                        self.cofactor(i, j, method))
         return out
 
     def minorEntry(self, i, j, method="berkowitz"):
@@ -1445,7 +1417,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not 0 <= i < self.rows or not 0 <= j < self.cols:
             raise ValueError("`i` and `j` must satisfy 0 <= i < `self.rows` " +
-                "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
+                             "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
         return self.minorMatrix(i, j).det(method)
 
     def minorMatrix(self, i, j):
@@ -1460,7 +1432,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not 0 <= i < self.rows or not 0 <= j < self.cols:
             raise ValueError("`i` and `j` must satisfy 0 <= i < `self.rows` " +
-                "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
+                             "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
         M = self.as_mutable()
         M.row_del(i)
         M.col_del(j)
@@ -1610,9 +1582,9 @@ class MatrixBase(DefaultPrinting):
             # normalize it
             R[j, j] = tmp.norm()
             Q[:, j] = tmp / R[j, j]
-            if Q[:, j].norm() != 1:
-                raise NotImplementedError(
-                    "Could not normalize the vector %d." % j)
+            if Q[:, j].norm() != 1:  # pragma: no cover
+                raise NotImplementedError("Couldn't normalize the "
+                                          "vector %d." % j)
             for i in range(j):
                 R[i, j] = Q[:, i].dot(mat[:, j])
         return cls(Q), cls(R)
@@ -1677,7 +1649,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not is_sequence(b):
             raise TypeError("`b` must be an ordered iterable or Matrix, not %s." %
-                type(b))
+                            type(b))
         if not (self.rows * self.cols == b.rows * b.cols == 3):
             raise ShapeError("Dimensions incorrect for cross product.")
         else:
@@ -1723,7 +1695,7 @@ class MatrixBase(DefaultPrinting):
                 return self.dot(Matrix(b))
             else:
                 raise TypeError("`b` must be an ordered iterable or Matrix, not %s." %
-                type(b))
+                                type(b))
 
         mat = self
         if mat.cols == b.rows:
@@ -1834,10 +1806,7 @@ class MatrixBase(DefaultPrinting):
 
             # Otherwise generalize the 2-norm, Sum(x_i**ord)**(1/ord)
             # Note that while useful this is not mathematically a norm
-            try:
-                return Pow(Add(*(abs(i)**ord for i in vals)), Integer(1) / ord)
-            except (NotImplementedError, TypeError):
-                raise ValueError("Expected order to be Number, Symbol, oo")
+            return Pow(Add(*(abs(i)**ord for i in vals)), Integer(1) / ord)
 
         # Matrix Norms
         else:
@@ -1854,7 +1823,7 @@ class MatrixBase(DefaultPrinting):
                 # Reshape as vector and send back to norm function
                 return self.vec().norm(ord=2)
 
-            else:
+            else:  # pragma: no cover
                 raise NotImplementedError("Matrix Norms under development")
 
     def normalized(self):
@@ -1938,12 +1907,9 @@ class MatrixBase(DefaultPrinting):
     def exp(self):
         """Return the exponentiation of a square matrix."""
         if not self.is_square:
-            raise NonSquareMatrixError(
-                "Exponentiation is valid only for square matrices")
-        try:
-            P, cells = self.jordan_cells()
-        except MatrixError:
-            raise NotImplementedError("Exponentiation is implemented only for matrices for which the Jordan normal form can be computed")
+            raise NonSquareMatrixError("Exponentiation is valid only "
+                                       "for square matrices")
+        P, cells = self.jordan_cells()
 
         def _jblock_exponential(b):
             # This function computes the matrix exponential for one single Jordan block
@@ -2100,8 +2066,8 @@ class MatrixBase(DefaultPrinting):
         is_upper_hessenberg
         """
         return all(self[i, j].is_zero
-            for i in range(1, self.rows)
-            for j in range(i))
+                   for i in range(1, self.rows)
+                   for j in range(i))
 
     @property
     def is_lower(self):
@@ -2147,8 +2113,8 @@ class MatrixBase(DefaultPrinting):
         is_lower_hessenberg
         """
         return all(self[i, j].is_zero
-            for i in range(self.rows)
-            for j in range(i + 1, self.cols))
+                   for i in range(self.rows)
+                   for j in range(i + 1, self.cols))
 
     @property
     def is_hermitian(self):
@@ -2217,8 +2183,8 @@ class MatrixBase(DefaultPrinting):
         is_upper
         """
         return all(self[i, j].is_zero
-            for i in range(2, self.rows)
-            for j in range(i - 1))
+                   for i in range(2, self.rows)
+                   for j in range(i - 1))
 
     @property
     def is_lower_hessenberg(self):
@@ -2248,8 +2214,8 @@ class MatrixBase(DefaultPrinting):
         is_lower
         """
         return all(self[i, j].is_zero
-            for i in range(self.rows)
-            for j in range(i + 2, self.cols))
+                   for i in range(self.rows)
+                   for j in range(i + 2, self.cols))
 
     def is_symbolic(self):
         """Checks if any elements contain Symbols.
@@ -2770,10 +2736,10 @@ class MatrixBase(DefaultPrinting):
                     if simplify:
                         v = simpfunc(v)
                     if v:
-                        if j in pivots:
+                        if j in pivots:  # pragma: no cover
                             # XXX: Is this the correct error?
-                            raise NotImplementedError(
-                                "Could not compute the nullspace of `self`.")
+                            raise NotImplementedError("Couldn't compute the "
+                                                      "nullspace of `self`.")
                         basis[basiskey.index(j)][i, 0] = -v
         return [self._new(b) for b in basis]
 
@@ -2967,7 +2933,7 @@ class MatrixBase(DefaultPrinting):
         if flags.pop('rational', True):
             if any(v.has(Float) for v in mat):
                 mat = mat._new(mat.rows, mat.cols,
-                    [nsimplify(v, rational=True) for v in mat])
+                               [nsimplify(v, rational=True) for v in mat])
 
         flags.pop('simplify', None)  # pop unsupported flag
         return mat.berkowitz_eigenvals(**flags)
@@ -2989,7 +2955,6 @@ class MatrixBase(DefaultPrinting):
         """
         from . import eye
 
-        simplify = flags.get('simplify', True)
         primitive = bool(flags.get('simplify', False))
         chop = flags.pop('chop', False)
 
@@ -3015,12 +2980,7 @@ class MatrixBase(DefaultPrinting):
             # whether tmp.is_symbolic() is True or False, it is possible that
             # the basis will come back as [] in which case simplification is
             # necessary.
-            if not basis:
-                # The nullspace routine failed, try it again with simplification
-                basis = tmp.nullspace(simplify=simplify)
-                if not basis:
-                    raise NotImplementedError(
-                        "Can't evaluate eigenvector for eigenvalue %s" % r)
+
             if primitive:
                 # the relationship A*e = lambda*e will still hold if we change the
                 # eigenvector; so if simplify is True we tidy up any normalization
@@ -3094,17 +3054,6 @@ class MatrixBase(DefaultPrinting):
         singularvalues = self.singular_values()
         return Max(*singularvalues) / Min(*singularvalues)
 
-    def __getattr__(self, attr):
-        if attr in ('diff', 'integrate', 'limit'):
-            def doit(*args):
-                def item_doit(item):
-                    return getattr(item, attr)(*args)
-                return self.applyfunc(item_doit)
-            return doit
-        else:
-            raise AttributeError(
-                "%s has no attribute %s." % (self.__class__.__name__, attr))
-
     def integrate(self, *args):
         """Integrate each element of the matrix.
 
@@ -3130,7 +3079,7 @@ class MatrixBase(DefaultPrinting):
         diff
         """
         return self._new(self.rows, self.cols,
-                lambda i, j: self[i, j].integrate(*args))
+                         lambda i, j: self[i, j].integrate(*args))
 
     def limit(self, *args):
         """Calculate the limit of each element in the matrix.
@@ -3153,7 +3102,7 @@ class MatrixBase(DefaultPrinting):
         diff
         """
         return self._new(self.rows, self.cols,
-                lambda i, j: self[i, j].limit(*args))
+                         lambda i, j: self[i, j].limit(*args))
 
     def diff(self, *args):
         """Calculate the derivative of each element in the matrix.
@@ -3176,7 +3125,7 @@ class MatrixBase(DefaultPrinting):
         limit
         """
         return self._new(self.rows, self.cols,
-                lambda i, j: self[i, j].diff(*args))
+                         lambda i, j: self[i, j].diff(*args))
 
     def vec(self):
         """Return the Matrix converted into a one column matrix by stacking columns
@@ -4029,15 +3978,10 @@ class MatrixBase(DefaultPrinting):
         # Trivial case: pseudoinverse of all-zero matrix is its transpose.
         if A.is_zero:
             return AH
-        try:
-            if self.rows >= self.cols:
-                return (AH * A).inv() * AH
-            else:
-                return AH * (A * AH).inv()
-        except ValueError:
-            # Matrix is not full rank, so A*AH cannot be inverted.
-            raise NotImplementedError('Rank-deficient matrices are not yet '
-                                      'supported.')
+        if self.rows >= self.cols:
+            return (AH * A).inv() * AH
+        else:
+            return AH * (A * AH).inv()
 
     def pinv_solve(self, B, arbitrary_matrix=None):
         """Solve Ax = B using the Moore-Penrose pseudoinverse.
@@ -4148,14 +4092,6 @@ def classof(A, B):
             return B.__class__
     except Exception:
         pass
-    try:
-        import numpy
-        if isinstance(A, numpy.ndarray):
-            return B.__class__
-        if isinstance(B, numpy.ndarray):
-            return A.__class__
-    except Exception:
-        pass
     raise TypeError("Incompatible classes %s, %s" % (A.__class__, B.__class__))
 
 
@@ -4222,7 +4158,7 @@ def mgamma(mu, lower=False):
             (-1, 0, 0, 0),
             (0, 1, 0, 0)
         )
-    elif mu == 5:
+    else:  # mu == 5
         mat = (
             (0, 0, 1, 0),
             (0, 0, 0, 1),

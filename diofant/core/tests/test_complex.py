@@ -1,6 +1,7 @@
-from diofant import (Symbol, sqrt, I, Integer, Rational, cos, sin, im, re,
-                     Abs, exp, sinh, cosh, tan, tanh, conjugate, sign, cot,
-                     coth, pi, symbols, expand_complex)
+from diofant import (Abs, I, Integer, Rational, Symbol, conjugate, cos, cosh,
+                     cot, coth, exp, expand_complex, im, pi, re, sign, sin,
+                     sinh, sqrt, symbols, tan, tanh)
+
 
 __all__ = ()
 
@@ -59,7 +60,7 @@ def test_evalc():
     z = Symbol("z")
     assert ((x + I*y)**2).expand(complex=True) == x**2 + 2*I*x*y - y**2
     assert expand_complex(z**(2*I)) == (re((re(z) + I*im(z))**(2*I)) +
-        I*im((re(z) + I*im(z))**(2*I)))
+                                        I*im((re(z) + I*im(z))**(2*I)))
     assert expand_complex(
         z**(2*I), deep=False) == I*im(z**(2*I)) + re(z**(2*I))
 
@@ -162,7 +163,7 @@ def test_sympyissue_5084():
 
 def test_sympyissue_5236():
     assert (cos(1 + I)**3).as_real_imag() == (-3*sin(1)**2*sinh(1)**2*cos(1)*cosh(1) +
-        cos(1)**3*cosh(1)**3, -3*cos(1)**2*cosh(1)**2*sin(1)*sinh(1) + sin(1)**3*sinh(1)**3)
+                                              cos(1)**3*cosh(1)**3, -3*cos(1)**2*cosh(1)**2*sin(1)*sinh(1) + sin(1)**3*sinh(1)**3)
 
 
 def test_real_imag():

@@ -1,12 +1,12 @@
 from functools import wraps
 
-from ...core import (S, Symbol, Tuple, Integer, Expr,
-                     SympifyError, sympify, AtomicExpr)
-from ...core.assumptions import StdFactKB
-from ...core.logic import fuzzy_bool
-from ...core.decorators import call_highest_priority, _sympifyit
-from ...functions import conjugate, adjoint
 from .. import ShapeError
+from ...core import (AtomicExpr, Expr, Integer, S, Symbol, SympifyError, Tuple,
+                     sympify)
+from ...core.assumptions import StdFactKB
+from ...core.decorators import _sympifyit, call_highest_priority
+from ...core.logic import fuzzy_bool
+from ...functions import adjoint, conjugate
 from ...simplify import simplify
 
 
@@ -50,6 +50,7 @@ class MatrixExpr(Expr):
 
     # The following is adapted from the core Expr object
     def __neg__(self):
+        from .matmul import MatMul
         return MatMul(S.NegativeOne, self).doit()
 
     def __abs__(self):
@@ -58,36 +59,44 @@ class MatrixExpr(Expr):
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__radd__')
     def __add__(self, other):
+        from .matadd import MatAdd
         return MatAdd(self, other).doit()
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__add__')
     def __radd__(self, other):
+        from .matadd import MatAdd
         return MatAdd(other, self).doit()
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rsub__')
     def __sub__(self, other):
+        from .matadd import MatAdd
         return MatAdd(self, -other).doit()
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__sub__')
     def __rsub__(self, other):
+        from .matadd import MatAdd
         return MatAdd(other, -self).doit()
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rmul__')
     def __mul__(self, other):
+        from .matmul import MatMul
         return MatMul(self, other).doit()
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__mul__')
     def __rmul__(self, other):
+        from .matmul import MatMul
         return MatMul(other, self).doit()
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rpow__')
     def __pow__(self, other):
+        from .inverse import Inverse
+        from .matpow import MatPow
         if not self.is_square:
             raise ShapeError("Power of non-square matrix %s" % self)
         elif self.is_Identity:
@@ -138,9 +147,11 @@ class MatrixExpr(Expr):
         return Inverse(self)
 
     def _eval_transpose(self):
+        from .transpose import Transpose
         return Transpose(self)
 
     def _eval_power(self, exp):
+        from .matpow import MatPow
         return MatPow(self, exp)
 
     def _eval_simplify(self, **kwargs):
@@ -241,8 +252,8 @@ class MatrixExpr(Expr):
         """
         from ..immutable import ImmutableMatrix
         return ImmutableMatrix([[    self[i, j]
-                            for j in range(self.cols)]
-                            for i in range(self.rows)])
+                                     for j in range(self.cols)]
+                                for i in range(self.rows)])
 
     def as_mutable(self):
         """
@@ -293,6 +304,7 @@ class MatrixExpr(Expr):
         return self
 
     def as_coeff_mmul(self):
+        from .matmul import MatMul
         return 1, MatMul(self)
 
 
@@ -481,10 +493,3 @@ class ZeroMatrix(MatrixExpr):
 
     def __bool__(self):
         return False
-
-
-from .matmul import MatMul
-from .matadd import MatAdd
-from .matpow import MatPow
-from .transpose import Transpose
-from .inverse import Inverse

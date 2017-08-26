@@ -1,13 +1,14 @@
 import pytest
 
-from diofant import (Symbol, gamma, I, oo, nan, zoo, factorial, sqrt, Rational,
-                     log, Integer, polygamma, EulerGamma, pi, uppergamma, S,
-                     expand_func, loggamma, sin, cos, O, lowergamma, exp, erf,
-                     exp_polar, harmonic, zeta, conjugate, trigamma, im)
+from diofant import (EulerGamma, I, Integer, O, Rational, S, Symbol, conjugate,
+                     cos, erf, exp, exp_polar, expand_func, factorial, gamma,
+                     harmonic, im, log, loggamma, lowergamma, nan, oo, pi,
+                     polygamma, sin, sqrt, trigamma, uppergamma, zeta, zoo)
 from diofant.core.function import ArgumentIndexError
-from diofant.utilities.randtest import (test_derivative_numerically as td,
-                                        random_complex_number as randcplx,
-                                        verify_numerically as tn)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_numerically as tn
+
 
 __all__ = ()
 
@@ -88,8 +89,8 @@ def test_gamma_series():
         1 - EulerGamma*x + x**2*(EulerGamma**2/2 + pi**2/12) + O(x**3)
     assert gamma(x).series(x, -1, 3) == \
         -1/(x + 1) + EulerGamma - 1 + (x + 1)*(-1 - pi**2/12 - EulerGamma**2/2 +
-       EulerGamma) + (x + 1)**2*(-1 - pi**2/12 - EulerGamma**2/2 + EulerGamma**3/6 -
-       polygamma(2, 1)/6 + EulerGamma*pi**2/12 + EulerGamma) + O((x + 1)**3, (x, -1))
+                                               EulerGamma) + (x + 1)**2*(-1 - pi**2/12 - EulerGamma**2/2 + EulerGamma**3/6 -
+                                                                         polygamma(2, 1)/6 + EulerGamma*pi**2/12 + EulerGamma) + O((x + 1)**3, (x, -1))
 
 
 def tn_branch(s, func):

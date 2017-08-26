@@ -1,12 +1,13 @@
 """ Tools for doing common subexpression elimination."""
 
-from ..core import (Basic, Mul, Add, Pow, sympify, Symbol, Tuple,
-                    S, factor_terms)
-from ..core.function import _coeff_isneg
-from ..core.compatibility import iterable
-from ..utilities.iterables import (filter_symbols, numbered_symbols,
-                                   sift, topological_sort, ordered)
 from . import cse_opts
+from ..core import (Add, Basic, Mul, Pow, S, Symbol, Tuple, factor_terms,
+                    sympify)
+from ..core.compatibility import iterable
+from ..core.function import _coeff_isneg
+from ..utilities.iterables import (filter_symbols, numbered_symbols, ordered,
+                                   sift, topological_sort)
+
 
 # (preprocessor, postprocessor) pairs which are commonly useful. They should
 # each take a diofant expression and return a possibly transformed expression.
@@ -158,7 +159,7 @@ def opt_cse(exprs, order='canonical'):
     >>> opt_subs
     {x**(-2): 1/(x**2)}
     """
-    opt_subs = dict()
+    opt_subs = {}
 
     adds = set()
     muls = set()
@@ -273,7 +274,7 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
         expressions where speed is a concern, use the setting order='none'.
     """
     if opt_subs is None:
-        opt_subs = dict()
+        opt_subs = {}
 
     # Find repeated sub-expressions
 
@@ -310,7 +311,7 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
 
     replacements = []
 
-    subs = dict()
+    subs = {}
 
     def _rebuild(expr):
 
@@ -457,7 +458,7 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
     del temp
 
     if optimizations is None:
-        optimizations = list()
+        optimizations = []
     elif optimizations == 'basic':
         optimizations = basic_optimizations
 
@@ -465,7 +466,7 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
     reduced_exprs = [preprocess_for_cse(e, optimizations) for e in exprs]
 
     excluded_symbols = set().union(*[expr.atoms(Symbol)
-                                   for expr in reduced_exprs])
+                                     for expr in reduced_exprs])
 
     if symbols is None:
         symbols = numbered_symbols()

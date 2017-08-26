@@ -45,7 +45,7 @@ References
 
 from collections import defaultdict
 
-from .logic import Logic, And, Or, Not
+from .logic import And, Logic, Not, Or
 
 
 def _base_fact(atom):

@@ -34,6 +34,7 @@ import string
 from .core import Symbol, symbols
 from .core.alphabets import greeks
 
+
 # ##### Symbol definitions #####
 
 a, b, c, d, e, f, g, h, i, j, k, l, m = symbols('a:m')

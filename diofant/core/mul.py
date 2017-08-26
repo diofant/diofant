@@ -1,14 +1,15 @@
-from collections import defaultdict
 import operator
+from collections import defaultdict
 from functools import reduce
 
-from .sympify import sympify
 from .basic import Basic
-from .singleton import S
-from .operations import AssocOp
 from .cache import cacheit
-from .logic import fuzzy_not, _fuzzy_group, fuzzy_and
 from .compatibility import default_sort_key
+from .logic import _fuzzy_group, fuzzy_and, fuzzy_not
+from .operations import AssocOp
+from .singleton import S
+from .sympify import sympify
+
 
 # internal marker to indicate:
 #   "there are still non-commutative objects -- don't forget to process them"
@@ -307,6 +308,7 @@ class Mul(AssocOp):
                                 b = -b
                             if b is not S.One:
                                 pnum_rat.setdefault(b, []).append(e)
+                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         elif b.is_positive or e.is_integer:
                             num_exp.append((b, e))
@@ -767,7 +769,7 @@ class Mul(AssocOp):
         n, d = fraction(expr)
         if d.is_Mul:
             n, d = [i._eval_expand_mul(**hints) if i.is_Mul else i
-                for i in (n, d)]
+                    for i in (n, d)]
             expr = n/d
             if not expr.is_Mul:
                 return expr
@@ -1186,7 +1188,7 @@ class Mul(AssocOp):
             noncommutatives come back as a list [(b**e, Rational)]
             """
 
-            (c, nc) = (defaultdict(int), list())
+            (c, nc) = (defaultdict(int), [])
             for a in Mul.make_args(eq):
                 a = powdenest(a)
                 (b, e) = base_exp(a)
@@ -1338,7 +1340,7 @@ class Mul(AssocOp):
                             if cdid:
                                 ndo = min(cdid, ndo)
                             nc[i] = Pow(new, ndo)*rejoin(nc[i][0],
-                                    nc[i][1] - ndo*old_nc[0][1])
+                                                         nc[i][1] - ndo*old_nc[0][1])
                         else:
                             ndo = 1
 

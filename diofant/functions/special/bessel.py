@@ -1,17 +1,18 @@
 from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
-from ...core import (S, pi, I, Rational, Wild, cacheit, sympify, Integer,
-                     Function, Pow, Expr, Add)
+from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, S, Wild,
+                     cacheit, pi, sympify)
 from ...core.function import ArgumentIndexError
+from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
+from ..elementary.complexes import Abs, im, re
 from ..elementary.exponential import exp
-from ..elementary.trigonometric import sin, cos, csc, cot
-from ..elementary.complexes import Abs
-from ..elementary.miscellaneous import sqrt, root
-from ..elementary.complexes import re, im
+from ..elementary.miscellaneous import root, sqrt
+from ..elementary.trigonometric import cos, cot, csc, sin
 from .gamma_functions import gamma
 from .hyper import hyper
+
 
 # TODO
 # o Scorer functions G1 and G2
@@ -361,8 +362,7 @@ class besseli(BesselBase):
 
     def _eval_rewrite_as_bessely(self, nu, z):
         aj = self._eval_rewrite_as_besselj(*self.args)
-        if aj:
-            return aj.rewrite(bessely)
+        return aj.rewrite(bessely)
 
     def _eval_rewrite_as_jn(self, nu, z):
         return self._eval_rewrite_as_besselj(*self.args).rewrite(jn)
@@ -440,11 +440,6 @@ class besselk(BesselBase):
         aj = self._eval_rewrite_as_besselj(*self.args)
         if aj:
             return aj.rewrite(bessely)
-
-    def _eval_rewrite_as_yn(self, nu, z):
-        ay = self._eval_rewrite_as_bessely(*self.args)
-        if ay:
-            return ay.rewrite(yn)
 
     def _eval_is_extended_real(self):
         nu, z = self.args
@@ -539,9 +534,6 @@ class hankel2(BesselBase):
             return hankel1(self.order.conjugate(), z.conjugate())
 
 
-from ...polys.orthopolys import spherical_bessel_fn as fn
-
-
 class SphericalBesselBase(BesselBase):
     """
     Base class for spherical Bessel functions.
@@ -555,11 +547,11 @@ class SphericalBesselBase(BesselBase):
 
     def _expand(self, **hints):
         """ Expand self into a polynomial. Nu is guaranteed to be Integer. """
-        raise NotImplementedError('expansion')
+        raise NotImplementedError('expansion')  # pragma: no cover
 
     def _rewrite(self):
         """ Rewrite self in terms of ordinary Bessel functions. """
-        raise NotImplementedError('rewriting')
+        raise NotImplementedError('rewriting')  # pragma: no cover
 
     def _eval_expand_func(self, **hints):
         if self.order.is_Integer:
@@ -728,13 +720,13 @@ def jn_zeros(n, k, method="diofant", dps=15):
 
         def f(x):
             return spherical_jn(n, x)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError("Unknown method.")
 
     def solver(f, x):
         if method == "scipy":
             root = newton(f, x)
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Unknown method.")
         return root
 
@@ -764,7 +756,7 @@ class AiryBase(Function):
         if self.args[0].is_extended_real:
             return True
 
-    def _as_real_imag(self, deep=True, **hints):
+    def as_real_imag(self, deep=True, **hints):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
@@ -772,21 +764,14 @@ class AiryBase(Function):
             else:
                 return self, S.Zero
         if deep:
-            re, im = self.args[0].expand(deep, **hints).as_real_imag()
+            x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
-            re, im = self.args[0].as_real_imag()
-        return re, im
+            x, y = self.args[0].as_real_imag()
 
-    def as_real_imag(self, deep=True, **hints):
-        x, y = self._as_real_imag(deep=deep, **hints)
         sq = -y**2/x**2
         re = S.Half*(self.func(x+x*sqrt(sq))+self.func(x-x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x-x*sqrt(sq)) - self.func(x+x*sqrt(sq)))
         return re, im
-
-    def _eval_expand_complex(self, deep=True, **hints):
-        re_part, im_part = self.as_real_imag(deep=deep, **hints)
-        return re_part + im_part*S.ImaginaryUnit
 
 
 class airyai(AiryBase):
@@ -899,13 +884,7 @@ class airyai(AiryBase):
             return S.Zero
         else:
             x = sympify(x)
-            if len(previous_terms) > 1:
-                p = previous_terms[-1]
-                return ((3**Rational(1, 3)*x)**(-n)*(3**Rational(1, 3)*x)**(n + 1)*sin(pi*(2*n/3 + Rational(4, 3)))*factorial(n) *
-                        gamma(n/3 + Rational(2, 3))/(sin(pi*(2*n/3 + Rational(2, 3)))*factorial(n + 1)*gamma(n/3 + Rational(1, 3))) * p)
-            else:
-                return (S.One/(3**Rational(2, 3)*pi) * gamma((n+S.One)/Integer(3)) * sin(2*pi*(n+S.One)/Integer(3)) /
-                        factorial(n) * (root(3, 3)*x)**n)
+            return (S.One/(3**Rational(2, 3)*pi) * gamma((n+S.One)/Integer(3)) * sin(2*pi*(n+S.One)/Integer(3)) / factorial(n) * (root(3, 3)*x)**n)
 
     def _eval_rewrite_as_besselj(self, z):
         ot = Rational(1, 3)
@@ -953,6 +932,7 @@ class airyai(AiryBase):
                     pf = (d * z**n)**m / (d**m * z**(m*n))
                     newarg = c * d**m * z**(m*n)
                     return S.Half * ((pf + S.One)*airyai(newarg) - (pf - S.One)/sqrt(3)*airybi(newarg))
+        return self.func(*self.args)
 
 
 class airybi(AiryBase):
@@ -1067,13 +1047,7 @@ class airybi(AiryBase):
             return S.Zero
         else:
             x = sympify(x)
-            if len(previous_terms) > 1:
-                p = previous_terms[-1]
-                return (3**Rational(1, 3)*x * Abs(sin(2*pi*(n + S.One)/Integer(3))) * factorial((n - S.One)/Integer(3)) /
-                        ((n + S.One) * Abs(cos(2*pi*(n + S.Half)/Integer(3))) * factorial((n - 2)/Integer(3))) * p)
-            else:
-                return (S.One/(root(3, 6)*pi) * gamma((n + S.One)/Integer(3)) * Abs(sin(2*pi*(n + S.One)/Integer(3))) /
-                        factorial(n) * (root(3, 3)*x)**n)
+            return (S.One/(root(3, 6)*pi) * gamma((n + S.One)/Integer(3)) * Abs(sin(2*pi*(n + S.One)/Integer(3))) / factorial(n) * (root(3, 3)*x)**n)
 
     def _eval_rewrite_as_besselj(self, z):
         ot = Rational(1, 3)
@@ -1123,6 +1097,7 @@ class airybi(AiryBase):
                     pf = (d * z**n)**m / (d**m * z**(m*n))
                     newarg = c * d**m * z**(m*n)
                     return S.Half * (sqrt(3)*(S.One - pf)*airyai(newarg) + (S.One + pf)*airybi(newarg))
+        return self.func(*self.args)
 
 
 class _airyais(Function):
@@ -1328,6 +1303,7 @@ class airyaiprime(AiryBase):
                     pf = (d**m * z**(n*m)) / (d * z**n)**m
                     newarg = c * d**m * z**(n*m)
                     return S.Half * ((pf + S.One)*airyaiprime(newarg) + (pf - S.One)/sqrt(3)*airybiprime(newarg))
+        return self.func(*self.args)
 
 
 class airybiprime(AiryBase):
@@ -1479,3 +1455,4 @@ class airybiprime(AiryBase):
                     pf = (d**m * z**(n*m)) / (d * z**n)**m
                     newarg = c * d**m * z**(n*m)
                     return S.Half * (sqrt(3)*(pf - S.One)*airyaiprime(newarg) + (pf + S.One)*airybiprime(newarg))
+        return self.func(*self.args)

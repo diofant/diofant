@@ -22,15 +22,15 @@ if you care at all about performance. A new backend instance is initialized
 every time you call ``show()`` and the old one is left to the garbage collector.
 """
 
-from inspect import getfullargspec
-from collections import Callable
 import warnings
+from collections import Callable
+from inspect import getfullargspec
 
-from ..core import sympify, Expr, Tuple, Dummy, Symbol
+from ..core import Dummy, Expr, Symbol, Tuple, sympify
 from ..external import import_module
+from ..utilities import lambdify
 from ..utilities.decorator import doctest_depends_on
 from ..utilities.iterables import is_sequence
-from ..utilities import lambdify
 
 
 def vectorized_lambdify(args, expr):
@@ -183,6 +183,13 @@ class Plot:
             self._backend.close()
         self._backend = self.backend(self)
         self._backend.save(path)
+
+    def close(self):
+        if hasattr(self, '_backend'):
+            self._backend.close()
+
+    def __del__(self):
+        self.close()
 
     def __str__(self):
         series_strs = [('[%d]: ' % i) + str(s)
@@ -443,7 +450,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                 # Randomly sample to avoid aliasing.
                 random = 0.45 + np.random.rand() * 0.1
                 xnew = p[0] + random * (q[0] - p[0])
-                ynew = f(xnew)
+                ynew = f(xnew).real
                 new_point = np.array([xnew, ynew])
 
                 # Maximum depth
@@ -466,7 +473,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                         for i in range(len(yarray) - 1):
                             if yarray[i] is not None or yarray[i + 1] is not None:
                                 sample([xarray[i], yarray[i]],
-                                    [xarray[i + 1], yarray[i + 1]], depth + 1)
+                                       [xarray[i + 1], yarray[i + 1]], depth + 1)
 
                 # Sample further if one of the end points in None( i.e. a complex
                 # value) or the three points are not almost collinear.
@@ -477,8 +484,8 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                 else:
                     list_segments.append([p, q])
 
-            f_start = f(self.start)
-            f_end = f(self.end)
+            f_start = f(self.start).real
+            f_end = f(self.end).real
             sample([self.start, f_start], [self.end, f_end], 0)
             return list_segments
 
@@ -486,7 +493,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
         np = import_module('numpy')
         if self.only_integers is True:
             list_x = np.linspace(int(self.start), int(self.end),
-                    num=int(self.end) - int(self.start) + 1)
+                                 num=int(self.end) - int(self.start) + 1)
         else:
             list_x = np.linspace(self.start, self.end, num=self.nb_of_points)
         f = vectorized_lambdify([self.var], self.expr)
@@ -803,8 +810,8 @@ class MatplotlibBackend(BaseBackend):
         super(MatplotlibBackend, self).__init__(parent)
         are_3D = [s.is_3D for s in self.parent._series]
         self.matplotlib = import_module('matplotlib',
-            __import__kwargs={'fromlist': ['pyplot', 'cm', 'collections']},
-            min_module_version='1.1.0', catch=(RuntimeError,))
+                                        __import__kwargs={'fromlist': ['pyplot', 'cm', 'collections']},
+                                        min_module_version='1.1.0', catch=(RuntimeError,))
         self.plt = self.matplotlib.pyplot
         self.cm = self.matplotlib.cm
         self.LineCollection = self.matplotlib.collections.LineCollection
@@ -822,10 +829,6 @@ class MatplotlibBackend(BaseBackend):
             self.ax.xaxis.set_ticks_position('bottom')
             self.ax.yaxis.set_ticks_position('left')
         elif all(are_3D):
-            # mpl_toolkits.mplot3d is necessary for
-            # projection='3d'
-            mpl_toolkits = import_module('mpl_toolkits',
-                                     __import__kwargs={'fromlist': ['mplot3d']})
             self.fig = self.plt.figure()
             self.ax = self.fig.add_subplot(111, projection='3d')
 
@@ -842,7 +845,7 @@ class MatplotlibBackend(BaseBackend):
             elif s.is_3Dline:
                 # TODO too complicated, I blame matplotlib
                 mpl_toolkits = import_module('mpl_toolkits',
-                    __import__kwargs={'fromlist': ['mplot3d']})
+                                             __import__kwargs={'fromlist': ['mplot3d']})
                 art3d = mpl_toolkits.mplot3d.art3d
                 collection = art3d.Line3DCollection(s.get_segments())
                 self.ax.add_collection(collection)
@@ -873,7 +876,7 @@ class MatplotlibBackend(BaseBackend):
                     xarray, yarray, zarray, plot_type = points
                     if plot_type == 'contour':
                         self.ax.contour(xarray, yarray, zarray,
-                                contours=(0, 0), fill=False, cmap=colormap)
+                                        contours=(0, 0), fill=False, cmap=colormap)
                     else:
                         self.ax.contourf(xarray, yarray, zarray, cmap=colormap)
             else:
@@ -906,7 +909,7 @@ class MatplotlibBackend(BaseBackend):
         # XXX The order of those is important.
 
         mpl_toolkits = import_module('mpl_toolkits',
-            __import__kwargs={'fromlist': ['mplot3d']})
+                                     __import__kwargs={'fromlist': ['mplot3d']})
         Axes3D = mpl_toolkits.mplot3d.Axes3D
         if parent.xscale and not isinstance(self.ax, Axes3D):
             self.ax.set_xscale(parent.xscale)
@@ -1684,7 +1687,7 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
         exprs = args[:i]
         assert all(isinstance(e, Expr) for expr in exprs for e in expr)
         free_symbols = list(set().union(*[e.free_symbols for expr in exprs
-                                        for e in expr]))
+                                          for e in expr]))
 
         if len(free_symbols) > nb_of_free_symbols:
             raise ValueError("The number of free_symbols in the expression "

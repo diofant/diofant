@@ -10,17 +10,17 @@ diofant.stats.frv
 
 import random
 
-from .rv import (RandomDomain, SingleDomain, ConditionalDomain,
-                 ProductDomain, PSpace, SinglePSpace, random_symbols,
-                 ProductPSpace, NamedArgsMixin)
+from ..core import Dummy, Expr, Lambda, Mul, S, cacheit, oo, symbols, sympify
 from ..functions import DiracDelta, Piecewise
-from ..core import symbols, sympify, Dummy, Mul, cacheit, oo, Lambda, Expr, S
+from ..integrals import Integral, integrate
 from ..logic import And, Or
+from ..polys.polyerrors import PolynomialError
 from ..sets import Interval
-from ..integrals import integrate, Integral
 from ..solvers import solve
 from ..solvers.inequalities import reduce_rational_inequalities
-from ..polys.polyerrors import PolynomialError
+from .rv import (ConditionalDomain, NamedArgsMixin, ProductDomain,
+                 ProductPSpace, PSpace, RandomDomain, SingleDomain,
+                 SinglePSpace, random_symbols)
 
 
 class ContinuousDomain(RandomDomain):
@@ -263,7 +263,7 @@ class ContinuousPSpace(PSpace):
         domain_symbols = frozenset(rv.symbol for rv in rvs)
 
         return self.domain.integrate(self.pdf * expr,
-                domain_symbols, **kwargs)
+                                     domain_symbols, **kwargs)
 
     def compute_density(self, expr, **kwargs):
         # Common case Density(X) where X in self.values
@@ -422,10 +422,10 @@ def reduce_rational_inequalities_wrap(condition, var):
         return _reduce_inequalities([[condition]], var, relational=False)
     if condition.__class__ is Or:
         return _reduce_inequalities([list(condition.args)],
-                var, relational=False)
+                                    var, relational=False)
     if condition.__class__ is And:
         intervals = [_reduce_inequalities([[arg]], var, relational=False)
-            for arg in condition.args]
+                     for arg in condition.args]
         I = intervals[0]
         for i in intervals:
             I = I.intersection(i)

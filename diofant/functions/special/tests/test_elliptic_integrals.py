@@ -1,15 +1,17 @@
 import pytest
 
-from diofant import (S, Symbol, pi, I, oo, zoo, sin, sqrt, tan, gamma,
-                     atanh, hyper, meijerg, O, Rational, conjugate)
+from diofant import (I, O, Rational, S, Symbol, atanh, conjugate, gamma, hyper,
+                     meijerg, oo, pi, sin, sqrt, tan, zoo)
+from diofant.abc import m, n, z
 from diofant.core.function import ArgumentIndexError
-from diofant.functions.special.elliptic_integrals import (elliptic_k, elliptic_f,
-                                                          elliptic_e, elliptic_pi)
-from diofant.utilities.randtest import (test_derivative_numerically as td,
-                                        random_complex_number as randcplx,
-                                        verify_numerically as tn)
+from diofant.functions.special.elliptic_integrals import (elliptic_e,
+                                                          elliptic_f,
+                                                          elliptic_k,
+                                                          elliptic_pi)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_numerically as tn
 
-from diofant.abc import z, m, n
 
 __all__ = ()
 
@@ -155,13 +157,13 @@ def test_elliptic_pi():
     assert elliptic_pi(n, z, m).conjugate() == conjugate(elliptic_pi(n, z, m))
 
     assert elliptic_pi(n, z, m).diff(n) == (elliptic_e(z, m) + (m - n)*elliptic_f(z, m)/n +
-        (n**2 - m)*elliptic_pi(n, z, m)/n - n*sqrt(1 -
-            m*sin(z)**2)*sin(2*z)/(2*(1 - n*sin(z)**2)))/(2*(m - n)*(n - 1))
+                                            (n**2 - m)*elliptic_pi(n, z, m)/n - n*sqrt(1 -
+                                                                                       m*sin(z)**2)*sin(2*z)/(2*(1 - n*sin(z)**2)))/(2*(m - n)*(n - 1))
     assert elliptic_pi(n, z, m).diff(z) == 1/(sqrt(1 - m*sin(z)**2)*(1 - n*sin(z)**2))
     assert elliptic_pi(n, z, m).diff(m) == (elliptic_e(z, m)/(m - 1) + elliptic_pi(n, z, m) -
-        m*sin(2*z)/(2*(m - 1)*sqrt(1 - m*sin(z)**2)))/(2*(n - m))
+                                            m*sin(2*z)/(2*(m - 1)*sqrt(1 - m*sin(z)**2)))/(2*(n - m))
     assert elliptic_pi(n, m).diff(n) == (elliptic_e(m) + (m - n)*elliptic_k(m)/n +
-        (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
+                                         (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
     assert elliptic_pi(n, m).diff(m) == (elliptic_e(m)/(m - 1) + elliptic_pi(n, m))/(2*(n - m))
     rx, ry = randcplx(), randcplx()
     assert td(elliptic_pi(n, rx, ry), n)

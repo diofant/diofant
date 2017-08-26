@@ -3,17 +3,17 @@ import math
 import mpmath
 import pytest
 
-from diofant import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
-                     Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
-                     oo, I, Abs, Function, true, false, And, Or, Not, sympify,
-                     ITE, Min, Max)
-from diofant.printing.lambdarepr import LambdaPrinter
-from diofant.utilities.lambdify import implemented_function
-from diofant.utilities.decorator import conserve_mpmath_dps
-from diofant.external import import_module
 import diofant
-
+from diofant import (ITE, Abs, And, Float, Function, I, Integral, Lambda,
+                     Matrix, Max, Min, Not, Or, Piecewise, Rational, acos,
+                     acosh, cos, exp, false, lambdify, oo, pi, sin, sqrt,
+                     symbols, sympify, tan, true)
 from diofant.abc import w, x, y, z
+from diofant.external import import_module
+from diofant.printing.lambdarepr import LambdaPrinter
+from diofant.utilities.decorator import conserve_mpmath_dps
+from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 
@@ -431,6 +431,7 @@ def test_namespace_order():
     if1 = lambdify(x, f(x), modules=(n1, "diofant"))
     assert if1(1) == 'first f'
     if2 = lambdify(x, g(x), modules=(n2, "diofant"))
+    assert if2(1) == 'function g'
     # previously gave 'second f'
     assert if1(1) == 'first f'
 
@@ -449,7 +450,7 @@ def test_imps():
     func = diofant.Function('myfunc')
     assert not hasattr(func, '_imp_')
     my_f = implemented_function(func, lambda x: 2*x)
-    assert hasattr(func, '_imp_')
+    assert hasattr(func, '_imp_') and hasattr(my_f, '_imp_')
     # Error for functions with same name and different implementation
     f2 = implemented_function("f", lambda x: x + 101)
     pytest.raises(ValueError, lambda: lambdify(x, f(f2(x))))

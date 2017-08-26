@@ -3,15 +3,15 @@ import os
 
 import pytest
 
-from diofant import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
-                     acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
-                     cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
-                     Function, subfactorial, PoleError, Integer, Float,
-                     diff, simplify, Matrix, sinh, polygamma)
+from diofant import (E, Float, Function, I, Integer, Integral, Limit, Matrix,
+                     Piecewise, PoleError, Rational, S, Sum, Symbol, acos,
+                     atan, ceiling, cos, cot, diff, exp, floor, gamma,
+                     integrate, limit, log, oo, pi, polygamma, sign, simplify,
+                     sin, sinh, sqrt, subfactorial, symbols, tan)
+from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
 
-from diofant.abc import a, b, c, x, y, z, n
 
 __all__ = ()
 
@@ -240,7 +240,7 @@ def test_doit2():
 
 
 def test_sympyissue_3792():
-    assert limit( (1 - cos(x))/x**2, x, Rational(1, 2)) == 4 - 4*cos(Rational(1, 2))
+    assert limit((1 - cos(x))/x**2, x, Rational(1, 2)) == 4 - 4*cos(Rational(1, 2))
     assert limit(sin(sin(x + 1) + 1), x, 0) == sin(1 + sin(1))
     assert limit(abs(sin(x + 1) + 1), x, 0) == 1 + sin(1)
 
@@ -401,7 +401,7 @@ def test_factorial():
 
 def test_sympyissue_6560():
     e = 5*x**3/4 - 3*x/4 + (y*(3*x**2/2 - Rational(1, 2)) +
-        35*x**4/8 - 15*x**2/4 + Rational(3, 8))/(2*(y + 1))
+                            35*x**4/8 - 15*x**2/4 + Rational(3, 8))/(2*(y + 1))
     assert limit(e, y, oo) == (5*x**3 + 3*x**2 - 3*x - 1)/4
 
 
@@ -410,7 +410,7 @@ def test_sympyissue_5172():
     p = Symbol('p', positive=True)
     m = Symbol('m', negative=True)
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
-        (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
+            (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs(c, c + 1)
     assert limit(expr.subs(c, m), n, oo) == 1
     assert limit(expr.subs(c, p), n, oo).simplify() == \
@@ -519,9 +519,9 @@ def test_sympyissue_11678():
                 [1./2, 0, 1./2],
                 [1./4, 0, 3./4]])
     e = (p**x).applyfunc(lambda i: limit(i, x, oo))
-    assert e == Matrix([[Float('0.36363636363636359', prec=15),
-                         Float('0.090909090909090898', prec=15),
-                         Float('0.54545454545454541', prec=15)]]*3)
+    assert e == Matrix([[Float('0.36363636363636359', dps=15),
+                         Float('0.090909090909090898', dps=15),
+                         Float('0.54545454545454541', dps=15)]]*3)
 
 
 def test_sympyissue_8635():
@@ -559,3 +559,19 @@ def test_sympyissue_11879():
 
 def test_sympyissue_12555():
     assert limit((3**x + 2*x**10)/(x**10 + E**x), x, -oo) == 2
+
+
+def test_sympyissue_12769():
+    r, z, x = symbols('r,z,x', real=True)
+    a, b, s0, K, F0, s, T = symbols('a,b,s0,K,F0,s,T',
+                                    positive=True, real=True)
+    fx = (F0**b*K**b*r*s0 -
+          sqrt((F0**2*K**(2*b)*a**2*(b - 1) +
+                F0**(2*b)*K**2*a**2*(b - 1) +
+                F0**(2*b)*K**(2*b)*s0**2*(b - 1)*(b**2 - 2*b + 1) -
+                2*F0**(2*b)*K**(b + 1)*a*r*s0*(b**2 - 2*b + 1) +
+                2*F0**(b + 1)*K**(2*b)*a*r*s0*(b**2 - 2*b + 1) -
+                2*F0**(b + 1)*K**(b + 1)*a**2*(b - 1))/((b - 1)*(b**2 - 2*b + 1))))*(b*r - b - r + 1)
+    assert limit(fx, K, F0) == (F0**(2*b)*b*r**2*s0 - 2*F0**(2*b)*b*r*s0 +
+                                F0**(2*b)*b*s0 - F0**(2*b)*r**2*s0 +
+                                2*F0**(2*b)*r*s0 - F0**(2*b)*s0)

@@ -2,17 +2,19 @@ import itertools
 
 import pytest
 
-from diofant import (symbols, Dummy, simplify, Equality, S, Interval,
-                     oo, EmptySet, Integer, Unequality, Union, Eq)
-from diofant.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
-                                   Nand, Nor, Not, Or, POSform, SOPform, Xor,
-                                   conjuncts, disjuncts, distribute_or_over_and,
-                                   distribute_and_over_or, eliminate_implications,
-                                   is_nnf, is_cnf, is_dnf, simplify_logic, to_nnf,
-                                   to_cnf, to_dnf, to_int_repr, bool_map, true,
-                                   false, BooleanAtom, is_literal, BooleanFunction)
-
+from diofant import (Dummy, EmptySet, Eq, Equality, Integer, Interval, S,
+                     Unequality, Union, oo, simplify, symbols)
 from diofant.abc import A, B, C, D, a, b, c, w, x, y, z
+from diofant.logic.boolalg import (ITE, And, Boolean, BooleanAtom,
+                                   BooleanFunction, Equivalent, Implies, Nand,
+                                   Nor, Not, Or, POSform, SOPform, Xor,
+                                   bool_map, conjuncts, disjuncts,
+                                   distribute_and_over_or,
+                                   distribute_or_over_and,
+                                   eliminate_implications, false, is_cnf,
+                                   is_dnf, is_literal, is_nnf, simplify_logic,
+                                   to_cnf, to_dnf, to_int_repr, to_nnf, true)
+
 
 __all__ = ()
 
@@ -99,6 +101,9 @@ def test_Xor():
     assert Xor(A < 1, A >= 1, B) == Xor(0, 1, B) == Xor(1, 0, B)
     e = A > 1
     assert Xor(e, e.canonical) == Xor(0, 0) == Xor(1, 1)
+    e = Integer(1) < A
+    assert e != e.canonical and Xor(e, e.canonical) is S.false
+    assert Xor(A > 1, B > C) == Xor(A > 1, B > C, evaluate=False)
 
 
 def test_Not():
@@ -158,6 +163,7 @@ def test_Implies():
     assert (A < 1) >> (A >= 1) == (A >= 1)
     assert (A < 1) >> (Integer(1) > A) is true
     assert A >> A is true
+    assert ((A < 1) >> (B >= 1)) == Implies(A < 1, B >= 1, evaluate=False)
 
 
 def test_Equivalent():
@@ -178,6 +184,7 @@ def test_Equivalent():
     assert Equivalent(A < 1, A >= 1, 0) is false
     assert Equivalent(A < 1, A >= 1, 1) is false
     assert Equivalent(A < 1, Integer(1) > A) == Equivalent(1, 1) == Equivalent(0, 0)
+    assert Equivalent(A < 1, B >= 1) == Equivalent(B >= 1, A < 1, evaluate=False)
 
 
 def test_equals():
@@ -202,7 +209,7 @@ def test_simplification():
     assert SOPform([Dummy(), Dummy(), Dummy()], set1 + set2) is true
 
     minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
-        [1, 1, 1, 1]]
+                [1, 1, 1, 1]]
     dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
     assert (
         SOPform([w, x, y, z], minterms, dontcares) ==
@@ -215,15 +222,19 @@ def test_simplification():
     assert simplify_logic((A & B) | (A & C)) == ans
     assert simplify_logic(Implies(A, B)) == Or(Not(A), B)
     assert simplify_logic(Equivalent(A, B)) == \
-           Or(And(A, B), And(Not(A), Not(B)))
+        Or(And(A, B), And(Not(A), Not(B)))
     assert simplify_logic(And(Equality(A, 2), C)) == And(Equality(A, 2), C)
     assert simplify_logic(And(Equality(A, 2), A)) == And(Equality(A, 2), A)
     assert simplify_logic(And(Equality(A, B), C)) == And(Equality(A, B), C)
     assert simplify_logic(Or(And(Equality(A, 3), B), And(Equality(A, 3), C))) \
-           == And(Equality(A, 3), Or(B, C))
+        == And(Equality(A, 3), Or(B, C))
     e = And(A, x**2 - x)
     assert simplify_logic(e) == And(A, x*(x - 1))
     assert simplify_logic(e, deep=False) == e
+    pytest.raises(ValueError, lambda: simplify_logic(A & (B | C), form='spam'))
+    e = x & y ^ z | (z ^ x)
+    assert simplify_logic(e) in [(x & ~z) | (z & ~x) | (z & ~y),
+                                 (x & ~y) | (x & ~z) | (z & ~x)]
 
     # check input
     ans = SOPform([x, y], [[1, 0]])
@@ -252,17 +263,22 @@ def test_bool_map():
     """
 
     minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
-        [1, 1, 1, 1]]
+                [1, 1, 1, 1]]
     assert bool_map(Not(Not(a)), a) == (a, {a: a})
     assert bool_map(SOPform([w, x, y, z], minterms),
-        POSform([w, x, y, z], minterms)) == \
+                    POSform([w, x, y, z], minterms)) == \
         (And(Or(Not(w), y), Or(Not(x), y), z), {x: x, w: w, z: z, y: y})
     assert bool_map(SOPform([x, z, y], [[1, 0, 1]]),
-                    SOPform([a, b, c], [[1, 0, 1]])) is not S.false
+                    SOPform([a, b, c], [[1, 0, 1]])) is not False
     function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
     function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     assert bool_map(function1, function2) == \
         (function1, {y: a, z: b})
+    assert bool_map(And(x, Not(y)), Or(y, Not(x))) is False
+    assert bool_map(And(x, Not(y)), And(y, Not(x), z)) is False
+    assert bool_map(And(x, Not(y)), And(Or(y, z), Not(x))) is False
+    assert bool_map(Or(And(Not(y), a), And(Not(y), b), And(x, y)),
+                    Or(x, y, a)) is False
 
 
 def test_bool_symbol():
@@ -379,18 +395,18 @@ def test_to_nnf():
     assert to_nnf(A >> B) == ~A | B
     assert to_nnf(Equivalent(A, B, C)) == (~A | B) & (~B | C) & (~C | A)
     assert to_nnf(A ^ B ^ C) == \
-            (A | B | C) & (~A | ~B | C) & (A | ~B | ~C) & (~A | B | ~C)
+        (A | B | C) & (~A | ~B | C) & (A | ~B | ~C) & (~A | B | ~C)
     assert to_nnf(ITE(A, B, C)) == (~A | B) & (A | C)
     assert to_nnf(Not(A | B | C)) == ~A & ~B & ~C
     assert to_nnf(Not(A & B & C)) == ~A | ~B | ~C
     assert to_nnf(Not(A >> B)) == A & ~B
     assert to_nnf(Not(Equivalent(A, B, C))) == And(Or(A, B, C), Or(~A, ~B, ~C))
     assert to_nnf(Not(A ^ B ^ C)) == \
-            (~A | B | C) & (A | ~B | C) & (A | B | ~C) & (~A | ~B | ~C)
+        (~A | B | C) & (A | ~B | C) & (A | B | ~C) & (~A | ~B | ~C)
     assert to_nnf(Not(ITE(A, B, C))) == (~A | ~B) & (A | ~C)
     assert to_nnf((A >> B) ^ (B >> A)) == (A & ~B) | (~A & B)
     assert to_nnf((A >> B) ^ (B >> A), False) == \
-            (~A | ~B | A | B) & ((A & ~B) | (~A & B))
+        (~A | ~B | A | B) & ((A & ~B) | (~A & B))
 
 
 def test_to_cnf():
@@ -403,7 +419,7 @@ def test_to_cnf():
 
     assert to_cnf(Equivalent(A, B)) == And(Or(A, Not(B)), Or(B, Not(A)))
     assert to_cnf(Equivalent(A, B & C)) == \
-           (~A | B) & (~A | C) & (~B | ~C | A)
+        (~A | B) & (~A | C) & (~B | ~C | A)
     assert to_cnf(Equivalent(A, B | C), True) == \
         And(Or(Not(B), A), Or(Not(C), A), Or(B, C, Not(A)))
 
@@ -417,9 +433,9 @@ def test_to_dnf():
     assert to_dnf(A >> (B & C)) == (~A) | (B & C)
 
     assert to_dnf(Equivalent(A, B), True) == \
-           Or(And(A, B), And(Not(A), Not(B)))
+        Or(And(A, B), And(Not(A), Not(B)))
     assert to_dnf(Equivalent(A, B & C), True) == \
-           Or(And(A, B, C), And(Not(A), Not(B)), And(Not(A), Not(C)))
+        Or(And(A, B, C), And(Not(A), Not(B)), And(Not(A), Not(C)))
 
 
 def test_to_int_repr():
@@ -455,6 +471,8 @@ def test_is_cnf():
     assert is_cnf(x & y & z) is True
     assert is_cnf((x | y) & z) is True
     assert is_cnf((x & y) | z) is False
+    assert is_cnf(x & y & (z | ~(x ^ y))) is False
+    assert is_cnf(x & y & (z | (x ^ y))) is False
 
 
 def test_is_dnf():

@@ -1,11 +1,11 @@
 import pytest
 
-from diofant import (symbols, sin, simplify, cos, trigsimp, tan, csc,
-                     exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
-                     S, integrate, I, Matrix, Symbol, coth, pi, log,
-                     count_ops, sqrt, E, expand, Piecewise, Rational)
+from diofant import (E, I, Matrix, Piecewise, Rational, S, Subs, Symbol, cos,
+                     cosh, cot, coth, count_ops, csc, diff, exp, expand,
+                     exptrigsimp, integrate, log, pi, simplify, sin, sinh,
+                     sqrt, symbols, tan, tanh, trigsimp)
+from diofant.abc import a, b, x, y, z
 
-from diofant.abc import x, y, z, a, b
 
 __all__ = ()
 
@@ -66,9 +66,9 @@ def test_trigsimp1a():
 
 def test_trigsimp2():
     assert trigsimp(cos(x)**2*sin(y)**2 + cos(x)**2*cos(y)**2 + sin(x)**2,
-            recursive=True) == 1
+                    recursive=True) == 1
     assert trigsimp(sin(x)**2*sin(y)**2 + sin(x)**2*cos(y)**2 + cos(x)**2,
-            recursive=True) == 1
+                    recursive=True) == 1
     assert trigsimp(
         Subs(x, x, sin(y)**2 + cos(y)**2)) == Subs(x, x, 1)
 
@@ -256,9 +256,9 @@ def test_hyperbolic_simp():
     assert trigsimp(log(e)) == log(2)
 
     assert trigsimp(cosh(x)**2*cosh(y)**2 - cosh(x)**2*sinh(y)**2 - sinh(x)**2,
-            recursive=True) == 1
+                    recursive=True) == 1
     assert trigsimp(sinh(x)**2*sinh(y)**2 - sinh(x)**2*cosh(y)**2 + cosh(x)**2,
-            recursive=True) == 1
+                    recursive=True) == 1
 
     assert abs(trigsimp(2.0*cosh(x)**2 - 2.0*sinh(x)**2) - 2.0) < 1e-10
 
@@ -328,7 +328,7 @@ def test_sympyissue_2827_trigsimp_methods():
     # aren't Expr
     M = Matrix.eye(1)
     assert all(trigsimp(M, method=m) == M for m in
-        'fu matching groebner old'.split())
+               'fu matching groebner old'.split())
     # watch for E in exptrigsimp, not only exp()
     eq = 1/sqrt(E) + E
     assert exptrigsimp(eq) == eq
@@ -355,8 +355,8 @@ def test_exptrigsimp():
 
     res = []
     ok = [y*tanh(1), 1/(y*tanh(1)), I*y*tan(1), -I/(y*tan(1)),
-        y*tanh(x), 1/(y*tanh(x)), I*y*tan(x), -I/(y*tan(x)),
-        y*tanh(1 + I), 1/(y*tanh(1 + I))]
+          y*tanh(x), 1/(y*tanh(x)), I*y*tan(x), -I/(y*tan(x)),
+          y*tanh(1 + I), 1/(y*tanh(1 + I))]
     for a in (1, I, x, I*x, 1 + I):
         w = exp(a)
         eq = y*(w - 1/w)/(w + 1/w)

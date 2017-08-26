@@ -1,6 +1,7 @@
 from diofant.combinatorics.group_constructs import DirectProduct
 from diofant.combinatorics.named_groups import CyclicGroup, DihedralGroup
 
+
 __all__ = ()
 
 

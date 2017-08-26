@@ -2,27 +2,27 @@ from collections import defaultdict
 
 import mpmath
 
-from ..core import (Basic, S, Add, Mul, Pow, Symbol, sympify, expand_mul,
-                    expand_func, Dummy, Expr, factor_terms, expand_power_exp,
-                    Float, I, pi, Rational, Integer, expand_log, count_ops)
-from ..core.compatibility import iterable, ordered, as_int
+from ..core import (Add, Basic, Dummy, Expr, Float, I, Integer, Mul, Pow,
+                    Rational, S, Symbol, count_ops, expand_func, expand_log,
+                    expand_mul, expand_power_exp, factor_terms, pi, sympify)
+from ..core.compatibility import as_int, iterable, ordered
+from ..core.evaluate import global_evaluate
 from ..core.function import _mexpand
 from ..core.rules import Transform
-from ..core.evaluate import global_evaluate
-from ..functions import (gamma, exp, sqrt, log, exp_polar, piecewise_fold,
-                         ceiling, unpolarify, besselj, besseli, besselk,
-                         jn, bessely)
+from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
+                         exp_polar, gamma, jn, log, piecewise_fold, sqrt,
+                         unpolarify)
+from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
-from ..functions.combinatorial.factorials import CombinatorialFunction
+from ..polys import cancel, factor, together
 from ..utilities import has_variety
-from .radsimp import radsimp, fraction
-from .trigsimp import trigsimp, exptrigsimp
-from .powsimp import powsimp
-from .cse_opts import sub_pre, sub_post
-from .sqrtdenest import sqrtdenest
 from .combsimp import combsimp
-from ..polys import together, cancel, factor
+from .cse_opts import sub_post, sub_pre
+from .powsimp import powsimp
+from .radsimp import fraction, radsimp
+from .sqrtdenest import sqrtdenest
+from .trigsimp import exptrigsimp, trigsimp
 
 
 def separatevars(expr, symbols=[], dict=False, force=False):
@@ -603,7 +603,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     if not isinstance(expr, (Add, Mul, Pow, exp_polar)):
         return expr.func(*[simplify(x, ratio=ratio, measure=measure, fu=fu)
-                         for x in expr.args])
+                           for x in expr.args])
 
     # TODO: Apply different strategies, considering expression pattern:
     # is it a purely rational function? Is there any trigonometric function?...
@@ -701,7 +701,6 @@ def _real_to_rational(expr, tolerance=None):
     sqrt(x)/10 + 19/25
 
     """
-    inf = Float('inf')
     p = expr
     reps = {}
     reduce_num = None
@@ -790,8 +789,8 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     # was given
     if tolerance is None:
         tolerance = 10**-min([15] +
-             [mpmath.libmp.libmpf.prec_to_dps(n._prec)
-             for n in expr.atoms(Float)])
+                             [mpmath.libmp.libmpf.prec_to_dps(n._prec)
+                              for n in expr.atoms(Float)])
     # XXX should prec be set independent of tolerance or should it be computed
     # from tolerance?
     prec = 30
@@ -824,7 +823,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
                     return Rational(-int(rat[1]), int(rat[0]))
             mpmath.mp.dps = prec
             newexpr = mpmath.identify(xv, constants=constants_dict,
-                tol=tolerance, full=full)
+                                      tol=tolerance, full=full)
             if not newexpr:
                 raise ValueError
             if full:
@@ -908,7 +907,7 @@ def logcombine(expr, force=False):
             # bool to tell whether the leading ``a`` in ``a*log(x)``
             # could appear as log(x**a)
             return (a is not S.NegativeOne and  # -1 *could* go, but we disallow
-                (a.is_extended_real or force and a.is_extended_real is not False))
+                    (a.is_extended_real or force and a.is_extended_real is not False))
 
         def goodlog(l):
             # bool to tell whether log ``l``'s argument can combine with others
@@ -1068,10 +1067,10 @@ def besselsimp(expr):
     ifactors = [I, exp_polar(I*pi/2), exp_polar(-I*pi/2)]
     expr = expr.replace(
         besselj, replacer(besselj,
-        torewrite(besselj, besseli), ifactors))
+                          torewrite(besselj, besseli), ifactors))
     expr = expr.replace(
         besseli, replacer(besseli,
-        torewrite(besseli, besselj), ifactors))
+                          torewrite(besseli, besselj), ifactors))
 
     minusfactors = [-1, exp_polar(I*pi)]
     expr = expr.replace(

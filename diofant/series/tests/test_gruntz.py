@@ -8,13 +8,14 @@ complex part, because it needs to calculate a limit to return the result.
 
 import pytest
 
-from diofant import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
-                     S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh, airyai,
-                     airybi, coth, sinh, tanh, digamma, Integer, Ei, EulerGamma,
-                     Mul, Pow, Add, li, Li, tan, acosh, factorial, binomial,
-                     root, fibonacci, GoldenRatio, Limit)
-from diofant.series.gruntz import (compare, mrv, rewrite,
-                                   mrv_leadterm, limitinf as gruntz, sign)
+from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
+                     Limit, Mul, Pow, Rational, S, Symbol, acosh, acot, airyai,
+                     airybi, atan, binomial, cos, cosh, coth, digamma, erf,
+                     exp, factorial, fibonacci, gamma, li, log, loggamma, oo,
+                     pi, root, sin, sinh, sqrt, tan, tanh, zeta)
+from diofant.series.gruntz import limitinf as gruntz
+from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite, sign
+
 
 __all__ = ()
 
@@ -29,7 +30,7 @@ def test_gruntz_evaluation():
     assert gruntz(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x) == -1
     # 8.2
     assert gruntz(exp(x)*(exp(1/x + exp(-x) + exp(-x**2))
-                  - exp(1/x - exp(-exp(x)))), x) == 1
+                          - exp(1/x - exp(-exp(x)))), x) == 1
     # 8.3
     assert gruntz(exp(exp(x - exp(-x))/(1 - 1/x)) - exp(exp(x)), x) == oo
     # 8.4
@@ -47,7 +48,7 @@ def test_gruntz_evaluation():
     assert gruntz(exp(exp(x)) / exp(exp(x - exp(-exp(exp(x))))), x) == 1
     # 8.9
     assert gruntz(log(x)**2 * exp(sqrt(log(x))*(log(log(x)))**2
-                  * exp(sqrt(log(log(x))) * (log(log(log(x))))**3)) / sqrt(x),
+                                  * exp(sqrt(log(log(x))) * (log(log(log(x))))**3)) / sqrt(x),
                   x) == 0
     # 8.10
     assert gruntz((x*log(x)*(log(x*exp(x) - x**2))**2)
@@ -81,7 +82,7 @@ def test_gruntz_evaluation():
                   / (log(log(x) + log(log(log(x))))), x) == 1
     # 8.20
     assert gruntz(exp((log(log(x + exp(log(x)*log(log(x))))))
-                  / (log(log(log(exp(x) + x + log(x)))))), x) == E
+                      / (log(log(log(exp(x) + x + log(x)))))), x) == E
     # Another
     assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x) == oo
 
@@ -120,10 +121,12 @@ def test_gruntz_other():
     assert gruntz(sqrt(log(x + 1)) - sqrt(log(x)), x) == 0  # p12, 2.5
     y = Symbol('y')
     assert gruntz(((1 + 1/x)**y - 1)*x, x) == y  # p12, 2.6
-    # TODO: p13, 2.7
     n = Symbol('n', integer=True)
     assert gruntz(x**n/exp(x), x) == 0  # p14, 2.9
     assert gruntz((1 + 1/x)*x - 1/log(1 + 1/x), x) == S.Half  # p15, 2.10
+    m = Symbol('m', integer=True)
+    assert gruntz((root(1 + 1/x, n) - 1)/(root(1 + 1/x, m) - 1),
+                  x) == m/n  # p13, 2.7
 
 
 def test_gruntz_hyperbolic():
@@ -461,9 +464,9 @@ def test_diofantissue_74():
     from diofant.functions import sign
     assert gruntz(sign(log(1 + 1/x)), x) == +1
     assert gruntz(sign(log(1 - 1/x)), x) == -1
-    assert gruntz(sign(sin( 1/x)), x) == +1
+    assert gruntz(sign(sin(+1/x)), x) == +1
     assert gruntz(sign(sin(-1/x)), x) == -1
-    assert gruntz(sign(tan( 1/x)), x) == +1
+    assert gruntz(sign(tan(+1/x)), x) == +1
     assert gruntz(sign(tan(-1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 + 1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 - 1/x)), x) == +1
@@ -473,6 +476,9 @@ def test_diofantissue_75():
     assert gruntz(abs(log(x)), x) == oo
     assert gruntz(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
     assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) == +oo
+
+    assert gruntz(abs(log(2 + 1/x)) - log(2 + 1/x), x) == 0
+    assert gruntz(abs(log(2 - 1/x)) - log(2 - 1/x), x) == 0
 
 
 def test_sympyissue_8241():

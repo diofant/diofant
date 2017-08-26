@@ -2,18 +2,21 @@
 
 # NOTE: keep tests sorted by (module, class name) key.
 
+import inspect
+import io
 import os
 import re
 import warnings
-import io
-import inspect
 
 import pytest
 
-from diofant import Basic, S, symbols, sqrt, sin, oo, Interval, exp, Integer
+from diofant import Basic, Integer, Interval, S, exp, oo, sin, sqrt, symbols
+from diofant.abc import a, b, c, w, x, y, z
+from diofant.matrices.expressions import MatrixSymbol
+from diofant.stats.crv_types import NormalDistribution
+from diofant.stats.frv_types import DieDistribution
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -126,7 +129,6 @@ def test_diofant__combinatorics__perm_groups__PermutationGroup():
 def test_diofant__combinatorics__polyhedron__Polyhedron():
     from diofant.combinatorics.permutations import Permutation
     from diofant.combinatorics.polyhedron import Polyhedron
-    from diofant.abc import w, x, y, z
     pgroup = [Permutation([[0, 1, 2], [3]]),
               Permutation([[0, 1, 3], [2]]),
               Permutation([[0, 2, 3], [1]]),
@@ -462,7 +464,7 @@ def test_diofant__sets__sets__Complement():
 def test_diofant__sets__sets__SymmetricDifference():
     from diofant.sets.sets import FiniteSet, SymmetricDifference
     assert _test_args(SymmetricDifference(FiniteSet(1, 2, 3),
-           FiniteSet(2, 3, 4)))
+                                          FiniteSet(2, 3, 4)))
 
 
 def test_diofant__core__trace__Tr():
@@ -517,9 +519,7 @@ def test_diofant__sets__contains__Contains():
 # STATS
 
 
-from diofant.stats.crv_types import NormalDistribution
 nd = NormalDistribution(0, 1)
-from diofant.stats.frv_types import DieDistribution
 die = DieDistribution(6)
 
 
@@ -542,7 +542,7 @@ def test_diofant__stats__crv__ProductContinuousDomain():
 
 def test_diofant__stats__crv__ConditionalContinuousDomain():
     from diofant.stats.crv import (SingleContinuousDomain,
-            ConditionalContinuousDomain)
+                                   ConditionalContinuousDomain)
     D = SingleContinuousDomain(x, Interval(-oo, oo))
     assert _test_args(ConditionalContinuousDomain(D, x > 0))
 
@@ -693,7 +693,6 @@ def test_diofant__stats__frv__ConditionalFiniteDomain():
 def test_diofant__stats__frv__FinitePSpace():
     from diofant.stats.frv import FinitePSpace, SingleFiniteDomain
     xd = SingleFiniteDomain(x, {1, 2, 3, 4, 5, 6})
-    p = 1.0/6
     xd = SingleFiniteDomain(x, {1, 2})
     assert _test_args(FinitePSpace(xd, {(x, 1): S.Half, (x, 2): S.Half}))
 
@@ -2011,7 +2010,6 @@ def test_diofant__matrices__expressions__fourier__IDFT():
     assert _test_args(IDFT(Integer(2)))
 
 
-from diofant.matrices.expressions import MatrixSymbol
 X = MatrixSymbol('X', 10, 10)
 
 
@@ -2486,7 +2484,6 @@ def test_diofant__vector__vector__VectorAdd():
     from diofant.vector.vector import VectorAdd, VectorMul
     from diofant.vector.coordsysrect import CoordSysCartesian
     C = CoordSysCartesian('C')
-    from diofant.abc import a, b, c, x, y, z
     v1 = a*C.i + b*C.j + c*C.k
     v2 = x*C.i + y*C.j + z*C.k
     assert _test_args(VectorAdd(v1, v2))
@@ -2497,7 +2494,6 @@ def test_diofant__vector__vector__VectorMul():
     from diofant.vector.vector import VectorMul
     from diofant.vector.coordsysrect import CoordSysCartesian
     C = CoordSysCartesian('C')
-    from diofant.abc import a
     assert _test_args(VectorMul(a, C.i))
 
 

@@ -7,12 +7,13 @@
 
 import mpmath
 
-from diofant import (Rational, Symbol, list2numpy, matrix2numpy, sin, Float,
-                     Matrix, lambdify, symarray, symbols, Integer)
 import diofant
+from diofant import (Float, Integer, Matrix, Rational, Symbol, lambdify,
+                     list2numpy, matrix2numpy, sin, symarray, symbols)
 from diofant.abc import x, y, z
-from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.external import import_module
+from diofant.utilities.decorator import conserve_mpmath_dps
+
 
 __all__ = ()
 
@@ -30,16 +31,16 @@ else:
 
 def test_systematic_basic():
     def s(diofant_object, numpy_array):
-        x = diofant_object + numpy_array
-        x = numpy_array + diofant_object
-        x = diofant_object - numpy_array
-        x = numpy_array - diofant_object
-        x = diofant_object * numpy_array
-        x = numpy_array * diofant_object
-        x = diofant_object / numpy_array
-        x = numpy_array / diofant_object
-        x = diofant_object ** numpy_array
-        x = numpy_array ** diofant_object
+        diofant_object + numpy_array
+        numpy_array + diofant_object
+        diofant_object - numpy_array
+        numpy_array - diofant_object
+        diofant_object * numpy_array
+        numpy_array * diofant_object
+        diofant_object / numpy_array
+        numpy_array / diofant_object
+        diofant_object ** numpy_array
+        numpy_array ** diofant_object
     x = Symbol("x")
     y = Symbol("y")
     diofant_objs = [

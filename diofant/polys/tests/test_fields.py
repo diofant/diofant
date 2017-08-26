@@ -2,13 +2,13 @@
 
 import pytest
 
-from diofant.polys.fields import field, FracField
-from diofant.polys.rings import ring
-from diofant.domains import ZZ, QQ
-from diofant.polys.orderings import lex
-
+from diofant import Rational, sqrt
 from diofant.core import symbols
-from diofant import sqrt, Rational
+from diofant.domains import QQ, ZZ
+from diofant.polys.fields import FracField, field
+from diofant.polys.orderings import lex
+from diofant.polys.rings import ring
+
 
 __all__ = ()
 

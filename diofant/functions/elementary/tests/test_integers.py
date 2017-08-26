@@ -1,7 +1,8 @@
 import pytest
 
-from diofant import (Symbol, floor, nan, oo, E, symbols, ceiling, pi, Rational,
-                     Float, I, sin, exp, log, factorial, S)
+from diofant import (E, Float, I, Rational, S, Symbol, ceiling, exp, factorial,
+                     floor, log, nan, oo, pi, sin, symbols)
+
 
 __all__ = ()
 

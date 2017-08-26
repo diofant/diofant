@@ -1,19 +1,34 @@
 language: python
+dist: trusty
 sudo: false
 cache: pip
 python:
   - 3.6
 env:
-  - SPLIT=1/7
-  - SPLIT=2/7
-  - SPLIT=3/7
-  - SPLIT=4/7
-  - SPLIT=5/7
-  - SPLIT=6/7
-  - SPLIT=7/7
+  - SPLIT=1/20
+  - SPLIT=2/20
+  - SPLIT=3/20
+  - SPLIT=4/20
+  - SPLIT=5/20
+  - SPLIT=6/20
+  - SPLIT=7/20
+  - SPLIT=8/20
+  - SPLIT=9/20
+  - SPLIT=10/20
+  - SPLIT=11/20
+  - SPLIT=12/20
+  - SPLIT=13/20
+  - SPLIT=14/20
+  - SPLIT=15/20
+  - SPLIT=16/20
+  - SPLIT=17/20
+  - SPLIT=18/20
+  - SPLIT=19/20
+  - SPLIT=20/20
 addons:
   apt:
     packages:
+      - libmpc-dev
       - libmpfr-dev
       - libgmp-dev
       - libatlas-dev
@@ -24,19 +39,45 @@ addons:
 matrix:
   include:
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/7'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/20'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/7'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/20'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/7'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/20'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/7'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/20'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/7'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/20'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='6/7'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='6/20'
     - python: 3.4
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='7/7'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='7/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='8/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='9/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='10/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='11/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='12/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='13/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='14/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='15/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='16/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='17/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='18/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='19/20'
+    - python: 3.4
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='20/20'
     - python: 3.5
       env: COVERAGE='on' EXTRA='on'
       install:
@@ -45,18 +86,13 @@ matrix:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
         - py.test --cov diofant diofant/polys
+    - python: 3.5
+      env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
+      install:
+        - travis_wait pip install .[exports,develop]
+      script:
+        - py.test --cov diofant diofant/domains
 before_install:
-  - |
-    mkdir -p $HOME/.local
-    wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz
-    tar xzvf mpc-1.0.2.tar.gz
-    pushd mpc-1.0.2
-    ./configure --prefix=$HOME/.local
-    make all install
-    popd
-    export CPATH=$HOME/.local/include
-    export LIBRARY_PATH=$HOME/.local/lib
-    export LD_LIBRARY_PATH=$HOME/.local/lib
   - pip install --upgrade pip setuptools pytest codecov
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]
@@ -80,7 +116,7 @@ deploy:
   server: https://pypi.python.org/pypi
   on:
     python: 3.4
-    condition: -z "${COVERAGE}" && "${SPLIT}" = "1/7" && "${TRAVIS_EVENT_TYPE}" != "cron"
+    condition: -z "${COVERAGE}" && "${SPLIT}" = "1/20" && "${TRAVIS_EVENT_TYPE}" != "cron"
     tags: true
 notifications:
   email: false

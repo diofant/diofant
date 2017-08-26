@@ -1,8 +1,8 @@
 """Implementation of :class:`PolynomialRing` class. """
 
-from .ring import Ring
-from .compositedomain import CompositeDomain
 from ..polys.polyerrors import CoercionFailed, GeneratorsError
+from .compositedomain import CompositeDomain
+from .ring import Ring
 
 
 __all__ = ('PolynomialRing',)

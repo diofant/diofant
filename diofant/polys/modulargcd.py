@@ -2,12 +2,13 @@ import random
 
 from mpmath import sqrt
 
+from ..core import Dummy
+from ..domains import PolynomialRing
 from ..ntheory import nextprime
 from ..ntheory.modular import crt
-from .galoistools import gf_gcd, gf_from_dict, gf_gcdex, gf_div, gf_lcm
+from ..utilities import public
+from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
-from ..domains import PolynomialRing
-from ..core import Dummy
 
 
 def _trivial_gcd(f, g):
@@ -153,6 +154,7 @@ def _chinese_remainder_reconstruction_univariate(hp, hq, p, q):
     return hpq
 
 
+@public
 def modgcd_univariate(f, g):
     r"""
     Computes the GCD of two polynomials in `\mathbb{Z}[x]` using a modular
@@ -448,7 +450,6 @@ def _swap(f, i):
     Make the variable `x_i` the leading one in a multivariate polynomial `f`.
     """
     ring = f.ring
-    k = ring.ngens
     fswap = ring.zero
     for monom, coeff in f.iterterms():
         monomswap = (monom[i],) + monom[:i] + monom[i+1:]
@@ -693,6 +694,7 @@ def _interpolate_multivariate(evalpoints, hpeval, ring, i, p, ground=False):
     return hp.trunc_ground(p)
 
 
+@public
 def modgcd_bivariate(f, g):
     r"""
     Computes the GCD of two polynomials in `\mathbb{Z}[x, y]` using a
@@ -825,7 +827,7 @@ def modgcd_bivariate(f, g):
         degdelta = delta.degree()
 
         N = min(degyf - degcontfp, degyg - degcontgp,
-            ybound - ycontbound + degdelta) + 1
+                ybound - ycontbound + degdelta) + 1
 
         if p < N:
             continue
@@ -1056,6 +1058,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     return
 
 
+@public
 def modgcd_multivariate(f, g):
     r"""
     Compute the GCD of two polynomials in `\mathbb{Z}[x_0, \ldots, x_{k-1}]`
@@ -1449,7 +1452,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
     return _trunc(f * lcfinv, minpoly, p)
 
 
-def _trial_division(f, h, minpoly, p=None):
+def trial_division(f, h, minpoly, p=None):
     r"""
     Check if `h` divides `f` in
     `\mathbb K[t_1, \ldots, t_k][z]/(m_{\alpha}(z))`, where `\mathbb K` is
@@ -1482,12 +1485,8 @@ def _trial_division(f, h, minpoly, p=None):
     .. [1] [Hoeij02]_
     """
     ring = f.ring
-    domain = ring.domain
-
     zxring = ring.clone(symbols=(ring.symbols[1], ring.symbols[0]))
-
     minpoly = minpoly.set_ring(ring)
-
     rem = f
 
     degrem = rem.degree()
@@ -1677,7 +1676,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
 
             for coeff in h.itercoeffs():
                 den = dom.ring.from_dense(gf_lcm(den.to_dense(), coeff.denom.to_dense(),
-                        p, dom.domain))
+                                                 p, dom.domain))
 
         else:
             dom = qring.domain.domain.field
@@ -1686,18 +1685,18 @@ def _func_field_modgcd_p(f, g, minpoly, p):
             for coeff in h.itercoeffs():
                 for c in coeff.itercoeffs():
                     den = dom.ring.from_dense(gf_lcm(den.to_dense(), c.denom.to_dense(),
-                            p, dom.domain))
+                                                     p, dom.domain))
 
         den = qring.domain_new(den.trunc_ground(p))
         h = ring(h.mul_ground(den).as_expr()).trunc_ground(p)
 
-        if not _trial_division(f, h, minpoly, p) and not _trial_division(g, h, minpoly, p):
+        if not trial_division(f, h, minpoly, p) and not trial_division(g, h, minpoly, p):
             return h
 
     return
 
 
-def _integer_rational_reconstruction(c, m, domain):
+def integer_rational_reconstruction(c, m, domain):
     r"""
     Reconstruct a rational number `\frac a b` from
 
@@ -1798,7 +1797,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
     See also
     ========
 
-    _integer_rational_reconstruction
+    integer_rational_reconstruction
 
     """
     h = ring.zero
@@ -1807,7 +1806,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
         reconstruction = _rational_reconstruction_int_coeffs
         domain = ring.domain.ring
     else:
-        reconstruction = _integer_rational_reconstruction
+        reconstruction = integer_rational_reconstruction
         domain = hm.ring.domain
 
     for monom, coeff in hm.iterterms():
@@ -1972,8 +1971,8 @@ def _func_field_modgcd_m(f, g, minpoly):
         h = h.set_ring(ring)
         h = h.primitive()[1]
 
-        if not (_trial_division(f.mul_ground(cf), h, minpoly) or
-                _trial_division(g.mul_ground(cg), h, minpoly)):
+        if not (trial_division(f.mul_ground(cf), h, minpoly) or
+                trial_division(g.mul_ground(cg), h, minpoly)):
             return h
 
 
@@ -2120,6 +2119,7 @@ def _primitive_in_x0(f):
 
 
 # TODO: add support for algebraic function fields
+@public
 def func_field_modgcd(f, g):
     r"""
     Compute the GCD of two polynomials `f` and `g` in

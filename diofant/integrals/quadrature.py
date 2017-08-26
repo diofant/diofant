@@ -1,6 +1,7 @@
-from ..core import S, Dummy, pi, Rational
-from ..functions import factorial, sin, cos, sqrt, gamma
-from ..polys.orthopolys import legendre_poly, laguerre_poly, hermite_poly, jacobi_poly
+from ..core import Dummy, Rational, S, pi
+from ..functions import cos, factorial, gamma, sin, sqrt
+from ..polys.orthopolys import (hermite_poly, jacobi_poly, laguerre_poly,
+                                legendre_poly)
 from ..polys.rootoftools import RootOf
 
 
@@ -36,28 +37,27 @@ def gauss_legendre(n, n_digits):
     Examples
     ========
 
-    >>> from diofant.integrals.quadrature import gauss_legendre
-    >>> from diofant.printing import pprint
     >>> x, w = gauss_legendre(3, 5)
-    >>> pprint(x)
+    >>> x
     [-0.7746, 0, 0.7746]
-    >>> pprint(w)
+    >>> w
     [0.55556, 0.88889, 0.55556]
+
     >>> x, w = gauss_legendre(4, 5)
-    >>> pprint(x)
+    >>> x
     [-0.86114, -0.33998, 0.33998, 0.86114]
-    >>> pprint(w)
-    [0.34786, 0.65215, 0.65215, 0.34786]
+    >>> w
+    [0.34785, 0.65215, 0.65215, 0.34785]
 
     See Also
     ========
 
-    diofant.integrals.quadrature.gauss_laguerre
-    diofant.integrals.quadrature.gauss_gen_laguerre
-    diofant.integrals.quadrature.gauss_hermite
-    diofant.integrals.quadrature.gauss_chebyshev_t
-    diofant.integrals.quadrature.gauss_chebyshev_u
-    diofant.integrals.quadrature.gauss_jacobi
+    gauss_laguerre
+    gauss_gen_laguerre
+    gauss_hermite
+    gauss_chebyshev_t
+    gauss_chebyshev_u
+    gauss_jacobi
 
     References
     ==========
@@ -111,28 +111,27 @@ def gauss_laguerre(n, n_digits):
     Examples
     ========
 
-    >>> from diofant.integrals.quadrature import gauss_laguerre
-    >>> from diofant.printing import pprint
     >>> x, w = gauss_laguerre(3, 5)
     >>> x
     [0.41577, 2.2943, 6.2899]
     >>> w
     [0.71109, 0.27852, 0.010389]
+
     >>> x, w = gauss_laguerre(6, 5)
     >>> x
     [0.22285, 1.1889, 2.9927, 5.7751, 9.8375, 15.983]
-    >>> pprint(w)
+    >>> w
     [0.45896, 0.417, 0.11337, 0.010399, 0.00026102, 8.9855e-7]
 
     See Also
     ========
 
-    diofant.integrals.quadrature.gauss_legendre
-    diofant.integrals.quadrature.gauss_gen_laguerre
-    diofant.integrals.quadrature.gauss_hermite
-    diofant.integrals.quadrature.gauss_chebyshev_t
-    diofant.integrals.quadrature.gauss_chebyshev_u
-    diofant.integrals.quadrature.gauss_jacobi
+    gauss_legendre
+    gauss_gen_laguerre
+    gauss_hermite
+    gauss_chebyshev_t
+    gauss_chebyshev_u
+    gauss_jacobi
 
     References
     ==========
@@ -185,8 +184,6 @@ def gauss_hermite(n, n_digits):
     Examples
     ========
 
-    >>> from diofant.integrals.quadrature import gauss_hermite
-    >>> from diofant.printing import pprint
     >>> x, w = gauss_hermite(3, 5)
     >>> x
     [-1.2247, 0, 1.2247]
@@ -196,18 +193,18 @@ def gauss_hermite(n, n_digits):
     >>> x, w = gauss_hermite(6, 5)
     >>> x
     [-2.3506, -1.3358, -0.43608, 0.43608, 1.3358, 2.3506]
-    >>> pprint(w)
+    >>> w
     [0.00453, 0.15707, 0.72463, 0.72463, 0.15707, 0.00453]
 
     See Also
     ========
 
-    diofant.integrals.quadrature.gauss_legendre
-    diofant.integrals.quadrature.gauss_laguerre
-    diofant.integrals.quadrature.gauss_gen_laguerre
-    diofant.integrals.quadrature.gauss_chebyshev_t
-    diofant.integrals.quadrature.gauss_chebyshev_u
-    diofant.integrals.quadrature.gauss_jacobi
+    gauss_legendre
+    gauss_laguerre
+    gauss_gen_laguerre
+    gauss_chebyshev_t
+    gauss_chebyshev_u
+    gauss_jacobi
 
     References
     ==========
@@ -263,12 +260,11 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     Examples
     ========
 
-    >>> from diofant import S, pprint
-    >>> from diofant.integrals.quadrature import gauss_gen_laguerre
+    >>> from diofant import S
     >>> x, w = gauss_gen_laguerre(3, -S.Half, 5)
     >>> x
     [0.19016, 1.7845, 5.5253]
-    >>> pprint(w)
+    >>> w
     [1.4493, 0.31413, 0.00906]
 
     >>> x, w = gauss_gen_laguerre(4, 3*S.Half, 5)
@@ -280,12 +276,12 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     See Also
     ========
 
-    diofant.integrals.quadrature.gauss_legendre
-    diofant.integrals.quadrature.gauss_laguerre
-    diofant.integrals.quadrature.gauss_hermite
-    diofant.integrals.quadrature.gauss_chebyshev_t
-    diofant.integrals.quadrature.gauss_chebyshev_u
-    diofant.integrals.quadrature.gauss_jacobi
+    gauss_legendre
+    gauss_laguerre
+    gauss_hermite
+    gauss_chebyshev_t
+    gauss_chebyshev_u
+    gauss_jacobi
 
     References
     ==========
@@ -340,8 +336,7 @@ def gauss_chebyshev_t(n, n_digits):
     Examples
     ========
 
-    >>> from diofant import S, pprint
-    >>> from diofant.integrals.quadrature import gauss_chebyshev_t
+    >>> from diofant import S
     >>> x, w = gauss_chebyshev_t(3, 5)
     >>> x
     [0.86602, 0, -0.86602]
@@ -351,18 +346,18 @@ def gauss_chebyshev_t(n, n_digits):
     >>> x, w = gauss_chebyshev_t(6, 5)
     >>> x
     [0.96593, 0.70711, 0.25882, -0.25882, -0.70711, -0.96593]
-    >>> pprint(w)
+    >>> w
     [0.5236, 0.5236, 0.5236, 0.5236, 0.5236, 0.5236]
 
     See Also
     ========
 
-    diofant.integrals.quadrature.gauss_legendre
-    diofant.integrals.quadrature.gauss_laguerre
-    diofant.integrals.quadrature.gauss_hermite
-    diofant.integrals.quadrature.gauss_gen_laguerre
-    diofant.integrals.quadrature.gauss_chebyshev_u
-    diofant.integrals.quadrature.gauss_jacobi
+    gauss_legendre
+    gauss_laguerre
+    gauss_hermite
+    gauss_gen_laguerre
+    gauss_chebyshev_u
+    gauss_jacobi
 
     References
     ==========
@@ -370,7 +365,6 @@ def gauss_chebyshev_t(n, n_digits):
     .. [1] http://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
     .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev1_rule/chebyshev1_rule.html
     """
-    x = Dummy("x")
     xi = []
     w = []
     for i in range(1, n + 1):
@@ -412,12 +406,11 @@ def gauss_chebyshev_u(n, n_digits):
     Examples
     ========
 
-    >>> from diofant import S, pprint
-    >>> from diofant.integrals.quadrature import gauss_chebyshev_u
+    >>> from diofant import S
     >>> x, w = gauss_chebyshev_u(3, 5)
     >>> x
     [0.70711, 0, -0.70711]
-    >>> pprint(w)
+    >>> w
     [0.3927, 0.7854, 0.3927]
 
     >>> x, w = gauss_chebyshev_u(6, 5)
@@ -429,12 +422,12 @@ def gauss_chebyshev_u(n, n_digits):
     See Also
     ========
 
-    diofant.integrals.quadrature.gauss_legendre
-    diofant.integrals.quadrature.gauss_laguerre
-    diofant.integrals.quadrature.gauss_hermite
-    diofant.integrals.quadrature.gauss_gen_laguerre
-    diofant.integrals.quadrature.gauss_chebyshev_t
-    diofant.integrals.quadrature.gauss_jacobi
+    gauss_legendre
+    gauss_laguerre
+    gauss_hermite
+    gauss_gen_laguerre
+    gauss_chebyshev_t
+    gauss_jacobi
 
     References
     ==========
@@ -442,7 +435,6 @@ def gauss_chebyshev_u(n, n_digits):
     .. [1] http://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
     .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev2_rule/chebyshev2_rule.html
     """
-    x = Dummy("x")
     xi = []
     w = []
     for i in range(1, n + 1):
@@ -489,8 +481,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     Examples
     ========
 
-    >>> from diofant import S, pprint
-    >>> from diofant.integrals.quadrature import gauss_jacobi
+    >>> from diofant import S
     >>> x, w = gauss_jacobi(3, S.Half, -S.Half, 5)
     >>> x
     [-0.90097, -0.22252, 0.62349]
@@ -498,7 +489,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     [1.7063, 1.0973, 0.33795]
 
     >>> x, w = gauss_jacobi(6, 1, 1, 5)
-    >>> pprint(x)
+    >>> x
     [-0.87174, -0.5917, -0.2093, 0.2093, 0.5917, 0.87174]
     >>> w
     [0.050584, 0.22169, 0.39439, 0.39439, 0.22169, 0.050584]
@@ -506,12 +497,12 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     See Also
     ========
 
-    diofant.integrals.quadrature.gauss_legendre
-    diofant.integrals.quadrature.gauss_laguerre
-    diofant.integrals.quadrature.gauss_hermite
-    diofant.integrals.quadrature.gauss_gen_laguerre
-    diofant.integrals.quadrature.gauss_chebyshev_t
-    diofant.integrals.quadrature.gauss_chebyshev_u
+    gauss_legendre
+    gauss_laguerre
+    gauss_hermite
+    gauss_gen_laguerre
+    gauss_chebyshev_t
+    gauss_chebyshev_u
 
     References
     ==========

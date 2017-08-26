@@ -3,14 +3,14 @@ from functools import reduce
 
 from mpmath.libmp import mpf_log, prec_to_dps
 
-from .sympify import sympify, _sympify, SympifyError
-from .basic import Basic, Atom
-from .singleton import S
-from .evalf import EvalfMixin, pure_complex
-from .decorators import _sympifyit, call_highest_priority
+from .assumptions import ManagedProperties
+from .basic import Atom, Basic
 from .cache import cacheit
 from .compatibility import as_int, default_sort_key
-from .assumptions import ManagedProperties
+from .decorators import _sympifyit, call_highest_priority
+from .evalf import EvalfMixin, pure_complex
+from .singleton import S
+from .sympify import SympifyError, sympify
 
 
 class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
@@ -1720,7 +1720,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         if deps:
             if not self.has(*deps):
-                return self, tuple()
+                return self, ()
         return S.One, (self,)
 
     def as_coeff_add(self, *deps):
@@ -1755,7 +1755,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         if deps:
             if not self.has(*deps):
-                return self, tuple()
+                return self, ()
         return S.Zero, (self,)
 
     def primitive(self):
@@ -2970,7 +2970,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     @cacheit
     def expand(self, deep=True, modulus=None, power_base=True, power_exp=True,
-            mul=True, log=True, multinomial=True, basic=True, **hints):
+               mul=True, log=True, multinomial=True, basic=True, **hints):
         """Expand an expression using hints.
 
         See Also
@@ -2981,7 +2981,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify.radsimp import fraction
 
         hints.update(power_base=power_base, power_exp=power_exp, mul=mul,
-           log=log, multinomial=multinomial, basic=basic)
+                     log=log, multinomial=multinomial, basic=basic)
 
         expr = self
         if hints.pop('frac', False):

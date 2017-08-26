@@ -1,11 +1,11 @@
 import pytest
 
+from diofant.abc import x
+from diofant.core.cache import CACHE, cacheit, clear_cache, print_cache
 from diofant.core.compatibility import ordered
 from diofant.core.symbol import Symbol, symbols
-from diofant.core.cache import cacheit, CACHE, print_cache, clear_cache
 from diofant.printing.str import sstr
 
-from diofant.abc import x
 
 __all__ = ()
 
@@ -80,7 +80,7 @@ def test_nocache(clear_imports, monkeypatch):
     assert CACHE == []
 
     # issue sympy/sympy#8840
-    expr = (1 + x)*x  # not raises
+    (1 + x)*x  # not raises
 
     # issue sympy/sympy#9413
     (2*x).is_complex  # not raises
@@ -106,7 +106,7 @@ def test_nocache(clear_imports, monkeypatch):
     a = Symbol('a', positive=True)
     f = exp(x*(-a - 1))
     g = sinh(x)
-    r = f*g  # not raises
+    f*g  # not raises
 
 
 def test_sympyissue_8825():

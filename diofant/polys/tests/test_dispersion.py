@@ -1,11 +1,11 @@
 import pytest
 
-from diofant.core import oo, Integer
+from diofant.abc import a, x, y
+from diofant.core import Integer, oo
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.polys import poly
 from diofant.polys.dispersion import dispersion, dispersionset
 
-from diofant.abc import x, y, a
 
 __all__ = ()
 

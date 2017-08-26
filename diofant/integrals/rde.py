@@ -24,11 +24,12 @@ Manuel Bronstein.  See also the docstring of risch.py.
 from functools import reduce
 from operator import mul
 
-from ..core import oo, Dummy
+from ..core import Dummy, oo
 from ..domains import ZZ
-from ..polys import Poly, gcd, cancel
-from .risch import (gcdex_diophantine, frac_in, derivation, splitfactor,
-                    NonElementaryIntegralException, DecrementLevel)
+from ..polys import Poly, cancel, gcd
+from .risch import (DecrementLevel, NonElementaryIntegralException, derivation,
+                    frac_in, gcdex_diophantine, splitfactor)
+
 
 # TODO: Add messages to NonElementaryIntegralException errors
 
@@ -112,7 +113,7 @@ def weak_normalizer(a, d, DE, z=None):
     d1 = d_sqf_part.quo(gcd(d_sqf_part, g))
 
     a1, b = gcdex_diophantine(d.quo(d1).as_poly(DE.t), d1.as_poly(DE.t),
-        a.as_poly(DE.t))
+                              a.as_poly(DE.t))
     r = (a - Poly(z, DE.t)*derivation(d1, DE)).as_poly(DE.t).resultant(
         d1.as_poly(DE.t))
     r = Poly(r, z)
@@ -123,7 +124,7 @@ def weak_normalizer(a, d, DE, z=None):
     N = [i for i in r.real_roots() if i in ZZ and i > 0]
 
     q = reduce(mul, [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
-        Poly(1, DE.t))
+               Poly(1, DE.t))
 
     dq = derivation(q, DE)
     sn = q*a - d*dq
@@ -201,7 +202,7 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
         return a, B, C, Poly(1, DE.t)
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
-            "'base'}, not %s." % case)
+                         "'base'}, not %s." % case)
 
     nb = order_at(ba, p, DE.t) - order_at(bd, p, DE.t)
     nc = order_at(ca, p, DE.t) - order_at(cd, p, DE.t)
@@ -283,7 +284,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
         dc = cQ.degree(DE.t)
 
     alpha = cancel(-b.as_poly(DE.t).LC().as_expr() /
-        a.as_poly(DE.t).LC().as_expr())
+                   a.as_poly(DE.t).LC().as_expr())
 
     if case == 'base':
         n = max(0, dc - max(db, da - 1))
@@ -305,7 +306,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
                 # if alpha == m*Dt + Dz for z in k and m in ZZ:
                 try:
                     (za, zd), m = limited_integrate(alphaa, alphad, [(etaa, etad)],
-                        DE)
+                                                    DE)
                 except NonElementaryIntegralException:
                     pass
                 else:
@@ -323,11 +324,11 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
                     aa, z = A
                     if aa == 1:
                         beta = -(a*derivation(z, DE).as_poly(t1) +
-                            b*z.as_poly(t1)).LC()/(z.as_expr()*a.LC())
+                                 b*z.as_poly(t1)).LC()/(z.as_expr()*a.LC())
                         betaa, betad = frac_in(beta, DE.t)
                         try:
                             (za, zd), m = limited_integrate(betaa, betad,
-                                [(etaa, etad)], DE)
+                                                            [(etaa, etad)], DE)
                         except NonElementaryIntegralException:
                             pass
                         else:
@@ -359,7 +360,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
 
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
-            "'other_nonlinear', 'base'}, not %s." % case)
+                         "'other_nonlinear', 'base'}, not %s." % case)
 
     return n
 
@@ -428,7 +429,7 @@ def no_cancel_b_large(b, c, n, DE):
             raise NonElementaryIntegralException
 
         p = Poly(c.as_poly(DE.t).LC()/b.as_poly(DE.t).LC()*DE.t**m, DE.t,
-            expand=False)
+                 expand=False)
         q = q + p
         n = m - 1
         c = c - derivation(p, DE) - b*p
@@ -462,7 +463,7 @@ def no_cancel_b_small(b, c, n, DE):
 
         if m > 0:
             p = Poly(c.as_poly(DE.t).LC()/(m*DE.d.as_poly(DE.t).LC())*DE.t**m,
-                DE.t, expand=False)
+                     DE.t, expand=False)
         else:
             if b.degree(DE.t) != c.degree(DE.t):
                 raise NonElementaryIntegralException
@@ -470,7 +471,7 @@ def no_cancel_b_small(b, c, n, DE):
                 return (q, b.as_poly(DE.T[DE.level - 1]),
                         c.as_poly(DE.T[DE.level - 1]))
             p = Poly(c.as_poly(DE.t).LC()/b.as_poly(DE.t).LC(), DE.t,
-                expand=False)
+                     expand=False)
 
         q = q + p
         n = m - 1
@@ -543,7 +544,7 @@ def cancel_primitive(b, c, n, DE):
             n, z = A
             if n == 1:  # b == Dz/z
                 raise NotImplementedError("is_deriv_in_field() is required to "
-                    " solve this problem.")
+                                          " solve this problem.")
                 # if z*c == Dp for p in k[t] and deg(p) <= n:
                 #     return p/z
                 # else:
@@ -593,7 +594,7 @@ def cancel_exp(b, c, n, DE):
             a, m, z = A
             if a == 1:
                 raise NotImplementedError("is_deriv_in_field() is required to "
-                    "solve this problem.")
+                                          "solve this problem.")
                 # if c*z*t**m == Dp for p in k<t> and q = p/(z*t**m) in k[t] and
                 # deg(q) <= n:
                 #     return q
@@ -642,7 +643,7 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
 
     # No cancellation
     if not b.is_zero and (DE.case == 'base' or
-            b.degree(DE.t) > max(0, DE.d.degree(DE.t) - 1)):
+                          b.degree(DE.t) > max(0, DE.d.degree(DE.t) - 1)):
 
         if parametric:
             return prde_no_cancel_b_large(b, cQ, n, DE)
@@ -680,7 +681,7 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
 
         if parametric:
             raise NotImplementedError("prde_no_cancel_b_equal() is not yet "
-                "implemented.")
+                                      "implemented.")
 
         R = no_cancel_equal(b, cQ, n, DE)
 
@@ -696,29 +697,29 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
         # Cancellation
         if b.is_zero:
             raise NotImplementedError("Remaining cases for Poly (P)RDE are "
-            "not yet implemented (is_deriv_in_field() required).")
+                                      "not yet implemented (is_deriv_in_field() required).")
         else:
             if DE.case == 'exp':
                 if parametric:
                     raise NotImplementedError("Parametric RDE cancellation "
-                        "hyperexponential case is not yet implemented.")
+                                              "hyperexponential case is not yet implemented.")
                 return cancel_exp(b, cQ, n, DE)
 
             elif DE.case == 'primitive':
                 if parametric:
                     raise NotImplementedError("Parametric RDE cancellation "
-                        "primitive case is not yet implemented.")
+                                              "primitive case is not yet implemented.")
                 return cancel_primitive(b, cQ, n, DE)
 
             else:
                 raise NotImplementedError("Other Poly (P)RDE cancellation "
-                    "cases are not yet implemented (%s)." % case)
+                                          "cases are not yet implemented (%s)." % case)
 
         if parametric:
             raise NotImplementedError("Remaining cases for Poly PRDE not yet "
-                "implemented.")
+                                      "implemented.")
         raise NotImplementedError("Remaining cases for Poly RDE not yet "
-            "implemented.")
+                                  "implemented.")
 
 
 def rischDE(fa, fd, ga, gd, DE):

@@ -5,15 +5,15 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (S, symbols, Symbol, Wild, Rational, sqrt, powsimp, sin, cos,
-                     pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root,
-                     Integer)
-from diofant.polys import Poly, cyclotomic_poly, intervals, nroots, RootOf
-from diofant.polys.polyroots import (
-    root_factors, roots_linear,
-    roots_quadratic, roots_cubic, roots_quartic, roots_cyclotomic,
-    roots_binomial, preprocess_roots, roots)
+from diofant import (ZZ, I, Integer, Interval, Piecewise, Rational, S, Symbol,
+                     Wild, acos, cos, exp, im, pi, powsimp, re, root, sin,
+                     sqrt, symbols)
+from diofant.polys import Poly, RootOf, cyclotomic_poly, intervals, nroots
 from diofant.polys.orthopolys import legendre_poly
+from diofant.polys.polyroots import (preprocess_roots, root_factors, roots,
+                                     roots_binomial, roots_cubic,
+                                     roots_cyclotomic, roots_linear,
+                                     roots_quadratic, roots_quartic)
 from diofant.polys.polyutils import _nsort
 from diofant.utilities.randtest import verify_numerically
 
@@ -68,7 +68,7 @@ def test_sympyissue_8438():
     z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
     post = [r.subs(y, z) for r in roots]
     assert set(post) == \
-    set(roots_cubic(Poly(p.subs(y, z), x)))
+        set(roots_cubic(Poly(p.subs(y, z), x)))
     # /!\ if p is not made an expression, this is *very* slow
     assert all(p.subs({y: z, x: i}).n(2, chop=True) == 0 for i in post)
 
@@ -107,10 +107,10 @@ def test_roots_cubic():
     assert roots_cubic(Poly(x**3 + 1, x)) == \
         [-1, S.Half - I*sqrt(3)/2, S.Half + I*sqrt(3)/2]
     assert roots_cubic(Poly(2*x**3 - 3*x**2 - 3*x - 1, x))[0] == \
-         S.Half + 3**Rational(1, 3)/2 + 3**Rational(2, 3)/2
+        S.Half + 3**Rational(1, 3)/2 + 3**Rational(2, 3)/2
     eq = -x**3 + 2*x**2 + 3*x - 2
     assert roots(eq, trig=True, multiple=True) == \
-           roots_cubic(Poly(eq, x), trig=True) == [
+        roots_cubic(Poly(eq, x), trig=True) == [
         Rational(2, 3) + 2*sqrt(13)*cos(acos(8*sqrt(13)/169)/3)/3,
         -2*sqrt(13)*sin(-acos(8*sqrt(13)/169)/3 + pi/6)/3 + Rational(2, 3),
         -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + Rational(2, 3),
@@ -166,10 +166,9 @@ def test_roots_quartic():
     eq = Poly(y*x**4 + x**3 - x + z, x)
     ans = roots_quartic(eq)
     assert all(type(i) == Piecewise for i in ans)
-    reps = (
-        dict(y=-Rational(1, 3), z=-Rational(1, 4)),  # 4 real
-        dict(y=-Rational(1, 3), z=-Rational(1, 2)),  # 2 real
-        dict(y=-Rational(1, 3), z=-2))  # 0 real
+    reps = ({y: -Rational(1, 3), z: -Rational(1, 4)},  # 4 real
+            {y: -Rational(1, 3), z: -Rational(1, 2)},  # 2 real
+            {y: -Rational(1, 3), z: -2})  # 0 real
     for rep in reps:
         sol = roots_quartic(Poly(eq.subs(rep), x))
         assert all(verify_numerically(w.subs(rep) - s, 0) for w, s in zip(ans, sol))
@@ -393,7 +392,7 @@ def test_roots0():
     f = (x**2 + 2*x + 3).subs(x, 2*x**2 + 3*x).subs(x, 5*x - 4)
 
     r13_20, r1_20 = [ Rational(*r)
-        for r in ((13, 20), (1, 20)) ]
+                      for r in ((13, 20), (1, 20)) ]
 
     s2 = sqrt(2)
     assert roots(f, x) == {
@@ -470,13 +469,13 @@ def test_roots0():
     assert roots(eq) == {-1 + sqrt(2): 1, -2 + 2*sqrt(2): 1, -sqrt(2) + 1: 1}
 
     eq = Poly(41*x**5 + 29*sqrt(2)*x**5 - 153*x**4 - 108*sqrt(2)*x**4 +
-    175*x**3 + 125*sqrt(2)*x**3 - 45*x**2 - 30*sqrt(2)*x**2 - 26*sqrt(2)*x -
-    26*x + 24, x, domain='EX')
+              175*x**3 + 125*sqrt(2)*x**3 - 45*x**2 - 30*sqrt(2)*x**2 - 26*sqrt(2)*x -
+              26*x + 24, x, domain='EX')
     assert roots(eq) == {-sqrt(2) + 1: 1, -2 + 2*sqrt(2): 1, -1 + sqrt(2): 1,
                          -4 + 4*sqrt(2): 1, -3 + 3*sqrt(2): 1}
 
     eq = Poly(x**3 - 2*x**2 + 6*sqrt(2)*x**2 - 8*sqrt(2)*x + 23*x - 14 +
-            14*sqrt(2), x, domain='EX')
+              14*sqrt(2), x, domain='EX')
     assert roots(eq) == {-2*sqrt(2) + 2: 1, -2*sqrt(2) + 1: 1, -2*sqrt(2) - 1: 1}
 
     assert roots(Poly((x + sqrt(2))**3 - 7, x, domain='EX')) == \
@@ -606,16 +605,16 @@ def test_nroots1():
     # The order of roots matters. They are ordered from smallest to the
     # largest.
     assert [str(r) for r in roots] == \
-            ['-0.999', '-0.996', '-0.991', '-0.983', '-0.973', '-0.961',
-            '-0.946', '-0.930', '-0.911', '-0.889', '-0.866', '-0.841',
-            '-0.813', '-0.784', '-0.753', '-0.720', '-0.685', '-0.649',
-            '-0.611', '-0.572', '-0.531', '-0.489', '-0.446', '-0.402',
-            '-0.357', '-0.311', '-0.265', '-0.217', '-0.170', '-0.121',
-            '-0.0730', '-0.0243', '0.0243', '0.0730', '0.121', '0.170',
-            '0.217', '0.265', '0.311', '0.357', '0.402', '0.446', '0.489',
-            '0.531', '0.572', '0.611', '0.649', '0.685', '0.720', '0.753',
-            '0.784', '0.813', '0.841', '0.866', '0.889', '0.911', '0.930',
-            '0.946', '0.961', '0.973', '0.983', '0.991', '0.996', '0.999']
+        ['-0.999', '-0.996', '-0.991', '-0.983', '-0.973', '-0.961',
+         '-0.946', '-0.930', '-0.911', '-0.889', '-0.866', '-0.841',
+         '-0.813', '-0.784', '-0.753', '-0.720', '-0.685', '-0.649',
+         '-0.611', '-0.572', '-0.531', '-0.489', '-0.446', '-0.402',
+         '-0.357', '-0.311', '-0.265', '-0.217', '-0.170', '-0.121',
+         '-0.0730', '-0.0243', '0.0243', '0.0730', '0.121', '0.170',
+         '0.217', '0.265', '0.311', '0.357', '0.402', '0.446', '0.489',
+         '0.531', '0.572', '0.611', '0.649', '0.685', '0.720', '0.753',
+         '0.784', '0.813', '0.841', '0.866', '0.889', '0.911', '0.930',
+         '0.946', '0.961', '0.973', '0.983', '0.991', '0.996', '0.999']
 
 
 def test_nroots2():
@@ -626,13 +625,13 @@ def test_nroots2():
     # components (if they agree, then by their imaginary components),
     # with real roots appearing first.
     assert [str(r) for r in roots] == \
-            ['-0.332', '-0.839 - 0.944*I', '-0.839 + 0.944*I',
-                '1.01 - 0.937*I', '1.01 + 0.937*I']
+        ['-0.332', '-0.839 - 0.944*I', '-0.839 + 0.944*I',
+         '1.01 - 0.937*I', '1.01 + 0.937*I']
 
     roots = p.nroots(n=5)
     assert [str(r) for r in roots] == \
-            ['-0.33199', '-0.83907 - 0.94385*I', '-0.83907 + 0.94385*I',
-              '1.0051 - 0.93726*I', '1.0051 + 0.93726*I']
+        ['-0.33199', '-0.83907 - 0.94385*I', '-0.83907 + 0.94385*I',
+         '1.0051 - 0.93726*I', '1.0051 + 0.93726*I']
 
 
 def test_roots_composite():

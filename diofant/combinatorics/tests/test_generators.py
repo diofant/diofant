@@ -1,5 +1,7 @@
-from diofant.combinatorics.generators import symmetric, cyclic, alternating, dihedral
+from diofant.combinatorics.generators import (alternating, cyclic, dihedral,
+                                              symmetric)
 from diofant.combinatorics.permutations import Permutation
+
 
 __all__ = ()
 

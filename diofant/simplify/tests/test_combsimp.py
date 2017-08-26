@@ -1,9 +1,8 @@
-from diofant import (
-    Rational, combsimp, factorial, gamma, binomial, Symbol, pi, S,
-    sin, exp, powsimp, sqrt, FallingFactorial, RisingFactorial,
-    simplify, symbols, cos, rf)
+from diofant import (FallingFactorial, Rational, RisingFactorial, S, Symbol,
+                     binomial, combsimp, cos, exp, factorial, gamma, pi,
+                     powsimp, rf, simplify, sin, sqrt, symbols)
+from diofant.abc import k, n, x, y
 
-from diofant.abc import x, y, n, k
 
 __all__ = ()
 
@@ -26,7 +25,7 @@ def test_combsimp():
     assert combsimp(binomial(n - 1, k)) == -((-n + k)*binomial(n, k))/n
 
     assert combsimp(binomial(n + 2, k + Rational(1, 2))) == 4*((n + 1)*(n + 2) *
-        binomial(n, k + Rational(1, 2)))/((2*k - 2*n - 1)*(2*k - 2*n - 3))
+                                                               binomial(n, k + Rational(1, 2)))/((2*k - 2*n - 1)*(2*k - 2*n - 3))
     assert combsimp(binomial(n + 2, k + 2.0)) == \
         -((1.0*n + 2.0)*binomial(n + 1.0, k + 2.0))/(k - n)
 

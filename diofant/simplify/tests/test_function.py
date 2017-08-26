@@ -1,8 +1,9 @@
 """ Unit tests for Hyper_Function"""
 
-from diofant.core import symbols, Dummy, Tuple, Rational
+from diofant.core import Dummy, Rational, Tuple, symbols
 from diofant.functions import hyper
 from diofant.simplify.hyperexpand import Hyper_Function
+
 
 __all__ = ()
 
@@ -57,6 +58,6 @@ def test_suitable_origin():
     assert Hyper_Function((Rational(1, 2),), (-1, 1,))._is_suitable_origin() is False
     assert Hyper_Function((Rational(1, 2), 0), (1,))._is_suitable_origin() is False
     assert Hyper_Function((Rational(1, 2), 1),
-            (2, -Rational(2, 3)))._is_suitable_origin() is True
+                          (2, -Rational(2, 3)))._is_suitable_origin() is True
     assert Hyper_Function((Rational(1, 2), 1),
-            (2, -Rational(2, 3), Rational(3, 2)))._is_suitable_origin() is True
+                          (2, -Rational(2, 3), Rational(3, 2)))._is_suitable_origin() is True

@@ -10,8 +10,9 @@ source code files that are compilable without further modifications.
 """
 
 from ..core import S
-from .codeprinter import CodePrinter, Assignment
+from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
+
 
 # dictionary mapping diofant function to (argument_conditions, C_function).
 # Used in CCodePrinter._print_Function(self)
@@ -144,7 +145,7 @@ class CCodePrinter(CodePrinter):
             return 'sqrt(%s)' % self._print(expr.base)
         else:
             return 'pow(%s, %s)' % (self._print(expr.base),
-                                 self._print(expr.exp))
+                                    self._print(expr.exp))
 
     def _print_Rational(self, expr):
         p, q = int(expr.p), int(expr.q)
@@ -203,7 +204,7 @@ class CCodePrinter(CodePrinter):
             # not work for statements that span multiple lines (Matrix or
             # Indexed expressions).
             ecpairs = ["((%s) ? (\n%s\n)\n" % (self._print(c), self._print(e))
-                    for e, c in expr.args[:-1]]
+                       for e, c in expr.args[:-1]]
             last_line = ": (\n%s\n)" % self._print(expr.args[-1].expr)
             return ": ".join(ecpairs) + last_line + " ".join([")"*len(ecpairs)])
 
@@ -214,7 +215,7 @@ class CCodePrinter(CodePrinter):
 
     def _print_MatrixElement(self, expr):
         return "{0}[{1}]".format(expr.parent, expr.j +
-                expr.i*expr.parent.shape[1])
+                                 expr.i*expr.parent.shape[1])
 
     def _print_Symbol(self, expr):
 

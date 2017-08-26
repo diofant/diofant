@@ -1,17 +1,18 @@
 """Functions for generating interesting polynomials, e.g. for benchmarking. """
 
-from ..core import Add, Mul, Symbol, sympify, Dummy, symbols, S
+from ..core import Add, Dummy, Mul, S, Symbol, symbols, sympify
+from ..domains import ZZ
 from ..functions import sqrt
+from ..ntheory import nextprime
+from ..utilities import public, subsets
+from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
+from .densebasic import (dmp_ground, dmp_one, dmp_raise, dmp_zero,
+                         dup_from_raw_dict, dup_random)
+from .factortools import dup_zz_cyclotomic_poly
+from .polyclasses import DMP
 from .polytools import Poly, PurePoly
 from .polyutils import _analyze_gens
-from .polyclasses import DMP
-from .densebasic import (dmp_zero, dmp_one, dmp_ground, dup_from_raw_dict,
-                         dmp_raise, dup_random)
-from .densearith import dmp_add_term, dmp_neg, dmp_mul, dmp_sqr
-from .factortools import dup_zz_cyclotomic_poly
-from ..domains import ZZ
-from ..ntheory import nextprime
-from ..utilities import subsets, public
+from .rings import ring
 
 
 @public
@@ -23,17 +24,9 @@ def swinnerton_dyer_poly(n, x=None, **args):
             "can't generate Swinnerton-Dyer polynomial of order %s" % n)
 
     if x is not None:
-        sympify(x)
+        x = sympify(x)
     else:
         x = Dummy('x')
-
-    if n > 3:
-        p = 2
-        a = [sqrt(2)]
-        for i in range(2, n + 1):
-            p = nextprime(p)
-            a.append(sqrt(p))
-        return minimal_polynomial(Add(*a), x, polys=args.get('polys', False))
 
     if n == 1:
         ex = x**2 - 2
@@ -41,6 +34,14 @@ def swinnerton_dyer_poly(n, x=None, **args):
         ex = x**4 - 10*x**2 + 1
     elif n == 3:
         ex = x**8 - 40*x**6 + 352*x**4 - 960*x**2 + 576
+    else:
+        p = 2
+        a = [sqrt(2)]
+        for i in range(2, n + 1):
+            p = nextprime(p)
+            a.append(sqrt(p))
+        return minimal_polynomial(Add(*a), x, polys=args.get('polys', False))
+
     if not args.get('polys', False):
         return ex
     else:
@@ -247,8 +248,6 @@ def dmp_fateman_poly_F_3(n, K):
 
 
 # A few useful polynomials from Wang's paper ('78).
-
-from .rings import ring
 
 
 def _f_0():

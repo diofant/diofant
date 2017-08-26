@@ -1,10 +1,11 @@
 import pytest
 
-from diofant import (diff, Integral, Limit, sin, Symbol, Integer, Rational,
-                     cos, tan, asin, acos, atan, sinh, cosh, tanh, asinh,
-                     acosh, atanh, E, I, oo, pi, GoldenRatio, EulerGamma,
-                     Sum, Eq, Ne, Ge, Lt, Float, Matrix, Basic)
-from diofant.printing.mathml import mathml, MathMLPrinter
+from diofant import (Basic, E, Eq, EulerGamma, Float, Ge, GoldenRatio, I,
+                     Integer, Integral, Limit, Lt, Matrix, Ne, Rational, Sum,
+                     Symbol, acos, acosh, asin, asinh, atan, atanh, cos, cosh,
+                     diff, oo, pi, sin, sinh, tan, tanh)
+from diofant.printing.mathml import MathMLPrinter, mathml
+
 
 __all__ = ()
 

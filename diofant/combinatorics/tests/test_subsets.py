@@ -1,9 +1,15 @@
+import pytest
+
 from diofant.combinatorics import Subset
+
 
 __all__ = ()
 
 
 def test_subset():
+    pytest.raises(ValueError, lambda: Subset(['a', 'b'], ['a']))
+    pytest.raises(ValueError, lambda: Subset(['c'], ['a', 'b']))
+
     a = Subset(['c', 'd'], ['a', 'b', 'c', 'd'])
     assert a.next_binary() == Subset(['b'], ['a', 'b', 'c', 'd'])
     assert a.prev_binary() == Subset(['c'], ['a', 'b', 'c', 'd'])
@@ -12,7 +18,9 @@ def test_subset():
     assert a.next_gray() == Subset(['c'], ['a', 'b', 'c', 'd'])
     assert a.prev_gray() == Subset(['d'], ['a', 'b', 'c', 'd'])
     assert a.rank_binary == 3
+    assert a.rank_binary == 3  # cached
     assert a.rank_lexicographic == 14
+    assert a.rank_lexicographic == 14  # cached
     assert a.rank_gray == 2
     assert a.cardinality == 16
 
@@ -48,3 +56,5 @@ def test_subset():
         a = a.prev_lexicographic()
         i = i + 1
     assert i == 16
+
+    pytest.raises(ValueError, lambda: Subset.subset_from_bitlist(['a'], '01'))

@@ -1,6 +1,6 @@
-from diofant import Symbol, Contains, S, Interval, FiniteSet
-
+from diofant import Contains, FiniteSet, Interval, S, Symbol
 from diofant.abc import x
+
 
 __all__ = ()
 

@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (hyper, meijerg, S, Tuple, pi, I, exp, log, Float,
-                     cos, sqrt, symbols, oo, Derivative, gamma, O, Rational)
+from diofant import (Derivative, Float, I, O, Rational, S, Tuple, cos, exp,
+                     gamma, hyper, log, meijerg, oo, pi, sqrt, symbols)
+from diofant.abc import a, b, c, d, k, l, s, x, z
 from diofant.series.limits import limit
-from diofant.utilities.randtest import (random_complex_number as randcplx,
-                                        verify_numerically as tn,
-                                        test_derivative_numerically as td)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_numerically as tn
 
-from diofant.abc import x, z, k
 
 __all__ = ()
 
@@ -53,7 +53,6 @@ def test_hyper():
 
 def test_expand_func():
     # evaluation at 1 of Gauss' hypergeometric function:
-    from diofant.abc import a, b, c
     from diofant import gamma, expand_func
     a1, b1, c1 = randcplx(), randcplx(), randcplx() + 5
     assert expand_func(hyper([a, b], [c], 1)) == \
@@ -101,6 +100,7 @@ def test_radius_of_convergence():
     assert hyper([-1, 1], [-2, 2], z).radius_of_convergence == oo
     assert hyper([-1, 1, 3], [-2], z).radius_of_convergence == 0
     assert hyper((-1, 2, 3, 4), [], z).radius_of_convergence == oo
+    assert hyper((-4, 2), [-3], z).radius_of_convergence == 0
 
     assert hyper([1, 1], [3], 1).convergence_statement
     assert hyper([1, 1], [2], 1).convergence_statement == S.false
@@ -170,7 +170,6 @@ def test_meijer():
         meijerg([a1], [a2], [b1], [b2], pl(z))
 
     # integrand
-    from diofant.abc import a, b, c, d, s
     assert meijerg([a], [b], [c], [d], z).integrand(s) == \
         z**s*gamma(c - s)*gamma(-a + s + 1)/(gamma(b - s)*gamma(-d + s + 1))
 
@@ -219,9 +218,9 @@ def test_hyper_unpolarify():
 @pytest.mark.slow
 def test_hyperrep():
     from diofant.functions.special.hyper import (HyperRep, HyperRep_atanh,
-        HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
-        HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
-        HyperRep_cosasin, HyperRep_sinasin)
+                                                 HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
+                                                 HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
+                                                 HyperRep_cosasin, HyperRep_sinasin)
     # First test the base class works.
     from diofant import Piecewise, exp_polar
     a, b, c, d, z = symbols('a b c d z')
@@ -307,7 +306,6 @@ def test_hyperrep():
 
 def test_meijerg_eval():
     from diofant import besseli, exp_polar
-    from diofant.abc import l
     a = randcplx()
     arg = x*exp_polar(k*pi*I)
     expr1 = pi*meijerg([[], [(a + 1)/2]], [[a/2], [-a/2, (a + 1)/2]], arg**2/4)
@@ -338,12 +336,12 @@ def test_meijerg_eval():
 def test_limits():
     k, x = symbols('k, x')
     assert hyper((1,), (Rational(4, 3), Rational(5, 3)), k**2).series(k) == \
-           hyper((1,), (Rational(4, 3), Rational(5, 3)), 0) + \
-           9*k**2*hyper((2,), (Rational(7, 3), Rational(8, 3)), 0)/20 + \
-           81*k**4*hyper((3,), (Rational(10, 3), Rational(11, 3)), 0)/1120 + \
-           O(k**6)  # issue sympy/sympy#6350
+        hyper((1,), (Rational(4, 3), Rational(5, 3)), 0) + \
+        9*k**2*hyper((2,), (Rational(7, 3), Rational(8, 3)), 0)/20 + \
+        81*k**4*hyper((3,), (Rational(10, 3), Rational(11, 3)), 0)/1120 + \
+        O(k**6)  # issue sympy/sympy#6350
     assert limit(meijerg((), (), (1,), (0,), -x), x, 0) == \
-            meijerg(((), ()), ((1,), (0,)), 0)  # issue sympy/sympy#6052
+        meijerg(((), ()), ((1,), (0,)), 0)  # issue sympy/sympy#6052
 
 
 def test_hyper_evalf():

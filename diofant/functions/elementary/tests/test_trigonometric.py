@@ -1,11 +1,13 @@
 import pytest
 
-from diofant import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, pi, atan,
-                     acos, Rational, sqrt, asin, acot, coth, E, S, tan, tanh,
-                     cos, cosh, atan2, exp, log, asinh, acoth, atanh, O,
-                     cancel, Matrix, re, im, Float, Pow, gcd, sec, csc, cot,
-                     diff, simplify, Heaviside, arg, conjugate, series,
-                     FiniteSet, asec, acsc, sech, csch, Integer)
+from diofant import (E, FiniteSet, Float, Heaviside, I, Integer, Matrix, Mul,
+                     O, PoleError, Pow, Rational, S, Symbol, acos, acot, acoth,
+                     acsc, arg, asec, asin, asinh, atan, atan2, atanh, cancel,
+                     conjugate, cos, cosh, cot, coth, csc, csch, diff, exp,
+                     gcd, im, log, nan, oo, pi, re, sec, sech, series,
+                     simplify, sin, sinh, sqrt, symbols, tan, tanh, zoo)
+from diofant.core.function import ArgumentIndexError
+
 
 __all__ = ()
 
@@ -129,6 +131,8 @@ def test_sin():
             e = abs( float(sin(x)) - sin(float(x)) )
             assert e < 1e-12
 
+    assert sin(z).taylor_term(3, z, *(z, 0)) == -z**3/6
+
 
 def test_sin_cos():
     for d in [1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 24, 30, 40, 60, 120]:  # list is not exhaustive...
@@ -166,6 +170,7 @@ def test_sin_rewrite():
     assert sin(cot(x)).rewrite(
         exp).subs(x, 3).n() == sin(x).rewrite(exp).subs(x, cot(3)).n()
     assert sin(log(x)).rewrite(Pow) == I*x**-I / 2 - I*x**I / 2
+    assert sin(x).rewrite(Pow) == sin(x)
     assert sin(x).rewrite(csc) == 1/csc(x)
 
 
@@ -180,6 +185,7 @@ def test_sin_expansion():
     assert sin(4*x).expand(trig=True) == -8*sin(x)**3*cos(x) + 4*sin(x)*cos(x)
     assert sin(2).expand(trig=True) == 2*sin(1)*cos(1)
     assert sin(3).expand(trig=True) == -4*sin(1)**3 + 3*sin(1)
+    assert sin(k*pi/2).expand(trig=True) == sin(k*pi/2)
 
 
 def test_trig_symmetry():
@@ -322,6 +328,9 @@ def test_cos():
             e = abs( float(cos(x)) - cos(float(x)) )
             assert e < 1e-12
 
+    assert cos(z).taylor_term(2, z, *(1, 0)) == -z**2/2
+    pytest.raises(ArgumentIndexError, lambda: cos(z).fdiff(2))
+
 
 def test_sympyissue_6190():
     c = Float('123456789012345678901234567890.25', '')
@@ -357,6 +366,7 @@ def test_cos_rewrite():
     assert cos(cot(x)).rewrite(
         exp).subs(x, 3).n() == cos(x).rewrite(exp).subs(x, cot(3)).n()
     assert cos(log(x)).rewrite(Pow) == x**I/2 + x**-I/2
+    assert cos(x).rewrite(Pow) == cos(x)
     assert cos(x).rewrite(sec) == 1/sec(x)
 
 
@@ -369,6 +379,7 @@ def test_cos_expansion():
     assert cos(4*x).expand(trig=True) == 8*cos(x)**4 - 8*cos(x)**2 + 1
     assert cos(2).expand(trig=True) == 2*cos(1)**2 - 1
     assert cos(3).expand(trig=True) == 4*cos(1)**3 - 3*cos(1)
+    assert cos(k*pi/2).expand(trig=True) == cos(k*pi/2)
 
 
 def test_tan():
@@ -465,6 +476,8 @@ def test_tan():
     assert tan(15*pi/14) == tan(pi/14)
     assert tan(-15*pi/14) == -tan(pi/14)
 
+    pytest.raises(ArgumentIndexError, lambda: tan(x).fdiff(2))
+
 
 def test_tan_series():
     assert tan(x).series(x, 0, 9) == \
@@ -494,9 +507,10 @@ def test_tan_rewrite():
     assert tan(cot(x)).rewrite(
         exp).subs(x, 3).n() == tan(x).rewrite(exp).subs(x, cot(3)).n()
     assert tan(log(x)).rewrite(Pow) == I*(x**-I - x**I)/(x**-I + x**I)
-    assert 0 == (cos(pi/34)*tan(pi/34) - sin(pi/34)).rewrite(pow)
-    assert 0 == (cos(pi/17)*tan(pi/17) - sin(pi/17)).rewrite(pow)
-    assert tan(pi/19).rewrite(pow) == tan(pi/19)
+    assert tan(x).rewrite(Pow) == tan(x)
+    assert 0 == (cos(pi/34)*tan(pi/34) - sin(pi/34)).rewrite(sqrt)
+    assert 0 == (cos(pi/17)*tan(pi/17) - sin(pi/17)).rewrite(sqrt)
+    assert tan(pi/19).rewrite(sqrt) == tan(pi/19)
     assert tan(8*pi/19).rewrite(sqrt) == tan(8*pi/19)
 
 
@@ -603,6 +617,8 @@ def test_cot():
 
     assert cot(x).subs(x, 3*pi) == zoo
 
+    pytest.raises(ArgumentIndexError, lambda: cot(x).fdiff(2))
+
 
 def test_cot_series():
     assert cot(x).series(x, 0, 9) == \
@@ -631,9 +647,8 @@ def test_cot_rewrite():
     assert cot(tan(x)).rewrite(
         exp).subs(x, 3).n() == cot(x).rewrite(exp).subs(x, tan(3)).n()
     assert cot(log(x)).rewrite(Pow) == -I*(x**-I + x**I)/(x**-I - x**I)
-    assert cot(4*pi/34).rewrite(pow).ratsimp() == (cos(4*pi/34)/sin(4*pi/34)).rewrite(pow).ratsimp()
-    assert cot(4*pi/17).rewrite(pow) == (cos(4*pi/17)/sin(4*pi/17)).rewrite(pow)
-    assert cot(pi/19).rewrite(pow) == cot(pi/19)
+    assert cot(4*pi/34).rewrite(sqrt).ratsimp() == (cos(4*pi/34)/sin(4*pi/34)).rewrite(sqrt).ratsimp()
+    assert cot(4*pi/17).rewrite(sqrt) == (cos(4*pi/17)/sin(4*pi/17)).rewrite(sqrt)
     assert cot(pi/19).rewrite(sqrt) == cot(pi/19)
 
 
@@ -706,6 +721,8 @@ def test_asin():
     assert asin(Rational(-1, 7), evaluate=False).is_positive is False
     assert asin(p).is_positive is None
 
+    pytest.raises(ArgumentIndexError, lambda: asin(x).fdiff(2))
+
 
 def test_asin_series():
     assert asin(x).series(x, 0, 9) == \
@@ -770,6 +787,8 @@ def test_acos():
     z = Symbol('z')
     assert acos(z).conjugate() != acos(conjugate(z))
 
+    pytest.raises(ArgumentIndexError, lambda: acos(x).fdiff(2))
+
 
 def test_acos_series():
     assert acos(x).series(x, 0, 8) == \
@@ -778,12 +797,14 @@ def test_acos_series():
     t5 = acos(x).taylor_term(5, x)
     assert t5 == -3*x**5/40
     assert acos(x).taylor_term(7, x, t5, 0) == -5*x**7/112
+    assert acos(x).taylor_term(0, x) == pi/2
+    assert acos(x).taylor_term(2, x) == 0
 
 
 def test_acos_rewrite():
     assert acos(x).rewrite(log) == pi/2 + I*log(I*x + sqrt(1 - x**2))
     assert acos(x).rewrite(atan) == \
-           atan(sqrt(1 - x**2)/x) + (pi/2)*(1 - x*sqrt(1/x**2))
+        atan(sqrt(1 - x**2)/x) + (pi/2)*(1 - x*sqrt(1/x**2))
     assert acos(0).rewrite(atan) == S.Pi/2
     assert acos(0.5).rewrite(atan) == acos(0.5).rewrite(log)
     assert acos(x).rewrite(asin) == S.Pi/2 - asin(x)
@@ -820,6 +841,8 @@ def test_atan():
     assert atan(z).is_rational
     assert atan(rn).is_rational is False
     assert atan(x).is_rational is None
+
+    pytest.raises(ArgumentIndexError, lambda: atan(x).fdiff(2))
 
 
 def test_atan_rewrite():
@@ -888,6 +911,8 @@ def test_atan2():
     r2 = Symbol('r2', real=True)
     assert atan2(r1, r2).is_real is None
 
+    assert atan2(r1, r2).rewrite(arg) == arg(I*r1 + r2)
+
     assert conjugate(atan2(x, y)) == atan2(conjugate(x), conjugate(y))
 
     assert diff(atan2(y, x), x) == -y/(x**2 + y**2)
@@ -895,6 +920,8 @@ def test_atan2():
 
     assert simplify(diff(atan2(y, x).rewrite(log), x)) == -y/(x**2 + y**2)
     assert simplify(diff(atan2(y, x).rewrite(log), y)) == x/(x**2 + y**2)
+
+    pytest.raises(ArgumentIndexError, lambda: atan2(x, y).fdiff(3))
 
 
 def test_acot():
@@ -923,6 +950,8 @@ def test_acot():
     q = Symbol('q', rational=True)
     assert acot(q).is_rational is False
     assert acot(x).is_rational is None
+
+    pytest.raises(ArgumentIndexError, lambda: acot(x).fdiff(2))
 
 
 def test_acot_rewrite():
@@ -1029,6 +1058,8 @@ def test_aseries():
     t(atan, -0.1, '-', 1e-5)
     t(acot, 0.1, '+', 1e-5)
     t(acot, -0.1, '-', 1e-5)
+    pytest.raises(PoleError, lambda: atan(y/x).series(x, n=1))
+    pytest.raises(PoleError, lambda: acot(y/x).series(x, n=1))
 
 
 def test_sympyissue_4420():
@@ -1162,9 +1193,9 @@ def test_real_imag():
         assert cos(
             z).as_real_imag(deep=deep) == (cos(a)*cosh(b), -sin(a)*sinh(b))
         assert tan(z).as_real_imag(deep=deep) == (sin(2*a)/(cos(2*a) +
-            cosh(2*b)), sinh(2*b)/(cos(2*a) + cosh(2*b)))
+                                                            cosh(2*b)), sinh(2*b)/(cos(2*a) + cosh(2*b)))
         assert cot(z).as_real_imag(deep=deep) == (-sin(2*a)/(cos(2*a) -
-            cosh(2*b)), -sinh(2*b)/(cos(2*a) - cosh(2*b)))
+                                                             cosh(2*b)), -sinh(2*b)/(cos(2*a) - cosh(2*b)))
         assert sin(a).as_real_imag(deep=deep) == (sin(a), 0)
         assert cos(a).as_real_imag(deep=deep) == (cos(a), 0)
         assert tan(a).as_real_imag(deep=deep) == (tan(a), 0)
@@ -1181,7 +1212,6 @@ def test_sin_cos_with_infinity():
 
 @pytest.mark.slow
 def test_sincos_rewrite_sqrt():
-    # equivalent to testing rewrite(pow)
     for p in [1, 3, 5, 17]:
         for t in [1, 8]:
             n = t*p
@@ -1194,12 +1224,26 @@ def test_sincos_rewrite_sqrt():
                     assert not c1.has(cos, sin), "fails for %d*pi/%d" % (i, n)
                     assert 1e-3 > abs(sin(x.evalf(5)) - s1.evalf(2)), "fails for %d*pi/%d" % (i, n)
                     assert 1e-3 > abs(cos(x.evalf(5)) - c1.evalf(2)), "fails for %d*pi/%d" % (i, n)
+
+
+def test_sincos_rewrite_sqrt2():
     assert cos(pi/14).rewrite(sqrt) == sqrt(cos(pi/7)/2 + S.Half)
+    assert cos(pi/21).rewrite(sqrt) == cos(2*pi/7)/2 + sqrt(3)*sin(2*pi/7)/2
+    assert (cos(pi/105).rewrite(sqrt) == -sqrt(-sqrt(5)/8 +
+                                               Rational(5, 8))*sin(pi/7)/2 -
+            (-sqrt(5)/4 - Rational(1, 4))*cos(pi/7)/2 +
+            sqrt(3)*(Mul(-1, (-sqrt(5)/4 - Rational(1, 4)),
+                         evaluate=False)*sin(pi/7) +
+                     sqrt(-sqrt(5)/8 + Rational(5, 8))*cos(pi/7))/2)
+    assert cos(pi*k/3).rewrite(sqrt) == cos(pi*k/3)
+    assert (cos(pi/(3*5), evaluate=False).rewrite(sqrt) ==
+            -Rational(1, 8) + sqrt(5)/8 +
+            sqrt(3)*sqrt(sqrt(5)/8 + Rational(5, 8))/2)
+    assert cos(pi/75).rewrite(sqrt) == cos(8*pi/25)/2 + sqrt(3)*sin(8*pi/25)/2
 
 
 @pytest.mark.slow
 def test_tancot_rewrite_sqrt():
-    # equivalent to testing rewrite(pow)
     for p in [1, 3, 5, 17]:
         for t in [1, 8]:
             n = t*p
@@ -1241,17 +1285,16 @@ def test_sec():
     assert sec(x).rewrite(sin) == sec(x)
     assert sec(x).rewrite(cos) == 1/cos(x)
     assert sec(x).rewrite(tan) == (tan(x/2)**2 + 1)/(-tan(x/2)**2 + 1)
-    assert sec(x).rewrite(pow) == sec(x)
     assert sec(x).rewrite(sqrt) == sec(x)
     assert sec(z).rewrite(cot) == (cot(z/2)**2 + 1)/(cot(z/2)**2 - 1)
 
     assert sec(z).conjugate() == sec(conjugate(z))
 
     assert (sec(z).as_real_imag() ==
-    (cos(re(z))*cosh(im(z))/(sin(re(z))**2*sinh(im(z))**2 +
-                             cos(re(z))**2*cosh(im(z))**2),
-     sin(re(z))*sinh(im(z))/(sin(re(z))**2*sinh(im(z))**2 +
-                             cos(re(z))**2*cosh(im(z))**2)))
+            (cos(re(z))*cosh(im(z))/(sin(re(z))**2*sinh(im(z))**2 +
+                                     cos(re(z))**2*cosh(im(z))**2),
+             sin(re(z))*sinh(im(z))/(sin(re(z))**2*sinh(im(z))**2 +
+                                     cos(re(z))**2*cosh(im(z))**2)))
 
     assert sec(x).expand(trig=True) == 1/cos(x)
     assert sec(2*x).expand(trig=True) == 1/(2*cos(x)**2 - 1)
@@ -1281,6 +1324,8 @@ def test_sec():
     assert sec(z).taylor_term(4, z) == 5*z**4/24
     assert sec(z).taylor_term(6, z) == 61*z**6/720
     assert sec(z).taylor_term(5, z) == 0
+
+    pytest.raises(ArgumentIndexError, lambda: sec(x).fdiff(2))
 
 
 def test_csc():
@@ -1323,7 +1368,7 @@ def test_csc():
             (sin(re(z))*cosh(im(z))/(sin(re(z))**2*cosh(im(z))**2 +
                                      cos(re(z))**2*sinh(im(z))**2),
              -cos(re(z))*sinh(im(z))/(sin(re(z))**2*cosh(im(z))**2 +
-                          cos(re(z))**2*sinh(im(z))**2)))
+                                      cos(re(z))**2*sinh(im(z))**2)))
 
     assert csc(x).expand(trig=True) == 1/sin(x)
     assert csc(2*x).expand(trig=True) == 1/(2*sin(x)*cos(x))
@@ -1340,13 +1385,16 @@ def test_csc():
     assert series(csc(x), x, x0=pi/2, n=6) == \
         1 + (x - pi/2)**2/2 + 5*(x - pi/2)**4/24 + O((x - pi/2)**6, (x, pi/2))
     assert series(csc(x), x, x0=0, n=6) == \
-            1/x + x/6 + 7*x**3/360 + 31*x**5/15120 + O(x**6)
+        1/x + x/6 + 7*x**3/360 + 31*x**5/15120 + O(x**6)
 
     assert csc(x).diff(x) == -cot(x)*csc(x)
 
+    assert csc(x).taylor_term(0, x) == 1/x
     assert csc(x).taylor_term(2, x) == 0
     assert csc(x).taylor_term(3, x) == 7*x**3/360
     assert csc(x).taylor_term(5, x) == 31*x**5/15120
+
+    pytest.raises(ArgumentIndexError, lambda: csc(x).fdiff(2))
 
 
 def test_asec():
@@ -1369,6 +1417,11 @@ def test_asec():
     assert asec(x).rewrite(acot) == (2*acot(x - sqrt(x**2 - 1)) - pi/2)*sqrt(x**2)/x
     assert asec(x).rewrite(acsc) == -acsc(x) + pi/2
 
+    pytest.raises(ArgumentIndexError, lambda: asec(x).fdiff(2))
+
+    assert asec(x).as_leading_term(x) == log(x)
+    assert asec(1/x).as_leading_term(x) == asec(1/x)
+
 
 def test_acsc():
     assert acsc(nan) == nan
@@ -1388,14 +1441,18 @@ def test_acsc():
     assert acsc(x).rewrite(acot) == (-acot(1/sqrt(x**2 - 1)) + pi/2)*sqrt(x**2)/x
     assert acsc(x).rewrite(asec) == -asec(x) + pi/2
 
+    pytest.raises(ArgumentIndexError, lambda: acsc(x).fdiff(2))
+
+    assert acsc(x).as_leading_term(x) == log(x)
+    assert acsc(1/x).as_leading_term(x) == acsc(1/x)
+
 
 @pytest.mark.xfail
 @pytest.mark.slow
 def test_csc_rewrite_failing():
     # Move these 2 tests to test_csc() once bugs fixed
-    # sin(x).rewrite(pow) raises RuntimeError: maximum recursion depth
+    # sin(x).rewrite(sqrt) raises RuntimeError: maximum recursion depth
     # https://github.com/sympy/sympy/issues/7171
-    assert csc(x).rewrite(pow) == csc(x)
     assert csc(x).rewrite(sqrt) == csc(x)
 
 

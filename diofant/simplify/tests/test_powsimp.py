@@ -1,9 +1,8 @@
-from diofant import (
-    powsimp, symbols, MatrixSymbol, sqrt, pi, Mul, gamma, Function,
-    I, exp, simplify, sin, E, log, hyper, Symbol, Dummy, powdenest,
-    root, Rational)
+from diofant import (Dummy, E, Function, I, MatrixSymbol, Mul, Rational,
+                     Symbol, exp, gamma, hyper, log, pi, powdenest, powsimp,
+                     root, simplify, sin, sqrt, symbols)
+from diofant.abc import a, b, c, x, y, z
 
-from diofant.abc import x, y, z, a, b, c
 
 __all__ = ()
 
@@ -146,7 +145,7 @@ def test_sympyissue_6440():
 
 def test_powdenest():
     from diofant import powdenest
-    from diofant.abc import x, y, z, a, b
+    x, y = symbols('x,y')
     p, q = symbols('p q', positive=True)
     i, j = symbols('i,j', integer=True)
 
@@ -278,10 +277,10 @@ def test_sympyissue_from_PR1599():
     n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True)
     assert simplify(I*sqrt(n1)) == -sqrt(-n1)
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==
-        -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))
+            -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))
     assert (powsimp(root(n1, 3)*root(n2, 3)*root(n3, 3)*root(n4, 3)) ==
-        -(-1)**Rational(1, 3) *
-        (-n1)**Rational(1, 3)*(-n2)**Rational(1, 3)*(-n3)**Rational(1, 3)*(-n4)**Rational(1, 3))
+            -(-1)**Rational(1, 3) *
+            (-n1)**Rational(1, 3)*(-n2)**Rational(1, 3)*(-n3)**Rational(1, 3)*(-n4)**Rational(1, 3))
 
 
 def test_powsimp_on_numbers():

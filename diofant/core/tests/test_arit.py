@@ -2,11 +2,12 @@ import itertools
 
 import pytest
 
-from diofant import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float,
-                     re, pi, sympify, Add, Mul, Pow, Mod, I, log, S, Max,
-                     symbols, oo, Integer, sign, im, nan, Dummy,
-                     factorial, comp, O, zoo)
+from diofant import (Add, Basic, Dummy, Float, I, Integer, Max, Mod, Mul, O,
+                     Pow, Rational, S, Symbol, comp, cos, exp, factorial, im,
+                     log, nan, oo, pi, re, sign, sin, sqrt, symbols, sympify,
+                     zoo)
 from diofant.utilities.randtest import verify_numerically
+
 
 __all__ = ()
 
@@ -1787,7 +1788,7 @@ def test_float_int():
 
 def test_sympyissue_6611a():
     assert Mul.flatten([3**Rational(1, 3),
-        Pow(-Rational(1, 9), Rational(2, 3), evaluate=False)]) == \
+                        Pow(-Rational(1, 9), Rational(2, 3), evaluate=False)]) == \
         ([Rational(1, 3), (-1)**Rational(2, 3)], [], None)
 
 
@@ -1901,12 +1902,12 @@ def test_sympyissue_8247_8354():
         sqrt(3)*(-3 + 4*cos(19*pi/90)**2)
     assert z.is_positive is not True  # it's zero and it shouldn't hang
     z = (9*(3*sqrt(93) + 29)**Rational(2, 3)*((3*sqrt(93) +
-         29)**Rational(1, 3)*(-2**Rational(2, 3)*(3*sqrt(93) +
-         29)**Rational(1, 3) - 2) - 2*2**Rational(1, 3))**3 +
+                                               29)**Rational(1, 3)*(-2**Rational(2, 3)*(3*sqrt(93) +
+                                                                                        29)**Rational(1, 3) - 2) - 2*2**Rational(1, 3))**3 +
          72*(3*sqrt(93) + 29)**Rational(2, 3)*(81*sqrt(93) + 783) +
          (162*sqrt(93) + 1566)*((3*sqrt(93) + 29)**Rational(1, 3) *
-         (-2**Rational(2, 3)*(3*sqrt(93) + 29)**Rational(1, 3) - 2) -
-         2*2**Rational(1, 3))**2)
+                                (-2**Rational(2, 3)*(3*sqrt(93) + 29)**Rational(1, 3) - 2) -
+                                2*2**Rational(1, 3))**2)
     assert z.is_positive is False  # it's 0 (and a single _mexpand isn't enough)
 
 

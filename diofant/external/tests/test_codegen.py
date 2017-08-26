@@ -21,16 +21,16 @@
 # incorporation in various projects. The tests below assume that the binary cc
 # is somewhere in the path and that it can compile ANSI C code.
 
-import sys
 import os
-import tempfile
 import subprocess
+import sys
+import tempfile
 
 import pytest
 
-from diofant.utilities.codegen import codegen, make_routine, get_code_generator
-
 from diofant.abc import x, y, z
+from diofant.utilities.codegen import codegen, get_code_generator, make_routine
+
 
 __all__ = ()
 
@@ -120,7 +120,7 @@ def try_run(commands):
     null = open(os.devnull, 'w')
     for command in commands:
         retcode = subprocess.call(command, stdout=null, shell=True,
-                stderr=subprocess.STDOUT)
+                                  stderr=subprocess.STDOUT)
         if retcode != 0:
             return False
     return True
@@ -251,7 +251,7 @@ def is_feasible(language, commands):
     ]
     try:
         run_test("is_feasible", [routine], numerical_tests, language, commands,
-                friendly=False)
+                 friendly=False)
         return True
     except AssertionError:
         return False

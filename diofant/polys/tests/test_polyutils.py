@@ -2,21 +2,16 @@
 
 import pytest
 
-from diofant import (Integer, sin, cos, sqrt, symbols, pi, Eq,  # noqa: N814
-                     Integral, exp, Mul, Abs, Rational as Q, I)
-from diofant.polys.polyutils import (
-    _nsort,
-    _sort_gens,
-    _unify_gens,
-    _analyze_gens,
-    _sort_factors,
-    parallel_dict_from_expr,
-    dict_from_expr)
-from diofant.polys.polyerrors import (
-    GeneratorsNeeded,
-    PolynomialError)
-from diofant.polys import factor
+from diofant import Rational as Q  # noqa: N814
+from diofant import (Abs, Eq, I, Integer, Integral, Mul, cos, exp, pi, sin,
+                     sqrt, symbols)
 from diofant.domains import ZZ
+from diofant.polys import factor
+from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
+from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
+                                     _sort_gens, _unify_gens, dict_from_expr,
+                                     parallel_dict_from_expr)
+
 
 __all__ = ()
 
@@ -31,7 +26,7 @@ def test__nsort():
                                 2*(Q(-415, 216) + 13*I/12)**Q(1, 3)) -
                          61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)))/2 -
           sqrt(-7/3 + 61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)) +
-                2*(Q(-415, 216) + 13*I/12)**Q(1, 3))/2,
+               2*(Q(-415, 216) + 13*I/12)**Q(1, 3))/2,
           Q(3, 2) - sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)) +
                          2*(Q(-415, 216) + 13*I/12)**Q(1, 3))/2 -
           sqrt(Q(-14, 3) - 2*(Q(-415, 216) + 13*I/12)**Q(1, 3) -
@@ -270,7 +265,7 @@ def test__dict_from_expr_no_gens():
     f = cos(x)*sin(x) + cos(x)*sin(y) + cos(y)*sin(x) + cos(y)*sin(y)
 
     assert dict_from_expr(f) == ({(0, 1, 0, 1): 1, (0, 1, 1, 0): 1,
-        (1, 0, 0, 1): 1, (1, 0, 1, 0): 1}, (cos(x), cos(y), sin(x), sin(y)))
+                                  (1, 0, 0, 1): 1, (1, 0, 1, 0): 1}, (cos(x), cos(y), sin(x), sin(y)))
 
 
 def test__parallel_dict_from_expr_if_gens():

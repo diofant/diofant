@@ -2,15 +2,15 @@ from io import StringIO
 
 import pytest
 
-from diofant.core import symbols, Eq, pi, Catalan, Lambda, Dummy
-from diofant import erf, Integral
-from diofant import Equality
+from diofant import Equality, Integral, erf
+from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
-from diofant.utilities.codegen import (codegen, make_routine, CCodeGen,
-                                       InputArgument, CodeGenError, FCodeGen,
-                                       CodeGenArgumentListError,
-                                       OutputArgument, InOutArgument)
+from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
+                                       CodeGenError, FCodeGen, InOutArgument,
+                                       InputArgument, OutputArgument, codegen,
+                                       make_routine)
 from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 
@@ -37,9 +37,9 @@ def test_Routine_argument_order():
     a, x, y, z = symbols('a x y z')
     expr = (x + y)*z
     pytest.raises(CodeGenArgumentListError, lambda: make_routine("test", expr,
-           argument_sequence=[z, x]))
+                                                                 argument_sequence=[z, x]))
     pytest.raises(CodeGenArgumentListError, lambda: make_routine("test", Eq(a,
-           expr), argument_sequence=[z, x, y]))
+                                                                            expr), argument_sequence=[z, x, y]))
     r = make_routine('test', Eq(a, expr), argument_sequence=[z, x, a, y])
     assert [ arg.name for arg in r.arguments ] == [z, x, a, y]
     assert [ type(arg) for arg in r.arguments ] == [
@@ -74,13 +74,13 @@ def test_empty_c_code_with_comment():
     )
     #   "                    Code generated with diofant 0.7.2-git                    "
     assert source[158:] == (                                                              "*\n"
-        " *                                                                            *\n"
-        " *             See http://diofant.rtfd.io/ for more information.              *\n"
-        " *                                                                            *\n"
-        " *                       This file is part of 'project'                       *\n"
-        " ******************************************************************************/\n"
-        "#include \"file.h\"\n"
-        "#include <math.h>\n")
+                                                                                          " *                                                                            *\n"
+                                                                                          " *             See http://diofant.rtfd.io/ for more information.              *\n"
+                                                                                          " *                                                                            *\n"
+                                                                                          " *                       This file is part of 'project'                       *\n"
+                                                                                          " ******************************************************************************/\n"
+                                                                                          "#include \"file.h\"\n"
+                                                                                          "#include <math.h>\n")
 
 
 def test_empty_c_header():
@@ -181,18 +181,18 @@ def test_simple_c_codegen():
     result = codegen(("test", expr), "C", "file", header=False, empty=False)
     expected = [
         ("file.c",
-        "#include \"file.h\"\n"
-        "#include <math.h>\n"
-        "double test(double x, double y, double z) {\n"
-        "   double test_result;\n"
-        "   test_result = z*(x + y);\n"
-        "   return test_result;\n"
-        "}\n"),
+         "#include \"file.h\"\n"
+         "#include <math.h>\n"
+         "double test(double x, double y, double z) {\n"
+         "   double test_result;\n"
+         "   test_result = z*(x + y);\n"
+         "   return test_result;\n"
+         "}\n"),
         ("file.h",
-        "#ifndef PROJECT__FILE__H\n"
-        "#define PROJECT__FILE__H\n"
-        "double test(double x, double y, double z);\n"
-        "#endif\n")
+         "#ifndef PROJECT__FILE__H\n"
+         "#define PROJECT__FILE__H\n"
+         "double test(double x, double y, double z);\n"
+         "#endif\n")
     ]
     assert result == expected
 
@@ -216,7 +216,7 @@ def test_no_results_c():
 def test_ansi_math1_codegen():
     # not included: log10
     from diofant import (acos, asin, atan, ceiling, cos, cosh, floor, log, ln,
-        sin, sinh, sqrt, tan, tanh, Abs)
+                         sin, sinh, sqrt, tan, tanh, Abs)
     x = symbols('x')
     name_expr = [
         ("test_fabs", Abs(x)),
@@ -577,11 +577,11 @@ def test_empty_f_code_with_header():
     )
     #   "                    Code generated with diofant 0.7.2-git                    "
     assert source[158:] == (                                                              "*\n"
-        "!*                                                                            *\n"
-        "!*             See http://diofant.rtfd.io/ for more information.              *\n"
-        "!*                                                                            *\n"
-        "!*                       This file is part of 'project'                       *\n"
-        "!******************************************************************************\n")
+                                                                                          "!*                                                                            *\n"
+                                                                                          "!*             See http://diofant.rtfd.io/ for more information.              *\n"
+                                                                                          "!*                                                                            *\n"
+                                                                                          "!*                       This file is part of 'project'                       *\n"
+                                                                                          "!******************************************************************************\n")
 
 
 def test_empty_f_header():
@@ -682,22 +682,22 @@ def test_simple_f_codegen():
         ("test", expr), "F95", "file", header=False, empty=False)
     expected = [
         ("file.f90",
-        "REAL*8 function test(x, y, z)\n"
-        "implicit none\n"
-        "REAL*8, intent(in) :: x\n"
-        "REAL*8, intent(in) :: y\n"
-        "REAL*8, intent(in) :: z\n"
-        "test = z*(x + y)\n"
-        "end function\n"),
+         "REAL*8 function test(x, y, z)\n"
+         "implicit none\n"
+         "REAL*8, intent(in) :: x\n"
+         "REAL*8, intent(in) :: y\n"
+         "REAL*8, intent(in) :: z\n"
+         "test = z*(x + y)\n"
+         "end function\n"),
         ("file.h",
-        "interface\n"
-        "REAL*8 function test(x, y, z)\n"
-        "implicit none\n"
-        "REAL*8, intent(in) :: x\n"
-        "REAL*8, intent(in) :: y\n"
-        "REAL*8, intent(in) :: z\n"
-        "end function\n"
-        "end interface\n")
+         "interface\n"
+         "REAL*8 function test(x, y, z)\n"
+         "implicit none\n"
+         "REAL*8, intent(in) :: x\n"
+         "REAL*8, intent(in) :: y\n"
+         "REAL*8, intent(in) :: z\n"
+         "end function\n"
+         "end interface\n")
     ]
     assert result == expected
 
@@ -721,7 +721,7 @@ def test_no_results_f():
 def test_intrinsic_math_codegen():
     # not included: log10
     from diofant import (acos, asin, atan, cos, cosh, log, ln,
-                       sin, sinh, sqrt, tan, tanh, Abs)
+                         sin, sinh, sqrt, tan, tanh, Abs)
     x = symbols('x')
     name_expr = [
         ("test_abs", Abs(x)),

@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (sin, cos, symbols, pi, ImmutableMatrix as Matrix,
-                     simplify)
-from diofant.vector import (CoordSysCartesian, Vector, Dyadic,
-                            DyadicAdd, DyadicMul, DyadicZero,
-                            BaseDyadic, express)
+from diofant import ImmutableMatrix as Matrix
+from diofant import cos, pi, simplify, sin, symbols
+from diofant.vector import (BaseDyadic, CoordSysCartesian, Dyadic, DyadicAdd,
+                            DyadicMul, DyadicZero, Vector, express)
+
 
 __all__ = ()
 
@@ -73,8 +73,8 @@ def test_dyadic():
     B = A.orient_new_axis('B', q, A.k)
     assert express(d1, B) == express(d1, B, B)
     assert express(d1, B) == ((cos(q)**2) * (B.i | B.i) + (-sin(q) * cos(q)) *
-            (B.i | B.j) + (-sin(q) * cos(q)) * (B.j | B.i) + (sin(q)**2) *
-            (B.j | B.j))
+                              (B.i | B.j) + (-sin(q) * cos(q)) * (B.j | B.i) + (sin(q)**2) *
+                              (B.j | B.j))
     assert express(d1, B, A) == (cos(q)) * (B.i | A.i) + (-sin(q)) * (B.j | A.i)
     assert express(d1, A, B) == (cos(q)) * (A.i | B.i) + (-sin(q)) * (A.i | B.j)
     assert d1.to_matrix(A) == Matrix([[1, 0, 0], [0, 0, 0], [0, 0, 0]])
@@ -92,7 +92,7 @@ def test_dyadic():
     d5 = v1.outer(v1)
     C = A.orient_new_axis('C', q, A.i)
     for expected, actual in zip(C.rotation_matrix(A) * d5.to_matrix(A) *
-                               C.rotation_matrix(A).T, d5.to_matrix(C)):
+                                C.rotation_matrix(A).T, d5.to_matrix(C)):
         assert (expected - actual).simplify() == 0
 
 

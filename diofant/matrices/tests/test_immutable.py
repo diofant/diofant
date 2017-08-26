@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (ImmutableMatrix, Matrix, eye, zeros, S, Equality,
-                     Unequality, ImmutableSparseMatrix, SparseMatrix, sympify)
-
+from diofant import (Equality, ImmutableMatrix, ImmutableSparseMatrix, Matrix,
+                     S, SparseMatrix, Unequality, eye, sympify, zeros)
 from diofant.abc import x, y
+
 
 __all__ = ()
 

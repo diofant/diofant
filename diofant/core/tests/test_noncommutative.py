@@ -2,11 +2,11 @@
 
 import pytest
 
-from diofant import (adjoint, cancel, collect, combsimp, conjugate, cos, expand,
-                     factor, posify, radsimp, ratsimp, rcollect, sin, simplify,
-                     symbols, transpose, trigsimp, I)
-
+from diofant import (I, adjoint, cancel, collect, combsimp, conjugate, cos,
+                     expand, factor, posify, radsimp, ratsimp, rcollect,
+                     simplify, sin, symbols, transpose, trigsimp)
 from diofant.abc import x, y, z
+
 
 __all__ = ()
 

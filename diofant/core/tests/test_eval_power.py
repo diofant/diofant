@@ -1,14 +1,14 @@
 import pytest
 
-from diofant.core import (Rational, Symbol, S, Float, Integer, Number,
-                          Pow, Basic, I, nan, pi, symbols, oo, zoo, E)
+from diofant.abc import a, b, c, x, y
+from diofant.core import (Basic, E, Float, I, Integer, Number, Pow, Rational,
+                          S, Symbol, nan, oo, pi, symbols, zoo)
 from diofant.core.tests.test_evalf import NS
-from diofant.functions.elementary.miscellaneous import sqrt, cbrt
 from diofant.functions.elementary.exponential import exp, log
-from diofant.functions.elementary.trigonometric import sin, cos
+from diofant.functions.elementary.miscellaneous import cbrt, sqrt
+from diofant.functions.elementary.trigonometric import cos, sin
 from diofant.series.order import O
 
-from diofant.abc import a, b, c, x, y
 
 __all__ = ()
 
@@ -168,7 +168,7 @@ def test_sympyissue_4362():
     assert (b**(-S.One)).as_numer_denom() == ((notp + x)**2, notp**2)
     nonp = Symbol('nonp', nonpositive=True)
     assert (((1 + x/nonp)**-2)**(-S.One)).as_numer_denom() == ((-nonp -
-            x)**2, nonp**2)
+                                                                x)**2, nonp**2)
 
     n = Symbol('n', negative=True)
     assert (x**n).as_numer_denom() == (1, x**-n)
@@ -227,16 +227,16 @@ def test_pow_as_base_exp():
 
 
 def test_sympyissue_6100():
-    assert x**1.0 == x
-    assert x == x**1.0
+    assert x**1.0 != x
+    assert x != x**1.0
     assert S.true != x**1.0
     assert x**1.0 is not True
     assert x is not True
-    assert x*y == (x*y)**1.0
-    assert (x**1.0)**1.0 == x
+    assert x*y != (x*y)**1.0
+    assert (x**1.0)**1.0 != x
     assert (x**1.0)**2.0 == x**2
     b = Basic()
-    assert Pow(b, 1.0, evaluate=False) == b
+    assert Pow(b, 1.0, evaluate=False) != b
     # if the following gets distributed as a Mul (x**1.0*y**1.0 then
     # __eq__ methods could be added to Symbol and Pow to detect the
     # power-of-1.0 case.
@@ -258,7 +258,7 @@ def test_sympyissue_6208():
 def test_sympyissue_6990():
     assert (sqrt(a + b*x + x**2)).series(x, 0, 3).removeO() == \
         b*x/(2*sqrt(a)) + x**2*(1/(2*sqrt(a)) -
-        b**2/(8*a**Rational(3, 2))) + sqrt(a)
+                                b**2/(8*a**Rational(3, 2))) + sqrt(a)
 
 
 def test_sympyissue_6068():

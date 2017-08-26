@@ -1,5 +1,5 @@
-from .expr_with_limits import ExprWithLimits
 from ..core import S
+from .expr_with_limits import ExprWithLimits
 
 
 class ReorderError(NotImplementedError):

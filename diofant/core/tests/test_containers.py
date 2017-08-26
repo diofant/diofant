@@ -2,10 +2,11 @@ from collections import defaultdict
 
 import pytest
 
-from diofant import (Matrix, Tuple, symbols, sympify, Basic, Dict, S,
-                     FiniteSet, Integer)
-from diofant.core.containers import tuple_wrapper
+from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, S, Tuple,
+                     symbols, sympify)
 from diofant.core.compatibility import is_sequence, iterable
+from diofant.core.containers import tuple_wrapper
+
 
 __all__ = ()
 
@@ -116,7 +117,7 @@ def test_tuple_wrapper():
 
 
 def test_iterable_is_sequence():
-    ordered = [list(), tuple(), Tuple(), Matrix([[]])]
+    ordered = [[], (), Tuple(), Matrix([[]])]
     unordered = [set()]
     not_diofant_iterable = [{}, '']
     assert all(is_sequence(i) for i in ordered)

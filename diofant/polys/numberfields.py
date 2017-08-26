@@ -2,30 +2,30 @@
 
 from functools import reduce
 
-from mpmath import pslq, mp
+from mpmath import mp, pslq
 
-from ..core import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
-                    Dummy, expand_mul, I, pi, GoldenRatio, Integer)
-from ..functions import cos, sin, sqrt
-from .polytools import (Poly, PurePoly, sqf_norm, invert, factor_list,
-                        groebner, resultant, degree, poly_from_expr,
-                        parallel_poly_from_expr, lcm)
-from .polyerrors import (IsomorphismFailed, CoercionFailed, NotAlgebraic,
-                         GeneratorsError)
-from .rootoftools import RootOf
-from .specialpolys import cyclotomic_poly
-from .polyutils import dict_from_expr, expr_from_dict
-from ..domains import ZZ, QQ
-from .orthopolys import dup_chebyshevt
-from .rings import ring
-from .ring_series import rs_compose_add
-from ..printing.lambdarepr import LambdaPrinter
-from ..utilities import numbered_symbols, variations, lambdify, public, sift
+from ..core import (Add, AlgebraicNumber, Dummy, GoldenRatio, I, Integer, Mul,
+                    Rational, S, expand_mul, pi, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
+from ..domains import QQ, ZZ
+from ..functions import cos, sin, sqrt
+from ..ntheory import divisors, sieve
+from ..printing.lambdarepr import LambdaPrinter
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
-from ..ntheory import sieve, divisors
+from ..utilities import lambdify, numbered_symbols, public, sift, variations
+from .orthopolys import dup_chebyshevt
+from .polyerrors import (CoercionFailed, GeneratorsError, IsomorphismFailed,
+                         NotAlgebraic)
+from .polytools import (Poly, PurePoly, degree, factor_list, groebner, invert,
+                        lcm, parallel_poly_from_expr, poly_from_expr,
+                        resultant, sqf_norm)
+from .polyutils import dict_from_expr, expr_from_dict
+from .ring_series import rs_compose_add
+from .rings import ring
+from .rootoftools import RootOf
+from .specialpolys import cyclotomic_poly
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
@@ -158,7 +158,6 @@ def _minimal_polynomial_sq(p, n, x):
     """
     p = sympify(p)
     n = sympify(n)
-    r = _is_sum_surds(p)
     if not n.is_Integer or not n > 0 or not _is_sum_surds(p):
         return
     pn = p**Rational(1, n)
@@ -439,7 +438,6 @@ def _minpoly_exp(ex, x):
     Returns the minimal polynomial of ``exp(ex)``
     """
     c, a = ex.exp.as_coeff_Mul()
-    p = sympify(c.p)
     q = sympify(c.q)
     if a == I*pi:
         if c.is_rational:
@@ -631,11 +629,11 @@ def minimal_polynomial(ex, x=None, **args):
     if not dom.is_QQ:
         raise NotImplementedError("groebner method only works for QQ")
 
-    result = _minpoly_groebner(ex, x)
+    result = minpoly_groebner(ex, x)
     return cls(result, x, field=True) if polys else result.collect(x)
 
 
-def _minpoly_groebner(ex, x):
+def minpoly_groebner(ex, x):
     """
     Computes the minimal polynomial of an algebraic number
     using Gröbner bases
@@ -657,7 +655,7 @@ def _minpoly_groebner(ex, x):
     from ..core import expand_multinomial
 
     generator = numbered_symbols('a', cls=Dummy)
-    mapping, symbols, replace = {}, {}, []
+    mapping, symbols = {}, {}
 
     def update_mapping(ex, exp, base=None):
         if ex in mapping:
@@ -689,7 +687,7 @@ def _minpoly_groebner(ex, x):
                         base, exp = base**exp.p, Rational(1, exp.q)
                     base = bottom_up_scan(base)
                 else:
-                    bmp = PurePoly(_minpoly_groebner(1/base, x), x)
+                    bmp = PurePoly(minpoly_groebner(1/base, x), x)
                     base, exp = update_mapping(1/base, bmp), -exp
                 return update_mapping(ex, exp.q, -base**exp.p)
         elif ex.is_AlgebraicNumber:

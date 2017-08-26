@@ -5,11 +5,11 @@ A Printer for generating readable representation of most diofant classes.
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import S, Rational, Pow, Mul
+from ..core import Mul, Pow, Rational, S
 from ..core.mul import _keep_coeff
-from .printer import Printer
-from .precedence import precedence, PRECEDENCE
 from ..utilities import default_sort_key
+from .precedence import PRECEDENCE, precedence
+from .printer import Printer
 
 
 class StrPrinter(Printer):
@@ -19,7 +19,7 @@ class StrPrinter(Printer):
         "full_prec": "auto",
     }
 
-    _relationals = dict()
+    _relationals = {}
 
     def parenthesize(self, item, level):
         if precedence(item) <= level:
@@ -68,11 +68,11 @@ class StrPrinter(Printer):
 
     def _print_And(self, expr):
         return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
-            expr.args)))
+                                                       expr.args)))
 
     def _print_Or(self, expr):
         return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
-            expr.args)))
+                                                       expr.args)))
 
     def _print_Basic(self, expr):
         l = [self._print(o) for o in expr.args]
@@ -273,15 +273,15 @@ class StrPrinter(Printer):
 
     def _print_MatMul(self, expr):
         return '*'.join([self.parenthesize(arg, precedence(expr))
-            for arg in expr.args])
+                         for arg in expr.args])
 
     def _print_HadamardProduct(self, expr):
         return '.*'.join([self.parenthesize(arg, precedence(expr))
-            for arg in expr.args])
+                          for arg in expr.args])
 
     def _print_MatAdd(self, expr):
         return ' + '.join([self.parenthesize(arg, precedence(expr))
-            for arg in expr.args])
+                           for arg in expr.args])
 
     def _print_NaN(self, expr):
         return 'nan'
@@ -388,7 +388,7 @@ class StrPrinter(Printer):
                         s_monom.append(self._print(gens[i]))
                     else:
                         s_monom.append(self.parenthesize(gens[i],
-                                       PRECEDENCE["Atom"] - 1) + "**%d" % exp)
+                                                         PRECEDENCE["Atom"] - 1) + "**%d" % exp)
 
             s_monom = "*".join(s_monom)
 
@@ -543,8 +543,8 @@ class StrPrinter(Printer):
             return '%s(%s, %s)' % (charmap[expr.rel_op], expr.lhs, expr.rhs)
 
         return '%s %s %s' % (self.parenthesize(expr.lhs, precedence(expr)),
-                           self._relationals.get(expr.rel_op) or expr.rel_op,
-                           self.parenthesize(expr.rhs, precedence(expr)))
+                             self._relationals.get(expr.rel_op) or expr.rel_op,
+                             self.parenthesize(expr.rhs, precedence(expr)))
 
     def _print_RootOf(self, expr):
         return "RootOf(%s, %s, %d)" % (self._print_Add(expr.expr,

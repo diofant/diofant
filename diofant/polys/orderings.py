@@ -2,7 +2,7 @@
 
 __all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
 
-from ..core import Tuple, Symbol
+from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
 
 

@@ -7,19 +7,19 @@ Contains
 
 import random
 
-from ..core import S, sympify, pi, oo, Rational, Dummy
+from ..core import Dummy, Rational, S, oo, pi, sympify
 from ..core.logic import fuzzy_bool
+from ..functions import cos, sin, sqrt
+from ..polys import DomainError, Poly, PolynomialError
+from ..polys.polyutils import _not_a_coeff, _nsort
 from ..simplify import simplify, trigsimp
-from ..functions import sqrt, cos, sin
-from .exceptions import GeometryError
-from ..polys import Poly, PolynomialError, DomainError
-from ..polys.polyutils import _nsort, _not_a_coeff
 from ..solvers import solve
-from ..utilities.iterables import uniq
 from ..utilities import filldedent
+from ..utilities.iterables import uniq
 from .entity import GeometryEntity, GeometrySet
+from .exceptions import GeometryError
+from .line import Line, LinearEntity
 from .point import Point
-from .line import LinearEntity, Line
 from .util import _symbol, idiff
 
 
@@ -106,7 +106,7 @@ class Ellipse(GeometrySet):
 
         if len(list(filter(None, (hradius, vradius, eccentricity)))) != 2:
             raise ValueError('Exactly two arguments of "hradius", '
-                '"vradius", and "eccentricity" must not be None."')
+                             '"vradius", and "eccentricity" must not be None."')
 
         if eccentricity is not None:
             if hradius is None:
@@ -744,6 +744,7 @@ class Ellipse(GeometrySet):
         True
 
         """
+        from .polygon import Polygon
         inter = None
         if isinstance(o, Ellipse):
             inter = self.intersection(o)
@@ -883,7 +884,7 @@ class Ellipse(GeometrySet):
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
             raise ValueError(filldedent('Symbol %s already appears in object '
-                'and cannot be used as a parameter.' % t.name))
+                                        'and cannot be used as a parameter.' % t.name))
         return Point(self.center.x + self.hradius*cos(t),
                      self.center.y + self.vradius*sin(t))
 
@@ -928,15 +929,6 @@ class Ellipse(GeometrySet):
         diofant.geometry.point.Point
         arbitrary_point : Returns parameterized point on ellipse
 
-        Notes
-        -----
-
-        A random point may not appear to be on the ellipse, ie, `p in e` may
-        return False. This is because the coordinates of the point will be
-        floating point values, and when these values are substituted into the
-        equation for the ellipse the result may not be zero because of floating
-        point rounding error.
-
         Examples
         ========
 
@@ -955,6 +947,12 @@ class Ellipse(GeometrySet):
 
         Notes
         =====
+
+        A random point may not appear to be on the ellipse, ie, `p in e` may
+        return False. This is because the coordinates of the point will be
+        floating point values, and when these values are substituted into the
+        equation for the ellipse the result may not be zero because of floating
+        point rounding error.
 
         An arbitrary_point with a random value of t substituted into it may
         not test as being on the ellipse because the expression tested that
@@ -1474,6 +1472,3 @@ class Circle(Ellipse):
         c = self.center
         c = c.reflect(line)
         return self.func(c, -self.radius)
-
-
-from .polygon import Polygon

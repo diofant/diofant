@@ -7,18 +7,18 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
-from mpmath import bernfrac, workprec, mp
+from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
-from ...core import (S, Rational, Integer, Add, Dummy, cacheit, Function,
-                     expand_mul, E, pi, LessThan, StrictGreaterThan, Expr,
+from ...core import (Add, Dummy, E, Expr, Function, Integer, LessThan,
+                     Rational, S, StrictGreaterThan, cacheit, expand_mul, pi,
                      prod)
-from ...core.compatibility import as_int, DIOFANT_INTS
-from .factorials import binomial, factorial
+from ...core.compatibility import DIOFANT_INTS, as_int
+from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
 from ..elementary.integers import floor
-from ..elementary.trigonometric import sin, cos, cot
-from ...utilities.memoization import recurrence_memo
+from ..elementary.trigonometric import cos, cot, sin
+from .factorials import binomial, factorial
 
 
 def _product(a, b):
@@ -105,7 +105,7 @@ class fibonacci(Function):
             else:
                 if n < 1:
                     raise ValueError("Fibonacci polynomials are defined "
-                       "only for positive integer indices.")
+                                     "only for positive integer indices.")
                 return cls._fibpoly(n).subs(_sym, sym)
 
     def _eval_rewrite_as_sqrt(self, n, sym=None):
@@ -339,17 +339,17 @@ class bell(Function):
     The second kind of Bell polynomials (are sometimes called "partial" Bell
     polynomials or incomplete Bell polynomials) are defined as
 
-    .. math:: B_{n,k}(x_1, x_2,\ldotsc x_{n-k+1}) =
-            \sum_{j_1+j_2+j_2+\ldotsb=k \atop j_1+2j_2+3j_2+\ldotsb=n}
-                \frac{n!}{j_1!j_2!\ldotsb j_{n-k+1}!}
+    .. math:: B_{n,k}(x_1, x_2,\dotsc x_{n-k+1}) =
+            \sum_{j_1+j_2+j_2+\dotsb=k \atop j_1+2j_2+3j_2+\dotsb=n}
+                \frac{n!}{j_1!j_2!\dotsb j_{n-k+1}!}
                 \left(\frac{x_1}{1!} \right)^{j_1}
-                \left(\frac{x_2}{2!} \right)^{j_2} \ldotsb
+                \left(\frac{x_2}{2!} \right)^{j_2} \dotsb
                 \left(\frac{x_{n-k+1}}{(n-k+1)!} \right) ^{j_{n-k+1}}.
 
     * bell(n) gives the `n^{th}` Bell number, `B_n`.
     * bell(n, x) gives the `n^{th}` Bell polynomial, `B_n(x)`.
     * bell(n, k, (x1, x2, ...)) gives Bell polynomials of the second kind,
-      `B_{n,k}(x_1, x_2, \ldotsc, x_{n-k+1})`.
+      `B_{n,k}(x_1, x_2, \dotsc, x_{n-k+1})`.
 
     Notes
     =====
@@ -416,9 +416,9 @@ class bell(Function):
 
         Calculated by recurrence formula:
 
-        .. math:: B_{n,k}(x_1, x_2, \ldotsc, x_{n-k+1}) =
+        .. math:: B_{n,k}(x_1, x_2, \dotsc, x_{n-k+1}) =
                 \sum_{m=1}^{n-k+1}
-                \x_m \binom{n-1}{m-1} B_{n-m,k-1}(x_1, x_2, \ldotsc, x_{n-m-k})
+                \x_m \binom{n-1}{m-1} B_{n-m,k-1}(x_1, x_2, \dotsc, x_{n-m-k})
 
         where
             B_{0,0} = 1;
@@ -677,8 +677,8 @@ class harmonic(Function):
                     k = Dummy("k")
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
                     t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
-                                   log(sin((pi * k) / q)),
-                                   (k, 1, floor((q - 1) / Integer(2))))
+                                 log(sin((pi * k) / q)),
+                                 (k, 1, floor((q - 1) / Integer(2))))
                     t3 = (pi / 2) * cot((pi * p) / q) + log(2 * q)
                     return t1 + t2 - t3
 

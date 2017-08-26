@@ -2,19 +2,16 @@
 
 import pytest
 
-from diofant.polys.monomials import (
-    itermonomials, monomial_count,
-    monomial_mul, monomial_div,
-    monomial_gcd, monomial_lcm,
-    monomial_max, monomial_min,
-    monomial_divides,
-    Monomial,
-)
-
-from diofant.polys.polyerrors import ExactQuotientFailed
-from diofant.core import Integer
-
 from diofant.abc import a, b, c, x, y, z
+from diofant.core import Integer
+from diofant.domains import QQ, ZZ
+from diofant.polys.monomials import (Monomial, itermonomials, monomial_count,
+                                     monomial_div, monomial_divides,
+                                     monomial_gcd, monomial_lcm, monomial_max,
+                                     monomial_min, monomial_mul, monomial_pow,
+                                     term_div)
+from diofant.polys.polyerrors import ExactQuotientFailed
+
 
 __all__ = ()
 
@@ -50,6 +47,10 @@ def test_monomial_div():
     assert monomial_div((3, 4, 1), (1, 2, 0)) == (2, 2, 1)
 
 
+def test_monomial_pow():
+    assert monomial_pow((3, 4, 1), 2) == (6, 8, 2)
+
+
 def test_monomial_gcd():
     assert monomial_gcd((3, 4, 1), (1, 2, 0)) == (1, 2, 0)
 
@@ -71,8 +72,16 @@ def test_monomial_divides():
     assert monomial_divides((1, 2, 3), (0, 5, 6)) is False
 
 
+def test_term_div():
+    assert term_div(((3, 4, 1), 1), ((1, 2, 0), 1), QQ) == ((2, 2, 1), 1)
+    assert term_div(((3, 4, 1), 1), ((1, 2, 0), 1), ZZ) == ((2, 2, 1), 1)
+    assert term_div(((3, 4, 1), 1), ((1, 2, 2), 1), ZZ) is None
+    assert term_div(((3, 4, 1), 1), ((1, 2, 2), 1), QQ) is None
+
+
 def test_Monomial():
     m = Monomial((3, 4, 1), (x, y, z))
+    m2 = Monomial((3, 4, 1))
     n = Monomial((1, 2, 0), (x, y, z))
 
     assert m.as_expr() == x**3*y**4*z
@@ -80,6 +89,8 @@ def test_Monomial():
 
     assert m.as_expr(a, b, c) == a**3*b**4*c
     assert n.as_expr(a, b, c) == a**1*b**2
+
+    pytest.raises(ValueError, lambda: m2.as_expr())
 
     assert m.exponents == (3, 4, 1)
     assert m.gens == (x, y, z)
@@ -91,6 +102,10 @@ def test_Monomial():
     assert n != (3, 4, 1)
     assert m != (1, 2, 0)
     assert n == (1, 2, 0)
+    assert n != object()
+
+    assert m != n
+    assert hash(m) != hash(n)
 
     assert m[0] == m[-3] == 3
     assert m[1] == m[-2] == 4
@@ -109,15 +124,26 @@ def test_Monomial():
     assert m*(1, 2, 0) == Monomial((4, 6, 1))
     assert m/(1, 2, 0) == Monomial((2, 2, 1))
 
+    pytest.raises(TypeError, lambda: m*object())
+    pytest.raises(TypeError, lambda: m/object())
+
     assert m.gcd(n) == Monomial((1, 2, 0))
     assert m.lcm(n) == Monomial((3, 4, 1))
 
     assert m.gcd((1, 2, 0)) == Monomial((1, 2, 0))
     assert m.lcm((1, 2, 0)) == Monomial((3, 4, 1))
 
+    pytest.raises(TypeError, lambda: m.gcd(object()))
+    pytest.raises(TypeError, lambda: m.lcm(object()))
+
     assert m**0 == Monomial((0, 0, 0))
     assert m**1 == m
     assert m**2 == Monomial((6, 8, 2))
     assert m**3 == Monomial((9, 12, 3))
 
+    pytest.raises(ValueError, lambda: m**-3)
+
     pytest.raises(ExactQuotientFailed, lambda: m/Monomial((5, 2, 0)))
+
+    assert str(m) == "x**3*y**4*z**1"
+    assert str(m2) == "Monomial((3, 4, 1))"

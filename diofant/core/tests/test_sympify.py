@@ -4,16 +4,16 @@ import sys
 import mpmath
 import pytest
 
-from diofant import (Symbol, exp, Integer, Float, sin, Poly, Lambda,
-                     Function, I, S, sqrt, Rational, Tuple, Matrix,
-                     Add, Mul, Pow, Or, true, false, Abs, pi, Xor, Range)
-from diofant.core.sympify import sympify, _sympify, SympifyError
-from diofant.core.decorators import _sympifyit
-from diofant.utilities.decorator import conserve_mpmath_dps
-from diofant.geometry import Point, Line
+from diofant import (Abs, Add, Float, Function, I, Integer, Lambda, Matrix,
+                     Mul, Or, Poly, Pow, Range, Rational, S, Symbol, Tuple,
+                     Xor, exp, false, pi, sin, sqrt, true)
+from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
+from diofant.core.decorators import _sympifyit
+from diofant.core.sympify import SympifyError, sympify
+from diofant.geometry import Line, Point
+from diofant.utilities.decorator import conserve_mpmath_dps
 
-from diofant.abc import x, y, _clash, _clash1, _clash2
 
 __all__ = ()
 
@@ -109,7 +109,7 @@ def test_sympify2():
 
     a = A()
 
-    assert _sympify(a) == x**3
+    assert sympify(a, strict=True) == x**3
     assert sympify(a) == x**3
     assert a == x**3
 
@@ -120,8 +120,8 @@ def test_sympify3():
     assert sympify("x^3", convert_xor=False) == Xor(x, 3)
     assert sympify("1/2") == Rational(1, 2)
 
-    pytest.raises(SympifyError, lambda: _sympify('x**3'))
-    pytest.raises(SympifyError, lambda: _sympify('1/2'))
+    pytest.raises(SympifyError, lambda: sympify('x**3', strict=True))
+    pytest.raises(SympifyError, lambda: sympify('1/2', strict=True))
 
 
 def test_sympify_keywords():
@@ -145,8 +145,8 @@ def test_sympyify_iterables():
     ans = [Rational(3, 10), Rational(1, 5)]
     assert sympify(['.3', '.2'], rational=True) == ans
     assert sympify({'.3', '.2'}, rational=True) == set(ans)
-    assert sympify(tuple(['.3', '.2']), rational=True) == Tuple(*ans)
-    assert sympify(dict(x=0, y=1)) == {x: 0, y: 1}
+    assert sympify(('.3', '.2'), rational=True) == Tuple(*ans)
+    assert sympify({x: 0, y: 1}) == {x: 0, y: 1}
     assert sympify(['1', '2', ['3', '4']]) == [Integer(1), Integer(2), [Integer(3), Integer(4)]]
 
 
@@ -157,7 +157,7 @@ def test_sympify4():
 
     a = A()
 
-    assert _sympify(a)**3 == x**3
+    assert sympify(a, strict=True)**3 == x**3
     assert sympify(a)**3 == x**3
     assert a == x
 
@@ -193,7 +193,7 @@ def test_sympify_function():
 def test_sympify_poly():
     p = Poly(x**2 + x + 1, x)
 
-    assert _sympify(p) is p
+    assert sympify(p, strict=True) is p
     assert sympify(p) is p
 
 
@@ -210,41 +210,39 @@ def test_lambda():
     assert sympify('lambda x, y: 2*x+y') == Lambda([x, y], 2*x + y)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 5),
-                    reason="XXX python3.5 api changes")
 def test_lambda_raises():
-    pytest.raises(SympifyError, lambda: sympify("lambda *args: args"))  # args argument error
-    pytest.raises(SympifyError, lambda: sympify("lambda **kwargs: kwargs[0]"))  # kwargs argument error
+    pytest.raises(NotImplementedError, lambda: sympify("lambda *args: args"))  # args argument error
+    pytest.raises(NotImplementedError, lambda: sympify("lambda **kwargs: kwargs"))  # kwargs argument error
     pytest.raises(SympifyError, lambda: sympify("lambda x = 1: x"))    # Keyword argument error
     with pytest.raises(SympifyError):
-        _sympify('lambda: 1')
+        sympify('lambda: 1', strict=True)
 
 
 def test_sympify_raises():
     pytest.raises(SympifyError, lambda: sympify("fx)"))
 
 
-def test__sympify():
+def test_sympify_strict():
     x = Symbol('x')
     f = Function('f')
 
-    # positive _sympify
-    assert _sympify(x) is x
-    assert _sympify(f) is f
-    assert _sympify(1) == Integer(1)
-    assert _sympify(0.5) == Float("0.5")
-    assert _sympify(1 + 1j) == 1.0 + I*1.0
+    # positive sympify
+    assert sympify(x, strict=True) is x
+    assert sympify(f, strict=True) is f
+    assert sympify(1, strict=True) == Integer(1)
+    assert sympify(0.5, strict=True) == Float("0.5")
+    assert sympify(1 + 1j, strict=True) == 1.0 + I*1.0
 
     class A:
         def _diofant_(self):
             return Integer(5)
 
     a = A()
-    assert _sympify(a) == Integer(5)
+    assert sympify(a, strict=True) == Integer(5)
 
-    # negative _sympify
-    pytest.raises(SympifyError, lambda: _sympify('1'))
-    pytest.raises(SympifyError, lambda: _sympify([1, 2, 3]))
+    # negative sympify
+    pytest.raises(SympifyError, lambda: sympify('1', strict=True))
+    pytest.raises(SympifyError, lambda: sympify([1, 2, 3], strict=True))
 
 
 def test_sympifyit():
@@ -358,15 +356,15 @@ def test_int_float():
     assert abs(sympify(f1_1b) - 1.1) < 1e-5
     assert abs(sympify(f1_1c) - 1.1) < 1e-5
 
-    assert _sympify(i5) == 5
-    assert isinstance(_sympify(i5), Integer)
-    assert _sympify(i5b) == 5
-    assert isinstance(_sympify(i5b), Float)
-    assert _sympify(i5c) == 5
-    assert isinstance(_sympify(i5c), Integer)
-    assert abs(_sympify(f1_1) - 1.1) < 1e-5
-    assert abs(_sympify(f1_1b) - 1.1) < 1e-5
-    assert abs(_sympify(f1_1c) - 1.1) < 1e-5
+    assert sympify(i5, strict=True) == 5
+    assert isinstance(sympify(i5, strict=True), Integer)
+    assert sympify(i5b, strict=True) == 5
+    assert isinstance(sympify(i5b, strict=True), Float)
+    assert sympify(i5c, strict=True) == 5
+    assert isinstance(sympify(i5c, strict=True), Integer)
+    assert abs(sympify(f1_1, strict=True) - 1.1) < 1e-5
+    assert abs(sympify(f1_1b, strict=True) - 1.1) < 1e-5
+    assert abs(sympify(f1_1c, strict=True) - 1.1) < 1e-5
 
 
 def test_evaluate_false():
@@ -457,4 +455,4 @@ def test_sympyissue_8821_highprec_from_str():
 
 def test_Range():
     assert sympify(range(10)) == Range(10)
-    assert _sympify(range(10)) == Range(10)
+    assert sympify(range(10), strict=True) == Range(10)

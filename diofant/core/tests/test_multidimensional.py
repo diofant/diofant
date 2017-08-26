@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (Function, Derivative, diff, sin, pi,
-                     log, Integer, Rational, S)
+from diofant import (Derivative, Function, Integer, Rational, S, diff, log, pi,
+                     sin)
+from diofant.abc import x, y, z
 from diofant.core.multidimensional import vectorize
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -36,7 +36,7 @@ def test_vectorize():
     f, g = map(Function, 'fg')
 
     assert vsin1([1, x, y]) == [sin(1), sin(x), sin(y)]
-    assert vsin1(tuple([1, tuple([x, y])])) == [sin(1), [sin(x), sin(y)]]
+    assert vsin1((1, (x, y))) == [sin(1), [sin(x), sin(y)]]
     assert vsin1((1, x, y)) == [sin(1), sin(x), sin(y)]
     assert vsin2([1, x, y]) == [sin(1), sin(x), sin(y)]
     assert (vsin3([pi, 2*pi, pi/2], evaluate=[True, False]) ==

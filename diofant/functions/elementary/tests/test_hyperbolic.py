@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (symbols, Symbol, sinh, nan, oo, zoo, pi,
-                     asinh, acosh, log, sqrt, coth, I, cot, E, tanh,
-                     tan, cosh, cos, S, sin, Rational, atanh, acoth,
-                     O, exp, sech, sec, csch)
-from diofant.core.function import ArgumentIndexError
-from diofant.functions.elementary.hyperbolic import ReciprocalHyperbolicFunction
-
+from diofant import (E, I, O, Rational, S, Symbol, acosh, acoth, asinh, atanh,
+                     cos, cosh, cot, coth, csch, exp, log, nan, oo, pi, sec,
+                     sech, sin, sinh, sqrt, symbols, tan, tanh, zoo)
 from diofant.abc import x, y
+from diofant.core.function import ArgumentIndexError
+from diofant.functions.elementary.hyperbolic import \
+    ReciprocalHyperbolicFunction
+
 
 __all__ = ()
 
@@ -81,10 +81,21 @@ def test_sinh():
 
     pytest.raises(ArgumentIndexError, lambda: sinh(x).fdiff(2))
 
+    a, b = symbols('a b', extended_real=True)
+    z = a + b*I
+    for deep in [True, False]:
+        assert sinh(z).as_real_imag(deep=deep) == (sinh(a)*cos(b),
+                                                   cosh(a)*sin(b))
+        assert sinh(a).as_real_imag(deep=deep) == (sinh(a), 0)
+
 
 def test_sinh_series():
     assert sinh(x).series(x, 0, 10) == \
         x + x**3/6 + x**5/120 + x**7/5040 + x**9/362880 + O(x**10)
+
+    assert sinh(x).taylor_term(1, x) == x
+    assert sinh(x).taylor_term(3, x) == x**3/6
+    assert sinh(x).taylor_term(3, x, *(x, 0)) == sinh(x).taylor_term(3, x)
 
 
 def test_cosh():
@@ -154,10 +165,21 @@ def test_cosh():
 
     pytest.raises(ArgumentIndexError, lambda: cosh(x).fdiff(2))
 
+    a, b = symbols('a b', extended_real=True)
+    z = a + b*I
+    for deep in [True, False]:
+        assert cosh(z).as_real_imag(deep=deep) == (cosh(a)*cos(b),
+                                                   sinh(a)*sin(b))
+        assert cosh(a).as_real_imag(deep=deep) == (cosh(a), 0)
+
 
 def test_cosh_series():
     assert cosh(x).series(x, 0, 10) == \
         1 + x**2/2 + x**4/24 + x**6/720 + x**8/40320 + O(x**10)
+
+    assert cosh(x).taylor_term(0, x) == 1
+    assert cosh(x).taylor_term(2, x) == x**2/2
+    assert cosh(x).taylor_term(2, x, *(1, 0)) == cosh(x).taylor_term(2, x)
 
 
 def test_tanh():
@@ -228,6 +250,14 @@ def test_tanh():
 
     pytest.raises(ArgumentIndexError, lambda: tanh(x).fdiff(2))
 
+    a, b = symbols('a b', extended_real=True)
+    z = a + b*I
+    for deep in [True, False]:
+        d = sinh(a)**2 + cos(b)**2
+        assert tanh(z).as_real_imag(deep=deep) == (sinh(a)*cosh(a)/d,
+                                                   sin(b)*cos(b)/d)
+        assert tanh(a).as_real_imag(deep=deep) == (tanh(a), 0)
+
 
 def test_tanh_series():
     assert tanh(x).series(x, 0, 10) == \
@@ -295,6 +325,14 @@ def test_coth():
     assert coth(k*pi*I) == -cot(k*pi)*I
 
     pytest.raises(ArgumentIndexError, lambda: coth(x).fdiff(2))
+
+    a, b = symbols('a b', extended_real=True)
+    z = a + b*I
+    for deep in [True, False]:
+        d = sinh(a)**2 + sin(b)**2
+        assert coth(z).as_real_imag(deep=deep) == (sinh(a)*cosh(a)/d,
+                                                   -sin(b)*cos(b)/d)
+        assert coth(a).as_real_imag(deep=deep) == (coth(a), 0)
 
 
 def test_coth_series():
@@ -677,11 +715,11 @@ def test_complex():
         assert coth(z).expand(complex=True, deep=deep) == sinh(a)*cosh(
             a)/(sin(b)**2 + sinh(a)**2) - I*sin(b)*cos(b)/(sin(b)**2 + sinh(a)**2)
         assert csch(z).expand(complex=True, deep=deep) == cos(b) * sinh(a) / (sin(b)**2
-            * cosh(a)**2 + cos(b)**2 * sinh(a)**2) - I*sin(b) * cosh(a) / (sin(b)**2
-            * cosh(a)**2 + cos(b)**2 * sinh(a)**2)
+                                                                              * cosh(a)**2 + cos(b)**2 * sinh(a)**2) - I*sin(b) * cosh(a) / (sin(b)**2
+                                                                                                                                             * cosh(a)**2 + cos(b)**2 * sinh(a)**2)
         assert sech(z).expand(complex=True, deep=deep) == cos(b) * cosh(a) / (sin(b)**2
-            * sinh(a)**2 + cos(b)**2 * cosh(a)**2) - I*sin(b) * sinh(a) / (sin(b)**2
-            * sinh(a)**2 + cos(b)**2 * cosh(a)**2)
+                                                                              * sinh(a)**2 + cos(b)**2 * cosh(a)**2) - I*sin(b) * sinh(a) / (sin(b)**2
+                                                                                                                                             * sinh(a)**2 + cos(b)**2 * cosh(a)**2)
 
 
 def test_complex_2899():

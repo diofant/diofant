@@ -1,11 +1,11 @@
 import pytest
 
-from diofant import (Eq, factorial, Function, Lambda, rf, S, sqrt, symbols,
-                     I, expand_func, binomial, gamma, Rational, sin)
+from diofant import (Eq, Function, I, Lambda, Rational, S, binomial,
+                     expand_func, factorial, gamma, rf, sin, sqrt, symbols)
+from diofant.abc import a, b
 from diofant.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
                                     rsolve_ratio)
 
-from diofant.abc import a, b
 
 __all__ = ()
 
@@ -32,7 +32,7 @@ def test_rsolve_poly():
 
 def test_rsolve_ratio():
     solution = rsolve_ratio([-2*n**3 + n**2 + 2*n - 1, 2*n**3 + n**2 - 6*n,
-        -2*n**3 - 11*n**2 - 18*n - 9, 2*n**3 + 13*n**2 + 22*n + 8], 0, n)
+                             -2*n**3 - 11*n**2 - 18*n - 9, 2*n**3 + 13*n**2 + 22*n + 8], 0, n)
 
     assert solution in [
         C1*((-2*n + 3)/(n**2 - 1))/3,
@@ -184,13 +184,13 @@ def test_rsolve():
     assert rsolve(Eq(y(n + 1), a*y(n)), y(n), {y(1): a}).simplify() == a**n
 
     assert rsolve(y(n) - a*y(n-2), y(n),
-            {y(1): sqrt(a)*(a + b), y(2): a*(a - b)}).simplify() == \
-            a**(n/2)*(-(-1)**n*b + a)
+                  {y(1): sqrt(a)*(a + b), y(2): a*(a - b)}).simplify() == \
+        a**(n/2)*(-(-1)**n*b + a)
 
     f = (-16*n**2 + 32*n - 12)*y(n - 1) + (4*n**2 - 12*n + 9)*y(n)
 
     assert expand_func(rsolve(f, y(n),
-            {y(1): binomial(2*n + 1, 3)}).rewrite(gamma)).simplify() == \
+                              {y(1): binomial(2*n + 1, 3)}).rewrite(gamma)).simplify() == \
         2**(2*n)*n*(2*n - 1)*(4*n**2 - 1)/12
 
     assert (rsolve(y(n) + a*(y(n + 1) + y(n - 1))/2, y(n)) -

@@ -1,10 +1,9 @@
 import pytest
 
-from diofant.functions import bspline_basis_set, bspline_basis
-from diofant import Piecewise, Interval
-from diofant import Rational
-
+from diofant import Interval, Piecewise, Rational
 from diofant.abc import x
+from diofant.functions import bspline_basis, bspline_basis_set
+
 
 __all__ = ()
 

@@ -1,10 +1,8 @@
-import itertools
-
 import collections
+import itertools
 
 from ...core import S, Tuple, prod
 from ...matrices import Matrix
-
 from .dense_ndim_array import ImmutableDenseNDimArray
 from .ndim_array import NDimArray
 

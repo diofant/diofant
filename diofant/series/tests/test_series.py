@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (sin, cos, exp, E, series, oo, Derivative, O, Integral,
-                     Function, log, sqrt, Symbol, Subs, pi, symbols,
-                     Rational, Integer)
-
+from diofant import (Derivative, E, Function, Integer, Integral, O, Rational,
+                     Subs, Symbol, cos, exp, log, oo, pi, series, sin, sqrt,
+                     symbols)
 from diofant.abc import x, y
+
 
 __all__ = ()
 
@@ -85,22 +85,22 @@ def test_sympyissue_5223():
 def test_sympyissue_3978():
     f = Function('f')
     assert f(x).series(x, 0, 3, dir='-') == \
-            f(0) + x*Subs(Derivative(f(x), x), (x,), (0,)) + \
-            x**2*Subs(Derivative(f(x), x, x), (x,), (0,))/2 + O(x**3)
+        f(0) + x*Subs(Derivative(f(x), x), (x,), (0,)) + \
+        x**2*Subs(Derivative(f(x), x, x), (x,), (0,))/2 + O(x**3)
     assert f(x).series(x, 0, 3) == \
-            f(0) + x*Subs(Derivative(f(x), x), (x,), (0,)) + \
-            x**2*Subs(Derivative(f(x), x, x), (x,), (0,))/2 + O(x**3)
+        f(0) + x*Subs(Derivative(f(x), x), (x,), (0,)) + \
+        x**2*Subs(Derivative(f(x), x, x), (x,), (0,))/2 + O(x**3)
     assert f(x**2).series(x, 0, 3) == \
-            f(0) + x**2*Subs(Derivative(f(x), x), (x,), (0,)) + O(x**3)
+        f(0) + x**2*Subs(Derivative(f(x), x), (x,), (0,)) + O(x**3)
     assert f(x**2+1).series(x, 0, 3) == \
-            f(1) + x**2*Subs(Derivative(f(x), x), (x,), (1,)) + O(x**3)
+        f(1) + x**2*Subs(Derivative(f(x), x), (x,), (1,)) + O(x**3)
 
     class TestF(Function):
         pass
 
     assert TestF(x).series(x, 0, 3) == TestF(0) + \
-            x*Subs(Derivative(TestF(x), x), (x,), (0,)) + \
-            x**2*Subs(Derivative(TestF(x), x, x), (x,), (0,))/2 + O(x**3)
+        x*Subs(Derivative(TestF(x), x), (x,), (0,)) + \
+        x**2*Subs(Derivative(TestF(x), x, x), (x,), (0,))/2 + O(x**3)
 
 
 def test_sympyissue_5852():
@@ -150,8 +150,8 @@ def test_sympyissue_8805():
 def test_sympyissue_9173():
     p_0, p_1, p_2, p_3, b_0, b_1, b_2 = symbols('p_0:4, b_0:3')
     Q = (p_0 + (p_1 + (p_2 + p_3/y)/y)/y)/(1 + ((p_3/(b_0*y) +
-        (b_0*p_2 - b_1*p_3)/b_0**2)/y + (b_0**2*p_1 - b_0*b_1*p_2 -
-            p_3*(b_0*b_2 - b_1**2))/b_0**3)/y)
+                                                 (b_0*p_2 - b_1*p_3)/b_0**2)/y + (b_0**2*p_1 - b_0*b_1*p_2 -
+                                                                                  p_3*(b_0*b_2 - b_1**2))/b_0**3)/y)
     assert Q.series(y, n=3) == b_2*y**2 + b_1*y + b_0 + O(y**3)
 
 
@@ -205,3 +205,7 @@ def test_sympyissue_12375():
     s = (x + 1).series(x, 2, 1)
     assert s == 3 + O(x - 2, (x, 2))
     assert s.removeO() == 3
+
+
+def test_sympyissue_12747():
+    assert exp(x).series(x, y, n=1) == exp(y) + O(x - y, (x, y))

@@ -2,25 +2,26 @@
 
 from math import log as mathlog
 
-from mpmath import mpf, mpc, findroot, workprec
+from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
-from ..core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
-                    sympify, Rational, Dummy, cacheit)
+from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational, S,
+                    cacheit, symbols, sympify)
 from ..core.evaluate import global_evaluate
 from ..core.function import AppliedUndef
-from ..functions import root as _root, sign
+from ..domains import QQ
+from ..functions import root as _root
+from ..functions import sign
+from ..utilities import lambdify, public
+from .polyerrors import (DomainError, GeneratorsNeeded,
+                         MultivariatePolynomialError, PolynomialError)
+from .polyfuncs import symmetrize, viete
+from .polyroots import (preprocess_roots, roots, roots_binomial, roots_linear,
+                        roots_quadratic)
 from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
-from .polyfuncs import symmetrize, viete
 from .rootisolation import (dup_isolate_complex_roots_sqf,
                             dup_isolate_real_roots_sqf)
-from .polyroots import (roots_linear, roots_quadratic, roots_binomial,
-                        preprocess_roots, roots)
-from .polyerrors import (MultivariatePolynomialError, GeneratorsNeeded,
-                         PolynomialError, DomainError)
-from ..domains import QQ
-from ..utilities import lambdify, public
 
 
 def _ispow2(i):
@@ -53,7 +54,7 @@ class RootOf(Expr):
         else:
             raise ValueError("expected an integer root index, got %s" % index)
 
-        poly = PurePoly(f, x, greedy=False, expand=expand)
+        poly = PurePoly(f, x, expand=expand)
 
         if not poly.is_univariate:
             raise PolynomialError("only univariate polynomials are allowed")
@@ -385,7 +386,7 @@ class RootOf(Expr):
         """Map initial real root index to an index in a factor where the root belongs. """
         i = 0
 
-        for j, (_, factor, k) in enumerate(reals):
+        for j, (_, factor, k) in enumerate(reals):  # pragma: no branch
             if index < i + k:
                 poly, index = factor, 0
 
@@ -402,7 +403,7 @@ class RootOf(Expr):
         """Map initial complex root index to an index in a factor where the root belongs. """
         index, i = index, 0
 
-        for j, (_, factor, k) in enumerate(complexes):
+        for j, (_, factor, k) in enumerate(complexes):  # pragma: no branch
             if index < i + k:
                 poly, index = factor, 0
 
@@ -533,8 +534,6 @@ class RootOf(Expr):
     @classmethod
     def _get_roots(cls, method, poly, radicals):
         """Return postprocessed roots of specified kind. """
-        if not poly.is_univariate:
-            raise PolynomialError("only univariate polynomials are allowed")
 
         coeff, poly = cls._preprocess_roots(poly)
         roots = []
@@ -544,21 +543,14 @@ class RootOf(Expr):
 
         return roots
 
-    def _get_interval(self):
+    @property
+    def interval(self):
         """Internal function for retrieving isolation interval from cache. """
         if self.is_real:
             return _reals_cache[self.poly][self.index]
         else:
             reals_count = len(_reals_cache[self.poly])
             return _complexes_cache[self.poly][self.index - reals_count]
-
-    def _set_interval(self, interval):
-        """Internal function for updating isolation interval in cache. """
-        if self.is_real:
-            _reals_cache[self.poly][self.index] = interval
-        else:
-            reals_count = len(_reals_cache[self.poly])
-            _complexes_cache[self.poly][self.index - reals_count] = interval
 
     def _eval_subs(self, old, new):
         if old in self.free_symbols:
@@ -578,18 +570,9 @@ class RootOf(Expr):
                 func = lambdify(g, self.expr)
 
             try:
-                interval = self._get_interval()
+                interval = self.interval
             except KeyError:
                 return super(Expr, self)._eval_evalf(prec)
-
-            if not self.is_extended_real:
-                # For complex intervals, we need to keep refining until the
-                # imaginary interval is disjunct with other roots, that is,
-                # until both ends get refined.
-                ay = interval.ay
-                by = interval.by
-                while interval.ay == ay or interval.by == by:
-                    interval = interval.refine()
 
             while True:
                 if self.is_extended_real:
@@ -604,23 +587,10 @@ class RootOf(Expr):
                     bx = mpf(str(interval.bx))
                     ay = mpf(str(interval.ay))
                     by = mpf(str(interval.by))
-                    if ax == bx and ay == by:
-                        # the sign of the imaginary part will be assigned
-                        # according to the desired index using the fact that
-                        # roots are sorted with negative imag parts coming
-                        # before positive (and all imag roots coming after real
-                        # roots)
-                        deg = self.poly.degree()
-                        i = self.index  # a positive attribute after creation
-                        if (deg - i) % 2:
-                            if ay < 0:
-                                ay = -ay
-                        else:
-                            if ay > 0:
-                                ay = -ay
-                        root = mpc(ax, ay)
-                        break
                     x0 = mpc(*map(str, interval.center))
+                    if ax == bx and ay == by:
+                        root = x0
+                        break
 
                 try:
                     root = findroot(func, x0)
@@ -636,21 +606,21 @@ class RootOf(Expr):
                     if self.is_extended_real:
                         if (a <= root <= b):
                             break
-                    elif (ax <= root.real <= bx and ay <= root.imag <= by):
+                    elif (ax <= root.real <= bx and ay <= root.imag <= by
+                          and (interval.ay > 0 or interval.by < 0)):
                         break
                 except ValueError:
                     pass
                 interval = interval.refine()
 
-        return Float._new(root.real._mpf_, prec) + I*Float._new(root.imag._mpf_, prec)
+        return (Float._new(root.real._mpf_, prec) +
+                I*Float._new(root.imag._mpf_, prec))
 
     def eval_rational(self, tol):
         """
         Returns a Rational approximation to ``self`` with the tolerance ``tol``.
 
-        This method uses bisection, which is very robust and it will always
-        converge. The returned Rational instance will be at most 'tol' from the
-        exact root.
+        The returned instance will be at most 'tol' from the exact root.
 
         The following example first obtains Rational approximation to 1e-7
         accuracy for all roots of the 4-th order Legendre polynomial, and then
@@ -669,11 +639,12 @@ class RootOf(Expr):
 
         if not self.is_extended_real:
             raise NotImplementedError("eval_rational() only works for real polynomials so far")
-        func = lambdify(self.poly.gen, self.expr)
-        interval = self._get_interval()
+        interval = self.interval
+        while interval.b - interval.a > tol:
+            interval = interval.refine()
         a = Rational(str(interval.a))
         b = Rational(str(interval.b))
-        return bisect(func, a, b, tol)
+        return (a + b)/2
 
     def _eval_Eq(self, other):
         # RootOf represents a Root, so if other is that root, it should set
@@ -694,7 +665,7 @@ class RootOf(Expr):
         s = self.is_extended_real, self.is_imaginary
         if o != s and None not in o and None not in s:
             return S.false
-        i = self._get_interval()
+        i = self.interval
         was = i.a, i.b
         need = [True]*2
         # make sure it would be distinct from others
@@ -770,7 +741,7 @@ class RootSum(Expr):
         func = Lambda(var, expr)
 
         rational = cls._is_func_rational(poly, func)
-        (_, factors), terms = poly.factor_list(), []
+        factors, terms = poly.factor_list()[1], []
 
         for poly, k in factors:
             if poly.is_linear:
@@ -801,8 +772,6 @@ class RootSum(Expr):
     @classmethod
     def new(cls, poly, func, auto=True):
         """Construct new ``RootSum`` instance. """
-        if not func.expr.has(*func.variables):
-            return func.expr
 
         rational = cls._is_func_rational(poly, func)
 
@@ -897,9 +866,6 @@ class RootSum(Expr):
         return True
 
     def doit(self, **hints):
-        if not hints.get('roots', True):
-            return self
-
         _roots = roots(self.poly, multiple=True)
 
         if len(_roots) < self.poly.degree():
@@ -919,38 +885,3 @@ class RootSum(Expr):
         var, expr = self.fun.args
         func = Lambda(var, expr.diff(x))
         return self.new(self.poly, func, self.auto)
-
-
-def bisect(f, a, b, tol):
-    """
-    Implements bisection. This function is used in RootOf.eval_rational() and
-    it needs to be robust.
-
-    Examples
-    ========
-
-    >>> from diofant import Rational
-
-    >>> bisect(lambda x: x**2-1, -10, 0, Rational(1, 10)**2)
-    -1025/1024
-    >>> bisect(lambda x: x**2-1, -10, 0, Rational(1, 10)**4)
-    -131075/131072
-    """
-    a = sympify(a)
-    b = sympify(b)
-    fa = f(a)
-    fb = f(b)
-    if fa * fb >= 0:
-        raise ValueError("bisect: f(a) and f(b) must have opposite signs")
-    while (b - a > tol):
-        c = (a + b)/2
-        fc = f(c)
-        if (fc == 0):
-            return c  # We need to make sure f(c) is not zero below
-        if (fa * fc < 0):
-            b = c
-            fb = fc
-        else:
-            a = c
-            fa = fc
-    return (a + b)/2

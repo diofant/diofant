@@ -1,15 +1,17 @@
 import pytest
 
-from diofant.core import Function, I, oo, Rational, S, Symbol, symbols, Eq
-from diofant.logic import true, false
-from diofant.functions import (sqrt, cbrt, root, Min, Max, real_root,
-                               Piecewise, cos, sin, floor, ceiling, Heaviside)
+from diofant.abc import x, y, z
+from diofant.core import Eq, Function, I, Rational, S, Symbol, oo, symbols
+from diofant.core.function import ArgumentIndexError
+from diofant.functions import (Heaviside, Max, Min, Piecewise, cbrt, ceiling,
+                               cos, floor, real_root, root, sin, sqrt)
+from diofant.logic import false, true
+
 
 __all__ = ()
 
 
 def test_Min():
-    from diofant.abc import x, y, z
     n = Symbol('n', negative=True)
     n_ = Symbol('n_', negative=True)
     nn = Symbol('nn', nonnegative=True)
@@ -100,6 +102,8 @@ def test_Min():
     assert Min(0, -x, 1 - 2*x).diff(x) == -Heaviside(x + Min(0, -2*x + 1)) \
         - 2*Heaviside(2*x + Min(0, -x) - 1)
 
+    pytest.raises(ArgumentIndexError, lambda: Min(1, x).fdiff(3))
+
     a, b = Symbol('a', extended_real=True), Symbol('b', extended_real=True)
     # a and b are both real, Min(a, b) should be real
     assert Min(a, b).is_extended_real
@@ -115,15 +119,9 @@ def test_Min():
 
 
 def test_Max():
-    from diofant.abc import x, y, z
     n = Symbol('n', negative=True)
     n_ = Symbol('n_', negative=True)
-    nn = Symbol('nn', nonnegative=True)
-    nn_ = Symbol('nn_', nonnegative=True)
     p = Symbol('p', positive=True)
-    p_ = Symbol('p_', positive=True)
-    np = Symbol('np', nonpositive=True)
-    np_ = Symbol('np_', nonpositive=True)
     r = Symbol('r', extended_real=True)
 
     assert Max(5, 4) == 5
@@ -160,6 +158,8 @@ def test_Max():
         2*x*Heaviside(x**2 - Max(1, x + 1)) \
         + Heaviside(x - Max(1, x**2) + 1)
 
+    pytest.raises(ArgumentIndexError, lambda: Max(1, x).fdiff(3))
+
     a, b = Symbol('a', extended_real=True), Symbol('b', extended_real=True)
     # a and b are both real, Max(a, b) should be real
     assert Max(a, b).is_extended_real
@@ -181,7 +181,6 @@ def test_sympyissue_8413():
 
 
 def test_root():
-    from diofant.abc import x
     n = Symbol('n', integer=True)
     k = Symbol('k', integer=True)
 
@@ -222,17 +221,16 @@ def test_real_root():
     x = Symbol('x')
     n = Symbol('n')
     g = real_root(x, n)
-    assert g.subs(dict(x=-8, n=3)) == -2
-    assert g.subs(dict(x=8, n=3)) == 2
+    assert g.subs({x: -8, n: 3}) == -2
+    assert g.subs({x: 8, n: 3}) == 2
     # give principle root if there is no real root -- if this is not desired
     # then maybe a Root class is needed to raise an error instead
-    assert g.subs(dict(x=I, n=3)) == cbrt(I)
-    assert g.subs(dict(x=-8, n=2)) == sqrt(-8)
-    assert g.subs(dict(x=I, n=2)) == sqrt(I)
+    assert g.subs({x: I, n: 3}) == cbrt(I)
+    assert g.subs({x: -8, n: 2}) == sqrt(-8)
+    assert g.subs({x: I, n: 2}) == sqrt(I)
 
 
 def test_rewrite_MaxMin_as_Heaviside():
-    from diofant.abc import x
     assert Max(0, x).rewrite(Heaviside) == x*Heaviside(x)
     assert Max(3, x).rewrite(Heaviside) == x*Heaviside(x - 3) + \
         3*Heaviside(-x + 3)

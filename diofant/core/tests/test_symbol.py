@@ -1,8 +1,9 @@
 import pytest
 
-from diofant import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
-                     StrictLessThan, pi, I, Rational, sympify, symbols, Dummy,
-                     Integer, Float, sstr)
+from diofant import (Dummy, Float, GreaterThan, I, Integer, LessThan, Rational,
+                     StrictGreaterThan, StrictLessThan, Symbol, Wild, pi, sstr,
+                     symbols, sympify)
+
 
 __all__ = ()
 
@@ -98,8 +99,6 @@ def test_no_len():
 
 
 def test_ineq_unequal():
-    S = sympify
-
     x, y, z = symbols('x,y,z')
 
     e = (

@@ -38,6 +38,7 @@ Backwards-incompatible changes
 * Removed support for ``particular`` and ``quick`` options of :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.solvers.minsolve_linear_system` instead, see :pull:`426`.
 * Removed support for inequalities in :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.inequalities.reduce_inequalities` instead, see :pull:`426`.
 * Removed ``get_domain()`` method of :class:`~diofant.polys.polytools.Poly`, use :attr:`~diofant.polys.polytools.Poly.domain` property instead, see :pull:`479`.
+* Renamed 'prec' argument of Float to 'dps', see :pull:`510`.
 
 Minor changes
 =============
@@ -50,6 +51,7 @@ Minor changes
 * Support rewriting :class:`~diofant.functions.elementary.miscellaneous.Min` and :class:`~diofant.functions.elementary.miscellaneous.Max` as :class:`~diofant.functions.elementary.piecewise.Piecewise`, this allow solving more piecewise equations, see :pull:`426`.
 * :func:`~diofant.polys.numberfields.minimal_polynomial` fixed to support generic :class:`~diofant.core.numbers.AlgebraicNumber`'s, see :pull:`433` and :pull:`438`.
 * :class:`~diofant.core.numbers.AlgebraicNumber` now support arithmetic operations and exponentiation with integer exponents, see :pull:`428` and :pull:`485`.
+* Add AST transformation :class:`~diofant.interactive.session.IntegerDivisionWrapper` to wrap integer division, see :pull:`519`.
 
 Developer changes
 =================
@@ -57,6 +59,7 @@ Developer changes
 * Enabled docstring testing with flake8, see :pull:`408`.
 * Use only relative imports in the codebase, see :pull:`421`.
 * Enabled flake8-comprehensions plugin, see :pull:`420`.
+* Sort imports with `isort <https://github.com/timothycrosley/isort>`_, see :pull:`520`.
 
 Issues closed
 =============
@@ -145,6 +148,19 @@ Issues closed
 * :sympyissue:`12569` problem with polygamma or im
 * :sympyissue:`12578` Taylor expansion wrong (likely because of wrong substitution at point of evaluation?)
 * :sympyissue:`12582` Can't solve integrate(abs(x**2-3*x), (x, -15, 15))
+* :sympyissue:`12747` Missing constant coefficient in Taylor series of degree 1
+* :sympyissue:`12769` Slow limit() calculation?!
+* :issue:`375` Separate user-level API and documentation of internals
+* :issue:`358` Use pytest-warnings?
+* :issue:`350` Pretty printing in pdf docs looks bad
+* :sympyissue:`12942` Remove x**1.0 == x hack from core
+* :issue:`75` limit(abs(ln(x))-ln(x), x, 2, '-') runs endless
+* :issue:`462` Poor performance for very simple matching rule
+* :sympyissue:`12238` match can take a long time (possibly forever)
+* :sympyissue:`4269` ordering of classes
+* :sympyissue:`13081` Some comparisons between rational and irrational numbers are incorrect
+* :sympyissue:`13078` Return NotImplemented, not False, upon rich comparison with unknown type
+* :sympyissue:`13098` sympy.floor() sometimes returns the wrong answer
 
 .. last pr: #494
 

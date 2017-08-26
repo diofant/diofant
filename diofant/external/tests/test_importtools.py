@@ -3,6 +3,7 @@ import pytest
 from diofant.core.compatibility import HAS_GMPY
 from diofant.external import import_module
 
+
 __all__ = ()
 
 # fixes issue that arose in addressing issue sympy/sympy#6533
@@ -15,8 +16,8 @@ def test_no_stdlib_collections():
     """
     import collections
     matplotlib = import_module('matplotlib',
-        __import__kwargs={'fromlist': ['cm', 'collections']},
-        min_module_version='1.1.0', catch=(RuntimeError,))
+                               __import__kwargs={'fromlist': ['cm', 'collections']},
+                               min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
         assert collections != matplotlib.collections
 
@@ -28,8 +29,8 @@ def test_no_stdlib_collections2():
     """
     import collections
     matplotlib = import_module('matplotlib',
-        __import__kwargs={'fromlist': ['collections']},
-        min_module_version='1.1.0', catch=(RuntimeError,))
+                               __import__kwargs={'fromlist': ['collections']},
+                               min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
         assert collections != matplotlib.collections
 
@@ -38,8 +39,8 @@ def test_no_stdlib_collections3():
     """make sure we get the right collections with no catch"""
     import collections
     matplotlib = import_module('matplotlib',
-        __import__kwargs={'fromlist': ['cm', 'collections']},
-        min_module_version='1.1.0')
+                               __import__kwargs={'fromlist': ['cm', 'collections']},
+                               min_module_version='1.1.0')
     if matplotlib:
         assert collections != matplotlib.collections
 

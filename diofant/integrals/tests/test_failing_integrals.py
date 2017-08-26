@@ -5,10 +5,10 @@ import signal
 
 import pytest
 
-from diofant import (integrate, Integral, exp, oo, pi, sign,
-                     sqrt, sin, cos, tan, log, gamma, sinh, Rational)
+from diofant import (Integral, Rational, cos, exp, gamma, integrate, log, oo,
+                     pi, sign, sin, sinh, sqrt, tan)
+from diofant.abc import R, a, b, c, h, k, m, x, y
 
-from diofant.abc import x, k, c, y, R, b, h, a, m
 
 __all__ = ()
 
@@ -60,7 +60,7 @@ def test_sympyissue_4511():
     # This works, but gives a complicated answer.  The correct answer is x - cos(x).
     # The last one is what Maple gives.  It is also quite slow.
     assert integrate(cos(x)**2 / (1 - sin(x))) in [x - cos(x), 1 - cos(x) + x,
-            -2/(tan((Rational(1, 2))*x)**2 + 1) + x]
+                                                   -2/(tan((Rational(1, 2))*x)**2 + 1) + x]
 
 
 @pytest.mark.xfail
