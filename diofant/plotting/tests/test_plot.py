@@ -6,9 +6,8 @@ from tempfile import NamedTemporaryFile
 
 import pytest
 
-from diofant import (And, I, Integral, LambertW, Max, Piecewise, cos,
-                     exp_polar, log, meijerg, oo, pi, real_root, sin, sqrt,
-                     summation)
+from diofant import (And, I, Integral, LambertW, Piecewise, cos, exp_polar,
+                     log, meijerg, oo, pi, real_root, sin, sqrt, summation)
 from diofant.abc import x, y, z
 from diofant.external import import_module
 from diofant.plotting import (plot, plot3d, plot3d_parametric_line,

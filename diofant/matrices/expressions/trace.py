@@ -1,6 +1,5 @@
 from ...core import Expr, sympify
-from ..matrices import MatrixBase
-from .matexpr import ShapeError
+from ..matrices import MatrixBase, ShapeError
 
 
 class Trace(Expr):

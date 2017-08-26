@@ -3,7 +3,7 @@
 from mpmath.ctx_mp_python import PythonMPContext, _constant, _mpc, _mpf
 from mpmath.libmp import (MPZ_ONE, finf, fnan, fninf, fone, from_float,
                           from_int, from_str, fzero, int_types, mpf_mul,
-                          repr_dps, round_nearest, to_rational)
+                          round_nearest, to_rational)
 from mpmath.rational import mpq
 
 from .domainelement import DomainElement

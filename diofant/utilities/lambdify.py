@@ -7,7 +7,7 @@ import inspect
 import textwrap
 
 from ..core.compatibility import is_sequence, iterable
-from ..external import import_module
+from ..external import import_module  # noqa: F401
 from .decorator import doctest_depends_on
 
 

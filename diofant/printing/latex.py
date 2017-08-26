@@ -7,7 +7,7 @@ import re
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Add, S, Symbol, SympifyError
+from ..core import Add, S, Symbol
 from ..core.alphabets import greeks
 from ..core.compatibility import default_sort_key
 from ..core.function import _coeff_isneg

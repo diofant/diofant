@@ -1,9 +1,9 @@
 """Implementation of :class:`Domain` class. """
 
-from ..core import Basic, sympify
-from ..core.compatibility import HAS_GMPY, default_sort_key, is_sequence
+from ..core import Basic
+from ..core.compatibility import HAS_GMPY, default_sort_key
 from ..polys.orderings import lex
-from ..polys.polyerrors import CoercionFailed, DomainError, UnificationFailed
+from ..polys.polyerrors import CoercionFailed, UnificationFailed
 from ..polys.polyutils import _unify_gens
 from ..printing.defaults import DefaultPrinting
 from .domainelement import DomainElement

@@ -1,6 +1,6 @@
 from ...core import Expr, Integer
 from ...core.sympify import sympify
-from .matexpr import ShapeError
+from ..matrices import ShapeError
 from .matpow import MatPow
 
 

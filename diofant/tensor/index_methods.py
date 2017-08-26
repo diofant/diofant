@@ -13,7 +13,6 @@ refactoring.
 from functools import reduce
 
 from ..core import Function
-from ..functions import Piecewise
 from .indexed import Idx, Indexed
 
 

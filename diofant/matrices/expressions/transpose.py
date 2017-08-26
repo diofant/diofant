@@ -1,4 +1,3 @@
-from ...core import Basic
 from ...functions import adjoint, conjugate
 from .matexpr import MatrixExpr
 

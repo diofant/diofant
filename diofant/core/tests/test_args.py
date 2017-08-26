@@ -8,8 +8,6 @@ import os
 import re
 import warnings
 
-import pytest
-
 from diofant import Basic, Integer, Interval, S, exp, oo, sin, sqrt, symbols
 from diofant.abc import a, b, c, w, x, y, z
 from diofant.matrices.expressions import MatrixSymbol

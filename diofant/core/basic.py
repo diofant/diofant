@@ -548,7 +548,7 @@ class Basic(object):
         """
         from .containers import Dict
         from ..utilities import default_sort_key
-        from .symbol import Dummy, Symbol
+        from .symbol import Dummy
 
         unordered = False
         if len(args) == 1:

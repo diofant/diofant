@@ -10,9 +10,8 @@ the separate 'factorials' module.
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
-from ...core import (Add, Dummy, E, Expr, Function, Integer, LessThan,
-                     Rational, S, StrictGreaterThan, cacheit, expand_mul, pi,
-                     prod)
+from ...core import (Add, Dummy, E, Expr, Function, Integer, Rational, S,
+                     cacheit, expand_mul, pi, prod)
 from ...core.compatibility import DIOFANT_INTS, as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log

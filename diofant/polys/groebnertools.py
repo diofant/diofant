@@ -4,7 +4,6 @@ from ..core import Dummy
 from .monomials import monomial_divides, monomial_lcm, monomial_mul, term_div
 from .orderings import lex
 from .polyconfig import query
-from .polyerrors import DomainError
 
 
 def groebner(seq, ring, method=None):

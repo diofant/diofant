@@ -1,8 +1,5 @@
-from functools import wraps
-
 from .. import ShapeError
-from ...core import (AtomicExpr, Expr, Integer, S, Symbol, SympifyError, Tuple,
-                     sympify)
+from ...core import AtomicExpr, Expr, Integer, S, Symbol, Tuple, sympify
 from ...core.assumptions import StdFactKB
 from ...core.decorators import _sympifyit, call_highest_priority
 from ...core.logic import fuzzy_bool

@@ -8,8 +8,8 @@ from ...core.logic import _fuzzy_group
 from ...core.strategies import flatten, glom, rm_id, sort, unpack
 from ...functions import adjoint
 from ...utilities import default_sort_key, sift
-from ..matrices import MatrixBase
-from .matexpr import MatrixExpr, ShapeError, ZeroMatrix
+from ..matrices import MatrixBase, ShapeError
+from .matexpr import MatrixExpr, ZeroMatrix
 from .transpose import transpose
 
 

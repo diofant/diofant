@@ -6,7 +6,7 @@ from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
                      erfinv, exp, exp_polar, expand, expand_func, expint,
                      fresnelc, fresnels, gamma, hyper, im, integrate, li,
                      limit, log, meijerg, nan, oo, pi, polar_lift, re, sign,
-                     sin, sinh, sqrt, symbols, uppergamma)
+                     sin, sinh, sqrt, uppergamma)
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.error_functions import _eis, _erfs

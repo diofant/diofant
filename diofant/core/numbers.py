@@ -3,7 +3,6 @@ import fractions
 import math
 import numbers
 import re as regex
-from collections import defaultdict
 
 import mpmath
 import mpmath.libmp as mlib

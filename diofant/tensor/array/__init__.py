@@ -165,9 +165,9 @@ Matrix([
 [2*z, -t + z]])
 """
 
-from .dense_ndim_array import MutableDenseNDimArray, ImmutableDenseNDimArray
-from .sparse_ndim_array import MutableSparseNDimArray, ImmutableSparseNDimArray
-from .arrayop import tensorproduct, tensorcontraction
+from .dense_ndim_array import MutableDenseNDimArray, ImmutableDenseNDimArray  # noqa: F401
+from .sparse_ndim_array import MutableSparseNDimArray, ImmutableSparseNDimArray  # noqa: F401
+from .arrayop import tensorproduct, tensorcontraction  # noqa: F401
 
 Array = ImmutableDenseNDimArray
 NDimArray = ImmutableDenseNDimArray

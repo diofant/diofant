@@ -2,10 +2,9 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Basic, Dummy, Float, I, Integer, Max, Mod, Mul, O,
-                     Pow, Rational, S, Symbol, comp, cos, exp, factorial, im,
-                     log, nan, oo, pi, re, sign, sin, sqrt, symbols, sympify,
-                     zoo)
+from diofant import (Add, Dummy, Float, I, Integer, Mod, Mul, O, Pow, Rational,
+                     S, Symbol, comp, cos, exp, factorial, im, log, nan, oo,
+                     pi, re, sign, sin, sqrt, symbols, sympify, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 

@@ -18,9 +18,9 @@ from ..utilities import lambdify, numbered_symbols, public, sift, variations
 from .orthopolys import dup_chebyshevt
 from .polyerrors import (CoercionFailed, GeneratorsError, IsomorphismFailed,
                          NotAlgebraic)
-from .polytools import (Poly, PurePoly, degree, factor_list, groebner, invert,
-                        lcm, parallel_poly_from_expr, poly_from_expr,
-                        resultant, sqf_norm)
+from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
+                        parallel_poly_from_expr, poly_from_expr, resultant,
+                        sqf_norm)
 from .polyutils import dict_from_expr, expr_from_dict
 from .ring_series import rs_compose_add
 from .rings import ring
@@ -651,8 +651,6 @@ def minpoly_groebner(ex, x):
 
     .. [1] [Adams94]_
     """
-    from .polytools import degree
-    from ..core import expand_multinomial
 
     generator = numbered_symbols('a', cls=Dummy)
     mapping, symbols = {}, {}

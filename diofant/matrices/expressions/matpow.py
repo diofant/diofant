@@ -1,7 +1,8 @@
 from .. import MatrixBase
 from ...core import S
 from ...core.sympify import sympify
-from .matexpr import Identity, MatrixExpr, ShapeError, ZeroMatrix
+from ..matrices import ShapeError
+from .matexpr import Identity, MatrixExpr, ZeroMatrix
 from .matmul import MatMul
 
 

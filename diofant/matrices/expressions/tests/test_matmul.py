@@ -4,9 +4,8 @@ from strategies.core import null_safe
 from diofant.core import Basic, I, symbols
 from diofant.functions import adjoint, transpose
 from diofant.matrices import (Identity, ImmutableMatrix, Inverse, Matrix,
-                              MatrixSymbol, ZeroMatrix, eye)
+                              MatrixSymbol, ShapeError, ZeroMatrix, eye)
 from diofant.matrices.expressions import Adjoint, MatPow, Transpose, det
-from diofant.matrices.expressions.matexpr import ShapeError
 from diofant.matrices.expressions.matmul import (MatMul, any_zeros,
                                                  factor_in_front, only_squares,
                                                  remove_ids, unpack, xxinv)
