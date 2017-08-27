@@ -9,7 +9,6 @@ from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
                      floor, im, log, loggamma, nan, nfloat, oo, pi, polygamma,
                      re, sin, sqrt, symbols, zoo)
 from diofant.abc import a, b, t, w, x, y, z
-from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
 from diofant.core.function import (ArgumentIndexError, PoleError,
                                    UndefinedFunction, _mexpand)
@@ -626,18 +625,17 @@ def test_unhandled():
 
 
 def test_nfloat():
-    x = Symbol("x")
     eq = x**Rational(4, 3) + 4*cbrt(x)/3
-    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*cbrt(x))
-    assert _aresame(nfloat(eq, exponent=True), x**(4.0/3) + (4.0/3)*x**(1.0/3))
+    assert nfloat(eq) == x**Rational(4, 3) + (4.0/3)*cbrt(x)
+    assert nfloat(eq, exponent=True) == x**(4.0/3) + (4.0/3)*x**(1.0/3)
     eq = x**Rational(4, 3) + 4*x**(x/3)/3
-    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**(x/3))
+    assert nfloat(eq) == x**Rational(4, 3) + (4.0/3)*x**(x/3)
     big = 12345678901234567890
     # specify precision to match value used in nfloat
     Float_big = Float(big, 15)
-    assert _aresame(nfloat(big), Float_big)
-    assert _aresame(nfloat(big*x), Float_big*x)
-    assert _aresame(nfloat(x**big, exponent=True), x**Float_big)
+    assert nfloat(big) == Float_big
+    assert nfloat(big*x) == Float_big*x
+    assert nfloat(x**big, exponent=True) == x**Float_big
     assert nfloat({x: sqrt(2)}) == {x: nfloat(sqrt(2))}
     assert nfloat({sqrt(2): x}) == {sqrt(2): x}
     assert nfloat(cos(x + sqrt(2))) == cos(x + nfloat(sqrt(2)))

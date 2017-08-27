@@ -6,7 +6,6 @@ from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
                      cse, exp, factor, false, log, nsimplify, oo, pi, sin,
                      sqrt, symbols, tan, zoo)
 from diofant.abc import a, b, c, d, e, t, x, y, z
-from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
 
 
@@ -518,14 +517,11 @@ def test_sympyissue_6075():
 
 
 def test_sympyissue_6079():
-    # since x + 2.0 == x + 2 we can't do a simple equality test
-    assert _aresame((x + 2.0).subs(2, 3), x + 2.0)
-    assert _aresame((x + 2.0).subs(2.0, 3), x + 3)
-    assert not _aresame(x + 2, x + 2.0)
-    assert not _aresame(Basic(cos, 1), Basic(cos, 1.))
-    assert _aresame(cos, cos)
-    assert not _aresame(1, Integer(1))
-    assert not _aresame(x, symbols('x', positive=True))
+    assert (x + 2.0).subs(2, 3) == x + 2.0
+    assert (x + 2.0).subs(2.0, 3) == x + 3
+    assert x + 2 != x + 2.0
+    assert Basic(cos, 1) != Basic(cos, 1.)
+    assert x != symbols('x', positive=True)
 
 
 def test_sympyissue_4680():

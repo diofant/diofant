@@ -133,12 +133,12 @@ def test_divmod():
     assert divmod(0.3, Integer(2)) == (0, Float(0.3))
     assert divmod(Rational(3, 2), Float(3.5)) == (0, Rational(3, 2))
     assert divmod(Float(3.5), Rational(3, 2)) == (2, Float(0.5))
-    assert divmod(Rational(3, 2), Rational(1, 3)) == (4, Float("1/6"))
+    assert divmod(Rational(3, 2), Rational(1, 3)) == (4, Rational(1, 6))
     assert divmod(Rational(1, 3), Rational(3, 2)) == (0, Rational(1, 3))
     assert divmod(Rational(3, 2), Float(0.1)) == (15, 0)
     assert divmod(Float(0.1), Rational(3, 2)) == (0, Float(0.1))
     assert divmod(Rational(3, 2), 2) == (0, Rational(3, 2))
-    assert divmod(2, Rational(3, 2)) == (1, Float(0.5))
+    assert divmod(2, Rational(3, 2)) == (1, Rational(1, 2))
     assert divmod(Rational(3, 2), 1.5) == (1, 0)
     assert divmod(1.5, Rational(3, 2)) == (1, 0)
     assert divmod(Rational(3, 2), 0.3) == (5, 0)
@@ -1657,3 +1657,7 @@ def test_comparisons_with_unknown_type():
     assert not bar >= oo
     assert oo >= bar
     assert bar <= oo
+
+
+def test_sympissue_8189():
+    assert 1/3 != Rational(1, 3)

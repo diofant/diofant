@@ -1287,8 +1287,6 @@ class Rational(Number):
                 # a Rational is always in reduced form so will never be 2/4
                 # so we can just check equivalence of args
                 return self.numerator == other.numerator and self.denominator == other.denominator
-            if isinstance(other, Float):
-                return mlib.mpf_eq(self._as_mpf_val(other._prec), other._mpf_)
         return False
 
     @_sympifyit('other', NotImplemented)

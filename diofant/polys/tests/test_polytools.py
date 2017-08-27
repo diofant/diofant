@@ -2339,7 +2339,7 @@ def test_factor():
 
     # issue sympy/sympy#11198
     assert factor_list(sqrt(2)*x) == (1, [(2, Rational(1, 2)), (x, 1)])
-    assert factor_list(sqrt(2)*sin(x), sin(x)) == (1, [(2, 1/2), (sin(x), 1)])
+    assert factor_list(sqrt(2)*sin(x), sin(x)) == (1, [(2, Rational(1, 2)), (sin(x), 1)])
 
     assert factor(6) == 6 and factor(6).is_Integer
 
@@ -2789,7 +2789,7 @@ def test_nroots():
     eps = Float("1e-5")
 
     assert re(roots[0]).epsilon_eq(-0.75487, eps) is true
-    assert im(roots[0]) == 0.0
+    assert im(roots[0]) == 0
     assert re(roots[1]) == -0.5
     assert im(roots[1]).epsilon_eq(-0.86602, eps) is true
     assert re(roots[2]) == -0.5
@@ -2802,7 +2802,7 @@ def test_nroots():
     eps = Float("1e-6")
 
     assert re(roots[0]).epsilon_eq(-0.75487, eps) is false
-    assert im(roots[0]) == 0.0
+    assert im(roots[0]) == 0
     assert re(roots[1]) == -0.5
     assert im(roots[1]).epsilon_eq(-0.86602, eps) is false
     assert re(roots[2]) == -0.5

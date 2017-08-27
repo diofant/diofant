@@ -1,4 +1,3 @@
-from .basic import _aresame
 from .cache import cacheit
 from .compatibility import ordered
 from .evaluate import global_evaluate
@@ -313,8 +312,7 @@ class AssocOp(Expr):
                         args.append(a)
                     else:
                         args.append(newa)
-                if not _aresame(tuple(args), self.func.make_args(tail)):
-                    tail = self.func(*args)
+                tail = self.func(*args)
                 return self.func(x, tail)
 
         # this is the same as above, but there were no pure-number args to
@@ -323,7 +321,7 @@ class AssocOp(Expr):
         for a in self.args:
             newa = a.evalf(prec, strict=False)
             args.append(newa)
-        if not _aresame(tuple(args), self.args):
+        if tuple(args) != self.args:
             return self.func(*args)
         return self
 

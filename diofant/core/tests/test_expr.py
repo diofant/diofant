@@ -947,7 +947,8 @@ def test_extractions():
     assert (2*x + 3).extract_additively(2*x) == 3
     assert x.extract_additively(0) == x
     assert Integer(2).extract_additively(x) is None
-    assert Float(2.).extract_additively(2) == 0
+    assert Float(2).extract_additively(2) is None
+    assert Float(2).extract_additively(2.0) == 0
     assert (2*x + 3).extract_additively(x + 1) == x + 2
     assert (2*x + 3).extract_additively(y + 1) is None
     assert (2*x - 3).extract_additively(x + 1) is None

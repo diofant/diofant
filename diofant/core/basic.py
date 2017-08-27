@@ -1,7 +1,6 @@
 """Base class for all the objects in Diofant"""
 
 from collections import Mapping, defaultdict
-from itertools import zip_longest
 
 from .cache import cacheit
 from .compatibility import iterable, ordered
@@ -440,7 +439,7 @@ class Basic:
         else:
             raise ValueError("subs accepts either 1 or 2 arguments")
 
-        sequence = [_ for _ in sympify(sequence) if not _aresame(*_)]
+        sequence = [_ for _ in sympify(sequence) if _[0] != _[1]]
 
         if unordered:
             sequence = dict(sequence)
@@ -561,7 +560,7 @@ class Basic:
             args = list(self.args)
             for i, arg in enumerate(args):
                 arg = arg._subs(old, new, **hints)
-                if not _aresame(arg, args[i]):
+                if arg != args[i]:
                     hit = True
                     args[i] = arg
             if hit:
@@ -585,7 +584,7 @@ class Basic:
                 return rv
             return self
 
-        if _aresame(self, old):
+        if self == old:
             return new
 
         rv = self._eval_subs(old, new)
@@ -666,7 +665,7 @@ class Basic:
             return rule[self]
         elif rule and not self.is_Atom:
             args = tuple(a.xreplace(rule) for a in self.args)
-            if not _aresame(args, self.args):
+            if args != self.args:
                 return self.func(*args)
         return self
 
@@ -1171,36 +1170,6 @@ class Atom(Basic):
         # to see that this property is not called for Atoms.
         raise AttributeError('Atoms have no args. It might be necessary'
                              ' to make a check for Atoms in the calling code.')
-
-
-def _aresame(a, b):
-    """Return True if a and b are structurally the same, else False.
-
-    Examples
-    ========
-
-    To Diofant, 2.0 == 2:
-
-    >>> 2.0 == Integer(2)
-    True
-
-    Since a simple 'same or not' result is sometimes useful, this routine was
-    written to provide that query:
-
-    >>> _aresame(Float(2.0), Integer(2))
-    False
-    """
-    from .function import AppliedUndef, UndefinedFunction as UndefFunc
-    for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
-        if i != j or type(i) != type(j):
-            if (isinstance(i, (UndefFunc, AppliedUndef)) and
-                    isinstance(j, (UndefFunc, AppliedUndef))):
-                if i.class_key() != j.class_key():
-                    return False
-            else:
-                return False
-    else:
-        return True
 
 
 class preorder_traversal:
