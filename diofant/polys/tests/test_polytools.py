@@ -6,7 +6,6 @@ from diofant import (Derivative, Eq, Expr, Float, I, Integer, Mul, Piecewise,
                      Rational, RootOf, S, Sum, Symbol, Tuple, diff, exp,
                      expand, im, oo, pi, re, sin, sqrt, tanh)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
-from diofant.core.basic import _aresame
 from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
 from diofant.domains import EX, FF, QQ, RR, ZZ
@@ -1977,7 +1976,7 @@ def test_terms_gcd():
     assert terms_gcd(2*x**3*y/3 + 4*x*y**3/5) == 2*x*y/15*(5*x**2 + 6*y**2)
 
     assert terms_gcd(2.0*x**3*y + 4.1*x*y**3) == x*y*(2.0*x**2 + 4.1*y**2)
-    assert _aresame(terms_gcd(2.0*x + 3), 2.0*x + 3)
+    assert terms_gcd(2.0*x + 3) == 2.0*x + 3
 
     assert terms_gcd((3 + 3*x)*(x + x*y), expand=False) == \
         (3*x + 3)*(x*y + x)
