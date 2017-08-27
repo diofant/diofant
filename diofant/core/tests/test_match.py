@@ -572,11 +572,10 @@ def test_sympyissue_2711():
     a = Wild('a')
     b = Wild('b')
 
-    assert f.find(a) == {(S.Zero,), ((), ()), ((S.Zero,), ()), x, S.Zero,
-                         (), meijerg(((), ()), ((S.Zero,), ()), x)}
-    assert f.find(a + b) == \
-        {meijerg(((), ()), ((S.Zero,), ()), x), x, S.Zero}
-    assert f.find(a**2) == {meijerg(((), ()), ((S.Zero,), ()), x), x}
+    assert f.find(a) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1,
+                         (): 3, (0,): 1, ((), ()): 1, ((0,), ()): 1}
+    assert f.find(a + b) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1}
+    assert f.find(a**2) == {x: 1, meijerg(((), ()), ((0,), ()), x): 1}
 
 
 def test_diofantissue_423():

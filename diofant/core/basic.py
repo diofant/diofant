@@ -1093,28 +1093,30 @@ class Basic(object):
                                for k, v in mapping.items()}
             return rv, mapping
 
-    def find(self, query, group=False):
+    def find(self, query):
         """Find all subexpressions matching a query. """
-        query = _make_find_query(query)
-        results = list(filter(query, preorder_traversal(self)))
-
-        if not group:
-            return set(results)
+        try:
+            query = sympify(query)
+        except SympifyError:
+            pass
+        if isinstance(query, type):
+            def _query(expr):
+                return isinstance(expr, query)
+        elif isinstance(query, Basic):
+            def _query(expr):
+                return expr.match(query) is not None
         else:
-            groups = {}
+            _query = query
 
-            for result in results:
-                if result in groups:
-                    groups[result] += 1
-                else:
-                    groups[result] = 1
-
-            return groups
+        groups = {}
+        for result in filter(_query, preorder_traversal(self)):
+            groups.setdefault(result, 0)
+            groups[result] += 1
+        return groups
 
     def count(self, query):
         """Count the number of matching subexpressions. """
-        query = _make_find_query(query)
-        return sum(bool(query(sub)) for sub in preorder_traversal(self))
+        return sum(self.find(query).values())
 
     def matches(self, expr, repl_dict={}):
         """Helper method for match() that looks for a match between Wild
@@ -1494,16 +1496,3 @@ class preorder_traversal:
 
     def __iter__(self):
         return self
-
-
-def _make_find_query(query):
-    """Convert the argument of Basic.find() into a callable"""
-    try:
-        query = sympify(query)
-    except SympifyError:
-        pass
-    if isinstance(query, type):
-        return lambda expr: isinstance(expr, query)
-    elif isinstance(query, Basic):
-        return lambda expr: expr.match(query) is not None
-    return query

@@ -665,31 +665,19 @@ def test_replace():
 def test_find():
     expr = (x + y + 2 + sin(3*x))
 
-    assert expr.find(lambda u: u.is_Integer) == {Integer(2), Integer(3)}
-    assert expr.find(lambda u: u.is_Symbol) == {x, y}
+    assert expr.find(lambda u: u.is_Integer) == {2: 1, 3: 1}
+    assert expr.find(lambda u: u.is_Symbol) == {x: 2, y: 1}
 
-    assert expr.find(lambda u: u.is_Integer, group=True) == {Integer(2): 1, Integer(3): 1}
-    assert expr.find(lambda u: u.is_Symbol, group=True) == {x: 2, y: 1}
-
-    assert expr.find(Integer) == {Integer(2), Integer(3)}
-    assert expr.find(Symbol) == {x, y}
-
-    assert expr.find(Integer, group=True) == {Integer(2): 1, Integer(3): 1}
-    assert expr.find(Symbol, group=True) == {x: 2, y: 1}
+    assert expr.find(Integer) == {2: 1, 3: 1}
+    assert expr.find(Symbol) == {x: 2, y: 1}
 
     a = Wild('a')
 
     expr = sin(sin(x)) + sin(x) + cos(x) + x
 
-    assert expr.find(lambda u: type(u) is sin) == {sin(x), sin(sin(x))}
-    assert expr.find(
-        lambda u: type(u) is sin, group=True) == {sin(x): 2, sin(sin(x)): 1}
-
-    assert expr.find(sin(a)) == {sin(x), sin(sin(x))}
-    assert expr.find(sin(a), group=True) == {sin(x): 2, sin(sin(x)): 1}
-
-    assert expr.find(sin) == {sin(x), sin(sin(x))}
-    assert expr.find(sin, group=True) == {sin(x): 2, sin(sin(x)): 1}
+    assert expr.find(lambda u: type(u) is sin) == {sin(x): 2, sin(sin(x)): 1}
+    assert expr.find(sin(a)) == {sin(x): 2, sin(sin(x)): 1}
+    assert expr.find(sin) == {sin(x): 2, sin(sin(x)): 1}
 
 
 def test_count():
