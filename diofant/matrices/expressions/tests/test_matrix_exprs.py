@@ -1,5 +1,6 @@
 import pytest
 
+from diofant.abc import t, x
 from diofant.core import Add, Eq, Integer, Mul, S, symbols
 from diofant.external import import_module
 from diofant.functions import cos, sin, sqrt, transpose
@@ -16,7 +17,6 @@ numpy = import_module('numpy')
 __all__ = ()
 
 n, m, l, k, p = symbols('n m l k p', integer=True)
-x = symbols('x')
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', m, l)
 C = MatrixSymbol('C', n, n)
@@ -156,7 +156,6 @@ def test_MatPow():
 
 
 def test_MatrixSymbol():
-    n, m, t = symbols('n,m,t')
     X = MatrixSymbol('X', n, m)
     assert X.shape == (n, m)
     pytest.raises(TypeError, lambda: MatrixSymbol('X', n, m)(t))  # issue sympy/sympy#5855

@@ -1,11 +1,11 @@
-from diofant import FunctionMatrix, Lambda, Matrix, MatrixExpr, symbols
+from diofant import FunctionMatrix, Lambda, Matrix, MatrixExpr
+from diofant.abc import i, j
 
 
 __all__ = ()
 
 
 def test_funcmatrix():
-    i, j = symbols('i,j')
     X = FunctionMatrix(3, 3, Lambda((i, j), i - j))
     assert X[1, 1] == 0
     assert X[1, 2] == -1

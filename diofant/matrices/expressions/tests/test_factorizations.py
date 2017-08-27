@@ -1,11 +1,11 @@
-from diofant import MatrixSymbol, Symbol
+from diofant import MatrixSymbol
+from diofant.abc import n
 from diofant.matrices.expressions.factorizations import (LofCholesky, eig, lu,
                                                          qr, svd)
 
 
 __all__ = ()
 
-n = Symbol('n')
 X = MatrixSymbol('X', n, n)
 
 

@@ -9,6 +9,7 @@ from diofant.matrices.expressions import (Adjoint, FunctionMatrix, Identity,
                                           MatrixSymbol, Trace, ZeroMatrix,
                                           trace)
 
+
 __all__ = ()
 
 n = symbols('n', integer=True)

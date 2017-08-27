@@ -1,5 +1,6 @@
 import pytest
 
+from diofant.abc import k, m, n
 from diofant.core import symbols
 from diofant.matrices import MatrixSymbol, ShapeError
 from diofant.matrices.expressions import HadamardProduct, hadamard_product
@@ -7,7 +8,6 @@ from diofant.matrices.expressions import HadamardProduct, hadamard_product
 
 __all__ = ()
 
-n, m, k = symbols('n,m,k')
 Z = MatrixSymbol('Z', n, n)
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', n, m)

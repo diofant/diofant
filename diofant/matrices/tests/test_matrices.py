@@ -6,7 +6,7 @@ from diofant import (Abs, Basic, Dummy, E, Float, Function, I, Integer, Max,
                      Min, N, Poly, Pow, PurePoly, Rational, S, Symbol, cos,
                      exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
                      trigsimp)
-from diofant.abc import a, b, c, d, n, x, y, z
+from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.external import import_module
 from diofant.matrices import (GramSchmidt, ImmutableMatrix,
@@ -145,7 +145,7 @@ def test_multiplication():
     assert h[2, 1] == 0
     pytest.raises(ShapeError, lambda: matrix_multiply_elementwise(a, b))
 
-    c = b * Symbol("x")
+    c = b * x
     assert isinstance(c, Matrix)
     assert c[0, 0] == x
     assert c[0, 1] == 2*x
@@ -826,11 +826,10 @@ def test_eigen():
             ( 2, 1, [Matrix([R(2, 3), R(1, 3), 1])])
         ])
 
-    a = Symbol('a')
-    M = Matrix([[a, 0],
+    M = Matrix([[x, 0],
                 [0, 1]])
 
-    assert M.eigenvals() == {a: 1, S.One: 1}
+    assert M.eigenvals() == {x: 1, S.One: 1}
 
     M = Matrix([[1, -1],
                 [1,  3]])
@@ -919,7 +918,6 @@ def test_xreplace():
 
 
 def test_simplify():
-    n = Symbol('n')
     f = Function('f')
 
     m = Matrix([[1, x], [x + 1/x, x - 1]])
@@ -1472,7 +1470,6 @@ def test_diagonalization():
     pytest.raises(MatrixError, lambda: m.diagonalize())
 
     # symbolic
-    a, b, c, d = symbols('a b c d')
     m = Matrix(2, 2, [a, c, c, b])
     assert m.is_symmetric()
     assert m.is_diagonalizable()
@@ -1705,7 +1702,7 @@ def test_errors():
     pytest.raises(ValueError,
                   lambda: hessian(Matrix([[1, 2], [3, 4]]), Matrix([[1, 2], [2, 1]])))
     pytest.raises(ValueError, lambda: hessian(Matrix([[1, 2], [3, 4]]), []))
-    pytest.raises(ValueError, lambda: hessian(Symbol('x')**2, 'a'))
+    pytest.raises(ValueError, lambda: hessian(x**2, 'a'))
     pytest.raises(ValueError,
                   lambda: Matrix([[5, 10, 7],
                                   [0, -1, 2],
@@ -2211,7 +2208,6 @@ def test_invertible_check():
 
 @pytest.mark.xfail
 def test_sympyissue_3959():
-    x, y = symbols('x, y')
     e = x*y
     assert e.subs(x, Matrix([3, 5, 3])) == Matrix([3, 5, 3])*y
 
@@ -2221,7 +2217,6 @@ def test_sympyissue_5964():
 
 
 def test_sympyissue_7604():
-    x, y = symbols("x y")
     assert sstr(Matrix([[x, 2*y], [y**2, x + 3]])) == \
         'Matrix([\n[   x,   2*y],\n[y**2, x + 3]])'
 
@@ -2549,7 +2544,6 @@ def test_sympyissue_9457_9467_9876():
 
 def test_sympyissue_9422():
     x, y = symbols('x y', commutative=False)
-    a, b = symbols('a b')
     M = eye(2)
     M1 = Matrix(2, 2, [x, y, y, z])
     assert y*x*M != x*y*M
@@ -2566,7 +2560,6 @@ def test_sympyissue_9480():
 
 
 def test_diofantissue_288():
-    k = Symbol('k')
     m = Matrix([[-exp(I*k)*I/(4*k) + S.Half + exp(-I*k)*I/(4*k),
                  exp(I*k)*I/(4*k) + S.Half - exp(-I*k)*I/(4*k),
                  exp(I*k)/4 + S.Half + exp(-I*k)/4,
