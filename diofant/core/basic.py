@@ -1157,10 +1157,20 @@ class Basic(object):
 
         Wild symbols match all.
 
-        Return ``None`` when expression (self) does not match
-        with pattern. Otherwise return a dictionary such that::
+        Parameters
+        ==========
 
-            pattern.xreplace(self.match(pattern)) == self
+        pattern : Expr
+            An expression that may contain Wild symbols.
+
+        Returns
+        =======
+
+        dict or None
+            If pattern match self, return a dictionary of
+            replacement rules, such that::
+
+                pattern.xreplace(self.match(pattern)) == self
 
         Examples
         ========
@@ -1169,17 +1179,19 @@ class Basic(object):
         >>> from diofant.abc import x, y
         >>> p = Wild("p")
         >>> q = Wild("q")
-        >>> r = Wild("r")
-        >>> e = (x+y)**(x+y)
+        >>> e = (x + y)**(x + y)
         >>> e.match(p**p)
         {p_: x + y}
         >>> e.match(p**q)
         {p_: x + y, q_: x + y}
-        >>> e = (2*x)**2
-        >>> e.match(p*q**r)
-        {p_: 4, q_: x, r_: 2}
-        >>> (p*q**r).xreplace(e.match(p*q**r))
-        4*x**2
+        >>> (p**q).xreplace(_)
+        (x + y)**(x + y)
+
+        See Also
+        ========
+
+        xreplace
+        diofant.core.symbol.Wild
         """
         from ..simplify import signsimp
         pattern = sympify(pattern)
