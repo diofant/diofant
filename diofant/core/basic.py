@@ -358,7 +358,7 @@ class Basic(object):
 
         The following should hold for all objects::
 
-            >> x == x.func(*x.args)
+            x == x.func(*x.args)
 
         Examples
         ========
@@ -373,7 +373,6 @@ class Basic(object):
         2*x
         >>> a == a.func(*a.args)
         True
-
         """
         return self.__class__
 
@@ -398,13 +397,6 @@ class Basic(object):
 
         >>> (x*y).args[1]
         y
-
-        Notes
-        =====
-
-        Only use _args in __new__ when creating a new function.
-        Don't override .args() from Basic (so that it's easy to
-        change the interface in the future if needed).
         """
         return self._args
 
