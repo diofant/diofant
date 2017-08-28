@@ -14,24 +14,6 @@ class Basic(object):
     Base class for all objects in Diofant.
 
     Always use ``args`` property, when accessing parameters of some instance.
-
-    Examples
-    ========
-
-    >>> from diofant import cot
-    >>> from diofant.abc import x, y
-
-    >>> cot(x).args
-    (x,)
-
-    >>> cot(x).args[0]
-    x
-
-    >>> (x*y).args
-    (x, y)
-
-    >>> (x*y).args[1]
-    y
     """
 
     # To be overridden with True in the appropriate subclasses
