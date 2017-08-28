@@ -1,6 +1,5 @@
-from ...core import Expr, sympify
-from ..matrices import MatrixBase
-from .matexpr import ShapeError
+from ...core import Dummy, Expr, sympify
+from ..matrices import MatrixBase, ShapeError
 
 
 class Trace(Expr):
@@ -52,8 +51,7 @@ class Trace(Expr):
             else:
                 return Trace(self.arg)
 
-    def _eval_rewrite_as_Sum(self):
-        from ...core import Dummy
+    def _eval_rewrite_as_Sum(self, arg):
         from ...concrete import Sum
         i = Dummy('i')
         return Sum(self.arg[i, i], (i, 0, self.arg.rows-1)).doit()

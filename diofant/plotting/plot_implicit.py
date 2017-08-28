@@ -9,8 +9,6 @@ See Also
 diofant.plotting.plot
 """
 
-import warnings
-
 from ..core import Dummy, Eq, Symbol, Tuple, sympify
 from ..core.relational import (Equality, GreaterThan, LessThan, Relational,
                                StrictGreaterThan, StrictLessThan)

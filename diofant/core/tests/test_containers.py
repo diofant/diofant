@@ -32,8 +32,6 @@ def test_Tuple():
 
     assert Tuple(t2) == Tuple(Tuple(*t2))
 
-    assert Tuple(1, 2).as_content_primitive() == (1, (1, 2))
-
 
 def test_Tuple_contains():
     t1, t2 = Tuple(1), Tuple(2)

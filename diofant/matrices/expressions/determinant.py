@@ -1,5 +1,5 @@
 from ...core import Expr, sympify
-from .matexpr import ShapeError
+from ..matrices import ShapeError
 
 
 class Determinant(Expr):

@@ -2,7 +2,6 @@ from strategies import condition, do_one, exhaust
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
-from .. import ShapeError
 from ...core import Add, Expr, S, sympify
 from ...core.strategies import unpack
 from ...utilities import sift

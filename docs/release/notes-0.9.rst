@@ -39,6 +39,7 @@ Backwards-incompatible changes
 * Removed support for inequalities in :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.inequalities.reduce_inequalities` instead, see :pull:`426`.
 * Removed ``get_domain()`` method of :class:`~diofant.polys.polytools.Poly`, use :attr:`~diofant.polys.polytools.Poly.domain` property instead, see :pull:`479`.
 * Renamed 'prec' argument of Float to 'dps', see :pull:`510`.
+* Removed 'group' option of :meth:`~diofant.core.basic.Basic.find`, which now return a :class:`dict`.
 
 Minor changes
 =============

@@ -1,5 +1,3 @@
-import sys
-
 import pytest
 
 from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,

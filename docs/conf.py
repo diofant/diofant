@@ -12,7 +12,6 @@
 # commented out serve to show the default value.
 #
 
-import os
 import warnings
 
 import sphinx_rtd_theme

@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant.core import Integer, Rational, Symbol
+from diofant.core import Rational, Symbol
 from diofant.external import import_module
 
 

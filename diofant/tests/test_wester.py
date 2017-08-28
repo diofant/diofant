@@ -17,8 +17,8 @@ from diofant import continued_fraction_iterator as cf_i
 from diofant import continued_fraction_periodic as cf_p
 from diofant import continued_fraction_reduce as cf_r
 from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
-                     DiracDelta, E, Eq, EulerGamma, FiniteSet, Function, I,
-                     Integer, Lambda, LambertW, Le, Lt, Max, Mul, N, Ne, O, Or,
+                     DiracDelta, E, EulerGamma, FiniteSet, Function, I,
+                     Integer, Lambda, LambertW, Le, Lt, Max, Mul, N, O, Or,
                      Piecewise, Poly, Rational, RootOf, S, Subs, Symbol, acot,
                      apart, asin, asinh, assoc_legendre, atan, bernoulli,
                      besselj, binomial, ceiling, chebyshevt, combsimp, cos,

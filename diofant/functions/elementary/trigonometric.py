@@ -6,8 +6,7 @@ from ...core.numbers import igcdex
 from ...utilities import numbered_symbols
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
-from .hyperbolic import (HyperbolicFunction, acoth, asinh, atanh, cosh, coth,
-                         csch, sech, sinh, tanh)
+from .hyperbolic import acoth, asinh, atanh, cosh, coth, csch, sech, sinh, tanh
 from .miscellaneous import sqrt
 
 

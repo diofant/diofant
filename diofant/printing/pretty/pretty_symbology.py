@@ -2,7 +2,6 @@
 
 import sys
 import unicodedata
-import warnings
 
 from ...core.alphabets import greeks
 from ..conventions import split_super_sub

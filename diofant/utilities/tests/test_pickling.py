@@ -27,8 +27,6 @@ from diofant.core.symbol import Dummy, Symbol, Wild
 from diofant.domains.algebraicfield import AlgebraicField
 from diofant.domains.expressiondomain import ExpressionDomain
 from diofant.domains.groundtypes import PythonRational
-from diofant.domains.mpelements import MPContext
-from diofant.domains.pythonfinitefield import PythonFiniteField
 from diofant.domains.pythonintegerring import PythonIntegerRing
 from diofant.domains.pythonrationalfield import PythonRationalField
 from diofant.functions import (Abs, DiracDelta, Eijk, Heaviside, LambertW,

@@ -1,6 +1,6 @@
 """High-level polynomials manipulation functions. """
 
-from ..core import Add, Basic, Mul, S
+from ..core import Add, Mul, S
 from ..utilities import numbered_symbols, public, take
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)

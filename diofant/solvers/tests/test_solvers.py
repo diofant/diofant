@@ -5,11 +5,11 @@ import pytest
 from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
                      Indexed, IndexedBase, Integer, Integral, LambertW, Lt,
                      Matrix, Mul, Or, Piecewise, Poly, Pow, Rational, S,
-                     Symbol, Tuple, Wild, acos, arg, asin, atan, atan2, atanh,
-                     cos, cosh, diff, erf, erfc, erfcinv, erfinv, exp,
-                     expand_log, im, log, oo, pi, re, real_root, root, sec,
-                     sech, simplify, sin, sinh, solve, solve_linear, sqrt,
-                     sstr, symbols, sympify, tan, tanh)
+                     Symbol, Tuple, Wild, acos, arg, asin, atan, atan2, cos,
+                     cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
+                     im, log, oo, pi, re, real_root, root, sec, sech, simplify,
+                     sin, sinh, solve, solve_linear, sqrt, sstr, symbols,
+                     sympify, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat

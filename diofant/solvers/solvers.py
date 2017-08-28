@@ -19,8 +19,8 @@ from ..core.relational import Relational
 from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
                          atan2, cos, exp, im, log, piecewise_fold, re, sin,
                          sqrt, tan)
-from ..functions.elementary.trigonometric import (HyperbolicFunction,
-                                                  TrigonometricFunction)
+from ..functions.elementary.hyperbolic import HyperbolicFunction
+from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..integrals import Integral
 from ..matrices import Matrix, zeros
 from ..polys import Poly, RootOf, cancel, factor, roots, together
@@ -29,7 +29,7 @@ from ..simplify import (collect, denom, logcombine, nsimplify, posify,
                         powdenest, powsimp, simplify)
 from ..simplify.fu import TR1
 from ..simplify.sqrtdenest import unrad
-from ..utilities import filldedent, subsets
+from ..utilities import filldedent
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
 

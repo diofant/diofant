@@ -107,46 +107,6 @@ class Basic(object):
         """
         return self._args
 
-    def compare(self, other):
-        """
-        Return -1, 0, 1 if the object is smaller, equal, or greater than other.
-
-        Not in the mathematical sense. If the object is of a different type
-        from the "other" then their classes are ordered according to
-        the sorted_classes list.
-
-        Examples
-        ========
-
-        >>> from diofant.abc import x, y
-        >>> x.compare(y)
-        -1
-        >>> x.compare(x)
-        0
-        >>> y.compare(x)
-        1
-        """
-        if self is other:
-            return 0
-        n1 = self.__class__.__name__
-        n2 = other.__class__.__name__
-        c = (n1 > n2) - (n1 < n2)
-        if c:
-            return c
-
-        st = self._hashable_content()
-        ot = other._hashable_content()
-        for l, r in zip(st, ot):
-            l = Basic(*l) if isinstance(l, frozenset) else l
-            r = Basic(*r) if isinstance(r, frozenset) else r
-            if isinstance(l, Basic):
-                c = l.compare(r)
-            else:
-                c = (l > r) - (l < r)
-            if c:
-                return c
-        return 0
-
     @classmethod
     def class_key(cls):
         """Nice order of classes. """
@@ -171,23 +131,14 @@ class Basic(object):
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
         """
 
-        # XXX: remove this when issue sympy/sympy#5169 is fixed
-        def inner_key(arg):
-            if isinstance(arg, Basic):
-                return arg.sort_key(order)
-            else:
-                return arg
-
-        args = self._sorted_args
-        args = len(args), tuple(inner_key(arg) for arg in args)
+        args = len(self.args), tuple(arg.sort_key(order)
+                                     for arg in self._sorted_args)
         return self.class_key(), args, S.One.sort_key(), S.One
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
         """Return a boolean indicating whether a == b on the basis of
         their symbolic trees.
-
-        This is the same as a.compare(b) == 0 but faster.
 
         Notes
         =====
@@ -486,42 +437,6 @@ class Basic(object):
         """
         return self.args
 
-    def as_poly(self, *gens, **args):
-        """Converts ``self`` to a polynomial or returns ``None``.
-
-        Examples
-        ========
-
-        >>> from diofant import sin
-        >>> from diofant.abc import x, y
-
-        >>> (x**2 + x*y).as_poly()
-        Poly(x**2 + x*y, x, y, domain='ZZ')
-
-        >>> (x**2 + x*y).as_poly(x, y)
-        Poly(x**2 + x*y, x, y, domain='ZZ')
-
-        >>> (x**2 + sin(y)).as_poly(x, y) is None
-        True
-        """
-        from ..polys import Poly, PolynomialError
-
-        try:
-            return Poly(self, *gens, **args)
-        except PolynomialError:
-            pass
-
-    def as_content_primitive(self, radical=False):
-        """A stub to allow Basic args (like Tuple) to be skipped when computing
-        the content and primitive components of an expression.
-
-        See Also
-        ========
-
-        diofant.core.expr.Expr.as_content_primitive
-        """
-        return S.One, self
-
     def subs(self, *args, **kwargs):
         """
         Substitutes old for new in an expression after sympifying args.
@@ -633,7 +548,7 @@ class Basic(object):
         """
         from .containers import Dict
         from ..utilities import default_sort_key
-        from .symbol import Dummy, Symbol
+        from .symbol import Dummy
 
         unordered = False
         if len(args) == 1:
@@ -1178,28 +1093,30 @@ class Basic(object):
                                for k, v in mapping.items()}
             return rv, mapping
 
-    def find(self, query, group=False):
+    def find(self, query):
         """Find all subexpressions matching a query. """
-        query = _make_find_query(query)
-        results = list(filter(query, preorder_traversal(self)))
-
-        if not group:
-            return set(results)
+        try:
+            query = sympify(query)
+        except SympifyError:
+            pass
+        if isinstance(query, type):
+            def _query(expr):
+                return isinstance(expr, query)
+        elif isinstance(query, Basic):
+            def _query(expr):
+                return expr.match(query) is not None
         else:
-            groups = {}
+            _query = query
 
-            for result in results:
-                if result in groups:
-                    groups[result] += 1
-                else:
-                    groups[result] = 1
-
-            return groups
+        groups = {}
+        for result in filter(_query, preorder_traversal(self)):
+            groups.setdefault(result, 0)
+            groups[result] += 1
+        return groups
 
     def count(self, query):
         """Count the number of matching subexpressions. """
-        query = _make_find_query(query)
-        return sum(bool(query(sub)) for sub in preorder_traversal(self))
+        return sum(self.find(query).values())
 
     def matches(self, expr, repl_dict={}):
         """Helper method for match() that looks for a match between Wild
@@ -1579,16 +1496,3 @@ class preorder_traversal:
 
     def __iter__(self):
         return self
-
-
-def _make_find_query(query):
-    """Convert the argument of Basic.find() into a callable"""
-    try:
-        query = sympify(query)
-    except SympifyError:
-        pass
-    if isinstance(query, type):
-        return lambda expr: isinstance(expr, query)
-    elif isinstance(query, Basic):
-        return lambda expr: expr.match(query) is not None
-    return query

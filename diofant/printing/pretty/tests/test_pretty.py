@@ -6,11 +6,10 @@ from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
                      Complement, Contains, Derivative, Dict, Eq, Equivalent,
                      FiniteSet, Float, Function, Ge, Gt, I, Implies, Integer,
                      Integral, Intersection, Interval, Lambda, Le, Limit, Lt,
-                     Matrix, MatrixSymbol, Mul, Nand, Ne, Nor, Not, O, Or,
-                     Order, Pow, Product, Range, Rational, Ray, RealField,
-                     RootOf, RootSum, S, Segment, Subs, Sum, Symbol, Trace,
-                     Tuple, Union, Xor, conjugate, grlex, groebner, ilex, oo,
-                     pi, symbols)
+                     Matrix, MatrixSymbol, Mul, Nand, Ne, Nor, Not, O, Or, Pow,
+                     Product, Range, Rational, Ray, RealField, RootOf, RootSum,
+                     S, Segment, Subs, Sum, Symbol, Trace, Tuple, Union, Xor,
+                     conjugate, grlex, groebner, ilex, oo, pi, symbols)
 from diofant.abc import a, b, k, lamda, m, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField

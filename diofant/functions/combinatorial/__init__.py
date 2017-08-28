@@ -2,5 +2,5 @@
 Package for combinatorial functions.
 """
 
-from . import factorials
-from . import numbers
+from . import factorials  # noqa: F401
+from . import numbers  # noqa: F401

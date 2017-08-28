@@ -5,8 +5,8 @@ from ...core import Add, Expr, Mul, Number, sympify
 from ...core.logic import _fuzzy_group
 from ...core.strategies import flatten, rm_id, unpack
 from ...functions import adjoint
-from ..matrices import MatrixBase
-from .matexpr import Identity, MatrixExpr, ShapeError, ZeroMatrix
+from ..matrices import MatrixBase, ShapeError
+from .matexpr import Identity, MatrixExpr, ZeroMatrix
 from .transpose import transpose
 
 

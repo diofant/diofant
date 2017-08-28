@@ -2,10 +2,9 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Basic, Dummy, Float, I, Integer, Max, Mod, Mul, O,
-                     Pow, Rational, S, Symbol, comp, cos, exp, factorial, im,
-                     log, nan, oo, pi, re, sign, sin, sqrt, symbols, sympify,
-                     zoo)
+from diofant import (Add, Dummy, Float, I, Integer, Mod, Mul, O, Pow, Rational,
+                     S, Symbol, comp, cos, exp, factorial, im, log, nan, oo,
+                     pi, re, sign, sin, sqrt, symbols, sympify, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -1678,16 +1677,6 @@ def test_sympyissue_6040():
     assert b != a
     assert not (a == b)
     assert not (b == a)
-
-
-def test_sympyissue_6082():
-    # Comparison is symmetric
-    assert Basic.compare(Max(x, 1), Max(x, 2)) == \
-        - Basic.compare(Max(x, 2), Max(x, 1))
-    # Equal expressions compare equal
-    assert Basic.compare(Max(x, 1), Max(x, 1)) == 0
-    # Basic subtypes (such as Max) compare different than standard types
-    assert Basic.compare(Max(1, x), frozenset((1, x))) != 0
 
 
 def test_sympyissue_6077():

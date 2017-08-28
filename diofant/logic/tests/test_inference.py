@@ -2,7 +2,6 @@
 
 import pytest
 
-from diofant import symbols
 from diofant.abc import A, B, C, x, y
 from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
                                            find_pure_symbol,

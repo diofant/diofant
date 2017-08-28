@@ -3,7 +3,6 @@ A MathML printer.
 """
 
 from ..core import Mul, S, sympify
-from ..core.alphabets import greeks
 from ..core.function import _coeff_isneg
 from .conventions import requires_partial, split_super_sub
 from .pretty.pretty_symbology import greek_unicode

@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (E, Float, Function, I, Integer, LambertW, O, Rational, S,
-                     Symbol, arg, conjugate, cos, cosh, exp, exp_polar,
-                     expand_log, log, nan, oo, pi, re, sign, simplify, sin,
-                     sinh, sqrt, symbols, tanh, zoo)
+from diofant import (E, Float, I, Integer, LambertW, O, Rational, S, Symbol,
+                     arg, conjugate, cos, cosh, exp, exp_polar, expand_log,
+                     log, nan, oo, pi, re, sign, simplify, sin, sinh, sqrt,
+                     symbols, tanh, zoo)
 from diofant.abc import m, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 

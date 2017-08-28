@@ -1,6 +1,6 @@
-from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol, SympifyError
+from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol
 from ...core.function import _coeff_isneg
-from ...utilities import default_sort_key, group, has_variety
+from ...utilities import default_sort_key, group
 from ..conventions import requires_partial
 from ..printer import Printer
 from ..str import sstr

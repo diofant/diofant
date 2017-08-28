@@ -3,7 +3,7 @@
 import re
 from collections import defaultdict
 
-from ..core import Add, Mul, Pow, S, expand_mul, expand_multinomial
+from ..core import Add, Mul, Pow, S
 from ..core.exprtools import decompose_power
 from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
 from .polyoptions import build_options

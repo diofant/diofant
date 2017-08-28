@@ -6,8 +6,7 @@ from diofant import (BlockMatrix, Identity, ImmutableMatrix, MatPow,
 
 __all__ = ()
 
-k, l, m, n = symbols('k l m n', integer=True)
-i, j = symbols('i j', integer=True)
+i, j, k, l, m, n = symbols('i j k l m n', integer=True)
 
 W = MatrixSymbol('W', k, l)
 X = MatrixSymbol('X', l, m)
