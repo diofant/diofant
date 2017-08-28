@@ -223,23 +223,24 @@ class Basic(object):
 
         >>> from diofant import I, pi, sin
         >>> from diofant.abc import x, y
-        >>> (1 + x + 2*sin(y + I*pi)).atoms()
+        >>> e = 1 + x + 2*sin(y + I*pi)
+        >>> e.atoms()
         {1, 2, I, pi, x, y}
 
         If one or more types are given, the results will contain only
         those types of atoms.
 
         >>> from diofant import Number, NumberSymbol, Symbol
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Symbol)
+        >>> e.atoms(Symbol)
         {x, y}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number)
+        >>> e.atoms(Number)
         {1, 2}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol)
+        >>> e.atoms(Number, NumberSymbol)
         {1, 2, pi}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol, I)
+        >>> e.atoms(Number, NumberSymbol, I)
         {1, 2, I, pi}
 
         Note that I (imaginary unit) and zoo (complex infinity) are special
@@ -247,46 +248,43 @@ class Basic(object):
 
         The type can be given implicitly, too:
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(x)
+        >>> e.atoms(x)
         {x, y}
 
         Be careful to check your assumptions when using the implicit option
-        since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is ``One``, a special type
-        of diofant atom, while ``type(Integer(2))`` is type ``Integer`` and will find all
-        integers in an expression:
+        since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is
+        ``One``, a special type of diofant atom, while ``type(Integer(2))``
+        is type ``Integer`` and will find all integers in an expression:
 
         >>> from diofant import S, Integer
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(1))
+        >>> e.atoms(Integer(1))
         {1}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(2))
+        >>> e.atoms(Integer(2))
         {1, 2}
 
         Finally, arguments to atoms() can select more than atomic atoms: any
-        diofant type (loaded in core/__init__.py) can be listed as an argument
-        and those types of "atoms" as found in scanning the arguments of the
-        expression recursively:
+        diofant type can be listed as an argument and those types of "atoms"
+        as found in scanning the arguments of the expression recursively:
 
         >>> from diofant import Function, Mul
         >>> from diofant.core.function import AppliedUndef
-        >>> f = Function('f')
-        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(Function)
-        {f(x), sin(y + I*pi)}
-        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef)
-        {f(x)}
 
         >>> (1 + x + 2*sin(y + I*pi)).atoms(Mul)
         {I*pi, 2*sin(y + I*pi)}
+
+        >>> f = Function('f')
+        >>> e = 1 + f(x) + 2*sin(y + I*pi)
+        >>> e.atoms(Function)
+        {f(x), sin(y + I*pi)}
+        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef)
+        {f(x)}
         """
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
             types = (Atom,)
-        result = set()
-        for expr in preorder_traversal(self):
-            if isinstance(expr, types):
-                result.add(expr)
-        return result
+        return set().union(*[set(self.find(t).keys()) for t in types])
 
     @property
     def free_symbols(self):
