@@ -815,44 +815,49 @@ class Basic(object):
 
     @cacheit
     def has(self, *patterns):
-        """Test whether any subexpression matches any of the patterns.
+        r"""Test if any subexpression matches any of the patterns.
+
+        Parameters
+        ==========
+
+        \*patterns : tuple of Expr
+            List of expressions to search for match.
+
+        Returns
+        =======
+
+        bool
+            False if there is no match or patterns list is
+            empty, else True.
 
         Examples
         ========
 
         >>> from diofant import sin
         >>> from diofant.abc import x, y, z
-        >>> (x**2 + sin(x*y)).has(z)
+        >>> e = x**2 + sin(x*y)
+        >>> e.has(z)
         False
-        >>> (x**2 + sin(x*y)).has(x, y, z)
+        >>> e.has(x, y, z)
         True
-        >>> x.has(x)
-        True
-
-        Note that ``expr.has(*patterns)`` is exactly equivalent to
-        ``any(expr.has(p) for p in patterns)``. In particular, ``False`` is
-        returned when the list of patterns is empty.
-
         >>> x.has()
         False
         """
-        return any(self._has(pattern) for pattern in patterns)
-
-    def _has(self, pattern):
-        """Helper for .has()"""
         from .function import UndefinedFunction, Function
 
-        pattern = sympify(pattern)
-
-        if isinstance(pattern, UndefinedFunction):
-            return any(pattern in (f, f.func)
-                       for f in self.atoms(Function, UndefinedFunction))
-        elif isinstance(pattern, type):
-            return any(isinstance(arg, pattern)
-                       for arg in preorder_traversal(self))
+        if len(patterns) != 1:
+            return any(self.has(pattern) for pattern in patterns)
         else:
-            match = pattern._has_matcher()
-            return any(match(arg) for arg in preorder_traversal(self))
+            pattern = sympify(patterns[0])
+            if isinstance(pattern, UndefinedFunction):
+                return any(pattern in (f, f.func)
+                           for f in self.atoms(Function, UndefinedFunction))
+            elif isinstance(pattern, type):
+                return any(isinstance(arg, pattern)
+                           for arg in preorder_traversal(self))
+            else:
+                match = pattern._has_matcher()
+                return any(match(arg) for arg in preorder_traversal(self))
 
     def _has_matcher(self):
         """Helper for .has()"""
