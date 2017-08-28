@@ -168,7 +168,7 @@ class Pow(Expr):
     def __new__(cls, b, e, evaluate=None):
         if evaluate is None:
             evaluate = global_evaluate[0]
-        from ..functions.elementary.exponential import exp_polar
+        from ..functions.elementary.exponential import exp, exp_polar
 
         b = sympify(b, strict=True)
         e = sympify(e, strict=True)
@@ -207,6 +207,8 @@ class Pow(Expr):
                 obj = b._eval_power(e)
                 if obj is not None:
                     return obj
+                elif b is S.Exp1:
+                    return exp(e, evaluate=False)
         return Expr.__new__(cls, b, e)
 
     def _eval_is_commutative(self):
@@ -381,7 +383,7 @@ class Pow(Expr):
                     return self.exp.is_negative
 
     def _eval_is_integer(self):
-        b, e = self.args
+        b, e = self.base, self.exp
         if b.is_rational:
             if b.is_integer is False and e.is_positive:
                 return False  # rat**nonneg
@@ -400,7 +402,7 @@ class Pow(Expr):
 
     def _eval_is_extended_real(self):
         from .mul import Mul
-        from ..functions import arg, log
+        from ..functions import arg, exp, log
 
         if self.base is S.Exp1:
             if self.exp.is_extended_real:
@@ -409,7 +411,7 @@ class Pow(Expr):
                 return (2*S.ImaginaryUnit*self.exp/S.Pi).is_even
 
         if self.base.is_extended_real is None:
-            if self.base.func == Pow and self.base.base is S.Exp1 and self.base.exp.is_imaginary:
+            if isinstance(self.base, exp) and self.base.exp.is_imaginary:
                 return self.exp.is_imaginary
         if self.exp.is_extended_real is None:
             return
@@ -554,7 +556,7 @@ class Pow(Expr):
                 ok, pow = _check(ct1, ct2, old)
                 if ok:
                     # issue sympy/sympy#5180: (x**(6*y)).subs(x**(3*y),z)->z**2
-                    return self.func(new, pow)
+                    return Pow(new, pow)
             else:  # b**(6*x+a).subs(b**(3*x), y) -> y**2 * b**a
                 # exp(exp(x) + exp(x**2)).subs(exp(exp(x)), w) -> w * exp(exp(x**2))
                 oarg = old.exp
@@ -579,7 +581,7 @@ class Pow(Expr):
                 Symbol, as_Add=False)
             ok, pow = _check(ct1, ct2, old)
             if ok:
-                return self.func(new, pow)  # (2**x).subs(exp(x*log(2)), z) -> z
+                return Pow(new, pow)  # (2**x).subs(exp(x*log(2)), z) -> z
 
     def as_base_exp(self):
         """Return base and exp of self.
@@ -600,7 +602,7 @@ class Pow(Expr):
 
         """
 
-        b, e = self.args
+        b, e = self.base, self.exp
         if b.is_Rational and b.p == 1 and b.q != 1:
             return Integer(b.q), -e
         return b, e
@@ -771,7 +773,7 @@ class Pow(Expr):
     def _eval_expand_multinomial(self, **hints):
         """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer"""
 
-        base, exp = self.args
+        base, exp = self.base, self.exp
         result = self
 
         if exp.is_Rational and exp.p > 0 and base.is_Add:
@@ -1224,23 +1226,6 @@ class Pow(Expr):
             return exp(arg)
         else:
             return exp(self.exp*log(self.base)).as_leading_term(x)
-
-    def _eval_rewrite_as_sin(self, base, exp):
-        from ..functions import sin
-        if self.base is S.Exp1:
-            I = S.ImaginaryUnit
-            return sin(I*self.exp + S.Pi/2) - I*sin(I*self.exp)
-
-    def _eval_rewrite_as_cos(self, base, exp):
-        from ..functions import cos
-        if self.base is S.Exp1:
-            I = S.ImaginaryUnit
-            return cos(I*self.exp) + I*cos(I*self.exp + S.Pi/2)
-
-    def _eval_rewrite_as_tanh(self, base, exp):
-        from ..functions import tanh
-        if self.base is S.Exp1:
-            return (1 + tanh(self.exp/2))/(1 - tanh(self.exp/2))
 
     def as_content_primitive(self, radical=False):
         """Return the tuple (R, self/R) where R is the positive Rational

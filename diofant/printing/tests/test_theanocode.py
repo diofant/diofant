@@ -80,7 +80,7 @@ def test_trig():
 def test_many():
     expr = sy.exp(x**2 + sy.cos(y)) * sy.log(2*z)
     comp = theano_code(expr)
-    expected = 2.718281828459045**(xt**2 + tt.cos(yt)) * tt.log(2*zt)
+    expected = tt.exp(xt**2 + tt.cos(yt)) * tt.log(2*zt)
     assert theq(comp, expected)
 
 

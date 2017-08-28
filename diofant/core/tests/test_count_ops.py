@@ -83,7 +83,7 @@ def test_count_ops_visual():
     assert count(2*z + y**17 + x + sin(x)) == 3*ADD + POW + MUL + SIN
     assert count(2*z + y**17 + x + sin(x**2)) == 3*ADD + MUL + 2*POW + SIN
     assert count(2*z + y**17 + x + sin(
-        x**2) + exp(cos(x))) == 4*ADD + MUL + 3*POW + COS + SIN
+        x**2) + exp(cos(x))) == 4*ADD + MUL + 2*POW + EXP + COS + SIN
 
     assert count(Derivative(x, x)) == D
     assert count(Integral(x, x) + 2*x/(1 + x)) == G + DIV + MUL + 2*ADD
