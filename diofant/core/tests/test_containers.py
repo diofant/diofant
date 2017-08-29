@@ -2,8 +2,8 @@ from collections import defaultdict
 
 import pytest
 
-from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, S, Tuple,
-                     symbols, sympify)
+from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, S, Tuple, false,
+                     symbols, sympify, true)
 from diofant.core.compatibility import is_sequence, iterable
 from diofant.core.containers import tuple_wrapper
 
@@ -67,10 +67,10 @@ def test_Tuple_equality():
 
 
 def test_Tuple_comparision():
-    assert (Tuple(1, 3) >= Tuple(-10, 30)) is S.true
-    assert (Tuple(1, 3) <= Tuple(-10, 30)) is S.false
-    assert (Tuple(1, 3) >= Tuple(1, 3)) is S.true
-    assert (Tuple(1, 3) <= Tuple(1, 3)) is S.true
+    assert (Tuple(1, 3) >= Tuple(-10, 30)) is true
+    assert (Tuple(1, 3) <= Tuple(-10, 30)) is false
+    assert (Tuple(1, 3) >= Tuple(1, 3)) is true
+    assert (Tuple(1, 3) <= Tuple(1, 3)) is true
 
 
 def test_Tuple_tuple_count():

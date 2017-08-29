@@ -102,7 +102,7 @@ def test_Xor():
     e = A > 1
     assert Xor(e, e.canonical) == Xor(0, 0) == Xor(1, 1)
     e = Integer(1) < A
-    assert e != e.canonical and Xor(e, e.canonical) is S.false
+    assert e != e.canonical and Xor(e, e.canonical) is false
     assert Xor(A > 1, B > C) == Xor(A > 1, B > C, evaluate=False)
 
 
@@ -253,8 +253,8 @@ def test_simplification():
 
     # check working of simplify
     assert simplify((A & B) | (A & C)) == And(A, Or(B, C))
-    assert simplify(And(x, Not(x))) is S.false
-    assert simplify(Or(x, Not(x))) is S.true
+    assert simplify(And(x, Not(x))) is false
+    assert simplify(Or(x, Not(x))) is true
 
 
 def test_bool_map():
@@ -520,15 +520,15 @@ def test_is_literal():
 def test_operators():
     # Mostly test __and__, __rand__, and so on
     assert True & A == (A & True) == A
-    assert False & A == (A & False) == S.false
+    assert False & A == (A & False) == false
     assert A & B == And(A, B)
-    assert True | A == (A | True) == S.true
+    assert True | A == (A | True) == true
     assert False | A == (A | False) == A
     assert A | B == Or(A, B)
     assert ~A == Not(A)
     assert True >> A == (A << True) == A
-    assert False >> A == (A << False) == S.true
-    assert (A >> True) == (True << A) == S.true
+    assert False >> A == (A << False) == true
+    assert (A >> True) == (True << A) == true
     assert (A >> False) == (False << A) == ~A
     assert A >> B == B << A == Implies(A, B)
     assert True ^ A == A ^ True == ~A
@@ -537,8 +537,8 @@ def test_operators():
 
 
 def test_true_false():
-    assert true is S.true
-    assert false is S.false
+    assert true is true
+    assert false is false
     assert true is not True
     assert false is not False
     assert true
@@ -692,7 +692,7 @@ def test_all_or_nothing():
     args = x >= - oo, x <= oo
     v = And(*args)
     if v.func is And:
-        assert len(v.args) == len(args) - args.count(S.true)
+        assert len(v.args) == len(args) - args.count(true)
     else:
         assert v
     v = Or(*args)

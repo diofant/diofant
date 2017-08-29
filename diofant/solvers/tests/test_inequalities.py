@@ -4,7 +4,8 @@ import pytest
 
 from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
                      Interval, Le, Lt, Ne, Or, Piecewise, Poly, PurePoly,
-                     Rational, S, Symbol, Union, log, oo, pi, root, sin, sqrt)
+                     Rational, S, Symbol, Union, false, log, oo, pi, root, sin,
+                     sqrt)
 from diofant.abc import x, y
 from diofant.polys.rootoftools import RootOf
 from diofant.solvers.inequalities import solve_poly_inequality as psolve
@@ -105,7 +106,7 @@ def test_reduce_poly_inequalities_real_interval():
         [[x < oo, x >= 0, -oo < x]], x, relational=False) == Interval(0, oo, False, True)
 
     assert reduce_rational_inequalities([[Eq((x + 1)/(x**2 - 1),
-                                             0)]], x) is S.false
+                                             0)]], x) is false
 
 
 def test_reduce_poly_inequalities_complex_relational():
@@ -114,7 +115,7 @@ def test_reduce_poly_inequalities_complex_relational():
     assert reduce_rational_inequalities(
         [[Le(x**2, 0)]], x, relational=True) == Eq(x, 0)
     assert reduce_rational_inequalities(
-        [[Lt(x**2, 0)]], x, relational=True) is S.false
+        [[Lt(x**2, 0)]], x, relational=True) is false
     assert reduce_rational_inequalities(
         [[Ge(x**2, 0)]], x, relational=True) == And(Lt(-oo, x), Lt(x, oo))
     assert reduce_rational_inequalities(
@@ -149,7 +150,7 @@ def test_reduce_poly_inequalities_complex_relational():
 
 
 def test_reduce_rational_inequalities_real_relational():
-    assert reduce_rational_inequalities([], x) is S.false
+    assert reduce_rational_inequalities([], x) is false
     assert reduce_rational_inequalities(
         [[(x**2 + 3*x + 2)/(x**2 - 16) >= 0]], x, relational=False) == \
         Union(Interval.open(-oo, -4), Interval(-2, -1), Interval.open(4, oo))
@@ -216,7 +217,7 @@ def test_reduce_inequalities_general():
 def test_reduce_inequalities_boolean():
     assert reduce_inequalities(
         [Eq(x**2, 0), True]) == Eq(x, 0)
-    assert reduce_inequalities([Eq(x**2, 0), False]) is S.false
+    assert reduce_inequalities([Eq(x**2, 0), False]) is false
 
 
 def test_reduce_inequalities_multivariate():
@@ -308,7 +309,7 @@ def test_solve_univariate_inequality():
     assert isolve((x - 1)/den <= 0, x) == \
         Or(And(-oo < x, x < 1), And(Integer(1) < x, x < 2))
 
-    assert isolve(x > oo, x) is S.false
+    assert isolve(x > oo, x) is false
 
 
 def test_slow_general_univariate():
@@ -332,7 +333,7 @@ def test_sympyissue_8974():
 
 def test_sympyissue_10196():
     assert reduce_inequalities(x**2 >= 0)
-    assert reduce_inequalities(x**2 < 0) is S.false
+    assert reduce_inequalities(x**2 < 0) is false
 
 
 def test_sympyissue_10268():

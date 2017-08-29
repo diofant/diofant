@@ -7,6 +7,7 @@ from diofant.core.tests.test_evalf import NS
 from diofant.functions.elementary.exponential import exp, log
 from diofant.functions.elementary.miscellaneous import cbrt, sqrt
 from diofant.functions.elementary.trigonometric import cos, sin
+from diofant.logic import true
 from diofant.series.order import O
 
 
@@ -229,7 +230,7 @@ def test_pow_as_base_exp():
 def test_sympyissue_6100():
     assert x**1.0 != x
     assert x != x**1.0
-    assert S.true != x**1.0
+    assert true != x**1.0
     assert x**1.0 is not True
     assert x is not True
     assert x*y != (x*y)**1.0

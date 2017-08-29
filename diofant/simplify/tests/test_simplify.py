@@ -9,7 +9,7 @@ from diofant import (Abs, Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      gamma, hyper, hypersimp, integrate, log, logcombine,
                      nsimplify, oo, pi, posify, rad, separatevars, sign,
                      signsimp, simplify, sin, sinh, solve, sqrt, sqrtdenest,
-                     sstr, symbols, tan, zoo)
+                     sstr, symbols, tan, true, zoo)
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
                          y, z)
 from diofant.core.mul import _keep_coeff
@@ -497,7 +497,7 @@ def test_as_content_primitive():
 
 def test_signsimp():
     e = x*(-x + 1) + x*(x - 1)
-    assert signsimp(Eq(e, 0)) is S.true
+    assert signsimp(Eq(e, 0)) is true
     assert Abs(x - 1) == Abs(1 - x)
 
 

@@ -239,11 +239,8 @@ def test_satisfiable_non_symbols():
 
 
 def test_satisfiable_bool():
-    from diofant.core.singleton import S
     assert satisfiable(true) == {true: true}
-    assert satisfiable(S.true) == {true: true}
     assert satisfiable(false) is False
-    assert satisfiable(S.false) is False
 
 
 def test_satisfiable_all_models():

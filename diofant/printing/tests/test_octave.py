@@ -9,6 +9,7 @@ from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
                                               airybiprime, besseli, besselj,
                                               besselk, bessely, hankel1,
                                               hankel2, jn, yn)
+from diofant.logic import false, true
 from diofant.matrices import (HadamardProduct, Identity, Matrix, MatrixSymbol,
                               SparseMatrix, eye)
 from diofant.utilities.lambdify import implemented_function
@@ -121,8 +122,8 @@ def test_constants():
     assert mcode(nan) == "NaN"
     assert mcode(E) == "exp(1)"
     assert mcode(exp(1)) == "exp(1)"
-    assert mcode(S.true) == "true"
-    assert mcode(S.false) == "false"
+    assert mcode(true) == "true"
+    assert mcode(false) == "false"
 
 
 def test_constants_other():
@@ -298,9 +299,9 @@ def test_octave_matrix_elements():
 
 def test_octave_boolean():
     assert mcode(True) == "true"
-    assert mcode(S.true) == "true"
+    assert mcode(true) == "true"
     assert mcode(False) == "false"
-    assert mcode(S.false) == "false"
+    assert mcode(false) == "false"
 
 
 def test_octave_not_supported():

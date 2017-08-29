@@ -4,8 +4,8 @@ import mpmath
 import pytest
 
 from diofant import (Abs, Add, Float, Function, I, Integer, Lambda, Matrix,
-                     Mul, Or, Poly, Pow, Range, Rational, S, Symbol, Tuple,
-                     Xor, exp, false, pi, sin, sqrt, true)
+                     Mul, Or, Poly, Pow, Range, Rational, Symbol, Tuple, Xor,
+                     exp, false, pi, sin, sqrt, true)
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
@@ -88,15 +88,15 @@ def test_sympify_mpmath():
 
     mpmath.mp.dps = 12
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-12")) is S.true
+        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-12")) is true
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-13")) is S.false
+        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-13")) is false
 
     mpmath.mp.dps = 6
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-5")) is S.true
+        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-5")) is true
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-6")) is S.false
+        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-6")) is false
 
     assert sympify(mpmath.mpc(1.0 + 2.0j)) == Float(1.0) + Float(2.0)*I
 

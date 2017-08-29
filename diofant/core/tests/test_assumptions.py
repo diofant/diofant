@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import I, asin, exp, log, simplify, sin, sqrt
+from diofant import I, asin, exp, false, log, simplify, sin, sqrt
 from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Pow,
-                          Rational, S, Symbol, Wild, nan, oo, pi, zoo)
+                          Rational, Symbol, Wild, nan, oo, pi, zoo)
 from diofant.core.facts import InconsistentAssumptions
 
 
@@ -817,8 +817,8 @@ def test_sanitize_assumptions():
 
 def test_special_assumptions():
     e = -3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2
-    assert simplify(e < 0) is S.false
-    assert simplify(e > 0) is S.false
+    assert simplify(e < 0) is false
+    assert simplify(e > 0) is false
     assert (e == 0) is False  # it's not a literal 0
     assert e.equals(0) is True
 

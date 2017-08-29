@@ -5,10 +5,10 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      Number, NumberSymbol, O, Piecewise, Poly, Pow, Rational,
                      S, Si, Sum, Symbol, Tuple, Wild, WildFunction, apart,
                      cancel, collect, combsimp, cos, default_sort_key, diff,
-                     exp, exp_polar, expand, factor, factorial, gamma, log,
-                     nan, nsimplify, oo, pi, powsimp, radsimp, ratsimp,
+                     exp, exp_polar, expand, factor, factorial, false, gamma,
+                     log, nan, nsimplify, oo, pi, powsimp, radsimp, ratsimp,
                      simplify, sin, sqrt, symbols, sympify, tan, together,
-                     trigsimp, zoo)
+                     trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 
@@ -156,16 +156,16 @@ def test_ibasic():
 
 def test_relational():
     from diofant import Lt
-    assert (pi < 3) is S.false
-    assert (pi <= 3) is S.false
-    assert (pi > 3) is S.true
-    assert (pi >= 3) is S.true
-    assert (-pi < 3) is S.true
-    assert (-pi <= 3) is S.true
-    assert (-pi > 3) is S.false
-    assert (-pi >= 3) is S.false
+    assert (pi < 3) is false
+    assert (pi <= 3) is false
+    assert (pi > 3) is true
+    assert (pi >= 3) is true
+    assert (-pi < 3) is true
+    assert (-pi <= 3) is true
+    assert (-pi > 3) is false
+    assert (-pi >= 3) is false
     r = Symbol('r', extended_real=True)
-    assert (r - 2 < r - 3) is S.false
+    assert (r - 2 < r - 3) is false
     assert Lt(x + I, x + I + 2).func == Lt  # issue sympy/sympy#8288
 
 
@@ -183,26 +183,26 @@ def test_relational_assumptions():
     m2 = Symbol("m2", positive=False, extended_real=True)
     m3 = Symbol("m3", nonpositive=False, extended_real=True)
     m4 = Symbol("m4", negative=False, extended_real=True)
-    assert (m1 < 0) is S.true
-    assert (m2 <= 0) is S.true
-    assert (m3 > 0) is S.true
-    assert (m4 >= 0) is S.true
+    assert (m1 < 0) is true
+    assert (m2 <= 0) is true
+    assert (m3 > 0) is true
+    assert (m4 >= 0) is true
     m1 = Symbol("m1", negative=True)
     m2 = Symbol("m2", nonpositive=True)
     m3 = Symbol("m3", positive=True)
     m4 = Symbol("m4", nonnegative=True)
-    assert (m1 < 0) is S.true
-    assert (m2 <= 0) is S.true
-    assert (m3 > 0) is S.true
-    assert (m4 >= 0) is S.true
+    assert (m1 < 0) is true
+    assert (m2 <= 0) is true
+    assert (m3 > 0) is true
+    assert (m4 >= 0) is true
     m1 = Symbol("m1", negative=False, extended_real=True)
     m2 = Symbol("m2", nonpositive=False, extended_real=True)
     m3 = Symbol("m3", positive=False, extended_real=True)
     m4 = Symbol("m4", nonnegative=False, extended_real=True)
-    assert (m1 < 0) is S.false
-    assert (m2 <= 0) is S.false
-    assert (m3 > 0) is S.false
-    assert (m4 >= 0) is S.false
+    assert (m1 < 0) is false
+    assert (m2 <= 0) is false
+    assert (m3 > 0) is false
+    assert (m4 >= 0) is false
 
 
 def test_relational_noncommutative():

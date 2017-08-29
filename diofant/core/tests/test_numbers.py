@@ -6,8 +6,8 @@ from mpmath import mpf
 
 from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
                      GoldenRatio, Gt, I, Integer, Le, Lt, Mul, Number, Pow,
-                     Rational, S, Symbol, Tuple, cos, exp, factorial, latex,
-                     log, nan, oo, pi, simplify, sin, sqrt, zoo)
+                     Rational, S, Symbol, Tuple, cos, exp, factorial, false,
+                     latex, log, nan, oo, pi, simplify, sin, sqrt, true, zoo)
 from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
                                   mpf_norm, seterr)
 from diofant.core.power import integer_nthroot
@@ -742,21 +742,21 @@ def test_Infinity_inequations():
     pytest.raises(TypeError, lambda: I >= -oo)
 
     assert oo > -oo and oo >= -oo
-    assert (oo < -oo) is S.false and (oo <= -oo) is S.false
+    assert (oo < -oo) is false and (oo <= -oo) is false
     assert -oo < oo and -oo <= oo
-    assert (-oo > oo) is S.false and (-oo >= oo) is S.false
+    assert (-oo > oo) is false and (-oo >= oo) is false
 
-    assert (oo < oo) is S.false  # issue sympy/sympy#7775
-    assert (oo > oo) is S.false
-    assert (-oo > -oo) is S.false and (-oo < -oo) is S.false
+    assert (oo < oo) is false  # issue sympy/sympy#7775
+    assert (oo > oo) is false
+    assert (-oo > -oo) is false and (-oo < -oo) is false
     assert oo >= oo and oo <= oo and -oo >= -oo and -oo <= -oo
 
     x = Symbol('x')
     b = Symbol('b', real=True)
     assert (x < oo) == Lt(x, oo)  # issue sympy/sympy#7775
     assert b < oo and b > -oo and b <= oo and b >= -oo
-    assert oo > b and oo >= b and (oo < b) is S.false and (oo <= b) is S.false
-    assert (-oo > b) is S.false and (-oo >= b) is S.false and -oo < b and -oo <= b
+    assert oo > b and oo >= b and (oo < b) is false and (oo <= b) is false
+    assert (-oo > b) is false and (-oo >= b) is false and -oo < b and -oo <= b
     assert (oo < x) == Lt(oo, x) and (oo > x) == Gt(oo, x)
     assert (oo <= x) == Le(oo, x) and (oo >= x) == Ge(oo, x)
     assert (-oo < x) == Lt(-oo, x) and (-oo > x) == Gt(-oo, x)
@@ -1268,10 +1268,10 @@ def test_relational():
     r = Symbol('r', extended_real=True)
     assert (oo > r) == Gt(oo, r)
     assert (oo <= r) == Le(oo, r)
-    assert (oo >= r) is S.true
+    assert (oo >= r) is true
 
-    assert (Float(3.0) >= pi) is S.false
-    assert (Float(3.0) <= pi) is S.true
+    assert (Float(3.0) >= pi) is false
+    assert (Float(3.0) <= pi) is true
 
 
 def test_Integer_as_index():
@@ -1578,12 +1578,12 @@ def test_mod_inverse():
 
 def test_sympyissue_13081():
     r = Rational(905502432259640373, 288230376151711744)
-    assert (pi < r) is S.true
-    assert (r > pi) is S.true
+    assert (pi < r) is true
+    assert (r > pi) is true
     r2 = Rational(472202503979844695356573871761845338575143343779448489867569357017941709222155070092152068445390137810467671349,
                   150306725297525326584926758194517569752043683130132471725266622178061377607334940381676735896625196994043838464)
-    assert (r2 < pi) is S.true
-    assert (r2 > pi) is S.false
+    assert (r2 < pi) is true
+    assert (r2 > pi) is false
 
 
 def test_comparisons_with_unknown_type():

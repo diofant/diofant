@@ -4,7 +4,7 @@ import pytest
 
 from diofant import (Derivative, Eq, Expr, Float, I, Integer, Mul, Piecewise,
                      Rational, RootOf, S, Sum, Symbol, Tuple, diff, exp,
-                     expand, im, oo, pi, re, sin, sqrt, tanh)
+                     expand, false, im, oo, pi, re, sin, sqrt, tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
@@ -2685,29 +2685,29 @@ def test_nroots():
     roots = nroots(x**5 + x + 1, n=5)
     eps = Float("1e-5")
 
-    assert re(roots[0]).epsilon_eq(-0.75487, eps) is S.true
+    assert re(roots[0]).epsilon_eq(-0.75487, eps) is true
     assert im(roots[0]) == 0.0
     assert re(roots[1]) == -0.5
-    assert im(roots[1]).epsilon_eq(-0.86602, eps) is S.true
+    assert im(roots[1]).epsilon_eq(-0.86602, eps) is true
     assert re(roots[2]) == -0.5
-    assert im(roots[2]).epsilon_eq(+0.86602, eps) is S.true
-    assert re(roots[3]).epsilon_eq(+0.87743, eps) is S.true
-    assert im(roots[3]).epsilon_eq(-0.74486, eps) is S.true
-    assert re(roots[4]).epsilon_eq(+0.87743, eps) is S.true
-    assert im(roots[4]).epsilon_eq(+0.74486, eps) is S.true
+    assert im(roots[2]).epsilon_eq(+0.86602, eps) is true
+    assert re(roots[3]).epsilon_eq(+0.87743, eps) is true
+    assert im(roots[3]).epsilon_eq(-0.74486, eps) is true
+    assert re(roots[4]).epsilon_eq(+0.87743, eps) is true
+    assert im(roots[4]).epsilon_eq(+0.74486, eps) is true
 
     eps = Float("1e-6")
 
-    assert re(roots[0]).epsilon_eq(-0.75487, eps) is S.false
+    assert re(roots[0]).epsilon_eq(-0.75487, eps) is false
     assert im(roots[0]) == 0.0
     assert re(roots[1]) == -0.5
-    assert im(roots[1]).epsilon_eq(-0.86602, eps) is S.false
+    assert im(roots[1]).epsilon_eq(-0.86602, eps) is false
     assert re(roots[2]) == -0.5
-    assert im(roots[2]).epsilon_eq(+0.86602, eps) is S.false
-    assert re(roots[3]).epsilon_eq(+0.87743, eps) is S.false
-    assert im(roots[3]).epsilon_eq(-0.74486, eps) is S.false
-    assert re(roots[4]).epsilon_eq(+0.87743, eps) is S.false
-    assert im(roots[4]).epsilon_eq(+0.74486, eps) is S.false
+    assert im(roots[2]).epsilon_eq(+0.86602, eps) is false
+    assert re(roots[3]).epsilon_eq(+0.87743, eps) is false
+    assert im(roots[3]).epsilon_eq(-0.74486, eps) is false
+    assert re(roots[4]).epsilon_eq(+0.87743, eps) is false
+    assert im(roots[4]).epsilon_eq(+0.74486, eps) is false
 
     pytest.raises(DomainError, lambda: Poly(x + y, x).nroots())
     pytest.raises(MultivariatePolynomialError, lambda: Poly(x + y).nroots())

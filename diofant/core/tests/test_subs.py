@@ -3,8 +3,8 @@ import pytest
 from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
                      Integer, Lambda, Min, Mul, Piecewise, Rational, RootOf, S,
                      Subs, Symbol, Tuple, Wild, abc, atan2, cos, cot, cse, exp,
-                     factor, log, nsimplify, oo, pi, sin, sqrt, symbols, tan,
-                     zoo)
+                     factor, false, log, nsimplify, oo, pi, sin, sqrt, symbols,
+                     tan, zoo)
 from diofant.abc import x, y, z
 from diofant.core.basic import _aresame
 
@@ -671,7 +671,7 @@ def test_RootOf_sympyissue_10092():
     x = Symbol('x', real=True)
     eq = x**3 - 17*x**2 + 81*x - 118
     r = RootOf(eq, 0)
-    assert (x < r).subs(x, r) is S.false
+    assert (x < r).subs(x, r) is false
 
 
 def test_sympyissue_11746():

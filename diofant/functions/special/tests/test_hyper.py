@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative, Float, I, O, Rational, S, Tuple, cos, exp,
+from diofant import (Derivative, Float, I, O, Rational, Tuple, cos, exp, false,
                      gamma, hyper, log, meijerg, oo, pi, sqrt, symbols)
 from diofant.abc import a, b, c, d, k, l, s, x, z
 from diofant.series.limits import limit
@@ -103,9 +103,9 @@ def test_radius_of_convergence():
     assert hyper((-4, 2), [-3], z).radius_of_convergence == 0
 
     assert hyper([1, 1], [3], 1).convergence_statement
-    assert hyper([1, 1], [2], 1).convergence_statement == S.false
+    assert hyper([1, 1], [2], 1).convergence_statement == false
     assert hyper([1, 1], [2], -1).convergence_statement
-    assert hyper([1, 1], [1], -1).convergence_statement == S.false
+    assert hyper([1, 1], [1], -1).convergence_statement == false
 
 
 def test_meijer():
