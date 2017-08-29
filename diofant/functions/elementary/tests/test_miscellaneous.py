@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.abc import x, y, z
-from diofant.core import Eq, Function, I, Rational, S, Symbol, oo, symbols
+from diofant.core import Eq, Function, I, Rational, S, Symbol, oo, symbols, zoo
 from diofant.core.function import ArgumentIndexError
 from diofant.functions import (Heaviside, Max, Min, Piecewise, cbrt, ceiling,
                                cos, floor, real_root, root, sin, sqrt)
@@ -95,7 +95,7 @@ def test_Min():
     pytest.raises(ValueError, lambda: Min(cos(x), sin(x)).subs(x, I))
     pytest.raises(ValueError, lambda: Min(I))
     pytest.raises(ValueError, lambda: Min(I, x))
-    pytest.raises(ValueError, lambda: Min(S.ComplexInfinity, x))
+    pytest.raises(ValueError, lambda: Min(zoo, x))
 
     assert Min(1, x).diff(x) == Heaviside(1 - x)
     assert Min(x, 1).diff(x) == Heaviside(1 - x)
@@ -135,7 +135,7 @@ def test_Max():
     assert Max(x, Min(y, oo)) == Max(x, y)
     assert Max(n, -oo, n_, p, 2) == Max(p, 2)
     assert Max(n, -oo, n_, p) == p
-    assert Max(2, x, p, n, -oo, S.NegativeInfinity, n_, p, 2) == Max(2, x, p)
+    assert Max(2, x, p, n, -oo, -oo, n_, p, 2) == Max(2, x, p)
     assert Max(0, x, 1, y) == Max(1, x, y)
     assert Max(r, r + 1, r - 1) == 1 + r
     assert Max(1000, 100, -100, x, p, n) == Max(p, x, 1000)
@@ -145,7 +145,7 @@ def test_Max():
     pytest.raises(ValueError, lambda: Max(cos(x), sin(x)).subs(x, I))
     pytest.raises(ValueError, lambda: Max(I))
     pytest.raises(ValueError, lambda: Max(I, x))
-    pytest.raises(ValueError, lambda: Max(S.ComplexInfinity, 1))
+    pytest.raises(ValueError, lambda: Max(zoo, 1))
     # interesting:
     # Max(n, -oo, n_,  p, 2) == Max(p, 2)
     # True

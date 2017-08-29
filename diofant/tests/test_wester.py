@@ -1234,7 +1234,7 @@ def test_P7():
 def test_P8():
     M = Matrix([[1, -2*I],
                 [-3*I, 4]])
-    assert M.norm(ord=S.Infinity) == 7  # Matrix.norm(ord=inf) not implemented
+    assert M.norm(ord=oo) == 7  # Matrix.norm(ord=inf) not implemented
 
 
 def test_P9():
@@ -1544,7 +1544,7 @@ def test_P38():
     M = Matrix([[0, 1, 0],
                 [0, 0, 0],
                 [0, 0, 0]])
-    assert all(e in (S.NaN, S.ComplexInfinity) for e in M**Rational(1, 2))
+    assert all(e in (nan, zoo) for e in M**Rational(1, 2))
 
 
 def test_P40():

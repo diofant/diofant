@@ -1940,7 +1940,7 @@ def test_matrix_norm():
     L = [a, b, c, d, e]
     alpha = Symbol('alpha', extended_real=True)
 
-    for order in [1, 2, -1, -2, S.Infinity, S.NegativeInfinity, pi]:
+    for order in [1, 2, -1, -2, oo, -oo, pi]:
         # Zero Check
         if order > 0:
             assert Matrix([0, 0, 0]).norm(order) == Integer(0)
@@ -1951,7 +1951,7 @@ def test_matrix_norm():
                     assert simplify(v.norm(order) + w.norm(order) >=
                                     (v + w).norm(order))
         # Linear to scalar multiplication
-        if order in [1, 2, -1, -2, S.Infinity, S.NegativeInfinity]:
+        if order in [1, 2, -1, -2, oo, -oo]:
             for vec in L:
                 try:
                     assert simplify((alpha*v).norm(order) -

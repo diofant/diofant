@@ -7,9 +7,9 @@ from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
                      Matrix, Mul, Or, Piecewise, Poly, Pow, Rational, S,
                      Symbol, Tuple, Wild, acos, arg, asin, atan, atan2, cos,
                      cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
-                     im, log, oo, pi, re, real_root, root, sec, sech, simplify,
-                     sin, sinh, solve, solve_linear, sqrt, sstr, symbols,
-                     sympify, tan, tanh)
+                     im, log, nan, oo, pi, re, real_root, root, sec, sech,
+                     simplify, sin, sinh, solve, solve_linear, sqrt, sstr,
+                     symbols, sympify, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
@@ -996,8 +996,8 @@ def test_sympyissue_6060():
     )
     y = Symbol('y')
     assert (solve(absxm3 - y, x) ==
-            [{x: Piecewise((-y + 3, y > 0), (S.NaN, True))},
-             {x: Piecewise((y + 3, 0 <= y), (S.NaN, True))}])
+            [{x: Piecewise((-y + 3, y > 0), (nan, True))},
+             {x: Piecewise((y + 3, 0 <= y), (nan, True))}])
     y = Symbol('y', positive=True)
     assert solve(absxm3 - y, x) == [{x: -y + 3}, {x: y + 3}]
 

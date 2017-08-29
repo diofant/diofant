@@ -2,7 +2,7 @@ import pytest
 
 from diofant import I, asin, exp, log, simplify, sin, sqrt
 from diofant.core import (Dummy, Float, Integer, Mod, Pow, Rational, S, Symbol,
-                          Wild, pi)
+                          Wild, nan, oo, pi, zoo)
 from diofant.core.facts import InconsistentAssumptions
 
 
@@ -97,8 +97,6 @@ def test_negativeone():
 
 
 def test_infinity():
-    oo = S.Infinity
-
     assert oo.is_commutative is True
     assert oo.is_integer is False
     assert oo.is_rational is False
@@ -124,7 +122,7 @@ def test_infinity():
 
 
 def test_neg_infinity():
-    mm = S.NegativeInfinity
+    mm = -oo
 
     assert mm.is_commutative is True
     assert mm.is_integer is False
@@ -151,7 +149,6 @@ def test_neg_infinity():
 
 
 def test_zoo():
-    zoo = S.ComplexInfinity
     assert zoo.is_complex is False
     assert zoo.is_real is False
     assert zoo.is_prime is False
@@ -159,8 +156,6 @@ def test_zoo():
 
 
 def test_nan():
-    nan = S.NaN
-
     assert nan.is_commutative is True
     assert nan.is_integer is False
     assert nan.is_rational is False
@@ -656,7 +651,7 @@ def test_Add_is_pos_neg():
     assert (n + xf).is_negative is True
     assert (p + xf).is_negative is False
 
-    assert (x - S.Infinity).is_negative is None  # issue sympy/sympy#7798
+    assert (x - oo).is_negative is None  # issue sympy/sympy#7798
     # issue sympy/sympy#8046, 16.2
     assert (p + nn).is_positive
     assert (n + np).is_negative
@@ -749,11 +744,11 @@ def test_Mul_is_infinite():
     assert (x*i).is_infinite is None
     assert (f*i).is_infinite is None
     assert (x*f*i).is_infinite is None
-    assert (z*i).is_infinite is S.NaN.is_infinite
+    assert (z*i).is_infinite is nan.is_infinite
     assert (nzf*i).is_infinite is True
     assert (z*f).is_infinite is False
     assert Mul(0, f, evaluate=False).is_infinite is False
-    assert Mul(0, i, evaluate=False).is_infinite is S.NaN.is_infinite
+    assert Mul(0, i, evaluate=False).is_infinite is nan.is_infinite
 
 
 def test_special_is_rational():
@@ -803,8 +798,8 @@ def test_sympyissue_6275():
     x = Symbol('x')
     # both zero or both Muls...but neither "change would be very appreciated.
     # This is similar to x/x => 1 even though if x = 0, it is really nan.
-    assert isinstance(x*0, type(0*S.Infinity))
-    if 0*S.Infinity is S.NaN:
+    assert isinstance(x*0, type(0*oo))
+    if 0*oo is nan:
         b = Symbol('b', finite=None)
         assert (b*0).is_zero is None
 
@@ -899,9 +894,9 @@ def test_sympyissue_8642():
 def test_sympyissue_9165():
     z = Symbol('z', zero=True)
     f = Symbol('f', finite=False)
-    assert 0/z == S.NaN
-    assert 0*(1/z) == S.NaN
-    assert 0*f == S.NaN
+    assert 0/z == nan
+    assert 0*(1/z) == nan
+    assert 0*f == nan
 
 
 def test_sympyissue_10024():

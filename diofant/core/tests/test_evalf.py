@@ -5,8 +5,8 @@ from mpmath.libmp.libmpf import from_float
 from diofant import (Abs, Add, E, Eq, Float, Function, GoldenRatio, I,
                      Integral, Min, Mul, N, Pow, Product, Rational, S, Sum,
                      Symbol, atan, ceiling, cos, exp, factorial, fibonacci,
-                     floor, im, integrate, log, oo, pi, product, re, sin, sqrt,
-                     sstr, sympify, zoo)
+                     floor, im, integrate, log, nan, oo, pi, product, re, sin,
+                     sqrt, sstr, sympify, zoo)
 from diofant.abc import H, n, x, y
 from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
                                 complex_accuracy, scaled_zero)
@@ -215,23 +215,23 @@ def test_evalf_bugs():
     # n+nan, n-nan, n+inf, n-inf
     assert (0*sin(oo)).n() == S.Zero
     assert (0/sin(oo)).n() == S.Zero
-    assert (0*E**(oo)).n() == S.NaN
-    assert (0/E**(oo)).n() == S.Zero
+    assert (0*E**oo).n() == nan
+    assert (0/E**oo).n() == S.Zero
 
-    assert (0+sin(oo)).n() == S.NaN
-    assert (0-sin(oo)).n() == S.NaN
-    assert (0+E**(oo)).n() == S.Infinity
-    assert (0-E**(oo)).n() == S.NegativeInfinity
+    assert (0+sin(oo)).n() == nan
+    assert (0-sin(oo)).n() == nan
+    assert (0+E**oo).n() == +oo
+    assert (0-E**oo).n() == -oo
 
-    assert (5*sin(oo)).n() == S.NaN
-    assert (5/sin(oo)).n() == S.NaN
-    assert (5*E**(oo)).n() == S.Infinity
-    assert (5/E**(oo)).n() == S.Zero
+    assert (5*sin(oo)).n() == nan
+    assert (5/sin(oo)).n() == nan
+    assert (5*E**oo).n() == oo
+    assert (5/E**oo).n() == S.Zero
 
-    assert (5+sin(oo)).n() == S.NaN
-    assert (5-sin(oo)).n() == S.NaN
-    assert (5+E**(oo)).n() == S.Infinity
-    assert (5-E**(oo)).n() == S.NegativeInfinity
+    assert (5+sin(oo)).n() == nan
+    assert (5-sin(oo)).n() == nan
+    assert (5+E**oo).n() == +oo
+    assert (5-E**oo).n() == -oo
 
     # issue sympy/sympy#7416
     assert as_mpmath(0.0, 10, {'chop': True}) == 0

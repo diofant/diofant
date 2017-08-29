@@ -37,7 +37,6 @@ def test_trigonometric():
     assert e == 2*cos(x)**2
 
     i = Symbol('i', integer=True)
-    zoo = S.ComplexInfinity
     assert tan(x).subs(x, pi/2) is zoo
     assert cot(x).subs(x, pi) is zoo
     assert cot(i*x).subs(x, pi) is zoo
@@ -54,8 +53,8 @@ def test_powers():
     assert (x**Rational(1, 3)).subs(x, -27) == 3*(-1)**Rational(1, 3)
     assert ((-x)**Rational(1, 3)).subs(x, 27) == 3*(-1)**Rational(1, 3)
     n = Symbol('n', negative=True)
-    assert (x**n).subs(x, 0) is S.ComplexInfinity
-    assert exp(-1).subs(S.Exp1, 0) is S.ComplexInfinity
+    assert (x**n).subs(x, 0) is zoo
+    assert exp(-1).subs(S.Exp1, 0) is zoo
     assert (x**(4.0*y)).subs(x**(2.0*y), n) == n**2.0
     assert (2**(x + 2)).subs(2, 3) == 3**(x + 3)
 

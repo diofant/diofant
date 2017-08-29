@@ -209,17 +209,17 @@ def test_zero():
     assert 0**(1.0*x) == 0**x
     assert 0**(2.0*x) == 0**x
     assert (0**(2 - x)).as_base_exp() == (0, 2 - x)
-    assert 0**(x - 2) != S.Infinity**(2 - x)
+    assert 0**(x - 2) != oo**(2 - x)
     assert 0**(2*x*y) == 0**(x*y)
-    assert 0**(-2*x*y) == S.ComplexInfinity**(x*y)
+    assert 0**(-2*x*y) == zoo**(x*y)
     assert 0**I == nan
     i = Symbol('i', imaginary=True, nonzero=True)
     assert 0**i == nan
 
 
 def test_pow_as_base_exp():
-    assert (S.Infinity**(2 - x)).as_base_exp() == (S.Infinity, 2 - x)
-    assert (S.Infinity**(x - 2)).as_base_exp() == (S.Infinity, x - 2)
+    assert (oo**(2 - x)).as_base_exp() == (oo, 2 - x)
+    assert (oo**(x - 2)).as_base_exp() == (oo, x - 2)
     p = S.Half**x
     assert p.base, p.exp == p.as_base_exp() == (Integer(2), -x)
     # issue sympy/sympy#8344:

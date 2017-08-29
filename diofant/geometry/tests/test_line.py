@@ -2,8 +2,8 @@ import itertools
 
 import pytest
 
-from diofant import (Float, I, Rational, S, Symbol, acos, cos, oo, pi,
-                     simplify, sin, sqrt, symbols)
+from diofant import (Float, I, Rational, Symbol, acos, cos, oo, pi, simplify,
+                     sin, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
 from diofant.geometry import (Circle, GeometryError, Line, Line3D, Plane,
                               Point, Point3D, Ray, Ray3D, Segment, Segment3D,
@@ -564,7 +564,7 @@ def test_line3d():
 
     # Test zdirection
     negz = Ray3D(p1, Point3D(0, 0, -1))
-    assert negz.zdirection == S.NegativeInfinity
+    assert negz.zdirection == -oo
 
     # Test contains
     assert negz.contains(Segment3D(p1, Point3D(0, 0, -10))) is True

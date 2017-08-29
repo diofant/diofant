@@ -2,8 +2,8 @@ import pytest
 
 from diofant import octave_code as mcode
 from diofant.core import (Catalan, EulerGamma, Function, GoldenRatio, I,
-                          Integer, Lambda, Rational, S, Symbol, Tuple, oo, pi,
-                          symbols)
+                          Integer, Lambda, Rational, S, Symbol, Tuple, nan, oo,
+                          pi, symbols, zoo)
 from diofant.functions import Piecewise, ceiling, cos, exp, sin, sqrt
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
                                               airybiprime, besseli, besselj,
@@ -118,8 +118,7 @@ def test_constants():
     assert mcode(pi) == "pi"
     assert mcode(oo) == "inf"
     assert mcode(-oo) == "-inf"
-    assert mcode(S.NegativeInfinity) == "-inf"
-    assert mcode(S.NaN) == "NaN"
+    assert mcode(nan) == "NaN"
     assert mcode(S.Exp1) == "exp(1)"
     assert mcode(exp(1)) == "exp(1)"
     assert mcode(S.true) == "true"
@@ -305,7 +304,7 @@ def test_octave_boolean():
 
 
 def test_octave_not_supported():
-    assert mcode(S.ComplexInfinity) == (
+    assert mcode(zoo) == (
         "% Not supported in Octave:\n"
         "% ComplexInfinity\n"
         "zoo"

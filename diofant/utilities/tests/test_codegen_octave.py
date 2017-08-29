@@ -4,7 +4,7 @@ import pytest
 
 import diofant
 from diofant import Equality, Piecewise
-from diofant.core import Catalan, Eq, EulerGamma, Function, S, pi, symbols
+from diofant.core import Catalan, Eq, EulerGamma, Function, pi, symbols, zoo
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.utilities.codegen import OctaveCodeGen, codegen, make_routine
 
@@ -552,7 +552,7 @@ def test_m_InOutArgument_order():
 
 def test_m_not_supported():
     f = Function('f')
-    name_expr = ("test", [f(x).diff(x), S.ComplexInfinity])
+    name_expr = ("test", [f(x).diff(x), zoo])
     result, = codegen(name_expr, "Octave", header=False, empty=False)
     source = result[1]
     expected = (

@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, S, Symbol,
-                     exp, legendre_poly, log, root, solve, sqrt, tan)
+                     exp, legendre_poly, log, oo, root, solve, sqrt, tan)
 from diofant.abc import a, b, r, x, y, z
 from diofant.polys.polyerrors import (GeneratorsNeeded,
                                       MultivariatePolynomialError,
@@ -144,7 +144,7 @@ def test_RootOf___eval_Eq__():
     assert Eq(r, r) is S.true
     assert Eq(r, x) is S.false
     assert Eq(r, 0) is S.false
-    assert Eq(r, S.Infinity) is S.false
+    assert Eq(r, oo) is S.false
     assert Eq(r, I) is S.false
     assert Eq(r, f(0)) is S.false
     assert Eq(r, f(0)) is S.false

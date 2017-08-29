@@ -476,7 +476,7 @@ def test_as_content_primitive():
     assert ((5*(x*(1 + y)) + 2*x*(3 + 3*y))**2).as_content_primitive() == \
         (121, x**2*(y + 1)**2)
     assert (y**2).as_content_primitive() == (1, y**2)
-    assert (S.Infinity).as_content_primitive() == (1, oo)
+    assert oo.as_content_primitive() == (1, oo)
     eq = x**(2 + y)
     assert (eq).as_content_primitive() == (1, eq)
     assert (S.Half**(2 + x)).as_content_primitive() == (Rational(1, 4), 2**-x)

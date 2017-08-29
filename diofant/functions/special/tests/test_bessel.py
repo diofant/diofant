@@ -3,8 +3,8 @@ import pytest
 from diofant import (Abs, I, Integer, Limit, O, Rational, S, Symbol, besseli,
                      besselj, besselk, bessely, conjugate, cos, cosh, diff,
                      exp, expand_func, gamma, hankel1, hankel2, hyper, im, jn,
-                     jn_zeros, log, oo, pi, re, series, sin, sinh, sqrt,
-                     symbols, yn)
+                     jn_zeros, log, nan, oo, pi, re, series, sin, sinh, sqrt,
+                     symbols, yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
@@ -248,27 +248,27 @@ def test_bessel_eval():
         assert f(0, 0) == S.One
         assert f(2.1, 0) == S.Zero
         assert f(-3, 0) == S.Zero
-        assert f(-10.2, 0) == S.ComplexInfinity
+        assert f(-10.2, 0) == zoo
         assert f(1 + 3*I, 0) == S.Zero
-        assert f(-3 + I, 0) == S.ComplexInfinity
-        assert f(-2*I, 0) == S.NaN
+        assert f(-3 + I, 0) == zoo
+        assert f(-2*I, 0) == nan
         assert f(n, 0) != S.One and f(n, 0) != S.Zero
         assert f(m, 0) != S.One and f(m, 0) != S.Zero
         assert f(k, 0) == S.Zero
 
-    assert bessely(0, 0) == S.NegativeInfinity
-    assert besselk(0, 0) == S.Infinity
+    assert bessely(0, 0) == -oo
+    assert besselk(0, 0) == +oo
     for f in [bessely, besselk]:
-        assert f(1 + I, 0) == S.ComplexInfinity
-        assert f(I, 0) == S.NaN
+        assert f(1 + I, 0) == zoo
+        assert f(I, 0) == nan
 
     for f in [besselj, bessely]:
-        assert f(m, S.Infinity) == S.Zero
-        assert f(m, S.NegativeInfinity) == S.Zero
+        assert f(m, +oo) == S.Zero
+        assert f(m, -oo) == S.Zero
 
     for f in [besseli, besselk]:
-        assert f(m, I*S.Infinity) == S.Zero
-        assert f(m, I*S.NegativeInfinity) == S.Zero
+        assert f(m, +I*oo) == S.Zero
+        assert f(m, -I*oo) == S.Zero
 
     for f in [besseli, besselk]:
         assert f(-4, z) == f(4, z)
@@ -298,7 +298,7 @@ def test_bessel_eval():
 
 def test_bessel_nan():
     for f in [besselj, bessely, besseli, besselk, hankel1, hankel2, yn, jn]:
-        assert f(1, S.NaN) == S.NaN
+        assert f(1, nan) == nan
 
 
 def test_conjugate():

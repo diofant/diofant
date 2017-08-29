@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (E, I, Matrix, Piecewise, Rational, S, Subs, Symbol, cos,
+from diofant import (E, I, Matrix, Piecewise, Rational, Subs, Symbol, cos,
                      cosh, cot, coth, count_ops, csc, diff, exp, expand,
-                     exptrigsimp, integrate, log, pi, simplify, sin, sinh,
+                     exptrigsimp, integrate, log, nan, pi, simplify, sin, sinh,
                      sqrt, symbols, tan, tanh, trigsimp)
 from diofant.abc import a, b, x, y, z
 
@@ -170,8 +170,8 @@ def test_trigsimp_issues():
     n = (1 + z1/z)
     assert trigsimp(sin(n)) != sin(1)
     eq = x*(n - 1) - x*n
-    assert trigsimp(eq) is S.NaN
-    assert trigsimp(eq, recursive=True) is S.NaN
+    assert trigsimp(eq) is nan
+    assert trigsimp(eq, recursive=True) is nan
     assert trigsimp(1).is_Integer
 
     assert trigsimp(-sin(x)**4 - 2*sin(x)**2*cos(x)**2 - cos(x)**4) == -1

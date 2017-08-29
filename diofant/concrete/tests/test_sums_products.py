@@ -184,7 +184,7 @@ def test_karr_proposition_2b():
 
 def test_arithmetic_sums():
     assert summation(1, (n, a, b)) == b - a + 1
-    assert Sum(S.NaN, (n, a, b)) is S.NaN
+    assert Sum(nan, (n, a, b)) is nan
     assert Sum(x, (n, a, a)).doit() == x
     assert Sum(x, (x, a, a)).doit() == a
     assert Sum(x, (n, 1, a)).doit() == a*x
@@ -404,8 +404,8 @@ def test_evalf_sympyissue_6372():
 
 
 def test_simple_products():
-    assert Product(S.NaN, (x, 1, 3)) is S.NaN
-    assert product(S.NaN, (x, 1, 3)) is S.NaN
+    assert Product(nan, (x, 1, 3)) is nan
+    assert product(nan, (x, 1, 3)) is nan
     assert Product(x, (n, a, a)).doit() == x
     assert Product(x, (x, a, a)).doit() == a
     assert Product(x, (y, 1, a)).doit() == x**a

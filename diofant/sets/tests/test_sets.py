@@ -6,7 +6,7 @@ from diofant import (And, Complement, Contains, E, EmptySet, Eq, FiniteSet,
                      Lambda, Le, LessThan, Lt, Max, Min, Or, Piecewise, Pow,
                      ProductSet, Rational, RootOf, S, Set, Sum, Symbol,
                      SymmetricDifference, Union, cos, false, imageset, log,
-                     nan, oo, pi, sin, sqrt, sympify, true)
+                     nan, oo, pi, sin, sqrt, sympify, true, zoo)
 from diofant.abc import a, b, x, y, z
 
 
@@ -197,14 +197,14 @@ def test_complement():
     assert FiniteSet(0).complement(S.Reals) ==  \
         Union(Interval(-oo, 0, True, True), Interval(0, oo, True, True))
 
-    assert (FiniteSet(5) + Interval(S.NegativeInfinity,
+    assert (FiniteSet(5) + Interval(-oo,
                                     0)).complement(S.Reals) == \
-        Interval(0, 5, True, True) + Interval(5, S.Infinity, True, True)
+        Interval(0, 5, True, True) + Interval(5, oo, True, True)
 
     assert FiniteSet(1, 2, 3).complement(S.Reals) == \
-        Interval(S.NegativeInfinity, 1, True, True) + \
+        Interval(-oo, 1, True, True) + \
         Interval(1, 2, True, True) + Interval(2, 3, True, True) +\
-        Interval(3, S.Infinity, True, True)
+        Interval(3, oo, True, True)
 
     assert FiniteSet(x).complement(S.Reals) == Complement(S.Reals, FiniteSet(x))
 
@@ -451,8 +451,8 @@ def test_contains():
     assert S.Reals.contains(-oo) is S.false
     assert Interval(-oo, oo, True).contains(oo) is S.true
     assert Interval(-oo, oo).contains(-oo) is S.true
-    bad = [EmptySet(), FiniteSet(1), Interval(1, 2), S.ComplexInfinity,
-           S.ImaginaryUnit, S.Infinity, S.NaN, S.NegativeInfinity]
+    bad = [EmptySet(), FiniteSet(1), Interval(1, 2), zoo,
+           S.ImaginaryUnit, oo, nan, -oo]
     assert all(i not in Interval(0, 5) for i in bad)
 
     assert FiniteSet(1, 2, 3).contains(2) is S.true
@@ -471,7 +471,7 @@ def test_contains():
     s2 = FiniteSet(rad2)
     assert s1 - s2 == S.EmptySet
 
-    items = [1, 2, S.Infinity, Symbol('ham'), -1.1]
+    items = [1, 2, oo, Symbol('ham'), -1.1]
     fset = FiniteSet(*items)
     assert all(item in fset for item in items)
     assert all(fset.contains(item) is S.true for item in items)
@@ -481,7 +481,7 @@ def test_contains():
     assert Union(Interval(0, 1), FiniteSet(2, 5)).contains(3) is S.false
 
     assert S.EmptySet.contains(1) is S.false
-    assert FiniteSet(RootOf(x**3 + x - 1, 0)).contains(S.Infinity) is S.false
+    assert FiniteSet(RootOf(x**3 + x - 1, 0)).contains(oo) is S.false
 
     assert RootOf(x**5 + x**3 + 1, 0) in S.Reals
     assert not RootOf(x**5 + x**3 + 1, 1) in S.Reals
@@ -705,10 +705,8 @@ def test_supinf():
     assert FiniteSet(5, 1, x).inf == Min(1, x)
     assert FiniteSet(5, 1, x, y).sup == Max(5, x, y)
     assert FiniteSet(5, 1, x, y).inf == Min(1, x, y)
-    assert FiniteSet(5, 1, x, y, S.Infinity, S.NegativeInfinity).sup == \
-        S.Infinity
-    assert FiniteSet(5, 1, x, y, S.Infinity, S.NegativeInfinity).inf == \
-        S.NegativeInfinity
+    assert FiniteSet(5, 1, x, y, oo, -oo).sup == +oo
+    assert FiniteSet(5, 1, x, y, oo, -oo).inf == -oo
     assert FiniteSet('Ham', 'Eggs').sup == Max('Ham', 'Eggs')
 
 
@@ -718,7 +716,7 @@ def test_universalset():
     assert U.union(Interval(2, 4)) == U
 
     assert U.intersection(Interval(2, 4)) == Interval(2, 4)
-    assert U.measure == S.Infinity
+    assert U.measure == oo
     assert U.boundary == S.EmptySet
     assert U.contains(0) is S.true
     assert Interval(0, 1).symmetric_difference(U) == Interval(0, 1)

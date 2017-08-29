@@ -390,10 +390,10 @@ def test_is_rational_function():
     assert (sin(y)/x).is_rational_function(x) is True
     assert (sin(y)/x).is_rational_function(x, y) is False
 
-    assert (S.NaN).is_rational_function() is False
-    assert (S.Infinity).is_rational_function() is False
-    assert (-S.Infinity).is_rational_function() is False
-    assert (S.ComplexInfinity).is_rational_function() is False
+    assert nan.is_rational_function() is False
+    assert (+oo).is_rational_function() is False
+    assert (-oo).is_rational_function() is False
+    assert zoo.is_rational_function() is False
 
 
 def test_is_algebraic_expr():
@@ -520,11 +520,11 @@ def test_as_numer_denom():
     # this should take no more than a few seconds
     assert int(log(Add(*[Dummy()/i/x for i in range(1, 705)]
                        ).as_numer_denom()[1]/x).n(4)) == 705
-    for i in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+    for i in (oo, -oo, zoo):
         assert (i + x/3).as_numer_denom() == \
             (x + i, 3)
-    assert (S.Infinity + x/3 + y/4).as_numer_denom() == \
-        (4*x + 3*y + S.Infinity, 12)
+    assert (oo + x/3 + y/4).as_numer_denom() == \
+        (4*x + 3*y + oo, 12)
     assert (oo*x + zoo*y).as_numer_denom() == \
         (zoo*y + oo*x, 1)
 
@@ -1364,14 +1364,14 @@ def test_as_ordered_terms():
 
 
 def test_sympyissue_4199():
-    # first subs and limit gives NaN
+    # first subs and limit gives nan
     a = x/y
-    assert a._eval_interval(x, 0, oo)._eval_interval(y, oo, 0) is S.NaN
-    # second subs and limit gives NaN
-    assert a._eval_interval(x, 0, oo)._eval_interval(y, 0, oo) is S.NaN
-    # difference gives S.NaN
+    assert a._eval_interval(x, 0, oo)._eval_interval(y, oo, 0) is nan
+    # second subs and limit gives nan
+    assert a._eval_interval(x, 0, oo)._eval_interval(y, 0, oo) is nan
+    # difference gives nan
     a = x - y
-    assert a._eval_interval(x, 1, oo)._eval_interval(y, oo, 1) is S.NaN
+    assert a._eval_interval(x, 1, oo)._eval_interval(y, oo, 1) is nan
     pytest.raises(ValueError, lambda: x._eval_interval(x, None, None))
     a = -y*Heaviside(x - y)
     assert a._eval_interval(x, -oo, oo) == -y
@@ -1396,10 +1396,10 @@ def test_primitive():
     assert (-2*x).primitive() == (2, -x)
     assert Add(5*z/7, 0.5*x, 3*y/2, evaluate=False).primitive() == \
         (Rational(1, 14), 7.0*x + 21*y + 10*z)
-    for i in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+    for i in (oo, -oo, zoo):
         assert (i + x/3).primitive() == \
             (Rational(1, 3), i + x)
-    assert (S.Infinity + 2*x/3 + 4*y/7).primitive() == \
+    assert (oo + 2*x/3 + 4*y/7).primitive() == \
         (Rational(1, 21), 14*x + 12*y + oo)
     assert S.Zero.primitive() == (S.One, S.Zero)
 
@@ -1595,10 +1595,10 @@ def test_round():
     assert str(Float(0.00106).round(4)) == '0.0011'
 
     # issue sympy/sympy#8147
-    assert S.NaN.round() == S.NaN
-    assert S.Infinity.round() == S.Infinity
-    assert S.NegativeInfinity.round() == S.NegativeInfinity
-    assert S.ComplexInfinity.round() == S.ComplexInfinity
+    assert nan.round() == nan
+    assert (+oo).round() == +oo
+    assert (-oo).round() == -oo
+    assert zoo.round() == zoo
 
 
 def test_round_exception_nostr():

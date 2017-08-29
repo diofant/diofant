@@ -2,8 +2,8 @@ import pytest
 
 from diofant import (Add, Derivative, Function, I, Integer, Mul, O, Rational,
                      S, Symbol, Wild, collect, collect_const, cos, diff, exp,
-                     factor, fraction, log, radsimp, rcollect, root, sin, sqrt,
-                     symbols)
+                     factor, fraction, log, nan, radsimp, rcollect, root, sin,
+                     sqrt, symbols)
 from diofant.abc import a, b, c, d, f, t, x, y, z
 from diofant.core.mul import _unevaluated_Mul as UMul
 from diofant.simplify.radsimp import collect_sqrt, fraction_expand
@@ -103,7 +103,7 @@ def test_radsimp():
          120*sqrt(10)*sqrt(-8*sqrt(5) + 40)*sqrt(sqrt(5) + 5))/(-36000 -
                                                                 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
                                                                                 24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
-    assert radsimp(eq) is S.NaN  # it's 0/0
+    assert radsimp(eq) is nan  # it's 0/0
 
     # work with normal form
     e = 1/sqrt(sqrt(7)/7 + 2*sqrt(2) + 3*sqrt(3) + 5*sqrt(5)) + 3

@@ -167,8 +167,8 @@ def test_erfc_evalf():
 def test_erfi():
     assert erfi(nan) == nan
 
-    assert erfi(oo) == S.Infinity
-    assert erfi(-oo) == S.NegativeInfinity
+    assert erfi(+oo) == +oo
+    assert erfi(-oo) == -oo
 
     assert erfi(0) == S.Zero
 
@@ -264,9 +264,9 @@ def test_erf2():
 
 def test_erfinv():
     assert erfinv(0) == 0
-    assert erfinv(-1) == S.NegativeInfinity
-    assert erfinv(1) == S.Infinity
-    assert erfinv(nan) == S.NaN
+    assert erfinv(-1) == -oo
+    assert erfinv(+1) == +oo
+    assert erfinv(nan) == nan
 
     assert erfinv(erf(w)) == w
     assert erfinv(erf(-w)) == -w
@@ -284,8 +284,8 @@ def test_erfinv_evalf():
 
 def test_erfcinv():
     assert erfcinv(1) == 0
-    assert erfcinv(0) == S.Infinity
-    assert erfcinv(nan) == S.NaN
+    assert erfcinv(0) == oo
+    assert erfcinv(nan) == nan
 
     assert erfcinv(x).diff() == -sqrt(pi)*exp(erfcinv(x)**2)/2
 
@@ -296,7 +296,7 @@ def test_erfcinv():
 
 def test_erf2inv():
     assert erf2inv(0, 0) == S.Zero
-    assert erf2inv(0, 1) == S.Infinity
+    assert erf2inv(0, 1) == oo
     assert erf2inv(1, 0) == S.One
     assert erf2inv(0, y) == erfinv(y)
     assert erf2inv(oo, y) == erfcinv(-y)
@@ -699,10 +699,10 @@ def test_fresnel():
     assert fresnelc(y/z).limit(z, 0) == fresnelc(oo*sign(y))
 
     # issue sympy/sympy#6510
-    assert fresnels(z).series(z, S.Infinity) == \
+    assert fresnels(z).series(z, oo) == \
         (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + \
         (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + S.Half
-    assert fresnelc(z).series(z, S.Infinity) == \
+    assert fresnelc(z).series(z, oo) == \
         (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + \
         (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + S.Half
     assert fresnels(1/z).series(z) == \

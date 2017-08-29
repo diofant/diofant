@@ -60,7 +60,7 @@ def test_basics():
     assert Integral(0, x) != 0
     assert Integral(x, (x, 1, 1)) != 0
     assert Integral(oo, x) != oo
-    assert Integral(S.NaN, x) == S.NaN
+    assert Integral(nan, x) == nan
 
     assert diff(Integral(y, y), x) == 0
     assert diff(Integral(x, (x, 0, 1)), x) == 0

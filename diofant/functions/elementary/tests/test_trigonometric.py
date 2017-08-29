@@ -856,7 +856,7 @@ def test_atan_rewrite():
 
 def test_atan2():
     assert atan2.nargs == FiniteSet(2)
-    assert atan2(0, 0) == S.NaN
+    assert atan2(0, 0) == nan
     assert atan2(0, 1) == 0
     assert atan2(1, 1) == pi/4
     assert atan2(1, 0) == pi/2
@@ -1206,8 +1206,8 @@ def test_real_imag():
 def test_sin_cos_with_infinity():
     # Test for issue sympy/sympy#5196
     # https://github.com/sympy/sympy/issues/5196
-    assert sin(oo) == S.NaN
-    assert cos(oo) == S.NaN
+    assert sin(oo) == nan
+    assert cos(oo) == nan
 
 
 @pytest.mark.slow

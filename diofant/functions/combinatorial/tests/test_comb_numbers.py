@@ -3,8 +3,8 @@ import string
 import pytest
 
 from diofant import (Dummy, EulerGamma, I, Integer, Product, Rational, S, Sum,
-                     Symbol, cancel, diff, expand_func, im, oo, pi, re, sstr,
-                     symbols)
+                     Symbol, cancel, diff, expand_func, im, nan, oo, pi, re,
+                     sstr, symbols, zoo)
 from diofant.abc import x
 from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
                                digamma, euler, factorial, fibonacci, gamma,
@@ -138,7 +138,7 @@ def test_harmonic():
     assert harmonic(3, 3) == Rational(251, 216)
     assert harmonic(4, 3) == Rational(2035, 1728)
 
-    assert harmonic(oo, -1) == S.NaN
+    assert harmonic(oo, -1) == nan
     assert harmonic(oo, 0) == oo
     assert harmonic(oo, S.Half) == oo
     assert harmonic(oo, 1) == oo
@@ -541,7 +541,7 @@ def test_sympyissue_8601():
     n = Symbol('n', integer=True, negative=True)
 
     assert catalan(n - 1) == S.Zero
-    assert catalan(-S.Half) == S.ComplexInfinity
+    assert catalan(-S.Half) == zoo
     assert catalan(-S.One) == -S.Half
     c1 = catalan(-5.6).evalf()
     assert str(c1) == '6.93334070531408e-5'

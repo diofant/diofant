@@ -6,8 +6,8 @@ import pytest
 from diofant import (E, Float, Function, I, Integer, Integral, Limit, Matrix,
                      Piecewise, PoleError, Rational, S, Sum, Symbol, acos,
                      atan, ceiling, cos, cot, diff, exp, floor, gamma,
-                     integrate, limit, log, oo, pi, polygamma, sign, simplify,
-                     sin, sinh, sqrt, subfactorial, symbols, tan)
+                     integrate, limit, log, nan, oo, pi, polygamma, sign,
+                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -33,14 +33,14 @@ def test_basic1():
     assert limit((1 + x)**(1 + sqrt(2)), x, 0) == 1
     assert limit((1 + x)**oo, x, 0) == oo
     assert limit((1 + x)**oo, x, 0, dir='-') == 0
-    assert limit((1 + x + y)**oo, x, 0, dir='-') == (1 + y)**(oo)
+    assert limit((1 + x + y)**oo, x, 0, dir='-') == (1 + y)**oo
     assert limit(y/x/log(x), x, 0) == -oo*sign(y)
     assert limit(cos(x + y)/x, x, 0) == sign(cos(y))*oo
     limit(Sum(1/x, (x, 1, y)) - log(y), y, oo)
     limit(Sum(1/x, (x, 1, y)) - 1/y, y, oo)
     assert limit(gamma(1/x + 3), x, oo) == 2
-    assert limit(S.NaN, x, -oo) == S.NaN
-    assert limit(O(2)*x, x, S.NaN) == S.NaN
+    assert limit(nan, x, -oo) == nan
+    assert limit(O(2)*x, x, nan) == nan
     assert limit(sin(O(x)), x, 0) == 0
     assert limit(1/(x - 1), x, 1, dir="+") == oo
     assert limit(1/(x - 1), x, 1, dir="-") == -oo
@@ -103,8 +103,8 @@ def test_basic5():
     class my(Function):
         @classmethod
         def eval(cls, arg):
-            if arg is S.Infinity:
-                return S.NaN
+            if arg is oo:
+                return nan
     assert limit(my(x), x, oo) == Limit(my(x), x, oo)
 
     assert limit(4/x > 8, x, 0)  # relational test
