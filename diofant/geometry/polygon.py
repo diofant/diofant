@@ -575,7 +575,7 @@ class Polygon(GeometrySet):
         >>> p = tri.arbitrary_point('t')
         >>> perimeter = tri.perimeter
         >>> s1, s2 = [s.length for s in tri.sides[:2]]
-        >>> p.subs(t, (s1 + s2/2)/perimeter)
+        >>> p.subs({t: (s1 + s2/2)/perimeter})
         Point2D(1, 1/2)
 
         """
@@ -588,8 +588,7 @@ class Polygon(GeometrySet):
         for s in self.sides:
             side_perim_fraction = s.length/perimeter
             perim_fraction_end = perim_fraction_start + side_perim_fraction
-            pt = s.arbitrary_point(parameter).subs(
-                t, (t - perim_fraction_start)/side_perim_fraction)
+            pt = s.arbitrary_point(parameter).subs({t: (t - perim_fraction_start)/side_perim_fraction})
             sides.append(
                 (pt, (And(perim_fraction_start <= t, t < perim_fraction_end))))
             perim_fraction_start = perim_fraction_end
@@ -1396,7 +1395,7 @@ class RegularPolygon(Polygon):
         >>> p.encloses_point(Point(R/2, R/2 + (R - r)/10))
         False
         >>> t = Symbol('t', extended_real=True)
-        >>> p.encloses_point(p.arbitrary_point().subs(t, S.Half))
+        >>> p.encloses_point(p.arbitrary_point().subs({t: S.Half}))
         False
         >>> p.encloses_point(Point(5, 5))
         False

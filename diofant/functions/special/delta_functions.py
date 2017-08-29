@@ -101,7 +101,7 @@ class DiracDelta(Function):
             darg = abs(diff(self.args[0], x))
             for r, m in argroots.items():
                 if r.is_extended_real is not False and m == 1:
-                    result += self.func(x - r)/darg.subs(x, r)
+                    result += self.func(x - r)/darg.subs({x: r})
                 else:
                     # don't handle non-real and if m != 1 then
                     # a polynomial will have a zero in the derivative (darg)

@@ -27,8 +27,8 @@ def test_Tuple():
     assert st == st2.subs({p: 1, q: 2, r: 3, s: 4})
     # issue sympy/sympy#5505
     assert all(isinstance(arg, Basic) for arg in st.args)
-    assert Tuple(p, 1).subs(p, 0) == Tuple(0, 1)
-    assert Tuple(p, Tuple(p, 1)).subs(p, 0) == Tuple(0, Tuple(0, 1))
+    assert Tuple(p, 1).subs({p: 0}) == Tuple(0, 1)
+    assert Tuple(p, Tuple(p, 1)).subs({p: 0}) == Tuple(0, Tuple(0, 1))
 
     assert Tuple(t2) == Tuple(Tuple(*t2))
 

@@ -353,6 +353,6 @@ def log_to_real(h, q, x, t):
             result += r_u*log(AB) + r_v*log_to_atan(A, B)
 
     for r in R_q:
-        result += r*log(h.as_expr().subs(t, r))
+        result += r*log(h.as_expr().subs({t: r}))
 
     return result

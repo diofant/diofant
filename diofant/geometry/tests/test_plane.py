@@ -83,7 +83,7 @@ def test_plane():
     t = Dummy()
     r = pl3.random_point()
     a = pl3.perpendicular_line(r).arbitrary_point(t)
-    s = Segment3D(a.subs(t, 1), a.subs(t, 2))
+    s = Segment3D(a.subs({t: 1}), a.subs({t: 2}))
     assert s.p1 not in pl3 and s.p2 not in pl3
     assert pl3.projection_line(s).equals(r)
     assert pl3.projection_line(Segment(Point(1, 0), Point(1, 1))) == \
@@ -222,5 +222,5 @@ def test_plane2():
     t = Dummy()
     r = pl3.random_point()
     a = pl3.perpendicular_line(r).arbitrary_point(t)
-    s = Segment3D(a.subs(t, 1), a.subs(t, 2))
+    s = Segment3D(a.subs({t: 1}), a.subs({t: 2}))
     assert s.p1 not in pl3 and s.p2 not in pl3

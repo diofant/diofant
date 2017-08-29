@@ -69,7 +69,7 @@ method.  It replaces all instances of something in an expression with
 something else.
 
     >>> expr = cos(x) + 1
-    >>> expr.subs(x, y)
+    >>> expr.subs({x: y})
     cos(y) + 1
     >>> expr
     cos(x) + 1
@@ -82,13 +82,13 @@ We see that performing substitution leaves original expression
    Almost all Diofant expressions are immutable.  No function (or
    method) will change them in-place.
 
-To perform several substitutions in one shot, you can provide
-:class:`~collections.abc.Iterable` sequence of pairs.
+Use several method calls to perform a sequence of substitutions in
+same variable:
 
     >>> x**y
      y
     x
-    >>> _.subs(((y, x**y), (y, x**x)))
+    >>> _.subs({y: x**y}).subs({y: x**x})
      ⎛ ⎛ x⎞⎞
      ⎜ ⎝x ⎠⎟
      ⎝x    ⎠
@@ -96,9 +96,9 @@ To perform several substitutions in one shot, you can provide
 
 Use flag ``simultaneous`` to do all substitutions at once.
 
-    >>> (x - y).subs(((x, y), (y, x)))
+    >>> (x - y).subs({x: y, y: x})
     0
-    >>> (x - y).subs(((x, y), (y, x)), simultaneous=True)
+    >>> (x - y).subs({x: y, y: x}, simultaneous=True)
     -x + y
 
 Numerics

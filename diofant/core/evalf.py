@@ -965,7 +965,7 @@ def hypsum(expr, n, start, prec):
         raise NotImplementedError('does not support inf prec')
 
     if start:
-        expr = expr.subs(n, n + start)
+        expr = expr.subs({n: n + start})
     hs = hypersimp(expr, n)
     if hs is None:
         raise NotImplementedError("a hypergeometric series is required")
@@ -979,7 +979,7 @@ def hypsum(expr, n, start, prec):
     if h < 0:
         raise ValueError("Sum diverges like (n!)^%i" % (-h))
 
-    term = expr.subs(n, 0)
+    term = expr.subs({n: 0})
     if not term.is_Rational:
         raise NotImplementedError("Non rational term functionality is not implemented.")
 

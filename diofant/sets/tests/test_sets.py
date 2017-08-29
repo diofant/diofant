@@ -329,8 +329,8 @@ def test_ProductSet_iter():
 def test_interval_subs():
     a = Symbol('a', extended_real=True)
 
-    assert Interval(0, a).subs(a, 2) == Interval(0, 2)
-    assert Interval(a, 0).subs(a, 2) == S.EmptySet
+    assert Interval(0, a).subs({a: 2}) == Interval(0, 2)
+    assert Interval(a, 0).subs({a: 2}) == S.EmptySet
 
 
 def test_interval_to_mpi():
@@ -504,11 +504,11 @@ def test_union_contains():
     pytest.raises(TypeError, lambda: x in i3)
     e = i3.contains(x)
     assert e == Or(And(0 <= x, x <= 1), And(2 <= x, x <= 3))
-    assert e.subs(x, -0.5) is false
-    assert e.subs(x, 0.5) is true
-    assert e.subs(x, 1.5) is false
-    assert e.subs(x, 2.5) is true
-    assert e.subs(x, 3.5) is false
+    assert e.subs({x: -0.5}) is false
+    assert e.subs({x: 0.5}) is true
+    assert e.subs({x: 1.5}) is false
+    assert e.subs({x: 2.5}) is true
+    assert e.subs({x: 3.5}) is false
 
     U = Interval(0, 2, True, True) + Interval(10, oo) + FiniteSet(-1, 2, 5, 6)
     assert all(el not in U for el in [0, 4, -oo])

@@ -529,7 +529,7 @@ class Pow(Expr):
             otherwise bool will be False,
 
             cti are the coefficient and terms of an exponent of self or old
-            In this _eval_subs routine a change like (b**(2*x)).subs(b**x, y)
+            In this _eval_subs routine a change like (b**(2*x)).subs({b**x: y})
             will give y**2 since (b**x)**2 == b**(2*x); if that equality does
             not hold then the substitution should not occur so `bool` will be
             False.
@@ -566,10 +566,10 @@ class Pow(Expr):
                 ct1 = (self.exp/ct2[1], ct2[1])
                 ok, pow = _check(ct1, ct2, old)
                 if ok:
-                    # issue sympy/sympy#5180: (x**(6*y)).subs(x**(3*y),z)->z**2
+                    # issue sympy/sympy#5180: (x**(6*y)).subs({x**(3*y):z})->z**2
                     return self.func(new, pow)
-            else:  # b**(6*x+a).subs(b**(3*x), y) -> y**2 * b**a
-                # exp(exp(x) + exp(x**2)).subs(exp(exp(x)), w) -> w * exp(exp(x**2))
+            else:  # b**(6*x+a).subs({b**(3*x): y}) -> y**2 * b**a
+                # exp(exp(x) + exp(x**2)).subs({exp(exp(x)): w}) -> w * exp(exp(x**2))
                 oarg = old.exp
                 new_l = []
                 o_al = []
@@ -592,7 +592,7 @@ class Pow(Expr):
                 Symbol, as_Add=False)
             ok, pow = _check(ct1, ct2, old)
             if ok:
-                return self.func(new, pow)  # (2**x).subs(exp(x*log(2)), z) -> z
+                return self.func(new, pow)  # (2**x).subs({exp(x*log(2)): z}) -> z
 
     def as_base_exp(self):
         """Return base and exp of self.

@@ -435,7 +435,7 @@ def test_polygon():
     assert Polygon(Point(4, 4), Point(0, 4), Point(0, 0)) in p5
     assert p5 != Point(0, 4)
     assert Point(0, 1) in p5
-    assert p5.arbitrary_point('t').subs(Symbol('t', extended_real=True), 0) == \
+    assert p5.arbitrary_point('t').subs({Symbol('t', extended_real=True): 0}) == \
         Point(0, 0)
     pytest.raises(ValueError, lambda: Polygon(
         Point(x, 0), Point(0, y), Point(x, y)).arbitrary_point('x'))
@@ -673,11 +673,11 @@ def test_subs():
               Polygon(p, q, r, Point(5, 4)),
               Circle(p, 3),
               Ellipse(p, 3, 4)]:
-        assert 'y' in str(o.subs(x, y))
+        assert 'y' in str(o.subs({x: y}))
     assert p.subs({x: 1}) == Point(1, 2)
-    assert Point(1, 2).subs(Point(1, 2), Point(3, 4)) == Point(3, 4)
-    assert Point(1, 2).subs((1, 2), Point(3, 4)) == Point(3, 4)
-    assert Point(1, 2).subs(Point(1, 2), Point(3, 4)) == Point(3, 4)
+    assert Point(1, 2).subs({Point(1, 2): Point(3, 4)}) == Point(3, 4)
+    assert Point(1, 2).subs({(1, 2): Point(3, 4)}) == Point(3, 4)
+    assert Point(1, 2).subs({Point(1, 2): Point(3, 4)}) == Point(3, 4)
     assert Point(1, 2).subs({(1, 2)}) == Point(2, 2)
     pytest.raises(ValueError, lambda: Point(1, 2).subs(1))
     pytest.raises(ValueError, lambda: Point(1, 1).subs((Point(1, 1), Point(1,
@@ -762,8 +762,8 @@ def test_geometry_transforms():
     cout = Curve((2*x - 4, 3*x**2 - 10), (x, 0, 1))
     pts_out = [Point(-4, -10), Point(-3, -37/4), Point(-2, -7)]
     assert c.scale(2, 3, (4, 5)) == cout
-    assert [c.subs(x, xi/2) for xi in Tuple(0, 1, 2)] == pts
-    assert [cout.subs(x, xi/2) for xi in Tuple(0, 1, 2)] == pts_out
+    assert [c.subs({x: xi/2}) for xi in Tuple(0, 1, 2)] == pts
+    assert [cout.subs({x: xi/2}) for xi in Tuple(0, 1, 2)] == pts_out
     assert Triangle(*pts).scale(2, 3, (4, 5)) == Triangle(*pts_out)
 
     assert Ellipse((0, 0), 2, 3).scale(2, 3, (4, 5)) == \
@@ -776,7 +776,7 @@ def test_geometry_transforms():
         Circle(Point(-8, -10), 6)
     assert Circle(Point(-8, -10), 6).scale(1/3, 1/3, (4, 5)) == \
         Circle((0, 0), 2)
-    assert Curve((x + y, 3*x), (x, 0, 1)).subs(y, Rational(1, 2)) == \
+    assert Curve((x + y, 3*x), (x, 0, 1)).subs({y: Rational(1, 2)}) == \
         Curve((x + 1/2, 3*x), (x, 0, 1))
     assert Curve((x, 3*x), (x, 0, 1)).translate(4, 5) == \
         Curve((x + 4, 3*x + 5), (x, 0, 1))

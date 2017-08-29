@@ -1269,7 +1269,7 @@ def intcurve_diffequ(vector_field, param, start_point, coord_sys=None):
     coord_functions = coord_sys.coord_functions()
     equations = [simplify(diff(cf.rcall(arbitrary_p), param) - vector_field.rcall(cf).rcall(arbitrary_p))
                  for cf in coord_functions]
-    init_cond = [simplify(cf.rcall(arbitrary_p).subs(param, 0) - cf.rcall(start_point))
+    init_cond = [simplify(cf.rcall(arbitrary_p).subs({param: 0}) - cf.rcall(start_point))
                  for cf in coord_functions]
     return equations, init_cond
 

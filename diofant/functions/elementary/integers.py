@@ -134,9 +134,9 @@ class floor(RoundFunction):
             return arg.approximation_interval(Integer)[0]
 
     def _eval_nseries(self, x, n, logx):
-        r = self.subs(x, 0)
+        r = self.subs({x: 0})
         args = self.args[0]
-        args0 = args.subs(x, 0)
+        args0 = args.subs({x: 0})
         if args0 == r:
             direction = (args - args0).as_leading_term(x).as_coeff_exponent(x)[0]
             if direction.is_positive:
@@ -209,9 +209,9 @@ class ceiling(RoundFunction):
             return arg.approximation_interval(Integer)[1]
 
     def _eval_nseries(self, x, n, logx):
-        r = self.subs(x, 0)
+        r = self.subs({x: 0})
         args = self.args[0]
-        args0 = args.subs(x, 0)
+        args0 = args.subs({x: 0})
         if args0 == r:
             direction = (args - args0).as_leading_term(x).as_coeff_exponent(x)[0]
             if direction.is_positive:

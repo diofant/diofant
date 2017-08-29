@@ -97,7 +97,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     >>> S = Sum(i, (i, 1, n)).doit()
     >>> S
     n**2/2 + n/2
-    >>> S.subs(n, -4)
+    >>> S.subs({n: -4})
     6
     >>> Sum(i, (i, 1, -4)).doit()
     6
@@ -269,9 +269,9 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 m = min(m, b - a + 1)
             if not eps or f.is_polynomial(i):
                 for k in range(m):
-                    s += f.subs(i, a + k)
+                    s += f.subs({i: a + k})
             else:
-                term = f.subs(i, a)
+                term = f.subs({i: a})
                 if term:
                     test = abs(term.evalf(3)) < eps
                     if not (test == S.false):
@@ -279,7 +279,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                         return term, S.Zero
                 s += term
                 for k in range(1, m):
-                    term = f.subs(i, a + k)
+                    term = f.subs({i: a + k})
                     if abs(term.evalf(3)) < eps and term != 0:
                         return s, abs(term)
                     s += term
@@ -287,15 +287,15 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 return s, S.Zero
             a += m
         x = Dummy('x')
-        I = Integral(f.subs(i, x), (x, a, b))
+        I = Integral(f.subs({i: x}), (x, a, b))
         if eval_integral:
             I = I.doit()
         s += I
 
         def fpoint(expr):
             if b is oo:
-                return expr.subs(i, a), 0
-            return expr.subs(i, a), expr.subs(i, b)
+                return expr.subs({i: a}), 0
+            return expr.subs({i: a}), expr.subs({i: b})
         fa, fb = fpoint(f)
         iterm = (fa + fb)/2
         g = f.diff(i)
@@ -430,7 +430,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         a = Function('a')
 
         def f(i, j):
-            return self.function.subs([(n, i), (k, j)])
+            return self.function.subs({n: i, k: j})
 
         I, J, step = 0, 1, 1
         y, x, sols = S.Zero, [], {}
@@ -460,7 +460,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             sols = solve(eq, *x)[0]
 
         y = sum(a(i, j)*F(n - j, k - i) for i in range(I) for j in range(J))
-        y = y.subs(sols).subs(map(lambda a: (a, 1), x))
+        y = y.subs(sols).subs({_: 1 for _ in x})
 
         return y if y else None
 
@@ -524,7 +524,7 @@ def telescopic_direct(L, R, n, limits):
     (i, a, b) = limits
     s = 0
     for m in range(n):
-        s += L.subs(i, a + m) + R.subs(i, b - m)
+        s += L.subs({i: a + m}) + R.subs({i: b - m})
     return s
 
 
@@ -538,7 +538,7 @@ def telescopic(L, R, limits):
         return
 
     k = Wild("k")
-    sol = (-R).match(L.subs(i, i + k))
+    sol = (-R).match(L.subs({i: i + k}))
     if sol:
         s = sol[k]
     else:
@@ -562,7 +562,7 @@ def eval_sum(f, limits):
     if i not in f.free_symbols:
         return f*(b - a + 1)
     if a == b:
-        return f.subs(i, a)
+        return f.subs({i: a})
 
     if f.has(KroneckerDelta) and _has_simple_delta(f, limits[0]):
         return deltasummation(f, limits)
@@ -590,7 +590,7 @@ def eval_sum_direct(expr, limits):
     (i, a, b) = limits
 
     dif = b - a
-    return Add(*[expr.subs(i, a + j) for j in range(dif + 1)])
+    return Add(*[expr.subs({i: a + j}) for j in range(dif + 1)])
 
 
 def eval_sum_symbolic(f, limits):
@@ -686,12 +686,12 @@ def _eval_sum_hyper(f, i, a):
     from ..polys import Poly, factor
 
     if a != 0:
-        return _eval_sum_hyper(f.subs(i, i + a), i, 0)
+        return _eval_sum_hyper(f.subs({i: i + a}), i, 0)
 
-    if f.subs(i, 0) == 0:
-        if simplify(f.subs(i, Dummy('i', integer=True, positive=True))) == 0:
+    if f.subs({i: 0}) == 0:
+        if simplify(f.subs({i: Dummy('i', integer=True, positive=True)})) == 0:
             return Integer(0), True
-        return _eval_sum_hyper(f.subs(i, i + 1), i, 0)
+        return _eval_sum_hyper(f.subs({i: i + 1}), i, 0)
 
     hs = hypersimp(f, i)
     if hs is None:
@@ -729,7 +729,7 @@ def _eval_sum_hyper(f, i, a):
     except PolynomialError:
         pass
 
-    return f.subs(i, 0)*e, h.convergence_statement
+    return f.subs({i: 0})*e, h.convergence_statement
 
 
 def eval_sum_hyper(f, i_a_b):
@@ -745,7 +745,7 @@ def eval_sum_hyper(f, i_a_b):
 
     if b != oo:
         if a == -oo:
-            res = _eval_sum_hyper(f.subs(i, -i), i, -b)
+            res = _eval_sum_hyper(f.subs({i: -i}), i, -b)
             if res is not None:
                 return Piecewise(res, (old_sum, True))
         else:
@@ -765,7 +765,7 @@ def eval_sum_hyper(f, i_a_b):
         if res is not None:
             r, c = res
             if c == S.false:
-                f = f.subs(i, Dummy('i', integer=True, positive=True) + a)
+                f = f.subs({i: Dummy('i', integer=True, positive=True) + a})
                 if f.is_nonnegative:
                     return oo
                 else:

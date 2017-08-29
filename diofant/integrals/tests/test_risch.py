@@ -664,7 +664,7 @@ def test_risch_integrate():
 
     # XXX: Unfortunately, making backsubs work on this one is a little
     # trickier, because x**x is converted to exp(x*log(x)), and so log(x**x)
-    # is converted to x*log(x). (x**2*log(x)).subs(x*log(x), log(x**x)) is
+    # is converted to x*log(x). (x**2*log(x)).subs({x*log(x): log(x**x)}) is
     # smart enough, the issue is that these splits happen at different places
     # in the algorithm.  Maybe a heuristic is in order
     assert risch_integrate(log(x**x), x) == x**2*log(x)/2 - x**2/4
@@ -681,7 +681,7 @@ def test_NonElementaryIntegral():
     assert isinstance(risch_integrate(exp(x**2), x), NonElementaryIntegral)
     assert isinstance(risch_integrate(x**x*log(x), x), NonElementaryIntegral)
     # Make sure methods of Integral still give back a NonElementaryIntegral
-    assert isinstance(NonElementaryIntegral(x**x*t0, x).subs(t0, log(x)), NonElementaryIntegral)
+    assert isinstance(NonElementaryIntegral(x**x*t0, x).subs({t0: log(x)}), NonElementaryIntegral)
 
 
 def test_xtothex():

@@ -361,7 +361,7 @@ def hypersimp(f, k):
     """
     f = sympify(f)
 
-    g = f.subs(k, k + 1) / f
+    g = f.subs({k: k + 1}) / f
 
     g = g.rewrite(gamma)
     g = expand_func(g)
@@ -555,7 +555,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     >>> def my_measure(expr):
     ...     POW = Symbol('POW')
     ...     # Discourage powers by giving POW a weight of 10
-    ...     count = count_ops(expr, visual=True).subs(POW, 10)
+    ...     count = count_ops(expr, visual=True).subs({POW: 10})
     ...     # Every other operation gets a weight of 1 (the default)
     ...     count = count.replace(Symbol, type(S.One))
     ...     return count
@@ -1064,7 +1064,7 @@ def besselsimp(expr):
             if (nu % 1) == Rational(1, 2):
                 return exptrigsimp(trigsimp(unpolarify(
                     fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
-                        func=True)).subs(z0, z)))
+                        func=True)).subs({z0: z})))
             elif nu.is_Integer and nu > 1:
                 return fro(nu, z).expand(func=True)
             return fro(nu, z)
@@ -1246,7 +1246,7 @@ def clear_coefficients(expr, rhs=Integer(0)):
     >>> rhs = Dummy('rhs')
     >>> clear_coefficients(expr, rhs)
     (y*(2*x + 1), _rhs/12)
-    >>> _[1].subs(rhs, 2)
+    >>> _[1].subs({rhs: 2})
     1/6
     """
     was = None

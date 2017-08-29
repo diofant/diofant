@@ -271,7 +271,7 @@ class Integral(AddWithLimits):
             raise ValueError('either x or u must be a symbol')
 
         if uvar == xvar:
-            return self.transform(x, (u.subs(uvar, d), d)).xreplace({d: uvar})
+            return self.transform(x, (u.subs({uvar: d}), d)).xreplace({d: uvar})
 
         if uvar in self.limits:
             raise ValueError(filldedent('''
@@ -279,21 +279,21 @@ class Integral(AddWithLimits):
             or a variable that is not already an integration variable'''))
 
         if not x.is_Symbol:
-            F = [x.subs(xvar, d)]
+            F = [x.subs({xvar: d})]
             soln = solve(u - x, xvar, check=False)
             if not soln:
                 raise ValueError('no solution for solve(F(x) - f(u), x)')
-            f = [fi[xvar].subs(uvar, d) for fi in soln]
+            f = [fi[xvar].subs({uvar: d}) for fi in soln]
         else:
-            f = [u.subs(uvar, d)]
+            f = [u.subs({uvar: d})]
             pdiff, reps = posify(u - x)
             puvar = uvar.subs([(v, k) for k, v in reps.items()])
             soln = [s[puvar].subs(reps) for s in solve(pdiff, puvar)]
             if not soln:
                 raise ValueError('no solution for solve(F(x) - f(u), u)')
-            F = [fi.subs(xvar, d) for fi in soln]
+            F = [fi.subs({xvar: d}) for fi in soln]
 
-        newfuncs = {(self.function.subs(xvar, fi)*fi.diff(d)).subs(d, uvar)
+        newfuncs = {(self.function.subs({xvar: fi})*fi.diff(d)).subs({d: uvar})
                     for fi in f}
         if len(newfuncs) > 1:
             raise ValueError(filldedent('''
@@ -306,7 +306,7 @@ class Integral(AddWithLimits):
             replace d with a, using subs if possible, otherwise limit
             where sign of b is considered
             """
-            wok = F.subs(d, a)
+            wok = F.subs({d: a})
             if wok is nan or wok.is_finite is False and a.is_finite:
                 return limit(sign(b)*F, d, a)
             return wok
@@ -477,9 +477,9 @@ class Integral(AddWithLimits):
                     if (any(b.is_extended_real for b in xab[1:]) and
                             not any(b.is_extended_real is False for b in xab[1:])):
                         r = Dummy('r', extended_real=True)
-                        function = function.subs(xab[0], r)
+                        function = function.subs({xab[0]: r})
                         function = function.rewrite(Piecewise)
-                        function = function.subs(r, xab[0])
+                        function = function.subs({r: xab[0]})
                         function = piecewise_fold(function)
 
                 antideriv = self._eval_integral(
@@ -633,7 +633,7 @@ class Integral(AddWithLimits):
                 limits = [(x, x) if (len(l) == 1 and l[0] == x) else l
                           for l in f.limits]
                 f = self.func(f.function, *limits)
-            return f.subs(x, ab)*dab_dsym
+            return f.subs({x: ab})*dab_dsym
         rv = 0
         if b is not None:
             rv += _do(f, b)
@@ -649,7 +649,7 @@ class Integral(AddWithLimits):
             # by the limits, so mask off the variable of integration
             # while differentiating
             u = Dummy('u')
-            arg = f.subs(x, u).diff(sym).subs(u, x)
+            arg = f.subs({x: u}).diff(sym).subs({u: x})
             rv += self.func(arg, Tuple(x, a, b))
         return rv
 
@@ -1027,7 +1027,7 @@ class Integral(AddWithLimits):
             result = (l + r)/2
             for i in range(1, n):
                 x = lower_limit + i*dx
-                result += self.function.subs(sym, x)
+                result += self.function.subs({sym: x})
             return result*dx
         elif method not in ('left', 'right', 'midpoint'):
             raise NotImplementedError("Unknown method %s" % method)
@@ -1046,7 +1046,7 @@ class Integral(AddWithLimits):
                 if i == n:
                     result += self.function.limit(sym, upper_limit, "-")
                     continue
-            result += self.function.subs(sym, xi)
+            result += self.function.subs({sym: xi})
         return result*dx
 
 
@@ -1243,7 +1243,7 @@ def line_integrate(field, curve, vars):
         _dn = diff(_f, curve.parameter)
         # ...arc length
         dldt = dldt + (_dn * _dn)
-        Ft = Ft.subs(var, _f)
+        Ft = Ft.subs({var: _f})
     Ft = Ft * sqrt(dldt)
 
     integral = Integral(Ft, curve.limits).doit(deep=False)

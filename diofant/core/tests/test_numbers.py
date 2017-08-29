@@ -1095,7 +1095,7 @@ def test_sympyissue_3423():
 
 def test_sympyissue_3449():
     x = Symbol("x")
-    assert sqrt(x - 1).subs(x, 5) == 2
+    assert sqrt(x - 1).subs({x: 5}) == 2
 
 
 def test_Integer_factors():

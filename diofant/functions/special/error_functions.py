@@ -1534,7 +1534,7 @@ class TrigonometricIntegral(Function):
     def _eval_nseries(self, x, n, logx):
         # NOTE this is fairly inefficient
         n += 1
-        if self.args[0].subs(x, 0) != 0:
+        if self.args[0].subs({x: 0}) != 0:
             return super()._eval_nseries(x, n, logx)
         baseseries = self._trigfunc(x)._eval_nseries(x, n, logx)
         if self._trigfunc(0) != 0:
@@ -1542,7 +1542,7 @@ class TrigonometricIntegral(Function):
         baseseries = baseseries.replace(Pow, lambda t, n: t**n/n)
         if self._trigfunc(0) != 0:
             baseseries += EulerGamma + log(x)
-        return baseseries.subs(x, self.args[0])._eval_nseries(x, n, logx)
+        return baseseries.subs({x: self.args[0]})._eval_nseries(x, n, logx)
 
 
 class Si(TrigonometricIntegral):
@@ -2101,7 +2101,7 @@ class fresnels(FresnelIntegral):
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [-sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
 
-            return S.Half + (sin(z**2)*Add(*p) + cos(z**2)*Add(*q)).subs(x, sqrt(2/pi)*x)
+            return S.Half + (sin(z**2)*Add(*p) + cos(z**2)*Add(*q)).subs({x: sqrt(2/pi)*x})
 
         # All other points are not handled
         return super()._eval_aseries(n, args0, x, logx)
@@ -2228,7 +2228,7 @@ class fresnelc(FresnelIntegral):
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [ sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
 
-            return S.Half + (cos(z**2)*Add(*p) + sin(z**2)*Add(*q)).subs(x, sqrt(2/pi)*x)
+            return S.Half + (cos(z**2)*Add(*p) + sin(z**2)*Add(*q)).subs({x: sqrt(2/pi)*x})
 
         # All other points are not handled
         return super()._eval_aseries(n, args0, x, logx)

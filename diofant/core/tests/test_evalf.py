@@ -212,7 +212,7 @@ def test_evalf_bugs():
     assert NS((-x).evalf(strict=False)) == '-x'
     assert NS((-2*x).evalf(strict=False), strict=False) == '-2.00000000000000*x'
     assert NS((-2*x*y).evalf(strict=False), strict=False) == '-2.00000000000000*x*y'
-    assert cos(x).evalf(subs={x: 1+I}) == cos(x).subs(x, 1+I).evalf()
+    assert cos(x).evalf(subs={x: 1+I}) == cos(x).subs({x: 1 + I}).evalf()
     # issue sympy/sympy#6660. Also NaN != mpmath.nan
     # In this order:
     # 0*nan, 0/nan, 0*inf, 0/inf

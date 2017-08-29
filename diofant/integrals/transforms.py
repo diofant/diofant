@@ -220,7 +220,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
     F = integrator(x**(s - 1) * f, x)
 
     if not F.has(Integral):
-        return _simplify(F.subs(s, s_), simplify), (-oo, oo), True
+        return _simplify(F.subs({s: s_}), simplify), (-oo, oo), True
 
     if not F.is_Piecewise:
         raise IntegralTransformError('Mellin', f, 'could not compute integral')
@@ -244,15 +244,15 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
             b_ = -oo
             aux_ = []
             for d in disjuncts(c):
-                d_ = d.replace(
-                    re, lambda x: x.as_real_imag()[0]).subs(re(s), t)
+                d_ = d.replace(re,
+                               lambda x: x.as_real_imag()[0]).subs({re(s): t})
                 if not d.is_Relational or d.rel_op in ('==', '!=') \
                         or d_.has(s) or not d_.has(t):
                     aux_ += [d]
                     continue
                 soln = solve_univariate_inequality(d_, t)
                 t_ = Dummy("t", real=True)
-                soln = soln.subs(t, t_).subs(t_, t)
+                soln = soln.subs({t: t_}).subs({t_: t})
                 if not soln.is_Relational or soln.rel_op in ('==', '!='):
                     aux_ += [d]
                     continue
@@ -276,7 +276,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
         raise IntegralTransformError('Mellin', f, 'no convergence found')
 
     a, b, aux = conds[0]
-    return _simplify(F.subs(s, s_), simplify), (a, b), aux
+    return _simplify(F.subs({s: s_}), simplify), (a, b), aux
 
 
 class MellinTransform(IntegralTransform):
@@ -522,7 +522,7 @@ def _rewrite_gamma(f, s, a, b):
 
     exponent = Integer(1)
     fac = Integer(1)
-    f = f.subs(s, s/s_multiplier)
+    f = f.subs({s: s/s_multiplier})
     fac /= s_multiplier
     exponent = 1/s_multiplier
     if a_ is not None:
@@ -717,7 +717,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
             res = Add(*ress)
             if not as_meijerg:
                 res = factor(res, gens=res.atoms(Heaviside))
-            return res.subs(x, x_), And(*conds)
+            return res.subs({x: x_}), And(*conds)
 
         try:
             a, b, C, e, fac = _rewrite_gamma(g, s, strip[0], strip[1])
@@ -749,7 +749,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
         if cond == S.false:
             raise IntegralTransformError(
                 'Inverse Mellin', F, 'does not converge')
-        return (h*fac).subs(x, x_), cond
+        return (h*fac).subs({x: x_}), cond
 
     raise IntegralTransformError('Inverse Mellin', F, '')
 
@@ -955,7 +955,7 @@ def _laplace_transform(f, t, s_, simplify=True):
     F = integrate(exp(-s*t) * f, (t, 0, oo))
 
     if not F.has(Integral):
-        return _simplify(F.subs(s, s_), simplify), -oo, True
+        return _simplify(F.subs({s: s_}), simplify), -oo, True
 
     if not F.is_Piecewise:
         raise IntegralTransformError(
@@ -994,15 +994,15 @@ def _laplace_transform(f, t, s_, simplify=True):
                         arg(polar_lift(s)**w1*w5, q))*w2)*abs(s**w3)**w4 - p)
                 if m and all(m[wild].is_positive for wild in [w1, w2, w3, w4, w5]):
                     d = re(s) > m[p]
-                d_ = d.replace(
-                    re, lambda x: x.expand().as_real_imag()[0]).subs(re(s), t)
+                d_ = d.replace(re,
+                               lambda x: x.expand().as_real_imag()[0]).subs({re(s): t})
                 if not d.is_Relational or d.rel_op in ('==', '!=') \
                         or d_.has(s) or not d_.has(t):
                     aux_ += [d]
                     continue
                 soln = solve_univariate_inequality(d_, t)
                 t_ = Dummy("t", real=True)
-                soln = soln.subs(t, t_).subs(t_, t)
+                soln = soln.subs({t: t_}).subs({t_: t})
                 if not soln.is_Relational or soln.rel_op in ('==', '!='):
                     aux_ += [d]
                     continue
@@ -1036,11 +1036,11 @@ def _laplace_transform(f, t, s_, simplify=True):
     def sbs(expr):
         if expr == S.true or expr == S.false:
             return bool(expr)
-        return expr.subs(s, s_)
+        return expr.subs({s: s_})
     if simplify:
         F = _simplifyconds(F, s, a)
         aux = _simplifyconds(aux, s, a)
-    return _simplify(F.subs(s, s_), simplify), sbs(a), sbs(aux)
+    return _simplify(F.subs({s: s_}), simplify), sbs(a), sbs(aux)
 
 
 class LaplaceTransform(IntegralTransform):
@@ -1159,17 +1159,17 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
     if f.is_Piecewise:
         # many of the functions called below can't work with piecewise
         # (b/c it has a bool in args)
-        return f.subs(t, t_), cond
+        return f.subs({t: t_}), cond
 
     u = Dummy('u')
 
     def simp_heaviside(arg):
-        a = arg.subs(exp(-t), u)
+        a = arg.subs({exp(-t): u})
         if a.has(t):
             return Heaviside(arg)
         rel = solve_univariate_inequality(a > 0, u)
         u_ = Dummy('u', real=True)
-        rel = rel.subs(u, u_).subs(u_, u)
+        rel = rel.subs({u: u_}).subs({u_: u})
         if rel.lts == u:
             k = log(rel.gts)
             return Heaviside(t + k)
@@ -1183,7 +1183,7 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
     # TODO it would be nice to fix cosh and sinh ... simplify messes these
     #      exponentials up
 
-    return _simplify(f.subs(t, t_), simplify), cond
+    return _simplify(f.subs({t: t_}), simplify), cond
 
 
 class InverseLaplaceTransform(IntegralTransform):

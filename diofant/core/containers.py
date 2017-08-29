@@ -24,7 +24,7 @@ class Tuple(Basic):
 
     >>> Tuple(a, b, c)[1:]
     (b, c)
-    >>> Tuple(a, b, c).subs(a, d)
+    >>> Tuple(a, b, c).subs({a: d})
     (d, b, c)
     """
 

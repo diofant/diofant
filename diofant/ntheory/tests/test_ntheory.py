@@ -453,7 +453,7 @@ def test_totient():
 
     m = Symbol("m", integer=True)
     assert totient(m)
-    assert totient(m).subs(m, 3**10) == 3**10 - 3**9
+    assert totient(m).subs({m: 3**10}) == 3**10 - 3**9
     assert summation(totient(m), (m, 1, 11)) == 42
 
     n = Symbol("n", integer=True, positive=True)
@@ -476,8 +476,8 @@ def test_divisor_sigma():
     k = Symbol("k", integer=True)
     assert divisor_sigma(m)
     assert divisor_sigma(m, k)
-    assert divisor_sigma(m).subs(m, 3**10) == 88573
-    assert divisor_sigma(m, k).subs([(m, 3**10), (k, 3)]) == 213810021790597
+    assert divisor_sigma(m).subs({m: 3**10}) == 88573
+    assert divisor_sigma(m, k).subs({m: 3**10, k: 3}) == 213810021790597
     assert summation(divisor_sigma(m), (m, 1, 11)) == 99
 
     pytest.raises(ValueError, lambda: divisor_sigma(-4))

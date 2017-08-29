@@ -179,7 +179,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             y += C[i] * n**i
 
         for i in range(r + 1):
-            E += coeffs[i].as_expr()*y.subs(n, n + i)
+            E += coeffs[i].as_expr()*y.subs({n: n + i})
 
         solutions = solve((E - f).as_poly(n).coeffs(), *C)
 
@@ -208,11 +208,11 @@ def rsolve_poly(coeffs, f, n, **hints):
 
         def _delta(p, k):
             B = S.One
-            D = p.subs(n, a + k)
+            D = p.subs({n: a + k})
 
             for i in range(1, k + 1):
                 B *= -Rational(k - i + 1, i)
-                D += B * p.subs(n, a + k - i)
+                D += B * p.subs({n: a + k - i})
 
             return D
 
@@ -243,12 +243,12 @@ def rsolve_poly(coeffs, f, n, **hints):
                     if i - k < 0:
                         break
 
-                    B = alpha[k - A].subs(x, i - k)
+                    B = alpha[k - A].subs({x: i - k})
 
                     for j in range(A):
                         v[j] += B * V[i - k, j]
 
-                denom = alpha[-A].subs(x, i)
+                denom = alpha[-A].subs({x: i})
 
                 for j in range(A):
                     V[i, j] = -v[j] / denom
@@ -263,14 +263,14 @@ def rsolve_poly(coeffs, f, n, **hints):
                     if i - k < 0:
                         break
 
-                    B = alpha[k - A].subs(x, i - k)
+                    B = alpha[k - A].subs({x: i - k})
 
                     for j in range(A):
                         v[j] += B * V[i - k, j]
 
                     g += B * G[i - k]
 
-                denom = alpha[-A].subs(x, i)
+                denom = alpha[-A].subs({x: i})
 
                 for j in range(A):
                     V[i, j] = -v[j] / denom
@@ -382,11 +382,11 @@ def rsolve_ratio(coeffs, f, n, **hints):
     r = len(coeffs) - 1
 
     A, B = coeffs[r], coeffs[0]
-    A = A.subs(n, n - r).expand()
+    A = A.subs({n: n - r}).expand()
 
     h = Dummy('h')
 
-    res = resultant(A, B.subs(n, n + h), n)
+    res = resultant(A, B.subs({n: n + h}), n)
     assert res.is_polynomial(n)
 
     nni_roots = list(roots(res, h, filter='Z',
@@ -398,14 +398,14 @@ def rsolve_ratio(coeffs, f, n, **hints):
         C, numers = S.One, [S.Zero]*(r + 1)
 
         for i in range(int(max(nni_roots)), -1, -1):
-            d = gcd(A, B.subs(n, n + i), n)
+            d = gcd(A, B.subs({n: n + i}), n)
 
             A = quo(A, d, n)
-            B = quo(B, d.subs(n, n - i), n)
+            B = quo(B, d.subs({n: n - i}), n)
 
-            C *= Mul(*[d.subs(n, n - j) for j in range(i + 1)])
+            C *= Mul(*[d.subs({n: n - j}) for j in range(i + 1)])
 
-        denoms = [C.subs(n, n + i) for i in range(r + 1)]
+        denoms = [C.subs({n: n + i}) for i in range(r + 1)]
 
         for i in range(r + 1):
             g = gcd(coeffs[i], denoms[i], n)
@@ -512,7 +512,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             s = hypersimp(g, n)
 
             for j in range(1, r + 1):
-                coeff *= s.subs(n, n + j - 1)
+                coeff *= s.subs({n: n + j - 1})
 
                 p, q = coeff.as_numer_denom()
 
@@ -540,7 +540,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
     Z = Dummy('Z')
 
-    p, q = coeffs[0], coeffs[r].subs(n, n - r + 1)
+    p, q = coeffs[0], coeffs[r].subs({n: n - r + 1})
 
     p_factors = list(roots(p, n))
     q_factors = list(roots(q, n))
@@ -561,11 +561,11 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
     for A, B in factors:
         polys, degrees = [], []
-        D = A*B.subs(n, n + r - 1)
+        D = A*B.subs({n: n + r - 1})
 
         for i in range(r + 1):
-            a = Mul(*[A.subs(n, n + j) for j in range(i)])
-            b = Mul(*[B.subs(n, n + j) for j in range(i, r)])
+            a = Mul(*[A.subs({n: n + j}) for j in range(0, i)])
+            b = Mul(*[B.subs({n: n + j}) for j in range(i, r)])
 
             poly = quo(coeffs[i]*a*b, D, n)
             polys.append(poly.as_poly(n))
@@ -591,7 +591,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             sol = [sol.coeff(_) for _ in syms]
 
             for C in sol:
-                ratio = z * A * C.subs(n, n + 1) / B / C
+                ratio = z * A * C.subs({n: n + 1}) / B / C
                 ratio = simplify(ratio)
 
                 skip = max([-1] + [v for v in roots(Mul(*ratio.as_numer_denom()), n)
@@ -702,7 +702,7 @@ def rsolve(f, y, init=None):
     k_min, k_max = min(h_part), max(h_part)
 
     if k_min < 0:
-        return rsolve(f.subs(n, n + abs(k_min)), y, init)
+        return rsolve(f.subs({n: n + abs(k_min)}), y, init)
 
     i_numer, i_denom = i_part.as_numer_denom()
 

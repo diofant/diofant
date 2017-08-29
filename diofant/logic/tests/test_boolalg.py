@@ -308,15 +308,15 @@ def test_is_boolean():
 
 def test_subs():
 
-    assert (A & B).subs(A, True) == B
-    assert (A & B).subs(A, False) is false
-    assert (A & B).subs(B, True) == A
-    assert (A & B).subs(B, False) is false
+    assert (A & B).subs({A: True}) == B
+    assert (A & B).subs({A: False}) is false
+    assert (A & B).subs({B: True}) == A
+    assert (A & B).subs({B: False}) is false
     assert (A & B).subs({A: True, B: True}) is true
-    assert (A | B).subs(A, True) is true
-    assert (A | B).subs(A, False) == B
-    assert (A | B).subs(B, True) is true
-    assert (A | B).subs(B, False) == A
+    assert (A | B).subs({A: True}) is true
+    assert (A | B).subs({A: False}) == B
+    assert (A | B).subs({B: True}) is true
+    assert (A | B).subs({B: False}) == A
     assert (A | B).subs({A: True, B: True}) is true
 
 

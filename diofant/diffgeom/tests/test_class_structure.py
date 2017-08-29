@@ -19,7 +19,7 @@ def test_point():
     point = Point(cs, [x, y])
     assert point == point.func(*point.args)
     assert point != Point(cs, [2, y])
-    # TODO assert point.subs(x, 2) == Point(cs, [2, y])
+    # TODO assert point.subs({x: 2}) == Point(cs, [2, y])
     # TODO assert point.free_symbols == {x, y}
 
 
@@ -34,9 +34,9 @@ def test_rebuild():
 
 
 def test_subs():
-    assert s1.subs(s1, s2) == s2
-    assert v1.subs(v1, v2) == v2
-    assert f1.subs(f1, f2) == f2
-    assert (x*f(s1) + y).subs(s1, s2) == x*f(s2) + y
-    assert (f(s1)*v1).subs(v1, v2) == f(s1)*v2
-    assert (y*f(s1)*f1).subs(f1, f2) == y*f(s1)*f2
+    assert s1.subs({s1: s2}) == s2
+    assert v1.subs({v1: v2}) == v2
+    assert f1.subs({f1: f2}) == f2
+    assert (x*f(s1) + y).subs({s1: s2}) == x*f(s2) + y
+    assert (f(s1)*v1).subs({v1: v2}) == f(s1)*v2
+    assert (y*f(s1)*f1).subs({f1: f2}) == y*f(s1)*f2

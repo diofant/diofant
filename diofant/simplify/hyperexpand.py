@@ -1031,7 +1031,7 @@ class UnShiftA(Operator):
             raise ValueError('Cannot decrement upper index: '
                              'cancels with lower')
 
-        n = Poly(Poly(n.all_coeffs()[:-1], A).as_expr().subs(A, _x/ai + 1), _x)
+        n = Poly(Poly(n.all_coeffs()[:-1], A).as_expr().subs({A: _x/ai + 1}), _x)
 
         self._poly = Poly((n - m)/b0, _x)
 
@@ -1072,8 +1072,7 @@ class UnShiftB(Operator):
         if b0 == 0:
             raise ValueError('Cannot increment index: cancels with upper')
 
-        n = Poly(Poly(n.all_coeffs()[:-1], B).as_expr().subs(
-            B, _x/(bi - 1) + 1), _x)
+        n = Poly(Poly(n.all_coeffs()[:-1], B).as_expr().subs({B: _x/(bi - 1) + 1}), _x)
 
         self._poly = Poly((m - n)/b0, _x)
 
@@ -1163,7 +1162,7 @@ class MeijerUnShiftA(Operator):
         if b0 == 0:
             raise ValueError('Cannot decrement upper b index (cancels)')
 
-        n = Poly(Poly(n.all_coeffs()[:-1], A).as_expr().subs(A, bi - _x), _x)
+        n = Poly(Poly(n.all_coeffs()[:-1], A).as_expr().subs({A: bi - _x}), _x)
 
         self._poly = Poly((m - n)/b0, _x)
 
@@ -1209,8 +1208,7 @@ class MeijerUnShiftB(Operator):
         if b0 == 0:
             raise ValueError('Cannot increment upper a index (cancels)')
 
-        n = Poly(Poly(n.all_coeffs()[:-1], B).as_expr().subs(
-            B, 1 - ai + _x), _x)
+        n = Poly(Poly(n.all_coeffs()[:-1], B).as_expr().subs({B: 1 - ai + _x}), _x)
 
         self._poly = Poly((m - n)/b0, _x)
 
@@ -1262,7 +1260,7 @@ class MeijerUnShiftC(Operator):
         if b0 == 0:
             raise ValueError('Cannot decrement lower b index (cancels)')
 
-        n = Poly(Poly(n.all_coeffs()[:-1], C).as_expr().subs(C, _x - bi), _x)
+        n = Poly(Poly(n.all_coeffs()[:-1], C).as_expr().subs({C: _x - bi}), _x)
 
         self._poly = Poly((m - n)/b0, _x)
 
@@ -1311,8 +1309,7 @@ class MeijerUnShiftD(Operator):
         if b0 == 0:
             raise ValueError('Cannot increment lower a index (cancels)')
 
-        n = Poly(Poly(n.all_coeffs()[:-1], B).as_expr().subs(
-            B, ai - 1 - _x), _x)
+        n = Poly(Poly(n.all_coeffs()[:-1], B).as_expr().subs({B: ai - 1 - _x}), _x)
 
         self._poly = Poly((m - n)/b0, _x)
 
@@ -1958,18 +1955,18 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     def carryout_plan(f, ops):
         from ..matrices import eye
 
-        C = apply_operators(f.C.subs(f.z, z0), ops,
-                            make_derivative_operator(f.M.subs(f.z, z0), z0))
+        C = apply_operators(f.C.subs({f.z: z0}), ops,
+                            make_derivative_operator(f.M.subs({f.z: z0}), z0))
         C = apply_operators(C, ops0,
-                            make_derivative_operator(f.M.subs(f.z, z0) +
+                            make_derivative_operator(f.M.subs({f.z: z0}) +
                                                      prem*eye(f.M.shape[0]), z0))
 
         if premult == 1:
             C = C.applyfunc(make_simp(z0))
-        r = C*f.B.subs(f.z, z0)*premult
+        r = C*f.B.subs({f.z: z0})*premult
 
         # Try substitution first
-        res = r[0].subs(z0, z).replace(hyper, hyperexpand_special)
+        res = r[0].subs({z0: z}).replace(hyper, hyperexpand_special)
         if rewrite:
             res = res.rewrite(rewrite)
         res = powdenest(res, polar=True)
@@ -2005,7 +2002,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
         debug('  Recognised polynomial.')
         p = apply_operators(res, ops, lambda f: z0*f.diff(z0))
         p = apply_operators(p*premult, ops0, lambda f: z0*f.diff(z0))
-        return unpolarify(simplify(p).subs(z0, z))
+        return unpolarify(simplify(p).subs({z0: z}))
 
     # Try to recognise a shifted sum.
     p = Integer(0)
@@ -2018,7 +2015,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     # apply the plan for poly
     p = apply_operators(p, ops, lambda f: z0*f.diff(z0))
     p = apply_operators(p*premult, ops0, lambda f: z0*f.diff(z0))
-    p = unpolarify(simplify(p).subs(z0, z))
+    p = unpolarify(simplify(p).subs({z0: z}))
 
     # Try special expansions early.
     if unpolarify(z) in [1, 0, -1]:
@@ -2219,12 +2216,12 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
         ops += devise_plan_meijer(f.func, func, z)
 
         # Now carry out the plan.
-        C = apply_operators(f.C.subs(f.z, z), ops,
-                            make_derivative_operator(f.M.subs(f.z, z), z))
+        C = apply_operators(f.C.subs({f.z: z}), ops,
+                            make_derivative_operator(f.M.subs({f.z: z}), z))
 
         C = C.applyfunc(make_simp(z))
-        r = C*f.B.subs(f.z, z)
-        r = r[0].subs(z, z0)
+        r = C*f.B.subs({f.z: z})
+        r = r[0].subs({z: z0})
         return powdenest(r, polar=True)
 
     debug("  Could not find a direct formula. Trying Slater's theorem.")
@@ -2360,10 +2357,10 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
     slater2, cond2 = do_slater(tr(func.bm), tr(func.an), tr(func.bq), tr(func.ap),
                                t, 1/z0)
 
-    slater1 = powdenest(slater1.subs(z, z0), polar=True)
-    slater2 = powdenest(slater2.subs(t, 1/z0), polar=True)
+    slater1 = powdenest(slater1.subs({z: z0}), polar=True)
+    slater2 = powdenest(slater2.subs({t: 1/z0}), polar=True)
     if not isinstance(cond2, bool):
-        cond2 = cond2.subs(t, 1/z)
+        cond2 = cond2.subs({t: 1/z})
 
     m = func(z)
     if m.delta > 0 or \
@@ -2389,9 +2386,9 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
         slater2 = slater2.rewrite(rewrite or 'nonrepsmall')
 
     if not isinstance(cond1, bool):
-        cond1 = cond1.subs(z, z0)
+        cond1 = cond1.subs({z: z0})
     if not isinstance(cond2, bool):
-        cond2 = cond2.subs(z, z0)
+        cond2 = cond2.subs({z: z0})
 
     def weight(expr, cond):
         if cond is True:

@@ -507,7 +507,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     for name_h, expr_h, args_h in helpers:
         if expr.has(expr_h):
             name_h = binary_function(name_h, expr_h, backend='dummy')
-            expr = expr.subs(expr_h, name_h(*args_h))
+            expr = expr.subs({expr_h: name_h(*args_h)})
     try:
         routine = make_routine('autofunc', expr, args)
     except CodeGenArgumentListError as e:

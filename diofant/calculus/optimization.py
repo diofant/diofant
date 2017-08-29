@@ -136,10 +136,10 @@ def minimize_univariate(f, x, dom):
         for p in solve(diff(f, x), x):
             p = p[x]
             if p in dom:
-                extr[p] = f.subs(x, p)
+                extr[p] = f.subs({x: p})
     elif dom.is_FiniteSet:
         for p in dom.args:
-            extr[p] = f.subs(x, p)
+            extr[p] = f.subs({x: p})
     else:  # pragma: no cover
         raise NotImplementedError
 

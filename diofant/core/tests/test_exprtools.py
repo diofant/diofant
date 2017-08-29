@@ -236,8 +236,8 @@ def test_gcd_terms():
     # issue sympy/sympy#6139-like
     alpha, alpha1, alpha2, alpha3 = symbols('alpha:4')
     a = alpha**2 - alpha*x**2 + alpha + x**3 - x*(alpha + 1)
-    rep = (alpha, (1 + sqrt(5))/2 + alpha1*x + alpha2*x**2 + alpha3*x**3)
-    s = (a/(x - alpha)).subs(*rep).series(x, 0, 1)
+    rep = {alpha: (1 + sqrt(5))/2 + alpha1*x + alpha2*x**2 + alpha3*x**3}
+    s = (a/(x - alpha)).subs(rep).series(x, 0, 1)
     assert simplify(collect(s, x)) == -sqrt(5)/2 - Rational(3, 2) + O(x)
 
     # issue sympy/sympy#5917

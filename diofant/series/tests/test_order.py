@@ -290,10 +290,10 @@ def test_leading_term():
 
 
 def test_eval():
-    assert O(x).subs(O(x), 1) == 1
-    assert O(x).subs(x, y) == O(y)
-    assert O(x).subs(y, x) == O(x)
-    assert O(x).subs(x, x + y) == O(x + y, (x, -y))
+    assert O(x).subs({O(x): 1}) == 1
+    assert O(x).subs({x: y}) == O(y)
+    assert O(x).subs({y: x}) == O(x)
+    assert O(x).subs({x: x + y}) == O(x + y, (x, -y))
     assert (O(1)**x).is_Pow
 
 
@@ -346,8 +346,8 @@ def test_sympyissue_6753():
 
 
 def test_sympyissue_7872():
-    assert O(x**3).subs(x, exp(-x**2)) in [O(exp(-3*x**2), (x, oo)),
-                                           O(exp(-3*x**2), (x, -oo))]
+    assert O(x**3).subs({x: exp(-x**2)}) in [O(exp(-3*x**2), (x, oo)),
+                                             O(exp(-3*x**2), (x, -oo))]
 
 
 def test_order_at_infinity():
@@ -417,15 +417,15 @@ def test_order_at_some_point():
 
 def test_order_subs_limits():
     # issue sympy/sympy#3333
-    assert (1 + O(x)).subs(x, 1/x) == 1 + O(1/x, (x, oo))
+    assert (1 + O(x)).subs({x: 1/x}) == 1 + O(1/x, (x, oo))
     assert (1 + O(x)).limit(x, 0) == 1
     # issue sympy/sympy#5769
     assert ((x + O(x**2))/x).limit(x, 0) == 1
 
-    assert O(x**2).subs(x, y - 1) == O((y - 1)**2, (y, 1))
-    assert O(10*x**2, (x, 2)).subs(x, y - 1) == O(1, (y, 3))
+    assert O(x**2).subs({x: y - 1}) == O((y - 1)**2, (y, 1))
+    assert O(10*x**2, (x, 2)).subs({x: y - 1}) == O(1, (y, 3))
 
-    assert O(x).subs(x, y*z) == O(y*z, y, z)
+    assert O(x).subs({x: y*z}) == O(y*z, y, z)
 
 
 def test_sympyissue_9351():

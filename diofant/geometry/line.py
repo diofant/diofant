@@ -1108,7 +1108,7 @@ class Line(LinearEntity):
                 return (solve(eq, x)[0][x] - o.x).equals(0)
             if not eq.has(x):
                 return (solve(eq, y)[0][y] - o.y).equals(0)
-            return (solve(eq.subs(x, o.x), y)[0][y] - o.y).equals(0)
+            return (solve(eq.subs({x: o.x}), y)[0][y] - o.y).equals(0)
         elif not isinstance(o, LinearEntity):
             return False
         elif isinstance(o, Line):

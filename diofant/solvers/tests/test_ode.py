@@ -764,32 +764,32 @@ def test_classify_ode_init():
     #####################
 
     # Wrong function
-    init = {g(x).diff(x).subs(x, 0): 1}
+    init = {g(x).diff(x).subs({x: 0}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Contains x
-    init = {f(y).diff(y).subs(y, x): 1}
+    init = {f(y).diff(y).subs({y: x}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Wrong variable
-    init = {f(y).diff(y).subs(y, 0): 1}
+    init = {f(y).diff(y).subs({y: 0}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Too many args
-    init = {f(x, y).diff(x).subs(x, 0): 1}
+    init = {f(x, y).diff(x).subs({x: 0}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Derivative wrt wrong vars
-    init = {Derivative(f(x), x, y).subs(x, 0): 1}
+    init = {Derivative(f(x), x, y).subs({x: 0}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # point contains f
     # XXX: Should be NotImplementedError
-    init = {f(x).diff(x).subs(x, 0): f(0)}
+    init = {f(x).diff(x).subs({x: 0}): f(0)}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Does not raise
-    init = {f(x).diff(x).subs(x, 0): 1}
+    init = {f(x).diff(x).subs({x: 0}): 1}
     classify_ode(eq, f(x), init=init)
 
     ###########################
@@ -797,28 +797,28 @@ def test_classify_ode_init():
     ###########################
 
     # Wrong function
-    init = {g(x).diff(x).subs(x, y): 1}
+    init = {g(x).diff(x).subs({x: y}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Contains x
-    init = {f(y).diff(y).subs(y, x): 1}
+    init = {f(y).diff(y).subs({y: x}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Too many args
-    init = {f(x, y).diff(x).subs(x, y): 1}
+    init = {f(x, y).diff(x).subs({x: y}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Derivative wrt wrong vars
-    init = {Derivative(f(x), x, z).subs(x, y): 1}
+    init = {Derivative(f(x), x, z).subs({x: y}): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # point contains f
     # XXX: Should be NotImplementedError
-    init = {f(x).diff(x).subs(x, y): f(0)}
+    init = {f(x).diff(x).subs({x: y}): f(0)}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Does not raise
-    init = {f(x).diff(x).subs(x, y): 1}
+    init = {f(x).diff(x).subs({x: y}): 1}
     classify_ode(eq, f(x), init=init)
 
 
@@ -970,10 +970,10 @@ def test_classify_sysode():
 def test_solve_init():
     # Basic tests that things work from dsolve.
     assert dsolve(f(x).diff(x) - f(x), f(x), init={f(0): 1}) == Eq(f(x), exp(x))
-    assert dsolve(f(x).diff(x) - f(x), f(x), init={f(x).diff(x).subs(x, 0): 1}) == Eq(f(x), exp(x))
+    assert dsolve(f(x).diff(x) - f(x), f(x), init={f(x).diff(x).subs({x: 0}): 1}) == Eq(f(x), exp(x))
     assert dsolve(f(x).diff(x, x) + f(x), f(x),
                   init={f(0): 1,
-                        f(x).diff(x).subs(x, 0): 1}) == Eq(f(x), sin(x) + cos(x))
+                        f(x).diff(x).subs({x: 0}): 1}) == Eq(f(x), sin(x) + cos(x))
     assert (dsolve([f(x).diff(x) - f(x) + g(x), g(x).diff(x) - g(x) - f(x)],
                    [f(x), g(x)], init={f(0): 1, g(0): 0}) ==
             [Eq(f(x), E**(x*(1 - I))/2 + E**(x*(1 + I))/2),
@@ -994,7 +994,7 @@ def test_solve_init():
                       {f(0): 1, f(pi/2): 1}) == {C1: 1, C2: 1}
 
     assert solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
-                      {f(0): 1, f(x).diff(x).subs(x, 0): 1}) == {C1: 1, C2: 1}
+                      {f(0): 1, f(x).diff(x).subs({x: 0}): 1}) == {C1: 1, C2: 1}
 
     # XXX: Ought to be ValueError
     pytest.raises(NotImplementedError, lambda: solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2], {f(0): 1, f(pi): 1}))
@@ -1005,14 +1005,14 @@ def test_solve_init():
     sols = [Eq(f(x), C1 + C2*x + C3*x**2 + C4*x**3 + q*x**4/(24*EI))]
     funcs = [f(x)]
     constants = [C1, C2, C3, C4]
-    # Test both cases, Derivative (the default from f(x).diff(x).subs(x, L)),
+    # Test both cases, Derivative (the default from f(x).diff(x).subs({x: L})),
     # and Subs
     init1 = {f(0): 0,
-             f(x).diff(x).subs(x, 0): 0,
+             f(x).diff(x).subs({x: 0}): 0,
              f(L).diff(L, 2): 0,
              f(L).diff(L, 3): 0}
     init2 = {f(0): 0,
-             f(x).diff(x).subs(x, 0): 0,
+             f(x).diff(x).subs({x: 0}): 0,
              Subs(f(x).diff(x, 2), (x, L)): 0,
              Subs(f(x).diff(x, 3), (x, L)): 0}
 

@@ -1654,7 +1654,7 @@ def test_sympyissue_6001():
     B = Symbol("B", commutative=False)
     # Although commutative terms could cancel we return True
     # meaning "there are non-commutative symbols; aftersubstitution
-    # that definition can change, e.g. (A*B).subs(B,A**-1) -> 1
+    # that definition can change, e.g. (A*B).subs({B: A**-1}) -> 1
     assert (sqrt(2)*A).is_commutative is False
     assert (sqrt(2)*A*B).is_commutative is False
 

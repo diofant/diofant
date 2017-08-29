@@ -56,6 +56,7 @@ Compatibility breaks
 * Removed ``itercoeffs()``, ``itermonoms()``, ``iterterms()``, ``listcoeffs()``, ``listmonoms()``, ``listterms()``, ``const()``, ``imul_num()`` and ``square()`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`697`.
 * Removed ``add()``, ``add_ground()``, ``sub()``, ``sub_ground()``, ``mul()``, ``mul_ground()`` and ``pow()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`701`.
 * Removed ``map()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`704`.
+* :meth:`~diofant.core.basic.Basic.subs` support one argument (a mapping or an iterable of pairs), see :pull:`532`.
 
 Minor changes
 =============

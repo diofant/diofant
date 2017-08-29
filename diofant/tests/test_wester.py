@@ -1933,10 +1933,10 @@ def test_U7():
 def test_U8():
     x, y = symbols('x y', real=True)
     eq = cos(x*y) + x
-    eq = eq.subs(y, f(x))
+    eq = eq.subs({y: f(x)})
     #  If Diofant had implicit_diff() function this hack could be avoided
     assert (solve((f(x) - eq).diff(x),
-                  f(x).diff(x))[0][f(x).diff(x)].subs(f(x), y) ==
+                  f(x).diff(x))[0][f(x).diff(x)].subs({f(x): y}) ==
             (-y*sin(x*y) + 1)/(x*sin(x*y) + 1))
 
 
@@ -2495,7 +2495,7 @@ def test_Z4():
 
 def test_Z5():
     eq = Derivative(f(x), x, 2) + 4*f(x) - sin(2*x)
-    sol = dsolve(eq, f(x), init={f(0): 0, f(x).diff(x).subs(x, 0): 0})
+    sol = dsolve(eq, f(x), init={f(0): 0, f(x).diff(x).subs({x: 0}): 0})
     assert solve(sol, f(x))[0][f(x)] == -x*cos(2*x)/4 + sin(2*x)/8
 
 

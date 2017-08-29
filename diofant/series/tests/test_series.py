@@ -41,7 +41,7 @@ def test_sympyissue_5223():
     pytest.raises(ValueError, lambda: x.series(dir=""))
 
     assert (cos(x).series(x, 1) -
-            cos(x + 1).series(x).subs(x, x - 1)).removeO() == 0
+            cos(x + 1).series(x).subs({x: x - 1})).removeO() == 0
     e = cos(x).series(x, 1, n=None)
     assert [next(e) for i in range(2)] == [cos(1), -((x - 1)*sin(1))]
     e = cos(x).series(x, 1, n=None, dir='-')
@@ -192,12 +192,12 @@ def test_sympyissue_6179():
 def test_sympyissue_11722():
     t, g = symbols('t g')
     good = -g**4*t**4/4 + 7*g**3*t**4/3 + g**3*t**3/3 - 27*g**2*t**4/4 - 2*g**2*t**3 - g**2*t**2/2 + 15*g*t**4/2 + 19*g*t**3/6 + 3*g*t**2/2 + g*t + g - 2009*t**4/720 - 13*t**3/9 - 5*t**2/6 - t/2 - (g + log(-t + 1) - 1 + (g + log(-t + 1))/(-1 + 1/t) - 1/(2*(-1 + 1/t)) - (g + log(-t + 1))**2/(2*(-1 + 1/t)**2) + 3*(g + log(-t + 1))/(2*(-1 + 1/t)**2) - 5/(6*(-1 + 1/t)**2) + (g + log(-t + 1))**3/(3*(-1 + 1/t)**3) - 2*(g + log(-t + 1))**2/(-1 + 1/t)**3 + 19*(g + log(-t + 1))/(6*(-1 + 1/t)**3) - 13/(9*(-1 + 1/t)**3) - (g + log(-t + 1))**4/(4*(-1 + 1/t)**4) + 7*(g + log(-t + 1))**3/(3*(-1 + 1/t)**4) - 27*(g + log(-t + 1))**2/(4*(-1 + 1/t)**4) + 15*(g + log(-t + 1))/(2*(-1 + 1/t)**4) - 2009/(720*(-1 + 1/t)**4) + 1/t)/(1 - 1/(g + log(-t + 1) - 1 + (g + log(-t + 1))/(-1 + 1/t) - 1/(2*(-1 + 1/t)) - (g + log(-t + 1))**2/(2*(-1 + 1/t)**2) + 3*(g + log(-t + 1))/(2*(-1 + 1/t)**2) - 5/(6*(-1 + 1/t)**2) + (g + log(-t + 1))**3/(3*(-1 + 1/t)**3) - 2*(g + log(-t + 1))**2/(-1 + 1/t)**3 + 19*(g + log(-t + 1))/(6*(-1 + 1/t)**3) - 13/(9*(-1 + 1/t)**3) - (g + log(-t + 1))**4/(4*(-1 + 1/t)**4) + 7*(g + log(-t + 1))**3/(3*(-1 + 1/t)**4) - 27*(g + log(-t + 1))**2/(4*(-1 + 1/t)**4) + 15*(g + log(-t + 1))/(2*(-1 + 1/t)**4) - 2009/(720*(-1 + 1/t)**4) + 1/t)) + 1/t
-    bad = good.subs(g, log(1/t))
+    bad = good.subs({g: log(1/t)})
     assert bad.series(t, x0=0, n=5) == O(t**5)
 
 
 def test_sympyissue_11884():
-    assert O(x).subs(x, x - 1) + 1 == 1 + O(x - 1, (x, 1))
+    assert O(x).subs({x: x - 1}) + 1 == 1 + O(x - 1, (x, 1))
     assert cos(x).series(x, x0=1, n=1) == cos(1) + O(x - 1, (x, 1))
 
 

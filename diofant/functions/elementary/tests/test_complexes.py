@@ -395,7 +395,7 @@ def test_Abs_rewrite():
     a = Abs(x).rewrite(Heaviside).expand()
     assert a == x*Heaviside(x) - x*Heaviside(-x)
     for i in [-2, -1, 0, 1, 2]:
-        assert a.subs(x, i) == abs(i)
+        assert a.subs({x: i}) == abs(i)
     y = Symbol('y')
     assert Abs(y).rewrite(Heaviside) == Abs(y)
 
@@ -723,10 +723,10 @@ def test_derivatives_sympyissue_4757():
     assert im(f(y)).diff(y) == -I*re(f(y).diff(y))
     assert re(f(z)).diff(z) == Derivative(re(f(z)), z)
     assert im(f(z)).diff(z) == Derivative(im(f(z)), z)
-    assert Abs(f(x)).diff(x).subs(f(x), 1 + I*x).doit() == x/sqrt(1 + x**2)
-    assert arg(f(x)).diff(x).subs(f(x), 1 + I*x**2).doit() == 2*x/(1 + x**4)
-    assert Abs(f(y)).diff(y).subs(f(y), 1 + y).doit() == -y/sqrt(1 - y**2)
-    assert arg(f(y)).diff(y).subs(f(y), I + y**2).doit() == 2*y/(1 + y**4)
+    assert Abs(f(x)).diff(x).subs({f(x): 1 + I*x}).doit() == x/sqrt(1 + x**2)
+    assert arg(f(x)).diff(x).subs({f(x): 1 + I*x**2}).doit() == 2*x/(1 + x**4)
+    assert Abs(f(y)).diff(y).subs({f(y): 1 + y}).doit() == -y/sqrt(1 - y**2)
+    assert arg(f(y)).diff(y).subs({f(y): I + y**2}).doit() == 2*y/(1 + y**4)
 
 
 def test_periodic_argument():
@@ -806,7 +806,7 @@ def test_sympyissue_6167_6151():
     e = big*one - big + eps
     assert sign(simplify(e)) == 1
     for xi in (111, 11, 1, Rational(1, 10)):
-        assert sign(e.subs(x, xi)) == 1
+        assert sign(e.subs({x: xi})) == 1
 
 
 def test_sympyissue_11413():

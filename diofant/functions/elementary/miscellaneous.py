@@ -61,7 +61,7 @@ def sqrt(arg, **kwargs):
     This is because the two are not equal to each other in general.
     For example, consider x == -1:
 
-    >>> Eq(sqrt(x**2), x).subs(x, -1)
+    >>> Eq(sqrt(x**2), x).subs({x: -1})
     false
 
     This is because sqrt computes the principal square root, so the square may
@@ -123,7 +123,7 @@ def cbrt(arg, **kwargs):
     This is because the two are not equal to each other in general.
     For example, consider `x == -1`:
 
-    >>> Eq(cbrt(x**3), x).subs(x, -1)
+    >>> Eq(cbrt(x**3), x).subs({x: -1})
     false
 
     This is because cbrt computes the principal cube root, this
@@ -456,7 +456,7 @@ class Max(MinMaxBase, Application):
 
     >>> Max(x, -2)
     Max(-2, x)
-    >>> Max(x, -2).subs(x, 3)
+    >>> Max(x, -2).subs({x: 3})
     3
     >>> Max(p, -2)
     p
@@ -543,7 +543,7 @@ class Min(MinMaxBase, Application):
 
     >>> Min(x, -2)
     Min(-2, x)
-    >>> Min(x, -2).subs(x, 3)
+    >>> Min(x, -2).subs({x: 3})
     -2
     >>> Min(p, -3)
     -3

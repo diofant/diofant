@@ -151,7 +151,7 @@ def test_bug2():  # 1/log(0) * log(0) problem
     e = (w**(-1) + w**(
         -log(3)*log(2)**(-1)))**(-1)*(3*w**(-log(3)*log(2)**(-1)) + 2*w**(-1))
     e = e.expand()
-    assert e.nseries(w, 4).subs(w, 0) == 3
+    assert e.nseries(w, 4).subs({w: 0}) == 3
 
 
 def test_exp():
@@ -200,7 +200,7 @@ def test_seriesbug2():
     # simple case (1):
     e = ((2*w)/w)**(1 + w)
     assert e.nseries(w, 1) == 2 + O(w)
-    assert e.nseries(w, 1).subs(w, 0) == 2
+    assert e.nseries(w, 1).subs({w: 0}) == 2
 
 
 def test_seriesbug2b():
@@ -222,7 +222,7 @@ def test_seriesbug2c():
     assert e.series(w, 0, 1) == 2 + O(w)
     assert e.series(w, 0, 3) == 2 + 2*w*log(2) + \
         w**2*(-Rational(4, 3) + log(2)**2) + O(w**3)
-    assert e.series(w, 0, 2).subs(w, 0) == 2
+    assert e.series(w, 0, 2).subs({w: 0}) == 2
 
 
 def test_expbug4():
@@ -491,12 +491,12 @@ def test_sympyissue_5654():
 def test_sympyissue_5925():
     sx = sqrt(x + z).series(z, 0, 1)
     sxy = sqrt(x + y + z).series(z, 0, 1)
-    s1, s2 = sx.subs(x, x + y), sxy
+    s1, s2 = sx.subs({x: x + y}), sxy
     assert (s1 - s2).expand().removeO().simplify() == 0
 
     sx = sqrt(x + z).series(z, 0, 1)
     sxy = sqrt(x + y + z).series(z, 0, 1)
-    assert sxy.subs({x: 1, y: 2}) == sx.subs(x, 3)
+    assert sxy.subs({x: 1, y: 2}) == sx.subs({x: 3})
 
 
 def test_sympyissues_6235_6236():

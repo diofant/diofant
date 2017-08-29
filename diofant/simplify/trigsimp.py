@@ -231,7 +231,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
                 elif fn == t:
                     I.append(t(coeff*x)*c(coeff*x) - s(coeff*x))
                 elif fn in [c, s]:
-                    cn = fn(coeff*y).expand(trig=True).subs(y, x)
+                    cn = fn(coeff*y).expand(trig=True).subs({y: x})
                     I.append(fn(coeff*x) - cn)
         return list(set(I))
 
@@ -339,7 +339,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         return res, freegens, newgens
 
     myI = Dummy('I')
-    expr = expr.subs(I, myI)
+    expr = expr.subs({I: myI})
     subs = [(myI, I)]
 
     num, denom = cancel(expr).as_numer_denom()
@@ -542,13 +542,13 @@ def exptrigsimp(expr, simplify=True):
     # sinh and cosh
     for ei in ex:
         a = ei.exp if ei is not E else S.One
-        newexpr = newexpr.subs(ei + 1/ei, 2*cosh(a))
-        newexpr = newexpr.subs(ei - 1/ei, 2*sinh(a))
+        newexpr = newexpr.subs({ei + 1/ei: 2*cosh(a)})
+        newexpr = newexpr.subs({ei - 1/ei: 2*sinh(a)})
         e2 = ei**-2
         if e2 in ex:
             a = e2.exp/2 if e2 is not E else S.Half
-            newexpr = newexpr.subs((e2 + 1)*ei, 2*cosh(a))
-            newexpr = newexpr.subs((e2 - 1)*ei, 2*sinh(a))
+            newexpr = newexpr.subs({(e2 + 1)*ei: 2*cosh(a)})
+            newexpr = newexpr.subs({(e2 - 1)*ei: 2*sinh(a)})
 
     # exp ratios to tan and tanh
     for ei in ex:
@@ -560,12 +560,12 @@ def exptrigsimp(expr, simplify=True):
             c = a.as_coefficient(I)
             if c:
                 t = I*tan(c/2)
-                newexpr = newexpr.subs(etinv, 1/t)
-                newexpr = newexpr.subs(et, t)
+                newexpr = newexpr.subs({etinv: 1/t})
+                newexpr = newexpr.subs({et: t})
                 continue
         t = tanh(a/2)
-        newexpr = newexpr.subs(etinv, 1/t)
-        newexpr = newexpr.subs(et, t)
+        newexpr = newexpr.subs({etinv: 1/t})
+        newexpr = newexpr.subs({et: t})
 
     # sin/cos and sinh/cosh ratios to tan and tanh, respectively
     if newexpr.has(HyperbolicFunction):
@@ -706,7 +706,7 @@ def trigsimp_old(expr, **opts):
         g = trigsimpfunc(g[0], deep)
 
         for sub in reversed(w):
-            g = g.subs(sub[0], sub[1])
+            g = g.subs({sub[0]: sub[1]})
             g = trigsimpfunc(g, deep)
         result = g
     else:
@@ -1017,8 +1017,8 @@ def __trigsimp(expr, deep=False):
             # to help influence a better match. This is because
             # sometimes, for example, 'a' would match sec(x)**2
             a_t = Wild('a', exclude=[ex])
-            pattern = pattern.subs(a, a_t)
-            result = result.subs(a, a_t)
+            pattern = pattern.subs({a: a_t})
+            result = result.subs({a: a_t})
 
             m = expr.match(pattern)
             was = None

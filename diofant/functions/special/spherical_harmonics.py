@@ -151,7 +151,7 @@ class Ynm(Function):
         rv = (sqrt((2*n + 1)/(4*pi) * factorial(n - m)/factorial(n + m)) *
               exp(I*m*phi) * assoc_legendre(n, m, cos(theta)))
         # We can do this because of the range of theta
-        return rv.subs(sqrt(-cos(theta)**2 + 1), sin(theta))
+        return rv.subs({sqrt(-cos(theta)**2 + 1): sin(theta)})
 
     def fdiff(self, argindex=4):
         if argindex == 3:

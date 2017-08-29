@@ -689,7 +689,7 @@ class LinearEntity3D(GeometryEntity):
                 d = solve([dx, a.z - b.z], t)[0]
                 if len(c) == 1 and len(d) == 1:
                     return []
-                e = a.subs(t1, c[t1])
+                e = a.subs({t1: c[t1]})
                 if e in self and e in o:
                     return [e]
                 else:
@@ -911,7 +911,7 @@ class Line3D(LinearEntity3D):
         if isinstance(o, Point3D):
             sym = list(map(Dummy, 'xyz'))
             eq = self.equation(*sym)
-            a = [eq[i].subs(sym[i], o.args[i]) for i in range(3)]
+            a = [eq[i].subs({sym[i]: o.args[i]}) for i in range(3)]
             a = [i for i in a if i != nan]
             if len(a) == 1:
                 return True

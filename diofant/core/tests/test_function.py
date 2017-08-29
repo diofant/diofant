@@ -35,10 +35,10 @@ def test_f_expand_complex():
 
 def test_bug1():
     e = sqrt(-log(w))
-    assert e.subs(log(w), -x) == sqrt(x)
+    assert e.subs({log(w): -x}) == sqrt(x)
 
     e = sqrt(-5*log(w))
-    assert e.subs(log(w), -x) == sqrt(5*x)
+    assert e.subs({log(w): -x}) == sqrt(5*x)
 
 
 def test_general_function():
@@ -59,17 +59,17 @@ def test_general_function():
 
 def test_derivative_subs_bug():
     e = diff(g(x), x)
-    assert e.subs(g(x), f(x)) != e
-    assert e.subs(g(x), f(x)) == Derivative(f(x), x)
-    assert e.subs(g(x), -f(x)) == Derivative(-f(x), x)
+    assert e.subs({g(x): +f(x)}) != e
+    assert e.subs({g(x): +f(x)}) == Derivative(f(x), x)
+    assert e.subs({g(x): -f(x)}) == Derivative(-f(x), x)
 
-    assert e.subs(x, y) == Derivative(g(y), y)
+    assert e.subs({x: y}) == Derivative(g(y), y)
 
 
 def test_derivative_subs_self_bug():
     d = diff(f(x), x)
 
-    assert d.subs(d, y) == y
+    assert d.subs({d: y}) == y
 
 
 def test_derivative_linearity():
@@ -207,8 +207,8 @@ def test_Lambda_equality():
 
 def test_Subs():
     assert Subs(x, (x, 0)) == Subs(y, (y, 0))
-    assert Subs(x, (x, 0)).subs(x, 1) == Subs(x, (x, 0))
-    assert Subs(y, (x, 0)).subs(y, 1) == Subs(1, (x, 0))
+    assert Subs(x, (x, 0)).subs({x: 1}) == Subs(x, (x, 0))
+    assert Subs(y, (x, 0)).subs({y: 1}) == Subs(1, (x, 0))
     assert Subs(f(x), (x, 0)).doit() == f(0)
     assert Subs(f(x**2), (x**2, 0)).doit() == f(0)
     assert Subs(f(x, y, z), (x, 0), (y, 1), (z, 1)) != \
@@ -230,10 +230,10 @@ def test_Subs():
     assert Subs(f(x)*y, (x, 0), (y, 1)) == Subs(f(y)*x, (y, 0), (x, 1))
     assert Subs(f(x)*y, (x, 1), (y, 1)) == Subs(f(y)*x, (x, 1), (y, 1))
 
-    assert Subs(f(x), (x, 0)).subs(x, 1).doit() == f(0)
-    assert Subs(f(x), (x, y)).subs(y, 0) == Subs(f(x), (x, 0))
-    assert Subs(y*f(x), (x, y)).subs(y, 2) == Subs(2*f(x), (x, 2))
-    assert (2 * Subs(f(x), (x, 0))).subs(Subs(f(x), (x, 0)), y) == 2*y
+    assert Subs(f(x), (x, 0)).subs({x: 1}).doit() == f(0)
+    assert Subs(f(x), (x, y)).subs({y: 0}) == Subs(f(x), (x, 0))
+    assert Subs(y*f(x), (x, y)).subs({y: 2}) == Subs(2*f(x), (x, 2))
+    assert (2 * Subs(f(x), (x, 0))).subs({Subs(f(x), (x, 0)): y}) == 2*y
 
     assert Subs(f(x), (x, 0)).free_symbols == set()
     assert Subs(f(x, y), (x, z)).free_symbols == {y, z}
@@ -253,15 +253,15 @@ def test_Subs():
     assert e1 + e2 == 2*e1
     assert e1.__hash__() == e2.__hash__()
     assert Subs(z*f(x + 1), (x, 1)) not in (e1, e2)
-    assert Derivative(f(x), x).subs(x, g(x)) == Derivative(f(g(x)), g(x))
-    assert Derivative(f(x), x).subs(x, x + y) == Subs(Derivative(f(x), x),
-                                                      (x, x + y))
+    assert Derivative(f(x), x).subs({x: g(x)}) == Derivative(f(g(x)), g(x))
+    assert Derivative(f(x), x).subs({x: x + y}) == Subs(Derivative(f(x), x),
+                                                        (x, x + y))
     assert Subs(f(x)*cos(y) + z, (x, 0), (y, pi/3)).evalf(2, strict=False) == \
         Subs(f(x)*cos(y) + z, (x, 0), (y, pi/3)).evalf(2, strict=False) == \
         z + Rational('1/2').evalf(2)*f(0)
 
-    assert f(x).diff(x).subs(x, 0).subs(x, y) == f(x).diff(x).subs(x, 0)
-    assert (x*f(x).diff(x).subs(x, 0)).subs(x, y) == y*f(x).diff(x).subs(x, 0)
+    assert f(x).diff(x).subs({x: 0}).subs({x: y}) == f(x).diff(x).subs({x: 0})
+    assert (x*f(x).diff(x).subs({x: 0})).subs({x: y}) == y*f(x).diff(x).subs({x: 0})
 
 
 @pytest.mark.xfail
@@ -555,7 +555,7 @@ def test_diff_wrt():
 
 
 def test_diff_wrt_func_subs():
-    assert f(g(x)).diff(x).subs(g, Lambda(x, 2*x)).doit() == f(2*x).diff(x)
+    assert f(g(x)).diff(x).subs({g: Lambda(x, 2*x)}).doit() == f(2*x).diff(x)
 
 
 def test_diff_wrt_not_allowed():
@@ -646,7 +646,7 @@ def test_nfloat():
     lamda = Symbol('lamda')
     f = x*lamda + lamda**3*(x/2 + Rational(1, 2)) + lamda**2 + Rational(1, 4)
     assert not any(a[lamda].free_symbols
-                   for a in solve(f.subs(x, -0.139)))
+                   for a in solve(f.subs({x: -0.139})))
 
     # issue sympy/sympy#6632
     assert nfloat(-100000*sqrt(2500000001) + 5000000001) == \

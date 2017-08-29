@@ -155,7 +155,7 @@ def continued_fraction_reduce(cf):
         solns = [s[y] for s in solns]
         solns.sort()
         pure = solns[-1]
-        return a.subs(x, pure).radsimp()
+        return a.subs({x: pure}).radsimp()
     else:
         return a
 

@@ -283,7 +283,7 @@ def test_transcendental_functions():
 def test_sympyissue_3740():
     f = 4*log(x) - 2*log(x)**2
     fid = diff(integrate(f, x), x)
-    assert abs(f.subs(x, 42).evalf() - fid.subs(x, 42).evalf()) < 1e-10
+    assert abs(f.subs({x: 42}).evalf() - fid.subs({x: 42}).evalf()) < 1e-10
 
 
 def test_sympyissue_3788():
@@ -438,7 +438,7 @@ def test_evalf_sympyissue_4038():
     # revisions, making this test a bit useless. This can't be said about
     # other two tests. For now, all values of this evaluation are used here,
     # but in future this should be reconsidered.
-    assert NS(integrate(1/(x**5 + 1), x).subs(x, 4), chop=True) in \
+    assert NS(integrate(1/(x**5 + 1), x).subs({x: 4}), chop=True) in \
         ['-0.000976138910649103', '0.965906660135753', '1.93278945918216']
 
     assert NS(Integral(1/(x**5 + 1), (x, 2, 4))) == '0.0144361088886740'
@@ -511,9 +511,9 @@ def test_integrate_returns_piecewise():
 
 def test_subs1():
     e = Integral(exp(x - y), x)
-    assert e.subs(y, 3) == Integral(exp(x - 3), x)
+    assert e.subs({y: 3}) == Integral(exp(x - 3), x)
     e = Integral(exp(x - y), (x, 0, 1))
-    assert e.subs(y, 3) == Integral(exp(x - 3), (x, 0, 1))
+    assert e.subs({y: 3}) == Integral(exp(x - 3), (x, 0, 1))
     f = Lambda(x, exp(-x**2))
     conv = Integral(f(x - y)*f(y), (y, -oo, oo))
     assert conv.subs({x: 0}) == Integral(exp(-2*y**2), (y, -oo, oo))
@@ -521,9 +521,9 @@ def test_subs1():
 
 def test_subs2():
     e = Integral(exp(x - y), x, t)
-    assert e.subs(y, 3) == Integral(exp(x - 3), x, t)
+    assert e.subs({y: 3}) == Integral(exp(x - 3), x, t)
     e = Integral(exp(x - y), (x, 0, 1), (t, 0, 1))
-    assert e.subs(y, 3) == Integral(exp(x - 3), (x, 0, 1), (t, 0, 1))
+    assert e.subs({y: 3}) == Integral(exp(x - 3), (x, 0, 1), (t, 0, 1))
     f = Lambda(x, exp(-x**2))
     conv = Integral(f(x - y)*f(y), (y, -oo, oo), (t, 0, 1))
     assert conv.subs({x: 0}) == Integral(exp(-2*y**2), (y, -oo, oo), (t, 0, 1))
@@ -531,7 +531,7 @@ def test_subs2():
 
 def test_subs3():
     e = Integral(exp(x - y), (x, 0, y), (t, y, 1))
-    assert e.subs(y, 3) == Integral(exp(x - 3), (x, 0, 3), (t, 3, 1))
+    assert e.subs({y: 3}) == Integral(exp(x - 3), (x, 0, 3), (t, 3, 1))
     f = Lambda(x, exp(-x**2))
     conv = Integral(f(x - y)*f(y), (y, -oo, oo), (t, x, 1))
     assert conv.subs({x: 0}) == Integral(exp(-2*y**2), (y, -oo, oo), (t, 0, 1))
@@ -539,7 +539,7 @@ def test_subs3():
 
 def test_subs4():
     e = Integral(exp(x), (x, 0, y), (t, y, 1))
-    assert e.subs(y, 3) == Integral(exp(x), (x, 0, 3), (t, 3, 1))
+    assert e.subs({y: 3}) == Integral(exp(x), (x, 0, 3), (t, 3, 1))
     f = Lambda(x, exp(-x**2))
     conv = Integral(f(y)*f(y), (y, -oo, oo), (t, x, 1))
     assert conv.subs({x: 0}) == Integral(exp(-2*y**2), (y, -oo, oo), (t, 0, 1))
@@ -547,32 +547,32 @@ def test_subs4():
 
 def test_subs5():
     e = Integral(exp(-x**2), (x, -oo, oo))
-    assert e.subs(x, 5) == e
+    assert e.subs({x: 5}) == e
     e = Integral(exp(-x**2 + y), x)
-    assert e.subs(y, 5) == Integral(exp(-x**2 + 5), x)
+    assert e.subs({y: 5}) == Integral(exp(-x**2 + 5), x)
     e = Integral(exp(-x**2 + y), (x, x))
-    assert e.subs(x, 5) == Integral(exp(y - x**2), (x, 5))
-    assert e.subs(y, 5) == Integral(exp(-x**2 + 5), x)
+    assert e.subs({x: 5}) == Integral(exp(y - x**2), (x, 5))
+    assert e.subs({y: 5}) == Integral(exp(-x**2 + 5), x)
     e = Integral(exp(-x**2 + y), (y, -oo, oo), (x, -oo, oo))
-    assert e.subs(x, 5) == e
-    assert e.subs(y, 5) == e
+    assert e.subs({x: 5}) == e
+    assert e.subs({y: 5}) == e
     # Test evaluation of antiderivatives
     e = Integral(exp(-x**2), (x, x))
-    assert e.subs(x, 5) == Integral(exp(-x**2), (x, 5))
+    assert e.subs({x: 5}) == Integral(exp(-x**2), (x, 5))
     e = Integral(exp(x), x)
-    assert (e.subs(x, 1) - e.subs(x, 0) -
+    assert (e.subs({x: 1}) - e.subs({x: 0}) -
             Integral(exp(x), (x, 0, 1))).doit().is_zero
 
 
 def test_subs6():
     e = Integral(x*y, (x, f(x), f(y)))
-    assert e.subs(x, 1) == Integral(x*y, (x, f(1), f(y)))
-    assert e.subs(y, 1) == Integral(x, (x, f(x), f(1)))
+    assert e.subs({x: 1}) == Integral(x*y, (x, f(1), f(y)))
+    assert e.subs({y: 1}) == Integral(x, (x, f(x), f(1)))
     e = Integral(x*y, (x, f(x), f(y)), (y, f(x), f(y)))
-    assert e.subs(x, 1) == Integral(x*y, (x, f(1), f(y)), (y, f(1), f(y)))
-    assert e.subs(y, 1) == Integral(x*y, (x, f(x), f(y)), (y, f(x), f(1)))
+    assert e.subs({x: 1}) == Integral(x*y, (x, f(1), f(y)), (y, f(1), f(y)))
+    assert e.subs({y: 1}) == Integral(x*y, (x, f(x), f(y)), (y, f(x), f(1)))
     e = Integral(x*y, (x, f(x), f(a)), (y, f(x), f(a)))
-    assert e.subs(a, 1) == Integral(x*y, (x, f(x), f(1)), (y, f(x), f(1)))
+    assert e.subs({a: 1}) == Integral(x*y, (x, f(x), f(1)), (y, f(x), f(1)))
 
 
 def test_subs7():
@@ -580,9 +580,9 @@ def test_subs7():
     assert e.subs({x: 1, y: 2}) == e
     e = Integral(sin(x) + sin(y), (x, sin(x), sin(y)),
                  (y, 1, 2))
-    assert e.subs(sin(y), 1) == e
-    assert e.subs(sin(x), 1) == Integral(sin(x) + sin(y), (x, 1, sin(y)),
-                                         (y, 1, 2))
+    assert e.subs({sin(y): 1}) == e
+    assert e.subs({sin(x): 1}) == Integral(sin(x) + sin(y), (x, 1, sin(y)),
+                                           (y, 1, 2))
 
 
 def test_expand():
@@ -663,8 +663,8 @@ def test_sympyissue_4665():
     f = Integral(x**2, (x, 1, None))
     assert e.doit() == Rational(1, 3)
     assert f.doit() == Rational(-1, 3)
-    assert Integral(x*y, (x, None, y)).subs(y, t) == Integral(x*t, (x, None, t))
-    assert Integral(x*y, (x, y, None)).subs(y, t) == Integral(x*t, (x, t, None))
+    assert Integral(x*y, (x, None, y)).subs({y: t}) == Integral(x*t, (x, None, t))
+    assert Integral(x*y, (x, y, None)).subs({y: t}) == Integral(x*t, (x, t, None))
     assert integrate(x**2, (x, None, 1)) == Rational(1, 3)
     assert integrate(x**2, (x, 1, None)) == Rational(-1, 3)
     assert integrate("x**2", ("x", "1", None)) == Rational(-1, 3)

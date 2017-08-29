@@ -850,7 +850,7 @@ def test_is_number():
     g = WildFunction('g')
     assert g.is_number is False
     assert (2*g).is_number is False
-    assert (x**2).subs(x, 3).is_number is True
+    assert (x**2).subs({x: 3}).is_number is True
 
     # test extensibility of .is_number
     # on subinstances of Basic
@@ -1456,12 +1456,12 @@ def test_equals():
     ans = sqrt(2*x + 1)*(6*x**2 + x - 1)/15
     diff = i - ans
     assert diff.equals(0) is False
-    assert diff.subs(x, Rational(-1, 4)) == 7*sqrt(2)/120
+    assert diff.subs({x: Rational(-1, 4)}) == 7*sqrt(2)/120
     # there are regions for x for which the expression is True, for
     # example, when x < -1/2 or x > 0 the expression is zero
     p = Symbol('p', positive=True)
-    assert diff.subs(x, p).equals(0) is True
-    assert diff.subs(x, -1).equals(0) is True
+    assert diff.subs({x: p}).equals(0) is True
+    assert diff.subs({x: -1}).equals(0) is True
 
     # prove via minimal_polynomial or self-consistency
     eq = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))

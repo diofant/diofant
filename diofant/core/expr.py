@@ -47,7 +47,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Notes
         =====
 
-        The expr.subs(yourclass, Symbol) should be well-defined on a
+        The expr.subs({yourclass: Symbol}) should be well-defined on a
         structural level, or this will lead to inconsistent results.
 
         Examples
@@ -633,10 +633,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def _eval_interval(self, x, a, b):
         """Returns evaluation over an interval.
 
-        For most functions this is: self.subs(x, b) - self.subs(x, a),
+        For most functions this is: self.subs({x: b}) - self.subs({x: a}),
         possibly using limit() if NaN is returned from subs.
 
-        If b or a is None, it only evaluates -self.subs(x, a) or self.subs(b, x),
+        If b or a is None, it only evaluates -self.subs({x: a}) or self.subs({b: x}),
         respectively.
         """
         from ..series import limit, Limit
@@ -646,7 +646,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if a is None:
             A = 0
         else:
-            A = self.subs(x, a)
+            A = self.subs({x: a})
             if A.has(nan, oo, -oo, zoo):
                 A = limit(self, x, a)
                 if isinstance(A, Limit):
@@ -655,7 +655,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if b is None:
             B = 0
         else:
-            B = self.subs(x, b)
+            B = self.subs({x: b})
             if B.has(nan, oo, -oo, zoo):
                 B = limit(self, x, b)
                 if isinstance(B, Limit):
@@ -896,7 +896,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         syms = oi.atoms(Dummy, Symbol)
                         if len(syms) == 1:
                             x = syms.pop()
-                            oi = oi.subs(x, Dummy('x', positive=True))
+                            oi = oi.subs({x: Dummy('x', positive=True)})
                             if oi.base.is_Symbol and oi.exp.is_Rational:
                                 return abs(oi.exp)
 
@@ -2353,7 +2353,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if x0 in [oo, -oo]:
             s = self.aseries(x, n)
             if x0 == -oo:
-                return s.subs(x, -x)
+                return s.subs({x: -x})
             return s
 
         # use rep to shift origin to x0 and change sign (if dir is negative)
@@ -2367,21 +2367,21 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 rep = x + x0
                 rep2 = x
                 rep2b = -x0
-            s = self.subs(x, rep).series(x, x0=0, n=n, dir='+', logx=logx)
+            s = self.subs({x: rep}).series(x, x0=0, n=n, dir='+', logx=logx)
             if n is None:  # lseries...
-                return (si.subs(x, rep2 + rep2b) for si in s)  # pragma: no branch
-            return s.subs(x, rep2 + rep2b)
+                return (si.subs({x: rep2 + rep2b}) for si in s)  # pragma: no branch
+            return s.subs({x: rep2 + rep2b})
 
         # from here on it's x0=0 and dir='+' handling
 
         if x.is_positive is x.is_negative is None or x.is_Symbol is not True:
             # replace x with an x that has a positive assumption
             xpos = Dummy('x', positive=True, finite=True)
-            rv = self.subs(x, xpos).series(xpos, x0, n, dir, logx=logx)
+            rv = self.subs({x: xpos}).series(xpos, x0, n, dir, logx=logx)
             if n is None:
-                return (s.subs(xpos, x) for s in rv)
+                return (s.subs({xpos: x}) for s in rv)
             else:
-                return rv.subs(xpos, x)
+                return rv.subs({xpos: x})
 
         if n is not None:  # nseries handling
             s1 = self._eval_nseries(x, n=n, logx=logx)
@@ -2445,7 +2445,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..functions import factorial
         x = sympify(x)
         _x = Dummy('x')
-        return self.subs(x, _x).diff(_x, n).subs(_x, x).subs(x, 0) * x**n / factorial(n)
+        return self.subs({x: _x}).diff(_x, n).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
 
     def lseries(self, x=None, x0=0, dir='+', logx=None):
         """Wrapper for series yielding an iterator of the terms of the series.
@@ -2575,9 +2575,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return collect(series.removeO(), x) + order
         else:
             p = Dummy('x', positive=True, finite=True)
-            e = self.subs(x, p)
+            e = self.subs({x: p})
             e = e.nseries(p, n, logx=logx)
-            return e.subs(p, x)
+            return e.subs({p: x})
 
     def aseries(self, x, n=6, bound=0, hir=False):
         """Returns asymptotic expansion for "self". See [3]_
@@ -2634,11 +2634,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         if x.is_positive is x.is_negative is None:
             xpos = Dummy('x', positive=True, finite=True)
-            return self.subs(x, xpos).aseries(xpos, n, bound, hir).subs(xpos, x)
+            return self.subs({x: xpos}).aseries(xpos, n, bound, hir).subs({xpos: x})
 
         omega = mrv(self, x)
         if x in omega:
-            s = self.subs(x, exp(x)).aseries(x, n, bound, hir).subs(x, log(x))
+            s = self.subs({x: exp(x)}).aseries(x, n, bound, hir).subs({x: log(x)})
             if s.getO():
                 o = Order(1/x**n, (x, oo))
                 return s + o
@@ -2653,14 +2653,14 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             a = self.exp
             s = a.aseries(x, n, bound=bound)
             s = s.func(*[t.removeO() for t in s.args])
-            rep = exp(s.subs(x, 1/x).as_leading_term(x).subs(x, 1/x))
+            rep = exp(s.subs({x: 1/x}).as_leading_term(x).subs({x: 1/x}))
             f = exp(self.exp - rep.exp)/d
             logw = log(1/rep)
 
         s = f.series(d, 0, n)
         # Hierarchical series: break after first recursion
         if hir:
-            return s.subs(d, exp(logw))
+            return s.subs({d: exp(logw)})
 
         o = s.getO()
         terms = sorted(Add.make_args(s.removeO()), key=lambda i: int(i.as_coeff_exponent(d)[1]))
@@ -2679,9 +2679,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             else:
                 s += t
         if not o or gotO:
-            return s.subs(d, exp(logw))
+            return s.subs({d: exp(logw)})
         else:
-            return (s + o).subs(d, exp(logw))
+            return (s + o).subs({d: exp(logw)})
 
     def limit(self, x, xlim, dir='+'):
         """ Compute limit x->xlim.
@@ -2710,7 +2710,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise NotImplementedError("Zero-decision problem for %s" % t)
 
         if logx is None:
-            t = t.subs(d, log(x))
+            t = t.subs({d: log(x)})
 
         return t.as_leading_term(x)
 

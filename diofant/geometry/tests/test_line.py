@@ -155,11 +155,11 @@ def test_line_geom():
 
     # issue sympy/sympy#7963
     r = Ray((0, 0), angle=x)
-    assert r.subs(x, 3*pi/4) == Ray((0, 0), (-1, 1))
-    assert r.subs(x, 5*pi/4) == Ray((0, 0), (-1, -1))
-    assert r.subs(x, -pi/4) == Ray((0, 0), (1, -1))
-    assert r.subs(x, pi/2) == Ray((0, 0), (0, 1))
-    assert r.subs(x, -pi/2) == Ray((0, 0), (0, -1))
+    assert r.subs({x: 3*pi/4}) == Ray((0, 0), (-1, 1))
+    assert r.subs({x: 5*pi/4}) == Ray((0, 0), (-1, -1))
+    assert r.subs({x: -pi/4}) == Ray((0, 0), (1, -1))
+    assert r.subs({x: pi/2}) == Ray((0, 0), (0, 1))
+    assert r.subs({x: -pi/2}) == Ray((0, 0), (0, -1))
 
     r1 = Ray(p1, Point(-1, 5))
     r2 = Ray(p1, Point(-1, 1))

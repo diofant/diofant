@@ -269,20 +269,19 @@ def test_hyperrep():
             return False
         # Next check that the two small representations agree.
         if not tn(
-            func.rewrite('nonrepsmall').subs(
-                z, exp_polar(I*pi)*z).replace(exp_polar, exp),
-            func.subs(z, exp_polar(I*pi)*z).rewrite('nonrepsmall'),
+            func.rewrite('nonrepsmall').subs({z: exp_polar(I*pi)*z}).replace(exp_polar, exp),
+            func.subs({z: exp_polar(I*pi)*z}).rewrite('nonrepsmall'),
                 z, a=Rational(-1, 2), b=Rational(-1, 2), c=Rational(1, 2), d=Rational(1, 2)):
             return False
         # Next check continuity along exp_polar(I*pi)*t
-        expr = func.subs(z, exp_polar(I*pi)*z).rewrite('nonrep')
-        if abs(expr.subs(z, 1 + 1e-15) - expr.subs(z, 1 - 1e-15)).evalf(strict=False) > 1e-10:
+        expr = func.subs({z: exp_polar(I*pi)*z}).rewrite('nonrep')
+        if abs(expr.subs({z: 1 + 1e-15}) - expr.subs({z: 1 - 1e-15})).evalf(strict=False) > 1e-10:
             return False
         # Finally check continuity of the big reps.
 
         def dosubs(func, a, b):
-            rv = func.subs(z, exp_polar(a)*z).rewrite('nonrep')
-            return rv.subs(z, exp_polar(b)*z).replace(exp_polar, exp)
+            rv = func.subs({z: exp_polar(a)*z}).rewrite('nonrep')
+            return rv.subs({z: exp_polar(b)*z}).replace(exp_polar, exp)
         for n in [0, 1, 2, 3, 4, -1, -2, -3, -4]:
             expr1 = dosubs(func, 2*I*pi*n, I*pi/2)
             expr2 = dosubs(func, 2*I*pi*n + I*pi, -I*pi/2)
@@ -324,7 +323,7 @@ def test_meijerg_eval():
 
     # Test continuity independently
     eps = 1e-13
-    expr2 = expr1.subs(k, l)
+    expr2 = expr1.subs({k: l})
     for x_ in [0.5, 1.5]:
         for k_ in [0.5, Rational(1, 3), 0.25, 0.75, Rational(2, 3), 1.0, 1.5]:
             assert abs((expr1 - expr2).evalf(

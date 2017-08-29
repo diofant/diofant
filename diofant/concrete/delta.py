@@ -176,7 +176,7 @@ def deltaproduct(f, limit):
         if isinstance(limit[1], int) and isinstance(limit[2], int):
             result += sum(deltaproduct(newexpr,
                                        (limit[0], limit[1], ik - 1)) *
-                          delta.subs(limit[0], ik) *
+                          delta.subs({limit[0]: ik}) *
                           deltaproduct(newexpr,
                                        (limit[0], ik + 1, limit[2]))
                           for ik in range(int(limit[1]), int(limit[2] + 1)))
@@ -185,7 +185,7 @@ def deltaproduct(f, limit):
             result += deltasummation(deltaproduct(newexpr,
                                                   (limit[0],
                                                    limit[1], k - 1)) *
-                                     delta.subs(limit[0], k) *
+                                     delta.subs({limit[0]: k}) *
                                      deltaproduct(newexpr, (limit[0],
                                                             k + 1, limit[2])),
                                      (k, limit[1], limit[2]),
@@ -201,7 +201,7 @@ def deltaproduct(f, limit):
             return factor(deltaproduct(g, limit))
         return product(f, limit)
 
-    return (_remove_multiple_delta(f.subs(limit[0], limit[1]) *
+    return (_remove_multiple_delta(f.subs({limit[0]: limit[1]}) *
                                    KroneckerDelta(limit[2], limit[1])) +
             _simplify_delta(KroneckerDelta(limit[2], limit[1] - 1)))
 
@@ -293,7 +293,7 @@ def deltasummation(f, limit, no_piecewise=False):
     assert len(solns) == 1
     value = solns[0][x]
     if no_piecewise:
-        return expr.subs(x, value)
-    return Piecewise((expr.subs(x, value),
+        return expr.subs({x: value})
+    return Piecewise((expr.subs({x: value}),
                       Interval(*limit[1:3]).as_relational(value)),
                      (S.Zero, True))

@@ -50,7 +50,7 @@ def test_dispersion():
     assert dispersionset(fp, gp) == set()
 
     fp = poly(x*(3*x**2+a)*(x-2536)*(x**3+a), x)
-    gp = fp.as_expr().subs(x, x-345).as_poly(x)
+    gp = fp.as_expr().subs({x: x - 345}).as_poly(x)
     assert sorted(dispersionset(fp, gp)) == [345, 2881]
     assert sorted(dispersionset(gp, fp)) == [2191]
 
@@ -79,11 +79,11 @@ def test_dispersion():
     # This is the point where the resultant based Ansatz
     # is superior to the current one.
     fp = poly(a**2*x**3 + (a**3 + a**2 + a + 1)*x, x)
-    gp = fp.as_expr().subs(x, x - 3*a).as_poly(x)
+    gp = fp.as_expr().subs({x: x - 3*a}).as_poly(x)
     assert sorted(dispersionset(fp, gp)) == []
 
-    fpa = fp.as_expr().subs(a, 2).as_poly(x)
-    gpa = gp.as_expr().subs(a, 2).as_poly(x)
+    fpa = fp.as_expr().subs({a: 2}).as_poly(x)
+    gpa = gp.as_expr().subs({a: 2}).as_poly(x)
     assert sorted(dispersionset(fpa, gpa)) == [6]
 
     # Work with Expr instead of Poly

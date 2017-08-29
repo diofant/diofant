@@ -103,7 +103,7 @@ class fibonacci(Function):
                 if n < 1:
                     raise ValueError("Fibonacci polynomials are defined "
                                      "only for positive integer indices.")
-                return cls._fibpoly(n).subs(_sym, sym)
+                return cls._fibpoly(n).subs({_sym: sym})
 
     def _eval_rewrite_as_sqrt(self, n, sym=None):
         from .. import sqrt
@@ -435,7 +435,7 @@ class bell(Function):
             if k_sym is None:
                 return Integer(cls._bell(int(n)))
             elif symbols is None:
-                return cls._bell_poly(int(n)).subs(_sym, k_sym)
+                return cls._bell_poly(int(n)).subs({_sym: k_sym})
             else:
                 r = cls._bell_incomplete_poly(int(n), int(k_sym), symbols)
                 return r

@@ -30,7 +30,7 @@ class OrthogonalPolynomial(Function):
     @classmethod
     def _eval_at_order(cls, n, x):
         if n.is_integer and n >= 0:
-            return cls._ortho_poly(int(n), _x).subs(_x, x)
+            return cls._ortho_poly(int(n), _x).subs({_x: x})
 
     def _eval_conjugate(self):
         return self.func(self.args[0], self.args[1].conjugate())
@@ -810,7 +810,7 @@ class assoc_legendre(Function):
                 raise ValueError("%s : 1st index must be nonnegative integer (got %r)" % (cls, n))
             if abs(m) > n:
                 raise ValueError("%s : abs('2nd index') must be <= '1st index' (got %r, %r)" % (cls, n, m))
-            return cls._eval_at_order(int(n), abs(int(m))).subs(_x, x)
+            return cls._eval_at_order(int(n), abs(int(m))).subs({_x: x})
 
     def fdiff(self, argindex=3):
         if argindex == 3:
@@ -1068,7 +1068,7 @@ class assoc_laguerre(OrthogonalPolynomial):
     @classmethod
     def _eval_at_order(cls, n, x, alpha):
         if n.is_integer and n >= 0:
-            return laguerre_poly(int(n), _x, alpha).subs(_x, x)
+            return laguerre_poly(int(n), _x, alpha).subs({_x: x})
 
     @classmethod
     def eval(cls, n, alpha, x):

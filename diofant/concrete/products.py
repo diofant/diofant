@@ -93,7 +93,7 @@ class Product(ExprWithIntLimits):
     By the same formula we can compute sin(pi/2):
 
     >>> P = pi * x * Product(1 - x**2/k**2, (k, 1, n))
-    >>> P = P.subs(x, pi/2)
+    >>> P = P.subs({x: pi/2})
     >>> P
     pi**2*Product(1 - pi**2/(4*k**2), (k, 1, n))/2
     >>> Pe = P.doit()
@@ -128,7 +128,7 @@ class Product(ExprWithIntLimits):
     >>> P = Product(2, (i, 10, n)).doit()
     >>> P
     2**(n - 9)
-    >>> P.subs(n, 5)
+    >>> P.subs({n: 5})
     1/16
     >>> Product(2, (i, 10, 5)).doit()
     1/16
@@ -232,14 +232,14 @@ class Product(ExprWithIntLimits):
             return term**(n - a + 1)
 
         if a == n:
-            return term.subs(k, a)
+            return term.subs({k: a})
 
         if term.has(KroneckerDelta) and _has_simple_delta(term, limits[0]):
             return deltaproduct(term, limits)
 
         dif = n - a
         if dif.is_Integer:
-            return Mul(*[term.subs(k, a + i) for i in range(dif + 1)])
+            return Mul(*[term.subs({k: a + i}) for i in range(dif + 1)])
 
         elif term.is_polynomial(k):
             poly = term.as_poly(k)

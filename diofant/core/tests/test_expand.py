@@ -298,8 +298,8 @@ def test_sympyissues_5919_6830():
         1 + 3*x + 3*x**2 + x**3 + O(z)
 
     e = (sin(x) + y)**3
-    assert (expand_multinomial(e.subs(y, O(x**4))) ==
-            expand_multinomial(e).subs(y, O(x**4)) == sin(x)**3 + O(x**6))
+    assert (expand_multinomial(e.subs({y: O(x**4)})) ==
+            expand_multinomial(e).subs({y: O(x**4)}) == sin(x)**3 + O(x**6))
 
     assert expand_multinomial(3**(x + y + 3)) == 27*3**(x + y)
 

@@ -148,8 +148,8 @@ def test_trigsimp_issues():
     # check integer exponents
     e = sin(x)**y/cos(x)**y
     assert trigsimp(e) == e
-    assert trigsimp(e.subs(y, 2)) == tan(x)**2
-    assert trigsimp(e.subs(x, 1)) == tan(1)**y
+    assert trigsimp(e.subs({y: 2})) == tan(x)**2
+    assert trigsimp(e.subs({x: 1})) == tan(1)**y
 
     # check for multiple patterns
     assert (cos(x)**2/sin(x)**2*cos(y)**2/sin(y)**2).trigsimp() == \
