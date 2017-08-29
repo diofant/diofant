@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative, Function, Integer, Rational, S, diff, log, pi,
+from diofant import (Derivative, E, Function, Integer, Rational, diff, log, pi,
                      sin)
 from diofant.abc import x, y, z
 from diofant.core.multidimensional import vectorize
@@ -26,7 +26,7 @@ def test_vectorize():
         return log(x, base, evaluate=evaluate)
 
     @vectorize(0, 3, "boo")
-    def vlog2(x, base=S.Exp1, **kwargs):
+    def vlog2(x, base=E, **kwargs):
         return log(x, base)
 
     @vectorize(0, 1)

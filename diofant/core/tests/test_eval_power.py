@@ -172,7 +172,7 @@ def test_sympyissue_4362():
 
     n = Symbol('n', negative=True)
     assert (x**n).as_numer_denom() == (1, x**-n)
-    assert sqrt(1/n).as_numer_denom() == (S.ImaginaryUnit, sqrt(-n))
+    assert sqrt(1/n).as_numer_denom() == (I, sqrt(-n))
     n = Symbol('0 or neg', nonpositive=True)
     # if x and n are split up without negating each term and n is negative
     # then the answer might be wrong; if n is 0 it won't matter since
@@ -245,7 +245,6 @@ def test_sympyissue_6100():
 
 def test_sympyissue_6208():
     from diofant import root, Rational
-    I = S.ImaginaryUnit
     assert sqrt(33**(9*I/10)) == -33**(9*I/20)
     assert root((6*I)**(2*I), 3).as_base_exp()[1] == Rational(1, 3)  # != 2*I/3
     assert root((6*I)**(I/3), 3).as_base_exp()[1] == I/9

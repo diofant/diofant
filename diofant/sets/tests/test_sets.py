@@ -31,7 +31,7 @@ def test_interval_arguments():
 
     assert isinstance(Interval(0, Symbol('a')), Interval)
     assert Interval(Symbol('a', extended_real=True, positive=True), 0) == S.EmptySet
-    pytest.raises(ValueError, lambda: Interval(0, S.ImaginaryUnit))
+    pytest.raises(ValueError, lambda: Interval(0, I))
     pytest.raises(ValueError, lambda: Interval(0, Symbol('z', extended_real=False)))
 
     pytest.raises(NotImplementedError, lambda: Interval(0, 1, And(x, y)))
@@ -452,7 +452,7 @@ def test_contains():
     assert Interval(-oo, oo, True).contains(oo) is S.true
     assert Interval(-oo, oo).contains(-oo) is S.true
     bad = [EmptySet(), FiniteSet(1), Interval(1, 2), zoo,
-           S.ImaginaryUnit, oo, nan, -oo]
+           I, oo, nan, -oo]
     assert all(i not in Interval(0, 5) for i in bad)
 
     assert FiniteSet(1, 2, 3).contains(2) is S.true
@@ -680,7 +680,7 @@ def test_real():
 
     I = Interval(0, 5)
     J = Interval(10, 20)
-    A = FiniteSet(1, 2, 30, x, S.Pi)
+    A = FiniteSet(1, 2, 30, x, pi)
     B = FiniteSet(-4, 0)
     C = FiniteSet(100)
     D = FiniteSet('Ham', 'Eggs')

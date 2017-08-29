@@ -222,7 +222,7 @@ def test_fun():
 
 def test_reals():
     assert 5 in S.Reals
-    assert S.Pi in S.Reals
+    assert pi in S.Reals
     assert -sqrt(2) in S.Reals
     assert (2, 5) not in S.Reals
     assert sqrt(-1) not in S.Reals

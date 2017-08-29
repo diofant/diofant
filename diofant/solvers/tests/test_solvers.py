@@ -689,7 +689,6 @@ def test_sympypull_1964():
                                        [{z: log(2)/(log(x*y))}]]
     # if you do inversion too soon then multiple roots (as for the following)
     # will be missed, e.g. if exp(3*x) = exp(3) -> 3*x = 3
-    E = S.Exp1
     assert (solve(exp(3*x) - exp(3), x) in
             [[{x: 1}, {x: log(E*(-S.Half - sqrt(3)*I/2))},
               {x: log(E*(-S.Half + sqrt(3)*I/2))}],
@@ -737,7 +736,6 @@ def test_sympyissue_4671_4463_4467():
     f = Function('f')
     assert solve(C1 + C2/x**2 - exp(-f(x)), f(x)) == [{f(x): log(x**2/(C1*x**2 + C2))}]
     a = Symbol('a')
-    E = S.Exp1
     assert (solve(1 - log(a + 4*x**2), x) in
             ([{x: -sqrt(-a + E)/2}, {x: sqrt(-a + E)/2}],
              [{x: sqrt(-a + E)/2}, {x: -sqrt(-a + E)/2}]))
@@ -1189,7 +1187,7 @@ def test_sympyissue_6989():
 def test_lambert_multivariate():
     assert _filtered_gens(Poly(x + 1/x + exp(x) + y), x) == {x, exp(x)}
     assert _lambert(x, x) == []
-    assert solve((x**2 - 2*x + 1).subs(x, log(x) + 3*x)) == [{x: LambertW(3*S.Exp1)/3}]
+    assert solve((x**2 - 2*x + 1).subs(x, log(x) + 3*x)) == [{x: LambertW(3*E)/3}]
     assert (solve((x**2 - 2*x + 1).subs(x, (log(x) + 3*x)**2 - 1)) ==
             [{x: LambertW(3*exp(-sqrt(2)))/3}, {x: LambertW(3*exp(sqrt(2)))/3}])
     assert (solve((x**2 - 2*x - 2).subs(x, log(x) + 3*x)) ==

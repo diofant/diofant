@@ -324,7 +324,7 @@ def test_is_polynomial():
     k = Symbol('k', nonnegative=True, integer=True)
 
     assert Rational(2).is_polynomial(x, y, z) is True
-    assert (S.Pi).is_polynomial(x, y, z) is True
+    assert pi.is_polynomial(x, y, z) is True
 
     assert x.is_polynomial(x) is True
     assert x.is_polynomial(y) is True

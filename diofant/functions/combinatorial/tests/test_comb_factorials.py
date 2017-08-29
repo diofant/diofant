@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (EulerGamma, O, Product, S, Symbol, binomial, exp,
+from diofant import (E, EulerGamma, O, Product, S, Symbol, binomial, exp,
                      expand_func, factorial, factorial2, ff, gamma, loggamma,
                      nan, oo, pi, polygamma, rf, simplify, symbols, zoo)
 from diofant.abc import x
@@ -341,7 +341,7 @@ def test_subfactorial():
     assert subfactorial(nan) == nan
 
     x = Symbol('x')
-    assert subfactorial(x).rewrite(uppergamma) == uppergamma(x + 1, -1)/S.Exp1
+    assert subfactorial(x).rewrite(uppergamma) == uppergamma(x + 1, -1)/E
 
     tt = Symbol('tt', integer=True, nonnegative=True)
     tf = Symbol('tf', integer=True, nonnegative=False)

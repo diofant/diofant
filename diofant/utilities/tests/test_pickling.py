@@ -8,6 +8,7 @@ from diofant import QQ, ZZ, lex
 from diofant.abc import x, y, z
 from diofant.concrete.products import Product
 from diofant.concrete.summations import Sum
+from diofant.core import Catalan, EulerGamma, GoldenRatio
 from diofant.core.add import Add
 from diofant.core.basic import Atom, Basic
 from diofant.core.compatibility import HAS_GMPY
@@ -208,8 +209,8 @@ def test_Singletons():
     copiers += [lambda x: pickle.loads(pickle.dumps(x, p)) for p in protocols]
 
     for obj in (Integer(-1), Integer(0), Integer(1), Rational(1, 2), pi,
-                E, I, oo, -oo, zoo, nan, S.GoldenRatio, S.EulerGamma,
-                S.Catalan, S.EmptySet, S.IdentityFunction):
+                E, I, oo, -oo, zoo, nan, GoldenRatio, EulerGamma,
+                Catalan, S.EmptySet, S.IdentityFunction):
         for func in copiers:
             assert func(obj) is obj
 

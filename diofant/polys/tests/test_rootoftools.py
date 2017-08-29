@@ -160,7 +160,7 @@ def test_RootOf___eval_Eq__():
     assert ([Eq(RootOf(eq, i), j[x])
              for i in range(3) for j in solve(eq)] ==
             [False, False, True, False, True, False, True, False, False])
-    assert Eq(RootOf(eq, 0), 1 + S.ImaginaryUnit) is S.false
+    assert Eq(RootOf(eq, 0), 1 + I) is S.false
 
 
 def test_RootOf_is_real():

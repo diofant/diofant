@@ -23,8 +23,8 @@ def test_exp_values():
 
     assert exp(0) == 1
     assert exp(1) == E
-    assert exp(-1 + x).as_base_exp() == (S.Exp1, x - 1)
-    assert exp(1 + x).as_base_exp() == (S.Exp1, x + 1)
+    assert exp(-1 + x).as_base_exp() == (E, x - 1)
+    assert exp(+1 + x).as_base_exp() == (E, x + 1)
 
     assert exp(pi*I/2) == I
     assert exp(pi*I) == -1
@@ -78,7 +78,7 @@ def test_exp__as_base_exp():
     assert E**(2*x) == exp(2*x)
     assert E**(x*y) == exp(x*y)
 
-    assert exp(x).base is S.Exp1
+    assert exp(x).base is E
     assert exp(x).exp == x
 
 
@@ -373,7 +373,7 @@ def test_lambertw():
     p = Symbol('p', positive=True)
     assert LambertW(p, evaluate=False).is_extended_real
     assert LambertW(p - 1, evaluate=False).is_extended_real is None
-    assert LambertW(-p - 2/S.Exp1, evaluate=False).is_extended_real is False
+    assert LambertW(-p - 2/E, evaluate=False).is_extended_real is False
     assert LambertW(S.Half, -1, evaluate=False).is_extended_real is False
     assert LambertW(-S.One/10, -1, evaluate=False).is_extended_real
 

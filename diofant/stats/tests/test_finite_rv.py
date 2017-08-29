@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (And, Dict, Eq, FiniteSet, Integer, Or, Rational, S,
-                     Symbol, Tuple, binomial, cancel, cos, simplify, sqrt,
+                     Symbol, Tuple, binomial, cancel, cos, pi, simplify, sqrt,
                      symbols, sympify)
 from diofant.abc import p, x
 from diofant.matrices import Matrix
@@ -61,7 +61,7 @@ def test_dice():
     assert cmoment(4*X, 3) == 64*cmoment(X, 3)
     assert covariance(X, Y) == S.Zero
     assert covariance(X, X + Y) == variance(X)
-    assert density(Eq(cos(X*S.Pi), 1))[True] == S.Half
+    assert density(Eq(cos(X*pi), 1))[True] == S.Half
     assert correlation(X, Y) == 0
     assert correlation(X, Y) == correlation(Y, X)
     assert smoment(X + Y, 3) == skewness(X + Y)

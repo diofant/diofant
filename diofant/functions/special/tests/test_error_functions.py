@@ -56,7 +56,7 @@ def test_erf():
                                                   I*fresnels(z*(1 - I)/sqrt(pi)))
     assert erf(z).rewrite('hyper') == 2*z*hyper([S.Half], [3*S.Half], -z**2)/sqrt(pi)
     assert erf(z).rewrite('meijerg') == z*meijerg([S.Half], [], [0], [-S.Half], z**2)/sqrt(pi)
-    assert erf(z).rewrite('expint') == sqrt(z**2)/z - z*expint(S.Half, z**2)/sqrt(S.Pi)
+    assert erf(z).rewrite('expint') == sqrt(z**2)/z - z*expint(S.Half, z**2)/sqrt(pi)
 
     assert limit(exp(x)*exp(x**2)*(erf(x + 1/exp(x)) - erf(x)), x, oo) == \
         2/sqrt(pi)
@@ -92,7 +92,7 @@ def test_erf_evalf():
 
 
 def test__erfs():
-    assert _erfs(z).diff(z) == -2/sqrt(S.Pi) + 2*z*_erfs(z)
+    assert _erfs(z).diff(z) == -2/sqrt(pi) + 2*z*_erfs(z)
     pytest.raises(ArgumentIndexError, lambda: _erfs(x).fdiff(2))
 
     assert _erfs(1/z).series(z) == \
@@ -136,7 +136,7 @@ def test_erfc():
     assert erfc(z).rewrite('hyper') == 1 - 2*z*hyper([S.Half], [3*S.Half], -z**2)/sqrt(pi)
     assert erfc(z).rewrite('meijerg') == 1 - z*meijerg([S.Half], [], [0], [-S.Half], z**2)/sqrt(pi)
     assert erfc(z).rewrite('uppergamma') == 1 - sqrt(z**2)*erf(sqrt(z**2))/z
-    assert erfc(z).rewrite('expint') == S.One - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(S.Pi)
+    assert erfc(z).rewrite('expint') == S.One - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(pi)
 
     assert erfc(x).as_real_imag() == \
         ((erfc(re(x) - I*re(x)*Abs(im(x))/Abs(re(x)))/2 +
@@ -196,8 +196,8 @@ def test_erfi():
     assert erfi(z).rewrite('hyper') == 2*z*hyper([S.Half], [3*S.Half], z**2)/sqrt(pi)
     assert erfi(z).rewrite('meijerg') == z*meijerg([S.Half], [], [0], [-S.Half], -z**2)/sqrt(pi)
     assert erfi(z).rewrite('uppergamma') == (sqrt(-z**2)/z*(uppergamma(S.Half,
-                                                                       -z**2)/sqrt(S.Pi) - S.One))
-    assert erfi(z).rewrite('expint') == sqrt(-z**2)/z - z*expint(S.Half, -z**2)/sqrt(S.Pi)
+                                                                       -z**2)/sqrt(pi) - S.One))
+    assert erfi(z).rewrite('expint') == sqrt(-z**2)/z - z*expint(S.Half, -z**2)/sqrt(pi)
 
     assert erfi(x).as_real_imag() == \
         ((erfi(re(x) - I*re(x)*Abs(im(x))/Abs(re(x)))/2 +

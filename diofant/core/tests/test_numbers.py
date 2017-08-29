@@ -873,7 +873,7 @@ def test_powers_Integer():
     assert Integer(+1) ** oo == nan
     assert Integer(-1) ** oo == nan
     assert Integer(+2) ** oo == oo
-    assert Integer(-2) ** oo == oo + oo * S.ImaginaryUnit
+    assert Integer(-2) ** oo == oo + oo * I
     assert Integer(0) ** oo == 0
 
     # check Nan
@@ -975,8 +975,7 @@ def test_powers_Rational():
     assert Rational(1, 2) ** oo == 0
     assert Rational(3, 2) ** oo == oo
     assert Rational(-1, 2) ** oo == 0
-    assert Rational(-3, 2) ** oo == \
-        oo + oo * S.ImaginaryUnit
+    assert Rational(-3, 2) ** oo == oo + oo*I
 
     # check Nan
     assert Rational(3, 4) ** nan == nan
@@ -1296,7 +1295,7 @@ def test_zoo():
     pb = Symbol('pb', positive=True, finite=True)
     nb = Symbol('nb', negative=True, finite=True)
     imb = Symbol('ib', imaginary=True, finite=True)
-    for i in [I, oo, -oo, S.Zero, S.One, S.Pi, S.Half, Integer(3), log(3),
+    for i in [I, oo, -oo, S.Zero, S.One, pi, S.Half, Integer(3), log(3),
               b, nz, p, n, im, pb, nb, imb, c]:
         if i.is_finite and (i.is_extended_real or i.is_imaginary):
             assert i + zoo is zoo
@@ -1437,8 +1436,8 @@ def test_int_NumberSymbols():
 
 
 def test_approximation_interval():
-    assert S.Exp1.approximation_interval(Integer) == (2, 3)
-    assert S.Exp1.approximation_interval(Float) is None
+    assert E.approximation_interval(Integer) == (2, 3)
+    assert E.approximation_interval(Float) is None
 
     assert GoldenRatio.approximation_interval(Integer) == (1, 2)
     assert GoldenRatio.approximation_interval(Float) is None

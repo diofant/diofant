@@ -2,9 +2,9 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Dummy, Float, I, Integer, Mod, Mul, O, Pow, Rational,
-                     S, Symbol, comp, cos, exp, factorial, im, log, nan, oo,
-                     pi, re, sign, sin, sqrt, symbols, sympify, zoo)
+from diofant import (Add, Dummy, E, Float, I, Integer, Mod, Mul, O, Pow,
+                     Rational, S, Symbol, comp, cos, exp, factorial, im, log,
+                     nan, oo, pi, re, sign, sin, sqrt, symbols, sympify, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -193,11 +193,11 @@ def test_pow3():
 
 
 def test_pow_E():
-    assert 2**(y/log(2)) == S.Exp1**y
-    assert 2**(y/log(2)/3) == S.Exp1**(y/3)
-    assert 3**(1/log(-3)) != S.Exp1
-    assert (3 + 2*I)**(1/(log(-3 - 2*I) + I*pi)) == S.Exp1
-    assert (4 + 2*I)**(1/(log(-4 - 2*I) + I*pi)) == S.Exp1
+    assert 2**(y/log(2)) == E**y
+    assert 2**(y/log(2)/3) == E**(y/3)
+    assert 3**(1/log(-3)) != E
+    assert (3 + 2*I)**(1/(log(-3 - 2*I) + I*pi)) == E
+    assert (4 + 2*I)**(1/(log(-4 - 2*I) + I*pi)) == E
     assert (3 + 2*I)**(1/(log(-3 - 2*I, 3)/2 + I*pi/log(3)/2)) == 9
     assert (3 + 2*I)**(1/(log(3 + 2*I, 3)/2)) == 9
     # every time tests are run they will affirm with a different random
@@ -207,7 +207,7 @@ def test_pow_E():
         r, i = b.as_real_imag()
         if i:
             break
-    assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).n()), S.Exp1)
+    assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).n()), E)
 
 
 def test_pow_sympyissue_3516():
@@ -1045,7 +1045,7 @@ def test_Pow_is_finite():
     assert (x**x).is_finite is None  # ditto
     assert (p**x).is_finite is None  # ditto
     assert (n**x).is_finite is None  # ditto
-    assert (1/S.Pi).is_finite
+    assert (1/pi).is_finite
     assert (y**2).is_finite is True
     assert (y**x).is_finite is None
     assert (y**exp(x)).is_finite is None

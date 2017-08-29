@@ -488,7 +488,7 @@ def test_tan_rewrite():
     neg_exp, pos_exp = exp(-x*I), exp(x*I)
     assert tan(x).rewrite(exp) == I*(neg_exp - pos_exp)/(neg_exp + pos_exp)
     assert tan(x).rewrite(sin) == 2*sin(x)**2/sin(2*x)
-    assert tan(x).rewrite(cos) == -cos(x + S.Pi/2)/cos(x)
+    assert tan(x).rewrite(cos) == -cos(x + pi/2)/cos(x)
     assert tan(x).rewrite(cot) == 1/cot(x)
     assert tan(sinh(x)).rewrite(
         exp).subs(x, 3).n() == tan(x).rewrite(exp).subs(x, sinh(3)).n()
@@ -517,8 +517,8 @@ def test_tan_rewrite():
 def test_tan_subs():
     assert tan(x).subs(tan(x), y) == y
     assert tan(x).subs(x, y) == tan(y)
-    assert tan(x).subs(x, S.Pi/2) == zoo
-    assert tan(x).subs(x, 3*S.Pi/2) == zoo
+    assert tan(x).subs(x, pi/2) == zoo
+    assert tan(x).subs(x, 3*pi/2) == zoo
 
 
 def test_tan_expansion():
@@ -632,7 +632,7 @@ def test_cot_rewrite():
     neg_exp, pos_exp = exp(-x*I), exp(x*I)
     assert cot(x).rewrite(exp) == I*(pos_exp + neg_exp)/(pos_exp - neg_exp)
     assert cot(x).rewrite(sin) == 2*sin(2*x)/sin(x)**2
-    assert cot(x).rewrite(cos) == -cos(x)/cos(x + S.Pi/2)
+    assert cot(x).rewrite(cos) == -cos(x)/cos(x + pi/2)
     assert cot(x).rewrite(tan) == 1/tan(x)
     assert cot(sinh(x)).rewrite(
         exp).subs(x, 3).n() == cot(x).rewrite(exp).subs(x, sinh(3)).n()
@@ -656,7 +656,7 @@ def test_cot_subs():
     assert cot(x).subs(cot(x), y) == y
     assert cot(x).subs(x, y) == cot(y)
     assert cot(x).subs(x, 0) == zoo
-    assert cot(x).subs(x, S.Pi) == zoo
+    assert cot(x).subs(x, pi) == zoo
 
 
 def test_cot_expansion():
@@ -735,7 +735,7 @@ def test_asin_series():
 def test_asin_rewrite():
     assert asin(x).rewrite(log) == -I*log(I*x + sqrt(1 - x**2))
     assert asin(x).rewrite(atan) == 2*atan(x/(1 + sqrt(1 - x**2)))
-    assert asin(x).rewrite(acos) == S.Pi/2 - acos(x)
+    assert asin(x).rewrite(acos) == pi/2 - acos(x)
     assert asin(x).rewrite(acot) == 2*acot((sqrt(-x**2 + 1) + 1)/x)
     assert asin(x).rewrite(asec) == -asec(1/x) + pi/2
     assert asin(x).rewrite(acsc) == acsc(1/x)
@@ -805,9 +805,9 @@ def test_acos_rewrite():
     assert acos(x).rewrite(log) == pi/2 + I*log(I*x + sqrt(1 - x**2))
     assert acos(x).rewrite(atan) == \
         atan(sqrt(1 - x**2)/x) + (pi/2)*(1 - x*sqrt(1/x**2))
-    assert acos(0).rewrite(atan) == S.Pi/2
+    assert acos(0).rewrite(atan) == pi/2
     assert acos(0.5).rewrite(atan) == acos(0.5).rewrite(log)
-    assert acos(x).rewrite(asin) == S.Pi/2 - asin(x)
+    assert acos(x).rewrite(asin) == pi/2 - asin(x)
     assert acos(x).rewrite(acot) == -2*acot((sqrt(-x**2 + 1) + 1)/x) + pi/2
     assert acos(x).rewrite(asec) == asec(1/x)
     assert acos(x).rewrite(acsc) == -acsc(1/x) + pi/2

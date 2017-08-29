@@ -40,7 +40,7 @@ def test_as_explicit_symbol():
 def test_as_explicit_nonsquare_symbol():
     X = MatrixSymbol('X', 2, 3)
     assert MatPow(X, 1).as_explicit() == X.as_explicit()
-    for r in [0, 2, S.Half, S.Pi]:
+    for r in [0, 2, S.Half, pi]:
         pytest.raises(ShapeError, lambda: MatPow(X, r).as_explicit())
 
 

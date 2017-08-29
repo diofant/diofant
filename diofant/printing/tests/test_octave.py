@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import octave_code as mcode
-from diofant.core import (Catalan, EulerGamma, Function, GoldenRatio, I,
+from diofant.core import (Catalan, E, EulerGamma, Function, GoldenRatio, I,
                           Integer, Lambda, Rational, S, Symbol, Tuple, nan, oo,
                           pi, symbols, zoo)
 from diofant.functions import Piecewise, ceiling, cos, exp, sin, sqrt
@@ -119,7 +119,7 @@ def test_constants():
     assert mcode(oo) == "inf"
     assert mcode(-oo) == "-inf"
     assert mcode(nan) == "NaN"
-    assert mcode(S.Exp1) == "exp(1)"
+    assert mcode(E) == "exp(1)"
     assert mcode(exp(1)) == "exp(1)"
     assert mcode(S.true) == "true"
     assert mcode(S.false) == "false"

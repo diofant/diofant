@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import I, asin, exp, log, simplify, sin, sqrt
-from diofant.core import (Dummy, Float, Integer, Mod, Pow, Rational, S, Symbol,
-                          Wild, nan, oo, pi, zoo)
+from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Pow,
+                          Rational, S, Symbol, Wild, nan, oo, pi, zoo)
 from diofant.core.facts import InconsistentAssumptions
 
 
@@ -245,7 +245,7 @@ def test_neg_rational():
 
 
 def test_pi():
-    z = S.Pi
+    z = pi
     assert z.is_commutative is True
     assert z.is_integer is False
     assert z.is_rational is False
@@ -270,7 +270,7 @@ def test_pi():
 
 
 def test_E():
-    z = S.Exp1
+    z = E
     assert z.is_commutative is True
     assert z.is_integer is False
     assert z.is_rational is False
@@ -295,7 +295,7 @@ def test_E():
 
 
 def test_I():
-    z = S.ImaginaryUnit
+    z = I
     assert z.is_commutative is True
     assert z.is_integer is False
     assert z.is_rational is False
@@ -613,7 +613,7 @@ def test_hash_vs_typeinfo_2():
 
 def test_hash_vs_eq():
     """catch: different hash for equal objects"""
-    a = 1 + S.Pi    # important: do not fold it into a Number instance
+    a = 1 + pi    # important: do not fold it into a Number instance
     ha = hash(a)  # it should be Add/Mul/... to trigger the bug
 
     a.is_positive   # this uses .evalf() and deduces it is positive
@@ -714,7 +714,7 @@ def test_Pow_is_algebraic():
     # Gelfond-Schneider constant:
     assert Pow(2, sqrt(2), evaluate=False).is_algebraic is False
 
-    assert Pow(S.GoldenRatio, sqrt(3), evaluate=False).is_algebraic is False
+    assert Pow(GoldenRatio, sqrt(3), evaluate=False).is_algebraic is False
 
     # sympy/sympy#8649
     t = Symbol('t', real=True, transcendental=True)
@@ -776,7 +776,7 @@ def test_special_is_rational():
     assert log(rn + 1).is_rational is False
     assert log(x).is_rational is None
     assert (sqrt(3) + sqrt(5)).is_rational is None
-    assert (sqrt(3) + S.Pi).is_rational is False
+    assert (sqrt(3) + pi).is_rational is False
     assert (x**i).is_rational is None
     assert (i**i).is_rational is True
     assert (i**i2).is_rational is None
@@ -833,7 +833,7 @@ def test_sympyissue_6631():
     assert ((-1)**(I)).is_extended_real is True
     assert ((-1)**(I*2)).is_extended_real is True
     assert ((-1)**(I/2)).is_extended_real is True
-    assert ((-1)**(I*S.Pi)).is_extended_real is True
+    assert ((-1)**(I*pi)).is_extended_real is True
     assert (I**(I + 2)).is_extended_real is True
 
 
@@ -844,13 +844,13 @@ def test_sympyissue_2730():
 def test_sympyissue_4149():
     assert (3 + I).is_complex
     assert (3 + I).is_imaginary is False
-    assert (3*I + S.Pi*I).is_imaginary
+    assert (3*I + pi*I).is_imaginary
     y = Symbol('y', real=True)
-    assert (3*I + S.Pi*I + y*I).is_imaginary is True
+    assert (3*I + pi*I + y*I).is_imaginary is True
     p = Symbol('p', positive=True, finite=True)
-    assert (3*I + S.Pi*I + p*I).is_imaginary
+    assert (3*I + pi*I + p*I).is_imaginary
     n = Symbol('n', negative=True, finite=True)
-    assert (-3*I - S.Pi*I + n*I).is_imaginary
+    assert (-3*I - pi*I + n*I).is_imaginary
 
     i = Symbol('i', imaginary=True)
     assert ([(i**a).is_imaginary for a in range(4)] ==

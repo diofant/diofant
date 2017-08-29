@@ -218,7 +218,7 @@ def test_exponential():
     assert limit((1 + x/(2*n))**n, n, oo) == exp(x/2)
     assert limit((1 + x/(2*n + 1))**n, n, oo) == exp(x/2)
     assert limit(((x - 1)/(x + 1))**x, x, oo) == exp(-2)
-    assert limit(1 + (1 + 1/x)**x, x, oo) == 1 + S.Exp1
+    assert limit(1 + (1 + 1/x)**x, x, oo) == 1 + E
 
 
 @pytest.mark.xfail
@@ -294,7 +294,7 @@ def test_sympyissue_5184():
 
 
 def test_sympyissue_5229():
-    assert limit((1 + y)**(1/y) - S.Exp1, y, 0) == 0
+    assert limit((1 + y)**(1/y) - E, y, 0) == 0
 
 
 def test_sympyissue_4546():

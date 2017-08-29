@@ -17,20 +17,21 @@ from diofant import continued_fraction_iterator as cf_i
 from diofant import continued_fraction_periodic as cf_p
 from diofant import continued_fraction_reduce as cf_r
 from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
-                     DiracDelta, E, EulerGamma, FiniteSet, Function, I,
-                     Integer, Lambda, LambertW, Le, Lt, Max, Mul, N, O, Or,
-                     Piecewise, Poly, Rational, RootOf, S, Subs, Symbol, acot,
-                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
-                     besselj, binomial, ceiling, chebyshevt, combsimp, cos,
-                     cosh, cot, csc, diff, elliptic_e, elliptic_f, exp, expand,
-                     expand_func, factor, factorial, factorial2, factorint,
-                     fibonacci, floor, gamma, gcd, hessian, hyper, hyperexpand,
-                     igcd, im, legendre_poly, limit, log, logcombine, minimize,
-                     nan, npartitions, oo, pi, polygamma, polylog, powdenest,
-                     powsimp, primerange, primitive_root, product, radsimp, re,
-                     reduce_inequalities, residue, resultant, rf, sec, series,
-                     sign, simplify, sin, sinh, solve, sqrt, sqrtdenest,
-                     symbols, tan, tanh, totient, trigsimp, wronskian, zoo)
+                     DiracDelta, E, EulerGamma, FiniteSet, Function,
+                     GoldenRatio, I, Integer, Lambda, LambertW, Le, Lt, Max,
+                     Mul, N, O, Or, Piecewise, Poly, Rational, RootOf, S, Subs,
+                     Symbol, acot, apart, asin, asinh, assoc_legendre, atan,
+                     bernoulli, besselj, binomial, ceiling, chebyshevt,
+                     combsimp, cos, cosh, cot, csc, diff, elliptic_e,
+                     elliptic_f, exp, expand, expand_func, factor, factorial,
+                     factorial2, factorint, fibonacci, floor, gamma, gcd,
+                     hessian, hyper, hyperexpand, igcd, im, legendre_poly,
+                     limit, log, logcombine, minimize, nan, npartitions, oo,
+                     pi, polygamma, polylog, powdenest, powsimp, primerange,
+                     primitive_root, product, radsimp, re, reduce_inequalities,
+                     residue, resultant, rf, sec, series, sign, simplify, sin,
+                     sinh, solve, sqrt, sqrtdenest, symbols, tan, tanh,
+                     totient, trigsimp, wronskian, zoo)
 from diofant.concrete import Sum
 from diofant.concrete.products import Product
 from diofant.core.relational import Equality
@@ -464,7 +465,7 @@ def test_H23():
 
 
 def test_H24():
-    phi = AlgebraicNumber(S.GoldenRatio.expand(func=True), alias='phi')
+    phi = AlgebraicNumber(GoldenRatio.expand(func=True), alias='phi')
     assert factor(x**4 - 3*x**2 + 1, extension=phi) == \
         (x - phi)*(x + 1 - phi)*(x - 1 + phi)*(x + phi)
 
@@ -857,10 +858,8 @@ def test_M22():
 
 
 def test_M23():
-    x = symbols('x', complex=True)
-
-    assert solve(x - 1/sqrt(1 + x**2)) == [
-        {x: -I*sqrt(S.Half + sqrt(5)/2)}, {x: sqrt(-S.Half + sqrt(5)/2)}]
+    assert solve(x - 1/sqrt(1 + x**2)) == [{x: -I*sqrt(S.Half + sqrt(5)/2)},
+                                           {x: sqrt(-S.Half + sqrt(5)/2)}]
 
 
 def test_M24():
@@ -871,7 +870,6 @@ def test_M24():
 
 def test_M25():
     a, b, c, d = symbols(':d', positive=True)
-    x = symbols('x')
     assert solve(a*b**x - c*d**x, x)[0][x].expand() == (log(c/a)/log(b/d)).expand()
 
 
@@ -1038,11 +1036,10 @@ def test_N1():
     assert E**pi > pi**E
 
 
-@pytest.mark.xfail
 def test_N2():
     x = symbols('x', real=True)
     assert reduce_inequalities(x**4 - x + 1 > 0)
-    assert reduce_inequalities(x**4 - x + 1 > 1) == Or(1 < x, x < 0)
+    assert reduce_inequalities(x**4 - x + 1 > 1) == Or(Lt(1, x), x < 0)
 
 
 @pytest.mark.xfail

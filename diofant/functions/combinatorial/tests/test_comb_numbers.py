@@ -2,9 +2,9 @@ import string
 
 import pytest
 
-from diofant import (Dummy, EulerGamma, I, Integer, Product, Rational, S, Sum,
-                     Symbol, cancel, diff, expand_func, im, nan, oo, pi, re,
-                     sstr, symbols, zoo)
+from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
+                     Rational, S, Sum, Symbol, cancel, diff, expand_func, im,
+                     nan, oo, pi, re, sstr, symbols, zoo)
 from diofant.abc import x
 from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
                                digamma, euler, factorial, fibonacci, gamma,
@@ -65,7 +65,7 @@ def test_fibonacci():
     assert fibonacci(3, x) == x**2 + 1
     assert fibonacci(4, x) == x**3 + 2*x
 
-    assert fibonacci(x).rewrite(sqrt) == (S.GoldenRatio**x - cos(S.Pi*x)/S.GoldenRatio**x)/sqrt(5)
+    assert fibonacci(x).rewrite(sqrt) == (GoldenRatio**x - cos(pi*x)/GoldenRatio**x)/sqrt(5)
     assert fibonacci(x).rewrite('tractable') == fibonacci(x).rewrite(sqrt)
 
     pytest.raises(ValueError, lambda: fibonacci(-2, x))
