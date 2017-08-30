@@ -174,7 +174,7 @@ def test_free_symbols():
 
 
 def test_zero_matmul():
-    assert isinstance(S.Zero * MatrixSymbol('X', 2, 2), MatrixExpr)
+    assert isinstance(0 * MatrixSymbol('X', 2, 2), MatrixExpr)
 
 
 def test_matadd_simplify():

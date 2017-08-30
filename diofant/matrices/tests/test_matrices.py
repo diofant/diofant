@@ -242,7 +242,7 @@ def test_creation():
 
 
 def test_tolist():
-    lst = [[S.One, S.Half, x*y, S.Zero], [x, y, z, x**2], [y, -S.One, z*x, 3]]
+    lst = [[1, S.Half, x*y, 0], [x, y, z, x**2], [y, -1, z*x, 3]]
     m = Matrix(lst)
     assert m.tolist() == lst
 
@@ -806,7 +806,7 @@ def test_eigen():
                 [0, 1, 0],
                 [0, 0, 1]])
 
-    assert M.eigenvals(multiple=False) == {S.One: 3}
+    assert M.eigenvals(multiple=False) == {1: 3}
 
     assert M.eigenvects() == (
         [(1, 3, [Matrix([1, 0, 0]),
@@ -817,7 +817,7 @@ def test_eigen():
                 [1, 0, 0],
                 [1, 1, 1]])
 
-    assert M.eigenvals() == {2*S.One: 1, -S.One: 1, S.Zero: 1}
+    assert M.eigenvals() == {2: 1, -1: 1, 0: 1}
 
     assert M.eigenvects() == (
         [
@@ -829,7 +829,7 @@ def test_eigen():
     M = Matrix([[x, 0],
                 [0, 1]])
 
-    assert M.eigenvals() == {x: 1, S.One: 1}
+    assert M.eigenvals() == {x: 1, 1: 1}
 
     M = Matrix([[1, -1],
                 [1,  3]])
@@ -886,7 +886,7 @@ def test_eigen():
     ]
 
     m = Matrix([[1, .6, .6], [.6, .9, .9], [.9, .6, .6]])
-    evals = {-sqrt(385)/20 + Rational(5, 4): 1, sqrt(385)/20 + Rational(5, 4): 1, S.Zero: 1}
+    evals = {-sqrt(385)/20 + Rational(5, 4): 1, sqrt(385)/20 + Rational(5, 4): 1, 0: 1}
     assert m.eigenvals() == evals
     nevals = list(sorted(m.eigenvals(rational=False).keys()))
     sevals = list(sorted(evals.keys()))

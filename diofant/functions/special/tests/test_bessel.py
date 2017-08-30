@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Abs, I, Integer, Limit, O, Rational, S, Symbol, besseli,
+from diofant import (Abs, I, Integer, Limit, O, Rational, Symbol, besseli,
                      besselj, besselk, bessely, conjugate, cos, cosh, diff,
                      exp, expand_func, gamma, hankel1, hankel2, hyper, im, jn,
                      jn_zeros, log, nan, oo, pi, re, series, sin, sinh, sqrt,
@@ -245,16 +245,16 @@ def test_bessel_eval():
     n, m, k = Symbol('n', integer=True), Symbol('m'), Symbol('k', integer=True, zero=False)
 
     for f in [besselj, besseli]:
-        assert f(0, 0) == S.One
-        assert f(2.1, 0) == S.Zero
-        assert f(-3, 0) == S.Zero
+        assert f(0, 0) == 1
+        assert f(2.1, 0) == 0
+        assert f(-3, 0) == 0
         assert f(-10.2, 0) == zoo
-        assert f(1 + 3*I, 0) == S.Zero
+        assert f(1 + 3*I, 0) == 0
         assert f(-3 + I, 0) == zoo
         assert f(-2*I, 0) == nan
-        assert f(n, 0) != S.One and f(n, 0) != S.Zero
-        assert f(m, 0) != S.One and f(m, 0) != S.Zero
-        assert f(k, 0) == S.Zero
+        assert f(n, 0) not in (0, 1)
+        assert f(m, 0) not in (0, 1)
+        assert f(k, 0) == 0
 
     assert bessely(0, 0) == -oo
     assert besselk(0, 0) == +oo
@@ -263,12 +263,12 @@ def test_bessel_eval():
         assert f(I, 0) == nan
 
     for f in [besselj, bessely]:
-        assert f(m, +oo) == S.Zero
-        assert f(m, -oo) == S.Zero
+        assert f(m, +oo) == 0
+        assert f(m, -oo) == 0
 
     for f in [besseli, besselk]:
-        assert f(m, +I*oo) == S.Zero
-        assert f(m, -I*oo) == S.Zero
+        assert f(m, +I*oo) == 0
+        assert f(m, -I*oo) == 0
 
     for f in [besseli, besselk]:
         assert f(-4, z) == f(4, z)

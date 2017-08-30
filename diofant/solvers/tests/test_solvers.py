@@ -164,7 +164,7 @@ def test_solve_polynomial1():
             [{x: (a22*b1 - a12*b2)/(a11*a22 - a12*a21),
               y: (a11*b2 - a21*b1)/(a11*a22 - a12*a21)}])
 
-    solution = [{y: S.Zero, x: S.Zero}]
+    solution = [{y: 0, x: 0}]
 
     assert solve((x - y, x + y), x, y) == solution
     assert solve((x - y, x + y), (x, y)) == solution

@@ -59,7 +59,7 @@ def test_dice():
     assert variance(X + X) == 4 * variance(X) == cmoment(X + X, 2)
     assert cmoment(X, 0) == 1
     assert cmoment(4*X, 3) == 64*cmoment(X, 3)
-    assert covariance(X, Y) == S.Zero
+    assert covariance(X, Y) == 0
     assert covariance(X, X + Y) == variance(X)
     assert density(Eq(cos(X*pi), 1))[True] == S.Half
     assert correlation(X, Y) == 0
@@ -77,8 +77,8 @@ def test_dice():
     assert moment(X, 0) == 1
     assert moment(5*X, 2) == 25*moment(X, 2)
 
-    assert P(X > 3, X > 3) == S.One
-    assert P(X > Y, Eq(Y, 6)) == S.Zero
+    assert P(X > 3, X > 3) == 1
+    assert P(X > Y, Eq(Y, 6)) == 0
     assert P(Eq(X + Y, 12)) == S.One/36
     assert P(Eq(X + Y, 12), Eq(X, 6)) == S.One/6
 
@@ -162,7 +162,7 @@ def test_bernoulli():
 
 def test_cdf():
     D = Die('D', 6)
-    o = S.One
+    o = Integer(1)
 
     assert cdf(
         D) == sympify({1: o/6, 2: o/3, 3: o/2, 4: 2*o/3, 5: 5*o/6, 6: o})
@@ -260,7 +260,6 @@ def test_density_call():
     x = Bernoulli('x', p)
     d = density(x)
     assert d(0) == 1 - p
-    assert d(S.Zero) == 1 - p
     assert d(5) == 0
 
     assert 0 in d
@@ -270,7 +269,7 @@ def test_density_call():
 
 def test_DieDistribution():
     X = DieDistribution(6)
-    assert X.pdf(S.Half) == S.Zero
+    assert X.pdf(S.Half) == 0
     assert X.pdf(x).subs({x: 1}).doit() == Rational(1, 6)
     assert X.pdf(x).subs({x: 7}).doit() == 0
     assert X.pdf(x).subs({x: -1}).doit() == 0

@@ -25,7 +25,7 @@ def test_decompose_power():
 def test_Factors():
     assert Factors() == Factors({}) == Factors(Integer(1))
     assert Factors(Integer(1)) == Factors(Factors(Integer(1)))
-    assert Factors().as_expr() == S.One
+    assert Factors().as_expr() == 1
     assert Factors({x: 2, y: 3, sin(x): 4}).as_expr() == x**2*y**3*sin(x)**4
     assert Factors(+oo) == Factors({oo: 1})
     assert Factors(-oo) == Factors({oo: 1, -1: 1})
@@ -68,21 +68,21 @@ def test_Factors():
 
     # coverage
     # /!\ things break if this is not True
-    assert Factors({Integer(-1): Rational(3, 2)}) == Factors({I: S.One, Integer(-1): S.One})
+    assert Factors({Integer(-1): Rational(3, 2)}) == Factors({I: 1, -1: 1})
     assert Factors({I: Integer(1), Integer(-1): Rational(1, 3)}).as_expr() == I*(-1)**Rational(1, 3)
 
     assert Factors(-1.) == Factors({Integer(-1): Integer(1), Float(1.): 1})
     assert Factors(-2.) == Factors({Integer(-1): Integer(1), Float(2.): 1})
     assert Factors((-2.)**x) == Factors({Float(-2.): x})
     assert Factors(Integer(-2)) == Factors({Integer(-1): Integer(1), Integer(2): 1})
-    assert Factors(S.Half) == Factors({Integer(2): -S.One})
-    assert Factors(Rational(3, 2)) == Factors({Integer(3): S.One, Integer(2): Integer(-1)})
+    assert Factors(S.Half) == Factors({Integer(2): -1})
+    assert Factors(Rational(3, 2)) == Factors({Integer(3): 1, Integer(2): Integer(-1)})
     assert Factors({I: Integer(1)}) == Factors(I)
     assert Factors({-1.0: 2, I: 1}) == Factors({Float(1.0): 1, I: 1})
-    assert Factors({S.NegativeOne: -Rational(3, 2)}).as_expr() == I
+    assert Factors({-1: -Rational(3, 2)}).as_expr() == I
     A = symbols('A', commutative=False)
     assert Factors(2*A**2) == Factors({Integer(2): 1, A**2: 1})
-    assert Factors(I) == Factors({I: S.One})
+    assert Factors(I) == Factors({I: 1})
     assert Factors(x).normal(Integer(2)) == (Factors(x), Factors(Integer(2)))
     assert Factors(x).normal(Integer(0)) == (Factors(), Factors(Integer(0)))
     pytest.raises(ZeroDivisionError, lambda: Factors(x).div(Integer(0)))

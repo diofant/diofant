@@ -200,13 +200,13 @@ def test_reduce_piecewise_inequalities():
 
     # sympy/sympy#10198
     assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
-        Or(And(S.Zero < x, x < S.Half), And(-oo < x, x < S.Zero))
+        Or(And(Lt(0, x), x < S.Half), And(-oo < x, x < 0))
 
     # sympy/sympy#10255
     assert reduce_inequalities(Piecewise((1, x < 1), (3, True)) > 1) == \
-        And(S.One <= x, x < oo)
+        And(Le(1, x), x < oo)
     assert reduce_inequalities(Piecewise((x**2, x < 0), (2*x, x >= 0)) < 1) == \
-        And(-S.One < x, x < S.Half)
+        And(Lt(-1, x), x < S.Half)
 
 
 def test_reduce_inequalities_general():

@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, S, Symbol,
+from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, Symbol,
                      exp, false, legendre_poly, log, oo, root, solve, sqrt,
                      tan, true)
 from diofant.abc import a, b, r, x, y, z
@@ -19,8 +19,6 @@ __all__ = ()
 def test_RootOf___new__():
     assert RootOf(x, 0) == 0
     assert RootOf(x, -1) == 0
-
-    assert RootOf(x, S.Zero) == 0
 
     assert RootOf(x - 1, 0) == 1
     assert RootOf(x - 1, -1) == 1

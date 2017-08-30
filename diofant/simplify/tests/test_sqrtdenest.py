@@ -283,7 +283,7 @@ def test_unrad1():
     # but this one really does have those solutions
     assert ({s[x] for s in solve(sqrt(x) - sqrt(x + 1) +
                                  sqrt(1 - sqrt(x)))} ==
-            {S.Zero, Rational(9, 16)})
+            {0, Rational(9, 16)})
 
     assert check(unrad(sqrt(x) + root(x + 1, 3) + 2*sqrt(y), y),
                  (2*sqrt(x)*(x + 1)**Rational(1, 3) + x - 4*y +

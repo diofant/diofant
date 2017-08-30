@@ -133,7 +133,7 @@ def test_roots_quartic():
     ]
 
     lhs = roots_quartic(Poly(x**4 + x, x))
-    rhs = [S.Half + I*sqrt(3)/2, S.Half - I*sqrt(3)/2, S.Zero, -S.One]
+    rhs = [S.Half + I*sqrt(3)/2, S.Half - I*sqrt(3)/2, 0, -1]
 
     assert sorted(lhs, key=hash) == sorted(rhs, key=hash)
 
@@ -316,8 +316,8 @@ def test_roots_preprocessing():
 
 def test_roots0():
     assert roots(1, x) == {}
-    assert roots(x, x) == {S.Zero: 1}
-    assert roots(x**9, x) == {S.Zero: 9}
+    assert roots(x, x) == {0: 1}
+    assert roots(x**9, x) == {0: 9}
     assert roots(((x - 2)*(x + 3)*(x - 4)).expand(), x) == {-Integer(3): 1, Integer(2): 1, Integer(4): 1}
 
     assert roots(x**2 - 2*x + 1, x, auto=False) == {1: 2}
@@ -327,8 +327,8 @@ def test_roots0():
     assert roots((2*x + 1)**5, x) == {-S.Half: 5}
     assert roots((2*x + 1)**10, x) == {-S.Half: 10}
 
-    assert roots(x**4 - 1, x) == {I: 1, S.One: 1, -S.One: 1, -I: 1}
-    assert roots((x**4 - 1)**2, x) == {I: 2, S.One: 2, -S.One: 2, -I: 2}
+    assert roots(x**4 - 1, x) == {I: 1, 1: 1, -1: 1, -I: 1}
+    assert roots((x**4 - 1)**2, x) == {I: 2, 1: 2, -1: 2, -I: 2}
 
     assert roots(((2*x - 3)**2).expand(), x) == { Rational(3, 2): 2}
     assert roots(((2*x + 3)**2).expand(), x) == {-Rational(3, 2): 2}
@@ -342,19 +342,19 @@ def test_roots0():
     assert roots(((a*x - b)**5).expand(), x) == { b/a: 5}
     assert roots(((a*x + b)**5).expand(), x) == {-b/a: 5}
 
-    assert roots(x**2 + (-a - 1)*x + a, x) == {a: 1, S.One: 1}
+    assert roots(x**2 + (-a - 1)*x + a, x) == {a: 1, 1: 1}
 
-    assert roots(x**4 - 2*x**2 + 1, x) == {S.One: 2, -S.One: 2}
+    assert roots(x**4 - 2*x**2 + 1, x) == {1: 2, -1: 2}
 
     assert roots(x**6 - 4*x**4 + 4*x**3 - x**2, x) == \
-        {S.One: 2, -1 - sqrt(2): 1, S.Zero: 2, -1 + sqrt(2): 1}
+        {1: 2, -1 - sqrt(2): 1, 0: 2, -1 + sqrt(2): 1}
 
     assert roots(x**8 - 1, x) == {
         sqrt(2)/2 + I*sqrt(2)/2: 1,
         sqrt(2)/2 - I*sqrt(2)/2: 1,
         -sqrt(2)/2 + I*sqrt(2)/2: 1,
         -sqrt(2)/2 - I*sqrt(2)/2: 1,
-        S.One: 1, -S.One: 1, I: 1, -I: 1
+        1: 1, -1: 1, I: 1, -I: 1
     }
 
     f = -2016*x**2 - 5616*x**3 - 2056*x**4 + 3324*x**5 + 2176*x**6 - \
@@ -416,7 +416,7 @@ def test_roots0():
     f = z**3 + (-2 - y)*z**2 + (1 + 2*y - 2*x**2)*z - y + 2*x**2
 
     assert roots(f, z) == {
-        S.One: 1,
+        1: 1,
         S.Half + S.Half*y + S.Half*sqrt(1 - 2*y + y**2 + 8*x**2): 1,
         S.Half + S.Half*y - S.Half*sqrt(1 - 2*y + y**2 + 8*x**2): 1,
     }
@@ -424,17 +424,17 @@ def test_roots0():
     assert roots(a*b*c*x**3 + 2*x**2 + 4*x + 8, x, cubics=False) == {}
     assert roots(a*b*c*x**3 + 2*x**2 + 4*x + 8, x, cubics=True) != {}
 
-    assert roots(x**4 - 1, x, filter='Z') == {S.One: 1, -S.One: 1}
+    assert roots(x**4 - 1, x, filter='Z') == {1: 1, -1: 1}
     assert roots(x**4 - 1, x, filter='I') == {I: 1, -I: 1}
 
-    assert roots((x - 1)*(x + 1), x) == {S.One: 1, -S.One: 1}
+    assert roots((x - 1)*(x + 1), x) == {1: 1, -1: 1}
     assert roots(
-        (x - 1)*(x + 1), x, predicate=lambda r: r.is_positive) == {S.One: 1}
+        (x - 1)*(x + 1), x, predicate=lambda r: r.is_positive) == {1: 1}
 
-    assert roots(x**4 - 1, x, filter='Z', multiple=True) == [-S.One, S.One]
+    assert roots(x**4 - 1, x, filter='Z', multiple=True) == [-1, 1]
     assert roots(x**4 - 1, x, filter='I', multiple=True) == [I, -I]
 
-    assert roots(x**3, x, multiple=True) == [S.Zero, S.Zero, S.Zero]
+    assert roots(x**3, x, multiple=True) == [0, 0, 0]
     assert roots(1234, x, multiple=True) == []
 
     f = x**6 - x**5 + x**4 - x**3 + x**2 - x + 1

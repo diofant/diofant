@@ -525,9 +525,9 @@ def test_TensExpr():
     g = Lorentz.metric
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
     pytest.raises(ValueError, lambda: g(c, d)/g(a, b))
-    pytest.raises(ValueError, lambda: S.One/g(a, b))
+    pytest.raises(ValueError, lambda: 1/g(a, b))
     pytest.raises(ValueError, lambda: (A(c, d) + g(c, d))/g(a, b))
-    pytest.raises(ValueError, lambda: S.One/(A(c, d) + g(c, d)))
+    pytest.raises(ValueError, lambda: 1/(A(c, d) + g(c, d)))
     pytest.raises(ValueError, lambda: A(a, b) + A(a, c))
     t = A(a, b) + B(a, b)
     pytest.raises(NotImplementedError, lambda: TensExpr.__mul__(t, 'a'))
@@ -600,9 +600,9 @@ def test_add1():
     t = (p(i) + q(i))/2
     assert 2*t == p(i) + q(i)
 
-    t = S.One - p(i)*p(-i)
+    t = 1 - p(i)*p(-i)
     assert (t + p(-j)*p(j)).equals(1)
-    t = S.One + p(i)*p(-i)
+    t = 1 + p(i)*p(-i)
     assert (t - p(-j)*p(j)).equals(1)
 
     t = A(a, b) + B(a, b)
@@ -634,15 +634,13 @@ def test_special_eq_ne():
     assert p(i) != A(a, b)
     assert A(a, -a) != A(a, b)
     assert 0*(A(a, b) + B(a, b)) == 0
-    assert 0*(A(a, b) + B(a, b)) == S.Zero
 
-    assert 3*(A(a, b) - A(a, b)) == S.Zero
+    assert 3*(A(a, b) - A(a, b)) == 0
 
     assert p(i) + q(i) != A(a, b)
     assert p(i) + q(i) != A(a, b) + B(a, b)
 
     assert p(i) - p(i) == 0
-    assert p(i) - p(i) == S.Zero
 
     assert _is_equal(A(a, b), A(b, a))
 

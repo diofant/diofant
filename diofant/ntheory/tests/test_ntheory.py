@@ -908,9 +908,9 @@ def test_continued_fraction():
 
     assert list(cf_c([1, 6, 1, 8])) == [Integer(1), Rational(7, 6), Rational(8, 7), Rational(71, 62)]
     assert list(cf_c([2])) == [Integer(2)]
-    assert list(cf_c([1, 1, 1, 1, 1, 1, 1])) == [S.One, Integer(2), Rational(3, 2), Rational(5, 3),
+    assert list(cf_c([1, 1, 1, 1, 1, 1, 1])) == [1, Integer(2), Rational(3, 2), Rational(5, 3),
                                                  Rational(8, 5), Rational(13, 8), Rational(21, 13)]
-    assert list(cf_c([1, 6, Rational(-1, 2), 4])) == [S.One, Rational(7, 6), Rational(5, 4), Rational(3, 2)]
+    assert list(cf_c([1, 6, Rational(-1, 2), 4])) == [1, Rational(7, 6), Rational(5, 4), Rational(3, 2)]
 
     assert cf_r([1, 6, 1, 8]) == Rational(71, 62)
     assert cf_r([3]) == Integer(3)

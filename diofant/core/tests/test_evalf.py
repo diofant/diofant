@@ -3,7 +3,7 @@ from mpmath import inf, ninf
 from mpmath.libmp.libmpf import from_float
 
 from diofant import (Abs, Add, E, Eq, Float, Function, GoldenRatio, I,
-                     Integral, Min, Mul, N, Pow, Product, Rational, S, Sum,
+                     Integral, Min, Mul, N, Pow, Product, Rational, Sum,
                      Symbol, atan, ceiling, cos, exp, factorial, fibonacci,
                      floor, im, integrate, log, nan, oo, pi, product, re, sin,
                      sqrt, sstr, sympify, zoo)
@@ -213,10 +213,10 @@ def test_evalf_bugs():
     # >>> n = Some Number
     # n*nan, n/nan, n*inf, n/inf
     # n+nan, n-nan, n+inf, n-inf
-    assert (0*sin(oo)).n() == S.Zero
-    assert (0/sin(oo)).n() == S.Zero
+    assert (0*sin(oo)).n() == 0
+    assert (0/sin(oo)).n() == 0
     assert (0*E**oo).n() == nan
-    assert (0/E**oo).n() == S.Zero
+    assert (0/E**oo).n() == 0
 
     assert (0+sin(oo)).n() == nan
     assert (0-sin(oo)).n() == nan
@@ -226,7 +226,7 @@ def test_evalf_bugs():
     assert (5*sin(oo)).n() == nan
     assert (5/sin(oo)).n() == nan
     assert (5*E**oo).n() == oo
-    assert (5/E**oo).n() == S.Zero
+    assert (5/E**oo).n() == 0
 
     assert (5+sin(oo)).n() == nan
     assert (5-sin(oo)).n() == nan

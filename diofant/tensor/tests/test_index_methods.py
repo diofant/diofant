@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import get_contraction_structure, get_indices
-from diofant.core import Function, Pow, S, symbols
+from diofant.core import Function, Pow, symbols
 from diofant.functions import exp
 from diofant.tensor.index_methods import IndexConformanceException
 from diofant.tensor.indexed import Idx, IndexedBase
@@ -92,7 +92,7 @@ def test_get_contraction_structure_basic():
     assert get_contraction_structure(x[i] + y[j]) == {None: {x[i], y[j]}}
     assert get_contraction_structure(x[i]*y[i]) == {(i,): {x[i]*y[i]}}
     assert get_contraction_structure(
-        1 + x[i]*y[i]) == {None: {S.One}, (i,): {x[i]*y[i]}}
+        1 + x[i]*y[i]) == {None: {1}, (i,): {x[i]*y[i]}}
     assert get_contraction_structure(x[i]**y[i]) == {None: {x[i]**y[i]}}
     assert (get_contraction_structure(f(x[i, i])) ==
             {None: {f(x[i, i])}, f(x[i, i]): [{(i,): {x[i, i]}}]})
@@ -161,8 +161,8 @@ def test_contraction_structure_Add_in_Pow():
     expected = {
         None: {s_ii_jj_s},
         s_ii_jj_s: [
-            {None: {S.One}, (i,): {x[i, i]}},
-            {None: {S.One}, (j,): {y[j, j]}}
+            {None: {1}, (i,): {x[i, i]}},
+            {None: {1}, (j,): {y[j, j]}}
         ]
     }
     result = get_contraction_structure(s_ii_jj_s)

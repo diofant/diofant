@@ -413,10 +413,10 @@ def test_tan():
     assert tan(pi/3) == sqrt(3)
     assert tan(-2*pi/3) == sqrt(3)
 
-    assert tan(pi/4) == S.One
-    assert tan(-pi/4) == -S.One
-    assert tan(17*pi/4) == S.One
-    assert tan(-3*pi/4) == S.One
+    assert tan(+pi/4) == +1
+    assert tan(-pi/4) == -1
+    assert tan(17*pi/4) == 1
+    assert tan(-3*pi/4) == 1
 
     assert tan(pi/6) == 1/sqrt(3)
     assert tan(-pi/6) == -1/sqrt(3)
@@ -563,10 +563,10 @@ def test_cot():
     assert cot(pi/3) == 1/sqrt(3)
     assert cot(-2*pi/3) == 1/sqrt(3)
 
-    assert cot(pi/4) == S.One
-    assert cot(-pi/4) == -S.One
-    assert cot(17*pi/4) == S.One
-    assert cot(-3*pi/4) == S.One
+    assert cot(+pi/4) == +1
+    assert cot(-pi/4) == -1
+    assert cot(17*pi/4) == 1
+    assert cot(-3*pi/4) == 1
 
     assert cot(pi/6) == sqrt(3)
     assert cot(-pi/6) == -sqrt(3)

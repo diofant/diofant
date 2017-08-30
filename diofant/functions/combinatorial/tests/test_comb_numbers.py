@@ -540,9 +540,9 @@ def test_sympyissue_8496():
 def test_sympyissue_8601():
     n = Symbol('n', integer=True, negative=True)
 
-    assert catalan(n - 1) == S.Zero
+    assert catalan(n - 1) == 0
     assert catalan(-S.Half) == zoo
-    assert catalan(-S.One) == -S.Half
+    assert catalan(-1) == -S.Half
     c1 = catalan(-5.6).evalf()
     assert str(c1) == '6.93334070531408e-5'
     c2 = catalan(-35.4).evalf()

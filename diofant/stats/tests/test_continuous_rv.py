@@ -532,7 +532,7 @@ def test_weibull():
 def test_weibull_numeric():
     # Test for integers and rationals
     a = 1
-    bvals = [S.Half, S.One, Rational(3, 2), Integer(5)]
+    bvals = [S.Half, 1, Rational(3, 2), Integer(5)]
     for b in bvals:
         X = Weibull('x', a, b)
         assert simplify(E(X)) == simplify(a * gamma(1 + 1/b))
@@ -613,7 +613,7 @@ def test_density_unevaluated():
 def test_NormalDistribution():
     nd = NormalDistribution(0, 1)
     x = Symbol('x')
-    assert nd.cdf(x) == erf(sqrt(2)*x/2)/2 + S.One/2
+    assert nd.cdf(x) == erf(sqrt(2)*x/2)/2 + Rational(1, 2)
     assert isinstance(nd.sample(), float) or nd.sample().is_Number
     assert nd.expectation(1, x) == 1
     assert nd.expectation(x, x) == 0
@@ -656,5 +656,5 @@ def test_difficult_univariate():
 def test_sympyissue_10003():
     X = Exponential('x', 3)
     G = Gamma('g', 1, 2)
-    assert P(X < -1) == S.Zero
-    assert P(G < -1) == S.Zero
+    assert P(X < -1) == 0
+    assert P(G < -1) == 0

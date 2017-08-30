@@ -288,8 +288,8 @@ def test_atoms():
 
     assert sin(oo).atoms(oo) == {oo}
 
-    assert Poly(0, x).atoms() == {S.Zero, x}
-    assert Poly(1, x).atoms() == {S.One, x}
+    assert Poly(0, x).atoms() == {0, x}
+    assert Poly(1, x).atoms() == {1, x}
 
     assert Poly(x, x).atoms() == {x}
     assert Poly(x, x, y).atoms() == {x, y}
@@ -965,7 +965,7 @@ def test_extractions():
     assert (2*x + 3).extract_additively(2*x) == 3
     assert x.extract_additively(0) == x
     assert Integer(2).extract_additively(x) is None
-    assert Float(2.).extract_additively(2) == S.Zero
+    assert Float(2.).extract_additively(2) == 0
     assert (2*x + 3).extract_additively(x + 1) == x + 2
     assert (2*x + 3).extract_additively(y + 1) is None
     assert (2*x - 3).extract_additively(x + 1) is None
@@ -1118,9 +1118,9 @@ def test_integrate():
 
 
 def test_as_base_exp():
-    assert x.as_base_exp() == (x, S.One)
-    assert (x*y*z).as_base_exp() == (x*y*z, S.One)
-    assert (x + y + z).as_base_exp() == (x + y + z, S.One)
+    assert x.as_base_exp() == (x, 1)
+    assert (x*y*z).as_base_exp() == (x*y*z, 1)
+    assert (x + y + z).as_base_exp() == (x + y + z, 1)
     assert ((x + y)**z).as_base_exp() == (x + y, z)
 
 
@@ -1231,7 +1231,7 @@ def test_sympyissue_5300():
 
 
 def test_as_coeff_Mul():
-    assert S.Zero.as_coeff_Mul() == (S.One, S.Zero)
+    assert S.Zero.as_coeff_Mul() == (1, 0)
     assert Integer(3).as_coeff_Mul() == (Integer(3), Integer(1))
     assert Rational(3, 4).as_coeff_Mul() == (Rational(3, 4), Integer(1))
     assert Float(5.0).as_coeff_Mul() == (Float(5.0), Integer(1))
@@ -1244,8 +1244,8 @@ def test_as_coeff_Mul():
     assert (Rational(3, 4)*x*y).as_coeff_Mul() == (Rational(3, 4), x*y)
     assert (Float(5.0)*x*y).as_coeff_Mul() == (Float(5.0), x*y)
 
-    assert (x).as_coeff_Mul() == (S.One, x)
-    assert (x*y).as_coeff_Mul() == (S.One, x*y)
+    assert x.as_coeff_Mul() == (1, x)
+    assert (x*y).as_coeff_Mul() == (1, x*y)
     assert (-oo*x).as_coeff_Mul(rational=True) == (-1, oo*x)
 
 
@@ -1262,8 +1262,8 @@ def test_as_coeff_Add():
     assert (Rational(3, 4) + x + y).as_coeff_Add() == (Rational(3, 4), x + y)
     assert (Float(5.0) + x + y).as_coeff_Add() == (Float(5.0), x + y)
 
-    assert (x).as_coeff_Add() == (S.Zero, x)
-    assert (x*y).as_coeff_Add() == (S.Zero, x*y)
+    assert x.as_coeff_Add() == (0, x)
+    assert (x*y).as_coeff_Add() == (0, x*y)
 
 
 def test_expr_sorting():
@@ -1401,7 +1401,7 @@ def test_primitive():
             (Rational(1, 3), i + x)
     assert (oo + 2*x/3 + 4*y/7).primitive() == \
         (Rational(1, 21), 14*x + 12*y + oo)
-    assert S.Zero.primitive() == (S.One, S.Zero)
+    assert S.Zero.primitive() == (1, 0)
 
 
 def test_sympyissue_5843():

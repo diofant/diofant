@@ -39,7 +39,7 @@ def test_negative_real():
     def feq(a, b):
         return abs(a - b) < 1E-10
 
-    assert feq(S.One / Float(-0.5), -Integer(2))
+    assert feq(1/Float(-0.5), -Integer(2))
 
 
 def test_expand():
@@ -162,14 +162,14 @@ def test_sympyissue_4362():
     eq = eqn(nneg, dneg, -pow)
     assert eq.is_Pow and eq.as_numer_denom() == ((-dneg)**pow, (-nneg)**pow)
 
-    assert ((1/(1 + x/3))**(-S.One)).as_numer_denom() == (3 + x, 3)
+    assert ((1/(1 + x/3))**-1).as_numer_denom() == (3 + x, 3)
     notp = Symbol('notp', positive=False)  # not positive does not imply real
     b = ((1 + x/notp)**-2)
     assert (b**(-y)).as_numer_denom() == (1, b**y)
-    assert (b**(-S.One)).as_numer_denom() == ((notp + x)**2, notp**2)
+    assert (b**-1).as_numer_denom() == ((notp + x)**2, notp**2)
     nonp = Symbol('nonp', nonpositive=True)
-    assert (((1 + x/nonp)**-2)**(-S.One)).as_numer_denom() == ((-nonp -
-                                                                x)**2, nonp**2)
+    assert (((1 + x/nonp)**-2)**-1).as_numer_denom() == ((-nonp - x)**2,
+                                                         nonp**2)
 
     n = Symbol('n', negative=True)
     assert (x**n).as_numer_denom() == (1, x**-n)
@@ -343,7 +343,7 @@ def test_sympyissue_10095():
     assert ((1/(2*E))**oo).as_numer_denom() == (1, (2*E)**oo)
     assert ((2*E)**oo).as_numer_denom() == ((2*E)**oo, 1)
     e = Pow(1, oo, evaluate=False)
-    assert e.as_numer_denom() == (e, S.One)
+    assert e.as_numer_denom() == (e, 1)
 
 
 @pytest.mark.slow

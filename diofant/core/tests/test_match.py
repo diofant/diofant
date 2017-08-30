@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Add, Derivative, Float, Function, I, Integer, Mul,
-                     Rational, S, Symbol, Wild, WildFunction, cos, diff, exp,
-                     log, meijerg, oo, pi, sin, sqrt, symbols)
+                     Rational, Symbol, Wild, WildFunction, cos, diff, exp, log,
+                     meijerg, oo, pi, sin, sqrt, symbols)
 from diofant.abc import X, Y, Z, a, b, c, gamma, mu, x, y
 
 
@@ -534,7 +534,7 @@ def test_sympyissue_4883():
 
 def test_sympyissue_4319():
     p = -x*(Rational(1, 8) - y)
-    ans = {S.Zero, y - Rational(1, 8)}
+    ans = {0, y - Rational(1, 8)}
 
     def ok(pat):
         assert set(p.match(pat).values()) == ans

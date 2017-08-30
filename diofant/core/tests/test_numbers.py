@@ -78,9 +78,7 @@ def test_mod():
     ans = Float(Rational(f) % r, 3)
     assert m == ans and m._prec == ans._prec
 
-    s = S.Zero
-
-    assert s % float(1) == S.Zero
+    assert S.Zero % float(1) == 0
 
     # No rounding required since these numbers can be represented
     # exactly.
@@ -491,13 +489,13 @@ def test_Float_sympyissue_5206():
 
     assert a - a == 0
     assert a + (-a) == 0
-    assert S.Zero + a - a == 0
-    assert S.Zero + a + (-a) == 0
+    assert 0 + a - a == 0
+    assert 0 + a + (-a) == 0
 
     assert b - b == 0
     assert b + (-b) == 0
-    assert S.Zero + b - b == 0
-    assert S.Zero + b + (-b) == 0
+    assert 0 + b - b == 0
+    assert 0 + b + (-b) == 0
 
 
 def test_Infinity():
@@ -619,7 +617,7 @@ def test_Infinity():
     assert nan + -oo == nan
     assert nan - oo == nan
     assert nan - -oo == nan
-    assert -oo * S.Zero == nan
+    assert -oo * 0 == nan
 
     assert oo*nan == nan
     assert -oo*nan == nan
@@ -629,25 +627,25 @@ def test_Infinity():
     assert -oo + nan == nan
     assert oo - nan == nan
     assert -oo - nan == nan
-    assert S.Zero * oo == nan
+    assert 0 * oo == nan
     assert oo.is_Rational is False
     assert isinstance(oo, Rational) is False
 
-    assert S.One/oo == 0
-    assert -S.One/oo == 0
-    assert S.One/-oo == 0
-    assert -S.One/-oo == 0
-    assert S.One*oo == oo
-    assert -S.One*oo == -oo
-    assert S.One*-oo == -oo
-    assert -S.One*-oo == oo
-    assert S.One/nan == nan
-    assert S.One - -oo == oo
-    assert S.One + nan == nan
-    assert S.One - nan == nan
-    assert nan - S.One == nan
-    assert nan/S.One == nan
-    assert -oo - S.One == -oo
+    assert 1/oo == 0
+    assert -1/oo == 0
+    assert 1/-oo == 0
+    assert -1/-oo == 0
+    assert 1*oo == oo
+    assert -1*oo == -oo
+    assert 1*-oo == -oo
+    assert -1*-oo == oo
+    assert 1/nan == nan
+    assert 1 - -oo == oo
+    assert 1 + nan == nan
+    assert 1 - nan == nan
+    assert nan - 1 == nan
+    assert nan/1 == nan
+    assert -oo - 1 == -oo
 
     e = (I + cos(1)**2 + sin(1)**2 - 1)
     assert oo**e == Pow(oo, e, evaluate=False)
@@ -787,14 +785,14 @@ def test_NaN():
     pytest.raises(TypeError, lambda: 0 > nan)
     pytest.raises(TypeError, lambda: 0 <= nan)
     pytest.raises(TypeError, lambda: 0 >= nan)
-    assert S.One + nan == nan
-    assert S.One - nan == nan
-    assert S.One*nan == nan
-    assert S.One/nan == nan
-    assert nan - S.One == nan
-    assert nan*S.One == nan
-    assert nan + S.One == nan
-    assert nan/S.One == nan
+    assert 1 + nan == nan
+    assert 1 - nan == nan
+    assert 1*nan == nan
+    assert 1/nan == nan
+    assert nan - 1 == nan
+    assert nan*1 == nan
+    assert nan + 1 == nan
+    assert nan/1 == nan
     assert nan**0 == 1  # as per IEEE 754
     assert 1**nan == nan  # IEEE 754 is not the best choice for symbolic work
     # test Pow._eval_power's handling of NaN
@@ -926,7 +924,7 @@ def test_powers_Integer():
     assert (-3) ** Rational(-2, 3) == \
         -(-1)**Rational(1, 3)*3**Rational(1, 3)/3
 
-    assert S.One.factors(visual=True) == S.One
+    assert S.One.factors(visual=True) == 1
     assert Integer(1234).factors() == {617: 1, 2: 1}
     assert Rational(2*3, 3*5*7).factors() == {2: 1, 5: -1, 7: -1}
 
@@ -1206,25 +1204,25 @@ def test_Rational_gcd_lcm_cofactors():
     assert Integer(4).cofactors(Integer(2)) == \
         (Integer(2), Integer(2), Integer(1))
 
-    assert Integer(4).gcd(Float(2.0)) == S.One
+    assert Integer(4).gcd(Float(2.0)) == 1
     assert Integer(4).lcm(Float(2.0)) == Float(8.0)
-    assert Integer(4).cofactors(Float(2.0)) == (S.One, Integer(4), Float(2.0))
+    assert Integer(4).cofactors(Float(2.0)) == (1, Integer(4), Float(2.0))
 
-    assert Rational(1, 2).gcd(Float(2.0)) == S.One
+    assert Rational(1, 2).gcd(Float(2.0)) == 1
     assert Rational(1, 2).lcm(Float(2.0)) == Float(1.0)
     assert Rational(1, 2).cofactors(Float(2.0)) == \
-        (S.One, Rational(1, 2), Float(2.0))
+        (1, Rational(1, 2), Float(2.0))
 
 
 def test_Float_gcd_lcm_cofactors():
-    assert Float(2.0).gcd(Integer(4)) == S.One
+    assert Float(2.0).gcd(Integer(4)) == 1
     assert Float(2.0).lcm(Integer(4)) == Float(8.0)
-    assert Float(2.0).cofactors(Integer(4)) == (S.One, Float(2.0), Integer(4))
+    assert Float(2.0).cofactors(Integer(4)) == (1, Float(2.0), Integer(4))
 
-    assert Float(2.0).gcd(Rational(1, 2)) == S.One
+    assert Float(2.0).gcd(Rational(1, 2)) == 1
     assert Float(2.0).lcm(Rational(1, 2)) == Float(1.0)
     assert Float(2.0).cofactors(Rational(1, 2)) == \
-        (S.One, Float(2.0), Rational(1, 2))
+        (1, Float(2.0), Rational(1, 2))
 
 
 def test_sympyissue_4611():

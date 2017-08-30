@@ -41,11 +41,11 @@ def test_elliptic_k():
     assert elliptic_k(z).conjugate() == conjugate(elliptic_k(z), evaluate=False)
 
     assert elliptic_k(z).rewrite(hyper) == \
-        (pi/2)*hyper((S.Half, S.Half), (S.One,), z)
-    assert tn(elliptic_k(z), (pi/2)*hyper((S.Half, S.Half), (S.One,), z))
+        (pi/2)*hyper((S.Half, S.Half), (1,), z)
+    assert tn(elliptic_k(z), (pi/2)*hyper((S.Half, S.Half), (1,), z))
     assert elliptic_k(z).rewrite(meijerg) == \
-        meijerg(((S.Half, S.Half), []), ((S.Zero,), (S.Zero,)), -z)/2
-    assert tn(elliptic_k(z), meijerg(((S.Half, S.Half), []), ((S.Zero,), (S.Zero,)), -z)/2)
+        meijerg(((S.Half, S.Half), []), ((0,), (0,)), -z)/2
+    assert tn(elliptic_k(z), meijerg(((S.Half, S.Half), []), ((0,), (0,)), -z)/2)
 
     assert elliptic_k(z).series(z) == pi/2 + pi*z/8 + 9*pi*z**2/128 + \
         25*pi*z**3/512 + 1225*pi*z**4/32768 + 3969*pi*z**5/131072 + O(z**6)
@@ -111,13 +111,13 @@ def test_elliptic_e():
     assert elliptic_e(z, m).conjugate() == conjugate(elliptic_e(z, m))
     assert elliptic_e(z).conjugate() == conjugate(elliptic_e(z))
 
-    assert elliptic_e(z).rewrite(hyper) == (pi/2)*hyper((-S.Half, S.Half), (S.One,), z)
+    assert elliptic_e(z).rewrite(hyper) == (pi/2)*hyper((-S.Half, S.Half), (1,), z)
     assert elliptic_e(z, m).rewrite(hyper) == elliptic_e(z, m)
-    assert tn(elliptic_e(z), (pi/2)*hyper((-S.Half, S.Half), (S.One,), z))
+    assert tn(elliptic_e(z), (pi/2)*hyper((-S.Half, S.Half), (1,), z))
     assert elliptic_e(z).rewrite(meijerg) == \
-        -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4
+        -meijerg(((S.Half, Rational(3, 2)), []), ((0,), (0,)), -z)/4
     assert elliptic_e(z, m).rewrite(meijerg) == elliptic_e(z, m)
-    assert tn(elliptic_e(z), -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4)
+    assert tn(elliptic_e(z), -meijerg(((S.Half, Rational(3, 2)), []), ((0,), (0,)), -z)/4)
 
     assert elliptic_e(z, m).series(z) == \
         z + z**5*(-m**2/40 + m/30) - m*z**3/6 + O(z**6)

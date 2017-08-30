@@ -1509,7 +1509,7 @@ def test_sympyissue_5919():
 
 def test_Mod():
     assert Mod(x, 1).func is Mod
-    assert pi % pi == S.Zero
+    assert pi % pi == 0
     assert Mod(5, 3) == 2
     assert Mod(-5, 3) == 1
     assert Mod(5, -3) == -1
@@ -1672,7 +1672,7 @@ def test_polar():
 
 
 def test_sympyissue_6040():
-    a, b = Pow(1, 2, evaluate=False), S.One
+    a, b = Pow(1, 2, evaluate=False), 1
     assert a != b
     assert b != a
     assert not (a == b)

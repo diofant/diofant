@@ -48,7 +48,7 @@ def test_erf():
     assert erf(1/x).as_leading_term(x) == erf(1/x)
 
     assert erf(z).rewrite('uppergamma') == sqrt(z**2)*erf(sqrt(z**2))/z
-    assert erf(z).rewrite('erfc') == S.One - erfc(z)
+    assert erf(z).rewrite('erfc') == 1 - erfc(z)
     assert erf(z).rewrite('erfi') == -I*erfi(I*z)
     assert erf(z).rewrite('fresnels') == (1 + I)*(fresnelc(z*(1 - I)/sqrt(pi)) -
                                                   I*fresnels(z*(1 - I)/sqrt(pi)))
@@ -124,7 +124,7 @@ def test_erfc():
 
     assert conjugate(erfc(z)) == erfc(conjugate(z))
 
-    assert erfc(x).as_leading_term(x) == S.One
+    assert erfc(x).as_leading_term(x) == 1
     assert erfc(1/x).as_leading_term(x) == erfc(1/x)
 
     assert erfc(z).rewrite('erf') == 1 - erf(z)
@@ -136,7 +136,7 @@ def test_erfc():
     assert erfc(z).rewrite('hyper') == 1 - 2*z*hyper([S.Half], [3*S.Half], -z**2)/sqrt(pi)
     assert erfc(z).rewrite('meijerg') == 1 - z*meijerg([S.Half], [], [0], [-S.Half], z**2)/sqrt(pi)
     assert erfc(z).rewrite('uppergamma') == 1 - sqrt(z**2)*erf(sqrt(z**2))/z
-    assert erfc(z).rewrite('expint') == S.One - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(pi)
+    assert erfc(z).rewrite('expint') == 1 - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(pi)
 
     assert erfc(x).as_real_imag() == \
         ((erfc(re(x) - I*re(x)*Abs(im(x))/Abs(re(x)))/2 +
@@ -170,7 +170,7 @@ def test_erfi():
     assert erfi(+oo) == +oo
     assert erfi(-oo) == -oo
 
-    assert erfi(0) == S.Zero
+    assert erfi(0) == 0
 
     assert erfi(I*oo) == I
     assert erfi(-I*oo) == -I
@@ -196,7 +196,7 @@ def test_erfi():
     assert erfi(z).rewrite('hyper') == 2*z*hyper([S.Half], [3*S.Half], z**2)/sqrt(pi)
     assert erfi(z).rewrite('meijerg') == z*meijerg([S.Half], [], [0], [-S.Half], -z**2)/sqrt(pi)
     assert erfi(z).rewrite('uppergamma') == (sqrt(-z**2)/z*(uppergamma(S.Half,
-                                                                       -z**2)/sqrt(pi) - S.One))
+                                                                       -z**2)/sqrt(pi) - 1))
     assert erfi(z).rewrite('expint') == sqrt(-z**2)/z - z*expint(S.Half, -z**2)/sqrt(pi)
 
     assert erfi(x).as_real_imag() == \
@@ -226,9 +226,8 @@ def test_erfi_evalf():
 
 
 def test_erf2():
-
-    assert erf2(0, 0) == S.Zero
-    assert erf2(x, x) == S.Zero
+    assert erf2(0, 0) == 0
+    assert erf2(x, x) == 0
     assert erf2(nan, 0) == nan
 
     assert erf2(-oo,  y) == erf(y) + 1
@@ -295,9 +294,9 @@ def test_erfcinv():
 
 
 def test_erf2inv():
-    assert erf2inv(0, 0) == S.Zero
+    assert erf2inv(0, 0) == 0
     assert erf2inv(0, 1) == oo
-    assert erf2inv(1, 0) == S.One
+    assert erf2inv(1, 0) == 1
     assert erf2inv(0, y) == erfinv(y)
     assert erf2inv(oo, y) == erfcinv(-y)
     assert erf2inv(x, 0) == x
@@ -628,8 +627,8 @@ def test_fresnel():
 
     assert fresnels(z).diff(z) == sin(pi*z**2/2)
 
-    assert fresnels(z).rewrite(erf) == (S.One + I)/4 * (
-        erf((S.One + I)/2*sqrt(pi)*z) - I*erf((S.One - I)/2*sqrt(pi)*z))
+    assert fresnels(z).rewrite(erf) == (1 + I)/4 * (
+        erf((1 + I)/2*sqrt(pi)*z) - I*erf((1 - I)/2*sqrt(pi)*z))
 
     assert fresnels(z).rewrite(hyper) == \
         pi*z**3/6 * hyper([Rational(3, 4)], [Rational(3, 2), Rational(7, 4)], -pi**2*z**4/16)
@@ -683,8 +682,8 @@ def test_fresnel():
     pytest.raises(ArgumentIndexError, lambda: fresnels(z).fdiff(2))
     pytest.raises(ArgumentIndexError, lambda: fresnelc(z).fdiff(2))
 
-    assert fresnelc(z).rewrite(erf) == (S.One - I)/4 * (
-        erf((S.One + I)/2*sqrt(pi)*z) + I*erf((S.One - I)/2*sqrt(pi)*z))
+    assert fresnelc(z).rewrite(erf) == (1 - I)/4 * (
+        erf((1 + I)/2*sqrt(pi)*z) + I*erf((1 - I)/2*sqrt(pi)*z))
 
     assert fresnelc(z).rewrite(hyper) == \
         z * hyper([S.One/4], [S.One/2, Rational(5, 4)], -pi**2*z**4/16)
