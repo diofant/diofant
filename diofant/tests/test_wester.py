@@ -18,20 +18,19 @@ from diofant import continued_fraction_periodic as cf_p
 from diofant import continued_fraction_reduce as cf_r
 from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
                      DiracDelta, E, EulerGamma, FiniteSet, Function,
-                     GoldenRatio, I, Integer, Lambda, LambertW, Le, Lt, Max,
-                     Mul, N, O, Or, Piecewise, Poly, Rational, RootOf, S, Subs,
-                     Symbol, acot, apart, asin, asinh, assoc_legendre, atan,
-                     bernoulli, besselj, binomial, ceiling, chebyshevt,
-                     combsimp, cos, cosh, cot, csc, diff, elliptic_e,
-                     elliptic_f, exp, expand, expand_func, factor, factorial,
-                     factorial2, factorint, fibonacci, floor, gamma, gcd,
-                     hessian, hyper, hyperexpand, igcd, im, legendre_poly,
-                     limit, log, logcombine, minimize, nan, npartitions, oo,
-                     pi, polygamma, polylog, powdenest, powsimp, primerange,
-                     primitive_root, product, radsimp, re, reduce_inequalities,
-                     residue, resultant, rf, sec, series, sign, simplify, sin,
-                     sinh, solve, sqrt, sqrtdenest, symbols, tan, tanh,
-                     totient, trigsimp, wronskian, zoo)
+                     GoldenRatio, I, Lambda, LambertW, Le, Lt, Max, Mul, N, O,
+                     Or, Piecewise, Poly, Rational, RootOf, S, Subs, Symbol,
+                     acot, apart, asin, asinh, assoc_legendre, atan, bernoulli,
+                     besselj, binomial, ceiling, chebyshevt, combsimp, cos,
+                     cosh, cot, csc, diff, elliptic_e, elliptic_f, exp, expand,
+                     expand_func, factor, factorial, factorial2, factorint,
+                     fibonacci, floor, gamma, gcd, hessian, hyper, hyperexpand,
+                     igcd, im, legendre_poly, limit, log, logcombine, minimize,
+                     nan, npartitions, oo, pi, polygamma, polylog, powdenest,
+                     powsimp, primerange, primitive_root, product, radsimp, re,
+                     reduce_inequalities, residue, resultant, rf, sec, series,
+                     sign, simplify, sin, sinh, solve, sqrt, sqrtdenest,
+                     symbols, tan, tanh, totient, trigsimp, wronskian, zoo)
 from diofant.concrete import Sum
 from diofant.concrete.products import Product
 from diofant.core.relational import Equality
@@ -1366,12 +1365,7 @@ def test_P23():
         [0, 1, 2, 1, 0],
         [0, 0, 1, 2, 1],
         [0, 0, 0, 1, 2]])
-    assert M.eigenvals() == {
-        Integer(1): 1,
-        Integer(2): 1,
-        Integer(3): 1,
-        sqrt(3) + 2: 1,
-        -sqrt(3) + 2: 1}
+    assert M.eigenvals() == {1: 1, 2: 1, 3: 1, sqrt(3) + 2: 1, -sqrt(3) + 2: 1}
 
 
 def test_P24():
@@ -1383,14 +1377,9 @@ def test_P24():
                 [-52,   -43,   49,   44, -599,  411,  208,  208],
                 [-49,    -8,    8,   59,  208,  208,   99, -911],
                 [29,   -44,    52,  -23,  208,  208, -911,   99]])
-    assert M.eigenvals() == {
-        Integer(0): 1,
-        10*sqrt(10405): 1,
-        100*sqrt(26) + 510: 1,
-        Integer(1000): 2,
-        -100*sqrt(26) + 510: 1,
-        -10*sqrt(10405): 1,
-        Integer(1020): 1}
+    assert M.eigenvals() == {0: 1, 10*sqrt(10405): 1, 100*sqrt(26) + 510: 1,
+                             1000: 2, -100*sqrt(26) + 510: 1,
+                             -10*sqrt(10405): 1, 1020: 1}
 
 
 def test_P25():

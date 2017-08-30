@@ -3,11 +3,11 @@ import os
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integer, Integral, Limit, Matrix,
-                     Piecewise, PoleError, Rational, S, Sum, Symbol, acos,
-                     atan, ceiling, cos, cot, diff, exp, floor, gamma,
-                     integrate, limit, log, nan, oo, pi, polygamma, sign,
-                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan)
+from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
+                     PoleError, Rational, S, Sum, Symbol, acos, atan, ceiling,
+                     cos, cot, diff, exp, floor, gamma, integrate, limit, log,
+                     nan, oo, pi, polygamma, sign, simplify, sin, sinh, sqrt,
+                     subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -195,7 +195,7 @@ def test_abs():
     assert limit(abs(log(n)/n**3), n, oo) == 0
     expr = abs(log(n)/n**3)
     expr2 = expr.subs(n, n + 1)
-    assert limit(n*(expr/expr2 - Integer(1)), n, oo) == 3
+    assert limit(n*(expr/expr2 - 1), n, oo) == 3
 
 
 def test_heuristic():
@@ -247,7 +247,7 @@ def test_sympyissue_3792():
 
 def test_sympyissue_4090():
     assert limit(1/(x + 3), x, 2) == Rational(1, 5)
-    assert limit(1/(x + pi), x, 2) == Integer(1)/(2 + pi)
+    assert limit(1/(x + pi), x, 2) == 1/(2 + pi)
     assert limit(log(x)/(x**2 + 3), x, 2) == log(2)/7
     assert limit(log(x)/(x**2 + pi), x, 2) == log(2)/(4 + pi)
 

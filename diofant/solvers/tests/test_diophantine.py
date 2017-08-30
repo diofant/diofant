@@ -28,8 +28,8 @@ def test_input_format():
 
 
 def test_univariate():
-    assert diop_solve((x - 1)*(x - 2)**2) == {(Integer(1),), (Integer(2),)}
-    assert diop_solve((x - 1)*(x - 2)) == {(Integer(1),), (Integer(2),)}
+    assert diop_solve((x - 1)*(x - 2)**2) == {(1,), (2,)}
+    assert diop_solve((x - 1)*(x - 2)) == {(1,), (2,)}
 
 
 def test_linear():
@@ -60,17 +60,16 @@ def test_linear():
 
 def test_quadratic_simple_hyperbolic_case():
     # Simple Hyperbolic case: A = C = 0 and B != 0
-    assert diop_solve(3*x*y + 34*x - 12*y + 1) == \
-        {(-Integer(133), -Integer(11)), (Integer(5), -Integer(57))}
+    assert diop_solve(3*x*y + 34*x - 12*y + 1) == {(-133, -11), (5, -57)}
     assert diop_solve(6*x*y + 2*x + 3*y + 1) == set()
-    assert diop_solve(-13*x*y + 2*x - 4*y - 54) == {(Integer(27), Integer(0))}
-    assert diop_solve(-27*x*y - 30*x - 12*y - 54) == {(-Integer(14), -Integer(1))}
-    assert diop_solve(2*x*y + 5*x + 56*y + 7) == {(-Integer(161), -Integer(3)),
-                                                  (-Integer(47), -Integer(6)), (-Integer(35), -Integer(12)), (-Integer(29), -Integer(69)),
-                                                  (-Integer(27), Integer(64)), (-Integer(21), Integer(7)), (-Integer(9), Integer(1)),
-                                                  (Integer(105), -Integer(2))}
+    assert diop_solve(-13*x*y + 2*x - 4*y - 54) == {(27, 0)}
+    assert diop_solve(-27*x*y - 30*x - 12*y - 54) == {(-14, -1)}
+    assert diop_solve(2*x*y + 5*x + 56*y + 7) == {(-161, -3),
+                                                  (-47, -6), (-35, -12), (-29, -69),
+                                                  (-27, 64), (-21, 7), (-9, 1),
+                                                  (105, -2)}
     assert diop_solve(6*x*y + 9*x + 2*y + 3) == set()
-    assert diop_solve(x*y + x + y + 1) == {(-Integer(1), t), (t, -Integer(1))}
+    assert diop_solve(x*y + x + y + 1) == {(-1, t), (t, -1)}
     assert diophantine(48*x*y)
 
 
@@ -79,12 +78,12 @@ def test_quadratic_elliptical_case():
     # Two test cases highlighted require lot of memory due to quadratic_congruence() method.
     # This above method should be replaced by Pernici's square_mod() method when his PR gets merged.
 
-    # assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == {(-Integer(11), -Integer(1))}
+    # assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == {(-11, -1)}
     assert diop_solve(4*x**2 + 3*y**2 + 5*x - 11*y + 12) == set()
-    assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-Integer(1), -Integer(1))}
-    # assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-Integer(15), Integer(6))}
+    assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-1, -1)}
+    # assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-15, 6)}
     assert diop_solve(10*x**2 + 12*x*y + 12*y**2 - 34) == \
-        {(Integer(1), -Integer(2)), (-Integer(1), -Integer(1)), (Integer(1), Integer(1)), (-Integer(1), Integer(2))}
+        {(1, -2), (-1, -1), (1, 1), (-1, 2)}
 
 
 def test_quadratic_parabolic_case():
@@ -192,8 +191,8 @@ def test_DN():
 
     assert diop_DN(13, 27) == [(220, 61), (40, 11), (768, 213), (12, 3)]
     assert set(diop_DN(157, 12)) == \
-        {(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)),
-         (Integer(483790960), Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))}
+        {(13, 1), (10663, 851), (579160, 46222),
+         (483790960, 38610722), (26277068347, 2097138361), (21950079635497, 1751807067011)}
     assert diop_DN(13, 25) == [(3245, 900)]
     assert diop_DN(192, 18) == []
     assert diop_DN(23, 13) == [(-6, 1), (6, 1)]

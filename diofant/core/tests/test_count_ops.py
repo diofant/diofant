@@ -1,7 +1,6 @@
 from diofant import (ITE, And, Basic, Derivative, Eq, Equivalent, I, Implies,
-                     Integer, Integral, MatrixSymbol, Nand, Nor, Not, Or,
-                     Rational, S, Symbol, Xor, cos, count_ops, exp, pi, sin,
-                     symbols)
+                     Integral, MatrixSymbol, Nand, Nor, Not, Or, Rational, S,
+                     Symbol, Xor, cos, count_ops, exp, pi, sin, symbols)
 from diofant.core.containers import Tuple
 
 
@@ -20,7 +19,7 @@ def test_count_ops_non_visual():
     assert count(x + y) is not S.One
     assert count(x + y*x + 2*y) == 4
     assert count({x + y: x}) == 1
-    assert count({x + y: Integer(2) + x}) is not S.One
+    assert count({x + y: 2 + x}) is not S.One
     assert count(Or(x, y)) == 1
     assert count(And(x, y)) == 1
     assert count(Not(x)) == 1
@@ -44,7 +43,6 @@ def test_count_ops_visual():
         return count_ops(val, visual=True)
 
     assert count(7) is S.Zero
-    assert count(Integer(7)) is S.Zero
     assert count(-1) == NEG
     assert count(-2) == NEG
     assert count(Rational(2, 3)) == DIV
@@ -115,7 +113,7 @@ def test_count_ops_visual():
     assert count(Basic(Tuple(x))) == BASIC + TUPLE
     # It checks that TUPLE is counted as an operation.
 
-    assert count(Eq(x + y, Integer(2))) == ADD
+    assert count(Eq(x + y, 2)) == ADD
 
 
 def test_sympyissue_9324():

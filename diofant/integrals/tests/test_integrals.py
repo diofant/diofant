@@ -1,10 +1,10 @@
 import pytest
 
 from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
-                     EulerGamma, Function, I, Integer, Integral, Interval,
-                     Lambda, LambertW, Matrix, Max, Min, Ne, O, Piecewise,
-                     Poly, Rational, S, Sum, Symbol, Tuple, acos, acosh, asin,
-                     asinh, atan, cos, cosh, diff, erf, erfi, exp, factor, im,
+                     EulerGamma, Function, I, Integral, Interval, Lambda,
+                     LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
+                     Rational, S, Sum, Symbol, Tuple, acos, acosh, asin, asinh,
+                     atan, cos, cosh, diff, erf, erfi, exp, factor, im,
                      integrate, log, meijerg, nan, oo, pi, polar_lift, re,
                      sign, simplify, sin, sinh, sqrt, sstr, symbols, sympify,
                      tan, tanh, trigsimp)
@@ -85,7 +85,7 @@ def test_basics():
     assert integrate(t**2, (t, x, 2*x)).diff(x) == 7*x**2
 
     assert Integral(x, x).atoms() == {x}
-    assert Integral(f(x), (x, 0, 1)).atoms() == {Integer(0), Integer(1), x}
+    assert Integral(f(x), (x, 0, 1)).atoms() == {0, 1, x}
 
     assert diff_test(Integral(x, (x, 3*y))) == {y}
     assert diff_test(Integral(x, (a, 3*y))) == {x, y}
@@ -335,11 +335,10 @@ def test_transform():
     # < 3 arg limit handled properly
     assert Integral(x, x).transform(x, a*y).doit() == \
         Integral(y*a**2, y).doit()
-    _3 = Integer(3)
-    assert Integral(x, (x, 0, -_3)).transform(x, 1/y).doit() == \
-        Integral(-1/x**3, (x, -oo, -1/_3)).doit()
-    assert Integral(x, (x, 0, _3)).transform(x, 1/y) == \
-        Integral(y**(-3), (y, 1/_3, oo))
+    assert Integral(x, (x, 0, -3)).transform(x, 1/y).doit() == \
+        Integral(-1/x**3, (x, -oo, Rational(-1, 3))).doit()
+    assert Integral(x, (x, 0, 3)).transform(x, 1/y) == \
+        Integral(y**(-3), (y, Rational(1, 3), oo))
     # issue sympy/sympy#8400
     i = Integral(x + y, (x, 1, 2), (y, 1, 2))
     assert i.transform(x, (x + 2*y, x)).doit() == \

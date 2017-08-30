@@ -276,12 +276,12 @@ def test_as_leading_term_stub():
 
 def test_atoms():
     assert x.atoms() == {x}
-    assert (1 + x).atoms() == {x, Integer(1)}
+    assert (1 + x).atoms() == {x, 1}
 
     assert (1 + 2*cos(x)).atoms(Symbol) == {x}
-    assert (1 + 2*cos(x)).atoms(Symbol, Number) == {Integer(1), Integer(2), x}
+    assert (1 + 2*cos(x)).atoms(Symbol, Number) == {1, 2, x}
 
-    assert (2*(x**(y**x))).atoms() == {Integer(2), x, y}
+    assert (2*(x**(y**x))).atoms() == {2, x, y}
 
     assert Rational(1, 2).atoms() == {S.Half}
     assert Rational(1, 2).atoms(Symbol) == set()
@@ -298,26 +298,21 @@ def test_atoms():
     assert Poly(x + y*t, x, y, z).atoms() == {t, x, y, z}
 
     assert (I*pi).atoms(NumberSymbol) == {pi}
-    assert (I*pi).atoms(NumberSymbol, I) == \
-        (I*pi).atoms(I, NumberSymbol) == {pi, I}
+    assert (I*pi).atoms(NumberSymbol, I) == {pi, I}
+    assert (I*pi).atoms(I, NumberSymbol) == {pi, I}
 
     assert exp(exp(x)).atoms(Pow) == {exp(exp(x)), exp(x)}
-    assert (1 + x*(2 + y) + exp(3 + z)).atoms(Add) == \
-        {1 + x*(2 + y) + exp(3 + z), 2 + y, 3 + z}
+    assert (1 + x*(2 + y) + exp(3 + z)).atoms(Add) == {1 + x*(2 + y) + exp(3 + z),
+                                                       2 + y, 3 + z}
 
     # issue sympy/sympy#6132
     f = Function('f')
     e = (f(x) + sin(x) + 2)
-    assert e.atoms(AppliedUndef) == \
-        {f(x)}
-    assert e.atoms(AppliedUndef, Function) == \
-        {f(x), sin(x)}
-    assert e.atoms(Function) == \
-        {f(x), sin(x)}
-    assert e.atoms(AppliedUndef, Number) == \
-        {f(x), Integer(2)}
-    assert e.atoms(Function, Number) == \
-        {Integer(2), sin(x), f(x)}
+    assert e.atoms(AppliedUndef) == {f(x)}
+    assert e.atoms(AppliedUndef, Function) == {f(x), sin(x)}
+    assert e.atoms(Function) == {f(x), sin(x)}
+    assert e.atoms(AppliedUndef, Number) == {f(x), 2}
+    assert e.atoms(Function, Number) == {2, sin(x), f(x)}
 
 
 def test_is_polynomial():
@@ -866,7 +861,7 @@ def test_is_number():
     assert (2 + log(x)).is_number is False
     assert (8 + log(2) + x).is_number is False
     assert (1 + x**2/x - x).is_number is True
-    assert Tuple(Integer(1)).is_number is False
+    assert Tuple(1).is_number is False
     assert Add(2, x).is_number is False
     assert Mul(3, 4).is_number is True
     assert Pow(log(2), 2).is_number is True
@@ -1154,7 +1149,7 @@ def test_action_verbs():
 def test_as_powers_dict():
     assert x.as_powers_dict() == {x: 1}
     assert (x**y*z).as_powers_dict() == {x: y, z: 1}
-    assert Mul(2, 2, evaluate=False).as_powers_dict() == {Integer(2): Integer(2)}
+    assert Mul(2, 2, evaluate=False).as_powers_dict() == {2: 2}
     assert (x*y).as_powers_dict()[z] == 0
     assert (x + y).as_powers_dict()[z] == 0
 
@@ -1232,15 +1227,15 @@ def test_sympyissue_5300():
 
 def test_as_coeff_Mul():
     assert S.Zero.as_coeff_Mul() == (1, 0)
-    assert Integer(3).as_coeff_Mul() == (Integer(3), Integer(1))
-    assert Rational(3, 4).as_coeff_Mul() == (Rational(3, 4), Integer(1))
-    assert Float(5.0).as_coeff_Mul() == (Float(5.0), Integer(1))
+    assert Integer(3).as_coeff_Mul() == (3, 1)
+    assert Rational(3, 4).as_coeff_Mul() == (Rational(3, 4), 1)
+    assert Float(5.0).as_coeff_Mul() == (Float(5.0), 1)
 
-    assert (Integer(3)*x).as_coeff_Mul() == (Integer(3), x)
+    assert (Integer(3)*x).as_coeff_Mul() == (3, x)
     assert (Rational(3, 4)*x).as_coeff_Mul() == (Rational(3, 4), x)
     assert (Float(5.0)*x).as_coeff_Mul() == (Float(5.0), x)
 
-    assert (Integer(3)*x*y).as_coeff_Mul() == (Integer(3), x*y)
+    assert (Integer(3)*x*y).as_coeff_Mul() == (3, x*y)
     assert (Rational(3, 4)*x*y).as_coeff_Mul() == (Rational(3, 4), x*y)
     assert (Float(5.0)*x*y).as_coeff_Mul() == (Float(5.0), x*y)
 
@@ -1250,15 +1245,15 @@ def test_as_coeff_Mul():
 
 
 def test_as_coeff_Add():
-    assert Integer(3).as_coeff_Add() == (Integer(3), Integer(0))
-    assert Rational(3, 4).as_coeff_Add() == (Rational(3, 4), Integer(0))
-    assert Float(5.0).as_coeff_Add() == (Float(5.0), Integer(0))
+    assert Integer(3).as_coeff_Add() == (3, 0)
+    assert Rational(3, 4).as_coeff_Add() == (Rational(3, 4), 0)
+    assert Float(5.0).as_coeff_Add() == (Float(5.0), 0)
 
-    assert (Integer(3) + x).as_coeff_Add() == (Integer(3), x)
+    assert (Integer(3) + x).as_coeff_Add() == (3, x)
     assert (Rational(3, 4) + x).as_coeff_Add() == (Rational(3, 4), x)
     assert (Float(5.0) + x).as_coeff_Add() == (Float(5.0), x)
 
-    assert (Integer(3) + x + y).as_coeff_Add() == (Integer(3), x + y)
+    assert (Integer(3) + x + y).as_coeff_Add() == (3, x + y)
     assert (Rational(3, 4) + x + y).as_coeff_Add() == (Rational(3, 4), x + y)
     assert (Float(5.0) + x + y).as_coeff_Add() == (Float(5.0), x + y)
 
@@ -1315,7 +1310,7 @@ def test_as_ordered_factors():
 
     assert x.as_ordered_factors() == [x]
     assert (2*x*x**n*sin(x)*cos(x)).as_ordered_factors() \
-        == [Integer(2), x, x**n, sin(x), cos(x)]
+        == [2, x, x**n, sin(x), cos(x)]
 
     args = [f(1), f(2), f(3), f(1, 2, 3), g(1), g(2), g(3), g(1, 2, 3)]
     expr = Mul(*args)
@@ -1430,11 +1425,11 @@ def test_is_constant():
     assert checksol(x, x, f(x)) is False
 
     p = symbols('p', positive=True)
-    assert Pow(x, Integer(0), evaluate=False).is_constant() is True  # == 1
-    assert Pow(Integer(0), x, evaluate=False).is_constant() is False  # == 0 or 1
-    assert Pow(Integer(0), p, evaluate=False).is_constant() is True  # == 1
+    assert Pow(x, 0, evaluate=False).is_constant() is True  # == 1
+    assert Pow(0, x, evaluate=False).is_constant() is False  # == 0 or 1
+    assert Pow(0, p, evaluate=False).is_constant() is True  # == 1
     assert (2**x).is_constant() is False
-    assert Pow(Integer(2), Integer(3), evaluate=False).is_constant() is True
+    assert Pow(2, 3, evaluate=False).is_constant() is True
 
     z1, z2 = symbols('z1 z2', zero=True)
     assert (z1 + 2*z2).is_constant() is True

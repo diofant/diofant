@@ -242,8 +242,8 @@ def test_geometric_sums():
 
     # issue sympy/sympy#6802:
     assert summation((-1)**(2*x + 2), (x, 0, n)) == n + 1
-    assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/Integer(3) - Rational(4, 3)
-    assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/Integer(2) + Rational(1, 2)
+    assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/3 - Rational(4, 3)
+    assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/2 + Rational(1, 2)
     assert summation(y**x, (x, a, b)) == \
         Piecewise((-a + b + 1, Eq(y, 1)), ((y**a - y**(b + 1))/(-y + 1), True))
     assert summation((-2)**(y*x + 2), (x, 0, n)) == \

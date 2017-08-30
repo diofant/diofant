@@ -37,42 +37,44 @@ def test_finite_diff_weights():
 
     # Zeroeth derivative
     for i in range(5):
-        assert d[0][i] == [Integer(1)] + [Integer(0)]*8
+        assert d[0][i] == [1] + [0]*8
 
     # First derivative
-    assert d[1][0] == [Integer(0)]*9
-    assert d[1][2] == [Integer(0), Rational(1, 2), -Rational(1, 2)] + [Integer(0)]*6
-    assert d[1][4] == [Integer(0), Rational(2, 3), -Rational(2, 3), -Rational(1, 12), Rational(1, 12)] + [Integer(0)]*4
-    assert d[1][6] == [Integer(0), Rational(3, 4), -Rational(3, 4), -Rational(3, 20), Rational(3, 20),
-                       Rational(1, 60), -Rational(1, 60)] + [Integer(0)]*2
-    assert d[1][8] == [Integer(0), Rational(4, 5), -Rational(4, 5), -Rational(1, 5), Rational(1, 5),
+    assert d[1][0] == [0]*9
+    assert d[1][2] == [0, Rational(1, 2), -Rational(1, 2)] + [0]*6
+    assert d[1][4] == [0, Rational(2, 3), -Rational(2, 3), -Rational(1, 12), Rational(1, 12)] + [0]*4
+    assert d[1][6] == [0, Rational(3, 4), -Rational(3, 4), -Rational(3, 20), Rational(3, 20),
+                       Rational(1, 60), -Rational(1, 60)] + [0]*2
+    assert d[1][8] == [0, Rational(4, 5), -Rational(4, 5), -Rational(1, 5), Rational(1, 5),
                        Rational(4, 105), -Rational(4, 105), -Rational(1, 280), Rational(1, 280)]
 
     # Second derivative
     for i in range(2):
-        assert d[2][i] == [Integer(0)]*9
-    assert d[2][2] == [-Integer(2), Integer(1), Integer(1)] + [Integer(0)]*6
-    assert d[2][4] == [-Rational(5, 2), Rational(4, 3), Rational(4, 3), -Rational(1, 12), -Rational(1, 12)] + [Integer(0)]*4
-    assert d[2][6] == [-Rational(49, 18), Rational(3, 2), Rational(3, 2), -Rational(3, 20), -Rational(3, 20),
-                       Rational(1, 90), Rational(1, 90)] + [Integer(0)]*2
+        assert d[2][i] == [0]*9
+    assert d[2][2] == [-2, 1, 1] + [0]*6
+    assert d[2][4] == [-Rational(5, 2), Rational(4, 3), Rational(4, 3),
+                       -Rational(1, 12), -Rational(1, 12)] + [0]*4
+    assert d[2][6] == [-Rational(49, 18), Rational(3, 2), Rational(3, 2),
+                       -Rational(3, 20), -Rational(3, 20),
+                       Rational(1, 90), Rational(1, 90)] + [0]*2
     assert d[2][8] == [-Rational(205, 72), Rational(8, 5), Rational(8, 5), -Rational(1, 5), -Rational(1, 5),
                        Rational(8, 315), Rational(8, 315), -Rational(1, 560), -Rational(1, 560)]
 
     # Third derivative
     for i in range(3):
-        assert d[3][i] == [Integer(0)]*9
-    assert d[3][4] == [Integer(0), -Integer(1), Integer(1), Rational(1, 2), -Rational(1, 2)] + [Integer(0)]*4
-    assert d[3][6] == [Integer(0), -Rational(13, 8), Rational(13, 8), Integer(1), -Integer(1),
-                       -Rational(1, 8), Rational(1, 8)] + [Integer(0)]*2
-    assert d[3][8] == [Integer(0), -Rational(61, 30), Rational(61, 30), Rational(169, 120), -Rational(169, 120),
+        assert d[3][i] == [0]*9
+    assert d[3][4] == [0, -1, 1, Rational(1, 2), -Rational(1, 2)] + [0]*4
+    assert d[3][6] == [0, -Rational(13, 8), Rational(13, 8), 1, -1,
+                       -Rational(1, 8), Rational(1, 8)] + [0]*2
+    assert d[3][8] == [0, -Rational(61, 30), Rational(61, 30), Rational(169, 120), -Rational(169, 120),
                        -Rational(3, 10), Rational(3, 10), Rational(7, 240), -Rational(7, 240)]
 
     # Fourth derivative
     for i in range(4):
-        assert d[4][i] == [Integer(0)]*9
-    assert d[4][4] == [Integer(6), -Integer(4), -Integer(4), Integer(1), Integer(1)] + [Integer(0)]*4
-    assert d[4][6] == [Rational(28, 3), -Rational(13, 2), -Rational(13, 2), Integer(2), Integer(2),
-                       -Rational(1, 6), -Rational(1, 6)] + [Integer(0)]*2
+        assert d[4][i] == [0]*9
+    assert d[4][4] == [6, -4, -4, 1, 1] + [0]*4
+    assert d[4][6] == [Rational(28, 3), -Rational(13, 2), -Rational(13, 2), 2, 2,
+                       -Rational(1, 6), -Rational(1, 6)] + [0]*2
     assert d[4][8] == [Rational(91, 8), -Rational(122, 15), -Rational(122, 15), Rational(169, 60), Rational(169, 60),
                        -Rational(2, 5), -Rational(2, 5), Rational(7, 240), Rational(7, 240)]
 
@@ -94,7 +96,7 @@ def test_finite_diff_weights():
                           Rational(1225, 2048), -Rational(245, 2048), Rational(49, 2048), -Rational(5, 2048)]
 
     # First derivative
-    assert d[0][1][1] == [-Integer(1), Integer(1)]
+    assert d[0][1][1] == [-1, 1]
     assert d[1][1][3] == [Rational(1, 24), -Rational(9, 8), Rational(9, 8), -Rational(1, 24)]
     assert d[2][1][5] == [-Rational(3, 640), Rational(25, 384), -Rational(75, 64), Rational(75, 64),
                           -Rational(25, 384), Rational(3, 640)]
@@ -116,10 +118,10 @@ def test_as_finite_diff():
     assert (as_finite_diff(f(x).diff(x)) -
             (f(x + Rational(1, 2))-f(x - Rational(1, 2)))).simplify() == 0
     assert (as_finite_diff(f(x).diff(x), h) -
-            (f(x + h/Integer(2))-f(x - h/Integer(2)))/h).simplify() == 0
+            (f(x + h/2)-f(x - h/2))/h).simplify() == 0
     assert (as_finite_diff(f(x).diff(x), [x - 3*h, x-h, x+h, x + 3*h]) -
-            (Integer(9)/(8*2*h)*(f(x+h) - f(x-h)) +
-             Integer(1)/(24*2*h)*(f(x - 3*h) - f(x + 3*h)))).simplify() == 0
+            (9/(8*2*h)*(f(x+h) - f(x-h)) +
+             1/(24*2*h)*(f(x - 3*h) - f(x + 3*h)))).simplify() == 0
 
     # One sided 1st derivative at gridpoint
     assert (as_finite_diff(f(x).diff(x), [0, 1, 2], 0) -
@@ -127,12 +129,12 @@ def test_as_finite_diff():
     assert (as_finite_diff(f(x).diff(x), [x, x+h], x) -
             (f(x+h) - f(x))/h).simplify() == 0
     assert (as_finite_diff(f(x).diff(x), [x-h, x, x+h], x-h) -
-            (-Integer(3)/(2*h)*f(x-h) + 2/h*f(x) -
-             Integer(1)/(2*h)*f(x+h))).simplify() == 0
+            (-3/(2*h)*f(x-h) + 2/h*f(x) -
+             1/(2*h)*f(x+h))).simplify() == 0
 
     # One sided 1st derivative "half-way"
     assert (as_finite_diff(f(x).diff(x), [x-h, x+h, x + 3*h, x + 5*h, x + 7*h])
-            - 1/(2*h)*(-Integer(11)/(12)*f(x-h) + Integer(17)/(24)*f(x+h)
+            - 1/(2*h)*(-11*f(x-h)/12 + 17*f(x+h)/24
                        + Rational(3, 8)*f(x + 3*h) - Rational(5, 24)*f(x + 5*h)
                        + Rational(1, 24)*f(x + 7*h))).simplify() == 0
 
@@ -161,8 +163,8 @@ def test_as_finite_diff():
 
     # Central 3rd derivative at gridpoint
     assert (as_finite_diff(f(x).diff(x, 3)) -
-            (-f(x - 3/Integer(2)) + 3*f(x - 1/Integer(2)) -
-             3*f(x + 1/Integer(2)) + f(x + 3/Integer(2)))).simplify() == 0
+            (-f(x - 3/Integer(2)) + 3*f(x - Rational(1, 2)) -
+             3*f(x + Rational(1, 2)) + f(x + 3/Integer(2)))).simplify() == 0
 
     assert (as_finite_diff(
         f(x).diff(x, 3), [x - 3*h, x - 2*h, x-h, x, x+h, x + 2*h, x + 3*h]) -
