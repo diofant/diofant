@@ -66,4 +66,6 @@ setup(name='Diofant',
       install_requires=['mpmath>=0.19', 'strategies>=0.2.3'],
       setup_requires=setup_reqs,
       extras_require=extra_reqs,
-      zip_safe=True)
+      zip_safe=True,
+      entry_points={'console_scripts':
+                    ['dsh=diofant.__main__:main']})
