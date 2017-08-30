@@ -26,7 +26,7 @@ warnings.simplefilter('error', UserWarning)
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode', 'sphinx.ext.mathjax',
               'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
               'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
-              'sphinxcontrib.bibtex']
+              'sphinxcontrib.bibtex', 'sphinxcontrib.autoprogram']
 
 napoleon_google_docstring = False
 napoleon_use_param = False

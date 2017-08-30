@@ -8,6 +8,7 @@ New features
 ============
 
 * Support square-free factorization of multivariate polynomials over finite fields (with adaptation of Musser's algorithm), see :pull:`1132`.
+* Support calling from the command-line as ``python -m diofant``, see :pull:`853`.
 
 Major changes
 =============
