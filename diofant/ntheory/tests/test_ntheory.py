@@ -1,3 +1,4 @@
+import random
 from collections import defaultdict
 
 import pytest
@@ -228,7 +229,6 @@ def test_generate():
 
 
 def test_randprime():
-    import random
     random.seed(1234)
     assert randprime(2, 3) == 2
     assert randprime(1, 3) == 2

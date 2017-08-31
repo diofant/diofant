@@ -22,12 +22,15 @@
 # is somewhere in the path and that it can compile ANSI C code.
 
 import os
+import re
 import subprocess
 import sys
 import tempfile
 
 import pytest
 
+from diofant import (N, acos, asin, atan, atan2, ceiling, cos, cosh, floor, ln,
+                     log, sin, sinh, sqrt, tan, tanh)
 from diofant.abc import x, y, z
 from diofant.utilities.codegen import codegen, get_code_generator, make_routine
 
@@ -226,7 +229,6 @@ def fortranize_double_constants(code_string):
     """
     Replaces every literal float with literal doubles
     """
-    import re
     pattern_exp = re.compile('\d+(\.)?\d*[eE]-?\d+')
     pattern_float = re.compile('\d+\.\d*(?!\d*d)')
 
@@ -308,8 +310,6 @@ def test_basic_codegen():
 
 def test_intrinsic_math1_codegen():
     # not included: log10
-    from diofant import acos, asin, atan, ceiling, cos, cosh, floor, log, ln, \
-        sin, sinh, sqrt, tan, tanh, N
     name_expr = [
         ("test_fabs", abs(x)),
         ("test_acos", acos(x)),
@@ -341,7 +341,6 @@ def test_intrinsic_math1_codegen():
 
 def test_instrinsic_math2_codegen():
     # not included: frexp, ldexp, modf, fmod
-    from diofant import atan2, N
     name_expr = [
         ("test_atan2", atan2(x, y)),
         ("test_pow", x**y),
@@ -356,7 +355,6 @@ def test_instrinsic_math2_codegen():
 
 
 def test_complicated_codegen():
-    from diofant import sin, cos, tan, N
     name_expr = [
         ("test1", ((sin(x) + cos(y) + tan(z))**7).expand()),
         ("test2", cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))),

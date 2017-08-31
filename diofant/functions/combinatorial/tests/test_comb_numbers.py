@@ -1,4 +1,5 @@
 import string
+from random import choice
 
 import pytest
 
@@ -6,10 +7,18 @@ from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
                      Rational, S, Sum, Symbol, cancel, diff, expand_func, im,
                      nan, oo, pi, re, sstr, symbols, zoo)
 from diofant.abc import x
+from diofant.combinatorics.permutations import Permutation
 from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
                                digamma, euler, factorial, fibonacci, gamma,
                                genocchi, harmonic, hyper, log, lucas,
                                polygamma, sin, sqrt, trigamma, zeta)
+from diofant.functions.combinatorial.numbers import (_AOP_product,
+                                                     _multiset_histogram, nC,
+                                                     nP, nT, stirling)
+from diofant.utilities.iterables import (multiset_combinations,
+                                         multiset_partitions,
+                                         multiset_permutations, partitions,
+                                         permutations, subsets)
 
 
 __all__ = ()
@@ -368,15 +377,6 @@ def test_genocchi():
 
 
 def test_nC_nP_nT():
-    from diofant.utilities.iterables import (
-        multiset_permutations, multiset_combinations, multiset_partitions,
-        partitions, subsets, permutations)
-    from diofant.functions.combinatorial.numbers import (
-        nP, nC, nT, stirling, _multiset_histogram, _AOP_product)
-    from diofant.combinatorics.permutations import Permutation
-    from diofant.core.numbers import oo
-    from random import choice
-
     c = string.ascii_lowercase
     for i in range(100):
         s = ''.join(choice(c) for i in range(7))

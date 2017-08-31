@@ -1,5 +1,6 @@
 import pytest
 
+from diofant.concrete import Sum
 from diofant.core import S, pi, symbols
 from diofant.matrices import (Identity, ImmutableMatrix, MatrixSymbol,
                               ShapeError, ZeroMatrix)
@@ -21,7 +22,6 @@ def test_matpow():
 
 
 def test_entry():
-    from diofant.concrete import Sum
     assert MatPow(A, 1)[0, 0] == A[0, 0]
     assert MatPow(C, 0)[0, 0] == 1
     assert MatPow(C, 0)[0, 1] == 0

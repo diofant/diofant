@@ -3,13 +3,15 @@ import pytest
 from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
                      EulerGamma, Function, I, Integral, Interval, Lambda,
                      LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
-                     Rational, S, Sum, Symbol, Tuple, acos, acosh, asin, asinh,
-                     atan, cos, cosh, diff, erf, erfi, exp, factor, im,
-                     integrate, log, meijerg, nan, oo, pi, polar_lift, re,
-                     sign, simplify, sin, sinh, sqrt, sstr, symbols, sympify,
-                     tan, tanh, trigsimp)
+                     Rational, S, Si, Sum, Symbol, Tuple, acos, acosh, asin,
+                     asinh, atan, cos, cosh, diff, erf, erfi, exp, expand_func,
+                     expand_mul, factor, fresnels, gamma, im, integrate, log,
+                     lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
+                     re, sign, simplify, sin, sinh, sqrt, sstr, symbols,
+                     sympify, tan, tanh, trigsimp)
 from diofant.abc import a, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
+from diofant.integrals.heurisch import heurisch
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically
 
@@ -256,7 +258,6 @@ def test_sympyissue_3679():
 
 
 def test_sympyissue_3686():  # remove this when fresnel itegrals are implemented
-    from diofant import expand_func, fresnels
     assert expand_func(integrate(sin(x**2), x)) == \
         sqrt(2)*sqrt(pi)*fresnels(sqrt(2)*x/sqrt(pi))/2
 
@@ -675,7 +676,6 @@ def test_sympyissue_4884():
 
 
 def test_is_number():
-    from diofant import cos, sin
     assert Integral(x).is_number is False
     assert Integral(1, x).is_number is False
     assert Integral(1, (x, 1)).is_number is True
@@ -857,7 +857,6 @@ def test_sympyissue_3940():
     assert integrate(exp(a*x**2 + b*x + c), x) == \
         sqrt(pi)*exp(c)*exp(-b**2/(4*a))*erfi(sqrt(a)*x + b/(2*sqrt(a)))/(2*sqrt(a))
 
-    from diofant import expand_mul
     assert expand_mul(integrate(exp(-x**2)*exp(I*k*x), (x, -oo, oo))) == \
         sqrt(pi)*exp(-k**2/4)
     a, d = symbols('a d', positive=True)
@@ -928,8 +927,6 @@ def test_integrate_series():
 
 
 def test_atom_bug():
-    from diofant import meijerg
-    from diofant.integrals.heurisch import heurisch
     assert heurisch(meijerg([], [], [1], [], x), x) is None
 
 
@@ -953,7 +950,6 @@ def test_sympyissue_1888():
 
 
 def test_sympyissue_3558():
-    from diofant import Si
     assert integrate(cos(x*y), (x, -pi/2, pi/2), (y, 0, pi)) == 2*Si(pi**2/2)
 
 
@@ -962,7 +958,6 @@ def test_sympyissue_4422():
 
 
 def test_sympyissue_4493():
-    from diofant import simplify
     assert simplify(integrate(x*sqrt(1 + 2*x), x)) == \
         sqrt(2*x + 1)*(6*x**2 + x - 1)/15
 
@@ -974,14 +969,12 @@ def test_sympyissue_4737():
 
 def test_sympyissue_4992():
     # Note: psi in _check_antecedents becomes NaN.
-    from diofant import simplify, expand_func, polygamma, gamma
     a = Symbol('a', positive=True)
     assert simplify(expand_func(integrate(exp(-x)*log(x)*x**a, (x, 0, oo)))) == \
         (a*polygamma(0, a) + 1)*gamma(a)
 
 
 def test_sympyissue_4487():
-    from diofant import lowergamma, simplify
     assert simplify(integrate(exp(-x)*x**y, x)) == lowergamma(y + 1, x)
 
 

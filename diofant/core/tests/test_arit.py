@@ -4,7 +4,8 @@ import pytest
 
 from diofant import (Add, Dummy, E, Float, I, Integer, Mod, Mul, O, Pow,
                      Rational, S, Symbol, comp, cos, exp, factorial, im, log,
-                     nan, oo, pi, re, sign, sin, sqrt, symbols, sympify, zoo)
+                     nan, oo, pi, polar_lift, re, sign, sin, sqrt, symbols,
+                     sympify, tan, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -1497,7 +1498,6 @@ def test_sympyissue_5460():
 
 
 def test_product_irrational():
-    from diofant import I, pi
     assert (I*pi).is_irrational is False
     # The following used to be deduced from the above bug:
     assert (I*pi).is_positive is False
@@ -1652,7 +1652,6 @@ def test_sympyissue_6001():
 
 
 def test_polar():
-    from diofant import polar_lift
     p = Symbol('p', polar=True)
     x = Symbol('x')
     assert p.is_polar
@@ -1878,7 +1877,6 @@ def test_mul_zero_detection():
 
 
 def test_sympyissue_8247_8354():
-    from diofant import tan
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_positive is False  # it's 0
     z = (-2**Rational(1, 3)*(3*sqrt(93) + 29)**2 -

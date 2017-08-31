@@ -2,14 +2,16 @@ import pytest
 from mpmath import inf, ninf
 from mpmath.libmp.libmpf import from_float
 
-from diofant import (Abs, Add, E, Eq, Float, Function, GoldenRatio, I,
-                     Integral, Min, Mul, N, Pow, Product, Rational, Sum,
-                     Symbol, atan, ceiling, cos, exp, factorial, fibonacci,
-                     floor, im, integrate, log, nan, oo, pi, product, re, sin,
-                     sqrt, sstr, sympify, zoo)
+from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
+                     GoldenRatio, I, Integral, Min, Mul, N, Pow, Product,
+                     Rational, S, Sum, Symbol, atan, ceiling, cos, exp,
+                     factorial, fibonacci, floor, im, integrate, log, nan, oo,
+                     pi, polar_lift, product, re, sin, sqrt, sstr, sympify,
+                     zoo)
 from diofant.abc import H, n, x, y
 from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
                                 complex_accuracy, scaled_zero)
+from diofant.utilities.lambdify import implemented_function
 
 
 __all__ = ()
@@ -340,7 +342,6 @@ def test_evalf_arguments():
 
 
 def test_implemented_function_evalf():
-    from diofant.utilities.lambdify import implemented_function
     f = Function('f')
     f = implemented_function(f, lambda x: x + 1)
     assert str(f(x)) == "f(x)"
@@ -367,14 +368,11 @@ def test_sympyissue_5486():
 
 
 def test_sympyissue_5486_bug():
-    from diofant import I, Expr
     assert abs(Expr._from_mpmath(I._to_mpmath(15), 15) - I) < 1.0e-15
     pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
 
 
 def test_bugs():
-    from diofant import polar_lift, re
-
     assert abs(re((1 + I)**2)) < 1e-15
 
     # anything that evalf's to 0 will do in place of polar_lift
@@ -493,7 +491,6 @@ def test_sympyissue_8853():
 
 
 def test_sympyissue_9326():
-    from diofant import Dummy
     d1 = Dummy('d')
     d2 = Dummy('d')
     e = d1 + d2

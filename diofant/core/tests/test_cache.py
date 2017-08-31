@@ -1,3 +1,6 @@
+import sys
+import weakref
+
 import pytest
 
 from diofant.abc import x
@@ -47,8 +50,6 @@ def test_print_cache(capfd):
 
 @pytest.fixture(scope='function')
 def clear_imports(request):
-    import sys
-
     # Clear namespace
     orig = sys.modules.copy()
     for m in list(sys.modules.keys()):
@@ -110,7 +111,6 @@ def test_nocache(clear_imports, monkeypatch):
 
 
 def test_sympyissue_8825():
-    import weakref
     a, b = symbols('a b')
     d = weakref.WeakKeyDictionary([(a, 1), (b, 2)])
     assert sstr(list(ordered(d.items()))) == '[(a, 1), (b, 2)]'

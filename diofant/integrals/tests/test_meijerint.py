@@ -1,10 +1,18 @@
+from random import randrange, uniform
+
 import pytest
 
-from diofant import (I, Integer, Integral, Rational, cos, cosh, erf, exp,
-                     exp_polar, expand_func, gamma, hyper, hyperexpand,
-                     integrate, log, meijerg, nan, oo, pi, polygamma, simplify,
-                     sin, sqrt)
+from diofant import (E1, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
+                     Integral, Mul, Piecewise, Rational, Shi, Si, Symbol,
+                     acosh, acoth, arg, asin, atan, besseli, besselj, combsimp,
+                     cos, cosh, erf, exp, exp_polar, expand, expand_func,
+                     expand_mul, expint, fourier_transform, fresnelc, fresnels,
+                     gamma, hyper, hyperexpand, integrate, laplace_transform,
+                     log, lowergamma, meijerg, nan, oo, pi, piecewise_fold,
+                     polygamma, powdenest, powsimp, re, simplify, sin, sinh,
+                     sqrt, symbols, unpolarify)
 from diofant.abc import a, b, c, d, s, t, x, y, z
+from diofant.integrals.meijerint import z as z_dummy
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          _rewrite1, _rewrite_single,
                                          meijerint_definite,
@@ -35,7 +43,6 @@ def test_rewrite_single():
     tn(x**y)
 
     def u(expr, x):
-        from diofant import Add, exp, exp_polar
         r = _rewrite_single(expr, x)
         e = Add(*[res[0]*res[2] for res in r[0]]).replace(
             exp_polar, exp)  # XXX Hack?
@@ -93,7 +100,6 @@ def test_inflate():
             d: randcplx(), y: randcplx()/10}
 
     def t(a, b, arg, n):
-        from diofant import Mul
         m1 = meijerg(a, b, arg)
         m2 = Mul(*_inflate_g(m1, n))
         # NOTE: (the random number)**9 must still be on the principal sheet.
@@ -105,7 +111,6 @@ def test_inflate():
 
 
 def test_recursive():
-    from diofant import symbols
     a, b, c = symbols('a b c', positive=True)
     r = exp(-(x - a)**2)*exp(-(x - b)**2)
     e = integrate(r, (x, 0, oo), meijerg=True)
@@ -123,7 +128,6 @@ def test_recursive():
 
 
 def test_meijerint():
-    from diofant import symbols, expand, arg
     s, t, mu = symbols('s t mu', extended_real=True)
     assert integrate(meijerg([], [], [0], [], s*t)
                      * meijerg([], [], [mu/2], [-mu/2], t**2/4),
@@ -192,7 +196,6 @@ def test_meijerint():
     # (This is besselj*besselj in disguise, to stop the product from being
     #  recognised in the tables.)
     a, b, s = symbols('a b s')
-    from diofant import And, re
     assert meijerint_definite(meijerg([], [], [a/2], [-a/2], x/4)
                               * meijerg([], [], [b/2], [-b/2], x/4)*x**(s - 1), x, 0, oo) == \
         (4*2**(2*s - 2)*gamma(-2*s + 1)*gamma(a/2 + b/2 + s)
@@ -209,7 +212,6 @@ def test_meijerint():
         (sqrt(pi)*polygamma(0, Rational(1, 2))/4).expand()
 
     # Test hyperexpand bug.
-    from diofant import lowergamma
     n = symbols('n', integer=True)
     assert simplify(integrate(exp(-x)*x**n, x, meijerg=True)) == \
         lowergamma(n + 1, x)
@@ -227,7 +229,6 @@ def test_meijerint():
 
 
 def test_bessel():
-    from diofant import besselj, besseli
     assert simplify(integrate(besselj(a, z)*besselj(b, z)/z, (z, 0, oo),
                               meijerg=True, conds='none')) == \
         2*sin(pi*(a/2 - b/2))/(pi*(a - b)*(a + b))
@@ -275,8 +276,6 @@ def test_bessel():
 
 
 def test_inversion():
-    from diofant import piecewise_fold, besselj, sqrt, sin, cos, Heaviside
-
     def inv(f):
         return piecewise_fold(meijerint_inversion(f, s, t))
     assert inv(1/(s**2 + 1)) == sin(t)*Heaviside(t)
@@ -292,9 +291,6 @@ def test_inversion():
 
 @pytest.mark.slow
 def test_lookup_table():
-    from random import uniform, randrange
-    from diofant import Add
-    from diofant.integrals.meijerint import z as z_dummy
     table = {}
     _create_lookup_table(table)
     for _, l in sorted(table.items(), key=default_sort_key):
@@ -324,7 +320,6 @@ def test_lookup_table():
 
 
 def test_branch_bug():
-    from diofant import powdenest, lowergamma
     # TODO combsimp cannot prove that the factor is unity
     assert powdenest(integrate(erf(x**3), x, meijerg=True).diff(x),
                      polar=True) == 2*erf(x**3)*gamma(Rational(2, 3))/3/gamma(Rational(5, 3))
@@ -334,7 +329,6 @@ def test_branch_bug():
 
 
 def test_linear_subs():
-    from diofant import besselj
     assert integrate(sin(x - 1), x, meijerg=True) == -cos(1 - x)
     assert integrate(besselj(1, x - 1), x, meijerg=True) == -besselj(0, 1 - x)
 
@@ -342,7 +336,6 @@ def test_linear_subs():
 @pytest.mark.slow
 def test_probability():
     # various integrals from probability theory
-    from diofant import symbols, Symbol, Abs, expand_mul, combsimp, powsimp, sin
     mu1, mu2 = symbols('mu1 mu2', real=True, nonzero=True)
     sigma1, sigma2 = symbols('sigma1 sigma2', real=True,
                              nonzero=True, positive=True)
@@ -512,7 +505,6 @@ def test_probability():
         lamda**n*gamma(1 + n/k)
 
     # rice distribution
-    from diofant import besseli
     nu, sigma = symbols('nu sigma', positive=True)
     rice = x/sigma**2*exp(-(x**2 + nu**2)/2/sigma**2)*besseli(0, x*nu/sigma**2)
     assert integrate(rice, (x, 0, oo), meijerg=True) == 1
@@ -538,8 +530,6 @@ def test_probability():
 @pytest.mark.slow
 def test_expint():
     """ Test various exponential integrals. """
-    from diofant import (expint, unpolarify, Symbol, Ci, Si, Shi, Chi,
-                         sin, cos, sinh, cosh, Ei)
     assert simplify(integrate(exp(-z*x)/x**y,
                               (x, 1, oo),
                               meijerg=True,
@@ -592,9 +582,6 @@ def test_expint():
 
 
 def test_messy():
-    from diofant import (laplace_transform, Si, Shi, Chi, atan, Piecewise,
-                         acoth, E1, besselj, acosh, asin, And, re,
-                         fourier_transform, sqrt)
     assert laplace_transform(Si(x), x, s) == ((-atan(s) + pi/2)/s, 0, True)
 
     assert laplace_transform(Shi(x), x, s) == (acoth(s)/s, 1, True)
@@ -643,8 +630,6 @@ def test_sympyissue_6348():
 
 
 def test_fresnel():
-    from diofant import fresnels, fresnelc
-
     assert expand_func(integrate(sin(pi*x**2/2), x)) == fresnels(x)
     assert expand_func(integrate(cos(pi*x**2/2), x)) == fresnelc(x)
 

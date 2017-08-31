@@ -5,7 +5,7 @@ from diofant.core import (Basic, E, Float, I, Integer, Number, Pow, Rational,
                           S, Symbol, nan, oo, pi, symbols, zoo)
 from diofant.core.tests.test_evalf import NS
 from diofant.functions.elementary.exponential import exp, log
-from diofant.functions.elementary.miscellaneous import cbrt, sqrt
+from diofant.functions.elementary.miscellaneous import cbrt, root, sqrt
 from diofant.functions.elementary.trigonometric import cos, sin
 from diofant.logic import true
 from diofant.series.order import O
@@ -245,7 +245,6 @@ def test_sympyissue_6100():
 
 
 def test_sympyissue_6208():
-    from diofant import root, Rational
     assert sqrt(33**(9*I/10)) == -33**(9*I/20)
     assert root((6*I)**(2*I), 3).as_base_exp()[1] == Rational(1, 3)  # != 2*I/3
     assert root((6*I)**(I/3), 3).as_base_exp()[1] == I/9

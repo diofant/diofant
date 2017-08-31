@@ -2,9 +2,9 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Eq, Function, Idx, IndexedBase, Matrix, O, Piecewise,
-                     Pow, Rational, RootOf, Symbol, Tuple, cos, cse, exp, sin,
-                     sqrt, symbols, sympify, true)
+from diofant import (Add, Eq, Function, Idx, IndexedBase, Matrix, MatrixSymbol,
+                     O, Piecewise, Pow, Rational, RootOf, Subs, Symbol, Tuple,
+                     cos, cse, exp, sin, sqrt, symbols, sympify, true)
 from diofant.abc import a, b, w, x, y, z
 from diofant.functions.special.hyper import meijerg
 from diofant.matrices import (ImmutableDenseMatrix, ImmutableSparseMatrix,
@@ -199,7 +199,6 @@ def test_sympyissue_6263():
 
 
 def test_dont_cse_tuples():
-    from diofant import Subs
     f = Function("f")
     g = Function("g")
 
@@ -294,7 +293,6 @@ def test_cse_Indexed():
 
 @pytest.mark.xfail
 def test_cse_MatrixSymbol():
-    from diofant import MatrixSymbol
     A = MatrixSymbol('A', 3, 3)
     y = MatrixSymbol('y', 3, 1)
 

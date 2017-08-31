@@ -12,18 +12,17 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
                      Order, Piecewise, Poly, Pow, Product, Range, Rational,
                      RisingFactorial, RootOf, RootSum, S, Shi, Si,
                      SineTransform, Subs, Sum, Symbol, SymmetricDifference,
-                     Tuple, Union, Wild, Ynm, ZeroMatrix, Znm, acot, airyai,
-                     airyaiprime, airybi, airybiprime, arg, asin,
-                     assoc_laguerre, assoc_legendre, binomial, catalan,
-                     ceiling, chebyshevt, chebyshevu, conjugate, cos, cot,
-                     coth, diff, dirichlet_eta, divisor_sigma, elliptic_e,
-                     elliptic_f, elliptic_k, elliptic_pi, exp, expint,
-                     factorial, factorial2, false, field, floor, gamma,
-                     gegenbauer, hermite, hyper, im, jacobi, laguerre,
-                     legendre, lerchphi, log, lowergamma, meijerg, oo,
-                     polar_lift, polylog, re, ring, root, sin, sqrt,
-                     subfactorial, symbols, tan, totient, true, uppergamma,
-                     zeta)
+                     Tuple, Union, Wild, Ynm, Znm, acot, airyai, airyaiprime,
+                     airybi, airybiprime, arg, asin, assoc_laguerre,
+                     assoc_legendre, binomial, catalan, ceiling, chebyshevt,
+                     chebyshevu, conjugate, cos, cot, coth, diff,
+                     dirichlet_eta, divisor_sigma, elliptic_e, elliptic_f,
+                     elliptic_k, elliptic_pi, exp, expint, factorial,
+                     factorial2, false, field, floor, gamma, gegenbauer,
+                     hermite, hyper, im, jacobi, laguerre, legendre, lerchphi,
+                     log, lowergamma, meijerg, oo, pi, polar_lift, polylog, re,
+                     ring, root, sin, sqrt, subfactorial, symbols, tan,
+                     totient, true, uppergamma, zeta)
 from diofant.abc import a, b, mu, t, tau, x, y, z
 from diofant.combinatorics.permutations import Cycle, Permutation
 from diofant.core.trace import Tr
@@ -31,10 +30,17 @@ from diofant.diffgeom import (CovarDerivativeOp, Differential, Manifold, Patch,
                               TensorProduct, metric_to_Christoffel_2nd)
 from diofant.diffgeom.rn import R2, R2_r
 from diofant.functions import (DiracDelta, Heaviside, KroneckerDelta,
-                               LeviCivita, euler)
+                               LeviCivita, besseli, besselj, besselk, bessely,
+                               euler, fresnelc, fresnels, hankel1, hankel2, jn,
+                               yn)
 from diofant.logic import Implies
 from diofant.logic.boolalg import And, Or, Xor
-from diofant.printing.latex import latex, translate
+from diofant.matrices import (Adjoint, HadamardProduct, Inverse, Transpose,
+                              ZeroMatrix)
+from diofant.parsing.sympy_parser import parse_expr
+from diofant.printing.latex import (LatexPrinter, latex, other_symbols,
+                                    translate)
+from diofant.stats import Die, Exponential, Normal, pspace, where
 
 
 __all__ = ()
@@ -416,8 +422,6 @@ def test_latex_functions():
 
 
 def test_hyper_printing():
-    from diofant import pi
-
     assert latex(meijerg(Tuple(pi, pi, x), Tuple(1),
                          (0, 1), Tuple(1, 2, 3/pi), z)) == \
         r'{G_{4, 5}^{2, 3}\left(\begin{matrix} \pi, \pi, x & 1 \\0, 1 & 1, 2, \frac{3}{\pi} \end{matrix} \middle| {z} \right)}'
@@ -438,8 +442,6 @@ def test_hyper_printing():
 
 
 def test_latex_bessel():
-    from diofant.functions.special.bessel import (besselj, bessely, besseli,
-                                                  besselk, hankel1, hankel2, jn, yn)
     assert latex(besselj(n, z**2)**k) == r'J^{k}_{n}\left(z^{2}\right)'
     assert latex(bessely(n, z)) == r'Y_{n}\left(z\right)'
     assert latex(besseli(n, z)) == r'I_{n}\left(z\right)'
@@ -452,7 +454,6 @@ def test_latex_bessel():
 
 
 def test_latex_fresnel():
-    from diofant.functions.special.error_functions import (fresnels, fresnelc)
     assert latex(fresnels(z)) == r'S\left(z\right)'
     assert latex(fresnelc(z)) == r'C\left(z\right)'
     assert latex(fresnels(z)**2) == r'S^{2}\left(z\right)'
@@ -986,7 +987,6 @@ def test_custom_symbol_names():
 
 
 def test_matAdd():
-    from diofant.printing.latex import LatexPrinter
     C = MatrixSymbol('C', 5, 5)
     B = MatrixSymbol('B', 5, 5)
     l = LatexPrinter()
@@ -997,7 +997,6 @@ def test_matAdd():
 
 
 def test_matMul():
-    from diofant.printing.latex import LatexPrinter
     A = MatrixSymbol('A', 5, 5)
     B = MatrixSymbol('B', 5, 5)
     x = Symbol('x')
@@ -1021,7 +1020,6 @@ def test_latex_MatrixSlice():
 
 
 def test_latex_RandomDomain():
-    from diofant.stats import Normal, Die, Exponential, pspace, where
     X = Normal('x1', 0, 1)
     assert latex(where(X > 0)) == r"Domain: 0 < x_{1} \wedge x_{1} < \infty"
 
@@ -1078,7 +1076,6 @@ def test_Tr():
 
 
 def test_Adjoint():
-    from diofant.matrices import Adjoint, Inverse, Transpose
     X = MatrixSymbol('X', 2, 2)
     Y = MatrixSymbol('Y', 2, 2)
     assert latex(Adjoint(X)) == r'X^\dag'
@@ -1095,7 +1092,6 @@ def test_Adjoint():
 
 
 def test_Hadamard():
-    from diofant.matrices import HadamardProduct
     X = MatrixSymbol('X', 2, 2)
     Y = MatrixSymbol('Y', 2, 2)
     assert latex(HadamardProduct(X, Y*Y)) == r'X \circ \left(Y Y\right)'
@@ -1103,7 +1099,6 @@ def test_Hadamard():
 
 
 def test_ZeroMatrix():
-    from diofant import ZeroMatrix
     assert latex(ZeroMatrix(1, 1)) == r"\mathbb{0}"
 
 
@@ -1182,7 +1177,6 @@ def test_translate():
 
 
 def test_other_symbols():
-    from diofant.printing.latex import other_symbols
     for s in other_symbols:
         assert latex(symbols(s)) == "\\"+s
 
@@ -1368,7 +1362,6 @@ def test_sympyissue_8409():
 
 
 def test_sympyissue_8470():
-    from diofant.parsing.sympy_parser import parse_expr
     e = parse_expr("-B*A", evaluate=False)
     assert latex(e) == r"A \left(- B\right)"
 

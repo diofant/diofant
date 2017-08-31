@@ -1,3 +1,4 @@
+import fractions
 import re
 
 import mpmath
@@ -61,13 +62,8 @@ def test_sympify1():
 
 
 def test_sympify_Fraction():
-    try:
-        import fractions
-    except ImportError:
-        pass
-    else:
-        value = sympify(fractions.Fraction(101, 127))
-        assert value == Rational(101, 127) and type(value) is Rational
+    value = sympify(fractions.Fraction(101, 127))
+    assert value == Rational(101, 127) and type(value) is Rational
 
 
 def test_sympify_gmpy():

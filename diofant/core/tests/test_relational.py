@@ -7,6 +7,7 @@ from diofant import (And, Float, Function, I, Implies, Integer, Not, Or,
                      Rational, Symbol, Wild, Xor, ceiling, false, floor, nan,
                      oo, pi, simplify, sqrt, true, zoo)
 from diofant.abc import t, w, x, y, z
+from diofant.core.relational import _Inequality as Inequality
 from diofant.core.relational import (Eq, Equality, Ge, GreaterThan, Gt, Le,
                                      LessThan, Lt, Ne, Rel, Relational,
                                      StrictGreaterThan, StrictLessThan,
@@ -349,7 +350,6 @@ def assert_all_ineq_raise_TypeError(a, b):
 
 def assert_all_ineq_give_class_Inequality(a, b):
     """All inequality operations on `a` and `b` result in class Inequality."""
-    from diofant.core.relational import _Inequality as Inequality
     assert isinstance(a > b,  Inequality)
     assert isinstance(a >= b, Inequality)
     assert isinstance(a < b,  Inequality)

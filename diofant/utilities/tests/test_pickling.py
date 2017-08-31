@@ -25,6 +25,7 @@ from diofant.core.relational import (Equality, GreaterThan, LessThan,
                                      StrictLessThan, Unequality)
 from diofant.core.singleton import S, SingletonRegistry
 from diofant.core.symbol import Dummy, Symbol, Wild
+from diofant.domains import QQ_gmpy, ZZ_gmpy
 from diofant.domains.algebraicfield import AlgebraicField
 from diofant.domains.expressiondomain import ExpressionDomain
 from diofant.domains.groundtypes import PythonRational
@@ -360,17 +361,14 @@ def test_pickling_polys_domains():
         check(c)
 
     if HAS_GMPY:
-        from diofant.domains.gmpyintegerring import GMPYIntegerRing
-        from diofant.domains.gmpyrationalfield import GMPYRationalField
-
         # TODO: fix pickling of ModularInteger
         # for c in (GMPYFiniteField, GMPYFiniteField(17)):
         #     check(c)
 
-        for c in (GMPYIntegerRing, GMPYIntegerRing()):
+        for c in (ZZ_gmpy, ZZ_gmpy()):
             check(c)
 
-        for c in (GMPYRationalField, GMPYRationalField()):
+        for c in (QQ_gmpy, QQ_gmpy()):
             check(c)
 
     # TODO: fix pickling of RealElement

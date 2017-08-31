@@ -14,7 +14,7 @@ from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
 from diofant.polys.rootoftools import RootOf
-from diofant.solvers import solve_undetermined_coeffs
+from diofant.solvers import reduce_inequalities, solve_undetermined_coeffs
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
 from diofant.utilities.randtest import verify_numerically as tn
@@ -611,8 +611,6 @@ def test_solve_undetermined_coeffs():
 
 
 def test_solve_inequalities():
-    from diofant.solvers import reduce_inequalities
-
     x = Symbol('x')
     system = [Lt(x**2 - 2, 0), Gt(x**2 - 1, 0)]
 

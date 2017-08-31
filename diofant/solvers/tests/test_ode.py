@@ -2,18 +2,20 @@ import os
 
 import pytest
 
-from diofant import (Abs, Derivative, Dummy, E, Eq, Function, I, Integer,
+from diofant import (Abs, Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      Integral, LambertW, O, Piecewise, Poly, Pow, Rational,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan, cos,
                      diff, dsolve, erf, erfi, exp, log, pi, simplify, sin,
                      sinh, sqrt, sstr, symbols, tan)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
-from diofant.solvers.ode import (_undetermined_coefficients_match, checkinfsol,
+from diofant.solvers.ode import (_linear_coeff_match,
+                                 _undetermined_coefficients_match, checkinfsol,
                                  checkodesol, checksysodesol, classify_ode,
                                  classify_sysode, constant_renumber,
                                  constantsimp, homogeneous_order,
                                  infinitesimals, solve_init)
+from diofant.utilities.iterables import variations
 
 
 __all__ = ()
@@ -2163,8 +2165,6 @@ def test_sympyissue_4825():
 
 
 def test_constant_renumber_order_sympyissue_5308():
-    from diofant.utilities.iterables import variations
-
     assert constant_renumber(C1*x + C2*y, "C", 1, 2) == \
         constant_renumber(C1*y + C2*x, "C", 1, 2) == \
         C1*x + C2*y
@@ -2343,7 +2343,6 @@ def test_sympyissue_5095():
 
 
 def test_almost_linear():
-    from diofant import Ei
     A = Symbol('A', positive=True)
     our_hint = 'almost_linear'
     f = Function('f')
@@ -2449,7 +2448,6 @@ def test_homogeneous_function():
 
 
 def test_linear_coeff_match():
-    from diofant.solvers.ode import _linear_coeff_match
     n, d = z*(2*x + 3*f(x) + 5), z*(7*x + 9*f(x) + 11)
     rat = n/d
     eq1 = sin(rat) + cos(rat.expand())

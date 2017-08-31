@@ -1,8 +1,11 @@
 import decimal
+import fractions
 
 import mpmath
+import mpmath.libmp as mlib
 import pytest
 from mpmath import mpf
+from mpmath.libmp.libmpf import _normalize, finf, fnan, fninf
 
 from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
                      GoldenRatio, Gt, I, Integer, Le, Lt, Mul, Number, Pow,
@@ -289,11 +292,7 @@ def test_Rational_new():
     assert Rational(2, 4).denominator == 2
 
     # handle fractions.Fraction instances
-    try:
-        import fractions
-        assert Rational(fractions.Fraction(1, 2)) == Rational(1, 2)
-    except ImportError:
-        pass
+    assert Rational(fractions.Fraction(1, 2)) == Rational(1, 2)
 
 
 def test_Number_new():
@@ -935,7 +934,6 @@ def test_powers_Integer():
 
     # test that eval_power factors numbers bigger than
     # the current limit in factor_trial_division (2**15)
-    from diofant import nextprime
     n = nextprime(2**15)
     assert sqrt(n**2) == n
     assert sqrt(n**3) == n*sqrt(n)
@@ -1059,7 +1057,6 @@ def test_bug_sqrt():
 
 def test_pi_Pi():
     """Test that pi (instance) is imported, but Pi (class) is not"""
-    from diofant import pi  # noqa: F401
     with pytest.raises(ImportError):
         from diofant import Pi  # noqa: F401
 
@@ -1395,8 +1392,6 @@ def test_sympyissue_4172():
 
 @pytest.mark.xfail
 def test_mpmath_issues():
-    from mpmath.libmp.libmpf import _normalize
-    import mpmath.libmp as mlib
     rnd = mlib.round_nearest
     mpf = (0, int(0), -123, -1, 53, rnd)  # nan
     assert _normalize(mpf, 53) != (0, int(0), 0, 0)
@@ -1405,7 +1400,6 @@ def test_mpmath_issues():
     mpf = (1, int(0), -789, -3, 53, rnd)  # -inf
     assert _normalize(mpf, 53) != (0, int(0), 0, 0)
 
-    from mpmath.libmp.libmpf import fnan
     assert mlib.mpf_eq(fnan, fnan)
 
 
@@ -1458,7 +1452,6 @@ def test_approximation_interval():
 
 
 def test_sympyissue_6640():
-    from mpmath.libmp.libmpf import finf, fninf
     # fnan is not included because Float no longer returns fnan,
     # but otherwise, the same sort of test could apply
     assert Float(finf).is_zero is False

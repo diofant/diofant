@@ -1,9 +1,12 @@
+from random import uniform
+
 import pytest
 
 from diofant import (EulerGamma, I, Integer, O, Rational, S, Symbol, conjugate,
-                     cos, erf, exp, exp_polar, expand_func, factorial, gamma,
-                     harmonic, im, log, loggamma, lowergamma, nan, oo, pi,
-                     polygamma, sin, sqrt, trigamma, uppergamma, zeta, zoo)
+                     cos, erf, exp, exp_polar, expand_func, expint, factorial,
+                     gamma, harmonic, im, log, loggamma, lowergamma, meijerg,
+                     nan, oo, pi, polygamma, sin, sqrt, trigamma, uppergamma,
+                     zeta, zoo)
 from diofant.core.function import ArgumentIndexError
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import test_derivative_numerically as td
@@ -94,8 +97,6 @@ def test_gamma_series():
 
 
 def tn_branch(s, func):
-    from diofant import I, pi, exp_polar
-    from random import uniform
     c = uniform(1, 5)
     expr = func(s, c*exp_polar(I*pi)) - func(s, c*exp_polar(-I*pi))
     eps = 1e-15
@@ -104,7 +105,6 @@ def tn_branch(s, func):
 
 
 def test_lowergamma():
-    from diofant import meijerg, exp_polar, I, expint
     assert lowergamma(x, y).diff(y) == y**(x - 1)*exp(-y)
     assert td(lowergamma(randcplx(), y), y)
     assert td(lowergamma(x, randcplx()), x)
@@ -147,7 +147,6 @@ def test_lowergamma():
 
 
 def test_uppergamma():
-    from diofant import meijerg, exp_polar, I, expint
     assert uppergamma(4, 0) == 6
     assert uppergamma(x, oo) == 0
     assert uppergamma(x, y).diff(y) == -y**(x - 1)*exp(-y)
@@ -188,8 +187,6 @@ def test_uppergamma():
 
 
 def test_polygamma():
-    from diofant import I
-
     assert polygamma(n, nan) == nan
 
     assert polygamma(0, oo) == oo
@@ -250,7 +247,6 @@ def test_polygamma():
     assert polygamma(x, y).rewrite(harmonic) == polygamma(x, y)
 
     # Polygamma of non-negative integer order is unbranched:
-    from diofant import exp_polar
     k = Symbol('n', integer=True, nonnegative=True)
     assert polygamma(k, exp_polar(2*I*pi)*x) == polygamma(k, x)
 
@@ -333,8 +329,6 @@ def test_loggamma():
     assert loggamma(n) == log(gamma(n))
     assert loggamma(-n) == oo
     assert loggamma(n/2) == log(2**(-n + 1)*sqrt(pi)*gamma(n)/gamma(n/2 + S.Half))
-
-    from diofant import I
 
     assert loggamma(oo) == oo
     assert loggamma(-oo) == zoo

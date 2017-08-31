@@ -1,4 +1,4 @@
-from diofant import Basic, Expr, Integer, Symbol
+from diofant import Basic, Expr, Integer, MatrixSymbol, Symbol
 from diofant.abc import x
 from diofant.printing.dot import (attrprint, dotedges, dotnode, dotprint,
                                   styleof)
@@ -76,7 +76,6 @@ def test_dotprint_depth():
 
 
 def test_Matrix_and_non_basics():
-    from diofant import MatrixSymbol
     n = Symbol('n')
     assert dotprint(MatrixSymbol('X', n, n))
 

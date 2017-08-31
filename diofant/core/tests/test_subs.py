@@ -7,6 +7,7 @@ from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
                      tan, zoo)
 from diofant.abc import x, y, z
 from diofant.core.basic import _aresame
+from diofant.core.cache import clear_cache
 
 
 __all__ = ()
@@ -644,8 +645,6 @@ def test_sympyissue_5217():
 
 
 def test_pow_eval_subs_no_cache():
-    from diofant.core.cache import clear_cache
-
     s = 1/sqrt(x**2)
     # This bug only appeared when the cache was turned off.
     clear_cache()

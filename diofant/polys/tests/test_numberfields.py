@@ -2,8 +2,9 @@
 
 import pytest
 
-from diofant import (GoldenRatio, I, Integer, Poly, Rational, S, Symbol, Tuple,
-                     cos, exp, expand, oo, pi, root, sin, solve, sqrt)
+from diofant import (Add, GoldenRatio, I, Integer, Poly, Rational, S, Symbol,
+                     Tuple, cos, exp, expand, expand_multinomial, nsimplify,
+                     oo, pi, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains import QQ
 from diofant.polys.numberfields import (AlgebraicNumber, IntervalPrinter,
@@ -196,7 +197,6 @@ def test_minimal_polynomial_hi_prec():
 
 
 def test_minimal_polynomial_sq():
-    from diofant import Add, expand_multinomial
     p = expand_multinomial((1 + 5*sqrt(2) + 2*sqrt(3))**3)
     mp = minimal_polynomial(p**Rational(1, 3), x)
     assert mp == x**4 - 4*x**3 - 118*x**2 + 244*x + 1321
@@ -294,7 +294,6 @@ def test_minpoly_compose():
 
 def test_minpoly_sympyissue_7113():
     # see discussion in https://github.com/sympy/sympy/pull/2234
-    from diofant.simplify.simplify import nsimplify
     r = nsimplify(pi, tolerance=0.000000001)
     mp = minimal_polynomial(r, x)
     assert mp == 1768292677839237920489538677417507171630859375*x**109 - \

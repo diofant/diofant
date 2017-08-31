@@ -5,6 +5,8 @@ from diofant import (E, I, Matrix, Piecewise, Rational, Subs, Symbol, cos,
                      exptrigsimp, integrate, log, nan, pi, simplify, sin, sinh,
                      sqrt, symbols, tan, tanh, trigsimp)
 from diofant.abc import a, b, x, y, z
+from diofant.simplify.trigsimp import trigsimp_groebner
+from diofant.utilities.randtest import verify_numerically as tn
 
 
 __all__ = ()
@@ -281,8 +283,6 @@ def test_hyperbolic_simp():
 
 
 def test_trigsimp_groebner():
-    from diofant.simplify.trigsimp import trigsimp_groebner
-
     c = cos(x)
     s = sin(x)
     ex = (4*s*c + 12*s + 5*c**3 + 21*c**2 + 23*c + 15)/(
@@ -336,7 +336,6 @@ def test_sympyissue_2827_trigsimp_methods():
 
 def test_exptrigsimp():
     def valid(a, b):
-        from diofant.utilities.randtest import verify_numerically as tn
         if not (tn(a, b) and a == b):
             return False
         return True

@@ -10,6 +10,7 @@ from diofant.abc import a, b, c, x, y
 from diofant.polys.partfrac import (apart, apart_list,
                                     apart_undetermined_coeffs,
                                     assemble_partfrac_list)
+from diofant.utilities.iterables import numbered_symbols
 
 
 __all__ = ()
@@ -106,8 +107,6 @@ def test_apart_undetermined_coeffs():
 
 
 def test_apart_list():
-    from diofant.utilities.iterables import numbered_symbols
-
     assert apart_list(1) == 1
 
     w0, w1, w2 = Symbol("w0"), Symbol("w1"), Symbol("w2")

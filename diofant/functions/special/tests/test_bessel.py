@@ -1,10 +1,12 @@
+from random import uniform
+
 import pytest
 
 from diofant import (Abs, I, Integer, Limit, O, Rational, Symbol, besseli,
-                     besselj, besselk, bessely, conjugate, cos, cosh, diff,
-                     exp, expand_func, gamma, hankel1, hankel2, hyper, im, jn,
-                     jn_zeros, log, nan, oo, pi, re, series, sin, sinh, sqrt,
-                     symbols, yn, zoo)
+                     besselj, besselk, besselsimp, bessely, conjugate, cos,
+                     cosh, diff, exp, exp_polar, expand_func, gamma, hankel1,
+                     hankel2, hyper, im, jn, jn_zeros, log, nan, oo, pi,
+                     polar_lift, re, series, sin, sinh, sqrt, symbols, yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
@@ -48,8 +50,6 @@ def test_diff():
 
 
 def test_rewrite():
-    from diofant import polar_lift, exp, I
-
     assert besselj(n, z).rewrite(jn) == sqrt(2*z/pi)*jn(n - Rational(1, 2), z)
     assert bessely(n, z).rewrite(yn) == sqrt(2*z/pi)*yn(n - Rational(1, 2), z)
     assert besseli(n, z).rewrite(besselj) == \
@@ -80,8 +80,6 @@ def test_rewrite():
 
 
 def test_expand():
-    from diofant import besselsimp, Symbol, exp, exp_polar, I
-
     assert expand_func(besselj(Rational(1, 2), z).rewrite(jn)) == \
         sqrt(2)*sin(z)/(sqrt(pi)*sqrt(z))
     assert expand_func(bessely(Rational(1, 2), z).rewrite(yn)) == \
@@ -241,7 +239,6 @@ def test_jn_zeros():
 
 
 def test_bessel_eval():
-    from diofant import I, Symbol
     n, m, k = Symbol('n', integer=True), Symbol('m'), Symbol('k', integer=True, zero=False)
 
     for f in [besselj, besseli]:
@@ -302,7 +299,6 @@ def test_bessel_nan():
 
 
 def test_conjugate():
-    from diofant import conjugate, I, Symbol
     n, z, x = Symbol('n'), Symbol('z', extended_real=False), Symbol('x', extended_real=True)
     y, t = Symbol('y', extended_real=True, positive=True), Symbol('t', negative=True)
 
@@ -337,7 +333,6 @@ def test_conjugate():
 
 
 def test_branching():
-    from diofant import exp_polar, polar_lift, Symbol, I, exp
     assert besselj(polar_lift(k), x) == besselj(k, x)
     assert besseli(polar_lift(k), x) == besseli(k, x)
 
@@ -348,7 +343,6 @@ def test_branching():
     assert besseli(n, polar_lift(x)) == besseli(n, x)
 
     def tn(func, s):
-        from random import uniform
         c = uniform(1, 5)
         expr = func(s, c*exp_polar(I*pi)) - func(s, c*exp_polar(-I*pi))
         eps = 1e-15

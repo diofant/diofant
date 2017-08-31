@@ -1,3 +1,5 @@
+from random import randint
+
 import pytest
 
 from diofant import Integer, Matrix, Subs, factor_list, simplify, symbols
@@ -490,8 +492,6 @@ def test_sum_of_three_squares():
 
 
 def test_sum_of_four_squares():
-    from random import randint
-
     for i in range(10):
         n = randint(1, 100000000000000)
         a, b, c, d = sum_of_four_squares(n)

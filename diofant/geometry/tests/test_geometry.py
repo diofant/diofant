@@ -2,8 +2,8 @@ import warnings
 
 import pytest
 
-from diofant import (Abs, Derivative, Dummy, Float, Rational, S, Symbol, cos,
-                     oo, pi, sqrt, symbols)
+from diofant import (Abs, Derivative, Dummy, Float, Rational, S, Symbol, Tuple,
+                     cos, oo, pi, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
                               Point, Point2D, Polygon, Ray, RegularPolygon,
@@ -750,7 +750,6 @@ def test_triangle_kwargs():
 
 
 def test_geometry_transforms():
-    from diofant import Tuple
     c = Curve((x, x**2), (x, 0, 1))
     pts = [Point(0, 0), Point(1/2, 1/4), Point(1, 1)]
     cout = Curve((2*x - 4, 3*x**2 - 10), (x, 0, 1))

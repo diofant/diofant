@@ -1,5 +1,5 @@
 from diofant import (Abs, I, Integer, Rational, Symbol, conjugate, cos, cosh,
-                     cot, coth, exp, expand_complex, im, pi, re, sign, sin,
+                     cot, coth, exp, expand_complex, im, oo, pi, re, sign, sin,
                      sinh, sqrt, symbols, tan, tanh)
 
 
@@ -213,5 +213,4 @@ def test_sympyissue_5429():
 
 
 def test_sympyissue_4124():
-    from diofant import oo
     assert expand_complex(I*oo) == oo*I

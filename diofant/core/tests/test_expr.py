@@ -1,16 +1,17 @@
 import pytest
 
 from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
-                     Function, Heaviside, I, Integer, Integral, Max, Mul,
-                     Number, NumberSymbol, O, Piecewise, Poly, Pow, Rational,
-                     S, Si, Sum, Symbol, Tuple, Wild, WildFunction, apart,
-                     cancel, collect, combsimp, cos, default_sort_key, diff,
-                     exp, exp_polar, expand, factor, factorial, false, gamma,
-                     log, nan, nsimplify, oo, pi, powsimp, radsimp, ratsimp,
-                     simplify, sin, sqrt, symbols, sympify, tan, together,
-                     trigsimp, true, zoo)
+                     Function, Ge, Gt, Heaviside, I, Integer, Integral, Le, Lt,
+                     Max, Mul, Number, NumberSymbol, O, Piecewise, Poly, Pow,
+                     Rational, S, Si, Sum, Symbol, Tuple, Wild, WildFunction,
+                     apart, cancel, collect, combsimp, cos, default_sort_key,
+                     diff, exp, exp_polar, expand, factor, factorial, false,
+                     gamma, log, lucas, nan, nsimplify, oo, pi, posify,
+                     powsimp, radsimp, ratsimp, simplify, sin, sqrt, symbols,
+                     sympify, tan, together, trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, t, u, x, y, z
 from diofant.core.function import AppliedUndef
+from diofant.solvers.solvers import checksol
 
 
 __all__ = ()
@@ -155,7 +156,6 @@ def test_ibasic():
 
 
 def test_relational():
-    from diofant import Lt
     assert (pi < 3) is false
     assert (pi <= 3) is false
     assert (pi > 3) is true
@@ -170,7 +170,6 @@ def test_relational():
 
 
 def test_relational_assumptions():
-    from diofant import Lt, Gt, Le, Ge
     m1 = Symbol("m1", nonnegative=False)
     m2 = Symbol("m2", positive=False)
     m3 = Symbol("m3", nonpositive=False)
@@ -206,7 +205,6 @@ def test_relational_assumptions():
 
 
 def test_relational_noncommutative():
-    from diofant import Lt, Gt, Le, Ge
     A, B = symbols('A,B', commutative=False)
     assert (A < B) == Lt(A, B)
     assert (A <= B) == Le(A, B)
@@ -1407,7 +1405,6 @@ def test_sympyissue_5843():
 
 
 def test_is_constant():
-    from diofant.solvers.solvers import checksol
     Sum(x, (x, 1, 10)).is_constant() is True
     Sum(x, (x, 1, n)).is_constant() is False
     Sum(x, (x, 1, n)).is_constant(y) is True
@@ -1497,7 +1494,6 @@ def test_equals():
 
 
 def test_random():
-    from diofant import posify, lucas
     assert posify(x)[0]._random() is not None
     assert lucas(n)._random(2, -2, 0, -1, 1) is None
 

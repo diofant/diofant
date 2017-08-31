@@ -5,9 +5,9 @@ import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
                      PoleError, Rational, S, Sum, Symbol, acos, atan, ceiling,
-                     cos, cot, diff, exp, floor, gamma, integrate, limit, log,
-                     nan, oo, pi, polygamma, sign, simplify, sin, sinh, sqrt,
-                     subfactorial, symbols, tan)
+                     cos, cot, diff, exp, factorial, floor, gamma, integrate,
+                     limit, log, nan, oo, pi, polygamma, sign, simplify, sin,
+                     sinh, sqrt, subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -387,7 +387,6 @@ def test_sympyissue_6366():
 
 
 def test_factorial():
-    from diofant import factorial, E
     f = factorial(x)
     assert limit(f, x, oo) == oo
     assert limit(x/f, x, oo) == 0

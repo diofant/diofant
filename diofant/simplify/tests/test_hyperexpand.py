@@ -2,11 +2,15 @@ from random import randrange
 
 import pytest
 
-from diofant import (I, Integer, Piecewise, Rational, S, Tuple, asin, atanh,
-                     besseli, cos, erf, exp, exp_polar, gamma, hyper, log,
-                     lowergamma, meijerg, pi, sin, sqrt)
+from diofant import (Ci, I, Integer, Piecewise, Rational, Si, Symbol, Tuple,
+                     asin, atanh, besseli, combsimp, cos, erf, exp, exp_polar,
+                     expand, gamma, hyper, lerchphi, log, lowergamma, meijerg,
+                     oo, pi, polylog, simplify, sin, sqrt, sympify, unpolarify,
+                     uppergamma)
 from diofant.abc import a, b, c, z
-from diofant.simplify.hyperexpand import (Formula, G_Function, Hyper_Function,
+from diofant.simplify.hyperexpand import (Formula, FormulaCollection,
+                                          G_Function, Hyper_Function,
+                                          MeijerFormulaCollection,
                                           MeijerShiftA, MeijerShiftB,
                                           MeijerShiftC, MeijerShiftD,
                                           MeijerUnShiftA, MeijerUnShiftB,
@@ -45,7 +49,6 @@ def test_hyperexpand():
 
 
 def can_do(ap, bq, numerical=True, div=1, lowerplane=False):
-    from diofant import exp_polar, exp
     r = hyperexpand(hyper(ap, bq, z))
     if r.has(hyper):
         return False
@@ -92,7 +95,6 @@ def test_roach_fail():
 
 
 def test_polynomial():
-    from diofant import oo
     assert hyperexpand(hyper([], [-1], z)) == oo
     assert hyperexpand(hyper([-2], [-1], z)) == oo
     assert hyperexpand(hyper([0, 0], [-1], z)) == 1
@@ -134,7 +136,6 @@ def test_hyperexpand_parametric():
 
 
 def test_shifted_sum():
-    from diofant import simplify
     assert simplify(hyperexpand(z**4*hyper([2], [3, Rational(3, 2)], -z**2))) \
         == z*sin(2*z) + (-z**2 + S.Half)*cos(2*z) - S.Half
 
@@ -151,7 +152,6 @@ def randcplx(offset=-1):
 
 @pytest.mark.slow
 def test_formulae():
-    from diofant.simplify.hyperexpand import FormulaCollection
     formulae = FormulaCollection().formulae
     for formula in formulae:
         h = formula.func(formula.z)
@@ -183,7 +183,6 @@ def test_formulae():
 
 
 def test_meijerg_formulae():
-    from diofant.simplify.hyperexpand import MeijerFormulaCollection
     formulae = MeijerFormulaCollection().formulae
     for sig in formulae:
         for formula in formulae[sig]:
@@ -327,7 +326,6 @@ def can_do_meijer(a1, a2, b1, b2, numeric=True):
     (at random values) and returns False if the test fails.
     Else it returns True.
     """
-    from diofant import unpolarify, expand
     r = hyperexpand(meijerg(a1, a2, b1, b2, z))
     if r.has(meijerg):
         return False
@@ -350,7 +348,6 @@ def can_do_meijer(a1, a2, b1, b2, numeric=True):
 
 @pytest.mark.slow
 def test_meijerg_expand():
-    from diofant import combsimp, simplify
     # from mpmath docs
     assert hyperexpand(meijerg([[], []], [[0], []], -z)) == exp(z)
 
@@ -410,7 +407,6 @@ def test_meijerg_expand():
 
 
 def test_meijerg_lookup():
-    from diofant import uppergamma, Si, Ci
     assert hyperexpand(meijerg([a], [], [b, a], [], z)) == \
         z**b*exp(z)*gamma(-a + b + 1)*uppergamma(a - b, z)
     assert hyperexpand(meijerg([0], [], [0, 0], [], z)) == \
@@ -515,7 +511,6 @@ def test_meijerg_shift_operators():
 @pytest.mark.slow
 def test_meijerg_confluence():
     def t(m, a, b):
-        from diofant import sympify, Piecewise
         a, b = sympify([a, b])
         m_ = m
         m = hyperexpand(m)
@@ -554,7 +549,6 @@ def test_meijerg_confluence():
 
 
 def test_lerchphi():
-    from diofant import combsimp, exp_polar, polylog, log, lerchphi
     assert hyperexpand(hyper([1, a], [a + 1], z)/a) == lerchphi(z, 1, a)
     assert hyperexpand(
         hyper([1, a, a], [a + 1, a + 1], z)/a**2) == lerchphi(z, 2, a)
@@ -592,10 +586,9 @@ def test_lerchphi():
         [1, a, a, a, b + 5], [a + 1, a + 1, a + 1, b], numerical=False)
 
     # test a bug
-    from diofant import Abs
     assert hyperexpand(hyper([Rational(1, 2), Rational(1, 2), Rational(1, 2), 1],
                              [Rational(3, 2), Rational(3, 2), Rational(3, 2)], Rational(1, 4))) == \
-        Abs(-polylog(3, exp_polar(I*pi)/2) + polylog(3, Rational(1, 2)))
+        abs(-polylog(3, exp_polar(I*pi)/2) + polylog(3, Rational(1, 2)))
 
 
 def test_partial_simp():
@@ -643,7 +636,6 @@ def test_hyperexpand_special():
 
 
 def test_Mod1_behavior():
-    from diofant import Symbol, simplify, lowergamma
     n = Symbol('n', integer=True)
     # Note: this should not hang.
     assert simplify(hyperexpand(meijerg([1], [], [n + 1], [0], z))) == \

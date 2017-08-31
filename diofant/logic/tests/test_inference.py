@@ -2,6 +2,7 @@
 
 import pytest
 
+from diofant import numbered_symbols, pi
 from diofant.abc import A, B, C, x, y
 from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
                                            find_pure_symbol,
@@ -12,8 +13,9 @@ from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
                                            unit_propagate_int_repr)
 from diofant.logic.algorithms.dpll2 import \
     dpll_satisfiable as dpll2_satisfiable
-from diofant.logic.boolalg import (And, Boolean, Equivalent, Implies, false,
-                                   true)
+from diofant.logic.algorithms.dpll2 import SATSolver
+from diofant.logic.boolalg import (And, Boolean, Equivalent, Implies, Or,
+                                   false, true)
 from diofant.logic.inference import (PropKB, entails, literal_symbol, pl_true,
                                      satisfiable, valid)
 
@@ -124,8 +126,6 @@ def test_dpll2_satisfiable():
     assert dpll2_satisfiable( Equivalent(A, B) & A ) == {A: True, B: True}
     assert dpll2_satisfiable( Equivalent(A, B) & ~A ) == {A: False, B: False}
 
-    from diofant.logic.algorithms.dpll2 import SATSolver
-
     l = SATSolver([], set(), set())
     assert l.lit_heap == []
     assert l._vsids_calculate() == 0
@@ -176,7 +176,6 @@ def test_pl_true():
 
 
 def test_pl_true_wrong_input():
-    from diofant import pi
     pytest.raises(ValueError, lambda: pl_true('John Cleese'))
     pytest.raises(ValueError, lambda: pl_true(42 + pi + pi ** 2))
     pytest.raises(ValueError, lambda: pl_true(42))
@@ -266,8 +265,6 @@ def test_satisfiable_all_models():
     # This is a santiy test to check that only the required number
     # of solutions are generated. The expr below has 2**100 - 1 models
     # which would time out the test if all are generated at once.
-    from diofant import numbered_symbols
-    from diofant.logic.boolalg import Or
     sym = numbered_symbols()
     X = [next(sym) for i in range(100)]
     result = satisfiable(Or(*X), all_models=True)

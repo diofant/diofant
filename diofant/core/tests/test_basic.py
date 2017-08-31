@@ -7,8 +7,10 @@ import pytest
 from diofant import Lambda, cos, sin
 from diofant.core.basic import Atom, Basic, preorder_traversal
 from diofant.core.compatibility import default_sort_key
+from diofant.core.function import Function
 from diofant.core.singleton import S, Singleton
 from diofant.core.symbol import symbols
+from diofant.integrals.integrals import Integral
 
 
 __all__ = ()
@@ -181,9 +183,6 @@ def test_call():
 
 
 def test_literal_evalf_is_number_is_zero_is_comparable():
-    from diofant.integrals.integrals import Integral
-    from diofant.core.symbol import symbols
-    from diofant.core.function import Function
     x = symbols('x')
     f = Function('f')
 

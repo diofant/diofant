@@ -1,3 +1,5 @@
+from random import uniform
+
 import pytest
 
 from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
@@ -10,6 +12,9 @@ from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.error_functions import _eis, _erfs
+from diofant.utilities.randtest import (random_complex_number,
+                                        test_derivative_numerically,
+                                        verify_numerically)
 
 
 __all__ = ()
@@ -313,7 +318,6 @@ def test_erf2inv():
 
 
 def mytn(expr1, expr2, expr3, x, d=0):
-    from diofant.utilities.randtest import verify_numerically, random_complex_number
     subs = {}
     for a in expr1.free_symbols:
         if a != x:
@@ -323,8 +327,6 @@ def mytn(expr1, expr2, expr3, x, d=0):
 
 
 def mytd(expr1, expr2, x):
-    from diofant.utilities.randtest import test_derivative_numerically, \
-        random_complex_number
     subs = {}
     for a in expr1.free_symbols:
         if a != x:
@@ -333,9 +335,6 @@ def mytd(expr1, expr2, x):
 
 
 def tn_branch(func, s=None):
-    from diofant import I, pi, exp_polar
-    from random import uniform
-
     def fn(x):
         if s is None:
             return func(x)
@@ -464,7 +463,6 @@ def test__eis():
 
 def tn_arg(func):
     def test(arg, e1, e2):
-        from random import uniform
         v = uniform(1, 5)
         v1 = func(arg*x).subs(x, v).n()
         v2 = func(e1*v + e2*1e-15).n()
@@ -605,7 +603,6 @@ def test_ci():
     assert tn_arg(Ci)
     assert tn_arg(Chi)
 
-    from diofant import O, EulerGamma, log, limit
     assert Ci(x).nseries(x, n=4) == \
         EulerGamma + log(x) - x**2/4 + x**4/96 + O(x**6)
     assert Chi(x).nseries(x, n=4) == \
@@ -731,8 +728,6 @@ def test_fresnel():
     assert fresnelc(z).rewrite(meijerg) == sqrt(2)*pi*z**Rational(3, 4) * \
         meijerg(((), (1,)), ((Rational(1, 4),),
                              (Rational(3, 4), 0)), -pi**2*z**4/16)/(2*(-z)**Rational(1, 4)*(z**2)**Rational(1, 4))
-
-    from diofant.utilities.randtest import verify_numerically
 
     verify_numerically(re(fresnels(z)), fresnels(z).as_real_imag()[0], z)
     verify_numerically(im(fresnels(z)), fresnels(z).as_real_imag()[1], z)

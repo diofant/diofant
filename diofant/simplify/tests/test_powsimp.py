@@ -1,6 +1,6 @@
 from diofant import (Dummy, E, Function, I, MatrixSymbol, Mul, Rational,
-                     Symbol, exp, gamma, hyper, log, pi, powdenest, powsimp,
-                     root, simplify, sin, sqrt, symbols)
+                     Symbol, exp, exp_polar, gamma, hyper, log, pi, polar_lift,
+                     powdenest, powsimp, root, simplify, sin, sqrt, symbols)
 from diofant.abc import a, b, c, x, y, z
 
 
@@ -144,7 +144,6 @@ def test_sympyissue_6440():
 
 
 def test_powdenest():
-    from diofant import powdenest
     x, y = symbols('x,y')
     p, q = symbols('p q', positive=True)
     i, j = symbols('i,j', integer=True)
@@ -221,7 +220,6 @@ def test_sympyissue_6367():
 
 
 def test_powsimp_polar():
-    from diofant import polar_lift, exp_polar
     p, q, r = symbols('p q r', polar=True)
 
     assert (polar_lift(-1))**(2*x) == exp_polar(2*pi*I*x)

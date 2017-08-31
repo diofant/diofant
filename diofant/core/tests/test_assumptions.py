@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import I, asin, exp, false, log, simplify, sin, sqrt
-from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Pow,
+from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Mul, Pow,
                           Rational, Symbol, Wild, nan, oo, pi, zoo)
 from diofant.core.facts import InconsistentAssumptions
 
@@ -729,7 +729,6 @@ def test_Mul_is_infinite():
     i = Symbol('i', infinite=True)
     z = Dummy(zero=True)
     nzf = Dummy(finite=True, zero=False)
-    from diofant import Mul
     assert (x*f).is_finite is None
     assert (x*i).is_finite is None
     assert (f*i).is_finite is False

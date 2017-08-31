@@ -1,8 +1,16 @@
 import pytest
 
-from diofant import (Derivative, Float, I, O, Rational, Tuple, cos, exp, false,
-                     gamma, hyper, log, meijerg, oo, pi, sqrt, symbols)
+from diofant import (Derivative, Dummy, Float, I, O, Piecewise, Rational,
+                     RisingFactorial, Sum, Tuple, besseli, cos, exp, exp_polar,
+                     expand_func, factorial, false, gamma, hyper, log, meijerg,
+                     oo, pi, polar_lift, sqrt, symbols)
 from diofant.abc import a, b, c, d, k, l, s, x, z
+from diofant.functions.special.hyper import (HyperRep, HyperRep_asin1,
+                                             HyperRep_asin2, HyperRep_atanh,
+                                             HyperRep_cosasin, HyperRep_log1,
+                                             HyperRep_log2, HyperRep_power1,
+                                             HyperRep_power2, HyperRep_sinasin,
+                                             HyperRep_sqrts1, HyperRep_sqrts2)
 from diofant.series.limits import limit
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import test_derivative_numerically as td
@@ -46,14 +54,12 @@ def test_hyper():
     assert hyper([z], [], z).diff(z) == Derivative(hyper([z], [], z), z)
 
     # hyper is unbranched wrt parameters
-    from diofant import polar_lift
     assert hyper([polar_lift(z)], [polar_lift(k)], polar_lift(x)) == \
         hyper([z], [k], polar_lift(x))
 
 
 def test_expand_func():
     # evaluation at 1 of Gauss' hypergeometric function:
-    from diofant import gamma, expand_func
     a1, b1, c1 = randcplx(), randcplx(), randcplx() + 5
     assert expand_func(hyper([a, b], [c], 1)) == \
         gamma(c)*gamma(-a - b + c)/(gamma(-a + c)*gamma(-b + c))
@@ -69,7 +75,6 @@ def test_expand_func():
 
 
 def replace_dummy(expr, sym):
-    from diofant import Dummy
     dum = expr.atoms(Dummy)
     if not dum:
         return expr
@@ -78,7 +83,6 @@ def replace_dummy(expr, sym):
 
 
 def test_hyper_rewrite_sum():
-    from diofant import RisingFactorial, factorial, Dummy, Sum
     _k = Dummy("k")
     assert replace_dummy(hyper((1, 2), (1, 3), x).rewrite(Sum), _k) == \
         Sum(x**_k / factorial(_k) * RisingFactorial(2, _k) /
@@ -165,9 +169,10 @@ def test_meijer():
         Derivative(meijerg([z, z], [], [], [], z), z)
 
     # meijerg is unbranched wrt parameters
-    from diofant import polar_lift as pl
-    assert meijerg([pl(a1)], [pl(a2)], [pl(b1)], [pl(b2)], pl(z)) == \
-        meijerg([a1], [a2], [b1], [b2], pl(z))
+    assert meijerg([polar_lift(a1)], [polar_lift(a2)], [polar_lift(b1)],
+                   [polar_lift(b2)], polar_lift(z)) == meijerg([a1], [a2],
+                                                               [b1], [b2],
+                                                               polar_lift(z))
 
     # integrand
     assert meijerg([a], [b], [c], [d], z).integrand(s) == \
@@ -206,7 +211,6 @@ def test_meijerg_period():
 
 
 def test_hyper_unpolarify():
-    from diofant import exp_polar
     a = exp_polar(2*pi*I)*x
     b = x
     assert hyper([], [], a).argument == b
@@ -217,12 +221,7 @@ def test_hyper_unpolarify():
 
 @pytest.mark.slow
 def test_hyperrep():
-    from diofant.functions.special.hyper import (HyperRep, HyperRep_atanh,
-                                                 HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
-                                                 HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
-                                                 HyperRep_cosasin, HyperRep_sinasin)
     # First test the base class works.
-    from diofant import Piecewise, exp_polar
     a, b, c, d, z = symbols('a b c d z')
 
     class myrep(HyperRep):
@@ -305,7 +304,6 @@ def test_hyperrep():
 
 
 def test_meijerg_eval():
-    from diofant import besseli, exp_polar
     a = randcplx()
     arg = x*exp_polar(k*pi*I)
     expr1 = pi*meijerg([[], [(a + 1)/2]], [[a/2], [-a/2, (a + 1)/2]], arg**2/4)

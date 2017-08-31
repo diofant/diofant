@@ -12,9 +12,10 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      Limit, Mul, Pow, Rational, S, Symbol, acosh, acot, airyai,
                      airybi, atan, binomial, cos, cosh, coth, digamma, erf,
                      exp, factorial, fibonacci, gamma, li, log, loggamma, oo,
-                     pi, root, sin, sinh, sqrt, tan, tanh, zeta)
+                     pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
 from diofant.series.gruntz import limitinf as gruntz
-from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite, sign
+from diofant.series.gruntz import sign as mrv_sign
+from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite
 
 
 __all__ = ()
@@ -190,27 +191,27 @@ def test_compare():
 
 
 def test_sign():
-    assert sign(Rational(0), x) == 0
-    assert sign(Rational(3), x) == 1
-    assert sign(Rational(-5), x) == -1
-    assert sign(log(x), x) == 1
-    assert sign(exp(-x), x) == 1
-    assert sign(exp(x), x) == 1
-    assert sign(-exp(x), x) == -1
-    assert sign(3 - 1/x, x) == 1
-    assert sign(-3 - 1/x, x) == -1
-    assert sign(sin(1/x), x) == 1
-    assert sign((x**Integer(2)), x) == 1
-    assert sign(x**2, x) == 1
-    assert sign(x**5, x) == 1
+    assert mrv_sign(Rational(0), x) == 0
+    assert mrv_sign(Rational(3), x) == 1
+    assert mrv_sign(Rational(-5), x) == -1
+    assert mrv_sign(log(x), x) == 1
+    assert mrv_sign(exp(-x), x) == 1
+    assert mrv_sign(exp(x), x) == 1
+    assert mrv_sign(-exp(x), x) == -1
+    assert mrv_sign(3 - 1/x, x) == 1
+    assert mrv_sign(-3 - 1/x, x) == -1
+    assert mrv_sign(sin(1/x), x) == 1
+    assert mrv_sign((x**Integer(2)), x) == 1
+    assert mrv_sign(x**2, x) == 1
+    assert mrv_sign(x**5, x) == 1
 
-    assert sign(x, x) == 1
-    assert sign(-x, x) == -1
+    assert mrv_sign(x, x) == 1
+    assert mrv_sign(-x, x) == -1
     y = Symbol("y", positive=True)
-    assert sign(y, x) == 1
-    assert sign(-y, x) == -1
-    assert sign(y*x, x) == 1
-    assert sign(-y*x, x) == -1
+    assert mrv_sign(y, x) == 1
+    assert mrv_sign(-y, x) == -1
+    assert mrv_sign(y*x, x) == 1
+    assert mrv_sign(-y*x, x) == -1
 
 
 def test_mrv():
@@ -298,8 +299,6 @@ def test_mrv_leadterm():
 
 
 def test_limit():
-    from diofant.functions import sign
-
     assert gruntz(x, x) == oo
     assert gruntz(-x, x) == -oo
     assert gruntz(-x, x) == -oo
@@ -361,7 +360,6 @@ def test_limit():
 
 
 def test_I():
-    from diofant.functions import sign
     y = Symbol("y")
     assert gruntz(I*x, x) == I*oo
     assert gruntz(y*I*x, x) == sign(y)*I*oo
@@ -450,7 +448,6 @@ def test_sympyissue_6682():
 
 
 def test_sympyissue_7096():
-    from diofant.functions import sign
     assert gruntz((-1/x)**-pi, x) == oo*sign((-1)**(-pi))
 
 
@@ -461,7 +458,6 @@ def test_sympyissue_8462():
 
 
 def test_diofantissue_74():
-    from diofant.functions import sign
     assert gruntz(sign(log(1 + 1/x)), x) == +1
     assert gruntz(sign(log(1 - 1/x)), x) == -1
     assert gruntz(sign(sin(+1/x)), x) == +1

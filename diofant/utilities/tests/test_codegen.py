@@ -2,9 +2,12 @@ from io import StringIO
 
 import pytest
 
-from diofant import Equality, Integral, erf
+from diofant import (Abs, Equality, Integral, acos, asin, atan, atan2, ceiling,
+                     cos, cosh, erf, floor, ln, log, sin, sinh, sqrt, tan,
+                     tanh)
 from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
+from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                        CodeGenError, FCodeGen, InOutArgument,
                                        InputArgument, OutputArgument, codegen,
@@ -13,9 +16,6 @@ from diofant.utilities.lambdify import implemented_function
 
 
 __all__ = ()
-
-# FIXME: Fails due to circular import in with core
-# from diofant import codegen
 
 
 def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
@@ -48,7 +48,6 @@ def test_Routine_argument_order():
     assert [ type(arg) for arg in r.arguments ] == [
         InOutArgument, InputArgument, InputArgument ]
 
-    from diofant.tensor import IndexedBase, Idx
     A, B = map(IndexedBase, ['A', 'B'])
     m = symbols('m', integer=True)
     i = Idx('i', m)
@@ -215,8 +214,6 @@ def test_no_results_c():
 
 def test_ansi_math1_codegen():
     # not included: log10
-    from diofant import (acos, asin, atan, ceiling, cos, cosh, floor, log, ln,
-                         sin, sinh, sqrt, tan, tanh, Abs)
     x = symbols('x')
     name_expr = [
         ("test_fabs", Abs(x)),
@@ -271,7 +268,6 @@ def test_ansi_math1_codegen():
 
 def test_ansi_math2_codegen():
     # not included: frexp, ldexp, modf, fmod
-    from diofant import atan2
     x, y = symbols('x,y')
     name_expr = [
         ("test_atan2", atan2(x, y)),
@@ -294,7 +290,6 @@ def test_ansi_math2_codegen():
 
 
 def test_complicated_codegen():
-    from diofant import sin, cos, tan
     x, y, z = symbols('x,y,z')
     name_expr = [
         ("test1", ((sin(x) + cos(y) + tan(z))**7).expand()),
@@ -362,8 +357,6 @@ def test_complicated_codegen():
 
 
 def test_loops_c():
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m = symbols('n m', integer=True)
     A = IndexedBase('A')
     x = IndexedBase('x')
@@ -404,7 +397,6 @@ def test_loops_c():
 
 
 def test_dummy_loops_c():
-    from diofant.tensor import IndexedBase, Idx
     i, m = symbols('i m', integer=True, cls=Dummy)
     x = IndexedBase('x')
     y = IndexedBase('y')
@@ -427,8 +419,6 @@ def test_dummy_loops_c():
 def test_partial_loops_c():
     # check that loop boundaries are determined by Idx, and array strides
     # determined by shape of IndexedBase object.
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m, o, p = symbols('n m o p', integer=True)
     A = IndexedBase('A', shape=(m, p))
     x = IndexedBase('x')
@@ -469,7 +459,6 @@ def test_partial_loops_c():
 
 
 def test_output_arg_c():
-    from diofant import sin, cos, Equality
     x, y, z = symbols("x,y,z")
     r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
     c = CCodeGen()
@@ -489,7 +478,6 @@ def test_output_arg_c():
 
 
 def test_output_arg_c_reserved_words():
-    from diofant import sin, cos, Equality
     x, y, z = symbols("if, while, z")
     r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
     c = CCodeGen()
@@ -720,8 +708,6 @@ def test_no_results_f():
 
 def test_intrinsic_math_codegen():
     # not included: log10
-    from diofant import (acos, asin, atan, cos, cosh, log, ln,
-                         sin, sinh, sqrt, tan, tanh, Abs)
     x = symbols('x')
     name_expr = [
         ("test_abs", Abs(x)),
@@ -895,7 +881,6 @@ def test_intrinsic_math_codegen():
 
 def test_intrinsic_math2_codegen():
     # not included: frexp, ldexp, modf, fmod
-    from diofant import atan2
     x, y = symbols('x,y')
     name_expr = [
         ("test_atan2", atan2(x, y)),
@@ -940,7 +925,6 @@ def test_intrinsic_math2_codegen():
 
 
 def test_complicated_codegen_f95():
-    from diofant import sin, cos, tan
     x, y, z = symbols('x,y,z')
     name_expr = [
         ("test1", ((sin(x) + cos(y) + tan(z))**7).expand()),
@@ -1002,9 +986,6 @@ def test_complicated_codegen_f95():
 
 
 def test_loops():
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
-
     n, m = symbols('n,m', integer=True)
     A, x, y = map(IndexedBase, 'Axy')
     i = Idx('i', m)
@@ -1053,7 +1034,6 @@ def test_loops():
 
 
 def test_dummy_loops_f95():
-    from diofant.tensor import IndexedBase, Idx
     i, m = symbols('i m', integer=True, cls=Dummy)
     x = IndexedBase('x')
     y = IndexedBase('y')
@@ -1077,8 +1057,6 @@ def test_dummy_loops_f95():
 
 
 def test_loops_InOut():
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
 
     i, j, n, m = symbols('i,j,n,m', integer=True)
     A, x, y = symbols('A,x,y')
@@ -1128,8 +1106,6 @@ def test_loops_InOut():
 def test_partial_loops_f():
     # check that loop boundaries are determined by Idx, and array strides
     # determined by shape of IndexedBase object.
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m, o, p = symbols('n m o p', integer=True)
     A = IndexedBase('A', shape=(m, p))
     x = IndexedBase('x')
@@ -1173,7 +1149,6 @@ def test_partial_loops_f():
 
 
 def test_output_arg_f():
-    from diofant import sin, cos, Equality
     x, y, z = symbols("x,y,z")
     r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
     c = FCodeGen()
@@ -1191,8 +1166,6 @@ def test_output_arg_f():
 
 
 def test_inline_function():
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m = symbols('n m', integer=True)
     A, x, y = map(IndexedBase, 'Axy')
     i = Idx('i', m)

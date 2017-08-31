@@ -3,9 +3,10 @@ from io import StringIO
 import pytest
 
 import diofant
-from diofant import Equality, Piecewise
+from diofant import Equality, Piecewise, cos, sin, tan
 from diofant.core import Catalan, Eq, EulerGamma, Function, pi, symbols, zoo
 from diofant.matrices import Matrix, MatrixSymbol
+from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import OctaveCodeGen, codegen, make_routine
 
 
@@ -168,7 +169,6 @@ def test_results_named_ordered():
 
 
 def test_complicated_m_codegen():
-    from diofant import sin, cos, tan
     name_expr = ("testlong",
                  [((sin(x) + cos(y) + tan(z))**3).expand(),
                   cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))])
@@ -188,7 +188,6 @@ def test_complicated_m_codegen():
 
 def test_m_output_arg_mixed_unordered():
     # named outputs are alphabetical, unnamed output appear in the given order
-    from diofant import sin, cos
     a = symbols("a")
     name_expr = ("foo", [cos(2*x), Equality(y, sin(x)), cos(x), Equality(a, sin(2*x))])
     result, = codegen(name_expr, "Octave", header=False, empty=False)
@@ -450,8 +449,6 @@ def test_m_loops():
     # more dimensions.  Also, size(A) would be used rather than passing in m
     # and n.  Perhaps users would expect us to vectorize automatically here?
     # Or is it possible to represent such things using IndexedBase?
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m = symbols('n m', integer=True)
     A = IndexedBase('A')
     x = IndexedBase('x')
@@ -479,8 +476,6 @@ def test_m_loops():
 
 def test_m_tensor_loops_multiple_contractions():
     # see comments in previous test about vectorizing
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m, o, p = symbols('n m o p', integer=True)
     A = IndexedBase('A')
     B = IndexedBase('B')

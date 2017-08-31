@@ -3,6 +3,8 @@ from diofant import (Add, Dummy, I, Mul, Rational, S, Symbol, cos, cosh, cot,
                      tanh)
 from diofant.abc import a, b, c, x, y, z
 from diofant.simplify.fu import _TR56 as T
+from diofant.simplify.fu import _osborne as o
+from diofant.simplify.fu import _osbornei as i
 from diofant.simplify.fu import (TR1, TR2, TR3, TR5, TR6, TR7, TR8, TR9, TR10,
                                  TR11, TR12, TR13, TR14, TR15, TR16, TR111, L,
                                  TR2i, TR10i, TR12i, TRmorrie, as_f_sign_1,
@@ -339,8 +341,6 @@ def test_TRmorrie():
 
 
 def test_hyper_as_trig():
-    from diofant.simplify.fu import _osborne as o, _osbornei as i, TR12
-
     eq = sinh(x)**2 + cosh(x)**2
     t, f = hyper_as_trig(eq)
     assert f(fu(t)) == cosh(2*x)

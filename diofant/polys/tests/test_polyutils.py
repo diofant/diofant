@@ -3,8 +3,8 @@
 import pytest
 
 from diofant import Rational as Q  # noqa: N814
-from diofant import (Abs, Eq, I, Integer, Integral, Mul, cos, exp, pi, sin,
-                     sqrt, symbols)
+from diofant import (Abs, Eq, I, Integer, Integral, Mul, cos, erf, exp,
+                     integrate, pi, sin, sqrt, symbols)
 from diofant.domains import ZZ
 from diofant.polys import factor
 from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
@@ -292,7 +292,6 @@ def test_dict_from_expr():
 
 
 def test_sympyissue_7383():
-    from diofant import erf, integrate
     x, z, R, a = symbols('x z R a')
     r = sqrt(x**2 + z**2)
     u = erf(a*r/sqrt(2))/r
