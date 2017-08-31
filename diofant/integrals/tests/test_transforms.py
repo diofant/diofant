@@ -9,7 +9,7 @@ from diofant import (E1, Abs, And, Ci, Ei, EulerGamma, Function, Heaviside, I,
                      hyperexpand, lerchphi, log, logcombine, meijerg, oo,
                      periodic_argument, pi, polar_lift, powsimp, re, simplify,
                      sin, sinh, sqrt, symbols, tan, trigsimp, unpolarify)
-from diofant.abc import a, b, c, d, s, x
+from diofant.abc import a, b, c, d, s, t, w, x
 from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           IntegralTransformError,
                                           InverseCosineTransform,
@@ -449,8 +449,6 @@ def test_inverse_mellin_transform():
 def test_laplace_transform():
     LT = laplace_transform
     a, b, c, = symbols('a b c', positive=True)
-    t = symbols('t')
-    w = Symbol("w")
     f = Function("f")
 
     # Test unevaluated form
@@ -533,7 +531,6 @@ def test_sympyissue_8368_7173():
 def test_inverse_laplace_transform():
     ILT = inverse_laplace_transform
     a, b, c, = symbols('a b c', positive=True, finite=True)
-    t = symbols('t')
 
     def simp_hyp(expr):
         return factor_terms(expand_mul(expr)).rewrite(sin)
@@ -633,9 +630,6 @@ def test_fourier_transform():
 
 
 def test_sine_transform():
-    t = symbols("t")
-    w = symbols("w")
-    a = symbols("a")
     f = Function("f")
 
     # Test unevaluated form
@@ -669,9 +663,6 @@ def test_sine_transform():
 
 
 def test_cosine_transform():
-    t = symbols("t")
-    w = symbols("w")
-    a = symbols("a")
     f = Function("f")
 
     # Test unevaluated form
@@ -713,7 +704,6 @@ def test_hankel_transform():
     k = Symbol("k")
     nu = Symbol("nu")
     m = Symbol("m")
-    a = symbols("a")
 
     assert hankel_transform(1/r, r, k, 0) == 1/k
     assert inverse_hankel_transform(1/k, k, r, 0) == 1/r

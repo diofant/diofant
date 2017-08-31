@@ -5,11 +5,11 @@ of Basic or Atom.
 import pytest
 
 from diofant import Lambda, cos, sin
+from diofant.abc import w, x, y, z
 from diofant.core.basic import Atom, Basic, preorder_traversal
 from diofant.core.compatibility import default_sort_key
 from diofant.core.function import Function
 from diofant.core.singleton import S, Singleton
-from diofant.core.symbol import symbols
 from diofant.integrals.integrals import Integral
 
 
@@ -148,7 +148,6 @@ def test_preorder_traversal():
             pt.skip()
     assert result == [expr, b21, b2, b1, b3, b2]
 
-    w, x, y, z = symbols('w:z')
     expr = z + w*(x + y)
     assert list(preorder_traversal([expr], keys=default_sort_key)) == \
         [[w*(x + y) + z], w*(x + y) + z, z, w*(x + y), w, x + y, x, y]
@@ -157,13 +156,11 @@ def test_preorder_traversal():
 
 
 def test_sorted_args():
-    x = symbols('x')
     assert b21._sorted_args == b21.args
     pytest.raises(AttributeError, lambda: x._sorted_args)
 
 
 def test_call():
-    x, y = symbols('x y')
     # See the long history of this in issues sympy/sympy#5026 and sympy/sympy#5105.
 
     pytest.raises(TypeError, lambda: sin(x)({x: 1, sin(x): 2}))
@@ -183,7 +180,6 @@ def test_call():
 
 
 def test_literal_evalf_is_number_is_zero_is_comparable():
-    x = symbols('x')
     f = Function('f')
 
     # the following should not be changed without a lot of dicussion

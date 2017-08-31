@@ -31,6 +31,7 @@ from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
                      reduce_inequalities, residue, resultant, rf, sec, series,
                      sign, simplify, sin, sinh, solve, sqrt, sqrtdenest,
                      symbols, tan, tanh, totient, trigsimp, wronskian, zoo)
+from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.concrete import Sum
 from diofant.concrete.products import Product
 from diofant.core.relational import Equality
@@ -47,7 +48,7 @@ from diofant.matrices import GramSchmidt, Matrix, eye
 from diofant.matrices.expressions import MatrixSymbol, ZeroMatrix
 from diofant.matrices.expressions.blockmatrix import (BlockMatrix,
                                                       block_collapse)
-from diofant.polys.fields import vfield
+from diofant.polys.fields import field
 from diofant.polys.rings import vring
 from diofant.polys.solvers import solve_lin_sys
 from diofant.solvers.ode import dsolve
@@ -58,7 +59,6 @@ from diofant.utilities.iterables import partitions
 __all__ = ()
 
 R = Rational
-x, y, z = symbols('x y z')
 i, j, k, l, m, n = symbols('i j k l m n', integer=True)
 f = Function('f')
 g = Function('g')
@@ -448,7 +448,6 @@ def test_H18():
 
 
 def test_H19():
-    a = symbols('a')
     # The idea is to let a**2 == 2, then solve 1/(a-1). Answer is a+1")
     assert Poly(a - 1).invert(Poly(a**2 - 2)) == a + 1
 
@@ -946,7 +945,8 @@ def test_M37():
 
 @pytest.mark.slow
 def test_M38():
-    variabes = vring("k1:50", vfield("a,b,c", ZZ).to_domain())
+    F, a, b, c = field("a,b,c", ZZ)
+    variables = vring("k1:50", F.to_domain())
     system = [
         -b*k8/a + c*k8/a, -b*k11/a + c*k11/a, -b*k10/a + c*k10/a + k2, -k3 - b*k9/a + c*k9/a,
         -b*k14/a + c*k14/a, -b*k15/a + c*k15/a, -b*k18/a + c*k18/a - k2, -b*k17/a + c*k17/a,
@@ -997,7 +997,7 @@ def test_M38():
         k2:  0, k1:  0,
         k34: b/c*k42, k31: k39, k26: a/c*k42, k23: k39
     }
-    assert solve_lin_sys(system, variabes) == solution
+    assert solve_lin_sys(system, variables) == solution
 
 
 @pytest.mark.slow
@@ -1325,7 +1325,6 @@ def test_P18():
 
 
 def test_P19():
-    w = symbols('w')
     M = Matrix([[1,    1,    1,    1],
                 [w,    x,    y,    z],
                 [w**2, x**2, y**2, z**2],
@@ -1413,7 +1412,6 @@ def test_P26():
 
 
 def test_P27():
-    a = symbols('a')
     M = Matrix([[a,  0, 0, 0, 0],
                 [0,  0, 0, 0, 1],
                 [0,  0, a, 0, 0],
@@ -1468,7 +1466,6 @@ def test_P32():
 
 
 def test_P33():
-    w, t = symbols('w t')
     M = Matrix([[0,    1,      0,   0],
                 [0,    0,      0, 2*w],
                 [0,    0,      0,   1],
@@ -2314,7 +2311,6 @@ def test_W26():
 
 
 def test_W27():
-    a, b, c = symbols('a b c')
     assert integrate(integrate(integrate(1, (z, 0, c*(1 - x/a - y/b))),
                                (y, 0, b*(1 - x/a))),
                      (x, 0, a)) == a*b*c/6
@@ -2395,13 +2391,11 @@ def test_X9():
 
 
 def test_X10():
-    z, w = symbols('z w')
     assert (series(log(sinh(z)) + log(cosh(z + w)), z, x0=0, n=2) ==
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
 
 def test_X11():
-    z, w = symbols('z w')
     assert (series(log(sinh(z) * cosh(z + w)), z, x0=0, n=2) ==
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
@@ -2451,7 +2445,6 @@ def test_X16():
 def test_Y1():
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
-    s = symbols('s')
     F, _, _ = laplace_transform(cos((w - 1)*t), t, s)
     assert F == s/(s**2 + (w - 1)**2)
 
@@ -2459,7 +2452,6 @@ def test_Y1():
 def test_Y2():
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
-    s = symbols('s')
     f = inverse_laplace_transform(s/(s**2 + (w - 1)**2), s, t)
     assert f == cos(t*abs(w - 1))
 
@@ -2470,14 +2462,12 @@ def test_Y2():
 def test_Y3():
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
-    s = symbols('s')
     F, _, _ = laplace_transform(sinh(w*t)*cosh(w*t), t, s)
     assert F == w/(s**2 - 4*w**2)
 
 
 def test_Y4():
     t = symbols('t', extended_real=True, positive=True)
-    s = symbols('s')
     F, _, _ = laplace_transform(erf(3/sqrt(t)), t, s)
     assert F == (1 - exp(-6*sqrt(s)))/s
 
@@ -2492,7 +2482,6 @@ def test_Y5_Y6():
     # => s^2 Y(s) - s + Y(s) = 4/s [e^(-s) - e^(-2 s)]
     # where Y(s) is the Laplace transform of y(t)
     t = symbols('t', extended_real=True, positive=True)
-    s = symbols('s')
     y = Function('y')
     F, _, _ = laplace_transform(diff(y(t), t, 2)
                                 + y(t)
@@ -2515,7 +2504,6 @@ def test_Y7():
     #    [Sanchez, Allen and Kyner, p. 213]
     t = symbols('t', extended_real=True, positive=True)
     a = symbols('a', extended_real=True)
-    s = symbols('s')
     F, _, _ = laplace_transform(1 + 2*Sum((-1)**n*Heaviside(t - n*a),
                                           (n, 1, oo)), t, s)
     # returns 2*LaplaceTransform(Sum((-1)**n*Heaviside(-a*n + t),
@@ -2543,7 +2531,6 @@ def test_Y10():
 @pytest.mark.slow
 def test_Y11():
     # => pi cot(pi s)   (0 < Re s < 1)   [Gradshteyn and Ryzhik 17.43(5)]
-    x, s = symbols('x s')
     # raises RuntimeError: maximum recursion depth exceeded
     # https://github.com/sympy/sympy/issues/7181
     F, _, _ = mellin_transform(1/(1 - x), x, s)
@@ -2554,7 +2541,6 @@ def test_Y11():
 def test_Y12():
     # => 2^(s - 4) gamma(s/2)/gamma(4 - s/2)   (0 < Re s < 1)
     # [Gradshteyn and Ryzhik 17.43(16)]
-    x, s = symbols('x s')
     # returns Wrong value -2**(s - 4)*gamma(s/2 - 3)/gamma(-s/2 + 1)
     # https://github.com/sympy/sympy/issues/7182
     F, _, _ = mellin_transform(besselj(3, x)/x**3, x, s)
@@ -2589,7 +2575,6 @@ def test_Z4():
     # => [c^(n+1) [c^(n+1) - 2 c - 2] + (n+1) c^2 + 2 c - n] / [(c-1)^3 (c+1)]
     #    [Joan Z. Yu and Robert Israel in sci.math.symbolic]
     r = Function('r')
-    c = symbols('c')
     # raises ValueError: Polynomial or rational function expected,
     #     got '(c**2 - c**n)/(c - c**n)
     s = rsolve(r(n) - ((1 + c - c**(n-1) - c**(n+1))/(1 - c**n)*r(n - 1)
@@ -2610,7 +2595,6 @@ def test_Z6():
     # Second order ODE with initial conditions---solve  using Laplace
     # transform: f(t) = sin(2 t)/8 - t cos(2 t)/4
     t = symbols('t', extended_real=True, positive=True)
-    s = symbols('s')
     eq = Derivative(f(t), t, 2) + 4*f(t) - sin(2*t)
     F, _, _ = laplace_transform(eq, t, s)
     # Laplace transform for diff() not calculated

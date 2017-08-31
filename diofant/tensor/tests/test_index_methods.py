@@ -1,7 +1,8 @@
 import pytest
 
 from diofant import get_contraction_structure, get_indices
-from diofant.core import Function, Pow, symbols
+from diofant.abc import a, x, y
+from diofant.core import Function, Pow
 from diofant.functions import exp
 from diofant.tensor.index_methods import IndexConformanceException
 from diofant.tensor.indexed import Idx, IndexedBase
@@ -11,7 +12,6 @@ __all__ = ()
 
 
 def test_trivial_indices():
-    x, y = symbols('x y')
     assert get_indices(x) == (set(), {})
     assert get_indices(x*y) == (set(), {})
     assert get_indices(x + y) == (set(), {})
@@ -197,7 +197,6 @@ def test_ufunc_support():
     x = IndexedBase('x')
     y = IndexedBase('y')
     i, j = Idx('i'), Idx('j')
-    a = symbols('a')
 
     assert get_indices(f(x[i])) == ({i}, {})
     assert get_indices(f(x[i], y[j])) == ({i, j}, {})

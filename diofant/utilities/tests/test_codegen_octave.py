@@ -4,6 +4,7 @@ import pytest
 
 import diofant
 from diofant import Equality, Piecewise, cos, sin, tan
+from diofant.abc import A, B, C, a, t, x, y, z
 from diofant.core import Catalan, Eq, EulerGamma, Function, pi, symbols, zoo
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.tensor import Idx, IndexedBase
@@ -11,8 +12,6 @@ from diofant.utilities.codegen import OctaveCodeGen, codegen, make_routine
 
 
 __all__ = ()
-
-x, y, z = symbols('x,y,z')
 
 
 def test_empty_m_code():
@@ -131,7 +130,6 @@ def test_multiple_results_m():
 
 def test_results_named_unordered():
     # Here output order is based on name_expr
-    A, B, C = symbols('A,B,C')
     expr1 = Equality(C, (x + y)*z)
     expr2 = Equality(A, (x - y)*z)
     expr3 = Equality(B, 2*x)
@@ -149,7 +147,6 @@ def test_results_named_unordered():
 
 
 def test_results_named_ordered():
-    A, B, C = symbols('A,B,C')
     expr1 = Equality(C, (x + y)*z)
     expr2 = Equality(A, (x - y)*z)
     expr3 = Equality(B, 2*x)
@@ -188,7 +185,6 @@ def test_complicated_m_codegen():
 
 def test_m_output_arg_mixed_unordered():
     # named outputs are alphabetical, unnamed output appear in the given order
-    a = symbols("a")
     name_expr = ("foo", [cos(2*x), Equality(y, sin(x)), cos(x), Equality(a, sin(2*x))])
     result, = codegen(name_expr, "Octave", header=False, empty=False)
     assert result[0] == "foo.m"
@@ -354,7 +350,6 @@ def test_m_matrix_output_autoname_2():
 
 
 def test_m_results_matrix_named_ordered():
-    B, C = symbols('B,C')
     A = MatrixSymbol('A', 1, 3)
     expr1 = Equality(C, (x + y)*z)
     expr2 = Equality(A, Matrix([[1, 2, x]]))
@@ -562,7 +557,6 @@ def test_m_not_supported():
 
 
 def test_global_vars_octave():
-    x, y, z, t = symbols("x y z t")
     result = codegen(('f', x*y), "Octave", header=False, empty=False,
                      global_vars=(y,))
     source = result[0][1]

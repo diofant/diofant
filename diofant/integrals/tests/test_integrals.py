@@ -9,7 +9,7 @@ from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
                      lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
                      re, sign, simplify, sin, sinh, sqrt, sstr, symbols,
                      sympify, tan, tanh, trigsimp)
-from diofant.abc import a, k, m, s, t, w, x, y, z
+from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.heurisch import heurisch
 from diofant.integrals.risch import NonElementaryIntegral
@@ -878,7 +878,6 @@ def test_sympyissue_5907():
 
 
 def test_sympyissue_4892a():
-    A = symbols('A')
     c = Symbol('c', nonzero=True)
     P1 = -A*exp(-z)
     P2 = -A/(c*t)*(sin(x)**2 + cos(y)**2)
@@ -1005,7 +1004,6 @@ def test_sympyissue_4153():
 
 
 def test_sympyissue_4326():
-    R, b, h = symbols('R b h')
     # It doesn't matter if we can do the integral.  Just make sure the result
     # doesn't contain nan.  This is really a test against _eval_interval.
     assert not integrate(((h*(x - R + b))/b)*sqrt(R**2 - x**2), (x, R - b, R)).has(nan)
@@ -1093,7 +1091,6 @@ def test_sympyissue_8901():
 
 @pytest.mark.slow
 def test_sympyissue_7130():
-    i, L, b = symbols('i L b')
     integrand = (cos(pi*i*x/L)**2 / (a + b*x)).rewrite(exp)
     assert x not in integrate(integrand, (x, 0, L)).free_symbols
 
@@ -1121,7 +1118,6 @@ def test_sympyissue_4187_xfail():
 
 
 def test_sympyissue_10567():
-    a, b, c, t = symbols('a b c t')
     vt = Matrix([a*t, b, c])
     assert integrate(vt, t) == Integral(vt, t).doit()
     assert integrate(vt, t) == Matrix([[a*t**2/2], [b*t], [c*t]])

@@ -9,7 +9,7 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      gamma, log, lucas, nan, nsimplify, oo, pi, posify,
                      powsimp, radsimp, ratsimp, simplify, sin, sqrt, symbols,
                      sympify, tan, together, trigsimp, true, zoo)
-from diofant.abc import a, b, c, n, t, u, x, y, z
+from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 from diofant.solvers.solvers import checksol
 
@@ -484,8 +484,6 @@ def test_noncommutative_expand_sympyissue_3757():
 
 
 def test_as_numer_denom():
-    a, b, c = symbols('a, b, c')
-
     assert nan.as_numer_denom() == (nan, 1)
     assert oo.as_numer_denom() == (oo, 1)
     assert (-oo).as_numer_denom() == (-oo, 1)
@@ -1082,7 +1080,6 @@ def test_coeff():
 
 
 def test_coeff2():
-    r, kappa = symbols('r, kappa')
     psi = Function("psi")
     g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
     g = g.expand()
@@ -1090,7 +1087,6 @@ def test_coeff2():
 
 
 def test_coeff2_0():
-    r, kappa = symbols('r, kappa')
     psi = Function("psi")
     g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
     g = g.expand()
@@ -1473,7 +1469,6 @@ def test_equals():
     # issue sympy/sympy#6829
     # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3)
     # z = eq.subs(solve(eq, x)[0])
-    q = symbols('q')
     z = (q*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
                   Rational(13, 12))/2 - sqrt((2*q - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
                                                                              Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 -

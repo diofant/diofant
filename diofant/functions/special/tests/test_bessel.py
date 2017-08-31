@@ -6,7 +6,7 @@ from diofant import (Abs, I, Integer, Limit, O, Rational, Symbol, besseli,
                      besselj, besselk, besselsimp, bessely, conjugate, cos,
                      cosh, diff, exp, exp_polar, expand_func, gamma, hankel1,
                      hankel2, hyper, im, jn, jn_zeros, log, nan, oo, pi,
-                     polar_lift, re, series, sin, sinh, sqrt, symbols, yn, zoo)
+                     polar_lift, re, series, sin, sinh, sqrt, yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
@@ -179,7 +179,6 @@ def test_expand():
 
 
 def test_fn():
-    x, z = symbols("x z")
     assert fn(1, z) == 1/z**2
     assert fn(2, z) == -1/z + 3/z**3
     assert fn(3, z) == -6/z**2 + 15/z**4
@@ -195,7 +194,6 @@ def myn(n, z):
 
 
 def test_jn():
-    z = symbols("z")
     assert mjn(0, z) == sin(z)/z
     assert mjn(1, z) == sin(z)/z**2 - cos(z)/z
     assert mjn(2, z) == (3/z**3 - 1/z)*sin(z) - (3/z**2) * cos(z)
@@ -211,7 +209,6 @@ def test_jn():
 
 
 def test_yn():
-    z = symbols("z")
     assert myn(0, z) == -cos(z)/z
     assert myn(1, z) == -cos(z)/z**2 - sin(z)/z
     assert myn(2, z) == -((3/z**3 - 1/z)*cos(z) + (3/z**2)*sin(z))

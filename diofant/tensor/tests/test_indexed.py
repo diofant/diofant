@@ -1,7 +1,7 @@
 import pytest
 
-# import test:
 from diofant import Idx, Indexed, IndexedBase
+from diofant.abc import a, b, c, x
 from diofant.core import Basic, Dict, Symbol, Tuple, oo, symbols
 from diofant.core.compatibility import iterable
 from diofant.tensor.indexed import IndexException
@@ -16,7 +16,6 @@ def test_Idx_construction():
     assert Idx(i, a) == Idx(i, (0, a - 1))
     assert Idx(i, oo) == Idx(i, (0, oo))
 
-    x = symbols('x')
     pytest.raises(TypeError, lambda: Idx(x))
     pytest.raises(TypeError, lambda: Idx(0.5))
     pytest.raises(TypeError, lambda: Idx(i, x))
@@ -95,7 +94,6 @@ def test_Idx_subs():
 
 def test_IndexedBase_sugar():
     i, j = symbols('i j', integer=True)
-    a = symbols('a')
     A1 = Indexed(a, i, j)
     A2 = IndexedBase(a)
     assert A1 == A2[i, j]
@@ -107,7 +105,6 @@ def test_IndexedBase_sugar():
 
 def test_IndexedBase_subs():
     i, j, k = symbols('i j k', integer=True)
-    a, b, c = symbols('a b c')
     A = IndexedBase(a)
     B = IndexedBase(b)
     C = IndexedBase(c)
@@ -139,14 +136,12 @@ def test_Indexed_constructor():
 
 def test_Indexed_func_args():
     i, j = symbols('i j', integer=True)
-    a = symbols('a')
     A = Indexed(a, i, j)
     assert A == A.func(*A.args)
 
 
 def test_Indexed_subs():
     i, j, k = symbols('i j k', integer=True)
-    a, b = symbols('a b')
     A = IndexedBase(a)
     B = IndexedBase(b)
     assert A[i, j] == B[i, j].subs(b, a)

@@ -5,6 +5,7 @@ import pytest
 from diofant import (Abs, Equality, Integral, acos, asin, atan, atan2, ceiling,
                      cos, cosh, erf, floor, ln, log, sin, sinh, sqrt, tan,
                      tanh)
+from diofant.abc import B, C, X, a, t, x, y, z
 from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.tensor import Idx, IndexedBase
@@ -34,7 +35,6 @@ def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
 
 
 def test_Routine_argument_order():
-    a, x, y, z = symbols('a x y z')
     expr = (x + y)*z
     pytest.raises(CodeGenArgumentListError, lambda: make_routine("test", expr,
                                                                  argument_sequence=[z, x]))
@@ -89,7 +89,6 @@ def test_empty_c_header():
 
 
 def test_simple_c_code():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = CCodeGen()
@@ -107,8 +106,8 @@ def test_simple_c_code():
 
 
 def test_c_code_reserved_words():
-    x, y, z = symbols('if, typedef, while')
-    expr = (x + y) * z
+    if_, typedef_, while_ = symbols('if, typedef, while')
+    expr = (if_ + typedef_) * while_
     routine = make_routine("test", expr)
     code_gen = CCodeGen()
     source = get_string(code_gen.dump_c, [routine])
@@ -142,7 +141,6 @@ def test_numbersymbol_c_code():
 
 
 def test_c_code_argument_order():
-    x, y, z = symbols('x,y,z')
     expr = x + y
     routine = make_routine("test", expr, argument_sequence=[z, x, y])
     code_gen = CCodeGen()
@@ -160,7 +158,6 @@ def test_c_code_argument_order():
 
 
 def test_simple_c_header():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = CCodeGen()
@@ -175,7 +172,6 @@ def test_simple_c_header():
 
 
 def test_simple_c_codegen():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     result = codegen(("test", expr), "C", "file", header=False, empty=False)
     expected = [
@@ -197,7 +193,6 @@ def test_simple_c_codegen():
 
 
 def test_multiple_results_c():
-    x, y, z = symbols('x,y,z')
     expr1 = (x + y)*z
     expr2 = (x - y)*z
     routine = make_routine(
@@ -214,7 +209,6 @@ def test_no_results_c():
 
 def test_ansi_math1_codegen():
     # not included: log10
-    x = symbols('x')
     name_expr = [
         ("test_fabs", Abs(x)),
         ("test_acos", acos(x)),
@@ -268,7 +262,6 @@ def test_ansi_math1_codegen():
 
 def test_ansi_math2_codegen():
     # not included: frexp, ldexp, modf, fmod
-    x, y = symbols('x,y')
     name_expr = [
         ("test_atan2", atan2(x, y)),
         ("test_pow", x**y),
@@ -290,7 +283,6 @@ def test_ansi_math2_codegen():
 
 
 def test_complicated_codegen():
-    x, y, z = symbols('x,y,z')
     name_expr = [
         ("test1", ((sin(x) + cos(y) + tan(z))**7).expand()),
         ("test2", cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))),
@@ -459,7 +451,6 @@ def test_partial_loops_c():
 
 
 def test_output_arg_c():
-    x, y, z = symbols("x,y,z")
     r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
     c = CCodeGen()
     result = c.write([r], "test", header=False, empty=False)
@@ -478,8 +469,8 @@ def test_output_arg_c():
 
 
 def test_output_arg_c_reserved_words():
-    x, y, z = symbols("if, while, z")
-    r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
+    if_, while_ = symbols("if, while")
+    r = make_routine("foo", [Equality(while_, sin(if_)), cos(if_)])
     c = CCodeGen()
     result = c.write([r], "test", header=False, empty=False)
     assert result[0][0] == "test.c"
@@ -497,8 +488,6 @@ def test_output_arg_c_reserved_words():
 
 
 def test_ccode_results_named_ordered():
-    x, y, z = symbols('x,y,z')
-    B, C = symbols('B,C')
     A = MatrixSymbol('A', 1, 3)
     expr1 = Equality(A, Matrix([[1, 2, x]]))
     expr2 = Equality(C, (x + y)*z)
@@ -579,7 +568,6 @@ def test_empty_f_header():
 
 
 def test_simple_f_code():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = FCodeGen()
@@ -612,7 +600,6 @@ def test_numbersymbol_f_code():
 
 
 def test_erf_f_code():
-    x = symbols('x')
     routine = make_routine("test", erf(x) - erf(-2 * x))
     code_gen = FCodeGen()
     source = get_string(code_gen.dump_f95, [routine])
@@ -627,7 +614,6 @@ def test_erf_f_code():
 
 
 def test_f_code_argument_order():
-    x, y, z = symbols('x,y,z')
     expr = x + y
     routine = make_routine("test", expr, argument_sequence=[z, x, y])
     code_gen = FCodeGen()
@@ -645,7 +631,6 @@ def test_f_code_argument_order():
 
 
 def test_simple_f_header():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = FCodeGen()
@@ -664,7 +649,6 @@ def test_simple_f_header():
 
 
 def test_simple_f_codegen():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     result = codegen(
         ("test", expr), "F95", "file", header=False, empty=False)
@@ -691,7 +675,6 @@ def test_simple_f_codegen():
 
 
 def test_multiple_results_f():
-    x, y, z = symbols('x,y,z')
     expr1 = (x + y)*z
     expr2 = (x - y)*z
     routine = make_routine(
@@ -708,7 +691,6 @@ def test_no_results_f():
 
 def test_intrinsic_math_codegen():
     # not included: log10
-    x = symbols('x')
     name_expr = [
         ("test_abs", Abs(x)),
         ("test_acos", acos(x)),
@@ -881,7 +863,6 @@ def test_intrinsic_math_codegen():
 
 def test_intrinsic_math2_codegen():
     # not included: frexp, ldexp, modf, fmod
-    x, y = symbols('x,y')
     name_expr = [
         ("test_atan2", atan2(x, y)),
         ("test_pow", x**y),
@@ -925,7 +906,6 @@ def test_intrinsic_math2_codegen():
 
 
 def test_complicated_codegen_f95():
-    x, y, z = symbols('x,y,z')
     name_expr = [
         ("test1", ((sin(x) + cos(y) + tan(z))**7).expand()),
         ("test2", cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))),
@@ -1057,12 +1037,10 @@ def test_dummy_loops_f95():
 
 
 def test_loops_InOut():
-
     i, j, n, m = symbols('i,j,n,m', integer=True)
-    A, x, y = symbols('A,x,y')
-    A = IndexedBase(A)[Idx(i, m), Idx(j, n)]
-    x = IndexedBase(x)[Idx(j, n)]
-    y = IndexedBase(y)[Idx(i, m)]
+    A = IndexedBase('A')[Idx(i, m), Idx(j, n)]
+    x = IndexedBase('x')[Idx(j, n)]
+    y = IndexedBase('y')[Idx(i, m)]
 
     (f1, code), (f2, interface) = codegen(
         ('matrix_vector', Eq(y, y + A*x)), "F95", "file", header=False, empty=False)
@@ -1149,7 +1127,6 @@ def test_partial_loops_f():
 
 
 def test_output_arg_f():
-    x, y, z = symbols("x,y,z")
     r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
     c = FCodeGen()
     result = c.write([r], "test", header=False, empty=False)
@@ -1231,7 +1208,6 @@ end function
 
 
 def test_check_case():
-    x, X = symbols('x,X')
     pytest.raises(CodeGenError, lambda: codegen(('test', x*X), 'f95', 'prefix'))
 
 
@@ -1240,17 +1216,15 @@ def test_check_case_false_positive():
     # objects that differ only because of assumptions.  (It may be useful to
     # have a check for that as well, but here we only want to test against
     # false positives with respect to case checking.)
-    x1 = symbols('x')
     x2 = symbols('x', my_assumption=True)
     try:
-        codegen(('test', x1*x2), 'f95', 'prefix')
+        codegen(('test', x*x2), 'f95', 'prefix')
     except CodeGenError as e:
         if e.args[0].startswith("Fortran ignores case."):
             raise AssertionError("This exception should not be raised!")
 
 
 def test_c_fortran_omit_routine_name():
-    x, y = symbols("x,y")
     name_expr = [("foo", 2*x)]
     result = codegen(name_expr, "F95", header=False, empty=False)
     expresult = codegen(name_expr, "F95", "foo", header=False, empty=False)
@@ -1268,7 +1242,6 @@ def test_c_fortran_omit_routine_name():
 
 
 def test_fcode_matrix_output():
-    x, y, z = symbols('x,y,z')
     e1 = x + y
     e2 = Matrix([[x, y], [z, 16]])
     name_expr = ("test", (e1, e2))
@@ -1297,8 +1270,6 @@ def test_fcode_matrix_output():
 
 
 def test_fcode_results_named_ordered():
-    x, y, z = symbols('x,y,z')
-    B, C = symbols('B,C')
     A = MatrixSymbol('A', 1, 3)
     expr1 = Equality(A, Matrix([[1, 2, x]]))
     expr2 = Equality(C, (x + y)*z)
@@ -1380,7 +1351,6 @@ def test_fcode_matrixsymbol_slice_autoname():
 
 
 def test_global_vars():
-    x, y, z, t = symbols("x y z t")
     result = codegen(('f', x*y), "F95", header=False, empty=False,
                      global_vars=(y,))
     source = result[0][1]

@@ -8,7 +8,7 @@ from diofant import (ITE, Abs, And, Float, Function, I, Integral, Lambda,
                      Matrix, Max, Min, Not, Or, Piecewise, Rational, acos,
                      acosh, cos, exp, false, lambdify, oo, pi, sin, sqrt,
                      symbols, sympify, tan, true)
-from diofant.abc import w, x, y, z
+from diofant.abc import a, b, t, w, x, y, z
 from diofant.external import import_module
 from diofant.printing.lambdarepr import LambdaPrinter, NumExprPrinter
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -182,10 +182,9 @@ def test_numexpr_printer():
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 @pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_sympyissue_9334():
-    a, b = symbols('a, b')
     expr = b*a - sqrt(a**2)
-    a, b = sorted(expr.free_symbols, key=lambda s: s.name)
-    func_numexpr = lambdify((a, b), expr, modules=[numexpr], dummify=False)
+    syms = sorted(expr.free_symbols, key=lambda s: s.name)
+    func_numexpr = lambdify(syms, expr, modules=[numexpr], dummify=False)
     foo, bar = numpy.random.random((2, 4))
     func_numexpr(foo, bar)
 
@@ -493,7 +492,6 @@ def test_lambdify_imps():
 
 
 def test_dummification():
-    t = symbols('t')
     F = Function('F')
     G = Function('G')
     # "\alpha" is not a valid python variable name

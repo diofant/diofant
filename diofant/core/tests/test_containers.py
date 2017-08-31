@@ -3,7 +3,8 @@ from collections import defaultdict
 import pytest
 
 from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, S, Tuple, false,
-                     symbols, sympify, true)
+                     sympify, true)
+from diofant.abc import p, q, r, s, x, y, z
 from diofant.core.compatibility import is_sequence, iterable
 from diofant.core.containers import tuple_wrapper
 
@@ -20,7 +21,6 @@ def test_Tuple():
     assert isinstance(st[:], Tuple)
     assert st == Tuple(1, 2, 3, 4)
     assert st.func(*st.args) == st
-    p, q, r, s = symbols('p q r s')
     t2 = (p, q, r, s)
     st2 = Tuple(*t2)
     assert st2.atoms() == set(t2)
@@ -108,7 +108,6 @@ def test_tuple_wrapper():
     def wrap_tuples_and_return(*t):
         return t
 
-    p = symbols('p')
     assert wrap_tuples_and_return(p, 1) == (p, 1)
     assert wrap_tuples_and_return((p, 1)) == (Tuple(p, 1),)
     assert wrap_tuples_and_return(1, (p, 2), 3) == (1, Tuple(p, 2), 3)
@@ -126,7 +125,6 @@ def test_iterable_is_sequence():
 
 
 def test_Dict():
-    x, y, z = symbols('x y z')
     d = Dict({x: 1, y: 2, z: 3})
     assert d[x] == 1
     assert d[y] == 2

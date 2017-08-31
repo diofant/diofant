@@ -5,7 +5,7 @@ from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
                      Subs, Symbol, Tuple, Wild, abc, atan2, cos, cot, cse, exp,
                      factor, false, log, nsimplify, oo, pi, sin, sqrt, symbols,
                      tan, zoo)
-from diofant.abc import x, y, z
+from diofant.abc import a, b, c, d, e, t, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
 
@@ -164,7 +164,6 @@ def test_sympyissue_3742():
 
 
 def test_subs_dict1():
-    x, y = symbols('x y')
     assert (1 + x*y).subs(x, pi) == 1 + pi*y
     assert (1 + x*y).subs({x: pi, y: 2}) == 1 + 2*pi
 
@@ -177,7 +176,6 @@ def test_subs_dict1():
 
 
 def test_mul():
-    x, y, z, a, b, c = symbols('x y z a b c')
     A, B, C = symbols('A B C', commutative=0)
     assert (x*y*z).subs(z*x, y) == y**2
     assert (z*x).subs(1/x, z) == z*x
@@ -359,8 +357,6 @@ def test_division():
 
 
 def test_add():
-    a, b, c, d, x, y, t = symbols('a b c d x y t')
-
     assert (a**2 - b - c).subs(a**2 - b, d) in [d - c, a**2 - b - c]
     assert (a**2 - c).subs(a**2 - c, d) == d
     assert (a**2 - b - c).subs(a**2 - c, d) in [d - b, a**2 - b - c]
@@ -395,7 +391,6 @@ def test_subs_sympyissue_4009():
 
 
 def test_functions_subs():
-    x, y = symbols('x y')
     f, g = symbols('f g', cls=Function)
     l = Lambda((x, y), sin(x) + y)
     assert (g(y, x) + cos(x)).subs(g, l) == sin(y) + x + cos(x)
@@ -420,7 +415,6 @@ def test_derivative_subs():
 
 
 def test_derivative_subs2():
-    x, y, z = symbols('x y z')
     f, g = symbols('f g', cls=Function)
     assert Derivative(f, x, y).subs(Derivative(f, x, y), g) == g
     assert Derivative(f, y, x).subs(Derivative(f, x, y), g) == g
@@ -456,9 +450,6 @@ def test_subs_iter():
 
 
 def test_subs_dict():
-    a, b, c, d, e = symbols('a b c d e')
-    z = symbols('z')
-
     assert (2*x + y + z).subs({x: 1, y: 2}) == 4 + z
 
     l = [(sin(x), 2), (x, 1)]
@@ -485,8 +476,6 @@ def test_subs_dict():
 
 
 def test_no_arith_subs_on_floats():
-    a, x, y = symbols('a x y')
-
     assert (x + 3).subs(x + 3, a) == a
     assert (x + 3).subs(x + 2, a) == a + 1
 
@@ -502,7 +491,6 @@ def test_no_arith_subs_on_floats():
 
 def test_sympyissue_5651():
     a, b, c, K = symbols('a b c K', commutative=True)
-    x, y, z = symbols('x y z')
     assert (a/(b*c)).subs(b*c, K) == a/K
     assert (a/(b**2*c**3)).subs(b*c, K) == a/(c*K**2)
     assert (1/(x*y)).subs(x*y, 2) == S.Half
@@ -517,7 +505,6 @@ def test_sympyissue_6075():
 
 def test_sympyissue_6079():
     # since x + 2.0 == x + 2 we can't do a simple equality test
-    x = symbols('x')
     assert _aresame((x + 2.0).subs(2, 3), x + 2.0)
     assert _aresame((x + 2.0).subs(2.0, 3), x + 3)
     assert not _aresame(x + 2, x + 2.0)
@@ -679,7 +666,6 @@ def test_sympyissue_11746():
 
 
 def test_diofantissue_376():
-    x, y, z, t = symbols('x y z t')
     f = symbols('f', cls=Function)
     e1 = Subs(Derivative(f(x), x), x, y*z)
     e2 = Subs(Derivative(f(t), t), t, y*z)

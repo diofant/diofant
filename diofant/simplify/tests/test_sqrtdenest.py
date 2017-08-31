@@ -3,7 +3,7 @@ import pytest
 from diofant import (Dummy, Eq, I, Integer, Integral, Rational, S, cos, cosh,
                      posify, root, solve, sqrt, sqrtdenest, sstr, symbols,
                      sympify)
-from diofant.abc import a, b, c, d, t, x, y
+from diofant.abc import F, a, b, c, d, t, x, y
 from diofant.simplify.sqrtdenest import _subsets as subsets
 from diofant.simplify.sqrtdenest import unrad
 
@@ -457,7 +457,6 @@ def test_unrad1():
     assert len(ans) == 1 and NS(ans[0][x])[:4] == '0.73'
     # the fence optimization problem
     # https://github.com/sympy/sympy/issues/4793#issuecomment-36994519
-    F = symbols('F')
     eq = F - (2*x + 2*y + sqrt(x**2 + y**2))
     ans = 2*F/7 - sqrt(2)*F/14
     X = solve(eq, x, check=False)

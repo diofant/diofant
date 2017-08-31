@@ -1,5 +1,6 @@
 import pytest
 
+from diofant.abc import t, x, y
 from diofant.core import Derivative, Function, S, Subs, Symbol, symbols
 from diofant.diffgeom import (BaseCovarDerivativeOp, Commutator, CoordSystem,
                               CovarDerivativeOp, Differential, LieDerivative,
@@ -55,7 +56,6 @@ def test_R3():
 
 
 def test_point():
-    x, y = symbols('x, y')
     p = R2_r.point([x, y])
     # TODO assert p.free_symbols() == {x, y}
     assert p.coords(R2_r) == p.coords() == Matrix([x, y])
@@ -110,7 +110,6 @@ def test_covar_deriv():
 
 
 def test_intcurve_diffequ():
-    t = symbols('t')
     start_point = R2_r.point([1, 0])
     vector_field = -R2.y*R2.e_x + R2.x*R2.e_y
     equations, init_cond = intcurve_diffequ(vector_field, t, start_point)
