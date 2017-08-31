@@ -9,7 +9,7 @@ from diofant.functions.special.elliptic_integrals import (elliptic_e,
                                                           elliptic_k,
                                                           elliptic_pi)
 from diofant.utilities.randtest import random_complex_number as randcplx
-from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_derivative_numerically as td
 from diofant.utilities.randtest import verify_numerically as tn
 
 

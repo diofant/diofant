@@ -13,7 +13,7 @@ from diofant.functions.special.hyper import (HyperRep, HyperRep_asin1,
                                              HyperRep_sqrts1, HyperRep_sqrts2)
 from diofant.series.limits import limit
 from diofant.utilities.randtest import random_complex_number as randcplx
-from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_derivative_numerically as td
 from diofant.utilities.randtest import verify_numerically as tn
 
 

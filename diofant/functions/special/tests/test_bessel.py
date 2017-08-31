@@ -12,7 +12,7 @@ from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
                                               airybiprime, fn)
 from diofant.utilities.randtest import random_complex_number as randcplx
-from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_derivative_numerically as td
 from diofant.utilities.randtest import verify_numerically as tn
 from diofant.utilities.randtest import _randint
 

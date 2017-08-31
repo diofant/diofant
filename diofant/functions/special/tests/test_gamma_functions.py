@@ -9,7 +9,7 @@ from diofant import (EulerGamma, I, Integer, O, Rational, S, Symbol, conjugate,
                      zeta, zoo)
 from diofant.core.function import ArgumentIndexError
 from diofant.utilities.randtest import random_complex_number as randcplx
-from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_derivative_numerically as td
 from diofant.utilities.randtest import verify_numerically as tn
 
 

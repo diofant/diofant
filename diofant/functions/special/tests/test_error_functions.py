@@ -13,7 +13,7 @@ from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.error_functions import _eis, _erfs
 from diofant.utilities.randtest import (random_complex_number,
-                                        test_derivative_numerically,
+                                        verify_derivative_numerically,
                                         verify_numerically)
 
 
@@ -331,7 +331,7 @@ def mytd(expr1, expr2, x):
     for a in expr1.free_symbols:
         if a != x:
             subs[a] = random_complex_number()
-    return expr1.diff(x) == expr2 and test_derivative_numerically(expr1.subs(subs), x)
+    return expr1.diff(x) == expr2 and verify_derivative_numerically(expr1.subs(subs), x)
 
 
 def tn_branch(func, s=None):
