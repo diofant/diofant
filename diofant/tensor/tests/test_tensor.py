@@ -3,7 +3,7 @@ import pytest
 from diofant import Matrix, eye
 from diofant.abc import x
 from diofant.combinatorics import Permutation
-from diofant.core import Basic, Integer, Rational, S, Symbol
+from diofant.core import Basic, Integer, Rational, Symbol
 from diofant.core.containers import Tuple
 from diofant.core.symbol import symbols
 from diofant.external import import_module
@@ -628,7 +628,6 @@ def test_special_eq_ne():
 
     t = 0*A(a, b)
     assert _is_equal(t, 0)
-    assert _is_equal(t, S.Zero)
 
     assert p(i) != A(a, b)
     assert A(a, -a) != A(a, b)
@@ -662,7 +661,7 @@ def test_add2():
 def test_mul():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
-    t = TensMul.from_data(S.One, [], [], [])
+    t = TensMul.from_data(Integer(1), [], [], [])
     assert str(t) == '1'
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
     t = (1 + x)*A(a, b)
@@ -687,7 +686,7 @@ def test_mul():
     t1 = tensor_mul(*t.split())
     assert t == t(-b, d)
     assert t == t1
-    assert tensor_mul(*[]) == TensMul.from_data(S.One, [], [], [])
+    assert tensor_mul(*[]) == TensMul.from_data(Integer(1), [], [], [])
 
     t = TensMul.from_data(1, [], [], [])
     zsym = tensorsymmetry()
@@ -750,7 +749,7 @@ def test_riemann_cyclic_replace():
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
     t = R(m0, m2, m1, m3)
     t1 = riemann_cyclic_replace(t)
-    t1a = -S.One/3*R(m0, m3, m2, m1) + S.One/3*R(m0, m1, m2, m3) + Rational(2, 3)*R(m0, m2, m1, m3)
+    t1a = -R(m0, m3, m2, m1)/3 + R(m0, m1, m2, m3)/3 + 2*R(m0, m2, m1, m3)/3
     assert t1 == t1a
 
 

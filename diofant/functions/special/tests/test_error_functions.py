@@ -3,8 +3,8 @@ from random import uniform
 import pytest
 
 from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
-                     Li, Limit, O, Rational, S, Shi, Si, Symbol, conjugate,
-                     cos, cosh, diff, erf, erf2, erf2inv, erfc, erfcinv, erfi,
+                     Li, Limit, O, Rational, Shi, Si, Symbol, conjugate, cos,
+                     cosh, diff, erf, erf2, erf2inv, erfc, erfcinv, erfi,
                      erfinv, exp, exp_polar, expand, expand_func, expint,
                      fresnelc, fresnels, gamma, hyper, im, integrate, li,
                      limit, log, meijerg, nan, oo, pi, polar_lift, re, sign,
@@ -683,7 +683,7 @@ def test_fresnel():
         erf((1 + I)/2*sqrt(pi)*z) + I*erf((1 - I)/2*sqrt(pi)*z))
 
     assert fresnelc(z).rewrite(hyper) == \
-        z * hyper([S.One/4], [S.One/2, Rational(5, 4)], -pi**2*z**4/16)
+        z * hyper([Rational(1, 4)], [Rational(1, 2), Rational(5, 4)], -pi**2*z**4/16)
 
     assert fresnelc(x).taylor_term(-1, z) == 0
     assert fresnelc(x).taylor_term(1, z, *(z,)) == -pi**2*z**5/40

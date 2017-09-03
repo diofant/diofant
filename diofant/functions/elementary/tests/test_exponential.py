@@ -376,7 +376,7 @@ def test_lambertw():
     assert LambertW(p - 1, evaluate=False).is_extended_real is None
     assert LambertW(-p - 2/E, evaluate=False).is_extended_real is False
     assert LambertW(S.Half, -1, evaluate=False).is_extended_real is False
-    assert LambertW(-S.One/10, -1, evaluate=False).is_extended_real
+    assert LambertW(Rational(-1, 10), -1, evaluate=False).is_extended_real
 
     assert LambertW(0, evaluate=False).is_algebraic
     na = Symbol('na', nonzero=True, algebraic=True)

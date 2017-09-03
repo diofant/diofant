@@ -10,7 +10,9 @@ from mpmath.libmp.libmpf import _normalize, finf, fnan, fninf
 from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
                      GoldenRatio, Gt, I, Integer, Le, Lt, Mul, Number, Pow,
                      Rational, S, Symbol, cos, exp, factorial, false, latex,
-                     log, nan, oo, pi, simplify, sin, sqrt, true, zoo)
+                     log, nan, nextprime, oo, pi, simplify, sin, sqrt, true,
+                     zoo)
+from diofant.core.cache import clear_cache
 from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
                                   mpf_norm, seterr)
 from diofant.core.power import integer_nthroot
@@ -28,11 +30,11 @@ def same_and_same_prec(a, b):
 
 def test_seterr():
     seterr(divide=True)
-    pytest.raises(ValueError, lambda: S.Zero/S.Zero)
+    pytest.raises(ValueError, lambda: Integer(0)/Integer(0))
     seterr(divide=False)
-    assert S.Zero / S.Zero == nan
+    assert Integer(0)/Integer(0) == nan
     seterr(divide=False)
-    assert S.Zero / S.Zero == nan
+    assert Integer(0)/Integer(0) == nan
 
 
 def test_mod():
@@ -81,7 +83,7 @@ def test_mod():
     ans = Float(Rational(f) % r, 3)
     assert m == ans and m._prec == ans._prec
 
-    assert S.Zero % float(1) == 0
+    assert Integer(0) % float(1) == 0
 
     # No rounding required since these numbers can be represented
     # exactly.
@@ -232,12 +234,11 @@ def _test_rational_new(cls):
     """
     Tests that are common between Integer and Rational.
     """
-    assert cls(0) is S.Zero
-    assert cls(1) is S.One
-    assert cls(-1) is S.NegativeOne
-    # These look odd, but are similar to int():
-    assert cls('1') is S.One
-    assert cls('-1') is S.NegativeOne
+    for a, b in ((0, Integer(0)), (1, Integer(1)), (-1, Integer(-1)),
+                 # These look odd, but are similar to int():
+                 ('1', Integer(1)), ('-1', Integer(-1))):
+        clear_cache()
+        assert cls(a) is b
 
     i = Integer(10)
     assert _strictly_equal(i, cls('10'))
@@ -254,7 +255,7 @@ def test_Integer_new():
     """
     _test_rational_new(Integer)
 
-    assert _strictly_equal(Integer(0.9), S.Zero)
+    assert _strictly_equal(Integer(0.9), Integer(0))
     assert _strictly_equal(Integer(10.5), Integer(10))
     pytest.raises(ValueError, lambda: Integer("10.5"))
     assert Integer(Rational('1.' + '9'*20)) == 1
@@ -300,12 +301,12 @@ def test_Number_new():
     Test for Number constructor
     """
     # Expected behavior on numbers and strings
-    assert Number(1) is S.One
+    assert Number(1) is Integer(1)
     assert Number(2).__class__ is Integer
     assert Number(-622).__class__ is Integer
     assert Number(5, 3).__class__ is Rational
     assert Number(5.3).__class__ is Float
-    assert Number('1') is S.One
+    assert Number('1') is Integer(1)
     assert Number('2').__class__ is Integer
     assert Number('-622').__class__ is Integer
     assert Number('5/3').__class__ is Rational
@@ -452,8 +453,8 @@ def test_Float():
     assert Float(0) == zero
     assert Float(0, '') == Float('0', '')
     assert Float(1) == Float(1.0)
-    assert Float(S.Zero) == zero
-    assert Float(S.One) == Float(1.0)
+    assert Float(Integer(0)) == zero
+    assert Float(Integer(1)) == Float(1.0)
 
     assert Float(decimal.Decimal('0.1'), 3) == Float('.1', 3)
     assert Float(decimal.Decimal('nan')) == nan
@@ -468,7 +469,7 @@ def test_Float():
 
     pytest.raises(ValueError, lambda: Float('inf', dps=''))
 
-    assert Float(0)**2 is S.Zero
+    assert Float(0)**2 is Integer(0)
     assert Float(0)**t == Pow(Float(0), t, evaluate=False)
 
 
@@ -928,7 +929,7 @@ def test_powers_Integer():
     assert (-3) ** Rational(-2, 3) == \
         -(-1)**Rational(1, 3)*3**Rational(1, 3)/3
 
-    assert S.One.factors(visual=True) == 1
+    assert Integer(1).factors(visual=True) == 1
     assert Integer(1234).factors() == {617: 1, 2: 1}
     assert Rational(2*3, 3*5*7).factors() == {2: 1, 5: -1, 7: -1}
 
@@ -1292,7 +1293,7 @@ def test_zoo():
     pb = Symbol('pb', positive=True, finite=True)
     nb = Symbol('nb', negative=True, finite=True)
     imb = Symbol('ib', imaginary=True, finite=True)
-    for i in [I, oo, -oo, S.Zero, S.One, pi, S.Half, Integer(3), log(3),
+    for i in [I, oo, -oo, Integer(0), Integer(1), pi, S.Half, Integer(3), log(3),
               b, nz, p, n, im, pb, nb, imb, c]:
         if i.is_finite and (i.is_extended_real or i.is_imaginary):
             assert i + zoo is zoo
@@ -1335,9 +1336,9 @@ def test_zoo():
     assert zoo - zoo is nan
     assert zoo/zoo is nan
     assert zoo**zoo is nan
-    assert zoo**0 is S.One
+    assert zoo**0 is Integer(1)
     assert zoo**2 is zoo
-    assert 1/zoo is S.Zero
+    assert 1/zoo is Integer(0)
 
     assert Mul.flatten([Integer(-1), oo, Integer(0)]) == ([nan], [], None)
 
@@ -1368,7 +1369,7 @@ def test_GoldenRatio_expand():
 
 
 def test_as_content_primitive():
-    assert S.Zero.as_content_primitive() == (1, 0)
+    assert Integer(0).as_content_primitive() == (1, 0)
     assert S.Half.as_content_primitive() == (S.Half, 1)
     assert (-S.Half).as_content_primitive() == (S.Half, -1)
     assert Integer(3).as_content_primitive() == (3, 1)
@@ -1534,9 +1535,9 @@ def test_sympyissue_10063():
 def test_sympyissue_10020():
     assert oo**I is nan
     assert oo**(1 + I) is zoo
-    assert oo**(-1 + I) is S.Zero
+    assert oo**(-1 + I) is Integer(0)
     assert (-oo)**I is nan
-    assert (-oo)**(-1 + I) is S.Zero
+    assert (-oo)**(-1 + I) is Integer(0)
     assert oo**t == Pow(oo, t, evaluate=False)
     assert (-oo)**t == Pow(-oo, t, evaluate=False)
 

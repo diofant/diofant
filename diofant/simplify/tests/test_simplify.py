@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Abs, Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      Integer, Integral, Lt, Matrix, MatrixSymbol, Mul, Number,
-                     Piecewise, Rational, S, Sum, Symbol, acos, atan, besseli,
+                     Piecewise, Rational, Sum, Symbol, acos, atan, besseli,
                      besselj, besselsimp, binomial, cancel, combsimp, cos,
                      cosh, cosine_transform, count_ops, diff, erf, exp,
                      exp_polar, expand, expand_multinomial, factor, factorial,
@@ -337,8 +337,8 @@ def test_nsimplify():
     assert nsimplify(33.33, tolerance=10, rational=True) == Rational(30)
     assert nsimplify(37.76, tolerance=10, rational=True) == Rational(40)
     assert nsimplify(-203.1) == -Rational(2031, 10)
-    assert nsimplify(.2, tolerance=0) == S.One/5
-    assert nsimplify(-.2, tolerance=0) == -S.One/5
+    assert nsimplify(+.2, tolerance=0) == Rational(+1, 5)
+    assert nsimplify(-.2, tolerance=0) == Rational(-1, 5)
     assert nsimplify(.2222, tolerance=0) == Rational(1111, 5000)
     assert nsimplify(-.2222, tolerance=0) == -Rational(1111, 5000)
     # issue sympy/sympy#7211, PR sympy/sympy#4112

@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.abc import t, x, y
-from diofant.core import Derivative, Function, S, Subs, Symbol, symbols
+from diofant.core import Derivative, Function, Integer, Subs, Symbol, symbols
 from diofant.diffgeom import (BaseCovarDerivativeOp, Commutator, CoordSystem,
                               CovarDerivativeOp, Differential, LieDerivative,
                               Manifold, Patch, TensorProduct, WedgeProduct,
@@ -193,8 +193,8 @@ def test_correct_arguments():
     pytest.raises(ValueError, lambda: contravariant_order(R2.e_x*R2.e_y))
     pytest.raises(ValueError, lambda: covariant_order(R2.dx*R2.dy))
 
-    assert covariant_order(S.Zero, True) == -1
-    assert contravariant_order(S.Zero, True) == -1
+    assert covariant_order(Integer(0), True) == -1
+    assert contravariant_order(Integer(0), True) == -1
 
 
 def test_simplify():

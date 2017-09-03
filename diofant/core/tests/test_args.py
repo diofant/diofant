@@ -1666,9 +1666,9 @@ def test_diofant__matrices__immutable__ImmutableMatrix():
     assert _test_args(m)
     assert _test_args(Basic(*list(m)))
     m = ImmutableMatrix(2, 2, lambda i, j: 1)
-    assert m[0, 0] is S.One
+    assert m[0, 0] is Integer(1)
     m = ImmutableMatrix(2, 2, lambda i, j: 1/(1 + i) + 1/(1 + j))
-    assert m[1, 1] is S.One  # true div. will give 1.0 if i,j not sympified
+    assert m[1, 1] is Integer(1)  # true div. will give 1.0 if i,j not sympified
     assert _test_args(m)
     assert _test_args(Basic(*list(m)))
 
@@ -1684,9 +1684,9 @@ def test_diofant__matrices__immutable__ImmutableSparseMatrix():
     assert _test_args(m)
     assert _test_args(Basic(*list(m)))
     m = ImmutableSparseMatrix(2, 2, lambda i, j: 1)
-    assert m[0, 0] is S.One
+    assert m[0, 0] is Integer(1)
     m = ImmutableSparseMatrix(2, 2, lambda i, j: 1/(1 + i) + 1/(1 + j))
-    assert m[1, 1] is S.One  # true div. will give 1.0 if i,j not sympified
+    assert m[1, 1] is Integer(1)  # true div. will give 1.0 if i,j not sympified
     assert _test_args(m)
     assert _test_args(Basic(*list(m)))
 

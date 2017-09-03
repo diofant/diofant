@@ -2,7 +2,7 @@
 import pytest
 
 from diofant import (E, Eq, Function, I, Integer, Lambda, Piecewise, Poly,
-                     Rational, S, Symbol, exp, factor, log, sin, sqrt, symbols,
+                     Rational, Symbol, exp, factor, log, sin, sqrt, symbols,
                      tan)
 from diofant.abc import a, nu, t, x, y, z
 from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
@@ -581,7 +581,7 @@ def test_DifferentialExtension_misc():
          [Lambda(i, log(i**2))], [], [], [], [1], [x**2]),
         (Poly(3*t0, t0), Poly(1, t0), [Poly(1, x), Poly(1/x, t0)], [x, t0],
          [Lambda(i, log(i))], [], [], [], [1], [x])]
-    assert DifferentialExtension(S.Zero, x, dummy=False)._important_attrs == \
+    assert DifferentialExtension(Integer(0), x, dummy=False)._important_attrs == \
         (Poly(0, x), Poly(1, x), [Poly(1, x)], [x], [], [], [], [], [], [])
 
 

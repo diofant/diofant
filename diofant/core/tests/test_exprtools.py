@@ -218,7 +218,7 @@ def test_gcd_terms():
     assert simplify(collect(s, x)) == -sqrt(5)/2 - Rational(3, 2) + O(x)
 
     # issue sympy/sympy#5917
-    assert _gcd_terms([S.Zero, S.Zero]) == (0, 0, 1)
+    assert _gcd_terms([Integer(0), Integer(0)]) == (0, 0, 1)
     assert _gcd_terms([2*x + 4]) == (2, x + 2, 1)
 
     eq = x/(x + 1/x)

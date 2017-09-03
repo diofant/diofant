@@ -173,7 +173,7 @@ def test_Range():
     assert Range(0, -oo, -1)
 
     assert Range(0, oo, 2)._last_element is oo
-    assert Range(-oo, 1, 1)._last_element is S.Zero
+    assert Range(-oo, 1, 1)._last_element is Integer(0)
 
     it = iter(Range(-oo, 0, 2))
     assert (next(it), next(it)) == (-2, -4)

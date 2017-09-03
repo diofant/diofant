@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (E, FiniteSet, Float, Heaviside, I, Integer, Matrix, Mul,
-                     O, PoleError, Pow, Rational, S, Symbol, acos, acot, acoth,
+                     O, PoleError, Pow, Rational, Symbol, acos, acot, acoth,
                      acsc, arg, asec, asin, asinh, atan, atan2, atanh, cancel,
                      conjugate, cos, cosh, cot, coth, csc, csch, diff, exp,
                      gcd, im, log, nan, oo, pi, re, sec, sech, series,
@@ -780,8 +780,8 @@ def test_acos():
 
     assert acos(2 + p).conjugate() != acos(10 + p)
     assert acos(-3 + n).conjugate() != acos(-3 + n)
-    assert acos(S.One/3).conjugate() == acos(S.One/3)
-    assert acos(-S.One/3).conjugate() == acos(-S.One/3)
+    assert acos(Rational(+1, 3)).conjugate() == acos(Rational(+1, 3))
+    assert acos(Rational(-1, 3)).conjugate() == acos(Rational(-1, 3))
     assert acos(p + n*I).conjugate() == acos(p - n*I)
 
     z = Symbol('z')

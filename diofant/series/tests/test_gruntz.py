@@ -9,7 +9,7 @@ complex part, because it needs to calculate a limit to return the result.
 import pytest
 
 from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
-                     Limit, Mul, Pow, Rational, S, Symbol, acosh, acot, airyai,
+                     Limit, Mul, Pow, Rational, Symbol, acosh, acot, airyai,
                      airybi, atan, binomial, cos, cosh, coth, digamma, erf,
                      exp, factorial, fibonacci, gamma, li, log, loggamma, oo,
                      pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
@@ -260,7 +260,7 @@ def test_mrv():
 
 
 def test_rewrite():
-    assert rewrite(S.One, x, m) == (1, None)
+    assert rewrite(Integer(1), x, m) == (1, None)
 
     e = exp(x)
     assert rewrite(e, x, m) == (1/m, -x)
@@ -282,7 +282,7 @@ def test_rewrite():
 
 
 def test_mrv_leadterm():
-    assert mrv_leadterm(S.One, x) == (1, 0)
+    assert mrv_leadterm(Integer(1), x) == (1, 0)
 
     assert mrv_leadterm(-exp(1/x), x) == (-1, 0)
     assert mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x) == (-1, 0)

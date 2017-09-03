@@ -172,7 +172,7 @@ def test_Lambda():
     assert Lambda(x, 2*x) + Lambda(y, 2*y) == 2*Lambda(x, 2*x)
     assert Lambda(x, 2*x) not in [ Lambda(x, x) ]
     pytest.raises(TypeError, lambda: Lambda(1, x))
-    assert Lambda(x, 1)(1) is S.One
+    assert Lambda(x, 1)(1) is Integer(1)
 
     assert (2*x).canonical_variables == {}
     assert Lambda(x, 2*x).canonical_variables == {x: Symbol('0_')}
@@ -716,7 +716,7 @@ def test_sympyissue_7688():
 
 def test_mexpand():
     assert _mexpand(None) is None
-    assert _mexpand(1) is S.One
+    assert _mexpand(1) is Integer(1)
     assert _mexpand(x*(x + 1)**2) == (x*(x + 1)**2).expand()
 
 

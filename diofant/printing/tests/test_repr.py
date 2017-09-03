@@ -77,10 +77,10 @@ def test_Singletons():
     sT(oo, 'oo')
     sT(nan, 'nan')
     sT(-oo, '-oo')
-    sT(S.NegativeOne, 'Integer(-1)')
-    sT(S.One, 'Integer(1)')
+    sT(Integer(-1), 'Integer(-1)')
+    sT(Integer(1), 'Integer(1)')
     sT(pi, 'pi')
-    sT(S.Zero, 'Integer(0)')
+    sT(Integer(0), 'Integer(0)')
 
 
 def test_Integer():

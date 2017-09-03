@@ -3,7 +3,7 @@ import pytest
 from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      Function, Ge, Gt, Heaviside, I, Integer, Integral, Le, Lt,
                      Max, Mul, Number, NumberSymbol, O, Piecewise, Poly, Pow,
-                     Rational, S, Si, Sum, Symbol, Tuple, Wild, WildFunction,
+                     Rational, Si, Sum, Symbol, Tuple, Wild, WildFunction,
                      apart, cancel, collect, combsimp, cos, default_sort_key,
                      diff, exp, exp_polar, expand, factor, factorial, false,
                      gamma, log, lucas, nan, nsimplify, oo, pi, posify,
@@ -832,8 +832,8 @@ def test_as_poly_as_expr():
 
 
 def test_nonzero():
-    assert bool(S.Zero) is False
-    assert bool(S.One) is True
+    assert bool(Integer(0)) is False
+    assert bool(Integer(1)) is True
     assert bool(x) is True
     assert bool(x + y) is True
     assert bool(x - x) is False
@@ -1197,7 +1197,7 @@ def test_new_rawargs():
     assert m._new_rawargs(x, y, n).is_commutative is False
 
     assert m._new_rawargs(x, n, reeval=False).is_commutative is False
-    assert m._new_rawargs(S.One) is S.One
+    assert m._new_rawargs(Integer(1)) is Integer(1)
 
 
 def test_sympyissue_5226():
@@ -1220,7 +1220,7 @@ def test_sympyissue_5300():
 
 
 def test_as_coeff_Mul():
-    assert S.Zero.as_coeff_Mul() == (1, 0)
+    assert Integer(0).as_coeff_Mul() == (1, 0)
     assert Integer(3).as_coeff_Mul() == (3, 1)
     assert Rational(3, 4).as_coeff_Mul() == (Rational(3, 4), 1)
     assert Float(5.0).as_coeff_Mul() == (Float(5.0), 1)
@@ -1390,7 +1390,7 @@ def test_primitive():
             (Rational(1, 3), i + x)
     assert (oo + 2*x/3 + 4*y/7).primitive() == \
         (Rational(1, 21), 14*x + 12*y + oo)
-    assert S.Zero.primitive() == (1, 0)
+    assert Integer(0).primitive() == (1, 0)
 
 
 def test_sympyissue_5843():
@@ -1539,7 +1539,7 @@ def test_round():
     assert (Float(.03, 3) + 2*pi/100).round(4) == 0.0928
     assert (pi + 2*E*I).round() == 3 + 5*I
 
-    assert S.Zero.round() == 0
+    assert Integer(0).round() == 0
 
     a = (Add(1, Float('1.' + '9'*27, ''), evaluate=0))
     assert a.round(10) == Float('3.0000000000', '')

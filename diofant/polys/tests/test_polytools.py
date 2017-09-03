@@ -1835,7 +1835,7 @@ def test_gcd_list():
     assert gcd_list([x*(y + 42) - x*y - x*42]) == 0
 
     gcd = gcd_list([], x)
-    assert gcd.is_Number and gcd is S.Zero
+    assert gcd.is_Number and gcd is Integer(0)
 
     gcd = gcd_list([], x, polys=True)
     assert gcd.is_Poly and gcd.is_zero
@@ -1856,7 +1856,7 @@ def test_lcm_list():
     assert lcm_list([x*(y + 42) - x*y - x*42]) == 0
 
     lcm = lcm_list([], x)
-    assert lcm.is_Number and lcm is S.One
+    assert lcm.is_Number and lcm is Integer(1)
 
     lcm = lcm_list([], x, polys=True)
     assert lcm.is_Poly and lcm.is_one

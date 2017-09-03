@@ -1015,7 +1015,7 @@ def test_Pow_is_real():
 
     x = Symbol("x", nonnegative=True)
     y = Symbol("y", nonnegative=True)
-    assert im(x**y).expand(complex=True) is S.Zero
+    assert im(x**y).expand(complex=True) is Integer(0)
     assert (x**y).is_extended_real is True
     i = Symbol('i', imaginary=True)
     assert (exp(i)**I).is_extended_real is True

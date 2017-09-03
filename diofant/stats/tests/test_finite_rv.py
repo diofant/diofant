@@ -79,12 +79,12 @@ def test_dice():
 
     assert P(X > 3, X > 3) == 1
     assert P(X > Y, Eq(Y, 6)) == 0
-    assert P(Eq(X + Y, 12)) == S.One/36
-    assert P(Eq(X + Y, 12), Eq(X, 6)) == S.One/6
+    assert P(Eq(X + Y, 12)) == Rational(1, 36)
+    assert P(Eq(X + Y, 12), Eq(X, 6)) == Rational(1, 6)
 
     assert density(X + Y) == density(Y + Z) != density(X + X)
     d = density(2*X + Y**Z)
-    assert d[Integer(22)] == S.One/108 and d[Integer(4100)] == S.One/216 and Integer(3130) not in d
+    assert d[22] == Rational(1, 108) and d[4100] == Rational(1, 216) and 3130 not in d
 
     assert pspace(X).domain.as_boolean() == Or(
         *[Eq(X.symbol, i) for i in [1, 2, 3, 4, 5, 6]])
@@ -94,7 +94,7 @@ def test_dice():
 
 def test_given():
     X = Die('X', 6)
-    assert density(X, X > 5) == {Integer(6): Integer(1)}
+    assert density(X, X > 5) == {6: 1}
     assert where(X > 2, X > 5).as_boolean() == Eq(X.symbol, 6)
     assert sample(X, X > 5) == 6
 
@@ -172,11 +172,11 @@ def test_coins():
     C, D = Coin('C'), Coin('D')
     H, T = symbols('H, T')
     assert P(Eq(C, D)) == S.Half
-    assert density(Tuple(C, D)) == {(H, H): S.One/4, (H, T): S.One/4,
-                                    (T, H): S.One/4, (T, T): S.One/4}
+    assert density(Tuple(C, D)) == {(H, H): S.Half/2, (H, T): S.Half/2,
+                                    (T, H): S.Half/2, (T, T): S.Half/2}
     assert dict(density(C).items()) == {H: S.Half, T: S.Half}
 
-    F = Coin('F', S.One/10)
+    F = Coin('F', Rational(1, 10))
     assert P(Eq(F, H)) == Rational(1, 10)
 
     d = pspace(C).domain
@@ -247,9 +247,9 @@ def test_rademacher():
 
 
 def test_FiniteRV():
-    F = FiniteRV('F', {1: S.Half, 2: S.One/4, 3: S.One/4})
+    F = FiniteRV('F', {1: S.Half, 2: S.Half/2, 3: S.Half/2})
 
-    assert dict(density(F).items()) == {Integer(1): S.Half, Integer(2): S.One/4, Integer(3): S.One/4}
+    assert dict(density(F).items()) == {1: S.Half, 2: S.Half/2, 3: S.Half/2}
     assert P(F >= 2) == S.Half
 
     assert pspace(F).domain.as_boolean() == Or(
@@ -264,7 +264,7 @@ def test_density_call():
 
     assert 0 in d
     assert 5 not in d
-    assert d(Integer(0)) == d[Integer(0)]
+    assert d(0) == d[0]
 
 
 def test_DieDistribution():
