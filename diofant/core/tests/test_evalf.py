@@ -6,8 +6,8 @@ from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
                      GoldenRatio, I, Integral, Min, Mul, N, Pow, Product,
                      Rational, S, Sum, Symbol, atan, ceiling, cos, exp,
                      factorial, fibonacci, floor, im, integrate, log, nan, oo,
-                     pi, polar_lift, product, re, sin, sqrt, sstr, sympify,
-                     zoo)
+                     pi, polar_lift, product, re, sin, sqrt, sstr, symbols,
+                     sympify, zoo)
 from diofant.abc import H, n, x, y
 from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
                                 complex_accuracy, scaled_zero)
@@ -391,24 +391,26 @@ def test_sympyissue_4956_5204():
     # issue sympy/sympy#4956
     v = ((-27*12**Rational(1, 3)*sqrt(31)*I +
           27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I) /
-         (-2511*2**Rational(2, 3)*3**Rational(1, 3) + (29*18**Rational(1, 3) +
-                                                       9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
-                                                       87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
+         (-2511*2**Rational(2, 3)*3**Rational(1, 3) +
+          (29*18**Rational(1, 3) +
+           9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
+           87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
     assert NS(v, 1) == '0.e-118 - 0.e-118*I'
 
     # issue sympy/sympy#5204
-    v = (-(357587765856 + 18873261792*249**Rational(1, 2) +
-           56619785376*I*83**Rational(1, 2) + 108755765856*I*3**Rational(1, 2) +
-           41281887168*6**Rational(1, 3)*(1422 + 54*249**Rational(1, 2))**Rational(1, 3)
-           - 1239810624*6**Rational(1, 3)*249**Rational(1, 2)*(1422 +
-                                                               54*249**Rational(1, 2))**Rational(1, 3) - 3110400000*I*6**Rational(1, 3)*83**Rational(1, 2)*(1422 +
-                                                                                                                                                            54*249**Rational(1, 2))**Rational(1, 3) + 13478400000*I*3**Rational(1, 2)*6**Rational(1, 3)*(1422 +
-                                                                                                                                                                                                                                                         54*249**Rational(1, 2))**Rational(1, 3) + 1274950152*6**Rational(2, 3)*(1422 +
-                                                                                                                                                                                                                                                                                                                                 54*249**Rational(1, 2))**Rational(2, 3) + 32347944*6**Rational(2, 3)*249**Rational(1, 2)*(1422 +
-                                                                                                                                                                                                                                                                                                                                                                                                                           54*249**Rational(1, 2))**Rational(2, 3) - 1758790152*I*3**Rational(1, 2)*6**Rational(2, 3)*(1422 +
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       54*249**Rational(1, 2))**Rational(2, 3) - 304403832*I*6**Rational(2, 3)*83**Rational(1, 2)*(1422 +
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   4*249**Rational(1, 2))**Rational(2, 3))/(175732658352 + (1106028 + 25596*249**Rational(1, 2) +
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            76788*I*83**Rational(1, 2))**2))
+    x0, x1, x2, x3, x4, x5, x6, x7, x8, x9 = symbols('x:10')
+    v = ((-18873261792*x0 + 3110400000*I*x1*x5 + 1239810624*x1*x8 -
+          97043832*x1*x9 + 304403832*x2*x6*(4*x0 + 1422)**Rational(2, 3) -
+          56619785376*x2 - 41281887168*x5 - 1274950152*x6*x7 -
+          13478400000*I*x8 + 5276370456*I*x9 - 357587765856 -
+          108755765856*sqrt(3)*I)/((25596*x0 + 76788*x2 + 1106028)**2 +
+                                   175732658352))
+    v = v.subs(((x9, 2**Rational(2, 3)*3**Rational(1, 6)*x7),
+                (x8, 2**Rational(1, 3)*3**Rational(5, 6)*x4),
+                (x7, x3**Rational(2, 3)), (x6, 6**Rational(2, 3)),
+                (x5, 6**Rational(1, 3)*x4), (x4, x3**Rational(1, 3)),
+                (x3, 54*x0 + 1422), (x2, I*x1), (x1, sqrt(83)), (x0, sqrt(249))))
+
     assert NS(v, 5) == '0.077284 + 1.1104*I'
     assert NS(v, 1) == '0.08 + 1.*I'
 
