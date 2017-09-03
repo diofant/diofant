@@ -749,8 +749,8 @@ class SparseMatrixBase(MatrixBase):
                                         summ += C[i, p1]*C[j, p1]
                                 else:
                                     break
-                            else:
-                                break
+                        else:
+                            break
                     C[i, j] -= summ
                     C[i, j] /= C[j, j]
                 else:
@@ -790,7 +790,7 @@ class SparseMatrixBase(MatrixBase):
                             break
                     L[i, j] -= summ
                     L[i, j] /= D[j, j]
-                elif i == j:
+                else:
                     D[i, i] = self[i, i]
                     summ = 0
                     for k in Lrowstruc[i]:
@@ -1463,8 +1463,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
                         self._smat.pop((i, j), None)
             else:
                 for i, j, v in self.row_list():
-                    if rlo <= i < rhi and clo <= j < chi:
-                        self._smat.pop((i, j), None)
+                    assert rlo <= i < rhi and clo <= j < chi
+                    self._smat.pop((i, j), None)
             for k, v in value._smat.items():
                 i, j = k
                 self[i + rlo, j + clo] = value[i, j]

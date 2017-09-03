@@ -643,6 +643,15 @@ def test_inverse():
              [59, 28, 65]])
     assert all(type(m.inv(s)) is cls for s in 'CH LDL'.split())
 
+    A = ImmutableSparseMatrix([[20682, 12468,  9899, 12111],
+                               [12468, 18618, 14513,  9401],
+                               [ 9899, 14513, 12770,  6823],
+                               [12111,  9401,  6823,  7894]])
+    Ainv = A.inv('CH')
+    assert A.inv('LDL') == Ainv
+    assert A*Ainv == Ainv*A
+    assert Matrix(Ainv*A) == eye(4)
+
 
 def test_matrix_inverse_mod():
     A = Matrix(2, 1, [1, 0])

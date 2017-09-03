@@ -130,6 +130,15 @@ def test_sparse_matrix():
     assert S == SparseMatrix([[0, 1, 0],
                               [1, 0, 0],
                               [0, 2, 1]])
+    S.row_swap(0, 2)
+    assert S == SparseMatrix([[0, 2, 1],
+                              [1, 0, 0],
+                              [0, 1, 0]])
+
+    S.col_swap(0, 2)
+    assert S == SparseMatrix([[1, 2, 0],
+                              [0, 0, 1],
+                              [0, 1, 0]])
 
     a = SparseMatrix(1, 2, [1, 2])
     b = a.copy()
