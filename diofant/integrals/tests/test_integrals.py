@@ -3,7 +3,7 @@ import pytest
 from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
                      EulerGamma, Function, I, Integral, Interval, Lambda,
                      LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
-                     Rational, S, Si, Sum, Symbol, Tuple, acos, acosh, asin,
+                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, asin,
                      asinh, atan, cos, cosh, diff, erf, erfi, exp, expand_func,
                      expand_mul, factor, fresnels, gamma, im, integrate, log,
                      lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
@@ -289,7 +289,7 @@ def test_sympyissue_4516():
 
 def test_sympyissue_7450():
     ans = integrate(exp(-(1 + I)*x), (x, 0, oo))
-    assert re(ans) == S.Half and im(ans) == -S.Half
+    assert re(ans) == Rational(1, 2) and im(ans) == Rational(-1, 2)
 
 
 def test_matrices():
@@ -817,7 +817,7 @@ def test_sympyissue_4890():
 
 def test_sympyissue_4376():
     n = Symbol('n', integer=True, positive=True)
-    assert simplify(integrate(n*(x**(1/n) - 1), (x, 0, S.Half)) -
+    assert simplify(integrate(n*(x**(1/n) - 1), (x, 0, Rational(1, 2))) -
                     (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
 
 
@@ -1075,8 +1075,8 @@ def test_sympyissue_8368():
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
                                 (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
-                                (meijerg(((0,), (-S.Half, S.Half)),
-                                         ((0, S.Half), (-S.Half,)),
+                                (meijerg(((0,), (Rational(-1, 2), Rational(1, 2))),
+                                         ((0, Rational(1, 2)), (Rational(-1, 2),)),
                                          polar_lift(s)**2), True)),
                    And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
                        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),
@@ -1136,7 +1136,7 @@ def test_sympyissue_11045():
 
 def test_definite_integrals_abs():
     # issue sympy/sympy#8430
-    assert integrate(abs(x), (x, 0, 1)) == S.Half
+    assert integrate(abs(x), (x, 0, 1)) == Rational(1, 2)
     # issue sympy/sympy#7165
     r = Symbol('r', real=True)
     assert (integrate(abs(x - r**2), (x, 0, 2)) ==

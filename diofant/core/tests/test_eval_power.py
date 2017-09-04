@@ -2,7 +2,7 @@ import pytest
 
 from diofant.abc import a, b, c, x, y
 from diofant.core import (Basic, E, Float, I, Integer, Number, Pow, Rational,
-                          S, Symbol, nan, oo, pi, symbols, zoo)
+                          Symbol, nan, oo, pi, symbols, zoo)
 from diofant.core.tests.test_evalf import NS
 from diofant.functions.elementary.exponential import exp, log
 from diofant.functions.elementary.miscellaneous import cbrt, root, sqrt
@@ -126,7 +126,7 @@ def test_sympyissue_4362():
     eq = eqn(nneg, dneg, -2)
     assert eq.is_Pow and eq.as_numer_denom() == (dneg**2, 1)
     # pos or neg rational
-    pow = S.Half
+    pow = Rational(1, 2)
     eq = eqn(npos, dpos, pow)
     assert eq.is_Pow and eq.as_numer_denom() == (npos**pow, dpos**pow)
     eq = eqn(npos, dneg, pow)
@@ -221,7 +221,7 @@ def test_zero():
 def test_pow_as_base_exp():
     assert (oo**(2 - x)).as_base_exp() == (oo, 2 - x)
     assert (oo**(x - 2)).as_base_exp() == (oo, x - 2)
-    p = S.Half**x
+    p = Rational(1, 2)**x
     assert p.base, p.exp == p.as_base_exp() == (Integer(2), -x)
     # issue sympy/sympy#8344:
     assert Pow(1, 2, evaluate=False).as_base_exp() == (Integer(1), Integer(2))
@@ -303,21 +303,21 @@ def test_sympyissue_7638():
     r = symbols('r', extended_real=True)
     assert sqrt(r**2) == abs(r)
     assert cbrt(r**3) != r
-    assert sqrt(Pow(2*I, 5*S.Half)) != (2*I)**(5/Integer(4))
+    assert sqrt(Pow(2*I, Rational(5, 2))) != (2*I)**Rational(5, 4)
     p = symbols('p', positive=True)
     assert cbrt(p**2) == p**(2/Integer(3))
     assert NS(((0.2 + 0.7*I)**(0.7 + 1.0*I))**(0.5 - 0.1*I), 1) == '0.4 + 0.2*I'
     assert sqrt(1/(1 + I)) == sqrt((1 - I)/2)  # or 1/sqrt(1 + I)
     e = 1/(1 - sqrt(2))
     assert sqrt(e) == I/sqrt(-1 + sqrt(2))
-    assert e**-S.Half == -I*sqrt(-1 + sqrt(2))
-    assert sqrt((cos(1)**2 + sin(1)**2 - 1)**(3 + I)).exp == S.Half
+    assert e**Rational(-1, 2) == -I*sqrt(-1 + sqrt(2))
+    assert sqrt((cos(1)**2 + sin(1)**2 - 1)**(3 + I)).exp == Rational(1, 2)
     assert sqrt(r**(4/Integer(3))) != r**(2/Integer(3))
     assert sqrt((p + I)**(4/Integer(3))) == (p + I)**(2/Integer(3))
     assert sqrt((p - p**2*I)**2) == p - p**2*I
     assert sqrt((p + r*I)**2) != p + r*I
     e = (1 + I/5)
-    assert sqrt(e**5) == e**(5*S.Half)
+    assert sqrt(e**5) == e**Rational(5, 2)
     assert sqrt(e**6) == e**3
     assert sqrt((1 + I*r)**6) != (1 + I*r)**3
 

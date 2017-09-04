@@ -59,9 +59,9 @@ def test_erf():
                                                   I*fresnels(z*(1 - I)/sqrt(pi)))
     assert erf(z).rewrite('fresnelc') == (1 + I)*(fresnelc(z*(1 - I)/sqrt(pi)) -
                                                   I*fresnels(z*(1 - I)/sqrt(pi)))
-    assert erf(z).rewrite('hyper') == 2*z*hyper([S.Half], [3*S.Half], -z**2)/sqrt(pi)
-    assert erf(z).rewrite('meijerg') == z*meijerg([S.Half], [], [0], [-S.Half], z**2)/sqrt(pi)
-    assert erf(z).rewrite('expint') == sqrt(z**2)/z - z*expint(S.Half, z**2)/sqrt(pi)
+    assert erf(z).rewrite('hyper') == 2*z*hyper([Rational(1, 2)], [Rational(3, 2)], -z**2)/sqrt(pi)
+    assert erf(z).rewrite('meijerg') == z*meijerg([Rational(1, 2)], [], [0], [Rational(-1, 2)], z**2)/sqrt(pi)
+    assert erf(z).rewrite('expint') == sqrt(z**2)/z - z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
     assert limit(exp(x)*exp(x**2)*(erf(x + 1/exp(x)) - erf(x)), x, oo) == \
         2/sqrt(pi)
@@ -138,10 +138,10 @@ def test_erfc():
                                                        I*fresnels(z*(1 - I)/sqrt(pi)))
     assert erfc(z).rewrite('fresnelc') == 1 - (1 + I)*(fresnelc(z*(1 - I)/sqrt(pi)) -
                                                        I*fresnels(z*(1 - I)/sqrt(pi)))
-    assert erfc(z).rewrite('hyper') == 1 - 2*z*hyper([S.Half], [3*S.Half], -z**2)/sqrt(pi)
-    assert erfc(z).rewrite('meijerg') == 1 - z*meijerg([S.Half], [], [0], [-S.Half], z**2)/sqrt(pi)
+    assert erfc(z).rewrite('hyper') == 1 - 2*z*hyper([Rational(1, 2)], [Rational(3, 2)], -z**2)/sqrt(pi)
+    assert erfc(z).rewrite('meijerg') == 1 - z*meijerg([Rational(1, 2)], [], [0], [Rational(-1, 2)], z**2)/sqrt(pi)
     assert erfc(z).rewrite('uppergamma') == 1 - sqrt(z**2)*erf(sqrt(z**2))/z
-    assert erfc(z).rewrite('expint') == 1 - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(pi)
+    assert erfc(z).rewrite('expint') == 1 - sqrt(z**2)/z + z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
     assert erfc(x).as_real_imag() == \
         ((erfc(re(x) - I*re(x)*Abs(im(x))/Abs(re(x)))/2 +
@@ -198,11 +198,11 @@ def test_erfi():
                                                    I*fresnels(z*(1 + I)/sqrt(pi)))
     assert erfi(z).rewrite('fresnelc') == (1 - I)*(fresnelc(z*(1 + I)/sqrt(pi)) -
                                                    I*fresnels(z*(1 + I)/sqrt(pi)))
-    assert erfi(z).rewrite('hyper') == 2*z*hyper([S.Half], [3*S.Half], z**2)/sqrt(pi)
-    assert erfi(z).rewrite('meijerg') == z*meijerg([S.Half], [], [0], [-S.Half], -z**2)/sqrt(pi)
-    assert erfi(z).rewrite('uppergamma') == (sqrt(-z**2)/z*(uppergamma(S.Half,
+    assert erfi(z).rewrite('hyper') == 2*z*hyper([Rational(1, 2)], [Rational(3, 2)], z**2)/sqrt(pi)
+    assert erfi(z).rewrite('meijerg') == z*meijerg([Rational(1, 2)], [], [0], [Rational(-1, 2)], -z**2)/sqrt(pi)
+    assert erfi(z).rewrite('uppergamma') == (sqrt(-z**2)/z*(uppergamma(Rational(1, 2),
                                                                        -z**2)/sqrt(pi) - 1))
-    assert erfi(z).rewrite('expint') == sqrt(-z**2)/z - z*expint(S.Half, -z**2)/sqrt(pi)
+    assert erfi(z).rewrite('expint') == sqrt(-z**2)/z - z*expint(Rational(1, 2), -z**2)/sqrt(pi)
 
     assert erfi(x).as_real_imag() == \
         ((erfi(re(x) - I*re(x)*Abs(im(x))/Abs(re(x)))/2 +
@@ -612,8 +612,8 @@ def test_ci():
 
 def test_fresnel():
     assert fresnels(0) == 0
-    assert fresnels(oo) == S.Half
-    assert fresnels(-oo) == -S.Half
+    assert fresnels(+oo) == Rational(+1, 2)
+    assert fresnels(-oo) == Rational(-1, 2)
 
     assert fresnels(z) == fresnels(z)
     assert fresnels(-z) == -fresnels(z)
@@ -665,8 +665,8 @@ def test_fresnel():
                              (Rational(1, 4), 0)), -pi**2*z**4/16)/(2*(-z)**Rational(3, 4)*(z**2)**Rational(3, 4))
 
     assert fresnelc(0) == 0
-    assert fresnelc(oo) == S.Half
-    assert fresnelc(-oo) == -S.Half
+    assert fresnelc(+oo) == Rational(+1, 2)
+    assert fresnelc(-oo) == Rational(-1, 2)
 
     assert fresnelc(z) == fresnelc(z)
     assert fresnelc(-z) == -fresnelc(z)
@@ -697,16 +697,16 @@ def test_fresnel():
     # issue sympy/sympy#6510
     assert fresnels(z).series(z, oo) == \
         (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + \
-        (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + S.Half
+        (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + Rational(1, 2)
     assert fresnelc(z).series(z, oo) == \
         (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + \
-        (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + S.Half
+        (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + Rational(1, 2)
     assert fresnels(1/z).series(z) == \
         (-z**3/pi**2 + O(z**6))*sin(pi/(2*z**2)) + (-z/pi + 3*z**5/pi**3 +
-                                                    O(z**6))*cos(pi/(2*z**2)) + S.Half
+                                                    O(z**6))*cos(pi/(2*z**2)) + Rational(1, 2)
     assert fresnelc(1/z).series(z) == \
         (-z**3/pi**2 + O(z**6))*cos(pi/(2*z**2)) + (z/pi - 3*z**5/pi**3 +
-                                                    O(z**6))*sin(pi/(2*z**2)) + S.Half
+                                                    O(z**6))*sin(pi/(2*z**2)) + Rational(1, 2)
 
     assert fresnelc(w).is_extended_real is True
 

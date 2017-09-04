@@ -3,8 +3,8 @@ import collections
 import pytest
 
 from diofant import (Abs, Basic, Dummy, E, Float, Function, I, Integer, Max,
-                     Min, N, Poly, Pow, PurePoly, Rational, S, Symbol, cos,
-                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
+                     Min, N, Poly, Pow, PurePoly, Rational, Symbol, cos, exp,
+                     oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
                      trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.core.compatibility import iterable
@@ -183,7 +183,7 @@ def test_power():
     A = Matrix([[0, 4], [-1, 5]])
     assert (A**Rational(1, 2))**2 == A
 
-    assert Matrix([[1, 0], [1, 1]])**S.Half == Matrix([[1, 0], [S.Half, 1]])
+    assert Matrix([[1, 0], [1, 1]])**Rational(1, 2) == Matrix([[1, 0], [Rational(1, 2), 1]])
     assert Matrix([[1, a], [0, 1]])**n == Matrix([[1, a*n], [0, 1]])
     assert Matrix([[b, a], [0, b]])**n == Matrix([[b**n, a*b**(n - 1)*n], [0, b**n]])
     assert Matrix([[a, 1, 0], [0, a, 1], [0, 0, a]])**n == Matrix([
@@ -242,7 +242,7 @@ def test_creation():
 
 
 def test_tolist():
-    lst = [[1, S.Half, x*y, 0], [x, y, z, x**2], [y, -1, z*x, 3]]
+    lst = [[1, Rational(1, 2), x*y, 0], [x, y, z, x**2], [y, -1, z*x, 3]]
     m = Matrix(lst)
     assert m.tolist() == lst
 
@@ -2566,16 +2566,16 @@ def test_sympyissue_9480():
 
 
 def test_diofantissue_288():
-    m = Matrix([[-exp(I*k)*I/(4*k) + S.Half + exp(-I*k)*I/(4*k),
-                 exp(I*k)*I/(4*k) + S.Half - exp(-I*k)*I/(4*k),
-                 exp(I*k)/4 + S.Half + exp(-I*k)/4,
-                 -exp(I*k)/4 - S.Half - exp(-I*k)/4],
-                [exp(I*k)*I/(4*k) + S.Half - exp(-I*k)*I/(4*k),
-                 -exp(I*k)*I/(4*k) + S.Half + exp(-I*k)*I/(4*k),
-                 -exp(I*k)/4 - S.Half - exp(-I*k)/4,
-                 exp(I*k)/4 + S.Half + exp(-I*k)/4],
-                [exp(I*k)/4 + S.Half + exp(-I*k)/4,
-                 -exp(I*k)/4 - S.Half - exp(-I*k)/4,
+    m = Matrix([[-exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
+                 exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
+                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4],
+                [exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
+                 -exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
+                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4],
+                [exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
                  exp(I*k)*I*k/4 - exp(-I*k)*I*k/4,
                  -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4],
                 [-exp(I*k)/4 - 1/2 - exp(-I*k)/4,

@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
-                     Ne, Or, Piecewise, Product, Rational, S, Sum, Symbol,
+                     Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
                      binomial, cos, exp, factorial, gamma, harmonic, log, nan,
                      oo, pi, product, simplify, sin, sqrt, summation, symbols,
                      sympify, zeta)
@@ -206,7 +206,7 @@ def test_arithmetic_sums():
         2*d + 2*d**2 + a*d + a*d**2 - d*a**2 - a**2*d**2
     assert summation(cos(n), (n, -2, 1)) == cos(-2) + cos(-1) + cos(0) + cos(1)
     assert summation(cos(n), (n, x, x + 2)) == cos(x) + cos(x + 1) + cos(x + 2)
-    assert isinstance(summation(cos(n), (n, x, x + S.Half)), Sum)
+    assert isinstance(summation(cos(n), (n, x, x + Rational(1, 2))), Sum)
     assert summation(k, (k, 0, oo)) == oo
 
 
@@ -437,7 +437,7 @@ def test_simple_products():
         == 3**(2*(1 - a + b) + b/2 + (b**2)/2 + a/2 - (a**2)/2)
     assert product(cos(n), (n, 3, 5)) == cos(3)*cos(4)*cos(5)
     assert product(cos(n), (n, x, x + 2)) == cos(x)*cos(x + 1)*cos(x + 2)
-    assert isinstance(product(cos(n), (n, x, x + S.Half)), Product)
+    assert isinstance(product(cos(n), (n, x, x + Rational(1, 2))), Product)
     # If Product managed to evaluate this one, it most likely got it wrong!
     assert isinstance(Product(n**n, (n, 1, b)), Product)
 

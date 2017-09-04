@@ -3,8 +3,8 @@
 import pytest
 
 from diofant import (Add, Basic, Dict, Float, I, Integer, Integral, Interval,
-                     Mul, O, Rational, S, Sum, Symbol, Tuple, collect, cos,
-                     exp, oo, root, simplify, sin, sqrt, symbols)
+                     Mul, O, Rational, Sum, Symbol, Tuple, collect, cos, exp,
+                     oo, root, simplify, sin, sqrt, symbols)
 from diofant.abc import a, b, t, x, y, z
 from diofant.core.exprtools import (Factors, Term, _gcd_terms, decompose_power,
                                     factor_nc, factor_terms, gcd_terms)
@@ -76,7 +76,7 @@ def test_Factors():
     assert Factors(-2.) == Factors({Integer(-1): Integer(1), Float(2.): 1})
     assert Factors((-2.)**x) == Factors({Float(-2.): x})
     assert Factors(Integer(-2)) == Factors({Integer(-1): Integer(1), Integer(2): 1})
-    assert Factors(S.Half) == Factors({Integer(2): -1})
+    assert Factors(Rational(1, 2)) == Factors({Integer(2): -1})
     assert Factors(Rational(3, 2)) == Factors({Integer(3): 1, Integer(2): Integer(-1)})
     assert Factors({I: Integer(1)}) == Factors(I)
     assert Factors({-1.0: 2, I: 1}) == Factors({Float(1.0): 1, I: 1})
@@ -180,11 +180,11 @@ def test_gcd_terms():
     f = 2*(x + 1)*(x + 4)/(5*x**2 + 5) + (2*x + 2)*(x + 5)/(x**2 + 1)/5 + \
         (2*x + 2)*(x + 6)/(5*x**2 + 5)
 
-    assert _gcd_terms(f) == ((Rational(6, 5))*((1 + x)/(1 + x**2)), 5 + x, 1)
+    assert _gcd_terms(f) == (Rational(6, 5)*((1 + x)/(1 + x**2)), 5 + x, 1)
     assert _gcd_terms(Add.make_args(f)) == \
-        ((Rational(6, 5))*((1 + x)/(1 + x**2)), 5 + x, 1)
+        (Rational(6, 5)*((1 + x)/(1 + x**2)), 5 + x, 1)
 
-    newf = (Rational(6, 5))*((1 + x)*(5 + x)/(1 + x**2))
+    newf = Rational(6, 5)*((1 + x)*(5 + x)/(1 + x**2))
     assert gcd_terms(f) == newf
     args = Add.make_args(f)
     # non-Basic sequences of terms treated as terms of Add

@@ -2,7 +2,7 @@ from random import uniform
 
 import pytest
 
-from diofant import (EulerGamma, I, Integer, O, Rational, S, Symbol, conjugate,
+from diofant import (EulerGamma, I, Integer, O, Rational, Symbol, conjugate,
                      cos, erf, exp, exp_polar, expand_func, expint, factorial,
                      gamma, harmonic, im, log, loggamma, lowergamma, meijerg,
                      nan, oo, pi, polygamma, sin, sqrt, trigamma, uppergamma,
@@ -113,14 +113,14 @@ def test_lowergamma():
         - meijerg([], [1, 1], [0, 0, x], [], y)
     pytest.raises(ArgumentIndexError, lambda: lowergamma(x, y).fdiff(3))
 
-    assert lowergamma(S.Half, x) == sqrt(pi)*erf(sqrt(x))
-    assert not lowergamma(S.Half - 3, x).has(lowergamma)
-    assert not lowergamma(S.Half + 3, x).has(lowergamma)
-    assert lowergamma(S.Half, x, evaluate=False).has(lowergamma)
-    assert tn(lowergamma(S.Half + 3, x, evaluate=False),
-              lowergamma(S.Half + 3, x), x)
-    assert tn(lowergamma(S.Half - 3, x, evaluate=False),
-              lowergamma(S.Half - 3, x), x)
+    assert lowergamma(Rational(1, 2), x) == sqrt(pi)*erf(sqrt(x))
+    assert not lowergamma(Rational(1, 2) - 3, x).has(lowergamma)
+    assert not lowergamma(Rational(1, 2) + 3, x).has(lowergamma)
+    assert lowergamma(Rational(1, 2), x, evaluate=False).has(lowergamma)
+    assert tn(lowergamma(Rational(1, 2) + 3, x, evaluate=False),
+              lowergamma(Rational(1, 2) + 3, x), x)
+    assert tn(lowergamma(Rational(1, 2) - 3, x, evaluate=False),
+              lowergamma(Rational(1, 2) - 3, x), x)
 
     assert tn_branch(-3, lowergamma)
     assert tn_branch(-4, lowergamma)
@@ -156,14 +156,14 @@ def test_uppergamma():
     assert td(uppergamma(x, randcplx()), x)
     pytest.raises(ArgumentIndexError, lambda: uppergamma(x, y).fdiff(3))
 
-    assert uppergamma(S.Half, x) == sqrt(pi)*(1 - erf(sqrt(x)))
-    assert not uppergamma(S.Half - 3, x).has(uppergamma)
-    assert not uppergamma(S.Half + 3, x).has(uppergamma)
-    assert uppergamma(S.Half, x, evaluate=False).has(uppergamma)
-    assert tn(uppergamma(S.Half + 3, x, evaluate=False),
-              uppergamma(S.Half + 3, x), x)
-    assert tn(uppergamma(S.Half - 3, x, evaluate=False),
-              uppergamma(S.Half - 3, x), x)
+    assert uppergamma(Rational(1, 2), x) == sqrt(pi)*(1 - erf(sqrt(x)))
+    assert not uppergamma(Rational(1, 2) - 3, x).has(uppergamma)
+    assert not uppergamma(Rational(1, 2) + 3, x).has(uppergamma)
+    assert uppergamma(Rational(1, 2), x, evaluate=False).has(uppergamma)
+    assert tn(uppergamma(Rational(1, 2) + 3, x, evaluate=False),
+              uppergamma(Rational(1, 2) + 3, x), x)
+    assert tn(uppergamma(Rational(1, 2) - 3, x, evaluate=False),
+              uppergamma(Rational(1, 2) - 3, x), x)
 
     assert tn_branch(-3, uppergamma)
     assert tn_branch(-4, uppergamma)
@@ -328,7 +328,7 @@ def test_loggamma():
     n = Symbol("n", integer=True, positive=True)
     assert loggamma(n) == log(gamma(n))
     assert loggamma(-n) == oo
-    assert loggamma(n/2) == log(2**(-n + 1)*sqrt(pi)*gamma(n)/gamma(n/2 + S.Half))
+    assert loggamma(n/2) == log(2**(-n + 1)*sqrt(pi)*gamma(n)/gamma(n/2 + Rational(1, 2)))
 
     assert loggamma(oo) == oo
     assert loggamma(-oo) == zoo
@@ -441,8 +441,8 @@ def test_sympyissue_8524():
     assert gamma(p).is_positive is None
     assert gamma(q).is_positive is None
     assert gamma(r).is_positive is None
-    assert gamma(e + S.Half).is_positive is True
-    assert gamma(e - S.Half).is_positive is False
+    assert gamma(e + Rational(1, 2)).is_positive is True
+    assert gamma(e - Rational(1, 2)).is_positive is False
 
 
 def test_sympyissue_12569():

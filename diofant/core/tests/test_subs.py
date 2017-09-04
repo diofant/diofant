@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
-                     Integer, Lambda, Min, Mul, Piecewise, Rational, RootOf, S,
+                     Integer, Lambda, Min, Mul, Piecewise, Rational, RootOf,
                      Subs, Symbol, Tuple, Wild, abc, atan2, cos, cot, cse, exp,
                      factor, false, log, nsimplify, oo, pi, sin, sqrt, symbols,
                      tan, zoo)
@@ -227,7 +227,7 @@ def test_mul():
     assert (-2*x**3/9).subs(-x/3, z) == -2*x*z**2
     assert (-2*x**3/9).subs(-2*x, z) == z*x**2/9
     assert (-2*x**3/9).subs(2*x, z) == -z*x**2/9
-    assert (2*(3*x/5/7)**2).subs(3*x/5, z) == 2*(Rational(1, 7))**2*z**2
+    assert (2*(3*x/5/7)**2).subs(3*x/5, z) == 2*Rational(1, 7)**2*z**2
     assert (4*x).subs(-2*x, z) == 4*x  # try keep subs literal
 
 
@@ -493,7 +493,7 @@ def test_sympyissue_5651():
     a, b, c, K = symbols('a b c K', commutative=True)
     assert (a/(b*c)).subs(b*c, K) == a/K
     assert (a/(b**2*c**3)).subs(b*c, K) == a/(c*K**2)
-    assert (1/(x*y)).subs(x*y, 2) == S.Half
+    assert (1/(x*y)).subs(x*y, 2) == Rational(1, 2)
     assert ((1 + x*y)/(x*y)).subs(x*y, 1) == 2
     assert (x*y*z).subs(x*y, 2) == 2*z
     assert ((1 + x*y)/(x*y)/z).subs(x*y, 1) == 2/z

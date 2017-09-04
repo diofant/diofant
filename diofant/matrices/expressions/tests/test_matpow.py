@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.concrete import Sum
-from diofant.core import S, pi, symbols
+from diofant.core import Rational, pi, symbols
 from diofant.matrices import (Identity, ImmutableMatrix, MatrixSymbol,
                               ShapeError, ZeroMatrix)
 from diofant.matrices.expressions import MatAdd, MatMul, MatPow
@@ -40,7 +40,7 @@ def test_as_explicit_symbol():
 def test_as_explicit_nonsquare_symbol():
     X = MatrixSymbol('X', 2, 3)
     assert MatPow(X, 1).as_explicit() == X.as_explicit()
-    for r in [0, 2, S.Half, pi]:
+    for r in [0, 2, Rational(1, 2), pi]:
         pytest.raises(ShapeError, lambda: MatPow(X, r).as_explicit())
 
 
@@ -53,7 +53,7 @@ def test_as_explicit():
     assert MatPow(A, -2).as_explicit() == (A.inv())**2
     # less expensive than testing on a 2x2
     A = ImmutableMatrix([4])
-    assert MatPow(A, S.Half).as_explicit() == A**S.Half
+    assert MatPow(A, Rational(1, 2)).as_explicit() == A**Rational(1, 2)
 
 
 def test_as_explicit_nonsquare():
@@ -87,7 +87,7 @@ def test_doit_with_MatrixBase():
     assert MatPow(X, -1).doit() == X.inv()
     assert MatPow(X, -2).doit() == (X.inv())**2
     # less expensive than testing on a 2x2
-    assert MatPow(ImmutableMatrix([4]), S.Half).doit() == ImmutableMatrix([2])
+    assert MatPow(ImmutableMatrix([4]), Rational(1, 2)).doit() == ImmutableMatrix([2])
 
 
 def test_doit_nonsquare():

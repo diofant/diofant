@@ -1,4 +1,4 @@
-from diofant import (FallingFactorial, Rational, RisingFactorial, S, Symbol,
+from diofant import (FallingFactorial, Rational, RisingFactorial, Symbol,
                      binomial, combsimp, cos, exp, factorial, gamma, pi,
                      powsimp, rf, simplify, sin, sqrt, symbols)
 from diofant.abc import k, n, x, y
@@ -121,7 +121,7 @@ def test_combsimp_gamma():
         -2**(2*k + 1)*sqrt(pi)/(2*((2*k + 1)*cos(pi*k))))
     assert combsimp(
         gamma(k)*gamma(k + R(1, 3))*gamma(k + R(2, 3))/gamma(3*k/2)) == (
-        3*2**(3*k + 1)*3**(-3*k - S.Half)*sqrt(pi)*gamma(3*k/2 + S.Half)/2)
+        3*2**(3*k + 1)*3**(-3*k - Rational(1, 2))*sqrt(pi)*gamma(3*k/2 + Rational(1, 2))/2)
 
 
 def test_sympyissue_9699():

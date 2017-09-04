@@ -4,9 +4,9 @@ from mpmath.libmp.libmpf import from_float
 
 from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
                      GoldenRatio, I, Integral, Min, Mul, N, Pow, Product,
-                     Rational, S, Sum, Symbol, atan, ceiling, cos, exp,
-                     factorial, fibonacci, floor, im, integrate, log, nan, oo,
-                     pi, polar_lift, product, re, sin, sqrt, sstr, symbols,
+                     Rational, Sum, Symbol, atan, ceiling, cos, exp, factorial,
+                     fibonacci, floor, im, integrate, log, nan, oo, pi,
+                     polar_lift, product, re, sin, sqrt, sstr, symbols,
                      sympify, zoo)
 from diofant.abc import H, n, x, y
 from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
@@ -314,7 +314,7 @@ def test_evalf_divergent_series():
 
 def test_evalf_product():
     assert Product(n, (n, 1, 10)).evalf() == 3628800.
-    assert Product(1 - S.Half**2/n**2, (n, 1, oo)).evalf(5) == 0.63662
+    assert Product(1 - 1/(4*n**2), (n, 1, oo)).evalf(5) == 0.63662
     assert Product(n, (n, -1, 3)).evalf() == 0
 
 
@@ -486,10 +486,10 @@ def test_sympyissue_8821_highprec_from_str():
 
 def test_sympyissue_8853():
     p = Symbol('x', even=True, positive=True)
-    assert floor(-p - S.Half).is_even is False
-    assert floor(-p + S.Half).is_even
-    assert ceiling(p - S.Half).is_even
-    assert ceiling(p + S.Half).is_even is False
+    assert floor(-p - Rational(1, 2)).is_even is False
+    assert floor(-p + Rational(1, 2)).is_even
+    assert ceiling(p - Rational(1, 2)).is_even
+    assert ceiling(p + Rational(1, 2)).is_even is False
 
 
 def test_sympyissue_9326():
@@ -507,15 +507,15 @@ def test_diofantissue_161():
 
 def test_AssocOp_Function():
     e = Min(-sqrt(3)*cos(pi/18)/6 +
-            re(1/((-S.Half - sqrt(3)*I/2)*(Rational(1, 6) +
-                                           sqrt(3)*I/18)**Rational(1, 3)))/3 + sin(pi/18)/2 + 2 +
+            re(1/((Rational(-1, 2) - sqrt(3)*I/2)*(Rational(1, 6) +
+                                                   sqrt(3)*I/18)**Rational(1, 3)))/3 + sin(pi/18)/2 + 2 +
             I*(-cos(pi/18)/2 - sqrt(3)*sin(pi/18)/6 +
-               im(1/((-S.Half - sqrt(3)*I/2)*(Rational(1, 6) +
-                                              sqrt(3)*I/18)**Rational(1, 3)))/3),
-            re(1/((-S.Half + sqrt(3)*I/2)*(Rational(1, 6) + sqrt(3)*I/18)**Rational(1, 3)))/3 -
+               im(1/((Rational(-1, 2) - sqrt(3)*I/2)*(Rational(1, 6) +
+                                                      sqrt(3)*I/18)**Rational(1, 3)))/3),
+            re(1/((Rational(-1, 2) + sqrt(3)*I/2)*(Rational(1, 6) + sqrt(3)*I/18)**Rational(1, 3)))/3 -
             sqrt(3)*cos(pi/18)/6 - sin(pi/18)/2 + 2 +
-            I*(im(1/((-S.Half + sqrt(3)*I/2)*(Rational(1, 6) +
-                                              sqrt(3)*I/18)**Rational(1, 3)))/3 -
+            I*(im(1/((Rational(-1, 2) + sqrt(3)*I/2)*(Rational(1, 6) +
+                                                      sqrt(3)*I/18)**Rational(1, 3)))/3 -
                sqrt(3)*sin(pi/18)/6 + cos(pi/18)/2))
     # the following should not raise a recursion error; it
     # should raise a value error because the first arg computes

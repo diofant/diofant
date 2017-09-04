@@ -57,24 +57,24 @@ def test_sin():
 
     ne = symbols('ne', integer=True, even=False)
     e = symbols('e', even=True)
-    assert sin(pi*ne/2) == (-1)**(ne/2 - S.Half)
+    assert sin(pi*ne/2) == (-1)**(ne/2 - Rational(1, 2))
     assert sin(pi*k/2).func == sin
     assert sin(pi*e/2) == 0
     assert sin(pi*k) == 0
     assert sin(pi*k).subs(k, 3) == sin(pi*k/2).subs(k, 6)  # issue sympy/sympy#8298
 
-    assert sin(pi/3) == S.Half*sqrt(3)
-    assert sin(-2*pi/3) == -S.Half*sqrt(3)
+    assert sin(pi/3) == sqrt(3)/2
+    assert sin(-2*pi/3) == -sqrt(3)/2
 
-    assert sin(pi/4) == S.Half*sqrt(2)
-    assert sin(-pi/4) == -S.Half*sqrt(2)
-    assert sin(17*pi/4) == S.Half*sqrt(2)
-    assert sin(-3*pi/4) == -S.Half*sqrt(2)
+    assert sin(pi/4) == sqrt(2)/2
+    assert sin(-pi/4) == -sqrt(2)/2
+    assert sin(17*pi/4) == sqrt(2)/2
+    assert sin(-3*pi/4) == -sqrt(2)/2
 
-    assert sin(pi/6) == S.Half
-    assert sin(-pi/6) == -S.Half
-    assert sin(7*pi/6) == -S.Half
-    assert sin(-5*pi/6) == -S.Half
+    assert sin(pi/6) == Rational(1, 2)
+    assert sin(-pi/6) == Rational(-1, 2)
+    assert sin(7*pi/6) == Rational(-1, 2)
+    assert sin(-5*pi/6) == Rational(-1, 2)
 
     assert sin(1*pi/5) == sqrt((5 - sqrt(5)) / 8)
     assert sin(2*pi/5) == sqrt((5 + sqrt(5)) / 8)
@@ -264,18 +264,18 @@ def test_cos():
     assert cos(5*pi) == -1
     assert cos(8*pi) == 1
 
-    assert cos(pi/3) == S.Half
-    assert cos(-2*pi/3) == -S.Half
+    assert cos(pi/3) == Rational(1, 2)
+    assert cos(-2*pi/3) == Rational(-1, 2)
 
-    assert cos(pi/4) == S.Half*sqrt(2)
-    assert cos(-pi/4) == S.Half*sqrt(2)
-    assert cos(11*pi/4) == -S.Half*sqrt(2)
-    assert cos(-3*pi/4) == -S.Half*sqrt(2)
+    assert cos(pi/4) == sqrt(2)/2
+    assert cos(-pi/4) == sqrt(2)/2
+    assert cos(11*pi/4) == -sqrt(2)/2
+    assert cos(-3*pi/4) == -sqrt(2)/2
 
-    assert cos(pi/6) == S.Half*sqrt(3)
-    assert cos(-pi/6) == S.Half*sqrt(3)
-    assert cos(7*pi/6) == -S.Half*sqrt(3)
-    assert cos(-5*pi/6) == -S.Half*sqrt(3)
+    assert cos(pi/6) == sqrt(3)/2
+    assert cos(-pi/6) == sqrt(3)/2
+    assert cos(7*pi/6) == -sqrt(3)/2
+    assert cos(-5*pi/6) == -sqrt(3)/2
 
     assert cos(1*pi/5) == (sqrt(5) + 1)/4
     assert cos(2*pi/5) == (sqrt(5) - 1)/4
@@ -1033,7 +1033,7 @@ def test_as_leading_term_sympyissue_5272():
 
 def test_leading_terms():
     for func in [sin, cos, tan, cot, asin, acos, atan, acot]:
-        for arg in (1/x, S.Half):
+        for arg in (1/x, Rational(1, 2)):
             eq = func(arg)
             assert eq.as_leading_term(x) == eq
 
@@ -1227,7 +1227,7 @@ def test_sincos_rewrite_sqrt():
 
 
 def test_sincos_rewrite_sqrt2():
-    assert cos(pi/14).rewrite(sqrt) == sqrt(cos(pi/7)/2 + S.Half)
+    assert cos(pi/14).rewrite(sqrt) == sqrt(cos(pi/7)/2 + Rational(1, 2))
     assert cos(pi/21).rewrite(sqrt) == cos(2*pi/7)/2 + sqrt(3)*sin(2*pi/7)/2
     assert (cos(pi/105).rewrite(sqrt) == -sqrt(-sqrt(5)/8 +
                                                Rational(5, 8))*sin(pi/7)/2 -

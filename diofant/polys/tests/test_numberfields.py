@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (Add, GoldenRatio, I, Integer, Poly, Rational, S, Symbol,
+from diofant import (Add, GoldenRatio, I, Integer, Poly, Rational, Symbol,
                      Tuple, cos, exp, expand, expand_multinomial, nsimplify,
                      oo, pi, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
@@ -104,7 +104,7 @@ def test_minimal_polynomial():
     assert minimal_polynomial(sqrt(b/2 + 17), x) == 4*x**4 - 136*x**2 + 1153
 
     # issue diofant/diofant#431
-    theta = AlgebraicNumber(sqrt(2), (S.Half, 17))
+    theta = AlgebraicNumber(sqrt(2), (Rational(1, 2), 17))
     assert minimal_polynomial(theta, x) == 2*x**2 - 68*x + 577
 
     theta = AlgebraicNumber(RootOf(x**7 + x - 1, x, 3), (1, 2, 0, 0, 1))
@@ -173,7 +173,7 @@ def test_minimal_polynomial():
     mp = minimal_polynomial(p, x)
     assert mp == x**8 - 512*x**7 - 118208*x**6 + 31131136*x**5 + 647362560*x**4 - 56026611712*x**3 + 116994310144*x**2 + 404854931456*x - 27216576512
 
-    assert minimal_polynomial(-sqrt(5)/2 - S.Half + (-sqrt(5)/2 - S.Half)**2, x) == x - 1
+    assert minimal_polynomial(-sqrt(5)/2 - Rational(1, 2) + (-sqrt(5)/2 - Rational(1, 2))**2, x) == x - 1
     a = 1 + sqrt(2)
     assert minimal_polynomial((a*sqrt(2) + a)**3, x) == x**2 - 198*x + 1
 

@@ -9,9 +9,8 @@ from mpmath.libmp.libmpf import _normalize, finf, fnan, fninf
 
 from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
                      GoldenRatio, Gt, I, Integer, Le, Lt, Mul, Number, Pow,
-                     Rational, S, Symbol, cos, exp, factorial, false, latex,
-                     log, nan, nextprime, oo, pi, simplify, sin, sqrt, true,
-                     zoo)
+                     Rational, Symbol, cos, exp, factorial, false, latex, log,
+                     nan, nextprime, oo, pi, simplify, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
                                   mpf_norm, seterr)
@@ -507,8 +506,8 @@ def test_Infinity():
     assert oo + 1 == oo
     assert 2 + oo == oo
     assert 3*oo + 2 == oo
-    assert S.Half**oo == 0
-    assert S.Half**(-oo) == oo
+    assert Rational(1, 2)**oo == 0
+    assert Rational(1, 2)**(-oo) == oo
     assert oo**zoo == nan
     assert -oo*3 == -oo
     assert oo + oo == oo
@@ -898,9 +897,9 @@ def test_powers_Integer():
     # not exact roots
     assert sqrt(-3) == I*sqrt(3)
     assert 3 ** Rational(3, 2) == 3 * sqrt(3)
-    assert (-3) ** (Rational(3, 2)) == - 3 * sqrt(-3)
-    assert (-3) ** (Rational(5, 2)) == 9 * I * sqrt(3)
-    assert (-3) ** (Rational(7, 2)) == - I * 27 * sqrt(3)
+    assert (-3) ** Rational(3, 2) == - 3 * sqrt(-3)
+    assert (-3) ** Rational(5, 2) == 9 * I * sqrt(3)
+    assert (-3) ** Rational(7, 2) == - I * 27 * sqrt(3)
     assert 2 ** Rational(3, 2) == 2 * sqrt(2)
     assert 2 ** Rational(-3, 2) == sqrt(2) / 4
     assert 81 ** Rational(2, 3) == 9 * 3 ** Rational(2, 3)
@@ -1083,7 +1082,7 @@ def test_sympyissue_3692():
 
 def test_sympyissue_3423():
     x = Symbol("x")
-    assert sqrt(x - 1).as_base_exp() == (x - 1, S.Half)
+    assert sqrt(x - 1).as_base_exp() == (x - 1, Rational(1, 2))
     assert sqrt(x - 1) != I*sqrt(1 - x)
 
 
@@ -1293,7 +1292,7 @@ def test_zoo():
     pb = Symbol('pb', positive=True, finite=True)
     nb = Symbol('nb', negative=True, finite=True)
     imb = Symbol('ib', imaginary=True, finite=True)
-    for i in [I, oo, -oo, Integer(0), Integer(1), pi, S.Half, Integer(3), log(3),
+    for i in [I, oo, -oo, Integer(0), Integer(1), pi, Rational(1, 2), Integer(3), log(3),
               b, nz, p, n, im, pb, nb, imb, c]:
         if i.is_finite and (i.is_extended_real or i.is_imaginary):
             assert i + zoo is zoo
@@ -1365,13 +1364,13 @@ def test_sympyissue_4122():
 
 
 def test_GoldenRatio_expand():
-    assert GoldenRatio.expand(func=True) == S.Half + sqrt(5)/2
+    assert GoldenRatio.expand(func=True) == Rational(1, 2) + sqrt(5)/2
 
 
 def test_as_content_primitive():
     assert Integer(0).as_content_primitive() == (1, 0)
-    assert S.Half.as_content_primitive() == (S.Half, 1)
-    assert (-S.Half).as_content_primitive() == (S.Half, -1)
+    assert Rational(1, 2).as_content_primitive() == (Rational(1, 2), 1)
+    assert Rational(-1, 2).as_content_primitive() == (Rational(1, 2), -1)
     assert Integer(3).as_content_primitive() == (3, 1)
     assert Float(3.1).as_content_primitive() == (1, 3.1)
 
@@ -1544,7 +1543,7 @@ def test_sympyissue_10020():
 
 def test_invert_numbers():
     assert Integer(2).invert(5) == 3
-    assert Integer(2).invert(Integer(5)/2) == S.Half
+    assert Integer(2).invert(Rational(5, 2)) == Rational(1, 2)
     assert Integer(2).invert(5.) == 3
     assert Integer(2).invert(Integer(5)) == 3
     assert Integer(2.).invert(5) == 3
@@ -1563,9 +1562,9 @@ def test_mod_inverse():
     assert mod_inverse(2, 5) == 3
     assert mod_inverse(-2, 5) == -3
     x = Symbol('x')
-    assert Integer(2).invert(x) == S.Half
+    assert Integer(2).invert(x) == Rational(1, 2)
     pytest.raises(TypeError, lambda: mod_inverse(2, x))
-    pytest.raises(ValueError, lambda: mod_inverse(2, S.Half))
+    pytest.raises(ValueError, lambda: mod_inverse(2, Rational(1, 2)))
     pytest.raises(ValueError, lambda: mod_inverse(2, cos(1)**2 + sin(1)**2))
     pytest.raises(ValueError, lambda: mod_inverse(2, 1))
 

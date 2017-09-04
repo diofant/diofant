@@ -86,10 +86,10 @@ def test_apart_full():
 
     assert apart(f, full=False) == \
         (-Rational(1, 5))*((x**3 - 2*x**2 + 3*x - 4)/(x**4 - x**3 + x**2 -
-                                                      x + 1)) + (Rational(1, 5))/(x + 1)
+                                                      x + 1)) + Rational(1, 5)/(x + 1)
     assert apart(f, full=True) == \
         -RootSum(x**4 - x**3 + x**2 - x + 1,
-                 Lambda(a, a/(x - a)), auto=False)/5 + (Rational(1, 5))/(x + 1)
+                 Lambda(a, a/(x - a)), auto=False)/5 + Rational(1, 5)/(x + 1)
 
 
 def test_apart_undetermined_coeffs():

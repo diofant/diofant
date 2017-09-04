@@ -445,7 +445,7 @@ def test_evalf_default():
 
 
 def test_sympyissue_5399():
-    args = [x, y, Integer(2), S.Half]
+    args = [x, y, Integer(2), Rational(1, 2)]
 
     def ok(a):
         """Return True if the input args for diff are ok"""

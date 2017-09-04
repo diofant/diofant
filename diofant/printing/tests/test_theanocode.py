@@ -1,7 +1,6 @@
 import pytest
 
 import diofant
-from diofant import S
 from diofant.abc import x, y, z
 from diofant.external import import_module
 from diofant.printing.theanocode import (dim_handling, theano_code,
@@ -136,7 +135,6 @@ def test_dim_handling():
 
 def test_Rationals():
     assert theq(theano_code(diofant.Rational(2, 3)), tt.true_div(2, 3))
-    assert theq(theano_code(S.Half), tt.true_div(1, 2))
 
 
 def test_Integers():

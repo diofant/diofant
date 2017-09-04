@@ -281,7 +281,7 @@ def test_atoms():
 
     assert (2*(x**(y**x))).atoms() == {2, x, y}
 
-    assert Rational(1, 2).atoms() == {S.Half}
+    assert Rational(1, 2).atoms() == {Rational(1, 2)}
     assert Rational(1, 2).atoms(Symbol) == set()
 
     assert sin(oo).atoms(oo) == {oo}
@@ -1381,7 +1381,7 @@ def test_primitive():
     eq = (2 + 2*x)**2
     assert eq.primitive()[0] == 1
     assert (4.0*x).primitive() == (1, 4.0*x)
-    assert (4.0*x + y/2).primitive() == (S.Half, 8.0*x + y)
+    assert (4.0*x + y/2).primitive() == (Rational(1, 2), 8.0*x + y)
     assert (-2*x).primitive() == (2, -x)
     assert Add(5*z/7, 0.5*x, 3*y/2, evaluate=False).primitive() == \
         (Rational(1, 14), 7.0*x + 21*y + 10*z)
@@ -1452,7 +1452,7 @@ def test_equals():
     ans = sqrt(2*x + 1)*(6*x**2 + x - 1)/15
     diff = i - ans
     assert diff.equals(0) is False
-    assert diff.subs(x, -S.Half/2) == 7*sqrt(2)/120
+    assert diff.subs(x, Rational(-1, 4)) == 7*sqrt(2)/120
     # there are regions for x for which the expression is True, for
     # example, when x < -1/2 or x > 0 the expression is zero
     p = Symbol('p', positive=True)

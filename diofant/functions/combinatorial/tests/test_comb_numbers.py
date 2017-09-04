@@ -4,8 +4,8 @@ from random import choice
 import pytest
 
 from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
-                     Rational, S, Sum, Symbol, cancel, diff, expand_func, im,
-                     nan, oo, pi, re, sstr, symbols, zoo)
+                     Rational, Sum, Symbol, cancel, diff, expand_func, im, nan,
+                     oo, pi, re, sstr, symbols, zoo)
 from diofant.abc import x
 from diofant.combinatorics.permutations import Permutation
 from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
@@ -149,7 +149,7 @@ def test_harmonic():
 
     assert harmonic(oo, -1) == nan
     assert harmonic(oo, 0) == oo
-    assert harmonic(oo, S.Half) == oo
+    assert harmonic(oo, Rational(1, 2)) == oo
     assert harmonic(oo, 1) == oo
     assert harmonic(oo, 2) == (pi**2)/6
     assert harmonic(oo, 3) == zeta(3)
@@ -245,8 +245,8 @@ def test_harmonic_rewrite_polygamma():
 
     assert expand_func(harmonic(n, 2)).func is harmonic
 
-    assert expand_func(harmonic(n + S.Half)) == expand_func(harmonic(n + S.Half))
-    assert expand_func(harmonic(-S.Half)) == harmonic(-S.Half)
+    assert expand_func(harmonic(n + Rational(1, 2))) == expand_func(harmonic(n + Rational(1, 2)))
+    assert expand_func(harmonic(Rational(-1, 2))) == harmonic(Rational(-1, 2))
     assert expand_func(harmonic(x)) == harmonic(x)
 
 
@@ -302,7 +302,7 @@ def test_euler():
 
     assert euler(20).evalf() == 370371188237525.0
     assert euler(20, evaluate=False).evalf() == 370371188237525.0
-    assert euler(S.Half).evalf() == euler(S.Half)
+    assert euler(Rational(1, 2)).evalf() == euler(Rational(1, 2))
 
     assert euler(n).rewrite(Sum) == euler(n)
     # XXX: Not sure what the guy who wrote this test was trying to do with the _j and _k stuff
@@ -343,7 +343,7 @@ def test_catalan():
         0, x + Rational(1, 2)) - polygamma(0, x + 2) + log(4))*catalan(x)
 
     assert catalan(x).evalf() == catalan(x)
-    c = catalan(S.Half).evalf()
+    c = catalan(Rational(1, 2)).evalf()
     assert str(c) == '0.848826363156775'
     c = catalan(I).evalf(3)
     assert sstr((re(c), im(c))) == '(0.398, -0.0209)'
@@ -355,7 +355,7 @@ def test_genocchi():
         assert genocchi(n + 1) == g
 
     assert genocchi(Symbol('z', zero=True) + 1) == 1
-    pytest.raises(ValueError, lambda: genocchi(S.Half))
+    pytest.raises(ValueError, lambda: genocchi(Rational(1, 2)))
 
     m = Symbol('m', integer=True)
     n = Symbol('n', integer=True, positive=True)
@@ -541,8 +541,8 @@ def test_sympyissue_8601():
     n = Symbol('n', integer=True, negative=True)
 
     assert catalan(n - 1) == 0
-    assert catalan(-S.Half) == zoo
-    assert catalan(-1) == -S.Half
+    assert catalan(Rational(-1, 2)) == zoo
+    assert catalan(-1) == Rational(-1, 2)
     c1 = catalan(-5.6).evalf()
     assert str(c1) == '6.93334070531408e-5'
     c2 = catalan(-35.4).evalf()

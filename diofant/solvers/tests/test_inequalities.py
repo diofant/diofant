@@ -200,13 +200,13 @@ def test_reduce_piecewise_inequalities():
 
     # sympy/sympy#10198
     assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
-        Or(And(Lt(0, x), x < S.Half), And(-oo < x, x < 0))
+        Or(And(Lt(0, x), x < Rational(1, 2)), And(-oo < x, x < 0))
 
     # sympy/sympy#10255
     assert reduce_inequalities(Piecewise((1, x < 1), (3, True)) > 1) == \
         And(Le(1, x), x < oo)
     assert reduce_inequalities(Piecewise((x**2, x < 0), (2*x, x >= 0)) < 1) == \
-        And(Lt(-1, x), x < S.Half)
+        And(Lt(-1, x), x < Rational(1, 2))
 
 
 def test_reduce_inequalities_general():
@@ -293,9 +293,9 @@ def test_solve_univariate_inequality():
         Interval(1, oo, True, True)
 
     # XXX should be limited in domain, e.g. between 0 and 2*pi
-    assert isolve(sin(x) < S.Half, x) == \
+    assert isolve(sin(x) < Rational(1, 2), x) == \
         Or(And(-oo < x, x < pi/6), And(5*pi/6 < x, x < oo))
-    assert isolve(sin(x) > S.Half, x) == And(pi/6 < x, x < 5*pi/6)
+    assert isolve(sin(x) > Rational(1, 2), x) == And(pi/6 < x, x < 5*pi/6)
 
     # numerical testing in valid() is needed
     assert isolve(x**7 - x - 2 > 0, x) == \

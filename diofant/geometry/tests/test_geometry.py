@@ -2,7 +2,7 @@ import warnings
 
 import pytest
 
-from diofant import (Abs, Derivative, Dummy, Float, Rational, S, Symbol, Tuple,
+from diofant import (Abs, Derivative, Dummy, Float, Rational, Symbol, Tuple,
                      cos, oo, pi, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
@@ -200,7 +200,7 @@ def test_ellipse_geom():
         Line(Point(-51/26, -1/5), Point(-25/26, 17/83)),
         Line(Point(28/29, -7/8), Point(57/29, -9/2))]
     # test the failure of Poly.intervals and checks a point on the boundary
-    p = Point(sqrt(3), S.Half)
+    p = Point(sqrt(3), Rational(1, 2))
     assert p in e
     assert e.normal_lines(p, 2) == [
         Line(Point(-341/171, -1/13), Point(-170/171, 5/64)),
@@ -330,10 +330,10 @@ def test_ellipse_geom():
     # Circle rotation tests (issue sympy/sympy#11743)
     cir = Circle(Point(1, 0), 1)
     assert cir.rotate(pi/2) == Circle(Point(0, 1), 1)
-    assert cir.rotate(pi/3) == Circle(Point(S.Half, sqrt(3)/2), 1)
+    assert cir.rotate(pi/3) == Circle(Point(Rational(1, 2), sqrt(3)/2), 1)
     assert cir.rotate(pi/3, Point(1, 0)) == Circle(Point(1, 0), 1)
-    assert cir.rotate(pi/3, Point(0, 1)) == Circle(Point(S.Half + sqrt(3)/2,
-                                                         S.Half + sqrt(3)/2), 1)
+    assert cir.rotate(pi/3, Point(0, 1)) == Circle(Point(Rational(1, 2) + sqrt(3)/2,
+                                                         Rational(1, 2) + sqrt(3)/2), 1)
 
     # transformations
     c = Circle((1, 1), 2)
@@ -680,11 +680,11 @@ def test_subs():
 def test_encloses():
     # square with a dimpled left side
     s = Polygon(Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1),
-                Point(S.Half, S.Half))
+                Point(Rational(1, 2), Rational(1, 2)))
     # the following is True if the polygon isn't treated as closing on itself
-    assert s.encloses(Point(0, S.Half)) is False
-    assert s.encloses(Point(S.Half, S.Half)) is False  # it's a vertex
-    assert s.encloses(Point(Rational(3, 4), S.Half)) is True
+    assert s.encloses(Point(0, Rational(1, 2))) is False
+    assert s.encloses(Point(Rational(1, 2), Rational(1, 2))) is False  # it's a vertex
+    assert s.encloses(Point(Rational(3, 4), Rational(1, 2))) is True
 
 
 def test_free_symbols():
@@ -769,7 +769,7 @@ def test_geometry_transforms():
         Circle(Point(-8, -10), 6)
     assert Circle(Point(-8, -10), 6).scale(1/3, 1/3, (4, 5)) == \
         Circle((0, 0), 2)
-    assert Curve((x + y, 3*x), (x, 0, 1)).subs(y, S.Half) == \
+    assert Curve((x + y, 3*x), (x, 0, 1)).subs(y, Rational(1, 2)) == \
         Curve((x + 1/2, 3*x), (x, 0, 1))
     assert Curve((x, 3*x), (x, 0, 1)).translate(4, 5) == \
         Curve((x + 4, 3*x + 5), (x, 0, 1))

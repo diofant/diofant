@@ -2,8 +2,8 @@ from collections import defaultdict
 
 import pytest
 
-from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, S, Tuple, false,
-                     sympify, true)
+from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, Rational, Tuple,
+                     false, sympify, true)
 from diofant.abc import p, q, r, s, x, y, z
 from diofant.core.compatibility import is_sequence, iterable
 from diofant.core.containers import tuple_wrapper
@@ -98,8 +98,8 @@ def test_Tuple_mul():
     assert Tuple(1, 2, 3)*Integer(2) == Tuple(1, 2, 3, 1, 2, 3)
     assert Integer(2)*Tuple(1, 2, 3) == Tuple(1, 2, 3, 1, 2, 3)
 
-    pytest.raises(TypeError, lambda: Tuple(1, 2, 3)*S.Half)
-    pytest.raises(TypeError, lambda: S.Half*Tuple(1, 2, 3))
+    pytest.raises(TypeError, lambda: Tuple(1, 2, 3)*Rational(1, 2))
+    pytest.raises(TypeError, lambda: Rational(1, 2)*Tuple(1, 2, 3))
 
 
 def test_tuple_wrapper():

@@ -4,7 +4,7 @@ import os
 import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
-                     PoleError, Rational, S, Sum, Symbol, acos, atan, ceiling,
+                     PoleError, Rational, Sum, Symbol, acos, atan, ceiling,
                      cos, cot, diff, exp, factorial, floor, gamma, integrate,
                      limit, log, nan, oo, pi, polygamma, sign, simplify, sin,
                      sinh, sqrt, subfactorial, symbols, tan)
@@ -466,7 +466,7 @@ def test_sympyissue_9205():
 def test_sympyissue_10610():
     assert limit(3**x*3**(-x - 1)*(x + 1)**2/x**2, x, oo) == Rational(1, 3)
     assert limit(2**x*2**(-x - 1)*(x + 1)*(y - 1)**(-x) *
-                 (y - 1)**(x + 1)/(x + 2), x, oo) == y/2 - S.Half
+                 (y - 1)**(x + 1)/(x + 2), x, oo) == y/2 - Rational(1, 2)
 
 
 def test_sympyissue_9075():

@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (And, Dict, Eq, FiniteSet, Integer, Or, Rational, S,
-                     Symbol, Tuple, binomial, cancel, cos, pi, simplify, sqrt,
-                     symbols, sympify)
+from diofant import (And, Dict, Eq, FiniteSet, Integer, Or, Rational, Symbol,
+                     Tuple, binomial, cancel, cos, pi, simplify, sqrt, symbols,
+                     sympify)
 from diofant.abc import p, x
 from diofant.matrices import Matrix
 from diofant.stats import (Bernoulli, Binomial, Coin, Die, DiscreteUniform, E,
@@ -50,7 +50,7 @@ def test_dice():
     X, Y, Z = Die('X', 6), Die('Y', 6), Die('Z', 6)
     a, b = symbols('a b')
 
-    assert E(X) == 3 + S.Half
+    assert E(X) == 3 + Rational(1, 2)
     assert variance(X) == Rational(35, 12)
     assert E(X + Y) == 7
     assert E(X + X) == 7
@@ -61,13 +61,13 @@ def test_dice():
     assert cmoment(4*X, 3) == 64*cmoment(X, 3)
     assert covariance(X, Y) == 0
     assert covariance(X, X + Y) == variance(X)
-    assert density(Eq(cos(X*pi), 1))[True] == S.Half
+    assert density(Eq(cos(X*pi), 1))[True] == Rational(1, 2)
     assert correlation(X, Y) == 0
     assert correlation(X, Y) == correlation(Y, X)
     assert smoment(X + Y, 3) == skewness(X + Y)
     assert smoment(X, 0) == 1
-    assert P(X > 3) == S.Half
-    assert P(2*X > 6) == S.Half
+    assert P(X > 3) == Rational(1, 2)
+    assert P(2*X > 6) == Rational(1, 2)
     assert P(X > Y) == Rational(5, 12)
     assert P(Eq(X, Y)) == P(Eq(X, 1))
 
@@ -171,10 +171,10 @@ def test_cdf():
 def test_coins():
     C, D = Coin('C'), Coin('D')
     H, T = symbols('H, T')
-    assert P(Eq(C, D)) == S.Half
-    assert density(Tuple(C, D)) == {(H, H): S.Half/2, (H, T): S.Half/2,
-                                    (T, H): S.Half/2, (T, T): S.Half/2}
-    assert dict(density(C).items()) == {H: S.Half, T: S.Half}
+    assert P(Eq(C, D)) == Rational(1, 2)
+    assert density(Tuple(C, D)) == {(H, H): Rational(1, 4), (H, T): Rational(1, 4),
+                                    (T, H): Rational(1, 4), (T, T): Rational(1, 4)}
+    assert dict(density(C).items()) == {H: Rational(1, 2), T: Rational(1, 2)}
 
     F = Coin('F', Rational(1, 10))
     assert P(Eq(F, H)) == Rational(1, 10)
@@ -193,7 +193,7 @@ def test_binomial_verify_parameters():
 
 def test_binomial_numeric():
     nvals = range(5)
-    pvals = [0, Rational(1, 4), S.Half, Rational(3, 4), 1]
+    pvals = [0, Rational(1, 4), Rational(1, 2), Rational(3, 4), 1]
 
     for n in nvals:
         for p in pvals:
@@ -242,15 +242,15 @@ def test_rademacher():
 
     assert E(X) == 0
     assert variance(X) == 1
-    assert density(X)[-1] == S.Half
-    assert density(X)[1] == S.Half
+    assert density(X)[-1] == Rational(1, 2)
+    assert density(X)[1] == Rational(1, 2)
 
 
 def test_FiniteRV():
-    F = FiniteRV('F', {1: S.Half, 2: S.Half/2, 3: S.Half/2})
+    F = FiniteRV('F', {1: Rational(1, 2), 2: Rational(1, 4), 3: Rational(1, 4)})
 
-    assert dict(density(F).items()) == {1: S.Half, 2: S.Half/2, 3: S.Half/2}
-    assert P(F >= 2) == S.Half
+    assert dict(density(F).items()) == {1: Rational(1, 2), 2: Rational(1, 4), 3: Rational(1, 4)}
+    assert P(F >= 2) == Rational(1, 2)
 
     assert pspace(F).domain.as_boolean() == Or(
         *[Eq(F.symbol, i) for i in [1, 2, 3]])
@@ -269,7 +269,7 @@ def test_density_call():
 
 def test_DieDistribution():
     X = DieDistribution(6)
-    assert X.pdf(S.Half) == 0
+    assert X.pdf(Rational(1, 2)) == 0
     assert X.pdf(x).subs({x: 1}).doit() == Rational(1, 6)
     assert X.pdf(x).subs({x: 7}).doit() == 0
     assert X.pdf(x).subs({x: -1}).doit() == 0

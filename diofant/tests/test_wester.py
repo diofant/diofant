@@ -19,8 +19,8 @@ from diofant import continued_fraction_reduce as cf_r
 from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
                      DiracDelta, E, EulerGamma, FiniteSet, Function,
                      GoldenRatio, I, Lambda, LambertW, Le, Lt, Max, Mul, N, O,
-                     Or, Piecewise, Poly, Rational, RootOf, S, Subs, Symbol,
-                     acot, apart, asin, asinh, assoc_legendre, atan, bernoulli,
+                     Or, Piecewise, Poly, Rational, RootOf, Subs, Symbol, acot,
+                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
                      besselj, binomial, ceiling, chebyshevt, combsimp, cos,
                      cosh, cot, csc, diff, elliptic_e, elliptic_f, exp, expand,
                      expand_func, factor, factorial, factorial2, factorint,
@@ -310,7 +310,7 @@ def test_G17():
 
 def test_G18():
     assert cf_p(1, 2, 5) == [[1]]
-    assert cf_r([[1]]) == S.Half + sqrt(5)/2
+    assert cf_r([[1]]) == Rational(1, 2) + sqrt(5)/2
 
 
 @pytest.mark.xfail
@@ -820,7 +820,7 @@ def test_M14():
 
 
 def test_M15():
-    assert solve(sin(x) - S.Half) == [{x: pi/6}, {x: 5*pi/6}]
+    assert solve(sin(x) - Rational(1, 2)) == [{x: pi/6}, {x: 5*pi/6}]
 
 
 def test_M16():
@@ -856,8 +856,8 @@ def test_M22():
 
 
 def test_M23():
-    assert solve(x - 1/sqrt(1 + x**2)) == [{x: -I*sqrt(S.Half + sqrt(5)/2)},
-                                           {x: sqrt(-S.Half + sqrt(5)/2)}]
+    assert solve(x - 1/sqrt(1 + x**2)) == [{x: -I*sqrt(Rational(1, 2) + sqrt(5)/2)},
+                                           {x: sqrt(Rational(-1, 2) + sqrt(5)/2)}]
 
 
 def test_M24():

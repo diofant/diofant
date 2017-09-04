@@ -17,7 +17,7 @@ def test_apply_finite_diff():
             (f(x+h)-f(x-h))/(2*h)).simplify() == 0
 
     assert (apply_finite_diff(1, [5, 6, 7], [f(5), f(6), f(7)], 5) -
-            (-Rational(3, 2)*f(5) + 2*f(6) - Rational(1, 2)*f(7))).simplify() == 0
+            (-3*f(5)/2 + 2*f(6) - f(7)/2)).simplify() == 0
 
 
 def test_finite_diff_weights():
@@ -148,8 +148,8 @@ def test_as_finite_diff():
 
     # Central 2nd derivative "half-way"
     assert (as_finite_diff(f(x).diff(x, 2), [x - 3*h, x-h, x+h, x + 3*h]) -
-            (2*h)**-2 * (Rational(1, 2)*(f(x - 3*h) + f(x + 3*h)) -
-                         Rational(1, 2)*(f(x+h) + f(x-h)))).simplify() == 0
+            (2*h)**-2 * ((f(x - 3*h) + f(x + 3*h))/2 -
+                         (f(x+h) + f(x-h))/2)).simplify() == 0
 
     # One sided 2nd derivative at gridpoint
     assert (as_finite_diff(f(x).diff(x, 2), [x, x+h, x + 2*h, x + 3*h]) -
@@ -159,7 +159,7 @@ def test_as_finite_diff():
     # One sided 2nd derivative at "half-way"
     assert (as_finite_diff(f(x).diff(x, 2), [x-h, x+h, x + 3*h, x + 5*h]) -
             (2*h)**-2 * (Rational(3, 2)*f(x-h) - Rational(7, 2)*f(x+h) + Rational(5, 2)*f(x + 3*h) -
-                         Rational(1, 2)*f(x + 5*h))).simplify() == 0
+                         f(x + 5*h)/2)).simplify() == 0
 
     # Central 3rd derivative at gridpoint
     assert (as_finite_diff(f(x).diff(x, 3)) -

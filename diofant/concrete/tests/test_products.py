@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import KroneckerDelta as Kd
-from diofant import (Function, Product, Rational, S, Sum, Symbol, cos, exp,
+from diofant import (Function, Product, Rational, Sum, Symbol, cos, exp,
                      factorial, log, oo, product, rf, simplify, sqrt, symbols)
 from diofant.concrete.expr_with_intlimits import ReorderError
 
@@ -375,5 +375,5 @@ def test_reorder_limit():
 
 
 def test_rewrite_Sum():
-    assert Product(1 - S.Half**2/k**2, (k, 1, oo)).rewrite(Sum) == \
+    assert Product(1 - 1/(4*k**2), (k, 1, oo)).rewrite(Sum) == \
         exp(Sum(log(1 - 1/(4*k**2)), (k, 1, oo)))

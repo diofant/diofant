@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.abc import t, x
-from diofant.core import Add, Eq, Integer, Mul, S, symbols
+from diofant.core import Add, Eq, Integer, Mul, Rational, symbols
 from diofant.external import import_module
 from diofant.functions import cos, sin, sqrt, transpose
 from diofant.matrices import (Adjoint, Identity, ImmutableMatrix, Inverse,
@@ -131,7 +131,7 @@ def test_multiplication():
 
     assert C * Identity(n) * C.I == Identity(n)
 
-    assert B/2 == S.Half*B
+    assert B/2 == Rational(1, 2)*B
     pytest.raises(NotImplementedError, lambda: 2/B)
 
     A = MatrixSymbol('A', n, n)
@@ -151,7 +151,7 @@ def test_MatPow():
     assert A**1 == A
     assert A**2 == AA
     assert A**-1 == Inverse(A)
-    assert A**S.Half == sqrt(A)
+    assert A**Rational(1, 2) == sqrt(A)
     pytest.raises(ShapeError, lambda: MatrixSymbol('B', 3, 2)**2)
 
 

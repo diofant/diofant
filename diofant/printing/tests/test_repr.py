@@ -2,8 +2,8 @@ import pytest
 
 from diofant import (Abs, AlgebraicNumber, Catalan, Dummy, E, EulerGamma,
                      Float, Function, GoldenRatio, I, ImmutableMatrix, Integer,
-                     Matrix, Rational, S, Symbol, Wild, WildFunction, false,
-                     nan, ones, oo, pi, root, sin, sqrt, symbols, true, zoo)
+                     Matrix, Rational, Symbol, Wild, WildFunction, false, nan,
+                     ones, oo, pi, root, sin, sqrt, symbols, true, zoo)
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Ellipse, Point
 from diofant.polys import field, grlex, lex, ring
@@ -72,7 +72,7 @@ def test_Singletons():
     sT(EulerGamma, 'EulerGamma')
     sT(E, 'E')
     sT(GoldenRatio, 'GoldenRatio')
-    sT(S.Half, 'Rational(1, 2)')
+    sT(Rational(1, 2), 'Rational(1, 2)')
     sT(I, 'I')
     sT(oo, 'oo')
     sT(nan, 'nan')

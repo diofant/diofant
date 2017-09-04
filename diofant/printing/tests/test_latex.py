@@ -1358,7 +1358,7 @@ def test_sympyissue_7180():
 
 
 def test_sympyissue_8409():
-    assert latex(S.Half**n) == r"\left(\frac{1}{2}\right)^{n}"
+    assert latex(Rational(1, 2)**n) == r"\left(\frac{1}{2}\right)^{n}"
 
 
 def test_sympyissue_8470():

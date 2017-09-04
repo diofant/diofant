@@ -2,7 +2,7 @@ import pytest
 
 from diofant import octave_code as mcode
 from diofant.core import (Catalan, E, EulerGamma, Function, GoldenRatio, I,
-                          Integer, Lambda, Rational, S, Symbol, Tuple, nan, oo,
+                          Integer, Lambda, Rational, Symbol, Tuple, nan, oo,
                           pi, symbols, zoo)
 from diofant.functions import Piecewise, ceiling, cos, exp, sin, sqrt
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
@@ -62,9 +62,9 @@ def test_1_over_x_and_sqrt():
     assert mcode(1/x) == '1./x'
     assert mcode(x**-1) == mcode(x**-1.0) == '1./x'
     assert mcode(1/sqrt(x)) == '1./sqrt(x)'
-    assert mcode(x**-S.Half) == mcode(x**-0.5) == '1./sqrt(x)'
+    assert mcode(x**Rational(-1, 2)) == mcode(x**-0.5) == '1./sqrt(x)'
     assert mcode(sqrt(x)) == 'sqrt(x)'
-    assert mcode(x**S.Half) == mcode(x**0.5) == 'sqrt(x)'
+    assert mcode(x**Rational(1, 2)) == mcode(x**0.5) == 'sqrt(x)'
     assert mcode(1/pi) == '1/pi'
     assert mcode(pi**-1) == mcode(pi**-1.0) == '1/pi'
     assert mcode(pi**-0.5) == '1/sqrt(pi)'
@@ -111,7 +111,7 @@ def test_mix_number_pow_symbols():
 def test_imag():
     assert mcode(I) == "1i"
     assert mcode(5*I) == "5i"
-    assert mcode((Rational(3, 2))*I) == "3*1i/2"
+    assert mcode(Rational(3, 2)*I) == "3*1i/2"
     assert mcode(3+4*I) == "3 + 4i"
 
 
@@ -192,7 +192,7 @@ def test_MatrixSymbol():
     assert mcode(A*(B + 3*Identity(n))) == "A*(B + 3*eye(n))"
     assert mcode(A**(x**2)) == "A^(x.^2)"
     assert mcode(A**3) == "A^3"
-    assert mcode(A**(S.Half)) == "A^(1/2)"
+    assert mcode(A**Rational(1, 2)) == "A^(1/2)"
 
 
 def test_special_matrices():

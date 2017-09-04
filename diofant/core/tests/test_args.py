@@ -689,11 +689,11 @@ def test_diofant__stats__frv_types__DieDistribution():
 
 
 def test_diofant__stats__frv_types__BernoulliDistribution():
-    assert _test_args(BernoulliDistribution(S.Half, 0, 1))
+    assert _test_args(BernoulliDistribution(Rational(1, 2), 0, 1))
 
 
 def test_diofant__stats__frv_types__BinomialDistribution():
-    assert _test_args(BinomialDistribution(5, S.Half, 1, 0))
+    assert _test_args(BinomialDistribution(5, Rational(1, 2), 1, 0))
 
 
 def test_diofant__stats__frv_types__HypergeometricDistribution():
@@ -726,7 +726,7 @@ def test_diofant__stats__frv__ConditionalFiniteDomain():
 def test_diofant__stats__frv__FinitePSpace():
     xd = SingleFiniteDomain(x, {1, 2, 3, 4, 5, 6})
     xd = SingleFiniteDomain(x, {1, 2})
-    assert _test_args(FinitePSpace(xd, {(x, 1): S.Half, (x, 2): S.Half}))
+    assert _test_args(FinitePSpace(xd, {(x, 1): Rational(1, 2), (x, 2): Rational(1, 2)}))
 
 
 def test_diofant__stats__frv__SingleFinitePSpace():

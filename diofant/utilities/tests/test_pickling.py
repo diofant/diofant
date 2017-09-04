@@ -87,7 +87,7 @@ from diofant.utilities.exceptions import DiofantDeprecationWarning
 __all__ = ()
 
 # XXX we need this to initialize singleton registry properly
-half = S.Half
+half = Rational(1, 2)
 ø = S.EmptySet
 ℕ = S.Naturals0
 

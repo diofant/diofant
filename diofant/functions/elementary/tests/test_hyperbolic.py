@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (E, I, O, Rational, S, Symbol, acosh, acoth, asinh, atanh,
+from diofant import (E, I, O, Rational, Symbol, acosh, acoth, asinh, atanh,
                      cos, cosh, cot, coth, csch, exp, log, nan, oo, pi, sec,
                      sech, sin, sinh, sqrt, symbols, tan, tanh, zoo)
 from diofant.abc import x, y
@@ -47,18 +47,18 @@ def test_sinh():
     assert sinh(5*pi*I/2) == I
     assert sinh(7*pi*I/2) == -I
 
-    assert sinh(pi*I/3) == S.Half*sqrt(3)*I
-    assert sinh(-2*pi*I/3) == -S.Half*sqrt(3)*I
+    assert sinh(pi*I/3) == sqrt(3)*I/2
+    assert sinh(-2*pi*I/3) == -sqrt(3)*I/2
 
-    assert sinh(pi*I/4) == S.Half*sqrt(2)*I
-    assert sinh(-pi*I/4) == -S.Half*sqrt(2)*I
-    assert sinh(17*pi*I/4) == S.Half*sqrt(2)*I
-    assert sinh(-3*pi*I/4) == -S.Half*sqrt(2)*I
+    assert sinh(pi*I/4) == sqrt(2)*I/2
+    assert sinh(-pi*I/4) == -sqrt(2)*I/2
+    assert sinh(17*pi*I/4) == sqrt(2)*I/2
+    assert sinh(-3*pi*I/4) == -sqrt(2)*I/2
 
-    assert sinh(pi*I/6) == S.Half*I
-    assert sinh(-pi*I/6) == -S.Half*I
-    assert sinh(7*pi*I/6) == -S.Half*I
-    assert sinh(-5*pi*I/6) == -S.Half*I
+    assert sinh(pi*I/6) == I/2
+    assert sinh(-pi*I/6) == -I/2
+    assert sinh(7*pi*I/6) == -I/2
+    assert sinh(-5*pi*I/6) == -I/2
 
     assert sinh(pi*I/105) == sin(pi/105)*I
     assert sinh(-pi*I/105) == -sin(pi/105)*I
@@ -131,18 +131,18 @@ def test_cosh():
     assert cosh(5*pi*I) == -1
     assert cosh(8*pi*I) == 1
 
-    assert cosh(pi*I/3) == S.Half
-    assert cosh(-2*pi*I/3) == -S.Half
+    assert cosh(pi*I/3) == Rational(1, 2)
+    assert cosh(-2*pi*I/3) == Rational(-1, 2)
 
-    assert cosh(pi*I/4) == S.Half*sqrt(2)
-    assert cosh(-pi*I/4) == S.Half*sqrt(2)
-    assert cosh(11*pi*I/4) == -S.Half*sqrt(2)
-    assert cosh(-3*pi*I/4) == -S.Half*sqrt(2)
+    assert cosh(pi*I/4) == sqrt(2)/2
+    assert cosh(-pi*I/4) == sqrt(2)/2
+    assert cosh(11*pi*I/4) == -sqrt(2)/2
+    assert cosh(-3*pi*I/4) == -sqrt(2)/2
 
-    assert cosh(pi*I/6) == S.Half*sqrt(3)
-    assert cosh(-pi*I/6) == S.Half*sqrt(3)
-    assert cosh(7*pi*I/6) == -S.Half*sqrt(3)
-    assert cosh(-5*pi*I/6) == -S.Half*sqrt(3)
+    assert cosh(pi*I/6) == sqrt(3)/2
+    assert cosh(-pi*I/6) == sqrt(3)/2
+    assert cosh(7*pi*I/6) == -sqrt(3)/2
+    assert cosh(-5*pi*I/6) == -sqrt(3)/2
 
     assert cosh(pi*I/105) == cos(pi/105)
     assert cosh(-pi*I/105) == cos(pi/105)
@@ -691,11 +691,11 @@ def test_leading_term():
     for func in [sinh, tanh, asinh, atanh]:
         assert func(x).as_leading_term(x) == x
     for func in [sinh, cosh, tanh, coth, asinh, acosh, atanh, acoth]:
-        for arg in (1/x, S.Half):
+        for arg in (1/x, Rational(1, 2)):
             eq = func(arg)
             assert eq.as_leading_term(x) == eq
     for func in [csch, sech]:
-        eq = func(S.Half)
+        eq = func(Rational(1, 2))
         assert eq.as_leading_term(x) == eq
     assert csch(x).as_leading_term(x) == 1/x
 
@@ -769,20 +769,16 @@ def test_sinh_rewrite():
     assert sinh(x).rewrite(exp) == (exp(x) - exp(-x))/2 \
         == sinh(x).rewrite('tractable')
     assert sinh(x).rewrite(cosh) == -I*cosh(x + I*pi/2)
-    tanh_half = tanh(S.Half*x)
-    assert sinh(x).rewrite(tanh) == 2*tanh_half/(1 - tanh_half**2)
-    coth_half = coth(S.Half*x)
-    assert sinh(x).rewrite(coth) == 2*coth_half/(coth_half**2 - 1)
+    assert sinh(x).rewrite(tanh) == 2*tanh(x/2)/(1 - tanh(x/2)**2)
+    assert sinh(x).rewrite(coth) == 2*coth(x/2)/(coth(x/2)**2 - 1)
 
 
 def test_cosh_rewrite():
     assert cosh(x).rewrite(exp) == (exp(x) + exp(-x))/2 \
         == cosh(x).rewrite('tractable')
     assert cosh(x).rewrite(sinh) == -I*sinh(x + I*pi/2)
-    tanh_half = tanh(S.Half*x)**2
-    assert cosh(x).rewrite(tanh) == (1 + tanh_half)/(1 - tanh_half)
-    coth_half = coth(S.Half*x)**2
-    assert cosh(x).rewrite(coth) == (coth_half + 1)/(coth_half - 1)
+    assert cosh(x).rewrite(tanh) == (1 + tanh(x/2)**2)/(1 - tanh(x/2)**2)
+    assert cosh(x).rewrite(coth) == (coth(x/2)**2 + 1)/(coth(x/2)**2 - 1)
 
 
 def test_tanh_rewrite():
@@ -805,20 +801,16 @@ def test_csch_rewrite():
     assert csch(x).rewrite(exp) == 1 / (exp(x)/2 - exp(-x)/2) \
         == csch(x).rewrite('tractable')
     assert csch(x).rewrite(cosh) == I/cosh(x + I*pi/2)
-    tanh_half = tanh(S.Half*x)
-    assert csch(x).rewrite(tanh) == (1 - tanh_half**2)/(2*tanh_half)
-    coth_half = coth(S.Half*x)
-    assert csch(x).rewrite(coth) == (coth_half**2 - 1)/(2*coth_half)
+    assert csch(x).rewrite(tanh) == (1 - tanh(x/2)**2)/(2*tanh(x/2))
+    assert csch(x).rewrite(coth) == (coth(x/2)**2 - 1)/(2*coth(x/2))
 
 
 def test_sech_rewrite():
     assert sech(x).rewrite(exp) == 1 / (exp(x)/2 + exp(-x)/2) \
         == sech(x).rewrite('tractable')
     assert sech(x).rewrite(sinh) == I/sinh(x + I*pi/2)
-    tanh_half = tanh(S.Half*x)**2
-    assert sech(x).rewrite(tanh) == (1 - tanh_half)/(1 + tanh_half)
-    coth_half = coth(S.Half*x)**2
-    assert sech(x).rewrite(coth) == (coth_half - 1)/(coth_half + 1)
+    assert sech(x).rewrite(tanh) == (1 - tanh(x/2)**2)/(1 + tanh(x/2)**2)
+    assert sech(x).rewrite(coth) == (coth(x/2)**2 - 1)/(coth(x/2)**2 + 1)
 
 
 def test_derivs():

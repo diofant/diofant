@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import I, Matrix, Poly, Rational, S, flatten, sqrt, symbols
+from diofant import I, Matrix, Poly, Rational, flatten, sqrt, symbols
 from diofant.abc import n, t, x, y, z
 from diofant.polys import ComputationFailed, PolynomialError, RootOf
 from diofant.solvers.polysys import solve_linear_system, solve_poly_system
@@ -39,7 +39,7 @@ def test_solve_poly_system():
             [{x: 0, y: 0}, {x: 2, y: -2}, {x: 2, y: 2}])
 
     assert (solve_poly_system([y - x**2, y + x**2 + 1], x, y) ==
-            [{x: -I/sqrt(2), y: -S.Half}, {x: I/sqrt(2), y: -S.Half}])
+            [{x: -I/sqrt(2), y: Rational(-1, 2)}, {x: I/sqrt(2), y: Rational(-1, 2)}])
 
     f_1 = x**2 + y + z - 1
     f_2 = x + y**2 + z - 1
@@ -91,7 +91,7 @@ def test_solve_biquadratic():
              {x: 1 + sqrt(((2*r - 1)*(2*r + 1)))/2, y: Rational(3, 2)}])
 
     def query(expr):
-        return expr.is_Pow and expr.exp is S.Half
+        return expr.is_Pow and expr.exp is Rational(1, 2)
 
     f_1 = (x - 1 )**2 + (y - 2)**2 - r**2
     f_2 = (x - x1)**2 + (y - 1)**2 - r**2
@@ -114,9 +114,9 @@ def test_solve_biquadratic():
                                              y: Rational(5, 3)},
                                             {x: 3, y: -1}]
     eqs = [y + x**2 - 3, -y + x - 4]
-    assert solve_poly_system(eqs, x, y) == [{x: -S.Half + sqrt(29)/2,
+    assert solve_poly_system(eqs, x, y) == [{x: Rational(-1, 2) + sqrt(29)/2,
                                              y: Rational(-9, 2) + sqrt(29)/2},
-                                            {x: -sqrt(29)/2 - S.Half,
+                                            {x: -sqrt(29)/2 - Rational(1, 2),
                                              y: Rational(-9, 2) - sqrt(29)/2}]
 
 

@@ -5,7 +5,7 @@ import pytest
 
 from diofant import GoldenRatio as Phi
 from diofant import factorial as fac
-from diofant import (Mul, Pow, S, Sieve, Symbol, binomial_coefficients,
+from diofant import (Mul, Pow, Sieve, Symbol, binomial_coefficients,
                      binomial_coefficients_list, multinomial_coefficients, pi,
                      sieve, sqrt, summation)
 from diofant.core.add import Add
@@ -921,7 +921,7 @@ def test_continued_fraction():
 
 
 def test_egyptian_fraction():
-    pytest.raises(ValueError, lambda: egyptian_fraction(S.Half, "spam"))
+    pytest.raises(ValueError, lambda: egyptian_fraction(Rational(1, 2), "spam"))
 
     def test_equality(r, alg="Greedy"):
         return r == Add(*[Rational(1, i) for i in egyptian_fraction(r, alg)])

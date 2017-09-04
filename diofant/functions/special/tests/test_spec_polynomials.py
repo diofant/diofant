@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative, Dummy, Rational, RisingFactorial, S, Symbol,
+from diofant import (Derivative, Dummy, Rational, RisingFactorial, Symbol,
                      assoc_laguerre, assoc_legendre, binomial, chebyshevt,
                      chebyshevt_root, chebyshevu, chebyshevu_root, conjugate,
                      cos, diff, exp, factorial, gamma, gegenbauer, hermite,
@@ -18,7 +18,7 @@ def test_jacobi():
     assert jacobi(1, a, b, x) == a/2 - b/2 + x*(a/2 + b/2 + 1)
     assert (jacobi(2, a, b, x) == a**2/8 - a*b/4 - a/8 + b**2/8 - b/8 +
             x**2*(a**2/8 + a*b/4 + 7*a/8 + b**2/8 + 7*b/8 + Rational(3, 2)) +
-            x*(a**2/4 + 3*a/4 - b**2/4 - 3*b/4) - S.Half)
+            x*(a**2/4 + 3*a/4 - b**2/4 - 3*b/4) - Rational(1, 2))
 
     assert jacobi(n, a, a, x) == RisingFactorial(
         a + 1, n)*gegenbauer(n, a + Rational(1, 2), x)/RisingFactorial(2*a + 1, n)
@@ -27,9 +27,9 @@ def test_jacobi():
     assert jacobi(n, -b, b, x) == ((-x + 1)**(b/2)*(x + 1)**(-b/2)*assoc_legendre(n, b, x) *
                                    gamma(-b + n + 1)/gamma(n + 1))
     assert jacobi(n, 0, 0, x) == legendre(n, x)
-    assert jacobi(n, S.Half, S.Half, x) == RisingFactorial(
+    assert jacobi(n, Rational(1, 2), Rational(1, 2), x) == RisingFactorial(
         Rational(3, 2), n)*chebyshevu(n, x)/factorial(n + 1)
-    assert jacobi(n, -S.Half, -S.Half, x) == RisingFactorial(
+    assert jacobi(n, Rational(-1, 2), Rational(-1, 2), x) == RisingFactorial(
         Rational(1, 2), n)*chebyshevt(n, x)/factorial(n)
 
     X = jacobi(n, a, b, x)
@@ -143,7 +143,7 @@ def test_legendre():
     assert legendre(-n, x) == legendre(n - 1, x)
     assert legendre(n, -x) == (-1)**n*legendre(n, x)
 
-    assert legendre(n, 0) == sqrt(pi)/(gamma(S.Half - n/2)*gamma(1 + n/2))
+    assert legendre(n, 0) == sqrt(pi)/(gamma(Rational(1, 2) - n/2)*gamma(1 + n/2))
     assert legendre(n, 1) == 1
     assert legendre(n, oo) == oo
 

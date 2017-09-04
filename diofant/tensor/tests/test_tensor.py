@@ -1098,7 +1098,7 @@ def test_fun():
     # dg_{a b c} = \partial_{a} g_{b c} is symmetric in b, c
     dg = tensorhead('dg', [Lorentz]*3, [[1], [1]*2])
     # gamma^a_{b c} is the Christoffel symbol
-    gamma = S.Half*g(a, d)*(dg(-b, -d, -c) + dg(-c, -b, -d) - dg(-d, -b, -c))
+    gamma = g(a, d)*(dg(-b, -d, -c) + dg(-c, -b, -d) - dg(-d, -b, -c))/2
     # t = g_{a b; c}
     t = dg(-c, -a, -b) - g(-a, -d)*gamma(d, -b, -c) - g(-b, -d)*gamma(d, -a, -c)
     t = t.contract_metric(g)

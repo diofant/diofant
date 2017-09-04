@@ -3,8 +3,8 @@
 import pytest
 
 from diofant import (Derivative, Eq, Expr, Float, I, Integer, Mul, Piecewise,
-                     Rational, RootOf, S, Sum, Symbol, Tuple, diff, exp,
-                     expand, false, im, oo, pi, re, sin, sqrt, tanh, true)
+                     Rational, RootOf, Sum, Symbol, Tuple, diff, exp, expand,
+                     false, im, oo, pi, re, sin, sqrt, tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
@@ -2255,10 +2255,10 @@ def test_factor():
 
     assert factor_list(1) == (1, [])
     assert factor_list(6) == (6, [])
-    assert factor_list(sqrt(3), x) == (1, [(3, S.Half)])
+    assert factor_list(sqrt(3), x) == (1, [(3, Rational(1, 2))])
     assert factor_list((-1)**x, x) == (1, [(-1, x)])
     assert factor_list((2*x)**y, x) == (1, [(2, y), (x, y)])
-    assert factor_list(sqrt(x*y), x) == (1, [(x*y, S.Half)])
+    assert factor_list(sqrt(x*y), x) == (1, [(x*y, Rational(1, 2))])
 
     assert factor(6) == 6 and factor(6).is_Integer
 

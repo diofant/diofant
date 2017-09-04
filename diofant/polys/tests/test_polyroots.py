@@ -5,7 +5,7 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (ZZ, I, Integer, Interval, Piecewise, Rational, S, Symbol,
+from diofant import (ZZ, I, Integer, Interval, Piecewise, Rational, Symbol,
                      Wild, acos, cos, exp, im, pi, powsimp, re, root, sin,
                      sqrt, symbols)
 from diofant.polys import Poly, RootOf, cyclotomic_poly, intervals, nroots
@@ -105,9 +105,9 @@ def test_roots_cubic():
     assert roots_cubic(Poly(x**3 - 3*x**2 + 3*x - 1, x)) == [1, 1, 1]
 
     assert roots_cubic(Poly(x**3 + 1, x)) == \
-        [-1, S.Half - I*sqrt(3)/2, S.Half + I*sqrt(3)/2]
+        [-1, Rational(1, 2) - I*sqrt(3)/2, Rational(1, 2) + I*sqrt(3)/2]
     assert roots_cubic(Poly(2*x**3 - 3*x**2 - 3*x - 1, x))[0] == \
-        S.Half + 3**Rational(1, 3)/2 + 3**Rational(2, 3)/2
+        Rational(1, 2) + 3**Rational(1, 3)/2 + 3**Rational(2, 3)/2
     eq = -x**3 + 2*x**2 + 3*x - 2
     assert roots(eq, trig=True, multiple=True) == \
         roots_cubic(Poly(eq, x), trig=True) == [
@@ -133,7 +133,7 @@ def test_roots_quartic():
     ]
 
     lhs = roots_quartic(Poly(x**4 + x, x))
-    rhs = [S.Half + I*sqrt(3)/2, S.Half - I*sqrt(3)/2, 0, -1]
+    rhs = [Rational(1, 2) + I*sqrt(3)/2, Rational(1, 2) - I*sqrt(3)/2, 0, -1]
 
     assert sorted(lhs, key=hash) == sorted(rhs, key=hash)
 
@@ -322,10 +322,10 @@ def test_roots0():
 
     assert roots(x**2 - 2*x + 1, x, auto=False) == {1: 2}
 
-    assert roots(2*x + 1, x) == {-S.Half: 1}
-    assert roots((2*x + 1)**2, x) == {-S.Half: 2}
-    assert roots((2*x + 1)**5, x) == {-S.Half: 5}
-    assert roots((2*x + 1)**10, x) == {-S.Half: 10}
+    assert roots(2*x + 1, x) == {Rational(-1, 2): 1}
+    assert roots((2*x + 1)**2, x) == {Rational(-1, 2): 2}
+    assert roots((2*x + 1)**5, x) == {Rational(-1, 2): 5}
+    assert roots((2*x + 1)**10, x) == {Rational(-1, 2): 10}
 
     assert roots(x**4 - 1, x) == {I: 1, 1: 1, -1: 1, -I: 1}
     assert roots((x**4 - 1)**2, x) == {I: 2, 1: 2, -1: 2, -I: 2}
@@ -417,8 +417,8 @@ def test_roots0():
 
     assert roots(f, z) == {
         1: 1,
-        S.Half + S.Half*y + S.Half*sqrt(1 - 2*y + y**2 + 8*x**2): 1,
-        S.Half + S.Half*y - S.Half*sqrt(1 - 2*y + y**2 + 8*x**2): 1,
+        Rational(1, 2) + y/2 + sqrt(1 - 2*y + y**2 + 8*x**2)/2: 1,
+        Rational(1, 2) + y/2 - sqrt(1 - 2*y + y**2 + 8*x**2)/2: 1,
     }
 
     assert roots(a*b*c*x**3 + 2*x**2 + 4*x + 8, x, cubics=False) == {}

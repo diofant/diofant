@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (Eq, Function, I, Lambda, Rational, S, binomial,
-                     expand_func, factorial, gamma, rf, sin, sqrt, symbols)
+from diofant import (Eq, Function, I, Lambda, Rational, binomial, expand_func,
+                     factorial, gamma, rf, sin, sqrt, symbols)
 from diofant.abc import a, b
 from diofant.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
                                     rsolve_ratio)
@@ -36,10 +36,10 @@ def test_rsolve_ratio():
 
     assert solution in [
         C1*((-2*n + 3)/(n**2 - 1))/3,
-        (Rational(1, 2))*(C1*(-3 + 2*n)/(-1 + n**2)),
-        (Rational(1, 2))*(C1*( 3 - 2*n)/( 1 - n**2)),
-        (Rational(1, 2))*(C2*(-3 + 2*n)/(-1 + n**2)),
-        (Rational(1, 2))*(C2*( 3 - 2*n)/( 1 - n**2)),
+        (C1*(-3 + 2*n)/(-1 + n**2))/2,
+        (C1*( 3 - 2*n)/( 1 - n**2))/2,
+        (C2*(-3 + 2*n)/(-1 + n**2))/2,
+        (C2*( 3 - 2*n)/( 1 - n**2))/2,
     ]
 
     assert rsolve_ratio([1, 1], sqrt(n), n) is None
@@ -47,8 +47,8 @@ def test_rsolve_ratio():
 
 def test_rsolve_hyper():
     assert rsolve_hyper([-1, -1, 1], 0, n) in [
-        C0*(S.Half - S.Half*sqrt(5))**n + C1*(S.Half + S.Half*sqrt(5))**n,
-        C1*(S.Half - S.Half*sqrt(5))**n + C0*(S.Half + S.Half*sqrt(5))**n,
+        C0*(Rational(1, 2) - sqrt(5)/2)**n + C1*(Rational(1, 2) + sqrt(5)/2)**n,
+        C1*(Rational(1, 2) - sqrt(5)/2)**n + C0*(Rational(1, 2) + sqrt(5)/2)**n,
     ]
 
     assert rsolve_hyper([n**2 - 2, -2*n - 1, 1], 0, n) in [
@@ -112,12 +112,12 @@ def test_rsolve_bulk():
 
 def test_rsolve():
     f = y(n + 2) - y(n + 1) - y(n)
-    h = sqrt(5)*(S.Half + S.Half*sqrt(5))**n \
-        - sqrt(5)*(S.Half - S.Half*sqrt(5))**n
+    h = sqrt(5)*(Rational(1, 2) + sqrt(5)/2)**n \
+        - sqrt(5)*(Rational(1, 2) - sqrt(5)/2)**n
 
     assert rsolve(f, y(n)) in [
-        C0*(S.Half - S.Half*sqrt(5))**n + C1*(S.Half + S.Half*sqrt(5))**n,
-        C1*(S.Half - S.Half*sqrt(5))**n + C0*(S.Half + S.Half*sqrt(5))**n,
+        C0*(Rational(1, 2) - sqrt(5)/2)**n + C1*(Rational(1, 2) + sqrt(5)/2)**n,
+        C1*(Rational(1, 2) - sqrt(5)/2)**n + C0*(Rational(1, 2) + sqrt(5)/2)**n,
     ]
 
     assert rsolve(f, y(n), [0, 5]) == h
@@ -152,9 +152,9 @@ def test_rsolve():
 
     f = 3*y(n - 1) - y(n) - 1
 
-    assert rsolve(f, y(n), {y(0): 0}) == -3**n/2 + S.Half
-    assert rsolve(f, y(n), {y(0): 1}) == 3**n/2 + S.Half
-    assert rsolve(f, y(n), {y(0): 2}) == 3*3**n/2 + S.Half
+    assert rsolve(f, y(n), {y(0): 0}) == -3**n/2 + Rational(1, 2)
+    assert rsolve(f, y(n), {y(0): 1}) == 3**n/2 + Rational(1, 2)
+    assert rsolve(f, y(n), {y(0): 2}) == 3*3**n/2 + Rational(1, 2)
 
     assert f.subs(y, Lambda(k, rsolve(f, y(n)).subs(n, k))).simplify() == 0
 

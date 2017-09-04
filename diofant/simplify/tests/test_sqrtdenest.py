@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Dummy, Eq, I, Integer, Integral, Rational, S, cos, cosh,
+from diofant import (Dummy, Eq, I, Integer, Integral, Rational, cos, cosh,
                      posify, root, solve, sqrt, sqrtdenest, sstr, symbols,
                      sympify)
 from diofant.abc import F, a, b, c, d, t, x, y
@@ -509,7 +509,7 @@ def test_unrad_slow():
     # this has roots with multiplicity > 1; there should be no
     # repeats in roots obtained, however
     eq = (sqrt(1 + sqrt(1 - 4*x**2)) - x*((1 + sqrt(1 + 2*sqrt(1 - 4*x**2)))))
-    assert solve(eq) == [{x: S.Half}]
+    assert solve(eq) == [{x: Rational(1, 2)}]
 
 
 @pytest.mark.xfail
