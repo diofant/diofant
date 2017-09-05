@@ -13,6 +13,7 @@ from diofant import (Float, Integer, Matrix, Rational, Symbol, lambdify,
 from diofant.abc import x, y, z
 from diofant.external import import_module
 from diofant.utilities.decorator import conserve_mpmath_dps
+from diofant.utilities.lambdify import NUMPY_TRANSLATIONS
 
 
 __all__ = ()
@@ -187,8 +188,7 @@ def test_Matrix_mul():
 def test_Matrix_array():
     class matarray:
         def __array__(self):
-            from numpy import array
-            return array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+            return numpy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     matarr = matarray()
     assert Matrix(matarr) == Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
@@ -274,7 +274,6 @@ def test_lambdify_matrix_vec_input():
 
 
 def test_lambdify_transl():
-    from diofant.utilities.lambdify import NUMPY_TRANSLATIONS
     for sym, mat in NUMPY_TRANSLATIONS.items():
         assert sym in diofant.__dict__
         assert mat in numpy.__dict__
@@ -283,13 +282,10 @@ def test_lambdify_transl():
 def test_symarray():
     """Test creation of numpy arrays of diofant symbols."""
 
-    import numpy as np
-    import numpy.testing as npt
-
     syms = symbols('_0,_1,_2')
     s1 = symarray("", 3)
     s2 = symarray("", 3)
-    npt.assert_array_equal(s1, np.array(syms, dtype=object))
+    numpy.testing.assert_array_equal(s1, numpy.array(syms, dtype=object))
     assert s1[0] == s2[0]
 
     a = symarray('a', 3)
@@ -297,7 +293,7 @@ def test_symarray():
     assert not(a[0] == b[0])
 
     asyms = symbols('a_0,a_1,a_2')
-    npt.assert_array_equal(a, np.array(asyms, dtype=object))
+    numpy.testing.assert_array_equal(a, numpy.array(asyms, dtype=object))
 
     # Multidimensional checks
     a2d = symarray('a', (2, 3))

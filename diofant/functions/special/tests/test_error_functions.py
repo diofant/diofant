@@ -1,8 +1,10 @@
+from random import uniform
+
 import pytest
 
 from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
-                     Li, Limit, O, Rational, S, Shi, Si, Symbol, conjugate,
-                     cos, cosh, diff, erf, erf2, erf2inv, erfc, erfcinv, erfi,
+                     Li, Limit, O, Rational, Shi, Si, Symbol, conjugate, cos,
+                     cosh, diff, erf, erf2, erf2inv, erfc, erfcinv, erfi,
                      erfinv, exp, exp_polar, expand, expand_func, expint,
                      fresnelc, fresnels, gamma, hyper, im, integrate, li,
                      limit, log, meijerg, nan, oo, pi, polar_lift, re, sign,
@@ -10,6 +12,9 @@ from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.error_functions import _eis, _erfs
+from diofant.utilities.randtest import (random_complex_number,
+                                        verify_derivative_numerically,
+                                        verify_numerically)
 
 
 __all__ = ()
@@ -48,15 +53,15 @@ def test_erf():
     assert erf(1/x).as_leading_term(x) == erf(1/x)
 
     assert erf(z).rewrite('uppergamma') == sqrt(z**2)*erf(sqrt(z**2))/z
-    assert erf(z).rewrite('erfc') == S.One - erfc(z)
+    assert erf(z).rewrite('erfc') == 1 - erfc(z)
     assert erf(z).rewrite('erfi') == -I*erfi(I*z)
     assert erf(z).rewrite('fresnels') == (1 + I)*(fresnelc(z*(1 - I)/sqrt(pi)) -
                                                   I*fresnels(z*(1 - I)/sqrt(pi)))
     assert erf(z).rewrite('fresnelc') == (1 + I)*(fresnelc(z*(1 - I)/sqrt(pi)) -
                                                   I*fresnels(z*(1 - I)/sqrt(pi)))
-    assert erf(z).rewrite('hyper') == 2*z*hyper([S.Half], [3*S.Half], -z**2)/sqrt(pi)
-    assert erf(z).rewrite('meijerg') == z*meijerg([S.Half], [], [0], [-S.Half], z**2)/sqrt(pi)
-    assert erf(z).rewrite('expint') == sqrt(z**2)/z - z*expint(S.Half, z**2)/sqrt(S.Pi)
+    assert erf(z).rewrite('hyper') == 2*z*hyper([Rational(1, 2)], [Rational(3, 2)], -z**2)/sqrt(pi)
+    assert erf(z).rewrite('meijerg') == z*meijerg([Rational(1, 2)], [], [0], [Rational(-1, 2)], z**2)/sqrt(pi)
+    assert erf(z).rewrite('expint') == sqrt(z**2)/z - z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
     assert limit(exp(x)*exp(x**2)*(erf(x + 1/exp(x)) - erf(x)), x, oo) == \
         2/sqrt(pi)
@@ -92,7 +97,7 @@ def test_erf_evalf():
 
 
 def test__erfs():
-    assert _erfs(z).diff(z) == -2/sqrt(S.Pi) + 2*z*_erfs(z)
+    assert _erfs(z).diff(z) == -2/sqrt(pi) + 2*z*_erfs(z)
     pytest.raises(ArgumentIndexError, lambda: _erfs(x).fdiff(2))
 
     assert _erfs(1/z).series(z) == \
@@ -124,7 +129,7 @@ def test_erfc():
 
     assert conjugate(erfc(z)) == erfc(conjugate(z))
 
-    assert erfc(x).as_leading_term(x) == S.One
+    assert erfc(x).as_leading_term(x) == 1
     assert erfc(1/x).as_leading_term(x) == erfc(1/x)
 
     assert erfc(z).rewrite('erf') == 1 - erf(z)
@@ -133,10 +138,10 @@ def test_erfc():
                                                        I*fresnels(z*(1 - I)/sqrt(pi)))
     assert erfc(z).rewrite('fresnelc') == 1 - (1 + I)*(fresnelc(z*(1 - I)/sqrt(pi)) -
                                                        I*fresnels(z*(1 - I)/sqrt(pi)))
-    assert erfc(z).rewrite('hyper') == 1 - 2*z*hyper([S.Half], [3*S.Half], -z**2)/sqrt(pi)
-    assert erfc(z).rewrite('meijerg') == 1 - z*meijerg([S.Half], [], [0], [-S.Half], z**2)/sqrt(pi)
+    assert erfc(z).rewrite('hyper') == 1 - 2*z*hyper([Rational(1, 2)], [Rational(3, 2)], -z**2)/sqrt(pi)
+    assert erfc(z).rewrite('meijerg') == 1 - z*meijerg([Rational(1, 2)], [], [0], [Rational(-1, 2)], z**2)/sqrt(pi)
     assert erfc(z).rewrite('uppergamma') == 1 - sqrt(z**2)*erf(sqrt(z**2))/z
-    assert erfc(z).rewrite('expint') == S.One - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(S.Pi)
+    assert erfc(z).rewrite('expint') == 1 - sqrt(z**2)/z + z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
     assert erfc(x).as_real_imag() == \
         ((erfc(re(x) - I*re(x)*Abs(im(x))/Abs(re(x)))/2 +
@@ -167,10 +172,10 @@ def test_erfc_evalf():
 def test_erfi():
     assert erfi(nan) == nan
 
-    assert erfi(oo) == S.Infinity
-    assert erfi(-oo) == S.NegativeInfinity
+    assert erfi(+oo) == +oo
+    assert erfi(-oo) == -oo
 
-    assert erfi(0) == S.Zero
+    assert erfi(0) == 0
 
     assert erfi(I*oo) == I
     assert erfi(-I*oo) == -I
@@ -193,11 +198,11 @@ def test_erfi():
                                                    I*fresnels(z*(1 + I)/sqrt(pi)))
     assert erfi(z).rewrite('fresnelc') == (1 - I)*(fresnelc(z*(1 + I)/sqrt(pi)) -
                                                    I*fresnels(z*(1 + I)/sqrt(pi)))
-    assert erfi(z).rewrite('hyper') == 2*z*hyper([S.Half], [3*S.Half], z**2)/sqrt(pi)
-    assert erfi(z).rewrite('meijerg') == z*meijerg([S.Half], [], [0], [-S.Half], -z**2)/sqrt(pi)
-    assert erfi(z).rewrite('uppergamma') == (sqrt(-z**2)/z*(uppergamma(S.Half,
-                                                                       -z**2)/sqrt(S.Pi) - S.One))
-    assert erfi(z).rewrite('expint') == sqrt(-z**2)/z - z*expint(S.Half, -z**2)/sqrt(S.Pi)
+    assert erfi(z).rewrite('hyper') == 2*z*hyper([Rational(1, 2)], [Rational(3, 2)], z**2)/sqrt(pi)
+    assert erfi(z).rewrite('meijerg') == z*meijerg([Rational(1, 2)], [], [0], [Rational(-1, 2)], -z**2)/sqrt(pi)
+    assert erfi(z).rewrite('uppergamma') == (sqrt(-z**2)/z*(uppergamma(Rational(1, 2),
+                                                                       -z**2)/sqrt(pi) - 1))
+    assert erfi(z).rewrite('expint') == sqrt(-z**2)/z - z*expint(Rational(1, 2), -z**2)/sqrt(pi)
 
     assert erfi(x).as_real_imag() == \
         ((erfi(re(x) - I*re(x)*Abs(im(x))/Abs(re(x)))/2 +
@@ -226,9 +231,8 @@ def test_erfi_evalf():
 
 
 def test_erf2():
-
-    assert erf2(0, 0) == S.Zero
-    assert erf2(x, x) == S.Zero
+    assert erf2(0, 0) == 0
+    assert erf2(x, x) == 0
     assert erf2(nan, 0) == nan
 
     assert erf2(-oo,  y) == erf(y) + 1
@@ -264,9 +268,9 @@ def test_erf2():
 
 def test_erfinv():
     assert erfinv(0) == 0
-    assert erfinv(-1) == S.NegativeInfinity
-    assert erfinv(1) == S.Infinity
-    assert erfinv(nan) == S.NaN
+    assert erfinv(-1) == -oo
+    assert erfinv(+1) == +oo
+    assert erfinv(nan) == nan
 
     assert erfinv(erf(w)) == w
     assert erfinv(erf(-w)) == -w
@@ -284,8 +288,8 @@ def test_erfinv_evalf():
 
 def test_erfcinv():
     assert erfcinv(1) == 0
-    assert erfcinv(0) == S.Infinity
-    assert erfcinv(nan) == S.NaN
+    assert erfcinv(0) == oo
+    assert erfcinv(nan) == nan
 
     assert erfcinv(x).diff() == -sqrt(pi)*exp(erfcinv(x)**2)/2
 
@@ -295,9 +299,9 @@ def test_erfcinv():
 
 
 def test_erf2inv():
-    assert erf2inv(0, 0) == S.Zero
-    assert erf2inv(0, 1) == S.Infinity
-    assert erf2inv(1, 0) == S.One
+    assert erf2inv(0, 0) == 0
+    assert erf2inv(0, 1) == oo
+    assert erf2inv(1, 0) == 1
     assert erf2inv(0, y) == erfinv(y)
     assert erf2inv(oo, y) == erfcinv(-y)
     assert erf2inv(x, 0) == x
@@ -314,7 +318,6 @@ def test_erf2inv():
 
 
 def mytn(expr1, expr2, expr3, x, d=0):
-    from diofant.utilities.randtest import verify_numerically, random_complex_number
     subs = {}
     for a in expr1.free_symbols:
         if a != x:
@@ -324,19 +327,14 @@ def mytn(expr1, expr2, expr3, x, d=0):
 
 
 def mytd(expr1, expr2, x):
-    from diofant.utilities.randtest import test_derivative_numerically, \
-        random_complex_number
     subs = {}
     for a in expr1.free_symbols:
         if a != x:
             subs[a] = random_complex_number()
-    return expr1.diff(x) == expr2 and test_derivative_numerically(expr1.subs(subs), x)
+    return expr1.diff(x) == expr2 and verify_derivative_numerically(expr1.subs(subs), x)
 
 
 def tn_branch(func, s=None):
-    from diofant import I, pi, exp_polar
-    from random import uniform
-
     def fn(x):
         if s is None:
             return func(x)
@@ -465,7 +463,6 @@ def test__eis():
 
 def tn_arg(func):
     def test(arg, e1, e2):
-        from random import uniform
         v = uniform(1, 5)
         v1 = func(arg*x).subs(x, v).n()
         v2 = func(e1*v + e2*1e-15).n()
@@ -606,7 +603,6 @@ def test_ci():
     assert tn_arg(Ci)
     assert tn_arg(Chi)
 
-    from diofant import O, EulerGamma, log, limit
     assert Ci(x).nseries(x, n=4) == \
         EulerGamma + log(x) - x**2/4 + x**4/96 + O(x**6)
     assert Chi(x).nseries(x, n=4) == \
@@ -616,8 +612,8 @@ def test_ci():
 
 def test_fresnel():
     assert fresnels(0) == 0
-    assert fresnels(oo) == S.Half
-    assert fresnels(-oo) == -S.Half
+    assert fresnels(+oo) == Rational(+1, 2)
+    assert fresnels(-oo) == Rational(-1, 2)
 
     assert fresnels(z) == fresnels(z)
     assert fresnels(-z) == -fresnels(z)
@@ -628,8 +624,8 @@ def test_fresnel():
 
     assert fresnels(z).diff(z) == sin(pi*z**2/2)
 
-    assert fresnels(z).rewrite(erf) == (S.One + I)/4 * (
-        erf((S.One + I)/2*sqrt(pi)*z) - I*erf((S.One - I)/2*sqrt(pi)*z))
+    assert fresnels(z).rewrite(erf) == (1 + I)/4 * (
+        erf((1 + I)/2*sqrt(pi)*z) - I*erf((1 - I)/2*sqrt(pi)*z))
 
     assert fresnels(z).rewrite(hyper) == \
         pi*z**3/6 * hyper([Rational(3, 4)], [Rational(3, 2), Rational(7, 4)], -pi**2*z**4/16)
@@ -669,8 +665,8 @@ def test_fresnel():
                              (Rational(1, 4), 0)), -pi**2*z**4/16)/(2*(-z)**Rational(3, 4)*(z**2)**Rational(3, 4))
 
     assert fresnelc(0) == 0
-    assert fresnelc(oo) == S.Half
-    assert fresnelc(-oo) == -S.Half
+    assert fresnelc(+oo) == Rational(+1, 2)
+    assert fresnelc(-oo) == Rational(-1, 2)
 
     assert fresnelc(z) == fresnelc(z)
     assert fresnelc(-z) == -fresnelc(z)
@@ -683,11 +679,11 @@ def test_fresnel():
     pytest.raises(ArgumentIndexError, lambda: fresnels(z).fdiff(2))
     pytest.raises(ArgumentIndexError, lambda: fresnelc(z).fdiff(2))
 
-    assert fresnelc(z).rewrite(erf) == (S.One - I)/4 * (
-        erf((S.One + I)/2*sqrt(pi)*z) + I*erf((S.One - I)/2*sqrt(pi)*z))
+    assert fresnelc(z).rewrite(erf) == (1 - I)/4 * (
+        erf((1 + I)/2*sqrt(pi)*z) + I*erf((1 - I)/2*sqrt(pi)*z))
 
     assert fresnelc(z).rewrite(hyper) == \
-        z * hyper([S.One/4], [S.One/2, Rational(5, 4)], -pi**2*z**4/16)
+        z * hyper([Rational(1, 4)], [Rational(1, 2), Rational(5, 4)], -pi**2*z**4/16)
 
     assert fresnelc(x).taylor_term(-1, z) == 0
     assert fresnelc(x).taylor_term(1, z, *(z,)) == -pi**2*z**5/40
@@ -699,18 +695,18 @@ def test_fresnel():
     assert fresnelc(y/z).limit(z, 0) == fresnelc(oo*sign(y))
 
     # issue sympy/sympy#6510
-    assert fresnels(z).series(z, S.Infinity) == \
+    assert fresnels(z).series(z, oo) == \
         (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + \
-        (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + S.Half
-    assert fresnelc(z).series(z, S.Infinity) == \
+        (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + Rational(1, 2)
+    assert fresnelc(z).series(z, oo) == \
         (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + \
-        (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + S.Half
+        (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + Rational(1, 2)
     assert fresnels(1/z).series(z) == \
         (-z**3/pi**2 + O(z**6))*sin(pi/(2*z**2)) + (-z/pi + 3*z**5/pi**3 +
-                                                    O(z**6))*cos(pi/(2*z**2)) + S.Half
+                                                    O(z**6))*cos(pi/(2*z**2)) + Rational(1, 2)
     assert fresnelc(1/z).series(z) == \
         (-z**3/pi**2 + O(z**6))*cos(pi/(2*z**2)) + (z/pi - 3*z**5/pi**3 +
-                                                    O(z**6))*sin(pi/(2*z**2)) + S.Half
+                                                    O(z**6))*sin(pi/(2*z**2)) + Rational(1, 2)
 
     assert fresnelc(w).is_extended_real is True
 
@@ -732,8 +728,6 @@ def test_fresnel():
     assert fresnelc(z).rewrite(meijerg) == sqrt(2)*pi*z**Rational(3, 4) * \
         meijerg(((), (1,)), ((Rational(1, 4),),
                              (Rational(3, 4), 0)), -pi**2*z**4/16)/(2*(-z)**Rational(1, 4)*(z**2)**Rational(1, 4))
-
-    from diofant.utilities.randtest import verify_numerically
 
     verify_numerically(re(fresnels(z)), fresnels(z).as_real_imag()[0], z)
     verify_numerically(im(fresnels(z)), fresnels(z).as_real_imag()[1], z)

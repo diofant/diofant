@@ -10,6 +10,7 @@ from diofant import (Abs, Add, And, Catalan, Complement, Derivative, Dict,
                      sin, sqrt, subfactorial, summation, symbols, true, zeta,
                      zoo)
 from diofant.abc import w, x, y, z
+from diofant.combinatorics import Cycle, Permutation
 from diofant.core import Expr
 from diofant.core.trace import Tr
 from diofant.domains import QQ, ZZ
@@ -17,6 +18,7 @@ from diofant.geometry import Circle, Point
 from diofant.polys import (Poly, RootOf, RootSum, field, grlex, groebner, lex,
                            ring)
 from diofant.printing import StrPrinter, sstr, sstrrepr
+from diofant.stats import Die, Exponential, Normal, pspace, where
 
 
 __all__ = ()
@@ -252,8 +254,6 @@ def test_Order():
 
 
 def test_Permutation_Cycle():
-    from diofant.combinatorics import Permutation, Cycle
-
     # general principle: economically, canonically show all moved elements
     # and the size of the permutation.
 
@@ -650,7 +650,6 @@ def test_settings():
 
 
 def test_RandomDomain():
-    from diofant.stats import Normal, Die, Exponential, pspace, where
     X = Normal('x1', 0, 1)
     assert str(where(X > 0)) == "Domain: And(0 < x1, x1 < oo)"
 
@@ -668,7 +667,6 @@ def test_FiniteSet():
 
 
 def test_PrettyPoly():
-    from diofant.domains import QQ
     F = QQ.frac_field(x, y)
     R = QQ[x, y]
     assert sstr(F.convert(x/(x + y))) == sstr(x/(x + y))

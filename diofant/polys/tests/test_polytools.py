@@ -3,8 +3,8 @@
 import pytest
 
 from diofant import (Derivative, Eq, Expr, Float, I, Integer, Mul, Piecewise,
-                     Rational, RootOf, S, Sum, Symbol, Tuple, diff, exp,
-                     expand, im, oo, pi, re, sin, sqrt, tanh)
+                     Rational, RootOf, Sum, Symbol, Tuple, diff, exp, expand,
+                     false, im, oo, pi, re, sin, sqrt, tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
@@ -1835,7 +1835,7 @@ def test_gcd_list():
     assert gcd_list([x*(y + 42) - x*y - x*42]) == 0
 
     gcd = gcd_list([], x)
-    assert gcd.is_Number and gcd is S.Zero
+    assert gcd.is_Number and gcd is Integer(0)
 
     gcd = gcd_list([], x, polys=True)
     assert gcd.is_Poly and gcd.is_zero
@@ -1856,7 +1856,7 @@ def test_lcm_list():
     assert lcm_list([x*(y + 42) - x*y - x*42]) == 0
 
     lcm = lcm_list([], x)
-    assert lcm.is_Number and lcm is S.One
+    assert lcm.is_Number and lcm is Integer(1)
 
     lcm = lcm_list([], x, polys=True)
     assert lcm.is_Poly and lcm.is_one
@@ -2255,10 +2255,10 @@ def test_factor():
 
     assert factor_list(1) == (1, [])
     assert factor_list(6) == (6, [])
-    assert factor_list(sqrt(3), x) == (1, [(3, S.Half)])
+    assert factor_list(sqrt(3), x) == (1, [(3, Rational(1, 2))])
     assert factor_list((-1)**x, x) == (1, [(-1, x)])
     assert factor_list((2*x)**y, x) == (1, [(2, y), (x, y)])
-    assert factor_list(sqrt(x*y), x) == (1, [(x*y, S.Half)])
+    assert factor_list(sqrt(x*y), x) == (1, [(x*y, Rational(1, 2))])
 
     assert factor(6) == 6 and factor(6).is_Integer
 
@@ -2685,29 +2685,29 @@ def test_nroots():
     roots = nroots(x**5 + x + 1, n=5)
     eps = Float("1e-5")
 
-    assert re(roots[0]).epsilon_eq(-0.75487, eps) is S.true
+    assert re(roots[0]).epsilon_eq(-0.75487, eps) is true
     assert im(roots[0]) == 0.0
     assert re(roots[1]) == -0.5
-    assert im(roots[1]).epsilon_eq(-0.86602, eps) is S.true
+    assert im(roots[1]).epsilon_eq(-0.86602, eps) is true
     assert re(roots[2]) == -0.5
-    assert im(roots[2]).epsilon_eq(+0.86602, eps) is S.true
-    assert re(roots[3]).epsilon_eq(+0.87743, eps) is S.true
-    assert im(roots[3]).epsilon_eq(-0.74486, eps) is S.true
-    assert re(roots[4]).epsilon_eq(+0.87743, eps) is S.true
-    assert im(roots[4]).epsilon_eq(+0.74486, eps) is S.true
+    assert im(roots[2]).epsilon_eq(+0.86602, eps) is true
+    assert re(roots[3]).epsilon_eq(+0.87743, eps) is true
+    assert im(roots[3]).epsilon_eq(-0.74486, eps) is true
+    assert re(roots[4]).epsilon_eq(+0.87743, eps) is true
+    assert im(roots[4]).epsilon_eq(+0.74486, eps) is true
 
     eps = Float("1e-6")
 
-    assert re(roots[0]).epsilon_eq(-0.75487, eps) is S.false
+    assert re(roots[0]).epsilon_eq(-0.75487, eps) is false
     assert im(roots[0]) == 0.0
     assert re(roots[1]) == -0.5
-    assert im(roots[1]).epsilon_eq(-0.86602, eps) is S.false
+    assert im(roots[1]).epsilon_eq(-0.86602, eps) is false
     assert re(roots[2]) == -0.5
-    assert im(roots[2]).epsilon_eq(+0.86602, eps) is S.false
-    assert re(roots[3]).epsilon_eq(+0.87743, eps) is S.false
-    assert im(roots[3]).epsilon_eq(-0.74486, eps) is S.false
-    assert re(roots[4]).epsilon_eq(+0.87743, eps) is S.false
-    assert im(roots[4]).epsilon_eq(+0.74486, eps) is S.false
+    assert im(roots[2]).epsilon_eq(+0.86602, eps) is false
+    assert re(roots[3]).epsilon_eq(+0.87743, eps) is false
+    assert im(roots[3]).epsilon_eq(-0.74486, eps) is false
+    assert re(roots[4]).epsilon_eq(+0.87743, eps) is false
+    assert im(roots[4]).epsilon_eq(+0.74486, eps) is false
 
     pytest.raises(DomainError, lambda: Poly(x + y, x).nroots())
     pytest.raises(MultivariatePolynomialError, lambda: Poly(x + y).nroots())

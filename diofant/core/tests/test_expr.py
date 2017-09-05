@@ -1,16 +1,17 @@
 import pytest
 
 from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
-                     Function, Heaviside, I, Integer, Integral, Max, Mul,
-                     Number, NumberSymbol, O, Piecewise, Poly, Pow, Rational,
-                     S, Si, Sum, Symbol, Tuple, Wild, WildFunction, apart,
-                     cancel, collect, combsimp, cos, default_sort_key, diff,
-                     exp, exp_polar, expand, factor, factorial, gamma, log,
-                     nan, nsimplify, oo, pi, powsimp, radsimp, ratsimp,
-                     simplify, sin, sqrt, symbols, sympify, tan, together,
-                     trigsimp, zoo)
-from diofant.abc import a, b, c, n, t, u, x, y, z
+                     Function, Ge, Gt, Heaviside, I, Integer, Integral, Le, Lt,
+                     Max, Mul, Number, NumberSymbol, O, Piecewise, Poly, Pow,
+                     Rational, Si, Sum, Symbol, Tuple, Wild, WildFunction,
+                     apart, cancel, collect, combsimp, cos, default_sort_key,
+                     diff, exp, exp_polar, expand, factor, factorial, false,
+                     gamma, log, lucas, nan, nsimplify, oo, pi, posify,
+                     powsimp, radsimp, ratsimp, simplify, sin, sqrt, symbols,
+                     sympify, tan, together, trigsimp, true, zoo)
+from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
+from diofant.solvers.solvers import checksol
 
 
 __all__ = ()
@@ -155,22 +156,20 @@ def test_ibasic():
 
 
 def test_relational():
-    from diofant import Lt
-    assert (pi < 3) is S.false
-    assert (pi <= 3) is S.false
-    assert (pi > 3) is S.true
-    assert (pi >= 3) is S.true
-    assert (-pi < 3) is S.true
-    assert (-pi <= 3) is S.true
-    assert (-pi > 3) is S.false
-    assert (-pi >= 3) is S.false
+    assert (pi < 3) is false
+    assert (pi <= 3) is false
+    assert (pi > 3) is true
+    assert (pi >= 3) is true
+    assert (-pi < 3) is true
+    assert (-pi <= 3) is true
+    assert (-pi > 3) is false
+    assert (-pi >= 3) is false
     r = Symbol('r', extended_real=True)
-    assert (r - 2 < r - 3) is S.false
+    assert (r - 2 < r - 3) is false
     assert Lt(x + I, x + I + 2).func == Lt  # issue sympy/sympy#8288
 
 
 def test_relational_assumptions():
-    from diofant import Lt, Gt, Le, Ge
     m1 = Symbol("m1", nonnegative=False)
     m2 = Symbol("m2", positive=False)
     m3 = Symbol("m3", nonpositive=False)
@@ -183,30 +182,29 @@ def test_relational_assumptions():
     m2 = Symbol("m2", positive=False, extended_real=True)
     m3 = Symbol("m3", nonpositive=False, extended_real=True)
     m4 = Symbol("m4", negative=False, extended_real=True)
-    assert (m1 < 0) is S.true
-    assert (m2 <= 0) is S.true
-    assert (m3 > 0) is S.true
-    assert (m4 >= 0) is S.true
+    assert (m1 < 0) is true
+    assert (m2 <= 0) is true
+    assert (m3 > 0) is true
+    assert (m4 >= 0) is true
     m1 = Symbol("m1", negative=True)
     m2 = Symbol("m2", nonpositive=True)
     m3 = Symbol("m3", positive=True)
     m4 = Symbol("m4", nonnegative=True)
-    assert (m1 < 0) is S.true
-    assert (m2 <= 0) is S.true
-    assert (m3 > 0) is S.true
-    assert (m4 >= 0) is S.true
+    assert (m1 < 0) is true
+    assert (m2 <= 0) is true
+    assert (m3 > 0) is true
+    assert (m4 >= 0) is true
     m1 = Symbol("m1", negative=False, extended_real=True)
     m2 = Symbol("m2", nonpositive=False, extended_real=True)
     m3 = Symbol("m3", positive=False, extended_real=True)
     m4 = Symbol("m4", nonnegative=False, extended_real=True)
-    assert (m1 < 0) is S.false
-    assert (m2 <= 0) is S.false
-    assert (m3 > 0) is S.false
-    assert (m4 >= 0) is S.false
+    assert (m1 < 0) is false
+    assert (m2 <= 0) is false
+    assert (m3 > 0) is false
+    assert (m4 >= 0) is false
 
 
 def test_relational_noncommutative():
-    from diofant import Lt, Gt, Le, Ge
     A, B = symbols('A,B', commutative=False)
     assert (A < B) == Lt(A, B)
     assert (A <= B) == Le(A, B)
@@ -276,20 +274,20 @@ def test_as_leading_term_stub():
 
 def test_atoms():
     assert x.atoms() == {x}
-    assert (1 + x).atoms() == {x, Integer(1)}
+    assert (1 + x).atoms() == {x, 1}
 
     assert (1 + 2*cos(x)).atoms(Symbol) == {x}
-    assert (1 + 2*cos(x)).atoms(Symbol, Number) == {Integer(1), Integer(2), x}
+    assert (1 + 2*cos(x)).atoms(Symbol, Number) == {1, 2, x}
 
-    assert (2*(x**(y**x))).atoms() == {Integer(2), x, y}
+    assert (2*(x**(y**x))).atoms() == {2, x, y}
 
-    assert Rational(1, 2).atoms() == {S.Half}
+    assert Rational(1, 2).atoms() == {Rational(1, 2)}
     assert Rational(1, 2).atoms(Symbol) == set()
 
     assert sin(oo).atoms(oo) == {oo}
 
-    assert Poly(0, x).atoms() == {S.Zero, x}
-    assert Poly(1, x).atoms() == {S.One, x}
+    assert Poly(0, x).atoms() == {0, x}
+    assert Poly(1, x).atoms() == {1, x}
 
     assert Poly(x, x).atoms() == {x}
     assert Poly(x, x, y).atoms() == {x, y}
@@ -298,33 +296,28 @@ def test_atoms():
     assert Poly(x + y*t, x, y, z).atoms() == {t, x, y, z}
 
     assert (I*pi).atoms(NumberSymbol) == {pi}
-    assert (I*pi).atoms(NumberSymbol, I) == \
-        (I*pi).atoms(I, NumberSymbol) == {pi, I}
+    assert (I*pi).atoms(NumberSymbol, I) == {pi, I}
+    assert (I*pi).atoms(I, NumberSymbol) == {pi, I}
 
     assert exp(exp(x)).atoms(Pow) == {exp(exp(x)), exp(x)}
-    assert (1 + x*(2 + y) + exp(3 + z)).atoms(Add) == \
-        {1 + x*(2 + y) + exp(3 + z), 2 + y, 3 + z}
+    assert (1 + x*(2 + y) + exp(3 + z)).atoms(Add) == {1 + x*(2 + y) + exp(3 + z),
+                                                       2 + y, 3 + z}
 
     # issue sympy/sympy#6132
     f = Function('f')
     e = (f(x) + sin(x) + 2)
-    assert e.atoms(AppliedUndef) == \
-        {f(x)}
-    assert e.atoms(AppliedUndef, Function) == \
-        {f(x), sin(x)}
-    assert e.atoms(Function) == \
-        {f(x), sin(x)}
-    assert e.atoms(AppliedUndef, Number) == \
-        {f(x), Integer(2)}
-    assert e.atoms(Function, Number) == \
-        {Integer(2), sin(x), f(x)}
+    assert e.atoms(AppliedUndef) == {f(x)}
+    assert e.atoms(AppliedUndef, Function) == {f(x), sin(x)}
+    assert e.atoms(Function) == {f(x), sin(x)}
+    assert e.atoms(AppliedUndef, Number) == {f(x), 2}
+    assert e.atoms(Function, Number) == {2, sin(x), f(x)}
 
 
 def test_is_polynomial():
     k = Symbol('k', nonnegative=True, integer=True)
 
     assert Rational(2).is_polynomial(x, y, z) is True
-    assert (S.Pi).is_polynomial(x, y, z) is True
+    assert pi.is_polynomial(x, y, z) is True
 
     assert x.is_polynomial(x) is True
     assert x.is_polynomial(y) is True
@@ -390,10 +383,10 @@ def test_is_rational_function():
     assert (sin(y)/x).is_rational_function(x) is True
     assert (sin(y)/x).is_rational_function(x, y) is False
 
-    assert (S.NaN).is_rational_function() is False
-    assert (S.Infinity).is_rational_function() is False
-    assert (-S.Infinity).is_rational_function() is False
-    assert (S.ComplexInfinity).is_rational_function() is False
+    assert nan.is_rational_function() is False
+    assert (+oo).is_rational_function() is False
+    assert (-oo).is_rational_function() is False
+    assert zoo.is_rational_function() is False
 
 
 def test_is_algebraic_expr():
@@ -491,8 +484,6 @@ def test_noncommutative_expand_sympyissue_3757():
 
 
 def test_as_numer_denom():
-    a, b, c = symbols('a, b, c')
-
     assert nan.as_numer_denom() == (nan, 1)
     assert oo.as_numer_denom() == (oo, 1)
     assert (-oo).as_numer_denom() == (-oo, 1)
@@ -520,11 +511,11 @@ def test_as_numer_denom():
     # this should take no more than a few seconds
     assert int(log(Add(*[Dummy()/i/x for i in range(1, 705)]
                        ).as_numer_denom()[1]/x).n(4)) == 705
-    for i in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+    for i in (oo, -oo, zoo):
         assert (i + x/3).as_numer_denom() == \
             (x + i, 3)
-    assert (S.Infinity + x/3 + y/4).as_numer_denom() == \
-        (4*x + 3*y + S.Infinity, 12)
+    assert (oo + x/3 + y/4).as_numer_denom() == \
+        (4*x + 3*y + oo, 12)
     assert (oo*x + zoo*y).as_numer_denom() == \
         (zoo*y + oo*x, 1)
 
@@ -841,8 +832,8 @@ def test_as_poly_as_expr():
 
 
 def test_nonzero():
-    assert bool(S.Zero) is False
-    assert bool(S.One) is True
+    assert bool(Integer(0)) is False
+    assert bool(Integer(1)) is True
     assert bool(x) is True
     assert bool(x + y) is True
     assert bool(x - x) is False
@@ -866,7 +857,7 @@ def test_is_number():
     assert (2 + log(x)).is_number is False
     assert (8 + log(2) + x).is_number is False
     assert (1 + x**2/x - x).is_number is True
-    assert Tuple(Integer(1)).is_number is False
+    assert Tuple(1).is_number is False
     assert Add(2, x).is_number is False
     assert Mul(3, 4).is_number is True
     assert Pow(log(2), 2).is_number is True
@@ -965,7 +956,7 @@ def test_extractions():
     assert (2*x + 3).extract_additively(2*x) == 3
     assert x.extract_additively(0) == x
     assert Integer(2).extract_additively(x) is None
-    assert Float(2.).extract_additively(2) == S.Zero
+    assert Float(2.).extract_additively(2) == 0
     assert (2*x + 3).extract_additively(x + 1) == x + 2
     assert (2*x + 3).extract_additively(y + 1) is None
     assert (2*x - 3).extract_additively(x + 1) is None
@@ -1089,7 +1080,6 @@ def test_coeff():
 
 
 def test_coeff2():
-    r, kappa = symbols('r, kappa')
     psi = Function("psi")
     g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
     g = g.expand()
@@ -1097,7 +1087,6 @@ def test_coeff2():
 
 
 def test_coeff2_0():
-    r, kappa = symbols('r, kappa')
     psi = Function("psi")
     g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
     g = g.expand()
@@ -1118,9 +1107,9 @@ def test_integrate():
 
 
 def test_as_base_exp():
-    assert x.as_base_exp() == (x, S.One)
-    assert (x*y*z).as_base_exp() == (x*y*z, S.One)
-    assert (x + y + z).as_base_exp() == (x + y + z, S.One)
+    assert x.as_base_exp() == (x, 1)
+    assert (x*y*z).as_base_exp() == (x*y*z, 1)
+    assert (x + y + z).as_base_exp() == (x + y + z, 1)
     assert ((x + y)**z).as_base_exp() == (x + y, z)
 
 
@@ -1154,7 +1143,7 @@ def test_action_verbs():
 def test_as_powers_dict():
     assert x.as_powers_dict() == {x: 1}
     assert (x**y*z).as_powers_dict() == {x: y, z: 1}
-    assert Mul(2, 2, evaluate=False).as_powers_dict() == {Integer(2): Integer(2)}
+    assert Mul(2, 2, evaluate=False).as_powers_dict() == {2: 2}
     assert (x*y).as_powers_dict()[z] == 0
     assert (x + y).as_powers_dict()[z] == 0
 
@@ -1208,7 +1197,7 @@ def test_new_rawargs():
     assert m._new_rawargs(x, y, n).is_commutative is False
 
     assert m._new_rawargs(x, n, reeval=False).is_commutative is False
-    assert m._new_rawargs(S.One) is S.One
+    assert m._new_rawargs(Integer(1)) is Integer(1)
 
 
 def test_sympyissue_5226():
@@ -1231,39 +1220,39 @@ def test_sympyissue_5300():
 
 
 def test_as_coeff_Mul():
-    assert S.Zero.as_coeff_Mul() == (S.One, S.Zero)
-    assert Integer(3).as_coeff_Mul() == (Integer(3), Integer(1))
-    assert Rational(3, 4).as_coeff_Mul() == (Rational(3, 4), Integer(1))
-    assert Float(5.0).as_coeff_Mul() == (Float(5.0), Integer(1))
+    assert Integer(0).as_coeff_Mul() == (1, 0)
+    assert Integer(3).as_coeff_Mul() == (3, 1)
+    assert Rational(3, 4).as_coeff_Mul() == (Rational(3, 4), 1)
+    assert Float(5.0).as_coeff_Mul() == (Float(5.0), 1)
 
-    assert (Integer(3)*x).as_coeff_Mul() == (Integer(3), x)
+    assert (Integer(3)*x).as_coeff_Mul() == (3, x)
     assert (Rational(3, 4)*x).as_coeff_Mul() == (Rational(3, 4), x)
     assert (Float(5.0)*x).as_coeff_Mul() == (Float(5.0), x)
 
-    assert (Integer(3)*x*y).as_coeff_Mul() == (Integer(3), x*y)
+    assert (Integer(3)*x*y).as_coeff_Mul() == (3, x*y)
     assert (Rational(3, 4)*x*y).as_coeff_Mul() == (Rational(3, 4), x*y)
     assert (Float(5.0)*x*y).as_coeff_Mul() == (Float(5.0), x*y)
 
-    assert (x).as_coeff_Mul() == (S.One, x)
-    assert (x*y).as_coeff_Mul() == (S.One, x*y)
+    assert x.as_coeff_Mul() == (1, x)
+    assert (x*y).as_coeff_Mul() == (1, x*y)
     assert (-oo*x).as_coeff_Mul(rational=True) == (-1, oo*x)
 
 
 def test_as_coeff_Add():
-    assert Integer(3).as_coeff_Add() == (Integer(3), Integer(0))
-    assert Rational(3, 4).as_coeff_Add() == (Rational(3, 4), Integer(0))
-    assert Float(5.0).as_coeff_Add() == (Float(5.0), Integer(0))
+    assert Integer(3).as_coeff_Add() == (3, 0)
+    assert Rational(3, 4).as_coeff_Add() == (Rational(3, 4), 0)
+    assert Float(5.0).as_coeff_Add() == (Float(5.0), 0)
 
-    assert (Integer(3) + x).as_coeff_Add() == (Integer(3), x)
+    assert (Integer(3) + x).as_coeff_Add() == (3, x)
     assert (Rational(3, 4) + x).as_coeff_Add() == (Rational(3, 4), x)
     assert (Float(5.0) + x).as_coeff_Add() == (Float(5.0), x)
 
-    assert (Integer(3) + x + y).as_coeff_Add() == (Integer(3), x + y)
+    assert (Integer(3) + x + y).as_coeff_Add() == (3, x + y)
     assert (Rational(3, 4) + x + y).as_coeff_Add() == (Rational(3, 4), x + y)
     assert (Float(5.0) + x + y).as_coeff_Add() == (Float(5.0), x + y)
 
-    assert (x).as_coeff_Add() == (S.Zero, x)
-    assert (x*y).as_coeff_Add() == (S.Zero, x*y)
+    assert x.as_coeff_Add() == (0, x)
+    assert (x*y).as_coeff_Add() == (0, x*y)
 
 
 def test_expr_sorting():
@@ -1315,7 +1304,7 @@ def test_as_ordered_factors():
 
     assert x.as_ordered_factors() == [x]
     assert (2*x*x**n*sin(x)*cos(x)).as_ordered_factors() \
-        == [Integer(2), x, x**n, sin(x), cos(x)]
+        == [2, x, x**n, sin(x), cos(x)]
 
     args = [f(1), f(2), f(3), f(1, 2, 3), g(1), g(2), g(3), g(1, 2, 3)]
     expr = Mul(*args)
@@ -1364,14 +1353,14 @@ def test_as_ordered_terms():
 
 
 def test_sympyissue_4199():
-    # first subs and limit gives NaN
+    # first subs and limit gives nan
     a = x/y
-    assert a._eval_interval(x, 0, oo)._eval_interval(y, oo, 0) is S.NaN
-    # second subs and limit gives NaN
-    assert a._eval_interval(x, 0, oo)._eval_interval(y, 0, oo) is S.NaN
-    # difference gives S.NaN
+    assert a._eval_interval(x, 0, oo)._eval_interval(y, oo, 0) is nan
+    # second subs and limit gives nan
+    assert a._eval_interval(x, 0, oo)._eval_interval(y, 0, oo) is nan
+    # difference gives nan
     a = x - y
-    assert a._eval_interval(x, 1, oo)._eval_interval(y, oo, 1) is S.NaN
+    assert a._eval_interval(x, 1, oo)._eval_interval(y, oo, 1) is nan
     pytest.raises(ValueError, lambda: x._eval_interval(x, None, None))
     a = -y*Heaviside(x - y)
     assert a._eval_interval(x, -oo, oo) == -y
@@ -1392,16 +1381,16 @@ def test_primitive():
     eq = (2 + 2*x)**2
     assert eq.primitive()[0] == 1
     assert (4.0*x).primitive() == (1, 4.0*x)
-    assert (4.0*x + y/2).primitive() == (S.Half, 8.0*x + y)
+    assert (4.0*x + y/2).primitive() == (Rational(1, 2), 8.0*x + y)
     assert (-2*x).primitive() == (2, -x)
     assert Add(5*z/7, 0.5*x, 3*y/2, evaluate=False).primitive() == \
         (Rational(1, 14), 7.0*x + 21*y + 10*z)
-    for i in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+    for i in (oo, -oo, zoo):
         assert (i + x/3).primitive() == \
             (Rational(1, 3), i + x)
-    assert (S.Infinity + 2*x/3 + 4*y/7).primitive() == \
+    assert (oo + 2*x/3 + 4*y/7).primitive() == \
         (Rational(1, 21), 14*x + 12*y + oo)
-    assert S.Zero.primitive() == (S.One, S.Zero)
+    assert Integer(0).primitive() == (1, 0)
 
 
 def test_sympyissue_5843():
@@ -1412,7 +1401,6 @@ def test_sympyissue_5843():
 
 
 def test_is_constant():
-    from diofant.solvers.solvers import checksol
     Sum(x, (x, 1, 10)).is_constant() is True
     Sum(x, (x, 1, n)).is_constant() is False
     Sum(x, (x, 1, n)).is_constant(y) is True
@@ -1430,11 +1418,11 @@ def test_is_constant():
     assert checksol(x, x, f(x)) is False
 
     p = symbols('p', positive=True)
-    assert Pow(x, Integer(0), evaluate=False).is_constant() is True  # == 1
-    assert Pow(Integer(0), x, evaluate=False).is_constant() is False  # == 0 or 1
-    assert Pow(Integer(0), p, evaluate=False).is_constant() is True  # == 1
+    assert Pow(x, 0, evaluate=False).is_constant() is True  # == 1
+    assert Pow(0, x, evaluate=False).is_constant() is False  # == 0 or 1
+    assert Pow(0, p, evaluate=False).is_constant() is True  # == 1
     assert (2**x).is_constant() is False
-    assert Pow(Integer(2), Integer(3), evaluate=False).is_constant() is True
+    assert Pow(2, 3, evaluate=False).is_constant() is True
 
     z1, z2 = symbols('z1 z2', zero=True)
     assert (z1 + 2*z2).is_constant() is True
@@ -1464,7 +1452,7 @@ def test_equals():
     ans = sqrt(2*x + 1)*(6*x**2 + x - 1)/15
     diff = i - ans
     assert diff.equals(0) is False
-    assert diff.subs(x, -S.Half/2) == 7*sqrt(2)/120
+    assert diff.subs(x, Rational(-1, 4)) == 7*sqrt(2)/120
     # there are regions for x for which the expression is True, for
     # example, when x < -1/2 or x > 0 the expression is zero
     p = Symbol('p', positive=True)
@@ -1481,28 +1469,18 @@ def test_equals():
     # issue sympy/sympy#6829
     # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3)
     # z = eq.subs(solve(eq, x)[0])
-    q = symbols('q')
-    z = (q*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-                  Rational(13, 12))/2 - sqrt((2*q - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
-                                                                             Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 -
-                                                                                                                                             Rational(2197, 13824))**Rational(1, 3) - Rational(13, 6))/2 - Rational(1, 4)) + q/4 + (-sqrt(-2*(-(q
-                                                                                                                                                                                                                                                - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q
-                                                                                                                                                                                                                                                                                                                                                       - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-                                                                                                                                                                                                                                                                                                                                                                              Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-                                                                                                                                                                                                                                                                                                                                                      Rational(13, 6))/2 - Rational(1, 4))**4 + (-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
-                                                                                                                                                                                                                                                                                                                                                                                                           Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q -
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Rational(13, 6))/2 - Rational(1, 4))**3 + 2*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q -
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          Rational(13, 6))/2 - Rational(1, 4))**2 - Rational(1, 3))
+    q, x0, x1, x2, x3, x4 = symbols('q, x:5')
+    z = q*x2 + q/4 + x2**4 + x2**3 + 2*x2**2 - Rational(1, 3)
+    z = z.subs(((x2, (-x1/2 - sqrt(x0 - Rational(13, 6) +
+                                   (2*q - Rational(7, 4))/x1)/2 -
+                      Rational(1, 4))),
+                (x1, sqrt(-x0 - Rational(13, 12))),
+                (x0, 2*(-(q - Rational(7, 8))**2/8 -
+                        Rational(2197, 13824))**Rational(1, 3))))
     assert z.equals(0)
 
 
 def test_random():
-    from diofant import posify, lucas
     assert posify(x)[0]._random() is not None
     assert lucas(n)._random(2, -2, 0, -1, 1) is None
 
@@ -1553,7 +1531,7 @@ def test_round():
     assert (Float(.03, 3) + 2*pi/100).round(4) == 0.0928
     assert (pi + 2*E*I).round() == 3 + 5*I
 
-    assert S.Zero.round() == 0
+    assert Integer(0).round() == 0
 
     a = (Add(1, Float('1.' + '9'*27, ''), evaluate=0))
     assert a.round(10) == Float('3.0000000000', '')
@@ -1595,10 +1573,10 @@ def test_round():
     assert str(Float(0.00106).round(4)) == '0.0011'
 
     # issue sympy/sympy#8147
-    assert S.NaN.round() == S.NaN
-    assert S.Infinity.round() == S.Infinity
-    assert S.NegativeInfinity.round() == S.NegativeInfinity
-    assert S.ComplexInfinity.round() == S.ComplexInfinity
+    assert nan.round() == nan
+    assert (+oo).round() == +oo
+    assert (-oo).round() == -oo
+    assert zoo.round() == zoo
 
 
 def test_round_exception_nostr():

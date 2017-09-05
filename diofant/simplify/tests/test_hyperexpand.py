@@ -2,11 +2,15 @@ from random import randrange
 
 import pytest
 
-from diofant import (I, Integer, Piecewise, Rational, S, Tuple, asin, atanh,
-                     besseli, cos, erf, exp, exp_polar, gamma, hyper, log,
-                     lowergamma, meijerg, pi, sin, sqrt)
+from diofant import (Ci, I, Integer, Piecewise, Rational, Si, Symbol, Tuple,
+                     asin, atanh, besseli, combsimp, cos, erf, exp, exp_polar,
+                     expand, gamma, hyper, lerchphi, log, lowergamma, meijerg,
+                     oo, pi, polylog, simplify, sin, sqrt, sympify, unpolarify,
+                     uppergamma)
 from diofant.abc import a, b, c, z
-from diofant.simplify.hyperexpand import (Formula, G_Function, Hyper_Function,
+from diofant.simplify.hyperexpand import (Formula, FormulaCollection,
+                                          G_Function, Hyper_Function,
+                                          MeijerFormulaCollection,
                                           MeijerShiftA, MeijerShiftB,
                                           MeijerShiftC, MeijerShiftD,
                                           MeijerUnShiftA, MeijerUnShiftB,
@@ -38,14 +42,13 @@ def test_hyperexpand():
 
     assert hyperexpand(hyper([], [], z)) == exp(z)
     assert hyperexpand(hyper([1, 1], [2], -z)*z) == log(1 + z)
-    assert hyperexpand(hyper([], [S.Half], -z**2/4)) == cos(z)
+    assert hyperexpand(hyper([], [Rational(1, 2)], -z**2/4)) == cos(z)
     assert hyperexpand(z*hyper([], [Rational(3, 2)], -z**2/4)) == sin(z)
     assert hyperexpand(hyper([Rational(1, 2), Rational(1, 2)], [Rational(3, 2)], z**2)*z) \
         == asin(z)
 
 
 def can_do(ap, bq, numerical=True, div=1, lowerplane=False):
-    from diofant import exp_polar, exp
     r = hyperexpand(hyper(ap, bq, z))
     if r.has(hyper):
         return False
@@ -73,7 +76,7 @@ def test_roach():
     # Section "Gallery"
     assert can_do([Rational(1, 2)], [Rational(9, 2)])
     assert can_do([], [1, Rational(5, 2), 4])
-    assert can_do([-S.Half, 1, 2], [3, 4])
+    assert can_do([Rational(-1, 2), 1, 2], [3, 4])
     assert can_do([Rational(1, 3)], [-Rational(2, 3), -Rational(1, 2), Rational(1, 2), 1])
     assert can_do([-Rational(3, 2), -Rational(1, 2)], [-Rational(5, 2), 1])
     assert can_do([-Rational(3, 2), ], [-Rational(1, 2), Rational(1, 2)])  # shine-integral
@@ -92,7 +95,6 @@ def test_roach_fail():
 
 
 def test_polynomial():
-    from diofant import oo
     assert hyperexpand(hyper([], [-1], z)) == oo
     assert hyperexpand(hyper([-2], [-1], z)) == oo
     assert hyperexpand(hyper([0, 0], [-1], z)) == 1
@@ -104,26 +106,26 @@ def test_hyperexpand_bases():
     assert hyperexpand(hyper([2], [a], z)) == \
         a + z**(-a + 1)*(-a**2 + 3*a + z*(a - 1) - 2)*exp(z) * \
         lowergamma(a - 1, z) - 1
-    # TODO [a+1, a-S.Half], [2*a]
+    # TODO [a+1, a+Rational(-1, 2)], [2*a]
     assert hyperexpand(hyper([1, 2], [3], z)) == -2/z - 2*log(-z + 1)/z**2
-    assert hyperexpand(hyper([S.Half, 2], [Rational(3, 2)], z)) == \
+    assert hyperexpand(hyper([Rational(1, 2), 2], [Rational(3, 2)], z)) == \
         -1/(2*z - 2) + atanh(sqrt(z))/sqrt(z)/2
     assert hyperexpand(hyper([Rational(1, 2), Rational(1, 2)], [Rational(5, 2)], z)) == \
         (-3*z + 3)/4/(z*sqrt(-z + 1)) \
         + (6*z - 3)*asin(sqrt(z))/(4*z**Rational(3, 2))
     assert hyperexpand(hyper([1, 2], [Rational(3, 2)], z)) == -1/(2*z - 2) \
         - asin(sqrt(z))/(sqrt(z)*(2*z - 2)*sqrt(-z + 1))
-    assert hyperexpand(hyper([-S.Half - 1, 1, 2], [S.Half, 3], z)) == \
+    assert hyperexpand(hyper([Rational(-1, 2) - 1, 1, 2], [Rational(1, 2), 3], z)) == \
         sqrt(z)*(6*z/7 - Rational(6, 5))*atanh(sqrt(z)) \
         + (-30*z**2 + 32*z - 6)/35/z - 6*log(-z + 1)/(35*z**2)
-    assert hyperexpand(hyper([1 + S.Half, 1, 1], [2, 2], z)) == \
+    assert hyperexpand(hyper([1 + Rational(1, 2), 1, 1], [2, 2], z)) == \
         -4*log(sqrt(-z + 1)/2 + Rational(1, 2))/z
     # TODO hyperexpand(hyper([a], [2*a + 1], z))
-    # TODO [S.Half, a], [Rational(3, 2), a+1]
+    # TODO [Rational(1, 2), a], [Rational(3, 2), a+1]
     assert hyperexpand(hyper([2], [b, 1], z)) == \
         z**(-b/2 + Rational(1, 2))*besseli(b - 1, 2*sqrt(z))*gamma(b) \
         + z**(-b/2 + 1)*besseli(b, 2*sqrt(z))*gamma(b)
-    # TODO [a], [a - S.Half, 2*a]
+    # TODO [a], [a - Rational(1, 2), 2*a]
 
 
 def test_hyperexpand_parametric():
@@ -134,9 +136,8 @@ def test_hyperexpand_parametric():
 
 
 def test_shifted_sum():
-    from diofant import simplify
     assert simplify(hyperexpand(z**4*hyper([2], [3, Rational(3, 2)], -z**2))) \
-        == z*sin(2*z) + (-z**2 + S.Half)*cos(2*z) - S.Half
+        == z*sin(2*z) + (-z**2 + Rational(1, 2))*cos(2*z) - Rational(1, 2)
 
 
 def _randrat():
@@ -151,7 +152,6 @@ def randcplx(offset=-1):
 
 @pytest.mark.slow
 def test_formulae():
-    from diofant.simplify.hyperexpand import FormulaCollection
     formulae = FormulaCollection().formulae
     for formula in formulae:
         h = formula.func(formula.z)
@@ -183,7 +183,6 @@ def test_formulae():
 
 
 def test_meijerg_formulae():
-    from diofant.simplify.hyperexpand import MeijerFormulaCollection
     formulae = MeijerFormulaCollection().formulae
     for sig in formulae:
         for formula in formulae[sig]:
@@ -327,7 +326,6 @@ def can_do_meijer(a1, a2, b1, b2, numeric=True):
     (at random values) and returns False if the test fails.
     Else it returns True.
     """
-    from diofant import unpolarify, expand
     r = hyperexpand(meijerg(a1, a2, b1, b2, z))
     if r.has(meijerg):
         return False
@@ -350,7 +348,6 @@ def can_do_meijer(a1, a2, b1, b2, numeric=True):
 
 @pytest.mark.slow
 def test_meijerg_expand():
-    from diofant import combsimp, simplify
     # from mpmath docs
     assert hyperexpand(meijerg([[], []], [[0], []], -z)) == exp(z)
 
@@ -362,7 +359,7 @@ def test_meijerg_expand():
         == sin(z)/sqrt(pi)
     assert hyperexpand(meijerg([[], []], [[0], [Rational(1, 2)]], (z/2)**2)) \
         == cos(z)/sqrt(pi)
-    assert can_do_meijer([], [a], [a - 1, a - S.Half], [])
+    assert can_do_meijer([], [a], [a - 1, a - Rational(1, 2)], [])
     assert can_do_meijer([], [], [a/2], [-a/2], False)  # branches...
     assert can_do_meijer([a], [b], [a], [b, a - 1])
 
@@ -375,20 +372,20 @@ def test_meijerg_expand():
                   (meijerg([], [1], [0], [], z), True))
 
     # The Special Functions and their Approximations
-    assert can_do_meijer([], [], [a + b/2], [a, a - b/2, a + S.Half])
+    assert can_do_meijer([], [], [a + b/2], [a, a - b/2, a + Rational(1, 2)])
     assert can_do_meijer(
         [], [], [a], [b], False)  # branches only agree for small z
-    assert can_do_meijer([], [S.Half], [a], [-a])
+    assert can_do_meijer([], [Rational(1, 2)], [a], [-a])
     assert can_do_meijer([], [], [a, b], [])
     assert can_do_meijer([], [], [a, b], [])
-    assert can_do_meijer([], [], [a, a + S.Half], [b, b + S.Half])
-    assert can_do_meijer([], [], [a, -a], [0, S.Half], False)  # dito
-    assert can_do_meijer([], [], [a, a + S.Half, b, b + S.Half], [])
-    assert can_do_meijer([S.Half], [], [0], [a, -a])
-    assert can_do_meijer([S.Half], [], [a], [0, -a], False)  # dito
-    assert can_do_meijer([], [a - S.Half], [a, b], [a - S.Half], False)
-    assert can_do_meijer([], [a + S.Half], [a + b, a - b, a], [], False)
-    assert can_do_meijer([a + S.Half], [], [b, 2*a - b, a], [], False)
+    assert can_do_meijer([], [], [a, a + Rational(1, 2)], [b, b + Rational(1, 2)])
+    assert can_do_meijer([], [], [a, -a], [0, Rational(1, 2)], False)  # dito
+    assert can_do_meijer([], [], [a, a + Rational(1, 2), b, b + Rational(1, 2)], [])
+    assert can_do_meijer([Rational(1, 2)], [], [0], [a, -a])
+    assert can_do_meijer([Rational(1, 2)], [], [a], [0, -a], False)  # dito
+    assert can_do_meijer([], [a - Rational(1, 2)], [a, b], [a - Rational(1, 2)], False)
+    assert can_do_meijer([], [a + Rational(1, 2)], [a + b, a - b, a], [], False)
+    assert can_do_meijer([a + Rational(1, 2)], [], [b, 2*a - b, a], [], False)
 
     # This for example is actually zero.
     assert can_do_meijer([], [], [], [a, b])
@@ -410,7 +407,6 @@ def test_meijerg_expand():
 
 
 def test_meijerg_lookup():
-    from diofant import uppergamma, Si, Ci
     assert hyperexpand(meijerg([a], [], [b, a], [], z)) == \
         z**b*exp(z)*gamma(-a + b + 1)*uppergamma(a - b, z)
     assert hyperexpand(meijerg([0], [], [0, 0], [], z)) == \
@@ -433,13 +429,13 @@ def test_meijerg_expand_fail():
     # which is *very* messy. But since the meijer g actually yields a
     # sum of bessel functions, things can sometimes be simplified a lot and
     # are then put into tables...
-    assert can_do_meijer([], [], [a + S.Half], [a, a - b/2, a + b/2])
-    assert can_do_meijer([], [], [0, S.Half], [a, -a])
-    assert can_do_meijer([], [], [3*a - S.Half, a, -a - S.Half], [a - S.Half])
-    assert can_do_meijer([], [], [0, a - S.Half, -a - S.Half], [S.Half])
+    assert can_do_meijer([], [], [a + Rational(1, 2)], [a, a - b/2, a + b/2])
+    assert can_do_meijer([], [], [0, Rational(1, 2)], [a, -a])
+    assert can_do_meijer([], [], [3*a - Rational(1, 2), a, -a - Rational(1, 2)], [a - Rational(1, 2)])
+    assert can_do_meijer([], [], [0, a - Rational(1, 2), -a - Rational(1, 2)], [Rational(1, 2)])
     assert can_do_meijer([], [], [a, b + Rational(1, 2), b], [2*b - a])
     assert can_do_meijer([], [], [a, b + Rational(1, 2), b, 2*b - a])
-    assert can_do_meijer([S.Half], [], [-a, a], [0])
+    assert can_do_meijer([Rational(1, 2)], [], [-a, a], [0])
 
 
 @pytest.mark.slow
@@ -515,7 +511,6 @@ def test_meijerg_shift_operators():
 @pytest.mark.slow
 def test_meijerg_confluence():
     def t(m, a, b):
-        from diofant import sympify, Piecewise
         a, b = sympify([a, b])
         m_ = m
         m = hyperexpand(m)
@@ -554,7 +549,6 @@ def test_meijerg_confluence():
 
 
 def test_lerchphi():
-    from diofant import combsimp, exp_polar, polylog, log, lerchphi
     assert hyperexpand(hyper([1, a], [a + 1], z)/a) == lerchphi(z, 1, a)
     assert hyperexpand(
         hyper([1, a, a], [a + 1, a + 1], z)/a**2) == lerchphi(z, 2, a)
@@ -592,10 +586,9 @@ def test_lerchphi():
         [1, a, a, a, b + 5], [a + 1, a + 1, a + 1, b], numerical=False)
 
     # test a bug
-    from diofant import Abs
     assert hyperexpand(hyper([Rational(1, 2), Rational(1, 2), Rational(1, 2), 1],
                              [Rational(3, 2), Rational(3, 2), Rational(3, 2)], Rational(1, 4))) == \
-        Abs(-polylog(3, exp_polar(I*pi)/2) + polylog(3, Rational(1, 2)))
+        abs(-polylog(3, exp_polar(I*pi)/2) + polylog(3, Rational(1, 2)))
 
 
 def test_partial_simp():
@@ -643,7 +636,6 @@ def test_hyperexpand_special():
 
 
 def test_Mod1_behavior():
-    from diofant import Symbol, simplify, lowergamma
     n = Symbol('n', integer=True)
     # Note: this should not hang.
     assert simplify(hyperexpand(meijerg([1], [], [n + 1], [0], z))) == \
@@ -653,22 +645,22 @@ def test_Mod1_behavior():
 @pytest.mark.slow
 def test_prudnikov_misc():
     assert can_do([1, (3 + I)/2, (3 - I)/2], [Rational(3, 2), 2])
-    assert can_do([S.Half, a - 1], [Rational(3, 2), a + 1], lowerplane=True)
+    assert can_do([Rational(1, 2), a - 1], [Rational(3, 2), a + 1], lowerplane=True)
     assert can_do([], [b + 1])
     assert can_do([a], [a - 1, b + 1])
 
-    assert can_do([a], [a - S.Half, 2*a])
-    assert can_do([a], [a - S.Half, 2*a + 1])
-    assert can_do([a], [a - S.Half, 2*a - 1])
-    assert can_do([a], [a + S.Half, 2*a])
-    assert can_do([a], [a + S.Half, 2*a + 1])
-    assert can_do([a], [a + S.Half, 2*a - 1])
-    assert can_do([S.Half], [b, 2 - b])
-    assert can_do([S.Half], [b, 3 - b])
+    assert can_do([a], [a - Rational(1, 2), 2*a])
+    assert can_do([a], [a - Rational(1, 2), 2*a + 1])
+    assert can_do([a], [a - Rational(1, 2), 2*a - 1])
+    assert can_do([a], [a + Rational(1, 2), 2*a])
+    assert can_do([a], [a + Rational(1, 2), 2*a + 1])
+    assert can_do([a], [a + Rational(1, 2), 2*a - 1])
+    assert can_do([Rational(1, 2)], [b, 2 - b])
+    assert can_do([Rational(1, 2)], [b, 3 - b])
     assert can_do([1], [2, b])
 
-    assert can_do([a, a + S.Half], [2*a, b, 2*a - b + 1])
-    assert can_do([a, a + S.Half], [S.Half, 2*a, 2*a + S.Half])
+    assert can_do([a, a + Rational(1, 2)], [2*a, b, 2*a - b + 1])
+    assert can_do([a, a + Rational(1, 2)], [Rational(1, 2), 2*a, 2*a + Rational(1, 2)])
     assert can_do([a], [a + 1], lowerplane=True)  # lowergamma
 
 
@@ -679,10 +671,10 @@ def test_prudnikov_1():
     # Gordon and Breach Science Publisher
 
     # 7.3.1
-    assert can_do([a, -a], [S.Half])
-    assert can_do([a, 1 - a], [S.Half])
+    assert can_do([a, -a], [Rational(1, 2)])
+    assert can_do([a, 1 - a], [Rational(1, 2)])
     assert can_do([a, 1 - a], [Rational(3, 2)])
-    assert can_do([a, 2 - a], [S.Half])
+    assert can_do([a, 2 - a], [Rational(1, 2)])
     assert can_do([a, 2 - a], [Rational(3, 2)])
     assert can_do([a, 2 - a], [Rational(3, 2)])
     assert can_do([a, a + Rational(1, 2)], [2*a - 1])
@@ -703,7 +695,7 @@ def test_prudnikov_1():
 
 @pytest.mark.slow
 def test_prudnikov_2():
-    h = S.Half
+    h = Rational(1, 2)
     assert can_do([-h, -h], [h])
     assert can_do([-h, h], [3*h])
     assert can_do([-h, h], [5*h])
@@ -721,7 +713,7 @@ def test_prudnikov_2():
 
 @pytest.mark.slow
 def test_prudnikov_3():
-    h = S.Half
+    h = Rational(1, 2)
     assert can_do([Rational(1, 4), Rational(3, 4)], [h])
     assert can_do([Rational(1, 4), Rational(3, 4)], [3*h])
     assert can_do([Rational(1, 3), Rational(2, 3)], [3*h])
@@ -736,7 +728,7 @@ def test_prudnikov_3():
 
 @pytest.mark.slow
 def test_prudnikov_4():
-    h = S.Half
+    h = Rational(1, 2)
     for p in [3*h, 5*h, 7*h]:
         for n in [-h, h, 3*h, 5*h, 7*h]:
             for m in [3*h, 2, 5*h, 3, 7*h, 4]:
@@ -748,7 +740,7 @@ def test_prudnikov_4():
 
 @pytest.mark.slow
 def test_prudnikov_5():
-    h = S.Half
+    h = Rational(1, 2)
 
     for p in [1, 2, 3]:
         for q in range(p, 4):
@@ -772,7 +764,7 @@ def test_prudnikov_5():
 
 @pytest.mark.slow
 def test_prudnikov_6():
-    h = S.Half
+    h = Rational(1, 2)
 
     for m in [3*h, 5*h]:
         for n in [1, 2, 3]:
@@ -800,7 +792,7 @@ def test_prudnikov_6():
 def test_prudnikov_7():
     assert can_do([3], [6])
 
-    h = S.Half
+    h = Rational(1, 2)
     for n in [h, 3*h, 5*h, 7*h]:
         assert can_do([-h], [n])
     for m in [-h, h, 1, 3*h, 2, 5*h, 3, 7*h, 4]:  # HERE
@@ -810,7 +802,7 @@ def test_prudnikov_7():
 
 @pytest.mark.slow
 def test_prudnikov_8():
-    h = S.Half
+    h = Rational(1, 2)
 
     # 7.12.2
     for a in [1, 2, 3]:
@@ -847,7 +839,7 @@ def test_prudnikov_9():
 @pytest.mark.slow
 def test_prudnikov_10():
     # 7.14.2
-    h = S.Half
+    h = Rational(1, 2)
     for p in [-h, h, 1, 3*h, 2, 5*h, 3, 7*h, 4]:
         for m in [1, 2, 3, 4]:
             for n in range(m, 5):
@@ -872,8 +864,8 @@ def test_prudnikov_10():
 @pytest.mark.slow
 def test_prudnikov_11():
     # 7.15
-    assert can_do([a, a + S.Half], [2*a, b, 2*a - b])
-    assert can_do([a, a + S.Half], [Rational(3, 2), 2*a, 2*a - Rational(1, 2)])
+    assert can_do([a, a + Rational(1, 2)], [2*a, b, 2*a - b])
+    assert can_do([a, a + Rational(1, 2)], [Rational(3, 2), 2*a, 2*a - Rational(1, 2)])
 
     assert can_do([Rational(1, 4), Rational(3, 4)], [Rational(1, 2), Rational(1, 2), 1])
     assert can_do([Rational(5, 4), Rational(3, 4)], [Rational(3, 2), Rational(1, 2), 2])
@@ -887,10 +879,10 @@ def test_prudnikov_11():
 def test_prudnikov_12():
     # 7.16
     assert can_do(
-        [], [a, a + S.Half, 2*a], False)  # branches only agree for some z!
-    assert can_do([], [a, a + S.Half, 2*a + 1], False)  # dito
-    assert can_do([], [S.Half, a, a + S.Half])
-    assert can_do([], [Rational(3, 2), a, a + S.Half])
+        [], [a, a + Rational(1, 2), 2*a], False)  # branches only agree for some z!
+    assert can_do([], [a, a + Rational(1, 2), 2*a + 1], False)  # dito
+    assert can_do([], [Rational(1, 2), a, a + Rational(1, 2)])
+    assert can_do([], [Rational(3, 2), a, a + Rational(1, 2)])
 
     assert can_do([], [Rational(1, 4), Rational(1, 2), Rational(3, 4)])
     assert can_do([], [Rational(1, 2), Rational(1, 2), 1])
@@ -905,7 +897,7 @@ def test_prudnikov_12():
 
 @pytest.mark.slow
 def test_prudnikov_2F1():
-    h = S.Half
+    h = Rational(1, 2)
     # Elliptic integrals
     for p in [-h, h]:
         for m in [h, 3*h, 5*h, 7*h]:
@@ -921,15 +913,15 @@ def test_prudnikov_fail_2F1():
     # TODO polys
 
     # Legendre functions:
-    assert can_do([a, b], [a + b + S.Half])
-    assert can_do([a, b], [a + b - S.Half])
+    assert can_do([a, b], [a + b + Rational(1, 2)])
+    assert can_do([a, b], [a + b - Rational(1, 2)])
     assert can_do([a, b], [a + b + Rational(3, 2)])
     assert can_do([a, b], [(a + b + 1)/2])
     assert can_do([a, b], [(a + b)/2 + 1])
     assert can_do([a, b], [a - b + 1])
     assert can_do([a, b], [a - b + 2])
     assert can_do([a, b], [2*b])
-    assert can_do([a, b], [S.Half])
+    assert can_do([a, b], [Rational(1, 2)])
     assert can_do([a, b], [Rational(3, 2)])
     assert can_do([a, 1 - a], [c])
     assert can_do([a, 2 - a], [c])
@@ -978,8 +970,8 @@ def test_prudnikov_fail_3F2():
     assert can_do([a, a + Rational(1, 3), a + Rational(2, 3)], [3*a/2, (3*a + 1)/2])
 
     # pages 422 ...
-    assert can_do([-S.Half, S.Half, S.Half], [1, 1])  # elliptic integrals
-    assert can_do([-S.Half, S.Half, 1], [Rational(3, 2), Rational(3, 2)])
+    assert can_do([Rational(-1, 2), Rational(1, 2), Rational(1, 2)], [1, 1])  # elliptic integrals
+    assert can_do([Rational(-1, 2), Rational(1, 2), 1], [Rational(3, 2), Rational(3, 2)])
     # TODO LOTS more
 
     # PFDD
@@ -989,7 +981,7 @@ def test_prudnikov_fail_3F2():
     assert can_do([Rational(1, 6), Rational(1, 3), 1], [Rational(7, 6), Rational(4, 3)])
     assert can_do([Rational(1, 6), Rational(2, 3), 1], [Rational(7, 6), Rational(5, 3)])
     assert can_do([Rational(1, 6), Rational(2, 3), 1], [Rational(5, 3), Rational(13, 6)])
-    assert can_do([S.Half, 1, 1], [Rational(1, 4), Rational(3, 4)])
+    assert can_do([Rational(1, 2), 1, 1], [Rational(1, 4), Rational(3, 4)])
     # LOTS more
 
 
@@ -1020,7 +1012,7 @@ def test_prudnikov_fail_other():
     assert can_do([], [Rational(5, 3), Rational(4, 3)])  # PFDD
 
     # XXX this does not *evaluate* right??
-    assert can_do([], [a, a + S.Half, 2*a - 1])
+    assert can_do([], [a, a + Rational(1, 2), 2*a - 1])
 
 
 def test_bug():

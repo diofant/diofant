@@ -17,9 +17,9 @@ from diofant import continued_fraction_iterator as cf_i
 from diofant import continued_fraction_periodic as cf_p
 from diofant import continued_fraction_reduce as cf_r
 from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
-                     DiracDelta, E, EulerGamma, FiniteSet, Function, I,
-                     Integer, Lambda, LambertW, Le, Lt, Max, Mul, N, O, Or,
-                     Piecewise, Poly, Rational, RootOf, S, Subs, Symbol, acot,
+                     DiracDelta, E, EulerGamma, FiniteSet, Function,
+                     GoldenRatio, I, Lambda, LambertW, Le, Lt, Max, Mul, N, O,
+                     Or, Piecewise, Poly, Rational, RootOf, Subs, Symbol, acot,
                      apart, asin, asinh, assoc_legendre, atan, bernoulli,
                      besselj, binomial, ceiling, chebyshevt, combsimp, cos,
                      cosh, cot, csc, diff, elliptic_e, elliptic_f, exp, expand,
@@ -31,6 +31,7 @@ from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
                      reduce_inequalities, residue, resultant, rf, sec, series,
                      sign, simplify, sin, sinh, solve, sqrt, sqrtdenest,
                      symbols, tan, tanh, totient, trigsimp, wronskian, zoo)
+from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.concrete import Sum
 from diofant.concrete.products import Product
 from diofant.core.relational import Equality
@@ -47,8 +48,8 @@ from diofant.matrices import GramSchmidt, Matrix, eye
 from diofant.matrices.expressions import MatrixSymbol, ZeroMatrix
 from diofant.matrices.expressions.blockmatrix import (BlockMatrix,
                                                       block_collapse)
-from diofant.polys.fields import vfield
-from diofant.polys.rings import vring
+from diofant.polys.fields import field
+from diofant.polys.rings import ring
 from diofant.polys.solvers import solve_lin_sys
 from diofant.solvers.ode import dsolve
 from diofant.solvers.recurr import rsolve
@@ -58,7 +59,6 @@ from diofant.utilities.iterables import partitions
 __all__ = ()
 
 R = Rational
-x, y, z = symbols('x y z')
 i, j, k, l, m, n = symbols('i j k l m n', integer=True)
 f = Function('f')
 g = Function('g')
@@ -310,7 +310,7 @@ def test_G17():
 
 def test_G18():
     assert cf_p(1, 2, 5) == [[1]]
-    assert cf_r([[1]]) == S.Half + sqrt(5)/2
+    assert cf_r([[1]]) == Rational(1, 2) + sqrt(5)/2
 
 
 @pytest.mark.xfail
@@ -448,7 +448,6 @@ def test_H18():
 
 
 def test_H19():
-    a = symbols('a')
     # The idea is to let a**2 == 2, then solve 1/(a-1). Answer is a+1")
     assert Poly(a - 1).invert(Poly(a**2 - 2)) == a + 1
 
@@ -464,7 +463,7 @@ def test_H23():
 
 
 def test_H24():
-    phi = AlgebraicNumber(S.GoldenRatio.expand(func=True), alias='phi')
+    phi = AlgebraicNumber(GoldenRatio.expand(func=True), alias='phi')
     assert factor(x**4 - 3*x**2 + 1, extension=phi) == \
         (x - phi)*(x + 1 - phi)*(x - 1 + phi)*(x + phi)
 
@@ -821,7 +820,7 @@ def test_M14():
 
 
 def test_M15():
-    assert solve(sin(x) - S.Half) == [{x: pi/6}, {x: 5*pi/6}]
+    assert solve(sin(x) - Rational(1, 2)) == [{x: pi/6}, {x: 5*pi/6}]
 
 
 def test_M16():
@@ -857,10 +856,8 @@ def test_M22():
 
 
 def test_M23():
-    x = symbols('x', complex=True)
-
-    assert solve(x - 1/sqrt(1 + x**2)) == [
-        {x: -I*sqrt(S.Half + sqrt(5)/2)}, {x: sqrt(-S.Half + sqrt(5)/2)}]
+    assert solve(x - 1/sqrt(1 + x**2)) == [{x: -I*sqrt(Rational(1, 2) + sqrt(5)/2)},
+                                           {x: sqrt(Rational(-1, 2) + sqrt(5)/2)}]
 
 
 def test_M24():
@@ -871,7 +868,6 @@ def test_M24():
 
 def test_M25():
     a, b, c, d = symbols(':d', positive=True)
-    x = symbols('x')
     assert solve(a*b**x - c*d**x, x)[0][x].expand() == (log(c/a)/log(b/d)).expand()
 
 
@@ -949,7 +945,12 @@ def test_M37():
 
 @pytest.mark.slow
 def test_M38():
-    variabes = vring("k1:50", vfield("a,b,c", ZZ).to_domain())
+    F, a, b, c = field("a,b,c", ZZ)
+    R, *variables = ring("k1:50", F.to_domain())
+    [k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15,
+     k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29,
+     k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43,
+     k44, k45, k46, k47, k48, k49] = variables
     system = [
         -b*k8/a + c*k8/a, -b*k11/a + c*k11/a, -b*k10/a + c*k10/a + k2, -k3 - b*k9/a + c*k9/a,
         -b*k14/a + c*k14/a, -b*k15/a + c*k15/a, -b*k18/a + c*k18/a - k2, -b*k17/a + c*k17/a,
@@ -1000,7 +1001,7 @@ def test_M38():
         k2:  0, k1:  0,
         k34: b/c*k42, k31: k39, k26: a/c*k42, k23: k39
     }
-    assert solve_lin_sys(system, variabes) == solution
+    assert solve_lin_sys(system, R) == solution
 
 
 @pytest.mark.slow
@@ -1038,11 +1039,10 @@ def test_N1():
     assert E**pi > pi**E
 
 
-@pytest.mark.xfail
 def test_N2():
     x = symbols('x', real=True)
     assert reduce_inequalities(x**4 - x + 1 > 0)
-    assert reduce_inequalities(x**4 - x + 1 > 1) == Or(1 < x, x < 0)
+    assert reduce_inequalities(x**4 - x + 1 > 1) == Or(Lt(1, x), x < 0)
 
 
 @pytest.mark.xfail
@@ -1234,7 +1234,7 @@ def test_P7():
 def test_P8():
     M = Matrix([[1, -2*I],
                 [-3*I, 4]])
-    assert M.norm(ord=S.Infinity) == 7  # Matrix.norm(ord=inf) not implemented
+    assert M.norm(ord=oo) == 7  # Matrix.norm(ord=inf) not implemented
 
 
 def test_P9():
@@ -1329,7 +1329,6 @@ def test_P18():
 
 
 def test_P19():
-    w = symbols('w')
     M = Matrix([[1,    1,    1,    1],
                 [w,    x,    y,    z],
                 [w**2, x**2, y**2, z**2],
@@ -1369,12 +1368,7 @@ def test_P23():
         [0, 1, 2, 1, 0],
         [0, 0, 1, 2, 1],
         [0, 0, 0, 1, 2]])
-    assert M.eigenvals() == {
-        Integer(1): 1,
-        Integer(2): 1,
-        Integer(3): 1,
-        sqrt(3) + 2: 1,
-        -sqrt(3) + 2: 1}
+    assert M.eigenvals() == {1: 1, 2: 1, 3: 1, sqrt(3) + 2: 1, -sqrt(3) + 2: 1}
 
 
 def test_P24():
@@ -1386,14 +1380,9 @@ def test_P24():
                 [-52,   -43,   49,   44, -599,  411,  208,  208],
                 [-49,    -8,    8,   59,  208,  208,   99, -911],
                 [29,   -44,    52,  -23,  208,  208, -911,   99]])
-    assert M.eigenvals() == {
-        Integer(0): 1,
-        10*sqrt(10405): 1,
-        100*sqrt(26) + 510: 1,
-        Integer(1000): 2,
-        -100*sqrt(26) + 510: 1,
-        -10*sqrt(10405): 1,
-        Integer(1020): 1}
+    assert M.eigenvals() == {0: 1, 10*sqrt(10405): 1, 100*sqrt(26) + 510: 1,
+                             1000: 2, -100*sqrt(26) + 510: 1,
+                             -10*sqrt(10405): 1, 1020: 1}
 
 
 def test_P25():
@@ -1427,7 +1416,6 @@ def test_P26():
 
 
 def test_P27():
-    a = symbols('a')
     M = Matrix([[a,  0, 0, 0, 0],
                 [0,  0, 0, 0, 1],
                 [0,  0, a, 0, 0],
@@ -1482,7 +1470,6 @@ def test_P32():
 
 
 def test_P33():
-    w, t = symbols('w t')
     M = Matrix([[0,    1,      0,   0],
                 [0,    0,      0, 2*w],
                 [0,    0,      0,   1],
@@ -1544,7 +1531,7 @@ def test_P38():
     M = Matrix([[0, 1, 0],
                 [0, 0, 0],
                 [0, 0, 0]])
-    assert all(e in (S.NaN, S.ComplexInfinity) for e in M**Rational(1, 2))
+    assert all(e in (nan, zoo) for e in M**Rational(1, 2))
 
 
 def test_P40():
@@ -2328,7 +2315,6 @@ def test_W26():
 
 
 def test_W27():
-    a, b, c = symbols('a b c')
     assert integrate(integrate(integrate(1, (z, 0, c*(1 - x/a - y/b))),
                                (y, 0, b*(1 - x/a))),
                      (x, 0, a)) == a*b*c/6
@@ -2409,13 +2395,11 @@ def test_X9():
 
 
 def test_X10():
-    z, w = symbols('z w')
     assert (series(log(sinh(z)) + log(cosh(z + w)), z, x0=0, n=2) ==
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
 
 def test_X11():
-    z, w = symbols('z w')
     assert (series(log(sinh(z) * cosh(z + w)), z, x0=0, n=2) ==
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
@@ -2465,7 +2449,6 @@ def test_X16():
 def test_Y1():
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
-    s = symbols('s')
     F, _, _ = laplace_transform(cos((w - 1)*t), t, s)
     assert F == s/(s**2 + (w - 1)**2)
 
@@ -2473,7 +2456,6 @@ def test_Y1():
 def test_Y2():
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
-    s = symbols('s')
     f = inverse_laplace_transform(s/(s**2 + (w - 1)**2), s, t)
     assert f == cos(t*abs(w - 1))
 
@@ -2484,14 +2466,12 @@ def test_Y2():
 def test_Y3():
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
-    s = symbols('s')
     F, _, _ = laplace_transform(sinh(w*t)*cosh(w*t), t, s)
     assert F == w/(s**2 - 4*w**2)
 
 
 def test_Y4():
     t = symbols('t', extended_real=True, positive=True)
-    s = symbols('s')
     F, _, _ = laplace_transform(erf(3/sqrt(t)), t, s)
     assert F == (1 - exp(-6*sqrt(s)))/s
 
@@ -2506,7 +2486,6 @@ def test_Y5_Y6():
     # => s^2 Y(s) - s + Y(s) = 4/s [e^(-s) - e^(-2 s)]
     # where Y(s) is the Laplace transform of y(t)
     t = symbols('t', extended_real=True, positive=True)
-    s = symbols('s')
     y = Function('y')
     F, _, _ = laplace_transform(diff(y(t), t, 2)
                                 + y(t)
@@ -2529,7 +2508,6 @@ def test_Y7():
     #    [Sanchez, Allen and Kyner, p. 213]
     t = symbols('t', extended_real=True, positive=True)
     a = symbols('a', extended_real=True)
-    s = symbols('s')
     F, _, _ = laplace_transform(1 + 2*Sum((-1)**n*Heaviside(t - n*a),
                                           (n, 1, oo)), t, s)
     # returns 2*LaplaceTransform(Sum((-1)**n*Heaviside(-a*n + t),
@@ -2557,7 +2535,6 @@ def test_Y10():
 @pytest.mark.slow
 def test_Y11():
     # => pi cot(pi s)   (0 < Re s < 1)   [Gradshteyn and Ryzhik 17.43(5)]
-    x, s = symbols('x s')
     # raises RuntimeError: maximum recursion depth exceeded
     # https://github.com/sympy/sympy/issues/7181
     F, _, _ = mellin_transform(1/(1 - x), x, s)
@@ -2568,7 +2545,6 @@ def test_Y11():
 def test_Y12():
     # => 2^(s - 4) gamma(s/2)/gamma(4 - s/2)   (0 < Re s < 1)
     # [Gradshteyn and Ryzhik 17.43(16)]
-    x, s = symbols('x s')
     # returns Wrong value -2**(s - 4)*gamma(s/2 - 3)/gamma(-s/2 + 1)
     # https://github.com/sympy/sympy/issues/7182
     F, _, _ = mellin_transform(besselj(3, x)/x**3, x, s)
@@ -2603,7 +2579,6 @@ def test_Z4():
     # => [c^(n+1) [c^(n+1) - 2 c - 2] + (n+1) c^2 + 2 c - n] / [(c-1)^3 (c+1)]
     #    [Joan Z. Yu and Robert Israel in sci.math.symbolic]
     r = Function('r')
-    c = symbols('c')
     # raises ValueError: Polynomial or rational function expected,
     #     got '(c**2 - c**n)/(c - c**n)
     s = rsolve(r(n) - ((1 + c - c**(n-1) - c**(n+1))/(1 - c**n)*r(n - 1)
@@ -2624,7 +2599,6 @@ def test_Z6():
     # Second order ODE with initial conditions---solve  using Laplace
     # transform: f(t) = sin(2 t)/8 - t cos(2 t)/4
     t = symbols('t', extended_real=True, positive=True)
-    s = symbols('s')
     eq = Derivative(f(t), t, 2) + 4*f(t) - sin(2*t)
     F, _, _ = laplace_transform(eq, t, s)
     # Laplace transform for diff() not calculated

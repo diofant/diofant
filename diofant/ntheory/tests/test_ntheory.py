@@ -1,10 +1,11 @@
+import random
 from collections import defaultdict
 
 import pytest
 
 from diofant import GoldenRatio as Phi
 from diofant import factorial as fac
-from diofant import (Mul, Pow, S, Sieve, Symbol, binomial_coefficients,
+from diofant import (Mul, Pow, Sieve, Symbol, binomial_coefficients,
                      binomial_coefficients_list, multinomial_coefficients, pi,
                      sieve, sqrt, summation)
 from diofant.core.add import Add
@@ -228,7 +229,6 @@ def test_generate():
 
 
 def test_randprime():
-    import random
     random.seed(1234)
     assert randprime(2, 3) == 2
     assert randprime(1, 3) == 2
@@ -796,7 +796,7 @@ def test_visual_factorint():
     forty2 = factorint(42, visual=True)
     assert type(forty2) == Mul
     assert str(forty2) == '2**1*3**1*7**1'
-    assert factorint(1, visual=True) is S.One
+    assert factorint(1, visual=True) is Integer(1)
     no = {'evaluate': False}
     assert factorint(42**2, visual=True) == Mul(Pow(2, 2, **no),
                                                 Pow(3, 2, **no),
@@ -908,9 +908,9 @@ def test_continued_fraction():
 
     assert list(cf_c([1, 6, 1, 8])) == [Integer(1), Rational(7, 6), Rational(8, 7), Rational(71, 62)]
     assert list(cf_c([2])) == [Integer(2)]
-    assert list(cf_c([1, 1, 1, 1, 1, 1, 1])) == [S.One, Integer(2), Rational(3, 2), Rational(5, 3),
+    assert list(cf_c([1, 1, 1, 1, 1, 1, 1])) == [1, Integer(2), Rational(3, 2), Rational(5, 3),
                                                  Rational(8, 5), Rational(13, 8), Rational(21, 13)]
-    assert list(cf_c([1, 6, Rational(-1, 2), 4])) == [S.One, Rational(7, 6), Rational(5, 4), Rational(3, 2)]
+    assert list(cf_c([1, 6, Rational(-1, 2), 4])) == [1, Rational(7, 6), Rational(5, 4), Rational(3, 2)]
 
     assert cf_r([1, 6, 1, 8]) == Rational(71, 62)
     assert cf_r([3]) == Integer(3)
@@ -921,7 +921,7 @@ def test_continued_fraction():
 
 
 def test_egyptian_fraction():
-    pytest.raises(ValueError, lambda: egyptian_fraction(S.Half, "spam"))
+    pytest.raises(ValueError, lambda: egyptian_fraction(Rational(1, 2), "spam"))
 
     def test_equality(r, alg="Greedy"):
         return r == Add(*[Rational(1, i) for i in egyptian_fraction(r, alg)])

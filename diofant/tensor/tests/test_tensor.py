@@ -3,7 +3,7 @@ import pytest
 from diofant import Matrix, eye
 from diofant.abc import x
 from diofant.combinatorics import Permutation
-from diofant.core import Basic, Integer, Rational, S, Symbol
+from diofant.core import Basic, Integer, Rational, Symbol
 from diofant.core.containers import Tuple
 from diofant.core.symbol import symbols
 from diofant.external import import_module
@@ -346,7 +346,6 @@ def test_canonicalize1():
 def test_bug_correction_tensor_indices():
     # to make sure that tensor_indices does not return a list if creating
     # only one index:
-    from diofant.tensor.tensor import tensor_indices, TensorIndexType, TensorIndex
     A = TensorIndexType("A")
     i = tensor_indices('i', A)
     assert not isinstance(i, (tuple, list))
@@ -525,9 +524,9 @@ def test_TensExpr():
     g = Lorentz.metric
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
     pytest.raises(ValueError, lambda: g(c, d)/g(a, b))
-    pytest.raises(ValueError, lambda: S.One/g(a, b))
+    pytest.raises(ValueError, lambda: 1/g(a, b))
     pytest.raises(ValueError, lambda: (A(c, d) + g(c, d))/g(a, b))
-    pytest.raises(ValueError, lambda: S.One/(A(c, d) + g(c, d)))
+    pytest.raises(ValueError, lambda: 1/(A(c, d) + g(c, d)))
     pytest.raises(ValueError, lambda: A(a, b) + A(a, c))
     t = A(a, b) + B(a, b)
     pytest.raises(NotImplementedError, lambda: TensExpr.__mul__(t, 'a'))
@@ -600,9 +599,9 @@ def test_add1():
     t = (p(i) + q(i))/2
     assert 2*t == p(i) + q(i)
 
-    t = S.One - p(i)*p(-i)
+    t = 1 - p(i)*p(-i)
     assert (t + p(-j)*p(j)).equals(1)
-    t = S.One + p(i)*p(-i)
+    t = 1 + p(i)*p(-i)
     assert (t - p(-j)*p(j)).equals(1)
 
     t = A(a, b) + B(a, b)
@@ -629,20 +628,17 @@ def test_special_eq_ne():
 
     t = 0*A(a, b)
     assert _is_equal(t, 0)
-    assert _is_equal(t, S.Zero)
 
     assert p(i) != A(a, b)
     assert A(a, -a) != A(a, b)
     assert 0*(A(a, b) + B(a, b)) == 0
-    assert 0*(A(a, b) + B(a, b)) == S.Zero
 
-    assert 3*(A(a, b) - A(a, b)) == S.Zero
+    assert 3*(A(a, b) - A(a, b)) == 0
 
     assert p(i) + q(i) != A(a, b)
     assert p(i) + q(i) != A(a, b) + B(a, b)
 
     assert p(i) - p(i) == 0
-    assert p(i) - p(i) == S.Zero
 
     assert _is_equal(A(a, b), A(b, a))
 
@@ -665,7 +661,7 @@ def test_add2():
 def test_mul():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
-    t = TensMul.from_data(S.One, [], [], [])
+    t = TensMul.from_data(Integer(1), [], [], [])
     assert str(t) == '1'
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
     t = (1 + x)*A(a, b)
@@ -690,7 +686,7 @@ def test_mul():
     t1 = tensor_mul(*t.split())
     assert t == t(-b, d)
     assert t == t1
-    assert tensor_mul(*[]) == TensMul.from_data(S.One, [], [], [])
+    assert tensor_mul(*[]) == TensMul.from_data(Integer(1), [], [], [])
 
     t = TensMul.from_data(1, [], [], [])
     zsym = tensorsymmetry()
@@ -753,7 +749,7 @@ def test_riemann_cyclic_replace():
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
     t = R(m0, m2, m1, m3)
     t1 = riemann_cyclic_replace(t)
-    t1a = -S.One/3*R(m0, m3, m2, m1) + S.One/3*R(m0, m1, m2, m3) + Rational(2, 3)*R(m0, m2, m1, m3)
+    t1a = -R(m0, m3, m2, m1)/3 + R(m0, m1, m2, m3)/3 + 2*R(m0, m2, m1, m3)/3
     assert t1 == t1a
 
 
@@ -1102,7 +1098,7 @@ def test_fun():
     # dg_{a b c} = \partial_{a} g_{b c} is symmetric in b, c
     dg = tensorhead('dg', [Lorentz]*3, [[1], [1]*2])
     # gamma^a_{b c} is the Christoffel symbol
-    gamma = S.Half*g(a, d)*(dg(-b, -d, -c) + dg(-c, -b, -d) - dg(-d, -b, -c))
+    gamma = g(a, d)*(dg(-b, -d, -c) + dg(-c, -b, -d) - dg(-d, -b, -c))/2
     # t = g_{a b; c}
     t = dg(-c, -a, -b) - g(-a, -d)*gamma(d, -b, -c) - g(-b, -d)*gamma(d, -a, -c)
     t = t.contract_metric(g)

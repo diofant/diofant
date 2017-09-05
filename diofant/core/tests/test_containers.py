@@ -2,8 +2,9 @@ from collections import defaultdict
 
 import pytest
 
-from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, S, Tuple,
-                     symbols, sympify)
+from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, Rational, Tuple,
+                     false, sympify, true)
+from diofant.abc import p, q, r, s, x, y, z
 from diofant.core.compatibility import is_sequence, iterable
 from diofant.core.containers import tuple_wrapper
 
@@ -20,7 +21,6 @@ def test_Tuple():
     assert isinstance(st[:], Tuple)
     assert st == Tuple(1, 2, 3, 4)
     assert st.func(*st.args) == st
-    p, q, r, s = symbols('p q r s')
     t2 = (p, q, r, s)
     st2 = Tuple(*t2)
     assert st2.atoms() == set(t2)
@@ -67,10 +67,10 @@ def test_Tuple_equality():
 
 
 def test_Tuple_comparision():
-    assert (Tuple(1, 3) >= Tuple(-10, 30)) is S.true
-    assert (Tuple(1, 3) <= Tuple(-10, 30)) is S.false
-    assert (Tuple(1, 3) >= Tuple(1, 3)) is S.true
-    assert (Tuple(1, 3) <= Tuple(1, 3)) is S.true
+    assert (Tuple(1, 3) >= Tuple(-10, 30)) is true
+    assert (Tuple(1, 3) <= Tuple(-10, 30)) is false
+    assert (Tuple(1, 3) >= Tuple(1, 3)) is true
+    assert (Tuple(1, 3) <= Tuple(1, 3)) is true
 
 
 def test_Tuple_tuple_count():
@@ -98,8 +98,8 @@ def test_Tuple_mul():
     assert Tuple(1, 2, 3)*Integer(2) == Tuple(1, 2, 3, 1, 2, 3)
     assert Integer(2)*Tuple(1, 2, 3) == Tuple(1, 2, 3, 1, 2, 3)
 
-    pytest.raises(TypeError, lambda: Tuple(1, 2, 3)*S.Half)
-    pytest.raises(TypeError, lambda: S.Half*Tuple(1, 2, 3))
+    pytest.raises(TypeError, lambda: Tuple(1, 2, 3)*Rational(1, 2))
+    pytest.raises(TypeError, lambda: Rational(1, 2)*Tuple(1, 2, 3))
 
 
 def test_tuple_wrapper():
@@ -108,7 +108,6 @@ def test_tuple_wrapper():
     def wrap_tuples_and_return(*t):
         return t
 
-    p = symbols('p')
     assert wrap_tuples_and_return(p, 1) == (p, 1)
     assert wrap_tuples_and_return((p, 1)) == (Tuple(p, 1),)
     assert wrap_tuples_and_return(1, (p, 2), 3) == (1, Tuple(p, 2), 3)
@@ -126,14 +125,13 @@ def test_iterable_is_sequence():
 
 
 def test_Dict():
-    x, y, z = symbols('x y z')
     d = Dict({x: 1, y: 2, z: 3})
     assert d[x] == 1
     assert d[y] == 2
     pytest.raises(KeyError, lambda: d[2])
     assert len(d) == 3
     assert set(d.keys()) == {x, y, z}
-    assert set(d.values()) == {Integer(1), Integer(2), Integer(3)}
+    assert set(d.values()) == {1, 2, 3}
     assert d.get(5, 'default') == 'default'
     assert x in d and z in d and 5 not in d
     assert d.has(x) and d.has(1)  # Diofant Basic .has method
@@ -148,10 +146,12 @@ def test_Dict():
     with pytest.raises(NotImplementedError):
         d[5] = 6  # assert immutability
 
-    assert set(d.items()) == {Tuple(x, Integer(1)), Tuple(y, Integer(2)), Tuple(z, Integer(3))}
+    assert set(d.items()) == {Tuple(x, 1), Tuple(y, 2), Tuple(z, 3)}
     assert set(d) == {x, y, z}
     assert str(d) == '{x: 1, y: 2, z: 3}'
-    assert d.__repr__() == "Dict(Tuple(Symbol('x'), Integer(1)), Tuple(Symbol('y'), Integer(2)), Tuple(Symbol('z'), Integer(3)))"
+    assert d.__repr__() == ("Dict(Tuple(Symbol('x'), Integer(1)), "
+                            "Tuple(Symbol('y'), Integer(2)), "
+                            "Tuple(Symbol('z'), Integer(3)))")
 
     # Test creating a Dict from a Dict.
     d = Dict({x: 1, y: 2, z: 3})

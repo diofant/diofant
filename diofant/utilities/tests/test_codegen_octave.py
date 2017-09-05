@@ -3,15 +3,15 @@ from io import StringIO
 import pytest
 
 import diofant
-from diofant import Equality, Piecewise
-from diofant.core import Catalan, Eq, EulerGamma, Function, S, pi, symbols
+from diofant import Equality, Piecewise, cos, sin, tan
+from diofant.abc import A, B, C, a, t, x, y, z
+from diofant.core import Catalan, Eq, EulerGamma, Function, pi, symbols, zoo
 from diofant.matrices import Matrix, MatrixSymbol
+from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import OctaveCodeGen, codegen, make_routine
 
 
 __all__ = ()
-
-x, y, z = symbols('x,y,z')
 
 
 def test_empty_m_code():
@@ -130,7 +130,6 @@ def test_multiple_results_m():
 
 def test_results_named_unordered():
     # Here output order is based on name_expr
-    A, B, C = symbols('A,B,C')
     expr1 = Equality(C, (x + y)*z)
     expr2 = Equality(A, (x - y)*z)
     expr3 = Equality(B, 2*x)
@@ -148,7 +147,6 @@ def test_results_named_unordered():
 
 
 def test_results_named_ordered():
-    A, B, C = symbols('A,B,C')
     expr1 = Equality(C, (x + y)*z)
     expr2 = Equality(A, (x - y)*z)
     expr3 = Equality(B, 2*x)
@@ -168,7 +166,6 @@ def test_results_named_ordered():
 
 
 def test_complicated_m_codegen():
-    from diofant import sin, cos, tan
     name_expr = ("testlong",
                  [((sin(x) + cos(y) + tan(z))**3).expand(),
                   cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))])
@@ -188,8 +185,6 @@ def test_complicated_m_codegen():
 
 def test_m_output_arg_mixed_unordered():
     # named outputs are alphabetical, unnamed output appear in the given order
-    from diofant import sin, cos
-    a = symbols("a")
     name_expr = ("foo", [cos(2*x), Equality(y, sin(x)), cos(x), Equality(a, sin(2*x))])
     result, = codegen(name_expr, "Octave", header=False, empty=False)
     assert result[0] == "foo.m"
@@ -355,7 +350,6 @@ def test_m_matrix_output_autoname_2():
 
 
 def test_m_results_matrix_named_ordered():
-    B, C = symbols('B,C')
     A = MatrixSymbol('A', 1, 3)
     expr1 = Equality(C, (x + y)*z)
     expr2 = Equality(A, Matrix([[1, 2, x]]))
@@ -450,8 +444,6 @@ def test_m_loops():
     # more dimensions.  Also, size(A) would be used rather than passing in m
     # and n.  Perhaps users would expect us to vectorize automatically here?
     # Or is it possible to represent such things using IndexedBase?
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m = symbols('n m', integer=True)
     A = IndexedBase('A')
     x = IndexedBase('x')
@@ -479,8 +471,6 @@ def test_m_loops():
 
 def test_m_tensor_loops_multiple_contractions():
     # see comments in previous test about vectorizing
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m, o, p = symbols('n m o p', integer=True)
     A = IndexedBase('A')
     B = IndexedBase('B')
@@ -552,7 +542,7 @@ def test_m_InOutArgument_order():
 
 def test_m_not_supported():
     f = Function('f')
-    name_expr = ("test", [f(x).diff(x), S.ComplexInfinity])
+    name_expr = ("test", [f(x).diff(x), zoo])
     result, = codegen(name_expr, "Octave", header=False, empty=False)
     source = result[1]
     expected = (
@@ -567,7 +557,6 @@ def test_m_not_supported():
 
 
 def test_global_vars_octave():
-    x, y, z, t = symbols("x y z t")
     result = codegen(('f', x*y), "Octave", header=False, empty=False,
                      global_vars=(y,))
     source = result[0][1]

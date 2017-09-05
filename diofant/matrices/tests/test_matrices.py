@@ -3,8 +3,8 @@ import collections
 import pytest
 
 from diofant import (Abs, Basic, Dummy, E, Float, Function, I, Integer, Max,
-                     Min, N, Poly, Pow, PurePoly, Rational, S, Symbol, cos,
-                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
+                     Min, N, Poly, Pow, PurePoly, Rational, Symbol, cos, exp,
+                     oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
                      trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.core.compatibility import iterable
@@ -183,7 +183,7 @@ def test_power():
     A = Matrix([[0, 4], [-1, 5]])
     assert (A**Rational(1, 2))**2 == A
 
-    assert Matrix([[1, 0], [1, 1]])**S.Half == Matrix([[1, 0], [S.Half, 1]])
+    assert Matrix([[1, 0], [1, 1]])**Rational(1, 2) == Matrix([[1, 0], [Rational(1, 2), 1]])
     assert Matrix([[1, a], [0, 1]])**n == Matrix([[1, a*n], [0, 1]])
     assert Matrix([[b, a], [0, b]])**n == Matrix([[b**n, a*b**(n - 1)*n], [0, b**n]])
     assert Matrix([[a, 1, 0], [0, a, 1], [0, 0, a]])**n == Matrix([
@@ -242,7 +242,7 @@ def test_creation():
 
 
 def test_tolist():
-    lst = [[S.One, S.Half, x*y, S.Zero], [x, y, z, x**2], [y, -S.One, z*x, 3]]
+    lst = [[1, Rational(1, 2), x*y, 0], [x, y, z, x**2], [y, -1, z*x, 3]]
     m = Matrix(lst)
     assert m.tolist() == lst
 
@@ -643,6 +643,15 @@ def test_inverse():
              [59, 28, 65]])
     assert all(type(m.inv(s)) is cls for s in 'CH LDL'.split())
 
+    A = ImmutableSparseMatrix([[20682, 12468,  9899, 12111],
+                               [12468, 18618, 14513,  9401],
+                               [ 9899, 14513, 12770,  6823],
+                               [12111,  9401,  6823,  7894]])
+    Ainv = A.inv('CH')
+    assert A.inv('LDL') == Ainv
+    assert A*Ainv == Ainv*A
+    assert Matrix(Ainv*A) == eye(4)
+
 
 def test_matrix_inverse_mod():
     A = Matrix(2, 1, [1, 0])
@@ -806,7 +815,7 @@ def test_eigen():
                 [0, 1, 0],
                 [0, 0, 1]])
 
-    assert M.eigenvals(multiple=False) == {S.One: 3}
+    assert M.eigenvals(multiple=False) == {1: 3}
 
     assert M.eigenvects() == (
         [(1, 3, [Matrix([1, 0, 0]),
@@ -817,7 +826,7 @@ def test_eigen():
                 [1, 0, 0],
                 [1, 1, 1]])
 
-    assert M.eigenvals() == {2*S.One: 1, -S.One: 1, S.Zero: 1}
+    assert M.eigenvals() == {2: 1, -1: 1, 0: 1}
 
     assert M.eigenvects() == (
         [
@@ -829,7 +838,7 @@ def test_eigen():
     M = Matrix([[x, 0],
                 [0, 1]])
 
-    assert M.eigenvals() == {x: 1, S.One: 1}
+    assert M.eigenvals() == {x: 1, 1: 1}
 
     M = Matrix([[1, -1],
                 [1,  3]])
@@ -886,7 +895,7 @@ def test_eigen():
     ]
 
     m = Matrix([[1, .6, .6], [.6, .9, .9], [.9, .6, .6]])
-    evals = {-sqrt(385)/20 + Rational(5, 4): 1, sqrt(385)/20 + Rational(5, 4): 1, S.Zero: 1}
+    evals = {-sqrt(385)/20 + Rational(5, 4): 1, sqrt(385)/20 + Rational(5, 4): 1, 0: 1}
     assert m.eigenvals() == evals
     nevals = list(sorted(m.eigenvals(rational=False).keys()))
     sevals = list(sorted(evals.keys()))
@@ -1940,7 +1949,7 @@ def test_matrix_norm():
     L = [a, b, c, d, e]
     alpha = Symbol('alpha', extended_real=True)
 
-    for order in [1, 2, -1, -2, S.Infinity, S.NegativeInfinity, pi]:
+    for order in [1, 2, -1, -2, oo, -oo, pi]:
         # Zero Check
         if order > 0:
             assert Matrix([0, 0, 0]).norm(order) == Integer(0)
@@ -1951,7 +1960,7 @@ def test_matrix_norm():
                     assert simplify(v.norm(order) + w.norm(order) >=
                                     (v + w).norm(order))
         # Linear to scalar multiplication
-        if order in [1, 2, -1, -2, S.Infinity, S.NegativeInfinity]:
+        if order in [1, 2, -1, -2, oo, -oo]:
             for vec in L:
                 try:
                     assert simplify((alpha*v).norm(order) -
@@ -2355,7 +2364,6 @@ def test_adjoint():
 
 
 def test_simplify_immutable():
-    from diofant import simplify, sin, cos
     assert simplify(ImmutableMatrix([[sin(x)**2 + cos(x)**2]])) == \
         ImmutableMatrix([[1]])
 
@@ -2370,7 +2378,6 @@ def test_rank():
 
 
 def test_replace():
-    from diofant import symbols, Function, Matrix
     F, G = symbols('F, G', cls=Function)
     K = Matrix(2, 2, lambda i, j: G(i+j))
     M = Matrix(2, 2, lambda i, j: F(i+j))
@@ -2379,7 +2386,6 @@ def test_replace():
 
 
 def test_replace_map():
-    from diofant import symbols, Function, Matrix
     F, G = symbols('F, G', cls=Function)
     K = Matrix(2, 2, [(G(0), {F(0): G(0)}), (G(1), {F(1): G(1)}), (G(1),
                                                                    {F(1): G(1)}), (G(2), {F(2): G(2)})])
@@ -2560,16 +2566,16 @@ def test_sympyissue_9480():
 
 
 def test_diofantissue_288():
-    m = Matrix([[-exp(I*k)*I/(4*k) + S.Half + exp(-I*k)*I/(4*k),
-                 exp(I*k)*I/(4*k) + S.Half - exp(-I*k)*I/(4*k),
-                 exp(I*k)/4 + S.Half + exp(-I*k)/4,
-                 -exp(I*k)/4 - S.Half - exp(-I*k)/4],
-                [exp(I*k)*I/(4*k) + S.Half - exp(-I*k)*I/(4*k),
-                 -exp(I*k)*I/(4*k) + S.Half + exp(-I*k)*I/(4*k),
-                 -exp(I*k)/4 - S.Half - exp(-I*k)/4,
-                 exp(I*k)/4 + S.Half + exp(-I*k)/4],
-                [exp(I*k)/4 + S.Half + exp(-I*k)/4,
-                 -exp(I*k)/4 - S.Half - exp(-I*k)/4,
+    m = Matrix([[-exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
+                 exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
+                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4],
+                [exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
+                 -exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
+                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4],
+                [exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
                  exp(I*k)*I*k/4 - exp(-I*k)*I*k/4,
                  -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4],
                 [-exp(I*k)/4 - 1/2 - exp(-I*k)/4,

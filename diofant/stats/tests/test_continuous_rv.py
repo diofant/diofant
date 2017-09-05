@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Abs, And, Eq, Integer, Integral, Interval, N, Piecewise,
-                     Rational, S, Sum, Symbol, besseli, beta, binomial, cos,
-                     erf, exp, expand_func, factorial, floor, gamma, log,
+                     Rational, Sum, Symbol, besseli, beta, binomial, cos, erf,
+                     exp, expand_func, factorial, floor, gamma, log,
                      lowergamma, oo, pi, simplify, sin, sqrt, symbols)
 from diofant.abc import x, y, z
 from diofant.stats import (Arcsin, Benini, Beta, BetaPrime, Cauchy, Chi,
@@ -33,9 +33,9 @@ def test_single_normal():
     pdf = density(Y)
     x = Symbol('x')
     assert (pdf(x) ==
-            2**S.Half*exp(-(x - mu)**2/(2*sigma**2))/(2*pi**S.Half*sigma))
+            sqrt(2)*exp(-(x - mu)**2/(2*sigma**2))/(2*sqrt(pi)*sigma))
 
-    assert P(X**2 < 1) == erf(2**S.Half/2)
+    assert P(X**2 < 1) == erf(sqrt(2)/2)
 
     assert E(X, Eq(X, mu)) == mu
 
@@ -85,7 +85,7 @@ def test_multiple_normal():
     assert smoment(X*X, 2) == 1
     assert smoment(X + Y, 3) == skewness(X + Y)
     assert E(X, Eq(X + Y, 0)) == 0
-    assert variance(X, Eq(X + Y, 0)) == S.Half
+    assert variance(X, Eq(X + Y, 0)) == Rational(1, 2)
 
 
 @pytest.mark.slow
@@ -114,7 +114,7 @@ def test_cdf():
 
     d = cdf(X)
     assert P(X < 1) == d(1)
-    assert d(0) == S.Half
+    assert d(0) == Rational(1, 2)
 
     d = cdf(X, X > 0)  # given X>0
     assert d(0) == 0
@@ -396,7 +396,7 @@ def test_nakagami():
     assert density(X)(x) == (2*x**(2*mu - 1)*mu**mu*omega**(-mu)
                              * exp(-x**2*mu/omega)/gamma(mu))
     assert simplify(E(X, meijerg=True)) == (sqrt(mu)*sqrt(omega)
-                                            * gamma(mu + S.Half)/gamma(mu + 1))
+                                            * gamma(mu + Rational(1, 2))/gamma(mu + 1))
     assert simplify(variance(X, meijerg=True)) == (
         omega - omega*gamma(mu + Rational(1, 2))**2/(gamma(mu)*gamma(mu + 1)))
 
@@ -484,7 +484,7 @@ def test_uniform():
     # With numbers all is well
     X = Uniform('x', 3, 5)
     assert P(X < 3) == 0 and P(X > 5) == 0
-    assert P(X < 4) == P(X > 4) == S.Half
+    assert P(X < 4) == P(X > 4) == Rational(1, 2)
 
 
 def test_uniform_P():
@@ -532,7 +532,7 @@ def test_weibull():
 def test_weibull_numeric():
     # Test for integers and rationals
     a = 1
-    bvals = [S.Half, S.One, Rational(3, 2), Integer(5)]
+    bvals = [Rational(1, 2), 1, Rational(3, 2), Integer(5)]
     for b in bvals:
         X = Weibull('x', a, b)
         assert simplify(E(X)) == simplify(a * gamma(1 + 1/b))
@@ -613,7 +613,7 @@ def test_density_unevaluated():
 def test_NormalDistribution():
     nd = NormalDistribution(0, 1)
     x = Symbol('x')
-    assert nd.cdf(x) == erf(sqrt(2)*x/2)/2 + S.One/2
+    assert nd.cdf(x) == erf(sqrt(2)*x/2)/2 + Rational(1, 2)
     assert isinstance(nd.sample(), float) or nd.sample().is_Number
     assert nd.expectation(1, x) == 1
     assert nd.expectation(x, x) == 0
@@ -656,5 +656,5 @@ def test_difficult_univariate():
 def test_sympyissue_10003():
     X = Exponential('x', 3)
     G = Gamma('g', 1, 2)
-    assert P(X < -1) == S.Zero
-    assert P(G < -1) == S.Zero
+    assert P(X < -1) == 0
+    assert P(G < -1) == 0

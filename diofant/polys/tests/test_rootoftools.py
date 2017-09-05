@@ -2,8 +2,9 @@
 
 import pytest
 
-from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, S, Symbol,
-                     exp, legendre_poly, log, root, solve, sqrt, tan)
+from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, Symbol,
+                     exp, false, legendre_poly, log, oo, root, solve, sqrt,
+                     tan, true)
 from diofant.abc import a, b, r, x, y, z
 from diofant.polys.polyerrors import (GeneratorsNeeded,
                                       MultivariatePolynomialError,
@@ -18,8 +19,6 @@ __all__ = ()
 def test_RootOf___new__():
     assert RootOf(x, 0) == 0
     assert RootOf(x, -1) == 0
-
-    assert RootOf(x, S.Zero) == 0
 
     assert RootOf(x - 1, 0) == 1
     assert RootOf(x - 1, -1) == 1
@@ -140,27 +139,27 @@ def test_RootOf___eval_Eq__():
     f = Function('f')
     r = RootOf(x**3 + x + 3, 2)
     r1 = RootOf(x**3 + x + 3, 1)
-    assert Eq(r, r1) is S.false
-    assert Eq(r, r) is S.true
-    assert Eq(r, x) is S.false
-    assert Eq(r, 0) is S.false
-    assert Eq(r, S.Infinity) is S.false
-    assert Eq(r, I) is S.false
-    assert Eq(r, f(0)) is S.false
-    assert Eq(r, f(0)) is S.false
+    assert Eq(r, r1) is false
+    assert Eq(r, r) is true
+    assert Eq(r, x) is false
+    assert Eq(r, 0) is false
+    assert Eq(r, oo) is false
+    assert Eq(r, I) is false
+    assert Eq(r, f(0)) is false
+    assert Eq(r, f(0)) is false
     sol = solve(r.expr, x)
     for s in sol:
         if s[x].is_real:
-            assert Eq(r, s[x]) is S.false
+            assert Eq(r, s[x]) is false
     r = RootOf(r.expr, 0)
     for s in sol:
         if s[x].is_real:
-            assert Eq(r, s[x]) is S.true
+            assert Eq(r, s[x]) is true
     eq = x**3 + x + 1
     assert ([Eq(RootOf(eq, i), j[x])
              for i in range(3) for j in solve(eq)] ==
             [False, False, True, False, True, False, True, False, False])
-    assert Eq(RootOf(eq, 0), 1 + S.ImaginaryUnit) is S.false
+    assert Eq(RootOf(eq, 0), 1 + I) is false
 
 
 def test_RootOf_is_real():
@@ -414,9 +413,9 @@ def test_RootSum_evalf():
     rs = RootSum(x**2 + 1, Lambda(x, exp(x)))
 
     assert rs.evalf(n=20, chop=True).epsilon_eq(
-        Float("1.0806046117362794348", 20), Float("1e-20")) is S.true
+        Float("1.0806046117362794348", 20), Float("1e-20")) is true
     assert rs.evalf(n=15, chop=True).epsilon_eq(
-        Float("1.08060461173628", 15), Float("1e-15")) is S.true
+        Float("1.08060461173628", 15), Float("1e-15")) is true
 
     rs = RootSum(x**2 + a, Lambda(x, exp(x)), x)
 

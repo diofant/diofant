@@ -1,6 +1,6 @@
 import pytest
 
-from diofant.core import S, symbols
+from diofant.core import symbols
 from diofant.matrices import Matrix, ShapeError, eye
 from diofant.matrices.expressions import (Determinant, Identity, MatrixExpr,
                                           MatrixSymbol, Transpose, ZeroMatrix,
@@ -23,7 +23,7 @@ def test_det():
     assert det(Matrix(3, 3, [1, 3, 2, 4, 1, 3, 2, 5, 2])) == 17
     A / det(A)  # Make sure this is possible
 
-    pytest.raises(TypeError, lambda: Determinant(S.One))
+    pytest.raises(TypeError, lambda: Determinant(1))
 
     assert Determinant(A).arg is A
 

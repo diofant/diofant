@@ -4,9 +4,10 @@ from operator import ge, gt, le, lt
 import pytest
 
 from diofant import (And, Float, Function, I, Implies, Integer, Not, Or,
-                     Rational, S, Symbol, Wild, Xor, ceiling, floor, nan, oo,
-                     pi, simplify, sqrt, zoo)
+                     Rational, Symbol, Wild, Xor, ceiling, false, floor, nan,
+                     oo, pi, simplify, sqrt, true, zoo)
 from diofant.abc import t, w, x, y, z
+from diofant.core.relational import _Inequality as Inequality
 from diofant.core.relational import (Eq, Equality, Ge, GreaterThan, Gt, Le,
                                      LessThan, Lt, Ne, Rel, Relational,
                                      StrictGreaterThan, StrictLessThan,
@@ -58,8 +59,8 @@ def test_rel_subs():
     assert e.rhs == y
 
     e = Eq(x, 0)
-    assert e.subs(x, 0) is S.true
-    assert e.subs(x, 1) is S.false
+    assert e.subs(x, 0) is true
+    assert e.subs(x, 1) is false
 
 
 def test_wrappers():
@@ -93,62 +94,62 @@ def test_Eq():
 
     # issue sympy/sympy#6116
     p = Symbol('p', positive=True)
-    assert Eq(p, 0) is S.false
+    assert Eq(p, 0) is false
 
 
 def test_rel_Infinity():
     # NOTE: All of these are actually handled by diofant.core.Number, and do
     # not create Relational objects.
-    assert (oo > oo) is S.false
-    assert (oo > -oo) is S.true
-    assert (oo > 1) is S.true
-    assert (oo < oo) is S.false
-    assert (oo < -oo) is S.false
-    assert (oo < 1) is S.false
-    assert (oo >= oo) is S.true
-    assert (oo >= -oo) is S.true
-    assert (oo >= 1) is S.true
-    assert (oo <= oo) is S.true
-    assert (oo <= -oo) is S.false
-    assert (oo <= 1) is S.false
-    assert (-oo > oo) is S.false
-    assert (-oo > -oo) is S.false
-    assert (-oo > 1) is S.false
-    assert (-oo < oo) is S.true
-    assert (-oo < -oo) is S.false
-    assert (-oo < 1) is S.true
-    assert (-oo >= oo) is S.false
-    assert (-oo >= -oo) is S.true
-    assert (-oo >= 1) is S.false
-    assert (-oo <= oo) is S.true
-    assert (-oo <= -oo) is S.true
-    assert (-oo <= 1) is S.true
+    assert (oo > oo) is false
+    assert (oo > -oo) is true
+    assert (oo > 1) is true
+    assert (oo < oo) is false
+    assert (oo < -oo) is false
+    assert (oo < 1) is false
+    assert (oo >= oo) is true
+    assert (oo >= -oo) is true
+    assert (oo >= 1) is true
+    assert (oo <= oo) is true
+    assert (oo <= -oo) is false
+    assert (oo <= 1) is false
+    assert (-oo > oo) is false
+    assert (-oo > -oo) is false
+    assert (-oo > 1) is false
+    assert (-oo < oo) is true
+    assert (-oo < -oo) is false
+    assert (-oo < 1) is true
+    assert (-oo >= oo) is false
+    assert (-oo >= -oo) is true
+    assert (-oo >= 1) is false
+    assert (-oo <= oo) is true
+    assert (-oo <= -oo) is true
+    assert (-oo <= 1) is true
 
 
 def test_bool():
-    assert Eq(0, 0) is S.true
-    assert Eq(1, 0) is S.false
-    assert Ne(0, 0) is S.false
-    assert Ne(1, 0) is S.true
-    assert Lt(0, 1) is S.true
-    assert Lt(1, 0) is S.false
-    assert Le(0, 1) is S.true
-    assert Le(1, 0) is S.false
-    assert Le(0, 0) is S.true
-    assert Gt(1, 0) is S.true
-    assert Gt(0, 1) is S.false
-    assert Ge(1, 0) is S.true
-    assert Ge(0, 1) is S.false
-    assert Ge(1, 1) is S.true
-    assert Eq(I, 2) is S.false
-    assert Ne(I, 2) is S.true
+    assert Eq(0, 0) is true
+    assert Eq(1, 0) is false
+    assert Ne(0, 0) is false
+    assert Ne(1, 0) is true
+    assert Lt(0, 1) is true
+    assert Lt(1, 0) is false
+    assert Le(0, 1) is true
+    assert Le(1, 0) is false
+    assert Le(0, 0) is true
+    assert Gt(1, 0) is true
+    assert Gt(0, 1) is false
+    assert Ge(1, 0) is true
+    assert Ge(0, 1) is false
+    assert Ge(1, 1) is true
+    assert Eq(I, 2) is false
+    assert Ne(I, 2) is true
     pytest.raises(TypeError, lambda: Gt(I, 2))
     pytest.raises(TypeError, lambda: Ge(I, 2))
     pytest.raises(TypeError, lambda: Lt(I, 2))
     pytest.raises(TypeError, lambda: Le(I, 2))
     a = Float('.000000000000000000001', '')
     b = Float('.0000000000000000000001', '')
-    assert Eq(pi + a, pi + b) is S.false
+    assert Eq(pi + a, pi + b) is false
 
 
 def test_rich_cmp():
@@ -164,14 +165,14 @@ def test_doit():
     np = Symbol('np', nonpositive=True)
     nn = Symbol('nn', nonnegative=True)
 
-    assert Gt(p, 0).doit() is S.true
+    assert Gt(p, 0).doit() is true
     assert Gt(p, 1).doit() == Gt(p, 1)
-    assert Ge(p, 0).doit() is S.true
-    assert Le(p, 0).doit() is S.false
-    assert Lt(n, 0).doit() is S.true
-    assert Le(np, 0).doit() is S.true
+    assert Ge(p, 0).doit() is true
+    assert Le(p, 0).doit() is false
+    assert Lt(n, 0).doit() is true
+    assert Le(np, 0).doit() is true
     assert Gt(nn, 0).doit() == Gt(nn, 0)
-    assert Lt(nn, 0).doit() is S.false
+    assert Lt(nn, 0).doit() is false
 
     assert Eq(x, 0).doit() == Eq(x, 0)
 
@@ -326,9 +327,9 @@ def test_Not():
 
 def test_evaluate():
     assert str(Eq(x, x, evaluate=False)) == 'Eq(x, x)'
-    assert Eq(x, x, evaluate=False).doit() == S.true
+    assert Eq(x, x, evaluate=False).doit() == true
     assert str(Ne(x, x, evaluate=False)) == 'Ne(x, x)'
-    assert Ne(x, x, evaluate=False).doit() == S.false
+    assert Ne(x, x, evaluate=False).doit() == false
 
     assert str(Ge(x, x, evaluate=False)) == 'x >= x'
     assert str(Le(x, x, evaluate=False)) == 'x <= x'
@@ -349,7 +350,6 @@ def assert_all_ineq_raise_TypeError(a, b):
 
 def assert_all_ineq_give_class_Inequality(a, b):
     """All inequality operations on `a` and `b` result in class Inequality."""
-    from diofant.core.relational import _Inequality as Inequality
     assert isinstance(a > b,  Inequality)
     assert isinstance(a >= b, Inequality)
     assert isinstance(a < b,  Inequality)
@@ -434,15 +434,15 @@ def test_x_minus_y_not_same_as_x_lt_y():
 
 def test_nan_equality_exceptions():
     # See issue sympy/sympy#7774
-    assert Equality(nan, nan) is S.false
-    assert Unequality(nan, nan) is S.true
+    assert Equality(nan, nan) is false
+    assert Unequality(nan, nan) is true
 
     # See issue sympy/sympy#7773
     A = (x, Integer(0), Rational(1, 3), pi, oo, -oo)
-    assert Equality(nan, random.choice(A)) is S.false
-    assert Equality(random.choice(A), nan) is S.false
-    assert Unequality(nan, random.choice(A)) is S.true
-    assert Unequality(random.choice(A), nan) is S.true
+    assert Equality(nan, random.choice(A)) is false
+    assert Equality(random.choice(A), nan) is false
+    assert Unequality(nan, random.choice(A)) is true
+    assert Unequality(random.choice(A), nan) is true
 
 
 def test_nan_inequality_raise_errors():
@@ -534,35 +534,35 @@ def test_sympyissue_8245():
     q = a.n(10)
     assert (a == q) is True
     assert (a != q) is False
-    assert (a > q) is S.false
-    assert (a < q) is S.false
-    assert (a >= q) is S.true
-    assert (a <= q) is S.true
+    assert (a > q) is false
+    assert (a < q) is false
+    assert (a >= q) is true
+    assert (a <= q) is true
 
     a = sqrt(2)
     r = Rational(str(a.n(30)))
     assert (r == a) is False
     assert (r != a) is True
-    assert (r > a) is S.true
-    assert (r < a) is S.false
-    assert (r >= a) is S.true
-    assert (r <= a) is S.false
+    assert (r > a) is true
+    assert (r < a) is false
+    assert (r >= a) is true
+    assert (r <= a) is false
     a = sqrt(2)
     r = Rational(str(a.n(29)))
     assert (r == a) is False
     assert (r != a) is True
-    assert (r > a) is S.false
-    assert (r < a) is S.true
-    assert (r >= a) is S.false
-    assert (r <= a) is S.true
+    assert (r > a) is false
+    assert (r < a) is true
+    assert (r >= a) is false
+    assert (r <= a) is true
 
 
 def test_sympyissue_8449():
     p = Symbol('p', nonnegative=True)
     assert Lt(-oo, p)
-    assert Ge(-oo, p) is S.false
+    assert Ge(-oo, p) is false
     assert Gt(oo, -p)
-    assert Le(oo, -p) is S.false
+    assert Le(oo, -p) is false
 
 
 def test_simplify():
@@ -639,24 +639,24 @@ def test_canonical():
 @pytest.mark.xfail
 def test_sympyissue_8444():
     x = Symbol('x', extended_real=True)
-    assert (x <= oo) == (x >= -oo) == S.true
+    assert (x <= oo) == (x >= -oo) == true
 
     x = Symbol('x', real=True)
     assert x >= floor(x)
-    assert (x < floor(x)) is S.false
+    assert (x < floor(x)) is false
     assert Gt(x, floor(x)) == Gt(x, floor(x), evaluate=False)
     assert Ge(x, floor(x)) == Ge(x, floor(x), evaluate=False)
     assert x <= ceiling(x)
-    assert (x > ceiling(x)) is S.false
+    assert (x > ceiling(x)) is false
     assert Lt(x, ceiling(x)) == Lt(x, ceiling(x), evaluate=False)
     assert Le(x, ceiling(x)) == Le(x, ceiling(x), evaluate=False)
     i = Symbol('i', integer=True)
-    assert (i > floor(i)) is S.false
-    assert (i < ceiling(i)) is S.false
+    assert (i > floor(i)) is false
+    assert (i < ceiling(i)) is false
 
 
 def test_sympyissue_10633():
-    assert Eq(True, False) is S.false
-    assert Eq(False, True) is S.false
-    assert Eq(True, True) is S.true
-    assert Eq(False, False) is S.true
+    assert Eq(True, False) is false
+    assert Eq(False, True) is false
+    assert Eq(True, True) is true
+    assert Eq(False, False) is true

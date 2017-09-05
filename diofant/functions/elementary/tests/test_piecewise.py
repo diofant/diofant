@@ -5,7 +5,7 @@ from diofant import (Abs, And, Basic, Eq, Function, Gt, I, Integral, Interval,
                      adjoint, conjugate, cos, diff, exp, expand, integrate,
                      lambdify, log, oo, pi, piecewise_fold, sin, solve,
                      symbols, sympify, transpose)
-from diofant.abc import t, x, y
+from diofant.abc import a, t, x, y
 
 
 __all__ = ()
@@ -129,7 +129,6 @@ def test_piecewise():
 
 
 def test_piecewise_free_symbols():
-    a = symbols('a')
     f = Piecewise((x, a < 0), (y, True))
     assert f.free_symbols == {x, y, a}
 

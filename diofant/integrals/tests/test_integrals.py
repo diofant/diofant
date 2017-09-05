@@ -1,15 +1,17 @@
 import pytest
 
 from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
-                     EulerGamma, Function, I, Integer, Integral, Interval,
-                     Lambda, LambertW, Matrix, Max, Min, Ne, O, Piecewise,
-                     Poly, Rational, S, Sum, Symbol, Tuple, acos, acosh, asin,
-                     asinh, atan, cos, cosh, diff, erf, erfi, exp, factor, im,
-                     integrate, log, meijerg, nan, oo, pi, polar_lift, re,
-                     sign, simplify, sin, sinh, sqrt, sstr, symbols, sympify,
-                     tan, tanh, trigsimp)
-from diofant.abc import a, k, m, s, t, w, x, y, z
+                     EulerGamma, Function, I, Integral, Interval, Lambda,
+                     LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
+                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, asin,
+                     asinh, atan, cos, cosh, diff, erf, erfi, exp, expand_func,
+                     expand_mul, factor, fresnels, gamma, im, integrate, log,
+                     lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
+                     re, sign, simplify, sin, sinh, sqrt, sstr, symbols,
+                     sympify, tan, tanh, trigsimp)
+from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
+from diofant.integrals.heurisch import heurisch
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically
 
@@ -60,7 +62,7 @@ def test_basics():
     assert Integral(0, x) != 0
     assert Integral(x, (x, 1, 1)) != 0
     assert Integral(oo, x) != oo
-    assert Integral(S.NaN, x) == S.NaN
+    assert Integral(nan, x) == nan
 
     assert diff(Integral(y, y), x) == 0
     assert diff(Integral(x, (x, 0, 1)), x) == 0
@@ -85,7 +87,7 @@ def test_basics():
     assert integrate(t**2, (t, x, 2*x)).diff(x) == 7*x**2
 
     assert Integral(x, x).atoms() == {x}
-    assert Integral(f(x), (x, 0, 1)).atoms() == {Integer(0), Integer(1), x}
+    assert Integral(f(x), (x, 0, 1)).atoms() == {0, 1, x}
 
     assert diff_test(Integral(x, (x, 3*y))) == {y}
     assert diff_test(Integral(x, (a, 3*y))) == {x, y}
@@ -256,7 +258,6 @@ def test_sympyissue_3679():
 
 
 def test_sympyissue_3686():  # remove this when fresnel itegrals are implemented
-    from diofant import expand_func, fresnels
     assert expand_func(integrate(sin(x**2), x)) == \
         sqrt(2)*sqrt(pi)*fresnels(sqrt(2)*x/sqrt(pi))/2
 
@@ -288,7 +289,7 @@ def test_sympyissue_4516():
 
 def test_sympyissue_7450():
     ans = integrate(exp(-(1 + I)*x), (x, 0, oo))
-    assert re(ans) == S.Half and im(ans) == -S.Half
+    assert re(ans) == Rational(1, 2) and im(ans) == Rational(-1, 2)
 
 
 def test_matrices():
@@ -335,11 +336,10 @@ def test_transform():
     # < 3 arg limit handled properly
     assert Integral(x, x).transform(x, a*y).doit() == \
         Integral(y*a**2, y).doit()
-    _3 = Integer(3)
-    assert Integral(x, (x, 0, -_3)).transform(x, 1/y).doit() == \
-        Integral(-1/x**3, (x, -oo, -1/_3)).doit()
-    assert Integral(x, (x, 0, _3)).transform(x, 1/y) == \
-        Integral(y**(-3), (y, 1/_3, oo))
+    assert Integral(x, (x, 0, -3)).transform(x, 1/y).doit() == \
+        Integral(-1/x**3, (x, -oo, Rational(-1, 3))).doit()
+    assert Integral(x, (x, 0, 3)).transform(x, 1/y) == \
+        Integral(y**(-3), (y, Rational(1, 3), oo))
     # issue sympy/sympy#8400
     i = Integral(x + y, (x, 1, 2), (y, 1, 2))
     assert i.transform(x, (x + 2*y, x)).doit() == \
@@ -676,7 +676,6 @@ def test_sympyissue_4884():
 
 
 def test_is_number():
-    from diofant import cos, sin
     assert Integral(x).is_number is False
     assert Integral(1, x).is_number is False
     assert Integral(1, (x, 1)).is_number is True
@@ -818,7 +817,7 @@ def test_sympyissue_4890():
 
 def test_sympyissue_4376():
     n = Symbol('n', integer=True, positive=True)
-    assert simplify(integrate(n*(x**(1/n) - 1), (x, 0, S.Half)) -
+    assert simplify(integrate(n*(x**(1/n) - 1), (x, 0, Rational(1, 2))) -
                     (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
 
 
@@ -858,7 +857,6 @@ def test_sympyissue_3940():
     assert integrate(exp(a*x**2 + b*x + c), x) == \
         sqrt(pi)*exp(c)*exp(-b**2/(4*a))*erfi(sqrt(a)*x + b/(2*sqrt(a)))/(2*sqrt(a))
 
-    from diofant import expand_mul
     assert expand_mul(integrate(exp(-x**2)*exp(I*k*x), (x, -oo, oo))) == \
         sqrt(pi)*exp(-k**2/4)
     a, d = symbols('a d', positive=True)
@@ -880,7 +878,6 @@ def test_sympyissue_5907():
 
 
 def test_sympyissue_4892a():
-    A = symbols('A')
     c = Symbol('c', nonzero=True)
     P1 = -A*exp(-z)
     P2 = -A/(c*t)*(sin(x)**2 + cos(y)**2)
@@ -929,8 +926,6 @@ def test_integrate_series():
 
 
 def test_atom_bug():
-    from diofant import meijerg
-    from diofant.integrals.heurisch import heurisch
     assert heurisch(meijerg([], [], [1], [], x), x) is None
 
 
@@ -954,7 +949,6 @@ def test_sympyissue_1888():
 
 
 def test_sympyissue_3558():
-    from diofant import Si
     assert integrate(cos(x*y), (x, -pi/2, pi/2), (y, 0, pi)) == 2*Si(pi**2/2)
 
 
@@ -963,7 +957,6 @@ def test_sympyissue_4422():
 
 
 def test_sympyissue_4493():
-    from diofant import simplify
     assert simplify(integrate(x*sqrt(1 + 2*x), x)) == \
         sqrt(2*x + 1)*(6*x**2 + x - 1)/15
 
@@ -975,14 +968,12 @@ def test_sympyissue_4737():
 
 def test_sympyissue_4992():
     # Note: psi in _check_antecedents becomes NaN.
-    from diofant import simplify, expand_func, polygamma, gamma
     a = Symbol('a', positive=True)
     assert simplify(expand_func(integrate(exp(-x)*log(x)*x**a, (x, 0, oo)))) == \
         (a*polygamma(0, a) + 1)*gamma(a)
 
 
 def test_sympyissue_4487():
-    from diofant import lowergamma, simplify
     assert simplify(integrate(exp(-x)*x**y, x)) == lowergamma(y + 1, x)
 
 
@@ -1013,7 +1004,6 @@ def test_sympyissue_4153():
 
 
 def test_sympyissue_4326():
-    R, b, h = symbols('R b h')
     # It doesn't matter if we can do the integral.  Just make sure the result
     # doesn't contain nan.  This is really a test against _eval_interval.
     assert not integrate(((h*(x - R + b))/b)*sqrt(R**2 - x**2), (x, R - b, R)).has(nan)
@@ -1085,8 +1075,8 @@ def test_sympyissue_8368():
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
                                 (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
-                                (meijerg(((0,), (-S.Half, S.Half)),
-                                         ((0, S.Half), (-S.Half,)),
+                                (meijerg(((0,), (Rational(-1, 2), Rational(1, 2))),
+                                         ((0, Rational(1, 2)), (Rational(-1, 2),)),
                                          polar_lift(s)**2), True)),
                    And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
                        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),
@@ -1101,7 +1091,6 @@ def test_sympyissue_8901():
 
 @pytest.mark.slow
 def test_sympyissue_7130():
-    i, L, b = symbols('i L b')
     integrand = (cos(pi*i*x/L)**2 / (a + b*x)).rewrite(exp)
     assert x not in integrate(integrand, (x, 0, L)).free_symbols
 
@@ -1129,7 +1118,6 @@ def test_sympyissue_4187_xfail():
 
 
 def test_sympyissue_10567():
-    a, b, c, t = symbols('a b c t')
     vt = Matrix([a*t, b, c])
     assert integrate(vt, t) == Integral(vt, t).doit()
     assert integrate(vt, t) == Matrix([[a*t**2/2], [b*t], [c*t]])
@@ -1148,7 +1136,7 @@ def test_sympyissue_11045():
 
 def test_definite_integrals_abs():
     # issue sympy/sympy#8430
-    assert integrate(abs(x), (x, 0, 1)) == S.Half
+    assert integrate(abs(x), (x, 0, 1)) == Rational(1, 2)
     # issue sympy/sympy#7165
     r = Symbol('r', real=True)
     assert (integrate(abs(x - r**2), (x, 0, 2)) ==

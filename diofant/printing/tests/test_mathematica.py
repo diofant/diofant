@@ -2,8 +2,9 @@ import pytest
 
 from diofant import mathematica_code as mcode
 from diofant.concrete import Sum
-from diofant.core import (AlgebraicNumber, Derivative, Dummy, Eq, Function, Gt,
-                          Integer, Le, Ne, Rational, S, Tuple, oo, pi, symbols)
+from diofant.core import (AlgebraicNumber, Catalan, Derivative, Dummy, E, Eq,
+                          EulerGamma, Function, Gt, Integer, Le, Ne, Rational,
+                          Tuple, oo, pi, symbols)
 from diofant.functions import (Max, Min, Piecewise, acos, asin, atan, atanh,
                                binomial, cos, cosh, cot, coth, csch, erfc, exp,
                                hyper, log, meijerg, sech, sign, sin, sinh, tan,
@@ -116,10 +117,10 @@ def test_Mul():
 def test_constants():
     assert mcode(pi) == "Pi"
     assert mcode(oo) == "Infinity"
-    assert mcode(S.NegativeInfinity) == "-Infinity"
-    assert mcode(S.EulerGamma) == "EulerGamma"
-    assert mcode(S.Catalan) == "Catalan"
-    assert mcode(S.Exp1) == "E"
+    assert mcode(-oo) == "-Infinity"
+    assert mcode(EulerGamma) == "EulerGamma"
+    assert mcode(Catalan) == "Catalan"
+    assert mcode(E) == "E"
 
 
 def test_containers():

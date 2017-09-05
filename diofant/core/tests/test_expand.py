@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (I, Integer, Mul, O, Pow, Rational, S, Symbol, cos, exp,
+from diofant import (I, Integer, Mul, O, Pow, Rational, Symbol, cos, exp,
                      expand, log, pi, sin, sqrt)
 from diofant.abc import x, y, z
 from diofant.core.function import expand_multinomial, expand_power_base
@@ -287,7 +287,7 @@ def test_sympyissues_5919_6830():
         e = (a + I*b)**n
         return verify_numerically(e, expand_multinomial(e))
 
-    for a in [2, S.Half]:
+    for a in [2, Rational(1, 2)]:
         for b in [3, Rational(1, 3)]:
             for n in range(2, 6):
                 assert ok(a, b, n)

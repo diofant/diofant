@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
-                     Ne, Or, Piecewise, Product, Rational, S, Sum, Symbol,
+                     Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
                      binomial, cos, exp, factorial, gamma, harmonic, log, nan,
                      oo, pi, product, simplify, sin, sqrt, summation, symbols,
                      sympify, zeta)
@@ -184,7 +184,7 @@ def test_karr_proposition_2b():
 
 def test_arithmetic_sums():
     assert summation(1, (n, a, b)) == b - a + 1
-    assert Sum(S.NaN, (n, a, b)) is S.NaN
+    assert Sum(nan, (n, a, b)) is nan
     assert Sum(x, (n, a, a)).doit() == x
     assert Sum(x, (x, a, a)).doit() == a
     assert Sum(x, (n, 1, a)).doit() == a*x
@@ -206,7 +206,7 @@ def test_arithmetic_sums():
         2*d + 2*d**2 + a*d + a*d**2 - d*a**2 - a**2*d**2
     assert summation(cos(n), (n, -2, 1)) == cos(-2) + cos(-1) + cos(0) + cos(1)
     assert summation(cos(n), (n, x, x + 2)) == cos(x) + cos(x + 1) + cos(x + 2)
-    assert isinstance(summation(cos(n), (n, x, x + S.Half)), Sum)
+    assert isinstance(summation(cos(n), (n, x, x + Rational(1, 2))), Sum)
     assert summation(k, (k, 0, oo)) == oo
 
 
@@ -242,8 +242,8 @@ def test_geometric_sums():
 
     # issue sympy/sympy#6802:
     assert summation((-1)**(2*x + 2), (x, 0, n)) == n + 1
-    assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/Integer(3) - Rational(4, 3)
-    assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/Integer(2) + Rational(1, 2)
+    assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/3 - Rational(4, 3)
+    assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/2 + Rational(1, 2)
     assert summation(y**x, (x, a, b)) == \
         Piecewise((-a + b + 1, Eq(y, 1)), ((y**a - y**(b + 1))/(-y + 1), True))
     assert summation((-2)**(y*x + 2), (x, 0, n)) == \
@@ -404,8 +404,8 @@ def test_evalf_sympyissue_6372():
 
 
 def test_simple_products():
-    assert Product(S.NaN, (x, 1, 3)) is S.NaN
-    assert product(S.NaN, (x, 1, 3)) is S.NaN
+    assert Product(nan, (x, 1, 3)) is nan
+    assert product(nan, (x, 1, 3)) is nan
     assert Product(x, (n, a, a)).doit() == x
     assert Product(x, (x, a, a)).doit() == a
     assert Product(x, (y, 1, a)).doit() == x**a
@@ -437,7 +437,7 @@ def test_simple_products():
         == 3**(2*(1 - a + b) + b/2 + (b**2)/2 + a/2 - (a**2)/2)
     assert product(cos(n), (n, 3, 5)) == cos(3)*cos(4)*cos(5)
     assert product(cos(n), (n, x, x + 2)) == cos(x)*cos(x + 1)*cos(x + 2)
-    assert isinstance(product(cos(n), (n, x, x + S.Half)), Product)
+    assert isinstance(product(cos(n), (n, x, x + Rational(1, 2))), Product)
     # If Product managed to evaluate this one, it most likely got it wrong!
     assert isinstance(Product(n**n, (n, 1, b)), Product)
 
@@ -591,7 +591,6 @@ def test_eval_derivative():
 
 
 def test_hypersum():
-    from diofant import sin
     assert simplify(summation(x**n/fac(n), (n, 1, oo))) == -1 + exp(x)
     assert summation((-1)**n * x**(2*n) / fac(2*n), (n, 0, oo)) == cos(x)
     assert simplify(summation((-1)**n*x**(2*n + 1) /

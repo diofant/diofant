@@ -1,4 +1,6 @@
+import sys
 import warnings
+from io import StringIO
 
 import pytest
 
@@ -8,9 +10,10 @@ from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
                      Integral, Intersection, Interval, Lambda, Le, Limit, Lt,
                      Matrix, MatrixSymbol, Mul, Nand, Ne, Nor, Not, O, Or, Pow,
                      Product, Range, Rational, Ray, RealField, RootOf, RootSum,
-                     S, Segment, Subs, Sum, Symbol, Trace, Tuple, Union, Xor,
-                     conjugate, grlex, groebner, ilex, oo, pi, symbols)
-from diofant.abc import a, b, k, lamda, m, t, w, x, y, z
+                     S, Segment, Subs, Sum, Symbol, SymmetricDifference, Trace,
+                     Tuple, Union, Xor, conjugate, grlex, groebner, ilex, oo,
+                     pi, symbols)
+from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2_r
@@ -21,9 +24,11 @@ from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, KroneckerDelta,
                                factorial, factorial2, floor, gamma, hyper, log,
                                lowergamma, meijerg, sin, sqrt, subfactorial,
                                tan, uppergamma)
+from diofant.matrices import Adjoint, Inverse, Transpose
 from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty import pprint
 from diofant.printing.pretty.pretty_symbology import U, xobj
+from diofant.stats import Die, Exponential, Normal, pspace, where
 
 
 __all__ = ()
@@ -1856,7 +1861,6 @@ x ___\n\
 
 
 def test_pretty_KroneckerDelta():
-    x, y = symbols("x, y")
     expr = KroneckerDelta(x, y)
     ascii_str = \
         """\
@@ -1873,7 +1877,6 @@ d   \n\
 
 
 def test_pretty_product():
-    n, m, k, l = symbols('n m k l')
     f = symbols('f', cls=Function)
     expr = Product(f((n/3)**2), (n, k**2, l))
 
@@ -2560,7 +2563,6 @@ def test_pretty_matrix():
 
 
 def test_Adjoint():
-    from diofant.matrices import Adjoint, Inverse, Transpose
     X = MatrixSymbol('X', 2, 2)
     Y = MatrixSymbol('Y', 2, 2)
     assert pretty(Adjoint(X)) == " +\nX "
@@ -3149,7 +3151,6 @@ def test_pretty_Intersection():
 
 
 def test_ProductSet_paranthesis():
-    from diofant import FiniteSet
     ucode_str = '([4, 7] × {1, 2}) ∪ ([2, 3] × [4, 7])'
 
     a, b = Interval(2, 3), Interval(4, 7)
@@ -3408,13 +3409,12 @@ def test_pretty_Boolean():
     assert pretty(expr) == "Or(x, y)"
     assert upretty(expr) == "x ∨ y"
 
-    syms = symbols('a:f')
-    expr = And(*syms)
+    expr = And(*[a, b, c, d, e, f])
 
     assert pretty(expr) == "And(a, b, c, d, e, f)"
     assert upretty(expr) == "a ∧ b ∧ c ∧ d ∧ e ∧ f"
 
-    expr = Or(*syms)
+    expr = Or(*[a, b, c, d, e, f])
 
     assert pretty(expr) == "Or(a, b, c, d, e, f)"
     assert upretty(expr) == "a ∨ b ∨ c ∨ d ∨ e ∨ f"
@@ -3541,8 +3541,6 @@ def test_pretty_prec():
 
 
 def test_pprint():
-    from io import StringIO
-    import sys
     fd = StringIO()
     sso = sys.stdout
     sys.stdout = fd
@@ -4489,8 +4487,6 @@ A⋅C  ⋅B\n\
 
 
 def test_pretty_special_functions():
-    x, y = symbols("x y")
-
     # atan2
     expr = atan2(y/sqrt(200), sqrt(x))
     ascii_str = \
@@ -4639,7 +4635,6 @@ Pi|3; -|6|\n\
 
 
 def test_RandomDomain():
-    from diofant.stats import Normal, Die, Exponential, pspace, where
     X = Normal('x1', 0, 1)
     assert upretty(where(X > 0)) == "Domain: 0 < x₁ ∧ x₁ < ∞"
 
@@ -4820,7 +4815,6 @@ def test_pretty_Complement():
 
 
 def test_pretty_SymmetricDifference():
-    from diofant import SymmetricDifference
     assert upretty(SymmetricDifference(Interval(2, 3), Interval(3, 5),
                                        evaluate=False)) == '[2, 3] ∆ [3, 5]'
     with pytest.raises(NotImplementedError):

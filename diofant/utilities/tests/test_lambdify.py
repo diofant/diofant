@@ -8,11 +8,13 @@ from diofant import (ITE, Abs, And, Float, Function, I, Integral, Lambda,
                      Matrix, Max, Min, Not, Or, Piecewise, Rational, acos,
                      acosh, cos, exp, false, lambdify, oo, pi, sin, sqrt,
                      symbols, sympify, tan, true)
-from diofant.abc import w, x, y, z
+from diofant.abc import a, b, t, w, x, y, z
 from diofant.external import import_module
-from diofant.printing.lambdarepr import LambdaPrinter
+from diofant.printing.lambdarepr import LambdaPrinter, NumExprPrinter
 from diofant.utilities.decorator import conserve_mpmath_dps
-from diofant.utilities.lambdify import implemented_function
+from diofant.utilities.lambdify import (MATH_TRANSLATIONS, MPMATH_TRANSLATIONS,
+                                        NUMPY_TRANSLATIONS,
+                                        implemented_function)
 
 
 __all__ = ()
@@ -132,14 +134,12 @@ def test_number_precision():
 
 
 def test_math_transl():
-    from diofant.utilities.lambdify import MATH_TRANSLATIONS
     for sym, mat in MATH_TRANSLATIONS.items():
         assert sym in diofant.__dict__
         assert mat in math.__dict__
 
 
 def test_mpmath_transl():
-    from diofant.utilities.lambdify import MPMATH_TRANSLATIONS
     for sym, mat in MPMATH_TRANSLATIONS.items():
         assert sym in diofant.__dict__ or sym == 'Matrix'
         assert mat in mpmath.__dict__
@@ -147,7 +147,6 @@ def test_mpmath_transl():
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_transl():
-    from diofant.utilities.lambdify import NUMPY_TRANSLATIONS
     for sym, nump in NUMPY_TRANSLATIONS.items():
         assert sym in diofant.__dict__
         assert nump in numpy.__dict__
@@ -164,7 +163,6 @@ def test_numpy_translation_abs():
 def test_numexpr_printer():
     # if translation/printing is done incorrectly then evaluating
     # a lambdified numexpr expression will throw an exception
-    from diofant.printing.lambdarepr import NumExprPrinter
 
     blacklist = ('where', 'complex', 'contains')
     arg_tuple = (x, y, z)  # some functions take more than one argument
@@ -184,10 +182,9 @@ def test_numexpr_printer():
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 @pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_sympyissue_9334():
-    a, b = symbols('a, b')
     expr = b*a - sqrt(a**2)
-    a, b = sorted(expr.free_symbols, key=lambda s: s.name)
-    func_numexpr = lambdify((a, b), expr, modules=[numexpr], dummify=False)
+    syms = sorted(expr.free_symbols, key=lambda s: s.name)
+    func_numexpr = lambdify(syms, expr, modules=[numexpr], dummify=False)
     foo, bar = numpy.random.random((2, 4))
     func_numexpr(foo, bar)
 
@@ -495,7 +492,6 @@ def test_lambdify_imps():
 
 
 def test_dummification():
-    t = symbols('t')
     F = Function('F')
     G = Function('G')
     # "\alpha" is not a valid python variable name

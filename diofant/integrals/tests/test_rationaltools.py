@@ -1,6 +1,6 @@
 from diofant import (I, Integer, Poly, Rational, atan, integrate, log,
                      simplify, sqrt, symbols)
-from diofant.abc import a, b, t, x
+from diofant.abc import a, b, t, u, x
 from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
 
 
@@ -128,7 +128,6 @@ def test_sympyissue_5817():
 
 
 def test_sympyissue_5981():
-    u = symbols('u')
     assert integrate(1/(u**2 + 1)) == atan(u)
 
 

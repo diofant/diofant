@@ -1,14 +1,18 @@
 import inspect
+from random import random
 
 import pytest
 
 from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
-                     Integer, Lambda, O, Rational, S, Subs, Sum, Symbol, Tuple,
-                     acos, cos, diff, exp, expand, expint, floor, im, log,
-                     loggamma, nfloat, pi, polygamma, re, sin, sqrt, symbols)
+                     Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
+                     Symbol, Tuple, acos, cos, diff, exp, expand, expint,
+                     floor, im, log, loggamma, nfloat, pi, polygamma, re, sin,
+                     sqrt, symbols)
 from diofant.abc import a, b, t, w, x, y, z
+from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
-from diofant.core.function import PoleError, _mexpand
+from diofant.core.function import (ArgumentIndexError, PoleError,
+                                   UndefinedFunction, _mexpand)
 from diofant.sets.sets import FiniteSet
 from diofant.solvers import solve
 from diofant.utilities.iterables import subsets, variations
@@ -168,7 +172,7 @@ def test_Lambda():
     assert Lambda(x, 2*x) + Lambda(y, 2*y) == 2*Lambda(x, 2*x)
     assert Lambda(x, 2*x) not in [ Lambda(x, x) ]
     pytest.raises(TypeError, lambda: Lambda(1, x))
-    assert Lambda(x, 1)(1) is S.One
+    assert Lambda(x, 1)(1) is Integer(1)
 
     assert (2*x).canonical_variables == {}
     assert Lambda(x, 2*x).canonical_variables == {x: Symbol('0_')}
@@ -432,7 +436,6 @@ def test_doit():
 
 
 def test_evalf_default():
-    from diofant.functions.special.gamma_functions import polygamma
     assert type(sin(4.0)) == Float
     assert type(re(sin(I + 1.0))) == Float
     assert type(im(sin(I + 1.0))) == Float
@@ -442,7 +445,7 @@ def test_evalf_default():
 
 
 def test_sympyissue_5399():
-    args = [x, y, Integer(2), S.Half]
+    args = [x, y, Integer(2), Rational(1, 2)]
 
     def ok(a):
         """Return True if the input args for diff are ok"""
@@ -468,14 +471,11 @@ def test_sympyissue_5399():
 
 
 def test_derivative_numerically():
-    from random import random
     z0 = random() + I*random()
     assert abs(Derivative(sin(x), x).doit_numerically(z0) - cos(z0)) < 1e-15
 
 
 def test_fdiff_argument_index_error():
-    from diofant.core.function import ArgumentIndexError
-
     class myfunc(Function):
         nargs = 1  # define since there is no eval routine
 
@@ -631,9 +631,6 @@ def test_unhandled():
 
 
 def test_nfloat():
-    from diofant.core.basic import _aresame
-    from diofant.polys.rootoftools import RootOf
-
     x = Symbol("x")
     eq = x**Rational(4, 3) + 4*x**Rational(1, 3)/3
     assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**Rational(1, 3))
@@ -696,7 +693,6 @@ def test_sympyissue_7231():
 
 
 def test_sympyissue_7687():
-    from diofant.core.function import Function
     f = Function('f')(x)
     ff = Function('f')(x)
     match_with_cache = ff.matches(f)
@@ -708,8 +704,6 @@ def test_sympyissue_7687():
 
 
 def test_sympyissue_7688():
-    from diofant.core.function import Function, UndefinedFunction
-
     f = Function('f')  # actually an UndefinedFunction
     clear_cache()
 
@@ -722,7 +716,7 @@ def test_sympyissue_7688():
 
 def test_mexpand():
     assert _mexpand(None) is None
-    assert _mexpand(1) is S.One
+    assert _mexpand(1) is Integer(1)
     assert _mexpand(x*(x + 1)**2) == (x*(x + 1)**2).expand()
 
 
@@ -742,7 +736,7 @@ def test_sympyissue_12005():
     e3 = Subs(Derivative(f(x) + y**2 - y, y), (y,), (y**2,))
     assert e3.diff(y) == 4*y
     e4 = Subs(Derivative(f(x + y), y), (y,), (x**2))
-    assert e4.diff(y) == S.Zero
+    assert e4.diff(y) == 0
     e5 = Subs(Derivative(f(x), x), (y, z), (y, z))
     assert e5.diff(x) == Derivative(f(x), x, x)
     assert f(g(x)).diff(g(x), g(x)) == Subs(Derivative(f(y), y, y), (y,), (g(x),))

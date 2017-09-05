@@ -1,4 +1,4 @@
-from diofant import E, O, S, cos, exp, sin, tanh
+from diofant import E, Integer, O, cos, exp, sin, tanh
 from diofant.abc import x, y
 
 
@@ -37,7 +37,7 @@ def test_exp2():
 
 def test_simple():
     assert [t for t in x.lseries()] == [x]
-    assert [t for t in S.One.lseries(x)] == [1]
+    assert [t for t in Integer(1).lseries(x)] == [1]
     assert not next((x/(x + y)).lseries(y)).has(O)
 
 

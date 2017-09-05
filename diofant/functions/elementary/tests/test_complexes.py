@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (Abs, DiracDelta, E, Eq, Expr, Function, Heaviside, I,
-                     Integral, Interval, Matrix, Ne, Piecewise, Rational, S,
-                     Symbol, adjoint, arg, atan2, comp, conjugate, cos, erf,
-                     exp, exp_polar, expand, gamma, im, log, nan, oo,
+                     Integer, Integral, Interval, Matrix, Ne, Piecewise,
+                     Rational, Symbol, adjoint, arg, atan2, comp, conjugate,
+                     cos, erf, exp, exp_polar, expand, gamma, im, log, nan, oo,
                      periodic_argument, pi, polar_lift, polarify,
                      principal_branch, re, sign, simplify, sin, sqrt, symbols,
                      tanh, transpose, unbranched_argument, unpolarify,
@@ -259,7 +259,7 @@ def test_sign():
     assert sign(y).rewrite(Heaviside) == sign(y)
 
     # evaluate what can be evaluated
-    assert sign(exp_polar(I*pi)*pi) is S.NegativeOne
+    assert sign(exp_polar(I*pi)*pi) is Integer(-1)
 
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when and when you cannot prove an

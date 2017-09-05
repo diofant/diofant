@@ -1,15 +1,24 @@
 import string
+from random import choice
 
 import pytest
 
-from diofant import (Dummy, EulerGamma, I, Integer, Product, Rational, S, Sum,
-                     Symbol, cancel, diff, expand_func, im, oo, pi, re, sstr,
-                     symbols)
+from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
+                     Rational, Sum, Symbol, cancel, diff, expand_func, im, nan,
+                     oo, pi, re, sstr, symbols, zoo)
 from diofant.abc import x
+from diofant.combinatorics.permutations import Permutation
 from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
                                digamma, euler, factorial, fibonacci, gamma,
                                genocchi, harmonic, hyper, log, lucas,
                                polygamma, sin, sqrt, trigamma, zeta)
+from diofant.functions.combinatorial.numbers import (_AOP_product,
+                                                     _multiset_histogram, nC,
+                                                     nP, nT, stirling)
+from diofant.utilities.iterables import (multiset_combinations,
+                                         multiset_partitions,
+                                         multiset_permutations, partitions,
+                                         permutations, subsets)
 
 
 __all__ = ()
@@ -65,7 +74,7 @@ def test_fibonacci():
     assert fibonacci(3, x) == x**2 + 1
     assert fibonacci(4, x) == x**3 + 2*x
 
-    assert fibonacci(x).rewrite(sqrt) == (S.GoldenRatio**x - cos(S.Pi*x)/S.GoldenRatio**x)/sqrt(5)
+    assert fibonacci(x).rewrite(sqrt) == (GoldenRatio**x - cos(pi*x)/GoldenRatio**x)/sqrt(5)
     assert fibonacci(x).rewrite('tractable') == fibonacci(x).rewrite(sqrt)
 
     pytest.raises(ValueError, lambda: fibonacci(-2, x))
@@ -138,9 +147,9 @@ def test_harmonic():
     assert harmonic(3, 3) == Rational(251, 216)
     assert harmonic(4, 3) == Rational(2035, 1728)
 
-    assert harmonic(oo, -1) == S.NaN
+    assert harmonic(oo, -1) == nan
     assert harmonic(oo, 0) == oo
-    assert harmonic(oo, S.Half) == oo
+    assert harmonic(oo, Rational(1, 2)) == oo
     assert harmonic(oo, 1) == oo
     assert harmonic(oo, 2) == (pi**2)/6
     assert harmonic(oo, 3) == zeta(3)
@@ -236,8 +245,8 @@ def test_harmonic_rewrite_polygamma():
 
     assert expand_func(harmonic(n, 2)).func is harmonic
 
-    assert expand_func(harmonic(n + S.Half)) == expand_func(harmonic(n + S.Half))
-    assert expand_func(harmonic(-S.Half)) == harmonic(-S.Half)
+    assert expand_func(harmonic(n + Rational(1, 2))) == expand_func(harmonic(n + Rational(1, 2)))
+    assert expand_func(harmonic(Rational(-1, 2))) == harmonic(Rational(-1, 2))
     assert expand_func(harmonic(x)) == harmonic(x)
 
 
@@ -293,7 +302,7 @@ def test_euler():
 
     assert euler(20).evalf() == 370371188237525.0
     assert euler(20, evaluate=False).evalf() == 370371188237525.0
-    assert euler(S.Half).evalf() == euler(S.Half)
+    assert euler(Rational(1, 2)).evalf() == euler(Rational(1, 2))
 
     assert euler(n).rewrite(Sum) == euler(n)
     # XXX: Not sure what the guy who wrote this test was trying to do with the _j and _k stuff
@@ -334,7 +343,7 @@ def test_catalan():
         0, x + Rational(1, 2)) - polygamma(0, x + 2) + log(4))*catalan(x)
 
     assert catalan(x).evalf() == catalan(x)
-    c = catalan(S.Half).evalf()
+    c = catalan(Rational(1, 2)).evalf()
     assert str(c) == '0.848826363156775'
     c = catalan(I).evalf(3)
     assert sstr((re(c), im(c))) == '(0.398, -0.0209)'
@@ -346,7 +355,7 @@ def test_genocchi():
         assert genocchi(n + 1) == g
 
     assert genocchi(Symbol('z', zero=True) + 1) == 1
-    pytest.raises(ValueError, lambda: genocchi(S.Half))
+    pytest.raises(ValueError, lambda: genocchi(Rational(1, 2)))
 
     m = Symbol('m', integer=True)
     n = Symbol('n', integer=True, positive=True)
@@ -368,15 +377,6 @@ def test_genocchi():
 
 
 def test_nC_nP_nT():
-    from diofant.utilities.iterables import (
-        multiset_permutations, multiset_combinations, multiset_partitions,
-        partitions, subsets, permutations)
-    from diofant.functions.combinatorial.numbers import (
-        nP, nC, nT, stirling, _multiset_histogram, _AOP_product)
-    from diofant.combinatorics.permutations import Permutation
-    from diofant.core.numbers import oo
-    from random import choice
-
     c = string.ascii_lowercase
     for i in range(100):
         s = ''.join(choice(c) for i in range(7))
@@ -540,9 +540,9 @@ def test_sympyissue_8496():
 def test_sympyissue_8601():
     n = Symbol('n', integer=True, negative=True)
 
-    assert catalan(n - 1) == S.Zero
-    assert catalan(-S.Half) == S.ComplexInfinity
-    assert catalan(-S.One) == -S.Half
+    assert catalan(n - 1) == 0
+    assert catalan(Rational(-1, 2)) == zoo
+    assert catalan(-1) == Rational(-1, 2)
     c1 = catalan(-5.6).evalf()
     assert str(c1) == '6.93334070531408e-5'
     c2 = catalan(-35.4).evalf()

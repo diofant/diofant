@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import Rational as Q  # noqa: N814
-from diofant import Poly, S
+from diofant import Poly
 from diofant.abc import a, b, x
 from diofant.polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
                                       gegenbauer_poly, hermite_poly,
@@ -41,7 +41,7 @@ def test_gegenbauer_poly():
     assert gegenbauer_poly(
         3, a, x) == x**3*(4*a**3/3 + 4*a**2 + 8*a/3) + x*(-2*a**2 - 2*a)
 
-    assert gegenbauer_poly(1, S.Half).dummy_eq(x)
+    assert gegenbauer_poly(1, Q(1, 2)).dummy_eq(x)
     assert gegenbauer_poly(1, a, polys=True) == Poly(2*a*x, x, domain='ZZ(a)')
 
 

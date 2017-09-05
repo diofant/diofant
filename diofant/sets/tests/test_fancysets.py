@@ -173,7 +173,7 @@ def test_Range():
     assert Range(0, -oo, -1)
 
     assert Range(0, oo, 2)._last_element is oo
-    assert Range(-oo, 1, 1)._last_element is S.Zero
+    assert Range(-oo, 1, 1)._last_element is Integer(0)
 
     it = iter(Range(-oo, 0, 2))
     assert (next(it), next(it)) == (-2, -4)
@@ -222,7 +222,7 @@ def test_fun():
 
 def test_reals():
     assert 5 in S.Reals
-    assert S.Pi in S.Reals
+    assert pi in S.Reals
     assert -sqrt(2) in S.Reals
     assert (2, 5) not in S.Reals
     assert sqrt(-1) not in S.Reals

@@ -1,8 +1,8 @@
 """Most of these tests come from the examples in Bronstein's book."""
 import pytest
 
-from diofant import (Eq, Function, I, Integer, Lambda, Piecewise, Poly,
-                     Rational, S, Symbol, exp, factor, log, sin, sqrt, symbols,
+from diofant import (E, Eq, Function, I, Integer, Lambda, Piecewise, Poly,
+                     Rational, Symbol, exp, factor, log, sin, sqrt, symbols,
                      tan)
 from diofant.abc import a, nu, t, x, y, z
 from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
@@ -437,9 +437,10 @@ def test_DifferentialExtension_exp():
                                                                                     Lambda(i, exp(i**2))], [], [1, 2], [x, x**2], [], [])
     assert DifferentialExtension(exp(x) + exp(x**2) + exp(x + x**2 + 1), x,
                                  dummy=False)._important_attrs == \
-        (Poly((1 + S.Exp1*t0)*t1 + t0, t1), Poly(1, t1), [Poly(1, x),
-                                                          Poly(t0, t0), Poly(2*x*t1, t1)], [x, t0, t1], [Lambda(i, exp(i)),
-                                                                                                         Lambda(i, exp(i**2))], [], [1, 2], [x, x**2], [], [])
+        (Poly((1 + E*t0)*t1 + t0, t1), Poly(1, t1),
+         [Poly(1, x), Poly(t0, t0), Poly(2*x*t1, t1)], [x, t0, t1],
+         [Lambda(i, exp(i)), Lambda(i, exp(i**2))],
+         [], [1, 2], [x, x**2], [], [])
     assert DifferentialExtension(exp(x) + exp(x**2) + exp(x/2 + x**2), x,
                                  dummy=False)._important_attrs == \
         (Poly((t0 + 1)*t1 + t0**2, t1), Poly(1, t1), [Poly(1, x),
@@ -580,7 +581,7 @@ def test_DifferentialExtension_misc():
          [Lambda(i, log(i**2))], [], [], [], [1], [x**2]),
         (Poly(3*t0, t0), Poly(1, t0), [Poly(1, x), Poly(1/x, t0)], [x, t0],
          [Lambda(i, log(i))], [], [], [], [1], [x])]
-    assert DifferentialExtension(S.Zero, x, dummy=False)._important_attrs == \
+    assert DifferentialExtension(Integer(0), x, dummy=False)._important_attrs == \
         (Poly(0, x), Poly(1, x), [Poly(1, x)], [x], [], [], [], [], [], [])
 
 

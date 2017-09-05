@@ -1,22 +1,24 @@
 import pytest
 
-from diofant import (Abs, And, EulerGamma, Function, Heaviside, I, Integer, Ne,
-                     Or, Rational, Symbol, atan, atan2, besseli, besselj,
-                     besselk, bessely, combsimp, cos, cosh, erf, exp,
-                     exp_polar, expand_mul, factorial, gamma, hyperexpand, log,
-                     meijerg, oo, periodic_argument, pi, polar_lift, re,
-                     simplify, sin, sinh, sqrt, symbols, tan, trigsimp,
-                     unpolarify)
-from diofant.abc import a, b, c, d, s, x
+from diofant import (E1, Abs, And, Ci, Ei, EulerGamma, Function, Heaviside, I,
+                     Integer, Integral, Max, Min, Ne, Or, Rational, Si, Symbol,
+                     atan, atan2, besseli, besselj, besselk, bessely, combsimp,
+                     cos, cosh, cot, erf, exp, exp_polar, expand,
+                     expand_complex, expand_mul, expand_trig, expint, factor,
+                     factor_terms, factorial, fresnelc, fresnels, gamma,
+                     hyperexpand, lerchphi, log, logcombine, meijerg, oo,
+                     periodic_argument, pi, polar_lift, powsimp, re, simplify,
+                     sin, sinh, sqrt, symbols, tan, trigsimp, unpolarify)
+from diofant.abc import a, b, c, d, s, t, w, x
 from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           IntegralTransformError,
                                           InverseCosineTransform,
                                           InverseFourierTransform,
                                           InverseLaplaceTransform,
                                           InverseSineTransform,
-                                          LaplaceTransform, SineTransform,
-                                          cosine_transform, fourier_transform,
-                                          hankel_transform,
+                                          LaplaceTransform, MellinTransform,
+                                          SineTransform, cosine_transform,
+                                          fourier_transform, hankel_transform,
                                           inverse_cosine_transform,
                                           inverse_fourier_transform,
                                           inverse_hankel_transform,
@@ -34,7 +36,6 @@ nu, beta, rho = symbols('nu beta rho')
 
 
 def test_undefined_function():
-    from diofant import Function, MellinTransform
     f = Function('f')
     assert mellin_transform(f(x), x, s) == MellinTransform(f(x), x, s)
     assert mellin_transform(f(x) + exp(-x), x, s) == \
@@ -45,14 +46,12 @@ def test_undefined_function():
 
 
 def test_free_symbols():
-    from diofant import Function
     f = Function('f')
     assert mellin_transform(f(x), x, s).free_symbols == {s}
     assert mellin_transform(f(x)*a, x, s).free_symbols == {s, a}
 
 
 def test_as_integral():
-    from diofant import Function, Integral
     f = Function('f')
     assert mellin_transform(f(x), x, s).rewrite('Integral') == \
         Integral(x**(s - 1)*f(x), (x, 0, oo))
@@ -99,7 +98,6 @@ def test_mellin_transform_fail():
 
 
 def test_mellin_transform():
-    from diofant import Max, Min
     MT = mellin_transform
 
     bpos = symbols('b', positive=True)
@@ -175,7 +173,6 @@ def test_mellin_transform():
 
 @pytest.mark.slow
 def test_mellin_transform_bessel():
-    from diofant import Max
     MT = mellin_transform
 
     # 8.4.19
@@ -271,7 +268,6 @@ def test_mellin_transform_bessel():
 
 
 def test_expint():
-    from diofant import E1, expint, Max, re, lerchphi, Symbol, simplify, Si, Ci, Ei
     aneg = Symbol('a', negative=True)
     u = Symbol('u', polar=True)
 
@@ -318,8 +314,6 @@ def test_expint():
 
 @pytest.mark.slow
 def test_inverse_mellin_transform():
-    from diofant import (sin, simplify, Max, Min, expand,
-                         powsimp, exp_polar, cos, cot)
     IMT = inverse_mellin_transform
 
     assert IMT(gamma(s), s, x, (0, oo)) == exp(-x)
@@ -391,7 +385,6 @@ def test_inverse_mellin_transform():
 
     # TODO
     def mysimp(expr):
-        from diofant import expand, logcombine, powsimp
         return expand(
             powsimp(logcombine(expr, force=True), force=True, deep=True),
             force=True).replace(exp_polar, exp)
@@ -454,11 +447,8 @@ def test_inverse_mellin_transform():
 
 @pytest.mark.slow
 def test_laplace_transform():
-    from diofant import fresnels, fresnelc
     LT = laplace_transform
     a, b, c, = symbols('a b c', positive=True)
-    t = symbols('t')
-    w = Symbol("w")
     f = Function("f")
 
     # Test unevaluated form
@@ -539,10 +529,8 @@ def test_sympyissue_8368_7173():
 
 
 def test_inverse_laplace_transform():
-    from diofant import sinh, cosh, besselj, besseli, simplify, factor_terms
     ILT = inverse_laplace_transform
     a, b, c, = symbols('a b c', positive=True, finite=True)
-    t = symbols('t')
 
     def simp_hyp(expr):
         return factor_terms(expand_mul(expr)).rewrite(sin)
@@ -587,7 +575,6 @@ def test_inverse_laplace_transform():
 
 
 def test_fourier_transform():
-    from diofant import simplify, expand, expand_complex, factor, expand_trig
     FT = fourier_transform
     IFT = inverse_fourier_transform
 
@@ -643,11 +630,6 @@ def test_fourier_transform():
 
 
 def test_sine_transform():
-    from diofant import EulerGamma
-
-    t = symbols("t")
-    w = symbols("w")
-    a = symbols("a")
     f = Function("f")
 
     # Test unevaluated form
@@ -681,11 +663,6 @@ def test_sine_transform():
 
 
 def test_cosine_transform():
-    from diofant import Si, Ci
-
-    t = symbols("t")
-    w = symbols("w")
-    a = symbols("a")
     f = Function("f")
 
     # Test unevaluated form
@@ -723,13 +700,10 @@ def test_cosine_transform():
 
 
 def test_hankel_transform():
-    from diofant import gamma, sqrt, exp
-
     r = Symbol("r")
     k = Symbol("k")
     nu = Symbol("nu")
     m = Symbol("m")
-    a = symbols("a")
 
     assert hankel_transform(1/r, r, k, 0) == 1/k
     assert inverse_hankel_transform(1/k, k, r, 0) == 1/r
@@ -758,7 +732,6 @@ def test_sympyissue_7181():
 
 def test_sympyissue_8882():
     # This is the original test.
-    # from diofant import diff, Integral, integrate
     # r = Symbol('r')
     # psi = 1/r*sin(r)*exp(-(a0*r))
     # h = -1/2*diff(psi, r, r) - 1/r*psi

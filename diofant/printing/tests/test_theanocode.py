@@ -1,7 +1,6 @@
 import pytest
 
 import diofant
-from diofant import S
 from diofant.abc import x, y, z
 from diofant.external import import_module
 from diofant.printing.theanocode import (dim_handling, theano_code,
@@ -136,7 +135,6 @@ def test_dim_handling():
 
 def test_Rationals():
     assert theq(theano_code(diofant.Rational(2, 3)), tt.true_div(2, 3))
-    assert theq(theano_code(S.Half), tt.true_div(1, 2))
 
 
 def test_Integers():
@@ -173,7 +171,6 @@ def test_theano_function_numpy():
 
 
 def test_theano_function_kwargs():
-    import numpy as np
     f = theano_function([x, y, z], [x+y], dim=1, on_unused_input='ignore',
                         dtypes={x: 'float64', y: 'float64', z: 'float64'})
     assert np.linalg.norm(f([1, 2], [3, 4], [0, 0]) - np.asarray([4, 6])) < 1e-9

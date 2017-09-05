@@ -2,9 +2,10 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Dummy, Float, I, Integer, Mod, Mul, O, Pow, Rational,
-                     S, Symbol, comp, cos, exp, factorial, im, log, nan, oo,
-                     pi, re, sign, sin, sqrt, symbols, sympify, zoo)
+from diofant import (Add, Dummy, E, Float, I, Integer, Mod, Mul, O, Pow,
+                     Rational, Symbol, comp, cos, exp, factorial, im, log, nan,
+                     oo, pi, polar_lift, re, sign, sin, sqrt, symbols, sympify,
+                     tan, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -193,11 +194,11 @@ def test_pow3():
 
 
 def test_pow_E():
-    assert 2**(y/log(2)) == S.Exp1**y
-    assert 2**(y/log(2)/3) == S.Exp1**(y/3)
-    assert 3**(1/log(-3)) != S.Exp1
-    assert (3 + 2*I)**(1/(log(-3 - 2*I) + I*pi)) == S.Exp1
-    assert (4 + 2*I)**(1/(log(-4 - 2*I) + I*pi)) == S.Exp1
+    assert 2**(y/log(2)) == E**y
+    assert 2**(y/log(2)/3) == E**(y/3)
+    assert 3**(1/log(-3)) != E
+    assert (3 + 2*I)**(1/(log(-3 - 2*I) + I*pi)) == E
+    assert (4 + 2*I)**(1/(log(-4 - 2*I) + I*pi)) == E
     assert (3 + 2*I)**(1/(log(-3 - 2*I, 3)/2 + I*pi/log(3)/2)) == 9
     assert (3 + 2*I)**(1/(log(3 + 2*I, 3)/2)) == 9
     # every time tests are run they will affirm with a different random
@@ -207,7 +208,7 @@ def test_pow_E():
         r, i = b.as_real_imag()
         if i:
             break
-    assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).n()), S.Exp1)
+    assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).n()), E)
 
 
 def test_pow_sympyissue_3516():
@@ -260,7 +261,7 @@ def test_pow_im():
     assert Mul(*args, evaluate=False)**e == ans
     assert Mul(*args)**e == ans
     assert Mul(Pow(-1, Rational(3, 2), evaluate=False), I, I) == I
-    assert Mul(I*Pow(I, S.Half, evaluate=False)) == (-1)**Rational(3, 4)
+    assert Mul(I*Pow(I, Rational(1, 2), evaluate=False)) == (-1)**Rational(3, 4)
 
 
 def test_real_mul():
@@ -964,12 +965,12 @@ def test_Pow_is_integer():
     assert Pow(3, 2, evaluate=False).is_integer is True
     assert Pow(3, 0, evaluate=False).is_integer is True
     assert Pow(3, -2, evaluate=False).is_integer is False
-    assert Pow(S.Half, 3, evaluate=False).is_integer is False
+    assert Pow(Rational(1, 2), 3, evaluate=False).is_integer is False
     # decided by re-evaluating
-    assert Pow(3, S.Half, evaluate=False).is_integer is False
-    assert Pow(3, S.Half, evaluate=False).is_integer is False
-    assert Pow(4, S.Half, evaluate=False).is_integer is True
-    assert Pow(S.Half, -2, evaluate=False).is_integer is True
+    assert Pow(3, Rational(1, 2), evaluate=False).is_integer is False
+    assert Pow(3, Rational(1, 2), evaluate=False).is_integer is False
+    assert Pow(4, Rational(1, 2), evaluate=False).is_integer is True
+    assert Pow(Rational(1, 2), -2, evaluate=False).is_integer is True
 
     assert ((-1)**k).is_integer
 
@@ -1009,12 +1010,12 @@ def test_Pow_is_real():
     assert (i**k).is_extended_real is None
     assert (i**(4*k)).is_extended_real is True
     assert (x**i).is_extended_real is None
-    assert (i**(S.Half + x)).is_extended_real is None
+    assert (i**(Rational(1, 2) + x)).is_extended_real is None
     assert Pow(I, 2, evaluate=False).is_extended_real
 
     x = Symbol("x", nonnegative=True)
     y = Symbol("y", nonnegative=True)
-    assert im(x**y).expand(complex=True) is S.Zero
+    assert im(x**y).expand(complex=True) is Integer(0)
     assert (x**y).is_extended_real is True
     i = Symbol('i', imaginary=True)
     assert (exp(i)**I).is_extended_real is True
@@ -1045,7 +1046,7 @@ def test_Pow_is_finite():
     assert (x**x).is_finite is None  # ditto
     assert (p**x).is_finite is None  # ditto
     assert (n**x).is_finite is None  # ditto
-    assert (1/S.Pi).is_finite
+    assert (1/pi).is_finite
     assert (y**2).is_finite is True
     assert (y**x).is_finite is None
     assert (y**exp(x)).is_finite is None
@@ -1166,8 +1167,8 @@ def test_Pow_is_zero():
 
     assert Pow(2, oo, evaluate=False).is_zero is False
     assert Pow(2, -oo, evaluate=False).is_zero
-    assert Pow(S.Half, oo, evaluate=False).is_zero
-    assert Pow(S.Half, -oo, evaluate=False).is_zero is False
+    assert Pow(Rational(1, 2), oo, evaluate=False).is_zero
+    assert Pow(Rational(1, 2), -oo, evaluate=False).is_zero is False
 
 
 def test_Pow_is_nonpositive_nonnegative():
@@ -1414,7 +1415,7 @@ def test_Pow_as_coeff_mul_doesnt_expand():
 
 
 def test_sympyissue_3514():
-    assert sqrt(S.Half) * sqrt(6) == 2 * sqrt(3)/2
+    assert sqrt(Rational(1, 2)) * sqrt(6) == 2 * sqrt(3)/2
     assert Rational(1, 2)*sqrt(6)*sqrt(2) == sqrt(3)
     assert sqrt(6)/2*sqrt(2) == sqrt(3)
     assert sqrt(6)*sqrt(2)/2 == sqrt(3)
@@ -1480,8 +1481,8 @@ def test_Mul_as_content_primitive():
     assert (x*(2 + 2*x)).as_content_primitive() == (2, x*(1 + x))
     assert (x*(2 + 2*y)*(3*x + 3)**2).as_content_primitive() == \
         (18, x*(1 + y)*(x + 1)**2)
-    assert ((2 + 2*x)**2*(3 + 6*x) + S.Half).as_content_primitive() == \
-        (S.Half, 24*(x + 1)**2*(2*x + 1) + 1)
+    assert ((2 + 2*x)**2*(3 + 6*x) + Rational(1, 2)).as_content_primitive() == \
+        (Rational(1, 2), 24*(x + 1)**2*(2*x + 1) + 1)
 
 
 def test_Pow_as_content_primitive():
@@ -1497,7 +1498,6 @@ def test_sympyissue_5460():
 
 
 def test_product_irrational():
-    from diofant import I, pi
     assert (I*pi).is_irrational is False
     # The following used to be deduced from the above bug:
     assert (I*pi).is_positive is False
@@ -1509,7 +1509,7 @@ def test_sympyissue_5919():
 
 def test_Mod():
     assert Mod(x, 1).func is Mod
-    assert pi % pi == S.Zero
+    assert pi % pi == 0
     assert Mod(5, 3) == 2
     assert Mod(-5, 3) == 1
     assert Mod(5, -3) == -1
@@ -1652,7 +1652,6 @@ def test_sympyissue_6001():
 
 
 def test_polar():
-    from diofant import polar_lift
     p = Symbol('p', polar=True)
     x = Symbol('x')
     assert p.is_polar
@@ -1672,7 +1671,7 @@ def test_polar():
 
 
 def test_sympyissue_6040():
-    a, b = Pow(1, 2, evaluate=False), S.One
+    a, b = Pow(1, 2, evaluate=False), 1
     assert a != b
     assert b != a
     assert not (a == b)
@@ -1878,7 +1877,6 @@ def test_mul_zero_detection():
 
 
 def test_sympyissue_8247_8354():
-    from diofant import tan
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_positive is False  # it's 0
     z = (-2**Rational(1, 3)*(3*sqrt(93) + 29)**2 -

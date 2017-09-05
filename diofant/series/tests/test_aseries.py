@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (O, PoleError, S, Symbol, cos, exp, log, oo, sin, sqrt,
-                     symbols)
+from diofant import (O, PoleError, Rational, Symbol, cos, exp, log, oo, sin,
+                     sqrt, symbols)
 from diofant.abc import x
 
 
@@ -32,7 +32,7 @@ def test_simple():
         return exp(exp(exp(x)))
 
     e = e3(x)/e3(x-1/e3(x))
-    assert e.aseries(x, n=3) == 1 + exp(x + exp(x))*exp(-exp(exp(x))) + ((-exp(x)/2 - S.Half)*exp(x + exp(x)) +
+    assert e.aseries(x, n=3) == 1 + exp(x + exp(x))*exp(-exp(exp(x))) + ((-exp(x)/2 - Rational(1, 2))*exp(x + exp(x)) +
                                                                          exp(2*x + 2*exp(x))/2)*exp(-2*exp(exp(x))) + O(exp(-3*exp(exp(x))), (x, oo))
 
     # A New Algorithm for Computing Asymptotic Series by Gruntz - Examples

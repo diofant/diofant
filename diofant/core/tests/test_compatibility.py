@@ -1,9 +1,9 @@
 import pytest
 
 from diofant.abc import x
+from diofant.core import nan, oo, zoo
 from diofant.core.compatibility import (as_int, default_sort_key, iterable,
                                         ordered)
-from diofant.core.singleton import S
 
 
 __all__ = ()
@@ -18,10 +18,10 @@ def test_default_sort_key():
 def test_as_int():
     pytest.raises(ValueError, lambda: as_int(1.1))
     pytest.raises(ValueError, lambda: as_int([]))
-    pytest.raises(ValueError, lambda: as_int(S.NaN))
-    pytest.raises(ValueError, lambda: as_int(S.Infinity))
-    pytest.raises(ValueError, lambda: as_int(S.NegativeInfinity))
-    pytest.raises(ValueError, lambda: as_int(S.ComplexInfinity))
+    pytest.raises(ValueError, lambda: as_int(nan))
+    pytest.raises(ValueError, lambda: as_int(oo))
+    pytest.raises(ValueError, lambda: as_int(-oo))
+    pytest.raises(ValueError, lambda: as_int(zoo))
 
 
 def test_iterable():

@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (Abs, AlgebraicNumber, Dummy, Float, Function,
-                     ImmutableMatrix, Integer, Matrix, Rational, S, Symbol,
-                     Wild, WildFunction, false, ones, root, sin, sqrt, symbols,
-                     true)
+from diofant import (Abs, AlgebraicNumber, Catalan, Dummy, E, EulerGamma,
+                     Float, Function, GoldenRatio, I, ImmutableMatrix, Integer,
+                     Matrix, Rational, Symbol, Wild, WildFunction, false, nan,
+                     ones, oo, pi, root, sin, sqrt, symbols, true, zoo)
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Ellipse, Point
 from diofant.polys import field, grlex, lex, ring
@@ -67,20 +67,20 @@ def test_Geometry():
 
 
 def test_Singletons():
-    sT(S.Catalan, 'Catalan')
-    sT(S.ComplexInfinity, 'zoo')
-    sT(S.EulerGamma, 'EulerGamma')
-    sT(S.Exp1, 'E')
-    sT(S.GoldenRatio, 'GoldenRatio')
-    sT(S.Half, 'Rational(1, 2)')
-    sT(S.ImaginaryUnit, 'I')
-    sT(S.Infinity, 'oo')
-    sT(S.NaN, 'nan')
-    sT(S.NegativeInfinity, '-oo')
-    sT(S.NegativeOne, 'Integer(-1)')
-    sT(S.One, 'Integer(1)')
-    sT(S.Pi, 'pi')
-    sT(S.Zero, 'Integer(0)')
+    sT(Catalan, 'Catalan')
+    sT(zoo, 'zoo')
+    sT(EulerGamma, 'EulerGamma')
+    sT(E, 'E')
+    sT(GoldenRatio, 'GoldenRatio')
+    sT(Rational(1, 2), 'Rational(1, 2)')
+    sT(I, 'I')
+    sT(oo, 'oo')
+    sT(nan, 'nan')
+    sT(-oo, '-oo')
+    sT(Integer(-1), 'Integer(-1)')
+    sT(Integer(1), 'Integer(1)')
+    sT(pi, 'pi')
+    sT(Integer(0), 'Integer(0)')
 
 
 def test_Integer():

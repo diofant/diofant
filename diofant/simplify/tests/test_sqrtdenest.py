@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (Dummy, Eq, I, Integer, Integral, Rational, S, cos, cosh,
+from diofant import (Dummy, Eq, I, Integer, Integral, Rational, cos, cosh,
                      posify, root, solve, sqrt, sqrtdenest, sstr, symbols,
                      sympify)
-from diofant.abc import a, b, c, d, t, x, y
+from diofant.abc import F, a, b, c, d, t, x, y
 from diofant.simplify.sqrtdenest import _subsets as subsets
 from diofant.simplify.sqrtdenest import unrad
 
@@ -283,7 +283,7 @@ def test_unrad1():
     # but this one really does have those solutions
     assert ({s[x] for s in solve(sqrt(x) - sqrt(x + 1) +
                                  sqrt(1 - sqrt(x)))} ==
-            {S.Zero, Rational(9, 16)})
+            {0, Rational(9, 16)})
 
     assert check(unrad(sqrt(x) + root(x + 1, 3) + 2*sqrt(y), y),
                  (2*sqrt(x)*(x + 1)**Rational(1, 3) + x - 4*y +
@@ -457,7 +457,6 @@ def test_unrad1():
     assert len(ans) == 1 and NS(ans[0][x])[:4] == '0.73'
     # the fence optimization problem
     # https://github.com/sympy/sympy/issues/4793#issuecomment-36994519
-    F = symbols('F')
     eq = F - (2*x + 2*y + sqrt(x**2 + y**2))
     ans = 2*F/7 - sqrt(2)*F/14
     X = solve(eq, x, check=False)
@@ -510,7 +509,7 @@ def test_unrad_slow():
     # this has roots with multiplicity > 1; there should be no
     # repeats in roots obtained, however
     eq = (sqrt(1 + sqrt(1 - 4*x**2)) - x*((1 + sqrt(1 + 2*sqrt(1 - 4*x**2)))))
-    assert solve(eq) == [{x: S.Half}]
+    assert solve(eq) == [{x: Rational(1, 2)}]
 
 
 @pytest.mark.xfail

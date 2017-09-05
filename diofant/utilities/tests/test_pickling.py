@@ -8,6 +8,7 @@ from diofant import QQ, ZZ, lex
 from diofant.abc import x, y, z
 from diofant.concrete.products import Product
 from diofant.concrete.summations import Sum
+from diofant.core import Catalan, EulerGamma, GoldenRatio
 from diofant.core.add import Add
 from diofant.core.basic import Atom, Basic
 from diofant.core.compatibility import HAS_GMPY
@@ -24,6 +25,7 @@ from diofant.core.relational import (Equality, GreaterThan, LessThan,
                                      StrictLessThan, Unequality)
 from diofant.core.singleton import S, SingletonRegistry
 from diofant.core.symbol import Dummy, Symbol, Wild
+from diofant.domains import QQ_gmpy, ZZ_gmpy
 from diofant.domains.algebraicfield import AlgebraicField
 from diofant.domains.expressiondomain import ExpressionDomain
 from diofant.domains.groundtypes import PythonRational
@@ -85,7 +87,7 @@ from diofant.utilities.exceptions import DiofantDeprecationWarning
 __all__ = ()
 
 # XXX we need this to initialize singleton registry properly
-half = S.Half
+half = Rational(1, 2)
 ø = S.EmptySet
 ℕ = S.Naturals0
 
@@ -208,8 +210,8 @@ def test_Singletons():
     copiers += [lambda x: pickle.loads(pickle.dumps(x, p)) for p in protocols]
 
     for obj in (Integer(-1), Integer(0), Integer(1), Rational(1, 2), pi,
-                E, I, oo, -oo, zoo, nan, S.GoldenRatio, S.EulerGamma,
-                S.Catalan, S.EmptySet, S.IdentityFunction):
+                E, I, oo, -oo, zoo, nan, GoldenRatio, EulerGamma,
+                Catalan, S.EmptySet, S.IdentityFunction):
         for func in copiers:
             assert func(obj) is obj
 
@@ -359,17 +361,14 @@ def test_pickling_polys_domains():
         check(c)
 
     if HAS_GMPY:
-        from diofant.domains.gmpyintegerring import GMPYIntegerRing
-        from diofant.domains.gmpyrationalfield import GMPYRationalField
-
         # TODO: fix pickling of ModularInteger
         # for c in (GMPYFiniteField, GMPYFiniteField(17)):
         #     check(c)
 
-        for c in (GMPYIntegerRing, GMPYIntegerRing()):
+        for c in (ZZ_gmpy, ZZ_gmpy()):
             check(c)
 
-        for c in (GMPYRationalField, GMPYRationalField()):
+        for c in (QQ_gmpy, QQ_gmpy()):
             check(c)
 
     # TODO: fix pickling of RealElement

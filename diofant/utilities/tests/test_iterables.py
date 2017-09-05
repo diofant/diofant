@@ -1,5 +1,6 @@
 import itertools
 import random
+from operator import lt
 from textwrap import dedent
 
 import pytest
@@ -8,7 +9,6 @@ from diofant import (Basic, Dummy, Integer, Integral, Matrix, Tuple,
                      default_sort_key, factorial, symbols, true)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
-from diofant.core.singleton import S
 from diofant.functions.elementary.piecewise import ExprCondPair, Piecewise
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
@@ -189,7 +189,7 @@ def test_numbered_symbols():
 def test_sift():
     assert sift(list(range(5)), lambda _: _ % 2) == {1: [1, 3], 0: [0, 2, 4]}
     assert sift([x, y], lambda _: _.has(x)) == {False: [y], True: [x]}
-    assert sift([S.One], lambda _: _.has(x)) == {False: [1]}
+    assert sift([Integer(1)], lambda _: _.has(x)) == {False: [1]}
 
 
 def test_take():
@@ -591,7 +591,6 @@ def test_runs():
     assert runs([1, 1, 2]) == [[1], [1, 2]]
     assert runs([1, 2, 1]) == [[1, 2], [1]]
     assert runs([2, 1, 1]) == [[2], [1], [1]]
-    from operator import lt
     assert runs([2, 1, 1], lt) == [[2, 1], [1]]
 
 

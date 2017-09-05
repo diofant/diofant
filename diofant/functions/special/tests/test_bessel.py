@@ -1,16 +1,18 @@
+from random import uniform
+
 import pytest
 
-from diofant import (Abs, I, Integer, Limit, O, Rational, S, Symbol, besseli,
-                     besselj, besselk, bessely, conjugate, cos, cosh, diff,
-                     exp, expand_func, gamma, hankel1, hankel2, hyper, im, jn,
-                     jn_zeros, log, oo, pi, re, series, sin, sinh, sqrt,
-                     symbols, yn)
+from diofant import (Abs, I, Integer, Limit, O, Rational, Symbol, besseli,
+                     besselj, besselk, besselsimp, bessely, conjugate, cos,
+                     cosh, diff, exp, exp_polar, expand_func, gamma, hankel1,
+                     hankel2, hyper, im, jn, jn_zeros, log, nan, oo, pi,
+                     polar_lift, re, series, sin, sinh, sqrt, yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
                                               airybiprime, fn)
 from diofant.utilities.randtest import random_complex_number as randcplx
-from diofant.utilities.randtest import test_derivative_numerically as td
+from diofant.utilities.randtest import verify_derivative_numerically as td
 from diofant.utilities.randtest import verify_numerically as tn
 from diofant.utilities.randtest import _randint
 
@@ -48,8 +50,6 @@ def test_diff():
 
 
 def test_rewrite():
-    from diofant import polar_lift, exp, I
-
     assert besselj(n, z).rewrite(jn) == sqrt(2*z/pi)*jn(n - Rational(1, 2), z)
     assert bessely(n, z).rewrite(yn) == sqrt(2*z/pi)*yn(n - Rational(1, 2), z)
     assert besseli(n, z).rewrite(besselj) == \
@@ -80,8 +80,6 @@ def test_rewrite():
 
 
 def test_expand():
-    from diofant import besselsimp, Symbol, exp, exp_polar, I
-
     assert expand_func(besselj(Rational(1, 2), z).rewrite(jn)) == \
         sqrt(2)*sin(z)/(sqrt(pi)*sqrt(z))
     assert expand_func(bessely(Rational(1, 2), z).rewrite(yn)) == \
@@ -181,7 +179,6 @@ def test_expand():
 
 
 def test_fn():
-    x, z = symbols("x z")
     assert fn(1, z) == 1/z**2
     assert fn(2, z) == -1/z + 3/z**3
     assert fn(3, z) == -6/z**2 + 15/z**4
@@ -197,7 +194,6 @@ def myn(n, z):
 
 
 def test_jn():
-    z = symbols("z")
     assert mjn(0, z) == sin(z)/z
     assert mjn(1, z) == sin(z)/z**2 - cos(z)/z
     assert mjn(2, z) == (3/z**3 - 1/z)*sin(z) - (3/z**2) * cos(z)
@@ -213,7 +209,6 @@ def test_jn():
 
 
 def test_yn():
-    z = symbols("z")
     assert myn(0, z) == -cos(z)/z
     assert myn(1, z) == -cos(z)/z**2 - sin(z)/z
     assert myn(2, z) == -((3/z**3 - 1/z)*cos(z) + (3/z**2)*sin(z))
@@ -241,34 +236,33 @@ def test_jn_zeros():
 
 
 def test_bessel_eval():
-    from diofant import I, Symbol
     n, m, k = Symbol('n', integer=True), Symbol('m'), Symbol('k', integer=True, zero=False)
 
     for f in [besselj, besseli]:
-        assert f(0, 0) == S.One
-        assert f(2.1, 0) == S.Zero
-        assert f(-3, 0) == S.Zero
-        assert f(-10.2, 0) == S.ComplexInfinity
-        assert f(1 + 3*I, 0) == S.Zero
-        assert f(-3 + I, 0) == S.ComplexInfinity
-        assert f(-2*I, 0) == S.NaN
-        assert f(n, 0) != S.One and f(n, 0) != S.Zero
-        assert f(m, 0) != S.One and f(m, 0) != S.Zero
-        assert f(k, 0) == S.Zero
+        assert f(0, 0) == 1
+        assert f(2.1, 0) == 0
+        assert f(-3, 0) == 0
+        assert f(-10.2, 0) == zoo
+        assert f(1 + 3*I, 0) == 0
+        assert f(-3 + I, 0) == zoo
+        assert f(-2*I, 0) == nan
+        assert f(n, 0) not in (0, 1)
+        assert f(m, 0) not in (0, 1)
+        assert f(k, 0) == 0
 
-    assert bessely(0, 0) == S.NegativeInfinity
-    assert besselk(0, 0) == S.Infinity
+    assert bessely(0, 0) == -oo
+    assert besselk(0, 0) == +oo
     for f in [bessely, besselk]:
-        assert f(1 + I, 0) == S.ComplexInfinity
-        assert f(I, 0) == S.NaN
+        assert f(1 + I, 0) == zoo
+        assert f(I, 0) == nan
 
     for f in [besselj, bessely]:
-        assert f(m, S.Infinity) == S.Zero
-        assert f(m, S.NegativeInfinity) == S.Zero
+        assert f(m, +oo) == 0
+        assert f(m, -oo) == 0
 
     for f in [besseli, besselk]:
-        assert f(m, I*S.Infinity) == S.Zero
-        assert f(m, I*S.NegativeInfinity) == S.Zero
+        assert f(m, +I*oo) == 0
+        assert f(m, -I*oo) == 0
 
     for f in [besseli, besselk]:
         assert f(-4, z) == f(4, z)
@@ -298,11 +292,10 @@ def test_bessel_eval():
 
 def test_bessel_nan():
     for f in [besselj, bessely, besseli, besselk, hankel1, hankel2, yn, jn]:
-        assert f(1, S.NaN) == S.NaN
+        assert f(1, nan) == nan
 
 
 def test_conjugate():
-    from diofant import conjugate, I, Symbol
     n, z, x = Symbol('n'), Symbol('z', extended_real=False), Symbol('x', extended_real=True)
     y, t = Symbol('y', extended_real=True, positive=True), Symbol('t', negative=True)
 
@@ -337,7 +330,6 @@ def test_conjugate():
 
 
 def test_branching():
-    from diofant import exp_polar, polar_lift, Symbol, I, exp
     assert besselj(polar_lift(k), x) == besselj(k, x)
     assert besseli(polar_lift(k), x) == besseli(k, x)
 
@@ -348,7 +340,6 @@ def test_branching():
     assert besseli(n, polar_lift(x)) == besseli(n, x)
 
     def tn(func, s):
-        from random import uniform
         c = uniform(1, 5)
         expr = func(s, c*exp_polar(I*pi)) - func(s, c*exp_polar(-I*pi))
         eps = 1e-15

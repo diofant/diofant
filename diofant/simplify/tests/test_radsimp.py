@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (Add, Derivative, Function, I, Integer, Mul, O, Rational,
-                     S, Symbol, Wild, collect, collect_const, cos, diff, exp,
-                     factor, fraction, log, radsimp, rcollect, root, sin, sqrt,
-                     symbols)
+from diofant import (Add, Derivative, Function, I, Integer, Mul, O, Polygon,
+                     Rational, RegularPolygon, Symbol, Wild, collect,
+                     collect_const, cos, denom, diff, exp, factor, fraction,
+                     log, nan, radsimp, rcollect, root, sin, sqrt, symbols)
 from diofant.abc import a, b, c, d, f, t, x, y, z
 from diofant.core.mul import _unevaluated_Mul as UMul
 from diofant.simplify.radsimp import collect_sqrt, fraction_expand
@@ -72,7 +72,7 @@ def test_radsimp():
         (-9*x + 9*sqrt(2)*x - 9*sqrt(y) + 9*sqrt(2)*sqrt(y))/(9*x*(9*x**2 -
                                                                    9*y)))
     assert radsimp(1 + 1/(1 + sqrt(3))) == \
-        Mul(S.Half, -1 + sqrt(3), evaluate=False) + 1
+        Mul(Rational(1, 2), -1 + sqrt(3), evaluate=False) + 1
     A = symbols("A", commutative=False)
     assert radsimp(x**2 + sqrt(2)*x**2 - sqrt(2)*x*A) == \
         x**2 + sqrt(2)*x**2 - sqrt(2)*x*A
@@ -103,7 +103,7 @@ def test_radsimp():
          120*sqrt(10)*sqrt(-8*sqrt(5) + 40)*sqrt(sqrt(5) + 5))/(-36000 -
                                                                 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
                                                                                 24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
-    assert radsimp(eq) is S.NaN  # it's 0/0
+    assert radsimp(eq) is nan  # it's 0/0
 
     # work with normal form
     e = 1/sqrt(sqrt(7)/7 + 2*sqrt(2) + 3*sqrt(3) + 5*sqrt(5)) + 3
@@ -244,7 +244,7 @@ def test_collect_func():
         (a + 1)**3
 
     assert collect(f, x, evaluate=False) == {
-        S.One: a**3 + 3*a**2 + 3*a + 1,
+        1: a**3 + 3*a**2 + 3*a + 1,
         x: 3*a**2 + 6*a + 3, x**2: 3*a + 3,
         x**3: 1
     }
@@ -279,7 +279,7 @@ def test_rcollect():
 @pytest.mark.xfail
 def test_collect_func_xfail():
     # XXX: this test will pass when automatic constant distribution is removed (issue sympy/sympy#4596)
-    assert collect(f, x, factor, evaluate=False) == {S.One: (a + 1)**3,
+    assert collect(f, x, factor, evaluate=False) == {1: (a + 1)**3,
                                                      x: 3*(a + 1)**2, x**2: 3*(a + 1), x**3: 1}
 
 
@@ -391,7 +391,6 @@ def test_sympyissue_5615():
 
 
 def test_sympyissue_5933():
-    from diofant import Polygon, RegularPolygon, denom
     x = Polygon(*RegularPolygon((0, 0), 1, 5).vertices).centroid.x
     assert abs(denom(x).n()) > 1e-12
     assert abs(denom(radsimp(x))) > 1e-12  # in case simplify didn't handle it

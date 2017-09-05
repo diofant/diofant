@@ -8,7 +8,7 @@ from io import StringIO
 
 import pytest
 
-from diofant.core import Eq, symbols
+from diofant.core import Eq, Equality, symbols
 from diofant.utilities.autowrap import (CodeWrapper, CythonCodeWrapper,
                                         UfuncifyCodeWrapper, autowrap,
                                         binary_function)
@@ -51,7 +51,6 @@ def test_cython_wrapper_scalar_function():
 
 
 def test_cython_wrapper_outarg():
-    from diofant import Equality
     x, y, z = symbols('x,y,z')
     code_gen = CythonCodeWrapper(CCodeGen())
 
@@ -70,7 +69,6 @@ def test_cython_wrapper_outarg():
 
 
 def test_cython_wrapper_inoutarg():
-    from diofant import Equality
     x, y, z = symbols('x,y,z')
     code_gen = CythonCodeWrapper(CCodeGen())
     routine = make_routine("test", Equality(z, x + y + z))
