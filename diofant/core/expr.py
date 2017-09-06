@@ -679,15 +679,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     if count_ops(self) > 75:
                         return
                     try:
-                        return minimal_polynomial(self).is_Symbol
+                        if minimal_polynomial(self).is_Symbol:
+                            return True
                     except (NotAlgebraic, NotImplementedError):
                         pass
                 return
-            if v.is_extended_real or v.is_complex:
-                r, i = v.as_real_imag()
-                if r.is_Number and i.is_Number:
-                    if r != 0 or i != 0:
-                        return False
+            r, i = v.as_real_imag()
+            if r.is_Float and i.is_Float:
+                if r != 0 or i != 0:
+                    return False
 
     def _eval_is_positive(self):
         if self.is_number:
@@ -699,10 +699,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     raise PrecisionExhausted
             except (PrecisionExhausted, ValueError):
                 return
-            if v.is_extended_real or v.is_complex:
-                r, i = v.as_real_imag()
-                if r.is_Number and i.is_Number:
-                    return bool(not i and r > 0)
+            r, i = v.as_real_imag()
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+                return bool(not i and r > 0)
 
     def _eval_is_negative(self):
         if self.is_number:
@@ -714,10 +713,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     raise PrecisionExhausted
             except (PrecisionExhausted, ValueError):
                 return
-            if v.is_extended_real or v.is_complex:
-                r, i = v.as_real_imag()
-                if r.is_Number and i.is_Number:
-                    return bool(not i and r < 0)
+            r, i = v.as_real_imag()
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+                return bool(not i and r < 0)
 
     def _eval_interval(self, x, a, b):
         """Returns evaluation over an interval.
