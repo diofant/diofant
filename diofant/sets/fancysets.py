@@ -311,9 +311,9 @@ class ImageSet(Set):
 
             n_ = Dummy(n.name, integer=True)
             f_ = f.subs(n, n_)
+            f_ = expand_complex(f_)
 
             re, im = f_.as_real_imag()
-            im = expand_complex(im)
 
             sols = list(diophantine(im, n_))
             if all(s[0].has(n_) is False for s in sols):
