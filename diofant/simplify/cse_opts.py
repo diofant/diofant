@@ -2,7 +2,7 @@
 opportunities.
 """
 
-from ..core import Add, Basic, Mul, preorder_traversal, S
+from ..core import Add, Basic, Mul, S, preorder_traversal
 from ..utilities.iterables import default_sort_key
 
 

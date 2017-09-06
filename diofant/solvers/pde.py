@@ -33,20 +33,21 @@ more information on each (run help(pde)):
 
 """
 
+import operator
 from functools import reduce
 from itertools import combinations_with_replacement
-import operator
 
-from ..simplify import simplify, collect
-from ..core import (Add, Function, expand, Subs, Equality, Eq, Symbol,
-                    Wild, symbols, S)
+from ..core import (Add, Eq, Equality, Function, S, Subs, Symbol, Wild, expand,
+                    symbols)
 from ..core.compatibility import is_sequence
 from ..core.function import AppliedUndef
 from ..functions import exp
 from ..integrals import Integral
-from ..utilities import has_dups, filldedent
-from .deutils import _preprocess, ode_order, _desolve
+from ..simplify import collect, simplify
+from ..utilities import filldedent, has_dups
+from .deutils import _desolve, _preprocess, ode_order
 from .solvers import solve
+
 
 allhints = (
     "1st_linear_constant_coeff_homogeneous",
@@ -157,14 +158,12 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     Eq(f(x, y), E**(-2*x/13 - 3*y/13)*F(3*x - 2*y))
     """
 
-    given_hint = hint  # hint given by the user.
-
     if not solvefun:
         solvefun = Function('F')
 
     # See the docstring of _desolve for more details.
     hints = _desolve(eq, func=func,
-        hint=hint, simplify=True, type='pde', **kwargs)
+                     hint=hint, simplify=True, type='pde', **kwargs)
     eq = hints.pop('eq', False)
     all_ = hints.pop('all', False)
 
@@ -175,11 +174,11 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
         failed_hints = {}
         gethints = classify_pde(eq, dict=True)
         pdedict.update({'order': gethints['order'],
-            'default': gethints['default']})
+                        'default': gethints['default']})
         for hint in hints:
             try:
                 rv = _helper_simplify(eq, hint, hints[hint]['func'],
-                    hints[hint]['order'], hints[hint][hint], solvefun)
+                                      hints[hint]['order'], hints[hint][hint], solvefun)
             except NotImplementedError as detail:  # pragma: no cover
                 failed_hints[hint] = detail
             else:
@@ -189,7 +188,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
 
     else:
         return _helper_simplify(eq, hints['hint'],
-            hints['func'], hints['order'], hints[hints['hint']], solvefun)
+                                hints['func'], hints['order'], hints[hints['hint']], solvefun)
 
 
 def _helper_simplify(eq, hint, func, order, match, solvefun):
@@ -205,7 +204,7 @@ def _helper_simplify(eq, hint, func, order, match, solvefun):
     else:
         solvefunc = globals()["pde_" + hint]
     return _handle_Integral(solvefunc(eq, func, order,
-        match, solvefun), func, order, hint)
+                                      match, solvefun), func, order, hint)
 
 
 def _handle_Integral(expr, func, order, hint):
@@ -452,9 +451,6 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     # Convert solution into an equation
     if not isinstance(sol, Equality):
         sol = Eq(func, sol)
-
-    # Try solving for the function
-    solved = sol.lhs == func and not sol.rhs.has(func)
 
     # try direct substitution of the solution into the PDE and simplify
     if sol.lhs == func:
@@ -777,9 +773,7 @@ def _simplify_variable_coeff(sol, syms, func, funcarg):
         final = sol.subs(sym, func(funcarg))
 
     else:
-        fname = func.__name__
         for key, sym in enumerate(syms):
-            tempfun = Function(fname + str(key))
             final = sol.subs(sym, func(funcarg))
 
     return simplify(final.subs(eta, funcarg))

@@ -1,15 +1,14 @@
-from diofant import sin, cos
-from diofant.printing.pretty.pretty import pretty, PrettyPrinter
-from diofant.printing.pretty.stringpict import stringPict
-
+from diofant import cos, sin
 from diofant.abc import x
+from diofant.printing.pretty.pretty import PrettyPrinter, pretty
+
 
 __all__ = ()
 
 
 def test_render():
     ustr = \
-"""\
+        """\
      3     5      \n\
     x     x     ⎛ \n\
 x - ── + ─── + O⎝x\n\

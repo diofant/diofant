@@ -1,7 +1,8 @@
-from diofant.stats import Poisson, Beta
-from diofant.stats.rv import pspace, ProductPSpace, density
+from diofant import Eq, Symbol
+from diofant.stats import Beta, Poisson
 from diofant.stats.drv_types import PoissonDistribution
-from diofant import Symbol, Eq
+from diofant.stats.rv import ProductPSpace, density, pspace
+
 
 __all__ = ()
 

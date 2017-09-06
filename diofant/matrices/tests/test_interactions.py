@@ -7,11 +7,12 @@ Here we test the extent to which they cooperate
 
 import pytest
 
-from diofant import symbols
-from diofant.matrices import (Matrix, MatrixSymbol, eye, Identity,
-                              ImmutableMatrix)
-from diofant.matrices.expressions import MatrixExpr, MatAdd
+from diofant.abc import a
+from diofant.matrices import (Identity, ImmutableMatrix, Matrix, MatrixSymbol,
+                              eye)
+from diofant.matrices.expressions import MatAdd, MatrixExpr
 from diofant.matrices.matrices import classof
+
 
 __all__ = ()
 
@@ -21,7 +22,6 @@ IM = ImmutableMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 meye = eye(3)
 imeye = ImmutableMatrix(eye(3))
 ideye = Identity(3)
-a, b, c = symbols('a,b,c')
 
 
 def test_IM_MM():

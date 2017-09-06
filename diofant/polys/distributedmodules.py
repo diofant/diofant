@@ -28,10 +28,11 @@ The main reference for this file is [SCA],
 
 from itertools import permutations
 
-from .monomials import monomial_mul, monomial_lcm, monomial_div, monomial_deg
+from ..core import S, sympify
+from .monomials import monomial_deg, monomial_div, monomial_lcm, monomial_mul
 from .polytools import Poly
 from .polyutils import parallel_dict_from_expr
-from ..core import S, sympify
+
 
 # Additional monomial tools.
 
@@ -701,7 +702,7 @@ def sdm_groebner(G, NF, O, K, extended=False):
     # Now carry out the buchberger algorithm.
     while P:
         i, j, s, t = P.pop()
-        f, sf, g, sg = S[i], Sugars[i], S[j], Sugars[j]
+        f, g = S[i], S[j]
         if extended:
             sp, coeff = sdm_spoly(f, g, O, K,
                                   phantom=(coefficients[i], coefficients[j]))

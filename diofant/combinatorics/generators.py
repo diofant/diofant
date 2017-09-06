@@ -1,8 +1,8 @@
-from .permutations import Permutation
-from ..utilities import variations
-from ..utilities.iterables import rotate_left
 from ..core import symbols
 from ..matrices import Matrix
+from ..utilities import variations
+from ..utilities.iterables import rotate_left
+from .permutations import Permutation
 
 
 def symmetric(n):

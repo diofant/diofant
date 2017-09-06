@@ -2,9 +2,9 @@
 
 import math
 
+from .characteristiczero import CharacteristicZero
 from .ring import Ring
 from .simpledomain import SimpleDomain
-from .characteristiczero import CharacteristicZero
 
 
 __all__ = ('IntegerRing',)

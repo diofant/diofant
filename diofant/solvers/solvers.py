@@ -3,33 +3,33 @@ This module contain solvers for all kinds of equations,
 algebraic or transcendental.
 """
 
-from types import GeneratorType
-from collections import defaultdict
 import warnings
+from collections import defaultdict
+from types import GeneratorType
 
-from ..core.compatibility import (iterable, is_sequence, ordered,
-                                  default_sort_key)
-from ..core import (sympify, S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow,
-                    expand_mul, expand_multinomial, expand_log, Derivative,
-                    Function, expand_power_exp, Lambda, nfloat, Float,
-                    Integer, Ge, preorder_traversal)
+from ..core import (Add, Derivative, Dummy, Equality, Expr, Float, Function,
+                    Ge, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
+                    expand_mul, expand_multinomial, expand_power_exp, nfloat,
+                    preorder_traversal, sympify)
 from ..core.assumptions import check_assumptions
+from ..core.compatibility import (default_sort_key, is_sequence, iterable,
+                                  ordered)
 from ..core.function import AppliedUndef
-from ..integrals import Integral
 from ..core.relational import Relational
-from ..functions import (log, exp, cos, sin, tan, acos, asin, atan,
-                         Abs, re, im, arg, sqrt, atan2, piecewise_fold,
-                         Piecewise, Min, Max)
-from ..functions.elementary.trigonometric import (TrigonometricFunction,
-                                                  HyperbolicFunction)
-from ..simplify import (simplify, collect, powsimp, posify, powdenest,
-                        nsimplify, denom, logcombine)
-from ..simplify.sqrtdenest import unrad
-from ..simplify.fu import TR1
+from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
+                         atan2, cos, exp, im, log, piecewise_fold, re, sin,
+                         sqrt, tan)
+from ..functions.elementary.hyperbolic import HyperbolicFunction
+from ..functions.elementary.trigonometric import TrigonometricFunction
+from ..integrals import Integral
 from ..matrices import Matrix, zeros
-from ..polys import roots, cancel, factor, Poly, together, RootOf
+from ..polys import Poly, RootOf, cancel, factor, roots, together
 from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
-from ..utilities import filldedent, subsets
+from ..simplify import (collect, denom, logcombine, nsimplify, posify,
+                        powdenest, powsimp, simplify)
+from ..simplify.fu import TR1
+from ..simplify.sqrtdenest import unrad
+from ..utilities import filldedent
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
 
@@ -495,7 +495,7 @@ def solve(f, *symbols, **flags):
 
         # rewrite hyperbolics in terms of exp
         f[i] = f[i].replace(lambda w: isinstance(w, HyperbolicFunction),
-                lambda w: w.rewrite(exp))
+                            lambda w: w.rewrite(exp))
 
         # replace min/max:
         f[i] = f[i].replace(lambda w: isinstance(w, (Min, Max)),
@@ -560,9 +560,9 @@ def solve(f, *symbols, **flags):
                 continue
             if a.args[0].is_extended_real is None and a.args[0].is_imaginary is not True:
                 raise NotImplementedError('solving %s when the argument '
-                    'is not real or imaginary.' % a)
+                                          'is not real or imaginary.' % a)
             reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
-                piece(a.args[0]*S.ImaginaryUnit)))
+                         piece(a.args[0]*S.ImaginaryUnit)))
         fi = fi.subs(reps)
 
         # arg
@@ -774,7 +774,7 @@ def solve(f, *symbols, **flags):
             warnings.warn(filldedent("""
                 \tWarning: assumptions concerning following solution(s)
                 can't be checked:""" + '\n\t' +
-                ', '.join(str(s) for s in got_None)))
+                                     ', '.join(str(s) for s in got_None)))
 
     #
     # done
@@ -983,7 +983,7 @@ def _solve(f, *symbols, **flags):
                 funcs = {b for b in bases if b.is_Function}
 
                 trig = {_ for _ in funcs if
-                    isinstance(_, TrigonometricFunction)}
+                        isinstance(_, TrigonometricFunction)}
                 other = funcs - trig
                 if not other and len(funcs.intersection(trig)) > 1:
                     newf = TR1(f_num).rewrite(tan)
@@ -1075,7 +1075,7 @@ def _solve(f, *symbols, **flags):
                     except NotImplementedError:  # pragma: no cover
                         if not flags.get('incomplete', True):
                                 raise NotImplementedError(
-                                filldedent('''
+                                    filldedent('''
     Neither high-order multivariate polynomials
     nor sorting of EX-domain polynomials is supported.
     If you want to see any results, pass keyword incomplete=True to
@@ -1304,11 +1304,11 @@ def _solve_system(exprs, symbols, **flags):
 
     if checkdens:
         result = [r for r in result
-            if not any(checksol(d, r, **flags) for d in dens)]
+                  if not any(checksol(d, r, **flags) for d in dens)]
 
     if check and not linear:
         result = [r for r in result
-            if not any(checksol(e, r, **flags) is False for e in exprs)]
+                  if not any(checksol(e, r, **flags) is False for e in exprs)]
 
     result = [r for r in result if r]
     if linear and result:
@@ -1416,7 +1416,6 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
                              ''' % (bad, eg)))
         symbols = free.intersection(symbols)
     symbols = symbols.difference(exclude)
-    dfree = d.free_symbols
 
     # derivatives are easy to do but tricky to analyze to see if they are going
     # to disallow a linear solution, so for simplicity we just evaluate the
@@ -1444,7 +1443,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
                     if dens is None:
                         dens = denoms(eq, symbols)
                     if not any(checksol(di, {xi: vi}, minimal=True) is True
-                              for di in dens):
+                               for di in dens):
                         # simplify any trivial integral
                         irep = [(i, i.doit()) for i in vi.atoms(Integral) if
                                 i.function.is_number]
@@ -1621,6 +1620,8 @@ def _tsolve(eq, sym, **flags):
     >>> tsolve(log(x) + 2*x, x)
     [LambertW(2)/2]
     """
+    from .bivariate import bivariate_type, _solve_lambert, _filtered_gens
+
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []
     if eq in flags['tsolve_saw']:
@@ -1657,10 +1658,10 @@ def _tsolve(eq, sym, **flags):
                 # the same place
                 sol_base = _solve(lhs.base, sym, **flags)
                 return list(ordered(set(sol_base) -
-                            set(_solve(lhs.exp, sym, **flags))))
+                                    set(_solve(lhs.exp, sym, **flags))))
             elif (rhs is not S.Zero and
-                        lhs.base.is_positive and
-                        lhs.exp.is_extended_real):
+                  lhs.base.is_positive and
+                  lhs.exp.is_extended_real):
                 return _solve(lhs.exp*log(lhs.base) - log(rhs), sym, **flags)
             elif lhs.base == 0 and rhs == 1:
                 return _solve(lhs.exp, sym, **flags)
@@ -1697,7 +1698,6 @@ def _tsolve(eq, sym, **flags):
                 gisimp = powdenest(expand_power_exp(gi))
                 if gisimp.is_Pow and sym in gisimp.exp.free_symbols:
                     up_or_log.add(gi)
-        down = g.difference(up_or_log)
         eq_down = expand_log(expand_power_exp(eq)).subs(
             dict(zip(up_or_log, [0]*len(up_or_log))))
         eq = expand_power_exp(factor(eq_down, deep=True) + (eq - eq_down))
@@ -1720,7 +1720,7 @@ def _tsolve(eq, sym, **flags):
                         if inversion:
                             sol = _solve(p, u, **flags)
                             return list(ordered({i.subs(u, s)
-                                for i in inversion for s in sol}))
+                                                 for i in inversion for s in sol}))
                     except NotImplementedError:
                         pass
                 else:
@@ -1910,6 +1910,3 @@ def _invert(eq, *symbols, **kwargs):
         if lhs == was:
             break
     return rhs, lhs
-
-
-from .bivariate import bivariate_type, _solve_lambert, _filtered_gens

@@ -1,14 +1,14 @@
 import pytest
 
-from diofant import (Abs, And, binomial, Catalan, cos, Derivative, E, Eq,
-                     exp, EulerGamma, factorial, Function, harmonic, I,
-                     Integral, KroneckerDelta, log, nan, sin, Ne, Or, oo,
-                     pi, Piecewise, Product, product, Rational, S, simplify,
-                     sqrt, Sum, summation, Symbol, symbols, sympify, zeta,
-                     gamma, Le, Mod, Integer)
+from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma,
+                     Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
+                     Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
+                     binomial, cos, exp, factorial, gamma, harmonic, log, nan,
+                     oo, pi, product, simplify, sin, sqrt, summation, symbols,
+                     sympify, zeta)
+from diofant.abc import a, b, c, d, k, m, x, y, z
 from diofant.concrete.summations import telescopic
 
-from diofant.abc import a, b, c, d, k, m, x, y, z
 
 __all__ = ()
 
@@ -184,7 +184,7 @@ def test_karr_proposition_2b():
 
 def test_arithmetic_sums():
     assert summation(1, (n, a, b)) == b - a + 1
-    assert Sum(S.NaN, (n, a, b)) is S.NaN
+    assert Sum(nan, (n, a, b)) is nan
     assert Sum(x, (n, a, a)).doit() == x
     assert Sum(x, (x, a, a)).doit() == a
     assert Sum(x, (n, 1, a)).doit() == a*x
@@ -206,7 +206,7 @@ def test_arithmetic_sums():
         2*d + 2*d**2 + a*d + a*d**2 - d*a**2 - a**2*d**2
     assert summation(cos(n), (n, -2, 1)) == cos(-2) + cos(-1) + cos(0) + cos(1)
     assert summation(cos(n), (n, x, x + 2)) == cos(x) + cos(x + 1) + cos(x + 2)
-    assert isinstance(summation(cos(n), (n, x, x + S.Half)), Sum)
+    assert isinstance(summation(cos(n), (n, x, x + Rational(1, 2))), Sum)
     assert summation(k, (k, 0, oo)) == oo
 
 
@@ -242,8 +242,8 @@ def test_geometric_sums():
 
     # issue sympy/sympy#6802:
     assert summation((-1)**(2*x + 2), (x, 0, n)) == n + 1
-    assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/Integer(3) - Rational(4, 3)
-    assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/Integer(2) + Rational(1, 2)
+    assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/3 - Rational(4, 3)
+    assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/2 + Rational(1, 2)
     assert summation(y**x, (x, a, b)) == \
         Piecewise((-a + b + 1, Eq(y, 1)), ((y**a - y**(b + 1))/(-y + 1), True))
     assert summation((-2)**(y*x + 2), (x, 0, n)) == \
@@ -320,7 +320,7 @@ def test_evalf_fast_series():
         binomial(2*n, n)**3 * (42*n + 5)/2**(12*n + 4), (n, 0, oo)), 100) == pistr
     # Machin's formula for pi
     assert NS(16*Sum((-1)**n/(2*n + 1)/5**(2*n + 1), (n, 0, oo)) -
-        4*Sum((-1)**n/(2*n + 1)/239**(2*n + 1), (n, 0, oo)), 100) == pistr
+              4*Sum((-1)**n/(2*n + 1)/239**(2*n + 1), (n, 0, oo)), 100) == pistr
 
     # Apery's constant
     astr = NS(zeta(3), 100)
@@ -329,19 +329,19 @@ def test_evalf_fast_series():
     assert NS(Sum((-1)**n * P / 24 * (fac(2*n + 1)*fac(2*n)*fac(
         n))**3 / fac(3*n + 2) / fac(4*n + 3)**3, (n, 0, oo)), 100) == astr
     assert NS(Sum((-1)**n * (205*n**2 + 250*n + 77)/64 * fac(n)**10 /
-              fac(2*n + 1)**5, (n, 0, oo)), 100) == astr
+                  fac(2*n + 1)**5, (n, 0, oo)), 100) == astr
 
 
 def test_evalf_fast_series_sympyissue_4021():
     # Catalan's constant
     assert NS(Sum((-1)**(n - 1)*2**(8*n)*(40*n**2 - 24*n + 3)*fac(2*n)**3 *
-        fac(n)**2/n**3/(2*n - 1)/fac(4*n)**2, (n, 1, oo))/64, 100) == \
+                  fac(n)**2/n**3/(2*n - 1)/fac(4*n)**2, (n, 1, oo))/64, 100) == \
         NS(Catalan, 100)
     astr = NS(zeta(3), 100)
     assert NS(5*Sum(
         (-1)**(n - 1)*fac(n)**2 / n**3 / fac(2*n), (n, 1, oo))/2, 100) == astr
     assert NS(Sum((-1)**(n - 1)*(56*n**2 - 32*n + 5) / (2*n - 1)**2 * fac(n - 1)
-              ** 3 / fac(3*n), (n, 1, oo))/4, 100) == astr
+                  ** 3 / fac(3*n), (n, 1, oo))/4, 100) == astr
 
 
 def test_evalf_slow_series():
@@ -404,8 +404,8 @@ def test_evalf_sympyissue_6372():
 
 
 def test_simple_products():
-    assert Product(S.NaN, (x, 1, 3)) is S.NaN
-    assert product(S.NaN, (x, 1, 3)) is S.NaN
+    assert Product(nan, (x, 1, 3)) is nan
+    assert product(nan, (x, 1, 3)) is nan
     assert Product(x, (n, a, a)).doit() == x
     assert Product(x, (x, a, a)).doit() == a
     assert Product(x, (y, 1, a)).doit() == x**a
@@ -437,7 +437,7 @@ def test_simple_products():
         == 3**(2*(1 - a + b) + b/2 + (b**2)/2 + a/2 - (a**2)/2)
     assert product(cos(n), (n, 3, 5)) == cos(3)*cos(4)*cos(5)
     assert product(cos(n), (n, x, x + 2)) == cos(x)*cos(x + 1)*cos(x + 2)
-    assert isinstance(product(cos(n), (n, x, x + S.Half)), Product)
+    assert isinstance(product(cos(n), (n, x, x + Rational(1, 2))), Product)
     # If Product managed to evaluate this one, it most likely got it wrong!
     assert isinstance(Product(n**n, (n, 1, b)), Product)
 
@@ -591,11 +591,10 @@ def test_eval_derivative():
 
 
 def test_hypersum():
-    from diofant import sin
     assert simplify(summation(x**n/fac(n), (n, 1, oo))) == -1 + exp(x)
     assert summation((-1)**n * x**(2*n) / fac(2*n), (n, 0, oo)) == cos(x)
     assert simplify(summation((-1)**n*x**(2*n + 1) /
-        factorial(2*n + 1), (n, 3, oo))) == -x + sin(x) + x**3/6 - x**5/120
+                              factorial(2*n + 1), (n, 3, oo))) == -x + sin(x) + x**3/6 - x**5/120
 
     assert summation(1/(n + 2)**3, (n, 1, oo)) == -Rational(9, 8) + zeta(3)
     assert summation(1/n**4, (n, 1, oo)) == pi**4/90
@@ -697,7 +696,7 @@ def test_simplify():
     y, t, v = symbols('y, t, v')
 
     assert simplify(Sum(x*y, (x, n, m), (y, a, k)) +
-        Sum(y, (x, n, m), (y, a, k))) == Sum(x*y + y, (x, n, m), (y, a, k))
+                    Sum(y, (x, n, m), (y, a, k))) == Sum(x*y + y, (x, n, m), (y, a, k))
     assert simplify(Sum(x, (x, n, m)) + Sum(x, (x, m + 1, a))) == \
         Sum(x, (x, n, a))
     assert simplify(Sum(x, (x, k + 1, a)) + Sum(x, (x, n, k))) == \
@@ -705,18 +704,18 @@ def test_simplify():
     assert simplify(Sum(x, (x, k + 1, a)) + Sum(x + 1, (x, n, k))) == \
         Sum(x, (x, k + 1, a)) + Sum(x + 1, (x, n, k))
     assert simplify(Sum(x, (x, 0, 3)) * 3 + 3 * Sum(x, (x, 4, 6)) +
-        4 * Sum(z, (z, 0, 1))) == Sum(4*z, (z, 0, 1)) + Sum(3*x, (x, 0, 6))
+                    4 * Sum(z, (z, 0, 1))) == Sum(4*z, (z, 0, 1)) + Sum(3*x, (x, 0, 6))
     assert simplify(3*Sum(x**2, (x, a, b)) + Sum(x, (x, a, b))) == \
         Sum(3*x**2 + x, (x, a, b))
     assert simplify(Sum(x**3, (x, n, k)) * 3 + 3 * Sum(x, (x, n, k)) +
-        4 * y * Sum(z, (z, n, k))) + 1 == \
-            y*Sum(4*z, (z, n, k)) + Sum(3*x**3 + 3*x, (x, n, k)) + 1
+                    4 * y * Sum(z, (z, n, k))) + 1 == \
+        y*Sum(4*z, (z, n, k)) + Sum(3*x**3 + 3*x, (x, n, k)) + 1
     assert simplify(Sum(x, (x, a, b)) + 1 + Sum(x, (x, b + 1, c))) == \
         1 + Sum(x, (x, a, c))
     assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) +
-        Sum(x, (t, b+1, c))) == Sum(x + y, (t, a, b)) + Sum(x, (t, b+1, c))
+                    Sum(x, (t, b+1, c))) == Sum(x + y, (t, a, b)) + Sum(x, (t, b+1, c))
     assert simplify(Sum(x, (t, a, b)) + Sum(x, (t, b+1, c)) +
-        Sum(y, (t, a, b))) == Sum(x + y, (t, a, b)) + Sum(x, (t, b+1, c))
+                    Sum(y, (t, a, b))) == Sum(x + y, (t, a, b)) + Sum(x, (t, b+1, c))
     assert simplify(Sum(x, (t, a, b)) + 2 * Sum(x, (t, b+1, c))) == \
         simplify(Sum(x, (t, a, b)) + Sum(x, (t, b+1, c)) + Sum(x, (t, b+1, c)))
     assert simplify(Sum(x, (x, a, b))*Sum(x**2, (x, a, b))) == \
@@ -724,7 +723,7 @@ def test_simplify():
     assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) + Sum(z, (t, a, b))) \
         == Sum(x + y + z, (t, a, b))          # issue sympy/sympy#8596
     assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) + Sum(z, (t, a, b)) +
-        Sum(v, (t, a, b))) == Sum(x + y + z + v, (t, a, b))  # issue sympy/sympy#8596
+                    Sum(v, (t, a, b))) == Sum(x + y + z + v, (t, a, b))  # issue sympy/sympy#8596
 
 
 def test_change_index():
@@ -768,17 +767,17 @@ def test_reorder():
 def test_reverse_order():
     assert Sum(x, (x, 0, 3)).reverse_order(0) == Sum(-x, (x, 4, -1))
     assert Sum(x*y, (x, 1, 5), (y, 0, 6)).reverse_order(0, 1) == \
-           Sum(x*y, (x, 6, 0), (y, 7, -1))
+        Sum(x*y, (x, 6, 0), (y, 7, -1))
     assert Sum(x, (x, 1, 2)).reverse_order(0) == Sum(-x, (x, 3, 0))
     assert Sum(x, (x, 1, 3)).reverse_order(0) == Sum(-x, (x, 4, 0))
     assert Sum(x, (x, 1, a)).reverse_order(0) == Sum(-x, (x, a + 1, 0))
     assert Sum(x, (x, a, 5)).reverse_order(0) == Sum(-x, (x, 6, a - 1))
     assert Sum(x, (x, a + 1, a + 5)).reverse_order(0) == \
-                         Sum(-x, (x, a + 6, a))
+        Sum(-x, (x, a + 6, a))
     assert Sum(x, (x, a + 1, a + 2)).reverse_order(0) == \
-           Sum(-x, (x, a + 3, a))
+        Sum(-x, (x, a + 3, a))
     assert Sum(x, (x, a + 1, a + 1)).reverse_order(0) == \
-           Sum(-x, (x, a + 2, a))
+        Sum(-x, (x, a + 2, a))
     assert Sum(x, (x, a, b)).reverse_order(0) == Sum(-x, (x, b + 1, a - 1))
     assert Sum(x, (x, a, b)).reverse_order(x) == Sum(-x, (x, b + 1, a - 1))
     assert Sum(x*y, (x, a, b), (y, 2, 5)).reverse_order(x, 1) == \
@@ -865,7 +864,7 @@ def test_sympyissue_2787():
     assert res == Piecewise(
         (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/Abs(p - 1) <= 1)),
         (Sum(k*p**k*(-p + 1)**(-k)*(-p + 1)**n*binomial(n, k), (k, 0, n)),
-        True))
+         True))
 
 
 def test_sympyissue_4668():

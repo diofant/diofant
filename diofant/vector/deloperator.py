@@ -1,7 +1,7 @@
-from ..core import Basic, Integer, Derivative
-from .vector import Vector
-from .functions import express
+from ..core import Basic, Derivative, Integer
 from .coordsysrect import CoordSysCartesian
+from .functions import express
+from .vector import Vector
 
 
 class Del(Basic):

@@ -1,15 +1,19 @@
 """Most of these tests come from the examples in Bronstein's book."""
 
-from diofant import Poly, Matrix, symbols, Rational
+from diofant import Matrix, Poly, Rational, symbols
+from diofant.abc import n, t, x
+from diofant.integrals.prde import (constant_system, is_deriv_k,
+                                    is_log_deriv_k_t_radical,
+                                    is_log_deriv_k_t_radical_in_field,
+                                    limited_integrate,
+                                    limited_integrate_reduce,
+                                    parametric_log_deriv_heu,
+                                    prde_linear_constraints,
+                                    prde_no_cancel_b_large,
+                                    prde_no_cancel_b_small, prde_normal_denom,
+                                    prde_spde, prde_special_denom)
 from diofant.integrals.risch import DifferentialExtension
-from diofant.integrals.prde import (
-    prde_normal_denom, prde_special_denom,
-    prde_linear_constraints, constant_system, prde_spde, prde_no_cancel_b_large,
-    prde_no_cancel_b_small, limited_integrate_reduce, limited_integrate,
-    is_deriv_k, is_log_deriv_k_t_radical, parametric_log_deriv_heu,
-    is_log_deriv_k_t_radical_in_field)
 
-from diofant.abc import x, t, n
 
 __all__ = ()
 
@@ -23,14 +27,14 @@ def test_prde_normal_denom():
     G = [(Poly(t, t), Poly(1 + t**2, t)), (Poly(1, t), Poly(x + x*t**2, t))]
     assert prde_normal_denom(fa, fd, G, DE) == \
         (Poly(x, t), (Poly(1, t), Poly(1, t)), [(Poly(x*t, t),
-         Poly(t**2 + 1, t)), (Poly(1, t), Poly(t**2 + 1, t))], Poly(1, t))
+                                                 Poly(t**2 + 1, t)), (Poly(1, t), Poly(t**2 + 1, t))], Poly(1, t))
     G = [(Poly(t, t), Poly(t**2 + 2*t + 1, t)), (Poly(x*t, t),
-        Poly(t**2 + 2*t + 1, t)), (Poly(x*t**2, t), Poly(t**2 + 2*t + 1, t))]
+                                                 Poly(t**2 + 2*t + 1, t)), (Poly(x*t**2, t), Poly(t**2 + 2*t + 1, t))]
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t, t)]})
     assert prde_normal_denom(Poly(x, t), Poly(1, t), G, DE) == \
         (Poly(t + 1, t), (Poly((-1 + x)*t + x, t), Poly(1, t)), [(Poly(t, t),
-        Poly(1, t)), (Poly(x*t, t), Poly(1, t)), (Poly(x*t**2, t),
-        Poly(1, t))], Poly(t + 1, t))
+                                                                  Poly(1, t)), (Poly(x*t, t), Poly(1, t)), (Poly(x*t**2, t),
+                                                                                                            Poly(1, t))], Poly(t + 1, t))
 
 
 def test_prde_special_denom():
@@ -41,31 +45,31 @@ def test_prde_special_denom():
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t, t)]})
     assert prde_special_denom(a, ba, bd, G, DE) == \
         (Poly(t + 1, t), Poly(t**2, t), [(Poly(t, t), Poly(1, t)),
-        (Poly(t**2, t), Poly(1, t)), (Poly(t**3, t), Poly(1, t))], Poly(1, t))
+                                         (Poly(t**2, t), Poly(1, t)), (Poly(t**3, t), Poly(1, t))], Poly(1, t))
     G = [(Poly(t, t), Poly(1, t)), (Poly(1, t), Poly(t, t))]
     assert prde_special_denom(Poly(1, t), Poly(t**2, t), Poly(1, t), G, DE) == \
         (Poly(1, t), Poly(t**2 - 1, t), [(Poly(t**2, t), Poly(1, t)),
-        (Poly(1, t), Poly(1, t))], Poly(t, t))
+                                         (Poly(1, t), Poly(1, t))], Poly(t, t))
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(-2*x*t0, t0)]})
     DE.decrement_level()
     G = [(Poly(t, t), Poly(t**2, t)), (Poly(2*t, t), Poly(t, t))]
     assert prde_special_denom(Poly(5*x*t + 1, t), Poly(t**2 + 2*x**3*t, t), Poly(t**3 + 2, t), G, DE) == \
         (Poly(5*x*t + 1, t), Poly(0, t), [(Poly(t, t), Poly(t**2, t)),
-        (Poly(2*t, t), Poly(t, t))], Poly(1, x))
+                                          (Poly(2*t, t), Poly(t, t))], Poly(1, x))
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly((t**2 + 1)*2*x, t)]})
     G = [(Poly(t + x, t), Poly(t*x, t)), (Poly(2*t, t), Poly(x**2, x))]
     assert prde_special_denom(Poly(5*x*t + 1, t), Poly(t**2 + 2*x**3*t, t), Poly(t**3, t), G, DE) == \
         (Poly(5*x*t + 1, t), Poly(0, t), [(Poly(t + x, t), Poly(x*t, t)),
-        (Poly(2*t, t, x), Poly(x**2, t, x))], Poly(1, t))
+                                          (Poly(2*t, t, x), Poly(x**2, t, x))], Poly(1, t))
     assert prde_special_denom(Poly(t + 1, t), Poly(t**2, t), Poly(t**3, t), G, DE) == \
         (Poly(t + 1, t), Poly(0, t), [(Poly(t + x, t), Poly(x*t, t)), (Poly(2*t, t, x),
-        Poly(x**2, t, x))], Poly(1, t))
+                                                                       Poly(x**2, t, x))], Poly(1, t))
 
 
 def test_prde_linear_constraints():
     DE = DifferentialExtension(extension={'D': [Poly(1, x)]})
     G = [(Poly(2*x**3 + 3*x + 1, x), Poly(x**2 - 1, x)), (Poly(1, x), Poly(x - 1, x)),
-        (Poly(1, x), Poly(x + 1, x))]
+         (Poly(1, x), Poly(x + 1, x))]
     assert prde_linear_constraints(Poly(1, x), Poly(0, x), G, DE) == \
         ((Poly(2*x, x), Poly(0, x), Poly(0, x)), Matrix([[1, 1, -1], [5, 1, 1]]))
     G = [(Poly(t, t), Poly(1, t)), (Poly(t**2, t), Poly(1, t)), (Poly(t**3, t), Poly(1, t))]
@@ -97,7 +101,7 @@ def test_prde_spde():
     # TODO: when bound_degree() can handle this, test degree bound from that too
     assert prde_spde(Poly(t, t), Poly(-1/x, t), D, n, DE) == \
         (Poly(t, t), Poly(0, t), [Poly(2*x, t), Poly(-x, t)],
-        [Poly(-x**2, t), Poly(0, t)], n - 1)
+         [Poly(-x**2, t), Poly(0, t)], n - 1)
 
 
 def test_prde_no_cancel():
@@ -118,17 +122,17 @@ def test_prde_no_cancel():
     G = [Poly(t**6, t), Poly(x*t**5, t), Poly(t**3, t), Poly(x*t**2, t), Poly(1 + x, t)]
     assert prde_no_cancel_b_small(Poly(x*t, t), G, 4, DE) == \
         ([Poly(t**4/4 - x/12*t**3 + x**2/24*t**2 + (-Rational(11, 12) - x**3/24)*t + x/24, t),
-        Poly(x/3*t**3 - x**2/6*t**2 + (-Rational(1, 3) + x**3/6)*t - x/6, t), Poly(t, t),
-        Poly(0, t), Poly(0, t)], Matrix([[1, 0,      -1, 0, 0,  0,  0,  0,  0,  0],
-                                         [0, 1, -Rational(1, 4), 0, 0,  0,  0,  0,  0,  0],
-                                         [0, 0,       0, 0, 0,  0,  0,  0,  0,  0],
-                                         [0, 0,       0, 1, 0,  0,  0,  0,  0,  0],
-                                         [0, 0,       0, 0, 1,  0,  0,  0,  0,  0],
-                                         [1, 0,       0, 0, 0, -1,  0,  0,  0,  0],
-                                         [0, 1,       0, 0, 0,  0, -1,  0,  0,  0],
-                                         [0, 0,       1, 0, 0,  0,  0, -1,  0,  0],
-                                         [0, 0,       0, 1, 0,  0,  0,  0, -1,  0],
-                                         [0, 0,       0, 0, 1,  0,  0,  0,  0, -1]]))
+          Poly(x/3*t**3 - x**2/6*t**2 + (-Rational(1, 3) + x**3/6)*t - x/6, t), Poly(t, t),
+          Poly(0, t), Poly(0, t)], Matrix([[1, 0,      -1, 0, 0,  0,  0,  0,  0,  0],
+                                           [0, 1, -Rational(1, 4), 0, 0,  0,  0,  0,  0,  0],
+                                           [0, 0,       0, 0, 0,  0,  0,  0,  0,  0],
+                                           [0, 0,       0, 1, 0,  0,  0,  0,  0,  0],
+                                           [0, 0,       0, 0, 1,  0,  0,  0,  0,  0],
+                                           [1, 0,       0, 0, 0, -1,  0,  0,  0,  0],
+                                           [0, 1,       0, 0, 0,  0, -1,  0,  0,  0],
+                                           [0, 0,       1, 0, 0,  0,  0, -1,  0,  0],
+                                           [0, 0,       0, 1, 0,  0,  0,  0, -1,  0],
+                                           [0, 0,       0, 0, 1,  0,  0,  0,  0, -1]]))
 
     # TODO: Add test for deg(b) <= 0 with b small
 
@@ -136,16 +140,16 @@ def test_prde_no_cancel():
 def test_limited_integrate_reduce():
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1/x, t)]})
     assert limited_integrate_reduce(Poly(x, t), Poly(t**2, t), [(Poly(x, t),
-    Poly(t, t))], DE) == \
+                                                                 Poly(t, t))], DE) == \
         (Poly(t, t), Poly(-1/x, t), Poly(t, t), 1, (Poly(x, t), Poly(1, t)),
-        [(Poly(-x*t, t), Poly(1, t))])
+         [(Poly(-x*t, t), Poly(1, t))])
 
 
 def test_limited_integrate():
     DE = DifferentialExtension(extension={'D': [Poly(1, x)]})
     G = [(Poly(x, x), Poly(x + 1, x))]
     assert limited_integrate(Poly(-(1 + x + 5*x**2 - 3*x**3), x),
-    Poly(1 - x - x**2 + x**3, x), G, DE) == \
+                             Poly(1 - x - x**2 + x**3, x), G, DE) == \
         ((Poly(x**2 - x + 2, x), Poly(x - 1, x)), [2])
     G = [(Poly(1, x), Poly(x, x))]
     assert limited_integrate(Poly(5*x**2, x), Poly(3, x), G, DE) == \
@@ -154,40 +158,40 @@ def test_limited_integrate():
 
 def test_is_log_deriv_k_t_radical():
     DE = DifferentialExtension(extension={'D': [Poly(1, x)], 'E_K': [], 'L_K': [],
-        'E_args': [], 'L_args': []})
+                                          'E_args': [], 'L_args': []})
     assert is_log_deriv_k_t_radical(Poly(2*x, x), Poly(1, x), DE) is None
 
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(2*t1, t1), Poly(1/x, t2)],
-        'L_K': [2], 'E_K': [1], 'L_args': [x], 'E_args': [2*x]})
+                                          'L_K': [2], 'E_K': [1], 'L_args': [x], 'E_args': [2*x]})
     assert is_log_deriv_k_t_radical(Poly(x + t2/2, t2), Poly(1, t2), DE) == \
         ([(t1, 1), (x, 1)], t1*x, 2, 0)
     # TODO: Add more tests
 
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t0, t0), Poly(1/x, t)],
-        'L_K': [2], 'E_K': [1], 'L_args': [x], 'E_args': [x]})
+                                          'L_K': [2], 'E_K': [1], 'L_args': [x], 'E_args': [x]})
     assert is_log_deriv_k_t_radical(Poly(x + t/2 + 3, t), Poly(1, t), DE) == \
         ([(t0, 2), (x, 1)], x*t0**2, 2, 3)
 
 
 def test_is_deriv_k():
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1/x, t1), Poly(1/(x + 1), t2)],
-        'L_K': [1, 2], 'E_K': [], 'L_args': [x, x + 1], 'E_args': []})
+                                          'L_K': [1, 2], 'E_K': [], 'L_args': [x, x + 1], 'E_args': []})
     assert is_deriv_k(Poly(2*x**2 + 2*x, t2), Poly(1, t2), DE) == \
         ([(t1, 1), (t2, 1)], t1 + t2, 2)
 
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1/x, t1), Poly(t2, t2)],
-        'L_K': [1], 'E_K': [2], 'L_args': [x], 'E_args': [x]})
+                                          'L_K': [1], 'E_K': [2], 'L_args': [x], 'E_args': [x]})
     assert is_deriv_k(Poly(x**2*t2**3, t2), Poly(1, t2), DE) == \
         ([(x, 3), (t1, 2)], 2*t1 + 3*x, 1)
     # TODO: Add more tests, including ones with exponentials
 
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(2/x, t1)],
-        'L_K': [1], 'E_K': [], 'L_args': [x**2], 'E_args': []})
+                                          'L_K': [1], 'E_K': [], 'L_args': [x**2], 'E_args': []})
     assert is_deriv_k(Poly(x, t1), Poly(1, t1), DE) == \
         ([(t1, Rational(1, 2))], t1/2, 1)
 
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(2/(1 + x), t0)],
-        'L_K': [1], 'E_K': [], 'L_args': [x**2 + 2*x + 1], 'E_args': []})
+                                          'L_K': [1], 'E_K': [], 'L_args': [x**2 + 2*x + 1], 'E_args': []})
     assert is_deriv_k(Poly(1 + x, t0), Poly(1, t0), DE) == \
         ([(t0, Rational(1, 2))], t0/2, 1)
 
@@ -203,7 +207,7 @@ def test_is_log_deriv_k_t_radical_in_field():
 
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(-t/x**2, t)]})
     assert is_log_deriv_k_t_radical_in_field(Poly(-(1 + 2*t), t),
-    Poly(2*x**2 + 2*x**2*t, t), DE) == \
+                                             Poly(2*x**2 + 2*x**2*t, t), DE) == \
         (2, t + t**2)
     assert is_log_deriv_k_t_radical_in_field(Poly(-1, t), Poly(x**2, t), DE) == \
         (1, t)
@@ -214,5 +218,5 @@ def test_is_log_deriv_k_t_radical_in_field():
 def test_parametric_log_deriv():
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1/x, t)]})
     assert parametric_log_deriv_heu(Poly(5*t**2 + t - 6, t), Poly(2*x*t**2, t),
-    Poly(-1, t), Poly(x*t**2, t), DE) == \
+                                    Poly(-1, t), Poly(x*t**2, t), DE) == \
         (2, 6, t*x**5)

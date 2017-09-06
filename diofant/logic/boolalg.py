@@ -5,15 +5,14 @@ Boolean algebra module for Diofant.
 from collections import defaultdict
 from itertools import combinations, product
 
-from ..core import Atom
+from ..core import Atom, cacheit
+from ..core.compatibility import ordered
 from ..core.expr import Expr
-from ..core import cacheit
+from ..core.function import Application, Derivative
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
-from ..core.function import Application, Derivative
-from ..core.compatibility import ordered
-from ..core.sympify import converter, _sympify, sympify
-from ..core.singleton import Singleton, S
+from ..core.singleton import S, Singleton
+from ..core.sympify import converter, sympify
 
 
 class Boolean(Expr):
@@ -76,7 +75,7 @@ class Boolean(Expr):
         if self.has(Relational) or other.has(Relational):
             raise NotImplementedError('handling of relationals')
         return self.atoms() == other.atoms() and \
-                not satisfiable(Not(Equivalent(self, other)))
+            not satisfiable(Not(Equivalent(self, other)))
 
 
 class BooleanAtom(Atom, Boolean):
@@ -821,7 +820,7 @@ class Equivalent(BooleanFunction):
 
     def __new__(cls, *args, **options):
         from ..core.relational import Relational
-        args = [_sympify(arg) for arg in args]
+        args = [sympify(arg, strict=True) for arg in args]
 
         argset = set(args)
         for x in args:
@@ -1006,10 +1005,10 @@ def _distribute(info):
             return info[0]
         rest = info[2](*[a for a in info[0].args if a is not conj])
         return info[1](*list(map(_distribute,
-            [(info[2](c, rest), info[1], info[2]) for c in conj.args])))
+                                 [(info[2](c, rest), info[1], info[2]) for c in conj.args])))
     elif info[0].func is info[1]:
         return info[1](*list(map(_distribute,
-            [(x, info[1], info[2]) for x in info[0].args])))
+                                 [(x, info[1], info[2]) for x in info[0].args])))
     else:
         return info[0]
 

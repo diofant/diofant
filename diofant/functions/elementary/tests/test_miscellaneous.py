@@ -1,15 +1,17 @@
 import pytest
 
-from diofant.core import Function, I, oo, Rational, S, Symbol, symbols, Eq
-from diofant.logic import true, false
-from diofant.functions import (sqrt, cbrt, root, Min, Max, real_root,
-                               Piecewise, cos, sin, floor, ceiling, Heaviside)
+from diofant.abc import x, y, z
+from diofant.core import Eq, Function, I, Rational, Symbol, oo, symbols, zoo
+from diofant.core.function import ArgumentIndexError
+from diofant.functions import (Heaviside, Max, Min, Piecewise, cbrt, ceiling,
+                               cos, floor, real_root, root, sin, sqrt)
+from diofant.logic import true
+
 
 __all__ = ()
 
 
 def test_Min():
-    from diofant.abc import x, y, z
     n = Symbol('n', negative=True)
     n_ = Symbol('n_', negative=True)
     nn = Symbol('nn', nonnegative=True)
@@ -93,12 +95,14 @@ def test_Min():
     pytest.raises(ValueError, lambda: Min(cos(x), sin(x)).subs(x, I))
     pytest.raises(ValueError, lambda: Min(I))
     pytest.raises(ValueError, lambda: Min(I, x))
-    pytest.raises(ValueError, lambda: Min(S.ComplexInfinity, x))
+    pytest.raises(ValueError, lambda: Min(zoo, x))
 
     assert Min(1, x).diff(x) == Heaviside(1 - x)
     assert Min(x, 1).diff(x) == Heaviside(1 - x)
     assert Min(0, -x, 1 - 2*x).diff(x) == -Heaviside(x + Min(0, -2*x + 1)) \
         - 2*Heaviside(2*x + Min(0, -x) - 1)
+
+    pytest.raises(ArgumentIndexError, lambda: Min(1, x).fdiff(3))
 
     a, b = Symbol('a', extended_real=True), Symbol('b', extended_real=True)
     # a and b are both real, Min(a, b) should be real
@@ -115,15 +119,9 @@ def test_Min():
 
 
 def test_Max():
-    from diofant.abc import x, y, z
     n = Symbol('n', negative=True)
     n_ = Symbol('n_', negative=True)
-    nn = Symbol('nn', nonnegative=True)
-    nn_ = Symbol('nn_', nonnegative=True)
     p = Symbol('p', positive=True)
-    p_ = Symbol('p_', positive=True)
-    np = Symbol('np', nonpositive=True)
-    np_ = Symbol('np_', nonpositive=True)
     r = Symbol('r', extended_real=True)
 
     assert Max(5, 4) == 5
@@ -137,7 +135,7 @@ def test_Max():
     assert Max(x, Min(y, oo)) == Max(x, y)
     assert Max(n, -oo, n_, p, 2) == Max(p, 2)
     assert Max(n, -oo, n_, p) == p
-    assert Max(2, x, p, n, -oo, S.NegativeInfinity, n_, p, 2) == Max(2, x, p)
+    assert Max(2, x, p, n, -oo, -oo, n_, p, 2) == Max(2, x, p)
     assert Max(0, x, 1, y) == Max(1, x, y)
     assert Max(r, r + 1, r - 1) == 1 + r
     assert Max(1000, 100, -100, x, p, n) == Max(p, x, 1000)
@@ -147,7 +145,7 @@ def test_Max():
     pytest.raises(ValueError, lambda: Max(cos(x), sin(x)).subs(x, I))
     pytest.raises(ValueError, lambda: Max(I))
     pytest.raises(ValueError, lambda: Max(I, x))
-    pytest.raises(ValueError, lambda: Max(S.ComplexInfinity, 1))
+    pytest.raises(ValueError, lambda: Max(zoo, 1))
     # interesting:
     # Max(n, -oo, n_,  p, 2) == Max(p, 2)
     # True
@@ -159,6 +157,8 @@ def test_Max():
     assert Max(x**2, 1 + x, 1).diff(x) == \
         2*x*Heaviside(x**2 - Max(1, x + 1)) \
         + Heaviside(x - Max(1, x**2) + 1)
+
+    pytest.raises(ArgumentIndexError, lambda: Max(1, x).fdiff(3))
 
     a, b = Symbol('a', extended_real=True), Symbol('b', extended_real=True)
     # a and b are both real, Max(a, b) should be real
@@ -181,7 +181,6 @@ def test_sympyissue_8413():
 
 
 def test_root():
-    from diofant.abc import x
     n = Symbol('n', integer=True)
     k = Symbol('k', integer=True)
 
@@ -232,7 +231,6 @@ def test_real_root():
 
 
 def test_rewrite_MaxMin_as_Heaviside():
-    from diofant.abc import x
     assert Max(0, x).rewrite(Heaviside) == x*Heaviside(x)
     assert Max(3, x).rewrite(Heaviside) == x*Heaviside(x - 3) + \
         3*Heaviside(-x + 3)
@@ -252,5 +250,5 @@ def test_rewrite_MaxMin_as_Heaviside():
 def test_rewrite_as_Piecewise():
     x, y = symbols('x, y', real=True)
     assert (Max(x, y).rewrite(Piecewise) ==
-            x*Piecewise((1, x - y > 0), (S.Half, Eq(x - y, 0)), (0, true)) +
-            y*Piecewise((1, -x + y > 0), (S.Half, Eq(-x + y, 0)), (0, true)))
+            x*Piecewise((1, x - y > 0), (Rational(1, 2), Eq(x - y, 0)), (0, true)) +
+            y*Piecewise((1, -x + y > 0), (Rational(1, 2), Eq(-x + y, 0)), (0, true)))

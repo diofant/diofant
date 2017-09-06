@@ -1,39 +1,35 @@
 import pytest
 
-from diofant.polys.galoistools import (
-    gf_crt, gf_crt1, gf_crt2, gf_int,
-    gf_degree, gf_strip, gf_trunc, gf_normal,
-    gf_from_dict, gf_to_dict,
-    gf_from_int_poly, gf_to_int_poly,
-    gf_neg, gf_add_ground, gf_sub_ground, gf_mul_ground,
-    gf_add, gf_sub, gf_add_mul, gf_sub_mul, gf_mul, gf_sqr,
-    gf_div, gf_rem, gf_quo, gf_exquo,
-    gf_lshift, gf_rshift, gf_expand,
-    gf_pow, gf_pow_mod,
-    gf_gcdex, gf_gcd, gf_lcm, gf_cofactors,
-    gf_LC, gf_TC, gf_monic,
-    gf_eval, gf_multi_eval,
-    gf_compose, gf_compose_mod,
-    gf_trace_map,
-    gf_diff,
-    gf_irreducible, gf_irreducible_p,
-    gf_irred_p_ben_or, gf_irred_p_rabin,
-    gf_sqf_list, gf_sqf_part, gf_sqf_p,
-    gf_Qmatrix, gf_Qbasis,
-    gf_ddf_zassenhaus, gf_ddf_shoup,
-    gf_edf_zassenhaus, gf_edf_shoup,
-    gf_berlekamp,
-    gf_factor_sqf, gf_factor,
-    gf_value, linear_congruence, csolve_prime, gf_csolve,
-    gf_frobenius_map, gf_frobenius_monomial_base)
-
-from diofant.polys.polyerrors import ExactQuotientFailed
-
+from diofant import nextprime, pi
+from diofant.domains import FF, ZZ
 from diofant.polys import polyconfig as config
-
-from diofant.domains import ZZ, FF
+from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
+                                       gf_add_mul, gf_berlekamp, gf_cofactors,
+                                       gf_compose, gf_compose_mod, gf_crt,
+                                       gf_crt1, gf_crt2, gf_csolve,
+                                       gf_ddf_shoup, gf_ddf_zassenhaus,
+                                       gf_degree, gf_diff, gf_div,
+                                       gf_edf_shoup, gf_edf_zassenhaus,
+                                       gf_eval, gf_expand, gf_exquo, gf_factor,
+                                       gf_factor_sqf, gf_frobenius_map,
+                                       gf_frobenius_monomial_base,
+                                       gf_from_dict, gf_from_int_poly, gf_gcd,
+                                       gf_gcdex, gf_int, gf_irred_p_ben_or,
+                                       gf_irred_p_rabin, gf_irreducible,
+                                       gf_irreducible_p, gf_LC, gf_lcm,
+                                       gf_lshift, gf_monic, gf_mul,
+                                       gf_mul_ground, gf_multi_eval, gf_neg,
+                                       gf_normal, gf_pow, gf_pow_mod,
+                                       gf_Qbasis, gf_Qmatrix, gf_quo, gf_rem,
+                                       gf_rshift, gf_sqf_list, gf_sqf_p,
+                                       gf_sqf_part, gf_sqr, gf_strip, gf_sub,
+                                       gf_sub_ground, gf_sub_mul, gf_TC,
+                                       gf_to_dict, gf_to_int_poly,
+                                       gf_trace_map, gf_trunc, gf_value,
+                                       linear_congruence)
+from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
-from diofant import pi, nextprime
+
 
 __all__ = ()
 
@@ -211,12 +207,12 @@ def test_gf_arith():
     assert gf_mul([5], [7], 11, ZZ) == [2]
 
     assert gf_mul([3, 0, 0, 6, 1, 2], [4, 0, 1, 0], 11, ZZ) == [1, 0,
-                  3, 2, 4, 3, 1, 2, 0]
+                                                                3, 2, 4, 3, 1, 2, 0]
     assert gf_mul([4, 0, 1, 0], [3, 0, 0, 6, 1, 2], 11, ZZ) == [1, 0,
-                  3, 2, 4, 3, 1, 2, 0]
+                                                                3, 2, 4, 3, 1, 2, 0]
 
     assert gf_mul([2, 0, 0, 1, 7], [2, 0, 0, 1, 7], 11, ZZ) == [4, 0,
-                  0, 4, 6, 0, 1, 3, 5]
+                                                                0, 4, 6, 0, 1, 3, 5]
 
     assert gf_sqr([], 11, ZZ) == []
     assert gf_sqr([2], 11, ZZ) == [4]
@@ -297,12 +293,12 @@ def test_gf_powering():
     assert gf_pow([1, 0, 0, 1, 8], 45, 11, ZZ) == \
         [ 1, 0, 0,  1,  8, 0, 0, 0, 0, 0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0, 0, 0,
           0, 0, 0,  0,  0, 0, 0, 0, 0, 0, 0,  4, 0, 0,  4, 10, 0, 0, 0, 0, 0, 0,
-         10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0, 0, 0,
+          10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0, 0, 0,
           6, 0, 0,  6,  4, 0, 0, 0, 0, 0, 0,  8, 0, 0,  8,  9, 0, 0, 0, 0, 0, 0,
-         10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  4, 0, 0,  4, 10, 0, 0, 0, 0, 0, 0,
+          10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  4, 0, 0,  4, 10, 0, 0, 0, 0, 0, 0,
           8, 0, 0,  8,  9, 0, 0, 0, 0, 0, 0,  9, 0, 0,  9,  6, 0, 0, 0, 0, 0, 0,
           3, 0, 0,  3,  2, 0, 0, 0, 0, 0, 0, 10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,
-         10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  2, 0, 0,  2,  5, 0, 0, 0, 0, 0, 0,
+          10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  2, 0, 0,  2,  5, 0, 0, 0, 0, 0, 0,
           4, 0, 0,  4, 10]
 
     assert gf_pow_mod(ZZ.map([1, 0, 0, 1, 8]), 0, ZZ.map([2, 0, 7]), 11, ZZ) == [1]
@@ -525,7 +521,6 @@ def test_gf_frobenius_map():
     f = ZZ.map([2, 0, 1, 0, 2, 2, 0, 2, 2, 2])
     g = ZZ.map([1, 1, 0, 2, 0, 1, 0, 2, 0, 1])
     p = 3
-    n = 4
     b = gf_frobenius_monomial_base(g, p, ZZ)
     h = gf_frobenius_map(f, g, b, p, ZZ)
     h1 = gf_pow_mod(f, p, g, p, ZZ)
@@ -555,13 +550,13 @@ def test_gf_berlekamp():
     f = ZZ.map([1, 0, 1, 0, 10, 10, 8, 2, 8])
 
     Q = ZZ.map([[1, 0, 0, 0, 0, 0, 0, 0],
-         [2, 1, 7, 11, 10, 12, 5, 11],
-        [3, 6, 4, 3, 0, 4, 7, 2],
-        [4, 3, 6, 5, 1, 6, 2, 3],
-        [2, 11, 8, 8, 3, 1, 3, 11],
-        [6, 11, 8, 6, 2, 7, 10, 9],
-        [5, 11, 7, 10, 0, 11, 7, 12],
-        [3, 3, 12, 5, 0, 11, 9, 12]])
+                [2, 1, 7, 11, 10, 12, 5, 11],
+                [3, 6, 4, 3, 0, 4, 7, 2],
+                [4, 3, 6, 5, 1, 6, 2, 3],
+                [2, 11, 8, 8, 3, 1, 3, 11],
+                [6, 11, 8, 6, 2, 7, 10, 9],
+                [5, 11, 7, 10, 0, 11, 7, 12],
+                [3, 3, 12, 5, 0, 11, 9, 12]])
 
     V = [[1, 0, 0, 0, 0, 0, 0, 0],
          [0, 5, 5, 0, 9, 5, 1, 0],

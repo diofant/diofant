@@ -1,6 +1,7 @@
 import pytest
 
-from diofant import Symbol, Function, exp, sqrt, Rational, I, cos, tan
+from diofant import Function, I, Rational, Symbol, cos, exp, sqrt, tan
+
 
 __all__ = ()
 

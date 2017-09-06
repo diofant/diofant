@@ -3,7 +3,7 @@
 import random
 
 from ..core import igcd, oo
-from .monomials import monomial_min, monomial_div
+from .monomials import monomial_div, monomial_min
 from .orderings import monomial_key
 
 
@@ -294,7 +294,7 @@ def _rec_validate(f, g, i, K):
     elif not g:
         return {i}
     else:
-        j, levels = i + 1, set()
+        levels = set()
 
         for c in g:
             levels |= _rec_validate(f, c, i + 1, K)

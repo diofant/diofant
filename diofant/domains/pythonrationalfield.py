@@ -1,9 +1,9 @@
 """Implementation of :class:`PythonRationalField` class. """
 
-from .rationalfield import RationalField
-from .groundtypes import (PythonInteger, PythonRational, DiofantRational,
-                          python_factorial)
 from ..polys.polyerrors import CoercionFailed
+from .groundtypes import (DiofantRational, PythonInteger, PythonRational,
+                          python_factorial)
+from .rationalfield import RationalField
 
 
 __all__ = ('PythonRationalField',)

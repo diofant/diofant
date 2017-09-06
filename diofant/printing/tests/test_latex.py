@@ -1,37 +1,47 @@
 import pytest
 
-from diofant import (
-    Add, Abs, Chi, Ci, CosineTransform, Dict, Ei, Eq, FallingFactorial,
-    FiniteSet, Float, FourierTransform, Function, IndexedBase, Integral,
-    Interval, InverseCosineTransform, InverseFourierTransform,
-    InverseLaplaceTransform, InverseMellinTransform, InverseSineTransform,
-    Lambda, LaplaceTransform, Limit, Matrix, Max, MellinTransform, Min, Mul,
-    Order, Piecewise, Poly, ring, field, ZZ, Pow, Product, Range, Rational,
-    RisingFactorial, RootOf, RootSum, S, Shi, Si, SineTransform, Subs,
-    Sum, Symbol, ImageSet, Tuple, Union, Ynm, Znm, arg, asin,
-    assoc_laguerre, assoc_legendre, binomial, catalan, ceiling, Complement,
-    chebyshevt, chebyshevu, conjugate, cot, coth, diff, dirichlet_eta,
-    exp, expint, factorial, factorial2, floor, gamma, gegenbauer, hermite,
-    hyper, im, jacobi, laguerre, legendre, lerchphi, log, lowergamma,
-    meijerg, oo, polar_lift, polylog, re, root, sin, sqrt, symbols,
-    uppergamma, zeta, subfactorial, totient, elliptic_k, elliptic_f,
-    elliptic_e, elliptic_pi, cos, tan, Wild, true, false, Equivalent, Not,
-    Contains, divisor_sigma, SymmetricDifference, Dummy, QQ, airyai,
-    airybi, airyaiprime, airybiprime, BlockMatrix, MatrixSymbol, ZeroMatrix,
-    Identity, Intersection, FF, CC, acot)
-from diofant.functions import euler
-from diofant.abc import mu, tau
-from diofant.printing.latex import latex, translate
-from diofant.functions import DiracDelta, Heaviside, KroneckerDelta, LeviCivita
+from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
+                     Complement, Contains, CosineTransform, Dict, Dummy, Ei,
+                     Eq, Equivalent, FallingFactorial, FiniteSet, Float,
+                     FourierTransform, Function, Identity, ImageSet,
+                     IndexedBase, Integral, Intersection, Interval,
+                     InverseCosineTransform, InverseFourierTransform,
+                     InverseLaplaceTransform, InverseMellinTransform,
+                     InverseSineTransform, Lambda, LaplaceTransform, Limit,
+                     Matrix, MatrixSymbol, Max, MellinTransform, Min, Mul, Not,
+                     Order, Piecewise, Poly, Pow, Product, Range, Rational,
+                     RisingFactorial, RootOf, RootSum, S, Shi, Si,
+                     SineTransform, Subs, Sum, Symbol, SymmetricDifference,
+                     Tuple, Union, Wild, Ynm, Znm, acot, airyai, airyaiprime,
+                     airybi, airybiprime, arg, asin, assoc_laguerre,
+                     assoc_legendre, binomial, catalan, ceiling, chebyshevt,
+                     chebyshevu, conjugate, cos, cot, coth, diff,
+                     dirichlet_eta, divisor_sigma, elliptic_e, elliptic_f,
+                     elliptic_k, elliptic_pi, exp, expint, factorial,
+                     factorial2, false, field, floor, gamma, gegenbauer,
+                     hermite, hyper, im, jacobi, laguerre, legendre, lerchphi,
+                     log, lowergamma, meijerg, oo, pi, polar_lift, polylog, re,
+                     ring, root, sin, sqrt, subfactorial, symbols, tan,
+                     totient, true, uppergamma, zeta)
+from diofant.abc import a, b, mu, t, tau, x, y, z
+from diofant.combinatorics.permutations import Cycle, Permutation
+from diofant.core.trace import Tr
+from diofant.diffgeom import (CovarDerivativeOp, Differential, Manifold, Patch,
+                              TensorProduct, metric_to_Christoffel_2nd)
+from diofant.diffgeom.rn import R2, R2_r
+from diofant.functions import (DiracDelta, Heaviside, KroneckerDelta,
+                               LeviCivita, besseli, besselj, besselk, bessely,
+                               euler, fresnelc, fresnels, hankel1, hankel2, jn,
+                               yn)
 from diofant.logic import Implies
 from diofant.logic.boolalg import And, Or, Xor
-from diofant.core.trace import Tr
-from diofant.combinatorics.permutations import Cycle, Permutation
-from diofant.diffgeom import (Manifold, Patch, TensorProduct, Differential,
-                              metric_to_Christoffel_2nd, CovarDerivativeOp)
-from diofant.diffgeom.rn import R2, R2_r
+from diofant.matrices import (Adjoint, HadamardProduct, Inverse, Transpose,
+                              ZeroMatrix)
+from diofant.parsing.sympy_parser import parse_expr
+from diofant.printing.latex import (LatexPrinter, latex, other_symbols,
+                                    translate)
+from diofant.stats import Die, Exponential, Normal, pspace, where
 
-from diofant.abc import x, y, z, t, a, b
 
 __all__ = ()
 
@@ -412,9 +422,6 @@ def test_latex_functions():
 
 
 def test_hyper_printing():
-    from diofant import pi
-    from diofant.abc import x, z
-
     assert latex(meijerg(Tuple(pi, pi, x), Tuple(1),
                          (0, 1), Tuple(1, 2, 3/pi), z)) == \
         r'{G_{4, 5}^{2, 3}\left(\begin{matrix} \pi, \pi, x & 1 \\0, 1 & 1, 2, \frac{3}{\pi} \end{matrix} \middle| {z} \right)}'
@@ -435,9 +442,6 @@ def test_hyper_printing():
 
 
 def test_latex_bessel():
-    from diofant.functions.special.bessel import (besselj, bessely, besseli,
-            besselk, hankel1, hankel2, jn, yn)
-    from diofant.abc import z
     assert latex(besselj(n, z**2)**k) == r'J^{k}_{n}\left(z^{2}\right)'
     assert latex(bessely(n, z)) == r'Y_{n}\left(z\right)'
     assert latex(besseli(n, z)) == r'I_{n}\left(z\right)'
@@ -450,8 +454,6 @@ def test_latex_bessel():
 
 
 def test_latex_fresnel():
-    from diofant.functions.special.error_functions import (fresnels, fresnelc)
-    from diofant.abc import z
     assert latex(fresnels(z)) == r'S\left(z\right)'
     assert latex(fresnelc(z)) == r'C\left(z\right)'
     assert latex(fresnels(z)**2) == r'S^{2}\left(z\right)'
@@ -588,7 +590,7 @@ def test_latex_union():
 
 def test_latex_symmetric_difference():
     assert latex(SymmetricDifference(Interval(2, 5), Interval(4, 7),
-        evaluate=False)) == r'\left[2, 5\right] \triangle \left[4, 7\right]'
+                                     evaluate=False)) == r'\left[2, 5\right] \triangle \left[4, 7\right]'
 
 
 def test_latex_Complement():
@@ -985,7 +987,6 @@ def test_custom_symbol_names():
 
 
 def test_matAdd():
-    from diofant.printing.latex import LatexPrinter
     C = MatrixSymbol('C', 5, 5)
     B = MatrixSymbol('B', 5, 5)
     l = LatexPrinter()
@@ -996,7 +997,6 @@ def test_matAdd():
 
 
 def test_matMul():
-    from diofant.printing.latex import LatexPrinter
     A = MatrixSymbol('A', 5, 5)
     B = MatrixSymbol('B', 5, 5)
     x = Symbol('x')
@@ -1009,18 +1009,17 @@ def test_matMul():
     assert l._print_MatMul(-sqrt(2)*A) == r'- \sqrt{2} A'
     assert l._print_MatMul(2*sqrt(2)*x*A) == r'2 \sqrt{2} x A'
     assert l._print_MatMul(-2*A*(A + 2*B)) in [r'-2 A \left(A + 2 B\right)',
-        r'-2 A \left(2 B + A\right)']
+                                               r'-2 A \left(2 B + A\right)']
 
 
 def test_latex_MatrixSlice():
     assert latex(MatrixSymbol('X', 10, 10)[:5, 1:9:2]) == \
         r'X\left[:5, 1:9:2\right]'
     assert latex(MatrixSymbol('X', 10, 10)[5, :5:2]) == \
-            r'X\left[5, :5:2\right]'
+        r'X\left[5, :5:2\right]'
 
 
 def test_latex_RandomDomain():
-    from diofant.stats import Normal, Die, Exponential, pspace, where
     X = Normal('x1', 0, 1)
     assert latex(where(X > 0)) == r"Domain: 0 < x_{1} \wedge x_{1} < \infty"
 
@@ -1077,7 +1076,6 @@ def test_Tr():
 
 
 def test_Adjoint():
-    from diofant.matrices import Adjoint, Inverse, Transpose
     X = MatrixSymbol('X', 2, 2)
     Y = MatrixSymbol('Y', 2, 2)
     assert latex(Adjoint(X)) == r'X^\dag'
@@ -1094,7 +1092,6 @@ def test_Adjoint():
 
 
 def test_Hadamard():
-    from diofant.matrices import HadamardProduct
     X = MatrixSymbol('X', 2, 2)
     Y = MatrixSymbol('Y', 2, 2)
     assert latex(HadamardProduct(X, Y*Y)) == r'X \circ \left(Y Y\right)'
@@ -1102,7 +1099,6 @@ def test_Hadamard():
 
 
 def test_ZeroMatrix():
-    from diofant import ZeroMatrix
     assert latex(ZeroMatrix(1, 1)) == r"\mathbb{0}"
 
 
@@ -1181,7 +1177,6 @@ def test_translate():
 
 
 def test_other_symbols():
-    from diofant.printing.latex import other_symbols
     for s in other_symbols:
         assert latex(symbols(s)) == "\\"+s
 
@@ -1322,7 +1317,7 @@ def test_Mul():
     assert latex(e) == r'- 2 \left(x + 1\right)'
     e = Mul(2, x + 1, evaluate=False)
     assert latex(e) == r'2 \left(x + 1\right)'
-    e = Mul(S.One/2, x + 1, evaluate=False)
+    e = Mul(Rational(1, 2), x + 1, evaluate=False)
     assert latex(e) == r'\frac{1}{2} \left(x + 1\right)'
     e = Mul(y, x + 1, evaluate=False)
     assert latex(e) == r'y \left(x + 1\right)'
@@ -1363,11 +1358,10 @@ def test_sympyissue_7180():
 
 
 def test_sympyissue_8409():
-    assert latex(S.Half**n) == r"\left(\frac{1}{2}\right)^{n}"
+    assert latex(Rational(1, 2)**n) == r"\left(\frac{1}{2}\right)^{n}"
 
 
 def test_sympyissue_8470():
-    from diofant.parsing.sympy_parser import parse_expr
     e = parse_expr("-B*A", evaluate=False)
     assert latex(e) == r"A \left(- B\right)"
 

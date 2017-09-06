@@ -1,16 +1,18 @@
+import pytest
 from mpmath import inf, ninf
 from mpmath.libmp.libmpf import from_float
-import pytest
 
-from diofant import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
-                     fibonacci, floor, Function, GoldenRatio, I, Integral,
-                     integrate, log, Mul, N, oo, pi, Pow, product, Product,
-                     Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol,
-                     Float, Min, re, im)
-from diofant.core.evalf import (complex_accuracy, PrecisionExhausted,
-                                scaled_zero, as_mpmath)
+from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
+                     GoldenRatio, I, Integral, Min, Mul, N, Pow, Product,
+                     Rational, Sum, Symbol, atan, ceiling, cos, exp, factorial,
+                     fibonacci, floor, im, integrate, log, nan, oo, pi,
+                     polar_lift, product, re, sin, sqrt, sstr, symbols,
+                     sympify, zoo)
+from diofant.abc import H, n, x, y
+from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
+                                complex_accuracy, scaled_zero)
+from diofant.utilities.lambdify import implemented_function
 
-from diofant.abc import n, x, y
 
 __all__ = ()
 
@@ -44,8 +46,8 @@ def test_cancellation():
 def test_evalf_powers():
     assert NS('pi**(10**20)', 10) == '1.339148777e+49714987269413385435'
     assert NS(pi**(10**100), 10) == ('4.946362032e+4971498726941338543512682882'
-          '9089887365167832438044244613405349992494711208'
-          '95526746555473864642912223')
+                                     '9089887365167832438044244613405349992494711208'
+                                     '95526746555473864642912223')
     assert NS('2**(1/10**50)', 15) == '1.00000000000000'
     assert NS('2**(1/10**50)-1', 15) == '6.93147180559945e-51'
 
@@ -68,7 +70,7 @@ def test_evalf_complex():
 @pytest.mark.xfail
 def test_evalf_complex_bug():
     assert NS('(pi+E*I)*(E+pi*I)', 15) in ('0.e-15 + 17.25866050002*I',
-              '0.e-17 + 17.25866050002*I', '-0.e-17 + 17.25866050002*I')
+                                           '0.e-17 + 17.25866050002*I', '-0.e-17 + 17.25866050002*I')
 
 
 def test_evalf_complex_powers():
@@ -213,25 +215,25 @@ def test_evalf_bugs():
     # >>> n = Some Number
     # n*nan, n/nan, n*inf, n/inf
     # n+nan, n-nan, n+inf, n-inf
-    assert (0*sin(oo)).n() == S.Zero
-    assert (0/sin(oo)).n() == S.Zero
-    assert (0*E**(oo)).n() == S.NaN
-    assert (0/E**(oo)).n() == S.Zero
+    assert (0*sin(oo)).n() == 0
+    assert (0/sin(oo)).n() == 0
+    assert (0*E**oo).n() == nan
+    assert (0/E**oo).n() == 0
 
-    assert (0+sin(oo)).n() == S.NaN
-    assert (0-sin(oo)).n() == S.NaN
-    assert (0+E**(oo)).n() == S.Infinity
-    assert (0-E**(oo)).n() == S.NegativeInfinity
+    assert (0+sin(oo)).n() == nan
+    assert (0-sin(oo)).n() == nan
+    assert (0+E**oo).n() == +oo
+    assert (0-E**oo).n() == -oo
 
-    assert (5*sin(oo)).n() == S.NaN
-    assert (5/sin(oo)).n() == S.NaN
-    assert (5*E**(oo)).n() == S.Infinity
-    assert (5/E**(oo)).n() == S.Zero
+    assert (5*sin(oo)).n() == nan
+    assert (5/sin(oo)).n() == nan
+    assert (5*E**oo).n() == oo
+    assert (5/E**oo).n() == 0
 
-    assert (5+sin(oo)).n() == S.NaN
-    assert (5-sin(oo)).n() == S.NaN
-    assert (5+E**(oo)).n() == S.Infinity
-    assert (5-E**(oo)).n() == S.NegativeInfinity
+    assert (5+sin(oo)).n() == nan
+    assert (5-sin(oo)).n() == nan
+    assert (5+E**oo).n() == +oo
+    assert (5-E**oo).n() == -oo
 
     # issue sympy/sympy#7416
     assert as_mpmath(0.0, 10, {'chop': True}) == 0
@@ -312,7 +314,7 @@ def test_evalf_divergent_series():
 
 def test_evalf_product():
     assert Product(n, (n, 1, 10)).evalf() == 3628800.
-    assert Product(1 - S.Half**2/n**2, (n, 1, oo)).evalf(5) == 0.63662
+    assert Product(1 - 1/(4*n**2), (n, 1, oo)).evalf(5) == 0.63662
     assert Product(n, (n, -1, 3)).evalf() == 0
 
 
@@ -340,7 +342,6 @@ def test_evalf_arguments():
 
 
 def test_implemented_function_evalf():
-    from diofant.utilities.lambdify import implemented_function
     f = Function('f')
     f = implemented_function(f, lambda x: x + 1)
     assert str(f(x)) == "f(x)"
@@ -367,14 +368,11 @@ def test_sympyissue_5486():
 
 
 def test_sympyissue_5486_bug():
-    from diofant import I, Expr
     assert abs(Expr._from_mpmath(I._to_mpmath(15), 15) - I) < 1.0e-15
     pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
 
 
 def test_bugs():
-    from diofant import polar_lift, re
-
     assert abs(re((1 + I)**2)) < 1e-15
 
     # anything that evalf's to 0 will do in place of polar_lift
@@ -392,25 +390,27 @@ def test_subs():
 def test_sympyissue_4956_5204():
     # issue sympy/sympy#4956
     v = ((-27*12**Rational(1, 3)*sqrt(31)*I +
-         27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I) /
-         (-2511*2**Rational(2, 3)*3**Rational(1, 3) + (29*18**Rational(1, 3) +
-         9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
-         87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
+          27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I) /
+         (-2511*2**Rational(2, 3)*3**Rational(1, 3) +
+          (29*18**Rational(1, 3) +
+           9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
+           87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
     assert NS(v, 1) == '0.e-118 - 0.e-118*I'
 
     # issue sympy/sympy#5204
-    v = (-(357587765856 + 18873261792*249**Rational(1, 2) +
-         56619785376*I*83**Rational(1, 2) + 108755765856*I*3**Rational(1, 2) +
-         41281887168*6**Rational(1, 3)*(1422 + 54*249**Rational(1, 2))**Rational(1, 3)
-         - 1239810624*6**Rational(1, 3)*249**Rational(1, 2)*(1422 +
-         54*249**Rational(1, 2))**Rational(1, 3) - 3110400000*I*6**Rational(1, 3)*83**Rational(1, 2)*(1422 +
-         54*249**Rational(1, 2))**Rational(1, 3) + 13478400000*I*3**Rational(1, 2)*6**Rational(1, 3)*(1422 +
-         54*249**Rational(1, 2))**Rational(1, 3) + 1274950152*6**Rational(2, 3)*(1422 +
-         54*249**Rational(1, 2))**Rational(2, 3) + 32347944*6**Rational(2, 3)*249**Rational(1, 2)*(1422 +
-         54*249**Rational(1, 2))**Rational(2, 3) - 1758790152*I*3**Rational(1, 2)*6**Rational(2, 3)*(1422 +
-         54*249**Rational(1, 2))**Rational(2, 3) - 304403832*I*6**Rational(2, 3)*83**Rational(1, 2)*(1422 +
-         4*249**Rational(1, 2))**Rational(2, 3))/(175732658352 + (1106028 + 25596*249**Rational(1, 2) +
-         76788*I*83**Rational(1, 2))**2))
+    x0, x1, x2, x3, x4, x5, x6, x7, x8, x9 = symbols('x:10')
+    v = ((-18873261792*x0 + 3110400000*I*x1*x5 + 1239810624*x1*x8 -
+          97043832*x1*x9 + 304403832*x2*x6*(4*x0 + 1422)**Rational(2, 3) -
+          56619785376*x2 - 41281887168*x5 - 1274950152*x6*x7 -
+          13478400000*I*x8 + 5276370456*I*x9 - 357587765856 -
+          108755765856*sqrt(3)*I)/((25596*x0 + 76788*x2 + 1106028)**2 +
+                                   175732658352))
+    v = v.subs(((x9, 2**Rational(2, 3)*3**Rational(1, 6)*x7),
+                (x8, 2**Rational(1, 3)*3**Rational(5, 6)*x4),
+                (x7, x3**Rational(2, 3)), (x6, 6**Rational(2, 3)),
+                (x5, 6**Rational(1, 3)*x4), (x4, x3**Rational(1, 3)),
+                (x3, 54*x0 + 1422), (x2, I*x1), (x1, sqrt(83)), (x0, sqrt(249))))
+
     assert NS(v, 5) == '0.077284 + 1.1104*I'
     assert NS(v, 1) == '0.08 + 1.*I'
 
@@ -467,8 +467,6 @@ def test_sympyissue_6632_evalf():
 
 
 def test_sympyissue_4945():
-    from diofant.abc import H
-    from diofant import zoo
     assert (H/0).evalf(subs={H: 1}) == zoo*H
 
 
@@ -488,14 +486,13 @@ def test_sympyissue_8821_highprec_from_str():
 
 def test_sympyissue_8853():
     p = Symbol('x', even=True, positive=True)
-    assert floor(-p - S.Half).is_even is False
-    assert floor(-p + S.Half).is_even
-    assert ceiling(p - S.Half).is_even
-    assert ceiling(p + S.Half).is_even is False
+    assert floor(-p - Rational(1, 2)).is_even is False
+    assert floor(-p + Rational(1, 2)).is_even
+    assert ceiling(p - Rational(1, 2)).is_even
+    assert ceiling(p + Rational(1, 2)).is_even is False
 
 
 def test_sympyissue_9326():
-    from diofant import Dummy
     d1 = Dummy('d')
     d2 = Dummy('d')
     e = d1 + d2
@@ -510,15 +507,15 @@ def test_diofantissue_161():
 
 def test_AssocOp_Function():
     e = Min(-sqrt(3)*cos(pi/18)/6 +
-            re(1/((-S.Half - sqrt(3)*I/2)*(Rational(1, 6) +
-                  sqrt(3)*I/18)**Rational(1, 3)))/3 + sin(pi/18)/2 + 2 +
+            re(1/((Rational(-1, 2) - sqrt(3)*I/2)*(Rational(1, 6) +
+                                                   sqrt(3)*I/18)**Rational(1, 3)))/3 + sin(pi/18)/2 + 2 +
             I*(-cos(pi/18)/2 - sqrt(3)*sin(pi/18)/6 +
-               im(1/((-S.Half - sqrt(3)*I/2)*(Rational(1, 6) +
-                                              sqrt(3)*I/18)**Rational(1, 3)))/3),
-            re(1/((-S.Half + sqrt(3)*I/2)*(Rational(1, 6) + sqrt(3)*I/18)**Rational(1, 3)))/3 -
+               im(1/((Rational(-1, 2) - sqrt(3)*I/2)*(Rational(1, 6) +
+                                                      sqrt(3)*I/18)**Rational(1, 3)))/3),
+            re(1/((Rational(-1, 2) + sqrt(3)*I/2)*(Rational(1, 6) + sqrt(3)*I/18)**Rational(1, 3)))/3 -
             sqrt(3)*cos(pi/18)/6 - sin(pi/18)/2 + 2 +
-            I*(im(1/((-S.Half + sqrt(3)*I/2)*(Rational(1, 6) +
-                                              sqrt(3)*I/18)**Rational(1, 3)))/3 -
+            I*(im(1/((Rational(-1, 2) + sqrt(3)*I/2)*(Rational(1, 6) +
+                                                      sqrt(3)*I/18)**Rational(1, 3)))/3 -
                sqrt(3)*sin(pi/18)/6 + cos(pi/18)/2))
     # the following should not raise a recursion error; it
     # should raise a value error because the first arg computes

@@ -2,12 +2,12 @@
 
 import pytest
 
-from diofant.polys.polyfuncs import symmetrize, horner, interpolate, viete
-from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                      ComputationFailed)
 from diofant import symbols
-
 from diofant.abc import a, b, c, d, e, x, y, z
+from diofant.polys.polyerrors import (ComputationFailed,
+                                      MultivariatePolynomialError)
+from diofant.polys.polyfuncs import horner, interpolate, symmetrize, viete
+
 
 __all__ = ()
 
@@ -18,7 +18,6 @@ def test_symmetrize():
 
     s1 = x + y + z
     s2 = x*y + x*z + y*z
-    s3 = x*y*z
 
     assert symmetrize(1) == (1, 0)
     assert symmetrize(1, formal=True) == (1, 0, [])

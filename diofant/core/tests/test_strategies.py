@@ -1,8 +1,8 @@
-from diofant.core.strategies import (rm_id, glom, flatten, unpack, sort,
-                                     arguments, operator, term)
-from diofant.core import Basic, Integer, Add
-
 from diofant.abc import x
+from diofant.core import Add, Basic, Integer
+from diofant.core.strategies import (arguments, flatten, glom, operator, rm_id,
+                                     sort, term, unpack)
+
 
 __all__ = ()
 

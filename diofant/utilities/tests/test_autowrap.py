@@ -1,19 +1,20 @@
 # Tests that require installed backends go into
 # diofant/test_external/test_autowrap
 
-from io import StringIO
 import os
-import tempfile
 import shutil
+import tempfile
+from io import StringIO
 
 import pytest
 
-from diofant.utilities.autowrap import (autowrap, binary_function,
-                                        CythonCodeWrapper,
-                                        UfuncifyCodeWrapper, CodeWrapper)
+from diofant.core import Eq, Equality, symbols
+from diofant.utilities.autowrap import (CodeWrapper, CythonCodeWrapper,
+                                        UfuncifyCodeWrapper, autowrap,
+                                        binary_function)
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                        make_routine)
-from diofant.core import symbols, Eq
+
 
 __all__ = ()
 
@@ -50,7 +51,6 @@ def test_cython_wrapper_scalar_function():
 
 
 def test_cython_wrapper_outarg():
-    from diofant import Equality
     x, y, z = symbols('x,y,z')
     code_gen = CythonCodeWrapper(CCodeGen())
 
@@ -69,7 +69,6 @@ def test_cython_wrapper_outarg():
 
 
 def test_cython_wrapper_inoutarg():
-    from diofant import Equality
     x, y, z = symbols('x,y,z')
     code_gen = CythonCodeWrapper(CCodeGen())
     routine = make_routine("test", Equality(z, x + y + z))

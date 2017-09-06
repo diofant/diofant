@@ -1,9 +1,10 @@
+from diofant.core import Derivative, Function, symbols
+from diofant.diffgeom import Differential, WedgeProduct, intcurve_series
 from diofant.diffgeom.rn import R2, R2_p, R2_r, R3_r
-from diofant.diffgeom import intcurve_series, Differential, WedgeProduct
-from diofant.core import symbols, Function, Derivative
-from diofant.simplify import trigsimp, simplify
-from diofant.functions import sqrt, atan2, sin, cos
+from diofant.functions import atan2, cos, sin, sqrt
 from diofant.matrices import Matrix
+from diofant.simplify import simplify, trigsimp
+
 
 __all__ = ()
 
@@ -23,9 +24,9 @@ def test_functional_diffgeom_ch2():
     f = Function('f')
 
     assert (R2_p.point_to_coords(R2_r.point([x0, y0])) ==
-           Matrix([sqrt(x0**2 + y0**2), atan2(y0, x0)]))
+            Matrix([sqrt(x0**2 + y0**2), atan2(y0, x0)]))
     assert (R2_r.point_to_coords(R2_p.point([r0, theta0])) ==
-           Matrix([r0*cos(theta0), r0*sin(theta0)]))
+            Matrix([r0*cos(theta0), r0*sin(theta0)]))
 
     assert R2_p.jacobian(R2_r, [r0, theta0]) == Matrix(
         [[cos(theta0), -r0*sin(theta0)], [sin(theta0), r0*cos(theta0)]])

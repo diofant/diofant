@@ -1,5 +1,6 @@
 from ..core import Basic, Expr
 
+
 __all__ = ('dotprint')
 
 default_styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
@@ -86,7 +87,7 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
 
 
 template = \
-"""digraph{
+    """digraph{
 
 # Graph style
 %(graphstyle)s

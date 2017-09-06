@@ -1,11 +1,11 @@
-from ..functions import sqrt, sign, root, log
-from ..core import (S, sympify, Mul, Add, Expr, factor_terms, ilcm,
-                    expand_mul, Dummy, count_ops)
+from ..core import (Add, Dummy, Expr, Mul, S, count_ops, expand_mul,
+                    factor_terms, ilcm, sympify)
 from ..core.compatibility import ordered
-from ..polys import Poly, PolynomialError, degree, cancel
 from ..core.function import _mexpand
-from .powsimp import powdenest
+from ..functions import log, root, sign, sqrt
+from ..polys import Poly, PolynomialError, cancel, degree
 from ..utilities import default_sort_key
+from .powsimp import powdenest
 
 
 def is_sqrt(expr):
@@ -672,8 +672,6 @@ def unrad(eq, *syms, **flags):
     from ..polys.rootoftools import RootOf
     from ..solvers import solve
 
-    _inv_error = 'cannot get an analytical solution for the inversion'
-
     uflags = {'check': False, 'simplify': False}
 
     def _cov(p, e):
@@ -919,18 +917,18 @@ def unrad(eq, *syms, **flags):
                     # zz represents the unraded expression into which the
                     # specifics for this case are substituted
                     zz = (c - d)*(A**3*a**9 + 3*A**2*B*a**6*b**3 -
-                        3*A**2*a**6*c**3 + 9*A**2*a**6*c**2*d - 9*A**2*a**6*c*d**2 +
-                        3*A**2*a**6*d**3 + 3*A*B**2*a**3*b**6 + 21*A*B*a**3*b**3*c**3 -
-                        63*A*B*a**3*b**3*c**2*d + 63*A*B*a**3*b**3*c*d**2 -
-                        21*A*B*a**3*b**3*d**3 + 3*A*a**3*c**6 - 18*A*a**3*c**5*d +
-                        45*A*a**3*c**4*d**2 - 60*A*a**3*c**3*d**3 + 45*A*a**3*c**2*d**4 -
-                        18*A*a**3*c*d**5 + 3*A*a**3*d**6 + B**3*b**9 - 3*B**2*b**6*c**3 +
-                        9*B**2*b**6*c**2*d - 9*B**2*b**6*c*d**2 + 3*B**2*b**6*d**3 +
-                        3*B*b**3*c**6 - 18*B*b**3*c**5*d + 45*B*b**3*c**4*d**2 -
-                        60*B*b**3*c**3*d**3 + 45*B*b**3*c**2*d**4 - 18*B*b**3*c*d**5 +
-                        3*B*b**3*d**6 - c**9 + 9*c**8*d - 36*c**7*d**2 + 84*c**6*d**3 -
-                        126*c**5*d**4 + 126*c**4*d**5 - 84*c**3*d**6 + 36*c**2*d**7 -
-                        9*c*d**8 + d**9)
+                                  3*A**2*a**6*c**3 + 9*A**2*a**6*c**2*d - 9*A**2*a**6*c*d**2 +
+                                  3*A**2*a**6*d**3 + 3*A*B**2*a**3*b**6 + 21*A*B*a**3*b**3*c**3 -
+                                  63*A*B*a**3*b**3*c**2*d + 63*A*B*a**3*b**3*c*d**2 -
+                                  21*A*B*a**3*b**3*d**3 + 3*A*a**3*c**6 - 18*A*a**3*c**5*d +
+                                  45*A*a**3*c**4*d**2 - 60*A*a**3*c**3*d**3 + 45*A*a**3*c**2*d**4 -
+                                  18*A*a**3*c*d**5 + 3*A*a**3*d**6 + B**3*b**9 - 3*B**2*b**6*c**3 +
+                                  9*B**2*b**6*c**2*d - 9*B**2*b**6*c*d**2 + 3*B**2*b**6*d**3 +
+                                  3*B*b**3*c**6 - 18*B*b**3*c**5*d + 45*B*b**3*c**4*d**2 -
+                                  60*B*b**3*c**3*d**3 + 45*B*b**3*c**2*d**4 - 18*B*b**3*c*d**5 +
+                                  3*B*b**3*d**6 - c**9 + 9*c**8*d - 36*c**7*d**2 + 84*c**6*d**3 -
+                                  126*c**5*d**4 + 126*c**4*d**5 - 84*c**3*d**6 + 36*c**2*d**7 -
+                                  9*c*d**8 + d**9)
 
                     def _t(i):
                         b = Mul(*info[i][RAD])
@@ -947,7 +945,7 @@ def unrad(eq, *syms, **flags):
         # handle power-of-2 cases
         if not ok:
             if log(lcm, 2).is_Integer and (not others and
-                    len(rterms) == 4 or len(rterms) < 4):
+                                           len(rterms) == 4 or len(rterms) < 4):
                 def _norm2(a, b):
                     return a**2 + b**2 + 2*a*b
 

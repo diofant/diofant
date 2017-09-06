@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import I, sqrt, log, exp, sin, asin
-from diofant.core import (Symbol, S, Rational, Integer, Dummy,
-                          Wild, Pow, Float, Mod, pi)
+from diofant import I, asin, exp, false, log, simplify, sin, sqrt
+from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Mul, Pow,
+                          Rational, Symbol, Wild, nan, oo, pi, zoo)
 from diofant.core.facts import InconsistentAssumptions
-from diofant import simplify
+
 
 __all__ = ()
 
@@ -97,8 +97,6 @@ def test_negativeone():
 
 
 def test_infinity():
-    oo = S.Infinity
-
     assert oo.is_commutative is True
     assert oo.is_integer is False
     assert oo.is_rational is False
@@ -124,7 +122,7 @@ def test_infinity():
 
 
 def test_neg_infinity():
-    mm = S.NegativeInfinity
+    mm = -oo
 
     assert mm.is_commutative is True
     assert mm.is_integer is False
@@ -151,7 +149,6 @@ def test_neg_infinity():
 
 
 def test_zoo():
-    zoo = S.ComplexInfinity
     assert zoo.is_complex is False
     assert zoo.is_real is False
     assert zoo.is_prime is False
@@ -159,8 +156,6 @@ def test_zoo():
 
 
 def test_nan():
-    nan = S.NaN
-
     assert nan.is_commutative is True
     assert nan.is_integer is False
     assert nan.is_rational is False
@@ -250,7 +245,7 @@ def test_neg_rational():
 
 
 def test_pi():
-    z = S.Pi
+    z = pi
     assert z.is_commutative is True
     assert z.is_integer is False
     assert z.is_rational is False
@@ -275,7 +270,7 @@ def test_pi():
 
 
 def test_E():
-    z = S.Exp1
+    z = E
     assert z.is_commutative is True
     assert z.is_integer is False
     assert z.is_rational is False
@@ -300,7 +295,7 @@ def test_E():
 
 
 def test_I():
-    z = S.ImaginaryUnit
+    z = I
     assert z.is_commutative is True
     assert z.is_integer is False
     assert z.is_rational is False
@@ -618,7 +613,7 @@ def test_hash_vs_typeinfo_2():
 
 def test_hash_vs_eq():
     """catch: different hash for equal objects"""
-    a = 1 + S.Pi    # important: do not fold it into a Number instance
+    a = 1 + pi    # important: do not fold it into a Number instance
     ha = hash(a)  # it should be Add/Mul/... to trigger the bug
 
     a.is_positive   # this uses .evalf() and deduces it is positive
@@ -656,7 +651,7 @@ def test_Add_is_pos_neg():
     assert (n + xf).is_negative is True
     assert (p + xf).is_negative is False
 
-    assert (x - S.Infinity).is_negative is None  # issue sympy/sympy#7798
+    assert (x - oo).is_negative is None  # issue sympy/sympy#7798
     # issue sympy/sympy#8046, 16.2
     assert (p + nn).is_positive
     assert (n + np).is_negative
@@ -719,7 +714,7 @@ def test_Pow_is_algebraic():
     # Gelfond-Schneider constant:
     assert Pow(2, sqrt(2), evaluate=False).is_algebraic is False
 
-    assert Pow(S.GoldenRatio, sqrt(3), evaluate=False).is_algebraic is False
+    assert Pow(GoldenRatio, sqrt(3), evaluate=False).is_algebraic is False
 
     # sympy/sympy#8649
     t = Symbol('t', real=True, transcendental=True)
@@ -734,7 +729,6 @@ def test_Mul_is_infinite():
     i = Symbol('i', infinite=True)
     z = Dummy(zero=True)
     nzf = Dummy(finite=True, zero=False)
-    from diofant import Mul
     assert (x*f).is_finite is None
     assert (x*i).is_finite is None
     assert (f*i).is_finite is False
@@ -749,11 +743,11 @@ def test_Mul_is_infinite():
     assert (x*i).is_infinite is None
     assert (f*i).is_infinite is None
     assert (x*f*i).is_infinite is None
-    assert (z*i).is_infinite is S.NaN.is_infinite
+    assert (z*i).is_infinite is nan.is_infinite
     assert (nzf*i).is_infinite is True
     assert (z*f).is_infinite is False
     assert Mul(0, f, evaluate=False).is_infinite is False
-    assert Mul(0, i, evaluate=False).is_infinite is S.NaN.is_infinite
+    assert Mul(0, i, evaluate=False).is_infinite is nan.is_infinite
 
 
 def test_special_is_rational():
@@ -781,7 +775,7 @@ def test_special_is_rational():
     assert log(rn + 1).is_rational is False
     assert log(x).is_rational is None
     assert (sqrt(3) + sqrt(5)).is_rational is None
-    assert (sqrt(3) + S.Pi).is_rational is False
+    assert (sqrt(3) + pi).is_rational is False
     assert (x**i).is_rational is None
     assert (i**i).is_rational is True
     assert (i**i2).is_rational is None
@@ -803,8 +797,8 @@ def test_sympyissue_6275():
     x = Symbol('x')
     # both zero or both Muls...but neither "change would be very appreciated.
     # This is similar to x/x => 1 even though if x = 0, it is really nan.
-    assert isinstance(x*0, type(0*S.Infinity))
-    if 0*S.Infinity is S.NaN:
+    assert isinstance(x*0, type(0*oo))
+    if 0*oo is nan:
         b = Symbol('b', finite=None)
         assert (b*0).is_zero is None
 
@@ -822,8 +816,8 @@ def test_sanitize_assumptions():
 
 def test_special_assumptions():
     e = -3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2
-    assert simplify(e < 0) is S.false
-    assert simplify(e > 0) is S.false
+    assert simplify(e < 0) is false
+    assert simplify(e > 0) is false
     assert (e == 0) is False  # it's not a literal 0
     assert e.equals(0) is True
 
@@ -831,14 +825,14 @@ def test_special_assumptions():
 def test_inconsistent():
     # cf. issues sympy/sympy#5795 and sympy/sympy#5545
     pytest.raises(InconsistentAssumptions, lambda: Symbol('x', extended_real=True,
-           commutative=False))
+                                                          commutative=False))
 
 
 def test_sympyissue_6631():
     assert ((-1)**(I)).is_extended_real is True
     assert ((-1)**(I*2)).is_extended_real is True
     assert ((-1)**(I/2)).is_extended_real is True
-    assert ((-1)**(I*S.Pi)).is_extended_real is True
+    assert ((-1)**(I*pi)).is_extended_real is True
     assert (I**(I + 2)).is_extended_real is True
 
 
@@ -849,13 +843,13 @@ def test_sympyissue_2730():
 def test_sympyissue_4149():
     assert (3 + I).is_complex
     assert (3 + I).is_imaginary is False
-    assert (3*I + S.Pi*I).is_imaginary
+    assert (3*I + pi*I).is_imaginary
     y = Symbol('y', real=True)
-    assert (3*I + S.Pi*I + y*I).is_imaginary is True
+    assert (3*I + pi*I + y*I).is_imaginary is True
     p = Symbol('p', positive=True, finite=True)
-    assert (3*I + S.Pi*I + p*I).is_imaginary
+    assert (3*I + pi*I + p*I).is_imaginary
     n = Symbol('n', negative=True, finite=True)
-    assert (-3*I - S.Pi*I + n*I).is_imaginary
+    assert (-3*I - pi*I + n*I).is_imaginary
 
     i = Symbol('i', imaginary=True)
     assert ([(i**a).is_imaginary for a in range(4)] ==
@@ -899,9 +893,9 @@ def test_sympyissue_8642():
 def test_sympyissue_9165():
     z = Symbol('z', zero=True)
     f = Symbol('f', finite=False)
-    assert 0/z == S.NaN
-    assert 0*(1/z) == S.NaN
-    assert 0*f == S.NaN
+    assert 0/z == nan
+    assert 0*(1/z) == nan
+    assert 0*f == nan
 
 
 def test_sympyissue_10024():

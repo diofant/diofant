@@ -1,18 +1,20 @@
 from itertools import islice
-from random import randrange, choice
 from math import log
+from random import choice, randrange
 
 from ..core import Basic
-from .permutations import (Permutation, _af_commutes_with, _af_invert,
-                           _af_rmul, _af_rmuln, _af_pow, Cycle)
-from .util import (_check_cycles_alt_sym, _distribute_gens_by_base,
-                   _orbits_transversals_from_bsgs, _handle_precomputed_bsgs,
-                   _base_ordering, _strong_gens_from_distr, _strip, _strip_af)
 from ..functions import factorial
 from ..ntheory import sieve
 from ..utilities import has_variety
 from ..utilities.iterables import is_sequence, uniq
 from ..utilities.randtest import _randrange
+from .permutations import (Cycle, Permutation, _af_commutes_with, _af_invert,
+                           _af_pow, _af_rmul, _af_rmuln)
+from .util import (_base_ordering, _check_cycles_alt_sym,
+                   _distribute_gens_by_base, _handle_precomputed_bsgs,
+                   _orbits_transversals_from_bsgs, _strip, _strip_af,
+                   _strong_gens_from_distr)
+
 
 rmul = Permutation.rmul_with_af
 _af_new = Permutation._af_new
@@ -519,7 +521,7 @@ class PermutationGroup(Basic):
         # and transversal elements from whatever was provided
         transversals, basic_orbits, strong_gens_distr = \
             _handle_precomputed_bsgs(base, strong_gens, transversals,
-                                 basic_orbits, strong_gens_distr)
+                                     basic_orbits, strong_gens_distr)
         base_len = len(base)
         degree = self.degree
         # size of orbit of base[pos] under the stabilizer we seek to insert
@@ -1151,7 +1153,6 @@ class PermutationGroup(Basic):
         """
         r = self._r
         gens = [p._array_form for p in self.generators]
-        gens_inv = [_af_invert(p) for p in gens]
         set_commutators = set()
         degree = self._degree
         rng = list(range(degree))
@@ -2072,7 +2073,7 @@ class PermutationGroup(Basic):
                             _distribute_gens_by_base(base, strong_gens)
                         basic_orbits, basic_transversals = \
                             _orbits_transversals_from_bsgs(base,
-                                strong_gens_distr)
+                                                           strong_gens_distr)
                 _loop = False
                 for g in self.generators:
                     for h in Z.generators:
@@ -2482,7 +2483,7 @@ class PermutationGroup(Basic):
 
         strong_gens_distr = _distribute_gens_by_base(base, strong_gens)
         basic_orbits, transversals = _orbits_transversals_from_bsgs(base,
-                strong_gens_distr)
+                                                                    strong_gens_distr)
         self._transversals = transversals
         self._basic_orbits = [sorted(x) for x in basic_orbits]
 
@@ -2571,7 +2572,7 @@ class PermutationGroup(Basic):
         base_len = len(_base)
         for i in range(base_len):
             transversals[i] = dict(_orbit_transversal(degree, strong_gens_distr[i],
-                _base[i], pairs=True, af=True))
+                                                      _base[i], pairs=True, af=True))
             orbs[i] = list(transversals[i].keys())
         # main loop: amend the stabilizer chain until we have generators
         # for all stabilizers
@@ -2616,8 +2617,8 @@ class PermutationGroup(Basic):
                             for l in range(i + 1, j):
                                 strong_gens_distr[l].append(h)
                                 transversals[l] =\
-                                dict(_orbit_transversal(degree, strong_gens_distr[l],
-                                    _base[l], pairs=True, af=True))
+                                    dict(_orbit_transversal(degree, strong_gens_distr[l],
+                                                            _base[l], pairs=True, af=True))
                                 orbs[l] = list(transversals[l].keys())
                             i = j - 1
                             # continue main loop using the flag
@@ -2721,7 +2722,7 @@ class PermutationGroup(Basic):
         orbs = {}
         for i in range(base_len):
             transversals[i] = dict(_orbit_transversal(n, strong_gens_distr[i],
-                base[i], pairs=True))
+                                                      base[i], pairs=True))
             orbs[i] = list(transversals[i].keys())
         # initialize the number of consecutive elements sifted
         c = 0
@@ -2751,7 +2752,7 @@ class PermutationGroup(Basic):
                 for l in range(1, j):
                     strong_gens_distr[l].append(h)
                     transversals[l] = dict(_orbit_transversal(n,
-                        strong_gens_distr[l], base[l], pairs=True))
+                                                              strong_gens_distr[l], base[l], pairs=True))
                     orbs[l] = list(transversals[l].keys())
                 c = 0
             else:
@@ -2950,7 +2951,7 @@ class PermutationGroup(Basic):
         def get_reps(orbits):
             # get the minimal element in the base ordering
             return [min(orbit, key=lambda x: base_ordering[x])
-              for orbit in orbits]
+                    for orbit in orbits]
 
         def update_nu(l):
             temp_index = len(basic_orbits[l]) + 1 -\
@@ -2974,7 +2975,7 @@ class PermutationGroup(Basic):
         # compute BSGS-related structures
         strong_gens_distr = _distribute_gens_by_base(base, strong_gens)
         basic_orbits, transversals = _orbits_transversals_from_bsgs(base,
-                                     strong_gens_distr)
+                                                                    strong_gens_distr)
         # handle subgroup initialization and tests
         if init_subgroup is None:
             init_subgroup = PermutationGroup([identity])
@@ -2994,11 +2995,11 @@ class PermutationGroup(Basic):
         res_base, res_strong_gens = res.schreier_sims_incremental(
             base=res_base)
         res_strong_gens_distr = _distribute_gens_by_base(res_base,
-                                res_strong_gens)
+                                                         res_strong_gens)
         res_generators = res.generators
         res_basic_orbits_init_base = \
-        [_orbit(degree, res_strong_gens_distr[i], res_base[i])
-         for i in range(base_len)]
+            [_orbit(degree, res_strong_gens_distr[i], res_base[i])
+             for i in range(base_len)]
         # initialize orbit representatives
         orbit_reps = [None]*base_len
         # line 4: orbit representatives for f-th basic stabilizer of K
@@ -3035,7 +3036,7 @@ class PermutationGroup(Basic):
                 new_point = computed_words[l](base[l])
                 res_base[l] = new_point
                 new_stab_gens = _stabilizer(degree, res_strong_gens_distr[l],
-                        new_point)
+                                            new_point)
                 res_strong_gens_distr[l + 1] = new_stab_gens
                 # line 12: calculate minimal orbit representatives for the
                 # l+1-th basic stabilizer
@@ -3044,7 +3045,7 @@ class PermutationGroup(Basic):
                 # line 13: amend sorted orbits
                 l += 1
                 temp_orbit = [computed_words[l - 1](point) for point
-                             in basic_orbits[l]]
+                              in basic_orbits[l]]
                 temp_orbit.sort(key=lambda point: base_ordering[point])
                 sorted_orbits[l] = temp_orbit
                 # lines 14 and 15: update variables used minimality tests
@@ -3078,10 +3079,10 @@ class PermutationGroup(Basic):
                 # line 20: recalculate basic orbits (and transversals)
                 res_strong_gens.append(g)
                 res_strong_gens_distr = _distribute_gens_by_base(res_base,
-                                                          res_strong_gens)
+                                                                 res_strong_gens)
                 res_basic_orbits_init_base = \
-                [_orbit(degree, res_strong_gens_distr[i], res_base[i])
-                 for i in range(base_len)]
+                    [_orbit(degree, res_strong_gens_distr[i], res_base[i])
+                     for i in range(base_len)]
                 # line 21: recalculate orbit representatives
                 # line 22: reset the search depth
                 orbit_reps[f] = get_reps(orbits)
@@ -3263,7 +3264,6 @@ def _orbits(degree, generators):
     [{0, 1, 2}]
     """
 
-    seen = set()  # elements that have already appeared in orbits
     orbs = []
     sorted_I = list(range(degree))
     I = set(sorted_I)

@@ -1,10 +1,10 @@
 import pytest
 
-from diofant.core import oo, E, S, Eq, Rational
-from diofant.calculus.optimization import minimize, maximize, simplex
+from diofant.abc import x, y, z
+from diofant.calculus.optimization import maximize, minimize, simplex
+from diofant.core import E, Eq, Rational, oo
 from diofant.functions import exp, sign, sqrt
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -61,7 +61,7 @@ def test_minimize_linear_2():
     assert minimize([2*x + 3*y - z, 1 <= x + y + z,
                      x + y + z <= 2, 1 <= x - y + z,
                      x - y + z <= 2, Eq(x - y - z, 3)],
-                    x, y, z) == (3, {x: 2, y: -S.Half, z: -S.Half})
+                    x, y, z) == (3, {x: 2, y: Rational(-1, 2), z: Rational(-1, 2)})
 
 
 @pytest.mark.xfail
@@ -89,7 +89,7 @@ def test_simplex():
                    [4, 7, 5]) == (11, (0, 3, 1))
     assert simplex([2, 3, 4], [[3, 2, 1], [2, 5, 3]],
                    [10, 15]) == (20, (0, 0, 5))
-    assert simplex([S.Half, 3, 1, 1],
+    assert simplex([Rational(1, 2), 3, 1, 1],
                    [[1, 1, 1, 1],
                     [-2, -1, 1, 1],
                     [0, 1, 0, -1]],

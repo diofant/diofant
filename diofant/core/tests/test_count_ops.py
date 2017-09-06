@@ -1,8 +1,9 @@
-from diofant import (symbols, sin, exp, cos, Derivative, Integral, Basic,
-                     count_ops, S, And, I, pi, Eq, Or, Not, Xor, Nand, Nor,
-                     Implies, Equivalent, MatrixSymbol, Symbol, ITE,
-                     Integer, Rational)
+from diofant import (ITE, And, Basic, Derivative, Eq, Equivalent, I, Implies,
+                     Integer, Integral, MatrixSymbol, Nand, Nor, Not, Or,
+                     Rational, Symbol, Xor, cos, count_ops, exp, pi, sin,
+                     symbols)
 from diofant.core.containers import Tuple
+
 
 __all__ = ()
 
@@ -14,12 +15,12 @@ def test_count_ops_non_visual():
     def count(val):
         return count_ops(val, visual=False)
     assert count(x) == 0
-    assert count(x) is not S.Zero
+    assert count(x) is not Integer(0)
     assert count(x + y) == 1
-    assert count(x + y) is not S.One
+    assert count(x + y) is not Integer(1)
     assert count(x + y*x + 2*y) == 4
     assert count({x + y: x}) == 1
-    assert count({x + y: Integer(2) + x}) is not S.One
+    assert count({x + y: 2 + x}) is not Integer(1)
     assert count(Or(x, y)) == 1
     assert count(And(x, y)) == 1
     assert count(Not(x)) == 1
@@ -42,8 +43,7 @@ def test_count_ops_visual():
     def count(val):
         return count_ops(val, visual=True)
 
-    assert count(7) is S.Zero
-    assert count(Integer(7)) is S.Zero
+    assert count(7) is Integer(0)
     assert count(-1) == NEG
     assert count(-2) == NEG
     assert count(Rational(2, 3)) == DIV
@@ -53,7 +53,7 @@ def test_count_ops_visual():
     assert count(1 - I) == SUB
     assert count(1 - 2*I) == SUB + MUL
 
-    assert count(x) is S.Zero
+    assert count(x) is Integer(0)
     assert count(-x) == NEG
     assert count(-2*x/3) == NEG + DIV + MUL
     assert count(1/x) == DIV
@@ -87,14 +87,14 @@ def test_count_ops_visual():
 
     assert count(Derivative(x, x)) == D
     assert count(Integral(x, x) + 2*x/(1 + x)) == G + DIV + MUL + 2*ADD
-    assert count(Basic()) is S.Zero
+    assert count(Basic()) is Integer(0)
 
     assert count({x + 1: sin(x)}) == ADD + SIN
     assert count([x + 1, sin(x) + y, None]) == ADD + SIN + ADD
     assert count({x + 1: sin(x), y: cos(x) + 1}) == SIN + COS + 2*ADD
-    assert count({}) is S.Zero
+    assert count({}) is Integer(0)
     assert count([x + 1, sin(x)*y, None]) == SIN + ADD + MUL
-    assert count([]) is S.Zero
+    assert count([]) is Integer(0)
 
     assert count(Basic()) == 0
     assert count(Basic(Basic(), Basic(x, x + y))) == ADD + 2*BASIC
@@ -114,7 +114,7 @@ def test_count_ops_visual():
     assert count(Basic(Tuple(x))) == BASIC + TUPLE
     # It checks that TUPLE is counted as an operation.
 
-    assert count(Eq(x + y, Integer(2))) == ADD
+    assert count(Eq(x + y, 2)) == ADD
 
 
 def test_sympyissue_9324():

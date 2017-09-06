@@ -1,11 +1,10 @@
 """Symbolic primitives + unicode/ASCII abstraction for pretty.py"""
 
 import sys
-import warnings
 import unicodedata
 
-from ..conventions import split_super_sub
 from ...core.alphabets import greeks
+from ..conventions import split_super_sub
 
 
 # first, setup unicodedate environment
@@ -267,10 +266,10 @@ _xobj_ascii = {
     '(':    (( '|', '/', '\\' ), '('),
     ')':    (( '|', '\\', '/' ), ')'),
 
-# XXX this looks ugly
-#   '[':    (( '|', '-', '-' ), '['),
-#   ']':    (( '|', '-', '-' ), ']'),
-# XXX not so ugly :(
+    # XXX this looks ugly
+    #   '[':    (( '|', '-', '-' ), '['),
+    #   ']':    (( '|', '-', '-' ), ']'),
+    # XXX not so ugly :(
     '[':    (( '[', '[', '[' ), '['),
     ']':    (( ']', ']', ']' ), ']'),
 

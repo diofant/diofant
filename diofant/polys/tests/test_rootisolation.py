@@ -2,9 +2,10 @@
 
 import pytest
 
-from diofant.polys.rings import ring
-from diofant.domains import ZZ, QQ, EX
+from diofant.domains import EX, QQ, ZZ
 from diofant.polys.polyerrors import DomainError, RefinementFailed
+from diofant.polys.rings import ring
+
 
 __all__ = ()
 
@@ -211,10 +212,10 @@ def test_dup_isolate_real_roots_sqf():
     a, b, c, d = 10000090000001, 2000100003, 10000300007, 10000005000008
 
     f = 20001600074001600021*x**4 \
-      + 1700135866278935491773999857*x**3 \
-      - 2000179008931031182161141026995283662899200197*x**2 \
-      - 800027600594323913802305066986600025*x \
-      + 100000950000540000725000008
+        + 1700135866278935491773999857*x**3 \
+        - 2000179008931031182161141026995283662899200197*x**2 \
+        - 800027600594323913802305066986600025*x \
+        + 100000950000540000725000008
 
     assert R.dup_isolate_real_roots_sqf(f) == \
         [(-a, -a), (-1, 0), (0, 1), (d, d)]
@@ -294,7 +295,7 @@ def test_dup_isolate_real_roots():
     assert R.dup_isolate_real_roots(-x**2 + 2) == I
 
     f = 16*x**14 - 96*x**13 + 24*x**12 + 936*x**11 - 1599*x**10 - 2880*x**9 + 9196*x**8 \
-      + 552*x**7 - 21831*x**6 + 13968*x**5 + 21690*x**4 - 26784*x**3 - 2916*x**2 + 15552*x - 5832
+        + 552*x**7 - 21831*x**6 + 13968*x**5 + 21690*x**4 - 26784*x**3 - 2916*x**2 + 15552*x - 5832
     g = R.dup_sqf_part(f)
 
     assert R.dup_isolate_real_roots(f) == \

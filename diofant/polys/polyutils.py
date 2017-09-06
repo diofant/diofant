@@ -1,12 +1,13 @@
 """Useful utilities for higher level polynomial classes. """
 
-from collections import defaultdict
 import re
+from collections import defaultdict
 
-from .polyerrors import PolynomialError, GeneratorsNeeded, GeneratorsError
-from .polyoptions import build_options
+from ..core import Add, Mul, Pow, S
 from ..core.exprtools import decompose_power
-from ..core import S, Add, Mul, Pow, expand_mul, expand_multinomial
+from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
+from .polyoptions import build_options
+
 
 _gens_order = {
     'a': 301, 'b': 302, 'c': 303, 'd': 304,

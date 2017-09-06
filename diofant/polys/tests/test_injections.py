@@ -2,9 +2,10 @@
 
 import pytest
 
-from diofant.polys.rings import vring
-from diofant.polys.fields import vfield
 from diofant.domains import QQ
+from diofant.polys.fields import vfield
+from diofant.polys.rings import vring
+
 
 __all__ = ()
 

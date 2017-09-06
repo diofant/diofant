@@ -2,10 +2,10 @@
 
 import pytest
 
-from diofant.simplify.epathtools import epath, EPath
-from diofant import sin, cos, E
+from diofant import E, cos, sin
+from diofant.abc import t, x, y, z
+from diofant.simplify.epathtools import EPath, epath
 
-from diofant.abc import x, y, z, t
 
 __all__ = ()
 
@@ -67,11 +67,11 @@ def test_epath_apply():
 
     assert epath("/*/[0]/int", expr, func) == [((x, 1, t), 2), ((9, y, 16), z)]
     assert epath("/*/[0]/Symbol", expr, func) == [((x**2, 1, t**2), 2),
-                 ((3, y**2, 4), z)]
+                                                  ((3, y**2, 4), z)]
     assert epath(
         "/*/[0]/int[1:]", expr, func) == [((x, 1, t), 2), ((3, y, 16), z)]
     assert epath("/*/[0]/Symbol[1:]", expr, func) == [((x, 1, t**2),
-                 2), ((3, y**2, 4), z)]
+                                                       2), ((3, y**2, 4), z)]
 
     assert epath("/Symbol", x + y + z + 1, func) == x**2 + y**2 + z**2 + 1
     assert epath("/*/*/Symbol", t + sin(x + 1) + cos(x + y + E), func) == \

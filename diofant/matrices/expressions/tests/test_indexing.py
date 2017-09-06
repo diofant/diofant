@@ -1,12 +1,12 @@
 import pytest
 
-from diofant import (symbols, MatrixSymbol, MatPow, BlockMatrix,
-                     Identity, ZeroMatrix, ImmutableMatrix, eye, Sum)
+from diofant import (BlockMatrix, Identity, ImmutableMatrix, MatPow,
+                     MatrixSymbol, Sum, ZeroMatrix, eye, symbols)
+
 
 __all__ = ()
 
-k, l, m, n = symbols('k l m n', integer=True)
-i, j = symbols('i j', integer=True)
+i, j, k, l, m, n = symbols('i j k l m n', integer=True)
 
 W = MatrixSymbol('W', k, l)
 X = MatrixSymbol('X', l, m)

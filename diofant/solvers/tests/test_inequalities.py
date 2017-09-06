@@ -2,19 +2,19 @@
 
 import pytest
 
-from diofant import (And, Eq, FiniteSet, Ge, Gt, Interval, Le, Lt, Ne, oo,
-                     Or, S, sin, sqrt, Symbol, Union, Integral,
-                     Poly, PurePoly, pi, root, log, E, Piecewise,
-                     Integer, Float, Rational)
-from diofant.solvers.inequalities import (reduce_inequalities,
-                                          solve_poly_inequality as psolve,
-                                          reduce_rational_inequalities,
-                                          solve_univariate_inequality as isolve,
-                                          reduce_piecewise_inequality)
+from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
+                     Interval, Le, Lt, Ne, Or, Piecewise, Poly, PurePoly,
+                     Rational, S, Symbol, Union, false, log, oo, pi, root, sin,
+                     sqrt)
+from diofant.abc import x, y
 from diofant.polys.rootoftools import RootOf
+from diofant.solvers.inequalities import solve_poly_inequality as psolve
+from diofant.solvers.inequalities import solve_univariate_inequality as isolve
+from diofant.solvers.inequalities import (reduce_inequalities,
+                                          reduce_piecewise_inequality,
+                                          reduce_rational_inequalities)
 from diofant.solvers.solvers import solve
 
-from diofant.abc import x, y
 
 __all__ = ()
 
@@ -73,7 +73,7 @@ def test_reduce_poly_inequalities_real_interval():
     assert reduce_rational_inequalities(
         [[Gt(x**2, 1.0)]], x, relational=False) == \
         Union(Interval(-inf, -1.0, True, True),
-        Interval(1.0, inf, True, True))
+              Interval(1.0, inf, True, True))
     assert reduce_rational_inequalities([[Ne(
         x**2, 1.0)]], x, relational=False) == \
         FiniteSet(-1.0, 1.0).complement(S.Reals)
@@ -99,14 +99,14 @@ def test_reduce_poly_inequalities_real_interval():
     assert reduce_rational_inequalities(
         [[Lt(x**2 - 2, 0), Ne(x**2 - 1, 0)]], x, relational=False
     ) == Union(Interval(-s, -1, True, True), Interval(-1, 1, True, True),
-        Interval(1, s, True, True))
+               Interval(1, s, True, True))
 
     # issue sympy/sympy#10237
     assert reduce_rational_inequalities(
         [[x < oo, x >= 0, -oo < x]], x, relational=False) == Interval(0, oo, False, True)
 
     assert reduce_rational_inequalities([[Eq((x + 1)/(x**2 - 1),
-                                             0)]], x) is S.false
+                                             0)]], x) is false
 
 
 def test_reduce_poly_inequalities_complex_relational():
@@ -115,7 +115,7 @@ def test_reduce_poly_inequalities_complex_relational():
     assert reduce_rational_inequalities(
         [[Le(x**2, 0)]], x, relational=True) == Eq(x, 0)
     assert reduce_rational_inequalities(
-        [[Lt(x**2, 0)]], x, relational=True) is S.false
+        [[Lt(x**2, 0)]], x, relational=True) is false
     assert reduce_rational_inequalities(
         [[Ge(x**2, 0)]], x, relational=True) == And(Lt(-oo, x), Lt(x, oo))
     assert reduce_rational_inequalities(
@@ -150,7 +150,7 @@ def test_reduce_poly_inequalities_complex_relational():
 
 
 def test_reduce_rational_inequalities_real_relational():
-    assert reduce_rational_inequalities([], x) is S.false
+    assert reduce_rational_inequalities([], x) is false
     assert reduce_rational_inequalities(
         [[(x**2 + 3*x + 2)/(x**2 - 16) >= 0]], x, relational=False) == \
         Union(Interval.open(-oo, -4), Interval(-2, -1), Interval.open(4, oo))
@@ -161,23 +161,23 @@ def test_reduce_rational_inequalities_real_relational():
         Union(Interval.open(-5, 2), Interval.open(2, 3))
 
     assert reduce_rational_inequalities([[(x + 1)/(x - 5) <= 0]], x,
-        relational=False) == \
+                                        relational=False) == \
         Interval.Ropen(-1, 5)
 
     assert reduce_rational_inequalities([[(x**2 + 4*x + 3)/(x - 1) > 0]], x,
-        relational=False) == \
+                                        relational=False) == \
         Union(Interval.open(-3, -1), Interval.open(1, oo))
 
     assert reduce_rational_inequalities([[(x**2 - 16)/(x - 1)**2 < 0]], x,
-        relational=False) == \
+                                        relational=False) == \
         Union(Interval.open(-4, 1), Interval.open(1, 4))
 
     assert reduce_rational_inequalities([[(3*x + 1)/(x + 4) >= 1]], x,
-        relational=False) == \
+                                        relational=False) == \
         Union(Interval.open(-oo, -4), Interval.Ropen(Rational(3, 2), oo))
 
     assert reduce_rational_inequalities([[(x - 8)/x <= 3 - x]], x,
-        relational=False) == \
+                                        relational=False) == \
         Union(Interval.Lopen(-oo, -2), Interval.Lopen(0, 4))
 
 
@@ -189,7 +189,7 @@ def test_reduce_piecewise_inequalities():
     assert reduce_inequalities(abs(x - 5)) == Eq(x, 5)
     assert reduce_inequalities(
         abs(2*x + 3) >= 8) == Or(And(Le(Rational(5, 2), x), Lt(x, oo)),
-        And(Le(x, -Rational(11, 2)), Lt(-oo, x)))
+                                 And(Le(x, -Rational(11, 2)), Lt(-oo, x)))
     assert reduce_inequalities(abs(x - 4) + abs(
         3*x - 5) < 7) == And(Lt(Rational(1, 2), x), Lt(x, 4))
     assert reduce_inequalities(abs(x - 4) + abs(3*abs(x) - 5) < 7) == \
@@ -200,13 +200,13 @@ def test_reduce_piecewise_inequalities():
 
     # sympy/sympy#10198
     assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
-        Or(And(S.Zero < x, x < S.Half), And(-oo < x, x < S.Zero))
+        Or(And(Lt(0, x), x < Rational(1, 2)), And(-oo < x, x < 0))
 
     # sympy/sympy#10255
     assert reduce_inequalities(Piecewise((1, x < 1), (3, True)) > 1) == \
-        And(S.One <= x, x < oo)
+        And(Le(1, x), x < oo)
     assert reduce_inequalities(Piecewise((x**2, x < 0), (2*x, x >= 0)) < 1) == \
-        And(-S.One < x, x < S.Half)
+        And(Lt(-1, x), x < Rational(1, 2))
 
 
 def test_reduce_inequalities_general():
@@ -217,7 +217,7 @@ def test_reduce_inequalities_general():
 def test_reduce_inequalities_boolean():
     assert reduce_inequalities(
         [Eq(x**2, 0), True]) == Eq(x, 0)
-    assert reduce_inequalities([Eq(x**2, 0), False]) is S.false
+    assert reduce_inequalities([Eq(x**2, 0), False]) is false
 
 
 def test_reduce_inequalities_multivariate():
@@ -271,15 +271,15 @@ def test_sympyissue_8235():
 
 def test_sympyissue_5526():
     assert reduce_inequalities(Integer(0) <=
-        x + Integral(y**2, (y, 1, 3)) - 1, [x]) == \
+                               x + Integral(y**2, (y, 1, 3)) - 1, [x]) == \
         And(-Integral(y**2, (y, 1, 3)) + 1 <= x, x < oo)
 
 
 def test_solve_univariate_inequality():
     assert isolve(x**2 >= 4, x, relational=False) == Union(Interval(-oo, -2, True),
-        Interval(2, oo, False, True))
+                                                           Interval(2, oo, False, True))
     assert isolve(x**2 >= 4, x) == Or(And(Le(2, x), Lt(x, oo)), And(Le(x, -2),
-        Lt(-oo, x)))
+                                                                    Lt(-oo, x)))
     assert isolve((x - 1)*(x - 2)*(x - 3) >= 0, x, relational=False) == \
         Union(Interval(1, 2), Interval(3, oo, False, True))
     assert isolve((x - 1)*(x - 2)*(x - 3) >= 0, x) == \
@@ -293,9 +293,9 @@ def test_solve_univariate_inequality():
         Interval(1, oo, True, True)
 
     # XXX should be limited in domain, e.g. between 0 and 2*pi
-    assert isolve(sin(x) < S.Half, x) == \
+    assert isolve(sin(x) < Rational(1, 2), x) == \
         Or(And(-oo < x, x < pi/6), And(5*pi/6 < x, x < oo))
-    assert isolve(sin(x) > S.Half, x) == And(pi/6 < x, x < 5*pi/6)
+    assert isolve(sin(x) > Rational(1, 2), x) == And(pi/6 < x, x < 5*pi/6)
 
     # numerical testing in valid() is needed
     assert isolve(x**7 - x - 2 > 0, x) == \
@@ -309,7 +309,7 @@ def test_solve_univariate_inequality():
     assert isolve((x - 1)/den <= 0, x) == \
         Or(And(-oo < x, x < 1), And(Integer(1) < x, x < 2))
 
-    assert isolve(x > oo, x) is S.false
+    assert isolve(x > oo, x) is false
 
 
 def test_slow_general_univariate():
@@ -333,7 +333,7 @@ def test_sympyissue_8974():
 
 def test_sympyissue_10196():
     assert reduce_inequalities(x**2 >= 0)
-    assert reduce_inequalities(x**2 < 0) is S.false
+    assert reduce_inequalities(x**2 < 0) is false
 
 
 def test_sympyissue_10268():

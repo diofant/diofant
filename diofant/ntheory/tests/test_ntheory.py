@@ -1,36 +1,45 @@
+import random
 from collections import defaultdict
 
 import pytest
 
-from diofant import (Sieve, binomial_coefficients, binomial_coefficients_list,
-                     multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
-                     summation, factorial as fac, pi, GoldenRatio as Phi, sqrt)
-from diofant.core.numbers import Integer, Rational
-from diofant.ntheory import (isprime, n_order, is_primitive_root,
-                             is_quad_residue, legendre_symbol, jacobi_symbol,
-                             npartitions, totient, factorint, primefactors, divisors,
-                             randprime, nextprime, prevprime, primerange, primepi,
-                             prime, pollard_rho, perfect_power, multiplicity,
-                             trailing, divisor_count, primorial, pollard_pm1,
-                             sqrt_mod, primitive_root, quadratic_residues,
-                             is_nthpow_residue, nthroot_mod, sqrt_mod_iter, mobius,
-                             divisor_sigma)
-from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
-from diofant.ntheory.factor_ import (smoothness, smoothness_p, factorrat,
-                                     antidivisors, antidivisor_count, core)
-from diofant.ntheory.generate import cycle_length
-from diofant.ntheory.primetest import _mr_safe_helper, mr
-from diofant.ntheory.modular import crt, crt1, crt2, solve_congruence
-from diofant.ntheory.continued_fraction import (continued_fraction_periodic as cf_p,
-                                                continued_fraction_iterator as cf_i,
-                                                continued_fraction_convergents as cf_c,
-                                                continued_fraction_reduce as cf_r)
-from diofant.ntheory.egyptian_fraction import egyptian_fraction
+from diofant import GoldenRatio as Phi
+from diofant import factorial as fac
+from diofant import (Mul, Pow, Sieve, Symbol, binomial_coefficients,
+                     binomial_coefficients_list, multinomial_coefficients, pi,
+                     sieve, sqrt, summation)
 from diofant.core.add import Add
+from diofant.core.numbers import Integer, Rational
 from diofant.domains import ZZ
+from diofant.ntheory import (divisor_count, divisor_sigma, divisors, factorint,
+                             is_nthpow_residue, is_primitive_root,
+                             is_quad_residue, isprime, jacobi_symbol,
+                             legendre_symbol, mobius, multiplicity, n_order,
+                             nextprime, npartitions, nthroot_mod,
+                             perfect_power, pollard_pm1, pollard_rho,
+                             prevprime, prime, primefactors, primepi,
+                             primerange, primitive_root, primorial,
+                             quadratic_residues, randprime, sqrt_mod,
+                             sqrt_mod_iter, totient, trailing)
+from diofant.ntheory.continued_fraction import \
+    continued_fraction_convergents as cf_c
+from diofant.ntheory.continued_fraction import \
+    continued_fraction_iterator as cf_i
+from diofant.ntheory.continued_fraction import \
+    continued_fraction_periodic as cf_p
+from diofant.ntheory.continued_fraction import \
+    continued_fraction_reduce as cf_r
+from diofant.ntheory.egyptian_fraction import egyptian_fraction
+from diofant.ntheory.factor_ import (antidivisor_count, antidivisors, core,
+                                     factorrat, smoothness, smoothness_p)
+from diofant.ntheory.generate import cycle_length
+from diofant.ntheory.modular import crt, crt1, crt2, solve_congruence
+from diofant.ntheory.multinomial import multinomial_coefficients_iterator
+from diofant.ntheory.primetest import _mr_safe_helper, mr
+from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
 from diofant.utilities.iterables import capture
 from diofant.utilities.randtest import random_complex_number
-from diofant.ntheory.multinomial import multinomial_coefficients_iterator
+
 
 __all__ = ()
 
@@ -190,7 +199,7 @@ def test_generate():
     assert list(primerange(2, 7)) == [2, 3, 5]
     assert list(primerange(2, 10)) == [2, 3, 5, 7]
     assert list(primerange(1050, 1100)) == [1051, 1061,
-        1063, 1069, 1087, 1091, 1093, 1097]
+                                            1063, 1069, 1087, 1091, 1093, 1097]
     s = Sieve()
     for i in range(30, 2350, 376):
         for j in range(2, 5096, 1139):
@@ -220,7 +229,6 @@ def test_generate():
 
 
 def test_randprime():
-    import random
     random.seed(1234)
     assert randprime(2, 3) == 2
     assert randprime(1, 3) == 2
@@ -497,8 +505,8 @@ def test_residue():
     pytest.raises(ValueError, lambda: is_primitive_root(3, 6))
 
     assert [primitive_root(i) for i in range(2, 31)] == [1, 2, 3, 2, 5, 3,
-       None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5,
-       None, 2, 7, 2, None, 2, None]
+                                                         None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5,
+                                                         None, 2, 7, 2, None, 2, None]
 
     for p in primerange(3, 100):
         it = _primitive_root_prime_iter(p)
@@ -534,7 +542,7 @@ def test_residue():
     assert quadratic_residues(12) == [0, 1, 4, 9]
     assert quadratic_residues(13) == [0, 1, 3, 4, 9, 10, 12]
     assert [len(quadratic_residues(i)) for i in range(1, 20)] == \
-      [1, 2, 2, 2, 3, 4, 4, 3, 4, 6, 6, 4, 7, 8, 6, 4, 9, 8, 10]
+        [1, 2, 2, 2, 3, 4, 4, 3, 4, 6, 6, 4, 7, 8, 6, 4, 9, 8, 10]
 
     assert list(sqrt_mod_iter(6, 2)) == [0]
     assert sqrt_mod(3, 13) == 4
@@ -561,11 +569,11 @@ def test_residue():
     assert sqrt_mod(9, 3**5, True) == [3, 78, 84, 159, 165, 240]
     assert sqrt_mod(81, 3**4, True) == [0, 9, 18, 27, 36, 45, 54, 63, 72]
     assert sqrt_mod(81, 3**5, True) == [9, 18, 36, 45, 63, 72, 90, 99, 117,
-            126, 144, 153, 171, 180, 198, 207, 225, 234]
+                                        126, 144, 153, 171, 180, 198, 207, 225, 234]
     assert sqrt_mod(81, 3**6, True) == [9, 72, 90, 153, 171, 234, 252, 315,
-            333, 396, 414, 477, 495, 558, 576, 639, 657, 720]
+                                        333, 396, 414, 477, 495, 558, 576, 639, 657, 720]
     assert sqrt_mod(81, 3**7, True) == [9, 234, 252, 477, 495, 720, 738, 963,
-            981, 1206, 1224, 1449, 1467, 1692, 1710, 1935, 1953, 2178]
+                                        981, 1206, 1224, 1449, 1467, 1692, 1710, 1935, 1953, 2178]
 
     for a, p in [(26214400, 32768000000), (26214400, 16384000000),
                  (262144, 1048576), (87169610025, 163443018796875),
@@ -695,11 +703,11 @@ def test_multinomial_coefficients():
     assert multinomial_coefficients(2, 1) == {(0, 1): 1, (1, 0): 1}
     assert multinomial_coefficients(2, 2) == {(2, 0): 1, (0, 2): 1, (1, 1): 2}
     assert multinomial_coefficients(2, 3) == {(3, 0): 1, (1, 2): 3, (0, 3): 1,
-            (2, 1): 3}
+                                              (2, 1): 3}
     assert multinomial_coefficients(3, 1) == {(1, 0, 0): 1, (0, 1, 0): 1,
-            (0, 0, 1): 1}
+                                              (0, 0, 1): 1}
     assert multinomial_coefficients(3, 2) == {(0, 1, 1): 2, (0, 0, 2): 1,
-            (1, 1, 0): 2, (0, 2, 0): 1, (1, 0, 1): 2, (2, 0, 0): 1}
+                                              (1, 1, 0): 2, (0, 2, 0): 1, (1, 0, 1): 2, (2, 0, 0): 1}
     mc = multinomial_coefficients(4, 2)
     assert mc == {(0, 0, 0, 2): 1, (0, 0, 1, 1): 2, (0, 0, 2, 0): 1,
                   (0, 1, 0, 1): 2, (0, 1, 1, 0): 2, (0, 2, 0, 0): 1,
@@ -707,8 +715,8 @@ def test_multinomial_coefficients():
                   (2, 0, 0, 0): 1}
     mc = multinomial_coefficients(3, 3)
     assert mc == {(2, 1, 0): 3, (0, 3, 0): 1,
-            (1, 0, 2): 3, (0, 2, 1): 3, (0, 1, 2): 3, (3, 0, 0): 1,
-        (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
+                  (1, 0, 2): 3, (0, 2, 1): 3, (0, 1, 2): 3, (3, 0, 0): 1,
+                  (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
     assert dict(multinomial_coefficients_iterator(2, 0)) == {(0, 0): 1}
     assert dict(
         multinomial_coefficients_iterator(2, 1)) == {(0, 1): 1, (1, 0): 1}
@@ -718,7 +726,7 @@ def test_multinomial_coefficients():
     it = multinomial_coefficients_iterator(7, 2)
     assert [next(it) for i in range(4)] == \
         [((2, 0, 0, 0, 0, 0, 0), 1), ((1, 1, 0, 0, 0, 0, 0), 2),
-      ((0, 2, 0, 0, 0, 0, 0), 1), ((1, 0, 1, 0, 0, 0, 0), 2)]
+         ((0, 2, 0, 0, 0, 0, 0), 1), ((1, 0, 1, 0, 0, 0, 0), 2)]
 
 
 def test_sympyissue_4356():
@@ -788,7 +796,7 @@ def test_visual_factorint():
     forty2 = factorint(42, visual=True)
     assert type(forty2) == Mul
     assert str(forty2) == '2**1*3**1*7**1'
-    assert factorint(1, visual=True) is S.One
+    assert factorint(1, visual=True) is Integer(1)
     no = {'evaluate': False}
     assert factorint(42**2, visual=True) == Mul(Pow(2, 2, **no),
                                                 Pow(3, 2, **no),
@@ -900,9 +908,9 @@ def test_continued_fraction():
 
     assert list(cf_c([1, 6, 1, 8])) == [Integer(1), Rational(7, 6), Rational(8, 7), Rational(71, 62)]
     assert list(cf_c([2])) == [Integer(2)]
-    assert list(cf_c([1, 1, 1, 1, 1, 1, 1])) == [S.One, Integer(2), Rational(3, 2), Rational(5, 3),
+    assert list(cf_c([1, 1, 1, 1, 1, 1, 1])) == [1, Integer(2), Rational(3, 2), Rational(5, 3),
                                                  Rational(8, 5), Rational(13, 8), Rational(21, 13)]
-    assert list(cf_c([1, 6, Rational(-1, 2), 4])) == [S.One, Rational(7, 6), Rational(5, 4), Rational(3, 2)]
+    assert list(cf_c([1, 6, Rational(-1, 2), 4])) == [1, Rational(7, 6), Rational(5, 4), Rational(3, 2)]
 
     assert cf_r([1, 6, 1, 8]) == Rational(71, 62)
     assert cf_r([3]) == Integer(3)
@@ -913,7 +921,7 @@ def test_continued_fraction():
 
 
 def test_egyptian_fraction():
-    pytest.raises(ValueError, lambda: egyptian_fraction(S.Half, "spam"))
+    pytest.raises(ValueError, lambda: egyptian_fraction(Rational(1, 2), "spam"))
 
     def test_equality(r, alg="Greedy"):
         return r == Add(*[Rational(1, i) for i in egyptian_fraction(r, alg)])

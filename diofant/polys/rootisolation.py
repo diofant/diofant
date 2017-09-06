@@ -1,15 +1,14 @@
 """Real and complex root isolation and refinement algorithms. """
 
-from .densebasic import (dup_LC, dup_TC, dup_degree, dup_strip,
-                         dup_reverse, dup_convert, dup_terms_gcd)
-from .densearith import dup_neg, dup_rshift, dup_rem
-from .densetools import (dup_clear_denoms, dup_mirror, dup_scale,
-                         dup_shift, dup_transform, dup_diff,
-                         dup_eval, dmp_eval_in, dup_sign_variations,
-                         dup_real_imag)
-from .sqfreetools import dup_sqf_part, dup_sqf_list
+from .densearith import dup_neg, dup_rem, dup_rshift
+from .densebasic import (dup_convert, dup_degree, dup_LC, dup_reverse,
+                         dup_strip, dup_TC, dup_terms_gcd)
+from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
+                         dup_mirror, dup_real_imag, dup_scale, dup_shift,
+                         dup_sign_variations, dup_transform)
 from .factortools import dup_factor_list
-from .polyerrors import RefinementFailed, DomainError
+from .polyerrors import DomainError, RefinementFailed
+from .sqfreetools import dup_sqf_list, dup_sqf_part
 
 
 def dup_sturm(f, K):
@@ -198,7 +197,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
 
     while not c:
         f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c,
-            d), K, fast=fast)
+                                                        d), K, fast=fast)
 
     if eps is not None and steps is not None:
         for i in range(0, steps):
@@ -235,7 +234,7 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
     a, b, c, d = _mobius_from_interval((s, t), K.get_field())
 
     f = dup_transform(f, dup_strip([a, b]),
-                         dup_strip([c, d]), K)
+                      dup_strip([c, d]), K)
 
     if dup_sign_variations(f, K) != 1:
         raise RefinementFailed("there should be exactly one root in (%s, %s) interval" % (s, t))
@@ -246,7 +245,7 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
 def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
     """Refine real root's approximating interval to the given precision. """
     if K.is_QQ:
-        (_, f), K = dup_clear_denoms(f, K, convert=True), K.get_ring()
+        f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
     elif not K.is_ZZ:
         raise DomainError("real root refinement not supported over %s" % K)
 
@@ -502,7 +501,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
     if K.is_QQ:
-        (_, f), K = dup_clear_denoms(f, K, convert=True), K.get_ring()
+        f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
@@ -557,7 +556,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
         I_pos = [ ((u, v), k) for u, v in I_pos ]
     else:
         I_neg, I_pos = _real_isolate_and_disjoin(factors, K,
-            eps=eps, inf=inf, sup=sup, basis=basis, fast=fast)
+                                                 eps=eps, inf=inf, sup=sup, basis=basis, fast=fast)
 
     return sorted(I_neg + I_zero + I_pos)
 
@@ -609,7 +608,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
         factors_list.append((list(f), indices))
 
     I_neg, I_pos = _real_isolate_and_disjoin(factors_list, K, eps=eps,
-        inf=inf, sup=sup, strict=strict, basis=basis, fast=fast)
+                                             inf=inf, sup=sup, strict=strict, basis=basis, fast=fast)
 
     F = K.get_field()
 
@@ -1216,7 +1215,7 @@ def _winding_number(T, field):
 
 
 def _roots_bound(f, F):
-    n, lc = dup_degree(f), abs(dup_LC(f, F))
+    lc = abs(dup_LC(f, F))
     return 2*max(F.quo(abs(c), lc) for c in f)
 
 
@@ -1540,9 +1539,9 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
         return []
 
     if K.is_ZZ:
-        R, F = K, K.get_field()
+        F = K.get_field()
     else:
-        R, F = K.get_ring(), K
+        F = K
 
     f = dup_convert(f, K, F)
 
@@ -1703,7 +1702,7 @@ class RealInterval:
             a, b, c, d = _mobius_from_interval((s, t), dom.get_field())
 
             f = dup_transform(f, dup_strip([a, b]),
-                                 dup_strip([c, d]), dom)
+                              dup_strip([c, d]), dom)
 
             self.mobius = a, b, c, d
         else:
@@ -1827,7 +1826,7 @@ class ComplexInterval:
     def conjugate(self):
         """This complex interval really is located in lower half-plane. """
         return ComplexInterval(self.a, self.b, self.I, self.Q,
-            self.F1, self.F2, self.f1, self.f2, self.domain, conj=True)
+                               self.F1, self.F2, self.f1, self.f2, self.domain, conj=True)
 
     def is_disjoint(self, other):
         """Return ``True`` if two isolation intervals are disjoint. """

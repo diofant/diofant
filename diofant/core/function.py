@@ -33,23 +33,23 @@ import inspect
 import mpmath
 import mpmath.libmp as mlib
 
+from ..utilities.iterables import uniq
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import (iterable, is_sequence, as_int, ordered,
-                            default_sort_key)
+from .compatibility import (as_int, default_sort_key, is_sequence, iterable,
+                            ordered)
+from .containers import Dict, Tuple
 from .decorators import _sympifyit
-from .expr import Expr, AtomicExpr
-from .numbers import Rational, Float
+from .evaluate import global_evaluate
+from .expr import AtomicExpr, Expr
+from .logic import fuzzy_and
+from .numbers import Float, Rational
 from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
 from .sympify import sympify
-from .containers import Tuple, Dict
-from .logic import fuzzy_and
-from .evaluate import global_evaluate
-from ..utilities.iterables import uniq
 
 
 def _coeff_isneg(a):
@@ -83,7 +83,7 @@ class PoleError(Exception):
 class ArgumentIndexError(ValueError):
     def __str__(self):
         return ("Invalid operation with argument number %s for Function %s" %
-               (self.args[1], self.args[0]))
+                (self.args[1], self.args[0]))
 
 
 class FunctionClass(ManagedProperties):
@@ -372,7 +372,7 @@ class Function(Application, Expr):
             # The ideal solution would be just to attach metadata to
             # the exception and change NumPy to take advantage of this.
             temp = ('%(name)s takes %(qual)s %(args)s '
-                   'argument%(plural)s (%(given)s given)')
+                    'argument%(plural)s (%(given)s given)')
             raise TypeError(temp % {
                 'name': cls,
                 'qual': 'exactly' if len(cls.nargs) == 1 else 'at least',
@@ -547,6 +547,7 @@ class Function(Application, Expr):
         -1/x - log(x)/x + log(x)/2 + O(1)
 
         """
+        from .symbol import Dummy
         from ..series import Order
         from ..sets.sets import FiniteSet
         args = self.args
@@ -618,12 +619,13 @@ class Function(Application, Expr):
             return e1.nseries(x, n=n, logx=logx)
         arg = self.args[0]
         f_series = order = S.Zero
-        i, term = 0, None
+        i, terms = 0, []
         while order == 0 or i <= n:
+            term = self.taylor_term(i, arg, *terms)
+            term = term.nseries(x, n=n, logx=logx)
+            terms.append(term)
             if term:
                 f_series += term
-            term = self.taylor_term(i, arg, term)
-            term = term.nseries(x, n=n, logx=logx)
             order = Order(term, x)
             i += 1
         return f_series + order
@@ -632,6 +634,8 @@ class Function(Application, Expr):
         """
         Returns the first derivative of the function.
         """
+        from .symbol import Dummy
+
         if not (1 <= argindex <= len(self.args)):
             raise ArgumentIndexError(self, argindex)
 
@@ -651,7 +655,7 @@ class Function(Application, Expr):
         new_args = [arg for arg in self.args]
         new_args[argindex-1] = arg_dummy
         return Subs(Derivative(self.func(*new_args), arg_dummy),
-            arg_dummy, self.args[argindex - 1])
+                    arg_dummy, self.args[argindex - 1])
 
     def _eval_as_leading_term(self, x):
         """Stub that should be overridden by new Functions to return
@@ -989,6 +993,7 @@ class Derivative(Expr):
             return False
 
     def __new__(cls, expr, *variables, **assumptions):
+        from .symbol import Dummy
 
         expr = sympify(expr)
 
@@ -1068,7 +1073,7 @@ class Derivative(Expr):
         # expr is itself not a Derivative, finish building an unevaluated
         # derivative class by calling Expr.__new__.
         if (not (hasattr(expr, '_eval_derivative') and evaluate) and
-           (not isinstance(expr, Derivative))):
+                (not isinstance(expr, Derivative))):
             variables = list(variablegen)
             # If we wanted to evaluate, we sort the variables into standard
             # order for later comparisons. This is too aggressive if evaluate
@@ -1414,7 +1419,7 @@ class Lambda(Expr):
             # the exception and change NumPy to take advantage of this.
             # XXX does this apply to Lambda? If not, remove this comment.
             temp = ('%(name)s takes exactly %(args)s '
-                   'argument%(plural)s (%(given)s given)')
+                    'argument%(plural)s (%(given)s given)')
             raise TypeError(temp % {
                 'name': self,
                 'args': list(self.nargs)[0],
@@ -1519,7 +1524,7 @@ class Subs(Expr):
         while 1:
             s_pts = {p: Symbol(pre + mystr(p)) for p in pts}
             reps = [(v, s_pts[p])
-                for v, p in zip(variables, point)]
+                    for v, p in zip(variables, point)]
             # if any underscore-preppended symbol is already a free symbol
             # and is a variable with a different point value, then there
             # is a clash, e.g. _0 clashes in Subs(_0 + _1, (_0, _1), (1, 0))
@@ -2024,7 +2029,7 @@ def expand_mul(expr, deep=True):
     E**(x + y)*x*log(x*y**2) + E**(x + y)*y*log(x*y**2)
     """
     return sympify(expr).expand(deep=deep, mul=True, power_exp=False,
-    power_base=False, basic=False, multinomial=False, log=False)
+                                power_base=False, basic=False, multinomial=False, log=False)
 
 
 def expand_multinomial(expr, deep=True):
@@ -2041,7 +2046,7 @@ def expand_multinomial(expr, deep=True):
     2*E**(x + 1)*x + E**(2*x + 2) + x**2
     """
     return sympify(expr).expand(deep=deep, mul=False, power_exp=False,
-    power_base=False, basic=False, multinomial=True, log=False)
+                                power_base=False, basic=False, multinomial=True, log=False)
 
 
 def expand_log(expr, deep=True, force=False):
@@ -2058,8 +2063,8 @@ def expand_log(expr, deep=True, force=False):
     E**(x + y)*(x + y)*(log(x) + 2*log(y))
     """
     return sympify(expr).expand(deep=deep, log=True, mul=False,
-        power_exp=False, power_base=False, multinomial=False,
-        basic=False, force=force)
+                                power_exp=False, power_base=False, multinomial=False,
+                                basic=False, force=force)
 
 
 def expand_func(expr, deep=True):
@@ -2076,7 +2081,7 @@ def expand_func(expr, deep=True):
     x*(x + 1)*gamma(x)
     """
     return sympify(expr).expand(deep=deep, func=True, basic=False,
-    log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
+                                log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
 
 
 def expand_trig(expr, deep=True):
@@ -2094,7 +2099,7 @@ def expand_trig(expr, deep=True):
 
     """
     return sympify(expr).expand(deep=deep, trig=True, basic=False,
-    log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
+                                log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
 
 
 def expand_complex(expr, deep=True):
@@ -2118,7 +2123,7 @@ def expand_complex(expr, deep=True):
     diofant.core.expr.Expr.as_real_imag
     """
     return sympify(expr).expand(deep=deep, complex=True, basic=False,
-    log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
+                                log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
 
 
 def expand_power_base(expr, deep=True, force=False):
@@ -2184,8 +2189,8 @@ def expand_power_base(expr, deep=True, force=False):
     expand
     """
     return sympify(expr).expand(deep=deep, log=False, mul=False,
-        power_exp=False, power_base=True, multinomial=False,
-        basic=False, force=force)
+                                power_exp=False, power_base=True, multinomial=False,
+                                basic=False, force=force)
 
 
 def expand_power_exp(expr, deep=True):
@@ -2206,7 +2211,7 @@ def expand_power_exp(expr, deep=True):
     expand
     """
     return sympify(expr).expand(deep=deep, complex=False, basic=False,
-    log=False, mul=False, power_exp=True, power_base=False, multinomial=False)
+                                log=False, mul=False, power_exp=True, power_base=False, multinomial=False)
 
 
 def count_ops(expr, visual=False):
@@ -2420,6 +2425,7 @@ def nfloat(expr, n=15, exponent=False):
 
     """
     from .power import Pow
+    from .symbol import Dummy
     from ..polys.rootoftools import RootOf
 
     if iterable(expr, exclude=(str,)):
@@ -2461,6 +2467,3 @@ def nfloat(expr, n=15, exponent=False):
     return rv.xreplace(Transform(
         lambda x: x.func(*nfloat(x.args, n, exponent)),
         lambda x: isinstance(x, Function)))
-
-
-from .symbol import Dummy

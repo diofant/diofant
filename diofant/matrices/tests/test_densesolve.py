@@ -1,7 +1,7 @@
-from diofant.matrices.densesolve import (LU, LU_solve, rref_solve,
-                                         cholesky_solve)
-from diofant import Dummy
-from diofant import QQ
+from diofant import QQ, Dummy
+from diofant.matrices.densesolve import (LU, LU_solve, cholesky_solve,
+                                         rref_solve)
+
 
 __all__ = ()
 

@@ -1,5 +1,5 @@
-from .matexpr import MatrixExpr
 from ...core import S
+from .matexpr import MatrixExpr
 
 
 class DiagonalMatrix(MatrixExpr):

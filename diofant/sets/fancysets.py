@@ -1,9 +1,9 @@
-from ..core import Basic, S, Lambda, Integer, Rational
+from ..core import Basic, Integer, Lambda, Rational, S
 from ..core.compatibility import as_int
-from .sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from ..core.singleton import Singleton
-from ..core.sympify import _sympify, converter
+from ..core.sympify import converter, sympify
 from ..utilities.iterables import cantor_product
+from .sets import EmptySet, FiniteSet, Intersection, Interval, Set
 
 
 class Naturals(Set, metaclass=Singleton):
@@ -421,7 +421,7 @@ class Range(Set):
     def _contains(self, other):
         if (((self.start - other)/self.step).is_integer or
                 ((self.stop - other)/self.step).is_integer):
-            return _sympify(other >= self.inf and other <= self.sup)
+            return sympify(other >= self.inf and other <= self.sup, strict=True)
         else:
             return S.false
 

@@ -7,7 +7,8 @@ a collection of enhancements to the standard Python distutils.
 """
 
 import re
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 
 with open('diofant/__init__.py') as f:
@@ -19,9 +20,9 @@ with open('diofant/__init__.py') as f:
         if m:
             __version__ = m.group(1)
 
-setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner']
-extra_reqs = {'exports': ['numpy!=1.13.0,!=1.13.1', 'scipy', 'Theano'],
-              'gmpy': ['gmpy2>2.0.3'],
+setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner', 'isort']
+extra_reqs = {'exports': ['numpy!=1.13.0,!=1.13.1', 'scipy', 'Theano>=0.9.0'],
+              'gmpy': ['gmpy2>=2.0.8'],
               'plot': ['pyparsing!=2.1.2', 'matplotlib'],
               'interactive': ['ipython>=2.3.0'],
               'docs': ['docutils!=0.13.1', 'sphinx>1.5', 'numpydoc',
@@ -29,7 +30,7 @@ extra_reqs = {'exports': ['numpy!=1.13.0,!=1.13.1', 'scipy', 'Theano'],
               }
 extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
                          'flake8-docstrings', 'pep8-naming',
-                         'flake8-comprehensions',
+                         'flake8-comprehensions', 'flake8-isort',
                          'pytest-cov', 'coverage'] + setup_reqs
 
 setup(name='Diofant',

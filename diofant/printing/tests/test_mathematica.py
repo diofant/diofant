@@ -1,19 +1,19 @@
 import pytest
 
-from diofant.core import (S, pi, oo, symbols, Function, Dummy,
-                          Rational, Integer, Tuple, Derivative,
-                          Eq, Ne, Le, Gt, AlgebraicNumber)
-from diofant.integrals import Integral
+from diofant import mathematica_code as mcode
 from diofant.concrete import Sum
-from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
-                               Min, Max, Piecewise, binomial,
-                               log, tan, cot, asin, acos, atan, sinh, cosh,
-                               tanh, coth, sech, csch)
+from diofant.core import (AlgebraicNumber, Catalan, Derivative, Dummy, E, Eq,
+                          EulerGamma, Function, Gt, Integer, Le, Ne, Rational,
+                          Tuple, oo, pi, symbols)
+from diofant.functions import (Max, Min, Piecewise, acos, asin, atan, atanh,
+                               binomial, cos, cosh, cot, coth, csch, erfc, exp,
+                               hyper, log, meijerg, sech, sign, sin, sinh, tan,
+                               tanh)
+from diofant.integrals import Integral
+from diofant.logic import Or, false, true
 from diofant.matrices import Matrix
-from diofant.logic import Or, true, false
 from diofant.polys import Poly, RootOf
 
-from diofant import mathematica_code as mcode
 
 __all__ = ()
 
@@ -70,6 +70,7 @@ def test_Function():
     assert mcode(coth(x)) == "Coth[x]"
     assert mcode(sech(x)) == "Sech[x]"
     assert mcode(csch(x)) == "Csch[x]"
+    assert mcode(erfc(x)) == "Erfc[x]"
 
     class myfunc1(Function):
         @classmethod
@@ -116,10 +117,10 @@ def test_Mul():
 def test_constants():
     assert mcode(pi) == "Pi"
     assert mcode(oo) == "Infinity"
-    assert mcode(S.NegativeInfinity) == "-Infinity"
-    assert mcode(S.EulerGamma) == "EulerGamma"
-    assert mcode(S.Catalan) == "Catalan"
-    assert mcode(S.Exp1) == "E"
+    assert mcode(-oo) == "-Infinity"
+    assert mcode(EulerGamma) == "EulerGamma"
+    assert mcode(Catalan) == "Catalan"
+    assert mcode(E) == "E"
 
 
 def test_containers():

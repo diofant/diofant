@@ -1,12 +1,13 @@
 import pytest
 
-from diofant import (symbols, log, Float, nan, oo, zoo, I, pi, E, O, exp,
-                     Symbol, LambertW, sqrt, Rational, expand_log, S, sign,
-                     conjugate, Integer, sin, cos, sinh, cosh, tanh,
-                     exp_polar, re, Function, simplify, arg)
+from diofant import (E, Float, I, Integer, LambertW, O, Rational, Symbol, arg,
+                     conjugate, cos, cosh, exp, exp_polar, expand_log, log,
+                     nan, oo, pi, re, sign, simplify, sin, sinh, sqrt, symbols,
+                     tanh, zoo)
+from diofant.abc import m, n, x, y, z
+from diofant.concrete import Product, Sum
 from diofant.core.function import ArgumentIndexError
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -23,8 +24,8 @@ def test_exp_values():
 
     assert exp(0) == 1
     assert exp(1) == E
-    assert exp(-1 + x).as_base_exp() == (S.Exp1, x - 1)
-    assert exp(1 + x).as_base_exp() == (S.Exp1, x + 1)
+    assert exp(-1 + x).as_base_exp() == (E, x - 1)
+    assert exp(+1 + x).as_base_exp() == (E, x + 1)
 
     assert exp(pi*I/2) == I
     assert exp(pi*I) == -1
@@ -78,7 +79,7 @@ def test_exp__as_base_exp():
     assert E**(2*x) == exp(2*x)
     assert E**(x*y) == exp(x*y)
 
-    assert exp(x).base is S.Exp1
+    assert exp(x).base is E
     assert exp(x).exp == x
 
 
@@ -161,7 +162,7 @@ def test_log_values():
 
     assert exp(-log(3))**(-1) == 3
 
-    assert log(S.Half) == -log(2)
+    assert log(Rational(1, 2)) == -log(2)
     assert log(2*3).func is log
     assert log(2*3**2).func is log
 
@@ -320,8 +321,8 @@ def test_log_expand():
     x, y, z = symbols('x,y,z', positive=True)
     assert log(x*(y + z)).expand(mul=False) == log(x) + log(y + z)
     assert log(log(x**2)*log(y*z)).expand() in [log(2*log(x)*log(y) +
-        2*log(x)*log(z)), log(log(x)*log(z) + log(y)*log(x)) + log(2),
-        log((log(y) + log(z))*log(x)) + log(2)]
+                                                    2*log(x)*log(z)), log(log(x)*log(z) + log(y)*log(x)) + log(2),
+                                                log((log(y) + log(z))*log(x)) + log(2)]
     assert log(x**log(x**2)).expand(deep=False) == log(x)*log(x**2)
     assert log(x**log(x**2)).expand() == 2*log(x)**2
     assert (log(x*(y + z))*(x + y)), expand(mul=True, log=True) == y*log(
@@ -373,9 +374,9 @@ def test_lambertw():
     p = Symbol('p', positive=True)
     assert LambertW(p, evaluate=False).is_extended_real
     assert LambertW(p - 1, evaluate=False).is_extended_real is None
-    assert LambertW(-p - 2/S.Exp1, evaluate=False).is_extended_real is False
-    assert LambertW(S.Half, -1, evaluate=False).is_extended_real is False
-    assert LambertW(-S.One/10, -1, evaluate=False).is_extended_real
+    assert LambertW(-p - 2/E, evaluate=False).is_extended_real is False
+    assert LambertW(Rational(1, 2), -1, evaluate=False).is_extended_real is False
+    assert LambertW(Rational(-1, 10), -1, evaluate=False).is_extended_real
 
     assert LambertW(0, evaluate=False).is_algebraic
     na = Symbol('na', nonzero=True, algebraic=True)
@@ -398,7 +399,7 @@ def test_sympyissue_5673():
     assert e.is_comparable is False
     assert e.is_positive is not True
     e2 = 1 - 1/(1 - exp(-1000))
-    assert e.is_positive is not True
+    assert e2.is_positive is not True
     e3 = -2 + exp(exp(LambertW(log(2)))*LambertW(log(2)))
     assert e3.is_nonzero is not True
 
@@ -460,14 +461,11 @@ def test_polar():
 
 
 def test_log_product():
-    from diofant.abc import n, m
     i, j = symbols('i,j', positive=True, integer=True)
     x, y = symbols('x,y', positive=True)
-    from diofant.concrete import Product, Sum
-    f, g = Function('f'), Function('g')
     assert simplify(log(Product(x**i, (i, 1, n)))) == Sum(i*log(x), (i, 1, n))
     assert simplify(log(Product(x**i*y**j, (i, 1, n), (j, 1, m)))) == \
-            log(Product(x**i*y**j, (i, 1, n), (j, 1, m)))
+        log(Product(x**i*y**j, (i, 1, n), (j, 1, m)))
 
     expr = log(Product(-2, (n, 0, 4)))
     assert simplify(expr) == expr

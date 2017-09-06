@@ -2,13 +2,14 @@
 
 import pytest
 
-from diofant.polys.rings import ring
-from diofant.domains import FF, ZZ, QQ, RR, EX
+from diofant import I, nextprime, sin, sqrt
+from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.polys import polyconfig as config
-from diofant.polys.polyerrors import DomainError
 from diofant.polys.polyclasses import ANP
+from diofant.polys.polyerrors import DomainError
+from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys, w_polys
-from diofant import nextprime, sin, sqrt, I
+
 
 __all__ = ()
 
@@ -207,11 +208,11 @@ def test_dup_zz_factor():
              (216*x**4 + 31*x**2 - 27, 1)])
 
     f = -29802322387695312500000000000000000000*x**25 \
-      + 2980232238769531250000000000000000*x**20 \
-      + 1743435859680175781250000000000*x**15 \
-      + 114142894744873046875000000*x**10 \
-      - 210106372833251953125*x**5 \
-      + 95367431640625
+        + 2980232238769531250000000000000000*x**20 \
+        + 1743435859680175781250000000000*x**15 \
+        + 114142894744873046875000000*x**10 \
+        - 210106372833251953125*x**5 \
+        + 95367431640625
 
     assert R.dup_zz_factor(f) == \
         (-95367431640625, [(5*x - 1, 1),
@@ -292,13 +293,13 @@ def test_dmp_zz_wang():
 
     assert R.dmp_zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
 
-    H_1 = [44*x**2 + 42*x + 1, 126*x**2 - 9*x + 28, 187*x**2 - 23]
-    H_2 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y, x**2*y**2 - 9*x**2 + y - 9]
-    H_3 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y, x**2*y**2 - 9*x**2 + y - 9]
+    # H_1 = [44*x**2 + 42*x + 1, 126*x**2 - 9*x + 28, 187*x**2 - 23]
+    # H_2 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y, x**2*y**2 - 9*x**2 + y - 9]
+    # H_3 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y, x**2*y**2 - 9*x**2 + y - 9]
 
-    c_1 = -70686*x**5 - 5863*x**4 - 17826*x**3 + 2009*x**2 + 5031*x + 74
-    c_2 = 9*x**5*y**4 + 12*x**5*y**3 - 45*x**5*y**2 - 108*x**5*y - 324*x**5 + 18*x**4*y**3 - 216*x**4*y**2 - 810*x**4*y + 2*x**3*y**4 + 9*x**3*y**3 - 252*x**3*y**2 - 288*x**3*y - 945*x**3 - 30*x**2*y**2 - 414*x**2*y + 2*x*y**3 - 54*x*y**2 - 3*x*y + 81*x + 12*y
-    c_3 = -36*x**4*y**2 - 108*x**4*y - 27*x**3*y**2 - 36*x**3*y - 108*x**3 - 8*x**2*y**2 - 42*x**2*y - 6*x*y**2 + 9*x + 2*y
+    # c_1 = -70686*x**5 - 5863*x**4 - 17826*x**3 + 2009*x**2 + 5031*x + 74
+    # c_2 = 9*x**5*y**4 + 12*x**5*y**3 - 45*x**5*y**2 - 108*x**5*y - 324*x**5 + 18*x**4*y**3 - 216*x**4*y**2 - 810*x**4*y + 2*x**3*y**4 + 9*x**3*y**3 - 252*x**3*y**2 - 288*x**3*y - 945*x**3 - 30*x**2*y**2 - 414*x**2*y + 2*x*y**3 - 54*x*y**2 - 3*x*y + 81*x + 12*y
+    # c_3 = -36*x**4*y**2 - 108*x**4*y - 27*x**3*y**2 - 36*x**3*y - 108*x**3 - 8*x**2*y**2 - 42*x**2*y - 6*x*y**2 + 9*x + 2*y
 
     # TODO
     # assert R.dmp_zz_diophantine(H_1, c_1, [], 5, p) == [-3*x, -2, 1]
@@ -557,7 +558,7 @@ def test_dup_factor_list():
 
     assert R.dup_factor_list(f) == \
         (4*t, [(x, 1),
-             (x + t, 1)])
+               (x + t, 1)])
 
     Rt, t = ring("t", QQ)
     R, x = ring("x", Rt)
@@ -566,7 +567,7 @@ def test_dup_factor_list():
 
     assert R.dup_factor_list(f) == \
         (QQ(1, 2)*t, [(x, 1),
-                    (x + t, 1)])
+                      (x + t, 1)])
 
     R, x = ring("x", QQ.algebraic_field(I))
 
@@ -667,7 +668,7 @@ def test_dmp_factor_list():
 
     assert R.dmp_factor_list(f) == \
         (4*t, [(x, 1),
-             (x + t, 1)])
+               (x + t, 1)])
 
     Rt, t = ring("t", QQ)
     R, x, y = ring("x,y", Rt)
@@ -675,7 +676,7 @@ def test_dmp_factor_list():
 
     assert R.dmp_factor_list(f) == \
         (QQ(1, 2)*t, [(x, 1),
-                    (x + t, 1)])
+                      (x + t, 1)])
 
     R, x, y = ring("x,y", FF(2))
     pytest.raises(NotImplementedError, lambda: R.dmp_factor_list(x**2 + y**2))

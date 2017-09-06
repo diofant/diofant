@@ -1,17 +1,18 @@
 import pytest
 
+from diofant import cos, sin
 from diofant.core.function import Derivative
-from diofant.vector.vector import Vector
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.simplify import simplify
-from diofant.core.symbol import symbols
 from diofant.core.numbers import Integer
-from diofant import sin, cos
+from diofant.core.symbol import symbols
+from diofant.simplify import simplify
+from diofant.vector.coordsysrect import CoordSysCartesian
+from diofant.vector.deloperator import Del
 from diofant.vector.functions import (curl, divergence, gradient,
                                       is_conservative, is_solenoidal,
                                       scalar_potential,
                                       scalar_potential_difference)
-from diofant.vector.deloperator import Del
+from diofant.vector.vector import Vector
+
 
 __all__ = ()
 
@@ -58,7 +59,7 @@ def test_del_operator():
             divergence(v, C))
     assert delop & v == delop.dot(v)
     assert delop.dot(1/(x*y*z) * (i + j + k), doit=True) == \
-           - 1 / (x*y*z**2) - 1 / (x*y**2*z) - 1 / (x**2*y*z)
+        - 1 / (x*y*z**2) - 1 / (x*y**2*z) - 1 / (x**2*y*z)
     v = x*i + y*j + z*k
     assert (delop & v == Derivative(C.x, C.x) +
             Derivative(C.y, C.y) + Derivative(C.z, C.z))
@@ -132,7 +133,7 @@ def test_product_rules():
     # Second product rule
     lhs = delop(u & v).doit()
     rhs = ((u ^ (delop ^ v)) + (v ^ (delop ^ u)) +
-          ((u & delop)(v)) + ((v & delop)(u))).doit()
+           ((u & delop)(v)) + ((v & delop)(u))).doit()
     assert simplify(lhs) == simplify(rhs)
 
     # Third product rule
@@ -153,7 +154,7 @@ def test_product_rules():
     # Sixth product rule
     lhs = (delop ^ (u ^ v)).doit()
     rhs = ((u * (delop & v) - v * (delop & u) +
-           (v & delop)(u) - (u & delop)(v))).doit()
+            (v & delop)(u) - (u & delop)(v))).doit()
     assert simplify(lhs) == simplify(rhs)
 
 

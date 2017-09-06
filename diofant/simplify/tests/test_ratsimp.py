@@ -1,6 +1,6 @@
-from diofant import ratsimpmodprime, ratsimp, Rational, sqrt, pi, log, erf
+from diofant import Rational, erf, log, pi, ratsimp, ratsimpmodprime, sqrt
+from diofant.abc import a, b, c, d, e, t, x, y, z
 
-from diofant.abc import x, y, z, t, a, b, c, d, e
 
 __all__ = ()
 

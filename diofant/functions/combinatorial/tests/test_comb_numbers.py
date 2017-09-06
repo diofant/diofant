@@ -1,16 +1,25 @@
 import string
+from random import choice
 
 import pytest
 
-from diofant import (Symbol, symbols, Dummy, S, Sum, Rational, oo, pi, I,
-                     expand_func, diff, EulerGamma, cancel, re, im,
-                     Product, Integer, sstr)
-from diofant.functions import (bernoulli, harmonic, bell, fibonacci, lucas, euler,
-                               catalan, genocchi, binomial, gamma, sqrt, hyper, log,
-                               digamma, trigamma, polygamma, factorial, sin,
-                               cos, cot, zeta)
-
+from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
+                     Rational, Sum, Symbol, cancel, diff, expand_func, im, nan,
+                     oo, pi, re, sstr, symbols, zoo)
 from diofant.abc import x
+from diofant.combinatorics.permutations import Permutation
+from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
+                               digamma, euler, factorial, fibonacci, gamma,
+                               genocchi, harmonic, hyper, log, lucas,
+                               polygamma, sin, sqrt, trigamma, zeta)
+from diofant.functions.combinatorial.numbers import (_AOP_product,
+                                                     _multiset_histogram, nC,
+                                                     nP, nT, stirling)
+from diofant.utilities.iterables import (multiset_combinations,
+                                         multiset_partitions,
+                                         multiset_permutations, partitions,
+                                         permutations, subsets)
+
 
 __all__ = ()
 
@@ -65,7 +74,7 @@ def test_fibonacci():
     assert fibonacci(3, x) == x**2 + 1
     assert fibonacci(4, x) == x**3 + 2*x
 
-    assert fibonacci(x).rewrite(sqrt) == (S.GoldenRatio**x - cos(S.Pi*x)/S.GoldenRatio**x)/sqrt(5)
+    assert fibonacci(x).rewrite(sqrt) == (GoldenRatio**x - cos(pi*x)/GoldenRatio**x)/sqrt(5)
     assert fibonacci(x).rewrite('tractable') == fibonacci(x).rewrite(sqrt)
 
     pytest.raises(ValueError, lambda: fibonacci(-2, x))
@@ -138,9 +147,9 @@ def test_harmonic():
     assert harmonic(3, 3) == Rational(251, 216)
     assert harmonic(4, 3) == Rational(2035, 1728)
 
-    assert harmonic(oo, -1) == S.NaN
+    assert harmonic(oo, -1) == nan
     assert harmonic(oo, 0) == oo
-    assert harmonic(oo, S.Half) == oo
+    assert harmonic(oo, Rational(1, 2)) == oo
     assert harmonic(oo, 1) == oo
     assert harmonic(oo, 2) == (pi**2)/6
     assert harmonic(oo, 3) == zeta(3)
@@ -156,53 +165,53 @@ def test_harmonic_rational():
 
     Heee = harmonic(ne + pe/qe)
     Aeee = (-log(10) + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-             + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 13944145/Integer(4720968))
+            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
+            + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 13944145/Integer(4720968))
 
     Heeo = harmonic(ne + pe/qo)
     Aeeo = (-log(26) + 2*log(sin(3*pi/13))*cos(4*pi/13) + 2*log(sin(2*pi/13))*cos(32*pi/13)
-             + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
-             - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2 - 2*log(sin(pi/13))*cos(3*pi/13)
-             + 2422020029/Integer(702257080))
+            + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
+            - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2 - 2*log(sin(pi/13))*cos(3*pi/13)
+            + 2422020029/Integer(702257080))
 
     Heoe = harmonic(ne + po/qe)
     Aeoe = (-log(20) + 2*(1/Integer(4) + sqrt(5)/4)*log(-1/Integer(4) + sqrt(5)/4)
-             + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
-             + 11818877030/Integer(4286604231) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
+            + 11818877030/Integer(4286604231) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
 
     Heoo = harmonic(ne + po/qo)
     Aeoo = (-log(26) + 2*log(sin(3*pi/13))*cos(54*pi/13) + 2*log(sin(4*pi/13))*cos(6*pi/13)
-             + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
-             - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
-             - 2*log(sin(2*pi/13))*cos(3*pi/13) + 11669332571/Integer(3628714320))
+            + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
+            - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
+            - 2*log(sin(2*pi/13))*cos(3*pi/13) + 11669332571/Integer(3628714320))
 
     Hoee = harmonic(no + pe/qe)
     Aoee = (-log(10) + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-             + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 779405/Integer(277704))
+            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
+            + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 779405/Integer(277704))
 
     Hoeo = harmonic(no + pe/qo)
     Aoeo = (-log(26) + 2*log(sin(3*pi/13))*cos(4*pi/13) + 2*log(sin(2*pi/13))*cos(32*pi/13)
-             + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
-             - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2
-             - 2*log(sin(pi/13))*cos(3*pi/13) + 53857323/Integer(16331560))
+            + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
+            - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2
+            - 2*log(sin(pi/13))*cos(3*pi/13) + 53857323/Integer(16331560))
 
     Hooe = harmonic(no + po/qe)
     Aooe = (-log(20) + 2*(1/Integer(4) + sqrt(5)/4)*log(-1/Integer(4) + sqrt(5)/4)
-             + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-             + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
-             + 486853480/Integer(186374097) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
+            + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
+            + 486853480/Integer(186374097) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
 
     Hooo = harmonic(no + po/qo)
     Aooo = (-log(26) + 2*log(sin(3*pi/13))*cos(54*pi/13) + 2*log(sin(4*pi/13))*cos(6*pi/13)
-             + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
-             - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
-             - 2*log(sin(2*pi/13))*cos(3*pi/13) + 383693479/Integer(125128080))
+            + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
+            - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
+            - 2*log(sin(2*pi/13))*cos(3*pi/13) + 383693479/Integer(125128080))
 
     H = [Heee, Heeo, Heoe, Heoo, Hoee, Hoeo, Hooe, Hooo]
     A = [Aeee, Aeeo, Aeoe, Aeoo, Aoee, Aoeo, Aooe, Aooo]
@@ -236,8 +245,8 @@ def test_harmonic_rewrite_polygamma():
 
     assert expand_func(harmonic(n, 2)).func is harmonic
 
-    assert expand_func(harmonic(n + S.Half)) == expand_func(harmonic(n + S.Half))
-    assert expand_func(harmonic(-S.Half)) == harmonic(-S.Half)
+    assert expand_func(harmonic(n + Rational(1, 2))) == expand_func(harmonic(n + Rational(1, 2)))
+    assert expand_func(harmonic(Rational(-1, 2))) == harmonic(Rational(-1, 2))
     assert expand_func(harmonic(x)) == harmonic(x)
 
 
@@ -293,7 +302,7 @@ def test_euler():
 
     assert euler(20).evalf() == 370371188237525.0
     assert euler(20, evaluate=False).evalf() == 370371188237525.0
-    assert euler(S.Half).evalf() == euler(S.Half)
+    assert euler(Rational(1, 2)).evalf() == euler(Rational(1, 2))
 
     assert euler(n).rewrite(Sum) == euler(n)
     # XXX: Not sure what the guy who wrote this test was trying to do with the _j and _k stuff
@@ -334,7 +343,7 @@ def test_catalan():
         0, x + Rational(1, 2)) - polygamma(0, x + 2) + log(4))*catalan(x)
 
     assert catalan(x).evalf() == catalan(x)
-    c = catalan(S.Half).evalf()
+    c = catalan(Rational(1, 2)).evalf()
     assert str(c) == '0.848826363156775'
     c = catalan(I).evalf(3)
     assert sstr((re(c), im(c))) == '(0.398, -0.0209)'
@@ -346,7 +355,7 @@ def test_genocchi():
         assert genocchi(n + 1) == g
 
     assert genocchi(Symbol('z', zero=True) + 1) == 1
-    pytest.raises(ValueError, lambda: genocchi(S.Half))
+    pytest.raises(ValueError, lambda: genocchi(Rational(1, 2)))
 
     m = Symbol('m', integer=True)
     n = Symbol('n', integer=True, positive=True)
@@ -368,15 +377,6 @@ def test_genocchi():
 
 
 def test_nC_nP_nT():
-    from diofant.utilities.iterables import (
-        multiset_permutations, multiset_combinations, multiset_partitions,
-        partitions, subsets, permutations)
-    from diofant.functions.combinatorial.numbers import (
-        nP, nC, nT, stirling, _multiset_histogram, _AOP_product)
-    from diofant.combinatorics.permutations import Permutation
-    from diofant.core.numbers import oo
-    from random import choice
-
     c = string.ascii_lowercase
     for i in range(100):
         s = ''.join(choice(c) for i in range(7))
@@ -456,41 +456,41 @@ def test_nC_nP_nT():
         stirling(4, i, kind=1) for i in range(5)]
     # http://oeis.org/A008275
     assert [stirling(n, k, signed=1)
-        for n in range(10) for k in range(1, n + 1)] == [
-            1, -1,
-            1, 2, -3,
-            1, -6, 11, -6,
-            1, 24, -50, 35, -10,
-            1, -120, 274, -225, 85, -15,
-            1, 720, -1764, 1624, -735, 175, -21,
-            1, -5040, 13068, -13132, 6769, -1960, 322, -28,
-            1, 40320, -109584, 118124, -67284, 22449, -4536, 546, -36, 1]
+            for n in range(10) for k in range(1, n + 1)] == [
+        1, -1,
+        1, 2, -3,
+        1, -6, 11, -6,
+        1, 24, -50, 35, -10,
+        1, -120, 274, -225, 85, -15,
+        1, 720, -1764, 1624, -735, 175, -21,
+        1, -5040, 13068, -13132, 6769, -1960, 322, -28,
+        1, 40320, -109584, 118124, -67284, 22449, -4536, 546, -36, 1]
     # http://en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
     assert [stirling(n, k, kind=1)
-        for n in range(10) for k in range(n+1)] == [
-            1,
-            0, 1,
-            0, 1, 1,
-            0, 2, 3, 1,
-            0, 6, 11, 6, 1,
-            0, 24, 50, 35, 10, 1,
-            0, 120, 274, 225, 85, 15, 1,
-            0, 720, 1764, 1624, 735, 175, 21, 1,
-            0, 5040, 13068, 13132, 6769, 1960, 322, 28, 1,
-            0, 40320, 109584, 118124, 67284, 22449, 4536, 546, 36, 1]
+            for n in range(10) for k in range(n+1)] == [
+        1,
+        0, 1,
+        0, 1, 1,
+        0, 2, 3, 1,
+        0, 6, 11, 6, 1,
+        0, 24, 50, 35, 10, 1,
+        0, 120, 274, 225, 85, 15, 1,
+        0, 720, 1764, 1624, 735, 175, 21, 1,
+        0, 5040, 13068, 13132, 6769, 1960, 322, 28, 1,
+        0, 40320, 109584, 118124, 67284, 22449, 4536, 546, 36, 1]
     # http://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
     assert [stirling(n, k, kind=2)
-        for n in range(10) for k in range(n+1)] == [
-            1,
-            0, 1,
-            0, 1, 1,
-            0, 1, 3, 1,
-            0, 1, 7, 6, 1,
-            0, 1, 15, 25, 10, 1,
-            0, 1, 31, 90, 65, 15, 1,
-            0, 1, 63, 301, 350, 140, 21, 1,
-            0, 1, 127, 966, 1701, 1050, 266, 28, 1,
-            0, 1, 255, 3025, 7770, 6951, 2646, 462, 36, 1]
+            for n in range(10) for k in range(n+1)] == [
+        1,
+        0, 1,
+        0, 1, 1,
+        0, 1, 3, 1,
+        0, 1, 7, 6, 1,
+        0, 1, 15, 25, 10, 1,
+        0, 1, 31, 90, 65, 15, 1,
+        0, 1, 63, 301, 350, 140, 21, 1,
+        0, 1, 127, 966, 1701, 1050, 266, 28, 1,
+        0, 1, 255, 3025, 7770, 6951, 2646, 462, 36, 1]
     assert stirling(3, 4, kind=1) == stirling(3, 4, kind=1) == 0
     pytest.raises(ValueError, lambda: stirling(-2, 2))
     pytest.raises(ValueError, lambda: stirling(9, 1, kind=3))
@@ -540,9 +540,9 @@ def test_sympyissue_8496():
 def test_sympyissue_8601():
     n = Symbol('n', integer=True, negative=True)
 
-    assert catalan(n - 1) == S.Zero
-    assert catalan(-S.Half) == S.ComplexInfinity
-    assert catalan(-S.One) == -S.Half
+    assert catalan(n - 1) == 0
+    assert catalan(Rational(-1, 2)) == zoo
+    assert catalan(-1) == Rational(-1, 2)
     c1 = catalan(-5.6).evalf()
     assert str(c1) == '6.93334070531408e-5'
     c2 = catalan(-35.4).evalf()

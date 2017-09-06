@@ -1,10 +1,10 @@
 import pytest
 
-from diofant.matrices.expressions.slice import MatrixSlice
-from diofant.matrices.expressions import MatrixSymbol
-from diofant.functions.elementary.integers import floor
-
 from diofant.abc import a, b, c, d, k, l, m, n
+from diofant.functions.elementary.integers import floor
+from diofant.matrices.expressions import MatrixSymbol
+from diofant.matrices.expressions.slice import MatrixSlice
+
 
 __all__ = ()
 

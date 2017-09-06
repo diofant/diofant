@@ -2,17 +2,21 @@ from math import log as _log
 
 from mpmath.libmp import sqrtrem as mpmath_sqrtrem
 
-from .sympify import _sympify
-from .cache import cacheit
-from .singleton import S
-from .expr import Expr
-from .evalf import PrecisionExhausted
-from .function import (_coeff_isneg, expand_complex, expand_multinomial,
-                       expand_mul)
-from .logic import fuzzy_or
-from .compatibility import as_int
-from .evaluate import global_evaluate
 from ..utilities.iterables import sift
+from .add import Add
+from .cache import cacheit
+from .compatibility import as_int
+from .evalf import PrecisionExhausted
+from .evaluate import global_evaluate
+from .expr import Expr
+from .function import (_coeff_isneg, expand_complex, expand_mul,
+                       expand_multinomial)
+from .logic import fuzzy_or
+from .mul import Mul, _keep_coeff
+from .numbers import Integer
+from .singleton import S
+from .symbol import Dummy, symbols
+from .sympify import sympify
 
 
 def integer_nthroot(y, n):
@@ -166,8 +170,8 @@ class Pow(Expr):
             evaluate = global_evaluate[0]
         from ..functions.elementary.exponential import exp_polar
 
-        b = _sympify(b)
-        e = _sympify(e)
+        b = sympify(b, strict=True)
+        e = sympify(e, strict=True)
         if evaluate:
             if e is S.Zero:
                 return S.One
@@ -664,8 +668,8 @@ class Pow(Expr):
         # that don't have an _eval_expand method
         if nc:
             nc = [i._eval_expand_power_base(**hints)
-                if hasattr(i, '_eval_expand_power_base') else i
-                for i in nc]
+                  if hasattr(i, '_eval_expand_power_base') else i
+                  for i in nc]
 
             if e.is_Integer:
                 if e.is_positive:
@@ -864,7 +868,7 @@ class Pow(Expr):
                     multi = (base**(n - 1))._eval_expand_multinomial()
                     if multi.is_Add:
                         return Add(*[f*g for f in base.args
-                            for g in multi.args])
+                                     for g in multi.args])
                     else:
                         # XXX can this ever happen if base was an Add?
                         return Add(*[f*multi for f in base.args])
@@ -995,7 +999,7 @@ class Pow(Expr):
 
         if self.base.has(*syms):
             return bool(self.base._eval_is_polynomial(syms) and
-                self.exp.is_Integer and (self.exp >= 0))
+                        self.exp.is_Integer and (self.exp >= 0))
         else:
             return True
 
@@ -1038,7 +1042,7 @@ class Pow(Expr):
             return self.base.is_algebraic
         elif self.base.is_algebraic and self.exp.is_algebraic:
             if ((self.base.is_nonzero and (self.base - 1).is_nonzero)
-                 or self.base.is_irrational):
+                    or self.base.is_irrational):
                 return self.exp.is_rational
 
     def _eval_is_rational_function(self, syms):
@@ -1110,7 +1114,7 @@ class Pow(Expr):
 
         diofant.core.basic.Basic.matches
         """
-        expr = _sympify(expr)
+        expr = sympify(expr, strict=True)
 
         # special case, pattern = 1 and expr.exp can match to 0
         if expr is S.One:
@@ -1351,9 +1355,3 @@ class Pow(Expr):
             return
 
         return e.equals(0)
-
-
-from .add import Add
-from .numbers import Integer
-from .mul import Mul, _keep_coeff
-from .symbol import Dummy, symbols

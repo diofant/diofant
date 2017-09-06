@@ -1,9 +1,9 @@
-from ..simplify import simplify, trigsimp
-from ..core.decorators import call_highest_priority, _sympifyit
+from ..core import Add, Expr, Integer, Mul, count_ops, diff
 from ..core.assumptions import StdFactKB
-from ..core import Add, Mul, count_ops, Integer, Expr, diff
-from ..polys import factor
+from ..core.decorators import _sympifyit, call_highest_priority
 from ..integrals import Integral
+from ..polys import factor
+from ..simplify import simplify, trigsimp
 
 
 class BasisDependent(Expr):

@@ -2,10 +2,11 @@
 
 import pytest
 
-from diofant.polys.polyclasses import DMP, DMF, ANP
-from diofant.domains import ZZ, QQ
-from diofant.polys.specialpolys import f_polys
+from diofant.domains import QQ, ZZ
+from diofant.polys.polyclasses import ANP, DMF, DMP
 from diofant.polys.polyerrors import ExactQuotientFailed, PolynomialError
+from diofant.polys.specialpolys import f_polys
+
 
 __all__ = ()
 
@@ -281,7 +282,7 @@ def test_DMP_functionality():
 def test_DMP_exclude():
     f = [[[[[[[[[[[[[[[[[[[[[[[[[[1]], [[]]]]]]]]]]]]]]]]]]]]]]]]]]
     J = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-        18, 19, 20, 21, 22, 24, 25]
+         18, 19, 20, 21, 22, 24, 25]
 
     assert DMP(f, ZZ).exclude() == (J, DMP([1, 0], ZZ))
     assert DMP([[1], [1, 0]], ZZ).exclude() == ([], DMP([[1], [1, 0]], ZZ))
@@ -565,7 +566,7 @@ def test___hash__():
     assert DMF(
         ([[1, 2], [3]], [[1]]), ZZ) == DMF(([[int(1), int(2)], [int(3)]], [[int(1)]]), ZZ)
     assert hash(DMF(([[1, 2], [3]], [[1]]), ZZ)) == hash(DMF(([[int(1),
-                int(2)], [int(3)]], [[int(1)]]), ZZ))
+                                                                int(2)], [int(3)]], [[int(1)]]), ZZ))
     assert ANP([1, 1], [1, 0, 1], ZZ) == ANP([int(1), int(1)], [int(1), int(0), int(1)], ZZ)
     assert hash(
         ANP([1, 1], [1, 0, 1], ZZ)) == hash(ANP([int(1), int(1)], [int(1), int(0), int(1)], ZZ))

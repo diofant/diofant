@@ -1,6 +1,6 @@
-from ..core import Basic, cacheit, sympify, Symbol
-from ..functions import sin, cos
-from ..matrices import eye, rot_axis1, rot_axis2, rot_axis3, ImmutableMatrix
+from ..core import Basic, Symbol, cacheit, sympify
+from ..functions import cos, sin
+from ..matrices import ImmutableMatrix, eye, rot_axis1, rot_axis2, rot_axis3
 
 
 class Orienter(Basic):

@@ -1,15 +1,15 @@
 import pytest
 from strategies.core import null_safe
 
-from diofant.core import I, symbols, Basic
+from diofant.core import Basic, I, symbols
 from diofant.functions import adjoint, transpose
-from diofant.matrices import (Identity, Inverse, Matrix, MatrixSymbol,
-                              ZeroMatrix, eye, ImmutableMatrix)
-from diofant.matrices.expressions import Adjoint, Transpose, det, MatPow
-from diofant.matrices.expressions.matexpr import ShapeError
-from diofant.matrices.expressions.matmul import (factor_in_front, remove_ids,
-                                                 MatMul, xxinv, any_zeros,
-                                                 unpack, only_squares)
+from diofant.matrices import (Identity, ImmutableMatrix, Inverse, Matrix,
+                              MatrixSymbol, ShapeError, ZeroMatrix, eye)
+from diofant.matrices.expressions import Adjoint, MatPow, Transpose, det
+from diofant.matrices.expressions.matmul import (MatMul, any_zeros,
+                                                 factor_in_front, only_squares,
+                                                 remove_ids, unpack, xxinv)
+
 
 __all__ = ()
 
@@ -54,7 +54,7 @@ def test_remove_ids():
     assert remove_ids(MatMul(A, Identity(m), B, evaluate=False)) == \
         MatMul(A, B, evaluate=False)
     assert null_safe(remove_ids)(MatMul(Identity(n), evaluate=False)) == \
-                                 MatMul(Identity(n), evaluate=False)
+        MatMul(Identity(n), evaluate=False)
 
 
 def test_xxinv():

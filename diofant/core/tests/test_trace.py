@@ -1,7 +1,8 @@
 import pytest
 
-from diofant import symbols, Matrix, Tuple
+from diofant import Matrix, Tuple, symbols
 from diofant.core.trace import Tr
+
 
 __all__ = ()
 

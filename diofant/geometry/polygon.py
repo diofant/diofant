@@ -1,18 +1,18 @@
 import warnings
 
-from ..core import Expr, S, sympify, oo, pi, Symbol
+from ..core import Expr, S, Symbol, oo, pi, sympify
 from ..core.compatibility import as_int
-from ..functions import sign, Piecewise, cos, sin, tan
-from .exceptions import GeometryError
+from ..functions import Piecewise, cos, sign, sin, tan
 from ..logic import And
 from ..matrices import Matrix
 from ..simplify import simplify
 from ..utilities import default_sort_key
-from ..utilities.iterables import has_variety, has_dups, uniq
-from .entity import GeometryEntity, GeometrySet
-from .point import Point
+from ..utilities.iterables import has_dups, has_variety, uniq
 from .ellipse import Circle
+from .entity import GeometryEntity, GeometrySet
+from .exceptions import GeometryError
 from .line import Line, Segment
+from .point import Point
 from .util import _symbol
 
 

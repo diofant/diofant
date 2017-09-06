@@ -1,18 +1,22 @@
 import inspect
+from random import random
 
 import pytest
 
-from diofant import (Lambda, Symbol, Function, Derivative, Subs, sqrt,
-                     log, exp, Rational, Float, sin, cos, acos, diff, I, re, im,
-                     E, expand, pi, O, Sum, S, polygamma, loggamma, expint,
-                     Tuple, Dummy, Eq, Expr, symbols, nfloat, Integer)
-from diofant.core.function import PoleError, _mexpand
+from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
+                     Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
+                     Symbol, Tuple, acos, cos, diff, exp, expand, expint,
+                     floor, im, log, loggamma, nfloat, pi, polygamma, re, sin,
+                     sqrt, symbols)
+from diofant.abc import a, b, t, w, x, y, z
+from diofant.core.basic import _aresame
+from diofant.core.cache import clear_cache
+from diofant.core.function import (ArgumentIndexError, PoleError,
+                                   UndefinedFunction, _mexpand)
 from diofant.sets.sets import FiniteSet
 from diofant.solvers import solve
 from diofant.utilities.iterables import subsets, variations
-from diofant.core.cache import clear_cache
 
-from diofant.abc import t, w, x, y, z
 
 __all__ = ()
 
@@ -168,7 +172,7 @@ def test_Lambda():
     assert Lambda(x, 2*x) + Lambda(y, 2*y) == 2*Lambda(x, 2*x)
     assert Lambda(x, 2*x) not in [ Lambda(x, x) ]
     pytest.raises(TypeError, lambda: Lambda(1, x))
-    assert Lambda(x, 1)(1) is S.One
+    assert Lambda(x, 1)(1) is Integer(1)
 
     assert (2*x).canonical_variables == {}
     assert Lambda(x, 2*x).canonical_variables == {x: Symbol('0_')}
@@ -300,19 +304,19 @@ def test_deriv1():
     assert (f(x)**3).diff(x) == 3*f(x)**2*f(x).diff(x)
     assert (
         f(2*x)**3).diff(x) == 6*f(2*x)**2*Subs(Derivative(f(x), x), Tuple(x),
-            Tuple(2*x))
+                                               Tuple(2*x))
 
     assert f(2 + x).diff(x) == Subs(Derivative(f(x), x), Tuple(x), Tuple(x + 2))
     assert f(2 + 3*x).diff(x) == 3*Subs(Derivative(f(x), x), Tuple(x),
-            Tuple(3*x + 2))
+                                        Tuple(3*x + 2))
     assert f(3*sin(x)).diff(x) == 3*cos(x)*Subs(Derivative(f(x), x),
-            Tuple(x), Tuple(3*sin(x)))
+                                                Tuple(x), Tuple(3*sin(x)))
 
     # See issue sympy/sympy#8510
     assert f(x, x + z).diff(x) == Subs(Derivative(f(y, x + z), y), Tuple(y), Tuple(x)) \
-            + Subs(Derivative(f(x, y), y), Tuple(y), Tuple(x + z))
+        + Subs(Derivative(f(x, y), y), Tuple(y), Tuple(x + z))
     assert f(x, x**2).diff(x) == Subs(Derivative(f(y, x**2), y), Tuple(y), Tuple(x)) \
-            + 2*x*Subs(Derivative(f(x, y), y), Tuple(y), Tuple(x**2))
+        + 2*x*Subs(Derivative(f(x, y), y), Tuple(y), Tuple(x**2))
 
 
 def test_deriv2():
@@ -432,7 +436,6 @@ def test_doit():
 
 
 def test_evalf_default():
-    from diofant.functions.special.gamma_functions import polygamma
     assert type(sin(4.0)) == Float
     assert type(re(sin(I + 1.0))) == Float
     assert type(im(sin(I + 1.0))) == Float
@@ -442,7 +445,7 @@ def test_evalf_default():
 
 
 def test_sympyissue_5399():
-    args = [x, y, Integer(2), S.Half]
+    args = [x, y, Integer(2), Rational(1, 2)]
 
     def ok(a):
         """Return True if the input args for diff are ok"""
@@ -455,27 +458,24 @@ def test_sympyissue_5399():
         # every symbol is followed by symbol or int
         # every number is followed by a symbol
         return (all(a[i + 1].is_Symbol or a[i + 1].is_Integer
-            for i in s_at if i + 1 < len(a)) and
-            all(a[i + 1].is_Symbol
-            for i in n_at if i + 1 < len(a)))
+                    for i in s_at if i + 1 < len(a)) and
+                all(a[i + 1].is_Symbol
+                    for i in n_at if i + 1 < len(a)))
     eq = x**10*y**8
     for a in subsets(args):
         for v in variations(a, len(a)):
             if ok(v):
-                noraise = eq.diff(*v)
+                eq.diff(*v)   # not raises
             else:
                 pytest.raises(ValueError, lambda: eq.diff(*v))
 
 
 def test_derivative_numerically():
-    from random import random
     z0 = random() + I*random()
     assert abs(Derivative(sin(x), x).doit_numerically(z0) - cos(z0)) < 1e-15
 
 
 def test_fdiff_argument_index_error():
-    from diofant.core.function import ArgumentIndexError
-
     class myfunc(Function):
         nargs = 1  # define since there is no eval routine
 
@@ -631,9 +631,6 @@ def test_unhandled():
 
 
 def test_nfloat():
-    from diofant.core.basic import _aresame
-    from diofant.polys.rootoftools import RootOf
-
     x = Symbol("x")
     eq = x**Rational(4, 3) + 4*x**Rational(1, 3)/3
     assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**Rational(1, 3))
@@ -666,7 +663,6 @@ def test_nfloat():
 
 
 def test_sympyissue_7068():
-    from diofant.abc import a, b
     f = Function('f')
     y1 = Dummy('y')
     y2 = Dummy('y')
@@ -681,7 +677,6 @@ def test_sympyissue_7068():
 
 
 def test_sympyissue_7231():
-    from diofant.abc import a
     ans1 = f(x).series(x, a)
     _xi_1 = ans1.atoms(Dummy).pop()
     res = (f(a) + (-a + x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1,), (a,)) +
@@ -698,8 +693,6 @@ def test_sympyissue_7231():
 
 
 def test_sympyissue_7687():
-    from diofant.core.function import Function
-    from diofant.abc import x
     f = Function('f')(x)
     ff = Function('f')(x)
     match_with_cache = ff.matches(f)
@@ -711,8 +704,6 @@ def test_sympyissue_7687():
 
 
 def test_sympyissue_7688():
-    from diofant.core.function import Function, UndefinedFunction
-
     f = Function('f')  # actually an UndefinedFunction
     clear_cache()
 
@@ -724,9 +715,8 @@ def test_sympyissue_7688():
 
 
 def test_mexpand():
-    from diofant.abc import x
     assert _mexpand(None) is None
-    assert _mexpand(1) is S.One
+    assert _mexpand(1) is Integer(1)
     assert _mexpand(x*(x + 1)**2) == (x*(x + 1)**2).expand()
 
 
@@ -746,7 +736,19 @@ def test_sympyissue_12005():
     e3 = Subs(Derivative(f(x) + y**2 - y, y), (y,), (y**2,))
     assert e3.diff(y) == 4*y
     e4 = Subs(Derivative(f(x + y), y), (y,), (x**2))
-    assert e4.diff(y) == S.Zero
+    assert e4.diff(y) == 0
     e5 = Subs(Derivative(f(x), x), (y, z), (y, z))
     assert e5.diff(x) == Derivative(f(x), x, x)
-    assert f(g(x)).diff(g(x), g(x)) == Subs(Derivative(Function('f')(y), y, y), (y,), (g(x),))
+    assert f(g(x)).diff(g(x), g(x)) == Subs(Derivative(f(y), y, y), (y,), (g(x),))
+
+
+def test_sympyissue_13098():
+    assert floor(log(Float('9.9999999000000006'), 10)) == 0
+    assert floor(log(Float('9.9999999899999992'), 10)) == 0
+    assert floor(log(Float(('15.9999999999999999999999999999999999'
+                            '99999999999999999999001'), dps=56), 2)) == 4
+    assert floor(log(Float('16.0'), 2)) == 4
+    assert floor(log(Float('99.99999999999999999999999007',
+                           dps=25), 10)) == 2
+    assert floor(log(Float('999.99999000000003'), 10)) == 2
+    assert floor(log(Float('999.999999'), 10)) == 2

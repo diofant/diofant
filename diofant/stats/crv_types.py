@@ -41,15 +41,17 @@ WignerSemicircle
 
 import random
 
-from ..core import pi, S, Dummy, sympify, Eq, Lambda, Expr, oo, Rational
 from ..concrete import Sum
+from ..core import Dummy, Eq, Expr, Lambda, Rational, S, oo, pi, sympify
+from ..functions import beta as beta_fn
+from ..functions import (Abs, Piecewise, besseli, binomial, cos, exp,
+                         factorial, floor, gamma, log, sqrt)
 from ..logic import And
-from ..functions import (beta as beta_fn, cos, exp, besseli, log, sqrt,
-                         binomial, factorial, floor, Abs, gamma, Piecewise)
 from ..sets import Interval
-from .crv import (SingleContinuousPSpace, SingleContinuousDistribution,
-                  ContinuousDistributionHandmade)
+from .crv import (ContinuousDistributionHandmade, SingleContinuousDistribution,
+                  SingleContinuousPSpace)
 from .rv import _value_check
+
 
 __all__ = ('ContinuousRV',
            'Arcsin',
@@ -202,7 +204,7 @@ class BeniniDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         alpha, beta, sigma = self.alpha, self.beta, self.sigma
         return (exp(-alpha*log(x/sigma) - beta*log(x/sigma)**2)
-               * (alpha/x + 2*beta*log(x/sigma)/x))
+                * (alpha/x + 2*beta*log(x/sigma)/x))
 
 
 def Benini(name, alpha, beta, sigma):
@@ -867,7 +869,7 @@ class FDistributionDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         d1, d2 = self.d1, self.d2
         return (sqrt((d1*x)**d1*d2**d2 / (d1*x+d2)**(d1+d2))
-               / (x * beta_fn(d1/2, d2/2)))
+                / (x * beta_fn(d1/2, d2/2)))
 
 
 def FDistribution(name, d1, d2):
@@ -938,7 +940,7 @@ class FisherZDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         d1, d2 = self.d1, self.d2
         return (2*d1**(d1/2)*d2**(d2/2) / beta_fn(d1/2, d2/2) *
-               exp(d1*x) / (d1*exp(2*x)+d2)**((d1+d2)/2))
+                exp(d1*x) / (d1*exp(2*x)+d2)**((d1+d2)/2))
 
 
 def FisherZ(name, d1, d2):

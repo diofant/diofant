@@ -3,10 +3,11 @@
 import pytest
 
 from diofant.core import I
-from diofant.polys.rings import ring
-from diofant.domains import FF, ZZ, QQ
+from diofant.domains import FF, QQ, ZZ
 from diofant.polys.polyerrors import DomainError, MultivariatePolynomialError
+from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
+
 
 __all__ = ()
 

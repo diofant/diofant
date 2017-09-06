@@ -7,18 +7,17 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
-from mpmath import bernfrac, workprec, mp
+from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
-from ...core import (S, Rational, Integer, Add, Dummy, cacheit, Function,
-                     expand_mul, E, pi, LessThan, StrictGreaterThan, Expr,
-                     prod)
-from ...core.compatibility import as_int, DIOFANT_INTS
-from .factorials import binomial, factorial
+from ...core import (Add, Dummy, E, Expr, Function, Integer, Rational, S,
+                     cacheit, expand_mul, pi, prod)
+from ...core.compatibility import DIOFANT_INTS, as_int
+from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
 from ..elementary.integers import floor
-from ..elementary.trigonometric import sin, cos, cot
-from ...utilities.memoization import recurrence_memo
+from ..elementary.trigonometric import cos, cot, sin
+from .factorials import binomial, factorial
 
 
 def _product(a, b):
@@ -105,7 +104,7 @@ class fibonacci(Function):
             else:
                 if n < 1:
                     raise ValueError("Fibonacci polynomials are defined "
-                       "only for positive integer indices.")
+                                     "only for positive integer indices.")
                 return cls._fibpoly(n).subs(_sym, sym)
 
     def _eval_rewrite_as_sqrt(self, n, sym=None):
@@ -677,8 +676,8 @@ class harmonic(Function):
                     k = Dummy("k")
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
                     t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
-                                   log(sin((pi * k) / q)),
-                                   (k, 1, floor((q - 1) / Integer(2))))
+                                 log(sin((pi * k) / q)),
+                                 (k, 1, floor((q - 1) / Integer(2))))
                     t3 = (pi / 2) * cot((pi * p) / q) + log(2 * q)
                     return t1 + t2 - t3
 

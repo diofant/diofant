@@ -1,17 +1,21 @@
+from random import uniform
+
 import pytest
 
-from diofant import (jn, yn, symbols, Symbol, sin, cos, pi, S, jn_zeros, besselj,
-                     bessely, besseli, besselk, hankel1, hankel2, expand_func,
-                     sqrt, sinh, cosh, diff, series, gamma, hyper, Abs, I, O, oo,
-                     conjugate, Integer, Rational)
-from diofant.functions.special.bessel import fn
-from diofant.functions.special.bessel import (airyai, airybi,
-                                              airyaiprime, airybiprime)
-from diofant.utilities.randtest import (random_complex_number as randcplx,
-                                        verify_numerically as tn,
-                                        test_derivative_numerically as td,
-                                        _randint)
-from diofant.abc import z, n, k, x
+from diofant import (Abs, I, Integer, Limit, O, Rational, Symbol, besseli,
+                     besselj, besselk, besselsimp, bessely, conjugate, cos,
+                     cosh, diff, exp, exp_polar, expand_func, gamma, hankel1,
+                     hankel2, hyper, im, jn, jn_zeros, log, nan, oo, pi,
+                     polar_lift, re, series, sin, sinh, sqrt, yn, zoo)
+from diofant.abc import k, n, x, y, z
+from diofant.core.function import ArgumentIndexError
+from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
+                                              airybiprime, fn)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import verify_derivative_numerically as td
+from diofant.utilities.randtest import verify_numerically as tn
+from diofant.utilities.randtest import _randint
+
 
 __all__ = ()
 
@@ -37,16 +41,27 @@ def test_diff():
     assert hankel1(n, z).diff(z) == hankel1(n - 1, z)/2 - hankel1(n + 1, z)/2
     assert hankel2(n, z).diff(z) == hankel2(n - 1, z)/2 - hankel2(n + 1, z)/2
 
+    pytest.raises(ArgumentIndexError, lambda: besselj(n, z).fdiff(3))
+    pytest.raises(ArgumentIndexError, lambda: jn(n, z).fdiff(3))
+    pytest.raises(ArgumentIndexError, lambda: airyai(z).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: airybi(z).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: airyaiprime(z).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: airybiprime(z).fdiff(2))
+
 
 def test_rewrite():
-    from diofant import polar_lift, exp, I
-
     assert besselj(n, z).rewrite(jn) == sqrt(2*z/pi)*jn(n - Rational(1, 2), z)
     assert bessely(n, z).rewrite(yn) == sqrt(2*z/pi)*yn(n - Rational(1, 2), z)
     assert besseli(n, z).rewrite(besselj) == \
         exp(-I*n*pi/2)*besselj(n, polar_lift(I)*z)
     assert besselj(n, z).rewrite(besseli) == \
         exp(I*n*pi/2)*besseli(n, polar_lift(-I)*z)
+    assert besselj(2, z).rewrite(bessely) == besselj(2, z)
+    assert bessely(2, z).rewrite(besselj) == bessely(2, z)
+    assert bessely(2, z).rewrite(besseli) == bessely(2, z)
+    assert besselk(2, z).rewrite(besseli) == besselk(2, z)
+    assert besselk(2, z).rewrite(besselj) == besselk(2, z)
+    assert besselk(2, z).rewrite(bessely) == besselk(2, z)
 
     nu = randcplx()
 
@@ -65,12 +80,11 @@ def test_rewrite():
 
 
 def test_expand():
-    from diofant import besselsimp, Symbol, exp, exp_polar, I
-
     assert expand_func(besselj(Rational(1, 2), z).rewrite(jn)) == \
         sqrt(2)*sin(z)/(sqrt(pi)*sqrt(z))
     assert expand_func(bessely(Rational(1, 2), z).rewrite(yn)) == \
         -sqrt(2)*cos(z)/(sqrt(pi)*sqrt(z))
+    assert expand_func(besselj(I, z)) == besselj(I, z)
 
     # XXX: teach sin/cos to work around arguments like
     # x*exp_polar(I*pi*n/2).  Then change besselsimp -> expand_func
@@ -165,7 +179,6 @@ def test_expand():
 
 
 def test_fn():
-    x, z = symbols("x z")
     assert fn(1, z) == 1/z**2
     assert fn(2, z) == -1/z + 3/z**3
     assert fn(3, z) == -6/z**2 + 15/z**4
@@ -181,7 +194,6 @@ def myn(n, z):
 
 
 def test_jn():
-    z = symbols("z")
     assert mjn(0, z) == sin(z)/z
     assert mjn(1, z) == sin(z)/z**2 - cos(z)/z
     assert mjn(2, z) == (3/z**3 - 1/z)*sin(z) - (3/z**2) * cos(z)
@@ -197,7 +209,6 @@ def test_jn():
 
 
 def test_yn():
-    z = symbols("z")
     assert myn(0, z) == -cos(z)/z
     assert myn(1, z) == -cos(z)/z**2 - sin(z)/z
     assert myn(2, z) == -((3/z**3 - 1/z)*cos(z) + (3/z**2)*sin(z))
@@ -225,34 +236,33 @@ def test_jn_zeros():
 
 
 def test_bessel_eval():
-    from diofant import I, Symbol
     n, m, k = Symbol('n', integer=True), Symbol('m'), Symbol('k', integer=True, zero=False)
 
     for f in [besselj, besseli]:
-        assert f(0, 0) == S.One
-        assert f(2.1, 0) == S.Zero
-        assert f(-3, 0) == S.Zero
-        assert f(-10.2, 0) == S.ComplexInfinity
-        assert f(1 + 3*I, 0) == S.Zero
-        assert f(-3 + I, 0) == S.ComplexInfinity
-        assert f(-2*I, 0) == S.NaN
-        assert f(n, 0) != S.One and f(n, 0) != S.Zero
-        assert f(m, 0) != S.One and f(m, 0) != S.Zero
-        assert f(k, 0) == S.Zero
+        assert f(0, 0) == 1
+        assert f(2.1, 0) == 0
+        assert f(-3, 0) == 0
+        assert f(-10.2, 0) == zoo
+        assert f(1 + 3*I, 0) == 0
+        assert f(-3 + I, 0) == zoo
+        assert f(-2*I, 0) == nan
+        assert f(n, 0) not in (0, 1)
+        assert f(m, 0) not in (0, 1)
+        assert f(k, 0) == 0
 
-    assert bessely(0, 0) == S.NegativeInfinity
-    assert besselk(0, 0) == S.Infinity
+    assert bessely(0, 0) == -oo
+    assert besselk(0, 0) == +oo
     for f in [bessely, besselk]:
-        assert f(1 + I, 0) == S.ComplexInfinity
-        assert f(I, 0) == S.NaN
+        assert f(1 + I, 0) == zoo
+        assert f(I, 0) == nan
 
     for f in [besselj, bessely]:
-        assert f(m, S.Infinity) == S.Zero
-        assert f(m, S.NegativeInfinity) == S.Zero
+        assert f(m, +oo) == 0
+        assert f(m, -oo) == 0
 
     for f in [besseli, besselk]:
-        assert f(m, I*S.Infinity) == S.Zero
-        assert f(m, I*S.NegativeInfinity) == S.Zero
+        assert f(m, +I*oo) == 0
+        assert f(m, -I*oo) == 0
 
     for f in [besseli, besselk]:
         assert f(-4, z) == f(4, z)
@@ -282,11 +292,10 @@ def test_bessel_eval():
 
 def test_bessel_nan():
     for f in [besselj, bessely, besseli, besselk, hankel1, hankel2, yn, jn]:
-        assert f(1, S.NaN) == S.NaN
+        assert f(1, nan) == nan
 
 
 def test_conjugate():
-    from diofant import conjugate, I, Symbol
     n, z, x = Symbol('n'), Symbol('z', extended_real=False), Symbol('x', extended_real=True)
     y, t = Symbol('y', extended_real=True, positive=True), Symbol('t', negative=True)
 
@@ -321,7 +330,6 @@ def test_conjugate():
 
 
 def test_branching():
-    from diofant import exp_polar, polar_lift, Symbol, I, exp
     assert besselj(polar_lift(k), x) == besselj(k, x)
     assert besseli(polar_lift(k), x) == besseli(k, x)
 
@@ -332,7 +340,6 @@ def test_branching():
     assert besseli(n, polar_lift(x)) == besseli(n, x)
 
     def tn(func, s):
-        from random import uniform
         c = uniform(1, 5)
         expr = func(s, c*exp_polar(I*pi)) - func(s, c*exp_polar(-I*pi))
         eps = 1e-15
@@ -367,6 +374,7 @@ def test_airy_base():
 
 def test_airyai():
     z = Symbol('z', extended_real=False)
+    r = Symbol('r', extended_real=True)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 
@@ -380,6 +388,9 @@ def test_airyai():
 
     assert series(airyai(z), z, 0, 3) == (
         3**Rational(5, 6)*gamma(Rational(1, 3))/(6*pi) - 3**Rational(1, 6)*z*gamma(Rational(2, 3))/(2*pi) + O(z**3))
+
+    l = Limit(airyai(I/x)/(exp(-Rational(2, 3)*(I/x)**Rational(3, 2))*sqrt(pi*sqrt(I/x))/2), x, 0)
+    assert l.doit() == l  # cover _airyais._eval_aseries
 
     assert airyai(z).rewrite(hyper) == (
         -3**Rational(2, 3)*z*hyper((), (Rational(4, 3),), z**Integer(3)/9)/(3*gamma(Rational(1, 3))) +
@@ -399,6 +410,21 @@ def test_airyai():
     assert expand_func(airyai(2*(3*z**5)**Rational(1, 3))) == (
         -sqrt(3)*(-1 + (z**5)**Rational(1, 3)/z**Rational(5, 3))*airybi(2*3**Rational(1, 3)*z**Rational(5, 3))/6 +
         (1 + (z**5)**Rational(1, 3)/z**Rational(5, 3))*airyai(2*3**Rational(1, 3)*z**Rational(5, 3))/2)
+    assert expand_func(airyai(x*y)) == airyai(x*y)
+    assert expand_func(airyai(log(x))) == airyai(log(x))
+    assert expand_func(airyai(2*(3*z**5)**Rational(1, 5))) == airyai(2*(3*z**5)**Rational(1, 5))
+
+    assert (airyai(r).as_real_imag() ==
+            airyai(r).as_real_imag(deep=False) == (airyai(r), 0))
+    assert airyai(x).as_real_imag() == airyai(x).as_real_imag(deep=False)
+    assert (airyai(x).as_real_imag() ==
+            (airyai(re(x) - I*re(x)*abs(im(x))/abs(re(x)))/2 +
+             airyai(re(x) + I*re(x)*abs(im(x))/abs(re(x)))/2,
+             I*(airyai(re(x) - I*re(x)*abs(im(x))/abs(re(x))) -
+                airyai(re(x) + I*re(x)*abs(im(x))/Abs(re(x)))) *
+             re(x)*abs(im(x))/(2*im(x)*abs(re(x)))))
+
+    assert airyai(x).taylor_term(-1, x) == 0
 
 
 def test_airybi():
@@ -416,25 +442,34 @@ def test_airybi():
 
     assert series(airybi(z), z, 0, 3) == (
         3**Rational(1, 3)*gamma(Rational(1, 3))/(2*pi) + 3**Rational(2, 3)*z*gamma(Rational(2, 3))/(2*pi) + O(z**3))
+    l = Limit(airybi(I/x)/(exp(Rational(2, 3)*(I/x)**Rational(3, 2))*sqrt(pi*sqrt(I/x))), x, 0)
+    assert l.doit() == l
 
     assert airybi(z).rewrite(hyper) == (
         3**Rational(1, 6)*z*hyper((), (Rational(4, 3),), z**Integer(3)/9)/gamma(Rational(1, 3)) +
         3**Rational(5, 6)*hyper((), (Rational(2, 3),), z**Integer(3)/9)/(3*gamma(Rational(2, 3))))
 
     assert isinstance(airybi(z).rewrite(besselj), airybi)
-    assert airyai(t).rewrite(besselj) == (
-        sqrt(-t)*(besselj(-Rational(1, 3), 2*(-t)**Rational(3, 2)/3) +
-                  besselj(Rational(1, 3), 2*(-t)**Rational(3, 2)/3))/3)
+    assert (airybi(t).rewrite(besselj) ==
+            sqrt(3)*sqrt(-t)*(besselj(-1/3, 2*(-t)**Rational(3, 2)/3) -
+                              besselj(Rational(1, 3),
+                                      2*(-t)**Rational(3, 2)/3))/3)
     assert airybi(z).rewrite(besseli) == (
         sqrt(3)*(z*besseli(Rational(1, 3), 2*z**Rational(3, 2)/3)/(z**Rational(3, 2))**Rational(1, 3) +
                  (z**Rational(3, 2))**Rational(1, 3)*besseli(-Rational(1, 3), 2*z**Rational(3, 2)/3))/3)
     assert airybi(p).rewrite(besseli) == (
         sqrt(3)*sqrt(p)*(besseli(-Rational(1, 3), 2*p**Rational(3, 2)/3) +
                          besseli(Rational(1, 3), 2*p**Rational(3, 2)/3))/3)
+    assert airybi(p).rewrite(besselj) == airybi(p)
 
     assert expand_func(airybi(2*(3*z**5)**Rational(1, 3))) == (
         sqrt(3)*(1 - (z**5)**Rational(1, 3)/z**Rational(5, 3))*airyai(2*3**Rational(1, 3)*z**Rational(5, 3))/2 +
         (1 + (z**5)**Rational(1, 3)/z**Rational(5, 3))*airybi(2*3**Rational(1, 3)*z**Rational(5, 3))/2)
+    assert expand_func(airybi(x*y)) == airybi(x*y)
+    assert expand_func(airybi(log(x))) == airybi(log(x))
+    assert expand_func(airybi(2*(3*z**5)**Rational(1, 5))) == airybi(2*(3*z**5)**Rational(1, 5))
+
+    assert airybi(x).taylor_term(-1, x) == 0
 
 
 def test_airyaiprime():
@@ -457,18 +492,22 @@ def test_airyaiprime():
         3**Rational(2, 3)*hyper((), (Rational(1, 3),), z**Integer(3)/9)/(3*gamma(Rational(1, 3))))
 
     assert isinstance(airyaiprime(z).rewrite(besselj), airyaiprime)
-    assert airyai(t).rewrite(besselj) == (
-        sqrt(-t)*(besselj(-Rational(1, 3), 2*(-t)**Rational(3, 2)/3) +
-                  besselj(Rational(1, 3), 2*(-t)**Rational(3, 2)/3))/3)
+    assert (airyaiprime(t).rewrite(besselj) ==
+            t*(besselj(-Rational(2, 3), 2*(-t)**Rational(3, 2)/3) -
+               besselj(Rational(2, 3), 2*(-t)**Rational(3, 2)/3))/3)
     assert airyaiprime(z).rewrite(besseli) == (
         z**2*besseli(Rational(2, 3), 2*z**Rational(3, 2)/3)/(3*(z**Rational(3, 2))**Rational(2, 3)) -
         (z**Rational(3, 2))**Rational(2, 3)*besseli(-Rational(1, 3), 2*z**Rational(3, 2)/3)/3)
     assert airyaiprime(p).rewrite(besseli) == (
         p*(-besseli(-Rational(2, 3), 2*p**Rational(3, 2)/3) + besseli(Rational(2, 3), 2*p**Rational(3, 2)/3))/3)
+    assert airyaiprime(p).rewrite(besselj) == airyaiprime(p)
 
     assert expand_func(airyaiprime(2*(3*z**5)**Rational(1, 3))) == (
         sqrt(3)*(z**Rational(5, 3)/(z**5)**Rational(1, 3) - 1)*airybiprime(2*3**Rational(1, 3)*z**Rational(5, 3))/6 +
         (z**Rational(5, 3)/(z**5)**Rational(1, 3) + 1)*airyaiprime(2*3**Rational(1, 3)*z**Rational(5, 3))/2)
+    assert expand_func(airyaiprime(x*y)) == airyaiprime(x*y)
+    assert expand_func(airyaiprime(log(x))) == airyaiprime(log(x))
+    assert expand_func(airyaiprime(2*(3*z**5)**Rational(1, 5))) == airyaiprime(2*(3*z**5)**Rational(1, 5))
 
 
 def test_airybiprime():
@@ -492,15 +531,19 @@ def test_airybiprime():
         3**Rational(1, 6)*hyper((), (Rational(1, 3),), z**Integer(3)/9)/gamma(Rational(1, 3)))
 
     assert isinstance(airybiprime(z).rewrite(besselj), airybiprime)
-    assert airyai(t).rewrite(besselj) == (
-        sqrt(-t)*(besselj(-Rational(1, 3), 2*(-t)**Rational(3, 2)/3) +
-                  besselj(Rational(1, 3), 2*(-t)**Rational(3, 2)/3))/3)
+    assert (airybiprime(t).rewrite(besselj) ==
+            -sqrt(3)*t*(besselj(-Rational(2, 3), 2*(-t)**Rational(3, 2)/3) +
+                        besselj(Rational(2, 3), 2*(-t)**Rational(3, 2)/3))/3)
     assert airybiprime(z).rewrite(besseli) == (
         sqrt(3)*(z**2*besseli(Rational(2, 3), 2*z**Rational(3, 2)/3)/(z**Rational(3, 2))**Rational(2, 3) +
                  (z**Rational(3, 2))**Rational(2, 3)*besseli(-Rational(2, 3), 2*z**Rational(3, 2)/3))/3)
     assert airybiprime(p).rewrite(besseli) == (
         sqrt(3)*p*(besseli(-Rational(2, 3), 2*p**Rational(3, 2)/3) + besseli(Rational(2, 3), 2*p**Rational(3, 2)/3))/3)
+    assert airybiprime(p).rewrite(besselj) == airybiprime(p)
 
     assert expand_func(airybiprime(2*(3*z**5)**Rational(1, 3))) == (
         sqrt(3)*(z**Rational(5, 3)/(z**5)**Rational(1, 3) - 1)*airyaiprime(2*3**Rational(1, 3)*z**Rational(5, 3))/2 +
         (z**Rational(5, 3)/(z**5)**Rational(1, 3) + 1)*airybiprime(2*3**Rational(1, 3)*z**Rational(5, 3))/2)
+    assert expand_func(airybiprime(x*y)) == airybiprime(x*y)
+    assert expand_func(airybiprime(log(x))) == airybiprime(log(x))
+    assert expand_func(airybiprime(2*(3*z**5)**Rational(1, 5))) == airybiprime(2*(3*z**5)**Rational(1, 5))

@@ -1,9 +1,9 @@
 """Implementaton of :class:`GMPYRationalField` class. """
 
-from .rationalfield import RationalField
-from .groundtypes import (GMPYRational, DiofantRational, gmpy_numer,
-                          gmpy_denom, gmpy_factorial, gmpy_qdiv)
 from ..polys.polyerrors import CoercionFailed
+from .groundtypes import (DiofantRational, GMPYRational, gmpy_denom,
+                          gmpy_factorial, gmpy_numer, gmpy_qdiv)
+from .rationalfield import RationalField
 
 
 __all__ = ('GMPYRationalField',)
@@ -29,7 +29,7 @@ class GMPYRationalField(RationalField):
     def to_diofant(self, a):
         """Convert `a` to a Diofant object. """
         return DiofantRational(int(gmpy_numer(a)),
-                             int(gmpy_denom(a)))
+                               int(gmpy_denom(a)))
 
     def from_diofant(self, a):
         """Convert Diofant's Integer to `dtype`. """

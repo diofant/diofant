@@ -1,19 +1,19 @@
 """Sparse rational function fields. """
 
 from functools import reduce
-from operator import add, mul, lt, le, gt, ge
+from operator import add, ge, gt, le, lt, mul
 
 from ..core import Expr, Symbol, sympify
 from ..core.sympify import CantSympify
-from .rings import PolyElement
-from .orderings import lex
-from .polyerrors import CoercionFailed
 from ..domains.domainelement import DomainElement
-from ..domains.polynomialring import PolynomialRing
 from ..domains.fractionfield import FractionField
+from ..domains.polynomialring import PolynomialRing
 from ..printing.defaults import DefaultPrinting
 from ..utilities import public
 from ..utilities.magic import pollute
+from .orderings import lex
+from .polyerrors import CoercionFailed
+from .rings import PolyElement
 
 
 @public

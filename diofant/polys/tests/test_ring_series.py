@@ -1,12 +1,14 @@
 import pytest
 
 from diofant.domains import QQ
+from diofant.polys.ring_series import (_has_constant_term, _invert_monoms,
+                                       rs_compose_add, rs_exp, rs_hadamard_exp,
+                                       rs_integrate, rs_log, rs_mul, rs_newton,
+                                       rs_pow, rs_series_from_list,
+                                       rs_series_inversion, rs_square,
+                                       rs_trunc)
 from diofant.polys.rings import ring
-from diofant.polys.ring_series import (
-    _invert_monoms, rs_integrate,
-    rs_trunc, rs_mul, rs_square, rs_pow, _has_constant_term,
-    rs_series_inversion, rs_series_from_list, rs_exp, rs_log, rs_newton,
-    rs_hadamard_exp, rs_compose_add)
+
 
 __all__ = ()
 
@@ -45,7 +47,7 @@ def test_mul_trunc():
     R1, z = ring('z', QQ)
 
     def test1(p):
-        p2 = rs_mul(p, z, x, 2)
+        rs_mul(p, z, x, 2)
 
     pytest.raises(ValueError, lambda: test1(p))
 
@@ -108,7 +110,7 @@ def test_inversion():
     p = 1 + x + y
 
     def test2(p):
-        p1 = rs_series_inversion(p, x, 4)
+        rs_series_inversion(p, x, 4)
 
     pytest.raises(NotImplementedError, lambda: test2(p))
 
@@ -145,7 +147,7 @@ def test_log():
     p = 1 + x + 2*x**2/3
     p1 = rs_log(p, x, 9)
     assert p1 == -17*x**8/648 + 13*x**7/189 - 11*x**6/162 - x**5/45 + \
-      7*x**4/36 - x**3/3 + x**2/6 + x
+        7*x**4/36 - x**3/3 + x**2/6 + x
     p2 = rs_series_inversion(p, x, 9)
     p3 = rs_log(p2, x, 9)
     assert p3 == -p1
@@ -177,7 +179,6 @@ def test_newton():
     R, x = ring('x', QQ)
     p = x**2 - 2
     r = rs_newton(p, x, 4)
-    f = [1, 0, -2]
     assert r == 8*x**4 + 4*x**2 + 2
 
 

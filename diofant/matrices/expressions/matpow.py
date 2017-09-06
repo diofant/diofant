@@ -1,16 +1,18 @@
-from .matexpr import MatrixExpr, ShapeError, Identity, ZeroMatrix
-from ...core.sympify import _sympify
 from .. import MatrixBase
 from ...core import S
+from ...core.sympify import sympify
+from ..matrices import ShapeError
+from .matexpr import Identity, MatrixExpr, ZeroMatrix
+from .matmul import MatMul
 
 
 class MatPow(MatrixExpr):
 
     def __new__(cls, base, exp):
-        base = _sympify(base)
+        base = sympify(base, strict=True)
         if not base.is_Matrix:
             raise TypeError("Function parameter should be a matrix")
-        exp = _sympify(exp)
+        exp = sympify(exp, strict=True)
         return super(MatPow, cls).__new__(cls, base, exp)
 
     @property
@@ -41,7 +43,7 @@ class MatPow(MatrixExpr):
             # A = MatMul(*[T for k in range(-A.exp)])
             else:
                 raise NotImplementedError(("(%d, %d) entry" % (int(i), int(j)))
-                    + " of matrix power either not defined or not implemented")
+                                          + " of matrix power either not defined or not implemented")
         return A._entry(i, j)
 
     def _eval_is_commutative(self):
@@ -72,6 +74,3 @@ class MatPow(MatrixExpr):
         elif exp is S.One:
             return base
         return MatPow(base, exp)
-
-
-from .matmul import MatMul

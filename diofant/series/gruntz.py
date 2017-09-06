@@ -67,9 +67,10 @@ References
 
 from functools import reduce
 
-from ..core import S, Dummy, Mul, Add, evaluate, Float, cacheit
+from ..core import Add, Dummy, Float, Mul, S, cacheit, evaluate
 from ..core.compatibility import ordered
-from ..functions import log, exp, sign as sgn, Abs
+from ..functions import sign as sgn
+from ..functions import Abs, exp, log
 
 
 def compare(a, b, x):
@@ -136,17 +137,16 @@ def mrv(e, x):
     elif e.is_Mul or e.is_Add:
         a, b = e.as_two_terms()
         return mrv_max(mrv(a, x), mrv(b, x), x)
-    elif e.is_Pow:
-        if e.base is S.Exp1:
-            if e.exp == x:
-                return {e}
-            elif any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
-                return mrv_max({e}, mrv(e.exp, x), x)
-            else:
-                return mrv(e.exp, x)
+    elif e.is_Pow and e.base is S.Exp1:
+        if e.exp == x:
+            return {e}
+        elif any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
+            return mrv_max({e}, mrv(e.exp, x), x)
         else:
-            assert not e.exp.has(x)
-            return mrv(e.base, x)
+            return mrv(e.exp, x)
+    elif e.is_Pow:
+        assert not e.exp.has(x)
+        return mrv(e.base, x)
     elif e.func is log:
         return mrv(e.args[0], x)
     elif e.is_Function:
@@ -275,7 +275,7 @@ def mrv_leadterm(e, x):
     if not e.has(x):
         return e, S.Zero
 
-    e = e.replace(lambda f: f.is_Pow and f.base != S.Exp1 and f.exp.has(x),
+    e = e.replace(lambda f: f.is_Pow and f.exp.has(x),
                   lambda f: exp(log(f.base)*f.exp))
     e = e.replace(lambda f: f.is_Mul and sum(a.is_Pow for a in f.args) > 1,
                   lambda f: Mul(exp(Add(*[a.exp for a in f.args if a.is_Pow and a.base is S.Exp1])),

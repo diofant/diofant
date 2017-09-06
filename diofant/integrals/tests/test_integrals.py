@@ -1,22 +1,24 @@
-import sys
-
 import pytest
 
-from diofant import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
-                     cos, sinh, cosh, tanh, Derivative, diff, DiracDelta, E,
-                     exp, erf, erfi, EulerGamma, factor, Function, I,
-                     Integral, integrate, Interval, Lambda, LambertW, log,
-                     Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
-                     simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
-                     sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
-                     im, polar_lift, meijerg, Min, Max, sign)
+from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
+                     EulerGamma, Function, I, Integral, Interval, Lambda,
+                     LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
+                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, asin,
+                     asinh, atan, cos, cosh, diff, erf, erfi, exp, expand_func,
+                     expand_mul, factor, fresnels, gamma, im, integrate, log,
+                     lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
+                     re, sign, simplify, sin, sinh, sqrt, sstr, symbols,
+                     sympify, tan, tanh, trigsimp)
+from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
+from diofant.integrals.heurisch import heurisch
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically
 
+
 __all__ = ()
 
-x, y, a, t, x_1, x_2, z, s = symbols('x y a t x_1 x_2 z s')
+x_1, x_2 = symbols('x_1 x_2')
 n = Symbol('n', integer=True)
 f = Function('f')
 
@@ -60,7 +62,7 @@ def test_basics():
     assert Integral(0, x) != 0
     assert Integral(x, (x, 1, 1)) != 0
     assert Integral(oo, x) != oo
-    assert Integral(S.NaN, x) == S.NaN
+    assert Integral(nan, x) == nan
 
     assert diff(Integral(y, y), x) == 0
     assert diff(Integral(x, (x, 0, 1)), x) == 0
@@ -85,7 +87,7 @@ def test_basics():
     assert integrate(t**2, (t, x, 2*x)).diff(x) == 7*x**2
 
     assert Integral(x, x).atoms() == {x}
-    assert Integral(f(x), (x, 0, 1)).atoms() == {Integer(0), Integer(1), x}
+    assert Integral(f(x), (x, 0, 1)).atoms() == {0, 1, x}
 
     assert diff_test(Integral(x, (x, 3*y))) == {y}
     assert diff_test(Integral(x, (a, 3*y))) == {x, y}
@@ -256,7 +258,6 @@ def test_sympyissue_3679():
 
 
 def test_sympyissue_3686():  # remove this when fresnel itegrals are implemented
-    from diofant import expand_func, fresnels
     assert expand_func(integrate(sin(x**2), x)) == \
         sqrt(2)*sqrt(pi)*fresnels(sqrt(2)*x/sqrt(pi))/2
 
@@ -288,7 +289,7 @@ def test_sympyissue_4516():
 
 def test_sympyissue_7450():
     ans = integrate(exp(-(1 + I)*x), (x, 0, oo))
-    assert re(ans) == S.Half and im(ans) == -S.Half
+    assert re(ans) == Rational(1, 2) and im(ans) == Rational(-1, 2)
 
 
 def test_matrices():
@@ -335,11 +336,10 @@ def test_transform():
     # < 3 arg limit handled properly
     assert Integral(x, x).transform(x, a*y).doit() == \
         Integral(y*a**2, y).doit()
-    _3 = Integer(3)
-    assert Integral(x, (x, 0, -_3)).transform(x, 1/y).doit() == \
-        Integral(-1/x**3, (x, -oo, -1/_3)).doit()
-    assert Integral(x, (x, 0, _3)).transform(x, 1/y) == \
-        Integral(y**(-3), (y, 1/_3, oo))
+    assert Integral(x, (x, 0, -3)).transform(x, 1/y).doit() == \
+        Integral(-1/x**3, (x, -oo, Rational(-1, 3))).doit()
+    assert Integral(x, (x, 0, 3)).transform(x, 1/y) == \
+        Integral(y**(-3), (y, Rational(1, 3), oo))
     # issue sympy/sympy#8400
     i = Integral(x + y, (x, 1, 2), (y, 1, 2))
     assert i.transform(x, (x + 2*y, x)).doit() == \
@@ -377,7 +377,7 @@ def test_evalf_integrals():
         NS('pi/sqrt(3) * log(2*pi**(5/6) / gamma(1/6))', 15)
     # http://mathworld.wolfram.com/AhmedsIntegral.html
     assert NS(Integral(atan(sqrt(x**2 + 2))/(sqrt(x**2 + 2)*(x**2 + 1)), (x,
-              0, 1)), 15) == NS(5*pi**2/96, 15)
+                                                                          0, 1)), 15) == NS(5*pi**2/96, 15)
     # http://mathworld.wolfram.com/AbelsIntegral.html
     assert NS(Integral(x/((exp(pi*x) - exp(
         -pi*x))*(x**2 + 1)), (x, 0, oo)), 15) == NS('log(2)/2-1/4', 15)
@@ -438,7 +438,7 @@ def test_integrate_DiracDelta():
     assert integrate(DiracDelta(x)**2, (x, -oo, oo)) == DiracDelta(0)
     # issue sympy/sympy#4522
     assert integrate(integrate((4 - 4*x + x*y - 4*y) *
-        DiracDelta(x)*DiracDelta(y - 1), (x, 0, 1)), (y, 0, 1)) == 0
+                               DiracDelta(x)*DiracDelta(y - 1), (x, 0, 1)), (y, 0, 1)) == 0
     # issue sympy/sympy#5729
     p = exp(-(x**2 + y**2))/pi
     assert integrate(p*DiracDelta(x - 10*y), (x, -oo, oo), (y, -oo, oo)) == \
@@ -540,7 +540,6 @@ def test_subs5():
 
 
 def test_subs6():
-    b = symbols('b')
     e = Integral(x*y, (x, f(x), f(y)))
     assert e.subs(x, 1) == Integral(x*y, (x, f(1), f(y)))
     assert e.subs(y, 1) == Integral(x, (x, f(x), f(1)))
@@ -555,7 +554,7 @@ def test_subs7():
     e = Integral(x, (x, 1, y), (y, 1, 2))
     assert e.subs({x: 1, y: 2}) == e
     e = Integral(sin(x) + sin(y), (x, sin(x), sin(y)),
-                                  (y, 1, 2))
+                 (y, 1, 2))
     assert e.subs(sin(y), 1) == e
     assert e.subs(sin(x), 1) == Integral(sin(x) + sin(y), (x, 1, sin(y)),
                                          (y, 1, 2))
@@ -670,15 +669,13 @@ def test_sympyissue_4884():
     assert integrate(sqrt(x)*(1 + x)) == \
         Piecewise(
             (2*sqrt(x)*(x + 1)**2/5 - 2*sqrt(x)*(x + 1)/15 - 4*sqrt(x)/15,
-            Abs(x + 1) > 1),
+             Abs(x + 1) > 1),
             (2*I*sqrt(-x)*(x + 1)**2/5 - 2*I*sqrt(-x)*(x + 1)/15 -
-            4*I*sqrt(-x)/15, True))
+             4*I*sqrt(-x)/15, True))
     assert integrate(x**x*(1 + log(x))) == x**x
 
 
 def test_is_number():
-    from diofant.abc import x, y, z
-    from diofant import cos, sin
     assert Integral(x).is_number is False
     assert Integral(1, x).is_number is False
     assert Integral(1, (x, 1)).is_number is True
@@ -731,7 +728,6 @@ def test_symbols():
 
 
 def test_is_zero():
-    from diofant.abc import x, m
     assert Integral(0, (x, 1, x)).is_zero
     assert Integral(1, (x, 1, 1)).is_zero
     assert Integral(1, (x, m)).is_zero is None
@@ -756,7 +752,6 @@ def test_is_real():
 
 
 def test_series():
-    from diofant.abc import x
     i = Integral(cos(x), (x, x))
     e = i.lseries(x)
     s1 = i.nseries(x, n=8).removeO().doit()
@@ -789,7 +784,6 @@ def test_sympyissue_4100():
 
 
 def test_sympyissue_5167():
-    from diofant.abc import w, x, y, z
     f = Function('f')
     assert Integral(Integral(f(x), x), x) == Integral(f(x), x, x)
     assert Integral(f(x)).args == (f(x), Tuple(x))
@@ -823,8 +817,8 @@ def test_sympyissue_4890():
 
 def test_sympyissue_4376():
     n = Symbol('n', integer=True, positive=True)
-    assert simplify(integrate(n*(x**(1/n) - 1), (x, 0, S.Half)) -
-                (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
+    assert simplify(integrate(n*(x**(1/n) - 1), (x, 0, Rational(1, 2))) -
+                    (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
 
 
 @pytest.mark.slow
@@ -863,8 +857,6 @@ def test_sympyissue_3940():
     assert integrate(exp(a*x**2 + b*x + c), x) == \
         sqrt(pi)*exp(c)*exp(-b**2/(4*a))*erfi(sqrt(a)*x + b/(2*sqrt(a)))/(2*sqrt(a))
 
-    from diofant import expand_mul
-    from diofant.abc import k
     assert expand_mul(integrate(exp(-x**2)*exp(I*k*x), (x, -oo, oo))) == \
         sqrt(pi)*exp(-k**2/4)
     a, d = symbols('a d', positive=True)
@@ -886,7 +878,6 @@ def test_sympyissue_5907():
 
 
 def test_sympyissue_4892a():
-    A = symbols('A')
     c = Symbol('c', nonzero=True)
     P1 = -A*exp(-z)
     P2 = -A/(c*t)*(sin(x)**2 + cos(y)**2)
@@ -935,8 +926,6 @@ def test_integrate_series():
 
 
 def test_atom_bug():
-    from diofant import meijerg
-    from diofant.integrals.heurisch import heurisch
     assert heurisch(meijerg([], [], [1], [], x), x) is None
 
 
@@ -960,7 +949,6 @@ def test_sympyissue_1888():
 
 
 def test_sympyissue_3558():
-    from diofant import Si
     assert integrate(cos(x*y), (x, -pi/2, pi/2), (y, 0, pi)) == 2*Si(pi**2/2)
 
 
@@ -969,7 +957,6 @@ def test_sympyissue_4422():
 
 
 def test_sympyissue_4493():
-    from diofant import simplify
     assert simplify(integrate(x*sqrt(1 + 2*x), x)) == \
         sqrt(2*x + 1)*(6*x**2 + x - 1)/15
 
@@ -981,14 +968,12 @@ def test_sympyissue_4737():
 
 def test_sympyissue_4992():
     # Note: psi in _check_antecedents becomes NaN.
-    from diofant import simplify, expand_func, polygamma, gamma
     a = Symbol('a', positive=True)
     assert simplify(expand_func(integrate(exp(-x)*log(x)*x**a, (x, 0, oo)))) == \
         (a*polygamma(0, a) + 1)*gamma(a)
 
 
 def test_sympyissue_4487():
-    from diofant import lowergamma, simplify
     assert simplify(integrate(exp(-x)*x**y, x)) == lowergamma(y + 1, x)
 
 
@@ -1019,7 +1004,6 @@ def test_sympyissue_4153():
 
 
 def test_sympyissue_4326():
-    R, b, h = symbols('R b h')
     # It doesn't matter if we can do the integral.  Just make sure the result
     # doesn't contain nan.  This is really a test against _eval_interval.
     assert not integrate(((h*(x - R + b))/b)*sqrt(R**2 - x**2), (x, R - b, R)).has(nan)
@@ -1083,16 +1067,16 @@ def test_sympyissue_2708():
 def test_sympyissue_8368():
     assert integrate(exp(-s*x)*cosh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), Abs(s**2) < 1),
-        (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
-        ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
-        And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
-        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
-        1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
+                                (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
+                                                                                    ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
+                   And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
+                       cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
+                       1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
                                 (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
-                                (meijerg(((0,), (-S.Half, S.Half)),
-                                                ((0, S.Half), (-S.Half,)),
+                                (meijerg(((0,), (Rational(-1, 2), Rational(1, 2))),
+                                         ((0, Rational(1, 2)), (Rational(-1, 2),)),
                                          polar_lift(s)**2), True)),
                    And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
                        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),
@@ -1107,7 +1091,6 @@ def test_sympyissue_8901():
 
 @pytest.mark.slow
 def test_sympyissue_7130():
-    i, L, b = symbols('i L b')
     integrand = (cos(pi*i*x/L)**2 / (a + b*x)).rewrite(exp)
     assert x not in integrate(integrand, (x, 0, L)).free_symbols
 
@@ -1135,7 +1118,6 @@ def test_sympyissue_4187_xfail():
 
 
 def test_sympyissue_10567():
-    a, b, c, t = symbols('a b c t')
     vt = Matrix([a*t, b, c])
     assert integrate(vt, t) == Integral(vt, t).doit()
     assert integrate(vt, t) == Matrix([[a*t**2/2], [b*t], [c*t]])
@@ -1154,7 +1136,7 @@ def test_sympyissue_11045():
 
 def test_definite_integrals_abs():
     # issue sympy/sympy#8430
-    assert integrate(abs(x), (x, 0, 1)) == S.Half
+    assert integrate(abs(x), (x, 0, 1)) == Rational(1, 2)
     # issue sympy/sympy#7165
     r = Symbol('r', real=True)
     assert (integrate(abs(x - r**2), (x, 0, 2)) ==

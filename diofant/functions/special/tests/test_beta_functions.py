@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import gamma, expand_func, beta, digamma, diff, conjugate
+from diofant import beta, conjugate, diff, digamma, expand_func, gamma
+from diofant.abc import x, y
 from diofant.core.function import ArgumentIndexError
 
-from diofant.abc import x, y
 
 __all__ = ()
 

@@ -184,21 +184,21 @@ http://www.sosmath.com/trig/Trig5/trig5/pdf/pdf.html gives a formula sheet.
 
 from collections import defaultdict
 
+from strategies.core import debug, identity
 from strategies.tree import greedy
-from strategies.core import identity, debug
 
-from .simplify import bottom_up
-from ..core import (sympify, Expr, Mul, Pow, expand_mul, Add, Dummy, S,
-                    Integer, pi, I, gcd_terms, factor_terms)
-from ..functions import (cos, sin, tan, cot, sec, csc, sqrt, cosh,
-                         sinh, tanh, coth)
-from ..functions.elementary.trigonometric import TrigonometricFunction
-from ..functions.elementary.hyperbolic import HyperbolicFunction
+from .. import DIOFANT_DEBUG
+from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, S, expand_mul,
+                    factor_terms, gcd_terms, pi, sympify)
 from ..core.compatibility import ordered
 from ..core.exprtools import Factors
-from ..polys.polytools import factor
+from ..functions import (cos, cosh, cot, coth, csc, sec, sin, sinh, sqrt, tan,
+                         tanh)
+from ..functions.elementary.hyperbolic import HyperbolicFunction
+from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..ntheory import perfect_power
-from .. import DIOFANT_DEBUG
+from ..polys.polytools import factor
+from .simplify import bottom_up
 
 
 # ================== Fu-like tools ===========================
@@ -307,11 +307,11 @@ def TR2i(rv, half=False):
             # initial filtering of factors
             return (
                 (e.is_integer or k.is_positive) and (
-                k.func in (sin, cos) or (half and
-                k.is_Add and
-                len(k.args) >= 2 and
-                any(any(ai.func is cos or ai.is_Pow and ai.base is cos
-                for ai in Mul.make_args(a)) for a in k.args))))
+                    k.func in (sin, cos) or (half and
+                                             k.is_Add and
+                                             len(k.args) >= 2 and
+                                             any(any(ai.func is cos or ai.is_Pow and ai.base is cos
+                                                     for ai in Mul.make_args(a)) for a in k.args))))
 
         n = n.as_powers_dict()
         ndone = [(k, n.pop(k)) for k in list(n.keys()) if not ok(k, n[k])]
@@ -369,7 +369,7 @@ def TR2i(rv, half=False):
                     k.args[1].func is cos:
                 a = sin(k.args[1].args[0], evaluate=False)
                 if a in d and d[a] == n[k] and (d[a].is_integer or
-                        a.is_positive):
+                                                a.is_positive):
                     t.append(tan(a.args[0]/2)**-n[k])
                     n[k] = d[a] = None
 
@@ -911,7 +911,7 @@ def TR10i(rv):
                                     break
             if args:
                 rv = Add(*(args + [Add(*[_f for _f in v if _f])
-                    for v in byrad.values()]))
+                                   for v in byrad.values()]))
             else:
                 rv = do(rv)  # final pass to resolve any new inducible pairs
                 break

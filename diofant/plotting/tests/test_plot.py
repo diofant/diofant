@@ -1,20 +1,19 @@
+import errno
+import os
+import sys
 from functools import wraps
 from tempfile import NamedTemporaryFile
-import os
-import errno
-import sys
 
 import pytest
 
-from diofant import (pi, sin, cos, Integral, summation, sqrt, log,
-                     oo, LambertW, I, meijerg, exp_polar, Max, real_root,
-                     Piecewise, And)
-from diofant.plotting import (plot, plot_parametric, plot3d_parametric_line,
-                              plot3d, plot3d_parametric_surface)
-from diofant.plotting.plot import unset_show
-from diofant.external import import_module
-
+from diofant import (And, I, Integral, LambertW, Piecewise, cos, exp_polar,
+                     log, meijerg, oo, pi, real_root, sin, sqrt, summation)
 from diofant.abc import x, y, z
+from diofant.external import import_module
+from diofant.plotting import (plot, plot3d, plot3d_parametric_line,
+                              plot3d_parametric_surface, plot_parametric)
+from diofant.plotting.plot import unset_show
+
 
 __all__ = ()
 
@@ -203,7 +202,7 @@ def test_matplotlib_colors():
         del p
 
         p = plot3d_parametric_line(sin(x) + 0.1*sin(x)*cos(7*x),
-            cos(x) + 0.1*cos(x)*cos(7*x), 0.1*sin(7*x), (x, 0, 2*pi))
+                                   cos(x) + 0.1*cos(x)*cos(7*x), 0.1*sin(7*x), (x, 0, 2*pi))
         p[0].line_color = lambda a: sin(4*a)
         p.save(tmp_file('%s_colors_3d_line_arity1' % name))
         p[0].line_color = lambda a, b: b
@@ -224,7 +223,7 @@ def test_matplotlib_colors():
         del p
 
         p = plot3d_parametric_surface(x * cos(4 * y), x * sin(4 * y), y,
-            (x, -1, 1), (y, -1, 1))
+                                      (x, -1, 1), (y, -1, 1))
         p[0].surface_color = lambda a: a
         p.save(tmp_file('%s_colors_param_surf_arity1' % name))
         p[0].surface_color = lambda a, b: a*b
@@ -265,9 +264,9 @@ def test_matplotlib_advanced():
 
         # Characteristic function of a StudentT distribution with nu=10
         plot((meijerg(((1 / 2,), ()), ((5, 0, 1 / 2), ()),
-              5 * x**2 * exp_polar(-I*pi)/2)
+                      5 * x**2 * exp_polar(-I*pi)/2)
               + meijerg(((1/2,), ()), ((5, 0, 1/2), ()),
-              5*x**2 * exp_polar(I*pi)/2)) / (48 * pi), (x, 1e-6, 1e-2)).save(tmp_file())
+                        5*x**2 * exp_polar(I*pi)/2)) / (48 * pi), (x, 1e-6, 1e-2)).save(tmp_file())
     finally:
         TmpFileManager.cleanup()
 
@@ -293,7 +292,6 @@ def test_matplotlib_advanced_2():
 def test_append_sympyissue_7140():
     p1 = plot(x)
     p2 = plot(x**2)
-    p3 = plot(x + 2)
 
     # append a series
     p2.append(p1[0])

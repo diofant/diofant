@@ -1,14 +1,16 @@
 import pytest
 
-from diofant import (
-    Abs, adjoint, arg, atan2, conjugate, cos, DiracDelta, E, exp, expand,
-    Expr, Function, Heaviside, I, im, log, nan, oo, pi, Rational, re, S,
-    sign, sin, sqrt, Symbol, symbols, transpose, zoo, exp_polar, Piecewise,
-    Interval, comp, Integral, Matrix, polar_lift, polarify, simplify,
-    unpolarify, principal_branch, gamma, erf, tanh, uppergamma, Eq, Ne,
-    periodic_argument, unbranched_argument)
-
+from diofant import (Abs, DiracDelta, E, Eq, Expr, Function, Heaviside, I,
+                     Integer, Integral, Interval, Matrix, Ne, Piecewise,
+                     Rational, Symbol, adjoint, arg, atan2, comp, conjugate,
+                     cos, erf, exp, exp_polar, expand, gamma, im, log, nan, oo,
+                     periodic_argument, pi, polar_lift, polarify,
+                     principal_branch, re, sign, simplify, sin, sqrt, symbols,
+                     tanh, transpose, unbranched_argument, unpolarify,
+                     uppergamma, zoo)
 from diofant.abc import x, y, z
+from diofant.core.function import ArgumentIndexError
+
 
 __all__ = ()
 
@@ -257,7 +259,7 @@ def test_sign():
     assert sign(y).rewrite(Heaviside) == sign(y)
 
     # evaluate what can be evaluated
-    assert sign(exp_polar(I*pi)*pi) is S.NegativeOne
+    assert sign(exp_polar(I*pi)*pi) is Integer(-1)
 
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when and when you cannot prove an
@@ -282,7 +284,7 @@ def test_as_real_imag():
     # issue sympy/sympy#6261
     assert sqrt(x).as_real_imag() == \
         ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(arg(re(x) + I*im(x))/2),
-     (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(arg(re(x) + I*im(x))/2))
+         (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(arg(re(x) + I*im(x))/2))
 
     # issue sympy/sympy#3853
     a, b = symbols('a,b', extended_real=True)
@@ -353,6 +355,8 @@ def test_Abs():
 
     x = Symbol('x', imaginary=True)
     assert Abs(x).diff(x) == -sign(x)
+
+    pytest.raises(ArgumentIndexError, lambda: Abs(z).fdiff(2))
 
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when you can and when you cannot prove an
@@ -639,9 +643,9 @@ def test_polarify():
     # variable
     assert polarify(
         Integral(sqrt(2)*x*exp(-(-mu + x)**2/(2*sigma**2))/(2*sqrt(pi)*sigma),
-        (x, -oo, oo)), lift=True) == Integral(sqrt(2)*(sigma*exp_polar(0))**exp_polar(I*pi) *
-        exp((sigma*exp_polar(0))**(2*exp_polar(I*pi))*exp_polar(I*pi)*polar_lift(-mu + x) **
-        (2*exp_polar(0))/2)*exp_polar(0)*polar_lift(x)/(2*sqrt(pi)), (x, -oo, oo))
+                 (x, -oo, oo)), lift=True) == Integral(sqrt(2)*(sigma*exp_polar(0))**exp_polar(I*pi) *
+                                                       exp((sigma*exp_polar(0))**(2*exp_polar(I*pi))*exp_polar(I*pi)*polar_lift(-mu + x) **
+                                                           (2*exp_polar(0))/2)*exp_polar(0)*polar_lift(x)/(2*sqrt(pi)), (x, -oo, oo))
 
 
 def test_unpolarify():

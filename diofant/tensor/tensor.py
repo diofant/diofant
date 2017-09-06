@@ -32,14 +32,13 @@ lowered when the tensor is put in canonical form.
 from collections import defaultdict
 from functools import reduce
 
-from ..combinatorics.tensor_can import (get_symmetric_group_sgs,
-                                        bsgs_direct_product, canonicalize,
-                                        riemann_bsgs)
-from ..core import Basic, sympify, Add, S, Tuple, Symbol, symbols, Rational
+from ..combinatorics.tensor_can import (bsgs_direct_product, canonicalize,
+                                        get_symmetric_group_sgs, riemann_bsgs)
+from ..core import Add, Basic, Rational, S, Symbol, Tuple, symbols, sympify
 from ..core.sympify import CantSympify
 from ..external import import_module
+from ..matrices import Matrix, eye
 from ..utilities.decorator import doctest_depends_on
-from ..matrices import eye, Matrix
 
 
 class TIDS(CantSympify):
@@ -941,7 +940,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             for dim, indextype in zip(data.shape, key.index_types):
                 if indextype.data is None:
                     raise ValueError("index type {} has no components data"
-                    " associated (needed to raise/lower index)".format(indextype))
+                                     " associated (needed to raise/lower index)".format(indextype))
                 if indextype.dim is None:
                     continue
                 if dim != indextype.dim:
@@ -1591,7 +1590,7 @@ class TensorIndex(Basic):
 
     def __neg__(self):
         t1 = TensorIndex(self._name, self._tensortype,
-                (not self._is_up))
+                         (not self._is_up))
         return t1
 
 
@@ -2645,12 +2644,12 @@ class TensAdd(TensExpr):
                     # get a tensor from prev with coeff=prev_coeff and store it
                     if prev_coeff:
                         t = TensMul.from_data(prev_coeff, prev_tids.components,
-                            prev_tids.free, prev_tids.dum)
+                                              prev_tids.free, prev_tids.dum)
                         a.append(t)
                 # move x to prev
                 op = 1
-                pprev, prev = prev, x
-                pprev_coeff, prev_coeff = prev_coeff, get_coeff(x)
+                prev = x
+                prev_coeff = get_coeff(x)
                 changed = False
         # if the case op=0 prev was not stored; store it now
         # in the case op=1 x was not stored; store it now (as prev)
@@ -3118,7 +3117,7 @@ class Tensor(TensExpr):
         def _get_compar_comp(self):
             t = self.canon_bp()
             r = (t.coeff, tuple(t.components),
-                    tuple(sorted(t.free)), tuple(sorted(t.dum)))
+                 tuple(sorted(t.free)), tuple(sorted(t.dum)))
             return r
 
         return _get_compar_comp(self) == _get_compar_comp(other)
@@ -3263,7 +3262,7 @@ class TensMul(TensExpr):
         def _get_compar_comp(self):
             t = self.canon_bp()
             r = (get_coeff(t), tuple(t.components),
-                    tuple(sorted(t.free)), tuple(sorted(t.dum)))
+                 tuple(sorted(t.free)), tuple(sorted(t.dum)))
             return r
 
         return _get_compar_comp(self) == _get_compar_comp(other)

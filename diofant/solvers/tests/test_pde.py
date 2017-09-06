@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (diff, Eq, exp, sin, tan,
-                     Function, Symbol, symbols, cos, log, Integer)
-from diofant.solvers.pde import (pde_separate_add, pde_separate_mul,
-                                 pdsolve, classify_pde, checkpdesol,
-                                 pde_separate)
+from diofant import (Eq, Function, Integer, Symbol, cos, diff, exp, log, sin,
+                     symbols, tan)
+from diofant.solvers.pde import (checkpdesol, classify_pde, pde_separate,
+                                 pde_separate_add, pde_separate_mul, pdsolve)
+
 
 __all__ = ()
 
@@ -53,19 +53,19 @@ def test_pde_separate_mul():
     # Separate z
     res = pde_separate_mul(eq, Phi(r, theta, z), [Z(z), u(theta, r)])
     assert res == [diff(Z(z), z, z)/Z(z),
-            -diff(u(theta, r), r, r)/u(theta, r) -
-        diff(u(theta, r), r)/(r*u(theta, r)) -
-        diff(u(theta, r), theta, theta)/(r**2*u(theta, r))]
+                   -diff(u(theta, r), r, r)/u(theta, r) -
+                   diff(u(theta, r), r)/(r*u(theta, r)) -
+                   diff(u(theta, r), theta, theta)/(r**2*u(theta, r))]
     # Lets use the result to create a new equation...
     eq = Eq(res[1], c)
     # ...and separate theta...
     res = pde_separate_mul(eq, u(theta, r), [T(theta), R(r)])
     assert res == [diff(T(theta), theta, theta)/T(theta),
-            -r*diff(R(r), r)/R(r) - r**2*diff(R(r), r, r)/R(r) - c*r**2]
+                   -r*diff(R(r), r)/R(r) - r**2*diff(R(r), r, r)/R(r) - c*r**2]
     # ...or r...
     res = pde_separate_mul(eq, u(theta, r), [R(r), T(theta)])
     assert res == [r*diff(R(r), r)/R(r) + r**2*diff(R(r), r, r)/R(r) + c*r**2,
-            -diff(T(theta), theta, theta)/T(theta)]
+                   -diff(T(theta), theta, theta)/T(theta)]
 
     # Laplace eq in spherical coordinates
     r, phi, theta, C1 = symbols("r,phi,theta,C1")
@@ -159,37 +159,37 @@ def test_pde_1st_linear_constant_coeff():
     eq = -2*u.diff(x) + 4*u.diff(y) + 5*u - exp(x + 3*y)
     sol = pdsolve(eq)
     assert sol == Eq(f(x, y),
-    (F(4*x + 2*y) + exp(x/Integer(2) + 4*y)/Integer(15))*exp(x/Integer(2) - y))
+                     (F(4*x + 2*y) + exp(x/Integer(2) + 4*y)/Integer(15))*exp(x/Integer(2) - y))
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
-    '1st_linear_constant_coeff_Integral')
+                                '1st_linear_constant_coeff_Integral')
     assert checkpdesol(eq, sol)[0]
 
     eq = (u.diff(x)/u) + (u.diff(y)/u) + 1 - (exp(x + y)/u)
     sol = pdsolve(eq)
     assert sol == Eq(f(x, y), F(x - y)*exp(-x/2 - y/2) + exp(x + y)/Integer(3))
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
-    '1st_linear_constant_coeff_Integral')
+                                '1st_linear_constant_coeff_Integral')
     assert checkpdesol(eq, sol)[0]
 
     eq = 2*u + -u.diff(x) + 3*u.diff(y) + sin(x)
     sol = pdsolve(eq)
     assert sol == Eq(f(x, y),
-         F(3*x + y)*exp(x/Integer(5) - 3*y/Integer(5)) - 2*sin(x)/Integer(5) - cos(x)/Integer(5))
+                     F(3*x + y)*exp(x/Integer(5) - 3*y/Integer(5)) - 2*sin(x)/Integer(5) - cos(x)/Integer(5))
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
-    '1st_linear_constant_coeff_Integral')
+                                '1st_linear_constant_coeff_Integral')
     assert checkpdesol(eq, sol)[0]
 
     eq = u + u.diff(x) + u.diff(y) + x*y
     sol = pdsolve(eq)
     assert sol == Eq(f(x, y),
-        -x*y + x + y + F(x - y)*exp(-x/Integer(2) - y/Integer(2)) - 2)
+                     -x*y + x + y + F(x - y)*exp(-x/Integer(2) - y/Integer(2)) - 2)
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
-    '1st_linear_constant_coeff_Integral')
+                                '1st_linear_constant_coeff_Integral')
     assert checkpdesol(eq, sol)[0]
 
     eq = u + u.diff(x) + u.diff(y) + log(x)
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
-    '1st_linear_constant_coeff_Integral')
+                                '1st_linear_constant_coeff_Integral')
 
 
 def test_pdsolve_all():
@@ -198,12 +198,12 @@ def test_pdsolve_all():
     eq = u + u.diff(x) + u.diff(y) + x**2*y
     sol = pdsolve(eq, hint='all')
     keys = ['1st_linear_constant_coeff',
-        '1st_linear_constant_coeff_Integral', 'default', 'order']
+            '1st_linear_constant_coeff_Integral', 'default', 'order']
     assert sorted(sol.keys()) == keys
     assert sol['order'] == 1
     assert sol['default'] == '1st_linear_constant_coeff'
     assert sol['1st_linear_constant_coeff'] == Eq(f(x, y),
-        -x**2*y + x**2 + 2*x*y - 4*x - 2*y + F(x - y)*exp(-x/Integer(2) - y/Integer(2)) + 6)
+                                                  -x**2*y + x**2 + 2*x*y - 4*x - 2*y + F(x - y)*exp(-x/Integer(2) - y/Integer(2)) + 6)
 
 
 def test_pdsolve_variable_coeff():

@@ -7,17 +7,18 @@ import re
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import S, Add, Symbol, SympifyError
-from ..core.function import _coeff_isneg
+from ..core import Add, S, Symbol
 from ..core.alphabets import greeks
+from ..core.compatibility import default_sort_key
+from ..core.function import _coeff_isneg
 from ..core.operations import AssocOp
 from ..core.relational import Relational
 from ..logic import true
-from .printer import Printer
-from .conventions import split_super_sub, requires_partial
-from .precedence import precedence, PRECEDENCE
-from ..core.compatibility import default_sort_key
 from ..utilities import has_variety
+from .conventions import requires_partial, split_super_sub
+from .precedence import PRECEDENCE, precedence
+from .printer import Printer
+
 
 # Hand-picked functions which can be used directly in both LaTeX and MathJax
 # Complete list at http://www.mathjax.org/docs/1.1/tex.html#supported-latex-commands
@@ -501,7 +502,7 @@ class LatexPrinter(Printer):
 
         if dim == 1:
             tex = r"\frac{%s}{%s %s}" % (diff_symbol, diff_symbol,
-                self._print(expr.variables[0]))
+                                         self._print(expr.variables[0]))
         else:
             multiplicity, i, tex = [], 1, ""
             current = expr.variables[0]
@@ -680,7 +681,6 @@ class LatexPrinter(Printer):
         else:
             symbols = self._print(tuple(symbols))
 
-        args = (symbols, self._print(expr))
         tex = r"\left( %s \mapsto %s \right)" % (symbols, self._print(expr))
 
         return tex
@@ -1238,7 +1238,7 @@ class LatexPrinter(Printer):
         }
 
         return "%s %s %s" % (self._print(expr.lhs),
-            charmap[expr.rel_op], self._print(expr.rhs))
+                             charmap[expr.rel_op], self._print(expr.rhs))
 
     def _print_Piecewise(self, expr):
         ecpairs = [r"%s & \text{for}\: %s" % (self._print(e), self._print(c))
@@ -1452,8 +1452,8 @@ class LatexPrinter(Printer):
             printset = tuple(s)
 
         return (r"\left\{"
-              + r", ".join(self._print(el) for el in printset)
-              + r"\right\}")
+                + r", ".join(self._print(el) for el in printset)
+                + r"\right\}")
 
     def _print_Interval(self, i):
         if i.left_open:
@@ -1628,7 +1628,7 @@ class LatexPrinter(Printer):
     def _print_divisor_sigma(self, expr, exp=None):
         if len(expr.args) == 2:
             tex = r"_%s\left(%s\right)" % tuple(map(self._print,
-                                                (expr.args[1], expr.args[0])))
+                                                    (expr.args[1], expr.args[0])))
         else:
             tex = r"\left(%s\right)" % self._print(expr.args[0])
         if exp is not None:

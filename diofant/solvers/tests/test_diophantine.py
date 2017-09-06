@@ -1,18 +1,23 @@
+from random import randint
+
 import pytest
 
-from diofant.solvers.diophantine import (diop_solve, diop_DN, diop_bf_DN, length,
-                                         transformation_to_DN, find_DN, equivalent,
-                                         square_factor, pairwise_prime, descent,
-                                         ldescent, diophantine,
-                                         transformation_to_normal, sum_of_four_squares,
-                                         sum_of_three_squares,
-                                         prime_as_sum_of_two_squares, partition,
-                                         power_representation)
-
-from diofant import symbols, Integer, Matrix, simplify, Subs, factor_list
+from diofant import Integer, Matrix, Subs, factor_list, simplify, symbols
+from diofant.abc import a, b, c, d, e, f, g, h, i
 from diofant.core.function import _mexpand
 from diofant.functions.elementary.trigonometric import sin
+from diofant.solvers.diophantine import (descent, diop_bf_DN, diop_DN,
+                                         diop_solve, diophantine, equivalent,
+                                         find_DN, ldescent, length,
+                                         pairwise_prime, partition,
+                                         power_representation,
+                                         prime_as_sum_of_two_squares,
+                                         square_factor, sum_of_four_squares,
+                                         sum_of_three_squares,
+                                         transformation_to_DN,
+                                         transformation_to_normal)
 from diofant.utilities import default_sort_key
+
 
 __all__ = ()
 
@@ -25,8 +30,8 @@ def test_input_format():
 
 
 def test_univariate():
-    assert diop_solve((x - 1)*(x - 2)**2) == {(Integer(1),), (Integer(2),)}
-    assert diop_solve((x - 1)*(x - 2)) == {(Integer(1),), (Integer(2),)}
+    assert diop_solve((x - 1)*(x - 2)**2) == {(1,), (2,)}
+    assert diop_solve((x - 1)*(x - 2)) == {(1,), (2,)}
 
 
 def test_linear():
@@ -57,17 +62,16 @@ def test_linear():
 
 def test_quadratic_simple_hyperbolic_case():
     # Simple Hyperbolic case: A = C = 0 and B != 0
-    assert diop_solve(3*x*y + 34*x - 12*y + 1) == \
-        {(-Integer(133), -Integer(11)), (Integer(5), -Integer(57))}
+    assert diop_solve(3*x*y + 34*x - 12*y + 1) == {(-133, -11), (5, -57)}
     assert diop_solve(6*x*y + 2*x + 3*y + 1) == set()
-    assert diop_solve(-13*x*y + 2*x - 4*y - 54) == {(Integer(27), Integer(0))}
-    assert diop_solve(-27*x*y - 30*x - 12*y - 54) == {(-Integer(14), -Integer(1))}
-    assert diop_solve(2*x*y + 5*x + 56*y + 7) == {(-Integer(161), -Integer(3)),
-        (-Integer(47), -Integer(6)), (-Integer(35), -Integer(12)), (-Integer(29), -Integer(69)),
-        (-Integer(27), Integer(64)), (-Integer(21), Integer(7)), (-Integer(9), Integer(1)),
-        (Integer(105), -Integer(2))}
+    assert diop_solve(-13*x*y + 2*x - 4*y - 54) == {(27, 0)}
+    assert diop_solve(-27*x*y - 30*x - 12*y - 54) == {(-14, -1)}
+    assert diop_solve(2*x*y + 5*x + 56*y + 7) == {(-161, -3),
+                                                  (-47, -6), (-35, -12), (-29, -69),
+                                                  (-27, 64), (-21, 7), (-9, 1),
+                                                  (105, -2)}
     assert diop_solve(6*x*y + 9*x + 2*y + 3) == set()
-    assert diop_solve(x*y + x + y + 1) == {(-Integer(1), t), (t, -Integer(1))}
+    assert diop_solve(x*y + x + y + 1) == {(-1, t), (t, -1)}
     assert diophantine(48*x*y)
 
 
@@ -76,12 +80,12 @@ def test_quadratic_elliptical_case():
     # Two test cases highlighted require lot of memory due to quadratic_congruence() method.
     # This above method should be replaced by Pernici's square_mod() method when his PR gets merged.
 
-    # assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == {(-Integer(11), -Integer(1))}
+    # assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == {(-11, -1)}
     assert diop_solve(4*x**2 + 3*y**2 + 5*x - 11*y + 12) == set()
-    assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-Integer(1), -Integer(1))}
-    # assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-Integer(15), Integer(6))}
+    assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-1, -1)}
+    # assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-15, 6)}
     assert diop_solve(10*x**2 + 12*x*y + 12*y**2 - 34) == \
-        {(Integer(1), -Integer(2)), (-Integer(1), -Integer(1)), (Integer(1), Integer(1)), (-Integer(1), Integer(2))}
+        {(1, -2), (-1, -1), (1, 1), (-1, 2)}
 
 
 def test_quadratic_parabolic_case():
@@ -189,8 +193,8 @@ def test_DN():
 
     assert diop_DN(13, 27) == [(220, 61), (40, 11), (768, 213), (12, 3)]
     assert set(diop_DN(157, 12)) == \
-    {(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)),
-        (Integer(483790960), Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))}
+        {(13, 1), (10663, 851), (579160, 46222),
+         (483790960, 38610722), (26277068347, 2097138361), (21950079635497, 1751807067011)}
     assert diop_DN(13, 25) == [(3245, 900)]
     assert diop_DN(192, 18) == []
     assert diop_DN(23, 13) == [(-6, 1), (6, 1)]
@@ -278,7 +282,7 @@ def test_find_DN():
 def test_ldescent():
     # Equations which have solutions
     u = ([(13, 23), (3, -11), (41, -113), (4, -7), (-7, 4), (91, -3), (1, 1), (1, -1),
-        (4, 32), (17, 13), (123689, 1), (19, -570)])
+          (4, 32), (17, 13), (123689, 1), (19, -570)])
     for a, b in u:
         w, x, y = ldescent(a, b)
         assert a*x**2 + b*y**2 == w**2
@@ -423,8 +427,6 @@ def test_diophantine():
 
 
 def test_general_pythagorean():
-    from diofant.abc import a, b, c, d, e
-
     assert check_solutions(a**2 + b**2 + c**2 - d**2)
     assert check_solutions(a**2 + 4*b**2 + 4*c**2 - d**2)
     assert check_solutions(9*a**2 + 4*b**2 + 4*c**2 - d**2)
@@ -435,8 +437,6 @@ def test_general_pythagorean():
 
 
 def test_diop_general_sum_of_squares():
-    from diofant.abc import a, b, c, d, e, f, g, h, i
-
     assert check_solutions(a**2 + b**2 + c**2 - 5)
     assert check_solutions(a**2 + b**2 + c**2 - 57)
     assert check_solutions(a**2 + b**2 + c**2 - 349560695)
@@ -492,8 +492,6 @@ def test_sum_of_three_squares():
 
 
 def test_sum_of_four_squares():
-    from random import randint
-
     for i in range(10):
         n = randint(1, 100000000000000)
         a, b, c, d = sum_of_four_squares(n)

@@ -1,16 +1,15 @@
 import itertools
 
-from mpmath import mpi, mpf
+from mpmath import mpf, mpi
 
-from ..core import sympify, Basic, Expr, S, Float, Mul, Eq
-from ..core.sympify import _sympify
-from ..core.singleton import Singleton
-from ..core.evalf import EvalfMixin
+from ..core import Basic, Eq, Expr, Float, Mul, S, sympify
 from ..core.compatibility import iterable, ordered
+from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
-from .contains import Contains
-from ..logic import And, Or, Not, true, false
+from ..core.singleton import Singleton
+from ..logic import And, Not, Or, false, true
 from ..utilities import subsets
+from .contains import Contains
 
 
 class Set(Basic):
@@ -699,10 +698,10 @@ class Interval(Set, EvalfMixin):
 
     def __new__(cls, start, end, left_open=False, right_open=False):
 
-        start = _sympify(start)
-        end = _sympify(end)
-        left_open = _sympify(left_open)
-        right_open = _sympify(right_open)
+        start = sympify(start, strict=True)
+        end = sympify(end, strict=True)
+        left_open = sympify(left_open, strict=True)
+        right_open = sympify(right_open, strict=True)
 
         if not all(isinstance(a, (type(true), type(false)))
                    for a in [left_open, right_open]):
@@ -881,7 +880,7 @@ class Interval(Set, EvalfMixin):
             end = Min(self.end, other.end)
             start = Max(self.start, other.start)
             if (end < start or
-               (end == start and (end not in self and end not in other))):
+                    (end == start and (end not in self and end not in other))):
                 return
             else:
                 start = Min(self.start, other.start)
@@ -924,7 +923,7 @@ class Interval(Set, EvalfMixin):
         else:
             expr = And(expr, other <= self.end)
 
-        return _sympify(expr)
+        return sympify(expr, strict=True)
 
     def _eval_imageset(self, f):
         from ..functions import Min, Max

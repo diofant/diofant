@@ -2,14 +2,15 @@ import itertools
 
 import pytest
 
-from diofant import (Rational, Float, S, Symbol, cos, oo, pi,
-                     simplify, sin, sqrt, symbols, acos, I)
+from diofant import (Float, I, Rational, Symbol, acos, cos, oo, pi, simplify,
+                     sin, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
-from diofant.geometry import (Circle, GeometryError, Line, Point, Ray,
-                              Segment, Triangle, intersection,
-                              Point3D, Line3D, Ray3D, Segment3D, Plane)
+from diofant.geometry import (Circle, GeometryError, Line, Line3D, Plane,
+                              Point, Point3D, Ray, Ray3D, Segment, Segment3D,
+                              Triangle, intersection)
 from diofant.geometry.line import Undecidable
 from diofant.geometry.polygon import _asa as asa
+
 
 __all__ = ()
 
@@ -127,7 +128,7 @@ def test_line_geom():
     assert l1.projection(p1_1) == p1
     assert l3.projection(p2) == Point(x1, 1)
     pytest.raises(GeometryError, lambda: Line(Point(0, 0), Point(1, 0))
-           .projection(Circle(Point(0, 0), 1)))
+                  .projection(Circle(Point(0, 0), 1)))
 
     # Finding angles
     l1_1 = Line(p1, Point(5, 0))
@@ -146,9 +147,9 @@ def test_line_geom():
     assert Ray((1, 1), angle=4.0*pi) == Ray((1, 1), (2, 1))
     assert Ray((1, 1), angle=0) == Ray((1, 1), (2, 1))
     assert Ray((1, 1), angle=4.05*pi) == Ray(Point(1, 1),
-               Point(2, -sqrt(5)*sqrt(2*sqrt(5) + 10)/4 - sqrt(2*sqrt(5) + 10)/4 + 2 + sqrt(5)))
+                                             Point(2, -sqrt(5)*sqrt(2*sqrt(5) + 10)/4 - sqrt(2*sqrt(5) + 10)/4 + 2 + sqrt(5)))
     assert Ray((1, 1), angle=4.02*pi) == Ray(Point(1, 1),
-               Point(2, 1 + tan(4.02*pi)))
+                                             Point(2, 1 + tan(4.02*pi)))
     assert Ray((1, 1), angle=5) == Ray((1, 1), (2, 1 + tan(5)))
     pytest.raises(ValueError, lambda: Ray((1, 1), 1))
 
@@ -344,17 +345,10 @@ def test_line3d():
     p4 = Point3D(y1, y1, y1)
     p5 = Point3D(x1, 1 + x1, 1)
     p6 = Point3D(1, 0, 1)
-    p7 = Point3D(0, 1, 1)
-    p8 = Point3D(2, 0, 3)
-    p9 = Point3D(2, 1, 4)
 
     l1 = Line3D(p1, p2)
     l2 = Line3D(p3, p4)
     l3 = Line3D(p3, p5)
-    l4 = Line3D(p1, p6)
-    l5 = Line3D(p1, p7)
-    l6 = Line3D(p8, p9)
-    l7 = Line3D(p2, p9)
     pytest.raises(ValueError, lambda: Line3D(Point3D(0, 0, 0), Point3D(0, 0, 0)))
 
     assert Line3D((1, 1, 1), direction_ratio=[2, 3, 4]) == \
@@ -385,7 +379,7 @@ def test_line3d():
 
     # Parallelity
     assert l1.parallel_line(p1_1) == Line3D(Point3D(x1, x1, x1),
-        Point3D(x1 + 1, x1 + 1, x1 + 1))
+                                            Point3D(x1 + 1, x1 + 1, x1 + 1))
     assert l1.parallel_line(p1_1.args) == \
         Line3D(Point3D(x1, x1, x1), Point3D(x1 + 1, x1 + 1, x1 + 1))
 
@@ -445,7 +439,6 @@ def test_line3d():
     r1 = Ray3D(p1, Point3D(-1, 5, 0))
     r2 = Ray3D(p1, Point3D(-1, 1, 1))
     r3 = Ray3D(p1, p2)
-    r4 = Ray3D(p2, p1)
     r5 = Ray3D(Point3D(0, 1, 1), Point3D(1, 2, 0))
     assert l1.projection(r1) == [
         Ray3D(Point3D(0, 0, 0), Point3D(4/3, 4/3, 4/3))]
@@ -508,8 +501,6 @@ def test_line3d():
     r1 = Ray3D(Point3D(1, 1, 1), Point3D(2, 2, 2))
     r2 = Ray3D(Point3D(2, 2, 2), Point3D(0, 0, 0))
     r3 = Ray3D(Point3D(1, 1, 1), Point3D(-1, -1, -1))
-    r4 = Ray3D(Point3D(0, 4, 2), Point3D(-1, -5, -1))
-    r5 = Ray3D(Point3D(2, 2, 2), Point3D(3, 3, 3))
     assert intersection(r1, r2) == \
         [Segment3D(Point3D(1, 1, 1), Point3D(2, 2, 2))]
     assert intersection(r1, r3) == [Point3D(1, 1, 1)]
@@ -573,7 +564,7 @@ def test_line3d():
 
     # Test zdirection
     negz = Ray3D(p1, Point3D(0, 0, -1))
-    assert negz.zdirection == S.NegativeInfinity
+    assert negz.zdirection == -oo
 
     # Test contains
     assert negz.contains(Segment3D(p1, Point3D(0, 0, -10))) is True
@@ -607,7 +598,7 @@ def test_line_intersection():
             Point(0, 0),
             Point(8, 0),
             Point(-4*cos(19*pi/90)/sin(2*pi/45),
-            4*sqrt(3)*cos(19*pi/90)/sin(2*pi/45)))
+                  4*sqrt(3)*cos(19*pi/90)/sin(2*pi/45)))
     assert Line((0, 0), (1, 1)).intersection(Ray((1, 0), (1, 2))) == \
         [Point(1, 1)]
     assert Line((0, 0), (1, 1)).intersection(Segment((1, 0), (1, 2))) == \

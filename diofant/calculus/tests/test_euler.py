@@ -1,7 +1,8 @@
 import pytest
 
-from diofant import Symbol, Function, diff, Eq, cos, sin
+from diofant import Eq, Function, Symbol, cos, diff, sin
 from diofant.calculus.euler import euler_equations as euler
+
 
 __all__ = ()
 

@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import MatrixSymbol, sin, asinh, I, Function
-from diofant.utilities.lambdify import implemented_function
-from diofant.printing.lambdarepr import NumExprPrinter
-
+from diofant import Function, I, MatrixSymbol, asinh, sin
 from diofant.abc import x, y
+from diofant.printing.lambdarepr import NumExprPrinter
+from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 

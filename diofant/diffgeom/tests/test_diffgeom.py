@@ -1,18 +1,22 @@
 import pytest
 
-from diofant.diffgeom.rn import R2, R2_p, R2_r, R3_r, R3_c, R3_s
-from diofant.diffgeom import (Commutator, Differential, TensorProduct,
-                              WedgeProduct, BaseCovarDerivativeOp, CovarDerivativeOp,
-                              LieDerivative, covariant_order, contravariant_order,
-                              twoform_to_matrix, metric_to_Christoffel_1st,
-                              metric_to_Christoffel_2nd, metric_to_Riemann_components,
-                              metric_to_Ricci_components, intcurve_diffequ,
-                              intcurve_series, Manifold, Patch, CoordSystem)
-from diofant.core import S, Symbol, symbols, Function, Derivative, Subs
-from diofant.simplify import trigsimp, simplify
-from diofant.functions import sqrt, atan2, sin, exp
+from diofant.abc import t, x, y
+from diofant.core import Derivative, Function, Integer, Subs, Symbol, symbols
+from diofant.diffgeom import (BaseCovarDerivativeOp, Commutator, CoordSystem,
+                              CovarDerivativeOp, Differential, LieDerivative,
+                              Manifold, Patch, TensorProduct, WedgeProduct,
+                              contravariant_order, covariant_order,
+                              intcurve_diffequ, intcurve_series,
+                              metric_to_Christoffel_1st,
+                              metric_to_Christoffel_2nd,
+                              metric_to_Ricci_components,
+                              metric_to_Riemann_components, twoform_to_matrix)
+from diofant.diffgeom.rn import R2, R2_p, R2_r, R3_c, R3_r, R3_s
+from diofant.functions import atan2, exp, sin, sqrt
 from diofant.matrices import Matrix
 from diofant.printing import sstr
+from diofant.simplify import simplify, trigsimp
+
 
 __all__ = ()
 
@@ -52,7 +56,6 @@ def test_R3():
 
 
 def test_point():
-    x, y = symbols('x, y')
     p = R2_r.point([x, y])
     # TODO assert p.free_symbols() == {x, y}
     assert p.coords(R2_r) == p.coords() == Matrix([x, y])
@@ -107,7 +110,6 @@ def test_covar_deriv():
 
 
 def test_intcurve_diffequ():
-    t = symbols('t')
     start_point = R2_r.point([1, 0])
     vector_field = -R2.y*R2.e_x + R2.x*R2.e_y
     equations, init_cond = intcurve_diffequ(vector_field, t, start_point)
@@ -191,8 +193,8 @@ def test_correct_arguments():
     pytest.raises(ValueError, lambda: contravariant_order(R2.e_x*R2.e_y))
     pytest.raises(ValueError, lambda: covariant_order(R2.dx*R2.dy))
 
-    assert covariant_order(S.Zero, True) == -1
-    assert contravariant_order(S.Zero, True) == -1
+    assert covariant_order(Integer(0), True) == -1
+    assert contravariant_order(Integer(0), True) == -1
 
 
 def test_simplify():
@@ -219,7 +221,7 @@ def test_schwarzschild():
     assert all(ricci[i, j] == 0 for i in range(4) for j in range(4) if i != j)
     R = Symbol('R')
     eq1 = simplify((ricci[0, 0]/exp(2*f(r) - 2*g(r)) +
-                   ricci[1, 1])*r/2).subs(r, R).doit()
+                    ricci[1, 1])*r/2).subs(r, R).doit()
     assert eq1 == f(R).diff(R) + g(R).diff(R)
     eq2 = simplify(ricci[1, 1].replace(g, lambda x: -f(x)).replace(r, R).doit())
     assert eq2 == -2*f(R).diff(R)**2 - f(R).diff(R, 2) - 2*f(R).diff(R)/R

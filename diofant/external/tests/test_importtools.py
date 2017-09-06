@@ -1,7 +1,10 @@
+import collections
+
 import pytest
 
 from diofant.core.compatibility import HAS_GMPY
 from diofant.external import import_module
+
 
 __all__ = ()
 
@@ -13,10 +16,9 @@ def test_no_stdlib_collections():
     make sure we get the right collections when it is not part of a
     larger list
     """
-    import collections
     matplotlib = import_module('matplotlib',
-        __import__kwargs={'fromlist': ['cm', 'collections']},
-        min_module_version='1.1.0', catch=(RuntimeError,))
+                               __import__kwargs={'fromlist': ['cm', 'collections']},
+                               min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
         assert collections != matplotlib.collections
 
@@ -26,20 +28,18 @@ def test_no_stdlib_collections2():
     make sure we get the right collections when it is not part of a
     larger list
     """
-    import collections
     matplotlib = import_module('matplotlib',
-        __import__kwargs={'fromlist': ['collections']},
-        min_module_version='1.1.0', catch=(RuntimeError,))
+                               __import__kwargs={'fromlist': ['collections']},
+                               min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
         assert collections != matplotlib.collections
 
 
 def test_no_stdlib_collections3():
     """make sure we get the right collections with no catch"""
-    import collections
     matplotlib = import_module('matplotlib',
-        __import__kwargs={'fromlist': ['cm', 'collections']},
-        min_module_version='1.1.0')
+                               __import__kwargs={'fromlist': ['cm', 'collections']},
+                               min_module_version='1.1.0')
     if matplotlib:
         assert collections != matplotlib.collections
 

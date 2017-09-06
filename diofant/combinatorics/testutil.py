@@ -1,5 +1,6 @@
-from .util import _distribute_gens_by_base
 from .permutations import Permutation
+from .util import _distribute_gens_by_base
+
 
 rmul = Permutation.rmul
 

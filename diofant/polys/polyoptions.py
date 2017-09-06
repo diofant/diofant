@@ -2,9 +2,10 @@
 
 import re
 
-from ..core import S, Basic, sympify
-from ..utilities import numbered_symbols, topological_sort, public, has_dups
-from .polyerrors import GeneratorsError, OptionError, FlagError
+from ..core import Basic, S, sympify
+from ..utilities import has_dups, numbered_symbols, public, topological_sort
+from .polyerrors import FlagError, GeneratorsError, OptionError
+
 
 __all__ = ["Options"]
 
@@ -497,7 +498,7 @@ class Split(BooleanOption, metaclass=OptionType):
 
     requires = []
     excludes = ['field', 'greedy', 'domain', 'gaussian', 'extension',
-        'modulus', 'symmetric']
+                'modulus', 'symmetric']
 
     @classmethod
     def postprocess(cls, options):
@@ -512,7 +513,7 @@ class Gaussian(BooleanOption, metaclass=OptionType):
 
     requires = []
     excludes = ['field', 'greedy', 'domain', 'split', 'extension',
-        'modulus', 'symmetric']
+                'modulus', 'symmetric']
 
     @classmethod
     def postprocess(cls, options):
@@ -528,7 +529,7 @@ class Extension(Option, metaclass=OptionType):
 
     requires = []
     excludes = ['greedy', 'domain', 'split', 'gaussian', 'modulus',
-        'symmetric']
+                'symmetric']
 
     @classmethod
     def preprocess(cls, extension):

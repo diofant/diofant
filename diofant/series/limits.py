@@ -1,7 +1,7 @@
-from ..core import S, Symbol, Dummy, sympify, Expr, Rational, Float, PoleError
-from ..functions.elementary.trigonometric import sin, cos
-from .order import Order
+from ..core import Dummy, Expr, Float, PoleError, Rational, S, Symbol, sympify
+from ..functions.elementary.trigonometric import cos, sin
 from .gruntz import limitinf
+from .order import Order
 
 
 def limit(expr, z, z0, dir="+"):

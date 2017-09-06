@@ -4,11 +4,11 @@ from functools import reduce
 
 import mpmath
 
-from ...core import (S, I, pi, oo, ilcm, Mod, Integer, Rational,
-                     Function, Derivative, Tuple, Mul, Ne, Expr, Dummy)
+from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
+                sin, sinh, sqrt)
+from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
+                     Ne, Rational, S, Tuple, ilcm, oo, pi)
 from ...core.function import ArgumentIndexError
-from .. import (sqrt, exp, log, sin, cos, asin, atan, sinh, cosh,
-                asinh, acosh, atanh, acoth)
 
 
 class TupleArg(Tuple):
@@ -214,7 +214,7 @@ class hyper(TupleParametersBase):
         rfbq = Tuple(*[RisingFactorial(b, n) for b in bq])
         coeff = Mul(*rfap) / Mul(*rfbq)
         return Piecewise((Sum(coeff * z**n / factorial(n), (n, 0, oo)),
-                         self.convergence_statement), (self, True))
+                          self.convergence_statement), (self, True))
 
     @property
     def argument(self):
@@ -636,11 +636,8 @@ class meijerg(TupleParametersBase):
         znum = znum**(Integer(1)/n)*exp(I*branch / n)
 
         # Convert all args to mpf or mpc
-        try:
-            [z, r, ap, bq] = [arg._to_mpmath(prec)
-                    for arg in [znum, 1/n, self.args[0], self.args[1]]]
-        except ValueError:
-            return
+        [z, r, ap, bq] = [arg._to_mpmath(prec)
+                          for arg in [znum, 1/n, self.args[0], self.args[1]]]
 
         with mpmath.workprec(prec):
             v = mpmath.meijerg(ap, bq, z, r)

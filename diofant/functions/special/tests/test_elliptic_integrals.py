@@ -1,15 +1,17 @@
 import pytest
 
-from diofant import (S, Symbol, pi, I, oo, zoo, sin, sqrt, tan, gamma,
-                     atanh, hyper, meijerg, O, Rational, conjugate)
+from diofant import (I, O, Rational, Symbol, atanh, conjugate, gamma, hyper,
+                     meijerg, oo, pi, sin, sqrt, tan, zoo)
+from diofant.abc import m, n, z
 from diofant.core.function import ArgumentIndexError
-from diofant.functions.special.elliptic_integrals import (elliptic_k, elliptic_f,
-                                                          elliptic_e, elliptic_pi)
-from diofant.utilities.randtest import (test_derivative_numerically as td,
-                                        random_complex_number as randcplx,
-                                        verify_numerically as tn)
+from diofant.functions.special.elliptic_integrals import (elliptic_e,
+                                                          elliptic_f,
+                                                          elliptic_k,
+                                                          elliptic_pi)
+from diofant.utilities.randtest import random_complex_number as randcplx
+from diofant.utilities.randtest import verify_derivative_numerically as td
+from diofant.utilities.randtest import verify_numerically as tn
 
-from diofant.abc import z, m, n
 
 __all__ = ()
 
@@ -39,11 +41,11 @@ def test_elliptic_k():
     assert elliptic_k(z).conjugate() == conjugate(elliptic_k(z), evaluate=False)
 
     assert elliptic_k(z).rewrite(hyper) == \
-        (pi/2)*hyper((S.Half, S.Half), (S.One,), z)
-    assert tn(elliptic_k(z), (pi/2)*hyper((S.Half, S.Half), (S.One,), z))
+        (pi/2)*hyper((Rational(1, 2), Rational(1, 2)), (1,), z)
+    assert tn(elliptic_k(z), (pi/2)*hyper((Rational(1, 2), Rational(1, 2)), (1,), z))
     assert elliptic_k(z).rewrite(meijerg) == \
-        meijerg(((S.Half, S.Half), []), ((S.Zero,), (S.Zero,)), -z)/2
-    assert tn(elliptic_k(z), meijerg(((S.Half, S.Half), []), ((S.Zero,), (S.Zero,)), -z)/2)
+        meijerg(((Rational(1, 2), Rational(1, 2)), []), ((0,), (0,)), -z)/2
+    assert tn(elliptic_k(z), meijerg(((Rational(1, 2), Rational(1, 2)), []), ((0,), (0,)), -z)/2)
 
     assert elliptic_k(z).series(z) == pi/2 + pi*z/8 + 9*pi*z**2/128 + \
         25*pi*z**3/512 + 1225*pi*z**4/32768 + 3969*pi*z**5/131072 + O(z**6)
@@ -109,13 +111,13 @@ def test_elliptic_e():
     assert elliptic_e(z, m).conjugate() == conjugate(elliptic_e(z, m))
     assert elliptic_e(z).conjugate() == conjugate(elliptic_e(z))
 
-    assert elliptic_e(z).rewrite(hyper) == (pi/2)*hyper((-S.Half, S.Half), (S.One,), z)
+    assert elliptic_e(z).rewrite(hyper) == (pi/2)*hyper((Rational(-1, 2), Rational(1, 2)), (1,), z)
     assert elliptic_e(z, m).rewrite(hyper) == elliptic_e(z, m)
-    assert tn(elliptic_e(z), (pi/2)*hyper((-S.Half, S.Half), (S.One,), z))
+    assert tn(elliptic_e(z), (pi/2)*hyper((Rational(-1, 2), Rational(1, 2)), (1,), z))
     assert elliptic_e(z).rewrite(meijerg) == \
-        -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4
+        -meijerg(((Rational(1, 2), Rational(3, 2)), []), ((0,), (0,)), -z)/4
     assert elliptic_e(z, m).rewrite(meijerg) == elliptic_e(z, m)
-    assert tn(elliptic_e(z), -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4)
+    assert tn(elliptic_e(z), -meijerg(((Rational(1, 2), Rational(3, 2)), []), ((0,), (0,)), -z)/4)
 
     assert elliptic_e(z, m).series(z) == \
         z + z**5*(-m**2/40 + m/30) - m*z**3/6 + O(z**6)
@@ -155,13 +157,13 @@ def test_elliptic_pi():
     assert elliptic_pi(n, z, m).conjugate() == conjugate(elliptic_pi(n, z, m))
 
     assert elliptic_pi(n, z, m).diff(n) == (elliptic_e(z, m) + (m - n)*elliptic_f(z, m)/n +
-        (n**2 - m)*elliptic_pi(n, z, m)/n - n*sqrt(1 -
-            m*sin(z)**2)*sin(2*z)/(2*(1 - n*sin(z)**2)))/(2*(m - n)*(n - 1))
+                                            (n**2 - m)*elliptic_pi(n, z, m)/n - n*sqrt(1 -
+                                                                                       m*sin(z)**2)*sin(2*z)/(2*(1 - n*sin(z)**2)))/(2*(m - n)*(n - 1))
     assert elliptic_pi(n, z, m).diff(z) == 1/(sqrt(1 - m*sin(z)**2)*(1 - n*sin(z)**2))
     assert elliptic_pi(n, z, m).diff(m) == (elliptic_e(z, m)/(m - 1) + elliptic_pi(n, z, m) -
-        m*sin(2*z)/(2*(m - 1)*sqrt(1 - m*sin(z)**2)))/(2*(n - m))
+                                            m*sin(2*z)/(2*(m - 1)*sqrt(1 - m*sin(z)**2)))/(2*(n - m))
     assert elliptic_pi(n, m).diff(n) == (elliptic_e(m) + (m - n)*elliptic_k(m)/n +
-        (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
+                                         (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
     assert elliptic_pi(n, m).diff(m) == (elliptic_e(m)/(m - 1) + elliptic_pi(n, m))/(2*(n - m))
     rx, ry = randcplx(), randcplx()
     assert td(elliptic_pi(n, rx, ry), n)

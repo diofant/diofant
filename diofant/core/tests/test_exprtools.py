@@ -2,15 +2,16 @@
 
 import pytest
 
-from diofant import (S, Add, sin, Mul, Symbol, oo, Integral, sqrt, Tuple, I,
-                     Interval, O, symbols, simplify, collect, Sum, Basic, Dict,
-                     root, exp, cos, Integer, Float, Rational)
-from diofant.core.exprtools import (decompose_power, Factors, Term, _gcd_terms,
-                                    gcd_terms, factor_terms, factor_nc)
+from diofant import (Add, Basic, Dict, Float, I, Integer, Integral, Interval,
+                     Mul, O, Rational, Sum, Symbol, Tuple, collect, cos, exp,
+                     oo, root, simplify, sin, sqrt, symbols)
+from diofant.abc import a, b, t, x, y, z
+from diofant.core.exprtools import (Factors, Term, _gcd_terms, decompose_power,
+                                    factor_nc, factor_terms, gcd_terms)
+from diofant.core.function import _mexpand
 from diofant.core.mul import _keep_coeff as _keep_coeff
 from diofant.simplify.cse_opts import sub_pre
 
-from diofant.abc import a, b, t, x, y, z
 
 __all__ = ()
 
@@ -25,10 +26,10 @@ def test_decompose_power():
 def test_Factors():
     assert Factors() == Factors({}) == Factors(Integer(1))
     assert Factors(Integer(1)) == Factors(Factors(Integer(1)))
-    assert Factors().as_expr() == S.One
+    assert Factors().as_expr() == 1
     assert Factors({x: 2, y: 3, sin(x): 4}).as_expr() == x**2*y**3*sin(x)**4
-    assert Factors(S.Infinity) == Factors({oo: 1})
-    assert Factors(S.NegativeInfinity) == Factors({oo: 1, -1: 1})
+    assert Factors(+oo) == Factors({oo: 1})
+    assert Factors(-oo) == Factors({oo: 1, -1: 1})
 
     f1 = Factors({oo: 1})
     f2 = Factors({oo: 1})
@@ -68,21 +69,21 @@ def test_Factors():
 
     # coverage
     # /!\ things break if this is not True
-    assert Factors({Integer(-1): Rational(3, 2)}) == Factors({I: S.One, Integer(-1): S.One})
+    assert Factors({Integer(-1): Rational(3, 2)}) == Factors({I: 1, -1: 1})
     assert Factors({I: Integer(1), Integer(-1): Rational(1, 3)}).as_expr() == I*(-1)**Rational(1, 3)
 
     assert Factors(-1.) == Factors({Integer(-1): Integer(1), Float(1.): 1})
     assert Factors(-2.) == Factors({Integer(-1): Integer(1), Float(2.): 1})
     assert Factors((-2.)**x) == Factors({Float(-2.): x})
     assert Factors(Integer(-2)) == Factors({Integer(-1): Integer(1), Integer(2): 1})
-    assert Factors(S.Half) == Factors({Integer(2): -S.One})
-    assert Factors(Rational(3, 2)) == Factors({Integer(3): S.One, Integer(2): Integer(-1)})
+    assert Factors(Rational(1, 2)) == Factors({Integer(2): -1})
+    assert Factors(Rational(3, 2)) == Factors({Integer(3): 1, Integer(2): Integer(-1)})
     assert Factors({I: Integer(1)}) == Factors(I)
     assert Factors({-1.0: 2, I: 1}) == Factors({Float(1.0): 1, I: 1})
-    assert Factors({S.NegativeOne: -Rational(3, 2)}).as_expr() == I
+    assert Factors({-1: -Rational(3, 2)}).as_expr() == I
     A = symbols('A', commutative=False)
     assert Factors(2*A**2) == Factors({Integer(2): 1, A**2: 1})
-    assert Factors(I) == Factors({I: S.One})
+    assert Factors(I) == Factors({I: 1})
     assert Factors(x).normal(Integer(2)) == (Factors(x), Factors(Integer(2)))
     assert Factors(x).normal(Integer(0)) == (Factors(), Factors(Integer(0)))
     pytest.raises(ZeroDivisionError, lambda: Factors(x).div(Integer(0)))
@@ -179,11 +180,11 @@ def test_gcd_terms():
     f = 2*(x + 1)*(x + 4)/(5*x**2 + 5) + (2*x + 2)*(x + 5)/(x**2 + 1)/5 + \
         (2*x + 2)*(x + 6)/(5*x**2 + 5)
 
-    assert _gcd_terms(f) == ((Rational(6, 5))*((1 + x)/(1 + x**2)), 5 + x, 1)
+    assert _gcd_terms(f) == (Rational(6, 5)*((1 + x)/(1 + x**2)), 5 + x, 1)
     assert _gcd_terms(Add.make_args(f)) == \
-        ((Rational(6, 5))*((1 + x)/(1 + x**2)), 5 + x, 1)
+        (Rational(6, 5)*((1 + x)/(1 + x**2)), 5 + x, 1)
 
-    newf = (Rational(6, 5))*((1 + x)*(5 + x)/(1 + x**2))
+    newf = Rational(6, 5)*((1 + x)*(5 + x)/(1 + x**2))
     assert gcd_terms(f) == newf
     args = Add.make_args(f)
     # non-Basic sequences of terms treated as terms of Add
@@ -217,7 +218,7 @@ def test_gcd_terms():
     assert simplify(collect(s, x)) == -sqrt(5)/2 - Rational(3, 2) + O(x)
 
     # issue sympy/sympy#5917
-    assert _gcd_terms([S.Zero, S.Zero]) == (0, 0, 1)
+    assert _gcd_terms([Integer(0), Integer(0)]) == (0, 0, 1)
     assert _gcd_terms([2*x + 4]) == (2, x + 2, 1)
 
     eq = x/(x + 1/x)
@@ -293,7 +294,6 @@ def test_factor_nc():
     n, m, o = symbols('n,m,o', commutative=False)
 
     # mul and multinomial expansion is needed
-    from diofant.core.function import _mexpand
     e = x*(1 + y)**2
     assert _mexpand(e) == x + x*2*y + x*y**2
 

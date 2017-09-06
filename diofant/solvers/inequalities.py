@@ -1,13 +1,13 @@
 """Tools for solving inequalities and systems of inequalities. """
 
-from ..core import Symbol, Dummy, Integer, Eq, Ge, Lt, S
+from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol
 from ..core.compatibility import iterable
-from ..sets import Interval, FiniteSet, Union
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
 from ..logic import And
 from ..polys import Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
+from ..sets import FiniteSet, Interval, Union
 from ..utilities import filldedent
 
 
@@ -468,9 +468,9 @@ def _reduce_inequalities(inequalities, symbols):
         if expr.is_polynomial(gen):
             poly_part.setdefault(gen, []).append((expr, rel))
         else:
-            components = expr.find(lambda u:
-                u.has(gen) and (
-                u.is_Function or u.is_Pow and not u.exp.is_Integer))
+            components = set(expr.find(lambda u: u.has(gen) and
+                                       (u.is_Function or u.is_Pow and
+                                        not u.exp.is_Integer)))
             if components and all(isinstance(i, Abs) or isinstance(i, Piecewise) for i in components):
                 pw_part.setdefault(gen, []).append((expr, rel))
             else:

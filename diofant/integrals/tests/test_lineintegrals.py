@@ -1,4 +1,5 @@
-from diofant import symbols, E, ln, Curve, line_integrate, sqrt
+from diofant import Curve, E, line_integrate, ln, sqrt, symbols
+
 
 __all__ = ()
 

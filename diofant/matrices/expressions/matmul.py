@@ -1,13 +1,13 @@
-from strategies import exhaust, do_one
+from strategies import do_one, exhaust
 from strategies.core import typed
 
-from ...core import Mul, sympify, Add, Number, Expr
+from ...core import Add, Expr, Mul, Number, sympify
 from ...core.logic import _fuzzy_group
+from ...core.strategies import flatten, rm_id, unpack
 from ...functions import adjoint
+from ..matrices import MatrixBase, ShapeError
+from .matexpr import Identity, MatrixExpr, ZeroMatrix
 from .transpose import transpose
-from ...core.strategies import rm_id, unpack, flatten
-from .matexpr import MatrixExpr, ShapeError, Identity, ZeroMatrix
-from ..matrices import MatrixBase
 
 
 class MatMul(MatrixExpr):

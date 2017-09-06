@@ -1,7 +1,7 @@
 """Implementation of :class:`Field` class. """
 
+from ..polys.polyerrors import DomainError, NotReversible
 from .ring import Ring
-from ..polys.polyerrors import NotReversible, DomainError
 
 
 __all__ = ('Field',)

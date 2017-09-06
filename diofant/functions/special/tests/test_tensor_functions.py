@@ -1,5 +1,6 @@
-from diofant import (adjoint, conjugate, Dummy, Eijk, KroneckerDelta,
-                     LeviCivita, Symbol, symbols, transpose)
+from diofant import (Dummy, Eijk, KroneckerDelta, LeviCivita, Symbol, adjoint,
+                     conjugate, symbols, transpose)
+
 
 __all__ = ()
 

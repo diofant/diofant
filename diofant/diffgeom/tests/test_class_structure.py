@@ -1,5 +1,6 @@
-from diofant.diffgeom import Manifold, Patch, CoordSystem, Point
-from diofant import symbols, Function
+from diofant import Function, symbols
+from diofant.diffgeom import CoordSystem, Manifold, Patch, Point
+
 
 __all__ = ()
 

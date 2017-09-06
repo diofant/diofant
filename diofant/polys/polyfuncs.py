@@ -1,12 +1,12 @@
 """High-level polynomials manipulation functions. """
 
-from .polytools import poly_from_expr, parallel_poly_from_expr, Poly
+from ..core import Add, Mul, S
+from ..utilities import numbered_symbols, public, take
+from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
+                         PolificationFailed)
 from .polyoptions import allowed_flags
-from .specialpolys import symmetric_poly, interpolating_poly
-from .polyerrors import (PolificationFailed, ComputationFailed,
-                         MultivariatePolynomialError)
-from ..utilities import numbered_symbols, take, public
-from ..core import S, Basic, Add, Mul
+from .polytools import Poly, parallel_poly_from_expr, poly_from_expr
+from .specialpolys import interpolating_poly, symmetric_poly
 
 
 @public

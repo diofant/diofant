@@ -1,5 +1,5 @@
-from ...core import (S, Function, Add, Integer, Gt, Lt, Ge, Le, Dummy,
-                     Symbol, PrecisionExhausted)
+from ...core import (Add, Dummy, Function, Ge, Gt, Integer, Le, Lt,
+                     PrecisionExhausted, S, Symbol)
 
 
 ###############################################################################

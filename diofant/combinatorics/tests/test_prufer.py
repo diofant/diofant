@@ -2,6 +2,7 @@ import pytest
 
 from diofant.combinatorics.prufer import Prufer
 
+
 __all__ = ()
 
 

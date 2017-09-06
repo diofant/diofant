@@ -1,8 +1,9 @@
 import pytest
 
-from diofant import I, Rational, Float, Symbol, pi, sqrt
-from diofant.geometry import Line, Point, Point2D, Point3D, Line3D
+from diofant import Float, I, Rational, Symbol, pi, sqrt
+from diofant.geometry import Line, Line3D, Point, Point2D, Point3D
 from diofant.matrices import Matrix
+
 
 __all__ = ()
 
@@ -141,7 +142,7 @@ def test_point3D():
     assert Point(34.05, sqrt(3)) == Point(Rational(681, 20), sqrt(3))
     assert Point3D.midpoint(p3, p4) == Point3D(half, half, half)
     assert Point3D.midpoint(p1, p4) == Point3D(half + half*x1, half + half*x2,
-                                         half + half*x3)
+                                               half + half*x3)
     assert Point3D.midpoint(p2, p2) == p2
     assert p2.midpoint(p2) == p2
 

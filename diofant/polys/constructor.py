@@ -1,12 +1,12 @@
 """Tools for constructing domains for expressions. """
 
-from .polyutils import parallel_dict_from_basic
-from .polyoptions import build_options
-from .polyerrors import GeneratorsNeeded
-from ..domains import ZZ, QQ, RR, EX
+from ..core import sympify
+from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
 from ..utilities import public
-from ..core import sympify
+from .polyerrors import GeneratorsNeeded
+from .polyoptions import build_options
+from .polyutils import parallel_dict_from_basic
 
 
 def _construct_simple(coeffs, opt):

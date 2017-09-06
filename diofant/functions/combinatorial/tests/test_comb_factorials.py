@@ -1,11 +1,14 @@
 import pytest
 
-from diofant import (S, Symbol, symbols, factorial, factorial2, binomial,
-                     rf, ff, gamma, polygamma, EulerGamma, O, pi, nan, exp,
-                     oo, zoo, simplify, expand_func, Product, loggamma)
+from diofant import (E, EulerGamma, O, Product, Rational, Symbol, binomial,
+                     exp, expand_func, factorial, factorial2, ff, gamma,
+                     loggamma, nan, oo, pi, polygamma, rf, simplify, symbols,
+                     zoo)
+from diofant.abc import x
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.combinatorial.factorials import subfactorial
 from diofant.functions.special.gamma_functions import uppergamma
+
 
 __all__ = ()
 
@@ -168,13 +171,13 @@ def test_factorial2():
     assert factorial2(7) == 105
     assert factorial2(8) == 384
     assert factorial2(n).func == factorial2
-    factorial2(S.Half)  # issue sympy/sympy#10388
+    factorial2(Rational(1, 2))  # issue sympy/sympy#10388
 
     assert factorial2(oo).func is factorial2
 
     pytest.raises(ValueError, lambda: factorial2(-2))
     nn = Symbol('nn', negative=True)
-    assert factorial2(-S.Half).func is factorial2
+    assert factorial2(Rational(-1, 2)).func is factorial2
 
     # The following is exhaustive
     tt = Symbol('tt', integer=True, nonnegative=True)
@@ -262,7 +265,7 @@ def test_binomial():
     assert binomial(1, -1) == 0
     assert binomial(-1, 1) == -1
     assert binomial(-1, -1) == 1
-    assert binomial(S.Half, S.Half) == 1
+    assert binomial(Rational(1, 2), Rational(1, 2)) == 1
     assert binomial(-10, 1) == -10
     assert binomial(-10, 7) == -11440
     assert binomial(n, -1).func == binomial
@@ -327,20 +330,19 @@ def test_binomial_rewrite():
 @pytest.mark.xfail
 def test_factorial_simplify_fail():
     # simplify(factorial(x + 1).diff(x) - ((x + 1)*factorial(x)).diff(x))) == 0
-    from diofant.abc import x
     assert simplify(x*polygamma(0, x + 1) - x*polygamma(0, x + 2) +
-    polygamma(0, x + 1) - polygamma(0, x + 2) + 1) == 0
+                    polygamma(0, x + 1) - polygamma(0, x + 2) + 1) == 0
 
 
 def test_subfactorial():
     assert all(subfactorial(i) == ans for i, ans in enumerate(
         [1, 0, 1, 2, 9, 44, 265, 1854, 14833, 133496]))
     assert subfactorial(oo) == oo
-    assert subfactorial(S.Half).func is subfactorial
+    assert subfactorial(Rational(1, 2)).func is subfactorial
     assert subfactorial(nan) == nan
 
     x = Symbol('x')
-    assert subfactorial(x).rewrite(uppergamma) == uppergamma(x + 1, -1)/S.Exp1
+    assert subfactorial(x).rewrite(uppergamma) == uppergamma(x + 1, -1)/E
 
     tt = Symbol('tt', integer=True, nonnegative=True)
     tf = Symbol('tf', integer=True, nonnegative=False)

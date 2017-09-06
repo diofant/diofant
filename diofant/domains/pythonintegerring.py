@@ -1,10 +1,9 @@
 """Implementaton of :class:`PythonIntegerRing` class. """
 
-from .integerring import IntegerRing
-from .groundtypes import (PythonInteger, DiofantInteger, python_sqrt,
-                          python_factorial, python_gcdex, python_gcd,
-                          python_lcm)
 from ..polys.polyerrors import CoercionFailed
+from .groundtypes import (DiofantInteger, PythonInteger, python_factorial,
+                          python_gcd, python_gcdex, python_lcm, python_sqrt)
+from .integerring import IntegerRing
 
 
 __all__ = ('PythonIntegerRing',)

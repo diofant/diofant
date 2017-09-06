@@ -1,7 +1,7 @@
 from diofant import exp, log, sign
+from diofant.abc import x
 from diofant.calculus.singularities import singularities
 
-from diofant.abc import x
 
 __all__ = ()
 

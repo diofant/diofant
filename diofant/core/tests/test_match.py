@@ -1,10 +1,9 @@
 import pytest
 
-from diofant import (Add, cos, Derivative, diff, exp, Float, Function,
-                     I, Integer, log, Mul, oo, Rational, S, sin, sqrt,
-                     Symbol, symbols, Wild, pi, meijerg, WildFunction)
-
-from diofant.abc import x, y, a, b, c, gamma, mu, C, X, Y, Z, R, T
+from diofant import (Add, Derivative, Float, Function, I, Integer, Mul,
+                     Rational, Symbol, Wild, WildFunction, cos, diff, exp, log,
+                     meijerg, oo, pi, sin, sqrt, symbols)
+from diofant.abc import X, Y, Z, a, b, c, gamma, mu, x, y
 
 
 __all__ = ()
@@ -418,7 +417,7 @@ def test_sympyissue_3883():
     g2 = Wild('g2', exclude=[gamma])
     g3 = Wild('g3', exclude=[gamma])
     assert f.expand().match(g1 * log(gamma) + g2 * gamma + g3) == \
-    {g3: log(2)/2 + log(pi)/2, g1: -Rational(1, 2), g2: -mu**2/2 + mu*x - x**2/2}
+        {g3: log(2)/2 + log(pi)/2, g1: -Rational(1, 2), g2: -mu**2/2 + mu*x - x**2/2}
 
 
 def test_sympyissue_4418():
@@ -535,7 +534,7 @@ def test_sympyissue_4883():
 
 def test_sympyissue_4319():
     p = -x*(Rational(1, 8) - y)
-    ans = {S.Zero, y - Rational(1, 8)}
+    ans = {0, y - Rational(1, 8)}
 
     def ok(pat):
         assert set(p.match(pat).values()) == ans
@@ -573,11 +572,10 @@ def test_sympyissue_2711():
     a = Wild('a')
     b = Wild('b')
 
-    assert f.find(a) == {(S.Zero,), ((), ()), ((S.Zero,), ()), x, S.Zero,
-                             (), meijerg(((), ()), ((S.Zero,), ()), x)}
-    assert f.find(a + b) == \
-        {meijerg(((), ()), ((S.Zero,), ()), x), x, S.Zero}
-    assert f.find(a**2) == {meijerg(((), ()), ((S.Zero,), ()), x), x}
+    assert f.find(a) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1,
+                         (): 3, (0,): 1, ((), ()): 1, ((0,), ()): 1}
+    assert f.find(a + b) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1}
+    assert f.find(a**2) == {x: 1, meijerg(((), ()), ((0,), ()), x): 1}
 
 
 def test_diofantissue_423():

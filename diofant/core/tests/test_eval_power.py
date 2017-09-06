@@ -1,14 +1,15 @@
 import pytest
 
-from diofant.core import (Rational, Symbol, S, Float, Integer, Number,
-                          Pow, Basic, I, nan, pi, symbols, oo, zoo, E)
+from diofant.abc import a, b, c, x, y
+from diofant.core import (Basic, E, Float, I, Integer, Number, Pow, Rational,
+                          Symbol, nan, oo, pi, symbols, zoo)
 from diofant.core.tests.test_evalf import NS
-from diofant.functions.elementary.miscellaneous import sqrt, cbrt
 from diofant.functions.elementary.exponential import exp, log
-from diofant.functions.elementary.trigonometric import sin, cos
+from diofant.functions.elementary.miscellaneous import cbrt, root, sqrt
+from diofant.functions.elementary.trigonometric import cos, sin
+from diofant.logic import true
 from diofant.series.order import O
 
-from diofant.abc import a, b, c, x, y
 
 __all__ = ()
 
@@ -38,7 +39,7 @@ def test_negative_real():
     def feq(a, b):
         return abs(a - b) < 1E-10
 
-    assert feq(S.One / Float(-0.5), -Integer(2))
+    assert feq(1/Float(-0.5), -Integer(2))
 
 
 def test_expand():
@@ -125,7 +126,7 @@ def test_sympyissue_4362():
     eq = eqn(nneg, dneg, -2)
     assert eq.is_Pow and eq.as_numer_denom() == (dneg**2, 1)
     # pos or neg rational
-    pow = S.Half
+    pow = Rational(1, 2)
     eq = eqn(npos, dpos, pow)
     assert eq.is_Pow and eq.as_numer_denom() == (npos**pow, dpos**pow)
     eq = eqn(npos, dneg, pow)
@@ -161,18 +162,18 @@ def test_sympyissue_4362():
     eq = eqn(nneg, dneg, -pow)
     assert eq.is_Pow and eq.as_numer_denom() == ((-dneg)**pow, (-nneg)**pow)
 
-    assert ((1/(1 + x/3))**(-S.One)).as_numer_denom() == (3 + x, 3)
+    assert ((1/(1 + x/3))**-1).as_numer_denom() == (3 + x, 3)
     notp = Symbol('notp', positive=False)  # not positive does not imply real
     b = ((1 + x/notp)**-2)
     assert (b**(-y)).as_numer_denom() == (1, b**y)
-    assert (b**(-S.One)).as_numer_denom() == ((notp + x)**2, notp**2)
+    assert (b**-1).as_numer_denom() == ((notp + x)**2, notp**2)
     nonp = Symbol('nonp', nonpositive=True)
-    assert (((1 + x/nonp)**-2)**(-S.One)).as_numer_denom() == ((-nonp -
-            x)**2, nonp**2)
+    assert (((1 + x/nonp)**-2)**-1).as_numer_denom() == ((-nonp - x)**2,
+                                                         nonp**2)
 
     n = Symbol('n', negative=True)
     assert (x**n).as_numer_denom() == (1, x**-n)
-    assert sqrt(1/n).as_numer_denom() == (S.ImaginaryUnit, sqrt(-n))
+    assert sqrt(1/n).as_numer_denom() == (I, sqrt(-n))
     n = Symbol('0 or neg', nonpositive=True)
     # if x and n are split up without negating each term and n is negative
     # then the answer might be wrong; if n is 0 it won't matter since
@@ -209,18 +210,18 @@ def test_zero():
     assert 0**(1.0*x) == 0**x
     assert 0**(2.0*x) == 0**x
     assert (0**(2 - x)).as_base_exp() == (0, 2 - x)
-    assert 0**(x - 2) != S.Infinity**(2 - x)
+    assert 0**(x - 2) != oo**(2 - x)
     assert 0**(2*x*y) == 0**(x*y)
-    assert 0**(-2*x*y) == S.ComplexInfinity**(x*y)
+    assert 0**(-2*x*y) == zoo**(x*y)
     assert 0**I == nan
     i = Symbol('i', imaginary=True, nonzero=True)
     assert 0**i == nan
 
 
 def test_pow_as_base_exp():
-    assert (S.Infinity**(2 - x)).as_base_exp() == (S.Infinity, 2 - x)
-    assert (S.Infinity**(x - 2)).as_base_exp() == (S.Infinity, x - 2)
-    p = S.Half**x
+    assert (oo**(2 - x)).as_base_exp() == (oo, 2 - x)
+    assert (oo**(x - 2)).as_base_exp() == (oo, x - 2)
+    p = Rational(1, 2)**x
     assert p.base, p.exp == p.as_base_exp() == (Integer(2), -x)
     # issue sympy/sympy#8344:
     assert Pow(1, 2, evaluate=False).as_base_exp() == (Integer(1), Integer(2))
@@ -229,7 +230,7 @@ def test_pow_as_base_exp():
 def test_sympyissue_6100():
     assert x**1.0 != x
     assert x != x**1.0
-    assert S.true != x**1.0
+    assert true != x**1.0
     assert x**1.0 is not True
     assert x is not True
     assert x*y != (x*y)**1.0
@@ -244,8 +245,6 @@ def test_sympyissue_6100():
 
 
 def test_sympyissue_6208():
-    from diofant import root, Rational
-    I = S.ImaginaryUnit
     assert sqrt(33**(9*I/10)) == -33**(9*I/20)
     assert root((6*I)**(2*I), 3).as_base_exp()[1] == Rational(1, 3)  # != 2*I/3
     assert root((6*I)**(I/3), 3).as_base_exp()[1] == I/9
@@ -258,7 +257,7 @@ def test_sympyissue_6208():
 def test_sympyissue_6990():
     assert (sqrt(a + b*x + x**2)).series(x, 0, 3).removeO() == \
         b*x/(2*sqrt(a)) + x**2*(1/(2*sqrt(a)) -
-        b**2/(8*a**Rational(3, 2))) + sqrt(a)
+                                b**2/(8*a**Rational(3, 2))) + sqrt(a)
 
 
 def test_sympyissue_6068():
@@ -304,21 +303,21 @@ def test_sympyissue_7638():
     r = symbols('r', extended_real=True)
     assert sqrt(r**2) == abs(r)
     assert cbrt(r**3) != r
-    assert sqrt(Pow(2*I, 5*S.Half)) != (2*I)**(5/Integer(4))
+    assert sqrt(Pow(2*I, Rational(5, 2))) != (2*I)**Rational(5, 4)
     p = symbols('p', positive=True)
     assert cbrt(p**2) == p**(2/Integer(3))
     assert NS(((0.2 + 0.7*I)**(0.7 + 1.0*I))**(0.5 - 0.1*I), 1) == '0.4 + 0.2*I'
     assert sqrt(1/(1 + I)) == sqrt((1 - I)/2)  # or 1/sqrt(1 + I)
     e = 1/(1 - sqrt(2))
     assert sqrt(e) == I/sqrt(-1 + sqrt(2))
-    assert e**-S.Half == -I*sqrt(-1 + sqrt(2))
-    assert sqrt((cos(1)**2 + sin(1)**2 - 1)**(3 + I)).exp == S.Half
+    assert e**Rational(-1, 2) == -I*sqrt(-1 + sqrt(2))
+    assert sqrt((cos(1)**2 + sin(1)**2 - 1)**(3 + I)).exp == Rational(1, 2)
     assert sqrt(r**(4/Integer(3))) != r**(2/Integer(3))
     assert sqrt((p + I)**(4/Integer(3))) == (p + I)**(2/Integer(3))
     assert sqrt((p - p**2*I)**2) == p - p**2*I
     assert sqrt((p + r*I)**2) != p + r*I
     e = (1 + I/5)
-    assert sqrt(e**5) == e**(5*S.Half)
+    assert sqrt(e**5) == e**Rational(5, 2)
     assert sqrt(e**6) == e**3
     assert sqrt((1 + I*r)**6) != (1 + I*r)**3
 
@@ -343,7 +342,7 @@ def test_sympyissue_10095():
     assert ((1/(2*E))**oo).as_numer_denom() == (1, (2*E)**oo)
     assert ((2*E)**oo).as_numer_denom() == ((2*E)**oo, 1)
     e = Pow(1, oo, evaluate=False)
-    assert e.as_numer_denom() == (e, S.One)
+    assert e.as_numer_denom() == (e, 1)
 
 
 @pytest.mark.slow

@@ -1,8 +1,8 @@
 """Implementation of :class:`FractionField` class. """
 
-from .field import Field
-from .compositedomain import CompositeDomain
 from ..polys.polyerrors import CoercionFailed, GeneratorsError
+from .compositedomain import CompositeDomain
+from .field import Field
 
 
 __all__ = ('FractionField',)

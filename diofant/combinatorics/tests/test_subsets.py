@@ -2,6 +2,7 @@ import pytest
 
 from diofant.combinatorics import Subset
 
+
 __all__ = ()
 
 

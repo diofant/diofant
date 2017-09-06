@@ -3,9 +3,9 @@ This test file tests the Diofant function interface, that people use to create
 their own new functions. It should be as easy as possible.
 """
 
-from diofant import Function, sympify, sin, cos, limit, tanh
-
+from diofant import Function, cos, limit, sin, sympify, tanh
 from diofant.abc import x
+
 
 __all__ = ()
 
@@ -69,6 +69,4 @@ def test_function_series3():
             if arg == 0:
                 return sympify(0)
 
-    e = tanh(x)
-    f = mytanh(x)
     assert tanh(x).series(x, 0, 6) == mytanh(x).series(x, 0, 6)

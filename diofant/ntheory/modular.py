@@ -1,11 +1,11 @@
 from functools import reduce
 
-from ..core.numbers import igcdex, igcd
-from ..core.mul import prod
 from ..core.compatibility import as_int
-from .primetest import isprime
+from ..core.mul import prod
+from ..core.numbers import igcd, igcdex
 from ..domains import ZZ
 from ..polys.galoistools import gf_crt, gf_crt1, gf_crt2
+from .primetest import isprime
 
 
 def symmetric_residue(a, m):
@@ -87,7 +87,7 @@ def crt(m, v, symmetric=False, check=True):
     if check:
         if not all(v % m == result % m for v, m in zip(v, m)):
             result = solve_congruence(*list(zip(v, m)),
-                    check=False, symmetric=symmetric)
+                                      check=False, symmetric=symmetric)
             if result is None:
                 return result
             result, mm = result

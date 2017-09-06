@@ -1,9 +1,9 @@
 """Implementaton of :class:`GMPYIntegerRing` class. """
 
-from .integerring import IntegerRing
-from .groundtypes import (GMPYInteger, DiofantInteger, gmpy_factorial,
-                          gmpy_gcdex, gmpy_gcd, gmpy_lcm, gmpy_sqrt)
 from ..polys.polyerrors import CoercionFailed
+from .groundtypes import (DiofantInteger, GMPYInteger, gmpy_factorial,
+                          gmpy_gcd, gmpy_gcdex, gmpy_lcm, gmpy_sqrt)
+from .integerring import IntegerRing
 
 
 __all__ = ('GMPYIntegerRing',)

@@ -2,20 +2,21 @@ from io import StringIO
 
 import pytest
 
-from diofant.core import symbols, Eq, pi, Catalan, Lambda, Dummy
-from diofant import erf, Integral
-from diofant import Equality
+from diofant import (Abs, Equality, Integral, acos, asin, atan, atan2, ceiling,
+                     cos, cosh, erf, floor, ln, log, sin, sinh, sqrt, tan,
+                     tanh)
+from diofant.abc import B, C, X, a, t, x, y, z
+from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
-from diofant.utilities.codegen import (codegen, make_routine, CCodeGen,
-                                       InputArgument, CodeGenError, FCodeGen,
-                                       CodeGenArgumentListError,
-                                       OutputArgument, InOutArgument)
+from diofant.tensor import Idx, IndexedBase
+from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
+                                       CodeGenError, FCodeGen, InOutArgument,
+                                       InputArgument, OutputArgument, codegen,
+                                       make_routine)
 from diofant.utilities.lambdify import implemented_function
 
-__all__ = ()
 
-# FIXME: Fails due to circular import in with core
-# from diofant import codegen
+__all__ = ()
 
 
 def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
@@ -34,12 +35,11 @@ def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
 
 
 def test_Routine_argument_order():
-    a, x, y, z = symbols('a x y z')
     expr = (x + y)*z
     pytest.raises(CodeGenArgumentListError, lambda: make_routine("test", expr,
-           argument_sequence=[z, x]))
+                                                                 argument_sequence=[z, x]))
     pytest.raises(CodeGenArgumentListError, lambda: make_routine("test", Eq(a,
-           expr), argument_sequence=[z, x, y]))
+                                                                            expr), argument_sequence=[z, x, y]))
     r = make_routine('test', Eq(a, expr), argument_sequence=[z, x, a, y])
     assert [ arg.name for arg in r.arguments ] == [z, x, a, y]
     assert [ type(arg) for arg in r.arguments ] == [
@@ -48,7 +48,6 @@ def test_Routine_argument_order():
     assert [ type(arg) for arg in r.arguments ] == [
         InOutArgument, InputArgument, InputArgument ]
 
-    from diofant.tensor import IndexedBase, Idx
     A, B = map(IndexedBase, ['A', 'B'])
     m = symbols('m', integer=True)
     i = Idx('i', m)
@@ -74,13 +73,13 @@ def test_empty_c_code_with_comment():
     )
     #   "                    Code generated with diofant 0.7.2-git                    "
     assert source[158:] == (                                                              "*\n"
-        " *                                                                            *\n"
-        " *             See http://diofant.rtfd.io/ for more information.              *\n"
-        " *                                                                            *\n"
-        " *                       This file is part of 'project'                       *\n"
-        " ******************************************************************************/\n"
-        "#include \"file.h\"\n"
-        "#include <math.h>\n")
+                                                                                          " *                                                                            *\n"
+                                                                                          " *             See http://diofant.rtfd.io/ for more information.              *\n"
+                                                                                          " *                                                                            *\n"
+                                                                                          " *                       This file is part of 'project'                       *\n"
+                                                                                          " ******************************************************************************/\n"
+                                                                                          "#include \"file.h\"\n"
+                                                                                          "#include <math.h>\n")
 
 
 def test_empty_c_header():
@@ -90,7 +89,6 @@ def test_empty_c_header():
 
 
 def test_simple_c_code():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = CCodeGen()
@@ -108,8 +106,8 @@ def test_simple_c_code():
 
 
 def test_c_code_reserved_words():
-    x, y, z = symbols('if, typedef, while')
-    expr = (x + y) * z
+    if_, typedef_, while_ = symbols('if, typedef, while')
+    expr = (if_ + typedef_) * while_
     routine = make_routine("test", expr)
     code_gen = CCodeGen()
     source = get_string(code_gen.dump_c, [routine])
@@ -143,7 +141,6 @@ def test_numbersymbol_c_code():
 
 
 def test_c_code_argument_order():
-    x, y, z = symbols('x,y,z')
     expr = x + y
     routine = make_routine("test", expr, argument_sequence=[z, x, y])
     code_gen = CCodeGen()
@@ -161,7 +158,6 @@ def test_c_code_argument_order():
 
 
 def test_simple_c_header():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = CCodeGen()
@@ -176,29 +172,27 @@ def test_simple_c_header():
 
 
 def test_simple_c_codegen():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     result = codegen(("test", expr), "C", "file", header=False, empty=False)
     expected = [
         ("file.c",
-        "#include \"file.h\"\n"
-        "#include <math.h>\n"
-        "double test(double x, double y, double z) {\n"
-        "   double test_result;\n"
-        "   test_result = z*(x + y);\n"
-        "   return test_result;\n"
-        "}\n"),
+         "#include \"file.h\"\n"
+         "#include <math.h>\n"
+         "double test(double x, double y, double z) {\n"
+         "   double test_result;\n"
+         "   test_result = z*(x + y);\n"
+         "   return test_result;\n"
+         "}\n"),
         ("file.h",
-        "#ifndef PROJECT__FILE__H\n"
-        "#define PROJECT__FILE__H\n"
-        "double test(double x, double y, double z);\n"
-        "#endif\n")
+         "#ifndef PROJECT__FILE__H\n"
+         "#define PROJECT__FILE__H\n"
+         "double test(double x, double y, double z);\n"
+         "#endif\n")
     ]
     assert result == expected
 
 
 def test_multiple_results_c():
-    x, y, z = symbols('x,y,z')
     expr1 = (x + y)*z
     expr2 = (x - y)*z
     routine = make_routine(
@@ -215,9 +209,6 @@ def test_no_results_c():
 
 def test_ansi_math1_codegen():
     # not included: log10
-    from diofant import (acos, asin, atan, ceiling, cos, cosh, floor, log, ln,
-        sin, sinh, sqrt, tan, tanh, Abs)
-    x = symbols('x')
     name_expr = [
         ("test_fabs", Abs(x)),
         ("test_acos", acos(x)),
@@ -271,8 +262,6 @@ def test_ansi_math1_codegen():
 
 def test_ansi_math2_codegen():
     # not included: frexp, ldexp, modf, fmod
-    from diofant import atan2
-    x, y = symbols('x,y')
     name_expr = [
         ("test_atan2", atan2(x, y)),
         ("test_pow", x**y),
@@ -294,8 +283,6 @@ def test_ansi_math2_codegen():
 
 
 def test_complicated_codegen():
-    from diofant import sin, cos, tan
-    x, y, z = symbols('x,y,z')
     name_expr = [
         ("test1", ((sin(x) + cos(y) + tan(z))**7).expand()),
         ("test2", cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))),
@@ -362,8 +349,6 @@ def test_complicated_codegen():
 
 
 def test_loops_c():
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m = symbols('n m', integer=True)
     A = IndexedBase('A')
     x = IndexedBase('x')
@@ -404,7 +389,6 @@ def test_loops_c():
 
 
 def test_dummy_loops_c():
-    from diofant.tensor import IndexedBase, Idx
     i, m = symbols('i m', integer=True, cls=Dummy)
     x = IndexedBase('x')
     y = IndexedBase('y')
@@ -427,8 +411,6 @@ def test_dummy_loops_c():
 def test_partial_loops_c():
     # check that loop boundaries are determined by Idx, and array strides
     # determined by shape of IndexedBase object.
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m, o, p = symbols('n m o p', integer=True)
     A = IndexedBase('A', shape=(m, p))
     x = IndexedBase('x')
@@ -469,8 +451,6 @@ def test_partial_loops_c():
 
 
 def test_output_arg_c():
-    from diofant import sin, cos, Equality
-    x, y, z = symbols("x,y,z")
     r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
     c = CCodeGen()
     result = c.write([r], "test", header=False, empty=False)
@@ -489,9 +469,8 @@ def test_output_arg_c():
 
 
 def test_output_arg_c_reserved_words():
-    from diofant import sin, cos, Equality
-    x, y, z = symbols("if, while, z")
-    r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
+    if_, while_ = symbols("if, while")
+    r = make_routine("foo", [Equality(while_, sin(if_)), cos(if_)])
     c = CCodeGen()
     result = c.write([r], "test", header=False, empty=False)
     assert result[0][0] == "test.c"
@@ -509,8 +488,6 @@ def test_output_arg_c_reserved_words():
 
 
 def test_ccode_results_named_ordered():
-    x, y, z = symbols('x,y,z')
-    B, C = symbols('B,C')
     A = MatrixSymbol('A', 1, 3)
     expr1 = Equality(A, Matrix([[1, 2, x]]))
     expr2 = Equality(C, (x + y)*z)
@@ -577,11 +554,11 @@ def test_empty_f_code_with_header():
     )
     #   "                    Code generated with diofant 0.7.2-git                    "
     assert source[158:] == (                                                              "*\n"
-        "!*                                                                            *\n"
-        "!*             See http://diofant.rtfd.io/ for more information.              *\n"
-        "!*                                                                            *\n"
-        "!*                       This file is part of 'project'                       *\n"
-        "!******************************************************************************\n")
+                                                                                          "!*                                                                            *\n"
+                                                                                          "!*             See http://diofant.rtfd.io/ for more information.              *\n"
+                                                                                          "!*                                                                            *\n"
+                                                                                          "!*                       This file is part of 'project'                       *\n"
+                                                                                          "!******************************************************************************\n")
 
 
 def test_empty_f_header():
@@ -591,7 +568,6 @@ def test_empty_f_header():
 
 
 def test_simple_f_code():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = FCodeGen()
@@ -624,7 +600,6 @@ def test_numbersymbol_f_code():
 
 
 def test_erf_f_code():
-    x = symbols('x')
     routine = make_routine("test", erf(x) - erf(-2 * x))
     code_gen = FCodeGen()
     source = get_string(code_gen.dump_f95, [routine])
@@ -639,7 +614,6 @@ def test_erf_f_code():
 
 
 def test_f_code_argument_order():
-    x, y, z = symbols('x,y,z')
     expr = x + y
     routine = make_routine("test", expr, argument_sequence=[z, x, y])
     code_gen = FCodeGen()
@@ -657,7 +631,6 @@ def test_f_code_argument_order():
 
 
 def test_simple_f_header():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = FCodeGen()
@@ -676,34 +649,32 @@ def test_simple_f_header():
 
 
 def test_simple_f_codegen():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     result = codegen(
         ("test", expr), "F95", "file", header=False, empty=False)
     expected = [
         ("file.f90",
-        "REAL*8 function test(x, y, z)\n"
-        "implicit none\n"
-        "REAL*8, intent(in) :: x\n"
-        "REAL*8, intent(in) :: y\n"
-        "REAL*8, intent(in) :: z\n"
-        "test = z*(x + y)\n"
-        "end function\n"),
+         "REAL*8 function test(x, y, z)\n"
+         "implicit none\n"
+         "REAL*8, intent(in) :: x\n"
+         "REAL*8, intent(in) :: y\n"
+         "REAL*8, intent(in) :: z\n"
+         "test = z*(x + y)\n"
+         "end function\n"),
         ("file.h",
-        "interface\n"
-        "REAL*8 function test(x, y, z)\n"
-        "implicit none\n"
-        "REAL*8, intent(in) :: x\n"
-        "REAL*8, intent(in) :: y\n"
-        "REAL*8, intent(in) :: z\n"
-        "end function\n"
-        "end interface\n")
+         "interface\n"
+         "REAL*8 function test(x, y, z)\n"
+         "implicit none\n"
+         "REAL*8, intent(in) :: x\n"
+         "REAL*8, intent(in) :: y\n"
+         "REAL*8, intent(in) :: z\n"
+         "end function\n"
+         "end interface\n")
     ]
     assert result == expected
 
 
 def test_multiple_results_f():
-    x, y, z = symbols('x,y,z')
     expr1 = (x + y)*z
     expr2 = (x - y)*z
     routine = make_routine(
@@ -720,9 +691,6 @@ def test_no_results_f():
 
 def test_intrinsic_math_codegen():
     # not included: log10
-    from diofant import (acos, asin, atan, cos, cosh, log, ln,
-                       sin, sinh, sqrt, tan, tanh, Abs)
-    x = symbols('x')
     name_expr = [
         ("test_abs", Abs(x)),
         ("test_acos", acos(x)),
@@ -895,8 +863,6 @@ def test_intrinsic_math_codegen():
 
 def test_intrinsic_math2_codegen():
     # not included: frexp, ldexp, modf, fmod
-    from diofant import atan2
-    x, y = symbols('x,y')
     name_expr = [
         ("test_atan2", atan2(x, y)),
         ("test_pow", x**y),
@@ -940,8 +906,6 @@ def test_intrinsic_math2_codegen():
 
 
 def test_complicated_codegen_f95():
-    from diofant import sin, cos, tan
-    x, y, z = symbols('x,y,z')
     name_expr = [
         ("test1", ((sin(x) + cos(y) + tan(z))**7).expand()),
         ("test2", cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))),
@@ -1002,9 +966,6 @@ def test_complicated_codegen_f95():
 
 
 def test_loops():
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
-
     n, m = symbols('n,m', integer=True)
     A, x, y = map(IndexedBase, 'Axy')
     i = Idx('i', m)
@@ -1053,7 +1014,6 @@ def test_loops():
 
 
 def test_dummy_loops_f95():
-    from diofant.tensor import IndexedBase, Idx
     i, m = symbols('i m', integer=True, cls=Dummy)
     x = IndexedBase('x')
     y = IndexedBase('y')
@@ -1077,14 +1037,10 @@ def test_dummy_loops_f95():
 
 
 def test_loops_InOut():
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
-
     i, j, n, m = symbols('i,j,n,m', integer=True)
-    A, x, y = symbols('A,x,y')
-    A = IndexedBase(A)[Idx(i, m), Idx(j, n)]
-    x = IndexedBase(x)[Idx(j, n)]
-    y = IndexedBase(y)[Idx(i, m)]
+    A = IndexedBase('A')[Idx(i, m), Idx(j, n)]
+    x = IndexedBase('x')[Idx(j, n)]
+    y = IndexedBase('y')[Idx(i, m)]
 
     (f1, code), (f2, interface) = codegen(
         ('matrix_vector', Eq(y, y + A*x)), "F95", "file", header=False, empty=False)
@@ -1128,8 +1084,6 @@ def test_loops_InOut():
 def test_partial_loops_f():
     # check that loop boundaries are determined by Idx, and array strides
     # determined by shape of IndexedBase object.
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m, o, p = symbols('n m o p', integer=True)
     A = IndexedBase('A', shape=(m, p))
     x = IndexedBase('x')
@@ -1173,8 +1127,6 @@ def test_partial_loops_f():
 
 
 def test_output_arg_f():
-    from diofant import sin, cos, Equality
-    x, y, z = symbols("x,y,z")
     r = make_routine("foo", [Equality(y, sin(x)), cos(x)])
     c = FCodeGen()
     result = c.write([r], "test", header=False, empty=False)
@@ -1191,8 +1143,6 @@ def test_output_arg_f():
 
 
 def test_inline_function():
-    from diofant.tensor import IndexedBase, Idx
-    from diofant import symbols
     n, m = symbols('n m', integer=True)
     A, x, y = map(IndexedBase, 'Axy')
     i = Idx('i', m)
@@ -1258,7 +1208,6 @@ end function
 
 
 def test_check_case():
-    x, X = symbols('x,X')
     pytest.raises(CodeGenError, lambda: codegen(('test', x*X), 'f95', 'prefix'))
 
 
@@ -1267,17 +1216,15 @@ def test_check_case_false_positive():
     # objects that differ only because of assumptions.  (It may be useful to
     # have a check for that as well, but here we only want to test against
     # false positives with respect to case checking.)
-    x1 = symbols('x')
     x2 = symbols('x', my_assumption=True)
     try:
-        codegen(('test', x1*x2), 'f95', 'prefix')
+        codegen(('test', x*x2), 'f95', 'prefix')
     except CodeGenError as e:
         if e.args[0].startswith("Fortran ignores case."):
             raise AssertionError("This exception should not be raised!")
 
 
 def test_c_fortran_omit_routine_name():
-    x, y = symbols("x,y")
     name_expr = [("foo", 2*x)]
     result = codegen(name_expr, "F95", header=False, empty=False)
     expresult = codegen(name_expr, "F95", "foo", header=False, empty=False)
@@ -1295,7 +1242,6 @@ def test_c_fortran_omit_routine_name():
 
 
 def test_fcode_matrix_output():
-    x, y, z = symbols('x,y,z')
     e1 = x + y
     e2 = Matrix([[x, y], [z, 16]])
     name_expr = ("test", (e1, e2))
@@ -1324,8 +1270,6 @@ def test_fcode_matrix_output():
 
 
 def test_fcode_results_named_ordered():
-    x, y, z = symbols('x,y,z')
-    B, C = symbols('B,C')
     A = MatrixSymbol('A', 1, 3)
     expr1 = Equality(A, Matrix([[1, 2, x]]))
     expr2 = Equality(C, (x + y)*z)
@@ -1407,7 +1351,6 @@ def test_fcode_matrixsymbol_slice_autoname():
 
 
 def test_global_vars():
-    x, y, z, t = symbols("x y z t")
     result = codegen(('f', x*y), "F95", header=False, empty=False,
                      global_vars=(y,))
     source = result[0][1]

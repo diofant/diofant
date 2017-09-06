@@ -1,4 +1,5 @@
-from diofant import sin, cos, exp, cot, I, symbols, Pow
+from diofant import I, Pow, cos, cot, exp, sin, symbols
+
 
 x, y, z, n = symbols('x,y,z,n')
 

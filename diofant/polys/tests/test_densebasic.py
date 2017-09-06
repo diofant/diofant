@@ -4,45 +4,34 @@ import random
 
 import pytest
 
-from diofant.polys.densebasic import (
-    dup_LC, dmp_LC,
-    dup_TC, dmp_TC,
-    dmp_ground_LC, dmp_ground_TC,
-    dmp_true_LT,
-    dup_degree, dmp_degree,
-    dmp_degree_in, dmp_degree_list,
-    dup_strip, dmp_strip,
-    dmp_validate,
-    dup_reverse,
-    dup_copy, dmp_copy,
-    dup_normal, dmp_normal,
-    dup_convert, dmp_convert,
-    dup_from_diofant, dmp_from_diofant,
-    dup_nth, dmp_nth, dmp_ground_nth,
-    dmp_zero_p, dmp_zero,
-    dmp_one_p, dmp_one,
-    dmp_ground_p, dmp_ground,
-    dmp_negative_p, dmp_positive_p,
-    dmp_zeros, dmp_grounds,
-    dup_from_dict, dup_from_raw_dict,
-    dup_to_dict, dup_to_raw_dict,
-    dmp_from_dict, dmp_to_dict,
-    dmp_swap, dmp_permute,
-    dmp_nest, dmp_raise,
-    dup_deflate, dmp_deflate,
-    dup_multi_deflate, dmp_multi_deflate,
-    dup_inflate, dmp_inflate,
-    dmp_exclude, dmp_include,
-    dmp_inject, dmp_eject,
-    dup_terms_gcd, dmp_terms_gcd,
-    dmp_list_terms, dmp_apply_pairs,
-    dup_slice, dmp_slice,
-    dup_random)
-
-from diofant.polys.specialpolys import f_polys
-from diofant.domains import ZZ, QQ
+from diofant import Integer, Rational, oo
+from diofant.domains import QQ, ZZ
+from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
+                                      dmp_deflate, dmp_degree, dmp_degree_in,
+                                      dmp_degree_list, dmp_eject, dmp_exclude,
+                                      dmp_from_dict, dmp_from_diofant,
+                                      dmp_ground, dmp_ground_LC,
+                                      dmp_ground_nth, dmp_ground_p,
+                                      dmp_ground_TC, dmp_grounds, dmp_include,
+                                      dmp_inflate, dmp_inject, dmp_LC,
+                                      dmp_list_terms, dmp_multi_deflate,
+                                      dmp_negative_p, dmp_nest, dmp_normal,
+                                      dmp_nth, dmp_one, dmp_one_p, dmp_permute,
+                                      dmp_positive_p, dmp_raise, dmp_slice,
+                                      dmp_strip, dmp_swap, dmp_TC,
+                                      dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
+                                      dmp_validate, dmp_zero, dmp_zero_p,
+                                      dmp_zeros, dup_convert, dup_copy,
+                                      dup_deflate, dup_degree, dup_from_dict,
+                                      dup_from_diofant, dup_from_raw_dict,
+                                      dup_inflate, dup_LC, dup_multi_deflate,
+                                      dup_normal, dup_nth, dup_random,
+                                      dup_reverse, dup_slice, dup_strip,
+                                      dup_TC, dup_terms_gcd, dup_to_dict,
+                                      dup_to_raw_dict)
 from diofant.polys.rings import ring
-from diofant import oo, Integer, Rational
+from diofant.polys.specialpolys import f_polys
+
 
 __all__ = ()
 

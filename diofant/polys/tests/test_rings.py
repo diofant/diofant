@@ -5,15 +5,16 @@ from operator import add, mul
 
 import pytest
 
-from diofant.polys.rings import ring, sring, PolyRing, PolyElement
-from diofant.polys.fields import field, FracField
-from diofant.domains import ZZ, QQ, RR, FF, EX
-from diofant.polys.orderings import lex, grlex
-from diofant.polys.polyerrors import (GeneratorsError, GeneratorsNeeded,
-                                      ExactQuotientFailed,
-                                      MultivariatePolynomialError, CoercionFailed)
+from diofant import oo, pi, sqrt
 from diofant.core import Symbol, symbols
-from diofant import sqrt, pi, oo
+from diofant.domains import EX, FF, QQ, RR, ZZ
+from diofant.polys.fields import FracField, field
+from diofant.polys.orderings import grlex, lex
+from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
+                                      GeneratorsError, GeneratorsNeeded,
+                                      MultivariatePolynomialError)
+from diofant.polys.rings import PolyElement, PolyRing, ring, sring
+
 
 __all__ = ()
 
@@ -758,8 +759,8 @@ def test_PolyElement___pow__():
     R, t = ring("t", ZZ)
     f = -11200*t**4 - 2604*t**2 + 49
     g = 15735193600000000*t**16 + 14633730048000000*t**14 + 4828147466240000*t**12 \
-      + 598976863027200*t**10 + 3130812416256*t**8 - 2620523775744*t**6 \
-      + 92413760096*t**4 - 1225431984*t**2 + 5764801
+        + 598976863027200*t**10 + 3130812416256*t**8 - 2620523775744*t**6 \
+        + 92413760096*t**4 - 1225431984*t**2 + 5764801
 
     assert f**4 == f._pow_generic(4) == f._pow_multinomial(4) == g
 

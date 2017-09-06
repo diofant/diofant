@@ -8,17 +8,18 @@ Ray
 Segment
 """
 
-from ..core import S, sympify, Dummy, factor_terms, Eq
-from ..functions import acos, sqrt, tan, Piecewise
+from ..core import Dummy, Eq, S, factor_terms, sympify
+from ..core.compatibility import is_sequence
+from ..functions import Piecewise, acos, sqrt, tan
 from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
 from ..logic import And
 from ..simplify import simplify
 from ..solvers import solve
-from .exceptions import GeometryError
 from .entity import GeometryEntity, GeometrySet
+from .exceptions import GeometryError
 from .point import Point
 from .util import _symbol
-from ..core.compatibility import is_sequence
+
 
 # TODO: this should be placed elsewhere and reused in other modules
 
@@ -145,7 +146,7 @@ class LinearEntity(GeometrySet):
         return tuple(simplify(i)
                      for i in (self.p1.y - self.p2.y,
                                self.p2.x - self.p1.x,
-                                self.p1.x*self.p2.y - self.p1.y*self.p2.x))
+                               self.p1.x*self.p2.y - self.p1.y*self.p2.x))
 
     @staticmethod
     def are_concurrent(*lines):
@@ -844,7 +845,7 @@ class LinearEntity(GeometrySet):
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
             raise ValueError('Symbol %s already appears in object '
-            'and cannot be used as a parameter.' % t.name)
+                             'and cannot be used as a parameter.' % t.name)
         # multiply on the right so the variable gets
         # combined witht he coordinates of the point
         return self.p1 + (self.p2 - self.p1)*t
@@ -1016,7 +1017,7 @@ class Line(LinearEntity):
                 p2 = Point(pt)
             except NotImplementedError:
                 raise ValueError('The 2nd argument was not a valid Point. '
-                'If it was a slope, enter it with keyword "slope".')
+                                 'If it was a slope, enter it with keyword "slope".')
         elif slope is not None and pt is None:
             slope = sympify(slope)
             if slope.is_finite is False:

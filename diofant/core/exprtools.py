@@ -2,21 +2,20 @@
 
 from collections import defaultdict
 
+from ..utilities.iterables import common_prefix, common_suffix, variations
 from .add import Add
-from .compatibility import (iterable, is_sequence, DIOFANT_INTS,
-                            default_sort_key, ordered)
-from .mul import Mul, _keep_coeff
-from .power import Pow
 from .basic import Basic, preorder_traversal
+from .compatibility import (DIOFANT_INTS, default_sort_key, is_sequence,
+                            iterable, ordered)
+from .containers import Dict, Tuple
+from .coreerrors import NonCommutativeExpression
 from .expr import Expr
-from .sympify import sympify
-from .numbers import Rational, Integer, Number, I
+from .mul import Mul, _keep_coeff
+from .numbers import I, Integer, Number, Rational
+from .power import Pow
 from .singleton import S
 from .symbol import Dummy
-from .coreerrors import NonCommutativeExpression
-from .containers import Tuple, Dict
-from ..utilities.iterables import (common_prefix, common_suffix,
-                                         variations)
+from .sympify import sympify
 
 
 def _isnumber(i):
@@ -844,7 +843,7 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
     if terms.is_Mul:
         c, args = terms.as_coeff_mul()
         return _keep_coeff(c, Mul(*[gcd_terms(i, isprimitive, clear, fraction)
-            for i in args]), clear=clear)
+                                    for i in args]), clear=clear)
 
     def handle(a):
         # don't treat internal args like terms of an Add
@@ -954,9 +953,9 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
             # rebuild p not worrying about the order which gcd_terms will fix
             p = Add._from_args(list_args)
             p = gcd_terms(p,
-                isprimitive=True,
-                clear=clear,
-                fraction=fraction).xreplace(special)
+                          isprimitive=True,
+                          clear=clear,
+                          fraction=fraction).xreplace(special)
         elif p.args:
             p = p.func(
                 *[do(a) for a in p.args])
@@ -1108,7 +1107,7 @@ def factor_nc(expr):
         the result.
         """
         return expr.expand(deep=True, mul=True, power_exp=True,
-            power_base=False, basic=False, multinomial=True, log=False)
+                           power_base=False, basic=False, multinomial=True, log=False)
 
     expr = sympify(expr)
     if not isinstance(expr, Expr) or not expr.args:

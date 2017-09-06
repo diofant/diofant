@@ -1,10 +1,11 @@
-from diofant.matrices.expressions.factorizations import (lu, LofCholesky,
-                                                         qr, svd, eig)
-from diofant import Symbol, MatrixSymbol
+from diofant import MatrixSymbol
+from diofant.abc import n
+from diofant.matrices.expressions.factorizations import (LofCholesky, eig, lu,
+                                                         qr, svd)
+
 
 __all__ = ()
 
-n = Symbol('n')
 X = MatrixSymbol('X', n, n)
 
 
@@ -15,6 +16,7 @@ def test_LU():
 
 def test_Cholesky():
     L = LofCholesky(X)
+    assert L.shape == X.shape
 
 
 def test_QR():

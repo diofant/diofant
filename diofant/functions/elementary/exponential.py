@@ -1,8 +1,8 @@
-from ...core import (sympify, Add, Function, Integer, Pow, S, Mul,
-                     pi, expand_log)
-from ...core.function import ArgumentIndexError
-from .miscellaneous import sqrt
+from ...core import (Add, Function, Integer, Mul, Pow, S, expand_log, pi,
+                     sympify)
+from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import multiplicity, perfect_power
+from .miscellaneous import sqrt
 
 
 class exp_polar(Function):
@@ -534,6 +534,3 @@ class LambertW(Function):
                            for k in range(1, n)])
             return l + o
         return super(LambertW, self)._eval_nseries(x, n=n, logx=logx)
-
-
-from ...core.function import _coeff_isneg

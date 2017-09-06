@@ -104,8 +104,8 @@ See the appropriate docstrings for a detailed explanation of the output.
 #      - Idx with stepsize != 1
 #      - Idx with step determined by function call
 
-from ..core import Expr, Tuple, Dummy, Symbol, sympify, S
-from ..core.compatibility import is_sequence, NotIterable
+from ..core import Dummy, Expr, S, Symbol, Tuple, sympify
+from ..core.compatibility import NotIterable, is_sequence
 
 
 class IndexException(Exception):

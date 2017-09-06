@@ -10,10 +10,10 @@ References:
 """
 
 from collections import defaultdict
-from heapq import heappush, heappop
+from heapq import heappop, heappush
 
 from ...core.compatibility import default_sort_key, ordered
-from ..boolalg import conjuncts, to_cnf, to_int_repr, _find_predicates
+from ..boolalg import _find_predicates, conjuncts, to_cnf, to_int_repr
 
 
 def dpll_satisfiable(expr, all_models=False):
@@ -71,7 +71,7 @@ class SATSolver:
     """
 
     def __init__(self, clauses, variables, var_settings, symbols=None,
-                heuristic='vsids', clause_learning='none', INTERVAL=500):
+                 heuristic='vsids', clause_learning='none', INTERVAL=500):
 
         self.var_settings = var_settings
         self.heuristic = heuristic

@@ -1,14 +1,14 @@
-from ...core import S, Mul, Rational, Pow, Equality, Symbol, SympifyError, Add
+from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol
 from ...core.function import _coeff_isneg
-from ...utilities import group, has_variety, default_sort_key
+from ...utilities import default_sort_key, group
+from ..conventions import requires_partial
 from ..printer import Printer
 from ..str import sstr
-from ..conventions import requires_partial
+from .pretty_symbology import (annotated, greek_unicode, hobj, pretty_atom,
+                               pretty_symbol, pretty_try_use_unicode,
+                               pretty_use_unicode, vobj, xobj, xsym)
 from .stringpict import prettyForm, stringPict
-from .pretty_symbology import (hobj, vobj, xobj, xsym, pretty_symbol,
-                               pretty_atom, pretty_use_unicode,
-                               pretty_try_use_unicode, greek_unicode,
-                               annotated)
+
 
 # rename for usage from outside
 pprint_use_unicode = pretty_use_unicode
@@ -1223,7 +1223,7 @@ class PrettyPrinter(Printer):
         # is more than one term in the numer/denom
         for i in range(0, len(a)):
             if (a[i].is_Add and len(a) > 1) or (i != len(a) - 1 and
-                    isinstance(a[i], (Integral, Piecewise, Product, Sum))):
+                                                isinstance(a[i], (Integral, Piecewise, Product, Sum))):
                 a[i] = prettyForm(*self._print(a[i]).parens())
             elif a[i].is_Relational:
                 a[i] = prettyForm(*self._print(a[i]).parens())
@@ -1232,7 +1232,7 @@ class PrettyPrinter(Printer):
 
         for i in range(0, len(b)):
             if (b[i].is_Add and len(b) > 1) or (i != len(b) - 1 and
-                    isinstance(b[i], (Integral, Piecewise, Product, Sum))):
+                                                isinstance(b[i], (Integral, Piecewise, Product, Sum))):
                 b[i] = prettyForm(*self._print(b[i]).parens())
             else:
                 b[i] = self._print(b[i])
@@ -1401,7 +1401,7 @@ class PrettyPrinter(Printer):
         delimiter = r' \ '
 
         return self._print_seq(u.args, None, None, delimiter,
-             parenthesize=lambda set: set.is_ProductSet or set.is_Intersection
+                               parenthesize=lambda set: set.is_ProductSet or set.is_Intersection
                                or set.is_Union)
 
     def _print_Contains(self, e):
@@ -1414,7 +1414,7 @@ class PrettyPrinter(Printer):
             return prettyForm(sstr(e))
 
     def _print_seq(self, seq, left=None, right=None, delimiter=', ',
-            parenthesize=lambda x: False):
+                   parenthesize=lambda x: False):
         s = None
 
         for item in seq:
@@ -1601,7 +1601,7 @@ class PrettyPrinter(Printer):
         pform.baseline = pform.height() - 1
         pform = prettyForm(*pform.right(self._print_seq([
             self._print_seq((self._print(v[0]), xsym('=='), self._print(v[1])),
-                delimiter='') for v in zip(e.variables, e.point) ])))
+                            delimiter='') for v in zip(e.variables, e.point) ])))
 
         pform.baseline = b
         return pform

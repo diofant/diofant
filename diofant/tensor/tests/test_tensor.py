@@ -1,18 +1,21 @@
 import pytest
 
 from diofant import Matrix, eye
+from diofant.abc import x
 from diofant.combinatorics import Permutation
-from diofant.core import S, Rational, Symbol, Basic, Integer
+from diofant.core import Basic, Integer, Rational, Symbol
 from diofant.core.containers import Tuple
 from diofant.core.symbol import symbols
 from diofant.external import import_module
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.printing.pretty.pretty import pretty
-from diofant.tensor.tensor import (TensorIndexType, tensor_indices, TensorSymmetry,
-                                   get_symmetric_group_sgs, TensorType, TensorIndex,
-                                   tensor_mul, TensAdd, riemann_cyclic_replace,
-                                   riemann_cyclic, TensMul, tensorsymmetry,
-                                   tensorhead, TensorManager, TensExpr, TIDS)
+from diofant.tensor.tensor import (TIDS, TensAdd, TensExpr, TensMul,
+                                   TensorIndex, TensorIndexType, TensorManager,
+                                   TensorSymmetry, TensorType,
+                                   get_symmetric_group_sgs, riemann_cyclic,
+                                   riemann_cyclic_replace, tensor_indices,
+                                   tensor_mul, tensorhead, tensorsymmetry)
+
 
 __all__ = ()
 
@@ -118,7 +121,6 @@ def test_canonicalize_no_dummies():
     a, b, c, d = tensor_indices('a, b, c, d', Lorentz)
     sym1 = tensorsymmetry([1])
     sym2 = tensorsymmetry([1]*2)
-    sym2a = tensorsymmetry([2])
 
     # A commuting
     # A^c A^b A^a
@@ -188,7 +190,7 @@ def test_no_metric_symmetry():
 def test_canonicalize1():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Lorentz)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Lorentz)
     sym1 = tensorsymmetry([1])
     base3, gens3 = get_symmetric_group_sgs(3)
     sym2 = tensorsymmetry([1]*2)
@@ -278,7 +280,7 @@ def test_canonicalize1():
     # T_c = -A^{d0 d1 d2} * A_{d0 d1}^d3 * B_{d2 d3}
     Spinor = TensorIndexType('Spinor', metric=1, dummy_fmt='S')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Spinor)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Spinor)
     S3 = TensorType([Spinor]*3, sym3)
     S2a = TensorType([Spinor]*2, sym2a)
     A = S3('A', 1)
@@ -293,7 +295,7 @@ def test_canonicalize1():
     # T_c = A^{d0 d1 d2} * A_{d0 d1 d3} * B_d2^d3
     Mat = TensorIndexType('Mat', metric=None, dummy_fmt='M')
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
-      tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Mat)
+        tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Mat)
     S3 = TensorType([Mat]*3, sym3)
     S2a = TensorType([Mat]*2, sym2a)
     A = S3('A', 1)
@@ -309,7 +311,7 @@ def test_canonicalize1():
     S2a = TensorType([Lorentz]*2, sym2a)
     S3a = TensorType([Lorentz]*3, sym3a)
     alpha, beta, gamma, mu, nu, rho = \
-      tensor_indices('alpha,beta,gamma,mu,nu,rho', Lorentz)
+        tensor_indices('alpha,beta,gamma,mu,nu,rho', Lorentz)
     Gamma = S1('Gamma', 2)
     Gamma2 = S2a('Gamma', 2)
     Gamma3 = S3a('Gamma', 2)
@@ -344,7 +346,6 @@ def test_canonicalize1():
 def test_bug_correction_tensor_indices():
     # to make sure that tensor_indices does not return a list if creating
     # only one index:
-    from diofant.tensor.tensor import tensor_indices, TensorIndexType, TensorIndex
     A = TensorIndexType("A")
     i = tensor_indices('i', A)
     assert not isinstance(i, (tuple, list))
@@ -354,7 +355,7 @@ def test_bug_correction_tensor_indices():
 def test_riemann_invariants():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11 = \
-            tensor_indices('d0:12', Lorentz)
+        tensor_indices('d0:12', Lorentz)
     # R^{d0 d1}_{d1 d0}; ord = [d0,-d0,d1,-d1]
     # T_c = -R^{d0 d1}_{d0 d1}
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
@@ -419,7 +420,7 @@ def test_canonicalize2():
     D = Symbol('D')
     Eucl = TensorIndexType('Eucl', metric=0, dim=D, dummy_fmt='E')
     i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14 = \
-            tensor_indices('i0:15', Eucl)
+        tensor_indices('i0:15', Eucl)
     A = tensorhead('A', [Eucl]*3, [[3]])
 
     # two examples from Cvitanovic, Group Theory page 59
@@ -442,7 +443,6 @@ def test_canonicalize3():
     D = Symbol('D')
     Spinor = TensorIndexType('Spinor', dim=D, metric=True, dummy_fmt='S')
     a0, a1, a2, a3, a4 = tensor_indices('a0:5', Spinor)
-    C = Spinor.metric
     chi, psi = tensorhead('chi,psi', [Spinor], [[1]], 1)
 
     t = chi(a1)*psi(a0)
@@ -496,7 +496,6 @@ def test_indices():
 
 
 def test_tensorsymmetry():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     sym = tensorsymmetry([1]*2)
     sym1 = TensorSymmetry(get_symmetric_group_sgs(2))
     assert sym == sym1
@@ -525,9 +524,9 @@ def test_TensExpr():
     g = Lorentz.metric
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
     pytest.raises(ValueError, lambda: g(c, d)/g(a, b))
-    pytest.raises(ValueError, lambda: S.One/g(a, b))
+    pytest.raises(ValueError, lambda: 1/g(a, b))
     pytest.raises(ValueError, lambda: (A(c, d) + g(c, d))/g(a, b))
-    pytest.raises(ValueError, lambda: S.One/(A(c, d) + g(c, d)))
+    pytest.raises(ValueError, lambda: 1/(A(c, d) + g(c, d)))
     pytest.raises(ValueError, lambda: A(a, b) + A(a, c))
     t = A(a, b) + B(a, b)
     pytest.raises(NotImplementedError, lambda: TensExpr.__mul__(t, 'a'))
@@ -600,9 +599,9 @@ def test_add1():
     t = (p(i) + q(i))/2
     assert 2*t == p(i) + q(i)
 
-    t = S.One - p(i)*p(-i)
+    t = 1 - p(i)*p(-i)
     assert (t + p(-j)*p(j)).equals(1)
-    t = S.One + p(i)*p(-i)
+    t = 1 + p(i)*p(-i)
     assert (t - p(-j)*p(j)).equals(1)
 
     t = A(a, b) + B(a, b)
@@ -629,20 +628,17 @@ def test_special_eq_ne():
 
     t = 0*A(a, b)
     assert _is_equal(t, 0)
-    assert _is_equal(t, S.Zero)
 
     assert p(i) != A(a, b)
     assert A(a, -a) != A(a, b)
     assert 0*(A(a, b) + B(a, b)) == 0
-    assert 0*(A(a, b) + B(a, b)) == S.Zero
 
-    assert 3*(A(a, b) - A(a, b)) == S.Zero
+    assert 3*(A(a, b) - A(a, b)) == 0
 
     assert p(i) + q(i) != A(a, b)
     assert p(i) + q(i) != A(a, b) + B(a, b)
 
     assert p(i) - p(i) == 0
-    assert p(i) - p(i) == S.Zero
 
     assert _is_equal(A(a, b), A(b, a))
 
@@ -663,11 +659,9 @@ def test_add2():
 
 
 def test_mul():
-    from diofant.abc import x
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
-    sym = tensorsymmetry([1]*2)
-    t = TensMul.from_data(S.One, [], [], [])
+    t = TensMul.from_data(Integer(1), [], [], [])
     assert str(t) == '1'
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
     t = (1 + x)*A(a, b)
@@ -692,7 +686,7 @@ def test_mul():
     t1 = tensor_mul(*t.split())
     assert t == t(-b, d)
     assert t == t1
-    assert tensor_mul(*[]) == TensMul.from_data(S.One, [], [], [])
+    assert tensor_mul(*[]) == TensMul.from_data(Integer(1), [], [], [])
 
     t = TensMul.from_data(1, [], [], [])
     zsym = tensorsymmetry()
@@ -752,11 +746,10 @@ def test_substitute_indices():
 def test_riemann_cyclic_replace():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     m0, m1, m2, m3 = tensor_indices('m:4', Lorentz)
-    symr = tensorsymmetry([2, 2])
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
     t = R(m0, m2, m1, m3)
     t1 = riemann_cyclic_replace(t)
-    t1a = -S.One/3*R(m0, m3, m2, m1) + S.One/3*R(m0, m1, m2, m3) + Rational(2, 3)*R(m0, m2, m1, m3)
+    t1a = -R(m0, m3, m2, m1)/3 + R(m0, m1, m2, m3)/3 + 2*R(m0, m2, m1, m3)/3
     assert t1 == t1a
 
 
@@ -1009,7 +1002,6 @@ def test_metric_contract3():
 def test_epsilon():
     Lorentz = TensorIndexType('Lorentz', dim=4, dummy_fmt='L')
     a, b, c, d, e = tensor_indices('a,b,c,d,e', Lorentz)
-    g = Lorentz.metric
     epsilon = Lorentz.epsilon
     p, q, r, s = tensorhead('p,q,r,s', [Lorentz], [[1]])
 
@@ -1106,7 +1098,7 @@ def test_fun():
     # dg_{a b c} = \partial_{a} g_{b c} is symmetric in b, c
     dg = tensorhead('dg', [Lorentz]*3, [[1], [1]*2])
     # gamma^a_{b c} is the Christoffel symbol
-    gamma = S.Half*g(a, d)*(dg(-b, -d, -c) + dg(-c, -b, -d) - dg(-d, -b, -c))
+    gamma = g(a, d)*(dg(-b, -d, -c) + dg(-c, -b, -d) - dg(-d, -b, -c))/2
     # t = g_{a b; c}
     t = dg(-c, -a, -b) - g(-a, -d)*gamma(d, -b, -c) - g(-b, -d)*gamma(d, -a, -c)
     t = t.contract_metric(g)
@@ -1148,7 +1140,7 @@ def test_TensorManager():
     TensorManager.clear()
     assert TensorManager.comm == [{0: 0, 1: 0, 2: 0}, {0: 0, 1: 1, 2: None}, {0: 0, 1: None}]
     assert GHsymbol not in TensorManager._comm_symbols2i
-    nh = TensorManager.comm_symbols2i(GHsymbol)
+    TensorManager.comm_symbols2i(GHsymbol)
     assert GHsymbol in TensorManager._comm_symbols2i
 
 

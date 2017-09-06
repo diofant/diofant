@@ -1,20 +1,25 @@
 import pytest
 
-from diofant import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
-                     factorial, factorial2, Function, GoldenRatio, I, Integer, Integral,
-                     Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Pow, Rational, Float, Rel,
-                     S, sin, SparseMatrix, sqrt, summation, Sum, Symbol, symbols, Wild,
-                     WildFunction, zeta, zoo, Dummy, Dict, Tuple, FiniteSet, factor,
-                     subfactorial, true, false, Equivalent, Xor, Complement,
-                     SymmetricDifference, MatrixSymbol, And)
+from diofant import (Abs, Add, And, Catalan, Complement, Derivative, Dict,
+                     Dummy, E, Equivalent, EulerGamma, FiniteSet, Float,
+                     Function, GoldenRatio, I, Integer, Integral, Interval,
+                     Lambda, Limit, Matrix, MatrixSymbol, Mul, O, Pow,
+                     Rational, Rel, S, SparseMatrix, Sum, Symbol,
+                     SymmetricDifference, Tuple, Wild, WildFunction, Xor, cos,
+                     exp, factor, factorial, factorial2, false, nan, oo, pi,
+                     sin, sqrt, subfactorial, summation, symbols, true, zeta,
+                     zoo)
+from diofant.abc import w, x, y, z
+from diofant.combinatorics import Cycle, Permutation
 from diofant.core import Expr
-from diofant.domains import ZZ, QQ
-from diofant.polys import Poly, RootOf, RootSum, groebner, ring, field, lex, grlex
-from diofant.geometry import Point, Circle
-from diofant.printing import sstr, sstrrepr, StrPrinter
 from diofant.core.trace import Tr
+from diofant.domains import QQ, ZZ
+from diofant.geometry import Circle, Point
+from diofant.polys import (Poly, RootOf, RootSum, field, grlex, groebner, lex,
+                           ring)
+from diofant.printing import StrPrinter, sstr, sstrrepr
+from diofant.stats import Die, Exponential, Normal, pspace, where
 
-from diofant.abc import x, y, z, w
 
 __all__ = ()
 
@@ -249,62 +254,60 @@ def test_Order():
 
 
 def test_Permutation_Cycle():
-    from diofant.combinatorics import Permutation, Cycle
-
     # general principle: economically, canonically show all moved elements
     # and the size of the permutation.
 
     for p, s in [
         (Cycle(),
-        'Cycle()'),
+         'Cycle()'),
         (Cycle(2),
-        'Cycle(2)'),
+         'Cycle(2)'),
         (Cycle(2, 1),
-        'Cycle(1, 2)'),
+         'Cycle(1, 2)'),
         (Cycle(1, 2)(5)(6, 7)(10),
-        'Cycle(1, 2)(6, 7)(10)'),
+         'Cycle(1, 2)(6, 7)(10)'),
         (Cycle(3, 4)(1, 2)(3, 4),
-        'Cycle(1, 2)(4)'),
+         'Cycle(1, 2)(4)'),
     ]:
         assert str(p) == s
 
     Permutation.print_cyclic = False
     for p, s in [
         (Permutation([]),
-        'Permutation([])'),
+         'Permutation([])'),
         (Permutation([], size=1),
-        'Permutation([0])'),
+         'Permutation([0])'),
         (Permutation([], size=2),
-        'Permutation([0, 1])'),
+         'Permutation([0, 1])'),
         (Permutation([], size=10),
-        'Permutation([], size=10)'),
+         'Permutation([], size=10)'),
         (Permutation([1, 0, 2]),
-        'Permutation([1, 0, 2])'),
+         'Permutation([1, 0, 2])'),
         (Permutation([1, 0, 2, 3, 4, 5]),
-        'Permutation([1, 0], size=6)'),
+         'Permutation([1, 0], size=6)'),
         (Permutation([1, 0, 2, 3, 4, 5], size=10),
-        'Permutation([1, 0], size=10)'),
+         'Permutation([1, 0], size=10)'),
     ]:
         assert str(p) == s
 
     Permutation.print_cyclic = True
     for p, s in [
         (Permutation([]),
-        'Permutation()'),
+         'Permutation()'),
         (Permutation([], size=1),
-        'Permutation(0)'),
+         'Permutation(0)'),
         (Permutation([], size=2),
-        'Permutation(1)'),
+         'Permutation(1)'),
         (Permutation([], size=10),
-        'Permutation(9)'),
+         'Permutation(9)'),
         (Permutation([1, 0, 2]),
-        'Permutation(2)(0, 1)'),
+         'Permutation(2)(0, 1)'),
         (Permutation([1, 0, 2, 3, 4, 5]),
-        'Permutation(5)(0, 1)'),
+         'Permutation(5)(0, 1)'),
         (Permutation([1, 0, 2, 3, 4, 5], size=10),
-        'Permutation(9)(0, 1)'),
+         'Permutation(9)(0, 1)'),
         (Permutation([0, 1, 3, 2, 4, 5], size=10),
-        'Permutation(9)(2, 3)'),
+         'Permutation(9)(2, 3)'),
     ]:
         assert str(p) == s
 
@@ -585,7 +588,7 @@ def test_sympyissue_3101():
 def test_sympyissue_3103():
     e = -2*sqrt(x) - y/sqrt(x)/2
     assert str(e) not in ["(-2)*x**1/2(-1/2)*x**(-1/2)*y",
-            "-2*x**1/2(-1/2)*x**(-1/2)*y", "-2*x**1/2-1/2*x**-1/2*w"]
+                          "-2*x**1/2(-1/2)*x**(-1/2)*y", "-2*x**1/2-1/2*x**-1/2*w"]
     assert str(e) == "-2*sqrt(x) - y/(2*sqrt(x))"
 
 
@@ -647,7 +650,6 @@ def test_settings():
 
 
 def test_RandomDomain():
-    from diofant.stats import Normal, Die, Exponential, pspace, where
     X = Normal('x1', 0, 1)
     assert str(where(X > 0)) == "Domain: And(0 < x1, x1 < oo)"
 
@@ -665,7 +667,6 @@ def test_FiniteSet():
 
 
 def test_PrettyPoly():
-    from diofant.domains import QQ
     F = QQ.frac_field(x, y)
     R = QQ[x, y]
     assert sstr(F.convert(x/(x + y))) == sstr(x/(x + y))

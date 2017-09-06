@@ -1,8 +1,9 @@
-from strategies import condition, exhaust, do_one
+from strategies import condition, do_one, exhaust
 
 from ...core import Mul, sympify
-from ...core.strategies import unpack, flatten
-from .matexpr import MatrixExpr, ShapeError
+from ...core.strategies import flatten, unpack
+from ..matrices import ShapeError
+from .matexpr import MatrixExpr
 
 
 def hadamard_product(*matrices):

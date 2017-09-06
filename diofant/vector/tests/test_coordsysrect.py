@@ -1,14 +1,15 @@
 import pytest
 
+from diofant import ImmutableMatrix as Matrix
+from diofant import Symbol, cos, pi, simplify, sin, symbols, zeros
 from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.scalar import BaseScalar
-from diofant import (sin, cos, pi, ImmutableMatrix as Matrix,
-                     symbols, simplify, zeros, Symbol)
 from diofant.vector.functions import express
-from diofant.vector.point import Point
-from diofant.vector.vector import Vector
 from diofant.vector.orienters import (AxisOrienter, BodyOrienter,
-                                      SpaceOrienter, QuaternionOrienter)
+                                      QuaternionOrienter, SpaceOrienter)
+from diofant.vector.point import Point
+from diofant.vector.scalar import BaseScalar
+from diofant.vector.vector import Vector
+
 
 __all__ = ()
 
@@ -102,34 +103,34 @@ def test_coordinate_vars():
     assert BaseScalar('Az', 2, A, ' ', ' ') == A.z
     assert BaseScalar('Ax', 0, A, ' ', ' ').__hash__() == A.x.__hash__()
     assert isinstance(A.x, BaseScalar) and \
-           isinstance(A.y, BaseScalar) and \
-           isinstance(A.z, BaseScalar)
+        isinstance(A.y, BaseScalar) and \
+        isinstance(A.z, BaseScalar)
     pytest.raises(TypeError, lambda: BaseScalar('Ax', 0, 1, ' ', ' '))
     pytest.raises(ValueError, lambda: BaseScalar('Ax', 5, A, ' ', ' '))
     assert A.scalar_map(A) == {A.x: A.x, A.y: A.y, A.z: A.z}
     assert A.x.system == A
     B = A.orient_new_axis('B', q, A.k)
     assert B.scalar_map(A) == {B.z: A.z, B.y: -A.x*sin(q) + A.y*cos(q),
-                                 B.x: A.x*cos(q) + A.y*sin(q)}
+                               B.x: A.x*cos(q) + A.y*sin(q)}
     assert A.scalar_map(B) == {A.x: B.x*cos(q) - B.y*sin(q),
-                                 A.y: B.x*sin(q) + B.y*cos(q), A.z: B.z}
+                               A.y: B.x*sin(q) + B.y*cos(q), A.z: B.z}
     assert express(B.x, A, variables=True) == A.x*cos(q) + A.y*sin(q)
     assert express(B.y, A, variables=True) == -A.x*sin(q) + A.y*cos(q)
     assert express(B.z, A, variables=True) == A.z
     assert express(B.x*B.y*B.z, A, variables=True) == \
-           A.z*(-A.x*sin(q) + A.y*cos(q))*(A.x*cos(q) + A.y*sin(q))
+        A.z*(-A.x*sin(q) + A.y*cos(q))*(A.x*cos(q) + A.y*sin(q))
     assert express(B.x*B.i + B.y*B.j + B.z*B.k, A) == \
-           (B.x*cos(q) - B.y*sin(q))*A.i + (B.x*sin(q) +
-           B.y*cos(q))*A.j + B.z*A.k
+        (B.x*cos(q) - B.y*sin(q))*A.i + (B.x*sin(q) +
+                                         B.y*cos(q))*A.j + B.z*A.k
     assert simplify(express(B.x*B.i + B.y*B.j + B.z*B.k, A,
                             variables=True)) == \
-           A.x*A.i + A.y*A.j + A.z*A.k
+        A.x*A.i + A.y*A.j + A.z*A.k
     assert express(A.x*A.i + A.y*A.j + A.z*A.k, B) == \
-           (A.x*cos(q) + A.y*sin(q))*B.i + \
-           (-A.x*sin(q) + A.y*cos(q))*B.j + A.z*B.k
+        (A.x*cos(q) + A.y*sin(q))*B.i + \
+        (-A.x*sin(q) + A.y*cos(q))*B.j + A.z*B.k
     assert simplify(express(A.x*A.i + A.y*A.j + A.z*A.k, B,
                             variables=True)) == \
-           B.x*B.i + B.y*B.j + B.z*B.k
+        B.x*B.i + B.y*B.j + B.z*B.k
     pytest.raises(TypeError, lambda: express(A.x, 1))
     pytest.raises(ValueError, lambda: express(A.i, B, A))
     pytest.raises(TypeError, lambda: express(A.i | A.j, B, 1))
@@ -137,7 +138,7 @@ def test_coordinate_vars():
 
     N = B.orient_new_axis('N', -q, B.k)
     assert N.scalar_map(A) == \
-           {N.x: A.x, N.z: A.z, N.y: A.y}
+        {N.x: A.x, N.z: A.z, N.y: A.y}
     C = A.orient_new_axis('C', q, A.i + A.j + A.k)
     mapping = A.scalar_map(C)
     assert mapping[A.x] == (C.x*(2*cos(q) + 1)/3 +
@@ -173,13 +174,13 @@ def test_rotation_matrix():
     G = N.orient_new_body('G', q1, q2, q3, '123')
     assert N.rotation_matrix(C) == Matrix([
         [- sin(q1) * sin(q2) * sin(q3) + cos(q1) * cos(q3), - sin(q1) *
-        cos(q2), sin(q1) * sin(q2) * cos(q3) + sin(q3) * cos(q1)],
+         cos(q2), sin(q1) * sin(q2) * cos(q3) + sin(q3) * cos(q1)],
         [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1),
          cos(q1) * cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) *
          cos(q3)], [- sin(q3) * cos(q2), sin(q2), cos(q2) * cos(q3)]])
     test_mat = D.rotation_matrix(C) - Matrix(
         [[cos(q1) * cos(q3) * cos(q4) - sin(q3) * (- sin(q4) * cos(q2) +
-          sin(q1) * sin(q2) * cos(q4)), - sin(q2) * sin(q4) - sin(q1) *
+                                                   sin(q1) * sin(q2) * cos(q4)), - sin(q2) * sin(q4) - sin(q1) *
           cos(q2) * cos(q4), sin(q3) * cos(q1) * cos(q4) + cos(q3) *
           (- sin(q4) * cos(q2) + sin(q1) * sin(q2) * cos(q4))],
          [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1), cos(q1) *
@@ -187,23 +188,23 @@ def test_rotation_matrix():
          [sin(q4) * cos(q1) * cos(q3) - sin(q3) * (cos(q2) * cos(q4) +
                                                    sin(q1) * sin(q2) *
                                                    sin(q4)), sin(q2) *
-                cos(q4) - sin(q1) * sin(q4) * cos(q2), sin(q3) *
+          cos(q4) - sin(q1) * sin(q4) * cos(q2), sin(q3) *
           sin(q4) * cos(q1) + cos(q3) * (cos(q2) * cos(q4) +
                                          sin(q1) * sin(q2) * sin(q4))]])
     assert test_mat.expand() == zeros(3, 3)
     assert E.rotation_matrix(N) == Matrix(
         [[cos(q2)*cos(q3), sin(q3)*cos(q2), -sin(q2)],
-        [sin(q1)*sin(q2)*cos(q3) - sin(q3)*cos(q1),
-         sin(q1)*sin(q2)*sin(q3) + cos(q1)*cos(q3), sin(q1)*cos(q2)],
+         [sin(q1)*sin(q2)*cos(q3) - sin(q3)*cos(q1),
+          sin(q1)*sin(q2)*sin(q3) + cos(q1)*cos(q3), sin(q1)*cos(q2)],
          [sin(q1)*sin(q3) + sin(q2)*cos(q1)*cos(q3), -
           sin(q1)*cos(q3) + sin(q2)*sin(q3)*cos(q1), cos(q1)*cos(q2)]])
     assert F.rotation_matrix(N) == Matrix([[
         q1**2 + q2**2 - q3**2 - q4**2,
         2*q1*q4 + 2*q2*q3, -2*q1*q3 + 2*q2*q4], [ -2*q1*q4 + 2*q2*q3,
-            q1**2 - q2**2 + q3**2 - q4**2, 2*q1*q2 + 2*q3*q4],
+                                                  q1**2 - q2**2 + q3**2 - q4**2, 2*q1*q2 + 2*q3*q4],
         [2*q1*q3 + 2*q2*q4,
-                                            -2*q1*q2 + 2*q3*q4,
-                                q1**2 - q2**2 - q3**2 + q4**2]])
+         -2*q1*q2 + 2*q3*q4,
+         q1**2 - q2**2 - q3**2 + q4**2]])
     assert G.rotation_matrix(N) == Matrix([[
         cos(q2)*cos(q3),  sin(q1)*sin(q2)*cos(q3) + sin(q3)*cos(q1),
         sin(q1)*sin(q3) - sin(q2)*cos(q1)*cos(q3)], [
@@ -242,7 +243,7 @@ def test_vector():
     assert N.k.dot(A.k) == 1
 
     assert N.i.dot(A.i + A.j) == -sin(q1) + cos(q1) == \
-           (A.i + A.j).dot(N.i)
+        (A.i + A.j).dot(N.i)
 
     assert A.i.dot(C.i) == cos(q3)
     assert A.i.dot(C.j) == 0
@@ -276,7 +277,7 @@ def test_vector():
     assert A.i.cross(C.j) == -sin(q3)*C.i + cos(q3)*C.k
     assert A.i.cross(C.k) == -cos(q3)*C.j
     assert C.i.cross(A.i) == (-sin(q3)*cos(q2))*A.j + \
-           (-sin(q2)*sin(q3))*A.k
+        (-sin(q2)*sin(q3))*A.k
     assert C.j.cross(A.i) == (sin(q2))*A.j + (-cos(q2))*A.k
     assert express(C.k.cross(A.i), C).trigsimp() == cos(q3)*C.j
 
@@ -311,16 +312,16 @@ def test_locatenew_point():
     C = A.locate_new('C', v)
     pytest.raises(TypeError, lambda: C.origin.position_wrt(1))
     assert C.origin.position_wrt(A) == \
-           C.position_wrt(A) == \
-           C.origin.position_wrt(A.origin) == v
+        C.position_wrt(A) == \
+        C.origin.position_wrt(A.origin) == v
     assert A.origin.position_wrt(C) == \
-           A.position_wrt(C) == \
-           A.origin.position_wrt(C.origin) == -v
+        A.position_wrt(C) == \
+        A.origin.position_wrt(C.origin) == -v
     assert A.origin.express_coordinates(C) == (-a, -b, -c)
     p = A.origin.locate_new('p', -v)
     assert p.express_coordinates(A) == (-a, -b, -c)
     assert p.position_wrt(C.origin) == p.position_wrt(C) == \
-           -2 * v
+        -2 * v
     p1 = p.locate_new('p1', 2*v)
     assert p1.position_wrt(C.origin) == Vector.zero
     assert p1.express_coordinates(C) == (0, 0, 0)

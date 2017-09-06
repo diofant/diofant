@@ -3,17 +3,19 @@ import math
 import mpmath
 import pytest
 
-from diofant import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
-                     Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
-                     oo, I, Abs, Function, true, false, And, Or, Not, sympify,
-                     ITE, Min, Max)
-from diofant.printing.lambdarepr import LambdaPrinter
-from diofant.utilities.lambdify import implemented_function
-from diofant.utilities.decorator import conserve_mpmath_dps
-from diofant.external import import_module
 import diofant
+from diofant import (ITE, Abs, And, Float, Function, I, Integral, Lambda,
+                     Matrix, Max, Min, Not, Or, Piecewise, Rational, acos,
+                     acosh, cos, exp, false, lambdify, oo, pi, sin, sqrt,
+                     symbols, sympify, tan, true)
+from diofant.abc import a, b, t, w, x, y, z
+from diofant.external import import_module
+from diofant.printing.lambdarepr import LambdaPrinter, NumExprPrinter
+from diofant.utilities.decorator import conserve_mpmath_dps
+from diofant.utilities.lambdify import (MATH_TRANSLATIONS, MPMATH_TRANSLATIONS,
+                                        NUMPY_TRANSLATIONS,
+                                        implemented_function)
 
-from diofant.abc import w, x, y, z
 
 __all__ = ()
 
@@ -132,14 +134,12 @@ def test_number_precision():
 
 
 def test_math_transl():
-    from diofant.utilities.lambdify import MATH_TRANSLATIONS
     for sym, mat in MATH_TRANSLATIONS.items():
         assert sym in diofant.__dict__
         assert mat in math.__dict__
 
 
 def test_mpmath_transl():
-    from diofant.utilities.lambdify import MPMATH_TRANSLATIONS
     for sym, mat in MPMATH_TRANSLATIONS.items():
         assert sym in diofant.__dict__ or sym == 'Matrix'
         assert mat in mpmath.__dict__
@@ -147,7 +147,6 @@ def test_mpmath_transl():
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_transl():
-    from diofant.utilities.lambdify import NUMPY_TRANSLATIONS
     for sym, nump in NUMPY_TRANSLATIONS.items():
         assert sym in diofant.__dict__
         assert nump in numpy.__dict__
@@ -164,7 +163,6 @@ def test_numpy_translation_abs():
 def test_numexpr_printer():
     # if translation/printing is done incorrectly then evaluating
     # a lambdified numexpr expression will throw an exception
-    from diofant.printing.lambdarepr import NumExprPrinter
 
     blacklist = ('where', 'complex', 'contains')
     arg_tuple = (x, y, z)  # some functions take more than one argument
@@ -184,10 +182,9 @@ def test_numexpr_printer():
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 @pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_sympyissue_9334():
-    a, b = symbols('a, b')
     expr = b*a - sqrt(a**2)
-    a, b = sorted(expr.free_symbols, key=lambda s: s.name)
-    func_numexpr = lambdify((a, b), expr, modules=[numexpr], dummify=False)
+    syms = sorted(expr.free_symbols, key=lambda s: s.name)
+    func_numexpr = lambdify(syms, expr, modules=[numexpr], dummify=False)
     foo, bar = numpy.random.random((2, 4))
     func_numexpr(foo, bar)
 
@@ -431,6 +428,7 @@ def test_namespace_order():
     if1 = lambdify(x, f(x), modules=(n1, "diofant"))
     assert if1(1) == 'first f'
     if2 = lambdify(x, g(x), modules=(n2, "diofant"))
+    assert if2(1) == 'function g'
     # previously gave 'second f'
     assert if1(1) == 'first f'
 
@@ -449,7 +447,7 @@ def test_imps():
     func = diofant.Function('myfunc')
     assert not hasattr(func, '_imp_')
     my_f = implemented_function(func, lambda x: 2*x)
-    assert hasattr(func, '_imp_')
+    assert hasattr(func, '_imp_') and hasattr(my_f, '_imp_')
     # Error for functions with same name and different implementation
     f2 = implemented_function("f", lambda x: x + 101)
     pytest.raises(ValueError, lambda: lambdify(x, f(f2(x))))
@@ -494,7 +492,6 @@ def test_lambdify_imps():
 
 
 def test_dummification():
-    t = symbols('t')
     F = Function('F')
     G = Function('G')
     # "\alpha" is not a valid python variable name

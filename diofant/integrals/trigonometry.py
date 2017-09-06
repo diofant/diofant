@@ -1,5 +1,6 @@
-from ..core import cacheit, Dummy, Eq, Integer, Rational, S, Wild
-from ..functions import binomial, sin, cos, Piecewise
+from ..core import Dummy, Eq, Integer, Rational, S, Wild, cacheit
+from ..functions import Piecewise, binomial, cos, sin
+
 
 # TODO sin(a*x)*cos(b*x) -> sin((a+b)x) + sin((a-b)x) ?
 
@@ -21,7 +22,7 @@ def _integer_instance(n):
 def _pat_sincos(x):
     a = Wild('a', exclude=[x])
     n, m = [Wild(s, exclude=[x], properties=[_integer_instance])
-                for s in 'nm']
+            for s in 'nm']
     pat = sin(a*x)**n * cos(a*x)**m
     return pat, a, n, m
 

@@ -3,33 +3,32 @@
 import mpmath
 from mpmath.libmp.libhyper import NoConvergence
 
-from ..core import (S, Basic, Expr, I, Integer, Add, Mul, Dummy,
-                    Tuple, Symbol, preorder_traversal, sympify, Derivative)
+from . import polyoptions as options
+from ..core import (Add, Basic, Derivative, Dummy, Expr, I, Integer, Mul, S,
+                    Symbol, Tuple, preorder_traversal, sympify)
+from ..core.compatibility import iterable
+from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
-from ..core.decorators import _sympifyit
+from ..domains import FF, QQ, ZZ
 from ..logic.boolalg import BooleanAtom
-from .polyclasses import DMP
-from .polyutils import (basic_from_dict, _sort_gens, _unify_gens,
-                        _dict_reorder, _dict_from_expr,
-                        _parallel_dict_from_expr)
-from .rationaltools import together
-from .rootisolation import dup_isolate_real_roots_list
-from .groebnertools import groebner as _groebner
+from ..utilities import group, public, sift
+from .constructor import construct_domain
 from .fglmtools import matrix_fglm
+from .groebnertools import groebner as _groebner
 from .monomials import Monomial
 from .orderings import monomial_key
-from .polyerrors import (OperationNotSupported, DomainError,
-                         CoercionFailed, UnificationFailed,
-                         GeneratorsNeeded, PolynomialError,
-                         MultivariatePolynomialError, ExactQuotientFailed,
-                         PolificationFailed, ComputationFailed,
-                         GeneratorsError)
-from ..utilities import group, sift, public
-from ..domains import FF, QQ, ZZ
-from .constructor import construct_domain
-from . import polyoptions as options
-from ..core.compatibility import iterable
+from .polyclasses import DMP
+from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
+                         ExactQuotientFailed, GeneratorsError,
+                         GeneratorsNeeded, MultivariatePolynomialError,
+                         OperationNotSupported, PolificationFailed,
+                         PolynomialError, UnificationFailed)
+from .polyutils import (_dict_from_expr, _dict_reorder,
+                        _parallel_dict_from_expr, _sort_gens, _unify_gens,
+                        basic_from_dict)
+from .rationaltools import together
+from .rootisolation import dup_isolate_real_roots_list
 
 
 @public
@@ -1022,7 +1021,7 @@ class Poly(Expr):
         if not dom.is_Numerical:
             raise DomainError("can't eject generators over %s" % dom)
 
-        n, k = len(self.gens), len(gens)
+        k = len(gens)
 
         if self.gens[:k] == gens:
             _gens, front = self.gens[k:], True
@@ -3335,12 +3334,12 @@ class Poly(Expr):
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
         else:
             coeffs = [coeff.evalf(n=n).as_real_imag()
-                    for coeff in self.all_coeffs()]
+                      for coeff in self.all_coeffs()]
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
             except TypeError:
                 raise DomainError("Numerical domain expected, got %s" %
-                        self.rep.domain)
+                                  self.rep.domain)
 
         dps = mpmath.mp.dps
         mpmath.mp.dps = n
@@ -3355,11 +3354,11 @@ class Poly(Expr):
             # Mpmath puts real roots first, then complex ones (as does all_roots)
             # so we make sure this convention holds here, too.
             roots = list(map(sympify,
-                sorted(roots, key=lambda r: (1 if r.imag else 0, r.real, r.imag))))
+                             sorted(roots, key=lambda r: (1 if r.imag else 0, r.real, r.imag))))
         except NoConvergence:
             raise NoConvergence(
                 'convergence to root failed; try n < %s or maxsteps > %s' % (
-                n, maxsteps))
+                    n, maxsteps))
         finally:
             mpmath.mp.dps = dps
 
@@ -5520,7 +5519,7 @@ def _symbolic_factor_list(expr, opt, method):
     coeff, factors = S.One, []
 
     args = [i._eval_factor() if hasattr(i, '_eval_factor') else i
-        for i in Mul.make_args(expr)]
+            for i in Mul.make_args(expr)]
     for arg in args:
         if arg.is_Number:
             coeff *= arg
@@ -5731,7 +5730,7 @@ def to_rational_coeffs(f):
             else:
                 args = [c]
             sifted = sift(args, lambda z: z.is_rational)
-            c1, c2 = sifted[True], sifted[False]
+            c2 = sifted[False]
             alpha = -func(*c2)/n
             f2 = f1.shift(alpha)
             return alpha, f2
@@ -5748,7 +5747,7 @@ def to_rational_coeffs(f):
             for x in Add.make_args(y):
                 f = Factors(x).factors
                 r = [wx.q for b, wx in f.items() if
-                    b.is_number and wx.is_Rational and wx.q >= 2]
+                     b.is_number and wx.is_Rational and wx.q >= 2]
                 if not r:
                     continue
                 if min(r) == 2:
@@ -5992,7 +5991,7 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
             sup = opt.domain.convert(sup)
 
         intervals = dup_isolate_real_roots_list(polys, opt.domain,
-            eps=eps, inf=inf, sup=sup, strict=strict, fast=fast)
+                                                eps=eps, inf=inf, sup=sup, strict=strict, fast=fast)
 
         result = []
 

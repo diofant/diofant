@@ -1,11 +1,12 @@
-from ...core import pi, I, S, Dummy, sympify, Function
+from ...core import Dummy, Function, I, S, pi, sympify
 from ...core.function import ArgumentIndexError
-from .polynomials import assoc_legendre
-from ..elementary.trigonometric import sin, cos, cot
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs
 from ..elementary.exponential import exp
 from ..elementary.miscellaneous import sqrt
+from ..elementary.trigonometric import cos, cot, sin
+from .polynomials import assoc_legendre
+
 
 _x = Dummy("dummy_for_spherical_harmonics")
 
@@ -159,7 +160,7 @@ class Ynm(Function):
     def _eval_expand_func(self, **hints):
         n, m, theta, phi = self.args
         rv = (sqrt((2*n + 1)/(4*pi) * factorial(n - m)/factorial(n + m)) *
-                exp(I*m*phi) * assoc_legendre(n, m, cos(theta)))
+              exp(I*m*phi) * assoc_legendre(n, m, cos(theta)))
         # We can do this because of the range of theta
         return rv.subs(sqrt(-cos(theta)**2 + 1), sin(theta))
 

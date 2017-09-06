@@ -1,12 +1,12 @@
 from collections import defaultdict
 from functools import reduce
 
-from .compatibility import is_sequence, default_sort_key
-from .logic import _fuzzy_group
-from .singleton import S
-from .operations import AssocOp
 from .cache import cacheit
-from .numbers import ilcm, igcd
+from .compatibility import default_sort_key, is_sequence
+from .logic import _fuzzy_group
+from .numbers import igcd, ilcm
+from .operations import AssocOp
+from .singleton import S
 
 
 class Add(AssocOp):
@@ -29,6 +29,7 @@ class Add(AssocOp):
         diofant.core.mul.Mul.flatten
 
         """
+        from .mul import Mul
         from ..series.order import Order
 
         rv = None
@@ -111,7 +112,7 @@ class Add(AssocOp):
             elif o.is_Pow:
                 b, e = o.as_base_exp()
                 if b.is_Number and (e.is_Integer or
-                                   (e.is_Rational and e.is_negative)):
+                                    (e.is_Rational and e.is_negative)):
                     seq.append(b**e)
                     continue
                 c, s = S.One, o
@@ -364,6 +365,8 @@ class Add(AssocOp):
 
         diofant.core.expr.Expr.as_numer_denom
         """
+        from .mul import Mul, _keep_coeff
+
         # clear rational denominator
         content, expr = self.primitive()
         ncon, dcon = content.as_numer_denom()
@@ -390,7 +393,7 @@ class Add(AssocOp):
         # assemble single numerator and denominator
         denoms, numers = [list(i) for i in zip(*iter(nd.items()))]
         n, d = self.func(*[Mul(*(denoms[:i] + [numers[i]] + denoms[i + 1:]))
-                   for i in range(len(numers))]), Mul(*denoms)
+                           for i in range(len(numers))]), Mul(*denoms)
 
         return _keep_coeff(ncon, n), _keep_coeff(dcon, d)
 
@@ -542,7 +545,7 @@ class Add(AssocOp):
                 if old_set < self_set:
                     ret_set = self_set - old_set
                     return self.func(new, coeff_self, -coeff_old,
-                               *[s._subs(old, new) for s in ret_set])
+                                     *[s._subs(old, new) for s in ret_set])
 
                 args_old = self.func.make_args(
                     -terms_old)     # (a+b+c+d).subs(-b-c,x) -> a-x+d
@@ -550,7 +553,7 @@ class Add(AssocOp):
                 if old_set < self_set:
                     ret_set = self_set - old_set
                     return self.func(-new, coeff_self, coeff_old,
-                               *[s._subs(old, new) for s in ret_set])
+                                     *[s._subs(old, new) for s in ret_set])
 
     def removeO(self):
         """Removes the additive O(..) symbol.
@@ -625,7 +628,7 @@ class Add(AssocOp):
         >>> ((1 + 2*I)*(1 + 3*I)).as_real_imag()
         (-5, 5)
         """
-        sargs, terms = self.args, []
+        sargs = self.args
         re_part, im_part = [], []
         for term in sargs:
             re, im = term.as_real_imag(deep=deep)
@@ -703,6 +706,8 @@ class Add(AssocOp):
 
         diofant.polys.polytools.primitive
         """
+        from .mul import _keep_coeff
+        from .numbers import Rational
 
         terms = []
         inf = False
@@ -765,6 +770,9 @@ class Add(AssocOp):
 
         diofant.core.expr.Expr.as_content_primitive
         """
+        from .mul import Mul, _keep_coeff, prod
+        from .numbers import Rational
+
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()
         if radical and prim.is_Add:
@@ -813,7 +821,3 @@ class Add(AssocOp):
     @property
     def _sorted_args(self):
         return tuple(sorted(self.args, key=default_sort_key))
-
-
-from .mul import Mul, _keep_coeff, prod
-from .numbers import Rational

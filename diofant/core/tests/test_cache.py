@@ -1,11 +1,14 @@
+import sys
+import weakref
+
 import pytest
 
+from diofant.abc import x
+from diofant.core.cache import CACHE, cacheit, clear_cache, print_cache
 from diofant.core.compatibility import ordered
 from diofant.core.symbol import Symbol, symbols
-from diofant.core.cache import cacheit, CACHE, print_cache, clear_cache
 from diofant.printing.str import sstr
 
-from diofant.abc import x
 
 __all__ = ()
 
@@ -47,8 +50,6 @@ def test_print_cache(capfd):
 
 @pytest.fixture(scope='function')
 def clear_imports(request):
-    import sys
-
     # Clear namespace
     orig = sys.modules.copy()
     for m in list(sys.modules.keys()):
@@ -80,7 +81,7 @@ def test_nocache(clear_imports, monkeypatch):
     assert CACHE == []
 
     # issue sympy/sympy#8840
-    expr = (1 + x)*x  # not raises
+    (1 + x)*x  # not raises
 
     # issue sympy/sympy#9413
     (2*x).is_complex  # not raises
@@ -106,11 +107,10 @@ def test_nocache(clear_imports, monkeypatch):
     a = Symbol('a', positive=True)
     f = exp(x*(-a - 1))
     g = sinh(x)
-    r = f*g  # not raises
+    f*g  # not raises
 
 
 def test_sympyissue_8825():
-    import weakref
     a, b = symbols('a b')
     d = weakref.WeakKeyDictionary([(a, 1), (b, 2)])
     assert sstr(list(ordered(d.items()))) == '[(a, 1), (b, 2)]'

@@ -2,21 +2,16 @@
 
 import pytest
 
-from diofant import (Integer, sin, cos, sqrt, symbols, pi, Eq,  # noqa: N814
-                     Integral, exp, Mul, Abs, Rational as Q, I)
-from diofant.polys.polyutils import (
-    _nsort,
-    _sort_gens,
-    _unify_gens,
-    _analyze_gens,
-    _sort_factors,
-    parallel_dict_from_expr,
-    dict_from_expr)
-from diofant.polys.polyerrors import (
-    GeneratorsNeeded,
-    PolynomialError)
-from diofant.polys import factor
+from diofant import Rational as Q  # noqa: N814
+from diofant import (Abs, Eq, I, Integer, Integral, Mul, cos, erf, exp,
+                     integrate, pi, sin, sqrt, symbols)
 from diofant.domains import ZZ
+from diofant.polys import factor
+from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
+from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
+                                     _sort_gens, _unify_gens, dict_from_expr,
+                                     parallel_dict_from_expr)
+
 
 __all__ = ()
 
@@ -193,67 +188,62 @@ def test__sort_factors():
 
 
 def test__dict_from_expr_if_gens():
-    assert dict_from_expr(
-        Integer(17), gens=(x,)) == ({(0,): Integer(17)}, (x,))
-    assert dict_from_expr(
-        Integer(17), gens=(x, y)) == ({(0, 0): Integer(17)}, (x, y))
-    assert dict_from_expr(
-        Integer(17), gens=(x, y, z)) == ({(0, 0, 0): Integer(17)}, (x, y, z))
+    assert dict_from_expr(Integer(17), gens=(x,)) == ({(0,): 17}, (x,))
+    assert dict_from_expr(Integer(17), gens=(x, y)) == ({(0, 0): 17}, (x, y))
+    assert dict_from_expr(Integer(17), gens=(x, y, z)) == ({(0, 0, 0): 17},
+                                                           (x, y, z))
 
-    assert dict_from_expr(
-        Integer(-17), gens=(x,)) == ({(0,): Integer(-17)}, (x,))
-    assert dict_from_expr(
-        Integer(-17), gens=(x, y)) == ({(0, 0): Integer(-17)}, (x, y))
-    assert dict_from_expr(Integer(
-        -17), gens=(x, y, z)) == ({(0, 0, 0): Integer(-17)}, (x, y, z))
+    assert dict_from_expr(Integer(-17), gens=(x,)) == ({(0,): -17}, (x,))
+    assert dict_from_expr(Integer(-17), gens=(x, y)) == ({(0, 0): -17}, (x, y))
+    assert dict_from_expr(Integer(-17), gens=(x, y, z)) == ({(0, 0, 0): -17},
+                                                            (x, y, z))
 
-    assert dict_from_expr(
-        Integer(17)*x, gens=(x,)) == ({(1,): Integer(17)}, (x,))
-    assert dict_from_expr(
-        Integer(17)*x, gens=(x, y)) == ({(1, 0): Integer(17)}, (x, y))
-    assert dict_from_expr(Integer(
-        17)*x, gens=(x, y, z)) == ({(1, 0, 0): Integer(17)}, (x, y, z))
+    assert dict_from_expr(17*x, gens=(x,)) == ({(1,): 17}, (x,))
+    assert dict_from_expr(17*x, gens=(x, y)) == ({(1, 0): 17}, (x, y))
+    assert dict_from_expr(17*x, gens=(x, y, z)) == ({(1, 0, 0): 17}, (x, y, z))
 
-    assert dict_from_expr(
-        Integer(17)*x**7, gens=(x,)) == ({(7,): Integer(17)}, (x,))
-    assert dict_from_expr(
-        Integer(17)*x**7*y, gens=(x, y)) == ({(7, 1): Integer(17)}, (x, y))
-    assert dict_from_expr(Integer(17)*x**7*y*z**12, gens=(
-        x, y, z)) == ({(7, 1, 12): Integer(17)}, (x, y, z))
+    assert dict_from_expr(17*x**7, gens=(x,)) == ({(7,): 17}, (x,))
+    assert dict_from_expr(17*x**7*y, gens=(x, y)) == ({(7, 1): 17}, (x, y))
+    assert dict_from_expr(17*x**7*y*z**12, gens=(x, y, z)) == ({(7, 1, 12): 17},
+                                                               (x, y, z))
 
-    assert dict_from_expr(x + 2*y + 3*z, gens=(x,)) == \
-        ({(1,): Integer(1), (0,): 2*y + 3*z}, (x,))
-    assert dict_from_expr(x + 2*y + 3*z, gens=(x, y)) == \
-        ({(1, 0): Integer(1), (0, 1): Integer(2), (0, 0): 3*z}, (x, y))
-    assert dict_from_expr(x + 2*y + 3*z, gens=(x, y, z)) == \
-        ({(1, 0, 0): Integer(
-            1), (0, 1, 0): Integer(2), (0, 0, 1): Integer(3)}, (x, y, z))
+    assert dict_from_expr(x + 2*y + 3*z, gens=(x,)) == ({(1,): 1,
+                                                         (0,): 2*y + 3*z}, (x,))
+    assert dict_from_expr(x + 2*y + 3*z, gens=(x, y)) == ({(1, 0): 1, (0, 1): 2,
+                                                           (0, 0): 3*z}, (x, y))
+    assert dict_from_expr(x + 2*y + 3*z, gens=(x, y, z)) == ({(1, 0, 0): 1,
+                                                              (0, 1, 0): 2,
+                                                              (0, 0, 1): 3},
+                                                             (x, y, z))
 
-    assert dict_from_expr(x*y + 2*x*z + 3*y*z, gens=(x,)) == \
-        ({(1,): y + 2*z, (0,): 3*y*z}, (x,))
-    assert dict_from_expr(x*y + 2*x*z + 3*y*z, gens=(x, y)) == \
-        ({(1, 1): Integer(1), (1, 0): 2*z, (0, 1): 3*z}, (x, y))
-    assert dict_from_expr(x*y + 2*x*z + 3*y*z, gens=(x, y, z)) == \
-        ({(1, 1, 0): Integer(
-            1), (1, 0, 1): Integer(2), (0, 1, 1): Integer(3)}, (x, y, z))
+    assert dict_from_expr(x*y + 2*x*z + 3*y*z, gens=(x,)) == ({(1,): y + 2*z,
+                                                               (0,): 3*y*z},
+                                                              (x,))
+    assert dict_from_expr(x*y + 2*x*z + 3*y*z, gens=(x, y)) == ({(1, 1): 1,
+                                                                 (1, 0): 2*z,
+                                                                 (0, 1): 3*z},
+                                                                (x, y))
+    assert dict_from_expr(x*y + 2*x*z + 3*y*z, gens=(x, y, z)) == ({(1, 1, 0): 1,
+                                                                    (1, 0, 1): 2,
+                                                                    (0, 1, 1): 3},
+                                                                   (x, y, z))
 
     assert dict_from_expr(2**y*x, gens=(x,)) == ({(1,): 2**y}, (x,))
-    assert dict_from_expr(Integral(x, (x, 1, 2)) + x) == (
-        {(0, 1): 1, (1, 0): 1}, (x, Integral(x, (x, 1, 2))))
+    assert dict_from_expr(Integral(x, (x, 1, 2)) + x) == ({(0, 1): 1, (1, 0): 1},
+                                                          (x, Integral(x, (x, 1, 2))))
     pytest.raises(PolynomialError, lambda: dict_from_expr(2**y*x, gens=(x, y)))
 
 
 def test__dict_from_expr_no_gens():
     pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(Integer(17)))
 
-    assert dict_from_expr(x) == ({(1,): Integer(1)}, (x,))
-    assert dict_from_expr(y) == ({(1,): Integer(1)}, (y,))
+    assert dict_from_expr(x) == ({(1,): 1}, (x,))
+    assert dict_from_expr(y) == ({(1,): 1}, (y,))
 
-    assert dict_from_expr(x*y) == ({(1, 1): Integer(1)}, (x, y))
-    assert dict_from_expr(
-        x + y) == ({(1, 0): Integer(1), (0, 1): Integer(1)}, (x, y))
+    assert dict_from_expr(x*y) == ({(1, 1): 1}, (x, y))
+    assert dict_from_expr(x + y) == ({(1, 0): 1, (0, 1): 1}, (x, y))
 
-    assert dict_from_expr(sqrt(2)) == ({(1,): Integer(1)}, (sqrt(2),))
+    assert dict_from_expr(sqrt(2)) == ({(1,): 1}, (sqrt(2),))
     pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(sqrt(2), greedy=False))
 
     assert dict_from_expr(x*y, domain=ZZ[x]) == ({(1,): x}, (y,))
@@ -270,41 +260,38 @@ def test__dict_from_expr_no_gens():
     f = cos(x)*sin(x) + cos(x)*sin(y) + cos(y)*sin(x) + cos(y)*sin(y)
 
     assert dict_from_expr(f) == ({(0, 1, 0, 1): 1, (0, 1, 1, 0): 1,
-        (1, 0, 0, 1): 1, (1, 0, 1, 0): 1}, (cos(x), cos(y), sin(x), sin(y)))
+                                  (1, 0, 0, 1): 1, (1, 0, 1, 0): 1}, (cos(x), cos(y), sin(x), sin(y)))
 
 
 def test__parallel_dict_from_expr_if_gens():
     assert parallel_dict_from_expr([x + 2*y + 3*z, Integer(7)], gens=(x,)) == \
-        ([{(1,): Integer(1), (0,): 2*y + 3*z}, {(0,): Integer(7)}], (x,))
+        ([{(1,): 1, (0,): 2*y + 3*z}, {(0,): 7}], (x,))
     assert parallel_dict_from_expr((Mul(x, x**2, evaluate=False),), gens=(x,)) == \
         ([{(3,): 1}], (x,))
 
 
 def test__parallel_dict_from_expr_no_gens():
     assert parallel_dict_from_expr([x*y, Integer(3)]) == \
-        ([{(1, 1): Integer(1)}, {(0, 0): Integer(3)}], (x, y))
+        ([{(1, 1): 1}, {(0, 0): 3}], (x, y))
     assert parallel_dict_from_expr([x*y, 2*z, Integer(3)]) == \
-        ([{(1, 1, 0): Integer(
-            1)}, {(0, 0, 1): Integer(2)}, {(0, 0, 0): Integer(3)}], (x, y, z))
+        ([{(1, 1, 0): 1}, {(0, 0, 1): 2}, {(0, 0, 0): 3}], (x, y, z))
     assert parallel_dict_from_expr((Mul(x, x**2, evaluate=False),)) == \
         ([{(3,): 1}], (x,))
 
 
 def test_parallel_dict_from_expr():
     assert parallel_dict_from_expr([Eq(x, 1), Eq(
-        x**2, 2)]) == ([{(0,): -Integer(1), (1,): Integer(1)},
-                        {(0,): -Integer(2), (2,): Integer(1)}], (x,))
+        x**2, 2)]) == ([{(0,): -1, (1,): 1},
+                        {(0,): -2, (2,): 1}], (x,))
     pytest.raises(PolynomialError, lambda: parallel_dict_from_expr([A*B - B*A]))
 
 
 def test_dict_from_expr():
-    assert dict_from_expr(Eq(x, 1)) == \
-        ({(0,): -Integer(1), (1,): Integer(1)}, (x,))
+    assert dict_from_expr(Eq(x, 1)) == ({(0,): -1, (1,): 1}, (x,))
     pytest.raises(PolynomialError, lambda: dict_from_expr(A*B - B*A))
 
 
 def test_sympyissue_7383():
-    from diofant import erf, integrate
     x, z, R, a = symbols('x z R a')
     r = sqrt(x**2 + z**2)
     u = erf(a*r/sqrt(2))/r

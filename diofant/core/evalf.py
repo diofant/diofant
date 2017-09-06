@@ -6,26 +6,26 @@ for mathematical functions.
 import math
 
 import mpmath.libmp as libmp
-from mpmath import (make_mpc, make_mpf, mp, mpc, mpf, nsum, quadts,
-                    quadosc, workprec)
 from mpmath import inf as mpmath_inf
-from mpmath.libmp import (from_int, from_man_exp, from_rational, fhalf,
-                          fnan, fnone, fone, fzero, mpf_abs, mpf_add,
-                          mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_e,
-                          mpf_exp, mpf_log, mpf_lt, mpf_mul, mpf_neg,
-                          mpf_pi, mpf_pow, mpf_pow_int, mpf_shift, mpf_sin,
-                          mpf_sqrt, normalize, round_nearest, to_str)
+from mpmath import (make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc, quadts,
+                    workprec)
 from mpmath.libmp import bitcount as mpmath_bitcount
+from mpmath.libmp import (fhalf, fnan, fnone, fone, from_int, from_man_exp,
+                          from_rational, fzero, mpf_abs, mpf_add, mpf_atan,
+                          mpf_atan2, mpf_cmp, mpf_cos, mpf_e, mpf_exp, mpf_log,
+                          mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
+                          mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt, normalize,
+                          round_nearest, to_str)
 from mpmath.libmp.backend import MPZ
+from mpmath.libmp.gammazeta import mpf_bernoulli
 from mpmath.libmp.libmpc import _infs_nan
 from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
-from mpmath.libmp.gammazeta import mpf_bernoulli
-
-from .compatibility import DIOFANT_INTS, is_sequence
-from .sympify import sympify
-from .singleton import S
 
 from ..utilities.misc import debug
+from .compatibility import DIOFANT_INTS, is_sequence
+from .singleton import S
+from .sympify import sympify
+
 
 LG10 = math.log(10, 2)
 rnd = round_nearest
@@ -281,8 +281,8 @@ def check_target(expr, result, prec):
     a = complex_accuracy(result)
     if a < prec:
         raise PrecisionExhausted("Failed to distinguish the expression: \n\n%s\n\n"
-            "from zero. Try simplifying the input, using chop=True, or providing "
-            "a higher maxn for evalf" % (expr))
+                                 "from zero. Try simplifying the input, using chop=True, or providing "
+                                 "a higher maxn for evalf" % (expr))
 
 
 ############################################################################
@@ -371,7 +371,7 @@ def add_terms(terms, prec, target_prec):
     sum_bc = bitcount(sum_man)
     sum_accuracy = sum_exp + sum_bc - absolute_error
     r = normalize(sum_sign, sum_man, sum_exp, sum_bc, target_prec,
-        rnd), sum_accuracy
+                  rnd), sum_accuracy
     return r
 
 
@@ -861,7 +861,7 @@ def do_integral(expr, prec, options):
                 m = func.match(sin(A*x + B)*D)
             if not m:
                 raise ValueError("An integrand of the form sin(A*x+B)*f(x) "
-                  "or cos(A*x+B)*f(x) is required for oscillatory quadrature")
+                                 "or cos(A*x+B)*f(x) is required for oscillatory quadrature")
             period = as_mpmath(2*S.Pi/m[A], prec + 15, options)
             result = quadosc(f, [xlow, xhigh], period=period)
             # XXX: quadosc does not do error detection yet
@@ -1078,7 +1078,7 @@ def evalf_sum(expr, prec, options):
         for i in range(1, 5):
             m = n = 2**i * prec
             s, err = expr.euler_maclaurin(m=m, n=n, eps=eps,
-                eval_integral=False)
+                                          eval_integral=False)
             err = err.evalf()
             if err <= eps:
                 break

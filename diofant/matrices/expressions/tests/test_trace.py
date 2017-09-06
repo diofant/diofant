@@ -1,13 +1,14 @@
 import pytest
 
-from diofant.core import Lambda, S, symbols
 from diofant.concrete import Sum
+from diofant.core import Lambda, symbols
 from diofant.functions import adjoint, conjugate, transpose
-from diofant.matrices import eye, Matrix, ShapeError, ImmutableMatrix
-from diofant.matrices.expressions import (Adjoint, Identity, FunctionMatrix,
-                                          MatrixExpr, MatrixSymbol, Trace,
-                                          ZeroMatrix, trace, MatPow, MatAdd,
-                                          MatMul)
+from diofant.matrices import ImmutableMatrix, Matrix, ShapeError, eye
+from diofant.matrices.expressions import (Adjoint, FunctionMatrix, Identity,
+                                          MatAdd, MatMul, MatPow, MatrixExpr,
+                                          MatrixSymbol, Trace, ZeroMatrix,
+                                          trace)
+
 
 __all__ = ()
 
@@ -40,7 +41,7 @@ def test_Trace():
     F = FunctionMatrix(3, 3, Lambda((i, j), i + j))
     assert trace(F) == (0 + 0) + (1 + 1) + (2 + 2)
 
-    pytest.raises(TypeError, lambda: Trace(S.One))
+    pytest.raises(TypeError, lambda: Trace(1))
 
     assert Trace(A).arg is A
 
@@ -88,6 +89,5 @@ def test_trace_constant_factor():
     assert trace(MatMul(2, X)) == 10
 
 
-@pytest.mark.xfail
 def test_rewrite():
     assert isinstance(trace(A).rewrite(Sum), Sum)

@@ -4,102 +4,90 @@ import warnings
 
 import pytest
 
-from diofant.core.basic import Atom, Basic
-from diofant.core.singleton import SingletonRegistry, S
-from diofant.core.symbol import Dummy, Symbol, Wild
-from diofant.core.numbers import (E, I, pi, oo, zoo, nan, Integer,
-                                  Rational, Float)
-from diofant.core.relational import (Equality, GreaterThan, LessThan, Relational,
-                                     StrictGreaterThan, StrictLessThan, Unequality)
+from diofant import QQ, ZZ, lex
+from diofant.abc import x, y, z
+from diofant.concrete.products import Product
+from diofant.concrete.summations import Sum
+from diofant.core import Catalan, EulerGamma, GoldenRatio
 from diofant.core.add import Add
-from diofant.core.mul import Mul
-from diofant.core.power import Pow
+from diofant.core.basic import Atom, Basic
+from diofant.core.compatibility import HAS_GMPY
 from diofant.core.function import (Derivative, Function, FunctionClass, Lambda,
                                    WildFunction)
-
-from diofant.functions import (Piecewise, lowergamma, acosh, chebyshevu,
-                               chebyshevt, ln, chebyshevt_root, binomial,
-                               legendre, Heaviside, factorial, bernoulli, coth,
-                               tanh, assoc_legendre, sign, arg, asin, DiracDelta,
-                               re, rf, Abs, uppergamma, sinh, cos,
-                               cot, acos, acot, gamma, bell, hermite, harmonic,
-                               LambertW, zeta, log, asinh, acoth,
-                               cosh, dirichlet_eta, Eijk, loggamma, erf, ceiling,
-                               im, fibonacci, conjugate, tan, chebyshevu_root,
-                               floor, atanh, sqrt, sin, atan, ff,
-                               lucas, atan2, polygamma, exp)
-
-from diofant.sets.sets import Interval
-from diofant.core.multidimensional import vectorize
-
-from diofant.integrals.integrals import Integral
-
 from diofant.core.logic import Logic
-
-from diofant.geometry.entity import GeometryEntity
-from diofant.geometry.point import Point
-from diofant.geometry.ellipse import Circle, Ellipse
-from diofant.geometry.line import Line, LinearEntity, Ray, Segment
-from diofant.geometry.polygon import Polygon, RegularPolygon, Triangle
-
-from diofant.matrices import Matrix, SparseMatrix
-
-from diofant.ntheory.generate import Sieve
-
-from diofant.plotting.plot import Plot
-
-from diofant import ZZ, QQ, lex
-from diofant.polys.polytools import Poly, PurePoly
-from diofant.polys.polyclasses import DMP, DMF, ANP
-from diofant.polys.rings import PolyRing
-from diofant.polys.fields import FracField
-from diofant.domains.groundtypes import PythonRational
-from diofant.domains.pythonfinitefield import PythonFiniteField
-from diofant.domains.mpelements import MPContext
-from diofant.domains.pythonintegerring import PythonIntegerRing
-from diofant.domains.pythonrationalfield import PythonRationalField
+from diofant.core.mul import Mul
+from diofant.core.multidimensional import vectorize
+from diofant.core.numbers import (E, Float, I, Integer, Rational, nan, oo, pi,
+                                  zoo)
+from diofant.core.power import Pow
+from diofant.core.relational import (Equality, GreaterThan, LessThan,
+                                     Relational, StrictGreaterThan,
+                                     StrictLessThan, Unequality)
+from diofant.core.singleton import S, SingletonRegistry
+from diofant.core.symbol import Dummy, Symbol, Wild
+from diofant.domains import QQ_gmpy, ZZ_gmpy
 from diofant.domains.algebraicfield import AlgebraicField
 from diofant.domains.expressiondomain import ExpressionDomain
+from diofant.domains.groundtypes import PythonRational
+from diofant.domains.pythonintegerring import PythonIntegerRing
+from diofant.domains.pythonrationalfield import PythonRationalField
+from diofant.functions import (Abs, DiracDelta, Eijk, Heaviside, LambertW,
+                               Piecewise, acos, acosh, acot, acoth, arg, asin,
+                               asinh, assoc_legendre, atan, atan2, atanh, bell,
+                               bernoulli, binomial, ceiling, chebyshevt,
+                               chebyshevt_root, chebyshevu, chebyshevu_root,
+                               conjugate, cos, cosh, cot, coth, dirichlet_eta,
+                               erf, exp, factorial, ff, fibonacci, floor,
+                               gamma, harmonic, hermite, im, legendre, ln, log,
+                               loggamma, lowergamma, lucas, polygamma, re, rf,
+                               sign, sin, sinh, sqrt, tan, tanh, uppergamma,
+                               zeta)
+from diofant.geometry.ellipse import Circle, Ellipse
+from diofant.geometry.entity import GeometryEntity
+from diofant.geometry.line import Line, LinearEntity, Ray, Segment
+from diofant.geometry.point import Point
+from diofant.geometry.polygon import Polygon, RegularPolygon, Triangle
+from diofant.integrals.integrals import Integral
+from diofant.matrices import Matrix, SparseMatrix
+from diofant.ntheory.generate import Sieve
+from diofant.plotting.plot import Plot
+from diofant.polys.fields import FracField
+from diofant.polys.monomials import Monomial, MonomialOps
 from diofant.polys.numberfields import AlgebraicNumber
-from diofant.polys.orderings import (LexOrder, GradedLexOrder,
-                                     ReversedGradedLexOrder, ProductOrder,
-                                     InverseOrder)
-from diofant.polys.monomials import MonomialOps, Monomial
-from diofant.polys.polyerrors import (HeuristicGCDFailed, HomomorphismFailed,
-                                      IsomorphismFailed, ExtraneousFactors,
-                                      EvaluationFailed, RefinementFailed,
-                                      CoercionFailed, NotInvertible, NotReversible,
-                                      NotAlgebraic, DomainError, PolynomialError,
-                                      UnificationFailed, GeneratorsError,
-                                      GeneratorsNeeded,
-                                      UnivariatePolynomialError,
+from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
+                                     ProductOrder, ReversedGradedLexOrder)
+from diofant.polys.polyclasses import ANP, DMF, DMP
+from diofant.polys.polyerrors import (CoercionFailed, DomainError,
+                                      EvaluationFailed, ExtraneousFactors,
+                                      FlagError, GeneratorsError,
+                                      GeneratorsNeeded, HeuristicGCDFailed,
+                                      HomomorphismFailed, IsomorphismFailed,
                                       MultivariatePolynomialError,
-                                      OptionError, FlagError)
+                                      NotAlgebraic, NotInvertible,
+                                      NotReversible, OptionError,
+                                      PolynomialError, RefinementFailed,
+                                      UnificationFailed,
+                                      UnivariatePolynomialError)
 from diofant.polys.polyoptions import Options
+from diofant.polys.polytools import Poly, PurePoly
+from diofant.polys.rings import PolyRing
 from diofant.polys.rootoftools import RootOf, RootSum
-
 from diofant.printing.latex import LatexPrinter
 from diofant.printing.mathml import MathMLPrinter
 from diofant.printing.pretty.pretty import PrettyPrinter
 from diofant.printing.pretty.stringpict import prettyForm, stringPict
 from diofant.printing.printer import Printer
 from diofant.printing.python import PythonPrinter
-
 from diofant.series.limits import Limit
 from diofant.series.order import Order
-
-from diofant.concrete.products import Product
-from diofant.concrete.summations import Sum
-
-from diofant.core.compatibility import HAS_GMPY
+from diofant.sets.sets import Interval
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 
 # XXX we need this to initialize singleton registry properly
-half = S.Half
+half = Rational(1, 2)
 ø = S.EmptySet
 ℕ = S.Naturals0
 
@@ -222,8 +210,8 @@ def test_Singletons():
     copiers += [lambda x: pickle.loads(pickle.dumps(x, p)) for p in protocols]
 
     for obj in (Integer(-1), Integer(0), Integer(1), Rational(1, 2), pi,
-                E, I, oo, -oo, zoo, nan, S.GoldenRatio, S.EulerGamma,
-                S.Catalan, S.EmptySet, S.IdentityFunction):
+                E, I, oo, -oo, zoo, nan, GoldenRatio, EulerGamma,
+                Catalan, S.EmptySet, S.IdentityFunction):
         for func in copiers:
             assert func(obj) is obj
 
@@ -344,13 +332,13 @@ def test_pickling_polys_elements():
     for c in (PythonRational, PythonRational(1, 7)):
         check(c)
 
-    gf = PythonFiniteField(17)
+    # gf = PythonFiniteField(17)
 
     # TODO: fix pickling of ModularInteger
     # for c in (gf.dtype, gf(5)):
     #     check(c)
 
-    mp = MPContext()
+    # mp = MPContext()
 
     # TODO: fix pickling of RealElement
     # for c in (mp.mpf, mp.mpf(1.0)):
@@ -373,17 +361,14 @@ def test_pickling_polys_domains():
         check(c)
 
     if HAS_GMPY:
-        from diofant.domains.gmpyintegerring import GMPYIntegerRing
-        from diofant.domains.gmpyrationalfield import GMPYRationalField
-
         # TODO: fix pickling of ModularInteger
         # for c in (GMPYFiniteField, GMPYFiniteField(17)):
         #     check(c)
 
-        for c in (GMPYIntegerRing, GMPYIntegerRing()):
+        for c in (ZZ_gmpy, ZZ_gmpy()):
             check(c)
 
-        for c in (GMPYRationalField, GMPYRationalField()):
+        for c in (QQ_gmpy, QQ_gmpy()):
             check(c)
 
     # TODO: fix pickling of RealElement

@@ -1,6 +1,7 @@
-from diofant.combinatorics.named_groups import (SymmetricGroup, CyclicGroup,
-                                                DihedralGroup, AlternatingGroup,
-                                                AbelianGroup)
+from diofant.combinatorics.named_groups import (AbelianGroup, AlternatingGroup,
+                                                CyclicGroup, DihedralGroup,
+                                                SymmetricGroup)
+
 
 __all__ = ()
 

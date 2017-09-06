@@ -1,6 +1,7 @@
-from ..core import S, Dummy, pi, Rational
-from ..functions import factorial, sin, cos, sqrt, gamma
-from ..polys.orthopolys import legendre_poly, laguerre_poly, hermite_poly, jacobi_poly
+from ..core import Dummy, Rational, S, pi
+from ..functions import cos, factorial, gamma, sin, sqrt
+from ..polys.orthopolys import (hermite_poly, jacobi_poly, laguerre_poly,
+                                legendre_poly)
 from ..polys.rootoftools import RootOf
 
 
@@ -364,7 +365,6 @@ def gauss_chebyshev_t(n, n_digits):
     .. [1] http://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
     .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev1_rule/chebyshev1_rule.html
     """
-    x = Dummy("x")
     xi = []
     w = []
     for i in range(1, n + 1):
@@ -435,7 +435,6 @@ def gauss_chebyshev_u(n, n_digits):
     .. [1] http://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
     .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev2_rule/chebyshev2_rule.html
     """
-    x = Dummy("x")
     xi = []
     w = []
     for i in range(1, n + 1):

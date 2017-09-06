@@ -8,9 +8,9 @@ as attributes of the coordinate systems (eg `R2_r.x` and `R2_p.theta`), or by
 using the usual `coord_sys.coord_function(index, name)` interface.
 """
 
-from .diffgeom import Manifold, Patch, CoordSystem
 from ..core import Dummy
-from ..functions import sqrt, atan2, acos, sin, cos
+from ..functions import acos, atan2, cos, sin, sqrt
+from .diffgeom import CoordSystem, Manifold, Patch
 
 
 ###############################################################################
@@ -25,10 +25,10 @@ R2_p = CoordSystem('polar', R2_origin, ['r', 'theta'])
 # Connecting the coordinate charts.
 x, y, r, theta = [Dummy(s) for s in ['x', 'y', 'r', 'theta']]
 R2_r.connect_to(R2_p, [x, y],
-                      [sqrt(x**2 + y**2), atan2(y, x)],
+                [sqrt(x**2 + y**2), atan2(y, x)],
                 inverse=False, fill_in_gaps=False)
 R2_p.connect_to(R2_r, [r, theta],
-                      [r*cos(theta), r*sin(theta)],
+                [r*cos(theta), r*sin(theta)],
                 inverse=False, fill_in_gaps=False)
 del x, y, r, theta
 
@@ -59,29 +59,29 @@ R3_s = CoordSystem('spherical', R3_origin, ['r', 'theta', 'phi'])
 
 # Connecting the coordinate charts.
 x, y, z, rho, psi, r, theta, phi = [Dummy(s) for s in ['x', 'y', 'z',
-                                          'rho', 'psi', 'r', 'theta', 'phi']]
+                                                       'rho', 'psi', 'r', 'theta', 'phi']]
 # rectangular <-> cylindrical
 R3_r.connect_to(R3_c, [x, y, z],
-                      [sqrt(x**2 + y**2), atan2(y, x), z],
+                [sqrt(x**2 + y**2), atan2(y, x), z],
                 inverse=False, fill_in_gaps=False)
 R3_c.connect_to(R3_r, [rho, psi, z],
-                      [rho*cos(psi), rho*sin(psi), z],
+                [rho*cos(psi), rho*sin(psi), z],
                 inverse=False, fill_in_gaps=False)
 # rectangular <-> spherical
 R3_r.connect_to(R3_s, [x, y, z],
-                      [sqrt(x**2 + y**2 + z**2), acos(z /
-                            sqrt(x**2 + y**2 + z**2)), atan2(y, x)],
+                [sqrt(x**2 + y**2 + z**2), acos(z /
+                                                sqrt(x**2 + y**2 + z**2)), atan2(y, x)],
                 inverse=False, fill_in_gaps=False)
 R3_s.connect_to(R3_r, [r, theta, phi],
-                      [r*sin(theta)*cos(phi), r*sin(
-                          theta)*sin(phi), r*cos(theta)],
+                [r*sin(theta)*cos(phi), r*sin(
+                    theta)*sin(phi), r*cos(theta)],
                 inverse=False, fill_in_gaps=False)
 # cylindrical <-> spherical
 R3_c.connect_to(R3_s, [rho, psi, z],
-                      [sqrt(rho**2 + z**2), acos(z/sqrt(rho**2 + z**2)), psi],
+                [sqrt(rho**2 + z**2), acos(z/sqrt(rho**2 + z**2)), psi],
                 inverse=False, fill_in_gaps=False)
 R3_s.connect_to(R3_c, [r, theta, phi],
-                      [r*sin(theta), phi, r*cos(theta)],
+                [r*sin(theta), phi, r*cos(theta)],
                 inverse=False, fill_in_gaps=False)
 del x, y, z, rho, psi, r, theta, phi
 

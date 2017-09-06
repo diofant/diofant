@@ -2,13 +2,14 @@
 
 import pytest
 
-from diofant import Poly, S, Rational as Q  # noqa: N814
-from diofant.polys.orthopolys import (jacobi_poly, gegenbauer_poly,
-                                      chebyshevt_poly, chebyshevu_poly,
-                                      hermite_poly, legendre_poly,
-                                      laguerre_poly, spherical_bessel_fn)
+from diofant import Rational as Q  # noqa: N814
+from diofant import Poly
+from diofant.abc import a, b, x
+from diofant.polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
+                                      gegenbauer_poly, hermite_poly,
+                                      jacobi_poly, laguerre_poly,
+                                      legendre_poly, spherical_bessel_fn)
 
-from diofant.abc import x, a, b
 
 __all__ = ()
 
@@ -22,7 +23,7 @@ def test_jacobi_poly():
     assert jacobi_poly(0, a, b, x) == 1
     assert jacobi_poly(1, a, b, x) == a/2 - b/2 + x*(a/2 + b/2 + 1)
     assert jacobi_poly(2, a, b, x) == (a**2/8 - a*b/4 - a/8 + b**2/8 - b/8 + x**2*(a**2/8 + a*b/4 + 7*a/8 +
-                                       b**2/8 + 7*b/8 + Q(3, 2)) + x*(a**2/4 + 3*a/4 - b**2/4 - 3*b/4) - Q(1, 2))
+                                                                                   b**2/8 + 7*b/8 + Q(3, 2)) + x*(a**2/4 + 3*a/4 - b**2/4 - 3*b/4) - Q(1, 2))
 
     assert jacobi_poly(1, a, b, polys=True) == Poly(
         (a/2 + b/2 + 1)*x + a/2 - b/2, x, domain='ZZ(a,b)')
@@ -40,7 +41,7 @@ def test_gegenbauer_poly():
     assert gegenbauer_poly(
         3, a, x) == x**3*(4*a**3/3 + 4*a**2 + 8*a/3) + x*(-2*a**2 - 2*a)
 
-    assert gegenbauer_poly(1, S.Half).dummy_eq(x)
+    assert gegenbauer_poly(1, Q(1, 2)).dummy_eq(x)
     assert gegenbauer_poly(1, a, polys=True) == Poly(2*a*x, x, domain='ZZ(a)')
 
 

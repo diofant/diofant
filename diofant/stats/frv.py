@@ -8,16 +8,16 @@ diofant.stats.rv
 diofant.stats.crv
 """
 
-from itertools import product
 import random
+from itertools import product
 
-from ..core import Expr, Symbol, cacheit, sympify, Mul, Tuple, Dict, Eq, Lambda
-from ..logic import And, Or
+from ..core import Dict, Eq, Expr, Lambda, Mul, Symbol, Tuple, cacheit, sympify
 from ..functions import Piecewise
+from ..logic import And, Or
 from ..sets import FiniteSet
-from .rv import (RandomDomain, ProductDomain, ConditionalDomain, PSpace,
-                 ProductPSpace, SinglePSpace, random_symbols, sumsets,
-                 rv_subs, NamedArgsMixin)
+from .rv import (ConditionalDomain, NamedArgsMixin, ProductDomain,
+                 ProductPSpace, PSpace, RandomDomain, SinglePSpace,
+                 random_symbols, rv_subs, sumsets)
 
 
 class FiniteDensity(dict):
@@ -263,7 +263,7 @@ class FinitePSpace(PSpace):
         sorted_items = sorted(items, key=lambda val_cumprob: val_cumprob[1])
         if python_float:
             sorted_items = [(v, float(cum_prob))
-                    for v, cum_prob in sorted_items]
+                            for v, cum_prob in sorted_items]
         return sorted_items
 
     def integrate(self, expr, rvs=None):
@@ -339,7 +339,7 @@ class ProductFinitePSpace(ProductPSpace, FinitePSpace):
     @cacheit
     def _density(self):
         proditer = product(*[iter(space._density.items())
-            for space in self.spaces])
+                             for space in self.spaces])
         d = {}
         for items in proditer:
             elems, probs = list(zip(*items))

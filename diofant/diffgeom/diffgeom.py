@@ -1,15 +1,14 @@
-from itertools import permutations
 from functools import reduce
+from itertools import permutations
 
-from ..matrices import Matrix
-from ..core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
-                    Mul, Add, symbols, Tuple, Integer)
-from ..core.numbers import Zero
-from ..solvers import solve
-from ..functions import factorial
-from ..simplify import simplify
 from ..combinatorics import Permutation
-
+from ..core import (Add, Basic, Dummy, Expr, Function, Integer, Mul, Pow,
+                    Tuple, diff, symbols, sympify)
+from ..core.numbers import Zero
+from ..functions import factorial
+from ..matrices import Matrix
+from ..simplify import simplify
+from ..solvers import solve
 # TODO you are a bit excessive in the use of Dummies
 # TODO dummy point, literal field
 # TODO too often one needs to call doit or simplify on the output, check the
@@ -1594,7 +1593,7 @@ def metric_to_Riemann_components(expr):
                     for nu in indices]
                    for mu in indices]
                   for sig in indices]
-                     for rho in indices]
+                 for rho in indices]
     riemann_b = [[[[Add(*[ch_2nd[rho, l, mu]*ch_2nd[l, sig, nu] - ch_2nd[rho, l, nu]*ch_2nd[l, sig, mu] for l in indices])
                     for nu in indices]
                    for mu in indices]
@@ -1602,7 +1601,7 @@ def metric_to_Riemann_components(expr):
                  for rho in indices]
     riemann = [[[[riemann_a[rho][sig][mu][nu] + riemann_b[rho][sig][mu][nu]
                   for nu in indices]
-                     for mu in indices]
+                 for mu in indices]
                 for sig in indices]
                for rho in indices]
     return ImmutableDenseNDimArray(riemann)

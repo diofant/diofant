@@ -2,19 +2,19 @@
 
 import pytest
 
-from diofant import sqrt, sin, oo, Poly, Float, Integer, Rational, I
-from diofant.domains import ZZ, QQ, RR, CC, FF, GF, EX, QQ_python, ZZ_python
+from diofant import Float, I, Integer, Poly, Rational, oo, sin, sqrt
+from diofant.abc import x, y, z
+from diofant.domains import CC, EX, FF, GF, QQ, RR, ZZ, QQ_python, ZZ_python
+from diofant.domains.algebraicfield import AlgebraicField
+from diofant.domains.complexfield import ComplexField
 from diofant.domains.domainelement import DomainElement
 from diofant.domains.groundtypes import PythonRational
 from diofant.domains.realfield import RealField
-from diofant.domains.complexfield import ComplexField
-from diofant.domains.algebraicfield import AlgebraicField
-from diofant.polys import ring, field, RootOf
-from diofant.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
-                                      GeneratorsError, CoercionFailed,
-                                      NotInvertible, DomainError)
+from diofant.polys import RootOf, field, ring
+from diofant.polys.polyerrors import (CoercionFailed, DomainError,
+                                      GeneratorsError, GeneratorsNeeded,
+                                      NotInvertible, UnificationFailed)
 
-from diofant.abc import x, y, z
 
 __all__ = ()
 

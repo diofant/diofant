@@ -1,9 +1,9 @@
 from ..core import Basic, Symbol, cacheit
-from .scalar import BaseScalar
-from ..matrices import eye, ImmutableMatrix
+from ..matrices import ImmutableMatrix, eye
 from ..simplify import trigsimp
-from .orienters import (Orienter, AxisOrienter, BodyOrienter,
-                        SpaceOrienter, QuaternionOrienter)
+from .orienters import (AxisOrienter, BodyOrienter, Orienter,
+                        QuaternionOrienter, SpaceOrienter)
+from .scalar import BaseScalar
 
 
 class CoordSysCartesian(Basic):
@@ -124,7 +124,7 @@ class CoordSysCartesian(Basic):
             _check_strings('variable_names', vector_names)
             variable_names = list(variable_names)
             latex_scalars = [(r"\mathbf{{%s}_{%s}}" % (x, name)) for
-                           x in variable_names]
+                             x in variable_names]
             pretty_scalars = [(name + '_' + x) for x in variable_names]
 
         obj._x = BaseScalar(variable_names[0], 0, obj,

@@ -1,21 +1,22 @@
 import pytest
 
-from diofant.core import S, symbols, Add, Mul, Integer, Eq
-from diofant.functions import transpose, sin, cos, sqrt
-from diofant.simplify import simplify
-from diofant.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd,
-                              MatMul, MatPow, Matrix, MatrixExpr,
-                              MatrixSymbol, ShapeError, ZeroMatrix,
-                              Transpose, Adjoint)
-from diofant.matrices.expressions.matexpr import MatrixElement
+from diofant.abc import t, x
+from diofant.core import Add, Eq, Integer, Mul, Rational, symbols
 from diofant.external import import_module
+from diofant.functions import cos, sin, sqrt, transpose
+from diofant.matrices import (Adjoint, Identity, ImmutableMatrix, Inverse,
+                              MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
+                              MatrixSymbol, ShapeError, Transpose, ZeroMatrix)
+from diofant.matrices.expressions.matexpr import MatrixElement
+from diofant.matrices.expressions.slice import MatrixSlice
+from diofant.simplify import simplify
+
 
 numpy = import_module('numpy')
 
 __all__ = ()
 
 n, m, l, k, p = symbols('n m l k p', integer=True)
-x = symbols('x')
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', m, l)
 C = MatrixSymbol('C', n, n)
@@ -130,7 +131,7 @@ def test_multiplication():
 
     assert C * Identity(n) * C.I == Identity(n)
 
-    assert B/2 == S.Half*B
+    assert B/2 == Rational(1, 2)*B
     pytest.raises(NotImplementedError, lambda: 2/B)
 
     A = MatrixSymbol('A', n, n)
@@ -150,12 +151,11 @@ def test_MatPow():
     assert A**1 == A
     assert A**2 == AA
     assert A**-1 == Inverse(A)
-    assert A**S.Half == sqrt(A)
+    assert A**Rational(1, 2) == sqrt(A)
     pytest.raises(ShapeError, lambda: MatrixSymbol('B', 3, 2)**2)
 
 
 def test_MatrixSymbol():
-    n, m, t = symbols('n,m,t')
     X = MatrixSymbol('X', n, m)
     assert X.shape == (n, m)
     pytest.raises(TypeError, lambda: MatrixSymbol('X', n, m)(t))  # issue sympy/sympy#5855
@@ -174,7 +174,7 @@ def test_free_symbols():
 
 
 def test_zero_matmul():
-    assert isinstance(S.Zero * MatrixSymbol('X', 2, 2), MatrixExpr)
+    assert isinstance(0 * MatrixSymbol('X', 2, 2), MatrixExpr)
 
 
 def test_matadd_simplify():
@@ -205,6 +205,8 @@ def test_indexing():
     A[1, 2]
     A[l, k]
     A[l+1, k+1]
+
+    assert A[:] == MatrixSlice(A, (0, n, 1), (0, m, 1))
 
 
 def test_single_indexing():

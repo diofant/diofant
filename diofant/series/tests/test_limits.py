@@ -3,15 +3,15 @@ import os
 
 import pytest
 
-from diofant import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
-                     acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
-                     cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
-                     Function, subfactorial, PoleError, Integer, Float,
-                     diff, simplify, Matrix, sinh, polygamma, symbols)
+from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
+                     PoleError, Rational, Sum, Symbol, acos, atan, ceiling,
+                     cos, cot, diff, exp, factorial, floor, gamma, integrate,
+                     limit, log, nan, oo, pi, polygamma, sign, simplify, sin,
+                     sinh, sqrt, subfactorial, symbols, tan)
+from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
 
-from diofant.abc import a, b, c, x, y, z, n
 
 __all__ = ()
 
@@ -33,14 +33,14 @@ def test_basic1():
     assert limit((1 + x)**(1 + sqrt(2)), x, 0) == 1
     assert limit((1 + x)**oo, x, 0) == oo
     assert limit((1 + x)**oo, x, 0, dir='-') == 0
-    assert limit((1 + x + y)**oo, x, 0, dir='-') == (1 + y)**(oo)
+    assert limit((1 + x + y)**oo, x, 0, dir='-') == (1 + y)**oo
     assert limit(y/x/log(x), x, 0) == -oo*sign(y)
     assert limit(cos(x + y)/x, x, 0) == sign(cos(y))*oo
     limit(Sum(1/x, (x, 1, y)) - log(y), y, oo)
     limit(Sum(1/x, (x, 1, y)) - 1/y, y, oo)
     assert limit(gamma(1/x + 3), x, oo) == 2
-    assert limit(S.NaN, x, -oo) == S.NaN
-    assert limit(O(2)*x, x, S.NaN) == S.NaN
+    assert limit(nan, x, -oo) == nan
+    assert limit(O(2)*x, x, nan) == nan
     assert limit(sin(O(x)), x, 0) == 0
     assert limit(1/(x - 1), x, 1, dir="+") == oo
     assert limit(1/(x - 1), x, 1, dir="-") == -oo
@@ -103,8 +103,8 @@ def test_basic5():
     class my(Function):
         @classmethod
         def eval(cls, arg):
-            if arg is S.Infinity:
-                return S.NaN
+            if arg is oo:
+                return nan
     assert limit(my(x), x, oo) == Limit(my(x), x, oo)
 
     assert limit(4/x > 8, x, 0)  # relational test
@@ -195,7 +195,7 @@ def test_abs():
     assert limit(abs(log(n)/n**3), n, oo) == 0
     expr = abs(log(n)/n**3)
     expr2 = expr.subs(n, n + 1)
-    assert limit(n*(expr/expr2 - Integer(1)), n, oo) == 3
+    assert limit(n*(expr/expr2 - 1), n, oo) == 3
 
 
 def test_heuristic():
@@ -218,7 +218,7 @@ def test_exponential():
     assert limit((1 + x/(2*n))**n, n, oo) == exp(x/2)
     assert limit((1 + x/(2*n + 1))**n, n, oo) == exp(x/2)
     assert limit(((x - 1)/(x + 1))**x, x, oo) == exp(-2)
-    assert limit(1 + (1 + 1/x)**x, x, oo) == 1 + S.Exp1
+    assert limit(1 + (1 + 1/x)**x, x, oo) == 1 + E
 
 
 @pytest.mark.xfail
@@ -247,7 +247,7 @@ def test_sympyissue_3792():
 
 def test_sympyissue_4090():
     assert limit(1/(x + 3), x, 2) == Rational(1, 5)
-    assert limit(1/(x + pi), x, 2) == Integer(1)/(2 + pi)
+    assert limit(1/(x + pi), x, 2) == 1/(2 + pi)
     assert limit(log(x)/(x**2 + 3), x, 2) == log(2)/7
     assert limit(log(x)/(x**2 + pi), x, 2) == log(2)/(4 + pi)
 
@@ -294,7 +294,7 @@ def test_sympyissue_5184():
 
 
 def test_sympyissue_5229():
-    assert limit((1 + y)**(1/y) - S.Exp1, y, 0) == 0
+    assert limit((1 + y)**(1/y) - E, y, 0) == 0
 
 
 def test_sympyissue_4546():
@@ -387,7 +387,6 @@ def test_sympyissue_6366():
 
 
 def test_factorial():
-    from diofant import factorial, E
     f = factorial(x)
     assert limit(f, x, oo) == oo
     assert limit(x/f, x, oo) == 0
@@ -401,7 +400,7 @@ def test_factorial():
 
 def test_sympyissue_6560():
     e = 5*x**3/4 - 3*x/4 + (y*(3*x**2/2 - Rational(1, 2)) +
-        35*x**4/8 - 15*x**2/4 + Rational(3, 8))/(2*(y + 1))
+                            35*x**4/8 - 15*x**2/4 + Rational(3, 8))/(2*(y + 1))
     assert limit(e, y, oo) == (5*x**3 + 3*x**2 - 3*x - 1)/4
 
 
@@ -410,7 +409,7 @@ def test_sympyissue_5172():
     p = Symbol('p', positive=True)
     m = Symbol('m', negative=True)
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
-        (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
+            (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs(c, c + 1)
     assert limit(expr.subs(c, m), n, oo) == 1
     assert limit(expr.subs(c, p), n, oo).simplify() == \
@@ -467,7 +466,7 @@ def test_sympyissue_9205():
 def test_sympyissue_10610():
     assert limit(3**x*3**(-x - 1)*(x + 1)**2/x**2, x, oo) == Rational(1, 3)
     assert limit(2**x*2**(-x - 1)*(x + 1)*(y - 1)**(-x) *
-                 (y - 1)**(x + 1)/(x + 2), x, oo) == y/2 - S.Half
+                 (y - 1)**(x + 1)/(x + 2), x, oo) == y/2 - Rational(1, 2)
 
 
 def test_sympyissue_9075():

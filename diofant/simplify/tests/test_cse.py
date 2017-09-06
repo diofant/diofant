@@ -2,19 +2,19 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Pow, Symbol, exp, sqrt, symbols, sympify, cse,
-                     Matrix, cos, sin, Eq, Function, Tuple, RootOf,
-                     IndexedBase, Idx, Piecewise, O, Rational, true)
-from diofant.simplify.cse_opts import sub_pre, sub_post
+from diofant import (Add, Eq, Function, Idx, IndexedBase, Matrix, MatrixSymbol,
+                     O, Piecewise, Pow, Rational, RootOf, Subs, Symbol, Tuple,
+                     cos, cse, exp, sin, sqrt, symbols, sympify, true)
+from diofant.abc import a, b, w, x, y, z
 from diofant.functions.special.hyper import meijerg
+from diofant.matrices import (ImmutableDenseMatrix, ImmutableSparseMatrix,
+                              MutableDenseMatrix, MutableSparseMatrix)
 from diofant.simplify import cse_main, cse_opts
-from diofant.matrices import (MutableDenseMatrix,
-                              MutableSparseMatrix, ImmutableDenseMatrix,
-                              ImmutableSparseMatrix)
+from diofant.simplify.cse_opts import sub_post, sub_pre
+
 
 __all__ = ()
 
-w, x, y, z = symbols('w,x,y,z')
 x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12 = symbols('x:13')
 
 
@@ -199,7 +199,6 @@ def test_sympyissue_6263():
 
 
 def test_dont_cse_tuples():
-    from diofant import Subs
     f = Function("f")
     g = Function("g")
 
@@ -209,7 +208,7 @@ def test_dont_cse_tuples():
 
     assert name_val == []
     assert expr == (Subs(f(x, y), (x, y), (0, 1))
-            + Subs(g(x, y), (x, y), (0, 1)))
+                    + Subs(g(x, y), (x, y), (0, 1)))
 
     name_val, (expr,) = cse(
         Subs(f(x, y), (x, y), (0, x + y))
@@ -244,32 +243,31 @@ def test_pow_invpow():
 def test_postprocess():
     eq = (x + 1 + exp((x + 1)/(y + 1)) + cos(y + 1))
     assert cse([eq, Eq(x, z + 1), z - 2, (z + 1)*(x + 1)],
-        postprocess=cse_main.cse_separate) == \
+               postprocess=cse_main.cse_separate) == \
         [[(x1, y + 1), (x2, z + 1), (x, x2), (x0, x + 1)],
-        [x0 + exp(x0/x1) + cos(x1), z - 2, x0*x2]]
+         [x0 + exp(x0/x1) + cos(x1), z - 2, x0*x2]]
 
 
 def test_sympyissue_4499():
     # previously, this gave 16 constants
-    from diofant.abc import a, b
     B = Function('B')
     G = Function('G')
     t = Tuple(*
-        (a, a + Rational(1, 2), 2*a, b, 2*a - b + 1, (sqrt(z)/2)**(-2*a + 1)*B(2*a -
-        b, sqrt(z))*B(b - 1, sqrt(z))*G(b)*G(2*a - b + 1),
-        sqrt(z)*(sqrt(z)/2)**(-2*a + 1)*B(b, sqrt(z))*B(2*a - b,
-        sqrt(z))*G(b)*G(2*a - b + 1), sqrt(z)*(sqrt(z)/2)**(-2*a + 1)*B(b - 1,
-        sqrt(z))*B(2*a - b + 1, sqrt(z))*G(b)*G(2*a - b + 1),
-        (sqrt(z)/2)**(-2*a + 1)*B(b, sqrt(z))*B(2*a - b + 1,
-        sqrt(z))*G(b)*G(2*a - b + 1), 1, 0, Rational(1, 2), z/2, -b + 1, -2*a + b,
-        -2*a))
+              (a, a + Rational(1, 2), 2*a, b, 2*a - b + 1, (sqrt(z)/2)**(-2*a + 1)*B(2*a -
+                                                                                     b, sqrt(z))*B(b - 1, sqrt(z))*G(b)*G(2*a - b + 1),
+               sqrt(z)*(sqrt(z)/2)**(-2*a + 1)*B(b, sqrt(z))*B(2*a - b,
+                                                               sqrt(z))*G(b)*G(2*a - b + 1), sqrt(z)*(sqrt(z)/2)**(-2*a + 1)*B(b - 1,
+                                                                                                                               sqrt(z))*B(2*a - b + 1, sqrt(z))*G(b)*G(2*a - b + 1),
+               (sqrt(z)/2)**(-2*a + 1)*B(b, sqrt(z))*B(2*a - b + 1,
+                                                       sqrt(z))*G(b)*G(2*a - b + 1), 1, 0, Rational(1, 2), z/2, -b + 1, -2*a + b,
+                  -2*a))
     c = cse(t)
     ans = (
         [(x0, 2*a), (x1, -b), (x2, x1 + 1), (x3, x0 + x2), (x4, sqrt(z)), (x5,
-        B(x0 + x1, x4)), (x6, G(b)), (x7, G(x3)), (x8, -x0), (x9,
-        (x4/2)**(x8 + 1)), (x10, x6*x7*x9*B(b - 1, x4)), (x11, x6*x7*x9*B(b,
-        x4)), (x12, B(x3, x4))], [(a, a + Rational(1, 2), x0, b, x3, x10*x5,
-        x11*x4*x5, x10*x12*x4, x11*x12, 1, 0, Rational(1, 2), z/2, x2, b + x8, x8)])
+                                                                           B(x0 + x1, x4)), (x6, G(b)), (x7, G(x3)), (x8, -x0), (x9,
+                                                                                                                                 (x4/2)**(x8 + 1)), (x10, x6*x7*x9*B(b - 1, x4)), (x11, x6*x7*x9*B(b,
+                                                                                                                                                                                                   x4)), (x12, B(x3, x4))], [(a, a + Rational(1, 2), x0, b, x3, x10*x5,
+                                                                                                                                                                                                                              x11*x4*x5, x10*x12*x4, x11*x12, 1, 0, Rational(1, 2), z/2, x2, b + x8, x8)])
     assert ans == c
 
 
@@ -285,7 +283,6 @@ def test_cse_Indexed():
     len_y = 5
     y = IndexedBase('y', shape=(len_y,))
     x = IndexedBase('x', shape=(len_y,))
-    Dy = IndexedBase('Dy', shape=(len_y-1,))
     i = Idx('i', len_y-1)
 
     expr1 = (y[i+1]-y[i])/(x[i+1]-x[i])
@@ -296,7 +293,6 @@ def test_cse_Indexed():
 
 @pytest.mark.xfail
 def test_cse_MatrixSymbol():
-    from diofant import MatrixSymbol
     A = MatrixSymbol('A', 3, 3)
     y = MatrixSymbol('y', 3, 1)
 
@@ -337,7 +333,7 @@ def test_name_conflict_cust_symbols():
 def test_symbols_exhausted_error():
     l = cos(x+y)+x+y+cos(w+y)+sin(w+y)
     sym = [x, y, z]
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError):
         cse(l, symbols=sym)
 
 
@@ -378,7 +374,7 @@ def test_sympyissue_7840():
 
 def test_sympyissue_8891():
     for cls in (MutableDenseMatrix, MutableSparseMatrix,
-            ImmutableDenseMatrix, ImmutableSparseMatrix):
+                ImmutableDenseMatrix, ImmutableSparseMatrix):
         m = cls(2, 2, [x + y, 0, 0, 0])
         res = cse([x + y, m])
         ans = ([(x0, x + y)], [x0, cls([[x0, 0], [0, 0]])])

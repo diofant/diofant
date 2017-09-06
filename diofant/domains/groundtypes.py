@@ -8,20 +8,19 @@ import fractions
 import mpmath.libmp as mlib
 
 from ..core.compatibility import HAS_GMPY
+from ..core.numbers import Float as DiofantReal  # noqa: F401
+from ..core.numbers import Integer as DiofantInteger  # noqa: F401
+from ..core.numbers import Rational as DiofantRational  # noqa: F401
+from ..core.numbers import igcd as python_gcd  # noqa: F401
+from ..core.numbers import igcdex as python_gcdex  # noqa: F401
+from ..core.numbers import ilcm as python_lcm  # noqa: F401
+
 
 PythonInteger = builtins.int
 PythonReal = builtins.float
 PythonComplex = builtins.complex
 PythonRational = fractions.Fraction
 
-from ..core.numbers import (
-    igcdex as python_gcdex,
-    igcd as python_gcd,
-    ilcm as python_lcm)
-from ..core.numbers import (
-    Float as DiofantReal,
-    Integer as DiofantInteger,
-    Rational as DiofantRational)
 
 if HAS_GMPY:
     from gmpy2 import (  # noqa: N812

@@ -1,17 +1,19 @@
 import pytest
 
-from diofant.core import (S, pi, oo, symbols, Function, Rational, Integer,
-                          Tuple, Symbol, I)
-from diofant.core import EulerGamma, GoldenRatio, Catalan, Lambda
-from diofant.functions import Piecewise, sqrt, ceiling, exp, sin, cos
-from diofant.utilities.lambdify import implemented_function
-from diofant.matrices import (eye, Matrix, MatrixSymbol, Identity,
-                              HadamardProduct, SparseMatrix)
-from diofant.functions.special.bessel import (jn, yn, besselj, bessely, besseli,
-                                              besselk, hankel1, hankel2, airyai,
-                                              airybi, airyaiprime, airybiprime)
-from diofant import octave_code
 from diofant import octave_code as mcode
+from diofant.core import (Catalan, E, EulerGamma, Function, GoldenRatio, I,
+                          Integer, Lambda, Rational, Symbol, Tuple, nan, oo,
+                          pi, symbols, zoo)
+from diofant.functions import Piecewise, ceiling, cos, exp, sin, sqrt
+from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
+                                              airybiprime, besseli, besselj,
+                                              besselk, bessely, hankel1,
+                                              hankel2, jn, yn)
+from diofant.logic import false, true
+from diofant.matrices import (HadamardProduct, Identity, Matrix, MatrixSymbol,
+                              SparseMatrix, eye)
+from diofant.utilities.lambdify import implemented_function
+
 
 __all__ = ()
 
@@ -60,9 +62,9 @@ def test_1_over_x_and_sqrt():
     assert mcode(1/x) == '1./x'
     assert mcode(x**-1) == mcode(x**-1.0) == '1./x'
     assert mcode(1/sqrt(x)) == '1./sqrt(x)'
-    assert mcode(x**-S.Half) == mcode(x**-0.5) == '1./sqrt(x)'
+    assert mcode(x**Rational(-1, 2)) == mcode(x**-0.5) == '1./sqrt(x)'
     assert mcode(sqrt(x)) == 'sqrt(x)'
-    assert mcode(x**S.Half) == mcode(x**0.5) == 'sqrt(x)'
+    assert mcode(x**Rational(1, 2)) == mcode(x**0.5) == 'sqrt(x)'
     assert mcode(1/pi) == '1/pi'
     assert mcode(pi**-1) == mcode(pi**-1.0) == '1/pi'
     assert mcode(pi**-0.5) == '1/sqrt(pi)'
@@ -80,7 +82,7 @@ def test_mix_number_mult_symbols():
     assert mcode(3*x*y) == "3*x.*y"
     assert mcode(3*pi*x*y) == "3*pi*x.*y"
     assert mcode(x/y) == "x./y"
-    assert octave_code(x*y**-2) == "x./y.^2"
+    assert mcode(x*y**-2) == "x./y.^2"
     assert mcode(3*x/y) == "3*x./y"
     assert mcode(x*y/z) == "x.*y./z"
     assert mcode(x/y*z) == "x.*z./y"
@@ -109,7 +111,7 @@ def test_mix_number_pow_symbols():
 def test_imag():
     assert mcode(I) == "1i"
     assert mcode(5*I) == "5i"
-    assert mcode((Rational(3, 2))*I) == "3*1i/2"
+    assert mcode(Rational(3, 2)*I) == "3*1i/2"
     assert mcode(3+4*I) == "3 + 4i"
 
 
@@ -117,12 +119,11 @@ def test_constants():
     assert mcode(pi) == "pi"
     assert mcode(oo) == "inf"
     assert mcode(-oo) == "-inf"
-    assert mcode(S.NegativeInfinity) == "-inf"
-    assert mcode(S.NaN) == "NaN"
-    assert mcode(S.Exp1) == "exp(1)"
+    assert mcode(nan) == "NaN"
+    assert mcode(E) == "exp(1)"
     assert mcode(exp(1)) == "exp(1)"
-    assert mcode(S.true) == "true"
-    assert mcode(S.false) == "false"
+    assert mcode(true) == "true"
+    assert mcode(false) == "false"
 
 
 def test_constants_other():
@@ -191,7 +192,7 @@ def test_MatrixSymbol():
     assert mcode(A*(B + 3*Identity(n))) == "A*(B + 3*eye(n))"
     assert mcode(A**(x**2)) == "A^(x.^2)"
     assert mcode(A**3) == "A^3"
-    assert mcode(A**(S.Half)) == "A^(1/2)"
+    assert mcode(A**Rational(1, 2)) == "A^(1/2)"
 
 
 def test_special_matrices():
@@ -292,19 +293,19 @@ def test_octave_matrix_elements():
     A = MatrixSymbol('AA', 1, 3)
     assert mcode(A) == "AA"
     assert mcode(A[0, 0]**2 + sin(A[0, 1]) + A[0, 2]) == \
-           "sin(AA(1, 2)) + AA(1, 1).^2 + AA(1, 3)"
+        "sin(AA(1, 2)) + AA(1, 1).^2 + AA(1, 3)"
     assert mcode(sum(A)) == "AA(1, 1) + AA(1, 2) + AA(1, 3)"
 
 
 def test_octave_boolean():
     assert mcode(True) == "true"
-    assert mcode(S.true) == "true"
+    assert mcode(true) == "true"
     assert mcode(False) == "false"
-    assert mcode(S.false) == "false"
+    assert mcode(false) == "false"
 
 
 def test_octave_not_supported():
-    assert mcode(S.ComplexInfinity) == (
+    assert mcode(zoo) == (
         "% Not supported in Octave:\n"
         "% ComplexInfinity\n"
         "zoo"
@@ -361,12 +362,12 @@ def test_sparse():
 def test_specfun():
     n = Symbol('n')
     for f in [besselj, bessely, besseli, besselk]:
-        assert octave_code(f(n, x)) == f.__name__ + '(n, x)'
-    assert octave_code(hankel1(n, x)) == 'besselh(n, 1, x)'
-    assert octave_code(hankel2(n, x)) == 'besselh(n, 2, x)'
-    assert octave_code(airyai(x)) == 'airy(0, x)'
-    assert octave_code(airyaiprime(x)) == 'airy(1, x)'
-    assert octave_code(airybi(x)) == 'airy(2, x)'
-    assert octave_code(airybiprime(x)) == 'airy(3, x)'
-    assert octave_code(jn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*besselj(n + 1/2, x)/2'
-    assert octave_code(yn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*bessely(n + 1/2, x)/2'
+        assert mcode(f(n, x)) == f.__name__ + '(n, x)'
+    assert mcode(hankel1(n, x)) == 'besselh(n, 1, x)'
+    assert mcode(hankel2(n, x)) == 'besselh(n, 2, x)'
+    assert mcode(airyai(x)) == 'airy(0, x)'
+    assert mcode(airyaiprime(x)) == 'airy(1, x)'
+    assert mcode(airybi(x)) == 'airy(2, x)'
+    assert mcode(airybiprime(x)) == 'airy(3, x)'
+    assert mcode(jn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*besselj(n + 1/2, x)/2'
+    assert mcode(yn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*bessely(n + 1/2, x)/2'

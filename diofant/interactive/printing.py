@@ -2,7 +2,7 @@ import builtins
 import os
 import sys
 
-from ..printing import latex, sstrrepr, pretty
+from ..printing import latex, pretty, sstrrepr
 from ..printing.printer import Printer
 
 

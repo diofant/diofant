@@ -8,13 +8,15 @@ complex part, because it needs to calculate a limit to return the result.
 
 import pytest
 
-from diofant import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
-                     S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh, airyai,
-                     airybi, coth, sinh, tanh, digamma, Integer, Ei, EulerGamma,
-                     Mul, Pow, Add, li, Li, tan, acosh, factorial, binomial,
-                     root, fibonacci, GoldenRatio, Limit)
-from diofant.series.gruntz import (compare, mrv, rewrite,
-                                   mrv_leadterm, limitinf as gruntz, sign)
+from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
+                     Limit, Mul, Pow, Rational, Symbol, acosh, acot, airyai,
+                     airybi, atan, binomial, cos, cosh, coth, digamma, erf,
+                     exp, factorial, fibonacci, gamma, li, log, loggamma, oo,
+                     pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
+from diofant.series.gruntz import limitinf as gruntz
+from diofant.series.gruntz import sign as mrv_sign
+from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite
+
 
 __all__ = ()
 
@@ -29,7 +31,7 @@ def test_gruntz_evaluation():
     assert gruntz(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x) == -1
     # 8.2
     assert gruntz(exp(x)*(exp(1/x + exp(-x) + exp(-x**2))
-                  - exp(1/x - exp(-exp(x)))), x) == 1
+                          - exp(1/x - exp(-exp(x)))), x) == 1
     # 8.3
     assert gruntz(exp(exp(x - exp(-x))/(1 - 1/x)) - exp(exp(x)), x) == oo
     # 8.4
@@ -47,7 +49,7 @@ def test_gruntz_evaluation():
     assert gruntz(exp(exp(x)) / exp(exp(x - exp(-exp(exp(x))))), x) == 1
     # 8.9
     assert gruntz(log(x)**2 * exp(sqrt(log(x))*(log(log(x)))**2
-                  * exp(sqrt(log(log(x))) * (log(log(log(x))))**3)) / sqrt(x),
+                                  * exp(sqrt(log(log(x))) * (log(log(log(x))))**3)) / sqrt(x),
                   x) == 0
     # 8.10
     assert gruntz((x*log(x)*(log(x*exp(x) - x**2))**2)
@@ -81,7 +83,7 @@ def test_gruntz_evaluation():
                   / (log(log(x) + log(log(log(x))))), x) == 1
     # 8.20
     assert gruntz(exp((log(log(x + exp(log(x)*log(log(x))))))
-                  / (log(log(log(exp(x) + x + log(x)))))), x) == E
+                      / (log(log(log(exp(x) + x + log(x)))))), x) == E
     # Another
     assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x) == oo
 
@@ -120,10 +122,12 @@ def test_gruntz_other():
     assert gruntz(sqrt(log(x + 1)) - sqrt(log(x)), x) == 0  # p12, 2.5
     y = Symbol('y')
     assert gruntz(((1 + 1/x)**y - 1)*x, x) == y  # p12, 2.6
-    # TODO: p13, 2.7
     n = Symbol('n', integer=True)
     assert gruntz(x**n/exp(x), x) == 0  # p14, 2.9
-    assert gruntz((1 + 1/x)*x - 1/log(1 + 1/x), x) == S.Half  # p15, 2.10
+    assert gruntz((1 + 1/x)*x - 1/log(1 + 1/x), x) == Rational(1, 2)  # p15, 2.10
+    m = Symbol('m', integer=True)
+    assert gruntz((root(1 + 1/x, n) - 1)/(root(1 + 1/x, m) - 1),
+                  x) == m/n  # p13, 2.7
 
 
 def test_gruntz_hyperbolic():
@@ -187,27 +191,27 @@ def test_compare():
 
 
 def test_sign():
-    assert sign(Rational(0), x) == 0
-    assert sign(Rational(3), x) == 1
-    assert sign(Rational(-5), x) == -1
-    assert sign(log(x), x) == 1
-    assert sign(exp(-x), x) == 1
-    assert sign(exp(x), x) == 1
-    assert sign(-exp(x), x) == -1
-    assert sign(3 - 1/x, x) == 1
-    assert sign(-3 - 1/x, x) == -1
-    assert sign(sin(1/x), x) == 1
-    assert sign((x**Integer(2)), x) == 1
-    assert sign(x**2, x) == 1
-    assert sign(x**5, x) == 1
+    assert mrv_sign(Rational(0), x) == 0
+    assert mrv_sign(Rational(3), x) == 1
+    assert mrv_sign(Rational(-5), x) == -1
+    assert mrv_sign(log(x), x) == 1
+    assert mrv_sign(exp(-x), x) == 1
+    assert mrv_sign(exp(x), x) == 1
+    assert mrv_sign(-exp(x), x) == -1
+    assert mrv_sign(3 - 1/x, x) == 1
+    assert mrv_sign(-3 - 1/x, x) == -1
+    assert mrv_sign(sin(1/x), x) == 1
+    assert mrv_sign((x**Integer(2)), x) == 1
+    assert mrv_sign(x**2, x) == 1
+    assert mrv_sign(x**5, x) == 1
 
-    assert sign(x, x) == 1
-    assert sign(-x, x) == -1
+    assert mrv_sign(x, x) == 1
+    assert mrv_sign(-x, x) == -1
     y = Symbol("y", positive=True)
-    assert sign(y, x) == 1
-    assert sign(-y, x) == -1
-    assert sign(y*x, x) == 1
-    assert sign(-y*x, x) == -1
+    assert mrv_sign(y, x) == 1
+    assert mrv_sign(-y, x) == -1
+    assert mrv_sign(y*x, x) == 1
+    assert mrv_sign(-y*x, x) == -1
 
 
 def test_mrv():
@@ -256,7 +260,7 @@ def test_mrv():
 
 
 def test_rewrite():
-    assert rewrite(S.One, x, m) == (1, None)
+    assert rewrite(Integer(1), x, m) == (1, None)
 
     e = exp(x)
     assert rewrite(e, x, m) == (1/m, -x)
@@ -278,7 +282,7 @@ def test_rewrite():
 
 
 def test_mrv_leadterm():
-    assert mrv_leadterm(S.One, x) == (1, 0)
+    assert mrv_leadterm(Integer(1), x) == (1, 0)
 
     assert mrv_leadterm(-exp(1/x), x) == (-1, 0)
     assert mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x) == (-1, 0)
@@ -295,8 +299,6 @@ def test_mrv_leadterm():
 
 
 def test_limit():
-    from diofant.functions import sign
-
     assert gruntz(x, x) == oo
     assert gruntz(-x, x) == -oo
     assert gruntz(-x, x) == -oo
@@ -358,7 +360,6 @@ def test_limit():
 
 
 def test_I():
-    from diofant.functions import sign
     y = Symbol("y")
     assert gruntz(I*x, x) == I*oo
     assert gruntz(y*I*x, x) == sign(y)*I*oo
@@ -420,7 +421,7 @@ def test_sympyissue_6843():
 
 
 def test_sympyissue_4190():
-    assert gruntz(x - gamma(1/x), x) == S.EulerGamma
+    assert gruntz(x - gamma(1/x), x) == EulerGamma
 
 
 def test_sympyissue_5172():
@@ -447,7 +448,6 @@ def test_sympyissue_6682():
 
 
 def test_sympyissue_7096():
-    from diofant.functions import sign
     assert gruntz((-1/x)**-pi, x) == oo*sign((-1)**(-pi))
 
 
@@ -458,7 +458,6 @@ def test_sympyissue_8462():
 
 
 def test_diofantissue_74():
-    from diofant.functions import sign
     assert gruntz(sign(log(1 + 1/x)), x) == +1
     assert gruntz(sign(log(1 - 1/x)), x) == -1
     assert gruntz(sign(sin(+1/x)), x) == +1

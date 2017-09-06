@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (residue, Symbol, Function, sin, sqrt,
-                     I, exp, log, pi, factorial, Rational)
+from diofant import (Function, I, Rational, Symbol, exp, factorial, log, pi,
+                     residue, sin, sqrt)
+from diofant.abc import a, s, x, z
 
-from diofant.abc import x, z, a, s
 
 __all__ = ()
 

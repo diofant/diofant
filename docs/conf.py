@@ -12,9 +12,12 @@
 # commented out serve to show the default value.
 #
 
-import os
 import warnings
+
+import sphinx_rtd_theme
+
 import diofant
+
 
 # This turns numpydoc's section warnings to exceptions,
 # see numpy/numpydoc#58.
@@ -65,6 +68,15 @@ default_role = 'math'
 
 # Options for HTML output
 # -----------------------
+
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+html_theme = 'sphinx_rtd_theme'
+
+# Theme options are theme-specific and customize the look and feel of a theme
+# further.  For a list of options available for each theme, see the
+# documentation.
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # If true, generate domain-specific indices in addition to the general
 # index. For e.g. the Python domain, this is the global module index. Default
@@ -119,7 +131,7 @@ latex_domain_indices = False
 
 texinfo_documents = [
     (master_doc, 'diofant', 'Diofant Documentation', 'Diofant Development Team',
-   'Diofant', 'Computer algebra system (CAS) in Python', 'Programming', 1),
+     'Diofant', 'Computer algebra system (CAS) in Python', 'Programming', 1),
 ]
 
 # Use svg for graphviz
@@ -137,10 +149,3 @@ extlinks = {
     'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#'),
     'sympypull': ('https://github.com/sympy/sympy/pull/%s', 'sympy/sympy#'),
 }
-
-# RTD theme support:
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if not on_rtd:  # only import and set the theme if we're building docs locally
-    import sphinx_rtd_theme
-    html_theme = 'sphinx_rtd_theme'
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]

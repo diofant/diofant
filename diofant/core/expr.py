@@ -3,14 +3,14 @@ from functools import reduce
 
 from mpmath.libmp import mpf_log, prec_to_dps
 
-from .sympify import sympify, _sympify, SympifyError
-from .basic import Basic, Atom
-from .singleton import S
-from .evalf import EvalfMixin, pure_complex, PrecisionExhausted
-from .decorators import _sympifyit, call_highest_priority
+from .assumptions import ManagedProperties
+from .basic import Atom, Basic
 from .cache import cacheit
 from .compatibility import as_int, default_sort_key
-from .assumptions import ManagedProperties
+from .decorators import _sympifyit, call_highest_priority
+from .evalf import EvalfMixin, PrecisionExhausted, pure_complex
+from .singleton import S
+from .sympify import sympify
 
 
 class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
@@ -1353,6 +1353,31 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         sin(x)
         """
         return self
+
+    def as_poly(self, *gens, **args):
+        """Converts ``self`` to a polynomial or returns ``None``.
+
+        Examples
+        ========
+
+        >>> from diofant import sin
+        >>> from diofant.abc import x, y
+
+        >>> (x**2 + x*y).as_poly()
+        Poly(x**2 + x*y, x, y, domain='ZZ')
+
+        >>> (x**2 + x*y).as_poly(x, y)
+        Poly(x**2 + x*y, x, y, domain='ZZ')
+
+        >>> (x**2 + sin(y)).as_poly(x, y) is None
+        True
+        """
+        from ..polys import Poly, PolynomialError
+
+        try:
+            return Poly(self, *gens, **args)
+        except PolynomialError:
+            pass
 
     def as_coefficient(self, expr):
         """Extracts symbolic coefficient at the given expression.
@@ -2958,7 +2983,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     @cacheit
     def expand(self, deep=True, modulus=None, power_base=True, power_exp=True,
-            mul=True, log=True, multinomial=True, basic=True, **hints):
+               mul=True, log=True, multinomial=True, basic=True, **hints):
         """Expand an expression using hints.
 
         See Also
@@ -2969,7 +2994,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify.radsimp import fraction
 
         hints.update(power_base=power_base, power_exp=power_exp, mul=mul,
-           log=log, multinomial=multinomial, basic=basic)
+                     log=log, multinomial=multinomial, basic=basic)
 
         expr = self
         if hints.pop('frac', False):

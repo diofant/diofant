@@ -2,25 +2,26 @@
 
 from math import log as mathlog
 
-from mpmath import mpf, mpc, findroot, workprec
+from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
-from ..core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
-                    sympify, Rational, Dummy, cacheit)
+from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational, S,
+                    cacheit, symbols, sympify)
 from ..core.evaluate import global_evaluate
 from ..core.function import AppliedUndef
-from ..functions import root as _root, sign
+from ..domains import QQ
+from ..functions import root as _root
+from ..functions import sign
+from ..utilities import lambdify, public
+from .polyerrors import (DomainError, GeneratorsNeeded,
+                         MultivariatePolynomialError, PolynomialError)
+from .polyfuncs import symmetrize, viete
+from .polyroots import (preprocess_roots, roots, roots_binomial, roots_linear,
+                        roots_quadratic)
 from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
-from .polyfuncs import symmetrize, viete
 from .rootisolation import (dup_isolate_complex_roots_sqf,
                             dup_isolate_real_roots_sqf)
-from .polyroots import (roots_linear, roots_quadratic, roots_binomial,
-                        preprocess_roots, roots)
-from .polyerrors import (MultivariatePolynomialError, GeneratorsNeeded,
-                         PolynomialError, DomainError)
-from ..domains import QQ
-from ..utilities import lambdify, public
 
 
 def _ispow2(i):
@@ -638,7 +639,6 @@ class RootOf(Expr):
 
         if not self.is_extended_real:
             raise NotImplementedError("eval_rational() only works for real polynomials so far")
-        func = lambdify(self.poly.gen, self.expr)
         interval = self.interval
         while interval.b - interval.a > tol:
             interval = interval.refine()
@@ -741,7 +741,7 @@ class RootSum(Expr):
         func = Lambda(var, expr)
 
         rational = cls._is_func_rational(poly, func)
-        (_, factors), terms = poly.factor_list(), []
+        factors, terms = poly.factor_list()[1], []
 
         for poly, k in factors:
             if poly.is_linear:

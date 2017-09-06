@@ -1,6 +1,6 @@
 from itertools import combinations_with_replacement
 
-from ..core import Function, sympify, diff, Eq, S, Symbol, Derivative
+from ..core import Derivative, Eq, Function, S, Symbol, diff, sympify
 from ..core.compatibility import iterable
 
 

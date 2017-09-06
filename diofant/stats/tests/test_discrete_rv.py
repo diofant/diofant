@@ -1,9 +1,9 @@
-from diofant.stats.drv_types import (PoissonDistribution, GeometricDistribution,
-                                     Poisson)
-from diofant import S, Sum
-from diofant.stats import E, variance, density
-
+from diofant import Rational, Sum
 from diofant.abc import x
+from diofant.stats import E, density, variance
+from diofant.stats.drv_types import (GeometricDistribution, Poisson,
+                                     PoissonDistribution)
+
 
 __all__ = ()
 
@@ -27,7 +27,7 @@ def test_Poisson():
 
 
 def test_GeometricDistribution():
-    p = S.One / 5
+    p = Rational(1, 5)
     d = GeometricDistribution(p)
     assert d.expectation(x, x) == 1/p
     assert d.expectation(x**2, x) - d.expectation(x, x)**2 == (1-p)/p**2

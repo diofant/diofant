@@ -1,13 +1,14 @@
-from diofant.combinatorics.named_groups import (SymmetricGroup, DihedralGroup,
-                                                AlternatingGroup)
+from diofant.combinatorics.named_groups import (AlternatingGroup,
+                                                DihedralGroup, SymmetricGroup)
 from diofant.combinatorics.permutations import Permutation
-from diofant.combinatorics.util import (_check_cycles_alt_sym, _strip,
-                                        _distribute_gens_by_base,
-                                        _strong_gens_from_distr,
-                                        _orbits_transversals_from_bsgs,
-                                        _handle_precomputed_bsgs,
-                                        _base_ordering, _remove_gens)
 from diofant.combinatorics.testutil import _verify_bsgs
+from diofant.combinatorics.util import (_base_ordering, _check_cycles_alt_sym,
+                                        _distribute_gens_by_base,
+                                        _handle_precomputed_bsgs,
+                                        _orbits_transversals_from_bsgs,
+                                        _remove_gens, _strip,
+                                        _strong_gens_from_distr)
+
 
 __all__ = ()
 
@@ -42,18 +43,18 @@ def test_strip():
 def test_distribute_gens_by_base():
     base = [0, 1, 2]
     gens = [Permutation([0, 1, 2, 3]), Permutation([0, 1, 3, 2]),
-           Permutation([0, 2, 3, 1]), Permutation([3, 2, 1, 0])]
+            Permutation([0, 2, 3, 1]), Permutation([3, 2, 1, 0])]
     assert _distribute_gens_by_base(base, gens) == [gens,
-                                                   [Permutation([0, 1, 2, 3]),
-                                                   Permutation([0, 1, 3, 2]),
-                                                   Permutation([0, 2, 3, 1])],
-                                                   [Permutation([0, 1, 2, 3]),
-                                                   Permutation([0, 1, 3, 2])]]
+                                                    [Permutation([0, 1, 2, 3]),
+                                                     Permutation([0, 1, 3, 2]),
+                                                     Permutation([0, 2, 3, 1])],
+                                                    [Permutation([0, 1, 2, 3]),
+                                                     Permutation([0, 1, 3, 2])]]
 
 
 def test_strong_gens_from_distr():
     strong_gens_distr = [[Permutation([0, 2, 1]), Permutation([1, 2, 0]),
-                  Permutation([1, 0, 2])], [Permutation([0, 2, 1])]]
+                          Permutation([1, 0, 2])], [Permutation([0, 2, 1])]]
     assert _strong_gens_from_distr(strong_gens_distr) == \
         [Permutation([0, 2, 1]),
          Permutation([1, 2, 0]),

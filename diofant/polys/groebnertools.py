@@ -1,10 +1,9 @@
 """Gröbner bases algorithms. """
 
-from .monomials import monomial_mul, monomial_lcm, monomial_divides, term_div
-from .orderings import lex
-from .polyerrors import DomainError
-from .polyconfig import query
 from ..core import Dummy
+from .monomials import monomial_divides, monomial_lcm, monomial_mul, term_div
+from .orderings import lex
+from .polyconfig import query
 
 
 def groebner(seq, ring, method=None):
@@ -84,7 +83,6 @@ def buchberger(f, ring):
     as presented in [5]_.
     """
     order = ring.order
-    domain = ring.domain
 
     monomial_mul = ring.monomial_mul
     monomial_div = ring.monomial_div
@@ -563,7 +561,6 @@ def f5b(F, ring):
     .. [2] [BeckerWeispfenning93]_, pp. 203, 216.
     """
     order = ring.order
-    domain = ring.domain
 
     # reduce polynomials (Becker, Weispfenning, p. 203)
     B = F
@@ -764,7 +761,7 @@ def groebner_lcm(f, g):
 
     f_terms = [ ((1,) + monom, coeff) for monom, coeff in f.terms() ]
     g_terms = [ ((0,) + monom, coeff) for monom, coeff in g.terms() ] \
-            + [ ((1,) + monom, -coeff) for monom, coeff in g.terms() ]
+        + [ ((1,) + monom, -coeff) for monom, coeff in g.terms() ]
 
     t = Dummy("t")
     t_ring = ring.clone(symbols=(t,) + ring.symbols, order=lex)

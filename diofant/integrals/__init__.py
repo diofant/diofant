@@ -11,8 +11,8 @@ log(x)
 -cos(x)
 """
 
-from .integrals import integrate, Integral, line_integrate
-from .transforms import (mellin_transform, inverse_mellin_transform,
+from .integrals import integrate, Integral, line_integrate  # noqa: F401
+from .transforms import (mellin_transform, inverse_mellin_transform,  # noqa: F401
                          MellinTransform, InverseMellinTransform,
                          laplace_transform, inverse_laplace_transform,
                          LaplaceTransform, InverseLaplaceTransform,
