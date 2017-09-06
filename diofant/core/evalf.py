@@ -42,7 +42,7 @@ INF = float(mpmath_inf)
 MINUS_INF = float(-mpmath_inf)
 
 # ~= 100 digits. Real men set this to INF.
-DEFAULT_MAXPREC = 333
+DEFAULT_MAXPREC = int(110*LG10)  # keep in sync with maxn kwarg of evalf
 
 
 class PrecisionExhausted(ArithmeticError):
@@ -383,7 +383,7 @@ def evalf_add(v, prec, options):
         im, _, im_acc, _ = evalf(c, prec, options)
         return re, im, re_acc, im_acc
 
-    oldmaxprec = options.get('maxprec', DEFAULT_MAXPREC)
+    oldmaxprec = options['maxprec']
 
     i = 0
     target_prec = prec
@@ -685,7 +685,7 @@ def evalf_trig(v, prec, options):
         if accuracy < prec:
             debug("SIN/COS", accuracy, "wanted", prec, "gap", gap)
             debug(to_str(y, 10))
-            if xprec > options.get('maxprec', DEFAULT_MAXPREC):
+            if xprec > options['maxprec']:
                 return y, None, accuracy, None
             xprec += gap
             re, im, re_acc, im_acc = evalf(arg, xprec, options)
@@ -819,7 +819,7 @@ def do_integral(expr, prec, options):
             if not diff.free_symbols:
                 xlow, xhigh = 0, diff
 
-    oldmaxprec = options.get('maxprec', DEFAULT_MAXPREC)
+    oldmaxprec = options['maxprec']
     options['maxprec'] = min(oldmaxprec, 2*prec)
 
     with workprec(prec + 5):
@@ -840,7 +840,7 @@ def do_integral(expr, prec, options):
         max_imag_term = [MINUS_INF]
 
         def f(t):
-            re, im, re_acc, im_acc = evalf(func, mp.prec, {'subs': {x: t}})
+            re, im, re_acc, im_acc = evalf(func, mp.prec, {'subs': {x: t}, 'maxprec': DEFAULT_MAXPREC})
 
             have_part[0] = re or have_part[0]
             have_part[1] = im or have_part[1]
@@ -1227,7 +1227,7 @@ def evalf(x, prec, options):
 class EvalfMixin:
     """Mixin class adding evalf capability."""
 
-    def evalf(self, n=15, subs=None, maxn=100, chop=False, strict=False, quad=None):
+    def evalf(self, n=15, subs=None, maxn=110, chop=False, strict=False, quad=None):
         """
         Evaluate the given formula to an accuracy of n digits.
         Optional keyword arguments:
@@ -1239,7 +1239,7 @@ class EvalfMixin:
 
             maxn=<integer>
                 Allow a maximum temporary working precision of maxn digits
-                (default=100)
+                (default=110)
 
             chop=<bool>
                 Replace tiny real or imaginary parts in subresults
@@ -1316,7 +1316,7 @@ class EvalfMixin:
         if hasattr(self, '_as_mpf_val'):
             return make_mpf(self._as_mpf_val(prec))
         try:
-            re, im, _, _ = evalf(self, prec, {})
+            re, im, _, _ = evalf(self, prec, {'maxprec': DEFAULT_MAXPREC})
             if im:
                 if not re:
                     re = fzero

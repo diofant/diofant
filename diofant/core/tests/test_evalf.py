@@ -395,7 +395,7 @@ def test_sympyissue_4956_5204():
           (29*18**Rational(1, 3) +
            9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
            87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
-    assert NS(v, 1) == '0.e-118 - 0.e-118*I'
+    assert NS(v, 1) == '0.e-198 - 0.e-198*I'
 
     # issue sympy/sympy#5204
     x0, x1, x2, x3, x4, x5, x6, x7, x8, x9 = symbols('x:10')
