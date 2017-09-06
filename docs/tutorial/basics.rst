@@ -73,7 +73,7 @@ removed by setting the ``chop`` flag.
 
     >>> one = cos(1)**2 + sin(1)**2
     >>> (one - 1).evalf()
-    -0.e-124
+    -0.e-146
     >>> (one - 1).evalf(chop=True)
     0
 

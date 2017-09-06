@@ -492,7 +492,7 @@ def test_Float():
     assert str(pi.evalf(1 + 64)) == ('3.141592653589793238462643383279'
                                      '5028841971693993751058209749445923')
     assert str(pi.round(-1)) == '0.'
-    assert str((pi**400 - (pi**400).round(1)).n(2)) == '-0.e+88'
+    assert str((pi**400 - (pi**400).round(1)).n(2)) == '-0.e+9'
 
 
 def test_Relational():
