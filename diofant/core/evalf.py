@@ -1276,7 +1276,10 @@ class EvalfMixin:
             # Fall back to the ordinary evalf
             v = self._eval_evalf(prec)
             if v is None:
-                return self
+                if options['strict']:
+                    raise PrecisionExhausted
+                else:
+                    return self
             try:
                 # If the result is numerical, normalize it
                 result = evalf(v, prec, options)
