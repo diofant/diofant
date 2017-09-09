@@ -2944,6 +2944,33 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """Efficiently extract the coefficient of a summation."""
         return S.Zero, self
 
+    @property
+    def canonical_variables(self):
+        """Return a dictionary mapping any variable defined in
+        ``self.variables`` as underscore-suffixed numbers
+        corresponding to their position in ``self.variables``. Enough
+        underscores are added to ensure that there will be no clash with
+        existing free symbols.
+
+        Examples
+        ========
+
+        >>> from diofant import Lambda
+        >>> from diofant.abc import x
+        >>> Lambda(x, 2*x).canonical_variables
+        {x: 0_}
+        """
+        from . import Symbol
+        try:
+            V = self.variables
+        except AttributeError:
+            return {}
+        u = "_"
+        while any(s.name.endswith(u) for s in V):
+            u += "_"
+        name = '%%i%s' % u
+        return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
+
     ###################################################################################
     # ################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ################## #
     ###################################################################################

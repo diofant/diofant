@@ -14,24 +14,6 @@ class Basic(object):
     Base class for all objects in Diofant.
 
     Always use ``args`` property, when accessing parameters of some instance.
-
-    Examples
-    ========
-
-    >>> from diofant import cot
-    >>> from diofant.abc import x, y
-
-    >>> cot(x).args
-    (x,)
-
-    >>> cot(x).args[0]
-    x
-
-    >>> (x*y).args
-    (x, y)
-
-    >>> (x*y).args[1]
-    y
     """
 
     # To be overridden with True in the appropriate subclasses
@@ -241,23 +223,24 @@ class Basic(object):
 
         >>> from diofant import I, pi, sin
         >>> from diofant.abc import x, y
-        >>> (1 + x + 2*sin(y + I*pi)).atoms()
+        >>> e = 1 + x + 2*sin(y + I*pi)
+        >>> e.atoms()
         {1, 2, I, pi, x, y}
 
         If one or more types are given, the results will contain only
         those types of atoms.
 
         >>> from diofant import Number, NumberSymbol, Symbol
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Symbol)
+        >>> e.atoms(Symbol)
         {x, y}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number)
+        >>> e.atoms(Number)
         {1, 2}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol)
+        >>> e.atoms(Number, NumberSymbol)
         {1, 2, pi}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol, I)
+        >>> e.atoms(Number, NumberSymbol, I)
         {1, 2, I, pi}
 
         Note that I (imaginary unit) and zoo (complex infinity) are special
@@ -265,46 +248,43 @@ class Basic(object):
 
         The type can be given implicitly, too:
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(x)
+        >>> e.atoms(x)
         {x, y}
 
         Be careful to check your assumptions when using the implicit option
-        since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is ``One``, a special type
-        of diofant atom, while ``type(Integer(2))`` is type ``Integer`` and will find all
-        integers in an expression:
+        since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is
+        ``One``, a special type of diofant atom, while ``type(Integer(2))``
+        is type ``Integer`` and will find all integers in an expression:
 
         >>> from diofant import S, Integer
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(1))
+        >>> e.atoms(Integer(1))
         {1}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(2))
+        >>> e.atoms(Integer(2))
         {1, 2}
 
         Finally, arguments to atoms() can select more than atomic atoms: any
-        diofant type (loaded in core/__init__.py) can be listed as an argument
-        and those types of "atoms" as found in scanning the arguments of the
-        expression recursively:
+        diofant type can be listed as an argument and those types of "atoms"
+        as found in scanning the arguments of the expression recursively:
 
         >>> from diofant import Function, Mul
         >>> from diofant.core.function import AppliedUndef
-        >>> f = Function('f')
-        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(Function)
-        {f(x), sin(y + I*pi)}
-        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef)
-        {f(x)}
 
         >>> (1 + x + 2*sin(y + I*pi)).atoms(Mul)
         {I*pi, 2*sin(y + I*pi)}
+
+        >>> f = Function('f')
+        >>> e = 1 + f(x) + 2*sin(y + I*pi)
+        >>> e.atoms(Function)
+        {f(x), sin(y + I*pi)}
+        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef)
+        {f(x)}
         """
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
             types = (Atom,)
-        result = set()
-        for expr in preorder_traversal(self):
-            if isinstance(expr, types):
-                result.add(expr)
-        return result
+        return set().union(*[set(self.find(t).keys()) for t in types])
 
     @property
     def free_symbols(self):
@@ -321,33 +301,6 @@ class Basic(object):
         free_symbols method.
         """
         return set().union(*[a.free_symbols for a in self.args])
-
-    @property
-    def canonical_variables(self):
-        """Return a dictionary mapping any variable defined in
-        ``self.variables`` as underscore-suffixed numbers
-        corresponding to their position in ``self.variables``. Enough
-        underscores are added to ensure that there will be no clash with
-        existing free symbols.
-
-        Examples
-        ========
-
-        >>> from diofant import Lambda
-        >>> from diofant.abc import x
-        >>> Lambda(x, 2*x).canonical_variables
-        {x: 0_}
-        """
-        from . import Symbol
-        try:
-            V = self.variables
-        except AttributeError:
-            return {}
-        u = "_"
-        while any(s.name.endswith(u) for s in V):
-            u += "_"
-        name = '%%i%s' % u
-        return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
 
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
@@ -378,7 +331,7 @@ class Basic(object):
 
         The following should hold for all objects::
 
-            >> x == x.func(*x.args)
+            x == x.func(*x.args)
 
         Examples
         ========
@@ -393,7 +346,6 @@ class Basic(object):
         2*x
         >>> a == a.func(*a.args)
         True
-
         """
         return self.__class__
 
@@ -418,13 +370,6 @@ class Basic(object):
 
         >>> (x*y).args[1]
         y
-
-        Notes
-        =====
-
-        Only use _args in __new__ when creating a new function.
-        Don't override .args() from Basic (so that it's easy to
-        change the interface in the future if needed).
         """
         return self._args
 
@@ -815,44 +760,49 @@ class Basic(object):
 
     @cacheit
     def has(self, *patterns):
-        """Test whether any subexpression matches any of the patterns.
+        r"""Test if any subexpression matches any of the patterns.
+
+        Parameters
+        ==========
+
+        \*patterns : tuple of Expr
+            List of expressions to search for match.
+
+        Returns
+        =======
+
+        bool
+            False if there is no match or patterns list is
+            empty, else True.
 
         Examples
         ========
 
         >>> from diofant import sin
         >>> from diofant.abc import x, y, z
-        >>> (x**2 + sin(x*y)).has(z)
+        >>> e = x**2 + sin(x*y)
+        >>> e.has(z)
         False
-        >>> (x**2 + sin(x*y)).has(x, y, z)
+        >>> e.has(x, y, z)
         True
-        >>> x.has(x)
-        True
-
-        Note that ``expr.has(*patterns)`` is exactly equivalent to
-        ``any(expr.has(p) for p in patterns)``. In particular, ``False`` is
-        returned when the list of patterns is empty.
-
         >>> x.has()
         False
         """
-        return any(self._has(pattern) for pattern in patterns)
-
-    def _has(self, pattern):
-        """Helper for .has()"""
         from .function import UndefinedFunction, Function
 
-        pattern = sympify(pattern)
-
-        if isinstance(pattern, UndefinedFunction):
-            return any(pattern in (f, f.func)
-                       for f in self.atoms(Function, UndefinedFunction))
-        elif isinstance(pattern, type):
-            return any(isinstance(arg, pattern)
-                       for arg in preorder_traversal(self))
+        if len(patterns) != 1:
+            return any(self.has(pattern) for pattern in patterns)
         else:
-            match = pattern._has_matcher()
-            return any(match(arg) for arg in preorder_traversal(self))
+            pattern = sympify(patterns[0])
+            if isinstance(pattern, UndefinedFunction):
+                return any(pattern in (f, f.func)
+                           for f in self.atoms(Function, UndefinedFunction))
+            elif isinstance(pattern, type):
+                return any(isinstance(arg, pattern)
+                           for arg in preorder_traversal(self))
+            else:
+                match = pattern._has_matcher()
+                return any(match(arg) for arg in preorder_traversal(self))
 
     def _has_matcher(self):
         """Helper for .has()"""
@@ -1157,10 +1107,20 @@ class Basic(object):
 
         Wild symbols match all.
 
-        Return ``None`` when expression (self) does not match
-        with pattern. Otherwise return a dictionary such that::
+        Parameters
+        ==========
 
-            pattern.xreplace(self.match(pattern)) == self
+        pattern : Expr
+            An expression that may contain Wild symbols.
+
+        Returns
+        =======
+
+        dict or None
+            If pattern match self, return a dictionary of
+            replacement rules, such that::
+
+                pattern.xreplace(self.match(pattern)) == self
 
         Examples
         ========
@@ -1169,17 +1129,19 @@ class Basic(object):
         >>> from diofant.abc import x, y
         >>> p = Wild("p")
         >>> q = Wild("q")
-        >>> r = Wild("r")
-        >>> e = (x+y)**(x+y)
+        >>> e = (x + y)**(x + y)
         >>> e.match(p**p)
         {p_: x + y}
         >>> e.match(p**q)
         {p_: x + y, q_: x + y}
-        >>> e = (2*x)**2
-        >>> e.match(p*q**r)
-        {p_: 4, q_: x, r_: 2}
-        >>> (p*q**r).xreplace(e.match(p*q**r))
-        4*x**2
+        >>> (p**q).xreplace(_)
+        (x + y)**(x + y)
+
+        See Also
+        ========
+
+        xreplace
+        diofant.core.symbol.Wild
         """
         from ..simplify import signsimp
         pattern = sympify(pattern)

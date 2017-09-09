@@ -162,7 +162,7 @@ therefore capped, by default to around 100 digits. If we try with the 1000'th
 Fibonacci number, the following happens:
 
     >>> N(fibonacci(1000) - (GoldenRatio)**1000/sqrt(5))
-    0.e+85
+    -0.e+63
 
 
 The lack of digits in the returned number indicates that ``N`` failed to achieve
@@ -195,7 +195,7 @@ does not know this:
 
     >>> f = fibonacci(100) - (GoldenRatio**100 - (GoldenRatio-1)**100)/sqrt(5)
     >>> N(f)
-    0.e-104
+    0.e-126
     >>> N(f, maxn=1000)
     0.e-1336
 
