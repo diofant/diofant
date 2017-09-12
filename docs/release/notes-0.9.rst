@@ -162,6 +162,7 @@ Issues closed
 * :sympyissue:`13081` Some comparisons between rational and irrational numbers are incorrect
 * :sympyissue:`13078` Return NotImplemented, not False, upon rich comparison with unknown type
 * :sympyissue:`13098` sympy.floor() sometimes returns the wrong answer
+* :issue:`514` (-x - 1).evalf(subs={x: oo}) returns Float('inf')
 
 .. last pr: #494
 

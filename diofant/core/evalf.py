@@ -425,7 +425,7 @@ def evalf_mul(v, prec, options):
     args = list(v.args)
 
     # see if any argument is NaN or oo and thus warrants a special return
-    special = []
+    special, other = [], []
     from .numbers import Float
     for arg in args:
         arg = evalf(arg, prec, options)
@@ -434,10 +434,13 @@ def evalf_mul(v, prec, options):
         arg = Float._new(arg[0], 1)
         if arg is S.NaN or arg.is_infinite:
             special.append(arg)
+        else:
+            other.append(arg)
     if special:
         from .mul import Mul
+        other = Mul(*other)
         special = Mul(*special)
-        return evalf(special, prec + 4, {})
+        return evalf(special*other, prec + 4, {})
 
     # With guard digits, multiplication in the real case does not destroy
     # accuracy. This is also true in the complex case when considering the
