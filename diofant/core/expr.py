@@ -526,7 +526,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if a is S.NaN:
                     # evaluation may succeed when substitution fails
                     a = expr._random(None, 0, 0, 0, 0)
-                    if a is None:
+                    if a is None or a is S.NaN:
+                        # try random real
                         a = expr._random(None, -1, 0, 1, 0)
             except ZeroDivisionError:
                 a = None

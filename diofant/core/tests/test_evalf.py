@@ -521,3 +521,8 @@ def test_AssocOp_Function():
     # should raise a value error because the first arg computes
     # a non-comparable (prec=1) imaginary part
     pytest.raises(ValueError, lambda: e._eval_evalf(2))
+
+
+def test_diofantissue_514():
+    assert (-x).evalf(subs={x: oo}) == Float('-inf')
+    assert (-x - 1).evalf(subs={x: oo}) == Float('-inf')
