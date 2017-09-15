@@ -1172,3 +1172,8 @@ def test_sympyissue_12221():
 
 def test_sympyissue_12582():
     assert integrate(abs(x**2 - 3*x), (x, -15, 15)) == 2259
+
+
+def test_sympyissue_13312():
+    assert integrate(exp(-a*t), (t, b, oo)) == Piecewise((-b + oo, Eq(a, 0)),
+                                                         (-exp(-oo*sign(a))/a + exp(-a*b)/a, True))

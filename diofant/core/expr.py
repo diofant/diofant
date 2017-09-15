@@ -1198,13 +1198,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return Add(*co)
 
         if n == 0:
-            if x.is_Add and self.is_Add:
-                c = self.coeff(x, right=right)
-                if not c:
-                    return S.Zero
-                if not right:
-                    return self - Add(*[a*x for a in Add.make_args(c)])
-                return self - Add(*[x*a for a in Add.make_args(c)])
             return self.as_independent(x, as_Add=True)[0]
 
         # continue with the full method, looking for this power of x:

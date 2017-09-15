@@ -357,8 +357,9 @@ def test_order_oo():
 
 
 def test_sympyissue_5436():
-    limit(exp(x*y), x, oo)
-    limit(exp(-x*y), x, oo)
+    # also issue sympy/sympy#13312 (but see diofant/diofant#425!)
+    assert limit(exp(x*y), x, oo) == exp(oo*sign(y))
+    assert limit(exp(-x*y), x, oo) == exp(-oo*sign(y))
 
 
 def test_Limit_dir():

@@ -138,7 +138,7 @@ def test_mul():
 def test_mul_noncommutative():
     A, B = symbols('A B', commutative=False)
     u, v = symbols('u v', cls=Wild)
-    w = Wild('w', commutative=False)
+    w, z = symbols('u v', cls=Wild, commutative=False)
 
     assert (u*v).matches(x) in ({v: x, u: 1}, {u: x, v: 1})
     assert (u*v).matches(x*y) in ({v: y, u: x}, {u: y, v: x})
@@ -166,6 +166,9 @@ def test_mul_noncommutative():
     assert (v*w).matches(-x*y*A) == {w: A, v: -x*y}
     assert (v*w).matches(-x*A*B) == {w: A*B, v: -x}
     assert (v*w).matches(-x*y*A*B) == {w: A*B, v: -x*y}
+
+    assert (u*v*w).matches(x*y*A) == {u: x, v: y, w: A}
+    assert (w*z).matches(x*A) is None
 
 
 def test_complex():
