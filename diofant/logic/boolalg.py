@@ -1398,10 +1398,10 @@ def _rem_redundancy(l1, terms):
             if _compare_term(x, y):
                 break
         else:
-            for z in l1:
+            for z in l1:  # pragma: no branch
                 if _compare_term(x, z):
-                    if z not in essential:
-                        essential.append(z)
+                    assert z not in essential
+                    essential.append(z)
                     break
 
     return essential
