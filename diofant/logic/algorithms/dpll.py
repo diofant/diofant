@@ -76,8 +76,6 @@ def dpll(clauses, symbols, model):
             unknown_clauses.append(c)
     if not unknown_clauses:
         return model
-    if not clauses:
-        return model
     P = symbols.pop()
     model_copy = model.copy()
     model.update({P: True})

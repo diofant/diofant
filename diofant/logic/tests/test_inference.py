@@ -3,9 +3,9 @@
 import pytest
 
 from diofant import numbered_symbols, pi
-from diofant.abc import A, B, C, x, y
-from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
-                                           find_pure_symbol,
+from diofant.abc import A, B, C, D, x, y
+from diofant.logic.algorithms.dpll import (dpll, dpll_int_repr,
+                                           dpll_satisfiable, find_pure_symbol,
                                            find_pure_symbol_int_repr,
                                            find_unit_clause,
                                            find_unit_clause_int_repr,
@@ -92,11 +92,26 @@ def test_unit_propagate_int_repr():
 
 
 def test_dpll():
-    """This is also tested in test_dimacs"""
+    # This is also tested in test_dimacs
     assert dpll([A | B], [A, B], {A: True, B: True}) == {A: True, B: True}
+
+    assert dpll([A | B | C, B | ~C, A | ~B], [A, B, C], {A: True}) is False
+    assert dpll([A | B | D, B | ~D | C | ~A, A | ~B | ~C | D],
+                [A, B, C, D], {A: False}) == {A: False, D: True}
+    assert dpll([A | B | D, B | ~D | C | ~C, A | ~B],
+                [A, B, C, D], {A: True}) == {A: True, B: False,
+                                             C: True, D: True}
+    assert dpll([A | ~B, ~B | ~D, D | A], [A, B, C, D],
+                {C: True}) == {A: True, B: False, C: True}
+
+
+def test_dpll_int_repr():
+    assert dpll_int_repr([{1, 2, 4}, {-4, -1, 2, 3}, {-3, -2, 1, 4}],
+                         [1, 2, 3, 4], {1: False}) == {1: False, 4: True}
 
 
 def test_dpll_satisfiable():
+    assert dpll_satisfiable(false) is False
     assert dpll_satisfiable( A & ~A ) is False
     assert dpll_satisfiable( A & ~B ) == {A: True, B: False}
     assert dpll_satisfiable(
