@@ -406,10 +406,8 @@ class Mul(AssocOp):
         # x  -> 1       x  -> x
         for b, e in c_powers:
             if e is S.One:
-                if b.is_Number:
-                    coeff *= b
-                else:
-                    c_part.append(b)
+                assert not b.is_Number
+                c_part.append(b)
             elif e is not S.Zero:
                 c_part.append(Pow(b, e))
 
@@ -795,17 +793,14 @@ class Mul(AssocOp):
             return expr
         else:
             plain = self.func(*plain)
-            if sums:
-                terms = self.func._expandsums(sums)
-                args = []
-                for term in terms:
-                    t = self.func(plain, term)
-                    if t.is_Mul and any(a.is_Add for a in t.args):
-                        t = t._eval_expand_mul()
-                    args.append(t)
-                return Add(*args)
-            else:
-                return plain
+            terms = self.func._expandsums(sums)
+            args = []
+            for term in terms:
+                t = self.func(plain, term)
+                if t.is_Mul and any(a.is_Add for a in t.args):
+                    t = t._eval_expand_mul()
+                args.append(t)
+            return Add(*args)
 
     @cacheit
     def _eval_derivative(self, s):
@@ -852,10 +847,10 @@ class Mul(AssocOp):
                 repl_dict = a.matches(self.func(*c2), repl_dict)
         if repl_dict:
             a = self.func(*nc1)
-            if isinstance(a, self.func):
-                repl_dict = a._matches(self.func(*nc2), repl_dict)
-            else:
+            if not isinstance(a, self.func):
                 repl_dict = a.matches(self.func(*nc2), repl_dict)
+            else:  # pragma: no cover
+                raise NotImplementedError
         return repl_dict or None
 
     @staticmethod
