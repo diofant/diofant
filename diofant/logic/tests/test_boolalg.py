@@ -232,9 +232,12 @@ def test_simplification():
     assert simplify_logic(e) == And(A, x*(x - 1))
     assert simplify_logic(e, deep=False) == e
     pytest.raises(ValueError, lambda: simplify_logic(A & (B | C), form='spam'))
+
     e = x & y ^ z | (z ^ x)
-    assert simplify_logic(e) in [(x & ~z) | (z & ~x) | (z & ~y),
-                                 (x & ~y) | (x & ~z) | (z & ~x)]
+    res = [(x & ~z) | (z & ~x) | (z & ~y), (x & ~y) | (x & ~z) | (z & ~x)]
+    assert simplify_logic(e) in res
+    assert SOPform([z, y, x], [[0, 0, 1], [0, 1, 1],
+                               [1, 0, 0], [1, 0, 1], [1, 1, 0]]) == res[1]
 
     # check input
     ans = SOPform([x, y], [[1, 0]])

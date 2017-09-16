@@ -907,6 +907,9 @@ def test_atan2():
     r1 = Symbol('r1', real=True, nonzero=True)
     r2 = Symbol('r2', real=True, nonzero=True)
     assert atan2(r1, r2).is_real
+
+    assert atan2(0, r1) == pi*(-Heaviside(r1) + 1)
+
     r1 = Symbol('r1', real=True)
     r2 = Symbol('r2', real=True)
     assert atan2(r1, r2).is_real is None
