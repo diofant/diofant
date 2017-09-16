@@ -197,7 +197,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
     Notes
     =====
 
-    See note in :py:class`~diofant.logic.boolalg.BooleanTrue`.
+    See note in :py:class:`~diofant.logic.boolalg.BooleanTrue`.
 
     Examples
     ========

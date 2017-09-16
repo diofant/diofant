@@ -14,7 +14,7 @@ Forming logical expressions
 
 You can build Boolean expressions with the standard python operators ``&``
 (:class:`~diofant.logic.boolalg.And`), ``|`` (:class:`~diofant.logic.boolalg.Or`),
-``~`` (:class:`diofant.logic.boolalg.Not`)::
+``~`` (:class:`~diofant.logic.boolalg.Not`)::
 
     >>> from diofant import *
     >>> x, y = symbols('x,y')
