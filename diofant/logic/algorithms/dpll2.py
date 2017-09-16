@@ -1,12 +1,14 @@
-"""Implementation of DPLL algorithm
+"""Implementation of DPLL algorithm.
 
 Features:
   - Clause learning
   - Watch literal scheme
   - VSIDS heuristic
 
-References:
-  - http://en.wikipedia.org/wiki/DPLL_algorithm
+References
+==========
+
+.. [1] https://en.wikipedia.org/wiki/DPLL_algorithm
 """
 
 from collections import defaultdict

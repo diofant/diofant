@@ -3,14 +3,10 @@
 import pytest
 
 from diofant import numbered_symbols, pi
-from diofant.abc import A, B, C, D, x, y
-from diofant.logic.algorithms.dpll import (dpll, dpll_int_repr,
-                                           dpll_satisfiable, find_pure_symbol,
-                                           find_pure_symbol_int_repr,
-                                           find_unit_clause,
-                                           find_unit_clause_int_repr,
-                                           unit_propagate,
-                                           unit_propagate_int_repr)
+from diofant.abc import A, B, C, x, y
+from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
+                                           find_pure_symbol, find_unit_clause,
+                                           unit_propagate)
 from diofant.logic.algorithms.dpll2 import \
     dpll_satisfiable as dpll2_satisfiable
 from diofant.logic.algorithms.dpll2 import SATSolver
@@ -33,81 +29,39 @@ def test_literal():
 
 
 def test_find_pure_symbol():
-    assert find_pure_symbol([A], [A]) == (A, True)
-    assert find_pure_symbol([A, B], [~A | B, ~B | A]) == (None, None)
-    assert find_pure_symbol([A, B, C], [ A | ~B, ~B | ~C, C | A]) == (A, True)
-    assert find_pure_symbol([A, B, C], [~A | B, B | ~C, C | A]) == (B, True)
-    assert find_pure_symbol([A, B, C], [~A | ~B, ~B | ~C, C | A]) == (B, False)
-    assert find_pure_symbol(
-        [A, B, C], [~A | B, ~B | ~C, C | A]) == (None, None)
-
-
-def test_find_pure_symbol_int_repr():
-    assert find_pure_symbol_int_repr([1], [{1}]) == (1, True)
-    assert find_pure_symbol_int_repr([1, 2],
-                                     [{-1, 2}, {-2, 1}]) == (None, None)
-    assert find_pure_symbol_int_repr([1, 2, 3],
-                                     [{1, -2}, {-2, -3}, {3, 1}]) == (1, True)
-    assert find_pure_symbol_int_repr([1, 2, 3],
-                                     [{-1, 2}, {2, -3}, {3, 1}]) == (2, True)
-    assert find_pure_symbol_int_repr([1, 2, 3],
-                                     [{-1, -2}, {-2, -3}, {3, 1}]) == (2, False)
-    assert find_pure_symbol_int_repr([1, 2, 3],
-                                     [{-1, 2}, {-2, -3}, {3, 1}]) == (None, None)
+    assert find_pure_symbol([1], [{1}]) == (1, True)
+    assert find_pure_symbol([1, 2],
+                            [{-1, 2}, {-2, 1}]) == (None, None)
+    assert find_pure_symbol([1, 2, 3],
+                            [{1, -2}, {-2, -3}, {3, 1}]) == (1, True)
+    assert find_pure_symbol([1, 2, 3],
+                            [{-1, 2}, {2, -3}, {3, 1}]) == (2, True)
+    assert find_pure_symbol([1, 2, 3],
+                            [{-1, -2}, {-2, -3}, {3, 1}]) == (2, False)
+    assert find_pure_symbol([1, 2, 3],
+                            [{-1, 2}, {-2, -3}, {3, 1}]) == (None, None)
 
 
 def test_unit_clause():
-    assert find_unit_clause([A], {}) == (A, True)
-    assert find_unit_clause([A, ~A], {}) == (A, True)  # Wrong ??
-    assert find_unit_clause([A | B], {A: True}) == (B, True)
-    assert find_unit_clause([A | B], {B: True}) == (A, True)
-    assert find_unit_clause(
-        [A | B | C, B | ~C, A | ~B], {A: True}) == (B, False)
-    assert find_unit_clause([A | B | C, B | ~C, A | B], {A: True}) == (B, True)
-    assert find_unit_clause([A | B | C, B | ~C, A ], {}) == (A, True)
-
-
-def test_unit_clause_int_repr():
-    assert find_unit_clause_int_repr(map(set, [[1]]), {}) == (1, True)
-    assert find_unit_clause_int_repr(map(set, [[1], [-1]]), {}) == (1, True)
-    assert find_unit_clause_int_repr([{1, 2}], {1: True}) == (2, True)
-    assert find_unit_clause_int_repr([{1, 2}], {2: True}) == (1, True)
-    assert find_unit_clause_int_repr(map(set,
-                                         [[1, 2, 3], [2, -3], [1, -2]]), {1: True}) == (2, False)
-    assert find_unit_clause_int_repr(map(set,
-                                         [[1, 2, 3], [3, -3], [1, 2]]), {1: True}) == (2, True)
-
-    assert find_unit_clause([A | B | C, B | ~C, A ], {}) == (A, True)
+    assert find_unit_clause(map(set, [[1]]), {}) == (1, True)
+    assert find_unit_clause(map(set, [[1], [-1]]), {}) == (1, True)
+    assert find_unit_clause([{1, 2}], {1: True}) == (2, True)
+    assert find_unit_clause([{1, 2}], {2: True}) == (1, True)
+    assert find_unit_clause(map(set, [[1, 2, 3], [2, -3], [1, -2]]),
+                            {1: True}) == (2, False)
+    assert find_unit_clause(map(set, [[1, 2, 3], [3, -3], [1, 2]]),
+                            {1: True}) == (2, True)
 
 
 def test_unit_propagate():
-    assert unit_propagate([A | B], A) == []
-    assert unit_propagate([A | B, ~A | C, ~C | B, A], A) == [C, ~C | B, A]
-
-
-def test_unit_propagate_int_repr():
-    assert unit_propagate_int_repr([{1, 2}], 1) == []
-    assert unit_propagate_int_repr(map(set,
-                                       [[1, 2], [-1, 3], [-3, 2], [1]]), 1) == [{3}, {-3, 2}]
+    assert unit_propagate([{1, 2}], 1) == []
+    assert unit_propagate(map(set, [[1, 2], [-1, 3],
+                                    [-3, 2], [1]]), 1) == [{3}, {-3, 2}]
 
 
 def test_dpll():
-    # This is also tested in test_dimacs
-    assert dpll([A | B], [A, B], {A: True, B: True}) == {A: True, B: True}
-
-    assert dpll([A | B | C, B | ~C, A | ~B], [A, B, C], {A: True}) is False
-    assert dpll([A | B | D, B | ~D | C | ~A, A | ~B | ~C | D],
-                [A, B, C, D], {A: False}) == {A: False, D: True}
-    assert dpll([A | B | D, B | ~D | C | ~C, A | ~B],
-                [A, B, C, D], {A: True}) == {A: True, B: False,
-                                             C: True, D: True}
-    assert dpll([A | ~B, ~B | ~D, D | A], [A, B, C, D],
-                {C: True}) == {A: True, B: False, C: True}
-
-
-def test_dpll_int_repr():
-    assert dpll_int_repr([{1, 2, 4}, {-4, -1, 2, 3}, {-3, -2, 1, 4}],
-                         [1, 2, 3, 4], {1: False}) == {1: False, 4: True}
+    assert dpll([{1, 2, 4}, {-4, -1, 2, 3}, {-3, -2, 1, 4}],
+                [1, 2, 3, 4], {1: False}) == {1: False, 4: True}
 
 
 def test_dpll_satisfiable():
