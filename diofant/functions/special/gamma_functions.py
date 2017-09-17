@@ -664,7 +664,7 @@ class polygamma(Function):
             elif z in (oo, -oo):
                 return oo
             else:
-                t = z.extract_multiplicatively(S.ImaginaryUnit)
+                t = z.extract_multiplicatively(I)
                 if t in (oo, -oo):
                     return oo
 
@@ -868,7 +868,7 @@ class loggamma(Function):
             if n.is_positive:
                 return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
             elif n.is_negative:
-                return loggamma(p / q) - n*log(q) + pi*S.ImaginaryUnit*n - Sum(log(k*q - p), (k, 1, -n))
+                return loggamma(p / q) - n*log(q) + pi*I*n - Sum(log(k*q - p), (k, 1, -n))
 
         return self
 

@@ -2,7 +2,7 @@ from ...core import (Add, Function, Integer, Rational, S, Symbol, cacheit,
                      expand_mul, sympify)
 from ...core.function import ArgumentIndexError
 from ...core.logic import fuzzy_and, fuzzy_not
-from ...core.numbers import igcdex, nan, oo, pi, zoo
+from ...core.numbers import I, igcdex, nan, oo, pi, zoo
 from ...utilities import numbered_symbols
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -22,7 +22,7 @@ class TrigonometricFunction(Function):
 
     def _eval_expand_complex(self, deep=True, **hints):
         re_part, im_part = self.as_real_imag(deep=deep, **hints)
-        return re_part + im_part*S.ImaginaryUnit
+        return re_part + im_part*I
 
     def _as_real_imag(self, deep=True, **hints):
         if self.args[0].is_extended_real:
@@ -215,9 +215,9 @@ class sin(TrigonometricFunction):
         if arg.could_extract_minus_sign():
             return -cls(-arg)
 
-        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+        i_coeff = arg.as_coefficient(I)
         if i_coeff is not None:
-            return S.ImaginaryUnit * sinh(i_coeff)
+            return I * sinh(i_coeff)
 
         pi_coeff = _pi_coeff(arg)
         if pi_coeff is not None:
@@ -289,12 +289,10 @@ class sin(TrigonometricFunction):
                 return (-1)**(n//2) * x**(n)/factorial(n)
 
     def _eval_rewrite_as_exp(self, arg):
-        I = S.ImaginaryUnit
         return (exp(arg*I) - exp(-arg*I)) / (2*I)
 
     def _eval_rewrite_as_Pow(self, arg):
         if isinstance(arg, log):
-            I = S.ImaginaryUnit
             x = arg.args[0]
             return I*x**-I / 2 - I*x**I / 2
 
@@ -471,7 +469,7 @@ class cos(TrigonometricFunction):
         if arg.could_extract_minus_sign():
             return cls(-arg)
 
-        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+        i_coeff = arg.as_coefficient(I)
         if i_coeff is not None:
             return cosh(i_coeff)
 
@@ -585,12 +583,10 @@ class cos(TrigonometricFunction):
                 return (-1)**(n//2)*x**(n)/factorial(n)
 
     def _eval_rewrite_as_exp(self, arg):
-        I = S.ImaginaryUnit
         return (exp(arg*I) + exp(-arg*I)) / 2
 
     def _eval_rewrite_as_Pow(self, arg):
         if isinstance(arg, log):
-            I = S.ImaginaryUnit
             x = arg.args[0]
             return x**I/2 + x**-I/2
 
@@ -834,9 +830,9 @@ class tan(TrigonometricFunction):
         if arg.could_extract_minus_sign():
             return -cls(-arg)
 
-        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+        i_coeff = arg.as_coefficient(I)
         if i_coeff is not None:
-            return S.ImaginaryUnit * tanh(i_coeff)
+            return I * tanh(i_coeff)
 
         pi_coeff = _pi_coeff(arg, 2)
         if pi_coeff is not None:
@@ -935,7 +931,6 @@ class tan(TrigonometricFunction):
 
     def _eval_rewrite_as_Pow(self, arg):
         if isinstance(arg, log):
-            I = S.ImaginaryUnit
             x = arg.args[0]
             return I*(x**-I - x**I)/(x**-I + x**I)
 
@@ -973,14 +968,12 @@ class tan(TrigonometricFunction):
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)
             if coeff.is_Integer and coeff > 1:
-                I = S.ImaginaryUnit
                 z = Symbol('dummy', extended_real=True)
                 P = ((1 + I*z)**coeff).expand()
                 return (im(P)/re(P)).subs([(z, tan(terms))])
         return tan(arg)
 
     def _eval_rewrite_as_exp(self, arg):
-        I = S.ImaginaryUnit
         neg_exp, pos_exp = exp(-arg*I), exp(arg*I)
         return I*(neg_exp - pos_exp)/(neg_exp + pos_exp)
 
@@ -1067,13 +1060,13 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
             elif cls._is_odd:  # pragma: no branch XXX: make _is_odd mandatory?
                 return -cls(-arg)
 
-        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+        i_coeff = arg.as_coefficient(I)
         if i_coeff is not None:
             c, n = S.One, sech
             if cls._reciprocal_of == sin:
-                c, n = -S.ImaginaryUnit, csch
+                c, n = -I, csch
             elif cls._reciprocal_of == tan:
-                c, n = -S.ImaginaryUnit, coth
+                c, n = -I, coth
             return c*n(i_coeff)
 
         pi_coeff = _pi_coeff(arg)
@@ -1381,7 +1374,6 @@ class cot(ReciprocalTrigonometricFunction):
         return cos(arg)/sin(arg)
 
     def _eval_rewrite_as_exp(self, arg):
-        I = S.ImaginaryUnit
         neg_exp, pos_exp = exp(-arg*I), exp(arg*I)
         return I*(pos_exp + neg_exp)/(pos_exp - neg_exp)
 
@@ -1418,7 +1410,6 @@ class cot(ReciprocalTrigonometricFunction):
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)
             if coeff.is_Integer and coeff > 1:
-                I = S.ImaginaryUnit
                 z = Symbol('dummy', real=True)
                 P = ((z + I)**coeff).expand()
                 return (re(P)/im(P)).subs([(z, cot(terms))])
@@ -1508,9 +1499,9 @@ class asin(InverseTrigonometricFunction):
     def eval(cls, arg):
         if arg.is_Number:
             if arg is oo:
-                return -oo * S.ImaginaryUnit
+                return -oo * I
             elif arg is -oo:
-                return oo * S.ImaginaryUnit
+                return oo * I
             elif arg is S.Zero:
                 return S.Zero
             elif arg is S.One:
@@ -1546,9 +1537,9 @@ class asin(InverseTrigonometricFunction):
             if arg in cst_table:
                 return pi / cst_table[arg]
 
-        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+        i_coeff = arg.as_coefficient(I)
         if i_coeff is not None:
-            return S.ImaginaryUnit * asinh(i_coeff)
+            return I * asinh(i_coeff)
 
     @staticmethod
     @cacheit
@@ -1582,7 +1573,7 @@ class asin(InverseTrigonometricFunction):
         return 2*atan(x/(1 + sqrt(1 - x**2)))
 
     def _eval_rewrite_as_log(self, x):
-        return -S.ImaginaryUnit*log(S.ImaginaryUnit*x + sqrt(1 - x**2))
+        return -I*log(I*x + sqrt(1 - x**2))
 
     def _eval_rewrite_as_acot(self, arg):
         return 2*acot((1 + sqrt(1 - arg**2))/arg)
@@ -1684,9 +1675,9 @@ class acos(InverseTrigonometricFunction):
     def eval(cls, arg):
         if arg.is_Number:
             if arg is oo:
-                return oo * S.ImaginaryUnit
+                return oo * I
             elif arg is -oo:
-                return -oo * S.ImaginaryUnit
+                return -oo * I
             elif arg is S.Zero:
                 return pi / 2
             elif arg is S.One:
@@ -1761,8 +1752,8 @@ class acos(InverseTrigonometricFunction):
         return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
 
     def _eval_rewrite_as_log(self, x):
-        return pi/2 + S.ImaginaryUnit * \
-            log(S.ImaginaryUnit * x + sqrt(1 - x**2))
+        return pi/2 + I * \
+            log(I * x + sqrt(1 - x**2))
 
     def _eval_rewrite_as_asin(self, x):
         return pi/2 - asin(x)
@@ -1884,9 +1875,9 @@ class atan(InverseTrigonometricFunction):
             if arg in cst_table:
                 return pi / cst_table[arg]
 
-        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+        i_coeff = arg.as_coefficient(I)
         if i_coeff is not None:
-            return S.ImaginaryUnit * atanh(i_coeff)
+            return I * atanh(i_coeff)
 
     @staticmethod
     @cacheit
@@ -1923,8 +1914,8 @@ class atan(InverseTrigonometricFunction):
         return self.args[0].is_extended_real
 
     def _eval_rewrite_as_log(self, x):
-        return S.ImaginaryUnit/2 * (log(
-            (Integer(1) - S.ImaginaryUnit * x)/(Integer(1) + S.ImaginaryUnit * x)))
+        return I/2 * (log(
+            (Integer(1) - I * x)/(Integer(1) + I * x)))
 
     def _eval_aseries(self, n, args0, x, logx):
         if args0[0] == oo:
@@ -2032,9 +2023,9 @@ class acot(InverseTrigonometricFunction):
             if arg in cst_table:
                 return pi / cst_table[arg]
 
-        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+        i_coeff = arg.as_coefficient(I)
         if i_coeff is not None:
-            return -S.ImaginaryUnit * acoth(i_coeff)
+            return -I * acoth(i_coeff)
 
     @staticmethod
     @cacheit
@@ -2077,8 +2068,8 @@ class acot(InverseTrigonometricFunction):
             return super(acot, self)._eval_aseries(n, args0, x, logx)
 
     def _eval_rewrite_as_log(self, x):
-        return S.ImaginaryUnit/2 * \
-            (log((x - S.ImaginaryUnit)/(x + S.ImaginaryUnit)))
+        return I/2 * \
+            (log((x - I)/(x + I)))
 
     def inverse(self, argindex=1):
         """
@@ -2200,7 +2191,7 @@ class asec(InverseTrigonometricFunction):
             return self.func(arg)
 
     def _eval_rewrite_as_log(self, arg):
-        return pi/2 + S.ImaginaryUnit*log(S.ImaginaryUnit/arg + sqrt(1 - 1/arg**2))
+        return pi/2 + I*log(I/arg + sqrt(1 - 1/arg**2))
 
     def _eval_rewrite_as_asin(self, arg):
         return pi/2 - asin(1/arg)
@@ -2294,7 +2285,7 @@ class acsc(InverseTrigonometricFunction):
             return self.func(arg)
 
     def _eval_rewrite_as_log(self, arg):
-        return -S.ImaginaryUnit*log(S.ImaginaryUnit/arg + sqrt(1 - 1/arg**2))
+        return -I*log(I/arg + sqrt(1 - 1/arg**2))
 
     def _eval_rewrite_as_asin(self, arg):
         return asin(1/arg)
@@ -2450,11 +2441,11 @@ class atan2(InverseTrigonometricFunction):
         if y.is_zero and x.is_extended_real and x.is_nonzero:
             return pi * (S.One - Heaviside(x))
         if x.is_number and y.is_number:
-            return -S.ImaginaryUnit*log(
-                (x + S.ImaginaryUnit*y)/sqrt(x**2 + y**2))
+            return -I*log(
+                (x + I*y)/sqrt(x**2 + y**2))
 
     def _eval_rewrite_as_log(self, y, x):
-        return -S.ImaginaryUnit*log((x + S.ImaginaryUnit*y) / sqrt(x**2 + y**2))
+        return -I*log((x + I*y) / sqrt(x**2 + y**2))
 
     def _eval_rewrite_as_atan(self, y, x):
         return 2*atan(y / (sqrt(x**2 + y**2) + x))
@@ -2462,8 +2453,7 @@ class atan2(InverseTrigonometricFunction):
     def _eval_rewrite_as_arg(self, y, x):
         from .complexes import arg
         if x.is_extended_real and y.is_extended_real:
-            return arg(x + y*S.ImaginaryUnit)
-        I = S.ImaginaryUnit
+            return arg(x + y*I)
         n = x + I*y
         d = x**2 + y**2
         return arg(n/sqrt(d)) - I*log(abs(n)/sqrt(abs(d)))

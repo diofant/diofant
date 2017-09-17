@@ -275,7 +275,7 @@ class Mul(AssocOp):
                 coeff = zoo
                 continue
 
-            elif o is S.ImaginaryUnit:
+            elif o is I:
                 neg1e += S.Half
                 continue
 
@@ -313,7 +313,7 @@ class Mul(AssocOp):
                             num_exp.append((b, e))
                             continue
 
-                    elif b is S.ImaginaryUnit and e.is_Rational:
+                    elif b is I and e.is_Rational:
                         neg1e += e/2
                         continue
 
@@ -504,7 +504,7 @@ class Mul(AssocOp):
                 coeff = -coeff
             # if it's a multiple of 1/2 extract I
             if q == 2:
-                c_part.append(S.ImaginaryUnit)
+                c_part.append(I)
             elif p:
                 # see if there is any positive base this power of
                 # -1 can join
@@ -1031,7 +1031,7 @@ class Mul(AssocOp):
             return real  # doesn't matter what zero is
 
     def _eval_is_imaginary(self):
-        obj = S.ImaginaryUnit*self
+        obj = I*self
         if obj.is_Mul:
             return fuzzy_and([obj._eval_is_extended_real(),
                               obj._eval_is_finite()])
@@ -1068,7 +1068,7 @@ class Mul(AssocOp):
         if self.is_zero:
             return False
         elif self.is_nonzero:
-            return (S.ImaginaryUnit*self).is_hermitian
+            return (I*self).is_hermitian
 
     def _eval_is_irrational(self):
         for t in self.args:
@@ -1586,6 +1586,6 @@ def expand_2arg(e):
     return bottom_up(e, do)
 
 
-from .numbers import Rational, nan, oo, zoo
+from .numbers import I, Rational, nan, oo, zoo
 from .power import Pow
 from .add import Add

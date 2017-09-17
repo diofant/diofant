@@ -930,7 +930,7 @@ class Float(Number):
                 re, im = mlib.mpc_pow(
                     (mpfself, _mpf_zero), (expt, _mpf_zero), prec, rnd)
                 return Float._new(re, prec) + \
-                    Float._new(im, prec)*S.ImaginaryUnit
+                    Float._new(im, prec)*I
 
     def __abs__(self):
         return Float._new(mlib.mpf_abs(self._mpf_), self._prec)
@@ -1277,7 +1277,7 @@ class Rational(Number):
                     return oo
                 if self.p < -self.q:
                     # (-3/2)**oo -> oo + I*oo
-                    return oo + oo*S.ImaginaryUnit
+                    return oo + oo*I
                 return S.Zero
             if isinstance(expt, Float):
                 return self._eval_evalf(expt._prec)**expt
@@ -1661,7 +1661,7 @@ class Integer(Rational):
             if self.p > S.One:
                 return oo
             # cases -1, 0, 1 are done in their respective classes
-            return oo + S.ImaginaryUnit*oo
+            return oo + I*oo
         if expt is -oo:
             return Rational(1, self)**oo
         if isinstance(expt, Float):
@@ -1671,7 +1671,7 @@ class Integer(Rational):
             return
         if expt is S.Half and self.is_negative:
             # we extract I for this special case since everyone is doing so
-            return S.ImaginaryUnit*Pow(-self, expt)
+            return I*Pow(-self, expt)
         if expt.is_negative:
             # invert base and change sign on exponent
             ne = -expt
@@ -2155,11 +2155,11 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
             elif expt in (oo, -oo):
                 return nan
             elif expt is S.Half:
-                return S.ImaginaryUnit
+                return I
             else:
                 assert isinstance(expt, Rational)
                 if expt.q == 2:
-                    return S.ImaginaryUnit**Integer(expt.p)
+                    return I**Integer(expt.p)
                 i, r = divmod(expt.p, expt.q)
                 if i:
                     return self**i*self**Rational(r, expt.q)
@@ -2873,11 +2873,11 @@ class Exp1(NumberSymbol, metaclass=Singleton):
         elif isinstance(arg, log):
             return arg.args[0]
         elif arg.is_Mul:
-            Ioo = S.ImaginaryUnit*oo
+            Ioo = I*oo
             if arg in [Ioo, -Ioo]:
                 return nan
 
-            coeff = arg.coeff(pi*S.ImaginaryUnit)
+            coeff = arg.coeff(pi*I)
             if coeff:
                 if (2*coeff).is_integer:
                     if coeff.is_even:
@@ -2885,9 +2885,9 @@ class Exp1(NumberSymbol, metaclass=Singleton):
                     elif coeff.is_odd:
                         return S.NegativeOne
                     elif (coeff + S.Half).is_even:
-                        return -S.ImaginaryUnit
+                        return -I
                     elif (coeff + S.Half).is_odd:
-                        return S.ImaginaryUnit
+                        return I
 
             # Warning: code in risch.py will be very sensitive to changes
             # in this (see DifferentialExtension).
@@ -2932,12 +2932,10 @@ class Exp1(NumberSymbol, metaclass=Singleton):
 
     def _eval_rewrite_as_sin(self):
         from ..functions import sin
-        I = S.ImaginaryUnit
         return sin(I + pi/2) - I*sin(I)
 
     def _eval_rewrite_as_cos(self):
         from ..functions import cos
-        I = S.ImaginaryUnit
         return cos(I) + I*cos(I + pi/2)
 
 
@@ -3161,8 +3159,7 @@ class Catalan(NumberSymbol, metaclass=Singleton):
 class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     r"""The imaginary unit, `i = \sqrt{-1}`.
 
-    I is a singleton, and can be accessed by ``S.I``, or can be
-    imported as ``I``.
+    I is a singleton, and can be imported as ``I``.
 
     Examples
     ========
@@ -3201,7 +3198,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
         return self
 
     def _eval_conjugate(self):
-        return -S.ImaginaryUnit
+        return -I
 
     def _eval_power(self, expt):
         """
@@ -3221,10 +3218,10 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
                 if expt == 0:
                     return S.One
                 if expt == 1:
-                    return S.ImaginaryUnit
+                    return I
                 if expt == 2:
                     return -S.One
-                return -S.ImaginaryUnit
+                return -I
             return (S.NegativeOne)**(expt*S.Half)
         return
 
@@ -3269,7 +3266,7 @@ converter[mpnumeric] = sympify_mpmath
 
 def sympify_complex(a):
     real, imag = list(map(sympify, (a.real, a.imag)))
-    return real + S.ImaginaryUnit*imag
+    return real + I*imag
 
 
 converter[complex] = sympify_complex

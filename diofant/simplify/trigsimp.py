@@ -343,8 +343,8 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         return res, freegens, newgens
 
     myI = Dummy('I')
-    expr = expr.subs(S.ImaginaryUnit, myI)
-    subs = [(myI, S.ImaginaryUnit)]
+    expr = expr.subs(I, myI)
+    subs = [(myI, I)]
 
     num, denom = cancel(expr).as_numer_denom()
     try:
@@ -566,10 +566,10 @@ def exptrigsimp(expr, simplify=True):
         et = n/d
         etinv = d/n  # not 1/et or else recursion errors arise
         a = ei.exp if ei.is_Pow and ei.base is S.Exp1 else S.One
-        if a.is_Mul or a is S.ImaginaryUnit:
+        if a.is_Mul or a is I:
             c = a.as_coefficient(I)
             if c:
-                t = S.ImaginaryUnit*tan(c/2)
+                t = I*tan(c/2)
                 newexpr = newexpr.subs(etinv, 1/t)
                 newexpr = newexpr.subs(et, t)
                 continue

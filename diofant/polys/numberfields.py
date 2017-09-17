@@ -671,7 +671,7 @@ def minpoly_groebner(ex, x):
 
     def bottom_up_scan(ex):
         if ex.is_Atom:
-            if ex is S.ImaginaryUnit:
+            if ex is I:
                 return update_mapping(ex, 2, 1)
             elif ex.is_Rational:
                 return ex

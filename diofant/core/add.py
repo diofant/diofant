@@ -4,7 +4,7 @@ from functools import reduce
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
-from .numbers import igcd, ilcm, nan, oo, zoo
+from .numbers import I, igcd, ilcm, nan, oo, zoo
 from .operations import AssocOp
 from .singleton import S
 
@@ -442,7 +442,7 @@ class Add(AssocOp):
         rv = _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
         if rv is False:
             return rv
-        iargs = [a*S.ImaginaryUnit for a in self.args]
+        iargs = [a*I for a in self.args]
         return _fuzzy_group((a.is_real for a in iargs), quick_exit=True)
 
     def _eval_is_odd(self):

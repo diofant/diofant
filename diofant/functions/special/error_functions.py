@@ -125,7 +125,7 @@ class erf(Function):
             return S.One - arg.args[0]
 
         # Try to pull out factors of I
-        t = arg.extract_multiplicatively(S.ImaginaryUnit)
+        t = arg.extract_multiplicatively(I)
         if t is oo or t is -oo:
             return arg
 
@@ -161,12 +161,12 @@ class erf(Function):
         return sqrt(z**2)/z*(S.One - uppergamma(S.Half, z**2)/sqrt(pi))
 
     def _eval_rewrite_as_fresnels(self, z):
-        arg = (S.One - S.ImaginaryUnit)*z/sqrt(pi)
-        return (S.One + S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One - I)*z/sqrt(pi)
+        return (S.One + I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_fresnelc(self, z):
-        arg = (S.One - S.ImaginaryUnit)*z/sqrt(pi)
-        return (S.One + S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One - I)*z/sqrt(pi)
+        return (S.One + I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_meijerg(self, z):
         return z/sqrt(pi)*meijerg([S.Half], [], [0], [-S.Half], z**2)
@@ -314,7 +314,7 @@ class erfc(Function):
             return arg.args[0]
 
         # Try to pull out factors of I
-        t = arg.extract_multiplicatively(S.ImaginaryUnit)
+        t = arg.extract_multiplicatively(I)
         if t is oo or t is -oo:
             return -arg
 
@@ -357,12 +357,12 @@ class erfc(Function):
         return S.One + I*erfi(I*z)
 
     def _eval_rewrite_as_fresnels(self, z):
-        arg = (S.One - S.ImaginaryUnit)*z/sqrt(pi)
-        return S.One - (S.One + S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One - I)*z/sqrt(pi)
+        return S.One - (S.One + I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_fresnelc(self, z):
-        arg = (S.One-S.ImaginaryUnit)*z/sqrt(pi)
-        return S.One - (S.One + S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One-I)*z/sqrt(pi)
+        return S.One - (S.One + I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_meijerg(self, z):
         return S.One - z/sqrt(pi)*meijerg([S.Half], [], [0], [-S.Half], z**2)
@@ -536,12 +536,12 @@ class erfi(Function):
         return I*erfc(I*z) - I
 
     def _eval_rewrite_as_fresnels(self, z):
-        arg = (S.One + S.ImaginaryUnit)*z/sqrt(pi)
-        return (S.One - S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One + I)*z/sqrt(pi)
+        return (S.One - I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_fresnelc(self, z):
-        arg = (S.One + S.ImaginaryUnit)*z/sqrt(pi)
-        return (S.One - S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One + I)*z/sqrt(pi)
+        return (S.One - I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_meijerg(self, z):
         return z/sqrt(pi)*meijerg([S.Half], [], [0], [-S.Half], -z**2)
@@ -2330,7 +2330,7 @@ class _erfs(Function):
             return (Add(*l))._eval_nseries(x, n, logx) + o
 
         # Expansion at I*oo
-        t = point.extract_multiplicatively(S.ImaginaryUnit)
+        t = point.extract_multiplicatively(I)
         if t is oo:
             z = self.args[0]
             # TODO: is the series really correct?

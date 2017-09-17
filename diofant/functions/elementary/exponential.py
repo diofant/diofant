@@ -1,5 +1,5 @@
-from ...core import (Add, Function, Integer, Mul, Pow, S, expand_log, nan, oo,
-                     pi, sympify, zoo)
+from ...core import (Add, Function, I, Integer, Mul, Pow, S, expand_log, nan,
+                     oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import multiplicity, perfect_power
 from .miscellaneous import sqrt
@@ -229,7 +229,7 @@ class log(Function):
 
         if arg.is_number:
             if arg.is_negative:
-                return pi * S.ImaginaryUnit + cls(-arg)
+                return pi * I + cls(-arg)
             elif arg is zoo:
                 return zoo
             elif arg is S.Exp1:
@@ -237,7 +237,7 @@ class log(Function):
 
         # don't autoexpand Pow or Mul (see the issue sympy/sympy#3351):
         if not arg.is_Add:
-            coeff = arg.as_coefficient(S.ImaginaryUnit)
+            coeff = arg.as_coefficient(I)
 
             if coeff is not None:
                 if coeff is oo:
@@ -246,9 +246,9 @@ class log(Function):
                     return oo
                 elif coeff.is_Rational:
                     if coeff.is_nonnegative:
-                        return pi * S.ImaginaryUnit * S.Half + cls(coeff)
+                        return pi * I * S.Half + cls(coeff)
                     else:
-                        return -pi * S.ImaginaryUnit * S.Half + cls(-coeff)
+                        return -pi * I * S.Half + cls(-coeff)
 
     def as_base_exp(self):
         """
@@ -404,7 +404,7 @@ class log(Function):
             if c.is_negative:
                 l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
                 if l.is_finite:
-                    log_series += 2*S.ImaginaryUnit*pi*l
+                    log_series += 2*I*pi*l
                 else:
                     raise NotImplementedError  # pragma: no cover
         return log_series + log(c) + e*logx
@@ -473,7 +473,7 @@ class LambertW(Function):
                 return -oo
         if k is S.NegativeOne:
             if x == -pi/2:
-                return -S.ImaginaryUnit*pi/2
+                return -I*pi/2
             elif x == -1/S.Exp1:
                 return S.NegativeOne
             elif x == -2*exp(-2):

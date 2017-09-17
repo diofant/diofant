@@ -2121,4 +2121,4 @@ def hyper_as_trig(rv):
     d = Dummy()
 
     return _osborne(masked, d), lambda x: collect(signsimp(
-        _osbornei(x, d).xreplace(dict(reps))), S.ImaginaryUnit)
+        _osbornei(x, d).xreplace(dict(reps))), I)

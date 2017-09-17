@@ -304,7 +304,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         elif hasattr(x, "_mpc_"):
             re, im = x._mpc_
             re = Float._new(re, prec)
-            im = Float._new(im, prec)*S.ImaginaryUnit
+            im = Float._new(im, prec)*I
             return re + im
         else:
             raise TypeError("expected mpmath number (mpf or mpc)")
@@ -1944,7 +1944,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return
                 else:
                     return quotient
-        elif self.is_NumberSymbol or self.is_Symbol or self is S.ImaginaryUnit:
+        elif self.is_NumberSymbol or self.is_Symbol or self is I:
             if quotient.is_Mul and len(quotient.args) == 2:
                 if quotient.args[0].is_Integer and quotient.args[0].is_positive and quotient.args[1] == self:
                     return quotient
@@ -2980,7 +2980,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def _eval_expand_complex(self, **hints):
         real, imag = self.as_real_imag(**hints)
-        return real + S.ImaginaryUnit*imag
+        return real + I*imag
 
     @staticmethod
     def _expand_hint(expr, hint, deep=True, **hints):
@@ -3241,7 +3241,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return x
         if not x.is_extended_real:
             i, r = x.as_real_imag()
-            return i.round(p) + S.ImaginaryUnit*r.round(p)
+            return i.round(p) + I*r.round(p)
         if not x:
             return x
         p = int(p)
@@ -3343,4 +3343,4 @@ from .power import Pow
 from .function import Function
 from .mod import Mod
 from .exprtools import factor_terms
-from .numbers import Integer, Rational, nan, oo, zoo
+from .numbers import I, Integer, Rational, nan, oo, zoo

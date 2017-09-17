@@ -8,7 +8,7 @@ from collections import defaultdict
 from types import GeneratorType
 
 from ..core import (Add, Derivative, Dummy, Equality, Expr, Float, Function,
-                    Ge, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
+                    Ge, I, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp, nan,
                     nfloat, oo, pi, preorder_traversal, sympify, zoo)
 from ..core.assumptions import check_assumptions
@@ -543,7 +543,7 @@ def solve(f, *symbols, **flags):
                 raise NotImplementedError('solving %s when the argument '
                                           'is not real or imaginary.' % a)
             reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
-                         piece(a.args[0]*S.ImaginaryUnit)))
+                         piece(a.args[0]*I)))
         fi = fi.subs(reps)
 
         # arg
@@ -560,7 +560,7 @@ def solve(f, *symbols, **flags):
             continue  # neither re(x) nor im(x) will appear
         # if re(s) or im(s) appear, the auxiliary equation must be present
         if any(fi.has(re(s), im(s)) for fi in f):
-            irf.append((s, re(s) + S.ImaginaryUnit*im(s)))
+            irf.append((s, re(s) + I*im(s)))
     if irf:
         for s, rhs in irf:
             for i, fi in enumerate(f):

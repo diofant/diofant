@@ -11,7 +11,7 @@ complete source code files.
 
 from re import search
 
-from ..core import Mul, Pow, Rational, S, oo, pi
+from ..core import I, Mul, Pow, Rational, S, oo, pi
 from ..core.mul import _keep_coeff
 from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
@@ -98,7 +98,7 @@ class OctaveCodePrinter(CodePrinter):
         # print complex numbers nicely in Octave
         if (expr.is_number and expr.is_imaginary and
                 expr.as_coeff_Mul()[0].is_integer):
-            return "%si" % self._print(-S.ImaginaryUnit*expr)
+            return "%si" % self._print(-I*expr)
 
         # cribbed from str.py
         prec = precedence(expr)

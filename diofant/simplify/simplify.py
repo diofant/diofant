@@ -849,7 +849,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
             return _real_to_rational(expr)
         return expr
 
-    rv = re + im*S.ImaginaryUnit
+    rv = re + im*I
     # if there was a change or rational is explicitly not wanted
     # return the value, else return the Rational representation
     if rv != expr or rational is False:

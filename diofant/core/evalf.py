@@ -124,9 +124,10 @@ def pure_complex(v):
     >>> pure_complex(I)
     (0, 1)
     """
+    from .numbers import I
     h, t = v.as_coeff_Add()
     c, i = t.as_coeff_Mul()
-    if i is S.ImaginaryUnit:
+    if i is I:
         return h, c
 
 
@@ -1259,7 +1260,7 @@ class EvalfMixin:
                 tanh-sinh quadrature is used. For oscillatory
                 integrals on an infinite interval, try quad='osc'.
         """
-        from .numbers import Float
+        from .numbers import Float, I
         n = n if n is not None else 15
 
         if subs and is_sequence(subs):
@@ -1296,7 +1297,7 @@ class EvalfMixin:
         if im:
             p = max(min(prec, im_acc), 1)
             im = Float._new(im, p)
-            return re + im*S.ImaginaryUnit
+            return re + im*I
         else:
             return re
 
