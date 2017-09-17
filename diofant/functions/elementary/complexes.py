@@ -88,9 +88,9 @@ class re(Function):
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
             return re(Derivative(self.args[0], x, evaluate=True))
-        if x.is_imaginary or self.args[0].is_imaginary:
-            return -S.ImaginaryUnit \
-                * im(Derivative(self.args[0], x, evaluate=True))
+        elif x.is_imaginary or self.args[0].is_imaginary:
+            return -S.ImaginaryUnit*im(Derivative(self.args[0],
+                                                  x, evaluate=True))
 
     def _eval_rewrite_as_im(self, arg):
         return self.args[0] - im(self.args[0])
@@ -181,9 +181,9 @@ class im(Function):
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
             return im(Derivative(self.args[0], x, evaluate=True))
-        if x.is_imaginary or self.args[0].is_imaginary:
-            return -S.ImaginaryUnit \
-                * re(Derivative(self.args[0], x, evaluate=True))
+        elif x.is_imaginary or self.args[0].is_imaginary:
+            return -S.ImaginaryUnit*re(Derivative(self.args[0],
+                                                  x, evaluate=True))
 
     def _eval_rewrite_as_re(self, arg):
         return self.args[0] - re(self.args[0])
@@ -286,8 +286,6 @@ class sign(Function):
             arg2 = -S.ImaginaryUnit * arg
             if arg2.is_positive:
                 return S.ImaginaryUnit
-            if arg2.is_negative:
-                return -S.ImaginaryUnit
 
     def _eval_Abs(self):
         if self.args[0].is_nonzero:
@@ -938,7 +936,7 @@ class principal_branch(Function):
         from .exponential import exp
         z, period = self.args
         p = periodic_argument(z, period)._eval_evalf(prec)
-        if abs(p) > pi or p == -pi:
+        if p is None or abs(p) > pi or p == -pi:
             return self  # Cannot evalf for this argument.
         return (abs(z)*exp(I*p))._eval_evalf(prec)
 
@@ -1096,8 +1094,6 @@ def unpolarify(eq, subs={}, exponents_only=False):
         if res != eq:
             changed = True
             eq = res
-        if isinstance(res, bool):
-            return res
     # Finally, replacing Exp(0) by 1 is always correct.
     # So is polar_lift(0) -> 0.
     return res.subs({exp_polar(0): 1, polar_lift(0): 0})
