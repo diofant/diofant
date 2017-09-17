@@ -55,3 +55,19 @@ class AutomaticSymbols(ast.NodeTransformer):
         if isinstance(node.ctx, ast.Load):
             self.names.append(node.id)
         return node
+
+
+class FloatRationalizer(ast.NodeTransformer):
+    """Wraps all floats in a call to Rational."""
+
+    def visit_Num(self, node):
+        if isinstance(node.n, float):
+            return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
+                            args=[ast.Str(s=repr(node.n))], keywords=[],
+                            starargs=None, kwargs=None)
+        return node
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id == "Float":
+            return node
+        return self.generic_visit(node)
