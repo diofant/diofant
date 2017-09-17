@@ -314,7 +314,7 @@ class Ellipse(GeometrySet):
         3*pi
 
         """
-        return simplify(S.Pi * self.hradius * self.vradius)
+        return simplify(pi * self.hradius * self.vradius)
 
     @property
     def circumference(self):
@@ -505,9 +505,9 @@ class Ellipse(GeometrySet):
         """
         if self.hradius == self.vradius:
             return self.func(self.center.rotate(angle, pt), self.hradius)
-        if (angle/S.Pi).is_integer:
+        if (angle/pi).is_integer:
             return super(Ellipse, self).rotate(angle, pt)
-        if (2*angle/S.Pi).is_integer:
+        if (2*angle/pi).is_integer:
             return self.func(self.center.rotate(angle, pt), self.vradius, self.hradius)
         # XXX see https://github.com/sympy/sympy/issues/2815 for general ellipes
         raise NotImplementedError('Only rotations of pi/2 are currently supported for Ellipse.')
@@ -913,7 +913,7 @@ class Ellipse(GeometrySet):
 
         """
         t = _symbol(parameter)
-        return [t, -S.Pi, S.Pi]
+        return [t, -pi, pi]
 
     def random_point(self, seed=None):
         """A random point on the ellipse.
@@ -1339,7 +1339,7 @@ class Circle(Ellipse):
         12*pi
 
         """
-        return 2 * S.Pi * self.radius
+        return 2 * pi * self.radius
 
     def equation(self, x='x', y='y'):
         """The equation of the circle.

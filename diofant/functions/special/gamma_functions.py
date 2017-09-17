@@ -125,9 +125,9 @@ class gamma(Function):
                         coeff *= i
 
                     if arg.is_positive:
-                        return coeff*sqrt(S.Pi) / 2**n
+                        return coeff*sqrt(pi) / 2**n
                     else:
-                        return 2**n*sqrt(S.Pi) / coeff
+                        return 2**n*sqrt(pi) / coeff
 
         if arg.is_integer and arg.is_nonpositive:
             return zoo
@@ -647,10 +647,10 @@ class polygamma(Function):
             if z.is_Rational:
                 # TODO actually *any* n/m can be done, but that is messy
                 lookup = {Rational(1, 2): -2*log(2) - S.EulerGamma,
-                          Rational(1, 3): -S.Pi/2/sqrt(3) - 3*log(3)/2 - S.EulerGamma,
-                          Rational(1, 4): -S.Pi/2 - 3*log(2) - S.EulerGamma,
-                          Rational(3, 4): -3*log(2) - S.EulerGamma + S.Pi/2,
-                          Rational(2, 3): -3*log(3)/2 + S.Pi/2/sqrt(3) - S.EulerGamma}
+                          Rational(1, 3): -pi/2/sqrt(3) - 3*log(3)/2 - S.EulerGamma,
+                          Rational(1, 4): -pi/2 - 3*log(2) - S.EulerGamma,
+                          Rational(3, 4): -3*log(2) - S.EulerGamma + pi/2,
+                          Rational(2, 3): -3*log(3)/2 + pi/2/sqrt(3) - S.EulerGamma}
                 if z > 0:
                     n = floor(z)
                     z0 = z - n
@@ -846,7 +846,7 @@ class loggamma(Function):
             p, q = z.as_numer_denom()
             # Half-integral values:
             if p.is_positive and q == 2:
-                return log(sqrt(S.Pi) * 2**(1 - p) * gamma(p) / gamma((p + 1)*S.Half))
+                return log(sqrt(pi) * 2**(1 - p) * gamma(p) / gamma((p + 1)*S.Half))
 
         if z is oo:
             return oo
@@ -868,7 +868,7 @@ class loggamma(Function):
             if n.is_positive:
                 return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
             elif n.is_negative:
-                return loggamma(p / q) - n*log(q) + S.Pi*S.ImaginaryUnit*n - Sum(log(k*q - p), (k, 1, -n))
+                return loggamma(p / q) - n*log(q) + pi*S.ImaginaryUnit*n - Sum(log(k*q - p), (k, 1, -n))
 
         return self
 

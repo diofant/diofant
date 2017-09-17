@@ -1,4 +1,4 @@
-from ...core import I, S
+from ...core import I, pi
 from ...functions import exp, sqrt
 from .matexpr import MatrixExpr
 
@@ -10,7 +10,7 @@ class DFT(MatrixExpr):
     shape = property(lambda self: (self.n, self.n))
 
     def _entry(self, i, j):
-        w = exp(-2*S.Pi*I/self.n)
+        w = exp(-2*pi*I/self.n)
         return w**(i*j) / sqrt(self.n)
 
     def _eval_inverse(self):
@@ -21,7 +21,7 @@ class IDFT(DFT):
     """ Inverse Discrete Fourier Transform """
 
     def _entry(self, i, j):
-        w = exp(-2*S.Pi*I/self.n)
+        w = exp(-2*pi*I/self.n)
         return w**(-i*j) / sqrt(self.n)
 
     def _eval_inverse(self):

@@ -11,7 +11,7 @@ complete source code files.
 
 from re import search
 
-from ..core import Mul, Pow, Rational, S, oo
+from ..core import Mul, Pow, Rational, S, oo, pi
 from ..core.mul import _keep_coeff
 from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
@@ -339,13 +339,13 @@ class OctaveCodePrinter(CodePrinter):
     def _print_jn(self, expr):
         from ..functions import sqrt, besselj
         x = expr.argument
-        expr2 = sqrt(S.Pi/(2*x))*besselj(expr.order + S.Half, x)
+        expr2 = sqrt(pi/(2*x))*besselj(expr.order + S.Half, x)
         return self._print(expr2)
 
     def _print_yn(self, expr):
         from ..functions import sqrt, bessely
         x = expr.argument
-        expr2 = sqrt(S.Pi/(2*x))*bessely(expr.order + S.Half, x)
+        expr2 = sqrt(pi/(2*x))*bessely(expr.order + S.Half, x)
         return self._print(expr2)
 
     def _print_airyai(self, expr):

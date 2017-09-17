@@ -2877,7 +2877,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
             if arg in [Ioo, -Ioo]:
                 return nan
 
-            coeff = arg.coeff(S.Pi*S.ImaginaryUnit)
+            coeff = arg.coeff(pi*S.ImaginaryUnit)
             if coeff:
                 if (2*coeff).is_integer:
                     if coeff.is_even:
@@ -2933,12 +2933,12 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     def _eval_rewrite_as_sin(self):
         from ..functions import sin
         I = S.ImaginaryUnit
-        return sin(I + S.Pi/2) - I*sin(I)
+        return sin(I + pi/2) - I*sin(I)
 
     def _eval_rewrite_as_cos(self):
         from ..functions import cos
         I = S.ImaginaryUnit
-        return cos(I) + I*cos(I + S.Pi/2)
+        return cos(I) + I*cos(I + pi/2)
 
 
 E = S.Exp1
@@ -2952,15 +2952,12 @@ class Pi(NumberSymbol, metaclass=Singleton):
     the half-period of trigonometric functions, and many other things
     in mathematics.
 
-    Pi is a singleton, and can be accessed by ``S.Pi``, or can
-    be imported as ``pi``.
+    Pi is a singleton, and can be imported as ``pi``.
 
     Examples
     ========
 
-    >>> from diofant import S, pi, oo, sin, exp, integrate, Symbol
-    >>> S.Pi
-    pi
+    >>> from diofant import pi, oo, sin, exp, integrate, Symbol
     >>> pi > 3
     true
     >>> pi.is_irrational
@@ -2990,7 +2987,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
 
     @staticmethod
     def __abs__():
-        return S.Pi
+        return pi
 
     def __int__(self):
         return 3

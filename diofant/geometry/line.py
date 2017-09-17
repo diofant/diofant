@@ -8,7 +8,7 @@ Ray
 Segment
 """
 
-from ..core import Dummy, Eq, S, factor_terms, oo, sympify
+from ..core import Dummy, Eq, S, factor_terms, oo, pi, sympify
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, acos, sqrt, tan
 from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
@@ -1269,11 +1269,11 @@ class Ray(LinearEntity):
                         elif c.p == 1:
                             p2 = p1 + Point(-1, 0)
                 if p2 is None:
-                    c *= S.Pi
+                    c *= pi
             else:
-                c = angle % (2*S.Pi)
+                c = angle % (2*pi)
             if not p2:
-                m = 2*c/S.Pi
+                m = 2*c/pi
                 left = And(1 < m, m < 3)  # is it in quadrant 2 or 3?
                 x = Piecewise((-1, left), (Piecewise((0, Eq(m % 1, 0)), (1, True)), True))
                 y = Piecewise((-tan(c), left), (Piecewise((1, Eq(m, 1)), (-1, Eq(m, 3)), (tan(c), True)), True))

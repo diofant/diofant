@@ -1099,7 +1099,7 @@ class airybi(AiryBase):
 
 class _airyais(Function):
     def _eval_rewrite_as_intractable(self, x):
-        return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
+        return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...simplify import combsimp
@@ -1109,7 +1109,7 @@ class _airyais(Function):
         if point is oo:
             z = self.args[0]
             l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
-                 Rational(-3, 4)**k/(2*S.Pi**2*factorial(k) *
+                 Rational(-3, 4)**k/(2*pi**2*factorial(k) *
                                      z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
@@ -1128,7 +1128,7 @@ class _airyais(Function):
 
 class _airybis(Function):
     def _eval_rewrite_as_intractable(self, x):
-        return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
+        return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...simplify import combsimp
@@ -1138,7 +1138,7 @@ class _airybis(Function):
         if point is oo:
             z = self.args[0]
             l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
-                 Rational(3, 4)**k/(2*S.Pi**2*factorial(k) *
+                 Rational(3, 4)**k/(2*pi**2*factorial(k) *
                                     z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)

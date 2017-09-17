@@ -440,7 +440,7 @@ class Abs(Function):
                 if base.is_nonnegative:
                     return base**re(exponent)
                 if base.is_negative:
-                    return (-base)**re(exponent)*exp(-S.Pi*im(exponent))
+                    return (-base)**re(exponent)*exp(-pi*im(exponent))
         if arg.is_zero:  # it may be an Expr that is zero
             return S.Zero
         if arg.is_nonnegative:

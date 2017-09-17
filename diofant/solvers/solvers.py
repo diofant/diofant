@@ -10,7 +10,7 @@ from types import GeneratorType
 from ..core import (Add, Derivative, Dummy, Equality, Expr, Float, Function,
                     Ge, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp, nan,
-                    nfloat, oo, preorder_traversal, sympify, zoo)
+                    nfloat, oo, pi, preorder_traversal, sympify, zoo)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import (default_sort_key, is_sequence, iterable,
                                   ordered)
@@ -1457,8 +1457,8 @@ def minsolve_linear_system(system, *symbols, **flags):
 
 # these are functions that have multiple inverse values per period
 multi_inverses = {
-    sin: lambda x: (asin(x), S.Pi - asin(x)),
-    cos: lambda x: (acos(x), 2*S.Pi - acos(x)),
+    sin: lambda x: (asin(x), pi - asin(x)),
+    cos: lambda x: (acos(x), 2*pi - acos(x)),
 }
 
 

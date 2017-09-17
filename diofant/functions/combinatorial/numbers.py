@@ -110,7 +110,7 @@ class fibonacci(Function):
     def _eval_rewrite_as_sqrt(self, n, sym=None):
         from .. import sqrt
         if sym is None:
-            return (S.GoldenRatio**n - cos(S.Pi*n)/S.GoldenRatio**n)/sqrt(5)
+            return (S.GoldenRatio**n - cos(pi*n)/S.GoldenRatio**n)/sqrt(5)
 
     _eval_rewrite_as_tractable = _eval_rewrite_as_sqrt
 

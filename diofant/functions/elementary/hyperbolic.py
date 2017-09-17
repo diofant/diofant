@@ -1,4 +1,4 @@
-from ...core import Function, S, cacheit, nan, oo, sympify, zoo
+from ...core import Function, S, cacheit, nan, oo, pi, sympify, zoo
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -164,7 +164,7 @@ class sinh(HyperbolicFunction):
         return (exp(arg) - exp(-arg)) / 2
 
     def _eval_rewrite_as_cosh(self, arg):
-        return -S.ImaginaryUnit*cosh(arg + S.Pi*S.ImaginaryUnit/2)
+        return -S.ImaginaryUnit*cosh(arg + pi*S.ImaginaryUnit/2)
 
     def _eval_rewrite_as_tanh(self, arg):
         tanh_half = tanh(S.Half*arg)
@@ -308,7 +308,7 @@ class cosh(HyperbolicFunction):
         return (exp(arg) + exp(-arg)) / 2
 
     def _eval_rewrite_as_sinh(self, arg):
-        return -S.ImaginaryUnit*sinh(arg + S.Pi*S.ImaginaryUnit/2)
+        return -S.ImaginaryUnit*sinh(arg + pi*S.ImaginaryUnit/2)
 
     def _eval_rewrite_as_tanh(self, arg):
         tanh_half = tanh(S.Half*arg)**2
@@ -447,10 +447,10 @@ class tanh(HyperbolicFunction):
         return (pos_exp - neg_exp)/(pos_exp + neg_exp)
 
     def _eval_rewrite_as_sinh(self, arg):
-        return S.ImaginaryUnit*sinh(arg)/sinh(S.Pi*S.ImaginaryUnit/2 - arg)
+        return S.ImaginaryUnit*sinh(arg)/sinh(pi*S.ImaginaryUnit/2 - arg)
 
     def _eval_rewrite_as_cosh(self, arg):
-        return S.ImaginaryUnit*cosh(S.Pi*S.ImaginaryUnit/2 - arg)/cosh(arg)
+        return S.ImaginaryUnit*cosh(pi*S.ImaginaryUnit/2 - arg)/cosh(arg)
 
     def _eval_rewrite_as_coth(self, arg):
         return 1/coth(arg)
@@ -577,10 +577,10 @@ class coth(HyperbolicFunction):
         return (pos_exp + neg_exp)/(pos_exp - neg_exp)
 
     def _eval_rewrite_as_sinh(self, arg):
-        return -S.ImaginaryUnit*sinh(S.Pi*S.ImaginaryUnit/2 - arg)/sinh(arg)
+        return -S.ImaginaryUnit*sinh(pi*S.ImaginaryUnit/2 - arg)/sinh(arg)
 
     def _eval_rewrite_as_cosh(self, arg):
-        return -S.ImaginaryUnit*cosh(arg)/cosh(S.Pi*S.ImaginaryUnit/2 - arg)
+        return -S.ImaginaryUnit*cosh(arg)/cosh(pi*S.ImaginaryUnit/2 - arg)
 
     def _eval_rewrite_as_tanh(self, arg):
         return 1/tanh(arg)
@@ -707,7 +707,7 @@ class csch(ReciprocalHyperbolicFunction):
             return 2 * (1 - 2**n) * B/F * x**n
 
     def _eval_rewrite_as_cosh(self, arg):
-        return S.ImaginaryUnit / cosh(arg + S.ImaginaryUnit * S.Pi / 2)
+        return S.ImaginaryUnit / cosh(arg + S.ImaginaryUnit * pi / 2)
 
 
 class sech(ReciprocalHyperbolicFunction):
@@ -748,7 +748,7 @@ class sech(ReciprocalHyperbolicFunction):
             return euler(n) / factorial(n) * x**(n)
 
     def _eval_rewrite_as_sinh(self, arg):
-        return S.ImaginaryUnit / sinh(arg + S.ImaginaryUnit * S.Pi / 2)
+        return S.ImaginaryUnit / sinh(arg + S.ImaginaryUnit * pi / 2)
 
 
 ###############################################################################
@@ -870,34 +870,34 @@ class acosh(Function):
             elif arg is -oo:
                 return oo
             elif arg is S.Zero:
-                return S.Pi*S.ImaginaryUnit / 2
+                return pi*S.ImaginaryUnit / 2
             elif arg is S.One:
                 return S.Zero
             elif arg is S.NegativeOne:
-                return S.Pi*S.ImaginaryUnit
+                return pi*S.ImaginaryUnit
 
         if arg.is_number:
             cst_table = {
                 S.ImaginaryUnit: log(S.ImaginaryUnit*(1 + sqrt(2))),
                 -S.ImaginaryUnit: log(-S.ImaginaryUnit*(1 + sqrt(2))),
-                S.Half: S.Pi/3,
-                -S.Half: 2*S.Pi/3,
-                sqrt(2)/2: S.Pi/4,
-                -sqrt(2)/2: 3*S.Pi/4,
-                1/sqrt(2): S.Pi/4,
-                -1/sqrt(2): 3*S.Pi/4,
-                sqrt(3)/2: S.Pi/6,
-                -sqrt(3)/2: 5*S.Pi/6,
-                (sqrt(3) - 1)/sqrt(2**3): 5*S.Pi/12,
-                -(sqrt(3) - 1)/sqrt(2**3): 7*S.Pi/12,
-                sqrt(2 + sqrt(2))/2: S.Pi/8,
-                -sqrt(2 + sqrt(2))/2: 7*S.Pi/8,
-                sqrt(2 - sqrt(2))/2: 3*S.Pi/8,
-                -sqrt(2 - sqrt(2))/2: 5*S.Pi/8,
-                (1 + sqrt(3))/(2*sqrt(2)): S.Pi/12,
-                -(1 + sqrt(3))/(2*sqrt(2)): 11*S.Pi/12,
-                (sqrt(5) + 1)/4: S.Pi/5,
-                -(sqrt(5) + 1)/4: 4*S.Pi/5
+                S.Half: pi/3,
+                -S.Half: 2*pi/3,
+                sqrt(2)/2: pi/4,
+                -sqrt(2)/2: 3*pi/4,
+                1/sqrt(2): pi/4,
+                -1/sqrt(2): 3*pi/4,
+                sqrt(3)/2: pi/6,
+                -sqrt(3)/2: 5*pi/6,
+                (sqrt(3) - 1)/sqrt(2**3): 5*pi/12,
+                -(sqrt(3) - 1)/sqrt(2**3): 7*pi/12,
+                sqrt(2 + sqrt(2))/2: pi/8,
+                -sqrt(2 + sqrt(2))/2: 7*pi/8,
+                sqrt(2 - sqrt(2))/2: 3*pi/8,
+                -sqrt(2 - sqrt(2))/2: 5*pi/8,
+                (1 + sqrt(3))/(2*sqrt(2)): pi/12,
+                -(1 + sqrt(3))/(2*sqrt(2)): 11*pi/12,
+                (sqrt(5) + 1)/4: pi/5,
+                -(sqrt(5) + 1)/4: 4*pi/5
             }
 
             if arg in cst_table:
@@ -912,7 +912,7 @@ class acosh(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
-            return S.Pi*S.ImaginaryUnit / 2
+            return pi*S.ImaginaryUnit / 2
         elif n < 0 or n % 2 == 0:
             return S.Zero
         else:
@@ -931,7 +931,7 @@ class acosh(Function):
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
-            return S.ImaginaryUnit*S.Pi/2
+            return S.ImaginaryUnit*pi/2
         else:
             return self.func(arg)
 
@@ -1041,7 +1041,7 @@ class acoth(Function):
             elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
-                return S.Pi*S.ImaginaryUnit / 2
+                return pi*S.ImaginaryUnit / 2
             elif arg is S.One:
                 return oo
             elif arg is S.NegativeOne:
@@ -1064,7 +1064,7 @@ class acoth(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
-            return S.Pi*S.ImaginaryUnit / 2
+            return pi*S.ImaginaryUnit / 2
         elif n < 0 or n % 2 == 0:
             return S.Zero
         else:
@@ -1076,7 +1076,7 @@ class acoth(Function):
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
-            return S.ImaginaryUnit*S.Pi/2
+            return S.ImaginaryUnit*pi/2
         else:
             return self.func(arg)
 

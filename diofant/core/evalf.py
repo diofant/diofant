@@ -837,6 +837,7 @@ def do_integral(expr, prec, options):
 
         from ..functions import cos, sin
         from .symbol import Wild
+        from .numbers import pi
 
         have_part = [False, False]
         max_real_term = [MINUS_INF]
@@ -865,7 +866,7 @@ def do_integral(expr, prec, options):
             if not m:
                 raise ValueError("An integrand of the form sin(A*x+B)*f(x) "
                                  "or cos(A*x+B)*f(x) is required for oscillatory quadrature")
-            period = as_mpmath(2*S.Pi/m[A], prec + 15, options)
+            period = as_mpmath(2*pi/m[A], prec + 15, options)
             result = quadosc(f, [xlow, xhigh], period=period)
             # XXX: quadosc does not do error detection yet
             quadrature_error = MINUS_INF

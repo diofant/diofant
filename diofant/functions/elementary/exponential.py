@@ -229,7 +229,7 @@ class log(Function):
 
         if arg.is_number:
             if arg.is_negative:
-                return S.Pi * S.ImaginaryUnit + cls(-arg)
+                return pi * S.ImaginaryUnit + cls(-arg)
             elif arg is zoo:
                 return zoo
             elif arg is S.Exp1:
@@ -246,9 +246,9 @@ class log(Function):
                     return oo
                 elif coeff.is_Rational:
                     if coeff.is_nonnegative:
-                        return S.Pi * S.ImaginaryUnit * S.Half + cls(coeff)
+                        return pi * S.ImaginaryUnit * S.Half + cls(coeff)
                     else:
-                        return -S.Pi * S.ImaginaryUnit * S.Half + cls(-coeff)
+                        return -pi * S.ImaginaryUnit * S.Half + cls(-coeff)
 
     def as_base_exp(self):
         """
@@ -402,9 +402,9 @@ class log(Function):
             log_series += Order(t**n, x)
             # branch handling
             if c.is_negative:
-                l = floor(arg(t.removeO()*c)/(2*S.Pi)).limit(x, 0)
+                l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
                 if l.is_finite:
-                    log_series += 2*S.ImaginaryUnit*S.Pi*l
+                    log_series += 2*S.ImaginaryUnit*pi*l
                 else:
                     raise NotImplementedError  # pragma: no cover
         return log_series + log(c) + e*logx
@@ -472,8 +472,8 @@ class LambertW(Function):
             if x is S.Zero:
                 return -oo
         if k is S.NegativeOne:
-            if x == -S.Pi/2:
-                return -S.ImaginaryUnit*S.Pi/2
+            if x == -pi/2:
+                return -S.ImaginaryUnit*pi/2
             elif x == -1/S.Exp1:
                 return S.NegativeOne
             elif x == -2*exp(-2):

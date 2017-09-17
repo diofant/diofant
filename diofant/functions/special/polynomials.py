@@ -6,7 +6,7 @@ combinatorial polynomials.
 
 """
 
-from ...core import Dummy, Function, Integer, Rational, S, oo, zoo
+from ...core import Dummy, Function, Integer, Rational, S, oo, pi, zoo
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
                                  gegenbauer_poly, hermite_poly, jacobi_poly,
@@ -342,7 +342,7 @@ class gegenbauer(OrthogonalPolynomial):
                 return S.NegativeOne**n * gegenbauer(n, a, -x)
             # We can evaluate for some special values of x
             if x == S.Zero:
-                return (2**n * sqrt(S.Pi) * gamma(a + S.Half*n) /
+                return (2**n * sqrt(pi) * gamma(a + S.Half*n) /
                         (gamma((1 - n)/2) * gamma(n + 1) * gamma(a)) )
             if x == S.One:
                 return gamma(2*a + n) / (gamma(2*a) * gamma(n + 1))
@@ -461,7 +461,7 @@ class chebyshevt(OrthogonalPolynomial):
                 return chebyshevt(-n, x)
             # We can evaluate for some special values of x
             if x == S.Zero:
-                return cos(S.Half * S.Pi * n)
+                return cos(S.Half * pi * n)
             if x == S.One:
                 return S.One
             elif x == oo:
@@ -560,7 +560,7 @@ class chebyshevu(OrthogonalPolynomial):
                 return -chebyshevu(-n - 2, x)
             # We can evaluate for some special values of x
             if x == S.Zero:
-                return cos(S.Half * S.Pi * n)
+                return cos(S.Half * pi * n)
             if x == S.One:
                 return S.One + n
             elif x == oo:
@@ -622,7 +622,7 @@ class chebyshevt_root(Function):
         if not ((0 <= k) and (k < n)):
             raise ValueError("must have 0 <= k < n, "
                              "got k = %s and n = %s" % (k, n))
-        return cos(S.Pi*(2*k + 1)/(2*n))
+        return cos(pi*(2*k + 1)/(2*n))
 
 
 class chebyshevu_root(Function):
@@ -661,7 +661,7 @@ class chebyshevu_root(Function):
         if not ((0 <= k) and (k < n)):
             raise ValueError("must have 0 <= k < n, "
                              "got k = %s and n = %s" % (k, n))
-        return cos(S.Pi*(k + 1)/(n + 1))
+        return cos(pi*(k + 1)/(n + 1))
 
 ############################################################################
 # Legendre polynomials and Associated Legendre polynomials
@@ -731,7 +731,7 @@ class legendre(OrthogonalPolynomial):
                 return legendre(-n - S.One, x)
             # We can evaluate for some special values of x
             if x == S.Zero:
-                return sqrt(S.Pi)/(gamma(S.Half - n/2)*gamma(S.One + n/2))
+                return sqrt(pi)/(gamma(S.Half - n/2)*gamma(S.One + n/2))
             elif x == S.One:
                 return S.One
             elif x == oo:
@@ -822,7 +822,7 @@ class assoc_legendre(Function):
             # P^0_n  --->  L_n
             return legendre(n, x)
         if x == 0:
-            return 2**m*sqrt(S.Pi) / (gamma((1 - m - n)/2)*gamma(1 - (m - n)/2))
+            return 2**m*sqrt(pi) / (gamma((1 - m - n)/2)*gamma(1 - (m - n)/2))
         if n.is_Number and m.is_Number and n.is_integer and m.is_integer:
             if n.is_negative:
                 raise ValueError("%s : 1st index must be nonnegative integer (got %r)" % (cls, n))
@@ -907,7 +907,7 @@ class hermite(OrthogonalPolynomial):
                 return S.NegativeOne**n * hermite(n, -x)
             # We can evaluate for some special values of x
             if x == S.Zero:
-                return 2**n * sqrt(S.Pi) / gamma((S.One - n)/2)
+                return 2**n * sqrt(pi) / gamma((S.One - n)/2)
             elif x == oo:
                 return oo
         else:

@@ -1351,7 +1351,7 @@ class FourierTransform(FourierTypeTransform):
         return 1
 
     def b(self):
-        return -2*S.Pi
+        return -2*pi
 
 
 def fourier_transform(f, x, k, **hints):
@@ -1404,7 +1404,7 @@ class InverseFourierTransform(FourierTypeTransform):
         return 1
 
     def b(self):
-        return 2*S.Pi
+        return 2*pi
 
 
 def inverse_fourier_transform(F, k, x, **hints):
