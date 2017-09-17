@@ -1,7 +1,7 @@
 """ Riemann zeta and related function. """
 
-from ...core import (Add, Dummy, Function, I, Integer, S, expand_mul, oo, pi,
-                     sympify, zoo)
+from ...core import (Add, Dummy, E, Function, I, Integer, S, expand_mul, oo,
+                     pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
@@ -160,7 +160,7 @@ class lerchphi(Function):
                   / (unpolarify(zet)**k*root)**m for k in range(n)])
 
         # TODO use minpoly instead of ad-hoc methods when issue sympy/sympy#5888 is fixed
-        if z.is_Pow and z.base is S.Exp1 and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
+        if z.is_Pow and z.base is E and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
             # TODO reference?
             if z == -1:
                 p, q = Integer(1), Integer(2)

@@ -1,4 +1,4 @@
-from ...core import (Add, Derivative, Dummy, Eq, Expr, Function, I, Mul,
+from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Mul,
                      Rational, S, Symbol, Tuple, factor_terms, oo, pi, sympify)
 from ...core.function import AppliedUndef, ArgumentIndexError
 from ...logic.boolalg import BooleanAtom
@@ -955,7 +955,7 @@ def _polarify(eq, lift, pause=False):
         return r
     elif eq.is_Function:
         return eq.func(*[_polarify(arg, lift, pause=False) for arg in eq.args])
-    elif eq.is_Pow and eq.base is S.Exp1:
+    elif eq.is_Pow and eq.base is E:
         return eq.func(eq.base, _polarify(eq.exp, lift, pause=False))
     elif isinstance(eq, Integral):
         # Don't lift the integration variable
@@ -1040,12 +1040,12 @@ def _unpolarify(eq, exponents_only, pause=False):
         if isinstance(eq, polar_lift):
             return _unpolarify(eq.args[0], exponents_only)
 
-    if eq.is_Pow and eq.base is not S.Exp1:
+    if eq.is_Pow and eq.base is not E:
         expo = _unpolarify(eq.exp, exponents_only)
         base = _unpolarify(eq.base, exponents_only,
                            not (expo.is_integer and not pause))
         return base**expo
-    elif eq.is_Pow and eq.base is S.Exp1:
+    elif eq.is_Pow and eq.base is E:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
 
     if eq.is_Function and getattr(eq.func, 'unbranched', False):

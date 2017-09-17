@@ -533,6 +533,7 @@ def evalf_mul(v, prec, options):
 
 
 def evalf_pow(v, prec, options):
+    from .numbers import E
 
     target_prec = prec
     base, exp = v.args
@@ -603,7 +604,7 @@ def evalf_pow(v, prec, options):
         yre, yim, _, _ = evalf(exp, prec, options)
 
     # Pure exponential function; no need to evalf the base
-    if base is S.Exp1:
+    if base is E:
         if yim:
             re, im = libmp.mpc_exp((yre or fzero, yim), prec)
             return finalize_complex(re, im, target_prec)

@@ -2,7 +2,7 @@ from collections import defaultdict
 
 import mpmath
 
-from ..core import (Add, Basic, Dummy, Expr, Float, I, Integer, Mul, Pow,
+from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     Rational, S, Symbol, count_ops, expand_func, expand_log,
                     expand_mul, expand_power_exp, factor_terms, oo, pi,
                     sympify)
@@ -660,7 +660,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     short = shorter(powsimp(expr, combine='exp', deep=True), powsimp(expr), expr)
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
     if (short.has(TrigonometricFunction, HyperbolicFunction, exp_polar) or
-            any(a.base is S.Exp1 for a in short.atoms(Pow))):
+            any(a.base is E for a in short.atoms(Pow))):
         short = exptrigsimp(short, simplify=False)
 
     # get rid of hollow 2-arg Mul factorization

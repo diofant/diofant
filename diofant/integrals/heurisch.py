@@ -1,7 +1,7 @@
 from functools import reduce
 from itertools import permutations
 
-from ..core import Add, Basic, Dummy, Eq, Mul, S, Wild, pi, sympify
+from ..core import Add, Basic, Dummy, E, Eq, Mul, S, Wild, pi, sympify
 from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
                          cos, cosh, cot, coth, erf, erfi, exp, li, log, root,
@@ -276,7 +276,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                             terms.add( x*(li(M[a]*x**M[b]) - (M[a]*x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
 
                 elif g.is_Pow:
-                    if g.base is S.Exp1:
+                    if g.base is E:
                         M = g.exp.match(a*x**2)
 
                         if M is not None:

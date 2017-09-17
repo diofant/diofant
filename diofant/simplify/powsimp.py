@@ -1,9 +1,9 @@
 from collections import defaultdict
 from functools import reduce
 
-from ..core import (Add, Basic, Dummy, Integer, Mul, Pow, Rational, S, cacheit,
-                    count_ops, expand_log, expand_mul, factor_terms, prod,
-                    sympify)
+from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, S,
+                    cacheit, count_ops, expand_log, expand_mul, factor_terms,
+                    prod, sympify)
 from ..core.compatibility import default_sort_key, ordered
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
@@ -608,7 +608,7 @@ def _denest_pow(eq):
             b, e = new.as_base_exp()
 
     # denest exp with log terms in exponent
-    if b is S.Exp1 and e.is_Mul:
+    if b is E and e.is_Mul:
         logs = []
         other = []
         for ei in e.args:

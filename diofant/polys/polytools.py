@@ -4,7 +4,7 @@ import mpmath
 from mpmath.libmp.libhyper import NoConvergence
 
 from . import polyoptions as options
-from ..core import (Add, Basic, Derivative, Dummy, Expr, I, Integer, Mul, S,
+from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul, S,
                     Symbol, Tuple, oo, preorder_traversal, sympify)
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
@@ -5527,7 +5527,7 @@ def _symbolic_factor_list(expr, opt, method):
         if arg.is_Mul:
             args.extend(arg.args)
             continue
-        if arg.is_Pow and arg.base is not S.Exp1:
+        if arg.is_Pow and arg.base is not E:
             base, exp = arg.args
             if base.is_Number:
                 factors.append((base, exp))

@@ -1,7 +1,7 @@
 from functools import reduce
 from math import sqrt as _sqrt
 
-from ...core import Dummy, Function, Integer, S, cacheit, oo, sympify, zoo
+from ...core import Dummy, E, Function, Integer, S, cacheit, oo, sympify, zoo
 from ...core.function import ArgumentIndexError
 from ...ntheory import sieve
 
@@ -274,7 +274,7 @@ class subfactorial(CombinatorialFunction):
 
     def _eval_rewrite_as_uppergamma(self, n):
         from .. import uppergamma
-        return uppergamma(n + 1, -1)/S.Exp1
+        return uppergamma(n + 1, -1)/E
 
     def _eval_is_nonnegative(self):
         n = self.args[0]

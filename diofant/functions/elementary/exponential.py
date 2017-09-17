@@ -1,5 +1,5 @@
-from ...core import (Add, Function, I, Integer, Mul, Pow, S, expand_log, nan,
-                     oo, pi, sympify, zoo)
+from ...core import (Add, E, Function, I, Integer, Mul, Pow, S, expand_log,
+                     nan, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import multiplicity, perfect_power
 from .miscellaneous import sqrt
@@ -147,7 +147,7 @@ def exp(arg, **kwargs):
 
     diofant.functions.elementary.exponential.log
     """
-    return Pow(S.Exp1, arg, **kwargs)
+    return Pow(E, arg, **kwargs)
 
 
 class log(Function):
@@ -204,7 +204,7 @@ class log(Function):
                     return log(arg)/log(base)
             except ValueError:
                 pass
-            if base is not S.Exp1:
+            if base is not E:
                 return cls(arg)/cls(base)
             else:
                 return cls(arg)
@@ -222,7 +222,7 @@ class log(Function):
                 if arg.q != 1:
                     return cls(arg.p) - cls(arg.q)
 
-        if arg.is_Pow and arg.base is S.Exp1 and arg.exp.is_extended_real:
+        if arg.is_Pow and arg.base is E and arg.exp.is_extended_real:
             return arg.exp
         elif isinstance(arg, exp_polar):
             return unpolarify(arg.exp)
@@ -232,7 +232,7 @@ class log(Function):
                 return pi * I + cls(-arg)
             elif arg is zoo:
                 return zoo
-            elif arg is S.Exp1:
+            elif arg is E:
                 return S.One
 
         # don't autoexpand Pow or Mul (see the issue sympy/sympy#3351):
@@ -459,9 +459,9 @@ class LambertW(Function):
         if k is S.Zero:
             if x is S.Zero:
                 return S.Zero
-            if x is S.Exp1:
+            if x is E:
                 return S.One
-            if x == -1/S.Exp1:
+            if x == -1/E:
                 return S.NegativeOne
             if x == -log(2)/2:
                 return -log(2)
@@ -474,7 +474,7 @@ class LambertW(Function):
         if k is S.NegativeOne:
             if x == -pi/2:
                 return -I*pi/2
-            elif x == -1/S.Exp1:
+            elif x == -1/E:
                 return S.NegativeOne
             elif x == -2*exp(-2):
                 return -Integer(2)
@@ -504,14 +504,14 @@ class LambertW(Function):
         else:
             k = self.args[1]
         if k.is_zero:
-            if (x + 1/S.Exp1).is_positive:
+            if (x + 1/E).is_positive:
                 return True
-            elif (x + 1/S.Exp1).is_nonpositive:
+            elif (x + 1/E).is_nonpositive:
                 return False
         elif (k + 1).is_zero:
-            if x.is_negative and (x + 1/S.Exp1).is_nonnegative:
+            if x.is_negative and (x + 1/E).is_nonnegative:
                 return True
-            elif x.is_nonpositive or (x + 1/S.Exp1).is_positive:
+            elif x.is_nonpositive or (x + 1/E).is_positive:
                 return False
 
     def _eval_is_algebraic(self):

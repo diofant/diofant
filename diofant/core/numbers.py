@@ -2817,8 +2817,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     natural logarithm and of the exponential function, `e = \exp(1)`.
     Sometimes called Euler's number or Napier's constant.
 
-    Exp1 is a singleton, and can be accessed by ``S.Exp1``,
-    or can be imported as ``E``.
+    Exp1 is a singleton, and can be imported as ``E``.
 
     Examples
     ========
@@ -2848,7 +2847,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
 
     @staticmethod
     def __abs__():
-        return S.Exp1
+        return E
 
     def __int__(self):
         return 2

@@ -7,7 +7,7 @@ import warnings
 from collections import defaultdict
 from types import GeneratorType
 
-from ..core import (Add, Derivative, Dummy, Equality, Expr, Float, Function,
+from ..core import (Add, Derivative, Dummy, E, Equality, Expr, Float, Function,
                     Ge, I, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp, nan,
                     nfloat, oo, pi, preorder_traversal, sympify, zoo)
@@ -1561,7 +1561,7 @@ def _tsolve(eq, sym, **flags):
         g = _filtered_gens(eq.as_poly(), sym)
         up_or_log = set()
         for gi in g:
-            if gi.is_Pow and gi.base is S.Exp1 or isinstance(gi, log):
+            if gi.is_Pow and gi.base is E or isinstance(gi, log):
                 up_or_log.add(gi)
             elif gi.is_Pow:
                 gisimp = powdenest(expand_power_exp(gi))
@@ -1754,7 +1754,7 @@ def _invert(eq, *symbols, **kwargs):
                 y, x = lhs.args
                 lhs = 2*atan(y/(sqrt(x**2 + y**2) + x))
 
-        if lhs.is_Pow and lhs.base is S.Exp1:
+        if lhs.is_Pow and lhs.base is E:
             rhs = log(rhs)
             lhs = lhs.exp
 

@@ -229,7 +229,7 @@ of those tests will surely fail.
 from collections import defaultdict
 from itertools import islice
 
-from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
+from ..core import (Add, AtomicExpr, Derivative, Dummy, E, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, S, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
                     oo, symbols, sympify, zoo)
@@ -1689,7 +1689,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
                 if e.has(t):
                     tpart = e.as_independent(t, Mul)[1]
                     for i in Mul.make_args(tpart):
-                        if i.is_Pow and i.base is S.Exp1:
+                        if i.is_Pow and i.base is E:
                             b, e = i.as_base_exp()
                             co = e.coeff(t)
                             if co and not co.has(t) and co.has(I):
@@ -2551,7 +2551,7 @@ def _get_constant_subexpressions(expr, Cs):
         if len(expr_syms) > 0 and expr_syms.issubset(Cs):
             Ces.append(expr)
         else:
-            if expr.is_Pow and expr.base is S.Exp1:
+            if expr.is_Pow and expr.base is E:
                 expr = expr.expand(mul=True)
             if expr.func in (Add, Mul):
                 d = sift(expr.args, lambda i: i.free_symbols.issubset(Cs))
@@ -2736,10 +2736,10 @@ def constantsimp(expr, constants):
             infac = False
             asfac = False
             for m in new_expr.args:
-                if m.is_Pow and m.base is S.Exp1:
+                if m.is_Pow and m.base is E:
                     asfac = True
                 elif m.is_Add:
-                    infac = any(fi.is_Pow and fi.base is S.Exp1 for t in m.args
+                    infac = any(fi.is_Pow and fi.base is E for t in m.args
                                 for fi in Mul.make_args(t))
                 if asfac and infac:
                     new_expr = expr
