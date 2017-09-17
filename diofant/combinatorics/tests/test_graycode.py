@@ -1,3 +1,5 @@
+import pytest
+
 from diofant.combinatorics.graycode import (GrayCode, bin_to_gray,
                                             get_subset_from_bitstring,
                                             graycode_subsets, random_bitstring)
@@ -37,6 +39,11 @@ def test_graycode():
     assert a.rank == 28
     a = GrayCode(6, start='101000')
     assert a.rank == 48
+    pytest.raises(ValueError, lambda: list(a.generate_gray(start='11111011')))
+
+    pytest.raises(ValueError, lambda: GrayCode(0))
+    pytest.raises(ValueError, lambda: GrayCode(3, start='1000'))
+    pytest.raises(ValueError, lambda: GrayCode(3, rank=-1))
 
     assert GrayCode(6, rank=4).current == '000110'
     assert GrayCode(6, rank=4).rank == 4
@@ -59,3 +66,6 @@ def test_graycode():
     assert list(graycode_subsets(['a', 'b', 'c'])) == \
         [[], ['c'], ['b', 'c'], ['b'], ['a', 'b'], ['a', 'b', 'c'],
          ['a', 'c'], ['a']]
+
+    pytest.raises(ValueError,
+                  lambda: get_subset_from_bitstring(['a', 'b'], '0'))
