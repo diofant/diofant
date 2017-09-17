@@ -1055,7 +1055,7 @@ def evalf_prod(expr, prec, options):
 
 
 def evalf_sum(expr, prec, options):
-    from .numbers import Float
+    from .numbers import Float, oo
     if 'subs' in options:
         expr = expr.subs(options['subs'])
     func = expr.function
@@ -1067,7 +1067,7 @@ def evalf_sum(expr, prec, options):
     prec2 = prec + 10
     try:
         n, a, b = limits[0]
-        if b != S.Infinity or a != int(a):
+        if b != oo or a != int(a):
             raise NotImplementedError
         # Use fast hypergeometric summation if possible
         v = hypsum(func, n, int(a), prec2)

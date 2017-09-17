@@ -136,8 +136,8 @@ class factorial(CombinatorialFunction):
         if n.is_Number:
             if n is S.Zero:
                 return S.One
-            elif n is S.Infinity:
-                return S.Infinity
+            elif n is oo:
+                return oo
             elif n.is_Integer:
                 if n.is_negative:
                     return zoo
@@ -259,8 +259,8 @@ class subfactorial(CombinatorialFunction):
         if arg.is_Number:
             if arg.is_Integer and arg.is_nonnegative:
                 return cls._eval(arg)
-            elif arg is S.Infinity:
-                return S.Infinity
+            elif arg is oo:
+                return oo
 
     def _eval_is_even(self):
         n = self.args[0]
@@ -428,20 +428,20 @@ class RisingFactorial(CombinatorialFunction):
                 return S.One
             else:
                 if k.is_positive:
-                    if x is S.Infinity:
-                        return S.Infinity
+                    if x is oo:
+                        return oo
                     elif x is -oo:
                         if k.is_odd:
                             return -oo
                         else:
-                            return S.Infinity
+                            return oo
                     else:
                         return reduce(lambda r, i: r*(x + i), range(int(k)), 1)
                 else:
-                    if x is S.Infinity:
-                        return S.Infinity
+                    if x is oo:
+                        return oo
                     elif x is -oo:
-                        return S.Infinity
+                        return oo
                     else:
                         return 1/reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
 
@@ -502,20 +502,20 @@ class FallingFactorial(CombinatorialFunction):
                 return S.One
             else:
                 if k.is_positive:
-                    if x is S.Infinity:
-                        return S.Infinity
+                    if x is oo:
+                        return oo
                     elif x is -oo:
                         if k.is_odd:
                             return -oo
                         else:
-                            return S.Infinity
+                            return oo
                     else:
                         return reduce(lambda r, i: r*(x - i), range(int(k)), 1)
                 else:
-                    if x is S.Infinity:
-                        return S.Infinity
+                    if x is oo:
+                        return oo
                     elif x is -oo:
-                        return S.Infinity
+                        return oo
                     else:
                         return 1/reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
 

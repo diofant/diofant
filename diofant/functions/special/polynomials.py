@@ -143,12 +143,12 @@ class jacobi(OrthogonalPolynomial):
                         hyper([-b - n, -n], [a + 1], -1))
             if x == S.One:
                 return RisingFactorial(a + 1, n) / factorial(n)
-            elif x == S.Infinity:
+            elif x == oo:
                 if n.is_positive:
                     # Make sure a+b+2*n \notin Z
                     if (a + b + 2*n).is_integer:
                         raise ValueError("a + b + 2*n should not be an integer.")
-                    return RisingFactorial(a + b + n + 1, n) * S.Infinity
+                    return RisingFactorial(a + b + n + 1, n) * oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             return jacobi_poly(n, a, b, x)
@@ -346,9 +346,9 @@ class gegenbauer(OrthogonalPolynomial):
                         (gamma((1 - n)/2) * gamma(n + 1) * gamma(a)) )
             if x == S.One:
                 return gamma(2*a + n) / (gamma(2*a) * gamma(n + 1))
-            elif x == S.Infinity:
+            elif x == oo:
                 if n.is_positive:
-                    return RisingFactorial(a, n) * S.Infinity
+                    return RisingFactorial(a, n) * oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             return gegenbauer_poly(n, a, x)
@@ -464,8 +464,8 @@ class chebyshevt(OrthogonalPolynomial):
                 return cos(S.Half * S.Pi * n)
             if x == S.One:
                 return S.One
-            elif x == S.Infinity:
-                return S.Infinity
+            elif x == oo:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -563,8 +563,8 @@ class chebyshevu(OrthogonalPolynomial):
                 return cos(S.Half * S.Pi * n)
             if x == S.One:
                 return S.One + n
-            elif x == S.Infinity:
-                return S.Infinity
+            elif x == oo:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -734,8 +734,8 @@ class legendre(OrthogonalPolynomial):
                 return sqrt(S.Pi)/(gamma(S.Half - n/2)*gamma(S.One + n/2))
             elif x == S.One:
                 return S.One
-            elif x == S.Infinity:
-                return S.Infinity
+            elif x == oo:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -908,8 +908,8 @@ class hermite(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == S.Zero:
                 return 2**n * sqrt(S.Pi) / gamma((S.One - n)/2)
-            elif x == S.Infinity:
-                return S.Infinity
+            elif x == oo:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -1000,9 +1000,9 @@ class laguerre(OrthogonalPolynomial):
             if x == S.Zero:
                 return S.One
             elif x == -oo:
-                return S.Infinity
-            elif x == S.Infinity:
-                return S.NegativeOne**n * S.Infinity
+                return oo
+            elif x == oo:
+                return S.NegativeOne**n * oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -1104,10 +1104,10 @@ class assoc_laguerre(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == S.Zero:
                 return binomial(n + alpha, alpha)
-            elif x == S.Infinity and n.is_positive:
-                return S.NegativeOne**n * S.Infinity
+            elif x == oo and n.is_positive:
+                return S.NegativeOne**n * oo
             elif x == -oo and n.is_positive:
-                return S.Infinity
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:

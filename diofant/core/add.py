@@ -165,7 +165,7 @@ class Add(AssocOp):
             noncommutative = noncommutative or not s.is_commutative
 
         # oo, -oo
-        if coeff is S.Infinity:
+        if coeff is oo:
             newseq = [f for f in newseq if not
                       (f.is_nonnegative or f.is_extended_real and f.is_finite)]
 

@@ -38,12 +38,12 @@ class Naturals(Set, metaclass=Singleton):
 
     is_iterable = True
     _inf = S.One
-    _sup = S.Infinity
+    _sup = oo
 
     def _intersection(self, other):
         if other.is_Interval:
             return Intersection(
-                S.Integers, other, Interval(self._inf, S.Infinity, False, True))
+                S.Integers, other, Interval(self._inf, oo, False, True))
 
     def _contains(self, other):
         if other.is_positive and other.is_integer:
@@ -120,7 +120,7 @@ class Integers(Set, metaclass=Singleton):
 
     def _intersection(self, other):
         from ..functions import floor, ceiling
-        if other is Interval(-oo, S.Infinity, True, True) or other is S.Reals:
+        if other is Interval(-oo, oo, True, True) or other is S.Reals:
             return self
         elif other.is_Interval:
             s = Range(ceiling(other.left), floor(other.right) + 1)
@@ -142,11 +142,11 @@ class Integers(Set, metaclass=Singleton):
 
     @property
     def _inf(self):
-        return -S.Infinity
+        return -oo
 
     @property
     def _sup(self):
-        return S.Infinity
+        return oo
 
     @property
     def _boundary(self):
@@ -184,11 +184,11 @@ class Rationals(Set, metaclass=Singleton):
 
     @property
     def _inf(self):
-        return -S.Infinity
+        return -oo
 
     @property
     def _sup(self):
-        return S.Infinity
+        return oo
 
     @property
     def _boundary(self):
@@ -207,7 +207,7 @@ class Rationals(Set, metaclass=Singleton):
 
 class Reals(Interval, metaclass=Singleton):
     def __new__(cls):
-        return Interval.__new__(cls, -S.Infinity, S.Infinity, True, True)
+        return Interval.__new__(cls, -oo, oo, True, True)
 
 
 class ImageSet(Set):
@@ -354,7 +354,7 @@ class Range(Set):
         slc = slice(*args)
         start, stop, step = slc.start or 0, slc.stop, slc.step or 1
         try:
-            start, stop, step = [w if w in [-oo, S.Infinity] else Integer(as_int(w))
+            start, stop, step = [w if w in [-oo, oo] else Integer(as_int(w))
                                  for w in (start, stop, step)]
         except ValueError:
             raise ValueError("Inputs to Range must be Integer Valued\n" +
@@ -377,7 +377,7 @@ class Range(Set):
             start, stop = sorted((start, stop - step))
 
         step = abs(step)
-        if (start, stop) == (-oo, S.Infinity):
+        if (start, stop) == (-oo, oo):
             raise ValueError("Both the start and end value of "
                              "Range cannot be unbounded")
         else:
@@ -413,7 +413,7 @@ class Range(Set):
             return Range(inf, sup + 1, self.step)
 
         if other == S.Naturals:
-            return self._intersection(Interval(1, S.Infinity, False, True))
+            return self._intersection(Interval(1, oo, False, True))
 
         if other == S.Integers:
             return self
@@ -448,8 +448,8 @@ class Range(Set):
 
     @property
     def _last_element(self):
-        if self.stop is S.Infinity:
-            return S.Infinity
+        if self.stop is oo:
+            return oo
         elif self.start is -oo:
             return self.stop - self.step
         else:

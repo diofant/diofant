@@ -56,7 +56,7 @@ class elliptic_k(Function):
             return zoo
         elif z is S.NegativeOne:
             return gamma(Rational(1, 4))**2/(4*sqrt(2*pi))
-        elif z in (S.Infinity, -oo, I*S.Infinity,
+        elif z in (oo, -oo, I*oo,
                    I*-oo, zoo):
             return S.Zero
 
@@ -125,7 +125,7 @@ class elliptic_f(Function):
             return S.Zero
         elif k.is_integer:
             return k*elliptic_k(m)
-        elif m in (S.Infinity, -oo):
+        elif m in (oo, -oo):
             return S.Zero
         elif z.could_extract_minus_sign():
             return -elliptic_f(-z, m)
@@ -196,7 +196,7 @@ class elliptic_e(Function):
                 return S.Zero
             elif k.is_integer:
                 return k*elliptic_e(m)
-            elif m in (S.Infinity, -oo):
+            elif m in (oo, -oo):
                 return zoo
             elif z.could_extract_minus_sign():
                 return -elliptic_e(-z, m)
@@ -205,10 +205,10 @@ class elliptic_e(Function):
                 return pi/2
             elif z is S.One:
                 return S.One
-            elif z is S.Infinity:
-                return I*S.Infinity
+            elif z is oo:
+                return I*oo
             elif z is -oo:
-                return S.Infinity
+                return oo
             elif z is zoo:
                 return zoo
 
@@ -310,9 +310,9 @@ class elliptic_pi(Function):
             elif n == m:
                 return (elliptic_f(z, n) - elliptic_pi(1, z, n) +
                         tan(z)/sqrt(1 - n*sin(z)**2))
-            elif n in (S.Infinity, -oo):
+            elif n in (oo, -oo):
                 return S.Zero
-            elif m in (S.Infinity, -oo):
+            elif m in (oo, -oo):
                 return S.Zero
             elif z.could_extract_minus_sign():
                 return -elliptic_pi(n, -z, m)
@@ -324,12 +324,12 @@ class elliptic_pi(Function):
             elif m == S.Zero:
                 return pi/(2*sqrt(1 - n))
             elif m == S.One:
-                return -S.Infinity/sign(n - 1)
+                return -oo/sign(n - 1)
             elif n == m:
                 return elliptic_e(n)/(1 - n)
-            elif n in (S.Infinity, -oo):
+            elif n in (oo, -oo):
                 return S.Zero
-            elif m in (S.Infinity, -oo):
+            elif m in (oo, -oo):
                 return S.Zero
 
     def _eval_conjugate(self):

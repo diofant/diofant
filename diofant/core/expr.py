@@ -202,7 +202,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         r = self.round(2)
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
-        if r in (nan, S.Infinity, -oo):
+        if r in (nan, oo, -oo):
             raise TypeError("can't convert %s to int" % r)
         i = int(r)
         if not i:
@@ -742,7 +742,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             A = 0
         else:
             A = self.subs(x, a)
-            if A.has(nan, S.Infinity, -oo, zoo):
+            if A.has(nan, oo, -oo, zoo):
                 A = limit(self, x, a)
                 if A is nan:
                     return A
@@ -753,7 +753,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = 0
         else:
             B = self.subs(x, b)
-            if B.has(nan, S.Infinity, -oo, zoo):
+            if B.has(nan, oo, -oo, zoo):
                 B = limit(self, x, b)
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
@@ -1912,12 +1912,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return x.extract_multiplicatively(b)
         quotient = self / c
         if self.is_Number:
-            if self is S.Infinity:
+            if self is oo:
                 if c.is_positive:
-                    return S.Infinity
+                    return oo
             elif self is -oo:
                 if c.is_negative:
-                    return S.Infinity
+                    return oo
                 elif c.is_positive:
                     return -oo
             elif self is zoo:
@@ -2329,7 +2329,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         is_algebraic_expr
         """
-        if self in [nan, S.Infinity, -S.Infinity, zoo]:
+        if self in [nan, oo, -oo, zoo]:
             return False
 
         if syms:
@@ -2513,7 +2513,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if len(dir) != 1 or dir not in '+-':
             raise ValueError("Dir must be '+' or '-'")
 
-        if x0 in [S.Infinity, -oo]:
+        if x0 in [oo, -oo]:
             s = self.aseries(x, n)
             if x0 is -oo:
                 return s.subs(x, -x)
@@ -2804,7 +2804,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if x in omega:
             s = self.subs(x, exp(x)).aseries(x, n, bound, hir).subs(x, log(x))
             if s.getO():
-                o = Order(1/x**n, (x, S.Infinity))
+                o = Order(1/x**n, (x, oo))
                 return s + o
             return s
         d = Dummy('d', positive=True)
@@ -3237,7 +3237,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x = self
         if not x.is_number:
             raise TypeError('%s is not a number' % type(x))
-        if x in (nan, S.Infinity, -oo, zoo):
+        if x in (nan, oo, -oo, zoo):
             return x
         if not x.is_extended_real:
             i, r = x.as_real_imag()

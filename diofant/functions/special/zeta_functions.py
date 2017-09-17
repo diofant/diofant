@@ -1,6 +1,6 @@
 """ Riemann zeta and related function. """
 
-from ...core import (Add, Dummy, Function, I, Integer, S, expand_mul, pi,
+from ...core import (Add, Dummy, Function, I, Integer, S, expand_mul, oo, pi,
                      sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
@@ -436,7 +436,7 @@ class zeta(Function):
             # TODO Should a == 0 return nan as well?
 
         if z.is_Number:
-            if z is S.Infinity:
+            if z is oo:
                 return S.One
             elif z is S.Zero:
                 return S.Half - a
@@ -490,7 +490,7 @@ class _zetas(Function):
         point = args0[0]
 
         # Expansion at oo
-        if point is S.Infinity:
+        if point is oo:
             if n < 1:
                 return Order(1, x)
             z = self.args[0]

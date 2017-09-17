@@ -67,7 +67,7 @@ References
 
 from functools import reduce
 
-from ..core import Add, Dummy, Float, Mul, S, cacheit, evaluate
+from ..core import Add, Dummy, Float, Mul, S, cacheit, evaluate, oo
 from ..core.compatibility import ordered
 from ..functions import sign as sgn
 from ..functions import Abs, exp, log
@@ -242,7 +242,7 @@ def limitinf(e, x):
     elif sig == -1:
         s = sign(c0, x)
         assert s != S.Zero
-        return s*S.Infinity
+        return s*oo
     elif sig == 0:
         return limitinf(c0, x)
     else:

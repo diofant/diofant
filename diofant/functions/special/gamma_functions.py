@@ -100,8 +100,8 @@ class gamma(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
             elif arg.is_Integer:
                 if arg.is_positive:
                     return factorial(arg - 1)
@@ -414,7 +414,7 @@ class uppergamma(Function):
         from .error_functions import expint
         from .. import unpolarify
         if z.is_Number:
-            if z is S.Infinity:
+            if z is oo:
                 return S.Zero
             elif z is S.Zero:
                 # TODO: Holds only for Re(a) > 0:
@@ -628,10 +628,10 @@ class polygamma(Function):
                 return loggamma(z)
             else:
                 if z.is_Number:
-                    if z is S.Infinity:
+                    if z is oo:
                         if n.is_Number:
                             if n is S.Zero:
-                                return S.Infinity
+                                return oo
                             else:
                                 return S.Zero
                     elif z.is_Integer:
@@ -661,12 +661,12 @@ class polygamma(Function):
                     z0 = z + n
                     if z0 in lookup:
                         return lookup[z0] - Add(*[1/(z0 - 1 - k) for k in range(n)])
-            elif z in (S.Infinity, -oo):
-                return S.Infinity
+            elif z in (oo, -oo):
+                return oo
             else:
                 t = z.extract_multiplicatively(S.ImaginaryUnit)
-                if t in (S.Infinity, -oo):
-                    return S.Infinity
+                if t in (oo, -oo):
+                    return oo
 
         # TODO n == 1 also can do some rational z
 
@@ -839,7 +839,7 @@ class loggamma(Function):
 
         if z.is_integer:
             if z.is_nonpositive:
-                return S.Infinity
+                return oo
             elif z.is_positive:
                 return log(gamma(z))
         elif z.is_rational:
@@ -848,9 +848,9 @@ class loggamma(Function):
             if p.is_positive and q == 2:
                 return log(sqrt(S.Pi) * 2**(1 - p) * gamma(p) / gamma((p + 1)*S.Half))
 
-        if z is S.Infinity:
-            return S.Infinity
-        elif abs(z) is S.Infinity:
+        if z is oo:
+            return oo
+        elif abs(z) is oo:
             return zoo
 
     def _eval_expand_func(self, **hints):

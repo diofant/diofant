@@ -59,7 +59,7 @@ def solve_poly_inequality(poly, rel):
     elif rel == '!=':
         left = -oo
 
-        for right, _ in reals + [(S.Infinity, 1)]:
+        for right, _ in reals + [(oo, 1)]:
             interval = Interval(left, right, True, True)
             intervals.append(interval)
             left = right
@@ -76,7 +76,7 @@ def solve_poly_inequality(poly, rel):
         else:
             eq_sign, equal = -1, True
 
-        right, right_open = S.Infinity, True
+        right, right_open = oo, True
 
         for left, multiplicity in reversed(reals):
             if multiplicity % 2:
@@ -411,9 +411,9 @@ def solve_univariate_inequality(expr, gen, relational=True):
     for x in reals:
         end = x
 
-        if end in [-oo, S.Infinity]:
+        if end in [-oo, oo]:
             if valid(Integer(0)):
-                sol_sets.append(Interval(start, S.Infinity, True, True))
+                sol_sets.append(Interval(start, oo, True, True))
                 break
 
         if valid((start + end)/2 if start != -oo else end - 1):
@@ -426,7 +426,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
         start = end
 
-    end = S.Infinity
+    end = oo
 
     if valid(start + 1):
         sol_sets.append(Interval(start, end, True, True))

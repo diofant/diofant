@@ -522,7 +522,7 @@ class Mul(AssocOp):
         c_part.extend([Pow(b, e) for e, b in pnew.items()])
 
         # oo, -oo
-        if (coeff is S.Infinity) or (coeff is -oo):
+        if (coeff is oo) or (coeff is -oo):
             def _handle_for_oo(c_part, coeff_sign):
                 new_c_part = []
                 for t in c_part:
@@ -1311,7 +1311,7 @@ class Mul(AssocOp):
         else:
             ncdid = 0  # number of nc replacements we did
             take = len(old_nc)  # how much to look at each time
-            limit = cdid or S.Infinity  # max number that we can take
+            limit = cdid or oo  # max number that we can take
             failed = []  # failed terms will need subs if other terms pass
             i = 0
             while limit and i + take <= len(nc):

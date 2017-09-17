@@ -1786,7 +1786,7 @@ class MatrixBase(DefaultPrinting):
             elif ord == 1:  # sum(abs(x))
                 return Add(*(abs(i) for i in vals))
 
-            elif ord == S.Infinity:  # max(abs(x))
+            elif ord == oo:  # max(abs(x))
                 return Max(*[abs(i) for i in vals])
 
             elif ord == -oo:  # min(abs(x))

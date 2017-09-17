@@ -532,7 +532,7 @@ class Max(MinMaxBase, Application):
     diofant.functions.elementary.miscellaneous.Min : find minimum values
     """
 
-    zero = S.Infinity
+    zero = oo
     identity = -oo
 
     def fdiff( self, argindex ):
@@ -586,7 +586,7 @@ class Min(MinMaxBase, Application):
     """
 
     zero = -oo
-    identity = S.Infinity
+    identity = oo
 
     def fdiff( self, argindex ):
         from .. import Heaviside

@@ -138,7 +138,7 @@ def checksol(f, sol, **flags):
 
     illegal = {nan,
                zoo,
-               S.Infinity,
+               oo,
                -oo}
     if any(sympify(v).atoms() & illegal for k, v in sol.items()):
         return False

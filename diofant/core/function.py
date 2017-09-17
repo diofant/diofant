@@ -312,7 +312,7 @@ class Function(Application, Expr):
     ...         if x.is_Number:
     ...             if x is S.Zero:
     ...                 return S.One
-    ...             elif x is S.Infinity:
+    ...             elif x is oo:
     ...                 return S.Zero
     ...
     ...     def _eval_is_real(self):

@@ -11,7 +11,7 @@ from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
 from ...core import (Add, Dummy, E, Expr, Function, Integer, Rational, S,
-                     cacheit, expand_mul, nan, pi, prod)
+                     cacheit, expand_mul, nan, oo, pi, prod)
 from ...core.compatibility import DIOFANT_INTS, as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
@@ -457,7 +457,7 @@ class bell(Function):
         if not n.is_nonnegative:
             return self
         k = Dummy('k', integer=True, nonnegative=True)
-        return 1 / E * Sum(k**n / factorial(k), (k, 0, S.Infinity))
+        return 1 / E * Sum(k**n / factorial(k), (k, 0, oo))
 
 ############################################################################
 #                                                                          #
@@ -612,12 +612,12 @@ class harmonic(Function):
         if m.is_zero:
             return n
 
-        if n is S.Infinity and m.is_Number:
+        if n is oo and m.is_Number:
             # TODO: Fix for symbolic values of m
             if m.is_negative:
                 return nan
             elif m <= 1:
-                return S.Infinity
+                return oo
             else:
                 return zeta(m)
 

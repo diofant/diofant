@@ -505,7 +505,7 @@ class PrettyPrinter(Printer):
             LimArg = prettyForm(*LimArg.right('->'))
         LimArg = prettyForm(*LimArg.right(self._print(z0)))
 
-        if str(dir) == "real" or z0 in (S.Infinity, -oo):
+        if str(dir) == "real" or z0 in (oo, -oo):
             dir = ""
         else:
             if self._use_unicode:
@@ -1207,7 +1207,7 @@ class PrettyPrinter(Printer):
                     b.append(Pow(item.base, -item.exp, evaluate=False))
                 else:
                     b.append(Pow(item.base, -item.exp))
-            elif item.is_Rational and item is not S.Infinity:
+            elif item.is_Rational and item is not oo:
                 if item.p != 1 or multiple_ones:
                     a.append(Rational(item.p))
                 if item.q != 1:
@@ -1351,7 +1351,7 @@ class PrettyPrinter(Printer):
         if s.start is -oo:
             it = iter(s)
             printset = s.start, dots, s._last_element - s.step, s._last_element
-        elif s.stop is S.Infinity or len(s) > 4:
+        elif s.stop is oo or len(s) > 4:
             it = iter(s)
             printset = next(it), next(it), dots, s._last_element
         else:

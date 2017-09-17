@@ -161,7 +161,7 @@ class besselj(BesselBase):
                 return zoo
             elif nu.is_imaginary:
                 return nan
-        if z is S.Infinity or (z is -oo):
+        if z is oo or (z is -oo):
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -254,7 +254,7 @@ class bessely(BesselBase):
                 return zoo
             elif re(nu).is_zero:
                 return nan
-        if z is S.Infinity or z is -oo:
+        if z is oo or z is -oo:
             return S.Zero
 
         if nu.is_integer:
@@ -330,7 +330,7 @@ class besseli(BesselBase):
                 return zoo
             elif nu.is_imaginary:
                 return nan
-        if im(z) is S.Infinity or im(z) is -oo:
+        if im(z) is oo or im(z) is -oo:
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -415,12 +415,12 @@ class besselk(BesselBase):
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.Infinity
+                return oo
             elif re(nu).is_zero is False:
                 return zoo
             elif re(nu).is_zero:
                 return nan
-        if im(z) is S.Infinity or im(z) is -oo:
+        if im(z) is oo or im(z) is -oo:
             return S.Zero
 
         if nu.is_integer:
@@ -861,7 +861,7 @@ class airyai(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
             elif arg is -oo:
                 return S.Zero
@@ -1024,8 +1024,8 @@ class airybi(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
             elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
@@ -1106,7 +1106,7 @@ class _airyais(Function):
         from ...series import Order
         point = args0[0]
 
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
             l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
                  Rational(-3, 4)**k/(2*S.Pi**2*factorial(k) *
@@ -1135,7 +1135,7 @@ class _airybis(Function):
         from ...series import Order
         point = args0[0]
 
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
             l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
                  Rational(3, 4)**k/(2*S.Pi**2*factorial(k) *
@@ -1236,7 +1236,7 @@ class airyaiprime(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
             elif arg is S.Zero:
                 return -S.One / (cbrt(3) * gamma(Rational(1, 3)))
@@ -1386,8 +1386,8 @@ class airybiprime(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
             elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:

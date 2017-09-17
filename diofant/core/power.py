@@ -1155,7 +1155,7 @@ class Pow(Expr):
             if e_series.is_Order:
                 return 1 + e_series
             e0 = limit(e_series.removeO(), x, 0)
-            if e0 in (-oo, S.Infinity):
+            if e0 in (-oo, oo):
                 return self
             t = e_series - e0
             exp_series = term = exp(e0)
@@ -1178,13 +1178,13 @@ class Pow(Expr):
             if t.is_Add:
                 t = t.func(*[i for i in t.args if i.limit(x, 0).is_finite])
             c, e = b0.as_coeff_exponent(x)
-            if self.exp is S.Infinity:
+            if self.exp is oo:
                 if e != 0:
                     sig = -e
                 else:
                     sig = abs(c) - 1 if c != 1 else t.removeO()
                 if sig.is_positive:
-                    return S.Infinity
+                    return oo
                 elif sig.is_negative:
                     return S.Zero
                 else:

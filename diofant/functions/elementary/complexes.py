@@ -453,7 +453,7 @@ class Abs(Function):
                 return arg2
         if arg.is_Add:
             if any(a.is_infinite for a in arg.as_real_imag()):
-                return S.Infinity
+                return oo
             if arg.is_extended_real is not True and arg.is_imaginary is None:
                 if all(a.is_extended_real or a.is_imaginary or (S.ImaginaryUnit*a).is_extended_real for a in arg.args):
                     from ...core import expand_mul

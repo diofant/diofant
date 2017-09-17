@@ -11,7 +11,7 @@ complete source code files.
 
 from re import search
 
-from ..core import Mul, Pow, Rational, S
+from ..core import Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
 from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
@@ -127,7 +127,7 @@ class OctaveCodePrinter(CodePrinter):
                     b.append(Pow(item.base, -item.exp, evaluate=False))
                 else:
                     b.append(Pow(item.base, -item.exp))
-            elif item.is_Rational and item is not S.Infinity:
+            elif item.is_Rational and item is not oo:
                 if item.p != 1:
                     a.append(Rational(item.p))
                 if item.q != 1:

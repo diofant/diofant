@@ -35,16 +35,15 @@ def limit(expr, z, z0, dir="+"):
 def heuristics(e, z, z0, dir):
     rv = None
 
-    if abs(z0) is S.Infinity:
-        rv = limit(e.subs(z, 1/z), z, S.Zero, "+" if z0 is S.Infinity else "-")
+    if abs(z0) is oo:
+        rv = limit(e.subs(z, 1/z), z, S.Zero, "+" if z0 is oo else "-")
         if isinstance(rv, Limit):
             return
     elif e.is_Mul or e.is_Add or e.is_Pow or e.is_Function:
         r = []
         for a in e.args:
             l = limit(a, z, z0, dir)
-            if l.has(S.Infinity) and (l.func not in (sin, cos) and
-                                      l.is_finite is None):
+            if l.has(oo) and (l.func not in (sin, cos) and l.is_finite is None):
                 return
             elif isinstance(l, Limit):
                 return
@@ -93,7 +92,7 @@ class Limit(Expr):
         z = sympify(z)
         z0 = sympify(z0)
 
-        if z0 is S.Infinity:
+        if z0 is oo:
             dir = "-"
         elif z0 is -oo:
             dir = "+"
@@ -185,7 +184,7 @@ class Limit(Expr):
             newe, newz = e, z
             if z0 == -oo:
                 newe = e.subs(z, -z)
-            elif z0 != S.Infinity:
+            elif z0 != oo:
                 if str(dir) == "+":
                     newe = e.subs(z, z0 + 1/z)
                 else:

@@ -111,7 +111,7 @@ class erf(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.One
             elif arg is -oo:
                 return S.NegativeOne
@@ -126,7 +126,7 @@ class erf(Function):
 
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity or t is -oo:
+        if t is oo or t is -oo:
             return arg
 
         # Try to pull out factors of -1
@@ -302,7 +302,7 @@ class erfc(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
             elif arg is S.Zero:
                 return S.One
@@ -315,7 +315,7 @@ class erfc(Function):
 
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity or t is -oo:
+        if t is oo or t is -oo:
             return -arg
 
         # Try to pull out factors of -1
@@ -486,8 +486,8 @@ class erfi(Function):
         if z.is_Number:
             if z is S.Zero:
                 return S.Zero
-            elif z is S.Infinity:
-                return S.Infinity
+            elif z is oo:
+                return oo
 
         # Try to pull out factors of -1
         if z.could_extract_minus_sign():
@@ -496,7 +496,7 @@ class erfi(Function):
         # Try to pull out factors of I
         nz = z.extract_multiplicatively(I)
         if nz is not None:
-            if nz is S.Infinity:
+            if nz is oo:
                 return I
             if isinstance(nz, erfinv):
                 return I*nz.args[0]
@@ -649,7 +649,7 @@ class erf2(Function):
 
     @classmethod
     def eval(cls, x, y):
-        I = S.Infinity
+        I = oo
         N = -oo
         O = S.Zero
         if x == y:
@@ -777,7 +777,7 @@ class erfinv(Function):
         elif z is S.Zero:
             return S.Zero
         elif z is S.One:
-            return S.Infinity
+            return oo
 
         if isinstance(z, erf) and z.args[0].is_extended_real:
             return z.args[0]
@@ -849,7 +849,7 @@ class erfcinv (Function):
     @classmethod
     def eval(cls, z):
         if z is S.Zero:
-            return S.Infinity
+            return oo
         elif z is S.One:
             return S.Zero
         elif z == 2:
@@ -923,16 +923,16 @@ class erf2inv(Function):
         if x is S.Zero and y is S.Zero:
             return S.Zero
         elif x is S.Zero and y is S.One:
-            return S.Infinity
+            return oo
         elif x is S.One and y is S.Zero:
             return S.One
         elif x is S.Zero:
             return erfinv(y)
-        elif x is S.Infinity:
+        elif x is oo:
             return erfcinv(-y)
         elif y is S.Zero:
             return x
-        elif y is S.Infinity:
+        elif y is oo:
             return erfinv(x)
 
 
@@ -1384,8 +1384,8 @@ class li(Function):
             return S.Zero
         elif z is S.One:
             return -oo
-        elif z is S.Infinity:
-            return S.Infinity
+        elif z is oo:
+            return oo
 
     def fdiff(self, argindex=1):
         arg = self.args[0]
@@ -1496,8 +1496,8 @@ class Li(Function):
 
     @classmethod
     def eval(cls, z):
-        if z is S.Infinity:
-            return S.Infinity
+        if z is oo:
+            return oo
         elif z is 2*S.One:
             return S.Zero
 
@@ -1529,7 +1529,7 @@ class TrigonometricIntegral(Function):
     def eval(cls, z):
         if z == 0:
             return cls._atzero
-        elif z is S.Infinity:
+        elif z is oo:
             return cls._atinf()
         elif z is -oo:
             return cls._atneginf()
@@ -1828,7 +1828,7 @@ class Shi(TrigonometricIntegral):
 
     @classmethod
     def _atinf(cls):
-        return S.Infinity
+        return oo
 
     @classmethod
     def _atneginf(cls):
@@ -1924,11 +1924,11 @@ class Chi(TrigonometricIntegral):
 
     @classmethod
     def _atinf(cls):
-        return S.Infinity
+        return oo
 
     @classmethod
     def _atneginf(cls):
-        return S.Infinity
+        return oo
 
     @classmethod
     def _minusfactor(cls, z):
@@ -1992,7 +1992,7 @@ class FresnelIntegral(Function):
 
         # Values at positive infinities signs
         # if any were extracted automatically
-        if z is S.Infinity:
+        if z is oo:
             return S.Half
 
     def fdiff(self, argindex=1):
@@ -2146,7 +2146,7 @@ class fresnels(FresnelIntegral):
         point = args0[0]
 
         # Expansion at oo
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
 
             # expansion of S(x) = S1(x*sqrt(pi/2)), see reference[5] page 1-8
@@ -2279,7 +2279,7 @@ class fresnelc(FresnelIntegral):
         point = args0[0]
 
         # Expansion at oo
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
 
             # expansion of C(x) = C1(x*sqrt(pi/2)), see reference[5] page 1-8
@@ -2321,7 +2321,7 @@ class _erfs(Function):
         point = args0[0]
 
         # Expansion at oo
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
             l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
                  factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
@@ -2331,7 +2331,7 @@ class _erfs(Function):
 
         # Expansion at I*oo
         t = point.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity:
+        if t is oo:
             z = self.args[0]
             # TODO: is the series really correct?
             l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
@@ -2362,7 +2362,7 @@ class _eis(Function):
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
-        if args0[0] != S.Infinity:
+        if args0[0] != oo:
             return super(_eis, self)._eval_aseries(n, args0, x, logx)
 
         z = self.args[0]

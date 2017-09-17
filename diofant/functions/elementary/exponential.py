@@ -214,10 +214,10 @@ class log(Function):
                 return zoo
             elif arg is S.One:
                 return S.Zero
-            elif arg is S.Infinity:
-                return S.Infinity
+            elif arg is oo:
+                return oo
             elif arg is -oo:
-                return S.Infinity
+                return oo
             elif arg.is_Rational:
                 if arg.q != 1:
                     return cls(arg.p) - cls(arg.q)
@@ -240,10 +240,10 @@ class log(Function):
             coeff = arg.as_coefficient(S.ImaginaryUnit)
 
             if coeff is not None:
-                if coeff is S.Infinity:
-                    return S.Infinity
+                if coeff is oo:
+                    return oo
                 elif coeff is -oo:
-                    return S.Infinity
+                    return oo
                 elif coeff.is_Rational:
                     if coeff.is_nonnegative:
                         return S.Pi * S.ImaginaryUnit * S.Half + cls(coeff)
@@ -465,8 +465,8 @@ class LambertW(Function):
                 return S.NegativeOne
             if x == -log(2)/2:
                 return -log(2)
-            if x is S.Infinity:
-                return S.Infinity
+            if x is oo:
+                return oo
 
         if k.is_nonzero:
             if x is S.Zero:

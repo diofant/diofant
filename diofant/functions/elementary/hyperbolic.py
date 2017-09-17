@@ -68,8 +68,8 @@ class sinh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
             elif arg is -oo:
                 return -oo
             elif arg is S.Zero:
@@ -218,10 +218,10 @@ class cosh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
             elif arg is -oo:
-                return S.Infinity
+                return oo
             elif arg is S.Zero:
                 return S.One
             elif arg.is_negative:
@@ -368,7 +368,7 @@ class tanh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.One
             elif arg is -oo:
                 return S.NegativeOne
@@ -498,7 +498,7 @@ class coth(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.One
             elif arg is -oo:
                 return S.NegativeOne
@@ -781,8 +781,8 @@ class asinh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
             elif arg is -oo:
                 return -oo
             elif arg is S.Zero:
@@ -865,10 +865,10 @@ class acosh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
             elif arg is -oo:
-                return S.Infinity
+                return oo
             elif arg is S.Zero:
                 return S.Pi*S.ImaginaryUnit / 2
             elif arg is S.One:
@@ -906,7 +906,7 @@ class acosh(Function):
                 return cst_table[arg]
 
         if arg.is_infinite:
-            return S.Infinity
+            return oo
 
     @staticmethod
     @cacheit
@@ -971,10 +971,10 @@ class atanh(Function):
             if arg is S.Zero:
                 return S.Zero
             elif arg is S.One:
-                return S.Infinity
+                return oo
             elif arg is S.NegativeOne:
                 return -oo
-            elif arg is S.Infinity:
+            elif arg is oo:
                 return -S.ImaginaryUnit * atan(arg)
             elif arg is -oo:
                 return S.ImaginaryUnit * atan(-arg)
@@ -1036,14 +1036,14 @@ class acoth(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
             elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return S.Pi*S.ImaginaryUnit / 2
             elif arg is S.One:
-                return S.Infinity
+                return oo
             elif arg is S.NegativeOne:
                 return -oo
             elif arg.is_negative:

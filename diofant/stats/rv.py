@@ -14,7 +14,7 @@ diofant.stats.rv_interface
 
 from ..abc import x
 from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, S, Symbol, Tuple,
-                    sympify)
+                    oo, sympify)
 from ..core.relational import Relational
 from ..functions import DiracDelta
 from ..logic import And
@@ -810,7 +810,7 @@ def sample(expr, condition=None, **kwargs):
     return next(sample_iter(expr, condition, numsamples=1))
 
 
-def sample_iter(expr, condition=None, numsamples=S.Infinity, **kwargs):
+def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     """
     Returns an iterator of realizations from the expression given a condition
 
@@ -845,7 +845,7 @@ def sample_iter(expr, condition=None, numsamples=S.Infinity, **kwargs):
         return sample_iter_subs(expr, condition, numsamples, **kwargs)
 
 
-def sample_iter_lambdify(expr, condition=None, numsamples=S.Infinity, **kwargs):
+def sample_iter_lambdify(expr, condition=None, numsamples=oo, **kwargs):
     """
     See sample_iter
 
@@ -891,7 +891,7 @@ def sample_iter_lambdify(expr, condition=None, numsamples=S.Infinity, **kwargs):
     return return_generator()
 
 
-def sample_iter_subs(expr, condition=None, numsamples=S.Infinity, **kwargs):
+def sample_iter_subs(expr, condition=None, numsamples=oo, **kwargs):
     """
     See sample_iter
 

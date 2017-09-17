@@ -214,7 +214,7 @@ class Piecewise(Function):
             newargs = []
             for e, c in self.args:
                 intervals = self._sort_expr_cond(
-                    sym, -oo, S.Infinity, c)
+                    sym, -oo, oo, c)
                 values = []
                 for lower, upper, expr in intervals:
                     if (a < lower) is S.true:
@@ -321,7 +321,7 @@ class Piecewise(Function):
                 continue
             elif isinstance(cond, And):
                 lower = -oo
-                upper = S.Infinity
+                upper = oo
                 for cond2 in cond.args:
                     if sym not in [cond2.lts, cond2.gts]:
                         cond2 = solve_univariate_inequality(cond2, sym)
@@ -337,7 +337,7 @@ class Piecewise(Function):
                 if cond.lts == sym:                # part 1a: expand the side ...
                     lower = -oo   # e.g. x <= 0 ---> -oo <= 0
                 elif cond.gts == sym:            # part 1a: ... that can be expanded
-                    upper = S.Infinity           # e.g. x >= 0 --->  oo >= 0
+                    upper = oo           # e.g. x >= 0 --->  oo >= 0
                 else:  # pragma: no cover
                     raise NotImplementedError(
                         "Unable to handle interval evaluation of expression.")
@@ -386,7 +386,7 @@ class Piecewise(Function):
         int_expr.sort(key=lambda x: x[1].sort_key(
         ) if x[1].is_number else (-oo).sort_key())
         int_expr.sort(key=lambda x: x[0].sort_key(
-        ) if x[0].is_number else S.Infinity.sort_key())
+        ) if x[0].is_number else oo.sort_key())
 
         for n in range(len(int_expr)):
             if len(int_expr[n][0].free_symbols) or len(int_expr[n][1].free_symbols):

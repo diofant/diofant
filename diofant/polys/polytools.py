@@ -3185,7 +3185,7 @@ class Poly(Expr):
         if sup is not None:
             sup = sympify(sup)
 
-            if sup is S.Infinity:
+            if sup is oo:
                 sup = None
             else:
                 re, im = sup.as_real_imag()

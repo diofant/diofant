@@ -374,7 +374,7 @@ def hypersimp(f, k):
     g = combsimp(g)
 
     if g.is_rational_function(k):
-        return simplify(g, ratio=S.Infinity)
+        return simplify(g, ratio=oo)
     else:
         return
 
@@ -624,7 +624,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     expr1 = shorter(_e, _mexpand(_e).cancel())  # issue sympy/sympy#6829
     expr2 = shorter(together(expr, deep=True), together(expr1, deep=True))
 
-    if ratio is S.Infinity:
+    if ratio is oo:
         expr = expr2
     else:
         expr = shorter(expr2, expr1, expr)
@@ -778,9 +778,9 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     except (TypeError, ValueError):
         pass
     expr = sympify(expr)
-    expr = sympify(expr).xreplace({Float('inf'): S.Infinity,
+    expr = sympify(expr).xreplace({Float('inf'): oo,
                                    Float('-inf'): -oo})
-    if expr is S.Infinity or expr is -oo:
+    if expr is oo or expr is -oo:
         return expr
     if rational or expr.free_symbols:
         return _real_to_rational(expr, tolerance)

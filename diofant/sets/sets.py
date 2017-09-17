@@ -41,14 +41,14 @@ class Set(Basic):
     @staticmethod
     def _infimum_key(expr):
         """
-        Return infimum (if possible) else S.Infinity.
+        Return infimum (if possible) else oo.
         """
         try:
             infimum = expr.inf
             assert infimum.is_comparable
         except (NotImplementedError,
                 AttributeError, AssertionError, ValueError):
-            infimum = S.Infinity
+            infimum = oo
         return infimum
 
     def union(self, other):
@@ -863,7 +863,7 @@ class Interval(Set, EvalfMixin):
         if other is S.Reals:
             a = Interval(-oo, self.start,
                          True, not self.left_open)
-            b = Interval(self.end, S.Infinity, not self.right_open, True)
+            b = Interval(self.end, oo, not self.right_open, True)
             return Union(a, b)
 
         return Set._complement(self, other)
@@ -1037,7 +1037,7 @@ class Interval(Set, EvalfMixin):
     @property
     def is_right_unbounded(self):
         """Return ``True`` if the right endpoint is positive infinity. """
-        return self.right is S.Infinity or self.right == Float("+inf")
+        return self.right is oo or self.right == Float("+inf")
 
     def as_relational(self, x):
         """Rewrite an interval in terms of inequalities and logic operators."""
@@ -1585,7 +1585,7 @@ class UniversalSet(Set, metaclass=Singleton):
 
     @property
     def _measure(self):
-        return S.Infinity
+        return oo
 
     def _contains(self, other):
         return true
