@@ -323,10 +323,10 @@ def add_terms(terms, prec, target_prec):
 
     # see if any argument is NaN or oo and thus warrants a special return
     special = []
-    from .numbers import Float
+    from .numbers import Float, nan
     for t in terms:
         arg = Float._new(t[0], 1)
-        if arg is S.NaN or arg.is_infinite:
+        if arg is nan or arg.is_infinite:
             special.append(arg)
     if special:
         from .add import Add
@@ -426,13 +426,13 @@ def evalf_mul(v, prec, options):
 
     # see if any argument is NaN or oo and thus warrants a special return
     special, other = [], []
-    from .numbers import Float
+    from .numbers import Float, nan
     for arg in args:
         arg = evalf(arg, prec, options)
         if arg[0] is None:
             continue
         arg = Float._new(arg[0], 1)
-        if arg is S.NaN or arg.is_infinite:
+        if arg is nan or arg.is_infinite:
             special.append(arg)
         else:
             other.append(arg)

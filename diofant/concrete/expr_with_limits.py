@@ -1,4 +1,4 @@
-from ..core import Add, Dummy, Equality, Expr, Mul, S, Symbol, Tuple, sympify
+from ..core import Add, Dummy, Equality, Expr, Mul, Symbol, Tuple, nan, sympify
 from ..core.compatibility import is_sequence
 from ..functions import piecewise_fold
 from ..sets.sets import Interval
@@ -62,8 +62,8 @@ class ExprWithLimits(Expr):
                             cls(rhs, *symbols, **assumptions))
         function = piecewise_fold(function)
 
-        if function is S.NaN:
-            return S.NaN
+        if function is nan:
+            return nan
 
         if symbols:
             limits, orientation = _process_limits(*symbols)
@@ -343,8 +343,8 @@ class AddWithLimits(ExprWithLimits):
                             cls(rhs, *symbols, **assumptions))
         function = piecewise_fold(function)
 
-        if function is S.NaN:
-            return S.NaN
+        if function is nan:
+            return nan
 
         if symbols:
             limits, orientation = _process_limits(*symbols)

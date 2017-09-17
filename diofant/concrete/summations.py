@@ -1,4 +1,4 @@
-from ..core import Derivative, Dummy, Eq, Function, Integer, S, Wild, oo
+from ..core import Derivative, Dummy, Eq, Function, Integer, S, Wild, nan, oo
 from ..functions import Piecewise
 from ..polys import PolynomialError, apart
 from ..solvers import solve
@@ -653,7 +653,7 @@ def eval_sum_symbolic(f, limits):
 
         if None not in (lsum, rsum):
             r = lsum + rsum
-            if r is not S.NaN:
+            if r is not nan:
                 return r
 
     # Polynomial terms with Faulhaber's formula

@@ -13,7 +13,7 @@ from .function import (_coeff_isneg, expand_complex, expand_mul,
                        expand_multinomial)
 from .logic import fuzzy_or
 from .mul import Mul, _keep_coeff
-from .numbers import Integer, oo
+from .numbers import Integer, nan, oo
 from .singleton import S
 from .symbol import Dummy, symbols
 from .sympify import sympify
@@ -182,11 +182,11 @@ class Pow(Expr):
                     b = -b
                 elif e.is_odd:
                     return -Pow(-b, e)
-            if S.NaN in (b, e):  # XXX S.NaN**x -> S.NaN under assumption that x != 0
-                return S.NaN
+            if nan in (b, e):  # XXX nan**x -> nan under assumption that x != 0
+                return nan
             elif b is S.One:
                 if abs(e).is_infinite:
-                    return S.NaN
+                    return nan
                 return S.One
             else:
                 # recognize base as E
@@ -230,7 +230,7 @@ class Pow(Expr):
     def _eval_power(self, other):
         from ..functions import Abs, arg, exp, floor, im, log, re, sign
         b, e = self.as_base_exp()
-        if b is S.NaN:
+        if b is nan:
             return (b**e)**other  # let __new__ handle it
 
         s = None

@@ -2,7 +2,7 @@ from ...core import (Add, Function, Integer, Rational, S, Symbol, cacheit,
                      expand_mul, sympify)
 from ...core.function import ArgumentIndexError
 from ...core.logic import fuzzy_and, fuzzy_not
-from ...core.numbers import igcdex, oo, zoo
+from ...core.numbers import igcdex, nan, oo, zoo
 from ...utilities import numbered_symbols
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -459,7 +459,7 @@ class cos(TrigonometricFunction):
                 return S.One
             elif arg is S.Infinity or arg is -oo:
                 # In this cases, it is unclear if we should
-                # return S.NaN or leave un-evaluated.  One
+                # return nan or leave un-evaluated.  One
                 # useful test case is how "limit(sin(x)/x,x,oo)"
                 # is handled.
                 # See test_sin_cos_with_infinity() an
@@ -2446,7 +2446,7 @@ class atan2(InverseTrigonometricFunction):
                 elif y.is_negative:
                     return -S.Pi/2
                 elif y.is_zero:
-                    return S.NaN
+                    return nan
         if y.is_zero and x.is_extended_real and x.is_nonzero:
             return S.Pi * (S.One - Heaviside(x))
         if x.is_number and y.is_number:

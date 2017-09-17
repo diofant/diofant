@@ -1022,7 +1022,7 @@ def _check_antecedents(g1, g2, x):
             `meijerint_definite(exp(x), x, 0, I)`
             """
             tmp = abs(arg_(1 - zso))
-            return False if tmp is S.NaN else tmp < pi
+            return False if tmp is nan else tmp < pi
         c14_alt = And(Eq(phi, 0), cstar - 1 + bstar <= 0,
                       Or(And(Ne(zso, 1), _cond()),
                          And(re(mu + rho + q - p) < 1, Eq(zso, 1))))

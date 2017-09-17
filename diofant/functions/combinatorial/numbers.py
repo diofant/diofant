@@ -11,7 +11,7 @@ from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
 from ...core import (Add, Dummy, E, Expr, Function, Integer, Rational, S,
-                     cacheit, expand_mul, pi, prod)
+                     cacheit, expand_mul, nan, pi, prod)
 from ...core.compatibility import DIOFANT_INTS, as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
@@ -615,7 +615,7 @@ class harmonic(Function):
         if n is S.Infinity and m.is_Number:
             # TODO: Fix for symbolic values of m
             if m.is_negative:
-                return S.NaN
+                return nan
             elif m <= 1:
                 return S.Infinity
             else:

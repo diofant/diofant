@@ -433,7 +433,7 @@ class zeta(Function):
         if a.is_Number:
             if a is S.One and a_ is not None:
                 return cls(z)
-            # TODO Should a == 0 return S.NaN as well?
+            # TODO Should a == 0 return nan as well?
 
         if z.is_Number:
             if z is S.Infinity:

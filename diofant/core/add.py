@@ -4,7 +4,7 @@ from functools import reduce
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
-from .numbers import igcd, ilcm, oo, zoo
+from .numbers import igcd, ilcm, nan, oo, zoo
 from .operations import AssocOp
 from .singleton import S
 
@@ -70,15 +70,15 @@ class Add(AssocOp):
 
             # 3 or NaN
             elif o.is_Number:
-                if (o is S.NaN or coeff is zoo and
+                if (o is nan or coeff is zoo and
                         o.is_finite is False):
                     # we know for sure the result will be nan
-                    return [S.NaN], [], None
+                    return [nan], [], None
                 if coeff.is_Number:
                     coeff += o
-                    if coeff is S.NaN:
+                    if coeff is nan:
                         # we know for sure the result will be nan
-                        return [S.NaN], [], None
+                        return [nan], [], None
                 elif coeff.is_AlgebraicNumber:
                     coeff += o
                 o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
@@ -91,7 +91,7 @@ class Add(AssocOp):
             elif o is zoo:
                 if coeff.is_finite is False:
                     # we know for sure the result will be nan
-                    return [S.NaN], [], None
+                    return [nan], [], None
                 coeff = zoo
                 continue
 
@@ -131,9 +131,9 @@ class Add(AssocOp):
             # 2*x**2 + 3*x**2  ->  5*x**2
             if s in terms:
                 terms[s] += c
-                if terms[s] is S.NaN:
+                if terms[s] is nan:
                     # we know for sure the result will be nan
-                    return [S.NaN], [], None
+                    return [nan], [], None
             else:
                 terms[s] = c
 

@@ -9,8 +9,8 @@ from types import GeneratorType
 
 from ..core import (Add, Derivative, Dummy, Equality, Expr, Float, Function,
                     Ge, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
-                    expand_mul, expand_multinomial, expand_power_exp, nfloat,
-                    oo, preorder_traversal, sympify, zoo)
+                    expand_mul, expand_multinomial, expand_power_exp, nan,
+                    nfloat, oo, preorder_traversal, sympify, zoo)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import (default_sort_key, is_sequence, iterable,
                                   ordered)
@@ -136,7 +136,7 @@ def checksol(f, sol, **flags):
         else:
             return
 
-    illegal = {S.NaN,
+    illegal = {nan,
                zoo,
                S.Infinity,
                -oo}
@@ -774,7 +774,7 @@ def _solve(f, symbol, **flags):
                             v = v.canonical
                         result.add(Piecewise(
                             (candidate, v),
-                            (S.NaN, True)
+                            (nan, True)
                         ))
         check = False
     else:
@@ -1338,7 +1338,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
             dn = nn.diff(xi)
             if dn:
                 all_zero = False
-                if dn is S.NaN:
+                if dn is nan:
                     break
                 if xi not in dn.free_symbols:
                     vi = -(nn.subs(xi, 0))/dn

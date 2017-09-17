@@ -393,8 +393,8 @@ class Number(AtomicExpr):
     def __add__(self, other):
         if self is S.Zero:
             return other
-        if other is S.NaN:
-            return S.NaN
+        if other is nan:
+            return nan
         elif other is S.Infinity:
             return S.Infinity
         elif other is -oo:
@@ -404,8 +404,8 @@ class Number(AtomicExpr):
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
-        if other is S.NaN:
-            return S.NaN
+        if other is nan:
+            return nan
         elif other is S.Infinity:
             return -oo
         elif other is -oo:
@@ -417,18 +417,18 @@ class Number(AtomicExpr):
     def __mul__(self, other):
         if self is S.One:
             return other
-        if other is S.NaN:
-            return S.NaN
+        if other is nan:
+            return nan
         elif other is S.Infinity:
             if self.is_zero:
-                return S.NaN
+                return nan
             elif self.is_positive:
                 return S.Infinity
             else:
                 return -oo
         elif other is -oo:
             if self.is_zero:
-                return S.NaN
+                return nan
             elif self.is_positive:
                 return -oo
             else:
@@ -441,8 +441,8 @@ class Number(AtomicExpr):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Number):
-            if other is S.NaN:
-                return S.NaN
+            if other is nan:
+                return nan
             elif other in (oo, -oo):
                 return S.Zero
         return AtomicExpr.__truediv__(self, other)
@@ -769,7 +769,7 @@ class Float(Number):
         if _mpf_ == _mpf_zero:
             pass  # we want a Float
         elif _mpf_ == _mpf_nan:
-            return S.NaN
+            return nan
 
         obj = Expr.__new__(cls)
         obj._mpf_ = _mpf_
@@ -782,7 +782,7 @@ class Float(Number):
         if _mpf_ == _mpf_zero:
             return S.Zero  # XXX this is different from Float which gives 0.0
         elif _mpf_ == _mpf_nan:
-            return S.NaN
+            return nan
 
         obj = Expr.__new__(cls)
         obj._mpf_ = mpf_norm(_mpf_, _prec)
@@ -972,7 +972,7 @@ class Float(Number):
             return other.__lt__(self)
         if other.is_comparable:
             other = other.evalf()
-        if isinstance(other, Number) and other is not S.NaN:
+        if isinstance(other, Number) and other is not nan:
             return sympify(bool(mlib.mpf_gt(self._mpf_,
                                             other._as_mpf_val(self._prec))),
                            strict=True)
@@ -984,7 +984,7 @@ class Float(Number):
             return other.__le__(self)
         if other.is_comparable:
             other = other.evalf()
-        if isinstance(other, Number) and other is not S.NaN:
+        if isinstance(other, Number) and other is not nan:
             return sympify(bool(mlib.mpf_ge(self._mpf_,
                                             other._as_mpf_val(self._prec))),
                            strict=True)
@@ -996,7 +996,7 @@ class Float(Number):
             return other.__gt__(self)
         if other.is_extended_real and other.is_number:
             other = other.evalf()
-        if isinstance(other, Number) and other is not S.NaN:
+        if isinstance(other, Number) and other is not nan:
             return sympify(bool(mlib.mpf_lt(self._mpf_,
                                             other._as_mpf_val(self._prec))),
                            strict=True)
@@ -1008,7 +1008,7 @@ class Float(Number):
             return other.__ge__(self)
         if other.is_extended_real and other.is_number:
             other = other.evalf()
-        if isinstance(other, Number) and other is not S.NaN:
+        if isinstance(other, Number) and other is not nan:
             return sympify(bool(mlib.mpf_le(self._mpf_,
                                             other._as_mpf_val(self._prec))),
                            strict=True)
@@ -1140,7 +1140,7 @@ class Rational(Number):
                 if _errdict["divide"]:
                     raise ValueError("Indeterminate 0/0")
                 else:
-                    return S.NaN
+                    return nan
             else:
                 return zoo
 
@@ -2058,7 +2058,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
         if expt.is_negative:
             return zoo
         if expt.is_extended_real is False:
-            return S.NaN
+            return nan
         # infinities are already handled with pos and neg
         # tests above; now throw away leading numbers on Mul
         # exponent
@@ -2153,7 +2153,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
             if isinstance(expt, Float):
                 return Float(-1.0)**expt
             elif expt in (oo, -oo):
-                return S.NaN
+                return nan
             elif expt is S.Half:
                 return S.ImaginaryUnit
             else:
@@ -2258,10 +2258,10 @@ class Infinity(Number, metaclass=Singleton):
     def __add__(self, other):
         if isinstance(other, Number):
             if other in (-oo, nan):
-                return S.NaN
+                return nan
             elif other.is_Float:
                 if other == Float('-inf'):
-                    return S.NaN
+                    return nan
                 else:
                     return Float('inf')
             else:
@@ -2272,11 +2272,11 @@ class Infinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
         if isinstance(other, Number):
-            if other is S.Infinity or other is S.NaN:
-                return S.NaN
+            if other is S.Infinity or other is nan:
+                return nan
             elif other.is_Float:
                 if other == Float('inf'):
-                    return S.NaN
+                    return nan
                 else:
                     return Float('inf')
             else:
@@ -2286,11 +2286,11 @@ class Infinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if isinstance(other, Number):
-            if other is S.Zero or other is S.NaN:
-                return S.NaN
+            if other is S.Zero or other is nan:
+                return nan
             elif other.is_Float:
                 if other == 0:
-                    return S.NaN
+                    return nan
                 if other > 0:
                     return Float('inf')
                 else:
@@ -2307,11 +2307,11 @@ class Infinity(Number, metaclass=Singleton):
     def __truediv__(self, other):
         if isinstance(other, Number):
             if other in (oo, -oo, nan):
-                return S.NaN
+                return nan
             elif other.is_Float:
                 if other == Float('-inf') or \
                         other == Float('inf'):
-                    return S.NaN
+                    return nan
                 elif other.is_nonnegative:
                     return Float('inf')
                 else:
@@ -2354,7 +2354,7 @@ class Infinity(Number, metaclass=Singleton):
         if expt.is_negative:
             return S.Zero
         if expt is zoo:
-            return S.NaN
+            return nan
         if expt.is_real is False and expt.is_number:
             expt_real = re(expt)
             if expt_real.is_positive:
@@ -2362,7 +2362,7 @@ class Infinity(Number, metaclass=Singleton):
             elif expt_real.is_negative:
                 return S.Zero
             elif expt_real.is_zero:
-                return S.NaN
+                return nan
 
     def _as_mpf_val(self, prec):
         return mlib.finf
@@ -2408,7 +2408,7 @@ class Infinity(Number, metaclass=Singleton):
         return Expr.__ge__(self, other)
 
     def __mod__(self, other):
-        return S.NaN
+        return nan
 
     __rmod__ = __mod__
 
@@ -2441,8 +2441,8 @@ class NegativeInfinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if isinstance(other, Number):
-            if other is S.Infinity or other is S.NaN:
-                return S.NaN
+            if other is S.Infinity or other is nan:
+                return nan
             elif other.is_Float:
                 if other == Float('inf'):
                     return Float('nan')
@@ -2457,7 +2457,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
     def __sub__(self, other):
         if isinstance(other, Number):
             if other in (-oo, nan):
-                return S.NaN
+                return nan
             elif other.is_Float:
                 if other == Float('-inf'):
                     return Float('nan')
@@ -2470,11 +2470,11 @@ class NegativeInfinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if isinstance(other, Number):
-            if other is S.Zero or other is S.NaN:
-                return S.NaN
+            if other is S.Zero or other is nan:
+                return nan
             elif other.is_Float:
                 if other.is_zero:
-                    return S.NaN
+                    return nan
                 elif other.is_positive:
                     return Float('-inf')
                 else:
@@ -2491,12 +2491,12 @@ class NegativeInfinity(Number, metaclass=Singleton):
     def __truediv__(self, other):
         if isinstance(other, Number):
             if other in (oo, -oo, nan):
-                return S.NaN
+                return nan
             elif other.is_Float:
                 if other == Float('-inf') or \
                     other == Float('inf') or \
-                        other is S.NaN:
-                    return S.NaN
+                        other is nan:
+                    return nan
                 elif other.is_nonnegative:
                     return Float('-inf')
                 else:
@@ -2538,7 +2538,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
         """
         if expt.is_number:
             if expt in (oo, -oo, nan):
-                return S.NaN
+                return nan
 
             return S.NegativeOne**expt*S.Infinity**expt
 
@@ -2586,7 +2586,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
         return Expr.__ge__(self, other)
 
     def __mod__(self, other):
-        return S.NaN
+        return nan
 
     __rmod__ = __mod__
 
@@ -2612,14 +2612,13 @@ class NaN(Number, metaclass=Singleton):
     NaN is not comparable so inequalities raise a TypeError.  This is in
     constrast with floating point nan where all inequalities are false.
 
-    NaN is a singleton, and can be accessed by ``S.NaN``, or can be imported
-    as ``nan``.
+    NaN is a singleton, and can be accessed by ``nan``.
 
     Examples
     ========
 
-    >>> from diofant import nan, S, oo, Eq
-    >>> nan is S.NaN
+    >>> from diofant import nan, oo, Eq
+    >>> nan is nan
     True
     >>> oo - oo
     nan
@@ -2671,7 +2670,7 @@ class NaN(Number, metaclass=Singleton):
 
     def __eq__(self, other):
         # NaN is structurally equal to another NaN
-        return other is S.NaN
+        return other is nan
 
     def _eval_Eq(self, other):
         # NaN is not mathematically equal to anything, even NaN
@@ -2737,7 +2736,7 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
 
     def _eval_power(self, expt):
         if expt in (S.Zero, zoo):
-            return S.NaN
+            return nan
         elif expt.is_positive:
             return zoo
         elif expt.is_negative:
@@ -2870,13 +2869,13 @@ class Exp1(NumberSymbol, metaclass=Singleton):
             elif arg is -oo:
                 return S.Zero
         elif arg is zoo:
-            return S.NaN
+            return nan
         elif isinstance(arg, log):
             return arg.args[0]
         elif arg.is_Mul:
             Ioo = S.ImaginaryUnit*S.Infinity
             if arg in [Ioo, -Ioo]:
-                return S.NaN
+                return nan
 
             coeff = arg.coeff(S.Pi*S.ImaginaryUnit)
             if coeff:

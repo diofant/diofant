@@ -2,7 +2,7 @@ from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, S, Wild,
-                     cacheit, oo, pi, sympify, zoo)
+                     cacheit, nan, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
@@ -160,7 +160,7 @@ class besselj(BesselBase):
             elif re(nu).is_negative and not (nu.is_integer is True):
                 return zoo
             elif nu.is_imaginary:
-                return S.NaN
+                return nan
         if z is S.Infinity or (z is -oo):
             return S.Zero
 
@@ -253,7 +253,7 @@ class bessely(BesselBase):
             elif re(nu).is_zero is False:
                 return zoo
             elif re(nu).is_zero:
-                return S.NaN
+                return nan
         if z is S.Infinity or z is -oo:
             return S.Zero
 
@@ -329,7 +329,7 @@ class besseli(BesselBase):
             elif re(nu).is_negative and not (nu.is_integer is True):
                 return zoo
             elif nu.is_imaginary:
-                return S.NaN
+                return nan
         if im(z) is S.Infinity or im(z) is -oo:
             return S.Zero
 
@@ -419,7 +419,7 @@ class besselk(BesselBase):
             elif re(nu).is_zero is False:
                 return zoo
             elif re(nu).is_zero:
-                return S.NaN
+                return nan
         if im(z) is S.Infinity or im(z) is -oo:
             return S.Zero
 

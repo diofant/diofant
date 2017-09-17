@@ -1,5 +1,5 @@
 from ..core import (Add, Dummy, Expr, Mul, S, Symbol, Tuple, cacheit,
-                    expand_log, expand_power_base, oo, sympify)
+                    expand_log, expand_power_base, nan, oo, sympify)
 from ..core.compatibility import default_sort_key, is_sequence
 from ..utilities.iterables import uniq
 
@@ -135,8 +135,8 @@ class Order(Expr):
                 variables = list(new_vp)
                 point = [new_vp[v] for v in variables]
 
-        if expr is S.NaN:
-            return S.NaN
+        if expr is nan:
+            return nan
 
         if any(x in p.free_symbols for x in variables for p in point):
             raise ValueError('Got %s as a point.' % point)
@@ -303,7 +303,7 @@ class Order(Expr):
         from .limits import Limit
         if expr is S.Zero:
             return True
-        if expr is S.NaN:
+        if expr is nan:
             return False
         if expr.is_Order:
             if (not all(p == expr.point[0] for p in expr.point) and

@@ -864,7 +864,7 @@ class FormulaCollection:
         for _, repl, f, func2 in possible:
             f2 = Formula(func2, f.z, None, [], f.B.subs(repl),
                          f.C.subs(repl), f.M.subs(repl))
-            if not any(e.has(S.NaN, oo, -oo, zoo) for e in [f2.B, f2.M, f2.C]):
+            if not any(e.has(nan, oo, -oo, zoo) for e in [f2.B, f2.M, f2.C]):
                 return f2
         else:
             return
@@ -1996,7 +1996,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
             res = res.rewrite(rewrite)
         res = powdenest(res, polar=True)
 
-        if res is not S.NaN:
+        if res is not nan:
             pass
         elif not r.has(hyper):
             res = r[0].limit(z0, unpolarify(z))
@@ -2046,7 +2046,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     if unpolarify(z) in [1, 0, -1]:
         f = build_hypergeometric_formula(func)
         r = carryout_plan(f, ops) + p
-        if not r.has(hyper) and r is not S.NaN:
+        if not r.has(hyper) and r is not nan:
             return r + p
 
     # Try to find a formula in our collection

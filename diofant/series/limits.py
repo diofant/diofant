@@ -1,5 +1,5 @@
-from ..core import (Dummy, Expr, Float, PoleError, Rational, S, Symbol, oo,
-                    sympify)
+from ..core import (Dummy, Expr, Float, PoleError, Rational, S, Symbol, nan,
+                    oo, sympify)
 from ..functions.elementary.trigonometric import cos, sin
 from .gruntz import limitinf
 from .order import Order
@@ -51,7 +51,7 @@ def heuristics(e, z, z0, dir):
             else:
                 r.append(l)
         rv = e.func(*r)
-        if rv is S.NaN:
+        if rv is nan:
             return
 
     return rv
@@ -160,8 +160,8 @@ class Limit(Expr):
         if not e.has(z):
             return e
 
-        if z0 is S.NaN:
-            return S.NaN
+        if z0 is nan:
+            return nan
 
         if e.is_Relational:
             ll = limit(e.lhs, z, z0, dir)

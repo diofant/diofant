@@ -2,7 +2,7 @@ import itertools
 
 from mpmath import mpf, mpi
 
-from ..core import Basic, Eq, Expr, Float, Mul, S, oo, sympify, zoo
+from ..core import Basic, Eq, Expr, Float, Mul, S, nan, oo, sympify, zoo
 from ..core.compatibility import iterable, ordered
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
@@ -907,7 +907,7 @@ class Interval(Set, EvalfMixin):
         return FiniteSet(self.start, self.end)
 
     def _contains(self, other):
-        if not isinstance(other, Expr) or other in (S.NaN, zoo):
+        if not isinstance(other, Expr) or other in (nan, zoo):
             return false
 
         if other.is_extended_real is False:

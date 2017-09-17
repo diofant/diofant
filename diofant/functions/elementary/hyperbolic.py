@@ -1,4 +1,4 @@
-from ...core import Function, S, cacheit, oo, sympify, zoo
+from ...core import Function, S, cacheit, nan, oo, sympify, zoo
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -78,7 +78,7 @@ class sinh(HyperbolicFunction):
                 return -cls(-arg)
         else:
             if arg is zoo:
-                return S.NaN
+                return nan
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
 
@@ -228,7 +228,7 @@ class cosh(HyperbolicFunction):
                 return cls(-arg)
         else:
             if arg is zoo:
-                return S.NaN
+                return nan
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
 
@@ -378,7 +378,7 @@ class tanh(HyperbolicFunction):
                 return -cls(-arg)
         else:
             if arg is zoo:
-                return S.NaN
+                return nan
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
 
@@ -508,7 +508,7 @@ class coth(HyperbolicFunction):
                 return -cls(-arg)
         else:
             if arg is zoo:
-                return S.NaN
+                return nan
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
 
@@ -982,7 +982,7 @@ class atanh(Function):
                 return -cls(-arg)
         else:
             if arg is zoo:
-                return S.NaN
+                return nan
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
 

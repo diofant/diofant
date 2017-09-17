@@ -1,5 +1,5 @@
-from ...core import (Add, Function, Integer, Mul, Pow, S, expand_log, oo, pi,
-                     sympify, zoo)
+from ...core import (Add, Function, Integer, Mul, Pow, S, expand_log, nan, oo,
+                     pi, sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import multiplicity, perfect_power
 from .miscellaneous import sqrt
@@ -187,7 +187,7 @@ class log(Function):
             base = sympify(base)
             if base == 1:
                 if arg == 1:
-                    return S.NaN
+                    return nan
                 else:
                     return zoo
             try:

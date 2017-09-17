@@ -202,7 +202,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         r = self.round(2)
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
-        if r in (S.NaN, S.Infinity, -oo):
+        if r in (nan, S.Infinity, -oo):
             raise TypeError("can't convert %s to int" % r)
         i = int(r)
         if not i:
@@ -242,7 +242,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
-            if me is S.NaN:
+            if me is nan:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
@@ -257,7 +257,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
-            if me is S.NaN:
+            if me is nan:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
@@ -272,7 +272,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
-            if me is S.NaN:
+            if me is nan:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
@@ -287,7 +287,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
-            if me is S.NaN:
+            if me is nan:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
@@ -523,32 +523,32 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             try:
                 a = expr.subs(list(zip(free, [0]*len(free))),
                               simultaneous=True).evalf(n=15)
-                if a is S.NaN:
+                if a is nan:
                     # evaluation may succeed when substitution fails
                     a = expr._random(None, 0, 0, 0, 0)
-                    if a is None or a is S.NaN:
+                    if a is None or a is nan:
                         # try random real
                         a = expr._random(None, -1, 0, 1, 0)
             except ZeroDivisionError:
                 a = None
-            if a is not None and a is not S.NaN:
+            if a is not None and a is not nan:
                 try:
                     b = expr.subs(list(zip(free, [1]*len(free))),
                                   simultaneous=True).evalf(n=15)
-                    if b is S.NaN:
+                    if b is nan:
                         # evaluation may succeed when substitution fails
                         b = expr._random(None, 1, 0, 1, 0)
                 except ZeroDivisionError:
                     b = None
-                if b is not None and b is not S.NaN and b.equals(a) is False:
+                if b is not None and b is not nan and b.equals(a) is False:
                     return False
                 # try random real
                 b = expr._random(None, -1, 0, 1, 0)
-                if b is not None and b is not S.NaN and b.equals(a) is False:
+                if b is not None and b is not nan and b.equals(a) is False:
                     return False
                 # try random complex
                 b = expr._random()
-                if b is not None and b is not S.NaN:
+                if b is not None and b is not nan:
                     if b.equals(a) is False:
                         return False
                     failing_number = a if a.is_number else b
@@ -673,7 +673,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 n2 = self._eval_evalf(2)
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
-                if n2 == S.NaN:
+                if n2 == nan:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
@@ -700,7 +700,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 n2 = self._eval_evalf(2)
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
-                if n2 == S.NaN:
+                if n2 == nan:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
@@ -717,7 +717,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 n2 = self._eval_evalf(2)
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
-                if n2 == S.NaN:
+                if n2 == nan:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
@@ -742,9 +742,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             A = 0
         else:
             A = self.subs(x, a)
-            if A.has(S.NaN, S.Infinity, -oo, zoo):
+            if A.has(nan, S.Infinity, -oo, zoo):
                 A = limit(self, x, a)
-                if A is S.NaN:
+                if A is nan:
                     return A
                 if isinstance(A, Limit):
                     raise NotImplementedError("Could not compute limit")
@@ -753,7 +753,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = 0
         else:
             B = self.subs(x, b)
-            if B.has(S.NaN, S.Infinity, -oo, zoo):
+            if B.has(nan, S.Infinity, -oo, zoo):
                 B = limit(self, x, b)
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
@@ -1895,7 +1895,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x/6
         """
         c = sympify(c)
-        if self is S.NaN:
+        if self is nan:
             return
         if c is S.One:
             return self
@@ -2014,7 +2014,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
 
         c = sympify(c)
-        if self is S.NaN:
+        if self is nan:
             return
         if c is S.Zero:
             return self
@@ -2329,7 +2329,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         is_algebraic_expr
         """
-        if self in [S.NaN, S.Infinity, -S.Infinity, zoo]:
+        if self in [nan, S.Infinity, -S.Infinity, zoo]:
             return False
 
         if syms:
@@ -3237,7 +3237,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x = self
         if not x.is_number:
             raise TypeError('%s is not a number' % type(x))
-        if x in (S.NaN, S.Infinity, -oo, zoo):
+        if x in (nan, S.Infinity, -oo, zoo):
             return x
         if not x.is_extended_real:
             i, r = x.as_real_imag()
@@ -3343,4 +3343,4 @@ from .power import Pow
 from .function import Function
 from .mod import Mod
 from .exprtools import factor_terms
-from .numbers import Integer, Rational, oo, zoo
+from .numbers import Integer, Rational, nan, oo, zoo

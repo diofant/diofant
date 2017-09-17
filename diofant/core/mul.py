@@ -248,14 +248,14 @@ class Mul(AssocOp):
 
             # 3
             elif o.is_Number:
-                if o is S.NaN or coeff is zoo and o is S.Zero:
+                if o is nan or coeff is zoo and o is S.Zero:
                     # we know for sure the result will be nan
-                    return [S.NaN], [], None
+                    return [nan], [], None
                 if coeff.is_Number:  # it could be zoo
                     coeff *= o
-                    if coeff is S.NaN:
+                    if coeff is nan:
                         # we know for sure the result will be nan
-                        return [S.NaN], [], None
+                        return [nan], [], None
                 elif coeff.is_AlgebraicNumber:
                     coeff *= o
                 o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
@@ -268,7 +268,7 @@ class Mul(AssocOp):
             elif o is zoo:
                 if not coeff:
                     # 0 * zoo = NaN
-                    return [S.NaN], [], None
+                    return [nan], [], None
                 if coeff is zoo:
                     # zoo * zoo = zoo
                     return [zoo], [], None
@@ -554,7 +554,7 @@ class Mul(AssocOp):
             # we know for sure the result will be 0 except the multiplicand
             # is infinity
             if any(c.is_finite is False for c in c_part):
-                return [S.NaN], [], order_symbols
+                return [nan], [], order_symbols
             return [coeff], [], order_symbols
 
         # check for straggling Numbers that were produced
@@ -1586,6 +1586,6 @@ def expand_2arg(e):
     return bottom_up(e, do)
 
 
-from .numbers import Rational, oo, zoo
+from .numbers import Rational, nan, oo, zoo
 from .power import Pow
 from .add import Add
