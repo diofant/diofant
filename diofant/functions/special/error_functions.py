@@ -3,7 +3,7 @@ of incomplete gamma functions. It should probably be renamed.
 """
 
 from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational, S,
-                     cacheit, expand_mul, pi, sympify)
+                     cacheit, expand_mul, oo, pi, sympify)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import polar_lift
@@ -113,7 +113,7 @@ class erf(Function):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
@@ -126,7 +126,7 @@ class erf(Function):
 
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity or t is S.NegativeInfinity:
+        if t is S.Infinity or t is -oo:
             return arg
 
         # Try to pull out factors of -1
@@ -315,7 +315,7 @@ class erfc(Function):
 
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity or t is S.NegativeInfinity:
+        if t is S.Infinity or t is -oo:
             return -arg
 
         # Try to pull out factors of -1
@@ -650,7 +650,7 @@ class erf2(Function):
     @classmethod
     def eval(cls, x, y):
         I = S.Infinity
-        N = S.NegativeInfinity
+        N = -oo
         O = S.Zero
         if x == y:
             return S.Zero
@@ -773,7 +773,7 @@ class erfinv(Function):
     @classmethod
     def eval(cls, z):
         if z is S.NegativeOne:
-            return S.NegativeInfinity
+            return -oo
         elif z is S.Zero:
             return S.Zero
         elif z is S.One:
@@ -853,7 +853,7 @@ class erfcinv (Function):
         elif z is S.One:
             return S.Zero
         elif z == 2:
-            return S.NegativeInfinity
+            return -oo
 
     def _eval_rewrite_as_erfinv(self, z):
         return erfinv(1-z)
@@ -1383,7 +1383,7 @@ class li(Function):
         if z is S.Zero:
             return S.Zero
         elif z is S.One:
-            return S.NegativeInfinity
+            return -oo
         elif z is S.Infinity:
             return S.Infinity
 
@@ -1531,7 +1531,7 @@ class TrigonometricIntegral(Function):
             return cls._atzero
         elif z is S.Infinity:
             return cls._atinf()
-        elif z is S.NegativeInfinity:
+        elif z is -oo:
             return cls._atneginf()
 
         nz = z.extract_multiplicatively(polar_lift(I))
@@ -1832,7 +1832,7 @@ class Shi(TrigonometricIntegral):
 
     @classmethod
     def _atneginf(cls):
-        return S.NegativeInfinity
+        return -oo
 
     @classmethod
     def _minusfactor(cls, z):

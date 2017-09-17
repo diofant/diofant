@@ -6,7 +6,7 @@ combinatorial polynomials.
 
 """
 
-from ...core import Dummy, Function, Integer, Rational, S
+from ...core import Dummy, Function, Integer, Rational, S, oo
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
                                  gegenbauer_poly, hermite_poly, jacobi_poly,
@@ -999,7 +999,7 @@ class laguerre(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == S.Zero:
                 return S.One
-            elif x == S.NegativeInfinity:
+            elif x == -oo:
                 return S.Infinity
             elif x == S.Infinity:
                 return S.NegativeOne**n * S.Infinity
@@ -1106,7 +1106,7 @@ class assoc_laguerre(OrthogonalPolynomial):
                 return binomial(n + alpha, alpha)
             elif x == S.Infinity and n.is_positive:
                 return S.NegativeOne**n * S.Infinity
-            elif x == S.NegativeInfinity and n.is_positive:
+            elif x == -oo and n.is_positive:
                 return S.Infinity
         else:
             # n is a given fixed integer, evaluate into polynomial

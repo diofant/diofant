@@ -3,7 +3,7 @@
 import re
 from collections import defaultdict
 
-from ..core import Add, Mul, Pow, S
+from ..core import Add, Mul, Pow, S, oo
 from ..core.exprtools import decompose_power
 from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
 from .polyoptions import build_options
@@ -171,7 +171,7 @@ def _sort_factors(factors, **args):
 
 def _not_a_coeff(expr):
     """Do not treat NaN and infinities as valid polynomial coefficients. """
-    return expr in [S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity]
+    return expr in [S.NaN, S.Infinity, -oo, S.ComplexInfinity]
 
 
 def _parallel_dict_from_expr_if_gens(exprs, opt):

@@ -3,7 +3,7 @@ from functools import reduce
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow, S,
-                    Symbol, count_ops, ilcm, symbols, sympify)
+                    Symbol, count_ops, ilcm, oo, symbols, sympify)
 from ..core.compatibility import (NotIterable, as_int, default_sort_key,
                                   is_sequence)
 from ..core.logic import fuzzy_and
@@ -1789,7 +1789,7 @@ class MatrixBase(DefaultPrinting):
             elif ord == S.Infinity:  # max(abs(x))
                 return Max(*[abs(i) for i in vals])
 
-            elif ord == S.NegativeInfinity:  # min(abs(x))
+            elif ord == -oo:  # min(abs(x))
                 return Min(*[abs(i) for i in vals])
 
             # Otherwise generalize the 2-norm, Sum(x_i**ord)**(1/ord)

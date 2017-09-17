@@ -10,7 +10,7 @@ from types import GeneratorType
 from ..core import (Add, Derivative, Dummy, Equality, Expr, Float, Function,
                     Ge, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp, nfloat,
-                    preorder_traversal, sympify)
+                    oo, preorder_traversal, sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import (default_sort_key, is_sequence, iterable,
                                   ordered)
@@ -139,7 +139,7 @@ def checksol(f, sol, **flags):
     illegal = {S.NaN,
                S.ComplexInfinity,
                S.Infinity,
-               S.NegativeInfinity}
+               -oo}
     if any(sympify(v).atoms() & illegal for k, v in sol.items()):
         return False
 

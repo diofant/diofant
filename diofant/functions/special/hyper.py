@@ -458,7 +458,7 @@ class meijerg(TupleParametersBase):
 
         arg0, arg1 = tr(args[0]), tr(args[1])
         if Tuple(arg0, arg1).has(S.Infinity, S.ComplexInfinity,
-                                 S.NegativeInfinity):
+                                 -oo):
             raise ValueError("G-function parameters must be finite")
 
         if any((a - b).is_integer and (a - b).is_positive

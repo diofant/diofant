@@ -13,7 +13,7 @@ from .function import (_coeff_isneg, expand_complex, expand_mul,
                        expand_multinomial)
 from .logic import fuzzy_or
 from .mul import Mul, _keep_coeff
-from .numbers import Integer
+from .numbers import Integer, oo
 from .singleton import S
 from .symbol import Dummy, symbols
 from .sympify import sympify
@@ -1155,7 +1155,7 @@ class Pow(Expr):
             if e_series.is_Order:
                 return 1 + e_series
             e0 = limit(e_series.removeO(), x, 0)
-            if e0 in (S.NegativeInfinity, S.Infinity):
+            if e0 in (-oo, S.Infinity):
                 return self
             t = e_series - e0
             exp_series = term = exp(e0)

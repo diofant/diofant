@@ -1,5 +1,5 @@
 from ...core import (Add, Dummy, Equality, Expr, Lambda, Mul, Pow, Rational, S,
-                     Tuple, sympify)
+                     Tuple, oo, sympify)
 from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
@@ -533,7 +533,7 @@ class Max(MinMaxBase, Application):
     """
 
     zero = S.Infinity
-    identity = S.NegativeInfinity
+    identity = -oo
 
     def fdiff( self, argindex ):
         from .. import Heaviside
@@ -585,7 +585,7 @@ class Min(MinMaxBase, Application):
     diofant.functions.elementary.miscellaneous.Max : find maximum values
     """
 
-    zero = S.NegativeInfinity
+    zero = -oo
     identity = S.Infinity
 
     def fdiff( self, argindex ):

@@ -522,7 +522,7 @@ class Mul(AssocOp):
         c_part.extend([Pow(b, e) for e, b in pnew.items()])
 
         # oo, -oo
-        if (coeff is S.Infinity) or (coeff is S.NegativeInfinity):
+        if (coeff is S.Infinity) or (coeff is -oo):
             def _handle_for_oo(c_part, coeff_sign):
                 new_c_part = []
                 for t in c_part:
@@ -1586,6 +1586,6 @@ def expand_2arg(e):
     return bottom_up(e, do)
 
 
-from .numbers import Rational
+from .numbers import Rational, oo
 from .power import Pow
 from .add import Add

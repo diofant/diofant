@@ -1,5 +1,5 @@
 from ..core import (Add, Dummy, Expr, Mul, S, Symbol, Tuple, cacheit,
-                    expand_log, expand_power_base, sympify)
+                    expand_log, expand_power_base, oo, sympify)
 from ..core.compatibility import default_sort_key, is_sequence
 from ..utilities.iterables import uniq
 
@@ -144,7 +144,7 @@ class Order(Expr):
         if variables:
             if any(p != point[0] for p in point):
                 raise NotImplementedError
-            if point[0] in [S.Infinity, S.NegativeInfinity]:
+            if point[0] in [S.Infinity, -oo]:
                 s = {k: 1/Dummy() for k in variables}
                 rs = {1/v: 1/k for k, v in s.items()}
             elif point[0] is not S.Zero:

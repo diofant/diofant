@@ -1,4 +1,4 @@
-from ...core import Function, S, cacheit, sympify
+from ...core import Function, S, cacheit, oo, sympify
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -70,8 +70,8 @@ class sinh(HyperbolicFunction):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.NegativeInfinity
+            elif arg is -oo:
+                return -oo
             elif arg is S.Zero:
                 return S.Zero
             elif arg.is_negative:
@@ -220,7 +220,7 @@ class cosh(HyperbolicFunction):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Infinity
             elif arg is S.Zero:
                 return S.One
@@ -370,7 +370,7 @@ class tanh(HyperbolicFunction):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
@@ -500,7 +500,7 @@ class coth(HyperbolicFunction):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.ComplexInfinity
@@ -783,8 +783,8 @@ class asinh(Function):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.NegativeInfinity
+            elif arg is -oo:
+                return -oo
             elif arg is S.Zero:
                 return S.Zero
             elif arg is S.One:
@@ -867,7 +867,7 @@ class acosh(Function):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Infinity
             elif arg is S.Zero:
                 return S.Pi*S.ImaginaryUnit / 2
@@ -973,10 +973,10 @@ class atanh(Function):
             elif arg is S.One:
                 return S.Infinity
             elif arg is S.NegativeOne:
-                return S.NegativeInfinity
+                return -oo
             elif arg is S.Infinity:
                 return -S.ImaginaryUnit * atan(arg)
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.ImaginaryUnit * atan(-arg)
             elif arg.is_negative:
                 return -cls(-arg)
@@ -1038,14 +1038,14 @@ class acoth(Function):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return S.Pi*S.ImaginaryUnit / 2
             elif arg is S.One:
                 return S.Infinity
             elif arg is S.NegativeOne:
-                return S.NegativeInfinity
+                return -oo
             elif arg.is_negative:
                 return -cls(-arg)
         else:

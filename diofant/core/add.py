@@ -4,7 +4,7 @@ from functools import reduce
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
-from .numbers import igcd, ilcm
+from .numbers import igcd, ilcm, oo
 from .operations import AssocOp
 from .singleton import S
 
@@ -169,7 +169,7 @@ class Add(AssocOp):
             newseq = [f for f in newseq if not
                       (f.is_nonnegative or f.is_extended_real and f.is_finite)]
 
-        elif coeff is S.NegativeInfinity:
+        elif coeff is -oo:
             newseq = [f for f in newseq if not
                       (f.is_nonpositive or f.is_extended_real and f.is_finite)]
 

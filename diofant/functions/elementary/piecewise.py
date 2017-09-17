@@ -1,4 +1,4 @@
-from ...core import Basic, Dummy, Equality, Expr, Function, S, Tuple, diff
+from ...core import Basic, Dummy, Equality, Expr, Function, S, Tuple, diff, oo
 from ...core.compatibility import default_sort_key
 from ...core.relational import Relational
 from ...logic import And, Not, Or, false, true
@@ -214,7 +214,7 @@ class Piecewise(Function):
             newargs = []
             for e, c in self.args:
                 intervals = self._sort_expr_cond(
-                    sym, S.NegativeInfinity, S.Infinity, c)
+                    sym, -oo, S.Infinity, c)
                 values = []
                 for lower, upper, expr in intervals:
                     if (a < lower) is S.true:
@@ -320,7 +320,7 @@ class Piecewise(Function):
             elif isinstance(cond, Equality):
                 continue
             elif isinstance(cond, And):
-                lower = S.NegativeInfinity
+                lower = -oo
                 upper = S.Infinity
                 for cond2 in cond.args:
                     if sym not in [cond2.lts, cond2.gts]:
@@ -335,7 +335,7 @@ class Piecewise(Function):
             else:
                 lower, upper = cond.lts, cond.gts  # part 1: initialize with givens
                 if cond.lts == sym:                # part 1a: expand the side ...
-                    lower = S.NegativeInfinity   # e.g. x <= 0 ---> -oo <= 0
+                    lower = -oo   # e.g. x <= 0 ---> -oo <= 0
                 elif cond.gts == sym:            # part 1a: ... that can be expanded
                     upper = S.Infinity           # e.g. x >= 0 --->  oo >= 0
                 else:  # pragma: no cover
@@ -384,7 +384,7 @@ class Piecewise(Function):
                     return or_intervals
 
         int_expr.sort(key=lambda x: x[1].sort_key(
-        ) if x[1].is_number else S.NegativeInfinity.sort_key())
+        ) if x[1].is_number else (-oo).sort_key())
         int_expr.sort(key=lambda x: x[0].sort_key(
         ) if x[0].is_number else S.Infinity.sort_key())
 

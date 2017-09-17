@@ -5,7 +5,7 @@ from mpmath.libmp.libhyper import NoConvergence
 
 from . import polyoptions as options
 from ..core import (Add, Basic, Derivative, Dummy, Expr, I, Integer, Mul, S,
-                    Symbol, Tuple, preorder_traversal, sympify)
+                    Symbol, Tuple, oo, preorder_traversal, sympify)
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
@@ -3172,7 +3172,7 @@ class Poly(Expr):
         if inf is not None:
             inf = sympify(inf)
 
-            if inf is S.NegativeInfinity:
+            if inf is -oo:
                 inf = None
             else:
                 re, im = inf.as_real_imag()

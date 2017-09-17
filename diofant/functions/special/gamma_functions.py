@@ -313,7 +313,7 @@ class lowergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if z not in (S.Zero, S.NegativeInfinity):
+        if z not in (S.Zero, -oo):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_uppergamma(self, s, x):
@@ -450,7 +450,7 @@ class uppergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if z not in (S.Zero, S.NegativeInfinity):
+        if z not in (S.Zero, -oo):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_lowergamma(self, s, x):
@@ -661,11 +661,11 @@ class polygamma(Function):
                     z0 = z + n
                     if z0 in lookup:
                         return lookup[z0] - Add(*[1/(z0 - 1 - k) for k in range(n)])
-            elif z in (S.Infinity, S.NegativeInfinity):
+            elif z in (S.Infinity, -oo):
                 return S.Infinity
             else:
                 t = z.extract_multiplicatively(S.ImaginaryUnit)
-                if t in (S.Infinity, S.NegativeInfinity):
+                if t in (S.Infinity, -oo):
                     return S.Infinity
 
         # TODO n == 1 also can do some rational z

@@ -1,7 +1,7 @@
 from functools import reduce
 from math import sqrt as _sqrt
 
-from ...core import Dummy, Function, Integer, S, cacheit, sympify
+from ...core import Dummy, Function, Integer, S, cacheit, oo, sympify
 from ...core.function import ArgumentIndexError
 from ...ntheory import sieve
 
@@ -430,9 +430,9 @@ class RisingFactorial(CombinatorialFunction):
                 if k.is_positive:
                     if x is S.Infinity:
                         return S.Infinity
-                    elif x is S.NegativeInfinity:
+                    elif x is -oo:
                         if k.is_odd:
-                            return S.NegativeInfinity
+                            return -oo
                         else:
                             return S.Infinity
                     else:
@@ -440,7 +440,7 @@ class RisingFactorial(CombinatorialFunction):
                 else:
                     if x is S.Infinity:
                         return S.Infinity
-                    elif x is S.NegativeInfinity:
+                    elif x is -oo:
                         return S.Infinity
                     else:
                         return 1/reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
@@ -504,9 +504,9 @@ class FallingFactorial(CombinatorialFunction):
                 if k.is_positive:
                     if x is S.Infinity:
                         return S.Infinity
-                    elif x is S.NegativeInfinity:
+                    elif x is -oo:
                         if k.is_odd:
-                            return S.NegativeInfinity
+                            return -oo
                         else:
                             return S.Infinity
                     else:
@@ -514,7 +514,7 @@ class FallingFactorial(CombinatorialFunction):
                 else:
                     if x is S.Infinity:
                         return S.Infinity
-                    elif x is S.NegativeInfinity:
+                    elif x is -oo:
                         return S.Infinity
                     else:
                         return 1/reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)

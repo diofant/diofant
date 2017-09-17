@@ -202,7 +202,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         r = self.round(2)
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
-        if r in (S.NaN, S.Infinity, S.NegativeInfinity):
+        if r in (S.NaN, S.Infinity, -oo):
             raise TypeError("can't convert %s to int" % r)
         i = int(r)
         if not i:
@@ -742,7 +742,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             A = 0
         else:
             A = self.subs(x, a)
-            if A.has(S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+            if A.has(S.NaN, S.Infinity, -oo, S.ComplexInfinity):
                 A = limit(self, x, a)
                 if A is S.NaN:
                     return A
@@ -753,7 +753,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = 0
         else:
             B = self.subs(x, b)
-            if B.has(S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+            if B.has(S.NaN, S.Infinity, -oo, S.ComplexInfinity):
                 B = limit(self, x, b)
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
@@ -1915,11 +1915,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if self is S.Infinity:
                 if c.is_positive:
                     return S.Infinity
-            elif self is S.NegativeInfinity:
+            elif self is -oo:
                 if c.is_negative:
                     return S.Infinity
                 elif c.is_positive:
-                    return S.NegativeInfinity
+                    return -oo
             elif self is S.ComplexInfinity:
                 if not c.is_zero:
                     return S.ComplexInfinity
@@ -2513,9 +2513,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if len(dir) != 1 or dir not in '+-':
             raise ValueError("Dir must be '+' or '-'")
 
-        if x0 in [S.Infinity, S.NegativeInfinity]:
+        if x0 in [S.Infinity, -oo]:
             s = self.aseries(x, n)
-            if x0 is S.NegativeInfinity:
+            if x0 is -oo:
                 return s.subs(x, -x)
             return s
 
@@ -3237,7 +3237,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x = self
         if not x.is_number:
             raise TypeError('%s is not a number' % type(x))
-        if x in (S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+        if x in (S.NaN, S.Infinity, -oo, S.ComplexInfinity):
             return x
         if not x.is_extended_real:
             i, r = x.as_real_imag()
@@ -3343,4 +3343,4 @@ from .power import Pow
 from .function import Function
 from .mod import Mod
 from .exprtools import factor_terms
-from .numbers import Integer, Rational
+from .numbers import Integer, Rational, oo

@@ -8,7 +8,7 @@ Ray
 Segment
 """
 
-from ..core import Dummy, Eq, S, factor_terms, sympify
+from ..core import Dummy, Eq, S, factor_terms, oo, sympify
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, acos, sqrt, tan
 from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
@@ -1355,7 +1355,7 @@ class Ray(LinearEntity):
         elif self.p1.x == self.p2.x:
             return S.Zero
         else:
-            return S.NegativeInfinity
+            return -oo
 
     @property
     def ydirection(self):
@@ -1387,7 +1387,7 @@ class Ray(LinearEntity):
         elif self.p1.y == self.p2.y:
             return S.Zero
         else:
-            return S.NegativeInfinity
+            return -oo
 
     def distance(self, o):
         """
@@ -1500,7 +1500,7 @@ class Ray(LinearEntity):
             if Point.is_collinear(self.p1, self.p2, o):
                 if self.xdirection is S.Infinity:
                     rv = o.x >= self.source.x
-                elif self.xdirection is S.NegativeInfinity:
+                elif self.xdirection is -oo:
                     rv = o.x <= self.source.x
                 elif self.ydirection is S.Infinity:
                     rv = o.y >= self.source.y

@@ -2,7 +2,7 @@ import itertools
 
 from mpmath import mpf, mpi
 
-from ..core import Basic, Eq, Expr, Float, Mul, S, sympify
+from ..core import Basic, Eq, Expr, Float, Mul, S, oo, sympify
 from ..core.compatibility import iterable, ordered
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
@@ -861,7 +861,7 @@ class Interval(Set, EvalfMixin):
 
     def _complement(self, other):
         if other is S.Reals:
-            a = Interval(S.NegativeInfinity, self.start,
+            a = Interval(-oo, self.start,
                          True, not self.left_open)
             b = Interval(self.end, S.Infinity, not self.right_open, True)
             return Union(a, b)
@@ -1032,7 +1032,7 @@ class Interval(Set, EvalfMixin):
     @property
     def is_left_unbounded(self):
         """Return ``True`` if the left endpoint is negative infinity. """
-        return self.left is S.NegativeInfinity or self.left == Float("-inf")
+        return self.left is -oo or self.left == Float("-inf")
 
     @property
     def is_right_unbounded(self):

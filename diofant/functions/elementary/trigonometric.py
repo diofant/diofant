@@ -2,7 +2,7 @@ from ...core import (Add, Function, Integer, Rational, S, Symbol, cacheit,
                      expand_mul, sympify)
 from ...core.function import ArgumentIndexError
 from ...core.logic import fuzzy_and, fuzzy_not
-from ...core.numbers import igcdex
+from ...core.numbers import igcdex, oo
 from ...utilities import numbered_symbols
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -209,7 +209,7 @@ class sin(TrigonometricFunction):
         if arg.is_Number:
             if arg is S.Zero:
                 return S.Zero
-            elif arg is S.Infinity or arg is S.NegativeInfinity:
+            elif arg is S.Infinity or arg is -oo:
                 return
 
         if arg.could_extract_minus_sign():
@@ -457,7 +457,7 @@ class cos(TrigonometricFunction):
         if arg.is_Number:
             if arg is S.Zero:
                 return S.One
-            elif arg is S.Infinity or arg is S.NegativeInfinity:
+            elif arg is S.Infinity or arg is -oo:
                 # In this cases, it is unclear if we should
                 # return S.NaN or leave un-evaluated.  One
                 # useful test case is how "limit(sin(x)/x,x,oo)"
@@ -1508,8 +1508,8 @@ class asin(InverseTrigonometricFunction):
     def eval(cls, arg):
         if arg.is_Number:
             if arg is S.Infinity:
-                return S.NegativeInfinity * S.ImaginaryUnit
-            elif arg is S.NegativeInfinity:
+                return -oo * S.ImaginaryUnit
+            elif arg is -oo:
                 return S.Infinity * S.ImaginaryUnit
             elif arg is S.Zero:
                 return S.Zero
@@ -1685,8 +1685,8 @@ class acos(InverseTrigonometricFunction):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Infinity * S.ImaginaryUnit
-            elif arg is S.NegativeInfinity:
-                return S.NegativeInfinity * S.ImaginaryUnit
+            elif arg is -oo:
+                return -oo * S.ImaginaryUnit
             elif arg is S.Zero:
                 return S.Pi / 2
             elif arg is S.One:
@@ -1852,7 +1852,7 @@ class atan(InverseTrigonometricFunction):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Pi / 2
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return -S.Pi / 2
             elif arg is S.Zero:
                 return S.Zero
@@ -1997,7 +1997,7 @@ class acot(InverseTrigonometricFunction):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return S.Pi / 2
@@ -2176,7 +2176,7 @@ class asec(InverseTrigonometricFunction):
                 return S.Zero
             elif arg is S.NegativeOne:
                 return S.Pi
-        if arg in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+        if arg in [S.Infinity, -oo, S.ComplexInfinity]:
             return S.Pi/2
 
     def fdiff(self, argindex=1):
@@ -2270,7 +2270,7 @@ class acsc(InverseTrigonometricFunction):
                 return S.Pi/2
             elif arg is S.NegativeOne:
                 return -S.Pi/2
-        if arg in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+        if arg in [S.Infinity, -oo, S.ComplexInfinity]:
             return S.Zero
 
     def fdiff(self, argindex=1):
@@ -2421,7 +2421,7 @@ class atan2(InverseTrigonometricFunction):
     def eval(cls, y, x):
         from .. import Heaviside
         from .complexes import im, re
-        if x is S.NegativeInfinity:
+        if x is -oo:
             if y.is_zero:
                 # Special case y = 0 because we define Heaviside(0) = 1/2
                 return S.Pi

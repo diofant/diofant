@@ -1,6 +1,6 @@
 """ Elliptic integrals. """
 
-from ...core import Function, I, Rational, S, pi
+from ...core import Function, I, Rational, S, oo, pi
 from ...core.function import ArgumentIndexError
 from ..elementary.complexes import sign
 from ..elementary.hyperbolic import atanh
@@ -56,8 +56,8 @@ class elliptic_k(Function):
             return S.ComplexInfinity
         elif z is S.NegativeOne:
             return gamma(Rational(1, 4))**2/(4*sqrt(2*pi))
-        elif z in (S.Infinity, S.NegativeInfinity, I*S.Infinity,
-                   I*S.NegativeInfinity, S.ComplexInfinity):
+        elif z in (S.Infinity, -oo, I*S.Infinity,
+                   I*-oo, S.ComplexInfinity):
             return S.Zero
 
     def fdiff(self, argindex=1):
@@ -125,7 +125,7 @@ class elliptic_f(Function):
             return S.Zero
         elif k.is_integer:
             return k*elliptic_k(m)
-        elif m in (S.Infinity, S.NegativeInfinity):
+        elif m in (S.Infinity, -oo):
             return S.Zero
         elif z.could_extract_minus_sign():
             return -elliptic_f(-z, m)
@@ -196,7 +196,7 @@ class elliptic_e(Function):
                 return S.Zero
             elif k.is_integer:
                 return k*elliptic_e(m)
-            elif m in (S.Infinity, S.NegativeInfinity):
+            elif m in (S.Infinity, -oo):
                 return S.ComplexInfinity
             elif z.could_extract_minus_sign():
                 return -elliptic_e(-z, m)
@@ -207,7 +207,7 @@ class elliptic_e(Function):
                 return S.One
             elif z is S.Infinity:
                 return I*S.Infinity
-            elif z is S.NegativeInfinity:
+            elif z is -oo:
                 return S.Infinity
             elif z is S.ComplexInfinity:
                 return S.ComplexInfinity
@@ -310,9 +310,9 @@ class elliptic_pi(Function):
             elif n == m:
                 return (elliptic_f(z, n) - elliptic_pi(1, z, n) +
                         tan(z)/sqrt(1 - n*sin(z)**2))
-            elif n in (S.Infinity, S.NegativeInfinity):
+            elif n in (S.Infinity, -oo):
                 return S.Zero
-            elif m in (S.Infinity, S.NegativeInfinity):
+            elif m in (S.Infinity, -oo):
                 return S.Zero
             elif z.could_extract_minus_sign():
                 return -elliptic_pi(n, -z, m)
@@ -327,9 +327,9 @@ class elliptic_pi(Function):
                 return -S.Infinity/sign(n - 1)
             elif n == m:
                 return elliptic_e(n)/(1 - n)
-            elif n in (S.Infinity, S.NegativeInfinity):
+            elif n in (S.Infinity, -oo):
                 return S.Zero
-            elif m in (S.Infinity, S.NegativeInfinity):
+            elif m in (S.Infinity, -oo):
                 return S.Zero
 
     def _eval_conjugate(self):

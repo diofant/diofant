@@ -1,4 +1,4 @@
-from ...core import (Add, Function, Integer, Mul, Pow, S, expand_log, pi,
+from ...core import (Add, Function, Integer, Mul, Pow, S, expand_log, oo, pi,
                      sympify)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import multiplicity, perfect_power
@@ -216,7 +216,7 @@ class log(Function):
                 return S.Zero
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Infinity
             elif arg.is_Rational:
                 if arg.q != 1:
@@ -242,7 +242,7 @@ class log(Function):
             if coeff is not None:
                 if coeff is S.Infinity:
                     return S.Infinity
-                elif coeff is S.NegativeInfinity:
+                elif coeff is -oo:
                     return S.Infinity
                 elif coeff.is_Rational:
                     if coeff.is_nonnegative:
@@ -470,7 +470,7 @@ class LambertW(Function):
 
         if k.is_nonzero:
             if x is S.Zero:
-                return S.NegativeInfinity
+                return -oo
         if k is S.NegativeOne:
             if x == -S.Pi/2:
                 return -S.ImaginaryUnit*S.Pi/2

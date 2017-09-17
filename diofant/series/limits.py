@@ -1,4 +1,5 @@
-from ..core import Dummy, Expr, Float, PoleError, Rational, S, Symbol, sympify
+from ..core import (Dummy, Expr, Float, PoleError, Rational, S, Symbol, oo,
+                    sympify)
 from ..functions.elementary.trigonometric import cos, sin
 from .gruntz import limitinf
 from .order import Order
@@ -94,7 +95,7 @@ class Limit(Expr):
 
         if z0 is S.Infinity:
             dir = "-"
-        elif z0 is S.NegativeInfinity:
+        elif z0 is -oo:
             dir = "+"
 
         if isinstance(dir, str):
@@ -182,7 +183,7 @@ class Limit(Expr):
         try:
             # Convert to the limit z->oo and use Gruntz algorithm.
             newe, newz = e, z
-            if z0 == S.NegativeInfinity:
+            if z0 == -oo:
                 newe = e.subs(z, -z)
             elif z0 != S.Infinity:
                 if str(dir) == "+":

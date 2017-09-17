@@ -1,4 +1,4 @@
-from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol
+from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol, oo
 from ...core.function import _coeff_isneg
 from ...utilities import default_sort_key, group
 from ..conventions import requires_partial
@@ -505,7 +505,7 @@ class PrettyPrinter(Printer):
             LimArg = prettyForm(*LimArg.right('->'))
         LimArg = prettyForm(*LimArg.right(self._print(z0)))
 
-        if str(dir) == "real" or z0 in (S.Infinity, S.NegativeInfinity):
+        if str(dir) == "real" or z0 in (S.Infinity, -oo):
             dir = ""
         else:
             if self._use_unicode:
@@ -1348,7 +1348,7 @@ class PrettyPrinter(Printer):
         else:
             dots = '...'
 
-        if s.start is S.NegativeInfinity:
+        if s.start is -oo:
             it = iter(s)
             printset = s.start, dots, s._last_element - s.step, s._last_element
         elif s.stop is S.Infinity or len(s) > 4:

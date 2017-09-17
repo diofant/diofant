@@ -2,7 +2,7 @@ from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, S, Wild,
-                     cacheit, pi, sympify)
+                     cacheit, oo, pi, sympify)
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
@@ -161,7 +161,7 @@ class besselj(BesselBase):
                 return S.ComplexInfinity
             elif nu.is_imaginary:
                 return S.NaN
-        if z is S.Infinity or (z is S.NegativeInfinity):
+        if z is S.Infinity or (z is -oo):
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -249,12 +249,12 @@ class bessely(BesselBase):
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.NegativeInfinity
+                return -oo
             elif re(nu).is_zero is False:
                 return S.ComplexInfinity
             elif re(nu).is_zero:
                 return S.NaN
-        if z is S.Infinity or z is S.NegativeInfinity:
+        if z is S.Infinity or z is -oo:
             return S.Zero
 
         if nu.is_integer:
@@ -330,7 +330,7 @@ class besseli(BesselBase):
                 return S.ComplexInfinity
             elif nu.is_imaginary:
                 return S.NaN
-        if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+        if im(z) is S.Infinity or im(z) is -oo:
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -420,7 +420,7 @@ class besselk(BesselBase):
                 return S.ComplexInfinity
             elif re(nu).is_zero:
                 return S.NaN
-        if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+        if im(z) is S.Infinity or im(z) is -oo:
             return S.Zero
 
         if nu.is_integer:
@@ -863,7 +863,7 @@ class airyai(AiryBase):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return S.One / (3**Rational(2, 3) * gamma(Rational(2, 3)))
@@ -1026,7 +1026,7 @@ class airybi(AiryBase):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return 1/(root(3, 6)*gamma(Rational(2, 3)))
@@ -1388,7 +1388,7 @@ class airybiprime(AiryBase):
         if arg.is_Number:
             if arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return root(3, 6)/gamma(Rational(1, 3))

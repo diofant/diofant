@@ -4,7 +4,8 @@ import mpmath
 
 from ..core import (Add, Basic, Dummy, Expr, Float, I, Integer, Mul, Pow,
                     Rational, S, Symbol, count_ops, expand_func, expand_log,
-                    expand_mul, expand_power_exp, factor_terms, pi, sympify)
+                    expand_mul, expand_power_exp, factor_terms, oo, pi,
+                    sympify)
 from ..core.compatibility import as_int, iterable, ordered
 from ..core.evaluate import global_evaluate
 from ..core.function import _mexpand
@@ -778,8 +779,8 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
         pass
     expr = sympify(expr)
     expr = sympify(expr).xreplace({Float('inf'): S.Infinity,
-                                   Float('-inf'): S.NegativeInfinity})
-    if expr is S.Infinity or expr is S.NegativeInfinity:
+                                   Float('-inf'): -oo})
+    if expr is S.Infinity or expr is -oo:
         return expr
     if rational or expr.free_symbols:
         return _real_to_rational(expr, tolerance)
