@@ -2632,10 +2632,6 @@ class MatrixBase(DefaultPrinting):
 
         d = self.berkowitz_det()
         zero = d.equals(0)
-        if zero is None:
-            # if equals() can't decide, will rref be able to?
-            ok = self.rref(simplify=True)[0]
-            zero = any(iszerofunc(ok[j, j]) for j in range(ok.rows))
         if zero:
             raise ValueError("Matrix det == 0; not invertible.")
 

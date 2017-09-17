@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (Abs, DiracDelta, E, Eq, Expr, Function, Heaviside, I,
-                     Integer, Integral, Interval, Matrix, Ne, Piecewise,
-                     Rational, Symbol, adjoint, arg, atan2, comp, conjugate,
-                     cos, erf, exp, exp_polar, expand, gamma, im, log, nan, oo,
-                     periodic_argument, pi, polar_lift, polarify,
+from diofant import (Abs, Derivative, DiracDelta, E, Eq, Expr, Function,
+                     Heaviside, I, Integer, Integral, Interval, Matrix, Ne,
+                     Piecewise, Rational, Symbol, adjoint, arg, atan2, comp,
+                     conjugate, cos, erf, exp, exp_polar, expand, gamma, im,
+                     log, nan, oo, periodic_argument, pi, polar_lift, polarify,
                      principal_branch, re, sign, simplify, sin, sqrt, symbols,
                      tanh, transpose, unbranched_argument, unpolarify,
                      uppergamma, zoo)
@@ -272,6 +272,8 @@ def test_sign():
     d = p - q
     assert sign(d).func is sign or sign(d) == 0
 
+    assert abs(sign(z)) == Abs(sign(z), evaluate=False)
+
 
 def test_as_real_imag():
     n = pi**1000
@@ -384,6 +386,8 @@ def test_Abs():
     assert re(a).is_algebraic
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
+
+    assert abs(sign(z)) == Abs(sign(z), evaluate=False)
 
 
 def test_Abs_rewrite():
@@ -569,6 +573,8 @@ def test_conjugate():
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
 
+    assert conjugate(z).diff(z) == Derivative(conjugate(z), z)
+
 
 def test_conjugate_transpose():
     x = Symbol('x')
@@ -715,6 +721,8 @@ def test_derivatives_sympyissue_4757():
     assert im(f(x)).diff(x) == im(f(x).diff(x))
     assert re(f(y)).diff(y) == -I*im(f(y).diff(y))
     assert im(f(y)).diff(y) == -I*re(f(y).diff(y))
+    assert re(f(z)).diff(z) == Derivative(re(f(z)), z)
+    assert im(f(z)).diff(z) == Derivative(im(f(z)), z)
     assert Abs(f(x)).diff(x).subs(f(x), 1 + I*x).doit() == x/sqrt(1 + x**2)
     assert arg(f(x)).diff(x).subs(f(x), 1 + I*x**2).doit() == 2*x/(1 + x**4)
     assert Abs(f(y)).diff(y).subs(f(y), 1 + y).doit() == -y/sqrt(1 - y**2)
@@ -781,6 +789,9 @@ def test_principal_branch():
     assert principal_branch(x, -4).func is principal_branch
     assert principal_branch(x, -oo).func is principal_branch
     assert principal_branch(x, zoo).func is principal_branch
+
+    assert (principal_branch((4 + I)**2, 2*pi).n() ==
+            principal_branch((4 + I)**2, 2*pi))
 
 
 @pytest.mark.xfail

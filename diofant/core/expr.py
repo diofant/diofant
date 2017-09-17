@@ -596,10 +596,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # don't worry about doing simplification steps one at a time
         # because if the expression ever goes to 0 then the subsequent
         # simplification steps that are done will be very fast.
-        try:
-            diff = factor_terms((self - other).simplify(), radical=True)
-        except ZeroDivisionError:
-            return
+        diff = factor_terms((self - other).simplify(), radical=True)
 
         if not diff:
             return True
@@ -2504,7 +2501,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise ValueError('x must be given for multivariate functions.')
             x = syms.pop()
 
-        if not x.is_Symbol:
+        if not x.is_Symbol:  # pragma: no cover
             raise NotImplementedError("x is not a symbol")
 
         if not self.has(x):

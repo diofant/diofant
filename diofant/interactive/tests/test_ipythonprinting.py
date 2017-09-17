@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant.core import Rational, Symbol
+from diofant.core import Float, Rational, Symbol
 from diofant.external import import_module
 
 
@@ -74,10 +74,30 @@ def test_automatic_symbols():
 
 
 @pytest.mark.skipif(ipython is None, reason="no IPython")
+def test_rationalize():
+    app = init_ipython_session()
+    app.run_cell("ip = get_ipython()")
+    app.run_cell("from diofant import Float")
+    app.run_cell("from diofant.interactive.session import FloatRationalizer")
+    app.run_cell("ip.ast_transformers.clear()")
+    app.run_cell("ip.ast_transformers.append(FloatRationalizer())")
+    app.run_cell("a = 0.3")
+    assert isinstance(app.user_ns['a'], Rational)
+    app.run_cell("a = float(0.3)")
+    assert isinstance(app.user_ns['a'], float)
+    app.run_cell("a = Float(1.23)")
+    assert isinstance(app.user_ns['a'], Float)
+    assert app.user_ns['a'] == Float(1.23)
+    app.run_cell("a = 2")
+    assert isinstance(app.user_ns['a'], int)
+
+
+@pytest.mark.skipif(ipython is None, reason="no IPython")
 def test_printing():
     # Initialize and setup IPython session
     app = init_ipython_session()
     app.run_cell("ip = get_ipython()")
+    app.run_cell("ip.ast_transformers.clear()")
     app.run_cell("inst = ip.instance()")
     app.run_cell("format = inst.display_formatter.format")
     app.run_cell("from diofant import Symbol, QQ, sqrt")

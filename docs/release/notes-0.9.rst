@@ -53,6 +53,7 @@ Minor changes
 * :func:`~diofant.polys.numberfields.minimal_polynomial` fixed to support generic :class:`~diofant.core.numbers.AlgebraicNumber`'s, see :pull:`433` and :pull:`438`.
 * :class:`~diofant.core.numbers.AlgebraicNumber` now support arithmetic operations and exponentiation with integer exponents, see :pull:`428` and :pull:`485`.
 * Add AST transformation :class:`~diofant.interactive.session.IntegerDivisionWrapper` to wrap integer division, see :pull:`519`.
+* Add AST transformation :class:`~diofant.interactive.session.FloatRationalizer` to wrap :class:`float`'s, see :pull:`538`.
 
 Developer changes
 =================
