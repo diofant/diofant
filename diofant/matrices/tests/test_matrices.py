@@ -3,9 +3,9 @@ import collections
 import pytest
 
 from diofant import (Abs, Basic, Dummy, E, Float, Function, I, Integer, Max,
-                     Min, N, Poly, Pow, PurePoly, Rational, Symbol, cos, exp,
-                     oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
-                     trigsimp)
+                     Min, N, Poly, Pow, PurePoly, Rational, StrPrinter, Symbol,
+                     cos, exp, oo, pi, simplify, sin, sqrt, sstr, symbols,
+                     sympify, trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.external import import_module
@@ -683,6 +683,9 @@ def test_util():
     test = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     assert test.cofactorMatrix() == \
         Matrix([[-3, 6, -3], [6, -12, 6], [-3, 6, -3]])
+
+    printer = StrPrinter()
+    assert Matrix().table(printer) == '[]'
 
 
 def test_jacobian_hessian():
@@ -1722,6 +1725,7 @@ def test_errors():
     pytest.raises(IndexError, lambda: eye(3)[2, 5])
     M = Matrix(((1, 2, 3, 4), (5, 6, 7, 8), (9, 10, 11, 12), (13, 14, 15, 16)))
     pytest.raises(ValueError, lambda: M.det('method=LU_decomposition()'))
+    pytest.raises(NonSquareMatrixError, lambda: ones(2, 3).det_LU_decomposition())
 
 
 def test_len():
@@ -2247,6 +2251,8 @@ def test_is_Identity():
 def test_dot():
     assert ones(1, 3).dot(ones(3, 1)) == 3
     assert ones(1, 3).dot([1, 1, 1]) == 3
+    assert ones(2, 3).dot([1, 1]) == [2, 2, 2]
+    pytest.raises(ShapeError, lambda: ones(1, 3).dot([1, 1]))
 
 
 def test_dual():
