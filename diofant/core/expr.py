@@ -742,7 +742,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             A = 0
         else:
             A = self.subs(x, a)
-            if A.has(S.NaN, S.Infinity, -oo, S.ComplexInfinity):
+            if A.has(S.NaN, S.Infinity, -oo, zoo):
                 A = limit(self, x, a)
                 if A is S.NaN:
                     return A
@@ -753,7 +753,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = 0
         else:
             B = self.subs(x, b)
-            if B.has(S.NaN, S.Infinity, -oo, S.ComplexInfinity):
+            if B.has(S.NaN, S.Infinity, -oo, zoo):
                 B = limit(self, x, b)
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
@@ -1920,9 +1920,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return S.Infinity
                 elif c.is_positive:
                     return -oo
-            elif self is S.ComplexInfinity:
+            elif self is zoo:
                 if not c.is_zero:
-                    return S.ComplexInfinity
+                    return zoo
             elif self.is_Integer:
                 if not quotient.is_Integer:
                     return
@@ -2329,7 +2329,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         is_algebraic_expr
         """
-        if self in [S.NaN, S.Infinity, -S.Infinity, S.ComplexInfinity]:
+        if self in [S.NaN, S.Infinity, -S.Infinity, zoo]:
             return False
 
         if syms:
@@ -3237,7 +3237,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x = self
         if not x.is_number:
             raise TypeError('%s is not a number' % type(x))
-        if x in (S.NaN, S.Infinity, -oo, S.ComplexInfinity):
+        if x in (S.NaN, S.Infinity, -oo, zoo):
             return x
         if not x.is_extended_real:
             i, r = x.as_real_imag()
@@ -3343,4 +3343,4 @@ from .power import Pow
 from .function import Function
 from .mod import Mod
 from .exprtools import factor_terms
-from .numbers import Integer, Rational, oo
+from .numbers import Integer, Rational, oo, zoo

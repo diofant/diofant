@@ -248,7 +248,7 @@ class Mul(AssocOp):
 
             # 3
             elif o.is_Number:
-                if o is S.NaN or coeff is S.ComplexInfinity and o is S.Zero:
+                if o is S.NaN or coeff is zoo and o is S.Zero:
                     # we know for sure the result will be nan
                     return [S.NaN], [], None
                 if coeff.is_Number:  # it could be zoo
@@ -265,14 +265,14 @@ class Mul(AssocOp):
                 coeff *= o
                 continue
 
-            elif o is S.ComplexInfinity:
+            elif o is zoo:
                 if not coeff:
                     # 0 * zoo = NaN
                     return [S.NaN], [], None
-                if coeff is S.ComplexInfinity:
+                if coeff is zoo:
                     # zoo * zoo = zoo
-                    return [S.ComplexInfinity], [], None
-                coeff = S.ComplexInfinity
+                    return [zoo], [], None
+                coeff = zoo
                 continue
 
             elif o is S.ImaginaryUnit:
@@ -538,7 +538,7 @@ class Mul(AssocOp):
             coeff *= coeff_sign
 
         # zoo
-        if coeff is S.ComplexInfinity:
+        if coeff is zoo:
             # zoo might be
             #   infinite_real + bounded_im
             #   bounded_real + infinite_im
@@ -1586,6 +1586,6 @@ def expand_2arg(e):
     return bottom_up(e, do)
 
 
-from .numbers import Rational, oo
+from .numbers import Rational, oo, zoo
 from .power import Pow
 from .add import Add

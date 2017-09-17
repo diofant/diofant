@@ -4,7 +4,7 @@ from functools import reduce
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
-from .numbers import igcd, ilcm, oo
+from .numbers import igcd, ilcm, oo, zoo
 from .operations import AssocOp
 from .singleton import S
 
@@ -70,7 +70,7 @@ class Add(AssocOp):
 
             # 3 or NaN
             elif o.is_Number:
-                if (o is S.NaN or coeff is S.ComplexInfinity and
+                if (o is S.NaN or coeff is zoo and
                         o.is_finite is False):
                     # we know for sure the result will be nan
                     return [S.NaN], [], None
@@ -88,11 +88,11 @@ class Add(AssocOp):
                 coeff += o
                 continue
 
-            elif o is S.ComplexInfinity:
+            elif o is zoo:
                 if coeff.is_finite is False:
                     # we know for sure the result will be nan
                     return [S.NaN], [], None
-                coeff = S.ComplexInfinity
+                coeff = zoo
                 continue
 
             # Add([...])
@@ -173,7 +173,7 @@ class Add(AssocOp):
             newseq = [f for f in newseq if not
                       (f.is_nonpositive or f.is_extended_real and f.is_finite)]
 
-        if coeff is S.ComplexInfinity:
+        if coeff is zoo:
             # zoo might be
             #   infinite_real + finite_im
             #   finite_real + infinite_im
@@ -716,7 +716,7 @@ class Add(AssocOp):
             if not c.is_Rational:
                 c = S.One
                 m = a
-            inf = inf or m is S.ComplexInfinity
+            inf = inf or m is zoo
             terms.append((c.p, c.q, m))
 
         if not inf:
@@ -738,7 +738,7 @@ class Add(AssocOp):
         #
         # We do need to make sure that term[0] stays in position 0, however.
         #
-        if terms[0].is_Number or terms[0] is S.ComplexInfinity:
+        if terms[0].is_Number or terms[0] is zoo:
             c = terms.pop(0)
         else:
             c = None

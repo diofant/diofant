@@ -1,7 +1,7 @@
 """ Riemann zeta and related function. """
 
 from ...core import (Add, Dummy, Function, I, Integer, S, expand_mul, pi,
-                     sympify)
+                     sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
@@ -441,7 +441,7 @@ class zeta(Function):
             elif z is S.Zero:
                 return S.Half - a
             elif z is S.One:
-                return S.ComplexInfinity
+                return zoo
             elif z.is_Integer:
                 if a.is_Integer:
                     if z.is_negative:

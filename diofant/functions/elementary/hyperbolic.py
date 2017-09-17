@@ -1,4 +1,4 @@
-from ...core import Function, S, cacheit, oo, sympify
+from ...core import Function, S, cacheit, oo, sympify, zoo
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -77,7 +77,7 @@ class sinh(HyperbolicFunction):
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
+            if arg is zoo:
                 return S.NaN
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
@@ -227,7 +227,7 @@ class cosh(HyperbolicFunction):
             elif arg.is_negative:
                 return cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
+            if arg is zoo:
                 return S.NaN
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
@@ -377,7 +377,7 @@ class tanh(HyperbolicFunction):
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
+            if arg is zoo:
                 return S.NaN
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
@@ -503,11 +503,11 @@ class coth(HyperbolicFunction):
             elif arg is -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
-                return S.ComplexInfinity
+                return zoo
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
+            if arg is zoo:
                 return S.NaN
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
@@ -794,8 +794,8 @@ class asinh(Function):
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
-                return S.ComplexInfinity
+            if arg is zoo:
+                return zoo
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
 
@@ -981,7 +981,7 @@ class atanh(Function):
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
+            if arg is zoo:
                 return S.NaN
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)
@@ -1049,7 +1049,7 @@ class acoth(Function):
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
+            if arg is zoo:
                 return 0
 
             i_coeff = arg.as_coefficient(S.ImaginaryUnit)

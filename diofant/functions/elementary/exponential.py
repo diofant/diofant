@@ -1,5 +1,5 @@
 from ...core import (Add, Function, Integer, Mul, Pow, S, expand_log, oo, pi,
-                     sympify)
+                     sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import multiplicity, perfect_power
 from .miscellaneous import sqrt
@@ -189,7 +189,7 @@ class log(Function):
                 if arg == 1:
                     return S.NaN
                 else:
-                    return S.ComplexInfinity
+                    return zoo
             try:
                 # handle extraction of powers of the base now
                 # or else expand_log in Mul would have to handle this
@@ -211,7 +211,7 @@ class log(Function):
 
         if arg.is_Number:
             if arg is S.Zero:
-                return S.ComplexInfinity
+                return zoo
             elif arg is S.One:
                 return S.Zero
             elif arg is S.Infinity:
@@ -230,8 +230,8 @@ class log(Function):
         if arg.is_number:
             if arg.is_negative:
                 return S.Pi * S.ImaginaryUnit + cls(-arg)
-            elif arg is S.ComplexInfinity:
-                return S.ComplexInfinity
+            elif arg is zoo:
+                return zoo
             elif arg is S.Exp1:
                 return S.One
 

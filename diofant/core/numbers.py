@@ -1142,7 +1142,7 @@ class Rational(Number):
                 else:
                     return S.NaN
             else:
-                return S.ComplexInfinity
+                return zoo
 
         if q == 1:
             return Integer(p)
@@ -1232,7 +1232,7 @@ class Rational(Number):
     def __truediv__(self, other):
         if isinstance(other, Rational):
             if self.p and other.p == S.Zero:
-                return S.ComplexInfinity
+                return zoo
             else:
                 return Rational(self.p*other.q, self.q*other.p)
         elif isinstance(other, Float):
@@ -2056,7 +2056,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
         if expt.is_positive:
             return self
         if expt.is_negative:
-            return S.ComplexInfinity
+            return zoo
         if expt.is_extended_real is False:
             return S.NaN
         # infinities are already handled with pos and neg
@@ -2064,7 +2064,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
         # exponent
         coeff, terms = expt.as_coeff_Mul()
         if coeff.is_negative:
-            return S.ComplexInfinity**terms
+            return zoo**terms
         if coeff is not S.One:  # there is a Number to discard
             return self**terms
 
@@ -2353,12 +2353,12 @@ class Infinity(Number, metaclass=Singleton):
             return S.Infinity
         if expt.is_negative:
             return S.Zero
-        if expt is S.ComplexInfinity:
+        if expt is zoo:
             return S.NaN
         if expt.is_real is False and expt.is_number:
             expt_real = re(expt)
             if expt_real.is_positive:
-                return S.ComplexInfinity
+                return zoo
             elif expt_real.is_negative:
                 return S.Zero
             elif expt_real.is_zero:
@@ -2694,8 +2694,7 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
     infinity", represents a quantity with infinite magnitude, but
     undetermined complex phase.
 
-    ComplexInfinity is a singleton, and can be accessed by
-    ``S.ComplexInfinity``, or can be imported as ``zoo``.
+    ComplexInfinity is a singleton, and can be accessed by as ``zoo``.
 
     Examples
     ========
@@ -2734,13 +2733,13 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
 
     @staticmethod
     def __neg__():
-        return S.ComplexInfinity
+        return zoo
 
     def _eval_power(self, expt):
-        if expt in (S.Zero, S.ComplexInfinity):
+        if expt in (S.Zero, zoo):
             return S.NaN
         elif expt.is_positive:
-            return S.ComplexInfinity
+            return zoo
         elif expt.is_negative:
             return S.Zero
 
@@ -2870,7 +2869,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
                 return S.Infinity
             elif arg is -oo:
                 return S.Zero
-        elif arg is S.ComplexInfinity:
+        elif arg is zoo:
             return S.NaN
         elif isinstance(arg, log):
             return arg.args[0]

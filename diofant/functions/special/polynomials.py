@@ -6,7 +6,7 @@ combinatorial polynomials.
 
 """
 
-from ...core import Dummy, Function, Integer, Rational, S, oo
+from ...core import Dummy, Function, Integer, Rational, S, oo, zoo
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
                                  gegenbauer_poly, hermite_poly, jacobi_poly,
@@ -332,7 +332,7 @@ class gegenbauer(OrthogonalPolynomial):
             # Handle this before the general sign extraction rule
             if x == S.NegativeOne:
                 if (re(a) > S.Half) is S.true:
-                    return S.ComplexInfinity
+                    return zoo
                 else:
                     return
 

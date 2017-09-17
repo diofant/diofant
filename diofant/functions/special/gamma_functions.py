@@ -1,7 +1,7 @@
 from mpmath import mp, workprec
 
 from ...core import (Add, Dummy, Expr, Function, I, Integer, Pow, Rational, S,
-                     oo, pi, sympify)
+                     oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
 from ..combinatorial.numbers import bernoulli, harmonic
@@ -106,7 +106,7 @@ class gamma(Function):
                 if arg.is_positive:
                     return factorial(arg - 1)
                 else:
-                    return S.ComplexInfinity
+                    return zoo
             elif arg.is_Rational:
                 if arg.q == 2:
                     n = abs(arg.p) // arg.q
@@ -130,7 +130,7 @@ class gamma(Function):
                         return 2**n*sqrt(S.Pi) / coeff
 
         if arg.is_integer and arg.is_nonpositive:
-            return S.ComplexInfinity
+            return zoo
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
@@ -636,7 +636,7 @@ class polygamma(Function):
                                 return S.Zero
                     elif z.is_Integer:
                         if z.is_nonpositive:
-                            return S.ComplexInfinity
+                            return zoo
                         else:
                             if n is S.Zero:
                                 return -S.EulerGamma + harmonic(z - 1, 1)
@@ -851,7 +851,7 @@ class loggamma(Function):
         if z is S.Infinity:
             return S.Infinity
         elif abs(z) is S.Infinity:
-            return S.ComplexInfinity
+            return zoo
 
     def _eval_expand_func(self, **hints):
         from ...concrete import Sum

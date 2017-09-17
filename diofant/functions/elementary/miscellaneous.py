@@ -1,5 +1,5 @@
 from ...core import (Add, Dummy, Equality, Expr, Lambda, Mul, Pow, Rational, S,
-                     Tuple, oo, sympify)
+                     Tuple, oo, sympify, zoo)
 from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
@@ -366,7 +366,7 @@ class MinMaxBase(LatticeOp):
         for arg in arg_sequence:
 
             # pre-filter, checking comparability of arguments
-            if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is S.ComplexInfinity):
+            if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is zoo):
                 raise ValueError("The argument '%s' is not comparable." % arg)
 
             if arg == cls.zero:

@@ -2,7 +2,7 @@ from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, S, Wild,
-                     cacheit, oo, pi, sympify)
+                     cacheit, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
@@ -158,7 +158,7 @@ class besselj(BesselBase):
             elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
                 return S.Zero
             elif re(nu).is_negative and not (nu.is_integer is True):
-                return S.ComplexInfinity
+                return zoo
             elif nu.is_imaginary:
                 return S.NaN
         if z is S.Infinity or (z is -oo):
@@ -251,7 +251,7 @@ class bessely(BesselBase):
             if nu.is_zero:
                 return -oo
             elif re(nu).is_zero is False:
-                return S.ComplexInfinity
+                return zoo
             elif re(nu).is_zero:
                 return S.NaN
         if z is S.Infinity or z is -oo:
@@ -327,7 +327,7 @@ class besseli(BesselBase):
             elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
                 return S.Zero
             elif re(nu).is_negative and not (nu.is_integer is True):
-                return S.ComplexInfinity
+                return zoo
             elif nu.is_imaginary:
                 return S.NaN
         if im(z) is S.Infinity or im(z) is -oo:
@@ -417,7 +417,7 @@ class besselk(BesselBase):
             if nu.is_zero:
                 return S.Infinity
             elif re(nu).is_zero is False:
-                return S.ComplexInfinity
+                return zoo
             elif re(nu).is_zero:
                 return S.NaN
         if im(z) is S.Infinity or im(z) is -oo:

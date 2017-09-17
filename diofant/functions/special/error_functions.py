@@ -3,7 +3,7 @@ of incomplete gamma functions. It should probably be renamed.
 """
 
 from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational, S,
-                     cacheit, expand_mul, oo, pi, sympify)
+                     cacheit, expand_mul, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import polar_lift
@@ -1741,7 +1741,7 @@ class Ci(TrigonometricIntegral):
     """
 
     _trigfunc = cos
-    _atzero = S.ComplexInfinity
+    _atzero = zoo
 
     @classmethod
     def _atinf(cls):
@@ -1920,7 +1920,7 @@ class Chi(TrigonometricIntegral):
     """
 
     _trigfunc = cosh
-    _atzero = S.ComplexInfinity
+    _atzero = zoo
 
     @classmethod
     def _atinf(cls):

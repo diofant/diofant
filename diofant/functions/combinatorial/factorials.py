@@ -1,7 +1,7 @@
 from functools import reduce
 from math import sqrt as _sqrt
 
-from ...core import Dummy, Function, Integer, S, cacheit, oo, sympify
+from ...core import Dummy, Function, Integer, S, cacheit, oo, sympify, zoo
 from ...core.function import ArgumentIndexError
 from ...ntheory import sieve
 
@@ -140,7 +140,7 @@ class factorial(CombinatorialFunction):
                 return S.Infinity
             elif n.is_Integer:
                 if n.is_negative:
-                    return S.ComplexInfinity
+                    return zoo
                 else:
                     n, result = n.p, 1
 

@@ -1,6 +1,6 @@
 """ Elliptic integrals. """
 
-from ...core import Function, I, Rational, S, oo, pi
+from ...core import Function, I, Rational, S, oo, pi, zoo
 from ...core.function import ArgumentIndexError
 from ..elementary.complexes import sign
 from ..elementary.hyperbolic import atanh
@@ -53,11 +53,11 @@ class elliptic_k(Function):
         elif z is S.Half:
             return 8*pi**Rational(3, 2)/gamma(-Rational(1, 4))**2
         elif z is S.One:
-            return S.ComplexInfinity
+            return zoo
         elif z is S.NegativeOne:
             return gamma(Rational(1, 4))**2/(4*sqrt(2*pi))
         elif z in (S.Infinity, -oo, I*S.Infinity,
-                   I*-oo, S.ComplexInfinity):
+                   I*-oo, zoo):
             return S.Zero
 
     def fdiff(self, argindex=1):
@@ -197,7 +197,7 @@ class elliptic_e(Function):
             elif k.is_integer:
                 return k*elliptic_e(m)
             elif m in (S.Infinity, -oo):
-                return S.ComplexInfinity
+                return zoo
             elif z.could_extract_minus_sign():
                 return -elliptic_e(-z, m)
         else:
@@ -209,8 +209,8 @@ class elliptic_e(Function):
                 return I*S.Infinity
             elif z is -oo:
                 return S.Infinity
-            elif z is S.ComplexInfinity:
-                return S.ComplexInfinity
+            elif z is zoo:
+                return zoo
 
     def fdiff(self, argindex=1):
         if len(self.args) == 2:
@@ -320,7 +320,7 @@ class elliptic_pi(Function):
             if n == S.Zero:
                 return elliptic_k(m)
             elif n == S.One:
-                return S.ComplexInfinity
+                return zoo
             elif m == S.Zero:
                 return pi/(2*sqrt(1 - n))
             elif m == S.One:

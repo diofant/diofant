@@ -2,7 +2,7 @@ from ...core import (Add, Function, Integer, Rational, S, Symbol, cacheit,
                      expand_mul, sympify)
 from ...core.function import ArgumentIndexError
 from ...core.logic import fuzzy_and, fuzzy_not
-from ...core.numbers import igcdex, oo
+from ...core.numbers import igcdex, oo, zoo
 from ...utilities import numbered_symbols
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -856,7 +856,7 @@ class tan(TrigonometricFunction):
                     if not isinstance(cresult, cos) \
                             and not isinstance(sresult, cos):
                         if sresult == 0:
-                            return S.ComplexInfinity
+                            return zoo
                         return (1 - cresult)/sresult
                 table2 = {
                     12: (3, 4),
@@ -888,7 +888,7 @@ class tan(TrigonometricFunction):
             if m:
                 tanm = tan(m)
                 tanx = tan(x)
-                if tanm is S.ComplexInfinity:
+                if tanm is zoo:
                     return -cot(x)
                 return (tanm + tanx)/(1 - tanm*tanx)
 
@@ -1437,7 +1437,7 @@ class cot(ReciprocalTrigonometricFunction):
         arg = self.args[0]
         argnew = arg.subs(old, new)
         if arg != argnew and (argnew/S.Pi).is_integer:
-            return S.ComplexInfinity
+            return zoo
         return cot(argnew)
 
 
@@ -1694,8 +1694,8 @@ class acos(InverseTrigonometricFunction):
             elif arg is S.NegativeOne:
                 return S.Pi
 
-        if arg is S.ComplexInfinity:
-            return S.ComplexInfinity
+        if arg is zoo:
+            return zoo
 
         if arg.is_number:
             cst_table = {
@@ -2170,13 +2170,13 @@ class asec(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_zero:
-            return S.ComplexInfinity
+            return zoo
         if arg.is_Number:
             if arg is S.One:
                 return S.Zero
             elif arg is S.NegativeOne:
                 return S.Pi
-        if arg in [S.Infinity, -oo, S.ComplexInfinity]:
+        if arg in [S.Infinity, -oo, zoo]:
             return S.Pi/2
 
     def fdiff(self, argindex=1):
@@ -2270,7 +2270,7 @@ class acsc(InverseTrigonometricFunction):
                 return S.Pi/2
             elif arg is S.NegativeOne:
                 return -S.Pi/2
-        if arg in [S.Infinity, -oo, S.ComplexInfinity]:
+        if arg in [S.Infinity, -oo, zoo]:
             return S.Zero
 
     def fdiff(self, argindex=1):
