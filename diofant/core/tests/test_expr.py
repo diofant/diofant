@@ -1427,6 +1427,9 @@ def test_is_constant():
     z1, z2 = symbols('z1 z2', zero=True)
     assert (z1 + 2*z2).is_constant() is True
 
+    e = factorial(x) % x
+    assert e.subs({x: x - 1}).is_constant() is False
+
 
 def test_equals():
     assert (-3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2).equals(0)
