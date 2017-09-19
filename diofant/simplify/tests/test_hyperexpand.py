@@ -664,7 +664,6 @@ def test_prudnikov_misc():
     assert can_do([a], [a + 1], lowerplane=True)  # lowergamma
 
 
-@pytest.mark.slow
 def test_prudnikov_1():
     # A. P. Prudnikov, Yu. A. Brychkov and O. I. Marichev (1990).
     # Integrals and Series: More Special Functions, Vol. 3,.
