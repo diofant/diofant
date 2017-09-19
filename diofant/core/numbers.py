@@ -2044,14 +2044,6 @@ class Zero(IntegerConstant, metaclass=Singleton):
     is_number = True
     is_imaginary = True
 
-    @staticmethod
-    def __abs__():
-        return S.Zero
-
-    @staticmethod
-    def __neg__():
-        return S.Zero
-
     def _eval_power(self, expt):
         if expt.is_positive:
             return self
@@ -2095,19 +2087,10 @@ class One(IntegerConstant, metaclass=Singleton):
     p = 1
     q = 1
 
-    @staticmethod
-    def __abs__():
-        return S.One
-
-    @staticmethod
-    def __neg__():
-        return S.NegativeOne
-
-    @staticmethod
-    def factors(limit=None, use_trial=True, use_rho=False, use_pm1=False,
-                verbose=False, visual=False):
+    def factors(self, limit=None, use_trial=True, use_rho=False,
+                use_pm1=False, verbose=False, visual=False):
         if visual:
-            return S.One
+            return self
         else:
             return {}
 
@@ -2139,14 +2122,6 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
 
     p = -1
     q = 1
-
-    @staticmethod
-    def __abs__():
-        return S.One
-
-    @staticmethod
-    def __neg__():
-        return S.One
 
     def _eval_power(self, expt):
         if isinstance(expt, Number):
@@ -2198,10 +2173,6 @@ class Half(RationalConstant, metaclass=Singleton):
 
     p = 1
     q = 2
-
-    @staticmethod
-    def __abs__():
-        return S.Half
 
 
 class Infinity(Number, metaclass=Singleton):
@@ -2726,13 +2697,11 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
     def _latex(self, printer):
         return r"\tilde{\infty}"
 
-    @staticmethod
-    def __abs__():
+    def __abs__(self):
         return oo
 
-    @staticmethod
-    def __neg__():
-        return zoo
+    def __neg__(self):
+        return self
 
     def _eval_power(self, expt):
         if expt in (S.Zero, zoo):
@@ -2845,9 +2814,8 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     def _latex(self, printer):
         return r"e"
 
-    @staticmethod
-    def __abs__():
-        return E
+    def __abs__(self):
+        return self
 
     def __int__(self):
         return 2
@@ -2982,9 +2950,8 @@ class Pi(NumberSymbol, metaclass=Singleton):
     def _latex(self, printer):
         return r"\pi"
 
-    @staticmethod
-    def __abs__():
-        return pi
+    def __abs__(self):
+        return self
 
     def __int__(self):
         return 3
@@ -3189,8 +3156,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     def _latex(self, printer):
         return r"i"
 
-    @staticmethod
-    def __abs__():
+    def __abs__(self):
         return S.One
 
     def _eval_evalf(self, prec):
