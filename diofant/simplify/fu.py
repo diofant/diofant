@@ -2037,7 +2037,7 @@ def _osborne(e, d):
             return I*tan(a)
         elif isinstance(rv, coth):
             return cot(a)/I
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError('unhandled %s' % rv.func)
 
     return bottom_up(e, f)
@@ -2075,7 +2075,7 @@ def _osbornei(e, d):
             return 1/cosh(a)
         elif isinstance(rv, csc):
             return I/sinh(a)
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError('unhandled %s' % rv.func)
 
     return bottom_up(e, f)

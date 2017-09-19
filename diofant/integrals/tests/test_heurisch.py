@@ -2,9 +2,9 @@ import os
 
 import pytest
 
-from diofant import (Add, Derivative, Eq, Function, I, Integral, LambertW,
+from diofant import (Add, Derivative, Ei, Eq, Function, I, Integral, LambertW,
                      Piecewise, Rational, Sum, Symbol, acos, asin, asinh, cos,
-                     cosh, diff, erf, exp, log, pi, ratsimp, simplify, sin,
+                     cosh, diff, erf, exp, li, log, pi, ratsimp, simplify, sin,
                      sinh, sqrt, symbols, tan)
 from diofant.integrals.heurisch import components, heurisch, heurisch_wrapper
 
@@ -160,24 +160,22 @@ def test_heurisch_symbolic_coeffs_1130():
 
 
 def test_heurisch_hacking():
-    assert heurisch(sqrt(1 + 7*x**2), x, hints=[]) == \
-        x*sqrt(1 + 7*x**2)/2 + sqrt(7)*asinh(sqrt(7)*x)/14
-    assert heurisch(sqrt(1 - 7*x**2), x, hints=[]) == \
-        x*sqrt(1 - 7*x**2)/2 + sqrt(7)*asin(sqrt(7)*x)/14
+    assert (heurisch(sqrt(1 + 7*x**2), x, hints=[]) ==
+            x*sqrt(1 + 7*x**2)/2 + sqrt(7)*asinh(sqrt(7)*x)/14)
+    assert (heurisch(sqrt(1 - 7*x**2), x, hints=[]) ==
+            x*sqrt(1 - 7*x**2)/2 + sqrt(7)*asin(sqrt(7)*x)/14)
 
-    assert heurisch(1/sqrt(1 + 7*x**2), x, hints=[]) == \
-        sqrt(7)*asinh(sqrt(7)*x)/7
-    assert heurisch(1/sqrt(1 - 7*x**2), x, hints=[]) == \
-        sqrt(7)*asin(sqrt(7)*x)/7
+    assert (heurisch(1/sqrt(1 + 7*x**2), x, hints=[]) ==
+            sqrt(7)*asinh(sqrt(7)*x)/7)
+    assert (heurisch(1/sqrt(1 - 7*x**2), x, hints=[]) ==
+            sqrt(7)*asin(sqrt(7)*x)/7)
 
-    assert heurisch(exp(-7*x**2), x, hints=[]) == \
-        sqrt(7*pi)*erf(sqrt(7)*x)/14
+    assert (heurisch(exp(-7*x**2), x, hints=[]) == sqrt(7*pi)*erf(sqrt(7)*x)/14)
 
-    assert heurisch(1/sqrt(9 - 4*x**2), x, hints=[]) == \
-        asin(2*x/3)/2
+    assert heurisch(1/sqrt(9 - 4*x**2), x, hints=[]) == asin(2*x/3)/2
+    assert heurisch(1/sqrt(9 + 4*x**2), x, hints=[]) == asinh(2*x/3)/2
 
-    assert heurisch(1/sqrt(9 + 4*x**2), x, hints=[]) == \
-        asinh(2*x/3)/2
+    assert heurisch(li(x), x, hints=[]) == x*li(x) - Ei(2*log(x))
 
 
 def test_heurisch_function():

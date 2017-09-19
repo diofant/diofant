@@ -961,10 +961,8 @@ def logcombine(expr, force=False):
                 li = l.pop(0)
                 e = log(li.args[0]**e)
             c, l = Mul(*o), e
-            if isinstance(l, log):  # it should be, but check to be sure
-                log1[(c,)].append(([], l))
-            else:
-                other.append(c*l)
+            assert isinstance(l, log)
+            log1[(c,)].append(([], l))
 
         # logs that have the same coefficient can multiply
         for k in list(log1.keys()):
