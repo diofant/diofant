@@ -264,13 +264,11 @@ def test_sign():
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when and when you cannot prove an
     # expression like this is zero then the equality to zero is ok
-    assert sign(eq).func is sign or sign(eq) == 0
-    # but sometimes it's hard to do this so it's better not to load
-    # abs down with tests that will be very slow
+    assert sign(eq) == 0
     q = 1 + sqrt(2) - 2*sqrt(3) + 1331*sqrt(6)
     p = expand(q**3)**Rational(1, 3)
     d = p - q
-    assert sign(d).func is sign or sign(d) == 0
+    assert sign(d) == 0
 
     assert abs(sign(z)) == Abs(sign(z), evaluate=False)
 
@@ -319,7 +317,7 @@ def test_Abs():
 
     x, y = symbols('x,y')
     assert sign(sign(x)) == sign(x)
-    assert sign(x*y).func is sign
+    assert isinstance(sign(x*y), sign)
     assert Abs(0) == 0
     assert Abs(1) == 1
     assert Abs(-1) == 1
@@ -363,13 +361,11 @@ def test_Abs():
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when you can and when you cannot prove an
     # expression like this is zero then the equality to zero is ok
-    assert abs(eq).func is Abs or abs(eq) == 0
-    # but sometimes it's hard to do this so it's better not to load
-    # abs down with tests that will be very slow
+    assert abs(eq) == 0
     q = 1 + sqrt(2) - 2*sqrt(3) + 1331*sqrt(6)
     p = expand(q**3)**Rational(1, 3)
     d = p - q
-    assert abs(d).func is Abs or abs(d) == 0
+    assert abs(d) == 0
 
     assert Abs(4*exp(pi*I/4)) == 4
     assert Abs(3**(2 + I)) == 9
@@ -785,10 +781,10 @@ def test_principal_branch():
     assert N_equals(principal_branch((1 + I)**2, 1*pi), 2*I)
 
     # test argument sanitization
-    assert principal_branch(x, I).func is principal_branch
-    assert principal_branch(x, -4).func is principal_branch
-    assert principal_branch(x, -oo).func is principal_branch
-    assert principal_branch(x, zoo).func is principal_branch
+    assert isinstance(principal_branch(x, I), principal_branch)
+    assert isinstance(principal_branch(x, -4), principal_branch)
+    assert isinstance(principal_branch(x, -oo), principal_branch)
+    assert isinstance(principal_branch(x, zoo), principal_branch)
 
     assert (principal_branch((4 + I)**2, 2*pi).n() ==
             principal_branch((4 + I)**2, 2*pi))

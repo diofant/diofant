@@ -55,7 +55,7 @@ class ExprWithLimits(Expr):
         # top level so that integration can go into piecewise mode at the
         # earliest possible moment.
         function = sympify(function)
-        if hasattr(function, 'func') and function.func is Equality:
+        if hasattr(function, 'func') and isinstance(function, Equality):
             lhs = function.lhs
             rhs = function.rhs
             return Equality(cls(lhs, *symbols, **assumptions),
@@ -336,7 +336,7 @@ class AddWithLimits(ExprWithLimits):
         # This constructor only differs from ExprWithLimits
         # in the application of the orientation variable.  Perhaps merge?
         function = sympify(function)
-        if hasattr(function, 'func') and function.func is Equality:
+        if hasattr(function, 'func') and isinstance(function, Equality):
             lhs = function.lhs
             rhs = function.rhs
             return Equality(cls(lhs, *symbols, **assumptions),

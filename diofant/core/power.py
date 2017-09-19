@@ -190,13 +190,13 @@ class Pow(Expr):
                 return S.One
             else:
                 # recognize base as E
-                if not e.is_Atom and b is not S.Exp1 and b.func is not exp_polar:
+                if not e.is_Atom and b is not S.Exp1 and not isinstance(b, exp_polar):
                     from .exprtools import factor_terms
                     from ..functions import log, sign, im
                     from ..simplify import numer, denom
                     c, ex = factor_terms(e, sign=False).as_coeff_Mul()
                     den = denom(ex)
-                    if den.func is log and den.args[0] == b:
+                    if isinstance(den, log) and den.args[0] == b:
                         return S.Exp1**(c*numer(ex))
                     elif den.is_Add:
                         s = sign(im(b))
@@ -547,7 +547,7 @@ class Pow(Expr):
         if old == self.base:
             return new**self.exp._subs(old, new)
 
-        if old.func is self.func and self.base == old.base:
+        if isinstance(old, self.func) and self.base == old.base:
             if self.exp.is_Add is False:
                 ct2 = old.exp.as_independent(Symbol, as_Add=False)
                 ct1 = (self.exp/ct2[1], ct2[1])

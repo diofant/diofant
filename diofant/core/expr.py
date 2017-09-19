@@ -2162,7 +2162,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         args = Mul.make_args(self)
         exps = []
         for arg in args:
-            if arg.func is exp_polar:
+            if isinstance(arg, exp_polar):
                 exps += [arg.exp]
             else:
                 res *= arg

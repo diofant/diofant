@@ -149,7 +149,7 @@ class Limit(Expr):
         if z0.has(z):
             newz = z.as_dummy()
             r = limit(e.subs(z, newz), newz, z0, dir)
-            if r.func is Limit:
+            if isinstance(r, Limit):
                 r = r.subs(newz, z)
             return r
 

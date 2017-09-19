@@ -694,12 +694,12 @@ def test_all_or_nothing():
     x = symbols('x', extended_real=True)
     args = x >= - oo, x <= oo
     v = And(*args)
-    if v.func is And:
+    if isinstance(v, And):
         assert len(v.args) == len(args) - args.count(true)
     else:
         assert v
     v = Or(*args)
-    if v.func is Or:
+    if isinstance(v, Or):
         assert len(v.args) == 2
     else:
         assert v

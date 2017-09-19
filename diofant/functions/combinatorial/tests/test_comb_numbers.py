@@ -59,7 +59,7 @@ def test_bernoulli():
     assert bernoulli(2 * n + 1) == 0
 
     pytest.raises(ValueError, lambda: bernoulli(-20))
-    assert bernoulli(l, x).func is bernoulli
+    assert isinstance(bernoulli(l, x), bernoulli)
 
 
 def test_fibonacci():
@@ -80,7 +80,7 @@ def test_fibonacci():
     pytest.raises(ValueError, lambda: fibonacci(-2, x))
 
     n = Symbol('n', integer=True)
-    assert fibonacci(n, x).rewrite(sqrt).func is fibonacci
+    assert isinstance(fibonacci(n, x).rewrite(sqrt), fibonacci)
 
 
 def test_bell():
@@ -120,7 +120,7 @@ def test_bell():
     m = Symbol('m', integer=True)
     assert bell(-1).evalf() == bell(m).rewrite(Sum).evalf(subs={m: -1})
 
-    assert bell(m, x).rewrite(Sum).func is bell
+    assert isinstance(bell(m, x).rewrite(Sum), bell)
 
 
 def test_harmonic():
@@ -243,7 +243,7 @@ def test_harmonic_rewrite_polygamma():
 
     assert harmonic(n, m).rewrite("tractable") == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite("tractable")
 
-    assert expand_func(harmonic(n, 2)).func is harmonic
+    assert isinstance(expand_func(harmonic(n, 2)), harmonic)
 
     assert expand_func(harmonic(n + Rational(1, 2))) == expand_func(harmonic(n + Rational(1, 2)))
     assert expand_func(harmonic(Rational(-1, 2))) == harmonic(Rational(-1, 2))

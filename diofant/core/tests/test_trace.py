@@ -77,7 +77,7 @@ def test_trace_new():
     pytest.raises(ValueError, lambda: Tr(A, 1, 2))
 
     # non-Expr objects
-    assert Tr(None).func is Tr
+    assert isinstance(Tr(None), Tr)
 
 
 def test_trace_doit():

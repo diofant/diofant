@@ -553,7 +553,7 @@ def piecewise_fold(expr):
     if not isinstance(expr, Basic) or not expr.has(Piecewise):
         return expr
     new_args = list(map(piecewise_fold, expr.args))
-    if expr.func is ExprCondPair:
+    if isinstance(expr, ExprCondPair):
         return ExprCondPair(*new_args)
     piecewise_args = []
     for n, arg in enumerate(new_args):

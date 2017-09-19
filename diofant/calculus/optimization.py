@@ -50,9 +50,9 @@ def minimize(f, *v):
     assert all(x.is_Symbol for x in v)
 
     # Canonicalize constraints, Ne -> pair Lt
-    constraints |= {Lt(*c.args) for c in constraints if c.func is Ne}
-    constraints |= {Lt(c.lts, c.gts) for c in constraints if c.func is Ne}
-    constraints -= {c for c in constraints if c.func is Ne}
+    constraints |= {Lt(*c.args) for c in constraints if isinstance(c, Ne)}
+    constraints |= {Lt(c.lts, c.gts) for c in constraints if isinstance(c, Ne)}
+    constraints -= {c for c in constraints if isinstance(c, Ne)}
 
     # Gt/Ge -> Lt, Le
     constraints = {c.reversed if c.func in (Gt, Ge) else c
@@ -67,12 +67,12 @@ def minimize(f, *v):
     is_linear = is_polynomial and all(p.is_linear for p in polys)
 
     # Eliminate equalities, in the linear case for now
-    elims = solve([c for c in constraints if c.func is Eq], *v)
+    elims = solve([c for c in constraints if isinstance(c, Eq)], *v)
     if elims and is_linear:
         elims = elims[0]
         res, sol = minimize([obj.subs(elims)] +
                             [c.subs(elims)
-                             for c in constraints if c.func is not Eq],
+                             for c in constraints if not isinstance(c, Eq)],
                             *(set(v) - set(elims.keys())))
         return res, {x: x.subs(elims).subs(sol) for x in v}
 
@@ -85,7 +85,7 @@ def minimize(f, *v):
 
     if is_linear:
         # Quick exit for strict forms
-        if any(c.func is Lt for c in constraints):
+        if any(isinstance(c, Lt) for c in constraints):
             return
 
         # Transform to the standard form: maximize cᵀx with m⋅x≤b, x≥0.

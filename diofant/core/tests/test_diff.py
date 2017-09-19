@@ -85,7 +85,7 @@ def test_diff_no_eval_derivative():
 
     x, y = symbols('x y')
     # My doesn't have its own _eval_derivative method
-    assert My(x).diff(x).func is Derivative
+    assert isinstance(My(x).diff(x), Derivative)
     # it doesn't have y so it shouldn't need a method for this case
     assert My(x).diff(y) == 0
 

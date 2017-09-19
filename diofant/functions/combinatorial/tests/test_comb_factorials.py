@@ -159,7 +159,7 @@ def test_factorial_rewrite():
 
     assert factorial(n).rewrite(gamma) == gamma(n + 1)
     assert str(factorial(k).rewrite(Product)) == 'Product(_i, (_i, 1, k))'
-    assert factorial(n).rewrite(Product).func is factorial
+    assert isinstance(factorial(n).rewrite(Product), factorial)
     assert factorial(n).rewrite('tractable') == exp(loggamma(n + 1))
 
 
@@ -173,11 +173,11 @@ def test_factorial2():
     assert factorial2(n).func == factorial2
     factorial2(Rational(1, 2))  # issue sympy/sympy#10388
 
-    assert factorial2(oo).func is factorial2
+    assert isinstance(factorial2(oo), factorial2)
 
     pytest.raises(ValueError, lambda: factorial2(-2))
     nn = Symbol('nn', negative=True)
-    assert factorial2(Rational(-1, 2)).func is factorial2
+    assert isinstance(factorial2(Rational(-1, 2)), factorial2)
 
     # The following is exhaustive
     tt = Symbol('tt', integer=True, nonnegative=True)
@@ -280,8 +280,8 @@ def test_binomial():
     assert expand_func(binomial(n, 3)) == n*(n - 2)*(n - 1)/6
     assert expand_func(binomial(1, 2, evaluate=False)) == 0
     assert expand_func(binomial(n, 0, evaluate=False)) == 1
-    assert expand_func(binomial(n, -1, evaluate=False)).func is binomial
-    assert expand_func(binomial(n, k)).func is binomial
+    assert isinstance(expand_func(binomial(n, -1, evaluate=False)), binomial)
+    assert isinstance(expand_func(binomial(n, k)), binomial)
     assert binomial(n, n) == 1
     assert binomial(n, n + 1).func == binomial  # e.g. (-1, 0) == 1
     assert binomial(kp, kp + 1) == 0
@@ -338,7 +338,7 @@ def test_subfactorial():
     assert all(subfactorial(i) == ans for i, ans in enumerate(
         [1, 0, 1, 2, 9, 44, 265, 1854, 14833, 133496]))
     assert subfactorial(oo) == oo
-    assert subfactorial(Rational(1, 2)).func is subfactorial
+    assert isinstance(subfactorial(Rational(1, 2)), subfactorial)
     assert subfactorial(nan) == nan
 
     x = Symbol('x')

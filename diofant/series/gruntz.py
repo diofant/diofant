@@ -147,7 +147,7 @@ def mrv(e, x):
     elif e.is_Pow:
         assert not e.exp.has(x)
         return mrv(e.base, x)
-    elif e.func is log:
+    elif isinstance(e, log):
         return mrv(e.args[0], x)
     elif e.is_Function:
         return reduce(lambda a, b: mrv_max(a, b, x), [mrv(a, x) for a in e.args])
