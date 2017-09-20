@@ -224,7 +224,7 @@ class log(Function):
 
         if arg.is_Pow and arg.base is S.Exp1 and arg.exp.is_extended_real:
             return arg.exp
-        elif arg.func is exp_polar:
+        elif isinstance(arg, exp_polar):
             return unpolarify(arg.exp)
 
         if arg.is_number:

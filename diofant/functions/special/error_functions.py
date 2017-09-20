@@ -118,10 +118,10 @@ class erf(Function):
             elif arg is S.Zero:
                 return S.Zero
 
-        if arg.func is erfinv:
+        if isinstance(arg, erfinv):
             return arg.args[0]
 
-        if arg.func is erfcinv:
+        if isinstance(arg, erfcinv):
             return S.One - arg.args[0]
 
         # Try to pull out factors of I
@@ -307,10 +307,10 @@ class erfc(Function):
             elif arg is S.Zero:
                 return S.One
 
-        if arg.func is erfinv:
+        if isinstance(arg, erfinv):
             return S.One - arg.args[0]
 
-        if arg.func is erfcinv:
+        if isinstance(arg, erfcinv):
             return arg.args[0]
 
         # Try to pull out factors of I
@@ -498,9 +498,9 @@ class erfi(Function):
         if nz is not None:
             if nz is S.Infinity:
                 return I
-            if nz.func is erfinv:
+            if isinstance(nz, erfinv):
                 return I*nz.args[0]
-            if nz.func is erfcinv:
+            if isinstance(nz, erfcinv):
                 return I*(S.One - nz.args[0])
 
     @staticmethod
@@ -657,7 +657,7 @@ class erf2(Function):
         elif (x is I or x is N or x is O) or (y is I or y is N or y is O):
             return erf(y) - erf(x)
 
-        if y.func is erf2inv and y.args[0] == x:
+        if isinstance(y, erf2inv) and y.args[0] == x:
             return y.args[1]
 
         # Try to pull out -1 factor
@@ -779,12 +779,12 @@ class erfinv(Function):
         elif z is S.One:
             return S.Infinity
 
-        if (z.func is erf) and z.args[0].is_extended_real:
+        if isinstance(z, erf) and z.args[0].is_extended_real:
             return z.args[0]
 
         # Try to pull out factors of -1
         nz = z.extract_multiplicatively(-1)
-        if nz is not None and ((nz.func is erf) and (nz.args[0]).is_extended_real):
+        if isinstance(nz, erf) and nz.args[0].is_extended_real:
             return -nz.args[0]
 
     def _eval_rewrite_as_erfcinv(self, z):

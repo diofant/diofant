@@ -612,7 +612,7 @@ def _denest_pow(eq):
         logs = []
         other = []
         for ei in e.args:
-            if any(ai.func is log for ai in Add.make_args(ei)):
+            if any(isinstance(ai, log) for ai in Add.make_args(ei)):
                 logs.append(ei)
             else:
                 other.append(ei)
@@ -677,7 +677,7 @@ def _denest_pow(eq):
             glogb = _keep_coeff(cg, rg*Add(*[a/g for a in args]))
 
     # now put the log back together again
-    if glogb.func is log or not glogb.is_Mul:
+    if isinstance(glogb, log) or not glogb.is_Mul:
         if glogb.args[0].is_Pow:
             glogb = _denest_pow(glogb.args[0])
             if (abs(glogb.exp) < 1) is S.true:

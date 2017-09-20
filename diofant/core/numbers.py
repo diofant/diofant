@@ -2879,7 +2879,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
                 return S.Zero
         elif arg is S.ComplexInfinity:
             return S.NaN
-        elif arg.func is log:
+        elif isinstance(arg, log):
             return arg.args[0]
         elif arg.is_Mul:
             Ioo = S.ImaginaryUnit*S.Infinity
@@ -2911,7 +2911,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
 
             coeffs, log_term = [coeff], None
             for term in Mul.make_args(terms):
-                if term.func is log:
+                if isinstance(term, log):
                     if log_term is None:
                         log_term = term.args[0]
                     else:

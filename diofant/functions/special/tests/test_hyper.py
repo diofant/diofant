@@ -219,7 +219,6 @@ def test_hyper_unpolarify():
     assert hyper([0, 1], [0], a).argument == a
 
 
-@pytest.mark.slow
 def test_hyperrep():
     # First test the base class works.
     a, b, c, d, z = symbols('a b c d z')

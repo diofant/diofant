@@ -1379,13 +1379,13 @@ def test_suppressed_evaluation():
     b = Mul(1, 3, 2, evaluate=False)
     c = Pow(3, 2, evaluate=False)
     assert a != 6
-    assert a.func is Add
+    assert isinstance(a, Add)
     assert a.args == (0, 3, 2)
     assert b != 6
-    assert b.func is Mul
+    assert isinstance(b, Mul)
     assert b.args == (1, 3, 2)
     assert c != 9
-    assert c.func is Pow
+    assert isinstance(c, Pow)
     assert c.args == (3, 2)
 
 
@@ -1508,7 +1508,7 @@ def test_sympyissue_5919():
 
 
 def test_Mod():
-    assert Mod(x, 1).func is Mod
+    assert isinstance(Mod(x, 1), Mod)
     assert pi % pi == 0
     assert Mod(5, 3) == 2
     assert Mod(-5, 3) == 1

@@ -137,7 +137,7 @@ def test_ndim_array_converting():
     alist == [[1, 2], [3, 4]]
 
     matrix = dense_array.tomatrix()
-    assert (isinstance(matrix, Matrix))
+    assert isinstance(matrix, Matrix)
 
     for i in range(len(dense_array)):
         assert dense_array[i] == matrix[i]
@@ -153,7 +153,7 @@ def test_ndim_array_converting():
     assert alist == [[1, 2], [3, 4]]
 
     matrix = sparse_array.tomatrix()
-    assert(isinstance(matrix, SparseMatrix))
+    assert isinstance(matrix, SparseMatrix)
 
     pytest.raises(ValueError,
                   lambda: ImmutableDenseNDimArray([1]*6, (2, 2, 2)).tomatrix())
@@ -173,12 +173,12 @@ def test_converting_functions():
 
     # list
     arr_ndim_array = ImmutableDenseNDimArray(arr_list, (2, 2))
-    assert (isinstance(arr_ndim_array, ImmutableDenseNDimArray))
+    assert isinstance(arr_ndim_array, ImmutableDenseNDimArray)
     assert arr_matrix.tolist() == arr_ndim_array.tolist()
 
     # Matrix
     arr_ndim_array = ImmutableDenseNDimArray(arr_matrix)
-    assert (isinstance(arr_ndim_array, ImmutableDenseNDimArray))
+    assert isinstance(arr_ndim_array, ImmutableDenseNDimArray)
     assert arr_matrix.tolist() == arr_ndim_array.tolist()
     assert arr_matrix.shape == arr_ndim_array.shape
 

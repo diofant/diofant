@@ -76,7 +76,7 @@ class Mod(Function):
             return rv
 
         # denest
-        if p.func is cls:
+        if isinstance(p, cls):
             # easy
             qinner = p.args[1]
             if qinner == q:

@@ -182,9 +182,9 @@ class Relational(Boolean, Expr, EvalfMixin):
                 if know:
                     dif = S.Zero
                 elif know is False:
-                    if r.func is Eq:
+                    if isinstance(r, Eq):
                         return False
-                    elif r.func is Ne:
+                    elif isinstance(r, Ne):
                         return True
             # Can definitively compare a Number to zero, if appropriate.
             if dif.is_Number and dif.is_extended_real:

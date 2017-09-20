@@ -118,7 +118,7 @@ def combsimp(expr):
 
         def gamma_factor(x):
             # return True if there is a gamma factor in shallow args
-            if x.func is gamma:
+            if isinstance(x, gamma):
                 return True
             if x.is_Add or x.is_Mul:
                 return any(gamma_factor(xi) for xi in x.args)
@@ -188,7 +188,7 @@ def combsimp(expr):
                 return None, []
             b, e = p.as_base_exp()
             if e.is_Integer:
-                if b.func is gamma:
+                if isinstance(b, gamma):
                     return True, [b.args[0]]*e
                 else:
                     return False, [b]*e

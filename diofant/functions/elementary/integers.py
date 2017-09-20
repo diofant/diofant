@@ -15,7 +15,7 @@ class RoundFunction(Function):
         from .complexes import im
         if arg.is_integer:
             return arg
-        if arg.func is cls:
+        if isinstance(arg, cls):
             return arg
         if arg.is_imaginary or (S.ImaginaryUnit*arg).is_extended_real:
             i = im(arg)
