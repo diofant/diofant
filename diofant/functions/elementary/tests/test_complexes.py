@@ -207,6 +207,8 @@ def test_sign():
     assert conjugate(sign(x)) == sign(x)
 
     assert sign(sin(x)).nseries(x) == 1
+    y = Symbol('y')
+    assert sign(x*y).nseries(x).removeO() == sign(y)
 
     x = Symbol('x', nonzero=True)
     assert sign(x).is_imaginary is None
@@ -334,6 +336,9 @@ def test_Abs():
     assert Abs(conjugate(x)) == Abs(x)
     assert conjugate(Abs(x)) == Abs(x)
 
+    a = cos(1)**2 + sin(1)**2 - 1
+    assert Abs(a*x).series(x).simplify() == 0
+
     a = Symbol('a', positive=True)
     assert Abs(2*pi*x*a) == 2*pi*a*Abs(x)
     assert Abs(2*pi*I*x*a) == 2*pi*a*Abs(x)
@@ -352,6 +357,7 @@ def test_Abs():
     assert 1/Abs(x)**3 == 1/(x**2*Abs(x))
     assert Abs(x)**-3 == Abs(x)/(x**4)
     assert Abs(x**3) == x**2*Abs(x)
+    assert Abs(x**pi) == Abs(x**pi, evaluate=False)
 
     x = Symbol('x', imaginary=True)
     assert Abs(x).diff(x) == -sign(x)
