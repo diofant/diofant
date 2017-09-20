@@ -195,8 +195,10 @@ def test_meijerg_derivative():
     assert td(meijerg([x], [a + 1], [a], [], y), x)
     assert td(meijerg([x, a], [], [], [a + 1], y), x)
     assert td(meijerg([x, a + 1], [], [], [a], y), x)
+
     b = Rational(3, 2)
     assert td(meijerg([a + 2], [b], [b - 3, x], [a], y), x)
+    assert td(meijerg([x], [2, b], [1, b + 1], [], y), x)
 
 
 def test_meijerg_period():
@@ -341,5 +343,8 @@ def test_limits():
         meijerg(((), ()), ((1,), (0,)), 0)  # issue sympy/sympy#6052
 
 
-def test_hyper_evalf():
-    assert hyper((-1, 1), (-1,), 1).n() == Float('2.0')
+def test_evalf():
+    assert hyper((-1, 1), (-1,), 1).evalf() == Float('2.0')
+
+    e = meijerg([], [], [], [], (exp_polar(-I*pi))*cos(exp_polar(-I*pi)))
+    assert e.evalf() == e

@@ -256,16 +256,10 @@ class sign(Function):
                     s = -s
                 elif a.is_positive:
                     pass
+                elif a.is_imaginary and im(a).is_comparable:
+                    s *= sign(a)
                 else:
-                    ai = im(a)
-                    if a.is_imaginary and ai.is_comparable:  # i.e. a = I*real
-                        s *= S.ImaginaryUnit
-                        if ai.is_negative:
-                            # can't use sign(ai) here since ai might not be
-                            # a Number
-                            s = -s
-                    else:
-                        unk.append(a)
+                    unk.append(a)
             if c is S.One and len(unk) == len(args):
                 return
             return s * cls(arg._new_rawargs(*unk))
@@ -458,9 +452,8 @@ class Abs(Function):
             if arg2.is_nonnegative:
                 return arg2
         if arg.is_Add:
-            if arg.has(S.Infinity, S.NegativeInfinity):
-                if any(a.is_infinite for a in arg.as_real_imag()):
-                    return S.Infinity
+            if any(a.is_infinite for a in arg.as_real_imag()):
+                return S.Infinity
             if arg.is_extended_real is not True and arg.is_imaginary is None:
                 if all(a.is_extended_real or a.is_imaginary or (S.ImaginaryUnit*a).is_extended_real for a in arg.args):
                     from ...core import expand_mul
@@ -845,8 +838,8 @@ class periodic_argument(Function):
             return unbranched
         else:
             n = ceiling(unbranched/period - Rational(1, 2))*period
-            if not n.has(ceiling):
-                return unbranched - n
+            assert not n.has(ceiling)
+            return unbranched - n
 
     def _eval_is_real(self):
         if self.args[1].is_real and self.args[1].is_positive:
