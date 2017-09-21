@@ -1819,6 +1819,12 @@ def test_cholesky_solve():
     soln = A.cholesky_solve(b)
     assert soln == x
 
+    A = Matrix([[-12, -3, -8],
+                [ -3, -4, -6],
+                [ -8, -6, -6]])
+    x = Matrix(3, 1, [Rational(-6, 83), Rational(15, 83), Rational(-7, 83)])
+    assert A.cholesky_solve(A*x) == x
+
 
 def test_LDLsolve():
     A = Matrix([[2, 3, 5],
@@ -1878,7 +1884,8 @@ def test_upper_triangular_solve():
 
 
 def test_diagonal_solve():
-    pytest.raises(TypeError, lambda: Matrix([1, 1]).diagonal_solve(Matrix([1])))
+    pytest.raises(TypeError, lambda: ones(2).diagonal_solve(Matrix([1])))
+    pytest.raises(TypeError, lambda: eye(2).diagonal_solve(Matrix([1])))
     A = Matrix([[1, 0], [0, 1]])*2
     B = Matrix([[x, y], [y, x]])
     assert A.diagonal_solve(B) == B/2

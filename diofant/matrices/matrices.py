@@ -680,11 +680,7 @@ class MatrixBase(DefaultPrinting):
             res[i] = rowstart + colsep.join(row) + rowend
         return rowsep.join(res)
 
-    def _format_str(self, printer=None):
-        if not printer:
-            from ..printing.str import StrPrinter
-            printer = StrPrinter()
-        # Handle zero dimensions:
+    def _format_str(self, printer):
         if self.rows == 0 or self.cols == 0:
             return 'Matrix(%s, %s, [])' % (self.rows, self.cols)
         if self.rows == 1:
@@ -872,7 +868,7 @@ class MatrixBase(DefaultPrinting):
         QRsolve
         pinv_solve
         """
-        if not self.is_diagonal:
+        if not self.is_diagonal():
             raise TypeError("Matrix should be diagonal")
         if rhs.rows != self.rows:
             raise TypeError("Size mis-match")
