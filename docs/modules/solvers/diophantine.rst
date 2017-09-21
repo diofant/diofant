@@ -284,7 +284,7 @@ level API.
 If you want to get a more thorough idea about the the Diophantine module please
 refer to the following blog.
 
-http://thilinaatdiofant.wordpress.com/
+http://thilinaatsympy.wordpress.com/
 
 
 References
