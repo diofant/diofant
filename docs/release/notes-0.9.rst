@@ -181,6 +181,7 @@ Issues closed
 * :sympyissue:`10701` Is the empty matrix nilpotent? IndexError: Index out of range: a[0]
 * :sympyissue:`10770` Adding a row or a column to an empty matrix
 * :sympyissue:`10773` sympify evaluates Div Operation in case of Unary Operator when evaluate = False
+* :sympyissue:`13332` limit(): AttributeError: 'NoneType' object has no attribute 'rewrite'
 
 .. last pr: #494
 
