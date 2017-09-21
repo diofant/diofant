@@ -180,6 +180,7 @@ Issues closed
 * :sympyissue:`10680` unable to get unevaluated Integral object for  integrate ( x**log (x**log (x**log(x) ) ) , x) .
 * :sympyissue:`10701` Is the empty matrix nilpotent? IndexError: Index out of range: a[0]
 * :sympyissue:`10770` Adding a row or a column to an empty matrix
+* :sympyissue:`10773` sympify evaluates Div Operation in case of Unary Operator when evaluate = False
 
 .. last pr: #494
 
