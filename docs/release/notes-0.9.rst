@@ -166,6 +166,20 @@ Issues closed
 * :issue:`514` (-x - 1).evalf(subs={x: oo}) returns Float('inf')
 * :sympyissue:`13312` SymPy does not evaluate integrals of exponentials with symbolic parameter and limit
 * :sympyissue:`13111` Don't use "is" to compare classes
+* :sympyissue:`10488` integrate(x/(a*x+b), x) gives wrong answer
+* :sympyissue:`9706` `Interval(-oo, 0).closure` hangs
+* :sympyissue:`10740` Add a test for `Interval(..) in Interval(..) == False`
+* :sympyissue:`10592` zeta(0, n) where n is negative is wrong
+* :sympyissue:`7858` Nth root mod giving wrong solutions
+* :sympyissue:`5412` N(oo*I) returns wrong result
+* :sympyissue:`10710` Any dict-like object in expr.subs
+* :sympyissue:`10810` Implemented function gives ValueError when constructing float expression in sympy 1.0
+* :sympyissue:`10867` Getting KeyError while solving ode : dsolve(Eq(g(x).diff(x).diff(x) , (x-2)**2 +(x-3)**3), g(x))
+* :sympyissue:`10782` condition_number() for empty matrices giving ValueError
+* :sympyissue:`10719` eigenvals of empty matrix raises IndexError
+* :sympyissue:`10680` unable to get unevaluated Integral object for  integrate ( x**log (x**log (x**log(x) ) ) , x) .
+* :sympyissue:`10701` Is the empty matrix nilpotent? IndexError: Index out of range: a[0]
+* :sympyissue:`10770` Adding a row or a column to an empty matrix
 
 .. last pr: #494
 
