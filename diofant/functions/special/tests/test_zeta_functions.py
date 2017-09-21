@@ -14,6 +14,7 @@ __all__ = ()
 
 x = Symbol('x')
 a = Symbol('a')
+b = Symbol('b', negative=True)
 z = Symbol('z')
 s = Symbol('s')
 
@@ -26,6 +27,7 @@ def test_zeta_eval():
 
     assert zeta(0) == Rational(-1, 2)
     assert zeta(0, x) == Rational(1, 2) - x
+    assert zeta(0, b) == Rational(1, 2) - b
 
     assert zeta(1) == zoo
     assert zeta(1, 2) == zoo
@@ -61,10 +63,10 @@ def test_zeta_eval():
     assert zeta(-4, -8) == 8772
 
     assert zeta(0, 1) == -Rational(1, 2)
-    assert zeta(0, -1) == Rational(1, 2)
+    assert zeta(0, -1) == Rational(3, 2)
 
     assert zeta(0, 2) == -Rational(3, 2)
-    assert zeta(0, -2) == Rational(3, 2)
+    assert zeta(0, -2) == Rational(5, 2)
 
     assert zeta(
         3).evalf(20).epsilon_eq(Float("1.2020569031595942854", 20), 1e-19)

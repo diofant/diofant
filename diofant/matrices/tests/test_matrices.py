@@ -904,6 +904,10 @@ def test_eigen():
     sevals = list(sorted(evals.keys()))
     assert all(abs(nevals[i] - sevals[i]) < 1e-9 for i in range(len(nevals)))
 
+    # issue sympy/sympy#10719
+    assert Matrix([]).eigenvals() == {}
+    assert Matrix([]).eigenvects() == []
+
 
 def test_subs():
     assert Matrix([[1, x], [x, 4]]).subs(x, 5) == Matrix([[1, 5], [5, 4]])
@@ -1142,6 +1146,8 @@ def test_is_nilpotent():
     assert a.is_nilpotent()
     a = Matrix([[1, 0], [0, 1]])
     assert not a.is_nilpotent()
+    a = Matrix([])
+    assert a.is_nilpotent()
 
 
 def test_zeros_ones_fill():
@@ -1813,6 +1819,12 @@ def test_cholesky_solve():
     soln = A.cholesky_solve(b)
     assert soln == x
 
+    A = Matrix([[-12, -3, -8],
+                [ -3, -4, -6],
+                [ -8, -6, -6]])
+    x = Matrix(3, 1, [Rational(-6, 83), Rational(15, 83), Rational(-7, 83)])
+    assert A.cholesky_solve(A*x) == x
+
 
 def test_LDLsolve():
     A = Matrix([[2, 3, 5],
@@ -1872,7 +1884,8 @@ def test_upper_triangular_solve():
 
 
 def test_diagonal_solve():
-    pytest.raises(TypeError, lambda: Matrix([1, 1]).diagonal_solve(Matrix([1])))
+    pytest.raises(TypeError, lambda: ones(2).diagonal_solve(Matrix([1])))
+    pytest.raises(TypeError, lambda: eye(2).diagonal_solve(Matrix([1])))
     A = Matrix([[1, 0], [0, 1]])*2
     B = Matrix([[x, y], [y, x]])
     assert A.diagonal_solve(B) == B/2
@@ -2004,6 +2017,8 @@ def test_condition_number():
     Mc = M.condition_number()
     assert all(Float(1.).epsilon_eq(Mc.subs(x, val).evalf()) for val in
                [Rational(1, 5), Rational(1, 2), Rational(1, 10), pi/2, pi, 7*pi/4 ])
+
+    assert Matrix([]).condition_number() == 0  # issue sympy/sympy#10782
 
 
 def test_equality():
@@ -2637,3 +2652,15 @@ def test_mgamma():
     assert mgamma(0, lower=True) == mgamma(0)
     assert mgamma(1, lower=True) == -mgamma(1)
     pytest.raises(IndexError, lambda: mgamma(4))
+
+
+def test_sympyissue_10770():
+    M = Matrix([])
+    a = ['col_insert', 'row_join'], Matrix([9, 6, 3])
+    b = ['row_insert', 'col_join'], a[1].T
+    c = ['row_insert', 'col_insert'], Matrix([[1, 2], [3, 4]])
+    for ops, m in (a, b, c):
+        for op in ops:
+            f = getattr(M, op)
+            new = f(m) if 'join' in op else f(42, m)
+            assert new == m and id(new) != id(m)

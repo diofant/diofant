@@ -575,3 +575,9 @@ def test_sympyissue_12769():
     assert limit(fx, K, F0) == (F0**(2*b)*b*r**2*s0 - 2*F0**(2*b)*b*r*s0 +
                                 F0**(2*b)*b*s0 - F0**(2*b)*r**2*s0 +
                                 2*F0**(2*b)*r*s0 - F0**(2*b)*s0)
+
+
+def test_sympyissue_13332():
+    assert limit(sqrt(30)*5**(-5*n - 1)*(46656*n)**n *
+                 (5*n + 2)**(5*n + Rational(5, 2)) *
+                 (6*n + 2)**(-6*n - Rational(5, 2)), n, oo) == Rational(25, 36)

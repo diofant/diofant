@@ -1,5 +1,6 @@
 """Base class for all the objects in Diofant"""
 
+from collections import Mapping
 from itertools import zip_longest
 
 from .cache import cacheit
@@ -491,7 +492,6 @@ class Basic(object):
         diofant.core.evalf.EvalfMixin.evalf: calculates the given formula to
                                            a desired level of precision
         """
-        from .containers import Dict
         from ..utilities import default_sort_key
         from .symbol import Dummy
 
@@ -500,7 +500,7 @@ class Basic(object):
             sequence = args[0]
             if isinstance(sequence, set):
                 unordered = True
-            elif isinstance(sequence, (Dict, dict)):
+            elif isinstance(sequence, Mapping):
                 unordered = True
                 sequence = sequence.items()
             elif not iterable(sequence):

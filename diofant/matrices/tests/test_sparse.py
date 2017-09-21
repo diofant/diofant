@@ -2,7 +2,8 @@ import pytest
 
 from diofant import I, PurePoly, Rational
 from diofant.abc import x, y, z
-from diofant.matrices import Matrix, ShapeError, SparseMatrix, eye, zeros
+from diofant.matrices import (Matrix, MutableDenseMatrix, MutableSparseMatrix,
+                              ShapeError, SparseMatrix, eye, zeros)
 
 
 __all__ = ()
@@ -24,6 +25,13 @@ def test_sparse_matrix():
         (0, 1)
     ))
     assert SparseMatrix(a) == a
+
+    a = MutableSparseMatrix([])
+    b = MutableDenseMatrix([1, 2])
+    assert a.row_join(b) == b
+    assert a.col_join(b) == b
+    assert type(a.row_join(b)) == type(a)
+    assert type(a.col_join(b)) == type(a)
 
     # test element assignment
     a = SparseMatrix((

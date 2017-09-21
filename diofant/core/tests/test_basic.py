@@ -2,6 +2,8 @@
 of Basic or Atom.
 """
 
+import collections
+
 import pytest
 
 from diofant import Lambda, cos, sin
@@ -72,6 +74,9 @@ def test_subs():
 
     pytest.raises(ValueError, lambda: b21.subs('bad arg'))
     pytest.raises(ValueError, lambda: b21.subs(b1, b2, b3))
+
+    assert b21.subs(collections.ChainMap({b1: b2}, {b2: b1})) == Basic(b2, b2)
+    assert b21.subs(collections.OrderedDict([(b2, b1), (b1, b2)])) == Basic(b2, b2)
 
 
 def test_rewrite():

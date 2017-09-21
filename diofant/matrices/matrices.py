@@ -680,11 +680,7 @@ class MatrixBase(DefaultPrinting):
             res[i] = rowstart + colsep.join(row) + rowend
         return rowsep.join(res)
 
-    def _format_str(self, printer=None):
-        if not printer:
-            from ..printing.str import StrPrinter
-            printer = StrPrinter()
-        # Handle zero dimensions:
+    def _format_str(self, printer):
         if self.rows == 0 or self.cols == 0:
             return 'Matrix(%s, %s, [])' % (self.rows, self.cols)
         if self.rows == 1:
@@ -872,7 +868,7 @@ class MatrixBase(DefaultPrinting):
         QRsolve
         pinv_solve
         """
-        if not self.is_diagonal:
+        if not self.is_diagonal():
             raise TypeError("Matrix should be diagonal")
         if rhs.rows != self.rows:
             raise TypeError("Size mis-match")
@@ -2015,6 +2011,8 @@ class MatrixBase(DefaultPrinting):
         >>> a.is_nilpotent()
         False
         """
+        if not self:
+            return True
         if not self.is_square:
             raise NonSquareMatrixError(
                 "Nilpotency is valid only for square matrices")
@@ -2926,6 +2924,8 @@ class MatrixBase(DefaultPrinting):
         # unless the nsimplify flag indicates that this has already
         # been done, e.g. in eigenvects
         mat = self
+        if not mat:
+            return {}
         if flags.pop('rational', True):
             if any(v.has(Float) for v in mat):
                 mat = mat._new(mat.rows, mat.cols,
@@ -3047,6 +3047,8 @@ class MatrixBase(DefaultPrinting):
         singular_values
         """
 
+        if not self:
+            return S.Zero
         singularvalues = self.singular_values()
         return Max(*singularvalues) / Min(*singularvalues)
 
@@ -3790,11 +3792,14 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.sparse.SparseMatrixBase.row
         col_join
         """
-        if self.rows != rhs.rows:
-            raise ShapeError(
-                "`self` and `rhs` must have the same number of rows.")
-
         from . import MutableMatrix
+
+        if not self:
+            return type(self)(rhs)
+        if self.rows != rhs.rows:
+            raise ShapeError("`self` and `rhs` must have the same"
+                             " number of rows.")
+
         newmat = MutableMatrix.zeros(self.rows, self.cols + rhs.cols)
         newmat[:, :self.cols] = self
         newmat[:, self.cols:] = rhs
@@ -3823,11 +3828,14 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.sparse.SparseMatrixBase.col
         row_join
         """
-        if self.cols != bott.cols:
-            raise ShapeError(
-                "`self` and `bott` must have the same number of columns.")
-
         from . import MutableMatrix
+
+        if not self:
+            return type(self)(bott)
+        if self.cols != bott.cols:
+            raise ShapeError("`self` and `bott` must have the same"
+                             " number of columns.")
+
         newmat = MutableMatrix.zeros(self.rows + bott.rows, self.cols)
         newmat[:self.rows, :] = self
         newmat[self.rows:, :] = bott
@@ -3856,6 +3864,9 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.sparse.SparseMatrixBase.row
         col_insert
         """
+        if not self:
+            return type(self)(mti)
+
         if pos == 0:
             return mti.col_join(self)
         elif pos < 0:
@@ -3898,6 +3909,11 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.sparse.SparseMatrixBase.col
         row_insert
         """
+        from . import MutableMatrix
+
+        if not self:
+            return type(self)(mti)
+
         if pos == 0:
             return mti.row_join(self)
         elif pos < 0:
@@ -3910,7 +3926,6 @@ class MatrixBase(DefaultPrinting):
         if self.rows != mti.rows:
             raise ShapeError("self and mti must have the same number of rows.")
 
-        from . import MutableMatrix
         newmat = MutableMatrix.zeros(self.rows, self.cols + mti.cols)
         i, j = pos, pos + mti.cols
         newmat[:, :i] = self[:, :i]
