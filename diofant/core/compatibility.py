@@ -5,7 +5,6 @@ here for easy import.
 """
 
 import os
-import sys
 from collections import defaultdict
 
 from ..external import import_module
@@ -431,14 +430,6 @@ def ordered(seq, keys=None, default=True, warn=False):
             yield v
         d.pop(k)
 
-
-if sys.version_info >= (3, 5):
-    from math import gcd
-else:
-    from fractions import gcd as _gcd
-
-    def gcd(a, b):
-        return abs(_gcd(a, b))
 
 # If HAS_GMPY is 0, no supported version of gmpy is available. Otherwise,
 # HAS_GMPY contains the major version number of gmpy.

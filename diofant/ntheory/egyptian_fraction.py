@@ -1,5 +1,6 @@
+import math
+
 from ..core import Integer
-from ..core.compatibility import gcd
 
 
 def egyptian_fraction(r, algorithm="Greedy"):
@@ -130,7 +131,7 @@ def egypt_greedy(x, y):
     else:
         a = (-y) % (x)
         b = y*(y//x + 1)
-        c = gcd(a, b)
+        c = math.gcd(a, b)
         if c > 1:
             num, denom = a//c, b//c
         else:
