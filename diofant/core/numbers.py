@@ -17,7 +17,7 @@ from mpmath.libmp.libmpf import prec_to_dps
 
 from ..utilities import filldedent
 from .cache import cacheit, clear_cache
-from .compatibility import DIOFANT_INTS, HAS_GMPY, as_int, gcd
+from .compatibility import DIOFANT_INTS, HAS_GMPY, as_int
 from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr
@@ -149,7 +149,7 @@ def igcd(*args):
     for b in args[1:]:
         a, b = as_int(a), abs(as_int(b))
 
-        a = gcd(a, b)
+        a = math.gcd(a, b)
         if a == 1:
             break
     return a

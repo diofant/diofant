@@ -40,6 +40,7 @@ Backwards-incompatible changes
 * Removed ``get_domain()`` method of :class:`~diofant.polys.polytools.Poly`, use :attr:`~diofant.polys.polytools.Poly.domain` property instead, see :pull:`479`.
 * Renamed 'prec' argument of Float to 'dps', see :pull:`510`.
 * Removed 'group' option of :meth:`~diofant.core.basic.Basic.find`, which now return a :class:`dict`.
+* Support for Python 3.4 was removed, see :pull:`543`.
 
 Minor changes
 =============

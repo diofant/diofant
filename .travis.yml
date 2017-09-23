@@ -25,19 +25,19 @@ addons:
       - graphviz
 matrix:
   include:
-    - python: 3.4
+    - python: 3.5
       env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/7'
-    - python: 3.4
+    - python: 3.5
       env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/7'
-    - python: 3.4
+    - python: 3.5
       env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/7'
-    - python: 3.4
+    - python: 3.5
       env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/7'
-    - python: 3.4
+    - python: 3.5
       env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/7'
-    - python: 3.4
+    - python: 3.5
       env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='6/7'
-    - python: 3.4
+    - python: 3.5
       env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='7/7'
     - python: 3.5
       env: COVERAGE='on' EXTRA='on'
@@ -76,7 +76,7 @@ deploy:
   distributions: "sdist bdist_wheel"
   server: https://pypi.python.org/pypi
   on:
-    python: 3.4
+    python: 3.5
     condition: -z "${COVERAGE}" && "${SPLIT}" = "1/7" && "${TRAVIS_EVENT_TYPE}" != "cron"
     tags: true
 notifications:

@@ -64,4 +64,4 @@ setup(name='Diofant',
       install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
       setup_requires=setup_reqs,
       extras_require=extra_reqs,
-      zip_safe=False)
+      zip_safe=True)
