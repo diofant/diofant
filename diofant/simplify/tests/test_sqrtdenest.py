@@ -492,10 +492,10 @@ def test_unrad1():
                                                                                                    x*(3*x**2 - 34)/2 + sqrt((-3*x**3 + x*(3*x**2 - 34) + 90)**2/4 -
                                                                                                                             Rational(39304, 27)) - 45)))
     assert check(unrad(eq),
-                 (s**7 - sqrt(3)*s**7*I + 102*cbrt(12)*s**5 +
-                  102*2**Rational(2, 3)*3**Rational(5, 6)*s**5*I + 1620*s**4 - 1620*sqrt(3)*s**4*I -
-                  13872*cbrt(18)*s**3 + 471648*s - 471648*sqrt(3)*s*I, [s, s**3 - 306*x
-                                                                        - sqrt(3)*sqrt(31212*x**2 - 165240*x + 61484) + 810]))
+                 (s**6 - sqrt(3)*s**6*I + 102*cbrt(12)*s**4 +
+                  102*2**Rational(2, 3)*3**Rational(5, 6)*s**4*I + 1620*s**3 - 1620*sqrt(3)*s**3*I -
+                  13872*cbrt(18)*s**2 + 471648 - 471648*sqrt(3)*I, [s, s**3 - 306*x
+                                                                    - sqrt(3)*sqrt(31212*x**2 - 165240*x + 61484) + 810]))
     assert solve(eq, x, check=False) != []  # not other code errors
 
 

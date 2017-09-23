@@ -7,8 +7,8 @@ import warnings
 from collections import defaultdict
 from types import GeneratorType
 
-from ..core import (Add, Derivative, Dummy, E, Equality, Expr, Float, Function,
-                    Ge, I, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
+from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
+                    Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp, nan,
                     nfloat, oo, pi, preorder_traversal, sympify, zoo)
 from ..core.assumptions import check_assumptions
@@ -22,7 +22,6 @@ from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
                          sqrt, tan)
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
-from ..integrals import Integral
 from ..matrices import Matrix, zeros
 from ..polys import Poly, RootOf, cancel, factor, roots, together
 from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
@@ -780,7 +779,7 @@ def _solve(f, symbol, **flags):
     else:
         # first see if it really depends on symbol and whether there
         # is a linear solution
-        f_num, sol = solve_linear(f, symbols=[symbol])
+        f_num, sol = solve_linear(f, symbol)
         if symbol not in f_num.free_symbols:
             return []
         elif f_num.is_Symbol:
@@ -1049,7 +1048,7 @@ def _solve_system(exprs, symbols, **flags):
         got_s = set()
         result = []
         for s in symbols:
-            n, d = solve_linear(f, symbols=[s])
+            n, d = solve_linear(f, s)
             if n.is_Symbol:
                 # no need to check but we should simplify if desired
                 if flags.get('simplify', True):
@@ -1218,147 +1217,47 @@ def _solve_system(exprs, symbols, **flags):
     return [r for r in result if r]
 
 
-def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
-    r""" Return a tuple derived from f = lhs - rhs that is either:
+def solve_linear(f, x):
+    r"""
+    Solve equation ``f`` wrt variable ``x``.
 
-        (numerator, denominator) of ``f``
-            If this comes back as (0, 1) it means
-            that ``f`` is independent of the symbols in ``symbols``, e.g::
+    Returns
+    =======
 
-                y*cos(x)**2 + y*sin(x)**2 - y = y*(0) = 0
-                cos(x)**2 + sin(x)**2 = 1
-
-            If it comes back as (0, 0) there is no solution to the equation
-            amongst the symbols given.
-
-            If the numerator is not zero then the function is guaranteed
-            to be dependent on a symbol in ``symbols``.
-
-        or
-
-        (symbol, solution) where symbol appears linearly in the numerator of
-        ``f``, is in ``symbols`` (if given) and is not in ``exclude`` (if given).
-
-        No simplification is done to ``f`` other than and mul=True expansion,
-        so the solution will correspond strictly to a unique solution.
+    tuple
+        ``(x, solution)``, if there is a linear solution, ``(0, 1)`` if
+        ``f`` is independent of the symbol``x``, ``(0, 0)`` if solution set
+        any denominator of ``f`` to zero or ``(numerator, denominator)``
+        of ``f``, if it's a nonlinear expression wrt ``x``.
 
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
+    >>> from diofant.abc import x, y
 
-    These are linear in x and 1/x:
-
-    >>> solve_linear(x + y**2)
-    (x, -y**2)
-    >>> solve_linear(1/x - y**2)
+    >>> solve_linear(1/x - y**2, x)
     (x, y**(-2))
-
-    When not linear in x or y then the numerator and denominator are returned.
-
-    >>> solve_linear(x**2/y**2 - 3)
+    >>> solve_linear(x**2/y**2 - 3, x)
     (x**2 - 3*y**2, y**2)
-
-    If the numerator is a symbol then (0, 0) is returned if the solution for
-    that symbol would have set any denominator to 0:
-
-    >>> solve_linear(1/(1/x - 2))
+    >>> solve_linear(y, x)
+    (0, 1)
+    >>> solve_linear(1/(1/x - 2), x)
     (0, 0)
-    >>> 1/(1/x)  # to Diofant, this looks like x ...
-    x
-    >>> solve_linear(1/(1/x))  # so a solution is given
-    (x, 0)
-
-    If x is allowed to cancel, then this appears linear, but this sort of
-    cancellation is not done so the solution will always satisfy the original
-    expression without causing a division by zero error.
-
-    >>> solve_linear(x**2*(1/x - z**2/x))
-    (x**2*(-z**2 + 1), x)
-
-    You can give a list of what you prefer for x candidates:
-
-    >>> solve_linear(x + y + z, symbols=[y])
-    (y, -x - z)
-
-    You can also indicate what variables you don't want to consider:
-
-    >>> solve_linear(x + y + z, exclude=[x, z])
-    (y, -x - z)
-
-    If only x was excluded then a solution for y or z might be obtained.
     """
-    if isinstance(lhs, Equality):
-        if rhs:
-            raise ValueError(filldedent('''
-            If lhs is an Equality, rhs must be 0 but was %s''' % rhs))
-        rhs = lhs.rhs
-        lhs = lhs.lhs
-    dens = None
-    eq = lhs - rhs
-    n, d = eq.as_numer_denom()
-    if not n:
-        return S.Zero, S.One
-
-    free = n.free_symbols
-    if not symbols:
-        symbols = free
-    else:
-        bad = [s for s in symbols if not s.is_Symbol]
-        if bad:
-            if len(bad) == 1:
-                bad = bad[0]
-            if len(symbols) == 1:
-                eg = 'solve(%s, %s)' % (eq, symbols[0])
-            else:
-                eg = 'solve(%s, *%s)' % (eq, list(symbols))
-            raise ValueError(filldedent('''
-                solve_linear only handles symbols, not %s. To isolate
-                non-symbols use solve, e.g. >>> %s <<<.
-                             ''' % (bad, eg)))
-        symbols = free.intersection(symbols)
-    symbols = symbols.difference(exclude)
-
-    # derivatives are easy to do but tricky to analyze to see if they are going
-    # to disallow a linear solution, so for simplicity we just evaluate the
-    # ones that have the symbols of interest
-    derivs = defaultdict(list)
-    for der in n.atoms(Derivative):
-        csym = der.free_symbols & symbols
-        for c in csym:
-            derivs[c].append(der)
-
-    if symbols:
-        all_zero = True
-        for xi in symbols:
-            # if there are derivatives in this var, calculate them now
-            if type(derivs[xi]) is list:
-                derivs[xi] = {der: der.doit() for der in derivs[xi]}
-            nn = n.subs(derivs[xi])
-            dn = nn.diff(xi)
-            if dn:
-                all_zero = False
-                if dn is nan:
-                    break
-                if xi not in dn.free_symbols:
-                    vi = -(nn.subs(xi, 0))/dn
-                    if dens is None:
-                        dens = denoms(eq, symbols)
-                    if not any(checksol(di, {xi: vi}, minimal=True) is True
-                               for di in dens):
-                        # simplify any trivial integral
-                        irep = [(i, i.doit()) for i in vi.atoms(Integral) if
-                                i.function.is_number]
-                        # do a slight bit of simplification
-                        vi = expand_mul(vi.subs(irep))
-                        if not d.has(xi) or not (d/xi).has(xi):
-                            return xi, vi
-
-        if all_zero:
-            return S.Zero, S.One
-    if n.is_Symbol:  # there was no valid solution
-        n = d = S.Zero
-    return n, d  # should we cancel now?
+    if not x.is_Symbol:
+        raise ValueError("%s is not a Symbol" % x)
+    f = f.replace(lambda e: e.is_Derivative, lambda e: e.doit())
+    n, d = res = f.as_numer_denom()
+    poly = n.as_poly(x)
+    if poly is not None and poly.is_linear:
+        a, b = n.expand().coeff(x, 1), n.expand().coeff(x, 0)
+        if a != 0 and d.subs({x: -b/a}) != 0:
+            res = (x, -b/a)
+    if not n.simplify().has(x):
+        res = S.Zero, S.One
+    if x == res[0] and any(checksol(_, {x: res[1]}) for _ in denoms(f, [x])):
+        res = S.Zero, S.Zero
+    return res
 
 
 def minsolve_linear_system(system, *symbols, **flags):

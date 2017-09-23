@@ -7,9 +7,9 @@ from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
                      Matrix, Mul, Or, Piecewise, Poly, Pow, Rational, Symbol,
                      Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
                      cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
-                     im, log, nan, oo, pi, re, real_root, root, sec, sech,
-                     simplify, sin, sinh, solve, solve_linear, sqrt, sstr,
-                     symbols, sympify, tan, tanh)
+                     im, log, nan, oo, ordered, pi, re, real_root, root, sec,
+                     sech, simplify, sin, sinh, solve, solve_linear, sqrt,
+                     sstr, symbols, sympify, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
@@ -576,24 +576,27 @@ def test_sympyissue_3870():
 
 def test_solve_linear():
     w = Wild('w')
-    assert solve_linear(x, x) == (0, 1)
-    assert solve_linear(x, y - 2*x) in [(x, y/3), (y, 3*x)]
-    assert solve_linear(x, y - 2*x, exclude=[x]) == (y, 3*x)
-    assert solve_linear(3*x - y, 0) in [(x, y/3), (y, 3*x)]
-    assert solve_linear(3*x - y, 0, [x]) == (x, y/3)
-    assert solve_linear(3*x - y, 0, [y]) == (y, 3*x)
-    assert solve_linear(x**2/y, 1) == (y, x**2)
-    assert solve_linear(w, x) in [(w, x), (x, w)]
-    assert solve_linear(cos(x)**2 + sin(x)**2 + 2 + y) == \
-        (y, -2 - cos(x)**2 - sin(x)**2)
-    assert solve_linear(cos(x)**2 + sin(x)**2 + 2 + y, symbols=[x]) == (0, 1)
-    assert solve_linear(Eq(x, 3)) == (x, 3)
-    assert solve_linear(1/(1/x - 2)) == (0, 0)
-    assert solve_linear((x + 1)*exp(-x), symbols=[x]) == (x + 1, exp(x))
-    assert solve_linear((x + 1)*exp(x), symbols=[x]) == ((x + 1)*exp(x), 1)
-    assert solve_linear(x*exp(-x**2), symbols=[x]) == (0, 0)
-    assert solve_linear(0**x - 1) == (0**x - 1, 1)
-    pytest.raises(ValueError, lambda: solve_linear(Eq(x, 3), 3))
+    assert solve_linear(Integer(0), x) == (0, 1)
+    assert solve_linear(3*x - y, x) == (x, y/3)
+    assert solve_linear(3*x - y, y) == (y, 3*x)
+    assert solve_linear(x**2/y - 1, y) == (y, x**2)
+    assert solve_linear(w - x, x) == (x, w)
+    assert solve_linear(cos(x)**2 + sin(x)**2 + 2 + y,
+                        y) == (y, -2 - cos(x)**2 - sin(x)**2)
+    assert solve_linear(cos(x)**2 + sin(x)**2 + 2 + y, x) == (0, 1)
+    assert solve_linear(x - 3, x) == (x, 3)
+    assert solve_linear(1/(1/x - 2), x) == (0, 0)
+    assert solve_linear((x + 1)*exp(-x), x) == (x, -1)
+    assert solve_linear((x + 1)*exp(x), x) == ((x + 1)*exp(x), 1)
+    assert solve_linear(x*exp(-x**2), x) == (x, 0)
+    assert solve_linear(0**x - 1, x) == (0**x - 1, 1)
+    pytest.raises(ValueError, lambda: solve_linear(x - 3, Integer(3)))
+    assert solve_linear(x + y**2, x) == (x, -y**2)
+    assert solve_linear(1/x - y**2, x) == (x, 1/y**2)
+    assert solve_linear(x**2/y**2 - 3, x) == (x**2 - 3*y**2, y**2)
+    assert solve_linear(1/(1/x), x) == (x, 0)
+    assert solve_linear(x**2*(1/x - z**2/x), x) == (x**2*(-z**2 + 1), x)
+    assert solve_linear(x + y + z, y) == (y, -x - z)
 
 
 def test_solve_inequalities():
@@ -896,23 +899,23 @@ def test_sympyissue_5901():
     # but a symbol and solve handles the substitutions necessary so solve_linear
     # won't make this error
     pytest.raises(ValueError,
-                  lambda: solve_linear(f(x) + f(x).diff(x), symbols=[f(x)]))
-    assert solve_linear(f(x) + f(x).diff(x), symbols=[x]) == \
+                  lambda: solve_linear(f(x) + f(x).diff(x), f(x)))
+    assert solve_linear(f(x) + f(x).diff(x), x) == \
         (f(x) + Derivative(f(x), x), 1)
-    assert solve_linear(f(x) + Integral(x, (x, y)), symbols=[x]) == \
+    assert solve_linear(f(x) + Integral(x, (x, y)), x) == \
         (f(x) + Integral(x, (x, y)), 1)
-    assert solve_linear(f(x) + Integral(x, (x, y)) + x, symbols=[x]) == \
+    assert solve_linear(f(x) + Integral(x, (x, y)) + x, x) == \
         (x + f(x) + Integral(x, (x, y)), 1)
-    assert solve_linear(f(y) + Integral(x, (x, y)) + x, symbols=[x]) == \
+    assert solve_linear(f(y) + Integral(x, (x, y)) + x, x) == \
         (x, -f(y) - Integral(x, (x, y)))
-    assert solve_linear(x - f(x)/a + (f(x) - 1)/a, symbols=[x]) == \
+    assert solve_linear(x - f(x)/a + (f(x) - 1)/a, x) == \
         (x, 1/a)
-    assert solve_linear(x + Derivative(2*x, x)) == \
+    assert solve_linear(x + Derivative(2*x, x), x) == \
         (x, -2)
-    assert solve_linear(x + Integral(x, y), symbols=[x]) == \
-        (x, 0)
-    assert solve_linear(x + Integral(x, y) - 2, symbols=[x]) == \
-        (x, 2/(y + 1))
+    assert solve_linear(x + Integral(x, y), x) == \
+        (x + Integral(x, y), 1)
+    assert solve_linear(x + Integral(x, y) - 2, x) == \
+        (x + Integral(x, y) - 2, 1)
 
     assert {s[exp(x)] for s in solve(x + exp(x)**2, exp(x))} == {-sqrt(-x), sqrt(-x)}
 
@@ -1183,13 +1186,14 @@ def test_lambert_multivariate():
     # coverage test
     pytest.raises(NotImplementedError, lambda: solve(x - sin(x)*log(y - x), x))
 
-    # if sign is unknown then only this one solution is obtained
-    assert (solve(3*log(a**(3*x + 5)) + a**(3*x + 5), x) ==
-            [{x: -((log(a**5) + LambertW(Rational(1, 3)))/(3*log(a)))}])
-    p = symbols('p', positive=True)
     _13 = Rational(1, 3)
     _56 = Rational(5, 6)
     _53 = Rational(5, 3)
+    assert (solve(3*log(a**(3*x + 5)) + a**(3*x + 5), x) ==
+            [{x: (log(a**(-_53)) - LambertW(_13)/3)/log(a)},
+             {x: (log((-1 - sqrt(3)*I)/a**_53) - log(2) - LambertW(_13)/3)/log(a)},
+             {x: (log((-1 + sqrt(3)*I)/a**_53) - log(2) - LambertW(_13)/3)/log(a)}])
+    p = symbols('p', positive=True)
     assert (solve(3*log(p**(3*x + 5)) + p**(3*x + 5), x) ==
             [{x: (-5*log(p) + log(LambertW(_13)) + log(3))/(3*log(p))},
              {x: log((-3**_13 - 3**_56*I)*LambertW(_13)**_13/(2*p**_53))/log(p)},
@@ -1197,7 +1201,9 @@ def test_lambert_multivariate():
 
     # check collection
     assert (solve(3*log(a**(3*x + 5)) + b*log(a**(3*x + 5)) + a**(3*x + 5), x) ==
-            [{x: -((log(a**5) + LambertW(1/(b + 3)))/(3*log(a)))}])
+            [{x: log(exp(-LambertW(1/(b + 3))/3)/a**_53)/log(a)},
+             {x: log(exp(-LambertW(1/(b + 3))/3)*(-1 - sqrt(3)*I)/(2*a**_53))/log(a)},
+             {x: log(exp(-LambertW(1/(b + 3))/3)*(-1 + sqrt(3)*I)/(2*a**_53))/log(a)}])
 
     eq = 4*2**(2*p + 3) - 2*p - 3
     assert _solve_lambert(eq, p, _filtered_gens(Poly(eq), p)) == [
@@ -1414,7 +1420,7 @@ def test_sympyissue_8828():
     A = solve(F, v)
     B = solve(G, v)
 
-    p, q = [{tuple(i.evalf(2) for i in j) for j in R} for R in [A, B]]
+    p, q = [{tuple(i.evalf(2) for i in ordered(j)) for j in R} for R in [A, B]]
     assert p == q
 
 

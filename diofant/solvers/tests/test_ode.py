@@ -3,10 +3,10 @@ import os
 import pytest
 
 from diofant import (Abs, Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
-                     Integral, LambertW, O, Piecewise, Poly, Pow, Rational,
-                     RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
-                     cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi, root,
-                     simplify, sin, sinh, sqrt, sstr, symbols, tan)
+                     Integral, LambertW, Mul, O, Piecewise, Poly, Pow,
+                     Rational, RootOf, Subs, Symbol, acos, acosh, asin, asinh,
+                     atan, cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi,
+                     root, simplify, sin, sinh, sqrt, sstr, symbols, tan)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_linear_coeff_match,
@@ -2474,7 +2474,7 @@ def test_linear_coeff_match():
 
 def test_linear_coefficients():
     f = Function('f')
-    sol = Eq(f(x), C1/(x**2 + 6*x + 9) - Rational(3, 2))
+    sol = Eq(f(x), (C1 - 3*x**2 - 18*x)/Mul(2, x**2 + 6*x + 9, evaluate=False))
     eq = f(x).diff(x) + (3 + 2*f(x))/(x + 3)
     assert dsolve(eq, hint='linear_coefficients') == sol
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
