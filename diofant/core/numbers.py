@@ -2033,7 +2033,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Zero
+    .. [1] http://mathworld.wolfram.com/Zero.html
     """
 
     p = 0
@@ -2087,7 +2087,7 @@ class One(IntegerConstant, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/1_%28number%29
+    .. [1] http://mathworld.wolfram.com/1.html
     """
 
     is_number = True
@@ -2191,7 +2191,7 @@ class Half(RationalConstant, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/One_half
+    .. [1] http://mathworld.wolfram.com/Half.html
     """
 
     is_number = True
@@ -2239,7 +2239,7 @@ class Infinity(Number, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Infinity
+    .. [1] http://mathworld.wolfram.com/Infinity.html
     """
 
     is_commutative = True
@@ -2841,7 +2841,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/E_%28mathematical_constant%29
+    .. [1] http://mathworld.wolfram.com/e.html
     """
 
     is_real = True
@@ -2983,7 +2983,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Pi
+    .. [1] http://mathworld.wolfram.com/Pi.html
     """
 
     is_real = True
@@ -3040,7 +3040,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Golden_ratio
+    .. [1] http://mathworld.wolfram.com/GoldenRatio.html
     """
 
     is_real = True
@@ -3097,7 +3097,7 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Euler%E2%80%93Mascheroni_constant
+    .. [1] http://mathworld.wolfram.com/Euler-MascheroniConstant.html
     """
 
     is_real = True
@@ -3146,7 +3146,7 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Catalan%27s_constant
+    .. [1] http://mathworld.wolfram.com/CatalansConstant.html
     """
 
     is_real = True
@@ -3190,7 +3190,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Imaginary_unit
+    .. [1] http://mathworld.wolfram.com/ImaginaryUnit.html
     """
 
     is_commutative = True
