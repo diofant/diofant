@@ -183,7 +183,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     implemented_function and user defined subclasses of Function.  If specified,
     numexpr may be the only option in modules. The official list of numexpr
     functions can be found at:
-    https://github.com/pydata/numexpr#supported-functions
+    https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions
 
     In previous releases ``lambdify`` replaced ``Matrix`` with ``numpy.matrix``
     by default. As of release 0.7.7 ``numpy.array`` is the default.

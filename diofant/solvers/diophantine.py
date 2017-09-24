@@ -686,7 +686,7 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     ==========
 
     .. [1] Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0,[online],
-          Available: http://www.alpertron.com.ar/METHODS.HTM
+          Available: https://www.alpertron.com.ar/METHODS.HTM
     .. [2] Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
           Available: http://www.jpr2718.org/ax2p.pdf
 
@@ -732,7 +732,7 @@ def _diop_quadratic(var, coeff, t):
     # (2) Simple-Hyperbolic case:A = C = 0, B != 0
     # In this case equation can be converted to (Bx + E)(By + D) = DE - BF
     # We consider two cases; DE - BF = 0 and DE - BF != 0
-    # More details, http://www.alpertron.com.ar/METHODS.HTM#SHyperb
+    # More details, https://www.alpertron.com.ar/METHODS.HTM#SHyperb
 
     l = set()
 
@@ -759,7 +759,7 @@ def _diop_quadratic(var, coeff, t):
     # (3) Parabolic case: B**2 - 4*A*C = 0
     # There are two subcases to be considered in this case.
     # sqrt(c)D - sqrt(a)E = 0 and sqrt(c)D - sqrt(a)E != 0
-    # More Details, http://www.alpertron.com.ar/METHODS.HTM#Parabol
+    # More Details, https://www.alpertron.com.ar/METHODS.HTM#Parabol
 
     elif B**2 - 4*A*C == 0:
 
@@ -2486,7 +2486,7 @@ def diop_general_sum_of_squares(eq, limit=1):
 
     .. [1] Representing an Integer as a sum of three squares, [online],
         Available:
-        http://www.proofwiki.org/wiki/Integer_as_Sum_of_Three_Squares
+        https//www.proofwiki.org/wiki/Integer_as_Sum_of_Three_Squares
     """
     var, coeff, diop_type = classify_diop(eq)
 
@@ -2582,7 +2582,7 @@ def partition(n, k=None, zeros=False):
     ==========
 
     .. [1] Generating Integer Partitions, [online],
-        Available: http://jeromekelleher.net/partitions.php
+        Available: https://web.archive.org/web/20151103102545/http://jeromekelleher.net:80/partitions.php
     """
     if n < 1:
         yield ()
@@ -2667,7 +2667,7 @@ def prime_as_sum_of_two_squares(p):
     ==========
 
     .. [1] Representing a number as a sum of four squares, [online],
-        Available: http://www.schorn.ch/howto.html
+        Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
     """
     if p % 8 == 5:
         b = 2
@@ -2711,7 +2711,7 @@ def sum_of_three_squares(n):
     ==========
 
     .. [1] Representing a number as a sum of three squares, [online],
-        Available: http://www.schorn.ch/howto.html
+        Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
     """
     special = {1: (1, 0, 0), 2: (1, 1, 0), 3: (1, 1, 1), 10: (1, 3, 0), 34: (3, 3, 4), 58: (3, 7, 0),
                85: (6, 7, 0), 130: (3, 11, 0), 214: (3, 6, 13), 226: (8, 9, 9), 370: (8, 9, 15),
@@ -2791,7 +2791,7 @@ def sum_of_four_squares(n):
     ==========
 
     .. [1] Representing a number as a sum of four squares, [online],
-        Available: http://www.schorn.ch/howto.html
+        Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
     """
     if n == 0:
         return 0, 0, 0, 0

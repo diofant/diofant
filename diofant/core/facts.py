@@ -36,11 +36,11 @@ Here we take minimalistic approach to get something usable first.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Rete_algorithm
+.. [1] https//en.wikipedia.org/wiki/Rete_algorithm
 .. [2] http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf
-.. [3] http://en.wikipedia.org/wiki/Propositional_formula
-.. [4] http://en.wikipedia.org/wiki/Inference_rule
-.. [5] http://en.wikipedia.org/wiki/List_of_rules_of_inference
+.. [3] https//en.wikipedia.org/wiki/Propositional_formula
+.. [4] https//en.wikipedia.org/wiki/Inference_rule
+.. [5] https//en.wikipedia.org/wiki/List_of_rules_of_inference
 """
 
 from collections import defaultdict

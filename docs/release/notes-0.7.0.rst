@@ -67,7 +67,7 @@ Major Changes
 
   - Implement symarray, providing numpy nd-arrays of symbols.
   - update mpmath to 0.16
-  - Add a tensor module (see `this report <http://code.google.com/p/sympy/wiki/CodeGenerationReport>`_)
+  - Add a tensor module (see `this report <https://code.google.com/archive/p/sympy/wikis/CodeGenerationReport.wiki>`_)
   - A lot of stuff was being imported with ``from sympy import *`` that shouldn't have been (like ``sys``).  This has been fixed.
 
 * Assumptions:
@@ -75,7 +75,7 @@ Major Changes
   - Refine
   - Added predicates (see :commit:`7c0b857`, :commit:`53f0e1a`, :commit:`d1dd6a3`)
   - Added query handlers for algebraic numbers (see :commit:`f3bee7a`)
-  - Implement a SAT solver (see `this <http://code.google.com/p/sympy/wiki/SuperchargingAssumptionsReport>`_, :commit:`2d96329`, :commit:`acfbe75`, etc)
+  - Implement a SAT solver (see `this <https://code.google.com/archive/p/sympy/wikis/SuperchargingAssumptionsReport.wiki>`_, :commit:`2d96329`, :commit:`acfbe75`, etc)
 
 * Concrete
 
@@ -170,7 +170,7 @@ Major Changes
   - Added a function computing topological sort of graphs (see :commit:`b2ce27b`)
   - Allow to setup a customized printer in ``lambdify()`` (see :commit:`c1ad905`)
   - ``flatten()`` was significantly improved (see :commit:`31ed8d7`)
-  - Major improvements to the Fortran code generator (see `report <http://code.google.com/p/sympy/wiki/CodeGenerationReport>`_, :commit:`3383aa3`, :commit:`7ab2da2`, etc)
+  - Major improvements to the Fortran code generator (see `report <https://code.google.com/archive/p/sympy/wikis/CodeGenerationReport.wiki>`_, :commit:`3383aa3`, :commit:`7ab2da2`, etc)
 
 Backwards-incompatible changes
 ==============================

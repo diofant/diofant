@@ -88,7 +88,7 @@ class erf(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Error_function
+    .. [1] https//en.wikipedia.org/wiki/Error_function
     .. [2] http://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/Erf.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/Erf
@@ -279,7 +279,7 @@ class erfc(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Error_function
+    .. [1] https//en.wikipedia.org/wiki/Error_function
     .. [2] http://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/Erfc.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/Erfc
@@ -468,7 +468,7 @@ class erfi(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Error_function
+    .. [1] https//en.wikipedia.org/wiki/Error_function
     .. [2] http://mathworld.wolfram.com/Erfi.html
     .. [3] http://functions.wolfram.com/GammaBetaErf/Erfi
     """
@@ -754,7 +754,7 @@ class erfinv(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Error_function#Inverse_functions
+    .. [1] https//en.wikipedia.org/wiki/Error_function#Inverse_functions
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErf/
     """
 
@@ -830,7 +830,7 @@ class erfcinv (Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Error_function#Inverse_functions
+    .. [1] https//en.wikipedia.org/wiki/Error_function#Inverse_functions
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErfc/
     """
 
@@ -1039,7 +1039,7 @@ class Ei(Function):
     ==========
 
     .. [1] http://dlmf.nist.gov/6.6
-    .. [2] http://en.wikipedia.org/wiki/Exponential_integral
+    .. [2] https//en.wikipedia.org/wiki/Exponential_integral
     .. [3] Abramowitz & Stegun, section 5: http://people.math.sfu.ca/~cbm/aands/page_228.htm
 
     """
@@ -1197,7 +1197,7 @@ class expint(Function):
 
     .. [1] http://dlmf.nist.gov/8.19
     .. [2] http://functions.wolfram.com/GammaBetaErf/ExpIntegralE/
-    .. [3] http://en.wikipedia.org/wiki/Exponential_integral
+    .. [3] https//en.wikipedia.org/wiki/Exponential_integral
     """
 
     @classmethod
@@ -1372,7 +1372,7 @@ class li(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Logarithmic_integral
+    .. [1] https//en.wikipedia.org/wiki/Logarithmic_integral
     .. [2] http://mathworld.wolfram.com/LogarithmicIntegral.html
     .. [3] http://dlmf.nist.gov/6
     .. [4] http://mathworld.wolfram.com/SoldnersConstant.html
@@ -1489,7 +1489,7 @@ class Li(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Logarithmic_integral
+    .. [1] https//en.wikipedia.org/wiki/Logarithmic_integral
     .. [2] http://mathworld.wolfram.com/LogarithmicIntegral.html
     .. [3] http://dlmf.nist.gov/6
     """
@@ -1636,7 +1636,7 @@ class Si(TrigonometricIntegral):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Trigonometric_integral
+    .. [1] https//en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1736,7 +1736,7 @@ class Ci(TrigonometricIntegral):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Trigonometric_integral
+    .. [1] https//en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1819,7 +1819,7 @@ class Shi(TrigonometricIntegral):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Trigonometric_integral
+    .. [1] https//en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1915,7 +1915,7 @@ class Chi(TrigonometricIntegral):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Trigonometric_integral
+    .. [1] https//en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -2107,7 +2107,7 @@ class fresnels(FresnelIntegral):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Fresnel_integral
+    .. [1] https//en.wikipedia.org/wiki/Fresnel_integral
     .. [2] http://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/FresnelIntegrals.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelS
@@ -2240,7 +2240,7 @@ class fresnelc(FresnelIntegral):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Fresnel_integral
+    .. [1] https//en.wikipedia.org/wiki/Fresnel_integral
     .. [2] http://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/FresnelIntegrals.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelC

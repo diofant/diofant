@@ -131,7 +131,6 @@ Issues closed
 * :issue:`31` Wrong automatical cancellation of expr with O terms
 * :sympyissue:`5641` Compatibility with py.test
 * :sympyissue:`10258` Relational involving Piecewise evaluates incorrectly as True
-* :sympyissue:`10205` 10203: handle Eq and Ne with _solve_inequality
 * :sympyissue:`10268` solving inequality involving exp fails for large values
 * :sympyissue:`10237` improper inequality reduction
 * :sympyissue:`10255` solving a Relational involving Piecewise fails

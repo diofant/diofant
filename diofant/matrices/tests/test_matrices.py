@@ -1925,7 +1925,7 @@ def test_matrix_norm():
     assert A.norm('frobenius') == sqrt(389)/2
 
     # Test properties of matrix norms
-    # http://en.wikipedia.org/wiki/Matrix_norm#Definition
+    # https//en.wikipedia.org/wiki/Matrix_norm#Definition
     # Two matrices
     A = Matrix([[1, 2], [3, 4]])
     B = Matrix([[5, 5], [-2, 2]])
@@ -1956,7 +1956,7 @@ def test_matrix_norm():
                 pass  # Some Norms fail on symbolic matrices due to Max issue
 
     # Test Properties of Vector Norms
-    # http://en.wikipedia.org/wiki/Vector_norm
+    # https//en.wikipedia.org/wiki/Vector_norm
     # Two column vectors
     a = Matrix([1, 1 - 1*I, -3])
     b = Matrix([Rational(1, 2), 1*I, 1])

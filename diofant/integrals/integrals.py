@@ -560,8 +560,8 @@ class Integral(AddWithLimits):
         References
         ==========
 
-        .. [1] http://en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
-        .. [2] http://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
+        .. [1] https//en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
+        .. [2] https//en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
 
         Examples
         ========
@@ -920,7 +920,7 @@ class Integral(AddWithLimits):
         is where the function value is taken in each interval to define the
         rectangle.
 
-        [1] http://en.wikipedia.org/wiki/Rectangle_method
+        [1] https//en.wikipedia.org/wiki/Rectangle_method
 
         Examples
         ========

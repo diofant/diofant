@@ -54,7 +54,7 @@ def continued_fraction_periodic(p, q, d=0):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Periodic_continued_fraction
+    .. [1] https//en.wikipedia.org/wiki/Periodic_continued_fraction
     .. [2] K. Rosen. Elementary Number theory and its applications.
            Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
     """
@@ -193,7 +193,7 @@ def continued_fraction_iterator(x):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Continued_fraction
+    .. [1] https//en.wikipedia.org/wiki/Continued_fraction
     """
     from ..functions import floor
 

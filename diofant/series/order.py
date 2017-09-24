@@ -84,7 +84,7 @@ class Order(Expr):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Big_O_notation
+    .. [1] https//en.wikipedia.org/wiki/Big_O_notation
     """
 
     is_Order = True

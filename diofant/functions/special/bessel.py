@@ -143,7 +143,7 @@ class besselj(BesselBase):
            Mathematical Tables
     .. [2] Luke, Y. L. (1969), The Special Functions and Their
            Approximations, Volume 1
-    .. [3] http://en.wikipedia.org/wiki/Bessel_function
+    .. [3] https//en.wikipedia.org/wiki/Bessel_function
     .. [4] http://functions.wolfram.com/Bessel-TypeFunctions/BesselJ/
     """
 
@@ -678,11 +678,8 @@ def jn_zeros(n, k, method="diofant", dps=15):
     This returns an array of zeros of jn up to the k-th zero.
 
     * method = "diofant": uses mpmath's function ``besseljzero``
-    * method = "scipy": uses the
-      `SciPy's sph_jn <http://docs.scipy.org/doc/scipy/reference/generated/scipy.special.jn_zeros.html>`_
-      and
-      `newton <http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.newton.html>`_
-      to find all
+    * method = "scipy": uses :func:`scipy.special.jn_zeros`.
+      and :func:`scipy.optimize.newton` to find all
       roots, which is faster than computing the zeros using a general
       numerical solver, but it requires SciPy and only works with low
       precision floating point numbers.  [The function used with
@@ -853,9 +850,9 @@ class airyai(AiryBase):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Airy_function
+    .. [1] https//en.wikipedia.org/wiki/Airy_function
     .. [2] http://dlmf.nist.gov/9
-    .. [3] http://www.encyclopediaofmath.org/index.php/Airy_functions
+    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
@@ -1016,9 +1013,9 @@ class airybi(AiryBase):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Airy_function
+    .. [1] https//en.wikipedia.org/wiki/Airy_function
     .. [2] http://dlmf.nist.gov/9
-    .. [3] http://www.encyclopediaofmath.org/index.php/Airy_functions
+    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
@@ -1228,9 +1225,9 @@ class airyaiprime(AiryBase):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Airy_function
+    .. [1] https//en.wikipedia.org/wiki/Airy_function
     .. [2] http://dlmf.nist.gov/9
-    .. [3] http://www.encyclopediaofmath.org/index.php/Airy_functions
+    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
@@ -1378,9 +1375,9 @@ class airybiprime(AiryBase):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Airy_function
+    .. [1] https//en.wikipedia.org/wiki/Airy_function
     .. [2] http://dlmf.nist.gov/9
-    .. [3] http://www.encyclopediaofmath.org/index.php/Airy_functions
+    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 

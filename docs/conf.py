@@ -140,6 +140,7 @@ graphviz_output_format = 'svg'
 intersphinx_mapping = {
     'python3': ('https://docs.python.org/3/', None),
     'numpy': ('https://docs.scipy.org/doc/numpy', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
 }
 
 extlinks = {
