@@ -153,8 +153,8 @@ Major changes
 
   - The SymPy cheatsheet was cleaned up.
 
-Backwards-incompatible changes
-==============================
+Compatibility breaks
+====================
 
 - Removed deprecated Real class and is_Real property of Basic, see :sympyissue:`4820`.
 - Removed deprecated 'each_char' option for ``symbols()``, see :sympyissue:`5018`.

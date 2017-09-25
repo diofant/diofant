@@ -39,8 +39,8 @@ Major changes
 
   - Added the ``with assuming(*facts)`` context manager for new assumptions.  See `blogpost <https://matthewrocklin.com/blog/work/2013/02/05/Assuming>`_.
 
-Backwards-incompatible changes
-==============================
+Compatibility breaks
+====================
 
 - This is the last version of SymPy to support Python 2.5.
 

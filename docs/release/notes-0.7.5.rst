@@ -40,8 +40,8 @@ Major changes
 
 * Euler-Lagrange equations (function ``euler_equations``) in a new package ``sympy.calculus`` (:sympypull:`2431`).
 
-Backwards-incompatible changes
-==============================
+Compatibility breaks
+====================
 
 * the ``submatrix`` method of matrices was removed; access the functionality by
   providing slices or list of rows/columns to matrix directly,

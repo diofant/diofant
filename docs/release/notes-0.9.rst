@@ -17,8 +17,8 @@ Major changes
 * :func:`~diofant.solvers.solvers.solve` now return :class:`list` of :class:`dict`'s, see :pull:`473`.
 * ``diofant.polys.domains`` module is now top-level module :mod:`~diofant.domains`, see :pull:`487`.
 
-Backwards-incompatible changes
-==============================
+Compatibility breaks
+====================
 
 * Removed ``assumption0`` property, see :pull:`382`.
 * :func:`~diofant.core.assumptions.check_assumptions` was moved to :mod:`~diofant.core.assumptions`, see :pull:`387`.

@@ -33,8 +33,8 @@ Major changes
     * complex are finite now, see :pull:`42`.
     * added docstrings for assumption properties, see :pull:`354`.
 
-Backwards-incompatible changes
-==============================
+Compatibility breaks
+====================
 
 * Removed physics submodule, see :pull:`23`.
 * Removed galgebra submodule, see :pull:`45`.

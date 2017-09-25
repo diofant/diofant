@@ -172,8 +172,8 @@ Major Changes
   - ``flatten()`` was significantly improved (see :commit:`31ed8d7`)
   - Major improvements to the Fortran code generator (see `report <https://code.google.com/archive/p/sympy/wikis/CodeGenerationReport.wiki>`_, :commit:`3383aa3`, :commit:`7ab2da2`, etc)
 
-Backwards-incompatible changes
-==============================
+Compatibility breaks
+====================
 
 * This will be the last release of SymPy to support Python 2.4.  Dropping support for Python 2.4 will let us move forward with things like supporting Python 3, and will let us use things that were introduced in Python 2.5, like with-statement context managers.
 * no longer support creating matrices without brackets (see :sympyissue:`4029`)
