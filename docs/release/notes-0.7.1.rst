@@ -23,7 +23,7 @@ Major changes
 * ``isympy`` now works with the new IPython 0.11.
 
 * mpmath has been updated to 0.17.  See the corresponding mpmath `release
-  notes <http://mpmath.googlecode.com/svn/trunk/CHANGES>`_.
+  notes <https://github.com/fredrik-johansson/mpmath/blob/master/CHANGES>`_.
 
 * Added a ``Subs`` object for representing unevaluated substitutions.  This
   finally lets us represent derivatives evaluated at a point, i.e.,

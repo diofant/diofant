@@ -49,7 +49,7 @@ def trigintegrate(f, x, conds='piecewise'):
        >>> trigintegrate(sin(x)*tan(x), x)
        -log(sin(x) - 1)/2 + log(sin(x) + 1)/2 - sin(x)
 
-       http://en.wikibooks.org/wiki/Calculus/Integration_techniques
+       https//en.wikibooks.org/wiki/Calculus/Integration_techniques
 
     See Also
     ========

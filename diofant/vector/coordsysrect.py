@@ -495,7 +495,7 @@ class CoordSysCartesian(Basic):
         successive simple rotations.
 
         Body fixed rotations include both Euler Angles and
-        Tait-Bryan Angles, see http://en.wikipedia.org/wiki/Euler_angles.
+        Tait-Bryan Angles, see https//en.wikipedia.org/wiki/Euler_angles.
 
         Parameters
         ==========

@@ -89,28 +89,28 @@ class PermutationGroup(Basic):
     [2] Seress, A.
     "Permutation Group Algorithms"
 
-    [3] http://en.wikipedia.org/wiki/Schreier_vector
+    [3] https://en.wikipedia.org/wiki/Schreier_vector
 
-    [4] http://en.wikipedia.org/wiki/Nielsen_transformation
+    [4] https://en.wikipedia.org/wiki/Nielsen_transformation
     #Product_replacement_algorithm
 
     [5] Frank Celler, Charles R.Leedham-Green, Scott H.Murray,
     Alice C.Niemeyer, and E.A.O'Brien. "Generating Random
     Elements of a Finite Group"
 
-    [6] http://en.wikipedia.org/wiki/Block_%28permutation_group_theory%29
+    [6] https://en.wikipedia.org/wiki/Block_%28permutation_group_theory%29
 
-    [7] http://www.algorithmist.com/index.php/Union_Find
+    [7] https://web.archive.org/web/20170105021515/http://www.algorithmist.com:80/index.php/Union_Find
 
-    [8] http://en.wikipedia.org/wiki/Multiply_transitive_group#Multiply_transitive_groups
+    [8] https://en.wikipedia.org/wiki/Multiply_transitive_group#Multiply_transitive_groups
 
-    [9] http://en.wikipedia.org/wiki/Center_%28group_theory%29
+    [9] https://en.wikipedia.org/wiki/Center_%28group_theory%29
 
-    [10] http://en.wikipedia.org/wiki/Centralizer_and_normalizer
+    [10] https://en.wikipedia.org/wiki/Centralizer_and_normalizer
 
-    [11] http://groupprops.subwiki.org/wiki/Derived_subgroup
+    [11] https://groupprops.subwiki.org/wiki/Derived_subgroup
 
-    [12] http://en.wikipedia.org/wiki/Nilpotent_group
+    [12] https://en.wikipedia.org/wiki/Nilpotent_group
 
     [13] http://www.math.colostate.edu/~hulpke/CGT/cgtnotes.pdf
     """
@@ -350,7 +350,7 @@ class PermutationGroup(Basic):
         [1] Holt, D., Eick, B., O'Brien, E.
         "Handbook of computational group theory"
 
-        [7] http://www.algorithmist.com/index.php/Union_Find
+        [7] https://web.archive.org/web/20170105021515/http://www.algorithmist.com:80/index.php/Union_Find
 
         """
         rep_first = self._union_find_rep(first, parents)
@@ -395,7 +395,7 @@ class PermutationGroup(Basic):
         [1] Holt, D., Eick, B., O'Brien, E.
         "Handbook of computational group theory"
 
-        [7] http://www.algorithmist.com/index.php/Union_Find
+        [7] https://web.archive.org/web/20170105021515/http://www.algorithmist.com:80/index.php/Union_Find
 
         """
         rep, parent = num, parents[num]

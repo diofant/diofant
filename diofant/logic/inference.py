@@ -100,7 +100,7 @@ def valid(expr):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Validity
+    .. [1] https//en.wikipedia.org/wiki/Validity
     """
     return not satisfiable(Not(expr))
 
@@ -195,7 +195,7 @@ def entails(expr, formula_set={}):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Logical_consequence
+    .. [1] https//en.wikipedia.org/wiki/Logical_consequence
     """
     formula_set = list(formula_set)
     formula_set.append(Not(expr))

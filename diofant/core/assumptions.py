@@ -128,7 +128,7 @@ is_complex
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Real_number
+.. [1] https//en.wikipedia.org/wiki/Real_number
 """,
     'imaginary':
     """
@@ -140,7 +140,7 @@ the imaginary unit ``I``.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Imaginary_number
+.. [1] https//en.wikipedia.org/wiki/Imaginary_number
 """,
     'extended_real':
     """
@@ -154,7 +154,7 @@ is_real
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Extended_real_number_line
+.. [1] https//en.wikipedia.org/wiki/Extended_real_number_line
 """,
     'integer':
     """
@@ -177,7 +177,7 @@ is_even
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
+.. [1] https//en.wikipedia.org/wiki/Parity_%28mathematics%29
 """,
     'even':
     """
@@ -191,7 +191,7 @@ is_odd
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
+.. [1] https//en.wikipedia.org/wiki/Parity_%28mathematics%29
 """,
     'prime':
     """
@@ -201,7 +201,7 @@ no positive divisors other than ``1`` and itself.  See [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Prime_number
+.. [1] https//en.wikipedia.org/wiki/Prime_number
 """,
     'composite':
     """
@@ -211,7 +211,7 @@ divisor other than ``1`` or the number itself.  See [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Composite_number
+.. [1] https//en.wikipedia.org/wiki/Composite_number
 """,
     'zero':
     """
@@ -242,7 +242,7 @@ Test if self can have only values from the set of algebraic numbers [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Algebraic_number
+.. [1] https//en.wikipedia.org/wiki/Algebraic_number
 """,
     'transcendental':
     """
@@ -251,7 +251,7 @@ Test if self can have only values from the set of transcendental numbers [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Transcendental_number
+.. [1] https//en.wikipedia.org/wiki/Transcendental_number
 """,
     'irrational':
     """
@@ -260,7 +260,7 @@ Test if self value cannot be represented exactly by Rational, see [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Irrational_number
+.. [1] https//en.wikipedia.org/wiki/Irrational_number
 """,
     'finite':
     """
@@ -269,7 +269,7 @@ Test if self absolute value is bounded.  See [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Finite
+.. [1] https//en.wikipedia.org/wiki/Finite
 
 """,
     'infinite':
@@ -279,8 +279,8 @@ Test if self absolute value can be arbitrarily large.  See [1]_, [2]_.
 References
 ==========
 
-.. [1] https://docs.python.org/3/library/math.html#math.isfinite
-.. [2] http://docs.scipy.org/doc/numpy/reference/generated/numpy.isfinite.html
+.. [1] :func:`math.isfinite`
+.. [2] :obj:`numpy.isfinite`
 """,
     'negative':
     """
@@ -289,7 +289,7 @@ Test if self can have only negative values [1]_.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Negative_number
+.. [1] https//en.wikipedia.org/wiki/Negative_number
 """,
     'nonnegative':
     """
@@ -303,7 +303,7 @@ is_negative
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Negative_number
+.. [1] https//en.wikipedia.org/wiki/Negative_number
 """,
     'positive':
     """

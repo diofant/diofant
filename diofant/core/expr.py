@@ -2387,7 +2387,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        .. [1] http://en.wikipedia.org/wiki/Algebraic_expression
+        .. [1] https//en.wikipedia.org/wiki/Algebraic_expression
         """
         if syms:
             syms = set(map(sympify, syms))
@@ -2789,7 +2789,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         .. [1] A New Algorithm for Computing Asymptotic Series - Dominik Gruntz
         .. [2] Gruntz thesis - p90
-        .. [3] http://en.wikipedia.org/wiki/Asymptotic_expansion
+        .. [3] https//en.wikipedia.org/wiki/Asymptotic_expansion
         """
         from . import Dummy
         from ..series.gruntz import mrv, rewrite

@@ -35,7 +35,7 @@ def AbelianGroup(*cyclic_orders):
     References
     ==========
 
-    .. [1] http://groupprops.subwiki.org/wiki/Structure_theorem_for_finitely_generated_abelian_groups
+    .. [1] https://groupprops.subwiki.org/wiki/Structure_theorem_for_finitely_generated_abelian_groups
     """
     groups = []
     degree = 0
@@ -198,7 +198,7 @@ def DihedralGroup(n):
     References
     ==========
 
-    [1] http://en.wikipedia.org/wiki/Dihedral_group
+    [1] https://en.wikipedia.org/wiki/Dihedral_group
 
     """
     # small cases are special
@@ -261,7 +261,7 @@ def SymmetricGroup(n):
     References
     ==========
 
-    [1] http://en.wikipedia.org/wiki/Symmetric_group#Generators_and_relations
+    [1] https://en.wikipedia.org/wiki/Symmetric_group#Generators_and_relations
 
     """
     if n == 1:

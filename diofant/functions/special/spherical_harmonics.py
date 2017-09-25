@@ -134,7 +134,7 @@ class Ynm(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Spherical_harmonics
+    .. [1] https//en.wikipedia.org/wiki/Spherical_harmonics
     .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
     .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
     .. [4] http://dlmf.nist.gov/14.30
@@ -220,7 +220,7 @@ def Ynm_c(n, m, theta, phi):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Spherical_harmonics
+    .. [1] https//en.wikipedia.org/wiki/Spherical_harmonics
     .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
     .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
     """
@@ -261,7 +261,7 @@ class Znm(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Spherical_harmonics
+    .. [1] https//en.wikipedia.org/wiki/Spherical_harmonics
     .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
     .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
     """

@@ -2469,7 +2469,7 @@ class MatrixBase(DefaultPrinting):
         rewriting is needed on resulting formulae.
 
         TODO: Implement algorithm for sparse matrices (SFF),
-        http://www.eecis.udel.edu/~saunders/papers/sffge/it5.ps.
+        https://www.eecis.udel.edu/~saunders/papers/sffge/it5.ps.
 
         See Also
         ========
@@ -2532,7 +2532,7 @@ class MatrixBase(DefaultPrinting):
         will fail.
 
         TODO: Implement algorithm for sparse matrices (SFF),
-        http://www.eecis.udel.edu/~saunders/papers/sffge/it5.ps.
+        https://www.eecis.udel.edu/~saunders/papers/sffge/it5.ps.
 
         See Also
         ========
@@ -2562,7 +2562,7 @@ class MatrixBase(DefaultPrinting):
 
         Adjugate matrix is the transpose of the cofactor matrix.
 
-        http://en.wikipedia.org/wiki/Adjugate
+        https//en.wikipedia.org/wiki/Adjugate
 
         See Also
         ========
@@ -4136,7 +4136,7 @@ def mgamma(mu, lower=False):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Gamma_matrices
+    .. [1] https//en.wikipedia.org/wiki/Gamma_matrices
     """
     from . import Matrix
     if mu not in [0, 1, 2, 3, 5]:

@@ -45,8 +45,8 @@ New features
 
 * New general 3D vector package at ``sympy.vector``.  This package provides a 3D vector object with the Del, gradient, divergence, curl, and operators. It supports arbitrary rotations of Cartesian coordinate systems and arbitrary locations of points.
 
-Backwards-incompatible changes
-==============================
+Compatibility breaks
+====================
 
 * All usage of inequalities (``>``, ``>=``, ``<``, ``<=``) on SymPy objects will now return SymPy's ``S.true`` or ``S.false`` singletons instead of Python's ``True`` or ``False`` singletons.  Code that checks for, e.g., ``(a < b) is True`` should be changed to ``(a < b) == True`` or ``(a < b) == S.true``.  Use of ``is`` is not recommended here.
 

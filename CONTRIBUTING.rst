@@ -62,8 +62,8 @@ By submitting a PR, you agree to license your code under the
 
 .. _GitHub issues: https://github.com/diofant/diofant/issues
 .. _Pull Requests (PR): https://github.com/diofant/diofant/pulls
-.. _PEP 8: http://www.python.org/dev/peps/pep-0008
-.. _PEP 257: http://www.python.org/dev/peps/pep-0257
+.. _PEP 8: https://www.python.org/dev/peps/pep-0008/
+.. _PEP 257: https://www.python.org/dev/peps/pep-0257/
 .. _flake8: http://flake8.rtfd.io/
 .. _BSD license: LICENSE
 .. _LGPL: https://www.gnu.org/copyleft/lesser.html
