@@ -102,7 +102,7 @@ def runtest_sympyissue_10274(language, backend):
             assert fil.read() == ("/******************************************************************************\n"
                                   " *                    Code generated with diofant " + diofant.__version__+"                     *\n"
                                   " *                                                                            *\n"
-                                  " *              See http://diofant.rtfd.io/ for more information.               *\n"
+                                  " *              See https://diofant.readthedocs.io/ for more information.               *\n"
                                   " *                                                                            *\n"
                                   " *                      This file is part of 'autowrap'                       *\n"
                                   " ******************************************************************************/\n"

@@ -103,7 +103,7 @@ a theoretical foundation for implementing polynomials manipulation module.
     Computation and its Application to Indefinite Summation",
     Proceedings of the International Symposium on Symbolic and
     Algebraic Computation, 1994, Pages 175-180
-    http://dl.acm.org/citation.cfm?doid=190347.190413
+    https://dl.acm.org/citation.cfm?doid=190347.190413
 
 .. [Koepf98] Wolfram Koepf, "Hypergeometric Summation: An Algorithmic Approach
     to Summation and Special Function Identities", Advanced lectures

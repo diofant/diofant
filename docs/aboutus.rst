@@ -64,4 +64,4 @@ good, proved code and not project popularity counters.  Here we believe
 that mathematical correctness is more important than political one.
 
 .. _SymPy : http://www.sympy.org/
-.. _Diofant : http://diofant.rtfd.io/
+.. _Diofant : https://diofant.readthedocs.io/en/latest/

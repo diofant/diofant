@@ -698,7 +698,7 @@ class CodeGenArgumentListError(Exception):
 
 header_comment = """Code generated with diofant %(version)s
 
-See http://diofant.rtfd.io/ for more information.
+See https://diofant.readthedocs.io/ for more information.
 
 This file is part of '%(project)s'
 """
