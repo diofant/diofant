@@ -65,7 +65,7 @@ By submitting a PR, you agree to license your code under the
 .. _PEP 8: https://www.python.org/dev/peps/pep-0008/
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/
 .. _flake8: http://flake8.rtfd.io/
-.. _BSD license: LICENSE
+.. _BSD license: https://github.com/diofant/diofant/blob/master/LICENSE
 .. _LGPL: https://www.gnu.org/copyleft/lesser.html
 .. _No Code of Conduct: https://github.com/domgetter/NCoC
 .. _mention closed issues: https://help.github.com/articles/closing-issues-via-commit-messages
