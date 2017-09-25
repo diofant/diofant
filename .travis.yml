@@ -46,6 +46,7 @@ matrix:
       script:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
+        - sphinx-build -W -b linkcheck docs build/sphinx/linkcheck
         - py.test --cov diofant diofant/polys
     - python: 3.5
       env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
