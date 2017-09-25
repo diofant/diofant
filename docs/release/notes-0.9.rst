@@ -66,6 +66,7 @@ Developer changes
 * Use only relative imports in the codebase, see :pull:`421`.
 * Enabled flake8-comprehensions plugin, see :pull:`420`.
 * Sort imports with `isort <https://github.com/timothycrosley/isort>`_, see :pull:`520`.
+* Depend on `hypothesis <https://hypothesis.readthedocs.io/>`_, see :pull:`547`.
 
 Issues closed
 =============

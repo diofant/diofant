@@ -1,6 +1,7 @@
 import random
 from collections import defaultdict
 
+import hypothesis
 import pytest
 
 from diofant import GoldenRatio as Phi
@@ -282,6 +283,12 @@ def multiproduct(seq=(), start=1):
                 units *= base
             multi.append((base, exp//2))
     return units * multiproduct(multi)**2
+
+
+@hypothesis.given(x=hypothesis.strategies.integers(min_value=0,
+                                                   max_value=1e+10))
+def test_factorint_invariant(x):
+    assert Mul(*[v**p for v, p in factorint(x).items()]) == x
 
 
 def test_factorint():

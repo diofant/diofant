@@ -2,6 +2,7 @@ import re
 import sys
 import warnings
 
+import hypothesis
 import pytest
 
 from diofant.core.cache import USE_CACHE, clear_cache
@@ -9,6 +10,12 @@ from diofant.core.compatibility import GROUND_TYPES
 
 
 sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
+
+hypothesis.settings.register_profile("default",
+                                     hypothesis.settings(max_examples=100))
+hypothesis.settings.register_profile("debug",
+                                     hypothesis.settings(max_examples=100,
+                                                         verbosity=hypothesis.Verbosity.verbose))
 
 
 def process_split(session, config, items):
