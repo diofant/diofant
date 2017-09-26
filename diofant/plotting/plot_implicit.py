@@ -20,10 +20,6 @@ from ..utilities.decorator import doctest_depends_on
 from .plot import BaseSeries, Plot
 
 
-def vectorized_lambdify(args, expr):
-    return lambdify(args, expr, "numpy")
-
-
 class ImplicitSeries(BaseSeries):
     """ Representation for Implicit plot """
 
@@ -77,7 +73,7 @@ class ImplicitSeries(BaseSeries):
         yarray = np.linspace(self.start_y, self.end_y, self.nb_of_points)
         x_grid, y_grid = np.meshgrid(xarray, yarray)
 
-        func = vectorized_lambdify((self.var_x, self.var_y), expr)
+        func = lambdify((self.var_x, self.var_y), expr, "numpy")
         z_grid = func(x_grid, y_grid)
         z_grid[np.ma.where(z_grid < 0)] = -1
         z_grid[np.ma.where(z_grid > 0)] = 1
