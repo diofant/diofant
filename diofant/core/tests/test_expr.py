@@ -1412,10 +1412,10 @@ def test_is_constant():
     assert x.is_constant() is False
     assert x.is_constant(y) is True
 
-    assert checksol(x, x, Sum(x, (x, 1, n))) is False
-    assert checksol(x, x, Sum(x, (x, 1, n))) is False
+    assert checksol(x, {x: Sum(x, (x, 1, n))}) is False
+    assert checksol(x, {x: Sum(x, (x, 1, n))}) is False
     f = Function('f')
-    assert checksol(x, x, f(x)) is False
+    assert checksol(x, {x: f(x)}) is False
 
     p = symbols('p', positive=True)
     assert Pow(x, 0, evaluate=False).is_constant() is True  # == 1

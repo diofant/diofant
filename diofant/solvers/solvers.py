@@ -72,17 +72,8 @@ def denoms(eq, symbols=None):
     return set(rv)
 
 
-def checksol(f, symbol, sol=None, **flags):
-    """Checks whether sol is a solution of equation f == 0.
-
-    Input can be either a single symbol and corresponding value
-    or a dictionary of symbols and values. When given as a dictionary
-    and flag ``simplify=True``, the values in the dictionary will be
-    simplified. ``f`` can be a single equation or an iterable of equations.
-    A solution must satisfy all equations in ``f`` to be considered valid;
-    if a solution does not satisfy any equation, False is returned; if one or
-    more checks are inconclusive (and none are False) then None
-    is returned.
+def checksol(f, sol, **flags):
+    r"""Checks whether sol is a solution of equations f.
 
     Examples
     ========
@@ -90,41 +81,49 @@ def checksol(f, symbol, sol=None, **flags):
     >>> from diofant import symbols
     >>> from diofant.solvers import checksol
     >>> x, y = symbols('x,y')
-    >>> checksol(x**4 - 1, x, 1)
+    >>> checksol(x**4 - 1, {x: 1})
     True
-    >>> checksol(x**4 - 1, x, 0)
+    >>> checksol(x**4 - 1, {x: 0})
     False
     >>> checksol(x**2 + y**2 - 5**2, {x: 3, y: 4})
     True
 
-    To check if an expression is zero using checksol, pass it
-    as ``f`` and send an empty dictionary for ``symbol``:
+    Returns
+    =======
 
-    >>> checksol(x**2 + x - x*(x + 1), {})
-    True
+    bool or None
+        Return True, if solution satisfy all equaltions
+        in ``f``.  Return False, if a solution doesn't
+        satisfy any equation.  Else (i.e. one or more checks
+        are inconclusive), return None.
 
-    None is returned if checksol() could not conclude.
+    Parameters
+    ==========
 
-    flags:
-        'minimal=True (default is False)'
-           a very fast, minimal testing.
-        'warn=True (default is False)'
-           show a warning if checksol() could not conclude.
-        'simplify=True (default)'
-           simplify solution before substituting into function and
-           simplify the function before trying specific simplifications
-        'force=True (default is False)'
-           make positive all symbols without assumptions regarding sign.
+    f : Expr or iterable of Expr's
+        Equations to substitute solutions in.
+    sol : dict of Expr's
+        Mapping of symbols to values.
+    \*\*flags : dict
+        A dictionary of following parameters:
+
+        minimal : bool, optional
+            Do a very fast, minimal testing.  Default is False.
+        warn : bool, optional
+            Show a warning if :func:`~diofant.solvers.solvers.checksol`
+            could not conclude.  Default is False.
+        simplify : bool, optional
+            Simplify solution before substituting into function and
+            simplify the function before trying specific simplifications.
+            Default is True.
+        force : bool, optional
+           Make positive all symbols without assumptions regarding
+           sign.  Default is False.
     """
     minimal = flags.get('minimal', False)
 
-    if sol is not None:
-        sol = {symbol: sol}
-    elif isinstance(symbol, dict):
-        sol = symbol
-    else:
-        raise ValueError("Expecting (sym, val) or ({sym: val}, "
-                         "None) but got (%s, %s)" % (symbol, sol))
+    if not isinstance(sol, dict):
+        raise ValueError("Expecting dictionary but got %s" % sol)
 
     if sol and not f.has(*list(sol.keys())):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
@@ -1247,7 +1246,7 @@ def _solve_system(exprs, symbols, **flags):
                 # if check is True then we see if it satisfies this
                 # equation, otherwise we just accept it
                 if check and r:
-                    b = checksol(u, u, eq2, minimal=True)
+                    b = checksol(u, {u: eq2}, minimal=True)
                     if b is not None:
                         # this solution is sufficient to know whether
                         # it is valid or not so we either accept or
