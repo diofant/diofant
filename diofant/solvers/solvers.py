@@ -34,6 +34,10 @@ from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
 
 
+__all__ = ('solve', 'solve_linear', 'solve_undetermined_coeffs',
+           'minsolve_linear_system', 'checksol')
+
+
 def denoms(eq, symbols=None):
     """Return (recursively) set of all denominators that appear in eq
     that contain any symbol in iterable ``symbols``; if ``symbols`` is
