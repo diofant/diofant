@@ -106,8 +106,6 @@ def checksol(f, symbol, sol=None, **flags):
     None is returned if checksol() could not conclude.
 
     flags:
-        'numerical=True (default)'
-           do a fast numerical check if ``f`` has only one symbol.
         'minimal=True (default is False)'
            a very fast, minimal testing.
         'warn=True (default is False)'
@@ -144,7 +142,6 @@ def checksol(f, symbol, sol=None, **flags):
 
     was = f
     attempt = -1
-    numerical = flags.get('numerical', True)
     while 1:
         attempt += 1
         if attempt == 0:
@@ -213,7 +210,7 @@ def checksol(f, symbol, sol=None, **flags):
             return val == 0
         elif val.is_nonzero:
             return False
-        if numerical and not val.free_symbols:
+        if not val.free_symbols:
             return bool(abs(val.n(18).n(12, chop=True)) < 1e-9)
         was = val
 
@@ -245,9 +242,6 @@ def solve(f, *symbols, **flags):
             True, i.e. the solutions are checked and those that doesn't
             satisfy given assumptions on symbols solved for or make any
             denominator zero - are automatically excluded.
-        numerical : bool, optional
-            If enabled (default), do a fast numerical check
-            if ``f`` has only one symbol.
         minimal : bool, optional
             A very fast, minimal testing.  Default is False.
         warn : bool, optional

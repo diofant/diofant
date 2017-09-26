@@ -34,8 +34,7 @@ Compatibility breaks
 * Removed ``pager_print()`` and ``print_fcode()``, see :pull:`411`.
 * "Increase" precision of Floats with :meth:`~diofant.core.evalf.EvalfMixin.evalf` now disallowed, see :pull:`380`.
 * Removed ``experimental_lambdify()`` and ``intervalmath`` module from plotting package, see :pull:`384`.
-* Removed :func:`~diofant.solvers.solvers.solve` flags ``set``, ``manual`` and ``implicit``, see :pull:`426`.
-* Removed support for ``particular`` and ``quick`` options of :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.solvers.minsolve_linear_system` instead, see :pull:`426`.
+* Removed :func:`~diofant.solvers.solvers.solve` flags ``set``, ``manual``, ``implicit``, ``particular``, ``quick`` and ``numerical`` see :pull:`426` and :pull:`542`.
 * Removed support for inequalities in :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.inequalities.reduce_inequalities` instead, see :pull:`426`.
 * Removed ``get_domain()`` method of :class:`~diofant.polys.polytools.Poly`, use :attr:`~diofant.polys.polytools.Poly.domain` property instead, see :pull:`479`.
 * Renamed 'prec' argument of Float to 'dps', see :pull:`510`.

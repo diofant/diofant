@@ -1001,7 +1001,6 @@ def test_sympyissue_6060():
 def test_sympyissue_5673():
     eq = -x + exp(exp(LambertW(log(x)))*LambertW(log(x)))
     assert checksol(eq, x, 2) is True
-    assert checksol(eq, x, 2, numerical=False) is None
 
 
 def test_checksol():
