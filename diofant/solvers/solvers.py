@@ -263,7 +263,7 @@ def solve(f, *symbols, **flags):
             Make positive all symbols without assumptions regarding
             sign.  Default is False.
         rational : bool or None, optional
-            If True (default), recast Floats as Rational.  If None,
+            If True, recast Floats as Rational.  If None (default),
             Floats will be recast as rationals but the answer will be
             recast as Floats.  If the flag is False then nothing
             will be done to the Floats.
