@@ -164,11 +164,11 @@ def solve_generic(polys, opt):
         """Recursively solves reduced polynomial systems. """
 
         basis = groebner(system, gens, polys=True)
+        dim = basis.dimension
 
-        if len(basis) == 1 and basis[0].is_ground:
+        if dim is None:
             return []
-
-        if not basis.is_zero_dimensional:
+        elif dim > 0:
             solutions = []
             solved_syms = set()
             for syms in subsets(gens, min(len(system), len(basis))):
