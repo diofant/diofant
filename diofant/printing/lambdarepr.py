@@ -1,3 +1,5 @@
+import functools
+
 from ..utilities import default_sort_key
 from .str import StrPrinter
 
@@ -118,14 +120,14 @@ class NumPyPrinter(LambdaPrinter):
         # We have to override LambdaPrinter because it uses Python 'and' keyword.
         # If LambdaPrinter didn't define it, we could use StrPrinter's
         # version of the function and add 'logical_and' to NUMPY_TRANSLATIONS.
-        return '{0}({1})'.format('logical_and', ','.join(self._print(i) for i in expr.args))
+        return functools.reduce(lambda x, y: 'logical_and({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
 
     def _print_Or(self, expr):
         """Logical Or printer"""
         # We have to override LambdaPrinter because it uses Python 'or' keyword.
         # If LambdaPrinter didn't define it, we could use StrPrinter's
         # version of the function and add 'logical_or' to NUMPY_TRANSLATIONS.
-        return '{0}({1})'.format('logical_or', ','.join(self._print(i) for i in expr.args))
+        return functools.reduce(lambda x, y: 'logical_or({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
 
     def _print_Not(self, expr):
         """Logical Not printer"""
