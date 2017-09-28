@@ -2,10 +2,10 @@ import collections
 
 import pytest
 
-from diofant import (Abs, Basic, Dummy, E, Float, Function, I, Integer, Max,
-                     Min, N, Poly, Pow, PurePoly, Rational, StrPrinter, Symbol,
-                     cos, exp, oo, pi, simplify, sin, sqrt, sstr, symbols,
-                     sympify, trigsimp)
+from diofant import (Abs, Basic, E, Float, Function, I, Integer, Max, Min, N,
+                     Poly, Pow, PurePoly, Rational, StrPrinter, Symbol, cos,
+                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
+                     trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.external import import_module
@@ -572,6 +572,9 @@ def test_LUdecomp():
     P, L, Dee, U = M.LUdecompositionFF()
     assert P*M == L*Dee.inv()*U
 
+    pytest.raises(ValueError,
+                  lambda: Matrix([[0, 2], [0, 0]]).LUdecompositionFF())
+
 
 def test_LUsolve():
     A = Matrix([[2, 3, 5],
@@ -785,6 +788,7 @@ def test_nullspace():
     assert basis[1] == Matrix([0, 0, 1, 0, 0, 0, 0])
     assert basis[2] == Matrix([-2, 0, 0, -2, 1, 0, 0])
     assert basis[3] == Matrix([0, 0, 0, 0, 0, R(-1)/3, 1])
+    assert basis == M.nullspace(simplify=True)
 
     # issue sympy/sympy#4797; just see that we can do it when rows > cols
     M = Matrix([[1, 2], [2, 4], [3, 6]])
@@ -1732,6 +1736,8 @@ def test_errors():
     M = Matrix(((1, 2, 3, 4), (5, 6, 7, 8), (9, 10, 11, 12), (13, 14, 15, 16)))
     pytest.raises(ValueError, lambda: M.det('method=LU_decomposition()'))
     pytest.raises(NonSquareMatrixError, lambda: ones(2, 3).det_LU_decomposition())
+    with pytest.raises(TypeError):
+        M[(1,)] = 1
 
 
 def test_len():
@@ -2268,6 +2274,7 @@ def test_dot():
     assert ones(1, 3).dot([1, 1, 1]) == 3
     assert ones(2, 3).dot([1, 1]) == [2, 2, 2]
     pytest.raises(ShapeError, lambda: ones(1, 3).dot([1, 1]))
+    pytest.raises(ShapeError, lambda: ones(1, 3).dot(ones(2, 1)))
 
 
 def test_dual():
@@ -2421,7 +2428,6 @@ def test_atoms():
     assert m.atoms(Symbol) == {x}
 
 
-@pytest.mark.slow
 def test_pinv():
     # Pseudoinverse of an invertible matrix is the inverse.
     A1 = Matrix([[a, b], [c, d]])
@@ -2459,14 +2465,10 @@ def test_pinv_solve():
     # Underdetermined system (infinite results).
     A = Matrix([[1, 0, 1], [0, 1, 1]])
     B = Matrix([5, 7])
-    solution = A.pinv_solve(B)
-    w = {}
-    for s in solution.atoms(Dummy, Symbol):
-        # Extract dummy symbols used in the solution.
-        w[s.name] = s
-    assert solution == Matrix([[w['w0_0']/3 + w['w1_0']/3 - w['w2_0']/3 + 1],
-                               [w['w0_0']/3 + w['w1_0']/3 - w['w2_0']/3 + 3],
-                               [-w['w0_0']/3 - w['w1_0']/3 + w['w2_0']/3 + 4]])
+    solution = A.pinv_solve(B, Matrix([x, y, z]))
+    assert solution == Matrix([[x/3 + y/3 - z/3 + 1],
+                               [x/3 + y/3 - z/3 + 3],
+                               [-x/3 - y/3 + z/3 + 4]])
     assert A * A.pinv() * B == B
     # Overdetermined system (least squares results).
     A = Matrix([[1, 0], [0, 0], [0, 1]])

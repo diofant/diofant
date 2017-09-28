@@ -1033,18 +1033,14 @@ class MatrixBase(DefaultPrinting):
 
         islice, jslice = [isinstance(k, slice) for k in keys]
         if islice:
-            if not self.rows:
-                rlo = rhi = 0
-            else:
-                rlo, rhi = keys[0].indices(self.rows)[:2]
+            assert self.rows
+            rlo, rhi = keys[0].indices(self.rows)[:2]
         else:
             rlo = a2idx(keys[0], self.rows)
             rhi = rlo + 1
         if jslice:
-            if not self.cols:
-                clo = chi = 0
-            else:
-                clo, chi = keys[1].indices(self.cols)[:2]
+            assert self.cols
+            clo, chi = keys[1].indices(self.cols)[:2]
         else:
             clo = a2idx(keys[1], self.cols)
             chi = clo + 1
@@ -3303,8 +3299,7 @@ class MatrixBase(DefaultPrinting):
             self._diagonalize_clear_subproducts()
             raise MatrixError("Matrix is not diagonalizable")
         else:
-            if self._eigenvects is None:
-                self._eigenvects = self.eigenvects(simplify=True)
+            assert self._eigenvects is not None
             if sort:
                 self._eigenvects.sort(key=default_sort_key)
                 self._eigenvects.reverse()
