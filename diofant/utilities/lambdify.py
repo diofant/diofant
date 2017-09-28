@@ -457,9 +457,9 @@ def lambdastr(args, expr, printer=None, dummify=False):
             if isinstance(args, (Function, Symbol)):
                 dummies = Dummy()
                 dummies_dict.update({args: dummies})
-                return str(dummies)
+                return lambdarepr(dummies)
             else:
-                return str(args)
+                return lambdarepr(args)
 
     def sub_expr(expr, dummies_dict):
         try:
@@ -483,7 +483,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     if isiter(args) and any(isiter(i) for i in args):
         import re
-        dum_args = [str(Dummy(str(i))) for i in range(len(args))]
+        dum_args = [lambdarepr(Dummy(str(i))) for i in range(len(args))]
         iter_args = ','.join([i if isiter(a) else i
                               for i, a in zip(dum_args, args)])
         lstr = lambdastr(flatten(args), expr, printer=printer, dummify=dummify)

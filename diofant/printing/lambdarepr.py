@@ -77,6 +77,9 @@ class LambdaPrinter(StrPrinter):
         ]
         return ''.join(result)
 
+    def _print_Dummy(self, expr):
+        return super()._print_Dummy(expr).replace("(", "_lpar_").replace(")", "_rpar_")
+
 
 class NumPyPrinter(LambdaPrinter):
     """
