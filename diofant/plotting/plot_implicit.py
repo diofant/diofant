@@ -178,6 +178,12 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     Plotting regions.
 
     >>> p6 = plot_implicit(y > x**2)
+
+    When plotting an expression with a single variable (y - 1, for example),
+    specify the x or the y variable explicitly:
+
+    >>> p8 = plot_implicit(y - 1, y_var=y)
+    >>> p9 = plot_implicit(x - 1, x_var=x)
     """
 
     # Represents whether the expression contains an Equality,
