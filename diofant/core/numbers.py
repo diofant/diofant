@@ -3081,16 +3081,14 @@ class Catalan(NumberSymbol, metaclass=Singleton):
 
     .. math:: K = \sum_{k=0}^{\infty} \frac{(-1)^k}{(2k+1)^2}
 
-    Catalan is a singleton, and can be accessed by ``S.Catalan``.
-
     Examples
     ========
 
-    >>> from diofant import S
-    >>> S.Catalan.is_irrational
-    >>> S.Catalan > 0
+    >>> from diofant import Catalan
+    >>> Catalan.is_irrational
+    >>> Catalan > 0
     true
-    >>> S.Catalan > 1
+    >>> Catalan > 1
     false
 
     References
