@@ -297,15 +297,15 @@ class elliptic_pi(Function):
         if z is not None:
             n, z, m = n, m, z
             k = 2*z/pi
-            if n == S.Zero:
+            if n == 0:
                 return elliptic_f(z, m)
-            elif n == S.One:
+            elif n == 1:
                 return (elliptic_f(z, m) +
                         (sqrt(1 - m*sin(z)**2)*tan(z) -
                          elliptic_e(z, m))/(1 - m))
             elif k.is_integer:
                 return k*elliptic_pi(n, m)
-            elif m == S.Zero:
+            elif m == 0:
                 return atanh(sqrt(n - 1)*tan(z))/sqrt(n - 1)
             elif n == m:
                 return (elliptic_f(z, n) - elliptic_pi(1, z, n) +
@@ -317,13 +317,13 @@ class elliptic_pi(Function):
             elif z.could_extract_minus_sign():
                 return -elliptic_pi(n, -z, m)
         else:
-            if n == S.Zero:
+            if n == 0:
                 return elliptic_k(m)
-            elif n == S.One:
+            elif n == 1:
                 return zoo
-            elif m == S.Zero:
+            elif m == 0:
                 return pi/(2*sqrt(1 - n))
-            elif m == S.One:
+            elif m == 1:
                 return -oo/sign(n - 1)
             elif n == m:
                 return elliptic_e(n)/(1 - n)

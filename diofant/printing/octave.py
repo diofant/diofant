@@ -171,7 +171,7 @@ class OctaveCodePrinter(CodePrinter):
             if expr.exp == -S.Half:
                 sym = '/' if expr.base.is_number else './'
                 return "1" + sym + "sqrt(%s)" % self._print(expr.base)
-            if expr.exp == -S.One:
+            if expr.exp == -1:
                 sym = '/' if expr.base.is_number else './'
                 return "1" + sym + "%s" % self.parenthesize(expr.base, PREC)
 

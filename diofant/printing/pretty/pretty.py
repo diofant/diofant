@@ -992,7 +992,7 @@ class PrettyPrinter(Printer):
 
     def _print_Order(self, expr):
         pform = self._print(expr.expr)
-        if ((expr.point and any(p != S.Zero for p in expr.point)) or
+        if ((expr.point and any(p != 0 for p in expr.point)) or
                 len(expr.variables) > 1):
             pform = prettyForm(*pform.right("; "))
             if len(expr.variables) > 1:
@@ -1198,7 +1198,7 @@ class PrettyPrinter(Printer):
         else:
             args = product.args
 
-        multiple_ones = len([x for x in args if x == S.One]) > 1
+        multiple_ones = len([x for x in args if x == 1]) > 1
 
         # Gather terms for numerator/denominator
         for item in args:

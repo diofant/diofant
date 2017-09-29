@@ -313,7 +313,7 @@ class lowergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if z not in (S.Zero, -oo):
+        if z not in (0, -oo):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_uppergamma(self, s, x):
@@ -450,7 +450,7 @@ class uppergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if z not in (S.Zero, -oo):
+        if z not in (0, -oo):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_lowergamma(self, s, x):
@@ -707,7 +707,7 @@ class polygamma(Function):
 
     def _eval_rewrite_as_harmonic(self, n, z):
         if n.is_integer:
-            if n == S.Zero:
+            if n == 0:
                 return harmonic(z - 1) - EulerGamma
             else:
                 return S.NegativeOne**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))

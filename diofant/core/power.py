@@ -454,7 +454,7 @@ class Pow(Expr):
             if self.base is S.NegativeOne:
                 return True
             c = self.exp.coeff(I)
-            if c in (S.One, S.NegativeOne):
+            if c in (1, -1):
                 if self.base == 2:
                     return False
 

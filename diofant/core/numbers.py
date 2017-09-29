@@ -1231,7 +1231,7 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Rational):
-            if self.p and other.p == S.Zero:
+            if self.p and other.p == 0:
                 return zoo
             else:
                 return Rational(self.p*other.q, self.q*other.p)
@@ -2704,7 +2704,7 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
         return self
 
     def _eval_power(self, expt):
-        if expt in (S.Zero, zoo):
+        if expt in (0, zoo):
             return nan
         elif expt.is_positive:
             return zoo

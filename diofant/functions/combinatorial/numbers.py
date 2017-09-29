@@ -655,7 +655,7 @@ class harmonic(Function):
         n = self.args[0]
         m = self.args[1] if len(self.args) == 2 else 1
 
-        if m == S.One:
+        if m == 1:
             if n.is_Add:
                 off = n.args[0]
                 nnew = n - off

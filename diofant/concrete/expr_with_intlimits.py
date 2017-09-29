@@ -117,9 +117,9 @@ class ExprWithIntLimits(ExprWithLimits):
                 alpha = p.coeff_monomial(var)
                 beta = p.coeff_monomial(S.One)
                 if alpha.is_number:
-                    if alpha == S.One:
+                    if alpha == 1:
                         limits.append((newvar, alpha*limit[1] + beta, alpha*limit[2] + beta))
-                    elif alpha == S.NegativeOne:
+                    elif alpha == -1:
                         limits.append((newvar, alpha*limit[2] + beta, alpha*limit[1] + beta))
                     else:
                         raise ValueError("Linear transformation results in non-linear summation stepsize")

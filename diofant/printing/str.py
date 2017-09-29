@@ -242,7 +242,7 @@ class StrPrinter(Printer):
             # use make_args in case expr was something like -x -> x
             args = Mul.make_args(expr)
 
-        multiple_ones = len([x for x in args if x == S.One]) > 1
+        multiple_ones = len([x for x in args if x == 1]) > 1
 
         # Gather args for numerator/denominator
         for item in args:

@@ -431,7 +431,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         if len(self.variables) > 1:
             raise ValueError
         else:
-            if self.limits[0][1:] != (S.Zero, oo):
+            if self.limits[0][1:] != (0, oo):
                 raise ValueError
             k = self.variables[0]
 

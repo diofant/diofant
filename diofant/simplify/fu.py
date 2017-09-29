@@ -1975,7 +1975,7 @@ def as_f_sign_1(e):
         return
     # exact match
     a, b = e.args
-    if a in (S.NegativeOne, S.One):
+    if a in (-1, 1):
         g = S.One
         if b.is_Mul and b.args[0].is_Number and b.args[0] < 0:
             a, b = -a, -b

@@ -197,7 +197,7 @@ class Factors:
         True
         """
         f = self.factors
-        return len(f) == 1 and S.Zero in f
+        return len(f) == 1 and 0 in f
 
     @property
     def is_one(self):  # Factors

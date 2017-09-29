@@ -693,7 +693,7 @@ class binomial(CombinatorialFunction):
             k = n - k
 
         if k.is_Integer:
-            if k == S.Zero:
+            if k == 0:
                 return S.One
             elif k > 0:
                 n = self.args[0]

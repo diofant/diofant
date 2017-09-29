@@ -124,7 +124,7 @@ def roots_cubic(f, trig=False):
                 u1 = root(-q, 3)
     elif q is S.Zero:
         y1, y2 = roots([1, 0, p], multiple=True)
-        return [tmp - aon3 for tmp in [y1, S.Zero, y2]]
+        return [tmp - aon3 for tmp in [y1, 0, y2]]
     elif q.is_extended_real and q.is_negative:
         u1 = -root(-q/2 + sqrt(q**2/4 + pon3**3), 3)
 
