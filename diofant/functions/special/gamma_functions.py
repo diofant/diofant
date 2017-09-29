@@ -1,7 +1,7 @@
 from mpmath import mp, workprec
 
-from ...core import (Add, Dummy, Expr, Function, I, Integer, Pow, Rational, S,
-                     oo, pi, sympify, zoo)
+from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Integer, Pow,
+                     Rational, S, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
 from ..combinatorial.numbers import bernoulli, harmonic
@@ -639,18 +639,18 @@ class polygamma(Function):
                             return zoo
                         else:
                             if n is S.Zero:
-                                return -S.EulerGamma + harmonic(z - 1, 1)
+                                return -EulerGamma + harmonic(z - 1, 1)
                             elif n.is_odd:
                                 return (-1)**(n + 1)*factorial(n)*zeta(n + 1, z)
 
         if n == 0:
             if z.is_Rational:
                 # TODO actually *any* n/m can be done, but that is messy
-                lookup = {Rational(1, 2): -2*log(2) - S.EulerGamma,
-                          Rational(1, 3): -pi/2/sqrt(3) - 3*log(3)/2 - S.EulerGamma,
-                          Rational(1, 4): -pi/2 - 3*log(2) - S.EulerGamma,
-                          Rational(3, 4): -3*log(2) - S.EulerGamma + pi/2,
-                          Rational(2, 3): -3*log(3)/2 + pi/2/sqrt(3) - S.EulerGamma}
+                lookup = {Rational(1, 2): -2*log(2) - EulerGamma,
+                          Rational(1, 3): -pi/2/sqrt(3) - 3*log(3)/2 - EulerGamma,
+                          Rational(1, 4): -pi/2 - 3*log(2) - EulerGamma,
+                          Rational(3, 4): -3*log(2) - EulerGamma + pi/2,
+                          Rational(2, 3): -3*log(3)/2 + pi/2/sqrt(3) - EulerGamma}
                 if z > 0:
                     n = floor(z)
                     z0 = z - n
@@ -708,7 +708,7 @@ class polygamma(Function):
     def _eval_rewrite_as_harmonic(self, n, z):
         if n.is_integer:
             if n == S.Zero:
-                return harmonic(z - 1) - S.EulerGamma
+                return harmonic(z - 1) - EulerGamma
             else:
                 return S.NegativeOne**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))
 

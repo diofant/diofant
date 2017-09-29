@@ -1424,7 +1424,7 @@ class li(Function):
 
     def _eval_rewrite_as_hyper(self, z):
         return (log(z)*hyper((1, 1), (2, 2), log(z)) +
-                S.Half*(log(log(z)) - log(S.One/log(z))) + S.EulerGamma)
+                S.Half*(log(log(z)) - log(S.One/log(z))) + EulerGamma)
 
     def _eval_rewrite_as_meijerg(self, z):
         return (-log(-log(z)) - S.Half*(log(S.One/log(z)) - log(log(z)))

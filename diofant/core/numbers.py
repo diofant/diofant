@@ -3034,16 +3034,14 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     .. math:: \gamma = \lim\limits_{n\to\infty}
               \left(\sum\limits_{k=1}^n\frac{1}{k} - \ln n\right)
 
-    EulerGamma is a singleton, and can be accessed by ``S.EulerGamma``.
-
     Examples
     ========
 
-    >>> from diofant import S
-    >>> S.EulerGamma.is_irrational
-    >>> S.EulerGamma > 0
+    >>> from diofant import EulerGamma
+    >>> EulerGamma.is_irrational
+    >>> EulerGamma > 0
     true
-    >>> S.EulerGamma > 1
+    >>> EulerGamma > 1
     false
 
     References
