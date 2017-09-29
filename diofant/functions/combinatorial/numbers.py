@@ -10,8 +10,8 @@ the separate 'factorials' module.
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
-from ...core import (Add, Dummy, E, Expr, Function, Integer, Rational, S,
-                     cacheit, expand_mul, nan, oo, pi, prod)
+from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
+                     Rational, S, cacheit, expand_mul, nan, oo, pi, prod)
 from ...core.compatibility import DIOFANT_INTS, as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
@@ -110,7 +110,7 @@ class fibonacci(Function):
     def _eval_rewrite_as_sqrt(self, n, sym=None):
         from .. import sqrt
         if sym is None:
-            return (S.GoldenRatio**n - cos(pi*n)/S.GoldenRatio**n)/sqrt(5)
+            return (GoldenRatio**n - cos(pi*n)/GoldenRatio**n)/sqrt(5)
 
     _eval_rewrite_as_tractable = _eval_rewrite_as_sqrt
 

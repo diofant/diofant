@@ -2976,17 +2976,15 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     are in the golden ratio if their ratio is the same as the ratio of
     their sum to the larger of the two quantities, i.e. their maximum.
 
-    GoldenRatio is a singleton, and can be accessed by ``S.GoldenRatio``.
-
     Examples
     ========
 
-    >>> from diofant import S
-    >>> S.GoldenRatio > 1
+    >>> from diofant import GoldenRatio
+    >>> GoldenRatio > 1
     true
-    >>> S.GoldenRatio.expand(func=True)
+    >>> GoldenRatio.expand(func=True)
     1/2 + sqrt(5)/2
-    >>> S.GoldenRatio.is_irrational
+    >>> GoldenRatio.is_irrational
     True
 
     References
