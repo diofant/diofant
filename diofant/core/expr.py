@@ -3060,7 +3060,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return 'mulz'
             return hint
 
-        for hint in sorted(hints.keys(), key=_expand_hint_key):
+        for hint in sorted(hints, key=_expand_hint_key):
             use_hint = hints[hint]
             if use_hint:
                 hint = '_eval_expand_' + hint

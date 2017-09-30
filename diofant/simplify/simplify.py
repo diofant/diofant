@@ -965,13 +965,13 @@ def logcombine(expr, force=False):
             log1[(c,)].append(([], l))
 
         # logs that have the same coefficient can multiply
-        for k in list(log1.keys()):
+        for k in list(log1):
             log1[Mul(*k)] = log(logcombine(Mul(*[
                 l.args[0]**Mul(*c) for c, l in log1.pop(k)]),
                 force=force))
 
         # logs that have oppositely signed coefficients can divide
-        for k in ordered(list(log1.keys())):
+        for k in ordered(list(log1)):
             if k not in log1:  # already popped as -k
                 continue
             if -k in log1:

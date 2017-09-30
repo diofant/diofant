@@ -199,7 +199,7 @@ def test_pdsolve_all():
     sol = pdsolve(eq, hint='all')
     keys = ['1st_linear_constant_coeff',
             '1st_linear_constant_coeff_Integral', 'default', 'order']
-    assert sorted(sol.keys()) == keys
+    assert sorted(sol) == keys
     assert sol['order'] == 1
     assert sol['default'] == '1st_linear_constant_coeff'
     assert sol['1st_linear_constant_coeff'] == Eq(f(x, y),

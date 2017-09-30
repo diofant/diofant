@@ -327,7 +327,7 @@ def dup_zz_irreducible_p(f, K):
     if e_fc:
         e_ff = factorint(int(e_fc))
 
-        for p in e_ff.keys():
+        for p in e_ff:
             if (lc % p) and (tc % p**2):
                 return True
 

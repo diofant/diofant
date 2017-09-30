@@ -245,11 +245,11 @@ def is_pell_transformation_ok(eq):
                                        for t in simplified.args)}
 
     for term in [X*Y, X, Y]:
-        if term in coeff.keys():
+        if term in coeff:
             return False
 
     for term in [X**2, Y**2, Integer(1)]:
-        if term not in coeff.keys():
+        if term not in coeff:
             coeff[term] = Integer(0)
 
     if coeff[X**2] != 0:
@@ -311,7 +311,7 @@ def is_normal_transformation_ok(eq):
     coeff = {val: key for key, val in (t.as_independent(X, Y, Z)
                                        for t in simplified.args)}
     for term in [X*Y, Y*Z, X*Z]:
-        if term in coeff.keys():
+        if term in coeff:
             return False
 
     return True

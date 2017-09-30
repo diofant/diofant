@@ -415,7 +415,7 @@ def test_sparse_matrix():
                 ( 1, 1,  0),
                 (-1, 0,  1)])
     vals = M.eigenvals()
-    assert sorted(vals.keys()) == [-1, 1, 2]
+    assert sorted(vals) == [-1, 1, 2]
 
     R = Rational
     M = Matrix([[1, 0, 0],

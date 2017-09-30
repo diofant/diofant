@@ -73,7 +73,7 @@ def minimize(f, *v):
         res, sol = minimize([obj.subs(elims)] +
                             [c.subs(elims)
                              for c in constraints if not isinstance(c, Eq)],
-                            *(set(v) - set(elims.keys())))
+                            *(set(v) - set(elims)))
         return res, {x: x.subs(elims).subs(sol) for x in v}
 
     if dim == 1:

@@ -279,7 +279,7 @@ class ProductPSpace(PSpace):
             for value in space.values:
                 rs_space_dict[value] = space
 
-        symbols = FiniteSet(*[val.symbol for val in rs_space_dict.keys()])
+        symbols = FiniteSet(*[val.symbol for val in rs_space_dict])
 
         # Overlapping symbols
         if len(symbols) < sum(len(space.symbols) for space in spaces):
@@ -306,7 +306,7 @@ class ProductPSpace(PSpace):
 
     @property
     def symbols(self):
-        return FiniteSet(*[val.symbol for val in self.rs_space_dict.keys()])
+        return FiniteSet(*[val.symbol for val in self.rs_space_dict])
 
     @property
     def spaces(self):

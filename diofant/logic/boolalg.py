@@ -1694,7 +1694,7 @@ def bool_map(bool1, bool2):
 
         # assemble the match dictionary if possible
         matchdict = {}
-        for k in f1.keys():
+        for k in f1:
             if k not in f2 or len(f1[k]) != len(f2[k]):
                 return
             for i, x in enumerate(f1[k]):

@@ -237,7 +237,7 @@ def gf_from_dict(f, p, K):
     >>> gf_from_dict({10: ZZ(4), 4: ZZ(33), 0: ZZ(-1)}, 5, ZZ)
     [4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4]
     """
-    n, h = max(f.keys()), []
+    n, h = max(f), []
 
     for k in range(n, -1, -1):
         h.append(f.get(k, K.zero) % p)

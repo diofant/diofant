@@ -253,7 +253,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         for candidates, rule in rewritables.items():
             f = f.rewrite(candidates, rule)
     else:
-        for candidates in rewritables.keys():
+        for candidates in rewritables:
             if f.has(*candidates):
                 break
         else:
@@ -421,7 +421,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     u_split = _splitter(denom)
     v_split = _splitter(Q)
 
-    polys = set(list(v_split) + [ u_split[0] ] + list(special.keys()))
+    polys = set(list(v_split) + [u_split[0]] + list(special))
 
     s = u_split[0] * Mul(*[ k for k, v in special.items() if v ])
     polified = [ p.as_poly(*V) for p in [s, P, Q] ]

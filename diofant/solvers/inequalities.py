@@ -323,7 +323,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
     inequalities = []
 
     for expr, conds in exprs:
-        if rel not in mapping.keys():
+        if rel not in mapping:
             expr = Relational( expr, 0, rel)
         else:
             expr = Relational(-expr, 0, mapping[rel])

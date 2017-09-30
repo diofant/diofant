@@ -285,7 +285,7 @@ class Basic(object):
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
             types = (Atom,)
-        return set().union(*[set(self.find(t).keys()) for t in types])
+        return set().union(*[set(self.find(t)) for t in types])
 
     @property
     def free_symbols(self):
@@ -535,7 +535,7 @@ class Basic(object):
                         ops = (0, 0)
                     d.setdefault(ops, []).append((o, n))
                 newseq = []
-                for k in sorted(d.keys(), reverse=True):
+                for k in sorted(d, reverse=True):
                     newseq.extend(sorted((v[0] for v in d[k]),
                                          key=default_sort_key))
                 sequence = [(k, sequence[k]) for k in newseq]

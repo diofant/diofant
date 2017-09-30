@@ -566,7 +566,7 @@ class Hyper_Function(Expr):
 
         diff = 0
         for bucket, obucket in [(abuckets, oabuckets), (bbuckets, obbuckets)]:
-            for mod in set(list(bucket.keys()) + list(obucket.keys())):
+            for mod in set(list(bucket) + list(obucket)):
                 if (mod not in bucket) or (mod not in obucket) \
                         or len(bucket[mod]) != len(obucket[mod]):
                     return -1
@@ -770,7 +770,7 @@ class Formula:
             symb_a, symb_b = [sift(params, lambda x: _mod1(x.xreplace(repl)))
                               for params in [self.func.ap, self.func.bq]]
             for bucket, obucket in [(abuckets, symb_a), (bbuckets, symb_b)]:
-                for mod in set(list(bucket.keys()) + list(obucket.keys())):
+                for mod in set(list(bucket) + list(obucket)):
                     if (mod not in bucket) or (mod not in obucket) \
                             or len(bucket[mod]) != len(obucket[mod]):
                         break
@@ -1563,8 +1563,8 @@ def devise_plan(target, origin, z):
     abuckets, bbuckets, nabuckets, nbbuckets = [sift(params, _mod1) for
                                                 params in (target.ap, target.bq, origin.ap, origin.bq)]
 
-    if len(list(abuckets.keys())) != len(list(nabuckets.keys())) or \
-            len(list(bbuckets.keys())) != len(list(nbbuckets.keys())):
+    if len(list(abuckets)) != len(list(nabuckets)) or \
+            len(list(bbuckets)) != len(list(nbbuckets)):
         raise ValueError('%s not reachable from %s' % (target, origin))
 
     ops = []
@@ -1596,7 +1596,7 @@ def devise_plan(target, origin, z):
                          lambda p, i: UnShiftB(nal + aother, p + bother, i, z),
                          lambda p, i: ShiftB(p[i]))
 
-    for r in sorted(chain(abuckets.keys(), bbuckets.keys()), key=default_sort_key):
+    for r in sorted(chain(abuckets, bbuckets), key=default_sort_key):
         al = ()
         nal = ()
         bk = ()
@@ -1849,7 +1849,7 @@ def try_lerchphi(func):
         deriv[lerchphi(z, 1, a)] = [(-a, lerchphi(z, 1, a)),
                                     (1/(1 - z), Integer(1))]
     trans = {}
-    for n, b in enumerate([Integer(1)] + list(deriv.keys())):
+    for n, b in enumerate([Integer(1)] + list(deriv)):
         trans[b] = n
     basis = [expand_func(b) for (b, _) in sorted(trans.items(),
                                                  key=lambda x:x[1])]

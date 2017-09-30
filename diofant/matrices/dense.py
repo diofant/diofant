@@ -1342,7 +1342,7 @@ def diag(*values, **kwargs):
     if kwargs:
         raise ValueError('unrecognized keyword%s: %s' % (
             's' if len(kwargs) > 1 else '',
-            ', '.join(kwargs.keys())))
+            ', '.join(kwargs)))
     rows = 0
     cols = 0
     values = list(values)

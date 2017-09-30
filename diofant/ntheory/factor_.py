@@ -627,7 +627,7 @@ def _trial(factors, n, candidates, verbose=False):
     value of ``n`` and a flag indicating whether any factors were found.
     """
     if verbose:
-        factors0 = list(factors.keys())
+        factors0 = list(factors)
     nfactors = len(factors)
     for d in candidates:
         if n % d == 0:
@@ -935,7 +935,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         factordict = n
     if factordict and (isinstance(n, Mul) or isinstance(n, dict)):
         # check it
-        for k in list(factordict.keys()):
+        for k in list(factordict):
             if isprime(k):
                 continue
             e = factordict.pop(k)
@@ -1239,7 +1239,7 @@ def primefactors(n, limit=None, verbose=False):
     divisors
     """
     n = int(n)
-    factors = sorted(factorint(n, limit=limit, verbose=verbose).keys())
+    factors = sorted(factorint(n, limit=limit, verbose=verbose))
     s = [f for f in factors[:-1:] if f not in [-1, 0, 1]]
     if factors and isprime(factors[-1]):
         s += [factors[-1]]
@@ -1250,7 +1250,7 @@ def _divisors(n):
     """Helper function for divisors which generates the divisors."""
 
     factordict = factorint(n)
-    ps = sorted(factordict.keys())
+    ps = sorted(factordict)
 
     def rec_gen(n=0):
         if n == len(ps):

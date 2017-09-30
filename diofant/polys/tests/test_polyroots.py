@@ -502,7 +502,7 @@ def test_roots_slow():
     assert list(roots(e1 - e2, k).values()) == [1, 1, 1]
 
     f = x**3 + 2*x**2 + 8
-    R = list(roots(f).keys())
+    R = list(roots(f))
 
     assert not any(i for i in [f.subs(x, ri).n(chop=True) for ri in R])
 

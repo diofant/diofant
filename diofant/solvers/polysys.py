@@ -84,7 +84,7 @@ def solve_linear_system(system, *symbols, **flags):
     if res is None:
         return
 
-    for k in list(res.keys()):
+    for k in list(res):
         s = domain.symbols[domain.index(k)]
         res[s] = res[k].as_expr()
         del res[k]
@@ -193,7 +193,7 @@ def solve_generic(polys, opt):
         gens = f.gens
         gen = gens[-1]
 
-        zeros = [k.doit() for k in roots(f.ltrim(gen)).keys()]
+        zeros = [k.doit() for k in roots(f.ltrim(gen))]
 
         if len(basis) == 1:
             return [{gen: zero} for zero in zeros]

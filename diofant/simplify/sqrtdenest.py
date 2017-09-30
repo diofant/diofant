@@ -804,7 +804,7 @@ def unrad(eq, *syms, **flags):
             key = ()
         rterms.setdefault(key, []).append(t)
     others = Add(*rterms.pop(()))
-    rterms = [Add(*rterms[k]) for k in rterms.keys()]
+    rterms = [Add(*rterms[k]) for k in rterms]
 
     # the output will depend on the order terms are processed, so
     # make it canonical quickly

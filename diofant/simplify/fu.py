@@ -314,12 +314,12 @@ def TR2i(rv, half=False):
                                                      for ai in Mul.make_args(a)) for a in k.args))))
 
         n = n.as_powers_dict()
-        ndone = [(k, n.pop(k)) for k in list(n.keys()) if not ok(k, n[k])]
+        ndone = [(k, n.pop(k)) for k in list(n) if not ok(k, n[k])]
         if not n:
             return rv
 
         d = d.as_powers_dict()
-        ddone = [(k, d.pop(k)) for k in list(d.keys()) if not ok(k, d[k])]
+        ddone = [(k, d.pop(k)) for k in list(d) if not ok(k, d[k])]
         if not d:
             return rv
 

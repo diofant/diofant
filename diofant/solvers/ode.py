@@ -3990,7 +3990,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     # First, set up characteristic equation.
     chareq, symbol = S.Zero, Dummy('x')
 
-    for i in r.keys():
+    for i in r:
         if not isinstance(i, str) and i >= 0:
             chareq += (r[i]*diff(x**symbol, x, i)*x**-symbol).expand()
 
@@ -4106,7 +4106,7 @@ def ode_nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients(eq, func, o
 
     chareq, eq, symbol = S.Zero, S.Zero, Dummy('x')
 
-    for i in r.keys():
+    for i in r:
         if not isinstance(i, str) and i >= 0:
             chareq += (r[i]*diff(x**symbol, x, i)*x**-symbol).expand()
 
@@ -4628,7 +4628,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     # First, set up characteristic equation.
     chareq, symbol = S.Zero, Dummy('x')
 
-    for i in r.keys():
+    for i in r:
         if type(i) == str or i < 0:
             pass
         else:

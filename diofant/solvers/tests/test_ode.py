@@ -608,7 +608,7 @@ def test_dsolve_options():
                      'almost_linear_Integral', 'best', 'best_hint', 'default',
                      'nth_linear_euler_eq_homogeneous',
                      'order', 'separable_Integral']
-    assert sorted(a.keys()) == keys
+    assert sorted(a) == keys
     assert a['order'] == ode_order(eq, f(x))
     assert a['best'] == Eq(f(x), C1/x)
     assert dsolve(eq, hint='best') == Eq(f(x), C1/x)
@@ -625,7 +625,7 @@ def test_dsolve_options():
     assert a['1st_homogeneous_coeff_subs_dep_div_indep_Integral'].has(Integral)
     assert a['1st_homogeneous_coeff_subs_indep_div_dep_Integral'].has(Integral)
     assert a['separable_Integral'].has(Integral)
-    assert sorted(b.keys()) == keys
+    assert sorted(b) == keys
     assert b['order'] == ode_order(eq, f(x))
     assert b['best'] == Eq(f(x), C1/x)
     assert dsolve(eq, hint='best', simplify=False) == Eq(f(x), C1/x)
@@ -647,7 +647,7 @@ def test_dsolve_options():
     assert b['1st_homogeneous_coeff_subs_dep_div_indep_Integral'].has(Integral)
     assert b['1st_homogeneous_coeff_subs_indep_div_dep_Integral'].has(Integral)
     assert b['separable_Integral'].has(Integral)
-    assert sorted(c.keys()) == Integral_keys
+    assert sorted(c) == Integral_keys
     pytest.raises(ValueError, lambda: dsolve(eq, hint='notarealhint'))
     pytest.raises(ValueError, lambda: dsolve(eq, hint='Liouville'))
     assert dsolve(f(x).diff(x) - 1/f(x)**2, hint='all')['best'] == \

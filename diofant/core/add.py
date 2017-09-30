@@ -790,9 +790,9 @@ class Add(AssocOp):
                 if not term_rads:
                     break
                 if common_q is None:
-                    common_q = set(term_rads.keys())
+                    common_q = set(term_rads)
                 else:
-                    common_q = common_q & set(term_rads.keys())
+                    common_q = common_q & set(term_rads)
                     if not common_q:
                         break
                 rads.append(term_rads)
@@ -800,7 +800,7 @@ class Add(AssocOp):
                 # process rads
                 # keep only those in common_q
                 for r in rads:
-                    for q in list(r.keys()):
+                    for q in list(r):
                         if q not in common_q:
                             r.pop(q)
                     for q in r:

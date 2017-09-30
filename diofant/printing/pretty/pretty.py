@@ -1464,7 +1464,7 @@ class PrettyPrinter(Printer):
         return self._print_tuple(expr)
 
     def _print_dict(self, d):
-        keys = sorted(d.keys(), key=default_sort_key)
+        keys = sorted(d, key=default_sort_key)
         items = []
 
         for k in keys:

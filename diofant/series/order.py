@@ -123,16 +123,16 @@ class Order(Expr):
             new_vp = dict(expr_vp)
             vp = dict(zip(variables, point))
             for v, p in vp.items():
-                if v in new_vp.keys():
+                if v in new_vp:
                     if p != new_vp[v]:
                         raise NotImplementedError(
                             "Mixing Order at different points is not supported.")
                 else:
                     new_vp[v] = p
-            if set(expr_vp.keys()) == set(new_vp.keys()):
+            if set(expr_vp) == set(new_vp):
                 return expr
             else:
-                variables = list(new_vp.keys())
+                variables = list(new_vp)
                 point = [new_vp[v] for v in variables]
 
         if expr is S.NaN:
@@ -276,7 +276,7 @@ class Order(Expr):
                     "Multiplying Order at different points is not supported.")
             order_symbols = dict(order_symbols)
             for s, p in dict(self.args[1:]).items():
-                if s not in order_symbols.keys():
+                if s not in order_symbols:
                     order_symbols[s] = p
             order_symbols = sorted(order_symbols.items(), key=lambda x: default_sort_key(x[0]))
         return self.expr, tuple(order_symbols)

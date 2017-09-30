@@ -95,7 +95,7 @@ class BaseSymbol(AtomicExpr, Boolean):
                 '%scommutativity must be True or False.' % whose)
 
         # sanitize other assumptions so 1 -> True and 0 -> False
-        for key in list(assumptions.keys()):
+        for key in list(assumptions):
             v = assumptions[key]
             if v is None:
                 assumptions.pop(key)

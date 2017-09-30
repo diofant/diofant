@@ -250,12 +250,12 @@ def classify_diop(eq):
             coeff = {x**2: 0, x*y: eq.args[0], y**2: 0, x: 0, y: 0, Integer(1): 0}
         else:
             for term in [x**2, y**2, x*y, x, y, Integer(1)]:
-                if term not in coeff.keys():
+                if term not in list(coeff):
                     coeff[term] = Integer(0)
 
-    elif Poly(eq).total_degree() == 2 and len(var) == 3 and Integer(1) not in coeff.keys():
+    elif Poly(eq).total_degree() == 2 and len(var) == 3 and Integer(1) not in coeff:
         for v in var:
-            if v in coeff.keys():
+            if v in coeff:
                 diop_type = "inhomogeneous_ternary_quadratic"
                 break
         else:
@@ -264,18 +264,18 @@ def classify_diop(eq):
             x, y, z = var[:3]
 
             for term in [x**2, y**2, z**2, x*y, y*z, x*z]:
-                if term not in coeff.keys():
+                if term not in list(coeff):
                     coeff[term] = Integer(0)
 
     elif Poly(eq).degree() == 2 and len(var) >= 3:
 
         for v in var:
-            if v in coeff.keys():
+            if v in coeff:
                 diop_type = "inhomogeneous_general_quadratic"
                 break
 
         else:
-            if Integer(1) in coeff.keys():
+            if Integer(1) in coeff:
                 constant_term = True
             else:
                 constant_term = False
@@ -283,7 +283,7 @@ def classify_diop(eq):
             non_square_degree_2_terms = False
             for v in var:
                 for u in var:
-                    if u != v and u*v in coeff.keys():
+                    if u != v and u*v in coeff:
                         non_square_degree_2_terms = True
                         break
                 if non_square_degree_2_terms:
@@ -319,8 +319,8 @@ def classify_diop(eq):
         diop_type = "cubic_thue"
 
         for term in [x**3, x**2*y, x*y**2, y**3, Integer(1)]:
-            if term not in coeff.keys():
-                coeff[term] == Integer(0)
+            if term not in list(coeff):
+                coeff[term] = Integer(0)
 
     if diop_type is not None:
         return var, coeff, diop_type
@@ -709,7 +709,7 @@ def _diop_quadratic(var, coeff, t):
     x, y = var[:2]
 
     for term in [x**2, y**2, x*y, x, y, Integer(1)]:
-        if term not in coeff.keys():
+        if term not in list(coeff):
             coeff[term] = Integer(0)
 
     A = coeff[x**2]
@@ -1589,7 +1589,7 @@ def _find_DN(var, coeff):
     coeff = {v: k for k, v in (t.as_independent(X, Y) for t in simplified.args)}
 
     for term in [X**2, Y**2, Integer(1)]:
-        if term not in coeff.keys():
+        if term not in list(coeff):
             coeff[term] = Integer(0)
 
     return -coeff[Y**2]/coeff[X**2], -coeff[Integer(1)]/coeff[X**2]
@@ -2413,7 +2413,7 @@ def diop_general_pythagorean(eq, param=symbols("m", integer=True)):
 def _diop_general_pythagorean(var, coeff, t):
 
     if sign(coeff[var[0]**2]) + sign(coeff[var[1]**2]) + sign(coeff[var[2]**2]) < 0:
-        for key in coeff.keys():
+        for key in list(coeff):
             coeff[key] = coeff[key] * -1
 
     n = len(var)
@@ -2730,7 +2730,7 @@ def sum_of_three_squares(n):
     if n % 8 == 7:
         return None, None, None
 
-    if n in special.keys():
+    if n in special:
         x, y, z = special[n]
         return 2**v*x, 2**v*y, 2**v*z
 

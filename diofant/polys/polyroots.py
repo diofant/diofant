@@ -197,7 +197,7 @@ def _roots_quartic_euler(p, q, r, a):
     # solve the resolvent equation
     x = Symbol('x')
     eq = 64*x**3 + 32*p*x**2 + (4*p**2 - 16*r)*x - q**2
-    xsols = list(roots(Poly(eq, x), cubics=False).keys())
+    xsols = list(roots(Poly(eq, x), cubics=False))
     xsols = [sol for sol in xsols if sol.is_rational]
     if not xsols:
         return
@@ -1003,12 +1003,12 @@ def roots(f, *gens, **flags):
         except KeyError:
             raise ValueError("Invalid filter: %s" % filter)
 
-        for zero in dict(result).keys():
+        for zero in dict(result):
             if not query(zero):
                 del result[zero]
 
     if predicate is not None:
-        for zero in dict(result).keys():
+        for zero in dict(result):
             if not predicate(zero):
                 del result[zero]
     if rescale_x:

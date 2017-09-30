@@ -2573,7 +2573,7 @@ class PermutationGroup(Basic):
         for i in range(base_len):
             transversals[i] = dict(_orbit_transversal(degree, strong_gens_distr[i],
                                                       _base[i], pairs=True, af=True))
-            orbs[i] = list(transversals[i].keys())
+            orbs[i] = list(transversals[i])
         # main loop: amend the stabilizer chain until we have generators
         # for all stabilizers
         i = base_len - 1
@@ -2619,7 +2619,7 @@ class PermutationGroup(Basic):
                                 transversals[l] =\
                                     dict(_orbit_transversal(degree, strong_gens_distr[l],
                                                             _base[l], pairs=True, af=True))
-                                orbs[l] = list(transversals[l].keys())
+                                orbs[l] = list(transversals[l])
                             i = j - 1
                             # continue main loop using the flag
                             continue_i = True
@@ -2723,7 +2723,7 @@ class PermutationGroup(Basic):
         for i in range(base_len):
             transversals[i] = dict(_orbit_transversal(n, strong_gens_distr[i],
                                                       base[i], pairs=True))
-            orbs[i] = list(transversals[i].keys())
+            orbs[i] = list(transversals[i])
         # initialize the number of consecutive elements sifted
         c = 0
         # start sifting random elements while the number of consecutive sifts
@@ -2753,7 +2753,7 @@ class PermutationGroup(Basic):
                     strong_gens_distr[l].append(h)
                     transversals[l] = dict(_orbit_transversal(n,
                                                               strong_gens_distr[l], base[l], pairs=True))
-                    orbs[l] = list(transversals[l].keys())
+                    orbs[l] = list(transversals[l])
                 c = 0
             else:
                 c += 1

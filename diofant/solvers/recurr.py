@@ -159,7 +159,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             degree_poly += terms[i][0]*FallingFactorial(x, i)
 
     nni_roots = list(roots(degree_poly, x, filter='Z',
-                           predicate=lambda r: r >= 0).keys())
+                           predicate=lambda r: r >= 0))
 
     if nni_roots:
         N = [max(nni_roots)]
@@ -205,7 +205,7 @@ def rsolve_poly(coeffs, f, n, **hints):
         U = N + A + b + 1
 
         nni_roots = list(roots(polys[r], filter='Z',
-                               predicate=lambda r: r >= 0).keys())
+                               predicate=lambda r: r >= 0))
 
         if nni_roots != []:
             a = max(nni_roots) + 1
@@ -420,7 +420,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
         res = quo(p, q, h)
 
     nni_roots = list(roots(res, h, filter='Z',
-                           predicate=lambda r: r >= 0).keys())
+                           predicate=lambda r: r >= 0))
 
     if not nni_roots:
         return rsolve_poly(coeffs, f, n, **hints)
@@ -526,7 +526,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 if not g.is_hypergeometric(n):
                     return
 
-                for h in similar.keys():
+                for h in list(similar):
                     if hypersimilar(g, h, n):
                         similar[h] += g
                         break
@@ -580,8 +580,8 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
     p, q = coeffs[0], coeffs[r].subs(n, n - r + 1)
 
-    p_factors = [ z for z in roots(p, n).keys() ]
-    q_factors = [ z for z in roots(q, n).keys() ]
+    p_factors = list(roots(p, n))
+    q_factors = list(roots(q, n))
 
     factors = [ (S.One, S.One) ]
 
@@ -619,7 +619,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             if coeff is not S.Zero:
                 poly += coeff * Z**i
 
-        for z in roots(poly, Z).keys():
+        for z in roots(poly, Z):
             if z.is_zero:
                 continue
 
@@ -632,7 +632,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 ratio = z * A * C.subs(n, n + 1) / B / C
                 ratio = simplify(ratio)
 
-                skip = max([-1] + [v for v in roots(Mul(*ratio.as_numer_denom()), n).keys()
+                skip = max([-1] + [v for v in roots(Mul(*ratio.as_numer_denom()), n)
                                    if v.is_Integer]) + 1
                 K = product(ratio, (n, skip, n - 1))
 
@@ -739,7 +739,7 @@ def rsolve(f, y, init=None):
                                       "hypergeometric terms in '%s', got "
                                       "'%s'" % (n, i_part))
 
-    k_min, k_max = min(h_part.keys()), max(h_part.keys())
+    k_min, k_max = min(h_part), max(h_part)
 
     if k_min < 0:
         return rsolve(f.subs(n, n + abs(k_min)), y, init)
