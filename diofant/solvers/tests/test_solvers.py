@@ -14,7 +14,7 @@ from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
 from diofant.polys.rootoftools import RootOf
-from diofant.solvers import reduce_inequalities, solve_undetermined_coeffs
+from diofant.solvers import reduce_inequalities
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
 from diofant.utilities.randtest import verify_numerically as tn
@@ -596,18 +596,6 @@ def test_solve_linear():
     assert solve_linear(x*exp(-x**2), symbols=[x]) == (0, 0)
     assert solve_linear(0**x - 1) == (0**x - 1, 1)
     pytest.raises(ValueError, lambda: solve_linear(Eq(x, 3), 3))
-
-
-def test_solve_undetermined_coeffs():
-    assert solve_undetermined_coeffs(a*x**2 + b*x**2 + b*x + 2*c*x + c + 1, [a, b, c], x) == \
-        {a: -2, b: 2, c: -1}
-    # Test that rational functions work
-    assert solve_undetermined_coeffs(a/x + b/(x + 1) - (2*x + 1)/(x**2 + x), [a, b], x) == \
-        {a: 1, b: 1}
-    # Test cancellation in rational functions
-    assert solve_undetermined_coeffs(((c + 1)*a*x**2 + (c + 1)*b*x**2 +
-                                      (c + 1)*b*x + (c + 1)*2*c*x + (c + 1)**2)/(c + 1), [a, b, c], x) == \
-        {a: -2, b: 2, c: -1}
 
 
 def test_solve_inequalities():

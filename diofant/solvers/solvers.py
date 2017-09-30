@@ -25,8 +25,8 @@ from ..integrals import Integral
 from ..matrices import Matrix, zeros
 from ..polys import Poly, RootOf, cancel, factor, roots, together
 from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
-from ..simplify import (collect, denom, logcombine, nsimplify, posify,
-                        powdenest, powsimp, simplify)
+from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
+                        powsimp, simplify)
 from ..simplify.fu import TR1
 from ..simplify.sqrtdenest import unrad
 from ..utilities import filldedent
@@ -34,8 +34,7 @@ from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
 
 
-__all__ = ('solve', 'solve_linear', 'solve_undetermined_coeffs',
-           'minsolve_linear_system', 'checksol')
+__all__ = ('solve', 'solve_linear', 'minsolve_linear_system', 'checksol')
 
 
 def denoms(eq, symbols=None):
@@ -1537,50 +1536,6 @@ def minsolve_linear_system(system, *symbols, **flags):
                 break
             bestsol = thissol
         return bestsol
-
-
-def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
-    """Solve equation of a type p(x; a_1, ..., a_k) == q(x) where both
-    p, q are univariate polynomials and f depends on k parameters.
-
-    The result of this functions is a dictionary with symbolic
-    values of those parameters with respect to coefficients in q.
-
-    This functions accepts both Equations class instances and ordinary
-    Diofant expressions. Specification of parameters and variable is
-    obligatory for efficiency and simplicity reason.
-
-    Examples
-    ========
-
-    >>> from diofant import Eq, Rational
-    >>> from diofant.abc import a, b, c, x
-
-    >>> solve_undetermined_coeffs(Eq(2*a*x + a+b, x), [a, b], x)
-    {a: 1/2, b: -1/2}
-
-    >>> solve_undetermined_coeffs(Eq(a*c*x + a+b, x), [a, b], x)
-    {a: 1/c, b: -1/c}
-    """
-    if isinstance(equ, Equality):
-        # got equation, so move all the
-        # terms to the left hand side
-        equ = equ.lhs - equ.rhs
-
-    equ = cancel(equ).as_numer_denom()[0]
-
-    system = list(collect(equ.expand(), sym, evaluate=False).values())
-
-    if not any(equ.has(sym) for equ in system):
-        # consecutive powers in the input expressions have
-        # been successfully collected, so solve remaining
-        # system using Gaussian elimination algorithm
-        sol = solve(system, *coeffs, **flags)
-        if sol:
-            sol = sol[0]
-        return sol
-    else:
-        return  # no solutions
 
 
 # these are functions that have multiple inverse values per period

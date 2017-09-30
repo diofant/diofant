@@ -41,6 +41,7 @@ Compatibility breaks
 * Removed 'group' option of :meth:`~diofant.core.basic.Basic.find`, which now return a :class:`dict`.
 * Support for Python 3.4 was removed, see :pull:`543`.
 * Second argument of :func:`~diofant.solvers.solvers.checksol` must be a :class:`dict`.  See :pull:`549`.
+* Removed ``solve_undetermined_coeffs()`` function, see :pull:`554`.
 
 Minor changes
 =============
