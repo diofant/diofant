@@ -44,6 +44,7 @@ Compatibility breaks
 * Removed ``solve_undetermined_coeffs()`` function, see :pull:`554`.
 * Make ``matches()`` method for :class:`~diofant.core.basic.Basic` - private, see :pull:`557`.
 * Removed :meth:`~diofant.core.basic.Basic.replace` flags ``simultaneous`` and ``map``, see :pull:`557`.
+* Make ``strict`` flag - default for :meth:`~diofant.core.evalf.EvalfMixin.evalf`, see :pull:`537`.
 
 Minor changes
 =============

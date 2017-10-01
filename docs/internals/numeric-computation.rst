@@ -25,7 +25,7 @@ for a symbolic one and then evaluate the result within Diofant.
     >>> from diofant import *
     >>> from diofant.abc import x
     >>> expr = sin(x)/x
-    >>> expr.evalf(subs={x: 3.14})
+    >>> expr.evalf(subs={x: 3.14}, strict=False)
     0.000507214304613640
 
 This method is slow.  You should use this method production only if performance

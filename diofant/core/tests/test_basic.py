@@ -207,4 +207,4 @@ def test_literal_evalf_is_number_is_zero_is_comparable():
     # issue sympy/sympy#10272
     n = sin(1)**2 + cos(1)**2 - 1
     assert n.is_comparable is not True
-    assert n.n(2).is_comparable is not True
+    assert n.n(2, strict=False).is_comparable is not True

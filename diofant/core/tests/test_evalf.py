@@ -141,7 +141,7 @@ def test_evalf_trig():
     assert NS('cos(1)', 15) == '0.540302305868140'
     assert NS('sin(10**-6)', 15) == '9.99999999999833e-7'
     assert NS('cos(10**-6)', 15) == '0.999999999999500'
-    assert NS('sin(E*10**100)', 15) == '0.409160531722613'
+    assert NS('sin(E*10**100)', 15, maxn=120) == '0.409160531722613'
     # Some input near roots
     assert NS(sin(exp(pi*sqrt(163))*pi), 15) == '-2.35596641936785e-12'
     assert NS(sin(pi*10**100 + Rational(7, 10**5), evaluate=False), 15, maxn=120) == \
@@ -185,26 +185,26 @@ def test_evalf_bugs():
     assert NS(
         '(sin(x)-x)/x**3', 15, subs={x: '1/10**50'}) == '-0.166666666666667'
     assert NS(sin(1) + I/10**100, 15) == '0.841470984807897 + 1.00000000000000e-100*I'
-    assert x.evalf() == x
+    assert x.evalf(strict=False) == x
     assert NS((1 + I)**2*I, 6) == '-2.00000'
     d = {n: (
         -1)**Rational(6, 7), y: (-1)**Rational(4, 7), x: (-1)**Rational(2, 7)}
     assert NS((x*(1 + y*(1 + n))).subs(d).evalf(), 6) == '0.346011 + 0.433884*I'
-    assert NS(((-I - sqrt(2)*I)**2).evalf()) == '-5.82842712474619'
+    assert NS(((-I - sqrt(2)*I)**2).evalf(), strict=False) == '-5.82842712474619'
     assert NS((1 + I)**2*I, 15) == '-2.00000000000000'
     # issue sympy/sympy#4758 (1/2):
     assert NS(Float(pi.evalf(69), 100) - pi) == '-4.43863937855894e-71'
-    assert NS(pi.evalf(69) - pi) == '-0.e-71'
+    assert NS(pi.evalf(69) - pi, strict=False) == '-0.e-71'
     # issue sympy/sympy#4758 (2/2): With the bug present, this still only fails if the
     # terms are in the order given here. This is not generally the case,
     # because the order depends on the hashes of the terms.
     assert NS(20 - 5008329267844*n**25 - 477638700*n**37 - 19*n,
-              subs={n: .01}) == '19.8100000000000'
-    assert NS(((x - 1)*((1 - x))**1000).n()
-              ) == '(-x + 1.00000000000000)**1000*(x - 1.00000000000000)'
-    assert NS((-x).n()) == '-x'
-    assert NS((-2*x).n()) == '-2.00000000000000*x'
-    assert NS((-2*x*y).n()) == '-2.00000000000000*x*y'
+              subs={n: .01}, strict=False) == '19.8100000000000'
+    assert NS(((x - 1)*((1 - x))**1000).n(strict=False),
+              strict=False) == '(-x + 1.00000000000000)**1000*(x - 1.00000000000000)'
+    assert NS((-x).n(strict=False)) == '-x'
+    assert NS((-2*x).n(strict=False), strict=False) == '-2.00000000000000*x'
+    assert NS((-2*x*y).n(strict=False), strict=False) == '-2.00000000000000*x*y'
     assert cos(x).n(subs={x: 1+I}) == cos(x).subs(x, 1+I).n()
     # issue sympy/sympy#6660. Also NaN != mpmath.nan
     # In this order:
@@ -280,7 +280,7 @@ def test_evalf_integer_parts():
 
 def test_evalf_trig_zero_detection():
     a = sin(160*pi, evaluate=False)
-    t = a.evalf(maxn=100)
+    t = a.evalf(maxn=100, strict=False)
     assert abs(t) < 1e-100
     assert t._prec < 2
     assert a.evalf(chop=True) == 0
@@ -348,8 +348,8 @@ def test_implemented_function_evalf():
     f = implemented_function(f, lambda x: x + 1)
     assert str(f(x)) == "f(x)"
     assert str(f(2)) == "f(2)"
-    assert f(2).evalf() == 3
-    assert f(x).evalf() == f(x)
+    assert f(2).evalf(strict=False) == 3
+    assert f(x).evalf(strict=False) == f(x)
     del f._imp_     # XXX: due to caching _imp_ would influence all other tests
 
 
@@ -366,7 +366,7 @@ def test_evalf_relational():
 
 
 def test_sympyissue_5486():
-    assert not cos(sqrt(0.5 + I)).n().is_Function
+    assert not cos(sqrt(0.5 + I)).n(strict=False).is_Function
 
 
 def test_sympyissue_5486_bug():
@@ -397,7 +397,7 @@ def test_sympyissue_4956_5204():
           (29*cbrt(18) +
            9*cbrt(2)*3**Rational(2, 3)*sqrt(31)*I +
            87*cbrt(2)*root(3, 6)*I)**2))
-    assert NS(v, 1) == '0.e-198 - 0.e-198*I'
+    assert NS(v, 1, strict=False) == '0.e-198 - 0.e-198*I'
 
     # issue sympy/sympy#5204
     x0, x1, x2, x3, x4, x5, x6, x7, x8, x9 = symbols('x:10')
@@ -503,8 +503,8 @@ def test_sympyissue_9326():
 
 def test_diofantissue_161():
     n = sin(1)**2 + cos(1)**2 - 1
-    f = n.evalf()
-    assert f.evalf()._prec == 1
+    f = n.evalf(strict=False)
+    assert f.evalf(strict=False)._prec == 1
 
 
 def test_AssocOp_Function():
@@ -526,5 +526,11 @@ def test_AssocOp_Function():
 
 
 def test_diofantissue_514():
-    assert (-x).evalf(subs={x: oo}) == Float('-inf')
-    assert (-x - 1).evalf(subs={x: oo}) == Float('-inf')
+    assert (-x).evalf(subs={x: oo}, strict=False) == Float('-inf')
+    assert (-x - 1).evalf(subs={x: oo}, strict=False) == Float('-inf')
+
+
+def test_diofantissue_499():
+    e = -3000 + log(1 + E**3000)
+    pytest.raises(PrecisionExhausted, lambda: e.evalf(2))
+    assert e.n(2, maxn=2000) == Float('1.3074e-1303', dps=2)

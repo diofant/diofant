@@ -519,9 +519,9 @@ def test_meijerg_confluence():
         if not (m.args[0].args[0] == a and m.args[1].args[0] == b):
             return False
         z0 = randcplx()/10
-        if abs(m.subs(z, z0).n() - a.subs(z, z0).n()).n() > 1e-10:
+        if abs(m.subs(z, z0) - a.subs(z, z0)).n(strict=False) > 1e-10:
             return False
-        if abs(m.subs(z, 1/z0).n() - b.subs(z, 1/z0).n()).n() > 1e-10:
+        if abs(m.subs(z, 1/z0) - b.subs(z, 1/z0)).n(strict=False) > 1e-10:
             return False
         return True
 

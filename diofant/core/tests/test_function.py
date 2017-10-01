@@ -255,8 +255,8 @@ def test_Subs():
     assert Subs(z*f(x + 1), x, 1) not in [ e1, e2 ]
     assert Derivative(
         f(x), x).subs(x, g(x)) == Subs(Derivative(f(x), x), (x,), (g(x),))
-    assert Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).n(2) == \
-        Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).evalf(2) == \
+    assert Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).n(2, strict=False) == \
+        Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).evalf(2, strict=False) == \
         z + Rational('1/2').n(2)*f(0)
 
     assert f(x).diff(x).subs(x, 0).subs(x, y) == f(x).diff(x).subs(x, 0)
@@ -355,7 +355,7 @@ def test_function_evalf():
         15), Float("1.29845758141598") + Float("0.634963914784736")*I, 1e-13)
     assert eq(exp(1 + I).evalf(15), Float(
         "1.46869393991588") + Float("2.28735528717884239")*I, 1e-13)
-    assert eq(exp(-0.5 + 1.5*I).evalf(15), Float(
+    assert eq(exp(-0.5 + 1.5*I).evalf(15, strict=False), Float(
         "0.0429042815937374") + Float("0.605011292285002")*I, 1e-13)
     assert eq(log(pi + sqrt(2)*I).evalf(
         15), Float("1.23699044022052") + Float("0.422985442737893")*I, 1e-13)

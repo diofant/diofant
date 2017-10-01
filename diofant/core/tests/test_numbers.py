@@ -355,10 +355,10 @@ def test_Float():
         return (-t < a - b < t)
 
     a = Float(2) ** Float(3)
-    assert eq(a.evalf(), Float(8))
+    assert eq(a, Float(8))
     assert eq((pi ** -1).evalf(), Float("0.31830988618379067"))
     a = Float(2) ** Float(4)
-    assert eq(a.evalf(), Float(16))
+    assert eq(a, Float(16))
     assert (Float(.3) == Float(.5)) is False
     x_str = Float((0, '13333333333333', -52, 53))
     x2_str = Float((0, '26666666666666', -53, 53))
@@ -404,10 +404,10 @@ def test_Float():
 
     # do not automatically evalf
     def teq(a):
-        assert (a.evalf() == a) is False
-        assert (a.evalf() != a) is True
-        assert (a == a.evalf()) is False
-        assert (a != a.evalf()) is True
+        assert (a.evalf(strict=False) == a) is False
+        assert (a.evalf(strict=False) != a) is True
+        assert (a == a.evalf(strict=False)) is False
+        assert (a != a.evalf(strict=False)) is True
 
     teq(pi)
     teq(2*pi)
@@ -1227,11 +1227,11 @@ def test_sympyissue_4611():
     assert abs(EulerGamma._evalf(50) - 0.577215664901533) < 1e-10
     assert abs(GoldenRatio._evalf(50) - 1.61803398874989) < 1e-10
     x = Symbol("x")
-    assert (pi + x).evalf() == pi.evalf() + x
-    assert (E + x).evalf() == E.evalf() + x
-    assert (Catalan + x).evalf() == Catalan.evalf() + x
-    assert (EulerGamma + x).evalf() == EulerGamma.evalf() + x
-    assert (GoldenRatio + x).evalf() == GoldenRatio.evalf() + x
+    assert (pi + x).evalf(strict=False) == pi.evalf() + x
+    assert (E + x).evalf(strict=False) == E.evalf() + x
+    assert (Catalan + x).evalf(strict=False) == Catalan.evalf() + x
+    assert (EulerGamma + x).evalf(strict=False) == EulerGamma.evalf() + x
+    assert (GoldenRatio + x).evalf(strict=False) == GoldenRatio.evalf() + x
 
 
 def test_conversion_to_mpmath():

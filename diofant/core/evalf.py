@@ -1085,7 +1085,7 @@ def evalf_sum(expr, prec, options):
             m = n = 2**i * prec
             s, err = expr.euler_maclaurin(m=m, n=n, eps=eps,
                                           eval_integral=False)
-            err = err.evalf()
+            err = err.evalf(strict=False)
             if err <= eps:
                 break
         err = fastlog(evalf(abs(err), 20, options)[0])
@@ -1233,7 +1233,7 @@ def evalf(x, prec, options):
 class EvalfMixin:
     """Mixin class adding evalf capability."""
 
-    def evalf(self, n=15, subs=None, maxn=110, chop=False, strict=False, quad=None):
+    def evalf(self, n=15, subs=None, maxn=110, chop=False, strict=True, quad=None):
         """
         Evaluate the given formula to an accuracy of n digits.
         Optional keyword arguments:
@@ -1254,7 +1254,7 @@ class EvalfMixin:
             strict=<bool>
                 Raise PrecisionExhausted if any subresult fails to evaluate
                 to full accuracy, given the available maxprec
-                (default=False)
+                (default=True)
 
             quad=<str>
                 Choose algorithm for numerical quadrature. By default,
@@ -1357,8 +1357,6 @@ class EvalfMixin:
 def N(x, n=15, **options):
     r"""
     Calls x.evalf(n, \*\*options).
-
-    Both .n() and N() are equivalent to .evalf(); use the one that you like better.
 
     Examples
     ========

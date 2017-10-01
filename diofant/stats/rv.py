@@ -968,7 +968,7 @@ def sampling_E(expr, given_condition=None, numsamples=1,
 
     result = Add(*list(samples)) / numsamples
     if evalf:
-        return result.evalf()
+        return result.evalf(strict=False)
     else:
         return result
 

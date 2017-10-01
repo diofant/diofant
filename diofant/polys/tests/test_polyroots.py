@@ -540,7 +540,7 @@ def test_roots_preprocessed():
 
     assert roots(f, x) == {}
 
-    R1 = roots(f.evalf(), x, multiple=True)
+    R1 = roots(f.evalf(strict=False), x, multiple=True)
     R2 = [-1304.88375606366, 97.1168816800648, 186.946430171876, 245.526792947065,
           503.441004174773, 791.549343830097, 1273.16678129348, 1850.10650616851]
 

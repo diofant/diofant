@@ -345,7 +345,7 @@ def test_branching():
         expr = func(s, c*exp_polar(I*pi)) - func(s, c*exp_polar(-I*pi))
         eps = 1e-15
         expr2 = func(s + eps, -c + eps*I) - func(s + eps, -c - eps*I)
-        return abs(expr.n() - expr2.n()).n() < 1e-10
+        return abs(expr - expr2).n(strict=False) < 1e-10
 
     nu = Symbol('nu')
     assert besselj(nu, exp_polar(2*pi*I)*x) == exp(2*pi*I*nu)*besselj(nu, x)

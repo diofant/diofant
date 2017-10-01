@@ -214,7 +214,7 @@ def checksol(f, sol, **flags):
         elif val.is_nonzero:
             return False
         if not val.free_symbols:
-            return bool(abs(val.n(18).n(12, chop=True)) < 1e-9)
+            return bool(abs(val.n(18, strict=False).n(12, chop=True)) < 1e-9)
         was = val
 
     if flags.get('warn', False):

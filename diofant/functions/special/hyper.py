@@ -629,7 +629,7 @@ class meijerg(TupleParametersBase):
         # G(z'**(1/r)) = G(z'**n) = G(z).
         from .. import exp_polar, ceiling
         z = self.argument
-        znum = self.argument.evalf(prec)
+        znum = self.argument.evalf(prec, strict=False)
         if znum.has(exp_polar):
             znum, branch = znum.as_coeff_mul(exp_polar)
             if len(branch) != 1:

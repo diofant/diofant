@@ -114,7 +114,7 @@ def test_bell():
     # For large numbers, this is too slow
     # For nonintegers, there are significant precision errors
     for i in [0, 2, 3, 7, 13, 42, 55]:
-        assert bell(i).evalf() == bell(n).rewrite(Sum).evalf(subs={n: i})
+        assert bell(i).evalf() == bell(n).rewrite(Sum).evalf(subs={n: i}, strict=False)
 
     # For negative numbers, the formula does not hold
     m = Symbol('m', integer=True)
@@ -543,7 +543,7 @@ def test_sympyissue_8601():
     assert catalan(n - 1) == 0
     assert catalan(Rational(-1, 2)) == zoo
     assert catalan(-1) == Rational(-1, 2)
-    c1 = catalan(-5.6).evalf()
+    c1 = catalan(-5.6).evalf(strict=False)
     assert str(c1) == '6.93334070531408e-5'
-    c2 = catalan(-35.4).evalf()
+    c2 = catalan(-35.4).evalf(strict=False)
     assert str(c2) == '-4.14189164517449e-24'

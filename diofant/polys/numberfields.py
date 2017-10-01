@@ -53,7 +53,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
             candidates = []
             eps = t**(prec1 // 2)
             for f in factors:
-                if abs(f.as_expr().evalf(prec1, points)) < eps:
+                if abs(f.as_expr().evalf(prec1, points, strict=False)) < eps:
                     candidates.append(f)
             if candidates:
                 factors = candidates
