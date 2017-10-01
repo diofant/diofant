@@ -68,6 +68,7 @@ Developer changes
 * Enabled flake8-comprehensions plugin, see :pull:`420`.
 * Sort imports with `isort <https://github.com/timothycrosley/isort>`_, see :pull:`520`.
 * Depend on `hypothesis <https://hypothesis.readthedocs.io/>`_, see :pull:`547`.
+* Depend on `pytest-xdist <https://github.com/pytest-dev/pytest-xdist>`_, see :pull:`551`.
 
 Issues closed
 =============
