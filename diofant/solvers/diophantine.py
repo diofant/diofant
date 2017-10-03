@@ -318,10 +318,6 @@ def classify_diop(eq):
         x, y = var[:2]
         diop_type = "cubic_thue"
 
-        for term in [x**3, x**2*y, x*y**2, y**3, Integer(1)]:
-            if term not in list(coeff):
-                coeff[term] = Integer(0)
-
     if diop_type is not None:
         return var, coeff, diop_type
     else:
