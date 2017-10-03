@@ -11,23 +11,25 @@ __all__ = ()
 ipython = import_module("IPython", min_module_version="2.3.0")
 
 
-def init_ipython_session():
-    ip = ipython.get_ipython()
-
-    if not ip:
-        app = ipython.terminal.ipapp.TerminalIPythonApp()
-        app.display_banner = False
-        app.initialize([])
-        ip = app.shell
-
-    return ip
-
-
 @pytest.mark.skipif(ipython is None, reason="no IPython")
-def test_wrap_int_divisions():
-    app = init_ipython_session()
+def test_ipython_printing(monkeypatch):
+    app = ipython.terminal.ipapp.TerminalIPythonApp()
+    app.display_banner = False
+    app.initialize([])
+    app = app.shell
+
     app.run_cell("ip = get_ipython()")
-    app.run_cell("from diofant import Rational")
+    app.run_cell("inst = ip.instance()")
+    app.run_cell("format = inst.display_formatter.format")
+    app.run_cell("import warnings")
+    app.run_cell("import IPython")
+    app.run_cell("import diofant")
+    app.run_cell("from diofant import Float, Rational, Symbol, QQ, "
+                 "factorial, sqrt, init_printing, pretty, "
+                 "Matrix, sstrrepr")
+
+    # Test IntegerDivisionWrapper
+
     app.run_cell("from diofant.interactive.session import IntegerDivisionWrapper")
     app.run_cell("ip.ast_transformers.clear()")
     app.run_cell("ip.ast_transformers.append(IntegerDivisionWrapper())")
@@ -44,15 +46,11 @@ def test_wrap_int_divisions():
     app.run_cell("a = (1/\n2)")
     assert app.user_ns['a'] == Rational(1, 2)
 
+    # Test AutomaticSymbols
 
-@pytest.mark.skipif(ipython is None, reason="no IPython")
-def test_automatic_symbols():
-    app = init_ipython_session()
-    app.run_cell("ip = get_ipython()")
     app.run_cell("from diofant.interactive.session import AutomaticSymbols")
     app.run_cell("ip.ast_transformers.clear()")
     app.run_cell("ip.ast_transformers.append(AutomaticSymbols())")
-    app.run_cell("from diofant import Symbol, factorial")
 
     symbol = "verylongsymbolname"
     assert symbol not in app.user_ns
@@ -68,16 +66,11 @@ def test_automatic_symbols():
     assert app.user_ns['a'] is True
 
     # Check that diofant names aren't overridden
-    app.run_cell("import diofant")
     app.run_cell("a = factorial == diofant.factorial")
     assert app.user_ns['a'] is True
 
+    # Test FloatRationalizer
 
-@pytest.mark.skipif(ipython is None, reason="no IPython")
-def test_rationalize():
-    app = init_ipython_session()
-    app.run_cell("ip = get_ipython()")
-    app.run_cell("from diofant import Float")
     app.run_cell("from diofant.interactive.session import FloatRationalizer")
     app.run_cell("ip.ast_transformers.clear()")
     app.run_cell("ip.ast_transformers.append(FloatRationalizer())")
@@ -91,17 +84,10 @@ def test_rationalize():
     app.run_cell("a = 2")
     assert isinstance(app.user_ns['a'], int)
 
+    # General printing tests
 
-@pytest.mark.skipif(ipython is None, reason="no IPython")
-def test_printing():
     # Initialize and setup IPython session
-    app = init_ipython_session()
-    app.run_cell("ip = get_ipython()")
     app.run_cell("ip.ast_transformers.clear()")
-    app.run_cell("inst = ip.instance()")
-    app.run_cell("format = inst.display_formatter.format")
-    app.run_cell("from diofant import Symbol, QQ, sqrt")
-    app.run_cell("from diofant import init_printing")
 
     # Printing by default
     app.run_cell("a = format(Symbol('pi'))")
@@ -116,31 +102,6 @@ def test_printing():
     app.run_cell("a2 = format(Symbol('pi')**2)")
     assert app.user_ns['a'][0]['text/plain'] == "pi"
     assert app.user_ns['a2'][0]['text/plain'] == "  2\npi "
-
-
-@pytest.mark.skipif(ipython is None, reason="no IPython")
-def test_dumbterm(monkeypatch):
-    monkeypatch.setenv('TERM', '')
-    app = init_ipython_session()
-    app.run_cell("ip = get_ipython()")
-    app.run_cell("inst = ip.instance()")
-    app.run_cell("format = inst.display_formatter.format")
-    app.run_cell("from diofant import Symbol")
-    app.run_cell("from diofant import init_printing")
-    app.run_cell("init_printing()")
-    app.run_cell("a = format(Symbol('pi'))")
-    assert app.user_ns['a'][0]['text/plain'] == "pi"
-
-
-@pytest.mark.skipif(ipython is None, reason="no IPython")
-def test_print_builtins():
-    # Initialize and setup IPython session
-    app = init_ipython_session()
-    app.run_cell("ip = get_ipython()")
-    app.run_cell("inst = ip.instance()")
-    app.run_cell("format = inst.display_formatter.format")
-    app.run_cell("from diofant import Symbol")
-    app.run_cell("from diofant import init_printing, pretty, sstrrepr")
 
     app.run_cell("a = format(int(1))")
     pytest.raises(KeyError, lambda: app.user_ns['a'][0]['text/latex'])
@@ -200,21 +161,20 @@ def test_print_builtins():
     assert text == "QQ<sqrt(2)>"
     assert latex == r"\begin{equation}QQ<sqrt(2)>\end{equation}"
 
+    # test_matplotlib_bad_latex
 
-@pytest.mark.skipif(ipython is None, reason="no IPython")
-def test_matplotlib_bad_latex():
     # Initialize and setup IPython session
-    app = init_ipython_session()
-    app.run_cell("import IPython")
-    app.run_cell("ip = get_ipython()")
-    app.run_cell("inst = ip.instance()")
-    app.run_cell("format = inst.display_formatter.format")
-    app.run_cell("from diofant import init_printing, Matrix")
     app.run_cell("init_printing()")
 
     # Make sure no warnings are raised by IPython
-    app.run_cell("import warnings")
     app.run_cell("warnings.simplefilter('error', IPython.core.formatters.FormatterWarning)")
 
     # This should not raise an exception
     app.run_cell("a = format(Matrix([1, 2, 3]))")
+
+    # Test dumb terminal
+
+    monkeypatch.setenv('TERM', '')
+    app.run_cell("init_printing()")
+    app.run_cell("a = format(Symbol('pi'))")
+    assert app.user_ns['a'][0]['text/plain'] == "pi"
