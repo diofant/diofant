@@ -778,6 +778,7 @@ def test_sympyissue_5132():
     assert {(s[x], s[y]) for s in solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), x, y)} == {(1, 3), (3, 1)}
 
 
+@pytest.mark.slow
 def test_sympyissue_5335():
     lam, a0, conc = symbols('lam a0 conc')
     eqs = [lam + 2*y - a0*(1 - x/2)*x - 0.005*x/2*x,
@@ -785,11 +786,11 @@ def test_sympyissue_5335():
            x + y - conc]
     sym = [x, y, a0]
     # there are 4 solutions but only two are valid
-    assert len(solve(eqs, sym, minimal=True, simplify=False)) == 2
+    assert len(solve(eqs, sym, simplify=False, check=False)) == 2
 
 
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def _test_sympyissue_5335_float():
+def test_sympyissue_5335_float():
     # gives ZeroDivisionError: polynomial division
     lam, a0, conc = symbols('lam a0 conc')
     eqs = [lam + 2*y - a0*(1 - x/2)*x - 0.005*x/2*x,

@@ -241,8 +241,6 @@ def solve(f, *symbols, **flags):
             True, i.e. the solutions are checked and those that doesn't
             satisfy given assumptions on symbols solved for or make any
             denominator zero - are automatically excluded.
-        minimal : bool, optional
-            A very fast, minimal testing.  Default is False.
         warn : bool, optional
             Show a warning if :func:`~diofant.solvers.solvers.checksol`
             could not conclude.  Default is False.
