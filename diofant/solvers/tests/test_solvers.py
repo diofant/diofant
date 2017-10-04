@@ -1003,7 +1003,7 @@ def test_exclude():
            Vminus*(-1/Ri - 1/Rf) + Vout/Rf,
            C*Vplus*s + V1*(-C*s - 1/R) + Vout/R,
            -Vminus + Vplus]
-    assert solve(eqs, exclude=s*C*R) == [
+    assert solve(eqs, Rf, Ri, V1, Vminus, Vout, Vplus) == [
         {
             Rf: Ri*(C*R*s + 1)**2/(C*R*s),
             Vminus: Vplus,
@@ -1017,7 +1017,7 @@ def test_exclude():
     ]
 
     # TODO: Investingate why currently solution [0] is preferred over [1].
-    assert solve(eqs, exclude=[Vplus, s, C]) in [[{
+    assert solve(eqs, R, Rf, Ri, V1, Vminus, Vout) in [[{
         Vminus: Vplus,
         V1: Vout/2 + Vplus/2 + sqrt((Vout - 5*Vplus)*(Vout - Vplus))/2,
         R: (Vout - 3*Vplus - sqrt(Vout**2 - 6*Vout*Vplus + 5*Vplus**2))/(2*C*Vplus*s),

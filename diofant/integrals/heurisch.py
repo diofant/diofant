@@ -120,7 +120,9 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     slns = []
     for d in denoms(res):
         try:
-            slns += solve(d, exclude=(x,))
+            ds = list(ordered(d.free_symbols - {x}))
+            if ds:
+                slns += solve(d, *ds)
         except NotImplementedError:
             pass
     if not slns:
@@ -130,7 +132,9 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     slns0 = []
     for d in denoms(f):
         try:
-            slns0 += solve(d, exclude=(x,))
+            ds = list(ordered(d.free_symbols - {x}))
+            if ds:
+                slns0 += solve(d, *ds)
         except NotImplementedError:
             pass
     slns = [s for s in slns if s not in slns0]
@@ -140,7 +144,8 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         eqs = []
         for sub_dict in slns:
             eqs.extend([Eq(key, value) for key, value in sub_dict.items()])
-        slns = solve(eqs, exclude=(x,)) + slns
+        slns = solve(eqs, *ordered(set().union(*[e.free_symbols
+                                                 for e in eqs]) - {x})) + slns
     # For each case listed in the list slns, we reevaluate the integral.
     pairs = []
     for sub_dict in slns:

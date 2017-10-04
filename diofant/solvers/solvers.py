@@ -236,9 +236,6 @@ def solve(f, *symbols, **flags):
     \*\*flags : dict
         A dictionary of following parameters:
 
-        exclude : iterable, optional
-            Don't try to solve for any of the symbols in
-            exclude.  Default is [].
         check : bool, optional
             If False, don't do any testing of solutions.  Default is
             True, i.e. the solutions are checked and those that doesn't
@@ -536,14 +533,6 @@ def solve(f, *symbols, **flags):
         ordered_symbols = False
     elif len(symbols) == 1 and iterable(symbols[0]):
         symbols = symbols[0]
-
-    # remove symbols the user is not interested in
-    exclude = flags.pop('exclude', set())
-    if exclude:
-        if isinstance(exclude, Expr):
-            exclude = [exclude]
-        exclude = set().union(*[e.free_symbols for e in sympify(exclude)])
-    symbols = [s for s in symbols if s not in exclude]
 
     # real/imag handling -----------------------------
     w = Dummy('w')
