@@ -95,7 +95,7 @@ def checksol(f, sol, **flags):
     =======
 
     bool or None
-        Return True, if solution satisfy all equaltions
+        Return True, if solution satisfy all equations
         in ``f``.  Return False, if a solution doesn't
         satisfy any equation.  Else (i.e. one or more checks
         are inconclusive), return None.
