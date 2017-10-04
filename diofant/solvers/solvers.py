@@ -1456,13 +1456,24 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
 
 
 def minsolve_linear_system(system, *symbols, **flags):
-    r"""
-    Find a particular solution to a linear system.
+    r"""Find a particular solution to a linear system.
 
     In particular, try to find a solution with the minimal possible number
     of non-zero variables. This is a very computationally hard problem.
-    If ``quick=True``, a heuristic is used. Otherwise a naive algorithm with
-    exponential complexity is used.
+
+    Parameters
+    ==========
+
+    system : Matrix
+        Nx(M+1) matrix, which means it has to be in augmented form.
+    \*symbols : list
+        List of M Symbol’s.
+    \*\*flags : dict
+        A dictionary of following parameters:
+
+        quick : boolean, optional
+            If True, a heuristic is used.  Otherwise (default) a naive
+            algorithm with exponential complexity is used.
     """
     quick = flags.get('quick', False)
     # Check if there are any non-zero solutions at all
