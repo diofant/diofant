@@ -1257,7 +1257,7 @@ def test_rewrite_trigh():
 
 def test_uselogcombine():
     eq = z - log(x) + log(y/(x*(-1 + y**2/x**2)))
-    assert solve(eq, x, force=True) == [{x: sqrt(y*(-exp(z) + y))}, {x: -sqrt(-y*(exp(z) - y))}]
+    assert solve(eq, x) == [{x: sqrt(y*(-exp(z) + y))}, {x: -sqrt(-y*(exp(z) - y))}]
     assert (solve(log(x + 3) + log(1 + 3/x) - 3) in
             [[{x: -3 + sqrt(-12 + exp(3))*exp(Rational(3, 2))/2 + exp(3)/2},
               {x: -sqrt(-12 + exp(3))*exp(Rational(3, 2))/2 - 3 + exp(3)/2}],

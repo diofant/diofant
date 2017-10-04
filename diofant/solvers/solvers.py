@@ -250,9 +250,6 @@ def solve(f, *symbols, **flags):
             not False) use the general simplify function on the solutions
             and the expression obtained when they are substituted into the
             function which should be zero.
-        force : bool, optional
-            Make positive all symbols without assumptions regarding
-            sign.  Default is False.
         rational : bool or None, optional
             If True, recast Floats as Rational.  If None (default),
             Floats will be recast as rationals but the answer will be
