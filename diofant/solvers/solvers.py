@@ -668,8 +668,6 @@ def solve(f, *symbols, **flags):
     # This is not necessary for
     #   - the single univariate equation case
     #     since the symbol will have been removed from the solution;
-    #   - the nonlinear poly_system since that only supports zero-dimensional
-    #     systems and those results come back as a list
     #
     # ** unless there were Derivatives with the symbols, but those were handled
     #    above.
