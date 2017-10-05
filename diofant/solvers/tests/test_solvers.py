@@ -197,6 +197,7 @@ def test_solve_polynomial2():
 
     assert solve(z**2*x**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
     assert solve(z**2*x - z**2*y**2) == [{x: y**2}, {z: 0}]
+    assert solve(z**2*x - z**2*y**2, simplify=False) == [{x: y**2}, {z: 0}]
 
 
 def test_solve_polynomial_cv_1a():
@@ -439,10 +440,7 @@ def test_solve_transcendental():
     assert solve(x**y - 1) == [{x: 1}, {y: 0}]
     assert solve([x**y - 1]) == [{x: 1}, {y: 0}]
     assert solve(x*y*(x**2 - y**2)) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
-    assert (solve([x*y*(x**2 - y**2)], check=False) ==
-            [{x: RootOf(x**3 - x*y**2, x, 0)},
-             {x: RootOf(x**3 - x*y**2, x, 1)},
-             {x: RootOf(x**3 - x*y**2, x, 2)}])
+    assert solve([x*y*(x**2 - y**2)], check=False) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
     # issue sympy/sympy#4739
     assert solve(exp(log(5)*x) - 2**x, x) == [{x: 0}]
 

@@ -646,14 +646,8 @@ def solve(f, *symbols, **flags):
     #
     # try to get a solution
     ###########################################################################
-    if bare_f:
-        solution = _solve(f[0], *symbols, **flags)
-
-        if not solution:
-            solution = []
-        elif not isinstance(solution[0], dict):
-            assert len(symbols) == 1
-            solution = [{symbols[0]: s} for s in solution]
+    if bare_f and len(symbols) == 1:
+        solution = [{symbols[0]: s} for s in _solve(f[0], symbols[0], **flags)]
     else:
         solution = _solve_system(f, symbols, **flags)
 
@@ -713,11 +707,9 @@ def solve(f, *symbols, **flags):
     return solution
 
 
-def _solve(f, *symbols, **flags):
+def _solve(f, symbol, **flags):
     """Return a checked solution for f in terms of one or more of the
-    symbols. A list should be returned except for the case when a linear
-    undetermined-coefficients equation is encountered (in which case
-    a dictionary is returned).
+    symbols. A list (possibly empty) should be returned.
 
     If no method is implemented to solve the equation, a NotImplementedError
     will be raised. In the case that conversion of an expression to a Poly
@@ -725,49 +717,6 @@ def _solve(f, *symbols, **flags):
     """
 
     not_impl_msg = "No algorithms are implemented to solve equation %s"
-
-    if len(symbols) != 1:
-        soln = None
-        free = f.free_symbols
-        ex = free - set(symbols)
-        if len(ex) != 1:
-            ind, dep = f.as_independent(*symbols)
-            ex = ind.free_symbols & dep.free_symbols
-        # find first successful solution
-        failed = []
-        got_s = set()
-        result = []
-        for s in symbols:
-            n, d = solve_linear(f, symbols=[s])
-            if n.is_Symbol:
-                # no need to check but we should simplify if desired
-                if flags.get('simplify', True):
-                    d = simplify(d)
-                if got_s and any(ss in d.free_symbols for ss in got_s):
-                    # sol depends on previously solved symbols: discard it
-                    continue
-                got_s.add(n)
-                result.append({n: d})
-            elif n and d:  # otherwise there was no solution for s
-                failed.append(s)
-        if not failed:
-            return result
-        for s in failed:
-            try:
-                soln = _solve(f, s, **flags)
-                for sol in soln:
-                    if got_s and any(ss in sol.free_symbols for ss in got_s):
-                        # sol depends on previously solved symbols: discard it
-                        continue
-                    got_s.add(s)
-                    result.append({s: sol})
-            except NotImplementedError:
-                continue
-        if got_s:
-            return result
-        else:
-            raise NotImplementedError(not_impl_msg % f)
-    symbol = symbols[0]
 
     # /!\ capture this flag then set it to False so that no checking in
     # recursive calls will be done; only the final answer is checked
@@ -785,7 +734,7 @@ def _solve(f, *symbols, **flags):
             # all solutions have been checked but now we must
             # check that the solutions do not set denominators
             # in any factor to zero
-            dens = denoms(f, symbols)
+            dens = denoms(f, [symbol])
             result = [s for s in result if
                       all(not checksol(den, {symbol: s}, **flags) for den in
                           dens)]
@@ -796,7 +745,7 @@ def _solve(f, *symbols, **flags):
     elif f.is_Piecewise:
         result = set()
         for n, (expr, cond) in enumerate(f.args):
-            candidates = _solve(piecewise_fold(expr), *symbols, **flags)
+            candidates = _solve(piecewise_fold(expr), symbol, **flags)
             for candidate in candidates:
                 if candidate in result:
                     continue
@@ -831,7 +780,7 @@ def _solve(f, *symbols, **flags):
     else:
         # first see if it really depends on symbol and whether there
         # is a linear solution
-        f_num, sol = solve_linear(f, symbols=symbols)
+        f_num, sol = solve_linear(f, symbols=[symbol])
         if symbol not in f_num.free_symbols:
             return []
         elif f_num.is_Symbol:
@@ -1069,7 +1018,7 @@ def _solve(f, *symbols, **flags):
     if checkdens:
         # reject any result that makes any denom. affirmatively 0;
         # if in doubt, keep it
-        dens = denoms(f, symbols)
+        dens = denoms(f, [symbol])
         result = [s for s in result if
                   all(not checksol(d, {symbol: s}, **flags)
                       for d in dens)]
@@ -1084,6 +1033,51 @@ def _solve_system(exprs, symbols, **flags):
     """Return a checked solution for list of exprs in terms of one or more
     of the symbols. A list of dict's (possibly empty) should be returned.
     """
+
+    if len(symbols) != 1 and len(exprs) == 1:
+        not_impl_msg = "No algorithms are implemented to solve equation %s"
+
+        f = exprs[0]
+        soln = None
+        free = f.free_symbols
+        ex = free - set(symbols)
+        if len(ex) != 1:
+            ind, dep = f.as_independent(*symbols)
+            ex = ind.free_symbols & dep.free_symbols
+        # find first successful solution
+        failed = []
+        got_s = set()
+        result = []
+        for s in symbols:
+            n, d = solve_linear(f, symbols=[s])
+            if n.is_Symbol:
+                # no need to check but we should simplify if desired
+                if flags.get('simplify', True):
+                    d = simplify(d)
+                if got_s and any(ss in d.free_symbols for ss in got_s):
+                    # sol depends on previously solved symbols: discard it
+                    continue
+                got_s.add(n)
+                result.append({n: d})
+            elif n and d:  # otherwise there was no solution for s
+                failed.append(s)
+        if not failed:
+            return result
+        for s in failed:
+            try:
+                soln = _solve(f, s, **flags)
+                for sol in soln:
+                    if got_s and any(ss in sol.free_symbols for ss in got_s):
+                        # sol depends on previously solved symbols: discard it
+                        continue
+                    got_s.add(s)
+                    result.append({s: sol})
+            except NotImplementedError:
+                continue
+        if got_s:
+            return result
+        else:
+            raise NotImplementedError(not_impl_msg % f)
 
     polys = []
     dens = set()
