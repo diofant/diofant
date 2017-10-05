@@ -647,6 +647,12 @@ def solve(f, *symbols, **flags):
     ###########################################################################
     if bare_f:
         solution = _solve(f[0], *symbols, **flags)
+
+        if not solution:
+            solution = []
+        elif not isinstance(solution[0], dict):
+            assert len(symbols) == 1
+            solution = [{symbols[0]: s} for s in solution]
     else:
         solution = _solve_system(f, symbols, **flags)
 
@@ -655,25 +661,8 @@ def solve(f, *symbols, **flags):
     ###########################################################################
     # Restore masked-off objects
     if non_inverts:
-
-        def _do_dict(solution):
-            return {k: v.subs(non_inverts) for k, v in solution.items()}
-        for i in range(1):
-            if type(solution) is dict:
-                solution = _do_dict(solution)
-                break
-            elif solution and type(solution) is list:
-                if type(solution[0]) is dict:
-                    solution = [_do_dict(s) for s in solution]
-                    break
-                else:
-                    solution = [v.subs(non_inverts) for v in solution]
-                    break
-            elif not solution:
-                break
-        else:  # pragma: no cover
-            raise NotImplementedError(filldedent('''
-                            no handling of %s was implemented''' % solution))
+        solution = [{k: v.subs(non_inverts) for k, v in s.items()}
+                    for s in solution]
 
     # Restore original "symbols" if a dictionary is returned.
     # This is not necessary for
@@ -686,10 +675,7 @@ def solve(f, *symbols, **flags):
     #    above.
     if symbol_swapped:
         symbols = [swap_sym[k] for k in symbols]
-        if type(solution) is dict:
-            solution = {swap_sym[k]: v.subs(swap_sym)
-                        for k, v in solution.items()}
-        elif solution and type(solution) is list and type(solution[0]) is dict:
+        if solution:
             for i, sol in enumerate(solution):
                 solution[i] = {swap_sym[k]: v.subs(swap_sym)
                                for k, v in sol.items()}
@@ -708,46 +694,19 @@ def solve(f, *symbols, **flags):
         warn = flags.get('warn', False)
         got_None = []  # solutions for which one or more symbols gave None
         no_False = []  # solutions for which no symbols gave False
-        if type(solution) is list:
-            if type(solution[0]) is dict:
-                for sol in solution:
-                    a_None = False
-                    for symb, val in sol.items():
-                        test = check_assumptions(val, **symb._assumptions)
-                        if test:
-                            continue
-                        if test is False:
-                            break
-                        a_None = True
-                    else:
-                        no_False.append(sol)
-                        if a_None:
-                            got_None.append(sol)
-            else:  # list of expressions
-                for sol in solution:
-                    test = check_assumptions(sol, **symbols[0]._assumptions)
-                    if test is False:
-                        continue
-                    no_False.append(sol)
-                    if test is None:
-                        got_None.append(sol)
-
-        elif type(solution) is dict:
+        for sol in solution:
             a_None = False
-            for symb, val in solution.items():
+            for symb, val in sol.items():
                 test = check_assumptions(val, **symb._assumptions)
                 if test:
                     continue
                 if test is False:
-                    no_False = None
                     break
                 a_None = True
             else:
-                no_False = solution
+                no_False.append(sol)
                 if a_None:
-                    got_None.append(solution)
-        else:
-            raise TypeError('Unrecognized solution')  # improve the checker
+                    got_None.append(sol)
 
         solution = no_False
         if warn and got_None:
@@ -760,22 +719,8 @@ def solve(f, *symbols, **flags):
     # done
     ###########################################################################
 
-    if isinstance(solution, list):
-        # Make sure that a list of solutions is ordered in a canonical way.
-        solution.sort(key=default_sort_key)
-
-    # return a list of mappings or []
-    if not solution:
-        solution = []
-    else:
-        if isinstance(solution, dict):
-            solution = [solution]
-        elif isinstance(solution[0], dict):
-            pass
-        else:
-            if len(symbols) != 1:
-                raise ValueError("Length should be 1")
-            solution = [{symbols[0]: s} for s in solution]
+    # Make sure that a list of solutions is ordered in a canonical way.
+    solution.sort(key=default_sort_key)
 
     return solution
 
@@ -1148,10 +1093,14 @@ def _solve(f, *symbols, **flags):
 
 
 def _solve_system(exprs, symbols, **flags):
+    """Return a checked solution for list of exprs in terms of one or more
+    of the symbols. A list of dict's (possibly empty) should be returned.
+    """
+
     polys = []
     dens = set()
     failed = []
-    result = False
+    result = [{}]
     linear = False
     checkdens = check = flags.get('check', True)
 
@@ -1192,17 +1141,11 @@ def _solve_system(exprs, symbols, **flags):
                     solved_syms = []
             else:
                 linear = True
-
+            result = [result] if result else [{}]
         else:
             result = solve_poly_system(polys, *symbols)
             solved_syms = list(set().union(*[{k for k in r.keys()}
                                              for r in result]))
-
-    if result:
-        if type(result) is dict:
-            result = [result]
-    else:
-        result = [{}]
 
     if failed:
         # For each failed equation, see if we can solve for one of the
@@ -1290,10 +1233,7 @@ def _solve_system(exprs, symbols, **flags):
         result = [r for r in result
                   if not any(checksol(e, r, **flags) is False for e in exprs)]
 
-    result = [r for r in result if r]
-    if linear and result:
-        result = result[0]
-    return result
+    return [r for r in result if r]
 
 
 def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
