@@ -15,6 +15,7 @@ from ..core.assumptions import check_assumptions
 from ..core.compatibility import (default_sort_key, is_sequence, iterable,
                                   ordered)
 from ..core.function import AppliedUndef
+from ..core.logic import fuzzy_and
 from ..core.relational import Relational
 from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
                          atan2, cos, exp, im, log, piecewise_fold, re, sin,
@@ -688,25 +689,14 @@ def solve(f, *symbols, **flags):
         solution = nfloat(solution, exponent=False)
 
     if check and solution:  # assumption checking
+        def test_assumptions(sol):
+            return fuzzy_and([check_assumptions(sol[sym], **sym._assumptions)
+                              for sym in sol])
+
+        solution = [s for s in solution if test_assumptions(s) is not False]
 
         warn = flags.get('warn', False)
-        got_None = []  # solutions for which one or more symbols gave None
-        no_False = []  # solutions for which no symbols gave False
-        for sol in solution:
-            a_None = False
-            for symb, val in sol.items():
-                test = check_assumptions(val, **symb._assumptions)
-                if test:
-                    continue
-                if test is False:
-                    break
-                a_None = True
-            else:
-                no_False.append(sol)
-                if a_None:
-                    got_None.append(sol)
-
-        solution = no_False
+        got_None = [s for s in solution if not test_assumptions(s)]
         if warn and got_None:
             warnings.warn(filldedent("""
                 \tWarning: assumptions concerning following solution(s)
