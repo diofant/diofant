@@ -10,7 +10,7 @@ from ..core.evaluate import global_evaluate
 from ..core.function import _mexpand
 from ..core.rules import Transform
 from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
-                         exp_polar, gamma, jn, log, piecewise_fold, sqrt,
+                         exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
                          unpolarify)
 from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
@@ -192,7 +192,7 @@ def _is_sum_surds(p):
 def _nthroot_solve(p, n, prec):
     """
     helper function for ``nthroot``
-    It denests ``p**Rational(1, n)`` using its minimal polynomial
+    It denests ``root(p, n)`` using its minimal polynomial
     """
     from ..polys.numberfields import _minimal_polynomial_sq
     from ..solvers import solve
@@ -201,7 +201,7 @@ def _nthroot_solve(p, n, prec):
         n = n // 2
     if n == 1:
         return p
-    pn = p**Rational(1, n)
+    pn = root(p, n)
     x = Symbol('x')
     f = _minimal_polynomial_sq(p, n, x)
     if f is None:
@@ -243,7 +243,7 @@ def nthroot(expr, n, max_len=4, prec=15):
     """
     expr = sympify(expr)
     n = sympify(n)
-    p = expr**Rational(1, n)
+    p = root(expr, n)
     if not n.is_integer:
         return p
     if not _is_sum_surds(expr):
@@ -261,7 +261,7 @@ def nthroot(expr, n, max_len=4, prec=15):
     surds.sort()
     surds = surds[:max_len]
     if expr < 0 and n % 2 == 1:
-        p = (-expr)**Rational(1, n)
+        p = root(-expr, n)
         a = nsimplify(p, constants=surds)
         res = a if _mexpand(a**n) == _mexpand(-expr) else p
         return -res

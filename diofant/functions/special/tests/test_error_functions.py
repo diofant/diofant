@@ -7,8 +7,8 @@ from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
                      cosh, diff, erf, erf2, erf2inv, erfc, erfcinv, erfi,
                      erfinv, exp, exp_polar, expand, expand_func, expint,
                      fresnelc, fresnels, gamma, hyper, im, integrate, li,
-                     limit, log, meijerg, nan, oo, pi, polar_lift, re, sign,
-                     sin, sinh, sqrt, uppergamma)
+                     limit, log, meijerg, nan, oo, pi, polar_lift, re, root,
+                     sign, sin, sinh, sqrt, uppergamma)
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.error_functions import _eis, _erfs
@@ -727,7 +727,7 @@ def test_fresnel():
 
     assert fresnelc(z).rewrite(meijerg) == sqrt(2)*pi*z**Rational(3, 4) * \
         meijerg(((), (1,)), ((Rational(1, 4),),
-                             (Rational(3, 4), 0)), -pi**2*z**4/16)/(2*(-z)**Rational(1, 4)*(z**2)**Rational(1, 4))
+                             (Rational(3, 4), 0)), -pi**2*z**4/16)/(2*root(-z, 4)*root(z**2, 4))
 
     verify_numerically(re(fresnels(z)), fresnels(z).as_real_imag()[0], z)
     verify_numerically(im(fresnels(z)), fresnels(z).as_real_imag()[1], z)

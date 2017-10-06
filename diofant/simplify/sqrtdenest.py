@@ -659,9 +659,9 @@ def unrad(eq, *syms, **flags):
 
     >>> from diofant.solvers.solvers import unrad
     >>> from diofant.abc import x
-    >>> from diofant import sqrt, Rational, root, real_roots, solve
+    >>> from diofant import cbrt, sqrt, Rational, root, real_roots, solve
 
-    >>> unrad(sqrt(x)*x**Rational(1, 3) + 2)
+    >>> unrad(sqrt(x)*cbrt(x) + 2)
     (x**5 - 64, [])
     >>> unrad(sqrt(x) + root(x + 1, 3))
     (x**3 - x**2 - 2*x - 1, [])

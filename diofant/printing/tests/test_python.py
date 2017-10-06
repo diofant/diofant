@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Abs, Derivative, Eq, Function, Ge, Gt, I, Integral, Le,
-                     Lt, Matrix, Ne, Rational, Symbol, conjugate, exp, limit,
-                     log, oo, pi, sin, sqrt, symbols)
+                     Lt, Matrix, Ne, Rational, Symbol, cbrt, conjugate, exp,
+                     limit, log, oo, pi, root, sin, sqrt, symbols)
 from diofant.printing.python import python
 
 
@@ -94,10 +94,10 @@ def test_python_functions():
     # Simple
     assert python((2*x + exp(x))) in "x = Symbol('x')\ne = E**x + 2*x"
     assert python(sqrt(2)) == 'e = sqrt(2)'
-    assert python(2**Rational(1, 3)) == 'e = 2**Rational(1, 3)'
+    assert python(cbrt(2)) == 'e = 2**Rational(1, 3)'
     assert python(sqrt(2 + pi)) == 'e = sqrt(2 + pi)'
-    assert python((2 + pi)**Rational(1, 3)) == 'e = (2 + pi)**Rational(1, 3)'
-    assert python(2**Rational(1, 4)) == 'e = 2**Rational(1, 4)'
+    assert python(cbrt(2 + pi)) == 'e = (2 + pi)**Rational(1, 3)'
+    assert python(root(2, 4)) == 'e = 2**Rational(1, 4)'
     assert python(Abs(x)) == "x = Symbol('x')\ne = Abs(x)"
     assert python(
         Abs(x/(x**2 + 1))) in ["x = Symbol('x')\ne = Abs(x/(1 + x**2))",
@@ -117,7 +117,7 @@ def test_python_functions():
         "x = Symbol('x')\ne = sqrt(sqrt(x + 1) + 1)"]
 
     # Nesting of powers
-    assert python((((x + 1)**Rational(1, 3)) + 1)**Rational(1, 3)) in [
+    assert python(cbrt(cbrt(x + 1) + 1)) in [
         "x = Symbol('x')\ne = (1 + (1 + x)**Rational(1, 3))**Rational(1, 3)",
         "x = Symbol('x')\ne = ((x + 1)**Rational(1, 3) + 1)**Rational(1, 3)"]
 

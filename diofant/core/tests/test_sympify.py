@@ -394,7 +394,7 @@ def test_sympyissue_3982():
 
 def test_S_sympify():
     assert Rational(1, 2) == sympify(1)/2
-    assert (-2)**Rational(1, 2) == sqrt(2)*I
+    assert sqrt(-2) == sqrt(2)*I
 
 
 def test_sympyissue_4788():

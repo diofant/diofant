@@ -21,16 +21,17 @@ from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
                      GoldenRatio, I, Lambda, LambertW, Le, Lt, Max, Mul, N, O,
                      Or, Piecewise, Poly, Rational, RootOf, Subs, Symbol, acot,
                      apart, asin, asinh, assoc_legendre, atan, bernoulli,
-                     besselj, binomial, ceiling, chebyshevt, combsimp, cos,
-                     cosh, cot, csc, diff, elliptic_e, elliptic_f, exp, expand,
-                     expand_func, factor, factorial, factorial2, factorint,
-                     fibonacci, floor, gamma, gcd, hessian, hyper, hyperexpand,
-                     igcd, im, legendre_poly, limit, log, logcombine, minimize,
-                     nan, npartitions, oo, pi, polygamma, polylog, powdenest,
-                     powsimp, primerange, primitive_root, product, radsimp, re,
-                     reduce_inequalities, residue, resultant, rf, sec, series,
-                     sign, simplify, sin, sinh, solve, sqrt, sqrtdenest,
-                     symbols, tan, tanh, totient, trigsimp, wronskian, zoo)
+                     besselj, binomial, cbrt, ceiling, chebyshevt, combsimp,
+                     cos, cosh, cot, csc, diff, elliptic_e, elliptic_f, exp,
+                     expand, expand_func, factor, factorial, factorial2,
+                     factorint, fibonacci, floor, gamma, gcd, hessian, hyper,
+                     hyperexpand, igcd, im, legendre_poly, limit, log,
+                     logcombine, minimize, nan, npartitions, oo, pi, polygamma,
+                     polylog, powdenest, powsimp, primerange, primitive_root,
+                     product, radsimp, re, reduce_inequalities, residue,
+                     resultant, rf, sec, series, sign, simplify, sin, sinh,
+                     solve, sqrt, sqrtdenest, symbols, tan, tanh, totient,
+                     trigsimp, wronskian, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.concrete import Sum
 from diofant.concrete.products import Product
@@ -2012,7 +2013,7 @@ def test_U10():
 
 
 def test_U13():
-    assert minimize(x**4 - x + 1, x)[0] == -3*2**Rational(1, 3)/8 + 1
+    assert minimize(x**4 - x + 1, x)[0] == -3*cbrt(2)/8 + 1
 
 
 @pytest.mark.xfail
@@ -2083,8 +2084,7 @@ def test_V10():
 def test_V11():
     r1 = integrate(1/(4 + 3*cos(x) + 4*sin(x)), x)
     r2 = factor(r1)
-    assert (logcombine(r2, force=True) ==
-            log(((tan(x/2) + 1)/(tan(x/2) + 7))**Rational(1, 3)))
+    assert logcombine(r2, force=True) == log(cbrt((tan(x/2) + 1)/(tan(x/2) + 7)))
 
 
 def test_V12():

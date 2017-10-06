@@ -102,13 +102,13 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant.core import S, I, Rational, Symbol
+        >>> from diofant import I, Rational, Symbol, root, sqrt
 
-        >>> sorted([S.Half, I, -I], key=lambda x: x.sort_key())
+        >>> sorted([Rational(1, 2), I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
         >>> x = Symbol('x')
-        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
+        >>> [x, 1/x, 1/x**2, x**2, sqrt(x), root(x, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]

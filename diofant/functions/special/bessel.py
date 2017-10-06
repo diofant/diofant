@@ -8,7 +8,7 @@ from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs, im, re
 from ..elementary.exponential import exp
-from ..elementary.miscellaneous import root, sqrt
+from ..elementary.miscellaneous import cbrt, root, sqrt
 from ..elementary.trigonometric import cos, cot, csc, sin
 from .gamma_functions import gamma
 from .hyper import hyper
@@ -1029,7 +1029,7 @@ class airybi(AiryBase):
             elif arg is S.NegativeInfinity:
                 return S.Zero
             elif arg is S.Zero:
-                return S.One / (3**Rational(1, 6) * gamma(Rational(2, 3)))
+                return 1/(root(3, 6)*gamma(Rational(2, 3)))
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -1239,7 +1239,7 @@ class airyaiprime(AiryBase):
             if arg is S.Infinity:
                 return S.Zero
             elif arg is S.Zero:
-                return -S.One / (3**Rational(1, 3) * gamma(Rational(1, 3)))
+                return -S.One / (cbrt(3) * gamma(Rational(1, 3)))
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -1391,7 +1391,7 @@ class airybiprime(AiryBase):
             elif arg is S.NegativeInfinity:
                 return S.Zero
             elif arg is S.Zero:
-                return 3**Rational(1, 6) / gamma(Rational(1, 3))
+                return root(3, 6)/gamma(Rational(1, 3))
 
     def fdiff(self, argindex=1):
         if argindex == 1:

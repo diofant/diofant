@@ -3,9 +3,9 @@ import itertools
 import pytest
 
 from diofant import (Add, Dummy, E, Float, I, Integer, Mod, Mul, O, Pow,
-                     Rational, Symbol, comp, cos, exp, factorial, im, log, nan,
-                     oo, pi, polar_lift, re, sign, sin, sqrt, symbols, sympify,
-                     tan, zoo)
+                     Rational, Symbol, cbrt, comp, cos, exp, factorial, im,
+                     log, nan, oo, pi, polar_lift, re, root, sign, sin, sqrt,
+                     symbols, sympify, tan, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -184,7 +184,7 @@ def test_pow2():
     # let x = 1 to see why the following are not true.
     assert (-x)**Rational(2, 3) != x**Rational(2, 3)
     assert (-x)**Rational(5, 7) != -x**Rational(5, 7)
-    assert ((-x)**2)**Rational(1, 3) != ((-x)**Rational(1, 3))**2
+    assert cbrt((-x)**2) != (cbrt(-x))**2
     assert sqrt(x**2) != x
 
 
@@ -212,7 +212,7 @@ def test_pow_E():
 
 
 def test_pow_sympyissue_3516():
-    assert 4**Rational(1, 4) == sqrt(2)
+    assert root(4, 4) == sqrt(2)
 
 
 def test_pow_im():
@@ -224,9 +224,9 @@ def test_pow_im():
                 assert (b**e - b.n()**e.n()).n(2, chop=1e-10) == 0
 
     e = Rational(7, 3)
-    assert (2*x*I)**e == 4*2**Rational(1, 3)*(I*x)**e  # same as Wolfram Alpha
+    assert (2*x*I)**e == 4*cbrt(2)*(I*x)**e  # same as Wolfram Alpha
     im = symbols('im', imaginary=True)
-    assert (2*im*I)**e == 4*2**Rational(1, 3)*(I*im)**e
+    assert (2*im*I)**e == 4*cbrt(2)*(I*im)**e
 
     args = [I, I, I, I, 2]
     e = Rational(1, 3)
@@ -347,7 +347,7 @@ def test_Mul_doesnt_expand_exp():
     assert x**(y)*x**(2*y) == x**(3*y)
     assert sqrt(2)*sqrt(2) == 2
     assert 2**x*2**(2*x) == 2**(3*x)
-    assert sqrt(2)*2**Rational(1, 4)*5**Rational(3, 4) == 10**Rational(3, 4)
+    assert sqrt(2)*root(2, 4)*5**Rational(3, 4) == 10**Rational(3, 4)
     assert (x**(-log(5)/log(3))*x)/(x*x**( - log(5)/log(3))) == sympify(1)
 
 
@@ -987,8 +987,8 @@ def test_Pow_is_real():
     assert (x**x).is_extended_real is None
     assert (y**x).is_extended_real is True
 
-    assert (x**Rational(1, 3)).is_extended_real is None
-    assert (y**Rational(1, 3)).is_extended_real is True
+    assert cbrt(x).is_extended_real is None
+    assert cbrt(y).is_extended_real is True
 
     assert sqrt(-1 - sqrt(2)).is_extended_real is False
 
@@ -1775,7 +1775,7 @@ def test_float_int():
 
 
 def test_sympyissue_6611a():
-    assert Mul.flatten([3**Rational(1, 3),
+    assert Mul.flatten([cbrt(3),
                         Pow(-Rational(1, 9), Rational(2, 3), evaluate=False)]) == \
         ([Rational(1, 3), (-1)**Rational(2, 3)], [], None)
 
@@ -1879,22 +1879,22 @@ def test_mul_zero_detection():
 def test_sympyissue_8247_8354():
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_positive is False  # it's 0
-    z = (-2**Rational(1, 3)*(3*sqrt(93) + 29)**2 -
+    z = (-cbrt(2)*(3*sqrt(93) + 29)**2 -
          4*(3*sqrt(93) + 29)**Rational(4, 3) +
-         12*sqrt(93)*(3*sqrt(93) + 29)**Rational(1, 3) +
-         116*(3*sqrt(93) + 29)**Rational(1, 3) +
-         174*2**Rational(1, 3)*sqrt(93) + 1678*2**Rational(1, 3))
+         12*sqrt(93)*cbrt(3*sqrt(93) + 29) +
+         116*cbrt(3*sqrt(93) + 29) +
+         174*cbrt(2)*sqrt(93) + 1678*cbrt(2))
     assert z.is_positive is False  # it's 0
     z = 2*(-3*tan(19*pi/90) + sqrt(3))*cos(11*pi/90)*cos(19*pi/90) - \
         sqrt(3)*(-3 + 4*cos(19*pi/90)**2)
     assert z.is_positive is not True  # it's zero and it shouldn't hang
-    z = (9*(3*sqrt(93) + 29)**Rational(2, 3)*((3*sqrt(93) +
-                                               29)**Rational(1, 3)*(-2**Rational(2, 3)*(3*sqrt(93) +
-                                                                                        29)**Rational(1, 3) - 2) - 2*2**Rational(1, 3))**3 +
+    z = (9*(3*sqrt(93) + 29)**Rational(2, 3)*(cbrt(3*sqrt(93) +
+                                                   29)*(-2**Rational(2, 3)*cbrt(3*sqrt(93) +
+                                                                                29) - 2) - 2*cbrt(2))**3 +
          72*(3*sqrt(93) + 29)**Rational(2, 3)*(81*sqrt(93) + 783) +
-         (162*sqrt(93) + 1566)*((3*sqrt(93) + 29)**Rational(1, 3) *
-                                (-2**Rational(2, 3)*(3*sqrt(93) + 29)**Rational(1, 3) - 2) -
-                                2*2**Rational(1, 3))**2)
+         (162*sqrt(93) + 1566)*(cbrt(3*sqrt(93) + 29) *
+                                (-2**Rational(2, 3)*cbrt(3*sqrt(93) + 29) - 2) -
+                                2*cbrt(2))**2)
     assert z.is_positive is False  # it's 0 (and a single _mexpand isn't enough)
 
 

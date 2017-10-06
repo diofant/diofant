@@ -186,7 +186,7 @@ def test_root():
 
     assert root(2, 2) == sqrt(2)
     assert root(2, 1) == 2
-    assert root(2, 3) == 2**Rational(1, 3)
+    assert root(2, 3) == cbrt(2)
     assert root(2, 3) == cbrt(2)
     assert root(2, -5) == 2**Rational(4, 5)/2
 
@@ -197,7 +197,7 @@ def test_root():
 
     assert root(x, 2) == sqrt(x)
     assert root(x, 1) == x
-    assert root(x, 3) == x**Rational(1, 3)
+    assert root(x, 3) == cbrt(x)
     assert root(x, 3) == cbrt(x)
     assert root(x, -5) == x**Rational(-1, 5)
 

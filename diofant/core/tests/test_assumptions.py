@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import I, asin, exp, false, log, simplify, sin, sqrt
+from diofant import I, asin, cbrt, exp, false, log, simplify, sin, sqrt
 from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Mul, Pow,
                           Rational, Symbol, Wild, nan, oo, pi, zoo)
 from diofant.core.facts import InconsistentAssumptions
@@ -586,7 +586,7 @@ def test_sympyissue_3825():
 
 
 def test_sympyissue_4822():
-    z = (-1)**Rational(1, 3)*(1 - I*sqrt(3))
+    z = cbrt(-1)*(1 - I*sqrt(3))
     assert z.is_extended_real in [True, None]
 
 

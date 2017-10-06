@@ -1,6 +1,7 @@
 from diofant import (Dummy, E, Function, I, MatrixSymbol, Mul, Rational,
-                     Symbol, exp, exp_polar, gamma, hyper, log, pi, polar_lift,
-                     powdenest, powsimp, root, simplify, sin, sqrt, symbols)
+                     Symbol, cbrt, exp, exp_polar, gamma, hyper, log, pi,
+                     polar_lift, powdenest, powsimp, root, simplify, sin, sqrt,
+                     symbols)
 from diofant.abc import a, b, c, x, y, z
 
 
@@ -277,12 +278,11 @@ def test_sympyissue_from_PR1599():
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==
             -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))
     assert (powsimp(root(n1, 3)*root(n2, 3)*root(n3, 3)*root(n4, 3)) ==
-            -(-1)**Rational(1, 3) *
-            (-n1)**Rational(1, 3)*(-n2)**Rational(1, 3)*(-n3)**Rational(1, 3)*(-n4)**Rational(1, 3))
+            -cbrt(-1)*cbrt(-n1)*cbrt(-n2)*cbrt(-n3)*cbrt(-n4))
 
 
 def test_powsimp_on_numbers():
-    assert 2**(Rational(1, 3) - 2) == 2**Rational(1, 3)/4
+    assert 2**(Rational(1, 3) - 2) == cbrt(2)/4
 
 
 def test_diofantissue_124():

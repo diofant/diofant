@@ -1,11 +1,11 @@
 from functools import reduce
 from itertools import permutations
 
-from ..core import Add, Basic, Dummy, Eq, Mul, Rational, S, Wild, pi, sympify
+from ..core import Add, Basic, Dummy, Eq, Mul, S, Wild, pi, sympify
 from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
-                         cos, cosh, cot, coth, erf, erfi, exp, li, log, sin,
-                         sinh, sqrt, tan, tanh)
+                         cos, cosh, cot, coth, erf, erfi, exp, li, log, root,
+                         sin, sinh, sqrt, tan, tanh)
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
@@ -50,7 +50,7 @@ def components(f, x):
 
             if not f.exp.is_Integer:
                 if f.exp.is_Rational:
-                    result.add(f.base**Rational(1, f.exp.q))
+                    result.add(root(f.base, f.exp.q))
                 else:
                     result |= components(f.exp, x) | {f}
         else:

@@ -11,8 +11,8 @@ from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
                      Matrix, MatrixSymbol, Mul, Nand, Ne, Nor, Not, O, Or, Pow,
                      Product, Range, Rational, Ray, RealField, RootOf, RootSum,
                      S, Segment, Subs, Sum, Symbol, SymmetricDifference, Trace,
-                     Tuple, Union, Xor, conjugate, grlex, groebner, ilex, oo,
-                     pi, symbols)
+                     Tuple, Union, Xor, cbrt, conjugate, grlex, groebner, ilex,
+                     oo, pi, root, symbols)
 from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
@@ -119,13 +119,13 @@ ceiling(1 / (y - ceiling(x)))
 SQRT:
 
 sqrt(2)
-2**Rational(1,3)
-2**Rational(1,1000)
+cbrt(2)
+root(2, 1000)
 sqrt(x**2 + 1)
-(1 + sqrt(5))**Rational(1,3)
+cbrt(1 + sqrt(5))
 2**(1/x)
 sqrt(2+pi)
-(2+(1+x**2)/(2+x))**Rational(1,4)+(1+x**Rational(1,1000))/sqrt(3+x**2)
+root(2+(1+x**2)/(2+x), 4)+(1+root(x,1000))/sqrt(3+x**2)
 
 
 DERIVATIVES:
@@ -1746,7 +1746,7 @@ def test_pretty_sqrt():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = 2**Rational(1, 3)
+    expr = cbrt(2)
     ascii_str = \
         """\
 3 ___\n\
@@ -1760,7 +1760,7 @@ def test_pretty_sqrt():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = 2**Rational(1, 1000)
+    expr = root(2, 1000)
     ascii_str = \
         """\
 1000___\n\
@@ -1790,7 +1790,7 @@ def test_pretty_sqrt():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = (1 + sqrt(5))**Rational(1, 3)
+    expr = cbrt(1 + sqrt(5))
     ascii_str = \
         """\
    ___________\n\
@@ -1834,8 +1834,7 @@ x ___\n\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = (2 + (
-        1 + x**2)/(2 + x))**Rational(1, 4) + (1 + x**Rational(1, 1000))/sqrt(3 + x**2)
+    expr = root(2 + (1 + x**2)/(2 + x), 4) + (1 + root(x, 1000))/sqrt(3 + x**2)
     ascii_str = \
         """\
      ____________              \n\

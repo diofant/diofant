@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (Derivative, E, I, O, PoleError, Rational, Symbol, acosh,
-                     acoth, asin, asinh, atanh, ceiling, cos, cosh, cot, coth,
-                     exp, floor, limit, ln, log, pi, sign, sin, sinh, sqrt,
-                     tan, tanh)
+                     acoth, asin, asinh, atanh, cbrt, ceiling, cos, cosh, cot,
+                     coth, exp, floor, limit, ln, log, pi, sign, sin, sinh,
+                     sqrt, tan, tanh)
 from diofant.abc import a, b, l, w, x, y, z
 
 
@@ -257,7 +257,7 @@ def test_sympyissue_3258():
 
 def test_sympyissue_3204():
     x = Symbol("x", nonnegative=True)
-    f = sin(x**3)**Rational(1, 3)
+    f = cbrt(sin(x**3))
     assert f.nseries(x) == x - x**7/18 - x**13/3240 + O(x**19)
 
 
@@ -288,8 +288,7 @@ def test_sympyissue_3515():
 
 
 def test_sympyissue_3505():
-    e = sin(x)**(-4)*(sqrt(cos(x))*sin(x)**2 -
-                      cos(x)**Rational(1, 3)*sin(x)**2)
+    e = sin(x)**(-4)*(sqrt(cos(x))*sin(x)**2 - cbrt(cos(x))*sin(x)**2)
     assert e.nseries(x, n=8) == -Rational(1)/12 - 7*x**2/288 - \
         43*x**4/10368 + O(x**6)
 

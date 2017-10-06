@@ -2,12 +2,12 @@ import pytest
 
 from diofant import (Abs, Derivative, DiracDelta, E, Eq, Expr, Function,
                      Heaviside, I, Integer, Integral, Interval, Matrix, Ne,
-                     Piecewise, Rational, Symbol, adjoint, arg, atan2, comp,
-                     conjugate, cos, erf, exp, exp_polar, expand, gamma, im,
-                     log, nan, oo, periodic_argument, pi, polar_lift, polarify,
-                     principal_branch, re, sign, simplify, sin, sqrt, symbols,
-                     tanh, transpose, unbranched_argument, unpolarify,
-                     uppergamma, zoo)
+                     Piecewise, Rational, Symbol, adjoint, arg, atan2, cbrt,
+                     comp, conjugate, cos, erf, exp, exp_polar, expand, gamma,
+                     im, log, nan, oo, periodic_argument, pi, polar_lift,
+                     polarify, principal_branch, re, root, sign, simplify, sin,
+                     sqrt, symbols, tanh, transpose, unbranched_argument,
+                     unpolarify, uppergamma, zoo)
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 
@@ -69,12 +69,10 @@ def test_re():
     assert re(i*r*x).diff(r) == re(i*x)
     assert re(i*r*x).diff(i) == I*r*im(x)
 
-    assert re(
-        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*cos(arg(a + I*b)/2)
+    assert re(sqrt(a + b*I)) == root(a**2 + b**2, 4)*cos(arg(a + I*b)/2)
     assert re(a * (2 + b*I)) == 2*a
 
-    assert re((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2)
+    assert re((1 + sqrt(a + b*I))/2) == root(a**2 + b**2, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2)
 
     assert re(x).rewrite(im) == x - im(x)
     assert (x + re(y)).rewrite(re, im) == x + y - im(y)
@@ -136,12 +134,10 @@ def test_im():
     assert im(i*r*x).diff(r) == im(i*x)
     assert im(i*r*x).diff(i) == -I * re(r*x)
 
-    assert im(
-        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)
+    assert im(sqrt(a + b*I)) == root(a**2 + b**2, 4)*sin(arg(a + I*b)/2)
     assert im(a * (2 + b*I)) == a*b
 
-    assert im((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)/2
+    assert im((1 + sqrt(a + b*I))/2) == root(a**2 + b**2, 4)*sin(arg(a + I*b)/2)/2
 
     assert im(x).rewrite(re) == x - re(x)
     assert (x + im(y)).rewrite(im, re) == x + y - re(y)
@@ -268,7 +264,7 @@ def test_sign():
     # expression like this is zero then the equality to zero is ok
     assert sign(eq) == 0
     q = 1 + sqrt(2) - 2*sqrt(3) + 1331*sqrt(6)
-    p = expand(q**3)**Rational(1, 3)
+    p = cbrt(expand(q**3))
     d = p - q
     assert sign(d) == 0
 
@@ -285,16 +281,14 @@ def test_as_real_imag():
 
     # issue sympy/sympy#6261
     assert sqrt(x).as_real_imag() == \
-        ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(arg(re(x) + I*im(x))/2),
-         (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(arg(re(x) + I*im(x))/2))
+        (root(re(x)**2 + im(x)**2, 4)*cos(arg(re(x) + I*im(x))/2),
+         root(re(x)**2 + im(x)**2, 4)*sin(arg(re(x) + I*im(x))/2))
 
     # issue sympy/sympy#3853
     a, b = symbols('a,b', extended_real=True)
-    assert ((1 + sqrt(a + b*I))/2).as_real_imag() == \
-           (
-               (a**2 + b**2)**Rational(
-                   1, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2),
-               (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)/2)
+    assert (((1 + sqrt(a + b*I))/2).as_real_imag() ==
+            (root(a**2 + b**2, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2),
+             root(a**2 + b**2, 4)*sin(arg(a + I*b)/2)/2))
 
     assert sqrt(a**2).as_real_imag() == (sqrt(a**2), 0)
     i = symbols('i', imaginary=True)
@@ -369,7 +363,7 @@ def test_Abs():
     # expression like this is zero then the equality to zero is ok
     assert abs(eq) == 0
     q = 1 + sqrt(2) - 2*sqrt(3) + 1331*sqrt(6)
-    p = expand(q**3)**Rational(1, 3)
+    p = cbrt(expand(q**3))
     d = p - q
     assert abs(d) == 0
 

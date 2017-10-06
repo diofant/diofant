@@ -250,7 +250,7 @@ def add_formulae(formulae):
          Matrix([[1, 0]]), Matrix([[0, 1], [z, (1 - b)]]))
 
     # 0F3
-    x = 4*z**Rational(1, 4)
+    x = 4*root(z, 4)
 
     def fp(a, z):
         return besseli(a, x) + besselj(a, x)
@@ -260,7 +260,7 @@ def add_formulae(formulae):
 
     # TODO branching
     addb([], [S.Half, a, a + S.Half],
-         Matrix([fp(2*a - 1, z), fm(2*a, z)*z**Rational(1, 4),
+         Matrix([fp(2*a - 1, z), fm(2*a, z)*root(z, 4),
                  fm(2*a - 1, z)*sqrt(z), fp(2*a, z)*z**Rational(3, 4)])
          * 2**(-2*a)*gamma(2*a)*z**((1 - 2*a)/4),
          Matrix([[1, 0, 0, 0]]),
@@ -268,7 +268,7 @@ def add_formulae(formulae):
                  [0, Rational(1, 2) - a, 1, 0],
                  [0, 0, Rational(1, 2), 1],
                  [z, 0, 0, 1 - a]]))
-    x = 2*(4*z)**Rational(1, 4)*exp_polar(I*pi/4)
+    x = 2*root(4*z, 4)*exp_polar(I*pi/4)
     addb([], [a, a + S.Half, 2*a],
          (2*sqrt(polar_lift(-1)*z))**(1 - 2*a)*gamma(2*a)**2 *
          Matrix([besselj(2*a - 1, x)*besseli(2*a - 1, x),

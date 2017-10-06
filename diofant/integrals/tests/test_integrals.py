@@ -4,11 +4,11 @@ from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
                      EulerGamma, Function, I, Integral, Interval, Lambda,
                      LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
                      Rational, Si, Sum, Symbol, Tuple, acos, acosh, asin,
-                     asinh, atan, cos, cosh, diff, erf, erfi, exp, expand_func,
-                     expand_mul, factor, fresnels, gamma, im, integrate, log,
-                     lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
-                     re, sign, simplify, sin, sinh, sqrt, sstr, symbols,
-                     sympify, tan, tanh, trigsimp)
+                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
+                     expand_func, expand_mul, factor, fresnels, gamma, im,
+                     integrate, log, lowergamma, meijerg, nan, oo, pi,
+                     polar_lift, polygamma, re, sign, simplify, sin, sinh,
+                     sqrt, sstr, symbols, sympify, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.heurisch import heurisch
@@ -823,7 +823,7 @@ def test_sympyissue_4376():
 
 @pytest.mark.slow
 def test_sympyissue_4517():
-    assert integrate((sqrt(x) - x**3)/x**Rational(1, 3), x) == \
+    assert integrate((sqrt(x) - x**3)/cbrt(x), x) == \
         6*x**Rational(7, 6)/7 - 3*x**Rational(11, 3)/11
 
 

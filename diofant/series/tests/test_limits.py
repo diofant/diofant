@@ -4,10 +4,10 @@ import os
 import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, atan, ceiling,
-                     cos, cot, diff, exp, factorial, floor, gamma, integrate,
-                     limit, log, nan, oo, pi, polygamma, sign, simplify, sin,
-                     sinh, sqrt, subfactorial, symbols, tan)
+                     PoleError, Rational, Sum, Symbol, acos, atan, cbrt,
+                     ceiling, cos, cot, diff, exp, factorial, floor, gamma,
+                     integrate, limit, log, nan, oo, pi, polygamma, root, sign,
+                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -50,10 +50,10 @@ def test_basic1():
     assert limit(1/sin(x), x, pi, dir="-") == oo
     assert limit(1/cos(x), x, pi/2, dir="+") == -oo
     assert limit(1/cos(x), x, pi/2, dir="-") == oo
-    assert limit(1/tan(x**3), x, (2*pi)**Rational(1, 3), dir="+") == oo
-    assert limit(1/tan(x**3), x, (2*pi)**Rational(1, 3), dir="-") == -oo
-    assert limit(1/cot(x)**3, x, (3*pi/2), dir="+") == -oo
-    assert limit(1/cot(x)**3, x, (3*pi/2), dir="-") == oo
+    assert limit(1/tan(x**3), x, cbrt(2*pi), dir="+") == oo
+    assert limit(1/tan(x**3), x, cbrt(2*pi), dir="-") == -oo
+    assert limit(1/cot(x)**3, x, 3*pi/2, dir="+") == -oo
+    assert limit(1/cot(x)**3, x, 3*pi/2, dir="-") == oo
 
     # approaching 0
     # from dir="+"
@@ -271,9 +271,9 @@ def test_sympyissue_5183():
                                    [-1, 1],
                                    [2, 3, Rational(1, 2), Rational(2, 3)],
                                    ['-', '+']))
-    results = (oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)), oo,
+    results = (oo, oo, -oo, oo, -oo*I, oo, -oo*sign(cbrt(-1)), oo,
                0, 0, 0, 0, 0, 0, 0, 0,
-               oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)),
+               oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign(cbrt(-1)),
                0, 0, 0, 0, 0, 0, 0, 0)
     assert len(tests) == len(results)
     for i, (args, res) in enumerate(zip(tests, results)):
@@ -453,7 +453,7 @@ def test_sympyissue_8061():
 
 
 def test_sympyissue_8229():
-    assert limit((x**Rational(1, 4) - 2)/(sqrt(x) - 4)**Rational(2, 3),
+    assert limit((root(x, 4) - 2)/(sqrt(x) - 4)**Rational(2, 3),
                  x, 16) == 0
 
 

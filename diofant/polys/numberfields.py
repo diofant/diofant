@@ -9,7 +9,7 @@ from ..core import (Add, AlgebraicNumber, Dummy, GoldenRatio, I, Integer, Mul,
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ
-from ..functions import cos, sin, sqrt
+from ..functions import cos, root, sin, sqrt
 from ..ntheory import divisors, sieve
 from ..printing.lambdarepr import LambdaPrinter
 from ..simplify.radsimp import _split_gcd
@@ -160,7 +160,7 @@ def _minimal_polynomial_sq(p, n, x):
     n = sympify(n)
     if not n.is_Integer or not n > 0 or not _is_sum_surds(p):
         return
-    pn = p**Rational(1, n)
+    pn = root(p, n)
     # eliminate the square roots
     p -= x
     while 1:
@@ -304,7 +304,7 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
     Examples
     ========
 
-    >>> from diofant import sqrt, QQ, Rational
+    >>> from diofant import cbrt, sqrt, QQ, Rational
     >>> from diofant.abc import x, y
 
     >>> p = sqrt(1 + sqrt(2))
@@ -314,7 +314,7 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
     x**2 - 2*x - 1
     >>> _minpoly_pow(y, Rational(1, 3), x, QQ.frac_field(y))
     x**3 - y
-    >>> minpoly(y**Rational(1, 3), x)
+    >>> minpoly(cbrt(y), x)
     x**3 - y
     """
     pw = sympify(pw)
@@ -533,7 +533,7 @@ def _minpoly_compose(ex, x, dom):
             # bases, and that in ``base**(n/d)`` a perfect power is
             # simplified with the root
             mp2 = ex2.q*x**lcmdens - ex2.p
-            ex2 = ex2**Rational(1, lcmdens)
+            ex2 = root(ex2, lcmdens)
             res = _minpoly_op_algebraic_element(Mul, ex1, ex2, x, dom, mp1=mp1, mp2=mp2)
         else:
             res = _minpoly_mul(x, dom, *ex.args)

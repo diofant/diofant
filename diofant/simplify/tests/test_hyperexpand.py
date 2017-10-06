@@ -3,10 +3,10 @@ from random import randrange
 import pytest
 
 from diofant import (Ci, I, Integer, Piecewise, Rational, Si, Symbol, Tuple,
-                     asin, atanh, besseli, combsimp, cos, erf, exp, exp_polar,
-                     expand, gamma, hyper, lerchphi, log, lowergamma, meijerg,
-                     oo, pi, polylog, simplify, sin, sqrt, sympify, unpolarify,
-                     uppergamma)
+                     asin, atanh, besseli, cbrt, combsimp, cos, erf, exp,
+                     exp_polar, expand, gamma, hyper, lerchphi, log,
+                     lowergamma, meijerg, oo, pi, polylog, simplify, sin, sqrt,
+                     sympify, unpolarify, uppergamma)
 from diofant.abc import a, b, c, z
 from diofant.simplify.hyperexpand import (Formula, FormulaCollection,
                                           G_Function, Hyper_Function,
@@ -29,7 +29,7 @@ __all__ = ()
 
 def test_branch_bug():
     assert hyperexpand(hyper((-Rational(1, 3), Rational(1, 2)), (Rational(2, 3), Rational(3, 2)), -z)) == \
-        -z**Rational(1, 3)*lowergamma(exp_polar(I*pi)/3, z)/5 \
+        -cbrt(z)*lowergamma(exp_polar(I*pi)/3, z)/5 \
         + sqrt(pi)*erf(sqrt(z))/(5*sqrt(z))
     assert hyperexpand(meijerg([Rational(7, 6), 1], [], [Rational(2, 3)], [Rational(1, 6), 0], z)) == \
         2*z**Rational(2, 3)*(2*sqrt(pi)*erf(sqrt(z))/sqrt(z) -
@@ -132,7 +132,7 @@ def test_hyperexpand_parametric():
     assert hyperexpand(hyper([a, Rational(1, 2) + a], [Rational(1, 2)], z)) \
         == (1 + sqrt(z))**(-2*a)/2 + (1 - sqrt(z))**(-2*a)/2
     assert hyperexpand(hyper([a, -Rational(1, 2) + a], [2*a], z)) \
-        == 2**(2*a - 1)*((-z + 1)**Rational(1, 2) + 1)**(-2*a + 1)
+        == 2**(2*a - 1)*(sqrt(-z + 1) + 1)**(-2*a + 1)
 
 
 def test_shifted_sum():
