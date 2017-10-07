@@ -19,7 +19,7 @@ class BaseScalar(Symbol):
         obj = super(BaseScalar, cls).__new__(cls, name)
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
-        if index not in range(0, 3):
+        if index not in range(3):
             raise ValueError("Invalid index specified.")
         # The _id is used for equating purposes, and for hashing
         obj._id = (index, system)

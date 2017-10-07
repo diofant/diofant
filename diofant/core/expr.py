@@ -1228,7 +1228,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if not first:
                 l.reverse()
                 sub.reverse()
-            for i in range(0, len(l) - n + 1):
+            for i in range(len(l) - n + 1):
                 if all(l[i + j] == sub[j] for j in range(n)):
                     break
             else:

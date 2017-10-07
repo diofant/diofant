@@ -72,12 +72,12 @@ def symmetrize(F, *gens, **args):
     polys, symbols = [], opt.symbols
     gens, dom = opt.gens, opt.domain
 
-    for i in range(0, len(gens)):
+    for i in range(len(gens)):
         poly = symmetric_poly(i + 1, gens, polys=True)
         polys.append((next(symbols), poly.set_domain(dom)))
 
-    indices = list(range(0, len(gens) - 1))
-    weights = list(range(len(gens), 0, -1))
+    indices = range(len(gens) - 1)
+    weights = range(len(gens), 0, -1)
 
     result = []
 

@@ -432,9 +432,9 @@ class PrettyPrinter(Printer):
                 d = d + more
                 vsum = vobj('sum', 4)
                 lines.append("_"*(w))
-                for i in range(0, d):
+                for i in range(d):
                     lines.append('%s%s%s' % (' '*i, vsum[2], ' '*(w - i - 1)))
-                for i in reversed(range(0, d)):
+                for i in reversed(range(d)):
                     lines.append('%s%s%s' % (' '*i, vsum[4], ' '*(w - i - 1)))
                 lines.append(vsum[8]*(w))
                 return d, h + 2*more, lines, more
@@ -1221,7 +1221,7 @@ class PrettyPrinter(Printer):
 
         # Convert to pretty forms. Add parens to Add instances if there
         # is more than one term in the numer/denom
-        for i in range(0, len(a)):
+        for i in range(len(a)):
             if (a[i].is_Add and len(a) > 1) or (i != len(a) - 1 and
                                                 isinstance(a[i], (Integral, Piecewise, Product, Sum))):
                 a[i] = prettyForm(*self._print(a[i]).parens())
@@ -1230,7 +1230,7 @@ class PrettyPrinter(Printer):
             else:
                 a[i] = self._print(a[i])
 
-        for i in range(0, len(b)):
+        for i in range(len(b)):
             if (b[i].is_Add and len(b) > 1) or (i != len(b) - 1 and
                                                 isinstance(b[i], (Integral, Piecewise, Product, Sum))):
                 b[i] = prettyForm(*self._print(b[i]).parens())

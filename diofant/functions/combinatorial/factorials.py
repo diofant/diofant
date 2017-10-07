@@ -436,7 +436,7 @@ class RisingFactorial(CombinatorialFunction):
                         else:
                             return S.Infinity
                     else:
-                        return reduce(lambda r, i: r*(x + i), range(0, int(k)), 1)
+                        return reduce(lambda r, i: r*(x + i), range(int(k)), 1)
                 else:
                     if x is S.Infinity:
                         return S.Infinity
@@ -510,7 +510,7 @@ class FallingFactorial(CombinatorialFunction):
                         else:
                             return S.Infinity
                     else:
-                        return reduce(lambda r, i: r*(x - i), range(0, int(k)), 1)
+                        return reduce(lambda r, i: r*(x - i), range(int(k)), 1)
                 else:
                     if x is S.Infinity:
                         return S.Infinity

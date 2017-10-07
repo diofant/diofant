@@ -760,7 +760,7 @@ def test_M5():
 
 def test_M6():
     assert ({s[x] for s in solve(x**7 - 1, x)} ==
-            {cos(n*2*pi/7) + I*sin(n*2*pi/7) for n in range(0, 7)})
+            {cos(n*2*pi/7) + I*sin(n*2*pi/7) for n in range(7)})
     # The paper asks for exp terms, but sin's and cos's may be acceptable;
     # if the results are simplified, exp terms appear for all but
     # -sin(pi/14) - I*cos(pi/14) and -sin(pi/14) + I*cos(pi/14) which
@@ -1573,7 +1573,7 @@ def test_P44():
 
 def test_P45():
     def __my_wronskian(Y, v):
-        M = Matrix([Matrix(Y).T.diff(x, n) for n in range(0, len(Y))])
+        M = Matrix([Matrix(Y).T.diff(x, n) for n in range(len(Y))])
         return M.det()
     assert __my_wronskian([cos(x), sin(x)], x).simplify() == 1
 

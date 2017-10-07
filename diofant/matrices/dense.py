@@ -806,7 +806,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.col_swap
         """
-        for k in range(0, self.cols):
+        for k in range(self.cols):
             self[i, k], self[j, k] = self[j, k], self[i, k]
 
     def col_swap(self, i, j):
@@ -833,7 +833,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         diofant.matrices.dense.DenseMatrix.col
         diofant.matrices.dense.MutableDenseMatrix.row_swap
         """
-        for k in range(0, self.rows):
+        for k in range(self.rows):
             self[k, i], self[k, j] = self[k, j], self[k, i]
 
     def row_del(self, i):
@@ -1533,7 +1533,7 @@ def wronskian(functions, var, method='bareis'):
     """
     from . import Matrix
 
-    for index in range(0, len(functions)):
+    for index in range(len(functions)):
         functions[index] = sympify(functions[index])
     n = len(functions)
     if n == 0:

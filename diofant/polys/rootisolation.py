@@ -68,7 +68,7 @@ def dup_root_upper_bound(f, K):
         f = dup_neg(f, K)
     f = list(reversed(f))
 
-    for i in range(0, n):
+    for i in range(n):
         if f[i] >= 0:
             continue
 
@@ -200,7 +200,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
                                                         d), K, fast=fast)
 
     if eps is not None and steps is not None:
-        for i in range(0, steps):
+        for i in range(steps):
             if abs(F(a, c) - F(b, d)) >= eps:
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
             else:
@@ -211,7 +211,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
 
         if steps is not None:
-            for i in range(0, steps):
+            for i in range(steps):
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
 
     if disjoint is not None:

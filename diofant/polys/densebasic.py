@@ -939,7 +939,7 @@ def dup_to_dict(f, K=None, zero=False):
 
     n, result = len(f) - 1, {}
 
-    for k in range(0, n + 1):
+    for k in range(n + 1):
         if f[n - k]:
             result[(k,)] = f[n - k]
 
@@ -961,7 +961,7 @@ def dup_to_raw_dict(f, K=None, zero=False):
 
     n, result = len(f) - 1, {}
 
-    for k in range(0, n + 1):
+    for k in range(n + 1):
         if f[n - k]:
             result[k] = f[n - k]
 
@@ -991,7 +991,7 @@ def dmp_to_dict(f, u, K=None, zero=False):
     if n == -oo:
         n = -1
 
-    for k in range(0, n + 1):
+    for k in range(n + 1):
         h = dmp_to_dict(f[n - k], v)
 
         for exp, coeff in h.items():
@@ -1371,7 +1371,7 @@ def dmp_exclude(f, u, K):
 
     J, F = [], dmp_to_dict(f, u)
 
-    for j in range(0, u + 1):
+    for j in range(u + 1):
         for monom in F:
             if monom[j]:
                 break
@@ -1730,7 +1730,7 @@ def dup_random(n, a, b, K):
     >>> dup_random(3, -10, 10, ZZ) #doctest: +SKIP
     [-2, -8, 9, -4]
     """
-    f = [ K.convert(random.randint(a, b)) for _ in range(0, n + 1) ]
+    f = [K.convert(random.randint(a, b)) for _ in range(n + 1)]
 
     while not f[0]:
         f[0] = K.convert(random.randint(a, b))

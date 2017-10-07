@@ -1045,7 +1045,7 @@ def laurent_series(a, d, F, n, DE):
     F_store = F
     V, DE_D_list, H_list = [], [], []
 
-    for j in range(0, n):
+    for j in range(n):
         # jth derivative of z would be substituted with dfnth/(j+1) where dfnth =(d^n)f/(dx)^n
         F_store = derivation(F_store, DE)
         v = (F_store.as_expr())/(j + 1)
@@ -1053,12 +1053,12 @@ def laurent_series(a, d, F, n, DE):
         DE_D_list.append(Poly(Z[j + 1], Z[j]))
 
     DE_new = DifferentialExtension(extension={'D': DE_D_list})  # a differential indeterminate
-    for j in range(0, n):
+    for j in range(n):
         zEha = Poly(z**(n + j), DE.t)*E**(j + 1)*ha
         zEhd = hd
         Pa, Pd = cancel((zEha, zEhd))[1], cancel((zEha, zEhd))[2]
         Q = Pa.quo(Pd)
-        for i in range(0, j + 1):
+        for i in range(j + 1):
             Q = Q.subs(Z[i], V[i])
         Dha = hd*derivation(ha, DE, basic=True) + ha*derivation(hd, DE, basic=True)
         Dha += hd*derivation(ha, DE_new, basic=True) + ha*derivation(hd, DE_new, basic=True)

@@ -223,7 +223,7 @@ def test_binomial_symbolic():
 
 def test_hypergeometric_numeric():
     for N in range(1, 5):
-        for m in range(0, N + 1):
+        for m in range(N + 1):
             for n in range(1, N + 1):
                 X = Hypergeometric('X', N, m, n)
                 N, m, n = map(sympify, (N, m, n))

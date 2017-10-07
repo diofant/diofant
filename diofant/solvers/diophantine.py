@@ -788,7 +788,7 @@ def _diop_quadratic(var, coeff, t):
                     return sqrt(a)*g*(e*sqrt(c)*D - sqrt(a)*E)*t**2 + (D + 2*sqrt(a)*g*u)*t \
                         + (sqrt(a)*g*u**2 + D*u + sqrt(a)*F) // (e*sqrt(c)*D - sqrt(a)*E)
 
-                for z0 in range(0, abs(e*sqrt(c)*D - sqrt(a)*E)):
+                for z0 in range(abs(e*sqrt(c)*D - sqrt(a)*E)):
                     if divisible(sqrt(a)*g*z0**2 + D*z0 + sqrt(a)*F, e*sqrt(c)*D - sqrt(a)*E):
                         l.add((solve_x(z0), solve_y(z0)))
 
