@@ -802,8 +802,8 @@ class FormulaCollection:
 
     def __init__(self):
         """ Doing this globally at module init time is a pain ... """
-        self.symbolic_formulae = {}
-        self.concrete_formulae = {}
+        self.symbolic_formulae = defaultdict(list)
+        self.concrete_formulae = defaultdict(dict)
         self.formulae = []
 
         add_formulae(self.formulae)
@@ -814,10 +814,10 @@ class FormulaCollection:
         for f in self.formulae:
             sizes = f.func.sizes
             if len(f.symbols) > 0:
-                self.symbolic_formulae.setdefault(sizes, []).append(f)
+                self.symbolic_formulae[sizes].append(f)
             else:
                 inv = f.func.build_invariants()
-                self.concrete_formulae.setdefault(sizes, {})[inv] = f
+                self.concrete_formulae[sizes][inv] = f
 
     def lookup_origin(self, func):
         """
@@ -1790,7 +1790,7 @@ def try_lerchphi(func):
     part = apart(numer/denom, t)
     args = Add.make_args(part)
     monomials = []
-    terms = {}
+    terms = defaultdict(list)
     for arg in args:
         numer, denom = arg.as_numer_denom()
         if not denom.has(t):
@@ -1821,7 +1821,7 @@ def try_lerchphi(func):
             indep *= b**n
         else:
             raise NotImplementedError('unrecognised form of partial fraction')
-        terms.setdefault(a, []).append((numer/indep, n))
+        terms[a].append((numer/indep, n))
 
     # Now that we have this information, assemble our formula. All the
     # monomials yield rational functions and go into one basis element.
@@ -1830,7 +1830,7 @@ def try_lerchphi(func):
     # deriv maps a basis to its derivative, expressed as a C(z)-linear
     # combination of other basis elements.
     deriv = {}
-    coeffs = {}
+    coeffs = defaultdict(list)
     z = Dummy('z')
     monomials.sort(key=lambda x: x[1])
     mon = {0: 1/(1 - z)}
@@ -1838,10 +1838,10 @@ def try_lerchphi(func):
         for k in range(monomials[-1][1]):
             mon[k + 1] = z*mon[k].diff(z)
     for a, n in monomials:
-        coeffs.setdefault(Integer(1), []).append(a*mon[n])
+        coeffs[Integer(1)].append(a*mon[n])
     for a, l in terms.items():
         for c, k in l:
-            coeffs.setdefault(lerchphi(z, k, a), []).append(c)
+            coeffs[lerchphi(z, k, a)].append(c)
         l.sort(key=lambda x: x[1])
         for k in range(2, l[-1][1] + 1):
             deriv[lerchphi(z, k, a)] = [(-a, lerchphi(z, k, a)),

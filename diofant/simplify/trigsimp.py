@@ -270,9 +270,9 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         # work with (i.e. is not a trigonometric term)
         freegens = [g for g in gens if g.func not in allfuncs]
         newgens = []
-        trigdict = {}
+        trigdict = defaultdict(list)
         for (coeff, var), fn in trigterms:
-            trigdict.setdefault(var, []).append((coeff, fn))
+            trigdict[var].append((coeff, fn))
         res = []  # the ideal
 
         for key, val in trigdict.items():

@@ -1692,10 +1692,10 @@ def _invert(eq, *symbols, **kwargs):
 
         # collect like-terms in symbols
         if lhs.is_Add:
-            terms = {}
+            terms = defaultdict(list)
             for a in lhs.args:
                 i, d = a.as_independent(*symbols)
-                terms.setdefault(d, []).append(i)
+                terms[d].append(i)
             if any(len(v) > 1 for v in terms.values()):
                 args = []
                 for d, i in terms.items():

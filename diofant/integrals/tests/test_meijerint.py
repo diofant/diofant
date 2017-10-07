@@ -1,3 +1,4 @@
+from collections import defaultdict
 from random import randrange, uniform
 
 import pytest
@@ -291,7 +292,7 @@ def test_inversion():
 
 @pytest.mark.slow
 def test_lookup_table():
-    table = {}
+    table = defaultdict(list)
     _create_lookup_table(table)
     for _, l in sorted(table.items(), key=default_sort_key):
         for formula, terms, cond, hint in sorted(l, key=default_sort_key):

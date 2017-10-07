@@ -1,6 +1,6 @@
 """Base class for all the objects in Diofant"""
 
-from collections import Mapping
+from collections import Mapping, defaultdict
 from itertools import zip_longest
 
 from .cache import cacheit
@@ -527,13 +527,13 @@ class Basic(object):
         if unordered:
             sequence = dict(sequence)
             if not all(k.is_Atom for k in sequence):
-                d = {}
+                d = defaultdict(list)
                 for o, n in sequence.items():
                     try:
                         ops = o.count_ops(), len(o.args)
                     except TypeError:
                         ops = (0, 0)
-                    d.setdefault(ops, []).append((o, n))
+                    d[ops].append((o, n))
                 newseq = []
                 for k in sorted(d, reverse=True):
                     newseq.extend(sorted((v[0] for v in d[k]),
@@ -1058,9 +1058,8 @@ class Basic(object):
         else:
             _query = query
 
-        groups = {}
+        groups = defaultdict(int)
         for result in filter(_query, preorder_traversal(self)):
-            groups.setdefault(result, 0)
             groups[result] += 1
         return groups
 

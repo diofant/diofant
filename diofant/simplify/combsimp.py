@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from ..core import Add, Function, Integer, Mul, Pow, Rational, S
 from ..core.compatibility import default_sort_key, ordered
 from ..functions import binomial, factorial, gamma, sin, sqrt
@@ -321,10 +323,10 @@ def combsimp(expr):
             # looking for runs in those Rationals
 
             # expr -> coeff + resid -> rats[resid] = coeff
-            rats = {}
+            rats = defaultdict(list)
             for g in gammas:
                 c, resid = g.as_coeff_Add()
-                rats.setdefault(resid, []).append(c)
+                rats[resid].append(c)
 
             # look for runs in Rationals for each resid
             keys = sorted(rats, key=default_sort_key)

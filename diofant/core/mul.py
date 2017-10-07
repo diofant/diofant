@@ -207,7 +207,7 @@ class Mul(AssocOp):
 
         #                                                 1/2
         # (num-base, Rat-exp) e.g.  (3, 1/2)  for  ... * 3     * ...
-        pnum_rat = {}
+        pnum_rat = defaultdict(list)
 
         order_symbols = None
 
@@ -306,7 +306,7 @@ class Mul(AssocOp):
                                 neg1e += e
                                 b = -b
                             if b is not S.One:
-                                pnum_rat.setdefault(b, []).append(e)
+                                pnum_rat[b].append(e)
                             o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         elif b.is_positive or e.is_integer:
@@ -415,19 +415,19 @@ class Mul(AssocOp):
         # 2  * 3  -> 6
         # exp:Mul(num-bases)     x    x
         # e.g.  x:6  for  ... * 2  * 3  * ...
-        inv_exp_dict = {}
+        inv_exp_dict = defaultdict(list)
 
         for b, e in num_exp:
-            inv_exp_dict.setdefault(e, []).append(b)
+            inv_exp_dict[e].append(b)
         for e, b in inv_exp_dict.items():
             inv_exp_dict[e] = cls(*b)
         c_part.extend([Pow(b, e) for e, b in inv_exp_dict.items() if e])
 
         # b, e -> e' = sum(e), b
         # {(1/5, [1/3]), (1/2, [1/12, 1/4]} -> {(1/3, [1/5, 1/2])}
-        comb_e = {}
+        comb_e = defaultdict(list)
         for b, e in pnum_rat.items():
-            comb_e.setdefault(Add(*e), []).append(b)
+            comb_e[Add(*e)].append(b)
         del pnum_rat
         # process them, reducing exponents to values less than 1
         # and updating coeff if necessary else adding them to
