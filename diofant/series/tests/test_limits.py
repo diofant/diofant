@@ -589,3 +589,9 @@ def test_sympyissue_13382():
 
 def test_sympyissue_13403():
     assert limit(n*(-1 + (n + log(n + 1) + 1)/(n + log(n))), n, oo) == 1
+
+
+def test_sympyissue_13416():
+    assert limit((-n**3*log(n)**3 +
+                  (n - 1)*(n + 1)**2*log(n + 1)**3)/(n**2*log(n)**3),
+                 n, oo) == 1
