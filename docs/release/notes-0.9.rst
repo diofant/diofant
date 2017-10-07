@@ -34,13 +34,14 @@ Compatibility breaks
 * Removed ``pager_print()`` and ``print_fcode()``, see :pull:`411`.
 * "Increase" precision of Floats with :meth:`~diofant.core.evalf.EvalfMixin.evalf` now disallowed, see :pull:`380`.
 * Removed ``experimental_lambdify()`` and ``intervalmath`` module from plotting package, see :pull:`384`.
-* Removed :func:`~diofant.solvers.solvers.solve` flags ``set``, ``manual``, ``implicit``, ``particular``, ``quick`` and ``numerical`` see :pull:`426` and :pull:`542`.
+* Removed :func:`~diofant.solvers.solvers.solve` flags ``set``, ``manual``, ``minimal``, ``implicit``, ``particular``, ``quick``, ``exclude``, ``force`` and ``numerical`` see :pull:`426`, :pull:`542` and :pull:`554`.
 * Removed support for inequalities in :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.inequalities.reduce_inequalities` instead, see :pull:`426`.
 * Removed ``get_domain()`` method of :class:`~diofant.polys.polytools.Poly`, use :attr:`~diofant.polys.polytools.Poly.domain` property instead, see :pull:`479`.
 * Renamed 'prec' argument of Float to 'dps', see :pull:`510`.
 * Removed 'group' option of :meth:`~diofant.core.basic.Basic.find`, which now return a :class:`dict`.
 * Support for Python 3.4 was removed, see :pull:`543`.
 * Second argument of :func:`~diofant.solvers.solvers.checksol` must be a :class:`dict`.  See :pull:`549`.
+* Removed ``solve_undetermined_coeffs()`` function, see :pull:`554`.
 
 Minor changes
 =============

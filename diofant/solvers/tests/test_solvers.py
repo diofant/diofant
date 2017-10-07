@@ -14,7 +14,7 @@ from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
 from diofant.polys.rootoftools import RootOf
-from diofant.solvers import reduce_inequalities, solve_undetermined_coeffs
+from diofant.solvers import reduce_inequalities
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
 from diofant.utilities.randtest import verify_numerically as tn
@@ -197,6 +197,7 @@ def test_solve_polynomial2():
 
     assert solve(z**2*x**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
     assert solve(z**2*x - z**2*y**2) == [{x: y**2}, {z: 0}]
+    assert solve(z**2*x - z**2*y**2, simplify=False) == [{x: y**2}, {z: 0}]
 
 
 def test_solve_polynomial_cv_1a():
@@ -439,10 +440,7 @@ def test_solve_transcendental():
     assert solve(x**y - 1) == [{x: 1}, {y: 0}]
     assert solve([x**y - 1]) == [{x: 1}, {y: 0}]
     assert solve(x*y*(x**2 - y**2)) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
-    assert (solve([x*y*(x**2 - y**2)], check=False) ==
-            [{x: RootOf(x**3 - x*y**2, x, 0)},
-             {x: RootOf(x**3 - x*y**2, x, 1)},
-             {x: RootOf(x**3 - x*y**2, x, 2)}])
+    assert solve([x*y*(x**2 - y**2)], check=False) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
     # issue sympy/sympy#4739
     assert solve(exp(log(5)*x) - 2**x, x) == [{x: 0}]
 
@@ -596,18 +594,6 @@ def test_solve_linear():
     assert solve_linear(x*exp(-x**2), symbols=[x]) == (0, 0)
     assert solve_linear(0**x - 1) == (0**x - 1, 1)
     pytest.raises(ValueError, lambda: solve_linear(Eq(x, 3), 3))
-
-
-def test_solve_undetermined_coeffs():
-    assert solve_undetermined_coeffs(a*x**2 + b*x**2 + b*x + 2*c*x + c + 1, [a, b, c], x) == \
-        {a: -2, b: 2, c: -1}
-    # Test that rational functions work
-    assert solve_undetermined_coeffs(a/x + b/(x + 1) - (2*x + 1)/(x**2 + x), [a, b], x) == \
-        {a: 1, b: 1}
-    # Test cancellation in rational functions
-    assert solve_undetermined_coeffs(((c + 1)*a*x**2 + (c + 1)*b*x**2 +
-                                      (c + 1)*b*x + (c + 1)*2*c*x + (c + 1)**2)/(c + 1), [a, b, c], x) == \
-        {a: -2, b: 2, c: -1}
 
 
 def test_solve_inequalities():
@@ -790,6 +776,7 @@ def test_sympyissue_5132():
     assert {(s[x], s[y]) for s in solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), x, y)} == {(1, 3), (3, 1)}
 
 
+@pytest.mark.slow
 def test_sympyissue_5335():
     lam, a0, conc = symbols('lam a0 conc')
     eqs = [lam + 2*y - a0*(1 - x/2)*x - 0.005*x/2*x,
@@ -797,11 +784,11 @@ def test_sympyissue_5335():
            x + y - conc]
     sym = [x, y, a0]
     # there are 4 solutions but only two are valid
-    assert len(solve(eqs, sym, minimal=True, simplify=False)) == 2
+    assert len(solve(eqs, sym, simplify=False, check=False)) == 2
 
 
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def _test_sympyissue_5335_float():
+def test_sympyissue_5335_float():
     # gives ZeroDivisionError: polynomial division
     lam, a0, conc = symbols('lam a0 conc')
     eqs = [lam + 2*y - a0*(1 - x/2)*x - 0.005*x/2*x,
@@ -1015,7 +1002,7 @@ def test_exclude():
            Vminus*(-1/Ri - 1/Rf) + Vout/Rf,
            C*Vplus*s + V1*(-C*s - 1/R) + Vout/R,
            -Vminus + Vplus]
-    assert solve(eqs, exclude=s*C*R) == [
+    assert solve(eqs, Rf, Ri, V1, Vminus, Vout, Vplus) == [
         {
             Rf: Ri*(C*R*s + 1)**2/(C*R*s),
             Vminus: Vplus,
@@ -1029,7 +1016,7 @@ def test_exclude():
     ]
 
     # TODO: Investingate why currently solution [0] is preferred over [1].
-    assert solve(eqs, exclude=[Vplus, s, C]) in [[{
+    assert solve(eqs, R, Rf, Ri, V1, Vminus, Vout) in [[{
         Vminus: Vplus,
         V1: Vout/2 + Vplus/2 + sqrt((Vout - 5*Vplus)*(Vout - Vplus))/2,
         R: (Vout - 3*Vplus - sqrt(Vout**2 - 6*Vout*Vplus + 5*Vplus**2))/(2*C*Vplus*s),
@@ -1268,7 +1255,7 @@ def test_rewrite_trigh():
 
 def test_uselogcombine():
     eq = z - log(x) + log(y/(x*(-1 + y**2/x**2)))
-    assert solve(eq, x, force=True) == [{x: sqrt(y*(-exp(z) + y))}, {x: -sqrt(-y*(exp(z) - y))}]
+    assert solve(eq, x) == [{x: sqrt(y*(-exp(z) + y))}, {x: -sqrt(-y*(exp(z) - y))}]
     assert (solve(log(x + 3) + log(1 + 3/x) - 3) in
             [[{x: -3 + sqrt(-12 + exp(3))*exp(Rational(3, 2))/2 + exp(3)/2},
               {x: -sqrt(-12 + exp(3))*exp(Rational(3, 2))/2 - 3 + exp(3)/2}],

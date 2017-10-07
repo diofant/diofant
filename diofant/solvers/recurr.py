@@ -58,7 +58,7 @@ from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
 from ..simplify import hypersimilar, hypersimp, simplify
 from ..utilities import numbered_symbols
-from .solvers import solve, solve_undetermined_coeffs
+from .solvers import solve
 
 
 def rsolve_poly(coeffs, f, n, **hints):
@@ -193,13 +193,13 @@ def rsolve_poly(coeffs, f, n, **hints):
         for i in range(0, r + 1):
             E += coeffs[i].as_expr()*y.subs(n, n + i)
 
-        solutions = solve_undetermined_coeffs(E - f, C, n)
+        solutions = solve((E - f).as_poly(n).coeffs(), *C)
 
-        if solutions is not None:
-            C = [ c for c in C if (c not in solutions) ]
-            result = y.subs(solutions)
-        else:
-            return  # TBD
+        if solutions:
+            solutions = solutions[0]
+
+        C = [c for c in C if (c not in solutions)]
+        result = y.subs(solutions)
     else:
         A = r
         U = N + A + b + 1
