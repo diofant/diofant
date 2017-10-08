@@ -169,8 +169,8 @@ class MatrixBase(DefaultPrinting):
                 for row in args[0]:
                     if isinstance(row, MatrixBase):
                         in_mat.extend(row.tolist())
-                        if row.cols or row.rows:  # only pay attention if it's not 0x0
-                            ncol.add(row.cols)
+                        assert row.cols or row.rows
+                        ncol.add(row.cols)
                     else:
                         in_mat.append(row)
                         try:
@@ -282,12 +282,8 @@ class MatrixBase(DefaultPrinting):
                 value = Matrix(value)
                 is_mat = True
             if is_mat:
-                if is_slice:
-                    key = (slice(*divmod(i, self.cols)),
-                           slice(*divmod(j, self.cols)))
-                else:
-                    key = (slice(i, i + value.rows),
-                           slice(j, j + value.cols))
+                assert not is_slice
+                key = (slice(i, i + value.rows), slice(j, j + value.cols))
                 self.copyin_matrix(key, value)
             else:
                 return i, j, self._sympify(value)
@@ -3229,23 +3225,18 @@ class MatrixBase(DefaultPrinting):
 
         def recurse_sub_blocks(M):
             i = 1
-            while i <= M.shape[0]:
+            while i <= M.rows:
                 if i == 1:
                     to_the_right = M[0, i:]
                     to_the_bottom = M[i:, 0]
                 else:
                     to_the_right = M[:i, i:]
                     to_the_bottom = M[i:, :i]
-                if any(to_the_right) or any(to_the_bottom):
-                    i += 1
-                    continue
-                else:
+                if not any(to_the_right) and not any(to_the_bottom):
                     sub_blocks.append(M[:i, :i])
-                    if M.shape == M[:i, :i].shape:
-                        return
-                    else:
-                        recurse_sub_blocks(M[i:, i:])
-                        return
+                    if M.shape != M[:i, :i].shape:
+                        return recurse_sub_blocks(M[i:, i:])
+                i += 1
         recurse_sub_blocks(self)
         return sub_blocks
 
@@ -3409,6 +3400,7 @@ class MatrixBase(DefaultPrinting):
         for eigenval, multiplicity, vects in _eigenvects:
             l_jordan_chains = {}
             geometrical = len(vects)
+            assert geometrical != 0
             if geometrical == multiplicity:
                 # The Jordan chains have all length 1 and consist of only one vector
                 # which is the eigenvector of course
@@ -3418,8 +3410,6 @@ class MatrixBase(DefaultPrinting):
                     chains.append(chain)
                 l_jordan_chains[1] = chains
                 jordan_block_structures[eigenval] = l_jordan_chains
-            elif geometrical == 0:
-                raise MatrixError("Matrix has the eigen vector with geometrical multiplicity equal zero.")
             else:
                 # Up to now we know nothing about the sizes of the blocks of our Jordan matrix.
                 # Note that knowledge of algebraic and geometrical multiplicity

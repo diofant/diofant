@@ -1673,6 +1673,7 @@ def test_has():
 
 def test_errors():
     pytest.raises(ValueError, lambda: Matrix([[1, 2], [1]]))
+    pytest.raises(TypeError, lambda: Matrix(2, 2, 1))
     pytest.raises(IndexError, lambda: Matrix([[1, 2]])[1.2, 5])
     pytest.raises(IndexError, lambda: Matrix([[1, 2]])[1, 5.2])
     pytest.raises(ValueError, lambda: randMatrix(3, c=4, symmetric=True))
@@ -1738,6 +1739,7 @@ def test_errors():
     pytest.raises(NonSquareMatrixError, lambda: ones(2, 3).det_LU_decomposition())
     with pytest.raises(TypeError):
         M[(1,)] = 1
+    pytest.raises(AttributeError, lambda: zeros(0).jordan_cells())
 
 
 def test_len():
