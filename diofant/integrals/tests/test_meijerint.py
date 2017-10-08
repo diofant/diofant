@@ -1,16 +1,17 @@
+from collections import defaultdict
 from random import randrange, uniform
 
 import pytest
 
 from diofant import (E1, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      Integral, Mul, Piecewise, Rational, Shi, Si, Symbol,
-                     acosh, acoth, arg, asin, atan, besseli, besselj, combsimp,
-                     cos, cosh, erf, exp, exp_polar, expand, expand_func,
-                     expand_mul, expint, fourier_transform, fresnelc, fresnels,
-                     gamma, hyper, hyperexpand, integrate, laplace_transform,
-                     log, lowergamma, meijerg, nan, oo, pi, piecewise_fold,
-                     polygamma, powdenest, powsimp, re, simplify, sin, sinh,
-                     sqrt, symbols, unpolarify)
+                     acosh, acoth, arg, asin, atan, besseli, besselj, cbrt,
+                     combsimp, cos, cosh, erf, exp, exp_polar, expand,
+                     expand_func, expand_mul, expint, fourier_transform,
+                     fresnelc, fresnels, gamma, hyper, hyperexpand, integrate,
+                     laplace_transform, log, lowergamma, meijerg, nan, oo, pi,
+                     piecewise_fold, polygamma, powdenest, powsimp, re,
+                     simplify, sin, sinh, sqrt, symbols, unpolarify)
 from diofant.abc import a, b, c, d, s, t, x, y, z
 from diofant.integrals.meijerint import z as z_dummy
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
@@ -291,7 +292,7 @@ def test_inversion():
 
 @pytest.mark.slow
 def test_lookup_table():
-    table = {}
+    table = defaultdict(list)
     _create_lookup_table(table)
     for _, l in sorted(table.items(), key=default_sort_key):
         for formula, terms, cond, hint in sorted(l, key=default_sort_key):
@@ -616,7 +617,7 @@ def test_sympyissue_6122():
 
 
 def test_sympyissue_6252():
-    expr = 1/x/(a + b*x)**Rational(1, 3)
+    expr = 1/x/cbrt(a + b*x)
     anti = integrate(expr, x, meijerg=True)
     assert not expr.has(hyper)
     # XXX the expression is a mess, but actually upon differentiation and

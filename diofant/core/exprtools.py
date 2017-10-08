@@ -178,10 +178,10 @@ class Factors:
                             raise ValueError('unexpected factor in i1: %s' % a)
 
         self.factors = factors
-        self.gens = frozenset(factors.keys())
+        self.gens = frozenset(factors)
 
     def __hash__(self):  # Factors
-        keys = tuple(ordered(self.factors.keys()))
+        keys = tuple(ordered(self.factors))
         values = tuple(self.factors[k] for k in keys)
         return hash((keys, values))
 

@@ -30,7 +30,7 @@ class AutomaticSymbols(ast.NodeTransformer):
         import IPython
 
         app = IPython.get_ipython()
-        ignored_names = list(app.user_ns.keys()) + dir(builtins)
+        ignored_names = list(app.user_ns) + dir(builtins)
 
         for s in node.body:
             self.visit(s)

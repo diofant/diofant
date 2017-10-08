@@ -377,7 +377,7 @@ class LatexPrinter(Printer):
         return tex
 
     def _print_Pow(self, expr):
-        # Treat x**Rational(1,n) as special case
+        # Treat root(x, n) as special case
         if expr.exp.is_Rational and abs(expr.exp.p) == 1 and expr.exp.q != 1:
             base = self._print(expr.base)
             expq = expr.exp.q
@@ -1375,7 +1375,7 @@ class LatexPrinter(Printer):
             r", \quad ".join([ self._print(i) for i in expr ])
 
     def _print_dict(self, d):
-        keys = sorted(d.keys(), key=default_sort_key)
+        keys = sorted(d, key=default_sort_key)
         items = []
 
         for key in keys:
@@ -1658,7 +1658,7 @@ def translate(s):
         return "\\" + s
     else:
         # Process modifiers, if any, and recurse
-        for key in sorted(modifier_dict.keys(), key=lambda k: len(k), reverse=True):
+        for key in sorted(modifier_dict, key=lambda k: len(k), reverse=True):
             if s.lower().endswith(key) and len(s) > len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s

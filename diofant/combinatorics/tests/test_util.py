@@ -103,6 +103,10 @@ def test_handle_precomputed_bsgs():
         order *= len(orbits[i])
     assert A.order() == order
 
+    _, transversals = _orbits_transversals_from_bsgs(base, strong_gens_distr)
+    assert transversals == _handle_precomputed_bsgs(base, strong_gens,
+                                                    transversals)[0]
+
 
 def test_base_ordering():
     base = [2, 4, 5]

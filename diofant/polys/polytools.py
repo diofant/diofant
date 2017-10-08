@@ -6146,8 +6146,8 @@ def nth_power_roots_poly(f, n, *gens, **args):
     >>> g
     (x**2 - x + 1)**2
 
-    >>> R_f = [ (r**2).expand() for r in roots(f) ]
-    >>> R_g = roots(g).keys()
+    >>> R_f = [(r**2).expand() for r in roots(f)]
+    >>> R_g = roots(g)
 
     >>> set(R_f) == set(R_g)
     True

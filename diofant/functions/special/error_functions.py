@@ -2152,7 +2152,7 @@ class fresnels(FresnelIntegral):
             # expansion of S(x) = S1(x*sqrt(pi/2)), see reference[5] page 1-8
             p = [(-1)**k * factorial(4*k + 1) /
                  (2**(2*k + 2) * z**(4*k + 3) * 2**(2*k)*factorial(2*k))
-                 for k in range(0, n)]
+                 for k in range(n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
                              (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
                              for k in range(1, n)]
@@ -2285,7 +2285,7 @@ class fresnelc(FresnelIntegral):
             # expansion of C(x) = C1(x*sqrt(pi/2)), see reference[5] page 1-8
             p = [(-1)**k * factorial(4*k + 1) /
                  (2**(2*k + 2) * z**(4*k + 3) * 2**(2*k)*factorial(2*k))
-                 for k in range(0, n)]
+                 for k in range(n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
                              (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
                              for k in range(1, n)]
@@ -2324,7 +2324,7 @@ class _erfs(Function):
         if point is S.Infinity:
             z = self.args[0]
             l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
-                 factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
+                 factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
             return (Add(*l))._eval_nseries(x, n, logx) + o
@@ -2335,7 +2335,7 @@ class _erfs(Function):
             z = self.args[0]
             # TODO: is the series really correct?
             l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
-                 factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
+                 factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
             return (Add(*l))._eval_nseries(x, n, logx) + o
@@ -2366,7 +2366,7 @@ class _eis(Function):
             return super(_eis, self)._eval_aseries(n, args0, x, logx)
 
         z = self.args[0]
-        l = [ factorial(k) * (1/z)**(k + 1) for k in range(0, n) ]
+        l = [ factorial(k) * (1/z)**(k + 1) for k in range(n) ]
         o = Order(1/z**(n + 1), x)
         # It is very inefficient to first add the order and then do the nseries
         return (Add(*l))._eval_nseries(x, n, logx) + o

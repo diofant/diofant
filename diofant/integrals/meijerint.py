@@ -26,6 +26,8 @@ The main references for this are:
     Gordon and Breach Science Publisher
 """
 
+from collections import defaultdict
+
 from ..core import (Add, Dummy, Eq, Expr, Function, I, Integer, Mul, Ne, Pow,
                     Rational, S, Tuple, Wild, cacheit, expand, expand_mul,
                     expand_power_base, factor_terms, nan, oo, pi, symbols,
@@ -63,12 +65,11 @@ def _create_lookup_table(table):
     t = p*z**q
 
     def add(formula, an, ap, bm, bq, arg=t, fac=Integer(1), cond=True, hint=True):
-        table.setdefault(_mytype(formula, z), []).append((formula,
-                                                          [(fac, meijerg(an, ap, bm, bq, arg))], cond, hint))
+        table[_mytype(formula, z)].append((formula,
+                                           [(fac, meijerg(an, ap, bm, bq, arg))], cond, hint))
 
     def addi(formula, inst, cond, hint=True):
-        table.setdefault(
-            _mytype(formula, z), []).append((formula, inst, cond, hint))
+        table[_mytype(formula, z)].append((formula, inst, cond, hint))
 
     def constant(a):
         return [(a, meijerg([1], [], [], [0], z)),
@@ -1420,7 +1421,7 @@ def _rewrite_single(f, x, recursive=True):
     from ..functions import polarify, unpolarify
     global _lookup_table
     if not _lookup_table:
-        _lookup_table = {}
+        _lookup_table = defaultdict(list)
         _create_lookup_table(_lookup_table)
 
     if isinstance(f, meijerg):

@@ -67,7 +67,7 @@ def _primitive_root_prime_iter(p):
     [2, 3, 10, 13, 14, 15]
     """
     p = as_int(p)
-    v = [(p - 1) // i for i in factorint(p - 1).keys()]
+    v = [(p - 1) // i for i in factorint(p - 1)]
     a = 2
     while a < p:
         for pw in v:

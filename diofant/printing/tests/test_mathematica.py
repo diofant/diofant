@@ -13,6 +13,7 @@ from diofant.integrals import Integral
 from diofant.logic import Or, false, true
 from diofant.matrices import Matrix
 from diofant.polys import Poly, RootOf
+from diofant.series import Limit
 
 
 __all__ = ()
@@ -185,3 +186,12 @@ def test_AlgebraicNumber():
     a = AlgebraicNumber(r, (1, 2, 3, 0, 1))
     assert mcode(a) == ('AlgebraicNumber[Root[#^7 + 3*# - 1 &, 4],'
                         ' {1, 0, 3, 2, 1}]')
+
+
+def test_Limit():
+    e = Limit(sin(x)/x, x, 0)
+    assert mcode(e) == "Hold[Limit[Sin[x]/x, x -> 0, Direction -> -1]]"
+    e = Limit(sin(x)/x, x, 0, "-")
+    assert mcode(e) == "Hold[Limit[Sin[x]/x, x -> 0, Direction -> 1]]"
+    e = Limit(sin(x)/x, x, 0, "real")
+    assert mcode(e) == "Hold[Limit[Sin[x]/x, x -> 0, Direction -> Reals]]"

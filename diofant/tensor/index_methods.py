@@ -296,7 +296,7 @@ def get_contraction_structure(expr):
     the internal contractions.
 
     >>> d = get_contraction_structure(x[i, i]*y[j, j])
-    >>> sorted(d.keys(), key=default_sort_key)
+    >>> sorted(d, key=default_sort_key)
     [None, x[i, i]*y[j, j]]
 
     In this case, the product has no contractions:
@@ -315,7 +315,7 @@ def get_contraction_structure(expr):
     dictionary resulting from a recursive call on the Add expression.
 
     >>> d = get_contraction_structure(x[i]*(y[i] + A[i, j]*x[j]))
-    >>> sorted(d.keys(), key=default_sort_key)
+    >>> sorted(d, key=default_sort_key)
     [(x[j]*A[i, j] + y[i])*x[i], (i,)]
     >>> d[(i,)]
     {(x[j]*A[i, j] + y[i])*x[i]}

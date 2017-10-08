@@ -129,7 +129,7 @@ def checksol(f, sol, **flags):
     if not isinstance(sol, dict):
         raise ValueError("Expecting dictionary but got %s" % sol)
 
-    if sol and not f.has(*list(sol.keys())):
+    if sol and not f.has(*list(sol)):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
         if f.is_Number:
             return f.is_zero
@@ -153,7 +153,7 @@ def checksol(f, sol, **flags):
                 return False
         elif attempt == 1:
             if val.free_symbols:
-                if not val.is_constant(*list(sol.keys()), simplify=not minimal):
+                if not val.is_constant(*list(sol), simplify=not minimal):
                     return False
                 # there are free symbols -- simple expansion might work
                 _, val = val.as_content_primitive()
@@ -947,7 +947,7 @@ def _solve(f, symbol, **flags):
                         else:
                             pass
                 else:
-                    soln = list(soln.keys())
+                    soln = list(soln)
 
                 if soln is not None:
                     u = poly.gen
@@ -1118,7 +1118,7 @@ def _solve_system(exprs, symbols, **flags):
             result = solve_linear_system(matrix, *symbols, **flags)
             if failed:
                 if result:
-                    solved_syms = list(result.keys())
+                    solved_syms = list(result)
                 else:
                     solved_syms = []
             else:
@@ -1126,7 +1126,7 @@ def _solve_system(exprs, symbols, **flags):
             result = [result] if result else [{}]
         else:
             result = solve_poly_system(polys, *symbols)
-            solved_syms = list(set().union(*[{k for k in r.keys()}
+            solved_syms = list(set().union(*[{k for k in r}
                                              for r in result]))
 
     if failed:
@@ -1692,10 +1692,10 @@ def _invert(eq, *symbols, **kwargs):
 
         # collect like-terms in symbols
         if lhs.is_Add:
-            terms = {}
+            terms = defaultdict(list)
             for a in lhs.args:
                 i, d = a.as_independent(*symbols)
-                terms.setdefault(d, []).append(i)
+                terms[d].append(i)
             if any(len(v) > 1 for v in terms.values()):
                 args = []
                 for d, i in terms.items():

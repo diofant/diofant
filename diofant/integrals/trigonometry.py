@@ -123,7 +123,7 @@ def trigintegrate(f, x, conds='piecewise'):
         #  2k         2 k             i             2i
         # C   = (1 - S )  = sum(i, (-) * B(k, i) * S  )
         if m > 0:
-            for i in range(0, m//2 + 1):
+            for i in range(m//2 + 1):
                 res += ((-1)**i * binomial(m//2, i) *
                         _sin_pow_integrate(n + 2*i, x))
 
@@ -169,7 +169,7 @@ def trigintegrate(f, x, conds='piecewise'):
             #    and then integrated.
             #
 
-            for i in range(0, n//2 + 1):
+            for i in range(n//2 + 1):
                 res += ((-1)**i * binomial(n//2, i) *
                         _cos_pow_integrate(m + 2*i, x))
 

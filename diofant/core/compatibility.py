@@ -414,7 +414,7 @@ def ordered(seq, keys=None, default=True, warn=False):
             raise ValueError('if default=False then keys must be provided')
         d[None].extend(seq)
 
-    for k in sorted(d.keys()):
+    for k in sorted(d):
         if len(d[k]) > 1:
             if keys:
                 d[k] = ordered(d[k], keys, default, warn)

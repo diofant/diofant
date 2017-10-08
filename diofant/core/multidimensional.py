@@ -112,7 +112,7 @@ class vectorize:
             if self.mdargs:
                 mdargs = self.mdargs
             else:
-                mdargs = list(range(len(args))) + list(kwargs.keys())
+                mdargs = list(range(len(args))) + list(kwargs)
 
             arglength = len(args)
 

@@ -4,9 +4,9 @@ import pytest
 
 from diofant import (Abs, Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      Integral, LambertW, O, Piecewise, Poly, Pow, Rational,
-                     RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan, cos,
-                     diff, dsolve, erf, erfi, exp, log, pi, simplify, sin,
-                     sinh, sqrt, sstr, symbols, tan)
+                     RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
+                     cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi, root,
+                     simplify, sin, sinh, sqrt, sstr, symbols, tan)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_linear_coeff_match,
@@ -355,25 +355,25 @@ def test_nonlinear_2eq_order1():
     eq1 = (Eq(diff(x(t), t), x(t)*y(t)**3), Eq(diff(y(t), t), y(t)**5))
     sol1 = [
         Eq(x(t), C1*exp((-1/(4*C2 + 4*t))**(-Rational(1, 4)))),
-        Eq(y(t), -(-1/(4*C2 + 4*t))**Rational(1, 4)),
-        Eq(x(t), C1*exp(-1/(-1/(4*C2 + 4*t))**Rational(1, 4))),
-        Eq(y(t), (-1/(4*C2 + 4*t))**Rational(1, 4)),
-        Eq(x(t), C1*exp(-I/(-1/(4*C2 + 4*t))**Rational(1, 4))),
-        Eq(y(t), -I*(-1/(4*C2 + 4*t))**Rational(1, 4)),
-        Eq(x(t), C1*exp(I/(-1/(4*C2 + 4*t))**Rational(1, 4))),
-        Eq(y(t), I*(-1/(4*C2 + 4*t))**Rational(1, 4))]
+        Eq(y(t), -root(-1/(4*C2 + 4*t), 4)),
+        Eq(x(t), C1*exp(-1/root(-1/(4*C2 + 4*t), 4))),
+        Eq(y(t), root(-1/(4*C2 + 4*t), 4)),
+        Eq(x(t), C1*exp(-I/root(-1/(4*C2 + 4*t), 4))),
+        Eq(y(t), -I*root(-1/(4*C2 + 4*t), 4)),
+        Eq(x(t), C1*exp(I/root(-1/(4*C2 + 4*t), 4))),
+        Eq(y(t), I*root(-1/(4*C2 + 4*t), 4))]
     assert dsolve(eq1) == sol1
 
     eq2 = (Eq(diff(x(t), t), exp(3*x(t))*y(t)**3), Eq(diff(y(t), t), y(t)**5))
     sol2 = [
-        Eq(x(t), -log(C1 - 3/(-1/(4*C2 + 4*t))**Rational(1, 4))/3),
-        Eq(y(t), -(-1/(4*C2 + 4*t))**Rational(1, 4)),
-        Eq(x(t), -log(C1 + 3/(-1/(4*C2 + 4*t))**Rational(1, 4))/3),
-        Eq(y(t), (-1/(4*C2 + 4*t))**Rational(1, 4)),
-        Eq(x(t), -log(C1 + 3*I/(-1/(4*C2 + 4*t))**Rational(1, 4))/3),
-        Eq(y(t), -I*(-1/(4*C2 + 4*t))**Rational(1, 4)),
-        Eq(x(t), -log(C1 - 3*I/(-1/(4*C2 + 4*t))**Rational(1, 4))/3),
-        Eq(y(t), I*(-1/(4*C2 + 4*t))**Rational(1, 4))]
+        Eq(x(t), -log(C1 - 3/root(-1/(4*C2 + 4*t), 4))/3),
+        Eq(y(t), -root(-1/(4*C2 + 4*t), 4)),
+        Eq(x(t), -log(C1 + 3/root(-1/(4*C2 + 4*t), 4))/3),
+        Eq(y(t), root(-1/(4*C2 + 4*t), 4)),
+        Eq(x(t), -log(C1 + 3*I/root(-1/(4*C2 + 4*t), 4))/3),
+        Eq(y(t), -I*root(-1/(4*C2 + 4*t), 4)),
+        Eq(x(t), -log(C1 - 3*I/root(-1/(4*C2 + 4*t), 4))/3),
+        Eq(y(t), I*root(-1/(4*C2 + 4*t), 4))]
     assert dsolve(eq2) == sol2
 
     eq3 = (Eq(diff(x(t), t), y(t)*x(t)), Eq(diff(y(t), t), x(t)**3))
@@ -393,14 +393,14 @@ def test_nonlinear_2eq_order1():
 
     eq6 = (Eq(diff(x(t), t), x(t)**2*y(t)**3), Eq(diff(y(t), t), y(t)**5))
     sol6 = [
-        Eq(x(t), 1/(C1 - 1/(-1/(4*C2 + 4*t))**Rational(1, 4))),
-        Eq(y(t), -(-1/(4*C2 + 4*t))**Rational(1, 4)),
+        Eq(x(t), 1/(C1 - 1/root(-1/(4*C2 + 4*t), 4))),
+        Eq(y(t), -root(-1/(4*C2 + 4*t), 4)),
         Eq(x(t), 1/(C1 + (-1/(4*C2 + 4*t))**(-Rational(1, 4)))),
-        Eq(y(t), (-1/(4*C2 + 4*t))**Rational(1, 4)),
-        Eq(x(t), 1/(C1 + I/(-1/(4*C2 + 4*t))**Rational(1, 4))),
-        Eq(y(t), -I*(-1/(4*C2 + 4*t))**Rational(1, 4)),
-        Eq(x(t), 1/(C1 - I/(-1/(4*C2 + 4*t))**Rational(1, 4))),
-        Eq(y(t), I*(-1/(4*C2 + 4*t))**Rational(1, 4))]
+        Eq(y(t), root(-1/(4*C2 + 4*t), 4)),
+        Eq(x(t), 1/(C1 + I/root(-1/(4*C2 + 4*t), 4))),
+        Eq(y(t), -I*root(-1/(4*C2 + 4*t), 4)),
+        Eq(x(t), 1/(C1 - I/root(-1/(4*C2 + 4*t), 4))),
+        Eq(y(t), I*root(-1/(4*C2 + 4*t), 4))]
     assert dsolve(eq6) == sol6
 
 
@@ -484,8 +484,8 @@ def test_checksysodesol():
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
     eq = (Eq(diff(x(t), t, t), 9*t*diff(y(t), t)-9*y(t)), Eq(diff(y(t), t, t), 7*t*diff(x(t), t)-7*x(t)))
-    I1 = sqrt(6)*7**Rational(1, 4)*sqrt(pi)*erfi(sqrt(6)*7**Rational(1, 4)*t/2)/2 - exp(3*sqrt(7)*t**2/2)/t
-    I2 = -sqrt(6)*7**Rational(1, 4)*sqrt(pi)*erf(sqrt(6)*7**Rational(1, 4)*t/2)/2 - exp(-3*sqrt(7)*t**2/2)/t
+    I1 = sqrt(6)*root(7, 4)*sqrt(pi)*erfi(sqrt(6)*root(7, 4)*t/2)/2 - exp(3*sqrt(7)*t**2/2)/t
+    I2 = -sqrt(6)*root(7, 4)*sqrt(pi)*erf(sqrt(6)*root(7, 4)*t/2)/2 - exp(-3*sqrt(7)*t**2/2)/t
     sol = [Eq(x(t), C3*t + t*(9*C1*I1 + 9*C2*I2)), Eq(y(t), C4*t + t*(3*sqrt(7)*C1*I1 - 3*sqrt(7)*C2*I2))]
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
@@ -518,17 +518,17 @@ def test_checksysodesol():
     assert checksysodesol(eq, sol) == (True, [0, 0, 0])
 
     eq = (Eq(diff(x(t), t), x(t)*y(t)**3), Eq(diff(y(t), t), y(t)**5))
-    sol = [Eq(x(t), C1*exp((-1/(4*C2 + 4*t))**(-Rational(1, 4)))), Eq(y(t), -(-1/(4*C2 + 4*t))**Rational(1, 4)),
-           Eq(x(t), C1*exp(-1/(-1/(4*C2 + 4*t))**Rational(1, 4))), Eq(y(t), (-1/(4*C2 + 4*t))**Rational(1, 4)),
-           Eq(x(t), C1*exp(-I/(-1/(4*C2 + 4*t))**Rational(1, 4))), Eq(y(t), -I*(-1/(4*C2 + 4*t))**Rational(1, 4)),
-           Eq(x(t), C1*exp(I/(-1/(4*C2 + 4*t))**Rational(1, 4))), Eq(y(t), I*(-1/(4*C2 + 4*t))**Rational(1, 4))]
+    sol = [Eq(x(t), C1*exp((-1/(4*C2 + 4*t))**(-Rational(1, 4)))), Eq(y(t), -root(-1/(4*C2 + 4*t), 4)),
+           Eq(x(t), C1*exp(-1/root(-1/(4*C2 + 4*t), 4))), Eq(y(t), root(-1/(4*C2 + 4*t), 4)),
+           Eq(x(t), C1*exp(-I/root(-1/(4*C2 + 4*t), 4))), Eq(y(t), -I*root(-1/(4*C2 + 4*t), 4)),
+           Eq(x(t), C1*exp(I/root(-1/(4*C2 + 4*t), 4))), Eq(y(t), I*root(-1/(4*C2 + 4*t), 4))]
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
     eq = (Eq(diff(x(t), t), exp(3*x(t))*y(t)**3), Eq(diff(y(t), t), y(t)**5))
-    sol = [Eq(x(t), -log(C1 - 3/(-1/(4*C2 + 4*t))**Rational(1, 4))/3), Eq(y(t), -(-1/(4*C2 + 4*t))**Rational(1, 4)),
-           Eq(x(t), -log(C1 + 3/(-1/(4*C2 + 4*t))**Rational(1, 4))/3), Eq(y(t), (-1/(4*C2 + 4*t))**Rational(1, 4)),
-           Eq(x(t), -log(C1 + 3*I/(-1/(4*C2 + 4*t))**Rational(1, 4))/3), Eq(y(t), -I*(-1/(4*C2 + 4*t))**Rational(1, 4)),
-           Eq(x(t), -log(C1 - 3*I/(-1/(4*C2 + 4*t))**Rational(1, 4))/3), Eq(y(t), I*(-1/(4*C2 + 4*t))**Rational(1, 4))]
+    sol = [Eq(x(t), -log(C1 - 3/root(-1/(4*C2 + 4*t), 4))/3), Eq(y(t), -root(-1/(4*C2 + 4*t), 4)),
+           Eq(x(t), -log(C1 + 3/root(-1/(4*C2 + 4*t), 4))/3), Eq(y(t), root(-1/(4*C2 + 4*t), 4)),
+           Eq(x(t), -log(C1 + 3*I/root(-1/(4*C2 + 4*t), 4))/3), Eq(y(t), -I*root(-1/(4*C2 + 4*t), 4)),
+           Eq(x(t), -log(C1 - 3*I/root(-1/(4*C2 + 4*t), 4))/3), Eq(y(t), I*root(-1/(4*C2 + 4*t), 4))]
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
     eq = (Eq(x(t), t*diff(x(t), t)+diff(x(t), t)*diff(y(t), t)), Eq(y(t), t*diff(y(t), t)+diff(y(t), t)**2))
@@ -608,7 +608,7 @@ def test_dsolve_options():
                      'almost_linear_Integral', 'best', 'best_hint', 'default',
                      'nth_linear_euler_eq_homogeneous',
                      'order', 'separable_Integral']
-    assert sorted(a.keys()) == keys
+    assert sorted(a) == keys
     assert a['order'] == ode_order(eq, f(x))
     assert a['best'] == Eq(f(x), C1/x)
     assert dsolve(eq, hint='best') == Eq(f(x), C1/x)
@@ -625,7 +625,7 @@ def test_dsolve_options():
     assert a['1st_homogeneous_coeff_subs_dep_div_indep_Integral'].has(Integral)
     assert a['1st_homogeneous_coeff_subs_indep_div_dep_Integral'].has(Integral)
     assert a['separable_Integral'].has(Integral)
-    assert sorted(b.keys()) == keys
+    assert sorted(b) == keys
     assert b['order'] == ode_order(eq, f(x))
     assert b['best'] == Eq(f(x), C1/x)
     assert dsolve(eq, hint='best', simplify=False) == Eq(f(x), C1/x)
@@ -647,7 +647,7 @@ def test_dsolve_options():
     assert b['1st_homogeneous_coeff_subs_dep_div_indep_Integral'].has(Integral)
     assert b['1st_homogeneous_coeff_subs_indep_div_dep_Integral'].has(Integral)
     assert b['separable_Integral'].has(Integral)
-    assert sorted(c.keys()) == Integral_keys
+    assert sorted(c) == Integral_keys
     pytest.raises(ValueError, lambda: dsolve(eq, hint='notarealhint'))
     pytest.raises(ValueError, lambda: dsolve(eq, hint='Liouville'))
     assert dsolve(f(x).diff(x) - 1/f(x)**2, hint='all')['best'] == \
@@ -2349,7 +2349,7 @@ def test_almost_linear():
     d = f(x).diff(x)
     eq = x**2*f(x)**2*d + f(x)**3 + 1
     sol = dsolve(eq, f(x), hint='almost_linear')
-    assert sol[0].rhs == (C1*exp(3/x) - 1)**Rational(1, 3)
+    assert sol[0].rhs == cbrt(C1*exp(3/x) - 1)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 
     eq = x*f(x)*d + 2*x*f(x)**2 + 1

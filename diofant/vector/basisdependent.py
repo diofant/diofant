@@ -163,7 +163,7 @@ class BasisDependentAdd(BasisDependent, Add):
             for x in arg.components:
                 components[x] = components.get(x, 0) + arg.components[x]
 
-        temp = list(components.keys())
+        temp = list(components)
         for x in temp:
             if components[x] == 0:
                 del components[x]
@@ -182,7 +182,7 @@ class BasisDependentAdd(BasisDependent, Add):
         assumptions['commutative'] = True
         obj._assumptions = StdFactKB(assumptions)
         obj._components = components
-        obj._sys = (list(components.keys()))[0]._sys
+        obj._sys = list(components)[0]._sys
 
         return obj
 

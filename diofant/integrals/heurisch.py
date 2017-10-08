@@ -1,11 +1,11 @@
 from functools import reduce
 from itertools import permutations
 
-from ..core import Add, Basic, Dummy, Eq, Mul, Rational, S, Wild, pi, sympify
+from ..core import Add, Basic, Dummy, Eq, Mul, S, Wild, pi, sympify
 from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
-                         cos, cosh, cot, coth, erf, erfi, exp, li, log, sin,
-                         sinh, sqrt, tan, tanh)
+                         cos, cosh, cot, coth, erf, erfi, exp, li, log, root,
+                         sin, sinh, sqrt, tan, tanh)
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
@@ -50,7 +50,7 @@ def components(f, x):
 
             if not f.exp.is_Integer:
                 if f.exp.is_Rational:
-                    result.add(f.base**Rational(1, f.exp.q))
+                    result.add(root(f.base, f.exp.q))
                 else:
                     result |= components(f.exp, x) | {f}
         else:
@@ -253,7 +253,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         for candidates, rule in rewritables.items():
             f = f.rewrite(candidates, rule)
     else:
-        for candidates in rewritables.keys():
+        for candidates in rewritables:
             if f.has(*candidates):
                 break
         else:
@@ -421,7 +421,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     u_split = _splitter(denom)
     v_split = _splitter(Q)
 
-    polys = set(list(v_split) + [ u_split[0] ] + list(special.keys()))
+    polys = set(list(v_split) + [u_split[0]] + list(special))
 
     s = u_split[0] * Mul(*[ k for k, v in special.items() if v ])
     polified = [ p.as_poly(*V) for p in [s, P, Q] ]

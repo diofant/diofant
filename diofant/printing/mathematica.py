@@ -131,6 +131,20 @@ class MCodePrinter(CodePrinter):
             args = expr.args
         return "Hold[Integrate[" + ', '.join(self.doprint(a) for a in args) + "]]"
 
+    def _print_Limit(self, expr):
+        direction = str(expr.args[-1])
+        if direction == "+":
+            direction = "-1"
+        elif direction == "-":
+            direction = "1"
+        elif direction == "real":
+            direction = "Reals"
+        else:  # pragma: no cover
+            raise NotImplementedError
+        e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
+        return ("Hold[Limit[%s, %s -> %s, Direction -> %s]]" % (e, x, x0,
+                                                                direction))
+
     def _print_Sum(self, expr):
         return "Hold[Sum[" + ', '.join(self.doprint(a) for a in expr.args) + "]]"
 

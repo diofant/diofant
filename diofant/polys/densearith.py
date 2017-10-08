@@ -757,7 +757,7 @@ def dup_mul(f, g, K):
     if n < 100:
         h = []
 
-        for i in range(0, df + dg + 1):
+        for i in range(df + dg + 1):
             coeff = K.zero
 
             for j in range(max(0, i - dg), min(df, i) + 1):
@@ -818,7 +818,7 @@ def dmp_mul(f, g, u, K):
 
     h, v = [], u - 1
 
-    for i in range(0, df + dg + 1):
+    for i in range(df + dg + 1):
         coeff = dmp_zero(v)
 
         for j in range(max(0, i - dg), min(df, i) + 1):
@@ -845,7 +845,7 @@ def dup_sqr(f, K):
     """
     df, h = len(f) - 1, []
 
-    for i in range(0, 2*df + 1):
+    for i in range(2*df + 1):
         c = K.zero
 
         jmin = max(0, i - df)
@@ -893,7 +893,7 @@ def dmp_sqr(f, u, K):
 
     h, v = [], u - 1
 
-    for i in range(0, 2*df + 1):
+    for i in range(2*df + 1):
         c = dmp_zero(v)
 
         jmin = max(0, i - df)

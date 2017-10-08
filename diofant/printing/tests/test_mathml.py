@@ -2,8 +2,8 @@ import pytest
 
 from diofant import (Basic, E, Eq, EulerGamma, Float, Ge, GoldenRatio, I,
                      Integer, Integral, Limit, Lt, Matrix, Ne, Rational, Sum,
-                     Symbol, acos, acosh, asin, asinh, atan, atanh, cos, cosh,
-                     diff, oo, pi, sin, sinh, tan, tanh)
+                     Symbol, acos, acosh, asin, asinh, atan, atanh, cbrt, cos,
+                     cosh, diff, oo, pi, sin, sinh, sqrt, tan, tanh)
 from diofant.printing.mathml import MathMLPrinter, mathml
 
 
@@ -173,11 +173,11 @@ def test_mathml_add():
 
 
 def test_mathml_pow():
-    mml = mp._print(x**Rational(1, 3))
+    mml = mp._print(cbrt(x))
     assert mml.childNodes[0].nodeName == 'root'
     assert mml.childNodes[1].nodeName == 'degree'
     assert mml.childNodes[1].childNodes[0].nodeName == 'ci'
-    mml = mp._print(x**Rational(1, 2))
+    mml = mp._print(sqrt(x))
     assert mml.childNodes[0].nodeName == 'root'
     assert mml.childNodes[1].nodeName == 'ci'
 

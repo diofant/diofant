@@ -120,7 +120,7 @@ def _remove_multiple_delta(expr):
     if len(solns) == 0:
         return S.Zero
     elif len(solns) == 1:
-        for key in solns[0].keys():
+        for key in solns[0]:
             newargs.append(KroneckerDelta(key, solns[0][key]))
         expr2 = expr.func(*newargs)
         if expr != expr2:

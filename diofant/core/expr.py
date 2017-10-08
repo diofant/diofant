@@ -1228,7 +1228,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if not first:
                 l.reverse()
                 sub.reverse()
-            for i in range(0, len(l) - n + 1):
+            for i in range(len(l) - n + 1):
                 if all(l[i + j] == sub[j] for j in range(n)):
                     break
             else:
@@ -3060,7 +3060,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return 'mulz'
             return hint
 
-        for hint in sorted(hints.keys(), key=_expand_hint_key):
+        for hint in sorted(hints, key=_expand_hint_key):
             use_hint = hints[hint]
             if use_hint:
                 hint = '_eval_expand_' + hint

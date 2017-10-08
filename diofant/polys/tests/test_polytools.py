@@ -4,7 +4,7 @@ import pytest
 
 from diofant import (Derivative, Eq, Expr, Float, I, Integer, Mul, Piecewise,
                      Rational, RootOf, Sum, Symbol, Tuple, diff, exp, expand,
-                     false, im, oo, pi, re, sin, sqrt, tanh, true)
+                     false, im, oo, pi, re, root, sin, sqrt, tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
@@ -2763,7 +2763,7 @@ def test_torational_factor_list():
         (-x*(1 + sqrt(2)) - 1, 1),
         (-x*(1 + sqrt(2)) + 1, 1)])
 
-    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + 2**Rational(1, 4))}))
+    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + root(2, 4))}))
     assert _torational_factor_list(p, x) is None
 
 

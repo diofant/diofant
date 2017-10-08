@@ -1004,7 +1004,7 @@ class Interval(Set, EvalfMixin):
             return imageset(f, Interval(self.start, sing[0],
                                         self.left_open, True)) + \
                 Union(*[imageset(f, Interval(sing[i], sing[i + 1], True, True))
-                        for i in range(0, len(sing) - 1)]) + \
+                        for i in range(len(sing) - 1)]) + \
                 imageset(f, Interval(sing[-1], self.end, True, self.right_open))
 
     @property

@@ -126,7 +126,7 @@ def test_sin():
     assert isinstance(sin(-re(x) + im(y)), sin) is False
 
     for d in list(range(1, 22)) + [60, 85]:
-        for n in range(0, d*2 + 1):
+        for n in range(d*2 + 1):
             x = n*pi/d
             e = abs( float(sin(x)) - sin(float(x)) )
             assert e < 1e-12
@@ -323,7 +323,7 @@ def test_cos():
     assert cos(2*k*pi) == 1
 
     for d in list(range(1, 22)) + [60, 85]:
-        for n in range(0, 2*d + 1):
+        for n in range(2*d + 1):
             x = n*pi/d
             e = abs( float(cos(x)) - cos(float(x)) )
             assert e < 1e-12

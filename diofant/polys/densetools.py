@@ -865,7 +865,7 @@ def dup_shift(f, a, K):
     f, n = list(f), len(f) - 1
 
     for i in range(n, 0, -1):
-        for j in range(0, i):
+        for j in range(i):
             f[j + 1] += a*f[j]
 
     return f
@@ -891,7 +891,7 @@ def dup_transform(f, p, q, K):
     n = len(f) - 1
     h, Q = [f[0]], [[K.one]]
 
-    for i in range(0, n):
+    for i in range(n):
         Q.append(dup_mul(Q[-1], q, K))
 
     for c, q in zip(f[1:], Q[1:]):
@@ -973,7 +973,7 @@ def _dup_right_decompose(f, s, K):
     for i in range(1, s):
         coeff = K.zero
 
-        for j in range(0, i):
+        for j in range(i):
             if not n + j - i in f:
                 continue
 

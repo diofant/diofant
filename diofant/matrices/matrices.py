@@ -2806,7 +2806,7 @@ class MatrixBase(DefaultPrinting):
 
             items = [C]
 
-            for i in range(0, n - 2):
+            for i in range(n - 2):
                 items.append(A*items[i])
 
             for i, B in enumerate(items):
@@ -3533,7 +3533,7 @@ class MatrixBase(DefaultPrinting):
                     # (`S` will no longer be quadratic.)
 
                     exclude_vectors = Ns[s-1]
-                    for k in range(0, a[s-1]):
+                    for k in range(a[s-1]):
                         S = S.col_join((exclude_vectors[k]).adjoint())
 
                     # We also want to exclude the vectors
@@ -3556,7 +3556,7 @@ class MatrixBase(DefaultPrinting):
                     n_e0 = len(e0s)
                     s_chains = []
                     # s_cells=[]
-                    for i in range(0, n_e0):
+                    for i in range(n_e0):
                         chain = [e0s[i]]
                         for k in range(1, s):
                             v = M*chain[k-1]
@@ -3654,22 +3654,22 @@ class MatrixBase(DefaultPrinting):
         from . import MutableMatrix
 
         # Order according to default_sort_key, this makes sure the order is the same as in .diagonalize():
-        for eigenval in (sorted(jordan_block_structures.keys(), key=default_sort_key)):
+        for eigenval in (sorted(jordan_block_structures, key=default_sort_key)):
             l_jordan_chains = jordan_block_structures[eigenval]
-            for s in reversed(sorted((l_jordan_chains).keys())):  # Start with the biggest block
+            for s in reversed(sorted(l_jordan_chains)):  # Start with the biggest block
                 s_chains = l_jordan_chains[s]
                 block = self.jordan_cell(eigenval, s)
                 number_of_s_chains = len(s_chains)
-                for i in range(0, number_of_s_chains):
+                for i in range(number_of_s_chains):
                     Jcells.append(type(self)(block))
                     chain_vectors = s_chains[i]
                     lc = len(chain_vectors)
                     assert lc == s
-                    for j in range(0, lc):
+                    for j in range(lc):
                         generalized_eigen_vector = chain_vectors[j]
                         Pcols_new.append(generalized_eigen_vector)
         P = MutableMatrix.zeros(n)
-        for j in range(0, n):
+        for j in range(n):
             P[:, j] = Pcols_new[j]
 
         return type(self)(P), Jcells

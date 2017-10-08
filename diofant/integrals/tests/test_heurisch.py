@@ -4,8 +4,8 @@ import pytest
 
 from diofant import (Add, Derivative, Ei, Eq, Function, I, Integral, LambertW,
                      Piecewise, Rational, Sum, Symbol, acos, asin, asinh, cos,
-                     cosh, diff, erf, exp, li, log, pi, ratsimp, simplify, sin,
-                     sinh, sqrt, symbols, tan)
+                     cosh, diff, erf, exp, li, log, pi, ratsimp, root,
+                     simplify, sin, sinh, sqrt, symbols, tan)
 from diofant.integrals.heurisch import components, heurisch, heurisch_wrapper
 
 
@@ -24,7 +24,7 @@ def test_components():
     assert components(x*sin(exp(x)*y), x) == \
         {sin(y*exp(x)), x, exp(x)}
     assert components(x**Rational(17, 54)/sqrt(sin(x)), x) == \
-        {sin(x), x**Rational(1, 54), sqrt(sin(x)), x}
+        {sin(x), root(x, 54), sqrt(sin(x)), x}
 
     assert components(f(x), x) == \
         {x, f(x)}

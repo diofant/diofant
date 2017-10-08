@@ -1,6 +1,6 @@
 """Base class for all the objects in Diofant"""
 
-from collections import Mapping
+from collections import Mapping, defaultdict
 from itertools import zip_longest
 
 from .cache import cacheit
@@ -102,13 +102,13 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant.core import S, I, Rational, Symbol
+        >>> from diofant import I, Rational, Symbol, root, sqrt
 
-        >>> sorted([S.Half, I, -I], key=lambda x: x.sort_key())
+        >>> sorted([Rational(1, 2), I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
         >>> x = Symbol('x')
-        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
+        >>> [x, 1/x, 1/x**2, x**2, sqrt(x), root(x, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
@@ -285,7 +285,7 @@ class Basic(object):
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
             types = (Atom,)
-        return set().union(*[set(self.find(t).keys()) for t in types])
+        return set().union(*[set(self.find(t)) for t in types])
 
     @property
     def free_symbols(self):
@@ -527,15 +527,15 @@ class Basic(object):
         if unordered:
             sequence = dict(sequence)
             if not all(k.is_Atom for k in sequence):
-                d = {}
+                d = defaultdict(list)
                 for o, n in sequence.items():
                     try:
                         ops = o.count_ops(), len(o.args)
                     except TypeError:
                         ops = (0, 0)
-                    d.setdefault(ops, []).append((o, n))
+                    d[ops].append((o, n))
                 newseq = []
-                for k in sorted(d.keys(), reverse=True):
+                for k in sorted(d, reverse=True):
                     newseq.extend(sorted((v[0] for v in d[k]),
                                          key=default_sort_key))
                 sequence = [(k, sequence[k]) for k in newseq]
@@ -1058,9 +1058,8 @@ class Basic(object):
         else:
             _query = query
 
-        groups = {}
+        groups = defaultdict(int)
         for result in filter(_query, preorder_traversal(self)):
-            groups.setdefault(result, 0)
             groups[result] += 1
         return groups
 

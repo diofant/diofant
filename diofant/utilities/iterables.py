@@ -1296,7 +1296,7 @@ def partitions(n, m=None, k=None, size=False):
     n, m, k = as_int(n), as_int(m), as_int(k)
     q, r = divmod(n, k)
     ms = {k: q}
-    keys = [k]  # ms.keys(), from largest to smallest
+    keys = [k]  # ms keys, from largest to smallest
     if r:
         ms[r] = 1
         keys.append(r)

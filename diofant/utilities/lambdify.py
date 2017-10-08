@@ -468,7 +468,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
             if isinstance(expr, DeferredVector):
                 pass
             elif isinstance(expr, dict):
-                k = [sub_expr(sympify(a), dummies_dict) for a in expr.keys()]
+                k = [sub_expr(sympify(a), dummies_dict) for a in expr]
                 v = [sub_expr(sympify(a), dummies_dict) for a in expr.values()]
                 expr = dict(zip(k, v))
             elif isinstance(expr, tuple):
@@ -546,7 +546,7 @@ def _imp_namespace(expr, namespace=None):
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> g = implemented_function(Function('g'), lambda x: x*10)
     >>> namespace = _imp_namespace(f(g(x)))
-    >>> sorted(namespace.keys())
+    >>> sorted(namespace)
     ['f', 'g']
     """
     # Delayed import to avoid circular imports

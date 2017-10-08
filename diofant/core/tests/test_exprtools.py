@@ -3,8 +3,8 @@
 import pytest
 
 from diofant import (Add, Basic, Dict, Float, I, Integer, Integral, Interval,
-                     Mul, O, Rational, Sum, Symbol, Tuple, collect, cos, exp,
-                     oo, root, simplify, sin, sqrt, symbols)
+                     Mul, O, Rational, Sum, Symbol, Tuple, cbrt, collect, cos,
+                     exp, oo, root, simplify, sin, sqrt, symbols)
 from diofant.abc import a, b, t, x, y, z
 from diofant.core.exprtools import (Factors, Term, _gcd_terms, decompose_power,
                                     factor_nc, factor_terms, gcd_terms)
@@ -70,7 +70,7 @@ def test_Factors():
     # coverage
     # /!\ things break if this is not True
     assert Factors({Integer(-1): Rational(3, 2)}) == Factors({I: 1, -1: 1})
-    assert Factors({I: Integer(1), Integer(-1): Rational(1, 3)}).as_expr() == I*(-1)**Rational(1, 3)
+    assert Factors({I: Integer(1), Integer(-1): Rational(1, 3)}).as_expr() == I*cbrt(-1)
 
     assert Factors(-1.) == Factors({Integer(-1): Integer(1), Float(1.): 1})
     assert Factors(-2.) == Factors({Integer(-1): Integer(1), Float(2.): 1})
@@ -251,7 +251,7 @@ def test_factor_terms():
     assert factor_terms(eq) == eq
     assert factor_terms(eq, radical=True) == sqrt(2)*(1 + sqrt(5))
     eq = root(-6, 3) + root(6, 3)
-    assert factor_terms(eq, radical=True) == 6**Rational(1, 3)*(1 + (-1)**Rational(1, 3))
+    assert factor_terms(eq, radical=True) == cbrt(6)*(1 + cbrt(-1))
 
     eq = [x + x*y]
     ans = [x*(y + 1)]

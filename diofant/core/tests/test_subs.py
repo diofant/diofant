@@ -2,9 +2,9 @@ import pytest
 
 from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
                      Integer, Lambda, Min, Mul, Piecewise, Rational, RootOf,
-                     Subs, Symbol, Tuple, Wild, abc, atan2, cos, cot, cse, exp,
-                     factor, false, log, nsimplify, oo, pi, sin, sqrt, symbols,
-                     tan, zoo)
+                     Subs, Symbol, Tuple, Wild, abc, atan2, cbrt, cos, cot,
+                     cse, exp, factor, false, log, nsimplify, oo, pi, sin,
+                     sqrt, symbols, tan, zoo)
 from diofant.abc import a, b, c, d, e, t, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
@@ -50,9 +50,9 @@ def test_trigonometric():
 def test_powers():
     assert sqrt(1 - sqrt(x)).subs(x, 4) == I
     assert (sqrt(1 - x**2)**3).subs(x, 2) == - 3*I*sqrt(3)
-    assert (x**Rational(1, 3)).subs(x, 27) == 3
-    assert (x**Rational(1, 3)).subs(x, -27) == 3*(-1)**Rational(1, 3)
-    assert ((-x)**Rational(1, 3)).subs(x, 27) == 3*(-1)**Rational(1, 3)
+    assert cbrt(x).subs(x, 27) == 3
+    assert cbrt(x).subs(x, -27) == 3*cbrt(-1)
+    assert cbrt(-x).subs(x, 27) == 3*cbrt(-1)
     n = Symbol('n', negative=True)
     assert (x**n).subs(x, 0) is zoo
     assert exp(-1).subs(E, 0) is zoo

@@ -21,7 +21,7 @@ def test_rational():
     assert sqrt(a) == r
     assert 2*sqrt(a) == 2*r
 
-    r = a*a**Rational(1, 2)
+    r = a*sqrt(a)
     assert a**Rational(3, 2) == r
     assert 2*a**Rational(3, 2) == 2*r
 
@@ -31,8 +31,8 @@ def test_rational():
 
 
 def test_large_rational():
-    e = (Rational(123712**12 - 1, 7) + Rational(1, 7))**Rational(1, 3)
-    assert e == 234232585392159195136*Rational(1, 7)**Rational(1, 3)
+    e = cbrt(Rational(123712**12 - 1, 7) + Rational(1, 7))
+    assert e == 234232585392159195136*cbrt(Rational(1, 7))
 
 
 def test_negative_real():
@@ -49,15 +49,14 @@ def test_expand():
 def test_sympyissue_3449():
     # test if powers are simplified correctly
     # see also issue sympy/sympy#3995
-    assert ((x**Rational(1, 3))**Rational(2)) == x**Rational(2, 3)
-    assert (
-        (x**Rational(3))**Rational(2, 5)) == (x**Rational(3))**Rational(2, 5)
+    assert cbrt(x)**2 == x**Rational(2, 3)
+    assert (x**3)**Rational(2, 5) == Pow(x**3, Rational(2, 5), evaluate=False)
 
     a = Symbol('a', extended_real=True)
     b = Symbol('b', extended_real=True)
     assert (a**2)**b == (abs(a)**b)**2
     assert sqrt(1/a) != 1/sqrt(a)  # e.g. for a = -1
-    assert (a**3)**Rational(1, 3) != a
+    assert cbrt(a**3) != a
     assert (x**a)**b != x**(a*b)  # e.g. x = -1, a=2, b=1/2
     assert (x**.5)**b == x**(.5*b)
     assert (x**.5)**.5 == x**.25
@@ -66,7 +65,7 @@ def test_sympyissue_3449():
     k = Symbol('k', integer=True)
     m = Symbol('m', integer=True)
     assert (x**k)**m == x**(k*m)
-    assert Number(5)**Rational(2, 3) == Number(25)**Rational(1, 3)
+    assert Number(5)**Rational(2, 3) == cbrt(Number(25))
 
     assert (x**.5)**2 == x**1.0
     assert (x**2)**k == (x**k)**2 == x**(2*k)
@@ -297,9 +296,9 @@ def test_sympyissue_7638():
     # if 1/3 -> 1.0/3 this should fail since it cannot be shown that the
     # sign will be +/-1; for the previous "small arg" case, it didn't matter
     # that this could not be proved
-    assert (1 + I)**(4*I*f) == ((1 + I)**(12*I*f))**Rational(1, 3)
+    assert (1 + I)**(4*I*f) == cbrt((1 + I)**(12*I*f))
 
-    assert (((1 + I)**(I*(1 + 7*f)))**Rational(1, 3)).exp == Rational(1, 3)
+    assert cbrt((1 + I)**(I*(1 + 7*f))).exp == Rational(1, 3)
     r = symbols('r', extended_real=True)
     assert sqrt(r**2) == abs(r)
     assert cbrt(r**3) != r
@@ -347,7 +346,7 @@ def test_sympyissue_10095():
 
 @pytest.mark.slow
 def test_sympyissue_12578():
-    s = (1 - ((x - 1/x)/2)**(-4))**Rational(1, 8)
+    s = root(1 - ((x - 1/x)/2)**(-4), 8)
     assert s.series(x, n=17) == (1 - 2*x**4 - 8*x**6 - 34*x**8 -
                                  152*x**10 - 714*x**12 - 3472*x**14 -
                                  17318*x**16 + O(x**17))

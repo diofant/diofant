@@ -1399,3 +1399,9 @@ def test_PolyElement_factor_list():
     w = x**2 + x + 1
 
     assert f.factor_list() == (1, [(u, 1), (v, 2), (w, 1)])
+
+
+def test_PolyElement_almosteq():
+    R, x, y = ring('x, y', RR)
+
+    assert x.almosteq(y) is False

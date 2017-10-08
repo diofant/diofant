@@ -2644,9 +2644,8 @@ class Permutation(Basic):
         References
         ==========
 
-        1. https://en.wikipedia.org/wiki/Flavius_Josephus
-        2. https://en.wikipedia.org/wiki/Josephus_problem
-        3. http://www.wou.edu/~burtonl/josephus.html
+        .. [1] https://en.wikipedia.org/wiki/Flavius_Josephus
+        .. [2] https://en.wikipedia.org/wiki/Josephus_problem
 
         """
         from collections import deque

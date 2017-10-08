@@ -1183,7 +1183,7 @@ def dup_zz_heu_gcd(f, g, K):
             2*min(f_norm // abs(dup_LC(f, K)),
                   g_norm // abs(dup_LC(g, K))) + 2)
 
-    for i in range(0, query('HEU_GCD_MAX')):
+    for i in range(query('HEU_GCD_MAX')):
         ff = dup_eval(f, x, K)
         gg = dup_eval(g, x, K)
 
@@ -1308,7 +1308,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
             2*min(f_norm // abs(dmp_ground_LC(f, u, K)),
                   g_norm // abs(dmp_ground_LC(g, u, K))) + 2)
 
-    for i in range(0, query('HEU_GCD_MAX')):
+    for i in range(query('HEU_GCD_MAX')):
         ff = dmp_eval(f, x, u, K)
         gg = dmp_eval(g, x, u, K)
 

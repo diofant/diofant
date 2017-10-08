@@ -1,5 +1,7 @@
 """Tools for solving inequalities and systems of inequalities. """
 
+from collections import defaultdict
+
 from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol
 from ..core.compatibility import iterable
 from ..core.relational import Relational
@@ -323,7 +325,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
     inequalities = []
 
     for expr, conds in exprs:
-        if rel not in mapping.keys():
+        if rel not in mapping:
             expr = Relational( expr, 0, rel)
         else:
             expr = Relational(-expr, 0, mapping[rel])
@@ -436,7 +438,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 def _reduce_inequalities(inequalities, symbols):
     # helper for reduce_inequalities
 
-    poly_part, pw_part = {}, {}
+    poly_part, pw_part = defaultdict(list), defaultdict(list)
     other = []
 
     for inequality in inequalities:
@@ -466,13 +468,13 @@ def _reduce_inequalities(inequalities, symbols):
                     symbol of interest'''))
 
         if expr.is_polynomial(gen):
-            poly_part.setdefault(gen, []).append((expr, rel))
+            poly_part[gen].append((expr, rel))
         else:
             components = set(expr.find(lambda u: u.has(gen) and
                                        (u.is_Function or u.is_Pow and
                                         not u.exp.is_Integer)))
             if components and all(isinstance(i, Abs) or isinstance(i, Piecewise) for i in components):
-                pw_part.setdefault(gen, []).append((expr, rel))
+                pw_part[gen].append((expr, rel))
             else:
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
 

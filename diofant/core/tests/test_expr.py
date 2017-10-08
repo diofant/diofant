@@ -4,11 +4,12 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      Function, Ge, Gt, Heaviside, I, Integer, Integral, Le, Lt,
                      Max, Mul, Number, NumberSymbol, O, Piecewise, Poly, Pow,
                      Rational, Si, Sum, Symbol, Tuple, Wild, WildFunction,
-                     apart, cancel, collect, combsimp, cos, default_sort_key,
-                     diff, exp, exp_polar, expand, factor, factorial, false,
-                     gamma, log, lucas, nan, nsimplify, oo, pi, posify,
-                     powsimp, radsimp, ratsimp, simplify, sin, sqrt, symbols,
-                     sympify, tan, together, trigsimp, true, zoo)
+                     apart, cancel, cbrt, collect, combsimp, cos,
+                     default_sort_key, diff, exp, exp_polar, expand, factor,
+                     factorial, false, gamma, log, lucas, nan, nsimplify, oo,
+                     pi, posify, powsimp, radsimp, ratsimp, root, simplify,
+                     sin, sqrt, symbols, sympify, tan, together, trigsimp,
+                     true, zoo)
 from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 from diofant.solvers.solvers import checksol
@@ -393,7 +394,7 @@ def test_is_algebraic_expr():
     assert sqrt(3).is_algebraic_expr(x) is True
     assert sqrt(3).is_algebraic_expr() is True
 
-    eq = ((1 + x**2)/(1 - y**2))**Rational(1, 3)
+    eq = cbrt((1 + x**2)/(1 - y**2))
     assert eq.is_algebraic_expr(x) is True
     assert eq.is_algebraic_expr(y) is True
 
@@ -1443,7 +1444,7 @@ def test_equals():
     assert (sqrt(5)*sqrt(3)).equals(sqrt(3)) is False
     assert (sqrt(5) + sqrt(3)).equals(0) is False
     assert (sqrt(5) + pi).equals(0) is False
-    eq = -(-1)**Rational(3, 4)*6**Rational(1, 4) + (-6)**Rational(1, 4)*I
+    eq = -(-1)**Rational(3, 4)*root(6, 4) + root(-6, 4)*I
     if eq != 0:  # if canonicalization makes this zero, skip the test
         assert eq.equals(0)
     assert sqrt(x).equals(0) is False
@@ -1465,8 +1466,8 @@ def test_equals():
     # prove via minimal_polynomial or self-consistency
     eq = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert eq.equals(0)
-    q = 3**Rational(1, 3) + 3
-    p = expand(q**3)**Rational(1, 3)
+    q = cbrt(3) + 3
+    p = cbrt(expand(q**3))
     assert (p - q).equals(0)
 
     # issue sympy/sympy#6829
@@ -1478,8 +1479,8 @@ def test_equals():
                                    (2*q - Rational(7, 4))/x1)/2 -
                       Rational(1, 4))),
                 (x1, sqrt(-x0 - Rational(13, 12))),
-                (x0, 2*(-(q - Rational(7, 8))**2/8 -
-                        Rational(2197, 13824))**Rational(1, 3))))
+                (x0, 2*cbrt(-(q - Rational(7, 8))**2/8 -
+                            Rational(2197, 13824)))))
     assert z.equals(0)
 
 

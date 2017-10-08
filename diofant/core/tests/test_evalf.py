@@ -4,10 +4,10 @@ from mpmath.libmp.libmpf import from_float
 
 from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
                      GoldenRatio, I, Integral, Min, Mul, N, Pow, Product,
-                     Rational, Sum, Symbol, atan, ceiling, cos, exp, factorial,
-                     fibonacci, floor, im, integrate, log, nan, oo, pi,
-                     polar_lift, product, re, sin, sqrt, sstr, symbols,
-                     sympify, zoo)
+                     Rational, Sum, Symbol, atan, cbrt, ceiling, cos, exp,
+                     factorial, fibonacci, floor, im, integrate, log, nan, oo,
+                     pi, polar_lift, product, re, root, sin, sqrt, sstr,
+                     symbols, sympify, zoo)
 from diofant.abc import H, n, x, y
 from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
                                 complex_accuracy, scaled_zero)
@@ -97,8 +97,7 @@ def test_evalf_complex_powers_bug():
 
 def test_evalf_exponentiation():
     assert NS(sqrt(-pi)) == '1.77245385090552*I'
-    assert NS(Pow(pi*I, Rational(
-        1, 2), evaluate=False)) == '1.25331413731550 + 1.25331413731550*I'
+    assert NS(sqrt(pi*I, evaluate=False)) == '1.25331413731550 + 1.25331413731550*I'
     assert NS(pi**I) == '0.413292116101594 + 0.910598499212615*I'
     assert NS(pi**(E + I/3)) == '20.8438653991931 + 8.36343473930031*I'
     assert NS((pi + I/3)**(E + I/3)) == '17.2442906093590 + 13.6839376767037*I'
@@ -185,8 +184,7 @@ def test_evalf_bugs():
     assert NS('log(2)', 10) == '0.6931471806'
     assert NS(
         '(sin(x)-x)/x**3', 15, subs={x: '1/10**50'}) == '-0.166666666666667'
-    assert NS(sin(1) + Rational(
-        1, 10**100)*I, 15) == '0.841470984807897 + 1.00000000000000e-100*I'
+    assert NS(sin(1) + I/10**100, 15) == '0.841470984807897 + 1.00000000000000e-100*I'
     assert x.evalf() == x
     assert NS((1 + I)**2*I, 6) == '-2.00000'
     d = {n: (
@@ -393,12 +391,12 @@ def test_subs():
 
 def test_sympyissue_4956_5204():
     # issue sympy/sympy#4956
-    v = ((-27*12**Rational(1, 3)*sqrt(31)*I +
-          27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I) /
-         (-2511*2**Rational(2, 3)*3**Rational(1, 3) +
-          (29*18**Rational(1, 3) +
-           9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
-           87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
+    v = ((-27*cbrt(12)*sqrt(31)*I +
+          27*2**Rational(2, 3)*cbrt(3)*sqrt(31)*I) /
+         (-2511*2**Rational(2, 3)*cbrt(3) +
+          (29*cbrt(18) +
+           9*cbrt(2)*3**Rational(2, 3)*sqrt(31)*I +
+           87*cbrt(2)*root(3, 6)*I)**2))
     assert NS(v, 1) == '0.e-198 - 0.e-198*I'
 
     # issue sympy/sympy#5204
@@ -409,10 +407,10 @@ def test_sympyissue_4956_5204():
           13478400000*I*x8 + 5276370456*I*x9 - 357587765856 -
           108755765856*sqrt(3)*I)/((25596*x0 + 76788*x2 + 1106028)**2 +
                                    175732658352))
-    v = v.subs(((x9, 2**Rational(2, 3)*3**Rational(1, 6)*x7),
-                (x8, 2**Rational(1, 3)*3**Rational(5, 6)*x4),
+    v = v.subs(((x9, 2**Rational(2, 3)*root(3, 6)*x7),
+                (x8, cbrt(2)*3**Rational(5, 6)*x4),
                 (x7, x3**Rational(2, 3)), (x6, 6**Rational(2, 3)),
-                (x5, 6**Rational(1, 3)*x4), (x4, x3**Rational(1, 3)),
+                (x5, cbrt(6)*x4), (x4, cbrt(x3)),
                 (x3, 54*x0 + 1422), (x2, I*x1), (x1, sqrt(83)), (x0, sqrt(249))))
 
     assert NS(v, 5) == '0.077284 + 1.1104*I'
@@ -511,15 +509,15 @@ def test_diofantissue_161():
 
 def test_AssocOp_Function():
     e = Min(-sqrt(3)*cos(pi/18)/6 +
-            re(1/((Rational(-1, 2) - sqrt(3)*I/2)*(Rational(1, 6) +
-                                                   sqrt(3)*I/18)**Rational(1, 3)))/3 + sin(pi/18)/2 + 2 +
+            re(1/((Rational(-1, 2) - sqrt(3)*I/2)*cbrt(Rational(1, 6) +
+                                                       sqrt(3)*I/18)))/3 + sin(pi/18)/2 + 2 +
             I*(-cos(pi/18)/2 - sqrt(3)*sin(pi/18)/6 +
-               im(1/((Rational(-1, 2) - sqrt(3)*I/2)*(Rational(1, 6) +
-                                                      sqrt(3)*I/18)**Rational(1, 3)))/3),
-            re(1/((Rational(-1, 2) + sqrt(3)*I/2)*(Rational(1, 6) + sqrt(3)*I/18)**Rational(1, 3)))/3 -
+               im(1/((Rational(-1, 2) - sqrt(3)*I/2)*cbrt(Rational(1, 6) +
+                                                          sqrt(3)*I/18)))/3),
+            re(1/((Rational(-1, 2) + sqrt(3)*I/2)*cbrt(Rational(1, 6) + sqrt(3)*I/18)))/3 -
             sqrt(3)*cos(pi/18)/6 - sin(pi/18)/2 + 2 +
-            I*(im(1/((Rational(-1, 2) + sqrt(3)*I/2)*(Rational(1, 6) +
-                                                      sqrt(3)*I/18)**Rational(1, 3)))/3 -
+            I*(im(1/((Rational(-1, 2) + sqrt(3)*I/2)*cbrt(Rational(1, 6) +
+                                                          sqrt(3)*I/18)))/3 -
                sqrt(3)*sin(pi/18)/6 + cos(pi/18)/2))
     # the following should not raise a recursion error; it
     # should raise a value error because the first arg computes

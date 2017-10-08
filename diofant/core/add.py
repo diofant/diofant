@@ -771,7 +771,7 @@ class Add(AssocOp):
         diofant.core.expr.Expr.as_content_primitive
         """
         from .mul import Mul, _keep_coeff, prod
-        from .numbers import Rational
+        from ..functions import root
 
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()
@@ -790,9 +790,9 @@ class Add(AssocOp):
                 if not term_rads:
                     break
                 if common_q is None:
-                    common_q = set(term_rads.keys())
+                    common_q = set(term_rads)
                 else:
-                    common_q = common_q & set(term_rads.keys())
+                    common_q = common_q & set(term_rads)
                     if not common_q:
                         break
                 rads.append(term_rads)
@@ -800,7 +800,7 @@ class Add(AssocOp):
                 # process rads
                 # keep only those in common_q
                 for r in rads:
-                    for q in list(r.keys()):
+                    for q in list(r):
                         if q not in common_q:
                             r.pop(q)
                     for q in r:
@@ -810,7 +810,7 @@ class Add(AssocOp):
                 for q in common_q:
                     g = reduce(igcd, [r[q] for r in rads], 0)
                     if g != 1:
-                        G.append(g**Rational(1, q))
+                        G.append(root(g, q))
                 if G:
                     G = Mul(*G)
                     args = [ai/G for ai in args]

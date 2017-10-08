@@ -151,7 +151,7 @@ class Options(dict):
             if key in self:
                 del defaults[key]
             else:
-                for option in self.keys():
+                for option in self:
                     cls = self.__options__[option]
 
                     if key in cls.excludes:
@@ -160,7 +160,7 @@ class Options(dict):
 
         preprocess_options(defaults)
 
-        for option in self.keys():
+        for option in self:
             cls = self.__options__[option]
 
             for require_option in cls.requires:
@@ -744,7 +744,7 @@ def allowed_flags(args, flags):
     """
     flags = set(flags)
 
-    for arg in args.keys():
+    for arg in args:
         try:
             if Options.__options__[arg].is_Flag and arg not in flags:
                 raise FlagError(

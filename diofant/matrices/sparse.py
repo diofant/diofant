@@ -40,7 +40,7 @@ class SparseMatrixBase(MatrixBase):
                             self._smat[(i, j)] = value
             elif isinstance(args[2], (dict, Dict)):
                 # manual copy, copy.deepcopy() doesn't work
-                for key in args[2].keys():
+                for key in args[2]:
                     v = args[2][key]
                     if v:
                         self._smat[key] = self._sympify(v)
@@ -204,7 +204,7 @@ class SparseMatrixBase(MatrixBase):
         col_list
         """
         return [tuple(k + (self[k],)) for k in
-                sorted(self._smat.keys(), key=lambda k: list(k))]
+                sorted(self._smat, key=lambda k: list(k))]
 
     RL = property(row_list, None, None, "Alternate faster representation")
 
@@ -229,7 +229,7 @@ class SparseMatrixBase(MatrixBase):
         diofant.matrices.sparse.MutableSparseMatrix.col_op
         row_list
         """
-        return [tuple(k + (self[k],)) for k in sorted(self._smat.keys(), key=lambda k: list(reversed(k)))]
+        return [tuple(k + (self[k],)) for k in sorted(self._smat, key=lambda k: list(reversed(k)))]
 
     CL = property(col_list, None, None, "Alternate faster representation")
 

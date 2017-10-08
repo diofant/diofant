@@ -6,8 +6,8 @@ import mpmath
 import pytest
 
 from diofant import (ZZ, I, Integer, Interval, Piecewise, Rational, Symbol,
-                     Wild, acos, cos, exp, im, pi, powsimp, re, root, sin,
-                     sqrt, symbols)
+                     Wild, acos, cbrt, cos, exp, im, pi, powsimp, re, root,
+                     sin, sqrt, symbols)
 from diofant.polys import Poly, RootOf, cyclotomic_poly, intervals, nroots
 from diofant.polys.orthopolys import legendre_poly
 from diofant.polys.polyroots import (preprocess_roots, root_factors, roots,
@@ -107,7 +107,7 @@ def test_roots_cubic():
     assert roots_cubic(Poly(x**3 + 1, x)) == \
         [-1, Rational(1, 2) - I*sqrt(3)/2, Rational(1, 2) + I*sqrt(3)/2]
     assert roots_cubic(Poly(2*x**3 - 3*x**2 - 3*x - 1, x))[0] == \
-        Rational(1, 2) + 3**Rational(1, 3)/2 + 3**Rational(2, 3)/2
+        Rational(1, 2) + cbrt(3)/2 + 3**Rational(2, 3)/2
     eq = -x**3 + 2*x**2 + 3*x - 2
     assert roots(eq, trig=True, multiple=True) == \
         roots_cubic(Poly(eq, x), trig=True) == [
@@ -502,7 +502,7 @@ def test_roots_slow():
     assert list(roots(e1 - e2, k).values()) == [1, 1, 1]
 
     f = x**3 + 2*x**2 + 8
-    R = list(roots(f).keys())
+    R = list(roots(f))
 
     assert not any(i for i in [f.subs(x, ri).n(chop=True) for ri in R])
 

@@ -26,6 +26,7 @@ The main reference for this file is [SCA],
 "A Singular Introduction to Commutative Algebra".
 """
 
+from collections import defaultdict
 from itertools import permutations
 
 from ..core import S, sympify
@@ -377,9 +378,9 @@ def sdm_to_vector(f, gens, K, n=None):
     [x**2 + y**2, 2*z]
     """
     dic = sdm_to_dict(f)
-    dics = {}
+    dics = defaultdict(list)
     for k, v in dic.items():
-        dics.setdefault(k[0], []).append((k[1:], v))
+        dics[k[0]].append((k[1:], v))
     n = n or len(dics)
     res = []
     for k in range(n):

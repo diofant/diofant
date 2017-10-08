@@ -85,8 +85,8 @@ def test_radsimp():
     assert fraction(radsimp(1/sqrt(2*(x + 3)))) == (sqrt(2*x + 6), 2*x + 6)
 
     # issue sympy/sympy#5994
-    e = -(2 + 2*sqrt(2) + 4*2**Rational(1, 4))/(1 + 2**Rational(3, 4) + 3*2**Rational(1, 4) + 3*sqrt(2))
-    assert radsimp(e).expand() == -2*2**Rational(3, 4) - 2*2**Rational(1, 4) + 2 + 2*sqrt(2)
+    e = -(2 + 2*sqrt(2) + 4*root(2, 4))/(1 + 2**Rational(3, 4) + 3*root(2, 4) + 3*sqrt(2))
+    assert radsimp(e).expand() == -2*2**Rational(3, 4) - 2*root(2, 4) + 2 + 2*sqrt(2)
 
     # issue sympy/sympy#5986 (modifications to radimp didn't initially recognize this so
     # the test is included here)

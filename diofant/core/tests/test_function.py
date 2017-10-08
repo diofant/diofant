@@ -5,7 +5,7 @@ import pytest
 
 from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
                      Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
-                     Symbol, Tuple, acos, cos, diff, exp, expand, expint,
+                     Symbol, Tuple, acos, cbrt, cos, diff, exp, expand, expint,
                      floor, im, log, loggamma, nfloat, pi, polygamma, re, sin,
                      sqrt, symbols)
 from diofant.abc import a, b, t, w, x, y, z
@@ -632,8 +632,8 @@ def test_unhandled():
 
 def test_nfloat():
     x = Symbol("x")
-    eq = x**Rational(4, 3) + 4*x**Rational(1, 3)/3
-    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**Rational(1, 3))
+    eq = x**Rational(4, 3) + 4*cbrt(x)/3
+    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*cbrt(x))
     assert _aresame(nfloat(eq, exponent=True), x**(4.0/3) + (4.0/3)*x**(1.0/3))
     eq = x**Rational(4, 3) + 4*x**(x/3)/3
     assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**(x/3))
