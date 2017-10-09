@@ -1338,8 +1338,8 @@ class Mul(AssocOp):
                     ndo = min(rat)
                     if ndo:
                         if take == 1:
-                            if cdid:
-                                ndo = min(cdid, ndo)
+                            assert cdid
+                            ndo = min(cdid, ndo)
                             nc[i] = Pow(new, ndo)*rejoin(nc[i][0],
                                                          nc[i][1] - ndo*old_nc[0][1])
                         else:

@@ -176,7 +176,7 @@ def test_subs_dict1():
 
 
 def test_mul():
-    A, B, C = symbols('A B C', commutative=0)
+    A, B, C = symbols('A B C', commutative=False)
     assert (x*y*z).subs(z*x, y) == y**2
     assert (z*x).subs(1/x, z) == z*x
     assert (x*y/z).subs(1/z, a) == a*x*y
@@ -229,6 +229,10 @@ def test_mul():
     assert (-2*x**3/9).subs(2*x, z) == -z*x**2/9
     assert (2*(3*x/5/7)**2).subs(3*x/5, z) == 2*Rational(1, 7)**2*z**2
     assert (4*x).subs(-2*x, z) == 4*x  # try keep subs literal
+
+    assert (A**2*B**2).subs(A*B**3, C) == A**2*B**2
+    assert (A**Rational(5, 3)*B**3).subs(sqrt(A)*B, C) == A**Rational(5, 3)*B**3
+    assert (A**2*B**2*A).subs(A**2*B*A, C) == A**2*B**2*A
 
 
 def test_subs_simple():
