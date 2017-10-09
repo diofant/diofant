@@ -10,8 +10,8 @@ the separate 'factorials' module.
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
-from ...core import (Add, Dummy, E, Expr, Function, Integer, Rational, S,
-                     cacheit, expand_mul, pi, prod)
+from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
+                     Rational, S, cacheit, expand_mul, nan, oo, pi, prod)
 from ...core.compatibility import DIOFANT_INTS, as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
@@ -110,7 +110,7 @@ class fibonacci(Function):
     def _eval_rewrite_as_sqrt(self, n, sym=None):
         from .. import sqrt
         if sym is None:
-            return (S.GoldenRatio**n - cos(S.Pi*n)/S.GoldenRatio**n)/sqrt(5)
+            return (GoldenRatio**n - cos(pi*n)/GoldenRatio**n)/sqrt(5)
 
     _eval_rewrite_as_tractable = _eval_rewrite_as_sqrt
 
@@ -457,7 +457,7 @@ class bell(Function):
         if not n.is_nonnegative:
             return self
         k = Dummy('k', integer=True, nonnegative=True)
-        return 1 / E * Sum(k**n / factorial(k), (k, 0, S.Infinity))
+        return 1 / E * Sum(k**n / factorial(k), (k, 0, oo))
 
 ############################################################################
 #                                                                          #
@@ -612,12 +612,12 @@ class harmonic(Function):
         if m.is_zero:
             return n
 
-        if n is S.Infinity and m.is_Number:
+        if n is oo and m.is_Number:
             # TODO: Fix for symbolic values of m
             if m.is_negative:
-                return S.NaN
+                return nan
             elif m <= 1:
-                return S.Infinity
+                return oo
             else:
                 return zeta(m)
 
@@ -655,7 +655,7 @@ class harmonic(Function):
         n = self.args[0]
         m = self.args[1] if len(self.args) == 2 else 1
 
-        if m == S.One:
+        if m == 1:
             if n.is_Add:
                 off = n.args[0]
                 nnew = n - off

@@ -1,4 +1,4 @@
-from ..core import Derivative, Dummy, Eq, Function, Integer, S, Wild
+from ..core import Derivative, Dummy, Eq, Function, Integer, S, Wild, nan, oo
 from ..functions import Piecewise
 from ..polys import PolynomialError, apart
 from ..solvers import solve
@@ -300,7 +300,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         s += I
 
         def fpoint(expr):
-            if b is S.Infinity:
+            if b is oo:
                 return expr.subs(i, a), 0
             return expr.subs(i, a), expr.subs(i, b)
         fa, fb = fpoint(f)
@@ -431,7 +431,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         if len(self.variables) > 1:
             raise ValueError
         else:
-            if self.limits[0][1:] != (S.Zero, S.Infinity):
+            if self.limits[0][1:] != (0, oo):
                 raise ValueError
             k = self.variables[0]
 
@@ -653,7 +653,7 @@ def eval_sum_symbolic(f, limits):
 
         if None not in (lsum, rsum):
             r = lsum + rsum
-            if r is not S.NaN:
+            if r is not nan:
                 return r
 
     # Polynomial terms with Faulhaber's formula
@@ -665,9 +665,9 @@ def eval_sum_symbolic(f, limits):
 
         if n.is_Integer:
             if n >= 0:
-                if (b is S.Infinity and a is not S.NegativeInfinity) or \
-                   (a is S.NegativeInfinity and b is not S.Infinity):
-                    return S.Infinity
+                if (b is oo and a is not -oo) or \
+                   (a is -oo and b is not oo):
+                    return oo
                 return ((bernoulli(n + 1, b + 1) - bernoulli(n + 1, a))/(n + 1)).expand()
             elif a.is_Integer and a >= 1:
                 if n == -1:
@@ -675,8 +675,8 @@ def eval_sum_symbolic(f, limits):
                 else:
                     return harmonic(b, abs(n)) - harmonic(a - 1, abs(n))
 
-    if not (a.has(S.Infinity, S.NegativeInfinity) or
-            b.has(S.Infinity, S.NegativeInfinity)):
+    if not (a.has(oo, -oo) or
+            b.has(oo, -oo)):
         # Geometric terms
         c1 = Wild('c1', exclude=[i])
         c2 = Wild('c2', exclude=[i])
@@ -764,8 +764,8 @@ def eval_sum_hyper(f, i_a_b):
 
     old_sum = Sum(f, (i, a, b))
 
-    if b != S.Infinity:
-        if a == S.NegativeInfinity:
+    if b != oo:
+        if a == -oo:
             res = _eval_sum_hyper(f.subs(i, -i), i, -b)
             if res is not None:
                 return Piecewise(res, (old_sum, True))
@@ -780,7 +780,7 @@ def eval_sum_hyper(f, i_a_b):
                 return
             return Piecewise((res1 - res2, cond), (old_sum, True))
 
-    if a != S.NegativeInfinity:
+    if a != -oo:
         # Now b == oo, a != -oo
         res = _eval_sum_hyper(f, i, a)
         if res is not None:
@@ -788,7 +788,7 @@ def eval_sum_hyper(f, i_a_b):
             if c == S.false:
                 f = f.subs(i, Dummy('i', integer=True, positive=True) + a)
                 if f.is_nonnegative:
-                    return S.Infinity
+                    return oo
                 else:
                     return
             return Piecewise(res, (old_sum, True))

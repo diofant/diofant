@@ -27,7 +27,7 @@ from the names used in Bronstein's book.
 from functools import reduce
 
 from ..abc import z
-from ..core import (Dummy, Eq, Integer, Lambda, Mul, Pow, S, Symbol, ilcm, oo,
+from ..core import (Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, ilcm, oo,
                     sympify)
 from ..core.compatibility import default_sort_key, ordered
 from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
@@ -275,10 +275,10 @@ class DifferentialExtension:
 
             # TODO: This probably doesn't need to be completely recomputed at
             # each pass.
-            exps = update(exps, {a for a in self.newf.atoms(Pow) if a.base is S.Exp1},
+            exps = update(exps, {a for a in self.newf.atoms(Pow) if a.base is E},
                           lambda i: i.exp.is_rational_function(*self.T) and
                           i.exp.has(*self.T))
-            pows = update(pows, {a for a in self.newf.atoms(Pow) if a.base is not S.Exp1},
+            pows = update(pows, {a for a in self.newf.atoms(Pow) if a.base is not E},
                           lambda i: i.exp.is_rational_function(*self.T) and
                           i.exp.has(*self.T))
             numpows = update(numpows, set(pows),
@@ -316,7 +316,7 @@ class DifferentialExtension:
                         log_new_extension = self._log_part([log(i.base)],
                                                            dummy=dummy)
                         exps = update(exps, {a for a in self.newf.atoms(Pow)
-                                             if a.base is S.Exp1},
+                                             if a.base is E},
                                       lambda i: (i.exp.is_rational_function(*self.T) and
                                                  i.exp.has(*self.T)))
                         continue
@@ -350,7 +350,7 @@ class DifferentialExtension:
             symlogs = update(symlogs, atoms,
                              lambda i: i.has(*self.T) and i.args[0].is_Pow and
                              i.args[0].base.is_rational_function(*self.T) and
-                             not i.args[0].base is S.Exp1 and
+                             not i.args[0].base is E and
                              not i.args[0].exp.is_Integer)
 
             # We can handle things like log(x**y) by converting it to y*log(x)

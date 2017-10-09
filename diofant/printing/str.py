@@ -5,7 +5,7 @@ A Printer for generating readable representation of most diofant classes.
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Mul, Pow, Rational, S
+from ..core import Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
 from ..utilities import default_sort_key
 from .precedence import PRECEDENCE, precedence
@@ -242,7 +242,7 @@ class StrPrinter(Printer):
             # use make_args in case expr was something like -x -> x
             args = Mul.make_args(expr)
 
-        multiple_ones = len([x for x in args if x == S.One]) > 1
+        multiple_ones = len([x for x in args if x == 1]) > 1
 
         # Gather args for numerator/denominator
         for item in args:
@@ -251,7 +251,7 @@ class StrPrinter(Printer):
                     b.append(Pow(item.base, -item.exp, evaluate=False))
                 else:
                     b.append(Pow(item.base, -item.exp))
-            elif item.is_Rational and item is not S.Infinity:
+            elif item.is_Rational and item is not oo:
                 if item.p != 1 or multiple_ones:
                     a.append(Rational(item.p))
                 if item.q != 1:

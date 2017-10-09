@@ -1,4 +1,4 @@
-from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol
+from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol, oo
 from ...core.function import _coeff_isneg
 from ...utilities import default_sort_key, group
 from ..conventions import requires_partial
@@ -505,7 +505,7 @@ class PrettyPrinter(Printer):
             LimArg = prettyForm(*LimArg.right('->'))
         LimArg = prettyForm(*LimArg.right(self._print(z0)))
 
-        if str(dir) == "real" or z0 in (S.Infinity, S.NegativeInfinity):
+        if str(dir) == "real" or z0 in (oo, -oo):
             dir = ""
         else:
             if self._use_unicode:
@@ -992,7 +992,7 @@ class PrettyPrinter(Printer):
 
     def _print_Order(self, expr):
         pform = self._print(expr.expr)
-        if ((expr.point and any(p != S.Zero for p in expr.point)) or
+        if ((expr.point and any(p != 0 for p in expr.point)) or
                 len(expr.variables) > 1):
             pform = prettyForm(*pform.right("; "))
             if len(expr.variables) > 1:
@@ -1198,7 +1198,7 @@ class PrettyPrinter(Printer):
         else:
             args = product.args
 
-        multiple_ones = len([x for x in args if x == S.One]) > 1
+        multiple_ones = len([x for x in args if x == 1]) > 1
 
         # Gather terms for numerator/denominator
         for item in args:
@@ -1207,7 +1207,7 @@ class PrettyPrinter(Printer):
                     b.append(Pow(item.base, -item.exp, evaluate=False))
                 else:
                     b.append(Pow(item.base, -item.exp))
-            elif item.is_Rational and item is not S.Infinity:
+            elif item.is_Rational and item is not oo:
                 if item.p != 1 or multiple_ones:
                     a.append(Rational(item.p))
                 if item.q != 1:
@@ -1348,10 +1348,10 @@ class PrettyPrinter(Printer):
         else:
             dots = '...'
 
-        if s.start is S.NegativeInfinity:
+        if s.start is -oo:
             it = iter(s)
             printset = s.start, dots, s._last_element - s.step, s._last_element
-        elif s.stop is S.Infinity or len(s) > 4:
+        elif s.stop is oo or len(s) > 4:
             it = iter(s)
             printset = next(it), next(it), dots, s._last_element
         else:

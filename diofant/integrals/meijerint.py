@@ -28,8 +28,8 @@ The main references for this are:
 
 from collections import defaultdict
 
-from ..core import (Add, Dummy, Eq, Expr, Function, I, Integer, Mul, Ne, Pow,
-                    Rational, S, Tuple, Wild, cacheit, expand, expand_mul,
+from ..core import (Add, Dummy, E, Eq, Expr, Function, I, Integer, Mul, Ne,
+                    Pow, Rational, S, Tuple, Wild, cacheit, expand, expand_mul,
                     expand_power_base, factor_terms, nan, oo, pi, symbols,
                     sympify, zoo)
 from ..core.compatibility import default_sort_key, ordered
@@ -363,7 +363,7 @@ def _exponents(expr, x):
 def _functions(expr, x):
     """ Find the types of functions in expr, to estimate the complexity. """
     return ({e.func for e in expr.atoms(Function) if x in e.free_symbols} |
-            {e.func for e in expr.atoms(Pow) if e.base is S.Exp1 and x in e.free_symbols})
+            {e.func for e in expr.atoms(Pow) if e.base is E and x in e.free_symbols})
 
 
 def _find_splitting_points(expr, x):
@@ -480,8 +480,8 @@ def _mul_as_two_parts(f):
     if len(gs) < 2:
         return
     if len(gs) == 2:
-        if ((gs[0].is_Pow and gs[0].base is S.Exp1) and
-                (not gs[1].is_Pow or gs[1].base is not S.Exp1)):
+        if ((gs[0].is_Pow and gs[0].base is E) and
+                (not gs[1].is_Pow or gs[1].base is not E)):
             gs = [gs[1], gs[0]]
         return [tuple(gs)]
     return [(Mul(*x), Mul(*y)) for (x, y) in multiset_partitions(gs, 2)]
@@ -1022,7 +1022,7 @@ def _check_antecedents(g1, g2, x):
             `meijerint_definite(exp(x), x, 0, I)`
             """
             tmp = abs(arg_(1 - zso))
-            return False if tmp is S.NaN else tmp < pi
+            return False if tmp is nan else tmp < pi
         c14_alt = And(Eq(phi, 0), cstar - 1 + bstar <= 0,
                       Or(And(Ne(zso, 1), _cond()),
                          And(re(mu + rho + q - p) < 1, Eq(zso, 1))))
@@ -1630,7 +1630,7 @@ def meijerint_indefinite(f, x):
         if rv:
             if not type(rv) is list:
                 return collect(factor_terms(rv),
-                               {a for a in rv.atoms(Pow) if a.base is S.Exp1})
+                               {a for a in rv.atoms(Pow) if a.base is E})
             results.extend(rv)
     if results:
         return next(ordered(results))
@@ -1847,7 +1847,7 @@ def meijerint_definite(f, x, a, b):
         if rv:
             if not type(rv) is list:
                 rv = (collect(factor_terms(rv[0]),
-                              {a for a in rv[0].atoms(Pow) if a.base is S.Exp1}),) + rv[1:]
+                              {a for a in rv[0].atoms(Pow) if a.base is E}),) + rv[1:]
                 return rv
             results.extend(rv)
     if results:
@@ -2045,7 +2045,7 @@ def meijerint_inversion(f, x, t):
         exponentials = []
         while args:
             arg = args.pop()
-            if arg.is_Pow and arg.base is S.Exp1:
+            if arg.is_Pow and arg.base is E:
                 arg2 = expand(arg)
                 if arg2.is_Mul:
                     args += arg2.args

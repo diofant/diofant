@@ -124,9 +124,10 @@ def pure_complex(v):
     >>> pure_complex(I)
     (0, 1)
     """
+    from .numbers import I
     h, t = v.as_coeff_Add()
     c, i = t.as_coeff_Mul()
-    if i is S.ImaginaryUnit:
+    if i is I:
         return h, c
 
 
@@ -323,10 +324,10 @@ def add_terms(terms, prec, target_prec):
 
     # see if any argument is NaN or oo and thus warrants a special return
     special = []
-    from .numbers import Float
+    from .numbers import Float, nan
     for t in terms:
         arg = Float._new(t[0], 1)
-        if arg is S.NaN or arg.is_infinite:
+        if arg is nan or arg.is_infinite:
             special.append(arg)
     if special:
         from .add import Add
@@ -426,13 +427,13 @@ def evalf_mul(v, prec, options):
 
     # see if any argument is NaN or oo and thus warrants a special return
     special, other = [], []
-    from .numbers import Float
+    from .numbers import Float, nan
     for arg in args:
         arg = evalf(arg, prec, options)
         if arg[0] is None:
             continue
         arg = Float._new(arg[0], 1)
-        if arg is S.NaN or arg.is_infinite:
+        if arg is nan or arg.is_infinite:
             special.append(arg)
         else:
             other.append(arg)
@@ -532,6 +533,7 @@ def evalf_mul(v, prec, options):
 
 
 def evalf_pow(v, prec, options):
+    from .numbers import E
 
     target_prec = prec
     base, exp = v.args
@@ -602,7 +604,7 @@ def evalf_pow(v, prec, options):
         yre, yim, _, _ = evalf(exp, prec, options)
 
     # Pure exponential function; no need to evalf the base
-    if base is S.Exp1:
+    if base is E:
         if yim:
             re, im = libmp.mpc_exp((yre or fzero, yim), prec)
             return finalize_complex(re, im, target_prec)
@@ -837,6 +839,7 @@ def do_integral(expr, prec, options):
 
         from ..functions import cos, sin
         from .symbol import Wild
+        from .numbers import pi
 
         have_part = [False, False]
         max_real_term = [MINUS_INF]
@@ -865,7 +868,7 @@ def do_integral(expr, prec, options):
             if not m:
                 raise ValueError("An integrand of the form sin(A*x+B)*f(x) "
                                  "or cos(A*x+B)*f(x) is required for oscillatory quadrature")
-            period = as_mpmath(2*S.Pi/m[A], prec + 15, options)
+            period = as_mpmath(2*pi/m[A], prec + 15, options)
             result = quadosc(f, [xlow, xhigh], period=period)
             # XXX: quadosc does not do error detection yet
             quadrature_error = MINUS_INF
@@ -1055,7 +1058,7 @@ def evalf_prod(expr, prec, options):
 
 
 def evalf_sum(expr, prec, options):
-    from .numbers import Float
+    from .numbers import Float, oo
     if 'subs' in options:
         expr = expr.subs(options['subs'])
     func = expr.function
@@ -1067,7 +1070,7 @@ def evalf_sum(expr, prec, options):
     prec2 = prec + 10
     try:
         n, a, b = limits[0]
-        if b != S.Infinity or a != int(a):
+        if b != oo or a != int(a):
             raise NotImplementedError
         # Use fast hypergeometric summation if possible
         v = hypsum(func, n, int(a), prec2)
@@ -1258,7 +1261,7 @@ class EvalfMixin:
                 tanh-sinh quadrature is used. For oscillatory
                 integrals on an infinite interval, try quad='osc'.
         """
-        from .numbers import Float
+        from .numbers import Float, I
         n = n if n is not None else 15
 
         if subs and is_sequence(subs):
@@ -1295,7 +1298,7 @@ class EvalfMixin:
         if im:
             p = max(min(prec, im_acc), 1)
             im = Float._new(im, p)
-            return re + im*S.ImaginaryUnit
+            return re + im*I
         else:
             return re
 

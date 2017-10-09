@@ -428,7 +428,7 @@ def _vect_div(one, other):
     if isinstance(other, Vector):
         raise TypeError("Cannot divide two vectors")
     else:
-        if other == S.Zero:
+        if other == 0:
             raise ValueError("Cannot divide a vector by zero")
         return VectorMul(one, Pow(other, S.NegativeOne))
 

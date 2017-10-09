@@ -2,7 +2,7 @@ from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, S, Wild,
-                     cacheit, pi, sympify)
+                     cacheit, nan, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
@@ -158,10 +158,10 @@ class besselj(BesselBase):
             elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
                 return S.Zero
             elif re(nu).is_negative and not (nu.is_integer is True):
-                return S.ComplexInfinity
+                return zoo
             elif nu.is_imaginary:
-                return S.NaN
-        if z is S.Infinity or (z is S.NegativeInfinity):
+                return nan
+        if z is oo or (z is -oo):
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -249,12 +249,12 @@ class bessely(BesselBase):
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.NegativeInfinity
+                return -oo
             elif re(nu).is_zero is False:
-                return S.ComplexInfinity
+                return zoo
             elif re(nu).is_zero:
-                return S.NaN
-        if z is S.Infinity or z is S.NegativeInfinity:
+                return nan
+        if z is oo or z is -oo:
             return S.Zero
 
         if nu.is_integer:
@@ -327,10 +327,10 @@ class besseli(BesselBase):
             elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
                 return S.Zero
             elif re(nu).is_negative and not (nu.is_integer is True):
-                return S.ComplexInfinity
+                return zoo
             elif nu.is_imaginary:
-                return S.NaN
-        if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+                return nan
+        if im(z) is oo or im(z) is -oo:
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -415,12 +415,12 @@ class besselk(BesselBase):
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.Infinity
+                return oo
             elif re(nu).is_zero is False:
-                return S.ComplexInfinity
+                return zoo
             elif re(nu).is_zero:
-                return S.NaN
-        if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+                return nan
+        if im(z) is oo or im(z) is -oo:
             return S.Zero
 
         if nu.is_integer:
@@ -861,9 +861,9 @@ class airyai(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return S.One / (3**Rational(2, 3) * gamma(Rational(2, 3)))
@@ -1024,9 +1024,9 @@ class airybi(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
+            if arg is oo:
+                return oo
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return 1/(root(3, 6)*gamma(Rational(2, 3)))
@@ -1099,17 +1099,17 @@ class airybi(AiryBase):
 
 class _airyais(Function):
     def _eval_rewrite_as_intractable(self, x):
-        return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
+        return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...simplify import combsimp
         from ...series import Order
         point = args0[0]
 
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
             l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
-                 Rational(-3, 4)**k/(2*S.Pi**2*factorial(k) *
+                 Rational(-3, 4)**k/(2*pi**2*factorial(k) *
                                      z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
@@ -1128,17 +1128,17 @@ class _airyais(Function):
 
 class _airybis(Function):
     def _eval_rewrite_as_intractable(self, x):
-        return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
+        return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...simplify import combsimp
         from ...series import Order
         point = args0[0]
 
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
             l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
-                 Rational(3, 4)**k/(2*S.Pi**2*factorial(k) *
+                 Rational(3, 4)**k/(2*pi**2*factorial(k) *
                                     z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
@@ -1236,7 +1236,7 @@ class airyaiprime(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
             elif arg is S.Zero:
                 return -S.One / (cbrt(3) * gamma(Rational(1, 3)))
@@ -1386,9 +1386,9 @@ class airybiprime(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
+            if arg is oo:
+                return oo
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return root(3, 6)/gamma(Rational(1, 3))

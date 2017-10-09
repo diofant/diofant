@@ -1,7 +1,7 @@
 from mpmath import mp, workprec
 
-from ...core import (Add, Dummy, Expr, Function, I, Integer, Pow, Rational, S,
-                     oo, pi, sympify)
+from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Integer, Pow,
+                     Rational, S, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
 from ..combinatorial.numbers import bernoulli, harmonic
@@ -100,13 +100,13 @@ class gamma(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
             elif arg.is_Integer:
                 if arg.is_positive:
                     return factorial(arg - 1)
                 else:
-                    return S.ComplexInfinity
+                    return zoo
             elif arg.is_Rational:
                 if arg.q == 2:
                     n = abs(arg.p) // arg.q
@@ -125,12 +125,12 @@ class gamma(Function):
                         coeff *= i
 
                     if arg.is_positive:
-                        return coeff*sqrt(S.Pi) / 2**n
+                        return coeff*sqrt(pi) / 2**n
                     else:
-                        return 2**n*sqrt(S.Pi) / coeff
+                        return 2**n*sqrt(pi) / coeff
 
         if arg.is_integer and arg.is_nonpositive:
-            return S.ComplexInfinity
+            return zoo
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
@@ -313,7 +313,7 @@ class lowergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if z not in (S.Zero, S.NegativeInfinity):
+        if z not in (0, -oo):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_uppergamma(self, s, x):
@@ -414,7 +414,7 @@ class uppergamma(Function):
         from .error_functions import expint
         from .. import unpolarify
         if z.is_Number:
-            if z is S.Infinity:
+            if z is oo:
                 return S.Zero
             elif z is S.Zero:
                 # TODO: Holds only for Re(a) > 0:
@@ -450,7 +450,7 @@ class uppergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if z not in (S.Zero, S.NegativeInfinity):
+        if z not in (0, -oo):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_lowergamma(self, s, x):
@@ -628,29 +628,29 @@ class polygamma(Function):
                 return loggamma(z)
             else:
                 if z.is_Number:
-                    if z is S.Infinity:
+                    if z is oo:
                         if n.is_Number:
                             if n is S.Zero:
-                                return S.Infinity
+                                return oo
                             else:
                                 return S.Zero
                     elif z.is_Integer:
                         if z.is_nonpositive:
-                            return S.ComplexInfinity
+                            return zoo
                         else:
                             if n is S.Zero:
-                                return -S.EulerGamma + harmonic(z - 1, 1)
+                                return -EulerGamma + harmonic(z - 1, 1)
                             elif n.is_odd:
                                 return (-1)**(n + 1)*factorial(n)*zeta(n + 1, z)
 
         if n == 0:
             if z.is_Rational:
                 # TODO actually *any* n/m can be done, but that is messy
-                lookup = {Rational(1, 2): -2*log(2) - S.EulerGamma,
-                          Rational(1, 3): -S.Pi/2/sqrt(3) - 3*log(3)/2 - S.EulerGamma,
-                          Rational(1, 4): -S.Pi/2 - 3*log(2) - S.EulerGamma,
-                          Rational(3, 4): -3*log(2) - S.EulerGamma + S.Pi/2,
-                          Rational(2, 3): -3*log(3)/2 + S.Pi/2/sqrt(3) - S.EulerGamma}
+                lookup = {Rational(1, 2): -2*log(2) - EulerGamma,
+                          Rational(1, 3): -pi/2/sqrt(3) - 3*log(3)/2 - EulerGamma,
+                          Rational(1, 4): -pi/2 - 3*log(2) - EulerGamma,
+                          Rational(3, 4): -3*log(2) - EulerGamma + pi/2,
+                          Rational(2, 3): -3*log(3)/2 + pi/2/sqrt(3) - EulerGamma}
                 if z > 0:
                     n = floor(z)
                     z0 = z - n
@@ -661,12 +661,12 @@ class polygamma(Function):
                     z0 = z + n
                     if z0 in lookup:
                         return lookup[z0] - Add(*[1/(z0 - 1 - k) for k in range(n)])
-            elif z in (S.Infinity, S.NegativeInfinity):
-                return S.Infinity
+            elif z in (oo, -oo):
+                return oo
             else:
-                t = z.extract_multiplicatively(S.ImaginaryUnit)
-                if t in (S.Infinity, S.NegativeInfinity):
-                    return S.Infinity
+                t = z.extract_multiplicatively(I)
+                if t in (oo, -oo):
+                    return oo
 
         # TODO n == 1 also can do some rational z
 
@@ -707,8 +707,8 @@ class polygamma(Function):
 
     def _eval_rewrite_as_harmonic(self, n, z):
         if n.is_integer:
-            if n == S.Zero:
-                return harmonic(z - 1) - S.EulerGamma
+            if n == 0:
+                return harmonic(z - 1) - EulerGamma
             else:
                 return S.NegativeOne**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))
 
@@ -839,19 +839,19 @@ class loggamma(Function):
 
         if z.is_integer:
             if z.is_nonpositive:
-                return S.Infinity
+                return oo
             elif z.is_positive:
                 return log(gamma(z))
         elif z.is_rational:
             p, q = z.as_numer_denom()
             # Half-integral values:
             if p.is_positive and q == 2:
-                return log(sqrt(S.Pi) * 2**(1 - p) * gamma(p) / gamma((p + 1)*S.Half))
+                return log(sqrt(pi) * 2**(1 - p) * gamma(p) / gamma((p + 1)*S.Half))
 
-        if z is S.Infinity:
-            return S.Infinity
-        elif abs(z) is S.Infinity:
-            return S.ComplexInfinity
+        if z is oo:
+            return oo
+        elif abs(z) is oo:
+            return zoo
 
     def _eval_expand_func(self, **hints):
         from ...concrete import Sum
@@ -868,7 +868,7 @@ class loggamma(Function):
             if n.is_positive:
                 return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
             elif n.is_negative:
-                return loggamma(p / q) - n*log(q) + S.Pi*S.ImaginaryUnit*n - Sum(log(k*q - p), (k, 1, -n))
+                return loggamma(p / q) - n*log(q) + pi*I*n - Sum(log(k*q - p), (k, 1, -n))
 
         return self
 

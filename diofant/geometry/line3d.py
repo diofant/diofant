@@ -8,7 +8,7 @@ Ray3D
 Segment3D
 """
 
-from ..core import Dummy, S, nan
+from ..core import Dummy, S, nan, oo
 from ..core.compatibility import is_sequence
 from ..functions import acos
 from ..simplify import simplify
@@ -148,7 +148,7 @@ class LinearEntity3D(GeometryEntity):
         >>> l1.length
         oo
         """
-        return S.Infinity
+        return oo
 
     @property
     def points(self):
@@ -1096,11 +1096,11 @@ class Ray3D(LinearEntity3D):
 
         """
         if self.p1.x < self.p2.x:
-            return S.Infinity
+            return oo
         elif self.p1.x == self.p2.x:
             return S.Zero
         else:
-            return S.NegativeInfinity
+            return -oo
 
     @property
     def ydirection(self):
@@ -1128,11 +1128,11 @@ class Ray3D(LinearEntity3D):
 
         """
         if self.p1.y < self.p2.y:
-            return S.Infinity
+            return oo
         elif self.p1.y == self.p2.y:
             return S.Zero
         else:
-            return S.NegativeInfinity
+            return -oo
 
     @property
     def zdirection(self):
@@ -1162,11 +1162,11 @@ class Ray3D(LinearEntity3D):
 
         """
         if self.p1.z < self.p2.z:
-            return S.Infinity
+            return oo
         elif self.p1.z == self.p2.z:
             return S.Zero
         else:
-            return S.NegativeInfinity
+            return -oo
 
     def distance(self, o):
         """
@@ -1243,15 +1243,15 @@ class Ray3D(LinearEntity3D):
             o = Point3D(o)
         if isinstance(o, Point3D):
             if Point3D.are_collinear(self.p1, self.p2, o):
-                if self.xdirection is S.Infinity:
+                if self.xdirection is oo:
                     rv = o.x >= self.source.x
-                elif self.xdirection is S.NegativeInfinity:
+                elif self.xdirection is -oo:
                     rv = o.x <= self.source.x
-                elif self.ydirection is S.Infinity:
+                elif self.ydirection is oo:
                     rv = o.y >= self.source.y
-                elif self.ydirection is S.NegativeInfinity:
+                elif self.ydirection is -oo:
                     rv = o.y <= self.source.y
-                elif self.zdirection is S.Infinity:
+                elif self.zdirection is oo:
                     rv = o.z <= self.source.z
                 else:
                     rv = o.z <= self.source.z

@@ -19,7 +19,7 @@ the responsibility for generating properly cased Fortran code to the user.
 
 import string
 
-from ..core import Add, Function, N, S
+from ..core import Add, Function, I, N, S
 from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
 
@@ -195,13 +195,13 @@ class FCodePrinter(CodePrinter):
 
                 return "cmplx(%s,%s) %s %s" % (
                     self._print(Add(*pure_real)),
-                    self._print(-S.ImaginaryUnit*Add(*pure_imaginary)),
+                    self._print(-I*Add(*pure_imaginary)),
                     sign, t,
                 )
             else:
                 return "cmplx(%s,%s)" % (
                     self._print(Add(*pure_real)),
-                    self._print(-S.ImaginaryUnit*Add(*pure_imaginary)),
+                    self._print(-I*Add(*pure_imaginary)),
                 )
         else:
             return CodePrinter._print_Add(self, expr)
@@ -227,7 +227,7 @@ class FCodePrinter(CodePrinter):
         # purpose: print complex numbers nicely in Fortran.
         if expr.is_number and expr.is_imaginary:
             return "cmplx(0,%s)" % (
-                self._print(-S.ImaginaryUnit*expr)
+                self._print(-I*expr)
             )
         else:
             return CodePrinter._print_Mul(self, expr)

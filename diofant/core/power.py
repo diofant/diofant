@@ -13,7 +13,7 @@ from .function import (_coeff_isneg, expand_complex, expand_mul,
                        expand_multinomial)
 from .logic import fuzzy_or
 from .mul import Mul, _keep_coeff
-from .numbers import Integer
+from .numbers import E, I, Integer, nan, oo, pi
 from .singleton import S
 from .symbol import Dummy, symbols
 from .sympify import sympify
@@ -182,27 +182,27 @@ class Pow(Expr):
                     b = -b
                 elif e.is_odd:
                     return -Pow(-b, e)
-            if S.NaN in (b, e):  # XXX S.NaN**x -> S.NaN under assumption that x != 0
-                return S.NaN
+            if nan in (b, e):  # XXX nan**x -> nan under assumption that x != 0
+                return nan
             elif b is S.One:
                 if abs(e).is_infinite:
-                    return S.NaN
+                    return nan
                 return S.One
             else:
                 # recognize base as E
-                if not e.is_Atom and b is not S.Exp1 and not isinstance(b, exp_polar):
+                if not e.is_Atom and b is not E and not isinstance(b, exp_polar):
                     from .exprtools import factor_terms
                     from ..functions import log, sign, im
                     from ..simplify import numer, denom
                     c, ex = factor_terms(e, sign=False).as_coeff_Mul()
                     den = denom(ex)
                     if isinstance(den, log) and den.args[0] == b:
-                        return S.Exp1**(c*numer(ex))
+                        return E**(c*numer(ex))
                     elif den.is_Add:
                         s = sign(im(b))
                         if s.is_Number and s and den == \
-                                log(-factor_terms(b, sign=False)) + s*S.ImaginaryUnit*S.Pi:
-                            return S.Exp1**(c*numer(ex))
+                                log(-factor_terms(b, sign=False)) + s*I*pi:
+                            return E**(c*numer(ex))
 
                 obj = b._eval_power(e)
                 if obj is not None:
@@ -230,7 +230,7 @@ class Pow(Expr):
     def _eval_power(self, other):
         from ..functions import Abs, arg, exp, floor, im, log, re, sign
         b, e = self.as_base_exp()
-        if b is S.NaN:
+        if b is nan:
             return (b**e)**other  # let __new__ handle it
 
         s = None
@@ -278,7 +278,7 @@ class Pow(Expr):
                     if b.is_extended_real:
                         b = abs(b)
                     if b.is_imaginary:
-                        b = abs(im(b))*S.ImaginaryUnit
+                        b = abs(im(b))*I
 
                 if (abs(e) < 1) is S.true or (e == 1):
                     s = 1  # floor = 0
@@ -291,8 +291,8 @@ class Pow(Expr):
                 elif b.is_imaginary and (abs(e) == 2):
                     s = 1  # floor = 0
                 elif _half(other):
-                    s = exp(2*S.Pi*S.ImaginaryUnit*other*floor(
-                        S.Half - e*arg(b)/(2*S.Pi)))
+                    s = exp(2*pi*I*other*floor(
+                        S.Half - e*arg(b)/(2*pi)))
                     if s.is_extended_real and _n2(sign(s) - s) == 0:
                         s = sign(s)
                     else:
@@ -302,8 +302,8 @@ class Pow(Expr):
                 #     _half(other) with constant floor or
                 #     floor(S.Half - im(e*log(b))/2/pi) == 0
                 try:
-                    s = exp(2*S.ImaginaryUnit*S.Pi*other *
-                            floor(S.Half - im(e*log(b))/2/S.Pi))
+                    s = exp(2*I*pi*other *
+                            floor(S.Half - im(e*log(b))/2/pi))
                     # be careful to test that s is -1 or 1 b/c sign(I) == I:
                     # so check that s is real
                     if s.is_extended_real and _n2(sign(s) - s) == 0:
@@ -402,14 +402,14 @@ class Pow(Expr):
         from .mul import Mul
         from ..functions import arg, log
 
-        if self.base is S.Exp1:
+        if self.base is E:
             if self.exp.is_extended_real:
                 return True
             elif self.exp.is_imaginary:
-                return (2*S.ImaginaryUnit*self.exp/S.Pi).is_even
+                return (2*I*self.exp/pi).is_even
 
         if self.base.is_extended_real is None:
-            if self.base.func == Pow and self.base.base is S.Exp1 and self.base.exp.is_imaginary:
+            if self.base.func == Pow and self.base.base is E and self.base.exp.is_imaginary:
                 return self.exp.is_imaginary
         if self.exp.is_extended_real is None:
             return
@@ -445,7 +445,7 @@ class Pow(Expr):
                 if c and c.is_Integer:
                     return Mul(self.base**c, self.base**a,
                                evaluate=False).is_extended_real
-            elif (self.base in (-S.ImaginaryUnit, S.ImaginaryUnit) and
+            elif (self.base in (-I, I) and
                   (self.exp/2).is_noninteger):
                 return False
             return
@@ -453,13 +453,13 @@ class Pow(Expr):
         if self.base.is_extended_real and self.exp.is_imaginary:
             if self.base is S.NegativeOne:
                 return True
-            c = self.exp.coeff(S.ImaginaryUnit)
-            if c in (S.One, S.NegativeOne):
+            c = self.exp.coeff(I)
+            if c in (1, -1):
                 if self.base == 2:
                     return False
 
         if self.base.is_extended_real is False:  # we already know it's not imag
-            i = arg(self.base)*self.exp/S.Pi
+            i = arg(self.base)*self.exp/pi
             return i.is_integer
 
     def _eval_is_complex(self):
@@ -489,7 +489,7 @@ class Pow(Expr):
                         return self.base.is_negative
 
         if self.base.is_real is False:  # we already know it's not imag
-            return (2*arg(self.base)*self.exp/S.Pi).is_odd
+            return (2*arg(self.base)*self.exp/pi).is_odd
 
     def _eval_is_odd(self):
         if self.exp.is_integer:
@@ -573,7 +573,7 @@ class Pow(Expr):
                     new_l.append(Pow(self.base, Add(*o_al), evaluate=False))
                     return Mul(*new_l)
 
-        if old.is_Pow and old.base is S.Exp1 and self.exp.is_extended_real and self.base.is_positive:
+        if old.is_Pow and old.base is E and self.exp.is_extended_real and self.base.is_positive:
             ct1 = old.exp.as_independent(Symbol, as_Add=False)
             ct2 = (self.exp*log(self.base)).as_independent(
                 Symbol, as_Add=False)
@@ -687,8 +687,8 @@ class Pow(Expr):
 
         # sift the commutative bases
         def pred(x):
-            if x is S.ImaginaryUnit:
-                return S.ImaginaryUnit
+            if x is I:
+                return I
             polar = x.is_polar
             if polar:
                 return True
@@ -698,9 +698,8 @@ class Pow(Expr):
         nonneg = sifted[True]
         other = sifted[None]
         neg = sifted[False]
-        imag = sifted[S.ImaginaryUnit]
+        imag = sifted[I]
         if imag:
-            I = S.ImaginaryUnit
             i = len(imag) % 4
             if i == 0:
                 pass
@@ -842,8 +841,6 @@ class Pow(Expr):
                             a, b = a*a - b*b, 2*a*b
                             n //= 2
 
-                        I = S.ImaginaryUnit
-
                         if k == 1:
                             return c + I*d
                         else:
@@ -920,7 +917,7 @@ class Pow(Expr):
                 re, im = re/mag, -im/mag
                 if re.is_Number and im.is_Number:
                     # We can be more efficient in this case
-                    expr = expand_multinomial((re + im*S.ImaginaryUnit)**-exp)
+                    expr = expand_multinomial((re + im*I)**-exp)
                     return expr.as_real_imag()
 
                 expr = poly((a + b)**-exp)
@@ -934,7 +931,7 @@ class Pow(Expr):
             r = [i for i in expr.terms() if i[0][1] % 4 == 3]
             im_part3 = Add(*[cc*a**aa*b**bb for (aa, bb), cc in r])
 
-            return (re_part.subs({a: re, b: S.ImaginaryUnit*im}),
+            return (re_part.subs({a: re, b: I*im}),
                     im_part1.subs({a: re, b: im}) + im_part3.subs({a: re, b: -im}))
 
         elif self.exp.is_Rational:
@@ -950,12 +947,12 @@ class Pow(Expr):
             #      x being imaginary there are actually q roots, but
             #      only a single one is returned from here.
             r = self.func(self.func(re, 2) + self.func(im, 2), S.Half)
-            t = arg(re + S.ImaginaryUnit*im)
+            t = arg(re + I*im)
 
             rp, tp = self.func(r, self.exp), t*self.exp
 
             return rp*cos(tp), rp*sin(tp)
-        elif self.base is S.Exp1:
+        elif self.base is E:
             from ..functions import exp
             re, im = self.exp.as_real_imag()
             if deep:
@@ -1021,20 +1018,20 @@ class Pow(Expr):
             elif b.is_irrational:
                 if e.is_zero:
                     return True
-        if b is S.Exp1:
+        if b is E:
             if e.is_rational and e.is_nonzero:
                 return False
 
     def _eval_is_algebraic(self):
         if self.base.is_zero or (self.base - 1).is_zero:
             return True
-        elif self.base is S.Exp1:
+        elif self.base is E:
             s = self.func(*self.args)
             if s.func == self.func:
                 if self.exp.is_nonzero:
                     if self.exp.is_algebraic:
                         return False
-                    elif (self.exp/S.Pi).is_rational:
+                    elif (self.exp/pi).is_rational:
                         return False
             else:
                 return s.is_algebraic
@@ -1150,12 +1147,12 @@ class Pow(Expr):
         from ..functions import exp, log, floor, arg
         from ..series import Order, limit
         from ..simplify import powsimp
-        if self.base is S.Exp1:
+        if self.base is E:
             e_series = self.exp.nseries(x, n=n, logx=logx)
             if e_series.is_Order:
                 return 1 + e_series
             e0 = limit(e_series.removeO(), x, 0)
-            if e0 in (S.NegativeInfinity, S.Infinity):
+            if e0 in (-oo, oo):
                 return self
             t = e_series - e0
             exp_series = term = exp(e0)
@@ -1178,13 +1175,13 @@ class Pow(Expr):
             if t.is_Add:
                 t = t.func(*[i for i in t.args if i.limit(x, 0).is_finite])
             c, e = b0.as_coeff_exponent(x)
-            if self.exp is S.Infinity:
+            if self.exp is oo:
                 if e != 0:
                     sig = -e
                 else:
                     sig = abs(c) - 1 if c != 1 else t.removeO()
                 if sig.is_positive:
-                    return S.Infinity
+                    return oo
                 elif sig.is_negative:
                     return S.Zero
                 else:
@@ -1200,9 +1197,9 @@ class Pow(Expr):
                 pow_series += Order(t**n, x)
                 # branch handling
                 if c.is_negative:
-                    l = floor(arg(t.removeO()*c)/(2*S.Pi)).limit(x, 0)
+                    l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
                     if l.is_finite:
-                        factor *= exp(2*S.Pi*S.ImaginaryUnit*self.exp*l)
+                        factor *= exp(2*pi*I*self.exp*l)
             pow_series = expand_mul(factor*pow_series)
             return powsimp(pow_series, deep=True, combine='exp')
 
@@ -1211,7 +1208,7 @@ class Pow(Expr):
         from ..series import Order
         if not self.exp.has(x):
             return self.func(self.base.as_leading_term(x), self.exp)
-        elif self.base is S.Exp1:
+        elif self.base is E:
             if self.exp.is_Mul:
                 k, arg = self.exp.as_independent(x)
             else:
@@ -1227,19 +1224,17 @@ class Pow(Expr):
 
     def _eval_rewrite_as_sin(self, base, exp):
         from ..functions import sin
-        if self.base is S.Exp1:
-            I = S.ImaginaryUnit
-            return sin(I*self.exp + S.Pi/2) - I*sin(I*self.exp)
+        if self.base is E:
+            return sin(I*self.exp + pi/2) - I*sin(I*self.exp)
 
     def _eval_rewrite_as_cos(self, base, exp):
         from ..functions import cos
-        if self.base is S.Exp1:
-            I = S.ImaginaryUnit
-            return cos(I*self.exp) + I*cos(I*self.exp + S.Pi/2)
+        if self.base is E:
+            return cos(I*self.exp) + I*cos(I*self.exp + pi/2)
 
     def _eval_rewrite_as_tanh(self, base, exp):
         from ..functions import tanh
-        if self.base is S.Exp1:
+        if self.base is E:
             return (1 + tanh(self.exp/2))/(1 - tanh(self.exp/2))
 
     def as_content_primitive(self, radical=False):

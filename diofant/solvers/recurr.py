@@ -50,7 +50,7 @@ For the sake of completeness, `f(n)` can be:
 from collections import defaultdict
 
 from ..concrete import product
-from ..core import (Add, Dummy, Equality, Mul, Rational, S, Symbol, Wild,
+from ..core import (Add, Dummy, Equality, Mul, Rational, S, Symbol, Wild, oo,
                     sympify)
 from ..core.compatibility import default_sort_key
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
@@ -129,7 +129,7 @@ def rsolve_poly(coeffs, f, n, **hints):
         f = quo(f, g, n, polys=False)
 
     polys = [ Poly(0, n) ] * (r + 1)
-    terms = [ (S.Zero, S.NegativeInfinity) ] * (r + 1)
+    terms = [ (S.Zero, -oo) ] * (r + 1)
 
     for i in range(r + 1):
         for j in range(i, r + 1):

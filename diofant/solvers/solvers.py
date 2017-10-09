@@ -7,10 +7,10 @@ import warnings
 from collections import defaultdict
 from types import GeneratorType
 
-from ..core import (Add, Derivative, Dummy, Equality, Expr, Float, Function,
-                    Ge, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
-                    expand_mul, expand_multinomial, expand_power_exp, nfloat,
-                    preorder_traversal, sympify)
+from ..core import (Add, Derivative, Dummy, E, Equality, Expr, Float, Function,
+                    Ge, I, Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
+                    expand_mul, expand_multinomial, expand_power_exp, nan,
+                    nfloat, oo, pi, preorder_traversal, sympify, zoo)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import (default_sort_key, is_sequence, iterable,
                                   ordered)
@@ -136,10 +136,10 @@ def checksol(f, sol, **flags):
         else:
             return
 
-    illegal = {S.NaN,
-               S.ComplexInfinity,
-               S.Infinity,
-               S.NegativeInfinity}
+    illegal = {nan,
+               zoo,
+               oo,
+               -oo}
     if any(sympify(v).atoms() & illegal for k, v in sol.items()):
         return False
 
@@ -543,7 +543,7 @@ def solve(f, *symbols, **flags):
                 raise NotImplementedError('solving %s when the argument '
                                           'is not real or imaginary.' % a)
             reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
-                         piece(a.args[0]*S.ImaginaryUnit)))
+                         piece(a.args[0]*I)))
         fi = fi.subs(reps)
 
         # arg
@@ -560,7 +560,7 @@ def solve(f, *symbols, **flags):
             continue  # neither re(x) nor im(x) will appear
         # if re(s) or im(s) appear, the auxiliary equation must be present
         if any(fi.has(re(s), im(s)) for fi in f):
-            irf.append((s, re(s) + S.ImaginaryUnit*im(s)))
+            irf.append((s, re(s) + I*im(s)))
     if irf:
         for s, rhs in irf:
             for i, fi in enumerate(f):
@@ -774,7 +774,7 @@ def _solve(f, symbol, **flags):
                             v = v.canonical
                         result.add(Piecewise(
                             (candidate, v),
-                            (S.NaN, True)
+                            (nan, True)
                         ))
         check = False
     else:
@@ -1338,7 +1338,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
             dn = nn.diff(xi)
             if dn:
                 all_zero = False
-                if dn is S.NaN:
+                if dn is nan:
                     break
                 if xi not in dn.free_symbols:
                     vi = -(nn.subs(xi, 0))/dn
@@ -1457,8 +1457,8 @@ def minsolve_linear_system(system, *symbols, **flags):
 
 # these are functions that have multiple inverse values per period
 multi_inverses = {
-    sin: lambda x: (asin(x), S.Pi - asin(x)),
-    cos: lambda x: (acos(x), 2*S.Pi - acos(x)),
+    sin: lambda x: (asin(x), pi - asin(x)),
+    cos: lambda x: (acos(x), 2*pi - acos(x)),
 }
 
 
@@ -1561,7 +1561,7 @@ def _tsolve(eq, sym, **flags):
         g = _filtered_gens(eq.as_poly(), sym)
         up_or_log = set()
         for gi in g:
-            if gi.is_Pow and gi.base is S.Exp1 or isinstance(gi, log):
+            if gi.is_Pow and gi.base is E or isinstance(gi, log):
                 up_or_log.add(gi)
             elif gi.is_Pow:
                 gisimp = powdenest(expand_power_exp(gi))
@@ -1754,7 +1754,7 @@ def _invert(eq, *symbols, **kwargs):
                 y, x = lhs.args
                 lhs = 2*atan(y/(sqrt(x**2 + y**2) + x))
 
-        if lhs.is_Pow and lhs.base is S.Exp1:
+        if lhs.is_Pow and lhs.base is E:
             rhs = log(rhs)
             lhs = lhs.exp
 

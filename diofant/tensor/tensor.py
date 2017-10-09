@@ -3547,7 +3547,7 @@ class TensMul(TensExpr):
             # no arguments is equivalent to "1", i.e. TensMul().
             # If tensors are constructed correctly, this should never occur.
             return "1"
-        if self.coeff == S.NegativeOne:
+        if self.coeff == -1:
             # expressions like "-A(a)"
             return "-"+"*".join([get_str(arg) for arg in args[1:]])
 

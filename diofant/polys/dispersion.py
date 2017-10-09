@@ -1,5 +1,5 @@
 from . import Poly
-from ..core import S
+from ..core import oo
 
 
 def dispersionset(p, q=None, *gens, **args):
@@ -204,7 +204,7 @@ def dispersion(p, q=None, *gens, **args):
     J = dispersionset(p, q, *gens, **args)
     if not J:
         # Definition for maximum of empty set
-        j = S.NegativeInfinity
+        j = -oo
     else:
         j = max(J)
     return j

@@ -2,7 +2,7 @@ import itertools
 
 from mpmath import mpf, mpi
 
-from ..core import Basic, Eq, Expr, Float, Mul, S, sympify
+from ..core import Basic, Eq, Expr, Float, Mul, S, nan, oo, sympify, zoo
 from ..core.compatibility import iterable, ordered
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
@@ -41,14 +41,14 @@ class Set(Basic):
     @staticmethod
     def _infimum_key(expr):
         """
-        Return infimum (if possible) else S.Infinity.
+        Return infimum (if possible) else oo.
         """
         try:
             infimum = expr.inf
             assert infimum.is_comparable
         except (NotImplementedError,
                 AttributeError, AssertionError, ValueError):
-            infimum = S.Infinity
+            infimum = oo
         return infimum
 
     def union(self, other):
@@ -861,9 +861,9 @@ class Interval(Set, EvalfMixin):
 
     def _complement(self, other):
         if other is S.Reals:
-            a = Interval(S.NegativeInfinity, self.start,
+            a = Interval(-oo, self.start,
                          True, not self.left_open)
-            b = Interval(self.end, S.Infinity, not self.right_open, True)
+            b = Interval(self.end, oo, not self.right_open, True)
             return Union(a, b)
 
         return Set._complement(self, other)
@@ -907,7 +907,7 @@ class Interval(Set, EvalfMixin):
         return FiniteSet(self.start, self.end)
 
     def _contains(self, other):
-        if not isinstance(other, Expr) or other in (S.NaN, S.ComplexInfinity):
+        if not isinstance(other, Expr) or other in (nan, zoo):
             return false
 
         if other.is_extended_real is False:
@@ -1032,12 +1032,12 @@ class Interval(Set, EvalfMixin):
     @property
     def is_left_unbounded(self):
         """Return ``True`` if the left endpoint is negative infinity. """
-        return self.left is S.NegativeInfinity or self.left == Float("-inf")
+        return self.left is -oo or self.left == Float("-inf")
 
     @property
     def is_right_unbounded(self):
         """Return ``True`` if the right endpoint is positive infinity. """
-        return self.right is S.Infinity or self.right == Float("+inf")
+        return self.right is oo or self.right == Float("+inf")
 
     def as_relational(self, x):
         """Rewrite an interval in terms of inequalities and logic operators."""
@@ -1585,7 +1585,7 @@ class UniversalSet(Set, metaclass=Singleton):
 
     @property
     def _measure(self):
-        return S.Infinity
+        return oo
 
     def _contains(self, other):
         return true

@@ -7,7 +7,7 @@ import mpmath
 from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
                 sin, sinh, sqrt)
 from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
-                     Ne, Rational, S, Tuple, ilcm, oo, pi)
+                     Ne, Rational, S, Tuple, ilcm, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 
 
@@ -457,8 +457,8 @@ class meijerg(TupleParametersBase):
             return TupleArg(_prep_tuple(p[0]), _prep_tuple(p[1]))
 
         arg0, arg1 = tr(args[0]), tr(args[1])
-        if Tuple(arg0, arg1).has(S.Infinity, S.ComplexInfinity,
-                                 S.NegativeInfinity):
+        if Tuple(arg0, arg1).has(oo, zoo,
+                                 -oo):
             raise ValueError("G-function parameters must be finite")
 
         if any((a - b).is_integer and (a - b).is_positive
@@ -632,7 +632,7 @@ class meijerg(TupleParametersBase):
             branch = branch[0].args[0]/I
         else:
             branch = Integer(0)
-        n = ceiling(abs(branch/S.Pi)) + 1
+        n = ceiling(abs(branch/pi)) + 1
         znum = znum**(Integer(1)/n)*exp(I*branch / n)
 
         # Convert all args to mpf or mpc

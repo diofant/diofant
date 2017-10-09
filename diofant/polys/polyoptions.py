@@ -2,7 +2,7 @@
 
 import re
 
-from ..core import Basic, S, sympify
+from ..core import Basic, I, sympify
 from ..utilities import has_dups, numbered_symbols, public, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
@@ -518,7 +518,7 @@ class Gaussian(BooleanOption, metaclass=OptionType):
     @classmethod
     def postprocess(cls, options):
         if 'gaussian' in options and options['gaussian'] is True:
-            options['extension'] = {S.ImaginaryUnit}
+            options['extension'] = {I}
             Extension.postprocess(options)
 
 

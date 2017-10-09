@@ -1,4 +1,4 @@
-from ..core import Mul, S
+from ..core import Mul, S, nan
 from ..functions import exp, log
 from ..polys import quo, roots
 from ..simplify import powsimp
@@ -208,7 +208,7 @@ class Product(ExprWithIntLimits):
                 f = 1 / f
 
             g = self._eval_product(f, (i, a, b))
-            if g in (None, S.NaN):
+            if g in (None, nan):
                 return self.func(powsimp(f), *self.limits[index:])
             else:
                 f = g

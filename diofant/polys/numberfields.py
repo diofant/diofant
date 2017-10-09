@@ -4,8 +4,8 @@ from functools import reduce
 
 from mpmath import mp, pslq
 
-from ..core import (Add, AlgebraicNumber, Dummy, GoldenRatio, I, Integer, Mul,
-                    Rational, S, expand_mul, pi, sympify)
+from ..core import (Add, AlgebraicNumber, Dummy, E, GoldenRatio, I, Integer,
+                    Mul, Rational, S, expand_mul, pi, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ
@@ -538,7 +538,7 @@ def _minpoly_compose(ex, x, dom):
         else:
             res = _minpoly_mul(x, dom, *ex.args)
     elif ex.is_Pow:
-        if ex.base is S.Exp1:
+        if ex.base is E:
             res = _minpoly_exp(ex, x)
         else:
             res = _minpoly_pow(ex.base, ex.exp, x, dom)
@@ -671,7 +671,7 @@ def minpoly_groebner(ex, x):
 
     def bottom_up_scan(ex):
         if ex.is_Atom:
-            if ex is S.ImaginaryUnit:
+            if ex is I:
                 return update_mapping(ex, 2, 1)
             elif ex.is_Rational:
                 return ex

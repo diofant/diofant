@@ -1,4 +1,4 @@
-from ...core import Function, S, cacheit, sympify
+from ...core import Function, I, S, cacheit, nan, oo, pi, sympify, zoo
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -68,22 +68,22 @@ class sinh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.NegativeInfinity
+            if arg is oo:
+                return oo
+            elif arg is -oo:
+                return -oo
             elif arg is S.Zero:
                 return S.Zero
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
-                return S.NaN
+            if arg is zoo:
+                return nan
 
-            i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+            i_coeff = arg.as_coefficient(I)
 
             if i_coeff is not None:
-                return S.ImaginaryUnit * sin(i_coeff)
+                return I * sin(i_coeff)
             else:
                 if _coeff_isneg(arg):
                     return -cls(-arg)
@@ -141,7 +141,7 @@ class sinh(HyperbolicFunction):
 
     def _eval_expand_complex(self, deep=True, **hints):
         re_part, im_part = self.as_real_imag(deep=deep, **hints)
-        return re_part + im_part*S.ImaginaryUnit
+        return re_part + im_part*I
 
     def _eval_expand_trig(self, **hints):
         arg = self.args[0]
@@ -164,7 +164,7 @@ class sinh(HyperbolicFunction):
         return (exp(arg) - exp(-arg)) / 2
 
     def _eval_rewrite_as_cosh(self, arg):
-        return -S.ImaginaryUnit*cosh(arg + S.Pi*S.ImaginaryUnit/2)
+        return -I*cosh(arg + pi*I/2)
 
     def _eval_rewrite_as_tanh(self, arg):
         tanh_half = tanh(S.Half*arg)
@@ -218,19 +218,19 @@ class cosh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
+            elif arg is -oo:
+                return oo
             elif arg is S.Zero:
                 return S.One
             elif arg.is_negative:
                 return cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
-                return S.NaN
+            if arg is zoo:
+                return nan
 
-            i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+            i_coeff = arg.as_coefficient(I)
 
             if i_coeff is not None:
                 return cos(i_coeff)
@@ -285,7 +285,7 @@ class cosh(HyperbolicFunction):
 
     def _eval_expand_complex(self, deep=True, **hints):
         re_part, im_part = self.as_real_imag(deep=deep, **hints)
-        return re_part + im_part*S.ImaginaryUnit
+        return re_part + im_part*I
 
     def _eval_expand_trig(self, deep=True, **hints):
         arg = self.args[0]
@@ -308,7 +308,7 @@ class cosh(HyperbolicFunction):
         return (exp(arg) + exp(-arg)) / 2
 
     def _eval_rewrite_as_sinh(self, arg):
-        return -S.ImaginaryUnit*sinh(arg + S.Pi*S.ImaginaryUnit/2)
+        return -I*sinh(arg + pi*I/2)
 
     def _eval_rewrite_as_tanh(self, arg):
         tanh_half = tanh(S.Half*arg)**2
@@ -368,24 +368,24 @@ class tanh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
-                return S.NaN
+            if arg is zoo:
+                return nan
 
-            i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+            i_coeff = arg.as_coefficient(I)
 
             if i_coeff is not None:
                 if _coeff_isneg(i_coeff):
-                    return -S.ImaginaryUnit * tan(-i_coeff)
-                return S.ImaginaryUnit * tan(i_coeff)
+                    return -I * tan(-i_coeff)
+                return I * tan(i_coeff)
             else:
                 if _coeff_isneg(arg):
                     return -cls(-arg)
@@ -447,10 +447,10 @@ class tanh(HyperbolicFunction):
         return (pos_exp - neg_exp)/(pos_exp + neg_exp)
 
     def _eval_rewrite_as_sinh(self, arg):
-        return S.ImaginaryUnit*sinh(arg)/sinh(S.Pi*S.ImaginaryUnit/2 - arg)
+        return I*sinh(arg)/sinh(pi*I/2 - arg)
 
     def _eval_rewrite_as_cosh(self, arg):
-        return S.ImaginaryUnit*cosh(S.Pi*S.ImaginaryUnit/2 - arg)/cosh(arg)
+        return I*cosh(pi*I/2 - arg)/cosh(arg)
 
     def _eval_rewrite_as_coth(self, arg):
         return 1/coth(arg)
@@ -498,24 +498,24 @@ class coth(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
-                return S.ComplexInfinity
+                return zoo
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
-                return S.NaN
+            if arg is zoo:
+                return nan
 
-            i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+            i_coeff = arg.as_coefficient(I)
 
             if i_coeff is not None:
                 if _coeff_isneg(i_coeff):
-                    return S.ImaginaryUnit * cot(-i_coeff)
-                return -S.ImaginaryUnit * cot(i_coeff)
+                    return I * cot(-i_coeff)
+                return -I * cot(i_coeff)
             else:
                 if _coeff_isneg(arg):
                     return -cls(-arg)
@@ -577,10 +577,10 @@ class coth(HyperbolicFunction):
         return (pos_exp + neg_exp)/(pos_exp - neg_exp)
 
     def _eval_rewrite_as_sinh(self, arg):
-        return -S.ImaginaryUnit*sinh(S.Pi*S.ImaginaryUnit/2 - arg)/sinh(arg)
+        return -I*sinh(pi*I/2 - arg)/sinh(arg)
 
     def _eval_rewrite_as_cosh(self, arg):
-        return -S.ImaginaryUnit*cosh(arg)/cosh(S.Pi*S.ImaginaryUnit/2 - arg)
+        return -I*cosh(arg)/cosh(pi*I/2 - arg)
 
     def _eval_rewrite_as_tanh(self, arg):
         return 1/tanh(arg)
@@ -646,7 +646,7 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
 
     def _eval_expand_complex(self, deep=True, **hints):
         re_part, im_part = self.as_real_imag(deep=True, **hints)
-        return re_part + S.ImaginaryUnit*im_part
+        return re_part + I*im_part
 
     def _eval_as_leading_term(self, x):
         return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
@@ -707,7 +707,7 @@ class csch(ReciprocalHyperbolicFunction):
             return 2 * (1 - 2**n) * B/F * x**n
 
     def _eval_rewrite_as_cosh(self, arg):
-        return S.ImaginaryUnit / cosh(arg + S.ImaginaryUnit * S.Pi / 2)
+        return I / cosh(arg + I * pi / 2)
 
 
 class sech(ReciprocalHyperbolicFunction):
@@ -748,7 +748,7 @@ class sech(ReciprocalHyperbolicFunction):
             return euler(n) / factorial(n) * x**(n)
 
     def _eval_rewrite_as_sinh(self, arg):
-        return S.ImaginaryUnit / sinh(arg + S.ImaginaryUnit * S.Pi / 2)
+        return I / sinh(arg + I * pi / 2)
 
 
 ###############################################################################
@@ -781,10 +781,10 @@ class asinh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.NegativeInfinity
+            if arg is oo:
+                return oo
+            elif arg is -oo:
+                return -oo
             elif arg is S.Zero:
                 return S.Zero
             elif arg is S.One:
@@ -794,13 +794,13 @@ class asinh(Function):
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
-                return S.ComplexInfinity
+            if arg is zoo:
+                return zoo
 
-            i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+            i_coeff = arg.as_coefficient(I)
 
             if i_coeff is not None:
-                return S.ImaginaryUnit * asin(i_coeff)
+                return I * asin(i_coeff)
             else:
                 if _coeff_isneg(arg):
                     return -cls(-arg)
@@ -865,54 +865,54 @@ class acosh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.Infinity
+            if arg is oo:
+                return oo
+            elif arg is -oo:
+                return oo
             elif arg is S.Zero:
-                return S.Pi*S.ImaginaryUnit / 2
+                return pi*I / 2
             elif arg is S.One:
                 return S.Zero
             elif arg is S.NegativeOne:
-                return S.Pi*S.ImaginaryUnit
+                return pi*I
 
         if arg.is_number:
             cst_table = {
-                S.ImaginaryUnit: log(S.ImaginaryUnit*(1 + sqrt(2))),
-                -S.ImaginaryUnit: log(-S.ImaginaryUnit*(1 + sqrt(2))),
-                S.Half: S.Pi/3,
-                -S.Half: 2*S.Pi/3,
-                sqrt(2)/2: S.Pi/4,
-                -sqrt(2)/2: 3*S.Pi/4,
-                1/sqrt(2): S.Pi/4,
-                -1/sqrt(2): 3*S.Pi/4,
-                sqrt(3)/2: S.Pi/6,
-                -sqrt(3)/2: 5*S.Pi/6,
-                (sqrt(3) - 1)/sqrt(2**3): 5*S.Pi/12,
-                -(sqrt(3) - 1)/sqrt(2**3): 7*S.Pi/12,
-                sqrt(2 + sqrt(2))/2: S.Pi/8,
-                -sqrt(2 + sqrt(2))/2: 7*S.Pi/8,
-                sqrt(2 - sqrt(2))/2: 3*S.Pi/8,
-                -sqrt(2 - sqrt(2))/2: 5*S.Pi/8,
-                (1 + sqrt(3))/(2*sqrt(2)): S.Pi/12,
-                -(1 + sqrt(3))/(2*sqrt(2)): 11*S.Pi/12,
-                (sqrt(5) + 1)/4: S.Pi/5,
-                -(sqrt(5) + 1)/4: 4*S.Pi/5
+                I: log(I*(1 + sqrt(2))),
+                -I: log(-I*(1 + sqrt(2))),
+                S.Half: pi/3,
+                -S.Half: 2*pi/3,
+                sqrt(2)/2: pi/4,
+                -sqrt(2)/2: 3*pi/4,
+                1/sqrt(2): pi/4,
+                -1/sqrt(2): 3*pi/4,
+                sqrt(3)/2: pi/6,
+                -sqrt(3)/2: 5*pi/6,
+                (sqrt(3) - 1)/sqrt(2**3): 5*pi/12,
+                -(sqrt(3) - 1)/sqrt(2**3): 7*pi/12,
+                sqrt(2 + sqrt(2))/2: pi/8,
+                -sqrt(2 + sqrt(2))/2: 7*pi/8,
+                sqrt(2 - sqrt(2))/2: 3*pi/8,
+                -sqrt(2 - sqrt(2))/2: 5*pi/8,
+                (1 + sqrt(3))/(2*sqrt(2)): pi/12,
+                -(1 + sqrt(3))/(2*sqrt(2)): 11*pi/12,
+                (sqrt(5) + 1)/4: pi/5,
+                -(sqrt(5) + 1)/4: 4*pi/5
             }
 
             if arg in cst_table:
                 if arg.is_extended_real:
-                    return cst_table[arg]*S.ImaginaryUnit
+                    return cst_table[arg]*I
                 return cst_table[arg]
 
         if arg.is_infinite:
-            return S.Infinity
+            return oo
 
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
-            return S.Pi*S.ImaginaryUnit / 2
+            return pi*I / 2
         elif n < 0 or n % 2 == 0:
             return S.Zero
         else:
@@ -924,14 +924,14 @@ class acosh(Function):
                 k = (n - 1) // 2
                 R = RisingFactorial(S.Half, k)
                 F = factorial(k)
-                return -R / F * S.ImaginaryUnit * x**n / n
+                return -R / F * I * x**n / n
 
     def _eval_as_leading_term(self, x):
         from ...series import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
-            return S.ImaginaryUnit*S.Pi/2
+            return I*pi/2
         else:
             return self.func(arg)
 
@@ -971,23 +971,23 @@ class atanh(Function):
             if arg is S.Zero:
                 return S.Zero
             elif arg is S.One:
-                return S.Infinity
+                return oo
             elif arg is S.NegativeOne:
-                return S.NegativeInfinity
-            elif arg is S.Infinity:
-                return -S.ImaginaryUnit * atan(arg)
-            elif arg is S.NegativeInfinity:
-                return S.ImaginaryUnit * atan(-arg)
+                return -oo
+            elif arg is oo:
+                return -I * atan(arg)
+            elif arg is -oo:
+                return I * atan(-arg)
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
-                return S.NaN
+            if arg is zoo:
+                return nan
 
-            i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+            i_coeff = arg.as_coefficient(I)
 
             if i_coeff is not None:
-                return S.ImaginaryUnit * atan(i_coeff)
+                return I * atan(i_coeff)
             else:
                 if _coeff_isneg(arg):
                     return -cls(-arg)
@@ -1036,26 +1036,26 @@ class acoth(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
-                return S.Pi*S.ImaginaryUnit / 2
+                return pi*I / 2
             elif arg is S.One:
-                return S.Infinity
+                return oo
             elif arg is S.NegativeOne:
-                return S.NegativeInfinity
+                return -oo
             elif arg.is_negative:
                 return -cls(-arg)
         else:
-            if arg is S.ComplexInfinity:
+            if arg is zoo:
                 return 0
 
-            i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+            i_coeff = arg.as_coefficient(I)
 
             if i_coeff is not None:
-                return -S.ImaginaryUnit * acot(i_coeff)
+                return -I * acot(i_coeff)
             else:
                 if _coeff_isneg(arg):
                     return -cls(-arg)
@@ -1064,7 +1064,7 @@ class acoth(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
-            return S.Pi*S.ImaginaryUnit / 2
+            return pi*I / 2
         elif n < 0 or n % 2 == 0:
             return S.Zero
         else:
@@ -1076,7 +1076,7 @@ class acoth(Function):
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
-            return S.ImaginaryUnit*S.Pi/2
+            return I*pi/2
         else:
             return self.func(arg)
 

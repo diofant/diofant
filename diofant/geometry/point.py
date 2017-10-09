@@ -213,7 +213,7 @@ class Point(GeometryEntity):
     @property
     def is_zero(self):
         """True if every coordinate is zero, otherwise False."""
-        return all(x == S.Zero for x in self.args)
+        return all(x == 0 for x in self.args)
 
     @property
     def ambient_dimension(self):

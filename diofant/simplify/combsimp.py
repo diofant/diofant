@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from ..core import Add, Function, Integer, Mul, Pow, Rational, S
+from ..core import Add, Function, Integer, Mul, Pow, Rational, S, pi
 from ..core.compatibility import default_sort_key, ordered
 from ..functions import binomial, factorial, gamma, sin, sqrt
 from ..polys import cancel, factor
@@ -228,8 +228,8 @@ def combsimp(expr):
                     n = g1 + g2 - 1
                     if not n.is_Integer:
                         continue
-                    numer.append(S.Pi)
-                    denom.append(sin(S.Pi*g1))
+                    numer.append(pi)
+                    denom.append(sin(pi*g1))
                     gammas.pop(i)
                     if n > 0:
                         for k in range(n):
@@ -274,7 +274,7 @@ def combsimp(expr):
                         do.append(2*y - 1 - k)
                 ng.append(y + Rational(1, 2))
                 no.append(2**(2*y - 1))
-                do.append(sqrt(S.Pi))
+                do.append(sqrt(pi))
 
         # Try to reduce the number of gamma factors by applying the
         # multiplication theorem (used when n gammas with args differing
@@ -355,7 +355,7 @@ def combsimp(expr):
                     con = n*(resid + ui)  # for (2) and (3)
 
                     # (2)
-                    numer.append((2*S.Pi)**(Integer(n - 1)/2) *
+                    numer.append((2*pi)**(Integer(n - 1)/2) *
                                  n**(Rational(1, 2) - con))
                     # (3)
                     new.append(con)

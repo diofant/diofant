@@ -3,7 +3,7 @@ of incomplete gamma functions. It should probably be renamed.
 """
 
 from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational, S,
-                     cacheit, expand_mul, pi, sympify)
+                     cacheit, expand_mul, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import polar_lift
@@ -98,7 +98,7 @@ class erf(Function):
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            return 2*exp(-self.args[0]**2)/sqrt(S.Pi)
+            return 2*exp(-self.args[0]**2)/sqrt(pi)
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -111,9 +111,9 @@ class erf(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
@@ -125,8 +125,8 @@ class erf(Function):
             return S.One - arg.args[0]
 
         # Try to pull out factors of I
-        t = arg.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity or t is S.NegativeInfinity:
+        t = arg.extract_multiplicatively(I)
+        if t is oo or t is -oo:
             return arg
 
         # Try to pull out factors of -1
@@ -144,7 +144,7 @@ class erf(Function):
             if len(previous_terms) >= 2:
                 return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
-                return 2*(-1)**k * x**n/(n*factorial(k)*sqrt(S.Pi))
+                return 2*(-1)**k * x**n/(n*factorial(k)*sqrt(pi))
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -158,15 +158,15 @@ class erf(Function):
 
     def _eval_rewrite_as_uppergamma(self, z):
         from .gamma_functions import uppergamma
-        return sqrt(z**2)/z*(S.One - uppergamma(S.Half, z**2)/sqrt(S.Pi))
+        return sqrt(z**2)/z*(S.One - uppergamma(S.Half, z**2)/sqrt(pi))
 
     def _eval_rewrite_as_fresnels(self, z):
-        arg = (S.One - S.ImaginaryUnit)*z/sqrt(pi)
-        return (S.One + S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One - I)*z/sqrt(pi)
+        return (S.One + I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_fresnelc(self, z):
-        arg = (S.One - S.ImaginaryUnit)*z/sqrt(pi)
-        return (S.One + S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One - I)*z/sqrt(pi)
+        return (S.One + I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_meijerg(self, z):
         return z/sqrt(pi)*meijerg([S.Half], [], [0], [-S.Half], z**2)
@@ -175,7 +175,7 @@ class erf(Function):
         return 2*z/sqrt(pi)*hyper([S.Half], [3*S.Half], -z**2)
 
     def _eval_rewrite_as_expint(self, z):
-        return sqrt(z**2)/z - z*expint(S.Half, z**2)/sqrt(S.Pi)
+        return sqrt(z**2)/z - z*expint(S.Half, z**2)/sqrt(pi)
 
     def _eval_rewrite_as_tractable(self, z):
         return S.One - _erfs(z)*exp(-z**2)
@@ -289,7 +289,7 @@ class erfc(Function):
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            return -2*exp(-self.args[0]**2)/sqrt(S.Pi)
+            return -2*exp(-self.args[0]**2)/sqrt(pi)
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -302,7 +302,7 @@ class erfc(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
             elif arg is S.Zero:
                 return S.One
@@ -314,8 +314,8 @@ class erfc(Function):
             return arg.args[0]
 
         # Try to pull out factors of I
-        t = arg.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity or t is S.NegativeInfinity:
+        t = arg.extract_multiplicatively(I)
+        if t is oo or t is -oo:
             return -arg
 
         # Try to pull out factors of -1
@@ -335,7 +335,7 @@ class erfc(Function):
             if len(previous_terms) >= 2:
                 return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
-                return -2*(-1)**k * x**n/(n*factorial(k)*sqrt(S.Pi))
+                return -2*(-1)**k * x**n/(n*factorial(k)*sqrt(pi))
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -357,12 +357,12 @@ class erfc(Function):
         return S.One + I*erfi(I*z)
 
     def _eval_rewrite_as_fresnels(self, z):
-        arg = (S.One - S.ImaginaryUnit)*z/sqrt(pi)
-        return S.One - (S.One + S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One - I)*z/sqrt(pi)
+        return S.One - (S.One + I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_fresnelc(self, z):
-        arg = (S.One-S.ImaginaryUnit)*z/sqrt(pi)
-        return S.One - (S.One + S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One-I)*z/sqrt(pi)
+        return S.One - (S.One + I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_meijerg(self, z):
         return S.One - z/sqrt(pi)*meijerg([S.Half], [], [0], [-S.Half], z**2)
@@ -372,10 +372,10 @@ class erfc(Function):
 
     def _eval_rewrite_as_uppergamma(self, z):
         from .gamma_functions import uppergamma
-        return S.One - sqrt(z**2)/z*(S.One - uppergamma(S.Half, z**2)/sqrt(S.Pi))
+        return S.One - sqrt(z**2)/z*(S.One - uppergamma(S.Half, z**2)/sqrt(pi))
 
     def _eval_rewrite_as_expint(self, z):
-        return S.One - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(S.Pi)
+        return S.One - sqrt(z**2)/z + z*expint(S.Half, z**2)/sqrt(pi)
 
     def _eval_as_leading_term(self, x):
         from ...series import Order
@@ -477,7 +477,7 @@ class erfi(Function):
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            return 2*exp(self.args[0]**2)/sqrt(S.Pi)
+            return 2*exp(self.args[0]**2)/sqrt(pi)
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -486,8 +486,8 @@ class erfi(Function):
         if z.is_Number:
             if z is S.Zero:
                 return S.Zero
-            elif z is S.Infinity:
-                return S.Infinity
+            elif z is oo:
+                return oo
 
         # Try to pull out factors of -1
         if z.could_extract_minus_sign():
@@ -496,7 +496,7 @@ class erfi(Function):
         # Try to pull out factors of I
         nz = z.extract_multiplicatively(I)
         if nz is not None:
-            if nz is S.Infinity:
+            if nz is oo:
                 return I
             if isinstance(nz, erfinv):
                 return I*nz.args[0]
@@ -514,7 +514,7 @@ class erfi(Function):
             if len(previous_terms) >= 2:
                 return previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
-                return 2 * x**n/(n*factorial(k)*sqrt(S.Pi))
+                return 2 * x**n/(n*factorial(k)*sqrt(pi))
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -536,12 +536,12 @@ class erfi(Function):
         return I*erfc(I*z) - I
 
     def _eval_rewrite_as_fresnels(self, z):
-        arg = (S.One + S.ImaginaryUnit)*z/sqrt(pi)
-        return (S.One - S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One + I)*z/sqrt(pi)
+        return (S.One - I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_fresnelc(self, z):
-        arg = (S.One + S.ImaginaryUnit)*z/sqrt(pi)
-        return (S.One - S.ImaginaryUnit)*(fresnelc(arg) - I*fresnels(arg))
+        arg = (S.One + I)*z/sqrt(pi)
+        return (S.One - I)*(fresnelc(arg) - I*fresnels(arg))
 
     def _eval_rewrite_as_meijerg(self, z):
         return z/sqrt(pi)*meijerg([S.Half], [], [0], [-S.Half], -z**2)
@@ -551,10 +551,10 @@ class erfi(Function):
 
     def _eval_rewrite_as_uppergamma(self, z):
         from .gamma_functions import uppergamma
-        return sqrt(-z**2)/z*(uppergamma(S.Half, -z**2)/sqrt(S.Pi) - S.One)
+        return sqrt(-z**2)/z*(uppergamma(S.Half, -z**2)/sqrt(pi) - S.One)
 
     def _eval_rewrite_as_expint(self, z):
-        return sqrt(-z**2)/z - z*expint(S.Half, -z**2)/sqrt(S.Pi)
+        return sqrt(-z**2)/z - z*expint(S.Half, -z**2)/sqrt(pi)
 
     def as_real_imag(self, deep=True, **hints):
         if self.args[0].is_extended_real:
@@ -641,16 +641,16 @@ class erf2(Function):
     def fdiff(self, argindex):
         x, y = self.args
         if argindex == 1:
-            return -2*exp(-x**2)/sqrt(S.Pi)
+            return -2*exp(-x**2)/sqrt(pi)
         elif argindex == 2:
-            return 2*exp(-y**2)/sqrt(S.Pi)
+            return 2*exp(-y**2)/sqrt(pi)
         else:
             raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, x, y):
-        I = S.Infinity
-        N = S.NegativeInfinity
+        I = oo
+        N = -oo
         O = S.Zero
         if x == y:
             return S.Zero
@@ -702,8 +702,8 @@ class erf2(Function):
 
     def _eval_rewrite_as_uppergamma(self, x, y):
         from .gamma_functions import uppergamma
-        return (sqrt(y**2)/y*(S.One - uppergamma(S.Half, y**2)/sqrt(S.Pi)) -
-                sqrt(x**2)/x*(S.One - uppergamma(S.Half, x**2)/sqrt(S.Pi)))
+        return (sqrt(y**2)/y*(S.One - uppergamma(S.Half, y**2)/sqrt(pi)) -
+                sqrt(x**2)/x*(S.One - uppergamma(S.Half, x**2)/sqrt(pi)))
 
     def _eval_rewrite_as_expint(self, x, y):
         return erf(y).rewrite(expint) - erf(x).rewrite(expint)
@@ -760,7 +760,7 @@ class erfinv(Function):
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            return sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
+            return sqrt(pi)*exp(self.func(self.args[0])**2)*S.Half
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -773,11 +773,11 @@ class erfinv(Function):
     @classmethod
     def eval(cls, z):
         if z is S.NegativeOne:
-            return S.NegativeInfinity
+            return -oo
         elif z is S.Zero:
             return S.Zero
         elif z is S.One:
-            return S.Infinity
+            return oo
 
         if isinstance(z, erf) and z.args[0].is_extended_real:
             return z.args[0]
@@ -836,7 +836,7 @@ class erfcinv (Function):
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            return -sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
+            return -sqrt(pi)*exp(self.func(self.args[0])**2)*S.Half
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -849,11 +849,11 @@ class erfcinv (Function):
     @classmethod
     def eval(cls, z):
         if z is S.Zero:
-            return S.Infinity
+            return oo
         elif z is S.One:
             return S.Zero
         elif z == 2:
-            return S.NegativeInfinity
+            return -oo
 
     def _eval_rewrite_as_erfinv(self, z):
         return erfinv(1-z)
@@ -914,7 +914,7 @@ class erf2inv(Function):
         if argindex == 1:
             return exp(self.func(x, y)**2-x**2)
         elif argindex == 2:
-            return sqrt(S.Pi)*S.Half*exp(self.func(x, y)**2)
+            return sqrt(pi)*S.Half*exp(self.func(x, y)**2)
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -923,16 +923,16 @@ class erf2inv(Function):
         if x is S.Zero and y is S.Zero:
             return S.Zero
         elif x is S.Zero and y is S.One:
-            return S.Infinity
+            return oo
         elif x is S.One and y is S.Zero:
             return S.One
         elif x is S.Zero:
             return erfinv(y)
-        elif x is S.Infinity:
+        elif x is oo:
             return erfcinv(-y)
         elif y is S.Zero:
             return x
-        elif y is S.Infinity:
+        elif y is oo:
             return erfinv(x)
 
 
@@ -1383,9 +1383,9 @@ class li(Function):
         if z is S.Zero:
             return S.Zero
         elif z is S.One:
-            return S.NegativeInfinity
-        elif z is S.Infinity:
-            return S.Infinity
+            return -oo
+        elif z is oo:
+            return oo
 
     def fdiff(self, argindex=1):
         arg = self.args[0]
@@ -1424,7 +1424,7 @@ class li(Function):
 
     def _eval_rewrite_as_hyper(self, z):
         return (log(z)*hyper((1, 1), (2, 2), log(z)) +
-                S.Half*(log(log(z)) - log(S.One/log(z))) + S.EulerGamma)
+                S.Half*(log(log(z)) - log(S.One/log(z))) + EulerGamma)
 
     def _eval_rewrite_as_meijerg(self, z):
         return (-log(-log(z)) - S.Half*(log(S.One/log(z)) - log(log(z)))
@@ -1496,8 +1496,8 @@ class Li(Function):
 
     @classmethod
     def eval(cls, z):
-        if z is S.Infinity:
-            return S.Infinity
+        if z is oo:
+            return oo
         elif z is 2*S.One:
             return S.Zero
 
@@ -1529,9 +1529,9 @@ class TrigonometricIntegral(Function):
     def eval(cls, z):
         if z == 0:
             return cls._atzero
-        elif z is S.Infinity:
+        elif z is oo:
             return cls._atinf()
-        elif z is S.NegativeInfinity:
+        elif z is -oo:
             return cls._atneginf()
 
         nz = z.extract_multiplicatively(polar_lift(I))
@@ -1741,7 +1741,7 @@ class Ci(TrigonometricIntegral):
     """
 
     _trigfunc = cos
-    _atzero = S.ComplexInfinity
+    _atzero = zoo
 
     @classmethod
     def _atinf(cls):
@@ -1828,11 +1828,11 @@ class Shi(TrigonometricIntegral):
 
     @classmethod
     def _atinf(cls):
-        return S.Infinity
+        return oo
 
     @classmethod
     def _atneginf(cls):
-        return S.NegativeInfinity
+        return -oo
 
     @classmethod
     def _minusfactor(cls, z):
@@ -1920,15 +1920,15 @@ class Chi(TrigonometricIntegral):
     """
 
     _trigfunc = cosh
-    _atzero = S.ComplexInfinity
+    _atzero = zoo
 
     @classmethod
     def _atinf(cls):
-        return S.Infinity
+        return oo
 
     @classmethod
     def _atneginf(cls):
-        return S.Infinity
+        return oo
 
     @classmethod
     def _minusfactor(cls, z):
@@ -1992,7 +1992,7 @@ class FresnelIntegral(Function):
 
         # Values at positive infinities signs
         # if any were extracted automatically
-        if z is S.Infinity:
+        if z is oo:
             return S.Half
 
     def fdiff(self, argindex=1):
@@ -2146,7 +2146,7 @@ class fresnels(FresnelIntegral):
         point = args0[0]
 
         # Expansion at oo
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
 
             # expansion of S(x) = S1(x*sqrt(pi/2)), see reference[5] page 1-8
@@ -2279,7 +2279,7 @@ class fresnelc(FresnelIntegral):
         point = args0[0]
 
         # Expansion at oo
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
 
             # expansion of C(x) = C1(x*sqrt(pi/2)), see reference[5] page 1-8
@@ -2321,20 +2321,20 @@ class _erfs(Function):
         point = args0[0]
 
         # Expansion at oo
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
-            l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
+            l = [1/sqrt(pi)*factorial(2*k)*(-Integer(4))**(-k) /
                  factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
             return (Add(*l))._eval_nseries(x, n, logx) + o
 
         # Expansion at I*oo
-        t = point.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity:
+        t = point.extract_multiplicatively(I)
+        if t is oo:
             z = self.args[0]
             # TODO: is the series really correct?
-            l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
+            l = [1/sqrt(pi)*factorial(2*k)*(-Integer(4))**(-k) /
                  factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
@@ -2346,7 +2346,7 @@ class _erfs(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             z = self.args[0]
-            return -2/sqrt(S.Pi) + 2*z*_erfs(z)
+            return -2/sqrt(pi) + 2*z*_erfs(z)
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -2362,7 +2362,7 @@ class _eis(Function):
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
-        if args0[0] != S.Infinity:
+        if args0[0] != oo:
             return super(_eis, self)._eval_aseries(n, args0, x, logx)
 
         z = self.args[0]

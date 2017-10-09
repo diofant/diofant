@@ -7,7 +7,7 @@ import re
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Add, S, Symbol
+from ..core import Add, S, Symbol, oo
 from ..core.alphabets import greeks
 from ..core.compatibility import default_sort_key
 from ..core.function import _coeff_isneg
@@ -574,7 +574,7 @@ class LatexPrinter(Printer):
         e, z, z0, dir = expr.args
 
         tex = r"\lim_{%s \to " % self._print(z)
-        if str(dir) == "real" or z0 in (S.Infinity, S.NegativeInfinity):
+        if str(dir) == "real" or z0 in (oo, -oo):
             tex += r"%s}" % self._print(z0)
         else:
             tex += r"%s^%s}" % (self._print(z0), self._print(dir))
@@ -1177,7 +1177,7 @@ class LatexPrinter(Printer):
 
     def _print_Order(self, expr):
         s = self._print(expr.expr)
-        if expr.point and any(p != S.Zero for p in expr.point) or \
+        if expr.point and any(p != 0 for p in expr.point) or \
            len(expr.variables) > 1:
             s += '; '
             if len(expr.variables) > 1:

@@ -277,7 +277,7 @@ class Polygon(GeometrySet):
             a, b, c = args[i - 2], args[i - 1], args[i]
             ang = Line.angle_between(Line(b, a), Line(b, c))
             if cw ^ self._isright(a, b, c):
-                ret[b] = 2*S.Pi - ang
+                ret[b] = 2*pi - ang
             else:
                 ret[b] = ang
         return ret
@@ -1252,7 +1252,7 @@ class RegularPolygon(Polygon):
         sqrt(2)*r/2
 
         """
-        return self.radius * cos(S.Pi/self._n)
+        return self.radius * cos(pi/self._n)
 
     @property
     def inradius(self):
@@ -1294,7 +1294,7 @@ class RegularPolygon(Polygon):
         3*pi/4
 
         """
-        return (self._n - 2)*S.Pi/self._n
+        return (self._n - 2)*pi/self._n
 
     @property
     def exterior_angle(self):
@@ -1319,7 +1319,7 @@ class RegularPolygon(Polygon):
         pi/4
 
         """
-        return 2*S.Pi/self._n
+        return 2*pi/self._n
 
     @property
     def circumcircle(self):
@@ -1568,7 +1568,7 @@ class RegularPolygon(Polygon):
         c = self._center
         r = abs(self._radius)
         rot = self._rot
-        v = 2*S.Pi/self._n
+        v = 2*pi/self._n
 
         return [Point(c.x + r*cos(k*v + rot), c.y + r*sin(k*v + rot))
                 for k in range(self._n)]

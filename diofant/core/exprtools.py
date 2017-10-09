@@ -11,7 +11,7 @@ from .containers import Dict, Tuple
 from .coreerrors import NonCommutativeExpression
 from .expr import Expr
 from .mul import Mul, _keep_coeff
-from .numbers import I, Integer, Number, Rational
+from .numbers import I, Integer, Number, Rational, oo
 from .power import Pow
 from .singleton import S
 from .symbol import Dummy
@@ -121,7 +121,7 @@ class Factors:
                 factors[S.NegativeOne] = S.One
                 n = -n
             if n is not S.One:
-                if n.is_Float or n.is_Integer or n is S.Infinity:
+                if n.is_Float or n.is_Integer or n is oo:
                     factors[n] = S.One
                 elif n.is_Rational:
                     # since we're processing Numbers, the denominator is
@@ -197,7 +197,7 @@ class Factors:
         True
         """
         f = self.factors
-        return len(f) == 1 and S.Zero in f
+        return len(f) == 1 and 0 in f
 
     @property
     def is_one(self):  # Factors

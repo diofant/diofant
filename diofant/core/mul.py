@@ -248,14 +248,14 @@ class Mul(AssocOp):
 
             # 3
             elif o.is_Number:
-                if o is S.NaN or coeff is S.ComplexInfinity and o is S.Zero:
+                if o is nan or coeff is zoo and o is S.Zero:
                     # we know for sure the result will be nan
-                    return [S.NaN], [], None
+                    return [nan], [], None
                 if coeff.is_Number:  # it could be zoo
                     coeff *= o
-                    if coeff is S.NaN:
+                    if coeff is nan:
                         # we know for sure the result will be nan
-                        return [S.NaN], [], None
+                        return [nan], [], None
                 elif coeff.is_AlgebraicNumber:
                     coeff *= o
                 o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
@@ -265,17 +265,17 @@ class Mul(AssocOp):
                 coeff *= o
                 continue
 
-            elif o is S.ComplexInfinity:
+            elif o is zoo:
                 if not coeff:
                     # 0 * zoo = NaN
-                    return [S.NaN], [], None
-                if coeff is S.ComplexInfinity:
+                    return [nan], [], None
+                if coeff is zoo:
                     # zoo * zoo = zoo
-                    return [S.ComplexInfinity], [], None
-                coeff = S.ComplexInfinity
+                    return [zoo], [], None
+                coeff = zoo
                 continue
 
-            elif o is S.ImaginaryUnit:
+            elif o is I:
                 neg1e += S.Half
                 continue
 
@@ -313,7 +313,7 @@ class Mul(AssocOp):
                             num_exp.append((b, e))
                             continue
 
-                    elif b is S.ImaginaryUnit and e.is_Rational:
+                    elif b is I and e.is_Rational:
                         neg1e += e/2
                         continue
 
@@ -504,7 +504,7 @@ class Mul(AssocOp):
                 coeff = -coeff
             # if it's a multiple of 1/2 extract I
             if q == 2:
-                c_part.append(S.ImaginaryUnit)
+                c_part.append(I)
             elif p:
                 # see if there is any positive base this power of
                 # -1 can join
@@ -522,7 +522,7 @@ class Mul(AssocOp):
         c_part.extend([Pow(b, e) for e, b in pnew.items()])
 
         # oo, -oo
-        if (coeff is S.Infinity) or (coeff is S.NegativeInfinity):
+        if (coeff is oo) or (coeff is -oo):
             def _handle_for_oo(c_part, coeff_sign):
                 new_c_part = []
                 for t in c_part:
@@ -538,7 +538,7 @@ class Mul(AssocOp):
             coeff *= coeff_sign
 
         # zoo
-        if coeff is S.ComplexInfinity:
+        if coeff is zoo:
             # zoo might be
             #   infinite_real + bounded_im
             #   bounded_real + infinite_im
@@ -554,7 +554,7 @@ class Mul(AssocOp):
             # we know for sure the result will be 0 except the multiplicand
             # is infinity
             if any(c.is_finite is False for c in c_part):
-                return [S.NaN], [], order_symbols
+                return [nan], [], order_symbols
             return [coeff], [], order_symbols
 
         # check for straggling Numbers that were produced
@@ -1031,7 +1031,7 @@ class Mul(AssocOp):
             return real  # doesn't matter what zero is
 
     def _eval_is_imaginary(self):
-        obj = S.ImaginaryUnit*self
+        obj = I*self
         if obj.is_Mul:
             return fuzzy_and([obj._eval_is_extended_real(),
                               obj._eval_is_finite()])
@@ -1068,7 +1068,7 @@ class Mul(AssocOp):
         if self.is_zero:
             return False
         elif self.is_nonzero:
-            return (S.ImaginaryUnit*self).is_hermitian
+            return (I*self).is_hermitian
 
     def _eval_is_irrational(self):
         for t in self.args:
@@ -1311,7 +1311,7 @@ class Mul(AssocOp):
         else:
             ncdid = 0  # number of nc replacements we did
             take = len(old_nc)  # how much to look at each time
-            limit = cdid or S.Infinity  # max number that we can take
+            limit = cdid or oo  # max number that we can take
             failed = []  # failed terms will need subs if other terms pass
             i = 0
             while limit and i + take <= len(nc):
@@ -1586,6 +1586,6 @@ def expand_2arg(e):
     return bottom_up(e, do)
 
 
-from .numbers import Rational
+from .numbers import I, Rational, nan, oo, zoo
 from .power import Pow
 from .add import Add

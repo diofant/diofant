@@ -5,9 +5,9 @@ from ...sets import Interval
 
 def _add_splines(c, b1, d, b2):
     """Construct c*b1 + d*b2."""
-    if b1 == S.Zero or c == S.Zero:
+    if b1 == 0 or c == 0:
         rv = piecewise_fold(d*b2)
-    elif b2 == S.Zero or d == S.Zero:
+    elif b2 == 0 or d == 0:
         rv = piecewise_fold(c*b1)
     else:
         new_args = []
@@ -98,17 +98,17 @@ def bspline_basis(d, knots, n, x, close=True):
         )
     elif d > 0:
         denom = knots[n + d + 1] - knots[n + 1]
-        if denom != S.Zero:
+        if denom != 0:
             B = (knots[n + d + 1] - x)/denom
             b2 = bspline_basis(d - 1, knots, n + 1, x, close)
         else:
             b2 = B = S.Zero
 
         denom = knots[n + d] - knots[n]
-        if denom != S.Zero:
+        if denom != 0:
             A = (x - knots[n])/denom
             b1 = bspline_basis(
-                d - 1, knots, n, x, close and (B == S.Zero or b2 == S.Zero))
+                d - 1, knots, n, x, close and (B == 0 or b2 == 0))
         else:
             b1 = A = S.Zero
 

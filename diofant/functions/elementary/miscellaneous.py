@@ -1,5 +1,5 @@
 from ...core import (Add, Dummy, Equality, Expr, Lambda, Mul, Pow, Rational, S,
-                     Tuple, sympify)
+                     Tuple, oo, sympify, zoo)
 from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
@@ -366,7 +366,7 @@ class MinMaxBase(LatticeOp):
         for arg in arg_sequence:
 
             # pre-filter, checking comparability of arguments
-            if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is S.ComplexInfinity):
+            if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is zoo):
                 raise ValueError("The argument '%s' is not comparable." % arg)
 
             if arg == cls.zero:
@@ -532,8 +532,8 @@ class Max(MinMaxBase, Application):
     diofant.functions.elementary.miscellaneous.Min : find minimum values
     """
 
-    zero = S.Infinity
-    identity = S.NegativeInfinity
+    zero = oo
+    identity = -oo
 
     def fdiff( self, argindex ):
         from .. import Heaviside
@@ -585,8 +585,8 @@ class Min(MinMaxBase, Application):
     diofant.functions.elementary.miscellaneous.Max : find maximum values
     """
 
-    zero = S.NegativeInfinity
-    identity = S.Infinity
+    zero = -oo
+    identity = oo
 
     def fdiff( self, argindex ):
         from .. import Heaviside

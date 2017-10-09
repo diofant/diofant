@@ -6,7 +6,7 @@ combinatorial polynomials.
 
 """
 
-from ...core import Dummy, Function, Integer, Rational, S
+from ...core import Dummy, Function, Integer, Rational, S, oo, pi, zoo
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
                                  gegenbauer_poly, hermite_poly, jacobi_poly,
@@ -122,7 +122,7 @@ class jacobi(OrthogonalPolynomial):
         if a == b:
             if a == -S.Half:
                 return RisingFactorial(S.Half, n) / factorial(n) * chebyshevt(n, x)
-            elif a == S.Zero:
+            elif a == 0:
                 return legendre(n, x)
             elif a == S.Half:
                 return RisingFactorial(3*S.Half, n) / factorial(n + 1) * chebyshevu(n, x)
@@ -138,17 +138,17 @@ class jacobi(OrthogonalPolynomial):
             if x.could_extract_minus_sign():
                 return S.NegativeOne**n * jacobi(n, b, a, -x)
             # We can evaluate for some special values of x
-            if x == S.Zero:
+            if x == 0:
                 return (2**(-n) * gamma(a + n + 1) / (gamma(a + 1) * factorial(n)) *
                         hyper([-b - n, -n], [a + 1], -1))
-            if x == S.One:
+            if x == 1:
                 return RisingFactorial(a + 1, n) / factorial(n)
-            elif x == S.Infinity:
+            elif x == oo:
                 if n.is_positive:
                     # Make sure a+b+2*n \notin Z
                     if (a + b + 2*n).is_integer:
                         raise ValueError("a + b + 2*n should not be an integer.")
-                    return RisingFactorial(a + b + n + 1, n) * S.Infinity
+                    return RisingFactorial(a + b + n + 1, n) * oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             return jacobi_poly(n, a, b, x)
@@ -323,16 +323,16 @@ class gegenbauer(OrthogonalPolynomial):
         # Some special values for fixed a
         if a == S.Half:
             return legendre(n, x)
-        elif a == S.One:
+        elif a == 1:
             return chebyshevu(n, x)
-        elif a == S.NegativeOne:
+        elif a == -1:
             return S.Zero
 
         if not n.is_Number:
             # Handle this before the general sign extraction rule
-            if x == S.NegativeOne:
+            if x == -1:
                 if (re(a) > S.Half) is S.true:
-                    return S.ComplexInfinity
+                    return zoo
                 else:
                     return
 
@@ -341,14 +341,14 @@ class gegenbauer(OrthogonalPolynomial):
             if x.could_extract_minus_sign():
                 return S.NegativeOne**n * gegenbauer(n, a, -x)
             # We can evaluate for some special values of x
-            if x == S.Zero:
-                return (2**n * sqrt(S.Pi) * gamma(a + S.Half*n) /
+            if x == 0:
+                return (2**n * sqrt(pi) * gamma(a + S.Half*n) /
                         (gamma((1 - n)/2) * gamma(n + 1) * gamma(a)) )
-            if x == S.One:
+            if x == 1:
                 return gamma(2*a + n) / (gamma(2*a) * gamma(n + 1))
-            elif x == S.Infinity:
+            elif x == oo:
                 if n.is_positive:
-                    return RisingFactorial(a, n) * S.Infinity
+                    return RisingFactorial(a, n) * oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             return gegenbauer_poly(n, a, x)
@@ -460,12 +460,12 @@ class chebyshevt(OrthogonalPolynomial):
             if n.could_extract_minus_sign():
                 return chebyshevt(-n, x)
             # We can evaluate for some special values of x
-            if x == S.Zero:
-                return cos(S.Half * S.Pi * n)
-            if x == S.One:
+            if x == 0:
+                return cos(S.Half * pi * n)
+            if x == 1:
                 return S.One
-            elif x == S.Infinity:
-                return S.Infinity
+            elif x == oo:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -559,17 +559,17 @@ class chebyshevu(OrthogonalPolynomial):
             if n.could_extract_minus_sign():
                 return -chebyshevu(-n - 2, x)
             # We can evaluate for some special values of x
-            if x == S.Zero:
-                return cos(S.Half * S.Pi * n)
-            if x == S.One:
+            if x == 0:
+                return cos(S.Half * pi * n)
+            if x == 1:
                 return S.One + n
-            elif x == S.Infinity:
-                return S.Infinity
+            elif x == oo:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 # U_{-n}(x)  --->  -U_{n-2}(x)
-                if n == S.NegativeOne:
+                if n == -1:
                     return S.Zero
                 else:
                     return -cls._eval_at_order(-n - 2, x)
@@ -622,7 +622,7 @@ class chebyshevt_root(Function):
         if not ((0 <= k) and (k < n)):
             raise ValueError("must have 0 <= k < n, "
                              "got k = %s and n = %s" % (k, n))
-        return cos(S.Pi*(2*k + 1)/(2*n))
+        return cos(pi*(2*k + 1)/(2*n))
 
 
 class chebyshevu_root(Function):
@@ -661,7 +661,7 @@ class chebyshevu_root(Function):
         if not ((0 <= k) and (k < n)):
             raise ValueError("must have 0 <= k < n, "
                              "got k = %s and n = %s" % (k, n))
-        return cos(S.Pi*(k + 1)/(n + 1))
+        return cos(pi*(k + 1)/(n + 1))
 
 ############################################################################
 # Legendre polynomials and Associated Legendre polynomials
@@ -730,12 +730,12 @@ class legendre(OrthogonalPolynomial):
             if n.could_extract_minus_sign():
                 return legendre(-n - S.One, x)
             # We can evaluate for some special values of x
-            if x == S.Zero:
-                return sqrt(S.Pi)/(gamma(S.Half - n/2)*gamma(S.One + n/2))
-            elif x == S.One:
+            if x == 0:
+                return sqrt(pi)/(gamma(S.Half - n/2)*gamma(S.One + n/2))
+            elif x == 1:
                 return S.One
-            elif x == S.Infinity:
-                return S.Infinity
+            elif x == oo:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -822,7 +822,7 @@ class assoc_legendre(Function):
             # P^0_n  --->  L_n
             return legendre(n, x)
         if x == 0:
-            return 2**m*sqrt(S.Pi) / (gamma((1 - m - n)/2)*gamma(1 - (m - n)/2))
+            return 2**m*sqrt(pi) / (gamma((1 - m - n)/2)*gamma(1 - (m - n)/2))
         if n.is_Number and m.is_Number and n.is_integer and m.is_integer:
             if n.is_negative:
                 raise ValueError("%s : 1st index must be nonnegative integer (got %r)" % (cls, n))
@@ -906,10 +906,10 @@ class hermite(OrthogonalPolynomial):
             if x.could_extract_minus_sign():
                 return S.NegativeOne**n * hermite(n, -x)
             # We can evaluate for some special values of x
-            if x == S.Zero:
-                return 2**n * sqrt(S.Pi) / gamma((S.One - n)/2)
-            elif x == S.Infinity:
-                return S.Infinity
+            if x == 0:
+                return 2**n * sqrt(pi) / gamma((S.One - n)/2)
+            elif x == oo:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -997,12 +997,12 @@ class laguerre(OrthogonalPolynomial):
             if n.could_extract_minus_sign():
                 return exp(x) * laguerre(-n - 1, -x)
             # We can evaluate for some special values of x
-            if x == S.Zero:
+            if x == 0:
                 return S.One
-            elif x == S.NegativeInfinity:
-                return S.Infinity
-            elif x == S.Infinity:
-                return S.NegativeOne**n * S.Infinity
+            elif x == -oo:
+                return oo
+            elif x == oo:
+                return S.NegativeOne**n * oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -1097,17 +1097,17 @@ class assoc_laguerre(OrthogonalPolynomial):
     @classmethod
     def eval(cls, n, alpha, x):
         # L_{n}^{0}(x)  --->  L_{n}(x)
-        if alpha == S.Zero:
+        if alpha == 0:
             return laguerre(n, x)
 
         if not n.is_Number:
             # We can evaluate for some special values of x
-            if x == S.Zero:
+            if x == 0:
                 return binomial(n + alpha, alpha)
-            elif x == S.Infinity and n.is_positive:
-                return S.NegativeOne**n * S.Infinity
-            elif x == S.NegativeInfinity and n.is_positive:
-                return S.Infinity
+            elif x == oo and n.is_positive:
+                return S.NegativeOne**n * oo
+            elif x == -oo and n.is_positive:
+                return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:

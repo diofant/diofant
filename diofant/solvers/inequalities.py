@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 
-from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol
+from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
@@ -57,9 +57,9 @@ def solve_poly_inequality(poly, rel):
             interval = Interval(root, root)
             intervals.append(interval)
     elif rel == '!=':
-        left = S.NegativeInfinity
+        left = -oo
 
-        for right, _ in reals + [(S.Infinity, 1)]:
+        for right, _ in reals + [(oo, 1)]:
             interval = Interval(left, right, True, True)
             intervals.append(interval)
             left = right
@@ -76,7 +76,7 @@ def solve_poly_inequality(poly, rel):
         else:
             eq_sign, equal = -1, True
 
-        right, right_open = S.Infinity, True
+        right, right_open = oo, True
 
         for left, multiplicity in reversed(reals):
             if multiplicity % 2:
@@ -92,7 +92,7 @@ def solve_poly_inequality(poly, rel):
                     intervals.insert(0, Interval(left, left))
 
         if sign == eq_sign:
-            intervals.insert(0, Interval(S.NegativeInfinity, right, True, right_open))
+            intervals.insert(0, Interval(-oo, right, True, right_open))
 
     return intervals
 
@@ -405,18 +405,18 @@ def solve_univariate_inequality(expr, gen, relational=True):
         else:  # pragma: no cover
             raise NotImplementedError
 
-    start = S.NegativeInfinity
+    start = -oo
     sol_sets = [S.EmptySet]
     reals = _nsort(set(solns + singularities), separated=True)[0]
     for x in reals:
         end = x
 
-        if end in [S.NegativeInfinity, S.Infinity]:
+        if end in [-oo, oo]:
             if valid(Integer(0)):
-                sol_sets.append(Interval(start, S.Infinity, True, True))
+                sol_sets.append(Interval(start, oo, True, True))
                 break
 
-        if valid((start + end)/2 if start != S.NegativeInfinity else end - 1):
+        if valid((start + end)/2 if start != -oo else end - 1):
             sol_sets.append(Interval(start, end, True, True))
 
         if x in singularities:
@@ -426,7 +426,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
         start = end
 
-    end = S.Infinity
+    end = oo
 
     if valid(start + 1):
         sol_sets.append(Interval(start, end, True, True))

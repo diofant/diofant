@@ -1,9 +1,9 @@
 from collections import defaultdict
 from functools import reduce
 
-from ..core import (Add, Basic, Dummy, Integer, Mul, Pow, Rational, S, cacheit,
-                    count_ops, expand_log, expand_mul, factor_terms, prod,
-                    sympify)
+from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, S,
+                    cacheit, count_ops, expand_log, expand_mul, factor_terms,
+                    prod, sympify)
 from ..core.compatibility import default_sort_key, ordered
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
@@ -163,8 +163,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             # Numbers since autoevaluation will undo it, e.g.
             # 2**(1/3)/4 -> 2**(1/3 - 2) -> 2**(1/3)/4
             if (b and b.is_Number and not all(ei.is_Number for ei in e) and
-                    coeff is not S.One and
-                    b not in (S.One, S.NegativeOne)):
+                    coeff is not S.One and b not in (1, -1)):
                 m = multiplicity(abs(b), abs(coeff))
                 if m:
                     e.append(m)
@@ -608,7 +607,7 @@ def _denest_pow(eq):
             b, e = new.as_base_exp()
 
     # denest exp with log terms in exponent
-    if b is S.Exp1 and e.is_Mul:
+    if b is E and e.is_Mul:
         logs = []
         other = []
         for ei in e.args:

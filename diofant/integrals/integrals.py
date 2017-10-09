@@ -1,6 +1,6 @@
 from ..concrete.expr_with_limits import AddWithLimits
 from ..core import (Add, Basic, Dummy, Eq, Expr, S, Symbol, Tuple, Wild, diff,
-                    oo, sympify)
+                    nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..matrices import MatrixBase
@@ -311,7 +311,7 @@ class Integral(AddWithLimits):
             where sign of b is considered
             """
             wok = F.subs(d, a)
-            if wok is S.NaN or wok.is_finite is False and a.is_finite:
+            if wok is nan or wok.is_finite is False and a.is_finite:
                 return limit(sign(b)*F, d, a)
             return wok
 

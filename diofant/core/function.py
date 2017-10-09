@@ -45,7 +45,7 @@ from .decorators import _sympifyit
 from .evaluate import global_evaluate
 from .expr import AtomicExpr, Expr
 from .logic import fuzzy_and
-from .numbers import Float, Rational
+from .numbers import Float, Rational, nan
 from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
@@ -206,8 +206,8 @@ class Application(Expr, metaclass=FunctionClass):
             raise ValueError("Unknown options: %s" % options)
 
         if evaluate:
-            if S.NaN in args:
-                return S.NaN
+            if nan in args:
+                return nan
 
             evaluated = cls.eval(*args)
             if evaluated is not None:
@@ -252,8 +252,8 @@ class Application(Expr, metaclass=FunctionClass):
 
         @classmethod
         def eval(cls, arg):
-            if arg is S.NaN:
-                return S.NaN
+            if arg is nan:
+                return nan
             if arg is S.Zero: return S.Zero
             if arg.is_positive: return S.One
             if arg.is_negative: return S.NegativeOne
@@ -312,7 +312,7 @@ class Function(Application, Expr):
     ...         if x.is_Number:
     ...             if x is S.Zero:
     ...                 return S.One
-    ...             elif x is S.Infinity:
+    ...             elif x is oo:
     ...                 return S.Zero
     ...
     ...     def _eval_is_real(self):
@@ -553,7 +553,7 @@ class Function(Application, Expr):
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
         if any(isinstance(t, Expr) and t.is_finite is False for t in args0):
-            from .numbers import oo, zoo, nan
+            from .numbers import oo, zoo
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
             a = [t.compute_leading_term(x, logx=logx) for t in args]
@@ -596,7 +596,7 @@ class Function(Application, Expr):
                 # for example when e = sin(x+1) or e = sin(cos(x))
                 # let's try the general algorithm
                 term = e.subs(x, S.Zero)
-                if term.is_finite is False or term is S.NaN:
+                if term.is_finite is False or term is nan:
                     raise PoleError("Cannot expand %s around 0" % (self))
                 series = term
                 fact = S.One
@@ -607,7 +607,7 @@ class Function(Application, Expr):
                     fact *= Rational(i)
                     e = e.diff(_x)
                     subs = e.subs(_x, S.Zero)
-                    if subs is S.NaN:
+                    if subs is nan:
                         # try to evaluate a limit if we have to
                         subs = e.limit(_x, S.Zero)
                     if subs.is_finite is False:
