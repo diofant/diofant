@@ -1061,7 +1061,7 @@ class Basic(object):
         groups = defaultdict(int)
         for result in filter(_query, preorder_traversal(self)):
             groups[result] += 1
-        return groups
+        return dict(groups)
 
     def count(self, query):
         """Count the number of matching subexpressions. """
