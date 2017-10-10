@@ -1573,9 +1573,7 @@ class TrigonometricIntegral(Function):
         baseseries = self._trigfunc(x)._eval_nseries(x, n, logx)
         if self._trigfunc(0) != 0:
             baseseries -= 1
-        # XXX hack for Order replacement bug
-        baseseries = (baseseries.removeO().replace(Pow, lambda t, n: t**n/n) +
-                      baseseries.getO())
+        baseseries = baseseries.replace(Pow, lambda t, n: t**n/n)
         if self._trigfunc(0) != 0:
             baseseries += EulerGamma + log(x)
         return baseseries.subs(x, self.args[0])._eval_nseries(x, n, logx)

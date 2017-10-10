@@ -618,7 +618,7 @@ def test_replace():
     def cond(x):
         return x.is_Mul
 
-    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e) == O(1, x)
+    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e) == x**2/2 + O(x**3)
     assert (x*(x*y + 3)).replace(lambda x: x.is_Mul, lambda x: 2 + x) == \
         x*(x*y + 5) + 2
     e = (x*y + 1)*(2*x*y + 1) + 1

@@ -920,7 +920,6 @@ class Basic(object):
         xreplace: exact node replacement in expr tree; also capable of
                   using matching rules
         """
-        from .symbol import Dummy
         from ..simplify.simplify import bottom_up
 
         try:
@@ -992,31 +991,15 @@ class Basic(object):
                 "first argument to replace() must be a "
                 "type, an expression or a callable")
 
-        mask = []  # the dummies that were used as change placeholders
-
         def rec_replace(expr):
             result = _query(expr)
             if result or result == {}:
                 new = _value(expr, result)
                 if new is not None and new != expr:
-                    # don't let this expression be changed during rebuilding
-                    com = getattr(new, 'is_commutative', True)
-                    if com is None:
-                        com = True
-                    d = Dummy(commutative=com)
-                    mask.append((d, new))
-                    expr = d
+                    expr = new
             return expr
 
-        rv = bottom_up(self, rec_replace, atoms=True)
-
-        # restore original expressions for Dummy symbols
-        mask = list(reversed(mask))
-        for o, n in mask:
-            r = {o: n}
-            rv = rv.xreplace(r)
-
-        return rv
+        return bottom_up(self, rec_replace, atoms=True)
 
     def find(self, query):
         """Find all subexpressions matching a query. """
