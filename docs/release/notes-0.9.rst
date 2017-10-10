@@ -43,6 +43,7 @@ Compatibility breaks
 * Second argument of :func:`~diofant.solvers.solvers.checksol` must be a :class:`dict`.  See :pull:`549`.
 * Removed ``solve_undetermined_coeffs()`` function, see :pull:`554`.
 * Make ``matches()`` method for :class:`~diofant.core.basic.Basic` - private, see :pull:`557`.
+* Removed :meth:`~diofant.core.basic.Basic.replace` flags ``simultaneous`` and ``map``, see :pull:`557`.
 
 Minor changes
 =============

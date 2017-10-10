@@ -808,14 +808,8 @@ class Basic(object):
         """Helper for .has()"""
         return lambda x: self == x
 
-    def replace(self, query, value, map=False, exact=False):
+    def replace(self, query, value, exact=False):
         """Replace matching subexpressions of ``self`` with ``value``.
-
-        If ``map = True`` then also return the mapping {old: new} where ``old``
-        was a sub-expression found with query and ``new`` is the replacement
-        value for it. If the expression itself doesn't match the query, then
-        the returned value will be ``self.xreplace(map)`` otherwise it should
-        be ``self.subs(ordered(map.items()))``.
 
         Traverses an expression tree and performs replacement of matching
         subexpressions from the bottom to the top of the tree in a simultaneous
@@ -845,8 +839,6 @@ class Basic(object):
 
             >>> f.replace(sin, cos)
             log(cos(x)) + tan(cos(x**2))
-            >>> sin(x).replace(sin, cos, map=True)
-            (cos(x), {sin(x): cos(x)})
             >>> (x*y).replace(Mul, Add)
             x + y
 
@@ -1000,7 +992,6 @@ class Basic(object):
                 "first argument to replace() must be a "
                 "type, an expression or a callable")
 
-        mapping = {}  # changes that took place
         mask = []  # the dummies that were used as change placeholders
 
         def rec_replace(expr):
@@ -1008,7 +999,6 @@ class Basic(object):
             if result or result == {}:
                 new = _value(expr, result)
                 if new is not None and new != expr:
-                    mapping[expr] = new
                     # don't let this expression be changed during rebuilding
                     com = getattr(new, 'is_commutative', True)
                     if com is None:
@@ -1026,15 +1016,7 @@ class Basic(object):
             r = {o: n}
             rv = rv.xreplace(r)
 
-        if not map:
-            return rv
-        else:
-            # restore subexpressions in mapping
-            for o, n in mask:
-                r = {o: n}
-                mapping = {k.xreplace(r): v.xreplace(r)
-                           for k, v in mapping.items()}
-            return rv, mapping
+        return rv
 
     def find(self, query):
         """Find all subexpressions matching a query. """
