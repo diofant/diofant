@@ -1083,11 +1083,14 @@ class Basic(object):
         {x_: b + c}
         """
         expr = sympify(expr)
-        if not isinstance(expr, self.__class__):
+        if not isinstance(expr, self.func):
             return
 
         if self == expr:
             return repl_dict
+
+        if self.is_Atom:
+            return
 
         if len(self.args) != len(expr.args):
             return
@@ -1278,17 +1281,6 @@ class Atom(Basic):
     """
 
     is_Atom = True
-
-    def matches(self, expr, repl_dict={}):
-        """Helper method for match().
-
-        See Also
-        ========
-
-        Basic.matches
-        """
-        if self == expr:
-            return repl_dict
 
     def xreplace(self, rule):
         """Replace occurrences of objects within the expression.
