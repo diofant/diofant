@@ -752,7 +752,7 @@ class Basic(object):
         """
         if self in rule:
             return rule[self]
-        elif rule:
+        elif rule and not self.is_Atom:
             args = tuple(a.xreplace(rule) for a in self.args)
             if not _aresame(args, self.args):
                 return self.func(*args)
@@ -1281,16 +1281,6 @@ class Atom(Basic):
     """
 
     is_Atom = True
-
-    def xreplace(self, rule):
-        """Replace occurrences of objects within the expression.
-
-        See Also
-        ========
-
-        Basic.xreplace
-        """
-        return rule.get(self, self)
 
     def doit(self, **hints):
         """Evaluate objects that are not evaluated by default.
