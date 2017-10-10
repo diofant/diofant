@@ -1067,7 +1067,7 @@ class Basic(object):
         """Count the number of matching subexpressions. """
         return sum(self.find(query).values())
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match() that looks for a match between Wild
         symbols in self and expressions in expr.
 
@@ -1077,9 +1077,9 @@ class Basic(object):
         >>> from diofant import symbols, Wild, Basic
         >>> a, b, c = symbols('a b c')
         >>> x = Wild('x')
-        >>> Basic(a + x, x).matches(Basic(a + b, c)) is None
+        >>> Basic(a + x, x)._matches(Basic(a + b, c)) is None
         True
-        >>> Basic(a + x, x).matches(Basic(a + b + c, b + c))
+        >>> Basic(a + x, x)._matches(Basic(a + b + c, b + c))
         {x_: b + c}
         """
         expr = sympify(expr)
@@ -1099,7 +1099,7 @@ class Basic(object):
         for arg, other_arg in zip(self.args, expr.args):
             if arg == other_arg:
                 continue
-            d = arg.xreplace(d).matches(other_arg, d)
+            d = arg.xreplace(d)._matches(other_arg, d)
             if d is None:
                 return
         return d
@@ -1152,9 +1152,9 @@ class Basic(object):
         # if we still have the same relationship between the types of
         # input, then use the sign simplified forms
         if (pattern.func == self.func) and (s.func == p.func):
-            rv = p.matches(s)
+            rv = p._matches(s)
         else:
-            rv = pattern.matches(self)
+            rv = pattern._matches(self)
         return rv
 
     def count_ops(self, visual=None):

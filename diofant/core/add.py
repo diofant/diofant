@@ -309,13 +309,13 @@ class Add(AssocOp):
         return self.func(*terms)
 
     def _matches_simple(self, expr, repl_dict):
-        # handle (w+3).matches('x+5') -> {w: x+2}
+        # handle (w+3)._matches('x+5') -> {w: x+2}
         coeff, terms = self.as_coeff_add()
         if len(terms) == 1:
-            return terms[0].matches(expr - coeff, repl_dict)
+            return terms[0]._matches(expr - coeff, repl_dict)
         return
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match().
 
         See Also

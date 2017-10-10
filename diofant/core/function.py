@@ -782,7 +782,7 @@ class WildFunction(Function, AtomicExpr):
             nargs = FiniteSet(*nargs)
         self.nargs = nargs
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match()
 
         See Also

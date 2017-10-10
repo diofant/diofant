@@ -42,6 +42,7 @@ Compatibility breaks
 * Support for Python 3.4 was removed, see :pull:`543`.
 * Second argument of :func:`~diofant.solvers.solvers.checksol` must be a :class:`dict`.  See :pull:`549`.
 * Removed ``solve_undetermined_coeffs()`` function, see :pull:`554`.
+* Make ``matches()`` method for :class:`~diofant.core.basic.Basic` - private, see :pull:`557`.
 
 Minor changes
 =============

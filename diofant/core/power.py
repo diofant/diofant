@@ -1103,7 +1103,7 @@ class Pow(Expr):
             return S.One, self.func(d, exp)
         return self.func(n, exp), self.func(d, exp)
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match().
 
         See Also
@@ -1116,7 +1116,7 @@ class Pow(Expr):
         # special case, pattern = 1 and expr.exp can match to 0
         if expr is S.One:
             d = repl_dict.copy()
-            d = self.exp.matches(S.Zero, d)
+            d = self.exp._matches(S.Zero, d)
             if d is not None:
                 return d
 
@@ -1130,17 +1130,17 @@ class Pow(Expr):
         sb, se = self.as_base_exp()
         if sb.is_Symbol and se.is_Integer and expr:
             if e.is_rational:
-                return sb.matches(b**(e/se), repl_dict)
-            return sb.matches(expr**(1/se), repl_dict)
+                return sb._matches(b**(e/se), repl_dict)
+            return sb._matches(expr**(1/se), repl_dict)
 
         d = repl_dict.copy()
-        d = self.base.matches(b, d)
+        d = self.base._matches(b, d)
         if d is None:
             return
 
-        d = self.exp.xreplace(d).matches(e, d)
+        d = self.exp.xreplace(d)._matches(e, d)
         if d is None:
-            return Expr.matches(self, expr, repl_dict)
+            return Expr._matches(self, expr, repl_dict)
         return d
 
     def _eval_nseries(self, x, n, logx):

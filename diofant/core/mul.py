@@ -813,15 +813,15 @@ class Mul(AssocOp):
         return Add(*terms)
 
     def _matches_simple(self, expr, repl_dict):
-        # handle (w*3).matches('x*5') -> {w: x*5/3}
+        # handle (w*3)._matches('x*5') -> {w: x*5/3}
         coeff, terms = self.as_coeff_Mul()
         terms = Mul.make_args(terms)
         if len(terms) == 1:
             newexpr = self.__class__._combine_inverse(expr, coeff)
-            return terms[0].matches(newexpr, repl_dict)
+            return terms[0]._matches(newexpr, repl_dict)
         return
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match().
 
         See Also
@@ -844,11 +844,11 @@ class Mul(AssocOp):
             if isinstance(a, AssocOp):
                 repl_dict = a._matches_commutative(self.func(*c2), repl_dict)
             else:
-                repl_dict = a.matches(self.func(*c2), repl_dict)
+                repl_dict = a._matches(self.func(*c2), repl_dict)
         if repl_dict:
             a = self.func(*nc1)
             if not isinstance(a, self.func):
-                repl_dict = a.matches(self.func(*nc2), repl_dict)
+                repl_dict = a._matches(self.func(*nc2), repl_dict)
             else:  # pragma: no cover
                 raise NotImplementedError
         return repl_dict or None
