@@ -808,7 +808,7 @@ class Basic(object):
         """Helper for .has()"""
         return lambda x: self == x
 
-    def replace(self, query, value, map=False, simultaneous=True, exact=False):
+    def replace(self, query, value, map=False, exact=False):
         """Replace matching subexpressions of ``self`` with ``value``.
 
         If ``map = True`` then also return the mapping {old: new} where ``old``
@@ -818,14 +818,12 @@ class Basic(object):
         be ``self.subs(ordered(map.items()))``.
 
         Traverses an expression tree and performs replacement of matching
-        subexpressions from the bottom to the top of the tree. The default
-        approach is to do the replacement in a simultaneous fashion so
-        changes made are targeted only once. If this is not desired or causes
-        problems, ``simultaneous`` can be set to False. In addition, if an
+        subexpressions from the bottom to the top of the tree in a simultaneous
+        fashion so changes made are targeted only once. In addition, if an
         expression containing more than one Wild symbol is being used to match
-        subexpressions and  the ``exact`` flag is True, then the match will only
-        succeed if non-zero values are received for each Wild that appears in
-        the match pattern.
+        subexpressions and  the ``exact`` flag is True, then the match will
+        only succeed if non-zero values are received for each Wild that appears
+        in the match pattern.
 
         The list of possible combinations of queries and replacement values
         is listed below:
@@ -1011,36 +1009,31 @@ class Basic(object):
                 new = _value(expr, result)
                 if new is not None and new != expr:
                     mapping[expr] = new
-                    if simultaneous:
-                        # don't let this expression be changed during rebuilding
-                        com = getattr(new, 'is_commutative', True)
-                        if com is None:
-                            com = True
-                        d = Dummy(commutative=com)
-                        mask.append((d, new))
-                        expr = d
-                    else:
-                        expr = new
+                    # don't let this expression be changed during rebuilding
+                    com = getattr(new, 'is_commutative', True)
+                    if com is None:
+                        com = True
+                    d = Dummy(commutative=com)
+                    mask.append((d, new))
+                    expr = d
             return expr
 
         rv = bottom_up(self, rec_replace, atoms=True)
 
         # restore original expressions for Dummy symbols
-        if simultaneous:
-            mask = list(reversed(mask))
-            for o, n in mask:
-                r = {o: n}
-                rv = rv.xreplace(r)
+        mask = list(reversed(mask))
+        for o, n in mask:
+            r = {o: n}
+            rv = rv.xreplace(r)
 
         if not map:
             return rv
         else:
-            if simultaneous:
-                # restore subexpressions in mapping
-                for o, n in mask:
-                    r = {o: n}
-                    mapping = {k.xreplace(r): v.xreplace(r)
-                               for k, v in mapping.items()}
+            # restore subexpressions in mapping
+            for o, n in mask:
+                r = {o: n}
+                mapping = {k.xreplace(r): v.xreplace(r)
+                           for k, v in mapping.items()}
             return rv, mapping
 
     def find(self, query):

@@ -622,17 +622,7 @@ def test_replace():
         (2*x*(2*x*y + 1), {x*(2*x*y + 1): 2*x*(2*x*y + 1), x*y: 2*x*y})
     assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y, map=True) == \
         (sin(x), {sin(x): sin(x)/y})
-    assert (y*sin(x)).replace(sin,
-                              lambda expr: sin(expr)/y,
-                              map=True,
-                              simultaneous=False) == (sin(x)/y,
-                                                      {sin(x): sin(x)/y})
-    # if not simultaneous then y*sin(x) -> y*sin(x)/y = sin(x) -> sin(x)/y
-    assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y,
-                              simultaneous=False) == sin(x)/y
     assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e) == O(1, x)
-    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e,
-                                    simultaneous=False) == x**2/2 + O(x**3)
     assert (x*(x*y + 3)).replace(lambda x: x.is_Mul, lambda x: 2 + x) == \
         x*(x*y + 5) + 2
     e = (x*y + 1)*(2*x*y + 1) + 1
