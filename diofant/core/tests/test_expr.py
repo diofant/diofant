@@ -8,8 +8,8 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      default_sort_key, diff, exp, exp_polar, expand, factor,
                      factorial, false, gamma, log, lucas, nan, nsimplify, oo,
                      pi, posify, powsimp, radsimp, ratsimp, root, simplify,
-                     sin, sqrt, symbols, sympify, tan, together, trigsimp,
-                     true, zoo)
+                     sin, sqrt, symbols, sympify, tan, tanh, together,
+                     trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 from diofant.solvers.solvers import checksol
@@ -1614,3 +1614,8 @@ def test_sympyissue_7426():
     f1 = a % c
     f2 = x % z
     assert f1.equals(f2) is False
+
+
+def test_pow_rewrite():
+    assert (2**x).rewrite(sin) == 2**x
+    assert (2**x).rewrite(tanh) == 2**x

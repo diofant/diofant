@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import (I, adjoint, cancel, collect, combsimp, conjugate, cos,
-                     expand, factor, posify, radsimp, ratsimp, rcollect,
+                     expand, factor, pi, posify, radsimp, ratsimp, rcollect,
                      simplify, sin, symbols, transpose, trigsimp)
 from diofant.abc import x, y, z
 
@@ -32,6 +32,9 @@ def test_adjoint():
     assert adjoint(Y) == conjugate(transpose(Y))
     assert adjoint(X) == transpose(conjugate(X))
     assert adjoint(Y) == transpose(conjugate(Y))
+
+    assert adjoint(2**x) == 2**adjoint(x)
+    assert adjoint(x**pi) == adjoint(x**pi, evaluate=False)
 
 
 def test_cancel():
@@ -125,6 +128,8 @@ def test_transpose():
     assert transpose(-I*X) == -I*conjugate(X)
     assert transpose(Y) == -conjugate(Y)
     assert transpose(-I*Y) == I*conjugate(Y)
+
+    assert transpose(X**pi) == transpose(X**pi, evaluate=False)
 
 
 def test_trigsimp():

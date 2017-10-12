@@ -258,7 +258,7 @@ class Pow(Expr):
                     rv = e.evalf(2, strict=True)
                     if rv.is_Number:
                         return rv
-                except PrecisionExhausted:
+                except PrecisionExhausted:  # pragma: no cover
                     pass
 
             # ===================================================
@@ -301,16 +301,12 @@ class Pow(Expr):
                 # e.is_extended_real is False requires:
                 #     _half(other) with constant floor or
                 #     floor(S.Half - im(e*log(b))/2/pi) == 0
-                try:
-                    s = exp(2*I*pi*other *
-                            floor(S.Half - im(e*log(b))/2/pi))
-                    # be careful to test that s is -1 or 1 b/c sign(I) == I:
-                    # so check that s is real
-                    if s.is_extended_real and _n2(sign(s) - s) == 0:
-                        s = sign(s)
-                    else:
-                        s = None
-                except PrecisionExhausted:
+                s = exp(2*I*pi*other*floor(S.Half - im(e*log(b))/2/pi))
+                # be careful to test that s is -1 or 1 b/c sign(I) == I:
+                # so check that s is real
+                if s.is_extended_real and _n2(sign(s) - s) == 0:
+                    s = sign(s)
+                else:
                     s = None
 
         if s is not None:
@@ -612,10 +608,6 @@ class Pow(Expr):
             return adjoint(self.base)**self.exp
         if p:
             return self.base**adjoint(self.exp)
-        if i is False and p is False:
-            expanded = expand_complex(self)
-            if expanded != self:
-                return adjoint(expanded)
 
     def _eval_conjugate(self):
         from ..functions.elementary.complexes import conjugate as c
@@ -626,8 +618,8 @@ class Pow(Expr):
             return self.base**c(self.exp)
         if i is False and p is False:
             expanded = expand_complex(self)
-            if expanded != self:
-                return c(expanded)
+            assert expanded != self
+            return c(expanded)
 
     def _eval_transpose(self):
         from ..functions.elementary.complexes import transpose
@@ -636,10 +628,6 @@ class Pow(Expr):
             return self.base**self.exp
         if i:
             return transpose(self.base)**self.exp
-        if i is False and p is False:
-            expanded = expand_complex(self)
-            if expanded != self:
-                return transpose(expanded)
 
     def _eval_expand_power_exp(self, **hints):
         """a**(n+m) -> a**n*a**m"""
@@ -863,12 +851,8 @@ class Pow(Expr):
                     return Add(*[f*g for f in base.args for g in base.args])
                 else:
                     multi = (base**(n - 1))._eval_expand_multinomial()
-                    if multi.is_Add:
-                        return Add(*[f*g for f in base.args
-                                     for g in multi.args])
-                    else:
-                        # XXX can this ever happen if base was an Add?
-                        return Add(*[f*multi for f in base.args])
+                    assert multi.is_Add
+                    return Add(*[f*g for f in base.args for g in multi.args])
         elif (exp.is_Rational and exp.p < 0 and base.is_Add and
                 abs(exp.p) > exp.q):
             return 1 / self.func(base, -exp)._eval_expand_multinomial()
@@ -984,10 +968,6 @@ class Pow(Expr):
         base = base._evalf(prec)
         if not exp.is_Integer:
             exp = exp._evalf(prec)
-        if exp.is_negative and base.is_number and base.is_extended_real is False:
-            base = base.conjugate() / (base * base.conjugate())._evalf(prec)
-            exp = -exp
-            return self.func(base, exp).expand()
         return self.func(base, exp)
 
     def _eval_is_polynomial(self, syms):
@@ -1198,8 +1178,8 @@ class Pow(Expr):
                 # branch handling
                 if c.is_negative:
                     l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
-                    if l.is_finite:
-                        factor *= exp(2*pi*I*self.exp*l)
+                    assert l.is_finite
+                    factor *= exp(2*pi*I*self.exp*l)
             pow_series = expand_mul(factor*pow_series)
             return powsimp(pow_series, deep=True, combine='exp')
 
@@ -1320,33 +1300,3 @@ class Pow(Expr):
                 # sqrt(2)*sqrt(1 + sqrt(5))
                 return c, self.func(_keep_coeff(m, t), e)
         return S.One, self.func(b, e)
-
-    def is_constant(self, *wrt, **flags):
-        """Return True if self is constant, False if not, or None.
-
-        See Also
-        ========
-
-        diofant.core.expr.Expr.is_constant
-        """
-        expr = self
-        if flags.get('simplify', True):
-            expr = expr.simplify()
-        b, e = expr.as_base_exp()
-        bz = b.equals(0)
-        if bz:  # recalculate with assumptions in case it's unevaluated
-            new = b**e
-            if new != expr:
-                return new.is_constant()
-        econ = e.is_constant(*wrt)
-        bcon = b.is_constant(*wrt)
-        if bcon:
-            if econ:
-                return True
-            bz = b.equals(0)
-            if bz is False:
-                return False
-        elif bcon is None:
-            return
-
-        return e.equals(0)
