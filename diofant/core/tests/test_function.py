@@ -695,12 +695,12 @@ def test_sympyissue_7231():
 def test_sympyissue_7687():
     f = Function('f')(x)
     ff = Function('f')(x)
-    match_with_cache = ff.matches(f)
+    match_with_cache = f.match(ff)
     assert isinstance(f, type(ff))
     clear_cache()
     ff = Function('f')(x)
     assert isinstance(f, type(ff))
-    assert match_with_cache == ff.matches(f)
+    assert match_with_cache == f.match(ff)
 
 
 def test_sympyissue_7688():

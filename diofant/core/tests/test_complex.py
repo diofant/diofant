@@ -197,6 +197,9 @@ def test_real_imag():
     assert ((1 + I)/(1 - I)).as_real_imag() == (0, 1)
     assert ((1 + 2*I)*(1 + 3*I)).as_real_imag() == (-5, 5)
 
+    assert exp(x).as_real_imag(deep=False) == (re(exp(x)), im(exp(x)))
+    assert (2**x).as_real_imag(deep=False) == (re(2**x), im(2**x))
+
 
 def test_pow_sympyissue_4823():
     e = cbrt(-1)

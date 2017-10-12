@@ -49,9 +49,9 @@ def test_matches_basic():
     for i, b_i in enumerate(instances):
         for j, b_j in enumerate(instances):
             if i == j:
-                assert b_i.matches(b_j) == {}
+                assert b_j.match(b_i) == {}
             else:
-                assert b_i.matches(b_j) is None
+                assert b_j.match(b_i) is None
     assert b1.match(b1) == {}
 
 

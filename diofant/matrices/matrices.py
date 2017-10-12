@@ -3918,7 +3918,7 @@ class MatrixBase(DefaultPrinting):
         newmat[:, j:] = self[:, i:]
         return type(self)(newmat)
 
-    def replace(self, F, G, map=False):
+    def replace(self, F, G):
         """Replaces Function F in Matrix entries with Function G.
 
         Examples
@@ -3938,7 +3938,7 @@ class MatrixBase(DefaultPrinting):
         """
         M = self[:, :]
 
-        return M.applyfunc(lambda x: x.replace(F, G, map))
+        return M.applyfunc(lambda x: x.replace(F, G))
 
     def pinv(self):
         """Calculate the Moore-Penrose pseudoinverse of the matrix.

@@ -752,7 +752,7 @@ class Basic(object):
         """
         if self in rule:
             return rule[self]
-        elif rule:
+        elif rule and not self.is_Atom:
             args = tuple(a.xreplace(rule) for a in self.args)
             if not _aresame(args, self.args):
                 return self.func(*args)
@@ -808,24 +808,16 @@ class Basic(object):
         """Helper for .has()"""
         return lambda x: self == x
 
-    def replace(self, query, value, map=False, simultaneous=True, exact=False):
+    def replace(self, query, value, exact=False):
         """Replace matching subexpressions of ``self`` with ``value``.
 
-        If ``map = True`` then also return the mapping {old: new} where ``old``
-        was a sub-expression found with query and ``new`` is the replacement
-        value for it. If the expression itself doesn't match the query, then
-        the returned value will be ``self.xreplace(map)`` otherwise it should
-        be ``self.subs(ordered(map.items()))``.
-
         Traverses an expression tree and performs replacement of matching
-        subexpressions from the bottom to the top of the tree. The default
-        approach is to do the replacement in a simultaneous fashion so
-        changes made are targeted only once. If this is not desired or causes
-        problems, ``simultaneous`` can be set to False. In addition, if an
+        subexpressions from the bottom to the top of the tree in a simultaneous
+        fashion so changes made are targeted only once. In addition, if an
         expression containing more than one Wild symbol is being used to match
-        subexpressions and  the ``exact`` flag is True, then the match will only
-        succeed if non-zero values are received for each Wild that appears in
-        the match pattern.
+        subexpressions and  the ``exact`` flag is True, then the match will
+        only succeed if non-zero values are received for each Wild that appears
+        in the match pattern.
 
         The list of possible combinations of queries and replacement values
         is listed below:
@@ -847,8 +839,6 @@ class Basic(object):
 
             >>> f.replace(sin, cos)
             log(cos(x)) + tan(cos(x**2))
-            >>> sin(x).replace(sin, cos, map=True)
-            (cos(x), {sin(x): cos(x)})
             >>> (x*y).replace(Mul, Add)
             x + y
 
@@ -930,7 +920,6 @@ class Basic(object):
         xreplace: exact node replacement in expr tree; also capable of
                   using matching rules
         """
-        from .symbol import Dummy
         from ..simplify.simplify import bottom_up
 
         try:
@@ -1002,46 +991,15 @@ class Basic(object):
                 "first argument to replace() must be a "
                 "type, an expression or a callable")
 
-        mapping = {}  # changes that took place
-        mask = []  # the dummies that were used as change placeholders
-
         def rec_replace(expr):
             result = _query(expr)
             if result or result == {}:
                 new = _value(expr, result)
                 if new is not None and new != expr:
-                    mapping[expr] = new
-                    if simultaneous:
-                        # don't let this expression be changed during rebuilding
-                        com = getattr(new, 'is_commutative', True)
-                        if com is None:
-                            com = True
-                        d = Dummy(commutative=com)
-                        mask.append((d, new))
-                        expr = d
-                    else:
-                        expr = new
+                    expr = new
             return expr
 
-        rv = bottom_up(self, rec_replace, atoms=True)
-
-        # restore original expressions for Dummy symbols
-        if simultaneous:
-            mask = list(reversed(mask))
-            for o, n in mask:
-                r = {o: n}
-                rv = rv.xreplace(r)
-
-        if not map:
-            return rv
-        else:
-            if simultaneous:
-                # restore subexpressions in mapping
-                for o, n in mask:
-                    r = {o: n}
-                    mapping = {k.xreplace(r): v.xreplace(r)
-                               for k, v in mapping.items()}
-            return rv, mapping
+        return bottom_up(self, rec_replace, atoms=True)
 
     def find(self, query):
         """Find all subexpressions matching a query. """
@@ -1067,7 +1025,7 @@ class Basic(object):
         """Count the number of matching subexpressions. """
         return sum(self.find(query).values())
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match() that looks for a match between Wild
         symbols in self and expressions in expr.
 
@@ -1077,17 +1035,20 @@ class Basic(object):
         >>> from diofant import symbols, Wild, Basic
         >>> a, b, c = symbols('a b c')
         >>> x = Wild('x')
-        >>> Basic(a + x, x).matches(Basic(a + b, c)) is None
+        >>> Basic(a + x, x)._matches(Basic(a + b, c)) is None
         True
-        >>> Basic(a + x, x).matches(Basic(a + b + c, b + c))
+        >>> Basic(a + x, x)._matches(Basic(a + b + c, b + c))
         {x_: b + c}
         """
         expr = sympify(expr)
-        if not isinstance(expr, self.__class__):
+        if not isinstance(expr, self.func):
             return
 
         if self == expr:
             return repl_dict
+
+        if self.is_Atom:
+            return
 
         if len(self.args) != len(expr.args):
             return
@@ -1096,7 +1057,7 @@ class Basic(object):
         for arg, other_arg in zip(self.args, expr.args):
             if arg == other_arg:
                 continue
-            d = arg.xreplace(d).matches(other_arg, d)
+            d = arg.xreplace(d)._matches(other_arg, d)
             if d is None:
                 return
         return d
@@ -1149,9 +1110,9 @@ class Basic(object):
         # if we still have the same relationship between the types of
         # input, then use the sign simplified forms
         if (pattern.func == self.func) and (s.func == p.func):
-            rv = p.matches(s)
+            rv = p._matches(s)
         else:
-            rv = pattern.matches(self)
+            rv = pattern._matches(self)
         return rv
 
     def count_ops(self, visual=None):
@@ -1278,27 +1239,6 @@ class Atom(Basic):
     """
 
     is_Atom = True
-
-    def matches(self, expr, repl_dict={}):
-        """Helper method for match().
-
-        See Also
-        ========
-
-        Basic.matches
-        """
-        if self == expr:
-            return repl_dict
-
-    def xreplace(self, rule):
-        """Replace occurrences of objects within the expression.
-
-        See Also
-        ========
-
-        Basic.xreplace
-        """
-        return rule.get(self, self)
 
     def doit(self, **hints):
         """Evaluate objects that are not evaluated by default.

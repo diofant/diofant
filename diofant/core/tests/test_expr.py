@@ -8,8 +8,8 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      default_sort_key, diff, exp, exp_polar, expand, factor,
                      factorial, false, gamma, log, lucas, nan, nsimplify, oo,
                      pi, posify, powsimp, radsimp, ratsimp, root, simplify,
-                     sin, sqrt, symbols, sympify, tan, together, trigsimp,
-                     true, zoo)
+                     sin, sqrt, symbols, sympify, tan, tanh, together,
+                     trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 from diofant.solvers.solvers import checksol
@@ -613,33 +613,15 @@ def test_replace():
     assert g.replace(
         lambda expr: expr.is_Number, lambda expr: expr**2) == 4*sin(x**9)
 
-    assert cos(x).replace(cos, sin, map=True) == (sin(x), {cos(x): sin(x)})
     assert sin(x).replace(cos, sin) == sin(x)
 
-    cond, func = lambda x: x.is_Mul, lambda x: 2*x
-    assert (x*y).replace(cond, func, map=True) == (2*x*y, {x*y: 2*x*y})
-    assert (x*(1 + x*y)).replace(cond, func, map=True) == \
-        (2*x*(2*x*y + 1), {x*(2*x*y + 1): 2*x*(2*x*y + 1), x*y: 2*x*y})
-    assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y, map=True) == \
-        (sin(x), {sin(x): sin(x)/y})
-    assert (y*sin(x)).replace(sin,
-                              lambda expr: sin(expr)/y,
-                              map=True,
-                              simultaneous=False) == (sin(x)/y,
-                                                      {sin(x): sin(x)/y})
-    # if not simultaneous then y*sin(x) -> y*sin(x)/y = sin(x) -> sin(x)/y
-    assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y,
-                              simultaneous=False) == sin(x)/y
-    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e) == O(1, x)
-    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e,
-                                    simultaneous=False) == x**2/2 + O(x**3)
+    def cond(x):
+        return x.is_Mul
+
+    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e) == x**2/2 + O(x**3)
     assert (x*(x*y + 3)).replace(lambda x: x.is_Mul, lambda x: 2 + x) == \
         x*(x*y + 5) + 2
     e = (x*y + 1)*(2*x*y + 1) + 1
-    assert e.replace(cond, func, map=True) == (
-        2*((2*x*y + 1)*(4*x*y + 1)) + 1,
-        {2*x*y: 4*x*y, x*y: 2*x*y, (2*x*y + 1)*(4*x*y + 1):
-         2*((2*x*y + 1)*(4*x*y + 1))})
     assert x.replace(x, y) == y
     assert (x + 1).replace(1, 2) == x + 2
     pytest.raises(TypeError, lambda: e.replace(cond, x))
@@ -1632,3 +1614,8 @@ def test_sympyissue_7426():
     f1 = a % c
     f2 = x % z
     assert f1.equals(f2) is False
+
+
+def test_pow_rewrite():
+    assert (2**x).rewrite(sin) == 2**x
+    assert (2**x).rewrite(tanh) == 2**x
