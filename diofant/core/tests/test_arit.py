@@ -1299,6 +1299,7 @@ def test_Mul_hermitian_antihermitian():
     z = Symbol('z', zero=True)
     e = Symbol('e', antihermitian=True, finite=True)
     assert (z*e).is_antihermitian is False
+    assert (z*e).is_hermitian is True
     A = Symbol('A', hermitian=True, commutative=False)
     B = Symbol('B', hermitian=True, commutative=False)
     assert (A*B).is_hermitian is None
