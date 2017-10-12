@@ -147,3 +147,7 @@ extlinks = {
     'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#'),
     'sympypull': ('https://github.com/sympy/sympy/pull/%s', 'sympy/sympy#'),
 }
+
+# The number of times the linkcheck builder will attempt to check a URL
+# before declaring it broken.  Defaults to 1 attempt.
+linkcheck_retries = 3
