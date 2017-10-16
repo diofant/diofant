@@ -72,15 +72,6 @@ class SingleDiscretePSpace(SinglePSpace):
 
     def integrate(self, expr, rvs=None, **kwargs):
         rvs = rvs or (self.value,)
-        if self.value not in rvs:
-            return expr
-
         expr = expr.xreplace({rv: rv.symbol for rv in rvs})
-
         x = self.value.symbol
-        try:
-            return self.distribution.expectation(expr, x, evaluate=False,
-                                                 **kwargs)
-        except Exception:
-            return Sum(expr * self.pdf, (x, self.set.inf, self.set.sup),
-                       **kwargs)
+        return self.distribution.expectation(expr, x, evaluate=False, **kwargs)
