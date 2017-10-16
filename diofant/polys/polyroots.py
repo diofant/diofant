@@ -214,14 +214,14 @@ def roots_quartic(f):
     r"""
     Returns a list of roots of a quartic polynomial.
 
-    There are many references for solving quartic expressions available [1-5].
+    There are many references for solving quartic expressions available [1-4].
     This reviewer has found that many of them require one to select from among
     2 or more possible sets of solutions and that some solutions work when one
     is searching for real roots but don't work when searching for complex roots
     (though this is not always stated clearly). The following routine has been
     tested and found to be correct for 0, 2 or 4 complex roots.
 
-    The quasisymmetric case solution [6] looks for quartics that have the form
+    The quasisymmetric case solution [5] looks for quartics that have the form
     `x**4 + A*x**3 + B*x**2 + C*x + D = 0` where `(C/A)**2 = D`.
 
     Although no general solution that is always applicable for all
@@ -250,11 +250,10 @@ def roots_quartic(f):
 
     .. [1] http://mathforum.org/dr.math/faq/faq.cubic.equations.html
     .. [2] https//en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
-    .. [3] http://planetmath.org/encyclopedia/GaloisTheoreticDerivationOfTheQuarticFormula.html
-    .. [4] http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
-    .. [5] http://www.albmath.org/files/Math_5713.pdf
-    .. [6] http://www.statemaster.com/encyclopedia/Quartic-equation
-    .. [7] eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
+    .. [3] http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
+    .. [4] http://www.albmath.org/files/Math_5713.pdf
+    .. [5] http://www.statemaster.com/encyclopedia/Quartic-equation
+    .. [6] eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
     """
     _, a, b, c, d = f.monic().all_coeffs()
 

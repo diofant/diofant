@@ -5073,8 +5073,7 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Variation_of_parameters
-    .. [2] http://planetmath.org/VariationOfParameters
-    .. [3] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 233.
     """
 
