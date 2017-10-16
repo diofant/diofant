@@ -172,3 +172,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`13501` Incorrect integral of a rational function with a symbolic coefficient
 * :sympyissue:`13536` TypeError for integration from infinity to a positive value
 * :sympyissue:`13545` Poly loses modulus after arithemetic
+* :sympyissue:`13460` Integration of certain cubic rational functions is incorrect

@@ -366,7 +366,7 @@ def log_to_real(h, q, x, t):
 
             D = d.subs({u: r_u, v: r_v})
 
-            if D.evalf(chop=True) != 0:
+            if D.evalf(2, strict=True, chop=True) != 0:
                 continue
 
             A = Poly(a.subs({u: r_u, v: r_v}), x)

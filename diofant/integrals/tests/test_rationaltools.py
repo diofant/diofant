@@ -1,4 +1,4 @@
-from diofant import (I, Integer, Poly, Rational, atan, integrate, log,
+from diofant import (Float, I, Integer, Poly, Rational, atan, integrate, log,
                      simplify, sqrt, symbols)
 from diofant.abc import a, b, t, u, x
 from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
@@ -141,3 +141,8 @@ def test_log_to_atan():
     fg_ans = 2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
     assert log_to_atan(f, g) == fg_ans
     assert log_to_atan(g, f) == -fg_ans
+
+
+def test_sympyissue_13460():
+    assert integrate(1/(-28*x**3 - 46*x**2 - 25*x - 10),
+                     [x, 2, 3]).n() == Float('-0.0013230197536986538', dps=15)
