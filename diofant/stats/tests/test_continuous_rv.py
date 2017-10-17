@@ -171,6 +171,7 @@ def test_benini():
     X = Benini('x', alpha, b, sigma)
     assert density(X)(x) == ((alpha/x + 2*b*log(x/sigma)/x)
                              * exp(-alpha*log(x/sigma) - b*log(x/sigma)**2))
+    assert X.pspace.domain.set == Interval(sigma, oo, False, True)
 
 
 def test_beta():
@@ -432,6 +433,7 @@ def test_raised_cosine():
     X = RaisedCosine("x", mu, s)
     assert density(X)(x) == (Piecewise(((cos(pi*(x - mu)/s) + 1)/(2*s),
                                         And(x <= mu + s, mu - s <= x)), (0, True)))
+    assert X.pspace.domain.set == Interval(mu - s, mu + s)
 
 
 def test_rayleigh():
@@ -471,6 +473,7 @@ def test_quadratic_u():
     X = QuadraticU("x", a, b)
     assert density(X)(x) == (Piecewise((12*(x - a/2 - b/2)**2/(-a + b)**3,
                                         And(x <= b, a <= x)), (0, True)))
+    assert X.pspace.domain.set == Interval(a, b)
 
 
 def test_uniform():
@@ -502,14 +505,22 @@ def test_uniform_P():
     assert P(X < l) == 0 and P(X > l + w) == 0
 
 
-@pytest.mark.xfail
 def test_uniformsum():
     n = Symbol("n", integer=True)
-    _k = Symbol("k")
 
     X = UniformSum('x', n)
-    assert density(X)(x) == (Sum((-1)**_k*(-_k + x)**(n - 1)
-                                 * binomial(n, _k), (_k, 0, floor(x)))/factorial(n - 1))
+    assert X.pspace.domain.set == Interval(0, n)
+
+
+@pytest.mark.xfail
+def test_uniformsum_d():
+    n = Symbol("n", integer=True)
+    k = Symbol("k")
+
+    X = UniformSum('x', n)
+    d = density(X)(x)
+    assert d == 1/factorial(n - 1)*Sum((-1)**k*(x - k)**(n - 1) *
+                                       binomial(n, k), (k, 0, floor(x)))
 
 
 def test_von_mises():

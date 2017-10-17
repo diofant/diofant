@@ -24,6 +24,8 @@ def test_discreteuniform():
     # Symbolic
     a, b, c = symbols('a b c')
     X = DiscreteUniform('X', [a, b, c])
+    assert X.pspace.distribution.pdf(a) == Rational(1, 3)
+    assert X.pspace.distribution.pdf(p) == 0
 
     assert E(X) == (a + b + c)/3
     assert simplify(variance(X)
