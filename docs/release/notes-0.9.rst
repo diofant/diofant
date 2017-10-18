@@ -58,6 +58,7 @@ Minor changes
 * :class:`~diofant.core.numbers.AlgebraicNumber` now support arithmetic operations and exponentiation with integer exponents, see :pull:`428` and :pull:`485`.
 * Add AST transformation :class:`~diofant.interactive.session.IntegerDivisionWrapper` to wrap integer division, see :pull:`519`.
 * Add AST transformation :class:`~diofant.interactive.session.FloatRationalizer` to wrap :class:`float`'s, see :pull:`538`.
+* Support rewrite :class:`~diofant.polys.rootoftools.RootOf` via radicals, see :pull:`563`.
 
 Developer changes
 =================

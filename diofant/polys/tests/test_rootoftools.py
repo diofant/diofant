@@ -477,3 +477,14 @@ def test_sympyissue_8316():
     assert len(f.all_roots()) == 8
     f = Poly(7*x**8 - 10)
     assert len(f.all_roots()) == 8
+
+
+def test_rewrite():
+    r3 = RootOf(x**3 + x - 1, x, 0)
+    assert r3.n() == r3.rewrite(Pow).n()
+    assert r3.rewrite(Pow) == (-1/(3*root(Rational(1, 2) + sqrt(93)/18, 3)) +
+                               root(Rational(1, 2) + sqrt(93)/18, 3))
+    r4 = RootOf(x**4 - x + 5, x, 0)
+    assert r4.n() == r4.rewrite(Pow).n()
+    r11 = RootOf(x**11 + x - 3, x, 0)
+    assert r11.rewrite(Pow) == r11
