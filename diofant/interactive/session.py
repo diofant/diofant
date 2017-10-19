@@ -7,9 +7,18 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
 
     def visit_BinOp(self, node):
         def is_integer(x):
-            return ((isinstance(x, ast.Num) and isinstance(x.n, int)) or
-                    (isinstance(x, ast.UnaryOp) and
-                     isinstance(x.op, ast.USub) and is_integer(x.operand)))
+            if isinstance(x, ast.Num) and isinstance(x.n, int):
+                return True
+            elif isinstance(x, ast.UnaryOp) and isinstance(x.op, (ast.USub,
+                                                                  ast.UAdd)):
+                return is_integer(x.operand)
+            elif isinstance(x, ast.BinOp) and isinstance(x.op, (ast.Add,
+                                                                ast.Sub,
+                                                                ast.Mult,
+                                                                ast.Pow)):
+                return is_integer(x.left) and is_integer(x.right)
+            else:
+                return False
 
         if (isinstance(node.op, ast.Div) and
                 all(is_integer(_) for _ in [node.left, node.right])):
