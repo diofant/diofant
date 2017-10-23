@@ -751,7 +751,7 @@ def _solve(f, symbol, **flags):
                     continue
                 try:
                     v = (cond == S.true) or cond.subs(symbol, candidate)
-                except:
+                except TypeError:
                     v = False
                 if v != S.false:
                     # Only include solutions that do not match the condition
@@ -766,7 +766,7 @@ def _solve(f, symbol, **flags):
                             if other_cond.subs(symbol, candidate) == S.true:
                                 matches_other_piece = True
                                 break
-                        except:
+                        except TypeError:
                             pass
                     if not matches_other_piece:
                         v = v == S.true or v.doit()
