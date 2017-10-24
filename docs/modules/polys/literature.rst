@@ -51,8 +51,7 @@ a theoretical foundation for implementing polynomials manipulation module.
 .. [Cox97] D. Cox, J. Little, D. O'Shea, Ideals, Varieties and
     Algorithms, Springer, Second Edition, 1997
 
-.. [Ajwa95] I.A. Ajwa, Z. Liu, P.S. Wang, Gröbner Bases Algorithm,
-    https://citeseer.ist.psu.edu/myciteseer/login, 1995
+.. [Ajwa95] I.A. Ajwa, Z. Liu, P.S. Wang, Gröbner Bases Algorithm, 1995
 
 .. [Bose03] N.K. Bose, B. Buchberger, J.P. Guiver, Multidimensional
     Systems Theory and Applications, Springer, 2003
