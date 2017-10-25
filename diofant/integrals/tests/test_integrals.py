@@ -1181,3 +1181,9 @@ def test_sympyissue_13312():
 
 def test_sympyissue_10680():
     integrate(x**log(x**log(x**log(x))), x)  # not raises
+
+
+def test_sympyissue_13501():
+    a = Symbol('a', real=True)
+    assert integrate(1/(1 + a**2*x**2), x) == ((-I*log(x - I/a)/2 +
+                                               I*log(x + I/a)/2)/a)
