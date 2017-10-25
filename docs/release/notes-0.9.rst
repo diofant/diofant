@@ -168,3 +168,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`13416` Incorrect Result for limit((-n**3*log(n)**3 + (n - 1)*(n + 1)**2*log(n + 1)**3)/(n**2*log(n)**3), n ,oo)
 * :sympyissue:`13462` Bug in sympy.limit()
 * :sympyissue:`13501` Incorrect integral of a rational function with a symbolic coefficient
+* :sympyissue:`13536` TypeError for integration from infinity to a positive value

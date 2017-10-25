@@ -651,3 +651,8 @@ def test_meijerint_indefinite_abs():
     assert meijerint_indefinite(abs(y - x**2), y) is not nan
     # issue sympy/sympy#8733
     assert meijerint_indefinite(abs(x + 1), x) is not nan
+
+
+def test_sympyissue_13536():
+    a = Symbol('a', real=True, positive=True)
+    assert integrate(1/x**2, (x, oo, a)) == -1/a
