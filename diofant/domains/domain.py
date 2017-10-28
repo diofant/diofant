@@ -1,7 +1,7 @@
 """Implementation of :class:`Domain` class. """
 
 from ..core import Basic
-from ..core.compatibility import HAS_GMPY, default_sort_key
+from ..core.compatibility import HAS_GMPY
 from ..polys.orderings import lex
 from ..polys.polyerrors import CoercionFailed, UnificationFailed
 from ..polys.polyutils import _unify_gens
@@ -243,15 +243,12 @@ class Domain(DefaultPrinting):
         if K1.is_RationalField:
             return K1
 
-        if self.is_IntegerRing:
+        if self.is_FiniteField and self.domain == K1:
             return self
-        if K1.is_IntegerRing:
+        if K1.is_FiniteField and K1.domain == self:
             return K1
 
-        if self.is_FiniteField and K1.is_FiniteField:
-            return self.__class__(max(self.mod, K1.mod, key=default_sort_key))
-        else:  # pragma: no cover
-            raise NotImplementedError
+        raise NotImplementedError
 
     def __eq__(self, other):
         """Returns ``True`` if two domains are equivalent. """
