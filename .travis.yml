@@ -55,10 +55,7 @@ matrix:
         - travis_wait pip install .[exports,develop]
       script:
         - py.test --cov diofant diofant/domains
-jobs:
-  include:
     - stage: deploy
-      if: branch = master AND tag IS present
       script: skip
       deploy:
         provider: pypi
