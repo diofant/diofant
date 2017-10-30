@@ -55,6 +55,16 @@ matrix:
         - travis_wait pip install .[exports,develop]
       script:
         - py.test --cov diofant diofant/domains
+    - stage: deploy
+      if: branch = master AND tag IS present
+      script: skip
+      deploy:
+        provider: pypi
+        user: skirpichev
+        password:
+          secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/QSM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43htbMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVhB7k/t57Ig="
+        distributions: "sdist bdist_wheel"
+        server: https://pypi.python.org/pypi
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
@@ -70,16 +80,5 @@ script:
       python setup.py test --addopts "--split=${SPLIT}"
     fi
 after_success: test -n "${COVERAGE}" && codecov
-deploy:
-  provider: pypi
-  user: skirpichev
-  password:
-    secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/QSM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43htbMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVhB7k/t57Ig="
-  distributions: "sdist bdist_wheel"
-  server: https://pypi.python.org/pypi
-  on:
-    python: 3.5
-    condition: -z "${COVERAGE}" && "${SPLIT}" = "1/7" && "${TRAVIS_EVENT_TYPE}" != "cron"
-    tags: true
 notifications:
   email: false
