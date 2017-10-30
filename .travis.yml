@@ -62,7 +62,6 @@ matrix:
       script:
         - py.test --cov diofant diofant/domains
     - stage: deploy
-      if: branch = master
       script: skip
       deploy:
         provider: pypi
