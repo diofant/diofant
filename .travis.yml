@@ -81,7 +81,6 @@ matrix:
         password:
           secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/QSM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43htbMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVhB7k/t57Ig="
         distributions: "sdist bdist_wheel"
-        server: https://pypi.python.org/pypi
         on:
           tags: true
 before_install:
