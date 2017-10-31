@@ -5,15 +5,19 @@ cache: pip
 python:
   - 3.6
 env:
-  - SPLIT=1/9
-  - SPLIT=2/9
-  - SPLIT=3/9
-  - SPLIT=4/9
-  - SPLIT=5/9
-  - SPLIT=6/9
-  - SPLIT=7/9
-  - SPLIT=8/9
-  - SPLIT=9/9
+  - SPLIT=1/13
+  - SPLIT=2/13
+  - SPLIT=3/13
+  - SPLIT=4/13
+  - SPLIT=5/13
+  - SPLIT=6/13
+  - SPLIT=7/13
+  - SPLIT=8/13
+  - SPLIT=9/13
+  - SPLIT=10/13
+  - SPLIT=11/13
+  - SPLIT=12/13
+  - SPLIT=13/13
 addons:
   apt:
     packages:
@@ -28,23 +32,31 @@ addons:
 matrix:
   include:
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='6/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='6/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='7/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='7/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='8/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='8/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='9/9'
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='9/13'
+    - python: 3.5
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='10/13'
+    - python: 3.5
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='11/13'
+    - python: 3.5
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='12/13'
+    - python: 3.5
+      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='13/13'
     - python: 3.5
       env: COVERAGE='on' EXTRA='on'
       install:
