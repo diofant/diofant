@@ -39,7 +39,7 @@ numpydoc_class_members_toctree = False
 nitpicky = True
 
 # A list of glob-style patterns that should be excluded when looking for source files.
-exclude_patterns = ['README.rst']
+exclude_patterns = ['CONTRIBUTING.rst', 'README.rst']
 
 # The master toctree document.
 master_doc = 'index'
