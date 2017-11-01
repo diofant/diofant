@@ -51,10 +51,10 @@ class RandomDomain(Expr):
         return self.args[1]
 
     def __contains__(self, other):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def integrate(self, expr):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
 
 class SingleDomain(RandomDomain):
@@ -116,7 +116,7 @@ class ConditionalDomain(RandomDomain):
         return self.args[1]
 
     @property
-    def set(self):
+    def set(self):  # pragma: no cover
         raise NotImplementedError("Set of Conditional Domain not Implemented")
 
     def as_boolean(self):
@@ -157,19 +157,19 @@ class PSpace(Expr):
         return self.domain.symbols
 
     def where(self, condition):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def compute_density(self, expr):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def sample(self):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def probability(self, condition):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def integrate(self, expr):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
 
 class SinglePSpace(PSpace):
@@ -328,7 +328,7 @@ class ProductPSpace(PSpace):
         return ProductDomain(*[space.domain for space in self.spaces])
 
     @property
-    def density(self):
+    def density(self):  # pragma: no cover
         raise NotImplementedError("Density not available for ProductSpaces")
 
     def sample(self):
