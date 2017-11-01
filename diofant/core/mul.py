@@ -994,9 +994,8 @@ class Mul(AssocOp):
             return is_rational
 
     def _eval_is_polar(self):
-        has_polar = any(arg.is_polar for arg in self.args)
-        return has_polar and \
-            all(arg.is_polar or arg.is_positive for arg in self.args)
+        if all(arg.is_polar or arg.is_positive for arg in self.args):
+            return True
 
     def _eval_is_extended_real(self):
         real = True
