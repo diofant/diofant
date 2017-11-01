@@ -1550,10 +1550,10 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     (u, v), (s, t) = (-B, F.zero), (B, B)
 
     if inf is not None:
-        u = inf
+        u, v = inf
 
     if sup is not None:
-        s = sup
+        s, t = sup
 
     if v < 0 or t <= v or s <= u:
         raise ValueError("not a valid complex isolation rectangle")
