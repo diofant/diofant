@@ -16,8 +16,8 @@ from ..utilities import lambdify, public
 from .polyerrors import (DomainError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialError)
 from .polyfuncs import symmetrize, viete
-from .polyroots import (preprocess_roots, roots, roots_binomial, roots_linear,
-                        roots_quadratic)
+from .polyroots import (preprocess_roots, roots, roots_binomial, roots_cubic,
+                        roots_linear, roots_quadratic, roots_quartic)
 from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
 from .rootisolation import (dup_isolate_complex_roots_sqf,
@@ -153,6 +153,14 @@ class RootOf(Expr):
         p = self.poly
         if p.degree() == expt and p.length() == 2 and p.TC():
             return -p.TC()/p.LC()
+
+    def _eval_rewrite_as_Pow(self, e, x, i):
+        p = self.poly
+        n = p.degree()
+        if n == 3:
+            return roots_cubic(p)[i]
+        elif n == 4:
+            return roots_quartic(p)[i]
 
     @property
     def is_number(self):
