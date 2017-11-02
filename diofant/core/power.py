@@ -505,7 +505,8 @@ class Pow(Expr):
                 return True
 
     def _eval_is_polar(self):
-        return self.base.is_polar
+        if self.base.is_polar and self.exp.is_commutative:
+            return True
 
     def _eval_subs(self, old, new):
         from .symbol import Symbol

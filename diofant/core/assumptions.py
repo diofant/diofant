@@ -105,6 +105,8 @@ Test if self can have values from the Riemann surface of the logarithm.
 See Also
 ========
 
+diofant.functions.elementary.complexes.polar_lift
+diofant.functions.elementary.complexes.principal_branch
 diofant.functions.elementary.exponential.exp_polar
 """,
     'complex':
