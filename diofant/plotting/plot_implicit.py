@@ -10,18 +10,13 @@ diofant.plotting.plot
 """
 
 from ..core import Dummy, Eq, Symbol, Tuple, sympify
-from ..core.relational import (Equality, GreaterThan, LessThan, Relational,
-                               StrictGreaterThan, StrictLessThan)
+from ..core.relational import Equality, GreaterThan, LessThan, Relational
 from ..external import import_module
 from ..logic.boolalg import BooleanFunction
 from ..polys.polyutils import _sort_gens
 from ..utilities import flatten, lambdify
 from ..utilities.decorator import doctest_depends_on
 from .plot import BaseSeries, Plot
-
-
-def vectorized_lambdify(args, expr):
-    return lambdify(args, expr, "numpy")
 
 
 class ImplicitSeries(BaseSeries):
@@ -63,21 +58,17 @@ class ImplicitSeries(BaseSeries):
         if isinstance(self.expr, Equality):
             expr = self.expr.lhs - self.expr.rhs
             equal = True
-
-        elif isinstance(self.expr, (GreaterThan, StrictGreaterThan)):
-            expr = self.expr.lhs - self.expr.rhs
-
-        elif isinstance(self.expr, (LessThan, StrictLessThan)):
-            expr = self.expr.rhs - self.expr.lhs
-        else:
+        elif self.expr.has(Equality):  # pragma: no cover
             raise NotImplementedError("The expression is not supported for "
                                       "plotting in uniform meshed plot.")
+        else:
+            expr = self.expr
         np = import_module('numpy')
         xarray = np.linspace(self.start_x, self.end_x, self.nb_of_points)
         yarray = np.linspace(self.start_y, self.end_y, self.nb_of_points)
         x_grid, y_grid = np.meshgrid(xarray, yarray)
 
-        func = vectorized_lambdify((self.var_x, self.var_y), expr)
+        func = lambdify((self.var_x, self.var_y), expr, "numpy")
         z_grid = func(x_grid, y_grid)
         z_grid[np.ma.where(z_grid < 0)] = -1
         z_grid[np.ma.where(z_grid > 0)] = 1
@@ -178,6 +169,10 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     Plotting regions.
 
     >>> p6 = plot_implicit(y > x**2)
+
+    Plotting Using boolean conjunctions.
+
+    >>> p7 = plot_implicit(And(y > x, y > -x))
 
     When plotting an expression with a single variable (y - 1, for example),
     specify the x or the y variable explicitly:
