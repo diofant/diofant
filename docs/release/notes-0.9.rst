@@ -93,7 +93,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`8255` roots_quadratic should return roots in same order as Poly.all_roots(radicals=False)
 * :sympyissue:`7138` How to solve system of differential equations with symbolic solution?
 * :sympyissue:`7457` TypeError when using both multiprocessing and gmpy
-* :sympyissue:`12115` Cannot access imported submodules in `sympy.core`
+* :sympyissue:`12115` Cannot access imported submodules in sympy.core
 * :sympyissue:`4315` series expansion of piecewise fails
 * :sympyissue:`6807` atoms does not work correctly in the otherwise case of Piecewise
 * :sympyissue:`12114` solve() leads to ZeroDivisionError: polynomial division
@@ -113,10 +113,10 @@ These Sympy issues also were addressed:
 * :sympyissue:`9447` sets.Complement fails on certain Unions
 * :sympyissue:`10305` Complement Of Universal Subsets
 * :sympyissue:`10413` ascii pprint of ProductSet uses non-ascii multiplication symbol
-* :sympyissue:`10414` ``pprint(Union, use_unicode=False)`` raises error (but ``str(Union)`` works)
+* :sympyissue:`10414` pprint(Union, use_unicode=False) raises error (but str(Union) works)
 * :sympyissue:`10375` lambdify on sympy.Min does not work with NumPy
 * :sympyissue:`10433`  Dict does not accept collections.defaultdict
-* :sympyissue:`9044` pretty printing: `Trace` could be improved (and LaTeX)
+* :sympyissue:`9044` pretty printing: Trace could be improved (and LaTeX)
 * :sympyissue:`10445` Improper integral does not evaluate
 * :sympyissue:`10379` dsolve() converts floats to integers/rationals
 * :sympyissue:`10633` Eq(True, False) doesn't evaluate
@@ -125,7 +125,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`11801` Exception when printing Symbol('')
 * :sympyissue:`11911` typo in docs of printing
 * :sympyissue:`10489` Mathematical Symbol does not seem to serialize correctly LaTeX printer
-* :sympyissue:`10336` nsimplify problems with `oo` and `inf`
+* :sympyissue:`10336` nsimplify problems with oo and inf
 * :sympyissue:`12345` nonlinsolve (solve_biquadratic) gives no solution with radical
 * :sympyissue:`12375` sympy.series() is broken?
 * :sympyissue:`5514` Poly(x, x) * I != I * Poly(x, x)
@@ -148,8 +148,8 @@ These Sympy issues also were addressed:
 * :sympyissue:`13312` SymPy does not evaluate integrals of exponentials with symbolic parameter and limit
 * :sympyissue:`13111` Don't use "is" to compare classes
 * :sympyissue:`10488` integrate(x/(a*x+b), x) gives wrong answer
-* :sympyissue:`9706` `Interval(-oo, 0).closure` hangs
-* :sympyissue:`10740` Add a test for `Interval(..) in Interval(..) == False`
+* :sympyissue:`9706` Interval(-oo, 0).closure hangs
+* :sympyissue:`10740` Add a test for Interval(..) in Interval(..) == False
 * :sympyissue:`10592` zeta(0, n) where n is negative is wrong
 * :sympyissue:`7858` Nth root mod giving wrong solutions
 * :sympyissue:`5412` N(oo*I) returns wrong result
