@@ -29,6 +29,10 @@ addons:
       - liblapack-dev
       - gfortran
       - graphviz
+stages:
+  - quality
+  - test
+  - deploy
 matrix:
   include:
     - python: 3.5
@@ -57,7 +61,8 @@ matrix:
       env: COVERAGE='on' SPLIT='12/13'
     - python: 3.5
       env: COVERAGE='on' SPLIT='13/13'
-    - python: 3.5
+    - stage: quality
+      python: 3.5
       env: COVERAGE='on' EXTRA='on'
       install:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]
@@ -67,7 +72,8 @@ matrix:
         - sphinx-build -W -b linkcheck docs build/sphinx/linkcheck
         - cat build/sphinx/linkcheck/output.txt
         - py.test --cov diofant diofant/polys
-    - python: 3.5
+    - stage: test
+      python: 3.5
       env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
       install:
         - travis_wait pip install .[exports,develop]
