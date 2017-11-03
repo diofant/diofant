@@ -63,6 +63,11 @@ class TupleParametersBase(Function):
         except (ArgumentIndexError, NotImplementedError):
             return Derivative(self, s)
 
+    @property
+    def is_number(self):
+        """Returns True if 'self' has no free symbols. """
+        return not self.free_symbols
+
 
 class hyper(TupleParametersBase):
     r"""

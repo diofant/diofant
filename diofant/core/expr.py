@@ -675,7 +675,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     raise AttributeError
                 if n2 == nan:
                     raise AttributeError
-            except (AttributeError, ValueError):
+            except (AttributeError, ValueError, ZeroDivisionError):
                 return
             r, i = self.evalf(2).as_real_imag()
             if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
@@ -702,7 +702,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     raise AttributeError
                 if n2 == nan:
                     raise AttributeError
-            except (AttributeError, ValueError):
+            except (AttributeError, ValueError, ZeroDivisionError):
                 return
             r, i = self.evalf(2).as_real_imag()
             if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
@@ -719,7 +719,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     raise AttributeError
                 if n2 == nan:
                     raise AttributeError
-            except (AttributeError, ValueError):
+            except (AttributeError, ValueError, ZeroDivisionError):
                 return
             r, i = self.evalf(2).as_real_imag()
             if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
