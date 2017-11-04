@@ -1,7 +1,5 @@
 """Solvers of systems of polynomial equations. """
 
-import collections
-
 from ..matrices import Matrix
 from ..polys import groebner, sring
 from ..polys.polyerrors import (CoercionFailed, ComputationFailed,
@@ -17,13 +15,6 @@ __all__ = ('solve_linear_system', 'solve_poly_system')
 
 class SolveFailed(Exception):
     """Raised when solver's conditions weren't met. """
-
-
-def roots(p):
-    r = collections.defaultdict(int)
-    for v in p.all_roots():
-        r[v] += 1
-    return r
 
 
 def solve_linear_system(system, *symbols, **flags):
@@ -193,7 +184,7 @@ def solve_generic(polys, opt):
         gens = f.gens
         gen = gens[-1]
 
-        zeros = [k.doit() for k in roots(f.ltrim(gen))]
+        zeros = {k.doit() for k in f.ltrim(gen).all_roots()}
 
         if len(basis) == 1:
             return [{gen: zero} for zero in zeros]

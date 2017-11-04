@@ -103,11 +103,11 @@ These Sympy issues also were addressed:
 * :sympyissue:`9274` Wrong Jordan form: complex eigenvalues w/ geo. mult. > alg. mult.
 * :sympyissue:`9398` Simplify of small imaginary number yields 0
 * :sympyissue:`7259` LambertW has no series expansion at x=0 (nan)
-* :sympyissue:`9832` ``x**2 < oo`` returns ``True`` but ``x < oo`` un-evaluated for real ``x``
-* :sympyissue:`9053` ``MatMul(2, Matrix(...)).doit()`` doesn't do it
-* :sympyissue:`9052` ``trace(2*A) != 2*Trace(A)`` because LHS still has an MatMul
+* :sympyissue:`9832` x**2 < oo returns True but x < oo un-evaluated for real x
+* :sympyissue:`9053` MatMul(2, Matrix(...)).doit() doesn't do it
+* :sympyissue:`9052` trace(2*A) != 2*Trace(A) because LHS still has an MatMul
 * :sympyissue:`9533` Logical operators in octave_code
-* :sympyissue:`9545` ``Mod(zoo, 0)`` causes RunTime Error
+* :sympyissue:`9545` Mod(zoo, 0) causes RunTime Error
 * :sympyissue:`9652` Fail in plot_implicit test on OSX 10.8.5
 * :sympyissue:`8432` Tests fail, seems like Cython is not configured to compile with numpy correctly
 * :sympyissue:`9542` codegen octave global vars should print "global foo" at top of function
@@ -135,11 +135,11 @@ These Sympy issues also were addressed:
 * :sympyissue:`7098` Incorrect expression resulting from integral evaluation
 * :sympyissue:`10323` bad ceiling(sqrt(big integer))
 * :sympyissue:`10326` Interval(-oo, oo) contains oo
-* :sympyissue:`10095` simplify((1/(2*E))**oo) returns `nan`
+* :sympyissue:`10095` simplify((1/(2*E))**oo) returns nan
 * :sympyissue:`4187` integrate(log(x)*exp(x), (x, 0, oo)) should return -EulerGamma
 * :sympyissue:`10383` det of empty matrix is 1
 * :sympyissue:`10382` limit(fibonacci(n + 1)/fibonacci(n), n, oo) does not give GoldenRatio
-* :sympyissue:`10388` ``factorial2`` runs into ``RunTimeError`` for non-integer
+* :sympyissue:`10388` factorial2 runs into RunTimeError for non-integer
 * :sympyissue:`10391` solve((2*x + 8)*exp(-6*x), x) can't find any solution
 * :sympyissue:`8241` Wrong assumption/result in a parametric limit
 * :sympyissue:`3539` Symbol.__call__ should not create a Function
@@ -174,14 +174,14 @@ These Sympy issues also were addressed:
 * :sympyissue:`10761` (1/(x**-2 + x**-3)).series(x, 0) gives wrong result
 * :sympyissue:`10024` Eq( Mod(x, 2*pi), 0 ) evaluates to False
 * :sympyissue:`7985` Indexed should work with subs on a container
-* :sympyissue:`9637` ``S.Reals - FiniteSet(n)`` returns ``EmptySet - FiniteSet(n)``
+* :sympyissue:`9637` S.Reals - FiniteSet(n) returns EmptySet - FiniteSet(n)
 * :sympyissue:`10003` P(X < -1) of ExponentialDistribution
 * :sympyissue:`10052` P(X < oo ) for any Continuous Distribution raises AttributeError
 * :sympyissue:`10063` Integer raised to Float power does not evaluate
 * :sympyissue:`10075` X.pdf(x) for Symbol x returns 0
 * :sympyissue:`9823` Matrix power of identity matrix fails
-* :sympyissue:`10156` do not use `has` to test against self.variables when factoring Sum
-* :sympyissue:`10113` imageset(lambda x: x**2/(x**2 - 4), S.Reals) returns (1, ∞)
+* :sympyissue:`10156` do not use has() to test against self.variables when factoring Sum
+* :sympyissue:`10113` imageset(lambda x: x**2/(x**2 - 4), S.Reals) returns (1, oo)
 * :sympyissue:`10020` oo**I raises RunTimeError
 * :sympyissue:`10240` Not(And(x>2, x<3)) does not evaluate
 * :sympyissue:`8510` Differentiation of general functions
@@ -229,7 +229,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`8481` Wrong error raised trying to calculate limit of Poisson PMF
 * :sympyissue:`9956` Union(Interval(-oo, oo), FiniteSet(1)) not evaluated
 * :sympyissue:`9747` test_piecewise_lambdify fails locally
-* :sympyissue:`7853` Deprecation of lambdify converting `Matrix` -> `numpy.matrix`
+* :sympyissue:`7853` Deprecation of lambdify converting Matrix -> numpy.matrix
 * :sympyissue:`9634` Repeated example in the docstring of hermite
 * :sympyissue:`8500` Using and operator vs fuzzy_and while querying assumptions
 * :sympyissue:`9192` O(y + 1) = O(1)

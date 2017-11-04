@@ -70,6 +70,24 @@ def test_solve_poly_system():
              {x: RootOf(x**6 + x - 1, 2)}, {x: RootOf(x**6 + x - 1, 3)},
              {x: RootOf(x**6 + x - 1, 4)}, {x: RootOf(x**6 + x - 1, 5)}])
 
+    # Arnold's problem on two walking old women
+    eqs = (4*n + 9*t - y, n*(12 - x) - 9*t, -4*n + t*(12 - x))
+    res = solve_poly_system(eqs, n, t, x, y)
+    assert res == [{n: 0, t: 0, y: 0}, {n: -y/2, t: y/3, x: 18}, {n: y/10, t: y/15, x: 6}]
+    assert [_ for _ in res if 12 > _.get(x, 0) > 0] == [{n: y/10, t: y/15, x: 6}]
+
+
+@pytest.mark.xfail
+@pytest.mark.slow
+def test_arnold_xfail():
+    eqs = (n*(12 - x) + t*(12 - x) - y,
+           4*n + 9*t - y, n*(12 - x) - 9*t, -4*n + t*(12 - x))
+    res = solve_poly_system(eqs, n, x, y, t)
+    assert res == [{n: 0, t: 0, y: 0}, {n: -3*t/2, x: 18, y: 3*t},
+                   {n: 3*t/2, x: 6, y: 15*t}]
+
+    assert solve_poly_system(eqs[1:], n, t, y, x) != [{n: 0, t: 0, y: 0}]
+
 
 def test_solve_biquadratic():
     x0, y0, x1, y1, r = symbols('x0 y0 x1 y1 r')

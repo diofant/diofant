@@ -158,7 +158,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
         if self.fulldomain.__class__ is SingleFiniteDomain:
             return FiniteSet(*[elem for elem in self.fulldomain.set
                                if frozenset(((self.fulldomain.symbol, elem),)) in self])
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError(
                 "Not implemented on multi-dimensional conditional domain")
 

@@ -29,35 +29,40 @@ addons:
       - liblapack-dev
       - gfortran
       - graphviz
+stages:
+  - quality
+  - test
+  - deploy
 matrix:
   include:
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='1/13'
+      env: COVERAGE='on' SPLIT='1/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='2/13'
+      env: COVERAGE='on' SPLIT='2/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='3/13'
+      env: COVERAGE='on' SPLIT='3/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='4/13'
+      env: COVERAGE='on' SPLIT='4/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='5/13'
+      env: COVERAGE='on' SPLIT='5/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='6/13'
+      env: COVERAGE='on' SPLIT='6/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='7/13'
+      env: COVERAGE='on' SPLIT='7/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='8/13'
+      env: COVERAGE='on' SPLIT='8/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='9/13'
+      env: COVERAGE='on' SPLIT='9/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='10/13'
+      env: COVERAGE='on' SPLIT='10/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='11/13'
+      env: COVERAGE='on' SPLIT='11/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='12/13'
+      env: COVERAGE='on' SPLIT='12/13'
     - python: 3.5
-      env: COVERAGE='on' SELECT='not slow and not xfail' SPLIT='13/13'
-    - python: 3.5
+      env: COVERAGE='on' SPLIT='13/13'
+    - stage: quality
+      python: 3.5
       env: COVERAGE='on' EXTRA='on'
       install:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]
@@ -67,7 +72,8 @@ matrix:
         - sphinx-build -W -b linkcheck docs build/sphinx/linkcheck
         - cat build/sphinx/linkcheck/output.txt
         - py.test --cov diofant diofant/polys
-    - python: 3.5
+    - stage: test
+      python: 3.5
       env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
       install:
         - travis_wait pip install .[exports,develop]
@@ -93,7 +99,7 @@ before_script:
 script:
   - |
     if [ -n "${COVERAGE}" ]; then
-      python setup.py test --addopts "--cov diofant -m \"${SELECT}\" --split=${SPLIT}"
+      python setup.py test --addopts "--cov diofant -m \"not slow and not xfail\" --split=${SPLIT}"
     else
       python setup.py test --addopts "--split=${SPLIT}"
     fi

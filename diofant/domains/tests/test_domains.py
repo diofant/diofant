@@ -56,16 +56,16 @@ def test_Domain_unify():
     F3 = GF(3)
 
     assert unify(F3, F3) == F3
-    assert unify(F3, ZZ) == ZZ
+    assert unify(F3, ZZ) == F3
     assert unify(F3, QQ) == QQ
     assert unify(F3, ALG) == ALG
     assert unify(F3, RR) == RR
     assert unify(F3, CC) == CC
-    assert unify(F3, ZZ[x]) == ZZ[x]
-    assert unify(F3, ZZ.frac_field(x)) == ZZ.frac_field(x)
+    assert unify(F3, ZZ[x]) == F3[x]
+    assert unify(F3, ZZ.frac_field(x)) == F3.frac_field(x)
     assert unify(F3, EX) == EX
 
-    assert unify(ZZ, F3) == ZZ
+    assert unify(ZZ, F3) == F3
     assert unify(ZZ, ZZ) == ZZ
     assert unify(ZZ, QQ) == QQ
     assert unify(ZZ, ALG) == ALG
@@ -112,7 +112,7 @@ def test_Domain_unify():
     assert unify(RR, RR2) == unify(RR2, RR) == RealField(prec=RR.precision,
                                                          tol=RR2.tolerance)
 
-    assert unify(ZZ[x], F3) == ZZ[x]
+    assert unify(ZZ[x], F3) == F3[x]
     assert unify(ZZ[x], ZZ) == ZZ[x]
     assert unify(ZZ[x], QQ) == QQ[x]
     assert unify(ZZ[x], ALG) == ALG[x]
@@ -122,7 +122,7 @@ def test_Domain_unify():
     assert unify(ZZ[x], ZZ.frac_field(x)) == ZZ.frac_field(x)
     assert unify(ZZ[x], EX) == EX
 
-    assert unify(ZZ.frac_field(x), F3) == ZZ.frac_field(x)
+    assert unify(ZZ.frac_field(x), F3) == F3.frac_field(x)
     assert unify(ZZ.frac_field(x), ZZ) == ZZ.frac_field(x)
     assert unify(ZZ.frac_field(x), QQ) == QQ.frac_field(x)
     assert unify(ZZ.frac_field(x), ALG) == ALG.frac_field(x)
@@ -957,3 +957,9 @@ def test_EX():
 
     assert EX.numer(EX(1)/2) == 1
     assert EX.denom(EX(1)/2) == 2
+
+
+def test_sympyissue_13545():
+    assert Poly(x + 1, x, modulus=2) + 1 == Poly(x, x, modulus=2)
+    pytest.raises(NotImplementedError,
+                  lambda: Poly(x, modulus=2) + Poly(x, modulus=3))
