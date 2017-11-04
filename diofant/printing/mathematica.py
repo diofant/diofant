@@ -176,13 +176,23 @@ class MCodePrinter(CodePrinter):
                                                                Symbol('#'))),
                                    self.doprint(expr.index + 1))
 
+    def _print_Lambda(self, expr):
+        return 'Function[%s, %s]' % (self.doprint(expr.variables),
+                                     self.doprint(expr.expr))
+
+    def _print_RootSum(self, expr):
+        from ..core import Lambda
+        p, f = expr.poly, expr.fun
+        return "RootSum[%s, %s]" % (self.doprint(Lambda(p.gens, p.as_expr())),
+                                    self.doprint(f))
+
     def _print_AlgebraicNumber(self, expr):
         coeffs = list(reversed(expr.coeffs()))
         return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.root),
                                             self.doprint(coeffs))
 
     def _print_Dummy(self, expr):
-        return "Subscript[%s, %s]" % (expr.name, expr.dummy_index)
+        return "%s%s" % (expr.name, expr.dummy_index)
 
 
 def mathematica_code(expr, **settings):
