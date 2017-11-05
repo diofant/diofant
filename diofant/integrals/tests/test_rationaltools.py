@@ -1,5 +1,5 @@
-from diofant import (I, Integer, Poly, Rational, atan, integrate, log,
-                     simplify, sqrt, symbols)
+from diofant import (Float, I, Integer, Lambda, Poly, Rational, RootSum, atan,
+                     integrate, log, simplify, sqrt, symbols)
 from diofant.abc import a, b, t, u, x
 from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
 
@@ -102,6 +102,22 @@ def test_ratint():
     assert ratint(1/(x**2 + 1), x, symbol='x') == ans
     assert ratint(1/(x**2 + 1), x, symbol=a) == ans
 
+    ans = (-sqrt(2)*log(x**2 + x*(-2 - sqrt(2)) + sqrt(2) + 2)/8 +
+           sqrt(2)*log(x**2 + x*(-2 + sqrt(2)) - sqrt(2) + 2)/8 -
+           sqrt(2)*atan(-sqrt(2)*x + 1 + sqrt(2))/4 +
+           sqrt(2)*atan(sqrt(2)*x - sqrt(2) + 1)/4)
+    assert ratint(1/((x - 1)**4 + 1), x) == ans
+
+    ans = RootSum(776887*t**7 + 27216*t**5 - 15120*t**4 + 3780*t**3 -
+                  504*t**2 + 35*t - 1,
+                  Lambda(t, t*log(x + 6041073312*t**6/117649 +
+                                  1006845552*t**5/117649 +
+                                  379439208*t**4/117649 -
+                                  54333252*t**3/117649 +
+                                  20337738*t**2/117649 - 529481*t/117649 +
+                                  46656/117649)))
+    assert ratint(1/(x**7 - x + 1), x) == ans
+
 
 def test_ratint_logpart():
     assert ratint_logpart(x, x**2 - 9, x, t) == \
@@ -141,3 +157,8 @@ def test_log_to_atan():
     fg_ans = 2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
     assert log_to_atan(f, g) == fg_ans
     assert log_to_atan(g, f) == -fg_ans
+
+
+def test_sympyissue_13460():
+    assert integrate(1/(-28*x**3 - 46*x**2 - 25*x - 10),
+                     [x, 2, 3]).n() == Float('-0.0013230197536986538', dps=15)
