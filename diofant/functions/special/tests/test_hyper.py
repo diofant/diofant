@@ -57,6 +57,9 @@ def test_hyper():
     assert hyper([polar_lift(z)], [polar_lift(k)], polar_lift(x)) == \
         hyper([z], [k], polar_lift(x))
 
+    assert hyper((1, 2, 3), [3, 4], 1).is_number
+    assert not hyper((1, 2, 3), [3, x], 1).is_number
+
 
 def test_expand_func():
     # evaluation at 1 of Gauss' hypergeometric function:
@@ -177,6 +180,9 @@ def test_meijer():
     # integrand
     assert meijerg([a], [b], [c], [d], z).integrand(s) == \
         z**s*gamma(c - s)*gamma(-a + s + 1)/(gamma(b - s)*gamma(-d + s + 1))
+
+    assert meijerg([[], []], [[Rational(1, 2)], [0]], 1).is_number
+    assert not meijerg([[], []], [[x], [0]], 1).is_number
 
 
 def test_meijerg_derivative():
