@@ -5,7 +5,7 @@ functions.
 import pytest
 
 from diofant import (Dummy, E, Eq, Expr, I, Lambda, Poly, Rational, RootSum,
-                     Symbol, factor, pi, sqrt, together)
+                     Symbol, factor, pi, sqrt, symbols, together)
 from diofant.abc import a, b, c, x, y
 from diofant.polys.partfrac import (apart, apart_list,
                                     apart_undetermined_coeffs,
@@ -148,6 +148,9 @@ def test_noncommutative_pseudomultivariate():
     c = 1/(1 + y)
     assert apart(e + foo(e)) == c + foo(c)
     assert apart(e*foo(e)) == c*foo(c)
+
+    A, B = symbols('A, B', commutative=False)
+    assert apart(A*B) == A*B
 
 
 def test_sympyissue_5798():
