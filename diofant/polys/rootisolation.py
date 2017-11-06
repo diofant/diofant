@@ -1174,7 +1174,7 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
 
             if qq in _rules_ambiguous:
                 rules.append((_rules_ambiguous[qq], corners[(j, i)]))
-            else:
+            else:  # pragma: no cover
                 raise NotImplementedError("3 element rule (corner): " + str(qq))
 
         q1, k = Q[0], 1
@@ -1189,14 +1189,14 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
                     rules.append((_rules_simple[qq], 0))
                 elif qq in _rules_ambiguous:
                     rules.append((_rules_ambiguous[qq], edges[i]))
-                else:
+                else:  # pragma: no cover
                     raise NotImplementedError("2 element rule (inside): " + str(qq))
             else:
                 qq, k = (q1, q2, Q[k]), k + 1
 
                 if qq in _rules_ambiguous:
                     rules.append((_rules_ambiguous[qq], edges[i]))
-                else:
+                else:  # pragma: no cover
                     raise NotImplementedError("3 element rule (edge): " + str(qq))
 
             q1 = qq[-1]
@@ -1750,8 +1750,7 @@ class RealInterval:
 
     def _inner_refine(self):
         """Internal one step real root refinement procedure. """
-        if self.mobius is None:
-            return self
+        assert self.mobius is not None
 
         f, mobius = dup_inner_refine_real_root(
             self.f, self.mobius, self.domain, steps=1, mobius=True)
