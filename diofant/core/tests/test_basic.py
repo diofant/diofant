@@ -11,7 +11,8 @@ from diofant.abc import w, x, y, z
 from diofant.core.basic import Atom, Basic, preorder_traversal
 from diofant.core.compatibility import default_sort_key
 from diofant.core.function import Function
-from diofant.core.singleton import S, Singleton
+from diofant.core.singleton import SingletonWithManagedProperties as Singleton
+from diofant.core.singleton import S
 from diofant.integrals.integrals import Integral
 
 

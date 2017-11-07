@@ -22,7 +22,8 @@ from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr
 from .logic import fuzzy_not
-from .singleton import S, Singleton
+from .singleton import SingletonWithManagedProperties as Singleton
+from .singleton import S
 from .sympify import SympifyError, converter, sympify
 
 
