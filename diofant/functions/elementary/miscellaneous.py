@@ -5,7 +5,7 @@ from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
 from ...core.operations import LatticeOp, ShortCircuit
 from ...core.rules import Transform
-from ...core.singleton import Singleton
+from ...core.singleton import SingletonWithManagedProperties as Singleton
 from ...logic import And, Or
 from .integers import floor
 

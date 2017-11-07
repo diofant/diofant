@@ -85,7 +85,7 @@ class SingletonRegistry:
 S = SingletonRegistry()
 
 
-class Singleton(ManagedProperties):
+class Singleton(type):
     """
     Metaclass for singleton classes.
 
@@ -123,16 +123,21 @@ class Singleton(ManagedProperties):
     "Maps singleton classes to their instances."
 
     def __new__(cls, *args, **kwargs):
-        result = super(Singleton, cls).__new__(cls, *args, **kwargs)
+        result = super().__new__(cls, *args, **kwargs)
         S.register(result)
         return result
 
     def __call__(self, *args, **kwargs):
         # Called when application code says SomeClass(), where SomeClass is a
-        # class of which Singleton is the metaclas.
+        # class of which Singleton is the metaclass.
         # __call__ is invoked first, before __new__() and __init__().
-        if self not in Singleton._instances:
+        if self not in self.__class__._instances:
             # Invokes the standard constructor of SomeClass.
-            Singleton._instances[self] = \
-                super(Singleton, self).__call__(*args, **kwargs)
-        return Singleton._instances[self]
+            self.__class__._instances[self] = super().__call__(*args, **kwargs)
+        return self.__class__._instances[self]
+
+
+class SingletonWithManagedProperties(Singleton, ManagedProperties):
+    """
+    Metaclass for singleton classes with managed properties.
+    """
