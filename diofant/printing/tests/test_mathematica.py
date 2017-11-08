@@ -1,10 +1,11 @@
 import pytest
 
 from diofant import mathematica_code as mcode
+from diofant.abc import x, y, z
 from diofant.concrete import Sum
 from diofant.core import (AlgebraicNumber, Catalan, Derivative, Dummy, E, Eq,
-                          EulerGamma, Function, Gt, Integer, Le, Ne, Rational,
-                          Tuple, oo, pi, symbols)
+                          EulerGamma, Function, Gt, Integer, Lambda, Le, Ne,
+                          Rational, Tuple, oo, pi, symbols)
 from diofant.functions import (Max, Min, Piecewise, acos, asin, atan, atanh,
                                binomial, cos, cosh, cot, coth, csch, erfc, exp,
                                hyper, log, meijerg, sech, sign, sin, sinh, tan,
@@ -12,13 +13,12 @@ from diofant.functions import (Max, Min, Piecewise, acos, asin, atan, atanh,
 from diofant.integrals import Integral
 from diofant.logic import Or, false, true
 from diofant.matrices import Matrix
-from diofant.polys import Poly, RootOf
+from diofant.polys import Poly, RootOf, RootSum
 from diofant.series import Limit
 
 
 __all__ = ()
 
-x, y, z = symbols('x,y,z')
 f = Function('f')
 
 
@@ -39,7 +39,7 @@ def test_Rational():
 def test_symbols():
     assert mcode(x) == "x"
     d = Dummy("d")
-    assert mcode(d) == "Subscript[d, %s]" % d.dummy_index
+    assert mcode(d) == "d%s" % d.dummy_index
 
 
 def test_Function():
@@ -91,6 +91,13 @@ def test_Function():
     assert mcode(myfunc2(x, y),
                  user_functions={"myfunc2": [(lambda *x: False,
                                               "Myfunc2")]}) == "myfunc2[x, y]"
+
+
+def test_Lambda():
+    f1 = Lambda(x, x**2)
+    assert mcode(f1) == "Function[{x}, x^2]"
+    f2 = Lambda((x, y), x + 2*y)
+    assert mcode(f2) == "Function[{x, y}, x + 2*y]"
 
 
 def test_Derivative():
@@ -179,6 +186,12 @@ def test_Piecewise():
 def test_RootOf():
     p = Poly(x**3 + y*x + 1, x)
     assert mcode(RootOf(p, 0)) == 'Root[#^3 + #*y + 1 &, 1]'
+
+
+def test_RootSum():
+    r = RootSum(x**3 + x + 3, Lambda(y, log(y*z)))
+    assert mcode(r) == ("RootSum[Function[{x}, x^3 + x + 3], "
+                        "Function[{y}, Log[y*z]]]")
 
 
 def test_AlgebraicNumber():

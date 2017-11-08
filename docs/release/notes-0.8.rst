@@ -92,7 +92,7 @@ Issues closed
 =============
 
 See the `release milestone <https://github.com/diofant/diofant/milestone/1?closed=1>`_
-milestone for complete list of issues and pull requests involved in this release.
+for complete list of issues and pull requests involved in this release.
 
 These Sympy issues also were addressed:
 
