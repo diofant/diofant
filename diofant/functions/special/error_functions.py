@@ -207,10 +207,13 @@ class erf(Function):
         else:
             x, y = self.args[0].as_real_imag()
 
-        sq = -y**2/x**2
-        re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
-        im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
-                                   self.func(x + x*sqrt(sq)))
+        if x.is_zero:
+            re = S.Zero
+            im = erfi(y)
+        else:
+            sq = -y**2/x**2
+            re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
+            im = x/(2*y)*sqrt(sq)*(self.func(x - x*sqrt(sq)) - self.func(x + x*sqrt(sq)))
         return re, im
 
 
@@ -398,10 +401,13 @@ class erfc(Function):
         else:
             x, y = self.args[0].as_real_imag()
 
-        sq = -y**2/x**2
-        re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
-        im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
-                                   self.func(x + x*sqrt(sq)))
+        if x.is_zero:
+            re = S.One
+            im = -erfi(y)
+        else:
+            sq = -y**2/x**2
+            re = (self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))/2
+            im = x/(2*y)*sqrt(sq)*(self.func(x - x*sqrt(sq)) - self.func(x + x*sqrt(sq)))
         return re, im
 
 
@@ -568,9 +574,13 @@ class erfi(Function):
         else:
             x, y = self.args[0].as_real_imag()
 
-        sq = -y**2/x**2
-        re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
-        im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
+        if x.is_zero:
+            re = S.Zero
+            im = erf(y)
+        else:
+            sq = -y**2/x**2
+            re = (self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))/2
+            im = x/(2*y)*sqrt(sq)*(self.func(x - x*sqrt(sq)) -
                                    self.func(x + x*sqrt(sq)))
         return re, im
 
@@ -2026,9 +2036,12 @@ class FresnelIntegral(Function):
         # Fresnel C
         # http://functions.wolfram.com/06.33.19.0003.01
         # http://functions.wolfram.com/06.33.19.0006.01
-        sq = -y**2/x**2
-        re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
-        im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
+        if x.is_zero:
+            re, im = self.func(I*y).rewrite(erf).as_real_imag()
+        else:
+            sq = -y**2/x**2
+            re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
+            im = x/(2*y)*sqrt(sq)*(self.func(x - x*sqrt(sq)) -
                                    self.func(x + x*sqrt(sq)))
         return re, im
 

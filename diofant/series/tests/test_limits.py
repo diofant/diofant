@@ -5,9 +5,10 @@ import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
                      PoleError, Rational, Sum, Symbol, acos, atan, cbrt,
-                     ceiling, cos, cot, diff, exp, factorial, floor, gamma,
-                     integrate, limit, log, nan, oo, pi, polygamma, root, sign,
-                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan)
+                     ceiling, cos, cot, diff, erf, erfi, exp, factorial, floor,
+                     gamma, integrate, limit, log, nan, oo, pi, polygamma,
+                     root, sign, simplify, sin, sinh, sqrt, subfactorial,
+                     symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -600,3 +601,8 @@ def test_sympyissue_13416():
 def test_sympyissue_13462():
     assert limit(n**2*(2*n*(-(1 - 1/(2*n))**x + 1) -
                  x - (-x**2/4 + x/4)/n), n, oo) == x/12 - x**2/8 + x**3/24
+
+
+def test_sympyissue_13575():
+    assert limit(acos(erfi(x)), x, 1) == pi/2 + I*log(sqrt(erf(I)**2 + 1) +
+                                                      erf(I))
