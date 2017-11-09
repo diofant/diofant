@@ -81,6 +81,7 @@ def test_erf():
     assert erf(x).as_real_imag() == erf(x).as_real_imag(deep=False)
     assert erf(w).as_real_imag() == (erf(w), 0)
     assert erf(w).as_real_imag() == erf(w).as_real_imag(deep=False)
+    assert erf(I).as_real_imag() == (0, erfi(1))
 
     pytest.raises(ArgumentIndexError, lambda: erf(x).fdiff(2))
 
@@ -152,6 +153,7 @@ def test_erfc():
     assert erfc(x).as_real_imag(deep=False) == erfc(x).as_real_imag()
     assert erfc(w).as_real_imag() == (erfc(w), 0)
     assert erfc(w).as_real_imag(deep=False) == erfc(w).as_real_imag()
+    assert erfc(I).as_real_imag() == (1, -erfi(1))
 
     pytest.raises(ArgumentIndexError, lambda: erfc(x).fdiff(2))
 
@@ -213,6 +215,7 @@ def test_erfi():
     assert erfi(x).as_real_imag(deep=False) == erfi(x).as_real_imag()
     assert erfi(w).as_real_imag() == (erfi(w), 0)
     assert erfi(w).as_real_imag(deep=False) == erfi(w).as_real_imag()
+    assert erfi(I).as_real_imag() == (0, erf(1))
 
     pytest.raises(ArgumentIndexError, lambda: erfi(x).fdiff(2))
 
@@ -651,6 +654,10 @@ def test_fresnel():
     assert fresnels(z).as_real_imag(deep=False) == fresnels(z).as_real_imag()
     assert fresnels(w).as_real_imag() == (fresnels(w), 0)
     assert fresnels(w).as_real_imag(deep=False) == fresnels(w).as_real_imag()
+    assert (fresnels(I, evaluate=False).as_real_imag() ==
+            (0, -erf(sqrt(pi)/2 + I*sqrt(pi)/2)/4 +
+             I*(-erf(sqrt(pi)/2 + I*sqrt(pi)/2) + erf(sqrt(pi)/2 -
+                I*sqrt(pi)/2))/4 - erf(sqrt(pi)/2 - I*sqrt(pi)/2)/4))
 
     assert fresnels(2 + 3*I).as_real_imag() == (
         fresnels(2 + 3*I)/2 + fresnels(2 - 3*I)/2,

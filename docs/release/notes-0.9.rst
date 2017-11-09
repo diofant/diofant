@@ -175,3 +175,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`13545` Poly loses modulus after arithemetic
 * :sympyissue:`13460` Integration of certain cubic rational functions is incorrect
 * :sympyissue:`13071` meijerg.is_number is wrong
+* :sympyissue:`13575` limit(acos(erfi(x)), x, 1) causes recursion error
