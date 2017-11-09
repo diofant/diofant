@@ -1187,3 +1187,9 @@ def test_sympyissue_13501():
     a = Symbol('a', real=True)
     assert integrate(1/(1 + a**2*x**2), x) == ((-I*log(x - I/a)/2 +
                                                I*log(x + I/a)/2)/a)
+
+
+def test_diofantissue_447():
+    assert integrate(1/(2*sin(x) + cos(x)),
+                     x) == (sqrt(5)*log(tan(x/2) - 2 + sqrt(5))/5 -
+                            sqrt(5)*log(tan(x/2) - sqrt(5) - 2)/5)

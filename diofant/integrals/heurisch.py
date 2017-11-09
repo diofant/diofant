@@ -532,7 +532,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         except PolynomialError:
             return
         else:
-            ground, _ = construct_domain(non_syms, field=True)
+            ground, _ = construct_domain(non_syms, field=True, extension=True)
 
         coeff_ring = PolyRing(poly_coeffs, ground)
         ring = PolyRing(V, coeff_ring)
