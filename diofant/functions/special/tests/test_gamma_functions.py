@@ -101,7 +101,7 @@ def tn_branch(s, func):
     expr = func(s, c*exp_polar(I*pi)) - func(s, c*exp_polar(-I*pi))
     eps = 1e-15
     expr2 = func(s + eps, -c + eps*I) - func(s + eps, -c - eps*I)
-    return abs(expr.n() - expr2.n()).n() < 1e-10
+    return abs(expr - expr2).n(strict=False) < 1e-10
 
 
 def test_lowergamma():
@@ -222,7 +222,7 @@ def test_polygamma():
         r = polygamma(0, x)
         if r.has(polygamma):
             return False
-        return abs(polygamma(0, x.n()).n() - r.n()).n() < 1e-10
+        return abs(polygamma(0, x.n()).n(strict=False) - r.n()).n(strict=False) < 1e-10
     assert t(1, 2)
     assert t(3, 2)
     assert t(-1, 2)

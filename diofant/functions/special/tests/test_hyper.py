@@ -66,8 +66,8 @@ def test_expand_func():
     a1, b1, c1 = randcplx(), randcplx(), randcplx() + 5
     assert expand_func(hyper([a, b], [c], 1)) == \
         gamma(c)*gamma(-a - b + c)/(gamma(-a + c)*gamma(-b + c))
-    assert abs(expand_func(hyper([a1, b1], [c1], 1)).n()
-               - hyper([a1, b1], [c1], 1).n()) < 1e-10
+    assert abs(expand_func(hyper([a1, b1], [c1], 1))
+               - hyper([a1, b1], [c1], 1)).n(strict=False) < 1e-10
 
     # hyperexpand wrapper for hyper:
     assert expand_func(hyper([], [], z)) == exp(z)
@@ -276,7 +276,7 @@ def test_hyperrep():
             return False
         # Next check continuity along exp_polar(I*pi)*t
         expr = func.subs(z, exp_polar(I*pi)*z).rewrite('nonrep')
-        if abs(expr.subs(z, 1 + 1e-15).n() - expr.subs(z, 1 - 1e-15).n()) > 1e-10:
+        if abs(expr.subs(z, 1 + 1e-15) - expr.subs(z, 1 - 1e-15)).n(strict=False) > 1e-10:
             return False
         # Finally check continuity of the big reps.
 
@@ -319,8 +319,8 @@ def test_meijerg_eval():
     # Test that the two expressions agree for all arguments.
     for x_ in [0.5, 1.5]:
         for k_ in [0.0, 0.1, 0.3, 0.5, 0.8, 1, 5.751, 15.3]:
-            assert abs((expr1 - expr2).n(subs={x: x_, k: k_})) < 1e-10
-            assert abs((expr1 - expr2).n(subs={x: x_, k: -k_})) < 1e-10
+            assert abs((expr1 - expr2).n(subs={x: x_, k: k_}, strict=False)) < 1e-10
+            assert abs((expr1 - expr2).n(subs={x: x_, k: -k_}, strict=False)) < 1e-10
 
     # Test continuity independently
     eps = 1e-13

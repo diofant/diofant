@@ -346,7 +346,7 @@ def tn_branch(func, s=None):
     expr = fn(c*exp_polar(I*pi)) - fn(c*exp_polar(-I*pi))
     eps = 1e-15
     expr2 = fn(-c + eps*I) - fn(-c - eps*I)
-    return abs(expr.n() - expr2.n()).n() < 1e-10
+    return abs(expr - expr2).n(strict=False) < 1e-10
 
 
 def test_ei():
@@ -467,9 +467,9 @@ def test__eis():
 def tn_arg(func):
     def test(arg, e1, e2):
         v = uniform(1, 5)
-        v1 = func(arg*x).subs(x, v).n()
-        v2 = func(e1*v + e2*1e-15).n()
-        return abs(v1 - v2).n() < 1e-10
+        v1 = func(arg*x).subs(x, v).n(strict=False)
+        v2 = func(e1*v + e2*1e-15).n(strict=False)
+        return abs(v1 - v2).n(strict=False) < 1e-10
     return test(exp_polar(I*pi/2), I, 1) and \
         test(exp_polar(-I*pi/2), -I, 1) and \
         test(exp_polar(I*pi), -1, I) and \

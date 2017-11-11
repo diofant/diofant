@@ -805,7 +805,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
             raise ValueError("constants must be real-valued")
         constants_dict[str(constant)] = v._to_mpmath(bprec)
 
-    exprval = expr.evalf(prec, chop=True)
+    exprval = expr.evalf(prec, chop=True, strict=False)
     re, im = exprval.as_real_imag()
 
     # safety check to make sure that this evaluated to a number

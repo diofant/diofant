@@ -867,7 +867,7 @@ class Mul(AssocOp):
                 # if both objects are added to 0 they will share the same "normalization"
                 # and are more likely to compare the same. Since Add(foo, 0) will not allow
                 # the 0 to pass, we use __add__ directly.
-                return l.__add__(0) == r.evalf().__add__(0)
+                return l.__add__(0) == r.evalf(strict=False).__add__(0)
             return False
         if check(lhs, rhs) or check(rhs, lhs):
             return S.One

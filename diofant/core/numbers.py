@@ -600,7 +600,9 @@ class Float(Number):
     Please note that you can't increase precision with evalf:
 
     >>> approx.evalf(5)
-    0.1
+    Traceback (most recent call last):
+    ...
+    PrecisionExhausted: ...
 
     By contrast, 0.125 is exact in binary (as it is in base 10) and so it
     can be passed to Float constructor to obtain an arbitrary precision with
@@ -972,7 +974,7 @@ class Float(Number):
         if isinstance(other, NumberSymbol):
             return other.__lt__(self)
         if other.is_comparable:
-            other = other.evalf()
+            other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
             return sympify(bool(mlib.mpf_gt(self._mpf_,
                                             other._as_mpf_val(self._prec))),
@@ -984,7 +986,7 @@ class Float(Number):
         if isinstance(other, NumberSymbol):
             return other.__le__(self)
         if other.is_comparable:
-            other = other.evalf()
+            other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
             return sympify(bool(mlib.mpf_ge(self._mpf_,
                                             other._as_mpf_val(self._prec))),
@@ -996,7 +998,7 @@ class Float(Number):
         if isinstance(other, NumberSymbol):
             return other.__gt__(self)
         if other.is_extended_real and other.is_number:
-            other = other.evalf()
+            other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
             return sympify(bool(mlib.mpf_lt(self._mpf_,
                                             other._as_mpf_val(self._prec))),
@@ -1008,7 +1010,7 @@ class Float(Number):
         if isinstance(other, NumberSymbol):
             return other.__ge__(self)
         if other.is_extended_real and other.is_number:
-            other = other.evalf()
+            other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
             return sympify(bool(mlib.mpf_le(self._mpf_,
                                             other._as_mpf_val(self._prec))),

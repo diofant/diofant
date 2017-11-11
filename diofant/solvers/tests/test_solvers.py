@@ -254,7 +254,7 @@ def test_quintics_1():
     f = x**5 - 110*x**3 - 55*x**2 + 2310*x + 979
     s = solve(f, check=False)
     for root in s:
-        res = f.subs(x, root[x].n()).n()
+        res = f.subs(root).n(strict=False)
         assert tn(res, 0)
 
     f = x**5 - 15*x**3 - 5*x**2 + 10*x + 20
@@ -284,7 +284,7 @@ def test_quintics_2():
     f = x**5 + 15*x + 12
     s = solve(f, check=False)
     for root in s:
-        res = f.subs(x, root[x].n()).n()
+        res = f.subs(root).n(strict=False)
         assert tn(res, 0)
 
     f = x**5 - 15*x**3 - 5*x**2 + 10*x + 20
@@ -356,7 +356,7 @@ def test_solve_radicals():
 
     # XXX is this correct?
     sol = solve(eq, check=False)
-    assert abs(real_root(eq.subs(sol[0])).n(2)).epsilon_eq(0)
+    assert abs(real_root(eq.subs(sol[0])).n(2, strict=False)).epsilon_eq(0)
 
 
 # Note: multiple solutions exist for some of these equations, so the tests

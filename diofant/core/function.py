@@ -388,7 +388,7 @@ class Function(Application, Expr):
         pr = max(cls._should_evalf(a) for a in result.args)
         pr2 = min(cls._should_evalf(a) for a in result.args)
         if pr2 > 0:
-            return result.evalf(mlib.libmpf.prec_to_dps(pr))
+            return result.evalf(mlib.libmpf.prec_to_dps(pr), strict=False)
         return result
 
     @classmethod
@@ -1266,7 +1266,7 @@ class Derivative(Expr):
 
         def eval(x):
             f0 = self.expr.subs(z, Expr._from_mpmath(x, prec=mpmath.mp.prec))
-            f0 = f0.evalf(mlib.libmpf.prec_to_dps(mpmath.mp.prec))
+            f0 = f0.evalf(mlib.libmpf.prec_to_dps(mpmath.mp.prec), strict=False)
             return f0._to_mpmath(mpmath.mp.prec)
         return Expr._from_mpmath(mpmath.diff(eval,
                                              z0._to_mpmath(mpmath.mp.prec)),
@@ -2441,7 +2441,7 @@ def nfloat(expr, n=15, exponent=False):
         # evalf doesn't always set the precision
         rv = rv.n(n)
         if rv.is_Number:
-            rv = Float(rv.n(n), n)
+            rv = Float(rv, n)
         else:
             pass  # pure_complex(rv) is likely True
         return rv
@@ -2454,7 +2454,7 @@ def nfloat(expr, n=15, exponent=False):
     if not exponent:
         reps = [(p, Pow(p.base, Dummy())) for p in rv.atoms(Pow)]
         rv = rv.xreplace(dict(reps))
-    rv = rv.n(n)
+    rv = rv.n(n, strict=False)
     if not exponent:
         rv = rv.xreplace({d.exp: p.exp for p, d in reps})
     else:

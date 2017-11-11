@@ -20,7 +20,7 @@ __all__ = ()
 
 
 def test_sympyissue_7263():
-    assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf() -
+    assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf(strict=False) -
                673.447451402970) < 1e-12
 
 

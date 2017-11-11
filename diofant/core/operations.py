@@ -322,7 +322,7 @@ class AssocOp(Expr):
         # deal with
         args = []
         for a in self.args:
-            newa = a.evalf(prec)
+            newa = a.evalf(prec, strict=False)
             args.append(newa)
         if not _aresame(tuple(args), self.args):
             return self.func(*args)

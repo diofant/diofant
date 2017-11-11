@@ -255,7 +255,7 @@ class Pow(Expr):
                 digits, else None.
                 """
                 try:
-                    rv = e.evalf(2, strict=True)
+                    rv = e.evalf(2)
                     if rv.is_Number:
                         return rv
                 except PrecisionExhausted:  # pragma: no cover

@@ -211,11 +211,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if i == r and not (self - i).equals(0):
             isign = 1 if i > 0 else -1
             x = Dummy()
-            # in the following (self - i).evalf(2) will not always work while
-            # (self - r).evalf(2) and the use of subs does; if the test that
+            # in the following (self - i).evalf(2, strict=False) will not always work while
+            # (self - r).evalf(2, strict=False) and the use of subs does; if the test that
             # was added when this comment was added passes, it might be safe
             # to simply use sign to compute this rather than doing this by hand:
-            diff_sign = 1 if (self - x).evalf(2, subs={x: i}) > 0 else -1
+            diff_sign = 1 if (self - x).evalf(2, strict=False, subs={x: i}) > 0 else -1
             if diff_sign != isign:
                 i -= isign
         return i
@@ -224,7 +224,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # Don't bother testing if it's a number; if it's not this is going
         # to fail, and if it is we still need to check that it evalf'ed to
         # a number.
-        result = self.evalf()
+        result = self.evalf(strict=False)
         if result.is_Number:
             return float(result)
         if result.is_number and result.as_real_imag()[1]:
@@ -232,7 +232,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         raise TypeError("can't convert expression to float")
 
     def __complex__(self):
-        result = self.evalf()
+        result = self.evalf(strict=False)
         re, im = result.as_real_imag()
         return complex(float(re), float(im))
 
@@ -376,7 +376,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             reps = dict(zip(free, [random_complex_number(a, b, c, d, rational=True)
                                    for zi in free]))
             try:
-                nmag = abs(self.evalf(2, subs=reps))
+                nmag = abs(self.evalf(2, subs=reps, strict=False))
             except (ValueError, TypeError):
                 # if an out of range value resulted in evalf problems
                 # then return None -- XXX is there a way to know how to
@@ -386,7 +386,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return
         else:
             reps = {}
-            nmag = abs(self.evalf(2))
+            nmag = abs(self.evalf(2, strict=False))
 
         if not hasattr(nmag, '_prec'):
             # e.g. exp_polar(2*I*pi) doesn't evaluate but is_number is True
@@ -401,14 +401,14 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
             # evaluate
             for prec in giant_steps(2, TARGET):
-                nmag = abs(self.evalf(prec, subs=reps))
+                nmag = abs(self.evalf(prec, strict=False, subs=reps))
                 if nmag._prec != 1:
                     break
 
         if nmag._prec != 1:
             if n is None:
                 n = max(prec, 15)
-            return self.evalf(n, subs=reps)
+            return self.evalf(n, strict=False, subs=reps)
 
         # never got any significance
         return
@@ -522,7 +522,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             # try 0 (for a) and 1 (for b)
             try:
                 a = expr.subs(list(zip(free, [0]*len(free))),
-                              simultaneous=True).evalf(n=15)
+                              simultaneous=True).evalf(n=15, strict=False)
                 if a is nan:
                     # evaluation may succeed when substitution fails
                     a = expr._random(None, 0, 0, 0, 0)
@@ -534,7 +534,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if a is not None and a is not nan:
                 try:
                     b = expr.subs(list(zip(free, [1]*len(free))),
-                                  simultaneous=True).evalf(n=15)
+                                  simultaneous=True).evalf(n=15, strict=False)
                     if b is nan:
                         # evaluation may succeed when substitution fails
                         b = expr._random(None, 1, 0, 1, 0)
@@ -677,7 +677,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     raise AttributeError
             except (AttributeError, ValueError, ZeroDivisionError):
                 return
-            r, i = self.evalf(2).as_real_imag()
+            r, i = self.evalf(2, strict=False).as_real_imag()
             if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
                 if r != 0 or i != 0:
                     return False
@@ -704,7 +704,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     raise AttributeError
             except (AttributeError, ValueError, ZeroDivisionError):
                 return
-            r, i = self.evalf(2).as_real_imag()
+            r, i = self.evalf(2, strict=False).as_real_imag()
             if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
                 return bool(not i and r > 0)
 
@@ -721,7 +721,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     raise AttributeError
             except (AttributeError, ValueError, ZeroDivisionError):
                 return
-            r, i = self.evalf(2).as_real_imag()
+            r, i = self.evalf(2, strict=False).as_real_imag()
             if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
                 return bool(not i and r < 0)
 
@@ -2431,7 +2431,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         is_number = self.is_number
         if is_number is False:
             return False
-        n, i = self.n().as_real_imag()
+        n, i = self.n(strict=False).as_real_imag()
         if not i.is_Number or not n.is_Number:
             return False
         if i._prec > 1 or i._prec == -1:
@@ -3256,10 +3256,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         mag = Pow(10, p)  # magnitude needed to bring digit p to units place
         xwas = x
         x += 1/(2*mag)  # add the half for rounding
-        i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1)
+        i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1, strict=False)
         if i10.is_negative:
             x = xwas - 1/(2*mag)  # should have gone the other way
-            i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1)
+            i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1, strict=False)
             rv = -(Integer(-i10)//10)
         else:
             rv = Integer(i10)//10
@@ -3323,7 +3323,7 @@ def _mag(x):
     """
     from math import log10, ceil, log
     from .numbers import Float
-    xpos = abs(x.n())
+    xpos = abs(x.n(strict=False))
     if not xpos:
         return S.Zero
     try:
