@@ -35,9 +35,10 @@ def test_polyhedron():
     faces = cube_faces
     cube = Polyhedron(corners, faces, pgroup)
 
-    assert cube.edges == FiniteSet(*(
-        (0, 1), (6, 7), (1, 2), (5, 6), (0, 3), (2, 3),
-        (4, 7), (4, 5), (3, 7), (1, 5), (0, 4), (2, 6)))
+    edges = FiniteSet(*((0, 1), (6, 7), (1, 2), (5, 6), (0, 3), (2, 3),
+                        (4, 7), (4, 5), (3, 7), (1, 5), (0, 4), (2, 6)))
+    assert cube.edges == edges
+    assert cube.edges == edges  # cached result
 
     for i in range(3):  # add 180 degree face rotations
         cube.rotate(cube.pgroup[i]**2)
