@@ -1,3 +1,5 @@
+import pytest
+
 from diofant import Rational, erf, log, pi, ratsimp, ratsimpmodprime, sqrt
 from diofant.abc import a, b, c, d, e, t, x, y, z
 
@@ -69,3 +71,8 @@ def test_ratsimpmodprime():
     # Test a bug where denominators would be dropped
     assert ratsimpmodprime(x, [y - 2*x], order='lex') == \
         y/2
+
+    # coverage tests
+    assert ratsimpmodprime(x, [x - y/2], x, y, order='lex') == 2*y
+    pytest.raises(ValueError, lambda: ratsimpmodprime((x + y)/(x - y),
+                                                      [y**2 - 1, x**2 - 1]))

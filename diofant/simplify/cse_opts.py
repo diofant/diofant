@@ -17,13 +17,12 @@ def sub_pre(e):
     e = e.xreplace({a: Mul._from_args([S.NegativeOne, -a]) for a in reps})
     # repeat again for persisting Adds but mark these with a leading 1, -1
     # e.g. y - x -> 1*-1*(x - y)
-    if isinstance(e, Basic):
-        negs = {}
-        for a in sorted(e.atoms(Add), key=default_sort_key):
-            if a in reps or a.could_extract_minus_sign():
-                negs[a] = Mul._from_args([S.One, S.NegativeOne, -a])
-        e = e.xreplace(negs)
-    return e
+    assert isinstance(e, Basic)
+    negs = {}
+    for a in sorted(e.atoms(Add), key=default_sort_key):
+        if a in reps or a.could_extract_minus_sign():
+            negs[a] = Mul._from_args([S.One, S.NegativeOne, -a])
+    return e.xreplace(negs)
 
 
 def sub_post(e):
