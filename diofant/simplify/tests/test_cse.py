@@ -65,6 +65,7 @@ def test_cse_single():
     substs, reduced = cse([e])
     assert substs == [(x0, x + y)]
     assert reduced == [sqrt(x0) + x0**2]
+    assert cse([e], order='none') == cse([e])
 
 
 def test_cse_single2():
@@ -146,11 +147,15 @@ def test_multiple_expressions():
         ([(x0, x*y)], [x0, z + x0, 3 + x0*z])
 
 
-@pytest.mark.xfail  # CSE of non-commutative Mul terms is disabled
 def test_non_commutative_cse():
     A, B, C = symbols('A B C', commutative=False)
     l = [A*B*C, A*C]
     assert cse(l) == ([], l)
+
+
+@pytest.mark.xfail
+def test_non_commutative_cse_mul():
+    x0 = symbols('x0', commutative=False)
     l = [A*B*C, A*B]
     assert cse(l) == ([(x0, A*B)], [x0*C, x0])
 
@@ -166,12 +171,13 @@ def test_bypass_non_commutatives():
     assert cse(l) == ([], l)
 
 
-@pytest.mark.xfail  # CSE fails when replacing non-commutative sub-expressions
 def test_non_commutative_order():
     A, B, C = symbols('A B C', commutative=False)
     x0 = symbols('x0', commutative=False)
     l = [B+C, A*(B+C)]
     assert cse(l) == ([(x0, B+C)], [x0, A*x0])
+    l = [(A - B)**2 + A - B]
+    assert cse(l) == ([(x0, A - B)], [x0**2 + x0])
 
 
 @pytest.mark.xfail
