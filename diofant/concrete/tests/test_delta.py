@@ -30,7 +30,7 @@ def test_deltaproduct_basic():
     assert dp(Kd(i, j), (j, 3, 3)) == Kd(i, 3)
     assert dp(Kd(i, j), (j, 1, k)) == Kd(i, 1)*Kd(k, 1) + Kd(k, 0)
     assert dp(Kd(i, j), (j, k, 3)) == Kd(i, 3)*Kd(k, 3) + Kd(k, 4)
-    assert dp(Kd(i, j), (j, k, l)) == Kd(i, l)*Kd(k, l) + Kd(k, l + 1)
+    assert dp(Kd(i, j), (j, k, l)) == Kd(i, l)*Kd(k, l) + Kd(l, k - 1)
     assert dp(Kd(i, 1), (i, j**2, k**2)) == (Kd(1, j**2)*Kd(j**2, k**2) +
                                              Kd(k**2, j**2 - 1))
 
@@ -42,7 +42,7 @@ def test_deltaproduct_mul_x_kd():
     assert dp(x*Kd(i, j), (j, 3, 3)) == x*Kd(i, 3)
     assert dp(x*Kd(i, j), (j, 1, k)) == x*Kd(i, 1)*Kd(k, 1) + Kd(k, 0)
     assert dp(x*Kd(i, j), (j, k, 3)) == x*Kd(i, 3)*Kd(k, 3) + Kd(k, 4)
-    assert dp(x*Kd(i, j), (j, k, l)) == x*Kd(i, l)*Kd(k, l) + Kd(k, l + 1)
+    assert dp(x*Kd(i, j), (j, k, l)) == x*Kd(i, l)*Kd(k, l) + Kd(l, k - 1)
 
 
 def test_deltaproduct_mul_add_x_y_kd():
@@ -55,7 +55,7 @@ def test_deltaproduct_mul_add_x_y_kd():
     assert dp((x + y)*Kd(i, j), (j, k, 3)) == \
         (x + y)*Kd(i, 3)*Kd(k, 3) + Kd(k, 4)
     assert dp((x + y)*Kd(i, j), (j, k, l)) == \
-        (x + y)*Kd(i, l)*Kd(k, l) + Kd(k, l + 1)
+        (x + y)*Kd(i, l)*Kd(k, l) + Kd(l, k - 1)
 
 
 def test_deltaproduct_add_kd_kd():
@@ -69,9 +69,9 @@ def test_deltaproduct_add_kd_kd():
     assert dp(Kd(i, k) + Kd(j, k), (k, l, 3)) == Kd(l, 4) + \
         Kd(i, 3)*Kd(l, 3) + Kd(j, 3)*Kd(l, 3) + \
         Kd(i, 2)*Kd(j, 3)*Kd(l, 2) + Kd(i, 3)*Kd(j, 2)*Kd(l, 2)
-    assert dp(Kd(i, k) + Kd(j, k), (k, l, m)) == Kd(l, m + 1) + \
-        Kd(i, m)*Kd(l, m) + Kd(j, m)*Kd(l, m) + \
-        Kd(i, m)*Kd(j, m - 1)*Kd(l, m - 1) + Kd(i, m - 1)*Kd(j, m)*Kd(l, m - 1)
+    assert dp(Kd(i, k) + Kd(j, k), (k, l, m)) == \
+        Kd(i, m)*Kd(j, m - 1)*Kd(l, m - 1) + Kd(i, m)*Kd(l, m) + \
+        Kd(i, m - 1)*Kd(j, m)*Kd(l, m - 1) + Kd(j, m)*Kd(l, m) + Kd(m, l - 1)
 
 
 def test_deltaproduct_mul_x_add_kd_kd():
@@ -85,10 +85,10 @@ def test_deltaproduct_mul_x_add_kd_kd():
     assert dp(x*(Kd(i, k) + Kd(j, k)), (k, l, 3)) == Kd(l, 4) + \
         x*Kd(i, 3)*Kd(l, 3) + x*Kd(j, 3)*Kd(l, 3) + \
         x**2*Kd(i, 2)*Kd(j, 3)*Kd(l, 2) + x**2*Kd(i, 3)*Kd(j, 2)*Kd(l, 2)
-    assert dp(x*(Kd(i, k) + Kd(j, k)), (k, l, m)) == Kd(l, m + 1) + \
-        x*Kd(i, m)*Kd(l, m) + x*Kd(j, m)*Kd(l, m) + \
-        x**2*Kd(i, m - 1)*Kd(j, m)*Kd(l, m - 1) + \
-        x**2*Kd(i, m)*Kd(j, m - 1)*Kd(l, m - 1)
+    assert dp(x*(Kd(i, k) + Kd(j, k)), (k, l, m)) == \
+        Kd(i, m)*Kd(j, m - 1)*Kd(l, m - 1)*x**2 + Kd(i, m)*Kd(l, m)*x + \
+        Kd(i, m - 1)*Kd(j, m)*Kd(l, m - 1)*x**2 + \
+        Kd(j, m)*Kd(l, m)*x + Kd(m, l - 1)
 
 
 def test_deltaproduct_mul_add_x_y_add_kd_kd():
@@ -107,10 +107,11 @@ def test_deltaproduct_mul_add_x_y_add_kd_kd():
         (x + y)*Kd(i, 3)*Kd(l, 3) + (x + y)*Kd(j, 3)*Kd(l, 3) + \
         (x + y)**2*Kd(i, 2)*Kd(j, 3)*Kd(l, 2) + \
         (x + y)**2*Kd(i, 3)*Kd(j, 2)*Kd(l, 2)
-    assert dp((x + y)*(Kd(i, k) + Kd(j, k)), (k, l, m)) == Kd(l, m + 1) + \
-        (x + y)*Kd(i, m)*Kd(l, m) + (x + y)*Kd(j, m)*Kd(l, m) + \
-        (x + y)**2*Kd(i, m - 1)*Kd(j, m)*Kd(l, m - 1) + \
-        (x + y)**2*Kd(i, m)*Kd(j, m - 1)*Kd(l, m - 1)
+    assert dp((x + y)*(Kd(i, k) + Kd(j, k)), (k, l, m)) == \
+        Kd(i, m)*Kd(j, m - 1)*Kd(l, m - 1)*(x + y)**2 + \
+        Kd(i, m)*Kd(l, m)*(x + y) + \
+        Kd(i, m - 1)*Kd(j, m)*Kd(l, m - 1)*(x + y)**2 + \
+        Kd(j, m)*Kd(l, m)*(x + y) + Kd(m, l - 1)
 
 
 def test_deltaproduct_add_mul_x_y_mul_x_kd():

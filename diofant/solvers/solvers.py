@@ -842,6 +842,19 @@ def _solve_system(exprs, symbols, **flags):
         if len(ex) != 1:
             ind, dep = f.as_independent(*symbols)
             ex = ind.free_symbols & dep.free_symbols
+
+        if not ex and all(s.is_integer for s in symbols):
+            from .diophantine import diophantine
+            res = [dict(zip(symbols, _)) for _ in diophantine(exprs[0])]
+            for s in reversed(symbols):
+                if all(r[s].is_Symbol or (-r[s]).is_Symbol for r in res):
+                    s0 = [{r[s]: s} if r[s].is_Symbol else {-r[s]: -s}
+                          for r in res]
+                    return [{k: v.subs(s1) for k, v in r.items() if k != s}
+                            for r, s1 in zip(res, s0)]
+            else:
+                return res
+
         # find first successful solution
         failed = []
         got_s = set()

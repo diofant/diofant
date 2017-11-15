@@ -301,6 +301,11 @@ def test_quintics_2():
         assert root[x].func == RootOf
 
 
+def test_diophantine():
+    n, m = symbols('n, m', integer=True)
+    assert solve(n**2 - m**2) == [{m: -n}, {m: n}]
+
+
 def test_solve_rational():
     """Test solve for rational functions"""
     assert solve(( x - y**3 )/( (y**2)*sqrt(1 - y**2) ), x) == [{x: y**3}]

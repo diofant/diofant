@@ -15,6 +15,7 @@ Major changes
 =============
 
 * Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633` and :pull:`658`.
+* Support Diophantine equations in :func:`~diofant.solvers.solvers.solve`, see :pull:`576`.
 
 Compatibility breaks
 ====================
