@@ -19,7 +19,7 @@ class MatrixExpr(Expr):
     >>> from diofant import MatrixSymbol
     >>> A = MatrixSymbol('A', 3, 3)
     >>> y = MatrixSymbol('y', 3, 1)
-    >>> x = (A.T*A).I * A * y
+    >>> x = (A.T*A).inverse() * A * y
 
     See Also
     ========
@@ -179,10 +179,6 @@ class MatrixExpr(Expr):
 
     def inverse(self):
         return self._eval_inverse()
-
-    @property
-    def I(self):
-        return self.inverse()
 
     def valid_index(self, i, j):
         def is_valid(idx):

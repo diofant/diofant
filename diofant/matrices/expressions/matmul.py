@@ -184,7 +184,7 @@ def merge_explicit(matmul):
 
 
 def xxinv(mul):
-    """ X * X.I -> I """
+    """ X * X.inverse() -> Identity """
     factor, matrices = mul.as_coeff_matrices()
     for i, (X, Y) in enumerate(zip(matrices[:-1], matrices[1:])):
         try:

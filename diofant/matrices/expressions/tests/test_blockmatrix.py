@@ -153,10 +153,10 @@ def test_squareBlockMatrix():
     assert (X + MatrixSymbol('Q', n + m, n + m)).is_MatAdd
     assert (X * MatrixSymbol('Q', n + m, n + m)).is_MatMul
 
-    assert block_collapse(Y.I) == A.I
+    assert block_collapse(Y.inverse()) == A.inverse()
     assert block_collapse(X.inverse()) == BlockMatrix([
-        [(-B*D.I*C + A).I, -A.I*B*(D + -C*A.I*B).I],
-        [-(D - C*A.I*B).I*C*A.I, (D - C*A.I*B).I]])
+        [(-B*D.inverse()*C + A).inverse(), -A.inverse()*B*(D + -C*A.inverse()*B).inverse()],
+        [-(D - C*A.inverse()*B).inverse()*C*A.inverse(), (D - C*A.inverse()*B).inverse()]])
 
     assert isinstance(X.inverse(), Inverse)
 
@@ -182,7 +182,7 @@ def test_BlockDiagMatrix():
                for i in range(3) for j in range(3))
     assert X.__class__(*X.args) == X
 
-    assert isinstance(block_collapse(X.I * X), Identity)
+    assert isinstance(block_collapse(X.inverse() * X), Identity)
 
     assert bc_matmul(X*X) == BlockDiagMatrix(A*A, B*B, C*C)
     assert block_collapse(X*X) == BlockDiagMatrix(A*A, B*B, C*C)

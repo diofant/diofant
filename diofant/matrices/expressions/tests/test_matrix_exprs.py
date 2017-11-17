@@ -129,7 +129,7 @@ def test_multiplication():
 
     assert A * ZeroMatrix(m, m) * B == ZeroMatrix(n, l)
 
-    assert C * Identity(n) * C.I == Identity(n)
+    assert C * Identity(n) * C.inverse() == Identity(n)
 
     assert B/2 == Rational(1, 2)*B
     pytest.raises(NotImplementedError, lambda: 2/B)

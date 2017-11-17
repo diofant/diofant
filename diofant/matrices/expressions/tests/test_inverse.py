@@ -34,7 +34,7 @@ def test_inverse():
     assert (3*Identity(n)).inverse() == Identity(n)/3
 
     # Simplifies Muls if possible (i.e. submatrices are square)
-    assert (C*D).inverse() == D.I*C.I
+    assert (C*D).inverse() == D.inverse()*C.inverse()
     # But still works when not possible
     assert isinstance((A*E).inverse(), Inverse)
 
