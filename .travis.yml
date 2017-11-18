@@ -65,7 +65,7 @@ matrix:
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
-  - travis_wait pip install .[exports,plot,interactive,gmpy]
+  - travis_wait pip install .[exports,plot,interactive,gmpy,docs]
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
