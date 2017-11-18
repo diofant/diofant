@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (Dummy, Eq, I, Integer, Integral, Rational, cbrt, cos,
-                     cosh, posify, root, solve, sqrt, sqrtdenest, sstr,
+from diofant import (Dummy, Eq, I, Integer, Integral, Rational, RootOf, cbrt,
+                     cos, cosh, posify, root, solve, sqrt, sqrtdenest, sstr,
                      symbols, sympify)
 from diofant.abc import F, a, b, c, d, t, x, y
 from diofant.simplify.sqrtdenest import _subsets as subsets

@@ -11,6 +11,9 @@ from diofant.plotting.plot import unset_show
 
 __all__ = ()
 
+matplotlib = import_module('matplotlib', min_module_version='1.1.0',
+                           catch=(RuntimeError,))
+
 # Set plots not to show
 unset_show()
 
@@ -71,10 +74,7 @@ def test_line_color():
 
 
 @pytest.mark.xfail
+@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib():
-    matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
-    if matplotlib:
-        plot_and_save('test')
-        test_line_color()
-    else:
-        skip("Matplotlib not the default backend")
+    plot_and_save('test')
+    test_line_color()

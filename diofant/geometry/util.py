@@ -336,8 +336,9 @@ def are_coplanar(*e):
     False
 
     """
+    from .entity import GeometryEntity
     from .line3d import LinearEntity3D
-    from .point import Point3D
+    from .point import Point3D, Point
     from .plane import Plane
     # XXX update tests for coverage
 

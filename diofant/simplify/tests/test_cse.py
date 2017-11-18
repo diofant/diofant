@@ -156,6 +156,7 @@ def test_non_commutative_cse():
 @pytest.mark.xfail
 def test_non_commutative_cse_mul():
     x0 = symbols('x0', commutative=False)
+    A, B, C = symbols('A B C', commutative=False)
     l = [A*B*C, A*B]
     assert cse(l) == ([(x0, A*B)], [x0*C, x0])
 

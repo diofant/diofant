@@ -6,8 +6,8 @@ import pytest
 from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
                      Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
                      Symbol, Tuple, acos, cbrt, cos, diff, exp, expand, expint,
-                     floor, im, log, loggamma, nfloat, pi, polygamma, re, sin,
-                     sqrt, symbols)
+                     floor, im, log, loggamma, nan, nfloat, oo, pi, polygamma,
+                     re, sin, sqrt, symbols, zoo)
 from diofant.abc import a, b, t, w, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
@@ -289,9 +289,8 @@ def test_function_comparable():
     assert cos(Rational(1, 3)).is_comparable is True
 
 
-@pytest.mark.xfail
 def test_function_comparable_infinities():
-    assert sin(oo).is_comparable is False
+    assert sin(+oo).is_comparable is False
     assert sin(-oo).is_comparable is False
     assert sin(zoo).is_comparable is False
     assert sin(nan).is_comparable is False
