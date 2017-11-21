@@ -67,6 +67,8 @@ def test_dup_zz_hensel_lift():
 def test_dup_zz_irreducible_p():
     R, x = ring("x", ZZ)
 
+    assert R.dup_zz_irreducible_p(x) is None
+
     assert R.dup_zz_irreducible_p(3*x**4 + 2*x**3 + 6*x**2 + 8*x + 7) is None
     assert R.dup_zz_irreducible_p(3*x**4 + 2*x**3 + 6*x**2 + 8*x + 4) is None
 
@@ -81,6 +83,7 @@ def test_dup_cyclotomic_p():
     assert R.dup_cyclotomic_p(x + 1) is True
     assert R.dup_cyclotomic_p(x**2 + x + 1) is True
     assert R.dup_cyclotomic_p(x**2 + 1) is True
+    assert R.dup_cyclotomic_p(x**2 + 1, irreducible=True) is True
     assert R.dup_cyclotomic_p(x**4 + x**3 + x**2 + x + 1) is True
     assert R.dup_cyclotomic_p(x**2 - x + 1) is True
     assert R.dup_cyclotomic_p(x**6 + x**5 + x**4 + x**3 + x**2 + x + 1) is True
@@ -163,19 +166,32 @@ def test_dup_zz_factor():
     for i in range(20):
         assert R.dup_zz_factor(f) == (1, [(f, 1)])
 
-    assert R.dup_zz_factor(x**2 + 2*x + 2) == \
-        (1, [(x**2 + 2*x + 2, 1)])
+    assert R.dup_zz_factor(x**2 + 2*x + 2) == (1, [(x**2 + 2*x + 2, 1)])
 
-    assert R.dup_zz_factor(18*x**2 + 12*x + 2) == \
-        (2, [(3*x + 1, 2)])
+    with config.using(use_irreducible_in_factor=True):
+        assert R.dup_zz_factor(x**2 + 2*x + 2) == (1, [(x**2 + 2*x + 2, 1)])
+
+    assert R.dup_zz_factor(18*x**2 + 12*x + 2) == (2, [(3*x + 1, 2)])
+
+    with config.using(use_irreducible_in_factor=True):
+        assert R.dup_zz_factor(18*x**2 + 12*x + 2) == (2, [(3*x + 1, 2)])
 
     assert R.dup_zz_factor(-9*x**2 + 1) == \
         (-1, [(3*x - 1, 1),
               (3*x + 1, 1)])
 
-    assert R.dup_zz_factor_sqf(-9*x**2 + 1) == \
-        (-1, [3*x - 1,
-              3*x + 1])
+    with config.using(use_irreducible_in_factor=True):
+        assert R.dup_zz_factor_sqf(3*x**4 + 2*x**3 +
+                                   6*x**2 + 8*x + 10) == (1, [3*x**4 + 2*x**3 +
+                                                              6*x**2 + 8*x + 10])
+
+    assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+
+    with config.using(use_irreducible_in_factor=True):
+        assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+
+    with config.using(use_cyclotomic_factor=False):
+        assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
     assert R.dup_zz_factor(x**3 - 6*x**2 + 11*x - 6) == \
         (1, [(x - 3, 1),
@@ -506,6 +522,12 @@ def test_dmp_ext_factor():
             (anp([QQ(1)]), [(anp([QQ(1)])*z + anp([-QQ(1), QQ(0)])*t, 1),
                             (anp([QQ(1)])*x + anp([-QQ(1), QQ(0)])*y, 1)]))
 
+    R,  x = ring("x", QQ.algebraic_field(I))
+    f = anp([QQ(1)])*x**2 + anp([QQ(1)])
+    assert R.dmp_ext_factor(f) == (anp([QQ(1)]),
+                                   [(anp([QQ(1)])*x + anp([-QQ(1), QQ(0)]), 1),
+                                    (anp([QQ(1)])*x + anp([+QQ(1), QQ(0)]), 1)])
+
 
 def test_dup_factor_list():
     R, x = ring("x", ZZ)
@@ -693,5 +715,6 @@ def test_dup_irreducible_p():
 
 def test_dmp_irreducible_p():
     R, x, y = ring("x,y", ZZ)
+    assert R.dmp_irreducible_p(2) is True
     assert R.dmp_irreducible_p(x**2 + x + 1) is True
     assert R.dmp_irreducible_p(x**2 + 2*x + 1) is False
