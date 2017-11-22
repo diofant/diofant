@@ -59,16 +59,7 @@ def dup_half_gcdex(f, g, K):
 
 
 def dmp_half_gcdex(f, g, u, K):
-    """
-    Half extended Euclidean algorithm in `F[X]`.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
-    """
+    """Half extended Euclidean algorithm in `F[X]`."""
     if not u:
         return dup_half_gcdex(f, g, K)
     else:
@@ -104,17 +95,7 @@ def dup_gcdex(f, g, K):
 
 
 def dmp_gcdex(f, g, u, K):
-    """
-    Extended Euclidean algorithm in `F[X]`.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
-
-    """
+    """Extended Euclidean algorithm in `F[X]`."""
     if not u:
         return dup_gcdex(f, g, K)
     else:
@@ -151,24 +132,6 @@ def dup_invert(f, g, K):
         return dup_rem(s, g, K)
     else:
         raise NotInvertible("zero divisor")
-
-
-def dmp_invert(f, g, u, K):
-    """
-    Compute multiplicative inverse of `f` modulo `g` in `F[X]`.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", QQ)
-
-    """
-    if not u:
-        return dup_invert(f, g, K)
-    else:
-        raise MultivariatePolynomialError(f, g)
 
 
 def dup_euclidean_prs(f, g, K):
@@ -212,24 +175,6 @@ def dup_euclidean_prs(f, g, K):
     return prs
 
 
-def dmp_euclidean_prs(f, g, u, K):
-    """
-    Euclidean polynomial remainder sequence (PRS) in `K[X]`.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
-
-    """
-    if not u:
-        return dup_euclidean_prs(f, g, K)
-    else:
-        raise MultivariatePolynomialError(f, g)
-
-
 def dup_primitive_prs(f, g, K):
     """
     Primitive polynomial remainder sequence (PRS) in `K[x]`.
@@ -269,24 +214,6 @@ def dup_primitive_prs(f, g, K):
         _, h = dup_primitive(dup_prem(f, g, K), K)
 
     return prs
-
-
-def dmp_primitive_prs(f, g, u, K):
-    """
-    Primitive polynomial remainder sequence (PRS) in `K[X]`.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
-
-    """
-    if not u:
-        return dup_primitive_prs(f, g, K)
-    else:
-        raise MultivariatePolynomialError(f, g)
 
 
 def dup_inner_subresultants(f, g, K):
@@ -727,7 +654,7 @@ def dmp_qq_collins_resultant(f, g, u, K0):
     >>> from diofant.polys import ring
     >>> R, x,y = ring("x,y", QQ)
 
-    >>> f = QQ(1,2)*x + y + QQ(2,3)
+    >>> f = x/2 + y + QQ(2,3)
     >>> g = 2*x*y + x + 3
 
     >>> R.dmp_qq_collins_resultant(f, g)
@@ -1030,7 +957,7 @@ def dmp_rr_prs_gcd(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1077,9 +1004,9 @@ def dmp_ff_prs_gcd(f, g, u, K):
 
     >>> from diofant.domains import QQ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", QQ)
+    >>> R, x,y = ring("x,y", QQ)
 
-    >>> f = QQ(1,2)*x**2 + x*y + QQ(1,2)*y**2
+    >>> f = x**2/2 + x*y + y**2/2
     >>> g = x**2 + x*y
 
     >>> R.dmp_ff_prs_gcd(f, g)
@@ -1276,7 +1203,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1370,8 +1297,8 @@ def dup_qq_heu_gcd(f, g, K0):
     >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
-    >>> f = QQ(1,2)*x**2 + QQ(7,4)*x + QQ(3,2)
-    >>> g = QQ(1,2)*x**2 + x
+    >>> f = (x**2 + 7*x/2 + 3)/2
+    >>> g = x**2/2 + x
 
     >>> R.dup_qq_heu_gcd(f, g)
     (x + 2, 1/2*x + 3/4, 1/2*x)
@@ -1418,10 +1345,10 @@ def dmp_qq_heu_gcd(f, g, u, K0):
 
     >>> from diofant.domains import QQ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", QQ)
+    >>> R, x,y = ring("x,y", QQ)
 
-    >>> f = QQ(1,4)*x**2 + x*y + y**2
-    >>> g = QQ(1,2)*x**2 + x*y
+    >>> f = x**2/4 + x*y + y**2
+    >>> g = x**2/2 + x*y
 
     >>> R.dmp_qq_heu_gcd(f, g)
     (x + 2*y, 1/4*x + 1/2*y, 1/2*x)
@@ -1494,7 +1421,7 @@ def dup_inner_gcd(f, g, K):
         if K.is_QQ and query('USE_HEU_GCD'):
             try:
                 return dup_qq_heu_gcd(f, g, K)
-            except HeuristicGCDFailed:
+            except HeuristicGCDFailed:  # pragma: no cover
                 pass
 
         return dup_ff_prs_gcd(f, g, K)
@@ -1502,7 +1429,7 @@ def dup_inner_gcd(f, g, K):
         if K.is_ZZ and query('USE_HEU_GCD'):
             try:
                 return dup_zz_heu_gcd(f, g, K)
-            except HeuristicGCDFailed:
+            except HeuristicGCDFailed:  # pragma: no cover
                 pass
 
         return dup_rr_prs_gcd(f, g, K)
@@ -1530,7 +1457,7 @@ def _dmp_inner_gcd(f, g, u, K):
         if K.is_QQ and query('USE_HEU_GCD'):
             try:
                 return dmp_qq_heu_gcd(f, g, u, K)
-            except HeuristicGCDFailed:
+            except HeuristicGCDFailed:  # pragma: no cover
                 pass
 
         return dmp_ff_prs_gcd(f, g, u, K)
@@ -1538,7 +1465,7 @@ def _dmp_inner_gcd(f, g, u, K):
         if K.is_ZZ and query('USE_HEU_GCD'):
             try:
                 return dmp_zz_heu_gcd(f, g, u, K)
-            except HeuristicGCDFailed:
+            except HeuristicGCDFailed:  # pragma: no cover
                 pass
 
         return dmp_rr_prs_gcd(f, g, u, K)
@@ -1556,7 +1483,7 @@ def dmp_inner_gcd(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1603,7 +1530,7 @@ def dmp_gcd(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1652,8 +1579,8 @@ def dup_ff_lcm(f, g, K):
     >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
-    >>> f = QQ(1,2)*x**2 + QQ(7,4)*x + QQ(3,2)
-    >>> g = QQ(1,2)*x**2 + x
+    >>> f = (x**2 + 7*x/2 + 3)/2
+    >>> g = x**2/2 + x
 
     >>> R.dup_ff_lcm(f, g)
     x**3 + 7/2*x**2 + 3*x
@@ -1695,7 +1622,7 @@ def dmp_rr_lcm(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1724,10 +1651,10 @@ def dmp_ff_lcm(f, g, u, K):
 
     >>> from diofant.domains import QQ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", QQ)
+    >>> R, x,y = ring("x,y", QQ)
 
-    >>> f = QQ(1,4)*x**2 + x*y + y**2
-    >>> g = QQ(1,2)*x**2 + x*y
+    >>> f = x**2/4 + x*y + y**2
+    >>> g = x**2/2 + x*y
 
     >>> R.dmp_ff_lcm(f, g)
     x**3 + 4*x**2*y + 4*x*y**2
@@ -1748,7 +1675,7 @@ def dmp_lcm(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1775,7 +1702,7 @@ def dmp_content(f, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
     >>> R.dmp_content(2*x*y + 6*x + 4*y + 12)
     2*y + 6
@@ -1807,7 +1734,7 @@ def dmp_primitive(f, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
     >>> R.dmp_primitive(2*x*y + 6*x + 4*y + 12)
     (2*y + 6, x + 2)

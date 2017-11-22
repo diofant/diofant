@@ -37,6 +37,7 @@ from diofant.polys.polytools import (LC, LM, LT, GroebnerBasis, Poly, PurePoly,
                                      resultant, sqf, sqf_list, sqf_norm,
                                      sqf_part, sturm, subresultants, terms_gcd,
                                      to_rational_coeffs, trunc)
+from diofant.polys.rings import ring
 
 
 __all__ = ()
@@ -1731,6 +1732,10 @@ def test_gcdex():
     pytest.raises(DomainError, lambda: half_gcdex(x + 1, 2*x + 1, auto=False))
     pytest.raises(DomainError, lambda: gcdex(x + 1, 2*x + 1, auto=False))
     pytest.raises(DomainError, lambda: invert(x + 1, 2*x + 1, auto=False))
+
+    R, y, z = ring('y,z', QQ)
+    pytest.raises(MultivariatePolynomialError, lambda: (y + z).half_gcdex(y - z))
+    pytest.raises(MultivariatePolynomialError, lambda: (y + z).gcdex(y - z))
 
 
 def test_revert():

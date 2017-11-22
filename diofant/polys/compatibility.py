@@ -467,7 +467,9 @@ class IPolys:
 
     def dmp_prs_resultant(self, f, g):
         res, prs = dmp_prs_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self[1:].from_dense(res), list(map(self.from_dense, prs))
+        if isinstance(res, list):
+            res = self[1:].from_dense(res)
+        return res, list(map(self.from_dense, prs))
 
     def dmp_zz_modular_resultant(self, f, g, p):
         res = dmp_zz_modular_resultant(self.to_dense(f), self.to_dense(g), self.domain_new(p), self.ngens-1, self.domain)

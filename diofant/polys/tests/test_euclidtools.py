@@ -156,6 +156,9 @@ def test_dup_subresultants():
 
     assert R.dup_resultant(f, g) == -1
 
+    assert R.dup_inner_subresultants(0, 0) == ([], [])
+    assert R.dup_inner_subresultants(0, 1) == ([1], [1])
+
 
 def test_dmp_subresultants():
     R, x, y = ring("x,y", ZZ)
@@ -173,6 +176,9 @@ def test_dmp_subresultants():
     assert R.dmp_prs_resultant(0, 1)[0] == 0
     assert R.dmp_zz_collins_resultant(0, 1) == 0
     assert R.dmp_qq_collins_resultant(0, 1) == 0
+
+    assert R.dmp_inner_subresultants(0, 0) == ([], [])
+    assert R.dmp_inner_subresultants(0, 1) == ([R.one], [[1]])
 
     f = 3*x**2*y - y**3 - 4
     g = x**2 + x*y**3 - 9
@@ -233,6 +239,26 @@ def test_dmp_subresultants():
     g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
 
     assert Rx.dup_resultant(f, g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
+
+    assert Rx.dmp_prs_resultant(x - 1, x + 1) == (2, [x - 1, x + 1, 2])
+
+    R, x, y = ring("x,y", ZZ)
+
+    f = x + y
+    g = x**2 - x*y + 1
+
+    assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
+
+    with using(use_collins_resultant=True):
+        assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
+
+    R, x, y = ring("x,y", QQ)
+
+    f = x + y
+    g = x**2 - x*y + 1
+
+    with using(use_collins_resultant=True):
+        assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
 
 
 def test_dup_discriminant():
