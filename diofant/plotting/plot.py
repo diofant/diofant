@@ -872,7 +872,7 @@ class MatplotlibBackend(BaseBackend):
                     xarray, yarray, zarray, plot_type = points
                     if plot_type == 'contour':
                         self.ax.contour(xarray, yarray, zarray,
-                                        contours=(0, 0), fill=False, cmap=colormap)
+                                        cmap=colormap)
                     else:
                         self.ax.contourf(xarray, yarray, zarray, cmap=colormap)
             else:
