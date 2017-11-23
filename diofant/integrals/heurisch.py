@@ -184,8 +184,6 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     Parameters
     ==========
 
-    heurisch(f, x, rewrite=False, hints=None)
-
     f : Expr
         expression
     x : Symbol

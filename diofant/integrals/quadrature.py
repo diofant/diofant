@@ -260,14 +260,13 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     Examples
     ========
 
-    >>> from diofant import S
-    >>> x, w = gauss_gen_laguerre(3, -S.Half, 5)
+    >>> x, w = gauss_gen_laguerre(3, -0.5, 5)
     >>> x
     [0.19016, 1.7845, 5.5253]
     >>> w
     [1.4493, 0.31413, 0.00906]
 
-    >>> x, w = gauss_gen_laguerre(4, 3*S.Half, 5)
+    >>> x, w = gauss_gen_laguerre(4, 1.5, 5)
     >>> x
     [0.97851, 2.9904, 6.3193, 11.712]
     >>> w
@@ -336,7 +335,6 @@ def gauss_chebyshev_t(n, n_digits):
     Examples
     ========
 
-    >>> from diofant import S
     >>> x, w = gauss_chebyshev_t(3, 5)
     >>> x
     [0.86602, 0, -0.86602]
@@ -406,7 +404,6 @@ def gauss_chebyshev_u(n, n_digits):
     Examples
     ========
 
-    >>> from diofant import S
     >>> x, w = gauss_chebyshev_u(3, 5)
     >>> x
     [0.70711, 0, -0.70711]
@@ -481,8 +478,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     Examples
     ========
 
-    >>> from diofant import S
-    >>> x, w = gauss_jacobi(3, S.Half, -S.Half, 5)
+    >>> x, w = gauss_jacobi(3, 0.5, -0.5, 5)
     >>> x
     [-0.90097, -0.22252, 0.62349]
     >>> w
