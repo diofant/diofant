@@ -60,6 +60,8 @@ def test_strong_gens_from_distr():
          Permutation([1, 2, 0]),
          Permutation([1, 0, 2])]
 
+    assert _strong_gens_from_distr([[Permutation(0, 1)]]) == [Permutation(0, 1)]
+
 
 def test_orbits_transversals_from_bsgs():
     S = SymmetricGroup(4)
@@ -106,6 +108,10 @@ def test_handle_precomputed_bsgs():
     _, transversals = _orbits_transversals_from_bsgs(base, strong_gens_distr)
     assert transversals == _handle_precomputed_bsgs(base, strong_gens,
                                                     transversals)[0]
+    assert transversals == _handle_precomputed_bsgs(base, strong_gens,
+                                                    transversals,
+                                                    basic_orbits=transversals,
+                                                    strong_gens_distr=strong_gens_distr)[0]
 
 
 def test_base_ordering():
@@ -126,4 +132,10 @@ def test_remove_gens():
     D = DihedralGroup(2)
     base, strong_gens = D.schreier_sims_incremental()
     new_gens = _remove_gens(base, strong_gens)
+    assert _verify_bsgs(D, base, new_gens) is True
+    D = DihedralGroup(2)
+    base, strong_gens = D.schreier_sims_incremental()
+    strong_gens_distr = _distribute_gens_by_base(base, strong_gens)
+    _, transversals = _orbits_transversals_from_bsgs(base, strong_gens_distr)
+    new_gens = _remove_gens(base, strong_gens, transversals, strong_gens_distr)
     assert _verify_bsgs(D, base, new_gens) is True
