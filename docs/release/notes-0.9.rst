@@ -178,3 +178,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`13071` meijerg.is_number is wrong
 * :sympyissue:`13575` limit(acos(erfi(x)), x, 1) causes recursion error
 * :sympyissue:`13629` bug in rsolve
+* :sympyissue:`13645` sympy hangs on evaluating expression
