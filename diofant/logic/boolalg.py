@@ -11,7 +11,8 @@ from ..core.expr import Expr
 from ..core.function import Application, Derivative
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
-from ..core.singleton import S, Singleton
+from ..core.singleton import SingletonWithManagedProperties as Singleton
+from ..core.singleton import S
 from ..core.sympify import converter, sympify
 
 
@@ -197,7 +198,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
     Notes
     =====
 
-    See note in :py:class`~diofant.logic.boolalg.BooleanTrue`.
+    See note in :py:class:`~diofant.logic.boolalg.BooleanTrue`.
 
     Examples
     ========
@@ -996,9 +997,9 @@ def _distribute(info):
     """
     Distributes info[1] over info[2] with respect to info[0].
     """
-    if info[0].func is info[2]:
+    if isinstance(info[0], info[2]):
         for arg in info[0].args:
-            if arg.func is info[1]:
+            if isinstance(arg, info[1]):
                 conj = arg
                 break
         else:
@@ -1006,7 +1007,7 @@ def _distribute(info):
         rest = info[2](*[a for a in info[0].args if a is not conj])
         return info[1](*list(map(_distribute,
                                  [(info[2](c, rest), info[1], info[2]) for c in conj.args])))
-    elif info[0].func is info[1]:
+    elif isinstance(info[0], info[1]):
         return info[1](*list(map(_distribute,
                                  [(x, info[1], info[2]) for x in info[0].args])))
     else:
@@ -1194,9 +1195,9 @@ def _is_form(expr, function1, function2):
         return True
 
     # Special case of a single expression of function2
-    if expr.func is function2:
+    if isinstance(expr, function2):
         for lit in expr.args:
-            if lit.func is Not:
+            if isinstance(lit, Not):
                 if not lit.args[0].is_Atom:
                     return False
             else:
@@ -1205,23 +1206,23 @@ def _is_form(expr, function1, function2):
         return True
 
     # Special case of a single negation
-    if expr.func is Not:
+    if isinstance(expr, Not):
         if not expr.args[0].is_Atom:
             return False
 
-    if expr.func is not function1:
+    if not isinstance(expr, function1):
         return False
 
     for cls in expr.args:
         if cls.is_Atom:
             continue
-        if cls.func is Not:
+        if isinstance(cls, Not):
             if not cls.args[0].is_Atom:
                 return False
-        elif cls.func is not function2:
+        elif not isinstance(cls, function2):
             return False
         for lit in cls.args:
-            if lit.func is Not:
+            if isinstance(lit, Not):
                 if not lit.args[0].is_Atom:
                     return False
             else:
@@ -1294,7 +1295,7 @@ def to_int_repr(clauses, symbols):
     symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
 
     def append_symbol(arg, symbols):
-        if arg.func is Not:
+        if isinstance(arg, Not):
             return -symbols[arg.args[0]]
         else:
             return symbols[arg]
@@ -1398,10 +1399,10 @@ def _rem_redundancy(l1, terms):
             if _compare_term(x, y):
                 break
         else:
-            for z in l1:
+            for z in l1:  # pragma: no branch
                 if _compare_term(x, z):
-                    if z not in essential:
-                        essential.append(z)
+                    assert z not in essential
+                    essential.append(z)
                     break
 
     return essential
@@ -1611,7 +1612,7 @@ def _finger(eq):
         elif a.is_Not:
             d[a.args[0]][1] += 1
         else:
-            o = len(a.args) + sum(ai.func is Not for ai in a.args)
+            o = len(a.args) + sum(isinstance(ai, Not) for ai in a.args)
             for ai in a.args:
                 if ai.is_Symbol:
                     d[ai][2] += 1
@@ -1694,7 +1695,7 @@ def bool_map(bool1, bool2):
 
         # assemble the match dictionary if possible
         matchdict = {}
-        for k in f1.keys():
+        for k in f1:
             if k not in f2 or len(f1[k]) != len(f2[k]):
                 return
             for i, x in enumerate(f1[k]):

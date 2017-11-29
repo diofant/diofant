@@ -373,10 +373,10 @@ def apart_list_full_decomposition(P, Q, dummygen):
         for j in range(1, n + 1):
             subs += [ (U[j - 1], b.diff(x, j) / j) ]
 
-        for j in range(0, n):
+        for j in range(n):
             P, Q = cancel(H[j]).as_numer_denom()
 
-            for i in range(0, j + 1):
+            for i in range(j + 1):
                 P = P.subs(*subs[j - i])
 
             Q = Q.subs(*subs[0])

@@ -1,6 +1,6 @@
-from diofant import (Abs, I, Integer, Rational, Symbol, conjugate, cos, cosh,
-                     cot, coth, exp, expand_complex, im, oo, pi, re, sign, sin,
-                     sinh, sqrt, symbols, tan, tanh)
+from diofant import (Abs, I, Integer, Rational, Symbol, cbrt, conjugate, cos,
+                     cosh, cot, coth, exp, expand_complex, im, oo, pi, re,
+                     root, sign, sin, sinh, sqrt, symbols, tan, tanh)
 
 
 __all__ = ()
@@ -11,7 +11,7 @@ def test_complex():
     b = Symbol("b", extended_real=True)
     e = (a + I*b)*(a - I*b)
     assert e.expand() == a**2 + b**2
-    assert sqrt(I) == (-1)**Rational(1, 4)
+    assert sqrt(I) == root(-1, 4)
 
 
 def test_conjugate():
@@ -197,12 +197,15 @@ def test_real_imag():
     assert ((1 + I)/(1 - I)).as_real_imag() == (0, 1)
     assert ((1 + 2*I)*(1 + 3*I)).as_real_imag() == (-5, 5)
 
+    assert exp(x).as_real_imag(deep=False) == (re(exp(x)), im(exp(x)))
+    assert (2**x).as_real_imag(deep=False) == (re(2**x), im(2**x))
+
 
 def test_pow_sympyissue_4823():
-    e = (-1)**Rational(1, 3)
+    e = cbrt(-1)
     assert e.conjugate().n() == e.n().conjugate()
-    e = (Rational(-2, 3) - (Rational(-29, 54) + sqrt(93)/18)**Rational(1, 3)
-         - 1/(9*(Rational(-29, 54) + sqrt(93)/18)**Rational(1, 3)))
+    e = (Rational(-2, 3) - cbrt(Rational(-29, 54) + sqrt(93)/18)
+         - 1/(9*cbrt(Rational(-29, 54) + sqrt(93)/18)))
     assert e.conjugate().n() == e.n().conjugate()
     e = 2**I
     assert e.conjugate().n() == e.n().conjugate()

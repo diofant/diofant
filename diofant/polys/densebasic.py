@@ -843,7 +843,7 @@ def dup_from_dict(f, K):
     if not f:
         return []
 
-    n, h = max(f.keys()), []
+    n, h = max(f), []
 
     if type(n) is int:
         for k in range(n, -1, -1):
@@ -872,7 +872,7 @@ def dup_from_raw_dict(f, K):
     if not f:
         return []
 
-    n, h = max(f.keys()), []
+    n, h = max(f), []
 
     for k in range(n, -1, -1):
         h.append(f.get(k, K.zero))
@@ -909,7 +909,7 @@ def dmp_from_dict(f, u, K):
         else:
             coeffs[head] = { tail: coeff }
 
-    n, v, h = max(coeffs.keys()), u - 1, []
+    n, v, h = max(coeffs), u - 1, []
 
     for k in range(n, -1, -1):
         coeff = coeffs.get(k)
@@ -939,7 +939,7 @@ def dup_to_dict(f, K=None, zero=False):
 
     n, result = len(f) - 1, {}
 
-    for k in range(0, n + 1):
+    for k in range(n + 1):
         if f[n - k]:
             result[(k,)] = f[n - k]
 
@@ -961,7 +961,7 @@ def dup_to_raw_dict(f, K=None, zero=False):
 
     n, result = len(f) - 1, {}
 
-    for k in range(0, n + 1):
+    for k in range(n + 1):
         if f[n - k]:
             result[k] = f[n - k]
 
@@ -991,7 +991,7 @@ def dmp_to_dict(f, u, K=None, zero=False):
     if n == -oo:
         n = -1
 
-    for k in range(0, n + 1):
+    for k in range(n + 1):
         h = dmp_to_dict(f[n - k], v)
 
         for exp, coeff in h.items():
@@ -1164,7 +1164,7 @@ def dmp_deflate(f, u, K):
     F = dmp_to_dict(f, u)
     B = [0]*(u + 1)
 
-    for M in F.keys():
+    for M in F:
         for i, m in enumerate(M):
             B[i] = igcd(B[i], m)
 
@@ -1248,7 +1248,7 @@ def dmp_multi_deflate(polys, u, K):
         f = dmp_to_dict(p, u)
 
         if not dmp_zero_p(p, u):
-            for M in f.keys():
+            for M in f:
                 for i, m in enumerate(M):
                     B[i] = igcd(B[i], m)
 
@@ -1371,8 +1371,8 @@ def dmp_exclude(f, u, K):
 
     J, F = [], dmp_to_dict(f, u)
 
-    for j in range(0, u + 1):
-        for monom in F.keys():
+    for j in range(u + 1):
+        for monom in F:
             if monom[j]:
                 break
         else:
@@ -1543,7 +1543,7 @@ def dmp_terms_gcd(f, u, K):
         return (0,)*(u + 1), f
 
     F = dmp_to_dict(f, u)
-    G = monomial_min(*list(F.keys()))
+    G = monomial_min(*list(F))
 
     if all(g == 0 for g in G):
         return G, f
@@ -1730,7 +1730,7 @@ def dup_random(n, a, b, K):
     >>> dup_random(3, -10, 10, ZZ) #doctest: +SKIP
     [-2, -8, 9, -4]
     """
-    f = [ K.convert(random.randint(a, b)) for _ in range(0, n + 1) ]
+    f = [K.convert(random.randint(a, b)) for _ in range(n + 1)]
 
     while not f[0]:
         f[0] = K.convert(random.randint(a, b))

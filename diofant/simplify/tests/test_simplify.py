@@ -3,11 +3,11 @@ import pytest
 from diofant import (Abs, Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      Integer, Integral, Lt, Matrix, MatrixSymbol, Mul, Number,
                      Piecewise, Rational, Sum, Symbol, acos, atan, besseli,
-                     besselj, besselsimp, binomial, cancel, combsimp, cos,
-                     cosh, cosine_transform, count_ops, diff, erf, exp,
+                     besselj, besselsimp, binomial, cancel, cbrt, combsimp,
+                     cos, cosh, cosine_transform, count_ops, diff, erf, exp,
                      exp_polar, expand, expand_multinomial, factor, factorial,
                      gamma, hyper, hypersimp, integrate, log, logcombine,
-                     nsimplify, oo, pi, posify, rad, separatevars, sign,
+                     nsimplify, oo, pi, posify, rad, root, separatevars, sign,
                      signsimp, simplify, sin, sinh, solve, sqrt, sqrtdenest,
                      sstr, symbols, tan, true, zoo)
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
@@ -20,7 +20,7 @@ __all__ = ()
 
 
 def test_sympyissue_7263():
-    assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf() -
+    assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf(strict=False) -
                673.447451402970) < 1e-12
 
 
@@ -130,15 +130,15 @@ def test_simplify_complex():
 def test_simplify_ratio():
     # roots of x**3-3*x+5
     roots = [(Rational(1, 2) - sqrt(3)*I/2) *
-             (sqrt(21)/2 + Rational(5, 2))**Rational(1, 3) +
-             1/((Rational(1, 2) - sqrt(3)*I/2)*(sqrt(21)/2 +
-                                                Rational(5, 2))**Rational(1, 3)),
+             cbrt(sqrt(21)/2 + Rational(5, 2)) +
+             1/((Rational(1, 2) - sqrt(3)*I/2)*cbrt(sqrt(21)/2 +
+                                                    Rational(5, 2))),
              1/((Rational(1, 2) + sqrt(3)*I/2) *
-                (sqrt(21)/2 + Rational(5, 2))**Rational(1, 3)) +
-             (Rational(1, 2) + sqrt(3)*I/2)*(sqrt(21)/2 +
-                                             Rational(5, 2))**Rational(1, 3),
-             -(sqrt(21)/2 + Rational(5, 2))**Rational(1, 3) -
-             1/(sqrt(21)/2 + Rational(5, 2))**Rational(1, 3)]
+                cbrt(sqrt(21)/2 + Rational(5, 2))) +
+             (Rational(1, 2) + sqrt(3)*I/2)*cbrt(sqrt(21)/2 +
+                                                 Rational(5, 2)),
+             -cbrt(sqrt(21)/2 + Rational(5, 2)) -
+             1/cbrt(sqrt(21)/2 + Rational(5, 2))]
 
     for root in roots:
         assert count_ops(simplify(root, ratio=1)) <= count_ops(root)
@@ -312,8 +312,7 @@ def test_nsimplify():
     assert nsimplify(pi, tolerance=0.001) == Rational(355, 113)
     assert nsimplify(0.33333, tolerance=1e-4) == Rational(1, 3)
     assert nsimplify(2.0**(1/3.), tolerance=0.001) == Rational(635, 504)
-    assert nsimplify(2.0**(1/3.), tolerance=0.001, full=True) == \
-        2**Rational(1, 3)
+    assert nsimplify(2.0**(1/3.), tolerance=0.001, full=True) == cbrt(2)
     assert nsimplify(x + .5, rational=True) == Rational(1, 2) + x
     assert nsimplify(1/.3 + x, rational=True) == Rational(10, 3) + x
     assert nsimplify(log(3).n(), rational=True) == Rational(109861228866811,
@@ -355,8 +354,8 @@ def test_nsimplify():
 
 
 def test_sympyissue_9448():
-    expr = (1/(1 - (-1)**Rational(2, 3) - (-1)**Rational(1, 3)) +
-            1/(1 + (-1)**Rational(2, 3) + (-1)**Rational(1, 3)))
+    expr = (1/(1 - (-1)**Rational(2, 3) - cbrt(-1)) +
+            1/(1 + (-1)**Rational(2, 3) + cbrt(-1)))
     assert nsimplify(expr) == Rational(1, 2)
 
 
@@ -491,8 +490,8 @@ def test_as_content_primitive():
     assert (5**Rational(7, 4)).as_content_primitive() == (5, 5**Rational(3, 4))
     assert Add(5*z/7, 0.5*x, 3*y/2, evaluate=False).as_content_primitive() == \
               (Rational(1, 14), 7.0*x + 21*y + 10*z)
-    assert (2**Rational(3, 4) + 2**Rational(1, 4)*sqrt(3)).as_content_primitive(radical=True) == \
-           (1, 2**Rational(1, 4)*(sqrt(2) + sqrt(3)))
+    assert (2**Rational(3, 4) + root(2, 4)*sqrt(3)).as_content_primitive(radical=True) == \
+           (1, root(2, 4)*(sqrt(2) + sqrt(3)))
 
 
 def test_signsimp():
@@ -506,7 +505,7 @@ def test_besselsimp():
         besselj(y, z)
     assert besselsimp(exp(-I*pi*a/2)*besseli(a, 2*sqrt(x)*exp_polar(I*pi/2))) == \
         besselj(a, 2*sqrt(x))
-    assert besselsimp(sqrt(2)*sqrt(pi)*x**Rational(1, 4)*exp(I*pi/4)*exp(-I*pi*a/2) *
+    assert besselsimp(sqrt(2)*sqrt(pi)*root(x, 4)*exp(I*pi/4)*exp(-I*pi*a/2) *
                       besseli(-Rational(1, 2), sqrt(x)*exp_polar(I*pi/2)) *
                       besseli(a, sqrt(x)*exp_polar(I*pi/2))/2) == \
         besselj(a, sqrt(x)) * cos(sqrt(x))

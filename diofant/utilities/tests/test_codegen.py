@@ -74,7 +74,7 @@ def test_empty_c_code_with_comment():
     #   "                    Code generated with diofant 0.7.2-git                    "
     assert source[158:] == (                                                              "*\n"
                                                                                           " *                                                                            *\n"
-                                                                                          " *             See http://diofant.rtfd.io/ for more information.              *\n"
+                                                                                          " *         See https://diofant.readthedocs.io/ for more information.          *\n"
                                                                                           " *                                                                            *\n"
                                                                                           " *                       This file is part of 'project'                       *\n"
                                                                                           " ******************************************************************************/\n"
@@ -555,7 +555,7 @@ def test_empty_f_code_with_header():
     #   "                    Code generated with diofant 0.7.2-git                    "
     assert source[158:] == (                                                              "*\n"
                                                                                           "!*                                                                            *\n"
-                                                                                          "!*             See http://diofant.rtfd.io/ for more information.              *\n"
+                                                                                          "!*         See https://diofant.readthedocs.io/ for more information.          *\n"
                                                                                           "!*                                                                            *\n"
                                                                                           "!*                       This file is part of 'project'                       *\n"
                                                                                           "!******************************************************************************\n")

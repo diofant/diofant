@@ -39,7 +39,7 @@ in some cases a partially evaluated expression. For example, when the
 expression is a polynomial in expanded form, the coefficients are evaluated:
 
     >>> x = Symbol('x')
-    >>> (pi*x**2 + x/3).evalf()
+    >>> (pi*x**2 + x/3).evalf(strict=False)
     3.14159265358979*x**2 + 0.333333333333333*x
 
 
@@ -68,7 +68,7 @@ This shows digits 999,951 through 1,000,000 of pi:
 
 
 High-precision calculations can be slow. It is recommended (but entirely
-optional) to install gmpy (http://code.google.com/p/gmpy/), which will
+optional) to install `gmpy2 <https://github.com/aleaxit/gmpy>`_, which will
 significantly speed up computations such as the one above.
 
 Floating-point numbers
@@ -118,7 +118,7 @@ Function :func:`~diofant.core.evalf.N` (or
 :meth:`~diofant.core.evalf.EvalfMixin.evalf` method) can be used to
 change the precision of existing floating-point numbers:
 
-    >>> N(3.5)
+    >>> N(3.5, strict=False)
     3.50000000000000
     >>> N(3.5, 5)
     3.5000
@@ -162,41 +162,29 @@ therefore capped, by default to around 100 digits. If we try with the 1000'th
 Fibonacci number, the following happens:
 
     >>> N(fibonacci(1000) - (GoldenRatio)**1000/sqrt(5))
-    0.e+85
+    Traceback (most recent call last):
+    ...
+    PrecisionExhausted: ...
 
-
-The lack of digits in the returned number indicates that ``N`` failed to achieve
-full accuracy. The result indicates that the magnitude of the expression is something
-less than 10^84, but that is not a particularly good answer. To force a higher working
-precision, the ``maxn`` keyword argument can be used:
+The exception indicates that ``N`` failed to achieve full accuracy.  To force a
+higher working precision, the ``maxn`` keyword argument can be used:
 
     >>> N(fibonacci(1000) - (GoldenRatio)**1000/sqrt(5), maxn=500)
     -4.60123853010113e-210
 
 
 Normally, ``maxn`` can be set very high (thousands of digits), but be aware that
-this may cause significant slowdown in extreme cases. Alternatively, the
-``strict=True`` option can be set to force an exception instead of silently
-returning a value with less than the requested accuracy:
+this may cause significant slowdown in extreme cases.
 
-    >>> N(fibonacci(1000) - (GoldenRatio)**1000/sqrt(5), strict=True)
-    Traceback (most recent call last):
-    ...
-    PrecisionExhausted: Failed to distinguish the expression:
-    <BLANKLINE>
-    -sqrt(5)*GoldenRatio**1000/5 + 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
-    <BLANKLINE>
-    from zero. Try simplifying the input, using chop=True, or providing a higher maxn for evalf
-
-
-If we add a term so that the Fibonacci approximation becomes exact (the full
-form of Binet's formula), we get an expression that is exactly zero, but ``N``
-does not know this:
+Also, you can set ``strict`` keyword argument to ``False`` to obtain imprecise
+answer instead of exception.  For example, if we add a term so that the
+Fibonacci approximation becomes exact (the full form of Binet's formula), we
+get an expression that is exactly zero, but ``N`` does not know this:
 
     >>> f = fibonacci(100) - (GoldenRatio**100 - (GoldenRatio-1)**100)/sqrt(5)
-    >>> N(f)
-    0.e-104
-    >>> N(f, maxn=1000)
+    >>> N(f, strict=False)
+    0.e-126
+    >>> N(f, maxn=1000, strict=False)
     0.e-1336
 
 
@@ -262,7 +250,9 @@ the result is accurate but only good to four digits:
 
     >>> f = abs(sin(x))
     >>> Integral(abs(sin(x)), (x, 0, 4)).evalf()
-    2.346
+    Traceback (most recent call last):
+    ...
+    PrecisionExhausted: ...
 
 
 It is better to split this integral into two pieces:
@@ -274,8 +264,10 @@ It is better to split this integral into two pieces:
 A similar example is the following oscillatory integral:
 
 
-    >>> Integral(sin(x)/x**2, (x, 1, oo)).evalf(maxn=20)
-    0.5
+    >>> Integral(sin(x)/x**2, (x, 1, oo)).evalf()
+    Traceback (most recent call last):
+    ...
+    PrecisionExhausted: ...
 
 
 It can be dealt with much more efficiently by telling ``evalf`` or ``N`` to
@@ -316,7 +308,7 @@ high-precision evaluation of slowly convergent series:
 
     >>> var('k')
     k
-    >>> Sum(1/k**2, (k, 1, oo)).evalf()
+    >>> Sum(1/k**2, (k, 1, oo)).evalf(strict=False)
     1.64493406684823
     >>> zeta(2).evalf()
     1.64493406684823
@@ -349,7 +341,7 @@ digits in a fraction of a second with a simple command:
     >>> n = Symbol('n', integer=True)
     >>> R = 9801/sqrt(8)/Sum(f(4*n)*(1103+26390*n)/f(n)**4/396**(4*n),
     ...                      (n, 0, oo))
-    >>> N(R, 10000)
+    >>> N(R, 10000, strict=False)
     3.141592653589793238462643383279502884197169399375105820974944592307...
 
 Numerical simplification

@@ -6,6 +6,8 @@ The containers implemented in this module are subclassed to Basic.
 They are supposed to work seamlessly within the Diofant framework.
 """
 
+from collections import Mapping
+
 from ..utilities.iterables import iterable
 from .basic import Basic
 from .compatibility import as_int
@@ -260,3 +262,6 @@ class Dict(Basic):
     def _sorted_args(self):
         from ..utilities import default_sort_key
         return tuple(sorted(self.args, key=default_sort_key))
+
+
+Mapping.register(Dict)

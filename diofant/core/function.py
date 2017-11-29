@@ -45,7 +45,7 @@ from .decorators import _sympifyit
 from .evaluate import global_evaluate
 from .expr import AtomicExpr, Expr
 from .logic import fuzzy_and
-from .numbers import Float, Rational
+from .numbers import Float, Rational, nan
 from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
@@ -206,8 +206,8 @@ class Application(Expr, metaclass=FunctionClass):
             raise ValueError("Unknown options: %s" % options)
 
         if evaluate:
-            if S.NaN in args:
-                return S.NaN
+            if nan in args:
+                return nan
 
             evaluated = cls.eval(*args)
             if evaluated is not None:
@@ -252,8 +252,8 @@ class Application(Expr, metaclass=FunctionClass):
 
         @classmethod
         def eval(cls, arg):
-            if arg is S.NaN:
-                return S.NaN
+            if arg is nan:
+                return nan
             if arg is S.Zero: return S.Zero
             if arg.is_positive: return S.One
             if arg.is_negative: return S.NegativeOne
@@ -312,7 +312,7 @@ class Function(Application, Expr):
     ...         if x.is_Number:
     ...             if x is S.Zero:
     ...                 return S.One
-    ...             elif x is S.Infinity:
+    ...             elif x is oo:
     ...                 return S.Zero
     ...
     ...     def _eval_is_real(self):
@@ -388,7 +388,7 @@ class Function(Application, Expr):
         pr = max(cls._should_evalf(a) for a in result.args)
         pr2 = min(cls._should_evalf(a) for a in result.args)
         if pr2 > 0:
-            return result.evalf(mlib.libmpf.prec_to_dps(pr))
+            return result.evalf(mlib.libmpf.prec_to_dps(pr), strict=False)
         return result
 
     @classmethod
@@ -448,7 +448,7 @@ class Function(Application, Expr):
         except (AttributeError, KeyError):
             try:
                 return Float(self._imp_(*self.args), prec)
-            except (AttributeError, TypeError):
+            except (AttributeError, TypeError, ValueError):
                 return
 
         # Convert all args to mpf or mpc
@@ -553,7 +553,7 @@ class Function(Application, Expr):
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
         if any(isinstance(t, Expr) and t.is_finite is False for t in args0):
-            from .numbers import oo, zoo, nan
+            from .numbers import oo, zoo
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
             a = [t.compute_leading_term(x, logx=logx) for t in args]
@@ -596,7 +596,7 @@ class Function(Application, Expr):
                 # for example when e = sin(x+1) or e = sin(cos(x))
                 # let's try the general algorithm
                 term = e.subs(x, S.Zero)
-                if term.is_finite is False or term is S.NaN:
+                if term.is_finite is False or term is nan:
                     raise PoleError("Cannot expand %s around 0" % (self))
                 series = term
                 fact = S.One
@@ -607,7 +607,7 @@ class Function(Application, Expr):
                     fact *= Rational(i)
                     e = e.diff(_x)
                     subs = e.subs(_x, S.Zero)
-                    if subs is S.NaN:
+                    if subs is nan:
                         # try to evaluate a limit if we have to
                         subs = e.limit(_x, S.Zero)
                     if subs.is_finite is False:
@@ -782,7 +782,7 @@ class WildFunction(Function, AtomicExpr):
             nargs = FiniteSet(*nargs)
         self.nargs = nargs
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match()
 
         See Also
@@ -1266,7 +1266,7 @@ class Derivative(Expr):
 
         def eval(x):
             f0 = self.expr.subs(z, Expr._from_mpmath(x, prec=mpmath.mp.prec))
-            f0 = f0.evalf(mlib.libmpf.prec_to_dps(mpmath.mp.prec))
+            f0 = f0.evalf(mlib.libmpf.prec_to_dps(mpmath.mp.prec), strict=False)
             return f0._to_mpmath(mpmath.mp.prec)
         return Expr._from_mpmath(mpmath.diff(eval,
                                              z0._to_mpmath(mpmath.mp.prec)),
@@ -2441,7 +2441,7 @@ def nfloat(expr, n=15, exponent=False):
         # evalf doesn't always set the precision
         rv = rv.n(n)
         if rv.is_Number:
-            rv = Float(rv.n(n), n)
+            rv = Float(rv, n)
         else:
             pass  # pure_complex(rv) is likely True
         return rv
@@ -2454,7 +2454,7 @@ def nfloat(expr, n=15, exponent=False):
     if not exponent:
         reps = [(p, Pow(p.base, Dummy())) for p in rv.atoms(Pow)]
         rv = rv.xreplace(dict(reps))
-    rv = rv.n(n)
+    rv = rv.n(n, strict=False)
     if not exponent:
         rv = rv.xreplace({d.exp: p.exp for p, d in reps})
     else:

@@ -237,7 +237,7 @@ def gf_from_dict(f, p, K):
     >>> gf_from_dict({10: ZZ(4), 4: ZZ(33), 0: ZZ(-1)}, 5, ZZ)
     [4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4]
     """
-    n, h = max(f.keys()), []
+    n, h = max(f), []
 
     for k in range(n, -1, -1):
         h.append(f.get(k, K.zero) % p)
@@ -259,7 +259,7 @@ def gf_to_dict(f, p, symmetric=True):
     """
     n, result = gf_degree(f), {}
 
-    for k in range(0, n + 1):
+    for k in range(n + 1):
         if symmetric:
             a = gf_int(f[n - k], p)
         else:
@@ -489,7 +489,7 @@ def gf_mul(f, g, p, K):
     dh = df + dg
     h = [0]*(dh + 1)
 
-    for i in range(0, dh + 1):
+    for i in range(dh + 1):
         coeff = K.zero
 
         for j in range(max(0, i - dg), min(i, df) + 1):
@@ -517,7 +517,7 @@ def gf_sqr(f, p, K):
     dh = 2*df
     h = [0]*(dh + 1)
 
-    for i in range(0, dh + 1):
+    for i in range(dh + 1):
         coeff = K.zero
 
         jmin = max(0, i - df)
@@ -635,7 +635,7 @@ def gf_div(f, g, p, K):
 
     h, dq, dr = list(f), df - dg, dg - 1
 
-    for i in range(0, df + 1):
+    for i in range(df + 1):
         coeff = h[i]
 
         for j in range(max(0, dg - i), min(df - i, dr) + 1):
@@ -690,7 +690,7 @@ def gf_quo(f, g, p, K):
 
     h, dq, dr = f[:], df - dg, dg - 1
 
-    for i in range(0, dq + 1):
+    for i in range(dq + 1):
         coeff = h[i]
 
         for j in range(max(0, dg - i), min(df - i, dr) + 1):
@@ -1278,7 +1278,7 @@ def gf_random(n, p, K):
     >>> gf_random(10, 5, ZZ) #doctest: +SKIP
     [1, 2, 3, 2, 1, 1, 1, 2, 0, 4, 2]
     """
-    return [K.one] + [ K(int(uniform(0, p))) for i in range(0, n) ]
+    return [K.one] + [ K(int(uniform(0, p))) for i in range(n) ]
 
 
 def gf_irreducible(n, p, K):
@@ -1327,7 +1327,7 @@ def gf_irred_p_ben_or(f, p, K):
     if n < 5:
         H = h = gf_pow_mod([K.one, K.zero], p, f, p, K)
 
-        for i in range(0, n//2):
+        for i in range(n//2):
             g = gf_sub(h, [K.one, K.zero], p, K)
 
             if gf_gcd(f, g, p, K) == [K.one]:
@@ -1337,7 +1337,7 @@ def gf_irred_p_ben_or(f, p, K):
     else:
         b = gf_frobenius_monomial_base(f, p, K)
         H = h = gf_frobenius_map([K.one, K.zero], f, b, p, K)
-        for i in range(0, n//2):
+        for i in range(n//2):
             g = gf_sub(h, [K.one, K.zero], p, K)
             if gf_gcd(f, g, p, K) == [K.one]:
                 h = gf_frobenius_map(h, f, b, p, K)
@@ -1526,7 +1526,7 @@ def gf_sqf_list(f, p, K, all=False):
         if not sqf:
             d = gf_degree(f) // r
 
-            for i in range(0, d + 1):
+            for i in range(d + 1):
                 f[i] = f[i*r]
 
             f, n = f[:d + 1], n*r
@@ -1594,10 +1594,10 @@ def gf_Qbasis(Q, p, K):
     """
     Q, n = [ list(q) for q in Q ], len(Q)
 
-    for k in range(0, n):
+    for k in range(n):
         Q[k][k] = (Q[k][k] - K.one) % p
 
-    for k in range(0, n):
+    for k in range(n):
         for i in range(k, n):
             if Q[k][i]:
                 break
@@ -1606,23 +1606,23 @@ def gf_Qbasis(Q, p, K):
 
         inv = K.invert(Q[k][i], p)
 
-        for j in range(0, n):
+        for j in range(n):
             Q[j][i] = (Q[j][i]*inv) % p
 
-        for j in range(0, n):
+        for j in range(n):
             t = Q[j][k]
             Q[j][k] = Q[j][i]
             Q[j][i] = t
 
-        for i in range(0, n):
+        for i in range(n):
             if i != k:
                 q = Q[k][i]
 
-                for j in range(0, n):
+                for j in range(n):
                     Q[j][i] = (Q[j][i] - Q[j][k]*q) % p
 
-    for i in range(0, n):
-        for j in range(0, n):
+    for i in range(n):
+        for j in range(n):
             if i == j:
                 Q[i][j] = (K.one - Q[i][j]) % p
             else:
@@ -1770,7 +1770,7 @@ def gf_edf_zassenhaus(f, n, p, K):
         if p == 2:
             h = r
 
-            for i in range(0, 2**(n*N - 1)):
+            for i in range(2**(n*N - 1)):
                 r = gf_pow_mod(r, 2, f, p, K)
                 h = gf_add(h, r, p, K)
 
@@ -2091,7 +2091,7 @@ def linear_congruence(a, b, m):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Linear_congruence_theorem
+    .. [1] https//en.wikipedia.org/wiki/Linear_congruence_theorem
     """
     from .polytools import gcdex
     if a % m == 0:

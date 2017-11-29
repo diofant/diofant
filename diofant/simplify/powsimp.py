@@ -1,9 +1,9 @@
 from collections import defaultdict
 from functools import reduce
 
-from ..core import (Add, Basic, Dummy, Integer, Mul, Pow, Rational, S, cacheit,
-                    count_ops, expand_log, expand_mul, factor_terms, prod,
-                    sympify)
+from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, S,
+                    cacheit, count_ops, expand_log, expand_mul, factor_terms,
+                    prod, sympify)
 from ..core.compatibility import default_sort_key, ordered
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
@@ -163,8 +163,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             # Numbers since autoevaluation will undo it, e.g.
             # 2**(1/3)/4 -> 2**(1/3 - 2) -> 2**(1/3)/4
             if (b and b.is_Number and not all(ei.is_Number for ei in e) and
-                    coeff is not S.One and
-                    b not in (S.One, S.NegativeOne)):
+                    coeff is not S.One and b not in (1, -1)):
                 m = multiplicity(abs(b), abs(coeff))
                 if m:
                     e.append(m)
@@ -273,7 +272,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         bases = []
         for b, e in c_powers:
             b, e = bkey(b, e)
-            if b in common_b.keys():
+            if b in common_b:
                 common_b[b] = common_b[b] + e
             else:
                 common_b[b] = e
@@ -608,11 +607,11 @@ def _denest_pow(eq):
             b, e = new.as_base_exp()
 
     # denest exp with log terms in exponent
-    if b is S.Exp1 and e.is_Mul:
+    if b is E and e.is_Mul:
         logs = []
         other = []
         for ei in e.args:
-            if any(ai.func is log for ai in Add.make_args(ei)):
+            if any(isinstance(ai, log) for ai in Add.make_args(ei)):
                 logs.append(ei)
             else:
                 other.append(ei)
@@ -677,7 +676,7 @@ def _denest_pow(eq):
             glogb = _keep_coeff(cg, rg*Add(*[a/g for a in args]))
 
     # now put the log back together again
-    if glogb.func is log or not glogb.is_Mul:
+    if isinstance(glogb, log) or not glogb.is_Mul:
         if glogb.args[0].is_Pow:
             glogb = _denest_pow(glogb.args[0])
             if (abs(glogb.exp) < 1) is S.true:

@@ -7,8 +7,8 @@ from diofant import (E1, Abs, Chi, Ci, E, Ei, EulerGamma, Float, I, Integer,
                      cosh, diff, erf, erf2, erf2inv, erfc, erfcinv, erfi,
                      erfinv, exp, exp_polar, expand, expand_func, expint,
                      fresnelc, fresnels, gamma, hyper, im, integrate, li,
-                     limit, log, meijerg, nan, oo, pi, polar_lift, re, sign,
-                     sin, sinh, sqrt, uppergamma)
+                     limit, log, meijerg, nan, oo, pi, polar_lift, re, root,
+                     sign, sin, sinh, sqrt, uppergamma)
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.error_functions import _eis, _erfs
@@ -81,6 +81,7 @@ def test_erf():
     assert erf(x).as_real_imag() == erf(x).as_real_imag(deep=False)
     assert erf(w).as_real_imag() == (erf(w), 0)
     assert erf(w).as_real_imag() == erf(w).as_real_imag(deep=False)
+    assert erf(I).as_real_imag() == (0, erfi(1))
 
     pytest.raises(ArgumentIndexError, lambda: erf(x).fdiff(2))
 
@@ -152,6 +153,7 @@ def test_erfc():
     assert erfc(x).as_real_imag(deep=False) == erfc(x).as_real_imag()
     assert erfc(w).as_real_imag() == (erfc(w), 0)
     assert erfc(w).as_real_imag(deep=False) == erfc(w).as_real_imag()
+    assert erfc(I).as_real_imag() == (1, -erfi(1))
 
     pytest.raises(ArgumentIndexError, lambda: erfc(x).fdiff(2))
 
@@ -213,6 +215,7 @@ def test_erfi():
     assert erfi(x).as_real_imag(deep=False) == erfi(x).as_real_imag()
     assert erfi(w).as_real_imag() == (erfi(w), 0)
     assert erfi(w).as_real_imag(deep=False) == erfi(w).as_real_imag()
+    assert erfi(I).as_real_imag() == (0, erf(1))
 
     pytest.raises(ArgumentIndexError, lambda: erfi(x).fdiff(2))
 
@@ -343,7 +346,7 @@ def tn_branch(func, s=None):
     expr = fn(c*exp_polar(I*pi)) - fn(c*exp_polar(-I*pi))
     eps = 1e-15
     expr2 = fn(-c + eps*I) - fn(-c - eps*I)
-    return abs(expr.n() - expr2.n()).n() < 1e-10
+    return abs(expr - expr2).n(strict=False) < 1e-10
 
 
 def test_ei():
@@ -464,9 +467,9 @@ def test__eis():
 def tn_arg(func):
     def test(arg, e1, e2):
         v = uniform(1, 5)
-        v1 = func(arg*x).subs(x, v).n()
-        v2 = func(e1*v + e2*1e-15).n()
-        return abs(v1 - v2).n() < 1e-10
+        v1 = func(arg*x).subs(x, v).n(strict=False)
+        v2 = func(e1*v + e2*1e-15).n(strict=False)
+        return abs(v1 - v2).n(strict=False) < 1e-10
     return test(exp_polar(I*pi/2), I, 1) and \
         test(exp_polar(-I*pi/2), -I, 1) and \
         test(exp_polar(I*pi), -1, I) and \
@@ -651,6 +654,10 @@ def test_fresnel():
     assert fresnels(z).as_real_imag(deep=False) == fresnels(z).as_real_imag()
     assert fresnels(w).as_real_imag() == (fresnels(w), 0)
     assert fresnels(w).as_real_imag(deep=False) == fresnels(w).as_real_imag()
+    assert (fresnels(I, evaluate=False).as_real_imag() ==
+            (0, -erf(sqrt(pi)/2 + I*sqrt(pi)/2)/4 +
+             I*(-erf(sqrt(pi)/2 + I*sqrt(pi)/2) + erf(sqrt(pi)/2 -
+                I*sqrt(pi)/2))/4 - erf(sqrt(pi)/2 - I*sqrt(pi)/2)/4))
 
     assert fresnels(2 + 3*I).as_real_imag() == (
         fresnels(2 + 3*I)/2 + fresnels(2 - 3*I)/2,
@@ -727,7 +734,7 @@ def test_fresnel():
 
     assert fresnelc(z).rewrite(meijerg) == sqrt(2)*pi*z**Rational(3, 4) * \
         meijerg(((), (1,)), ((Rational(1, 4),),
-                             (Rational(3, 4), 0)), -pi**2*z**4/16)/(2*(-z)**Rational(1, 4)*(z**2)**Rational(1, 4))
+                             (Rational(3, 4), 0)), -pi**2*z**4/16)/(2*root(-z, 4)*root(z**2, 4))
 
     verify_numerically(re(fresnels(z)), fresnels(z).as_real_imag()[0], z)
     verify_numerically(im(fresnels(z)), fresnels(z).as_real_imag()[1], z)

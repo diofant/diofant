@@ -1,6 +1,6 @@
 from ..concrete.expr_with_limits import AddWithLimits
 from ..core import (Add, Basic, Dummy, Eq, Expr, S, Symbol, Tuple, Wild, diff,
-                    oo, sympify)
+                    nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..matrices import MatrixBase
@@ -311,7 +311,7 @@ class Integral(AddWithLimits):
             where sign of b is considered
             """
             wok = F.subs(d, a)
-            if wok is S.NaN or wok.is_finite is False and a.is_finite:
+            if wok is nan or wok.is_finite is False and a.is_finite:
                 return limit(sign(b)*F, d, a)
             return wok
 
@@ -560,8 +560,8 @@ class Integral(AddWithLimits):
         References
         ==========
 
-        .. [1] http://en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
-        .. [2] http://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
+        .. [1] https//en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
+        .. [2] https//en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
 
         Examples
         ========
@@ -723,7 +723,7 @@ class Integral(AddWithLimits):
             return f.integrate(x)
 
         # Piecewise antiderivatives need to call special integrate.
-        if f.func is Piecewise:
+        if isinstance(f, Piecewise):
             return f._eval_integral(x)
 
         # let's cut it short if `f` does not depend on `x`
@@ -920,7 +920,7 @@ class Integral(AddWithLimits):
         is where the function value is taken in each interval to define the
         rectangle.
 
-        [1] http://en.wikipedia.org/wiki/Rectangle_method
+        [1] https//en.wikipedia.org/wiki/Rectangle_method
 
         Examples
         ========

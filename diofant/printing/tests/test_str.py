@@ -5,10 +5,10 @@ from diofant import (Abs, Add, And, Catalan, Complement, Derivative, Dict,
                      Function, GoldenRatio, I, Integer, Integral, Interval,
                      Lambda, Limit, Matrix, MatrixSymbol, Mul, O, Pow,
                      Rational, Rel, S, SparseMatrix, Sum, Symbol,
-                     SymmetricDifference, Tuple, Wild, WildFunction, Xor, cos,
-                     exp, factor, factorial, factorial2, false, nan, oo, pi,
-                     sin, sqrt, subfactorial, summation, symbols, true, zeta,
-                     zoo)
+                     SymmetricDifference, Tuple, Wild, WildFunction, Xor, cbrt,
+                     cos, exp, factor, factorial, factorial2, false, nan, oo,
+                     pi, root, sin, sqrt, subfactorial, summation, symbols,
+                     true, zeta, zoo)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Cycle, Permutation
 from diofant.core import Expr
@@ -417,8 +417,8 @@ def test_Pow():
     assert str((x + y)**-2) == "(x + y)**(-2)"
     assert str((x + y)**2) == "(x + y)**2"
     assert str((x + y)**(1 + x)) == "(x + y)**(x + 1)"
-    assert str(x**Rational(1, 3)) == "x**(1/3)"
-    assert str(1/x**Rational(1, 3)) == "x**(-1/3)"
+    assert str(cbrt(x)) == "x**(1/3)"
+    assert str(1/cbrt(x)) == "x**(-1/3)"
     assert str(sqrt(sqrt(x))) == "x**(1/4)"
     # not the same as x**-1
     assert str(x**-1.0) == 'x**(-1.0)'
@@ -469,16 +469,16 @@ def test_Rational():
     assert str(sqrt(Rational(1, 4))) == "1/2"
     assert str(sqrt(Rational(1, 36))) == "1/6"
 
-    assert str((123**25) ** Rational(1, 25)) == "123"
-    assert str((123**25 + 1)**Rational(1, 25)) != "123"
-    assert str((123**25 - 1)**Rational(1, 25)) != "123"
-    assert str((123**25 - 1)**Rational(1, 25)) != "122"
+    assert str(root(123**25, 25)) == "123"
+    assert str(root(123**25 + 1, 25)) != "123"
+    assert str(root(123**25 - 1, 25)) != "123"
+    assert str(root(123**25 - 1, 25)) != "122"
 
     assert str(sqrt(Rational(81, 36))**3) == "27/8"
     assert str(1/sqrt(Rational(81, 36))**3) == "8/27"
 
     assert str(sqrt(-4)) == str(2*I)
-    assert str(2**Rational(1, 10**10)) == "2**(1/10000000000)"
+    assert str(root(2, 10**10)) == "2**(1/10000000000)"
 
 
 def test_Float():
@@ -492,7 +492,7 @@ def test_Float():
     assert str(pi.evalf(1 + 64)) == ('3.141592653589793238462643383279'
                                      '5028841971693993751058209749445923')
     assert str(pi.round(-1)) == '0.'
-    assert str((pi**400 - (pi**400).round(1)).n(2)) == '-0.e+88'
+    assert str((pi**400 - (pi**400).round(1)).n(2, strict=False)) == '-0.e+9'
 
 
 def test_Relational():

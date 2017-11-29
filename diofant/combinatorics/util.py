@@ -244,7 +244,7 @@ def _handle_precomputed_bsgs(base, strong_gens, transversals=None,
             base_len = len(base)
             basic_orbits = [None]*base_len
             for i in range(base_len):
-                basic_orbits[i] = list(transversals[i].keys())
+                basic_orbits[i] = list(transversals[i])
     return transversals, basic_orbits, strong_gens_distr
 
 
@@ -299,7 +299,7 @@ def _orbits_transversals_from_bsgs(base, strong_gens_distr,
         transversals[i] = dict(_orbit_transversal(degree, strong_gens_distr[i],
                                                   base[i], pairs=True))
         if transversals_only is False:
-            basic_orbits[i] = list(transversals[i].keys())
+            basic_orbits[i] = list(transversals[i])
     if transversals_only:
         return transversals
     else:

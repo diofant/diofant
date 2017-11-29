@@ -69,7 +69,7 @@ def mr(n, bases):
     .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
            A Computational Perspective", Springer, 2nd edition, 135-138
     .. [2] A list of thresholds and the bases they require are here:
-           http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
+           https//en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
 
     Examples
     ========
@@ -122,7 +122,7 @@ def _mr_safe(n):
 
     .. [1] http://primes.utm.edu/prove/prove2_3.html
     .. [2] http://www.trnicely.net/misc/mpzspsp.html
-    .. [3] http://en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
+    .. [3] https//en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
     .. [4] http://primes.utm.edu/glossary/xpage/Pseudoprime.html
     .. [5] http://uucode.com/obf/dalbec/alg.html#sprp
     """

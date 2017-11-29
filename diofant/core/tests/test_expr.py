@@ -4,11 +4,12 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      Function, Ge, Gt, Heaviside, I, Integer, Integral, Le, Lt,
                      Max, Mul, Number, NumberSymbol, O, Piecewise, Poly, Pow,
                      Rational, Si, Sum, Symbol, Tuple, Wild, WildFunction,
-                     apart, cancel, collect, combsimp, cos, default_sort_key,
-                     diff, exp, exp_polar, expand, factor, factorial, false,
-                     gamma, log, lucas, nan, nsimplify, oo, pi, posify,
-                     powsimp, radsimp, ratsimp, simplify, sin, sqrt, symbols,
-                     sympify, tan, together, trigsimp, true, zoo)
+                     apart, cancel, cbrt, collect, combsimp, cos,
+                     default_sort_key, diff, exp, exp_polar, expand, factor,
+                     factorial, false, gamma, log, lucas, nan, nsimplify, oo,
+                     pi, posify, powsimp, radsimp, ratsimp, root, simplify,
+                     sin, sqrt, symbols, sympify, tan, tanh, together,
+                     trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 from diofant.solvers.solvers import checksol
@@ -393,7 +394,7 @@ def test_is_algebraic_expr():
     assert sqrt(3).is_algebraic_expr(x) is True
     assert sqrt(3).is_algebraic_expr() is True
 
-    eq = ((1 + x**2)/(1 - y**2))**Rational(1, 3)
+    eq = cbrt((1 + x**2)/(1 - y**2))
     assert eq.is_algebraic_expr(x) is True
     assert eq.is_algebraic_expr(y) is True
 
@@ -612,33 +613,15 @@ def test_replace():
     assert g.replace(
         lambda expr: expr.is_Number, lambda expr: expr**2) == 4*sin(x**9)
 
-    assert cos(x).replace(cos, sin, map=True) == (sin(x), {cos(x): sin(x)})
     assert sin(x).replace(cos, sin) == sin(x)
 
-    cond, func = lambda x: x.is_Mul, lambda x: 2*x
-    assert (x*y).replace(cond, func, map=True) == (2*x*y, {x*y: 2*x*y})
-    assert (x*(1 + x*y)).replace(cond, func, map=True) == \
-        (2*x*(2*x*y + 1), {x*(2*x*y + 1): 2*x*(2*x*y + 1), x*y: 2*x*y})
-    assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y, map=True) == \
-        (sin(x), {sin(x): sin(x)/y})
-    assert (y*sin(x)).replace(sin,
-                              lambda expr: sin(expr)/y,
-                              map=True,
-                              simultaneous=False) == (sin(x)/y,
-                                                      {sin(x): sin(x)/y})
-    # if not simultaneous then y*sin(x) -> y*sin(x)/y = sin(x) -> sin(x)/y
-    assert (y*sin(x)).replace(sin, lambda expr: sin(expr)/y,
-                              simultaneous=False) == sin(x)/y
-    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e) == O(1, x)
-    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e,
-                                    simultaneous=False) == x**2/2 + O(x**3)
+    def cond(x):
+        return x.is_Mul
+
+    assert (x**2 + O(x**3)).replace(Pow, lambda b, e: b**e/e) == x**2/2 + O(x**3)
     assert (x*(x*y + 3)).replace(lambda x: x.is_Mul, lambda x: 2 + x) == \
         x*(x*y + 5) + 2
     e = (x*y + 1)*(2*x*y + 1) + 1
-    assert e.replace(cond, func, map=True) == (
-        2*((2*x*y + 1)*(4*x*y + 1)) + 1,
-        {2*x*y: 4*x*y, x*y: 2*x*y, (2*x*y + 1)*(4*x*y + 1):
-         2*((2*x*y + 1)*(4*x*y + 1))})
     assert x.replace(x, y) == y
     assert (x + 1).replace(1, 2) == x + 2
     pytest.raises(TypeError, lambda: e.replace(cond, x))
@@ -1412,10 +1395,10 @@ def test_is_constant():
     assert x.is_constant() is False
     assert x.is_constant(y) is True
 
-    assert checksol(x, x, Sum(x, (x, 1, n))) is False
-    assert checksol(x, x, Sum(x, (x, 1, n))) is False
+    assert checksol(x, {x: Sum(x, (x, 1, n))}) is False
+    assert checksol(x, {x: Sum(x, (x, 1, n))}) is False
     f = Function('f')
-    assert checksol(x, x, f(x)) is False
+    assert checksol(x, {x: f(x)}) is False
 
     p = symbols('p', positive=True)
     assert Pow(x, 0, evaluate=False).is_constant() is True  # == 1
@@ -1426,6 +1409,9 @@ def test_is_constant():
 
     z1, z2 = symbols('z1 z2', zero=True)
     assert (z1 + 2*z2).is_constant() is True
+
+    e = factorial(x) % x
+    assert e.subs({x: x - 1}).is_constant() is False
 
 
 def test_equals():
@@ -1440,7 +1426,7 @@ def test_equals():
     assert (sqrt(5)*sqrt(3)).equals(sqrt(3)) is False
     assert (sqrt(5) + sqrt(3)).equals(0) is False
     assert (sqrt(5) + pi).equals(0) is False
-    eq = -(-1)**Rational(3, 4)*6**Rational(1, 4) + (-6)**Rational(1, 4)*I
+    eq = -(-1)**Rational(3, 4)*root(6, 4) + root(-6, 4)*I
     if eq != 0:  # if canonicalization makes this zero, skip the test
         assert eq.equals(0)
     assert sqrt(x).equals(0) is False
@@ -1462,8 +1448,8 @@ def test_equals():
     # prove via minimal_polynomial or self-consistency
     eq = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert eq.equals(0)
-    q = 3**Rational(1, 3) + 3
-    p = expand(q**3)**Rational(1, 3)
+    q = cbrt(3) + 3
+    p = cbrt(expand(q**3))
     assert (p - q).equals(0)
 
     # issue sympy/sympy#6829
@@ -1475,8 +1461,8 @@ def test_equals():
                                    (2*q - Rational(7, 4))/x1)/2 -
                       Rational(1, 4))),
                 (x1, sqrt(-x0 - Rational(13, 12))),
-                (x0, 2*(-(q - Rational(7, 8))**2/8 -
-                        Rational(2197, 13824))**Rational(1, 3))))
+                (x0, 2*cbrt(-(q - Rational(7, 8))**2/8 -
+                            Rational(2197, 13824)))))
     assert z.equals(0)
 
 
@@ -1628,3 +1614,8 @@ def test_sympyissue_7426():
     f1 = a % c
     f2 = x % z
     assert f1.equals(f2) is False
+
+
+def test_pow_rewrite():
+    assert (2**x).rewrite(sin) == 2**x
+    assert (2**x).rewrite(tanh) == 2**x

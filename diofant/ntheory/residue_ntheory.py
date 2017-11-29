@@ -67,7 +67,7 @@ def _primitive_root_prime_iter(p):
     [2, 3, 10, 13, 14, 15]
     """
     p = as_int(p)
-    v = [(p - 1) // i for i in factorint(p - 1).keys()]
+    v = [(p - 1) // i for i in factorint(p - 1)]
     a = 2
     while a < p:
         for pw in v:
@@ -583,6 +583,8 @@ def is_nthpow_residue(a, n, m):
 
     .. [1] P. Hackman "Elementary Number Theory" (2009),  page 76
     """
+    if primitive_root(m) is None:
+        raise NotImplementedError("%s does not have any primitive root" % m)
     if n == 1:
         return True
     if n == 2:
@@ -873,7 +875,7 @@ class mobius(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/M%C3%B6bius_function
+    .. [1] https//en.wikipedia.org/wiki/M%C3%B6bius_function
     .. [2] Thomas Koshy "Elementary Number Theory with Applications"
     """
 

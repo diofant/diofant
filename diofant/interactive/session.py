@@ -7,9 +7,18 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
 
     def visit_BinOp(self, node):
         def is_integer(x):
-            return ((isinstance(x, ast.Num) and isinstance(x.n, int)) or
-                    (isinstance(x, ast.UnaryOp) and
-                     isinstance(x.op, ast.USub) and is_integer(x.operand)))
+            if isinstance(x, ast.Num) and isinstance(x.n, int):
+                return True
+            elif isinstance(x, ast.UnaryOp) and isinstance(x.op, (ast.USub,
+                                                                  ast.UAdd)):
+                return is_integer(x.operand)
+            elif isinstance(x, ast.BinOp) and isinstance(x.op, (ast.Add,
+                                                                ast.Sub,
+                                                                ast.Mult,
+                                                                ast.Pow)):
+                return is_integer(x.left) and is_integer(x.right)
+            else:
+                return False
 
         if (isinstance(node.op, ast.Div) and
                 all(is_integer(_) for _ in [node.left, node.right])):
@@ -30,7 +39,7 @@ class AutomaticSymbols(ast.NodeTransformer):
         import IPython
 
         app = IPython.get_ipython()
-        ignored_names = list(app.user_ns.keys()) + dir(builtins)
+        ignored_names = list(app.user_ns) + dir(builtins)
 
         for s in node.body:
             self.visit(s)
@@ -55,3 +64,19 @@ class AutomaticSymbols(ast.NodeTransformer):
         if isinstance(node.ctx, ast.Load):
             self.names.append(node.id)
         return node
+
+
+class FloatRationalizer(ast.NodeTransformer):
+    """Wraps all floats in a call to Rational."""
+
+    def visit_Num(self, node):
+        if isinstance(node.n, float):
+            return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
+                            args=[ast.Str(s=repr(node.n))], keywords=[],
+                            starargs=None, kwargs=None)
+        return node
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id == "Float":
+            return node
+        return self.generic_visit(node)

@@ -124,9 +124,10 @@ def pure_complex(v):
     >>> pure_complex(I)
     (0, 1)
     """
+    from .numbers import I
     h, t = v.as_coeff_Add()
     c, i = t.as_coeff_Mul()
-    if i is S.ImaginaryUnit:
+    if i is I:
         return h, c
 
 
@@ -323,10 +324,10 @@ def add_terms(terms, prec, target_prec):
 
     # see if any argument is NaN or oo and thus warrants a special return
     special = []
-    from .numbers import Float
+    from .numbers import Float, nan
     for t in terms:
         arg = Float._new(t[0], 1)
-        if arg is S.NaN or arg.is_infinite:
+        if arg is nan or arg.is_infinite:
             special.append(arg)
     if special:
         from .add import Add
@@ -425,19 +426,22 @@ def evalf_mul(v, prec, options):
     args = list(v.args)
 
     # see if any argument is NaN or oo and thus warrants a special return
-    special = []
-    from .numbers import Float
+    special, other = [], []
+    from .numbers import Float, nan
     for arg in args:
         arg = evalf(arg, prec, options)
         if arg[0] is None:
             continue
         arg = Float._new(arg[0], 1)
-        if arg is S.NaN or arg.is_infinite:
+        if arg is nan or arg.is_infinite:
             special.append(arg)
+        else:
+            other.append(arg)
     if special:
         from .mul import Mul
+        other = Mul(*other)
         special = Mul(*special)
-        return evalf(special, prec + 4, {})
+        return evalf(special*other, prec + 4, {})
 
     # With guard digits, multiplication in the real case does not destroy
     # accuracy. This is also true in the complex case when considering the
@@ -529,6 +533,7 @@ def evalf_mul(v, prec, options):
 
 
 def evalf_pow(v, prec, options):
+    from .numbers import E
 
     target_prec = prec
     base, exp = v.args
@@ -599,7 +604,7 @@ def evalf_pow(v, prec, options):
         yre, yim, _, _ = evalf(exp, prec, options)
 
     # Pure exponential function; no need to evalf the base
-    if base is S.Exp1:
+    if base is E:
         if yim:
             re, im = libmp.mpc_exp((yre or fzero, yim), prec)
             return finalize_complex(re, im, target_prec)
@@ -641,9 +646,9 @@ def evalf_trig(v, prec, options):
     TODO: should also handle tan of complex arguments.
     """
     from ..functions import cos, sin
-    if v.func is cos:
+    if isinstance(v, cos):
         func = mpf_cos
-    elif v.func is sin:
+    elif isinstance(v, sin):
         func = mpf_sin
     else:  # pragma: no cover
         raise NotImplementedError
@@ -657,9 +662,9 @@ def evalf_trig(v, prec, options):
             v = v.subs(options['subs'])
         return evalf(v._eval_evalf(prec), prec, options)
     if not re:
-        if v.func is cos:
+        if isinstance(v, cos):
             return fone, None, prec, None
-        elif v.func is sin:
+        elif isinstance(v, sin):
             return None, None, None, None
         else:  # pragma: no cover
             raise NotImplementedError
@@ -834,6 +839,7 @@ def do_integral(expr, prec, options):
 
         from ..functions import cos, sin
         from .symbol import Wild
+        from .numbers import pi
 
         have_part = [False, False]
         max_real_term = [MINUS_INF]
@@ -862,7 +868,7 @@ def do_integral(expr, prec, options):
             if not m:
                 raise ValueError("An integrand of the form sin(A*x+B)*f(x) "
                                  "or cos(A*x+B)*f(x) is required for oscillatory quadrature")
-            period = as_mpmath(2*S.Pi/m[A], prec + 15, options)
+            period = as_mpmath(2*pi/m[A], prec + 15, options)
             result = quadosc(f, [xlow, xhigh], period=period)
             # XXX: quadosc does not do error detection yet
             quadrature_error = MINUS_INF
@@ -1052,7 +1058,7 @@ def evalf_prod(expr, prec, options):
 
 
 def evalf_sum(expr, prec, options):
-    from .numbers import Float
+    from .numbers import Float, oo
     if 'subs' in options:
         expr = expr.subs(options['subs'])
     func = expr.function
@@ -1064,7 +1070,7 @@ def evalf_sum(expr, prec, options):
     prec2 = prec + 10
     try:
         n, a, b = limits[0]
-        if b != S.Infinity or a != int(a):
+        if b != oo or a != int(a):
             raise NotImplementedError
         # Use fast hypergeometric summation if possible
         v = hypsum(func, n, int(a), prec2)
@@ -1079,7 +1085,7 @@ def evalf_sum(expr, prec, options):
             m = n = 2**i * prec
             s, err = expr.euler_maclaurin(m=m, n=n, eps=eps,
                                           eval_integral=False)
-            err = err.evalf()
+            err = err.evalf(strict=False)
             if err <= eps:
                 break
         err = fastlog(evalf(abs(err), 20, options)[0])
@@ -1227,7 +1233,7 @@ def evalf(x, prec, options):
 class EvalfMixin:
     """Mixin class adding evalf capability."""
 
-    def evalf(self, n=15, subs=None, maxn=110, chop=False, strict=False, quad=None):
+    def evalf(self, n=15, subs=None, maxn=110, chop=False, strict=True, quad=None):
         """
         Evaluate the given formula to an accuracy of n digits.
         Optional keyword arguments:
@@ -1248,14 +1254,14 @@ class EvalfMixin:
             strict=<bool>
                 Raise PrecisionExhausted if any subresult fails to evaluate
                 to full accuracy, given the available maxprec
-                (default=False)
+                (default=True)
 
             quad=<str>
                 Choose algorithm for numerical quadrature. By default,
                 tanh-sinh quadrature is used. For oscillatory
                 integrals on an infinite interval, try quad='osc'.
         """
-        from .numbers import Float
+        from .numbers import Float, I
         n = n if n is not None else 15
 
         if subs and is_sequence(subs):
@@ -1295,7 +1301,7 @@ class EvalfMixin:
         if im:
             p = max(min(prec, im_acc), 1)
             im = Float._new(im, p)
-            return re + im*S.ImaginaryUnit
+            return re + im*I
         else:
             return re
 
@@ -1354,8 +1360,6 @@ class EvalfMixin:
 def N(x, n=15, **options):
     r"""
     Calls x.evalf(n, \*\*options).
-
-    Both .n() and N() are equivalent to .evalf(); use the one that you like better.
 
     Examples
     ========

@@ -4,7 +4,7 @@ from functools import reduce
 from strategies.core import identity
 from strategies.tree import greedy
 
-from ..core import (Add, Basic, Dummy, Expr, FunctionClass, I, Integer, Mul,
+from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
                     Pow, S, Wild, cacheit, count_ops, expand, expand_mul,
                     factor_terms, igcd, symbols, sympify)
 from ..core.compatibility import iterable
@@ -270,9 +270,9 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         # work with (i.e. is not a trigonometric term)
         freegens = [g for g in gens if g.func not in allfuncs]
         newgens = []
-        trigdict = {}
+        trigdict = defaultdict(list)
         for (coeff, var), fn in trigterms:
-            trigdict.setdefault(var, []).append((coeff, fn))
+            trigdict[var].append((coeff, fn))
         res = []  # the ideal
 
         for key, val in trigdict.items():
@@ -343,8 +343,8 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         return res, freegens, newgens
 
     myI = Dummy('I')
-    expr = expr.subs(S.ImaginaryUnit, myI)
-    subs = [(myI, S.ImaginaryUnit)]
+    expr = expr.subs(I, myI)
+    subs = [(myI, I)]
 
     num, denom = cancel(expr).as_numer_denom()
     try:
@@ -542,7 +542,7 @@ def exptrigsimp(expr, simplify=True):
         newexpr = newexpr.simplify()
 
     # conversion from exp to hyperbolic
-    ex = {a for a in newexpr.atoms(Pow) if a.base is S.Exp1} | newexpr.atoms(S.Exp1)
+    ex = {a for a in newexpr.atoms(Pow) if a.base is E} | newexpr.atoms(E)
     if ex:
         ex0 = {list(ex)[0]}
         ex = [ei for ei in ex if 1/ei not in ex]
@@ -551,12 +551,12 @@ def exptrigsimp(expr, simplify=True):
 
     # sinh and cosh
     for ei in ex:
-        a = ei.exp if ei is not S.Exp1 else S.One
+        a = ei.exp if ei is not E else S.One
         newexpr = newexpr.subs(ei + 1/ei, 2*cosh(a))
         newexpr = newexpr.subs(ei - 1/ei, 2*sinh(a))
         e2 = ei**-2
         if e2 in ex:
-            a = e2.exp/2 if e2 is not S.Exp1 else S.Half
+            a = e2.exp/2 if e2 is not E else S.Half
             newexpr = newexpr.subs((e2 + 1)*ei, 2*cosh(a))
             newexpr = newexpr.subs((e2 - 1)*ei, 2*sinh(a))
 
@@ -565,11 +565,11 @@ def exptrigsimp(expr, simplify=True):
         n, d = ei - 1, ei + 1
         et = n/d
         etinv = d/n  # not 1/et or else recursion errors arise
-        a = ei.exp if ei.is_Pow and ei.base is S.Exp1 else S.One
-        if a.is_Mul or a is S.ImaginaryUnit:
+        a = ei.exp if ei.is_Pow and ei.base is E else S.One
+        if a.is_Mul or a is I:
             c = a.as_coefficient(I)
             if c:
-                t = S.ImaginaryUnit*tan(c/2)
+                t = I*tan(c/2)
                 newexpr = newexpr.subs(etinv, 1/t)
                 newexpr = newexpr.subs(et, t)
                 continue
@@ -1051,7 +1051,7 @@ def __trigsimp(expr, deep=False):
     try:
         if not expr.has(*_trigs):
             raise TypeError
-        e = {a for a in expr.atoms(Pow) if a.base is S.Exp1}
+        e = {a for a in expr.atoms(Pow) if a.base is E}
         new = expr.rewrite(exp, deep=deep)
         if new == e:
             raise TypeError
@@ -1059,7 +1059,7 @@ def __trigsimp(expr, deep=False):
         if fnew != new:
             new = sorted([new, factor(new)], key=count_ops)[0]
         # if all exp that were introduced disappeared then accept it
-        ne = {a for a in new.atoms(Pow) if a.base is S.Exp1}
+        ne = {a for a in new.atoms(Pow) if a.base is E}
         if not (ne - e):
             expr = new
     except TypeError:

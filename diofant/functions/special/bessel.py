@@ -2,13 +2,13 @@ from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, S, Wild,
-                     cacheit, pi, sympify)
+                     cacheit, nan, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs, im, re
 from ..elementary.exponential import exp
-from ..elementary.miscellaneous import root, sqrt
+from ..elementary.miscellaneous import cbrt, root, sqrt
 from ..elementary.trigonometric import cos, cot, csc, sin
 from .gamma_functions import gamma
 from .hyper import hyper
@@ -143,7 +143,7 @@ class besselj(BesselBase):
            Mathematical Tables
     .. [2] Luke, Y. L. (1969), The Special Functions and Their
            Approximations, Volume 1
-    .. [3] http://en.wikipedia.org/wiki/Bessel_function
+    .. [3] https//en.wikipedia.org/wiki/Bessel_function
     .. [4] http://functions.wolfram.com/Bessel-TypeFunctions/BesselJ/
     """
 
@@ -158,10 +158,10 @@ class besselj(BesselBase):
             elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
                 return S.Zero
             elif re(nu).is_negative and not (nu.is_integer is True):
-                return S.ComplexInfinity
+                return zoo
             elif nu.is_imaginary:
-                return S.NaN
-        if z is S.Infinity or (z is S.NegativeInfinity):
+                return nan
+        if z is oo or (z is -oo):
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -249,12 +249,12 @@ class bessely(BesselBase):
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.NegativeInfinity
+                return -oo
             elif re(nu).is_zero is False:
-                return S.ComplexInfinity
+                return zoo
             elif re(nu).is_zero:
-                return S.NaN
-        if z is S.Infinity or z is S.NegativeInfinity:
+                return nan
+        if z is oo or z is -oo:
             return S.Zero
 
         if nu.is_integer:
@@ -327,10 +327,10 @@ class besseli(BesselBase):
             elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
                 return S.Zero
             elif re(nu).is_negative and not (nu.is_integer is True):
-                return S.ComplexInfinity
+                return zoo
             elif nu.is_imaginary:
-                return S.NaN
-        if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+                return nan
+        if im(z) is oo or im(z) is -oo:
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -415,12 +415,12 @@ class besselk(BesselBase):
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.Infinity
+                return oo
             elif re(nu).is_zero is False:
-                return S.ComplexInfinity
+                return zoo
             elif re(nu).is_zero:
-                return S.NaN
-        if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+                return nan
+        if im(z) is oo or im(z) is -oo:
             return S.Zero
 
         if nu.is_integer:
@@ -678,11 +678,8 @@ def jn_zeros(n, k, method="diofant", dps=15):
     This returns an array of zeros of jn up to the k-th zero.
 
     * method = "diofant": uses mpmath's function ``besseljzero``
-    * method = "scipy": uses the
-      `SciPy's sph_jn <http://docs.scipy.org/doc/scipy/reference/generated/scipy.special.jn_zeros.html>`_
-      and
-      `newton <http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.newton.html>`_
-      to find all
+    * method = "scipy": uses :func:`scipy.special.jn_zeros`.
+      and :func:`scipy.optimize.newton` to find all
       roots, which is faster than computing the zeros using a general
       numerical solver, but it requires SciPy and only works with low
       precision floating point numbers.  [The function used with
@@ -853,9 +850,9 @@ class airyai(AiryBase):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Airy_function
+    .. [1] https//en.wikipedia.org/wiki/Airy_function
     .. [2] http://dlmf.nist.gov/9
-    .. [3] http://www.encyclopediaofmath.org/index.php/Airy_functions
+    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
@@ -864,9 +861,9 @@ class airyai(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return S.One / (3**Rational(2, 3) * gamma(Rational(2, 3)))
@@ -1016,9 +1013,9 @@ class airybi(AiryBase):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Airy_function
+    .. [1] https//en.wikipedia.org/wiki/Airy_function
     .. [2] http://dlmf.nist.gov/9
-    .. [3] http://www.encyclopediaofmath.org/index.php/Airy_functions
+    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
@@ -1027,12 +1024,12 @@ class airybi(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
+            if arg is oo:
+                return oo
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
-                return S.One / (3**Rational(1, 6) * gamma(Rational(2, 3)))
+                return 1/(root(3, 6)*gamma(Rational(2, 3)))
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -1102,17 +1099,17 @@ class airybi(AiryBase):
 
 class _airyais(Function):
     def _eval_rewrite_as_intractable(self, x):
-        return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
+        return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...simplify import combsimp
         from ...series import Order
         point = args0[0]
 
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
             l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
-                 Rational(-3, 4)**k/(2*S.Pi**2*factorial(k) *
+                 Rational(-3, 4)**k/(2*pi**2*factorial(k) *
                                      z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
@@ -1131,17 +1128,17 @@ class _airyais(Function):
 
 class _airybis(Function):
     def _eval_rewrite_as_intractable(self, x):
-        return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
+        return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...simplify import combsimp
         from ...series import Order
         point = args0[0]
 
-        if point is S.Infinity:
+        if point is oo:
             z = self.args[0]
             l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
-                 Rational(3, 4)**k/(2*S.Pi**2*factorial(k) *
+                 Rational(3, 4)**k/(2*pi**2*factorial(k) *
                                     z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
@@ -1228,9 +1225,9 @@ class airyaiprime(AiryBase):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Airy_function
+    .. [1] https//en.wikipedia.org/wiki/Airy_function
     .. [2] http://dlmf.nist.gov/9
-    .. [3] http://www.encyclopediaofmath.org/index.php/Airy_functions
+    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
@@ -1239,10 +1236,10 @@ class airyaiprime(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
+            if arg is oo:
                 return S.Zero
             elif arg is S.Zero:
-                return -S.One / (3**Rational(1, 3) * gamma(Rational(1, 3)))
+                return -S.One / (cbrt(3) * gamma(Rational(1, 3)))
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -1378,9 +1375,9 @@ class airybiprime(AiryBase):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Airy_function
+    .. [1] https//en.wikipedia.org/wiki/Airy_function
     .. [2] http://dlmf.nist.gov/9
-    .. [3] http://www.encyclopediaofmath.org/index.php/Airy_functions
+    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
@@ -1389,12 +1386,12 @@ class airybiprime(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
+            if arg is oo:
+                return oo
+            elif arg is -oo:
                 return S.Zero
             elif arg is S.Zero:
-                return 3**Rational(1, 6) / gamma(Rational(1, 3))
+                return root(3, 6)/gamma(Rational(1, 3))
 
     def fdiff(self, argindex=1):
         if argindex == 1:

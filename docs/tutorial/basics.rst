@@ -72,8 +72,8 @@ that remain after an expression is evaluated.  Such numbers can be
 removed by setting the ``chop`` flag.
 
     >>> one = cos(1)**2 + sin(1)**2
-    >>> (one - 1).evalf()
-    -0.e-124
+    >>> (one - 1).evalf(strict=False)
+    -0.e-146
     >>> (one - 1).evalf(chop=True)
     0
 

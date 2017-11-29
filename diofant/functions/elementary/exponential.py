@@ -1,5 +1,5 @@
-from ...core import (Add, Function, Integer, Mul, Pow, S, expand_log, pi,
-                     sympify)
+from ...core import (Add, E, Function, I, Integer, Mul, Pow, S, expand_log,
+                     nan, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import multiplicity, perfect_power
 from .miscellaneous import sqrt
@@ -119,7 +119,7 @@ class exp_polar(Function):
             bad = True
         if bad:
             return self  # cannot evalf for this argument
-        res = exp(self.exp).evalf(prec)
+        res = exp(self.exp).evalf(prec, strict=False)
         if i > 0 and im(res) < 0:
             # i ~ pi, but exp(I*i) evaluated to argument slightly bigger than pi
             return re(res)
@@ -147,7 +147,7 @@ def exp(arg, **kwargs):
 
     diofant.functions.elementary.exponential.log
     """
-    return Pow(S.Exp1, arg, **kwargs)
+    return Pow(E, arg, **kwargs)
 
 
 class log(Function):
@@ -187,9 +187,9 @@ class log(Function):
             base = sympify(base)
             if base == 1:
                 if arg == 1:
-                    return S.NaN
+                    return nan
                 else:
-                    return S.ComplexInfinity
+                    return zoo
             try:
                 # handle extraction of powers of the base now
                 # or else expand_log in Mul would have to handle this
@@ -204,51 +204,51 @@ class log(Function):
                     return log(arg)/log(base)
             except ValueError:
                 pass
-            if base is not S.Exp1:
+            if base is not E:
                 return cls(arg)/cls(base)
             else:
                 return cls(arg)
 
         if arg.is_Number:
             if arg is S.Zero:
-                return S.ComplexInfinity
+                return zoo
             elif arg is S.One:
                 return S.Zero
-            elif arg is S.Infinity:
-                return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.Infinity
+            elif arg is oo:
+                return oo
+            elif arg is -oo:
+                return oo
             elif arg.is_Rational:
                 if arg.q != 1:
                     return cls(arg.p) - cls(arg.q)
 
-        if arg.is_Pow and arg.base is S.Exp1 and arg.exp.is_extended_real:
+        if arg.is_Pow and arg.base is E and arg.exp.is_extended_real:
             return arg.exp
-        elif arg.func is exp_polar:
+        elif isinstance(arg, exp_polar):
             return unpolarify(arg.exp)
 
         if arg.is_number:
             if arg.is_negative:
-                return S.Pi * S.ImaginaryUnit + cls(-arg)
-            elif arg is S.ComplexInfinity:
-                return S.ComplexInfinity
-            elif arg is S.Exp1:
+                return pi * I + cls(-arg)
+            elif arg is zoo:
+                return zoo
+            elif arg is E:
                 return S.One
 
         # don't autoexpand Pow or Mul (see the issue sympy/sympy#3351):
         if not arg.is_Add:
-            coeff = arg.as_coefficient(S.ImaginaryUnit)
+            coeff = arg.as_coefficient(I)
 
             if coeff is not None:
-                if coeff is S.Infinity:
-                    return S.Infinity
-                elif coeff is S.NegativeInfinity:
-                    return S.Infinity
+                if coeff is oo:
+                    return oo
+                elif coeff is -oo:
+                    return oo
                 elif coeff.is_Rational:
                     if coeff.is_nonnegative:
-                        return S.Pi * S.ImaginaryUnit * S.Half + cls(coeff)
+                        return pi * I * S.Half + cls(coeff)
                     else:
-                        return -S.Pi * S.ImaginaryUnit * S.Half + cls(-coeff)
+                        return -pi * I * S.Half + cls(-coeff)
 
     def as_base_exp(self):
         """
@@ -402,9 +402,9 @@ class log(Function):
             log_series += Order(t**n, x)
             # branch handling
             if c.is_negative:
-                l = floor(arg(t.removeO()*c)/(2*S.Pi)).limit(x, 0)
+                l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
                 if l.is_finite:
-                    log_series += 2*S.ImaginaryUnit*S.Pi*l
+                    log_series += 2*I*pi*l
                 else:
                     raise NotImplementedError  # pragma: no cover
         return log_series + log(c) + e*logx
@@ -446,7 +446,7 @@ class LambertW(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Lambert_W_function
+    .. [1] https//en.wikipedia.org/wiki/Lambert_W_function
     """
 
     @classmethod
@@ -459,22 +459,22 @@ class LambertW(Function):
         if k is S.Zero:
             if x is S.Zero:
                 return S.Zero
-            if x is S.Exp1:
+            if x is E:
                 return S.One
-            if x == -1/S.Exp1:
+            if x == -1/E:
                 return S.NegativeOne
             if x == -log(2)/2:
                 return -log(2)
-            if x is S.Infinity:
-                return S.Infinity
+            if x is oo:
+                return oo
 
         if k.is_nonzero:
             if x is S.Zero:
-                return S.NegativeInfinity
+                return -oo
         if k is S.NegativeOne:
-            if x == -S.Pi/2:
-                return -S.ImaginaryUnit*S.Pi/2
-            elif x == -1/S.Exp1:
+            if x == -pi/2:
+                return -I*pi/2
+            elif x == -1/E:
                 return S.NegativeOne
             elif x == -2*exp(-2):
                 return -Integer(2)
@@ -504,14 +504,14 @@ class LambertW(Function):
         else:
             k = self.args[1]
         if k.is_zero:
-            if (x + 1/S.Exp1).is_positive:
+            if (x + 1/E).is_positive:
                 return True
-            elif (x + 1/S.Exp1).is_nonpositive:
+            elif (x + 1/E).is_nonpositive:
                 return False
         elif (k + 1).is_zero:
-            if x.is_negative and (x + 1/S.Exp1).is_nonnegative:
+            if x.is_negative and (x + 1/E).is_nonnegative:
                 return True
-            elif x.is_nonpositive or (x + 1/S.Exp1).is_positive:
+            elif x.is_nonpositive or (x + 1/E).is_positive:
                 return False
 
     def _eval_is_algebraic(self):

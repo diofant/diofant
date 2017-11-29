@@ -4,12 +4,12 @@ from functools import reduce
 
 from mpmath import mp, pslq
 
-from ..core import (Add, AlgebraicNumber, Dummy, GoldenRatio, I, Integer, Mul,
-                    Rational, S, expand_mul, pi, sympify)
+from ..core import (Add, AlgebraicNumber, Dummy, E, GoldenRatio, I, Integer,
+                    Mul, Rational, S, expand_mul, pi, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ
-from ..functions import cos, sin, sqrt
+from ..functions import cos, root, sin, sqrt
 from ..ntheory import divisors, sieve
 from ..printing.lambdarepr import LambdaPrinter
 from ..simplify.radsimp import _split_gcd
@@ -53,7 +53,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
             candidates = []
             eps = t**(prec1 // 2)
             for f in factors:
-                if abs(f.as_expr().evalf(prec1, points)) < eps:
+                if abs(f.as_expr().evalf(prec1, points, strict=False)) < eps:
                     candidates.append(f)
             if candidates:
                 factors = candidates
@@ -160,7 +160,7 @@ def _minimal_polynomial_sq(p, n, x):
     n = sympify(n)
     if not n.is_Integer or not n > 0 or not _is_sum_surds(p):
         return
-    pn = p**Rational(1, n)
+    pn = root(p, n)
     # eliminate the square roots
     p -= x
     while 1:
@@ -219,7 +219,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Resultant
+    .. [1] https//en.wikipedia.org/wiki/Resultant
     .. [2] I.M. Isaacs, Proc. Amer. Math. Soc. 25 (1970), 638
            "Degrees of sums in a separable field extension".
     """
@@ -304,7 +304,7 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
     Examples
     ========
 
-    >>> from diofant import sqrt, QQ, Rational
+    >>> from diofant import cbrt, sqrt, QQ, Rational
     >>> from diofant.abc import x, y
 
     >>> p = sqrt(1 + sqrt(2))
@@ -314,7 +314,7 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
     x**2 - 2*x - 1
     >>> _minpoly_pow(y, Rational(1, 3), x, QQ.frac_field(y))
     x**3 - y
-    >>> minpoly(y**Rational(1, 3), x)
+    >>> minpoly(cbrt(y), x)
     x**3 - y
     """
     pw = sympify(pw)
@@ -533,12 +533,12 @@ def _minpoly_compose(ex, x, dom):
             # bases, and that in ``base**(n/d)`` a perfect power is
             # simplified with the root
             mp2 = ex2.q*x**lcmdens - ex2.p
-            ex2 = ex2**Rational(1, lcmdens)
+            ex2 = root(ex2, lcmdens)
             res = _minpoly_op_algebraic_element(Mul, ex1, ex2, x, dom, mp1=mp1, mp2=mp2)
         else:
             res = _minpoly_mul(x, dom, *ex.args)
     elif ex.is_Pow:
-        if ex.base is S.Exp1:
+        if ex.base is E:
             res = _minpoly_exp(ex, x)
         else:
             res = _minpoly_pow(ex.base, ex.exp, x, dom)
@@ -671,7 +671,7 @@ def minpoly_groebner(ex, x):
 
     def bottom_up_scan(ex):
         if ex.is_Atom:
-            if ex is S.ImaginaryUnit:
+            if ex is I:
                 return update_mapping(ex, 2, 1)
             elif ex.is_Rational:
                 return ex

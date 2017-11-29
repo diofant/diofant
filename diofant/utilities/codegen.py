@@ -698,7 +698,7 @@ class CodeGenArgumentListError(Exception):
 
 header_comment = """Code generated with diofant %(version)s
 
-See http://diofant.rtfd.io/ for more information.
+See https://diofant.readthedocs.io/ for more information.
 
 This file is part of '%(project)s'
 """
@@ -732,7 +732,7 @@ class CCodeGen(CodeGen):
         If the routine has multiple result objects, an CodeGenError is
         raised.
 
-        See: http://en.wikipedia.org/wiki/Function_prototype
+        See: https//en.wikipedia.org/wiki/Function_prototype
 
         """
         if len(routine.results) > 1:
@@ -1000,7 +1000,7 @@ class FCodeGen(CodeGen):
         If the routine has multiple result objects, a CodeGenError is
         raised.
 
-        See: http://en.wikipedia.org/wiki/Function_prototype
+        See: https//en.wikipedia.org/wiki/Function_prototype
 
         """
         prototype = [ "interface\n" ]

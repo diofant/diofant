@@ -12,7 +12,7 @@ Developer's Guide
     you are willing to contribute - it's assumed you know the Python
     programming language and the Git Version Control System.
 
-.. include:: ../CONTRIBUTING.rst
+.. include:: CONTRIBUTING.rst
 
 Rosetta Stone
 =============

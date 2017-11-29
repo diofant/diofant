@@ -14,7 +14,6 @@ def test_symbol():
 
     e = x
     assert e.match(x) == {}
-    assert e.matches(x) == {}
     assert e.match(a) == {a: x}
 
     e = Rational(5)
@@ -138,34 +137,37 @@ def test_mul():
 def test_mul_noncommutative():
     A, B = symbols('A B', commutative=False)
     u, v = symbols('u v', cls=Wild)
-    w = Wild('w', commutative=False)
+    w, z = symbols('u v', cls=Wild, commutative=False)
 
-    assert (u*v).matches(x) in ({v: x, u: 1}, {u: x, v: 1})
-    assert (u*v).matches(x*y) in ({v: y, u: x}, {u: y, v: x})
-    assert (u*v).matches(A) is None
-    assert (u*v).matches(A*B) is None
-    assert (u*v).matches(x*A) is None
-    assert (u*v).matches(x*y*A) is None
-    assert (u*v).matches(x*A*B) is None
-    assert (u*v).matches(x*y*A*B) is None
+    assert x.match(u*v) in ({v: x, u: 1}, {u: x, v: 1})
+    assert (x*y).match(u*v) in ({v: y, u: x}, {u: y, v: x})
+    assert A.match(u*v) is None
+    assert (A*B).match(u*v) is None
+    assert (x*A).match(u*v) is None
+    assert (x*y*A).match(u*v) is None
+    assert (x*A*B).match(u*v) is None
+    assert (x*y*A*B).match(u*v) is None
 
-    assert (v*w).matches(x) is None
-    assert (v*w).matches(x*y) is None
-    assert (v*w).matches(A) == {w: A, v: 1}
-    assert (v*w).matches(A*B) == {w: A*B, v: 1}
-    assert (v*w).matches(x*A) == {w: A, v: x}
-    assert (v*w).matches(x*y*A) == {w: A, v: x*y}
-    assert (v*w).matches(x*A*B) == {w: A*B, v: x}
-    assert (v*w).matches(x*y*A*B) == {w: A*B, v: x*y}
+    assert x.match(v*w) is None
+    assert (x*y).match(v*w) is None
+    assert A.match(v*w) == {w: A, v: 1}
+    assert (A*B).match(v*w) == {w: A*B, v: 1}
+    assert (x*A).match(v*w) == {w: A, v: x}
+    assert (x*y*A).match(v*w) == {w: A, v: x*y}
+    assert (x*A*B).match(v*w) == {w: A*B, v: x}
+    assert (x*y*A*B).match(v*w) == {w: A*B, v: x*y}
 
-    assert (v*w).matches(-x) is None
-    assert (v*w).matches(-x*y) is None
-    assert (v*w).matches(-A) == {w: A, v: -1}
-    assert (v*w).matches(-A*B) == {w: A*B, v: -1}
-    assert (v*w).matches(-x*A) == {w: A, v: -x}
-    assert (v*w).matches(-x*y*A) == {w: A, v: -x*y}
-    assert (v*w).matches(-x*A*B) == {w: A*B, v: -x}
-    assert (v*w).matches(-x*y*A*B) == {w: A*B, v: -x*y}
+    assert (-x).match(v*w) is None
+    assert (-x*y).match(v*w) is None
+    assert (-A).match(v*w) == {w: A, v: -1}
+    assert (-A*B).match(v*w) == {w: A*B, v: -1}
+    assert (-x*A).match(v*w) == {w: A, v: -x}
+    assert (-x*y*A).match(v*w) == {w: A, v: -x*y}
+    assert (-x*A*B).match(v*w) == {w: A*B, v: -x}
+    assert (-x*y*A*B).match(v*w) == {w: A*B, v: -x*y}
+
+    assert (x*y*A).match(u*v*w) == {u: x, v: y, w: A}
+    assert (x*A).match(w*z) is None
 
 
 def test_complex():
@@ -235,7 +237,7 @@ def test_derivative_bug1():
     pattern = a * Derivative(f(x), x, x) + b
     expr = Derivative(f(x), x) + x**2
     d1 = {b: x**2}
-    d2 = pattern.xreplace(d1).matches(expr, d1)
+    d2 = expr.match(pattern.xreplace(d1))
     assert d2 is None
 
 

@@ -806,7 +806,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.col_swap
         """
-        for k in range(0, self.cols):
+        for k in range(self.cols):
             self[i, k], self[j, k] = self[j, k], self[i, k]
 
     def col_swap(self, i, j):
@@ -833,7 +833,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         diofant.matrices.dense.DenseMatrix.col
         diofant.matrices.dense.MutableDenseMatrix.row_swap
         """
-        for k in range(0, self.rows):
+        for k in range(self.rows):
             self[k, i], self[k, j] = self[k, j], self[k, i]
 
     def row_del(self, i):
@@ -1342,7 +1342,7 @@ def diag(*values, **kwargs):
     if kwargs:
         raise ValueError('unrecognized keyword%s: %s' % (
             's' if len(kwargs) > 1 else '',
-            ', '.join(kwargs.keys())))
+            ', '.join(kwargs)))
     rows = 0
     cols = 0
     values = list(values)
@@ -1445,7 +1445,7 @@ def hessian(f, varlist, constraints=[]):
     References
     ==========
 
-    http://en.wikipedia.org/wiki/Hessian_matrix
+    https//en.wikipedia.org/wiki/Hessian_matrix
 
     See Also
     ========
@@ -1491,7 +1491,7 @@ def GramSchmidt(vlist, orthonormal=False):
     """
     Apply the Gram-Schmidt process to a set of vectors.
 
-    see: http://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process
+    see: https//en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process
     """
     out = []
     m = len(vlist)
@@ -1523,7 +1523,7 @@ def wronskian(functions, var, method='bareis'):
                          |  (n)      (n)            (n)     |
                          | D   (f1) D   (f2)  ...  D   (fn) |
 
-    see: http://en.wikipedia.org/wiki/Wronskian
+    see: https//en.wikipedia.org/wiki/Wronskian
 
     See Also
     ========
@@ -1533,7 +1533,7 @@ def wronskian(functions, var, method='bareis'):
     """
     from . import Matrix
 
-    for index in range(0, len(functions)):
+    for index in range(len(functions)):
         functions[index] = sympify(functions[index])
     n = len(functions)
     if n == 0:

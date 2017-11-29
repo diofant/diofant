@@ -161,7 +161,7 @@ class AssocOp(Expr):
         if d is not None:
             return d
 
-        # eliminate exact part from pattern: (2+a+w1+w2).matches(expr) -> (w1+w2).matches(expr-a-2)
+        # eliminate exact part from pattern: (2+a+w1+w2)._matches(expr) -> (w1+w2)._matches(expr-a-2)
         from .function import WildFunction
         from .symbol import Wild
         wild_part = []
@@ -169,7 +169,7 @@ class AssocOp(Expr):
         for p in ordered(self.args):
             if p.has(Wild, WildFunction) and (not expr.has(p)):
                 # not all Wild should stay Wilds, for example:
-                # (w2+w3).matches(w1) -> (w1+w3).matches(w1) -> w3.matches(0)
+                # (w2+w3)._matches(w1) -> (w1+w3)._matches(w1) -> w3._matches(0)
                 wild_part.append(p)
             else:
                 exact_part.append(p)
@@ -187,7 +187,7 @@ class AssocOp(Expr):
             if all(isinstance(e, AssocOp) for e in [expr, newexpr]):
                 if newexpr.count_ops() > expr.count_ops():
                     return
-            return newpattern.matches(newexpr, repl_dict)
+            return newpattern._matches(newexpr, repl_dict)
 
         # now to real work ;)
         i = 0
@@ -197,9 +197,9 @@ class AssocOp(Expr):
             expr_list = (self.identity,) + tuple(ordered(self.make_args(expr)))
             for last_op in reversed(expr_list):
                 for w in reversed(wild_part):
-                    d1 = w.matches(last_op, repl_dict)
+                    d1 = w._matches(last_op, repl_dict)
                     if d1 is not None:
-                        d2 = self.xreplace(d1).matches(expr, d1)
+                        d2 = self.xreplace(d1)._matches(expr, d1)
                         if d2 is not None:
                             return d2
 
@@ -322,7 +322,7 @@ class AssocOp(Expr):
         # deal with
         args = []
         for a in self.args:
-            newa = a.evalf(prec)
+            newa = a.evalf(prec, strict=False)
             args.append(newa)
         if not _aresame(tuple(args), self.args):
             return self.func(*args)
@@ -383,7 +383,7 @@ class LatticeOp(AssocOp):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Lattice_%28order%29
+    .. [1] https//en.wikipedia.org/wiki/Lattice_%28order%29
     """
 
     is_commutative = True

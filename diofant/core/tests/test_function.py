@@ -5,7 +5,7 @@ import pytest
 
 from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
                      Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
-                     Symbol, Tuple, acos, cos, diff, exp, expand, expint,
+                     Symbol, Tuple, acos, cbrt, cos, diff, exp, expand, expint,
                      floor, im, log, loggamma, nfloat, pi, polygamma, re, sin,
                      sqrt, symbols)
 from diofant.abc import a, b, t, w, x, y, z
@@ -255,8 +255,8 @@ def test_Subs():
     assert Subs(z*f(x + 1), x, 1) not in [ e1, e2 ]
     assert Derivative(
         f(x), x).subs(x, g(x)) == Subs(Derivative(f(x), x), (x,), (g(x),))
-    assert Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).n(2) == \
-        Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).evalf(2) == \
+    assert Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).n(2, strict=False) == \
+        Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).evalf(2, strict=False) == \
         z + Rational('1/2').n(2)*f(0)
 
     assert f(x).diff(x).subs(x, 0).subs(x, y) == f(x).diff(x).subs(x, 0)
@@ -341,7 +341,7 @@ def test_func_deriv():
 def test_suppressed_evaluation():
     a = sin(0, evaluate=False)
     assert a != 0
-    assert a.func is sin
+    assert isinstance(a, sin)
     assert a.args == (0,)
 
 
@@ -355,7 +355,7 @@ def test_function_evalf():
         15), Float("1.29845758141598") + Float("0.634963914784736")*I, 1e-13)
     assert eq(exp(1 + I).evalf(15), Float(
         "1.46869393991588") + Float("2.28735528717884239")*I, 1e-13)
-    assert eq(exp(-0.5 + 1.5*I).evalf(15), Float(
+    assert eq(exp(-0.5 + 1.5*I).evalf(15, strict=False), Float(
         "0.0429042815937374") + Float("0.605011292285002")*I, 1e-13)
     assert eq(log(pi + sqrt(2)*I).evalf(
         15), Float("1.23699044022052") + Float("0.422985442737893")*I, 1e-13)
@@ -632,8 +632,8 @@ def test_unhandled():
 
 def test_nfloat():
     x = Symbol("x")
-    eq = x**Rational(4, 3) + 4*x**Rational(1, 3)/3
-    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**Rational(1, 3))
+    eq = x**Rational(4, 3) + 4*cbrt(x)/3
+    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*cbrt(x))
     assert _aresame(nfloat(eq, exponent=True), x**(4.0/3) + (4.0/3)*x**(1.0/3))
     eq = x**Rational(4, 3) + 4*x**(x/3)/3
     assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**(x/3))
@@ -695,12 +695,12 @@ def test_sympyissue_7231():
 def test_sympyissue_7687():
     f = Function('f')(x)
     ff = Function('f')(x)
-    match_with_cache = ff.matches(f)
+    match_with_cache = f.match(ff)
     assert isinstance(f, type(ff))
     clear_cache()
     ff = Function('f')(x)
     assert isinstance(f, type(ff))
-    assert match_with_cache == ff.matches(f)
+    assert match_with_cache == f.match(ff)
 
 
 def test_sympyissue_7688():

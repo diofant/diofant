@@ -24,6 +24,8 @@ def test_discreteuniform():
     # Symbolic
     a, b, c = symbols('a b c')
     X = DiscreteUniform('X', [a, b, c])
+    assert X.pspace.distribution.pdf(a) == Rational(1, 3)
+    assert X.pspace.distribution.pdf(p) == 0
 
     assert E(X) == (a + b + c)/3
     assert simplify(variance(X)
@@ -223,7 +225,7 @@ def test_binomial_symbolic():
 
 def test_hypergeometric_numeric():
     for N in range(1, 5):
-        for m in range(0, N + 1):
+        for m in range(N + 1):
             for n in range(1, N + 1):
                 X = Hypergeometric('X', N, m, n)
                 N, m, n = map(sympify, (N, m, n))

@@ -57,14 +57,17 @@ def test_hyper():
     assert hyper([polar_lift(z)], [polar_lift(k)], polar_lift(x)) == \
         hyper([z], [k], polar_lift(x))
 
+    assert hyper((1, 2, 3), [3, 4], 1).is_number
+    assert not hyper((1, 2, 3), [3, x], 1).is_number
+
 
 def test_expand_func():
     # evaluation at 1 of Gauss' hypergeometric function:
     a1, b1, c1 = randcplx(), randcplx(), randcplx() + 5
     assert expand_func(hyper([a, b], [c], 1)) == \
         gamma(c)*gamma(-a - b + c)/(gamma(-a + c)*gamma(-b + c))
-    assert abs(expand_func(hyper([a1, b1], [c1], 1)).n()
-               - hyper([a1, b1], [c1], 1).n()) < 1e-10
+    assert abs(expand_func(hyper([a1, b1], [c1], 1))
+               - hyper([a1, b1], [c1], 1)).n(strict=False) < 1e-10
 
     # hyperexpand wrapper for hyper:
     assert expand_func(hyper([], [], z)) == exp(z)
@@ -178,6 +181,9 @@ def test_meijer():
     assert meijerg([a], [b], [c], [d], z).integrand(s) == \
         z**s*gamma(c - s)*gamma(-a + s + 1)/(gamma(b - s)*gamma(-d + s + 1))
 
+    assert meijerg([[], []], [[Rational(1, 2)], [0]], 1).is_number
+    assert not meijerg([[], []], [[x], [0]], 1).is_number
+
 
 def test_meijerg_derivative():
     assert meijerg([], [1, 1], [0, 0, x], [], z).diff(x) == \
@@ -195,8 +201,10 @@ def test_meijerg_derivative():
     assert td(meijerg([x], [a + 1], [a], [], y), x)
     assert td(meijerg([x, a], [], [], [a + 1], y), x)
     assert td(meijerg([x, a + 1], [], [], [a], y), x)
+
     b = Rational(3, 2)
     assert td(meijerg([a + 2], [b], [b - 3, x], [a], y), x)
+    assert td(meijerg([x], [2, b], [1, b + 1], [], y), x)
 
 
 def test_meijerg_period():
@@ -219,7 +227,6 @@ def test_hyper_unpolarify():
     assert hyper([0, 1], [0], a).argument == a
 
 
-@pytest.mark.slow
 def test_hyperrep():
     # First test the base class works.
     a, b, c, d, z = symbols('a b c d z')
@@ -269,7 +276,7 @@ def test_hyperrep():
             return False
         # Next check continuity along exp_polar(I*pi)*t
         expr = func.subs(z, exp_polar(I*pi)*z).rewrite('nonrep')
-        if abs(expr.subs(z, 1 + 1e-15).n() - expr.subs(z, 1 - 1e-15).n()) > 1e-10:
+        if abs(expr.subs(z, 1 + 1e-15) - expr.subs(z, 1 - 1e-15)).n(strict=False) > 1e-10:
             return False
         # Finally check continuity of the big reps.
 
@@ -312,8 +319,8 @@ def test_meijerg_eval():
     # Test that the two expressions agree for all arguments.
     for x_ in [0.5, 1.5]:
         for k_ in [0.0, 0.1, 0.3, 0.5, 0.8, 1, 5.751, 15.3]:
-            assert abs((expr1 - expr2).n(subs={x: x_, k: k_})) < 1e-10
-            assert abs((expr1 - expr2).n(subs={x: x_, k: -k_})) < 1e-10
+            assert abs((expr1 - expr2).n(subs={x: x_, k: k_}, strict=False)) < 1e-10
+            assert abs((expr1 - expr2).n(subs={x: x_, k: -k_}, strict=False)) < 1e-10
 
     # Test continuity independently
     eps = 1e-13
@@ -342,5 +349,8 @@ def test_limits():
         meijerg(((), ()), ((1,), (0,)), 0)  # issue sympy/sympy#6052
 
 
-def test_hyper_evalf():
-    assert hyper((-1, 1), (-1,), 1).n() == Float('2.0')
+def test_evalf():
+    assert hyper((-1, 1), (-1,), 1).evalf() == Float('2.0')
+
+    e = meijerg([], [], [], [], (exp_polar(-I*pi))*cos(exp_polar(-I*pi)))
+    assert e.evalf() == e

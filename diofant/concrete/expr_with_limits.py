@@ -1,4 +1,4 @@
-from ..core import Add, Dummy, Equality, Expr, Mul, S, Symbol, Tuple, sympify
+from ..core import Add, Dummy, Equality, Expr, Mul, Symbol, Tuple, nan, sympify
 from ..core.compatibility import is_sequence
 from ..functions import piecewise_fold
 from ..sets.sets import Interval
@@ -55,15 +55,15 @@ class ExprWithLimits(Expr):
         # top level so that integration can go into piecewise mode at the
         # earliest possible moment.
         function = sympify(function)
-        if hasattr(function, 'func') and function.func is Equality:
+        if hasattr(function, 'func') and isinstance(function, Equality):
             lhs = function.lhs
             rhs = function.rhs
             return Equality(cls(lhs, *symbols, **assumptions),
                             cls(rhs, *symbols, **assumptions))
         function = piecewise_fold(function)
 
-        if function is S.NaN:
-            return S.NaN
+        if function is nan:
+            return nan
 
         if symbols:
             limits, orientation = _process_limits(*symbols)
@@ -336,15 +336,15 @@ class AddWithLimits(ExprWithLimits):
         # This constructor only differs from ExprWithLimits
         # in the application of the orientation variable.  Perhaps merge?
         function = sympify(function)
-        if hasattr(function, 'func') and function.func is Equality:
+        if hasattr(function, 'func') and isinstance(function, Equality):
             lhs = function.lhs
             rhs = function.rhs
             return Equality(cls(lhs, *symbols, **assumptions),
                             cls(rhs, *symbols, **assumptions))
         function = piecewise_fold(function)
 
-        if function is S.NaN:
-            return S.NaN
+        if function is nan:
+            return nan
 
         if symbols:
             limits, orientation = _process_limits(*symbols)

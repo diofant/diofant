@@ -200,8 +200,8 @@ def opt_cse(exprs, order='canonical'):
                                      evaluate=False)
 
     for e in exprs:
-        if isinstance(e, Basic):
-            _find_opts(e)
+        assert isinstance(e, Basic)
+        _find_opts(e)
 
     # Process Adds and commutative Muls
 
@@ -256,7 +256,7 @@ def opt_cse(exprs, order='canonical'):
     return opt_subs
 
 
-def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
+def tree_cse(exprs, symbols, opt_subs={}, order='canonical'):
     """Perform raw CSE on expression tree, taking opt_subs into account.
 
     Parameters
@@ -273,9 +273,6 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
         The order by which Mul and Add arguments are processed. For large
         expressions where speed is a concern, use the setting order='none'.
     """
-    if opt_subs is None:
-        opt_subs = {}
-
     # Find repeated sub-expressions
 
     to_eliminate = set()
@@ -304,8 +301,8 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
         list(map(_find_repeated, args))
 
     for e in exprs:
-        if isinstance(e, Basic):
-            _find_repeated(e)
+        assert isinstance(e, Basic)
+        _find_repeated(e)
 
     # Rebuild tree
 
@@ -353,6 +350,8 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
                 sym = next(symbols)
             except StopIteration:
                 raise ValueError("Symbols iterator ran out of symbols.")
+            if not orig_expr.is_commutative and not orig_expr.is_Relational:
+                sym = Symbol(sym.name, commutative=False)
             subs[orig_expr] = sym
             replacements.append((sym, new_expr))
             return sym
@@ -362,10 +361,8 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
 
     reduced_exprs = []
     for e in exprs:
-        if isinstance(e, Basic):
-            reduced_e = _rebuild(e)
-        else:
-            reduced_e = e
+        assert isinstance(e, Basic)
+        reduced_e = _rebuild(e)
         reduced_exprs.append(reduced_e)
 
     return replacements, reduced_exprs

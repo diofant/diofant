@@ -201,7 +201,7 @@ def test_simple_products():
 
     assert product(1, (n, 1, oo)) == 1  # issue sympy/sympy#8301
     assert product(2, (n, 1, oo)) == oo
-    assert product(-1, (n, 1, oo)).func is Product
+    assert isinstance(product(-1, (n, 1, oo)), Product)
 
     assert product(Kd(n, m), (m, 1, 3)) == 0
     assert product(Kd(n, m), (m, 1, 1)) == Kd(n, 1)

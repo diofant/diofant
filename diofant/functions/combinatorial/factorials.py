@@ -1,7 +1,7 @@
 from functools import reduce
 from math import sqrt as _sqrt
 
-from ...core import Dummy, Function, Integer, S, cacheit, sympify
+from ...core import Dummy, E, Function, Integer, S, cacheit, oo, sympify, zoo
 from ...core.function import ArgumentIndexError
 from ...ntheory import sieve
 
@@ -136,11 +136,11 @@ class factorial(CombinatorialFunction):
         if n.is_Number:
             if n is S.Zero:
                 return S.One
-            elif n is S.Infinity:
-                return S.Infinity
+            elif n is oo:
+                return oo
             elif n.is_Integer:
                 if n.is_negative:
-                    return S.ComplexInfinity
+                    return zoo
                 else:
                     n, result = n.p, 1
 
@@ -224,7 +224,7 @@ class subfactorial(CombinatorialFunction):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Subfactorial
+    .. [1] https//en.wikipedia.org/wiki/Subfactorial
     .. [2] http://mathworld.wolfram.com/Subfactorial.html
 
     Examples
@@ -259,8 +259,8 @@ class subfactorial(CombinatorialFunction):
         if arg.is_Number:
             if arg.is_Integer and arg.is_nonnegative:
                 return cls._eval(arg)
-            elif arg is S.Infinity:
-                return S.Infinity
+            elif arg is oo:
+                return oo
 
     def _eval_is_even(self):
         n = self.args[0]
@@ -274,7 +274,7 @@ class subfactorial(CombinatorialFunction):
 
     def _eval_rewrite_as_uppergamma(self, n):
         from .. import uppergamma
-        return uppergamma(n + 1, -1)/S.Exp1
+        return uppergamma(n + 1, -1)/E
 
     def _eval_is_nonnegative(self):
         n = self.args[0]
@@ -428,20 +428,20 @@ class RisingFactorial(CombinatorialFunction):
                 return S.One
             else:
                 if k.is_positive:
-                    if x is S.Infinity:
-                        return S.Infinity
-                    elif x is S.NegativeInfinity:
+                    if x is oo:
+                        return oo
+                    elif x is -oo:
                         if k.is_odd:
-                            return S.NegativeInfinity
+                            return -oo
                         else:
-                            return S.Infinity
+                            return oo
                     else:
-                        return reduce(lambda r, i: r*(x + i), range(0, int(k)), 1)
+                        return reduce(lambda r, i: r*(x + i), range(int(k)), 1)
                 else:
-                    if x is S.Infinity:
-                        return S.Infinity
-                    elif x is S.NegativeInfinity:
-                        return S.Infinity
+                    if x is oo:
+                        return oo
+                    elif x is -oo:
+                        return oo
                     else:
                         return 1/reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
 
@@ -502,20 +502,20 @@ class FallingFactorial(CombinatorialFunction):
                 return S.One
             else:
                 if k.is_positive:
-                    if x is S.Infinity:
-                        return S.Infinity
-                    elif x is S.NegativeInfinity:
+                    if x is oo:
+                        return oo
+                    elif x is -oo:
                         if k.is_odd:
-                            return S.NegativeInfinity
+                            return -oo
                         else:
-                            return S.Infinity
+                            return oo
                     else:
-                        return reduce(lambda r, i: r*(x - i), range(0, int(k)), 1)
+                        return reduce(lambda r, i: r*(x - i), range(int(k)), 1)
                 else:
-                    if x is S.Infinity:
-                        return S.Infinity
-                    elif x is S.NegativeInfinity:
-                        return S.Infinity
+                    if x is oo:
+                        return oo
+                    elif x is -oo:
+                        return oo
                     else:
                         return 1/reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
 
@@ -693,7 +693,7 @@ class binomial(CombinatorialFunction):
             k = n - k
 
         if k.is_Integer:
-            if k == S.Zero:
+            if k == 0:
                 return S.One
             elif k > 0:
                 n = self.args[0]

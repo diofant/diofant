@@ -269,6 +269,8 @@ def test__parallel_dict_from_expr_if_gens():
     assert parallel_dict_from_expr((Mul(x, x**2, evaluate=False),), gens=(x,)) == \
         ([{(3,): 1}], (x,))
 
+    pytest.raises(PolynomialError, lambda: parallel_dict_from_expr((A*x,), gens=(x,)))
+
 
 def test__parallel_dict_from_expr_no_gens():
     assert parallel_dict_from_expr([x*y, Integer(3)]) == \

@@ -4,7 +4,7 @@ from functools import reduce
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
-from .numbers import igcd, ilcm
+from .numbers import I, igcd, ilcm, nan, oo, zoo
 from .operations import AssocOp
 from .singleton import S
 
@@ -70,15 +70,15 @@ class Add(AssocOp):
 
             # 3 or NaN
             elif o.is_Number:
-                if (o is S.NaN or coeff is S.ComplexInfinity and
+                if (o is nan or coeff is zoo and
                         o.is_finite is False):
                     # we know for sure the result will be nan
-                    return [S.NaN], [], None
+                    return [nan], [], None
                 if coeff.is_Number:
                     coeff += o
-                    if coeff is S.NaN:
+                    if coeff is nan:
                         # we know for sure the result will be nan
-                        return [S.NaN], [], None
+                        return [nan], [], None
                 elif coeff.is_AlgebraicNumber:
                     coeff += o
                 o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
@@ -88,11 +88,11 @@ class Add(AssocOp):
                 coeff += o
                 continue
 
-            elif o is S.ComplexInfinity:
+            elif o is zoo:
                 if coeff.is_finite is False:
                     # we know for sure the result will be nan
-                    return [S.NaN], [], None
-                coeff = S.ComplexInfinity
+                    return [nan], [], None
+                coeff = zoo
                 continue
 
             # Add([...])
@@ -131,9 +131,9 @@ class Add(AssocOp):
             # 2*x**2 + 3*x**2  ->  5*x**2
             if s in terms:
                 terms[s] += c
-                if terms[s] is S.NaN:
+                if terms[s] is nan:
                     # we know for sure the result will be nan
-                    return [S.NaN], [], None
+                    return [nan], [], None
             else:
                 terms[s] = c
 
@@ -165,15 +165,15 @@ class Add(AssocOp):
             noncommutative = noncommutative or not s.is_commutative
 
         # oo, -oo
-        if coeff is S.Infinity:
+        if coeff is oo:
             newseq = [f for f in newseq if not
                       (f.is_nonnegative or f.is_extended_real and f.is_finite)]
 
-        elif coeff is S.NegativeInfinity:
+        elif coeff is -oo:
             newseq = [f for f in newseq if not
                       (f.is_nonpositive or f.is_extended_real and f.is_finite)]
 
-        if coeff is S.ComplexInfinity:
+        if coeff is zoo:
             # zoo might be
             #   infinite_real + finite_im
             #   finite_real + infinite_im
@@ -309,13 +309,13 @@ class Add(AssocOp):
         return self.func(*terms)
 
     def _matches_simple(self, expr, repl_dict):
-        # handle (w+3).matches('x+5') -> {w: x+2}
+        # handle (w+3)._matches('x+5') -> {w: x+2}
         coeff, terms = self.as_coeff_add()
         if len(terms) == 1:
-            return terms[0].matches(expr - coeff, repl_dict)
+            return terms[0]._matches(expr - coeff, repl_dict)
         return
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match().
 
         See Also
@@ -442,7 +442,7 @@ class Add(AssocOp):
         rv = _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
         if rv is False:
             return rv
-        iargs = [a*S.ImaginaryUnit for a in self.args]
+        iargs = [a*I for a in self.args]
         return _fuzzy_group((a.is_real for a in iargs), quick_exit=True)
 
     def _eval_is_odd(self):
@@ -716,7 +716,7 @@ class Add(AssocOp):
             if not c.is_Rational:
                 c = S.One
                 m = a
-            inf = inf or m is S.ComplexInfinity
+            inf = inf or m is zoo
             terms.append((c.p, c.q, m))
 
         if not inf:
@@ -738,7 +738,7 @@ class Add(AssocOp):
         #
         # We do need to make sure that term[0] stays in position 0, however.
         #
-        if terms[0].is_Number or terms[0] is S.ComplexInfinity:
+        if terms[0].is_Number or terms[0] is zoo:
             c = terms.pop(0)
         else:
             c = None
@@ -771,7 +771,7 @@ class Add(AssocOp):
         diofant.core.expr.Expr.as_content_primitive
         """
         from .mul import Mul, _keep_coeff, prod
-        from .numbers import Rational
+        from ..functions import root
 
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()
@@ -790,9 +790,9 @@ class Add(AssocOp):
                 if not term_rads:
                     break
                 if common_q is None:
-                    common_q = set(term_rads.keys())
+                    common_q = set(term_rads)
                 else:
-                    common_q = common_q & set(term_rads.keys())
+                    common_q = common_q & set(term_rads)
                     if not common_q:
                         break
                 rads.append(term_rads)
@@ -800,7 +800,7 @@ class Add(AssocOp):
                 # process rads
                 # keep only those in common_q
                 for r in rads:
-                    for q in list(r.keys()):
+                    for q in list(r):
                         if q not in common_q:
                             r.pop(q)
                     for q in r:
@@ -810,7 +810,7 @@ class Add(AssocOp):
                 for q in common_q:
                     g = reduce(igcd, [r[q] for r in rads], 0)
                     if g != 1:
-                        G.append(g**Rational(1, q))
+                        G.append(root(g, q))
                 if G:
                     G = Mul(*G)
                     args = [ai/G for ai in args]

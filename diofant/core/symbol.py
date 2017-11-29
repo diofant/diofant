@@ -95,7 +95,7 @@ class BaseSymbol(AtomicExpr, Boolean):
                 '%scommutativity must be True or False.' % whose)
 
         # sanitize other assumptions so 1 -> True and 0 -> False
-        for key in list(assumptions.keys()):
+        for key in list(assumptions):
             v = assumptions[key]
             if v is None:
                 assumptions.pop(key)
@@ -382,7 +382,7 @@ class Wild(BaseSymbol):
         return super(Wild, self)._hashable_content() + (self.exclude, self.properties)
 
     # TODO add check against another Wild
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match().
 
         See Also

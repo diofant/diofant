@@ -162,7 +162,7 @@ class Printer:
 
         numpy = import_module("numpy")
         if numpy is not None:  # pragma: no cover
-            formatter = {'numpystr': str}
+            formatter = {'object': str}
             numpy.set_printoptions(formatter=formatter)
 
     @classmethod

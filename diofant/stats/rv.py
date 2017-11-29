@@ -14,7 +14,7 @@ diofant.stats.rv_interface
 
 from ..abc import x
 from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, S, Symbol, Tuple,
-                    sympify)
+                    oo, sympify)
 from ..core.relational import Relational
 from ..functions import DiracDelta
 from ..logic import And
@@ -51,10 +51,10 @@ class RandomDomain(Expr):
         return self.args[1]
 
     def __contains__(self, other):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def integrate(self, expr):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
 
 class SingleDomain(RandomDomain):
@@ -116,7 +116,7 @@ class ConditionalDomain(RandomDomain):
         return self.args[1]
 
     @property
-    def set(self):
+    def set(self):  # pragma: no cover
         raise NotImplementedError("Set of Conditional Domain not Implemented")
 
     def as_boolean(self):
@@ -157,19 +157,19 @@ class PSpace(Expr):
         return self.domain.symbols
 
     def where(self, condition):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def compute_density(self, expr):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def sample(self):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def probability(self, condition):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
     def integrate(self, expr):
-        raise NotImplementedError()
+        raise NotImplementedError  # pragma: no cover
 
 
 class SinglePSpace(PSpace):
@@ -279,7 +279,7 @@ class ProductPSpace(PSpace):
             for value in space.values:
                 rs_space_dict[value] = space
 
-        symbols = FiniteSet(*[val.symbol for val in rs_space_dict.keys()])
+        symbols = FiniteSet(*[val.symbol for val in rs_space_dict])
 
         # Overlapping symbols
         if len(symbols) < sum(len(space.symbols) for space in spaces):
@@ -306,7 +306,7 @@ class ProductPSpace(PSpace):
 
     @property
     def symbols(self):
-        return FiniteSet(*[val.symbol for val in self.rs_space_dict.keys()])
+        return FiniteSet(*[val.symbol for val in self.rs_space_dict])
 
     @property
     def spaces(self):
@@ -328,7 +328,7 @@ class ProductPSpace(PSpace):
         return ProductDomain(*[space.domain for space in self.spaces])
 
     @property
-    def density(self):
+    def density(self):  # pragma: no cover
         raise NotImplementedError("Density not available for ProductSpaces")
 
     def sample(self):
@@ -810,7 +810,7 @@ def sample(expr, condition=None, **kwargs):
     return next(sample_iter(expr, condition, numsamples=1))
 
 
-def sample_iter(expr, condition=None, numsamples=S.Infinity, **kwargs):
+def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     """
     Returns an iterator of realizations from the expression given a condition
 
@@ -845,7 +845,7 @@ def sample_iter(expr, condition=None, numsamples=S.Infinity, **kwargs):
         return sample_iter_subs(expr, condition, numsamples, **kwargs)
 
 
-def sample_iter_lambdify(expr, condition=None, numsamples=S.Infinity, **kwargs):
+def sample_iter_lambdify(expr, condition=None, numsamples=oo, **kwargs):
     """
     See sample_iter
 
@@ -891,7 +891,7 @@ def sample_iter_lambdify(expr, condition=None, numsamples=S.Infinity, **kwargs):
     return return_generator()
 
 
-def sample_iter_subs(expr, condition=None, numsamples=S.Infinity, **kwargs):
+def sample_iter_subs(expr, condition=None, numsamples=oo, **kwargs):
     """
     See sample_iter
 
@@ -968,7 +968,7 @@ def sampling_E(expr, given_condition=None, numsamples=1,
 
     result = Add(*list(samples)) / numsamples
     if evalf:
-        return result.evalf()
+        return result.evalf(strict=False)
     else:
         return result
 

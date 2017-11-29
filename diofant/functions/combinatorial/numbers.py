@@ -10,8 +10,8 @@ the separate 'factorials' module.
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
-from ...core import (Add, Dummy, E, Expr, Function, Integer, Rational, S,
-                     cacheit, expand_mul, pi, prod)
+from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
+                     Rational, S, cacheit, expand_mul, nan, oo, pi, prod)
 from ...core.compatibility import DIOFANT_INTS, as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
@@ -69,7 +69,7 @@ class fibonacci(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Fibonacci_number
+    .. [1] https//en.wikipedia.org/wiki/Fibonacci_number
     .. [2] http://mathworld.wolfram.com/FibonacciNumber.html
 
     See Also
@@ -110,7 +110,7 @@ class fibonacci(Function):
     def _eval_rewrite_as_sqrt(self, n, sym=None):
         from .. import sqrt
         if sym is None:
-            return (S.GoldenRatio**n - cos(S.Pi*n)/S.GoldenRatio**n)/sqrt(5)
+            return (GoldenRatio**n - cos(pi*n)/GoldenRatio**n)/sqrt(5)
 
     _eval_rewrite_as_tractable = _eval_rewrite_as_sqrt
 
@@ -137,7 +137,7 @@ class lucas(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Lucas_number
+    .. [1] https//en.wikipedia.org/wiki/Lucas_number
     .. [2] http://mathworld.wolfram.com/LucasNumber.html
 
     See Also
@@ -229,8 +229,8 @@ class bernoulli(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Bernoulli_number
-    .. [2] http://en.wikipedia.org/wiki/Bernoulli_polynomial
+    .. [1] https//en.wikipedia.org/wiki/Bernoulli_number
+    .. [2] https//en.wikipedia.org/wiki/Bernoulli_polynomial
     .. [3] http://mathworld.wolfram.com/BernoulliNumber.html
     .. [4] http://mathworld.wolfram.com/BernoulliPolynomial.html
 
@@ -373,7 +373,7 @@ class bell(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Bell_number
+    .. [1] https//en.wikipedia.org/wiki/Bell_number
     .. [2] http://mathworld.wolfram.com/BellNumber.html
     .. [3] http://mathworld.wolfram.com/BellPolynomial.html
 
@@ -457,7 +457,7 @@ class bell(Function):
         if not n.is_nonnegative:
             return self
         k = Dummy('k', integer=True, nonnegative=True)
-        return 1 / E * Sum(k**n / factorial(k), (k, 0, S.Infinity))
+        return 1 / E * Sum(k**n / factorial(k), (k, 0, oo))
 
 ############################################################################
 #                                                                          #
@@ -582,7 +582,7 @@ class harmonic(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Harmonic_number
+    .. [1] https//en.wikipedia.org/wiki/Harmonic_number
     .. [2] http://functions.wolfram.com/GammaBetaErf/HarmonicNumber/
     .. [3] http://functions.wolfram.com/GammaBetaErf/HarmonicNumber2/
 
@@ -612,12 +612,12 @@ class harmonic(Function):
         if m.is_zero:
             return n
 
-        if n is S.Infinity and m.is_Number:
+        if n is oo and m.is_Number:
             # TODO: Fix for symbolic values of m
             if m.is_negative:
-                return S.NaN
+                return nan
             elif m <= 1:
-                return S.Infinity
+                return oo
             else:
                 return zeta(m)
 
@@ -655,7 +655,7 @@ class harmonic(Function):
         n = self.args[0]
         m = self.args[1] if len(self.args) == 2 else 1
 
-        if m == S.One:
+        if m == 1:
             if n.is_Add:
                 off = n.args[0]
                 nnew = n - off
@@ -732,9 +732,9 @@ class euler(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Euler_numbers
+    .. [1] https//en.wikipedia.org/wiki/Euler_numbers
     .. [2] http://mathworld.wolfram.com/EulerNumber.html
-    .. [3] http://en.wikipedia.org/wiki/Alternating_permutation
+    .. [3] https//en.wikipedia.org/wiki/Alternating_permutation
     .. [4] http://mathworld.wolfram.com/AlternatingPermutation.html
 
     See Also
@@ -841,7 +841,7 @@ class catalan(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Catalan_number
+    .. [1] https//en.wikipedia.org/wiki/Catalan_number
     .. [2] http://mathworld.wolfram.com/CatalanNumber.html
     .. [3] http://functions.wolfram.com/GammaBetaErf/CatalanNumber/
     .. [4] http://geometer.org/mathcircles/catalan.pdf
@@ -1081,7 +1081,7 @@ def nP(n, k=None, replacement=False):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Permutation
+    .. [1] https//en.wikipedia.org/wiki/Permutation
 
     See Also
     ========
@@ -1171,9 +1171,13 @@ def _AOP_product(n):
     >>> [c[i] for i in range(8)] == [prod.coeff(x, i) for i in range(8)]
     True
 
-    The generating poly used here is the same as that listed in
-    http://tinyurl.com/cep849r, but in a refactored form.
+    The generating poly used here is the same as that listed in [1]_,
+    but in a refactored form.
 
+    References
+    ==========
+
+    .. [1] https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
     """
     from collections import defaultdict
 
@@ -1255,8 +1259,8 @@ def nC(n, k=None, replacement=False):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Combination
-    .. [2] http://tinyurl.com/cep849r
+    .. [1] https//en.wikipedia.org/wiki/Combination
+    .. [2] https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
 
     See Also
     ========
@@ -1412,8 +1416,8 @@ def stirling(n, k, d=None, kind=2, signed=False):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
-    .. [2] http://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
+    .. [1] https//en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
+    .. [2] https//en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
 
     See Also
     ========
@@ -1505,7 +1509,7 @@ def nT(n, k=None):
     References
     ==========
 
-    .. [1] http://undergraduate.csse.uwa.edu.au/units/CITS7209/partition.pdf
+    .. [1] http://teaching.csse.uwa.edu.au/units/CITS7209/partition.pdf
 
     See Also
     ========

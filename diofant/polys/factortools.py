@@ -327,7 +327,7 @@ def dup_zz_irreducible_p(f, K):
     if e_fc:
         e_ff = factorint(int(e_fc))
 
-        for p in e_ff.keys():
+        for p in e_ff:
             if (lc % p) and (tc % p**2):
                 return True
 
@@ -767,7 +767,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
         m = dmp_nest([K.one, -a], n, K)
         M = dmp_one(n, K)
 
-        for k in K.map(range(0, d)):
+        for k in K.map(range(d)):
             if dmp_zero_p(c, u):
                 break
 
@@ -822,7 +822,7 @@ def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
 
         dj = dmp_degree_in(s, w, w)
 
-        for k in K.map(range(0, dj)):
+        for k in K.map(range(dj)):
             if dmp_zero_p(c, w):
                 break
 

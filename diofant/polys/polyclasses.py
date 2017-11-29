@@ -740,13 +740,13 @@ class DMP(CantSympify):
     def is_linear(self):
         """Returns ``True`` if ``self`` is linear in all its variables. """
         return all(sum(monom) <= 1 for monom in dmp_to_dict(self.rep, self.lev,
-                                                            self.domain).keys())
+                                                            self.domain))
 
     @property
     def is_quadratic(self):
         """Returns ``True`` if ``self`` is quadratic in all its variables. """
         return all(sum(monom) <= 2 for monom in dmp_to_dict(self.rep, self.lev,
-                                                            self.domain).keys())
+                                                            self.domain))
 
     @property
     def is_monomial(self):

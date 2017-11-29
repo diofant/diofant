@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from .. import DIOFANT_DEBUG
-from ..core import (Add, Derivative, Mul, Pow, Rational, S, expand_mul,
+from ..core import (Add, Derivative, I, Mul, Pow, Rational, S, expand_mul,
                     expand_power_base, gcd_terms, symbols, sympify)
 from ..core.compatibility import default_sort_key, iterable, ordered
 from ..core.exprtools import Factors
@@ -473,7 +473,7 @@ def collect_sqrt(expr, evaluate=True):
         for m in a.args_cnc()[0]:
             if m.is_number and (
                     m.is_Pow and m.exp.is_Rational and m.exp.q == 2 or
-                    m is S.ImaginaryUnit):
+                    m is I):
                 vars.add(m)
 
     # we only want radicals, so exclude Number handling; in this case
@@ -490,7 +490,7 @@ def collect_sqrt(expr, evaluate=True):
             for ci in c:
                 # XXX should this be restricted to ci.is_number as above?
                 if ci.is_Pow and ci.exp.is_Rational and ci.exp.q == 2 or \
-                        ci is S.ImaginaryUnit:
+                        ci is I:
                     nrad += 1
                     break
             args[i] *= coeff
@@ -790,7 +790,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                 for i in Mul.make_args(m):
                     if ispow2(i, log2=True):
                         p2.append(i.base if i.exp is S.Half else i.base**(2*i.exp))
-                    elif i is S.ImaginaryUnit:
+                    elif i is I:
                         p2.append(S.NegativeOne)
                     else:
                         other.append(i)

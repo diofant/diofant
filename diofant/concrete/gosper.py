@@ -1,6 +1,6 @@
 """Gosper's algorithm for hypergeometric summation. """
 
-from ..core import Dummy, Integer, S, symbols
+from ..core import Dummy, Integer, S, nan, symbols
 from ..core.compatibility import is_sequence
 from ..polys import Poly, factor, parallel_poly_from_expr
 from ..simplify import hypersimp
@@ -190,7 +190,7 @@ def gosper_sum(f, k):
     else:
         result = (f*(g + 1)).subs(k, b) - (f*g).subs(k, a)
 
-        if result is S.NaN:
+        if result is nan:
             try:
                 result = (f*(g + 1)).limit(k, b) - (f*g).limit(k, a)
             except NotImplementedError:  # pragma: no cover

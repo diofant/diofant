@@ -35,7 +35,7 @@ def using(**kwargs):
 
     yield
 
-    for k in kwargs.keys():
+    for k in kwargs:
         setup(k)
 
 

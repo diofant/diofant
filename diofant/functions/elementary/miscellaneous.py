@@ -1,11 +1,11 @@
 from ...core import (Add, Dummy, Equality, Expr, Lambda, Mul, Pow, Rational, S,
-                     Tuple, sympify)
+                     Tuple, oo, sympify, zoo)
 from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
 from ...core.operations import LatticeOp, ShortCircuit
 from ...core.rules import Transform
-from ...core.singleton import Singleton
+from ...core.singleton import SingletonWithManagedProperties as Singleton
 from ...logic import And, Or
 from .integers import floor
 
@@ -103,8 +103,8 @@ def sqrt(arg, **kwargs):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Square_root
-    .. [2] http://en.wikipedia.org/wiki/Principal_value
+    .. [1] https//en.wikipedia.org/wiki/Square_root
+    .. [2] https//en.wikipedia.org/wiki/Principal_value
     """
     # arg = sympify(arg) is handled by Pow
     return Pow(arg, S.Half, **kwargs)
@@ -155,8 +155,8 @@ def cbrt(arg, **kwargs):
     References
     ==========
 
-    * http://en.wikipedia.org/wiki/Cube_root
-    * http://en.wikipedia.org/wiki/Principal_value
+    * https//en.wikipedia.org/wiki/Cube_root
+    * https//en.wikipedia.org/wiki/Principal_value
 
     """
     return Pow(arg, Rational(1, 3), **kwargs)
@@ -240,10 +240,10 @@ def root(arg, n, k=0):
     References
     ==========
 
-    * http://en.wikipedia.org/wiki/Square_root
-    * http://en.wikipedia.org/wiki/Real_root
-    * http://en.wikipedia.org/wiki/Root_of_unity
-    * http://en.wikipedia.org/wiki/Principal_value
+    * https//en.wikipedia.org/wiki/Square_root
+    * https//en.wikipedia.org/wiki/Real_root
+    * https//en.wikipedia.org/wiki/Root_of_unity
+    * https//en.wikipedia.org/wiki/Principal_value
     * http://mathworld.wolfram.com/CubeRoot.html
 
     """
@@ -366,7 +366,7 @@ class MinMaxBase(LatticeOp):
         for arg in arg_sequence:
 
             # pre-filter, checking comparability of arguments
-            if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is S.ComplexInfinity):
+            if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is zoo):
                 raise ValueError("The argument '%s' is not comparable." % arg)
 
             if arg == cls.zero:
@@ -523,8 +523,8 @@ class Max(MinMaxBase, Application):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Directed_complete_partial_order
-    .. [2] http://en.wikipedia.org/wiki/Lattice_%28order%29
+    .. [1] https//en.wikipedia.org/wiki/Directed_complete_partial_order
+    .. [2] https//en.wikipedia.org/wiki/Lattice_%28order%29
 
     See Also
     ========
@@ -532,8 +532,8 @@ class Max(MinMaxBase, Application):
     diofant.functions.elementary.miscellaneous.Min : find minimum values
     """
 
-    zero = S.Infinity
-    identity = S.NegativeInfinity
+    zero = oo
+    identity = -oo
 
     def fdiff( self, argindex ):
         from .. import Heaviside
@@ -585,8 +585,8 @@ class Min(MinMaxBase, Application):
     diofant.functions.elementary.miscellaneous.Max : find maximum values
     """
 
-    zero = S.NegativeInfinity
-    identity = S.Infinity
+    zero = -oo
+    identity = oo
 
     def fdiff( self, argindex ):
         from .. import Heaviside

@@ -1,12 +1,14 @@
-"""Implementation of DPLL algorithm
+"""Implementation of DPLL algorithm.
 
 Features:
   - Clause learning
   - Watch literal scheme
   - VSIDS heuristic
 
-References:
-  - http://en.wikipedia.org/wiki/DPLL_algorithm
+References
+==========
+
+.. [1] https://en.wikipedia.org/wiki/DPLL_algorithm
 """
 
 from collections import defaultdict
@@ -453,7 +455,7 @@ class SATSolver:
         """
         # We divide every literal score by 2 for a decay factor
         #  Note: This doesn't change the heap property
-        for lit in self.lit_scores.keys():
+        for lit in self.lit_scores:
             self.lit_scores[lit] /= 2.0
 
     def _vsids_calculate(self):

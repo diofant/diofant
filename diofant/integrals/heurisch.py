@@ -1,11 +1,11 @@
 from functools import reduce
 from itertools import permutations
 
-from ..core import Add, Basic, Dummy, Eq, Mul, Rational, S, Wild, pi, sympify
+from ..core import Add, Basic, Dummy, E, Eq, Mul, S, Wild, pi, sympify
 from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
-                         cos, cosh, cot, coth, erf, erfi, exp, li, log, sin,
-                         sinh, sqrt, tan, tanh)
+                         cos, cosh, cot, coth, erf, erfi, exp, li, log, root,
+                         sin, sinh, sqrt, tan, tanh)
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
@@ -50,7 +50,7 @@ def components(f, x):
 
             if not f.exp.is_Integer:
                 if f.exp.is_Rational:
-                    result.add(f.base**Rational(1, f.exp.q))
+                    result.add(root(f.base, f.exp.q))
                 else:
                     result |= components(f.exp, x) | {f}
         else:
@@ -120,7 +120,9 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     slns = []
     for d in denoms(res):
         try:
-            slns += solve(d, exclude=(x,))
+            ds = list(ordered(d.free_symbols - {x}))
+            if ds:
+                slns += solve(d, *ds)
         except NotImplementedError:
             pass
     if not slns:
@@ -130,7 +132,9 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     slns0 = []
     for d in denoms(f):
         try:
-            slns0 += solve(d, exclude=(x,))
+            ds = list(ordered(d.free_symbols - {x}))
+            if ds:
+                slns0 += solve(d, *ds)
         except NotImplementedError:
             pass
     slns = [s for s in slns if s not in slns0]
@@ -140,7 +144,8 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         eqs = []
         for sub_dict in slns:
             eqs.extend([Eq(key, value) for key, value in sub_dict.items()])
-        slns = solve(eqs, exclude=(x,)) + slns
+        slns = solve(eqs, *ordered(set().union(*[e.free_symbols
+                                                 for e in eqs]) - {x})) + slns
     # For each case listed in the list slns, we reevaluate the integral.
     pairs = []
     for sub_dict in slns:
@@ -248,7 +253,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         for candidates, rule in rewritables.items():
             f = f.rewrite(candidates, rule)
     else:
-        for candidates in rewritables.keys():
+        for candidates in rewritables:
             if f.has(*candidates):
                 break
         else:
@@ -264,17 +269,14 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
             for g in set(terms):  # using copy of terms
                 if g.is_Function:
-                    if g.func is li:
+                    if isinstance(g, li):
                         M = g.args[0].match(a*x**b)
 
                         if M is not None:
                             terms.add( x*(li(M[a]*x**M[b]) - (M[a]*x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
-                            # terms.add( x*(li(M[a]*x**M[b]) - (x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
-                            # terms.add( x*(li(M[a]*x**M[b]) - x*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
-                            # terms.add( li(M[a]*x**M[b]) - Ei((M[b]+1)*log(M[a]*x**M[b])/M[b]) )
 
                 elif g.is_Pow:
-                    if g.base is S.Exp1:
+                    if g.base is E:
                         M = g.exp.match(a*x**2)
 
                         if M is not None:
@@ -404,12 +406,12 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     for term in terms:
         if term.is_Function:
-            if term.func is tan:
+            if isinstance(term, tan):
                 special[1 + _substitute(term)**2] = False
-            elif term.func is tanh:
+            elif isinstance(term, tanh):
                 special[1 + _substitute(term)] = False
                 special[1 - _substitute(term)] = False
-            elif term.func is LambertW:
+            elif isinstance(term, LambertW):
                 special[_substitute(term)] = True
 
     F = _substitute(f)
@@ -419,7 +421,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     u_split = _splitter(denom)
     v_split = _splitter(Q)
 
-    polys = set(list(v_split) + [ u_split[0] ] + list(special.keys()))
+    polys = set(list(v_split) + [u_split[0]] + list(special))
 
     s = u_split[0] * Mul(*[ k for k, v in special.items() if v ])
     polified = [ p.as_poly(*V) for p in [s, P, Q] ]
@@ -530,12 +532,15 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         except PolynomialError:
             return
         else:
-            ground, _ = construct_domain(non_syms, field=True)
+            ground, _ = construct_domain(non_syms, field=True, extension=True)
 
         coeff_ring = PolyRing(poly_coeffs, ground)
         ring = PolyRing(V, coeff_ring)
 
-        numer = ring.from_expr(raw_numer)
+        try:
+            numer = ring.from_expr(raw_numer)
+        except ValueError:
+            raise PolynomialError
 
         solution = solve_lin_sys(numer.coeffs(), coeff_ring)
 

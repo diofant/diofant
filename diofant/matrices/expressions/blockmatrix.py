@@ -376,7 +376,7 @@ def deblock(B):
 
     from .. import Matrix
     MM = Matrix(0, sum(bb[0, i].blocks.shape[1] for i in range(bb.shape[1])), [])
-    for row in range(0, bb.shape[0]):
+    for row in range(bb.shape[0]):
         M = Matrix(bb[row, 0].blocks)
         for col in range(1, bb.shape[1]):
             M = M.row_join(bb[row, col].blocks)

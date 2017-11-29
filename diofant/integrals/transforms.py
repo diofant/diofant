@@ -3,8 +3,8 @@
 from functools import reduce, wraps
 from itertools import repeat
 
-from ..core import (Add, Dummy, Function, I, Integer, Mul, Rational, S, expand,
-                    expand_mul, oo, pi, sympify)
+from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, S,
+                    expand, expand_mul, oo, pi, sympify)
 from ..functions import cos, sin, sqrt
 from ..logic import And, Or, to_cnf
 from ..logic.boolalg import conjuncts, disjuncts
@@ -577,7 +577,7 @@ def _rewrite_gamma(f, s, a, b):
             ufacs += [fact]
         # exponentials
         elif fact.is_Pow:
-            if fact.is_Pow and fact.base is not S.Exp1:
+            if fact.is_Pow and fact.base is not E:
                 base = fact.base
                 exp = fact.exp
             else:
@@ -916,9 +916,9 @@ def _simplifyconds(expr, s, a):
         """
         if ex1.has(s) and ex2.has(s):
             return
-        if ex1.func is Abs:
+        if isinstance(ex1, Abs):
             ex1 = ex1.args[0]
-        if ex2.func is Abs:
+        if isinstance(ex2, Abs):
             ex2 = ex2.args[0]
         if ex1.has(s):
             return bigger(1/ex2, 1/ex1)
@@ -935,8 +935,8 @@ def _simplifyconds(expr, s, a):
 
     def replie(x, y):
         """ simplify x < y """
-        if not (x.is_positive or x.func is Abs) \
-                or not (y.is_positive or y.func is Abs):
+        if not (x.is_positive or isinstance(x, Abs)) \
+                or not (y.is_positive or isinstance(y, Abs)):
             return (x < y)
         r = bigger(x, y)
         if r is not None:
@@ -1194,7 +1194,7 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
             k = log(rel.lts)
             return Heaviside(-(t + k))
     f = f.replace(Heaviside, simp_heaviside)
-    f = f.replace(lambda expr: expr.is_Pow and expr.base is S.Exp1,
+    f = f.replace(lambda expr: expr.is_Pow and expr.base is E,
                   lambda expr: expand_complex(exp(expr.exp)))
 
     # TODO it would be nice to fix cosh and sinh ... simplify messes these
@@ -1351,7 +1351,7 @@ class FourierTransform(FourierTypeTransform):
         return 1
 
     def b(self):
-        return -2*S.Pi
+        return -2*pi
 
 
 def fourier_transform(f, x, k, **hints):
@@ -1404,7 +1404,7 @@ class InverseFourierTransform(FourierTypeTransform):
         return 1
 
     def b(self):
-        return 2*S.Pi
+        return 2*pi
 
 
 def inverse_fourier_transform(F, k, x, **hints):

@@ -50,7 +50,7 @@ For the sake of completeness, `f(n)` can be:
 from collections import defaultdict
 
 from ..concrete import product
-from ..core import (Add, Dummy, Equality, Mul, Rational, S, Symbol, Wild,
+from ..core import (Add, Dummy, Equality, Mul, Rational, S, Symbol, Wild, oo,
                     sympify)
 from ..core.compatibility import default_sort_key
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
@@ -58,7 +58,7 @@ from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
 from ..simplify import hypersimilar, hypersimp, simplify
 from ..utilities import numbered_symbols
-from .solvers import solve, solve_undetermined_coeffs
+from .solvers import solve
 
 
 def rsolve_poly(coeffs, f, n, **hints):
@@ -129,9 +129,9 @@ def rsolve_poly(coeffs, f, n, **hints):
         f = quo(f, g, n, polys=False)
 
     polys = [ Poly(0, n) ] * (r + 1)
-    terms = [ (S.Zero, S.NegativeInfinity) ] * (r + 1)
+    terms = [ (S.Zero, -oo) ] * (r + 1)
 
-    for i in range(0, r + 1):
+    for i in range(r + 1):
         for j in range(i, r + 1):
             polys[i] += coeffs[j]*binomial(j, i)
 
@@ -154,12 +154,12 @@ def rsolve_poly(coeffs, f, n, **hints):
 
     degree_poly = S.Zero
 
-    for i in range(0, r + 1):
+    for i in range(r + 1):
         if terms[i][1] - i == b:
             degree_poly += terms[i][0]*FallingFactorial(x, i)
 
     nni_roots = list(roots(degree_poly, x, filter='Z',
-                           predicate=lambda r: r >= 0).keys())
+                           predicate=lambda r: r >= 0))
 
     if nni_roots:
         N = [max(nni_roots)]
@@ -186,26 +186,26 @@ def rsolve_poly(coeffs, f, n, **hints):
         C = []
         y = E = S.Zero
 
-        for i in range(0, N + 1):
+        for i in range(N + 1):
             C.append(Symbol('C' + str(i)))
             y += C[i] * n**i
 
-        for i in range(0, r + 1):
+        for i in range(r + 1):
             E += coeffs[i].as_expr()*y.subs(n, n + i)
 
-        solutions = solve_undetermined_coeffs(E - f, C, n)
+        solutions = solve((E - f).as_poly(n).coeffs(), *C)
 
-        if solutions is not None:
-            C = [ c for c in C if (c not in solutions) ]
-            result = y.subs(solutions)
-        else:
-            return  # TBD
+        if solutions:
+            solutions = solutions[0]
+
+        C = [c for c in C if (c not in solutions)]
+        result = y.subs(solutions)
     else:
         A = r
         U = N + A + b + 1
 
         nni_roots = list(roots(polys[r], filter='Z',
-                               predicate=lambda r: r >= 0).keys())
+                               predicate=lambda r: r >= 0))
 
         if nni_roots != []:
             a = max(nni_roots) + 1
@@ -238,8 +238,8 @@ def rsolve_poly(coeffs, f, n, **hints):
 
             alpha[i] = S.Zero
 
-            for j in range(0, A + 1):
-                for k in range(0, d + 1):
+            for j in range(A + 1):
+                for k in range(d + 1):
                     B = binomial(k, i + j)
                     D = _delta(polys[j].as_expr(), k)
 
@@ -257,12 +257,12 @@ def rsolve_poly(coeffs, f, n, **hints):
 
                     B = alpha[k - A].subs(x, i - k)
 
-                    for j in range(0, A):
+                    for j in range(A):
                         v[j] += B * V[i - k, j]
 
                 denom = alpha[-A].subs(x, i)
 
-                for j in range(0, A):
+                for j in range(A):
                     V[i, j] = -v[j] / denom
         else:
             G = _zero_vector(U)
@@ -277,14 +277,14 @@ def rsolve_poly(coeffs, f, n, **hints):
 
                     B = alpha[k - A].subs(x, i - k)
 
-                    for j in range(0, A):
+                    for j in range(A):
                         v[j] += B * V[i - k, j]
 
                     g += B * G[i - k]
 
                 denom = alpha[-A].subs(x, i)
 
-                for j in range(0, A):
+                for j in range(A):
                     V[i, j] = -v[j] / denom
 
                 G[i] = (_delta(f, i - A) - g) / denom
@@ -294,13 +294,13 @@ def rsolve_poly(coeffs, f, n, **hints):
         for i in range(1, U):
             P[i] = (P[i - 1] * (n - a - i + 1)/i).expand()
 
-        for i in range(0, A):
+        for i in range(A):
             Q[i] = Add(*[ (v*p).expand() for v, p in zip(V[:, i], P) ])
 
         if not homogeneous:
             h = Add(*[ (g*p).expand() for g, p in zip(G, P) ])
 
-        C = [ Symbol('C' + str(i)) for i in range(0, A) ]
+        C = [Symbol('C' + str(i)) for i in range(A)]
 
         def g(i):
             return Add(*[ c*_delta(q, i) for c, q in zip(C, Q) ])
@@ -420,7 +420,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
         res = quo(p, q, h)
 
     nni_roots = list(roots(res, h, filter='Z',
-                           predicate=lambda r: r >= 0).keys())
+                           predicate=lambda r: r >= 0))
 
     if not nni_roots:
         return rsolve_poly(coeffs, f, n, **hints)
@@ -433,17 +433,17 @@ def rsolve_ratio(coeffs, f, n, **hints):
             A = quo(A, d, n)
             B = quo(B, d.subs(n, n - i), n)
 
-            C *= Mul(*[ d.subs(n, n - j) for j in range(0, i + 1) ])
+            C *= Mul(*[d.subs(n, n - j) for j in range(i + 1)])
 
-        denoms = [ C.subs(n, n + i) for i in range(0, r + 1) ]
+        denoms = [C.subs(n, n + i) for i in range(r + 1)]
 
-        for i in range(0, r + 1):
+        for i in range(r + 1):
             g = gcd(coeffs[i], denoms[i], n)
 
             numers[i] = quo(coeffs[i], g, n)
             denoms[i] = quo(denoms[i], g, n)
 
-        for i in range(0, r + 1):
+        for i in range(r + 1):
             numers[i] *= Mul(*(denoms[:i] + denoms[i + 1:]))
 
         result = rsolve_poly(numers, f * Mul(*denoms), n, **hints)
@@ -526,7 +526,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 if not g.is_hypergeometric(n):
                     return
 
-                for h in similar.keys():
+                for h in list(similar):
                     if hypersimilar(g, h, n):
                         similar[h] += g
                         break
@@ -557,7 +557,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 polys[j] *= p
                 denoms[j] = q
 
-            for j in range(0, r + 1):
+            for j in range(r + 1):
                 polys[j] *= Mul(*(denoms[:j] + denoms[j + 1:]))
 
             R = rsolve_ratio(polys, Mul(*denoms), n, symbols=True)
@@ -580,8 +580,8 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
     p, q = coeffs[0], coeffs[r].subs(n, n - r + 1)
 
-    p_factors = [ z for z in roots(p, n).keys() ]
-    q_factors = [ z for z in roots(q, n).keys() ]
+    p_factors = list(roots(p, n))
+    q_factors = list(roots(q, n))
 
     factors = [ (S.One, S.One) ]
 
@@ -601,9 +601,9 @@ def rsolve_hyper(coeffs, f, n, **hints):
         polys, degrees = [], []
         D = A*B.subs(n, n + r - 1)
 
-        for i in range(0, r + 1):
-            a = Mul(*[ A.subs(n, n + j) for j in range(0, i) ])
-            b = Mul(*[ B.subs(n, n + j) for j in range(i, r) ])
+        for i in range(r + 1):
+            a = Mul(*[A.subs(n, n + j) for j in range(i)])
+            b = Mul(*[B.subs(n, n + j) for j in range(i, r)])
 
             poly = quo(coeffs[i]*a*b, D, n)
             polys.append(poly.as_poly(n))
@@ -613,13 +613,13 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
         d, poly = max(degrees), S.Zero
 
-        for i in range(0, r + 1):
+        for i in range(r + 1):
             coeff = polys[i].nth(d)
 
             if coeff is not S.Zero:
                 poly += coeff * Z**i
 
-        for z in roots(poly, Z).keys():
+        for z in roots(poly, Z):
             if z.is_zero:
                 continue
 
@@ -632,7 +632,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 ratio = z * A * C.subs(n, n + 1) / B / C
                 ratio = simplify(ratio)
 
-                skip = max([-1] + [v for v in roots(Mul(*ratio.as_numer_denom()), n).keys()
+                skip = max([-1] + [v for v in roots(Mul(*ratio.as_numer_denom()), n)
                                    if v.is_Integer]) + 1
                 K = product(ratio, (n, skip, n - 1))
 
@@ -739,7 +739,7 @@ def rsolve(f, y, init=None):
                                       "hypergeometric terms in '%s', got "
                                       "'%s'" % (n, i_part))
 
-    k_min, k_max = min(h_part.keys()), max(h_part.keys())
+    k_min, k_max = min(h_part), max(h_part)
 
     if k_min < 0:
         return rsolve(f.subs(n, n + abs(k_min)), y, init)

@@ -1,4 +1,4 @@
-from ...core import Basic, Dummy, Equality, Expr, Function, S, Tuple, diff
+from ...core import Basic, Dummy, Equality, Expr, Function, S, Tuple, diff, oo
 from ...core.compatibility import default_sort_key
 from ...core.relational import Relational
 from ...logic import And, Not, Or, false, true
@@ -214,7 +214,7 @@ class Piecewise(Function):
             newargs = []
             for e, c in self.args:
                 intervals = self._sort_expr_cond(
-                    sym, S.NegativeInfinity, S.Infinity, c)
+                    sym, -oo, oo, c)
                 values = []
                 for lower, upper, expr in intervals:
                     if (a < lower) is S.true:
@@ -320,8 +320,8 @@ class Piecewise(Function):
             elif isinstance(cond, Equality):
                 continue
             elif isinstance(cond, And):
-                lower = S.NegativeInfinity
-                upper = S.Infinity
+                lower = -oo
+                upper = oo
                 for cond2 in cond.args:
                     if sym not in [cond2.lts, cond2.gts]:
                         cond2 = solve_univariate_inequality(cond2, sym)
@@ -335,9 +335,9 @@ class Piecewise(Function):
             else:
                 lower, upper = cond.lts, cond.gts  # part 1: initialize with givens
                 if cond.lts == sym:                # part 1a: expand the side ...
-                    lower = S.NegativeInfinity   # e.g. x <= 0 ---> -oo <= 0
+                    lower = -oo   # e.g. x <= 0 ---> -oo <= 0
                 elif cond.gts == sym:            # part 1a: ... that can be expanded
-                    upper = S.Infinity           # e.g. x >= 0 --->  oo >= 0
+                    upper = oo           # e.g. x >= 0 --->  oo >= 0
                 else:  # pragma: no cover
                     raise NotImplementedError(
                         "Unable to handle interval evaluation of expression.")
@@ -384,9 +384,9 @@ class Piecewise(Function):
                     return or_intervals
 
         int_expr.sort(key=lambda x: x[1].sort_key(
-        ) if x[1].is_number else S.NegativeInfinity.sort_key())
+        ) if x[1].is_number else (-oo).sort_key())
         int_expr.sort(key=lambda x: x[0].sort_key(
-        ) if x[0].is_number else S.Infinity.sort_key())
+        ) if x[0].is_number else oo.sort_key())
 
         for n in range(len(int_expr)):
             if len(int_expr[n][0].free_symbols) or len(int_expr[n][1].free_symbols):
@@ -553,7 +553,7 @@ def piecewise_fold(expr):
     if not isinstance(expr, Basic) or not expr.has(Piecewise):
         return expr
     new_args = list(map(piecewise_fold, expr.args))
-    if expr.func is ExprCondPair:
+    if isinstance(expr, ExprCondPair):
         return ExprCondPair(*new_args)
     piecewise_args = []
     for n, arg in enumerate(new_args):

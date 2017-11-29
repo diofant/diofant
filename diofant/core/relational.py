@@ -1,9 +1,6 @@
-from mpmath.libmp.libintmath import giant_steps
-
 from ..logic.boolalg import Boolean, BooleanAtom
 from .basic import S
 from .compatibility import ordered
-from .evalf import DEFAULT_MAXPREC as TARGET
 from .evalf import EvalfMixin
 from .evaluate import global_evaluate
 from .expr import Expr
@@ -185,17 +182,10 @@ class Relational(Boolean, Expr, EvalfMixin):
                 if know:
                     dif = S.Zero
                 elif know is False:
-                    if r.func is Eq:
+                    if isinstance(r, Eq):
                         return False
-                    elif r.func is Ne:
+                    elif isinstance(r, Ne):
                         return True
-                    else:
-                        # XXX workaround for diofant/diofant#499
-                        for prec in giant_steps(2, TARGET):  # pragma: no branch
-                            ndif = dif.evalf(prec)
-                            if ndif._prec != 1:
-                                dif = ndif
-                                break
             # Can definitively compare a Number to zero, if appropriate.
             if dif.is_Number and dif.is_extended_real:
                 # Always T/F (we never return an expression w/ the evalf)

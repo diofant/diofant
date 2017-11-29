@@ -236,7 +236,7 @@ class BinomialDistribution(SingleFiniteDistribution):
         n, p, succ, fail = self.n, self.p, self.succ, self.fail
         n = as_int(n)
         return {k*succ + (n - k)*fail:
-                binomial(n, k) * p**k * (1 - p)**(n - k) for k in range(0, n + 1)}
+                binomial(n, k) * p**k * (1 - p)**(n - k) for k in range(n + 1)}
 
 
 def Binomial(name, n, p, succ=1, fail=0):
@@ -327,7 +327,7 @@ def Rademacher(name):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Rademacher_distribution
+    .. [1] https//en.wikipedia.org/wiki/Rademacher_distribution
 
     """
     return rv(name, RademacherDistribution)

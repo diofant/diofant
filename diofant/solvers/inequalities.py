@@ -1,6 +1,8 @@
 """Tools for solving inequalities and systems of inequalities. """
 
-from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol
+from collections import defaultdict
+
+from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
@@ -55,9 +57,9 @@ def solve_poly_inequality(poly, rel):
             interval = Interval(root, root)
             intervals.append(interval)
     elif rel == '!=':
-        left = S.NegativeInfinity
+        left = -oo
 
-        for right, _ in reals + [(S.Infinity, 1)]:
+        for right, _ in reals + [(oo, 1)]:
             interval = Interval(left, right, True, True)
             intervals.append(interval)
             left = right
@@ -74,7 +76,7 @@ def solve_poly_inequality(poly, rel):
         else:
             eq_sign, equal = -1, True
 
-        right, right_open = S.Infinity, True
+        right, right_open = oo, True
 
         for left, multiplicity in reversed(reals):
             if multiplicity % 2:
@@ -90,7 +92,7 @@ def solve_poly_inequality(poly, rel):
                     intervals.insert(0, Interval(left, left))
 
         if sign == eq_sign:
-            intervals.insert(0, Interval(S.NegativeInfinity, right, True, right_open))
+            intervals.insert(0, Interval(-oo, right, True, right_open))
 
     return intervals
 
@@ -323,7 +325,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
     inequalities = []
 
     for expr, conds in exprs:
-        if rel not in mapping.keys():
+        if rel not in mapping:
             expr = Relational( expr, 0, rel)
         else:
             expr = Relational(-expr, 0, mapping[rel])
@@ -403,18 +405,18 @@ def solve_univariate_inequality(expr, gen, relational=True):
         else:  # pragma: no cover
             raise NotImplementedError
 
-    start = S.NegativeInfinity
+    start = -oo
     sol_sets = [S.EmptySet]
     reals = _nsort(set(solns + singularities), separated=True)[0]
     for x in reals:
         end = x
 
-        if end in [S.NegativeInfinity, S.Infinity]:
+        if end in [-oo, oo]:
             if valid(Integer(0)):
-                sol_sets.append(Interval(start, S.Infinity, True, True))
+                sol_sets.append(Interval(start, oo, True, True))
                 break
 
-        if valid((start + end)/2 if start != S.NegativeInfinity else end - 1):
+        if valid((start + end)/2 if start != -oo else end - 1):
             sol_sets.append(Interval(start, end, True, True))
 
         if x in singularities:
@@ -424,7 +426,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
         start = end
 
-    end = S.Infinity
+    end = oo
 
     if valid(start + 1):
         sol_sets.append(Interval(start, end, True, True))
@@ -436,7 +438,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 def _reduce_inequalities(inequalities, symbols):
     # helper for reduce_inequalities
 
-    poly_part, pw_part = {}, {}
+    poly_part, pw_part = defaultdict(list), defaultdict(list)
     other = []
 
     for inequality in inequalities:
@@ -466,13 +468,13 @@ def _reduce_inequalities(inequalities, symbols):
                     symbol of interest'''))
 
         if expr.is_polynomial(gen):
-            poly_part.setdefault(gen, []).append((expr, rel))
+            poly_part[gen].append((expr, rel))
         else:
             components = set(expr.find(lambda u: u.has(gen) and
                                        (u.is_Function or u.is_Pow and
                                         not u.exp.is_Integer)))
             if components and all(isinstance(i, Abs) or isinstance(i, Piecewise) for i in components):
-                pw_part.setdefault(gen, []).append((expr, rel))
+                pw_part[gen].append((expr, rel))
             else:
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
 

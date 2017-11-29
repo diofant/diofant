@@ -131,6 +131,20 @@ class MCodePrinter(CodePrinter):
             args = expr.args
         return "Hold[Integrate[" + ', '.join(self.doprint(a) for a in args) + "]]"
 
+    def _print_Limit(self, expr):
+        direction = str(expr.args[-1])
+        if direction == "+":
+            direction = "-1"
+        elif direction == "-":
+            direction = "1"
+        elif direction == "real":
+            direction = "Reals"
+        else:  # pragma: no cover
+            raise NotImplementedError
+        e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
+        return ("Hold[Limit[%s, %s -> %s, Direction -> %s]]" % (e, x, x0,
+                                                                direction))
+
     def _print_Sum(self, expr):
         return "Hold[Sum[" + ', '.join(self.doprint(a) for a in expr.args) + "]]"
 
@@ -162,13 +176,23 @@ class MCodePrinter(CodePrinter):
                                                                Symbol('#'))),
                                    self.doprint(expr.index + 1))
 
+    def _print_Lambda(self, expr):
+        return 'Function[%s, %s]' % (self.doprint(expr.variables),
+                                     self.doprint(expr.expr))
+
+    def _print_RootSum(self, expr):
+        from ..core import Lambda
+        p, f = expr.poly, expr.fun
+        return "RootSum[%s, %s]" % (self.doprint(Lambda(p.gens, p.as_expr())),
+                                    self.doprint(f))
+
     def _print_AlgebraicNumber(self, expr):
         coeffs = list(reversed(expr.coeffs()))
         return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.root),
                                             self.doprint(coeffs))
 
     def _print_Dummy(self, expr):
-        return "Subscript[%s, %s]" % (expr.name, expr.dummy_index)
+        return "%s%s" % (expr.name, expr.dummy_index)
 
 
 def mathematica_code(expr, **settings):

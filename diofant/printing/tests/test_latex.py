@@ -14,8 +14,8 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
                      SineTransform, Subs, Sum, Symbol, SymmetricDifference,
                      Tuple, Union, Wild, Ynm, Znm, acot, airyai, airyaiprime,
                      airybi, airybiprime, arg, asin, assoc_laguerre,
-                     assoc_legendre, binomial, catalan, ceiling, chebyshevt,
-                     chebyshevu, conjugate, cos, cot, coth, diff,
+                     assoc_legendre, binomial, catalan, cbrt, ceiling,
+                     chebyshevt, chebyshevu, conjugate, cos, cot, coth, diff,
                      dirichlet_eta, divisor_sigma, elliptic_e, elliptic_f,
                      elliptic_k, elliptic_pi, exp, expint, factorial,
                      factorial2, false, field, floor, gamma, gegenbauer,
@@ -87,10 +87,10 @@ def test_latex_basic():
         r"\left(2 \int x\, dx\right) / 3"
 
     assert latex(sqrt(x)) == r"\sqrt{x}"
-    assert latex(x**Rational(1, 3)) == r"\sqrt[3]{x}"
+    assert latex(cbrt(x)) == r"\sqrt[3]{x}"
     assert latex(sqrt(x)**3) == r"x^{\frac{3}{2}}"
     assert latex(sqrt(x), itex=True) == r"\sqrt{x}"
-    assert latex(x**Rational(1, 3), itex=True) == r"\root{3}{x}"
+    assert latex(cbrt(x), itex=True) == r"\root{3}{x}"
     assert latex(sqrt(x)**3, itex=True) == r"x^{\frac{3}{2}}"
     assert latex(x**Rational(3, 4)) == r"x^{\frac{3}{4}}"
     assert latex(x**Rational(3, 4), fold_frac_powers=True) == "x^{3/4}"

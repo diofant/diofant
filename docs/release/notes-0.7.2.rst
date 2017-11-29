@@ -127,8 +127,8 @@ Major Changes
     and Wisdom. Currently implemented are scalar, vector and form fields over
     manifolds as well as covariant and other derivatives.
 
-Backwards-incompatible changes
-==============================
+Compatibility breaks
+====================
 
 - The KroneckerDelta class was moved from ``sympy/physics/quantum/kronecker.py`` to
   ``sympy/functions/special/tensor_functions.py``.

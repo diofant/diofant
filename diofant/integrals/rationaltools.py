@@ -4,6 +4,8 @@ from ..core import Dummy, I, Integer, Lambda, S, Symbol, symbols
 from ..domains import ZZ
 from ..functions import atan, log
 from ..polys import Poly, RootSum, cancel, resultant, roots
+from ..simplify import collect
+from ..solvers import solve
 
 
 def ratint(f, x, **flags):
@@ -13,7 +15,6 @@ def ratint(f, x, **flags):
     where `p` and `q` are polynomials in `K[x]`,
     returns a function `g` such that `f = g'`.
 
-    >>> from diofant.integrals.rationaltools import ratint
     >>> from diofant.abc import x
 
     >>> ratint(36/(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2), x)
@@ -89,10 +90,12 @@ def ratint(f, x, **flags):
 
         if not ereal:
             for h, q in L:
+                _, h = h.primitive()
                 eps += RootSum(
                     q, Lambda(t, t*log(h.as_expr())), quadratic=True)
         else:
             for h, q in L:
+                _, h = h.primitive()
                 R = log_to_real(h, q, x, t)
 
                 if R is not None:
@@ -107,8 +110,7 @@ def ratint(f, x, **flags):
 
 
 def ratint_ratpart(f, g, x):
-    """
-    Horowitz-Ostrogradsky algorithm.
+    """Horowitz-Ostrogradsky algorithm.
 
     Given a field K and polynomials f and g in K[x], such that f and g
     are coprime and deg(f) < deg(g), returns fractions A and B in K(x),
@@ -117,18 +119,16 @@ def ratint_ratpart(f, g, x):
     Examples
     ========
 
-        >>> from diofant.integrals.rationaltools import ratint_ratpart
-        >>> from diofant.abc import x, y
-        >>> from diofant import Poly
-        >>> ratint_ratpart(Poly(1, x, domain='ZZ'),
-        ... Poly(x + 1, x, domain='ZZ'), x)
-        (0, 1/(x + 1))
-        >>> ratint_ratpart(Poly(1, x, domain='EX'),
-        ... Poly(x**2 + y**2, x, domain='EX'), x)
-        (0, 1/(x**2 + y**2))
-        >>> ratint_ratpart(Poly(36, x, domain='ZZ'),
-        ... Poly(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2, x, domain='ZZ'), x)
-        ((12*x + 6)/(x**2 - 1), 12/(x**2 - x - 2))
+    >>> from diofant.abc import x, y
+    >>> from diofant import Poly
+    >>> ratint_ratpart(Poly(1, x), Poly(x + 1, x), x)
+    (0, 1/(x + 1))
+    >>> ratint_ratpart(Poly(1, x, domain='EX'),
+    ...                Poly(x**2 + y**2, x, domain='EX'), x)
+    (0, 1/(x**2 + y**2))
+    >>> ratint_ratpart(Poly(36, x),
+    ...                Poly(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2, x), x)
+    ((12*x + 6)/(x**2 - 1), 12/(x**2 - x - 2))
 
     See Also
     ========
@@ -136,8 +136,6 @@ def ratint_ratpart(f, g, x):
     diofant.integrals.rationaltools.ratint
     diofant.integrals.rationaltools.ratint_logpart
     """
-    from ..solvers import solve
-
     f = Poly(f, x)
     g = Poly(g, x)
 
@@ -146,8 +144,8 @@ def ratint_ratpart(f, g, x):
     n = u.degree()
     m = v.degree()
 
-    A_coeffs = [ Dummy('a' + str(n - i)) for i in range(0, n) ]
-    B_coeffs = [ Dummy('b' + str(m - i)) for i in range(0, m) ]
+    A_coeffs = [Dummy('a' + str(n - i)) for i in range(n)]
+    B_coeffs = [Dummy('b' + str(m - i)) for i in range(m)]
 
     C_coeffs = A_coeffs + B_coeffs
 
@@ -168,8 +166,7 @@ def ratint_ratpart(f, g, x):
 
 
 def ratint_logpart(f, g, x, t=None):
-    r"""
-    Lazard-Rioboo-Trager algorithm.
+    r"""Lazard-Rioboo-Trager algorithm.
 
     Given a field K and polynomials f and g in K[x], such that f and g
     are coprime, deg(f) < deg(g) and g is square-free, returns a list
@@ -185,17 +182,14 @@ def ratint_logpart(f, g, x, t=None):
     Examples
     ========
 
-        >>> from diofant.integrals.rationaltools import ratint_logpart
-        >>> from diofant.abc import x
-        >>> from diofant import Poly
-        >>> ratint_logpart(Poly(1, x, domain='ZZ'),
-        ... Poly(x**2 + x + 1, x, domain='ZZ'), x)
-        [(Poly(x + 3*_t/2 + 1/2, x, domain='QQ[_t]'),
-        ...Poly(3*_t**2 + 1, _t, domain='ZZ'))]
-        >>> ratint_logpart(Poly(12, x, domain='ZZ'),
-        ... Poly(x**2 - x - 2, x, domain='ZZ'), x)
-        [(Poly(x - 3*_t/8 - 1/2, x, domain='QQ[_t]'),
-        ...Poly(-_t**2 + 16, _t, domain='ZZ'))]
+    >>> from diofant.abc import x
+    >>> from diofant import Poly
+    >>> ratint_logpart(Poly(1, x), Poly(x**2 + x + 1, x), x)
+    [(Poly(x + 3*_t/2 + 1/2, x, domain='QQ[_t]'),
+      Poly(3*_t**2 + 1, _t, domain='ZZ'))]
+    >>> ratint_logpart(Poly(12, x), Poly(x**2 - x - 2, x), x)
+    [(Poly(x - 3*_t/8 - 1/2, x, domain='QQ[_t]'),
+      Poly(-_t**2 + 16, _t, domain='ZZ'))]
 
     See Also
     ========
@@ -255,8 +249,7 @@ def ratint_logpart(f, g, x, t=None):
 
 
 def log_to_atan(f, g):
-    """
-    Convert complex logarithms to real arctangents.
+    """Convert complex logarithms to real arctangents.
 
     Given a real field K and polynomials f and g in K[x], with g != 0,
     returns a sum h of arctangents of polynomials in K[x], such that:
@@ -268,14 +261,12 @@ def log_to_atan(f, g):
     Examples
     ========
 
-        >>> from diofant.integrals.rationaltools import log_to_atan
-        >>> from diofant.abc import x
-        >>> from diofant import Poly, sqrt, Rational
-        >>> log_to_atan(Poly(x, x, domain='ZZ'), Poly(1, x, domain='ZZ'))
-        2*atan(x)
-        >>> log_to_atan(Poly(x + Rational(1, 2), x, domain='QQ'),
-        ... Poly(sqrt(3)/2, x, domain='EX'))
-        2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
+    >>> from diofant.abc import x
+    >>> from diofant import Poly, sqrt, Rational
+    >>> log_to_atan(Poly(x, x), Poly(1, x))
+    2*atan(x)
+    >>> log_to_atan(Poly(x + Rational(1, 2), x), Poly(sqrt(3)/2, x))
+    2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
 
     See Also
     ========
@@ -301,8 +292,7 @@ def log_to_atan(f, g):
 
 
 def log_to_real(h, q, x, t):
-    r"""
-    Convert complex logarithms to real functions.
+    r"""Convert complex logarithms to real functions.
 
     Given real field K and polynomials h in K[t,x] and q in K[t],
     returns real function f such that:
@@ -315,22 +305,19 @@ def log_to_real(h, q, x, t):
     Examples
     ========
 
-        >>> from diofant.integrals.rationaltools import log_to_real
-        >>> from diofant.abc import x, y
-        >>> from diofant import Poly, sqrt, Rational
-        >>> log_to_real(Poly(x + 3*y/2 + Rational(1, 2), x, domain='QQ[y]'),
-        ... Poly(3*y**2 + 1, y, domain='ZZ'), x, y)
-        2*sqrt(3)*atan(2*sqrt(3)*x/3 + sqrt(3)/3)/3
-        >>> log_to_real(Poly(x**2 - 1, x, domain='ZZ'),
-        ... Poly(-2*y + 1, y, domain='ZZ'), x, y)
-        log(x**2 - 1)/2
+    >>> from diofant.abc import x, y
+    >>> from diofant import Poly, sqrt, Rational
+    >>> log_to_real(Poly(x + 3*y/2 + Rational(1, 2), x),
+    ...             Poly(3*y**2 + 1, y), x, y)
+    2*sqrt(3)*atan(2*sqrt(3)*x/3 + sqrt(3)/3)/3
+    >>> log_to_real(Poly(x**2 - 1, x), Poly(-2*y + 1, y), x, y)
+    log(x**2 - 1)/2
 
     See Also
     ========
 
     log_to_atan
     """
-    from ..simplify import collect
     u, v = symbols('u,v', cls=Dummy)
 
     H = h.as_expr().subs({t: u + I*v}).expand()
@@ -345,13 +332,14 @@ def log_to_real(h, q, x, t):
     R = Poly(resultant(c, d, v), u)
 
     R_u = roots(R, filter='R')
+    R_q = roots(q, filter='R')
 
-    if len(R_u) != R.count_roots():
+    if len(R_u) != R.count_roots() or len(R_q) != q.count_roots():
         return
 
     result = Integer(0)
 
-    for r_u in R_u.keys():
+    for r_u in R_u:
         C = Poly(c.subs({u: r_u}), v)
         R_v = roots(C, filter='R')
 
@@ -364,7 +352,7 @@ def log_to_real(h, q, x, t):
 
             D = d.subs({u: r_u, v: r_v})
 
-            if D.evalf(chop=True) != 0:
+            if D.evalf(2, chop=True) != 0:
                 continue
 
             A = Poly(a.subs({u: r_u, v: r_v}), x)
@@ -374,12 +362,7 @@ def log_to_real(h, q, x, t):
 
             result += r_u*log(AB) + r_v*log_to_atan(A, B)
 
-    R_q = roots(q, filter='R')
-
-    if len(R_q) != q.count_roots():
-        return
-
-    for r in R_q.keys():
+    for r in R_q:
         result += r*log(h.as_expr().subs(t, r))
 
     return result

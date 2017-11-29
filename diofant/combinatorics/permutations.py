@@ -755,9 +755,9 @@ class Permutation(Basic):
            Concrete Mathematics: A Foundation for Computer Science, 2nd ed.
            Reading, MA: Addison-Wesley, 1994.
 
-    .. [6] http://en.wikipedia.org/wiki/Permutation#Product_and_inverse
+    .. [6] https://en.wikipedia.org/wiki/Permutation#Product_and_inverse
 
-    .. [7] http://en.wikipedia.org/wiki/Lehmer_code
+    .. [7] https://en.wikipedia.org/wiki/Lehmer_code
 
     """
 
@@ -1410,7 +1410,7 @@ class Permutation(Basic):
         References
         ==========
 
-        1. http://en.wikipedia.org/wiki/Transposition_%28mathematics%29#Properties
+        1. https://en.wikipedia.org/wiki/Transposition_%28mathematics%29#Properties
 
         """
         a = self.cyclic_form
@@ -1986,7 +1986,7 @@ class Permutation(Basic):
         References
         ==========
 
-        [1] http://www.cp.eng.chula.ac.th/~piak/teaching/algo/algo2008/count-inv.htm
+        [1] https://www.cp.eng.chula.ac.th/~piak/teaching/algo/algo2008/count-inv.htm
 
         Examples
         ========
@@ -2060,7 +2060,7 @@ class Permutation(Basic):
         References
         ==========
 
-        http://en.wikipedia.org/wiki/Commutator
+        https://en.wikipedia.org/wiki/Commutator
         """
 
         a = self.array_form
@@ -2644,9 +2644,8 @@ class Permutation(Basic):
         References
         ==========
 
-        1. http://en.wikipedia.org/wiki/Flavius_Josephus
-        2. http://en.wikipedia.org/wiki/Josephus_problem
-        3. http://www.wou.edu/~burtonl/josephus.html
+        .. [1] https://en.wikipedia.org/wiki/Flavius_Josephus
+        .. [2] https://en.wikipedia.org/wiki/Josephus_problem
 
         """
         from collections import deque

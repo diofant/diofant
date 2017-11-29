@@ -10,9 +10,9 @@ import pytest
 
 from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      Limit, Mul, Pow, Rational, Symbol, acosh, acot, airyai,
-                     airybi, atan, binomial, cos, cosh, coth, digamma, erf,
-                     exp, factorial, fibonacci, gamma, li, log, loggamma, oo,
-                     pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
+                     airybi, atan, binomial, cbrt, cos, cosh, coth, digamma,
+                     erf, exp, factorial, fibonacci, gamma, li, log, loggamma,
+                     oo, pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
 from diofant.series.gruntz import limitinf as gruntz
 from diofant.series.gruntz import sign as mrv_sign
 from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite
@@ -388,8 +388,7 @@ def test_intractable():
                   exp(-2*x**Rational(3, 2)/3), x) == 1/sqrt(pi)
     assert gruntz(airyai(1/x), x) == (3**Rational(5, 6) *
                                       gamma(Rational(1, 3))/(6*pi))
-    assert gruntz(airybi(1/x), x) == (3**Rational(1, 3) *
-                                      gamma(Rational(1, 3))/(2*pi))
+    assert gruntz(airybi(1/x), x) == cbrt(3)*gamma(Rational(1, 3))/(2*pi)
     assert gruntz(airyai(2 + 1/x), x) == airyai(2)
     assert gruntz(airybi(2 + 1/x), x) == airybi(2)
 

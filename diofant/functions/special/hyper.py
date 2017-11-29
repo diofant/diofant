@@ -7,7 +7,7 @@ import mpmath
 from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
                 sin, sinh, sqrt)
 from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
-                     Ne, Rational, S, Tuple, ilcm, oo, pi)
+                     Ne, Rational, S, Tuple, ilcm, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 
 
@@ -62,6 +62,11 @@ class TupleParametersBase(Function):
             return res + self.fdiff(3)*self.args[2].diff(s)
         except (ArgumentIndexError, NotImplementedError):
             return Derivative(self, s)
+
+    @property
+    def is_number(self):
+        """Returns True if 'self' has no free symbols. """
+        return not self.free_symbols
 
 
 class hyper(TupleParametersBase):
@@ -174,7 +179,7 @@ class hyper(TupleParametersBase):
 
     .. [1] Luke, Y. L. (1969), The Special Functions and Their Approximations,
            Volume 1
-    .. [2] http://en.wikipedia.org/wiki/Generalized_hypergeometric_function
+    .. [2] https//en.wikipedia.org/wiki/Generalized_hypergeometric_function
     """
 
     def __new__(cls, ap, bq, z):
@@ -440,7 +445,7 @@ class meijerg(TupleParametersBase):
 
     .. [1] Luke, Y. L. (1969), The Special Functions and Their Approximations,
            Volume 1
-    .. [2] http://en.wikipedia.org/wiki/Meijer_G-function
+    .. [2] https//en.wikipedia.org/wiki/Meijer_G-function
 
     """
 
@@ -457,8 +462,8 @@ class meijerg(TupleParametersBase):
             return TupleArg(_prep_tuple(p[0]), _prep_tuple(p[1]))
 
         arg0, arg1 = tr(args[0]), tr(args[1])
-        if Tuple(arg0, arg1).has(S.Infinity, S.ComplexInfinity,
-                                 S.NegativeInfinity):
+        if Tuple(arg0, arg1).has(oo, zoo,
+                                 -oo):
             raise ValueError("G-function parameters must be finite")
 
         if any((a - b).is_integer and (a - b).is_positive
@@ -624,7 +629,7 @@ class meijerg(TupleParametersBase):
         # G(z'**(1/r)) = G(z'**n) = G(z).
         from .. import exp_polar, ceiling
         z = self.argument
-        znum = self.argument._eval_evalf(prec)
+        znum = self.argument.evalf(prec, strict=False)
         if znum.has(exp_polar):
             znum, branch = znum.as_coeff_mul(exp_polar)
             if len(branch) != 1:
@@ -632,7 +637,7 @@ class meijerg(TupleParametersBase):
             branch = branch[0].args[0]/I
         else:
             branch = Integer(0)
-        n = ceiling(abs(branch/S.Pi)) + 1
+        n = ceiling(abs(branch/pi)) + 1
         znum = znum**(Integer(1)/n)*exp(I*branch / n)
 
         # Convert all args to mpf or mpc

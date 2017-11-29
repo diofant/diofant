@@ -42,8 +42,8 @@ def verify_numerically(f, g, z=None, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     f, g, z = Tuple(f, g, z)
     z = [z] if isinstance(z, Symbol) else (f.free_symbols | g.free_symbols)
     reps = list(zip(z, [random_complex_number(a, b, c, d) for zi in z]))
-    z1 = f.subs(reps).n()
-    z2 = g.subs(reps).n()
+    z1 = f.subs(reps).n(strict=False)
+    z2 = g.subs(reps).n(strict=False)
     return comp(z1, z2, tol)
 
 
@@ -67,9 +67,9 @@ def verify_derivative_numerically(f, z, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     """
     from ..core import Derivative
     z0 = random_complex_number(a, b, c, d)
-    f1 = f.diff(z).subs(z, z0)
+    f1 = f.diff(z).evalf(subs={z: z0})
     f2 = Derivative(f, z).doit_numerically(z0)
-    return comp(f1.n(), f2.n(), tol)
+    return comp(f1, f2, tol)
 
 
 def _randrange(seed=None):

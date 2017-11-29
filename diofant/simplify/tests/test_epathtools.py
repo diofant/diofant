@@ -76,6 +76,10 @@ def test_epath_apply():
     assert epath("/Symbol", x + y + z + 1, func) == x**2 + y**2 + z**2 + 1
     assert epath("/*/*/Symbol", t + sin(x + 1) + cos(x + y + E), func) == \
         t + sin(x**2 + 1) + cos(x**2 + y**2 + E)
+    assert epath("/*/*/Symbol", t*sin(x + 1)*cos(x + y + E), func) == \
+        t*sin(x**2 + 1)*cos(x**2 + y**2 + E)
+    assert epath("/*/*/Symbol", [((x, 1), 2), ((3, y), z)], func) == \
+        [((x**2, 1), 2), ((3, y**2), z)]
 
 
 def test_EPath():

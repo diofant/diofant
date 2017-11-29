@@ -2,9 +2,9 @@ import pytest
 
 from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
                      Integer, Lambda, Min, Mul, Piecewise, Rational, RootOf,
-                     Subs, Symbol, Tuple, Wild, abc, atan2, cos, cot, cse, exp,
-                     factor, false, log, nsimplify, oo, pi, sin, sqrt, symbols,
-                     tan, zoo)
+                     Subs, Symbol, Tuple, Wild, abc, atan2, cbrt, cos, cot,
+                     cse, exp, factor, false, log, nsimplify, oo, pi, sin,
+                     sqrt, symbols, tan, zoo)
 from diofant.abc import a, b, c, d, e, t, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
@@ -50,9 +50,9 @@ def test_trigonometric():
 def test_powers():
     assert sqrt(1 - sqrt(x)).subs(x, 4) == I
     assert (sqrt(1 - x**2)**3).subs(x, 2) == - 3*I*sqrt(3)
-    assert (x**Rational(1, 3)).subs(x, 27) == 3
-    assert (x**Rational(1, 3)).subs(x, -27) == 3*(-1)**Rational(1, 3)
-    assert ((-x)**Rational(1, 3)).subs(x, 27) == 3*(-1)**Rational(1, 3)
+    assert cbrt(x).subs(x, 27) == 3
+    assert cbrt(x).subs(x, -27) == 3*cbrt(-1)
+    assert cbrt(-x).subs(x, 27) == 3*cbrt(-1)
     n = Symbol('n', negative=True)
     assert (x**n).subs(x, 0) is zoo
     assert exp(-1).subs(E, 0) is zoo
@@ -176,7 +176,7 @@ def test_subs_dict1():
 
 
 def test_mul():
-    A, B, C = symbols('A B C', commutative=0)
+    A, B, C = symbols('A B C', commutative=False)
     assert (x*y*z).subs(z*x, y) == y**2
     assert (z*x).subs(1/x, z) == z*x
     assert (x*y/z).subs(1/z, a) == a*x*y
@@ -229,6 +229,10 @@ def test_mul():
     assert (-2*x**3/9).subs(2*x, z) == -z*x**2/9
     assert (2*(3*x/5/7)**2).subs(3*x/5, z) == 2*Rational(1, 7)**2*z**2
     assert (4*x).subs(-2*x, z) == 4*x  # try keep subs literal
+
+    assert (A**2*B**2).subs(A*B**3, C) == A**2*B**2
+    assert (A**Rational(5, 3)*B**3).subs(sqrt(A)*B, C) == A**Rational(5, 3)*B**3
+    assert (A**2*B**2*A).subs(A**2*B*A, C) == A**2*B**2*A
 
 
 def test_subs_simple():

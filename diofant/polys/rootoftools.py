@@ -16,8 +16,8 @@ from ..utilities import lambdify, public
 from .polyerrors import (DomainError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialError)
 from .polyfuncs import symmetrize, viete
-from .polyroots import (preprocess_roots, roots, roots_binomial, roots_linear,
-                        roots_quadratic)
+from .polyroots import (preprocess_roots, roots, roots_binomial, roots_cubic,
+                        roots_linear, roots_quadratic, roots_quartic)
 from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
 from .rootisolation import (dup_isolate_complex_roots_sqf,
@@ -153,6 +153,14 @@ class RootOf(Expr):
         p = self.poly
         if p.degree() == expt and p.length() == 2 and p.TC():
             return -p.TC()/p.LC()
+
+    def _eval_rewrite_as_Pow(self, e, x, i):
+        p = self.poly
+        n = p.degree()
+        if n == 3:
+            return roots_cubic(p)[i]
+        elif n == 4:
+            return roots_quartic(p)[i]
 
     @property
     def is_number(self):
@@ -449,7 +457,7 @@ class RootOf(Expr):
 
         roots = []
 
-        for index in range(0, reals_count):
+        for index in range(reals_count):
             roots.append(cls._reals_index(reals, index))
 
         return roots
@@ -469,14 +477,14 @@ class RootOf(Expr):
 
         roots = []
 
-        for index in range(0, reals_count):
+        for index in range(reals_count):
             roots.append(cls._reals_index(reals, index))
 
         complexes = cls._get_complexes(factors)
         complexes = cls._complexes_sorted(complexes)
         complexes_count = cls._count_roots(complexes)
 
-        for index in range(0, complexes_count):
+        for index in range(complexes_count):
             roots.append(cls._complexes_index(complexes, index))
 
         return roots

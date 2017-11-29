@@ -3,7 +3,7 @@ from functools import reduce
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow, S,
-                    Symbol, count_ops, ilcm, symbols, sympify)
+                    Symbol, count_ops, ilcm, oo, symbols, sympify)
 from ..core.compatibility import (NotIterable, as_int, default_sort_key,
                                   is_sequence)
 from ..core.logic import fuzzy_and
@@ -169,8 +169,8 @@ class MatrixBase(DefaultPrinting):
                 for row in args[0]:
                     if isinstance(row, MatrixBase):
                         in_mat.extend(row.tolist())
-                        if row.cols or row.rows:  # only pay attention if it's not 0x0
-                            ncol.add(row.cols)
+                        assert row.cols or row.rows
+                        ncol.add(row.cols)
                     else:
                         in_mat.append(row)
                         try:
@@ -282,12 +282,8 @@ class MatrixBase(DefaultPrinting):
                 value = Matrix(value)
                 is_mat = True
             if is_mat:
-                if is_slice:
-                    key = (slice(*divmod(i, self.cols)),
-                           slice(*divmod(j, self.cols)))
-                else:
-                    key = (slice(i, i + value.rows),
-                           slice(j, j + value.cols))
+                assert not is_slice
+                key = (slice(i, i + value.rows), slice(j, j + value.cols))
                 self.copyin_matrix(key, value)
             else:
                 return i, j, self._sympify(value)
@@ -680,11 +676,7 @@ class MatrixBase(DefaultPrinting):
             res[i] = rowstart + colsep.join(row) + rowend
         return rowsep.join(res)
 
-    def _format_str(self, printer=None):
-        if not printer:
-            from ..printing.str import StrPrinter
-            printer = StrPrinter()
-        # Handle zero dimensions:
+    def _format_str(self, printer):
         if self.rows == 0 or self.cols == 0:
             return 'Matrix(%s, %s, [])' % (self.rows, self.cols)
         if self.rows == 1:
@@ -872,7 +864,7 @@ class MatrixBase(DefaultPrinting):
         QRsolve
         pinv_solve
         """
-        if not self.is_diagonal:
+        if not self.is_diagonal():
             raise TypeError("Matrix should be diagonal")
         if rhs.rows != self.rows:
             raise TypeError("Size mis-match")
@@ -1037,18 +1029,14 @@ class MatrixBase(DefaultPrinting):
 
         islice, jslice = [isinstance(k, slice) for k in keys]
         if islice:
-            if not self.rows:
-                rlo = rhi = 0
-            else:
-                rlo, rhi = keys[0].indices(self.rows)[:2]
+            assert self.rows
+            rlo, rhi = keys[0].indices(self.rows)[:2]
         else:
             rlo = a2idx(keys[0], self.rows)
             rhi = rlo + 1
         if jslice:
-            if not self.cols:
-                clo = chi = 0
-            else:
-                clo, chi = keys[1].indices(self.cols)[:2]
+            assert self.cols
+            clo, chi = keys[1].indices(self.cols)[:2]
         else:
             clo = a2idx(keys[1], self.cols)
             chi = clo + 1
@@ -1798,10 +1786,10 @@ class MatrixBase(DefaultPrinting):
             elif ord == 1:  # sum(abs(x))
                 return Add(*(abs(i) for i in vals))
 
-            elif ord == S.Infinity:  # max(abs(x))
+            elif ord == oo:  # max(abs(x))
                 return Max(*[abs(i) for i in vals])
 
-            elif ord == S.NegativeInfinity:  # min(abs(x))
+            elif ord == -oo:  # min(abs(x))
                 return Min(*[abs(i) for i in vals])
 
             # Otherwise generalize the 2-norm, Sum(x_i**ord)**(1/ord)
@@ -2015,6 +2003,8 @@ class MatrixBase(DefaultPrinting):
         >>> a.is_nilpotent()
         False
         """
+        if not self:
+            return True
         if not self.is_square:
             raise NonSquareMatrixError(
                 "Nilpotency is valid only for square matrices")
@@ -2471,7 +2461,11 @@ class MatrixBase(DefaultPrinting):
         rewriting is needed on resulting formulae.
 
         TODO: Implement algorithm for sparse matrices (SFF),
-        http://www.eecis.udel.edu/~saunders/papers/sffge/it5.ps.
+        Hong R. Lee, B.David Saunders, Fraction Free Gaussian Elimination
+        for Sparse Matrices, In Journal of Symbolic Computation, Volume 19,
+        Issue 5, 1995, Pages 393-402, ISSN 0747-7171,
+        https://doi.org/10.1006/jsco.1995.1022.
+        (http://www.sciencedirect.com/science/article/pii/S074771718571022X)
 
         See Also
         ========
@@ -2534,7 +2528,11 @@ class MatrixBase(DefaultPrinting):
         will fail.
 
         TODO: Implement algorithm for sparse matrices (SFF),
-        http://www.eecis.udel.edu/~saunders/papers/sffge/it5.ps.
+        Hong R. Lee, B.David Saunders, Fraction Free Gaussian Elimination
+        for Sparse Matrices, In Journal of Symbolic Computation, Volume 19,
+        Issue 5, 1995, Pages 393-402, ISSN 0747-7171,
+        https://doi.org/10.1006/jsco.1995.1022.
+        (http://www.sciencedirect.com/science/article/pii/S074771718571022X)
 
         See Also
         ========
@@ -2564,7 +2562,7 @@ class MatrixBase(DefaultPrinting):
 
         Adjugate matrix is the transpose of the cofactor matrix.
 
-        http://en.wikipedia.org/wiki/Adjugate
+        https//en.wikipedia.org/wiki/Adjugate
 
         See Also
         ========
@@ -2632,10 +2630,6 @@ class MatrixBase(DefaultPrinting):
 
         d = self.berkowitz_det()
         zero = d.equals(0)
-        if zero is None:
-            # if equals() can't decide, will rref be able to?
-            ok = self.rref(simplify=True)[0]
-            zero = any(iszerofunc(ok[j, j]) for j in range(ok.rows))
         if zero:
             raise ValueError("Matrix det == 0; not invertible.")
 
@@ -2816,7 +2810,7 @@ class MatrixBase(DefaultPrinting):
 
             items = [C]
 
-            for i in range(0, n - 2):
+            for i in range(n - 2):
                 items.append(A*items[i])
 
             for i, B in enumerate(items):
@@ -2930,6 +2924,8 @@ class MatrixBase(DefaultPrinting):
         # unless the nsimplify flag indicates that this has already
         # been done, e.g. in eigenvects
         mat = self
+        if not mat:
+            return {}
         if flags.pop('rational', True):
             if any(v.has(Float) for v in mat):
                 mat = mat._new(mat.rows, mat.cols,
@@ -3051,6 +3047,8 @@ class MatrixBase(DefaultPrinting):
         singular_values
         """
 
+        if not self:
+            return S.Zero
         singularvalues = self.singular_values()
         return Max(*singularvalues) / Min(*singularvalues)
 
@@ -3235,23 +3233,18 @@ class MatrixBase(DefaultPrinting):
 
         def recurse_sub_blocks(M):
             i = 1
-            while i <= M.shape[0]:
+            while i <= M.rows:
                 if i == 1:
                     to_the_right = M[0, i:]
                     to_the_bottom = M[i:, 0]
                 else:
                     to_the_right = M[:i, i:]
                     to_the_bottom = M[i:, :i]
-                if any(to_the_right) or any(to_the_bottom):
-                    i += 1
-                    continue
-                else:
+                if not any(to_the_right) and not any(to_the_bottom):
                     sub_blocks.append(M[:i, :i])
-                    if M.shape == M[:i, :i].shape:
-                        return
-                    else:
-                        recurse_sub_blocks(M[i:, i:])
-                        return
+                    if M.shape != M[:i, :i].shape:
+                        return recurse_sub_blocks(M[i:, i:])
+                i += 1
         recurse_sub_blocks(self)
         return sub_blocks
 
@@ -3305,8 +3298,7 @@ class MatrixBase(DefaultPrinting):
             self._diagonalize_clear_subproducts()
             raise MatrixError("Matrix is not diagonalizable")
         else:
-            if self._eigenvects is None:
-                self._eigenvects = self.eigenvects(simplify=True)
+            assert self._eigenvects is not None
             if sort:
                 self._eigenvects.sort(key=default_sort_key)
                 self._eigenvects.reverse()
@@ -3416,6 +3408,7 @@ class MatrixBase(DefaultPrinting):
         for eigenval, multiplicity, vects in _eigenvects:
             l_jordan_chains = {}
             geometrical = len(vects)
+            assert geometrical != 0
             if geometrical == multiplicity:
                 # The Jordan chains have all length 1 and consist of only one vector
                 # which is the eigenvector of course
@@ -3425,8 +3418,6 @@ class MatrixBase(DefaultPrinting):
                     chains.append(chain)
                 l_jordan_chains[1] = chains
                 jordan_block_structures[eigenval] = l_jordan_chains
-            elif geometrical == 0:
-                raise MatrixError("Matrix has the eigen vector with geometrical multiplicity equal zero.")
             else:
                 # Up to now we know nothing about the sizes of the blocks of our Jordan matrix.
                 # Note that knowledge of algebraic and geometrical multiplicity
@@ -3540,7 +3531,7 @@ class MatrixBase(DefaultPrinting):
                     # (`S` will no longer be quadratic.)
 
                     exclude_vectors = Ns[s-1]
-                    for k in range(0, a[s-1]):
+                    for k in range(a[s-1]):
                         S = S.col_join((exclude_vectors[k]).adjoint())
 
                     # We also want to exclude the vectors
@@ -3563,7 +3554,7 @@ class MatrixBase(DefaultPrinting):
                     n_e0 = len(e0s)
                     s_chains = []
                     # s_cells=[]
-                    for i in range(0, n_e0):
+                    for i in range(n_e0):
                         chain = [e0s[i]]
                         for k in range(1, s):
                             v = M*chain[k-1]
@@ -3661,22 +3652,22 @@ class MatrixBase(DefaultPrinting):
         from . import MutableMatrix
 
         # Order according to default_sort_key, this makes sure the order is the same as in .diagonalize():
-        for eigenval in (sorted(jordan_block_structures.keys(), key=default_sort_key)):
+        for eigenval in (sorted(jordan_block_structures, key=default_sort_key)):
             l_jordan_chains = jordan_block_structures[eigenval]
-            for s in reversed(sorted((l_jordan_chains).keys())):  # Start with the biggest block
+            for s in reversed(sorted(l_jordan_chains)):  # Start with the biggest block
                 s_chains = l_jordan_chains[s]
                 block = self.jordan_cell(eigenval, s)
                 number_of_s_chains = len(s_chains)
-                for i in range(0, number_of_s_chains):
+                for i in range(number_of_s_chains):
                     Jcells.append(type(self)(block))
                     chain_vectors = s_chains[i]
                     lc = len(chain_vectors)
                     assert lc == s
-                    for j in range(0, lc):
+                    for j in range(lc):
                         generalized_eigen_vector = chain_vectors[j]
                         Pcols_new.append(generalized_eigen_vector)
         P = MutableMatrix.zeros(n)
-        for j in range(0, n):
+        for j in range(n):
             P[:, j] = Pcols_new[j]
 
         return type(self)(P), Jcells
@@ -3794,11 +3785,14 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.sparse.SparseMatrixBase.row
         col_join
         """
-        if self.rows != rhs.rows:
-            raise ShapeError(
-                "`self` and `rhs` must have the same number of rows.")
-
         from . import MutableMatrix
+
+        if not self:
+            return type(self)(rhs)
+        if self.rows != rhs.rows:
+            raise ShapeError("`self` and `rhs` must have the same"
+                             " number of rows.")
+
         newmat = MutableMatrix.zeros(self.rows, self.cols + rhs.cols)
         newmat[:, :self.cols] = self
         newmat[:, self.cols:] = rhs
@@ -3827,11 +3821,14 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.sparse.SparseMatrixBase.col
         row_join
         """
-        if self.cols != bott.cols:
-            raise ShapeError(
-                "`self` and `bott` must have the same number of columns.")
-
         from . import MutableMatrix
+
+        if not self:
+            return type(self)(bott)
+        if self.cols != bott.cols:
+            raise ShapeError("`self` and `bott` must have the same"
+                             " number of columns.")
+
         newmat = MutableMatrix.zeros(self.rows + bott.rows, self.cols)
         newmat[:self.rows, :] = self
         newmat[self.rows:, :] = bott
@@ -3860,6 +3857,9 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.sparse.SparseMatrixBase.row
         col_insert
         """
+        if not self:
+            return type(self)(mti)
+
         if pos == 0:
             return mti.col_join(self)
         elif pos < 0:
@@ -3902,6 +3902,11 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.sparse.SparseMatrixBase.col
         row_insert
         """
+        from . import MutableMatrix
+
+        if not self:
+            return type(self)(mti)
+
         if pos == 0:
             return mti.row_join(self)
         elif pos < 0:
@@ -3914,7 +3919,6 @@ class MatrixBase(DefaultPrinting):
         if self.rows != mti.rows:
             raise ShapeError("self and mti must have the same number of rows.")
 
-        from . import MutableMatrix
         newmat = MutableMatrix.zeros(self.rows, self.cols + mti.cols)
         i, j = pos, pos + mti.cols
         newmat[:, :i] = self[:, :i]
@@ -3922,7 +3926,7 @@ class MatrixBase(DefaultPrinting):
         newmat[:, j:] = self[:, i:]
         return type(self)(newmat)
 
-    def replace(self, F, G, map=False):
+    def replace(self, F, G):
         """Replaces Function F in Matrix entries with Function G.
 
         Examples
@@ -3942,7 +3946,7 @@ class MatrixBase(DefaultPrinting):
         """
         M = self[:, :]
 
-        return M.applyfunc(lambda x: x.replace(F, G, map))
+        return M.applyfunc(lambda x: x.replace(F, G))
 
     def pinv(self):
         """Calculate the Moore-Penrose pseudoinverse of the matrix.
@@ -4125,7 +4129,7 @@ def mgamma(mu, lower=False):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Gamma_matrices
+    .. [1] https//en.wikipedia.org/wiki/Gamma_matrices
     """
     from . import Matrix
     if mu not in [0, 1, 2, 3, 5]:

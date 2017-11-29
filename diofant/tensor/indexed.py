@@ -104,7 +104,7 @@ See the appropriate docstrings for a detailed explanation of the output.
 #      - Idx with stepsize != 1
 #      - Idx with step determined by function call
 
-from ..core import Dummy, Expr, S, Symbol, Tuple, sympify
+from ..core import Dummy, Expr, Symbol, Tuple, oo, sympify
 from ..core.compatibility import NotIterable, is_sequence
 
 
@@ -497,11 +497,11 @@ class Idx(Expr):
                 raise ValueError(filldedent("""
                     Idx range tuple must have length 2, but got %s""" % len(range)))
             for bound in range:
-                if not (bound.is_integer or abs(bound) is S.Infinity):
+                if not (bound.is_integer or abs(bound) is oo):
                     raise TypeError("Idx object requires integer bounds.")
             args = label, Tuple(*range)
         elif isinstance(range, Expr):
-            if not (range.is_integer or range is S.Infinity):
+            if not (range.is_integer or range is oo):
                 raise TypeError("Idx object requires an integer dimension.")
             args = label, Tuple(0, range - 1)
         elif range:

@@ -1,6 +1,7 @@
 import pytest
 
-from diofant import And, Interval, Matrix, Not, Or, Piecewise, false, sin
+from diofant import (And, Dummy, Interval, Matrix, Not, Or, Piecewise, false,
+                     sin)
 from diofant.abc import x, y, z
 from diofant.printing.lambdarepr import lambdarepr
 
@@ -16,6 +17,7 @@ def test_basic():
     assert lambdarepr(Or(x, y)) == "((x) or (y))"
     assert lambdarepr(Not(x)) == "(not (x))"
     assert lambdarepr(false) == "False"
+    assert lambdarepr(Dummy('f(x)')) == "_f_lpar_x_rpar_"
 
 
 def test_matrix():

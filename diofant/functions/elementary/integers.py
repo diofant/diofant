@@ -1,4 +1,4 @@
-from ...core import (Add, Dummy, Function, Ge, Gt, Integer, Le, Lt,
+from ...core import (Add, Dummy, Function, Ge, Gt, I, Integer, Le, Lt,
                      PrecisionExhausted, S, Symbol)
 
 
@@ -15,12 +15,12 @@ class RoundFunction(Function):
         from .complexes import im
         if arg.is_integer:
             return arg
-        if arg.func is cls:
+        if isinstance(arg, cls):
             return arg
-        if arg.is_imaginary or (S.ImaginaryUnit*arg).is_extended_real:
+        if arg.is_imaginary or (I*arg).is_extended_real:
             i = im(arg)
-            if not i.has(S.ImaginaryUnit):
-                return cls(i)*S.ImaginaryUnit
+            if not i.has(I):
+                return cls(i)*I
             return cls(arg, evaluate=False)
 
         v = cls._eval_number(arg)
@@ -47,7 +47,7 @@ class RoundFunction(Function):
         # Evaluate npart numerically if independent of spart
         if npart and (
             not spart or
-            npart.is_extended_real and (spart.is_imaginary or (S.ImaginaryUnit*spart).is_extended_real) or
+            npart.is_extended_real and (spart.is_imaginary or (I*spart).is_extended_real) or
                 npart.is_imaginary and spart.is_extended_real):
             try:
                 from ...core.evalf import DEFAULT_MAXPREC as TARGET
@@ -60,7 +60,7 @@ class RoundFunction(Function):
                         if prec >= TARGET:
                             raise PrecisionExhausted
                         prec += 10
-                ipart += Integer(r) + Integer(i)*S.ImaginaryUnit
+                ipart += Integer(r) + Integer(i)*I
                 npart = S.Zero
             except (PrecisionExhausted, NotImplementedError):
                 pass
@@ -68,8 +68,8 @@ class RoundFunction(Function):
         spart += npart
         if not spart:
             return ipart
-        elif spart.is_imaginary or (S.ImaginaryUnit*spart).is_extended_real:
-            return ipart + cls(im(spart), evaluate=False)*S.ImaginaryUnit
+        elif spart.is_imaginary or (I*spart).is_extended_real:
+            return ipart + cls(im(spart), evaluate=False)*I
         else:
             return ipart + cls(spart, evaluate=False)
 

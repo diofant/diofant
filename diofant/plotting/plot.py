@@ -33,10 +33,6 @@ from ..utilities.decorator import doctest_depends_on
 from ..utilities.iterables import is_sequence
 
 
-def vectorized_lambdify(args, expr):
-    return lambdify(args, expr, "numpy")
-
-
 # Global variable
 # Set to False when running tests / doctests so that the plots don't show.
 _show = True
@@ -496,7 +492,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                                  num=int(self.end) - int(self.start) + 1)
         else:
             list_x = np.linspace(self.start, self.end, num=self.nb_of_points)
-        f = vectorized_lambdify([self.var], self.expr)
+        f = lambdify([self.var], self.expr, "numpy")
         list_y = f(list_x)
         return list_x, list_y
 
@@ -532,8 +528,8 @@ class Parametric2DLineSeries(Line2DBaseSeries):
 
     def get_points(self):
         param = self.get_parameter_points()
-        fx = vectorized_lambdify([self.var], self.expr_x)
-        fy = vectorized_lambdify([self.var], self.expr_y)
+        fx = lambdify([self.var], self.expr_x, "numpy")
+        fy = lambdify([self.var], self.expr_y, "numpy")
         list_x = fx(param)
         list_y = fy(param)
         return list_x, list_y
@@ -664,9 +660,9 @@ class Parametric3DLineSeries(Line3DBaseSeries):
 
     def get_points(self):
         param = self.get_parameter_points()
-        fx = vectorized_lambdify([self.var], self.expr_x)
-        fy = vectorized_lambdify([self.var], self.expr_y)
-        fz = vectorized_lambdify([self.var], self.expr_z)
+        fx = lambdify([self.var], self.expr_x, "numpy")
+        fy = lambdify([self.var], self.expr_y, "numpy")
+        fz = lambdify([self.var], self.expr_z, "numpy")
         list_x = fx(param)
         list_y = fy(param)
         list_z = fz(param)
@@ -739,7 +735,7 @@ class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
                                                  num=self.nb_of_points_x),
                                      np.linspace(self.start_y, self.end_y,
                                                  num=self.nb_of_points_y))
-        f = vectorized_lambdify((self.var_x, self.var_y), self.expr)
+        f = lambdify((self.var_x, self.var_y), self.expr, "numpy")
         return mesh_x, mesh_y, f(mesh_x, mesh_y)
 
 
@@ -787,9 +783,9 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
 
     def get_meshes(self):
         mesh_u, mesh_v = self.get_parameter_meshes()
-        fx = vectorized_lambdify((self.var_u, self.var_v), self.expr_x)
-        fy = vectorized_lambdify((self.var_u, self.var_v), self.expr_y)
-        fz = vectorized_lambdify((self.var_u, self.var_v), self.expr_z)
+        fx = lambdify((self.var_u, self.var_v), self.expr_x, "numpy")
+        fy = lambdify((self.var_u, self.var_v), self.expr_y, "numpy")
+        fz = lambdify((self.var_u, self.var_v), self.expr_z, "numpy")
         return fx(mesh_u, mesh_v), fy(mesh_u, mesh_v), fz(mesh_u, mesh_v)
 
 

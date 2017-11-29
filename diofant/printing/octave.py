@@ -11,7 +11,7 @@ complete source code files.
 
 from re import search
 
-from ..core import Mul, Pow, Rational, S
+from ..core import I, Mul, Pow, Rational, S, oo, pi
 from ..core.mul import _keep_coeff
 from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
@@ -98,7 +98,7 @@ class OctaveCodePrinter(CodePrinter):
         # print complex numbers nicely in Octave
         if (expr.is_number and expr.is_imaginary and
                 expr.as_coeff_Mul()[0].is_integer):
-            return "%si" % self._print(-S.ImaginaryUnit*expr)
+            return "%si" % self._print(-I*expr)
 
         # cribbed from str.py
         prec = precedence(expr)
@@ -127,7 +127,7 @@ class OctaveCodePrinter(CodePrinter):
                     b.append(Pow(item.base, -item.exp, evaluate=False))
                 else:
                     b.append(Pow(item.base, -item.exp))
-            elif item.is_Rational and item is not S.Infinity:
+            elif item.is_Rational and item is not oo:
                 if item.p != 1:
                     a.append(Rational(item.p))
                 if item.q != 1:
@@ -171,7 +171,7 @@ class OctaveCodePrinter(CodePrinter):
             if expr.exp == -S.Half:
                 sym = '/' if expr.base.is_number else './'
                 return "1" + sym + "sqrt(%s)" % self._print(expr.base)
-            if expr.exp == -S.One:
+            if expr.exp == -1:
                 sym = '/' if expr.base.is_number else './'
                 return "1" + sym + "%s" % self.parenthesize(expr.base, PREC)
 
@@ -339,13 +339,13 @@ class OctaveCodePrinter(CodePrinter):
     def _print_jn(self, expr):
         from ..functions import sqrt, besselj
         x = expr.argument
-        expr2 = sqrt(S.Pi/(2*x))*besselj(expr.order + S.Half, x)
+        expr2 = sqrt(pi/(2*x))*besselj(expr.order + S.Half, x)
         return self._print(expr2)
 
     def _print_yn(self, expr):
         from ..functions import sqrt, bessely
         x = expr.argument
-        expr2 = sqrt(S.Pi/(2*x))*bessely(expr.order + S.Half, x)
+        expr2 = sqrt(pi/(2*x))*bessely(expr.order + S.Half, x)
         return self._print(expr2)
 
     def _print_airyai(self, expr):

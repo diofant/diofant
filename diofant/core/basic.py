@@ -1,5 +1,6 @@
 """Base class for all the objects in Diofant"""
 
+from collections import Mapping, defaultdict
 from itertools import zip_longest
 
 from .cache import cacheit
@@ -14,24 +15,6 @@ class Basic(object):
     Base class for all objects in Diofant.
 
     Always use ``args`` property, when accessing parameters of some instance.
-
-    Examples
-    ========
-
-    >>> from diofant import cot
-    >>> from diofant.abc import x, y
-
-    >>> cot(x).args
-    (x,)
-
-    >>> cot(x).args[0]
-    x
-
-    >>> (x*y).args
-    (x, y)
-
-    >>> (x*y).args[1]
-    y
     """
 
     # To be overridden with True in the appropriate subclasses
@@ -119,13 +102,13 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant.core import S, I, Rational, Symbol
+        >>> from diofant import I, Rational, Symbol, root, sqrt
 
-        >>> sorted([S.Half, I, -I], key=lambda x: x.sort_key())
+        >>> sorted([Rational(1, 2), I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
         >>> x = Symbol('x')
-        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
+        >>> [x, 1/x, 1/x**2, x**2, sqrt(x), root(x, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
@@ -241,23 +224,24 @@ class Basic(object):
 
         >>> from diofant import I, pi, sin
         >>> from diofant.abc import x, y
-        >>> (1 + x + 2*sin(y + I*pi)).atoms()
+        >>> e = 1 + x + 2*sin(y + I*pi)
+        >>> e.atoms()
         {1, 2, I, pi, x, y}
 
         If one or more types are given, the results will contain only
         those types of atoms.
 
         >>> from diofant import Number, NumberSymbol, Symbol
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Symbol)
+        >>> e.atoms(Symbol)
         {x, y}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number)
+        >>> e.atoms(Number)
         {1, 2}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol)
+        >>> e.atoms(Number, NumberSymbol)
         {1, 2, pi}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol, I)
+        >>> e.atoms(Number, NumberSymbol, I)
         {1, 2, I, pi}
 
         Note that I (imaginary unit) and zoo (complex infinity) are special
@@ -265,46 +249,43 @@ class Basic(object):
 
         The type can be given implicitly, too:
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(x)
+        >>> e.atoms(x)
         {x, y}
 
         Be careful to check your assumptions when using the implicit option
-        since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is ``One``, a special type
-        of diofant atom, while ``type(Integer(2))`` is type ``Integer`` and will find all
-        integers in an expression:
+        since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is
+        ``One``, a special type of diofant atom, while ``type(Integer(2))``
+        is type ``Integer`` and will find all integers in an expression:
 
         >>> from diofant import S, Integer
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(1))
+        >>> e.atoms(Integer(1))
         {1}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(2))
+        >>> e.atoms(Integer(2))
         {1, 2}
 
         Finally, arguments to atoms() can select more than atomic atoms: any
-        diofant type (loaded in core/__init__.py) can be listed as an argument
-        and those types of "atoms" as found in scanning the arguments of the
-        expression recursively:
+        diofant type can be listed as an argument and those types of "atoms"
+        as found in scanning the arguments of the expression recursively:
 
         >>> from diofant import Function, Mul
         >>> from diofant.core.function import AppliedUndef
-        >>> f = Function('f')
-        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(Function)
-        {f(x), sin(y + I*pi)}
-        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef)
-        {f(x)}
 
         >>> (1 + x + 2*sin(y + I*pi)).atoms(Mul)
         {I*pi, 2*sin(y + I*pi)}
+
+        >>> f = Function('f')
+        >>> e = 1 + f(x) + 2*sin(y + I*pi)
+        >>> e.atoms(Function)
+        {f(x), sin(y + I*pi)}
+        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef)
+        {f(x)}
         """
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
             types = (Atom,)
-        result = set()
-        for expr in preorder_traversal(self):
-            if isinstance(expr, types):
-                result.add(expr)
-        return result
+        return set().union(*[set(self.find(t)) for t in types])
 
     @property
     def free_symbols(self):
@@ -321,33 +302,6 @@ class Basic(object):
         free_symbols method.
         """
         return set().union(*[a.free_symbols for a in self.args])
-
-    @property
-    def canonical_variables(self):
-        """Return a dictionary mapping any variable defined in
-        ``self.variables`` as underscore-suffixed numbers
-        corresponding to their position in ``self.variables``. Enough
-        underscores are added to ensure that there will be no clash with
-        existing free symbols.
-
-        Examples
-        ========
-
-        >>> from diofant import Lambda
-        >>> from diofant.abc import x
-        >>> Lambda(x, 2*x).canonical_variables
-        {x: 0_}
-        """
-        from . import Symbol
-        try:
-            V = self.variables
-        except AttributeError:
-            return {}
-        u = "_"
-        while any(s.name.endswith(u) for s in V):
-            u += "_"
-        name = '%%i%s' % u
-        return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
 
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
@@ -378,7 +332,7 @@ class Basic(object):
 
         The following should hold for all objects::
 
-            >> x == x.func(*x.args)
+            x == x.func(*x.args)
 
         Examples
         ========
@@ -393,7 +347,6 @@ class Basic(object):
         2*x
         >>> a == a.func(*a.args)
         True
-
         """
         return self.__class__
 
@@ -418,13 +371,6 @@ class Basic(object):
 
         >>> (x*y).args[1]
         y
-
-        Notes
-        =====
-
-        Only use _args in __new__ when creating a new function.
-        Don't override .args() from Basic (so that it's easy to
-        change the interface in the future if needed).
         """
         return self._args
 
@@ -525,12 +471,12 @@ class Basic(object):
         evaluation, it is better to pass the substitution to
         evalf as
 
-        >>> (1/x).evalf(subs={x: 3.0}, n=21)
+        >>> (1/x).evalf(subs={x: 3.0}, n=21, strict=False)
         0.333333333333333333333
 
         rather than
 
-        >>> (1/x).subs({x: 3.0}).evalf(21)
+        >>> (1/x).subs({x: 3.0}).evalf(21, strict=False)
         0.333333333333333
 
         as the former will ensure that the desired level of precision is
@@ -546,7 +492,6 @@ class Basic(object):
         diofant.core.evalf.EvalfMixin.evalf: calculates the given formula to
                                            a desired level of precision
         """
-        from .containers import Dict
         from ..utilities import default_sort_key
         from .symbol import Dummy
 
@@ -555,7 +500,7 @@ class Basic(object):
             sequence = args[0]
             if isinstance(sequence, set):
                 unordered = True
-            elif isinstance(sequence, (Dict, dict)):
+            elif isinstance(sequence, Mapping):
                 unordered = True
                 sequence = sequence.items()
             elif not iterable(sequence):
@@ -582,15 +527,15 @@ class Basic(object):
         if unordered:
             sequence = dict(sequence)
             if not all(k.is_Atom for k in sequence):
-                d = {}
+                d = defaultdict(list)
                 for o, n in sequence.items():
                     try:
                         ops = o.count_ops(), len(o.args)
                     except TypeError:
                         ops = (0, 0)
-                    d.setdefault(ops, []).append((o, n))
+                    d[ops].append((o, n))
                 newseq = []
-                for k in sorted(d.keys(), reverse=True):
+                for k in sorted(d, reverse=True):
                     newseq.extend(sorted((v[0] for v in d[k]),
                                          key=default_sort_key))
                 sequence = [(k, sequence[k]) for k in newseq]
@@ -807,7 +752,7 @@ class Basic(object):
         """
         if self in rule:
             return rule[self]
-        elif rule:
+        elif rule and not self.is_Atom:
             args = tuple(a.xreplace(rule) for a in self.args)
             if not _aresame(args, self.args):
                 return self.func(*args)
@@ -815,67 +760,64 @@ class Basic(object):
 
     @cacheit
     def has(self, *patterns):
-        """Test whether any subexpression matches any of the patterns.
+        r"""Test if any subexpression matches any of the patterns.
+
+        Parameters
+        ==========
+
+        \*patterns : tuple of Expr
+            List of expressions to search for match.
+
+        Returns
+        =======
+
+        bool
+            False if there is no match or patterns list is
+            empty, else True.
 
         Examples
         ========
 
         >>> from diofant import sin
         >>> from diofant.abc import x, y, z
-        >>> (x**2 + sin(x*y)).has(z)
+        >>> e = x**2 + sin(x*y)
+        >>> e.has(z)
         False
-        >>> (x**2 + sin(x*y)).has(x, y, z)
+        >>> e.has(x, y, z)
         True
-        >>> x.has(x)
-        True
-
-        Note that ``expr.has(*patterns)`` is exactly equivalent to
-        ``any(expr.has(p) for p in patterns)``. In particular, ``False`` is
-        returned when the list of patterns is empty.
-
         >>> x.has()
         False
         """
-        return any(self._has(pattern) for pattern in patterns)
-
-    def _has(self, pattern):
-        """Helper for .has()"""
         from .function import UndefinedFunction, Function
 
-        pattern = sympify(pattern)
-
-        if isinstance(pattern, UndefinedFunction):
-            return any(pattern in (f, f.func)
-                       for f in self.atoms(Function, UndefinedFunction))
-        elif isinstance(pattern, type):
-            return any(isinstance(arg, pattern)
-                       for arg in preorder_traversal(self))
+        if len(patterns) != 1:
+            return any(self.has(pattern) for pattern in patterns)
         else:
-            match = pattern._has_matcher()
-            return any(match(arg) for arg in preorder_traversal(self))
+            pattern = sympify(patterns[0])
+            if isinstance(pattern, UndefinedFunction):
+                return any(pattern in (f, f.func)
+                           for f in self.atoms(Function, UndefinedFunction))
+            elif isinstance(pattern, type):
+                return any(isinstance(arg, pattern)
+                           for arg in preorder_traversal(self))
+            else:
+                match = pattern._has_matcher()
+                return any(match(arg) for arg in preorder_traversal(self))
 
     def _has_matcher(self):
         """Helper for .has()"""
         return lambda x: self == x
 
-    def replace(self, query, value, map=False, simultaneous=True, exact=False):
+    def replace(self, query, value, exact=False):
         """Replace matching subexpressions of ``self`` with ``value``.
 
-        If ``map = True`` then also return the mapping {old: new} where ``old``
-        was a sub-expression found with query and ``new`` is the replacement
-        value for it. If the expression itself doesn't match the query, then
-        the returned value will be ``self.xreplace(map)`` otherwise it should
-        be ``self.subs(ordered(map.items()))``.
-
         Traverses an expression tree and performs replacement of matching
-        subexpressions from the bottom to the top of the tree. The default
-        approach is to do the replacement in a simultaneous fashion so
-        changes made are targeted only once. If this is not desired or causes
-        problems, ``simultaneous`` can be set to False. In addition, if an
+        subexpressions from the bottom to the top of the tree in a simultaneous
+        fashion so changes made are targeted only once. In addition, if an
         expression containing more than one Wild symbol is being used to match
-        subexpressions and  the ``exact`` flag is True, then the match will only
-        succeed if non-zero values are received for each Wild that appears in
-        the match pattern.
+        subexpressions and  the ``exact`` flag is True, then the match will
+        only succeed if non-zero values are received for each Wild that appears
+        in the match pattern.
 
         The list of possible combinations of queries and replacement values
         is listed below:
@@ -897,8 +839,6 @@ class Basic(object):
 
             >>> f.replace(sin, cos)
             log(cos(x)) + tan(cos(x**2))
-            >>> sin(x).replace(sin, cos, map=True)
-            (cos(x), {sin(x): cos(x)})
             >>> (x*y).replace(Mul, Add)
             x + y
 
@@ -980,7 +920,6 @@ class Basic(object):
         xreplace: exact node replacement in expr tree; also capable of
                   using matching rules
         """
-        from .symbol import Dummy
         from ..simplify.simplify import bottom_up
 
         try:
@@ -1052,46 +991,15 @@ class Basic(object):
                 "first argument to replace() must be a "
                 "type, an expression or a callable")
 
-        mapping = {}  # changes that took place
-        mask = []  # the dummies that were used as change placeholders
-
         def rec_replace(expr):
             result = _query(expr)
             if result or result == {}:
                 new = _value(expr, result)
                 if new is not None and new != expr:
-                    mapping[expr] = new
-                    if simultaneous:
-                        # don't let this expression be changed during rebuilding
-                        com = getattr(new, 'is_commutative', True)
-                        if com is None:
-                            com = True
-                        d = Dummy(commutative=com)
-                        mask.append((d, new))
-                        expr = d
-                    else:
-                        expr = new
+                    expr = new
             return expr
 
-        rv = bottom_up(self, rec_replace, atoms=True)
-
-        # restore original expressions for Dummy symbols
-        if simultaneous:
-            mask = list(reversed(mask))
-            for o, n in mask:
-                r = {o: n}
-                rv = rv.xreplace(r)
-
-        if not map:
-            return rv
-        else:
-            if simultaneous:
-                # restore subexpressions in mapping
-                for o, n in mask:
-                    r = {o: n}
-                    mapping = {k.xreplace(r): v.xreplace(r)
-                               for k, v in mapping.items()}
-            return rv, mapping
+        return bottom_up(self, rec_replace, atoms=True)
 
     def find(self, query):
         """Find all subexpressions matching a query. """
@@ -1108,17 +1016,16 @@ class Basic(object):
         else:
             _query = query
 
-        groups = {}
+        groups = defaultdict(int)
         for result in filter(_query, preorder_traversal(self)):
-            groups.setdefault(result, 0)
             groups[result] += 1
-        return groups
+        return dict(groups)
 
     def count(self, query):
         """Count the number of matching subexpressions. """
         return sum(self.find(query).values())
 
-    def matches(self, expr, repl_dict={}):
+    def _matches(self, expr, repl_dict={}):
         """Helper method for match() that looks for a match between Wild
         symbols in self and expressions in expr.
 
@@ -1128,17 +1035,20 @@ class Basic(object):
         >>> from diofant import symbols, Wild, Basic
         >>> a, b, c = symbols('a b c')
         >>> x = Wild('x')
-        >>> Basic(a + x, x).matches(Basic(a + b, c)) is None
+        >>> Basic(a + x, x)._matches(Basic(a + b, c)) is None
         True
-        >>> Basic(a + x, x).matches(Basic(a + b + c, b + c))
+        >>> Basic(a + x, x)._matches(Basic(a + b + c, b + c))
         {x_: b + c}
         """
         expr = sympify(expr)
-        if not isinstance(expr, self.__class__):
+        if not isinstance(expr, self.func):
             return
 
         if self == expr:
             return repl_dict
+
+        if self.is_Atom:
+            return
 
         if len(self.args) != len(expr.args):
             return
@@ -1147,7 +1057,7 @@ class Basic(object):
         for arg, other_arg in zip(self.args, expr.args):
             if arg == other_arg:
                 continue
-            d = arg.xreplace(d).matches(other_arg, d)
+            d = arg.xreplace(d)._matches(other_arg, d)
             if d is None:
                 return
         return d
@@ -1157,10 +1067,20 @@ class Basic(object):
 
         Wild symbols match all.
 
-        Return ``None`` when expression (self) does not match
-        with pattern. Otherwise return a dictionary such that::
+        Parameters
+        ==========
 
-            pattern.xreplace(self.match(pattern)) == self
+        pattern : Expr
+            An expression that may contain Wild symbols.
+
+        Returns
+        =======
+
+        dict or None
+            If pattern match self, return a dictionary of
+            replacement rules, such that::
+
+                pattern.xreplace(self.match(pattern)) == self
 
         Examples
         ========
@@ -1169,17 +1089,19 @@ class Basic(object):
         >>> from diofant.abc import x, y
         >>> p = Wild("p")
         >>> q = Wild("q")
-        >>> r = Wild("r")
-        >>> e = (x+y)**(x+y)
+        >>> e = (x + y)**(x + y)
         >>> e.match(p**p)
         {p_: x + y}
         >>> e.match(p**q)
         {p_: x + y, q_: x + y}
-        >>> e = (2*x)**2
-        >>> e.match(p*q**r)
-        {p_: 4, q_: x, r_: 2}
-        >>> (p*q**r).xreplace(e.match(p*q**r))
-        4*x**2
+        >>> (p**q).xreplace(_)
+        (x + y)**(x + y)
+
+        See Also
+        ========
+
+        xreplace
+        diofant.core.symbol.Wild
         """
         from ..simplify import signsimp
         pattern = sympify(pattern)
@@ -1188,9 +1110,9 @@ class Basic(object):
         # if we still have the same relationship between the types of
         # input, then use the sign simplified forms
         if (pattern.func == self.func) and (s.func == p.func):
-            rv = p.matches(s)
+            rv = p._matches(s)
         else:
-            rv = pattern.matches(self)
+            rv = pattern._matches(self)
         return rv
 
     def count_ops(self, visual=None):
@@ -1317,27 +1239,6 @@ class Atom(Basic):
     """
 
     is_Atom = True
-
-    def matches(self, expr, repl_dict={}):
-        """Helper method for match().
-
-        See Also
-        ========
-
-        Basic.matches
-        """
-        if self == expr:
-            return repl_dict
-
-    def xreplace(self, rule):
-        """Replace occurrences of objects within the expression.
-
-        See Also
-        ========
-
-        Basic.xreplace
-        """
-        return rule.get(self, self)
 
     def doit(self, **hints):
         """Evaluate objects that are not evaluated by default.

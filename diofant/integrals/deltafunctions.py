@@ -51,10 +51,10 @@ def change_mul(node, x):
     sorted_args.extend(nc)
 
     for arg in sorted_args:
-        if arg.is_Pow and arg.base.func is DiracDelta:
+        if arg.is_Pow and isinstance(arg.base, DiracDelta):
             new_args.append(arg.func(arg.base, arg.exp - 1))
             arg = arg.base
-        if dirac is None and (arg.func is DiracDelta and arg.is_simple(x)
+        if dirac is None and (isinstance(arg, DiracDelta) and arg.is_simple(x)
                               and (len(arg.args) <= 1 or arg.args[1] == 0)):
             dirac = arg
         else:
@@ -62,9 +62,9 @@ def change_mul(node, x):
     if not dirac:  # there was no simple dirac
         new_args = []
         for arg in sorted_args:
-            if arg.func is DiracDelta:
+            if isinstance(arg, DiracDelta):
                 new_args.append(arg.simplify(x))
-            elif arg.is_Pow and arg.base.func is DiracDelta:
+            elif arg.is_Pow and isinstance(arg.base, DiracDelta):
                 new_args.append(arg.func(arg.base.simplify(x), arg.exp))
             else:
                 new_args.append(change_mul(arg, x))
@@ -102,7 +102,7 @@ def deltaintegrate(f, x):
 
       First we expand it.
 
-      If the expansion did work, the we try to integrate the expansion.
+      If the expansion did work, then we try to integrate the expansion.
 
       If not, we try to extract a simple DiracDelta term, then we have two
       cases:

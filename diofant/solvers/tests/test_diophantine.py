@@ -6,9 +6,9 @@ from diofant import Integer, Matrix, Subs, factor_list, simplify, symbols
 from diofant.abc import a, b, c, d, e, f, g, h, i
 from diofant.core.function import _mexpand
 from diofant.functions.elementary.trigonometric import sin
-from diofant.solvers.diophantine import (descent, diop_bf_DN, diop_DN,
-                                         diop_solve, diophantine, equivalent,
-                                         find_DN, ldescent, length,
+from diofant.solvers.diophantine import (classify_diop, descent, diop_bf_DN,
+                                         diop_DN, diop_solve, diophantine,
+                                         equivalent, find_DN, ldescent, length,
                                          pairwise_prime, partition,
                                          power_representation,
                                          prime_as_sum_of_two_squares,
@@ -32,6 +32,17 @@ def test_input_format():
 def test_univariate():
     assert diop_solve((x - 1)*(x - 2)**2) == {(1,), (2,)}
     assert diop_solve((x - 1)*(x - 2)) == {(1,), (2,)}
+
+
+def test_classify_diop():
+    pytest.raises(TypeError, lambda: classify_diop(x**2/3 - 1))
+    pytest.raises(NotImplementedError, lambda: classify_diop(w*x*y*z - 1))
+    pytest.raises(NotImplementedError, lambda: classify_diop(x**3 + y**3 + z**4 - 90))
+    assert classify_diop(14*x**2 + 15*x - 42) == ([x], {1: -42, x: 15, x**2: 14}, 'univariate')
+    assert classify_diop(x*y + z) == ([x, y, z], {x*y: 1, z: 1}, 'inhomogeneous_ternary_quadratic')
+    assert classify_diop(x*y + z + w + x**2) == ([w, x, y, z], {x*y: 1, w: 1, x**2: 1, z: 1}, 'inhomogeneous_general_quadratic')
+    assert classify_diop(x*y + x*z + x**2 + 1) == ([x, y, z], {x*y: 1, x*z: 1, x**2: 1, 1: 1}, 'inhomogeneous_general_quadratic')
+    assert classify_diop(x*y**2 + 1) == ([x, y], {x*y**2: 1, 1: 1}, 'cubic_thue')
 
 
 def test_linear():
@@ -245,11 +256,11 @@ def is_pell_transformation_ok(eq):
                                        for t in simplified.args)}
 
     for term in [X*Y, X, Y]:
-        if term in coeff.keys():
+        if term in coeff:
             return False
 
     for term in [X**2, Y**2, Integer(1)]:
-        if term not in coeff.keys():
+        if term not in coeff:
             coeff[term] = Integer(0)
 
     if coeff[X**2] != 0:
@@ -311,7 +322,7 @@ def is_normal_transformation_ok(eq):
     coeff = {val: key for key, val in (t.as_independent(X, Y, Z)
                                        for t in simplified.args)}
     for term in [X*Y, Y*Z, X*Z]:
-        if term in coeff.keys():
+        if term in coeff:
             return False
 
     return True
@@ -525,7 +536,7 @@ def test_assumptions():
     Test whether diophantine respects the assumptions.
     """
     # Test case taken from the below so question regarding assumptions in diophantine module
-    # http://stackoverflow.com/questions/23301941/how-can-i-declare-natural-symbols-with-sympy
+    # https//stackoverflow.com/questions/23301941/how-can-i-declare-natural-symbols-with-sympy
     m, n = symbols('m n', integer=True, positive=True)
     diof = diophantine(n ** 2 + m * n - 500)
     assert diof == {(5, 20), (40, 10), (95, 5), (121, 4), (248, 2), (499, 1)}

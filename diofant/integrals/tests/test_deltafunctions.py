@@ -1,5 +1,5 @@
 from diofant import (DiracDelta, Function, Heaviside, Integer, Rational, cos,
-                     pi, sin, symbols)
+                     exp, pi, sin, symbols)
 from diofant.integrals.deltafunctions import change_mul, deltaintegrate
 
 
@@ -73,3 +73,7 @@ def test_deltaintegrate():
     p = DiracDelta(x - z)*f(x - b)*f(x - a)*DiracDelta(x - y)
     assert deltaintegrate(p, x) == DiracDelta(y - z)*f(y - b)*f(y - a) * \
         Heaviside(x - y)
+
+    # for test coverage
+    assert deltaintegrate(DiracDelta(exp(x) - 1), x) is None
+    assert deltaintegrate((x - 1)*DiracDelta(exp(x) - 1), x) is None

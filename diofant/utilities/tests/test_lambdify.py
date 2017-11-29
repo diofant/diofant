@@ -1,4 +1,5 @@
 import math
+from itertools import product
 
 import mpmath
 import pytest
@@ -166,7 +167,7 @@ def test_numexpr_printer():
 
     blacklist = ('where', 'complex', 'contains')
     arg_tuple = (x, y, z)  # some functions take more than one argument
-    for sym in NumExprPrinter._numexpr_functions.keys():
+    for sym in NumExprPrinter._numexpr_functions:
         if sym in blacklist:
             continue
         ssym = sympify(sym)
@@ -451,6 +452,22 @@ def test_imps():
     # Error for functions with same name and different implementation
     f2 = implemented_function("f", lambda x: x + 101)
     pytest.raises(ValueError, lambda: lambdify(x, f(f2(x))))
+
+
+def test_imps_errors():
+    # Test errors that implemented functions can return, and still be
+    # able to form expressions.  See issue sympy/sympy#10810.
+    for val, error_class in product((0, 0., 2, 2.0),
+                                    (AttributeError, TypeError, ValueError)):
+
+        def myfunc(a):
+            if a == 0:
+                raise error_class
+            return 1
+
+        f = implemented_function('f', myfunc)
+        expr = f(val)
+        assert expr == f(val)
 
 
 def test_imps_wrong_args():

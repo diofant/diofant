@@ -1,5 +1,5 @@
 from ..core import (Add, Dummy, Expr, Mul, S, Symbol, Tuple, cacheit,
-                    expand_log, expand_power_base, sympify)
+                    expand_log, expand_power_base, nan, oo, sympify)
 from ..core.compatibility import default_sort_key, is_sequence
 from ..utilities.iterables import uniq
 
@@ -84,7 +84,7 @@ class Order(Expr):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Big_O_notation
+    .. [1] https//en.wikipedia.org/wiki/Big_O_notation
     """
 
     is_Order = True
@@ -123,20 +123,20 @@ class Order(Expr):
             new_vp = dict(expr_vp)
             vp = dict(zip(variables, point))
             for v, p in vp.items():
-                if v in new_vp.keys():
+                if v in new_vp:
                     if p != new_vp[v]:
                         raise NotImplementedError(
                             "Mixing Order at different points is not supported.")
                 else:
                     new_vp[v] = p
-            if set(expr_vp.keys()) == set(new_vp.keys()):
+            if set(expr_vp) == set(new_vp):
                 return expr
             else:
-                variables = list(new_vp.keys())
+                variables = list(new_vp)
                 point = [new_vp[v] for v in variables]
 
-        if expr is S.NaN:
-            return S.NaN
+        if expr is nan:
+            return nan
 
         if any(x in p.free_symbols for x in variables for p in point):
             raise ValueError('Got %s as a point.' % point)
@@ -144,7 +144,7 @@ class Order(Expr):
         if variables:
             if any(p != point[0] for p in point):
                 raise NotImplementedError
-            if point[0] in [S.Infinity, S.NegativeInfinity]:
+            if point[0] in [oo, -oo]:
                 s = {k: 1/Dummy() for k in variables}
                 rs = {1/v: 1/k for k, v in s.items()}
             elif point[0] is not S.Zero:
@@ -276,7 +276,7 @@ class Order(Expr):
                     "Multiplying Order at different points is not supported.")
             order_symbols = dict(order_symbols)
             for s, p in dict(self.args[1:]).items():
-                if s not in order_symbols.keys():
+                if s not in order_symbols:
                     order_symbols[s] = p
             order_symbols = sorted(order_symbols.items(), key=lambda x: default_sort_key(x[0]))
         return self.expr, tuple(order_symbols)
@@ -303,7 +303,7 @@ class Order(Expr):
         from .limits import Limit
         if expr is S.Zero:
             return True
-        if expr is S.NaN:
+        if expr is nan:
             return False
         if expr.is_Order:
             if (not all(p == expr.point[0] for p in expr.point) and
@@ -325,7 +325,7 @@ class Order(Expr):
                 return all(x in self.args[1:] for x in expr.args[1:])
             if expr.expr.is_Add:
                 return all(self.contains(x) for x in expr.expr.args)
-            if self.expr.is_Add and point == S.Zero:
+            if self.expr.is_Add and point == 0:
                 return any(self.func(x, *self.args[1:]).contains(expr)
                            for x in self.expr.args)
             if self.variables and expr.variables:

@@ -52,16 +52,16 @@ def test_print_cache(capfd):
 def clear_imports(request):
     # Clear namespace
     orig = sys.modules.copy()
-    for m in list(sys.modules.keys()):
+    for m in list(sys.modules):
         if m.startswith('diofant'):
             del sys.modules[m]
 
     def restore_imports():
-        for m in list(sys.modules.keys()):
+        for m in list(sys.modules):
             if m.startswith('diofant'):
                 del sys.modules[m]
 
-        for m in orig.keys():
+        for m in orig:
             sys.modules[m] = orig[m]
 
     request.addfinalizer(restore_imports)

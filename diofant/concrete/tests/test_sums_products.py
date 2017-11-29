@@ -285,7 +285,7 @@ def test_other_sums():
     g = 3*exp(Rational(3, 2))/2 + exp(Rational(1, 2))/2 - exp(-Rational(1, 2))/2 - 3*exp(-Rational(3, 2))/2 + 5
 
     assert summation(f, (m, -Rational(3, 2), Rational(3, 2))).expand() == g
-    assert summation(f, (m, -1.5, 1.5)).evalf().epsilon_eq(g.evalf(), 1e-10)
+    assert summation(f, (m, -Rational(3, 2), Rational(3, 2))).evalf().epsilon_eq(g.evalf(), 1e-10)
 
     assert summation(n**x, (n, 1, oo)) == Sum(n**x, (n, 1, oo))
 
@@ -302,20 +302,21 @@ def NS(e, n=15, **options):
 
 def test_evalf_fast_series():
     # Euler transformed series for sqrt(1+x)
-    assert NS(Sum(
-        fac(2*n + 1)/fac(n)**2/2**(3*n + 1), (n, 0, oo)), 100) == NS(sqrt(2), 100)
+    assert NS(Sum(fac(2*n + 1)/fac(n)**2/2**(3*n + 1), (n, 0, oo)),
+              100, strict=False) == NS(sqrt(2), 100)
 
     # Some series for exp(1)
     estr = NS(E, 100)
-    assert NS(Sum(1/fac(n), (n, 0, oo)), 100) == estr
+    assert NS(Sum(1/fac(n), (n, 0, oo)), 100, strict=False) == estr
     assert NS(1/Sum((1 - 2*n)/fac(2*n), (n, 0, oo)), 100) == estr
-    assert NS(Sum((2*n + 1)/fac(2*n), (n, 0, oo)), 100) == estr
-    assert NS(Sum((4*n + 3)/2**(2*n + 1)/fac(2*n + 1), (n, 0, oo))**2, 100) == estr
+    assert NS(Sum((2*n + 1)/fac(2*n), (n, 0, oo)), 100, strict=False) == estr
+    assert NS(Sum((4*n + 3)/2**(2*n + 1)/fac(2*n + 1), (n, 0, oo))**2,
+              100, strict=False) == estr
 
     pistr = NS(pi, 100)
     # Ramanujan series for pi
-    assert NS(9801/sqrt(8)/Sum(fac(
-        4*n)*(1103 + 26390*n)/fac(n)**4/396**(4*n), (n, 0, oo)), 100) == pistr
+    assert NS(9801/sqrt(8)/Sum(fac(4*n)*(1103 + 26390*n)/fac(n)**4/396**(4*n),
+                               (n, 0, oo)), 100, strict=False) == pistr
     assert NS(1/Sum(
         binomial(2*n, n)**3 * (42*n + 5)/2**(12*n + 4), (n, 0, oo)), 100) == pistr
     # Machin's formula for pi
@@ -326,30 +327,32 @@ def test_evalf_fast_series():
     astr = NS(zeta(3), 100)
     P = 126392*n**5 + 412708*n**4 + 531578*n**3 + 336367*n**2 + 104000 * \
         n + 12463
-    assert NS(Sum((-1)**n * P / 24 * (fac(2*n + 1)*fac(2*n)*fac(
-        n))**3 / fac(3*n + 2) / fac(4*n + 3)**3, (n, 0, oo)), 100) == astr
+    assert NS(Sum((-1)**n * P / 24 * (fac(2*n + 1)*fac(2*n)*fac(n))**3 /
+                  fac(3*n + 2) / fac(4*n + 3)**3, (n, 0, oo)),
+              100, strict=False) == astr
     assert NS(Sum((-1)**n * (205*n**2 + 250*n + 77)/64 * fac(n)**10 /
-                  fac(2*n + 1)**5, (n, 0, oo)), 100) == astr
+                  fac(2*n + 1)**5, (n, 0, oo)), 100, strict=False) == astr
 
 
 def test_evalf_fast_series_sympyissue_4021():
     # Catalan's constant
     assert NS(Sum((-1)**(n - 1)*2**(8*n)*(40*n**2 - 24*n + 3)*fac(2*n)**3 *
-                  fac(n)**2/n**3/(2*n - 1)/fac(4*n)**2, (n, 1, oo))/64, 100) == \
-        NS(Catalan, 100)
+                  fac(n)**2/n**3/(2*n - 1)/fac(4*n)**2, (n, 1, oo))/64,
+              100, strict=False) == NS(Catalan, 100)
     astr = NS(zeta(3), 100)
     assert NS(5*Sum(
         (-1)**(n - 1)*fac(n)**2 / n**3 / fac(2*n), (n, 1, oo))/2, 100) == astr
     assert NS(Sum((-1)**(n - 1)*(56*n**2 - 32*n + 5) / (2*n - 1)**2 * fac(n - 1)
-                  ** 3 / fac(3*n), (n, 1, oo))/4, 100) == astr
+                  ** 3 / fac(3*n), (n, 1, oo))/4,
+              100, strict=False) == astr
 
 
 def test_evalf_slow_series():
     assert NS(Sum((-1)**n / n, (n, 1, oo)), 15) == NS(-log(2), 15)
     assert NS(Sum((-1)**n / n, (n, 1, oo)), 50) == NS(-log(2), 50)
-    assert NS(Sum(1/n**2, (n, 1, oo)), 15) == NS(pi**2/6, 15)
-    assert NS(Sum(1/n**2, (n, 1, oo)), 100) == NS(pi**2/6, 100)
-    assert NS(Sum(1/n**2, (n, 1, oo)), 500) == NS(pi**2/6, 500)
+    assert NS(Sum(1/n**2, (n, 1, oo)), 15, strict=False) == NS(pi**2/6, 15)
+    assert NS(Sum(1/n**2, (n, 1, oo)), 100, strict=False) == NS(pi**2/6, 100)
+    assert NS(Sum(1/n**2, (n, 1, oo)), 500, strict=False) == NS(pi**2/6, 500)
     assert NS(Sum((-1)**n / (2*n + 1)**3, (n, 0, oo)), 15) == NS(pi**3/32, 15)
     assert NS(Sum((-1)**n / (2*n + 1)**3, (n, 0, oo)), 50) == NS(pi**3/32, 50)
 
@@ -396,7 +399,7 @@ def test_evalf_symbolic():
     f, g = symbols('f g', cls=Function)
     # issue sympy/sympy#6328
     expr = Sum(f(x), (x, 1, 3)) + Sum(g(x), (x, 1, 3))
-    assert expr.evalf() == expr
+    assert expr.evalf(strict=False) == expr
 
 
 def test_evalf_sympyissue_6372():

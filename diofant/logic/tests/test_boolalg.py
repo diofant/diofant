@@ -232,9 +232,12 @@ def test_simplification():
     assert simplify_logic(e) == And(A, x*(x - 1))
     assert simplify_logic(e, deep=False) == e
     pytest.raises(ValueError, lambda: simplify_logic(A & (B | C), form='spam'))
+
     e = x & y ^ z | (z ^ x)
-    assert simplify_logic(e) in [(x & ~z) | (z & ~x) | (z & ~y),
-                                 (x & ~y) | (x & ~z) | (z & ~x)]
+    res = [(x & ~z) | (z & ~x) | (z & ~y), (x & ~y) | (x & ~z) | (z & ~x)]
+    assert simplify_logic(e) in res
+    assert SOPform([z, y, x], [[0, 0, 1], [0, 1, 1],
+                               [1, 0, 0], [1, 0, 1], [1, 1, 0]]) == res[1]
 
     # check input
     ans = SOPform([x, y], [[1, 0]])
@@ -319,7 +322,7 @@ def test_subs():
 
 """
 we test for axioms of boolean algebra
-see http://en.wikipedia.org/wiki/Boolean_algebra_(structure)
+see https//en.wikipedia.org/wiki/Boolean_algebra_(structure)
 """
 
 
@@ -691,12 +694,12 @@ def test_all_or_nothing():
     x = symbols('x', extended_real=True)
     args = x >= - oo, x <= oo
     v = And(*args)
-    if v.func is And:
+    if isinstance(v, And):
         assert len(v.args) == len(args) - args.count(true)
     else:
         assert v
     v = Or(*args)
-    if v.func is Or:
+    if isinstance(v, Or):
         assert len(v.args) == 2
     else:
         assert v

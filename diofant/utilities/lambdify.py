@@ -183,7 +183,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     implemented_function and user defined subclasses of Function.  If specified,
     numexpr may be the only option in modules. The official list of numexpr
     functions can be found at:
-    https://github.com/pydata/numexpr#supported-functions
+    https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions
 
     In previous releases ``lambdify`` replaced ``Matrix`` with ``numpy.matrix``
     by default. As of release 0.7.7 ``numpy.array`` is the default.
@@ -457,9 +457,9 @@ def lambdastr(args, expr, printer=None, dummify=False):
             if isinstance(args, (Function, Symbol)):
                 dummies = Dummy()
                 dummies_dict.update({args: dummies})
-                return str(dummies)
+                return lambdarepr(dummies)
             else:
-                return str(args)
+                return lambdarepr(args)
 
     def sub_expr(expr, dummies_dict):
         try:
@@ -468,7 +468,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
             if isinstance(expr, DeferredVector):
                 pass
             elif isinstance(expr, dict):
-                k = [sub_expr(sympify(a), dummies_dict) for a in expr.keys()]
+                k = [sub_expr(sympify(a), dummies_dict) for a in expr]
                 v = [sub_expr(sympify(a), dummies_dict) for a in expr.values()]
                 expr = dict(zip(k, v))
             elif isinstance(expr, tuple):
@@ -483,7 +483,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     if isiter(args) and any(isiter(i) for i in args):
         import re
-        dum_args = [str(Dummy(str(i))) for i in range(len(args))]
+        dum_args = [lambdarepr(Dummy(str(i))) for i in range(len(args))]
         iter_args = ','.join([i if isiter(a) else i
                               for i, a in zip(dum_args, args)])
         lstr = lambdastr(flatten(args), expr, printer=printer, dummify=dummify)
@@ -546,7 +546,7 @@ def _imp_namespace(expr, namespace=None):
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> g = implemented_function(Function('g'), lambda x: x*10)
     >>> namespace = _imp_namespace(f(g(x)))
-    >>> sorted(namespace.keys())
+    >>> sorted(namespace)
     ['f', 'g']
     """
     # Delayed import to avoid circular imports

@@ -1,6 +1,7 @@
 import random
 from collections import defaultdict
 
+import hypothesis
 import pytest
 
 from diofant import GoldenRatio as Phi
@@ -282,6 +283,12 @@ def multiproduct(seq=(), start=1):
                 units *= base
             multi.append((base, exp//2))
     return units * multiproduct(multi)**2
+
+
+@hypothesis.given(x=hypothesis.strategies.integers(min_value=0,
+                                                   max_value=1e+10))
+def test_factorint_invariant(x):
+    assert Mul(*[v**p for v, p in factorint(x).items()]) == x
 
 
 def test_factorint():
@@ -603,6 +610,7 @@ def test_residue():
     assert list(sqrt_mod_iter(6, 146, ZZ)) == [88, 58]
 
     assert is_nthpow_residue(2, 1, 5)
+    pytest.raises(NotImplementedError, lambda: is_nthpow_residue(676, 3, 5364))
     assert not is_nthpow_residue(2, 2, 5)
     assert is_nthpow_residue(8547, 12, 10007)
     assert nthroot_mod(1801, 11, 2663) == 44

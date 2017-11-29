@@ -2,7 +2,7 @@
 
 import re
 
-from ..core import Basic, S, sympify
+from ..core import Basic, I, sympify
 from ..utilities import has_dups, numbered_symbols, public, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
@@ -151,7 +151,7 @@ class Options(dict):
             if key in self:
                 del defaults[key]
             else:
-                for option in self.keys():
+                for option in self:
                     cls = self.__options__[option]
 
                     if key in cls.excludes:
@@ -160,7 +160,7 @@ class Options(dict):
 
         preprocess_options(defaults)
 
-        for option in self.keys():
+        for option in self:
             cls = self.__options__[option]
 
             for require_option in cls.requires:
@@ -518,7 +518,7 @@ class Gaussian(BooleanOption, metaclass=OptionType):
     @classmethod
     def postprocess(cls, options):
         if 'gaussian' in options and options['gaussian'] is True:
-            options['extension'] = {S.ImaginaryUnit}
+            options['extension'] = {I}
             Extension.postprocess(options)
 
 
@@ -744,7 +744,7 @@ def allowed_flags(args, flags):
     """
     flags = set(flags)
 
-    for arg in args.keys():
+    for arg in args:
         try:
             if Options.__options__[arg].is_Flag and arg not in flags:
                 raise FlagError(

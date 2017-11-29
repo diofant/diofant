@@ -2,15 +2,16 @@ from collections import defaultdict
 
 import mpmath
 
-from ..core import (Add, Basic, Dummy, Expr, Float, I, Integer, Mul, Pow,
+from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     Rational, S, Symbol, count_ops, expand_func, expand_log,
-                    expand_mul, expand_power_exp, factor_terms, pi, sympify)
+                    expand_mul, expand_power_exp, factor_terms, oo, pi,
+                    sympify)
 from ..core.compatibility import as_int, iterable, ordered
 from ..core.evaluate import global_evaluate
 from ..core.function import _mexpand
 from ..core.rules import Transform
 from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
-                         exp_polar, gamma, jn, log, piecewise_fold, sqrt,
+                         exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
                          unpolarify)
 from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
@@ -192,7 +193,7 @@ def _is_sum_surds(p):
 def _nthroot_solve(p, n, prec):
     """
     helper function for ``nthroot``
-    It denests ``p**Rational(1, n)`` using its minimal polynomial
+    It denests ``root(p, n)`` using its minimal polynomial
     """
     from ..polys.numberfields import _minimal_polynomial_sq
     from ..solvers import solve
@@ -201,7 +202,7 @@ def _nthroot_solve(p, n, prec):
         n = n // 2
     if n == 1:
         return p
-    pn = p**Rational(1, n)
+    pn = root(p, n)
     x = Symbol('x')
     f = _minimal_polynomial_sq(p, n, x)
     if f is None:
@@ -243,7 +244,7 @@ def nthroot(expr, n, max_len=4, prec=15):
     """
     expr = sympify(expr)
     n = sympify(n)
-    p = expr**Rational(1, n)
+    p = root(expr, n)
     if not n.is_integer:
         return p
     if not _is_sum_surds(expr):
@@ -261,7 +262,7 @@ def nthroot(expr, n, max_len=4, prec=15):
     surds.sort()
     surds = surds[:max_len]
     if expr < 0 and n % 2 == 1:
-        p = (-expr)**Rational(1, n)
+        p = root(-expr, n)
         a = nsimplify(p, constants=surds)
         res = a if _mexpand(a**n) == _mexpand(-expr) else p
         return -res
@@ -373,7 +374,7 @@ def hypersimp(f, k):
     g = combsimp(g)
 
     if g.is_rational_function(k):
-        return simplify(g, ratio=S.Infinity)
+        return simplify(g, ratio=oo)
     else:
         return
 
@@ -623,7 +624,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     expr1 = shorter(_e, _mexpand(_e).cancel())  # issue sympy/sympy#6829
     expr2 = shorter(together(expr, deep=True), together(expr1, deep=True))
 
-    if ratio is S.Infinity:
+    if ratio is oo:
         expr = expr2
     else:
         expr = shorter(expr2, expr1, expr)
@@ -659,7 +660,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     short = shorter(powsimp(expr, combine='exp', deep=True), powsimp(expr), expr)
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
     if (short.has(TrigonometricFunction, HyperbolicFunction, exp_polar) or
-            any(a.base is S.Exp1 for a in short.atoms(Pow))):
+            any(a.base is E for a in short.atoms(Pow))):
         short = exptrigsimp(short, simplify=False)
 
     # get rid of hollow 2-arg Mul factorization
@@ -777,9 +778,9 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     except (TypeError, ValueError):
         pass
     expr = sympify(expr)
-    expr = sympify(expr).xreplace({Float('inf'): S.Infinity,
-                                   Float('-inf'): S.NegativeInfinity})
-    if expr is S.Infinity or expr is S.NegativeInfinity:
+    expr = sympify(expr).xreplace({Float('inf'): oo,
+                                   Float('-inf'): -oo})
+    if expr is oo or expr is -oo:
         return expr
     if rational or expr.free_symbols:
         return _real_to_rational(expr, tolerance)
@@ -804,7 +805,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
             raise ValueError("constants must be real-valued")
         constants_dict[str(constant)] = v._to_mpmath(bprec)
 
-    exprval = expr.evalf(prec, chop=True)
+    exprval = expr.evalf(prec, chop=True, strict=False)
     re, im = exprval.as_real_imag()
 
     # safety check to make sure that this evaluated to a number
@@ -848,7 +849,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
             return _real_to_rational(expr)
         return expr
 
-    rv = re + im*S.ImaginaryUnit
+    rv = re + im*I
     # if there was a change or rational is explicitly not wanted
     # return the value, else return the Rational representation
     if rv != expr or rational is False:
@@ -918,7 +919,7 @@ def logcombine(expr, force=False):
         logs = []
         log1 = defaultdict(list)
         for a in Add.make_args(rv):
-            if a.func is log and goodlog(a):
+            if isinstance(a, log) and goodlog(a):
                 log1[()].append(([], a))
             elif not a.is_Mul:
                 other.append(a)
@@ -930,7 +931,7 @@ def logcombine(expr, force=False):
                     if ai.is_Rational and ai < 0:
                         ot.append(S.NegativeOne)
                         co.append(-ai)
-                    elif ai.func is log and goodlog(ai):
+                    elif isinstance(ai, log) and goodlog(ai):
                         lo.append(ai)
                     elif gooda(ai):
                         co.append(ai)
@@ -961,19 +962,17 @@ def logcombine(expr, force=False):
                 li = l.pop(0)
                 e = log(li.args[0]**e)
             c, l = Mul(*o), e
-            if l.func is log:  # it should be, but check to be sure
-                log1[(c,)].append(([], l))
-            else:
-                other.append(c*l)
+            assert isinstance(l, log)
+            log1[(c,)].append(([], l))
 
         # logs that have the same coefficient can multiply
-        for k in list(log1.keys()):
+        for k in list(log1):
             log1[Mul(*k)] = log(logcombine(Mul(*[
                 l.args[0]**Mul(*c) for c, l in log1.pop(k)]),
                 force=force))
 
         # logs that have oppositely signed coefficients can divide
-        for k in ordered(list(log1.keys())):
+        for k in ordered(list(log1)):
             if k not in log1:  # already popped as -k
                 continue
             if -k in log1:

@@ -609,12 +609,12 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ring = self.ring
 
         if isinstance(other, ring.dtype):
-            if set(self.keys()) != set(other.keys()):
+            if set(self) != set(other):
                 return False
 
             almosteq = ring.domain.almosteq
 
-            for k in self.keys():
+            for k in self:
                 if not almosteq(self[k], other[k], tolerance):
                     return False
             else:
@@ -877,7 +877,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             if not cp2:
                 return p
             zm = ring.zero_monom
-            if zm not in self.keys():
+            if zm not in self:
                 p[zm] = cp2
             else:
                 if other == -p[zm]:
@@ -897,7 +897,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return NotImplemented
         else:
             zm = ring.zero_monom
-            if zm not in self.keys():
+            if zm not in self:
                 p[zm] = n
             else:
                 if n == -p[zm]:
@@ -949,7 +949,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             p = self.copy()
             zm = ring.zero_monom
-            if zm not in self.keys():
+            if zm not in self:
                 p[zm] = -other
             else:
                 if other == p[zm]:
@@ -1157,7 +1157,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ring = self.ring
         p = ring.zero
         get = p.get
-        keys = list(self.keys())
+        keys = list(self)
         zero = ring.domain.zero
         monomial_mul = ring.monomial_mul
         for i in range(len(keys)):

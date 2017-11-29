@@ -4,10 +4,11 @@ import os
 import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, atan, ceiling,
-                     cos, cot, diff, exp, factorial, floor, gamma, integrate,
-                     limit, log, nan, oo, pi, polygamma, sign, simplify, sin,
-                     sinh, sqrt, subfactorial, symbols, tan)
+                     PoleError, Rational, Sum, Symbol, acos, atan, cbrt,
+                     ceiling, cos, cot, diff, erf, erfi, exp, factorial, floor,
+                     gamma, integrate, limit, log, nan, oo, pi, polygamma,
+                     root, sign, simplify, sin, sinh, sqrt, subfactorial,
+                     symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -50,10 +51,10 @@ def test_basic1():
     assert limit(1/sin(x), x, pi, dir="-") == oo
     assert limit(1/cos(x), x, pi/2, dir="+") == -oo
     assert limit(1/cos(x), x, pi/2, dir="-") == oo
-    assert limit(1/tan(x**3), x, (2*pi)**Rational(1, 3), dir="+") == oo
-    assert limit(1/tan(x**3), x, (2*pi)**Rational(1, 3), dir="-") == -oo
-    assert limit(1/cot(x)**3, x, (3*pi/2), dir="+") == -oo
-    assert limit(1/cot(x)**3, x, (3*pi/2), dir="-") == oo
+    assert limit(1/tan(x**3), x, cbrt(2*pi), dir="+") == oo
+    assert limit(1/tan(x**3), x, cbrt(2*pi), dir="-") == -oo
+    assert limit(1/cot(x)**3, x, 3*pi/2, dir="+") == -oo
+    assert limit(1/cot(x)**3, x, 3*pi/2, dir="-") == oo
 
     # approaching 0
     # from dir="+"
@@ -271,9 +272,9 @@ def test_sympyissue_5183():
                                    [-1, 1],
                                    [2, 3, Rational(1, 2), Rational(2, 3)],
                                    ['-', '+']))
-    results = (oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)), oo,
+    results = (oo, oo, -oo, oo, -oo*I, oo, -oo*sign(cbrt(-1)), oo,
                0, 0, 0, 0, 0, 0, 0, 0,
-               oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)),
+               oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign(cbrt(-1)),
                0, 0, 0, 0, 0, 0, 0, 0)
     assert len(tests) == len(results)
     for i, (args, res) in enumerate(zip(tests, results)):
@@ -357,8 +358,9 @@ def test_order_oo():
 
 
 def test_sympyissue_5436():
-    limit(exp(x*y), x, oo)
-    limit(exp(-x*y), x, oo)
+    # also issue sympy/sympy#13312 (but see diofant/diofant#425!)
+    assert limit(exp(x*y), x, oo) == exp(oo*sign(y))
+    assert limit(exp(-x*y), x, oo) == exp(-oo*sign(y))
 
 
 def test_Limit_dir():
@@ -391,7 +393,7 @@ def test_factorial():
     assert limit(f, x, oo) == oo
     assert limit(x/f, x, oo) == 0
     # see Stirling's approximation:
-    # http://en.wikipedia.org/wiki/Stirling's_approximation
+    # https//en.wikipedia.org/wiki/Stirling's_approximation
     assert limit(f/(sqrt(2*pi*x)*(x/E)**x), x, oo) == 1
     assert limit(f, x, -oo) == factorial(-oo)
     assert (limit(f, x, x**2) - factorial(x**2)).simplify() == 0
@@ -452,7 +454,7 @@ def test_sympyissue_8061():
 
 
 def test_sympyissue_8229():
-    assert limit((x**Rational(1, 4) - 2)/(sqrt(x) - 4)**Rational(2, 3),
+    assert limit((root(x, 4) - 2)/(sqrt(x) - 4)**Rational(2, 3),
                  x, 16) == 0
 
 
@@ -574,3 +576,33 @@ def test_sympyissue_12769():
     assert limit(fx, K, F0) == (F0**(2*b)*b*r**2*s0 - 2*F0**(2*b)*b*r*s0 +
                                 F0**(2*b)*b*s0 - F0**(2*b)*r**2*s0 +
                                 2*F0**(2*b)*r*s0 - F0**(2*b)*s0)
+
+
+def test_sympyissue_13332():
+    assert limit(sqrt(30)*5**(-5*n - 1)*(46656*n)**n *
+                 (5*n + 2)**(5*n + Rational(5, 2)) *
+                 (6*n + 2)**(-6*n - Rational(5, 2)), n, oo) == Rational(25, 36)
+
+
+def test_sympyissue_13382():
+    assert limit(n*(((n + 1)**2 + 1)/(n**2 + 1) - 1), n, oo) == 2
+
+
+def test_sympyissue_13403():
+    assert limit(n*(-1 + (n + log(n + 1) + 1)/(n + log(n))), n, oo) == 1
+
+
+def test_sympyissue_13416():
+    assert limit((-n**3*log(n)**3 +
+                  (n - 1)*(n + 1)**2*log(n + 1)**3)/(n**2*log(n)**3),
+                 n, oo) == 1
+
+
+def test_sympyissue_13462():
+    assert limit(n**2*(2*n*(-(1 - 1/(2*n))**x + 1) -
+                 x - (-x**2/4 + x/4)/n), n, oo) == x/12 - x**2/8 + x**3/24
+
+
+def test_sympyissue_13575():
+    assert limit(acos(erfi(x)), x, 1) == pi/2 + I*log(sqrt(erf(I)**2 + 1) +
+                                                      erf(I))

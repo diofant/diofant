@@ -381,7 +381,7 @@ class TIDS(CantSympify):
         # find out which free indices of f and g are contracted
         free_dict1 = {i if i.is_up else -i: (pos, cpos, i) for i, pos, cpos in f_free}
         free_dict2 = {i if i.is_up else -i: (pos, cpos, i) for i, pos, cpos in g_free}
-        free_names = set(free_dict1.keys()) & set(free_dict2.keys())
+        free_names = set(free_dict1) & set(free_dict2)
         # find the new `free` and `dum`
 
         dum2 = [(i1, i2, c1 + nc1, c2 + nc1) for i1, i2, c1, c2 in g.dum]
@@ -3547,7 +3547,7 @@ class TensMul(TensExpr):
             # no arguments is equivalent to "1", i.e. TensMul().
             # If tensors are constructed correctly, this should never occur.
             return "1"
-        if self.coeff == S.NegativeOne:
+        if self.coeff == -1:
             # expressions like "-A(a)"
             return "-"+"*".join([get_str(arg) for arg in args[1:]])
 

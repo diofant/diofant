@@ -2,6 +2,8 @@
 of Basic or Atom.
 """
 
+import collections
+
 import pytest
 
 from diofant import Lambda, cos, sin
@@ -9,7 +11,8 @@ from diofant.abc import w, x, y, z
 from diofant.core.basic import Atom, Basic, preorder_traversal
 from diofant.core.compatibility import default_sort_key
 from diofant.core.function import Function
-from diofant.core.singleton import S, Singleton
+from diofant.core.singleton import SingletonWithManagedProperties as Singleton
+from diofant.core.singleton import S
 from diofant.integrals.integrals import Integral
 
 
@@ -47,9 +50,9 @@ def test_matches_basic():
     for i, b_i in enumerate(instances):
         for j, b_j in enumerate(instances):
             if i == j:
-                assert b_i.matches(b_j) == {}
+                assert b_j.match(b_i) == {}
             else:
-                assert b_i.matches(b_j) is None
+                assert b_j.match(b_i) is None
     assert b1.match(b1) == {}
 
 
@@ -72,6 +75,9 @@ def test_subs():
 
     pytest.raises(ValueError, lambda: b21.subs('bad arg'))
     pytest.raises(ValueError, lambda: b21.subs(b1, b2, b3))
+
+    assert b21.subs(collections.ChainMap({b1: b2}, {b2: b1})) == Basic(b2, b2)
+    assert b21.subs(collections.OrderedDict([(b2, b1), (b1, b2)])) == Basic(b2, b2)
 
 
 def test_rewrite():
@@ -201,4 +207,4 @@ def test_literal_evalf_is_number_is_zero_is_comparable():
     # issue sympy/sympy#10272
     n = sin(1)**2 + cos(1)**2 - 1
     assert n.is_comparable is not True
-    assert n.n(2).is_comparable is not True
+    assert n.n(2, strict=False).is_comparable is not True

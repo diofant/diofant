@@ -59,7 +59,7 @@ def test_bernoulli():
     assert bernoulli(2 * n + 1) == 0
 
     pytest.raises(ValueError, lambda: bernoulli(-20))
-    assert bernoulli(l, x).func is bernoulli
+    assert isinstance(bernoulli(l, x), bernoulli)
 
 
 def test_fibonacci():
@@ -80,7 +80,7 @@ def test_fibonacci():
     pytest.raises(ValueError, lambda: fibonacci(-2, x))
 
     n = Symbol('n', integer=True)
-    assert fibonacci(n, x).rewrite(sqrt).func is fibonacci
+    assert isinstance(fibonacci(n, x).rewrite(sqrt), fibonacci)
 
 
 def test_bell():
@@ -114,13 +114,13 @@ def test_bell():
     # For large numbers, this is too slow
     # For nonintegers, there are significant precision errors
     for i in [0, 2, 3, 7, 13, 42, 55]:
-        assert bell(i).evalf() == bell(n).rewrite(Sum).evalf(subs={n: i})
+        assert bell(i).evalf() == bell(n).rewrite(Sum).evalf(subs={n: i}, strict=False)
 
     # For negative numbers, the formula does not hold
     m = Symbol('m', integer=True)
     assert bell(-1).evalf() == bell(m).rewrite(Sum).evalf(subs={m: -1})
 
-    assert bell(m, x).rewrite(Sum).func is bell
+    assert isinstance(bell(m, x).rewrite(Sum), bell)
 
 
 def test_harmonic():
@@ -243,7 +243,7 @@ def test_harmonic_rewrite_polygamma():
 
     assert harmonic(n, m).rewrite("tractable") == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite("tractable")
 
-    assert expand_func(harmonic(n, 2)).func is harmonic
+    assert isinstance(expand_func(harmonic(n, 2)), harmonic)
 
     assert expand_func(harmonic(n + Rational(1, 2))) == expand_func(harmonic(n + Rational(1, 2)))
     assert expand_func(harmonic(Rational(-1, 2))) == harmonic(Rational(-1, 2))
@@ -465,7 +465,7 @@ def test_nC_nP_nT():
         1, 720, -1764, 1624, -735, 175, -21,
         1, -5040, 13068, -13132, 6769, -1960, 322, -28,
         1, 40320, -109584, 118124, -67284, 22449, -4536, 546, -36, 1]
-    # http://en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
+    # https//en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
     assert [stirling(n, k, kind=1)
             for n in range(10) for k in range(n+1)] == [
         1,
@@ -478,7 +478,7 @@ def test_nC_nP_nT():
         0, 720, 1764, 1624, 735, 175, 21, 1,
         0, 5040, 13068, 13132, 6769, 1960, 322, 28, 1,
         0, 40320, 109584, 118124, 67284, 22449, 4536, 546, 36, 1]
-    # http://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
+    # https//en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
     assert [stirling(n, k, kind=2)
             for n in range(10) for k in range(n+1)] == [
         1,
@@ -543,7 +543,7 @@ def test_sympyissue_8601():
     assert catalan(n - 1) == 0
     assert catalan(Rational(-1, 2)) == zoo
     assert catalan(-1) == Rational(-1, 2)
-    c1 = catalan(-5.6).evalf()
+    c1 = catalan(-5.6).evalf(strict=False)
     assert str(c1) == '6.93334070531408e-5'
-    c2 = catalan(-35.4).evalf()
+    c2 = catalan(-35.4).evalf(strict=False)
     assert str(c2) == '-4.14189164517449e-24'

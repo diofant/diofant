@@ -25,7 +25,7 @@ for a symbolic one and then evaluate the result within Diofant.
     >>> from diofant import *
     >>> from diofant.abc import x
     >>> expr = sin(x)/x
-    >>> expr.evalf(subs={x: 3.14})
+    >>> expr.evalf(subs={x: 3.14}, strict=False)
     0.000507214304613640
 
 This method is slow.  You should use this method production only if performance
@@ -128,7 +128,7 @@ should call the ``ufuncify`` function
 This function ``f`` consumes and returns a NumPy array. Generally ``ufuncify``
 performs at least as well as ``lambdify``. If the expression is complicated
 then ``ufuncify`` often significantly outperforms the NumPy backed solution.
-Jensen has a good `blog post <http://ojensen.wordpress.com/2010/08/10/fast-ufunc-ish-hydrogen-solutions/>`_
+Jensen has a good `blog post <https://ojensen.wordpress.com/2010/08/10/fast-ufunc-ish-hydrogen-solutions/>`_
 on this topic.
 
 Theano

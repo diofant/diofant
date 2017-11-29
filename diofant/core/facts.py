@@ -36,11 +36,11 @@ Here we take minimalistic approach to get something usable first.
 References
 ==========
 
-.. [1] http://en.wikipedia.org/wiki/Rete_algorithm
+.. [1] https//en.wikipedia.org/wiki/Rete_algorithm
 .. [2] http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf
-.. [3] http://en.wikipedia.org/wiki/Propositional_formula
-.. [4] http://en.wikipedia.org/wiki/Inference_rule
-.. [5] http://en.wikipedia.org/wiki/List_of_rules_of_inference
+.. [3] https//en.wikipedia.org/wiki/Propositional_formula
+.. [4] https//en.wikipedia.org/wiki/Inference_rule
+.. [5] https//en.wikipedia.org/wiki/List_of_rules_of_inference
 """
 
 from collections import defaultdict
@@ -164,7 +164,7 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
     a  ->  [b, ~c, d, e]
     """
     x_impl = {}
-    for x in alpha_implications.keys():
+    for x in alpha_implications:
         x_impl[x] = (set(alpha_implications[x]), [])
     for bcond, bimpl in beta_rules:
         for bk in bcond.args:
@@ -447,7 +447,7 @@ class FactRules:
         impl_ab = apply_beta_to_alpha_route(impl_a, P.rules_beta)
 
         # extract defined fact names
-        self.defined_facts = {_base_fact(k) for k in impl_ab.keys()}
+        self.defined_facts = {_base_fact(k) for k in impl_ab}
 
         # build rels (forward chains)
         full_implications = defaultdict(set)

@@ -202,7 +202,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         r = self.round(2)
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
-        if r in (S.NaN, S.Infinity, S.NegativeInfinity):
+        if r in (nan, oo, -oo):
             raise TypeError("can't convert %s to int" % r)
         i = int(r)
         if not i:
@@ -211,11 +211,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if i == r and not (self - i).equals(0):
             isign = 1 if i > 0 else -1
             x = Dummy()
-            # in the following (self - i).evalf(2) will not always work while
-            # (self - r).evalf(2) and the use of subs does; if the test that
+            # in the following (self - i).evalf(2, strict=False) will not always work while
+            # (self - r).evalf(2, strict=False) and the use of subs does; if the test that
             # was added when this comment was added passes, it might be safe
             # to simply use sign to compute this rather than doing this by hand:
-            diff_sign = 1 if (self - x).evalf(2, subs={x: i}) > 0 else -1
+            diff_sign = 1 if (self - x).evalf(2, strict=False, subs={x: i}) > 0 else -1
             if diff_sign != isign:
                 i -= isign
         return i
@@ -224,7 +224,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # Don't bother testing if it's a number; if it's not this is going
         # to fail, and if it is we still need to check that it evalf'ed to
         # a number.
-        result = self.evalf()
+        result = self.evalf(strict=False)
         if result.is_Number:
             return float(result)
         if result.is_number and result.as_real_imag()[1]:
@@ -232,7 +232,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         raise TypeError("can't convert expression to float")
 
     def __complex__(self):
-        result = self.evalf()
+        result = self.evalf(strict=False)
         re, im = result.as_real_imag()
         return complex(float(re), float(im))
 
@@ -242,7 +242,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
-            if me is S.NaN:
+            if me is nan:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
@@ -257,7 +257,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
-            if me is S.NaN:
+            if me is nan:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
@@ -272,7 +272,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
-            if me is S.NaN:
+            if me is nan:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
@@ -287,7 +287,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
-            if me is S.NaN:
+            if me is nan:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
@@ -304,7 +304,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         elif hasattr(x, "_mpc_"):
             re, im = x._mpc_
             re = Float._new(re, prec)
-            im = Float._new(im, prec)*S.ImaginaryUnit
+            im = Float._new(im, prec)*I
             return re + im
         else:
             raise TypeError("expected mpmath number (mpf or mpc)")
@@ -376,7 +376,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             reps = dict(zip(free, [random_complex_number(a, b, c, d, rational=True)
                                    for zi in free]))
             try:
-                nmag = abs(self.evalf(2, subs=reps))
+                nmag = abs(self.evalf(2, subs=reps, strict=False))
             except (ValueError, TypeError):
                 # if an out of range value resulted in evalf problems
                 # then return None -- XXX is there a way to know how to
@@ -386,7 +386,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return
         else:
             reps = {}
-            nmag = abs(self.evalf(2))
+            nmag = abs(self.evalf(2, strict=False))
 
         if not hasattr(nmag, '_prec'):
             # e.g. exp_polar(2*I*pi) doesn't evaluate but is_number is True
@@ -401,14 +401,14 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
             # evaluate
             for prec in giant_steps(2, TARGET):
-                nmag = abs(self.evalf(prec, subs=reps))
+                nmag = abs(self.evalf(prec, strict=False, subs=reps))
                 if nmag._prec != 1:
                     break
 
         if nmag._prec != 1:
             if n is None:
                 n = max(prec, 15)
-            return self.evalf(n, subs=reps)
+            return self.evalf(n, strict=False, subs=reps)
 
         # never got any significance
         return
@@ -522,32 +522,33 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             # try 0 (for a) and 1 (for b)
             try:
                 a = expr.subs(list(zip(free, [0]*len(free))),
-                              simultaneous=True).evalf(n=15)
-                if a is S.NaN:
+                              simultaneous=True).evalf(n=15, strict=False)
+                if a is nan:
                     # evaluation may succeed when substitution fails
                     a = expr._random(None, 0, 0, 0, 0)
-                    if a is None:
+                    if a is None or a is nan:
+                        # try random real
                         a = expr._random(None, -1, 0, 1, 0)
             except ZeroDivisionError:
                 a = None
-            if a is not None and a is not S.NaN:
+            if a is not None and a is not nan:
                 try:
                     b = expr.subs(list(zip(free, [1]*len(free))),
-                                  simultaneous=True).evalf(n=15)
-                    if b is S.NaN:
+                                  simultaneous=True).evalf(n=15, strict=False)
+                    if b is nan:
                         # evaluation may succeed when substitution fails
                         b = expr._random(None, 1, 0, 1, 0)
                 except ZeroDivisionError:
                     b = None
-                if b is not None and b is not S.NaN and b.equals(a) is False:
+                if b is not None and b is not nan and b.equals(a) is False:
                     return False
                 # try random real
                 b = expr._random(None, -1, 0, 1, 0)
-                if b is not None and b is not S.NaN and b.equals(a) is False:
+                if b is not None and b is not nan and b.equals(a) is False:
                     return False
                 # try random complex
                 b = expr._random()
-                if b is not None and b is not S.NaN:
+                if b is not None and b is not nan:
                     if b.equals(a) is False:
                         return False
                     failing_number = a if a.is_number else b
@@ -595,10 +596,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # don't worry about doing simplification steps one at a time
         # because if the expression ever goes to 0 then the subsequent
         # simplification steps that are done will be very fast.
-        try:
-            diff = factor_terms((self - other).simplify(), radical=True)
-        except ZeroDivisionError:
-            return
+        diff = factor_terms((self - other).simplify(), radical=True)
 
         if not diff:
             return True
@@ -671,7 +669,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         if self.is_number:
             try:
-                v = self.evalf(2, strict=True)
+                v = self.evalf(2)
                 if v is S.NaN:
                     raise PrecisionExhausted
             except (PrecisionExhausted, ValueError):
@@ -694,7 +692,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if self.is_extended_real is False:
                 return False
             try:
-                v = self.evalf(2, strict=True)
+                v = self.evalf(2)
                 if v is S.NaN:
                     raise PrecisionExhausted
             except (PrecisionExhausted, ValueError):
@@ -708,7 +706,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if self.is_extended_real is False:
                 return False
             try:
-                v = self.evalf(2, strict=True)
+                v = self.evalf(2)
                 if v is S.NaN:
                     raise PrecisionExhausted
             except (PrecisionExhausted, ValueError):
@@ -734,9 +732,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             A = 0
         else:
             A = self.subs(x, a)
-            if A.has(S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+            if A.has(nan, oo, -oo, zoo):
                 A = limit(self, x, a)
-                if A is S.NaN:
+                if A is nan:
                     return A
                 if isinstance(A, Limit):
                     raise NotImplementedError("Could not compute limit")
@@ -745,7 +743,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = 0
         else:
             B = self.subs(x, b)
-            if B.has(S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+            if B.has(nan, oo, -oo, zoo):
                 B = limit(self, x, b)
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
@@ -1187,13 +1185,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return Add(*co)
 
         if n == 0:
-            if x.is_Add and self.is_Add:
-                c = self.coeff(x, right=right)
-                if not c:
-                    return S.Zero
-                if not right:
-                    return self - Add(*[a*x for a in Add.make_args(c)])
-                return self - Add(*[x*a for a in Add.make_args(c)])
             return self.as_independent(x, as_Add=True)[0]
 
         # continue with the full method, looking for this power of x:
@@ -1227,7 +1218,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if not first:
                 l.reverse()
                 sub.reverse()
-            for i in range(0, len(l) - n + 1):
+            for i in range(len(l) - n + 1):
                 if all(l[i + j] == sub[j] for j in range(n)):
                     break
             else:
@@ -1894,7 +1885,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x/6
         """
         c = sympify(c)
-        if self is S.NaN:
+        if self is nan:
             return
         if c is S.One:
             return self
@@ -1911,17 +1902,17 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return x.extract_multiplicatively(b)
         quotient = self / c
         if self.is_Number:
-            if self is S.Infinity:
+            if self is oo:
                 if c.is_positive:
-                    return S.Infinity
-            elif self is S.NegativeInfinity:
+                    return oo
+            elif self is -oo:
                 if c.is_negative:
-                    return S.Infinity
+                    return oo
                 elif c.is_positive:
-                    return S.NegativeInfinity
-            elif self is S.ComplexInfinity:
+                    return -oo
+            elif self is zoo:
                 if not c.is_zero:
-                    return S.ComplexInfinity
+                    return zoo
             elif self.is_Integer:
                 if not quotient.is_Integer:
                     return
@@ -1943,7 +1934,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return
                 else:
                     return quotient
-        elif self.is_NumberSymbol or self.is_Symbol or self is S.ImaginaryUnit:
+        elif self.is_NumberSymbol or self.is_Symbol or self is I:
             if quotient.is_Mul and len(quotient.args) == 2:
                 if quotient.args[0].is_Integer and quotient.args[0].is_positive and quotient.args[1] == self:
                     return quotient
@@ -2013,7 +2004,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
 
         c = sympify(c)
-        if self is S.NaN:
+        if self is nan:
             return
         if c is S.Zero:
             return self
@@ -2161,7 +2152,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         args = Mul.make_args(self)
         exps = []
         for arg in args:
-            if arg.func is exp_polar:
+            if isinstance(arg, exp_polar):
                 exps += [arg.exp]
             else:
                 res *= arg
@@ -2328,7 +2319,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         is_algebraic_expr
         """
-        if self in [S.NaN, S.Infinity, -S.Infinity, S.ComplexInfinity]:
+        if self in [nan, oo, -oo, zoo]:
             return False
 
         if syms:
@@ -2386,7 +2377,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        .. [1] http://en.wikipedia.org/wiki/Algebraic_expression
+        .. [1] https//en.wikipedia.org/wiki/Algebraic_expression
         """
         if syms:
             syms = set(map(sympify, syms))
@@ -2427,7 +2418,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if self.is_extended_real is False:
             return False
         try:
-            v = self.evalf(2, strict=True)
+            v = self.evalf(2)
         except PrecisionExhausted:
             return None if self.is_number else False
         r, i = v.as_real_imag()
@@ -2496,7 +2487,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise ValueError('x must be given for multivariate functions.')
             x = syms.pop()
 
-        if not x.is_Symbol:
+        if not x.is_Symbol:  # pragma: no cover
             raise NotImplementedError("x is not a symbol")
 
         if not self.has(x):
@@ -2508,9 +2499,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if len(dir) != 1 or dir not in '+-':
             raise ValueError("Dir must be '+' or '-'")
 
-        if x0 in [S.Infinity, S.NegativeInfinity]:
+        if x0 in [oo, -oo]:
             s = self.aseries(x, n)
-            if x0 is S.NegativeInfinity:
+            if x0 is -oo:
                 return s.subs(x, -x)
             return s
 
@@ -2784,7 +2775,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         .. [1] A New Algorithm for Computing Asymptotic Series - Dominik Gruntz
         .. [2] Gruntz thesis - p90
-        .. [3] http://en.wikipedia.org/wiki/Asymptotic_expansion
+        .. [3] https//en.wikipedia.org/wiki/Asymptotic_expansion
         """
         from . import Dummy
         from ..series.gruntz import mrv, rewrite
@@ -2799,7 +2790,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if x in omega:
             s = self.subs(x, exp(x)).aseries(x, n, bound, hir).subs(x, log(x))
             if s.getO():
-                o = Order(1/x**n, (x, S.Infinity))
+                o = Order(1/x**n, (x, oo))
                 return s + o
             return s
         d = Dummy('d', positive=True)
@@ -2930,6 +2921,33 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """Efficiently extract the coefficient of a summation."""
         return S.Zero, self
 
+    @property
+    def canonical_variables(self):
+        """Return a dictionary mapping any variable defined in
+        ``self.variables`` as underscore-suffixed numbers
+        corresponding to their position in ``self.variables``. Enough
+        underscores are added to ensure that there will be no clash with
+        existing free symbols.
+
+        Examples
+        ========
+
+        >>> from diofant import Lambda
+        >>> from diofant.abc import x
+        >>> Lambda(x, 2*x).canonical_variables
+        {x: 0_}
+        """
+        from . import Symbol
+        try:
+            V = self.variables
+        except AttributeError:
+            return {}
+        u = "_"
+        while any(s.name.endswith(u) for s in V):
+            u += "_"
+        name = '%%i%s' % u
+        return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
+
     ###################################################################################
     # ################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ################## #
     ###################################################################################
@@ -2948,7 +2966,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def _eval_expand_complex(self, **hints):
         real, imag = self.as_real_imag(**hints)
-        return real + S.ImaginaryUnit*imag
+        return real + I*imag
 
     @staticmethod
     def _expand_hint(expr, hint, deep=True, **hints):
@@ -3028,7 +3046,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return 'mulz'
             return hint
 
-        for hint in sorted(hints.keys(), key=_expand_hint_key):
+        for hint in sorted(hints, key=_expand_hint_key):
             use_hint = hints[hint]
             if use_hint:
                 hint = '_eval_expand_' + hint
@@ -3205,11 +3223,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x = self
         if not x.is_number:
             raise TypeError('%s is not a number' % type(x))
-        if x in (S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+        if x in (nan, oo, -oo, zoo):
             return x
         if not x.is_extended_real:
             i, r = x.as_real_imag()
-            return i.round(p) + S.ImaginaryUnit*r.round(p)
+            return i.round(p) + I*r.round(p)
         if not x:
             return x
         p = int(p)
@@ -3224,10 +3242,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         mag = Pow(10, p)  # magnitude needed to bring digit p to units place
         xwas = x
         x += 1/(2*mag)  # add the half for rounding
-        i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1)
+        i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1, strict=False)
         if i10.is_negative:
             x = xwas - 1/(2*mag)  # should have gone the other way
-            i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1)
+            i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1, strict=False)
             rv = -(Integer(-i10)//10)
         else:
             rv = Integer(i10)//10
@@ -3291,7 +3309,7 @@ def _mag(x):
     """
     from math import log10, ceil, log
     from .numbers import Float
-    xpos = abs(x.n())
+    xpos = abs(x.n(strict=False))
     if not xpos:
         return S.Zero
     try:
@@ -3311,4 +3329,4 @@ from .power import Pow
 from .function import Function
 from .mod import Mod
 from .exprtools import factor_terms
-from .numbers import Integer, Rational
+from .numbers import I, Integer, Rational, nan, oo, zoo

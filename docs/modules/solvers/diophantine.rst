@@ -284,7 +284,7 @@ level API.
 If you want to get a more thorough idea about the the Diophantine module please
 refer to the following blog.
 
-http://thilinaatdiofant.wordpress.com/
+https://thilinaatsympy.wordpress.com/
 
 
 References
@@ -295,7 +295,7 @@ References
 .. [2] Diophantine Equation, Wolfram Mathworld, [online]. Available:
     http://mathworld.wolfram.com/DiophantineEquation.html
 .. [3] Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0,[online],
-    Available: http://www.alpertron.com.ar/METHODS.HTM
+    Available: https://www.alpertron.com.ar/METHODS.HTM
 .. [4] Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
     Available: http://www.jpr2718.org/ax2p.pdf
 

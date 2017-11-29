@@ -1,5 +1,5 @@
-from diofant import Equality, MatrixSymbol, Mod, Piecewise, Unequality
-from diofant.abc import a, b, x
+from diofant import And, Equality, MatrixSymbol, Mod, Or, Piecewise, Unequality
+from diofant.abc import a, b, c, x
 from diofant.printing.lambdarepr import NumPyPrinter
 
 
@@ -48,3 +48,9 @@ def test_mod():
 
     e = Mod(a, b)
     assert p.doprint(e) == 'a%b'
+
+
+def test_logic():
+    p = NumPyPrinter()
+    assert p.doprint(And(a, b, c)) == 'logical_and(logical_and(a, b), c)'
+    assert p.doprint(Or(a, b, c)) == 'logical_or(logical_or(a, b), c)'

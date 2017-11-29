@@ -4,11 +4,11 @@ from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
                      EulerGamma, Function, I, Integral, Interval, Lambda,
                      LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
                      Rational, Si, Sum, Symbol, Tuple, acos, acosh, asin,
-                     asinh, atan, cos, cosh, diff, erf, erfi, exp, expand_func,
-                     expand_mul, factor, fresnels, gamma, im, integrate, log,
-                     lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
-                     re, sign, simplify, sin, sinh, sqrt, sstr, symbols,
-                     sympify, tan, tanh, trigsimp)
+                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
+                     expand_func, expand_mul, factor, fresnels, gamma, im,
+                     integrate, log, lowergamma, meijerg, nan, oo, pi,
+                     polar_lift, polygamma, re, sign, simplify, sin, sinh,
+                     sqrt, sstr, symbols, sympify, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.heurisch import heurisch
@@ -394,10 +394,10 @@ def test_evalf_integrals():
     assert NS(
         2 + Integral(log(2*cos(x/2)), (x, -pi, pi)), 22, chop=True) == NS(2, 22)
     # Needs zero handling
-    assert NS(pi - 4*Integral(
-        'sqrt(1-x**2)', (x, 0, 1)), 15, maxn=30, chop=True) in ('0.0', '0')
+    assert NS(pi - 4*Integral(sqrt(1 - x**2), (x, 0, 1)),
+              15, maxn=30, chop=True, strict=False) in ('0.0', '0')
     # Oscillatory quadrature
-    a = Integral(sin(x)/x**2, (x, 1, oo)).evalf(maxn=15)
+    a = Integral(sin(x)/x**2, (x, 1, oo)).evalf(maxn=15, strict=False)
     assert 0.49 < a < 0.51
     assert NS(
         Integral(sin(x)/x**2, (x, 1, oo)), quad='osc') == '0.504067061906928'
@@ -823,7 +823,7 @@ def test_sympyissue_4376():
 
 @pytest.mark.slow
 def test_sympyissue_4517():
-    assert integrate((sqrt(x) - x**3)/x**Rational(1, 3), x) == \
+    assert integrate((sqrt(x) - x**3)/cbrt(x), x) == \
         6*x**Rational(7, 6)/7 - 3*x**Rational(11, 3)/11
 
 
@@ -1172,3 +1172,24 @@ def test_sympyissue_12221():
 
 def test_sympyissue_12582():
     assert integrate(abs(x**2 - 3*x), (x, -15, 15)) == 2259
+
+
+def test_sympyissue_13312():
+    assert integrate(exp(-a*t), (t, b, oo)) == Piecewise((-b + oo, Eq(a, 0)),
+                                                         (-exp(-oo*sign(a))/a + exp(-a*b)/a, True))
+
+
+def test_sympyissue_10680():
+    integrate(x**log(x**log(x**log(x))), x)  # not raises
+
+
+def test_sympyissue_13501():
+    a = Symbol('a', real=True)
+    assert integrate(1/(1 + a**2*x**2), x) == ((-I*log(x - I/a)/2 +
+                                               I*log(x + I/a)/2)/a)
+
+
+def test_diofantissue_447():
+    assert integrate(1/(2*sin(x) + cos(x)),
+                     x) == (sqrt(5)*log(tan(x/2) - 2 + sqrt(5))/5 -
+                            sqrt(5)*log(tan(x/2) - sqrt(5) - 2)/5)

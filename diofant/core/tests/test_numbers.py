@@ -9,8 +9,9 @@ from mpmath.libmp.libmpf import _normalize, finf, fnan, fninf
 
 from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
                      GoldenRatio, Gt, I, Integer, Le, Lt, Mul, Number, Pow,
-                     Rational, Symbol, cos, exp, factorial, false, latex, log,
-                     nan, nextprime, oo, pi, simplify, sin, sqrt, true, zoo)
+                     Rational, Symbol, cbrt, cos, exp, factorial, false, latex,
+                     log, nan, nextprime, oo, pi, root, simplify, sin, sqrt,
+                     true, zoo)
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
                                   mpf_norm, seterr)
@@ -354,10 +355,10 @@ def test_Float():
         return (-t < a - b < t)
 
     a = Float(2) ** Float(3)
-    assert eq(a.evalf(), Float(8))
+    assert eq(a, Float(8))
     assert eq((pi ** -1).evalf(), Float("0.31830988618379067"))
     a = Float(2) ** Float(4)
-    assert eq(a.evalf(), Float(16))
+    assert eq(a, Float(16))
     assert (Float(.3) == Float(.5)) is False
     x_str = Float((0, '13333333333333', -52, 53))
     x2_str = Float((0, '26666666666666', -53, 53))
@@ -403,10 +404,10 @@ def test_Float():
 
     # do not automatically evalf
     def teq(a):
-        assert (a.evalf() == a) is False
-        assert (a.evalf() != a) is True
-        assert (a == a.evalf()) is False
-        assert (a != a.evalf()) is True
+        assert (a.evalf(strict=False) == a) is False
+        assert (a.evalf(strict=False) != a) is True
+        assert (a == a.evalf(strict=False)) is False
+        assert (a != a.evalf(strict=False)) is True
 
     teq(pi)
     teq(2*pi)
@@ -883,11 +884,11 @@ def test_powers_Integer():
     assert (-1) ** nan == nan
 
     # check for exact roots
-    assert (-1) ** Rational(6, 5) == - (-1)**Rational(1, 5)
+    assert (-1) ** Rational(6, 5) == - root(-1, 5)
     assert sqrt(4) == 2
     assert sqrt(-4) == I * 2
-    assert 16 ** Rational(1, 4) == 2
-    assert (-16) ** Rational(1, 4) == 2 * (-1)**Rational(1, 4)
+    assert root(16, 4) == 2
+    assert root(-16, 4) == 2 * root(-1, 4)
     assert 9 ** Rational(3, 2) == 27
     assert (-9) ** Rational(3, 2) == -27*I
     assert (27) ** Rational(2, 3) == 9
@@ -904,10 +905,8 @@ def test_powers_Integer():
     assert 2 ** Rational(-3, 2) == sqrt(2) / 4
     assert 81 ** Rational(2, 3) == 9 * 3 ** Rational(2, 3)
     assert (-81) ** Rational(2, 3) == 9 * (-3) ** Rational(2, 3)
-    assert (-3) ** Rational(-7, 3) == \
-        -(-1)**Rational(2, 3)*3**Rational(2, 3)/27
-    assert (-3) ** Rational(-2, 3) == \
-        -(-1)**Rational(1, 3)*3**Rational(1, 3)/3
+    assert (-3) ** Rational(-7, 3) == -(-1)**Rational(2, 3)*3**Rational(2, 3)/27
+    assert (-3) ** Rational(-2, 3) == -cbrt(-1)*cbrt(3)/3
 
     # join roots
     assert sqrt(6) + sqrt(24) == 3*sqrt(6)
@@ -923,10 +922,8 @@ def test_powers_Integer():
     assert (2**64 + 1) ** Rational(17, 25)
 
     # negative rational power and negative base
-    assert (-3) ** Rational(-7, 3) == \
-        -(-1)**Rational(2, 3)*3**Rational(2, 3)/27
-    assert (-3) ** Rational(-2, 3) == \
-        -(-1)**Rational(1, 3)*3**Rational(1, 3)/3
+    assert (-3) ** Rational(-7, 3) == -(-1)**Rational(2, 3)*3**Rational(2, 3)/27
+    assert (-3) ** Rational(-2, 3) == -cbrt(-1)*cbrt(3)/3
 
     assert Integer(1).factors(visual=True) == 1
     assert Integer(1234).factors() == {617: 1, 2: 1}
@@ -940,25 +937,25 @@ def test_powers_Integer():
     assert sqrt(4*n) == 2*sqrt(n)
 
     # check that factors of base with powers sharing gcd with power are removed
-    assert (2**4*3)**Rational(1, 6) == 2**Rational(2, 3)*3**Rational(1, 6)
-    assert (2**4*3)**Rational(5, 6) == 8*2**Rational(1, 3)*3**Rational(5, 6)
+    assert root(2**4*3, 6) == 2**Rational(2, 3)*root(3, 6)
+    assert (2**4*3)**Rational(5, 6) == 8*cbrt(2)*3**Rational(5, 6)
 
     # check that bases sharing a gcd are exptracted
-    assert 2**Rational(1, 3)*3**Rational(1, 4)*6**Rational(1, 5) == \
+    assert cbrt(2)*root(3, 4)*root(6, 5) == \
         2**Rational(8, 15)*3**Rational(9, 20)
-    assert sqrt(8)*24**Rational(1, 3)*6**Rational(1, 5) == \
+    assert sqrt(8)*cbrt(24)*root(6, 5) == \
         4*2**Rational(7, 10)*3**Rational(8, 15)
-    assert sqrt(8)*(-24)**Rational(1, 3)*(-6)**Rational(1, 5) == \
+    assert sqrt(8)*cbrt(-24)*root(-6, 5) == \
         4*(-3)**Rational(8, 15)*2**Rational(7, 10)
-    assert 2**Rational(1, 3)*2**Rational(8, 9) == 2*2**Rational(2, 9)
-    assert 2**Rational(2, 3)*6**Rational(1, 3) == 2*3**Rational(1, 3)
+    assert cbrt(2)*2**Rational(8, 9) == 2*2**Rational(2, 9)
+    assert 2**Rational(2, 3)*cbrt(6) == 2*cbrt(3)
     assert 2**Rational(2, 3)*6**Rational(8, 9) == \
         2*2**Rational(5, 9)*3**Rational(8, 9)
-    assert (-2)**Rational(2, 3)*(-4)**Rational(1, 3) == -2*2**Rational(1, 3)
+    assert (-2)**Rational(2, 3)*cbrt(-4) == -2*cbrt(2)
     assert 3*Pow(3, 2, evaluate=False) == 3**3
     assert 3*Pow(3, -1/Integer(3), evaluate=False) == 3**(2/Integer(3))
     assert (-2)**(1/Integer(3))*(-3)**(1/Integer(4))*(-5)**(5/Integer(6)) == \
-        -(-1)**Rational(5, 12)*2**Rational(1, 3)*3**Rational(1, 4) * \
+        -(-1)**Rational(5, 12)*cbrt(2)*root(3, 4) * \
         5**Rational(5, 6)
 
     assert (-2)**Symbol('', even=True) == 2**Symbol('', even=True)
@@ -986,23 +983,23 @@ def test_powers_Rational():
     assert Rational(4, 3) ** Rational(3, 2) == 8 * sqrt(3) / 9
     assert sqrt(Rational(-4, 3)) == I * 2 * sqrt(3) / 3
     assert Rational(-4, 3) ** Rational(3, 2) == - I * 8 * sqrt(3) / 9
-    assert Rational(27, 2) ** Rational(1, 3) == 3 * (2 ** Rational(2, 3)) / 2
+    assert cbrt(Rational(27, 2)) == 3 * (2 ** Rational(2, 3)) / 2
     assert Rational(5**3, 8**3) ** Rational(4, 3) == Rational(5**4, 8**4)
 
     # exact root on denominator
     assert sqrt(Rational(1, 4)) == Rational(1, 2)
-    assert sqrt(Rational(1, -4)) == I * Rational(1, 2)
-    assert sqrt(Rational(3, 4)) == sqrt(3) / 2
-    assert sqrt(Rational(3, -4)) == I * sqrt(3) / 2
-    assert Rational(5, 27) ** Rational(1, 3) == (5 ** Rational(1, 3)) / 3
+    assert sqrt(Rational(1, -4)) == I/2
+    assert sqrt(Rational(3, 4)) == sqrt(3)/2
+    assert sqrt(Rational(3, -4)) == I*sqrt(3)/2
+    assert cbrt(Rational(5, 27)) == cbrt(5)/3
 
     # not exact roots
-    assert sqrt(Rational(1, 2)) == sqrt(2) / 2
+    assert sqrt(Rational(1, 2)) == sqrt(2)/2
     assert sqrt(Rational(-4, 7)) == I * sqrt(Rational(4, 7))
     assert Rational(-3, 2)**Rational(-7, 3) == \
-        -4*(-1)**Rational(2, 3)*2**Rational(1, 3)*3**Rational(2, 3)/27
+        -4*(-1)**Rational(2, 3)*cbrt(2)*3**Rational(2, 3)/27
     assert Rational(-3, 2)**Rational(-2, 3) == \
-        -(-1)**Rational(1, 3)*2**Rational(2, 3)*3**Rational(1, 3)/3
+        -cbrt(-1)*2**Rational(2, 3)*cbrt(3)/3
 
     # negative integer power and negative rational base
     assert Rational(-2, 3) ** Rational(-2, 1) == Rational(9, 4)
@@ -1036,7 +1033,7 @@ def test_int():
     assert int(a) == 5
     a = Rational(9, 10)
     assert int(a) == int(-a) == 0
-    assert 1/(-1)**Rational(2, 3) == -(-1)**Rational(1, 3)
+    assert 1/(-1)**Rational(2, 3) == -cbrt(-1)
     assert int(pi) == 3
     assert int(E) == 2
     assert int(GoldenRatio) == 1
@@ -1074,10 +1071,9 @@ def test_sympyissue_3321():
 
 
 def test_sympyissue_3692():
-    assert ((-1)**Rational(1, 6)).expand(complex=True) == I/2 + sqrt(3)/2
-    assert ((-5)**Rational(1, 6)).expand(complex=True) == \
-        5**Rational(1, 6)*I/2 + 5**Rational(1, 6)*sqrt(3)/2
-    assert ((-64)**Rational(1, 6)).expand(complex=True) == I + sqrt(3)
+    assert root(-1, 6).expand(complex=True) == I/2 + sqrt(3)/2
+    assert root(-5, 6).expand(complex=True) == root(5, 6)*I/2 + root(5, 6)*sqrt(3)/2
+    assert root(-64, 6).expand(complex=True) == I + sqrt(3)
 
 
 def test_sympyissue_3423():
@@ -1231,11 +1227,11 @@ def test_sympyissue_4611():
     assert abs(EulerGamma._evalf(50) - 0.577215664901533) < 1e-10
     assert abs(GoldenRatio._evalf(50) - 1.61803398874989) < 1e-10
     x = Symbol("x")
-    assert (pi + x).evalf() == pi.evalf() + x
-    assert (E + x).evalf() == E.evalf() + x
-    assert (Catalan + x).evalf() == Catalan.evalf() + x
-    assert (EulerGamma + x).evalf() == EulerGamma.evalf() + x
-    assert (GoldenRatio + x).evalf() == GoldenRatio.evalf() + x
+    assert (pi + x).evalf(strict=False) == pi.evalf() + x
+    assert (E + x).evalf(strict=False) == E.evalf() + x
+    assert (Catalan + x).evalf(strict=False) == Catalan.evalf() + x
+    assert (EulerGamma + x).evalf(strict=False) == EulerGamma.evalf() + x
+    assert (GoldenRatio + x).evalf(strict=False) == GoldenRatio.evalf() + x
 
 
 def test_conversion_to_mpmath():
@@ -1489,11 +1485,11 @@ def test_sympyissue_7742():
 
 def test_simplify_AlgebraicNumber():
     A = AlgebraicNumber
-    e = 3**Rational(1, 6)*(3 + (135 + 78*sqrt(3))**Rational(2, 3))/(45 + 26*sqrt(3))**Rational(1, 3)
+    e = root(3, 6)*(3 + (135 + 78*sqrt(3))**Rational(2, 3))/cbrt(45 + 26*sqrt(3))
     assert simplify(A(e)) == A(12)  # wester test_C20
     assert simplify(A(12)) == A(12)
 
-    e = (41 + 29*sqrt(2))**Rational(1, 5)
+    e = root(41 + 29*sqrt(2), 5)
     assert simplify(A(e)) == A(1 + sqrt(2))  # wester test_C21
 
     e = (3 + 4*I)**Rational(3, 2)

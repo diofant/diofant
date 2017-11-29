@@ -10,6 +10,7 @@ from diofant import (Abs, Add, Float, Function, I, Integer, Lambda, Matrix,
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
+from diofant.core.evaluate import evaluate
 from diofant.core.sympify import SympifyError, sympify
 from diofant.geometry import Line, Point
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -393,7 +394,7 @@ def test_sympyissue_3982():
 
 def test_S_sympify():
     assert Rational(1, 2) == sympify(1)/2
-    assert (-2)**Rational(1, 2) == sqrt(2)*I
+    assert sqrt(-2) == sqrt(2)*I
 
 
 def test_sympyissue_4788():
@@ -451,3 +452,13 @@ def test_sympyissue_8821_highprec_from_str():
 def test_Range():
     assert sympify(range(10)) == Range(10)
     assert sympify(range(10), strict=True) == Range(10)
+
+
+def test_sympyissue_10773():
+    with evaluate(False):
+        ans = Mul(Integer(-10), Pow(Integer(5), Integer(-1)))
+    assert sympify('-10/5', evaluate=False) == ans
+
+    with evaluate(False):
+        ans = Mul(Integer(-10), Pow(Integer(-5), Integer(-1)))
+    assert sympify('-10/-5', evaluate=False) == ans

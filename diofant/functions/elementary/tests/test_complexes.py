@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (Abs, DiracDelta, E, Eq, Expr, Function, Heaviside, I,
-                     Integer, Integral, Interval, Matrix, Ne, Piecewise,
-                     Rational, Symbol, adjoint, arg, atan2, comp, conjugate,
-                     cos, erf, exp, exp_polar, expand, gamma, im, log, nan, oo,
-                     periodic_argument, pi, polar_lift, polarify,
-                     principal_branch, re, sign, simplify, sin, sqrt, symbols,
-                     tanh, transpose, unbranched_argument, unpolarify,
-                     uppergamma, zoo)
+from diofant import (Abs, Derivative, DiracDelta, E, Eq, Expr, Function,
+                     Heaviside, I, Integer, Integral, Interval, Matrix, Ne,
+                     Piecewise, Rational, Symbol, adjoint, arg, atan2, cbrt,
+                     comp, conjugate, cos, erf, exp, exp_polar, expand, gamma,
+                     im, log, nan, oo, periodic_argument, pi, polar_lift,
+                     polarify, principal_branch, re, root, sign, simplify, sin,
+                     sqrt, symbols, tanh, transpose, unbranched_argument,
+                     unpolarify, uppergamma, zoo)
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 
@@ -69,12 +69,10 @@ def test_re():
     assert re(i*r*x).diff(r) == re(i*x)
     assert re(i*r*x).diff(i) == I*r*im(x)
 
-    assert re(
-        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*cos(arg(a + I*b)/2)
+    assert re(sqrt(a + b*I)) == root(a**2 + b**2, 4)*cos(arg(a + I*b)/2)
     assert re(a * (2 + b*I)) == 2*a
 
-    assert re((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2)
+    assert re((1 + sqrt(a + b*I))/2) == root(a**2 + b**2, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2)
 
     assert re(x).rewrite(im) == x - im(x)
     assert (x + re(y)).rewrite(re, im) == x + y - im(y)
@@ -136,12 +134,10 @@ def test_im():
     assert im(i*r*x).diff(r) == im(i*x)
     assert im(i*r*x).diff(i) == -I * re(r*x)
 
-    assert im(
-        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)
+    assert im(sqrt(a + b*I)) == root(a**2 + b**2, 4)*sin(arg(a + I*b)/2)
     assert im(a * (2 + b*I)) == a*b
 
-    assert im((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)/2
+    assert im((1 + sqrt(a + b*I))/2) == root(a**2 + b**2, 4)*sin(arg(a + I*b)/2)/2
 
     assert im(x).rewrite(re) == x - re(x)
     assert (x + im(y)).rewrite(im, re) == x + y - re(y)
@@ -207,6 +203,8 @@ def test_sign():
     assert conjugate(sign(x)) == sign(x)
 
     assert sign(sin(x)).nseries(x) == 1
+    y = Symbol('y')
+    assert sign(x*y).nseries(x).removeO() == sign(y)
 
     x = Symbol('x', nonzero=True)
     assert sign(x).is_imaginary is None
@@ -264,13 +262,13 @@ def test_sign():
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when and when you cannot prove an
     # expression like this is zero then the equality to zero is ok
-    assert sign(eq).func is sign or sign(eq) == 0
-    # but sometimes it's hard to do this so it's better not to load
-    # abs down with tests that will be very slow
+    assert sign(eq) == 0
     q = 1 + sqrt(2) - 2*sqrt(3) + 1331*sqrt(6)
-    p = expand(q**3)**Rational(1, 3)
+    p = cbrt(expand(q**3))
     d = p - q
-    assert sign(d).func is sign or sign(d) == 0
+    assert sign(d) == 0
+
+    assert abs(sign(z)) == Abs(sign(z), evaluate=False)
 
 
 def test_as_real_imag():
@@ -283,16 +281,14 @@ def test_as_real_imag():
 
     # issue sympy/sympy#6261
     assert sqrt(x).as_real_imag() == \
-        ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(arg(re(x) + I*im(x))/2),
-         (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(arg(re(x) + I*im(x))/2))
+        (root(re(x)**2 + im(x)**2, 4)*cos(arg(re(x) + I*im(x))/2),
+         root(re(x)**2 + im(x)**2, 4)*sin(arg(re(x) + I*im(x))/2))
 
     # issue sympy/sympy#3853
     a, b = symbols('a,b', extended_real=True)
-    assert ((1 + sqrt(a + b*I))/2).as_real_imag() == \
-           (
-               (a**2 + b**2)**Rational(
-                   1, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2),
-               (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)/2)
+    assert (((1 + sqrt(a + b*I))/2).as_real_imag() ==
+            (root(a**2 + b**2, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2),
+             root(a**2 + b**2, 4)*sin(arg(a + I*b)/2)/2))
 
     assert sqrt(a**2).as_real_imag() == (sqrt(a**2), 0)
     i = symbols('i', imaginary=True)
@@ -317,7 +313,7 @@ def test_Abs():
 
     x, y = symbols('x,y')
     assert sign(sign(x)) == sign(x)
-    assert sign(x*y).func is sign
+    assert isinstance(sign(x*y), sign)
     assert Abs(0) == 0
     assert Abs(1) == 1
     assert Abs(-1) == 1
@@ -333,6 +329,9 @@ def test_Abs():
     assert Abs(2*pi*x*y) == 2*pi*Abs(x*y)
     assert Abs(conjugate(x)) == Abs(x)
     assert conjugate(Abs(x)) == Abs(x)
+
+    a = cos(1)**2 + sin(1)**2 - 1
+    assert Abs(a*x).series(x).simplify() == 0
 
     a = Symbol('a', positive=True)
     assert Abs(2*pi*x*a) == 2*pi*a*Abs(x)
@@ -352,6 +351,7 @@ def test_Abs():
     assert 1/Abs(x)**3 == 1/(x**2*Abs(x))
     assert Abs(x)**-3 == Abs(x)/(x**4)
     assert Abs(x**3) == x**2*Abs(x)
+    assert Abs(x**pi) == Abs(x**pi, evaluate=False)
 
     x = Symbol('x', imaginary=True)
     assert Abs(x).diff(x) == -sign(x)
@@ -361,13 +361,11 @@ def test_Abs():
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when you can and when you cannot prove an
     # expression like this is zero then the equality to zero is ok
-    assert abs(eq).func is Abs or abs(eq) == 0
-    # but sometimes it's hard to do this so it's better not to load
-    # abs down with tests that will be very slow
+    assert abs(eq) == 0
     q = 1 + sqrt(2) - 2*sqrt(3) + 1331*sqrt(6)
-    p = expand(q**3)**Rational(1, 3)
+    p = cbrt(expand(q**3))
     d = p - q
-    assert abs(d).func is Abs or abs(d) == 0
+    assert abs(d) == 0
 
     assert Abs(4*exp(pi*I/4)) == 4
     assert Abs(3**(2 + I)) == 9
@@ -384,6 +382,8 @@ def test_Abs():
     assert re(a).is_algebraic
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
+
+    assert abs(sign(z)) == Abs(sign(z), evaluate=False)
 
 
 def test_Abs_rewrite():
@@ -569,6 +569,8 @@ def test_conjugate():
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
 
+    assert conjugate(z).diff(z) == Derivative(conjugate(z), z)
+
 
 def test_conjugate_transpose():
     x = Symbol('x')
@@ -715,6 +717,8 @@ def test_derivatives_sympyissue_4757():
     assert im(f(x)).diff(x) == im(f(x).diff(x))
     assert re(f(y)).diff(y) == -I*im(f(y).diff(y))
     assert im(f(y)).diff(y) == -I*re(f(y).diff(y))
+    assert re(f(z)).diff(z) == Derivative(re(f(z)), z)
+    assert im(f(z)).diff(z) == Derivative(im(f(z)), z)
     assert Abs(f(x)).diff(x).subs(f(x), 1 + I*x).doit() == x/sqrt(1 + x**2)
     assert arg(f(x)).diff(x).subs(f(x), 1 + I*x**2).doit() == 2*x/(1 + x**4)
     assert Abs(f(y)).diff(y).subs(f(y), 1 + y).doit() == -y/sqrt(1 - y**2)
@@ -777,10 +781,13 @@ def test_principal_branch():
     assert N_equals(principal_branch((1 + I)**2, 1*pi), 2*I)
 
     # test argument sanitization
-    assert principal_branch(x, I).func is principal_branch
-    assert principal_branch(x, -4).func is principal_branch
-    assert principal_branch(x, -oo).func is principal_branch
-    assert principal_branch(x, zoo).func is principal_branch
+    assert isinstance(principal_branch(x, I), principal_branch)
+    assert isinstance(principal_branch(x, -4), principal_branch)
+    assert isinstance(principal_branch(x, -oo), principal_branch)
+    assert isinstance(principal_branch(x, zoo), principal_branch)
+
+    assert (principal_branch((4 + I)**2, 2*pi).n() ==
+            principal_branch((4 + I)**2, 2*pi))
 
 
 @pytest.mark.xfail

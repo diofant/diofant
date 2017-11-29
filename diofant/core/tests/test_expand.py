@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (I, Integer, Mul, O, Pow, Rational, Symbol, cos, exp,
+from diofant import (I, Integer, Mul, O, Pow, Rational, Symbol, cbrt, cos, exp,
                      expand, log, pi, sin, sqrt)
 from diofant.abc import x, y, z
 from diofant.core.function import expand_multinomial, expand_power_base
@@ -85,7 +85,7 @@ def test_expand_non_commutative():
 
 
 def test_expand_radicals():
-    a = (x + y)**Rational(1, 2)
+    a = sqrt(x + y)
 
     assert (a**1).expand() == a
     assert (a**3).expand() == x*a + y*a
@@ -95,7 +95,7 @@ def test_expand_radicals():
     assert (1/a**3).expand() == 1/(x*a + y*a)
     assert (1/a**5).expand() == 1/(x**2*a + 2*x*y*a + y**2*a)
 
-    a = (x + y)**Rational(1, 3)
+    a = cbrt(x + y)
 
     assert (a**1).expand() == a
     assert (a**2).expand() == a**2

@@ -590,7 +590,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
 
     .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
            A Computational Perspective", Springer, 2nd edition, 236-238
-    .. [2] http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
+    .. [2] https://web.archive.org/web/20150716201437/http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
     .. [3] http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
     """
 
@@ -627,7 +627,7 @@ def _trial(factors, n, candidates, verbose=False):
     value of ``n`` and a flag indicating whether any factors were found.
     """
     if verbose:
-        factors0 = list(factors.keys())
+        factors0 = list(factors)
     nfactors = len(factors)
     for d in candidates:
         if n % d == 0:
@@ -935,7 +935,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         factordict = n
     if factordict and (isinstance(n, Mul) or isinstance(n, dict)):
         # check it
-        for k in list(factordict.keys()):
+        for k in list(factordict):
             if isprime(k):
                 continue
             e = factordict.pop(k)
@@ -1239,7 +1239,7 @@ def primefactors(n, limit=None, verbose=False):
     divisors
     """
     n = int(n)
-    factors = sorted(factorint(n, limit=limit, verbose=verbose).keys())
+    factors = sorted(factorint(n, limit=limit, verbose=verbose))
     s = [f for f in factors[:-1:] if f not in [-1, 0, 1]]
     if factors and isprime(factors[-1]):
         s += [factors[-1]]
@@ -1250,7 +1250,7 @@ def _divisors(n):
     """Helper function for divisors which generates the divisors."""
 
     factordict = factorint(n)
-    ps = sorted(factordict.keys())
+    ps = sorted(factordict)
 
     def rec_gen(n=0):
         if n == len(ps):
@@ -1297,7 +1297,7 @@ def divisors(n, generator=False):
     References
     ==========
 
-    .. [1] http://stackoverflow.com/questions/1010381/python-factorization
+    .. [1] https//stackoverflow.com/questions/1010381/python-factorization
     """
 
     n = as_int(abs(n))
@@ -1322,7 +1322,7 @@ def divisor_count(n, modulus=1):
     References
     ==========
 
-    .. [1] http://www.mayer.dial.pipex.com/maths/formulae.htm
+    .. [1] https://web.archive.org/web/20130629014824/http://www.mayer.dial.pipex.com:80/maths/formulae.htm
 
     Examples
     ========
@@ -1491,7 +1491,7 @@ class divisor_sigma(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Divisor_function
+    .. [1] https//en.wikipedia.org/wiki/Divisor_function
 
     Examples
     ========
@@ -1554,7 +1554,7 @@ def core(n, t=2):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Square-free_integer#Squarefree_core
+    .. [1] https//en.wikipedia.org/wiki/Square-free_integer#Squarefree_core
 
     Examples
     ========

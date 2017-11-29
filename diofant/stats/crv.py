@@ -32,7 +32,7 @@ class ContinuousDomain(RandomDomain):
 
     is_Continuous = True
 
-    def as_boolean(self):
+    def as_boolean(self):  # pragma: no cover
         raise NotImplementedError("Not Implemented for generic Domains")
 
 
@@ -97,7 +97,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
             if cond.is_Boolean:
                 if isinstance(cond, And):
                     conditions.extend(cond.args)
-                elif isinstance(cond, Or):
+                elif isinstance(cond, Or):  # pragma: no cover
                     raise NotImplementedError("Or not implemented here")
             elif cond.is_Relational:
                 if cond.is_Equality:
@@ -105,7 +105,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                     integrand *= DiracDelta(cond.lhs - cond.rhs)
                 else:
                     symbols = cond.free_symbols & set(self.symbols)
-                    if len(symbols) != 1:  # Can't handle x > y
+                    if len(symbols) != 1:  # Can't handle x > y, # pragma: no cover
                         raise NotImplementedError(
                             "Multivariate Inequalities not yet implemented")
                     # Can handle x > 0
@@ -136,7 +136,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
         if len(self.symbols) == 1:
             return (self.fulldomain.set & reduce_rational_inequalities_wrap(
                 self.condition, tuple(self.symbols)[0]))
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError(
                 "Set of Conditional Domain not Implemented")
 
@@ -183,11 +183,8 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
         """
         x, z = symbols('x, z', extended_real=True, positive=True, cls=Dummy)
         # Invert CDF
-        try:
-            inverse_cdf = solve(self.cdf(x) - z, x)
-        except NotImplementedError:
-            inverse_cdf = None
-        if not inverse_cdf or len(inverse_cdf) != 1:
+        inverse_cdf = solve(self.cdf(x) - z, x)
+        if not inverse_cdf or len(inverse_cdf) != 1:  # pragma: no cover
             raise NotImplementedError("Could not invert CDF")
 
         return Lambda(z, inverse_cdf[0][x])
@@ -296,32 +293,19 @@ class ContinuousPSpace(PSpace):
     def probability(self, condition, **kwargs):
         z = Dummy('z', real=True)
         # Univariate case can be handled by where
-        try:
-            domain = self.where(condition)
-            rv = [rv for rv in self.values if rv.symbol == domain.symbol][0]
-            # Integrate out all other random variables
-            pdf = self.compute_density(rv, **kwargs)
-            # return S.Zero if `domain` is empty set
-            if domain.set is S.EmptySet:
-                return S.Zero
-            # Integrate out the last variable over the special domain
-            return Integral(pdf(z), (z, domain.set), **kwargs)
-
-        # Other cases can be turned into univariate case
-        # by computing a density handled by density computation
-        except NotImplementedError:
-            from .rv import density
-            expr = condition.lhs - condition.rhs
-            dens = density(expr, **kwargs)
-            if not isinstance(dens, ContinuousDistribution):
-                dens = ContinuousDistributionHandmade(dens)
-            # Turn problem into univariate case
-            space = SingleContinuousPSpace(z, dens)
-            return space.probability(condition.__class__(space.value, 0))
+        domain = self.where(condition)
+        rv = [rv for rv in self.values if rv.symbol == domain.symbol][0]
+        # Integrate out all other random variables
+        pdf = self.compute_density(rv, **kwargs)
+        # return S.Zero if `domain` is empty set
+        if domain.set is S.EmptySet:
+            return S.Zero
+        # Integrate out the last variable over the special domain
+        return Integral(pdf(z), (z, domain.set), **kwargs)
 
     def where(self, condition):
         rvs = frozenset(random_symbols(condition))
-        if not (len(rvs) == 1 and rvs.issubset(self.values)):
+        if not (len(rvs) == 1 and rvs.issubset(self.values)):  # pragma: no cover
             raise NotImplementedError(
                 "Multiple continuous random variables not supported")
         rv = tuple(rvs)[0]
@@ -387,7 +371,7 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
             return ContinuousPSpace.compute_cdf(self, expr, **kwargs)
 
     def compute_density(self, expr, **kwargs):
-        # http://en.wikipedia.org/wiki/Random_variable#Functions_of_random_variables
+        # https//en.wikipedia.org/wiki/Random_variable#Functions_of_random_variables
         if expr == self.value:
             return self.density
         y = Dummy('y')

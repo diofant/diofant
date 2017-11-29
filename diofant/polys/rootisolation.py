@@ -68,7 +68,7 @@ def dup_root_upper_bound(f, K):
         f = dup_neg(f, K)
     f = list(reversed(f))
 
-    for i in range(0, n):
+    for i in range(n):
         if f[i] >= 0:
             continue
 
@@ -200,7 +200,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
                                                         d), K, fast=fast)
 
     if eps is not None and steps is not None:
-        for i in range(0, steps):
+        for i in range(steps):
             if abs(F(a, c) - F(b, d)) >= eps:
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
             else:
@@ -211,7 +211,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
 
         if steps is not None:
-            for i in range(0, steps):
+            for i in range(steps):
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
 
     if disjoint is not None:
@@ -1174,7 +1174,7 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
 
             if qq in _rules_ambiguous:
                 rules.append((_rules_ambiguous[qq], corners[(j, i)]))
-            else:
+            else:  # pragma: no cover
                 raise NotImplementedError("3 element rule (corner): " + str(qq))
 
         q1, k = Q[0], 1
@@ -1189,14 +1189,14 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
                     rules.append((_rules_simple[qq], 0))
                 elif qq in _rules_ambiguous:
                     rules.append((_rules_ambiguous[qq], edges[i]))
-                else:
+                else:  # pragma: no cover
                     raise NotImplementedError("2 element rule (inside): " + str(qq))
             else:
                 qq, k = (q1, q2, Q[k]), k + 1
 
                 if qq in _rules_ambiguous:
                     rules.append((_rules_ambiguous[qq], edges[i]))
-                else:
+                else:  # pragma: no cover
                     raise NotImplementedError("3 element rule (edge): " + str(qq))
 
             q1 = qq[-1]
@@ -1550,10 +1550,10 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     (u, v), (s, t) = (-B, F.zero), (B, B)
 
     if inf is not None:
-        u = inf
+        u, v = inf
 
     if sup is not None:
-        s = sup
+        s, t = sup
 
     if v < 0 or t <= v or s <= u:
         raise ValueError("not a valid complex isolation rectangle")
@@ -1750,8 +1750,7 @@ class RealInterval:
 
     def _inner_refine(self):
         """Internal one step real root refinement procedure. """
-        if self.mobius is None:
-            return self
+        assert self.mobius is not None
 
         f, mobius = dup_inner_refine_real_root(
             self.f, self.mobius, self.domain, steps=1, mobius=True)

@@ -40,7 +40,7 @@ class SparseMatrixBase(MatrixBase):
                             self._smat[(i, j)] = value
             elif isinstance(args[2], (dict, Dict)):
                 # manual copy, copy.deepcopy() doesn't work
-                for key in args[2].keys():
+                for key in args[2]:
                     v = args[2][key]
                     if v:
                         self._smat[key] = self._sympify(v)
@@ -204,7 +204,7 @@ class SparseMatrixBase(MatrixBase):
         col_list
         """
         return [tuple(k + (self[k],)) for k in
-                sorted(self._smat.keys(), key=lambda k: list(k))]
+                sorted(self._smat, key=lambda k: list(k))]
 
     RL = property(row_list, None, None, "Alternate faster representation")
 
@@ -229,7 +229,7 @@ class SparseMatrixBase(MatrixBase):
         diofant.matrices.sparse.MutableSparseMatrix.col_op
         row_list
         """
-        return [tuple(k + (self[k],)) for k in sorted(self._smat.keys(), key=lambda k: list(reversed(k)))]
+        return [tuple(k + (self[k],)) for k in sorted(self._smat, key=lambda k: list(reversed(k)))]
 
     CL = property(col_list, None, None, "Alternate faster representation")
 
@@ -741,9 +741,9 @@ class SparseMatrixBase(MatrixBase):
                 if i != j:
                     C[i, j] = self[i, j]
                     summ = 0
-                    for p1 in Crowstruc[i]:
+                    for p1 in Crowstruc[i]:  # pragma: no branch
                         if p1 < j:
-                            for p2 in Crowstruc[j]:
+                            for p2 in Crowstruc[j]:  # pragma: no branch
                                 if p2 < j:
                                     if p1 == p2:
                                         summ += C[i, p1]*C[j, p1]
@@ -756,7 +756,7 @@ class SparseMatrixBase(MatrixBase):
                 else:
                     C[j, j] = self[j, j]
                     summ = 0
-                    for k in Crowstruc[j]:
+                    for k in Crowstruc[j]:  # pragma: no branch
                         if k < j:
                             summ += C[j, k]**2
                         else:
@@ -778,9 +778,9 @@ class SparseMatrixBase(MatrixBase):
                 if i != j:
                     L[i, j] = self[i, j]
                     summ = 0
-                    for p1 in Lrowstruc[i]:
+                    for p1 in Lrowstruc[i]:  # pragma: no branch
                         if p1 < j:
-                            for p2 in Lrowstruc[j]:
+                            for p2 in Lrowstruc[j]:  # pragma: no branch
                                 if p2 < j:
                                     if p1 == p2:
                                         summ += L[i, p1]*L[j, p1]*D[p1, p1]
@@ -793,7 +793,7 @@ class SparseMatrixBase(MatrixBase):
                 else:
                     D[i, i] = self[i, i]
                     summ = 0
-                    for k in Lrowstruc[i]:
+                    for k in Lrowstruc[i]:  # pragma: no branch
                         if k < i:
                             summ += L[i, k]**2*D[k, k]
                         else:
@@ -1360,6 +1360,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         True
         """
         A, B = self, other
+        if not self:
+            return type(self)(other)
         if not A.rows == B.rows:
             raise ShapeError()
         A = A.copy()
@@ -1418,6 +1420,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         True
         """
         A, B = self, other
+        if not self:
+            return type(self)(other)
         if not A.cols == B.cols:
             raise ShapeError()
         A = A.copy()

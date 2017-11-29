@@ -1,7 +1,7 @@
 """ Riemann zeta and related function. """
 
-from ...core import (Add, Dummy, Function, I, Integer, S, expand_mul, pi,
-                     sympify)
+from ...core import (Add, Dummy, E, Function, I, Integer, S, expand_mul, oo,
+                     pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
@@ -67,7 +67,7 @@ class lerchphi(Function):
     .. [1] Bateman, H.; Erdélyi, A. (1953), Higher Transcendental Functions,
            Vol. I, New York: McGraw-Hill. Section 1.11.
     .. [2] http://dlmf.nist.gov/25.14
-    .. [3] http://en.wikipedia.org/wiki/Lerch_transcendent
+    .. [3] https//en.wikipedia.org/wiki/Lerch_transcendent
 
     Examples
     ========
@@ -160,7 +160,7 @@ class lerchphi(Function):
                   / (unpolarify(zet)**k*root)**m for k in range(n)])
 
         # TODO use minpoly instead of ad-hoc methods when issue sympy/sympy#5888 is fixed
-        if z.is_Pow and z.base is S.Exp1 and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
+        if z.is_Pow and z.base is E and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
             # TODO reference?
             if z == -1:
                 p, q = Integer(1), Integer(2)
@@ -351,7 +351,7 @@ class zeta(Function):
     ==========
 
     .. [1] http://dlmf.nist.gov/25.11
-    .. [2] http://en.wikipedia.org/wiki/Hurwitz_zeta_function
+    .. [2] https//en.wikipedia.org/wiki/Hurwitz_zeta_function
 
     Examples
     ========
@@ -433,18 +433,15 @@ class zeta(Function):
         if a.is_Number:
             if a is S.One and a_ is not None:
                 return cls(z)
-            # TODO Should a == 0 return S.NaN as well?
+            # TODO Should a == 0 return nan as well?
 
         if z.is_Number:
-            if z is S.Infinity:
+            if z is oo:
                 return S.One
             elif z is S.Zero:
-                if a.is_negative:
-                    return S.Half - a - 1
-                else:
-                    return S.Half - a
+                return S.Half - a
             elif z is S.One:
-                return S.ComplexInfinity
+                return zoo
             elif z.is_Integer:
                 if a.is_Integer:
                     if z.is_negative:
@@ -493,7 +490,7 @@ class _zetas(Function):
         point = args0[0]
 
         # Expansion at oo
-        if point is S.Infinity:
+        if point is oo:
             if n < 1:
                 return Order(1, x)
             z = self.args[0]
@@ -524,7 +521,7 @@ class dirichlet_eta(Function):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Dirichlet_eta_function
+    .. [1] https//en.wikipedia.org/wiki/Dirichlet_eta_function
     .. [2] http://mathworld.wolfram.com/DirichletEtaFunction.html
 
     Examples

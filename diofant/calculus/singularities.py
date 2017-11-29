@@ -30,7 +30,7 @@ def singularities(f, x):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Mathematical_singularity
+    .. [1] https://en.wikipedia.org/wiki/Mathematical_singularity
     """
     f, x = sympify(f), sympify(x)
     guess, res = set(), set()
@@ -43,7 +43,7 @@ def singularities(f, x):
         return set()
     elif f.func in (Add, Mul):
         guess = guess.union(*[singularities(a, x) for a in f.args])
-    elif f.func is Pow:
+    elif isinstance(f, Pow):
         if f.exp.is_number and f.exp.is_negative:
             guess = {s[x] for s in solve(f.base, x) if s[x].is_real}
         else:

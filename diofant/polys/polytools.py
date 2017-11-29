@@ -4,8 +4,8 @@ import mpmath
 from mpmath.libmp.libhyper import NoConvergence
 
 from . import polyoptions as options
-from ..core import (Add, Basic, Derivative, Dummy, Expr, I, Integer, Mul, S,
-                    Symbol, Tuple, preorder_traversal, sympify)
+from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul, S,
+                    Symbol, Tuple, oo, preorder_traversal, sympify)
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
@@ -3172,7 +3172,7 @@ class Poly(Expr):
         if inf is not None:
             inf = sympify(inf)
 
-            if inf is S.NegativeInfinity:
+            if inf is -oo:
                 inf = None
             else:
                 re, im = inf.as_real_imag()
@@ -3185,7 +3185,7 @@ class Poly(Expr):
         if sup is not None:
             sup = sympify(sup)
 
-            if sup is S.Infinity:
+            if sup is oo:
                 sup = None
             else:
                 re, im = sup.as_real_imag()
@@ -3333,7 +3333,7 @@ class Poly(Expr):
             fac = ilcm(*denoms)
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
         else:
-            coeffs = [coeff.evalf(n=n).as_real_imag()
+            coeffs = [coeff.evalf(n=n, strict=False).as_real_imag()
                       for coeff in self.all_coeffs()]
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
@@ -5527,7 +5527,7 @@ def _symbolic_factor_list(expr, opt, method):
         if arg.is_Mul:
             args.extend(arg.args)
             continue
-        if arg.is_Pow and arg.base is not S.Exp1:
+        if arg.is_Pow and arg.base is not E:
             base, exp = arg.args
             if base.is_Number:
                 factors.append((base, exp))
@@ -6146,8 +6146,8 @@ def nth_power_roots_poly(f, n, *gens, **args):
     >>> g
     (x**2 - x + 1)**2
 
-    >>> R_f = [ (r**2).expand() for r in roots(f) ]
-    >>> R_g = roots(g).keys()
+    >>> R_f = [(r**2).expand() for r in roots(f)]
+    >>> R_g = roots(g)
 
     >>> set(R_f) == set(R_g)
     True

@@ -38,11 +38,8 @@ numpydoc_class_members_toctree = False
 # If true, Sphinx will warn about all references where the target cannot be found.
 nitpicky = True
 
-# MathJax file, which is free to use.  See http://www.mathjax.org/docs/2.0/start.html
-mathjax_path = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full'
-
 # A list of glob-style patterns that should be excluded when looking for source files.
-exclude_patterns = ['README.rst']
+exclude_patterns = ['CONTRIBUTING.rst', 'README.rst']
 
 # The master toctree document.
 master_doc = 'index'
@@ -140,6 +137,7 @@ graphviz_output_format = 'svg'
 intersphinx_mapping = {
     'python3': ('https://docs.python.org/3/', None),
     'numpy': ('https://docs.scipy.org/doc/numpy', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
 }
 
 extlinks = {
@@ -149,3 +147,7 @@ extlinks = {
     'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#'),
     'sympypull': ('https://github.com/sympy/sympy/pull/%s', 'sympy/sympy#'),
 }
+
+# The number of times the linkcheck builder will attempt to check a URL
+# before declaring it broken.  Defaults to 1 attempt.
+linkcheck_retries = 3

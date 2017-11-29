@@ -3,7 +3,7 @@ import warnings
 from ..core import Expr, S, Symbol, oo, pi, sympify
 from ..core.compatibility import as_int
 from ..functions import Piecewise, cos, sign, sin, tan
-from ..logic import And
+from ..logic import And, true
 from ..matrices import Matrix
 from ..simplify import simplify
 from ..utilities import default_sort_key
@@ -277,7 +277,7 @@ class Polygon(GeometrySet):
             a, b, c = args[i - 2], args[i - 1], args[i]
             ang = Line.angle_between(Line(b, a), Line(b, c))
             if cw ^ self._isright(a, b, c):
-                ret[b] = 2*S.Pi - ang
+                ret[b] = 2*pi - ang
             else:
                 ret[b] = ang
         return ret
@@ -736,9 +736,9 @@ class Polygon(GeometrySet):
         Method:
         [1] http://cgm.cs.mcgill.ca/~orm/mind2p.html
         Uses rotating calipers:
-        [2] http://en.wikipedia.org/wiki/Rotating_calipers
+        [2] https//en.wikipedia.org/wiki/Rotating_calipers
         and antipodal points:
-        [3] http://en.wikipedia.org/wiki/Antipodal_point
+        [3] https//en.wikipedia.org/wiki/Antipodal_point
         """
         e1 = self
 
@@ -846,7 +846,7 @@ class Polygon(GeometrySet):
             e2_angle = pi - support_line.angle_between(Line(
                 e2_current, e2_next))
 
-            if (e1_angle < e2_angle) is True:
+            if (e1_angle < e2_angle) is true:
                 support_line = Line(e1_current, e1_next)
                 e1_segment = Segment(e1_current, e1_next)
                 min_dist_current = e1_segment.distance(e2_current)
@@ -860,7 +860,7 @@ class Polygon(GeometrySet):
                 else:
                     e1_current = e1_next
                     e1_next = e1_connections[e1_next][1]
-            elif (e1_angle > e2_angle) is True:
+            elif (e1_angle > e2_angle) is true:
                 support_line = Line(e2_next, e2_current)
                 e2_segment = Segment(e2_current, e2_next)
                 min_dist_current = e2_segment.distance(e1_current)
@@ -1252,7 +1252,7 @@ class RegularPolygon(Polygon):
         sqrt(2)*r/2
 
         """
-        return self.radius * cos(S.Pi/self._n)
+        return self.radius * cos(pi/self._n)
 
     @property
     def inradius(self):
@@ -1294,7 +1294,7 @@ class RegularPolygon(Polygon):
         3*pi/4
 
         """
-        return (self._n - 2)*S.Pi/self._n
+        return (self._n - 2)*pi/self._n
 
     @property
     def exterior_angle(self):
@@ -1319,7 +1319,7 @@ class RegularPolygon(Polygon):
         pi/4
 
         """
-        return 2*S.Pi/self._n
+        return 2*pi/self._n
 
     @property
     def circumcircle(self):
@@ -1568,7 +1568,7 @@ class RegularPolygon(Polygon):
         c = self._center
         r = abs(self._radius)
         rot = self._rot
-        v = 2*S.Pi/self._n
+        v = 2*pi/self._n
 
         return [Point(c.x + r*cos(k*v + rot), c.y + r*sin(k*v + rot))
                 for k in range(self._n)]

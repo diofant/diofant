@@ -89,28 +89,28 @@ class PermutationGroup(Basic):
     [2] Seress, A.
     "Permutation Group Algorithms"
 
-    [3] http://en.wikipedia.org/wiki/Schreier_vector
+    [3] https://en.wikipedia.org/wiki/Schreier_vector
 
-    [4] http://en.wikipedia.org/wiki/Nielsen_transformation
+    [4] https://en.wikipedia.org/wiki/Nielsen_transformation
     #Product_replacement_algorithm
 
     [5] Frank Celler, Charles R.Leedham-Green, Scott H.Murray,
     Alice C.Niemeyer, and E.A.O'Brien. "Generating Random
     Elements of a Finite Group"
 
-    [6] http://en.wikipedia.org/wiki/Block_%28permutation_group_theory%29
+    [6] https://en.wikipedia.org/wiki/Block_%28permutation_group_theory%29
 
-    [7] http://www.algorithmist.com/index.php/Union_Find
+    [7] https://web.archive.org/web/20170105021515/http://www.algorithmist.com:80/index.php/Union_Find
 
-    [8] http://en.wikipedia.org/wiki/Multiply_transitive_group#Multiply_transitive_groups
+    [8] https://en.wikipedia.org/wiki/Multiply_transitive_group#Multiply_transitive_groups
 
-    [9] http://en.wikipedia.org/wiki/Center_%28group_theory%29
+    [9] https://en.wikipedia.org/wiki/Center_%28group_theory%29
 
-    [10] http://en.wikipedia.org/wiki/Centralizer_and_normalizer
+    [10] https://en.wikipedia.org/wiki/Centralizer_and_normalizer
 
-    [11] http://groupprops.subwiki.org/wiki/Derived_subgroup
+    [11] https://groupprops.subwiki.org/wiki/Derived_subgroup
 
-    [12] http://en.wikipedia.org/wiki/Nilpotent_group
+    [12] https://en.wikipedia.org/wiki/Nilpotent_group
 
     [13] http://www.math.colostate.edu/~hulpke/CGT/cgtnotes.pdf
     """
@@ -350,7 +350,7 @@ class PermutationGroup(Basic):
         [1] Holt, D., Eick, B., O'Brien, E.
         "Handbook of computational group theory"
 
-        [7] http://www.algorithmist.com/index.php/Union_Find
+        [7] https://web.archive.org/web/20170105021515/http://www.algorithmist.com:80/index.php/Union_Find
 
         """
         rep_first = self._union_find_rep(first, parents)
@@ -395,7 +395,7 @@ class PermutationGroup(Basic):
         [1] Holt, D., Eick, B., O'Brien, E.
         "Handbook of computational group theory"
 
-        [7] http://www.algorithmist.com/index.php/Union_Find
+        [7] https://web.archive.org/web/20170105021515/http://www.algorithmist.com:80/index.php/Union_Find
 
         """
         rep, parent = num, parents[num]
@@ -2573,7 +2573,7 @@ class PermutationGroup(Basic):
         for i in range(base_len):
             transversals[i] = dict(_orbit_transversal(degree, strong_gens_distr[i],
                                                       _base[i], pairs=True, af=True))
-            orbs[i] = list(transversals[i].keys())
+            orbs[i] = list(transversals[i])
         # main loop: amend the stabilizer chain until we have generators
         # for all stabilizers
         i = base_len - 1
@@ -2619,7 +2619,7 @@ class PermutationGroup(Basic):
                                 transversals[l] =\
                                     dict(_orbit_transversal(degree, strong_gens_distr[l],
                                                             _base[l], pairs=True, af=True))
-                                orbs[l] = list(transversals[l].keys())
+                                orbs[l] = list(transversals[l])
                             i = j - 1
                             # continue main loop using the flag
                             continue_i = True
@@ -2723,7 +2723,7 @@ class PermutationGroup(Basic):
         for i in range(base_len):
             transversals[i] = dict(_orbit_transversal(n, strong_gens_distr[i],
                                                       base[i], pairs=True))
-            orbs[i] = list(transversals[i].keys())
+            orbs[i] = list(transversals[i])
         # initialize the number of consecutive elements sifted
         c = 0
         # start sifting random elements while the number of consecutive sifts
@@ -2753,7 +2753,7 @@ class PermutationGroup(Basic):
                     strong_gens_distr[l].append(h)
                     transversals[l] = dict(_orbit_transversal(n,
                                                               strong_gens_distr[l], base[l], pairs=True))
-                    orbs[l] = list(transversals[l].keys())
+                    orbs[l] = list(transversals[l])
                 c = 0
             else:
                 c += 1

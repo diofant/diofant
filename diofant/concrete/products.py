@@ -1,4 +1,4 @@
-from ..core import Mul, S
+from ..core import Mul, S, nan
 from ..functions import exp, log
 from ..polys import quo, roots
 from ..simplify import powsimp
@@ -175,9 +175,9 @@ class Product(ExprWithIntLimits):
 
     .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
            Volume 28 Issue 2, April 1981, Pages 305-350
-           http://dl.acm.org/citation.cfm?doid=322248.322255
-    .. [2] http://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
-    .. [3] http://en.wikipedia.org/wiki/Empty_product
+           https://dl.acm.org/citation.cfm?doid=322248.322255
+    .. [2] https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
+    .. [3] https://en.wikipedia.org/wiki/Empty_product
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -208,7 +208,7 @@ class Product(ExprWithIntLimits):
                 f = 1 / f
 
             g = self._eval_product(f, (i, a, b))
-            if g in (None, S.NaN):
+            if g in (None, nan):
                 return self.func(powsimp(f), *self.limits[index:])
             else:
                 f = g
@@ -383,7 +383,7 @@ class Product(ExprWithIntLimits):
 
         .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
                Volume 28 Issue 2, April 1981, Pages 305-350
-               http://dl.acm.org/citation.cfm?doid=322248.322255
+               https://dl.acm.org/citation.cfm?doid=322248.322255
         """
         l_indices = list(indices)
 

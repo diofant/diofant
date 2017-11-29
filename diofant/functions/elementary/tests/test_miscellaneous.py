@@ -72,10 +72,10 @@ def test_Min():
     assert Min(oo, p) == p
     assert Min(oo, oo) == oo
 
-    assert Min(n, n_).func is Min
-    assert Min(nn, nn_).func is Min
-    assert Min(np, np_).func is Min
-    assert Min(p, p_).func is Min
+    assert isinstance(Min(n, n_), Min)
+    assert isinstance(Min(nn, nn_), Min)
+    assert isinstance(Min(np, np_), Min)
+    assert isinstance(Min(p, p_), Min)
 
     # lists
     pytest.raises(ValueError, lambda: Min())
@@ -115,7 +115,7 @@ def test_Min():
     # issue sympy/sympy#7233
     e = Min(0, x)
     assert e.evalf == e.n
-    assert e.n().args == (0, x)
+    assert e.n(strict=False).args == (0, x)
 
 
 def test_Max():
@@ -167,7 +167,7 @@ def test_Max():
     # issue sympy/sympy#7233
     e = Max(0, x)
     assert e.evalf == e.n
-    assert e.n().args == (0, x)
+    assert e.n(strict=False).args == (0, x)
 
 
 def test_sympyissue_8413():
@@ -186,7 +186,7 @@ def test_root():
 
     assert root(2, 2) == sqrt(2)
     assert root(2, 1) == 2
-    assert root(2, 3) == 2**Rational(1, 3)
+    assert root(2, 3) == cbrt(2)
     assert root(2, 3) == cbrt(2)
     assert root(2, -5) == 2**Rational(4, 5)/2
 
@@ -197,7 +197,7 @@ def test_root():
 
     assert root(x, 2) == sqrt(x)
     assert root(x, 1) == x
-    assert root(x, 3) == x**Rational(1, 3)
+    assert root(x, 3) == cbrt(x)
     assert root(x, 3) == cbrt(x)
     assert root(x, -5) == x**Rational(-1, 5)
 

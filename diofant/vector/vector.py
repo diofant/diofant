@@ -319,7 +319,7 @@ class BaseVector(Vector, AtomicExpr):
         pretty_str = str(pretty_str)
         latex_str = str(latex_str)
         # Verify arguments
-        if index not in range(0, 3):
+        if index not in range(3):
             raise ValueError("index must be 0, 1 or 2")
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
@@ -428,7 +428,7 @@ def _vect_div(one, other):
     if isinstance(other, Vector):
         raise TypeError("Cannot divide two vectors")
     else:
-        if other == S.Zero:
+        if other == 0:
             raise ValueError("Cannot divide a vector by zero")
         return VectorMul(one, Pow(other, S.NegativeOne))
 

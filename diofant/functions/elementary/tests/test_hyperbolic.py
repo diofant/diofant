@@ -534,6 +534,11 @@ def test_acosh():
     assert acosh(Rational(1, 2)) == I*pi/3
     assert acosh(Rational(-1, 2)) == 2*pi*I/3
 
+    assert acosh(+oo) == oo
+    assert acosh(-oo) == oo
+    assert acosh(+I*oo) == oo
+    assert acosh(-I*oo) == oo
+
     assert acosh(zoo) == oo
 
     assert acosh(I) == log(I*(1 + sqrt(2)))
@@ -557,13 +562,6 @@ def test_acosh():
     assert str(acosh(-5*I).n(6)) == '2.31244 - 1.5708*I'
 
     pytest.raises(ArgumentIndexError, lambda: acosh(x).fdiff(2))
-
-
-def test_acosh_infinities():
-    assert acosh(oo) == oo
-    assert acosh(-oo) == oo
-    assert acosh(I*oo) == oo
-    assert acosh(-I*oo) == oo
 
 
 def test_acosh_series():
@@ -610,6 +608,7 @@ def test_atanh():
     assert atanh(I*(2 - sqrt(3))) == pi*I/12
     assert atanh(I*(sqrt(3) - 2)) == -pi*I/12
     assert atanh(oo) == -I*pi/2
+    assert atanh(-oo) == I*pi/2
 
     pytest.raises(ArgumentIndexError, lambda: atanh(x).fdiff(2))
 
@@ -617,13 +616,6 @@ def test_atanh():
 def test_atanh_series():
     assert atanh(x).series(x, 0, 10) == \
         x + x**3/3 + x**5/5 + x**7/7 + x**9/9 + O(x**10)
-
-
-def test_atanh_infinities():
-    assert atanh(oo) == -I*pi/2
-    assert atanh(-oo) == I*pi/2
-
-# TODO please write more tests -- see issue sympy/sympy#3751
 
 
 def test_acoth():

@@ -5,16 +5,16 @@ import pytest
 from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
                      Indexed, IndexedBase, Integer, Integral, LambertW, Lt,
                      Matrix, Mul, Or, Piecewise, Poly, Pow, Rational, Symbol,
-                     Tuple, Wild, acos, arg, asin, atan, atan2, cos, cosh,
-                     diff, erf, erfc, erfcinv, erfinv, exp, expand_log, im,
-                     log, nan, oo, pi, re, real_root, root, sec, sech,
+                     Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
+                     cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
+                     im, log, nan, oo, pi, re, real_root, root, sec, sech,
                      simplify, sin, sinh, solve, solve_linear, sqrt, sstr,
                      symbols, sympify, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
 from diofant.polys.rootoftools import RootOf
-from diofant.solvers import reduce_inequalities, solve_undetermined_coeffs
+from diofant.solvers import reduce_inequalities
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
 from diofant.utilities.randtest import verify_numerically as tn
@@ -51,7 +51,7 @@ def test_guess_poly():
     assert guess_solve_strategy( x + a, x )  # == GS_POLY
     assert guess_solve_strategy( 2*x, x )  # == GS_POLY
     assert guess_solve_strategy( x + sqrt(2), x)  # == GS_POLY
-    assert guess_solve_strategy( x + 2**Rational(1, 4), x)  # == GS_POLY
+    assert guess_solve_strategy( x + root(2, 4), x)  # == GS_POLY
     assert guess_solve_strategy( x**2 + 1, x )  # == GS_POLY
     assert guess_solve_strategy( x**2 - 1, x )  # == GS_POLY
     assert guess_solve_strategy( x*y + y, x )  # == GS_POLY
@@ -64,7 +64,7 @@ def test_guess_poly_cv():
     # polynomial equations via a change of variable
     assert guess_solve_strategy( sqrt(x) + 1, x )  # == GS_POLY_CV_1
     assert guess_solve_strategy(
-        x**Rational(1, 3) + sqrt(x) + 1, x )  # == GS_POLY_CV_1
+        cbrt(x) + sqrt(x) + 1, x )  # == GS_POLY_CV_1
     assert guess_solve_strategy( 4*x*(1 - sqrt(x)), x )  # == GS_POLY_CV_1
 
     # polynomial equation multiplying both sides by x**n
@@ -78,7 +78,7 @@ def test_guess_rational_cv():
         (x - y**3)/(y**2*sqrt(1 - y**2)), y)  # == GS_RATIONAL_CV_1
 
     # rational functions via the change of variable y -> x**n
-    assert guess_solve_strategy( (sqrt(x) + 1)/(x**Rational(1, 3) + sqrt(x) + 1), x ) \
+    assert guess_solve_strategy( (sqrt(x) + 1)/(cbrt(x) + sqrt(x) + 1), x ) \
         # == GS_RATIONAL_CV_1
 
 
@@ -170,8 +170,8 @@ def test_solve_polynomial1():
     assert solve((x - y, x + y), (x, y)) == solution
     assert solve((x - y, x + y), [x, y]) == solution
 
-    assert ({s[x] for s in solve(x**3 - 15*x - 4, x)} ==
-            {-2 + 3**Rational(1, 2), 4, -2 - 3**Rational(1, 2)})
+    assert {s[x] for s in solve(x**3 - 15*x - 4, x)} == {-2 + sqrt(3), 4,
+                                                         -2 - sqrt(3)}
 
     assert ({s[x] for s in solve((x**2 - 1)**2 - a, x)} ==
             {sqrt(1 + sqrt(a)), -sqrt(1 + sqrt(a)),
@@ -197,6 +197,7 @@ def test_solve_polynomial2():
 
     assert solve(z**2*x**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
     assert solve(z**2*x - z**2*y**2) == [{x: y**2}, {z: 0}]
+    assert solve(z**2*x - z**2*y**2, simplify=False) == [{x: y**2}, {z: 0}]
 
 
 def test_solve_polynomial_cv_1a():
@@ -206,9 +207,9 @@ def test_solve_polynomial_cv_1a():
     """
     assert solve(sqrt(x) - 1, x) == [{x: 1}]
     assert solve(sqrt(x) - 2, x) == [{x: 4}]
-    assert solve(x**Rational(1, 4) - 2, x) == [{x: 16}]
-    assert solve( x**Rational(1, 3) - 3, x) == [{x: 27}]
-    assert solve(sqrt(x) + x**Rational(1, 3) + x**Rational(1, 4), x) == [{x: 0}]
+    assert solve(root(x, 4) - 2, x) == [{x: 16}]
+    assert solve(cbrt(x) - 3, x) == [{x: 27}]
+    assert solve(sqrt(x) + cbrt(x) + root(x, 4), x) == [{x: 0}]
 
 
 def test_solve_polynomial_cv_1b():
@@ -231,19 +232,19 @@ def test_solve_polynomial_cv_2():
 def test_solve_qubics():
     assert (solve(x**3 - x + 1) ==
             [{x: -1/((-Rational(1, 2) -
-                      sqrt(3)*I/2)*(3*sqrt(69)/2 +
-                                    Rational(27, 2))**Rational(1, 3)) -
+                      sqrt(3)*I/2)*cbrt(3*sqrt(69)/2 +
+                                        Rational(27, 2))) -
                  (-Rational(1, 2) -
-                  sqrt(3)*I/2)*(3*sqrt(69)/2 +
-                                Rational(27, 2))**Rational(1, 3)/3},
+                  sqrt(3)*I/2)*cbrt(3*sqrt(69)/2 +
+                                    Rational(27, 2))/3},
              {x: Mul(-1, -Rational(1, 2) + sqrt(3)*I/2,
-                     evaluate=False)*(3*sqrt(69)/2 +
-                                      Rational(27, 2))**Rational(1, 3)/3 -
+                     evaluate=False)*cbrt(3*sqrt(69)/2 +
+                                          Rational(27, 2))/3 -
                  1/((-Rational(1, 2) +
-                     sqrt(3)*I/2)*(3*sqrt(69)/2 +
-                                   Rational(27, 2))**Rational(1, 3))},
-             {x: -(3*sqrt(69)/2 + Rational(27, 2))**Rational(1, 3)/3 -
-                 1/(3*sqrt(69)/2 + Rational(27, 2))**Rational(1, 3)}])
+                     sqrt(3)*I/2)*cbrt(3*sqrt(69)/2 +
+                                       Rational(27, 2)))},
+             {x: -cbrt(3*sqrt(69)/2 + Rational(27, 2))/3 -
+                 1/cbrt(3*sqrt(69)/2 + Rational(27, 2))}])
     assert (solve(x**3 - x + 1, cubics=False) ==
             [{x: RootOf(x**3 - x + 1, x, 0)}, {x: RootOf(x**3 - x + 1, x, 1)},
              {x: RootOf(x**3 - x + 1, x, 2)}])
@@ -253,7 +254,7 @@ def test_quintics_1():
     f = x**5 - 110*x**3 - 55*x**2 + 2310*x + 979
     s = solve(f, check=False)
     for root in s:
-        res = f.subs(x, root[x].n()).n()
+        res = f.subs(root).n(strict=False)
         assert tn(res, 0)
 
     f = x**5 - 15*x**3 - 5*x**2 + 10*x + 20
@@ -283,7 +284,7 @@ def test_quintics_2():
     f = x**5 + 15*x + 12
     s = solve(f, check=False)
     for root in s:
-        res = f.subs(x, root[x].n()).n()
+        res = f.subs(root).n(strict=False)
         assert tn(res, 0)
 
     f = x**5 - 15*x**3 - 5*x**2 + 10*x + 20
@@ -355,7 +356,7 @@ def test_solve_radicals():
 
     # XXX is this correct?
     sol = solve(eq, check=False)
-    assert abs(real_root(eq.subs(sol[0])).n(2)).epsilon_eq(0)
+    assert abs(real_root(eq.subs(sol[0])).n(2, strict=False)).epsilon_eq(0)
 
 
 # Note: multiple solutions exist for some of these equations, so the tests
@@ -405,7 +406,7 @@ def test_solve_transcendental():
 
     eq = 2*(3*x + 4)**5 - 6*7**(3*x + 9)
     result = solve(eq, x)
-    ans = [{x: (log(2401) + 5*LambertW(-log(7**(7*3**Rational(1, 5)/5))))/(3*log(7))/-1}]
+    ans = [{x: (log(2401) + 5*LambertW(-log(7**(7*root(3, 5)/5))))/(3*log(7))/-1}]
     assert result == ans
     # it works if expanded, too
     assert solve(eq.expand(), x) == result
@@ -439,10 +440,7 @@ def test_solve_transcendental():
     assert solve(x**y - 1) == [{x: 1}, {y: 0}]
     assert solve([x**y - 1]) == [{x: 1}, {y: 0}]
     assert solve(x*y*(x**2 - y**2)) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
-    assert (solve([x*y*(x**2 - y**2)], check=False) ==
-            [{x: RootOf(x**3 - x*y**2, x, 0)},
-             {x: RootOf(x**3 - x*y**2, x, 1)},
-             {x: RootOf(x**3 - x*y**2, x, 2)}])
+    assert solve([x*y*(x**2 - y**2)], check=False) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
     # issue sympy/sympy#4739
     assert solve(exp(log(5)*x) - 2**x, x) == [{x: 0}]
 
@@ -596,18 +594,6 @@ def test_solve_linear():
     assert solve_linear(x*exp(-x**2), symbols=[x]) == (0, 0)
     assert solve_linear(0**x - 1) == (0**x - 1, 1)
     pytest.raises(ValueError, lambda: solve_linear(Eq(x, 3), 3))
-
-
-def test_solve_undetermined_coeffs():
-    assert solve_undetermined_coeffs(a*x**2 + b*x**2 + b*x + 2*c*x + c + 1, [a, b, c], x) == \
-        {a: -2, b: 2, c: -1}
-    # Test that rational functions work
-    assert solve_undetermined_coeffs(a/x + b/(x + 1) - (2*x + 1)/(x**2 + x), [a, b], x) == \
-        {a: 1, b: 1}
-    # Test cancellation in rational functions
-    assert solve_undetermined_coeffs(((c + 1)*a*x**2 + (c + 1)*b*x**2 +
-                                      (c + 1)*b*x + (c + 1)*2*c*x + (c + 1)**2)/(c + 1), [a, b, c], x) == \
-        {a: -2, b: 2, c: -1}
 
 
 def test_solve_inequalities():
@@ -790,6 +776,7 @@ def test_sympyissue_5132():
     assert {(s[x], s[y]) for s in solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), x, y)} == {(1, 3), (3, 1)}
 
 
+@pytest.mark.slow
 def test_sympyissue_5335():
     lam, a0, conc = symbols('lam a0 conc')
     eqs = [lam + 2*y - a0*(1 - x/2)*x - 0.005*x/2*x,
@@ -797,11 +784,11 @@ def test_sympyissue_5335():
            x + y - conc]
     sym = [x, y, a0]
     # there are 4 solutions but only two are valid
-    assert len(solve(eqs, sym, minimal=True, simplify=False)) == 2
+    assert len(solve(eqs, sym, simplify=False, check=False)) == 2
 
 
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def _test_sympyissue_5335_float():
+def test_sympyissue_5335_float():
     # gives ZeroDivisionError: polynomial division
     lam, a0, conc = symbols('lam a0 conc')
     eqs = [lam + 2*y - a0*(1 - x/2)*x - 0.005*x/2*x,
@@ -1000,8 +987,7 @@ def test_sympyissue_6060():
 
 def test_sympyissue_5673():
     eq = -x + exp(exp(LambertW(log(x)))*LambertW(log(x)))
-    assert checksol(eq, x, 2) is True
-    assert checksol(eq, x, 2, numerical=False) is None
+    assert checksol(eq, {x: 2}) is True
 
 
 def test_checksol():
@@ -1016,7 +1002,7 @@ def test_exclude():
            Vminus*(-1/Ri - 1/Rf) + Vout/Rf,
            C*Vplus*s + V1*(-C*s - 1/R) + Vout/R,
            -Vminus + Vplus]
-    assert solve(eqs, exclude=s*C*R) == [
+    assert solve(eqs, Rf, Ri, V1, Vminus, Vout, Vplus) == [
         {
             Rf: Ri*(C*R*s + 1)**2/(C*R*s),
             Vminus: Vplus,
@@ -1030,7 +1016,7 @@ def test_exclude():
     ]
 
     # TODO: Investingate why currently solution [0] is preferred over [1].
-    assert solve(eqs, exclude=[Vplus, s, C]) in [[{
+    assert solve(eqs, R, Rf, Ri, V1, Vminus, Vout) in [[{
         Vminus: Vplus,
         V1: Vout/2 + Vplus/2 + sqrt((Vout - 5*Vplus)*(Vout - Vplus))/2,
         R: (Vout - 3*Vplus - sqrt(Vout**2 - 6*Vout*Vplus + 5*Vplus**2))/(2*C*Vplus*s),
@@ -1269,7 +1255,7 @@ def test_rewrite_trigh():
 
 def test_uselogcombine():
     eq = z - log(x) + log(y/(x*(-1 + y**2/x**2)))
-    assert solve(eq, x, force=True) == [{x: sqrt(y*(-exp(z) + y))}, {x: -sqrt(-y*(exp(z) - y))}]
+    assert solve(eq, x) == [{x: sqrt(y*(-exp(z) + y))}, {x: -sqrt(-y*(exp(z) - y))}]
     assert (solve(log(x + 3) + log(1 + 3/x) - 3) in
             [[{x: -3 + sqrt(-12 + exp(3))*exp(Rational(3, 2))/2 + exp(3)/2},
               {x: -sqrt(-12 + exp(3))*exp(Rational(3, 2))/2 - 3 + exp(3)/2}],
@@ -1294,14 +1280,14 @@ def test_sympyissue_2725():
     eq = sqrt(2)*R*sqrt(1/(R + 1)) + (R + 1)*(sqrt(2)*sqrt(1/(R + 1)) - 1)
     sol = solve(eq, R)
     assert sol == [{R: Rational(5, 3) + (-Rational(1, 2) -
-                                         sqrt(3)*I/2)*(Rational(251, 27) +
-                                                       sqrt(111)*I/9)**Rational(1, 3) +
+                                         sqrt(3)*I/2)*cbrt(Rational(251, 27) +
+                                                           sqrt(111)*I/9) +
                     40/(9*((-Rational(1, 2) -
-                            sqrt(3)*I/2)*(Rational(251, 27) +
-                                          sqrt(111)*I/9)**Rational(1, 3)))},
-                   {R: Rational(5, 3) + 40/(9*(Rational(251, 27) +
-                                               sqrt(111)*I/9)**Rational(1, 3)) +
-                    (Rational(251, 27) + sqrt(111)*I/9)**Rational(1, 3)}]
+                            sqrt(3)*I/2)*cbrt(Rational(251, 27) +
+                                              sqrt(111)*I/9)))},
+                   {R: Rational(5, 3) + 40/(9*cbrt(Rational(251, 27) +
+                                                   sqrt(111)*I/9)) +
+                    cbrt(Rational(251, 27) + sqrt(111)*I/9)}]
 
 
 def test_sympyissue_5114_6611():
@@ -1399,7 +1385,7 @@ def test_sympyissue_8755():
     # the solution should still be found; also it tests the use of
     # keyword `composite`.
     assert len(solve(sqrt(y)*x + x**3 - 1, x)) == 3
-    assert len(solve(-512*y**3 + 1344*(x + 2)**Rational(1, 3)*y**2 -
+    assert len(solve(-512*y**3 + 1344*cbrt(x + 2)*y**2 -
                      1176*(x + 2)**Rational(2, 3)*y - 169*x + 686, y, _unrad=False)) == 3
 
 

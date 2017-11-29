@@ -2,9 +2,9 @@ import collections
 
 import pytest
 
-from diofant import (Abs, Basic, Dummy, E, Float, Function, I, Integer, Max,
-                     Min, N, Poly, Pow, PurePoly, Rational, Symbol, cos, exp,
-                     oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
+from diofant import (Abs, Basic, E, Float, Function, I, Integer, Max, Min, N,
+                     Poly, Pow, PurePoly, Rational, StrPrinter, Symbol, cos,
+                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
                      trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.core.compatibility import iterable
@@ -572,6 +572,9 @@ def test_LUdecomp():
     P, L, Dee, U = M.LUdecompositionFF()
     assert P*M == L*Dee.inv()*U
 
+    pytest.raises(ValueError,
+                  lambda: Matrix([[0, 2], [0, 0]]).LUdecompositionFF())
+
 
 def test_LUsolve():
     A = Matrix([[2, 3, 5],
@@ -684,6 +687,9 @@ def test_util():
     assert test.cofactorMatrix() == \
         Matrix([[-3, 6, -3], [6, -12, 6], [-3, 6, -3]])
 
+    printer = StrPrinter()
+    assert Matrix().table(printer) == '[]'
+
 
 def test_jacobian_hessian():
     L = Matrix(1, 2, [x**2*y, 2*y**2 + x*y])
@@ -782,6 +788,7 @@ def test_nullspace():
     assert basis[1] == Matrix([0, 0, 1, 0, 0, 0, 0])
     assert basis[2] == Matrix([-2, 0, 0, -2, 1, 0, 0])
     assert basis[3] == Matrix([0, 0, 0, 0, 0, R(-1)/3, 1])
+    assert basis == M.nullspace(simplify=True)
 
     # issue sympy/sympy#4797; just see that we can do it when rows > cols
     M = Matrix([[1, 2], [2, 4], [3, 6]])
@@ -897,9 +904,13 @@ def test_eigen():
     m = Matrix([[1, .6, .6], [.6, .9, .9], [.9, .6, .6]])
     evals = {-sqrt(385)/20 + Rational(5, 4): 1, sqrt(385)/20 + Rational(5, 4): 1, 0: 1}
     assert m.eigenvals() == evals
-    nevals = list(sorted(m.eigenvals(rational=False).keys()))
-    sevals = list(sorted(evals.keys()))
+    nevals = list(sorted(m.eigenvals(rational=False)))
+    sevals = list(sorted(evals))
     assert all(abs(nevals[i] - sevals[i]) < 1e-9 for i in range(len(nevals)))
+
+    # issue sympy/sympy#10719
+    assert Matrix([]).eigenvals() == {}
+    assert Matrix([]).eigenvects() == []
 
 
 def test_subs():
@@ -1139,6 +1150,8 @@ def test_is_nilpotent():
     assert a.is_nilpotent()
     a = Matrix([[1, 0], [0, 1]])
     assert not a.is_nilpotent()
+    a = Matrix([])
+    assert a.is_nilpotent()
 
 
 def test_zeros_ones_fill():
@@ -1660,6 +1673,7 @@ def test_has():
 
 def test_errors():
     pytest.raises(ValueError, lambda: Matrix([[1, 2], [1]]))
+    pytest.raises(TypeError, lambda: Matrix(2, 2, 1))
     pytest.raises(IndexError, lambda: Matrix([[1, 2]])[1.2, 5])
     pytest.raises(IndexError, lambda: Matrix([[1, 2]])[1, 5.2])
     pytest.raises(ValueError, lambda: randMatrix(3, c=4, symmetric=True))
@@ -1722,6 +1736,10 @@ def test_errors():
     pytest.raises(IndexError, lambda: eye(3)[2, 5])
     M = Matrix(((1, 2, 3, 4), (5, 6, 7, 8), (9, 10, 11, 12), (13, 14, 15, 16)))
     pytest.raises(ValueError, lambda: M.det('method=LU_decomposition()'))
+    pytest.raises(NonSquareMatrixError, lambda: ones(2, 3).det_LU_decomposition())
+    with pytest.raises(TypeError):
+        M[(1,)] = 1
+    pytest.raises(AttributeError, lambda: zeros(0).jordan_cells())
 
 
 def test_len():
@@ -1809,6 +1827,12 @@ def test_cholesky_solve():
     soln = A.cholesky_solve(b)
     assert soln == x
 
+    A = Matrix([[-12, -3, -8],
+                [ -3, -4, -6],
+                [ -8, -6, -6]])
+    x = Matrix(3, 1, [Rational(-6, 83), Rational(15, 83), Rational(-7, 83)])
+    assert A.cholesky_solve(A*x) == x
+
 
 def test_LDLsolve():
     A = Matrix([[2, 3, 5],
@@ -1868,7 +1892,8 @@ def test_upper_triangular_solve():
 
 
 def test_diagonal_solve():
-    pytest.raises(TypeError, lambda: Matrix([1, 1]).diagonal_solve(Matrix([1])))
+    pytest.raises(TypeError, lambda: ones(2).diagonal_solve(Matrix([1])))
+    pytest.raises(TypeError, lambda: eye(2).diagonal_solve(Matrix([1])))
     A = Matrix([[1, 0], [0, 1]])*2
     B = Matrix([[x, y], [y, x]])
     assert A.diagonal_solve(B) == B/2
@@ -1908,7 +1933,7 @@ def test_matrix_norm():
     assert A.norm('frobenius') == sqrt(389)/2
 
     # Test properties of matrix norms
-    # http://en.wikipedia.org/wiki/Matrix_norm#Definition
+    # https//en.wikipedia.org/wiki/Matrix_norm#Definition
     # Two matrices
     A = Matrix([[1, 2], [3, 4]])
     B = Matrix([[5, 5], [-2, 2]])
@@ -1939,7 +1964,7 @@ def test_matrix_norm():
                 pass  # Some Norms fail on symbolic matrices due to Max issue
 
     # Test Properties of Vector Norms
-    # http://en.wikipedia.org/wiki/Vector_norm
+    # https//en.wikipedia.org/wiki/Vector_norm
     # Two column vectors
     a = Matrix([1, 1 - 1*I, -3])
     b = Matrix([Rational(1, 2), 1*I, 1])
@@ -2000,6 +2025,8 @@ def test_condition_number():
     Mc = M.condition_number()
     assert all(Float(1.).epsilon_eq(Mc.subs(x, val).evalf()) for val in
                [Rational(1, 5), Rational(1, 2), Rational(1, 10), pi/2, pi, 7*pi/4 ])
+
+    assert Matrix([]).condition_number() == 0  # issue sympy/sympy#10782
 
 
 def test_equality():
@@ -2247,6 +2274,9 @@ def test_is_Identity():
 def test_dot():
     assert ones(1, 3).dot(ones(3, 1)) == 3
     assert ones(1, 3).dot([1, 1, 1]) == 3
+    assert ones(2, 3).dot([1, 1]) == [2, 2, 2]
+    pytest.raises(ShapeError, lambda: ones(1, 3).dot([1, 1]))
+    pytest.raises(ShapeError, lambda: ones(1, 3).dot(ones(2, 1)))
 
 
 def test_dual():
@@ -2384,13 +2414,9 @@ def test_replace():
     N = M.replace(F, G)
     assert N == K
 
-
-def test_replace_map():
-    F, G = symbols('F, G', cls=Function)
-    K = Matrix(2, 2, [(G(0), {F(0): G(0)}), (G(1), {F(1): G(1)}), (G(1),
-                                                                   {F(1): G(1)}), (G(2), {F(2): G(2)})])
+    K = Matrix(2, 2, [G(0), G(1), G(1), G(2)])
     M = Matrix(2, 2, lambda i, j: F(i+j))
-    N = M.replace(F, G, True)
+    N = M.replace(F, G)
     assert N == K
 
 
@@ -2400,7 +2426,6 @@ def test_atoms():
     assert m.atoms(Symbol) == {x}
 
 
-@pytest.mark.slow
 def test_pinv():
     # Pseudoinverse of an invertible matrix is the inverse.
     A1 = Matrix([[a, b], [c, d]])
@@ -2438,14 +2463,10 @@ def test_pinv_solve():
     # Underdetermined system (infinite results).
     A = Matrix([[1, 0, 1], [0, 1, 1]])
     B = Matrix([5, 7])
-    solution = A.pinv_solve(B)
-    w = {}
-    for s in solution.atoms(Dummy, Symbol):
-        # Extract dummy symbols used in the solution.
-        w[s.name] = s
-    assert solution == Matrix([[w['w0_0']/3 + w['w1_0']/3 - w['w2_0']/3 + 1],
-                               [w['w0_0']/3 + w['w1_0']/3 - w['w2_0']/3 + 3],
-                               [-w['w0_0']/3 - w['w1_0']/3 + w['w2_0']/3 + 4]])
+    solution = A.pinv_solve(B, Matrix([x, y, z]))
+    assert solution == Matrix([[x/3 + y/3 - z/3 + 1],
+                               [x/3 + y/3 - z/3 + 3],
+                               [-x/3 - y/3 + z/3 + 4]])
     assert A * A.pinv() * B == B
     # Overdetermined system (least squares results).
     A = Matrix([[1, 0], [0, 0], [0, 1]])
@@ -2631,3 +2652,15 @@ def test_mgamma():
     assert mgamma(0, lower=True) == mgamma(0)
     assert mgamma(1, lower=True) == -mgamma(1)
     pytest.raises(IndexError, lambda: mgamma(4))
+
+
+def test_sympyissue_10770():
+    M = Matrix([])
+    a = ['col_insert', 'row_join'], Matrix([9, 6, 3])
+    b = ['row_insert', 'col_join'], a[1].T
+    c = ['row_insert', 'col_insert'], Matrix([[1, 2], [3, 4]])
+    for ops, m in (a, b, c):
+        for op in ops:
+            f = getattr(M, op)
+            new = f(m) if 'join' in op else f(42, m)
+            assert new == m and id(new) != id(m)

@@ -21,17 +21,17 @@ with open('diofant/__init__.py') as f:
             __version__ = m.group(1)
 
 setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner', 'isort']
-extra_reqs = {'exports': ['numpy!=1.13.0,!=1.13.1', 'scipy', 'Theano>=0.9.0'],
+extra_reqs = {'exports': ['numpy>=1.12.1', 'scipy', 'Theano>=0.9.0'],
               'gmpy': ['gmpy2>=2.0.8'],
               'plot': ['pyparsing!=2.1.2', 'matplotlib'],
               'interactive': ['ipython>=2.3.0'],
-              'docs': ['docutils!=0.13.1', 'sphinx>1.5', 'numpydoc',
+              'docs': ['docutils!=0.13.1', 'sphinx>1.5,!=1.6.5', 'numpydoc',
                        'sphinx_rtd_theme>=0.2.4'],
               }
 extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
-                         'flake8-docstrings', 'pep8-naming',
-                         'flake8-comprehensions', 'flake8-isort',
-                         'pytest-cov', 'coverage'] + setup_reqs
+                         'flake8-docstrings', 'pydocstyle<2.1.0', 'pep8-naming',
+                         'flake8-comprehensions', 'flake8-isort', 'hypothesis',
+                         'pytest-xdist', 'pytest-cov', 'coverage'] + setup_reqs
 
 setup(name='Diofant',
       version=__version__,
@@ -40,7 +40,7 @@ setup(name='Diofant',
       maintainer='Sergey B Kirpichev',
       license='BSD',
       keywords='Math CAS',
-      url='http://diofant.rtfd.io',
+      url='https://diofant.readthedocs.io/',
       packages=find_packages(),
       ext_modules=[],
       classifiers=[
@@ -64,4 +64,4 @@ setup(name='Diofant',
       install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
       setup_requires=setup_reqs,
       extras_require=extra_reqs,
-      zip_safe=False)
+      zip_safe=True)

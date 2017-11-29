@@ -250,7 +250,7 @@ def add_formulae(formulae):
          Matrix([[1, 0]]), Matrix([[0, 1], [z, (1 - b)]]))
 
     # 0F3
-    x = 4*z**Rational(1, 4)
+    x = 4*root(z, 4)
 
     def fp(a, z):
         return besseli(a, x) + besselj(a, x)
@@ -260,7 +260,7 @@ def add_formulae(formulae):
 
     # TODO branching
     addb([], [S.Half, a, a + S.Half],
-         Matrix([fp(2*a - 1, z), fm(2*a, z)*z**Rational(1, 4),
+         Matrix([fp(2*a - 1, z), fm(2*a, z)*root(z, 4),
                  fm(2*a - 1, z)*sqrt(z), fp(2*a, z)*z**Rational(3, 4)])
          * 2**(-2*a)*gamma(2*a)*z**((1 - 2*a)/4),
          Matrix([[1, 0, 0, 0]]),
@@ -268,7 +268,7 @@ def add_formulae(formulae):
                  [0, Rational(1, 2) - a, 1, 0],
                  [0, 0, Rational(1, 2), 1],
                  [z, 0, 0, 1 - a]]))
-    x = 2*(4*z)**Rational(1, 4)*exp_polar(I*pi/4)
+    x = 2*root(4*z, 4)*exp_polar(I*pi/4)
     addb([], [a, a + S.Half, 2*a],
          (2*sqrt(polar_lift(-1)*z))**(1 - 2*a)*gamma(2*a)**2 *
          Matrix([besselj(2*a - 1, x)*besseli(2*a - 1, x),
@@ -566,7 +566,7 @@ class Hyper_Function(Expr):
 
         diff = 0
         for bucket, obucket in [(abuckets, oabuckets), (bbuckets, obbuckets)]:
-            for mod in set(list(bucket.keys()) + list(obucket.keys())):
+            for mod in set(list(bucket) + list(obucket)):
                 if (mod not in bucket) or (mod not in obucket) \
                         or len(bucket[mod]) != len(obucket[mod]):
                     return -1
@@ -770,7 +770,7 @@ class Formula:
             symb_a, symb_b = [sift(params, lambda x: _mod1(x.xreplace(repl)))
                               for params in [self.func.ap, self.func.bq]]
             for bucket, obucket in [(abuckets, symb_a), (bbuckets, symb_b)]:
-                for mod in set(list(bucket.keys()) + list(obucket.keys())):
+                for mod in set(list(bucket) + list(obucket)):
                     if (mod not in bucket) or (mod not in obucket) \
                             or len(bucket[mod]) != len(obucket[mod]):
                         break
@@ -802,8 +802,8 @@ class FormulaCollection:
 
     def __init__(self):
         """ Doing this globally at module init time is a pain ... """
-        self.symbolic_formulae = {}
-        self.concrete_formulae = {}
+        self.symbolic_formulae = defaultdict(list)
+        self.concrete_formulae = defaultdict(dict)
         self.formulae = []
 
         add_formulae(self.formulae)
@@ -814,10 +814,10 @@ class FormulaCollection:
         for f in self.formulae:
             sizes = f.func.sizes
             if len(f.symbols) > 0:
-                self.symbolic_formulae.setdefault(sizes, []).append(f)
+                self.symbolic_formulae[sizes].append(f)
             else:
                 inv = f.func.build_invariants()
-                self.concrete_formulae.setdefault(sizes, {})[inv] = f
+                self.concrete_formulae[sizes][inv] = f
 
     def lookup_origin(self, func):
         """
@@ -864,7 +864,7 @@ class FormulaCollection:
         for _, repl, f, func2 in possible:
             f2 = Formula(func2, f.z, None, [], f.B.subs(repl),
                          f.C.subs(repl), f.M.subs(repl))
-            if not any(e.has(S.NaN, oo, -oo, zoo) for e in [f2.B, f2.M, f2.C]):
+            if not any(e.has(nan, oo, -oo, zoo) for e in [f2.B, f2.M, f2.C]):
                 return f2
         else:
             return
@@ -1563,8 +1563,8 @@ def devise_plan(target, origin, z):
     abuckets, bbuckets, nabuckets, nbbuckets = [sift(params, _mod1) for
                                                 params in (target.ap, target.bq, origin.ap, origin.bq)]
 
-    if len(list(abuckets.keys())) != len(list(nabuckets.keys())) or \
-            len(list(bbuckets.keys())) != len(list(nbbuckets.keys())):
+    if len(list(abuckets)) != len(list(nabuckets)) or \
+            len(list(bbuckets)) != len(list(nbbuckets)):
         raise ValueError('%s not reachable from %s' % (target, origin))
 
     ops = []
@@ -1596,7 +1596,7 @@ def devise_plan(target, origin, z):
                          lambda p, i: UnShiftB(nal + aother, p + bother, i, z),
                          lambda p, i: ShiftB(p[i]))
 
-    for r in sorted(chain(abuckets.keys(), bbuckets.keys()), key=default_sort_key):
+    for r in sorted(chain(abuckets, bbuckets), key=default_sort_key):
         al = ()
         nal = ()
         bk = ()
@@ -1790,7 +1790,7 @@ def try_lerchphi(func):
     part = apart(numer/denom, t)
     args = Add.make_args(part)
     monomials = []
-    terms = {}
+    terms = defaultdict(list)
     for arg in args:
         numer, denom = arg.as_numer_denom()
         if not denom.has(t):
@@ -1821,7 +1821,7 @@ def try_lerchphi(func):
             indep *= b**n
         else:
             raise NotImplementedError('unrecognised form of partial fraction')
-        terms.setdefault(a, []).append((numer/indep, n))
+        terms[a].append((numer/indep, n))
 
     # Now that we have this information, assemble our formula. All the
     # monomials yield rational functions and go into one basis element.
@@ -1830,7 +1830,7 @@ def try_lerchphi(func):
     # deriv maps a basis to its derivative, expressed as a C(z)-linear
     # combination of other basis elements.
     deriv = {}
-    coeffs = {}
+    coeffs = defaultdict(list)
     z = Dummy('z')
     monomials.sort(key=lambda x: x[1])
     mon = {0: 1/(1 - z)}
@@ -1838,10 +1838,10 @@ def try_lerchphi(func):
         for k in range(monomials[-1][1]):
             mon[k + 1] = z*mon[k].diff(z)
     for a, n in monomials:
-        coeffs.setdefault(Integer(1), []).append(a*mon[n])
+        coeffs[Integer(1)].append(a*mon[n])
     for a, l in terms.items():
         for c, k in l:
-            coeffs.setdefault(lerchphi(z, k, a), []).append(c)
+            coeffs[lerchphi(z, k, a)].append(c)
         l.sort(key=lambda x: x[1])
         for k in range(2, l[-1][1] + 1):
             deriv[lerchphi(z, k, a)] = [(-a, lerchphi(z, k, a)),
@@ -1849,7 +1849,7 @@ def try_lerchphi(func):
         deriv[lerchphi(z, 1, a)] = [(-a, lerchphi(z, 1, a)),
                                     (1/(1 - z), Integer(1))]
     trans = {}
-    for n, b in enumerate([Integer(1)] + list(deriv.keys())):
+    for n, b in enumerate([Integer(1)] + list(deriv)):
         trans[b] = n
     basis = [expand_func(b) for (b, _) in sorted(trans.items(),
                                                  key=lambda x:x[1])]
@@ -1996,7 +1996,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
             res = res.rewrite(rewrite)
         res = powdenest(res, polar=True)
 
-        if res is not S.NaN:
+        if res is not nan:
             pass
         elif not r.has(hyper):
             res = r[0].limit(z0, unpolarify(z))
@@ -2046,7 +2046,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     if unpolarify(z) in [1, 0, -1]:
         f = build_hypergeometric_formula(func)
         r = carryout_plan(f, ops) + p
-        if not r.has(hyper) and r is not S.NaN:
+        if not r.has(hyper) and r is not nan:
             return r + p
 
     # Try to find a formula in our collection

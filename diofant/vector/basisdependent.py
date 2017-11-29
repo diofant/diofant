@@ -163,7 +163,7 @@ class BasisDependentAdd(BasisDependent, Add):
             for x in arg.components:
                 components[x] = components.get(x, 0) + arg.components[x]
 
-        temp = list(components.keys())
+        temp = list(components)
         for x in temp:
             if components[x] == 0:
                 del components[x]
@@ -182,7 +182,7 @@ class BasisDependentAdd(BasisDependent, Add):
         assumptions['commutative'] = True
         obj._assumptions = StdFactKB(assumptions)
         obj._components = components
-        obj._sys = (list(components.keys()))[0]._sys
+        obj._sys = list(components)[0]._sys
 
         return obj
 
@@ -201,7 +201,7 @@ class BasisDependentMul(BasisDependent, Mul):
 
         # Determine the component and check arguments
         # Also keep a count to ensure two vectors aren't
-        # being multipled
+        # being multiplied
         for arg in args:
             if isinstance(arg, cls._zero_func):
                 count += 1
@@ -217,7 +217,7 @@ class BasisDependentMul(BasisDependent, Mul):
                 expr = arg
             else:
                 measure_number *= arg
-        # Make sure incompatible types weren't multipled
+        # Make sure incompatible types weren't multiplied
         if count > 1:
             raise ValueError("Invalid multiplication")
         elif count == 0:

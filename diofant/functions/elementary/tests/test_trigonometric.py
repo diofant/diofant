@@ -126,7 +126,7 @@ def test_sin():
     assert isinstance(sin(-re(x) + im(y)), sin) is False
 
     for d in list(range(1, 22)) + [60, 85]:
-        for n in range(0, d*2 + 1):
+        for n in range(d*2 + 1):
             x = n*pi/d
             e = abs( float(sin(x)) - sin(float(x)) )
             assert e < 1e-12
@@ -323,7 +323,7 @@ def test_cos():
     assert cos(2*k*pi) == 1
 
     for d in list(range(1, 22)) + [60, 85]:
-        for n in range(0, 2*d + 1):
+        for n in range(2*d + 1):
             x = n*pi/d
             e = abs( float(cos(x)) - cos(float(x)) )
             assert e < 1e-12
@@ -907,6 +907,9 @@ def test_atan2():
     r1 = Symbol('r1', real=True, nonzero=True)
     r2 = Symbol('r2', real=True, nonzero=True)
     assert atan2(r1, r2).is_real
+
+    assert atan2(0, r1) == pi*(-Heaviside(r1) + 1)
+
     r1 = Symbol('r1', real=True)
     r2 = Symbol('r2', real=True)
     assert atan2(r1, r2).is_real is None
@@ -1052,8 +1055,8 @@ def test_atan2_expansion():
 
 def test_aseries():
     def t(n, v, d, e):
-        assert abs(
-            n(1/v).evalf() - n(1/x).series(x, dir=d).removeO().subs(x, v)) < e
+        assert abs(n(1/v).evalf(strict=False) -
+                   n(1/x).series(x, dir=d).removeO().subs(x, v)) < e
     t(atan, 0.1, '+', 1e-5)
     t(atan, -0.1, '-', 1e-5)
     t(acot, 0.1, '+', 1e-5)

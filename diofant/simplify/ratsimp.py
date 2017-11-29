@@ -4,7 +4,6 @@ from ..core import Add, Dummy, Rational, symbols
 from ..polys import (ComputationFailed, Poly, cancel, parallel_poly_from_expr,
                      reduced)
 from ..polys.monomials import Monomial, monomial_div
-from ..polys.polyerrors import PolificationFailed
 from ..utilities.misc import debug
 
 
@@ -69,18 +68,9 @@ def ratsimpmodprime(expr, G, *gens, **args):
 
     num, denom = cancel(expr).as_numer_denom()
 
-    try:
-        polys, opt = parallel_poly_from_expr([num, denom] + G, *gens, **args)
-    except PolificationFailed:
-        return expr
-
+    polys, opt = parallel_poly_from_expr([num, denom] + G, *gens, **args)
     domain = opt.domain
-
-    if domain.has_assoc_Field:
-        opt.domain = domain.get_field()
-    else:
-        raise DomainError(
-            "can't compute rational simplification over %s" % domain)
+    opt.domain = domain.get_field()
 
     # compute only once
     leading_monomials = [g.LM(opt.order) for g in polys[2:]]
@@ -218,6 +208,8 @@ def ratsimpmodprime(expr, G, *gens, **args):
     if not domain.has_Field:
         cn, c = c.clear_denoms(convert=True)
         dn, d = d.clear_denoms(convert=True)
+    else:
+        cn, dn = 1, 1
 
     cf, c, d = cancel((c, d), opt.gens, order=opt.order)  # canonicalize signs
     r = cf*Rational(cn, dn)

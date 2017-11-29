@@ -229,7 +229,7 @@ of those tests will surely fail.
 from collections import defaultdict
 from itertools import islice
 
-from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
+from ..core import (Add, AtomicExpr, Derivative, Dummy, E, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, S, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
                     oo, symbols, sympify, zoo)
@@ -1689,7 +1689,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
                 if e.has(t):
                     tpart = e.as_independent(t, Mul)[1]
                     for i in Mul.make_args(tpart):
-                        if i.is_Pow and i.base is S.Exp1:
+                        if i.is_Pow and i.base is E:
                             b, e = i.as_base_exp()
                             co = e.coeff(t)
                             if co and not co.has(t) and co.has(I):
@@ -2163,7 +2163,7 @@ def odesimp(eq, func, order, constants, hint):
         # The solution is not solved, so try to solve it
         try:
             floats = any(i.is_Float for i in eq.atoms(Number))
-            eqsol = solve(eq, func, force=True, rational=not floats)
+            eqsol = solve(eq, func, rational=not floats)
             if not eqsol:
                 raise NotImplementedError
         except (NotImplementedError, PolynomialError):
@@ -2187,7 +2187,7 @@ def odesimp(eq, func, order, constants, hint):
         if hint.startswith("1st_homogeneous_coeff"):
             for j, eqi in enumerate(eq):
                 newi = logcombine(eqi, force=True)
-                if newi.lhs.func is log and newi.rhs == 0:
+                if isinstance(newi.lhs, log) and newi.rhs == 0:
                     newi = Eq(newi.lhs.args[0]/C1, C1)
                 eq[j] = newi
 
@@ -2551,7 +2551,7 @@ def _get_constant_subexpressions(expr, Cs):
         if len(expr_syms) > 0 and expr_syms.issubset(Cs):
             Ces.append(expr)
         else:
-            if expr.is_Pow and expr.base is S.Exp1:
+            if expr.is_Pow and expr.base is E:
                 expr = expr.expand(mul=True)
             if expr.func in (Add, Mul):
                 d = sift(expr.args, lambda i: i.free_symbols.issubset(Cs))
@@ -2576,7 +2576,7 @@ def __remove_linear_redundancies(expr, Cs):
     Cs = [i for i in Cs if cnts[i] > 0]
 
     def _linear(expr):
-        if expr.func is Add:
+        if isinstance(expr, Add):
             xs = [i for i in Cs if expr.count(i) == cnts[i]
                   and 0 == expr.diff(i, 2)]
             d = {}
@@ -2598,13 +2598,13 @@ def __remove_linear_redundancies(expr, Cs):
         expr = _linear(expr)
         return expr
 
-    if expr.func is Equality:
+    if isinstance(expr, Equality):
         lhs, rhs = [_recursive_walk(i) for i in expr.args]
 
         def f(i):
             return isinstance(i, Number) or i in Cs
 
-        if lhs.func is Symbol and lhs in Cs:
+        if isinstance(lhs, Symbol) and lhs in Cs:
             rhs, lhs = lhs, rhs
         if lhs.func in (Add, Symbol) and rhs.func in (Add, Symbol):
             dlhs = sift([lhs] if isinstance(lhs, AtomicExpr) else lhs.args, f)
@@ -2736,10 +2736,10 @@ def constantsimp(expr, constants):
             infac = False
             asfac = False
             for m in new_expr.args:
-                if m.is_Pow and m.base is S.Exp1:
+                if m.is_Pow and m.base is E:
                     asfac = True
                 elif m.is_Add:
-                    infac = any(fi.is_Pow and fi.base is S.Exp1 for t in m.args
+                    infac = any(fi.is_Pow and fi.base is E for t in m.args
                                 for fi in Mul.make_args(t))
                 if asfac and infac:
                     new_expr = expr
@@ -2933,7 +2933,7 @@ def ode_1st_exact(eq, func, order, match):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Exact_differential_equation
+    .. [1] https//en.wikipedia.org/wiki/Exact_differential_equation
     .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 73.
     """
@@ -2986,7 +2986,7 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Homogeneous_differential_equation
+    .. [1] https//en.wikipedia.org/wiki/Homogeneous_differential_equation
     .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 59.
     """
@@ -3086,7 +3086,7 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Homogeneous_differential_equation
+    .. [1] https//en.wikipedia.org/wiki/Homogeneous_differential_equation
     .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 59.
     """
@@ -3182,7 +3182,7 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Homogeneous_differential_equation
+    .. [1] https//en.wikipedia.org/wiki/Homogeneous_differential_equation
     .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 59.
     """
@@ -3336,7 +3336,7 @@ def ode_1st_linear(eq, func, order, match):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
+    .. [1] https//en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
     .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 92.
     """
@@ -3419,7 +3419,7 @@ def ode_Bernoulli(eq, func, order, match):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Bernoulli_differential_equation
+    .. [1] https//en.wikipedia.org/wiki/Bernoulli_differential_equation
     .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 95.
     """
@@ -3467,7 +3467,7 @@ def ode_Riccati_special_minus2(eq, func, order, match):
     References
     ==========
 
-    1. http://www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Riccati
+    1. https//www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Riccati
     2. http://eqworld.ipmnet.ru/en/solutions/ode/ode0106.pdf -
        http://eqworld.ipmnet.ru/en/solutions/ode/ode0123.pdf
     """
@@ -3535,13 +3535,13 @@ def ode_Liouville(eq, func, order, match):
 
     .. [1] Goldstein and Braun, "Advanced Methods for the Solution of Differential
            Equations", pp. 98.
-    .. [2] http://www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
+    .. [2] https//www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
     """
     # Liouville ODE:
     #  f(x).diff(x, 2) + g(f(x))*(f(x).diff(x, 2))**2 + h(x)*f(x).diff(x)
     # See Goldstein and Braun, "Advanced Methods for the Solution of
     # Differential Equations", pg. 98, as well as
-    # http://www.maplesoft.com/support/help/view.aspx?path=odeadvisor/Liouville
+    # https//www.maplesoft.com/support/help/view.aspx?path=odeadvisor/Liouville
     x = func.args[0]
     f = func.func
     r = match  # f(x).diff(x, 2) + g*f(x).diff(x)**2 + h*f(x).diff(x)
@@ -3976,7 +3976,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
+    .. [1] https//en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
     .. [2] C. Bender & S. Orszag, "Advanced Mathematical Methods for Scientists and
            Engineers", Springer 1999, pp. 12.
     """
@@ -3990,7 +3990,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     # First, set up characteristic equation.
     chareq, symbol = S.Zero, Dummy('x')
 
-    for i in r.keys():
+    for i in r:
         if not isinstance(i, str) and i >= 0:
             chareq += (r[i]*diff(x**symbol, x, i)*x**-symbol).expand()
 
@@ -4106,7 +4106,7 @@ def ode_nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients(eq, func, o
 
     chareq, eq, symbol = S.Zero, S.Zero, Dummy('x')
 
-    for i in r.keys():
+    for i in r:
         if not isinstance(i, str) and i >= 0:
             chareq += (r[i]*diff(x**symbol, x, i)*x**-symbol).expand()
 
@@ -4616,7 +4616,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Linear_differential_equation section:
+    .. [1] https//en.wikipedia.org/wiki/Linear_differential_equation section:
            Nonhomogeneous_equation_with_constant_coefficients
     .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 211.
@@ -4628,7 +4628,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     # First, set up characteristic equation.
     chareq, symbol = S.Zero, Dummy('x')
 
-    for i in r.keys():
+    for i in r:
         if type(i) == str or i < 0:
             pass
         else:
@@ -4749,7 +4749,7 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Method_of_undetermined_coefficients
+    .. [1] https//en.wikipedia.org/wiki/Method_of_undetermined_coefficients
     .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 221.
     """
@@ -4845,7 +4845,7 @@ def _solve_undetermined_coefficients(eq, func, order, match):
 
     coeffsdict = dict(zip(trialset, [0]*(len(trialset) + 1)))
 
-    eqs = expand_mul(eqs)
+    eqs = _mexpand(eqs)
 
     for i in Add.make_args(eqs):
         s = separatevars(i, dict=True, symbols=[x])
@@ -5072,9 +5072,8 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Variation_of_parameters
-    .. [2] http://planetmath.org/VariationOfParameters
-    .. [3] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+    .. [1] https//en.wikipedia.org/wiki/Variation_of_parameters
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
            Dover 1963, pp. 233.
     """
 

@@ -4,7 +4,7 @@ import pytest
 
 from diofant import (Derivative, Eq, Expr, Float, I, Integer, Mul, Piecewise,
                      Rational, RootOf, Sum, Symbol, Tuple, diff, exp, expand,
-                     false, im, oo, pi, re, sin, sqrt, tanh, true)
+                     false, im, oo, pi, re, root, sin, sqrt, tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
@@ -387,12 +387,11 @@ def test_Poly__unify():
     pytest.raises(UnificationFailed, lambda: Poly(x)._unify(y))
 
     F3 = FF(3)
-    F5 = FF(5)
 
     assert Poly(x, x, modulus=3)._unify(Poly(y, y, modulus=3))[2:] == (
         DMP([[F3(1)], []], F3), DMP([[F3(1), F3(0)]], F3))
-    assert Poly(x, x, modulus=3)._unify(Poly(y, y, modulus=5))[2:] == (
-        DMP([[F5(1)], []], F5), DMP([[F5(1), F5(0)]], F5))
+    pytest.raises(NotImplementedError,
+                  lambda: Poly(x, x, modulus=3)._unify(Poly(y, y, modulus=5)))
 
     assert Poly(y, x, y)._unify(Poly(x, x, modulus=3))[2:] == (DMP([[F3(1), F3(0)]], F3), DMP([[F3(1)], []], F3))
     assert Poly(x, x, modulus=3)._unify(Poly(y, x, y))[2:] == (DMP([[F3(1)], []], F3), DMP([[F3(1), F3(0)]], F3))
@@ -2763,7 +2762,7 @@ def test_torational_factor_list():
         (-x*(1 + sqrt(2)) - 1, 1),
         (-x*(1 + sqrt(2)) + 1, 1)])
 
-    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + 2**Rational(1, 4))}))
+    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + root(2, 4))}))
     assert _torational_factor_list(p, x) is None
 
 

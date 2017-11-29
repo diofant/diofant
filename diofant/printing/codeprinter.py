@@ -198,7 +198,7 @@ class CodePrinter(StrPrinter):
                     indices)
 
                 for term in dummies[d]:
-                    if term in dummies and not ([list(f.keys()) for f in dummies[term]]
+                    if term in dummies and not ([list(f) for f in dummies[term]]
                                                 == [[None] for f in dummies[term]]):  # pragma: no cover
                         # If one factor in the term has it's own internal
                         # contractions, those must be computed first.
