@@ -5,7 +5,6 @@ from .evalf import EvalfMixin
 from .evaluate import global_evaluate
 from .expr import Expr
 from .function import _coeff_isneg
-from .symbol import Dummy, Symbol
 from .sympify import sympify
 
 
