@@ -270,7 +270,7 @@ def test_RootOf_evalf():
     # make sure verification is used in case a max/min traps the "root"
     assert str(RootOf(4*x**5 + 16*x**3 + 12*x**2 + 7, 0).n(3)) == '-0.976'
 
-    assert isinstance(RootOf(x**3 + y*x + 1, x, 0).n(2), RootOf)
+    assert isinstance(RootOf(x**3 + y*x + 1, x, 0).n(2, strict=False), RootOf)
 
 
 def test_RootOf_evalf_caching_bug():
