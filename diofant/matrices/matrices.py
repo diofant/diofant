@@ -2464,8 +2464,7 @@ class MatrixBase(DefaultPrinting):
         Hong R. Lee, B.David Saunders, Fraction Free Gaussian Elimination
         for Sparse Matrices, In Journal of Symbolic Computation, Volume 19,
         Issue 5, 1995, Pages 393-402, ISSN 0747-7171,
-        https://doi.org/10.1006/jsco.1995.1022.
-        (http://www.sciencedirect.com/science/article/pii/S074771718571022X)
+        https://www.sciencedirect.com/science/article/pii/S074771718571022X.
 
         See Also
         ========
@@ -2531,8 +2530,7 @@ class MatrixBase(DefaultPrinting):
         Hong R. Lee, B.David Saunders, Fraction Free Gaussian Elimination
         for Sparse Matrices, In Journal of Symbolic Computation, Volume 19,
         Issue 5, 1995, Pages 393-402, ISSN 0747-7171,
-        https://doi.org/10.1006/jsco.1995.1022.
-        (http://www.sciencedirect.com/science/article/pii/S074771718571022X)
+        https://www.sciencedirect.com/science/article/pii/S074771718571022X.
 
         See Also
         ========
