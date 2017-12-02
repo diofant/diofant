@@ -45,6 +45,7 @@ Compatibility breaks
 * Make ``matches()`` method for :class:`~diofant.core.basic.Basic` - private, see :pull:`557`.
 * Removed :meth:`~diofant.core.basic.Basic.replace` flags ``simultaneous`` and ``map``, see :pull:`557`.
 * Make ``strict`` flag - default for :meth:`~diofant.core.evalf.EvalfMixin.evalf`, see :pull:`537`.
+* Removed ``I`` property of the :class:`~diofant.matrices.expressions.MatrixExpr`, see :pull:`577`.
 
 Minor changes
 =============
