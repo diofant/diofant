@@ -188,3 +188,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`11016` diop: sum of squares needs to try more options to satisfy conditions
 * :sympyissue:`9538` diophantine() doesn't let you specify the variable order
 * :sympyissue:`11049` diop: recursion error
+* :sympyissue:`11021` diop: power_representation(4**5, 3, 1) -> (4,)
+* :sympyissue:`11050` diop: partition(n, k) gives redundant result

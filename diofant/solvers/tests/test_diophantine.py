@@ -55,6 +55,7 @@ def test_input_format():
 def test_univariate():
     assert diop_solve((x - 1)*(x - 2)**2) == {(1,), (2,)}
     assert diop_solve((x - 1)*(x - 2)) == {(1,), (2,)}
+    assert diop_solve(2*a**2 + a - 1) == {(-1,)}
 
 
 def test_classify_diop():
@@ -590,6 +591,7 @@ def test_diop_partition():
     assert list(partition(0)) == [()]
     assert list(partition(1, 0)) == [()]
     assert [list(i) for i in partition(3)] == [[1, 1, 1], [1, 2], [3]]
+    assert list(partition(3, 2)) == [(1, 2)]  # issue sympy/sympy#11050
 
 
 def test_prime_as_sum_of_two_squares():
@@ -653,6 +655,7 @@ def test_power_representation():
     pytest.raises(ValueError, lambda: list(power_representation(2, 2, 0)))
     assert list(power_representation(-1, 2, 2)) == []
     assert list(power_representation(1, 1, 1)) == [(1,)]  # issue sympy/sympy#11000
+    assert list(power_representation(4**5, 3, 1)) == []  # issue sympy/sympy#11021
     assert list(power_representation(3, 2, 1)) == []
     assert list(power_representation(4, 2, 1)) == [(2,)]
     assert list(power_representation(3**4, 4, 6, zeros=True)) == [(1, 2, 2, 2, 2, 2), (0, 0, 0, 0, 0, 3)]

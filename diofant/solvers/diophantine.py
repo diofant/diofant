@@ -827,7 +827,7 @@ def _diop_quadratic(var, coeff, t):
                         ans = diop_solve(sqa*x + e*sqc*y - root)
                         sol.add((ans[0], ans[1]))
 
-            elif _is_int(_c):
+            else:
                 def solve_x(u):
                     return -e*sqc*g*_c*t**2 - (E + 2*e*sqc*g*u)*t - (e*sqc*g*u**2 + E*u + e*sqc*F) // _c
 
@@ -855,13 +855,12 @@ def _diop_quadratic(var, coeff, t):
                 num = B*t0 + r*s0 + r*t0 - B*s0
                 x_0 = num/(4*A*r)
                 y_0 = (s0 - t0)/(2*r)
-                if isinstance(s0, Symbol) or isinstance(t0, Symbol):
-                    if check_param(x_0, y_0, 4*A*r, t) != (None, None):
-                        ans = check_param(x_0, y_0, 4*A*r, t)
-                        sol.add((ans[0], ans[1]))
-                elif x_0.is_Integer and y_0.is_Integer:
-                    if is_solution_quad(var, coeff, x_0, y_0):
-                        sol.add((x_0, y_0))
+                if ((isinstance(s0, Symbol) or isinstance(t0, Symbol)) and
+                        check_param(x_0, y_0, 4*A*r, t) != (None, None)):
+                    ans = check_param(x_0, y_0, 4*A*r, t)
+                    sol.add((ans[0], ans[1]))
+                elif x_0.is_Integer and y_0.is_Integer and is_solution_quad(var, coeff, x_0, y_0):
+                    sol.add((x_0, y_0))
 
         else:
             s = _diop_quadratic(var[::-1], coeff, t)  # Interchange x and y
@@ -1002,7 +1001,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
             return [(0, 0)]
         elif N < 0:
             return []
-        elif N > 0:
+        else:  # N > 0
             sol = []
             for d in divisors(square_factor(N)):
                 sols = cornacchia(1, -D, N // d**2)
@@ -1051,7 +1050,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
                 G = []
                 B = []
 
-                for i in pqa:
+                for i in pqa:  # pragma: no branch
 
                     a = i[2]
                     G.append(i[5])
@@ -1111,7 +1110,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
                         G = []
                         B = []
 
-                        for i in pqa:
+                        for i in pqa:  # pragma: no branch
 
                             a = i[2]
                             G.append(i[5])
@@ -2187,15 +2186,16 @@ def ldescent(A, B):
         div = divisors(Q)
         B_0 = None
 
-        for i in div:
+        for i in div:  # pragma: no cover
             sQ, _exact = integer_nthroot(abs(Q) // i, 2)
             if _exact:
                 B_0, d = sign(Q)*i, sQ
                 break
 
-    if B_0 is not None:
-        W, X, Y = ldescent(A, B_0)
-        return _remove_gcd((-A*X + r*W), (r*X - W), Y*(B_0*d))
+    assert B_0 is not None
+
+    W, X, Y = ldescent(A, B_0)
+    return _remove_gcd((-A*X + r*W), (r*X - W), Y*(B_0*d))
 
 
 def descent(A, B):
