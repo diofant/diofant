@@ -104,7 +104,6 @@ def diophantine(eq, param=symbols("t", integer=True), syms=None):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import diophantine
     >>> from diofant.abc import x, y, z
     >>> diophantine(x**2 - y**2)
     {(t_0, -t_0), (t_0, t_0)}
@@ -253,7 +252,6 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import diop_solve
     >>> from diofant.abc import x, y, z, w
     >>> diop_solve(2*x + 3*y - 5)
     (3*t_0 - 5, -2*t_0 + 5)
@@ -331,7 +329,6 @@ def classify_diop(eq, _dict=True):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import classify_diop
     >>> from diofant.abc import x, y, z, w, t
     >>> classify_diop(4*x + 6*y - 4)
     ([x, y], {1: -4, x: 4, y: 6}, 'linear')
@@ -450,7 +447,6 @@ def diop_linear(eq, param=symbols("t", integer=True)):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import diop_linear
     >>> from diofant.abc import x, y, z
     >>> diop_linear(2*x - 3*y - 5)
     (3*t_0 - 5, 2*t_0 - 5)
@@ -666,7 +662,6 @@ def base_solution_linear(c, a, b, t=None):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import base_solution_linear
     >>> from diofant.abc import t
     >>> base_solution_linear(5, 2, 3)  # equation 2*x + 3*y = 5
     (-5, 5)
@@ -731,7 +726,6 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     ========
 
     >>> from diofant.abc import x, y, t
-    >>> from diofant.solvers.diophantine import diop_quadratic
     >>> diop_quadratic(x**2 + y**2 + 2*x + 2*y + 2, t)
     {(-1, -1)}
 
@@ -971,7 +965,6 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import diop_DN
     >>> diop_DN(13, -4)  # Solves equation x**2 - 13*y**2 = -4
     [(3, 1), (393, 109), (36, 10)]
 
@@ -993,8 +986,8 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
     ==========
 
     .. [1] Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
-        Robertson, July 31, 2004, Pages 16 - 17. [online], Available:
-        http://www.jpr2718.org/pell.pdf
+           Robertson, July 31, 2004, Pages 16 - 17. [online], Available:
+           http://www.jpr2718.org/pell.pdf
     """
     if D < 0:
         if N == 0:
@@ -1149,7 +1142,6 @@ def cornacchia(a, b, m):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import cornacchia
     >>> cornacchia(2, 3, 35)  # equation 2x**2 + 3y**2 = 35
     {(2, 3), (4, 1)}
     >>> cornacchia(1, 1, 25)  # equation x**2 + y**2 = 25
@@ -1160,8 +1152,8 @@ def cornacchia(a, b, m):
 
     .. [1] A. Nitaj, "L'algorithme de Cornacchia"
     .. [2] Solving the diophantine equation ax**2 + by**2 = m by Cornacchia's
-        method, [online], Available:
-        http://www.numbertheory.org/php/cornacchia.html
+           method, [online], Available:
+           http://www.numbertheory.org/php/cornacchia.html
 
     See Also
     ========
@@ -1220,7 +1212,6 @@ def PQa(P_0, Q_0, D):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import PQa
     >>> pqa = PQa(13, 4, 5)  # (13 + sqrt(5))/4
     >>> next(pqa)  # (P_0, Q_0, a_0, A_0, B_0, G_0)
     (13, 4, 3, 3, 1, -1)
@@ -1231,7 +1222,7 @@ def PQa(P_0, Q_0, D):
     ==========
 
     .. [1] Solving the generalized Pell equation x^2 - Dy^2 = N, John P.
-        Robertson, July 31, 2004, Pages 4 - 8. http://www.jpr2718.org/pell.pdf
+           Robertson, July 31, 2004, Pages 4 - 8. http://www.jpr2718.org/pell.pdf
     """
     A_i_2 = B_i_1 = 0
     A_i_1 = B_i_2 = 1
@@ -1280,7 +1271,6 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import diop_bf_DN
     >>> diop_bf_DN(13, -4)
     [(3, 1), (-3, 1), (36, 10)]
     >>> diop_bf_DN(986, 1)
@@ -1295,7 +1285,7 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     ==========
 
     .. [1] Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
-        Robertson, July 31, 2004, Page 15. http://www.jpr2718.org/pell.pdf
+           Robertson, July 31, 2004, Page 15. http://www.jpr2718.org/pell.pdf
     """
     D = as_int(D)
     N = as_int(N)
@@ -1361,7 +1351,6 @@ def equivalent(u, v, r, s, D, N):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import equivalent
     >>> equivalent(18, 5, -18, -5, 13, -1)
     True
     >>> equivalent(3, 1, -18, 393, 109, -4)
@@ -1371,8 +1360,7 @@ def equivalent(u, v, r, s, D, N):
     ==========
 
     .. [1] Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
-        Robertson, July 31, 2004, Page 12. http://www.jpr2718.org/pell.pdf
-
+           Robertson, July 31, 2004, Page 12. http://www.jpr2718.org/pell.pdf
     """
     return divisible(u*r - D*v*s, N) and divisible(u*s - v*r, N)
 
@@ -1394,7 +1382,6 @@ def length(P, Q, D):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import length
     >>> length(-2 , 4, 5)  # (-2 + sqrt(5))/4
     3
     >>> length(-5, 4, 17)  # (-5 + sqrt(17))/4
@@ -1439,8 +1426,6 @@ def transformation_to_DN(eq):
     ========
 
     >>> from diofant.abc import x, y
-    >>> from diofant.solvers.diophantine import transformation_to_DN
-    >>> from diofant.solvers.diophantine import classify_diop
     >>> A, B = transformation_to_DN(x**2 - 3*x*y - y**2 - 2*y + 1)
     >>> A
     Matrix([
@@ -1568,7 +1553,6 @@ def find_DN(eq):
     ========
 
     >>> from diofant.abc import x, y
-    >>> from diofant.solvers.diophantine import find_DN
     >>> find_DN(x**2 - 3*x*y - y**2 - 2*y + 1)
     (13, -884)
 
@@ -1661,7 +1645,6 @@ def diop_ternary_quadratic(eq):
     ========
 
     >>> from diofant.abc import x, y, z
-    >>> from diofant.solvers.diophantine import diop_ternary_quadratic
     >>> diop_ternary_quadratic(x**2 + 3*y**2 - z**2)
     (1, 0, 1)
     >>> diop_ternary_quadratic(4*x**2 + 5*y**2 - z**2)
@@ -1879,7 +1862,6 @@ def parametrize_ternary_quadratic(eq):
     ========
 
     >>> from diofant.abc import x, y, z
-    >>> from diofant.solvers.diophantine import parametrize_ternary_quadratic
     >>> parametrize_ternary_quadratic(x**2 + y**2 - z**2)
     (2*p*q, p**2 - q**2, p**2 + q**2)
 
@@ -1896,7 +1878,6 @@ def parametrize_ternary_quadratic(eq):
     .. [1] The algorithmic resolution of Diophantine equations, Nigel P. Smart,
            London Mathematical Society Student Texts 41, Cambridge University
            Press, Cambridge, 1998.
-
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -1958,7 +1939,6 @@ def diop_ternary_quadratic_normal(eq):
     ========
 
     >>> from diofant.abc import x, y, z
-    >>> from diofant.solvers.diophantine import diop_ternary_quadratic_normal
     >>> diop_ternary_quadratic_normal(x**2 + 3*y**2 - z**2)
     (1, 0, 1)
     >>> diop_ternary_quadratic_normal(4*x**2 + 5*y**2 - z**2)
@@ -2047,7 +2027,6 @@ def sqf_normal(a, b, c, steps=False):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import sqf_normal
     >>> sqf_normal(2 * 3**2 * 5, 2 * 5 * 11, 2 * 7**2 * 11)
     (11, 1, 5)
     >>> sqf_normal(2 * 3**2 * 5, 2 * 5 * 11, 2 * 7**2 * 11, True)
@@ -2140,7 +2119,6 @@ def ldescent(A, B):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import ldescent
     >>> ldescent(1, 1)  # w^2 = x^2 + y^2
     (1, 1, 0)
     >>> ldescent(4, -7)  # w^2 = 4x^2 - 7y^2
@@ -2210,7 +2188,6 @@ def descent(A, B):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import descent
     >>> descent(3, 1)  # x**2 = 3*y**2 + z**2
     (1, 0, 1)
 
@@ -2392,7 +2369,6 @@ def diop_general_pythagorean(eq, param=symbols("m", integer=True)):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import diop_general_pythagorean
     >>> from diofant.abc import a, b, c, d, e
     >>> diop_general_pythagorean(a**2 + b**2 + c**2 - d**2)
     (m1**2 + m2**2 - m3**2, 2*m1*m3, 2*m2*m3, m1**2 + m2**2 + m3**2)
@@ -2462,7 +2438,6 @@ def diop_general_sum_of_squares(eq, limit=1):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import diop_general_sum_of_squares
     >>> from diofant.abc import a, b, c, d, e, f
     >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345)
     {(15, 22, 22, 24, 24)}
@@ -2471,8 +2446,8 @@ def diop_general_sum_of_squares(eq, limit=1):
     ==========
 
     .. [1] Representing an integer as a sum of three squares, [online],
-        Available:
-        https//www.proofwiki.org/wiki/Integer_as_Sum_of_Three_Squares
+           Available:
+           https//www.proofwiki.org/wiki/Integer_as_Sum_of_Three_Squares
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -2602,7 +2577,6 @@ def partition(n, k=None, zeros=False):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import partition
     >>> f = partition(5)
     >>> next(f)
     (1, 1, 1, 1, 1)
@@ -2636,7 +2610,6 @@ def prime_as_sum_of_two_squares(p):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import prime_as_sum_of_two_squares
     >>> prime_as_sum_of_two_squares(7)  # can't be done
     >>> prime_as_sum_of_two_squares(5)
     (1, 2)
@@ -2689,7 +2662,6 @@ def sum_of_three_squares(n):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import sum_of_three_squares
     >>> sum_of_three_squares(44542)
     (18, 37, 207)
 
@@ -2767,7 +2739,6 @@ def sum_of_four_squares(n):
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import sum_of_four_squares
     >>> sum_of_four_squares(3456)
     (8, 8, 32, 48)
     >>> sum_of_four_squares(1294585930293)
@@ -2824,8 +2795,6 @@ def power_representation(n, p, k, zeros=False):
 
     Examples
     ========
-
-    >>> from diofant.solvers.diophantine import power_representation
 
     Represent 1729 as a sum of two cubes:
 
