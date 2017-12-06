@@ -484,6 +484,14 @@ def test_roots0():
          -sqrt(2) + root(7, 3): 1}
 
 
+def test_roots1():
+    assert roots(1) == {}
+    assert roots(1, multiple=True) == []
+    assert roots(x**3 - y, x) == {cbrt(y): 1,
+                                  -cbrt(y)/2 - sqrt(3)*I*cbrt(y)/2: 1,
+                                  -cbrt(y)/2 + sqrt(3)*I*cbrt(y)/2: 1}
+
+
 def test_roots_slow():
     """Just test that calculating these roots does not hang. """
     a, b, c, d, x = symbols("a,b,c,d,x")

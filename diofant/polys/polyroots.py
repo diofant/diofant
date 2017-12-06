@@ -3,8 +3,8 @@
 import math
 from functools import reduce
 
-from ..core import (Dummy, Eq, Float, I, Integer, Mul, Rational, S, Symbol,
-                    comp, factor_terms, igcd, pi, symbols, sympify)
+from ..core import (Dummy, Eq, Float, I, Integer, Rational, S, Symbol, comp,
+                    factor_terms, igcd, pi, symbols, sympify)
 from ..core.compatibility import ordered
 from ..core.mul import expand_2arg
 from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
@@ -836,27 +836,6 @@ def roots(f, *gens, **flags):
     else:
         try:
             f = Poly(f, *gens, **flags)
-            if f.length == 2 and f.degree() != 1:
-                # check for foo**n factors in the constant
-                n = f.degree()
-                npow_bases = []
-                expr = f.as_expr()
-                con = expr.as_independent(*gens)[0]
-                for p in Mul.make_args(con):
-                    if p.is_Pow and not p.exp % n:
-                        npow_bases.append(p.base**(p.exp/n))
-                    else:
-                        other.append(p)
-                    if npow_bases:
-                        b = Mul(*npow_bases)
-                        B = Dummy()
-                        d = roots(Poly(expr - con + B**n*Mul(*others), *gens,
-                                       **flags), *gens, **flags)
-                        rv = {}
-                        for k, v in d.items():
-                            rv[k.subs(B, b)] = v
-                        return rv
-
         except GeneratorsNeeded:
             if multiple:
                 return []
