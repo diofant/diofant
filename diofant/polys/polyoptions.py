@@ -385,7 +385,7 @@ class Composite(BooleanOption, metaclass=OptionType):
         return
 
     requires = []
-    excludes = ['domain', 'split', 'gaussian', 'extension', 'modulus', 'symmetric']
+    excludes = ['domain', 'split', 'gaussian', 'modulus', 'symmetric']
 
 
 class Domain(Option, metaclass=OptionType):
