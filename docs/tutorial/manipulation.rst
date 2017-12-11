@@ -256,41 +256,13 @@ we have hit a leaf of the expression tree.
     >>> Integer(2).args
     ()
 
-This interface allows us to write simple algorithms that walk
-expression trees.
+This interface allows us to write recursive generators that walk expression
+trees either in post-order or pre-order fashion.
 
-    >>> def pre(expr):
-    ...     yield expr
-    ...     for arg in expr.args:
-    ...         for subtree in pre(arg):
-    ...             yield subtree
-
-See how nice it is that empty :class:`tuple` signals leaves in the
-expression tree.  We don't even have to write a base case for our
-recursion --- it is handled automatically by the for loop.
-
-Let's test this by printing all nodes of the expression at each level.
 
     >>> expr = x*y + 2
-    >>> for term in pre(expr):
+    >>> for term in preorder_traversal(expr):
     ...     print(term)
-    x*y + 2
-    2
-    x*y
-    x
-    y
-
-Can you guess why we called our function ``pre``?  We just wrote a
-pre-order traversal function for our expression tree.  See if you can
-write a post-order traversal function.
-
-Such traversals are so common in Diofant that the generator functions
-:func:`~diofant.core.basic.preorder_traversal` and
-:func:`~diofant.utilities.iterables.postorder_traversal` are provided
-to make such traversals easy.  We could have also written our test as
-
-    >>> for arg in preorder_traversal(expr):
-    ...     print(arg)
     x*y + 2
     2
     x*y
