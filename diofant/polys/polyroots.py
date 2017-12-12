@@ -680,7 +680,7 @@ def _integer_basis(poly):
             return div
 
 
-def preprocess_roots(poly):
+def preprocess_roots(poly, extension=None):
     """Try to get rid of symbolic coefficients from ``poly``. """
     coeff = S.One
 
@@ -690,7 +690,7 @@ def preprocess_roots(poly):
         return coeff, poly
 
     poly = poly.primitive()[1]
-    poly = poly.retract()
+    poly = poly.retract(extension=extension)
 
     # TODO: This is fragile. Figure out how to make this independent of construct_domain().
     if poly.domain.is_Poly and all(c.is_term for c in poly.rep.coeffs()):

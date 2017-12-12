@@ -40,7 +40,7 @@ class RootOf(Expr):
     is_commutative = True
 
     def __new__(cls, f, x, index=None, radicals=True, expand=True,
-                evaluate=None):
+                evaluate=None, extension=None):
         """Construct a new ``RootOf`` object for ``k``-th root of ``f``. """
         x = sympify(x)
 
@@ -54,7 +54,7 @@ class RootOf(Expr):
         else:
             raise ValueError("expected an integer root index, got %s" % index)
 
-        poly = PurePoly(f, x, expand=expand)
+        poly = PurePoly(f, x, expand=expand, extension=extension)
 
         if not poly.is_univariate:
             raise PolynomialError("only univariate polynomials are allowed")
@@ -93,7 +93,7 @@ class RootOf(Expr):
         if roots is not None:
             return roots[index]
 
-        coeff, poly = preprocess_roots(poly)
+        coeff, poly = preprocess_roots(poly, extension=extension)
         dom = poly.domain
 
         if dom.is_ZZ:
@@ -167,14 +167,14 @@ class RootOf(Expr):
         return not self.free_symbols
 
     @classmethod
-    def real_roots(cls, poly, radicals=True):
+    def real_roots(cls, poly, radicals=True, extension=None):
         """Get real roots of a polynomial. """
-        return cls._get_roots("_real_roots", poly, radicals)
+        return cls._get_roots("_real_roots", poly, radicals, extension=extension)
 
     @classmethod
-    def all_roots(cls, poly, radicals=True):
+    def all_roots(cls, poly, radicals=True, extension=None):
         """Get real and complex roots of a polynomial. """
-        return cls._get_roots("_all_roots", poly, radicals)
+        return cls._get_roots("_all_roots", poly, radicals, extension=extension)
 
     @classmethod
     def _get_reals_sqf(cls, factor):
@@ -513,14 +513,14 @@ class RootOf(Expr):
                 return [r*_ for _ in cls._roots_trivial(poly, radicals)]
 
     @classmethod
-    def _preprocess_roots(cls, poly):
+    def _preprocess_roots(cls, poly, extension):
         """Take heroic measures to make ``poly`` compatible with ``RootOf``. """
         dom = poly.domain
 
         if not dom.is_Exact:
             poly = poly.to_exact()
 
-        coeff, poly = preprocess_roots(poly)
+        coeff, poly = preprocess_roots(poly, extension=extension)
         dom = poly.domain
 
         if not dom.is_ZZ and poly.LC().is_nonzero is False:
@@ -540,10 +540,10 @@ class RootOf(Expr):
             return cls._new(poly, index)
 
     @classmethod
-    def _get_roots(cls, method, poly, radicals):
+    def _get_roots(cls, method, poly, radicals, extension):
         """Return postprocessed roots of specified kind. """
 
-        coeff, poly = cls._preprocess_roots(poly)
+        coeff, poly = cls._preprocess_roots(poly, extension=extension)
         roots = []
 
         for root in getattr(cls, method)(poly):
