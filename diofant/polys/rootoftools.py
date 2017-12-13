@@ -18,7 +18,7 @@ from .polyerrors import (DomainError, GeneratorsNeeded,
 from .polyfuncs import symmetrize, viete
 from .polyroots import (preprocess_roots, roots, roots_binomial, roots_cubic,
                         roots_linear, roots_quadratic, roots_quartic)
-from .polytools import Poly, PurePoly, factor
+from .polytools import Poly, PurePoly, factor, resultant
 from .rationaltools import together
 from .rootisolation import (dup_isolate_complex_roots_sqf,
                             dup_isolate_real_roots_sqf)
@@ -94,9 +94,20 @@ class RootOf(Expr):
             return roots[index]
 
         coeff, poly = preprocess_roots(poly, extension=extension)
-        dom = poly.domain
 
-        if dom.is_ZZ:
+        if poly.domain.is_Algebraic and extension:
+            x, y = poly.gen, Dummy('y')
+            p = sum(Poly(c.rep, y)*x**n for (n,), c in poly.rep.terms()).inject(x)
+            q = poly.domain.ext.minpoly.eval(y)
+            minpoly = PurePoly(resultant(p, q, y), x)
+            for idx, r in enumerate(minpoly.all_roots()):  # pragma: no branch
+                if poly.as_expr().evalf(n=2, subs={x: r}, chop=True) == 0:
+                    index -= 1
+                    if index == -1:
+                        break
+            poly, index = minpoly, idx
+
+        if poly.domain.is_ZZ:
             root = cls._indexed_root(poly, index)
         else:
             root = poly, index
