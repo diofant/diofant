@@ -35,7 +35,38 @@ _complexes_cache = {}
 
 @public
 class RootOf(Expr):
-    """Represents ``k``-th root of a univariate polynomial. """
+    """
+    Represents ``k``-th root of a univariate polynomial.
+
+    Parameters
+    ==========
+
+    f : Expr
+        Univariate polynomial expression.
+    x : Symbol or Integer
+        Polynomial variable or the index of the root.
+    index : Integer or None, optional
+        Index of the root.  If None (default), parameter ``x`` is
+        used instead as index.
+    radicals : bool, optional
+        Explicitly solve linear or quadratic polynomial
+        equation (enabled by default).
+    expand : bool, optional
+        Expand polynomial, enabled default.
+    evaluate : bool or None, optional
+        Control automatic evaluation.
+    extension : bool or None, optional
+        If enabled, reduce input polynomial to have integer
+        coefficients.
+
+    Examples
+    ========
+
+    >>> from diofant import I
+    >>> from diofant.abc import x
+    >>> RootOf(x**3 + I*x + 2, 0, extension=True)
+    RootOf(x**6 + 4*x**3 + x**2 + 4, 1)
+    """
 
     is_commutative = True
 
