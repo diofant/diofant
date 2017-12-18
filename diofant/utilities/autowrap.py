@@ -27,8 +27,8 @@ lambdify().
     >>> f = binary_function('f', expr)
     >>> 2*f(x, y) + y
     y + 2*f(x, y)
-    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y:2})
-    0.e-110
+    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y:2}, strict=False)
+    0.e-190
 
 The idea is that a Diofant user will primarily be interested in working with
 mathematical expressions, and should not have to learn details about wrapping
@@ -848,9 +848,9 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     >>> type(f) is np.ufunc
     True
     >>> f([1, 2, 3], 2)
-    array([ 3.,  6.,  11.])
+    [  3.   6.  11.]
     >>> f(np.arange(5), 3)
-    array([ 3.,  4.,  7.,  12.,  19.])
+    [  3.   4.   7.  12.  19.]
 
     For the F2Py and Cython backends, inputs are required to be equal length
     1-dimensional arrays. The F2Py backend will perform type conversion, but
@@ -858,16 +858,9 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
 
     >>> f_fortran = ufuncify((x, y), y + x**2, backend='F2Py')
     >>> f_fortran(1, 2)
-    3
-    >>> f_fortran(numpy.array([1, 2, 3]), numpy.array([1.0, 2.0, 3.0]))
-    array([2.,  6.,  12.])
-    >>> f_cython = ufuncify((x, y), y + x**2, backend='Cython')
-    >>> f_cython(1, 2)
-    Traceback (most recent call last):
-    ...
-    TypeError: Argument '_x' has incorrect type (expected numpy.ndarray, got int)
-    >>> f_cython(numpy.array([1.0]), numpy.array([2.0]))
-    array([ 3.])
+    [ 3.]
+    >>> f_fortran(np.array([1, 2, 3]), np.array([1.0, 2.0, 3.0]))
+    [  2.   6.  12.]
     """
 
     if isinstance(args, (Dummy, Symbol)):

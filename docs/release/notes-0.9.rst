@@ -45,6 +45,7 @@ Compatibility breaks
 * Make ``matches()`` method for :class:`~diofant.core.basic.Basic` - private, see :pull:`557`.
 * Removed :meth:`~diofant.core.basic.Basic.replace` flags ``simultaneous`` and ``map``, see :pull:`557`.
 * Make ``strict`` flag - default for :meth:`~diofant.core.evalf.EvalfMixin.evalf`, see :pull:`537`.
+* Removed ``I`` property of the :class:`~diofant.matrices.expressions.MatrixExpr`, see :pull:`577`.
 
 Minor changes
 =============
@@ -68,7 +69,7 @@ Developer changes
 * Use only relative imports in the codebase, see :pull:`421`.
 * Enabled flake8-comprehensions plugin, see :pull:`420`.
 * Sort imports with `isort <https://github.com/timothycrosley/isort>`_, see :pull:`520`.
-* Depend on `hypothesis <https://hypothesis.readthedocs.io/>`_, see :pull:`547`.
+* Depend on `hypothesis <https://hypothesis.readthedocs.io/en/latest/>`_, see :pull:`547`.
 * Depend on `pytest-xdist <https://github.com/pytest-dev/pytest-xdist>`_, see :pull:`551`.
 
 Issues closed
@@ -177,3 +178,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`13460` Integration of certain cubic rational functions is incorrect
 * :sympyissue:`13071` meijerg.is_number is wrong
 * :sympyissue:`13575` limit(acos(erfi(x)), x, 1) causes recursion error
+* :sympyissue:`13629` bug in rsolve
+* :sympyissue:`13645` sympy hangs on evaluating expression
+* :sympyissue:`11378` S.Reals should be accessible as just "Reals"

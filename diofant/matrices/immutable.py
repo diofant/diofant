@@ -83,7 +83,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 
     adjoint = MatrixBase.adjoint
     conjugate = MatrixBase.conjugate
-    # C and T are defined in MatrixExpr...I don't know why C alone
+    # C and T are defined in MatrixExpr.  I don't know why C alone
     # needs to be defined here
     C = MatrixBase.C
 

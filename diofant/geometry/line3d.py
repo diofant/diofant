@@ -15,6 +15,7 @@ from ..simplify import simplify
 from ..solvers import solve
 from .entity import GeometryEntity
 from .exceptions import GeometryError
+from .line import Undecidable
 from .point import Point3D
 from .util import _symbol
 

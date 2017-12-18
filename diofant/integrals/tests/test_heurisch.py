@@ -3,9 +3,9 @@ import os
 import pytest
 
 from diofant import (Add, Derivative, Ei, Eq, Function, I, Integral, LambertW,
-                     Piecewise, Rational, Sum, Symbol, acos, asin, asinh, cos,
-                     cosh, diff, erf, exp, li, log, pi, ratsimp, root,
-                     simplify, sin, sinh, sqrt, symbols, tan)
+                     Piecewise, Rational, Sum, Symbol, acos, asin, asinh,
+                     besselj, cos, cosh, diff, erf, exp, li, log, pi, ratsimp,
+                     root, simplify, sin, sinh, sqrt, symbols, tan)
 from diofant.integrals.heurisch import components, heurisch, heurisch_wrapper
 
 

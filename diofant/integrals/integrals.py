@@ -920,7 +920,10 @@ class Integral(AddWithLimits):
         is where the function value is taken in each interval to define the
         rectangle.
 
-        [1] https//en.wikipedia.org/wiki/Rectangle_method
+        References
+        ==========
+
+        .. [1] https//en.wikipedia.org/wiki/Rectangle_method
 
         Examples
         ========

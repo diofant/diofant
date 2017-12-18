@@ -394,8 +394,6 @@ in the case of integers.
 
 .. autofunction:: dmp_half_gcdex
 .. autofunction:: dmp_gcdex
-.. autofunction:: dmp_invert
-.. autofunction:: dmp_euclidean_prs
 
 Simplified remainder sequences
 ------------------------------
@@ -431,7 +429,7 @@ It is an example of *general polynomial remainder sequences* where
 the computed remainders are modified by constant multipliers (or divisors)
 in order to simplify the results.
 
-.. autofunction:: dmp_primitive_prs
+.. autofunction:: dup_primitive_prs
 
 Subresultant sequence
 ---------------------

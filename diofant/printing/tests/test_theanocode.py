@@ -244,7 +244,7 @@ def test_BlockMatrix_Inverse_execution():
     A = diofant.MatrixSymbol('A', n, k)
     B = diofant.MatrixSymbol('B', n, n)
     inputs = A, B
-    output = B.I*A
+    output = B.inverse()*A
 
     cutsizes = {A: [(n//2, n//2), (k//2, k//2)],
                 B: [(n//2, n//2), (n//2, n//2)]}

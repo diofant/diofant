@@ -19,19 +19,19 @@ from diofant import continued_fraction_reduce as cf_r
 from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
                      DiracDelta, E, EulerGamma, FiniteSet, Function,
                      GoldenRatio, I, Lambda, LambertW, Le, Lt, Max, Mul, N, O,
-                     Or, Piecewise, Poly, Rational, RootOf, Subs, Symbol, acot,
-                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
+                     Or, Piecewise, Poly, Rational, RootOf, Subs, Symbol, acos,
+                     acot, apart, asin, asinh, assoc_legendre, atan, bernoulli,
                      besselj, binomial, cbrt, ceiling, chebyshevt, combsimp,
-                     cos, cosh, cot, csc, diff, elliptic_e, elliptic_f, exp,
-                     expand, expand_func, factor, factorial, factorial2,
-                     factorint, fibonacci, floor, gamma, gcd, hessian, hyper,
-                     hyperexpand, igcd, im, legendre_poly, limit, log,
-                     logcombine, minimize, nan, npartitions, oo, pi, polygamma,
-                     polylog, powdenest, powsimp, primerange, primitive_root,
-                     product, radsimp, re, reduce_inequalities, residue,
-                     resultant, rf, sec, series, sign, simplify, sin, sinh,
-                     solve, sqrt, sqrtdenest, symbols, tan, tanh, totient,
-                     trigsimp, wronskian, zoo)
+                     conjugate, cos, cosh, cot, csc, diff, elliptic_e,
+                     elliptic_f, exp, expand, expand_func, factor, factorial,
+                     factorial2, factorint, fibonacci, floor, gamma, gcd,
+                     hessian, hyper, hyperexpand, igcd, im, legendre_poly,
+                     limit, log, logcombine, maximize, minimize, nan,
+                     npartitions, oo, pi, polygamma, polylog, powdenest,
+                     powsimp, primerange, primitive_root, product, radsimp, re,
+                     reduce_inequalities, residue, resultant, rf, sec, series,
+                     sign, simplify, sin, sinh, solve, sqrt, sqrtdenest,
+                     symbols, tan, tanh, totient, trigsimp, wronskian, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.concrete import Sum
 from diofant.concrete.products import Product
@@ -877,16 +877,6 @@ def test_M26():
 
 
 @pytest.mark.xfail
-def test_M27():
-    x = symbols('x', real=True)
-    b = symbols('b', real=True)
-    with assuming(sin(cos(1/E**2) + 1) + b > 0):
-        assert (solve(log(acos(asin(x**R(2, 3) - b) - 1)) + 2, x) ==
-                [{x: -b - sin(1 + cos(1/e**2))**R(3/2)},
-                 {x: b + sin(1 + cos(1/e**2))**R(3/2)}])
-
-
-@pytest.mark.xfail
 def test_M28():
     x = symbols('x', real=True)
     assert solve(5*x + exp((x - 5)/2) - 8*x**3, x) != []
@@ -1044,43 +1034,6 @@ def test_N2():
     x = symbols('x', real=True)
     assert reduce_inequalities(x**4 - x + 1 > 0)
     assert reduce_inequalities(x**4 - x + 1 > 1) == Or(Lt(1, x), x < 0)
-
-
-@pytest.mark.xfail
-def test_N3():
-    x = symbols('x', extended_real=True)
-    assert ask(Q.is_true(And(Lt(-1, x), Lt(x, 1))), Q.is_true(abs(x) < 1 ))
-
-
-@pytest.mark.xfail
-def test_N4():
-    x, y = symbols('x y', extended_real=True)
-    assert ask(Q.is_true(2*x**2 > 2*y**2), Q.is_true((x > y) & (y > 0)))
-
-
-@pytest.mark.xfail
-def test_N5():
-    x, y, k = symbols('x y k', extended_real=True)
-    assert ask(Q.is_true(k*x**2 > k*y**2), Q.is_true((x > y) & (y > 0) & (k > 0)))
-
-
-@pytest.mark.xfail
-def test_N6():
-    x, y, k, n = symbols('x y k n', extended_real=True)
-    assert ask(Q.is_true(k*x**n > k*y**n), Q.is_true((x > y) & (y > 0) & (k > 0) & (n > 0)))
-
-
-@pytest.mark.xfail
-def test_N7():
-    x, y = symbols('x y', extended_real=True)
-    assert ask(Q.is_true(y > 0), Q.is_true((x > 1) & (y >= x - 1)))
-
-
-@pytest.mark.xfail
-def test_N8():
-    x, y, z = symbols('x y z', extended_real=True)
-    assert ask(Q.is_true((x == y) & (y == z)),
-               Q.is_true((x >= y) & (y >= z) & (z >= x)))
 
 
 def test_N9():
@@ -1266,8 +1219,8 @@ def test_P12():
     A22 = MatrixSymbol('A22', n, n)
     B = BlockMatrix([[A11, A12],
                      [ZeroMatrix(n, n), A22]])
-    assert block_collapse(B.I) == BlockMatrix([[A11.I, (-1)*A11.I*A12*A22.I],
-                                               [ZeroMatrix(n, n), A22.I]])
+    assert block_collapse(B.inverse()) == BlockMatrix([[A11.inverse(), (-1)*A11.inverse()*A12*A22.inverse()],
+                                                       [ZeroMatrix(n, n), A22.inverse()]])
 
 
 def test_P13():

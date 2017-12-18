@@ -156,6 +156,7 @@ def test_non_commutative_cse():
 @pytest.mark.xfail
 def test_non_commutative_cse_mul():
     x0 = symbols('x0', commutative=False)
+    A, B, C = symbols('A B C', commutative=False)
     l = [A*B*C, A*B]
     assert cse(l) == ([(x0, A*B)], [x0*C, x0])
 
@@ -302,7 +303,7 @@ def test_cse_MatrixSymbol():
     A = MatrixSymbol('A', 3, 3)
     y = MatrixSymbol('y', 3, 1)
 
-    expr1 = (A.T*A).I * A * y
+    expr1 = (A.T*A).inverse() * A * y
     expr2 = (A.T*A) * A * y
     replacements, reduced_exprs = cse([expr1, expr2])
     assert len(replacements) > 0

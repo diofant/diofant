@@ -72,7 +72,7 @@ Releasing a new version is done as follows:
     $ git tag -s vX.Y.Z
     $ git push origin vX.Y.Z
 
-.. _Semantic Versioning: http://semver.org/
+.. _Semantic Versioning: https://semver.org/
 .. _PEP 440: https://www.python.org/dev/peps/pep-0440/
 
 .. XXX adopt http://www.contribution-guide.org

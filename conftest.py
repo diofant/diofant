@@ -9,6 +9,8 @@ from diofant.core.cache import USE_CACHE, clear_cache
 from diofant.core.compatibility import GROUND_TYPES
 
 
+collect_ignore = ["setup.py"]
+
 sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
 
 hypothesis.settings.register_profile("default",

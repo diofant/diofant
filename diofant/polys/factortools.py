@@ -523,19 +523,16 @@ def dup_zz_factor(f, K):
 
               (content(f), [(f_1, k_1), ..., (f_n, k_n))
 
-    Consider polynomial `f = 2*x**4 - 2`::
+    Examples
+    ========
 
-        >>> from diofant.domains import ZZ
-        >>> from diofant.polys import ring
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
-        >>> R, x = ring("x", ZZ)
+    >>> R, x = ring("x", ZZ)
 
-        >>> R.dup_zz_factor(2*x**4 - 2)
-        (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
-
-    In result we got the following factorization::
-
-                 f = 2 (x - 1) (x + 1) (x**2 + 1)
+    >>> R.dup_zz_factor(2*x**4 - 2)
+    (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
 
     Note that this is a complete factorization over integers,
     however over Gaussian integers we can factor the last term.
@@ -914,10 +911,10 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
         for _ in range(eez_num_tries):
             A = [ K(randint(-mod, mod)) for _ in range(u) ]
 
-            if tuple(A) not in history:
-                history.add(tuple(A))
-            else:
+            if tuple(A) in history:
                 continue
+            else:
+                history.add(tuple(A))
 
             try:
                 cs, s, E = dmp_zz_wang_test_points(f, T, ct, A, u, K)
@@ -1005,19 +1002,16 @@ def dmp_zz_factor(f, u, K):
 
              (content(f), [(f_1, k_1), ..., (f_n, k_n))
 
-    Consider polynomial `f = 2*(x**2 - y**2)`::
+    Examples
+    ========
 
-        >>> from diofant.domains import ZZ
-        >>> from diofant.polys import ring
+    >>> from diofant.domains import ZZ
+    >>> from diofant.polys import ring
 
-        >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x,y = ring("x,y", ZZ)
 
-        >>> R.dmp_zz_factor(2*x**2 - 2*y**2)
-        (2, [(x - y, 1), (x + y, 1)])
-
-    In result we got the following factorization::
-
-                    f = 2 (x - y) (x + y)
+    >>> R.dmp_zz_factor(2*x**2 - 2*y**2)
+    (2, [(x - y, 1), (x + y, 1)])
 
     References
     ==========

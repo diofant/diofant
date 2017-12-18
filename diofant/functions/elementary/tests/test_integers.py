@@ -247,6 +247,7 @@ def test_series():
 
 @pytest.mark.xfail
 def test_sympyissue_4149():
+    y = Symbol('y', real=True)
     assert floor(3 + pi*I + y*I) == 3 + floor(pi + y)*I
     assert floor(3*I + pi*I + y*I) == floor(3 + pi + y)*I
     assert floor(3 + E + pi*I + y*I) == 5 + floor(pi + y)*I

@@ -360,8 +360,8 @@ def blockinverse_2x2(expr):
     [[A, B],
      [C, D]] = expr.arg.blocks.tolist()
 
-    return BlockMatrix([[ (A - B*D.I*C).I,  (-A).I*B*(D - C*A.I*B).I],
-                        [-(D - C*A.I*B).I*C*A.I,     (D - C*A.I*B).I]])
+    return BlockMatrix([[ (A - B*D.inverse()*C).inverse(),  (-A).inverse()*B*(D - C*A.inverse()*B).inverse()],
+                        [-(D - C*A.inverse()*B).inverse()*C*A.inverse(),     (D - C*A.inverse()*B).inverse()]])
 
 
 def deblock(B):

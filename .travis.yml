@@ -44,7 +44,7 @@ matrix:
         - sphinx-build -W -b html docs build/sphinx/html
         - sphinx-build -W -b linkcheck docs build/sphinx/linkcheck
         - cat build/sphinx/linkcheck/output.txt
-        - py.test --numprocesses 2 --cov diofant diofant/polys
+        - travis_wait py.test --numprocesses 2 --cov diofant diofant/polys
     - stage: test
       python: 3.5
       env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
@@ -65,7 +65,7 @@ matrix:
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
-  - travis_wait pip install .[exports,plot,interactive,gmpy]
+  - travis_wait pip install .[exports,plot,interactive,gmpy,docs]
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
