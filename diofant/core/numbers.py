@@ -1818,7 +1818,7 @@ class AlgebraicNumber(Expr):
     The generator `\theta` can be any algebraic number, represented in terms
     of radicals or RootOf objects.
 
-    >>> b = AlgebraicNumber(RootOf(x**7 - x + 1, x, 1), (1, 2, -1), 'b')
+    >>> b = AlgebraicNumber(RootOf(x**7 - x + 1, 1), (1, 2, -1), 'b')
     >>> b
     b**2 + 2*b - 1
     >>> b**7

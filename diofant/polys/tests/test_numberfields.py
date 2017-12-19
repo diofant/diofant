@@ -107,12 +107,12 @@ def test_minimal_polynomial():
     theta = AlgebraicNumber(sqrt(2), (Rational(1, 2), 17))
     assert minimal_polynomial(theta, x) == 2*x**2 - 68*x + 577
 
-    theta = AlgebraicNumber(RootOf(x**7 + x - 1, x, 3), (1, 2, 0, 0, 1))
+    theta = AlgebraicNumber(RootOf(x**7 + x - 1, 3), (1, 2, 0, 0, 1))
     ans = minimal_polynomial(theta, x)
     assert ans == (x**7 - 7*x**6 + 19*x**5 - 27*x**4 + 63*x**3 -
                    115*x**2 + 82*x - 147)
     assert minimal_polynomial(theta.as_expr(), x, compose=False) == ans
-    theta = AlgebraicNumber(RootOf(x**5 + 5*x - 1, x, 2), (1, -1, 1))
+    theta = AlgebraicNumber(RootOf(x**5 + 5*x - 1, 2), (1, -1, 1))
     ans = (x**30 - 15*x**28 - 10*x**27 + 135*x**26 + 330*x**25 - 705*x**24 -
            150*x**23 + 3165*x**22 - 6850*x**21 + 7182*x**20 + 3900*x**19 +
            4435*x**18 + 11970*x**17 - 259725*x**16 - 18002*x**15 +
@@ -121,10 +121,10 @@ def test_minimal_polynomial():
            5302000*x**6 - 2405376*x**5 + 1016640*x**4 - 804480*x**3 +
            257280*x**2 - 53760*x + 1280)
     assert minimal_polynomial(sqrt(theta) + root(theta, 3), x) == ans
-    theta = sqrt(1 + 1/(AlgebraicNumber(RootOf(x**3 + 4*x - 15, x, 1),
+    theta = sqrt(1 + 1/(AlgebraicNumber(RootOf(x**3 + 4*x - 15, 1),
                                         (1, 0, 1)) +
                         1/(sqrt(3) +
-                           AlgebraicNumber(RootOf(x**3 - x + 1, x, 0),
+                           AlgebraicNumber(RootOf(x**3 - x + 1, 0),
                                            (1, 2, -1)))))
     ans = (2262264837876687263*x**36 - 38939909597855051866*x**34 +
            315720420314462950715*x**32 - 1601958657418182606114*x**30 +
@@ -149,7 +149,7 @@ def test_minimal_polynomial():
     assert minimal_polynomial(
         a**Q(3, 2), x) == 729*x**4 - 506898*x**2 + 84604519
 
-    a = AlgebraicNumber(RootOf(x**3 + x - 1, x, 0))
+    a = AlgebraicNumber(RootOf(x**3 + x - 1, 0))
     assert minimal_polynomial(1/a**2, x) == x**3 - x**2 - 2*x - 1
 
     # issue sympy/sympy#5994
@@ -701,7 +701,7 @@ def test_AlgebraicNumber():
     pytest.raises(ValueError, lambda: AlgebraicNumber(RootOf(x**3 + y*x + 1,
                                                              x, 0)))
 
-    a = AlgebraicNumber(RootOf(x**3 + 2*x - 1, x, 1), alias='alpha')
+    a = AlgebraicNumber(RootOf(x**3 + 2*x - 1, 1), alias='alpha')
     assert a.free_symbols == set()
 
     # integer powers:

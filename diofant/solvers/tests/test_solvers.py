@@ -246,8 +246,8 @@ def test_solve_qubics():
              {x: -cbrt(3*sqrt(69)/2 + Rational(27, 2))/3 -
                  1/cbrt(3*sqrt(69)/2 + Rational(27, 2))}])
     assert (solve(x**3 - x + 1, cubics=False) ==
-            [{x: RootOf(x**3 - x + 1, x, 0)}, {x: RootOf(x**3 - x + 1, x, 1)},
-             {x: RootOf(x**3 - x + 1, x, 2)}])
+            [{x: RootOf(x**3 - x + 1, 0)}, {x: RootOf(x**3 - x + 1, 1)},
+             {x: RootOf(x**3 - x + 1, 2)}])
 
 
 def test_quintics_1():
@@ -351,8 +351,8 @@ def test_solve_radicals():
     assert solve(eq, check=False) == [{x: Rational(1, 3)}]
 
     eq = root(x, 3) - root(x, 5) + Rational(1, 7)
-    assert solve(eq) == [{x: RootOf(7*x**5 - 7*x**3 + 1, x, 1)**15},
-                         {x: RootOf(7*x**5 - 7*x**3 + 1, x, 2)**15}]
+    assert solve(eq) == [{x: RootOf(7*x**5 - 7*x**3 + 1, 1)**15},
+                         {x: RootOf(7*x**5 - 7*x**3 + 1, 2)**15}]
 
     # XXX is this correct?
     sol = solve(eq, check=False)
