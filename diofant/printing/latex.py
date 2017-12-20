@@ -1544,8 +1544,10 @@ class LatexPrinter(Printer):
     def _print_RootOf(self, root):
         cls = root.__class__.__name__
         expr = self._print(root.expr)
-        index = root.index
-        return r"\operatorname{%s} {\left(%s, %d\right)}" % (cls, expr, index)
+        if root.free_symbols:
+            return r"\operatorname{%s} {\left(%s, %s, %d\right)}" % (cls, expr, *root.args[1:])
+        else:
+            return r"\operatorname{%s} {\left(%s, %d\right)}" % (cls, expr, root.index)
 
     def _print_RootSum(self, expr):
         cls = expr.__class__.__name__

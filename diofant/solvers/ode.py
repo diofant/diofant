@@ -4578,11 +4578,11 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     >>> dsolve(f(x).diff(x, 5) + 10*f(x).diff(x) - 2*f(x), f(x),
     ... hint='nth_linear_constant_coeff_homogeneous')
     ... # doctest: +NORMALIZE_WHITESPACE
-    Eq(f(x), E**(x*RootOf(_x**5 + 10*_x - 2, _x, 0))*C1 +
-    E**(x*RootOf(_x**5 + 10*_x - 2, _x, 1))*C2 +
-    E**(x*RootOf(_x**5 + 10*_x - 2, _x, 2))*C3 +
-    E**(x*RootOf(_x**5 + 10*_x - 2, _x, 3))*C4 +
-    E**(x*RootOf(_x**5 + 10*_x - 2, _x, 4))*C5)
+    Eq(f(x), E**(x*RootOf(_x**5 + 10*_x - 2, 0))*C1 +
+    E**(x*RootOf(_x**5 + 10*_x - 2, 1))*C2 +
+    E**(x*RootOf(_x**5 + 10*_x - 2, 2))*C3 +
+    E**(x*RootOf(_x**5 + 10*_x - 2, 3))*C4 +
+    E**(x*RootOf(_x**5 + 10*_x - 2, 4))*C5)
 
     Note that because this method does not involve integration, there is no
     ``nth_linear_constant_coeff_homogeneous_Integral`` hint.
