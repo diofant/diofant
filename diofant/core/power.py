@@ -34,9 +34,9 @@ def integer_nthroot(y, n):
     whether x**n == y).
 
     >>> from diofant import integer_nthroot
-    >>> integer_nthroot(16,2)
+    >>> integer_nthroot(16, 2)
     (4, True)
-    >>> integer_nthroot(26,2)
+    >>> integer_nthroot(26, 2)
     (5, False)
 
     """

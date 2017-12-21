@@ -1746,7 +1746,7 @@ def gf_edf_zassenhaus(f, n, p, K):
 
        >>> from diofant.domains import ZZ
 
-       >>> gf_edf_zassenhaus([1,1,1,1], 1, 5, ZZ)
+       >>> gf_edf_zassenhaus([1, 1, 1, 1], 1, 5, ZZ)
        [[1, 1], [1, 2], [1, 3]]
 
     References

@@ -1438,7 +1438,7 @@ def dmp_inject(f, u, K, front=False):
     >>> from diofant.polys.rings import ring
     >>> from diofant.domains import ZZ
 
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> dmp_inject([R(1), x + 2], 0, R.to_domain())
     ([[[1]], [[1], [2]]], 2)
@@ -1616,7 +1616,7 @@ def dup_apply_pairs(f, g, h, args, K):
 
     >>> h = lambda x, y, z: 2*x + y - z
 
-    >>> dup_apply_pairs([1, 2, 3], [3, 2, 1], h, (1,), ZZ)
+    >>> dup_apply_pairs([1, 2, 3], [3, 2, 1], h, [1], ZZ)
     [4, 5, 6]
     """
     n, m = len(f), len(g)
@@ -1646,7 +1646,7 @@ def dmp_apply_pairs(f, g, h, args, u, K):
 
     >>> h = lambda x, y, z: 2*x + y - z
 
-    >>> dmp_apply_pairs([[1], [2, 3]], [[3], [2, 1]], h, (1,), 1, ZZ)
+    >>> dmp_apply_pairs([[1], [2, 3]], [[3], [2, 1]], h, [1], 1, ZZ)
     [[4], [5, 6]]
     """
     if not u:

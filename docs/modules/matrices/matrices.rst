@@ -12,7 +12,7 @@ import and declare our first ``Matrix`` object:
     >>> from diofant.interactive.printing import init_printing
     >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
     >>> from diofant.matrices import Matrix, eye, zeros, ones, diag, GramSchmidt
-    >>> M = Matrix([[1,0,0], [0,0,0]]); M
+    >>> M = Matrix([[1, 0, 0], [0, 0, 0]]); M
     [1  0  0]
     [       ]
     [0  0  0]
@@ -44,7 +44,7 @@ More interesting (and useful), is the ability to use a 2-variable function
 (or ``lambda``) to create a matrix. Here we create an indicator function which
 is 1 on the diagonal and then use it to make the identity matrix:
 
-    >>> def f(i,j):
+    >>> def f(i, j):
     ...     if i == j:
     ...         return 1
     ...     else:
@@ -62,7 +62,7 @@ is 1 on the diagonal and then use it to make the identity matrix:
 Finally let's use ``lambda`` to create a 1-line matrix with 1's in the even
 permutation entries:
 
-    >>> Matrix(3, 4, lambda i,j: 1 - (i+j) % 2)
+    >>> Matrix(3, 4, lambda i, j: 1 - (i + j)%2)
     [1  0  1  0]
     [          ]
     [0  1  0  1]
@@ -178,7 +178,7 @@ do not affect the other:
 Notice that changing ``M2`` didn't change ``M``. Since we can slice, we can also assign
 entries:
 
-    >>> M = Matrix(([1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]))
+    >>> M = Matrix(([1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]))
     >>> M
     [1   2   3   4 ]
     [              ]
@@ -187,7 +187,7 @@ entries:
     [9   10  11  12]
     [              ]
     [13  14  15  16]
-    >>> M[2,2] = M[0,3] = 0
+    >>> M[2, 2] = M[0, 3] = 0
     >>> M
     [1   2   3   0 ]
     [              ]
@@ -199,8 +199,8 @@ entries:
 
 as well as assign slices:
 
-    >>> M = Matrix(([1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]))
-    >>> M[2:,2:] = Matrix(2,2,lambda i,j: 0)
+    >>> M = Matrix(([1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]))
+    >>> M[2:, 2:] = Matrix(2, 2, lambda i, j: 0)
     >>> M
     [1   2   3  4]
     [            ]
@@ -212,7 +212,7 @@ as well as assign slices:
 
 All the standard arithmetic operations are supported:
 
-    >>> M = Matrix(([1,2,3],[4,5,6],[7,8,9]))
+    >>> M = Matrix(([1, 2, 3], [4, 5, 6], [7, 8, 9]))
     >>> M - M
     [0  0  0]
     [       ]
@@ -231,7 +231,7 @@ All the standard arithmetic operations are supported:
     [66   81   96 ]
     [             ]
     [102  126  150]
-    >>> M2 = Matrix(3,1,[1,5,0])
+    >>> M2 = Matrix(3, 1, [1, 5, 0])
     >>> M*M2
     [11]
     [  ]
@@ -257,8 +257,8 @@ As well as some useful vector operations:
     [4  6]
     [    ]
     [7  9]
-    >>> v1 = Matrix([1,2,3])
-    >>> v2 = Matrix([4,5,6])
+    >>> v1 = Matrix([1, 2, 3])
+    >>> v2 = Matrix([4, 5, 6])
     >>> v3 = v1.cross(v2)
     >>> v1.dot(v2)
     32
@@ -399,7 +399,7 @@ decomposition as well:
 
 We can perform a `QR` factorization which is handy for solving systems:
 
-    >>> A = Matrix([[1,1,1],[1,1,3],[2,3,4]])
+    >>> A = Matrix([[1, 1, 1], [1, 1, 3], [2, 3, 4]])
     >>> Q, R = A.QRdecomposition()
     >>> Q
     [  ___     ___      ___ ]
@@ -443,7 +443,7 @@ little choose A and x then multiply to get b. Then we can solve for x and check
 that it's correct:
 
     >>> A = Matrix([ [2, 3, 5], [3, 6, 2], [8, 3, 6] ])
-    >>> x = Matrix(3,1,[3,7,5])
+    >>> x = Matrix(3, 1, [3, 7, 5])
     >>> b = A*x
     >>> soln = A.LUsolve(b)
     >>> soln
@@ -459,7 +459,7 @@ optional argument which specifies whether or not the output should also be
 normalized, it defaults to ``False``. Let's take some vectors and orthogonalize
 them - one normalized and one not:
 
-    >>> L = [Matrix([2,3,5]), Matrix([3,6,2]), Matrix([8,3,6])]
+    >>> L = [Matrix([2, 3, 5]), Matrix([3, 6, 2]), Matrix([8, 3, 6])]
     >>> out1 = GramSchmidt(L)
     >>> out2 = GramSchmidt(L, True)
 

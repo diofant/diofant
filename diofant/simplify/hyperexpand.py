@@ -1441,7 +1441,7 @@ def reduce_order(func):
     >>> from diofant.simplify.hyperexpand import reduce_order, Hyper_Function
     >>> reduce_order(Hyper_Function((1, 2), (3, 4)))
     (Hyper_Function((1, 2), (3, 4)), [])
-    >>> r = reduce_order(Hyper_Function((1,), (1,)))
+    >>> r = reduce_order(Hyper_Function([1], [1]))
     >>> r[0]
     Hyper_Function((), ())
     >>> for i in r[1]:
@@ -1527,10 +1527,10 @@ def devise_plan(target, origin, z):
 
     Very simple plans:
 
-    >>> for i in devise_plan(Hyper_Function((2,), ()), Hyper_Function((1,), ()), z):
+    >>> for i in devise_plan(Hyper_Function([2], []), Hyper_Function([1], []), z):
     ...     i
     <Increment upper 1.>
-    >>> for i in devise_plan(Hyper_Function((), (2,)), Hyper_Function((), (1,)), z):
+    >>> for i in devise_plan(Hyper_Function([], [2]), Hyper_Function([], [1]), z):
     ...     i
     <Increment lower index #0 of [], [1].>
 
@@ -1552,7 +1552,7 @@ def devise_plan(target, origin, z):
 
     Another more complicated plan: (note that the ap have to be shifted first!)
 
-    >>> for i in devise_plan(Hyper_Function((1, -1), (2,)), Hyper_Function((3, -2), (4,)), z):
+    >>> for i in devise_plan(Hyper_Function([1, -1], [2]), Hyper_Function([3, -2], [4]), z):
     ...     i
     <Decrement lower 3.>
     <Decrement lower 4.>

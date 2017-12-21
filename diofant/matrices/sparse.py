@@ -869,7 +869,7 @@ class SparseMatrixBase(MatrixBase):
         ========
 
         >>> from diofant.matrices import SparseMatrix
-        >>> A = SparseMatrix(((25,15,-5),(15,18,0),(-5,0,11)))
+        >>> A = SparseMatrix(((25, 15, -5), (15, 18, 0), (-5, 0, 11)))
         >>> A.cholesky()
         Matrix([
         [ 5, 0, 0],

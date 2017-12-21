@@ -23,11 +23,11 @@ class BlockMatrix(MatrixExpr):
 
     >>> from diofant import (MatrixSymbol, BlockMatrix, symbols,
     ...     Identity, ZeroMatrix, block_collapse)
-    >>> n,m,l = symbols('n m l')
+    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
-    >>> Y = MatrixSymbol('Y', m ,m)
+    >>> Y = MatrixSymbol('Y', m, m)
     >>> Z = MatrixSymbol('Z', n, m)
-    >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m,n), Y]])
+    >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
     >>> B
     Matrix([
     [X, Z],
@@ -125,9 +125,9 @@ class BlockMatrix(MatrixExpr):
         >>> from diofant import MatrixSymbol, BlockMatrix, ZeroMatrix
         >>> from diofant.abc import l, m, n
         >>> X = MatrixSymbol('X', n, n)
-        >>> Y = MatrixSymbol('Y', m ,m)
+        >>> Y = MatrixSymbol('Y', m, m)
         >>> Z = MatrixSymbol('Z', n, m)
-        >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m,n), Y]])
+        >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
         >>> B.transpose()
         Matrix([
         [X',  0],
@@ -182,9 +182,9 @@ class BlockDiagMatrix(BlockMatrix):
     A BlockDiagMatrix is a BlockMatrix with matrices only along the diagonal
 
     >>> from diofant import MatrixSymbol, BlockDiagMatrix, symbols, Identity
-    >>> n,m,l = symbols('n m l')
+    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
-    >>> Y = MatrixSymbol('Y', m ,m)
+    >>> Y = MatrixSymbol('Y', m, m)
     >>> BlockDiagMatrix(X, Y)
     Matrix([
     [X, 0],
@@ -250,9 +250,9 @@ def block_collapse(expr):
 
     >>> from diofant import (MatrixSymbol, BlockMatrix, symbols,
     ...                      Identity, Matrix, ZeroMatrix, block_collapse)
-    >>> n,m,l = symbols('n m l')
+    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
-    >>> Y = MatrixSymbol('Y', m ,m)
+    >>> Y = MatrixSymbol('Y', m, m)
     >>> Z = MatrixSymbol('Z', n, m)
     >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
     >>> B

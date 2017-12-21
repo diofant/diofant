@@ -204,7 +204,7 @@ def monomial_max(*monoms):
     We wish to find out what is the maximal degree for each of `x`, `y`
     and `z` variables::
 
-        >>> monomial_max((3,4,5), (0,5,1), (6,3,9))
+        >>> monomial_max((3, 4, 5), (0, 5, 1), (6, 3, 9))
         (6, 5, 9)
 
     """
@@ -225,7 +225,7 @@ def monomial_min(*monoms):
     We wish to find out what is the minimal degree for each of `x`, `y`
     and `z` variables::
 
-        >>> monomial_min((3,4,5), (0,5,1), (6,3,9))
+        >>> monomial_min((3, 4, 5), (0, 5, 1), (6, 3, 9))
         (0, 3, 1)
 
     """

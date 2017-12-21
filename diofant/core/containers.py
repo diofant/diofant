@@ -116,7 +116,7 @@ class Tuple(Basic):
         #
         # here. Any trouble with that? Yes:
         #
-        # >>> (1,).index(1, None, None)
+        # >>> [1].index(1, None, None)
         # Traceback (most recent call last):
         #   File "<stdin>", line 1, in <module>
         # TypeError: slice indices must be integers or None or have an __index__ method

@@ -413,8 +413,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     ========
 
     >>> from diofant import pollard_rho
-    >>> n=16843009
-    >>> F=lambda x:(2048*pow(x,2,n) + 32767) % n
+    >>> n = 16843009
+    >>> F = lambda x: (2048*pow(x, 2, n) + 32767) % n
     >>> pollard_rho(n, F=F)
     257
 

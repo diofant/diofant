@@ -24,7 +24,7 @@ computations were done using the following setup::
 
     >>> init_printing(pretty_print=True, use_unicode=True, wrap_line=False, no_global=True)
 
-    >>> var('x,y,z,s,c,n')
+    >>> var('x, y, z, s, c, n')
     (x, y, z, s, c, n)
 
 Simple univariate polynomial factorization

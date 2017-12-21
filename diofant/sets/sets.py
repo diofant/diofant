@@ -1289,7 +1289,7 @@ class Intersection(Set):
 
     We often use the .intersect method
 
-    >>> Interval(1,3).intersection(Interval(2,4))
+    >>> Interval(1, 3).intersection(Interval(2, 4))
     [2, 3]
 
     See Also

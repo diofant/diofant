@@ -90,7 +90,7 @@ def sqrt(arg, **kwargs):
 
     >>> from diofant import RootOf
 
-    >>> [ RootOf(x**2-3,i) for i in (0,1) ]
+    >>> [RootOf(x**2 - 3, i) for i in (0, 1)]
     [-sqrt(3), sqrt(3)]
 
     See Also
@@ -196,13 +196,13 @@ def root(arg, n, k=0):
 
     >>> from diofant import RootOf, I
 
-    >>> [ RootOf(x**2 - 1, i) for i in range(2) ]
+    >>> [RootOf(x**2 - 1, i) for i in range(2)]
     [-1, 1]
 
-    >>> [ RootOf(x**3 - 1,i) for i in range(3) ]
+    >>> [RootOf(x**3 - 1, i) for i in range(3)]
     [1, -1/2 - sqrt(3)*I/2, -1/2 + sqrt(3)*I/2]
 
-    >>> [ RootOf(x**4 - 1,i) for i in range(4) ]
+    >>> [RootOf(x**4 - 1, i) for i in range(4)]
     [-1, 1, -I, I]
 
     Diofant, like other symbolic algebra systems, returns the

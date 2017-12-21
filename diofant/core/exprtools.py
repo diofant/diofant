@@ -996,7 +996,7 @@ def _mask_nc(eq, name=None):
     >>> from diofant import symbols, Mul
     >>> from diofant.core.exprtools import _mask_nc
     >>> from diofant.abc import x, y
-    >>> A, B, C = symbols('A,B,C', commutative=False)
+    >>> A, B, C = symbols('A B C', commutative=False)
 
     One nc-symbol:
 

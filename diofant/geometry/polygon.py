@@ -94,7 +94,7 @@ class Polygon(GeometrySet):
     circle that circumscribes the RegularPolygon. Its method `spin` can be
     used to increment that angle.
 
-    >>> p = Polygon((0,0), 1, n=3)
+    >>> p = Polygon((0, 0), 1, n=3)
     >>> p
     RegularPolygon(Point2D(0, 0), 1, 3, 0)
     >>> p.vertices[0]
@@ -1457,7 +1457,7 @@ class RegularPolygon(Polygon):
         See also: rotate method which moves the center.
 
         >>> from diofant import Polygon, Point, pi
-        >>> r = Polygon(Point(0,0), 1, n=3)
+        >>> r = Polygon(Point(0, 0), 1, n=3)
         >>> r.vertices[0]
         Point2D(1, 0)
         >>> r.spin(pi/6)

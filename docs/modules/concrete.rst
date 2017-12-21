@@ -14,7 +14,7 @@ method which is available in Basic class. Here is simple example involving a
 polynomial:
 
     >>> from diofant import *
-    >>> n, k = symbols('n,k')
+    >>> n, k = symbols('n k')
     >>> (n**2 + 1).is_hypergeometric(n)
     True
 

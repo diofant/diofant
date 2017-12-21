@@ -381,7 +381,7 @@ and a minimum numerical tolerance. Here are some elementary examples:
 
 Here are several more advanced examples:
 
-    >>> nsimplify(Float('0.130198866629986772369127970337',30), [pi, E])
+    >>> nsimplify(Float('0.130198866629986772369127970337', 30), [pi, E])
         1
     ----------
     5*pi

@@ -378,9 +378,9 @@ class MultisetPartitionTraverser():
 
     >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
     >>> m = MultisetPartitionTraverser()
-    >>> m.count_partitions([4,4,4,2])
+    >>> m.count_partitions([4, 4, 4, 2])
     127750
-    >>> m.count_partitions([3,3,3])
+    >>> m.count_partitions([3, 3, 3])
     686
 
     References
@@ -731,7 +731,7 @@ class MultisetPartitionTraverser():
         >>> from diofant.utilities.enumerative import list_visitor
         >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
-        >>> states = m.enum_all([2,2])
+        >>> states = m.enum_all([2, 2])
         >>> list(list_visitor(state, 'ab') for state in states)
         [[['a', 'a', 'b', 'b']],
         [['a', 'a', 'b'], ['b']],
@@ -793,7 +793,7 @@ class MultisetPartitionTraverser():
         >>> from diofant.utilities.enumerative import list_visitor
         >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
-        >>> states = m.enum_small([2,2], 2)
+        >>> states = m.enum_small([2, 2], 2)
         >>> list(list_visitor(state, 'ab') for state in states)
         [[['a', 'a', 'b', 'b']],
         [['a', 'a', 'b'], ['b']],
@@ -869,7 +869,7 @@ class MultisetPartitionTraverser():
         >>> from diofant.utilities.enumerative import list_visitor
         >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
-        >>> states = m.enum_large([2,2], 2)
+        >>> states = m.enum_large([2, 2], 2)
         >>> list(list_visitor(state, 'ab') for state in states)
         [[['a', 'a'], ['b'], ['b']],
         [['a', 'b'], ['a'], ['b']],
@@ -917,7 +917,7 @@ class MultisetPartitionTraverser():
         >>> from diofant.utilities.enumerative import list_visitor
         >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
-        >>> states = m.enum_range([2,2], 1, 2)
+        >>> states = m.enum_range([2, 2], 1, 2)
         >>> list(list_visitor(state, 'ab') for state in states)
         [[['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
@@ -1016,9 +1016,9 @@ class MultisetPartitionTraverser():
 
         >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
-        >>> m.count_partitions([9,8,2])
+        >>> m.count_partitions([9, 8, 2])
         288716
-        >>> m.count_partitions([2,2])
+        >>> m.count_partitions([2, 2])
         9
         >>> del m
 

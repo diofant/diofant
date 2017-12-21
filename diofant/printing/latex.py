@@ -1673,13 +1673,13 @@ def latex(expr, **settings):
     >>> from diofant import latex, pi, sin, asin, Integral, Matrix, Rational
     >>> from diofant.abc import x, y, mu, r, tau
 
-    >>> print(latex((2*tau)**Rational(7,2)))
+    >>> print(latex((2*tau)**Rational(7, 2)))
     8 \sqrt{2} \tau^{\frac{7}{2}}
 
     Not using a print statement for printing, results in double backslashes for
     latex commands since that's the way Python escapes backslashes in strings.
 
-    >>> latex((2*tau)**Rational(7,2))
+    >>> latex((2*tau)**Rational(7, 2))
     '8 \\sqrt{2} \\tau^{\\frac{7}{2}}'
 
     order: Any of the supported monomial orderings (currently "lex", "grlex", or
@@ -1696,34 +1696,34 @@ def latex(expr, **settings):
     'amsmath' for 'equation*'), unless the 'itex' option is set. In the latter
     case, the ``$$ $$`` syntax is used.
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='plain'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='plain'))
     8 \sqrt{2} \mu^{\frac{7}{2}}
 
-    >>> print(latex((2*tau)**Rational(7,2), mode='inline'))
+    >>> print(latex((2*tau)**Rational(7, 2), mode='inline'))
     $8 \sqrt{2} \tau^{\frac{7}{2}}$
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation*'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation*'))
     \begin{equation*}8 \sqrt{2} \mu^{\frac{7}{2}}\end{equation*}
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation'))
     \begin{equation}8 \sqrt{2} \mu^{\frac{7}{2}}\end{equation}
 
     itex: Specifies if itex-specific syntax is used, including emitting ``$$ $$``.
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation', itex=True))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation', itex=True))
     $$8 \sqrt{2} \mu^{\frac{7}{2}}$$
 
     fold_frac_powers: Emit "^{p/q}" instead of "^{\frac{p}{q}}" for fractional
     powers.
 
-    >>> print(latex((2*tau)**Rational(7,2), fold_frac_powers=True))
+    >>> print(latex((2*tau)**Rational(7, 2), fold_frac_powers=True))
     8 \sqrt{2} \tau^{7/2}
 
     fold_func_brackets: Fold function brackets where applicable.
 
-    >>> print(latex((2*tau)**sin(Rational(7,2))))
+    >>> print(latex((2*tau)**sin(Rational(7, 2))))
     \left(2 \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
-    >>> print(latex((2*tau)**sin(Rational(7,2)), fold_func_brackets = True))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), fold_func_brackets = True))
     \left(2 \tau\right)^{\sin {\frac{7}{2}}}
 
     fold_short_frac: Emit "p / q" instead of "\frac{p}{q}" when the
@@ -1747,17 +1747,17 @@ def latex(expr, **settings):
     mul_symbol: The symbol to use for multiplication. Can be one of None,
     "ldot", "dot", or "times".
 
-    >>> print(latex((2*tau)**sin(Rational(7,2)), mul_symbol="times"))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), mul_symbol="times"))
     \left(2 \times \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
 
     inv_trig_style: How inverse trig functions should be displayed. Can be one
     of "abbreviated", "full", or "power". Defaults to "abbreviated".
 
-    >>> print(latex(asin(Rational(7,2))))
+    >>> print(latex(asin(Rational(7, 2))))
     \operatorname{asin}{\left (\frac{7}{2} \right )}
-    >>> print(latex(asin(Rational(7,2)), inv_trig_style="full"))
+    >>> print(latex(asin(Rational(7, 2)), inv_trig_style="full"))
     \arcsin{\left (\frac{7}{2} \right )}
-    >>> print(latex(asin(Rational(7,2)), inv_trig_style="power"))
+    >>> print(latex(asin(Rational(7, 2)), inv_trig_style="power"))
     \sin^{-1}{\left (\frac{7}{2} \right )}
 
     mat_str: Which matrix environment string to emit. "smallmatrix", "matrix",

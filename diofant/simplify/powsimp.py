@@ -538,7 +538,7 @@ def powdenest(eq, force=False, polar=False):
 
     No other expansion is done.
 
-    >>> i, j = symbols('i,j', integer=True)
+    >>> i, j = symbols('i j', integer=True)
     >>> powdenest((x**x)**(i + j))  # -X-> (x**x)**i*(x**x)**j
     x**(x*(i + j))
 

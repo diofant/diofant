@@ -127,21 +127,21 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     >>> from diofant import Derivative as D, Function
     >>> f = Function('f')(x)
 
-    >>> collect(a*D(f,x) + b*D(f,x), D(f,x))
+    >>> collect(a*D(f, x) + b*D(f, x), D(f, x))
     (a + b)*Derivative(f(x), x)
 
-    >>> collect(a*D(D(f,x),x) + b*D(D(f,x),x), f)
+    >>> collect(a*D(D(f, x), x) + b*D(D(f, x), x), f)
     (a + b)*Derivative(f(x), x, x)
 
-    >>> collect(a*D(D(f,x),x) + b*D(D(f,x),x), D(f,x), exact=True)
+    >>> collect(a*D(D(f, x), x) + b*D(D(f, x), x), D(f, x), exact=True)
     a*Derivative(f(x), x, x) + b*Derivative(f(x), x, x)
 
-    >>> collect(a*D(f,x) + b*D(f,x) + a*f + b*f, f)
+    >>> collect(a*D(f, x) + b*D(f, x) + a*f + b*f, f)
     f(x)*(a + b) + (a + b)*Derivative(f(x), x)
 
     Or you can even match both derivative order and exponent at the same time:
 
-    >>> collect(a*D(D(f,x),x)**2 + b*D(D(f,x),x)**2, D(f,x))
+    >>> collect(a*D(D(f, x), x)**2 + b*D(D(f, x), x)**2, D(f, x))
     (a + b)*Derivative(f(x), x, x)**2
 
     Finally, you can apply a function to each of the collected coefficients.
@@ -634,7 +634,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
     (1 - I)/2
     >>> radsimp(1/(2 + sqrt(2)))
     (-sqrt(2) + 2)/2
-    >>> x,y = map(Symbol, 'xy')
+    >>> x, y = map(Symbol, 'xy')
     >>> e = ((2 + 2*sqrt(2))*x + (2 + sqrt(8))*y)/(2 + sqrt(2))
     >>> radsimp(e)
     sqrt(2)*(x + y)

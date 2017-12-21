@@ -66,7 +66,7 @@ class TIDS(CantSympify):
 
     >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS, tensorhead
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> m0, m1, m2, m3 = tensor_indices('m0,m1,m2,m3', Lorentz)
+    >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
     >>> T = tensorhead('T', [Lorentz]*4, [[1]*4])
     >>> TIDS([T], [(m0, 0, 0), (m3, 3, 0)], [(1, 2, 0, 0)])
     TIDS([T(Lorentz,Lorentz,Lorentz,Lorentz)], [(m0, 0, 0), (m3, 3, 0)], [(1, 2, 0, 0)])
@@ -127,7 +127,7 @@ class TIDS(CantSympify):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> m0, m1, m2, m3 = tensor_indices('m0,m1,m2,m3', Lorentz)
+        >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> T = tensorhead('T', [Lorentz]*4, [[1]*4])
         >>> A = tensorhead('A', [Lorentz], [[1]])
         >>> t = TIDS.from_components_and_indices([T], [m0, m1, -m1, m3])
@@ -184,7 +184,7 @@ class TIDS(CantSympify):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> m0, m1, m2, m3 = tensor_indices('m0,m1,m2,m3', Lorentz)
+        >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> T = tensorhead('T', [Lorentz]*4, [[1]*4])
         >>> TIDS.from_components_and_indices([T], [m0, m1, -m1, m3])
         TIDS([T(Lorentz,Lorentz,Lorentz,Lorentz)], [(m0, 0, 0), (m3, 3, 0)], [(1, 2, 0, 0)])
@@ -230,7 +230,7 @@ class TIDS(CantSympify):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> m0, m1, m2, m3 = tensor_indices('m0,m1,m2,m3', Lorentz)
+        >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> TIDS.free_dum_from_indices(m0, m1, -m1, m3)
         ([(m0, 0, 0), (m3, 3, 0)], [(1, 2, 0, 0)])
         """
@@ -340,7 +340,7 @@ class TIDS(CantSympify):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> m0, m1, m2, m3 = tensor_indices('m0,m1,m2,m3', Lorentz)
+        >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> T = tensorhead('T', [Lorentz]*4, [[1]*4])
         >>> A = tensorhead('A', [Lorentz], [[1]])
         >>> tids_1 = TIDS.from_components_and_indices([T], [m0, m1, -m1, m3])
@@ -1206,7 +1206,7 @@ class _TensorManager:
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead, TensorManager
         >>> Lorentz = TensorIndexType('Lorentz')
-        >>> i0,i1,i2,i3,i4 = tensor_indices('i0:5', Lorentz)
+        >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
         >>> A = tensorhead('A', [Lorentz], [[1]])
         >>> G = tensorhead('G', [Lorentz], [[1]], 'Gcomm')
         >>> GH = tensorhead('GH', [Lorentz], [[1]], 'GHcomm')
@@ -1528,7 +1528,7 @@ class TensorIndex(Basic):
     i
     >>> sym1 = TensorSymmetry(*get_symmetric_group_sgs(1))
     >>> S1 = TensorType([Lorentz], sym1)
-    >>> A, B = S1('A,B')
+    >>> A, B = S1('A B')
     >>> A(i)*B(-i)
     A(L_0)*B(-L_0)
 
@@ -1610,7 +1610,7 @@ def tensor_indices(s, typ):
 
     >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
+    >>> a, b, c, d = tensor_indices('a b c d', Lorentz)
     """
     if isinstance(s, str):
         a = [x.name for x in symbols(s, seq=True)]
@@ -1841,7 +1841,7 @@ class TensorType(Basic):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorsymmetry, TensorType, canon_bp
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> a, b = tensor_indices('a,b', Lorentz)
+        >>> a, b = tensor_indices('a b', Lorentz)
         >>> sym2 = tensorsymmetry([1]*2)
         >>> S2 = TensorType([Lorentz]*2, sym2)
         >>> V = S2('V')
@@ -1884,7 +1884,7 @@ def tensorhead(name, typ, sym, comm=0, matrix_behavior=0):
 
     >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> a, b = tensor_indices('a,b', Lorentz)
+    >>> a, b = tensor_indices('a b', Lorentz)
     >>> A = tensorhead('A', [Lorentz]*2, [[1]*2])
     >>> A(a, -b)
     A(a, -b)
@@ -1933,7 +1933,7 @@ class TensorHead(Basic):
 
     >>> from diofant.tensor.tensor import TensorIndexType, tensorhead, TensorType
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> A = tensorhead('A', [Lorentz, Lorentz], [[1],[1]])
+    >>> A = tensorhead('A', [Lorentz, Lorentz], [[1], [1]])
 
     Examples with ndarray values, the components data assigned to the
     ``TensorHead`` object are assumed to be in a fully-contravariant
@@ -2207,7 +2207,7 @@ class TensorHead(Basic):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> a, b = tensor_indices('a,b', Lorentz)
+        >>> a, b = tensor_indices('a b', Lorentz)
         >>> A = tensorhead('A', [Lorentz]*2, [[1]*2])
         >>> t = A(a, -b)
         >>> t
@@ -2469,8 +2469,8 @@ class TensAdd(TensExpr):
 
     >>> from diofant.tensor.tensor import TensorIndexType, tensorhead, tensor_indices
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> a, b = tensor_indices('a,b', Lorentz)
-    >>> p, q = tensorhead('p,q', [Lorentz], [[1]])
+    >>> a, b = tensor_indices('a b', Lorentz)
+    >>> p, q = tensorhead('p q', [Lorentz], [[1]])
     >>> t = p(a) + q(a); t
     p(a) + q(a)
     >>> t(b)
@@ -2683,13 +2683,13 @@ class TensAdd(TensExpr):
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> D = Symbol('D')
         >>> Lorentz = TensorIndexType('Lorentz', dim=D, dummy_fmt='L')
-        >>> i0,i1,i2,i3,i4 = tensor_indices('i0:5', Lorentz)
-        >>> p, q = tensorhead('p,q', [Lorentz], [[1]])
+        >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
+        >>> p, q = tensorhead('p q', [Lorentz], [[1]])
         >>> g = Lorentz.metric
-        >>> t = p(i0)*p(i1) + g(i0,i1)*q(i2)*q(-i2)
-        >>> t(i0,i2)
+        >>> t = p(i0)*p(i1) + g(i0, i1)*q(i2)*q(-i2)
+        >>> t(i0, i2)
         metric(i0, i2)*q(L_0)*q(-L_0) + p(i0)*p(i2)
-        >>> t(i0,i1) - t(i1,i0)
+        >>> t(i0, i1) - t(i1, i0)
         0
         """
         free_args = self.free_args
@@ -2807,10 +2807,10 @@ class TensAdd(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> i, j, k, l = tensor_indices('i,j,k,l', Lorentz)
-        >>> A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
+        >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
+        >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
         >>> t = A(i, k)*B(-k, -j) + A(i, -j)
-        >>> t.fun_eval((i, k),(-j, l))
+        >>> t.fun_eval((i, k), (-j, l))
         A(k, L_0)*B(l, -L_0) + A(k, l)
         """
         args = self.args
@@ -2834,11 +2834,11 @@ class TensAdd(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> i, j, k, l = tensor_indices('i,j,k,l', Lorentz)
-        >>> A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
+        >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
+        >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
         >>> t = A(i, k)*B(-k, -j); t
         A(i, L_0)*B(-L_0, -j)
-        >>> t.substitute_indices((i,j), (j, k))
+        >>> t.substitute_indices((i, j), (j, k))
         A(j, L_0)*B(-L_0, -k)
         """
         args = self.args
@@ -2870,8 +2870,8 @@ class TensAdd(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead, TensAdd
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> i, j = tensor_indices('i,j', Lorentz)
-        >>> A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
+        >>> i, j = tensor_indices('i j', Lorentz)
+        >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
         >>> eA = 3*A(i, j)
         >>> eB = 2*B(j, i)
         >>> t1 = eA._tids
@@ -3016,7 +3016,7 @@ class Tensor(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> i0,i1,i2,i3,i4 = tensor_indices('i0:5', Lorentz)
+        >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
         >>> A = tensorhead('A', [Lorentz]*5, [[1]*5])
         >>> t = A(i2, i1, -i2, -i3, i4)
         >>> t
@@ -3281,10 +3281,10 @@ class TensMul(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> m0, m1, m2 = tensor_indices('m0,m1,m2', Lorentz)
+        >>> m0, m1, m2 = tensor_indices('m0 m1 m2', Lorentz)
         >>> g = Lorentz.metric
-        >>> p, q = tensorhead('p,q', [Lorentz], [[1]])
-        >>> t = p(m1)*g(m0,m2)
+        >>> p, q = tensorhead('p q', [Lorentz], [[1]])
+        >>> t = p(m1)*g(m0, m2)
         >>> t.get_indices()
         [m1, m0, m2]
         """
@@ -3303,9 +3303,9 @@ class TensMul(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
-        >>> A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
-        >>> t = A(a,b)*B(-b,c)
+        >>> a, b, c, d = tensor_indices('a b c d', Lorentz)
+        >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
+        >>> t = A(a, b)*B(-b, c)
         >>> t
         A(a, L_0)*B(-L_0, c)
         >>> t.split()
@@ -3347,9 +3347,9 @@ class TensMul(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> m0, m1, m2 = tensor_indices('m0,m1,m2', Lorentz)
+        >>> m0, m1, m2 = tensor_indices('m0 m1 m2', Lorentz)
         >>> g = Lorentz.metric
-        >>> p, q = tensorhead('p,q', [Lorentz], [[1]])
+        >>> p, q = tensorhead('p q', [Lorentz], [[1]])
         >>> t1 = p(m0)
         >>> t2 = q(-m0)
         >>> t1*t2
@@ -3413,12 +3413,12 @@ class TensMul(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> m0, m1, m2 = tensor_indices('m0,m1,m2', Lorentz)
+        >>> m0, m1, m2 = tensor_indices('m0 m1 m2', Lorentz)
         >>> A = tensorhead('A', [Lorentz]*2, [[2]])
-        >>> t = A(m0,-m1)*A(m1,-m0)
+        >>> t = A(m0, -m1)*A(m1, -m0)
         >>> t.canon_bp()
         -A(L_0, L_1)*A(-L_0, -L_1)
-        >>> t = A(m0,-m1)*A(m1,-m2)*A(m2,-m0)
+        >>> t = A(m0, -m1)*A(m1, -m2)*A(m2, -m0)
         >>> t.canon_bp()
         0
         """
@@ -3460,9 +3460,9 @@ class TensMul(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> m0, m1, m2 = tensor_indices('m0,m1,m2', Lorentz)
+        >>> m0, m1, m2 = tensor_indices('m0 m1 m2', Lorentz)
         >>> g = Lorentz.metric
-        >>> p, q = tensorhead('p,q', [Lorentz], [[1]])
+        >>> p, q = tensorhead('p q', [Lorentz], [[1]])
         >>> t = p(m0)*q(m1)*g(-m0, -m1)
         >>> t.canon_bp()
         metric(L_0, L_1)*p(-L_0)*q(-L_1)
@@ -3487,11 +3487,11 @@ class TensMul(TensExpr):
 
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-        >>> i, j, k, l = tensor_indices('i,j,k,l', Lorentz)
-        >>> A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
+        >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
+        >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
         >>> t = A(i, k)*B(-k, -j); t
         A(i, L_0)*B(-L_0, -j)
-        >>> t.fun_eval((i, k),(-j, l))
+        >>> t.fun_eval((i, k), (-j, l))
         A(k, L_0)*B(-L_0, l)
         """
         free = self.free
@@ -3516,9 +3516,9 @@ class TensMul(TensExpr):
         >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> D = Symbol('D')
         >>> Lorentz = TensorIndexType('Lorentz', dim=D, dummy_fmt='L')
-        >>> i0,i1,i2,i3,i4 = tensor_indices('i0:5', Lorentz)
+        >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
         >>> g = Lorentz.metric
-        >>> p, q = tensorhead('p,q', [Lorentz], [[1]])
+        >>> p, q = tensorhead('p q', [Lorentz], [[1]])
         >>> t = p(i0)*q(i1)*q(-i1)
         >>> t(i1)
         p(i1)*q(L_0)*q(-L_0)
@@ -3616,9 +3616,9 @@ def riemann_cyclic(t2):
 
     >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead, riemann_cyclic
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> i, j, k, l = tensor_indices('i,j,k,l', Lorentz)
+    >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
     >>> R = tensorhead('R', [Lorentz]*4, [[2, 2]])
-    >>> t = R(i,j,k,l)*(R(-i,-j,-k,-l) - 2*R(-i,-k,-j,-l))
+    >>> t = R(i, j, k, l)*(R(-i, -j, -k, -l) - 2*R(-i, -k, -j, -l))
     >>> riemann_cyclic(t)
     0
     """
@@ -3693,11 +3693,11 @@ def substitute_indices(t, *index_tuples):
 
     >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> i, j, k, l = tensor_indices('i,j,k,l', Lorentz)
-    >>> A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
+    >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
+    >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
     >>> t = A(i, k)*B(-k, -j); t
     A(i, L_0)*B(-L_0, -j)
-    >>> t.substitute_indices((i,j), (j, k))
+    >>> t.substitute_indices((i, j), (j, k))
     A(j, L_0)*B(-L_0, -k)
     """
     if not isinstance(t, TensExpr):

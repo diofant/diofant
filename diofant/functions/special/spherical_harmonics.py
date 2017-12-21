@@ -30,7 +30,7 @@ class Ynm(Function):
     ========
 
     >>> from diofant import Ynm, Symbol
-    >>> from diofant.abc import n,m
+    >>> from diofant.abc import n, m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -40,7 +40,7 @@ class Ynm(Function):
     Several symmetries are known, for the order
 
     >>> from diofant import Ynm, Symbol
-    >>> from diofant.abc import n,m
+    >>> from diofant.abc import n, m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -50,7 +50,7 @@ class Ynm(Function):
     as well as for the angles
 
     >>> from diofant import Ynm, Symbol, simplify
-    >>> from diofant.abc import n,m
+    >>> from diofant.abc import n, m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -94,7 +94,7 @@ class Ynm(Function):
     to both angles
 
     >>> from diofant import Ynm, Symbol, diff
-    >>> from diofant.abc import n,m
+    >>> from diofant.abc import n, m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -107,7 +107,7 @@ class Ynm(Function):
     Further we can compute the complex conjugation
 
     >>> from diofant import Ynm, Symbol, conjugate
-    >>> from diofant.abc import n,m
+    >>> from diofant.abc import n, m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -118,7 +118,7 @@ class Ynm(Function):
     coordinates we use full expansion
 
     >>> from diofant import Ynm, Symbol, expand_func
-    >>> from diofant.abc import n,m
+    >>> from diofant.abc import n, m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 

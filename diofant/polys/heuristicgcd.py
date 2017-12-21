@@ -32,7 +32,7 @@ def heugcd(f, g):
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
 
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y

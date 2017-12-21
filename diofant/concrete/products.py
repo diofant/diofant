@@ -64,9 +64,9 @@ class Product(ExprWithIntLimits):
     Product(k, (k, 1, m))
     >>> Product(k, (k, 1, m)).doit()
     factorial(m)
-    >>> Product(k**2,(k, 1, m))
+    >>> Product(k**2, (k, 1, m))
     Product(k**2, (k, 1, m))
-    >>> Product(k**2,(k, 1, m)).doit()
+    >>> Product(k**2, (k, 1, m)).doit()
     (factorial(m))**2
 
     Wallis' product for pi:

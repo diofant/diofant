@@ -248,7 +248,7 @@ def viete(f, roots=None, *gens, **args):
 
     >>> from diofant import symbols
 
-    >>> x, a, b, c, r1, r2 = symbols('x,a:c,r1:3')
+    >>> x, a, b, c, r1, r2 = symbols('x a:c r1:3')
 
     >>> viete(a*x**2 + b*x + c, [r1, r2], x)
     [(r1 + r2, -b/a), (r1*r2, c/a)]

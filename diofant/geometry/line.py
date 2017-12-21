@@ -985,7 +985,7 @@ class Line(LinearEntity):
     >>> from diofant import Point
     >>> from diofant.abc import L
     >>> from diofant.geometry import Line, Segment
-    >>> L = Line(Point(2,3), Point(3,5))
+    >>> L = Line(Point(2, 3), Point(3, 5))
     >>> L
     Line(Point2D(2, 3), Point2D(3, 5))
     >>> L.points
@@ -1113,7 +1113,7 @@ class Line(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Line,Point
+        >>> from diofant import Line, Point
         >>> p1, p2 = Point(0, 1), Point(3, 4)
         >>> l = Line(p1, p2)
         >>> l.contains(p1)
@@ -1466,7 +1466,7 @@ class Ray(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Ray,Point,Segment
+        >>> from diofant import Ray, Point, Segment
         >>> p1, p2 = Point(0, 0), Point(4, 4)
         >>> r = Ray(p1, p2)
         >>> r.contains(p1)

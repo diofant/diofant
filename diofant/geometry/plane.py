@@ -42,7 +42,7 @@ class Plane(GeometryEntity):
     Plane(Point3D(1, 1, 1), (-1, 2, -1))
     >>> Plane((1, 1, 1), (2, 3, 4), (2, 2, 2))
     Plane(Point3D(1, 1, 1), (-1, 2, -1))
-    >>> Plane(Point3D(1, 1, 1), normal_vector=(1,4,7))
+    >>> Plane(Point3D(1, 1, 1), normal_vector=(1, 4, 7))
     Plane(Point3D(1, 1, 1), (1, 4, 7))
     """
 
@@ -235,8 +235,8 @@ class Plane(GeometryEntity):
         ========
 
         >>> from diofant import Plane, Point3D
-        >>> a = Plane(Point3D(1,4,6), normal_vector=(2, 4, 6))
-        >>> b = Plane(Point3D(3,1,3), normal_vector=(4, 8, 12))
+        >>> a = Plane(Point3D(1, 4, 6), normal_vector=(2, 4, 6))
+        >>> b = Plane(Point3D(3, 1, 3), normal_vector=(4, 8, 12))
         >>> a.is_parallel(b)
         True
 
@@ -275,7 +275,7 @@ class Plane(GeometryEntity):
         ========
 
         >>> from diofant import Plane, Point3D
-        >>> a = Plane(Point3D(1,4,6), normal_vector=(2, 4, 6))
+        >>> a = Plane(Point3D(1, 4, 6), normal_vector=(2, 4, 6))
         >>> b = Plane(Point3D(2, 2, 2), normal_vector=(-1, 2, -1))
         >>> a.is_perpendicular(b)
         True
@@ -470,7 +470,7 @@ class Plane(GeometryEntity):
         ========
 
         >>> from diofant import Plane, Point3D, Line3D
-        >>> a = Plane(Point3D(1,4,6), normal_vector=(2, 4, 6))
+        >>> a = Plane(Point3D(1, 4, 6), normal_vector=(2, 4, 6))
         >>> a.perpendicular_line(Point3D(9, 8, 7))
         Line3D(Point3D(9, 8, 7), Point3D(11, 12, 13))
 

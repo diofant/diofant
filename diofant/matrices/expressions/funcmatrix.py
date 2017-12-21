@@ -9,7 +9,7 @@ class FunctionMatrix(MatrixExpr):
     This class is an alternative to SparseMatrix
 
     >>> from diofant import FunctionMatrix, symbols, Lambda, MatMul, Matrix
-    >>> i, j = symbols('i,j')
+    >>> i, j = symbols('i j')
     >>> X = FunctionMatrix(3, 3, Lambda((i, j), i + j))
     >>> Matrix(X)
     Matrix([
@@ -22,7 +22,7 @@ class FunctionMatrix(MatrixExpr):
     >>> isinstance(Y*Y, MatMul) # this is an expression object
     True
 
-    >>> (Y**2)[10,10] # So this is evaluated lazily
+    >>> (Y**2)[10, 10] # So this is evaluated lazily
     342923500
     """
 

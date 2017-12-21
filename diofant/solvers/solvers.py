@@ -83,7 +83,7 @@ def checksol(f, sol, **flags):
 
     >>> from diofant import symbols
     >>> from diofant.solvers import checksol
-    >>> x, y = symbols('x,y')
+    >>> x, y = symbols('x y')
     >>> checksol(x**4 - 1, {x: 1})
     True
     >>> checksol(x**4 - 1, {x: 0})
@@ -887,9 +887,9 @@ def _solve(f, symbol, **flags):
                     # having to factor:
                     #
                     # >>> eq = (exp(I*(-x-2))+exp(I*(x+2)))
-                    # >>> eq.subs(exp(x),y)  # fails
+                    # >>> eq.subs(exp(x), y)  # fails
                     # exp(I*(-x - 2)) + exp(I*(x + 2))
-                    # >>> eq.expand().subs(exp(x),y)  # works
+                    # >>> eq.expand().subs(exp(x), y)  # works
                     # y**I*exp(2*I) + y**(-I)*exp(-2*I)
                     def _expand(p):
                         b, e = p.as_base_exp()

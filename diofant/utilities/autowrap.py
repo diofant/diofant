@@ -10,7 +10,7 @@ as f2py, fwrap, Cython, SWIG(?) etc. (Currently only f2py and Cython are
 implemented) The goal is to provide access to compiled binaries of acceptable
 performance with a one-button user interface, i.e.
 
-    >>> from diofant.abc import x,y
+    >>> from diofant.abc import x, y
     >>> expr = ((x - y)**(25)).expand()
     >>> binary_callable = autowrap(expr)
     >>> binary_callable(1, 2)

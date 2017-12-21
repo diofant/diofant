@@ -36,7 +36,7 @@ class NDimArray:
     Create an N-dim array from a matrix:
 
     >>> from diofant import Matrix
-    >>> a = Matrix([[1,2],[3,4]])
+    >>> a = Matrix([[1, 2], [3, 4]])
     >>> a
     Matrix([
     [1, 2],
@@ -179,7 +179,7 @@ class NDimArray:
         ========
 
         >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
-        >>> a = MutableDenseNDimArray.zeros(3,4,5,6,3)
+        >>> a = MutableDenseNDimArray.zeros(3, 4, 5, 6, 3)
         >>> a.rank()
         5
 
@@ -325,8 +325,8 @@ class NDimArray:
         >>> c = a.reshape(3, 2)
         >>> c == b
         False
-        >>> a[0,0] = 1
-        >>> b[0,0] = 2
+        >>> a[0, 0] = 1
+        >>> b[0, 0] = 2
         >>> a == b
         False
         """

@@ -159,8 +159,8 @@ class MutableDenseNDimArray(DenseNDimArray, MutableNDimArray):
 
         >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(2,  2)
-        >>> a[0,0] = 1
-        >>> a[1,1] = 1
+        >>> a[0, 0] = 1
+        >>> a[1, 1] = 1
         >>> a
         [[1, 0], [0, 1]]
 

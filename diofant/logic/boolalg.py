@@ -1643,8 +1643,8 @@ def bool_map(bool1, bool2):
 
     >>> from diofant import SOPform, bool_map, Or, And, Not, Xor
     >>> from diofant.abc import w, x, y, z, a, b, c, d
-    >>> function1 = SOPform([x, z, y],[[1, 0, 1], [0, 0, 1]])
-    >>> function2 = SOPform([a, b, c],[[1, 0, 1], [1, 0, 0]])
+    >>> function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
+    >>> function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2)
     (And(Not(z), y), {y: a, z: b})
 
@@ -1656,7 +1656,7 @@ def bool_map(bool1, bool2):
     >>> bool_map(eq, eq2)
     (Or(And(Not(y), w), And(Not(y), z),
      And(x, y)), {w: a, x: b, y: c, z: d})
-    >>> eq = And(Xor(a, b), c, And(c,d))
+    >>> eq = And(Xor(a, b), c, And(c, d))
     >>> bool_map(eq, eq.subs(c, x))
     (And(Or(Not(a), Not(b)),
      Or(a, b), c, d),

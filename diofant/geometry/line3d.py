@@ -612,8 +612,8 @@ class LinearEntity3D(GeometryEntity):
         >>> l1.intersection(p3)
         [Point3D(7, 7, 7)]
 
-        >>> l1 = Line3D(Point3D(4,19,12), Point3D(5,25,17))
-        >>> l2 = Line3D(Point3D(-3, -15, -19), direction_ratio=[2,8,8])
+        >>> l1 = Line3D(Point3D(4, 19, 12), Point3D(5, 25, 17))
+        >>> l2 = Line3D(Point3D(-3, -15, -19), direction_ratio=[2, 8, 8])
         >>> l1.intersection(l2)
         [Point3D(1, 1, -3)]
 

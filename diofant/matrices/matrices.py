@@ -3936,7 +3936,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([
         [F(0), F(1)],
         [F(1), F(2)]])
-        >>> N = M.replace(F,G)
+        >>> N = M.replace(F, G)
         >>> N
         Matrix([
         [G(0), G(1)],

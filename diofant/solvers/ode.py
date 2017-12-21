@@ -554,13 +554,13 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     [Eq(f(x), -acos(C1/sqrt(-cos(x)**2)) + 2*pi), Eq(f(x), acos(C1/sqrt(-cos(x)**2)))]
     >>> t = symbols('t')
     >>> x, y = symbols('x, y', cls=Function)
-    >>> eq = (Eq(Derivative(x(t),t), 12*t*x(t) + 8*y(t)), Eq(Derivative(y(t),t), 21*x(t) + 7*t*y(t)))
+    >>> eq = (Eq(Derivative(x(t), t), 12*t*x(t) + 8*y(t)), Eq(Derivative(y(t), t), 21*x(t) + 7*t*y(t)))
     >>> dsolve(eq)
     [Eq(x(t), C1*x0(t) + C2*x0(t)*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t)**2, t)),
     Eq(y(t), C1*y0(t) + C2*(E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t) +
     y0(t)*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t)**2, t)))]
-    >>> eq = (Eq(Derivative(x(t),t),x(t)*y(t)*sin(t)), Eq(Derivative(y(t),t),y(t)**2*sin(t)))
-    >>> C1, C2 = symbols('C1, C2')
+    >>> eq = (Eq(Derivative(x(t), t), x(t)*y(t)*sin(t)), Eq(Derivative(y(t), t), y(t)**2*sin(t)))
+    >>> C1, C2 = symbols('C1 C2')
     >>> dsolve(eq)
     {Eq(x(t), -E**C1/(E**C1*C2 - cos(t))), Eq(y(t), -1/(C1 - cos(t)))}
     """
@@ -1437,7 +1437,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     >>> eq = (Eq(5*x1, 12*x(t) - 6*y(t)), Eq(2*y1, 11*x(t) + 3*y(t)))
     >>> classify_sysode(eq)
     {'eq': [-12*x(t) + 6*y(t) + 5*Derivative(x(t), t), -11*x(t) - 3*y(t) + 2*Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -12, (0, x(t), 1): 5, (0, y(t), 0): 6, (0, y(t), 1): 0, (1, x(t), 0): -11, (1, x(t), 1): 0, (1, y(t), 0): -3, (1, y(t), 1): 2}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type1'}
-    >>> eq = (Eq(diff(x(t),t), 5*t*x(t) + t**2*y(t)), Eq(diff(y(t),t), -t**2*x(t) + 5*t*y(t)))
+    >>> eq = (Eq(diff(x(t), t), 5*t*x(t) + t**2*y(t)), Eq(diff(y(t), t), -t**2*x(t) + 5*t*y(t)))
     >>> classify_sysode(eq)
     {'eq': [-t**2*y(t) - 5*t*x(t) + Derivative(x(t), t), t**2*x(t) - 5*t*y(t) + Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -5*t, (0, x(t), 1): 1, (0, y(t), 0): -t**2, (0, y(t), 1): 0, (1, x(t), 0): t**2, (1, x(t), 1): 0, (1, y(t), 0): -5*t, (1, y(t), 1): 1}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type4'}
     """
@@ -1978,13 +1978,13 @@ def checksysodesol(eqs, sols, func=None):
     >>> from diofant.solvers.ode import checksysodesol
     >>> C1, C2 = symbols('C1:3')
     >>> t = symbols('t')
-    >>> x, y = symbols('x, y', cls=Function)
-    >>> eq = (Eq(diff(x(t),t), x(t) + y(t) + 17), Eq(diff(y(t),t), -2*x(t) + y(t) + 12))
+    >>> x, y = symbols('x y', cls=Function)
+    >>> eq = (Eq(diff(x(t), t), x(t) + y(t) + 17), Eq(diff(y(t), t), -2*x(t) + y(t) + 12))
     >>> sol = [Eq(x(t), (C1*sin(sqrt(2)*t) + C2*cos(sqrt(2)*t))*exp(t) - Rational(5, 3)),
     ... Eq(y(t), (sqrt(2)*C1*cos(sqrt(2)*t) - sqrt(2)*C2*sin(sqrt(2)*t))*exp(t) - Rational(46, 3))]
     >>> checksysodesol(eq, sol)
     (True, [0, 0])
-    >>> eq = (Eq(diff(x(t),t),x(t)*y(t)**4), Eq(diff(y(t),t),y(t)**3))
+    >>> eq = (Eq(diff(x(t), t), x(t)*y(t)**4), Eq(diff(y(t), t), y(t)**3))
     >>> sol = [Eq(x(t), C1*exp(-1/(4*(C2 + t)))), Eq(y(t), -sqrt(2)*sqrt(-1/(C2 + t))/2),
     ... Eq(x(t), C1*exp(-1/(4*(C2 + t)))), Eq(y(t), sqrt(2)*sqrt(-1/(C2 + t))/2)]
     >>> checksysodesol(eq, sol)
@@ -2063,7 +2063,7 @@ def odesimp(eq, func, order, constants, hint):
 
     >>> from diofant import sin, symbols, dsolve, pprint, Function
     >>> from diofant.solvers.ode import odesimp
-    >>> x , u2, C1= symbols('x,u2,C1')
+    >>> x, u2, C1= symbols('x u2 C1')
     >>> f = Function('f')
 
     >>> eq = dsolve(x*f(x).diff(x) - f(x) - x*sin(f(x)/x), f(x),
@@ -2253,7 +2253,7 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
     ========
 
     >>> from diofant import Eq, Function, checkodesol, symbols
-    >>> x, C1 = symbols('x,C1')
+    >>> x, C1 = symbols('x C1')
     >>> f = Function('f')
     >>> checkodesol(f(x).diff(x), Eq(f(x), C1))
     (True, 0)
@@ -2778,7 +2778,7 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
 
     >>> from diofant import symbols, Eq, pprint
     >>> from diofant.solvers.ode import constant_renumber
-    >>> x, C0, C1, C2, C3, C4 = symbols('x,C:5')
+    >>> x, C0, C1, C2, C3, C4 = symbols('x C:5')
 
     Only constants in the given range (inclusive) are renumbered;
     the renumbering always starts from 1:
@@ -2900,7 +2900,7 @@ def ode_1st_exact(eq, func, order, match):
     Then, the solution will be as given below::
 
         >>> from diofant import Function, Eq, Integral, symbols, pprint
-        >>> x, y, t, x0, y0, C1= symbols('x,y,t,x0,y0,C1')
+        >>> x, y, t, x0, y0, C1= symbols('x y t x0 y0 C1')
         >>> P, Q, F= map(Function, ['P', 'Q', 'F'])
         >>> pprint(Eq(Eq(F(x, y), Integral(P(t, y), (t, x0, x)) +
         ... Integral(Q(x0, t), (t, y0, y))), C1), use_unicode=False)
@@ -3236,7 +3236,7 @@ def homogeneous_order(eq, *symbols):
     >>> f = Function('f')
     >>> homogeneous_order(f(x), f(x)) is None
     True
-    >>> homogeneous_order(f(x,y), f(y, x), x, y) is None
+    >>> homogeneous_order(f(x, y), f(y, x), x, y) is None
     True
     >>> homogeneous_order(f(x), f(x), x)
     1
@@ -3496,8 +3496,8 @@ def ode_Liouville(eq, func, order, match):
         >>> from diofant import Function, dsolve, Eq, pprint, diff
         >>> from diofant.abc import x
         >>> f, g, h = map(Function, ['f', 'g', 'h'])
-        >>> genform = Eq(diff(f(x),x,x) + g(f(x))*diff(f(x),x)**2 +
-        ... h(x)*diff(f(x),x), 0)
+        >>> genform = Eq(diff(f(x), x, x) + g(f(x))*diff(f(x), x)**2 +
+        ...              h(x)*diff(f(x), x), 0)
         >>> pprint(genform, use_unicode=False)
                           2                    2
                 /d       \         d          d

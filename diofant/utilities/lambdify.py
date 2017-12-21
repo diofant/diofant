@@ -215,14 +215,14 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     (2) Use some other module:
 
         >>> import numpy
-        >>> f = lambdify((x,y), tan(x*y), numpy)
+        >>> f = lambdify((x, y), tan(x*y), numpy)
 
         Attention: There are naming differences between numpy and diofant. So if
                    you simply take the numpy module, e.g. diofant.atan will not be
                    translated to numpy.arctan. Use the modified module instead
                    by passing the string "numpy":
 
-        >>> f = lambdify((x,y), tan(x*y), "numpy")
+        >>> f = lambdify((x, y), tan(x*y), "numpy")
         >>> f(1, 2)
         -2.18503986326
         >>> from numpy import array
@@ -248,7 +248,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     >>> f(2)
     4
     >>> f = lambdify((x, y, z), [z, y, x])
-    >>> f(1,2,3)
+    >>> f(1, 2, 3)
     [3, 2, 1]
     >>> f = lambdify(x, sqrt(x))
     >>> f(4)
@@ -415,7 +415,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
     >>> from diofant.utilities.lambdify import lambdastr
     >>> lambdastr(x, x**2)
     'lambda x: (x**2)'
-    >>> lambdastr((x,y,z), [z,y,x])
+    >>> lambdastr((x, y, z), [z, y, x])
     'lambda x,y,z: ([z, y, x])'
 
     Although tuples may not appear as arguments to lambda in Python 3,

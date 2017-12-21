@@ -57,7 +57,7 @@ def bspline_basis(d, knots, n, x, close=True):
     B-splines and their derivatives:
 
         >>> d = 1
-        >>> knots = [0,0,2,3,4]
+        >>> knots = [0, 0, 2, 3, 4]
         >>> bspline_basis(d, knots, 0, x)
         Piecewise((-x/2 + 1, And(x <= 2, x >= 0)), (0, true))
 

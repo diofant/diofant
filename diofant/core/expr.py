@@ -1640,7 +1640,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> from diofant import symbols, I
 
-        >>> x, y = symbols('x,y', extended_real=True)
+        >>> x, y = symbols('x y', extended_real=True)
 
         >>> (x + y*I).as_real_imag()
         (x, y)
@@ -1879,7 +1879,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> from diofant import symbols, Rational
 
-        >>> x, y = symbols('x,y', extended_real=True)
+        >>> x, y = symbols('x y', extended_real=True)
 
         >>> ((x*y)**3).extract_multiplicatively(x**2 * y)
         x*y**2

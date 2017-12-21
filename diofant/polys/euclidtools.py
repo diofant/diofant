@@ -367,7 +367,7 @@ def dmp_inner_subresultants(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
@@ -448,7 +448,7 @@ def dmp_subresultants(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
@@ -472,7 +472,7 @@ def dmp_prs_resultant(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
@@ -513,7 +513,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x + y + 2
     >>> g = 2*x*y + x + 3
@@ -592,7 +592,7 @@ def dmp_zz_collins_resultant(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x + y + 2
     >>> g = 2*x*y + x + 3
@@ -652,9 +652,9 @@ def dmp_qq_collins_resultant(f, g, u, K0):
 
     >>> from diofant.domains import QQ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
-    >>> f = x/2 + y + QQ(2,3)
+    >>> f = x/2 + y + QQ(2, 3)
     >>> g = 2*x*y + x + 3
 
     >>> R.dmp_qq_collins_resultant(f, g)
@@ -692,7 +692,7 @@ def dmp_resultant(f, g, u, K, includePRS=False):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
@@ -753,7 +753,7 @@ def dmp_discriminant(f, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y,z,t = ring("x,y,z,t", ZZ)
+    >>> R, x, y, z, t = ring("x y z t", ZZ)
 
     >>> R.dmp_discriminant(x**2*y + x*z + t)
     -4*y*t + z**2
@@ -957,7 +957,7 @@ def dmp_rr_prs_gcd(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1004,7 +1004,7 @@ def dmp_ff_prs_gcd(f, g, u, K):
 
     >>> from diofant.domains import QQ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
     >>> f = x**2/2 + x*y + y**2/2
     >>> g = x**2 + x*y
@@ -1203,7 +1203,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1345,7 +1345,7 @@ def dmp_qq_heu_gcd(f, g, u, K0):
 
     >>> from diofant.domains import QQ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
     >>> f = x**2/4 + x*y + y**2
     >>> g = x**2/2 + x*y
@@ -1483,7 +1483,7 @@ def dmp_inner_gcd(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1530,7 +1530,7 @@ def dmp_gcd(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1622,7 +1622,7 @@ def dmp_rr_lcm(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1651,7 +1651,7 @@ def dmp_ff_lcm(f, g, u, K):
 
     >>> from diofant.domains import QQ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
     >>> f = x**2/4 + x*y + y**2
     >>> g = x**2/2 + x*y
@@ -1675,7 +1675,7 @@ def dmp_lcm(f, g, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -1702,7 +1702,7 @@ def dmp_content(f, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_content(2*x*y + 6*x + 4*y + 12)
     2*y + 6
@@ -1734,7 +1734,7 @@ def dmp_primitive(f, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_primitive(2*x*y + 6*x + 4*y + 12)
     (2*y + 6, x + 2)
@@ -1775,7 +1775,7 @@ def dmp_cancel(f, g, u, K, include=True):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_cancel(2*x**2 - 2, x**2 - 2*x + 1)
     (2*x + 2, x - 1)
