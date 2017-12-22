@@ -3,6 +3,9 @@ Primality testing
 
 """
 
+from ..core.compatibility import as_int
+
+
 # pseudoprimes that will pass through last mr_safe test
 _pseudos = {
     669094855201,
@@ -37,6 +40,38 @@ _pseudos = {
     8337196000698841, 8352714234009421, 8389755717406381, 8509654470665701,
     8757647355282841, 8903933671696381, 8996133652295653, 9074421465661261,
     9157536631454221, 9188353522314541}
+
+
+def is_square(n, prep=True):
+    """Return True if n == a * a for some integer a, else False.
+
+    If n is suspected of *not* being a square then this is a
+    quick method of confirming that it is not.
+
+    References
+    ==========
+
+    .. [1] http://mersenneforum.org/showpost.php?p=110896
+
+    See Also
+    ========
+
+    diofant.core.power.integer_nthroot
+    """
+    if prep:
+        n = as_int(n)
+        if n < 0:
+            return False
+        if n in [0, 1]:
+            return True
+    m = n & 127
+    if not ((m*0x8bc40d7d) & (m*0xa1e2f5d1) & 0x14020a):
+        m = n % 63
+        if not ((m*0x3d491df7) & (m*0xc824a9f9) & 0x10f14008):
+            from . import perfect_power
+            if perfect_power(n, [2]):
+                return True
+    return False
 
 
 def _test(n, base, s, t):

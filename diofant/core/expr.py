@@ -2931,7 +2931,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """Efficiently extract the coefficient of a product."""
         return S.One, self
 
-    def as_coeff_Add(self):
+    def as_coeff_Add(self, rational=False):
         """Efficiently extract the coefficient of a summation."""
         return S.Zero, self
 

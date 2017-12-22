@@ -9,6 +9,7 @@ from diofant import (Basic, Dummy, Integer, Integral, Matrix, Tuple,
                      default_sort_key, factorial, symbols, true)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
+from diofant.functions.combinatorial.numbers import nT
 from diofant.functions.elementary.piecewise import ExprCondPair, Piecewise
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
@@ -24,7 +25,8 @@ from diofant.utilities.iterables import (_partition, _set_partitions,
                                          multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, necklaces,
-                                         numbered_symbols, ordered, partitions,
+                                         numbered_symbols, ordered,
+                                         ordered_partitions, partitions,
                                          permutations, postfixes,
                                          postorder_traversal, prefixes,
                                          reshape, rotate_left, rotate_right,
@@ -399,14 +401,21 @@ def test_multiset_permutations():
 
 
 def test_partitions():
+    ans = [[{}], [(0, {})]]
+    for i in range(2):
+        assert list(partitions(0, size=i)) == ans[i]
+        assert list(partitions(1, 0, size=i)) == ans[i]
+        assert list(partitions(6, 2, 2, size=i)) == ans[i]
+        assert list(partitions(6, 2, None, size=i)) != ans[i]
+        assert list(partitions(6, None, 2, size=i)) != ans[i]
+        assert list(partitions(6, 2, 0, size=i)) == ans[i]
+
     assert [p.copy() for p in partitions(6, k=2)] == [
         {2: 3}, {1: 2, 2: 2}, {1: 4, 2: 1}, {1: 6}]
 
     assert [p.copy() for p in partitions(6, k=3)] == [
         {3: 2}, {1: 1, 2: 1, 3: 1}, {1: 3, 3: 1}, {2: 3}, {1: 2, 2: 2},
         {1: 4, 2: 1}, {1: 6}]
-
-    assert [p.copy() for p in partitions(6, k=2, m=2)] == []
 
     assert [p.copy() for p in partitions(8, k=4, m=3)] == [
         {4: 2}, {1: 1, 3: 1, 4: 1}, {2: 2, 4: 1}, {2: 1, 3: 2}] == [
@@ -420,11 +429,6 @@ def test_partitions():
         {1: 1, 3: 1}, {2: 2}, {1: 2, 2: 1}, {1: 4}] == [
         i.copy() for i in partitions(4) if all(k <= 3 for k in i)]
 
-    pytest.raises(ValueError, lambda: list(partitions(3, 0)))
-    pytest.raises(ValueError, lambda: list(partitions(-1)))
-    pytest.raises(ValueError, lambda: list(partitions(3, -2)))
-    pytest.raises(ValueError, lambda: list(partitions(3, 2, -2)))
-
     # Consistency check on output of _partitions and RGS_unrank.
     # This provides a sanity test on both routines.  Also verifies that
     # the total number of partitions is the same in each case.
@@ -434,7 +438,7 @@ def test_partitions():
         i = 0
         for m, q in _set_partitions(n):
             assert q == RGS_unrank(i, n)
-            i = i+1
+            i += 1
         assert i == RGS_enum(n)
 
 
@@ -751,3 +755,13 @@ def test_cantor_product():
     assert (list(itertools.islice(cantor_product(itertools.count(1),
                                                  itertools.count(1)), 7)) ==
             [(1, 1), (1, 2), (2, 1), (2, 2), (1, 3), (2, 3), (3, 1)])
+
+
+def test_ordered_partitions():
+    assert list(ordered_partitions(0, 1)) == [[]]
+    assert list(ordered_partitions(1, 0)) == [[]]
+    for i in range(1, 7):
+        for j in [None] + list(range(1, i)):
+            assert (sum(1 for p in ordered_partitions(i, j, 1)) ==
+                    sum(1 for p in ordered_partitions(i, j, 0)) ==
+                    nT(i, j))

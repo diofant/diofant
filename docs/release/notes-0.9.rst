@@ -181,3 +181,12 @@ These Sympy issues also were addressed:
 * :sympyissue:`13629` bug in rsolve
 * :sympyissue:`13645` sympy hangs on evaluating expression
 * :sympyissue:`11378` S.Reals should be accessible as just "Reals"
+* :sympyissue:`10999` diop: holzer error
+* :sympyissue:`11000` diop: power_representation
+* :sympyissue:`11026` diophantine(x**3+y**3-2) -> KeyError instead of {(1, 1)}
+* :sympyissue:`8943` diophantine misses trivial solution
+* :sympyissue:`11016` diop: sum of squares needs to try more options to satisfy conditions
+* :sympyissue:`9538` diophantine() doesn't let you specify the variable order
+* :sympyissue:`11049` diop: recursion error
+* :sympyissue:`11021` diop: power_representation(4**5, 3, 1) -> (4,)
+* :sympyissue:`11050` diop: partition(n, k) gives redundant result

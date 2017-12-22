@@ -14,12 +14,12 @@ from diofant.core.numbers import Integer, Rational
 from diofant.domains import ZZ
 from diofant.ntheory import (divisor_count, divisor_sigma, divisors, factorint,
                              is_nthpow_residue, is_primitive_root,
-                             is_quad_residue, isprime, jacobi_symbol,
-                             legendre_symbol, mobius, multiplicity, n_order,
-                             nextprime, npartitions, nthroot_mod,
-                             perfect_power, pollard_pm1, pollard_rho,
-                             prevprime, prime, primefactors, primepi,
-                             primerange, primitive_root, primorial,
+                             is_quad_residue, is_square, isprime,
+                             jacobi_symbol, legendre_symbol, mobius,
+                             multiplicity, n_order, nextprime, npartitions,
+                             nthroot_mod, perfect_power, pollard_pm1,
+                             pollard_rho, prevprime, prime, primefactors,
+                             primepi, primerange, primitive_root, primorial,
                              quadratic_residues, randprime, sqrt_mod,
                              sqrt_mod_iter, totient, trailing)
 from diofant.ntheory.continued_fraction import \
@@ -977,3 +977,9 @@ def test_factorrat():
     assert str(factorrat(Rational(1, 1), visual=True)) == '1'
     assert str(factorrat(Rational(25, 14), visual=True)) == '5**2/(2*7)'
     assert str(factorrat(Rational(-25, 14)/9, visual=True)) == '-5**2/(2*3**2*7)'
+
+
+def test_is_square():
+    assert [i for i in range(25) if is_square(i)] == [0, 1, 4, 9, 16]
+    assert is_square(4, prep=False) is True
+    assert is_square(193) is False

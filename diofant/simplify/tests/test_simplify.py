@@ -13,7 +13,7 @@ from diofant import (Abs, Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
                          y, z)
 from diofant.core.mul import _keep_coeff
-from diofant.simplify.simplify import nthroot
+from diofant.simplify.simplify import clear_coefficients, nthroot
 
 
 __all__ = ()
@@ -616,3 +616,15 @@ def test_sympyissue_6249():
 
     M = MatrixSymbol('M', 2, 1)
     assert simplify(M[0]/2) == M[0]/2
+
+
+def test_clear_coefficients():
+    assert clear_coefficients(4*y*(6*x + 3)) == (y*(2*x + 1), 0)
+    assert clear_coefficients(4*y*(6*x + 3) - 2) == (y*(2*x + 1), Rational(1, 6))
+    assert clear_coefficients(4*y*(6*x + 3) - 2, x) == (y*(2*x + 1), x/12 + Rational(1, 6))
+    assert clear_coefficients(sqrt(2) - 2) == (sqrt(2), 2)
+    assert clear_coefficients(4*sqrt(2) - 2) == (sqrt(2), Rational(1, 2))
+    assert clear_coefficients(Integer(3), x) == (0, x - 3)
+    assert clear_coefficients(oo, x) == (oo, x)
+    assert clear_coefficients(-pi, x) == (pi, -x)
+    assert clear_coefficients(2 - pi/3, x) == (pi, -3*x + 6)
