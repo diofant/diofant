@@ -190,3 +190,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11049` diop: recursion error
 * :sympyissue:`11021` diop: power_representation(4**5, 3, 1) -> (4,)
 * :sympyissue:`11050` diop: partition(n, k) gives redundant result
+* :issue:`369` Issue labeling policy

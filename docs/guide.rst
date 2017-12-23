@@ -77,4 +77,33 @@ Releasing a new version is done as follows:
 
 .. XXX adopt http://www.contribution-guide.org
 
+Labeling Issues and Pull Requests
+=================================
+
+Following table lists meanings of labels, including
+`provided by Github
+<https://help.github.com/articles/about-labels/#using-default-labels>`_:
+
++------------------+----------------------------------------------------+
+| Label            | Description                                        |
++==================+====================================================+
+| bug              | an unexpected problem or unintended behavior       |
++------------------+----------------------------------------------------+
+| wrong answer     | if mathematically wrong result was obtained        |
++------------------+----------------------------------------------------+
+| duplicate        | indicates similar issues or pull requests          |
++------------------+----------------------------------------------------+
+| enhancement      | new feature requests (or implementation)           |
++------------------+----------------------------------------------------+
+| good first issue | indicates a good issue for first-time contributors |
++------------------+----------------------------------------------------+
+| help wanted      | indicates that a maintainer wants help here        |
++------------------+----------------------------------------------------+
+| invalid          | mark that a problem is no longer relevant          |
++------------------+----------------------------------------------------+
+| question         | support request or need for more information       |
++------------------+----------------------------------------------------+
+| wontfix          | indicates that work won't continue on this issue   |
++------------------+----------------------------------------------------+
+
 .. include:: README.rst
