@@ -129,7 +129,7 @@ class hyper(TupleParametersBase):
     The parameters must always be iterables, even if they are vectors of
     length one or zero:
 
-    >>> hyper((1, ), [], x)
+    >>> hyper([1], [], x)
     hyper((1,), (), x)
 
     But of course they may be variables (but if they depend on x then you

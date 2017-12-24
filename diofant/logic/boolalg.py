@@ -1549,7 +1549,7 @@ def simplify_logic(expr, form=None, deep=True):
     >>> from diofant.logic import simplify_logic
     >>> from diofant.abc import x, y, z
     >>> from diofant import sympify
-    >>> b = (~x & ~y & ~z) | ( ~x & ~y & z)
+    >>> b = (~x & ~y & ~z) | (~x & ~y & z)
     >>> simplify_logic(b)
     And(Not(x), Not(y))
 

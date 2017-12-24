@@ -109,18 +109,18 @@ class Polyhedron(Basic):
         Here is a demonstration that applying p and p**2 for every p in
         pgroup generates all the orientations of a tetrahedron and no others:
 
-        >>> all = ( (w, x, y, z),
-        ...         (x, y, w, z),
-        ...         (y, w, x, z),
-        ...         (w, z, x, y),
-        ...         (z, w, y, x),
-        ...         (w, y, z, x),
-        ...         (y, z, w, x),
-        ...         (x, z, y, w),
-        ...         (z, y, x, w),
-        ...         (y, x, z, w),
-        ...         (x, w, z, y),
-        ...         (z, x, w, y) )
+        >>> all = ((w, x, y, z),
+        ...        (x, y, w, z),
+        ...        (y, w, x, z),
+        ...        (w, z, x, y),
+        ...        (z, w, y, x),
+        ...        (w, y, z, x),
+        ...        (y, z, w, x),
+        ...        (x, z, y, w),
+        ...        (z, y, x, w),
+        ...        (y, x, z, w),
+        ...        (x, w, z, y),
+        ...        (z, x, w, y))
 
         >>> got = []
         >>> for p in (pgroup + [p**2 for p in pgroup]):

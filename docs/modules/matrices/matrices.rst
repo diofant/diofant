@@ -358,13 +358,13 @@ Now that we have the basics out of the way, let's see what we can do with the
 actual matrices. Of course, one of the first things that comes to mind is the
 determinant:
 
-    >>> M = Matrix(( [1, 2, 3], [3, 6, 2], [2, 0, 1] ))
+    >>> M = Matrix(([1, 2, 3], [3, 6, 2], [2, 0, 1]))
     >>> M.det()
     -28
     >>> M2 = eye(3)
     >>> M2.det()
     1
-    >>> M3 = Matrix(( [1, 0, 0], [1, 0, 0], [1, 0, 0] ))
+    >>> M3 = Matrix(([1, 0, 0], [1, 0, 0], [1, 0, 0]))
     >>> M3.det()
     0
 
@@ -442,7 +442,7 @@ by passing the b vector to the matrix A's LUsolve function. Here we'll cheat a
 little choose A and x then multiply to get b. Then we can solve for x and check
 that it's correct:
 
-    >>> A = Matrix([ [2, 3, 5], [3, 6, 2], [8, 3, 6] ])
+    >>> A = Matrix([[2, 3, 5], [3, 6, 2], [8, 3, 6]])
     >>> x = Matrix(3, 1, [3, 7, 5])
     >>> b = A*x
     >>> soln = A.LUsolve(b)

@@ -1205,7 +1205,7 @@ class Basic(object):
 
         Pattern as a list of functions:
 
-        >>> sin(x).rewrite([sin, ], exp)
+        >>> sin(x).rewrite([sin], exp)
         -I*(E**(I*x) - E**(-I*x))/2
         """
         if not args:

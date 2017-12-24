@@ -591,7 +591,7 @@ class binomial(CombinatorialFunction):
     As can a given diagonal, e.g. the 4th diagonal:
 
     >>> N = -4
-    >>> [ binomial(N, i) for i in range(1 - N)]
+    >>> [binomial(N, i) for i in range(1 - N)]
     [1, -4, 10, -20, 35]
 
     >>> binomial(Rational(5, 4), 3)

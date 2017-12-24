@@ -400,25 +400,25 @@ class CoordSysCartesian(Basic):
 
         >>> from diofant.vector import AxisOrienter
         >>> axis_orienter = AxisOrienter(q1, N.i + 2 * N.j)
-        >>> A = N.orient_new('A', (axis_orienter, ))
+        >>> A = N.orient_new('A', [axis_orienter])
 
         Using a BodyOrienter
 
         >>> from diofant.vector import BodyOrienter
         >>> body_orienter = BodyOrienter(q1, q2, q3, '123')
-        >>> B = N.orient_new('B', (body_orienter, ))
+        >>> B = N.orient_new('B', [body_orienter])
 
         Using a SpaceOrienter
 
         >>> from diofant.vector import SpaceOrienter
         >>> space_orienter = SpaceOrienter(q1, q2, q3, '312')
-        >>> C = N.orient_new('C', (space_orienter, ))
+        >>> C = N.orient_new('C', [space_orienter])
 
         Using a QuaternionOrienter
 
         >>> from diofant.vector import QuaternionOrienter
         >>> q_orienter = QuaternionOrienter(q0, q1, q2, q3)
-        >>> D = N.orient_new('D', (q_orienter, ))
+        >>> D = N.orient_new('D', [q_orienter])
 
         """
 

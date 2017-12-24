@@ -427,7 +427,7 @@ class PolyRing(DefaultPrinting, IPolys):
         >>> from diofant.domains import ZZ
 
         >>> R, x = ring("x", ZZ)
-        >>> R.add([ x**2 + 2*i + 3 for i in range(4) ])
+        >>> R.add([x**2 + 2*i + 3 for i in range(4)])
         4*x**2 + 24
         >>> _.factor_list()
         (4, [(x**2 + 6, 1)])
@@ -452,7 +452,7 @@ class PolyRing(DefaultPrinting, IPolys):
         >>> from diofant.domains import ZZ
 
         >>> R, x = ring("x", ZZ)
-        >>> R.mul([ x**2 + 2*i + 3 for i in range(4) ])
+        >>> R.mul([x**2 + 2*i + 3 for i in range(4)])
         x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
         >>> _.factor_list()
         (1, [(x**2 + 3, 1), (x**2 + 5, 1), (x**2 + 7, 1), (x**2 + 9, 1)])
