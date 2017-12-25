@@ -5658,14 +5658,14 @@ def to_rational_coeffs(f):
     >>> from diofant import sqrt, Poly, simplify
     >>> from diofant.polys.polytools import to_rational_coeffs
     >>> from diofant.abc import x
-    >>> p = Poly(((x**2-1)*(x-2)).subs({x:x*(1 + sqrt(2))}), x, domain='EX')
+    >>> p = Poly(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}), x, domain='EX')
     >>> lc, r, _, g = to_rational_coeffs(p)
     >>> lc, r
     (7 + 5*sqrt(2), -2*sqrt(2) + 2)
     >>> g
     Poly(x**3 + x**2 - 1/4*x - 1/4, x, domain='QQ')
     >>> r1 = simplify(1/r)
-    >>> Poly(lc*r**3*(g.as_expr()).subs({x:x*r1}), x, domain='EX') == p
+    >>> Poly(lc*r**3*(g.as_expr()).subs({x: x*r1}), x, domain='EX') == p
     True
 
     """
@@ -5777,12 +5777,12 @@ def _torational_factor_list(p, x):
     >>> from diofant.polys.polytools import _torational_factor_list
     >>> from diofant.abc import x
     >>> from diofant import sqrt, expand, Mul
-    >>> p = expand(((x**2-1)*(x-2)).subs({x:x*(1 + sqrt(2))}))
+    >>> p = expand(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}))
     >>> factors = _torational_factor_list(p, x); factors
     (-2, [(-x*(1 + sqrt(2))/2 + 1, 1), (-x*(1 + sqrt(2)) - 1, 1), (-x*(1 + sqrt(2)) + 1, 1)])
     >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
     True
-    >>> p = expand(((x**2-1)*(x-2)).subs({x:x + sqrt(2)}))
+    >>> p = expand(((x**2-1)*(x-2)).subs({x: x + sqrt(2)}))
     >>> factors = _torational_factor_list(p, x); factors
     (1, [(x - 2 + sqrt(2), 1), (x - 1 + sqrt(2), 1), (x + 1 + sqrt(2), 1)])
     >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p

@@ -370,7 +370,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
 
     >>> from diofant.ntheory.generate import cycle_length
     >>> n = 16843009
-    >>> F = lambda x:(2048*pow(x, 2, n) + 32767) % n
+    >>> F = lambda x: (2048*pow(x, 2, n) + 32767)%n
     >>> for s in range(5):
     ...     print('loop length = %4i; leader length = %3i' % next(cycle_length(F, s)))
     ...

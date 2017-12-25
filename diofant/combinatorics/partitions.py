@@ -317,7 +317,7 @@ class IntegerPartition(Basic):
         IntegerPartition(14, (5, 4, 3, 1, 1))
         >>> print(a)
         [5, 4, 3, 1, 1]
-        >>> IntegerPartition({1:3, 2:1})
+        >>> IntegerPartition({1: 3, 2: 1})
         IntegerPartition(5, (2, 1, 1, 1))
 
         If the value that the partion should sum to is given first, a check

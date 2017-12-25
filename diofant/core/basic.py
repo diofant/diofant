@@ -409,7 +409,7 @@ class Basic(object):
         >>> from diofant.abc import x, y
         >>> (1 + x*y).subs(x, pi)
         pi*y + 1
-        >>> (1 + x*y).subs({x:pi, y:2})
+        >>> (1 + x*y).subs({x: pi, y: 2})
         1 + 2*pi
         >>> (1 + x*y).subs([(x, pi), (y, 2)])
         1 + 2*pi

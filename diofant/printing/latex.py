@@ -1767,7 +1767,7 @@ def latex(expr, **settings):
     >>> print(latex(Matrix(2, 1, [x, y])))
     \left[\begin{matrix}x\\y\end{matrix}\right]
 
-    >>> print(latex(Matrix(2, 1, [x, y]), mat_str = "array"))
+    >>> print(latex(Matrix(2, 1, [x, y]), mat_str="array"))
     \left[\begin{array}{c}x\\y\end{array}\right]
 
     mat_delim: The delimiter to wrap around matrices. Can be one of "[", "(",
@@ -1779,7 +1779,7 @@ def latex(expr, **settings):
     symbol_names: Dictionary of symbols and the custom strings they should be
     emitted as.
 
-    >>> print(latex(x**2, symbol_names={x:'x_i'}))
+    >>> print(latex(x**2, symbol_names={x: 'x_i'}))
     x_i^{2}
 
     ``latex`` also supports the builtin container types list, tuple, and
