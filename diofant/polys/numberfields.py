@@ -83,7 +83,7 @@ def _separate_sq(p):
     >>> from diofant import sqrt
     >>> from diofant.abc import x
 
-    >>> p= -x + sqrt(2) + sqrt(3) + sqrt(7)
+    >>> p = -x + sqrt(2) + sqrt(3) + sqrt(7)
     >>> p = _separate_sq(p); p
     -x**2 + 2*sqrt(3)*x + 2*sqrt(7)*x - 2*sqrt(21) - 8
     >>> p = _separate_sq(p); p

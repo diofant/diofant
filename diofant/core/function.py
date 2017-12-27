@@ -2268,7 +2268,7 @@ def count_ops(expr, visual=False):
     operations for expressions in different forms. Here, the Horner
     representation is compared with the expanded form of a polynomial:
 
-    >>> eq=x*(1 + x*(2 + x*(3 + x)))
+    >>> eq = x*(1 + x*(2 + x*(3 + x)))
     >>> count_ops(eq.expand(), visual=True) - count_ops(eq, visual=True)
     -MUL + 3*POW
 

@@ -81,7 +81,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
 
     Two radicals are automatically joined through Mul:
 
-    >>> a=sqrt(x*sqrt(y))
+    >>> a = sqrt(x*sqrt(y))
     >>> a*a**3 == a**4
     True
 

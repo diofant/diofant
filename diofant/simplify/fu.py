@@ -94,10 +94,11 @@ a*sin(x)*sin(z) + a*cos(x)*cos(y)
 In some cases factoring might be a good idea, but the user is left
 to make that decision. For example:
 
->>> expr=((15*sin(2*x) + 19*sin(x + y) + 17*sin(x + z) + 19*cos(x - z) +
-... 25)*(20*sin(2*x) + 15*sin(x + y) + sin(y + z) + 14*cos(x - z) +
-... 14*cos(y - z))*(9*sin(2*y) + 12*sin(y + z) + 10*cos(x - y) + 2*cos(y -
-... z) + 18)).expand(trig=True).expand()
+>>> expr = ((15*sin(2*x) + 19*sin(x + y) + 17*sin(x + z) + 19*cos(x - z) +
+...          25)*(20*sin(2*x) + 15*sin(x + y) + sin(y + z) + 14*cos(x - z) +
+...               14*cos(y - z))*(9*sin(2*y) + 12*sin(y + z) +
+...                               10*cos(x - y) + 2*cos(y - z) +
+...                               18)).expand(trig=True).expand()
 
 In the expanded state, there are nearly 1000 trig functions:
 
@@ -108,7 +109,7 @@ If the expression where factored first, this would take time but the
 resulting expression would be transformed very quickly:
 
 >>> def clock(f, n=2):
-...    t=time(); f(); return round(time()-t, n)
+...    t = time(); f(); return round(time() - t, n)
 ...
 >>> clock(lambda: factor(expr))  # doctest: +SKIP
 0.86

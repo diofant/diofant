@@ -2471,7 +2471,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         If ``n=None`` then a generator of the series terms will be returned.
 
-        >>> term=cos(x).series(n=None)
+        >>> term = cos(x).series(n=None)
         >>> [next(term) for i in range(2)]
         [1, -x**2/2]
 

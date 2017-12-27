@@ -215,12 +215,11 @@ class SparseMatrixBase(MatrixBase):
         ========
 
         >>> from diofant.matrices import SparseMatrix
-        >>> a=SparseMatrix(((1, 2), (3, 4)))
-        >>> a
+        >>> SparseMatrix(((1, 2), (3, 4)))
         Matrix([
         [1, 2],
         [3, 4]])
-        >>> a.CL
+        >>> _.CL
         [(0, 0, 1), (1, 0, 3), (0, 1, 2), (1, 1, 4)]
 
         See Also

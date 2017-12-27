@@ -3130,7 +3130,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         >>> from diofant import Matrix
-        >>> m=Matrix([[1, 3], [2, 4]])
+        >>> m = Matrix([[1, 3], [2, 4]])
         >>> m
         Matrix([
         [1, 3],
@@ -3161,7 +3161,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         >>> from diofant import Matrix
-        >>> m=Matrix([[1, 2], [2, 3]])
+        >>> m = Matrix([[1, 2], [2, 3]])
         >>> m
         Matrix([
         [1, 2],

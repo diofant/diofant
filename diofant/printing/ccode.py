@@ -349,7 +349,7 @@ def ccode(expr, assign_to=None, **settings):
     >>> t = IndexedBase('t', shape=[len_y])
     >>> Dy = IndexedBase('Dy', shape=[len_y - 1])
     >>> i = Idx('i', len_y-1)
-    >>> e=Eq(Dy[i], (y[i+1]-y[i])/(t[i+1]-t[i]))
+    >>> e = Eq(Dy[i], (y[i+1]-y[i])/(t[i+1]-t[i]))
     >>> ccode(e.rhs, assign_to=e.lhs, contract=False)
     'Dy[i] = (y[i + 1] - y[i])/(t[i + 1] - t[i]);'
 
