@@ -1544,8 +1544,10 @@ class LatexPrinter(Printer):
     def _print_RootOf(self, root):
         cls = root.__class__.__name__
         expr = self._print(root.expr)
-        index = root.index
-        return r"\operatorname{%s} {\left(%s, %d\right)}" % (cls, expr, index)
+        if root.free_symbols:
+            return r"\operatorname{%s} {\left(%s, %s, %d\right)}" % (cls, expr, *root.args[1:])
+        else:
+            return r"\operatorname{%s} {\left(%s, %d\right)}" % (cls, expr, root.index)
 
     def _print_RootSum(self, expr):
         cls = expr.__class__.__name__
@@ -1671,13 +1673,13 @@ def latex(expr, **settings):
     >>> from diofant import latex, pi, sin, asin, Integral, Matrix, Rational
     >>> from diofant.abc import x, y, mu, r, tau
 
-    >>> print(latex((2*tau)**Rational(7,2)))
+    >>> print(latex((2*tau)**Rational(7, 2)))
     8 \sqrt{2} \tau^{\frac{7}{2}}
 
     Not using a print statement for printing, results in double backslashes for
     latex commands since that's the way Python escapes backslashes in strings.
 
-    >>> latex((2*tau)**Rational(7,2))
+    >>> latex((2*tau)**Rational(7, 2))
     '8 \\sqrt{2} \\tau^{\\frac{7}{2}}'
 
     order: Any of the supported monomial orderings (currently "lex", "grlex", or
@@ -1694,34 +1696,34 @@ def latex(expr, **settings):
     'amsmath' for 'equation*'), unless the 'itex' option is set. In the latter
     case, the ``$$ $$`` syntax is used.
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='plain'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='plain'))
     8 \sqrt{2} \mu^{\frac{7}{2}}
 
-    >>> print(latex((2*tau)**Rational(7,2), mode='inline'))
+    >>> print(latex((2*tau)**Rational(7, 2), mode='inline'))
     $8 \sqrt{2} \tau^{\frac{7}{2}}$
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation*'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation*'))
     \begin{equation*}8 \sqrt{2} \mu^{\frac{7}{2}}\end{equation*}
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation'))
     \begin{equation}8 \sqrt{2} \mu^{\frac{7}{2}}\end{equation}
 
     itex: Specifies if itex-specific syntax is used, including emitting ``$$ $$``.
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation', itex=True))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation', itex=True))
     $$8 \sqrt{2} \mu^{\frac{7}{2}}$$
 
     fold_frac_powers: Emit "^{p/q}" instead of "^{\frac{p}{q}}" for fractional
     powers.
 
-    >>> print(latex((2*tau)**Rational(7,2), fold_frac_powers=True))
+    >>> print(latex((2*tau)**Rational(7, 2), fold_frac_powers=True))
     8 \sqrt{2} \tau^{7/2}
 
     fold_func_brackets: Fold function brackets where applicable.
 
-    >>> print(latex((2*tau)**sin(Rational(7,2))))
+    >>> print(latex((2*tau)**sin(Rational(7, 2))))
     \left(2 \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
-    >>> print(latex((2*tau)**sin(Rational(7,2)), fold_func_brackets = True))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), fold_func_brackets = True))
     \left(2 \tau\right)^{\sin {\frac{7}{2}}}
 
     fold_short_frac: Emit "p / q" instead of "\frac{p}{q}" when the
@@ -1745,17 +1747,17 @@ def latex(expr, **settings):
     mul_symbol: The symbol to use for multiplication. Can be one of None,
     "ldot", "dot", or "times".
 
-    >>> print(latex((2*tau)**sin(Rational(7,2)), mul_symbol="times"))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), mul_symbol="times"))
     \left(2 \times \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
 
     inv_trig_style: How inverse trig functions should be displayed. Can be one
     of "abbreviated", "full", or "power". Defaults to "abbreviated".
 
-    >>> print(latex(asin(Rational(7,2))))
+    >>> print(latex(asin(Rational(7, 2))))
     \operatorname{asin}{\left (\frac{7}{2} \right )}
-    >>> print(latex(asin(Rational(7,2)), inv_trig_style="full"))
+    >>> print(latex(asin(Rational(7, 2)), inv_trig_style="full"))
     \arcsin{\left (\frac{7}{2} \right )}
-    >>> print(latex(asin(Rational(7,2)), inv_trig_style="power"))
+    >>> print(latex(asin(Rational(7, 2)), inv_trig_style="power"))
     \sin^{-1}{\left (\frac{7}{2} \right )}
 
     mat_str: Which matrix environment string to emit. "smallmatrix", "matrix",
@@ -1765,7 +1767,7 @@ def latex(expr, **settings):
     >>> print(latex(Matrix(2, 1, [x, y])))
     \left[\begin{matrix}x\\y\end{matrix}\right]
 
-    >>> print(latex(Matrix(2, 1, [x, y]), mat_str = "array"))
+    >>> print(latex(Matrix(2, 1, [x, y]), mat_str="array"))
     \left[\begin{array}{c}x\\y\end{array}\right]
 
     mat_delim: The delimiter to wrap around matrices. Can be one of "[", "(",
@@ -1777,7 +1779,7 @@ def latex(expr, **settings):
     symbol_names: Dictionary of symbols and the custom strings they should be
     emitted as.
 
-    >>> print(latex(x**2, symbol_names={x:'x_i'}))
+    >>> print(latex(x**2, symbol_names={x: 'x_i'}))
     x_i^{2}
 
     ``latex`` also supports the builtin container types list, tuple, and

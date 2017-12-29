@@ -146,13 +146,19 @@ def test_solve_args():
     pytest.raises(ValueError, lambda: solve([x**2 * y**2 <= x**2 * y,
                                              x**2 * y**2 > x**2 * y]))
 
+    assert solve(Eq(x, 3), x) == [{x: 3}]
+    assert solve(Poly(x - 3), x) == [{x: 3}]
+
+    assert solve([x - 2, x**2 + y]) == [{x: 2, y: -4}]
+
 
 def test_solve_polynomial1():
+    assert solve(x - y, x) == [{x: y}]
     assert solve(3*x - 2, x) == [{x: Rational(2, 3)}]
     assert solve(Eq(3*x, 2), x) == [{x: Rational(2, 3)}]
 
-    assert {s[x] for s in solve(x**2 - 1, x)} == {-1, 1}
-    assert {s[x] for s in solve(Eq(x**2, 1), x)} == {-1, 1}
+    assert solve(x**2 - 1, x) == [{x: -1}, {x: 1}]
+    assert solve(Eq(x**2, 1), x) == [{x: -1}, {x: 1}]
 
     assert solve(x - y**3, x) == [{x: y**3}]
     rx = root(x, 3)
@@ -185,10 +191,15 @@ def test_solve_polynomial1():
                  cubics=False) == [{x: -1}, {x: -1 + sqrt(2)},
                                    {x: -sqrt(2) - 1}]
 
+    assert solve(x - y**2, x, y) == [{x: y**2}]
+    assert solve(x**2 - y, x, y) == [{y: x**2}]
+
 
 def test_solve_polynomial2():
     assert solve(4, x) == []
     assert solve(x - 3, y) == []
+    assert solve(x - 3, x) == [{x: 3}]
+    assert solve(x - 3) == [{x: 3}]
     assert solve([x**2 - 3, y - 1]) == [{x: -sqrt(3), y: 1},
                                         {x: sqrt(3), y: 1}]
     assert solve(x**4 - 1, x) == [{x: -1}, {x: 1}, {x: -I}, {x: I}]
@@ -246,8 +257,8 @@ def test_solve_qubics():
              {x: -cbrt(3*sqrt(69)/2 + Rational(27, 2))/3 -
                  1/cbrt(3*sqrt(69)/2 + Rational(27, 2))}])
     assert (solve(x**3 - x + 1, cubics=False) ==
-            [{x: RootOf(x**3 - x + 1, x, 0)}, {x: RootOf(x**3 - x + 1, x, 1)},
-             {x: RootOf(x**3 - x + 1, x, 2)}])
+            [{x: RootOf(x**3 - x + 1, 0)}, {x: RootOf(x**3 - x + 1, 1)},
+             {x: RootOf(x**3 - x + 1, 2)}])
 
 
 def test_quintics_1():
@@ -304,6 +315,7 @@ def test_solve_rational():
 
 def test_solve_nonlinear():
     assert solve(x**2 - y**2, x, y) == [{x: -y}, {x: y}]
+    assert solve(x**2 - y**2) == [{x: -y}, {x: y}]
     assert solve(x**2 - y**2/exp(x), x, y) == [{x: 2*LambertW(y/2)}]
     assert solve(x**2 - y**2/exp(x), y, x) == [{y: -x*sqrt(exp(x))},
                                                {y: x*sqrt(exp(x))}]
@@ -351,8 +363,8 @@ def test_solve_radicals():
     assert solve(eq, check=False) == [{x: Rational(1, 3)}]
 
     eq = root(x, 3) - root(x, 5) + Rational(1, 7)
-    assert solve(eq) == [{x: RootOf(7*x**5 - 7*x**3 + 1, x, 1)**15},
-                         {x: RootOf(7*x**5 - 7*x**3 + 1, x, 2)**15}]
+    assert solve(eq) == [{x: RootOf(7*x**5 - 7*x**3 + 1, 1)**15},
+                         {x: RootOf(7*x**5 - 7*x**3 + 1, 2)**15}]
 
     # XXX is this correct?
     sol = solve(eq, check=False)

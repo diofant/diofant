@@ -2116,7 +2116,7 @@ def Triangular(name, a, b, c):
     >>> c = Symbol("c")
     >>> z = Symbol("z")
 
-    >>> X = Triangular("x", a,b,c)
+    >>> X = Triangular("x", a, b, c)
 
     >>> pprint(density(X)(z), use_unicode=False)
     /    -2*a + 2*z

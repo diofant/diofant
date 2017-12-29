@@ -215,12 +215,11 @@ class SparseMatrixBase(MatrixBase):
         ========
 
         >>> from diofant.matrices import SparseMatrix
-        >>> a=SparseMatrix(((1, 2), (3, 4)))
-        >>> a
+        >>> SparseMatrix(((1, 2), (3, 4)))
         Matrix([
         [1, 2],
         [3, 4]])
-        >>> a.CL
+        >>> _.CL
         [(0, 0, 1), (1, 0, 3), (0, 1, 2), (1, 1, 4)]
 
         See Also
@@ -869,7 +868,7 @@ class SparseMatrixBase(MatrixBase):
         ========
 
         >>> from diofant.matrices import SparseMatrix
-        >>> A = SparseMatrix(((25,15,-5),(15,18,0),(-5,0,11)))
+        >>> A = SparseMatrix(((25, 15, -5), (15, 18, 0), (-5, 0, 11)))
         >>> A.cholesky()
         Matrix([
         [ 5, 0, 0],

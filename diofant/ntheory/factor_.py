@@ -370,7 +370,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
 
     >>> from diofant.ntheory.generate import cycle_length
     >>> n = 16843009
-    >>> F = lambda x:(2048*pow(x, 2, n) + 32767) % n
+    >>> F = lambda x: (2048*pow(x, 2, n) + 32767)%n
     >>> for s in range(5):
     ...     print('loop length = %4i; leader length = %3i' % next(cycle_length(F, s)))
     ...
@@ -383,9 +383,9 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     Here is an explicit example where there is a two element leadup to
     a sequence of 3 numbers (11, 14, 4) that then repeat:
 
-    >>> x=2
+    >>> x = 2
     >>> for i in range(9):
-    ...     x=(x**2+12)%17
+    ...     x = (x**2 + 12)%17
     ...     print(x)
     ...
     16
@@ -413,8 +413,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     ========
 
     >>> from diofant import pollard_rho
-    >>> n=16843009
-    >>> F=lambda x:(2048*pow(x,2,n) + 32767) % n
+    >>> n = 16843009
+    >>> F = lambda x: (2048*pow(x, 2, n) + 32767) % n
     >>> pollard_rho(n, F=F)
     257
 
@@ -487,7 +487,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     for every prime power divisor of N. But consider the following:
 
         >>> from diofant.ntheory.factor_ import smoothness_p, pollard_pm1
-        >>> n=257*1009
+        >>> n = 257*1009
         >>> smoothness_p(n)
         (-1, [(257, (1, 2, 256)), (1009, (1, 7, 16))])
 

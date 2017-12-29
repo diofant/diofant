@@ -249,7 +249,7 @@ def convex_hull(*args):
     ========
 
     >>> from diofant.geometry import Point, convex_hull
-    >>> points = [(1,1), (1,2), (3,1), (-5,2), (15,4)]
+    >>> points = [(1, 1), (1, 2), (3, 1), (-5, 2), (15, 4)]
     >>> convex_hull(*points)
     Polygon(Point2D(-5, 2), Point2D(1, 1), Point2D(3, 1), Point2D(15, 4))
 

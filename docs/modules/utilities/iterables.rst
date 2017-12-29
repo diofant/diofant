@@ -13,9 +13,9 @@ without repetition if set to False.
 
 Examples::
     >>> from diofant.utilities.iterables import variations
-    >>> list(variations([1,2,3], 2))
+    >>> list(variations([1, 2, 3], 2))
     [(1, 2), (1, 3), (2, 1), (2, 3), (3, 1), (3, 2)]
-    >>> list(variations([1,2,3], 2, True))
+    >>> list(variations([1, 2, 3], 2, True))
     [(1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3), (3, 1), (3, 2), (3, 3)]
 
 

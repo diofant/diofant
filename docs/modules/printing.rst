@@ -103,7 +103,7 @@ Two basic examples:
 
 An example where line wrapping is required:
 
-    >>> expr = sqrt(1-x**2).series(x,n=20).removeO()
+    >>> expr = sqrt(1 - x**2).series(x, n=20).removeO()
     >>> print(fcode(expr))
           -715.0d0/65536.0d0*x**18 - 429.0d0/32768.0d0*x**16 - 33.0d0/
          @ 2048.0d0*x**14 - 21.0d0/1024.0d0*x**12 - 7.0d0/256.0d0*x**10 -
@@ -121,7 +121,7 @@ are wrapped properly when the assignment part is added.
 
 For piecewise functions, the ``assign_to`` option is mandatory:
 
-    >>> print(fcode(Piecewise((x,x<1),(x**2,True)), assign_to="var"))
+    >>> print(fcode(Piecewise((x, x<1), (x**2, True)), assign_to="var"))
           if (x < 1) then
             var = x
           else
@@ -133,7 +133,7 @@ the lack of a conditional operator in Fortran 77. Inline conditionals can be
 supported using the ``merge`` function introduced in Fortran 95 by setting of
 the kwarg ``standard=95``:
 
-    >>> print(fcode(Piecewise((x,x<1),(x**2,True)), standard=95))
+    >>> print(fcode(Piecewise((x, x<1), (x**2, True)), standard=95))
           merge(x, x**2, x < 1)
 
 Loops are generated if there are Indexed objects in the expression. This

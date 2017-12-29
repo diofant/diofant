@@ -285,7 +285,7 @@ def test_Domain_unify_algebraic():
     assert sqrt5.frac_field(x, y).unify(sqrt7) == sqrt57.frac_field(x, y)
 
     sqrt2 = QQ.algebraic_field(sqrt(2))
-    r = RootOf(x**7 - x + 1, x, 0)
+    r = RootOf(x**7 - x + 1, 0)
     rootof = QQ.algebraic_field(r)
     ans = QQ.algebraic_field(r + sqrt(2))
     assert sqrt2.unify(rootof) == rootof.unify(sqrt2) == ans

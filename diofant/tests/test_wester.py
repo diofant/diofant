@@ -911,7 +911,7 @@ def test_M32():
 def test_M33():
     x = Symbol('x', real=True)
     assert (solve(Max(2 - x**2, x) - x**3/9) ==
-            [{x: -3}, {x: RootOf(-18 + 9*x**2 + x**3, x, 1)}, {x: 3}])
+            [{x: -3}, {x: RootOf(-18 + 9*x**2 + x**3, 1)}, {x: 3}])
 
 
 @pytest.mark.xfail

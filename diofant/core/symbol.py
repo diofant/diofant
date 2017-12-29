@@ -212,13 +212,13 @@ class Symbol(BaseSymbol):
     ========
 
     >>> from diofant import symbols
-    >>> a, b = symbols('a,b')
+    >>> a, b = symbols('a b')
     >>> bool(a*b == b*a)
     True
 
     You can override default assumptions:
 
-    >>> A, B = symbols('A,B', commutative = False)
+    >>> A, B = symbols('A B', commutative = False)
     >>> bool(A*B != B*A)
     True
     >>> bool(A*B*2 == 2*A*B) == True # multiplication by scalars is commutative
@@ -452,7 +452,7 @@ def symbols(names, **args):
         >>> symbols('x5(:2)')
         (x50, x51)
 
-        >>> symbols('x5:10,y:5')
+        >>> symbols('x5:10 y:5')
         (x5, x6, x7, x8, x9, y0, y1, y2, y3, y4)
 
         >>> symbols(('x5:10', 'y:5'))
@@ -503,7 +503,7 @@ def symbols(names, **args):
         >>> a.is_integer
         True
 
-        >>> x, y, z = symbols('x,y,z', extended_real=True)
+        >>> x, y, z = symbols('x y z', extended_real=True)
         >>> x.is_extended_real and y.is_extended_real and z.is_extended_real
         True
 
@@ -511,7 +511,7 @@ def symbols(names, **args):
     instances of Function or Wild classes. To achieve this, set ``cls``
     keyword argument to the desired type::
 
-        >>> symbols('f,g,h', cls=Function)
+        >>> symbols('f g h', cls=Function)
         (f, g, h)
 
         >>> type(_[0])
@@ -627,12 +627,12 @@ def var(names, **args):
     >>> x
     x
 
-    >>> var('a,ab,abc')
+    >>> var('a ab abc')
     (a, ab, abc)
     >>> abc
     abc
 
-    >>> var('x,y', extended_real=True)
+    >>> var('x y', extended_real=True)
     (x, y)
     >>> x.is_extended_real and y.is_extended_real
     True

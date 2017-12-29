@@ -1189,7 +1189,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
     The series in the polar coordinate system:
 
     >>> series = intcurve_series(vector_field, t, start_point,
-    ...             n=3, coord_sys=R2_p, coeffs=True)
+    ...                          n=3, coord_sys=R2_p, coeffs=True)
     >>> series[0]
     Matrix([
     [sqrt(x**2 + y**2)],

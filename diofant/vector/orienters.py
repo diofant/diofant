@@ -59,7 +59,7 @@ class AxisOrienter(Orienter):
         >>> N = CoordSysCartesian('N')
         >>> from diofant.vector import AxisOrienter
         >>> orienter = AxisOrienter(q1, N.i + 2 * N.j)
-        >>> B = N.orient_new('B', (orienter, ))
+        >>> B = N.orient_new('B', [orienter])
 
         """
         # Dummy initializer for docstrings
@@ -211,17 +211,17 @@ class BodyOrienter(ThreeAngleOrienter):
         Therefore,
 
         >>> body_orienter = BodyOrienter(q1, q2, q3, '123')
-        >>> D = N.orient_new('D', (body_orienter, ))
+        >>> D = N.orient_new('D', [body_orienter])
 
         is same as
 
         >>> from diofant.vector import AxisOrienter
         >>> axis_orienter1 = AxisOrienter(q1, N.i)
-        >>> D = N.orient_new('D', (axis_orienter1, ))
+        >>> D = N.orient_new('D', [axis_orienter1])
         >>> axis_orienter2 = AxisOrienter(q2, D.j)
-        >>> D = D.orient_new('D', (axis_orienter2, ))
+        >>> D = D.orient_new('D', [axis_orienter2])
         >>> axis_orienter3 = AxisOrienter(q3, D.k)
-        >>> D = D.orient_new('D', (axis_orienter3, ))
+        >>> D = D.orient_new('D', [axis_orienter3])
 
         Acceptable rotation orders are of length 3, expressed in XYZ or
         123, and cannot have a rotation about about an axis twice in a row.
@@ -281,17 +281,17 @@ class SpaceOrienter(ThreeAngleOrienter):
         Therefore,
 
         >>> space_orienter = SpaceOrienter(q1, q2, q3, '312')
-        >>> D = N.orient_new('D', (space_orienter, ))
+        >>> D = N.orient_new('D', [space_orienter])
 
         is same as
 
         >>> from diofant.vector import AxisOrienter
         >>> axis_orienter1 = AxisOrienter(q1, N.i)
-        >>> B = N.orient_new('B', (axis_orienter1, ))
+        >>> B = N.orient_new('B', [axis_orienter1])
         >>> axis_orienter2 = AxisOrienter(q2, N.j)
-        >>> C = B.orient_new('C', (axis_orienter2, ))
+        >>> C = B.orient_new('C', [axis_orienter2])
         >>> axis_orienter3 = AxisOrienter(q3, N.k)
-        >>> D = C.orient_new('C', (axis_orienter3, ))
+        >>> D = C.orient_new('C', [axis_orienter3])
 
         """
         # Dummy initializer for docstrings
@@ -364,7 +364,7 @@ class QuaternionOrienter(Orienter):
         >>> N = CoordSysCartesian('N')
         >>> from diofant.vector import QuaternionOrienter
         >>> q_orienter = QuaternionOrienter(q0, q1, q2, q3)
-        >>> B = N.orient_new('B', (q_orienter, ))
+        >>> B = N.orient_new('B', [q_orienter])
 
         """
         # Dummy initializer for docstrings

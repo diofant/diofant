@@ -94,7 +94,7 @@ def test_RootOf___new__():
 
     assert isinstance(RootOf(x**3 - y, x, 0), RootOf)
     p = Symbol('p', positive=True)
-    assert RootOf(x**3 - p, x, 0) == root(p, 3)*RootOf(x**3 - 1, x, 0)
+    assert RootOf(x**3 - p, x, 0) == root(p, 3)*RootOf(x**3 - 1, 0)
 
     assert RootOf(y*x**3 + y*x + 2*y, x, 0) == -1
 
@@ -107,7 +107,7 @@ def test_RootOf___new__():
     assert e.poly == PurePoly(x**2 - 4, x)
     assert e.index == 1
 
-    assert RootOf(x**7 - 0.1*x + 1, x, 0) == RootOf(10*x**7 - x + 10, x, 0)
+    assert RootOf(x**7 - 0.1*x + 1, 0) == RootOf(10*x**7 - x + 10, 0)
 
 
 def test_RootOf_attributes():
@@ -287,7 +287,7 @@ def test_RootOf_real_roots():
     assert Poly(x**5 + x + 1).real_roots() == [RootOf(x**3 - x**2 + 1, 0)]
     assert Poly(x**5 + x + 1).real_roots(radicals=False) == [RootOf(
         x**3 - x**2 + 1, 0)]
-    assert Poly(x**7 - 0.1*x + 1, x).real_roots() == [RootOf(10*x**7 - x + 10, x, 0)]
+    assert Poly(x**7 - 0.1*x + 1, x).real_roots() == [RootOf(10*x**7 - x + 10, 0)]
 
 
 def test_RootOf_all_roots():
@@ -480,11 +480,11 @@ def test_sympyissue_8316():
 
 
 def test_rewrite():
-    r3 = RootOf(x**3 + x - 1, x, 0)
+    r3 = RootOf(x**3 + x - 1, 0)
     assert r3.n() == r3.rewrite(Pow).n()
     assert r3.rewrite(Pow) == (-1/(3*root(Rational(1, 2) + sqrt(93)/18, 3)) +
                                root(Rational(1, 2) + sqrt(93)/18, 3))
-    r4 = RootOf(x**4 - x + 5, x, 0)
+    r4 = RootOf(x**4 - x + 5, 0)
     assert r4.n() == r4.rewrite(Pow).n()
-    r11 = RootOf(x**11 + x - 3, x, 0)
+    r11 = RootOf(x**11 + x - 3, 0)
     assert r11.rewrite(Pow) == r11

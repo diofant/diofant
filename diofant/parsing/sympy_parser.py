@@ -706,8 +706,8 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     1/2
     >>> type(_)
     <class 'diofant.core.numbers.Half'>
-    >>> from diofant.parsing.sympy_parser import standard_transformations,\
-    ... implicit_multiplication_application
+    >>> from diofant.parsing.sympy_parser import (standard_transformations,
+    ...                                           implicit_multiplication_application)
     >>> transformations = (standard_transformations +
     ...     (implicit_multiplication_application,))
     >>> parse_expr("2x", transformations=transformations)

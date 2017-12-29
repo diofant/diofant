@@ -129,13 +129,13 @@ class hyper(TupleParametersBase):
     The parameters must always be iterables, even if they are vectors of
     length one or zero:
 
-    >>> hyper((1, ), [], x)
+    >>> hyper([1], [], x)
     hyper((1,), (), x)
 
     But of course they may be variables (but if they depend on x then you
     should not expect much implemented functionality):
 
-    >>> hyper((n, a), (n**2,), x)
+    >>> hyper([n, a], [n**2], x)
     hyper((n, a), (n**2,), x)
 
     The hypergeometric function generalizes many named special functions.
@@ -375,14 +375,14 @@ class meijerg(TupleParametersBase):
     >>> from diofant.abc import x, a
     >>> from diofant.core.containers import Tuple
     >>> from diofant import pprint
-    >>> pprint(meijerg((1, 2), (a, 4), (5,), [], x), use_unicode=False)
+    >>> pprint(meijerg([1, 2], [a, 4], [5], [], x), use_unicode=False)
      __1, 2 /1, 2  a, 4 |  \
     /__     |           | x|
     \_|4, 1 \ 5         |  /
 
     or as two nested vectors:
 
-    >>> pprint(meijerg([(1, 2), (3, 4)], ([5], Tuple()), x), use_unicode=False)
+    >>> pprint(meijerg(([1, 2], [3, 4]), ([5], []), x), use_unicode=False)
      __1, 2 /1, 2  3, 4 |  \
     /__     |           | x|
     \_|4, 1 \ 5         |  /
@@ -429,9 +429,9 @@ class meijerg(TupleParametersBase):
     Meijer G-function in terms of named special functions. For example:
 
     >>> from diofant import expand_func, Rational
-    >>> expand_func(meijerg([[],[]], [[0],[]], -x))
+    >>> expand_func(meijerg([[], []], [[0], []], -x))
     E**x
-    >>> hyperexpand(meijerg([[],[]], [[Rational(1, 2)],[0]], (x/2)**2))
+    >>> hyperexpand(meijerg([[], []], [[Rational(1, 2)], [0]], (x/2)**2))
     sin(x)/sqrt(pi)
 
     See Also
@@ -590,7 +590,7 @@ class meijerg(TupleParametersBase):
         oo
         >>> meijerg([1, 2], [], [], [], z).get_period()
         oo
-        >>> meijerg([1,1], [2], [1, Rational(1, 2), Rational(1, 3)], [1], z).get_period()
+        >>> meijerg([1, 1], [2], [1, Rational(1, 2), Rational(1, 3)], [1], z).get_period()
         12*pi
         """
         # This follows from slater's theorem.

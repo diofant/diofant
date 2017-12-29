@@ -203,7 +203,7 @@ class DenseMatrix(MatrixBase):
         ========
 
         >>> from diofant import Matrix, I
-        >>> m=Matrix(((1, 2+I), (3, 4)))
+        >>> m = Matrix(((1, 2 + I), (3, 4)))
         >>> m
         Matrix([
         [1, 2 + I],

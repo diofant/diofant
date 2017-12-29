@@ -45,7 +45,7 @@ def ring(symbols, domain, order=lex):
     >>> from diofant.domains import ZZ
     >>> from diofant.polys.orderings import lex
 
-    >>> R, x, y, z = ring("x,y,z", ZZ, lex)
+    >>> R, x, y, z = ring("x y z", ZZ, lex)
     >>> R
     Polynomial ring in x, y, z over ZZ with lex order
     >>> x + y + z
@@ -74,7 +74,7 @@ def vring(symbols, domain, order=lex):
     >>> from diofant.domains import ZZ
     >>> from diofant.polys.orderings import lex
 
-    >>> vring("x,y,z", ZZ, lex)
+    >>> vring("x y z", ZZ, lex)
     Polynomial ring in x, y, z over ZZ with lex order
     >>> x + y + z
     x + y + z
@@ -104,7 +104,7 @@ def sring(exprs, *symbols, **options):
     >>> from diofant.domains import ZZ
     >>> from diofant.polys.orderings import lex
 
-    >>> x, y, z = symbols("x,y,z")
+    >>> x, y, z = symbols("x y z")
     >>> R, f = sring(x + 2*y + 3*z)
     >>> R
     Polynomial ring in x, y, z over ZZ with lex order
@@ -427,7 +427,7 @@ class PolyRing(DefaultPrinting, IPolys):
         >>> from diofant.domains import ZZ
 
         >>> R, x = ring("x", ZZ)
-        >>> R.add([ x**2 + 2*i + 3 for i in range(4) ])
+        >>> R.add([x**2 + 2*i + 3 for i in range(4)])
         4*x**2 + 24
         >>> _.factor_list()
         (4, [(x**2 + 6, 1)])
@@ -452,7 +452,7 @@ class PolyRing(DefaultPrinting, IPolys):
         >>> from diofant.domains import ZZ
 
         >>> R, x = ring("x", ZZ)
-        >>> R.mul([ x**2 + 2*i + 3 for i in range(4) ])
+        >>> R.mul([x**2 + 2*i + 3 for i in range(4)])
         x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
         >>> _.factor_list()
         (1, [(x**2 + 3, 1), (x**2 + 5, 1), (x**2 + 7, 1), (x**2 + 9, 1)])
@@ -1578,7 +1578,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         >>> from diofant.domains import ZZ
 
-        >>> _, x, y, z = ring("x,y,z", ZZ)
+        >>> _, x, y, z = ring("x y z", ZZ)
         >>> f = 3*x**2*y - x*y*z + 7*z**3 + 23
 
         >>> f.coeff(x**2*y)
@@ -2072,7 +2072,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         >>> from diofant.domains import ZZ
         >>> from diofant.polys import ring
-        >>> R, x,y = ring("x,y", ZZ)
+        >>> R, x, y = ring("x y", ZZ)
 
         >>> (2*x**2 - 2).cancel(x**2 - 2*x + 1)
         (2*x + 2, x - 1)
@@ -2128,7 +2128,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         >>> from diofant.domains import ZZ
 
-        >>> _, x, y = ring("x,y", ZZ)
+        >>> _, x, y = ring("x y", ZZ)
         >>> p = x + x**2*y**3
         >>> p.diff(x)
         2*x*y**3 + 1

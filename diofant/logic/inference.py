@@ -126,7 +126,7 @@ def pl_true(expr, model={}, deep=False):
     ========
 
     >>> from diofant.abc import A, B, C
-    >>> pl_true( A & B, {A: True, B: True})
+    >>> pl_true(A & B, {A: True, B: True})
     True
     >>> pl_true(A & B, {A: False})
     False

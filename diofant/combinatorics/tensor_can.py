@@ -541,7 +541,7 @@ def canonical_free(base, gens, g, num_free):
 
     >>> from diofant.combinatorics import Permutation
     >>> from diofant.combinatorics.tensor_can import canonical_free
-    >>> gens = [[1, 0, 2, 3, 5, 4], [2, 3, 0, 1, 4, 5],[0, 1, 3, 2, 5, 4]]
+    >>> gens = [[1, 0, 2, 3, 5, 4], [2, 3, 0, 1, 4, 5], [0, 1, 3, 2, 5, 4]]
     >>> gens = [Permutation(h) for h in gens]
     >>> base = [0, 2]
     >>> g = Permutation([2, 1, 0, 3, 4, 5])

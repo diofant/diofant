@@ -510,7 +510,7 @@ class Permutation(Basic):
 
     Only the relative ordering of elements in a cycle matter:
 
-    >>> Permutation(1,2,3) == Permutation(2,3,1) == Permutation(3,1,2)
+    >>> Permutation(1, 2, 3) == Permutation(2, 3, 1) == Permutation(3, 1, 2)
     True
 
     The disjoint cycle notation is convenient when representing permutations
@@ -913,7 +913,7 @@ class Permutation(Basic):
 
         >>> from diofant.combinatorics.permutations import Perm
         >>> Perm.print_cyclic = False
-        >>> a = [2,1,3,0]
+        >>> a = [2, 1, 3, 0]
         >>> p = Perm._af_new(a)
         >>> p
         Permutation([2, 1, 3, 0])
@@ -1280,7 +1280,7 @@ class Permutation(Basic):
 
         >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
-        >>> p = Permutation([2,0,3,1])
+        >>> p = Permutation([2, 0, 3, 1])
         >>> p.order()
         4
         >>> p**4
@@ -1460,7 +1460,7 @@ class Permutation(Basic):
         ========
 
         >>> from diofant.combinatorics.permutations import Permutation
-        >>> p = Permutation([[2,0], [3,1]])
+        >>> p = Permutation([[2, 0], [3, 1]])
         >>> ~p
         Permutation([2, 3, 0, 1])
         >>> _ == p**-1
@@ -2092,7 +2092,7 @@ class Permutation(Basic):
         0
         >>> p.signature()
         1
-        >>> q = Permutation([0,2,1])
+        >>> q = Permutation([0, 2, 1])
         >>> q.inversions()
         1
         >>> q.signature()
@@ -2238,7 +2238,7 @@ class Permutation(Basic):
         >>> p = Permutation([2, 5, 7, 3, 6, 0, 1, 4, 8])
         >>> p.runs()
         [[2, 5, 7], [3, 6], [0, 1, 4, 8]]
-        >>> q = Permutation([1,3,2,0])
+        >>> q = Permutation([1, 3, 2, 0])
         >>> q.runs()
         [[1, 3], [2], [0]]
         """

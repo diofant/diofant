@@ -1746,7 +1746,7 @@ def gf_edf_zassenhaus(f, n, p, K):
 
        >>> from diofant.domains import ZZ
 
-       >>> gf_edf_zassenhaus([1,1,1,1], 1, 5, ZZ)
+       >>> gf_edf_zassenhaus([1, 1, 1, 1], 1, 5, ZZ)
        [[1, 1], [1, 2], [1, 3]]
 
     References
@@ -2118,7 +2118,7 @@ def _raise_mod_power(x, s, p, f):
     >>> f = [1, 1, 7]
     >>> csolve_prime(f, 3)
     [1]
-    >>> [ i for i in range(3) if not (i**2 + i + 7) % 3]
+    >>> [i for i in range(3) if not (i**2 + i + 7) % 3]
     [1]
 
     The solutions of f(x) cong 0 mod(9) are constructed from the
@@ -2131,7 +2131,7 @@ def _raise_mod_power(x, s, p, f):
 
     And these are confirmed with the following:
 
-    >>> [ i for i in range(3**2) if not (i**2 + i + 7) % 3**2]
+    >>> [i for i in range(3**2) if not (i**2 + i + 7) % 3**2]
     [1, 4, 7]
 
     """

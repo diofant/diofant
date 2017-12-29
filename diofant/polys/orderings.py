@@ -143,7 +143,7 @@ class InverseOrder(MonomialOrder):
     high powers of `x` count as small:
 
     >>> ilex = InverseOrder(lex)
-    >>> ilex((5,)) < ilex((0,))
+    >>> ilex([5]) < ilex([0])
     True
     """
 

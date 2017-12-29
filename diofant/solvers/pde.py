@@ -416,10 +416,10 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     >>> from diofant.solvers.pde import checkpdesol, pdsolve
     >>> x, y = symbols('x y')
     >>> f = Function('f')
-    >>> eq = 2*f(x,y) + 3*f(x,y).diff(x) + 4*f(x,y).diff(y)
+    >>> eq = 2*f(x, y) + 3*f(x, y).diff(x) + 4*f(x, y).diff(y)
     >>> sol = pdsolve(eq)
     >>> assert checkpdesol(eq, sol)[0]
-    >>> eq = x*f(x,y) + f(x,y).diff(x)
+    >>> eq = x*f(x, y) + f(x, y).diff(x)
     >>> checkpdesol(eq, sol)
     (False, E**(-6*x/25 - 8*y/25)*(x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1,), (4*x - 3*y,))))
     """
@@ -479,7 +479,7 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
         >>> from diofant.abc import x, y, a, b, c
         >>> from diofant import Function, pprint
         >>> f = Function('f')
-        >>> u = f(x,y)
+        >>> u = f(x, y)
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a*ux + b*uy + c*u
@@ -502,11 +502,11 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     ... pde_1st_linear_constant_coeff_homogeneous)
     >>> from diofant import pdsolve
     >>> from diofant import Function, diff, pprint
-    >>> from diofant.abc import x,y
+    >>> from diofant.abc import x, y
     >>> f = Function('f')
-    >>> pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y))
+    >>> pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y))
     Eq(f(x, y), E**(-x/2 - y/2)*F(x - y))
-    >>> pprint(pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y)), use_unicode=False)
+    >>> pprint(pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y)), use_unicode=False)
                  x   y
                - - - -
                  2   2
@@ -551,10 +551,10 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
         >>> from diofant import Function, pprint
         >>> f = Function('f')
         >>> G = Function('G')
-        >>> u = f(x,y)
+        >>> u = f(x, y)
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
-        >>> genform = a*u + b*ux + c*uy - G(x,y)
+        >>> genform = a*u + b*ux + c*uy - G(x, y)
         >>> pprint(genform, use_unicode=False)
                   d               d
         a*f(x, y) + b*--(f(x, y)) + c*--(f(x, y)) - G(x, y)
@@ -599,9 +599,9 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
 
     >>> from diofant.solvers.pde import pdsolve
     >>> from diofant import Function, diff, exp
-    >>> from diofant.abc import x,y
+    >>> from diofant.abc import x, y
     >>> f = Function('f')
-    >>> eq = -2*f(x,y).diff(x) + 4*f(x,y).diff(y) + 5*f(x,y) - exp(x + 3*y)
+    >>> eq = -2*f(x, y).diff(x) + 4*f(x, y).diff(y) + 5*f(x, y) - exp(x + 3*y)
     >>> pdsolve(eq)
     Eq(f(x, y), E**(x/2 - y)*(E**(x/2 + 4*y)/15 + F(4*x + 2*y)))
 
@@ -663,10 +663,10 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         >>> from diofant.abc import x, y
         >>> from diofant import Function, pprint
         >>> a, b, c, G, f= [Function(i) for i in ['a', 'b', 'c', 'G', 'f']]
-        >>> u = f(x,y)
+        >>> u = f(x, y)
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
-        >>> genform = a(x, y)*u + b(x, y)*ux + c(x, y)*uy - G(x,y)
+        >>> genform = a(x, y)*u + b(x, y)*ux + c(x, y)*uy - G(x, y)
         >>> pprint(genform, use_unicode=False)
                                              d                     d
         -G(x, y) + a(x, y)*f(x, y) + b(x, y)*--(f(x, y)) + c(x, y)*--(f(x, y))
@@ -677,7 +677,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
 
     >>> from diofant.solvers.pde import pdsolve
     >>> from diofant import Function, diff, pprint, exp
-    >>> from diofant.abc import x,y
+    >>> from diofant.abc import x, y
     >>> f = Function('f')
     >>> eq =  x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
     >>> pdsolve(eq)

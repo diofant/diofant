@@ -41,7 +41,7 @@ Otherwise one could pass a 1-dim array followed by a shape tuple:
 >>> m2 = Array(range(12), (3, 2, 2))
 >>> m2
 [[[0, 1], [2, 3]], [[4, 5], [6, 7]], [[8, 9], [10, 11]]]
->>> m2[1,1,1]
+>>> m2[1, 1, 1]
 7
 >>> m2.reshape(4, 3)
 [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]]
@@ -97,7 +97,7 @@ creates the combined array `P = A \otimes B` defined as
 It is available through ``tensorproduct(...)``:
 
 >>> from diofant.tensor.array import Array, tensorproduct
->>> from diofant.abc import x,y,z,t
+>>> from diofant.abc import x, y, z, t
 >>> A = Array([x, y, z, t])
 >>> B = Array([1, 2, 3, 4])
 >>> tensorproduct(A, B)
@@ -116,7 +116,7 @@ Tensor product between a rank-1 array and a matrix creates a rank-3 array:
 
 Now, to get back `A_0 \otimes \mathbf{1}` one can access `p_{0,m,n}` by slicing:
 
->>> p1[0,:,:]
+>>> p1[0, :, :]
 [[x, 0, 0, 0], [0, x, 0, 0], [0, 0, x, 0], [0, 0, 0, x]]
 
 Tensor contraction sums over the specified axes, for example contracting

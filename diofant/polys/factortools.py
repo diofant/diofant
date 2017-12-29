@@ -1008,7 +1008,7 @@ def dmp_zz_factor(f, u, K):
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
 
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_zz_factor(2*x**2 - 2*y**2)
     (2, [(x - y, 1), (x + y, 1)])

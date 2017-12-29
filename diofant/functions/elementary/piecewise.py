@@ -61,10 +61,10 @@ class Piecewise(Function):
       >>> from diofant.abc import x
       >>> f = x**2
       >>> g = log(x)
-      >>> p = Piecewise( (0, x<-1), (f, x<=1), (g, True))
-      >>> p.subs(x,1)
+      >>> p = Piecewise((0, x<-1), (f, x<=1), (g, True))
+      >>> p.subs(x, 1)
       1
-      >>> p.subs(x,5)
+      >>> p.subs(x, 5)
       log(5)
 
     See Also

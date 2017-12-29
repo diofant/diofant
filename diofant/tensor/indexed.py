@@ -245,7 +245,7 @@ class Indexed(Expr):
         Examples
         ========
 
-        >>> from diofant import Indexed,Idx, symbols
+        >>> from diofant import Indexed, Idx, symbols
         >>> Indexed('A', Idx('i', 2), Idx('j', 4), Idx('k', 8)).ranges
         [(0, 1), (0, 3), (0, 7)]
         >>> Indexed('A', Idx('i', 3), Idx('j', 3), Idx('k', 3)).ranges

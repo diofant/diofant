@@ -76,7 +76,7 @@ Intersection of medians
     >>> from diofant import symbols
     >>> from diofant.geometry import Point, Triangle, intersection
 
-    >>> a, b = symbols("a,b", positive=True)
+    >>> a, b = symbols("a b", positive=True)
 
     >>> x = Point(0, 0)
     >>> y = Point(a, 0)
@@ -171,8 +171,8 @@ cannot be guaranteed. For example, consider the following code:
 
     >>> from diofant import *
     >>> from diofant.geometry import *
-    >>> x,y,z = map(Symbol, 'xyz')
-    >>> p1,p2,p3 = Point(x, y), Point(y, z), Point(2*x*y, y)
+    >>> x, y, z = map(Symbol, 'xyz')
+    >>> p1, p2, p3 = Point(x, y), Point(y, z), Point(2*x*y, y)
     >>> Point.is_collinear(p1, p2, p3)
     False
 

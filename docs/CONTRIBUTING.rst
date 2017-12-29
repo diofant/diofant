@@ -44,10 +44,9 @@ All work should be submitted via `Pull Requests (PR)`_.
    1. Bugfixes should include regression tests.
    2. All new functionality should be tested, every new line
       should be covered by tests.
-   3. All new public interfaces (methods, functions or classes) should
-      have doctests showing how to use them.
-   4. Keep in mind, doctests are not tests.  Think of them as
-      examples that happen to be tested.
+   3. Optionally, provide doctests to illustrate usage.  But keep in
+      mind, doctests are not tests.  Think of them as examples that
+      happen to be tested.
 
 6. Usually, it's good idea to be sure that all existing tests
    pass and you don't break anything, so please run::

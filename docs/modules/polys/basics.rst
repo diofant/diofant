@@ -13,7 +13,7 @@ This tutorial tries to give an overview of the functionality concerning
 polynomials within Diofant. All code examples assume::
 
     >>> from diofant import *
-    >>> x, y, z = symbols('x,y,z')
+    >>> x, y, z = symbols('x y z')
     >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
 
 Basic functionality
@@ -89,7 +89,7 @@ In the last examples, all of the three variables ``x``, ``y`` and ``z`` are
 assumed to be variables of the polynomials. But if you have some unrelated
 constant as coefficient, you can specify the variables explicitly::
 
-    >>> a, b, c = symbols('a,b,c')
+    >>> a, b, c = symbols('a b c')
     >>> f = a*x**2 + b*x + c
     >>> g = 3*x + 2
     >>> q, r = div(f, g, domain='QQ')

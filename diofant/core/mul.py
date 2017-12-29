@@ -117,7 +117,7 @@ class Mul(AssocOp):
                 >>> a = sqrt(x*sqrt(y))
                 >>> a**3
                 (x*sqrt(y))**(3/2)
-                >>> Mul(a,a,a)
+                >>> Mul(a, a, a)
                 (x*sqrt(y))**(3/2)
                 >>> a*a*a
                 x*sqrt(y)*sqrt(x*sqrt(y))

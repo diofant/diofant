@@ -83,7 +83,7 @@ def checksol(f, sol, **flags):
 
     >>> from diofant import symbols
     >>> from diofant.solvers import checksol
-    >>> x, y = symbols('x,y')
+    >>> x, y = symbols('x y')
     >>> checksol(x**4 - 1, {x: 1})
     True
     >>> checksol(x**4 - 1, {x: 0})
@@ -265,188 +265,52 @@ def solve(f, *symbols, **flags):
     Examples
     ========
 
-    The output varies according to the input and can be seen by example::
+    >>> from diofant import Symbol
+    >>> from diofant.abc import x, y, z
 
-        >>> from diofant import solve, Poly, Eq, Function, exp, I, sqrt
-        >>> from diofant.abc import x, y, z, a, b
-        >>> f = Function('f')
+    Single equation:
 
-    * single expression and single symbol that is in the expression
+    >>> solve(x**2 - y**2)
+    [{x: -y}, {x: y}]
+    >>> solve(x**2 - 1)
+    [{x: -1}, {x: 1}]
 
-        >>> solve(x - y, x)
-        [{x: y}]
-        >>> solve(x - 3, x)
-        [{x: 3}]
-        >>> solve(Eq(x, 3), x)
-        [{x: 3}]
-        >>> solve(Poly(x - 3), x)
-        [{x: 3}]
+    We could restrict solutions by using assumptions:
 
-    * single expression with no symbol that is in the expression
+    >>> p = Symbol("p", positive=True)
+    >>> solve(p**2 - 1)
+    [{p: 1}]
 
-        >>> solve(3, x)
-        []
-        >>> solve(x - 3, y)
-        []
+    Several equations:
 
-    * single expression with no symbol given
+    >>> solve((x + 5*y - 2, -3*x + 6*y - 15))
+    [{x: -3, y: 1}]
+    >>> solve((x + 5*y - 2, -3*x + 6*y - z))
+    [{x: -5*z/21 + 4/7, y: z/21 + 2/7}]
 
-          In this case, all free symbols will be selected as potential
-          symbols to solve for. If the equation is univariate then a list
-          of solutions is returned; otherwise -- as is the case when symbols are
-          given as an iterable of length > 1 -- a list of mappings will be returned.
+    No solution:
 
-            >>> solve(x - 3)
-            [{x: 3}]
-            >>> solve(x**2 - y**2)
-            [{x: -y}, {x: y}]
-            >>> solve(z**2*x**2 - z**2*y**2)
-            [{x: -y}, {x: y}, {z: 0}]
-            >>> solve(z**2*x - z**2*y**2)
-            [{x: y**2}, {z: 0}]
-
-    * when an object other than a Symbol is given as a symbol, it is
-      isolated algebraically and an implicit solution may be obtained.
-      This is mostly provided as a convenience to save one from replacing
-      the object with a Symbol and solving for that Symbol. It will only
-      work if the specified object can be replaced with a Symbol using the
-      subs method.
-
-          >>> solve(f(x) - x, f(x))
-          [{f(x): x}]
-          >>> solve(f(x).diff(x) - f(x) - x, f(x).diff(x))
-          [{Derivative(f(x), x): x + f(x)}]
-          >>> solve(f(x).diff(x) - f(x) - x, f(x))
-          [{f(x): -x + Derivative(f(x), x)}]
-
-          >>> from diofant import Indexed, IndexedBase, Tuple, sqrt
-          >>> A = IndexedBase('A')
-          >>> eqs = Tuple(A[1] + A[2] - 3, A[1] - A[2] + 1)
-          >>> solve(eqs, eqs.atoms(Indexed))
-          [{A[1]: 1, A[2]: 2}]
-
-        * It is possible to solve for anything that can be targeted with
-          subs:
-
-            >>> solve(x + 2 + sqrt(3), x + 2)
-            [{x + 2: -sqrt(3)}]
-            >>> solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2)
-            [{y: -2 + sqrt(3), x + 2: -sqrt(3)}]
-
-        * Nothing heroic is done in this implicit solving so you may end up
-          with a symbol still in the solution:
-
-            >>> eqs = (x*y + 3*y + sqrt(3), x + 4 + y)
-            >>> solve(eqs, y, x + 2)
-            [{y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}]
-            >>> solve(eqs, y*x, x)
-            [{x: -y - 4, x*y: -3*y - sqrt(3)}]
-
-        * if you attempt to solve for a number remember that the number
-          you have obtained does not necessarily mean that the value is
-          equivalent to the expression obtained:
-
-            >>> solve(sqrt(2) - 1, 1, check=False)
-            [{1: sqrt(2)}]
-            >>> solve(x - y + 1, 1)  # /!\ -1 is targeted, too
-            [{1: x/(y - 1)}]
-            >>> [_[1].subs(z, -1) for _ in solve((x - y + 1).subs(-1, z), 1)]
-            [-x + y]
-
-        * To solve for a function within a derivative, use dsolve.
-
-    * single expression and more than 1 symbol
-
-        * when there is a linear solution
-
-            >>> solve(x - y**2, x, y)
-            [{x: y**2}]
-            >>> solve(x**2 - y, x, y)
-            [{y: x**2}]
-
-        * if there is no linear solution then the first successful
-          attempt for a nonlinear solution will be returned
-
-            >>> solve(x**2 - y**2, x, y)
-            [{x: -y}, {x: y}]
-            >>> solve(x**2 - y**2/exp(x), x, y)
-            [{x: 2*LambertW(y/2)}]
-            >>> solve(x**2 - y**2/exp(x), y, x)
-            [{y: -x*sqrt(E**x)}, {y: x*sqrt(E**x)}]
-
-    * iterable of one or more of the above
-
-        * when the system is linear
-
-            * with a solution
-
-                >>> solve([x - 3], x)
-                [{x: 3}]
-                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y)
-                [{x: -3, y: 1}]
-                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z)
-                [{x: -3, y: 1}]
-                >>> solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y)
-                [{x: -5*y + 2, z: 21*y - 6}]
-
-            * without a solution
-
-                >>> solve([x + 3, x - 3])
-                []
-
-        * if no symbols are given, all free symbols will be selected and a list
-          of mappings returned
-
-            >>> solve([x - 2, x**2 + y])
-            [{x: 2, y: -4}]
-            >>> solve([x - 2, x**2 + f(x)], {f(x), x})
-            [{x: 2, f(x): -4}]
+    >>> solve([x + 3, x - 3])
+    []
 
     Notes
     =====
 
-    solve() with check=True (default) will run through the symbol tags to
-    eliminate unwanted solutions.  If no assumptions are included all possible
-    solutions will be returned.
+    When an object other than a Symbol is given as a symbol, it is
+    isolated algebraically and an implicit solution may be obtained.
+    This is mostly provided as a convenience to save one from replacing
+    the object with a Symbol and solving for that Symbol. It will only
+    work if the specified object can be replaced with a Symbol using the
+    subs method.
 
-        >>> from diofant import Symbol, solve
-        >>> x = Symbol("x")
-        >>> solve(x**2 - 1)
-        [{x: -1}, {x: 1}]
+    >>> from diofant import Function
+    >>> from diofant.abc import x
 
-    By using the positive tag only one solution will be returned:
-
-        >>> pos = Symbol("pos", positive=True)
-        >>> solve(pos**2 - 1)
-        [{pos: 1}]
-
-    When the solutions are checked, those that make any denominator zero
-    are automatically excluded. If you do not want to exclude such solutions
-    then use the check=False option:
-
-        >>> from diofant import sin, limit
-        >>> solve(sin(x)/x)  # 0 is excluded
-        [{x: pi}]
-
-    If check=False then a solution to the numerator being zero is found: x = 0.
-    In this case, this is a spurious solution since sin(x)/x has the well known
-    limit (without discontinuity) of 1 at x = 0:
-
-        >>> solve(sin(x)/x, check=False)
-        [{x: 0}, {x: pi}]
-
-    In the following case, however, the limit exists and is equal to the the
-    value of x = 0 that is excluded when check=True:
-
-        >>> eq = x**2*(1/x - z**2/x)
-        >>> solve(eq, x)
-        []
-        >>> solve(eq, x, check=False)
-        [{x: 0}]
-        >>> limit(eq, x, 0, '-')
-        0
-        >>> limit(eq, x, 0, '+')
-        0
+    >>> f = Function('f')
+    >>> solve(f(x) - x, f(x))
+    [{f(x): x}]
+    >>> solve(f(x).diff(x) - f(x) - x, f(x).diff(x))
+    [{Derivative(f(x), x): x + f(x)}]
 
     See Also
     ========
@@ -887,9 +751,9 @@ def _solve(f, symbol, **flags):
                     # having to factor:
                     #
                     # >>> eq = (exp(I*(-x-2))+exp(I*(x+2)))
-                    # >>> eq.subs(exp(x),y)  # fails
+                    # >>> eq.subs(exp(x), y)  # fails
                     # exp(I*(-x - 2)) + exp(I*(x + 2))
-                    # >>> eq.expand().subs(exp(x),y)  # works
+                    # >>> eq.expand().subs(exp(x), y)  # works
                     # y**I*exp(2*I) + y**(-I)*exp(-2*I)
                     def _expand(p):
                         b, e = p.as_base_exp()
@@ -1226,7 +1090,7 @@ def solve_linear(f, x):
 
     tuple
         ``(x, solution)``, if there is a linear solution, ``(0, 1)`` if
-        ``f`` is independent of the symbol``x``, ``(0, 0)`` if solution set
+        ``f`` is independent of the symbol ``x``, ``(0, 0)`` if solution set
         any denominator of ``f`` to zero or ``(numerator, denominator)``
         of ``f``, if it's a nonlinear expression wrt ``x``.
 

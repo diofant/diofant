@@ -17,7 +17,7 @@ You can build Boolean expressions with the standard python operators ``&``
 ``~`` (:class:`~diofant.logic.boolalg.Not`)::
 
     >>> from diofant import *
-    >>> x, y = symbols('x,y')
+    >>> x, y = symbols('x y')
     >>> y | (x & y)
     Or(And(x, y), y)
     >>> x | y

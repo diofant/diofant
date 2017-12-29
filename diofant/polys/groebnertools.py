@@ -493,7 +493,7 @@ def f5_reduce(f, B):
     >>> from diofant.domains import QQ
     >>> from diofant.polys import ring, lex
 
-    >>> R, x,y,z = ring("x,y,z", QQ, lex)
+    >>> R, x, y, z = ring("x y z", QQ, lex)
 
     >>> f = lbp(sig((1, 1, 1), 4), x, 3)
     >>> g = lbp(sig((0, 0, 0), 2), x, 2)

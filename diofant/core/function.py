@@ -543,7 +543,7 @@ class Function(Application, Expr):
         and possible:
 
         >>> from diofant import loggamma
-        >>> loggamma(1/x)._eval_nseries(x,0,None)
+        >>> loggamma(1/x)._eval_nseries(x, 0, None)
         -1/x - log(x)/x + log(x)/2 + O(1)
 
         """
@@ -954,7 +954,7 @@ class Derivative(Expr):
 
         >>> Derivative(x**2, x, evaluate=True)
         2*x
-        >>> Derivative(Derivative(f(x,y), x), y)
+        >>> Derivative(Derivative(f(x, y), x), y)
         Derivative(f(x, y), x, y)
         >>> Derivative(f(x), x, 3)
         Derivative(f(x), x, x, x)
@@ -982,9 +982,9 @@ class Derivative(Expr):
             >>> from diofant import Function, Symbol, Derivative
             >>> f = Function('f')
             >>> x = Symbol('x')
-            >>> Derivative(f(x),x)._diff_wrt
+            >>> Derivative(f(x), x)._diff_wrt
             True
-            >>> Derivative(x**2,x)._diff_wrt
+            >>> Derivative(x**2, x)._diff_wrt
             False
         """
         if self.expr.is_Function:
@@ -1167,25 +1167,25 @@ class Derivative(Expr):
         >>> x, y, z = symbols('x y z')
         >>> f, g, h = symbols('f g h', cls=Function)
 
-        >>> vsort((x,y,z))
+        >>> vsort((x, y, z))
         [x, y, z]
 
-        >>> vsort((h(x),g(x),f(x)))
+        >>> vsort((h(x), g(x), f(x)))
         [f(x), g(x), h(x)]
 
-        >>> vsort((z,y,x,h(x),g(x),f(x)))
+        >>> vsort((z, y, x, h(x), g(x), f(x)))
         [x, y, z, f(x), g(x), h(x)]
 
-        >>> vsort((x,f(x),y,f(y)))
+        >>> vsort((x, f(x), y, f(y)))
         [x, f(x), y, f(y)]
 
-        >>> vsort((y,x,g(x),f(x),z,h(x),y,x))
+        >>> vsort((y, x, g(x), f(x), z, h(x), y, x))
         [x, y, f(x), g(x), z, h(x), x, y]
 
-        >>> vsort((z,y,f(x),x,f(x),g(x)))
+        >>> vsort((z, y, f(x), x, f(x), g(x)))
         [y, z, f(x), x, f(x), g(x)]
 
-        >>> vsort((z,y,f(x),x,f(x),g(x),z,z,y,x))
+        >>> vsort((z, y, f(x), x, f(x), g(x), z, z, y, x))
         [y, z, f(x), x, f(x), g(x), x, y, z, z]
         """
 
@@ -1772,14 +1772,14 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
         log(x**2*y)
         >>> log(x**2*y).expand(log=True, force=True)
         2*log(x) + log(y)
-        >>> x, y = symbols('x,y', positive=True)
+        >>> x, y = symbols('x y', positive=True)
         >>> log(x**2*y).expand(log=True)
         2*log(x) + log(y)
 
     complex : boolean, optional
         Split an expression into real and imaginary parts.
 
-        >>> x, y = symbols('x,y')
+        >>> x, y = symbols('x y')
         >>> (x + y).expand(complex=True)
         re(x) + re(y) + I*im(x) + I*im(y)
         >>> cos(x).expand(complex=True)
@@ -1845,7 +1845,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
       which hints are applied. Here are some examples::
 
         >>> from diofant import expand, expand_mul, expand_power_base
-        >>> x, y, z = symbols('x,y,z', positive=True)
+        >>> x, y, z = symbols('x y z', positive=True)
 
         >>> expand(log(x*(y + z)))
         log(x) + log(y + z)
@@ -2024,7 +2024,7 @@ def expand_mul(expr, deep=True):
     ========
 
     >>> from diofant import symbols, expand_mul, exp, log
-    >>> x, y = symbols('x,y', positive=True)
+    >>> x, y = symbols('x y', positive=True)
     >>> expand_mul(exp(x+y)*(x+y)*log(x*y**2))
     E**(x + y)*x*log(x*y**2) + E**(x + y)*y*log(x*y**2)
     """
@@ -2058,7 +2058,7 @@ def expand_log(expr, deep=True, force=False):
     ========
 
     >>> from diofant import symbols, expand_log, exp, log
-    >>> x, y = symbols('x,y', positive=True)
+    >>> x, y = symbols('x y', positive=True)
     >>> expand_log(exp(x+y)*(x+y)*log(x*y**2))
     E**(x + y)*(x + y)*(log(x) + 2*log(y))
     """
@@ -2268,7 +2268,7 @@ def count_ops(expr, visual=False):
     operations for expressions in different forms. Here, the Horner
     representation is compared with the expanded form of a polynomial:
 
-    >>> eq=x*(1 + x*(2 + x*(3 + x)))
+    >>> eq = x*(1 + x*(2 + x*(3 + x)))
     >>> count_ops(eq.expand(), visual=True) - count_ops(eq, visual=True)
     -MUL + 3*POW
 

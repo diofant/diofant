@@ -543,10 +543,10 @@ class harmonic(Function):
     >>> harmonic(n).rewrite(polygamma)
     polygamma(0, n + 1) + EulerGamma
 
-    >>> harmonic(n,3).rewrite(polygamma)
+    >>> harmonic(n, 3).rewrite(polygamma)
     polygamma(2, n + 1)/2 - polygamma(2, 1)/2
 
-    >>> harmonic(n,m).rewrite(polygamma)
+    >>> harmonic(n, m).rewrite(polygamma)
     (-1)**m*(polygamma(m - 1, 1) - polygamma(m - 1, n + 1))/factorial(m - 1)
 
     Integer offsets in the argument can be pulled out:
@@ -788,9 +788,9 @@ class catalan(Function):
     ========
 
     >>> from diofant import (Symbol, binomial, gamma, hyper, polygamma,
-    ...             catalan, diff, combsimp, Rational, I)
+    ...                      catalan, diff, combsimp, Rational, I)
 
-    >>> [ catalan(i) for i in range(1,10) ]
+    >>> [catalan(i) for i in range(1, 10)]
     [1, 2, 5, 14, 42, 132, 429, 1430, 4862]
 
     >>> n = Symbol("n", integer=True)
@@ -813,7 +813,7 @@ class catalan(Function):
     For some non-integer values of n we can get closed form
     expressions by rewriting in terms of gamma functions:
 
-    >>> catalan(Rational(1,2)).rewrite(gamma)
+    >>> catalan(Rational(1, 2)).rewrite(gamma)
     8/(3*pi)
 
     We can differentiate the Catalan numbers C(n) interpreted as a

@@ -1499,7 +1499,11 @@ class PrettyPrinter(Printer):
             return self._print(expr.as_expr())
 
     def _print_RootOf(self, expr):
-        args = (self._print_Add(expr.expr, order='lex'),) + expr.args[1:]
+        args = [self._print_Add(expr.expr, order='lex')]
+        if expr.free_symbols:
+            args += expr.args[1:]
+        else:
+            args += [expr.index]
         pform = prettyForm(*self._print_seq(args).parens())
         pform = prettyForm(*pform.left('RootOf'))
         return pform

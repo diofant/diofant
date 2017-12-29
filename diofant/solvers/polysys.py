@@ -52,13 +52,13 @@ def solve_linear_system(system, *symbols, **flags):
            x + 4 y ==  2
         -2 x +   y == 14
 
-    >>> system = Matrix(( (1, 4, 2), (-2, 1, 14)))
+    >>> system = Matrix(((1, 4, 2), (-2, 1, 14)))
     >>> solve_linear_system(system, x, y)
     {x: -6, y: 2}
 
     A degenerate system returns an empty dictionary.
 
-    >>> system = Matrix(( (0,0,0), (0,0,0) ))
+    >>> system = Matrix(((0, 0, 0), (0, 0, 0)))
     >>> solve_linear_system(system, x, y)
     {}
 

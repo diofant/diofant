@@ -101,7 +101,7 @@ class ExprWithLimits(Expr):
 
         >>> from diofant import Integral
         >>> from diofant.abc import x
-        >>> Integral(x**2, (x,)).function
+        >>> Integral(x**2, x).function
         x**2
 
         See Also

@@ -184,7 +184,7 @@ class Subset(Basic):
         >>> a = Subset([], ['a', 'b', 'c', 'd'])
         >>> a.prev_lexicographic().subset
         ['d']
-        >>> a = Subset(['c','d'], ['a', 'b', 'c', 'd'])
+        >>> a = Subset(['c', 'd'], ['a', 'b', 'c', 'd'])
         >>> a.prev_lexicographic().subset
         ['c']
 
@@ -281,7 +281,7 @@ class Subset(Basic):
         ========
 
         >>> from diofant.combinatorics.subsets import Subset
-        >>> a = Subset([], ['a','b','c','d'])
+        >>> a = Subset([], ['a', 'b', 'c', 'd'])
         >>> a.rank_binary
         0
         >>> a = Subset(['c', 'd'], ['a', 'b', 'c', 'd'])
@@ -335,7 +335,7 @@ class Subset(Basic):
         ========
 
         >>> from diofant.combinatorics.subsets import Subset
-        >>> a = Subset(['c','d'], ['a','b','c','d'])
+        >>> a = Subset(['c', 'd'], ['a', 'b', 'c', 'd'])
         >>> a.rank_gray
         2
         >>> a = Subset([2, 4, 5], [1, 2, 3, 4, 5, 6])

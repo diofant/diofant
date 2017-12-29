@@ -501,11 +501,11 @@ class GreaterThan(_Greater):
     One generally does not instantiate these classes directly, but uses various
     convenience methods:
 
-    >>> e1 = Ge( x, 2 )      # Ge is a convenience wrapper
+    >>> e1 = Ge(x, 2)  # Ge is a convenience wrapper
     >>> print(e1)
     x >= 2
 
-    >>> rels = Ge( x, 2 ), Gt( x, 2 ), Le( x, 2 ), Lt( x, 2 )
+    >>> rels = Ge(x, 2), Gt(x, 2), Le(x, 2), Lt(x, 2)
     >>> print('%s\n%s\n%s\n%s' % rels)
     x >= 2
     x > 2
@@ -615,7 +615,7 @@ class GreaterThan(_Greater):
     And:
 
     >>> e = And(x < y, y < z)
-    >>> type( e )
+    >>> type(e)
     And
     >>> e
     And(x < y, y < z)
@@ -624,7 +624,7 @@ class GreaterThan(_Greater):
     parenthesis (this is currently an open bug in Diofant [2]_):
 
     >>> e = (x < y) < z
-    >>> type( e )
+    >>> type(e)
     <class 'diofant.core.relational.StrictLessThan'>
     >>> e
     (x < y) < z

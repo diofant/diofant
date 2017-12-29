@@ -45,12 +45,12 @@ class DeferredVector(Symbol, NotIterable):
     ========
 
     >>> from diofant import DeferredVector, lambdify
-    >>> X = DeferredVector( 'X' )
+    >>> X = DeferredVector('X')
     >>> print(X)
     X
     >>> expr = (X[0] + 2, X[2] + 3)
-    >>> func = lambdify( X, expr)
-    >>> func( [1, 2, 3] )
+    >>> func = lambdify(X, expr)
+    >>> func([1, 2, 3])
     (3, 6)
     """
 
@@ -94,21 +94,21 @@ class MatrixBase(DefaultPrinting):
 
         * from a nested list of iterables
 
-        >>> Matrix( ((1, 2+I), (3, 4)) )
+        >>> Matrix(((1, 2 + I), (3, 4)))
         Matrix([
         [1, 2 + I],
         [3,     4]])
 
         * from un-nested iterable (interpreted as a column)
 
-        >>> Matrix( [1, 2] )
+        >>> Matrix([1, 2])
         Matrix([
         [1],
         [2]])
 
         * from un-nested iterable with dimensions
 
-        >>> Matrix(1, 2, [1, 2] )
+        >>> Matrix(1, 2, [1, 2])
         Matrix([[1, 2]])
 
         * from no arguments (a 0 x 0 matrix)
@@ -118,7 +118,7 @@ class MatrixBase(DefaultPrinting):
 
         * from a rule
 
-        >>> Matrix(2, 2, lambda i, j: i/(j + 1) )
+        >>> Matrix(2, 2, lambda i, j: i/(j + 1))
         Matrix([
         [0,   0],
         [1, 1/2]])
@@ -3059,7 +3059,7 @@ class MatrixBase(DefaultPrinting):
         >>> from diofant.matrices import Matrix
         >>> from diofant.abc import x, y
         >>> M = Matrix([[x, y], [1, 0]])
-        >>> M.integrate((x, ))
+        >>> M.integrate(x)
         Matrix([
         [x**2/2, x*y],
         [     x,   0]])
@@ -3130,7 +3130,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         >>> from diofant import Matrix
-        >>> m=Matrix([[1, 3], [2, 4]])
+        >>> m = Matrix([[1, 3], [2, 4]])
         >>> m
         Matrix([
         [1, 3],
@@ -3161,7 +3161,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         >>> from diofant import Matrix
-        >>> m=Matrix([[1, 2], [2, 3]])
+        >>> m = Matrix([[1, 2], [2, 3]])
         >>> m
         Matrix([
         [1, 2],
@@ -3936,7 +3936,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([
         [F(0), F(1)],
         [F(1), F(2)]])
-        >>> N = M.replace(F,G)
+        >>> N = M.replace(F, G)
         >>> N
         Matrix([
         [G(0), G(1)],

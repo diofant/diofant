@@ -46,7 +46,7 @@ def dmp_sqf_p(f, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sqf_p(x**2 + 2*x*y + y**2)
     False
@@ -120,8 +120,8 @@ def dmp_sqf_norm(f, u, K):
     >>> from diofant.core import I
 
     >>> K = QQ.algebraic_field(I)
-    >>> R, x, y = ring("x,y", K)
-    >>> _, X, Y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", K)
+    >>> _, X, Y = ring("x y", QQ)
 
     >>> s, f, r = R.dmp_sqf_norm(x*y + y**2)
 
@@ -210,7 +210,7 @@ def dmp_sqf_part(f, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sqf_part(x**3 + 2*x**2*y + x*y**2)
     x**2 + x*y
@@ -351,7 +351,7 @@ def dmp_sqf_list(f, u, K, all=False):
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
 
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**5 + 2*x**4*y + x**3*y**2
 
@@ -411,7 +411,7 @@ def dmp_sqf_list_include(f, u, K, all=False):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**5 + 2*x**4*y + x**3*y**2
 
@@ -481,7 +481,7 @@ def dmp_gff_list(f, u, K):
 
     >>> from diofant.domains import ZZ
     >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     """
     if not u:

@@ -1112,11 +1112,11 @@ class Ellipse(GeometrySet):
         []
         >>> e.intersection(Point(5, 0))
         [Point2D(5, 0)]
-        >>> e.intersection(Line(Point(0,0), Point(0, 1)))
+        >>> e.intersection(Line(Point(0, 0), Point(0, 1)))
         [Point2D(0, -7), Point2D(0, 7)]
-        >>> e.intersection(Line(Point(5,0), Point(5, 1)))
+        >>> e.intersection(Line(Point(5, 0), Point(5, 1)))
         [Point2D(5, 0)]
-        >>> e.intersection(Line(Point(6,0), Point(6, 1)))
+        >>> e.intersection(Line(Point(6, 0), Point(6, 1)))
         []
         >>> e = Ellipse(Point(-1, 0), 4, 3)
         >>> e.intersection(Ellipse(Point(1, 0), 4, 3))

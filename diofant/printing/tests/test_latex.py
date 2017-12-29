@@ -956,6 +956,8 @@ def test_latex_domains():
 def test_latex_RootOf():
     assert latex(RootOf(x**5 + x + 3, 0)) == \
         r"\operatorname{RootOf} {\left(x^{5} + x + 3, 0\right)}"
+    assert latex(RootOf(x**5 + x + y, x, 0)) == \
+        r"\operatorname{RootOf} {\left(x^{5} + x + y, x, 0\right)}"
 
 
 def test_latex_RootSum():

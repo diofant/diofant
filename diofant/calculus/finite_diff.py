@@ -128,7 +128,7 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     >>> from diofant import cos, symbols, pi, simplify
     >>> from diofant.calculus import finite_diff_weights
     >>> N, (h, x) = 4, symbols('h x')
-    >>> x_list = [x+h*cos(i*pi/(N)) for i in range(N,-1,-1)] # chebyshev nodes
+    >>> x_list = [x + h*cos(i*pi/(N)) for i in range(N, -1, -1)] # chebyshev nodes
     >>> x_list
     [-h + x, -sqrt(2)*h/2 + x, x, sqrt(2)*h/2 + x, h + x]
     >>> mycoeffs = finite_diff_weights(1, x_list, 0)[1][4]
@@ -225,7 +225,7 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
 
     >>> from diofant.calculus import apply_finite_diff
     >>> cube = lambda arg: (1.0*arg)**3
-    >>> xlist = range(-3,3+1)
+    >>> xlist = range(-3, 4)
     >>> apply_finite_diff(2, xlist, list(map(cube, xlist)), 2) - 12
     -3.55271367880050e-15
 
@@ -236,7 +236,7 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     >>> from diofant.calculus import apply_finite_diff
     >>> x, y = map(IndexedBase, 'xy')
     >>> i = Idx('i')
-    >>> x_list, y_list = zip(*[(x[i+j], y[i+j]) for j in range(-1,2)])
+    >>> x_list, y_list = zip(*[(x[i + j], y[i + j]) for j in range(-1, 2)])
     >>> apply_finite_diff(1, x_list, y_list, x[i])
     (-1 + (x[i + 1] - x[i])/(-x[i - 1] + x[i]))*y[i]/(x[i + 1] - x[i]) +
     (-x[i - 1] + x[i])*y[i + 1]/((-x[i - 1] + x[i + 1])*(x[i + 1] - x[i])) -
@@ -347,7 +347,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
     Partial derivatives are also supported:
 
     >>> y = Symbol('y')
-    >>> d2fdxdy=f(x,y).diff(x,y)
+    >>> d2fdxdy = f(x, y).diff(x, y)
     >>> as_finite_diff(d2fdxdy, wrt=x)
     -f(x - 1/2, y) + f(x + 1/2, y)
 

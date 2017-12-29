@@ -81,7 +81,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
 
     Two radicals are automatically joined through Mul:
 
-    >>> a=sqrt(x*sqrt(y))
+    >>> a = sqrt(x*sqrt(y))
     >>> a*a**3 == a**4
     True
 
@@ -538,7 +538,7 @@ def powdenest(eq, force=False, polar=False):
 
     No other expansion is done.
 
-    >>> i, j = symbols('i,j', integer=True)
+    >>> i, j = symbols('i j', integer=True)
     >>> powdenest((x**x)**(i + j))  # -X-> (x**x)**i*(x**x)**j
     x**(x*(i + j))
 

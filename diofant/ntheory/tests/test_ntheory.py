@@ -263,7 +263,7 @@ def multiproduct(seq=(), start=1):
     times the value of the parameter ``start``. The input may be a
     sequence of (factor, exponent) pairs or a dict of such pairs.
 
-        >>> multiproduct({3:7, 2:5}, 4) # = 3**7 * 2**5 * 4
+        >>> multiproduct({3: 7, 2: 5}, 4)  # = 3**7 * 2**5 * 4
         279936
 
     """

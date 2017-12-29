@@ -86,7 +86,7 @@ def tensorcontraction(array, *contraction_axes):
     ``tensorcontraction`` and ``tensorproduct``
 
     >>> from diofant.tensor.array import tensorproduct
-    >>> from diofant.abc import a,b,c,d,e,f,g,h
+    >>> from diofant.abc import a, b, c, d, e, f, g, h
     >>> m1 = Matrix([[a, b], [c, d]])
     >>> m2 = Matrix([[e, f], [g, h]])
     >>> p = tensorproduct(m1, m2)
