@@ -1090,7 +1090,7 @@ def solve_linear(f, x):
 
     tuple
         ``(x, solution)``, if there is a linear solution, ``(0, 1)`` if
-        ``f`` is independent of the symbol``x``, ``(0, 0)`` if solution set
+        ``f`` is independent of the symbol ``x``, ``(0, 0)`` if solution set
         any denominator of ``f`` to zero or ``(numerator, denominator)``
         of ``f``, if it's a nonlinear expression wrt ``x``.
 
