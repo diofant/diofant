@@ -222,6 +222,8 @@ def simplex(c, m, b):
     while min(tableau[-1, 1:-1]) < 0:
         col = pivot_col(tableau[-1, :])
         row = pivot_row(tableau[0:-1, col], tableau[0:-1, -1])
+        if tableau[row, col] <= 0:
+            return oo, (oo,)*m.cols
 
         tableau[row, :] /= tableau[row, col]
         for r in range(tableau.rows - 1):
