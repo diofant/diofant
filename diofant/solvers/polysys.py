@@ -1,13 +1,13 @@
 """Solvers of systems of polynomial equations. """
 
 from ..matrices import Matrix
-from ..polys import groebner, sring
+from ..polys import groebner, poly, sring
 from ..polys.polyerrors import (CoercionFailed, ComputationFailed,
                                 PolificationFailed)
 from ..polys.polytools import parallel_poly_from_expr
 from ..polys.solvers import solve_lin_sys
 from ..simplify import simplify
-from ..utilities import default_sort_key, subsets
+from ..utilities import default_sort_key
 
 
 __all__ = ('solve_linear_system', 'solve_poly_system')
@@ -169,15 +169,26 @@ def solve_generic(polys, opt):
         if dim is None:
             return []
         elif dim > 0:
-            solutions = []
-            solved_syms = set()
-            for syms in subsets(gens, min(len(system), len(basis))):
-                res = _solve_reduced_system(system, syms)
-                for r in res:
-                    if not any(solved_syms & v.free_symbols
-                               for v in r.values()):
-                        solved_syms.update(syms)
-                        solutions.append(r)
+            max_iset = max(basis.independent_sets, key=len)
+            new_gens = [g for g in gens if g not in max_iset]
+
+            # After removing variables from the maximal set of independent
+            # variables for the given ideal - the new ideal is of dimension
+            # zero with the independent variables as parameters in the
+            # coefficient domain.
+            solutions = _solve_reduced_system(system, new_gens)
+
+            # Now we should examine cases where leading coefficients of
+            # some polynomial in the system is zero.
+            for p in basis.polys:
+                lc = poly(p, *new_gens).LC(order=basis.order)
+                for special in _solve_reduced_system(system + [lc], gens):
+                    # This heuristics wipe out some redundant special
+                    # solutions, which already there in solutions after
+                    # solving the system with new set of generators.
+                    if all(any((_.subs(s) - _).subs(special).simplify()
+                               for _ in gens) for s in solutions):
+                        solutions.insert(0, special)
             return solutions
 
         f = basis[-1]
