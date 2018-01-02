@@ -42,8 +42,6 @@ matrix:
       script:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
-        - sphinx-build -W -b linkcheck docs build/sphinx/linkcheck
-        - cat build/sphinx/linkcheck/output.txt
         - travis_wait py.test --numprocesses 2 --cov diofant diofant/polys
     - stage: test
       python: 3.5
