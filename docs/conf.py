@@ -46,7 +46,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'Diofant'
-copyright = '2006-2016 SymPy Development Team, 2013-2017 Sergey B Kirpichev'
+copyright = '2006-2017 SymPy Development Team, 2013-2018 Sergey B Kirpichev'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
