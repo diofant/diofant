@@ -61,7 +61,7 @@ matrix:
         on:
           tags: true
 before_install:
-  - pip install --upgrade pip setuptools pytest codecov
+  - pip install --upgrade pip setuptools pytest 'codecov==2.0.10'
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy,docs]
 before_script:
