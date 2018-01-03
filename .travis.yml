@@ -51,6 +51,8 @@ matrix:
       script:
         - py.test --numprocesses 2 --cov diofant diofant/domains
     - stage: deploy
+      env:
+        -
       script: skip
       deploy:
         provider: pypi
