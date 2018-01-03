@@ -312,17 +312,7 @@ def rsolve_poly(coeffs, f, n, **hints):
 
         if E != []:
             solutions = solve(E, *C)
-
-            if not solutions:
-                if homogeneous:
-                    if hints.get('symbols', False):
-                        return S.Zero, []
-                    else:
-                        return S.Zero
-                else:
-                    return
-            else:
-                solutions = solutions[0]
+            solutions = solutions[0]
         else:
             solutions = {}
 
@@ -414,10 +404,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
     h = Dummy('h')
 
     res = resultant(A, B.subs(n, n + h), n)
-
-    if not res.is_polynomial(h):
-        p, q = res.as_numer_denom()
-        res = quo(p, q, h)
+    assert res.is_polynomial(n)
 
     nni_roots = list(roots(res, h, filter='Z',
                            predicate=lambda r: r >= 0))
@@ -453,8 +440,6 @@ def rsolve_ratio(coeffs, f, n, **hints):
                 return simplify(result[0] / C), result[1]
             else:
                 return simplify(result / C)
-        else:
-            return
 
 
 def rsolve_hyper(coeffs, f, n, **hints):

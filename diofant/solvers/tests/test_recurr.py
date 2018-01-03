@@ -18,6 +18,7 @@ def test_rsolve_poly():
     assert rsolve_poly([-1, -1, 1], 0, n) == 0
     assert rsolve_poly([-1, -1, 1], 0, n, symbols=True) == (0, [])
     assert rsolve_poly([-1, -1, 1], 1, n) == -1
+    assert rsolve_poly([-n**2, n,  -1, 1], 1, n) is None
 
     assert rsolve_poly([-1, n + 1], n, n) == 1
     assert rsolve_poly([-1, 1], n, n) == C0 + (n**2 - n)/2
@@ -43,6 +44,7 @@ def test_rsolve_ratio():
     ]
 
     assert rsolve_ratio([1, 1], sqrt(n), n) is None
+    assert rsolve_ratio([-n**3, n + 1], n, n) is None
 
 
 def test_rsolve_hyper():
@@ -74,6 +76,7 @@ def test_rsolve_hyper():
     assert rsolve_hyper([-1, 1], 1 + n, n).expand() == C0 + n**2/2 + n/2
 
     assert rsolve_hyper([-1, 1], 3*(n + n**2), n).expand() == C0 + n**3 - n
+    assert rsolve_hyper([-1, 1], n + factorial(n), n) is None
 
     assert rsolve_hyper([-a, 1], 0, n).expand() == C0*a**n
 
