@@ -716,8 +716,9 @@ def test_sympyissue_5197():
 
 
 def test_checking():
-    assert {s[x] for s in solve(x*(x - y/x), x, check=False)} == {sqrt(y), 0, -sqrt(y)}
-    assert {s[x] for s in solve(x*(x - y/x), x, check=True)} == {sqrt(y), -sqrt(y)}
+    assert solve(x*(x - y/x), x, check=False) == [{x: 0}, {x: -sqrt(y)},
+                                                  {x: sqrt(y)}]
+    assert solve(x*(x - y/x), x) == [{x: -sqrt(y)}, {x: sqrt(y)}]
     # {x: 0, y: 4} sets denominator to 0 in the following so system should return None
     assert solve((1/(1/x + 2), 1/(y - 3) - 1)) == []
     # 0 sets denominator of 1/x to zero so None is returned
@@ -971,6 +972,13 @@ def test_check_assumptions():
     x = symbols('x', positive=True)
     assert solve(x**2 - 1) == [{x: 1}]
 
+    with pytest.warns(UserWarning) as warn:
+        assert solve(x**2 - y, x, warn=True) == [{x: -sqrt(y)}, {x: sqrt(y)}]
+    assert len(warn) == 1
+    assert warn[0].message.args[0][:112] == """
+                        Warning: assumptions concerning following
+solution(s)                 can't be checked:"""
+
 
 def test_sympyissue_6056():
     assert solve(tanh(x + 3)*tanh(x - 3) - 1) == []
@@ -1007,6 +1015,14 @@ def test_sympyissue_5673():
 
 def test_checksol():
     pytest.raises(ValueError, lambda: checksol(x**4 - 1, 1))
+    assert checksol(x*(x - y/x), {x: 1}, force=False) is False
+
+    sol = {y: sqrt(x)}
+    with pytest.warns(UserWarning) as warn:
+        assert checksol(sqrt(y**2), sol, warn=True, force=False) is None
+    assert len(warn) == 1
+    assert warn[0].message.args[0] == """
+\tWarning: could not verify solution %s.""" % sol
 
 
 def test_exclude():
@@ -1159,6 +1175,7 @@ def test_sympyissues_6819_6820_6821_6248_8692():
 
     x, y = symbols('x y', extended_real=True)
     assert solve(x + y*I + 3) == [{y: 0, x: -3}]
+    assert solve([x + y*I + 3, y]) == [{x: -3, y: 0}]
     # issue sympy/sympy#2642
     assert solve(x*(1 + I)) == [{x: 0}]
 

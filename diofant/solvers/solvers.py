@@ -24,7 +24,7 @@ from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..matrices import Matrix, zeros
 from ..polys import Poly, RootOf, cancel, factor, roots, together
-from ..polys.polyerrors import GeneratorsNeeded, PolynomialError
+from ..polys.polyerrors import PolynomialError
 from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
                         powsimp, simplify)
 from ..simplify.fu import TR1
@@ -135,10 +135,7 @@ def checksol(f, sol, **flags):
         else:
             return
 
-    illegal = {nan,
-               zoo,
-               oo,
-               -oo}
+    illegal = {nan, zoo, oo, -oo}
     if any(sympify(v).atoms() & illegal for k, v in sol.items()):
         return False
 
@@ -151,12 +148,12 @@ def checksol(f, sol, **flags):
             if val.atoms() & illegal:
                 return False
         elif attempt == 1:
-            if val.free_symbols:
-                if not val.is_constant(*list(sol), simplify=not minimal):
-                    return False
-                # there are free symbols -- simple expansion might work
-                _, val = val.as_content_primitive()
-                val = expand_mul(expand_multinomial(val))
+            assert val.free_symbols
+            if not val.is_constant(*list(sol), simplify=not minimal):
+                return False
+            # there are free symbols -- simple expansion might work
+            _, val = val.as_content_primitive()
+            val = expand_mul(expand_multinomial(val))
         elif attempt == 2:
             if minimal:
                 return
@@ -472,18 +469,16 @@ def solve(f, *symbols, **flags):
         pot = preorder_traversal(fi)
         for p in pot:
             if not isinstance(p, Expr) or isinstance(p, Piecewise):
-                pass
+                pot.skip()
             elif (isinstance(p, bool) or not p.args or p in symset or
                   p.is_Add or p.is_Mul or p.is_Pow or p.is_Function or
                   isinstance(p, RootOf)) and p.func not in (re, im):
-                continue
+                pass
             elif p not in seen:
                 seen.add(p)
                 if p.free_symbols & symset:
                     non_inverts.add(p)
-                else:
-                    continue
-            pot.skip()
+                    pot.skip()
     del seen
     non_inverts = {d: Dummy() for d in non_inverts}
     f = [fi.subs(non_inverts) for fi in f]
@@ -664,16 +659,7 @@ def _solve(f, symbol, **flags):
         # as a polynomial, followed (perhaps) by a change of variables if the
         # generator is not a symbol
 
-        try:
-            poly = Poly(f_num)
-            if poly is None:
-                raise ValueError('could not convert %s to Poly' % f_num)
-        except GeneratorsNeeded:
-            simplified_f = simplify(f_num)
-            if simplified_f != f_num:
-                return _solve(simplified_f, symbol, **flags)
-            raise ValueError('expression appears to be a constant')
-
+        poly = Poly(f_num)
         gens = [g for g in poly.gens if g.has(symbol)]
 
         def _as_base_q(x):
