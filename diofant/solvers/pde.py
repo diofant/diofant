@@ -40,9 +40,9 @@ from itertools import combinations_with_replacement
 from ..core import (Add, Eq, Equality, Function, S, Subs, Symbol, Wild, expand,
                     symbols)
 from ..core.compatibility import is_sequence
-from ..core.function import AppliedUndef
 from ..functions import exp
 from ..integrals import Integral
+from ..polys import lcm
 from ..simplify import collect, simplify
 from ..utilities import filldedent, has_dups
 from .deutils import _desolve, _preprocess, ode_order
@@ -324,12 +324,6 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
                     dummyvar.remove(i)
                     break
             dummyvar.remove(i)
-        for i in dummyvar:
-            coeff = eq.coeff(f(x, y).diff(*i))
-            if coeff != 1:
-                match = coeff.match(a*f(x, y)**n)
-                if match and match[a] and match[n] < power:
-                    power = match[n]
         if power:
             den = f(x, y)**power
             reduced_eq = Add(*[arg/den for arg in eq.args])
@@ -430,16 +424,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
 
     # If no function is given, try finding the function present.
     if func is None:
-        try:
-            _, func = _preprocess(pde.lhs)
-        except ValueError:
-            funcs = [s.atoms(AppliedUndef) for s in (
-                sol if is_sequence(sol, set) else [sol])]
-            funcs = set().union(funcs)
-            if len(funcs) != 1:
-                raise ValueError(
-                    'must pass func arg to checkpdesol for this case.')
-            func = funcs.pop()
+        _, func = _preprocess(pde.lhs)
 
     # If the given solution is in the form of a list or a set
     # then return a list or set of tuples.
@@ -713,7 +698,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
                                               " due to inability of integrate")
                 else:
                     return Eq(f(x, y), solvefun(x) + tsol)
-            if b:
+            else:
                 try:
                     tsol = integrate(e/b, x)
                 except NotImplementedError:  # pragma: no cover
@@ -752,8 +737,6 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         ysub = solve(eta - etat, y)[0][y]
         deq = (b*(f(x).diff(x)) + d*f(x) - e).subs(y, ysub)
         final = (dsolve(deq, f(x), hint='1st_linear')).rhs
-        if isinstance(final, list):
-            final = final[0]
         finsyms = final.free_symbols - deq.free_symbols - {x, y}
         rhs = _simplify_variable_coeff(final, finsyms, solvefun, etat)
         return Eq(f(x, y), rhs)
@@ -771,10 +754,8 @@ def _simplify_variable_coeff(sol, syms, func, funcarg):
     if len(syms) == 1:
         sym = syms.pop()
         final = sol.subs(sym, func(funcarg))
-
-    else:
-        for key, sym in enumerate(syms):
-            final = sol.subs(sym, func(funcarg))
+    else:  # pragma: no cover
+        raise NotImplementedError
 
     return simplify(final.subs(eta, funcarg))
 
@@ -823,13 +804,13 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     elif strategy == 'mul':
         do_add = False
     else:
-        assert ValueError('Unknown strategy: %s' % strategy)
+        raise ValueError('Unknown strategy: %s' % strategy)
 
     if isinstance(eq, Equality):
         if eq.rhs != 0:
             return pde_separate(Eq(eq.lhs - eq.rhs), fun, sep, strategy)
-    if eq.rhs != 0:
-        raise ValueError("Value should be 0")
+    else:
+        eq = Eq(eq)
 
     # Handle arguments
     orig_args = list(fun.args)
@@ -939,17 +920,8 @@ def _separate(eq, dep, others):
         if sep.has(*others):
             return
         div.add(ext)
-    # FIXME: Find lcm() of all the divisors and divide with it, instead of
-    # current hack :(
-    # https://github.com/sympy/sympy/issues/4597
-    if len(div) > 0:
-        final = 0
-        for term in eq.args:
-            eqn = 0
-            for i in div:
-                eqn += term / i
-            final += simplify(eqn)
-        eq = final
+    div = lcm(div)
+    eq = Add(*[simplify(t/div) for t in eq.args])
 
     # SECOND PASS - separate the derivatives
     div = set()
