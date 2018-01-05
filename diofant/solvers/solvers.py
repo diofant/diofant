@@ -615,11 +615,9 @@ def _solve(f, symbol, **flags):
                     # Only include solutions that do not match the condition
                     # of any previous pieces.
                     matches_other_piece = False
-                    for other_n, (other_expr, other_cond) in enumerate(f.args):
+                    for other_n, (other_expr, other_cond) in enumerate(f.args):  # pragma: no branch
                         if other_n == n:
                             break
-                        if other_cond == S.false:
-                            continue
                         try:
                             if other_cond.subs(symbol, candidate) == S.true:
                                 matches_other_piece = True
@@ -745,19 +743,16 @@ def _solve(f, symbol, **flags):
                         b, e = p.as_base_exp()
                         e = expand_mul(e)
                         return expand_power_exp(b**e)
-                    ftry = f_num.replace(
-                        lambda w: w.is_Pow,
-                        _expand).subs(u, t)
-                    if not ftry.has(symbol):
-                        soln = _solve(ftry, t, **flags)
-                        sols = []
-                        for sol in soln:
-                            for i in inv:
-                                sols.append(i.subs(t, sol))
-                        result = list(ordered(sols))
+                    ftry = f_num.replace(lambda w: w.is_Pow, _expand).subs(u, t)
+                    assert not ftry.has(symbol)
+                    soln = _solve(ftry, t, **flags)
+                    sols = []
+                    for sol in soln:
+                        for i in inv:
+                            sols.append(i.subs(t, sol))
+                    result = list(ordered(sols))
 
-        elif len(gens) == 1:
-
+        else:
             # There is only one generator that we are interested in, but
             # there may have been more than one generator identified by
             # polys (e.g. for symbols other than the one we are interested
@@ -769,7 +764,6 @@ def _solve(f, symbol, **flags):
 
             # if we aren't on the tsolve-pass, use roots
             if not flags.pop('tsolve', False):
-                soln = None
                 deg = poly.degree()
                 flags['tsolve'] = True
                 solvers = {k: flags.get(k, True) for k in
@@ -781,68 +775,49 @@ def _solve(f, symbol, **flags):
                     # so all_roots is used and RootOf instances are
                     # returned *unless* the system is multivariate
                     # or high-order EX domain.
-                    try:
-                        soln = poly.all_roots()
-                    except NotImplementedError:  # pragma: no cover
-                        if not flags.get('incomplete', True):
-                                raise NotImplementedError(
-                                    filldedent('''
-    Neither high-order multivariate polynomials
-    nor sorting of EX-domain polynomials is supported.
-    If you want to see any results, pass keyword incomplete=True to
-    solve; to see numerical values of roots
-    for univariate expressions, use nroots.
-    '''))
-                        else:
-                            pass
+                    soln = poly.all_roots()
                 else:
                     soln = list(soln)
 
+                u = poly.gen
+                if u != symbol:
+                    try:
+                        t = Dummy('t')
+                        iv = _solve(u - t, symbol, **flags)
+                        soln = list(ordered({i.subs(t, s) for i in iv for s in soln}))
+                    except NotImplementedError:
+                        # perhaps _tsolve can handle f_num
+                        soln = None
+                else:
+                    check = False  # only dens need to be checked
                 if soln is not None:
-                    u = poly.gen
-                    if u != symbol:
-                        try:
-                            t = Dummy('t')
-                            iv = _solve(u - t, symbol, **flags)
-                            soln = list(ordered({i.subs(t, s) for i in iv for s in soln}))
-                        except NotImplementedError:
-                            # perhaps _tsolve can handle f_num
-                            soln = None
-                    else:
-                        check = False  # only dens need to be checked
-                    if soln is not None:
-                        if len(soln) > 2:
-                            # if the flag wasn't set then unset it since high-order
-                            # results are quite long. Perhaps one could base this
-                            # decision on a certain critical length of the
-                            # roots. In addition, wester test M2 has an expression
-                            # whose roots can be shown to be real with the
-                            # unsimplified form of the solution whereas only one of
-                            # the simplified forms appears to be real.
-                            flags['simplify'] = flags.get('simplify', False)
-                        result = soln
+                    if len(soln) > 2:
+                        # if the flag wasn't set then unset it since high-order
+                        # results are quite long. Perhaps one could base this
+                        # decision on a certain critical length of the
+                        # roots. In addition, wester test M2 has an expression
+                        # whose roots can be shown to be real with the
+                        # unsimplified form of the solution whereas only one of
+                        # the simplified forms appears to be real.
+                        flags['simplify'] = flags.get('simplify', False)
+                    result = soln
 
     # fallback if above fails
     # -----------------------
     if result is False:
-        # try unrad
-        if flags.pop('_unrad', True):
-            u = unrad(f_num, symbol)
-            if u:
-                eq, cov = u
-                if cov:
-                    isym, ieq = cov
-                    inv = _solve(ieq, symbol, **flags)[0]
-                    rv = {inv.subs(isym, xi) for xi in _solve(eq, isym, **flags)}
-                else:
-                    rv = set(_solve(eq, symbol, **flags))
-                if rv is not None:
-                    result = list(ordered(rv))
-                    # if the flag wasn't set then unset it since unrad results
-                    # can be quite long or of very high order
-                    flags['simplify'] = flags.get('simplify', False)
+        u = unrad(f_num, symbol)
+        if u:
+            eq, cov = u
+            if cov:
+                isym, ieq = cov
+                inv = _solve(ieq, symbol, **flags)[0]
+                rv = {inv.subs(isym, xi) for xi in _solve(eq, isym, **flags)}
             else:
-                pass  # for coverage
+                rv = set(_solve(eq, symbol, **flags))
+            result = list(ordered(rv))
+            # if the flag wasn't set then unset it since unrad results
+            # can be quite long or of very high order
+            flags['simplify'] = flags.get('simplify', False)
 
     # try _tsolve
     if result is False:
