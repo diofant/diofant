@@ -1,6 +1,7 @@
 """Computational algebraic field theory. """
 
 from functools import reduce
+from itertools import islice, tee
 
 from mpmath import mp, pslq
 
@@ -12,15 +13,16 @@ from ..domains import QQ, ZZ
 from ..functions import cos, root, sin, sqrt
 from ..ntheory import divisors, sieve
 from ..printing.lambdarepr import LambdaPrinter
+from ..sets import Integers
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
-from ..utilities import lambdify, numbered_symbols, public, sift, variations
+from ..utilities import (cantor_product, lambdify, numbered_symbols, public,
+                         sift)
 from .orthopolys import dup_chebyshevt
 from .polyerrors import (CoercionFailed, GeneratorsError, IsomorphismFailed,
                          NotAlgebraic)
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
-                        parallel_poly_from_expr, poly_from_expr, resultant,
-                        sqf_norm)
+                        parallel_poly_from_expr, poly_from_expr, resultant)
 from .polyutils import dict_from_expr, expr_from_dict
 from .ring_series import rs_compose_add
 from .rings import ring
@@ -719,12 +721,6 @@ minpoly = minimal_polynomial
 __all__.append('minpoly')
 
 
-def _coeffs_generator(n):
-    """Generate coefficients for `primitive_element()`. """
-    for coeffs in variations([1, -1], n, repetition=True):
-        yield list(coeffs)
-
-
 @public
 def primitive_element(extension, x=None, **args):
     """Construct a common number field for all extensions. """
@@ -735,41 +731,38 @@ def primitive_element(extension, x=None, **args):
         x, cls = sympify(x), Poly
     else:
         x, cls = Dummy('x'), PurePoly
-    if not args.get('ex', False):
-        extension = [ AlgebraicNumber(ext, gen=x) for ext in extension ]
-
-        g, coeffs = extension[0].minpoly.replace(x), [1]
-
-        for ext in extension[1:]:
-            s, _, g = sqf_norm(g, x, extension=ext)
-            coeffs = [ s*c for c in coeffs ] + [1]
-
-        if not args.get('polys', False):
-            return g.as_expr(), coeffs
-        else:
-            return cls(g), coeffs
 
     generator = numbered_symbols('y', cls=Dummy)
 
     F, Y = [], []
+    max_degree = -1
 
     for ext in extension:
+        ext = sympify(ext)
         y = next(generator)
 
         if ext.is_Poly:
             if ext.is_univariate:
                 f = ext.as_expr(y)
+                deg = ext.degree()
             else:
                 raise ValueError("expected minimal polynomial, got %s" % ext)
         else:
-            f = minpoly(ext, y)
+            f = minimal_polynomial(ext, y, polys=True)
+            deg = f.degree()
+            f = f.as_expr()
 
         F.append(f)
         Y.append(y)
 
-    coeffs_generator = args.get('coeffs', _coeffs_generator)
+        if deg > max_degree:
+            max_degree = deg
 
-    for coeffs in coeffs_generator(len(Y)):
+    nonzero_ints = islice(Integers, 1, None)
+    coeffs_iter = islice(cantor_product(*tee(nonzero_ints, len(Y))),
+                         max_degree**len(extension))
+
+    for coeffs in coeffs_iter:  # pragma: no branch
         f = x - sum(c*y for c, y in zip(coeffs, Y))
         G = groebner(F + [f], Y + [x], order='lex', field=True)
 
@@ -777,9 +770,8 @@ def primitive_element(extension, x=None, **args):
 
         for i, (h, y) in enumerate(zip(H, Y)):
             try:
-                H[i] = Poly(y - h, x,
-                            domain='QQ').all_coeffs()  # XXX: composite=False
-            except CoercionFailed:  # pragma: no cover
+                H[i] = Poly(y - h, x, domain='QQ').all_coeffs()
+            except CoercionFailed:
                 break  # G is not a triangular set
         else:
             break
@@ -789,9 +781,12 @@ def primitive_element(extension, x=None, **args):
     _, g = g.clear_denoms()
 
     if not args.get('polys', False):
-        return g.as_expr(), coeffs, H
+        g = g.as_expr()
+
+    if args.get('ex', False):
+        return g, list(coeffs), H
     else:
-        return g, coeffs, H
+        return g, list(coeffs)
 
 
 def is_isomorphism_possible(a, b):
