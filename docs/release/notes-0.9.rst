@@ -191,3 +191,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11021` diop: power_representation(4**5, 3, 1) -> (4,)
 * :sympyissue:`11050` diop: partition(n, k) gives redundant result
 * :issue:`369` Issue labeling policy
+* :sympyissue:`13853` Why does the expansion of polylog(1, z) have exp_polar(-I*pi)?

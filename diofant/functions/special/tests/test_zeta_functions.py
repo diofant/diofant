@@ -155,7 +155,7 @@ def test_polylog_eval():
 
 
 def test_polylog_expansion():
-    assert myexpand(polylog(1, z), -log(1 + exp_polar(-I*pi)*z))
+    assert myexpand(polylog(1, z), -log(1 - z))
     assert myexpand(polylog(0, z), z/(1 - z))
     assert myexpand(polylog(-1, z), z**2/(1 - z)**2 + z/(1 - z))
     assert myexpand(polylog(-5, z), None)
