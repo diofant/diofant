@@ -996,8 +996,7 @@ def _solve_system(exprs, symbols, **flags):
                 # can be solved for
                 ok_syms = _ok_syms(eq2, sort=True)
                 if not ok_syms:
-                    if r:
-                        newresult.append(r)
+                    newresult.append(r)
                     break  # skip as it's independent of desired symbols
                 for s in ok_syms:
                     soln = _solve(eq2, s, **flags)
@@ -1020,9 +1019,7 @@ def _solve_system(exprs, symbols, **flags):
                     raise NotImplementedError('could not solve %s' % eq2)
             else:
                 result = newresult
-                for b in bad_results:
-                    if b in result:
-                        result.remove(b)
+                assert not any(b in bad_results for b in result)
 
     default_simplify = bool(failed)  # rely on system-solvers to simplify
     if flags.get('simplify', default_simplify):
@@ -1238,12 +1235,12 @@ def _tsolve(eq, sym, **flags):
                 if f.count(log) != lhs.count(log):
                     if isinstance(f, log):
                         return _solve(f.args[0] - exp(rhs), sym, **flags)
-                    return _tsolve(f - rhs, sym)
+                    else:  # pragma: no cover
+                        raise NotImplementedError
 
         elif lhs.is_Pow:
-            if lhs.exp.is_Integer:
-                if lhs - rhs != eq:
-                    return _solve(lhs - rhs, sym, **flags)
+            if lhs.exp.is_Integer and lhs - rhs != eq:
+                return _solve(lhs - rhs, sym, **flags)
             elif sym not in lhs.exp.free_symbols:
                 return _solve(lhs.base - rhs**(1/lhs.exp), sym, **flags)
             elif not rhs and sym in lhs.exp.free_symbols:
@@ -1314,6 +1311,8 @@ def _tsolve(eq, sym, **flags):
                             sol = _solve(p, u, **flags)
                             return list(ordered({i.subs(u, s)
                                                  for i in inversion for s in sol}))
+                        else:  # pragma: no cover
+                            raise NotImplementedError
                     except NotImplementedError:
                         pass
                 else:
