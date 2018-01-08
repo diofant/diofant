@@ -331,6 +331,9 @@ def test_primitive_element():
     pytest.raises(ValueError, lambda: primitive_element([], x, ex=False))
     pytest.raises(ValueError, lambda: primitive_element([], x, ex=True))
 
+    assert primitive_element([Poly(x**2 - 2)], x) == (x**2 - 2, [1])
+    pytest.raises(ValueError, lambda: primitive_element([Poly(x**2 - y)], x))
+
     # issue sympy/sympy#13849
     assert (primitive_element([sqrt(2), sqrt(2) + sqrt(5)], x,
                               ex=True, polys=True) ==
