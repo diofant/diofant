@@ -251,7 +251,7 @@ class polylog(Function):
     >>> from diofant import expand_func
     >>> from diofant.abc import z
     >>> expand_func(polylog(1, z))
-    -log(z*exp_polar(-I*pi) + 1)
+    -log(-z + 1)
     >>> expand_func(polylog(0, z))
     z/(-z + 1)
 
@@ -301,7 +301,7 @@ class polylog(Function):
     def _eval_expand_func(self, **hints):
         s, z = self.args
         if s == 1:
-            return -log(1 + exp_polar(-I*pi)*z)
+            return -log(1 - z)
         if s.is_Integer and s <= 0:
             u = Dummy('u')
             start = u/(1 - u)
