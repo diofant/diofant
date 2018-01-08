@@ -1993,10 +1993,10 @@ class AlgebraicNumber(Expr):
         return AlgebraicNumber((minpoly, root), self.coeffs())
 
     def _eval_simplify(self, ratio, measure):
-        from ..polys import RootOf, minpoly
+        from ..polys import RootOf, minimal_polynomial
 
         for r in [r for r in self.minpoly.all_roots() if r.func != RootOf]:
-            if minpoly(self.root - r).is_Symbol:
+            if minimal_polynomial(self.root - r).is_Symbol:
                 # use the matching root if it's simpler
                 if measure(r) < ratio*measure(self.root):
                     return AlgebraicNumber(r)

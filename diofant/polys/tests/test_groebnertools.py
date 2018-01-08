@@ -143,7 +143,7 @@ def test_groebner_f5b():
         _do_test_groebner()
 
 
-def _do_test_benchmark_minpoly():
+def _do_test_benchmark_minimal_polynomial():
     R,  x, y, z = ring("x,y,z", QQ, lex)
 
     F = [x**3 + x + 1, y**2 + y + 1, (x + y) * z - (x**2 + y)]
@@ -154,14 +154,14 @@ def _do_test_benchmark_minpoly():
     assert groebner(F, R) == G
 
 
-def test_benchmark_minpoly_buchberger():
+def test_benchmark_minimal_polynomial_buchberger():
     with config.using(groebner='buchberger'):
-        _do_test_benchmark_minpoly()
+        _do_test_benchmark_minimal_polynomial()
 
 
-def test_benchmark_minpoly_f5b():
+def test_benchmark_minimal_polynomial_f5b():
     with config.using(groebner='f5b'):
-        _do_test_benchmark_minpoly()
+        _do_test_benchmark_minimal_polynomial()
 
 
 @pytest.mark.slow

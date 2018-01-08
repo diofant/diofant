@@ -292,7 +292,7 @@ def _muly(p, x, y):
 
 def _minpoly_pow(ex, pw, x, dom, mp=None):
     """
-    Returns ``minpoly(ex**pw, x)``
+    Returns ``minimal_polynomial(ex**pw, x)``
 
     Parameters
     ==========
@@ -312,11 +312,11 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
     >>> p = sqrt(1 + sqrt(2))
     >>> _minpoly_pow(p, 2, x, QQ)
     x**2 - 2*x - 1
-    >>> minpoly(p**2, x)
+    >>> minimal_polynomial(p**2, x)
     x**2 - 2*x - 1
     >>> _minpoly_pow(y, Rational(1, 3), x, QQ.frac_field(y))
     x**3 - y
-    >>> minpoly(cbrt(y), x)
+    >>> minimal_polynomial(cbrt(y), x)
     x**3 - y
     """
     pw = sympify(pw)
@@ -344,7 +344,7 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
 
 def _minpoly_add(x, dom, *a):
     """
-    returns ``minpoly(Add(*a), dom, x)``
+    returns ``minimal_polynomial(Add(*a), dom, x)``
     """
     mp = _minpoly_op_algebraic_element(Add, a[0], a[1], x, dom)
     p = a[0] + a[1]
@@ -356,7 +356,7 @@ def _minpoly_add(x, dom, *a):
 
 def _minpoly_mul(x, dom, *a):
     """
-    returns ``minpoly(Mul(*a), dom, x)``
+    returns ``minimal_polynomial(Mul(*a), dom, x)``
     """
     mp = _minpoly_op_algebraic_element(Mul, a[0], a[1], x, dom)
     p = a[0] * a[1]
@@ -991,7 +991,7 @@ def isolate(alg, eps=None, fast=False):
 
     func = lambdify((), alg, modules="mpmath", printer=IntervalPrinter())
 
-    poly = minpoly(alg, polys=True)
+    poly = minimal_polynomial(alg, polys=True)
     intervals = poly.intervals(sqf=True)
 
     dps, done = mp.dps, False
