@@ -110,8 +110,7 @@ matrix:
     - python: pypy3.5
       env: SPLIT=3/3
 install:
-  - pip install --pre -U 'gmpy2;platform_python_implementation!="PyPy"'
-  - travis_wait pip install .[exports,plot,interactive,develop,docs]
+  - travis_wait pip install .[exports,plot,interactive,develop,gmpy,docs]
 script:
   - |
     if [ -n "${COVERAGE}" ]; then

@@ -425,7 +425,7 @@ def ordered(seq, keys=None, default=True, warn=False):
 
 GROUND_TYPES = os.getenv('DIOFANT_GROUND_TYPES', 'auto').lower()
 
-gmpy = import_module('gmpy2', min_module_version='2.1.0',
+gmpy = import_module('gmpy2', min_module_version='2.0.8',
                      module_version_attr='version',
                      module_version_attr_call_args=())
 if gmpy:
@@ -448,7 +448,7 @@ if GROUND_TYPES == 'gmpy' and not HAS_GMPY:
 DIOFANT_INTS = int,
 
 if GROUND_TYPES == 'gmpy':
-    DIOFANT_INTS += gmpy.mpz,
+    DIOFANT_INTS += type(gmpy.mpz(0)),
 
 if GROUND_TYPES == 'python':
     os.environ['MPMATH_NOGMPY'] = 'yes'

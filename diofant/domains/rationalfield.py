@@ -50,10 +50,10 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
         return self.dtype(a.numerator, a.denominator)
 
     def _from_GMPYIntegerRing(self, a, K0):
-        return self.dtype(a)
+        return self.dtype(int(a))
 
     def _from_GMPYRationalField(self, a, K0):
-        return self.dtype(a.numerator, a.denominator)
+        return self.dtype(int(a.numerator), int(a.denominator))
 
     def _from_RealField(self, a, K0):
         return self.dtype(*K0.to_rational(a))
@@ -91,6 +91,7 @@ class GMPYRationalField(RationalField):
     dtype = GMPYRational
     zero = dtype(0)
     one = dtype(1)
+    tp = type(one)
 
     @property
     def ring(self):

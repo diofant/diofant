@@ -1214,7 +1214,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not other:
             raise ZeroDivisionError("polynomial division")
-        elif isinstance(other, ring.domain.dtype):
+        elif isinstance(other, ring.domain.tp):
             return self.quo_ground(other)
 
         try:
