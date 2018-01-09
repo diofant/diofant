@@ -331,6 +331,18 @@ def test_primitive_element():
     pytest.raises(ValueError, lambda: primitive_element([], x, ex=False))
     pytest.raises(ValueError, lambda: primitive_element([], x, ex=True))
 
+    assert primitive_element([Poly(x**2 - 2)], x) == (x**2 - 2, [1])
+    pytest.raises(ValueError, lambda: primitive_element([Poly(x**2 - y)], x))
+
+    # issue sympy/sympy#13849
+    assert (primitive_element([sqrt(2), sqrt(2) + sqrt(5)], x,
+                              ex=True, polys=True) ==
+            (x**8 - 120*x**6 + 3672*x**4 - 24800*x**2 + 1296, [1, 2],
+             [[QQ(1, 3456), 0, QQ(-59, 1728), 0, QQ(871, 864),
+               0, QQ(-895, 144), 0],
+              [QQ(-1, 6912), 0, QQ(59, 3456), 0, QQ(-871, 1728),
+               0, QQ(1039, 288), 0]]))
+
 
 def test_field_isomorphism_pslq():
     a = AlgebraicNumber(I)
