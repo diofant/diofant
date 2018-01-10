@@ -10,7 +10,7 @@ from diofant.domains import QQ
 from diofant.polys.numberfields import (AlgebraicNumber, IntervalPrinter,
                                         field_isomorphism,
                                         field_isomorphism_pslq,
-                                        is_isomorphism_possible, isolate,
+                                        is_isomorphism_possible,
                                         minimal_polynomial, primitive_element,
                                         to_number_field)
 from diofant.polys.polyclasses import DMP
@@ -255,6 +255,12 @@ def test_minpoly_compose():
         256*x**8 - 448*x**6 + 224*x**4 - 32*x**2 + 1
     assert minimal_polynomial(sin(5*pi/14), x) == 8*x**3 - 4*x**2 - 4*x + 1
     assert minimal_polynomial(cos(pi/15), x) == 16*x**4 + 8*x**3 - 16*x**2 - 8*x + 1
+    assert minimal_polynomial(cos(pi/17), x) == (256*x**8 - 128*x**7 -
+                                                 448*x**6 + 192*x**5 +
+                                                 240*x**4 - 80*x**3 -
+                                                 40*x**2 + 8*x + 1)
+    assert minimal_polynomial(cos(2*pi/21), x) == (64*x**6 - 32*x**5 - 96*x**4 +
+                                                   48*x**3 + 32*x**2 - 16*x + 1)
 
     ex = RootOf(x**3 + x*4 + 1, 0)
     mp = minimal_polynomial(ex, x)
@@ -266,6 +272,7 @@ def test_minpoly_compose():
     assert minimal_polynomial(exp(I*pi/6), x) == x**4 - x**2 + 1
     assert minimal_polynomial(exp(I*pi/9), x) == x**6 - x**3 + 1
     assert minimal_polynomial(exp(I*pi/10), x) == x**8 - x**6 + x**4 - x**2 + 1
+    assert minimal_polynomial(exp(I*pi/18), x) == x**12 - x**6 + 1
     assert minimal_polynomial(sin(pi/9), x) == 64*x**6 - 96*x**4 + 36*x**2 - 3
     assert minimal_polynomial(sin(pi/11), x) == 1024*x**10 - 2816*x**8 + \
         2816*x**6 - 1232*x**4 + 220*x**2 - 11
@@ -425,11 +432,15 @@ def test_field_isomorphism():
     q = AlgebraicNumber(-sqrt(2) + sqrt(3))
     r = AlgebraicNumber( sqrt(2) - sqrt(3))
     s = AlgebraicNumber(-sqrt(2) - sqrt(3))
+    c = AlgebraicNumber(cbrt(2))
 
     pos_coeffs = [ Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)]
     neg_coeffs = [-Rational(1, 2), Integer(0), Rational(9, 2), Integer(0)]
 
     a = AlgebraicNumber(sqrt(2))
+
+    assert is_isomorphism_possible(a, c) is False
+    assert field_isomorphism(a, c) is None
 
     assert is_isomorphism_possible(a, p) is True
     assert is_isomorphism_possible(a, q) is True
@@ -780,21 +791,9 @@ def test_to_algebraic_integer():
 
 def test_IntervalPrinter():
     ip = IntervalPrinter()
+    assert ip.doprint(x**2) == "x**mpi('2')"
     assert ip.doprint(x**Q(1, 3)) == "x**(mpi('1/3'))"
     assert ip.doprint(sqrt(x)) == "x**(mpi('1/2'))"
-
-
-def test_isolate():
-    assert isolate(1) == (1, 1)
-    assert isolate(Rational(1, 2)) == (Rational(1, 2), Rational(1, 2))
-
-    assert isolate(sqrt(2)) == (1, 2)
-    assert isolate(-sqrt(2)) == (-2, -1)
-
-    assert isolate(sqrt(2), eps=Rational(1, 100)) == (Rational(24, 17), Rational(17, 12))
-    assert isolate(-sqrt(2), eps=Rational(1, 100)) == (-Rational(17, 12), -Rational(24, 17))
-
-    pytest.raises(NotImplementedError, lambda: isolate(I))
 
 
 def test_minpoly_fraction_field():
