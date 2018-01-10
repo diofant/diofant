@@ -16,6 +16,7 @@ Major changes
 * Assumptions (old) moved from :class:`~diofant.core.basic.Basic` to :class:`~diofant.core.expr.Expr`, see :pull:`311`.
 * :func:`~diofant.solvers.solvers.solve` now return :class:`list` of :class:`dict`'s, see :pull:`473`.
 * ``diofant.polys.domains`` module is now top-level module :mod:`~diofant.domains`, see :pull:`487`.
+* Support canonicalization of :class:`~diofant.polys.rootoftools.RootOf` instances, construct polynomial with integer coefficients, see :pull:`430`.
 
 Compatibility breaks
 ====================
@@ -193,3 +194,4 @@ These Sympy issues also were addressed:
 * :issue:`369` Issue labeling policy
 * :sympyissue:`13853` Why does the expansion of polylog(1, z) have exp_polar(-I*pi)?
 * :sympyissue:`13849` solve/nonlinsolve: RuntimeError: run out of coefficient configurations
+* :sympyissue:`9366` rootof: Constructing RootOfs with polys containing RootOf coefficients
