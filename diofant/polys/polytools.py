@@ -328,34 +328,31 @@ class Poly(Expr):
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if isinstance(self.rep, DMP) and isinstance(other.rep, DMP):
-            gens = _unify_gens(self.gens, other.gens)
+        gens = _unify_gens(self.gens, other.gens)
 
-            dom, lev = self.rep.domain.unify(other.rep.domain, gens), len(gens) - 1
+        dom, lev = self.rep.domain.unify(other.rep.domain, gens), len(gens) - 1
 
-            if self.gens != gens:
-                self_monoms, self_coeffs = _dict_reorder(self.rep.to_dict(),
-                                                         self.gens, gens)
+        if self.gens != gens:
+            self_monoms, self_coeffs = _dict_reorder(self.rep.to_dict(),
+                                                     self.gens, gens)
 
-                if self.rep.domain != dom:
-                    self_coeffs = [dom.convert(c, self.rep.domain) for c in self_coeffs]
+            if self.rep.domain != dom:
+                self_coeffs = [dom.convert(c, self.rep.domain) for c in self_coeffs]
 
-                F = DMP(dict(zip(self_monoms, self_coeffs)), dom, lev)
-            else:
-                F = self.rep.convert(dom)
-
-            if other.gens != gens:
-                other_monoms, other_coeffs = _dict_reorder(other.rep.to_dict(),
-                                                           other.gens, gens)
-
-                if other.rep.domain != dom:
-                    other_coeffs = [dom.convert(c, other.rep.domain) for c in other_coeffs]
-
-                G = DMP(dict(zip(other_monoms, other_coeffs)), dom, lev)
-            else:
-                G = other.rep.convert(dom)
+            F = DMP(dict(zip(self_monoms, self_coeffs)), dom, lev)
         else:
-            raise UnificationFailed("can't unify %s with %s" % (self, other))
+            F = self.rep.convert(dom)
+
+        if other.gens != gens:
+            other_monoms, other_coeffs = _dict_reorder(other.rep.to_dict(),
+                                                       other.gens, gens)
+
+            if other.rep.domain != dom:
+                other_coeffs = [dom.convert(c, other.rep.domain) for c in other_coeffs]
+
+            G = DMP(dict(zip(other_monoms, other_coeffs)), dom, lev)
+        else:
+            G = other.rep.convert(dom)
 
         cls = self.__class__
 
@@ -842,8 +839,8 @@ class Poly(Expr):
                 if monom not in terms:
                     terms[monom] = coeff
                 else:
-                    raise PolynomialError(
-                        "%s monomial was generated twice" % monom)
+                    raise PolynomialError("%s monomial was generated"
+                                          " twice" % monom)
 
         return self.from_dict(terms, *(gens or self.gens), **args)
 
@@ -879,13 +876,6 @@ class Poly(Expr):
             return self.rep.to_dict(zero=zero)
         else:
             return self.rep.to_diofant_dict(zero=zero)
-
-    def as_list(self, native=False):
-        """Switch to a ``list`` representation. """
-        if native:
-            return self.rep.to_list()
-        else:
-            return self.rep.to_diofant_list()
 
     def as_expr(self, *gens):
         """
@@ -984,8 +974,6 @@ class Poly(Expr):
 
         if dom.is_Numerical:
             return self
-        elif not dom.is_Poly:
-            raise DomainError("can't inject generators over %s" % dom)
 
         if hasattr(self.rep, 'inject'):
             result = self.rep.inject(front=front)
@@ -1714,7 +1702,8 @@ class Poly(Expr):
             gens = self.gens + (s,)
         if hasattr(self.rep, 'homogenize'):
             return self.per(self.rep.homogenize(i), gens=gens)
-        raise OperationNotSupported(self, 'homogeneous_order')
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, 'homogeneous_order')
 
     def homogeneous_order(self):
         """
@@ -3752,11 +3741,10 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __radd__(self, other):
-        if not other.is_Poly:
-            try:
-                other = self.__class__(other, *self.gens)
-            except PolynomialError:
-                return other + self.as_expr()
+        try:
+            other = self.__class__(other, *self.gens)
+        except PolynomialError:
+            return other + self.as_expr()
 
         return other.add(self)
 
@@ -3772,11 +3760,10 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rsub__(self, other):
-        if not other.is_Poly:
-            try:
-                other = self.__class__(other, *self.gens)
-            except PolynomialError:
-                return other - self.as_expr()
+        try:
+            other = self.__class__(other, *self.gens)
+        except PolynomialError:
+            return other - self.as_expr()
 
         return other.sub(self)
 
@@ -3792,11 +3779,10 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rmul__(self, other):
-        if not other.is_Poly:
-            try:
-                other = self.__class__(other, *self.gens)
-            except PolynomialError:
-                return other*self.as_expr()
+        try:
+            other = self.__class__(other, *self.gens)
+        except PolynomialError:
+            return other*self.as_expr()
 
         return other.mul(self)
 
@@ -3816,8 +3802,7 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rdivmod__(self, other):
-        if not other.is_Poly:
-            other = self.__class__(other, *self.gens)
+        other = self.__class__(other, *self.gens)
 
         return other.div(self)
 
@@ -3830,8 +3815,7 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rmod__(self, other):
-        if not other.is_Poly:
-            other = self.__class__(other, *self.gens)
+        other = self.__class__(other, *self.gens)
 
         return other.rem(self)
 
@@ -3844,18 +3828,13 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rfloordiv__(self, other):
-        if not other.is_Poly:
-            other = self.__class__(other, *self.gens)
+        other = self.__class__(other, *self.gens)
 
         return other.quo(self)
 
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         return self.as_expr()/other.as_expr()
-
-    @_sympifyit('other', NotImplemented)
-    def __rtruediv__(self, other):
-        return other.as_expr()/self.as_expr()
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
@@ -3873,8 +3852,8 @@ class Poly(Expr):
         if f.rep.domain != g.rep.domain:
             try:
                 dom = f.rep.domain.unify(g.rep.domain, f.gens)
-            except UnificationFailed:
-                return False
+            except UnificationFailed:  # pragma: no cover
+                return NotImplemented
 
             f = f.set_domain(dom)
             g = g.set_domain(dom)
@@ -3949,8 +3928,8 @@ class PurePoly(Poly):
         if f.rep.domain != g.rep.domain:
             try:
                 dom = f.rep.domain.unify(g.rep.domain, f.gens)
-            except UnificationFailed:
-                return False
+            except UnificationFailed:  # pragma: no cover
+                return NotImplemented
 
             f = f.set_domain(dom)
             g = g.set_domain(dom)
@@ -3972,9 +3951,6 @@ class PurePoly(Poly):
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
         if len(self.gens) != len(other.gens):
-            raise UnificationFailed("can't unify %s with %s" % (self, other))
-
-        if not (isinstance(self.rep, DMP) and isinstance(other.rep, DMP)):
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
         cls = self.__class__
@@ -4146,16 +4122,6 @@ def _parallel_poly_from_expr(exprs, opt):
         opt.polys = bool(_polys)
 
     return polys, opt
-
-
-def _update_args(args, key, value):
-    """Add a new ``(key, value)`` pair to arguments ``dict``. """
-    args = dict(args)
-
-    if key not in args:
-        args[key] = value
-
-    return args
 
 
 @public
@@ -4377,10 +4343,7 @@ def pquo(f, g, *gens, **args):
     except PolificationFailed as exc:
         raise ComputationFailed('pquo', 2, exc)
 
-    try:
-        q = F.pquo(G)
-    except ExactQuotientFailed:
-        raise ExactQuotientFailed(f, g)
+    q = F.pquo(G)
 
     if not opt.polys:
         return q.as_expr()
@@ -4578,12 +4541,8 @@ def half_gcdex(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        try:
-            s, h = domain.half_gcdex(a, b)
-        except NotImplementedError:
-            raise ComputationFailed('half_gcdex', 2, exc)
-        else:
-            return domain.to_diofant(s), domain.to_diofant(h)
+        s, h = domain.half_gcdex(a, b)
+        return domain.to_diofant(s), domain.to_diofant(h)
 
     s, h = F.half_gcdex(G, auto=opt.auto)
 
@@ -4617,12 +4576,8 @@ def gcdex(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        try:
-            s, t, h = domain.gcdex(a, b)
-        except NotImplementedError:
-            raise ComputationFailed('gcdex', 2, exc)
-        else:
-            return domain.to_diofant(s), domain.to_diofant(t), domain.to_diofant(h)
+        s, t, h = domain.gcdex(a, b)
+        return domain.to_diofant(s), domain.to_diofant(t), domain.to_diofant(h)
 
     s, t, h = F.gcdex(G, auto=opt.auto)
 
@@ -4672,10 +4627,7 @@ def invert(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        try:
-            return domain.to_diofant(domain.invert(a, b))
-        except NotImplementedError:
-            raise ComputationFailed('invert', 2, exc)
+        return domain.to_diofant(domain.invert(a, b))
 
     h = F.invert(G, auto=opt.auto)
 
@@ -4809,12 +4761,8 @@ def cofactors(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        try:
-            h, cff, cfg = domain.cofactors(a, b)
-        except NotImplementedError:
-            raise ComputationFailed('cofactors', 2, exc)
-        else:
-            return domain.to_diofant(h), domain.to_diofant(cff), domain.to_diofant(cfg)
+        h, cff, cfg = domain.cofactors(a, b)
+        return tuple(map(domain.to_diofant, (h, cff, cfg)))
 
     h, cff, cfg = F.cofactors(G)
 
@@ -4898,7 +4846,7 @@ def gcd_list(seq, *gens, **args):
 
 
 @public
-def gcd(f, g=None, *gens, **args):
+def gcd(f, g, *gens, **args):
     """
     Compute GCD of ``f`` and ``g``.
 
@@ -4912,25 +4860,13 @@ def gcd(f, g=None, *gens, **args):
     x - 1
 
     """
-    if hasattr(f, '__iter__'):
-        if g is not None:
-            gens = (g,) + gens
-
-        return gcd_list(f, *gens, **args)
-    elif g is None:
-        raise TypeError("gcd() takes 2 arguments or a sequence of arguments")
-
     options.allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
-
-        try:
-            return domain.to_diofant(domain.gcd(a, b))
-        except NotImplementedError:
-            raise ComputationFailed('gcd', 2, exc)
+        return domain.to_diofant(domain.gcd(a, b))
 
     result = F.gcd(G)
 
@@ -5008,7 +4944,7 @@ def lcm_list(seq, *gens, **args):
 
 
 @public
-def lcm(f, g=None, *gens, **args):
+def lcm(f, g, *gens, **args):
     """
     Compute LCM of ``f`` and ``g``.
 
@@ -5022,25 +4958,13 @@ def lcm(f, g=None, *gens, **args):
     x**3 - 2*x**2 - x + 2
 
     """
-    if hasattr(f, '__iter__'):
-        if g is not None:
-            gens = (g,) + gens
-
-        return lcm_list(f, *gens, **args)
-    elif g is None:
-        raise TypeError("lcm() takes 2 arguments or a sequence of arguments")
-
     options.allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
-
-        try:
-            return domain.to_diofant(domain.lcm(a, b))
-        except NotImplementedError:
-            raise ComputationFailed('lcm', 2, exc)
+        return domain.to_diofant(domain.lcm(a, b))
 
     result = F.lcm(G)
 
@@ -5134,23 +5058,17 @@ def terms_gcd(f, *gens, **args):
     clear = args.pop('clear', True)
     options.allowed_flags(args, ['polys'])
 
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        return exc.expr
+    F, opt = poly_from_expr(f, *gens, **args)
 
     J, f = F.terms_gcd()
 
-    if opt.domain.has_Ring:
-        if opt.domain.has_Field:
-            denom, f = f.clear_denoms(convert=True)
+    if opt.domain.has_Field:
+        denom, f = f.clear_denoms(convert=True)
 
-        coeff, f = f.primitive()
+    coeff, f = f.primitive()
 
-        if opt.domain.has_Field:
-            coeff /= denom
-    else:
-        coeff = S.One
+    if opt.domain.has_Field:
+        coeff /= denom
 
     term = Mul(*[x**j for x, j in zip(f.gens, J)])
     if coeff == 1:
@@ -5579,8 +5497,8 @@ def _symbolic_factor(expr, opt, method):
         return expr.func(*[_symbolic_factor(arg, opt, method) for arg in expr.args])
     elif hasattr(expr, '__iter__'):
         return expr.__class__([_symbolic_factor(arg, opt, method) for arg in expr])
-    else:
-        return expr
+    else:  # pragma: no cover
+        raise NotImplementedError
 
 
 def _generic_factor_list(expr, gens, args, method):
@@ -5681,7 +5599,7 @@ def to_rational_coeffs(f):
         """
         from ..core import Add
         if not len(f.gens) == 1 or not (f.gens[0]).is_Atom:
-            return None, f
+            return
         n = f.degree()
         lc = f.LC()
         f1 = f1 or f1.monic()
@@ -5704,7 +5622,6 @@ def to_rational_coeffs(f):
                 f = Add(*v)
                 f = Poly(f)
                 return lc, rescale_x, f
-        return
 
     def _try_translate(f, f1=None):
         """
@@ -5716,7 +5633,7 @@ def to_rational_coeffs(f):
         """
         from ..core import Add
         if not len(f.gens) == 1 or not (f.gens[0]).is_Atom:
-            return None, f
+            return
         n = f.degree()
         f1 = f1 or f1.monic()
         coeffs = f1.all_coeffs()[1:]
@@ -5733,7 +5650,6 @@ def to_rational_coeffs(f):
             alpha = -func(*c2)/n
             f2 = f1.shift(alpha)
             return alpha, f2
-        return
 
     def _has_square_roots(p):
         """
@@ -5764,7 +5680,6 @@ def to_rational_coeffs(f):
             r = _try_translate(f, f1)
             if r:
                 return None, None, r[0], r[1]
-    return
 
 
 def _torational_factor_list(p, x):
@@ -6071,8 +5986,8 @@ def real_roots(f, multiple=True):
     try:
         F = Poly(f, greedy=False)
     except GeneratorsNeeded:
-        raise PolynomialError(
-            "can't compute real roots of %s, not a polynomial" % f)
+        raise PolynomialError("can't compute real roots of %s, "
+                              "not a polynomial" % f)
 
     return F.real_roots(multiple=multiple)
 
@@ -6152,7 +6067,7 @@ def nth_power_roots_poly(f, n, *gens, **args):
     True
 
     """
-    options.allowed_flags(args, [])
+    options.allowed_flags(args, ['polys'])
 
     try:
         F, opt = poly_from_expr(f, *gens, **args)
@@ -6190,7 +6105,7 @@ def cancel(f, *gens, **args):
 
     f = sympify(f)
 
-    if not isinstance(f, (tuple, Tuple)):
+    if not isinstance(f, Tuple):
         if f.is_Atom or isinstance(f, Relational) or not isinstance(f, Expr):
             return f
         f = factor_terms(f, radical=True)
@@ -6198,10 +6113,8 @@ def cancel(f, *gens, **args):
 
     elif len(f) == 2:
         p, q = f
-    elif isinstance(f, Tuple):
-        return factor_terms(f)
     else:
-        raise ValueError('unexpected argument: %s' % f)
+        return factor_terms(f)
 
     try:
         (F, G), opt = parallel_poly_from_expr((p, q), *gens, **args)
@@ -6211,8 +6124,7 @@ def cancel(f, *gens, **args):
         else:
             return S.One, p, q
     except PolynomialError as msg:
-        if f.is_commutative and not f.has(Piecewise):
-            raise PolynomialError(msg)
+        assert not f.is_commutative or f.has(Piecewise)
         # Handling of noncommutative and/or piecewise expressions
         if f.is_Add or f.is_Mul:
             sifted = sift(f.args, lambda x: x.is_commutative is True and not x.has(Piecewise))
@@ -6227,11 +6139,8 @@ def cancel(f, *gens, **args):
                 # XXX: This should really skip anything that's not Expr.
                 if isinstance(e, (tuple, Tuple, BooleanAtom)):
                     continue
-                try:
-                    reps.append((e, cancel(e)))
-                    pot.skip()  # this was handled successfully
-                except NotImplementedError:
-                    pass
+                reps.append((e, cancel(e)))
+                pot.skip()  # this was handled successfully
             return f.xreplace(dict(reps))
 
     c, P, Q = F.cancel(G)
@@ -6456,7 +6365,7 @@ class GroebnerBasis(Basic):
         return basis[item]
 
     def __hash__(self):
-        return hash((self._basis, tuple(self._options.items())))
+        return hash((self._basis, tuple(sorted(self._options.items()))))
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
