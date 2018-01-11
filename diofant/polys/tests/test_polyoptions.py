@@ -4,14 +4,16 @@ import pytest
 
 from diofant import I, Integer, Symbol, sqrt
 from diofant.abc import x, y, z
-from diofant.domains import EX, FF, GF, QQ, ZZ
+from diofant.domains import CC, EX, FF, GF, QQ, RR, ZZ, ComplexField, RealField
 from diofant.polys.orderings import lex
 from diofant.polys.polyerrors import GeneratorsError, OptionError
-from diofant.polys.polyoptions import (All, Auto, Domain, Expand, Extension,
-                                       Field, Formal, Frac, Gaussian, Gen,
-                                       Gens, Greedy, Include, Method, Modulus,
-                                       Options, Order, Polys, Sort, Split,
-                                       Strict, Symbols, Symmetric, Wrt)
+from diofant.polys.polyoptions import (All, Auto, BooleanOption, Domain,
+                                       Expand, Extension, Field, Formal, Frac,
+                                       Gaussian, Gen, Gens, Greedy, Include,
+                                       Method, Modulus, Options, OptionType,
+                                       Order, Polys, Sort, Split, Strict,
+                                       Symbols, Symmetric, Wrt, allowed_flags,
+                                       set_defaults)
 
 
 __all__ = ()
@@ -23,6 +25,12 @@ def test_Options_clone():
     assert opt.gens == (x, y, z)
     assert opt.domain == ZZ
     assert ('order' in opt) is False
+    assert opt.args == {'domain': ZZ}
+
+    # defaults:
+    assert opt.flags['all'] is False
+    assert opt.flags['include'] is False
+    assert opt.options['strict'] is True
 
     new_opt = opt.clone({'gens': (x, y), 'order': 'lex'})
 
@@ -33,6 +41,28 @@ def test_Options_clone():
     assert new_opt.gens == (x, y)
     assert new_opt.domain == ZZ
     assert ('order' in new_opt) is True
+
+    opt.spam = 'eggs'
+    assert opt.spam == 'eggs'
+
+    class SpamOpt(BooleanOption, metaclass=OptionType):
+        option = 'spam'
+        before = ['gens']
+        after = ['domain']
+
+    Options.__order__ = None
+    pytest.raises(RuntimeError, lambda: Options._init_dependencies_order())
+    delattr(Options, 'spam')
+    del Options.__options__['spam']
+    Options.__order__ = None
+    Options._init_dependencies_order()
+    Options._init_dependencies_order()  # noop
+
+    pytest.raises(OptionError, lambda: Options((x,), {'gens': (x, y)}))
+    pytest.raises(OptionError, lambda: Options((x,), {'spam': 1}))
+    pytest.raises(OptionError, lambda: Options((x,), {'field': True,
+                                                      'gaussian': True}))
+    pytest.raises(OptionError, lambda: Options((x,), {'gen': x}, strict=True))
 
 
 def test_Expand_preprocess():
@@ -210,6 +240,14 @@ def test_Domain_preprocess():
         'QQ<sqrt(2), I>') == QQ.algebraic_field(sqrt(2), I)
 
     pytest.raises(OptionError, lambda: Domain.preprocess('abc'))
+
+    assert Domain.preprocess('RR') == RR
+    assert Domain.preprocess('RR_5') == RealField(prec=5)
+
+    assert Domain.preprocess('CC') == CC
+    assert Domain.preprocess('CC_5') == ComplexField(prec=5)
+
+    pytest.raises(OptionError, lambda: Domain.preprocess(()))
 
 
 def test_Domain_postprocess():
@@ -449,6 +487,11 @@ def test_All_postprocess():
     assert opt == {'all': True}
 
 
+def test_Gen_preprocess():
+    opt = {'gen': 'spam'}
+    pytest.raises(OptionError, lambda: Gen.preprocess(opt))
+
+
 def test_Gen_postprocess():
     opt = {'gen': x}
     Gen.postprocess(opt)
@@ -476,3 +519,11 @@ def test_Method_postprocess():
     Method.postprocess(opt)
 
     assert opt == {'method': 'f5b'}
+
+
+def test_allowed_flags():
+    pytest.raises(OptionError, lambda: allowed_flags({'spam': True}, []))
+
+
+def test_set_defaults():
+    assert set_defaults({'defaults': None}) == {'defaults': None}
