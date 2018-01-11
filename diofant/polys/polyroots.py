@@ -117,14 +117,10 @@ def roots_cubic(f, trig=False):
     if p is S.Zero:
         if q is S.Zero:
             return [-aon3]*3
-        if q.is_extended_real:
-            if q.is_positive:
-                u1 = -root(q, 3)
-            elif q.is_negative:
-                u1 = root(-q, 3)
-    elif q is S.Zero:
-        y1, y2 = roots([1, 0, p], multiple=True)
-        return [tmp - aon3 for tmp in [y1, 0, y2]]
+        elif q.is_positive:
+            u1 = -root(q, 3)
+        elif q.is_negative:
+            u1 = root(-q, 3)
     elif q.is_extended_real and q.is_negative:
         u1 = -root(-q/2 + sqrt(q**2/4 + pon3**3), 3)
 
@@ -873,8 +869,6 @@ def roots(f, *gens, **flags):
         """Find roots using formulas and some tricks. """
         if f.is_ground:
             return []
-        if f.is_monomial:
-            return [Integer(0)]*f.degree()
 
         if f.length() == 2:
             if f.degree() == 1:
@@ -884,17 +878,9 @@ def roots(f, *gens, **flags):
 
         result = []
 
-        for i in [-1, 1]:
-            if not f.eval(i):
-                f = f.quo(Poly(f.gen - i, f.gen))
-                result.append(i)
-                break
-
         n = f.degree()
 
-        if n == 1:
-            result += list(map(cancel, roots_linear(f)))
-        elif n == 2:
+        if n == 2:
             result += list(map(cancel, roots_quadratic(f)))
         elif f.is_cyclotomic:
             result += roots_cyclotomic(f)
@@ -1027,9 +1013,6 @@ def root_factors(f, *gens, **args):
     filter = args.pop('filter', None)
 
     F = Poly(f, *gens, **args)
-
-    if not F.is_Poly:
-        return [f]
 
     if F.is_multivariate:
         raise ValueError('multivariate polynomials are not supported')

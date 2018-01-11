@@ -8,17 +8,18 @@ import pytest
 from diofant import (ZZ, I, Integer, Interval, Piecewise, Rational, Symbol,
                      Wild, acos, cbrt, cos, exp, im, pi, powsimp, re, root,
                      sin, sqrt, symbols)
+from diofant.abc import a, b, c, d, e, q, x, y, z
 from diofant.polys import Poly, RootOf, cyclotomic_poly, intervals, nroots
 from diofant.polys.orthopolys import legendre_poly
+from diofant.polys.polyerrors import PolynomialError
 from diofant.polys.polyroots import (preprocess_roots, root_factors, roots,
                                      roots_binomial, roots_cubic,
                                      roots_cyclotomic, roots_linear,
-                                     roots_quadratic, roots_quartic)
+                                     roots_quadratic, roots_quartic,
+                                     roots_quintic)
 from diofant.polys.polyutils import _nsort
 from diofant.utilities.randtest import verify_numerically
 
-
-a, b, c, d, e, q, t, x, y, z = symbols('a,b,c,d,e,q,t,x,y,z')
 
 __all__ = ()
 
@@ -172,6 +173,11 @@ def test_roots_quartic():
     for rep in reps:
         sol = roots_quartic(Poly(eq.subs(rep), x))
         assert all(verify_numerically(w.subs(rep) - s, 0) for w, s in zip(ans, sol))
+
+
+def test_roots_quintic():
+    assert roots_quintic(Poly(x**5 + x**4 + 1)) == []
+    assert roots_quintic(Poly(x**5 - 6*x + 3)) == []
 
 
 def test_roots_cyclotomic():
@@ -427,6 +433,8 @@ def test_roots0():
     assert roots(x**4 - 1, x, filter='Z') == {1: 1, -1: 1}
     assert roots(x**4 - 1, x, filter='I') == {I: 1, -I: 1}
 
+    pytest.raises(ValueError, lambda: roots(x**4 - 1, x, filter='spam'))
+
     assert roots((x - 1)*(x + 1), x) == {1: 1, -1: 1}
     assert roots(
         (x - 1)*(x + 1), x, predicate=lambda r: r.is_positive) == {1: 1}
@@ -483,13 +491,22 @@ def test_roots0():
          -sqrt(2) - root(7, 3)/2 + sqrt(3)*root(7, 3)*I/2: 1,
          -sqrt(2) + root(7, 3): 1}
 
+    pytest.raises(PolynomialError, lambda: roots(x*y, x, y))
+
 
 def test_roots1():
     assert roots(1) == {}
     assert roots(1, multiple=True) == []
-    assert roots(x**3 - y, x) == {cbrt(y): 1,
-                                  -cbrt(y)/2 - sqrt(3)*I*cbrt(y)/2: 1,
-                                  -cbrt(y)/2 + sqrt(3)*I*cbrt(y)/2: 1}
+    q = Symbol('q', real=True)
+    assert roots(x**3 - q, x) == {cbrt(q): 1,
+                                  -cbrt(q)/2 - sqrt(3)*I*cbrt(q)/2: 1,
+                                  -cbrt(q)/2 + sqrt(3)*I*cbrt(q)/2: 1}
+    assert roots_cubic(Poly(x**3 - 1)) == [1, Rational(-1, 2) + sqrt(3)*I/2,
+                                           Rational(-1, 2) - sqrt(3)*I/2]
+
+    assert roots([1, x, y]) == {-x/2 - sqrt(x**2 - 4*y)/2: 1,
+                                -x/2 + sqrt(x**2 - 4*y)/2: 1}
+    pytest.raises(ValueError, lambda: roots([1, x, y], z))
 
 
 def test_roots_slow():
@@ -601,6 +618,8 @@ def test_root_factors():
         [Poly(x + 1, x), Poly(x - 1, x), Poly(x**2 + 1, x)]
     assert root_factors(8*x**2 + 12*x**4 + 6*x**6 + x**8, x, filter='Q') == \
         [x, x, x**6 + 6*x**4 + 12*x**2 + 8]
+
+    pytest.raises(ValueError, lambda: root_factors(Poly(x*y)))
 
 
 def test_nroots1():
