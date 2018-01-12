@@ -17,8 +17,7 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
                          dmp_negative_p, dmp_one, dmp_one_p, dmp_permute,
                          dmp_slice_in, dmp_terms_gcd, dmp_to_dict,
                          dmp_to_tuple, dmp_validate, dmp_zero_p, dup_convert,
-                         dup_degree, dup_from_dict, dup_LC, dup_normal,
-                         dup_strip, dup_TC)
+                         dup_degree, dup_from_dict, dup_LC, dup_strip, dup_TC)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -29,8 +28,7 @@ from .euclidtools import (dmp_cancel, dmp_discriminant, dmp_gcd, dmp_inner_gcd,
                           dup_half_gcdex, dup_invert)
 from .factortools import (dmp_factor_list, dmp_factor_list_include,
                           dmp_irreducible_p, dup_cyclotomic_p)
-from .polyerrors import (CoercionFailed, NotReversible, PolynomialError,
-                         UnificationFailed)
+from .polyerrors import CoercionFailed, PolynomialError, UnificationFailed
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_real_roots, dup_isolate_real_roots_sqf,
@@ -42,7 +40,7 @@ from .sqfreetools import (dmp_sqf_list, dmp_sqf_list_include, dmp_sqf_norm,
 class DMP(CantSympify):
     """Dense Multivariate Polynomials over `K`. """
 
-    def __init__(self, rep, dom, lev=None, ring=None):
+    def __init__(self, rep, dom, lev=None):
         if lev is not None:
             if type(rep) is dict:
                 rep = dmp_from_dict(rep, lev, dom)
@@ -54,27 +52,20 @@ class DMP(CantSympify):
         self.rep = rep
         self.lev = lev
         self.domain = dom
-        self.ring = ring
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.to_tuple(),
-                     self.lev, self.domain, self.ring))
+                     self.lev, self.domain))
 
     def unify(self, other):
         """Unify representations of two multivariate polynomials. """
         if not isinstance(other, DMP) or self.lev != other.lev:
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if self.domain == other.domain and self.ring == other.ring:
+        if self.domain == other.domain:
             return self.lev, self.domain, self.per, self.rep, other.rep
         else:
             lev, dom = self.lev, self.domain.unify(other.domain)
-            ring = self.ring
-            if other.ring is not None:
-                if ring is not None:
-                    ring = ring.unify(other.ring)
-                else:
-                    ring = other.ring
 
             F = dmp_convert(self.rep, lev, self.domain, dom)
             G = dmp_convert(other.rep, lev, other.domain, dom)
@@ -85,12 +76,11 @@ class DMP(CantSympify):
                         return rep
                     else:
                         lev -= 1
-
-                return DMP(rep, dom, lev, ring)
+                return DMP(rep, dom, lev)
 
             return lev, dom, per, F, G
 
-    def per(self, rep, dom=None, kill=False, ring=None):
+    def per(self, rep, dom=None, kill=False):
         """Create a DMP out of the given representation. """
         lev = self.lev
 
@@ -103,18 +93,15 @@ class DMP(CantSympify):
         if dom is None:
             dom = self.domain
 
-        if ring is None:
-            ring = self.ring
-
-        return DMP(rep, dom, lev, ring)
+        return DMP(rep, dom, lev)
 
     @classmethod
-    def zero(cls, lev, dom, ring=None):
-        return DMP(0, dom, lev, ring)
+    def zero(cls, lev, dom):
+        return DMP(0, dom, lev)
 
     @classmethod
-    def one(cls, lev, dom, ring=None):
-        return DMP(1, dom, lev, ring)
+    def one(cls, lev, dom):
+        return DMP(1, dom, lev)
 
     @classmethod
     def from_list(cls, rep, lev, dom):
@@ -153,8 +140,8 @@ class DMP(CantSympify):
         return cls(dmp_from_dict(rep, lev, dom), dom, lev)
 
     @classmethod
-    def from_monoms_coeffs(cls, monoms, coeffs, lev, dom, ring=None):
-        return DMP(dict(zip(monoms, coeffs)), dom, lev, ring)
+    def from_monoms_coeffs(cls, monoms, coeffs, lev, dom):
+        return DMP(dict(zip(monoms, coeffs)), dom, lev)
 
     def to_ring(self):
         """Make the ground domain a ring. """
@@ -260,7 +247,7 @@ class DMP(CantSympify):
         >>> from diofant.domains import ZZ
 
         >>> DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()
-        ([2], DMP([[1], [1, 2]], ZZ, None))
+        ([2], DMP([[1], [1, 2]], ZZ))
         """
         J, F, u = dmp_exclude(self.rep, self.lev, self.domain)
         return J, self.__class__(F, self.domain, u)
@@ -275,10 +262,10 @@ class DMP(CantSympify):
         >>> from diofant.domains import ZZ
 
         >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])
-        DMP([[[2], []], [[1, 0], []]], ZZ, None)
+        DMP([[[2], []], [[1, 0], []]], ZZ)
 
         >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])
-        DMP([[[1], []], [[2, 0], []]], ZZ, None)
+        DMP([[[1], []], [[2, 0], []]], ZZ)
         """
         return self.per(dmp_permute(self.rep, P, self.lev, self.domain))
 
@@ -420,7 +407,7 @@ class DMP(CantSympify):
                 l = list(term[0])
                 l[s] += i
                 result[tuple(l)] = term[1]
-        return DMP(result, self.domain, self.lev + int(new_symbol), self.ring)
+        return DMP(result, self.domain, self.lev + int(new_symbol))
 
     def homogeneous_order(self):
         """Returns the homogeneous order of ``self``. """
@@ -823,15 +810,11 @@ class DMP(CantSympify):
         try:
             _, _, _, F, G = self.unify(other)
 
-            if self.lev == other.lev:
-                return F == G
+            return F == G
         except UnificationFailed:
             pass
 
         return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def eq(self, other, strict=False):
         if not strict:
@@ -853,7 +836,7 @@ class DMP(CantSympify):
 class DMF(CantSympify):
     """Dense Multivariate Fractions over `K`. """
 
-    def __init__(self, rep, dom, lev=None, ring=None):
+    def __init__(self, rep, dom, lev=None):
         num, den, lev = self._parse(rep, dom, lev)
         num, den = dmp_cancel(num, den, lev, dom)
 
@@ -861,10 +844,9 @@ class DMF(CantSympify):
         self.den = den
         self.lev = lev
         self.domain = dom
-        self.ring = ring
 
     @classmethod
-    def new(cls, rep, dom, lev=None, ring=None):
+    def new(cls, rep, dom, lev=None):
         num, den, lev = cls._parse(rep, dom, lev)
 
         obj = object.__new__(cls)
@@ -873,7 +855,6 @@ class DMF(CantSympify):
         obj.den = den
         obj.lev = lev
         obj.domain = dom
-        obj.ring = ring
 
         return obj
 
@@ -923,25 +904,18 @@ class DMF(CantSympify):
 
     def __hash__(self):
         return hash((self.__class__.__name__, dmp_to_tuple(self.num, self.lev),
-                     dmp_to_tuple(self.den, self.lev), self.lev, self.domain,
-                     self.ring))
+                     dmp_to_tuple(self.den, self.lev), self.lev, self.domain))
 
     def poly_unify(self, other):
         """Unify a multivariate fraction and a polynomial. """
         if not isinstance(other, DMP) or self.lev != other.lev:
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if self.domain == other.domain and self.ring == other.ring:
+        if self.domain == other.domain:
             return (self.lev, self.domain, self.per,
                     (self.num, self.den), other.rep)
         else:
             lev, dom = self.lev, self.domain.unify(other.domain)
-            ring = self.ring
-            if other.ring is not None:
-                if ring is not None:
-                    ring = ring.unify(other.ring)
-                else:
-                    ring = other.ring
 
             F = (dmp_convert(self.num, lev, self.domain, dom),
                  dmp_convert(self.den, lev, self.domain, dom))
@@ -958,7 +932,7 @@ class DMF(CantSympify):
                 if cancel:
                     num, den = dmp_cancel(num, den, lev, dom)
 
-                return self.__class__.new((num, den), dom, lev, ring=ring)
+                return self.__class__.new((num, den), dom, lev)
 
             return lev, dom, per, F, G
 
@@ -967,17 +941,11 @@ class DMF(CantSympify):
         if not isinstance(other, DMF) or self.lev != other.lev:
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if self.domain == other.domain and self.ring == other.ring:
+        if self.domain == other.domain:
             return (self.lev, self.domain, self.per, (self.num, self.den),
                     (other.num, other.den))
         else:
             lev, dom = self.lev, self.domain.unify(other.domain)
-            ring = other.ring
-            if other.ring is not None:
-                if ring is not None:
-                    ring = ring.unify(other.ring)
-                else:
-                    ring = other.ring
 
             F = (dmp_convert(self.num, lev, self.domain, dom),
                  dmp_convert(self.den, lev, self.domain, dom))
@@ -995,11 +963,11 @@ class DMF(CantSympify):
                 if cancel:
                     num, den = dmp_cancel(num, den, lev, dom)
 
-                return self.__class__.new((num, den), dom, lev, ring=ring)
+                return self.__class__.new((num, den), dom, lev)
 
             return lev, dom, per, F, G
 
-    def per(self, num, den, cancel=True, kill=False, ring=None):
+    def per(self, num, den, cancel=True, kill=False):
         """Create a DMF out of the given representation. """
         lev, dom = self.lev, self.domain
 
@@ -1012,10 +980,7 @@ class DMF(CantSympify):
         if cancel:
             num, den = dmp_cancel(num, den, lev, dom)
 
-        if ring is None:
-            ring = self.ring
-
-        return self.__class__.new((num, den), dom, lev, ring=ring)
+        return self.__class__.new((num, den), dom, lev)
 
     def half_per(self, rep, kill=False):
         """Create a DMP out of the given representation. """
@@ -1030,12 +995,12 @@ class DMF(CantSympify):
         return DMP(rep, self.domain, lev)
 
     @classmethod
-    def zero(cls, lev, dom, ring=None):
-        return cls.new(0, dom, lev, ring=ring)
+    def zero(cls, lev, dom):
+        return cls.new(0, dom, lev)
 
     @classmethod
-    def one(cls, lev, dom, ring=None):
-        return cls.new(1, dom, lev, ring=ring)
+    def one(cls, lev, dom):
+        return cls.new(1, dom, lev)
 
     def numer(self):
         """Returns the numerator of ``self``. """
@@ -1044,10 +1009,6 @@ class DMF(CantSympify):
     def denom(self):
         """Returns the denominator of ``self``. """
         return self.half_per(self.den)
-
-    def cancel(self):
-        """Remove common factors from ``self.num`` and ``self.den``. """
-        return self.per(self.num, self.den)
 
     def neg(self):
         """Negate all coefficients in ``self``. """
@@ -1119,18 +1080,12 @@ class DMF(CantSympify):
             num = dmp_mul(F_num, G_den, lev, dom)
             den = dmp_mul(F_den, G_num, lev, dom)
 
-        res = per(num, den)
-        if self.ring is not None and res not in self.ring:
-            from .polyerrors import ExactQuotientFailed
-            raise ExactQuotientFailed(self, other, self.ring)
-        return res
+        return per(num, den)
 
     exquo = quo
 
     def invert(self, check=True):
         """Computes inverse of a fraction ``self``. """
-        if check and self.ring is not None and not self.ring.is_unit(self):
-            raise NotReversible(self, self.ring)
         return self.per(self.den, self.num, cancel=False)
 
     @property
@@ -1153,18 +1108,8 @@ class DMF(CantSympify):
 
         try:
             return self.add(self.half_per(other))
-        except TypeError:
+        except (CoercionFailed, TypeError):
             return NotImplemented
-        except (CoercionFailed, NotImplementedError):
-            if self.ring is not None:
-                try:
-                    return self.add(self.ring.convert(other))
-                except (CoercionFailed, NotImplementedError):
-                    pass
-            return NotImplemented
-
-    def __radd__(self, other):
-        return self.__add__(other)
 
     def __sub__(self, other):
         if isinstance(other, (DMP, DMF)):
@@ -1172,18 +1117,8 @@ class DMF(CantSympify):
 
         try:
             return self.sub(self.half_per(other))
-        except TypeError:
+        except (CoercionFailed, TypeError):
             return NotImplemented
-        except (CoercionFailed, NotImplementedError):
-            if self.ring is not None:
-                try:
-                    return self.sub(self.ring.convert(other))
-                except (CoercionFailed, NotImplementedError):
-                    pass
-            return NotImplemented
-
-    def __rsub__(self, other):
-        return (-self).__add__(other)
 
     def __mul__(self, other):
         if isinstance(other, (DMP, DMF)):
@@ -1191,18 +1126,8 @@ class DMF(CantSympify):
 
         try:
             return self.mul(self.half_per(other))
-        except TypeError:
+        except (CoercionFailed, TypeError):
             return NotImplemented
-        except (CoercionFailed, NotImplementedError):
-            if self.ring is not None:
-                try:
-                    return self.mul(self.ring.convert(other))
-                except (CoercionFailed, NotImplementedError):
-                    pass
-            return NotImplemented
-
-    def __rmul__(self, other):
-        return self.__mul__(other)
 
     def __pow__(self, n):
         return self.pow(n)
@@ -1213,64 +1138,26 @@ class DMF(CantSympify):
 
         try:
             return self.quo(self.half_per(other))
-        except TypeError:
+        except (CoercionFailed, TypeError):
             return NotImplemented
-        except (CoercionFailed, NotImplementedError):
-            if self.ring is not None:
-                try:
-                    return self.quo(self.ring.convert(other))
-                except (CoercionFailed, NotImplementedError):
-                    pass
-            return NotImplemented
-
-    def __rtruediv__(self, other):
-        r = self.invert(check=False)*other
-        if self.ring and r not in self.ring:
-            from .polyerrors import ExactQuotientFailed
-            raise ExactQuotientFailed(other, self, self.ring)
-        return r
 
     def __eq__(self, other):
         try:
             if isinstance(other, DMP):
                 _, _, _, (F_num, F_den), G = self.poly_unify(other)
 
-                if self.lev == other.lev:
-                    return dmp_one_p(F_den, self.lev, self.domain) and F_num == G
+                return dmp_one_p(F_den, self.lev, self.domain) and F_num == G
             else:
                 _, _, _, F, G = self.frac_unify(other)
 
-                if self.lev == other.lev:
-                    return F == G
+                return F == G
         except UnificationFailed:
             pass
 
         return False
 
-    def __ne__(self, other):
-        try:
-            if isinstance(other, DMP):
-                _, _, _, (F_num, F_den), G = self.poly_unify(other)
-
-                if self.lev == other.lev:
-                    return not (dmp_one_p(F_den, self.lev, self.domain) and F_num == G)
-            else:
-                _, _, _, F, G = self.frac_unify(other)
-
-                if self.lev == other.lev:
-                    return F != G
-        except UnificationFailed:
-            pass
-
-        return True
-
     def __bool__(self):
         return not dmp_zero_p(self.num, self.lev)
-
-
-def init_normal_ANP(rep, mod, dom):
-    return ANP(dup_normal(rep, dom),
-               dup_normal(mod, dom), dom)
 
 
 class ANP(CantSympify):
@@ -1312,18 +1199,12 @@ class ANP(CantSympify):
             F = dup_convert(self.rep, self.domain, dom)
             G = dup_convert(other.rep, other.domain, dom)
 
-            if dom != self.domain and dom != other.domain:
-                mod = dup_convert(self.mod, self.domain, dom)
-            else:
-                if dom == self.domain:
-                    mod = self.mod
-                else:
-                    mod = other.mod
+            mod = dup_convert(self.mod, self.domain, dom)
 
             def per(rep):
                 return ANP(rep, mod, dom)
 
-        return dom, per, F, G, mod
+            return dom, per, F, G, mod
 
     def per(self, rep, mod=None, dom=None):
         return ANP(rep, mod or self.mod, dom or self.domain)
@@ -1499,14 +1380,6 @@ class ANP(CantSympify):
             return F == G
         except UnificationFailed:
             return False
-
-    def __ne__(self, other):
-        try:
-            _, _, F, G, _ = self.unify(other)
-
-            return F != G
-        except UnificationFailed:
-            return True
 
     def __lt__(self, other):
         _, _, F, G, _ = self.unify(other)

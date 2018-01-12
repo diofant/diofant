@@ -8,7 +8,6 @@ from ..core import Rational
 from ..core.compatibility import as_int
 from ..domains import QQ
 from .monomials import monomial_min, monomial_mul
-from .rings import PolyElement
 
 
 def _invert_monoms(p1):
@@ -106,30 +105,28 @@ def rs_mul(p1, p2, x, prec):
     if ring.__class__ != p2.ring.__class__ or ring != p2.ring:
         raise ValueError('p1 and p2 must have the same ring')
     iv = ring.gens.index(x)
-    if not isinstance(p2, PolyElement):
-        raise ValueError('p1 and p2 must have the same ring')
-    if ring == p2.ring:
-        get = p.get
-        items2 = list(p2.items())
-        items2.sort(key=lambda e: e[0][iv])
-        if ring.ngens == 1:
-            for exp1, v1 in p1.items():
-                for exp2, v2 in items2:
-                    exp = exp1[0] + exp2[0]
-                    if exp < prec:
-                        exp = (exp, )
-                        p[exp] = get(exp, 0) + v1*v2
-                    else:
-                        break
-        else:
-            monomial_mul = ring.monomial_mul
-            for exp1, v1 in p1.items():
-                for exp2, v2 in items2:
-                    if exp1[iv] + exp2[iv] < prec:
-                        exp = monomial_mul(exp1, exp2)
-                        p[exp] = get(exp, 0) + v1*v2
-                    else:
-                        break
+
+    get = p.get
+    items2 = list(p2.items())
+    items2.sort(key=lambda e: e[0][iv])
+    if ring.ngens == 1:
+        for exp1, v1 in p1.items():
+            for exp2, v2 in items2:
+                exp = exp1[0] + exp2[0]
+                if exp < prec:
+                    exp = (exp, )
+                    p[exp] = get(exp, 0) + v1*v2
+                else:
+                    break
+    else:
+        monomial_mul = ring.monomial_mul
+        for exp1, v1 in p1.items():
+            for exp2, v2 in items2:
+                if exp1[iv] + exp2[iv] < prec:
+                    exp = monomial_mul(exp1, exp2)
+                    p[exp] = get(exp, 0) + v1*v2
+                else:
+                    break
 
     p.strip_zero()
     return p
@@ -193,8 +190,8 @@ def rs_pow(p1, n, x, prec):
     """
     R = p1.ring
     p = R.zero
-    if isinstance(n, Rational):
-        raise NotImplementedError('to be implemented')
+    if isinstance(n, Rational):  # pragma: no cover
+        raise NotImplementedError
 
     n = as_int(n)
     if n == 0:
@@ -270,10 +267,7 @@ def _series_inversion1(p, x, prec):
     """
     ring = p.ring
     zm = ring.zero_monom
-    if zm not in p:
-        raise ValueError('no constant term in series')
-    if _has_constant_term(p - p[zm], x):
-        raise ValueError('p cannot contain a constant term depending on parameters')
+    assert zm in p and not _has_constant_term(p - p[zm], x)
     if p[zm] != ring(1):
         # TODO add check that it is a unit
         p1 = ring(1)/p[zm]
@@ -306,9 +300,9 @@ def rs_series_inversion(p, x, prec):
     zm = ring.zero_monom
     ii = ring.gens.index(x)
     m = min(p, key=lambda k: k[ii])[ii]
-    if m:
+    if m:  # pragma: no cover
         raise NotImplementedError('no constant term in series')
-    if zm not in p:
+    if zm not in p:  # pragma: no cover
         raise NotImplementedError('no constant term in series')
     if _has_constant_term(p - p[zm], x):
         raise NotImplementedError('p - p[0] must not have a constant term in the series variables')
@@ -390,14 +384,14 @@ def rs_series_from_list(p, c, x, prec, concur=1):
             break
     k = K - 1
     r = J*k
-    if r < n:
-        s1 = c[r]*ring(1)
-        for j in range(1, J):
-            if r + j >= n:
-                break
-            s1 += c[r + j]*ax[j]
-        s1 = rs_mul(s1, b, x, prec)
-        s += s1
+    assert r < n
+    s1 = c[r]*ring(1)
+    for j in range(1, J):
+        if r + j >= n:
+            break
+        s1 += c[r + j]*ax[j]
+    s1 = rs_mul(s1, b, x, prec)
+    s += s1
     return s
 
 
@@ -451,7 +445,7 @@ def rs_log(p, x, prec):
     ring = p.ring
     if p == 1:
         return ring.zero
-    if _has_constant_term(p - 1, x):
+    if _has_constant_term(p - 1, x):  # pragma: no cover
         raise NotImplementedError('p - 1 must not have a constant term in the series variables')
     dlog = p.diff(x)
     dlog = rs_mul(dlog, _series_inversion1(p, x, prec), x, prec - 1)
@@ -486,7 +480,7 @@ def rs_exp(p, x, prec):
     1/6*x**6 + 1/2*x**4 + x**2 + 1
     """
     ring = p.ring
-    if _has_constant_term(p, x):
+    if _has_constant_term(p, x):  # pragma: no cover
         raise NotImplementedError
     if len(p) > 20:
         return _exp1(p, x, prec)
@@ -545,7 +539,7 @@ def rs_hadamard_exp(p1, inverse=False):
     1/6*x**3 + 1/2*x**2 + x + 1
     """
     R = p1.ring
-    if R.domain != QQ:
+    if R.domain != QQ:  # pragma: no cover
         raise NotImplementedError
     p = R.zero
     if not inverse:

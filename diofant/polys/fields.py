@@ -34,7 +34,7 @@ def vfield(symbols, domain, order=lex):
 @public
 def sfield(exprs, *symbols, **options):
     """Construct a field deriving generators and domain from options and input expressions. """
-    raise NotImplementedError
+    raise NotImplementedError  # pragma: no cover
 
 
 _field_cache = {}
@@ -121,14 +121,14 @@ class FracField(DefaultPrinting):
                 numer = ring.ground_new(ground_field.numer(element))
                 denom = ring.ground_new(ground_field.denom(element))
                 return self.raw_new(numer, denom)
-            else:
-                raise
+            else:  # pragma: no cover
+                raise NotImplementedError
 
     def field_new(self, element):
         if isinstance(element, FracElement):
             if self == element.field:
                 return element
-            else:
+            else:  # pragma: no cover
                 raise NotImplementedError("conversion")
         elif isinstance(element, PolyElement):
             denom, numer = element.clear_denoms()
@@ -138,7 +138,7 @@ class FracField(DefaultPrinting):
         elif isinstance(element, tuple) and len(element) == 2:
             numer, denom = list(map(self.ring.ring_new, element))
             return self.new(numer, denom)
-        elif isinstance(element, str):
+        elif isinstance(element, str):  # pragma: no cover
             raise NotImplementedError("parsing")
         elif isinstance(element, Expr):
             return self.from_expr(element)
@@ -169,8 +169,8 @@ class FracField(DefaultPrinting):
             except CoercionFailed:
                 if not domain.has_Field and domain.has_assoc_Field:
                     return domain.get_field().convert(expr)
-                else:
-                    raise
+                else:  # pragma: no cover
+                    raise NotImplementedError
 
         return _rebuild(sympify(expr))
 
@@ -262,7 +262,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
     def _cmp(self, other, op):
         if isinstance(other, self.field.dtype):
             return op(self.sort_key(), other.sort_key())
-        else:
+        else:  # pragma: no cover
             return NotImplemented
 
     def __lt__(self, other):
@@ -326,7 +326,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
                     pass
                 elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
                     return other.__radd__(self)
-                else:
+                else:  # pragma: no cover
                     return NotImplemented
             elif isinstance(other, PolyElement):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
@@ -344,7 +344,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.numer + self.denom*other_numer, self.denom)
-        elif not op:
+        elif not op:  # pragma: no cover
             return NotImplemented
         else:
             return self.new(self.numer*other_denom + self.denom*other_numer,
@@ -372,7 +372,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
                     pass
                 elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
                     return other.__rsub__(self)
-                else:
+                else:  # pragma: no cover
                     return NotImplemented
             elif isinstance(other, PolyElement):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
@@ -384,7 +384,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.numer - self.denom*other_numer, self.denom)
-        elif not op:
+        elif not op:  # pragma: no cover
             return NotImplemented
         else:
             return self.new(self.numer*other_denom - self.denom*other_numer,
@@ -398,7 +398,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(-self.numer + self.denom*other_numer, self.denom)
-        elif not op:
+        elif not op:  # pragma: no cover
             return NotImplemented
         else:
             return self.new(-self.numer*other_denom + self.denom*other_numer,
@@ -420,7 +420,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
                     pass
                 elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
                     return other.__rmul__(self)
-                else:
+                else:  # pragma: no cover
                     return NotImplemented
             elif isinstance(other, PolyElement):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
@@ -438,7 +438,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.numer*other_numer, self.denom)
-        elif not op:
+        elif not op:  # pragma: no cover
             return NotImplemented
         else:
             return self.new(self.numer*other_numer, self.denom*other_denom)
@@ -459,7 +459,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
                     pass
                 elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
                     return other.__rtruediv__(self)
-                else:
+                else:  # pragma: no cover
                     return NotImplemented
             elif isinstance(other, PolyElement):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
@@ -471,7 +471,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.numer, self.denom*other_numer)
-        elif not op:
+        elif not op:  # pragma: no cover
             return NotImplemented
         else:
             return self.new(self.numer*other_denom, self.denom*other_numer)
@@ -486,7 +486,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.denom*other_numer, self.numer)
-        elif not op:
+        elif not op:  # pragma: no cover
             return NotImplemented
         else:
             return self.new(self.denom*other_numer, self.numer*other_denom)
@@ -544,4 +544,4 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         return self.new(numer, denom)
 
     def compose(self, x, a=None):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover

@@ -29,11 +29,11 @@ class Option:
 
     @classmethod
     def preprocess(cls, option):
-        return
+        return   # pragma: no cover
 
     @classmethod
     def postprocess(cls, options):
-        pass
+        return
 
 
 class Flag(Option):
@@ -138,9 +138,8 @@ class Options(dict):
                     raise OptionError("'%s' is not a valid option" % option)
 
                 if issubclass(cls, Flag):
-                    if flags is None or option not in flags:
-                        if strict:
-                            raise OptionError("'%s' flag is not allowed in this context" % option)
+                    if strict and (flags is None or option not in flags):
+                        raise OptionError("'%s' flag is not allowed in this context" % option)
 
                 if value is not None:
                     self[option] = cls.preprocess(value)
@@ -229,11 +228,9 @@ class Options(dict):
     @property
     def options(self):
         options = {}
-
         for option, cls in self.__options__.items():
             if not issubclass(cls, Flag):
                 options[option] = getattr(self, option)
-
         return options
 
     @property
@@ -477,7 +474,7 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, r.groups()[1].split(',')))
                 return domains.QQ.algebraic_field(*gens)
 
-        raise OptionError('expected a valid domain specification, got %s' % domain)
+        raise OptionError('expected a valid domain specification, got %s' % str(domain))
 
     @classmethod
     def postprocess(cls, options):

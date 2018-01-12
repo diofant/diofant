@@ -108,7 +108,6 @@ Algebraic number fields
 .. autofunction:: primitive_element
 .. autofunction:: field_isomorphism
 .. autofunction:: to_number_field
-.. autofunction:: isolate
 
 Monomials encoded as tuples
 ===========================

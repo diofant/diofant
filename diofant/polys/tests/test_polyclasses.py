@@ -4,13 +4,14 @@ import pytest
 
 from diofant.domains import QQ, ZZ
 from diofant.polys.polyclasses import ANP, DMF, DMP
-from diofant.polys.polyerrors import ExactQuotientFailed, PolynomialError
+from diofant.polys.polyerrors import (ExactQuotientFailed, PolynomialError,
+                                      UnificationFailed)
 from diofant.polys.specialpolys import f_polys
 
 
 __all__ = ()
 
-f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
+f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [f.to_dense() for f in f_polys()]
 
 
 def test_DMP___init__():
@@ -163,6 +164,12 @@ def test_DMP_arithmetics():
 
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
 
+    f = DMP([[-5]], ZZ)
+    g = DMP([[5]], QQ)
+    h = DMP([[]], QQ)
+
+    assert f + g == g + f == h
+
 
 def test_DMP_functionality():
     f = DMP([[1], [2, 0], [1, 0, 0]], ZZ)
@@ -278,6 +285,17 @@ def test_DMP_functionality():
     pytest.raises(TypeError, lambda: f.integrate(m="spam"))
     pytest.raises(TypeError, lambda: f.integrate(j="spam"))
 
+    f = DMP([[-1], [], [], [5]], ZZ)
+    g = DMP([[3, 1], [], []], QQ)
+
+    r = DMP([675, 675, 225, 25], QQ)
+
+    assert f.resultant(g) == r
+
+    assert DMP([1, 2], QQ).resultant(DMP([3], ZZ)) == 3
+
+    assert f.is_cyclotomic is False
+
 
 def test_DMP_exclude():
     f = [[[[[[[[[[[[[[[[[[[[[[[[[[1]], [[]]]]]]]]]]]]]]]]]]]]]]]]]]
@@ -376,6 +394,18 @@ def test_DMF__init__():
     pytest.raises(ValueError, lambda: DMF(([1], [[1]]), ZZ))
     pytest.raises(ZeroDivisionError, lambda: DMF(([1], []), ZZ))
 
+    f = DMF(({(1, 1): 1}, {(1, 0): 2, (0, 2): 1}), ZZ, 1)
+    assert f.num == [[1, 0], []]
+    assert f.den == [[2], [1, 0, 0]]
+    assert f.lev == 1
+    assert f.domain == ZZ
+
+    f = DMF([[1, 0], []], ZZ, 1)
+    assert f.num == [[1, 0], []]
+    assert f.den == [[1]]
+    assert f.lev == 1
+    assert f.domain == ZZ
+
 
 def test_DMF__bool__():
     assert bool(DMF([[]], ZZ)) is False
@@ -407,24 +437,50 @@ def test_DMF_arithmetics():
 
     f = DMF(([[1]], [[1], []]), ZZ)
     g = DMF(([[1]], [[1, 0]]), ZZ)
+    g2 = DMF(([[1]], [[1, 0]]), QQ)
 
     h = DMF(([[1], [1, 0]], [[1, 0], []]), ZZ)
+    h2 = DMF(([[1], [1, 0]], [[1, 0], []]), QQ)
 
     assert f.add(g) == f + g == h
     assert g.add(f) == g + f == h
+    assert f.add(g2) == f + g2 == h2
+    assert g2.add(f) == g2 + f == h2
+
+    g2 = DMP([[2]], QQ)
+    h2 = DMF(([[2], [1]], [[1], []]), QQ)
+    assert f + g2 == h2
+    assert f + 2 == h2
+    pytest.raises(TypeError, lambda: f + "x")
+    pytest.raises(UnificationFailed, lambda: f + DMP([2], ZZ))
 
     h = DMF(([[-1], [1, 0]], [[1, 0], []]), ZZ)
 
     assert f.sub(g) == f - g == h
+
+    h2 = DMF(([[-2], [1]], [[1], []]), QQ)
+    assert f - g2 == h2
+    assert f - 2 == h2
+    pytest.raises(TypeError, lambda: f - "x")
 
     h = DMF(([[1]], [[1, 0], []]), ZZ)
 
     assert f.mul(g) == f*g == h
     assert g.mul(f) == g*f == h
 
+    h2 = DMF(([[2]], [[1], []]), QQ)
+    assert f * g2 == h2
+    assert f * 2 == h2
+    pytest.raises(TypeError, lambda: f * "x")
+
     h = DMF(([[1, 0]], [[1], []]), ZZ)
 
     assert f.quo(g) == f/g == h
+
+    h2 = DMF(([[1]], [[2], []]), QQ)
+    assert f / g2 == h2
+    assert f / 2 == h2
+    pytest.raises(TypeError, lambda: f / "x")
 
     h = DMF(([[1]], [[1], [], [], []]), ZZ)
 
@@ -433,6 +489,20 @@ def test_DMF_arithmetics():
     h = DMF(([[1]], [[1, 0, 0, 0]]), ZZ)
 
     assert g.pow(3) == g**3 == h
+    pytest.raises(TypeError, lambda: g.pow("x"))
+
+    assert DMF(([2], [1]), ZZ) == DMP([2], ZZ)
+    assert DMF(([2], [1]), ZZ) != DMP([3], ZZ)
+    assert DMF(([[1, 0]], [[1], []]), ZZ) != DMF(([2], [1]), ZZ)
+
+
+def test_DMF_functionality():
+    f = DMF(([[1]], [[1], []]), ZZ)
+    assert f.invert() == DMF(([[1], []], [[1]]), ZZ)
+
+    assert f != "x"
+    assert f != 1
+    assert f != DMF(([[1]], [[2], []]), ZZ)
 
 
 def test_ANP___init__():
@@ -519,6 +589,10 @@ def test_ANP_arithmetics():
     assert a.add(b) == a + b == c
     assert b.add(a) == b + a == c
 
+    assert c + 1 == ANP([QQ(2), QQ(0), QQ(4)], mod, QQ)
+    pytest.raises(TypeError, lambda: c + "x")
+    pytest.raises(TypeError, lambda: "x" + c)
+
     c = ANP([QQ(2), QQ(-2), QQ(-1)], mod, QQ)
 
     assert a.sub(b) == a - b == c
@@ -527,15 +601,27 @@ def test_ANP_arithmetics():
 
     assert b.sub(a) == b - a == c
 
+    assert c - 1 == ANP([QQ(-2), QQ(2), QQ(0)], mod, QQ)
+    pytest.raises(TypeError, lambda: c - "x")
+    pytest.raises(TypeError, lambda: "x" - c)
+
     c = ANP([QQ(3), QQ(-1), QQ(6)], mod, QQ)
 
     assert a.mul(b) == a*b == c
     assert b.mul(a) == b*a == c
 
+    assert c*2 == ANP([QQ(6), QQ(-2), QQ(12)], mod, QQ)
+    pytest.raises(TypeError, lambda: c*"x")
+    pytest.raises(TypeError, lambda: "x"*c)
+
     c = ANP([QQ(11, 10), -QQ(1, 5), -QQ(3, 5)], mod, QQ)
     d = ANP([], mod, QQ)
     assert a.div(b) == divmod(a, b) == (c, d)
     assert a.rem(b) == a % b == d
+
+    assert c/2 == ANP([QQ(11, 20), -QQ(1, 10), -QQ(3, 10)], mod, QQ)
+    pytest.raises(TypeError, lambda: c/"x")
+    pytest.raises(TypeError, lambda: "x"/c)
 
     c = ANP([QQ(-1, 43), QQ(9, 43), QQ(5, 43)], mod, QQ)
 
@@ -545,6 +631,11 @@ def test_ANP_arithmetics():
     pytest.raises(TypeError, lambda: a.pow(QQ(1, 2)))
 
     assert a.quo(a) == a.mul(a.pow(-1)) == a*a**(-1) == ANP(1, mod, QQ)
+
+    a = ANP([QQ(1, 2), QQ(1), QQ(2)], [QQ(1), QQ(0), QQ(1)], QQ)
+    b = ANP([ZZ(1), ZZ(1), ZZ(2)], [ZZ(1), ZZ(0), ZZ(1)], ZZ)
+    c = ANP([QQ(3, 2), QQ(2), QQ(4)], [QQ(1), QQ(0), QQ(1)], QQ)
+    assert a + b == b + a == c
 
 
 def test_ANP_unify():

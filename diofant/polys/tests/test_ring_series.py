@@ -83,6 +83,9 @@ def test_pow_trunc():
     p = x + y
     assert rs_pow(p, 3, y, 3) == x**3 + 3*x**2*y + 3*x*y**2
 
+    assert rs_pow((1 + x)**4, 5, x, 2) == 20*x + 1
+    pytest.raises(ValueError, lambda: rs_pow(R.zero, 0, x, 2))
+
 
 def test_has_constant_term():
     R, x, y, z = ring('x, y, z', QQ)
