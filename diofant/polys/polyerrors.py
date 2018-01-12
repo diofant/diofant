@@ -17,7 +17,7 @@ class ExactQuotientFailed(BasePolynomialError):
     def __init__(self, f, g, dom=None):
         self.f, self.g, self.domain = f, g, dom
 
-    def __str__(self):  # pragma: no cover
+    def __str__(self):
         from ..printing import sstr
 
         if self.domain is None:
@@ -64,7 +64,7 @@ class OperationNotSupported(BasePolynomialError):
         self.poly = poly
         self.func = func
 
-    def __str__(self):  # pragma: no cover
+    def __str__(self):
         return "`%s` operation not supported by %s representation" % (self.func, self.poly.rep.__class__.__name__)
 
 
@@ -185,7 +185,7 @@ class PolificationFailed(PolynomialError):
         self.opt = opt
         self.seq = seq
 
-    def __str__(self):  # pragma: no cover
+    def __str__(self):
         if not self.seq:
             return "can't construct a polynomial from %s" % str(self.orig)
         else:
