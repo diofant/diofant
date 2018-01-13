@@ -23,10 +23,10 @@ def _do_test_groebner():
     f = x**2 + 2*x*y**2
     g = x*y + 2*y**3 - 1
 
-    assert not is_groebner([f, g], R)
+    assert not is_groebner([f, g])
     ans = [x, y**3 - QQ(1, 2)]
     assert groebner([f, g], R) == ans
-    assert is_groebner(ans, R)
+    assert is_groebner(ans)
     assert is_minimal(ans, R)
 
     R,  y, x = ring("y,x", QQ, lex)
@@ -129,7 +129,7 @@ def _do_test_groebner():
     ]
 
     b = [y**2 + x*y + x**2, y + x, y, x**2, x]
-    assert is_groebner(b, R)
+    assert is_groebner(b)
     assert not is_minimal(b, R)
 
 

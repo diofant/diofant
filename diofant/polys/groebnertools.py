@@ -1,7 +1,8 @@
 """Gröbner bases algorithms. """
 
 from ..core import Dummy
-from .monomials import monomial_divides, monomial_lcm, monomial_mul, term_div
+from .monomials import (monomial_div, monomial_divides, monomial_lcm,
+                        monomial_mul, term_div)
 from .orderings import lex
 from .polyconfig import query
 
@@ -83,10 +84,6 @@ def buchberger(f, ring):
     as presented in [5]_.
     """
     order = ring.order
-
-    monomial_mul = ring.monomial_mul
-    monomial_div = ring.monomial_div
-    monomial_lcm = ring.monomial_lcm
 
     def select(P):
         # normal selection strategy
@@ -226,7 +223,7 @@ def buchberger(f, ring):
         ig1, ig2 = select(CP)
         CP.remove((ig1, ig2))
 
-        h = spoly(f[ig1], f[ig2], ring)
+        h = spoly(f[ig1], f[ig2])
         # ordering divisors is on average more efficient [Cox] page 111
         G1 = sorted(G, key=lambda g: order(f[g].LM))
         ht = normal(h, G1)
@@ -254,7 +251,7 @@ def buchberger(f, ring):
     return Gr
 
 
-def spoly(p1, p2, ring):
+def spoly(p1, p2):
     """
     Compute LCM(LM(p1), LM(p2))/LM(p1)*p1 - LCM(LM(p1), LM(p2))/LM(p2)*p2.
 
@@ -262,9 +259,9 @@ def spoly(p1, p2, ring):
     """
     LM1 = p1.LM
     LM2 = p2.LM
-    LCM12 = ring.monomial_lcm(LM1, LM2)
-    m1 = ring.monomial_div(LCM12, LM1)
-    m2 = ring.monomial_div(LCM12, LM2)
+    LCM12 = monomial_lcm(LM1, LM2)
+    m1 = monomial_div(LCM12, LM1)
+    m2 = monomial_div(LCM12, LM2)
     s1 = p1.mul_monom(m1)
     s2 = p2.mul_monom(m2)
     s = s1 - s2
@@ -691,13 +688,13 @@ def red_groebner(G, ring):
     return reduction(H)
 
 
-def is_groebner(G, ring):
+def is_groebner(G):
     """
     Check if G is a Gröbner basis.
     """
     for i in range(len(G)):
         for j in range(i + 1, len(G)):
-            s = spoly(G[i], G[j], ring)
+            s = spoly(G[i], G[j])
             s = s.rem(G)
             if s:
                 return False
