@@ -25,6 +25,9 @@ def test_FracField___init__():
     assert F1.x != F3.x
     assert F1.y != F3.y
 
+    F4 = FracField("gens", ZZ)
+    assert type(F4.gens) is tuple
+
 
 def test_FracField___hash__():
     F, x, y, z = field("x,y,z", QQ)
@@ -46,6 +49,15 @@ def test_FracField___eq__():
 
     assert field("x,y", QQ)[0] != field("x,y,z", QQ)[0]
     assert field("x,y", QQ)[0] is not field("x,y,z", QQ)[0]
+
+
+def test_FracField_methods():
+    F = FracField("x", ZZ)
+
+    assert F.domain_new(2) == ZZ(2)
+
+    x = symbols("x")
+    assert F.field_new(x**2 + x) == F.x**2 + F.x
 
 
 def test_FracElement___hash__():
@@ -125,6 +137,11 @@ def test_FracElement_from_expr():
     assert f == X**2 + 1
 
 
+def test_FracElement_to_poly():
+    F, x, y = field("x y", ZZ)
+    pytest.raises(ValueError, lambda: (x/y).to_poly())
+
+
 def test_FracElement__lt_le_gt_ge__():
     F, x, y = field("x,y", ZZ)
 
@@ -141,12 +158,14 @@ def test_FracElement__lt_le_gt_ge__():
     assert 1/x**2 >= y/x >= 3/x >= 1/x >= -7/x
 
 
-def test_FracElement___neg__():
+def test_FracElement__pos_neg__():
     F,  x, y = field("x,y", QQ)
 
     f = (7*x - 9)/y
     g = (-7*x + 9)/y
 
+    assert +f == f
+    assert +g == g
     assert -f == g
     assert -g == f
 
@@ -156,6 +175,9 @@ def test_FracElement___add__():
 
     f, g = 1/x, 1/y
     assert f + g == g + f == (x + y)/(x*y)
+
+    z = symbols('z')
+    pytest.raises(TypeError, lambda: x + z)
 
     assert x + F.ring.gens[0] == F.ring.gens[0] + x == 2*x
 
@@ -203,6 +225,12 @@ def test_FracElement___sub__():
     f = (u*v - x)/(y - u*v)
     assert dict(f.numer) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
     assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
+
+    Fuv,  u, v = field("u,v", ZZ)
+    Rxyz,  x, y, z = ring("x,y,z", Fuv)
+
+    f = u - x
+    assert dict(f) == {(0, 0, 0): u, (1, 0, 0): -Fuv.one}
 
 
 def test_FracElement___mul__():
@@ -270,6 +298,11 @@ def test_FracElement___truediv__():
     assert dict(g.numer) == {(1, 1, 0, 0): 1}
     assert dict(g.denom) == {(0, 0, 0, 0): u*v}
 
+    Fuv,  u, v = field("u,v", ZZ)
+    Rxyz,  x, y, z = ring("x,y,z", Fuv)
+
+    pytest.raises(TypeError, lambda: u/x)
+
 
 def test_FracElement___pow__():
     F,  x, y = field("x,y", QQ)
@@ -296,6 +329,9 @@ def test_FracElement___call__():
     f = (x**2 + 3*y)/z
 
     pytest.raises(ValueError, lambda: f(1, 1, 1, 1))
+
+    Fz, *_ = field("z", ZZ)
+    assert f(1, 1) == 4/Fz.z
 
 
 @pytest.mark.xfail
