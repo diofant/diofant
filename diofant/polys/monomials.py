@@ -319,9 +319,6 @@ class Monomial:
 
         return self.exponents == exponents
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __mul__(self, other):
         if isinstance(other, Monomial):
             exponents = other.exponents

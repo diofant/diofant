@@ -334,9 +334,6 @@ class NDimArray:
             return False
         return (self.shape == other.shape) and (list(self) == list(other))
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
 
 class ImmutableNDimArray(NDimArray, Expr):
     _op_priority = 11.0

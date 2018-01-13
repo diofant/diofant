@@ -3861,10 +3861,6 @@ class Poly(Expr):
 
         return f.rep == g.rep
 
-    @_sympifyit('other', NotImplemented)
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __bool__(self):
         return not self.is_zero
 
@@ -6372,9 +6368,6 @@ class GroebnerBasis(Basic):
             return self.polys == list(other) or self.exprs == list(other)
         else:
             return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @property
     def is_zero_dimensional(self):

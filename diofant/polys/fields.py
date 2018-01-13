@@ -250,9 +250,6 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         else:
             return self.numer == other and self.denom == self.field.ring.one
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __bool__(self):
         return bool(self.numer)
 
