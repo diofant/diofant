@@ -154,7 +154,9 @@ def _parse_symbols(symbols):
         elif all(isinstance(s, Expr) for s in symbols):
             return symbols
 
-    raise GeneratorsError("expected a string, Symbol or expression or a non-empty sequence of strings, Symbols or expressions")
+    raise GeneratorsError("expected a string, Symbol or expression "
+                          "or a non-empty sequence of strings, "
+                          "Symbols or expressions")
 
 
 _ring_cache = {}
@@ -217,19 +219,6 @@ class PolyRing(DefaultPrinting, IPolys):
             _gens.append(poly)
         return tuple(_gens)
 
-    def __getnewargs__(self):
-        return self.symbols, self.domain, self.order
-
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        del state["leading_expv"]
-
-        for key, value in state.items():
-            if key.startswith("monomial_"):
-                del state[key]
-
-        return state
-
     def __hash__(self):
         return self._hash
 
@@ -275,10 +264,10 @@ class PolyRing(DefaultPrinting, IPolys):
                 return element
             elif isinstance(self.domain, PolynomialRing) and self.domain.ring == element.ring:
                 return self.ground_new(element)
-            else:
-                raise NotImplementedError("conversion")
-        elif isinstance(element, str):
-            raise NotImplementedError("parsing")
+            else:  # pragma: no cover
+                raise NotImplementedError
+        elif isinstance(element, str):  # pragma: no cover
+            raise NotImplementedError
         elif isinstance(element, dict):
             return self.from_dict(element)
         elif isinstance(element, list):
@@ -351,17 +340,12 @@ class PolyRing(DefaultPrinting, IPolys):
             if 0 <= i and i < self.ngens:
                 pass
             elif -self.ngens <= i and i <= -1:
-                i = -i - 1
+                i = self.ngens + i
             else:
                 raise ValueError("invalid generator index: %s" % gen)
         elif isinstance(gen, self.dtype):
             try:
                 i = self.gens.index(gen)
-            except ValueError:
-                raise ValueError("invalid generator: %s" % gen)
-        elif isinstance(gen, str):
-            try:
-                i = self.symbols.index(gen)
             except ValueError:
                 raise ValueError("invalid generator: %s" % gen)
         else:
@@ -482,9 +466,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def parent(self):
         return self.ring.to_domain()
-
-    def __getnewargs__(self):
-        return self.ring, list(self.iterterms())
 
     _hash = None
 
@@ -743,10 +724,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             if scoeff:
                 sexpv = [scoeff] + sexpv
             sexpvs.append(mul_symbol.join(sexpv))
-        if sexpvs[0] in [" + ", " - "]:
-            head = sexpvs.pop(0)
-            if head == " - ":
-                sexpvs.insert(0, "-")
+        head = sexpvs.pop(0)
+        if head == " - ":
+            sexpvs.insert(0, "-")
         return "".join(sexpvs)
 
     @property
@@ -866,8 +846,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return NotImplemented
         else:
             p = self.copy()
-            if not cp2:
-                return p
             zm = ring.zero_monom
             if zm not in self:
                 p[zm] = cp2
@@ -1017,8 +995,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             for exp1, v1 in self.items():
                 v = v1*other
-                if v:
-                    p[exp1] = v
+                p[exp1] = v
             return p
 
     def __rmul__(self, other):
@@ -1344,10 +1321,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if expv == ring.zero_monom:
             r += p
         if ret_single:
-            if not qv:
-                return ring.zero, r
-            else:
-                return qv[0], r
+            return qv[0], r
         else:
             return qv, r
 
@@ -1384,10 +1358,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                     break
             else:
                 ltm, ltc = ltf
-                if ltm in r:
-                    r[ltm] += ltc
-                else:
-                    r[ltm] = ltc
+                assert ltm not in r
+                r[ltm] = ltc
                 del f[ltm]
                 ltm = f.leading_expv()
                 if ltm is not None:
@@ -1782,7 +1754,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return self*c
         if not c:
             self.clear()
-            return
+            return self
         for exp in self:
             self[exp] *= c
         return self
