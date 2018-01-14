@@ -927,7 +927,7 @@ class DMF(CantSympify):
                     if not lev:
                         return num/den
                     else:
-                        lev = lev - 1
+                        lev -= 1
 
                 if cancel:
                     num, den = dmp_cancel(num, den, lev, dom)
@@ -958,7 +958,7 @@ class DMF(CantSympify):
                     if not lev:
                         return num/den
                     else:
-                        lev = lev - 1
+                        lev -= 1
 
                 if cancel:
                     num, den = dmp_cancel(num, den, lev, dom)
