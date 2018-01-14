@@ -241,4 +241,7 @@ def test_chain_criterion():
     gens = [x]
     f1 = sdm_from_vector([1, x], grlex, QQ, gens=gens)
     f2 = sdm_from_vector([0, x - 2], grlex, QQ, gens=gens)
-    assert len(sdm_groebner([f1, f2], sdm_nf_mora, grlex, QQ)) == 2
+    G, M = sdm_groebner([f1, f2], sdm_nf_mora, grlex, QQ, extended=True)
+    assert len(G) == 2
+    assert M == [[((1, 0), QQ(-1)), ((0, 0), QQ(1))],
+                 [((1, 1), QQ(1, 2)), ((0, 1), QQ(-1, 2)), ((0, 0), QQ(1))]]
