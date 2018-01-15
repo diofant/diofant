@@ -10,8 +10,8 @@ from diofant.external import import_module
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.printing.pretty.pretty import pretty
 from diofant.tensor.tensor import (TIDS, TensAdd, TensExpr, TensMul,
-                                   TensorIndex, TensorIndexType, TensorManager,
-                                   TensorSymmetry, TensorType,
+                                   TensorHead, TensorIndex, TensorIndexType,
+                                   TensorManager, TensorSymmetry, TensorType,
                                    get_symmetric_group_sgs, riemann_cyclic,
                                    riemann_cyclic_replace, tensor_indices,
                                    tensor_mul, tensorhead, tensorsymmetry)
@@ -114,6 +114,9 @@ def test_canonicalize_no_slot_sym():
     t = A(d1, d0)*B(-a, -d0)*C(-d1, -b)
     tc = t.canon_bp()
     assert str(tc) == 'A(L_0, L_1)*B(-a, -L_0)*C(-b, -L_1)'
+
+    pytest.raises(TypeError, lambda: TensorType(1, 2, 3))
+    pytest.raises(ValueError, lambda: TensorHead((1, 2), NS2))
 
 
 def test_canonicalize_no_dummies():
@@ -493,6 +496,7 @@ def test_indices():
     assert indices == [a, L_0, -L_0, c]
     pytest.raises(ValueError, lambda: tensor_indices(3, Lorentz))
     pytest.raises(ValueError, lambda: A(a, b, c))
+    pytest.raises(ValueError, lambda: TensorIndex([1, 2], Lorentz))
 
 
 def test_tensorsymmetry():
@@ -1562,6 +1566,16 @@ def test_valued_metric_inverse():
     # (this has no physical sense, it's just testing diofant);
     # it is symmetrical:
     md = [[2, 2, 2, 1], [2, 3, 1, 0], [2, 1, 2, 3], [1, 0, 3, 2]]
+    with pytest.raises(ValueError):
+        Lorentz.data = [[[1, 2], [1, 2]], [[3, 4], [3, 4]]]
+    with pytest.raises(ValueError):
+        Lorentz.data = [[1, 2]]
+    with pytest.raises(ValueError):
+        Lorentz.data = [[1]]
+    with pytest.raises(ValueError):
+        Lorentz.data = [1]
+    with pytest.raises(ValueError):
+        Lorentz.data = [[1], [2]]
     Lorentz.data = md
     m = Matrix(md)
     metric = Lorentz.metric
@@ -1613,6 +1627,13 @@ def test_pprint():
 
     assert pretty(A) == "A(Lorentz)"
     assert pretty(A(i0)) == "A(i0)"
+
+
+def test_from_components_and_indices():
+    a = TIDS.from_components_and_indices([], [])
+    assert a.components == []
+    assert a.free == []
+    assert a.dum == []
 
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")

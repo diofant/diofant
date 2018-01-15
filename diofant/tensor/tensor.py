@@ -370,9 +370,6 @@ class TIDS(CantSympify):
         def index_up(u):
             return u if u.is_up else -u
 
-        # lambda returns True is index is not a matrix index:
-        def notmat(i):
-            return i not in (i._tensortype.auto_left, -i._tensortype.auto_right)
         f_free = f.free[:]
         g_free = g.free[:]
         nc1 = len(f.components)
@@ -1089,15 +1086,8 @@ class _TensorDataLazyEvaluator(CantSympify):
         numpy = import_module('numpy')
 
         if (numpy is not None) and (not isinstance(data, numpy.ndarray)):
-            if len(data) == 2 and hasattr(data[0], '__call__'):
-
-                def fromfunction_sympify(*x):
-                    return sympify(data[0](*x))
-
-                data = numpy.fromfunction(fromfunction_sympify, data[1])
-            else:
-                vsympify = numpy.vectorize(sympify)
-                data = vsympify(numpy.array(data))
+            vsympify = numpy.vectorize(sympify)
+            data = vsympify(numpy.array(data))
         return data
 
 
