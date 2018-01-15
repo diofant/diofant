@@ -119,7 +119,6 @@ def rs_mul(p1, p2, x, prec):
                 else:
                     break
     else:
-        monomial_mul = ring.monomial_mul
         for exp1, v1 in p1.items():
             for exp2, v2 in items2:
                 if exp1[iv] + exp2[iv] < prec:
@@ -153,7 +152,6 @@ def rs_square(p1, x, prec):
     get = p.get
     items = list(p1.items())
     items.sort(key=lambda e: e[0][iv])
-    monomial_mul = ring.monomial_mul
     for i in range(len(items)):
         exp1, v1 = items[i]
         for j in range(i):

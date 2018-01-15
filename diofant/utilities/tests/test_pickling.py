@@ -52,7 +52,7 @@ from diofant.matrices import Matrix, SparseMatrix
 from diofant.ntheory.generate import Sieve
 from diofant.plotting.plot import Plot
 from diofant.polys.fields import FracField
-from diofant.polys.monomials import Monomial, MonomialOps
+from diofant.polys.monomials import Monomial
 from diofant.polys.numberfields import AlgebraicNumber
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
@@ -426,8 +426,7 @@ def test_pickling_polys_orderings():
 
 
 def test_pickling_polys_monomials():
-    for c in (MonomialOps, MonomialOps(3),
-              Monomial, Monomial((1, 2, 3), (x, y, z))):
+    for c in (Monomial, Monomial((1, 2, 3), (x, y, z))):
         check(c)
 
 

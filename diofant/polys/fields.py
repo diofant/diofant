@@ -84,9 +84,6 @@ class FracField(DefaultPrinting):
         """Return a list of polynomial generators. """
         return tuple(self.dtype(gen) for gen in self.ring.gens)
 
-    def __getnewargs__(self):
-        return self.symbols, self.domain, self.order
-
     def __hash__(self):
         return self._hash
 
@@ -218,9 +215,6 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
     def parent(self):
         return self.field.to_domain()
 
-    def __getnewargs__(self):
-        return self.field, self.numer, self.denom
-
     _hash = None
 
     def __hash__(self):
@@ -249,9 +243,6 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
             return self.numer == other.numer and self.denom == other.denom
         else:
             return self.numer == other and self.denom == self.field.ring.one
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __bool__(self):
         return bool(self.numer)
@@ -290,17 +281,14 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         try:
             element = domain.convert(element)
         except CoercionFailed:
-            if not domain.has_Field and domain.has_assoc_Field:
-                ground_field = domain.get_field()
+            ground_field = domain.get_field()
 
-                try:
-                    element = ground_field.convert(element)
-                except CoercionFailed:
-                    pass
-                else:
-                    return -1, ground_field.numer(element), ground_field.denom(element)
-
-            return 0, None, None
+            try:
+                element = ground_field.convert(element)
+            except CoercionFailed:
+                return 0, None, None
+            else:
+                return -1, ground_field.numer(element), ground_field.denom(element)
         else:
             return 1, element, None
 

@@ -429,6 +429,43 @@ def test_DMF_properties():
     assert f.denom() == DMP([[1, 0], []], ZZ)
 
 
+def test_DMF_per_and_unify():
+    f = DMF(([[1], [1, 0]], [[1, 0], []]), ZZ)
+
+    assert f.per(f.num, f.den) == f
+    g = DMF(([[2], [2, 0]], [[2, 0], []]), ZZ)
+    assert f.per(g.num, g.den) == f
+    assert f.per(g.num, g.den, cancel=False) == g
+    assert f.per([1, 2], [3, 4], kill=True) == DMF(([1, 2], [3, 4]), ZZ)
+    assert DMF(([2], [1]), ZZ).per(4, 2, kill=True) == 2
+
+    assert f.half_per([[2], [2, 0]]) == DMP([[2], [2, 0]], ZZ)
+    assert DMF(([2], [1]), ZZ).half_per(2, kill=True) == 2
+    assert f.half_per([1, 2], kill=True) == DMP([1, 2], ZZ)
+
+    lev, dom, per, F, G = f.poly_unify(DMP([[2], [4, 1]], QQ))
+    assert lev == 1 and dom == QQ
+    assert F == ([[1], [1, 0]], [[1, 0], []])
+    assert G == [[2], [4, 1]]
+    assert per([[2, 0], [4]], [[], [2]]) == DMF(([[1, 0], [2]],
+                                                 [[], [1]]), QQ)
+    assert per([[2, 0], [4]], [[], [2]],
+               cancel=False) == DMF.new(([[2, 0], [4]], [[], [2]]), QQ, 1)
+    assert per([1, 2], [3], kill=True) == DMF(([1, 2], [3]), QQ)
+    assert per(2, 4, kill=True, lev=0) == QQ(1, 2)
+
+    lev, dom, per, F, G = f.frac_unify(DMF(([[2], [4, 1]], [[1, 0]]), QQ))
+    assert lev == 1 and dom == QQ
+    assert F == ([[1], [1, 0]], [[1, 0], []])
+    assert G == ([[2], [4, 1]], [[1, 0]])
+    assert per([[2, 0], [4]], [[], [2]]) == DMF(([[1, 0], [2]],
+                                                 [[], [1]]), QQ)
+    assert per([[2, 0], [4]], [[], [2]],
+               cancel=False) == DMF.new(([[2, 0], [4]], [[], [2]]), QQ, 1)
+    assert per([1, 2], [3], kill=True) == DMF(([1, 2], [3]), QQ)
+    assert per(2, 4, kill=True, lev=0) == QQ(1, 2)
+
+
 def test_DMF_arithmetics():
     f = DMF([[7], [-9]], ZZ)
     g = DMF([[-7], [9]], ZZ)

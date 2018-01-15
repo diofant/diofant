@@ -5,6 +5,7 @@ import pytest
 from diofant.domains import EX, QQ, ZZ
 from diofant.polys.polyerrors import DomainError, RefinementFailed
 from diofant.polys.rings import ring
+from diofant.polys.rootisolation import RealInterval
 
 
 __all__ = ()
@@ -95,6 +96,17 @@ def test_dup_refine_real_root():
     assert R.dup_refine_real_root(f, s, t, disjoint=QQ(5)) == (s, t)
     assert R.dup_refine_real_root(f, s, t, disjoint=-u) == (s, t)
     assert R.dup_refine_real_root(f, s, t, disjoint=u) == (u, v)
+
+    R, x = ring("x", QQ)
+    f = x**2 - QQ(1, 4)
+    assert R.dup_refine_real_root(f, QQ(0), QQ(1),
+                                  steps=1) == (QQ(1, 2), QQ(1, 2))
+
+    D = ZZ.poly_ring("y")
+    y, = D.gens
+    R, x = ring("x", D)
+    f = x**2 + y*x - 1
+    pytest.raises(DomainError, lambda: R.dup_refine_real_root(f, ZZ(0), ZZ(1)))
 
 
 def test_dup_isolate_real_roots_sqf():
@@ -738,6 +750,8 @@ def test_dup_isolate_complex_roots_sqf():
         [((1, -2), (3, -1)), ((1, 1), (3, 2))]
     assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(0), QQ(0)), sup=(QQ(1, 6), QQ(1, 7))) == []
 
+    assert R.dup_isolate_complex_roots_sqf(R.zero) == []
+
     pytest.raises(ValueError, lambda: R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(-1))))
     pytest.raises(ValueError, lambda: R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(1)), sup=(QQ(3), QQ(1))))
     pytest.raises(ValueError, lambda: R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(1)), sup=(QQ(1), QQ(3))))
@@ -796,3 +810,16 @@ def test_dup_isolate_all_roots():
 
     f = x**5 + x**4 - 2*x**3 - 2*x**2 + x + 1
     pytest.raises(NotImplementedError, lambda: R.dup_isolate_all_roots(f))
+
+    D = ZZ.poly_ring("y")
+    R, x = ring("x", D)
+    y, = D.gens
+    f = x**2 + y*x - 1
+    pytest.raises(DomainError, lambda: R.dup_isolate_all_roots(f))
+
+
+def test_RealInterval():
+    R, x = ring("x", ZZ)
+    f = (x - 1)**2
+    pytest.raises(ValueError, lambda: RealInterval((-2, 1), R.to_dense(f),
+                                                   R.domain))
