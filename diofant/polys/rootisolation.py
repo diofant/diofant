@@ -82,9 +82,6 @@ def dup_root_upper_bound(f, K):
             q = t[j] + a - K.log(f[j], 2)
             QL.append([q // (j - i), j])
 
-        if not QL:
-            continue
-
         q = min(QL)
 
         t[q[1]] = t[q[1]] + 1
