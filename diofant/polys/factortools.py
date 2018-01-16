@@ -232,7 +232,7 @@ def dup_zz_zassenhaus(f, K):
     # choose a prime number `p` such that `f` be square free in Z_p
     # if there are many factors in Z_p, choose among a few different `p`
     # the one with fewer factors
-    for px in range(3, bound + 1):
+    for px in range(3, bound + 1):  # pragma: no branch
         if not isprime(px) or b % px == 0:
             continue
 
@@ -640,8 +640,8 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
 
         C.append(c)
 
-    if any(not j for j in J):
-        raise ExtraneousFactors  # pragma: no cover
+    if any(not j for j in J):  # pragma: no cover
+        raise ExtraneousFactors
 
     CC, HH = [], []
 

@@ -5,6 +5,7 @@ import pytest
 from diofant import I, nextprime, sin, sqrt
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.polys import polyconfig as config
+from diofant.polys.factortools import dmp_zz_diophantine
 from diofant.polys.polyclasses import ANP
 from diofant.polys.polyerrors import DomainError
 from diofant.polys.rings import ring
@@ -324,6 +325,21 @@ def test_dmp_zz_wang():
 
     factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
     assert R.dmp_expand(factors) == w_1
+
+
+def test_dmp_zz_diophantine():
+    F = [[[[47], []], [[9, 0, 0, -9]]],
+         [[[45]], [[]], [[]], [[-9], [-1], [], [3, 0, -6, 0]]]]
+    c = [[[-270, 0, 0, 270]], [[]], [[94, 0], []],
+         [[54, 0, 0, -54], [6, 0, 0, -6], [], [-18, 0, 54, 18, 0, -54, 0]]]
+    A = [-2, 0]
+    d = 6
+    p = 2345258188817
+    u = 2
+    K = ZZ
+
+    r = dmp_zz_diophantine(F, c, A, d, p, u, K)
+    assert r == [[[[-6, 0, 0, 6]]], [[[2, 0]]]]
 
 
 def test_sympyissue_6355():
