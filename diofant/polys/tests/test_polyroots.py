@@ -178,6 +178,7 @@ def test_roots_quartic():
 def test_roots_quintic():
     assert roots_quintic(Poly(x**5 + x**4 + 1)) == []
     assert roots_quintic(Poly(x**5 - 6*x + 3)) == []
+    assert roots_quintic(Poly(6*x**5 + 9*x**3 - 10*x**2 - 9*x)) == []
 
 
 def test_roots_cyclotomic():
