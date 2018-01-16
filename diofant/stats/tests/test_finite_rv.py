@@ -93,6 +93,18 @@ def test_dice():
 
     assert where(X > 3).set == FiniteSet(4, 5, 6)
 
+    X = Die('X', 2)
+    x = X.symbol
+
+    assert X.pspace.compute_cdf(X) == {1: Rational(1, 2), 2: 1}
+    assert X.pspace.sorted_cdf(X) == [(1, Rational(1, 2)), (2, 1)]
+
+    assert X.pspace.compute_density(X)(1) == Rational(1, 2)
+    assert X.pspace.compute_density(X)(0) == 0
+    assert X.pspace.compute_density(X)(8) == 0
+
+    assert X.pspace.density == x
+
 
 def test_given():
     X = Die('X', 6)
@@ -126,6 +138,15 @@ def test_domains():
 
     assert where(X > Y).dict == FiniteSet(*[Dict({X.symbol: i, Y.symbol: j})
                                             for i in range(1, 7) for j in range(1, 7) if i > j])
+
+    X, Y = Die('x', 7), Die('y', 3)
+    x, y = X.symbol, Y.symbol
+    pytest.raises(ValueError, lambda: X.pspace.where(Y < 3))
+    cset = X.pspace.where(X < 3)
+    assert ((x, 1),) in cset
+    assert ((x, 3),) not in cset
+
+    assert X.pspace.where(True) == X.pspace.domain
 
 
 def test_dice_bayes():

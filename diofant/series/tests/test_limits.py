@@ -606,3 +606,13 @@ def test_sympyissue_13462():
 def test_sympyissue_13575():
     assert limit(acos(erfi(x)), x, 1) == pi/2 + I*log(sqrt(erf(I)**2 + 1) +
                                                       erf(I))
+
+
+def test_diofantissue_558():
+    n = Symbol('n')
+    r = Symbol('r', positive=True)
+    c = Symbol('c')
+    expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
+            (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
+    expr = expr.subs(c, c + 1)
+    assert limit(expr, n, oo) == Limit(expr, n, oo)

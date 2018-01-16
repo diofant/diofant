@@ -245,3 +245,10 @@ def test_chain_criterion():
     assert len(G) == 2
     assert M == [[((1, 0), QQ(-1)), ((0, 0), QQ(1))],
                  [((1, 1), QQ(1, 2)), ((0, 1), QQ(-1, 2)), ((0, 0), QQ(1))]]
+
+
+def test_sdm_groebner():
+    gens = [x]
+    f = sdm_from_vector([0], grlex, QQ, gens=gens)
+    assert sdm_groebner([f], sdm_nf_mora, grlex, QQ) == []
+    assert sdm_groebner([f], sdm_nf_mora, grlex, QQ, extended=True) == ([], [])

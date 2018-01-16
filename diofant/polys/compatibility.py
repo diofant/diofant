@@ -486,8 +486,8 @@ class IPolys:
     def dup_resultant(self, f, g):
         return dup_resultant(self.to_dense(f), self.to_dense(g), self.domain)
 
-    def dmp_resultant(self, f, g):
-        res = dmp_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
+    def dmp_resultant(self, f, g, includePRS=False):
+        res = dmp_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain, includePRS=includePRS)
         if isinstance(res, list):
             return self[1:].from_dense(res)
         else:

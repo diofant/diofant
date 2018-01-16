@@ -2577,6 +2577,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     # terms have been returned
                     yielded = 0
                     o = Order(si, x)*x
+                    if expand_mul(o.expr).is_Add:
+                        raise NotImplementedError
                     ndid = 0
                     ndo = len(si.args)
                     while 1:
@@ -2925,6 +2927,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             b, e = p[0].as_base_exp()
             if b == x:
                 return c, e
+        if s.has(x):
+            s = s.simplify()
         return s, S.Zero
 
     def as_coeff_Mul(self, rational=False):
@@ -3340,7 +3344,7 @@ def _mag(x):
 from .mul import Mul
 from .add import Add
 from .power import Pow
-from .function import Function
+from .function import Function, expand_mul
 from .mod import Mod
 from .exprtools import factor_terms
 from .numbers import I, Integer, Rational, nan, oo, zoo

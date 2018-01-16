@@ -14,7 +14,7 @@ from .function import (_coeff_isneg, expand_complex, expand_mul,
                        expand_multinomial)
 from .logic import fuzzy_or
 from .mul import Mul, _keep_coeff
-from .numbers import E, I, Integer, nan, oo, pi
+from .numbers import E, I, Integer, nan, oo, pi, zoo
 from .singleton import S
 from .symbol import Dummy, symbols
 from .sympify import sympify
@@ -125,7 +125,9 @@ class Pow(Expr):
     +--------------+---------+-----------------------------------------------+
     | 1**oo        | nan     | Because there are various cases where         |
     | 1**-oo       |         | lim(x(t),t)=1, lim(y(t),t)=oo (or -oo),       |
-    | 1**zoo       |         | but lim( x(t)**y(t), t) != 1.  See [3].       |
+    |              |         | but lim(x(t)**y(t), t) != 1.  See [3].        |
+    +--------------+---------+-----------------------------------------------+
+    | z**zoo       | nan     | No limit for z**t for t -> zoo.               |
     +--------------+---------+-----------------------------------------------+
     | (-1)**oo     | nan     | Because of oscillations in the limit.         |
     | (-1)**(-oo)  |         |                                               |
@@ -185,6 +187,8 @@ class Pow(Expr):
                 return S.One
             elif e is S.One:
                 return b
+            elif e is zoo:
+                return nan
             elif e.is_integer and _coeff_isneg(b):
                 if e.is_even:
                     b = -b

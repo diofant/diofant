@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (And, Basic, DiracDelta, Eq, Interval, Sum, Symbol, Tuple,
-                     cos, integrate, oo, sin, symbols)
+from diofant import (And, Basic, Dict, DiracDelta, Eq, Interval, Rational, Sum,
+                     Symbol, Tuple, cos, integrate, oo, sin, symbols)
 from diofant.abc import x
 from diofant.stats import (Die, E, Exponential, Normal, P, density, dependent,
                            given, independent, pspace, random_symbols, sample,
@@ -100,6 +100,15 @@ def test_ProductPSpace():
     py = Y.pspace
     assert pspace(X + Y) == ProductPSpace(px, py)
     assert pspace(X + Y) == ProductPSpace(py, px)
+
+    X = Die("X", 2)
+    Y = Die("Y", 2)
+
+    assert (pspace(X + Y).density ==
+            Dict((frozenset({('X', 1), ('Y', 2)}), Rational(1, 4)),
+                 (frozenset({('X', 1), ('Y', 1)}), Rational(1, 4)),
+                 (frozenset({('X', 2), ('Y', 1)}), Rational(1, 4)),
+                 (frozenset({('X', 2), ('Y', 2)}), Rational(1, 4))))
 
 
 def test_E():

@@ -379,11 +379,8 @@ def lbp_cmp(f, g):
     """
     if sig_cmp(Sign(f), Sign(g), Polyn(f).ring.order) == -1:
         return -1
-    if Sign(f) == Sign(g):
-        if Num(f) > Num(g):
-            return -1
-        # if Num(f) == Num(g):
-        #    return 0
+    if Sign(f) == Sign(g) and Num(f) > Num(g):
+        return -1
     return 1
 
 
@@ -511,15 +508,14 @@ def f5_reduce(f, B):
         g = f
 
         for h in B:
-            if Polyn(h):
-                if monomial_divides(Polyn(h).LM, Polyn(f).LM):
-                    t = term_div(Polyn(f).LT, Polyn(h).LT, domain)
-                    if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
-                        # The following check need not be done and is in general slower than without.
-                        # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
-                        hp = lbp_mul_term(h, t)
-                        f = lbp_sub(f, hp)
-                        break
+            if Polyn(h) and monomial_divides(Polyn(h).LM, Polyn(f).LM):
+                t = term_div(Polyn(f).LT, Polyn(h).LT, domain)
+                if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
+                    # The following check need not be done and is in general slower than without.
+                    # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
+                    hp = lbp_mul_term(h, t)
+                    f = lbp_sub(f, hp)
+                    break
 
         if g == f or not Polyn(f):
             return f
@@ -633,7 +629,7 @@ def f5b(F, ring):
             if order(m) <= order(Polyn(B[-1]).LM):
                 B.append(p)
             else:
-                for i, q in enumerate(B):
+                for i, q in enumerate(B):  # pragma: no branch
                     if order(m) > order(Polyn(q).LM):
                         B.insert(i, p)
                         break

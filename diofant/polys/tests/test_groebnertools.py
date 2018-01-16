@@ -29,6 +29,17 @@ def _do_test_groebner():
     assert is_groebner(ans)
     assert is_minimal(ans, R)
 
+    R, x, y = ring("x,y", ZZ)
+    f = x**2*y + y**6 + 1
+    g = x**2 - 2*x*y
+
+    assert not is_groebner([f, g])
+    ans = [2*x - y**10 - 4*y**7 - y**4 - 4*y,
+           y**12 + 4*y**9 + 2*y**6 + 4*y**3 + 1]
+    assert groebner([f, g], R) == ans
+    assert is_groebner(ans)
+    assert is_minimal(ans, R) is False
+
     R,  y, x = ring("y,x", QQ, lex)
     f = 2*x**2*y + y**2
     g = 2*x**3 + x*y - 1
@@ -511,6 +522,9 @@ def test_representing_matrices():
 
 def test_groebner_lcm():
     R,  x, y, z = ring("x,y,z", ZZ)
+
+    assert groebner_lcm(x**2 - y**2, R.zero) == 0
+    assert groebner_lcm(R.zero, x - y) == 0
 
     assert groebner_lcm(x**2 - y**2, x - y) == x**2 - y**2
     assert groebner_lcm(2*x**2 - 2*y**2, 2*x - 2*y) == 2*x**2 - 2*y**2

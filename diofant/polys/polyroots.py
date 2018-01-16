@@ -559,7 +559,7 @@ def roots_quintic(f):
     r1 = Res[1][0]
     r1_n = Res_n[1][0]
 
-    for i in range(5):
+    for i in range(5):  # pragma: no branch
         if comp(im(r1_n*Res_n[4][i]), 0, tol):
             r4 = Res[4][i]
             break
@@ -577,7 +577,7 @@ def roots_quintic(f):
     r4_n = r4.n()
     r2 = r3 = None
 
-    for i in range(5):
+    for i in range(5):  # pragma: no branch
         r2temp_n = Res_n[2][i]
         for j in range(5):
             # Again storing away the exact number and using
@@ -935,9 +935,6 @@ def roots(f, *gens, **flags):
                             else:
                                 rescale_x, f = res[1], res[-1]
                             result = roots(f)
-                            if not result:
-                                for root in _try_decompose(f):
-                                    _update_dict(result, root, 1)
                     else:
                         for root in _try_decompose(f):
                             _update_dict(result, root, 1)
