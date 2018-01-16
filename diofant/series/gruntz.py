@@ -288,7 +288,12 @@ def mrv_leadterm(e, x):
     e, logw = rewrite(e, x, w)
 
     lt = e.compute_leading_term(w, logx=logw)
-    return lt.as_coeff_exponent(w)
+    c0, e0 = lt.as_coeff_exponent(w)
+    if c0.has(w):
+        raise NotImplementedError("Cannot compute mrv_leadterm(%s, %s). "
+                                  "The coefficient should have been free of "
+                                  "%s, but got %s." % (e, x, w, c0))
+    return c0, e0
 
 
 def rewrite(e, x, w):
