@@ -43,22 +43,8 @@ class FiniteDomain(RandomDomain):
     is_Finite = True
 
     @property
-    def symbols(self):
-        return FiniteSet(sym for sym, val in self.elements)
-
-    @property
-    def elements(self):
-        return self.args[0]
-
-    @property
     def dict(self):
         return FiniteSet(*[Dict(dict(el)) for el in self.elements])
-
-    def __contains__(self, other):
-        return other in self.elements
-
-    def __iter__(self):
-        return self.elements.__iter__()
 
     def as_boolean(self):
         return Or(*[And(*[Eq(sym, val) for sym, val in item]) for item in self])
@@ -79,7 +65,6 @@ class SingleFiniteDomain(FiniteDomain):
     @property
     def symbol(self):
         return self.args[0]
-        return tuple(self.symbols)[0]
 
     @property
     def symbols(self):
@@ -232,7 +217,6 @@ class FinitePSpace(PSpace):
         return self._density.get(elem, 0)
 
     def where(self, condition):
-        assert all(r.symbol in self.symbols for r in random_symbols(condition))
         return ConditionalFiniteDomain(self.domain, condition)
 
     def compute_density(self, expr):
@@ -300,8 +284,8 @@ class FinitePSpace(PSpace):
             if x < cum_prob:
                 # return dictionary mapping RandomSymbols to values
                 return dict(zip(expr, value))
-
-        assert False, "We should never have gotten to this point"
+        else:  # pragma: no cover
+            assert False, "We should never have gotten to this point"
 
 
 class SingleFinitePSpace(SinglePSpace, FinitePSpace):
@@ -351,4 +335,4 @@ class ProductFinitePSpace(ProductPSpace, FinitePSpace):
     @property
     @cacheit
     def density(self):
-        return Dict(self._density)
+        return self._density
