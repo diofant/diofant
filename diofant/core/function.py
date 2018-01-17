@@ -458,28 +458,6 @@ class Function(Application, Expr):
         #     we be more intelligent about it?
         try:
             args = [arg._to_mpmath(prec + 5) for arg in self.args]
-
-            def bad(m):
-                from mpmath import mpf, mpc
-                # the precision of an mpf value is the last element
-                # if that is 1 (and m[1] is not 1 which would indicate a
-                # power of 2), then the eval failed; so check that none of
-                # the arguments failed to compute to a finite precision.
-                # Note: An mpc value has two parts, the re and imag tuple;
-                # check each of those parts, too. Anything else is allowed to
-                # pass
-                if isinstance(m, mpf):
-                    m = m._mpf_
-                    return m[1] != 1 and m[-1] == 1
-                elif isinstance(m, mpc):
-                    m, n = m._mpc_
-                    return m[1] != 1 and m[-1] == 1 and \
-                        n[1] != 1 and n[-1] == 1
-                else:
-                    return False
-
-            if any(bad(a) for a in args):
-                raise ValueError  # one or more args failed to compute with significance
         except ValueError:
             return
 
@@ -573,7 +551,7 @@ class Function(Application, Expr):
             v = None
             for ai, zi, pi in zip(a0, z, p):
                 if zi.has(x):
-                    if v is not None:
+                    if v is not None:  # pragma: no cover
                         raise NotImplementedError
                     q.append(ai + pi)
                     v = pi
@@ -585,8 +563,7 @@ class Function(Application, Expr):
             s = e1._eval_nseries(v, n, logx)
             o = s.getO()
             s = s.removeO()
-            s = s.subs(v, zi).expand() + Order(o.expr.subs(v, zi), x)
-            return s
+            return s.subs(v, zi).expand() + Order(o.expr.subs(v, zi), x)
         if (self.func.nargs is S.Naturals0
                 or (self.func.nargs == FiniteSet(1) and args0[0])
                 or any(c > 1 for c in self.func.nargs)):
@@ -596,7 +573,7 @@ class Function(Application, Expr):
                 # for example when e = sin(x+1) or e = sin(cos(x))
                 # let's try the general algorithm
                 term = e.subs(x, S.Zero)
-                if term.is_finite is False or term is nan:
+                if term.is_finite is False:
                     raise PoleError("Cannot expand %s around 0" % (self))
                 series = term
                 fact = S.One
@@ -607,11 +584,6 @@ class Function(Application, Expr):
                     fact *= Rational(i)
                     e = e.diff(_x)
                     subs = e.subs(_x, S.Zero)
-                    if subs is nan:
-                        # try to evaluate a limit if we have to
-                        subs = e.limit(_x, S.Zero)
-                    if subs.is_finite is False:
-                        raise PoleError("Cannot expand %s around 0" % (self))
                     term = subs*(x**i)/fact
                     term = term.expand()
                     series += term
@@ -2305,9 +2277,6 @@ def count_ops(expr, visual=False):
         while args:
             a = args.pop()
 
-            if isinstance(a, str):
-                continue
-
             if a.is_Rational:
                 # -1/3 = NEG + DIV
                 if a is not S.One:
@@ -2315,6 +2284,8 @@ def count_ops(expr, visual=False):
                         ops.append(NEG)
                     if a.q != 1:
                         ops.append(DIV)
+                    # XXX "peephole" optimization, http://bugs.python.org/issue2506
+                    a
                     continue
             elif a.is_Mul:
                 if _coeff_isneg(a):
@@ -2326,8 +2297,6 @@ def count_ops(expr, visual=False):
                 n, d = fraction(a)
                 if n.is_Integer:
                     ops.append(DIV)
-                    if n < 0:
-                        ops.append(NEG)
                     args.append(d)
                     continue  # won't be -Mul but could be Add
                 elif d is not S.One:
@@ -2353,6 +2322,8 @@ def count_ops(expr, visual=False):
                     ops.append(NEG)
                 elif _coeff_isneg(aargs[0]):  # -x + y = SUB, but already recorded ADD
                     ops.append(SUB - ADD)
+                # XXX "peephole" optimization, http://bugs.python.org/issue2506
+                a
                 continue
             elif isinstance(expr, BooleanFunction):
                 ops = []
