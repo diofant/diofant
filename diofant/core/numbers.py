@@ -2329,8 +2329,6 @@ class Infinity(Number, metaclass=Singleton):
             return oo
         if expt.is_negative:
             return S.Zero
-        if expt is zoo:
-            return nan
         if expt.is_real is False and expt.is_number:
             expt_real = re(expt)
             if expt_real.is_positive:
@@ -2709,9 +2707,7 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
         return self
 
     def _eval_power(self, expt):
-        if expt in (0, zoo):
-            return nan
-        elif expt.is_positive:
+        if expt.is_positive:
             return zoo
         elif expt.is_negative:
             return S.Zero
@@ -2840,8 +2836,6 @@ class Exp1(NumberSymbol, metaclass=Singleton):
                 return oo
             elif arg is -oo:
                 return S.Zero
-        elif arg is zoo:
-            return nan
         elif isinstance(arg, log):
             return arg.args[0]
         elif arg.is_Mul:
