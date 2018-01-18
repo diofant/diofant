@@ -27,6 +27,10 @@ def test_solve_poly_system():
 
     assert solve_poly_system([y - x, y - x - 1], x, y) == []
 
+    assert solve_poly_system([x - y + 5, x + y - 3], x, y) == [{x: -1, y: 4}]
+    assert solve_poly_system([x - 2*y + 5, 2*x - y - 3], x, y) == [{x: Rational(11, 3), y: Rational(13, 3)}]
+    assert solve_poly_system([x**2 + y, x + y*4], x, y) == [{x: 0, y: 0}, {x: Rational(1, 4), y: Rational(-1, 16)}]
+
     assert solve_poly_system([y - x**2, y + x**2], x, y) == [{x: 0, y: 0}]
 
     assert (solve_poly_system([2*x - 3, 3*y/2 - 2*x, z - 5*y], x, y, z) ==
