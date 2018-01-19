@@ -1901,46 +1901,52 @@ class AlgebraicNumber(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
-        if isinstance(other, Rational):
+        if other.is_Rational:
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
                                           self.minpoly.domain)
             coeffs = self.rep + other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep + other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                coeffs = self.rep + other.rep
+                return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+            else:
+                return Add(self, other, evaluate=False)
         else:
             return Number.__add__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
-        if isinstance(other, Rational):
+        if other.is_Rational:
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
                                           self.minpoly.domain)
             coeffs = self.rep - other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep - other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                coeffs = self.rep - other.rep
+                return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+            else:
+                return Add(self, -other, evaluate=False)
         else:
             return Number.__sub__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
-        if isinstance(other, Rational):
+        if other.is_Rational:
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
                                           self.minpoly.domain)
             coeffs = self.rep * other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep * other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                coeffs = self.rep * other.rep
+                return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+            else:
+                return Mul(self, other, evaluate=False)
         else:
             return Number.__mul__(self, other)
 
