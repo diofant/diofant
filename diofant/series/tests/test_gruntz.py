@@ -88,7 +88,6 @@ def test_gruntz_evaluation():
     assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x) == oo
 
 
-@pytest.mark.slow
 def test_gruntz_eval_special():
     # Gruntz, p. 126
     assert gruntz(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))), x) == 1
@@ -106,6 +105,10 @@ def test_gruntz_eval_special():
     assert gruntz(x * (gamma(x - 1/gamma(x)) - gamma(x) + log(x)), x) \
         == Rational(1, 2)
     assert gruntz((gamma(x + 1/gamma(x)) - gamma(x)) / log(x), x) == 1
+
+
+@pytest.mark.slow
+def test_gruntz_eval_special_slow():
     assert gruntz(gamma(x + 1)/sqrt(2*pi)
                   - exp(-x)*(x**(x + Rational(1, 2)) + x**(x - Rational(1, 2))/12), x) == oo
     assert gruntz(exp(exp(exp(digamma(digamma(digamma(x))))))/x, x) == 0

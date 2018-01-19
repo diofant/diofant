@@ -64,7 +64,6 @@ Basic polynomial manipulation functions
 .. autofunction:: cancel
 .. autofunction:: reduced
 .. autofunction:: groebner
-.. autofunction:: is_zero_dimensional
 
 .. autoclass:: Poly
    :members:

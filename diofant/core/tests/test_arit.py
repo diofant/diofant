@@ -1170,6 +1170,9 @@ def test_Pow_is_zero():
     assert Pow(Rational(1, 2), oo, evaluate=False).is_zero
     assert Pow(Rational(1, 2), -oo, evaluate=False).is_zero is False
 
+    n = Symbol('n', nonzero=True)
+    assert Pow(n, oo).is_zero is None
+
 
 def test_Pow_is_nonpositive_nonnegative():
     x = Symbol('x', extended_real=True)

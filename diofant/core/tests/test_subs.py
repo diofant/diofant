@@ -430,6 +430,8 @@ def test_derivative_subs2():
         Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
     assert (Derivative(f(x, y, z), x, y, z).subs(
         Derivative(f(x, y, z), z, y, x), g) == g)
+    assert (Derivative(sin(x), x, 2).subs(Derivative(sin(x), f(x)), g) ==
+            Derivative(sin(x), x, 2))
 
 
 def test_derivative_subs3():
@@ -684,3 +686,9 @@ def test_aresame_ordering():
     e = Min(3, z)
     s = (Min(z, 3), 3)
     assert e.subs(*s) == 3
+
+
+def test_underscores():
+    _0, _1 = symbols('_0 _1')
+    e = Subs(_0 + _1, (_0, _1), (1, 0))
+    assert e._expr == Symbol('__0') + Symbol('__1')

@@ -29,9 +29,9 @@ from diofant.polys.polytools import (LC, LM, LT, GroebnerBasis, Poly, PurePoly,
                                      discriminant, div, exquo, factor,
                                      factor_list, gcd, gcd_list, gcdex, gff,
                                      gff_list, groebner, ground_roots,
-                                     half_gcdex, intervals, invert,
-                                     is_zero_dimensional, lcm, lcm_list, monic,
-                                     nroots, nth_power_roots_poly,
+                                     half_gcdex, intervals, invert, lcm,
+                                     lcm_list, monic, nroots,
+                                     nth_power_roots_poly,
                                      parallel_poly_from_expr, pdiv, pexquo,
                                      poly, pquo, prem, primitive, quo,
                                      real_roots, reduced, refine_root, rem,
@@ -3130,18 +3130,86 @@ def test_fglm():
     assert G.fglm(lex) == reversed(B)
 
 
-def test_is_zero_dimensional():
-    assert is_zero_dimensional([x, y], x, y) is True
-    assert is_zero_dimensional([x**3 + y**2], x, y) is False
+def test_dimension_and_independent_sets():
+    assert groebner((x, y)).dimension == 0
+    assert groebner((x**3 + y**2,)).dimension == 1
+    assert groebner((x, y, z)).dimension == 0
+    assert groebner((x, y, z), x, y, z, t).dimension == 1
+    assert groebner((x*y - z, y*z - x, x*y - y)).dimension == 0
+    assert groebner((x**2 - 2*x*z + 5, x*y**2 + y*z**3, 3*y**2 - 8*z**2)).dimension == 0
 
-    assert is_zero_dimensional([x, y, z], x, y, z) is True
-    assert is_zero_dimensional([x, y, z], x, y, z, t) is False
+    assert groebner((x + y, x - y)).independent_sets == [[]]
+    assert groebner((x + y, 2*x + 2*y)).independent_sets == [[y]]
+    assert groebner((x**2 + y**2,)).independent_sets == [[y]]
+    assert groebner((x**3*y**2 - 1,)).independent_sets == [[y], [x]]
+    assert groebner((x**3 - y**3,)).independent_sets == [[y]]
+    assert groebner((y - x, y - x - 1)).independent_sets is None
+    assert groebner((x*y - z**2 - z, x**2 + x - y*z, x*z - y**2 - y)).independent_sets == [[z]]
+    assert groebner((x*y*z,)).independent_sets == [[y, z], [x, z], [x, y]]
+    assert groebner((x**2 - 1, (x - 1)*y, (x + 1)*z)).independent_sets == [[z], [y]]
+    assert groebner((x**2 + y**2 + z**2, x + y - z, y + z**2)).independent_sets == [[]]
+    assert groebner((x*z - 2*y + 1, y*z - 1 + z, y*z + x*y*z + z)).independent_sets == [[]]
+    assert groebner((x**3*y*z - x*z**2, x*y**2*z - x*y*z, x**2*y**2 - z)).independent_sets == [[z], [y], [x]]
+    assert groebner((x*y**2 - z - z**2, x**2*y - y, y**2 - z**2)).independent_sets == [[x]]
+    assert groebner((x*y + z - 1, x - y - z**2, x**2 - 2*y**2 + 1)).independent_sets == [[]]
+    assert groebner((z*x - y - x + x*y, y*z - z + x**2 + y*x**2, x - x**2 + y, z)).independent_sets == [[]]
+    assert groebner((x*y - x*z + y**2, y*z - x**2 + x**2*y, x - x*y + y)).independent_sets == [[z]]
+    assert groebner((y*z + x**2 + z, x*y*z + x*z - y**3, x*z + y**2)).independent_sets == [[]]
+    assert groebner((x**2 + z**2*y + y*z, y**2 - z*x + x, x*y + z**2 - 1)).independent_sets == [[]]
+    assert groebner((x + y**2*z - 2*y**2 + 4*y - 2*z - 1, -x + y**2*z - 1)).independent_sets == [[z], [y]]
+    assert groebner((x, y - 1, z)).independent_sets == [[]]
 
-    F = [x*y - z, y*z - x, x*y - y]
-    assert is_zero_dimensional(F, x, y, z) is True
+    # H. Kredel and V. Weispfennig. Computing dimension and independent sets for
+    # polynomial ideals. J. Symbolic Computation, 6(1):231–247, November 1988.
 
-    F = [x**2 - 2*x*z + 5, x*y**2 + y*z**3, 3*y**2 - 8*z**2]
-    assert is_zero_dimensional(F, x, y, z) is True
+    # Ex. 4.1.
+    V = (A31, A32, A21, B1, B2, B3, C3, C2) = symbols('A31 A32 A21 B1 B2 B3 C3 C2')
+    S = (C2 - A21, C3 - A31 - A32, B1 + B2 + B3 - 1,
+         B2*C2 + B3*C3 - QQ(1, 2), B2*C2**2 + B3*C3**2 - QQ(1, 3),
+         B3*A32*C2 - QQ(1, 6))
+    G = groebner(S, V, domain=QQ)
+    assert G.independent_sets == [[C3, C2], [B3, C2], [B2, C3], [B2, B3], [A32, C3], [A32, B2]]
+    assert G.dimension == 2
+
+    # Ex. 4.3
+    V = (B1, A32, B2, B3, A, C3, C2, B) = symbols('B1 A32 B2 B3 A C3 C2 B')
+    S = (B1 + B2 + B3 - A - B,
+         B2*C2 + B3*C3 - QQ(1, 2) - B/2 - B**2 + A*B,
+         B2*C2**2 + B3*C3**2 - A/3 - A*B**2 + 4*B/3 + B**2 + B**3,
+         B3*A32*C2 - A/6 - A*B/2 - A*B**2 + 2*B/3 + B**2 + B**3,
+         B2*C2**3 + B3*C3**3 - QQ(1, 4) - B/4 - 5*B**2/2 - 3*B**3/2 - B**4 + A*B + A*B**3,
+         B3*C3*A32*C2 - QQ(1, 8) - 3*B/8 - 7*B**2/4 - 3*B**3/2 - B**4 + A*B/2 + A*B**2/2 + A*B**3,
+         B3*A32*C2**2 - QQ(1, 12) - B/12 - 7*B**2/6 - 3*B**3/2 - B**4 + 2*A*B/3 + A*B**2 + A*B**3,
+         QQ(1, 24) + 7*B/24 + 13*B**2/12 + 3*B**3/2 + B**4 - A*B/3 - A*B**2 - A*B**3)
+    G = groebner(S, V, domain=QQ)
+    assert G.independent_sets == [[B3, C2], [A32, C3, C2], [A32, B2, C3], [A32, B2, B3]]
+    assert G.dimension == 3
+
+    # Ex. 4.4
+    V = (L7, L6, L4, L1, L5, L3, L2) = symbols('L7 L6 L4 L1 L5 L3 L2')
+    S = (L1*(L4 - L5/2 + L6),
+         (2*L1**2/7 - L4)*(-10*L1 + 5*L2 - L3),
+         (2*L1**2/7 - L4)*(3*L4 - L5 + L6),
+         (-2*L1**2 + L1*L2 + 2*L1*L3 - L2**2 - 7*L5 + 21*L6)*(-3*L1 + 2*L2) + 21*(7*L7 - 2*L1*L4 + 3*L1**3/7),
+         (-2*L1**2 + L1*L2 + 2*L1*L3 - L2**2 - 7*L5 + 21*L6)*(2*L4 - 2*L5) + (7*L7 - 2*L1*L4 + 3*L1**3/7)*(-45*L1 + 15*L2 - 3*L3),
+         2*(-2*L1**2 + L1*L2 + 2*L1*L3 - L2**2 - 7*L5 + 21*L6)*L7 + (7*L7 - 2*L1*L4 + 3*L1**3/7)*(12*L4 - 3*L5 + 2*L6),
+         (L1*(5*L1 - 3*L2 + L3))*(2*L2 - L1) + 7*(L1*(2*L6 - 4*L4)),
+         (L1*(5*L1 - 3*L2 + L3))*L3+7*(L1*(2*L6 - 4*L4)),
+         (L1*(5*L1 - 3*L2 + L3))*(-2*L4 - 2*L5) + (L1*(2*L6 - 4*L4))*(2*L2 - 8*L1) + 42*L1*L7,
+         (L1*(5*L1 - 3*L2 + L3))*(8*L5/3 + 6*L6) + (L1*(2*L6 - 4*L4))*(11*L1 - 17*L2/3 + 5*L3/3) - 84*L1*L7,
+         15*L7*(L1*(5*L1 - 3*L2 + L3)) + (L1*(2*L6 - 4*L4))*(5*L4 - 2*L5) + L1*L7*(-120*L1 + 30*L2 - 6*L3)/2,
+         -3*(L1*(5*L1 - 3*L2 + L3))*L7 + (L1*(2*L6 - 4*L4))*(-L4/2 + L5/4 - L6/2) + L1*L7/2*(24*L1 - 6*L2),
+         3*(L1*(2*L6 - 4*L4))*L7 + L1*L7*(40*L4 - 8*L5 + 4*L6)/2)
+    G.independent_sets == [[L5, L3, L2], [L6, L3]]
+    assert G.dimension == 3
+
+    # Algebraic Solution of Nonlinear Equation Systems in REDUCE, p.7.
+    V = (ax, bx, cx, gx, jx, lx, mx, nx, q) = symbols('ax bx cx gx jx lx mx nx q')
+    S = (ax*q - lx*q - mx, ax - gx*q - lx, bx*q**2 + cx*q - jx*q - nx,
+         q*(-ax*q + lx*q + mx), q*(-ax + gx*q + lx))
+    G = groebner(S, V, domain=QQ)
+    assert G.independent_sets == [[cx, jx, lx, mx, nx, q], [cx, gx, jx, lx, mx, nx], [bx, cx, gx, jx, lx, nx]]
+    assert G.dimension == 6
 
 
 def test_GroebnerBasis():
