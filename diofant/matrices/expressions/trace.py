@@ -7,7 +7,7 @@ class Trace(Expr):
 
     Represents the trace of a matrix expression.
 
-    >>> from diofant import MatrixSymbol, Trace, eye
+    >>> from diofant import MatrixSymbol, eye
     >>> A = MatrixSymbol('A', 3, 3)
     >>> Trace(A)
     Trace(A)

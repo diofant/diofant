@@ -441,7 +441,7 @@ def fcode(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> from diofant import fcode, symbols, Rational, sin, ceiling, floor
+    >>> from diofant import symbols, Rational, sin, ceiling, floor
     >>> x, tau = symbols("x, tau")
     >>> fcode((2*tau)**Rational(7, 2))
     '      8*sqrt(2.0d0)*tau**(7.0d0/2.0d0)'

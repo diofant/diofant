@@ -219,7 +219,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> from diofant import symbols
         >>> q1 = symbols('q1')
         >>> N = CoordSysCartesian('N')
@@ -273,7 +272,7 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import Point, CoordSysCartesian
+        >>> from diofant.vector import Point
         >>> N = CoordSysCartesian('N')
         >>> N1 = N.locate_new('N1', 10 * N.i)
         >>> N.position_wrt(N1)
@@ -297,7 +296,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> from diofant import Symbol, cos, sin
         >>> A = CoordSysCartesian('A')
         >>> q = Symbol('q')
@@ -342,7 +340,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> A = CoordSysCartesian('A')
         >>> B = A.locate_new('B', 10 * A.i)
         >>> B.origin.position_wrt(A.origin)
@@ -391,7 +388,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> from diofant import symbols
         >>> q0, q1, q2, q3 = symbols('q0 q1 q2 q3')
         >>> N = CoordSysCartesian('N')
@@ -473,7 +469,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> from diofant import symbols
         >>> q1 = symbols('q1')
         >>> N = CoordSysCartesian('N')
@@ -522,7 +517,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> from diofant import symbols
         >>> q1, q2, q3 = symbols('q1 q2 q3')
         >>> N = CoordSysCartesian('N')
@@ -596,7 +590,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> from diofant import symbols
         >>> q1, q2, q3 = symbols('q1 q2 q3')
         >>> N = CoordSysCartesian('N')
@@ -664,7 +657,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> from diofant import symbols
         >>> q0, q1, q2, q3 = symbols('q0 q1 q2 q3')
         >>> N = CoordSysCartesian('N')

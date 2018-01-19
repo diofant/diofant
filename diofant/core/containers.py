@@ -23,7 +23,6 @@ class Tuple(Basic):
     you can also access elements or slices with [:] syntax.
 
     >>> from diofant import symbols
-    >>> from diofant.core.containers import Tuple
     >>> a, b, c, d = symbols('a b c d')
     >>> Tuple(a, b, c)[1:]
     (b, c)
@@ -142,7 +141,6 @@ def tuple_wrapper(method):
     call a function with regular tuples in the argument, and the wrapper will
     convert them to Tuples before handing them to the function.
 
-    >>> from diofant.core.containers import tuple_wrapper
     >>> def f(*args):
     ...    return args
     >>> g = tuple_wrapper(f)
@@ -173,8 +171,6 @@ class Dict(Basic):
     in sets, but its values must all be given at instantiation and
     cannot be changed afterwards.  Otherwise it behaves identically
     to the Python dict.
-
-    >>> from diofant.core.containers import Dict
 
     >>> D = Dict({1: 'one', 2: 'two'})
     >>> for key in D:

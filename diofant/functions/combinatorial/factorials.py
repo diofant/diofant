@@ -44,7 +44,7 @@ class factorial(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import Symbol, factorial, Rational
+    >>> from diofant import Symbol, Rational
     >>> n = Symbol('n', integer=True)
 
     >>> factorial(0)
@@ -230,7 +230,6 @@ class subfactorial(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import subfactorial
     >>> from diofant.abc import n
     >>> subfactorial(n + 1)
     subfactorial(n + 1)
@@ -308,7 +307,6 @@ class factorial2(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import factorial2
     >>> from diofant.abc import n
 
     >>> factorial2(n + 1)
@@ -396,7 +394,6 @@ class RisingFactorial(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import rf
     >>> from diofant.abc import x
 
     >>> rf(x, 0)
@@ -472,7 +469,6 @@ class FallingFactorial(CombinatorialFunction):
     more information check "Concrete mathematics" by Graham, pp. 66
     or visit http://mathworld.wolfram.com/FallingFactorial.html page.
 
-    >>> from diofant import ff
     >>> from diofant.abc import x
 
     >>> ff(x, 0)
@@ -565,7 +561,7 @@ class binomial(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import Symbol, Rational, binomial, expand_func
+    >>> from diofant import Symbol, Rational, expand_func
     >>> n = Symbol('n', integer=True, positive=True)
 
     >>> binomial(15, 8)

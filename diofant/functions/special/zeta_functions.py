@@ -78,7 +78,7 @@ class lerchphi(Function):
 
     If `z=1`, the Lerch transcendent reduces to the Hurwitz zeta function:
 
-    >>> from diofant import lerchphi, expand_func
+    >>> from diofant import expand_func
     >>> from diofant.abc import z, s, a
     >>> expand_func(lerchphi(1, s, a))
     zeta(s, a)
@@ -235,7 +235,6 @@ class polylog(Function):
     For `z \in \{0, 1, -1\}`, the polylogarithm is automatically expressed
     using other functions:
 
-    >>> from diofant import polylog
     >>> from diofant.abc import s
     >>> polylog(s, 0)
     0
@@ -262,7 +261,6 @@ class polylog(Function):
 
     The polylogarithm can be expressed in terms of the lerch transcendent:
 
-    >>> from diofant import lerchphi
     >>> polylog(s, z).rewrite(lerchphi)
     z*lerchphi(z, s, 1)
 
@@ -361,7 +359,6 @@ class zeta(Function):
 
     .. math:: \zeta(s, 1) = \zeta(s) = \sum_{n=1}^\infty \frac{1}{n^s}.
 
-    >>> from diofant import zeta
     >>> from diofant.abc import s
     >>> zeta(s, 1)
     zeta(s)
@@ -371,7 +368,6 @@ class zeta(Function):
     The Riemann zeta function can also be expressed using the Dirichlet eta
     function:
 
-    >>> from diofant import dirichlet_eta
     >>> zeta(s).rewrite(dirichlet_eta)
     dirichlet_eta(s)/(-2**(-s + 1) + 1)
 
@@ -417,7 +413,6 @@ class zeta(Function):
     The Hurwitz zeta function can be expressed in terms of the Lerch transcendent,
     :class:`diofant.functions.special.zeta_functions.lerchphi`:
 
-    >>> from diofant import lerchphi
     >>> zeta(s, a).rewrite(lerchphi)
     lerchphi(1, s, a)
 
@@ -529,7 +524,6 @@ class dirichlet_eta(Function):
 
     The Dirichlet eta function is closely related to the Riemann zeta function:
 
-    >>> from diofant import dirichlet_eta, zeta
     >>> from diofant.abc import s
     >>> dirichlet_eta(s).rewrite(zeta)
     (-2**(-s + 1) + 1)*zeta(s)

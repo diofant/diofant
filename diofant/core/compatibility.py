@@ -44,7 +44,6 @@ def iterable(i, exclude=(str, dict, NotIterable)):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import iterable
     >>> from diofant import Tuple
     >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1: 2}, '1', 1]
     >>> for i in things:
@@ -94,7 +93,6 @@ def is_sequence(i, include=None):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import is_sequence
     >>> from types import GeneratorType
     >>> is_sequence([])
     True
@@ -126,7 +124,6 @@ def as_int(n):
     Examples
     ========
 
-    >>> from diofant.core.compatibility import as_int
     >>> from diofant import sqrt
     >>> 3.0
     3.0
@@ -170,7 +167,7 @@ def default_sort_key(item, order=None):
     Examples
     ========
 
-    >>> from diofant import S, I, default_sort_key, sin, cos, sqrt
+    >>> from diofant import S, I, sin, cos, sqrt
     >>> from diofant.core.function import UndefinedFunction
     >>> from diofant.abc import x
 
@@ -345,7 +342,6 @@ def ordered(seq, keys=None, default=True, warn=False):
     Examples
     ========
 
-    >>> from diofant.core.compatibility import ordered
     >>> from diofant import count_ops
     >>> from diofant.abc import x, y
 

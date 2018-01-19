@@ -1648,7 +1648,6 @@ def translate(s):
 
     Let everything else pass as given.
 
-    >>> from diofant.printing.latex import translate
     >>> translate('alphahatdotprime')
     "{\\dot{\\hat{\\alpha}}}'"
     """
@@ -1670,7 +1669,7 @@ def latex(expr, **settings):
     r"""
     Convert the given expression to LaTeX representation.
 
-    >>> from diofant import latex, pi, sin, asin, Integral, Matrix, Rational
+    >>> from diofant import pi, sin, asin, Integral, Matrix, Rational
     >>> from diofant.abc import x, y, mu, r, tau
 
     >>> print(latex((2*tau)**Rational(7, 2)))

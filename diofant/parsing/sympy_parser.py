@@ -279,8 +279,6 @@ def function_exponentiation(tokens, local_dict, global_dict):
     Examples
     ========
 
-    >>> from diofant.parsing.sympy_parser import (parse_expr,
-    ... standard_transformations, function_exponentiation)
     >>> transformations = standard_transformations + (function_exponentiation,)
     >>> parse_expr('sin**4(x)', transformations=transformations)
     sin(x)**4
@@ -332,9 +330,6 @@ def split_symbols_custom(predicate):
     symbol names, a predicate like this would work:
 
 
-    >>> from diofant.parsing.sympy_parser import (parse_expr, _token_splittable,
-    ... standard_transformations, implicit_multiplication,
-    ... split_symbols_custom)
     >>> def can_split(symbol):
     ...     if symbol not in ('list', 'of', 'unsplittable', 'names'):
     ...             return _token_splittable(symbol)
@@ -342,7 +337,7 @@ def split_symbols_custom(predicate):
     ...
     >>> transformation = split_symbols_custom(can_split)
     >>> parse_expr('unsplittable', transformations=standard_transformations +
-    ... (transformation, implicit_multiplication))
+    ...            (transformation, implicit_multiplication))
     unsplittable
     """
     def _split_symbols(tokens, local_dict, global_dict):
@@ -405,8 +400,6 @@ def implicit_multiplication(result, local_dict, global_dict):
     Examples
     ========
 
-    >>> from diofant.parsing.sympy_parser import (parse_expr,
-    ... standard_transformations, implicit_multiplication)
     >>> transformations = standard_transformations + (implicit_multiplication,)
     >>> parse_expr('3 x y', transformations=transformations)
     3*x*y
@@ -431,8 +424,6 @@ def implicit_application(result, local_dict, global_dict):
     Examples
     ========
 
-    >>> from diofant.parsing.sympy_parser import (parse_expr,
-    ... standard_transformations, implicit_application)
     >>> transformations = standard_transformations + (implicit_application,)
     >>> parse_expr('cot z + csc z', transformations=transformations)
     cot(z) + csc(z)
@@ -461,11 +452,9 @@ def implicit_multiplication_application(result, local_dict, global_dict):
     Examples
     ========
 
-    >>> from diofant.parsing.sympy_parser import (parse_expr,
-    ... standard_transformations, implicit_multiplication_application)
     >>> parse_expr("10sin**2 x**2 + 3xyz + tan theta",
     ... transformations=(standard_transformations +
-    ... (implicit_multiplication_application,)))
+    ...                  (implicit_multiplication_application,)))
     3*x*y*z + 10*sin(x**2)**2 + tan(theta)
 
     """
@@ -701,15 +690,12 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     Examples
     ========
 
-    >>> from diofant.parsing.sympy_parser import parse_expr
     >>> parse_expr("1/2")
     1/2
     >>> type(_)
     <class 'diofant.core.numbers.Half'>
-    >>> from diofant.parsing.sympy_parser import (standard_transformations,
-    ...                                           implicit_multiplication_application)
     >>> transformations = (standard_transformations +
-    ...     (implicit_multiplication_application,))
+    ...                    (implicit_multiplication_application,))
     >>> parse_expr("2x", transformations=transformations)
     2*x
 

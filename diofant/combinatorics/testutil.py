@@ -17,7 +17,6 @@ def _cmp_perm_lists(first, second):
     ========
 
     >>> from diofant.combinatorics.permutations import Permutation
-    >>> from diofant.combinatorics.testutil import _cmp_perm_lists
     >>> a = Permutation([0, 2, 3, 4, 1])
     >>> b = Permutation([1, 2, 0, 4, 3])
     >>> c = Permutation([3, 4, 0, 1, 2])
@@ -43,7 +42,6 @@ def _naive_list_centralizer(self, other, af=False):
     Examples
     ========
 
-    >>> from diofant.combinatorics.testutil import _naive_list_centralizer
     >>> from diofant.combinatorics.named_groups import DihedralGroup
     >>> D = DihedralGroup(4)
     >>> _naive_list_centralizer(D, D)
@@ -92,7 +90,6 @@ def _verify_bsgs(group, base, gens):
     ========
 
     >>> from diofant.combinatorics.named_groups import AlternatingGroup
-    >>> from diofant.combinatorics.testutil import _verify_bsgs
     >>> A = AlternatingGroup(4)
     >>> A.schreier_sims()
     >>> _verify_bsgs(A, A.base, A.strong_gens)
@@ -131,7 +128,6 @@ def _verify_centralizer(group, arg, centr=None):
     ... AlternatingGroup)
     >>> from diofant.combinatorics.perm_groups import PermutationGroup
     >>> from diofant.combinatorics.permutations import Permutation
-    >>> from diofant.combinatorics.testutil import _verify_centralizer
     >>> S = SymmetricGroup(5)
     >>> A = AlternatingGroup(5)
     >>> centr = PermutationGroup([Permutation([0, 1, 2, 3, 4])])
@@ -165,7 +161,6 @@ def _verify_normal_closure(group, arg, closure=None):
 
     >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
     ... AlternatingGroup)
-    >>> from diofant.combinatorics.testutil import _verify_normal_closure
     >>> S = SymmetricGroup(3)
     >>> A = AlternatingGroup(3)
     >>> _verify_normal_closure(S, A, closure=A)
@@ -217,7 +212,6 @@ def canonicalize_naive(g, dummies, sym, *v):
     Examples
     ========
 
-    >>> from diofant.combinatorics.testutil import canonicalize_naive
     >>> from diofant.combinatorics.tensor_can import get_symmetric_group_sgs
     >>> from diofant.combinatorics import Permutation, PermutationGroup
     >>> g = Permutation([1, 3, 2, 0, 4, 5])
@@ -283,7 +277,6 @@ def graph_certificate(gr):
     Examples
     ========
 
-    >>> from diofant.combinatorics.testutil import graph_certificate
     >>> gr1 = {0: [1, 2, 3, 5], 1: [0, 2, 4], 2: [0, 1, 3, 4], 3: [0, 2, 4], 4: [1, 2, 3, 5], 5: [0, 4]}
     >>> gr2 = {0: [1, 5], 1: [0, 2, 3, 4], 2: [1, 3, 5], 3: [1, 2, 4, 5], 4: [1, 3, 5], 5: [0, 2, 3, 4]}
     >>> c1 = graph_certificate(gr1)

@@ -83,7 +83,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(5, 3)
         >>> l = Line(p1, p2)
         >>> l.p1
@@ -104,7 +104,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(5, 3)
         >>> l = Line(p1, p2)
         >>> l.p2
@@ -125,7 +125,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> from diofant.abc import x, y
         >>> p1, p2 = Point(0, 0), Point(5, 3)
         >>> l = Line(p1, p2)
@@ -184,7 +184,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line, Line3D
+        >>> from diofant import Point, Line3D
         >>> p1, p2 = Point(0, 0), Point(3, 5)
         >>> p3, p4 = Point(-2, -2), Point(0, 2)
         >>> l1, l2, l3 = Line(p1, p2), Line(p1, p3), Line(p1, p4)
@@ -239,7 +239,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(1, 1)
         >>> p3, p4 = Point(3, 4), Point(6, 7)
         >>> l1, l2 = Line(p1, p2), Line(p3, p4)
@@ -282,7 +282,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(-1, 1)
         >>> l1, l2 = Line(p1, p2), Line(p1, p3)
         >>> l1.is_perpendicular(l2)
@@ -334,7 +334,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(0, 4), Point(2, 0)
         >>> l1, l2 = Line(p1, p2), Line(p1, p3)
         >>> l1.angle_between(l2)
@@ -367,7 +367,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(2, 3), Point(-2, 2)
         >>> l1 = Line(p1, p2)
         >>> l2 = l1.parallel_line(p3)
@@ -403,7 +403,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(2, 3), Point(-2, 2)
         >>> l1 = Line(p1, p2)
         >>> l2 = l1.perpendicular_line(p3)
@@ -455,7 +455,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(0, 2)
         >>> l1 = Line(p1, p2)
         >>> s1 = l1.perpendicular_segment(p3)
@@ -494,7 +494,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(3, 5)
         >>> l1 = Line(p1, p2)
         >>> l1.length
@@ -519,7 +519,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(3, 5)
         >>> l1 = Line(p1, p2)
         >>> l1.slope
@@ -553,7 +553,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(5, 11)
         >>> l1 = Line(p1, p2)
         >>> l1.points
@@ -601,7 +601,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line, Segment, Rational
+        >>> from diofant import Point, Rational
         >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(Rational(1, 2), 0)
         >>> l1 = Line(p1, p2)
         >>> l1.projection(p3)
@@ -663,7 +663,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line, Segment
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(7, 7)
         >>> l1 = Line(p1, p2)
         >>> l1.intersection(p3)
@@ -835,7 +835,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(1, 0), Point(5, 3)
         >>> l1 = Line(p1, p2)
         >>> l1.arbitrary_point()
@@ -866,7 +866,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(5, 3)
         >>> l1 = Line(p1, p2)
         >>> p3 = l1.random_point()
@@ -917,7 +917,7 @@ class LinearEntity(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 1), Point(3, 4), Point(2, 3)
         >>> l1 = Line(p1, p2)
         >>> l2 = Line(p1, p3)
@@ -984,7 +984,6 @@ class Line(LinearEntity):
     >>> import diofant
     >>> from diofant import Point
     >>> from diofant.abc import L
-    >>> from diofant.geometry import Line, Segment
     >>> L = Line(Point(2, 3), Point(3, 5))
     >>> L
     Line(Point2D(2, 3), Point2D(3, 5))
@@ -1055,7 +1054,7 @@ class Line(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(5, 3)
         >>> l1 = Line(p1, p2)
         >>> l1.plot_interval()
@@ -1089,7 +1088,7 @@ class Line(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(1, 0), Point(5, 3)
         >>> l1 = Line(p1, p2)
         >>> l1.equation()
@@ -1113,7 +1112,7 @@ class Line(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Line, Point
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 1), Point(3, 4)
         >>> l = Line(p1, p2)
         >>> l.contains(p1)
@@ -1155,7 +1154,7 @@ class Line(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Line
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(1, 1)
         >>> s = Line(p1, p2)
         >>> s.distance(Point(-1, 1))
@@ -1219,7 +1218,6 @@ class Ray(LinearEntity):
     >>> import diofant
     >>> from diofant import Point, pi
     >>> from diofant.abc import r
-    >>> from diofant.geometry import Ray
     >>> r = Ray(Point(2, 3), Point(3, 5))
     >>> r = Ray(Point(2, 3), Point(3, 5))
     >>> r
@@ -1295,7 +1293,7 @@ class Ray(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Ray
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(4, 1)
         >>> r1 = Ray(p1, p2)
         >>> r1.source
@@ -1316,7 +1314,7 @@ class Ray(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Ray
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(4, 1)
         >>> r1 = Ray(p1, p2)
         >>> r1.direction
@@ -1341,7 +1339,7 @@ class Ray(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Ray
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(0, -1)
         >>> r1, r2 = Ray(p1, p2), Ray(p1, p3)
         >>> r1.xdirection
@@ -1373,7 +1371,7 @@ class Ray(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Ray
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(-1, -1), Point(-1, 0)
         >>> r1, r2 = Ray(p1, p2), Ray(p1, p3)
         >>> r1.ydirection
@@ -1401,7 +1399,7 @@ class Ray(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Ray
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(1, 1)
         >>> s = Ray(p1, p2)
         >>> s.distance(Point(-1, -1))
@@ -1444,7 +1442,7 @@ class Ray(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Ray, pi
+        >>> from diofant import Point, pi
         >>> r = Ray((0, 0), angle=pi/4)
         >>> r.plot_interval()
         [t, 0, 10]
@@ -1466,7 +1464,7 @@ class Ray(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Ray, Point, Segment
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(4, 4)
         >>> r = Ray(p1, p2)
         >>> r.contains(p1)
@@ -1551,7 +1549,6 @@ class Segment(LinearEntity):
     >>> import diofant
     >>> from diofant import Point
     >>> from diofant.abc import s
-    >>> from diofant.geometry import Segment
     >>> Segment((1, 0), (1, 1)) # tuples are interpreted as pts
     Segment(Point2D(1, 0), Point2D(1, 1))
     >>> s = Segment(Point(4, 3), Point(1, 1))
@@ -1601,7 +1598,7 @@ class Segment(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Segment
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(5, 3)
         >>> s1 = Segment(p1, p2)
         >>> s1.plot_interval()
@@ -1637,7 +1634,7 @@ class Segment(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Segment
+        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(6, 6), Point(5, 1)
         >>> s1 = Segment(p1, p2)
         >>> s1.perpendicular_bisector()
@@ -1665,7 +1662,7 @@ class Segment(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Segment
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(4, 3)
         >>> s1 = Segment(p1, p2)
         >>> s1.length
@@ -1686,7 +1683,7 @@ class Segment(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Segment
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 0), Point(4, 3)
         >>> s1 = Segment(p1, p2)
         >>> s1.midpoint
@@ -1707,7 +1704,7 @@ class Segment(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Segment
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 1), Point(3, 4)
         >>> s = Segment(p1, p2)
         >>> s.distance(Point(10, 15))
@@ -1738,7 +1735,7 @@ class Segment(LinearEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Segment
+        >>> from diofant import Point
         >>> p1, p2 = Point(0, 1), Point(3, 4)
         >>> s = Segment(p1, p2)
         >>> s2 = Segment(p2, p1)

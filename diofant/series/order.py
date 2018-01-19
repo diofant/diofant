@@ -26,7 +26,7 @@ class Order(Expr):
     Examples
     ========
 
-    >>> from diofant import O, oo, cos, pi
+    >>> from diofant import oo, cos, pi
     >>> from diofant.abc import x, y
 
     The order of a function can be intuitively thought of representing all

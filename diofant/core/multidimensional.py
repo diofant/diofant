@@ -68,7 +68,6 @@ class vectorize:
     ========
 
     >>> from diofant import diff, sin, symbols, Function
-    >>> from diofant.core.multidimensional import vectorize
 
     >>> x, y = symbols('x, y')
     >>> f, g = symbols('f, g', cls=Function)

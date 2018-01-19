@@ -94,7 +94,7 @@ class floor(RoundFunction):
     Examples
     ========
 
-    >>> from diofant import floor, E, I, Float, Rational
+    >>> from diofant import E, I, Float, Rational
     >>> floor(17)
     17
     >>> floor(Rational(23, 10))
@@ -168,7 +168,7 @@ class ceiling(RoundFunction):
     Examples
     ========
 
-    >>> from diofant import ceiling, E, I, Float, Rational
+    >>> from diofant import E, I, Float, Rational
     >>> ceiling(17)
     17
     >>> ceiling(Rational(23, 10))

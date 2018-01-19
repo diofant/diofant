@@ -17,7 +17,6 @@ def n_order(a, n):
     Examples
     ========
 
-    >>> from diofant.ntheory import n_order
     >>> n_order(3, 7)
     6
     >>> n_order(4, 7)
@@ -62,7 +61,6 @@ def _primitive_root_prime_iter(p):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
     >>> list(_primitive_root_prime_iter(19))
     [2, 3, 10, 13, 14, 15]
     """
@@ -95,7 +93,6 @@ def primitive_root(p):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import primitive_root
     >>> primitive_root(19)
     2
     """
@@ -153,7 +150,7 @@ def is_primitive_root(a, p):
     Examples
     ========
 
-    >>> from diofant.ntheory import is_primitive_root, n_order, totient
+    >>> from diofant.ntheory import totient
     >>> is_primitive_root(3, 10)
     True
     >>> is_primitive_root(9, 10)
@@ -224,7 +221,6 @@ def sqrt_mod(a, p, all_roots=False):
     Examples
     ========
 
-    >>> from diofant.ntheory import sqrt_mod
     >>> sqrt_mod(11, 43)
     21
     >>> sqrt_mod(17, 32, True)
@@ -265,7 +261,6 @@ def sqrt_mod_iter(a, p, domain=int):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import sqrt_mod_iter
     >>> list(sqrt_mod_iter(11, 43))
     [21, 22]
     """
@@ -331,7 +326,6 @@ def _sqrt_mod_prime_power(a, p, k):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import _sqrt_mod_prime_power
     >>> _sqrt_mod_prime_power(11, 43, 1)
     [21, 22]
     """
@@ -545,7 +539,6 @@ def is_quad_residue(a, p):
     i.e a % p in {i**2 % p for i in range(p)}. If ``p`` is an odd
     prime, an iterative method is used to make the determination:
 
-    >>> from diofant.ntheory import is_quad_residue
     >>> sorted({i**2 % 7 for i in range(7)})
     [0, 1, 2, 4]
     >>> [j for j in range(7) if is_quad_residue(j, 7)]
@@ -670,7 +663,6 @@ def nthroot_mod(a, n, p, all_roots=False):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import nthroot_mod
     >>> nthroot_mod(11, 4, 19)
     8
     >>> nthroot_mod(11, 4, 19, True)
@@ -724,7 +716,6 @@ def quadratic_residues(p):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import quadratic_residues
     >>> quadratic_residues(7)
     [0, 1, 2, 4]
     """
@@ -749,7 +740,6 @@ def legendre_symbol(a, p):
     Examples
     ========
 
-    >>> from diofant.ntheory import legendre_symbol
     >>> [legendre_symbol(i, 7) for i in range(7)]
     [0, 1, 1, -1, 1, -1, -1]
     >>> sorted({i**2 % 7 for i in range(7)})
@@ -790,7 +780,6 @@ def jacobi_symbol(m, n):
     Examples
     ========
 
-    >>> from diofant.ntheory import jacobi_symbol, legendre_symbol
     >>> from diofant import Mul, S, Integer
     >>> jacobi_symbol(45, 77)
     -1
@@ -862,7 +851,6 @@ class mobius(Function):
     Examples
     ========
 
-    >>> from diofant.ntheory import mobius
     >>> mobius(13*7)
     1
     >>> mobius(1)

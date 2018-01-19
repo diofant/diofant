@@ -35,8 +35,6 @@ class CantSympify:
     Examples
     ========
 
-    >>> from diofant.core.sympify import sympify, CantSympify
-
     >>> class Something(dict):
     ...     pass
     ...
@@ -74,8 +72,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     If the argument is already a type that Diofant understands, it will do
     nothing but return that value. This can be used at the beginning of a
     function to ensure you are working with the correct type.
-
-    >>> from diofant import sympify
 
     >>> sympify(2).is_integer
     True
@@ -217,7 +213,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...         yield 2
     ...         return
     ...     def __getitem__(self, i): return list(self)[i]
-    >>> from diofant.core.sympify import converter
     >>> converter[MyList2] = lambda x: Matrix(x)
     >>> sympify(MyList2())
     Matrix([

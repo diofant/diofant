@@ -25,7 +25,6 @@ def egyptian_fraction(r, algorithm="Greedy"):
     ========
 
     >>> from diofant import Rational
-    >>> from diofant.ntheory.egyptian_fraction import egyptian_fraction
     >>> egyptian_fraction(Rational(3, 7))
     [3, 11, 231]
     >>> egyptian_fraction(Rational(3, 7), "Graham Jewett")

@@ -471,7 +471,7 @@ def _minpoly_compose(ex, x, dom):
     Examples
     ========
 
-    >>> from diofant import minimal_polynomial, sqrt, Rational
+    >>> from diofant import sqrt, Rational
     >>> from diofant.abc import x, y
     >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=True)
     x**2 - 2*x - 1
@@ -561,7 +561,7 @@ def minimal_polynomial(ex, x=None, **args):
     Examples
     ========
 
-    >>> from diofant import minimal_polynomial, sqrt, solve, QQ
+    >>> from diofant import sqrt, solve, QQ
     >>> from diofant.abc import x, y
 
     >>> minimal_polynomial(sqrt(2), x)
@@ -624,7 +624,7 @@ def minpoly_groebner(ex, x):
     Examples
     ========
 
-    >>> from diofant import minimal_polynomial, sqrt, Rational
+    >>> from diofant import sqrt, Rational
     >>> from diofant.abc import x
     >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=False)
     x**2 - 2*x - 1

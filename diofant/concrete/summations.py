@@ -536,7 +536,6 @@ def telescopic_direct(L, R, n, limits):
 
     For example:
 
-    >>> from diofant.concrete.summations import telescopic_direct
     >>> from diofant.abc import k, a, b
     >>> telescopic_direct(1/k, -1/(k+2), 2, (k, a, b))
     -1/(b + 2) - 1/(b + 1) + 1/(a + 1) + 1/a

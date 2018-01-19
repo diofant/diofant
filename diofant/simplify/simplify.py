@@ -58,7 +58,7 @@ def separatevars(expr, symbols=[], dict=False, force=False):
     ========
 
     >>> from diofant.abc import x, y, z, alpha
-    >>> from diofant import separatevars, sin
+    >>> from diofant import sin
     >>> separatevars((x*y)**y)
     (x*y)**y
     >>> separatevars((x*y)**y, force=True)
@@ -237,7 +237,6 @@ def nthroot(expr, n, max_len=4, prec=15):
     Examples
     ========
 
-    >>> from diofant.simplify.simplify import nthroot
     >>> from diofant import sqrt
     >>> nthroot(90 + 34*sqrt(7), 3)
     sqrt(7) + 3
@@ -288,7 +287,7 @@ def posify(eq):
     A dictionary that can be sent to subs to restore eq to its original
     symbols is also returned.
 
-    >>> from diofant import posify, Symbol, log, solve
+    >>> from diofant import Symbol, log, solve
     >>> from diofant.abc import x
     >>> posify(x + Symbol('p', positive=True) + Symbol('n', negative=True))
     (n + p + _x, {_x: x})
@@ -410,7 +409,7 @@ def signsimp(expr, evaluate=None):
     Examples
     ========
 
-    >>> from diofant import signsimp, exp, symbols
+    >>> from diofant import exp, symbols
     >>> from diofant.abc import x, y
     >>> i = symbols('i', odd=True)
     >>> n = -1 + 1/x
@@ -480,7 +479,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     intelligent heuristics to make the input expression "simpler".  For
     example:
 
-    >>> from diofant import simplify, cos, sin
+    >>> from diofant import cos, sin
     >>> from diofant.abc import x, y
     >>> a = (x + x**2)/(x*sin(y)**2 + x*cos(y)**2)
     >>> a
@@ -513,7 +512,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     ::
 
-        >>> from diofant import sqrt, simplify, count_ops, oo
+        >>> from diofant import sqrt, count_ops, oo
         >>> root = 1/(sqrt(2)+3)
 
     Since ``simplify(root)`` would result in a slightly longer expression,
@@ -695,7 +694,6 @@ def _real_to_rational(expr, tolerance=None):
     """
     Replace all reals in expr with rationals.
 
-    >>> from diofant import nsimplify
     >>> from diofant.abc import x
 
     >>> nsimplify(.76 + .1*x**.5, rational=True)
@@ -758,7 +756,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     Examples
     ========
 
-    >>> from diofant import nsimplify, sqrt, GoldenRatio, exp, I, exp, pi
+    >>> from diofant import sqrt, GoldenRatio, exp, I, exp, pi
     >>> nsimplify(4/(1+sqrt(5)), [GoldenRatio])
     -2 + 2*GoldenRatio
     >>> nsimplify((1/(exp(3*pi*I/5)+1)))
@@ -873,7 +871,7 @@ def logcombine(expr, force=False):
     Examples
     ========
 
-    >>> from diofant import Symbol, symbols, log, logcombine, I
+    >>> from diofant import Symbol, symbols, log, I
     >>> from diofant.abc import a, x, y, z
     >>> logcombine(a*log(x) + log(y) - log(z))
     a*log(x) + log(y) - log(z)
@@ -1026,7 +1024,7 @@ def besselsimp(expr):
     of low order.  Finally, if the expression was changed, compute
     factorization of the result with factor().
 
-    >>> from diofant import besselj, besseli, besselsimp, polar_lift, I, Rational
+    >>> from diofant import besselj, besseli, polar_lift, I, Rational
     >>> from diofant.abc import z, nu
     >>> besselsimp(besselj(nu, z*polar_lift(-1)))
     E**(I*pi*nu)*besselj(nu, z)
@@ -1255,7 +1253,6 @@ def clear_coefficients(expr, rhs=Integer(0)):
     Examples
     ========
 
-    >>> from diofant.simplify.simplify import clear_coefficients
     >>> from diofant.abc import x, y
     >>> from diofant import Dummy
     >>> expr = 4*y*(6*x + 3)

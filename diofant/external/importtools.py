@@ -55,8 +55,6 @@ def import_module(module, min_module_version=None, min_python_version=None,
     Examples
     ========
 
-    >>> from diofant.external import import_module
-
     >>> numpy = import_module('numpy')
 
     >>> numpy = import_module('numpy', min_python_version=(2, 7),

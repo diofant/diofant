@@ -22,7 +22,7 @@ def tensorproduct(*args):
     Examples
     ========
 
-    >>> from diofant.tensor.array import tensorproduct, Array
+    >>> from diofant.tensor.array import Array
     >>> from diofant.abc import x, y, z, t
     >>> A = Array([[1, 2], [3, 4]])
     >>> B = Array([x, y])
@@ -71,7 +71,7 @@ def tensorcontraction(array, *contraction_axes):
     Examples
     ========
 
-    >>> from diofant.tensor.array import Array, tensorcontraction
+    >>> from diofant.tensor.array import Array
     >>> from diofant import Matrix, eye
     >>> tensorcontraction(eye(3), (0, 1))
     3
@@ -85,7 +85,6 @@ def tensorcontraction(array, *contraction_axes):
     Matrix multiplication may be emulated with a proper combination of
     ``tensorcontraction`` and ``tensorproduct``
 
-    >>> from diofant.tensor.array import tensorproduct
     >>> from diofant.abc import a, b, c, d, e, f, g, h
     >>> m1 = Matrix([[a, b], [c, d]])
     >>> m2 = Matrix([[e, f], [g, h]])

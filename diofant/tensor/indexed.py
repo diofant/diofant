@@ -30,7 +30,6 @@ Examples
 
 To express the above matrix element example you would write:
 
->>> from diofant.tensor import IndexedBase, Idx
 >>> from diofant import symbols
 >>> M = IndexedBase('M')
 >>> i, j = symbols('i j', cls=Idx)
@@ -115,7 +114,6 @@ class IndexException(Exception):
 class Indexed(Expr):
     """Represents a mathematical object with indices.
 
-    >>> from diofant.tensor import Indexed, IndexedBase, Idx
     >>> from diofant import symbols
     >>> i, j = symbols('i j', cls=Idx)
     >>> Indexed('A', i, j)
@@ -150,7 +148,6 @@ class Indexed(Expr):
         Examples
         ========
 
-        >>> from diofant.tensor import Indexed, IndexedBase, Idx
         >>> from diofant import symbols
         >>> i, j = symbols('i j', cls=Idx)
         >>> Indexed('A', i, j).base
@@ -170,7 +167,6 @@ class Indexed(Expr):
         Examples
         ========
 
-        >>> from diofant.tensor import Indexed, Idx
         >>> from diofant import symbols
         >>> i, j = symbols('i j', cls=Idx)
         >>> Indexed('A', i, j).indices
@@ -187,7 +183,6 @@ class Indexed(Expr):
         Examples
         ========
 
-        >>> from diofant.tensor import Indexed, Idx
         >>> from diofant import symbols
         >>> i, j, k, l, m = symbols('i:m', cls=Idx)
         >>> Indexed('A', i, j).rank
@@ -209,7 +204,6 @@ class Indexed(Expr):
         the IndexedBase does not define a shape attribute, it is assumed that
         the ranges of the indices correspond to the shape of the array.
 
-        >>> from diofant.tensor.indexed import IndexedBase, Idx
         >>> from diofant import symbols
         >>> n, m = symbols('n m', integer=True)
         >>> i = Idx('i', m)
@@ -245,7 +239,7 @@ class Indexed(Expr):
         Examples
         ========
 
-        >>> from diofant import Indexed, Idx, symbols
+        >>> from diofant import symbols
         >>> Indexed('A', Idx('i', 2), Idx('j', 4), Idx('k', 8)).ranges
         [(0, 1), (0, 3), (0, 7)]
         >>> Indexed('A', Idx('i', 3), Idx('j', 3), Idx('k', 3)).ranges
@@ -289,7 +283,6 @@ class IndexedBase(Expr, NotIterable):
          to arrays, and is recognized as such for code generation and automatic
          compilation and wrapping.
 
-    >>> from diofant.tensor import IndexedBase, Idx
     >>> from diofant import symbols
     >>> A = IndexedBase('A'); A
     A
@@ -342,7 +335,6 @@ class IndexedBase(Expr, NotIterable):
         Examples
         ========
 
-        >>> from diofant import IndexedBase
         >>> from diofant.abc import x, y
         >>> IndexedBase('A', shape=(x, y)).args
         (A, (x, y))
@@ -374,7 +366,6 @@ class IndexedBase(Expr, NotIterable):
         Examples
         ========
 
-        >>> from diofant import IndexedBase, Idx, Symbol
         >>> from diofant.abc import x, y
         >>> IndexedBase('A', shape=(x, y)).shape
         (x, y)
@@ -401,7 +392,6 @@ class IndexedBase(Expr, NotIterable):
         Examples
         ========
 
-        >>> from diofant import IndexedBase
         >>> from diofant.abc import x, y
         >>> IndexedBase('A', shape=(x, y)).label
         A
@@ -442,7 +432,6 @@ class Idx(Expr):
     Examples
     ========
 
-    >>> from diofant.tensor import IndexedBase, Idx
     >>> from diofant import symbols, oo
     >>> n, i, L, U = symbols('n i L U', integer=True)
 
@@ -521,7 +510,7 @@ class Idx(Expr):
         Examples
         ========
 
-        >>> from diofant import Idx, Symbol
+        >>> from diofant import Symbol
         >>> Idx(2).label
         2
         >>> j = Symbol('j', integer=True)
@@ -540,7 +529,6 @@ class Idx(Expr):
         Examples
         ========
 
-        >>> from diofant import Idx
         >>> Idx('j', 2).lower
         0
         >>> Idx('j', 5).lower
@@ -561,7 +549,6 @@ class Idx(Expr):
         Examples
         ========
 
-        >>> from diofant import Idx
         >>> Idx('j', 2).upper
         1
         >>> Idx('j', 5).upper

@@ -47,7 +47,6 @@ def combsimp(expr):
     Examples
     ========
 
-    >>> from diofant.simplify import combsimp
     >>> from diofant import factorial, binomial
     >>> from diofant.abc import n, k
 

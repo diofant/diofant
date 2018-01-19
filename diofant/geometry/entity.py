@@ -382,7 +382,6 @@ def rotate(th):
     then the origin, translate the Point, do the rotation, and
     translate it back:
 
-    >>> from diofant.geometry.entity import rotate, translate
     >>> from diofant import Point, pi
     >>> rot_about_11 = translate(-1, -1)*rotate(pi/2)*translate(1, 1)
     >>> Point(1, 1).transform(rot_about_11)

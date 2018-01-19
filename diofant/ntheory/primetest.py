@@ -109,7 +109,6 @@ def mr(n, bases):
     Examples
     ========
 
-    >>> from diofant.ntheory.primetest import mr
     >>> mr(1373651, [2, 3])
     False
     >>> mr(479001599, [31, 73])
@@ -216,7 +215,6 @@ def isprime(n):
     Examples
     ========
 
-    >>> from diofant.ntheory import isprime
     >>> isprime(13)
     True
     >>> isprime(15)
@@ -263,7 +261,6 @@ def _mr_safe_helper(_s):
 
     e.g.
 
-    >>> from diofant.ntheory.primetest import _mr_safe_helper
     >>> print(_mr_safe_helper("if n < 170584961: return mr(n, [350, 3958281543])"))
      # [350, 3958281543] stot = 1 clear [2, 3, 5, 7, 29, 67, 679067]
     >>> print(_mr_safe_helper('return mr(n, [2, 379215, 457083754])'))

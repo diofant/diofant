@@ -671,7 +671,7 @@ def sstr(expr, **settings):
     Examples
     ========
 
-    >>> from diofant import symbols, Eq, sstr
+    >>> from diofant import symbols, Eq
     >>> a, b = symbols('a b')
     >>> sstr(Eq(a + b, 0))
     'Eq(a + b, 0)'

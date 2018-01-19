@@ -214,7 +214,6 @@ class Plot:
         ``append`` method, like so:
 
         >>> from diofant import symbols
-        >>> from diofant.plotting import plot
         >>> x = symbols('x')
         >>> p1 = plot(x*x)
         >>> p2 = plot(x)
@@ -245,7 +244,6 @@ class Plot:
         second plot to the first, use the ``extend`` method, like so:
 
         >>> from diofant import symbols
-        >>> from diofant.plotting import plot
         >>> x = symbols('x')
         >>> p1 = plot(x*x)
         >>> p2 = plot(x)
@@ -1137,7 +1135,6 @@ def plot(*args, **kwargs):
     ========
 
     >>> from diofant import symbols
-    >>> from diofant.plotting import plot
     >>> x = symbols('x')
 
     Single Plot
@@ -1291,7 +1288,6 @@ def plot_parametric(*args, **kwargs):
     ========
 
     >>> from diofant import symbols, cos, sin
-    >>> from diofant.plotting import plot_parametric
     >>> u = symbols('u')
 
     Single Parametric plot
@@ -1390,7 +1386,6 @@ def plot3d_parametric_line(*args, **kwargs):
     ========
 
     >>> from diofant import symbols, cos, sin
-    >>> from diofant.plotting import plot3d_parametric_line
     >>> u = symbols('u')
 
     Single plot.
@@ -1488,7 +1483,6 @@ def plot3d(*args, **kwargs):
     ========
 
     >>> from diofant import symbols
-    >>> from diofant.plotting import plot3d
     >>> x, y = symbols('x y')
 
     Single plot
@@ -1594,7 +1588,6 @@ def plot3d_parametric_surface(*args, **kwargs):
     ========
 
     >>> from diofant import symbols, cos, sin
-    >>> from diofant.plotting import plot3d_parametric_surface
     >>> u, v = symbols('u v')
 
     Single plot.
@@ -1629,8 +1622,7 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
     Examples
     ========
 
-    >>> from diofant import plot, cos, sin, symbols
-    >>> from diofant.plotting.plot import check_arguments
+    >>> from diofant import cos, sin, symbols
     >>> x = symbols('x')
     >>> check_arguments([cos(x), sin(x)], 2, 1)
         [(cos(x), sin(x), (x, -10, 10))]

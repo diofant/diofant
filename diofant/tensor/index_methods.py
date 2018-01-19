@@ -26,7 +26,6 @@ def _remove_repeated(inds):
     Returns a set of the unique objects and a tuple of all that have been
     removed.
 
-    >>> from diofant.tensor.index_methods import _remove_repeated
     >>> l1 = [1, 2, 3, 2]
     >>> _remove_repeated(l1)
     ({1, 3}, (2,))
@@ -45,7 +44,6 @@ def _remove_repeated(inds):
 def _get_indices_Mul(expr, return_dummies=False):
     """Determine the outer indices of a Mul object.
 
-    >>> from diofant.tensor.index_methods import _get_indices_Mul
     >>> from diofant.tensor.indexed import IndexedBase, Idx
     >>> i, j, k = map(Idx, ['i', 'j', 'k'])
     >>> x = IndexedBase('x')
@@ -95,7 +93,6 @@ def _get_indices_Pow(expr):
     contractable with its own base.  Note however, that indices in the same
     exponent can be contracted with each other.
 
-    >>> from diofant.tensor.index_methods import _get_indices_Pow
     >>> from diofant import Pow, exp, IndexedBase, Idx
     >>> A = IndexedBase('A')
     >>> x = IndexedBase('x')
@@ -133,7 +130,6 @@ def _get_indices_Add(expr):
 
     FIXME: Add support for Numpy broadcasting
 
-    >>> from diofant.tensor.index_methods import _get_indices_Add
     >>> from diofant.tensor.indexed import IndexedBase, Idx
     >>> i, j, k = map(Idx, ['i', 'j', 'k'])
     >>> x = IndexedBase('x')
@@ -169,7 +165,6 @@ def get_indices(expr):
     Examples
     ========
 
-    >>> from diofant.tensor.index_methods import get_indices
     >>> from diofant import symbols
     >>> from diofant.tensor import IndexedBase, Idx
     >>> x, y, A = map(IndexedBase, ['x', 'y', 'A'])
@@ -282,7 +277,6 @@ def get_contraction_structure(expr):
     Examples
     ========
 
-    >>> from diofant.tensor.index_methods import get_contraction_structure
     >>> from diofant import symbols, default_sort_key
     >>> from diofant.tensor import IndexedBase, Idx
     >>> x, y, A = map(IndexedBase, ['x', 'y', 'A'])

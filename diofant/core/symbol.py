@@ -44,10 +44,8 @@ class BaseSymbol(AtomicExpr, Boolean):
     We illustrate the "flipping" problem, by using here
     BaseSymbol in place of ordinary Symbol:
 
-    >>> from diofant.core.symbol import Wild, BaseSymbol as Symbol
-
     >>> p = Wild('p')
-    >>> x = Symbol('x')
+    >>> x = BaseSymbol('x')
     >>> x < p
     p_ > x
 
@@ -75,7 +73,6 @@ class BaseSymbol(AtomicExpr, Boolean):
         Examples
         ========
 
-            >>> from diofant import Symbol
             >>> x = Symbol('x')
             >>> x._diff_wrt
             True
@@ -105,7 +102,6 @@ class BaseSymbol(AtomicExpr, Boolean):
     def __new__(cls, name, **assumptions):
         """Symbols are identified by name and assumptions::
 
-        >>> from diofant import Symbol
         >>> Symbol("x") == Symbol("x")
         True
         >>> Symbol("x", extended_real=True) == Symbol("x", extended_real=False)
@@ -211,7 +207,6 @@ class Symbol(BaseSymbol):
     Examples
     ========
 
-    >>> from diofant import symbols
     >>> a, b = symbols('a b')
     >>> bool(a*b == b*a)
     True
@@ -238,7 +233,6 @@ class Symbol(BaseSymbol):
 class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:
 
-    >>> from diofant import Dummy
     >>> bool(Dummy("x") == Dummy("x")) == True
     False
 
@@ -294,7 +288,7 @@ class Wild(BaseSymbol):
     Examples
     ========
 
-    >>> from diofant import Wild, WildFunction, cos, pi
+    >>> from diofant import WildFunction, cos, pi
     >>> from diofant.abc import x, y, z
     >>> a = Wild('a')
     >>> x.match(a)
@@ -323,7 +317,6 @@ class Wild(BaseSymbol):
     wanted. For example, using the above without
     exclude:
 
-    >>> from diofant import symbols
     >>> a, b = symbols('a b', cls=Wild)
     >>> (2 + 3*y).match(a*x + b*y)
     {a_: 2/x, b_: 3}
@@ -410,7 +403,7 @@ def symbols(names, **args):
     from ``names`` argument, which can be a comma or whitespace delimited
     string, or a sequence of strings::
 
-        >>> from diofant import symbols, Function
+        >>> from diofant import Function
 
         >>> x, y, z = symbols('x,y,z')
         >>> a, b, c = symbols('a b c')
@@ -619,8 +612,6 @@ def var(names, **args):
 
     Examples
     ========
-
-    >>> from diofant import var
 
     >>> var('x')
     x

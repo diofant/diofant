@@ -33,7 +33,7 @@ class erf(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erf
+    >>> from diofant import I, oo
     >>> from diofant.abc import z
 
     Several special values are known:
@@ -227,7 +227,7 @@ class erfc(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erfc
+    >>> from diofant import I, oo
     >>> from diofant.abc import z
 
     Several special values are known:
@@ -421,7 +421,7 @@ class erfi(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erfi
+    >>> from diofant import I, oo
     >>> from diofant.abc import z
 
     Several special values are known:
@@ -595,7 +595,7 @@ class erf2(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erf2
+    >>> from diofant import I, oo
     >>> from diofant.abc import x, y
 
     Several special values are known:
@@ -729,7 +729,7 @@ class erfinv(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erfinv
+    >>> from diofant import I, oo
     >>> from diofant.abc import x
 
     Several special values are known:
@@ -811,7 +811,7 @@ class erfcinv (Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erfcinv
+    >>> from diofant import I, oo
     >>> from diofant.abc import x
 
     Several special values are known:
@@ -879,7 +879,7 @@ class erf2inv(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erf2inv, erfinv, erfcinv
+    >>> from diofant import I, oo
     >>> from diofant.abc import x, y
 
     Several special values are known:
@@ -992,7 +992,7 @@ class Ei(Function):
     Examples
     ========
 
-    >>> from diofant import Ei, polar_lift, exp_polar, I, pi
+    >>> from diofant import polar_lift, exp_polar, I, pi
     >>> from diofant.abc import x
 
     The exponential integral in Diofant is strictly undefined for negative values
@@ -1026,7 +1026,7 @@ class Ei(Function):
     The exponential integral is related to many other special functions.
     For example:
 
-    >>> from diofant import uppergamma, expint, Shi
+    >>> from diofant import uppergamma
     >>> Ei(x).rewrite(expint)
     -expint(1, x*exp_polar(I*pi)) - I*pi
     >>> Ei(x).rewrite(Shi)
@@ -1139,7 +1139,7 @@ class expint(Function):
     Examples
     ========
 
-    >>> from diofant import expint, Rational
+    >>> from diofant import Rational
     >>> from diofant.abc import nu, z
 
     Differentiation is supported. Differentiation with respect to z explains
@@ -1310,7 +1310,7 @@ class li(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, li
+    >>> from diofant import I, oo
     >>> from diofant.abc import z
 
     Several special values are known:
@@ -1333,7 +1333,6 @@ class li(Function):
 
     The logarithmic integral can also be defined in terms of Ei:
 
-    >>> from diofant import Ei
     >>> li(z).rewrite(Ei)
     Ei(log(z))
     >>> diff(li(z).rewrite(Ei), z)
@@ -1357,7 +1356,6 @@ class li(Function):
     Further transformations include rewriting `li` in terms of
     the trigonometric integrals `Si`, `Ci`, `Shi` and `Chi`:
 
-    >>> from diofant import Si, Ci, Shi, Chi
     >>> li(z).rewrite(Si)
     -log(I*log(z)) - log(1/log(z))/2 + log(log(z))/2 + Ci(I*log(z)) + Shi(log(z))
     >>> li(z).rewrite(Ci)
@@ -1455,7 +1453,7 @@ class Li(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, Li
+    >>> from diofant import I, oo
     >>> from diofant.abc import z
 
     The following special value is known:
@@ -1471,7 +1469,6 @@ class Li(Function):
 
     The shifted logarithmic integral can be written in terms of `li(z)`:
 
-    >>> from diofant import li
     >>> Li(z).rewrite(li)
     li(z) - li(2)
 
@@ -1602,7 +1599,6 @@ class Si(TrigonometricIntegral):
     Examples
     ========
 
-    >>> from diofant import Si
     >>> from diofant.abc import z
 
     The sine integral is an antiderivative of sin(z)/z:
@@ -1626,7 +1622,6 @@ class Si(TrigonometricIntegral):
     It can also be expressed in terms of exponential integrals, but beware
     that the latter is branched:
 
-    >>> from diofant import expint
     >>> Si(z).rewrite(expint)
     -I*(-expint(1, z*exp_polar(-I*pi/2))/2 +
          expint(1, z*exp_polar(I*pi/2))/2) + pi/2
@@ -1703,7 +1698,6 @@ class Ci(TrigonometricIntegral):
     Examples
     ========
 
-    >>> from diofant import Ci
     >>> from diofant.abc import z
 
     The cosine integral is a primitive of `\cos(z)/z`:
@@ -1727,7 +1721,6 @@ class Ci(TrigonometricIntegral):
 
     It can also be expressed in terms of exponential integrals:
 
-    >>> from diofant import expint
     >>> Ci(z).rewrite(expint)
     -expint(1, z*exp_polar(-I*pi/2))/2 - expint(1, z*exp_polar(I*pi/2))/2
 
@@ -1786,7 +1779,6 @@ class Shi(TrigonometricIntegral):
     Examples
     ========
 
-    >>> from diofant import Shi
     >>> from diofant.abc import z
 
     The Sinh integral is a primitive of `\sinh(z)/z`:
@@ -1810,7 +1802,6 @@ class Shi(TrigonometricIntegral):
     It can also be expressed in terms of exponential integrals, but beware
     that the latter is branched:
 
-    >>> from diofant import expint
     >>> Shi(z).rewrite(expint)
     expint(1, z)/2 - expint(1, z*exp_polar(I*pi))/2 - I*pi/2
 
@@ -1882,7 +1873,6 @@ class Chi(TrigonometricIntegral):
     Examples
     ========
 
-    >>> from diofant import Chi
     >>> from diofant.abc import z
 
     The `\cosh` integral is a primitive of `\cosh(z)/z`:
@@ -1906,7 +1896,6 @@ class Chi(TrigonometricIntegral):
 
     It can also be expressed in terms of exponential integrals:
 
-    >>> from diofant import expint
     >>> Chi(z).rewrite(expint)
     -expint(1, z)/2 - expint(1, z*exp_polar(I*pi))/2 - I*pi/2
 
@@ -2059,7 +2048,7 @@ class fresnels(FresnelIntegral):
     Examples
     ========
 
-    >>> from diofant import I, oo, fresnels
+    >>> from diofant import I, oo
     >>> from diofant.abc import z
 
     Several special values are known:
@@ -2192,7 +2181,7 @@ class fresnelc(FresnelIntegral):
     Examples
     ========
 
-    >>> from diofant import I, oo, fresnelc
+    >>> from diofant import I, oo
     >>> from diofant.abc import z
 
     Several special values are known:

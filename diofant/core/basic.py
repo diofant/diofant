@@ -257,7 +257,7 @@ class Basic(object):
         ``One``, a special type of diofant atom, while ``type(Integer(2))``
         is type ``Integer`` and will find all integers in an expression:
 
-        >>> from diofant import S, Integer
+        >>> from diofant import Integer
         >>> e.atoms(Integer(1))
         {1}
 
@@ -1032,7 +1032,7 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import symbols, Wild, Basic
+        >>> from diofant import symbols, Wild
         >>> a, b, c = symbols('a b c')
         >>> x = Wild('x')
         >>> Basic(a + x, x)._matches(Basic(a + b, c)) is None
@@ -1289,7 +1289,6 @@ def _aresame(a, b):
     Since a simple 'same or not' result is sometimes useful, this routine was
     written to provide that query:
 
-    >>> from diofant.core.basic import _aresame
     >>> _aresame(Float(2.0), Integer(2))
     False
     """
@@ -1339,7 +1338,6 @@ class preorder_traversal:
     ========
 
     >>> from diofant import symbols
-    >>> from diofant.core.basic import preorder_traversal
     >>> x, y, z = symbols('x y z')
 
     The nodes are returned in the order that they are encountered unless key
@@ -1379,7 +1377,6 @@ class preorder_traversal:
         ========
 
         >>> from diofant.core import symbols
-        >>> from diofant.core.basic import preorder_traversal
         >>> x, y, z = symbols('x y z')
         >>> pt = preorder_traversal((x+y*z)*z)
         >>> for i in pt:

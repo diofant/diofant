@@ -421,8 +421,7 @@ def pspace(expr):
     Examples
     ========
 
-    >>> from diofant.stats import pspace, Normal
-    >>> from diofant.stats.rv import ProductPSpace
+    >>> from diofant.stats import Normal
     >>> X = Normal('X', 0, 1)
     >>> pspace(2*X + 1) == X.pspace
     True
@@ -474,7 +473,7 @@ def given(expr, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import given, density, Die
+    >>> from diofant.stats import Die
     >>> X = Die('X', 6)
     >>> Y = given(X, X > 3)
     >>> density(Y).dict
@@ -698,7 +697,7 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import density, Die, Normal
+    >>> from diofant.stats import Die, Normal
     >>> from diofant import Symbol
 
     >>> x = Symbol('x')
@@ -736,7 +735,7 @@ def cdf(expr, condition=None, evaluate=True, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import density, Die, Normal, cdf
+    >>> from diofant.stats import Die, Normal
 
     >>> D = Die('D', 6)
     >>> X = Normal('X', 0, 1)
@@ -771,7 +770,7 @@ def where(condition, given_condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import where, Die, Normal
+    >>> from diofant.stats import Die, Normal
     >>> from diofant import symbols, And
 
     >>> D1, D2 = Die('a', 6), Die('b', 6)
@@ -802,7 +801,7 @@ def sample(expr, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Die, sample
+    >>> from diofant.stats import Die
     >>> X, Y, Z = Die('X', 6), Die('Y', 6), Die('Z', 6)
 
     >>> die_roll = sample(X + Y + Z) # A random realization of three dice
@@ -821,7 +820,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Normal, sample_iter
+    >>> from diofant.stats import Normal
     >>> X = Normal('X', 0, 1)
     >>> expr = X*X + 3
     >>> iterator = sample_iter(expr, numsamples=3)
@@ -1001,7 +1000,7 @@ def dependent(a, b):
     Examples
     ========
 
-    >>> from diofant.stats import Normal, dependent, given
+    >>> from diofant.stats import Normal
     >>> from diofant import Tuple, Eq
 
     >>> X, Y = Normal('X', 0, 1), Normal('Y', 0, 1)
@@ -1037,7 +1036,7 @@ def independent(a, b):
     Examples
     ========
 
-    >>> from diofant.stats import Normal, independent, given
+    >>> from diofant.stats import Normal
     >>> from diofant import Tuple, Eq
 
     >>> X, Y = Normal('X', 0, 1), Normal('Y', 0, 1)

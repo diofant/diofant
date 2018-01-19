@@ -46,7 +46,6 @@ class Polyhedron(Basic):
         by reversal and rotation to be give the lowest lexical ordering.
         If no faces are given then no edges will be computed.
 
-            >>> from diofant.combinatorics.polyhedron import Polyhedron
             >>> Polyhedron(list('abc'), [(1, 2, 0)]).faces
             {(0, 1, 2)}
             >>> Polyhedron(list('abc'), [(1, 0, 2)]).faces
@@ -362,7 +361,6 @@ class Polyhedron(Basic):
             (2,6,7) (3,7,8) (4,8,9) (5,9,10) (1,6,10)
             (6,7,11,) (7,8,11) (8,9,11) (9,10,11) (6,10,11)
 
-        >>> from diofant.combinatorics.polyhedron import cube
         >>> cube.edges
         {(0, 1), (0, 3), (0, 4), ..., (4, 7), (5, 6), (6, 7)}
 
@@ -401,7 +399,6 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Polyhedron
         >>> from diofant.abc import a, b, c, d
         >>> p = Polyhedron(list('abcd'))
         >>> p.corners == p.vertices == (a, b, c, d)
@@ -425,7 +422,6 @@ class Polyhedron(Basic):
         ========
 
         >>> from diofant.combinatorics import Permutation, Cycle
-        >>> from diofant.combinatorics.polyhedron import tetrahedron
         >>> tetrahedron.array_form
         [0, 1, 2, 3]
 
@@ -486,7 +482,6 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Polyhedron
         >>> from diofant.abc import a, b, c
         >>> corners = (a, b, c)
         >>> faces = [(0, 1, 2)]
@@ -530,8 +525,7 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Polyhedron, Permutation
-        >>> from diofant.combinatorics.polyhedron import cube
+        >>> from diofant.combinatorics import Permutation
         >>> cube.corners
         (0, 1, 2, 3, 4, 5, 6, 7)
         >>> cube.rotate(0)
@@ -576,14 +570,13 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.polyhedron import tetrahedron as T
-        >>> T.corners
+        >>> tetrahedron.corners
         (0, 1, 2, 3)
-        >>> T.rotate(0)
-        >>> T.corners
+        >>> tetrahedron.rotate(0)
+        >>> tetrahedron.corners
         (0, 2, 3, 1)
-        >>> T.reset()
-        >>> T.corners
+        >>> tetrahedron.reset()
+        >>> tetrahedron.corners
         (0, 1, 2, 3)
         """
         self._corners = self.args[0]
@@ -632,9 +625,6 @@ def _pgroup_calcs():
     and the presence of the inverse for each of the elements in the group. This
     confirms that none of the polyhedra are true groups:
 
-    >>> from diofant.combinatorics.polyhedron import (
-    ... tetrahedron, cube, octahedron, dodecahedron, icosahedron)
-    ...
     >>> polyhedra = (tetrahedron, cube, octahedron, dodecahedron, icosahedron)
     >>> [h.pgroup.is_group for h in polyhedra]
     ...

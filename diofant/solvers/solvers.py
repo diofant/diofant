@@ -82,7 +82,6 @@ def checksol(f, sol, **flags):
     ========
 
     >>> from diofant import symbols
-    >>> from diofant.solvers import checksol
     >>> x, y = symbols('x y')
     >>> checksol(x**4 - 1, {x: 1})
     True
@@ -1201,13 +1200,12 @@ def _tsolve(eq, sym, **flags):
     ========
 
     >>> from diofant import log
-    >>> from diofant.solvers.solvers import _tsolve as tsolve
     >>> from diofant.abc import x
 
-    >>> tsolve(3**(2*x + 5) - 4, x)
+    >>> _tsolve(3**(2*x + 5) - 4, x)
     [-5/2 + log(2)/log(3), (-5*log(3)/2 + log(2) + I*pi)/log(3)]
 
-    >>> tsolve(log(x) + 2*x, x)
+    >>> _tsolve(log(x) + 2*x, x)
     [LambertW(2)/2]
     """
     from .bivariate import bivariate_type, _solve_lambert, _filtered_gens
@@ -1345,37 +1343,36 @@ def _invert(eq, *symbols, **kwargs):
     Examples
     ========
 
-    >>> from diofant.solvers.solvers import _invert as invert
     >>> from diofant import sqrt, cos
     >>> from diofant.abc import x, y
-    >>> invert(x - 3)
+    >>> _invert(x - 3)
     (3, x)
-    >>> invert(3)
+    >>> _invert(3)
     (3, 0)
-    >>> invert(2*cos(x) - 1)
+    >>> _invert(2*cos(x) - 1)
     (1/2, cos(x))
-    >>> invert(sqrt(x) - 3)
+    >>> _invert(sqrt(x) - 3)
     (3, sqrt(x))
-    >>> invert(sqrt(x) + y, x)
+    >>> _invert(sqrt(x) + y, x)
     (-y, sqrt(x))
-    >>> invert(sqrt(x) + y, y)
+    >>> _invert(sqrt(x) + y, y)
     (-sqrt(x), y)
-    >>> invert(sqrt(x) + y, x, y)
+    >>> _invert(sqrt(x) + y, x, y)
     (0, sqrt(x) + y)
 
     If there is more than one symbol in a power's base and the exponent
     is not an Integer, then the principal root will be used for the
     inversion:
 
-    >>> invert(sqrt(x + y) - 2)
+    >>> _invert(sqrt(x + y) - 2)
     (4, x + y)
-    >>> invert(sqrt(x + y) - 2)
+    >>> _invert(sqrt(x + y) - 2)
     (4, x + y)
 
     If the exponent is an integer, setting ``integer_power`` to True
     will force the principal root to be selected:
 
-    >>> invert(x**2 - 4, integer_power=True)
+    >>> _invert(x**2 - 4, integer_power=True)
     (2, x)
 
     """

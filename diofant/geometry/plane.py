@@ -36,7 +36,7 @@ class Plane(GeometryEntity):
     Examples
     ========
 
-    >>> from diofant import Plane, Point3D
+    >>> from diofant import Point3D
     >>> from diofant.abc import x
     >>> Plane(Point3D(1, 1, 1), Point3D(2, 3, 4), Point3D(2, 2, 2))
     Plane(Point3D(1, 1, 1), (-1, 2, -1))
@@ -79,7 +79,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Plane
+        >>> from diofant import Point3D
         >>> a = Plane(Point3D(1, 1, 1), Point3D(2, 3, 4), Point3D(2, 2, 2))
         >>> a.p1
         Point3D(1, 1, 1)
@@ -94,7 +94,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Plane
+        >>> from diofant import Point3D
         >>> a = Plane(Point3D(1, 1, 1), Point3D(2, 3, 4), Point3D(2, 2, 2))
         >>> a.normal_vector
         (-1, 2, -1)
@@ -111,7 +111,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Plane
+        >>> from diofant import Point3D
         >>> a = Plane(Point3D(1, 1, 2), Point3D(2, 4, 7), Point3D(3, 5, 1))
         >>> a.equation()
         -23*x + 11*y - 2*z + 16
@@ -142,7 +142,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Point, Point3D
+        >>> from diofant import Point, Point3D
         >>> A = Plane(Point3D(1, 1, 2), normal_vector=(1, 1, 1))
 
         The projection is along the normal vector direction, not the z
@@ -191,7 +191,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Line, Line3D, Point, Point3D
+        >>> from diofant import Line, Line3D, Point, Point3D
         >>> a = Plane(Point3D(1, 1, 1), normal_vector=(1, 1, 1))
         >>> b = Line(Point(1, 1), Point(2, 2))
         >>> a.projection_line(b)
@@ -234,7 +234,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Point3D
+        >>> from diofant import Point3D
         >>> a = Plane(Point3D(1, 4, 6), normal_vector=(2, 4, 6))
         >>> b = Plane(Point3D(3, 1, 3), normal_vector=(4, 8, 12))
         >>> a.is_parallel(b)
@@ -274,7 +274,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Point3D
+        >>> from diofant import Point3D
         >>> a = Plane(Point3D(1, 4, 6), normal_vector=(2, 4, 6))
         >>> b = Plane(Point3D(2, 2, 2), normal_vector=(-1, 2, -1))
         >>> a.is_perpendicular(b)
@@ -322,7 +322,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Point3D, Line, Line3D, Plane
+        >>> from diofant import Point, Point3D, Line, Line3D
         >>> a = Plane(Point3D(1, 1, 1), normal_vector=(1, 1, 1))
         >>> b = Point3D(1, 2, 3)
         >>> a.distance(b)
@@ -382,7 +382,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D, Plane
+        >>> from diofant import Point3D, Line3D
         >>> a = Plane(Point3D(1, 2, 2), normal_vector=(1, 2, 3))
         >>> b = Line3D(Point3D(1, 3, 4), Point3D(2, 2, 2))
         >>> a.angle_between(b)
@@ -424,7 +424,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Point3D
+        >>> from diofant import Point3D
         >>> a = Plane(Point3D(5, 0, 0), normal_vector=(1, -1, 1))
         >>> b = Plane(Point3D(0, -2, 0), normal_vector=(3, 1, 1))
         >>> c = Plane(Point3D(0, -1, 0), normal_vector=(5, -1, 9))
@@ -469,7 +469,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Point3D, Line3D
+        >>> from diofant import Point3D, Line3D
         >>> a = Plane(Point3D(1, 4, 6), normal_vector=(2, 4, 6))
         >>> a.perpendicular_line(Point3D(9, 8, 7))
         Line3D(Point3D(9, 8, 7), Point3D(11, 12, 13))
@@ -495,7 +495,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Point3D
+        >>> from diofant import Point3D
         >>> a = Plane(Point3D(1, 4, 6), normal_vector=(2, 4, 6))
         >>> a.parallel_plane(Point3D(2, 3, 5))
         Plane(Point3D(2, 3, 5), (2, 4, 6))
@@ -530,7 +530,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Point3D, Line3D
+        >>> from diofant import Point3D, Line3D
         >>> a, b = Point3D(0, 0, 0), Point3D(0, 1, 0)
         >>> Z = (0, 0, 1)
         >>> p = Plane(a, normal_vector=Z)
@@ -594,7 +594,6 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant.geometry.plane import Plane
         >>> from diofant.abc import t
         >>> p = Plane((0, 0, 0), (0, 0, 1), (0, 1, 0))
         >>> p.arbitrary_point(t)
@@ -637,7 +636,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Point3D, Line, Line3D, Plane
+        >>> from diofant import Point, Point3D, Line, Line3D
         >>> a = Plane(Point3D(1, 2, 3), normal_vector=(1, 1, 1))
         >>> b = Point3D(1, 2, 3)
         >>> a.intersection(b)
@@ -730,7 +729,7 @@ class Plane(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Plane, Point3D
+        >>> from diofant import Point3D
         >>> o = (0, 0, 0)
         >>> p = Plane(o, (1, 1, 1))
         >>> p2 = Plane(o, (2, 2, 2))

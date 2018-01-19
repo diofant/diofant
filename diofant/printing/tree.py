@@ -5,7 +5,6 @@ def pprint_nodes(subtrees):
     Examples
     ========
 
-    >>> from diofant.printing.tree import pprint_nodes
     >>> print(pprint_nodes(["a", "b1\nb2", "c"]))
     +-a
     +-b1
@@ -68,7 +67,6 @@ def print_tree(node):
     Examples
     ========
 
-    >>> from diofant.printing import print_tree
     >>> from diofant import Symbol
     >>> x = Symbol('x', odd=True)
     >>> y = Symbol('y', even=True)

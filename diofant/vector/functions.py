@@ -43,7 +43,6 @@ def express(expr, system, system2=None, variables=False):
     >>> N = CoordSysCartesian('N')
     >>> q = Symbol('q')
     >>> B = N.orient_new_axis('B', q, N.k)
-    >>> from diofant.vector import express
     >>> express(B.i, N)
     (cos(q))*N.i + (sin(q))*N.j
     >>> express(N.x, B, variables=True)
@@ -136,7 +135,7 @@ def curl(vect, coord_sys):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian, curl
+    >>> from diofant.vector import CoordSysCartesian
     >>> R = CoordSysCartesian('R')
     >>> v1 = R.y*R.z*R.i + R.x*R.z*R.j + R.x*R.y*R.k
     >>> curl(v1, R)
@@ -167,7 +166,7 @@ def divergence(vect, coord_sys):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian, divergence
+    >>> from diofant.vector import CoordSysCartesian
     >>> R = CoordSysCartesian('R')
     >>> v1 = R.x*R.y*R.z * (R.i+R.j+R.k)
     >>> divergence(v1, R)
@@ -198,7 +197,7 @@ def gradient(scalar, coord_sys):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian, gradient
+    >>> from diofant.vector import CoordSysCartesian
     >>> R = CoordSysCartesian('R')
     >>> s1 = R.x*R.y*R.z
     >>> gradient(s1, R)
@@ -226,7 +225,6 @@ def is_conservative(field):
     ========
 
     >>> from diofant.vector import CoordSysCartesian
-    >>> from diofant.vector import is_conservative
     >>> R = CoordSysCartesian('R')
     >>> is_conservative(R.y*R.z*R.i + R.x*R.z*R.j + R.x*R.y*R.k)
     True
@@ -260,7 +258,6 @@ def is_solenoidal(field):
     ========
 
     >>> from diofant.vector import CoordSysCartesian
-    >>> from diofant.vector import is_solenoidal
     >>> R = CoordSysCartesian('R')
     >>> is_solenoidal(R.y*R.z*R.i + R.x*R.z*R.j + R.x*R.y*R.k)
     True
@@ -299,7 +296,6 @@ def scalar_potential(field, coord_sys):
     ========
 
     >>> from diofant.vector import CoordSysCartesian
-    >>> from diofant.vector import scalar_potential, gradient
     >>> R = CoordSysCartesian('R')
     >>> scalar_potential(R.k, R) == R.z
     True
@@ -364,7 +360,6 @@ def scalar_potential_difference(field, coord_sys, point1, point2):
     ========
 
     >>> from diofant.vector import CoordSysCartesian, Point
-    >>> from diofant.vector import scalar_potential_difference
     >>> R = CoordSysCartesian('R')
     >>> P = R.origin.locate_new('P', R.x*R.i + R.y*R.j + R.z*R.k)
     >>> vectfield = 4*R.x*R.y*R.i + 2*R.x**2*R.j
@@ -422,7 +417,7 @@ def matrix_to_vector(matrix, system):
 
     >>> from diofant import ImmutableMatrix as Matrix
     >>> m = Matrix([1, 2, 3])
-    >>> from diofant.vector import CoordSysCartesian, matrix_to_vector
+    >>> from diofant.vector import CoordSysCartesian
     >>> C = CoordSysCartesian('C')
     >>> v = matrix_to_vector(m, C)
     >>> v

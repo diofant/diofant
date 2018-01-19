@@ -34,7 +34,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> a = Partition([1, 2], [3])
         >>> a
         {{3}, {1, 2}}
@@ -72,7 +71,6 @@ class Partition(FiniteSet):
         ========
 
         >>> from diofant.utilities.iterables import default_sort_key
-        >>> from diofant.combinatorics.partitions import Partition
         >>> from diofant.abc import x
         >>> a = Partition([1, 2])
         >>> b = Partition([3, 4])
@@ -96,7 +94,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> Partition([1], [2, 3]).partition
         [[1], [2, 3]]
         """
@@ -113,7 +110,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> a = Partition([1, 2], [3])
         >>> a.rank
         1
@@ -137,7 +133,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> a = Partition([1, 2], [3])
         >>> a.rank
         1
@@ -156,7 +151,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> a = Partition([1, 2], [3, 4, 5])
         >>> b = Partition([1], [2, 3], [4], [5])
         >>> a.rank, b.rank
@@ -175,7 +169,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> a = Partition([1, 2], [3, 4, 5])
         >>> b = Partition([1], [2, 3], [4], [5])
         >>> a.rank, b.rank
@@ -193,7 +186,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> a = Partition([1, 2], [3], [4, 5])
         >>> a.rank
         13
@@ -216,7 +208,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> a = Partition([1, 2], [3], [4, 5])
         >>> a.members
         (1, 2, 3, 4, 5)
@@ -249,7 +240,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import Partition
         >>> Partition.from_rgs([0, 1, 2, 0, 1], list('abcde'))
         {{c}, {a, d}, {b, e}}
         >>> Partition.from_rgs([0, 1, 2, 0, 1], list('cbead'))
@@ -311,7 +301,6 @@ class IntegerPartition(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import IntegerPartition
         >>> a = IntegerPartition([5, 4, 3, 1, 1])
         >>> a
         IntegerPartition(14, (5, 4, 3, 1, 1))
@@ -365,7 +354,6 @@ class IntegerPartition(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import IntegerPartition
         >>> p = IntegerPartition([4])
         >>> print(p.prev_lex())
         [3, 1]
@@ -402,7 +390,6 @@ class IntegerPartition(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import IntegerPartition
         >>> p = IntegerPartition([3, 1])
         >>> print(p.next_lex())
         [4]
@@ -453,7 +440,6 @@ class IntegerPartition(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import IntegerPartition
         >>> IntegerPartition([1]*3 + [2] + [3]*4).as_dict()
         {1: 3, 2: 1, 3: 4}
         """
@@ -471,7 +457,6 @@ class IntegerPartition(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import IntegerPartition
         >>> a = IntegerPartition([6, 3, 3, 2, 1])
         >>> a.conjugate
         [5, 4, 3, 1, 1, 1]
@@ -494,7 +479,6 @@ class IntegerPartition(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import IntegerPartition
         >>> a = IntegerPartition([3, 1])
         >>> a < a
         False
@@ -513,7 +497,6 @@ class IntegerPartition(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import IntegerPartition
         >>> a = IntegerPartition([4])
         >>> a <= a
         True
@@ -527,7 +510,6 @@ class IntegerPartition(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.partitions import IntegerPartition
         >>> print(IntegerPartition([1, 1, 5]).as_ferrers())
         #####
         #
@@ -546,8 +528,6 @@ def random_integer_partition(n, seed=None):
 
     Examples
     ========
-
-    >>> from diofant.combinatorics.partitions import random_integer_partition
 
     For the following, a seed is given so a known value can be shown; in
     practice, the seed would not be given.
@@ -586,7 +566,6 @@ def RGS_generalized(m):
     Examples
     ========
 
-    >>> from diofant.combinatorics.partitions import RGS_generalized
     >>> RGS_generalized(6)
     Matrix([
     [  1,   1,   1,  1,  1, 1, 1],
@@ -618,8 +597,6 @@ def RGS_enum(m):
     Examples
     ========
 
-    >>> from diofant.combinatorics.partitions import RGS_enum
-    >>> from diofant.combinatorics.partitions import Partition
     >>> RGS_enum(4)
     15
     >>> RGS_enum(5)
@@ -655,7 +632,6 @@ def RGS_unrank(rank, m):
     Examples
     ========
 
-    >>> from diofant.combinatorics.partitions import RGS_unrank
     >>> RGS_unrank(14, 4)
     [0, 1, 2, 3]
     >>> RGS_unrank(0, 4)
@@ -689,7 +665,6 @@ def RGS_rank(rgs):
     Examples
     ========
 
-    >>> from diofant.combinatorics.partitions import RGS_rank, RGS_unrank
     >>> RGS_rank([0, 1, 2, 1, 3])
     42
     >>> RGS_rank(RGS_unrank(4, 7))

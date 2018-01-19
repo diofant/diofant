@@ -53,7 +53,7 @@ class jacobi(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import jacobi, conjugate, diff, Rational
+    >>> from diofant import conjugate, diff, Rational
     >>> from diofant.abc import n, a, b, x
 
     >>> jacobi(0, a, b, x)
@@ -209,7 +209,6 @@ def jacobi_normalized(n, a, b, x):
     Examples
     ========
 
-    >>> from diofant import jacobi_normalized
     >>> from diofant.abc import n, a, b, x
 
     >>> jacobi_normalized(n, a, b, x)
@@ -262,7 +261,7 @@ class gegenbauer(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import gegenbauer, conjugate, diff
+    >>> from diofant import conjugate, diff
     >>> from diofant.abc import n, a, x
     >>> gegenbauer(0, a, x)
     1
@@ -397,7 +396,7 @@ class chebyshevt(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import chebyshevt, chebyshevu, diff
+    >>> from diofant import diff
     >>> from diofant.abc import n, x
     >>> chebyshevt(0, x)
     1
@@ -496,7 +495,7 @@ class chebyshevu(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import chebyshevt, chebyshevu, diff
+    >>> from diofant import diff
     >>> from diofant.abc import n, x
     >>> chebyshevu(0, x)
     1
@@ -594,7 +593,6 @@ class chebyshevt_root(Function):
     Examples
     ========
 
-    >>> from diofant import chebyshevt, chebyshevt_root
     >>> chebyshevt_root(3, 2)
     -sqrt(3)/2
     >>> chebyshevt(3, chebyshevt_root(3, 2))
@@ -634,7 +632,6 @@ class chebyshevu_root(Function):
     Examples
     ========
 
-    >>> from diofant import chebyshevu, chebyshevu_root
     >>> chebyshevu_root(3, 2)
     -sqrt(2)/2
     >>> chebyshevu(3, chebyshevu_root(3, 2))
@@ -679,7 +676,7 @@ class legendre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import legendre, diff
+    >>> from diofant import diff
     >>> from diofant.abc import x, n
     >>> legendre(0, x)
     1
@@ -772,7 +769,6 @@ class assoc_legendre(Function):
     Examples
     ========
 
-    >>> from diofant import assoc_legendre
     >>> from diofant.abc import x, m, n
     >>> assoc_legendre(0, 0, x)
     1
@@ -858,7 +854,7 @@ class hermite(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import hermite, diff
+    >>> from diofant import diff
     >>> from diofant.abc import x, n
     >>> hermite(0, x)
     1
@@ -944,7 +940,7 @@ class laguerre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import laguerre, diff
+    >>> from diofant import diff
     >>> from diofant.abc import x, n
     >>> laguerre(0, x)
     1
@@ -1037,7 +1033,7 @@ class assoc_laguerre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import laguerre, assoc_laguerre, diff
+    >>> from diofant import diff
     >>> from diofant.abc import x, n, a
     >>> assoc_laguerre(0, a, x)
     1

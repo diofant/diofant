@@ -14,7 +14,7 @@ class SingletonRegistry:
     instance, every time you create ``Integer(0)``, this will return
     the same instance, :class:`diofant.core.numbers.Zero`.
 
-    >>> from diofant import S, Integer
+    >>> from diofant import Integer
     >>> a = Integer(0)
     >>> a is S.Zero
     True
@@ -97,8 +97,7 @@ class Singleton(type):
     Examples
     ========
 
-    >>> from diofant import S, Basic
-    >>> from diofant.core.singleton import Singleton
+    >>> from diofant import Basic
     >>> class MySingleton(Basic, metaclass=Singleton):
     ...     pass
     >>> Basic() is Basic()

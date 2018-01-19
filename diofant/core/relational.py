@@ -35,7 +35,6 @@ class Relational(Boolean, Expr, EvalfMixin):
     Examples
     ========
 
-    >>> from diofant import Rel
     >>> from diofant.abc import x, y
     >>> Rel(y, x+x**2, '==')
     Eq(y, x**2 + x)
@@ -76,7 +75,6 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Eq
         >>> from diofant.abc import x
         >>> Eq(x, 1)
         Eq(x, 1)
@@ -207,7 +205,7 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Symbol, Eq
+        >>> from diofant import Symbol
         >>> x = Symbol('x', extended_real=True)
         >>> (x>0).as_set()
         (0, oo)
@@ -246,7 +244,7 @@ class Equality(Relational):
     Examples
     ========
 
-    >>> from diofant import Eq, simplify, exp, cos
+    >>> from diofant import simplify, exp, cos
     >>> from diofant.abc import x, y
     >>> Eq(y, x + x**2)
     Eq(y, x**2 + x)
@@ -331,7 +329,6 @@ class Unequality(Relational):
     Examples
     ========
 
-    >>> from diofant import Ne
     >>> from diofant.abc import x, y
     >>> Ne(y, x+x**2)
     Ne(y, x**2 + x)
@@ -483,11 +480,8 @@ class GreaterThan(_Greater):
     direction will make more explicit the intent of a certain section of code,
     and will make it similarly more robust to client code changes:
 
-    >>> from diofant import GreaterThan, StrictGreaterThan
-    >>> from diofant import LessThan,    StrictLessThan
-    >>> from diofant import And, Ge, Gt, Le, Lt, Rel, S, Integer
+    >>> from diofant import And, Integer
     >>> from diofant.abc import x, y, z
-    >>> from diofant.core.relational import Relational
 
     >>> e = GreaterThan(x, 1)
     >>> e

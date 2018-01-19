@@ -29,7 +29,6 @@ def idiff(eq, y, x, n=1):
     ========
 
     >>> from diofant.abc import x, y, a
-    >>> from diofant.geometry.util import idiff
 
     >>> circ = x**2 + y**2 - 4
     >>> idiff(circ, y, x)
@@ -82,7 +81,6 @@ def _symbol(s, matching_symbol=None):
     the name of the matching_symbol.
 
     >>> from diofant import Symbol
-    >>> from diofant.geometry.util import _symbol
     >>> x = Symbol('x')
     >>> _symbol('y')
     y
@@ -171,7 +169,7 @@ def intersection(*entities):
     Examples
     ========
 
-    >>> from diofant.geometry import Point, Line, Circle, intersection
+    >>> from diofant.geometry import Point, Line, Circle
     >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(-1, 5)
     >>> l1, l2 = Line(p1, p2), Line(p3, p2)
     >>> c = Circle(p2, 1)
@@ -248,7 +246,7 @@ def convex_hull(*args):
     Examples
     ========
 
-    >>> from diofant.geometry import Point, convex_hull
+    >>> from diofant.geometry import Point
     >>> points = [(1, 1), (1, 2), (3, 1), (-5, 2), (15, 4)]
     >>> convex_hull(*points)
     Polygon(Point2D(-5, 2), Point2D(1, 1), Point2D(3, 1), Point2D(15, 4))
@@ -328,7 +326,6 @@ def are_coplanar(*e):
     ========
 
     >>> from diofant import Point3D, Line3D
-    >>> from diofant.geometry.util import are_coplanar
     >>> a = Line3D(Point3D(5, 0, 0), Point3D(1, -1, 1))
     >>> b = Line3D(Point3D(0, -2, 0), Point3D(3, 1, 1))
     >>> c = Line3D(Point3D(0, -1, 0), Point3D(5, -1, 9))
@@ -418,7 +415,7 @@ def are_similar(e1, e2):
     Examples
     ========
 
-    >>> from diofant import Point, Circle, Triangle, are_similar
+    >>> from diofant import Point, Circle, Triangle
     >>> c1, c2 = Circle(Point(0, 0), 4), Circle(Point(1, 4), 3)
     >>> t1 = Triangle(Point(0, 0), Point(1, 0), Point(0, 1))
     >>> t2 = Triangle(Point(0, 0), Point(2, 0), Point(0, 2))
@@ -463,7 +460,6 @@ def centroid(*args):
     ========
 
     >>> from diofant import Point, Segment, Polygon
-    >>> from diofant.geometry.util import centroid
     >>> p = Polygon((0, 0), (10, 0), (10, 10))
     >>> q = p.translate(0, 20)
     >>> p.centroid, q.centroid

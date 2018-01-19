@@ -216,7 +216,7 @@ class ImageSet(Set):
     Examples
     ========
 
-    >>> from diofant import Symbol, S, ImageSet, FiniteSet, Lambda
+    >>> from diofant import Symbol, S, FiniteSet, Lambda
 
     >>> x = Symbol('x')
     >>> N = S.Naturals
@@ -331,7 +331,6 @@ class Range(Set):
     Examples
     ========
 
-    >>> from diofant import Range
     >>> list(Range(5)) # 0 to 5
     [0, 1, 2, 3, 4]
     >>> list(Range(10, 15)) # 10 to 15

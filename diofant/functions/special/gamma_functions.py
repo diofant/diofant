@@ -31,7 +31,7 @@ class gamma(Function):
     Examples
     ========
 
-    >>> from diofant import I, pi, oo, gamma, Rational
+    >>> from diofant import I, pi, oo, Rational
     >>> from diofant.abc import x
 
     Several special values are known:
@@ -215,7 +215,7 @@ class lowergamma(Function):
     Examples
     ========
 
-    >>> from diofant import lowergamma, Rational
+    >>> from diofant import Rational
     >>> from diofant.abc import s, x
     >>> lowergamma(s, x)
     lowergamma(s, x)
@@ -356,7 +356,7 @@ class uppergamma(Function):
     Examples
     ========
 
-    >>> from diofant import uppergamma, Rational
+    >>> from diofant import Rational
     >>> from diofant.abc import s, x
     >>> uppergamma(s, x)
     uppergamma(s, x)
@@ -480,7 +480,7 @@ class polygamma(Function):
 
     Several special values are known:
 
-    >>> from diofant import S, polygamma, Integer
+    >>> from diofant import Integer
     >>> polygamma(0, 1)
     -EulerGamma
     >>> polygamma(0, 1/Integer(2))
@@ -733,7 +733,6 @@ class loggamma(Function):
     Several special values are known. For numerical integral
     arguments we have:
 
-    >>> from diofant import loggamma
     >>> loggamma(-2)
     oo
     >>> loggamma(0)

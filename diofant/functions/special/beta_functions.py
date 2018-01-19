@@ -32,7 +32,7 @@ class beta(Function):
     Examples
     ========
 
-    >>> from diofant import I, pi, beta, conjugate, diff
+    >>> from diofant import I, pi, conjugate, diff
     >>> from diofant.abc import x, y
 
     The Beta function obeys the mirror symmetry:

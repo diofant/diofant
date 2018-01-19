@@ -340,7 +340,6 @@ def mellin_transform(f, x, s, **hints):
     then only `F` will be returned (i.e. not ``cond``, and also not the strip
     ``(a, b)``).
 
-    >>> from diofant.integrals.transforms import mellin_transform
     >>> from diofant import exp
     >>> from diofant.abc import x, s
     >>> mellin_transform(exp(-x), x, s)
@@ -362,7 +361,6 @@ def _rewrite_sin(m_n, s, a, b):
 
     Return ``(gamma1, gamma2, fac)`` so that ``f == fac/(gamma1 * gamma2)``.
 
-    >>> from diofant.integrals.transforms import _rewrite_sin
     >>> from diofant import pi, Rational
     >>> from diofant.abc import s
     >>> _rewrite_sin((pi, 0), s, 0, 1)
@@ -427,7 +425,6 @@ def _rewrite_gamma(f, s, a, b):
     This is a helper function for inverse_mellin_transform that will not
     attempt any transformations on f.
 
-    >>> from diofant.integrals.transforms import _rewrite_gamma
     >>> from diofant.abc import s
     >>> from diofant import oo
     >>> _rewrite_gamma(s*(s+3)*(s-1), s, -oo, oo)
@@ -842,7 +839,6 @@ def inverse_mellin_transform(F, s, x, strip, **hints):
     For a description of possible hints, refer to the docstring of
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
 
-    >>> from diofant.integrals.transforms import inverse_mellin_transform
     >>> from diofant import oo, gamma
     >>> from diofant.abc import x, s
     >>> inverse_mellin_transform(gamma(s), s, x, (0, oo))
@@ -875,28 +871,27 @@ def _simplifyconds(expr, s, a):
     r"""
     Naively simplify some conditions occuring in ``expr``, given that `\operatorname{Re}(s) > a`.
 
-    >>> from diofant.integrals.transforms import _simplifyconds as simp
     >>> from diofant.abc import x
-    >>> from diofant import sympify as S
-    >>> simp(abs(x**2) < 1, x, 1)
+    >>> from diofant import Integer
+    >>> _simplifyconds(abs(x**2) < 1, x, 1)
     False
-    >>> simp(abs(x**2) < 1, x, 2)
+    >>> _simplifyconds(abs(x**2) < 1, x, 2)
     False
-    >>> simp(abs(x**2) < 1, x, 0)
+    >>> _simplifyconds(abs(x**2) < 1, x, 0)
     Abs(x**2) < 1
-    >>> simp(abs(1/x**2) < 1, x, 1)
+    >>> _simplifyconds(abs(1/x**2) < 1, x, 1)
     True
-    >>> simp(Integer(1) < abs(x), x, 1)
+    >>> _simplifyconds(Integer(1) < abs(x), x, 1)
     True
-    >>> simp(Integer(1) < abs(1/x), x, 1)
+    >>> _simplifyconds(Integer(1) < abs(1/x), x, 1)
     False
 
     >>> from diofant import Ne
-    >>> simp(Ne(1, x**3), x, 1)
+    >>> _simplifyconds(Ne(1, x**3), x, 1)
     True
-    >>> simp(Ne(1, x**3), x, 2)
+    >>> _simplifyconds(Ne(1, x**3), x, 2)
     True
-    >>> simp(Ne(1, x**3), x, 0)
+    >>> _simplifyconds(Ne(1, x**3), x, 0)
     Ne(1, x**3)
     """
     from ..core.relational import (StrictGreaterThan, StrictLessThan,
@@ -1114,7 +1109,6 @@ def laplace_transform(f, t, s, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`. If ``noconds=True``,
     only `F` will be returned (i.e. not ``cond``, and also not the plane ``a``).
 
-    >>> from diofant.integrals import laplace_transform
     >>> from diofant.abc import t, s, a
     >>> laplace_transform(t**a, t, s)
     (s**(-a)*gamma(a + 1)/s, 0, -re(a) < 1)
@@ -1264,7 +1258,6 @@ def inverse_laplace_transform(F, s, t, plane=None, **hints):
     For a description of possible hints, refer to the docstring of
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
 
-    >>> from diofant.integrals.transforms import inverse_laplace_transform
     >>> from diofant import exp, Symbol
     >>> from diofant.abc import s, t
     >>> a = Symbol('a', positive=True)
@@ -1368,7 +1361,7 @@ def fourier_transform(f, x, k, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant import fourier_transform, exp
+    >>> from diofant import exp
     >>> from diofant.abc import x, k
     >>> fourier_transform(exp(-x**2), x, k)
     E**(-pi**2*k**2)*sqrt(pi)
@@ -1421,7 +1414,7 @@ def inverse_fourier_transform(F, k, x, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant import inverse_fourier_transform, exp, sqrt, pi
+    >>> from diofant import exp, sqrt, pi
     >>> from diofant.abc import x, k
     >>> inverse_fourier_transform(sqrt(pi)*exp(-(pi*k)**2), k, x)
     E**(-x**2)
@@ -1532,7 +1525,7 @@ def sine_transform(f, x, k, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant import sine_transform, exp
+    >>> from diofant import exp
     >>> from diofant.abc import x, k, a
     >>> sine_transform(x*exp(-a*x**2), x, k)
     sqrt(2)*E**(-k**2/(4*a))*k/(4*a**(3/2))
@@ -1586,7 +1579,7 @@ def inverse_sine_transform(F, k, x, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant import inverse_sine_transform, exp, sqrt, gamma, pi
+    >>> from diofant import exp, sqrt, gamma, pi
     >>> from diofant.abc import x, k, a
     >>> inverse_sine_transform(2**((1-2*a)/2)*k**(a - 1)*
     ...     gamma(-a/2 + 1)/gamma((a+1)/2), k, x)
@@ -1641,7 +1634,7 @@ def cosine_transform(f, x, k, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant import cosine_transform, exp, sqrt, cos
+    >>> from diofant import exp, sqrt, cos
     >>> from diofant.abc import x, k, a
     >>> cosine_transform(exp(-a*x), x, k)
     sqrt(2)*a/(sqrt(pi)*(a**2 + k**2))
@@ -1695,7 +1688,7 @@ def inverse_cosine_transform(F, k, x, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant import inverse_cosine_transform, exp, sqrt, pi
+    >>> from diofant import exp, sqrt, pi
     >>> from diofant.abc import x, k, a
     >>> inverse_cosine_transform(sqrt(2)*a/(sqrt(pi)*(a**2 + k**2)), k, x)
     E**(-a*x)
@@ -1795,7 +1788,6 @@ def hankel_transform(f, r, k, nu, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant import hankel_transform, inverse_hankel_transform
     >>> from diofant import gamma, exp, sinh, cosh
     >>> from diofant.abc import r, k, m, nu, a
 
@@ -1852,7 +1844,6 @@ def inverse_hankel_transform(F, k, r, nu, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant import hankel_transform, inverse_hankel_transform, gamma
     >>> from diofant import gamma, exp, sinh, cosh
     >>> from diofant.abc import r, k, m, nu, a
 

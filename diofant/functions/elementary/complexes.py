@@ -24,7 +24,7 @@ class re(Function):
     Examples
     ========
 
-    >>> from diofant import re, im, I, E
+    >>> from diofant import I, E
     >>> from diofant.abc import x, y
     >>> re(2*E)
     2*E
@@ -109,7 +109,7 @@ class im(Function):
     Examples
     ========
 
-    >>> from diofant import re, im, E, I
+    >>> from diofant import E, I
     >>> from diofant.abc import x, y
     >>> im(2*E)
     0
@@ -170,7 +170,6 @@ class im(Function):
         Examples
         ========
 
-        >>> from diofant.functions import im
         >>> from diofant import I
         >>> im(2 + 3*I).as_real_imag()
         (3, 0)
@@ -214,7 +213,6 @@ class sign(Function):
     Examples
     ========
 
-    >>> from diofant.functions import sign
     >>> from diofant.core.numbers import I
 
     >>> sign(-1)
@@ -352,7 +350,7 @@ class Abs(Function):
     Examples
     ========
 
-    >>> from diofant import Abs, Symbol, S
+    >>> from diofant import Symbol, S
     >>> Abs(-1)
     1
     >>> x = Symbol('x', extended_real=True)
@@ -392,7 +390,6 @@ class Abs(Function):
         ========
 
         >>> from diofant.abc import x
-        >>> from diofant.functions import Abs
         >>> Abs(-x).fdiff()
         sign(x)
         """
@@ -537,7 +534,6 @@ class arg(Function):
     Examples
     ========
 
-    >>> from diofant.functions import arg
     >>> from diofant import I, sqrt
     >>> arg(2.0)
     0
@@ -590,7 +586,7 @@ class conjugate(Function):
     Examples
     ========
 
-    >>> from diofant import conjugate, I
+    >>> from diofant import I
     >>> conjugate(2)
     2
     >>> conjugate(I)
@@ -690,7 +686,7 @@ class polar_lift(Function):
     Lift argument to the Riemann surface of the logarithm, using the
     standard branch.
 
-    >>> from diofant import Symbol, polar_lift, I
+    >>> from diofant import Symbol, I
     >>> p = Symbol('p', polar=True)
     >>> x = Symbol('x')
     >>> polar_lift(4)
@@ -766,7 +762,7 @@ class periodic_argument(Function):
     logarithm. That is, given a period P, always return a value in
     (-P/2, P/2], by using exp(P*I) == 1.
 
-    >>> from diofant import exp, exp_polar, periodic_argument, unbranched_argument
+    >>> from diofant import exp, exp_polar
     >>> from diofant import I, pi
     >>> unbranched_argument(exp(5*I*pi))
     pi
@@ -857,7 +853,7 @@ class principal_branch(Function):
     number `z`, and the second one a positive real number of infinity, `p`.
     The result is "z mod exp_polar(I*p)".
 
-    >>> from diofant import exp_polar, principal_branch, oo, I, pi
+    >>> from diofant import exp_polar, oo, I, pi
     >>> from diofant.abc import z
     >>> principal_branch(z, oo)
     z
@@ -990,7 +986,7 @@ def polarify(eq, subs=True, lift=False):
     changed to their polar_lift()ed versions.
     Note that lift=True implies subs=False.
 
-    >>> from diofant import polarify, sin, I, default_sort_key
+    >>> from diofant import sin, I, default_sort_key
     >>> from diofant.abc import x, y
     >>> expr = (-x)**y
     >>> expr.expand()
@@ -1063,7 +1059,7 @@ def unpolarify(eq, subs={}, exponents_only=False):
     Also apply the substitution subs in the end. (This is a convenience, since
     ``unpolarify``, in a certain sense, undoes polarify.)
 
-    >>> from diofant import unpolarify, polar_lift, sin, I
+    >>> from diofant import sin, I
     >>> unpolarify(polar_lift(I + 2))
     2 + I
     >>> unpolarify(sin(polar_lift(I + 7)))

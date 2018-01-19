@@ -59,7 +59,6 @@ def integer_powers(exprs):
     The easiest way to understand this is to look at an example:
 
     >>> from diofant.abc import x
-    >>> from diofant.integrals.risch import integer_powers
     >>> integer_powers([x, x/2, x**2 + 1, 2*x/3])
     [(x/6, [(x, 6), (x/2, 3), (2*x/3, 4)]), (x**2 + 1, [(x**2 + 1, 1)])]
 
@@ -736,7 +735,6 @@ def as_poly_1t(p, t, z):
     ========
 
     >>> from diofant import random_poly
-    >>> from diofant.integrals.risch import as_poly_1t
     >>> from diofant.abc import x, z
 
     >>> p1 = random_poly(x, 10, -10, 10)
@@ -1586,7 +1584,6 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     Examples
     ========
 
-    >>> from diofant.integrals.risch import risch_integrate
     >>> from diofant import exp, log, pprint
     >>> from diofant.abc import x
 

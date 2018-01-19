@@ -158,7 +158,6 @@ class EPath:
         Examples
         ========
 
-        >>> from diofant.simplify.epathtools import EPath
         >>> from diofant import sin, cos, E
         >>> from diofant.abc import x, y, z, t
 
@@ -230,7 +229,6 @@ class EPath:
         Examples
         ========
 
-        >>> from diofant.simplify.epathtools import EPath
         >>> from diofant import sin, cos, E
         >>> from diofant.abc import x, y, z, t
 
@@ -324,7 +322,6 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
     Examples
     ========
 
-    >>> from diofant.simplify.epathtools import epath
     >>> from diofant import sin, cos, E
     >>> from diofant.abc import x, y, z, t
 

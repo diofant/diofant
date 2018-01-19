@@ -51,7 +51,6 @@ attempted. For example,
 
     Set-up for examples below:
 
-    >>> from diofant.simplify.fu import fu, L, TR9, TR10i, TR11
     >>> from diofant import factor, sin, cos, powsimp
     >>> from diofant.abc import x, y, z, a
     >>> from time import time
@@ -220,7 +219,6 @@ def TR1(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR1, sec, csc
     >>> from diofant.abc import x
     >>> TR1(2*csc(x) + sec(x))
     1/cos(x) + 2/sin(x)
@@ -244,7 +242,6 @@ def TR2(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR2
     >>> from diofant.abc import x
     >>> from diofant import tan, cot, sin, cos
     >>> TR2(tan(x))
@@ -276,7 +273,6 @@ def TR2i(rv, half=False):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR2i
     >>> from diofant.abc import x, a
     >>> from diofant import sin, cos
     >>> TR2i(sin(x)/cos(x))
@@ -390,7 +386,6 @@ def TR3(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR3
     >>> from diofant.abc import x, y
     >>> from diofant import pi
     >>> from diofant import cos
@@ -436,7 +431,6 @@ def TR4(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR4
     >>> from diofant import pi
     >>> from diofant import cos, sin, tan, cot
     >>> for s in (0, pi/6, pi/4, pi/3, pi/2):
@@ -464,17 +458,16 @@ def _TR56(rv, f, g, h, max, pow):
             e.g. if pow=True (and max >= 6) then f**6 will not be changed
             but f**8 will be changed to h(g**2)**4
 
-    >>> from diofant.simplify.fu import _TR56 as T
     >>> from diofant.abc import x
     >>> from diofant import sin, cos
     >>> h = lambda x: 1 - x
-    >>> T(sin(x)**3, sin, cos, h, 4, False)
+    >>> _TR56(sin(x)**3, sin, cos, h, 4, False)
     sin(x)**3
-    >>> T(sin(x)**6, sin, cos, h, 6, False)
+    >>> _TR56(sin(x)**6, sin, cos, h, 6, False)
     (-cos(x)**2 + 1)**3
-    >>> T(sin(x)**6, sin, cos, h, 6, True)
+    >>> _TR56(sin(x)**6, sin, cos, h, 6, True)
     sin(x)**6
-    >>> T(sin(x)**8, sin, cos, h, 10, True)
+    >>> _TR56(sin(x)**8, sin, cos, h, 10, True)
     (-cos(x)**2 + 1)**4
     """
 
@@ -517,7 +510,6 @@ def TR5(rv, max=4, pow=False):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR5
     >>> from diofant.abc import x
     >>> from diofant import sin
     >>> TR5(sin(x)**2)
@@ -538,7 +530,6 @@ def TR6(rv, max=4, pow=False):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR6
     >>> from diofant.abc import x
     >>> from diofant import cos
     >>> TR6(cos(x)**2)
@@ -557,7 +548,6 @@ def TR7(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR7
     >>> from diofant.abc import x
     >>> from diofant import cos
     >>> TR7(cos(x)**2)
@@ -582,7 +572,6 @@ def TR8(rv, first=True):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR8, TR7
     >>> from diofant import cos, sin
     >>> TR8(cos(2)*cos(3))
     cos(5)/2 + cos(1)/2
@@ -654,7 +643,6 @@ def TR9(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR9
     >>> from diofant import cos, sin
     >>> TR9(cos(1) + cos(2))
     2*cos(1/2)*cos(3/2)
@@ -748,7 +736,6 @@ def TR10(rv, first=True):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR10
     >>> from diofant.abc import a, b, c
     >>> from diofant import cos, sin
     >>> TR10(cos(a + b))
@@ -796,7 +783,6 @@ def TR10i(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR10i
     >>> from diofant import cos, sin, pi, Add, Mul, sqrt, Symbol
     >>> from diofant.abc import x, y
 
@@ -930,7 +916,6 @@ def TR11(rv, base=None):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR11
     >>> from diofant import cos, sin, pi
     >>> from diofant.abc import x
     >>> TR11(sin(2*x))
@@ -1008,10 +993,8 @@ def TR12(rv, first=True):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR12
     >>> from diofant.abc import x, y
     >>> from diofant import tan
-    >>> from diofant.simplify.fu import TR12
     >>> TR12(tan(x + y))
     (tan(x) + tan(y))/(-tan(x)*tan(y) + 1)
     """
@@ -1045,7 +1028,6 @@ def TR12i(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR12i
     >>> from diofant import tan
     >>> from diofant.abc import a, b, c
     >>> ta, tb, tc = [tan(i) for i in (a, b, c)]
@@ -1169,7 +1151,6 @@ def TR13(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR13
     >>> from diofant import tan, cot, cos
     >>> TR13(tan(3)*tan(2))
     -tan(2)/tan(5) - tan(3)/tan(5) + 1
@@ -1216,7 +1197,6 @@ def TRmorrie(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TRmorrie, TR8, TR3
     >>> from diofant.abc import x
     >>> from diofant import Mul, cos, pi
     >>> TRmorrie(cos(x)*cos(2*x))
@@ -1334,7 +1314,6 @@ def TR14(rv, first=True):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR14
     >>> from diofant.abc import x, y
     >>> from diofant import cos, sin
     >>> TR14((cos(x) - 1)*(cos(x) + 1))
@@ -1456,7 +1435,6 @@ def TR15(rv, max=4, pow=False):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR15
     >>> from diofant.abc import x
     >>> from diofant import cos, sin
     >>> TR15(1 - 1/sin(x)**2)
@@ -1485,7 +1463,6 @@ def TR16(rv, max=4, pow=False):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR16
     >>> from diofant.abc import x
     >>> from diofant import cos, sin
     >>> TR16(1 - 1/cos(x)**2)
@@ -1513,7 +1490,6 @@ def TR111(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR111
     >>> from diofant.abc import x
     >>> from diofant import tan
     >>> TR111(1 - 1/tan(x)**2)
@@ -1545,7 +1521,6 @@ def TR22(rv, max=4, pow=False):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import TR22
     >>> from diofant.abc import x
     >>> from diofant import tan, cot
     >>> TR22(1 + tan(x)**2)
@@ -1572,7 +1547,6 @@ def L(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import L
     >>> from diofant.abc import x
     >>> from diofant import cos, sin
     >>> L(cos(x)+sin(x))
@@ -1631,7 +1605,6 @@ def fu(rv, measure=lambda x: (L(x), x.count_ops())):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import fu
     >>> from diofant import cos, sin, tan, pi, S, sqrt
     >>> from diofant.abc import x, y, a, b
 
@@ -1785,7 +1758,6 @@ def trig_split(a, b, two=False):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import trig_split
     >>> from diofant.abc import x, y, z
     >>> from diofant import cos, sin, sqrt
 
@@ -1959,7 +1931,6 @@ def as_f_sign_1(e):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import as_f_sign_1
     >>> from diofant.abc import x
     >>> as_f_sign_1(x + 1)
     (1, x, 1)
@@ -2095,7 +2066,6 @@ def hyper_as_trig(rv):
     Examples
     ========
 
-    >>> from diofant.simplify.fu import hyper_as_trig, fu
     >>> from diofant.abc import x
     >>> from diofant import cosh, sinh
     >>> eq = sinh(x)**2 + cosh(x)**2

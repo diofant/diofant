@@ -190,7 +190,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     To get the old default behavior you must pass in ``[{'ImmutableMatrix':
     numpy.matrix}, 'numpy']`` to the ``modules`` kwarg.
 
-    >>> from diofant import lambdify, Matrix
+    >>> from diofant import Matrix
     >>> from diofant.abc import x, y
     >>> import numpy
     >>> array2mat = [{'ImmutableMatrix': numpy.matrix}, 'numpy']
@@ -202,7 +202,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     (1) Use one of the provided modules:
 
         >>> from diofant import sin, tan, gamma
-        >>> from diofant.utilities.lambdify import lambdastr
         >>> from diofant.abc import x, y
         >>> f = lambdify(x, sin(x), "math")
 
@@ -239,7 +238,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     Examples
     ========
 
-    >>> from diofant.utilities.lambdify import implemented_function
     >>> from diofant import sqrt, sin, Matrix
     >>> from diofant import Function
     >>> from diofant.abc import w, x, y, z
@@ -412,7 +410,6 @@ def lambdastr(args, expr, printer=None, dummify=False):
     ========
 
     >>> from diofant.abc import x, y, z
-    >>> from diofant.utilities.lambdify import lambdastr
     >>> lambdastr(x, x**2)
     'lambda x: (x**2)'
     >>> lambdastr((x, y, z), [z, y, x])
@@ -541,7 +538,6 @@ def _imp_namespace(expr, namespace=None):
     --------
 
     >>> from diofant.abc import x
-    >>> from diofant.utilities.lambdify import implemented_function, _imp_namespace
     >>> from diofant import Function
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> g = implemented_function(Function('g'), lambda x: x*10)
@@ -611,7 +607,6 @@ def implemented_function(symfunc, implementation):
     --------
 
     >>> from diofant.abc import x
-    >>> from diofant.utilities.lambdify import lambdify, implemented_function
     >>> from diofant import Function
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> lam_f = lambdify(x, f(x))

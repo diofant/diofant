@@ -31,7 +31,7 @@ def together(expr, deep=False):
     Examples
     ========
 
-    >>> from diofant import together, exp
+    >>> from diofant import exp
     >>> from diofant.abc import x, y, z
 
     >>> together(1/x + 1/y)

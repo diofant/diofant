@@ -59,7 +59,7 @@ class fibonacci(Function):
     Examples
     ========
 
-    >>> from diofant import fibonacci, Symbol
+    >>> from diofant import Symbol
 
     >>> [fibonacci(x) for x in range(11)]
     [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
@@ -128,8 +128,6 @@ class lucas(Function):
 
     Examples
     ========
-
-    >>> from diofant import lucas
 
     >>> [lucas(x) for x in range(11)]
     [2, 1, 3, 4, 7, 11, 18, 29, 47, 76, 123]
@@ -218,8 +216,6 @@ class bernoulli(Function):
 
     Examples
     ========
-
-    >>> from diofant import bernoulli
 
     >>> [bernoulli(n) for n in range(11)]
     [1, -1/2, 1/6, 0, -1/30, 0, 1/42, 0, -1/30, 0, 5/66]
@@ -359,7 +355,7 @@ class bell(Function):
     Examples
     ========
 
-    >>> from diofant import bell, Symbol, symbols
+    >>> from diofant import Symbol, symbols
 
     >>> [bell(n) for n in range(11)]
     [1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975]
@@ -489,7 +485,7 @@ class harmonic(Function):
     Examples
     ========
 
-    >>> from diofant import harmonic, oo
+    >>> from diofant import oo
 
     >>> [harmonic(n) for n in range(6)]
     [0, 1, 3/2, 11/6, 25/12, 137/60]
@@ -507,7 +503,7 @@ class harmonic(Function):
     We can evaluate harmonic numbers for all integral and positive
     rational arguments:
 
-    >>> from diofant import S, expand_func, simplify
+    >>> from diofant import expand_func, simplify
     >>> harmonic(8)
     761/280
     >>> harmonic(11)
@@ -722,7 +718,6 @@ class euler(Function):
     ========
 
     >>> from diofant import Symbol
-    >>> from diofant.functions import euler
     >>> [euler(n) for n in range(10)]
     [1, 0, -1, 0, 5, 0, -61, 0, 1385, 0]
     >>> n = Symbol("n")
@@ -788,7 +783,7 @@ class catalan(Function):
     ========
 
     >>> from diofant import (Symbol, binomial, gamma, hyper, polygamma,
-    ...                      catalan, diff, combsimp, Rational, I)
+    ...                      diff, combsimp, Rational, I)
 
     >>> [catalan(i) for i in range(1, 10)]
     [1, 2, 5, 14, 42, 132, 429, 1430, 4862]
@@ -932,7 +927,6 @@ class genocchi(Function):
     ========
 
     >>> from diofant import Symbol
-    >>> from diofant.functions import genocchi
     >>> [genocchi(n) for n in range(1, 9)]
     [1, -1, 0, 1, 0, -3, 0, 17]
     >>> n = Symbol('n', integer=True, positive=True)
@@ -1053,7 +1047,6 @@ def nP(n, k=None, replacement=False):
     Examples
     ========
 
-    >>> from diofant.functions.combinatorial.numbers import nP
     >>> from diofant.utilities.iterables import multiset_permutations, multiset
     >>> nP(3, 2)
     6
@@ -1162,7 +1155,6 @@ def _AOP_product(n):
     Examples
     ========
 
-    >>> from diofant.functions.combinatorial.numbers import _AOP_product
     >>> from diofant.abc import x
     >>> n = (2, 2, 3)  # e.g. aabbccc
     >>> prod = ((x**2 + x + 1)*(x**2 + x + 1)*(x**3 + x**2 + x + 1)).expand()
@@ -1227,7 +1219,6 @@ def nC(n, k=None, replacement=False):
     Examples
     ========
 
-    >>> from diofant.functions.combinatorial.numbers import nC
     >>> from diofant.utilities.iterables import multiset_combinations
     >>> nC(3, 2)
     3
@@ -1370,10 +1361,9 @@ def stirling(n, k, d=None, kind=2, signed=False):
     Examples
     ========
 
-    >>> from diofant.functions.combinatorial.numbers import stirling, bell
     >>> from diofant.combinatorics import Permutation
     >>> from diofant.utilities.iterables import (multiset_partitions,
-    ...                                        permutations, subsets)
+    ...                                          permutations, subsets)
 
     First kind (unsigned by default):
 
@@ -1479,8 +1469,6 @@ def nT(n, k=None):
 
     Examples
     ========
-
-    >>> from diofant.functions.combinatorial.numbers import nT
 
     Partitions of the given multiset:
 

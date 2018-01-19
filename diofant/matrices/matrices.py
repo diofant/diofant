@@ -44,7 +44,7 @@ class DeferredVector(Symbol, NotIterable):
     Examples
     ========
 
-    >>> from diofant import DeferredVector, lambdify
+    >>> from diofant import lambdify
     >>> X = DeferredVector('X')
     >>> print(X)
     X
@@ -4081,7 +4081,6 @@ def classof(A, B):
     ========
 
     >>> from diofant import Matrix, ImmutableMatrix
-    >>> from diofant.matrices.matrices import classof
     >>> M = Matrix([[1, 2], [3, 4]])  # a Mutable Matrix
     >>> IM = ImmutableMatrix([[1, 2], [3, 4]])
     >>> classof(M, IM)

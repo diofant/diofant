@@ -53,7 +53,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Expr
         >>> e = Expr()
         >>> e._diff_wrt
         False
@@ -1723,7 +1722,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         - if you want to split self into an independent and dependent parts
           use ``self.as_independent(*deps)``
 
-        >>> from diofant import S
         >>> from diofant.abc import x, y
         >>> (Integer(3)).as_coeff_mul()
         (3, ())
@@ -1758,7 +1756,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         - if you want to split self into an independent and dependent parts
           use ``self.as_independent(*deps)``
 
-        >>> from diofant import S
         >>> from diofant.abc import x, y
         >>> (Integer(3)).as_coeff_add()
         (3, ())
@@ -3316,7 +3313,6 @@ def _mag(x):
     Examples
     ========
 
-    >>> from diofant.core.expr import _mag
     >>> from diofant import Float
     >>> _mag(Float(.1))
     0

@@ -305,7 +305,6 @@ def _get_coeff_exp(expr, x):
     return c, b.
 
     >>> from diofant.abc import x, a, b
-    >>> from diofant.integrals.meijerint import _get_coeff_exp
     >>> _get_coeff_exp(a*x**b, x)
     (a, b)
     >>> _get_coeff_exp(x, x)
@@ -334,7 +333,6 @@ def _exponents(expr, x):
     """
     Find the exponents of ``x`` (not including zero) in ``expr``.
 
-    >>> from diofant.integrals.meijerint import _exponents
     >>> from diofant.abc import x, y
     >>> from diofant import sin
     >>> _exponents(x, x)
@@ -371,14 +369,13 @@ def _find_splitting_points(expr, x):
     Find numbers a such that a linear substitution x -> x + a would
     (hopefully) simplify expr.
 
-    >>> from diofant.integrals.meijerint import _find_splitting_points as fsp
     >>> from diofant import sin
     >>> from diofant.abc import a, x
-    >>> fsp(x, x)
+    >>> _find_splitting_points(x, x)
     {0}
-    >>> fsp((x-1)**3, x)
+    >>> _find_splitting_points((x-1)**3, x)
     {1}
-    >>> fsp(sin(x+3)*x, x)
+    >>> _find_splitting_points(sin(x+3)*x, x)
     {-3, 0}
     """
     p, q = [Wild(n, exclude=[x]) for n in 'pq']
@@ -404,7 +401,6 @@ def _split_mul(f, x):
     Split expression ``f`` into fac, po, g, where fac is a constant factor,
     po = x**s for some s independent of s, and g is "the rest".
 
-    >>> from diofant.integrals.meijerint import _split_mul
     >>> from diofant import sin
     >>> from diofant.abc import s, x
     >>> _split_mul((3*x)**s*sin(x**2)*x, x)
@@ -469,7 +465,6 @@ def _mul_as_two_parts(f):
     if the case of len(gs) == 2 is removed and multiset is allowed to
     sort the terms, some tests fail.
 
-    >>> from diofant.integrals.meijerint import _mul_as_two_parts
     >>> from diofant import sin, exp, ordered
     >>> from diofant.abc import x
     >>> list(ordered(_mul_as_two_parts(x*sin(x)*exp(x))))
@@ -585,12 +580,11 @@ def _condsimp(cond):
     Note that this routine is completely ad-hoc, simplification rules being
     added as need arises rather than following any logical pattern.
 
-    >>> from diofant.integrals.meijerint import _condsimp as simp
     >>> from diofant import Or, Eq, unbranched_argument as arg, And
     >>> from diofant.abc import x, y, z
-    >>> simp(Or(x < y, z, Eq(x, y)))
+    >>> _condsimp(Or(x < y, z, Eq(x, y)))
     Or(x <= y, z)
-    >>> simp(Or(x <= y, And(x < y, z)))
+    >>> _condsimp(Or(x <= y, And(x < y, z)))
     x <= y
     """
     from ..functions import (unbranched_argument, exp_polar,
@@ -842,7 +836,6 @@ def _int0oo_1(g, x):
 
     >>> from diofant.abc import a, b, c, d, x, y
     >>> from diofant import meijerg
-    >>> from diofant.integrals.meijerint import _int0oo_1
     >>> _int0oo_1(meijerg([a], [b], [c], [d], x*y), x)
     gamma(-a)*gamma(c + 1)/(y*gamma(-d)*gamma(b + 1))
     """
@@ -870,7 +863,6 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
     Return C, f1, f2 such that integral C f1 f2 from 0 to infinity equals
     integral fac po g1 g2 from 0 to infinity.
 
-    >>> from diofant.integrals.meijerint import _rewrite_saxena
     >>> from diofant.abc import s, t, m
     >>> from diofant import meijerg
     >>> g1 = meijerg([], [], [0], [], s*t)
@@ -1238,7 +1230,6 @@ def _int0oo(g1, g2, x):
     Express integral from zero to infinity g1*g2 using a G function,
     assuming the necessary conditions are fulfilled.
 
-    >>> from diofant.integrals.meijerint import _int0oo
     >>> from diofant.abc import s, t, m
     >>> from diofant import meijerg, S
     >>> g1 = meijerg([], [], [-Rational(1, 2), 0], [], s**2*t/4)
@@ -1605,7 +1596,6 @@ def meijerint_indefinite(f, x):
     Examples
     ========
 
-    >>> from diofant.integrals.meijerint import meijerint_indefinite
     >>> from diofant import sin
     >>> from diofant.abc import x
     >>> meijerint_indefinite(sin(x), x)
@@ -1730,7 +1720,6 @@ def meijerint_definite(f, x, a, b):
     Examples
     ========
 
-    >>> from diofant.integrals.meijerint import meijerint_definite
     >>> from diofant import exp, oo
     >>> from diofant.abc import x
     >>> meijerint_definite(exp(-x**2), x, -oo, oo)
@@ -2021,7 +2010,6 @@ def meijerint_inversion(f, x, t):
     ========
 
     >>> from diofant.abc import x, t
-    >>> from diofant.integrals.meijerint import meijerint_inversion
     >>> meijerint_inversion(1/x, x, t)
     Heaviside(t)
     """

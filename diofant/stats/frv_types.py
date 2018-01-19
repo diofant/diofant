@@ -45,7 +45,7 @@ def FiniteRV(name, density):
 
     Returns a RandomSymbol.
 
-    >>> from diofant.stats import FiniteRV, P, E
+    >>> from diofant.stats import P, E
 
     >>> density = {0: .1, 1: .2, 2: .3, 3: .4}
     >>> X = FiniteRV('X', density)
@@ -89,7 +89,7 @@ def DiscreteUniform(name, items):
     Examples
     ========
 
-    >>> from diofant.stats import DiscreteUniform, density
+    >>> from diofant.stats import density
     >>> from diofant import symbols, Symbol
 
     >>> X = DiscreteUniform('X', symbols('a b c')) # equally likely over a, b, c
@@ -142,7 +142,7 @@ def Die(name, sides=6):
 
     Returns a RandomSymbol.
 
-    >>> from diofant.stats import Die, density
+    >>> from diofant.stats import density
 
     >>> D6 = Die('D6', 6) # Six sided Die
     >>> density(D6).dict
@@ -171,7 +171,7 @@ def Bernoulli(name, p, succ=1, fail=0):
 
     Returns a RandomSymbol
 
-    >>> from diofant.stats import Bernoulli, density
+    >>> from diofant.stats import density
     >>> from diofant import Rational, Symbol
 
     >>> X = Bernoulli('X', Rational(3, 4)) # 1-0 Bernoulli variable, probability = 3/4
@@ -194,7 +194,7 @@ def Coin(name, p=S.Half):
 
     Returns a RandomSymbol.
 
-    >>> from diofant.stats import Coin, density
+    >>> from diofant.stats import density
     >>> from diofant import Rational, Symbol
 
     >>> H, T = Symbol('H'), Symbol('T')
@@ -248,7 +248,7 @@ def Binomial(name, n, p, succ=1, fail=0):
     Examples
     ========
 
-    >>> from diofant.stats import Binomial, density
+    >>> from diofant.stats import density
     >>> from diofant import S
 
     >>> X = Binomial('X', 4, S.Half) # Four "coin flips"
@@ -287,7 +287,7 @@ def Hypergeometric(name, N, m, n):
     Examples
     ========
 
-    >>> from diofant.stats import Hypergeometric, density
+    >>> from diofant.stats import density
     >>> from diofant import S
 
     >>> X = Hypergeometric('X', 10, 5, 3) # 10 marbles, 5 white (success), 3 draws
@@ -313,7 +313,7 @@ def Rademacher(name):
     Examples
     ========
 
-    >>> from diofant.stats import Rademacher, density
+    >>> from diofant.stats import density
 
     >>> X = Rademacher('X')
     >>> density(X).dict

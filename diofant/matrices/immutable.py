@@ -20,7 +20,6 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     ========
 
     >>> from diofant import eye
-    >>> from diofant.matrices import ImmutableMatrix
     >>> ImmutableMatrix(eye(3))
     Matrix([
     [1, 0, 0],
@@ -128,7 +127,6 @@ class ImmutableSparseMatrix(Basic, SparseMatrixBase):
     ========
 
     >>> from diofant import eye
-    >>> from diofant.matrices.immutable import ImmutableSparseMatrix
     >>> ImmutableSparseMatrix(1, 1, {})
     Matrix([[0]])
     >>> ImmutableSparseMatrix(eye(3))
