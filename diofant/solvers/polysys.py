@@ -129,7 +129,7 @@ def solve_poly_system(eqs, *gens, **args):
             # coefficient domain.
             solutions.extend(_solve_reduced_system(system, new_gens))
 
-            # Now we should examine cases where leading coefficients of
+            # Now we should examine cases when leading coefficient of
             # some polynomial in the system is zero.
             for p in basis.polys:
                 lc = poly(p, *new_gens).LC(order=basis.order)
