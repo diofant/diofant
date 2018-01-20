@@ -285,7 +285,7 @@ class Basic(object):
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
             types = (Atom,)
-        return set().union(*[set(self.find(t)) for t in types])
+        return set().union(*[self.find(t) for t in types])
 
     @property
     def free_symbols(self):
