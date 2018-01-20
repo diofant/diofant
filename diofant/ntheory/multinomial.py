@@ -5,7 +5,6 @@ def binomial_coefficients(n):
     Examples
     ========
 
-    >>> from diofant.ntheory import binomial_coefficients
     >>> binomial_coefficients(9)
     {(0, 9): 1, (1, 8): 9, (2, 7): 36,
      (3, 6): 84, (4, 5): 126, (5, 4): 126, (6, 3): 84,
@@ -30,7 +29,6 @@ def binomial_coefficients_list(n):
     Examples
     ========
 
-    >>> from diofant.ntheory import binomial_coefficients_list
     >>> binomial_coefficients_list(9)
     [1, 9, 36, 84, 126, 126, 84, 36, 9, 1]
 
@@ -54,7 +52,6 @@ def multinomial_coefficients(m, n):
     Examples
     ========
 
-    >>> from diofant.ntheory import multinomial_coefficients
     >>> multinomial_coefficients(2, 5)
     {(0, 5): 1, (1, 4): 5,
      (2, 3): 10, (3, 2): 10, (4, 1): 5, (5, 0): 1}
@@ -125,7 +122,6 @@ def multinomial_coefficients_iterator(m, n, _tuple=tuple):
     ``multinomial_coefficients(n, n)``. Therefore, the latter coefficients are
     precomputed to save memory and time.
 
-    >>> from diofant.ntheory.multinomial import multinomial_coefficients
     >>> m53, m33 = multinomial_coefficients(5, 3), multinomial_coefficients(3, 3)
     >>> m53[(0, 0, 0, 1, 2)] == m53[(0, 0, 1, 0, 2)] == m53[(1, 0, 2, 0, 0)] == m33[(0, 1, 2)]
     True
@@ -133,7 +129,6 @@ def multinomial_coefficients_iterator(m, n, _tuple=tuple):
     Examples
     ========
 
-    >>> from diofant.ntheory.multinomial import multinomial_coefficients_iterator
     >>> it = multinomial_coefficients_iterator(20, 3)
     >>> next(it)
     ((3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), 1)

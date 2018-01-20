@@ -47,12 +47,11 @@ def _peeloff_pi(arg):
     Examples
     ========
 
-    >>> from diofant.functions.elementary.trigonometric import _peeloff_pi as peel
     >>> from diofant import pi
     >>> from diofant.abc import x, y
-    >>> peel(x + pi/2)
+    >>> _peeloff_pi(x + pi/2)
     (x, pi/2)
-    >>> peel(x + 2*pi/3 + pi*y)
+    >>> _peeloff_pi(x + 2*pi/3 + pi*y)
     (x + pi*y + pi/6, pi/2)
     """
     for a in Add.make_args(arg):
@@ -83,28 +82,27 @@ def _pi_coeff(arg, cycles=1):
     Examples
     ========
 
-    >>> from diofant.functions.elementary.trigonometric import _pi_coeff as coeff
     >>> from diofant import pi, Dummy
     >>> from diofant.abc import x, y
-    >>> coeff(3*x*pi)
+    >>> _pi_coeff(3*x*pi)
     3*x
-    >>> coeff(11*pi/7)
+    >>> _pi_coeff(11*pi/7)
     11/7
-    >>> coeff(-11*pi/7)
+    >>> _pi_coeff(-11*pi/7)
     3/7
-    >>> coeff(4*pi)
+    >>> _pi_coeff(4*pi)
     0
-    >>> coeff(5*pi)
+    >>> _pi_coeff(5*pi)
     1
-    >>> coeff(5.0*pi)
+    >>> _pi_coeff(5.0*pi)
     1
-    >>> coeff(5.5*pi)
+    >>> _pi_coeff(5.5*pi)
     3/2
-    >>> coeff(2 + pi)
+    >>> _pi_coeff(2 + pi)
 
-    >>> coeff(2*Dummy(integer=True)*pi)
+    >>> _pi_coeff(2*Dummy(integer=True)*pi)
     2
-    >>> coeff(2*Dummy(even=True)*pi)
+    >>> _pi_coeff(2*Dummy(even=True)*pi)
     0
     """
     arg = sympify(arg)
@@ -159,7 +157,7 @@ class sin(TrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import sin, pi
+    >>> from diofant import pi
     >>> from diofant.abc import x
     >>> sin(x**2).diff(x)
     2*x*cos(x**2)
@@ -406,7 +404,7 @@ class cos(TrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import cos, pi
+    >>> from diofant import pi
     >>> from diofant.abc import x
     >>> cos(x**2).diff(x)
     -2*x*sin(x**2)
@@ -778,7 +776,7 @@ class tan(TrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import tan, pi
+    >>> from diofant import pi
     >>> from diofant.abc import x
     >>> tan(x**2).diff(x)
     2*x*(tan(x**2)**2 + 1)
@@ -1168,7 +1166,6 @@ class sec(ReciprocalTrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import sec
     >>> from diofant.abc import x
     >>> sec(x**2).diff(x)
     2*x*tan(x**2)*sec(x**2)
@@ -1245,7 +1242,6 @@ class csc(ReciprocalTrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import csc
     >>> from diofant.abc import x
     >>> csc(x**2).diff(x)
     -2*x*cot(x**2)*csc(x**2)
@@ -1323,7 +1319,6 @@ class cot(ReciprocalTrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import cot
     >>> from diofant.abc import x
     >>> cot(x**2).diff(x)
     2*x*(-cot(x**2)**2 - 1)
@@ -1459,7 +1454,6 @@ class asin(InverseTrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import asin, oo, pi
     >>> asin(1)
     pi/2
     >>> asin(-1)
@@ -1633,7 +1627,6 @@ class acos(InverseTrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import acos, oo, pi
     >>> acos(1)
     0
     >>> acos(0)
@@ -1800,7 +1793,7 @@ class atan(InverseTrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import atan, oo, pi
+    >>> from diofant import oo
     >>> atan(0)
     0
     >>> atan(1)
@@ -2127,7 +2120,6 @@ class asec(InverseTrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import asec, oo, pi
     >>> asec(1)
     0
     >>> asec(-1)
@@ -2224,7 +2216,6 @@ class acsc(InverseTrigonometricFunction):
     Examples
     ========
 
-    >>> from diofant import acsc, oo, pi
     >>> acsc(1)
     pi/2
     >>> acsc(-1)
@@ -2331,7 +2322,6 @@ class atan2(InverseTrigonometricFunction):
     Going counter-clock wise around the origin we find the
     following angles:
 
-    >>> from diofant import atan2
     >>> atan2(0, 1)
     0
     >>> atan2(1, 1)
@@ -2352,7 +2342,7 @@ class atan2(InverseTrigonometricFunction):
     which are all correct. Compare this to the results of the ordinary
     `\operatorname{atan}` function for the point `(x, y) = (-1, 1)`
 
-    >>> from diofant import atan, S
+    >>> from diofant import Integer
     >>> atan(Integer(1) / -1)
     -pi/4
     >>> atan2(1, -1)
@@ -2378,7 +2368,6 @@ class atan2(InverseTrigonometricFunction):
 
     and in terms of `\operatorname(atan)`:
 
-    >>> from diofant import atan
     >>> atan2(y, x).rewrite(atan)
     2*atan(y/(x + sqrt(x**2 + y**2)))
 

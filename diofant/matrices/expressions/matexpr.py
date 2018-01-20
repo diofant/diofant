@@ -16,7 +16,6 @@ class MatrixExpr(Expr):
     Examples
     ========
 
-    >>> from diofant import MatrixSymbol
     >>> A = MatrixSymbol('A', 3, 3)
     >>> y = MatrixSymbol('y', 3, 1)
     >>> x = (A.T*A).inverse() * A * y
@@ -228,7 +227,6 @@ class MatrixExpr(Expr):
         Examples
         ========
 
-        >>> from diofant import Identity
         >>> I = Identity(3)
         >>> I
         I
@@ -255,7 +253,6 @@ class MatrixExpr(Expr):
         Examples
         ========
 
-        >>> from diofant import Identity
         >>> I = Identity(3)
         >>> I
         I
@@ -286,7 +283,7 @@ class MatrixExpr(Expr):
         Test elementwise equality between matrices, potentially of different
         types
 
-        >>> from diofant import Identity, eye
+        >>> from diofant import eye
         >>> Identity(3).equals(eye(3))
         True
         """
@@ -328,7 +325,6 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
     Creates a Diofant Symbol to represent a Matrix. This matrix has a shape and
     can be included in Matrix Expressions
 
-    >>> from diofant import MatrixSymbol, Identity
     >>> A = MatrixSymbol('A', 3, 4) # A 3 by 4 Matrix
     >>> B = MatrixSymbol('B', 4, 3) # A 4 by 3 Matrix
     >>> A.shape
@@ -391,7 +387,6 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
 class Identity(MatrixExpr):
     """The Matrix Identity I - multiplicative identity
 
-    >>> from diofant.matrices import Identity, MatrixSymbol
     >>> A = MatrixSymbol('A', 3, 5)
     >>> I = Identity(3)
     >>> I*A
@@ -440,7 +435,6 @@ class Identity(MatrixExpr):
 class ZeroMatrix(MatrixExpr):
     """The Matrix Zero 0 - additive identity
 
-    >>> from diofant import MatrixSymbol, ZeroMatrix
     >>> A = MatrixSymbol('A', 3, 5)
     >>> Z = ZeroMatrix(3, 5)
     >>> A+Z

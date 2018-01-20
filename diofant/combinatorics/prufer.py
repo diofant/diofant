@@ -37,7 +37,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> Prufer([[0, 3], [1, 3], [2, 3], [3, 4], [4, 5]]).prufer_repr
         [3, 3, 3, 4]
         >>> Prufer([1, 0, 0]).prufer_repr
@@ -60,7 +59,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> Prufer([[0, 3], [1, 3], [2, 3], [3, 4], [4, 5]]).tree_repr
         [[0, 3], [1, 3], [2, 3], [3, 4], [4, 5]]
         >>> Prufer([1, 0, 0]).tree_repr
@@ -83,7 +81,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> Prufer([[0, 3], [1, 3], [2, 3], [3, 4], [4, 5]]).nodes
         6
         >>> Prufer([1, 0, 0]).nodes
@@ -99,7 +96,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> p = Prufer([[0, 3], [1, 3], [2, 3], [3, 4], [4, 5]])
         >>> p.rank
         778
@@ -125,7 +121,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> Prufer([0]*4).size == Prufer([6]*4).size == 1296
         True
 
@@ -145,7 +140,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> a = Prufer([[0, 1], [0, 2], [0, 3]])
         >>> a.prufer_repr
         [0, 0]
@@ -195,7 +189,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> a = Prufer([0, 2], 4)
         >>> a.tree_repr
         [[0, 1], [0, 2], [2, 3]]
@@ -247,7 +240,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> Prufer.edges([1, 2, 3], [2, 4, 5]) # a T
         ([[0, 1], [1, 2], [1, 3], [3, 4]], 5)
 
@@ -294,7 +286,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> a = Prufer([[0, 1], [0, 2], [0, 3]])
         >>> a.prufer_rank()
         0
@@ -319,7 +310,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> Prufer.unrank(0, 4)
         Prufer((0, 0))
 
@@ -337,7 +327,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
 
         A Prufer object can be constructed from a list of edges:
 
@@ -397,7 +386,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> a = Prufer([[0, 1], [0, 2], [0, 3]])
         >>> b = a.next(1) # == a.next()
         >>> b.tree_repr
@@ -419,7 +407,6 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.prufer import Prufer
         >>> a = Prufer([[0, 1], [1, 2], [2, 3], [1, 4]])
         >>> a.rank
         36

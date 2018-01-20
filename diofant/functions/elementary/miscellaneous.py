@@ -17,7 +17,7 @@ class IdentityFunction(Lambda, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import Id, Symbol
+    >>> from diofant import Symbol
     >>> x = Symbol('x')
     >>> Id(x)
     x
@@ -48,7 +48,7 @@ def sqrt(arg, **kwargs):
     Examples
     ========
 
-    >>> from diofant import sqrt, Symbol
+    >>> from diofant import Symbol
     >>> x = Symbol('x')
 
     >>> sqrt(x)
@@ -117,7 +117,7 @@ def cbrt(arg, **kwargs):
     Examples
     ========
 
-    >>> from diofant import cbrt, Symbol
+    >>> from diofant import Symbol
     >>> x = Symbol('x')
 
     >>> cbrt(x)
@@ -170,7 +170,7 @@ def root(arg, n, k=0):
     Examples
     ========
 
-    >>> from diofant import root, Rational
+    >>> from diofant import Rational
     >>> from diofant.abc import x, n
 
     >>> root(x, 2)
@@ -217,7 +217,6 @@ def root(arg, n, k=0):
     The real_root function can be used to either make the principle
     result real (or simply to return the real root directly):
 
-    >>> from diofant import real_root
     >>> real_root(_)
     -2
     >>> real_root(-32, 5)
@@ -262,7 +261,6 @@ def real_root(arg, n=None):
     Examples
     ========
 
-    >>> from diofant import root, real_root, Rational
     >>> from diofant.abc import x, n
 
     >>> real_root(-8, 3)
@@ -472,7 +470,7 @@ class Max(MinMaxBase, Application):
     Examples
     ========
 
-    >>> from diofant import Max, Symbol, oo
+    >>> from diofant import Symbol, oo
 
     >>> from diofant.abc import x, y, z
     >>> p = Symbol('p', positive=True)
@@ -562,7 +560,7 @@ class Min(MinMaxBase, Application):
     Examples
     ========
 
-    >>> from diofant import Min, Symbol, oo
+    >>> from diofant import Symbol, oo
 
     >>> from diofant.abc import x, y
     >>> p = Symbol('p', positive=True)

@@ -61,7 +61,6 @@ representing a floating-point number: [1, -1][sign]*man*2**exp where
 sign is 0 or 1 and bc should correspond to the number of bits used to
 represent the mantissa (man) in binary notation, e.g.
 
->>> from diofant.core.evalf import bitcount
 >>> sign, man, exp, bc = 0, 5, 1, 3
 >>> n = [1, -1][sign]*man*2**exp
 >>> n, bitcount(man)
@@ -98,7 +97,6 @@ def fastlog(x):
     ========
 
     >>> from diofant import log
-    >>> from diofant.core.evalf import fastlog, bitcount
     >>> s, m, e = 0, 5, 1
     >>> bc = bitcount(m)
     >>> n = [1, -1][s]*m*2**e
@@ -115,7 +113,6 @@ def pure_complex(v):
     """Return a and b if v matches a + I*b where b is not zero and
     a and b are Numbers, else None.
 
-    >>> from diofant.core.evalf import pure_complex
     >>> from diofant import Tuple, I
     >>> a, b = Tuple(2, 3)
     >>> pure_complex(a)
@@ -140,7 +137,6 @@ def scaled_zero(mag, sign=1):
     Examples
     ========
 
-    >>> from diofant.core.evalf import scaled_zero
     >>> from diofant import Float
     >>> z, p = scaled_zero(100)
     >>> z, p
@@ -1361,7 +1357,7 @@ def N(x, n=15, **options):
     Examples
     ========
 
-    >>> from diofant import Sum, oo, N
+    >>> from diofant import Sum, oo
     >>> from diofant.abc import k
     >>> Sum(1/k**k, (k, 1, oo))
     Sum(k**(-k), (k, 1, oo))

@@ -33,7 +33,6 @@ def integer_nthroot(y, n):
     and a boolean indicating whether the result is exact (that is,
     whether x**n == y).
 
-    >>> from diofant import integer_nthroot
     >>> integer_nthroot(16, 2)
     (4, True)
     >>> integer_nthroot(26, 2)
@@ -600,7 +599,7 @@ class Pow(Expr):
         Examples
         ========
 
-        >>> from diofant import Pow, S
+        >>> from diofant import S
         >>> p = Pow(S.Half, 2, evaluate=False)
         >>> p.as_base_exp()
         (2, -2)

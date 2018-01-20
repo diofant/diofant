@@ -25,7 +25,6 @@ def components(f, x):
 
     >>> from diofant import cos, sin
     >>> from diofant.abc import x, y
-    >>> from diofant.integrals.heurisch import components
 
     >>> components(sin(x)*cos(x)**2, x)
     {x, sin(x), cos(x)}
@@ -93,7 +92,6 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     >>> from diofant.core import symbols
     >>> from diofant.functions import cos
-    >>> from diofant.integrals.heurisch import heurisch, heurisch_wrapper
     >>> n, x = symbols('n x')
     >>> heurisch(cos(n*x), x)
     sin(n*x)/n
@@ -200,7 +198,6 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     ========
 
     >>> from diofant import tan
-    >>> from diofant.integrals.heurisch import heurisch
     >>> from diofant.abc import x, y
 
     >>> heurisch(y*tan(x), x)

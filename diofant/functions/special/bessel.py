@@ -109,7 +109,6 @@ class besselj(BesselBase):
 
     Create a Bessel function object:
 
-    >>> from diofant import besselj, jn
     >>> from diofant.abc import z, n
     >>> b = besselj(n, z)
 
@@ -222,7 +221,6 @@ class bessely(BesselBase):
     Examples
     ========
 
-    >>> from diofant import bessely, yn
     >>> from diofant.abc import z, n
     >>> b = bessely(n, z)
     >>> b.diff(z)
@@ -299,7 +297,6 @@ class besseli(BesselBase):
     Examples
     ========
 
-    >>> from diofant import besseli
     >>> from diofant.abc import z, n
     >>> besseli(n, z).diff(z)
     besseli(n - 1, z)/2 + besseli(n + 1, z)/2
@@ -391,7 +388,6 @@ class besselk(BesselBase):
     Examples
     ========
 
-    >>> from diofant import besselk
     >>> from diofant.abc import z, n
     >>> besselk(n, z).diff(z)
     -besselk(n - 1, z)/2 - besselk(n + 1, z)/2
@@ -464,7 +460,6 @@ class hankel1(BesselBase):
     Examples
     ========
 
-    >>> from diofant import hankel1
     >>> from diofant.abc import z, n
     >>> hankel1(n, z).diff(z)
     hankel1(n - 1, z)/2 - hankel1(n + 1, z)/2
@@ -508,7 +503,6 @@ class hankel2(BesselBase):
     Examples
     ========
 
-    >>> from diofant import hankel2
     >>> from diofant.abc import z, n
     >>> hankel2(n, z).diff(z)
     hankel2(n - 1, z)/2 - hankel2(n + 1, z)/2
@@ -589,7 +583,7 @@ class jn(SphericalBesselBase):
     Examples
     ========
 
-    >>> from diofant import Symbol, jn, sin, cos, expand_func
+    >>> from diofant import Symbol, sin, cos, expand_func
     >>> z = Symbol("z")
     >>> print(jn(0, z).expand(func=True))
     sin(z)/z
@@ -640,7 +634,7 @@ class yn(SphericalBesselBase):
     Examples
     ========
 
-    >>> from diofant import Symbol, yn, sin, cos, expand_func
+    >>> from diofant import Symbol, sin, cos, expand_func
     >>> z = Symbol("z")
     >>> print(expand_func(yn(0, z)))
     -cos(z)/z
@@ -689,7 +683,6 @@ def jn_zeros(n, k, method="diofant", dps=15):
     Examples
     ========
 
-    >>> from diofant import jn_zeros
     >>> jn_zeros(2, 4, dps=5)
     [5.7635, 9.095, 12.323, 15.515]
 
@@ -792,7 +785,6 @@ class airyai(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant import airyai
     >>> from diofant.abc import z
 
     >>> airyai(z)
@@ -955,7 +947,6 @@ class airybi(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant import airybi
     >>> from diofant.abc import z
 
     >>> airybi(z)
@@ -1169,7 +1160,6 @@ class airyaiprime(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant import airyaiprime
     >>> from diofant.abc import z
 
     >>> airyaiprime(z)
@@ -1317,7 +1307,6 @@ class airybiprime(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant import airybiprime
     >>> from diofant.abc import z
 
     >>> airybiprime(z)

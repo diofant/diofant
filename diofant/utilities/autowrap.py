@@ -1,10 +1,6 @@
 """Module for compiling codegen output, and wrap the binary for use in
 python.
 
-.. note:: To use the autowrap module it must first be imported
-
-   >>> from diofant.utilities.autowrap import autowrap
-
 This module provides a common interface for different external backends, such
 as f2py, fwrap, Cython, SWIG(?) etc. (Currently only f2py and Cython are
 implemented) The goal is to provide access to compiled binaries of acceptable
@@ -23,7 +19,6 @@ Function object.  The binary callable is attached as the _imp_ attribute and
 invoked when a numerical evaluation is requested with evalf(), or with
 lambdify().
 
-    >>> from diofant.utilities.autowrap import binary_function
     >>> f = binary_function('f', expr)
     >>> 2*f(x, y) + y
     y + 2*f(x, y)
@@ -487,7 +482,6 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     --------
 
     >>> from diofant.abc import x, y, z
-    >>> from diofant.utilities.autowrap import autowrap
     >>> expr = ((x - y + z)**(13)).expand()
     >>> binary_func = autowrap(expr)
     >>> binary_func(1, 4, 2)
@@ -539,7 +533,6 @@ def binary_function(symfunc, expr, **kwargs):
     with implemented_function().
 
     >>> from diofant.abc import x, y
-    >>> from diofant.utilities.autowrap import binary_function
     >>> expr = ((x - y)**(25)).expand()
     >>> f = binary_function('f', expr)
     >>> type(f)
@@ -841,7 +834,6 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     Examples
     --------
 
-    >>> from diofant.utilities.autowrap import ufuncify
     >>> from diofant.abc import x, y
     >>> import numpy as np
     >>> f = ufuncify((x, y), y + x**2)

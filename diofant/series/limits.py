@@ -12,7 +12,7 @@ def limit(expr, z, z0, dir="+"):
     Examples
     ========
 
-    >>> from diofant import limit, sin, oo
+    >>> from diofant import sin, oo
     >>> from diofant.abc import x
     >>> limit(sin(x)/x, x, 0)
     1
@@ -79,7 +79,7 @@ class Limit(Expr):
     Examples
     ========
 
-    >>> from diofant import Limit, sin
+    >>> from diofant import sin
     >>> from diofant.abc import x
     >>> Limit(sin(x)/x, x, 0)
     Limit(sin(x)/x, x, 0)

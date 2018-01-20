@@ -186,8 +186,6 @@ def multiset_partitions_taocp(multiplicities):
     Examples
     ========
 
-    >>> from diofant.utilities.enumerative import list_visitor
-    >>> from diofant.utilities.enumerative import multiset_partitions_taocp
     >>> # variables components and multiplicities represent the multiset 'abb'
     >>> components = 'ab'
     >>> multiplicities = [1, 2]
@@ -305,8 +303,6 @@ def factoring_visitor(state, primes):
     partition as being the prime factors and the multiplicities as being their
     exponents.
 
-    >>> from diofant.utilities.enumerative import factoring_visitor
-    >>> from diofant.utilities.enumerative import multiset_partitions_taocp
     >>> from diofant import factorint
     >>> primes, multiplicities = zip(*factorint(24).items())
     >>> primes
@@ -334,8 +330,6 @@ def list_visitor(state, components):
     Examples
     ========
 
-    >>> from diofant.utilities.enumerative import list_visitor
-    >>> from diofant.utilities.enumerative import multiset_partitions_taocp
     >>> states = multiset_partitions_taocp([1, 2, 1])
     >>> s = next(states)
     >>> list_visitor(s, 'abc')  # for multiset 'a b b c'
@@ -376,7 +370,6 @@ class MultisetPartitionTraverser():
     Examples
     ========
 
-    >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
     >>> m = MultisetPartitionTraverser()
     >>> m.count_partitions([4, 4, 4, 2])
     127750
@@ -728,8 +721,6 @@ class MultisetPartitionTraverser():
         Examples
         ========
 
-        >>> from diofant.utilities.enumerative import list_visitor
-        >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_all([2, 2])
         >>> list(list_visitor(state, 'ab') for state in states)
@@ -790,8 +781,6 @@ class MultisetPartitionTraverser():
         Examples
         ========
 
-        >>> from diofant.utilities.enumerative import list_visitor
-        >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_small([2, 2], 2)
         >>> list(list_visitor(state, 'ab') for state in states)
@@ -866,8 +855,6 @@ class MultisetPartitionTraverser():
         Examples
         ========
 
-        >>> from diofant.utilities.enumerative import list_visitor
-        >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_large([2, 2], 2)
         >>> list(list_visitor(state, 'ab') for state in states)
@@ -914,8 +901,6 @@ class MultisetPartitionTraverser():
         Examples
         ========
 
-        >>> from diofant.utilities.enumerative import list_visitor
-        >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_range([2, 2], 1, 2)
         >>> list(list_visitor(state, 'ab') for state in states)
@@ -1014,7 +999,6 @@ class MultisetPartitionTraverser():
         Examples
         ========
 
-        >>> from diofant.utilities.enumerative import MultisetPartitionTraverser
         >>> m = MultisetPartitionTraverser()
         >>> m.count_partitions([9, 8, 2])
         288716

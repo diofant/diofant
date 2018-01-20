@@ -36,7 +36,6 @@ class Assignment(Relational):
     --------
 
     >>> from diofant import symbols, MatrixSymbol, Matrix
-    >>> from diofant.printing.codeprinter import Assignment
     >>> x, y, z = symbols('x, y, z')
     >>> Assignment(x, y)
     x := y

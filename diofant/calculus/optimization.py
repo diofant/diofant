@@ -17,7 +17,6 @@ def minimize(f, *v):
     Examples
     ========
 
-    >>> from diofant.calculus import minimize
     >>> from diofant.abc import x
     >>> minimize(x**2, x)
     (0, {x: 0})

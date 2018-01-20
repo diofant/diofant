@@ -367,7 +367,6 @@ class LatticeOp(AssocOp):
     attributes zero and identity. All defining properties are then respected.
 
     >>> from diofant import Integer
-    >>> from diofant.core.operations import LatticeOp
     >>> class my_join(LatticeOp):
     ...     zero = Integer(0)
     ...     identity = Integer(1)

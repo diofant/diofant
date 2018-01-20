@@ -10,7 +10,7 @@ class Determinant(Expr):
     Examples
     ========
 
-    >>> from diofant import MatrixSymbol, Determinant, eye, Matrix
+    >>> from diofant import MatrixSymbol, eye, Matrix
     >>> A = MatrixSymbol('A', 3, 3)
     >>> Determinant(A)
     Determinant(A)
@@ -48,7 +48,7 @@ class Determinant(Expr):
 def det(matexpr):
     """Compute the Matrix Determinant
 
-    >>> from diofant import MatrixSymbol, det, eye
+    >>> from diofant import MatrixSymbol, eye
     >>> A = MatrixSymbol('A', 3, 3)
     >>> det(A)
     Determinant(A)

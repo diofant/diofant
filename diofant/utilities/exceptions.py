@@ -14,7 +14,6 @@ class DiofantDeprecationWarning(DeprecationWarning):
     that one has to explicitly turn on deprecation warnings):
 
     >>> import warnings
-    >>> from diofant.utilities.exceptions import DiofantDeprecationWarning
     >>> warnings.simplefilter(
     ...     "always", DiofantDeprecationWarning)
     >>> warnings.warn(

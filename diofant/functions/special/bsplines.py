@@ -34,7 +34,6 @@ def bspline_basis(d, knots, n, x, close=True):
 
     The 0th degree splines have a value of one on a single interval:
 
-        >>> from diofant import bspline_basis
         >>> from diofant.abc import x
         >>> d = 0
         >>> knots = range(5)
@@ -128,7 +127,6 @@ def bspline_basis_set(d, knots, x):
     Examples
     ========
 
-    >>> from diofant import bspline_basis_set
     >>> from diofant.abc import x
     >>> d = 2
     >>> knots = range(5)

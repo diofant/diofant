@@ -127,7 +127,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, ones
+        >>> from diofant.matrices import ones
         >>> a = SparseMatrix(((1, 2), (3, 4)))
         >>> a.tolist()
         [[1, 2], [3, 4]]
@@ -150,7 +150,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> a = SparseMatrix(((1, 2), (3, 4)))
         >>> a.row(0)
         Matrix([[1, 2]])
@@ -168,7 +167,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> a = SparseMatrix(((1, 2), (3, 4)))
         >>> a.col(0)
         Matrix([
@@ -188,7 +186,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> a = SparseMatrix(((1, 2), (3, 4)))
         >>> a
         Matrix([
@@ -214,7 +211,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> SparseMatrix(((1, 2), (3, 4)))
         Matrix([
         [1, 2],
@@ -254,7 +250,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> a = SparseMatrix(((1, 2), (3, 4)))
         >>> a
         Matrix([
@@ -277,7 +272,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> from diofant import I
         >>> a = SparseMatrix(((1, 2 + I), (3, 4), (I, -I)))
         >>> a
@@ -309,7 +303,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, ones
+        >>> from diofant.matrices import ones
         >>> A, B = SparseMatrix(ones(4, 3)), SparseMatrix(ones(3, 4))
         >>> A.multiply(B) == 3*ones(4)
         True
@@ -351,7 +345,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, eye, zeros
+        >>> from diofant.matrices import eye, zeros
         >>> I = SparseMatrix(eye(3))
         >>> I*I == I
         True
@@ -379,7 +373,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix, SparseMatrix
+        >>> from diofant.matrices import Matrix
         >>> A = Matrix(2, 2, range(1, 5))
         >>> S = SparseMatrix(2, 2, range(2, 6))
         >>> A*S == S*A
@@ -399,7 +393,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, eye
+        >>> from diofant.matrices import eye
         >>> A = SparseMatrix(eye(3)) + SparseMatrix(eye(3))
         >>> B = SparseMatrix(eye(3)) + eye(3)
         >>> A
@@ -426,7 +420,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, eye
+        >>> from diofant.matrices import eye
         >>> -SparseMatrix(eye(3))
         Matrix([
         [-1,  0,  0],
@@ -446,7 +440,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, eye, ones
+        >>> from diofant.matrices import eye, ones
         >>> SparseMatrix(eye(3)).add(SparseMatrix(ones(3)))
         Matrix([
         [2, 1, 1],
@@ -525,7 +519,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> from diofant import I
         >>> from diofant.abc import x
         >>> a = SparseMatrix([[1, I], [-I, 1]])
@@ -564,7 +557,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, eye
+        >>> from diofant.matrices import eye
         >>> M = SparseMatrix(eye(3))
         >>> M.is_symmetric()
         True
@@ -586,7 +579,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant import SparseMatrix, Float
+        >>> from diofant import Float
         >>> from diofant.abc import x, y
         >>> A = SparseMatrix(((1, x), (0.2, 3)))
         >>> A.has(x)
@@ -604,7 +597,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> m = SparseMatrix(2, 2, lambda i, j: i*2+j)
         >>> m
         Matrix([
@@ -634,7 +626,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> S = SparseMatrix(4, 2, range(8))
         >>> S.reshape(2, 4)
         Matrix([
@@ -659,7 +650,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> S = SparseMatrix([
         ... [1, 0, 3, 2],
         ... [0, 0, 1, 0],
@@ -702,7 +692,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> S = SparseMatrix([
         ... [1, 0, 3, 2],
         ... [0, 0, 1, 0],
@@ -867,7 +856,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> A = SparseMatrix(((25, 15, -5), (15, 18, 0), (-5, 0, 11)))
         >>> A.cholesky()
         Matrix([
@@ -898,7 +886,6 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> A = SparseMatrix(((25, 15, -5), (15, 18, 0), (-5, 0, 11)))
         >>> L, D = A.LDLdecomposition()
         >>> L
@@ -932,7 +919,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, Matrix, ones
+        >>> from diofant.matrices import Matrix, ones
         >>> A = Matrix([1, 2, 3])
         >>> B = Matrix([2, 3, 4])
         >>> S = SparseMatrix(A.row_join(B))
@@ -1008,7 +995,7 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> from diofant import SparseMatrix, Matrix
+        >>> from diofant import Matrix
         >>> A = SparseMatrix([
         ... [ 2, -1,  0],
         ... [-1,  2, -1],
@@ -1111,7 +1098,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
     Examples
     ========
 
-    >>> from diofant.matrices import SparseMatrix
     >>> SparseMatrix(2, 2, range(4))
     Matrix([
     [0, 1],
@@ -1140,7 +1126,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix, ones
+        >>> from diofant.matrices import ones
         >>> M = SparseMatrix(2, 2, {})
         >>> M[1] = 1; M
         Matrix([
@@ -1199,7 +1185,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> M = SparseMatrix([[0, 0], [0, 1]])
         >>> M
         Matrix([
@@ -1232,7 +1217,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> M = SparseMatrix([[0, 0], [0, 1]])
         >>> M
         Matrix([
@@ -1267,7 +1251,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> S = SparseMatrix.eye(3); S[2, 1] = 2
         >>> S.row_swap(1, 0); S
         Matrix([
@@ -1297,7 +1280,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> S = SparseMatrix.eye(3); S[2, 1] = 2
         >>> S.col_swap(1, 0); S
         Matrix([
@@ -1329,7 +1311,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant import SparseMatrix, Matrix
+        >>> from diofant import Matrix
         >>> A = SparseMatrix(((1, 0, 1), (0, 1, 0), (1, 1, 0)))
         >>> A
         Matrix([
@@ -1386,7 +1368,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant import SparseMatrix, Matrix, ones
+        >>> from diofant import Matrix, ones
         >>> A = SparseMatrix(ones(3))
         >>> A
         Matrix([
@@ -1477,7 +1459,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> M = SparseMatrix.eye(3)*2
         >>> M[0, 1] = -1
         >>> M.zip_row_op(1, 0, lambda v, u: v + 2*u); M
@@ -1503,7 +1484,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> M = SparseMatrix.eye(3)*2
         >>> M[0, 1] = -1
         >>> M.row_op(1, lambda v, j: v + 2*M[0, j]); M
@@ -1535,7 +1515,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> M = SparseMatrix.eye(3)*2
         >>> M[1, 0] = -1
         >>> M.col_op(1, lambda v, i: v + 2*M[i, 0]); M
@@ -1565,7 +1544,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import SparseMatrix
         >>> M = SparseMatrix.zeros(3); M
         Matrix([
         [0, 0, 0],

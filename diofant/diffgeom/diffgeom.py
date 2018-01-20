@@ -60,7 +60,6 @@ class Patch(Basic):
 
     Define a Manifold and a Patch on that Manifold:
 
-    >>> from diofant.diffgeom import Manifold, Patch
     >>> m = Manifold('M', 3)
     >>> p = Patch('P', m)
     >>> p in m.patches
@@ -98,7 +97,6 @@ class CoordSystem(Basic):
     patch:
 
     >>> from diofant import symbols, sin, cos, pi
-    >>> from diofant.diffgeom import Manifold, Patch, CoordSystem
     >>> from diofant.simplify import simplify
     >>> r, theta = symbols('r, theta')
     >>> m = Manifold('M', 2)
@@ -387,8 +385,6 @@ class Point(Basic):
     Define the boilerplate Manifold, Patch and coordinate systems:
 
     >>> from diofant import symbols, sin, cos, pi
-    >>> from diofant.diffgeom import (
-    ...        Manifold, Patch, CoordSystem, Point)
     >>> r, theta = symbols('r, theta')
     >>> m = Manifold('M', 2)
     >>> p = Patch('P', m)
@@ -452,8 +448,6 @@ class BaseScalarField(Expr):
     Define boilerplate Manifold, Patch and coordinate systems:
 
     >>> from diofant import symbols, sin, cos, pi, Function
-    >>> from diofant.diffgeom import (
-    ...        Manifold, Patch, CoordSystem, Point, BaseScalarField)
     >>> r0, theta0 = symbols('r0, theta0')
     >>> m = Manifold('M', 2)
     >>> p = Patch('P', m)
@@ -534,7 +528,6 @@ class BaseVectorField(Expr):
 
     >>> from diofant import symbols, pi, Function
     >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
-    >>> from diofant.diffgeom import BaseVectorField
     >>> from diofant import pprint
     >>> x0, y0, r0, theta0 = symbols('x0, y0, r0, theta0')
 
@@ -627,7 +620,6 @@ class Commutator(Expr):
     Use the predefined R2 manifold, setup some boilerplate.
 
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import Commutator
     >>> from diofant import pprint
     >>> from diofant.simplify import simplify
 
@@ -703,7 +695,6 @@ class Differential(Expr):
 
     >>> from diofant import Function
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import Differential
     >>> from diofant import pprint
 
     Scalar field (0-forms):
@@ -815,7 +806,6 @@ class TensorProduct(Expr):
 
     >>> from diofant import Function
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import TensorProduct
     >>> from diofant import pprint
 
     >>> TensorProduct(R2.dx, R2.dy)(R2.e_x, R2.e_y)
@@ -901,7 +891,6 @@ class WedgeProduct(TensorProduct):
 
     >>> from diofant import Function
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import WedgeProduct
     >>> from diofant import pprint
 
     >>> WedgeProduct(R2.dx, R2.dy)(R2.e_x, R2.e_y)
@@ -943,7 +932,6 @@ class LieDerivative(Expr):
     Examples
     ========
 
-    >>> from diofant.diffgeom import (LieDerivative, TensorProduct)
     >>> from diofant.diffgeom.rn import R2
     >>> LieDerivative(R2.e_x, R2.y)
     0
@@ -1001,8 +989,6 @@ class BaseCovarDerivativeOp(Expr):
     ========
 
     >>> from diofant.diffgeom.rn import R2, R2_r
-    >>> from diofant.diffgeom import BaseCovarDerivativeOp
-    >>> from diofant.diffgeom import metric_to_Christoffel_2nd, TensorProduct
     >>> TP = TensorProduct
     >>> ch = metric_to_Christoffel_2nd(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))
     >>> ch
@@ -1069,8 +1055,6 @@ class CovarDerivativeOp(Expr):
     ========
 
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import CovarDerivativeOp
-    >>> from diofant.diffgeom import metric_to_Christoffel_2nd, TensorProduct
     >>> TP = TensorProduct
     >>> ch = metric_to_Christoffel_2nd(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))
     >>> ch
@@ -1156,7 +1140,6 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
 
     >>> from diofant.abc import t, x, y
     >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
-    >>> from diofant.diffgeom import intcurve_series
 
     Specify a starting point and a vector field:
 
@@ -1269,7 +1252,6 @@ def intcurve_diffequ(vector_field, param, start_point, coord_sys=None):
 
     >>> from diofant.abc import t
     >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
-    >>> from diofant.diffgeom import intcurve_diffequ
 
     Specify a starting point and a vector field:
 
@@ -1326,7 +1308,6 @@ def contravariant_order(expr, _strict=False):
     Examples
     ========
 
-    >>> from diofant.diffgeom import contravariant_order
     >>> from diofant.diffgeom.rn import R2
     >>> from diofant.abc import a
     >>> contravariant_order(a)
@@ -1369,7 +1350,6 @@ def covariant_order(expr, _strict=False):
     Examples
     ========
 
-    >>> from diofant.diffgeom import covariant_order
     >>> from diofant.diffgeom.rn import R2
     >>> from diofant.abc import a
     >>> covariant_order(a)
@@ -1420,7 +1400,6 @@ def vectors_in_basis(expr, to_sys):
     Examples
     ========
 
-    >>> from diofant.diffgeom import vectors_in_basis
     >>> from diofant.diffgeom.rn import R2_r, R2_p
     >>> vectors_in_basis(R2_r.e_x, R2_p)
     -y*e_theta/(x**2 + y**2) + x*e_r/sqrt(x**2 + y**2)
@@ -1451,7 +1430,6 @@ def twoform_to_matrix(expr):
     ========
 
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import twoform_to_matrix, TensorProduct
     >>> TP = TensorProduct
     >>> twoform_to_matrix(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))
     Matrix([
@@ -1492,7 +1470,6 @@ def metric_to_Christoffel_1st(expr):
     ========
 
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import metric_to_Christoffel_1st, TensorProduct
     >>> TP = TensorProduct
     >>> metric_to_Christoffel_1st(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))
     [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]
@@ -1525,7 +1502,6 @@ def metric_to_Christoffel_2nd(expr):
     ========
 
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import metric_to_Christoffel_2nd, TensorProduct
     >>> TP = TensorProduct
     >>> metric_to_Christoffel_2nd(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))
     [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]
@@ -1566,7 +1542,6 @@ def metric_to_Riemann_components(expr):
 
     >>> from diofant import pprint, exp
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import metric_to_Riemann_components, TensorProduct
     >>> TP = TensorProduct
     >>> metric_to_Riemann_components(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))
     [[[[0, 0], [0, 0]], [[0, 0], [0, 0]]], [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]]
@@ -1619,7 +1594,6 @@ def metric_to_Ricci_components(expr):
 
     >>> from diofant import pprint, exp
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.diffgeom import metric_to_Ricci_components, TensorProduct
     >>> TP = TensorProduct
     >>> metric_to_Ricci_components(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))
     [[0, 0], [0, 0]]

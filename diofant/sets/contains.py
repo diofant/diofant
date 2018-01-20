@@ -8,7 +8,6 @@ class Contains(BooleanFunction):
     ========
 
     >>> from diofant import Symbol, Integer, S
-    >>> from diofant.sets.contains import Contains
     >>> Contains(Integer(2), S.Integers)
     true
     >>> Contains(Integer(-2), S.Naturals)

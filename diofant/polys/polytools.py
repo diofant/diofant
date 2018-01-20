@@ -187,7 +187,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 1).free_symbols
@@ -212,7 +211,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 1).free_symbols_in_domain
@@ -241,7 +239,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).args
@@ -262,7 +259,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).gen
@@ -298,7 +294,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f, g = Poly(x/2 + 1), Poly(2*x + 1)
@@ -375,7 +370,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, ZZ
+        >>> from diofant import ZZ
         >>> from diofant.abc import x, y
 
         >>> from diofant.polys.polyclasses import DMP
@@ -409,7 +404,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(5*x**2 + 2*x - 1, x).set_modulus(2)
@@ -426,7 +420,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, modulus=2).get_modulus()
@@ -460,7 +453,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import a, b, c, d, x
 
         >>> Poly(a + x, a, b, c, d, x).exclude()
@@ -483,7 +475,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 1, x).replace(x, y)
@@ -517,7 +508,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + x*y**2, x, y).reorder(y, x)
@@ -542,7 +532,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y, z
 
         >>> Poly(y**2 + y*z**2, x, y, z).ltrim(y)
@@ -571,7 +560,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y, z
 
         >>> Poly(x*y + 1, x, y, z).has_only_gens(x, y)
@@ -604,7 +592,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, QQ
+        >>> from diofant import QQ
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, domain=QQ).to_ring()
@@ -624,7 +612,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, ZZ
+        >>> from diofant import ZZ
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x, domain=ZZ).to_field()
@@ -644,7 +632,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, RR
+        >>> from diofant import RR
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1.0, x, domain=RR).to_exact()
@@ -664,7 +652,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = Poly(x**2 + 1, x, domain='QQ[y]')
@@ -704,7 +691,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x + 3, x).coeffs()
@@ -726,7 +712,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).monoms()
@@ -746,7 +731,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).terms()
@@ -766,7 +750,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x - 1, x).all_coeffs()
@@ -781,7 +764,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x - 1, x).all_monoms()
@@ -801,7 +783,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x - 1, x).all_terms()
@@ -816,7 +797,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> def func(k, coeff):
@@ -852,7 +832,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 2*x - 1).length()
@@ -867,7 +846,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 2*x*y**2 - y, x, y).as_dict()
@@ -885,7 +863,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> f = Poly(x**2 + 2*x*y**2 - y, x, y)
@@ -921,7 +898,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, I
+        >>> from diofant import I
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + I*x + 1, x, extension=I).lift()
@@ -941,7 +918,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**6*y**2 + x**3 + 1, x, y).deflate()
@@ -961,7 +937,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> f = Poly(x**2*y + x*y**3 + x*y + 1, x)
@@ -995,7 +970,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> f = Poly(x**2*y + x*y**3 + x*y + 1, x, y)
@@ -1036,7 +1010,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**6*y**2 + x**3*y, x, y).terms_gcd()
@@ -1056,7 +1029,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x + 1).add_ground(2)
@@ -1076,7 +1048,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x + 1).sub_ground(2)
@@ -1096,7 +1067,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x + 1).mul_ground(2)
@@ -1116,7 +1086,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(2*x + 4).quo_ground(2)
@@ -1139,7 +1108,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(2*x + 4).exquo_ground(2)
@@ -1164,7 +1132,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).abs()
@@ -1184,7 +1151,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).neg()
@@ -1207,7 +1173,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).add(Poly(x - 2, x))
@@ -1237,7 +1202,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).sub(Poly(x - 2, x))
@@ -1267,7 +1231,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).mul(Poly(x - 2, x))
@@ -1297,7 +1260,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x - 2, x).sqr()
@@ -1320,7 +1282,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x - 2, x).pow(3)
@@ -1345,7 +1306,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).pdiv(Poly(2*x - 4, x))
@@ -1367,7 +1327,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).prem(Poly(2*x - 4, x))
@@ -1389,7 +1348,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).pquo(Poly(2*x - 4, x))
@@ -1414,7 +1372,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).pexquo(Poly(2*x - 2, x))
@@ -1444,7 +1401,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).div(Poly(2*x - 4, x))
@@ -1482,7 +1438,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).rem(Poly(2*x - 4, x))
@@ -1518,7 +1473,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).quo(Poly(2*x - 4, x))
@@ -1554,7 +1508,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).exquo(Poly(x - 1, x))
@@ -1617,7 +1570,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + y*x + 1, x, y).degree()
@@ -1641,7 +1593,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + y*x + 1, x, y).degree_list()
@@ -1659,7 +1610,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + y*x + 1, x, y).total_degree()
@@ -1686,7 +1636,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y, z
 
         >>> f = Poly(x**5 + 2*x**2*y**2 + 9*x*y**3)
@@ -1718,7 +1667,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> f = Poly(x**5 + 2*x**3*y**2 + 9*x*y**4)
@@ -1737,7 +1685,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(4*x**3 + 2*x**2 + 3*x, x).LC()
@@ -1760,7 +1707,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x**2 + 3*x, x).TC()
@@ -1780,7 +1726,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x**2 + 3*x, x).EC()
@@ -1798,7 +1743,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, exp
+        >>> from diofant import exp
         >>> from diofant.abc import x, y
 
         >>> p = Poly(24*x*y*exp(8) + 23*x, x, y)
@@ -1836,7 +1781,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, sqrt
+        >>> from diofant import sqrt
         >>> from diofant.abc import x, y
 
         >>> Poly(x**3 + 2*x**2 + 3*x, x).nth(2)
@@ -1884,7 +1829,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LM()
@@ -1899,7 +1843,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).EM()
@@ -1917,7 +1860,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LT()
@@ -1933,7 +1875,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).ET()
@@ -1949,7 +1890,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(-x**2 + 2*x - 3, x).max_norm()
@@ -1969,7 +1909,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(-x**2 + 2*x - 3, x).l1_norm()
@@ -1989,7 +1928,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, Rational, QQ
+        >>> from diofant import Rational, QQ
         >>> from diofant.abc import x
 
         >>> f = Poly(x/2 + Rational(1, 3), x, domain=QQ)
@@ -2027,7 +1966,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> f = Poly(x**2/y + 1, x)
@@ -2065,7 +2003,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 2*x + 1, x).integrate()
@@ -2104,7 +2041,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 2*x + 1, x).diff()
@@ -2143,7 +2079,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y, z
 
         >>> Poly(x**2 + 2*x + 3, x).eval(2)
@@ -2217,7 +2152,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y, z
 
         >>> f = Poly(2*x*y + 3*x + y + 2*z, x, y, z)
@@ -2240,7 +2174,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
@@ -2270,7 +2203,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
@@ -2300,7 +2232,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).invert(Poly(2*x - 1, x))
@@ -2330,7 +2261,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(1, x).revert(2)
@@ -2363,7 +2293,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).subresultants(Poly(x**2 - 1, x))
@@ -2391,7 +2320,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = Poly(x**2 + 1, x)
@@ -2423,7 +2351,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 2*x + 3, x).discriminant()
@@ -2452,13 +2379,12 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import poly
         >>> from diofant.polys.dispersion import dispersion, dispersionset
         >>> from diofant.abc import x
 
         Dispersion set and dispersion of a simple polynomial:
 
-        >>> fp = poly((x - 3)*(x + 3), x)
+        >>> fp = Poly((x - 3)*(x + 3), x)
         >>> sorted(dispersionset(fp))
         [0, 6]
         >>> dispersion(fp)
@@ -2466,7 +2392,7 @@ class Poly(Expr):
 
         Note that the definition of the dispersion is not symmetric:
 
-        >>> fp = poly(x**4 - 3*x**2 + 1, x)
+        >>> fp = Poly(x**4 - 3*x**2 + 1, x)
         >>> gp = fp.shift(-3)
         >>> sorted(dispersionset(fp, gp))
         [2, 3, 4]
@@ -2480,8 +2406,8 @@ class Poly(Expr):
         Computing the dispersion also works over field extensions:
 
         >>> from diofant import sqrt
-        >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-        >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
+        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
         >>> sorted(dispersionset(fp, gp))
         [2]
         >>> sorted(dispersionset(gp, fp))
@@ -2491,7 +2417,7 @@ class Poly(Expr):
         having symbolic coefficients:
 
         >>> from diofant.abc import a
-        >>> fp = poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
+        >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
         >>> sorted(dispersionset(fp))
         [0, 1]
 
@@ -2527,13 +2453,12 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import poly
         >>> from diofant.polys.dispersion import dispersion, dispersionset
         >>> from diofant.abc import x
 
         Dispersion set and dispersion of a simple polynomial:
 
-        >>> fp = poly((x - 3)*(x + 3), x)
+        >>> fp = Poly((x - 3)*(x + 3), x)
         >>> sorted(dispersionset(fp))
         [0, 6]
         >>> dispersion(fp)
@@ -2541,7 +2466,7 @@ class Poly(Expr):
 
         Note that the definition of the dispersion is not symmetric:
 
-        >>> fp = poly(x**4 - 3*x**2 + 1, x)
+        >>> fp = Poly(x**4 - 3*x**2 + 1, x)
         >>> gp = fp.shift(-3)
         >>> sorted(dispersionset(fp, gp))
         [2, 3, 4]
@@ -2555,8 +2480,8 @@ class Poly(Expr):
         Computing the dispersion also works over field extensions:
 
         >>> from diofant import sqrt
-        >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-        >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
+        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
         >>> sorted(dispersionset(fp, gp))
         [2]
         >>> sorted(dispersionset(gp, fp))
@@ -2566,7 +2491,7 @@ class Poly(Expr):
         having symbolic coefficients:
 
         >>> from diofant.abc import a
-        >>> fp = poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
+        >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
         >>> sorted(dispersionset(fp))
         [0, 1]
 
@@ -2597,7 +2522,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).cofactors(Poly(x**2 - 3*x + 2, x))
@@ -2621,7 +2545,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).gcd(Poly(x**2 - 3*x + 2, x))
@@ -2643,7 +2566,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).lcm(Poly(x**2 - 3*x + 2, x))
@@ -2665,7 +2587,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(2*x**3 + 3*x**2 + 5*x + 7, x).trunc(3)
@@ -2688,7 +2609,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, ZZ
+        >>> from diofant import ZZ
         >>> from diofant.abc import x
 
         >>> Poly(3*x**2 + 6*x + 9, x, domain=ZZ).monic()
@@ -2717,7 +2638,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(6*x**2 + 8*x + 12, x).content()
@@ -2737,7 +2657,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(2*x**2 + 8*x + 12, x).primitive()
@@ -2757,7 +2676,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + x, x).compose(Poly(x - 1, x))
@@ -2779,7 +2697,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**4 + 2*x**3 - x - 1, x, domain='ZZ').decompose()
@@ -2799,7 +2716,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 2*x + 1, x).shift(2)
@@ -2819,7 +2735,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**3 - 2*x**2 + x - 3, x).sturm()
@@ -2847,7 +2762,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = x**5 + 2*x**4 - x**3 - 2*x**2
@@ -2873,7 +2787,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, sqrt
+        >>> from diofant import sqrt
         >>> from diofant.abc import x
 
         >>> s, f, r = Poly(x**2 + 1, x, extension=[sqrt(3)]).sqf_norm()
@@ -2899,7 +2813,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**3 - 3*x - 2, x).sqf_part()
@@ -2919,7 +2832,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
@@ -2948,7 +2860,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, expand
+        >>> from diofant import expand
         >>> from diofant.abc import x
 
         >>> f = expand(2*(x + 1)**3*x**4)
@@ -2980,7 +2892,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> f = 2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y
@@ -3007,7 +2918,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> f = 2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y
@@ -3048,7 +2958,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 3, x).intervals()
@@ -3113,7 +3022,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 3, x).refine_root(1, 2, eps=1e-2)
@@ -3149,7 +3057,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, I
+        >>> from diofant import I
         >>> from diofant.abc import x
 
         >>> Poly(x**4 - 4, x).count_roots(-3, 3)
@@ -3211,7 +3119,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = Poly(2*x**3 - 7*x**2 + 4*x + 4)
@@ -3240,7 +3147,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(2*x**3 - 7*x**2 + 4*x + 4).real_roots()
@@ -3263,7 +3169,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(2*x**3 - 7*x**2 + 4*x + 4).all_roots()
@@ -3296,7 +3201,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 3).nroots(n=15)
@@ -3360,7 +3264,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**6 - 4*x**4 + 4*x**3 - x**2).ground_roots()
@@ -3386,7 +3289,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = Poly(x**4 - x**2 + 1)
@@ -3424,7 +3326,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(2*x**2 - 2, x).cancel(Poly(x**2 - 2*x + 1, x))
@@ -3461,7 +3362,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(0, x).is_zero
@@ -3479,7 +3379,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(0, x).is_one
@@ -3497,7 +3396,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 - 2*x + 1, x).is_sqf
@@ -3515,7 +3413,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x + 2, x).is_monic
@@ -3533,7 +3430,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(2*x**2 + 6*x + 12, x).is_primitive
@@ -3551,7 +3447,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x, x).is_ground
@@ -3571,7 +3466,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x + y + 2, x, y).is_linear
@@ -3589,7 +3483,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x*y + 2, x, y).is_quadratic
@@ -3607,7 +3500,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(3*x**2, x).is_monomial
@@ -3630,7 +3522,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + x*y, x, y).is_homogeneous
@@ -3648,7 +3539,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + x + 1, x, modulus=2).is_irreducible
@@ -3667,7 +3557,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + x + 1, x).is_univariate
@@ -3689,7 +3578,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + x + 1, x).is_multivariate
@@ -3711,7 +3599,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
         >>> from diofant.abc import x
 
         >>> f = x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1
@@ -3897,7 +3784,6 @@ class PurePoly(Poly):
         Examples
         ========
 
-        >>> from diofant import PurePoly
         >>> from diofant.abc import x, y
 
         >>> PurePoly(x**2 + 1).free_symbols
@@ -4131,7 +4017,6 @@ def degree(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import degree
     >>> from diofant.abc import x, y
 
     >>> degree(x**2 + y*x + 1, gen=x)
@@ -4160,7 +4045,6 @@ def degree_list(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import degree_list
     >>> from diofant.abc import x, y
 
     >>> degree_list(x**2 + y*x + 1)
@@ -4187,7 +4071,6 @@ def LC(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import LC
     >>> from diofant.abc import x, y
 
     >>> LC(4*x**2 + 2*x*y**2 + x*y + 3*y)
@@ -4212,7 +4095,6 @@ def LM(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import LM
     >>> from diofant.abc import x, y
 
     >>> LM(4*x**2 + 2*x*y**2 + x*y + 3*y)
@@ -4238,7 +4120,6 @@ def LT(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import LT
     >>> from diofant.abc import x, y
 
     >>> LT(4*x**2 + 2*x*y**2 + x*y + 3*y)
@@ -4264,7 +4145,6 @@ def pdiv(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import pdiv
     >>> from diofant.abc import x
 
     >>> pdiv(x**2 + 1, 2*x - 4)
@@ -4294,7 +4174,6 @@ def prem(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import prem
     >>> from diofant.abc import x
 
     >>> prem(x**2 + 1, 2*x - 4)
@@ -4324,7 +4203,6 @@ def pquo(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import pquo
     >>> from diofant.abc import x
 
     >>> pquo(x**2 + 1, 2*x - 4)
@@ -4356,7 +4234,6 @@ def pexquo(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import pexquo
     >>> from diofant.abc import x
 
     >>> pexquo(x**2 - 1, 2*x - 2)
@@ -4391,7 +4268,7 @@ def div(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import div, ZZ, QQ
+    >>> from diofant import ZZ, QQ
     >>> from diofant.abc import x
 
     >>> div(x**2 + 1, 2*x - 4, domain=ZZ)
@@ -4423,7 +4300,7 @@ def rem(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import rem, ZZ, QQ
+    >>> from diofant import ZZ, QQ
     >>> from diofant.abc import x
 
     >>> rem(x**2 + 1, 2*x - 4, domain=ZZ)
@@ -4455,7 +4332,6 @@ def quo(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import quo
     >>> from diofant.abc import x
 
     >>> quo(x**2 + 1, 2*x - 4)
@@ -4487,7 +4363,6 @@ def exquo(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import exquo
     >>> from diofant.abc import x
 
     >>> exquo(x**2 - 1, x - 1)
@@ -4524,7 +4399,6 @@ def half_gcdex(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import half_gcdex
     >>> from diofant.abc import x
 
     >>> half_gcdex(x**4 - 2*x**3 - 6*x**2 + 12*x + 15, x**3 + x**2 - 4*x - 4)
@@ -4559,7 +4433,6 @@ def gcdex(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import gcdex
     >>> from diofant.abc import x
 
     >>> gcdex(x**4 - 2*x**3 - 6*x**2 + 12*x + 15, x**3 + x**2 - 4*x - 4)
@@ -4592,7 +4465,6 @@ def invert(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import invert
     >>> from diofant.core.numbers import mod_inverse, Integer
     >>> from diofant.abc import x
 
@@ -4642,7 +4514,6 @@ def subresultants(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import subresultants
     >>> from diofant.abc import x
 
     >>> subresultants(x**2 + 1, x**2 - 1)
@@ -4672,7 +4543,6 @@ def resultant(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import resultant
     >>> from diofant.abc import x
 
     >>> resultant(x**2 + 1, x**2 - 1)
@@ -4710,7 +4580,6 @@ def discriminant(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import discriminant
     >>> from diofant.abc import x
 
     >>> discriminant(x**2 + 2*x + 3)
@@ -4744,7 +4613,6 @@ def cofactors(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import cofactors
     >>> from diofant.abc import x
 
     >>> cofactors(x**2 - 1, x**2 - 3*x + 2)
@@ -4777,7 +4645,6 @@ def gcd_list(seq, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import gcd_list
     >>> from diofant.abc import x
 
     >>> gcd_list([x**3 - 1, x**2 - 1, x**2 - 3*x + 2])
@@ -4850,7 +4717,6 @@ def gcd(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import gcd
     >>> from diofant.abc import x
 
     >>> gcd(x**2 - 1, x**2 - 3*x + 2)
@@ -4881,7 +4747,6 @@ def lcm_list(seq, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import lcm_list
     >>> from diofant.abc import x
 
     >>> lcm_list([x**3 - 1, x**2 - 1, x**2 - 3*x + 2])
@@ -4948,7 +4813,6 @@ def lcm(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import lcm
     >>> from diofant.abc import x
 
     >>> lcm(x**2 - 1, x**2 - 3*x + 2)
@@ -4987,7 +4851,7 @@ def terms_gcd(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import terms_gcd, cos
+    >>> from diofant import cos
     >>> from diofant.abc import x, y
     >>> terms_gcd(x**6*y**2 + x**3*y, x, y)
     x**3*y*(x**3*y + 1)
@@ -5089,7 +4953,6 @@ def trunc(f, p, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import trunc
     >>> from diofant.abc import x
 
     >>> trunc(2*x**3 + 3*x**2 + 5*x + 7, 3)
@@ -5119,7 +4982,6 @@ def monic(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import monic
     >>> from diofant.abc import x
 
     >>> monic(3*x**2 + 4*x + 2)
@@ -5149,7 +5011,6 @@ def content(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import content
     >>> from diofant.abc import x
 
     >>> content(6*x**2 + 8*x + 12)
@@ -5174,7 +5035,6 @@ def primitive(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant.polys.polytools import primitive
     >>> from diofant.abc import x
 
     >>> primitive(6*x**2 + 8*x + 12)
@@ -5220,7 +5080,6 @@ def compose(f, g, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import compose
     >>> from diofant.abc import x
 
     >>> compose(x**2 + x, x - 1)
@@ -5250,7 +5109,6 @@ def decompose(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import decompose
     >>> from diofant.abc import x
 
     >>> decompose(x**4 + 2*x**3 - x - 1)
@@ -5280,7 +5138,6 @@ def sturm(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import sturm
     >>> from diofant.abc import x
 
     >>> sturm(x**3 - 2*x**2 + x - 3)
@@ -5310,7 +5167,7 @@ def gff_list(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import gff_list, ff
+    >>> from diofant import ff
     >>> from diofant.abc import x
 
     >>> f = x**5 + 2*x**4 - x**3 - 2*x**2
@@ -5355,7 +5212,7 @@ def sqf_norm(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import sqf_norm, sqrt
+    >>> from diofant import sqrt
     >>> from diofant.abc import x
 
     >>> sqf_norm(x**2 + 1, extension=[sqrt(3)])
@@ -5385,7 +5242,6 @@ def sqf_part(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import sqf_part
     >>> from diofant.abc import x
 
     >>> sqf_part(x**3 - 3*x - 2)
@@ -5570,8 +5426,7 @@ def to_rational_coeffs(f):
     Examples
     ========
 
-    >>> from diofant import sqrt, Poly, simplify
-    >>> from diofant.polys.polytools import to_rational_coeffs
+    >>> from diofant import sqrt, simplify
     >>> from diofant.abc import x
     >>> p = Poly(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}), x, domain='EX')
     >>> lc, r, _, g = to_rational_coeffs(p)
@@ -5686,7 +5541,6 @@ def _torational_factor_list(p, x):
     Examples
     ========
 
-    >>> from diofant.polys.polytools import _torational_factor_list
     >>> from diofant.abc import x
     >>> from diofant import sqrt, expand, Mul
     >>> p = expand(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}))
@@ -5731,7 +5585,6 @@ def sqf_list(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import sqf_list
     >>> from diofant.abc import x
 
     >>> sqf_list(2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16)
@@ -5749,7 +5602,6 @@ def sqf(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import sqf
     >>> from diofant.abc import x
 
     >>> sqf(2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16)
@@ -5767,7 +5619,6 @@ def factor_list(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import factor_list
     >>> from diofant.abc import x, y
 
     >>> factor_list(2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y)
@@ -5799,7 +5650,7 @@ def factor(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import factor, sqrt
+    >>> from diofant import sqrt
     >>> from diofant.abc import x, y
 
     >>> factor(2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y)
@@ -5865,7 +5716,6 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
     Examples
     ========
 
-    >>> from diofant import intervals
     >>> from diofant.abc import x
 
     >>> intervals(x**2 - 3)
@@ -5921,7 +5771,6 @@ def refine_root(f, s, t, eps=None, steps=None, fast=False, check_sqf=False):
     Examples
     ========
 
-    >>> from diofant import refine_root
     >>> from diofant.abc import x
 
     >>> refine_root(x**2 - 3, 1, 2, eps=1e-2)
@@ -5948,7 +5797,7 @@ def count_roots(f, inf=None, sup=None):
     Examples
     ========
 
-    >>> from diofant import count_roots, I
+    >>> from diofant import I
     >>> from diofant.abc import x
 
     >>> count_roots(x**4 - 4, -3, 3)
@@ -5973,7 +5822,6 @@ def real_roots(f, multiple=True):
     Examples
     ========
 
-    >>> from diofant import real_roots
     >>> from diofant.abc import x
 
     >>> real_roots(2*x**3 - 7*x**2 + 4*x + 4)
@@ -5997,7 +5845,6 @@ def nroots(f, n=15, maxsteps=50, cleanup=True):
     Examples
     ========
 
-    >>> from diofant import nroots
     >>> from diofant.abc import x
 
     >>> nroots(x**2 - 3, n=15)
@@ -6023,7 +5870,6 @@ def ground_roots(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import ground_roots
     >>> from diofant.abc import x
 
     >>> ground_roots(x**6 - 4*x**4 + 4*x**3 - x**2)
@@ -6048,7 +5894,7 @@ def nth_power_roots_poly(f, n, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import nth_power_roots_poly, factor, roots
+    >>> from diofant import roots
     >>> from diofant.abc import x
 
     >>> f = x**4 - x**2 + 1
@@ -6087,7 +5933,7 @@ def cancel(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import cancel, sqrt, Symbol
+    >>> from diofant import sqrt, Symbol
     >>> from diofant.abc import x
     >>> A = Symbol('A', commutative=False)
 
@@ -6164,7 +6010,6 @@ def reduced(f, G, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import reduced
     >>> from diofant.abc import x, y
 
     >>> reduced(2*x**4 + y**2 - x**2 + y**3, [x**3 - x, y**3 - y])
@@ -6224,7 +6069,6 @@ def groebner(F, *gens, **args):
 
     Example taken from [1].
 
-    >>> from diofant import groebner
     >>> from diofant.abc import x, y
 
     >>> F = [x*y - 2*y, 2*y**2 - x**2]
@@ -6406,7 +6250,6 @@ class GroebnerBasis(Basic):
         ========
 
         >>> from diofant.abc import x, y
-        >>> from diofant import groebner
 
         >>> F = [x**2 - 3*y - x + 1, y**2 - 2*x + y - 1]
         >>> G = groebner(F, x, y, order='grlex')
@@ -6466,7 +6309,7 @@ class GroebnerBasis(Basic):
         Examples
         ========
 
-        >>> from diofant import groebner, expand
+        >>> from diofant import expand
         >>> from diofant.abc import x, y
 
         >>> f = 2*x**4 - x**2 + y**3 + y**2
@@ -6525,7 +6368,6 @@ class GroebnerBasis(Basic):
         Examples
         ========
 
-        >>> from diofant import groebner
         >>> from diofant.abc import x, y
 
         >>> f = 2*x**3 + y**3 + 3*y
@@ -6548,7 +6390,6 @@ def poly(expr, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import poly
     >>> from diofant.abc import x
 
     >>> poly(x*(x**2 + x - 1)**2)

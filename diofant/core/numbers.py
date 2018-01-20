@@ -140,7 +140,6 @@ def igcd(*args):
     Examples
     ========
 
-    >>> from diofant.core.numbers import igcd
     >>> igcd(2, 4)
     2
     >>> igcd(5, 10, 15)
@@ -162,7 +161,6 @@ def ilcm(*args):
     Examples
     ========
 
-    >>> from diofant.core.numbers import ilcm
     >>> ilcm(5, 10)
     10
     >>> ilcm(7, 3)
@@ -182,7 +180,6 @@ def ilcm(*args):
 def igcdex(a, b):
     """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
 
-    >>> from diofant.core.numbers import igcdex
     >>> igcdex(2, 3)
     (-1, 1, 1)
     >>> igcdex(10, 12)
@@ -229,8 +226,6 @@ def mod_inverse(a, m):
 
     Examples
     ========
-
-    >>> from diofant.core.numbers import mod_inverse, Integer
 
     Suppose we wish to find multiplicative inverse x of
     3 modulo 11. This is the same as finding x such
@@ -523,7 +518,6 @@ class Float(Number):
     Examples
     ========
 
-    >>> from diofant import Float
     >>> Float(3.5)
     3.50000000000000
     >>> Float(3)
@@ -1043,7 +1037,7 @@ class Rational(Number):
     Examples
     ========
 
-    >>> from diofant import Rational, nsimplify, pi
+    >>> from diofant import nsimplify
     >>> Rational(3)
     3
     >>> Rational(1, 2)
@@ -1163,7 +1157,6 @@ class Rational(Number):
     def limit_denominator(self, max_denominator=1000000):
         """Closest Rational to self with denominator at most max_denominator.
 
-        >>> from diofant import Rational
         >>> Rational('3.141592653589793').limit_denominator(10)
         22/7
         >>> Rational('3.141592653589793').limit_denominator(100)
@@ -1446,7 +1439,6 @@ class Rational(Number):
         Examples
         ========
 
-        >>> from diofant import Rational
         >>> Rational(-3, 2).as_content_primitive()
         (3/2, -1)
 
@@ -1793,7 +1785,7 @@ class AlgebraicNumber(Expr):
     Examples
     ========
 
-    >>> from diofant import AlgebraicNumber, sqrt, RootOf
+    >>> from diofant import sqrt, RootOf
     >>> from diofant.abc import x
 
     >>> a = AlgebraicNumber(sqrt(3), alias='a')
@@ -1901,46 +1893,52 @@ class AlgebraicNumber(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
-        if isinstance(other, Rational):
+        if other.is_Rational:
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
                                           self.minpoly.domain)
             coeffs = self.rep + other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep + other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                coeffs = self.rep + other.rep
+                return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+            else:
+                return Add(self, other, evaluate=False)
         else:
             return Number.__add__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
-        if isinstance(other, Rational):
+        if other.is_Rational:
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
                                           self.minpoly.domain)
             coeffs = self.rep - other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep - other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                coeffs = self.rep - other.rep
+                return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+            else:
+                return Add(self, -other, evaluate=False)
         else:
             return Number.__sub__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
-        if isinstance(other, Rational):
+        if other.is_Rational:
             from ..polys.polyclasses import DMP
             other = DMP.from_diofant_list((other,), 0,
                                           self.minpoly.domain)
             coeffs = self.rep * other
             return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep * other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        elif other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                coeffs = self.rep * other.rep
+                return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+            else:
+                return Mul(self, other, evaluate=False)
         else:
             return Number.__mul__(self, other)
 
@@ -2029,7 +2027,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Integer, zoo
+    >>> from diofant import S
     >>> Integer(0) is S.Zero
     True
     >>> 1/S.Zero
@@ -2077,7 +2075,7 @@ class One(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Integer
+    >>> from diofant import S
     >>> Integer(1) is S.One
     True
 
@@ -2108,7 +2106,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Integer
+    >>> from diofant import S
     >>> Integer(-1) is S.NegativeOne
     True
 
@@ -2164,7 +2162,7 @@ class Half(RationalConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Rational
+    >>> from diofant import S
     >>> Rational(1, 2) is S.Half
     True
 
@@ -2198,7 +2196,7 @@ class Infinity(Number, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import oo, exp, limit, Symbol
+    >>> from diofant import exp, limit, Symbol
     >>> 1 + oo
     oo
     >>> 42/oo
@@ -2591,7 +2589,7 @@ class NaN(Number, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import nan, oo, Eq
+    >>> from diofant import Eq
     >>> nan is nan
     True
     >>> oo - oo
@@ -2672,7 +2670,6 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import zoo, oo
     >>> zoo + 42
     zoo
     >>> 42/zoo
@@ -2792,7 +2789,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import exp, log, E
+    >>> from diofant import exp, log
     >>> E is exp(1)
     True
     >>> log(E)
@@ -2921,7 +2918,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import pi, oo, sin, exp, integrate, Symbol
+    >>> from diofant import sin, exp, integrate, Symbol
     >>> pi > 3
     true
     >>> pi.is_irrational
@@ -3123,7 +3120,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import I, sqrt
+    >>> from diofant import sqrt
     >>> sqrt(-1)
     I
     >>> I*I

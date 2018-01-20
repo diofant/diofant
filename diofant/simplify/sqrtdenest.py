@@ -18,7 +18,6 @@ def sqrt_depth(p):
     """Return the maximum depth of any square root argument of p.
 
     >>> from diofant.functions.elementary.miscellaneous import sqrt
-    >>> from diofant.simplify.sqrtdenest import sqrt_depth
 
     Neither of these square roots contains any other square roots
     so the depth is 1:
@@ -51,7 +50,6 @@ def is_algebraic(p):
     ========
 
     >>> from diofant.functions.elementary.miscellaneous import sqrt
-    >>> from diofant.simplify.sqrtdenest import is_algebraic
     >>> from diofant import cos
     >>> is_algebraic(sqrt(2)*(3/(sqrt(7) + sqrt(5)*sqrt(2))))
     True
@@ -80,7 +78,6 @@ def _subsets(n):
     Examples
     ========
 
-    >>> from diofant.simplify.sqrtdenest import _subsets
     >>> _subsets(2)
     [[1, 0], [0, 1], [1, 1]]
 
@@ -108,7 +105,6 @@ def sqrtdenest(expr, max_iter=3):
     Examples
     ========
 
-    >>> from diofant.simplify.sqrtdenest import sqrtdenest
     >>> from diofant import sqrt
     >>> sqrtdenest(sqrt(5 + 2 * sqrt(6)))
     sqrt(2) + sqrt(3)
@@ -143,7 +139,6 @@ def _sqrt_match(p):
     ========
 
     >>> from diofant.functions.elementary.miscellaneous import sqrt
-    >>> from diofant.simplify.sqrtdenest import _sqrt_match
     >>> _sqrt_match(1 + sqrt(2) + sqrt(2)*sqrt(3) +  2*sqrt(1+sqrt(5)))
     [1 + sqrt(2) + sqrt(6), 2, 1 + sqrt(5)]
     """
@@ -258,7 +253,6 @@ def _sqrtdenest_rec(expr):
     ========
 
     >>> from diofant import sqrt
-    >>> from diofant.simplify.sqrtdenest import _sqrtdenest_rec
     >>> _sqrtdenest_rec(sqrt(-72*sqrt(2) + 158*sqrt(5) + 498))
     -sqrt(10) + sqrt(2) + 9 + 9*sqrt(5)
     >>> w = -6*sqrt(55)-6*sqrt(35)-2*sqrt(22)-2*sqrt(14)+2*sqrt(77)+6*sqrt(10)+65
@@ -376,7 +370,6 @@ def _sqrt_symbolic_denest(a, b, r):
     Examples
     ========
 
-    >>> from diofant.simplify.sqrtdenest import _sqrt_symbolic_denest, sqrtdenest
     >>> from diofant import sqrt, Symbol
     >>> from diofant.abc import x
 
@@ -480,7 +473,6 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     ========
 
     >>> from diofant import sqrt
-    >>> from diofant.simplify.sqrtdenest import _sqrt_match, sqrt_biquadratic_denest
     >>> z = sqrt((2*sqrt(2) + 4)*sqrt(2 + sqrt(2)) + 5*sqrt(2) + 8)
     >>> a, b, r = _sqrt_match(z**2)
     >>> d2 = a**2 - b**2*r
@@ -657,7 +649,6 @@ def unrad(eq, *syms, **flags):
     Examples
     ========
 
-    >>> from diofant.solvers.solvers import unrad
     >>> from diofant.abc import x
     >>> from diofant import cbrt, sqrt, Rational, root, real_roots, solve
 

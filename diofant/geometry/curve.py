@@ -50,7 +50,6 @@ class Curve(GeometrySet):
 
     >>> from diofant import sin, cos, Symbol, interpolate
     >>> from diofant.abc import t, a
-    >>> from diofant.geometry import Curve
     >>> C = Curve((sin(t), cos(t)), (t, 0, 2))
     >>> C.functions
     (sin(t), cos(t))
@@ -91,7 +90,6 @@ class Curve(GeometrySet):
         ========
 
         >>> from diofant.abc import t, a
-        >>> from diofant.geometry import Curve
         >>> Curve((t, t**2), (t, 0, 2)).free_symbols
         set()
         >>> Curve((t, t**2), (t, a, 2)).free_symbols
@@ -121,7 +119,6 @@ class Curve(GeometrySet):
         ========
 
         >>> from diofant.abc import t
-        >>> from diofant.geometry import Curve
         >>> C = Curve((t, t**2), (t, 0, 2))
         >>> C.functions
         (t, t**2)
@@ -147,7 +144,6 @@ class Curve(GeometrySet):
         ========
 
         >>> from diofant.abc import t
-        >>> from diofant.geometry import Curve
         >>> C = Curve([t, t**2], (t, 0, 2))
         >>> C.parameter
         t
@@ -174,7 +170,6 @@ class Curve(GeometrySet):
         ========
 
         >>> from diofant.abc import t
-        >>> from diofant.geometry import Curve
         >>> C = Curve([t, t**3], (t, -2, 2))
         >>> C.limits
         (t, -2, 2)
@@ -190,7 +185,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.geometry.curve import Curve
         >>> from diofant.abc import x
         >>> from diofant import pi
         >>> Curve((x, x), (x, 0, 1)).rotate(pi/2)
@@ -213,7 +207,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.geometry.curve import Curve
         >>> from diofant import pi
         >>> from diofant.abc import x
         >>> Curve((x, x), (x, 0, 1)).scale(2)
@@ -231,7 +224,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.geometry.curve import Curve
         >>> from diofant import pi
         >>> from diofant.abc import x
         >>> Curve((x, x), (x, 0, 1)).translate(1, 2)
@@ -273,7 +265,6 @@ class Curve(GeometrySet):
 
         >>> from diofant import Symbol
         >>> from diofant.abc import s
-        >>> from diofant.geometry import Curve
         >>> C = Curve([2*s, s**2], (s, 0, 2))
         >>> C.arbitrary_point()
         Point2D(2*t, t**2)
@@ -320,7 +311,7 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Curve, sin
+        >>> from diofant import sin
         >>> from diofant.abc import x, t, s
         >>> Curve((x, sin(x)), (x, 1, 2)).plot_interval()
         [t, 1, 2]

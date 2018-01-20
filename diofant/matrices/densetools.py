@@ -11,7 +11,6 @@ def trace(matlist, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import trace, eye
     >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
@@ -37,7 +36,6 @@ def transpose(matlist, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import transpose
     >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
@@ -57,7 +55,6 @@ def conjugate(matlist, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import conjugate
     >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(2), ZZ(6)],
@@ -81,7 +78,6 @@ def conjugate_row(row, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import conjugate_row
     >>> from diofant import ZZ
     >>> a = [ZZ(3), ZZ(2), ZZ(6)]
     >>> conjugate_row(a, ZZ)
@@ -104,7 +100,6 @@ def conjugate_transpose(matlist, K):
     ========
 
     >>> from diofant import ZZ
-    >>> from diofant.matrices.densetools import conjugate_transpose
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -122,7 +117,6 @@ def augment(matlist, column, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import augment
     >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
@@ -145,7 +139,6 @@ def eye(n, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import eye
     >>> from diofant import ZZ
     >>> eye(3, ZZ)
     [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
@@ -168,7 +161,6 @@ def row(matlist, i):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import row
     >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
@@ -188,7 +180,6 @@ def col(matlist, i):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import col
     >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
@@ -234,7 +225,6 @@ def isHermitian(matlist, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densetools import isHermitian
     >>> from diofant import QQ
     >>> a = [
     ... [QQ(2,1), QQ(-1,1), QQ(-1,1)],

@@ -465,7 +465,7 @@ def octave_code(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> from diofant import octave_code, symbols, sin, pi
+    >>> from diofant import symbols, sin, pi
     >>> x = symbols('x')
     >>> octave_code(sin(x).series(x).removeO())
     'x.^5/120 - x.^3/6 + x'

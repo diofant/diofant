@@ -31,7 +31,7 @@ has solution `b(n) = B_m + C`.
 
 Then ``L = [-1, 1]`` and `f(n) = m n^(m-1)` and finally for `m=4`:
 
->>> from diofant import Symbol, bernoulli, rsolve_poly
+>>> from diofant import Symbol, bernoulli
 >>> n = Symbol('n', integer=True)
 
 >>> rsolve_poly([-1, 1], 4*n**3, n)
@@ -93,7 +93,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     up to a constant. For this we can use `b(n+1) - b(n) = m n^{m-1}`
     recurrence, which has solution `b(n) = B_m + C`. For example:
 
-    >>> from diofant import Symbol, rsolve_poly
+    >>> from diofant import Symbol
     >>> n = Symbol('n', integer=True)
 
     >>> rsolve_poly([-1, 1], 4*n**3, n)
@@ -371,7 +371,6 @@ def rsolve_ratio(coeffs, f, n, **hints):
     ========
 
     >>> from diofant.abc import x
-    >>> from diofant.solvers.recurr import rsolve_ratio
     >>> rsolve_ratio([-2*x**3 + x**2 + 2*x - 1, 2*x**3 + x**2 - 6*x,
     ... - 2*x**3 - 11*x**2 - 18*x - 9, 2*x**3 + 13*x**2 + 22*x + 8], 0, x)
     C2*(2*x - 3)/(2*(x**2 - 1))
@@ -479,7 +478,6 @@ def rsolve_hyper(coeffs, f, n, **hints):
     Examples
     ========
 
-    >>> from diofant.solvers import rsolve_hyper
     >>> from diofant.abc import x
 
     >>> rsolve_hyper([-1, -1, 1], 0, x)
@@ -674,7 +672,7 @@ def rsolve(f, y, init=None):
     .. math:: (n - 1) y(n + 2) - (n^2 + 3 n - 2) y(n + 1) +
               2 n (n + 1) y(n) = 0
 
-    >>> from diofant import Function, rsolve
+    >>> from diofant import Function
     >>> from diofant.abc import n
     >>> y = Function('y')
 

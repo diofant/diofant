@@ -18,7 +18,6 @@ class SparseNDimArray(NDimArray):
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableSparseNDimArray
         >>> a = MutableSparseNDimArray(range(4), (2, 2))
         >>> a
         [[0, 1], [2, 3]]
@@ -71,7 +70,6 @@ class SparseNDimArray(NDimArray):
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableSparseNDimArray
         >>> a = MutableSparseNDimArray([1 for i in range(9)], (3, 3))
         >>> b = a.tomatrix()
         >>> b
@@ -156,7 +154,6 @@ class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableSparseNDimArray
         >>> a = MutableSparseNDimArray.zeros(2, 2)
         >>> a[0, 0] = 1
         >>> a[1, 1] = 1

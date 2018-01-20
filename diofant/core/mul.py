@@ -34,10 +34,9 @@ def _unevaluated_Mul(*args):
     Examples
     ========
 
-    >>> from diofant.core.mul import _unevaluated_Mul as uMul
-    >>> from diofant import sqrt, Mul, Integer, Float
+    >>> from diofant import sqrt, Integer, Float
     >>> from diofant.abc import x
-    >>> a = uMul(*[Float(3.0), x, Integer(2)])
+    >>> a = _unevaluated_Mul(*[Float(3.0), x, Integer(2)])
     >>> a.args[0]
     6.00000000000000
     >>> a.args[1]
@@ -46,11 +45,11 @@ def _unevaluated_Mul(*args):
     Two unevaluated Muls with the same arguments will
     always compare as equal during testing:
 
-    >>> m = uMul(sqrt(2), sqrt(3))
-    >>> m == uMul(sqrt(3), sqrt(2))
+    >>> m = _unevaluated_Mul(sqrt(2), sqrt(3))
+    >>> m == _unevaluated_Mul(sqrt(3), sqrt(2))
     True
     >>> u = Mul(sqrt(3), sqrt(2), evaluate=False)
-    >>> m == uMul(u)
+    >>> m == _unevaluated_Mul(u)
     True
     >>> m == Mul(*m.args)
     False
@@ -96,7 +95,7 @@ class Mul(AssocOp):
               -  Sometimes terms are not combined as one would like:
                  {c.f. https://github.com/sympy/sympy/issues/4596}
 
-                >>> from diofant import Mul, sqrt
+                >>> from diofant import sqrt
                 >>> from diofant.abc import x, y, z
                 >>> 2*(x + 1) # this is the 2-arg Mul behavior
                 2*x + 2
@@ -1493,7 +1492,7 @@ def prod(a, start=1):
     Examples
     ========
 
-    >>> from diofant import prod, Integer
+    >>> from diofant import Integer
     >>> prod(range(3))
     0
     >>> type(_) is int
@@ -1524,7 +1523,6 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
     Examples
     ========
 
-    >>> from diofant.core.mul import _keep_coeff
     >>> from diofant.abc import x, y
     >>> from diofant import S, Integer
 

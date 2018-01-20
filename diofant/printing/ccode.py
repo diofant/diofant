@@ -299,7 +299,7 @@ def ccode(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> from diofant import ccode, symbols, Rational, sin, ceiling, Abs, Function
+    >>> from diofant import symbols, Rational, sin, ceiling, Abs, Function
     >>> x, tau = symbols("x, tau")
     >>> ccode((2*tau)**Rational(7, 2))
     '8*sqrt(2)*pow(tau, 7.0L/2.0L)'

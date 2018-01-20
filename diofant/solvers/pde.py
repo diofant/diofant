@@ -142,11 +142,9 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
         - Do help(pde.pde_hintname) to get help more information on a
           specific hint
 
-
     Examples
     ========
 
-    >>> from diofant.solvers.pde import pdsolve
     >>> from diofant import Function, diff, Eq
     >>> from diofant.abc import x, y
     >>> f = Function('f')
@@ -250,7 +248,6 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     Examples
     ========
 
-    >>> from diofant.solvers.pde import classify_pde
     >>> from diofant import Function, diff, Eq
     >>> from diofant.abc import x, y
     >>> f = Function('f')
@@ -407,7 +404,6 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     ========
 
     >>> from diofant import Function, symbols, diff
-    >>> from diofant.solvers.pde import checkpdesol, pdsolve
     >>> x, y = symbols('x y')
     >>> f = Function('f')
     >>> eq = 2*f(x, y) + 3*f(x, y).diff(x) + 4*f(x, y).diff(y)
@@ -460,7 +456,6 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
 
     The general solution is of the form::
 
-        >>> from diofant.solvers import pdsolve
         >>> from diofant.abc import x, y, a, b, c
         >>> from diofant import Function, pprint
         >>> f = Function('f')
@@ -483,9 +478,6 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     Examples
     ========
 
-    >>> from diofant.solvers.pde import (
-    ... pde_1st_linear_constant_coeff_homogeneous)
-    >>> from diofant import pdsolve
     >>> from diofant import Function, diff, pprint
     >>> from diofant.abc import x, y
     >>> f = Function('f')
@@ -531,7 +523,6 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
 
     The general solution of the PDE is::
 
-        >>> from diofant.solvers import pdsolve
         >>> from diofant.abc import x, y, a, b, c
         >>> from diofant import Function, pprint
         >>> f = Function('f')
@@ -582,7 +573,6 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     Examples
     ========
 
-    >>> from diofant.solvers.pde import pdsolve
     >>> from diofant import Function, diff, exp
     >>> from diofant.abc import x, y
     >>> f = Function('f')
@@ -644,7 +634,6 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
 
     The general form of this PDE is::
 
-        >>> from diofant.solvers.pde import pdsolve
         >>> from diofant.abc import x, y
         >>> from diofant import Function, pprint
         >>> a, b, c, G, f= [Function(i) for i in ['a', 'b', 'c', 'G', 'f']]
@@ -660,7 +649,6 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     Examples
     ========
 
-    >>> from diofant.solvers.pde import pdsolve
     >>> from diofant import Function, diff, pprint, exp
     >>> from diofant.abc import x, y
     >>> f = Function('f')
@@ -779,7 +767,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     Examples
     ========
 
-    >>> from diofant import E, Eq, Function, pde_separate, Derivative as D
+    >>> from diofant import E, Eq, Function, Derivative as D
     >>> from diofant.abc import x, t
     >>> u, X, T = map(Function, 'uXT')
 
@@ -862,7 +850,7 @@ def pde_separate_add(eq, fun, sep):
     Examples
     ========
 
-    >>> from diofant import E, Eq, Function, pde_separate_add, Derivative as D
+    >>> from diofant import E, Eq, Function, Derivative as D
     >>> from diofant.abc import x, t
     >>> u, X, T = map(Function, 'uXT')
 
@@ -886,7 +874,7 @@ def pde_separate_mul(eq, fun, sep):
     Examples
     ========
 
-    >>> from diofant import Function, Eq, pde_separate_mul, Derivative as D
+    >>> from diofant import Function, Eq, Derivative as D
     >>> from diofant.abc import x, y
     >>> u, X, Y = map(Function, 'uXY')
 

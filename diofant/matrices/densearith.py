@@ -11,7 +11,6 @@ def add(matlist1, matlist2, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import add
     >>> from diofant import ZZ
     >>> e = [
     ... [ZZ(12), ZZ(78)],
@@ -42,7 +41,6 @@ def addrow(row1, row2, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import addrow
     >>> from diofant import ZZ
 
     >>> a = [ZZ(12), ZZ(34), ZZ(56)]
@@ -66,7 +64,6 @@ def sub(matlist1, matlist2, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import sub
     >>> from diofant import ZZ
     >>> e = [
     ... [ZZ(12), ZZ(78)],
@@ -98,7 +95,6 @@ def negate(matlist, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import negate
     >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(2), ZZ(3)],
@@ -126,7 +122,6 @@ def negaterow(row, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import negaterow
     >>> from diofant import ZZ
     >>> a = [ZZ(2), ZZ(3), ZZ(4)]
     >>> b = [ZZ(0), ZZ(0), ZZ(0)]
@@ -150,7 +145,6 @@ def mulmatmat(matlist1, matlist2, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import mulmatmat
     >>> from diofant import ZZ
     >>> from diofant.matrices.densetools import eye
     >>> a = [
@@ -186,7 +180,6 @@ def mulmatscaler(matlist, scaler, K):
     ========
 
     >>> from diofant import ZZ
-    >>> from diofant.matrices.densearith import mulmatscaler
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -210,7 +203,6 @@ def mulrowscaler(row, scaler, K):
     ========
 
     >>> from diofant import ZZ
-    >>> from diofant.matrices.densearith import mulrowscaler
     >>> a = [ZZ(3), ZZ(4), ZZ(5)]
     >>> mulrowscaler(a, 2, ZZ)
     [6, 8, 10]
@@ -232,7 +224,6 @@ def mulrowcol(row, col, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import mulrowcol
     >>> from diofant import ZZ
 
     >>> a = [ZZ(2), ZZ(4), ZZ(6)]

@@ -31,7 +31,6 @@ def _prep_tuple(v):
     Examples
     ========
 
-    >>> from diofant.functions.special.hyper import _prep_tuple
     >>> _prep_tuple([1, 2, 3])
     (1, 2, 3)
     >>> _prep_tuple((4, 5))
@@ -112,7 +111,6 @@ class hyper(TupleParametersBase):
     The parameters `a_p` and `b_q` can be passed as arbitrary
     iterables, for example:
 
-    >>> from diofant.functions import hyper
     >>> from diofant.abc import x, n, a
     >>> hyper((1, 2, 3), [3, 4], x)
     hyper((1, 2, 3), (3, 4), x)
@@ -254,7 +252,6 @@ class hyper(TupleParametersBase):
         outside of the radius of convergence by analytic continuation. But if
         this is zero, then the function is not actually defined anywhere else.
 
-        >>> from diofant.functions import hyper
         >>> from diofant.abc import z
         >>> hyper((1, 2), [3], z).radius_of_convergence
         1
@@ -371,7 +368,6 @@ class meijerg(TupleParametersBase):
 
     You can pass the parameters either as four separate vectors:
 
-    >>> from diofant.functions import meijerg
     >>> from diofant.abc import x, a
     >>> from diofant.core.containers import Tuple
     >>> from diofant import pprint
@@ -580,7 +576,6 @@ class meijerg(TupleParametersBase):
         """
         Return a number P such that G(x*exp(I*P)) == G(x).
 
-        >>> from diofant.functions.special.hyper import meijerg
         >>> from diofant.abc import z
         >>> from diofant import pi, S
 

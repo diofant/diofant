@@ -34,7 +34,6 @@ def decompose_power(expr):
     Examples
     ========
 
-    >>> from diofant.core.exprtools import decompose_power
     >>> from diofant.abc import x, y
 
     >>> decompose_power(x)
@@ -80,7 +79,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x
         >>> from diofant import I
         >>> e = 2*x**3
@@ -192,7 +190,6 @@ class Factors:
     @property
     def is_zero(self):  # Factors
         """
-        >>> from diofant.core.exprtools import Factors
         >>> Factors(0).is_zero
         True
         """
@@ -202,7 +199,6 @@ class Factors:
     @property
     def is_one(self):  # Factors
         """
-        >>> from diofant.core.exprtools import Factors
         >>> Factors(1).is_one
         True
         """
@@ -214,7 +210,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x, y
         >>> Factors((x*y**2).as_powers_dict()).as_expr()
         x*y**2
@@ -242,7 +237,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
@@ -346,9 +340,7 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x, y, z
-        >>> from diofant import S
 
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> a.div(a)
@@ -377,7 +369,6 @@ class Factors:
 
         factor_terms can clean up such Rational-bases powers:
 
-        >>> from diofant.core.exprtools import factor_terms
         >>> n, d = Factors(2**(2*x + 2)).div(Integer(8))
         >>> n.as_expr()/d.as_expr()
         2**(2*x + 2)/8
@@ -447,7 +438,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
@@ -462,7 +452,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
@@ -479,7 +468,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x, y
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> a**2
@@ -509,7 +497,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
@@ -542,7 +529,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
         >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
@@ -770,7 +756,6 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
     Examples
     ========
 
-    >>> from diofant.core import gcd_terms
     >>> from diofant.abc import x, y
 
     >>> gcd_terms((x + 1)**2*y + (x + 1)*y**2)
@@ -879,7 +864,7 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
     Examples
     ========
 
-    >>> from diofant import factor_terms, Symbol
+    >>> from diofant import Symbol
     >>> from diofant.abc import x, y
     >>> factor_terms(x + x*(2 + 4*y)**3)
     x*(8*(2*y + 1)**3 + 1)
@@ -994,7 +979,6 @@ def _mask_nc(eq, name=None):
     ========
 
     >>> from diofant import symbols, Mul
-    >>> from diofant.core.exprtools import _mask_nc
     >>> from diofant.abc import x, y
     >>> A, B, C = symbols('A B C', commutative=False)
 
@@ -1089,7 +1073,6 @@ def factor_nc(expr):
     Examples
     ========
 
-    >>> from diofant.core.exprtools import factor_nc
     >>> from diofant import Symbol
     >>> from diofant.abc import x
     >>> A = Symbol('A', commutative=False)

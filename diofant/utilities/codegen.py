@@ -296,7 +296,6 @@ class Variable:
         ========
 
         >>> from diofant import Symbol
-        >>> from diofant.utilities.codegen import Variable
         >>> x = Variable(Symbol('x'))
         >>> x.get_datatype('c')
         'double'
@@ -1408,7 +1407,6 @@ def codegen(name_expr, language, prefix=None, project="project",
     Examples
     ========
 
-    >>> from diofant.utilities.codegen import codegen
     >>> from diofant.abc import x, y, z
     >>> [(c_name, c_code), (h_name, c_header)] = codegen(
     ...     ("f", x+y*z), "C", "test", header=False, empty=False)
@@ -1457,7 +1455,6 @@ def codegen(name_expr, language, prefix=None, project="project",
     global variables have been defined, the 'global_vars' option can be used
     to remove the specified variables from the function signature
 
-    >>> from diofant.utilities.codegen import codegen
     >>> from diofant.abc import x, y, z
     >>> [(f_name, f_code), header] = codegen(
     ...     ("f", x+y*z), "F95", header=False, empty=False,
@@ -1531,7 +1528,6 @@ def make_routine(name, expr, argument_sequence=None,
     Examples
     ========
 
-    >>> from diofant.utilities.codegen import make_routine
     >>> from diofant.abc import x, y, f, g
     >>> from diofant import Eq
     >>> r = make_routine('test', [Eq(f, 2*x), Eq(g, x + y)])
@@ -1558,8 +1554,6 @@ def make_routine(name, expr, argument_sequence=None,
 
     We can examine the various arguments more closely:
 
-    >>> from diofant.utilities.codegen import (InputArgument, OutputArgument,
-    ...                                      InOutArgument)
     >>> [a.name for a in r.arguments if isinstance(a, InputArgument)]
     [x, y]
 

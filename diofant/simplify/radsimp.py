@@ -45,7 +45,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     Examples
     ========
 
-    >>> from diofant import collect, expand, factor
+    >>> from diofant import expand, factor
     >>> from diofant.abc import a, b, c, x, y
 
     This function can collect symbolic coefficients in polynomials or
@@ -402,7 +402,6 @@ def rcollect(expr, *vars):
     Examples
     ========
 
-    >>> from diofant.simplify import rcollect
     >>> from diofant.abc import x, y
 
     >>> expr = (x**2*y + x*y + x + y)/(x + y)
@@ -439,7 +438,6 @@ def collect_sqrt(expr, evaluate=True):
     ========
 
     >>> from diofant import sqrt
-    >>> from diofant.simplify.radsimp import collect_sqrt
     >>> from diofant.abc import a, b
 
     >>> r2, r3, r5 = [sqrt(i) for i in [2, 3, 5]]
@@ -512,7 +510,6 @@ def collect_const(expr, *vars, **kwargs):
 
     >>> from diofant import sqrt
     >>> from diofant.abc import a, s, x, y, z
-    >>> from diofant.simplify.radsimp import collect_const
     >>> collect_const(sqrt(3) + sqrt(3)*(1 + sqrt(2)))
     sqrt(3)*(sqrt(2) + 2)
     >>> collect_const(sqrt(3)*s + sqrt(7)*s + sqrt(3) + sqrt(7))
@@ -625,9 +622,8 @@ def radsimp(expr, symbolic=True, max_terms=4):
     Examples
     ========
 
-    >>> from diofant import radsimp, sqrt, Symbol, denom, pprint, I
+    >>> from diofant import sqrt, Symbol, denom, pprint, I
     >>> from diofant import factor_terms, fraction, signsimp
-    >>> from diofant.simplify.radsimp import collect_sqrt
     >>> from diofant.abc import a, b, c
 
     >>> radsimp(1/(I + 1))
@@ -868,7 +864,6 @@ def rad_rationalize(num, den):
     ========
 
     >>> from diofant import sqrt
-    >>> from diofant.simplify.radsimp import rad_rationalize
     >>> rad_rationalize(sqrt(3), 1 + sqrt(2)/3)
     (-sqrt(3) + sqrt(6)/3, -7/9)
     """
@@ -893,7 +888,7 @@ def fraction(expr, exact=False):
     If only one of the numerator/denominator pair is needed then
     use numer(expr) or denom(expr) functions respectively.
 
-    >>> from diofant import fraction, Rational, Symbol
+    >>> from diofant import Rational, Symbol
     >>> from diofant.abc import x, y
 
     >>> fraction(x/y)
@@ -996,7 +991,6 @@ def split_surds(expr):
     ========
 
     >>> from diofant import sqrt
-    >>> from diofant.simplify.radsimp import split_surds
     >>> split_surds(3*sqrt(3) + sqrt(5)/7 + sqrt(6) + sqrt(10) + sqrt(15))
     (3, sqrt(2) + sqrt(5) + 3, sqrt(5)/7 + sqrt(10))
     """
@@ -1036,7 +1030,6 @@ def _split_gcd(*a):
     Examples
     ========
 
-    >>> from diofant.simplify.radsimp import _split_gcd
     >>> _split_gcd(55, 35, 22, 14, 77, 10)
     (5, [55, 35, 10], [22, 14, 77])
     """

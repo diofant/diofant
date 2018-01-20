@@ -52,7 +52,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     Examples
     ========
 
-    >>> from diofant import powsimp, exp, log, symbols
+    >>> from diofant import exp, log, symbols
     >>> from diofant.abc import x, y, z, n
     >>> powsimp(x**y*x**z*y**z, combine='all')
     x**(y + z)*y**z
@@ -520,7 +520,7 @@ def powdenest(eq, force=False, polar=False):
     ========
 
     >>> from diofant.abc import a, b, x, y, z
-    >>> from diofant import Symbol, exp, log, sqrt, symbols, powdenest
+    >>> from diofant import Symbol, exp, log, sqrt, symbols
 
     >>> powdenest((x**(2*a/3))**(3*x))
     (x**(2*a/3))**(3*x)

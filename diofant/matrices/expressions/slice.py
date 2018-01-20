@@ -35,7 +35,7 @@ class MatrixSlice(MatrixExpr):
     Examples
     ========
 
-    >>> from diofant import MatrixSlice, ImmutableMatrix
+    >>> from diofant import ImmutableMatrix
     >>> M = ImmutableMatrix(4, 4, range(16))
     >>> print(M)
     Matrix([

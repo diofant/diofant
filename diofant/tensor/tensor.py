@@ -64,7 +64,6 @@ class TIDS(CantSympify):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS, tensorhead
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
     >>> T = tensorhead('T', [Lorentz]*4, [[1]*4])
@@ -125,7 +124,6 @@ class TIDS(CantSympify):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> T = tensorhead('T', [Lorentz]*4, [[1]*4])
@@ -182,7 +180,6 @@ class TIDS(CantSympify):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> T = tensorhead('T', [Lorentz]*4, [[1]*4])
@@ -228,7 +225,6 @@ class TIDS(CantSympify):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> TIDS.free_dum_from_indices(m0, m1, -m1, m3)
@@ -338,7 +334,6 @@ class TIDS(CantSympify):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TIDS, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> T = tensorhead('T', [Lorentz]*4, [[1]*4])
@@ -1074,7 +1069,6 @@ class _TensorDataLazyEvaluator(CantSympify):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import _TensorDataLazyEvaluator
         >>> from diofant.printing import sstr
         >>> print(sstr(_TensorDataLazyEvaluator.parse_data([1, 3, -6, 12])))
         [1 3 -6 12]
@@ -1194,7 +1188,6 @@ class _TensorManager:
         ``G`` and ``GH`` do not commute with themselves and commute with
         each other; A is commuting.
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead, TensorManager
         >>> Lorentz = TensorIndexType('Lorentz')
         >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
         >>> A = tensorhead('A', [Lorentz], [[1]])
@@ -1330,7 +1323,6 @@ class TensorIndexType(Basic):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType
     >>> from diofant.printing import sstr
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> Lorentz.metric
@@ -1512,7 +1504,6 @@ class TensorIndex(Basic):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, TensorIndex, TensorSymmetry, TensorType, get_symmetric_group_sgs
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> i = TensorIndex('i', Lorentz); i
     i
@@ -1598,7 +1589,6 @@ def tensor_indices(s, typ):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> a, b, c, d = tensor_indices('a b c d', Lorentz)
     """
@@ -1647,7 +1637,6 @@ class TensorSymmetry(Basic):
 
     Define a symmetric tensor
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, TensorSymmetry, TensorType, get_symmetric_group_sgs
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> sym2 = TensorSymmetry(get_symmetric_group_sgs(2))
     >>> S2 = TensorType([Lorentz]*2, sym2)
@@ -1719,7 +1708,6 @@ def tensorsymmetry(*args):
 
     Symmetric tensor using a Young tableau
 
-    >>> from diofant.tensor.tensor import TensorIndexType, TensorType, tensorsymmetry
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> sym2 = tensorsymmetry([1, 1])
     >>> S2 = TensorType([Lorentz]*2, sym2)
@@ -1727,7 +1715,6 @@ def tensorsymmetry(*args):
 
     Symmetric tensor using a ``BSGS`` (base, strong generator set)
 
-    >>> from diofant.tensor.tensor import TensorSymmetry, get_symmetric_group_sgs
     >>> sym2 = tensorsymmetry(*get_symmetric_group_sgs(2))
     >>> S2 = TensorType([Lorentz]*2, sym2)
     >>> V = S2('V')
@@ -1785,7 +1772,6 @@ class TensorType(Basic):
 
     Define a symmetric tensor
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensorsymmetry, TensorType
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> sym2 = tensorsymmetry([1, 1])
     >>> S2 = TensorType([Lorentz]*2, sym2)
@@ -1829,7 +1815,6 @@ class TensorType(Basic):
         Define symmetric tensors ``V``, ``W`` and ``G``, respectively
         commuting, anticommuting and with no commutation symmetry
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorsymmetry, TensorType, canon_bp
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> a, b = tensor_indices('a b', Lorentz)
         >>> sym2 = tensorsymmetry([1]*2)
@@ -1872,7 +1857,6 @@ def tensorhead(name, typ, sym, comm=0, matrix_behavior=0):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> a, b = tensor_indices('a b', Lorentz)
     >>> A = tensorhead('A', [Lorentz]*2, [[1]*2])
@@ -1921,7 +1905,6 @@ class TensorHead(Basic):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensorhead, TensorType
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> A = tensorhead('A', [Lorentz, Lorentz], [[1], [1]])
 
@@ -1931,7 +1914,6 @@ class TensorHead(Basic):
     represents the values of a non-fully covariant tensor, see the other
     examples.
 
-    >>> from diofant.tensor.tensor import tensor_indices, tensorhead
     >>> from diofant.printing import sstr
     >>> Lorentz.data = [1, -1, -1, -1]
     >>> i0, i1 = tensor_indices('i0:2', Lorentz)
@@ -2195,7 +2177,6 @@ class TensorHead(Basic):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> a, b = tensor_indices('a b', Lorentz)
         >>> A = tensorhead('A', [Lorentz]*2, [[1]*2])
@@ -2377,7 +2358,6 @@ class TensExpr(Basic):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensorsymmetry, TensorType
         >>> from diofant import ones
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> sym2 = tensorsymmetry([1]*2)
@@ -2390,7 +2370,6 @@ class TensExpr(Basic):
         properties of data are currently not checked to be compatible with the
         defined tensor symmetry.
 
-        >>> from diofant.tensor.tensor import tensor_indices, tensorhead
         >>> Lorentz.data = [1, -1, -1, -1]
         >>> i0, i1 = tensor_indices('i0:2', Lorentz)
         >>> A.data = [[j+i for j in range(4)] for i in range(4)]
@@ -2457,7 +2436,6 @@ class TensAdd(TensExpr):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensorhead, tensor_indices
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> a, b = tensor_indices('a b', Lorentz)
     >>> p, q = tensorhead('p q', [Lorentz], [[1]])
@@ -2670,7 +2648,6 @@ class TensAdd(TensExpr):
         ========
 
         >>> from diofant import Symbol
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> D = Symbol('D')
         >>> Lorentz = TensorIndexType('Lorentz', dim=D, dummy_fmt='L')
         >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
@@ -2795,7 +2772,6 @@ class TensAdd(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
@@ -2822,7 +2798,6 @@ class TensAdd(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
@@ -2858,7 +2833,6 @@ class TensAdd(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead, TensAdd
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j = tensor_indices('i j', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
@@ -2901,7 +2875,6 @@ class Tensor(TensExpr):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
     >>> Lorentz = TensorIndexType("Lorentz", dummy_fmt="L")
     >>> mu, nu = tensor_indices('mu nu', Lorentz)
     >>> A = tensorhead("A", [Lorentz, Lorentz], [[1], [1]])
@@ -3004,7 +2977,6 @@ class Tensor(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
         >>> A = tensorhead('A', [Lorentz]*5, [[1]*5])
@@ -3269,7 +3241,6 @@ class TensMul(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> m0, m1, m2 = tensor_indices('m0 m1 m2', Lorentz)
         >>> g = Lorentz.metric
@@ -3291,7 +3262,6 @@ class TensMul(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> a, b, c, d = tensor_indices('a b c d', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
@@ -3335,7 +3305,6 @@ class TensMul(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> m0, m1, m2 = tensor_indices('m0 m1 m2', Lorentz)
         >>> g = Lorentz.metric
@@ -3401,7 +3370,6 @@ class TensMul(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> m0, m1, m2 = tensor_indices('m0 m1 m2', Lorentz)
         >>> A = tensorhead('A', [Lorentz]*2, [[2]])
@@ -3448,7 +3416,6 @@ class TensMul(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> m0, m1, m2 = tensor_indices('m0 m1 m2', Lorentz)
         >>> g = Lorentz.metric
@@ -3475,7 +3442,6 @@ class TensMul(TensExpr):
         Examples
         ========
 
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
@@ -3503,7 +3469,6 @@ class TensMul(TensExpr):
         ========
 
         >>> from diofant import Symbol
-        >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
         >>> D = Symbol('D')
         >>> Lorentz = TensorIndexType('Lorentz', dim=D, dummy_fmt='L')
         >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
@@ -3604,7 +3569,6 @@ def riemann_cyclic(t2):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead, riemann_cyclic
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
     >>> R = tensorhead('R', [Lorentz]*4, [[2, 2]])
@@ -3681,7 +3645,6 @@ def substitute_indices(t, *index_tuples):
     Examples
     ========
 
-    >>> from diofant.tensor.tensor import TensorIndexType, tensor_indices, tensorhead
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
     >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])

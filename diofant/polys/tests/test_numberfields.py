@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (Add, GoldenRatio, I, Integer, Poly, Rational, Symbol,
+from diofant import (Add, GoldenRatio, I, Integer, Mul, Poly, Rational, Symbol,
                      Tuple, cbrt, cos, exp, expand, expand_multinomial,
                      nsimplify, oo, pi, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
@@ -762,6 +762,13 @@ def test_AlgebraicNumber():
     a = AlgebraicNumber(sqrt(2), (5, 7))
     b = AlgebraicNumber(sqrt(2), (-4, -6))
     assert a*b == AlgebraicNumber(sqrt(2), (-58, -82))
+
+    # different extensions
+    a = AlgebraicNumber(sqrt(2))
+    b = AlgebraicNumber(sqrt(3))
+    assert a + b == Add(a, +b, evaluate=False)
+    assert a * b == Mul(a, +b, evaluate=False)
+    assert a - b == Add(a, -b, evaluate=False)
 
 
 def test_to_algebraic_integer():

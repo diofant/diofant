@@ -21,8 +21,7 @@ class BlockMatrix(MatrixExpr):
     The submatrices are stored in a Diofant Matrix object but accessed as part of
     a Matrix Expression
 
-    >>> from diofant import (MatrixSymbol, BlockMatrix, symbols,
-    ...     Identity, ZeroMatrix, block_collapse)
+    >>> from diofant import MatrixSymbol, symbols, Identity, ZeroMatrix
     >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
@@ -122,7 +121,7 @@ class BlockMatrix(MatrixExpr):
         Examples
         ========
 
-        >>> from diofant import MatrixSymbol, BlockMatrix, ZeroMatrix
+        >>> from diofant import MatrixSymbol, ZeroMatrix
         >>> from diofant.abc import l, m, n
         >>> X = MatrixSymbol('X', n, n)
         >>> Y = MatrixSymbol('Y', m, m)
@@ -181,7 +180,7 @@ class BlockDiagMatrix(BlockMatrix):
     """
     A BlockDiagMatrix is a BlockMatrix with matrices only along the diagonal
 
-    >>> from diofant import MatrixSymbol, BlockDiagMatrix, symbols, Identity
+    >>> from diofant import MatrixSymbol, symbols, Identity
     >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
@@ -248,8 +247,7 @@ class BlockDiagMatrix(BlockMatrix):
 def block_collapse(expr):
     """Evaluates a block matrix expression
 
-    >>> from diofant import (MatrixSymbol, BlockMatrix, symbols,
-    ...                      Identity, Matrix, ZeroMatrix, block_collapse)
+    >>> from diofant import MatrixSymbol, symbols, Identity, Matrix, ZeroMatrix
     >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
@@ -398,7 +396,6 @@ def reblock_2x2(B):
 def bounds(sizes):
     """ Convert sequence of numbers into pairs of low-high pairs
 
-    >>> from diofant.matrices.expressions.blockmatrix import bounds
     >>> bounds((1, 10, 50))
     [(0, 1), (1, 11), (11, 61)]
     """
@@ -413,7 +410,7 @@ def bounds(sizes):
 def blockcut(expr, rowsizes, colsizes):
     """ Cut a matrix expression into Blocks
 
-    >>> from diofant import ImmutableMatrix, blockcut
+    >>> from diofant import ImmutableMatrix
     >>> M = ImmutableMatrix(4, 4, range(16))
     >>> B = blockcut(M, (1, 3), (1, 3))
     >>> type(B).__name__

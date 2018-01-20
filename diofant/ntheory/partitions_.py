@@ -65,7 +65,6 @@ def npartitions(n):
     Examples
     ========
 
-    >>> from diofant.ntheory import npartitions
     >>> npartitions(25)
     1958
 
