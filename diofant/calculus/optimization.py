@@ -2,7 +2,7 @@ from ..calculus import singularities
 from ..core import Eq, Ge, Gt, Lt, Ne, S, diff, nan, oo, sympify
 from ..core.compatibility import is_sequence, ordered
 from ..functions import Min
-from ..matrices import Matrix, eye, zeros
+from ..matrices import eye, zeros
 from ..series import limit
 from ..sets import Interval
 from ..solvers import reduce_inequalities, solve
@@ -93,13 +93,10 @@ def minimize(f, *v):
         # will have v₁ = x₁⁺ - x₁⁻, where x₁⁺≥0 and x₁⁻≥0.
         c = [-polys[0].coeff_monomial(x) for x in v]
         c.extend([-_ for _ in c])
-        m = []
-        for p in polys[1:]:
-            r = [p.coeff_monomial(x) for x in v]
-            m.extend(r)
-            m.extend(-_ for _ in r)
+        m = [([+p.coeff_monomial(x) for x in v] +
+              [-p.coeff_monomial(x) for x in v])
+             for p in polys[1:]]
         b = [-p.coeff_monomial(1) for p in polys[1:]]
-        m = Matrix(m).reshape(len(b), len(c))
 
         res, sol = simplex(c, m, b)
         res -= polys[0].coeff_monomial(1)
@@ -183,17 +180,17 @@ def simplex(c, m, b):
     .. [1] http://mathworld.wolfram.com/SimplexMethod.html
     """
 
-    m = Matrix(m)
+    rows, cols = len(b), len(c)
 
-    if len(c) != m.cols or len(b) != m.rows:
+    if len(m) != rows or any(len(_) != cols for _ in m):
         raise ValueError("The dimensions doesn't match")
 
     # build full tableau
-    tableau = zeros(m.rows + 1, m.cols + m.rows + 2)
-    tableau[-1, :-1] = Matrix([[1] + [-_ for _ in c] + [0]*m.rows])
-    tableau[:-1, 1:m.cols + 1] = m
-    tableau[:-1, m.cols + 1:-1] = eye(m.rows)
-    tableau[:, -1] = Matrix(b + [0])
+    tableau = zeros(rows + 1, cols + rows + 1)
+    tableau[-1, :-1] = [[-_ for _ in c] + [0]*rows]
+    tableau[:-1, :cols] = m
+    tableau[:-1, cols:-1] = eye(rows)
+    tableau[:, -1] = b + [0]
 
     if any(_.is_negative for _ in tableau[:-1, -1]):
         raise NotImplementedError("Phase I for simplex isn't implemented.")
@@ -202,14 +199,14 @@ def simplex(c, m, b):
 
     def pivot_col(obj):
         low, idx = 0, 0
-        for i in range(1, len(obj) - 1):
+        for i in range(len(obj) - 1):
             if obj[i] < low:
                 low, idx = obj[i], i
         return -1 if idx == 0 else idx
 
     def pivot_row(lhs, rhs):
         ratio, idx = oo, 0
-        for i in range(len(rhs)):
+        for i in range(len(lhs)):
             if lhs[i] > 0:
                 r = rhs[i]/lhs[i]
                 if r < ratio:
@@ -218,25 +215,24 @@ def simplex(c, m, b):
 
     # Now solve
 
-    while min(tableau[-1, 1:-1]) < 0:
+    while min(tableau[-1, :-1]) < 0:
         col = pivot_col(tableau[-1, :])
-        row = pivot_row(tableau[0:-1, col], tableau[0:-1, -1])
+        row = pivot_row(tableau[:-1, col], tableau[:, -1])
         if tableau[row, col] <= 0:
-            return oo, (oo,)*m.cols
+            return oo, (oo,)*cols
 
         tableau[row, :] /= tableau[row, col]
-        for r in range(tableau.rows - 1):
+        for r in range(tableau.rows):
             if r == row:
                 continue
             tableau[r, :] -= tableau[r, col]*tableau[row, :]
-        tableau[-1, :] -= tableau[-1, col]*tableau[row, :]
 
-    ans = [S.Zero]*m.cols
-    for i in range(1, m.cols + 1):
+    ans = [S.Zero]*cols
+    for i in range(cols):
         if tableau[-1, i] == 0:
             for j in range(tableau.rows - 1):
                 if tableau[j, i] == 1:
-                    ans[i - 1] = tableau[j, -1]
+                    ans[i] = tableau[j, -1]
                     break
 
     return tableau[-1, -1], tuple(ans)
