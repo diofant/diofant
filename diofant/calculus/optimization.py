@@ -195,14 +195,11 @@ def simplex(c, m, b):
     if any(_.is_negative for _ in tableau[:-1, -1]):
         raise NotImplementedError("Phase I for simplex isn't implemented.")
 
-    # Pivoting strategy use Bland's rule
-
     def pivot_col(obj):
-        low, idx = 0, 0
-        for i in range(len(obj) - 1):
-            if obj[i] < low:
-                low, idx = obj[i], i
-        return -1 if idx == 0 else idx
+        # use Bland's rule
+        for i in range(len(obj) - 1):  # pragma: no branch
+            if obj[i] < 0:
+                return i
 
     def pivot_row(lhs, rhs):
         ratio, idx = oo, 0
