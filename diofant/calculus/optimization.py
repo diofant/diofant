@@ -1,5 +1,5 @@
 from ..calculus import singularities
-from ..core import Eq, Ge, Gt, Lt, Ne, S, diff, nan, oo, sympify
+from ..core import Eq, Ge, Gt, Le, Lt, Ne, S, diff, nan, oo, sympify
 from ..core.compatibility import is_sequence, ordered
 from ..functions import Min
 from ..matrices import eye, zeros
@@ -48,32 +48,20 @@ def minimize(f, *v):
 
     assert all(x.is_Symbol for x in v)
 
-    # Canonicalize constraints, Ne -> pair Lt
+    # Canonicalize constraints, Ne -> pair Lt, Eq -> pair Le
     constraints |= {Lt(*c.args) for c in constraints if isinstance(c, Ne)}
-    constraints |= {Lt(c.lts, c.gts) for c in constraints if isinstance(c, Ne)}
-    constraints -= {c for c in constraints if isinstance(c, Ne)}
+    constraints |= {Lt(c.rhs, c.lhs) for c in constraints if isinstance(c, Ne)}
+    constraints |= {Le(*c.args) for c in constraints if isinstance(c, Eq)}
+    constraints |= {Le(c.rhs, c.lhs) for c in constraints if isinstance(c, Eq)}
+    constraints -= {c for c in constraints if isinstance(c, (Ne, Eq))}
 
     # Gt/Ge -> Lt, Le
     constraints = {c.reversed if c.func in (Gt, Ge) else c
                    for c in constraints}
 
-    # Now we have only Lt/Le/Eq
+    # Now we have only Lt/Le
     constraints = list(ordered(c.func(c.lhs - c.rhs, 0)
                                for c in constraints))
-
-    polys = [obj.as_poly(*v)] + [c.lhs.as_poly(*v) for c in constraints]
-    is_polynomial = all(p is not None for p in polys)
-    is_linear = is_polynomial and all(p.is_linear for p in polys)
-
-    # Eliminate equalities, in the linear case for now
-    elims = solve([c for c in constraints if isinstance(c, Eq)], *v)
-    if elims and is_linear:
-        elims = elims[0]
-        res, sol = minimize([obj.subs(elims)] +
-                            [c.subs(elims)
-                             for c in constraints if not isinstance(c, Eq)],
-                            *(set(v) - set(elims)))
-        return res, {x: x.subs(elims).subs(sol) for x in v}
 
     if dim == 1:
         if constraints:
@@ -81,6 +69,10 @@ def minimize(f, *v):
         else:
             dom = Interval(-oo, oo, True, True)**len(v)
         return minimize_univariate(obj, v[0], dom)
+
+    polys = [obj.as_poly(*v)] + [c.lhs.as_poly(*v) for c in constraints]
+    is_polynomial = all(p is not None for p in polys)
+    is_linear = is_polynomial and all(p.is_linear for p in polys)
 
     if is_linear:
         # Quick exit for strict forms
