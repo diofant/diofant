@@ -210,26 +210,32 @@ def simplex(c, m, b):
                     ratio, idx = r, i
         return idx
 
+    def solve_simplex(tableau, basis, phase1=False):
+        while min(tableau[-1, :-1]) < 0:
+            col = pivot_col(tableau[-1, :])
+            row = pivot_row(tableau[:-1, col], tableau[:, -1])
+
+            if tableau[row, col] <= 0:
+                return 1
+            else:
+                basis[row] = col
+
+            tableau[row, :] /= tableau[row, col]
+            for r in range(tableau.rows):
+                if r != row:
+                    tableau[r, :] -= tableau[r, col]*tableau[row, :]
+        return 0
+
     # Now solve
 
-    while min(tableau[-1, :-1]) < 0:
-        col = pivot_col(tableau[-1, :])
-        row = pivot_row(tableau[:-1, col], tableau[:, -1])
-        if tableau[row, col] <= 0:
-            return oo, (oo,)*cols
+    basis = list(range(cols - 1, cols + rows - 1))
 
-        tableau[row, :] /= tableau[row, col]
-        for r in range(tableau.rows):
-            if r == row:
-                continue
-            tableau[r, :] -= tableau[r, col]*tableau[row, :]
+    status = solve_simplex(tableau, basis)
+    if status == 1:
+        return oo, (oo,)*cols
 
     ans = [S.Zero]*cols
-    for i in range(cols):
-        if tableau[-1, i] == 0:
-            for j in range(tableau.rows - 1):
-                if tableau[j, i] == 1:
-                    ans[i] = tableau[j, -1]
-                    break
-
+    for c, b in enumerate(basis):
+        if b < cols:
+            ans[b] = tableau[:-1, -1][c]
     return tableau[-1, -1], tuple(ans)
