@@ -1975,7 +1975,6 @@ def test_U14():
     assert [minimize(f, x, y)[0], maximize(f, x, y)[0]] == [0, 1]
 
 
-@pytest.mark.xfail
 def test_U17():
     x1, x2, x3, x4 = symbols('x1:5')
     assert minimize([4*x1 - x2 + 2*x3 - 2*x4,

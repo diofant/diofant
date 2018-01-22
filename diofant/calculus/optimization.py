@@ -160,6 +160,10 @@ def minimize_univariate(f, x, dom):
         return min, dict({x: point})
 
 
+class InfeasibleProblem(Exception):
+    pass
+
+
 def simplex(c, m, b):
     """
     Simplex algorithm for linear programming.
@@ -170,14 +174,14 @@ def simplex(c, m, b):
     Examples
     ========
 
-    >>> simplex([2, 3, 4], [[3, 2, 1],
-    ...                     [2, 5, 3]], [10, 15])
+    >>> simplex([2, 3, 4], [[3, 2, 1], [2, 5, 3]], [10, 15])
     (20, (0, 0, 5))
 
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/SimplexMethod.html
+    .. [1] Paul R. Thie, Gerard E. Keough, An Introduction to Linear
+           Programming and Game Theory, Third edition, 2008, Ch. 3.
     """
 
     rows, cols = len(b), len(c)
@@ -185,15 +189,15 @@ def simplex(c, m, b):
     if len(m) != rows or any(len(_) != cols for _ in m):
         raise ValueError("The dimensions doesn't match")
 
+    m = sorted(m, key=lambda v: b[m.index(v)])
+    b = sorted(b)
+
     # build full tableau
     tableau = zeros(rows + 1, cols + rows + 1)
     tableau[-1, :-1] = [[-_ for _ in c] + [0]*rows]
     tableau[:-1, :cols] = m
     tableau[:-1, cols:-1] = eye(rows)
     tableau[:, -1] = b + [0]
-
-    if any(_.is_negative for _ in tableau[:-1, -1]):
-        raise NotImplementedError("Phase I for simplex isn't implemented.")
 
     def pivot_col(obj):
         # use Bland's rule
@@ -213,7 +217,7 @@ def simplex(c, m, b):
     def solve_simplex(tableau, basis, phase1=False):
         while min(tableau[-1, :-1]) < 0:
             col = pivot_col(tableau[-1, :])
-            row = pivot_row(tableau[:-1, col], tableau[:, -1])
+            row = pivot_row(tableau[:-1 - phase1, col], tableau[:, -1])
 
             if tableau[row, col] <= 0:
                 return 1
@@ -228,7 +232,40 @@ def simplex(c, m, b):
 
     # Now solve
 
-    basis = list(range(cols - 1, cols + rows - 1))
+    neg_idx = [b.index(_) for _ in b if _ < 0]
+    nneg = len(neg_idx)
+    basis = list(range(cols + nneg - 1, cols + nneg + rows - 1))
+
+    if neg_idx:
+        tableau = tableau.col_insert(-1, zeros(tableau.rows, nneg))
+        tableau = tableau.row_insert(tableau.cols, zeros(1, tableau.cols))
+        j = tableau.cols - nneg - 1
+        for i in neg_idx:
+            tableau[i, :] *= -1
+            tableau[i, j] = 1
+            tableau[-1, :-1 - nneg] -= tableau[i, :-1 - nneg]
+            tableau[-1, -1] -= tableau[i, -1]
+            j += 1
+
+        status = solve_simplex(tableau, basis, phase1=True)
+        assert status == 0
+
+        if tableau[-1, -1].is_nonzero:
+            raise InfeasibleProblem
+
+        tableau.row_del(-1)
+        for i in range(nneg):
+            tableau.col_del(-2)
+
+        for row in [_ for _ in range(rows) if basis[_] > cols + rows - 1]:
+            for col in range(tableau.cols - 1):  # pragma: no branch
+                if tableau[row, col] != 0:
+                    break
+            basis[row] = col
+            tableau[row, :] /= tableau[row, col]
+            for r in range(tableau.rows):
+                if r != row:
+                    tableau[r, :] -= tableau[r, col]*tableau[row, :]
 
     status = solve_simplex(tableau, basis)
     if status == 1:
