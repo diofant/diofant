@@ -315,6 +315,11 @@ def test_roots_preprocessing():
     assert poly == 633*x**8 - 115300*x**7 + 4383520*x**6 + 296804300*x**5 - 27633173750*x**4 + \
         809735812500*x**3 - 10673859375000*x**2 + 63529101562500*x - 135006591796875
 
+    f = J**8 + 7*E*x**2*L**16 + 5*F*x*E**5*J**7*L**2
+    coeff, poly = preprocess_roots(Poly(f, x))
+    assert coeff == 1
+    assert poly == Poly(f, x)
+
     f = Poly(-y**2 + x**2*exp(x), y, domain=ZZ[x, exp(x)])
     g = Poly(-y**2 + exp(x), y, domain=ZZ[exp(x)])
 

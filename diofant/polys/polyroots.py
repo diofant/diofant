@@ -11,7 +11,7 @@ from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
 from ..ntheory import divisors, isprime, nextprime
 from ..simplify import powsimp, simplify
 from ..utilities import public
-from .polyerrors import DomainError, GeneratorsNeeded, PolynomialError
+from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyquinticconst import PolyQuintic
 from .polytools import Poly, cancel, discriminant, factor, gcd_list
 from .rationaltools import together
@@ -486,10 +486,9 @@ def roots_quintic(f):
         return result
 
     # Now, we know that f is solvable
-    for _factor in f20.factor_list()[1]:
-        if _factor[0].is_linear:
-            theta = _factor[0].root(0)
-            break
+    _factors = f20.factor_list()[1]
+    assert _factors[0][0].is_linear
+    theta = _factors[0][0].root(0)
     d = discriminant(f)
     delta = sqrt(d)
     # zeta = a fifth root of unity
@@ -598,19 +597,7 @@ def roots_quintic(f):
     x3 = (r1*zeta3 + r2*zeta1 + r3*zeta4 + r4*zeta2)/5
     x4 = (r1*zeta2 + r2*zeta4 + r3*zeta1 + r4*zeta3)/5
     x5 = (r1*zeta1 + r2*zeta2 + r3*zeta3 + r4*zeta4)/5
-    result = [x1, x2, x3, x4, x5]
-
-    # Now check if solutions are distinct
-
-    saw = set()
-    for r in result:
-        r = r.n(2)
-        if r in saw:
-            # Roots were identical. Abort, return []
-            # and fall back to usual solve
-            return []
-        saw.add(r)
-    return result
+    return [x1, x2, x3, x4, x5]
 
 
 def _quintic_simplify(expr):
@@ -680,10 +667,7 @@ def preprocess_roots(poly, extension=None):
     """Try to get rid of symbolic coefficients from ``poly``. """
     coeff = S.One
 
-    try:
-        _, poly = poly.clear_denoms(convert=True)
-    except DomainError:
-        return coeff, poly
+    _, poly = poly.clear_denoms(convert=True)
 
     poly = poly.primitive()[1]
     poly = poly.retract(extension=extension)
