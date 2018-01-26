@@ -5,7 +5,6 @@ http://www.math.unm.edu/~wester/cas/book/Wester.pdf
 See also http://math.unm.edu/~wester/cas_review.html for detailed output of
 each tested system.
 """
-import os
 from itertools import islice, takewhile
 
 import mpmath
@@ -19,8 +18,8 @@ from diofant import continued_fraction_reduce as cf_r
 from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
                      DiracDelta, E, EulerGamma, FiniteSet, Function,
                      GoldenRatio, I, Lambda, LambertW, Le, Lt, Max, Mul, N, O,
-                     Or, Piecewise, Poly, Rational, RootOf, Subs, Symbol, acos,
-                     acot, apart, asin, asinh, assoc_legendre, atan, bernoulli,
+                     Or, Piecewise, Poly, Rational, Subs, Symbol, acos, acot,
+                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
                      besselj, binomial, cbrt, ceiling, chebyshevt, combsimp,
                      conjugate, cos, cosh, cot, csc, diff, elliptic_e,
                      elliptic_f, exp, expand, expand_func, factor, factorial,
@@ -898,20 +897,10 @@ def test_M31():
                                                          {x: Rational(3, 2)}]
 
 
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 @pytest.mark.slow
 @pytest.mark.xfail
 def test_M32():
     assert solve(Max(2 - x**2, x) - Max(-x, (x**3)/9), x) == [{x: -1}, {x: 3}]
-
-
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-@pytest.mark.slow
-@pytest.mark.xfail
-def test_M33():
-    x = Symbol('x', real=True)
-    assert (solve(Max(2 - x**2, x) - x**3/9) ==
-            [{x: -3}, {x: RootOf(-18 + 9*x**2 + x**3, 1)}, {x: 3}])
 
 
 @pytest.mark.xfail
@@ -1688,7 +1677,6 @@ def test_R18():
 
 @pytest.mark.slow
 @pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_R19():
     k = symbols('k', integer=True, positive=True)
     Sm = Sum(1/((3*k + 1)*(3*k + 2)*(3*k + 3)), (k, 0, oo))
@@ -2046,22 +2034,11 @@ def test_V12():
 
 @pytest.mark.slow
 @pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_V13():
     r1 = integrate(1/(6 + 3*cos(x) + 4*sin(x)), x)
     # expression not simplified, returns: -sqrt(11)*I*log(tan(x/2) + 4/3
     #   - sqrt(11)*I/3)/11 + sqrt(11)*I*log(tan(x/2) + 4/3 + sqrt(11)*I/3)/11
     assert r1.simplify() == 2*sqrt(11)*atan(sqrt(11)*(3*tan(x/2) + 4)/11)/11
-
-
-@pytest.mark.slow
-@pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_V14():
-    r1 = integrate(log(abs(x**2 - y**2)), x)
-    # Piecewise result does not simplify to the desired result.
-    assert (r1.simplify() == x*log(abs(x**2 - y**2))
-            + y*log(x + y) - y*log(x - y) - 2*x)
 
 
 def test_V15():
@@ -2071,7 +2048,6 @@ def test_V15():
 
 @pytest.mark.slow
 @pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_V17():
     r1 = integrate((diff(f(x), x)*g(x)
                     - f(x)*diff(g(x), x))/(f(x)**2 - g(x)**2), x)
@@ -2118,14 +2094,6 @@ def test_W5():
     assert integrate(sqrt(x + 1/x - 2), (x, 0, 2)) == -2*sqrt(2)/3 + Rational(8, 3)
 
 
-@pytest.mark.xfail
-@pytest.mark.slow
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_W6():
-    # integral is not  calculated
-    assert integrate(sqrt(2 - 2*cos(2*x))/2, (x, -3*pi/4, -pi/4)) == sqrt(2)
-
-
 def test_W7():
     a = symbols('a', extended_real=True, positive=True)
     r1 = integrate(cos(x)/(x**2 + a**2), (x, -oo, oo))
@@ -2163,15 +2131,6 @@ def test_W12():
     q = symbols('q', extended_real=True)
     r1 = integrate(x*exp(-p*x**2 + 2*q*x), (x, -oo, oo))
     assert r1.simplify() == sqrt(pi)*q*exp(q**2/p)/p**Rational(3, 2)
-
-
-@pytest.mark.slow
-@pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_W13():
-    # Integral not calculated.
-    r1 = integrate(1/log(x) + 1/(1 - x) - log(log(1/x)), (x, 0, 1))
-    assert r1 == 2*EulerGamma
 
 
 def test_W14():
@@ -2242,22 +2201,10 @@ def test_W23b():
 
 @pytest.mark.xfail
 @pytest.mark.slow
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_W24():
     x, y = symbols('x y', extended_real=True)
     r1 = integrate(integrate(sqrt(x**2 + y**2), (x, 0, 1)), (y, 0, 1))
     assert (r1 - (sqrt(2) + asinh(1))/3).simplify() == 0
-
-
-@pytest.mark.xfail
-@pytest.mark.slow
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_W25():
-    a, x, y = symbols('a x y', extended_real=True)
-    i1 = integrate(sin(a)*sin(y)/sqrt(1 - sin(a)**2*sin(x)**2*sin(y)**2),
-                   (x, 0, pi/2))
-    i2 = integrate(i1, (y, 0, pi/2))
-    assert (i2 - pi*a/2).simplify() == 0
 
 
 def test_W26():
@@ -2356,18 +2303,6 @@ def test_X11():
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
 
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-@pytest.mark.xfail
-def test_X12():
-    # Look at the generalized Taylor series around x = 1
-    # Result => (x - 1)^a/e^b [1 - (a + 2 b) (x - 1) / 2 + O((x - 1)^2)]
-    a, b, x = symbols('a b x', extended_real=True)
-    # series returns O(log(x)**2)
-    # https://github.com/sympy/sympy/issues/7168
-    assert (series(log(x)**a*exp(-b*x), x, x0=1, n=2) ==
-            (x - 1)**a/exp(b)*(1 - (a + 2*b)*(x - 1)/2 + O((x - 1)**2)))
-
-
 def test_X13():
     assert series(sqrt(2*x**2 + 1), x, x0=oo, n=1) == sqrt(2)*x + O(1/x, (x, oo))
 
@@ -2379,7 +2314,6 @@ def test_X14():
                   n, x0=oo, n=1) == 1/(sqrt(pi)*sqrt(n)) + O(1/x, (x, oo))
 
 
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="too much memory")
 @pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7164")
 def test_X15():
     # => 0!/x - 1!/x^2 + 2!/x^3 - 3!/x^4 + O(1/x^5)   [Knopp, p. 544]
@@ -2412,9 +2346,6 @@ def test_Y2():
     assert f == cos(t*abs(w - 1))
 
 
-@pytest.mark.slow
-@pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_Y3():
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
