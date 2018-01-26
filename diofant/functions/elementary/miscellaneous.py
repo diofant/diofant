@@ -162,7 +162,7 @@ def cbrt(arg, **kwargs):
     return Pow(arg, Rational(1, 3), **kwargs)
 
 
-def root(arg, n, k=0):
+def root(arg, n, k=0, **kwargs):
     """root(x, n, k) -> Returns the k-th n-th root of x, defaulting to the
     principle root (k=0).
 
@@ -248,8 +248,8 @@ def root(arg, n, k=0):
     """
     n = sympify(n)
     if k:
-        return Pow(arg, S.One/n)*S.NegativeOne**(2*k/n)
-    return Pow(arg, 1/n)
+        return Pow(arg, S.One/n, **kwargs)*S.NegativeOne**(2*k/n)
+    return Pow(arg, 1/n, **kwargs)
 
 
 def real_root(arg, n=None):
