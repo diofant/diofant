@@ -1,5 +1,4 @@
 import itertools
-import os
 
 import pytest
 
@@ -327,13 +326,6 @@ def test_sympyissue_5955():
     assert limit((x**100)/(1 + x**100), x, oo) == 1
     assert limit((x**1885)/(1 + x**1885), x, oo) == 1
     assert limit((x**100/((x + 1)**100 + exp(-x))), x, oo) == 1
-
-
-@pytest.mark.slow
-@pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_sympyissue_5955_slow():
-    assert limit((x**1000/((x + 1)**1000 + exp(-x))), x, oo) == 1
 
 
 def test_newissue():

@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from diofant import (Add, Derivative, Ei, Eq, Function, I, Integral, LambertW,
@@ -281,8 +279,7 @@ def test_pmint_besselj():
     assert heurisch(f, x) == g
 
 
-@pytest.mark.slow  # 110 seconds on 3.4 GHz
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
+@pytest.mark.slow
 def test_pmint_WrightOmega():
     def omega(x):
         return LambertW(exp(x))

@@ -1,6 +1,5 @@
 # A collection of failing integrals from the issues.
 
-import os
 import signal
 
 import pytest
@@ -44,7 +43,6 @@ def test_sympyissue_4212():
 
 @pytest.mark.xfail
 @pytest.mark.slow
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_sympyissue_4326():
     assert integrate(((h*(x - R + b))/b)*sqrt(R**2 - x**2), (x, R - b, R)).has(Integral)
 
@@ -97,13 +95,6 @@ def test_sympyissue_1638b():
 def test_sympyissue_4891():
     # Requires the hypergeometric function.
     assert not integrate(cos(x)**y, x).has(Integral)
-
-
-@pytest.mark.xfail
-@pytest.mark.slow
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_sympyissue_1796a():
-    assert not integrate(exp(2*b*x)*exp(-a*x**2), x).has(Integral)
 
 
 @pytest.mark.xfail

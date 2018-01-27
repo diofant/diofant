@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
@@ -290,7 +288,6 @@ def test_highorder_poly():
     assert all(isinstance(i[x], RootOf) for i in sol) and len(sol) == 6
 
 
-@pytest.mark.slow
 def test_quintics_2():
     f = x**5 + 15*x + 12
     s = solve(f, check=False)
@@ -801,18 +798,6 @@ def test_sympyissue_5335():
     sym = [x, y, a0]
     # there are 4 solutions but only two are valid
     assert len(solve(eqs, sym, simplify=False, check=False)) == 2
-
-
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_sympyissue_5335_float():
-    # gives ZeroDivisionError: polynomial division
-    lam, a0, conc = symbols('lam a0 conc')
-    eqs = [lam + 2*y - a0*(1 - x/2)*x - 0.005*x/2*x,
-           a0*(1 - x/2)*x - 1*y - 0.743436700916726*y,
-           x + y - conc]
-    sym = [x, y, a0]
-    assert len(
-        solve(eqs, sym, rational=False, check=False, simplify=False)) == 2
 
 
 def test_sympyissue_5767():
