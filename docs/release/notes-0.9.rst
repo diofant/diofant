@@ -201,3 +201,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`9366` rootof: Constructing RootOfs with polys containing RootOf coefficients
 * :sympyissue:`13914` The power of zoo
 * :sympyissue:`14000` sqrt and other root functions should inherit from Function
+* :sympyissue:`11099` Min and Max would not substitute in evalf
