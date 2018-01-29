@@ -11,10 +11,10 @@ solving equations and inequalities.
    :name: solverstoc
    :maxdepth: 2
 
-   solvers.rst
-   inequalities.rst
-   diophantine.rst
-   ode.rst
-   recurr.rst
-   pde.rst
-   utilities.rst
+   solvers
+   inequalities
+   diophantine
+   ode
+   recurr
+   pde
+   utilities

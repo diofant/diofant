@@ -5371,6 +5371,9 @@ def _generic_factor_list(expr, gens, args, method):
             raise PolynomialError("a polynomial expected, got %s" % expr)
 
         _opt = opt.clone({'expand': True})
+        if not _opt.get('gens'):
+            _opt['gens'] = set().union(*[set(f.gens)
+                                         for f, _ in fp + fq if f.is_Poly])
 
         for factors in (fp, fq):
             for i, (f, k) in enumerate(factors):

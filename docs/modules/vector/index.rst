@@ -14,11 +14,11 @@ Guide to Vector
 .. toctree::
     :maxdepth: 2
 
-    intro.rst
-    basics.rst
-    coordsys.rst
-    fields.rst
-    examples.rst
+    intro
+    basics
+    coordsys
+    fields
+    examples
 
 Vector API
 ==========
@@ -26,6 +26,6 @@ Vector API
 .. toctree::
     :maxdepth: 2
 
-    api/classes.rst
-    api/orienterclasses.rst
-    api/vectorfunctions.rst
+    api/classes
+    api/orienterclasses
+    api/vectorfunctions

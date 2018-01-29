@@ -256,3 +256,9 @@ def test_rewrite_as_Piecewise():
     assert (Max(x, y).rewrite(Piecewise) ==
             x*Piecewise((1, x - y > 0), (Rational(1, 2), Eq(x - y, 0)), (0, true)) +
             y*Piecewise((1, -x + y > 0), (Rational(1, 2), Eq(-x + y, 0)), (0, true)))
+
+
+def test_sympyissue_11099():
+    e = Min(x, y)
+    s = {x: -2, y: 3}
+    assert e.evalf(subs=s) == e.subs(s).evalf()

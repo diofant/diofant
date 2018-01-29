@@ -1004,3 +1004,10 @@ def test_sympyissue_9706():
     assert Interval(-oo, 0).closure == Interval(-oo, 0)
     assert Interval(0, oo).closure == Interval(0, oo)
     assert Interval(-oo, oo).closure == Interval(-oo, oo)
+
+
+def test_sympyissue_8257():
+    assert Interval(-oo, oo) + FiniteSet(+oo) == Interval(-oo, oo)
+    assert FiniteSet(+oo) + Interval(-oo, oo) == Interval(-oo, oo)
+    assert Interval(-oo, oo) + FiniteSet(-oo) == Interval(-oo, oo)
+    assert FiniteSet(-oo) + Interval(-oo, oo) == Interval(-oo, oo)

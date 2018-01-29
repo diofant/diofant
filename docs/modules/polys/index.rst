@@ -19,7 +19,7 @@ and multivariate factorization over algebraic number domains.
     :name: polytoc
     :maxdepth: 3
 
-    basics.rst
-    wester.rst
-    reference.rst
-    literature.rst
+    basics
+    wester
+    reference
+    literature

@@ -12,10 +12,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   install.rst
-   tutorial/index.rst
-   modules/index.rst
-   internals/index.rst
-   guide.rst
-   aboutus.rst
-   release/index.rst
+   install
+   tutorial/index
+   modules/index
+   internals/index
+   guide
+   aboutus
+   release/index
