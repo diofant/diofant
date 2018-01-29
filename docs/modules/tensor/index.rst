@@ -11,7 +11,7 @@ Tensors
     :name: tenstoc
     :maxdepth: 3
 
-    array.rst
-    indexed.rst
-    index_methods.rst
-    tensor.rst
+    array
+    indexed
+    index_methods
+    tensor

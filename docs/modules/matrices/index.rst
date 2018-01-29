@@ -16,8 +16,8 @@ Matrices
    :name: mattoc
    :maxdepth: 2
 
-   matrices.rst
-   dense.rst
-   sparse.rst
-   immutablematrices.rst
-   expressions.rst
+   matrices
+   dense
+   sparse
+   immutablematrices
+   expressions

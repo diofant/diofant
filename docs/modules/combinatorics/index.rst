@@ -9,15 +9,15 @@ Combinatorics
    :name: combtoc
    :maxdepth: 2
 
-   partitions.rst
-   permutations.rst
-   perm_groups.rst
-   polyhedron.rst
-   prufer.rst
-   subsets.rst
-   graycode.rst
-   named_groups.rst
-   util.rst
-   group_constructs.rst
-   testutil.rst
-   tensor_can.rst
+   partitions
+   permutations
+   perm_groups
+   polyhedron
+   prufer
+   subsets
+   graycode
+   named_groups
+   util
+   group_constructs
+   testutil
+   tensor_can

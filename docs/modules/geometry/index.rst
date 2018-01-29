@@ -198,12 +198,12 @@ Submodules
 .. toctree::
     :maxdepth: 3
 
-    entities.rst
-    utils.rst
-    points.rst
-    lines.rst
-    line3d.rst
-    curves.rst
-    ellipses.rst
-    polygons.rst
-    plane.rst
+    entities
+    utils
+    points
+    lines
+    line3d
+    curves
+    ellipses
+    polygons
+    plane
