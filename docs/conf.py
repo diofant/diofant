@@ -14,8 +14,6 @@
 
 import warnings
 
-import sphinx_rtd_theme
-
 import diofant
 
 
@@ -41,9 +39,6 @@ nitpicky = True
 # A list of glob-style patterns that should be excluded when looking for source files.
 exclude_patterns = ['CONTRIBUTING.rst', 'README.rst']
 
-# The master toctree document.
-master_doc = 'index'
-
 # General substitutions.
 project = 'Diofant'
 copyright = '2006-2017 SymPy Development Team, 2013-2018 Sergey B Kirpichev'
@@ -56,9 +51,6 @@ version = diofant.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
-
 # The name of a reST role (builtin or Sphinx extension) to use as the
 # default role, that is, for text marked up `like this`.
 default_role = 'math'
@@ -70,20 +62,6 @@ default_role = 'math'
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-
-# If true, generate domain-specific indices in addition to the general
-# index. For e.g. the Python domain, this is the global module index. Default
-# is True.  This value can be a bool or a list of index names that
-# should be generated.
-html_domain_indices = ['py-modindex']
-
-# Output file base name for HTML help builder.
-htmlhelp_basename = 'Diofantdoc'
-
 # Options for LaTeX output
 # ------------------------
 
@@ -94,24 +72,15 @@ latex_engine = 'xelatex'
 # toctree_only is set to True so that the start file document itself is not included in the
 # output, only the documents referenced by it via TOC trees.  The extra stuff in the master
 # document is intended to show up in the HTML, but doesn't really belong in the LaTeX output.
-latex_documents = [('index', 'diofant.tex', 'Diofant Documentation',
+latex_documents = [('contents', 'diofant.tex', 'Diofant Documentation',
                     'Diofant Development Team', 'manual', True)]
 
 # Additional stuff for the LaTeX preamble.
 latex_elements = {
-    'babel':     r'\usepackage[english]{babel}',
-    'fontenc': r'''
-\usepackage{bm}
-\usepackage{amssymb}
-\usepackage{fontspec}
+    'preamble':  r'''
 \setmainfont{DejaVu Serif}
 \setsansfont{DejaVu Sans}
 \setmonofont{DejaVu Sans Mono}
-''',
-    'fontpkg':   '',
-    'inputenc':  '',
-    'utf8extra': '',
-    'preamble':  r'''
 % redefine \LaTeX to be usable in math mode
 \expandafter\def\expandafter\LaTeX\expandafter{\expandafter\text\expandafter{\LaTeX}}
 '''
@@ -120,16 +89,8 @@ latex_elements = {
 # Show page numbers next to internal references
 latex_show_pagerefs = True
 
-# We use False otherwise the module index gets generated twice.
-latex_domain_indices = False
-
 # Options for extensions
 # ----------------------
-
-texinfo_documents = [
-    (master_doc, 'diofant', 'Diofant Documentation', 'Diofant Development Team',
-     'Diofant', 'Computer algebra system (CAS) in Python', 'Programming', 1),
-]
 
 # Use svg for graphviz
 graphviz_output_format = 'svg'
