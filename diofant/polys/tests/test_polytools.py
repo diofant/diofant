@@ -2337,6 +2337,10 @@ def test_factor():
     assert factor_list((2*x)**y, x) == (1, [(2, y), (x, y)])
     assert factor_list(sqrt(x*y), x) == (1, [(x*y, Rational(1, 2))])
 
+    # issue sympy/sympy#11198
+    assert factor_list(sqrt(2)*x) == (1, [(2, Rational(1, 2)), (x, 1)])
+    assert factor_list(sqrt(2)*sin(x), sin(x)) == (1, [(2, 1/2), (sin(x), 1)])
+
     assert factor(6) == 6 and factor(6).is_Integer
 
     assert factor_list(3*x) == (3, [(x, 1)])

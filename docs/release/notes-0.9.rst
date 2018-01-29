@@ -203,3 +203,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14000` sqrt and other root functions should inherit from Function
 * :sympyissue:`11099` Min and Max would not substitute in evalf
 * :sympyissue:`8257` Interval(-oo, oo) + FiniteSet(oo) takes forever
+* :sympyissue:`11198` factor_list(sqrt(const)*x) error
