@@ -70,3 +70,13 @@ def set_displayhook():
 @pytest.fixture(autouse=True, scope='session')
 def enable_deprecationwarnings():
     warnings.simplefilter('error', DeprecationWarning)
+
+
+@pytest.fixture(autouse=True, scope='session')
+def enable_mpl_agg_backend():
+    try:
+        import matplotlib as mpl
+        mpl.use('Agg')
+        del mpl
+    except ImportError:
+        pass
