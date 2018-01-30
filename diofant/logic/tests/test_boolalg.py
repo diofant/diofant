@@ -3,7 +3,7 @@ import itertools
 import pytest
 
 from diofant import (Dummy, EmptySet, Eq, Equality, Integer, Interval, S,
-                     Unequality, Union, oo, simplify, symbols)
+                     Unequality, Union, oo, simplify, sqrt, symbols)
 from diofant.abc import A, B, C, D, a, b, c, w, x, y, z
 from diofant.logic.boolalg import (ITE, And, Boolean, BooleanAtom,
                                    BooleanFunction, Equivalent, Implies, Nand,
@@ -726,3 +726,8 @@ def test_sympyissue_12522():
     assert Eq(1, 1).simplify() is true
     assert true.simplify() is true
     assert false.simplify() is false
+
+
+def test_sympyissue_10641():
+    assert str(Or(x < sqrt(3), x).n(2)) == 'Or(x, x < 1.7)'
+    assert str(And(x < sqrt(3), x).n(2)) == 'And(x, x < 1.7)'

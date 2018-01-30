@@ -220,3 +220,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10972` [tensor module] incorrect evaluation of TensMul.data
 * :sympyissue:`10044` Error pretty printing a tuple with a sympy.vector basis vector
 * :sympyissue:`10395` nfloat changes the arguments inside Max.
+* :sympyissue:`10641` Or, And don't evaluate
