@@ -1,7 +1,7 @@
 """High-level polynomials manipulation functions. """
 
 from ..core import Add, Mul, S
-from ..utilities import numbered_symbols, public, take
+from ..utilities import numbered_symbols, take
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
@@ -9,7 +9,9 @@ from .polytools import Poly, parallel_poly_from_expr, poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
 
 
-@public
+__all__ = ('symmetrize', 'horner', 'interpolate', 'viete')
+
+
 def symmetrize(F, *gens, **args):
     """
     Rewrite a polynomial in terms of elementary symmetric polynomials.
@@ -139,7 +141,6 @@ def symmetrize(F, *gens, **args):
             return result + (polys,)
 
 
-@public
 def horner(f, *gens, **args):
     """
     Rewrite a polynomial in Horner form.
@@ -192,7 +193,6 @@ def horner(f, *gens, **args):
     return form
 
 
-@public
 def interpolate(data, x):
     """
     Construct an interpolating polynomial for the data points.
@@ -238,7 +238,6 @@ def interpolate(data, x):
     return poly.expand()
 
 
-@public
 def viete(f, roots=None, *gens, **args):
     """
     Generate Viete's formulas for ``f``.

@@ -10,12 +10,14 @@ from ..core.mul import expand_2arg
 from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
 from ..ntheory import divisors, isprime, nextprime
 from ..simplify import powsimp, simplify
-from ..utilities import public
 from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyquinticconst import PolyQuintic
 from .polytools import Poly, cancel, discriminant, factor, gcd_list
 from .rationaltools import together
 from .specialpolys import cyclotomic_poly
+
+
+__all__ = ('roots',)
 
 
 def roots_linear(f):
@@ -730,7 +732,6 @@ def preprocess_roots(poly, extension=None):
     return coeff, poly
 
 
-@public
 def roots(f, *gens, **flags):
     """
     Computes symbolic roots of a univariate polynomial.

@@ -12,7 +12,7 @@ from ..core.function import AppliedUndef
 from ..domains import QQ
 from ..functions import root as _root
 from ..functions import sign
-from ..utilities import lambdify, public
+from ..utilities import lambdify
 from .polyerrors import (DomainError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialError)
 from .polyfuncs import symmetrize, viete
@@ -24,6 +24,9 @@ from .rootisolation import (dup_isolate_complex_roots_sqf,
                             dup_isolate_real_roots_sqf)
 
 
+__all__ = ('RootOf', 'RootSum')
+
+
 def _ispow2(i):
     v = mathlog(i, 2)
     return v == int(v)
@@ -33,7 +36,6 @@ _reals_cache = {}
 _complexes_cache = {}
 
 
-@public
 class RootOf(Expr):
     """
     Represents ``k``-th root of a univariate polynomial.
@@ -741,7 +743,6 @@ class RootOf(Expr):
             i1 < im and im < i2))
 
 
-@public
 class RootSum(Expr):
     """Represents a sum of all roots of a univariate polynomial. """
 

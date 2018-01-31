@@ -1,9 +1,10 @@
 """Definitions of monomial orderings. """
 
-__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
-
 from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
+
+
+__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
 
 
 class MonomialOrder:

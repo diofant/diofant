@@ -1,10 +1,11 @@
 """Tools for manipulation of rational expressions. """
 
 from ..core import Add, gcd_terms, sympify
-from ..utilities import public
 
 
-@public
+__all__ = ('together',)
+
+
 def together(expr, deep=False):
     """
     Denest and combine rational expressions using symbolic methods.

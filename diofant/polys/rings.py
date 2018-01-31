@@ -12,7 +12,6 @@ from ..domains.domainelement import DomainElement
 from ..domains.polynomialring import PolynomialRing
 from ..ntheory import multinomial_coefficients
 from ..printing.defaults import DefaultPrinting
-from ..utilities import public
 from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
@@ -29,7 +28,9 @@ from .polyoptions import build_options
 from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
 
 
-@public
+__all__ = ('ring', 'sring', 'vring')
+
+
 def ring(symbols, domain, order=lex):
     """Construct a polynomial ring returning ``(ring, x_1, ..., x_n)``.
 
@@ -58,7 +59,6 @@ def ring(symbols, domain, order=lex):
     return (_ring,) + _ring.gens
 
 
-@public
 def vring(symbols, domain, order=lex):
     """Construct a polynomial ring and inject ``x_1, ..., x_n`` into the global namespace.
 
@@ -87,7 +87,6 @@ def vring(symbols, domain, order=lex):
     return _ring
 
 
-@public
 def sring(exprs, *symbols, **options):
     """Construct a ring deriving generators and domain from options and input expressions.
 

@@ -2,11 +2,14 @@
 
 from ..core import Dummy
 from ..domains import QQ, ZZ
-from ..utilities import public
 from .constructor import construct_domain
 from .densearith import dup_add, dup_lshift, dup_mul, dup_mul_ground, dup_sub
 from .polyclasses import DMP
 from .polytools import Poly, PurePoly
+
+
+__all__ = ('jacobi_poly', 'chebyshevt_poly', 'chebyshevu_poly', 'hermite_poly',
+           'legendre_poly', 'laguerre_poly', 'spherical_bessel_fn')
 
 
 def dup_jacobi(n, a, b, K):
@@ -26,7 +29,6 @@ def dup_jacobi(n, a, b, K):
     return seq[n]
 
 
-@public
 def jacobi_poly(n, a, b, x=None, **args):
     """Generates Jacobi polynomial of degree `n` in `x`. """
     if n < 0:
@@ -91,7 +93,6 @@ def dup_chebyshevt(n, K):
     return seq[n]
 
 
-@public
 def chebyshevt_poly(n, x=None, **args):
     """Generates Chebyshev polynomial of the first kind of degree `n` in `x`. """
     if n < 0:
@@ -122,7 +123,6 @@ def dup_chebyshevu(n, K):
     return seq[n]
 
 
-@public
 def chebyshevu_poly(n, x=None, **args):
     """Generates Chebyshev polynomial of the second kind of degree `n` in `x`. """
     if n < 0:
@@ -157,7 +157,6 @@ def dup_hermite(n, K):
     return seq[n]
 
 
-@public
 def hermite_poly(n, x=None, **args):
     """Generates Hermite polynomial of degree `n` in `x`. """
     if n < 0:
@@ -189,7 +188,6 @@ def dup_legendre(n, K):
     return seq[n]
 
 
-@public
 def legendre_poly(n, x=None, **args):
     """Generates Legendre polynomial of degree `n` in `x`. """
     if n < 0:
@@ -221,7 +219,6 @@ def dup_laguerre(n, alpha, K):
     return seq[-1]
 
 
-@public
 def laguerre_poly(n, x=None, alpha=None, **args):
     """Generates Laguerre polynomial of degree `n` in `x`. """
     if n < 0:
@@ -268,7 +265,6 @@ def dup_spherical_bessel_fn_minus(n, K):
     return seq[n]
 
 
-@public
 def spherical_bessel_fn(n, x=None, **args):
     """
     Coefficients for the spherical Bessel functions.

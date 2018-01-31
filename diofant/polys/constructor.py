@@ -3,10 +3,12 @@
 from ..core import sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
-from ..utilities import public
 from .polyerrors import GeneratorsNeeded
 from .polyoptions import build_options
 from .polyutils import parallel_dict_from_basic
+
+
+__all__ = ('construct_domain',)
 
 
 def _construct_simple(coeffs, opt):
@@ -220,7 +222,6 @@ def _construct_expression(coeffs, opt):
     return domain, result
 
 
-@public
 def construct_domain(obj, **args):
     """Construct a minimal domain for the list of coefficients. """
     opt = build_options(args)
