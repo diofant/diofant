@@ -1258,7 +1258,6 @@ class EvalfMixin:
                 integrals on an infinite interval, try quad='osc'.
         """
         from .numbers import Float, I
-        n = n if n is not None else 15
 
         if subs and is_sequence(subs):
             raise TypeError('subs must be given as a dictionary')
@@ -1274,17 +1273,20 @@ class EvalfMixin:
             options['quad'] = quad
         try:
             result = evalf(self, prec + 4, options)
+        except PrecisionExhausted:
+            if self.is_Float and self._prec >= prec:
+                return Float._new(self._mpf_, prec)
+            else:
+                raise
         except NotImplementedError:
             # Fall back to the ordinary evalf
             v = self._eval_evalf(prec)
             if v is None:
                 return self
-            try:
-                # If the result is numerical, normalize it
-                result = evalf(v, prec, options)
-            except NotImplementedError:
-                # Probably contains symbols or unknown functions
-                return v
+            else:
+                # Normalize result
+                return v.subs({_: _.evalf(n, strict=strict)
+                               for _ in v.atoms(Float)})
         re, im, re_acc, im_acc = result
         if re:
             p = max(min(prec, re_acc), 1)
