@@ -14,12 +14,12 @@ def _process_limits(*symbols):
     limits = []
     orientation = 1
     for V in symbols:
-        if isinstance(V, (Dummy, Symbol)):
+        if isinstance(V, (Dummy, Symbol)) or getattr(V, '_diff_wrt', False):
             limits.append(Tuple(V))
             continue
         elif is_sequence(V, Tuple):
             V = sympify(flatten(V))
-            if V[0].is_Symbol:
+            if V[0].is_Symbol or getattr(V[0], '_diff_wrt', False):
                 newsymbol = V[0]
                 if len(V) == 2 and isinstance(V[1], Interval):
                     V[1:] = [V[1].start, V[1].end]

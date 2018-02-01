@@ -334,6 +334,27 @@ class NDimArray:
             return False
         return (self.shape == other.shape) and (list(self) == list(other))
 
+    def _eval_transpose(self):
+        from .arrayop import permutedims
+        if self.rank() != 2:
+            raise ValueError("array rank not 2")
+        return permutedims(self, (1, 0))
+
+    def transpose(self):
+        return self._eval_transpose()
+
+    def _eval_conjugate(self):
+        return self.func([i.conjugate() for i in self], self.shape)
+
+    def conjugate(self):
+        return self._eval_conjugate()
+
+    def _eval_adjoint(self):
+        return self.transpose().conjugate()
+
+    def adjoint(self):
+        return self._eval_adjoint()
+
 
 class ImmutableNDimArray(NDimArray, Expr):
     _op_priority = 11.0

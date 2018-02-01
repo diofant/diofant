@@ -4,7 +4,7 @@ from ..core import Function, S, igcd
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex
 from ..utilities.iterables import cantor_product
-from .factor_ import factorint, totient, trailing
+from .factor_ import factorint, multiplicity, totient, trailing
 from .primetest import isprime
 
 
@@ -576,15 +576,59 @@ def is_nthpow_residue(a, n, m):
 
     .. [1] P. Hackman "Elementary Number Theory" (2009),  page 76
     """
-    if primitive_root(m) is None:
-        raise NotImplementedError("%s does not have any primitive root" % m)
+    a, n, m = [as_int(i) for i in (a, n, m)]
+    if m <= 0:
+        raise ValueError('m must be > 0')
+    if n < 0:
+        raise ValueError('n must be >= 0')
+    if a < 0:
+        raise ValueError('a must be >= 0')
+    if n == 0:
+        if m == 1:
+            return False
+        return a == 1
     if n == 1:
         return True
     if n == 2:
         return is_quad_residue(a, m)
+    return _is_nthpow_residue_bign(a, n, m)
+
+
+def _is_nthpow_residue_bign(a, n, m):
+    """Returns True if ``x**n == a (mod m)`` has solutions for n > 2."""
+    assert n > 2 and a >= 0 and m > 0
+    if primitive_root(m) is None:
+        assert m >= 8
+        for prime, power in factorint(m).items():
+            if not _is_nthpow_residue_bign_prime_power(a, n, prime, power):
+                return False
+        return True
     f = totient(m)
     k = f // igcd(f, n)
     return pow(a, k, m) == 1
+
+
+def _is_nthpow_residue_bign_prime_power(a, n, p, k):
+    """Returns True/False if a solution for ``x**n == a (mod(p**k))``
+    does/doesn't exist.
+    """
+    assert a >= 0 and n > 2 and isprime(p) and k > 0
+    if a % p:
+        if p != 2:
+            return _is_nthpow_residue_bign(a, n, pow(p, k))
+        if n & 1:
+            return True
+        c = trailing(n)
+        return a % pow(2, min(c + 2, k)) == 1
+    else:
+        a %= pow(p, k)
+        if not a:
+            return True
+        mu = multiplicity(p, a)
+        if mu % n:
+            return False
+        pm = pow(p, mu)
+        return _is_nthpow_residue_bign_prime_power(a//pm, n, p, k - mu)
 
 
 def _nthroot_mod2(s, q, p):
@@ -672,12 +716,11 @@ def nthroot_mod(a, n, p, all_roots=False):
     """
     if n == 2:
         return sqrt_mod(a, p, all_roots)
-    f = totient(p)
     # see Hackman "Elementary Number Theory" (2009), page 76
-    if pow(a, f // igcd(f, n), p) != 1:
+    if not is_nthpow_residue(a, n, p):
         return
-    if not isprime(p):
-        raise NotImplementedError  # pragma: no cover
+    if primitive_root(p) is None:
+        raise NotImplementedError("Not Implemented for m without primitive root")
 
     if (p - 1) % n == 0:
         return _nthroot_mod1(a, n, p, all_roots)

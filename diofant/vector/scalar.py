@@ -1,38 +1,44 @@
-from ..core import Integer, Symbol
+from ..core import Expr, S, Symbol, sympify
 from ..printing.pretty.stringpict import prettyForm
 
 
-class BaseScalar(Symbol):
+class BaseScalar(Expr):
     """
     A coordinate symbol/base scalar.
 
     Ideally, users should not instantiate this class.
-
     """
+
+    is_commutative = True
 
     def __new__(cls, name, index, system, pretty_str, latex_str):
         from .coordsysrect import CoordSysCartesian
+        index = sympify(index, strict=True)
+        system = sympify(system, strict=True)
+        obj = super(BaseScalar, cls).__new__(cls, Symbol(str(name)),
+                                             index, system,
+                                             Symbol(str(pretty_str)),
+                                             Symbol(str(latex_str)))
 
-        name = str(name)
-        pretty_str = str(pretty_str)
-        latex_str = str(latex_str)
-        obj = super(BaseScalar, cls).__new__(cls, name)
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
         if index not in range(3):
             raise ValueError("Invalid index specified.")
+
         # The _id is used for equating purposes, and for hashing
         obj._id = (index, system)
-        obj._name = name
-        obj._pretty_form = pretty_str
-        obj._latex_form = latex_str
+        obj.name = obj._name = str(name)
+        obj._pretty_form = str(pretty_str)
+        obj._latex_form = str(latex_str)
         obj._system = system
 
-        # Change the args for the object
-        obj._args = (Symbol(name), Integer(index), system,
-                     Symbol(pretty_str), Symbol(latex_str))
-
         return obj
+
+    _diff_wrt = True
+
+    def _eval_derivative(self, s):
+        assert self != s  # == case handled in Symbol._eval_derivative
+        return S.Zero
 
     def _latex(self, printer=None):
         return self._latex_form
@@ -43,17 +49,6 @@ class BaseScalar(Symbol):
     @property
     def system(self):
         return self._system
-
-    def __eq__(self, other):
-        # Check if the other object is a BaseScalar of same index
-        # and coordinate system
-        if isinstance(other, BaseScalar):
-            if other._id == self._id:
-                return True
-        return False
-
-    def __hash__(self):
-        return self._id.__hash__()
 
     def __str__(self, printer=None):
         return self._name

@@ -293,10 +293,10 @@ def test_latex_functions():
     assert latex(re(x)) == r"\Re{x}"
     assert latex(re(x)**3) == r"\left(\Re{x}\right)^{3}"
     assert latex(re(x + y)) == r"\Re{x} + \Re{y}"
-    assert latex(re(1/x, evaluate=False)) == r'\Re {\left (\frac{1}{x} \right )}'
+    assert latex(re(1/x, evaluate=False)) == r'\Re{\left(\frac{1}{x}\right)}'
     assert latex(im(x)) == r"\Im{x}"
     assert latex(im(x)**3) == r"\left(\Im{x}\right)^{3}"
-    assert latex(im(1/x, evaluate=False)) == r'\Im {\left ( \frac{1}{x} \right )}'
+    assert latex(im(1/x, evaluate=False)) == r'\Im{\left(\frac{1}{x}\right)}'
     assert latex(conjugate(x)) == r"\overline{x}"
     assert latex(conjugate(x)**3) == r'\overline{x}^{3}'
     assert latex(gamma(x)) == r"\Gamma{\left(x \right)}"
@@ -611,7 +611,7 @@ def test_latex_Naturals():
 
 
 def test_latex_Naturals0():
-    assert latex(S.Naturals0) == r"\mathbb{N_0}"
+    assert latex(S.Naturals0) == r"\mathbb{N}_0"
 
 
 def test_latex_Integers():
@@ -1411,3 +1411,9 @@ def test_sympyissue_10489():
     s = Symbol(latexSymbolWithBrace)
     assert latex(s) == latexSymbolWithBrace
     assert latex(cos(s)) == r'\cos{\left (C_{x_{0}} \right )}'
+
+
+def test_sympyissue_10889():
+    A, B = symbols('A B', commutative=False)
+    e = Mul(-1, A*B - B*A)
+    assert latex(e) == "- (A B - B A)"

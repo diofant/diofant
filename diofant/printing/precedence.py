@@ -14,6 +14,7 @@ PRECEDENCE = {
     "Mul": 50,
     "Mod": 50,
     "Pow": 60,
+    "Func": 70,
     "Not": 100,
     "Atom": 1000
 }
@@ -33,8 +34,9 @@ PRECEDENCE_VALUES = {
     "Relational": PRECEDENCE["Relational"],
     "Sub": PRECEDENCE["Add"],
     "Not": PRECEDENCE["Not"],
-    "factorial": PRECEDENCE["Pow"],
-    "factorial2": PRECEDENCE["Pow"],
+    "factorial": PRECEDENCE["Func"],
+    "factorial2": PRECEDENCE["Func"],
+    "Function": PRECEDENCE["Func"],
     "NegativeInfinity": PRECEDENCE["Add"],
     "MatAdd": PRECEDENCE["Add"],
     "MatMul": PRECEDENCE["Mul"],

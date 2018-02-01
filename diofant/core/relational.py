@@ -207,7 +207,7 @@ class Relational(Boolean, Expr, EvalfMixin):
 
         >>> from diofant import Symbol
         >>> x = Symbol('x', extended_real=True)
-        >>> (x>0).as_set()
+        >>> (x > 0).as_set()
         (0, oo)
         >>> Eq(x, 0).as_set()
         {0}

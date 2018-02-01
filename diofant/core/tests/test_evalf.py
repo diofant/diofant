@@ -3,11 +3,11 @@ from mpmath import inf, ninf
 from mpmath.libmp.libmpf import from_float
 
 from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
-                     GoldenRatio, I, Integral, Min, Mul, N, Pow, Product,
+                     GoldenRatio, I, Integral, Max, Min, Mul, N, Pow, Product,
                      Rational, Sum, Symbol, atan, cbrt, ceiling, cos, exp,
-                     factorial, fibonacci, floor, im, integrate, log, nan, oo,
-                     pi, polar_lift, product, re, root, sin, sqrt, sstr,
-                     symbols, sympify, zoo)
+                     factorial, fibonacci, floor, im, integrate, log, nan,
+                     nfloat, oo, pi, polar_lift, product, re, root, sin, sqrt,
+                     sstr, symbols, sympify, zoo)
 from diofant.abc import H, n, x, y
 from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
                                 complex_accuracy, scaled_zero)
@@ -534,3 +534,11 @@ def test_diofantissue_499():
     e = -3000 + log(1 + E**3000)
     pytest.raises(PrecisionExhausted, lambda: e.evalf(2))
     assert e.n(2, maxn=2000) == Float('1.3074e-1303', dps=2)
+
+
+def test_sympyissue_10395():
+    eq = x*Max(0, y)
+    assert nfloat(eq) == eq
+    eq = x*Max(y, -1.1)
+    assert nfloat(eq) == eq
+    assert Max(y, 4).n() == Max(4.0, y)

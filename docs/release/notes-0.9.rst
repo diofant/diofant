@@ -206,3 +206,19 @@ These Sympy issues also were addressed:
 * :sympyissue:`8257` Interval(-oo, oo) + FiniteSet(oo) takes forever
 * :sympyissue:`11198` factor_list(sqrt(const)*x) error
 * :sympyissue:`10784` autowrap on windows -- distutils doesn't work with C compiler
+* :sympyissue:`10897` rewrite im() in terms of re() and vice versa
+* :sympyissue:`10963` x**6000%400 hangs
+* :sympyissue:`10931` S.Integers - S.Integers does not evaluate
+* :sympyissue:`2799` S.UniversalSet + Interval(0, oo) takes forever
+* :sympyissue:`11090` ImmutableMatrix * MatrixSymbol raises AttributeError
+* :sympyissue:`11207` floor(ceiling(x)) doesn't simplify
+* :sympyissue:`9135` Incorrect subsitution of partial derivatives by .subs()
+* :sympyissue:`10829` subs method gives wrong result for powers
+* :sympyissue:`10816` is_nthpow_residue(a,n,m) gives NotImplemented error when m don't have primitive root
+* :sympyissue:`10886` No solution by nthroot_mod
+* :sympyissue:`10157` Replace needs_brackets with parenthesize in the latex printer
+* :sympyissue:`10972` [tensor module] incorrect evaluation of TensMul.data
+* :sympyissue:`10044` Error pretty printing a tuple with a sympy.vector basis vector
+* :sympyissue:`10395` nfloat changes the arguments inside Max.
+* :sympyissue:`10641` Or, And don't evaluate
+* :sympyissue:`10821` latex bug for commutator output

@@ -28,6 +28,7 @@ There are three types of functions implemented in Diofant:
 
 """
 
+import collections
 import inspect
 
 import mpmath
@@ -1263,38 +1264,25 @@ class Derivative(Expr):
         return self.expr.free_symbols
 
     def _eval_subs(self, old, new):
-        if old in self.variables and not new.is_Symbol:
+        if old in self.variables and not new._diff_wrt:
             # issue sympy/sympy#4719
             return Subs(self, old, new)
         # If both are Derivatives with the same expr, check if old is
         # equivalent to self or if old is a subderivative of self.
         if old.is_Derivative and old.expr == self.expr:
             # Check if canonnical order of variables is equal.
-            old_vars = Derivative._sort_variables(old.variables)
-            self_vars = Derivative._sort_variables(self.variables)
+            old_vars = collections.Counter(old.variables)
+            self_vars = collections.Counter(self.variables)
             if old_vars == self_vars:
                 return new
 
-            # Check if olf is a subderivative of self.
-            if len(old_vars) < len(self_vars):
-                self_vars_front = []
-                match = True
-                while old_vars and self_vars and match:
-                    if old_vars[0] == self_vars[0]:
-                        old_vars.pop(0)
-                        self_vars.pop(0)
-                    else:
-                        # If self_v does not match old_v, we need to check if
-                        # the types are the same (symbol vs non-symbol). If
-                        # they are, we can continue checking self_vars for a
-                        # match.
-                        if old_vars[0].is_Symbol != self_vars[0].is_Symbol:
-                            match = False
-                        else:
-                            self_vars_front.append(self_vars.pop(0))
-                if match:
-                    variables = self_vars_front + self_vars
-                    return Derivative(new, *variables)
+            # collections.Counter doesn't have __le__
+            def _subset(a, b):
+                return all(a[i] <= b[i] for i in a)
+
+            if _subset(old_vars, self_vars):
+                return Derivative(new, *(self_vars - old_vars).elements())
+
         return Derivative(*(x._subs(old, new) for x in self.args))
 
     def _eval_lseries(self, x, logx):

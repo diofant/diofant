@@ -70,6 +70,7 @@ from string import Template
 from subprocess import STDOUT, CalledProcessError, check_output
 
 from ..core import Dummy, Eq, Lambda, Symbol, cacheit
+from ..core.compatibility import iterable
 from ..tensor import Idx, IndexedBase
 from .codegen import (CCodeGen, CodeGenArgumentListError, InOutArgument,
                       InputArgument, OutputArgument, Result, ResultBase,
@@ -464,7 +465,8 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
         the generated code and the wrapper input files are left intact in the
         specified path.
     args : iterable, optional
-        An iterable of symbols. Specifies the argument sequence for the function.
+        An ordered iterable of symbols. Specifies the argument sequence for the
+        function.
     flags : iterable, optional
         Additional option flags that will be passed to the backend.
     verbose : bool, optional
@@ -487,7 +489,6 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     >>> binary_func(1, 4, 2)
     -1.0
     """
-
     if language:
         _validate_backend_language(backend, language)
     else:
@@ -495,6 +496,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
 
     helpers = [helpers] if helpers else ()
     flags = flags if flags else ()
+    args = list(args) if iterable(args, exclude=set) else args
 
     code_generator = get_code_generator(language, "autowrap")
     CodeWrapperClass = _get_code_wrapper_class(backend)

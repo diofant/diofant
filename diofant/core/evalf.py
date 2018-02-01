@@ -1193,13 +1193,13 @@ def evalf(x, prec, options):
             if re == 0:
                 re = None
                 reprec = None
-            else:
+            elif re.is_number:
                 re = re._to_mpmath(prec, allow_ints=False)._mpf_
                 reprec = prec
             if im == 0:
                 im = None
                 imprec = None
-            else:
+            elif im.is_number:
                 im = im._to_mpmath(prec, allow_ints=False)._mpf_
                 imprec = prec
             r = re, im, reprec, imprec

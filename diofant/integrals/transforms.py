@@ -246,16 +246,14 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
             for d in disjuncts(c):
                 d_ = d.replace(
                     re, lambda x: x.as_real_imag()[0]).subs(re(s), t)
-                if not d.is_Relational or \
-                    d.rel_op not in ('>', '>=', '<', '<=') \
+                if not d.is_Relational or d.rel_op in ('==', '!=') \
                         or d_.has(s) or not d_.has(t):
                     aux_ += [d]
                     continue
                 soln = solve_univariate_inequality(d_, t)
                 t_ = Dummy("t", real=True)
                 soln = soln.subs(t, t_).subs(t_, t)
-                if not soln.is_Relational or \
-                        soln.rel_op not in ('>', '>=', '<', '<='):
+                if not soln.is_Relational or soln.rel_op in ('==', '!='):
                     aux_ += [d]
                     continue
                 if soln.lts == t:
@@ -1005,16 +1003,14 @@ def _laplace_transform(f, t, s_, simplify=True):
                     d = re(s) > m[p]
                 d_ = d.replace(
                     re, lambda x: x.expand().as_real_imag()[0]).subs(re(s), t)
-                if not d.is_Relational or \
-                    d.rel_op not in ('>', '>=', '<', '<=') \
+                if not d.is_Relational or d.rel_op in ('==', '!=') \
                         or d_.has(s) or not d_.has(t):
                     aux_ += [d]
                     continue
                 soln = solve_univariate_inequality(d_, t)
                 t_ = Dummy("t", real=True)
                 soln = soln.subs(t, t_).subs(t_, t)
-                if not soln.is_Relational or \
-                        soln.rel_op not in ('>', '>=', '<', '<='):
+                if not soln.is_Relational or soln.rel_op in ('==', '!='):
                     aux_ += [d]
                     continue
                 if soln.lts == t:
