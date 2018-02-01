@@ -4,8 +4,9 @@ from functools import reduce
 from operator import add, ge, gt, le, lt, mul
 from types import GeneratorType
 
+from ..core import Expr, Symbol, igcd, oo
 from ..core import symbols as _symbols
-from ..core import Expr, Symbol, igcd, oo, sympify
+from ..core import sympify
 from ..core.compatibility import is_sequence
 from ..core.sympify import CantSympify
 from ..domains.domainelement import DomainElement

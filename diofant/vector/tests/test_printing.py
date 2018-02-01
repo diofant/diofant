@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import pretty as xpretty
 from diofant import Function, Integral, latex
+from diofant import pretty as xpretty
 from diofant.abc import a, b, c
 from diofant.vector import CoordSysCartesian, Vector, express
 

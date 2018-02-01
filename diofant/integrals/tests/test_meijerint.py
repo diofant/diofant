@@ -13,12 +13,12 @@ from diofant import (E1, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      piecewise_fold, polygamma, powdenest, powsimp, re,
                      simplify, sin, sinh, sqrt, symbols, unpolarify)
 from diofant.abc import a, b, c, d, s, t, x, y, z
-from diofant.integrals.meijerint import z as z_dummy
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          _rewrite1, _rewrite_single,
                                          meijerint_definite,
                                          meijerint_indefinite,
                                          meijerint_inversion)
+from diofant.integrals.meijerint import z as z_dummy
 from diofant.utilities import default_sort_key
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import verify_numerically

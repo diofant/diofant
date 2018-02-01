@@ -25,8 +25,8 @@ from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, KroneckerDelta,
                                lowergamma, meijerg, sin, sqrt, subfactorial,
                                tan, uppergamma)
 from diofant.matrices import Adjoint, Inverse, Transpose
-from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty import pprint
+from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty.pretty_symbology import U, xobj
 from diofant.stats import Die, Exponential, Normal, pspace, where
 

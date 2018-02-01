@@ -5,10 +5,10 @@ import hypothesis
 import pytest
 
 from diofant import GoldenRatio as Phi
-from diofant import factorial as fac
 from diofant import (Mul, Pow, Sieve, Symbol, binomial_coefficients,
-                     binomial_coefficients_list, multinomial_coefficients, pi,
-                     sieve, sqrt, summation)
+                     binomial_coefficients_list)
+from diofant import factorial as fac
+from diofant import multinomial_coefficients, pi, sieve, sqrt, summation
 from diofant.core.add import Add
 from diofant.core.numbers import Integer, Rational
 from diofant.domains import ZZ

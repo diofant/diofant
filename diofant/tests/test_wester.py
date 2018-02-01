@@ -11,26 +11,27 @@ import mpmath
 import pytest
 from mpmath import mpc, mpi
 
-from diofant import continued_fraction_convergents as cf_c
-from diofant import continued_fraction_iterator as cf_i
-from diofant import continued_fraction_periodic as cf_p
-from diofant import continued_fraction_reduce as cf_r
 from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
                      DiracDelta, E, EulerGamma, FiniteSet, Function,
                      GoldenRatio, I, Lambda, LambertW, Le, Lt, Max, Mul, N, O,
                      Or, Piecewise, Poly, Rational, Subs, Symbol, acos, acot,
                      apart, asin, asinh, assoc_legendre, atan, bernoulli,
                      besselj, binomial, cbrt, ceiling, chebyshevt, combsimp,
-                     conjugate, cos, cosh, cot, csc, diff, elliptic_e,
-                     elliptic_f, exp, expand, expand_func, factor, factorial,
-                     factorial2, factorint, fibonacci, floor, gamma, gcd,
-                     hessian, hyper, hyperexpand, igcd, im, legendre_poly,
-                     limit, log, logcombine, maximize, minimize, nan,
-                     npartitions, oo, pi, polygamma, polylog, powdenest,
-                     powsimp, primerange, primitive_root, product, radsimp, re,
-                     reduce_inequalities, residue, resultant, rf, sec, series,
-                     sign, simplify, sin, sinh, solve, sqrt, sqrtdenest,
-                     symbols, tan, tanh, totient, trigsimp, wronskian, zoo)
+                     conjugate)
+from diofant import continued_fraction_convergents as cf_c
+from diofant import continued_fraction_iterator as cf_i
+from diofant import continued_fraction_periodic as cf_p
+from diofant import continued_fraction_reduce as cf_r
+from diofant import (cos, cosh, cot, csc, diff, elliptic_e, elliptic_f, exp,
+                     expand, expand_func, factor, factorial, factorial2,
+                     factorint, fibonacci, floor, gamma, gcd, hessian, hyper,
+                     hyperexpand, igcd, im, legendre_poly, limit, log,
+                     logcombine, maximize, minimize, nan, npartitions, oo, pi,
+                     polygamma, polylog, powdenest, powsimp, primerange,
+                     primitive_root, product, radsimp, re, reduce_inequalities,
+                     residue, resultant, rf, sec, series, sign, simplify, sin,
+                     sinh, solve, sqrt, sqrtdenest, symbols, tan, tanh,
+                     totient, trigsimp, wronskian, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.concrete import Sum
 from diofant.concrete.products import Product

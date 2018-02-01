@@ -11,8 +11,8 @@ from ..functions import Max, Min, exp, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
 from ..printing import sstr
 from ..printing.defaults import DefaultPrinting
-from ..simplify import simplify as _simplify
 from ..simplify import nsimplify, signsimp
+from ..simplify import simplify as _simplify
 from ..utilities import flatten
 
 

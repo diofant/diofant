@@ -43,9 +43,9 @@ import random
 
 from ..concrete import Sum
 from ..core import Dummy, Eq, Expr, Lambda, Rational, S, oo, pi, sympify
+from ..functions import Abs, Piecewise, besseli
 from ..functions import beta as beta_fn
-from ..functions import (Abs, Piecewise, besseli, binomial, cos, exp,
-                         factorial, floor, gamma, log, sqrt)
+from ..functions import binomial, cos, exp, factorial, floor, gamma, log, sqrt
 from ..logic import And
 from ..sets import Interval
 from .crv import (ContinuousDistributionHandmade, SingleContinuousDistribution,

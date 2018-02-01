@@ -8,11 +8,11 @@ from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
                      sqrt)
 from diofant.abc import x, y
 from diofant.polys.rootoftools import RootOf
-from diofant.solvers.inequalities import solve_poly_inequality as psolve
-from diofant.solvers.inequalities import solve_univariate_inequality as isolve
 from diofant.solvers.inequalities import (reduce_inequalities,
                                           reduce_piecewise_inequality,
                                           reduce_rational_inequalities)
+from diofant.solvers.inequalities import solve_poly_inequality as psolve
+from diofant.solvers.inequalities import solve_univariate_inequality as isolve
 from diofant.solvers.solvers import solve
 
 
