@@ -65,7 +65,7 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
 
     def from_diofant(self, expr):
         """Convert Diofant's number to ``dtype``. """
-        number = expr.evalf(n=self.dps, strict=False)
+        number = expr.evalf(self.dps, strict=False)
         real, imag = number.as_real_imag()
 
         if real.is_Number and imag.is_Number:

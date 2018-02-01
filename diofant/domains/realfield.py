@@ -65,7 +65,7 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
 
     def from_diofant(self, expr):
         """Convert Diofant's number to ``dtype``. """
-        number = expr.evalf(n=self.dps, strict=False)
+        number = expr.evalf(self.dps, strict=False)
 
         if number.is_Number:
             return self.dtype(number)

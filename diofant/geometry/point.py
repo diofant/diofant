@@ -284,12 +284,12 @@ class Point(GeometryEntity):
         """
         return Point([simplify((a + b)*S.Half) for a, b in zip(self.args, p.args)])
 
-    def evalf(self, prec=None, **options):
+    def evalf(self, dps=15, **options):
         """Evaluate the coordinates of the point.
 
         This method will, where possible, create and return a new Point
         where the coordinates are evaluated as floating point numbers to
-        the precision indicated (default=15).
+        the decimal precision dps.
 
         Returns
         =======
@@ -306,7 +306,7 @@ class Point(GeometryEntity):
         >>> print(p1.evalf())
         Point2D(0.5, 1.5)
         """
-        coords = [x.evalf(prec, **options) for x in self.args]
+        coords = [x.evalf(dps, **options) for x in self.args]
         return Point(*coords, evaluate=False)
 
     n = evalf

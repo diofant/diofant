@@ -431,8 +431,8 @@ class MinMaxBase(LatticeOp):
             l.append(df * da)
         return Add(*l)
 
-    def evalf(self, n=15, **options):
-        return self.func(*[a.evalf(n, **options) for a in self.args])
+    def evalf(self, dps=15, **options):
+        return self.func(*[a.evalf(dps, **options) for a in self.args])
     n = evalf
 
     @property

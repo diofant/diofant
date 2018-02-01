@@ -471,7 +471,7 @@ class Basic(object):
         evaluation, it is better to pass the substitution to
         evalf as
 
-        >>> (1/x).evalf(subs={x: 3.0}, n=21, strict=False)
+        >>> (1/x).evalf(21, subs={x: 3.0}, strict=False)
         0.333333333333333333333
 
         rather than

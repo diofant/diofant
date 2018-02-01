@@ -134,7 +134,7 @@ class RootOf(Expr):
             q = poly.domain.ext.minpoly.eval(y)
             minpoly = PurePoly(resultant(p, q, y), x)
             for idx, r in enumerate(minpoly.all_roots()):  # pragma: no branch
-                if poly.as_expr().evalf(n=2, subs={x: r}, chop=True) == 0:
+                if poly.as_expr().evalf(2, subs={x: r}, chop=True) == 0:
                     index -= 1
                     if index == -1:
                         break

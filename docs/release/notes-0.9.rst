@@ -52,6 +52,7 @@ Compatibility breaks
 * Removed ``isolate()`` function, see :pull:`585`.
 * :func:`~diofant.polys.polytools.gcd` and :func:`~diofant.polys.polytools.lcm` now are two-arg functions, see :pull:`585`.
 * Removed ``is_zero_dimensional()`` function and :class:`~diofant.polys.polytools.GroebnerBasis`'s property of the same name, use :attr:`~diofant.polys.polytools.GroebnerBasis.dimension` instead, see :pull:`573`.
+* Renamed 'n' argiment of :meth:`~diofant.core.evalf.EvalfMixin.evalf` to 'dps', see :pull:`596`.
 
 Minor changes
 =============

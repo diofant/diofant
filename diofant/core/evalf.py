@@ -1229,9 +1229,9 @@ def evalf(x, prec, options):
 class EvalfMixin:
     """Mixin class adding evalf capability."""
 
-    def evalf(self, n=15, subs=None, maxn=110, chop=False, strict=True, quad=None):
+    def evalf(self, dps=15, subs=None, maxn=110, chop=False, strict=True, quad=None):
         """
-        Evaluate the given formula to an accuracy of n digits.
+        Evaluate the given formula to an accuracy of dps decimal digits.
         Optional keyword arguments:
 
             subs=<dict>
@@ -1264,7 +1264,7 @@ class EvalfMixin:
 
         if not evalf_table:
             _create_evalf_table()
-        prec = dps_to_prec(n)
+        prec = dps_to_prec(dps)
         options = {'maxprec': max(prec, int(maxn*LG10)), 'chop': chop,
                    'strict': strict}
         if subs is not None:
@@ -1285,7 +1285,7 @@ class EvalfMixin:
                 return self
             else:
                 # Normalize result
-                return v.subs({_: _.evalf(n, strict=strict)
+                return v.subs({_: _.evalf(dps, strict=strict)
                                for _ in v.atoms(Float)})
         re, im, re_acc, im_acc = result
         if re:
@@ -1352,9 +1352,9 @@ class EvalfMixin:
             return make_mpc((re, im))
 
 
-def N(x, n=15, **options):
+def N(x, dps=15, **options):
     r"""
-    Calls x.evalf(n, \*\*options).
+    Calls x.evalf(dps, \*\*options).
 
     Examples
     ========
@@ -1371,4 +1371,4 @@ def N(x, n=15, **options):
 
     diofant.core.evalf.EvalfMixin.evalf
     """
-    return sympify(x).evalf(n, **options)
+    return sympify(x).evalf(dps, **options)

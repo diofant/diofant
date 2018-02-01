@@ -3237,7 +3237,7 @@ class Poly(Expr):
             fac = ilcm(*denoms)
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
         else:
-            coeffs = [coeff.evalf(n=n, strict=False).as_real_imag()
+            coeffs = [coeff.evalf(n, strict=False).as_real_imag()
                       for coeff in self.all_coeffs()]
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]

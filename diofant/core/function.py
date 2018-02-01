@@ -1525,15 +1525,15 @@ class Subs(Expr):
         """
         return self.expr.doit(**hints).subs(list(zip(self.variables, self.point)))
 
-    def evalf(self, prec=None, **options):
-        """Evaluate the given formula to an accuracy of prec digits.
+    def evalf(self, dps=15, **options):
+        """Evaluate the given formula to an accuracy of dps decimal digits.
 
         See Also
         ========
 
         diofant.core.evalf.EvalfMixin.evalf
         """
-        return self.doit().evalf(prec, **options)
+        return self.doit().evalf(dps, **options)
 
     #:
     n = evalf
