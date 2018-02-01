@@ -11,8 +11,8 @@ from ..functions import Max, Min, exp, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
 from ..printing import sstr
 from ..printing.defaults import DefaultPrinting
-from ..simplify import simplify as _simplify
 from ..simplify import nsimplify, signsimp
+from ..simplify import simplify as _simplify
 from ..utilities import flatten
 
 
@@ -1062,9 +1062,9 @@ class MatrixBase(DefaultPrinting):
         else:
             return divmod(a2idx(key, len(self)), self.cols)
 
-    def evalf(self, prec=None, **options):
+    def evalf(self, dps=15, **options):
         """Apply evalf() to each element of self."""
-        return self.applyfunc(lambda i: i.evalf(prec, **options))
+        return self.applyfunc(lambda i: i.evalf(dps, **options))
 
     n = evalf
 

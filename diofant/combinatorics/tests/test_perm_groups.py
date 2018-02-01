@@ -6,8 +6,8 @@ from diofant.combinatorics.named_groups import (AbelianGroup, AlternatingGroup,
                                                 RubikGroup, SymmetricGroup)
 from diofant.combinatorics.perm_groups import PermutationGroup
 from diofant.combinatorics.permutations import Permutation
-from diofant.combinatorics.polyhedron import tetrahedron as tetra
 from diofant.combinatorics.polyhedron import cube
+from diofant.combinatorics.polyhedron import tetrahedron as tetra
 from diofant.combinatorics.testutil import (_verify_bsgs, _verify_centralizer,
                                             _verify_normal_closure)
 

@@ -203,16 +203,16 @@ def test_RootOf_diff():
 
 
 def test_RootOf_evalf():
-    real = RootOf(x**3 + x + 3, 0).evalf(n=20)
+    real = RootOf(x**3 + x + 3, 0).evalf(20)
 
     assert real.epsilon_eq(Float("-1.2134116627622296341"))
 
-    re, im = RootOf(x**3 + x + 3, 1).evalf(n=20).as_real_imag()
+    re, im = RootOf(x**3 + x + 3, 1).evalf(20).as_real_imag()
 
     assert re.epsilon_eq( Float("0.60670583138111481707"))
     assert im.epsilon_eq(-Float("1.45061224918844152650"))
 
-    re, im = RootOf(x**3 + x + 3, 2).evalf(n=20).as_real_imag()
+    re, im = RootOf(x**3 + x + 3, 2).evalf(20).as_real_imag()
 
     assert re.epsilon_eq(Float("0.60670583138111481707"))
     assert im.epsilon_eq(Float("1.45061224918844152650"))
@@ -226,22 +226,22 @@ def test_RootOf_evalf():
         "0.86113631159405258",
     ]
 
-    re = RootOf(x**5 - 5*x + 12, 0).evalf(n=20)
+    re = RootOf(x**5 - 5*x + 12, 0).evalf(20)
     assert re.epsilon_eq(Float("-1.84208596619025438271"))
 
-    re, im = RootOf(x**5 - 5*x + 12, 1).evalf(n=20).as_real_imag()
+    re, im = RootOf(x**5 - 5*x + 12, 1).evalf(20).as_real_imag()
     assert re.epsilon_eq(Float("-0.351854240827371999559"))
     assert im.epsilon_eq(Float("-1.709561043370328882010"))
 
-    re, im = RootOf(x**5 - 5*x + 12, 2).evalf(n=20).as_real_imag()
+    re, im = RootOf(x**5 - 5*x + 12, 2).evalf(20).as_real_imag()
     assert re.epsilon_eq(Float("-0.351854240827371999559"))
     assert im.epsilon_eq(Float("+1.709561043370328882010"))
 
-    re, im = RootOf(x**5 - 5*x + 12, 3).evalf(n=20).as_real_imag()
+    re, im = RootOf(x**5 - 5*x + 12, 3).evalf(20).as_real_imag()
     assert re.epsilon_eq(Float("+1.272897223922499190910"))
     assert im.epsilon_eq(Float("-0.719798681483861386681"))
 
-    re, im = RootOf(x**5 - 5*x + 12, 4).evalf(n=20).as_real_imag()
+    re, im = RootOf(x**5 - 5*x + 12, 4).evalf(20).as_real_imag()
     assert re.epsilon_eq(Float("+1.272897223922499190910"))
     assert im.epsilon_eq(Float("+0.719798681483861386681"))
 
@@ -412,9 +412,9 @@ def test_RootSum_doit():
 def test_RootSum_evalf():
     rs = RootSum(x**2 + 1, Lambda(x, exp(x)))
 
-    assert rs.evalf(n=20, chop=True).epsilon_eq(
+    assert rs.evalf(20, chop=True).epsilon_eq(
         Float("1.0806046117362794348", 20), Float("1e-20")) is true
-    assert rs.evalf(n=15, chop=True).epsilon_eq(
+    assert rs.evalf(15, chop=True).epsilon_eq(
         Float("1.08060461173628", 15), Float("1e-15")) is true
 
     rs = RootSum(x**2 + a, Lambda(x, exp(x)), x)

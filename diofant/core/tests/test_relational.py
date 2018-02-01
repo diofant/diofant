@@ -7,11 +7,11 @@ from diofant import (And, Float, Function, I, Implies, Integer, Not, Or,
                      Rational, Symbol, Wild, Xor, ceiling, false, floor, nan,
                      oo, pi, simplify, sqrt, true, zoo)
 from diofant.abc import t, w, x, y, z
-from diofant.core.relational import _Inequality as Inequality
 from diofant.core.relational import (Eq, Equality, Ge, GreaterThan, Gt, Le,
                                      LessThan, Lt, Ne, Rel, Relational,
                                      StrictGreaterThan, StrictLessThan,
                                      Unequality)
+from diofant.core.relational import _Inequality as Inequality
 from diofant.sets.sets import FiniteSet, Interval
 
 

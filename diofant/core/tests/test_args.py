@@ -35,12 +35,12 @@ from diofant.core.numbers import (Catalan, ComplexInfinity, EulerGamma, Exp1,
                                   NaN, NegativeInfinity, NegativeOne,
                                   NumberSymbol, One, Pi, Zero)
 from diofant.core.trace import Tr
-from diofant.diffgeom import Point as DiffgeomPoint
 from diofant.diffgeom import (BaseCovarDerivativeOp, BaseScalarField,
                               BaseVectorField, Commutator, CoordSystem,
                               CovarDerivativeOp, Differential, LieDerivative,
-                              Manifold, Patch, TensorProduct, WedgeProduct)
-from diofant.functions import re as _re
+                              Manifold, Patch)
+from diofant.diffgeom import Point as DiffgeomPoint
+from diofant.diffgeom import TensorProduct, WedgeProduct
 from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, FallingFactorial,
                                Heaviside, KroneckerDelta, LambertW, LeviCivita,
                                Li, Max, Min, Piecewise, RisingFactorial, Shi,
@@ -62,9 +62,10 @@ from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, FallingFactorial,
                                jn, laguerre, legendre, lerchphi, li, log,
                                loggamma, lowergamma, lucas, meijerg,
                                periodic_argument, polar_lift, polygamma,
-                               polylog, principal_branch, sec, sech, sign,
-                               sinh, subfactorial, tan, tanh, transpose,
-                               uppergamma, yn, zeta)
+                               polylog, principal_branch)
+from diofant.functions import re as _re
+from diofant.functions import (sec, sech, sign, sinh, subfactorial, tan, tanh,
+                               transpose, uppergamma, yn, zeta)
 from diofant.functions.combinatorial.factorials import MultiFactorial
 from diofant.functions.elementary.miscellaneous import IdentityFunction
 from diofant.functions.elementary.piecewise import ExprCondPair
@@ -156,11 +157,12 @@ from diofant.tensor.tensor import (TensAdd, TensorHead, TensorIndex,
                                    TensorIndexType, TensorSymmetry, TensorType,
                                    get_symmetric_group_sgs, tensor_indices)
 from diofant.utilities.exceptions import DiofantDeprecationWarning
-from diofant.vector import Point as VPoint
 from diofant.vector import (AxisOrienter, BaseDyadic, BaseScalar, BaseVector,
                             BodyOrienter, CoordSysCartesian, Del, DyadicAdd,
-                            DyadicMul, DyadicZero, QuaternionOrienter,
-                            SpaceOrienter, VectorAdd, VectorMul, VectorZero)
+                            DyadicMul, DyadicZero)
+from diofant.vector import Point as VPoint
+from diofant.vector import (QuaternionOrienter, SpaceOrienter, VectorAdd,
+                            VectorMul, VectorZero)
 
 
 __all__ = ()

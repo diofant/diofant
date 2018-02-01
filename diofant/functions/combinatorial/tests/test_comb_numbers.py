@@ -223,8 +223,8 @@ def test_harmonic_rational():
 
 
 def test_harmonic_evalf():
-    assert str(harmonic(1.5).evalf(n=10)) == '1.280372306'
-    assert str(harmonic(1.5, 2).evalf(n=10)) == '1.154576311'  # issue sympy/sympy#7443
+    assert str(harmonic(1.5).evalf(10)) == '1.280372306'
+    assert str(harmonic(1.5, 2).evalf(10)) == '1.154576311'  # issue sympy/sympy#7443
 
 
 def test_harmonic_rewrite_polygamma():

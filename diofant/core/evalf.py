@@ -1229,9 +1229,9 @@ def evalf(x, prec, options):
 class EvalfMixin:
     """Mixin class adding evalf capability."""
 
-    def evalf(self, n=15, subs=None, maxn=110, chop=False, strict=True, quad=None):
+    def evalf(self, dps=15, subs=None, maxn=110, chop=False, strict=True, quad=None):
         """
-        Evaluate the given formula to an accuracy of n digits.
+        Evaluate the given formula to an accuracy of dps decimal digits.
         Optional keyword arguments:
 
             subs=<dict>
@@ -1258,14 +1258,13 @@ class EvalfMixin:
                 integrals on an infinite interval, try quad='osc'.
         """
         from .numbers import Float, I
-        n = n if n is not None else 15
 
         if subs and is_sequence(subs):
             raise TypeError('subs must be given as a dictionary')
 
         if not evalf_table:
             _create_evalf_table()
-        prec = dps_to_prec(n)
+        prec = dps_to_prec(dps)
         options = {'maxprec': max(prec, int(maxn*LG10)), 'chop': chop,
                    'strict': strict}
         if subs is not None:
@@ -1274,17 +1273,20 @@ class EvalfMixin:
             options['quad'] = quad
         try:
             result = evalf(self, prec + 4, options)
+        except PrecisionExhausted:
+            if self.is_Float and self._prec >= prec:
+                return Float._new(self._mpf_, prec)
+            else:
+                raise
         except NotImplementedError:
             # Fall back to the ordinary evalf
             v = self._eval_evalf(prec)
             if v is None:
                 return self
-            try:
-                # If the result is numerical, normalize it
-                result = evalf(v, prec, options)
-            except NotImplementedError:
-                # Probably contains symbols or unknown functions
-                return v
+            else:
+                # Normalize result
+                return v.subs({_: _.evalf(dps, strict=strict)
+                               for _ in v.atoms(Float)})
         re, im, re_acc, im_acc = result
         if re:
             p = max(min(prec, re_acc), 1)
@@ -1350,9 +1352,9 @@ class EvalfMixin:
             return make_mpc((re, im))
 
 
-def N(x, n=15, **options):
+def N(x, dps=15, **options):
     r"""
-    Calls x.evalf(n, \*\*options).
+    Calls x.evalf(dps, \*\*options).
 
     Examples
     ========
@@ -1369,4 +1371,4 @@ def N(x, n=15, **options):
 
     diofant.core.evalf.EvalfMixin.evalf
     """
-    return sympify(x).evalf(n, **options)
+    return sympify(x).evalf(dps, **options)

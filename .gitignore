@@ -47,3 +47,6 @@ Diofant.egg-info/
 .hypothesis/
 # except for the examples directory
 !.hypothesis/examples/
+
+# Pytest cache
+.pytest_cache/

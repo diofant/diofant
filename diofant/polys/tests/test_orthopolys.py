@@ -2,8 +2,8 @@
 
 import pytest
 
-from diofant import Rational as Q  # noqa: N814
 from diofant import Poly
+from diofant import Rational as Q  # noqa: N814
 from diofant.abc import a, b, x
 from diofant.polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
                                       gegenbauer_poly, hermite_poly,

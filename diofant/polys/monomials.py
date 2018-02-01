@@ -2,12 +2,13 @@
 
 from ..core import Mul, S, Tuple, sympify
 from ..core.compatibility import iterable
-from ..utilities import public
 from .polyerrors import ExactQuotientFailed
 from .polyutils import dict_from_expr
 
 
-@public
+__all__ = ('Monomial', 'itermonomials')
+
+
 def itermonomials(variables, degree):
     r"""
     Generate a set of monomials of the given total degree or less.
@@ -263,7 +264,6 @@ def term_div(a, b, domain):
             return monom, domain.quo(a_lc, b_lc)
 
 
-@public
 class Monomial:
     """Class representing a monomial, i.e. a product of powers. """
 

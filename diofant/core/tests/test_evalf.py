@@ -522,7 +522,7 @@ def test_AssocOp_Function():
     # the following should not raise a recursion error; it
     # should raise a value error because the first arg computes
     # a non-comparable (prec=1) imaginary part
-    pytest.raises(ValueError, lambda: e._eval_evalf(2))
+    pytest.raises(ValueError, lambda: e.evalf(2, strict=False))
 
 
 def test_diofantissue_514():

@@ -11,8 +11,8 @@ from ..core.expr import Expr
 from ..core.function import Application, Derivative
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
-from ..core.singleton import SingletonWithManagedProperties as Singleton
 from ..core.singleton import S
+from ..core.singleton import SingletonWithManagedProperties as Singleton
 from ..core.sympify import converter, sympify
 
 

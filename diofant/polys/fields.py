@@ -9,21 +9,21 @@ from ..domains.domainelement import DomainElement
 from ..domains.fractionfield import FractionField
 from ..domains.polynomialring import PolynomialRing
 from ..printing.defaults import DefaultPrinting
-from ..utilities import public
 from ..utilities.magic import pollute
 from .orderings import lex
 from .polyerrors import CoercionFailed
 from .rings import PolyElement
 
 
-@public
+__all__ = ('field', 'sfield', 'vfield')
+
+
 def field(symbols, domain, order=lex):
     """Construct new rational function field returning (field, x1, ..., xn). """
     _field = FracField(symbols, domain, order)
     return (_field,) + _field.gens
 
 
-@public
 def vfield(symbols, domain, order=lex):
     """Construct new rational function field and inject generators into global namespace. """
     _field = FracField(symbols, domain, order)
@@ -31,7 +31,6 @@ def vfield(symbols, domain, order=lex):
     return _field
 
 
-@public
 def sfield(exprs, *symbols, **options):
     """Construct a field deriving generators and domain from options and input expressions. """
     raise NotImplementedError  # pragma: no cover

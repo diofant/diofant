@@ -25,7 +25,7 @@ def test_diofant_parser():
         '-(2)': -Integer(2),
         '[-1, -2, 3]': [Integer(-1), Integer(-2), Integer(3)],
         'Symbol("x").free_symbols': x.free_symbols,
-        "Float(Integer(3).n(n=3))": 3.00,
+        "Float(Integer(3).n(3))": 3.00,
         'factorint(12, visual=True)': Mul(
             Pow(2, 2, evaluate=False),
             Pow(3, 1, evaluate=False),

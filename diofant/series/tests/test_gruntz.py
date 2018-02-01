@@ -13,9 +13,10 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      airybi, atan, binomial, cbrt, cos, cosh, coth, digamma,
                      erf, exp, factorial, fibonacci, gamma, li, log, loggamma,
                      oo, pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
+from diofant.series.gruntz import compare
 from diofant.series.gruntz import limitinf as gruntz
+from diofant.series.gruntz import mrv, mrv_leadterm, rewrite
 from diofant.series.gruntz import sign as mrv_sign
-from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite
 
 
 __all__ = ()

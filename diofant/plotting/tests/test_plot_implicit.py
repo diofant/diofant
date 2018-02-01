@@ -77,4 +77,4 @@ def test_matplotlib2():
         plot_implicit(x**2 - 1, legend='An implicit plot', show=False).save(tmp_file(name))
         assert len(w) == 1
         assert issubclass(w[-1].category, UserWarning)
-        assert 'No labeled objects found' in str(w[0].message)
+        assert 'No labelled objects found' in str(w[0].message)

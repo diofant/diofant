@@ -2,9 +2,9 @@
 
 import pytest
 
+from diofant import Abs, Eq, I, Integer, Integral, Mul
 from diofant import Rational as Q  # noqa: N814
-from diofant import (Abs, Eq, I, Integer, Integral, Mul, cos, erf, exp,
-                     integrate, pi, sin, sqrt, symbols)
+from diofant import cos, erf, exp, integrate, pi, sin, sqrt, symbols
 from diofant.domains import ZZ
 from diofant.polys import factor
 from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError

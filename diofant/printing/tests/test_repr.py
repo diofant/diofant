@@ -3,7 +3,8 @@ import pytest
 from diofant import (Abs, AlgebraicNumber, Catalan, Dummy, E, EulerGamma,
                      Float, Function, GoldenRatio, I, ImmutableMatrix, Integer,
                      Matrix, Rational, Symbol, Wild, WildFunction, false, nan,
-                     ones, oo, pi, root, sin, sqrt, symbols, true, zoo)
+                     ones, oo, pi, root, sin, sqrt, true, zoo)
+from diofant.abc import x, y
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Ellipse, Point
 from diofant.polys import field, grlex, lex, ring
@@ -12,18 +13,15 @@ from diofant.printing.repr import srepr
 
 __all__ = ()
 
-x, y = symbols('x,y')
 
 # eval(repr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from diofant import *" for most cases.
 ENV = {}
-imports = """
-from diofant import *
-from diofant.polys.rings import PolyRing
-from diofant.polys.fields import FracField
-from diofant.polys.orderings import LexOrder, GradedLexOrder
-"""
-exec(imports, ENV)
+imports = ["from diofant import *",
+           "from diofant.polys.fields import FracField",
+           "from diofant.polys.orderings import GradedLexOrder, LexOrder",
+           "from diofant.polys.rings import PolyRing"]
+exec("\n".join(imports), ENV)
 
 
 def sT(expr, string):

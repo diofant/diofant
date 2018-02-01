@@ -26,6 +26,9 @@ class MockPrint:
     def write(self, s):
         pass
 
+    def flush(self):
+        pass
+
 
 def disable_print(func, *args, **kwargs):
     @wraps(func)

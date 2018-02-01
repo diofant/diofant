@@ -4,7 +4,7 @@ from ..core import Add, Dummy, Mul, S, Symbol, symbols, sympify
 from ..domains import ZZ
 from ..functions import sqrt
 from ..ntheory import nextprime
-from ..utilities import public, subsets
+from ..utilities import subsets
 from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
 from .densebasic import (dmp_ground, dmp_one, dmp_raise, dmp_zero,
                          dup_from_raw_dict, dup_random)
@@ -15,7 +15,10 @@ from .polyutils import _analyze_gens
 from .rings import ring
 
 
-@public
+__all__ = ('swinnerton_dyer_poly', 'cyclotomic_poly', 'symmetric_poly',
+           'random_poly', 'interpolating_poly')
+
+
 def swinnerton_dyer_poly(n, x=None, **args):
     """Generates n-th Swinnerton-Dyer polynomial in `x`.  """
     from .numberfields import minimal_polynomial
@@ -48,7 +51,6 @@ def swinnerton_dyer_poly(n, x=None, **args):
         return PurePoly(ex, x)
 
 
-@public
 def cyclotomic_poly(n, x=None, **args):
     """Generates cyclotomic polynomial of order `n` in `x`. """
     if n <= 0:
@@ -68,7 +70,6 @@ def cyclotomic_poly(n, x=None, **args):
         return poly
 
 
-@public
 def symmetric_poly(n, *gens, **args):
     """Generates symmetric polynomial of order `n`. """
     gens = _analyze_gens(gens)
@@ -86,7 +87,6 @@ def symmetric_poly(n, *gens, **args):
         return Poly(poly, *gens)
 
 
-@public
 def random_poly(x, n, inf, sup, domain=ZZ, polys=False):
     """Return a polynomial of degree ``n`` with coefficients in ``[inf, sup]``. """
     poly = Poly(dup_random(n, inf, sup, domain), x, domain=domain)
@@ -97,7 +97,6 @@ def random_poly(x, n, inf, sup, domain=ZZ, polys=False):
         return poly
 
 
-@public
 def interpolating_poly(n, x, X='x', Y='y'):
     """Construct Lagrange interpolating polynomial for ``n`` data points. """
     if isinstance(X, str):

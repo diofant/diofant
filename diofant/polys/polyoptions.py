@@ -3,11 +3,11 @@
 import re
 
 from ..core import Basic, I, sympify
-from ..utilities import has_dups, numbered_symbols, public, topological_sort
+from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
-__all__ = ["Options"]
+__all__ = ("Options",)
 
 
 class Option:
@@ -68,7 +68,6 @@ class OptionType(type):
         Options.__options__[self.option] = self
 
 
-@public
 class Options(dict):
     """
     Options manager for polynomial manipulation module.

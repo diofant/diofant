@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (And, Basic, Dict, DiracDelta, Eq, Interval, Rational, Sum,
                      Symbol, Tuple, cos, integrate, oo, sin, symbols)
-from diofant.abc import x
+from diofant.abc import x, z
 from diofant.stats import (Die, E, Exponential, Normal, P, density, dependent,
                            given, independent, pspace, random_symbols, sample,
                            variance, where)
@@ -131,7 +131,6 @@ def test_E():
 def test_Sample():
     X = Die('X', 6)
     Y = Normal('Y', 0, 1)
-    z = Symbol('z')
 
     assert sample(X) in [1, 2, 3, 4, 5, 6]
     assert sample(X + Y).is_Float
@@ -146,11 +145,15 @@ def test_Sample():
     assert P(sin(Y) <= 1, numsamples=10) == 1
     assert P(sin(Y) <= 1, cos(Y) < 1, numsamples=10) == 1
 
-    # Make sure this doesn't raise an error
-    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3)
-
     assert all(i in range(1, 7) for i in density(X, numsamples=10))
     assert all(i in range(4, 7) for i in density(X, X > 3, numsamples=10))
+
+
+@pytest.mark.slow
+def test_Sample_slow():
+    # Make sure this doesn't raise an error
+    Y = Normal('Y', 0, 1)
+    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3)
 
 
 def test_given():
