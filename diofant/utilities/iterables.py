@@ -714,8 +714,10 @@ def topological_sort(graph, key=None):
         ...
         ValueError: cycle detected
 
-    .. seealso:: https//en.wikipedia.org/wiki/Topological_sorting
+    References
+    ==========
 
+    .. [1] https//en.wikipedia.org/wiki/Topological_sorting
     """
     V, E = graph
 
