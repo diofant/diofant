@@ -222,3 +222,9 @@ These Sympy issues also were addressed:
 * :sympyissue:`10395` nfloat changes the arguments inside Max.
 * :sympyissue:`10641` Or, And don't evaluate
 * :sympyissue:`10821` latex bug for commutator output
+* :sympyissue:`9296` simplify(a)+simplify(b) Is Not simplify(a+b)
+* :sympyissue:`9630` simplify() rounds a numerical coefficient (indeed very close to unity) to 1
+* :sympyissue:`12792` Simplify with float values leads to non-equal result
+* :sympyissue:`12506` Simplify() returns wrong simplified expressions using Sympy 1.0 (trigonometric functions)
+* :sympyissue:`13115` Bug in simplify ?
+* :sympyissue:`13149` factor() of expression with float coefficients gives incorrect result
