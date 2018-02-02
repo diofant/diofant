@@ -104,6 +104,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`7789` Poly(...).all_roots fails for general quadratic equation
 * :sympyissue:`8255` roots_quadratic should return roots in same order as Poly.all_roots(radicals=False)
 * :sympyissue:`7138` How to solve system of differential equations with symbolic solution?
+* :sympyissue:`11691` Test failing with matplotlib 2.0.0
 * :sympyissue:`7457` TypeError when using both multiprocessing and gmpy
 * :sympyissue:`12115` Cannot access imported submodules in sympy.core
 * :sympyissue:`4315` series expansion of piecewise fails
@@ -187,6 +188,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`13575` limit(acos(erfi(x)), x, 1) causes recursion error
 * :sympyissue:`13629` bug in rsolve
 * :sympyissue:`13645` sympy hangs on evaluating expression
+* :sympyissue:`7067` factor_list() error Python3
 * :sympyissue:`11378` S.Reals should be accessible as just "Reals"
 * :sympyissue:`10999` diop: holzer error
 * :sympyissue:`11000` diop: power_representation
