@@ -101,7 +101,7 @@ Following table lists meanings of labels, including
 +------------------+----------------------------------------------------+
 | invalid          | mark that a problem is no longer relevant          |
 +------------------+----------------------------------------------------+
-| question         | support request or need for more information       |
+| question         | mark support request                               |
 +------------------+----------------------------------------------------+
 | wontfix          | indicates that work won't continue on this issue   |
 +------------------+----------------------------------------------------+
