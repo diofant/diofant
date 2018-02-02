@@ -588,6 +588,8 @@ def test_dup_factor_list():
     # issue diofant/diofant#238
     f = 0.1*x**2 + 1.1*x + 1.0
     assert R.dup_factor_list(f) == (10.0, [(0.1*x + 0.1, 1), (0.1*x + 1.0, 1)])
+    f = 0.25 + 1.0*x + 1.0*x**2
+    assert R.dup_factor_list(f) == (4.0, [(0.25 + 0.5*x, 2)])
 
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
@@ -699,6 +701,8 @@ def test_dmp_factor_list():
     R,  x, y, z = ring("x,y,z", RR)
     f = x*y + x*z + 0.1*y + 0.1*z
     assert R.dmp_factor_list(f) == (10.0, [(0.1*y + 0.1*z, 1), (x + 0.1, 1)])
+    f = 0.25*x**2 + 1.0*x*y*z + 1.0*y**2*z**2
+    assert R.dmp_factor_list(f) == (4.0, [(0.25*x + 0.5*y*z, 2)])
 
     Rt, t = ring("t", ZZ)
     R, x, y = ring("x,y", Rt)
