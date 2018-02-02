@@ -578,6 +578,8 @@ def test_as_independent():
     assert (x + Integral(x, (x, 1, 2))).as_independent(x, strict=True) == \
            (Integral(x, (x, 1, 2)), x)
 
+    assert (x*y).as_independent(z, as_Add=True) == (x*y, 0)
+
 
 @pytest.mark.xfail
 def test_call_2():
@@ -1060,6 +1062,8 @@ def test_coeff():
     assert (n*m + o*m*n).coeff(m*n) == o
     assert (n*m + o*m*n).coeff(m*n, right=1) == 1
     assert (n*m + n*m*n).coeff(n*m, right=1) == 1 + n  # = n*m*(n + 1)
+
+    assert (x*y).coeff(z, 0) == x*y
 
 
 def test_coeff2():
