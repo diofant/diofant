@@ -52,9 +52,9 @@ shifted by 3099.  I.e. ``issue 123`` in the history - does mean issue
 Versioning and Release Procedure
 ================================
 
-We use standard `Semantic Versioning`_ MAJOR.MINOR.MAINTENANCE
-numbering scheme, but adopt `PEP 440`_ for alpha ("aN" suffix), beta
-("bN"), release candidates ("rcN") and development (".devN").
+We use standard `Semantic Versioning`_ numbering scheme, but adopt
+`PEP 440`_ for alpha ("aN" suffix), beta ("bN") and development
+(".devN") releases.
 
 Releasing a new version is done as follows:
 
