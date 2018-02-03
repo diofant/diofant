@@ -1398,7 +1398,7 @@ def ordered_partitions(n, m=None, sort=True):
            Available: http://jeromekelleher.net/generating-integer-partitions.html
     .. [2] Jerome Kelleher and Barry O'Sullivan, "Generating All
            Partitions: A Comparison Of Two Encodings", [online],
-           Available: http://arxiv.org/pdf/0909.2331v2.pdf
+           Available: https://arxiv.org/pdf/0909.2331v2.pdf
     """
     if n < 1 or m is not None and m < 1:
         # the empty set is the only way to handle these inputs

@@ -89,7 +89,7 @@ class erf(Function):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Error_function
-    .. [2] http://dlmf.nist.gov/7
+    .. [2] https://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/Erf.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/Erf
     """
@@ -283,7 +283,7 @@ class erfc(Function):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Error_function
-    .. [2] http://dlmf.nist.gov/7
+    .. [2] https://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/Erfc.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/Erfc
     """
@@ -1048,7 +1048,7 @@ class Ei(Function):
     References
     ==========
 
-    .. [1] http://dlmf.nist.gov/6.6
+    .. [1] https://dlmf.nist.gov/6.6
     .. [2] https//en.wikipedia.org/wiki/Exponential_integral
     .. [3] Abramowitz & Stegun, section 5: http://people.math.sfu.ca/~cbm/aands/page_228.htm
 
@@ -1205,7 +1205,7 @@ class expint(Function):
     References
     ==========
 
-    .. [1] http://dlmf.nist.gov/8.19
+    .. [1] https://dlmf.nist.gov/8.19
     .. [2] http://functions.wolfram.com/GammaBetaErf/ExpIntegralE/
     .. [3] https//en.wikipedia.org/wiki/Exponential_integral
     """
@@ -1382,7 +1382,7 @@ class li(Function):
 
     .. [1] https//en.wikipedia.org/wiki/Logarithmic_integral
     .. [2] http://mathworld.wolfram.com/LogarithmicIntegral.html
-    .. [3] http://dlmf.nist.gov/6
+    .. [3] https://dlmf.nist.gov/6
     .. [4] http://mathworld.wolfram.com/SoldnersConstant.html
     """
 
@@ -1498,7 +1498,7 @@ class Li(Function):
 
     .. [1] https//en.wikipedia.org/wiki/Logarithmic_integral
     .. [2] http://mathworld.wolfram.com/LogarithmicIntegral.html
-    .. [3] http://dlmf.nist.gov/6
+    .. [3] https://dlmf.nist.gov/6
     """
 
     @classmethod
@@ -2110,7 +2110,7 @@ class fresnels(FresnelIntegral):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Fresnel_integral
-    .. [2] http://dlmf.nist.gov/7
+    .. [2] https://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/FresnelIntegrals.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelS
     .. [5] The converging factors for the fresnel integrals
@@ -2243,7 +2243,7 @@ class fresnelc(FresnelIntegral):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Fresnel_integral
-    .. [2] http://dlmf.nist.gov/7
+    .. [2] https://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/FresnelIntegrals.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelC
     .. [5] The converging factors for the fresnel integrals

@@ -131,7 +131,7 @@ class Ynm(Function):
     .. [1] https//en.wikipedia.org/wiki/Spherical_harmonics
     .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
     .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
-    .. [4] http://dlmf.nist.gov/14.30
+    .. [4] https://dlmf.nist.gov/14.30
     """
 
     @classmethod
