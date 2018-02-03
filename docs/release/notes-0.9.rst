@@ -19,6 +19,7 @@ Major changes
 * ``diofant.polys.domains`` module is now top-level module :mod:`~diofant.domains`, see :pull:`487`.
 * Support canonicalization of :class:`~diofant.polys.rootoftools.RootOf` instances, construct polynomial with integer coefficients, see :pull:`430`.
 * :func:`~diofant.solvers.polysys.solve_poly_system` now able to solve positive-dimensional systems, see :pull:`448` and :pull:`573`.
+* Big update of the :mod:`~diofant.solvers.diophantine` module with a lot of bugfixes, see :pull:`578`.  Thanks to Chris Smith.
 
 Compatibility breaks
 ====================
@@ -32,16 +33,19 @@ Compatibility breaks
 * Drop ``intersect()`` alias for :meth:`~diofant.sets.sets.Set.intersection`, see :pull:`396`.
 * Drop ``interactive_traversal()``, see :pull:`395`.
 * Drop ``xring()`` and ``xfield()``, see :pull:`403`.
+* Drop ``jscode`` submodule, see :pull:`403`.
 * Drop JS printer and ``TableForm`` class, see :pull:`403`.
-* Removed agca submodule of :mod:`~diofant.polys`, see :pull:`404`.
+* Removed ``agca`` submodule of :mod:`~diofant.polys`, see :pull:`404`.
 * Removed ``pager_print()`` and ``print_fcode()``, see :pull:`411`.
 * "Increase" precision of Floats with :meth:`~diofant.core.evalf.EvalfMixin.evalf` now disallowed, see :pull:`380`.
 * Removed ``experimental_lambdify()`` and ``intervalmath`` module from plotting package, see :pull:`384`.
-* Removed :func:`~diofant.solvers.solvers.solve` flags ``set``, ``manual``, ``minimal``, ``implicit``, ``particular``, ``quick``, ``exclude``, ``force`` and ``numerical`` see :pull:`426`, :pull:`542` and :pull:`554`.
+* Removed :func:`~diofant.solvers.solvers.solve` flags ``set``, ``manual``, ``minimal``, ``implicit``, ``particular``, ``quick``, ``exclude``, ``force`` and ``numerical`` see :pull:`426`, :pull:`554` and :pull:`549`.
 * Removed support for inequalities in :func:`~diofant.solvers.solvers.solve`, please use :func:`~diofant.solvers.inequalities.reduce_inequalities` instead, see :pull:`426`.
 * Removed ``get_domain()`` method of :class:`~diofant.polys.polytools.Poly`, use :attr:`~diofant.polys.polytools.Poly.domain` property instead, see :pull:`479`.
 * Renamed 'prec' argument of Float to 'dps', see :pull:`510`.
-* Removed 'group' option of :meth:`~diofant.core.basic.Basic.find`, which now return a :class:`dict`.
+* Drop ``as_content_primitive()`` method of :class:`~diofant.core.basic.Basic`, see :pull:`529`.
+* Move ``canonical_variables()`` property to :meth:`~diofant.core.expr.Expr.canonical_variables`, see :pull:`534`.
+* Removed 'group' option of :meth:`~diofant.core.basic.Basic.find`, which now return a :class:`dict`, see :pull:`529`.
 * Support for Python 3.4 was removed, see :pull:`543`.
 * Second argument of :func:`~diofant.solvers.solvers.checksol` must be a :class:`dict`.  See :pull:`549`.
 * Removed ``solve_undetermined_coeffs()`` function, see :pull:`554`.
@@ -52,22 +56,30 @@ Compatibility breaks
 * Removed ``isolate()`` function, see :pull:`585`.
 * :func:`~diofant.polys.polytools.gcd` and :func:`~diofant.polys.polytools.lcm` now are two-arg functions, see :pull:`585`.
 * Removed ``is_zero_dimensional()`` function and :class:`~diofant.polys.polytools.GroebnerBasis`'s property of the same name, use :attr:`~diofant.polys.polytools.GroebnerBasis.dimension` instead, see :pull:`573`.
+* Drop ``MonomialOps`` class, see :pull:`586`.
 * Renamed 'n' argiment of :meth:`~diofant.core.evalf.EvalfMixin.evalf` to 'dps', see :pull:`596`.
 
 Minor changes
 =============
 
 * New integration heuristics for integrals with :class:`~diofant.functions.elementary.complexes.Abs`, see :pull:`321`.
+* Added :func:`~diofant.core.numbers.mod_inverse` and :meth:`~diofant.core.expr.Expr.invert`, see :pull:`390`.
 * Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`400`.
 * Sorting of symbolic quadratic roots now same as in :class:`~diofant.polys.rootoftools.RootOf` for numerical coefficients, see :pull:`400`.
+* Improve printing of Mathematica code, see :pull:`400`, :pull:`433`, :pull:`438`, :pull:`519`, :pull:`553` and :pull:`571`.
 * Support simple first-order DAE with :func:`~diofant.solvers.ode.dsolve` helper :func:`~diofant.solvers.ode.ode_lie_group`, see :pull:`413`.
 * Add support for limits of relational expressions, see :pull:`414`.
+* Make :class:`~diofant.matrices.expressions.MatrixSymbol` truly atomic, see :pull:`415`.
 * Support rewriting :class:`~diofant.functions.elementary.miscellaneous.Min` and :class:`~diofant.functions.elementary.miscellaneous.Max` as :class:`~diofant.functions.elementary.piecewise.Piecewise`, this allow solving more piecewise equations, see :pull:`426`.
 * :func:`~diofant.polys.numberfields.minimal_polynomial` fixed to support generic :class:`~diofant.core.numbers.AlgebraicNumber`'s, see :pull:`433` and :pull:`438`.
 * :class:`~diofant.core.numbers.AlgebraicNumber` now support arithmetic operations and exponentiation with integer exponents, see :pull:`428` and :pull:`485`.
+* Added :attr:`~diofant.polys.rootoftools.RootOf.interval` property for :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`508`.
 * Add AST transformation :class:`~diofant.interactive.session.IntegerDivisionWrapper` to wrap integer division, see :pull:`519`.
 * Add AST transformation :class:`~diofant.interactive.session.FloatRationalizer` to wrap :class:`float`'s, see :pull:`538`.
 * Support rewrite :class:`~diofant.polys.rootoftools.RootOf` via radicals, see :pull:`563`.
+* Added :func:`~diofant.tensor.array.permutedims` and :func:`~diofant.tensor.array.derive_by_array`, see :pull:`567`.  Thanks to Francesco Bonazzi.
+* Export set singletons, see :pull:`577`.
+* Added :func:`~diofant.ntheory.primetest.is_square`, :func:`~diofant.utilities.iterables.ordered_partitions`, :func:`~diofant.utilities.iterables.permute_signs` and :func:`~diofant.utilities.iterables.signed_permutations`, see :pull:`578`.
 
 Developer changes
 =================

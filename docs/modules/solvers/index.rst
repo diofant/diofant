@@ -1,7 +1,7 @@
 Solvers
 =======
 
-.. module:: diofant.solvers
+.. automodule:: diofant.solvers
 
 The *solvers* module in Diofant implements methods for
 solving equations and inequalities.

@@ -597,7 +597,7 @@ class RootOf(Expr):
 
     @property
     def interval(self):
-        """Internal function for retrieving isolation interval from cache. """
+        """Return isolation interval for the root. """
         if self.is_real:
             return _reals_cache[self.poly][self.index]
         else:

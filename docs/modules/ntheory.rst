@@ -83,6 +83,8 @@ Ntheory Functions Reference
 
 .. module:: diofant.ntheory.primetest
 
+.. autofunction:: is_square
+
 .. autofunction:: mr
 
 .. autofunction:: isprime
