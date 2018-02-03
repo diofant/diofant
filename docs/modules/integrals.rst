@@ -1,5 +1,5 @@
-Symbolic Integrals
-==================
+Integrals
+=========
 
 .. module:: diofant.integrals
 
@@ -145,7 +145,7 @@ The class `Integral` represents an unevaluated integral and has some methods tha
    :members:
 
 Numeric Integrals
-=================
+-----------------
 
 Diofant has functions to calculate points and weights for Gaussian quadrature of
 any order and any precision:

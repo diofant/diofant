@@ -1,5 +1,5 @@
-Printing System
-===============
+Printing
+========
 
 See the :ref:`tutorial-printing` section in Tutorial for introduction into
 printing.

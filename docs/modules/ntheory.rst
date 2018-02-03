@@ -1,5 +1,5 @@
 Number Theory
-====================
+=============
 
 .. module:: diofant.ntheory.generate
 

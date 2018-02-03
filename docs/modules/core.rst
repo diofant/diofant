@@ -1,5 +1,5 @@
-Diofant Core
-============
+Core
+====
 
 sympify
 -------
