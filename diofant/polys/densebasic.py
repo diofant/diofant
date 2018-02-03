@@ -7,7 +7,7 @@ from .monomials import monomial_div, monomial_min
 from .orderings import monomial_key
 
 
-def poly_LC(f, K):
+def dup_LC(f, K):
     """
     Return leading coefficient of ``f``.
 
@@ -16,9 +16,9 @@ def poly_LC(f, K):
 
     >>> from diofant.domains import ZZ
 
-    >>> poly_LC([], ZZ)
+    >>> dup_LC([], ZZ)
     0
-    >>> poly_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> dup_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     1
     """
     if not f:
@@ -27,7 +27,7 @@ def poly_LC(f, K):
         return f[0]
 
 
-def poly_TC(f, K):
+def dup_TC(f, K):
     """
     Return trailing coefficient of ``f``.
 
@@ -36,9 +36,9 @@ def poly_TC(f, K):
 
     >>> from diofant.domains import ZZ
 
-    >>> poly_TC([], ZZ)
+    >>> dup_TC([], ZZ)
     0
-    >>> poly_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> dup_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     3
     """
     if not f:
@@ -47,8 +47,8 @@ def poly_TC(f, K):
         return f[-1]
 
 
-dup_LC = dmp_LC = poly_LC
-dup_TC = dmp_TC = poly_TC
+dmp_LC = dup_LC
+dmp_TC = dup_TC
 
 
 def dmp_ground_LC(f, u, K):
@@ -167,16 +167,6 @@ def dmp_degree(f, u):
         return len(f) - 1
 
 
-def _rec_degree_in(g, v, i, j):
-    """Recursive helper function for :func:`dmp_degree_in`."""
-    if i == j:
-        return dmp_degree(g, v)
-
-    v, i = v - 1, i + 1
-
-    return max(_rec_degree_in(c, v, i, j) for c in g)
-
-
 def dmp_degree_in(f, j, u):
     """
     Return the leading degree of ``f`` in ``x_j`` in ``K[X]``.
@@ -198,18 +188,15 @@ def dmp_degree_in(f, j, u):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    return _rec_degree_in(f, u, 0, j)
+    def degree_in(g, v, i, j):
+        if i == j:
+            return dmp_degree(g, v)
 
-
-def _rec_degree_list(g, v, i, degs):
-    """Recursive helper for :func:`dmp_degree_list`."""
-    degs[i] = max(degs[i], dmp_degree(g, v))
-
-    if v > 0:
         v, i = v - 1, i + 1
 
-        for c in g:
-            _rec_degree_list(c, v, i, degs)
+        return max(degree_in(c, v, i, j) for c in g)
+
+    return degree_in(f, u, 0, j)
 
 
 def dmp_degree_list(f, u):
@@ -226,7 +213,17 @@ def dmp_degree_list(f, u):
     (1, 2)
     """
     degs = [-oo]*(u + 1)
-    _rec_degree_list(f, u, 0, degs)
+
+    def degree_list(g, v, i, degs):
+        degs[i] = max(degs[i], dmp_degree(g, v))
+
+        if v > 0:
+            v, i = v - 1, i + 1
+
+            for c in g:
+                degree_list(c, v, i, degs)
+
+    degree_list(f, u, 0, degs)
     return tuple(degs)
 
 
@@ -284,34 +281,6 @@ def dmp_strip(f, u):
         return f[i:]
 
 
-def _rec_validate(f, g, i, K):
-    """Recursive helper for :func:`dmp_validate`."""
-    if type(g) is not list:
-        if K is not None and not K.of_type(g):
-            raise TypeError("%s in %s in not of type %s" % (g, f, K.dtype))
-
-        return {i - 1}
-    elif not g:
-        return {i}
-    else:
-        levels = set()
-
-        for c in g:
-            levels |= _rec_validate(f, c, i + 1, K)
-
-        return levels
-
-
-def _rec_strip(g, v):
-    """Recursive helper for :func:`_rec_strip`."""
-    if not v:
-        return dup_strip(g)
-
-    w = v - 1
-
-    return dmp_strip([ _rec_strip(c, w) for c in g ], v)
-
-
 def dmp_validate(f, K=None):
     """
     Return the number of levels in ``f`` and recursively strip it.
@@ -327,12 +296,36 @@ def dmp_validate(f, K=None):
     ...
     ValueError: invalid data structure for a multivariate polynomial
     """
-    levels = _rec_validate(f, f, 0, K)
+    def validate(f, g, i, K):
+        if type(g) is not list:
+            if K is not None and not K.of_type(g):
+                raise TypeError("%s in %s in not of type %s" % (g, f, K.dtype))
+
+            return {i - 1}
+        elif not g:
+            return {i}
+        else:
+            levels = set()
+
+            for c in g:
+                levels |= validate(f, c, i + 1, K)
+
+            return levels
+
+    levels = validate(f, f, 0, K)
 
     u = levels.pop()
 
+    def strip(g, v):
+        if not v:
+            return dup_strip(g)
+
+        w = v - 1
+
+        return dmp_strip([strip(c, w) for c in g], v)
+
     if not levels:
-        return _rec_strip(f, u), u
+        return strip(f, u), u
     else:
         raise ValueError(
             "invalid data structure for a multivariate polynomial")
@@ -1305,28 +1298,6 @@ def dup_inflate(f, m, K):
     return result
 
 
-def _rec_inflate(g, M, v, i, K):
-    """Recursive helper for :func:`dmp_inflate`."""
-    if not v:
-        return dup_inflate(g, M[i], K)
-    if M[i] <= 0:
-        raise IndexError("all M[i] must be positive, got %s" % M[i])
-
-    w, j = v - 1, i + 1
-
-    g = [ _rec_inflate(c, M, w, j, K) for c in g ]
-
-    result = [g[0]]
-
-    for coeff in g[1:]:
-        for _ in range(1, M[i]):
-            result.append(dmp_zero(w))
-
-        result.append(coeff)
-
-    return result
-
-
 def dmp_inflate(f, M, u, K):
     """
     Map ``y_i`` to ``x_i**k_i`` in a polynomial in ``K[X]``.
@@ -1344,10 +1315,30 @@ def dmp_inflate(f, M, u, K):
     if not u:
         return dup_inflate(f, M[0], K)
 
+    def inflate(g, M, v, i, K):
+        if not v:
+            return dup_inflate(g, M[i], K)
+        if M[i] <= 0:
+            raise IndexError("all M[i] must be positive, got %s" % M[i])
+
+        w, j = v - 1, i + 1
+
+        g = [inflate(c, M, w, j, K) for c in g]
+
+        result = [g[0]]
+
+        for coeff in g[1:]:
+            for _ in range(1, M[i]):
+                result.append(dmp_zero(w))
+
+            result.append(coeff)
+
+        return result
+
     if all(m == 1 for m in M):
         return f
     else:
-        return _rec_inflate(f, M, u, 0, K)
+        return inflate(f, M, u, 0, K)
 
 
 def dmp_exclude(f, u, K):
@@ -1556,25 +1547,6 @@ def dmp_terms_gcd(f, u, K):
     return G, dmp_from_dict(f, u, K)
 
 
-def _rec_list_terms(g, v, monom):
-    """Recursive helper for :func:`dmp_list_terms`."""
-    d, terms = dmp_degree(g, v), []
-
-    if not v:
-        for i, c in enumerate(g):
-            if not c:
-                continue
-
-            terms.append((monom + (d - i,), c))
-    else:
-        w = v - 1
-
-        for i, c in enumerate(g):
-            terms.extend(_rec_list_terms(c, w, monom + (d - i,)))
-
-    return terms
-
-
 def dmp_list_terms(f, u, K, order=None):
     """
     List all non-zero terms from ``f`` in the given order ``order``.
@@ -1594,7 +1566,24 @@ def dmp_list_terms(f, u, K, order=None):
     def sort(terms, O):
         return sorted(terms, key=lambda term: O(term[0]), reverse=True)
 
-    terms = _rec_list_terms(f, u, ())
+    def list_terms(g, v, monom):
+        d, terms = dmp_degree(g, v), []
+
+        if not v:
+            for i, c in enumerate(g):
+                if not c:
+                    continue
+
+                terms.append((monom + (d - i,), c))
+        else:
+            w = v - 1
+
+            for i, c in enumerate(g):
+                terms.extend(list_terms(c, w, monom + (d - i,)))
+
+        return terms
+
+    terms = list_terms(f, u, ())
 
     if not terms:
         return [((0,)*(u + 1), K.zero)]
