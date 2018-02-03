@@ -41,10 +41,10 @@ matrix:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
         - python setup.py flake8
-        - sphinx-build -W -b html docs build/sphinx/html
+        - python setup.py build_sphinx -W -b html
         - |
           if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]; then
-            python setup.py build_sphinx -b linkcheck
+            python setup.py build_sphinx -W -b linkcheck
           fi
         - travis_wait py.test --numprocesses 2 --cov diofant diofant/polys
     - stage: test
