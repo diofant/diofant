@@ -50,10 +50,8 @@ Concrete Domains
 .. autoclass:: RationalField
    :members:
 
-.. currentmodule:: diofant.polys.polyclasses
 .. autoclass:: diofant.domains.AlgebraicField
    :members:
-.. currentmodule:: diofant.domains
 
 .. autoclass:: FractionField
    :members:
