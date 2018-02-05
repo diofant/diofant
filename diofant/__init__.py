@@ -1,9 +1,6 @@
-"""Diofant is a Python library for symbolic mathematics. It aims to become a
-full-featured computer algebra system (CAS) while keeping the code as
-simple as possible in order to be comprehensible and easily extensible.
-"""
+"""Diofant is a Python library for symbolic mathematics. """
 
-__version__ = "0.9.0a4"
+__version__ = "0.9.0b1"
 
 import os
 DIOFANT_DEBUG = os.getenv('DIOFANT_DEBUG', 'False') != 'False'

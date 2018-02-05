@@ -3,6 +3,8 @@
 Diophantine
 ===========
 
+.. automodule:: diofant.solvers.diophantine
+
 Diophantine equations
 ---------------------
 

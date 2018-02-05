@@ -132,7 +132,10 @@ Formal manipulation of roots of polynomials
 .. currentmodule:: diofant.polys.rootoftools
 
 .. autoclass:: RootOf
+    :members:
+
 .. autoclass:: RootSum
+    :members:
 
 Symbolic root-finding algorithms
 ================================

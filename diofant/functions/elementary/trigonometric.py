@@ -191,7 +191,7 @@ class sin(TrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.14
+    .. [2] https://dlmf.nist.gov/4.14
     .. [3] http://functions.wolfram.com/ElementaryFunctions/Sin
     .. [4] http://mathworld.wolfram.com/TrigonometryAngles.html
     """
@@ -437,7 +437,7 @@ class cos(TrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.14
+    .. [2] https://dlmf.nist.gov/4.14
     .. [3] http://functions.wolfram.com/ElementaryFunctions/Cos
     """
 
@@ -803,7 +803,7 @@ class tan(TrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.14
+    .. [2] https://dlmf.nist.gov/4.14
     .. [3] http://functions.wolfram.com/ElementaryFunctions/Tan
     """
 
@@ -1190,7 +1190,7 @@ class sec(ReciprocalTrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.14
+    .. [2] https://dlmf.nist.gov/4.14
     .. [3] http://functions.wolfram.com/ElementaryFunctions/Sec
     """
 
@@ -1266,7 +1266,7 @@ class csc(ReciprocalTrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.14
+    .. [2] https://dlmf.nist.gov/4.14
     .. [3] http://functions.wolfram.com/ElementaryFunctions/Csc
     """
 
@@ -1343,7 +1343,7 @@ class cot(ReciprocalTrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.14
+    .. [2] https://dlmf.nist.gov/4.14
     .. [3] http://functions.wolfram.com/ElementaryFunctions/Cot
     """
 
@@ -1479,7 +1479,7 @@ class asin(InverseTrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.23
+    .. [2] https://dlmf.nist.gov/4.23
     .. [3] http://functions.wolfram.com/ElementaryFunctions/ArcSin
     """
 
@@ -1654,7 +1654,7 @@ class acos(InverseTrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.23
+    .. [2] https://dlmf.nist.gov/4.23
     .. [3] http://functions.wolfram.com/ElementaryFunctions/ArcCos
     """
 
@@ -1821,7 +1821,7 @@ class atan(InverseTrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.23
+    .. [2] https://dlmf.nist.gov/4.23
     .. [3] http://functions.wolfram.com/ElementaryFunctions/ArcTan
     """
 
@@ -1965,7 +1965,7 @@ class acot(InverseTrigonometricFunction):
     References
     ==========
 
-    .. [1] http://dlmf.nist.gov/4.23
+    .. [1] https://dlmf.nist.gov/4.23
     .. [2] http://functions.wolfram.com/ElementaryFunctions/ArcCot
     .. [3] https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
     """
@@ -2145,7 +2145,7 @@ class asec(InverseTrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.23
+    .. [2] https://dlmf.nist.gov/4.23
     .. [3] http://functions.wolfram.com/ElementaryFunctions/ArcSec
     .. [4] https://reference.wolfram.com/language/ref/ArcSec.html
     """
@@ -2241,7 +2241,7 @@ class acsc(InverseTrigonometricFunction):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.23
+    .. [2] https://dlmf.nist.gov/4.23
     .. [3] http://functions.wolfram.com/ElementaryFunctions/ArcCsc
     """
 

@@ -73,7 +73,7 @@ class beta(Function):
 
     .. [1] https//en.wikipedia.org/wiki/Beta_function
     .. [2] http://mathworld.wolfram.com/BetaFunction.html
-    .. [3] http://dlmf.nist.gov/5.12
+    .. [3] https://dlmf.nist.gov/5.12
     """
 
     unbranched = True

@@ -843,7 +843,7 @@ class airyai(AiryBase):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] http://dlmf.nist.gov/9
+    .. [2] https://dlmf.nist.gov/9
     .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
@@ -1005,7 +1005,7 @@ class airybi(AiryBase):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] http://dlmf.nist.gov/9
+    .. [2] https://dlmf.nist.gov/9
     .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
@@ -1216,7 +1216,7 @@ class airyaiprime(AiryBase):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] http://dlmf.nist.gov/9
+    .. [2] https://dlmf.nist.gov/9
     .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
@@ -1365,7 +1365,7 @@ class airybiprime(AiryBase):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] http://dlmf.nist.gov/9
+    .. [2] https://dlmf.nist.gov/9
     .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """

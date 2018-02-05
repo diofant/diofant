@@ -84,16 +84,6 @@ def dmp_integrate(f, m, u, K):
     return g
 
 
-def _rec_integrate_in(g, m, v, i, j, K):
-    """Recursive helper for :func:`dmp_integrate_in`."""
-    if i == j:
-        return dmp_integrate(g, m, v, K)
-
-    w, i = v - 1, i + 1
-
-    return dmp_strip([ _rec_integrate_in(c, m, w, i, j, K) for c in g ], v)
-
-
 def dmp_integrate_in(f, m, j, u, K):
     """
     Computes the indefinite integral of ``f`` in ``x_j`` in ``K[X]``.
@@ -113,7 +103,15 @@ def dmp_integrate_in(f, m, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    return _rec_integrate_in(f, m, u, 0, j, K)
+    def integrate_in(g, m, v, i, j, K):
+        if i == j:
+            return dmp_integrate(g, m, v, K)
+
+        w, i = v - 1, i + 1
+
+        return dmp_strip([integrate_in(c, m, w, i, j, K) for c in g], v)
+
+    return integrate_in(f, m, u, 0, j, K)
 
 
 def dup_diff(f, m, K):
@@ -206,16 +204,6 @@ def dmp_diff(f, m, u, K):
     return dmp_strip(deriv, u)
 
 
-def _rec_diff_in(g, m, v, i, j, K):
-    """Recursive helper for :func:`dmp_diff_in`."""
-    if i == j:
-        return dmp_diff(g, m, v, K)
-
-    w, i = v - 1, i + 1
-
-    return dmp_strip([ _rec_diff_in(c, m, w, i, j, K) for c in g ], v)
-
-
 def dmp_diff_in(f, m, j, u, K):
     """
     ``m``-th order derivative in ``x_j`` of a polynomial in ``K[X]``.
@@ -237,7 +225,15 @@ def dmp_diff_in(f, m, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    return _rec_diff_in(f, m, u, 0, j, K)
+    def diff_in(g, m, v, i, j, K):
+        if i == j:
+            return dmp_diff(g, m, v, K)
+
+        w, i = v - 1, i + 1
+
+        return dmp_strip([diff_in(c, m, w, i, j, K) for c in g], v)
+
+    return diff_in(f, m, u, 0, j, K)
 
 
 def dup_eval(f, a, K):
@@ -295,16 +291,6 @@ def dmp_eval(f, a, u, K):
     return result
 
 
-def _rec_eval_in(g, a, v, i, j, K):
-    """Recursive helper for :func:`dmp_eval_in`."""
-    if i == j:
-        return dmp_eval(g, a, v, K)
-
-    v, i = v - 1, i + 1
-
-    return dmp_strip([ _rec_eval_in(c, a, v, i, j, K) for c in g ], v)
-
-
 def dmp_eval_in(f, a, j, u, K):
     """
     Evaluate a polynomial at ``x_j = a`` in ``K[X]`` using the Horner scheme.
@@ -326,20 +312,15 @@ def dmp_eval_in(f, a, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    return _rec_eval_in(f, a, u, 0, j, K)
+    def eval_in(g, a, v, i, j, K):
+        if i == j:
+            return dmp_eval(g, a, v, K)
 
+        v, i = v - 1, i + 1
 
-def _rec_eval_tail(g, i, A, u, K):
-    """Recursive helper for :func:`dmp_eval_tail`."""
-    if i == u:
-        return dup_eval(g, A[-1], K)
-    else:
-        h = [ _rec_eval_tail(c, i + 1, A, u, K) for c in g ]
+        return dmp_strip([eval_in(c, a, v, i, j, K) for c in g], v)
 
-        if i < u - len(A) + 1:
-            return h
-        else:
-            return dup_eval(h, A[-u + i - 1], K)
+    return eval_in(f, a, u, 0, j, K)
 
 
 def dmp_eval_tail(f, A, u, K):
@@ -366,22 +347,23 @@ def dmp_eval_tail(f, A, u, K):
     if dmp_zero_p(f, u):
         return dmp_zero(u - len(A))
 
-    e = _rec_eval_tail(f, 0, A, u, K)
+    def eval_tail(g, i, A, u, K):
+        if i == u:
+            return dup_eval(g, A[-1], K)
+        else:
+            h = [eval_tail(c, i + 1, A, u, K) for c in g]
+
+            if i < u - len(A) + 1:
+                return h
+            else:
+                return dup_eval(h, A[-u + i - 1], K)
+
+    e = eval_tail(f, 0, A, u, K)
 
     if u == len(A) - 1:
         return e
     else:
         return dmp_strip(e, u - len(A))
-
-
-def _rec_diff_eval(g, m, a, v, i, j, K):
-    """Recursive helper for :func:`dmp_diff_eval`."""
-    if i == j:
-        return dmp_eval(dmp_diff(g, m, v, K), a, v, K)
-
-    v, i = v - 1, i + 1
-
-    return dmp_strip([ _rec_diff_eval(c, m, a, v, i, j, K) for c in g ], v)
 
 
 def dmp_diff_eval_in(f, m, a, j, u, K):
@@ -407,7 +389,15 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     if not j:
         return dmp_eval(dmp_diff(f, m, u, K), a, u, K)
 
-    return _rec_diff_eval(f, m, a, u, 0, j, K)
+    def diff_eval(g, m, a, v, i, j, K):
+        if i == j:
+            return dmp_eval(dmp_diff(g, m, v, K), a, v, K)
+
+        v, i = v - 1, i + 1
+
+        return dmp_strip([diff_eval(c, m, a, v, i, j, K) for c in g], v)
+
+    return diff_eval(f, m, a, u, 0, j, K)
 
 
 def dup_trunc(f, p, K):
@@ -1177,22 +1167,6 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
         return common, dup_convert(f, K0, K1)
 
 
-def _rec_clear_denoms(g, v, K0, K1):
-    """Recursive helper for :func:`dmp_clear_denoms`."""
-    common = K1.one
-
-    if not v:
-        for c in g:
-            common = K1.lcm(common, K0.denom(c))
-    else:
-        w = v - 1
-
-        for c in g:
-            common = K1.lcm(common, _rec_clear_denoms(c, w, K0, K1))
-
-    return common
-
-
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     """
     Clear denominators, i.e. transform ``K_0`` to ``K_1``.
@@ -1220,7 +1194,21 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
         else:
             K1 = K0
 
-    common = _rec_clear_denoms(f, u, K0, K1)
+    def clear_denoms(g, v, K0, K1):
+        common = K1.one
+
+        if not v:
+            for c in g:
+                common = K1.lcm(common, K0.denom(c))
+        else:
+            w = v - 1
+
+            for c in g:
+                common = K1.lcm(common, clear_denoms(c, w, K0, K1))
+
+        return common
+
+    common = clear_denoms(f, u, K0, K1)
 
     if not K1.is_one(common):
         f = dmp_mul_ground(f, common, u, K0)

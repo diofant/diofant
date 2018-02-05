@@ -84,7 +84,7 @@ class gamma(Function):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gamma_function
-    .. [2] http://dlmf.nist.gov/5
+    .. [2] https://dlmf.nist.gov/5
     .. [3] http://mathworld.wolfram.com/GammaFunction.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma/
     """
@@ -241,7 +241,7 @@ class lowergamma(Function):
     .. [1] https//en.wikipedia.org/wiki/Incomplete_gamma_function#Lower_incomplete_Gamma_function
     .. [2] Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
            Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
-    .. [3] http://dlmf.nist.gov/8
+    .. [3] https://dlmf.nist.gov/8
     .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma2/
     .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
     """
@@ -384,7 +384,7 @@ class uppergamma(Function):
     .. [1] https//en.wikipedia.org/wiki/Incomplete_gamma_function#Upper_incomplete_Gamma_function
     .. [2] Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
            Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
-    .. [3] http://dlmf.nist.gov/8
+    .. [3] https://dlmf.nist.gov/8
     .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma2/
     .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
     .. [6] https//en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
@@ -827,7 +827,7 @@ class loggamma(Function):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gamma_function
-    .. [2] http://dlmf.nist.gov/5
+    .. [2] https://dlmf.nist.gov/5
     .. [3] http://mathworld.wolfram.com/LogGammaFunction.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/LogGamma/
     """
