@@ -13,11 +13,11 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_from_diofant, dmp_ground,
                          dmp_ground_LC, dmp_ground_nth, dmp_ground_p,
-                         dmp_ground_TC, dmp_inject, dmp_list_terms,
+                         dmp_ground_TC, dmp_inject, dmp_LC, dmp_list_terms,
                          dmp_negative_p, dmp_one, dmp_one_p, dmp_permute,
                          dmp_slice_in, dmp_terms_gcd, dmp_to_dict,
                          dmp_to_tuple, dmp_validate, dmp_zero_p, dup_convert,
-                         dup_from_dict, dup_LC, dup_strip, dup_TC)
+                         dup_from_dict, dup_strip, dup_TC)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -1295,7 +1295,7 @@ class ANP(CantSympify):
 
     def LC(self):
         """Returns the leading coefficient of ``self``. """
-        return dup_LC(self.rep, self.domain)
+        return dmp_LC(self.rep, self.domain)
 
     def TC(self):
         """Returns the trailing coefficient of ``self``. """

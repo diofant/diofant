@@ -103,7 +103,7 @@ def test_dup_subresultants():
     d = 260708
 
     assert R.dup_subresultants(f, g) == [f, g, a, b, c, d]
-    assert R.dup_resultant(f, g) == R.dup_LC(d)
+    assert R.dup_resultant(f, g) == R.dmp_LC(d)
 
     f = x**2 - 2*x + 1
     g = x**2 - 1

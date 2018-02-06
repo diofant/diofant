@@ -3,7 +3,7 @@
 from .densearith import (dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul,
                          dup_mul_ground, dup_neg, dup_quo, dup_sub)
 from .densebasic import (dmp_degree, dmp_ground, dmp_ground_LC, dmp_inject,
-                         dmp_raise, dmp_zero_p, dup_convert, dup_LC, dup_strip)
+                         dmp_LC, dmp_raise, dmp_zero_p, dup_convert, dup_strip)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_diff, dup_monic,
                          dup_primitive, dup_shift)
@@ -188,7 +188,7 @@ def dup_sqf_part(f, K):
     if not f:
         return f
 
-    if K.is_negative(dup_LC(f, K)):
+    if K.is_negative(dmp_LC(f, K)):
         f = dup_neg(f, K)
 
     gcd = dup_gcd(f, dup_diff(f, 1, K), K)
@@ -276,12 +276,12 @@ def dup_sqf_list(f, K, all=False):
         return dup_gf_sqf_list(f, K, all=all)
 
     if K.has_Field:
-        coeff = dup_LC(f, K)
+        coeff = dmp_LC(f, K)
         f = dup_monic(f, K)
     else:
         coeff, f = dup_primitive(f, K)
 
-        if K.is_negative(dup_LC(f, K)):
+        if K.is_negative(dmp_LC(f, K)):
             f = dup_neg(f, K)
             coeff = -coeff
 

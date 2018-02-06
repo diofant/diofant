@@ -11,7 +11,7 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
                          dmp_raise, dmp_zero, dmp_zero_p, dmp_zeros,
-                         dup_convert, dup_LC, dup_strip)
+                         dup_convert, dup_strip)
 from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -52,7 +52,7 @@ def dup_half_gcdex(f, g, K):
         f, g = g, r
         a, b = b, dup_sub_mul(a, q, b, K)
 
-    a = dup_quo_ground(a, dup_LC(f, K), K)
+    a = dup_quo_ground(a, dmp_LC(f, K), K)
     f = dup_monic(f, K)
 
     return a, f
@@ -265,7 +265,7 @@ def dup_inner_subresultants(f, g, K):
     h = dup_prem(f, g, K)
     h = dup_mul_ground(h, b, K)
 
-    lc = dup_LC(g, K)
+    lc = dmp_LC(g, K)
     c = lc**d
 
     # Conventional first scalar subdeterminant is 1
@@ -283,7 +283,7 @@ def dup_inner_subresultants(f, g, K):
         h = dup_prem(f, g, K)
         h = dup_quo_ground(h, b, K)
 
-        lc = dup_LC(g, K)
+        lc = dmp_LC(g, K)
 
         if d > 1:        # abnormal case
             q = c**(d - 1)
@@ -737,7 +737,7 @@ def dup_discriminant(f, K):
         return K.zero
     else:
         s = (-1)**((d*(d - 1)) // 2)
-        c = dup_LC(f, K)
+        c = dmp_LC(f, K)
 
         r = dup_resultant(f, dup_diff(f, 1, K), K)
 
@@ -780,12 +780,12 @@ def _dup_rr_trivial_gcd(f, g, K):
     if not (f or g):
         return [], [], []
     elif not f:
-        if K.is_nonnegative(dup_LC(g, K)):
+        if K.is_nonnegative(dmp_LC(g, K)):
             return g, [], [K.one]
         else:
             return dup_neg(g, K), [], [-K.one]
     elif not g:
-        if K.is_nonnegative(dup_LC(f, K)):
+        if K.is_nonnegative(dmp_LC(f, K)):
             return f, [K.one], []
         else:
             return dup_neg(f, K), [-K.one], []
@@ -796,9 +796,9 @@ def _dup_ff_trivial_gcd(f, g, K):
     if not (f or g):
         return [], [], []
     elif not f:
-        return dup_monic(g, K), [], [dup_LC(g, K)]
+        return dup_monic(g, K), [], [dmp_LC(g, K)]
     elif not g:
-        return dup_monic(f, K), [dup_LC(f, K)], []
+        return dup_monic(f, K), [dmp_LC(f, K)], []
 
 
 def _dmp_rr_trivial_gcd(f, g, u, K):
@@ -902,7 +902,7 @@ def dup_rr_prs_gcd(f, g, K):
     h = dup_subresultants(F, G, K)[-1]
     _, h = dup_primitive(h, K)
 
-    if K.is_negative(dup_LC(h, K)):
+    if K.is_negative(dmp_LC(h, K)):
         c = -c
 
     h = dup_mul_ground(h, c, K)
@@ -1107,8 +1107,8 @@ def dup_zz_heu_gcd(f, g, K):
     B = K(2*min(f_norm, g_norm) + 29)
 
     x = max(min(B, 99*K.sqrt(B)),
-            2*min(f_norm // abs(dup_LC(f, K)),
-                  g_norm // abs(dup_LC(g, K))) + 2)
+            2*min(f_norm // abs(dmp_LC(f, K)),
+                  g_norm // abs(dmp_LC(g, K))) + 2)
 
     for i in range(query('HEU_GCD_MAX')):
         ff = dup_eval(f, x, K)
@@ -1321,7 +1321,7 @@ def dup_qq_heu_gcd(f, g, K0):
 
     h = dup_convert(h, K1, K0)
 
-    c = dup_LC(h, K0)
+    c = dmp_LC(h, K0)
     h = dup_monic(h, K0)
 
     cff = dup_convert(cff, K1, K0)

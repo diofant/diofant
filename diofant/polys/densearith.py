@@ -1,8 +1,8 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
 from .densebasic import (dmp_degree, dmp_ground, dmp_LC, dmp_one, dmp_one_p,
-                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros, dup_LC,
-                         dup_slice, dup_strip)
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros, dup_slice,
+                         dup_strip)
 from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
@@ -1019,10 +1019,10 @@ def dup_pdiv(f, g, K):
         return q, r
 
     N = df - dg + 1
-    lc_g = dup_LC(g, K)
+    lc_g = dmp_LC(g, K)
 
     while True:
-        lc_r = dup_LC(r, K)
+        lc_r = dmp_LC(r, K)
         j, N = dr - dg, N - 1
 
         Q = dup_mul_ground(q, lc_g, K)
@@ -1072,10 +1072,10 @@ def dup_prem(f, g, K):
         return r
 
     N = df - dg + 1
-    lc_g = dup_LC(g, K)
+    lc_g = dmp_LC(g, K)
 
     while True:
-        lc_r = dup_LC(r, K)
+        lc_r = dmp_LC(r, K)
         j, N = dr - dg, N - 1
 
         R = dup_mul_ground(r, lc_g, K)
@@ -1326,10 +1326,10 @@ def dup_rr_div(f, g, K):
     elif df < dg:
         return q, r
 
-    lc_g = dup_LC(g, K)
+    lc_g = dmp_LC(g, K)
 
     while True:
-        lc_r = dup_LC(r, K)
+        lc_r = dmp_LC(r, K)
 
         if lc_r % lc_g:
             break
@@ -1428,10 +1428,10 @@ def dup_ff_div(f, g, K):
     elif df < dg:
         return q, r
 
-    lc_g = dup_LC(g, K)
+    lc_g = dmp_LC(g, K)
 
     while True:
-        lc_r = dup_LC(r, K)
+        lc_r = dmp_LC(r, K)
 
         c = K.exquo(lc_r, lc_g)
         j = dr - dg

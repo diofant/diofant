@@ -24,7 +24,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_zeros, dup_convert, dup_copy,
                                       dup_deflate, dup_from_dict,
                                       dup_from_diofant, dup_from_raw_dict,
-                                      dup_inflate, dup_LC, dup_multi_deflate,
+                                      dup_inflate, dup_multi_deflate,
                                       dup_normal, dup_nth, dup_random,
                                       dup_reverse, dup_slice, dup_strip,
                                       dup_TC, dup_terms_gcd, dup_to_dict,
@@ -38,11 +38,6 @@ __all__ = ()
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
 
-def test_dup_LC():
-    assert dup_LC([], ZZ) == 0
-    assert dup_LC([2, 3, 4, 5], ZZ) == 2
-
-
 def test_dup_TC():
     assert dup_TC([], ZZ) == 0
     assert dup_TC([2, 3, 4, 5], ZZ) == 5
@@ -50,6 +45,8 @@ def test_dup_TC():
 
 def test_dmp_LC():
     assert dmp_LC([[]], ZZ) == []
+    assert dmp_LC([], ZZ) == 0
+    assert dmp_LC([2, 3, 4, 5], ZZ) == 2
     assert dmp_LC([[2, 3, 4], [5]], ZZ) == [2, 3, 4]
     assert dmp_LC([[[]]], ZZ) == [[]]
     assert dmp_LC([[[2], [3, 4]], [[5]]], ZZ) == [[2], [3, 4]]

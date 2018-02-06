@@ -12,8 +12,7 @@ from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_convert,
-                         dup_from_raw_dict, dup_LC, dup_strip, dup_TC,
-                         dup_to_raw_dict)
+                         dup_from_raw_dict, dup_strip, dup_TC, dup_to_raw_dict)
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
@@ -495,7 +494,7 @@ def dup_monic(f, K):
     if not f:
         return f
 
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
 
     if K.is_one(lc):
         return f
@@ -907,7 +906,7 @@ def dup_compose(f, g, K):
     x**2 - x
     """
     if len(g) <= 1:
-        return dup_strip([dup_eval(f, dup_LC(g, K), K)])
+        return dup_strip([dup_eval(f, dmp_LC(g, K), K)])
 
     if not f:
         return []
@@ -953,7 +952,7 @@ def dmp_compose(f, g, u, K):
 def _dup_right_decompose(f, s, K):
     """Helper function for :func:`_dup_decompose`."""
     n = len(f) - 1
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
 
     f = dup_to_raw_dict(f)
     g = { s: K.one }
@@ -987,7 +986,7 @@ def _dup_left_decompose(f, h, K):
         if dmp_degree(r, 0) > 0:
             return
         else:
-            g[i] = dup_LC(r, K)
+            g[i] = dmp_LC(r, K)
             f, i = q, i + 1
 
     return dup_from_raw_dict(g, K)

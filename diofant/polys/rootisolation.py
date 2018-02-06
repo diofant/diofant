@@ -1,7 +1,7 @@
 """Real and complex root isolation and refinement algorithms. """
 
 from .densearith import dup_neg, dup_rem, dup_rshift
-from .densebasic import (dmp_degree, dup_convert, dup_LC, dup_reverse,
+from .densebasic import (dmp_degree, dmp_LC, dup_convert, dup_reverse,
                          dup_strip, dup_TC, dup_terms_gcd)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
@@ -64,7 +64,7 @@ def dup_root_upper_bound(f, K):
     """
     n, P = len(f), []
     t = n * [K.one]
-    if dup_LC(f, K) < 0:
+    if dmp_LC(f, K) < 0:
         f = dup_neg(f, K)
     f = list(reversed(f))
 
@@ -718,12 +718,12 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
     sturm = dup_sturm(f, K)
 
     if inf is None:
-        signs_inf = dup_sign_variations([dup_LC(s, K)*(-1)**dmp_degree(s, 0) for s in sturm], K)
+        signs_inf = dup_sign_variations([dmp_LC(s, K)*(-1)**dmp_degree(s, 0) for s in sturm], K)
     else:
         signs_inf = dup_sign_variations([ dup_eval(s, inf, K) for s in sturm ], K)
 
     if sup is None:
-        signs_sup = dup_sign_variations([ dup_LC(s, K) for s in sturm ], K)
+        signs_sup = dup_sign_variations([dmp_LC(s, K) for s in sturm], K)
     else:
         signs_sup = dup_sign_variations([ dup_eval(s, sup, K) for s in sturm ], K)
 
@@ -1212,7 +1212,7 @@ def _winding_number(T, field):
 
 
 def _roots_bound(f, F):
-    lc = abs(dup_LC(f, F))
+    lc = abs(dmp_LC(f, F))
     return 2*max(F.quo(abs(c), lc) for c in f)
 
 

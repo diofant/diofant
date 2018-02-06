@@ -7,7 +7,7 @@ from .monomials import monomial_div, monomial_min
 from .orderings import monomial_key
 
 
-def dup_LC(f, K):
+def dmp_LC(f, K):
     """
     Return leading coefficient of ``f``.
 
@@ -16,9 +16,9 @@ def dup_LC(f, K):
 
     >>> from diofant.domains import ZZ
 
-    >>> dup_LC([], ZZ)
+    >>> dmp_LC([], ZZ)
     0
-    >>> dup_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> dmp_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     1
     """
     if not f:
@@ -47,7 +47,6 @@ def dup_TC(f, K):
         return f[-1]
 
 
-dmp_LC = dup_LC
 dmp_TC = dup_TC
 
 
@@ -69,7 +68,7 @@ def dmp_ground_LC(f, u, K):
         f = dmp_LC(f, K)
         u -= 1
 
-    return dup_LC(f, K)
+    return dmp_LC(f, K)
 
 
 def dmp_ground_TC(f, u, K):
@@ -118,7 +117,7 @@ def dmp_true_LT(f, u, K):
     else:
         monom.append(len(f) - 1)
 
-    return tuple(monom), dup_LC(f, K)
+    return tuple(monom), dmp_LC(f, K)
 
 
 def dmp_degree(f, u):

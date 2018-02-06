@@ -17,7 +17,7 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
                          dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
                          dmp_terms_gcd, dmp_zero_p, dup_convert, dup_inflate,
-                         dup_LC, dup_strip, dup_TC, dup_terms_gcd)
+                         dup_strip, dup_TC, dup_terms_gcd)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -78,7 +78,7 @@ def dmp_trial_division(f, factors, u, K):
 def dup_zz_mignotte_bound(f, K):
     """Mignotte bound for univariate polynomials in `K[x]`. """
     a = dup_max_norm(f, K)
-    b = abs(dup_LC(f, K))
+    b = abs(dmp_LC(f, K))
     n = dmp_degree(f, 0)
 
     return K.sqrt(K(n + 1))*2**n*a*b
@@ -172,7 +172,7 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
     .. [1] [Gathen99]_
     """
     r = len(f_list)
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
 
     if r == 1:
         F = dup_mul_ground(f, K.gcdex(lc, p**l)[0], K)
@@ -223,7 +223,7 @@ def dup_zz_zassenhaus(f, K):
 
     fc = f[-1]
     A = dup_max_norm(f, K)
-    b = dup_LC(f, K)
+    b = dmp_LC(f, K)
     B = int(abs(K.sqrt(K(n + 1))*2**n*A*b))
     C = int((n + 1)**(2*n)*A**(2*n - 1))
     gamma = int(_ceil(2*_log(C, 2)))
@@ -308,7 +308,7 @@ def dup_zz_zassenhaus(f, K):
                 f = dup_primitive(H, K)[1]
 
                 factors.append(G)
-                b = dup_LC(f, K)
+                b = dmp_LC(f, K)
 
                 break
         else:
@@ -319,7 +319,7 @@ def dup_zz_zassenhaus(f, K):
 
 def dup_zz_irreducible_p(f, K):
     """Test irreducibility using Eisenstein's criterion. """
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
     tc = dup_TC(f, K)
 
     e_fc = dup_content(f[1:], K)
@@ -360,7 +360,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     elif not K.is_ZZ:
         return False
 
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
     tc = dup_TC(f, K)
 
     if lc != 1 or (tc != -1 and tc != 1):
@@ -386,7 +386,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
 
     F = dup_sub(g, dup_lshift(h, 1, K), K)
 
-    if K.is_negative(dup_LC(F, K)):
+    if K.is_negative(dmp_LC(F, K)):
         F = dup_neg(F, K)
 
     if F == f:
@@ -394,7 +394,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
 
     g = dup_mirror(f, K)
 
-    if K.is_negative(dup_LC(g, K)):
+    if K.is_negative(dmp_LC(g, K)):
         g = dup_neg(g, K)
 
     if F == g and dup_cyclotomic_p(g, K):
@@ -450,7 +450,7 @@ def dup_zz_cyclotomic_factor(f, K):
 
     .. [1] [Weisstein09]_
     """
-    lc_f, tc_f = dup_LC(f, K), dup_TC(f, K)
+    lc_f, tc_f = dmp_LC(f, K), dup_TC(f, K)
 
     if dmp_degree(f, 0) <= 0:
         return
@@ -482,7 +482,7 @@ def dup_zz_factor_sqf(f, K):
 
     n = dmp_degree(g, 0)
 
-    if dup_LC(g, K) < 0:
+    if dmp_LC(g, K) < 0:
         cont, g = -cont, dup_neg(g, K)
 
     if n <= 0:
@@ -550,7 +550,7 @@ def dup_zz_factor(f, K):
 
     n = dmp_degree(g, 0)
 
-    if dup_LC(g, K) < 0:
+    if dmp_LC(g, K) < 0:
         cont, g = -cont, dup_neg(g, K)
 
     if n <= 0:
@@ -607,7 +607,7 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
 
     c, h = dup_primitive(g, K)
 
-    if K.is_negative(dup_LC(h, K)):
+    if K.is_negative(dmp_LC(h, K)):
         c, h = -c, dup_neg(h, K)
 
     v = u - 1
@@ -627,7 +627,7 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
 
     for h in H:
         c = dmp_one(v, K)
-        d = dup_LC(h, K)*cs
+        d = dmp_LC(h, K)*cs
 
         for i in reversed(range(len(E))):
             k, e, t = 0, E[i], T[i][0]
@@ -647,7 +647,7 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
 
     for c, h in zip(C, H):
         d = dmp_eval_tail(c, A, v, K)
-        lc = dup_LC(h, K)
+        lc = dmp_LC(h, K)
 
         if K.is_one(cs):
             cc = lc//d
@@ -1049,7 +1049,7 @@ def dmp_zz_factor(f, u, K):
 
 def dup_ext_factor(f, K):
     """Factor univariate polynomials over algebraic number fields. """
-    n, lc = dmp_degree(f, 0), dup_LC(f, K)
+    n, lc = dmp_degree(f, 0), dmp_LC(f, K)
 
     f = dup_monic(f, K)
 
