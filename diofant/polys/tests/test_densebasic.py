@@ -22,7 +22,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
                                       dmp_validate, dmp_zero, dmp_zero_p,
                                       dmp_zeros, dup_convert, dup_copy,
-                                      dup_deflate, dup_degree, dup_from_dict,
+                                      dup_deflate, dup_from_dict,
                                       dup_from_diofant, dup_from_raw_dict,
                                       dup_inflate, dup_LC, dup_multi_deflate,
                                       dup_normal, dup_nth, dup_random,
@@ -85,14 +85,13 @@ def test_dmp_true_LT():
     assert dmp_true_LT([[1, 0], []], 1, ZZ) == ((1, 1), 1)
 
 
-def test_dup_degree():
-    assert dup_degree([]) == -oo
-    assert dup_degree([1]) == 0
-    assert dup_degree([1, 0]) == 1
-    assert dup_degree([1, 0, 0, 0, 1]) == 4
-
-
 def test_dmp_degree():
+    assert dmp_degree([], 0) == -oo
+    assert dmp_degree([1], 0) == 0
+    assert dmp_degree([1, 0], 0) == 1
+    assert dmp_degree([1, 0, 0, 0, 1], 0) == 4
+    assert dmp_degree([1, 2, 0, 3], 0) == 3
+
     assert dmp_degree([[]], 1) == -oo
     assert dmp_degree([[[]]], 2) == -oo
 
@@ -720,22 +719,22 @@ def test_dmp_slice():
 def test_dup_random():
     f = dup_random(0, -10, 10, ZZ)
 
-    assert dup_degree(f) == 0
+    assert dmp_degree(f, 0) == 0
     assert all(-10 <= c <= 10 for c in f)
 
     f = dup_random(1, -20, 20, ZZ)
 
-    assert dup_degree(f) == 1
+    assert dmp_degree(f, 0) == 1
     assert all(-20 <= c <= 20 for c in f)
 
     f = dup_random(2, -30, 30, ZZ)
 
-    assert dup_degree(f) == 2
+    assert dmp_degree(f, 0) == 2
     assert all(-30 <= c <= 30 for c in f)
 
     f = dup_random(3, -40, 40, ZZ)
 
-    assert dup_degree(f) == 3
+    assert dmp_degree(f, 0) == 3
     assert all(-40 <= c <= 40 for c in f)
 
     random.seed(11)

@@ -1,8 +1,8 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
 from .densebasic import (dmp_degree, dmp_ground, dmp_LC, dmp_one, dmp_one_p,
-                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros,
-                         dup_degree, dup_LC, dup_slice, dup_strip)
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros, dup_LC,
+                         dup_slice, dup_strip)
 from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
@@ -525,8 +525,8 @@ def dup_add(f, g, K):
     if not g:
         return f
 
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     if df == dg:
         return dup_strip([ a + b for a, b in zip(f, g) ])
@@ -602,8 +602,8 @@ def dup_sub(f, g, K):
     if not g:
         return f
 
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     if df == dg:
         return dup_strip([ a - b for a, b in zip(f, g) ])
@@ -749,8 +749,8 @@ def dup_mul(f, g, K):
     if not (f and g):
         return []
 
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     n = max(df, dg) + 1
 
@@ -1008,8 +1008,8 @@ def dup_pdiv(f, g, K):
     >>> R.dup_pdiv(x**2 + 1, 2*x - 4)
     (2*x + 4, 20)
     """
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     q, r, dr = [], f, df
 
@@ -1032,7 +1032,7 @@ def dup_pdiv(f, g, K):
         G = dup_mul_term(g, lc_r, j, K)
         r = dup_sub(R, G, K)
 
-        _dr, dr = dr, dup_degree(r)
+        _dr, dr = dr, dmp_degree(r, 0)
 
         if dr < dg:
             break
@@ -1061,8 +1061,8 @@ def dup_prem(f, g, K):
     >>> R.dup_prem(x**2 + 1, 2*x - 4)
     20
     """
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     r, dr = f, df
 
@@ -1082,7 +1082,7 @@ def dup_prem(f, g, K):
         G = dup_mul_term(g, lc_r, j, K)
         r = dup_sub(R, G, K)
 
-        _dr, dr = dr, dup_degree(r)
+        _dr, dr = dr, dmp_degree(r, 0)
 
         if dr < dg:
             break
@@ -1316,8 +1316,8 @@ def dup_rr_div(f, g, K):
     >>> R.dup_rr_div(x**2 + 1, 2*x - 4)
     (0, x**2 + 1)
     """
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     q, r, dr = [], f, df
 
@@ -1341,7 +1341,7 @@ def dup_rr_div(f, g, K):
         h = dup_mul_term(g, c, j, K)
         r = dup_sub(r, h, K)
 
-        _dr, dr = dr, dup_degree(r)
+        _dr, dr = dr, dmp_degree(r, 0)
 
         if dr < dg:
             break
@@ -1418,8 +1418,8 @@ def dup_ff_div(f, g, K):
     >>> R.dup_ff_div(x**2 + 1, 2*x - 4)
     (1/2*x + 1, 5)
     """
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     q, r, dr = [], f, df
 
@@ -1440,7 +1440,7 @@ def dup_ff_div(f, g, K):
         h = dup_mul_term(g, c, j, K)
         r = dup_sub(r, h, K)
 
-        _dr, dr = dr, dup_degree(r)
+        _dr, dr = dr, dmp_degree(r, 0)
 
         if dr < dg:
             break

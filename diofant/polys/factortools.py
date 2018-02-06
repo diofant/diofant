@@ -16,8 +16,8 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
                          dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
-                         dmp_terms_gcd, dmp_zero_p, dup_convert, dup_degree,
-                         dup_inflate, dup_LC, dup_strip, dup_TC, dup_terms_gcd)
+                         dmp_terms_gcd, dmp_zero_p, dup_convert, dup_inflate,
+                         dup_LC, dup_strip, dup_TC, dup_terms_gcd)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -79,7 +79,7 @@ def dup_zz_mignotte_bound(f, K):
     """Mignotte bound for univariate polynomials in `K[x]`. """
     a = dup_max_norm(f, K)
     b = abs(dup_LC(f, K))
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
 
     return K.sqrt(K(n + 1))*2**n*a*b
 
@@ -216,7 +216,7 @@ def _test_pl(fc, q, pl):
 
 def dup_zz_zassenhaus(f, K):
     """Factor primitive square-free polynomials in `Z[x]`. """
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
 
     if n == 1:
         return [f]
@@ -372,7 +372,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
         if coeff != K.one or factors != [(f, 1)]:
             return False
 
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
     g, h = [], []
 
     for i in range(n, -1, -2):
@@ -452,7 +452,7 @@ def dup_zz_cyclotomic_factor(f, K):
     """
     lc_f, tc_f = dup_LC(f, K), dup_TC(f, K)
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return
 
     if lc_f != 1 or tc_f not in [-1, 1]:
@@ -461,7 +461,7 @@ def dup_zz_cyclotomic_factor(f, K):
     if any(bool(cf) for cf in f[1:-1]):
         return
 
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
     F = _dup_cyclotomic_decompose(n, K)
 
     if not K.is_one(tc_f):
@@ -480,7 +480,7 @@ def dup_zz_factor_sqf(f, K):
     """Factor square-free (non-primitive) polynomials in `Z[x]`. """
     cont, g = dup_primitive(f, K)
 
-    n = dup_degree(g)
+    n = dmp_degree(g, 0)
 
     if dup_LC(g, K) < 0:
         cont, g = -cont, dup_neg(g, K)
@@ -548,7 +548,7 @@ def dup_zz_factor(f, K):
     """
     cont, g = dup_primitive(f, K)
 
-    n = dup_degree(g)
+    n = dmp_degree(g, 0)
 
     if dup_LC(g, K) < 0:
         cont, g = -cont, dup_neg(g, K)
@@ -727,7 +727,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
     """Wang/EEZ: Solve multivariate Diophantine equations. """
     if not A:
         S = [ [] for _ in F ]
-        n = dup_degree(c)
+        n = dmp_degree(c, 0)
 
         for i, coeff in enumerate(c):
             if not coeff:
@@ -1049,7 +1049,7 @@ def dmp_zz_factor(f, u, K):
 
 def dup_ext_factor(f, K):
     """Factor univariate polynomials over algebraic number fields. """
-    n, lc = dup_degree(f), dup_LC(f, K)
+    n, lc = dmp_degree(f, 0), dup_LC(f, K)
 
     f = dup_monic(f, K)
 
@@ -1064,7 +1064,7 @@ def dup_ext_factor(f, K):
     factors = dup_factor_list_include(r, K.domain)
 
     if len(factors) == 1:
-        return lc, [(f, n//dup_degree(f))]
+        return lc, [(f, n//dmp_degree(f, 0))]
 
     H = s*K.unit
 

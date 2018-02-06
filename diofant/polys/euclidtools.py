@@ -11,7 +11,7 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
                          dmp_raise, dmp_zero, dmp_zero_p, dmp_zeros,
-                         dup_convert, dup_degree, dup_LC, dup_strip)
+                         dup_convert, dup_LC, dup_strip)
 from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -244,8 +244,8 @@ def dup_inner_subresultants(f, g, K):
     .. [1] W.S. Brown, The Subresultant PRS Algorithm.
            ACM Transaction of Mathematical Software 4 (1978) 237-249
     """
-    n = dup_degree(f)
-    m = dup_degree(g)
+    n = dmp_degree(f, 0)
+    m = dmp_degree(g, 0)
 
     if n < m:
         f, g = g, f
@@ -273,7 +273,7 @@ def dup_inner_subresultants(f, g, K):
     c = -c
 
     while h:
-        k = dup_degree(h)
+        k = dmp_degree(h, 0)
         R.append(h)
 
         f, g, m, d = g, h, k, m - k
@@ -333,7 +333,7 @@ def dup_prs_resultant(f, g, K):
 
     R, S = dup_inner_subresultants(f, g, K)
 
-    if dup_degree(R[-1]) > 0:
+    if dmp_degree(R[-1], 0) > 0:
         return K.zero, R
 
     return S[-1], R
@@ -538,7 +538,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
     D, a = [K.one], -K.one
     r = dmp_zero(v)
 
-    while dup_degree(D) <= B:
+    while dmp_degree(D, 0) <= B:
         while True:
             a += K.one
 
@@ -731,7 +731,7 @@ def dup_discriminant(f, K):
     >>> R.dup_discriminant(x**2 + 2*x + 3)
     -8
     """
-    d = dup_degree(f)
+    d = dmp_degree(f, 0)
 
     if d <= 0:
         return K.zero
@@ -1093,8 +1093,8 @@ def dup_zz_heu_gcd(f, g, K):
     if result is not None:
         return result
 
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     gcd, f, g = dup_extract(f, g, K)
 

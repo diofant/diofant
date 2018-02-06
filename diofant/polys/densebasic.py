@@ -121,27 +121,6 @@ def dmp_true_LT(f, u, K):
     return tuple(monom), dup_LC(f, K)
 
 
-def dup_degree(f):
-    """
-    Return the leading degree of ``f`` in ``K[x]``.
-
-    Note that the degree of 0 is negative infinity (the Diofant object -oo).
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 0, 3])
-
-    >>> dup_degree(f)
-    3
-    """
-    if not f:
-        return -oo
-    return len(f) - 1
-
-
 def dmp_degree(f, u):
     """
     Return the leading degree of ``f`` in ``x_0`` in ``K[X]``.
@@ -161,10 +140,7 @@ def dmp_degree(f, u):
     >>> dmp_degree(f, 1)
     1
     """
-    if dmp_zero_p(f, u):
-        return -oo
-    else:
-        return len(f) - 1
+    return -oo if dmp_zero_p(f, u) else len(f) - 1
 
 
 def dmp_degree_in(f, j, u):
@@ -566,7 +542,7 @@ def dup_nth(f, n, K):
     elif n >= len(f):
         return K.zero
     else:
-        return f[dup_degree(f) - n]
+        return f[dmp_degree(f, 0) - n]
 
 
 def dmp_nth(f, n, u, K):
@@ -1120,7 +1096,7 @@ def dup_deflate(f, K):
     >>> dup_deflate(f, ZZ)
     (3, [1, 1, 1])
     """
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return 1, f
 
     g = 0
@@ -1197,7 +1173,7 @@ def dup_multi_deflate(polys, K):
     G = 0
 
     for p in polys:
-        if dup_degree(p) <= 0:
+        if dmp_degree(p, 0) <= 0:
             return 1, polys
 
         g = 0

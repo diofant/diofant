@@ -1,7 +1,7 @@
 """Real and complex root isolation and refinement algorithms. """
 
 from .densearith import dup_neg, dup_rem, dup_rshift
-from .densebasic import (dup_convert, dup_degree, dup_LC, dup_reverse,
+from .densebasic import (dmp_degree, dup_convert, dup_LC, dup_reverse,
                          dup_strip, dup_TC, dup_terms_gcd)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
@@ -502,7 +502,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return []
 
     I_zero, f = _isolate_zero(f, K, inf, sup, basis=False, sqf=True)
@@ -536,7 +536,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return []
 
     I_zero, f = _isolate_zero(f, K, inf, sup, basis=basis, sqf=False)
@@ -708,7 +708,7 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
 
 def dup_count_real_roots(f, K, inf=None, sup=None):
     """Returns the number of distinct real roots of ``f`` in ``[inf, sup]``. """
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return 0
 
     if not K.has_Field:
@@ -718,7 +718,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
     sturm = dup_sturm(f, K)
 
     if inf is None:
-        signs_inf = dup_sign_variations([ dup_LC(s, K)*(-1)**dup_degree(s) for s in sturm ], K)
+        signs_inf = dup_sign_variations([dup_LC(s, K)*(-1)**dmp_degree(s, 0) for s in sturm], K)
     else:
         signs_inf = dup_sign_variations([ dup_eval(s, inf, K) for s in sturm ], K)
 
@@ -1532,7 +1532,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if not K.is_ZZ and not K.is_QQ:
         raise DomainError("isolation of complex roots is not supported over %s" % K)
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return []
 
     if K.is_ZZ:

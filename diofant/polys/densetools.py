@@ -12,8 +12,8 @@ from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_convert,
-                         dup_degree, dup_from_raw_dict, dup_LC, dup_strip,
-                         dup_TC, dup_to_raw_dict)
+                         dup_from_raw_dict, dup_LC, dup_strip, dup_TC,
+                         dup_to_raw_dict)
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
@@ -133,7 +133,7 @@ def dup_diff(f, m, K):
     if m <= 0:
         return f
 
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
 
     if n < m:
         return []
@@ -984,7 +984,7 @@ def _dup_left_decompose(f, h, K):
     while f:
         q, r = dup_div(f, h, K)
 
-        if dup_degree(r) > 0:
+        if dmp_degree(r, 0) > 0:
             return
         else:
             g[i] = dup_LC(r, K)
@@ -1248,7 +1248,7 @@ def dup_revert(f, n, K):
         a = dup_mul_ground(g, K(2), K)
         b = dup_mul(f, dup_sqr(g, K), K)
         g = dup_rem(dup_sub(a, b, K), h, K)
-        h = dup_lshift(h, dup_degree(h), K)
+        h = dup_lshift(h, dmp_degree(h, 0), K)
 
     return g
 
