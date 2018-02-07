@@ -21,13 +21,13 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_strip, dmp_swap, dmp_TC,
                                       dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
                                       dmp_validate, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_convert, dup_copy,
-                                      dup_deflate, dup_from_dict,
-                                      dup_from_diofant, dup_from_raw_dict,
-                                      dup_inflate, dup_multi_deflate,
-                                      dup_normal, dup_nth, dup_random,
-                                      dup_reverse, dup_slice, dup_terms_gcd,
-                                      dup_to_dict, dup_to_raw_dict)
+                                      dmp_zeros, dup_convert, dup_deflate,
+                                      dup_from_dict, dup_from_diofant,
+                                      dup_from_raw_dict, dup_inflate,
+                                      dup_multi_deflate, dup_normal, dup_nth,
+                                      dup_random, dup_reverse, dup_slice,
+                                      dup_terms_gcd, dup_to_dict,
+                                      dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -173,21 +173,29 @@ def test_dup_reverse():
     assert dup_reverse([1, 2, 3, 0]) == [3, 2, 1]
 
 
-def test_dup_copy():
-    f = [ZZ(1), ZZ(0), ZZ(2)]
-    g = dup_copy(f)
+def test_dmp_copy():
+    f = [ZZ(1), ZZ(2), ZZ(3), ZZ(0)]
+    g = dmp_copy(f, 0)
+    assert f is not g
+    assert f == g
 
     g[0], g[2] = ZZ(7), ZZ(0)
-
     assert f != g
 
+    f = [ZZ(1), ZZ(0), ZZ(2)]
+    g = dmp_copy(f, 0)
+    assert f is not g
+    assert f == g
 
-def test_dmp_copy():
+    g[0], g[2] = ZZ(7), ZZ(0)
+    assert f != g
+
     f = [[ZZ(1)], [ZZ(2), ZZ(0)]]
     g = dmp_copy(f, 1)
+    assert f is not g
+    assert f == g
 
     g[0][0], g[1][1] = ZZ(7), ZZ(1)
-
     assert f != g
 
 

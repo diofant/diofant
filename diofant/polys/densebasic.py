@@ -291,22 +291,6 @@ def dup_reverse(f):
     return dmp_strip(list(reversed(f)), 0)
 
 
-def dup_copy(f):
-    """
-    Create a new copy of a polynomial ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3, 0])
-    >>> dup_copy([1, 2, 3, 0])
-    [1, 2, 3, 0]
-    """
-    return list(f)
-
-
 def dmp_copy(f, u):
     """
     Create a new copy of a polynomial ``f`` in ``K[X]``.
@@ -324,15 +308,14 @@ def dmp_copy(f, u):
         return list(f)
 
     v = u - 1
-
-    return [ dmp_copy(c, v) for c in f ]
+    return [dmp_copy(c, v) for c in f]
 
 
 def dup_to_tuple(f):
     """
     Convert `f` into a tuple.
 
-    This is needed for hashing. This is similar to dup_copy().
+    This is needed for hashing. This is similar to dmp_copy().
 
     Examples
     ========
@@ -340,8 +323,8 @@ def dup_to_tuple(f):
     >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([1, 2, 3, 0])
-    >>> dup_copy([1, 2, 3, 0])
-    [1, 2, 3, 0]
+    >>> dup_to_tuple(f)
+    (1, 2, 3, 0)
     """
     return tuple(f)
 
