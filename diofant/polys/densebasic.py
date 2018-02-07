@@ -337,21 +337,6 @@ def dmp_to_tuple(f, u):
     return tuple(dmp_to_tuple(c, v) for c in f)
 
 
-def dup_normal(f, K):
-    """
-    Normalize univariate polynomial in the given domain.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> dup_normal([0, 1.5, 2, 3], ZZ)
-    [1, 2, 3]
-    """
-    return dmp_strip([K.normal(c) for c in f], 0)
-
-
 def dmp_normal(f, u, K):
     """
     Normalize a multivariate polynomial in the given domain.
@@ -365,11 +350,12 @@ def dmp_normal(f, u, K):
     [[1, 2]]
     """
     if not u:
-        return dup_normal(f, K)
+        r = [K.normal(c) for c in f]
+    else:
+        v = u - 1
+        r = [dmp_normal(c, v, K) for c in f]
 
-    v = u - 1
-
-    return dmp_strip([ dmp_normal(c, v, K) for c in f ], u)
+    return dmp_strip(r, u)
 
 
 def dup_convert(f, K0, K1):

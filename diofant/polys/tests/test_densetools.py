@@ -7,7 +7,7 @@ from diofant.abc import x
 from diofant.domains import EX, FF, QQ, ZZ
 from diofant.polys.densearith import dmp_mul_ground
 from diofant.polys.densebasic import (dmp_convert, dmp_normal, dmp_swap,
-                                      dup_from_raw_dict, dup_normal)
+                                      dup_from_raw_dict)
 from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_diff_eval_in, dmp_diff_in, dmp_eval,
                                       dmp_eval_in, dmp_eval_tail,
@@ -103,7 +103,7 @@ def test_dup_diff():
     assert dup_diff([1, 2, 3, 4], 1, ZZ) == [3, 4, 3]
     assert dup_diff([1, -1, 0, 0, 2], 1, ZZ) == [4, -3, 0, 0]
 
-    f = dup_normal([17, 34, 56, -345, 23, 76, 0, 0, 12, 3, 7], ZZ)
+    f = dmp_normal([17, 34, 56, -345, 23, 76, 0, 0, 12, 3, 7], 0, ZZ)
 
     assert dup_diff(f, 0, ZZ) == f
     assert dup_diff(f, 1, ZZ) == dup_diff(f, 1, ZZ)
@@ -112,11 +112,11 @@ def test_dup_diff():
         f, 3, ZZ) == dup_diff(dup_diff(dup_diff(f, 1, ZZ), 1, ZZ), 1, ZZ)
 
     K = FF(3)
-    f = dup_normal([17, 34, 56, -345, 23, 76, 0, 0, 12, 3, 7], K)
+    f = dmp_normal([17, 34, 56, -345, 23, 76, 0, 0, 12, 3, 7], 0, K)
 
-    assert dup_diff(f, 1, K) == dup_normal([2, 0, 1, 0, 0, 2, 0, 0, 0, 0], K)
-    assert dup_diff(f, 2, K) == dup_normal([1, 0, 0, 2, 0, 0, 0], K)
-    assert dup_diff(f, 3, K) == dup_normal([], K)
+    assert dup_diff(f, 1, K) == dmp_normal([2, 0, 1, 0, 0, 2, 0, 0, 0, 0], 0, K)
+    assert dup_diff(f, 2, K) == dmp_normal([1, 0, 0, 2, 0, 0, 0], 0, K)
+    assert dup_diff(f, 3, K) == dmp_normal([], 0, K)
 
     assert dup_diff(f, 0, K) == f
     assert dup_diff(f, 1, K) == dup_diff(f, 1, K)
@@ -420,18 +420,17 @@ def test_dmp_ground_primitive():
 
 
 def test_dup_extract():
-    f = dup_normal([2930944, 0, 2198208, 0, 549552, 0, 45796], ZZ)
-    g = dup_normal([17585664, 0, 8792832, 0, 1099104, 0], ZZ)
+    f = dmp_normal([2930944, 0, 2198208, 0, 549552, 0, 45796], 0, ZZ)
+    g = dmp_normal([17585664, 0, 8792832, 0, 1099104, 0], 0, ZZ)
 
-    F = dup_normal([64, 0, 48, 0, 12, 0, 1], ZZ)
-    G = dup_normal([384, 0, 192, 0, 24, 0], ZZ)
+    F = dmp_normal([64, 0, 48, 0, 12, 0, 1], 0, ZZ)
+    G = dmp_normal([384, 0, 192, 0, 24, 0], 0, ZZ)
 
     assert dup_extract(f, g, ZZ) == (45796, F, G)
 
 
 def test_dmp_ground_extract():
-    f = dmp_normal(
-        [[2930944], [], [2198208], [], [549552], [], [45796]], 1, ZZ)
+    f = dmp_normal([[2930944], [], [2198208], [], [549552], [], [45796]], 1, ZZ)
     g = dmp_normal([[17585664], [], [8792832], [], [1099104], []], 1, ZZ)
 
     F = dmp_normal([[64], [], [48], [], [12], [], [1]], 1, ZZ)

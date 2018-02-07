@@ -24,10 +24,9 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_zeros, dup_convert, dup_deflate,
                                       dup_from_dict, dup_from_diofant,
                                       dup_from_raw_dict, dup_inflate,
-                                      dup_multi_deflate, dup_normal, dup_nth,
-                                      dup_random, dup_reverse, dup_slice,
-                                      dup_terms_gcd, dup_to_dict,
-                                      dup_to_raw_dict)
+                                      dup_multi_deflate, dup_nth, dup_random,
+                                      dup_reverse, dup_slice, dup_terms_gcd,
+                                      dup_to_dict, dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -199,14 +198,14 @@ def test_dmp_copy():
     assert f != g
 
 
-def test_dup_normal():
-    assert dup_normal([0, 0, 2, 1, 0, 11, 0], ZZ) == \
-        [ZZ(2), ZZ(1), ZZ(0), ZZ(11), ZZ(0)]
-
-
 def test_dmp_normal():
-    assert dmp_normal([[0], [], [0, 2, 1], [0], [11], []], 1, ZZ) == \
-        [[ZZ(2), ZZ(1)], [], [ZZ(11)], []]
+    assert dmp_normal([0, 1.5, 2, 3], 0, ZZ) == [ZZ(1), ZZ(2), ZZ(3)]
+
+    assert (dmp_normal([0, 0, 2, 1, 0, 11, 0], 0, ZZ) ==
+            [ZZ(2), ZZ(1), ZZ(0), ZZ(11), ZZ(0)])
+
+    assert (dmp_normal([[0], [], [0, 2, 1], [0], [11], []], 1, ZZ) ==
+            [[ZZ(2), ZZ(1)], [], [ZZ(11)], []])
 
 
 def test_dup_convert():
