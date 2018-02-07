@@ -311,24 +311,6 @@ def dmp_copy(f, u):
     return [dmp_copy(c, v) for c in f]
 
 
-def dup_to_tuple(f):
-    """
-    Convert `f` into a tuple.
-
-    This is needed for hashing. This is similar to dmp_copy().
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3, 0])
-    >>> dup_to_tuple(f)
-    (1, 2, 3, 0)
-    """
-    return tuple(f)
-
-
 def dmp_to_tuple(f, u):
     """
     Convert `f` into a nested tuple of tuples.
@@ -340,14 +322,18 @@ def dmp_to_tuple(f, u):
 
     >>> from diofant.domains import ZZ
 
+    >>> f = ZZ.map([1, 2, 3, 0])
+    >>> dmp_to_tuple(f, 0)
+    (1, 2, 3, 0)
+
     >>> f = ZZ.map([[1], [1, 2]])
     >>> dmp_to_tuple(f, 1)
     ((1,), (1, 2))
     """
     if not u:
-        return dup_to_tuple(f)
-    v = u - 1
+        return tuple(f)
 
+    v = u - 1
     return tuple(dmp_to_tuple(c, v) for c in f)
 
 
