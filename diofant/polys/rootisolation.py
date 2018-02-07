@@ -1,8 +1,8 @@
 """Real and complex root isolation and refinement algorithms. """
 
 from .densearith import dup_neg, dup_rem, dup_rshift
-from .densebasic import (dmp_degree, dmp_LC, dmp_TC, dup_convert, dup_reverse,
-                         dup_strip, dup_terms_gcd)
+from .densebasic import (dmp_degree, dmp_LC, dmp_strip, dmp_TC, dup_convert,
+                         dup_reverse, dup_terms_gcd)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
                          dup_sign_variations, dup_transform)
@@ -230,8 +230,7 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
     """Refine a positive root of `f` given an interval `(s, t)`. """
     a, b, c, d = _mobius_from_interval((s, t), K.get_field())
 
-    f = dup_transform(f, dup_strip([a, b]),
-                      dup_strip([c, d]), K)
+    f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), K)
 
     if dup_sign_variations(f, K) != 1:
         raise RefinementFailed("there should be exactly one root in (%s, %s) interval" % (s, t))
@@ -1698,8 +1697,7 @@ class RealInterval:
 
             a, b, c, d = _mobius_from_interval((s, t), dom.get_field())
 
-            f = dup_transform(f, dup_strip([a, b]),
-                              dup_strip([c, d]), dom)
+            f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), dom)
 
             self.mobius = a, b, c, d
         else:

@@ -10,8 +10,8 @@ from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
-                         dmp_raise, dmp_zero, dmp_zero_p, dmp_zeros,
-                         dup_convert, dup_strip)
+                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros,
+                         dup_convert)
 from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -557,8 +557,8 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
         e = dmp_eval(r, a, v, K)
 
         if not v:
-            R = dup_strip([R])
-            e = dup_strip([e])
+            R = dmp_strip([R], 0)
+            e = dmp_strip([e], 0)
         else:
             R = [R]
             e = [e]

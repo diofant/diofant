@@ -15,9 +15,9 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_ground_LC, dmp_ground_nth, dmp_ground_p,
                          dmp_ground_TC, dmp_inject, dmp_LC, dmp_list_terms,
                          dmp_negative_p, dmp_one, dmp_one_p, dmp_permute,
-                         dmp_slice_in, dmp_TC, dmp_terms_gcd, dmp_to_dict,
-                         dmp_to_tuple, dmp_validate, dmp_zero_p, dup_convert,
-                         dup_from_dict, dup_strip)
+                         dmp_slice_in, dmp_strip, dmp_TC, dmp_terms_gcd,
+                         dmp_to_dict, dmp_to_tuple, dmp_validate, dmp_zero_p,
+                         dup_convert, dup_from_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -1170,7 +1170,7 @@ class ANP(CantSympify):
             if type(rep) is not list:
                 rep = [dom.convert(rep)]
 
-            self.rep = dup_strip(rep)
+            self.rep = dmp_strip(rep, 0)
 
         if isinstance(mod, DMP):
             self.mod = mod.rep
@@ -1178,7 +1178,7 @@ class ANP(CantSympify):
             if type(mod) is dict:
                 self.mod = dup_from_dict(mod, dom)
             else:
-                self.mod = dup_strip(mod)
+                self.mod = dmp_strip(mod, 0)
 
         self.domain = dom
 
@@ -1248,7 +1248,7 @@ class ANP(CantSympify):
 
     @classmethod
     def from_list(cls, rep, mod, dom):
-        return ANP(dup_strip(list(map(dom.convert, rep))), mod, dom)
+        return ANP(dmp_strip(list(map(dom.convert, rep)), 0), mod, dom)
 
     def neg(self):
         return self.per(dup_neg(self.rep, self.domain))

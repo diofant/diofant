@@ -12,7 +12,7 @@ from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_convert,
-                         dup_from_raw_dict, dup_strip, dup_to_raw_dict)
+                         dup_from_raw_dict, dup_to_raw_dict)
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
@@ -153,7 +153,7 @@ def dup_diff(f, m, K):
             deriv.append(K(k)*coeff)
             n -= 1
 
-    return dup_strip(deriv)
+    return dmp_strip(deriv, 0)
 
 
 def dmp_diff(f, m, u, K):
@@ -426,7 +426,7 @@ def dup_trunc(f, p, K):
     else:
         g = [ c % p for c in f ]
 
-    return dup_strip(g)
+    return dmp_strip(g, 0)
 
 
 def dmp_trunc(f, p, u, K):
@@ -906,7 +906,7 @@ def dup_compose(f, g, K):
     x**2 - x
     """
     if len(g) <= 1:
-        return dup_strip([dup_eval(f, dmp_LC(g, K), K)])
+        return dmp_strip([dup_eval(f, dmp_LC(g, K), K)], 0)
 
     if not f:
         return []

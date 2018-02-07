@@ -3,7 +3,7 @@
 from .densearith import (dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul,
                          dup_mul_ground, dup_neg, dup_quo, dup_sub)
 from .densebasic import (dmp_degree, dmp_ground, dmp_ground_LC, dmp_inject,
-                         dmp_LC, dmp_raise, dmp_zero_p, dup_convert, dup_strip)
+                         dmp_LC, dmp_raise, dmp_strip, dmp_zero_p, dup_convert)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_diff, dup_monic,
                          dup_primitive, dup_shift)
@@ -336,7 +336,7 @@ def dup_sqf_list_include(f, K, all=False):
         g = dup_mul_ground(factors[0][0], coeff, K)
         return [(g, 1)] + factors[1:]
     else:
-        g = dup_strip([coeff])
+        g = dmp_strip([coeff], 0)
         return [(g, 1)] + factors
 
 

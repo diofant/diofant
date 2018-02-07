@@ -199,30 +199,6 @@ def dmp_degree_list(f, u):
     return tuple(degs)
 
 
-def dup_strip(f):
-    """
-    Remove leading zeros from ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> dup_strip([0, 0, 1, 2, 3, 0])
-    [1, 2, 3, 0]
-    """
-    if not f or f[0]:
-        return f
-
-    i = 0
-
-    for cf in f:
-        if cf:
-            break
-        else:
-            i += 1
-
-    return f[i:]
-
-
 def dmp_strip(f, u):
     """
     Remove leading zeros from ``f`` in ``K[X]``.
@@ -234,23 +210,19 @@ def dmp_strip(f, u):
     [[0, 1, 2], [1]]
     """
     if not u:
-        return dup_strip(f)
-
-    if dmp_zero_p(f, u):
-        return f
-
-    i, v = 0, u - 1
-
-    for c in f:
-        if not dmp_zero_p(c, v):
-            break
+        for i, c in enumerate(f):
+            if c:
+                return f[i:]
         else:
-            i += 1
+            return dmp_zero(u)
 
-    if i == len(f):
-        return dmp_zero(u)
+    v = u - 1
+
+    for i, c in enumerate(f):
+        if not dmp_zero_p(c, v):
+            return f[i:]
     else:
-        return f[i:]
+        return dmp_zero(u)
 
 
 def dmp_validate(f, K=None):
@@ -290,7 +262,7 @@ def dmp_validate(f, K=None):
 
     def strip(g, v):
         if not v:
-            return dup_strip(g)
+            return dmp_strip(g, 0)
 
         w = v - 1
 
@@ -316,7 +288,7 @@ def dup_reverse(f):
     >>> dup_reverse(f)
     [3, 2, 1]
     """
-    return dup_strip(list(reversed(f)))
+    return dmp_strip(list(reversed(f)), 0)
 
 
 def dup_copy(f):
@@ -408,7 +380,7 @@ def dup_normal(f, K):
     >>> dup_normal([0, 1.5, 2, 3], ZZ)
     [1, 2, 3]
     """
-    return dup_strip([ K.normal(c) for c in f ])
+    return dmp_strip([K.normal(c) for c in f], 0)
 
 
 def dmp_normal(f, u, K):
@@ -451,7 +423,7 @@ def dup_convert(f, K0, K1):
     if K0 is not None and K0 == K1:
         return f
     else:
-        return dup_strip([ K1.convert(c, K0) for c in f ])
+        return dmp_strip([K1.convert(c, K0) for c in f], 0)
 
 
 def dmp_convert(f, u, K0, K1):
@@ -494,7 +466,7 @@ def dup_from_diofant(f, K):
     >>> dup_from_diofant([Integer(1), Integer(2)], ZZ)
     [1, 2]
     """
-    return dup_strip([ K.from_diofant(c) for c in f ])
+    return dmp_strip([K.from_diofant(c) for c in f], 0)
 
 
 def dmp_from_diofant(f, u, K):
@@ -819,7 +791,7 @@ def dup_from_dict(f, K):
         for k in range(n, -1, -1):
             h.append(f.get((k,), K.zero))
 
-    return dup_strip(h)
+    return dmp_strip(h, 0)
 
 
 def dup_from_raw_dict(f, K):
@@ -842,7 +814,7 @@ def dup_from_raw_dict(f, K):
     for k in range(n, -1, -1):
         h.append(f.get(k, K.zero))
 
-    return dup_strip(h)
+    return dmp_strip(h, 0)
 
 
 def dmp_from_dict(f, u, K):
@@ -1593,7 +1565,7 @@ def dup_apply_pairs(f, g, h, args, K):
     for a, b in zip(f, g):
         result.append(h(a, b, *args))
 
-    return dup_strip(result)
+    return dmp_strip(result, 0)
 
 
 def dmp_apply_pairs(f, g, h, args, u, K):

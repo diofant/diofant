@@ -16,8 +16,8 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
                          dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
-                         dmp_TC, dmp_terms_gcd, dmp_zero_p, dup_convert,
-                         dup_inflate, dup_strip, dup_terms_gcd)
+                         dmp_strip, dmp_TC, dmp_terms_gcd, dmp_zero_p,
+                         dup_convert, dup_inflate, dup_terms_gcd)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -381,8 +381,8 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     for i in range(n - 1, -1, -2):
         h.insert(0, f[i])
 
-    g = dup_sqr(dup_strip(g), K)
-    h = dup_sqr(dup_strip(h), K)
+    g = dup_sqr(dmp_strip(g, 0), K)
+    h = dup_sqr(dmp_strip(h, 0), K)
 
     F = dup_sub(g, dup_lshift(h, 1, K), K)
 
@@ -1191,7 +1191,7 @@ def dup_factor_list_include(f, K):
     coeff, factors = dup_factor_list(f, K)
 
     if not factors:
-        return [(dup_strip([coeff]), 1)]
+        return [(dmp_strip([coeff], 0), 1)]
     else:
         g = dup_mul_ground(factors[0][0], coeff, K)
         return [(g, factors[0][1])] + factors[1:]

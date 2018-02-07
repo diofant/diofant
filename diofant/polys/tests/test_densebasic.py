@@ -26,9 +26,8 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dup_from_diofant, dup_from_raw_dict,
                                       dup_inflate, dup_multi_deflate,
                                       dup_normal, dup_nth, dup_random,
-                                      dup_reverse, dup_slice, dup_strip,
-                                      dup_terms_gcd, dup_to_dict,
-                                      dup_to_raw_dict)
+                                      dup_reverse, dup_slice, dup_terms_gcd,
+                                      dup_to_dict, dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -127,22 +126,22 @@ def test_dmp_degree_list():
     assert dmp_degree_list(f_6, 3) == (4, 4, 6, 3)
 
 
-def test_dup_strip():
-    assert dup_strip([]) == []
-    assert dup_strip([0]) == []
-    assert dup_strip([0, 0, 0]) == []
-
-    assert dup_strip([1]) == [1]
-    assert dup_strip([0, 1]) == [1]
-    assert dup_strip([0, 0, 0, 1]) == [1]
-
-    assert dup_strip([1, 2, 0]) == [1, 2, 0]
-    assert dup_strip([0, 1, 2, 0]) == [1, 2, 0]
-    assert dup_strip([0, 0, 0, 1, 2, 0]) == [1, 2, 0]
-
-
 def test_dmp_strip():
+    assert dmp_strip([], 0) == []
+    assert dmp_strip([0], 0) == []
+    assert dmp_strip([0, 0, 0], 0) == []
+
+    assert dmp_strip([1], 0) == [1]
+    assert dmp_strip([0, 1], 0) == [1]
+    assert dmp_strip([0, 0, 0, 1], 0) == [1]
+
+    assert dmp_strip([1, 2, 0], 0) == [1, 2, 0]
+    assert dmp_strip([0, 1, 2, 0], 0) == [1, 2, 0]
+    assert dmp_strip([0, 0, 0, 1, 2, 0], 0) == [1, 2, 0]
+
     assert dmp_strip([0, 1, 0], 0) == [1, 0]
+
+    assert dmp_strip([0, 0, 1, 2, 3, 0], 0) == [1, 2, 3, 0]
 
     assert dmp_strip([[]], 1) == [[]]
     assert dmp_strip([[], []], 1) == [[]]

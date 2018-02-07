@@ -1,8 +1,7 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
 from .densebasic import (dmp_degree, dmp_ground, dmp_LC, dmp_one, dmp_one_p,
-                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros, dup_slice,
-                         dup_strip)
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros, dup_slice)
 from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
@@ -27,7 +26,7 @@ def dup_add_term(f, c, i, K):
     m = n - i - 1
 
     if i == n - 1:
-        return dup_strip([f[0] + c] + f[1:])
+        return dmp_strip([f[0] + c] + f[1:], 0)
     else:
         if i >= n:
             return [c] + [K.zero]*(i - n) + f
@@ -90,7 +89,7 @@ def dup_sub_term(f, c, i, K):
     m = n - i - 1
 
     if i == n - 1:
-        return dup_strip([f[0] - c] + f[1:])
+        return dmp_strip([f[0] - c] + f[1:], 0)
     else:
         if i >= n:
             return [-c] + [K.zero]*(i - n) + f
@@ -529,7 +528,7 @@ def dup_add(f, g, K):
     dg = dmp_degree(g, 0)
 
     if df == dg:
-        return dup_strip([ a + b for a, b in zip(f, g) ])
+        return dmp_strip([a + b for a, b in zip(f, g)], 0)
     else:
         k = abs(df - dg)
 
@@ -606,7 +605,7 @@ def dup_sub(f, g, K):
     dg = dmp_degree(g, 0)
 
     if df == dg:
-        return dup_strip([ a - b for a, b in zip(f, g) ])
+        return dmp_strip([a - b for a, b in zip(f, g)], 0)
     else:
         k = abs(df - dg)
 
@@ -765,7 +764,7 @@ def dup_mul(f, g, K):
 
             h.append(coeff)
 
-        return dup_strip(h)
+        return dmp_strip(h, 0)
     else:
         # Use Karatsuba's algorithm (divide and conquer), see e.g.:
         # Joris van der Hoeven, Relax But Don't Be Too Lazy,
@@ -866,7 +865,7 @@ def dup_sqr(f, K):
 
         h.append(c)
 
-    return dup_strip(h)
+    return dmp_strip(h, 0)
 
 
 def dmp_sqr(f, u, K):
