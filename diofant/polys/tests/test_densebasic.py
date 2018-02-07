@@ -27,7 +27,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dup_inflate, dup_multi_deflate,
                                       dup_normal, dup_nth, dup_random,
                                       dup_reverse, dup_slice, dup_strip,
-                                      dup_TC, dup_terms_gcd, dup_to_dict,
+                                      dup_terms_gcd, dup_to_dict,
                                       dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
@@ -36,11 +36,6 @@ from diofant.polys.specialpolys import f_polys
 __all__ = ()
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
-
-
-def test_dup_TC():
-    assert dup_TC([], ZZ) == 0
-    assert dup_TC([2, 3, 4, 5], ZZ) == 5
 
 
 def test_dmp_LC():
@@ -53,6 +48,8 @@ def test_dmp_LC():
 
 
 def test_dmp_TC():
+    assert dmp_TC([], ZZ) == 0
+    assert dmp_TC([2, 3, 4, 5], ZZ) == 5
     assert dmp_TC([[]], ZZ) == []
     assert dmp_TC([[2, 3, 4], [5]], ZZ) == [5]
     assert dmp_TC([[[]]], ZZ) == [[]]

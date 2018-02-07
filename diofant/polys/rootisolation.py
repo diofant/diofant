@@ -1,8 +1,8 @@
 """Real and complex root isolation and refinement algorithms. """
 
 from .densearith import dup_neg, dup_rem, dup_rshift
-from .densebasic import (dmp_degree, dmp_LC, dup_convert, dup_reverse,
-                         dup_strip, dup_TC, dup_terms_gcd)
+from .densebasic import (dmp_degree, dmp_LC, dmp_TC, dup_convert, dup_reverse,
+                         dup_strip, dup_terms_gcd)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
                          dup_sign_variations, dup_transform)
@@ -319,7 +319,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
                 f = dup_shift(f, A, K)
                 b, d = A*a + b, A*c + d
 
-                if not dup_TC(f, K):
+                if not dmp_TC(f, K):
                     roots.append((f, (b, b, d, d)))
                     f = dup_rshift(f, 1, K)
 
@@ -336,7 +336,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
 
             a1, b1, c1, d1, r = a, a + b, c, c + d, 0
 
-            if not dup_TC(f1, K):
+            if not dmp_TC(f1, K):
                 roots.append((f1, (b1, b1, d1, d1)))
                 f1, r = dup_rshift(f1, 1, K), 1
 
@@ -348,7 +348,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             if k2 > 1:
                 f2 = dup_shift(dup_reverse(f), K.one, K)
 
-                if not dup_TC(f2, K):
+                if not dmp_TC(f2, K):
                     f2 = dup_rshift(f2, 1, K)
 
                 k2 = dup_sign_variations(f2, K)
@@ -366,7 +366,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             if f1 is None:
                 f1 = dup_shift(dup_reverse(f), K.one, K)
 
-                if not dup_TC(f1, K):
+                if not dmp_TC(f1, K):
                     f1 = dup_rshift(f1, 1, K)
 
             if k1 == 1:
@@ -381,7 +381,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             if f2 is None:
                 f2 = dup_shift(dup_reverse(f), K.one, K)
 
-                if not dup_TC(f2, K):
+                if not dmp_TC(f2, K):
                     f2 = dup_rshift(f2, 1, K)
 
             if k2 == 1:

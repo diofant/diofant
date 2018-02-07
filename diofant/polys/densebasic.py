@@ -27,7 +27,7 @@ def dmp_LC(f, K):
         return f[0]
 
 
-def dup_TC(f, K):
+def dmp_TC(f, K):
     """
     Return trailing coefficient of ``f``.
 
@@ -36,18 +36,15 @@ def dup_TC(f, K):
 
     >>> from diofant.domains import ZZ
 
-    >>> dup_TC([], ZZ)
+    >>> dmp_TC([], ZZ)
     0
-    >>> dup_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> dmp_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     3
     """
     if not f:
         return K.zero
     else:
         return f[-1]
-
-
-dmp_TC = dup_TC
 
 
 def dmp_ground_LC(f, u, K):
@@ -89,7 +86,7 @@ def dmp_ground_TC(f, u, K):
         f = dmp_TC(f, K)
         u -= 1
 
-    return dup_TC(f, K)
+    return dmp_TC(f, K)
 
 
 def dmp_true_LT(f, u, K):
@@ -1477,7 +1474,7 @@ def dup_terms_gcd(f, K):
     >>> dup_terms_gcd(f, ZZ)
     (2, [1, 0, 1])
     """
-    if dup_TC(f, K) or not f:
+    if dmp_TC(f, K) or not f:
         return 0, f
 
     i = 0

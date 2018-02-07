@@ -16,8 +16,8 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
                          dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
-                         dmp_terms_gcd, dmp_zero_p, dup_convert, dup_inflate,
-                         dup_strip, dup_TC, dup_terms_gcd)
+                         dmp_TC, dmp_terms_gcd, dmp_zero_p, dup_convert,
+                         dup_inflate, dup_strip, dup_terms_gcd)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -320,7 +320,7 @@ def dup_zz_zassenhaus(f, K):
 def dup_zz_irreducible_p(f, K):
     """Test irreducibility using Eisenstein's criterion. """
     lc = dmp_LC(f, K)
-    tc = dup_TC(f, K)
+    tc = dmp_TC(f, K)
 
     e_fc = dup_content(f[1:], K)
 
@@ -361,7 +361,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
         return False
 
     lc = dmp_LC(f, K)
-    tc = dup_TC(f, K)
+    tc = dmp_TC(f, K)
 
     if lc != 1 or (tc != -1 and tc != 1):
         return False
@@ -450,7 +450,7 @@ def dup_zz_cyclotomic_factor(f, K):
 
     .. [1] [Weisstein09]_
     """
-    lc_f, tc_f = dmp_LC(f, K), dup_TC(f, K)
+    lc_f, tc_f = dmp_LC(f, K), dmp_TC(f, K)
 
     if dmp_degree(f, 0) <= 0:
         return

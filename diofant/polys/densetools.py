@@ -12,7 +12,7 @@ from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_convert,
-                         dup_from_raw_dict, dup_strip, dup_TC, dup_to_raw_dict)
+                         dup_from_raw_dict, dup_strip, dup_to_raw_dict)
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
@@ -250,7 +250,7 @@ def dup_eval(f, a, K):
     11
     """
     if not a:
-        return dup_TC(f, K)
+        return dmp_TC(f, K)
 
     result = K.zero
 
@@ -1238,7 +1238,7 @@ def dup_revert(f, n, K):
     >>> R.dup_revert(f, 8)
     61/720*x**6 + 5/24*x**4 + 1/2*x**2 + 1
     """
-    g = [K.revert(dup_TC(f, K))]
+    g = [K.revert(dmp_TC(f, K))]
     h = [K.one, K.zero, K.zero]
 
     N = int(_ceil(_log(n, 2)))
