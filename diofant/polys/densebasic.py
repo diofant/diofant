@@ -387,22 +387,6 @@ def dmp_convert(f, u, K0, K1):
     return dmp_strip(r, u)
 
 
-def dup_from_diofant(f, K):
-    """
-    Convert the ground domain of ``f`` from Diofant to ``K``.
-
-    Examples
-    ========
-
-    >>> from diofant import Integer
-    >>> from diofant.domains import ZZ
-
-    >>> dup_from_diofant([Integer(1), Integer(2)], ZZ)
-    [1, 2]
-    """
-    return dmp_strip([K.from_diofant(c) for c in f], 0)
-
-
 def dmp_from_diofant(f, u, K):
     """
     Convert the ground domain of ``f`` from Diofant to ``K``.
@@ -417,11 +401,11 @@ def dmp_from_diofant(f, u, K):
     [[1], [2]]
     """
     if not u:
-        return dup_from_diofant(f, K)
-
-    v = u - 1
-
-    return dmp_strip([ dmp_from_diofant(c, v, K) for c in f ], u)
+        r = [K.from_diofant(c) for c in f]
+    else:
+        v = u - 1
+        r = [dmp_from_diofant(c, v, K) for c in f]
+    return dmp_strip(r, u)
 
 
 def dup_nth(f, n, K):

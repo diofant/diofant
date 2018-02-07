@@ -22,11 +22,10 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
                                       dmp_validate, dmp_zero, dmp_zero_p,
                                       dmp_zeros, dup_deflate, dup_from_dict,
-                                      dup_from_diofant, dup_from_raw_dict,
-                                      dup_inflate, dup_multi_deflate, dup_nth,
-                                      dup_random, dup_reverse, dup_slice,
-                                      dup_terms_gcd, dup_to_dict,
-                                      dup_to_raw_dict)
+                                      dup_from_raw_dict, dup_inflate,
+                                      dup_multi_deflate, dup_nth, dup_random,
+                                      dup_reverse, dup_slice, dup_terms_gcd,
+                                      dup_to_dict, dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -223,18 +222,12 @@ def test_dmp_convert():
     assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
 
 
-def test_dup_from_diofant():
-    assert dup_from_diofant([Integer(1), Integer(2)], ZZ) == \
-        [ZZ(1), ZZ(2)]
-    assert dup_from_diofant([Rational(1, 2), Integer(3)], QQ) == \
-        [QQ(1, 2), QQ(3, 1)]
-
-
 def test_dmp_from_diofant():
-    assert dmp_from_diofant([[Integer(1), Integer(2)], [Integer(0)]], 1, ZZ) == \
-        [[ZZ(1), ZZ(2)], []]
-    assert dmp_from_diofant([[Rational(1, 2), Integer(2)]], 1, QQ) == \
-        [[QQ(1, 2), QQ(2, 1)]]
+    assert dmp_from_diofant([Integer(1), Integer(2)], 0, ZZ) == [ZZ(1), ZZ(2)]
+    assert dmp_from_diofant([Rational(1, 2), Integer(3)], 0, QQ) == [QQ(1, 2), QQ(3, 1)]
+
+    assert dmp_from_diofant([[Integer(1), Integer(2)], [Integer(0)]], 1, ZZ) == [[ZZ(1), ZZ(2)], []]
+    assert dmp_from_diofant([[Rational(1, 2), Integer(2)]], 1, QQ) == [[QQ(1, 2), QQ(2, 1)]]
 
 
 def test_dup_nth():
