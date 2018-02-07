@@ -408,32 +408,9 @@ def dmp_from_diofant(f, u, K):
     return dmp_strip(r, u)
 
 
-def dup_nth(f, n, K):
-    """
-    Return the ``n``-th coefficient of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3])
-    >>> dup_nth(f, 0, ZZ)
-    3
-    >>> dup_nth(f, 4, ZZ)
-    0
-    """
-    if n < 0:
-        raise IndexError("'n' must be non-negative, got %i" % n)
-    elif n >= len(f):
-        return K.zero
-    else:
-        return f[dmp_degree(f, 0) - n]
-
-
 def dmp_nth(f, n, u, K):
     """
-    Return the ``n``-th coefficient of ``f`` in ``K[x]``.
+    Return the ``n``-th coefficient of ``f`` in ``x_0`` in ``K[X]``.
 
     Examples
     ========
@@ -449,7 +426,7 @@ def dmp_nth(f, n, u, K):
     if n < 0:
         raise IndexError("'n' must be non-negative, got %i" % n)
     elif n >= len(f):
-        return dmp_zero(u - 1)
+        return dmp_zero(u - 1) if u else K.zero
     else:
         return f[dmp_degree(f, u) - n]
 

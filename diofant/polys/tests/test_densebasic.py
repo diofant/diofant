@@ -23,7 +23,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_validate, dmp_zero, dmp_zero_p,
                                       dmp_zeros, dup_deflate, dup_from_dict,
                                       dup_from_raw_dict, dup_inflate,
-                                      dup_multi_deflate, dup_nth, dup_random,
+                                      dup_multi_deflate, dup_random,
                                       dup_reverse, dup_slice, dup_terms_gcd,
                                       dup_to_dict, dup_to_raw_dict)
 from diofant.polys.rings import ring
@@ -230,17 +230,15 @@ def test_dmp_from_diofant():
     assert dmp_from_diofant([[Rational(1, 2), Integer(2)]], 1, QQ) == [[QQ(1, 2), QQ(2, 1)]]
 
 
-def test_dup_nth():
-    assert dup_nth([1, 2, 3], 0, ZZ) == 3
-    assert dup_nth([1, 2, 3], 1, ZZ) == 2
-    assert dup_nth([1, 2, 3], 2, ZZ) == 1
-
-    assert dup_nth([1, 2, 3], 9, ZZ) == 0
-
-    pytest.raises(IndexError, lambda: dup_nth([3, 4, 5], -1, ZZ))
-
-
 def test_dmp_nth():
+    assert dmp_nth([1, 2, 3], 0, 0, ZZ) == 3
+    assert dmp_nth([1, 2, 3], 1, 0, ZZ) == 2
+    assert dmp_nth([1, 2, 3], 2, 0, ZZ) == 1
+    assert dmp_nth([1, 2, 3], 4, 0, ZZ) == 0
+    assert dmp_nth([1, 2, 3], 9, 0, ZZ) == 0
+
+    pytest.raises(IndexError, lambda: dmp_nth([3, 4, 5], -1, 0, ZZ))
+
     assert dmp_nth([[1], [2], [3]], 0, 1, ZZ) == [3]
     assert dmp_nth([[1], [2], [3]], 1, 1, ZZ) == [2]
     assert dmp_nth([[1], [2], [3]], 2, 1, ZZ) == [1]
