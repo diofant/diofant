@@ -17,7 +17,7 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
                          dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_zero_p,
-                         dup_convert, dup_inflate, dup_terms_gcd)
+                         dup_inflate, dup_terms_gcd)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -354,7 +354,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     if K.is_QQ:
         try:
             K0, K = K, K.get_ring()
-            f = dup_convert(f, K0, K)
+            f = dmp_convert(f, 0, K0, K)
         except CoercionFailed:
             return False
     elif not K.is_ZZ:
@@ -1069,7 +1069,7 @@ def dup_ext_factor(f, K):
     H = s*K.unit
 
     for i, (factor, _) in enumerate(factors):
-        h = dup_convert(factor, K.domain, K)
+        h = dmp_convert(factor, 0, K.domain, K)
         h, _, g = dup_inner_gcd(h, g, K)
         h = dup_shift(h, H, K)
         factors[i] = h
@@ -1110,12 +1110,12 @@ def dmp_ext_factor(f, u, K):
 
 def dup_gf_factor(f, K):
     """Factor univariate polynomials over finite fields. """
-    f = dup_convert(f, K, K.domain)
+    f = dmp_convert(f, 0, K, K.domain)
 
     coeff, factors = gf_factor(f, K.mod, K.domain)
 
     for i, (f, k) in enumerate(factors):
-        factors[i] = (dup_convert(f, K.domain, K), k)
+        factors[i] = (dmp_convert(f, 0, K.domain, K), k)
 
     return K.convert(coeff, K.domain), factors
 
@@ -1137,7 +1137,7 @@ def dup_factor_list(f, K0):
     else:
         if not K0.is_Exact:
             K0_inexact, K0 = K0, K0.get_exact()
-            f = dup_convert(f, K0_inexact, K0)
+            f = dmp_convert(f, 0, K0_inexact, K0)
         else:
             K0_inexact = None
 
@@ -1145,7 +1145,7 @@ def dup_factor_list(f, K0):
             K = K0.get_ring()
 
             denom, f = dup_clear_denoms(f, K0, K)
-            f = dup_convert(f, K0, K)
+            f = dmp_convert(f, 0, K0, K)
         else:
             K = K0
 
@@ -1165,7 +1165,7 @@ def dup_factor_list(f, K0):
 
         if K0.has_Field:
             for i, (f, k) in enumerate(factors):
-                factors[i] = (dup_convert(f, K, K0), k)
+                factors[i] = (dmp_convert(f, 0, K, K0), k)
 
             coeff = K0.convert(coeff, K)
             coeff = K0.quo(coeff, denom)
@@ -1173,7 +1173,7 @@ def dup_factor_list(f, K0):
             if K0_inexact:
                 for i, (f, k) in enumerate(factors):
                     f = dup_quo_ground(f, denom, K0)
-                    f = dup_convert(f, K0, K0_inexact)
+                    f = dmp_convert(f, 0, K0, K0_inexact)
                     factors[i] = (f, k)
                     coeff *= denom**k
 

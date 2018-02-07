@@ -1,7 +1,7 @@
 """Real and complex root isolation and refinement algorithms. """
 
 from .densearith import dup_neg, dup_rem, dup_rshift
-from .densebasic import (dmp_degree, dmp_LC, dmp_strip, dmp_TC, dup_convert,
+from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
                          dup_reverse, dup_terms_gcd)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
@@ -712,7 +712,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
 
     if not K.has_Field:
         R, K = K, K.get_field()
-        f = dup_convert(f, R, K)
+        f = dmp_convert(f, 0, R, K)
 
     sturm = dup_sturm(f, K)
 
@@ -1225,7 +1225,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     else:
         R, F = K.get_ring(), K
 
-    f = dup_convert(f, K, F)
+    f = dmp_convert(f, 0, K, F)
 
     if inf is None or sup is None:
         B = _roots_bound(f, F)
@@ -1539,7 +1539,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     else:
         F = K
 
-    f = dup_convert(f, K, F)
+    f = dmp_convert(f, 0, K, F)
 
     B = _roots_bound(f, F)
 

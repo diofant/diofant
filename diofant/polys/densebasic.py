@@ -358,29 +358,6 @@ def dmp_normal(f, u, K):
     return dmp_strip(r, u)
 
 
-def dup_convert(f, K0, K1):
-    """
-    Convert the ground domain of ``f`` from ``K0`` to ``K1``.
-
-    Examples
-    ========
-
-    >>> from diofant.polys.rings import ring
-    >>> from diofant.domains import ZZ
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> dup_convert([R(1), R(2)], R.to_domain(), ZZ)
-    [1, 2]
-    >>> dup_convert([ZZ(1), ZZ(2)], ZZ, R.to_domain())
-    [1, 2]
-    """
-    if K0 is not None and K0 == K1:
-        return f
-    else:
-        return dmp_strip([K1.convert(c, K0) for c in f], 0)
-
-
 def dmp_convert(f, u, K0, K1):
     """
     Convert the ground domain of ``f`` from ``K0`` to ``K1``.
@@ -398,14 +375,16 @@ def dmp_convert(f, u, K0, K1):
     >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R.to_domain())
     [[1], [2]]
     """
-    if not u:
-        return dup_convert(f, K0, K1)
     if K0 is not None and K0 == K1:
         return f
 
-    v = u - 1
+    if not u:
+        r = [K1.convert(c, K0) for c in f]
+    else:
+        v = u - 1
+        r = [dmp_convert(c, v, K0, K1) for c in f]
 
-    return dmp_strip([ dmp_convert(c, v, K0, K1) for c in f ], u)
+    return dmp_strip(r, u)
 
 
 def dup_from_diofant(f, K):

@@ -2,8 +2,8 @@
 
 from .densearith import (dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul,
                          dup_mul_ground, dup_neg, dup_quo, dup_sub)
-from .densebasic import (dmp_degree, dmp_ground, dmp_ground_LC, dmp_inject,
-                         dmp_LC, dmp_raise, dmp_strip, dmp_zero_p, dup_convert)
+from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
+                         dmp_inject, dmp_LC, dmp_raise, dmp_strip, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_diff, dup_monic,
                          dup_primitive, dup_shift)
@@ -157,9 +157,9 @@ def dmp_sqf_norm(f, u, K):
 
 def dup_gf_sqf_part(f, K):
     """Compute square-free part of ``f`` in ``GF(p)[x]``. """
-    f = dup_convert(f, K, K.domain)
+    f = dmp_convert(f, 0, K, K.domain)
     g = gf_sqf_part(f, K.mod, K.domain)
-    return dup_convert(g, K.domain, K)
+    return dmp_convert(g, 0, K.domain, K)
 
 
 def dmp_gf_sqf_part(f, u, K):  # pragma: no cover
@@ -238,12 +238,12 @@ def dmp_sqf_part(f, u, K):
 
 def dup_gf_sqf_list(f, K, all=False):
     """Compute square-free decomposition of ``f`` in ``GF(p)[x]``. """
-    f = dup_convert(f, K, K.domain)
+    f = dmp_convert(f, 0, K, K.domain)
 
     coeff, factors = gf_sqf_list(f, K.mod, K.domain, all=all)
 
     for i, (f, k) in enumerate(factors):
-        factors[i] = (dup_convert(f, K.domain, K), k)
+        factors[i] = (dmp_convert(f, 0, K.domain, K), k)
 
     return K.convert(coeff, K.domain), factors
 

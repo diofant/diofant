@@ -17,7 +17,7 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_negative_p, dmp_one, dmp_one_p, dmp_permute,
                          dmp_slice_in, dmp_strip, dmp_TC, dmp_terms_gcd,
                          dmp_to_dict, dmp_to_tuple, dmp_validate, dmp_zero_p,
-                         dup_convert, dup_from_dict)
+                         dup_from_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -1196,10 +1196,10 @@ class ANP(CantSympify):
         else:
             dom = self.domain.unify(other.domain)
 
-            F = dup_convert(self.rep, self.domain, dom)
-            G = dup_convert(other.rep, other.domain, dom)
+            F = dmp_convert(self.rep, 0, self.domain, dom)
+            G = dmp_convert(other.rep, 0, other.domain, dom)
 
-            mod = dup_convert(self.mod, self.domain, dom)
+            mod = dmp_convert(self.mod, 0, self.domain, dom)
 
             def per(rep):
                 return ANP(rep, mod, dom)

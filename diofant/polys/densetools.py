@@ -11,8 +11,8 @@ from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
                          dup_quo_ground, dup_rem, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros, dup_convert,
-                         dup_from_raw_dict, dup_to_raw_dict)
+                         dmp_zero, dmp_zero_p, dmp_zeros, dup_from_raw_dict,
+                         dup_to_raw_dict)
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
@@ -1163,7 +1163,7 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
     if not convert:
         return common, f
     else:
-        return common, dup_convert(f, K0, K1)
+        return common, dmp_convert(f, 0, K0, K1)
 
 
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):

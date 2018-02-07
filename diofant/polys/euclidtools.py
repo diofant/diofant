@@ -10,8 +10,7 @@ from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
-                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros,
-                         dup_convert)
+                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -1314,18 +1313,18 @@ def dup_qq_heu_gcd(f, g, K0):
     cf, f = dup_clear_denoms(f, K0, K1)
     cg, g = dup_clear_denoms(g, K0, K1)
 
-    f = dup_convert(f, K0, K1)
-    g = dup_convert(g, K0, K1)
+    f = dmp_convert(f, 0, K0, K1)
+    g = dmp_convert(g, 0, K0, K1)
 
     h, cff, cfg = dup_zz_heu_gcd(f, g, K1)
 
-    h = dup_convert(h, K1, K0)
+    h = dmp_convert(h, 0, K1, K0)
 
     c = dmp_LC(h, K0)
     h = dup_monic(h, K0)
 
-    cff = dup_convert(cff, K1, K0)
-    cfg = dup_convert(cfg, K1, K0)
+    cff = dmp_convert(cff, 0, K1, K0)
+    cfg = dmp_convert(cfg, 0, K1, K0)
 
     cff = dup_mul_ground(cff, K0.quo(c, cf), K0)
     cfg = dup_mul_ground(cfg, K0.quo(c, cg), K0)
@@ -1407,14 +1406,14 @@ def dup_inner_gcd(f, g, K):
         except DomainError:
             return [K.one], f, g
 
-        f = dup_convert(f, K, exact)
-        g = dup_convert(g, K, exact)
+        f = dmp_convert(f, 0, K, exact)
+        g = dmp_convert(g, 0, K, exact)
 
         h, cff, cfg = dup_inner_gcd(f, g, exact)
 
-        h = dup_convert(h, exact, K)
-        cff = dup_convert(cff, exact, K)
-        cfg = dup_convert(cfg, exact, K)
+        h = dmp_convert(h, 0, exact, K)
+        cff = dmp_convert(cff, 0, exact, K)
+        cfg = dmp_convert(cfg, 0, exact, K)
 
         return h, cff, cfg
     elif K.has_Field:

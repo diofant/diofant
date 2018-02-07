@@ -21,12 +21,12 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_strip, dmp_swap, dmp_TC,
                                       dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
                                       dmp_validate, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_convert, dup_deflate,
-                                      dup_from_dict, dup_from_diofant,
-                                      dup_from_raw_dict, dup_inflate,
-                                      dup_multi_deflate, dup_nth, dup_random,
-                                      dup_reverse, dup_slice, dup_terms_gcd,
-                                      dup_to_dict, dup_to_raw_dict)
+                                      dmp_zeros, dup_deflate, dup_from_dict,
+                                      dup_from_diofant, dup_from_raw_dict,
+                                      dup_inflate, dup_multi_deflate, dup_nth,
+                                      dup_random, dup_reverse, dup_slice,
+                                      dup_terms_gcd, dup_to_dict,
+                                      dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -208,22 +208,19 @@ def test_dmp_normal():
             [[ZZ(2), ZZ(1)], [], [ZZ(11)], []])
 
 
-def test_dup_convert():
-    K0, K1 = ZZ['x'], ZZ
-
-    f = [K0(1), K0(2), K0(0), K0(3)]
-
-    assert dup_convert(f, K0, K1) == \
-        [ZZ(1), ZZ(2), ZZ(0), ZZ(3)]
-
-
 def test_dmp_convert():
     K0, K1 = ZZ['x'], ZZ
 
+    assert dmp_convert([K0(1), K0(2)], 0, K0, K1) == [ZZ(1), ZZ(2)]
+    assert dmp_convert([K1(1), K1(2)], 0, K1, K0) == [K0(1), K0(2)]
+
+    f = [K0(1), K0(2), K0(0), K0(3)]
+
+    assert dmp_convert(f, 0, K0, K1) == [ZZ(1), ZZ(2), ZZ(0), ZZ(3)]
+
     f = [[K0(1)], [K0(2)], [], [K0(3)]]
 
-    assert dmp_convert(f, 1, K0, K1) == \
-        [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
+    assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
 
 
 def test_dup_from_diofant():
