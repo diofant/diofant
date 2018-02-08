@@ -33,12 +33,13 @@ from ..core import (Add, Dummy, E, Eq, Expr, Function, I, Integer, Mul, Ne,
                     expand_power_base, factor_terms, nan, oo, pi, symbols,
                     sympify, zoo)
 from ..core.compatibility import default_sort_key, ordered
-from ..functions import Heaviside, Piecewise, meijerg, piecewise_fold
+from ..functions import Heaviside, Piecewise, cos, meijerg, piecewise_fold, sin
 from ..functions.elementary.hyperbolic import (HyperbolicFunction,
                                                _rewrite_hyperbolics_as_exp)
 from ..logic import And, Not, Or
 from ..logic.boolalg import BooleanAtom
 from ..simplify import collect, hyperexpand, powdenest
+from ..simplify.fu import sincos_to_sum
 from ..utilities.iterables import multiset_partitions
 from ..utilities.misc import debug as _debug
 
@@ -1850,6 +1851,12 @@ def _guess_expansion(f, x):
         if expanded not in saw:
             res += [(expanded, 'expand_trig, expand_mul')]
             saw.add(expanded)
+
+    if orig.has(cos, sin):
+        reduced = sincos_to_sum(orig)
+        if reduced not in saw:
+            res += [(reduced, 'trig power reduction')]
+            saw.add(reduced)
 
     return res
 

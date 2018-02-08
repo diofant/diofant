@@ -6,6 +6,7 @@ from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError
 from ..series import Order, limit
+from ..simplify.fu import sincos_to_sum
 from ..utilities import filldedent
 from .meijerint import meijerint_definite, meijerint_indefinite
 from .trigonometry import trigintegrate
@@ -893,7 +894,7 @@ class Integral(AddWithLimits):
             # collection on the expressions if they are already
             # in an expanded form
             if not h and len(args) == 1:
-                f = f.expand(mul=True, deep=False)
+                f = sincos_to_sum(f).expand(mul=True, deep=False)
                 if f.is_Add:
                     # Note: risch will be identical on the expanded
                     # expression, but maybe it will be able to pick out parts,

@@ -105,3 +105,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15055` Incorrect limit of n**3*((-n - 1)*sin(1/n) + (n + 2)*sin(1/(n + 1)))/(-n + 1)
 * :sympyissue:`15056` dsolve: get_numbered_constants should consider Functions
 * :sympyissue:`6938` Undefined Functions should not use the evalf name lookup scheme
+* :sympyissue:`8945` integrate(sin(x)**3/x, (x, 0, 1)) can't do it

@@ -194,8 +194,8 @@ from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, S, expand_mul,
                     factor_terms, gcd_terms, pi, sympify)
 from ..core.compatibility import ordered
 from ..core.exprtools import Factors
-from ..functions import (cos, cosh, cot, coth, csc, sec, sin, sinh, sqrt, tan,
-                         tanh)
+from ..functions import (binomial, cos, cosh, cot, coth, csc, sec, sin, sinh,
+                         sqrt, tan, tanh)
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..ntheory import perfect_power
@@ -1502,6 +1502,50 @@ def TR22(rv, max=4, pow=False):
     return bottom_up(rv, f)
 
 
+def TRpower(rv):
+    """Convert sin(x)**n and cos(x)**n with positive n to sums.
+
+    Examples
+    ========
+
+    >>> TRpower(sin(x)**6)
+    -15*cos(2*x)/32 + 3*cos(4*x)/16 - cos(6*x)/32 + 5/16
+    >>> TRpower(sin(x)**3*cos(2*x)**4)
+    (3*sin(x)/4 - sin(3*x)/4)*(cos(4*x)/2 + cos(8*x)/8 + 3/8)
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/List_of_trigonometric_identities#Power-reduction_formulae
+    """
+
+    def f(rv):
+        if not (isinstance(rv, Pow) and isinstance(rv.base, (sin, cos))):
+            return rv
+        b, n = rv.as_base_exp()
+        x = b.args[0]
+        if n.is_Integer and n.is_positive:
+            if n.is_odd and isinstance(b, cos):
+                rv = 2**(1-n)*Add(*[binomial(n, k)*cos((n - 2*k)*x)
+                                    for k in range((n + 1)/2)])
+            elif n.is_odd and isinstance(b, sin):
+                rv = (2**(1-n)*(-1)**((n-1)/2) *
+                      Add(*[binomial(n, k)*(-1)**k*sin((n - 2*k)*x)
+                            for k in range((n + 1)/2)]))
+            elif n.is_even and isinstance(b, cos):
+                rv = 2**(1-n)*Add(*[binomial(n, k)*cos((n - 2*k)*x)
+                                    for k in range(n/2)])
+            elif n.is_even and isinstance(b, sin):
+                rv = (2**(1-n)*(-1)**(n/2) *
+                      Add(*[binomial(n, k)*(-1)**k*cos((n - 2*k)*x)
+                            for k in range(n/2)]))
+            if n.is_even:
+                rv += 2**(-n)*binomial(n, n/2)
+        return rv
+
+    return bottom_up(rv, f)
+
+
 def L(rv):
     """Return count of trigonometric functions in expression.
 
@@ -2045,3 +2089,19 @@ def hyper_as_trig(rv):
 
     return _osborne(masked, d), lambda x: collect(signsimp(
         _osbornei(x, d).xreplace(dict(reps))), I)
+
+
+def sincos_to_sum(expr):
+    """Convert products and powers of sin and cos to sums.
+
+    Applied power reduction TRpower first, then expands products, and
+    converts products to sums with TR8.
+
+    Examples
+    ========
+
+    >>> sincos_to_sum(16*sin(x)**3*cos(2*x)**2)
+    7*sin(x) - 5*sin(3*x) + 3*sin(5*x) - sin(7*x)
+    """
+
+    return TR8(expand_mul(TRpower(expr)))

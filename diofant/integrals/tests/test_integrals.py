@@ -1121,6 +1121,16 @@ def test_sympyissue_8901():
     assert integrate(tanh(x)) == x - log(tanh(x) + 1)
 
 
+def test_sympyissue_8945():
+    assert integrate(sin(x)**3/x, (x, 0, 1)) == -Si(3)/4 + 3*Si(1)/4
+    assert integrate(sin(x)**3/x, (x, 0, oo)) == pi/4
+    assert integrate(cos(x)**2/x**2, x) == -Si(2*x) - cos(2*x)/(2*x) - 1/(2*x)
+
+
+def test_diofantissue_303():
+    assert integrate((cos(x)/x)**2, (x, pi, 2*pi)) == Si(2*pi) - Si(4*pi) + 1/pi/2
+
+
 @pytest.mark.slow
 def test_sympyissue_7130():
     integrand = (cos(pi*i*x/L)**2 / (a + b*x)).rewrite(exp)
