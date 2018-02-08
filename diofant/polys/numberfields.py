@@ -739,10 +739,11 @@ def primitive_element(extension, x=None, **args):
             max_degree = deg
 
     nonzero_ints = islice(Integers, 1, None)
-    coeffs_iter = islice(cantor_product(*tee(nonzero_ints, len(Y))),
-                         max_degree**len(extension))
+    coeffs_iter = cantor_product(*tee(nonzero_ints, len(Y)))
 
     for coeffs in coeffs_iter:  # pragma: no branch
+        if coeffs[0] < 0:
+            continue
         f = x - sum(c*y for c, y in zip(coeffs, Y))
         G = groebner(F + [f], Y + [x], order='lex', field=True)
 
@@ -755,8 +756,6 @@ def primitive_element(extension, x=None, **args):
                 break  # G is not a triangular set
         else:
             break
-    else:  # pragma: no cover
-        raise RuntimeError("run out of coefficient configurations")
 
     _, g = g.clear_denoms()
 
