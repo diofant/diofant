@@ -10,7 +10,7 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
                          dmp_sub_mul, dup_add, dup_div, dup_l1_norm,
                          dup_lshift, dup_max_norm, dup_mul, dup_neg, dup_quo,
-                         dup_quo_ground, dup_sqr, dup_sub, dup_sub_mul)
+                         dup_sqr, dup_sub, dup_sub_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
@@ -1171,7 +1171,7 @@ def dup_factor_list(f, K0):
 
             if K0_inexact:
                 for i, (f, k) in enumerate(factors):
-                    f = dup_quo_ground(f, denom, K0)
+                    f = dmp_quo_ground(f, denom, 0, K0)
                     f = dmp_convert(f, 0, K0, K0_inexact)
                     factors[i] = (f, k)
                     coeff *= denom**k

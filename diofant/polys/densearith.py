@@ -233,35 +233,6 @@ def dmp_mul_ground(f, c, u, K):
         return [dmp_mul_ground(coeff, c, v, K) for coeff in f]
 
 
-def dup_quo_ground(f, c, K):
-    """
-    Quotient by a constant in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_quo_ground(3*x**2 + 2, ZZ(2))
-    x**2 + 1
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_quo_ground(3*x**2 + 2, QQ(2))
-    3/2*x**2 + 1
-    """
-    if not c:
-        raise ZeroDivisionError('polynomial division')
-    if not f:
-        return f
-
-    if K.has_Field:
-        return [ K.quo(cf, c) for cf in f ]
-    else:
-        return [ cf // c for cf in f ]
-
-
 def dmp_quo_ground(f, c, u, K):
     """
     Quotient by a constant in ``K[X]``.
@@ -281,11 +252,18 @@ def dmp_quo_ground(f, c, u, K):
     x**2*y + 3/2*x
     """
     if not u:
-        return dup_quo_ground(f, c, K)
+        if not c:
+            raise ZeroDivisionError('polynomial division')
+        if not f:
+            return f
+
+        if K.has_Field:
+            return [K.quo(coeff, c) for coeff in f]
+        else:
+            return [coeff // c for coeff in f]
 
     v = u - 1
-
-    return [ dmp_quo_ground(cf, c, v, K) for cf in f ]
+    return [dmp_quo_ground(coeff, c, v, K) for coeff in f]
 
 
 def dup_exquo_ground(f, c, K):

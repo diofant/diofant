@@ -7,8 +7,8 @@ from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
                          dmp_mul, dmp_mul_ground, dmp_quo_ground, dmp_rem,
                          dmp_sub, dup_add, dup_add_term, dup_div,
-                         dup_exquo_ground, dup_lshift, dup_mul, dup_quo_ground,
-                         dup_rem, dup_sqr, dup_sub)
+                         dup_exquo_ground, dup_lshift, dup_mul, dup_rem,
+                         dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_raw_dict,
@@ -655,7 +655,7 @@ def dup_primitive(f, K):
     if K.is_one(cont):
         return cont, f
     else:
-        return cont, dup_quo_ground(f, cont, K)
+        return cont, dmp_quo_ground(f, cont, 0, K)
 
 
 def dmp_ground_primitive(f, u, K):
@@ -714,8 +714,8 @@ def dup_extract(f, g, K):
     gcd = K.gcd(fc, gc)
 
     if not K.is_one(gcd):
-        f = dup_quo_ground(f, gcd, K)
-        g = dup_quo_ground(g, gcd, K)
+        f = dmp_quo_ground(f, gcd, 0, K)
+        g = dmp_quo_ground(g, gcd, 0, K)
 
     return gcd, f, g
 

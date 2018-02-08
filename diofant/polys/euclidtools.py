@@ -5,7 +5,7 @@ from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_sub, dup_div,
                          dup_max_norm, dup_mul, dup_neg, dup_prem, dup_quo,
-                         dup_quo_ground, dup_rem, dup_sub_mul)
+                         dup_rem, dup_sub_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
@@ -50,7 +50,7 @@ def dup_half_gcdex(f, g, K):
         f, g = g, r
         a, b = b, dup_sub_mul(a, q, b, K)
 
-    a = dup_quo_ground(a, dmp_LC(f, K), K)
+    a = dmp_quo_ground(a, dmp_LC(f, K), 0, K)
     f = dup_monic(f, K)
 
     return a, f
@@ -279,7 +279,7 @@ def dup_inner_subresultants(f, g, K):
         b = -lc * c**d
 
         h = dup_prem(f, g, K)
-        h = dup_quo_ground(h, b, K)
+        h = dmp_quo_ground(h, b, 0, K)
 
         lc = dmp_LC(g, K)
 
