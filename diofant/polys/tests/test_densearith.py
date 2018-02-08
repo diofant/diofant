@@ -22,8 +22,7 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dup_pquo, dup_prem, dup_quo,
                                       dup_quo_ground, dup_rem, dup_rr_div,
                                       dup_rshift, dup_sqr, dup_sub,
-                                      dup_sub_ground, dup_sub_mul,
-                                      dup_sub_term)
+                                      dup_sub_mul, dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
@@ -144,14 +143,12 @@ def test_dmp_add_ground():
     assert dmp_add_ground(f, ZZ(4), 1, ZZ) == g
 
 
-def test_dup_sub_ground():
+def test_dmp_sub_ground():
     f = ZZ.map([1, 2, 3, 4])
     g = ZZ.map([1, 2, 3, 0])
 
-    assert dup_sub_ground(f, ZZ(4), ZZ) == g
+    assert dmp_sub_ground(f, ZZ(4), 0, ZZ) == g
 
-
-def test_dmp_sub_ground():
     f = ZZ.map([[1], [2], [3], [4]])
     g = ZZ.map([[1], [2], [3], []])
 

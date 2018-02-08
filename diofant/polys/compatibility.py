@@ -14,8 +14,8 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dup_lshift, dup_max_norm, dup_mul, dup_mul_ground,
                          dup_mul_term, dup_neg, dup_pdiv, dup_pexquo, dup_pow,
                          dup_pquo, dup_prem, dup_quo, dup_quo_ground, dup_rem,
-                         dup_rr_div, dup_rshift, dup_sqr, dup_sub,
-                         dup_sub_ground, dup_sub_mul, dup_sub_term)
+                         dup_rr_div, dup_rshift, dup_sqr, dup_sub, dup_sub_mul,
+                         dup_sub_term)
 from .densebasic import dmp_degree, dmp_LC, dmp_to_dict
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_diff_eval_in, dmp_diff_in, dmp_eval, dmp_eval_in,
@@ -115,9 +115,6 @@ class IPolys:
 
     def dmp_add_ground(self, f, c):
         return self.from_dense(dmp_add_ground(self.to_dense(f), c, self.ngens-1, self.domain))
-
-    def dup_sub_ground(self, f, c):
-        return self.from_dense(dup_sub_ground(self.to_dense(f), c, self.domain))
 
     def dmp_sub_ground(self, f, c):
         return self.from_dense(dmp_sub_ground(self.to_dense(f), c, self.ngens-1, self.domain))

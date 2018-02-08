@@ -195,23 +195,6 @@ def dmp_add_ground(f, c, u, K):
     return dmp_add_term(f, dmp_ground(c, u - 1), 0, u, K)
 
 
-def dup_sub_ground(f, c, K):
-    """
-    Subtract an element of the ground domain from ``f``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sub_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
-    x**3 + 2*x**2 + 3*x
-    """
-    return dup_sub_term(f, c, 0, K)
-
-
 def dmp_sub_ground(f, c, u, K):
     """
     Subtract an element of the ground domain from ``f``.
@@ -225,7 +208,6 @@ def dmp_sub_ground(f, c, u, K):
 
     >>> R.dmp_sub_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
     x**3 + 2*x**2 + 3*x
-
     """
     return dmp_sub_term(f, dmp_ground(c, u - 1), 0, u, K)
 
