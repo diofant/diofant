@@ -9,8 +9,8 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
                          dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
                          dmp_sub_mul, dup_add, dup_div, dup_l1_norm,
-                         dup_lshift, dup_max_norm, dup_mul, dup_neg, dup_quo,
-                         dup_sqr, dup_sub, dup_sub_mul)
+                         dup_lshift, dup_max_norm, dup_mul, dup_quo, dup_sqr,
+                         dup_sub, dup_sub_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
@@ -386,7 +386,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     F = dup_sub(g, dup_lshift(h, 1, K), K)
 
     if K.is_negative(dmp_LC(F, K)):
-        F = dup_neg(F, K)
+        F = dmp_neg(F, 0, K)
 
     if F == f:
         return True
@@ -394,7 +394,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     g = dup_mirror(f, K)
 
     if K.is_negative(dmp_LC(g, K)):
-        g = dup_neg(g, K)
+        g = dmp_neg(g, 0, K)
 
     if F == g and dup_cyclotomic_p(g, K):
         return True
@@ -482,7 +482,7 @@ def dup_zz_factor_sqf(f, K):
     n = dmp_degree(g, 0)
 
     if dmp_LC(g, K) < 0:
-        cont, g = -cont, dup_neg(g, K)
+        cont, g = -cont, dmp_neg(g, 0, K)
 
     if n <= 0:
         return cont, []
@@ -550,7 +550,7 @@ def dup_zz_factor(f, K):
     n = dmp_degree(g, 0)
 
     if dmp_LC(g, K) < 0:
-        cont, g = -cont, dup_neg(g, K)
+        cont, g = -cont, dmp_neg(g, 0, K)
 
     if n <= 0:
         return cont, []
@@ -607,7 +607,7 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
     c, h = dup_primitive(g, K)
 
     if K.is_negative(dmp_LC(h, K)):
-        c, h = -c, dup_neg(h, K)
+        c, h = -c, dmp_neg(h, 0, K)
 
     v = u - 1
 

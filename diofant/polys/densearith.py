@@ -352,23 +352,6 @@ def dmp_abs(f, u, K):
         return [dmp_abs(coeff, v, K) for coeff in f]
 
 
-def dup_neg(f, K):
-    """
-    Negate a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_neg(x**2 - 1)
-    -x**2 + 1
-    """
-    return [ -coeff for coeff in f ]
-
-
 def dmp_neg(f, u, K):
     """
     Negate a polynomial in ``K[X]``.
@@ -384,11 +367,10 @@ def dmp_neg(f, u, K):
     -x**2*y + x
     """
     if not u:
-        return dup_neg(f, K)
-
-    v = u - 1
-
-    return [ dmp_neg(cf, v, K) for cf in f ]
+        return [-coeff for coeff in f]
+    else:
+        v = u - 1
+        return [dmp_neg(coeff, v, K) for coeff in f]
 
 
 def dup_add(f, g, K):
@@ -483,7 +465,7 @@ def dup_sub(f, g, K):
     x**2 - x + 1
     """
     if not f:
-        return dup_neg(g, K)
+        return dmp_neg(g, 0, K)
     if not g:
         return f
 
@@ -498,7 +480,7 @@ def dup_sub(f, g, K):
         if df > dg:
             h, f = f[:k], f[k:]
         else:
-            h, g = dup_neg(g[:k], K), g[k:]
+            h, g = dmp_neg(g[:k], 0, K), g[k:]
 
         return h + [ a - b for a, b in zip(f, g) ]
 

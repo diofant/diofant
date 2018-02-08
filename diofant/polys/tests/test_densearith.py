@@ -16,7 +16,7 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dup_add_mul, dup_add_term, dup_div,
                                       dup_expand, dup_exquo, dup_ff_div,
                                       dup_l1_norm, dup_lshift, dup_max_norm,
-                                      dup_mul, dup_mul_term, dup_neg, dup_pdiv,
+                                      dup_mul, dup_mul_term, dup_pdiv,
                                       dup_pexquo, dup_pow, dup_pquo, dup_prem,
                                       dup_quo, dup_rem, dup_rr_div, dup_rshift,
                                       dup_sqr, dup_sub, dup_sub_mul,
@@ -286,20 +286,18 @@ def test_dmp_abs():
     assert dmp_abs([[[QQ(-7, 9)]]], 2, QQ) == [[[QQ(7, 9)]]]
 
 
-def test_dup_neg():
-    assert dup_neg([], ZZ) == []
-    assert dup_neg([ZZ(1)], ZZ) == [ZZ(-1)]
-    assert dup_neg([ZZ(-7)], ZZ) == [ZZ(7)]
-    assert dup_neg([ZZ(-1), ZZ(2), ZZ(3)], ZZ) == [ZZ(1), ZZ(-2), ZZ(-3)]
-
-    assert dup_neg([], QQ) == []
-    assert dup_neg([QQ(1, 2)], QQ) == [QQ(-1, 2)]
-    assert dup_neg([QQ(-7, 9)], QQ) == [QQ(7, 9)]
-    assert dup_neg([QQ(
-        -1, 7), QQ(2, 7), QQ(3, 7)], QQ) == [QQ(1, 7), QQ(-2, 7), QQ(-3, 7)]
-
-
 def test_dmp_neg():
+    assert dmp_neg([], 0, ZZ) == []
+    assert dmp_neg([ZZ(1), 0, ZZ(-1)], 0, ZZ) == [ZZ(-1), 0, ZZ(1)]
+    assert dmp_neg([ZZ(1)], 0, ZZ) == [ZZ(-1)]
+    assert dmp_neg([ZZ(-7)], 0, ZZ) == [ZZ(7)]
+    assert dmp_neg([ZZ(-1), ZZ(2), ZZ(3)], 0, ZZ) == [ZZ(1), ZZ(-2), ZZ(-3)]
+
+    assert dmp_neg([], 0, QQ) == []
+    assert dmp_neg([QQ(1, 2)], 0, QQ) == [QQ(-1, 2)]
+    assert dmp_neg([QQ(-7, 9)], 0, QQ) == [QQ(7, 9)]
+    assert dmp_neg([QQ(-1, 7), QQ(2, 7), QQ(3, 7)], 0, QQ) == [QQ(1, 7), QQ(-2, 7), QQ(-3, 7)]
+
     assert dmp_neg([ZZ(-1)], 0, ZZ) == [ZZ(1)]
     assert dmp_neg([QQ(-1, 2)], 0, QQ) == [QQ(1, 2)]
 

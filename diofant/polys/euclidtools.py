@@ -4,8 +4,8 @@ from ..ntheory import nextprime
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_sub, dup_div,
-                         dup_max_norm, dup_mul, dup_neg, dup_prem, dup_quo,
-                         dup_rem, dup_sub_mul)
+                         dup_max_norm, dup_mul, dup_prem, dup_quo, dup_rem,
+                         dup_sub_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
@@ -781,12 +781,12 @@ def _dup_rr_trivial_gcd(f, g, K):
         if K.is_nonnegative(dmp_LC(g, K)):
             return g, [], [K.one]
         else:
-            return dup_neg(g, K), [], [-K.one]
+            return dmp_neg(g, 0, K), [], [-K.one]
     elif not g:
         if K.is_nonnegative(dmp_LC(f, K)):
             return f, [K.one], []
         else:
-            return dup_neg(f, K), [-K.one], []
+            return dmp_neg(f, 0, K), [-K.one], []
 
 
 def _dup_ff_trivial_gcd(f, g, K):

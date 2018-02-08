@@ -8,7 +8,7 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_pdiv, dmp_pexquo, dmp_pow, dmp_pquo, dmp_prem,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sqr, dmp_sub,
                          dmp_sub_ground, dmp_sub_mul, dup_add, dup_mul,
-                         dup_neg, dup_pow, dup_rem, dup_sub)
+                         dup_pow, dup_rem, dup_sub)
 from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_from_diofant, dmp_ground,
@@ -1251,7 +1251,7 @@ class ANP(CantSympify):
         return ANP(dmp_strip(list(map(dom.convert, rep)), 0), mod, dom)
 
     def neg(self):
-        return self.per(dup_neg(self.rep, self.domain))
+        return self.per(dmp_neg(self.rep, 0, self.domain))
 
     def add(self, other):
         dom, per, F, G, mod = self.unify(other)
