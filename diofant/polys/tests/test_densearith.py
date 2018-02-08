@@ -15,13 +15,12 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_sub_mul, dmp_sub_term, dup_abs,
                                       dup_add, dup_add_mul, dup_add_term,
                                       dup_div, dup_expand, dup_exquo,
-                                      dup_exquo_ground, dup_ff_div,
-                                      dup_l1_norm, dup_lshift, dup_max_norm,
-                                      dup_mul, dup_mul_term, dup_neg, dup_pdiv,
-                                      dup_pexquo, dup_pow, dup_pquo, dup_prem,
-                                      dup_quo, dup_rem, dup_rr_div, dup_rshift,
-                                      dup_sqr, dup_sub, dup_sub_mul,
-                                      dup_sub_term)
+                                      dup_ff_div, dup_l1_norm, dup_lshift,
+                                      dup_max_norm, dup_mul, dup_mul_term,
+                                      dup_neg, dup_pdiv, dup_pexquo, dup_pow,
+                                      dup_pquo, dup_prem, dup_quo, dup_rem,
+                                      dup_rr_div, dup_rshift, dup_sqr, dup_sub,
+                                      dup_sub_mul, dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
@@ -221,29 +220,31 @@ def test_dmp_quo_ground():
         f, ZZ(3), 1, ZZ), 1, ZZ) == dmp_normal([[2], [], [2]], 1, ZZ)
 
 
-def test_dup_exquo_ground():
+def test_dmp_exquo_ground():
     pytest.raises(ZeroDivisionError,
-                  lambda: dup_exquo_ground(dmp_normal([1, 2, 3], 0, ZZ), ZZ(0), ZZ))
+                  lambda: dmp_exquo_ground(dmp_normal([1, 2, 3], 0, ZZ), ZZ(0), 0, ZZ))
     pytest.raises(ExactQuotientFailed,
-                  lambda: dup_exquo_ground(dmp_normal([1, 2, 3], 0, ZZ), ZZ(3), ZZ))
+                  lambda: dmp_exquo_ground(dmp_normal([1, 2, 3], 0, ZZ), ZZ(3), 0, ZZ))
+
+    f = dmp_normal([1, 0, 2], 0, QQ)
+
+    assert dmp_exquo_ground(f, QQ(2), 0, QQ) == dmp_normal([QQ(1, 2), 0, 1], 0, QQ)
 
     f = dmp_normal([], 0, ZZ)
 
-    assert dup_exquo_ground(f, ZZ(3), ZZ) == dmp_normal([], 0, ZZ)
+    assert dmp_exquo_ground(f, ZZ(3), 0, ZZ) == dmp_normal([], 0, ZZ)
 
     f = dmp_normal([6, 2, 8], 0, ZZ)
 
-    assert dup_exquo_ground(f, ZZ(1), ZZ) == f
-    assert dup_exquo_ground(f, ZZ(2), ZZ) == dmp_normal([3, 1, 4], 0, ZZ)
+    assert dmp_exquo_ground(f, ZZ(1), 0, ZZ) == f
+    assert dmp_exquo_ground(f, ZZ(2), 0, ZZ) == dmp_normal([3, 1, 4], 0, ZZ)
 
     f = dmp_normal([6, 2, 8], 0, QQ)
 
-    assert dup_exquo_ground(f, QQ(1), QQ) == f
-    assert dup_exquo_ground(f, QQ(2), QQ) == [QQ(3), QQ(1), QQ(4)]
-    assert dup_exquo_ground(f, QQ(7), QQ) == [QQ(6, 7), QQ(2, 7), QQ(8, 7)]
+    assert dmp_exquo_ground(f, QQ(1), 0, QQ) == f
+    assert dmp_exquo_ground(f, QQ(2), 0, QQ) == [QQ(3), QQ(1), QQ(4)]
+    assert dmp_exquo_ground(f, QQ(7), 0, QQ) == [QQ(6, 7), QQ(2, 7), QQ(8, 7)]
 
-
-def test_dmp_exquo_ground():
     f = dmp_normal([[6], [2], [8]], 1, ZZ)
 
     assert dmp_exquo_ground(f, ZZ(1), 1, ZZ) == f

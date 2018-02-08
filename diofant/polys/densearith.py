@@ -266,28 +266,6 @@ def dmp_quo_ground(f, c, u, K):
     return [dmp_quo_ground(coeff, c, v, K) for coeff in f]
 
 
-def dup_exquo_ground(f, c, K):
-    """
-    Exact quotient by a constant in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", QQ)
-
-    >>> R.dup_exquo_ground(x**2 + 2, QQ(2))
-    1/2*x**2 + 1
-    """
-    if not c:
-        raise ZeroDivisionError('polynomial division')
-    if not f:
-        return f
-
-    return [ K.exquo(cf, c) for cf in f ]
-
-
 def dmp_exquo_ground(f, c, u, K):
     """
     Exact quotient by a constant in ``K[X]``.
@@ -303,11 +281,15 @@ def dmp_exquo_ground(f, c, u, K):
     1/2*x**2*y + x
     """
     if not u:
-        return dup_exquo_ground(f, c, K)
+        if not c:
+            raise ZeroDivisionError('polynomial division')
+        if not f:
+            return f
+
+        return [K.exquo(coeff, c) for coeff in f]
 
     v = u - 1
-
-    return [ dmp_exquo_ground(cf, c, v, K) for cf in f ]
+    return [dmp_exquo_ground(coeff, c, v, K) for coeff in f]
 
 
 def dup_lshift(f, n, K):

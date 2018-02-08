@@ -6,9 +6,8 @@ from math import log as _log
 from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
                          dmp_mul, dmp_mul_ground, dmp_quo_ground, dmp_rem,
-                         dmp_sub, dup_add, dup_add_term, dup_div,
-                         dup_exquo_ground, dup_lshift, dup_mul, dup_rem,
-                         dup_sqr, dup_sub)
+                         dmp_sub, dup_add, dup_add_term, dup_div, dup_lshift,
+                         dup_mul, dup_rem, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_raw_dict,
@@ -499,7 +498,7 @@ def dup_monic(f, K):
     if K.is_one(lc):
         return f
     else:
-        return dup_exquo_ground(f, lc, K)
+        return dmp_exquo_ground(f, lc, 0, K)
 
 
 def dmp_ground_monic(f, u, K):
