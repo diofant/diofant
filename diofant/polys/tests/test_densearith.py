@@ -12,15 +12,15 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_pquo, dmp_prem, dmp_quo,
                                       dmp_quo_ground, dmp_rem, dmp_rr_div,
                                       dmp_sqr, dmp_sub, dmp_sub_ground,
-                                      dmp_sub_mul, dmp_sub_term, dup_abs,
-                                      dup_add, dup_add_mul, dup_add_term,
-                                      dup_div, dup_expand, dup_exquo,
-                                      dup_ff_div, dup_l1_norm, dup_lshift,
-                                      dup_max_norm, dup_mul, dup_mul_term,
-                                      dup_neg, dup_pdiv, dup_pexquo, dup_pow,
-                                      dup_pquo, dup_prem, dup_quo, dup_rem,
-                                      dup_rr_div, dup_rshift, dup_sqr, dup_sub,
-                                      dup_sub_mul, dup_sub_term)
+                                      dmp_sub_mul, dmp_sub_term, dup_add,
+                                      dup_add_mul, dup_add_term, dup_div,
+                                      dup_expand, dup_exquo, dup_ff_div,
+                                      dup_l1_norm, dup_lshift, dup_max_norm,
+                                      dup_mul, dup_mul_term, dup_neg, dup_pdiv,
+                                      dup_pexquo, dup_pow, dup_pquo, dup_prem,
+                                      dup_quo, dup_rem, dup_rr_div, dup_rshift,
+                                      dup_sqr, dup_sub, dup_sub_mul,
+                                      dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
@@ -262,20 +262,18 @@ def test_dup_rshift():
     assert dup_rshift([1, 0, 0, 0], 3, ZZ) == [1]
 
 
-def test_dup_abs():
-    assert dup_abs([], ZZ) == []
-    assert dup_abs([ZZ( 1)], ZZ) == [ZZ(1)]
-    assert dup_abs([ZZ(-7)], ZZ) == [ZZ(7)]
-    assert dup_abs([ZZ(-1), ZZ(2), ZZ(3)], ZZ) == [ZZ(1), ZZ(2), ZZ(3)]
-
-    assert dup_abs([], QQ) == []
-    assert dup_abs([QQ( 1, 2)], QQ) == [QQ(1, 2)]
-    assert dup_abs([QQ(-7, 3)], QQ) == [QQ(7, 3)]
-    assert dup_abs(
-        [QQ(-1, 7), QQ(2, 7), QQ(3, 7)], QQ) == [QQ(1, 7), QQ(2, 7), QQ(3, 7)]
-
-
 def test_dmp_abs():
+    assert dmp_abs([], 0, ZZ) == []
+    assert dmp_abs([ZZ(1), 0, ZZ(-1)], 0, ZZ) == [ZZ(1), 0, ZZ(1)]
+    assert dmp_abs([ZZ( 1)], 0, ZZ) == [ZZ(1)]
+    assert dmp_abs([ZZ(-7)], 0, ZZ) == [ZZ(7)]
+    assert dmp_abs([ZZ(-1), ZZ(2), ZZ(3)], 0, ZZ) == [ZZ(1), ZZ(2), ZZ(3)]
+
+    assert dmp_abs([], 0, QQ) == []
+    assert dmp_abs([QQ(+1, 2)], 0, QQ) == [QQ(1, 2)]
+    assert dmp_abs([QQ(-7, 3)], 0, QQ) == [QQ(7, 3)]
+    assert dmp_abs([QQ(-1, 7), QQ(2, 7), QQ(3, 7)], 0, QQ) == [QQ(1, 7), QQ(2, 7), QQ(3, 7)]
+
     assert dmp_abs([ZZ(-1)], 0, ZZ) == [ZZ(1)]
     assert dmp_abs([QQ(-1, 2)], 0, QQ) == [QQ(1, 2)]
 

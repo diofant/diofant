@@ -331,23 +331,6 @@ def dup_rshift(f, n, K):
     return f[:-n]
 
 
-def dup_abs(f, K):
-    """
-    Make all coefficients positive in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_abs(x**2 - 1)
-    x**2 + 1
-    """
-    return [ K.abs(coeff) for coeff in f ]
-
-
 def dmp_abs(f, u, K):
     """
     Make all coefficients positive in ``K[X]``.
@@ -363,11 +346,10 @@ def dmp_abs(f, u, K):
     x**2*y + x
     """
     if not u:
-        return dup_abs(f, K)
-
-    v = u - 1
-
-    return [ dmp_abs(cf, v, K) for cf in f ]
+        return [K.abs(coeff) for coeff in f]
+    else:
+        v = u - 1
+        return [dmp_abs(coeff, v, K) for coeff in f]
 
 
 def dup_neg(f, K):
@@ -1613,7 +1595,7 @@ def dup_max_norm(f, K):
     if not f:
         return K.zero
     else:
-        return max(dup_abs(f, K))
+        return max(dmp_abs(f, 0, K))
 
 
 def dmp_max_norm(f, u, K):
@@ -1655,7 +1637,7 @@ def dup_l1_norm(f, K):
     if not f:
         return K.zero
     else:
-        return sum(dup_abs(f, K))
+        return sum(dmp_abs(f, 0, K))
 
 
 def dmp_l1_norm(f, u, K):
