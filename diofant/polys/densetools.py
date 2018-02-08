@@ -7,8 +7,8 @@ from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
                          dmp_mul, dmp_mul_ground, dmp_quo_ground, dmp_rem,
                          dmp_sub, dup_add, dup_add_term, dup_div,
-                         dup_exquo_ground, dup_lshift, dup_mul, dup_mul_ground,
-                         dup_quo_ground, dup_rem, dup_sqr, dup_sub)
+                         dup_exquo_ground, dup_lshift, dup_mul, dup_quo_ground,
+                         dup_rem, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_raw_dict,
@@ -885,7 +885,7 @@ def dup_transform(f, p, q, K):
 
     for c, q in zip(f[1:], Q[1:]):
         h = dup_mul(h, p, K)
-        q = dup_mul_ground(q, c, K)
+        q = dmp_mul_ground(q, c, 0, K)
         h = dup_add(h, q, K)
 
     return h
@@ -1158,7 +1158,7 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
         common = K1.lcm(common, K0.denom(c))
 
     if not K1.is_one(common):
-        f = dup_mul_ground(f, common, K0)
+        f = dmp_mul_ground(f, common, 0, K0)
 
     if not convert:
         return common, f
@@ -1244,7 +1244,7 @@ def dup_revert(f, n, K):
     N = int(_ceil(_log(n, 2)))
 
     for i in range(1, N + 1):
-        a = dup_mul_ground(g, K(2), K)
+        a = dmp_mul_ground(g, K(2), 0, K)
         b = dup_mul(f, dup_sqr(g, K), K)
         g = dup_rem(dup_sub(a, b, K), h, K)
         h = dup_lshift(h, dmp_degree(h, 0), K)

@@ -212,26 +212,6 @@ def dmp_sub_ground(f, c, u, K):
     return dmp_sub_term(f, dmp_ground(c, u - 1), 0, u, K)
 
 
-def dup_mul_ground(f, c, K):
-    """
-    Multiply ``f`` by a constant value in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_mul_ground(x**2 + 2*x - 1, ZZ(3))
-    3*x**2 + 6*x - 3
-    """
-    if not c or not f:
-        return []
-    else:
-        return [ cf * c for cf in f ]
-
-
 def dmp_mul_ground(f, c, u, K):
     """
     Multiply ``f`` by a constant value in ``K[X]``.
@@ -247,11 +227,10 @@ def dmp_mul_ground(f, c, u, K):
     6*x + 6*y
     """
     if not u:
-        return dup_mul_ground(f, c, K)
-
-    v = u - 1
-
-    return [ dmp_mul_ground(cf, c, v, K) for cf in f ]
+        return dmp_strip([coeff * c for coeff in f], u)
+    else:
+        v = u - 1
+        return [dmp_mul_ground(coeff, c, v, K) for coeff in f]
 
 
 def dup_quo_ground(f, c, K):
@@ -989,10 +968,10 @@ def dup_pdiv(f, g, K):
         lc_r = dmp_LC(r, K)
         j, N = dr - dg, N - 1
 
-        Q = dup_mul_ground(q, lc_g, K)
+        Q = dmp_mul_ground(q, lc_g, 0, K)
         q = dup_add_term(Q, lc_r, j, K)
 
-        R = dup_mul_ground(r, lc_g, K)
+        R = dmp_mul_ground(r, lc_g, 0, K)
         G = dup_mul_term(g, lc_r, j, K)
         r = dup_sub(R, G, K)
 
@@ -1005,8 +984,8 @@ def dup_pdiv(f, g, K):
 
     c = lc_g**N
 
-    q = dup_mul_ground(q, c, K)
-    r = dup_mul_ground(r, c, K)
+    q = dmp_mul_ground(q, c, 0, K)
+    r = dmp_mul_ground(r, c, 0, K)
 
     return q, r
 
@@ -1042,7 +1021,7 @@ def dup_prem(f, g, K):
         lc_r = dmp_LC(r, K)
         j, N = dr - dg, N - 1
 
-        R = dup_mul_ground(r, lc_g, K)
+        R = dmp_mul_ground(r, lc_g, 0, K)
         G = dup_mul_term(g, lc_r, j, K)
         r = dup_sub(R, G, K)
 
@@ -1053,7 +1032,7 @@ def dup_prem(f, g, K):
         elif not (dr < _dr):
             raise PolynomialDivisionFailed(f, g, K)
 
-    return dup_mul_ground(r, lc_g**N, K)
+    return dmp_mul_ground(r, lc_g**N, 0, K)
 
 
 def dup_pquo(f, g, K):

@@ -9,9 +9,8 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
                          dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
                          dmp_sub_mul, dup_add, dup_div, dup_l1_norm,
-                         dup_lshift, dup_max_norm, dup_mul, dup_mul_ground,
-                         dup_neg, dup_quo, dup_quo_ground, dup_sqr, dup_sub,
-                         dup_sub_mul)
+                         dup_lshift, dup_max_norm, dup_mul, dup_neg, dup_quo,
+                         dup_quo_ground, dup_sqr, dup_sub, dup_sub_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
@@ -175,7 +174,7 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
     lc = dmp_LC(f, K)
 
     if r == 1:
-        F = dup_mul_ground(f, K.gcdex(lc, p**l)[0], K)
+        F = dmp_mul_ground(f, K.gcdex(lc, p**l)[0], 0, K)
         return [ dup_trunc(F, p**l, K) ]
 
     m = p
@@ -654,7 +653,7 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
         else:
             g = K.gcd(lc, d)
             d, cc = d//g, lc//g
-            h, cs = dup_mul_ground(h, d, K), cs//d
+            h, cs = dmp_mul_ground(h, d, 0, K), cs//d
 
         c = dmp_mul_ground(c, cc, v, K)
 
@@ -736,7 +735,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
             T = dup_zz_diophantine(F, n - i, p, K)
 
             for j, (s, t) in enumerate(zip(S, T)):
-                t = dup_mul_ground(t, coeff, K)
+                t = dmp_mul_ground(t, coeff, 0, K)
                 S[j] = dup_trunc(dup_add(s, t, K), p, K)
     else:
         n = len(A)
@@ -1193,7 +1192,7 @@ def dup_factor_list_include(f, K):
     if not factors:
         return [(dmp_strip([coeff], 0), 1)]
     else:
-        g = dup_mul_ground(factors[0][0], coeff, K)
+        g = dmp_mul_ground(factors[0][0], coeff, 0, K)
         return [(g, factors[0][1])] + factors[1:]
 
 

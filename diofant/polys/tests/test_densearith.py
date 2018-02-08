@@ -17,11 +17,10 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dup_div, dup_expand, dup_exquo,
                                       dup_exquo_ground, dup_ff_div,
                                       dup_l1_norm, dup_lshift, dup_max_norm,
-                                      dup_mul, dup_mul_ground, dup_mul_term,
-                                      dup_neg, dup_pdiv, dup_pexquo, dup_pow,
-                                      dup_pquo, dup_prem, dup_quo,
-                                      dup_quo_ground, dup_rem, dup_rr_div,
-                                      dup_rshift, dup_sqr, dup_sub,
+                                      dup_mul, dup_mul_term, dup_neg, dup_pdiv,
+                                      dup_pexquo, dup_pow, dup_pquo, dup_prem,
+                                      dup_quo, dup_quo_ground, dup_rem,
+                                      dup_rr_div, dup_rshift, dup_sqr, dup_sub,
                                       dup_sub_mul, dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import ExactQuotientFailed
@@ -155,18 +154,20 @@ def test_dmp_sub_ground():
     assert dmp_sub_ground(f, ZZ(4), 1, ZZ) == g
 
 
-def test_dup_mul_ground():
+def test_dmp_mul_ground():
     f = dmp_normal([], 0, ZZ)
 
-    assert dup_mul_ground(f, ZZ(2), ZZ) == dmp_normal([], 0, ZZ)
+    assert dmp_mul_ground(f, ZZ(2), 0, ZZ) == dmp_normal([], 0, ZZ)
+
+    f = dmp_normal([1, 2, -1], 0, ZZ)
+
+    assert dmp_mul_ground(f, ZZ(3), 0, ZZ) == dmp_normal([3, 6, -3], 0, ZZ)
 
     f = dmp_normal([1, 2, 3], 0, ZZ)
 
-    assert dup_mul_ground(f, ZZ(0), ZZ) == dmp_normal([], 0, ZZ)
-    assert dup_mul_ground(f, ZZ(2), ZZ) == dmp_normal([2, 4, 6], 0, ZZ)
+    assert dmp_mul_ground(f, ZZ(0), 0, ZZ) == dmp_normal([], 0, ZZ)
+    assert dmp_mul_ground(f, ZZ(2), 0, ZZ) == dmp_normal([2, 4, 6], 0, ZZ)
 
-
-def test_dmp_mul_ground():
     assert dmp_mul_ground(f_0, ZZ(2), 2, ZZ) == [
         [[ZZ(2), ZZ(4), ZZ(6)], [ZZ(4)]],
         [[ZZ(6)]],

@@ -4,9 +4,8 @@ from ..ntheory import nextprime
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_sub, dup_div,
-                         dup_max_norm, dup_mul, dup_mul_ground, dup_neg,
-                         dup_prem, dup_quo, dup_quo_ground, dup_rem,
-                         dup_sub_mul)
+                         dup_max_norm, dup_mul, dup_neg, dup_prem, dup_quo,
+                         dup_quo_ground, dup_rem, dup_sub_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
@@ -262,7 +261,7 @@ def dup_inner_subresultants(f, g, K):
     b = (-K.one)**(d + 1)
 
     h = dup_prem(f, g, K)
-    h = dup_mul_ground(h, b, K)
+    h = dmp_mul_ground(h, b, 0, K)
 
     lc = dmp_LC(g, K)
     c = lc**d
@@ -563,7 +562,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
             e = [e]
 
         d = K.invert(dup_eval(D, a, K), p)
-        d = dup_mul_ground(D, d, K)
+        d = dmp_mul_ground(D, d, 0, K)
         d = dmp_raise(d, v, 0, K)
 
         c = dmp_mul(d, dmp_sub(R, e, v, K), v, K)
@@ -904,7 +903,7 @@ def dup_rr_prs_gcd(f, g, K):
     if K.is_negative(dmp_LC(h, K)):
         c = -c
 
-    h = dup_mul_ground(h, c, K)
+    h = dmp_mul_ground(h, c, 0, K)
 
     cff = dup_quo(f, h, K)
     cfg = dup_quo(g, h, K)
@@ -1128,7 +1127,7 @@ def dup_zz_heu_gcd(f, g, K):
                 cfg_, r = dup_div(g, h, K)
 
                 if not r:
-                    h = dup_mul_ground(h, gcd, K)
+                    h = dmp_mul_ground(h, gcd, 0, K)
                     return h, cff_, cfg_
 
             cff = _dup_zz_gcd_interpolate(cff, x, K)
@@ -1139,7 +1138,7 @@ def dup_zz_heu_gcd(f, g, K):
                 cfg_, r = dup_div(g, h, K)
 
                 if not r:
-                    h = dup_mul_ground(h, gcd, K)
+                    h = dmp_mul_ground(h, gcd, 0, K)
                     return h, cff, cfg_
 
             cfg = _dup_zz_gcd_interpolate(cfg, x, K)
@@ -1150,7 +1149,7 @@ def dup_zz_heu_gcd(f, g, K):
                 cff_, r = dup_div(f, h, K)
 
                 if not r:
-                    h = dup_mul_ground(h, gcd, K)
+                    h = dmp_mul_ground(h, gcd, 0, K)
                     return h, cff_, cfg
 
         x = 73794*x * K.sqrt(K.sqrt(x)) // 27011
@@ -1326,8 +1325,8 @@ def dup_qq_heu_gcd(f, g, K0):
     cff = dmp_convert(cff, 0, K1, K0)
     cfg = dmp_convert(cfg, 0, K1, K0)
 
-    cff = dup_mul_ground(cff, K0.quo(c, cf), K0)
-    cfg = dup_mul_ground(cfg, K0.quo(c, cg), K0)
+    cff = dmp_mul_ground(cff, K0.quo(c, cf), 0, K0)
+    cfg = dmp_mul_ground(cfg, K0.quo(c, cg), 0, K0)
 
     return h, cff, cfg
 
@@ -1564,7 +1563,7 @@ def dup_rr_lcm(f, g, K):
     h = dup_quo(dup_mul(f, g, K),
                 dup_gcd(f, g, K), K)
 
-    return dup_mul_ground(h, c, K)
+    return dmp_mul_ground(h, c, 0, K)
 
 
 def dup_ff_lcm(f, g, K):
