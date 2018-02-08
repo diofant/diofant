@@ -13,9 +13,9 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_quo_ground, dmp_rem, dmp_rr_div,
                                       dmp_sqr, dmp_sub, dmp_sub_ground,
                                       dmp_sub_mul, dmp_sub_term, dup_abs,
-                                      dup_add, dup_add_ground, dup_add_mul,
-                                      dup_add_term, dup_div, dup_expand,
-                                      dup_exquo, dup_exquo_ground, dup_ff_div,
+                                      dup_add, dup_add_mul, dup_add_term,
+                                      dup_div, dup_expand, dup_exquo,
+                                      dup_exquo_ground, dup_ff_div,
                                       dup_l1_norm, dup_lshift, dup_max_norm,
                                       dup_mul, dup_mul_ground, dup_mul_term,
                                       dup_neg, dup_pdiv, dup_pexquo, dup_pow,
@@ -132,14 +132,12 @@ def test_dmp_mul_term():
         [[QQ(2, 15), QQ(4, 15)], [QQ(6, 15)], [], []]
 
 
-def test_dup_add_ground():
+def test_dmp_add_ground():
     f = ZZ.map([1, 2, 3, 4])
     g = ZZ.map([1, 2, 3, 8])
 
-    assert dup_add_ground(f, ZZ(4), ZZ) == g
+    assert dmp_add_ground(f, ZZ(4), 0, ZZ) == g
 
-
-def test_dmp_add_ground():
     f = ZZ.map([[1], [2], [3], [4]])
     g = ZZ.map([[1], [2], [3], [8]])
 

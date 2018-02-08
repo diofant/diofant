@@ -178,23 +178,6 @@ def dmp_mul_term(f, c, i, u, K):
         return [ dmp_mul(cf, c, v, K) for cf in f ] + dmp_zeros(i, v, K)
 
 
-def dup_add_ground(f, c, K):
-    """
-    Add an element of the ground domain to ``f``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_add_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
-    x**3 + 2*x**2 + 3*x + 8
-    """
-    return dup_add_term(f, c, 0, K)
-
-
 def dmp_add_ground(f, c, u, K):
     """
     Add an element of the ground domain to ``f``.
