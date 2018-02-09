@@ -8,9 +8,8 @@ from ..utilities import subsets
 from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
                          dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
-                         dmp_sub_mul, dup_add, dup_div, dup_lshift,
-                         dup_max_norm, dup_mul, dup_quo, dup_sqr, dup_sub,
-                         dup_sub_mul)
+                         dmp_sub_mul, dup_add, dup_div, dup_lshift, dup_mul,
+                         dup_quo, dup_sqr, dup_sub, dup_sub_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
@@ -76,7 +75,7 @@ def dmp_trial_division(f, factors, u, K):
 
 def dup_zz_mignotte_bound(f, K):
     """Mignotte bound for univariate polynomials in `K[x]`. """
-    a = dup_max_norm(f, K)
+    a = dmp_max_norm(f, 0, K)
     b = abs(dmp_LC(f, K))
     n = dmp_degree(f, 0)
 
@@ -221,7 +220,7 @@ def dup_zz_zassenhaus(f, K):
         return [f]
 
     fc = f[-1]
-    A = dup_max_norm(f, K)
+    A = dmp_max_norm(f, 0, K)
     b = dmp_LC(f, K)
     B = int(abs(K.sqrt(K(n + 1))*2**n*A*b))
     C = int((n + 1)**(2*n)*A**(2*n - 1))
@@ -946,7 +945,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
     s_norm, s_arg, i = None, 0, 0
 
     for s, _, _, _, _ in configs:
-        _s_norm = dup_max_norm(s, K)
+        _s_norm = dmp_max_norm(s, 0, K)
 
         if s_norm is not None:
             if _s_norm < s_norm:

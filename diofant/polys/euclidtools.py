@@ -4,8 +4,7 @@ from ..ntheory import nextprime
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_sub, dup_div,
-                         dup_max_norm, dup_mul, dup_prem, dup_quo, dup_rem,
-                         dup_sub_mul)
+                         dup_mul, dup_prem, dup_quo, dup_rem, dup_sub_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
@@ -1099,8 +1098,8 @@ def dup_zz_heu_gcd(f, g, K):
     if df == 0 or dg == 0:
         return [gcd], f, g
 
-    f_norm = dup_max_norm(f, K)
-    g_norm = dup_max_norm(g, K)
+    f_norm = dmp_max_norm(f, 0, K)
+    g_norm = dmp_max_norm(g, 0, K)
 
     B = K(2*min(f_norm, g_norm) + 29)
 

@@ -1560,26 +1560,6 @@ def dmp_exquo(f, g, u, K):
         raise ExactQuotientFailed(f, g)
 
 
-def dup_max_norm(f, K):
-    """
-    Returns maximum norm of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_max_norm(-x**2 + 2*x - 3)
-    3
-    """
-    if not f:
-        return K.zero
-    else:
-        return max(dmp_abs(f, 0, K))
-
-
 def dmp_max_norm(f, u, K):
     """
     Returns maximum norm of a polynomial in ``K[X]``.
@@ -1595,10 +1575,9 @@ def dmp_max_norm(f, u, K):
     3
     """
     if not u:
-        return dup_max_norm(f, K)
+        return max(dmp_abs(f, 0, K), default=K.zero)
 
     v = u - 1
-
     return max(dmp_max_norm(c, v, K) for c in f)
 
 

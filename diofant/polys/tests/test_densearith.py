@@ -15,11 +15,11 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_sub_mul, dmp_sub_term, dup_add,
                                       dup_add_mul, dup_add_term, dup_div,
                                       dup_exquo, dup_ff_div, dup_lshift,
-                                      dup_max_norm, dup_mul, dup_mul_term,
-                                      dup_pdiv, dup_pexquo, dup_pow, dup_pquo,
-                                      dup_prem, dup_quo, dup_rem, dup_rr_div,
-                                      dup_rshift, dup_sqr, dup_sub,
-                                      dup_sub_mul, dup_sub_term)
+                                      dup_mul, dup_mul_term, dup_pdiv,
+                                      dup_pexquo, dup_pow, dup_pquo, dup_prem,
+                                      dup_quo, dup_rem, dup_rr_div, dup_rshift,
+                                      dup_sqr, dup_sub, dup_sub_mul,
+                                      dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
@@ -927,14 +927,13 @@ def test_dmp_div():
     pytest.raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 2, ZZ))
 
 
-def test_dup_max_norm():
-    assert dup_max_norm([], ZZ) == 0
-    assert dup_max_norm([1], ZZ) == 1
-
-    assert dup_max_norm([1, 4, 2, 3], ZZ) == 4
-
-
 def test_dmp_max_norm():
+    assert dmp_max_norm([], 0, ZZ) == 0
+    assert dmp_max_norm([1], 0, ZZ) == 1
+    assert dmp_max_norm([-1, 2, -3], 0, ZZ) == 3
+
+    assert dmp_max_norm([1, 4, 2, 3], 0, ZZ) == 4
+
     assert dmp_max_norm([[[]]], 2, ZZ) == 0
     assert dmp_max_norm([[[1]]], 2, ZZ) == 1
 
