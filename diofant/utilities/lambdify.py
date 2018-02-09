@@ -341,6 +341,9 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         # XXX: This has to be done here because of circular imports
         from ..printing.lambdarepr import NumExprPrinter as printer  # noqa: N813
 
+    if _module_present('mpmath', namespaces) and printer is None:
+        from ..printing.lambdarepr import MpmathPrinter as printer  # noqa: N813
+
     # Get the names of the args, for creating a docstring
     if not iterable(args):
         args = (args,)
