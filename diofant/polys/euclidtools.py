@@ -3,8 +3,8 @@
 from ..ntheory import nextprime
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
-                         dmp_prem, dmp_quo, dmp_quo_ground, dmp_sub, dup_div,
-                         dup_mul, dup_prem, dup_quo, dup_rem, dup_sub_mul)
+                         dmp_prem, dmp_quo, dmp_quo_ground, dmp_sub, dup_mul,
+                         dup_prem, dup_quo, dup_rem, dup_sub_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
@@ -45,7 +45,7 @@ def dup_half_gcdex(f, g, K):
     a, b = [K.one], []
 
     while g:
-        q, r = dup_div(f, g, K)
+        q, r = dmp_div(f, g, 0, K)
         f, g = g, r
         a, b = b, dup_sub_mul(a, q, b, K)
 
@@ -1120,10 +1120,10 @@ def dup_zz_heu_gcd(f, g, K):
             h = _dup_zz_gcd_interpolate(h, x, K)
             h = dup_primitive(h, K)[1]
 
-            cff_, r = dup_div(f, h, K)
+            cff_, r = dmp_div(f, h, 0, K)
 
             if not r:
-                cfg_, r = dup_div(g, h, K)
+                cfg_, r = dmp_div(g, h, 0, K)
 
                 if not r:
                     h = dmp_mul_ground(h, gcd, 0, K)
@@ -1131,10 +1131,10 @@ def dup_zz_heu_gcd(f, g, K):
 
             cff = _dup_zz_gcd_interpolate(cff, x, K)
 
-            h, r = dup_div(f, cff, K)
+            h, r = dmp_div(f, cff, 0, K)
 
             if not r:
-                cfg_, r = dup_div(g, h, K)
+                cfg_, r = dmp_div(g, h, 0, K)
 
                 if not r:
                     h = dmp_mul_ground(h, gcd, 0, K)
@@ -1142,10 +1142,10 @@ def dup_zz_heu_gcd(f, g, K):
 
             cfg = _dup_zz_gcd_interpolate(cfg, x, K)
 
-            h, r = dup_div(g, cfg, K)
+            h, r = dmp_div(g, cfg, 0, K)
 
             if not r:
-                cff_, r = dup_div(f, h, K)
+                cff_, r = dmp_div(f, h, 0, K)
 
                 if not r:
                     h = dmp_mul_ground(h, gcd, 0, K)

@@ -8,8 +8,8 @@ from ..utilities import subsets
 from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
                          dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
-                         dmp_sub_mul, dup_add, dup_div, dup_lshift, dup_mul,
-                         dup_quo, dup_sqr, dup_sub, dup_sub_mul)
+                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_quo,
+                         dup_sqr, dup_sub, dup_sub_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
@@ -41,7 +41,7 @@ def dup_trial_division(f, factors, K):
         k = 0
 
         while True:
-            q, r = dup_div(f, factor, K)
+            q, r = dmp_div(f, factor, 0, K)
 
             if not r:
                 f, k = q, k + 1
@@ -123,7 +123,7 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     e = dup_sub_mul(f, g, h, K)
     e = dup_trunc(e, M, K)
 
-    q, r = dup_div(dup_mul(s, e, K), h, K)
+    q, r = dmp_div(dup_mul(s, e, K), h, 0, K)
 
     q = dup_trunc(q, M, K)
     r = dup_trunc(r, M, K)
@@ -135,7 +135,7 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     u = dup_add(dup_mul(s, G, K), dup_mul(t, H, K), K)
     b = dup_trunc(dup_sub(u, [K.one], K), M, K)
 
-    c, d = dup_div(dup_mul(s, b, K), H, K)
+    c, d = dmp_div(dup_mul(s, b, K), H, 0, K)
 
     c = dup_trunc(c, M, K)
     d = dup_trunc(d, M, K)

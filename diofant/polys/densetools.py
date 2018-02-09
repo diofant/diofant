@@ -4,10 +4,11 @@ from math import ceil as _ceil
 from math import log as _log
 
 from ..utilities import variations
-from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
-                         dmp_mul, dmp_mul_ground, dmp_quo_ground, dmp_rem,
-                         dmp_sub, dup_add, dup_add_term, dup_div, dup_lshift,
-                         dup_mul, dup_rem, dup_sqr, dup_sub)
+from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
+                         dmp_exquo_ground, dmp_mul, dmp_mul_ground,
+                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add,
+                         dup_add_term, dup_lshift, dup_mul, dup_rem, dup_sqr,
+                         dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_raw_dict,
@@ -980,7 +981,7 @@ def _dup_left_decompose(f, h, K):
     g, i = {}, 0
 
     while f:
-        q, r = dup_div(f, h, K)
+        q, r = dmp_div(f, h, 0, K)
 
         if dmp_degree(r, 0) > 0:
             return

@@ -1370,30 +1370,6 @@ def dmp_ff_div(f, g, u, K):
     return q, r
 
 
-def dup_div(f, g, K):
-    """
-    Polynomial division with remainder in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_div(x**2 + 1, 2*x - 4)
-    (0, x**2 + 1)
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_div(x**2 + 1, 2*x - 4)
-    (1/2*x + 1, 5)
-    """
-    if K.has_Field:
-        return dup_ff_div(f, g, K)
-    else:
-        return dup_rr_div(f, g, K)
-
-
 def dup_rem(f, g, K):
     """
     Returns polynomial remainder in ``K[x]``.
@@ -1412,7 +1388,7 @@ def dup_rem(f, g, K):
     >>> R.dup_rem(x**2 + 1, 2*x - 4)
     5
     """
-    return dup_div(f, g, K)[1]
+    return dmp_div(f, g, 0, K)[1]
 
 
 def dup_quo(f, g, K):
@@ -1433,7 +1409,7 @@ def dup_quo(f, g, K):
     >>> R.dup_quo(x**2 + 1, 2*x - 4)
     1/2*x + 1
     """
-    return dup_div(f, g, K)[0]
+    return dmp_div(f, g, 0, K)[0]
 
 
 def dup_exquo(f, g, K):
@@ -1455,7 +1431,7 @@ def dup_exquo(f, g, K):
     ...
     ExactQuotientFailed: [2, -4] does not divide [1, 0, 1]
     """
-    q, r = dup_div(f, g, K)
+    q, r = dmp_div(f, g, 0, K)
 
     if not r:
         return q

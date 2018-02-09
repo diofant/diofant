@@ -9,11 +9,11 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem,
                          dmp_rr_div, dmp_sqr, dmp_sub, dmp_sub_ground,
                          dmp_sub_mul, dmp_sub_term, dup_add, dup_add_mul,
-                         dup_add_term, dup_div, dup_exquo, dup_ff_div,
-                         dup_lshift, dup_mul, dup_mul_term, dup_pdiv,
-                         dup_pexquo, dup_pow, dup_pquo, dup_prem, dup_quo,
-                         dup_rem, dup_rr_div, dup_rshift, dup_sqr, dup_sub,
-                         dup_sub_mul, dup_sub_term)
+                         dup_add_term, dup_exquo, dup_ff_div, dup_lshift,
+                         dup_mul, dup_mul_term, dup_pdiv, dup_pexquo, dup_pow,
+                         dup_pquo, dup_prem, dup_quo, dup_rem, dup_rr_div,
+                         dup_rshift, dup_sqr, dup_sub, dup_sub_mul,
+                         dup_sub_term)
 from .densebasic import dmp_degree, dmp_LC, dmp_to_dict
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_diff_eval_in, dmp_diff_in, dmp_eval, dmp_eval_in,
@@ -220,10 +220,6 @@ class IPolys:
 
     def dmp_ff_div(self, f, g):
         q, r = dmp_ff_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(q), self.from_dense(r)
-
-    def dup_div(self, f, g):
-        q, r = dup_div(self.to_dense(f), self.to_dense(g), self.domain)
         return self.from_dense(q), self.from_dense(r)
 
     def dup_rem(self, f, g):
