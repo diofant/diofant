@@ -1,6 +1,6 @@
 """Real and complex root isolation and refinement algorithms. """
 
-from .densearith import dmp_neg, dup_rem, dup_rshift
+from .densearith import dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
                          dup_reverse, dup_terms_gcd)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
@@ -44,7 +44,7 @@ def dup_sturm(f, K):
     sturm = [f, dup_diff(f, 1, K)]
 
     while sturm[-1]:
-        s = dup_rem(sturm[-2], sturm[-1], K)
+        s = dmp_rem(sturm[-2], sturm[-1], 0, K)
         sturm.append(dmp_neg(s, 0, K))
 
     return sturm[:-1]

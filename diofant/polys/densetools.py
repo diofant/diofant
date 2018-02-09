@@ -7,8 +7,7 @@ from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
                          dmp_exquo_ground, dmp_mul, dmp_mul_ground,
                          dmp_quo_ground, dmp_rem, dmp_sub, dup_add,
-                         dup_add_term, dup_lshift, dup_mul, dup_rem, dup_sqr,
-                         dup_sub)
+                         dup_add_term, dup_lshift, dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_raw_dict,
@@ -1246,7 +1245,7 @@ def dup_revert(f, n, K):
     for i in range(1, N + 1):
         a = dmp_mul_ground(g, K(2), 0, K)
         b = dup_mul(f, dup_sqr(g, K), K)
-        g = dup_rem(dup_sub(a, b, K), h, K)
+        g = dmp_rem(dup_sub(a, b, K), h, 0, K)
         h = dup_lshift(h, dmp_degree(h, 0), K)
 
     return g

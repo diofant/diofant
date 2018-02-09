@@ -8,7 +8,7 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_pdiv, dmp_pexquo, dmp_pow, dmp_pquo, dmp_prem,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sqr, dmp_sub,
                          dmp_sub_ground, dmp_sub_mul, dup_add, dup_mul,
-                         dup_pow, dup_rem, dup_sub)
+                         dup_pow, dup_sub)
 from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_from_diofant, dmp_ground,
@@ -1263,7 +1263,7 @@ class ANP(CantSympify):
 
     def mul(self, other):
         dom, per, F, G, mod = self.unify(other)
-        return per(dup_rem(dup_mul(F, G, dom), mod, dom))
+        return per(dmp_rem(dup_mul(F, G, dom), mod, 0, dom))
 
     def pow(self, n):
         """Raise ``self`` to an integer power ``n``. """
@@ -1273,15 +1273,15 @@ class ANP(CantSympify):
             else:
                 F = self.rep
 
-            return self.per(dup_rem(dup_pow(F, n, self.domain),
-                                    self.mod, self.domain))
+            return self.per(dmp_rem(dup_pow(F, n, self.domain),
+                                    self.mod, 0, self.domain))
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
 
     def div(self, other):
         dom, per, F, G, mod = self.unify(other)
-        return (per(dup_rem(dup_mul(F, dup_invert(G, mod, dom),
-                                    dom), mod, dom)), self.zero(mod, dom))
+        return (per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom),
+                                    dom), mod, 0, dom)), self.zero(mod, dom))
 
     def rem(self, other):
         dom, _, _, _, mod = self.unify(other)
@@ -1289,7 +1289,7 @@ class ANP(CantSympify):
 
     def quo(self, other):
         dom, per, F, G, mod = self.unify(other)
-        return per(dup_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, dom))
+        return per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, 0, dom))
 
     exquo = quo
 

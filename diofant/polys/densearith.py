@@ -1370,27 +1370,6 @@ def dmp_ff_div(f, g, u, K):
     return q, r
 
 
-def dup_rem(f, g, K):
-    """
-    Returns polynomial remainder in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_rem(x**2 + 1, 2*x - 4)
-    x**2 + 1
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_rem(x**2 + 1, 2*x - 4)
-    5
-    """
-    return dmp_div(f, g, 0, K)[1]
-
-
 def dup_quo(f, g, K):
     """
     Returns exact polynomial quotient in ``K[x]``.

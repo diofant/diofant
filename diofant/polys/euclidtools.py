@@ -3,8 +3,8 @@
 from ..ntheory import nextprime
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
-                         dmp_prem, dmp_quo, dmp_quo_ground, dmp_sub, dup_mul,
-                         dup_prem, dup_quo, dup_rem, dup_sub_mul)
+                         dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
+                         dup_mul, dup_prem, dup_quo, dup_sub_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
@@ -126,7 +126,7 @@ def dup_invert(f, g, K):
     s, h = dup_half_gcdex(f, g, K)
 
     if h == [K.one]:
-        return dup_rem(s, g, K)
+        return dmp_rem(s, g, 0, K)
     else:
         raise NotInvertible("zero divisor")
 
@@ -162,12 +162,12 @@ def dup_euclidean_prs(f, g, K):
 
     """
     prs = [f, g]
-    h = dup_rem(f, g, K)
+    h = dmp_rem(f, g, 0, K)
 
     while h:
         prs.append(h)
         f, g = g, h
-        h = dup_rem(f, g, K)
+        h = dmp_rem(f, g, 0, K)
 
     return prs
 
