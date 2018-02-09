@@ -1644,31 +1644,6 @@ def dmp_l1_norm(f, u, K):
     return sum(dmp_l1_norm(c, v, K) for c in f)
 
 
-def dup_expand(polys, K):
-    """
-    Multiply together several polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_expand([x**2 - 1, x, 2])
-    2*x**3 - 2*x
-    """
-    if not polys:
-        return [K.one]
-
-    f = polys[0]
-
-    for g in polys[1:]:
-        f = dup_mul(f, g, K)
-
-    return f
-
-
 def dmp_expand(polys, u, K):
     """
     Multiply together several polynomials in ``K[X]``.
