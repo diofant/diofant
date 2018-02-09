@@ -1370,33 +1370,6 @@ def dmp_ff_div(f, g, u, K):
     return q, r
 
 
-def dup_exquo(f, g, K):
-    """
-    Returns polynomial quotient in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_exquo(x**2 - 1, x - 1)
-    x + 1
-
-    >>> R.dup_exquo(x**2 + 1, 2*x - 4)
-    Traceback (most recent call last):
-    ...
-    ExactQuotientFailed: [2, -4] does not divide [1, 0, 1]
-    """
-    q, r = dmp_div(f, g, 0, K)
-
-    if not r:
-        return q
-    else:
-        raise ExactQuotientFailed(f, g)
-
-
 def dmp_div(f, g, u, K):
     """
     Polynomial division with remainder in ``K[X]``.
