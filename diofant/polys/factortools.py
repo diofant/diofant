@@ -6,11 +6,11 @@ from math import log as _log
 from ..ntheory import factorint, isprime, nextprime
 from ..utilities import subsets
 from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
-                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
-                         dmp_sub_mul, dup_add, dup_div, dup_l1_norm,
-                         dup_lshift, dup_max_norm, dup_mul, dup_quo, dup_sqr,
-                         dup_sub, dup_sub_mul)
+                         dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
+                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
+                         dmp_sub_mul, dup_add, dup_div, dup_lshift,
+                         dup_max_norm, dup_mul, dup_quo, dup_sqr, dup_sub,
+                         dup_sub_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
@@ -296,8 +296,8 @@ def dup_zz_zassenhaus(f, K):
 
             H = dup_trunc(H, pl, K)
 
-            G_norm = dup_l1_norm(G, K)
-            H_norm = dup_l1_norm(H, K)
+            G_norm = dmp_l1_norm(G, 0, K)
+            H_norm = dmp_l1_norm(H, 0, K)
 
             if G_norm*H_norm <= B:
                 T = T_S
