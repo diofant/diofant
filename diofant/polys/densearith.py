@@ -1370,27 +1370,6 @@ def dmp_ff_div(f, g, u, K):
     return q, r
 
 
-def dup_quo(f, g, K):
-    """
-    Returns exact polynomial quotient in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_quo(x**2 + 1, 2*x - 4)
-    0
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_quo(x**2 + 1, 2*x - 4)
-    1/2*x + 1
-    """
-    return dmp_div(f, g, 0, K)[0]
-
-
 def dup_exquo(f, g, K):
     """
     Returns polynomial quotient in ``K[x]``.

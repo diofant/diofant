@@ -4,7 +4,7 @@ from ..ntheory import nextprime
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
-                         dup_mul, dup_prem, dup_quo, dup_sub_mul)
+                         dup_mul, dup_prem, dup_sub_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
@@ -86,7 +86,7 @@ def dup_gcdex(f, g, K):
     s, h = dup_half_gcdex(f, g, K)
 
     F = dup_sub_mul(h, s, f, K)
-    t = dup_quo(F, g, K)
+    t = dmp_quo(F, g, 0, K)
 
     return s, t, h
 
@@ -904,8 +904,8 @@ def dup_rr_prs_gcd(f, g, K):
 
     h = dmp_mul_ground(h, c, 0, K)
 
-    cff = dup_quo(f, h, K)
-    cfg = dup_quo(g, h, K)
+    cff = dmp_quo(f, h, 0, K)
+    cfg = dmp_quo(g, h, 0, K)
 
     return h, cff, cfg
 
@@ -936,8 +936,8 @@ def dup_ff_prs_gcd(f, g, K):
     h = dup_subresultants(f, g, K)[-1]
     h = dup_monic(h, K)
 
-    cff = dup_quo(f, h, K)
-    cfg = dup_quo(g, h, K)
+    cff = dmp_quo(f, h, 0, K)
+    cfg = dmp_quo(g, h, 0, K)
 
     return h, cff, cfg
 
@@ -1559,8 +1559,8 @@ def dup_rr_lcm(f, g, K):
 
     c = K.lcm(fc, gc)
 
-    h = dup_quo(dup_mul(f, g, K),
-                dup_gcd(f, g, K), K)
+    h = dmp_quo(dup_mul(f, g, K),
+                dup_gcd(f, g, K), 0, K)
 
     return dmp_mul_ground(h, c, 0, K)
 
@@ -1583,8 +1583,8 @@ def dup_ff_lcm(f, g, K):
     x**3 + 7/2*x**2 + 3*x
 
     """
-    h = dup_quo(dup_mul(f, g, K),
-                dup_gcd(f, g, K), K)
+    h = dmp_quo(dup_mul(f, g, K),
+                dup_gcd(f, g, K), 0, K)
 
     return dup_monic(h, K)
 

@@ -1,7 +1,7 @@
 """Square-free decomposition algorithms and related tools. """
 
 from .densearith import (dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul,
-                         dup_quo, dup_sub)
+                         dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
                          dmp_inject, dmp_LC, dmp_raise, dmp_strip, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
@@ -192,7 +192,7 @@ def dup_sqf_part(f, K):
         f = dmp_neg(f, 0, K)
 
     gcd = dup_gcd(f, dup_diff(f, 1, K), K)
-    sqf = dup_quo(f, gcd, K)
+    sqf = dmp_quo(f, gcd, 0, K)
 
     if K.has_Field:
         return dup_monic(sqf, K)
@@ -463,7 +463,7 @@ def dup_gff_list(f, K):
             g = dup_mul(g, dup_shift(h, -K(k), K), K)
             H[i] = (h, k + 1)
 
-        f = dup_quo(f, g, K)
+        f = dmp_quo(f, g, 0, K)
 
         if not dmp_degree(f, 0):
             return H

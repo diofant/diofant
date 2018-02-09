@@ -8,8 +8,8 @@ from ..utilities import subsets
 from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
                          dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
-                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_quo,
-                         dup_sqr, dup_sub, dup_sub_mul)
+                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
+                         dup_sub, dup_sub_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
@@ -411,7 +411,7 @@ def dup_zz_cyclotomic_poly(n, K):
     h = [K.one, -K.one]
 
     for p, k in factorint(n).items():
-        h = dup_quo(dup_inflate(h, p, K), h, K)
+        h = dmp_quo(dup_inflate(h, p, K), h, 0, K)
         h = dup_inflate(h, p**(k - 1), K)
 
     return h
@@ -421,7 +421,7 @@ def _dup_cyclotomic_decompose(n, K):
     H = [[K.one, -K.one]]
 
     for p, k in factorint(n).items():
-        Q = [ dup_quo(dup_inflate(h, p, K), h, K) for h in H ]
+        Q = [dmp_quo(dup_inflate(h, p, K), h, 0, K) for h in H]
         H.extend(Q)
 
         for i in range(1, k):
