@@ -23,9 +23,9 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_validate, dmp_zero, dmp_zero_p,
                                       dmp_zeros, dup_from_dict,
                                       dup_from_raw_dict, dup_inflate,
-                                      dup_multi_deflate, dup_random,
-                                      dup_reverse, dup_slice, dup_terms_gcd,
-                                      dup_to_dict, dup_to_raw_dict)
+                                      dup_random, dup_reverse, dup_slice,
+                                      dup_terms_gcd, dup_to_dict,
+                                      dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -462,20 +462,20 @@ def test_dmp_deflate():
     assert dmp_deflate(f, 1, ZZ) == ((2, 1), [[1, 0, 0], [1, 0], [1]])
 
 
-def test_dup_multi_deflate():
-    assert dup_multi_deflate(([2],), ZZ) == (1, ([2],))
-    assert dup_multi_deflate(([], []), ZZ) == (1, ([], []))
-
-    assert dup_multi_deflate(([1, 2, 3],), ZZ) == (1, ([1, 2, 3],))
-    assert dup_multi_deflate(([1, 0, 2, 0, 3],), ZZ) == (2, ([1, 2, 3],))
-
-    assert dup_multi_deflate(([1, 0, 2, 0, 3], [2, 0, 0]), ZZ) == \
-        (2, ([1, 2, 3], [2, 0]))
-    assert dup_multi_deflate(([1, 0, 2, 0, 3], [2, 1, 0]), ZZ) == \
-        (1, ([1, 0, 2, 0, 3], [2, 1, 0]))
-
-
 def test_dmp_multi_deflate():
+    assert dmp_multi_deflate(([2],), 0, ZZ) == ((1,), ([2],))
+    assert dmp_multi_deflate(([], []), 0, ZZ) == ((1,), ([], []))
+
+    assert dmp_multi_deflate(([1, 2, 3],), 0, ZZ) == ((1,), ([1, 2, 3],))
+    assert dmp_multi_deflate(([1, 0, 2, 0, 3],), 0, ZZ) == ((2,), ([1, 2, 3],))
+
+    assert dmp_multi_deflate(([1, 0, 2, 0, 3], [2, 0, 0]), 0, ZZ) == \
+        ((2,), ([1, 2, 3], [2, 0]))
+    assert dmp_multi_deflate(([1, 0, 2, 0, 3], [4, 0, 0]), 0, ZZ) == \
+        ((2,), ([1, 2, 3], [4, 0]))
+    assert dmp_multi_deflate(([1, 0, 2, 0, 3], [2, 1, 0]), 0, ZZ) == \
+        ((1,), ([1, 0, 2, 0, 3], [2, 1, 0]))
+
     assert dmp_multi_deflate(([[]],), 1, ZZ) == \
         ((1, 1), ([[]],))
     assert dmp_multi_deflate(([[]], [[]]), 1, ZZ) == \

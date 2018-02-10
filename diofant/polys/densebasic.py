@@ -987,43 +987,6 @@ def dmp_deflate(f, u, K):
     return B, dmp_from_dict(H, u, K)
 
 
-def dup_multi_deflate(polys, K):
-    """
-    Map ``x**m`` to ``y`` in a set of polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 2, 0, 3])
-    >>> g = ZZ.map([4, 0, 0])
-
-    >>> dup_multi_deflate((f, g), ZZ)
-    (2, ([1, 2, 3], [4, 0]))
-    """
-    G = 0
-
-    for p in polys:
-        if dmp_degree(p, 0) <= 0:
-            return 1, polys
-
-        g = 0
-
-        for i in range(len(p)):
-            if not p[-i - 1]:
-                continue
-
-            g = igcd(g, i)
-
-            if g == 1:
-                return 1, polys
-
-        G = igcd(G, g)
-
-    return G, tuple(p[::G] for p in polys)
-
-
 def dmp_multi_deflate(polys, u, K):
     """
     Map ``x_i**m_i`` to ``y_i`` in a set of polynomials in ``K[X]``.
@@ -1039,10 +1002,6 @@ def dmp_multi_deflate(polys, u, K):
     >>> dmp_multi_deflate((f, g), 1, ZZ)
     ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
     """
-    if not u:
-        M, H = dup_multi_deflate(polys, K)
-        return (M,), H
-
     F, B = [], [0]*(u + 1)
 
     for p in polys:
