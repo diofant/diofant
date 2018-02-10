@@ -21,14 +21,13 @@ def dup_sqf_p(f, K):
     ========
 
     >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_sqf_p(x**2 - 2*x + 1)
-    False
-    >>> R.dup_sqf_p(x**2 - 1)
+    >>> dup_sqf_p([], ZZ)
     True
-
+    >>> dup_sqf_p([1, -2, 1], ZZ)
+    False
+    >>> dup_sqf_p([1, 0, -1], ZZ)
+    True
     """
     if not f:
         return True
@@ -44,14 +43,13 @@ def dmp_sqf_p(f, u, K):
     ========
 
     >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_p(x**2 + 2*x*y + y**2)
-    False
-    >>> R.dmp_sqf_p(x**2 + y**2)
+    >>> dmp_sqf_p([[]], 1, ZZ)
     True
-
+    >>> dmp_sqf_p([[1], [2, 0], [1, 0, 0]], 1, ZZ)
+    False
+    >>> dmp_sqf_p([[1], [], [1, 0, 0]], 1, ZZ)
+    True
     """
     if dmp_zero_p(f, u):
         return True

@@ -18,25 +18,25 @@ def test_dup_sqf():
     R, x = ring("x", ZZ)
 
     assert R.dup_sqf_part(0) == 0
-    assert R.dup_sqf_p(0) is True
+    assert R(0).is_squarefree is True
 
     assert R.dup_sqf_part(7) == 1
-    assert R.dup_sqf_p(7) is True
+    assert R(7).is_squarefree is True
 
     assert R.dup_sqf_part(2*x + 2) == x + 1
-    assert R.dup_sqf_p(2*x + 2) is True
+    assert (2*x + 2).is_squarefree is True
 
     assert R.dup_sqf_part(x**3 + x + 1) == x**3 + x + 1
-    assert R.dup_sqf_p(x**3 + x + 1) is True
+    assert (x**3 + x + 1).is_squarefree is True
 
     assert R.dup_sqf_part(-x**3 + x + 1) == x**3 - x - 1
-    assert R.dup_sqf_p(-x**3 + x + 1) is True
+    assert (-x**3 + x + 1).is_squarefree is True
 
     assert R.dup_sqf_part(2*x**3 + 3*x**2) == 2*x**2 + 3*x
-    assert R.dup_sqf_p(2*x**3 + 3*x**2) is False
+    assert (2*x**3 + 3*x**2).is_squarefree is False
 
     assert R.dup_sqf_part(-2*x**3 + 3*x**2) == 2*x**2 - 3*x
-    assert R.dup_sqf_p(-2*x**3 + 3*x**2) is False
+    assert (-2*x**3 + 3*x**2).is_squarefree is False
 
     assert R.dup_sqf_list(0) == (0, [])
     assert R.dup_sqf_list(1) == (1, [])
@@ -73,8 +73,8 @@ def test_dup_sqf():
     assert R1.dup_sqf_part(f) == f
     assert R2.dup_sqf_part(g) == y + 1
 
-    assert R1.dup_sqf_p(f) is True
-    assert R2.dup_sqf_p(g) is False
+    assert f.is_squarefree is True
+    assert g.is_squarefree is False
 
     R, x, y = ring("x,y", ZZ)
 
@@ -97,33 +97,33 @@ def test_dup_sqf():
 def test_dmp_sqf():
     R, x, y = ring("x,y", ZZ)
     assert R.dmp_sqf_part(0) == 0
-    assert R.dmp_sqf_p(0) is True
+    assert R(0).is_squarefree is True
 
     assert R.dmp_sqf_part(7) == 1
-    assert R.dmp_sqf_p(7) is True
+    assert R(7).is_squarefree is True
 
     assert R.dmp_sqf_list(3) == (3, [])
     assert R.dmp_sqf_list_include(3) == [(3, 1)]
 
     R, x, y, z = ring("x,y,z", ZZ)
-    assert R.dmp_sqf_p(f_0) is True
-    assert R.dmp_sqf_p(f_0**2) is False
-    assert R.dmp_sqf_p(f_1) is True
-    assert R.dmp_sqf_p(f_1**2) is False
-    assert R.dmp_sqf_p(f_2) is True
-    assert R.dmp_sqf_p(f_2**2) is False
-    assert R.dmp_sqf_p(f_3) is True
-    assert R.dmp_sqf_p(f_3**2) is False
-    assert R.dmp_sqf_p(f_5) is False
-    assert R.dmp_sqf_p(f_5**2) is False
+    assert f_0.is_squarefree is True
+    assert (f_0**2).is_squarefree is False
+    assert f_1.is_squarefree is True
+    assert (f_1**2).is_squarefree is False
+    assert f_2.is_squarefree is True
+    assert (f_2**2).is_squarefree is False
+    assert f_3.is_squarefree is True
+    assert (f_3**2).is_squarefree is False
+    assert f_5.is_squarefree is False
+    assert (f_5**2).is_squarefree is False
 
-    assert R.dmp_sqf_p(f_4) is True
+    assert f_4.is_squarefree is True
     assert R.dmp_sqf_part(f_4) == -f_4
 
     assert R.dmp_sqf_part(f_5) == x + y - z
 
     R, x, y, z, t = ring("x,y,z,t", ZZ)
-    assert R.dmp_sqf_p(f_6) is True
+    assert f_6.is_squarefree is True
     assert R.dmp_sqf_part(f_6) == f_6
 
     R, x = ring("x", ZZ)

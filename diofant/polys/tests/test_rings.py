@@ -1366,8 +1366,11 @@ def test_PolyElement_is_():
     assert (x*y + z + 1).is_quadratic
     assert (x*y*z + 1).is_quadratic is False
 
+    assert R(0).is_squarefree
     assert (x - 1).is_squarefree
     assert ((x - 1)**2).is_squarefree is False
+    assert (x**2 + y**2).is_squarefree
+    assert ((x + y)**2).is_squarefree is False
 
     assert (x**2 + x + 1).is_irreducible
     assert (x**2 + 2*x + 1).is_irreducible is False
