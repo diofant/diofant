@@ -727,13 +727,11 @@ def test_dmp_factor_list():
     pytest.raises(DomainError, lambda: R.dmp_factor_list(EX(sin(1))))
 
 
-def test_dup_irreducible_p():
-    R, x = ring("x", ZZ)
-    assert R.dup_irreducible_p(x**2 + x + 1) is True
-    assert R.dup_irreducible_p(x**2 + 2*x + 1) is False
-
-
 def test_dmp_irreducible_p():
+    R, x = ring("x", ZZ)
+    assert R.dmp_irreducible_p(x**2 + x + 1) is True
+    assert R.dmp_irreducible_p(x**2 + 2*x + 1) is False
+
     R, x, y = ring("x,y", ZZ)
     assert R.dmp_irreducible_p(2) is True
     assert R.dmp_irreducible_p(x**2 + x + 1) is True

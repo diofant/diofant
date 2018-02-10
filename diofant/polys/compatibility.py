@@ -47,10 +47,9 @@ from .factortools import (dmp_ext_factor, dmp_factor_list,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
                           dup_ext_factor, dup_factor_list,
-                          dup_factor_list_include, dup_irreducible_p,
-                          dup_trial_division, dup_zz_cyclotomic_factor,
-                          dup_zz_cyclotomic_poly, dup_zz_factor,
-                          dup_zz_factor_sqf, dup_zz_hensel_lift,
+                          dup_factor_list_include, dup_trial_division,
+                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
+                          dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
                           dup_zz_hensel_step, dup_zz_irreducible_p,
                           dup_zz_mignotte_bound)
 from .galoistools import gf_factor_sqf, gf_strip
@@ -673,9 +672,6 @@ class IPolys:
     def dmp_factor_list_include(self, f):
         factors = dmp_factor_list_include(self.to_dense(f), self.ngens-1, self.domain)
         return [ (self.from_dense(g), k) for g, k in factors ]
-
-    def dup_irreducible_p(self, f):
-        return dup_irreducible_p(self.to_dense(f), self.domain)
 
     def dmp_irreducible_p(self, f):
         return dmp_irreducible_p(self.to_dense(f), self.ngens-1, self.domain)
