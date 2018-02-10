@@ -41,9 +41,8 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dup_qq_heu_gcd, dup_resultant, dup_rr_lcm,
                           dup_rr_prs_gcd, dup_subresultants, dup_zz_heu_gcd)
 from .factortools import (dmp_ext_factor, dmp_factor_list,
-                          dmp_factor_list_include, dmp_irreducible_p,
-                          dmp_trial_division, dmp_zz_factor,
-                          dmp_zz_mignotte_bound, dmp_zz_wang,
+                          dmp_factor_list_include, dmp_trial_division,
+                          dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
                           dup_ext_factor, dup_factor_list,
@@ -672,9 +671,6 @@ class IPolys:
     def dmp_factor_list_include(self, f):
         factors = dmp_factor_list_include(self.to_dense(f), self.ngens-1, self.domain)
         return [ (self.from_dense(g), k) for g, k in factors ]
-
-    def dmp_irreducible_p(self, f):
-        return dmp_irreducible_p(self.to_dense(f), self.ngens-1, self.domain)
 
     def dup_sturm(self, f):
         seq = dup_sturm(self.to_dense(f), self.domain)

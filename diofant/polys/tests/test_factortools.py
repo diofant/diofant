@@ -5,7 +5,7 @@ import pytest
 from diofant import I, nextprime, sin, sqrt
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.polys import polyconfig as config
-from diofant.polys.factortools import dmp_zz_diophantine
+from diofant.polys.factortools import dmp_irreducible_p, dmp_zz_diophantine
 from diofant.polys.polyclasses import ANP
 from diofant.polys.polyerrors import DomainError
 from diofant.polys.rings import ring
@@ -729,10 +729,21 @@ def test_dmp_factor_list():
 
 def test_dmp_irreducible_p():
     R, x = ring("x", ZZ)
-    assert R.dmp_irreducible_p(x**2 + x + 1) is True
-    assert R.dmp_irreducible_p(x**2 + 2*x + 1) is False
+
+    assert dmp_irreducible_p((x**2 + x + 1).to_dense(), 0, ZZ) is True
+    assert dmp_irreducible_p((x**2 + 2*x + 1).to_dense(), 0, ZZ) is False
+
+    assert (x**2 + x + 1).is_irreducible is True
+    assert (x**2 + 2*x + 1).is_irreducible is False
 
     R, x, y = ring("x,y", ZZ)
-    assert R.dmp_irreducible_p(2) is True
-    assert R.dmp_irreducible_p(x**2 + x + 1) is True
-    assert R.dmp_irreducible_p(x**2 + 2*x + 1) is False
+
+    assert dmp_irreducible_p(R(2).to_dense(), 1, ZZ) is True
+    assert dmp_irreducible_p((x**2 + x + 1).to_dense(), 1, ZZ) is True
+    assert dmp_irreducible_p((x**2 + 2*x + 1).to_dense(), 1, ZZ) is False
+
+    assert R(2).is_irreducible is True
+    assert (x**2 + x + 1).is_irreducible is True
+    assert (x**2 + 2*x + 1).is_irreducible is False
+    assert ((x - 2*y)*(x + y)).is_irreducible is False
+    assert (x**2 + y**2).is_irreducible is True

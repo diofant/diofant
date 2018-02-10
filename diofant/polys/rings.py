@@ -794,7 +794,14 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     @property
     def is_irreducible(self):
-        return self.ring.dmp_irreducible_p(self)
+        _, factors = self.factor_list()
+        if not factors:
+            return True
+        elif len(factors) > 1:
+            return False
+        else:
+            _, k = factors[0]
+            return k == 1
 
     @property
     def is_cyclotomic(self):
