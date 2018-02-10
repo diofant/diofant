@@ -313,37 +313,31 @@ def test_minpoly_sympyissue_7574():
 
 
 def test_primitive_element():
-    assert primitive_element([sqrt(2)], x) == (x**2 - 2, [1])
-    assert primitive_element(
-        [sqrt(2), sqrt(3)], x) == (x**4 - 10*x**2 + 1, [1, 1])
+    assert primitive_element([sqrt(2)], x)[:-1] == (x**2 - 2, [1])
+    assert primitive_element([sqrt(2), sqrt(3)], x)[:-1] == (x**4 - 10*x**2 + 1, [1, 1])
 
-    assert primitive_element([sqrt(2)], x, polys=True) == (Poly(x**2 - 2), [1])
-    assert primitive_element([sqrt(
-        2), sqrt(3)], x, polys=True) == (Poly(x**4 - 10*x**2 + 1), [1, 1])
+    assert primitive_element([sqrt(2)], x, polys=True)[:-1] == (Poly(x**2 - 2), [1])
+    assert primitive_element([sqrt(2), sqrt(3)], x, polys=True)[:-1] == (Poly(x**4 - 10*x**2 + 1), [1, 1])
 
-    assert primitive_element(
-        [sqrt(2)], x, ex=True) == (x**2 - 2, [1], [[1, 0]])
-    assert primitive_element([sqrt(2), sqrt(3)], x, ex=True) == \
-        (x**4 - 10*x**2 + 1, [1, 1], [[Q(1, 2), 0, -Q(9, 2), 0], [-
-                                                                  Q(1, 2), 0, Q(11, 2), 0]])
+    assert primitive_element([sqrt(2)], x) == (x**2 - 2, [1], [[1, 0]])
+    assert (primitive_element([sqrt(2), sqrt(3)], x) ==
+            (x**4 - 10*x**2 + 1, [1, 1], [[Q(+1, 2), 0, -Q(9, 2), 0],
+                                          [Q(-1, 2), 0, Q(11, 2), 0]]))
 
-    assert primitive_element(
-        [sqrt(2)], x, ex=True, polys=True) == (Poly(x**2 - 2), [1], [[1, 0]])
-    assert primitive_element([sqrt(2), sqrt(3)], x, ex=True, polys=True) == \
-        (Poly(x**4 - 10*x**2 + 1), [1, 1], [[Q(1, 2), 0, -Q(9, 2),
-                                             0], [-Q(1, 2), 0, Q(11, 2), 0]])
+    assert primitive_element([sqrt(2)], x, polys=True) == (Poly(x**2 - 2), [1], [[1, 0]])
+    assert (primitive_element([sqrt(2), sqrt(3)], x, polys=True) ==
+            (Poly(x**4 - 10*x**2 + 1), [1, 1], [[Q(+1, 2), 0, -Q(9, 2), 0],
+                                                [Q(-1, 2), 0, Q(11, 2), 0]]))
 
-    assert primitive_element([sqrt(2)], polys=True) == (Poly(x**2 - 2), [1])
+    assert primitive_element([sqrt(2)], polys=True)[:-1] == (Poly(x**2 - 2), [1])
 
-    pytest.raises(ValueError, lambda: primitive_element([], x, ex=False))
-    pytest.raises(ValueError, lambda: primitive_element([], x, ex=True))
+    pytest.raises(ValueError, lambda: primitive_element([], x))
 
-    assert primitive_element([Poly(x**2 - 2)], x) == (x**2 - 2, [1])
+    assert primitive_element([Poly(x**2 - 2)], x)[:-1] == (x**2 - 2, [1])
     pytest.raises(ValueError, lambda: primitive_element([Poly(x**2 - y)], x))
 
     # issue sympy/sympy#13849
-    assert (primitive_element([sqrt(2), sqrt(2) + sqrt(5)], x,
-                              ex=True, polys=True) ==
+    assert (primitive_element([sqrt(2), sqrt(2) + sqrt(5)], x) ==
             (x**8 - 120*x**6 + 3672*x**4 - 24800*x**2 + 1296, [1, 2],
              [[QQ(1, 3456), 0, QQ(-59, 1728), 0, QQ(871, 864),
                0, QQ(-895, 144), 0],
