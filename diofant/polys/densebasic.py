@@ -945,37 +945,6 @@ def dmp_raise(f, l, u, K):
     return [ dmp_raise(c, l, v, K) for c in f ]
 
 
-def dup_deflate(f, K):
-    """
-    Map ``x**m`` to ``y`` in a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 0, 1, 0, 0, 1])
-
-    >>> dup_deflate(f, ZZ)
-    (3, [1, 1, 1])
-    """
-    if dmp_degree(f, 0) <= 0:
-        return 1, f
-
-    g = 0
-
-    for i in range(len(f)):
-        if not f[-i - 1]:
-            continue
-
-        g = igcd(g, i)
-
-        if g == 1:
-            return 1, f
-
-    return g, f[::g]
-
-
 def dmp_deflate(f, u, K):
     """
     Map ``x_i**m_i`` to ``y_i`` in a polynomial in ``K[X]``.
@@ -1012,7 +981,7 @@ def dmp_deflate(f, u, K):
     H = {}
 
     for A, coeff in F.items():
-        N = [ a // b for a, b in zip(A, B) ]
+        N = [a // b for a, b in zip(A, B)]
         H[tuple(N)] = coeff
 
     return B, dmp_from_dict(H, u, K)
