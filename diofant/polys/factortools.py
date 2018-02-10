@@ -15,7 +15,7 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
                          dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_zero_p,
-                         dup_inflate, dup_terms_gcd)
+                         dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -1125,7 +1125,7 @@ def dmp_gf_factor(f, u, K):
 
 def dup_factor_list(f, K0):
     """Factor polynomials into irreducibles in `K[x]`. """
-    j, f = dup_terms_gcd(f, K0)
+    (j,), f = dmp_terms_gcd(f, 0, K0)
     cont, f = dup_primitive(f, K0)
 
     if K0.is_FiniteField:

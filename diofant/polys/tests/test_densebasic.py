@@ -24,8 +24,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_zeros, dup_from_dict,
                                       dup_from_raw_dict, dup_inflate,
                                       dup_random, dup_reverse, dup_slice,
-                                      dup_terms_gcd, dup_to_dict,
-                                      dup_to_raw_dict)
+                                      dup_to_dict, dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -597,23 +596,20 @@ def test_dmp_eject():
     assert dmp_eject(g, 2, K) == f
 
 
-def test_dup_terms_gcd():
-    assert dup_terms_gcd([], ZZ) == (0, [])
-    assert dup_terms_gcd([1, 0, 1], ZZ) == (0, [1, 0, 1])
-    assert dup_terms_gcd([1, 0, 1, 0], ZZ) == (1, [1, 0, 1])
-    assert dup_terms_gcd([1, 3, 1, 4, 2, 0], ZZ) == (1, [1, 3, 1, 4, 2])
-
-
 def test_dmp_terms_gcd():
+    assert dmp_terms_gcd([], 0, ZZ) == ((0,), [])
+    assert dmp_terms_gcd([1, 0, 1], 0, ZZ) == ((0,), [1, 0, 1])
+    assert dmp_terms_gcd([1, 0, 1, 0], 0, ZZ) == ((1,), [1, 0, 1])
+    assert dmp_terms_gcd([1, 3, 1, 4, 2, 0], 0, ZZ) == ((1,), [1, 3, 1, 4, 2])
+    assert dmp_terms_gcd([1, 0, 1, 0, 0], 0, ZZ) == ((2,), [1, 0, 1])
+
     assert dmp_terms_gcd([[]], 1, ZZ) == ((0, 0), [[]])
 
     assert dmp_terms_gcd([1, 0, 1, 0], 0, ZZ) == ((1,), [1, 0, 1])
     assert dmp_terms_gcd([[1], [], [1], []], 1, ZZ) == ((1, 0), [[1], [], [1]])
 
-    assert dmp_terms_gcd(
-        [[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
-    assert dmp_terms_gcd(
-        [[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
+    assert dmp_terms_gcd([[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
+    assert dmp_terms_gcd([[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
 
 
 def test_dmp_list_terms():

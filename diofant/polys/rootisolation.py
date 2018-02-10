@@ -2,7 +2,7 @@
 
 from .densearith import dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
-                         dup_reverse, dup_terms_gcd)
+                         dmp_terms_gcd, dup_reverse)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
                          dup_sign_variations, dup_transform)
@@ -465,7 +465,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, fast=Fa
 
 def _isolate_zero(f, K, inf, sup, basis=False, sqf=False):
     """Handle special case of CF algorithm when ``f`` is homogeneous. """
-    j, f = dup_terms_gcd(f, K)
+    (j,), f = dmp_terms_gcd(f, 0, K)
 
     if j > 0:
         F = K.get_field()
@@ -585,7 +585,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
         zeros, zero_indices = True, {}
 
     for i, p in enumerate(polys):
-        j, p = dup_terms_gcd(p, K)
+        (j,), p = dmp_terms_gcd(p, 0, K)
 
         if zeros and j > 0:
             zero_indices[i] = j

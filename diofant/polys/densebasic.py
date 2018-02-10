@@ -1255,34 +1255,6 @@ def dmp_eject(f, u, K, front=False):
     return dmp_from_dict(h, v - 1, K)
 
 
-def dup_terms_gcd(f, K):
-    """
-    Remove GCD of terms from ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 1, 0, 0])
-
-    >>> dup_terms_gcd(f, ZZ)
-    (2, [1, 0, 1])
-    """
-    if dmp_TC(f, K) or not f:
-        return 0, f
-
-    i = 0
-
-    for c in reversed(f):  # pragma: no branch
-        if not c:
-            i += 1
-        else:
-            break
-
-    return i, f[:-i]
-
-
 def dmp_terms_gcd(f, u, K):
     """
     Remove GCD of terms from ``f`` in ``K[X]``.
