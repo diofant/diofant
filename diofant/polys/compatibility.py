@@ -8,16 +8,12 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_neg, dmp_pdiv, dmp_pexquo, dmp_pow, dmp_pquo,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem,
                          dmp_rr_div, dmp_sqr, dmp_sub, dmp_sub_ground,
-                         dmp_sub_mul, dmp_sub_term, dup_abs, dup_add,
-                         dup_add_ground, dup_add_mul, dup_add_term, dup_div,
-                         dup_expand, dup_exquo, dup_exquo_ground, dup_ff_div,
-                         dup_l1_norm, dup_lshift, dup_max_norm, dup_mul,
-                         dup_mul_ground, dup_mul_term, dup_neg, dup_pdiv,
-                         dup_pexquo, dup_pow, dup_pquo, dup_prem, dup_quo,
-                         dup_quo_ground, dup_rem, dup_rr_div, dup_rshift,
-                         dup_sqr, dup_sub, dup_sub_ground, dup_sub_mul,
-                         dup_sub_term)
-from .densebasic import dmp_degree, dmp_LC, dmp_to_dict, dup_degree, dup_LC
+                         dmp_sub_mul, dmp_sub_term, dup_add, dup_add_mul,
+                         dup_add_term, dup_ff_div, dup_lshift, dup_mul,
+                         dup_mul_term, dup_pdiv, dup_pexquo, dup_pow, dup_pquo,
+                         dup_prem, dup_rr_div, dup_rshift, dup_sqr, dup_sub,
+                         dup_sub_mul, dup_sub_term)
+from .densebasic import dmp_degree, dmp_LC, dmp_to_dict
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_diff_eval_in, dmp_diff_in, dmp_eval, dmp_eval_in,
                          dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
@@ -114,32 +110,17 @@ class IPolys:
     def dmp_mul_term(self, f, c, i):
         return self.from_dense(dmp_mul_term(self.to_dense(f), self.wrap(c).drop(0).to_dense(), i, self.ngens-1, self.domain))
 
-    def dup_add_ground(self, f, c):
-        return self.from_dense(dup_add_ground(self.to_dense(f), c, self.domain))
-
     def dmp_add_ground(self, f, c):
         return self.from_dense(dmp_add_ground(self.to_dense(f), c, self.ngens-1, self.domain))
-
-    def dup_sub_ground(self, f, c):
-        return self.from_dense(dup_sub_ground(self.to_dense(f), c, self.domain))
 
     def dmp_sub_ground(self, f, c):
         return self.from_dense(dmp_sub_ground(self.to_dense(f), c, self.ngens-1, self.domain))
 
-    def dup_mul_ground(self, f, c):
-        return self.from_dense(dup_mul_ground(self.to_dense(f), c, self.domain))
-
     def dmp_mul_ground(self, f, c):
         return self.from_dense(dmp_mul_ground(self.to_dense(f), c, self.ngens-1, self.domain))
 
-    def dup_quo_ground(self, f, c):
-        return self.from_dense(dup_quo_ground(self.to_dense(f), c, self.domain))
-
     def dmp_quo_ground(self, f, c):
         return self.from_dense(dmp_quo_ground(self.to_dense(f), c, self.ngens-1, self.domain))
-
-    def dup_exquo_ground(self, f, c):
-        return self.from_dense(dup_exquo_ground(self.to_dense(f), c, self.domain))
 
     def dmp_exquo_ground(self, f, c):
         return self.from_dense(dmp_exquo_ground(self.to_dense(f), c, self.ngens-1, self.domain))
@@ -150,14 +131,8 @@ class IPolys:
     def dup_rshift(self, f, n):
         return self.from_dense(dup_rshift(self.to_dense(f), n, self.domain))
 
-    def dup_abs(self, f):
-        return self.from_dense(dup_abs(self.to_dense(f), self.domain))
-
     def dmp_abs(self, f):
         return self.from_dense(dmp_abs(self.to_dense(f), self.ngens-1, self.domain))
-
-    def dup_neg(self, f):
-        return self.from_dense(dup_neg(self.to_dense(f), self.domain))
 
     def dmp_neg(self, f):
         return self.from_dense(dmp_neg(self.to_dense(f), self.ngens-1, self.domain))
@@ -246,19 +221,6 @@ class IPolys:
         q, r = dmp_ff_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(q), self.from_dense(r)
 
-    def dup_div(self, f, g):
-        q, r = dup_div(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(q), self.from_dense(r)
-
-    def dup_rem(self, f, g):
-        return self.from_dense(dup_rem(self.to_dense(f), self.to_dense(g), self.domain))
-
-    def dup_quo(self, f, g):
-        return self.from_dense(dup_quo(self.to_dense(f), self.to_dense(g), self.domain))
-
-    def dup_exquo(self, f, g):
-        return self.from_dense(dup_exquo(self.to_dense(f), self.to_dense(g), self.domain))
-
     def dmp_div(self, f, g):
         q, r = dmp_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(q), self.from_dense(r)
@@ -272,33 +234,21 @@ class IPolys:
     def dmp_exquo(self, f, g):
         return self.from_dense(dmp_exquo(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
 
-    def dup_max_norm(self, f):
-        return dup_max_norm(self.to_dense(f), self.domain)
-
     def dmp_max_norm(self, f):
         return dmp_max_norm(self.to_dense(f), self.ngens-1, self.domain)
-
-    def dup_l1_norm(self, f):
-        return dup_l1_norm(self.to_dense(f), self.domain)
 
     def dmp_l1_norm(self, f):
         return dmp_l1_norm(self.to_dense(f), self.ngens-1, self.domain)
 
-    def dup_expand(self, polys):
-        return self.from_dense(dup_expand(list(map(self.to_dense, polys)), self.domain))
-
     def dmp_expand(self, polys):
         return self.from_dense(dmp_expand(list(map(self.to_dense, polys)), self.ngens-1, self.domain))
 
-    def dup_LC(self, f):
-        return dup_LC(self.to_dense(f), self.domain)
-
     def dmp_LC(self, f):
         LC = dmp_LC(self.to_dense(f), self.domain)
-        return self[1:].from_dense(LC)
-
-    def dup_degree(self, f):
-        return dup_degree(self.to_dense(f))
+        if self.ngens > 1:
+            return self[1:].from_dense(LC)
+        else:
+            return LC
 
     def dmp_degree(self, f):
         return dmp_degree(self.to_dense(f), self.ngens-1)

@@ -58,6 +58,7 @@ Compatibility breaks
 * Removed ``is_zero_dimensional()`` function and :class:`~diofant.polys.polytools.GroebnerBasis`'s property of the same name, use :attr:`~diofant.polys.polytools.GroebnerBasis.dimension` instead, see :pull:`573`.
 * Drop ``MonomialOps`` class, see :pull:`586`.
 * Renamed 'n' argiment of :meth:`~diofant.core.evalf.EvalfMixin.evalf` to 'dps', see :pull:`596`.
+* Make ``ex=True`` - default format for :func:`~diofant.polys.numberfields.primitive_element`, see :pull:`597`.
 
 Minor changes
 =============

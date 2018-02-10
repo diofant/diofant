@@ -1,8 +1,8 @@
 """Real and complex root isolation and refinement algorithms. """
 
-from .densearith import dup_neg, dup_rem, dup_rshift
-from .densebasic import (dup_convert, dup_degree, dup_LC, dup_reverse,
-                         dup_strip, dup_TC, dup_terms_gcd)
+from .densearith import dmp_neg, dmp_rem, dup_rshift
+from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
+                         dup_reverse, dup_terms_gcd)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
                          dup_sign_variations, dup_transform)
@@ -44,8 +44,8 @@ def dup_sturm(f, K):
     sturm = [f, dup_diff(f, 1, K)]
 
     while sturm[-1]:
-        s = dup_rem(sturm[-2], sturm[-1], K)
-        sturm.append(dup_neg(s, K))
+        s = dmp_rem(sturm[-2], sturm[-1], 0, K)
+        sturm.append(dmp_neg(s, 0, K))
 
     return sturm[:-1]
 
@@ -64,8 +64,8 @@ def dup_root_upper_bound(f, K):
     """
     n, P = len(f), []
     t = n * [K.one]
-    if dup_LC(f, K) < 0:
-        f = dup_neg(f, K)
+    if dmp_LC(f, K) < 0:
+        f = dmp_neg(f, 0, K)
     f = list(reversed(f))
 
     for i in range(n):
@@ -230,8 +230,7 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
     """Refine a positive root of `f` given an interval `(s, t)`. """
     a, b, c, d = _mobius_from_interval((s, t), K.get_field())
 
-    f = dup_transform(f, dup_strip([a, b]),
-                      dup_strip([c, d]), K)
+    f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), K)
 
     if dup_sign_variations(f, K) != 1:
         raise RefinementFailed("there should be exactly one root in (%s, %s) interval" % (s, t))
@@ -319,7 +318,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
                 f = dup_shift(f, A, K)
                 b, d = A*a + b, A*c + d
 
-                if not dup_TC(f, K):
+                if not dmp_TC(f, K):
                     roots.append((f, (b, b, d, d)))
                     f = dup_rshift(f, 1, K)
 
@@ -336,7 +335,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
 
             a1, b1, c1, d1, r = a, a + b, c, c + d, 0
 
-            if not dup_TC(f1, K):
+            if not dmp_TC(f1, K):
                 roots.append((f1, (b1, b1, d1, d1)))
                 f1, r = dup_rshift(f1, 1, K), 1
 
@@ -348,7 +347,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             if k2 > 1:
                 f2 = dup_shift(dup_reverse(f), K.one, K)
 
-                if not dup_TC(f2, K):
+                if not dmp_TC(f2, K):
                     f2 = dup_rshift(f2, 1, K)
 
                 k2 = dup_sign_variations(f2, K)
@@ -366,7 +365,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             if f1 is None:
                 f1 = dup_shift(dup_reverse(f), K.one, K)
 
-                if not dup_TC(f1, K):
+                if not dmp_TC(f1, K):
                     f1 = dup_rshift(f1, 1, K)
 
             if k1 == 1:
@@ -381,7 +380,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             if f2 is None:
                 f2 = dup_shift(dup_reverse(f), K.one, K)
 
-                if not dup_TC(f2, K):
+                if not dmp_TC(f2, K):
                     f2 = dup_rshift(f2, 1, K)
 
             if k2 == 1:
@@ -502,7 +501,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return []
 
     I_zero, f = _isolate_zero(f, K, inf, sup, basis=False, sqf=True)
@@ -536,7 +535,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return []
 
     I_zero, f = _isolate_zero(f, K, inf, sup, basis=basis, sqf=False)
@@ -708,22 +707,22 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
 
 def dup_count_real_roots(f, K, inf=None, sup=None):
     """Returns the number of distinct real roots of ``f`` in ``[inf, sup]``. """
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return 0
 
     if not K.has_Field:
         R, K = K, K.get_field()
-        f = dup_convert(f, R, K)
+        f = dmp_convert(f, 0, R, K)
 
     sturm = dup_sturm(f, K)
 
     if inf is None:
-        signs_inf = dup_sign_variations([ dup_LC(s, K)*(-1)**dup_degree(s) for s in sturm ], K)
+        signs_inf = dup_sign_variations([dmp_LC(s, K)*(-1)**dmp_degree(s, 0) for s in sturm], K)
     else:
         signs_inf = dup_sign_variations([ dup_eval(s, inf, K) for s in sturm ], K)
 
     if sup is None:
-        signs_sup = dup_sign_variations([ dup_LC(s, K) for s in sturm ], K)
+        signs_sup = dup_sign_variations([dmp_LC(s, K) for s in sturm], K)
     else:
         signs_sup = dup_sign_variations([ dup_eval(s, sup, K) for s in sturm ], K)
 
@@ -1212,7 +1211,7 @@ def _winding_number(T, field):
 
 
 def _roots_bound(f, F):
-    lc = abs(dup_LC(f, F))
+    lc = abs(dmp_LC(f, F))
     return 2*max(F.quo(abs(c), lc) for c in f)
 
 
@@ -1226,7 +1225,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     else:
         R, F = K.get_ring(), K
 
-    f = dup_convert(f, K, F)
+    f = dmp_convert(f, 0, K, F)
 
     if inf is None or sup is None:
         B = _roots_bound(f, F)
@@ -1532,7 +1531,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if not K.is_ZZ and not K.is_QQ:
         raise DomainError("isolation of complex roots is not supported over %s" % K)
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return []
 
     if K.is_ZZ:
@@ -1540,7 +1539,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     else:
         F = K
 
-    f = dup_convert(f, K, F)
+    f = dmp_convert(f, 0, K, F)
 
     B = _roots_bound(f, F)
 
@@ -1698,8 +1697,7 @@ class RealInterval:
 
             a, b, c, d = _mobius_from_interval((s, t), dom.get_field())
 
-            f = dup_transform(f, dup_strip([a, b]),
-                              dup_strip([c, d]), dom)
+            f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), dom)
 
             self.mobius = a, b, c, d
         else:

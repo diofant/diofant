@@ -7,7 +7,7 @@ from .monomials import monomial_div, monomial_min
 from .orderings import monomial_key
 
 
-def dup_LC(f, K):
+def dmp_LC(f, K):
     """
     Return leading coefficient of ``f``.
 
@@ -16,9 +16,9 @@ def dup_LC(f, K):
 
     >>> from diofant.domains import ZZ
 
-    >>> dup_LC([], ZZ)
+    >>> dmp_LC([], ZZ)
     0
-    >>> dup_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> dmp_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     1
     """
     if not f:
@@ -27,7 +27,7 @@ def dup_LC(f, K):
         return f[0]
 
 
-def dup_TC(f, K):
+def dmp_TC(f, K):
     """
     Return trailing coefficient of ``f``.
 
@@ -36,19 +36,15 @@ def dup_TC(f, K):
 
     >>> from diofant.domains import ZZ
 
-    >>> dup_TC([], ZZ)
+    >>> dmp_TC([], ZZ)
     0
-    >>> dup_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> dmp_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     3
     """
     if not f:
         return K.zero
     else:
         return f[-1]
-
-
-dmp_LC = dup_LC
-dmp_TC = dup_TC
 
 
 def dmp_ground_LC(f, u, K):
@@ -69,7 +65,7 @@ def dmp_ground_LC(f, u, K):
         f = dmp_LC(f, K)
         u -= 1
 
-    return dup_LC(f, K)
+    return dmp_LC(f, K)
 
 
 def dmp_ground_TC(f, u, K):
@@ -90,7 +86,7 @@ def dmp_ground_TC(f, u, K):
         f = dmp_TC(f, K)
         u -= 1
 
-    return dup_TC(f, K)
+    return dmp_TC(f, K)
 
 
 def dmp_true_LT(f, u, K):
@@ -118,28 +114,7 @@ def dmp_true_LT(f, u, K):
     else:
         monom.append(len(f) - 1)
 
-    return tuple(monom), dup_LC(f, K)
-
-
-def dup_degree(f):
-    """
-    Return the leading degree of ``f`` in ``K[x]``.
-
-    Note that the degree of 0 is negative infinity (the Diofant object -oo).
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 0, 3])
-
-    >>> dup_degree(f)
-    3
-    """
-    if not f:
-        return -oo
-    return len(f) - 1
+    return tuple(monom), dmp_LC(f, K)
 
 
 def dmp_degree(f, u):
@@ -161,10 +136,7 @@ def dmp_degree(f, u):
     >>> dmp_degree(f, 1)
     1
     """
-    if dmp_zero_p(f, u):
-        return -oo
-    else:
-        return len(f) - 1
+    return -oo if dmp_zero_p(f, u) else len(f) - 1
 
 
 def dmp_degree_in(f, j, u):
@@ -227,30 +199,6 @@ def dmp_degree_list(f, u):
     return tuple(degs)
 
 
-def dup_strip(f):
-    """
-    Remove leading zeros from ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> dup_strip([0, 0, 1, 2, 3, 0])
-    [1, 2, 3, 0]
-    """
-    if not f or f[0]:
-        return f
-
-    i = 0
-
-    for cf in f:
-        if cf:
-            break
-        else:
-            i += 1
-
-    return f[i:]
-
-
 def dmp_strip(f, u):
     """
     Remove leading zeros from ``f`` in ``K[X]``.
@@ -262,23 +210,19 @@ def dmp_strip(f, u):
     [[0, 1, 2], [1]]
     """
     if not u:
-        return dup_strip(f)
-
-    if dmp_zero_p(f, u):
-        return f
-
-    i, v = 0, u - 1
-
-    for c in f:
-        if not dmp_zero_p(c, v):
-            break
+        for i, c in enumerate(f):
+            if c:
+                return f[i:]
         else:
-            i += 1
+            return dmp_zero(u)
 
-    if i == len(f):
-        return dmp_zero(u)
+    v = u - 1
+
+    for i, c in enumerate(f):
+        if not dmp_zero_p(c, v):
+            return f[i:]
     else:
-        return f[i:]
+        return dmp_zero(u)
 
 
 def dmp_validate(f, K=None):
@@ -318,7 +262,7 @@ def dmp_validate(f, K=None):
 
     def strip(g, v):
         if not v:
-            return dup_strip(g)
+            return dmp_strip(g, 0)
 
         w = v - 1
 
@@ -344,23 +288,7 @@ def dup_reverse(f):
     >>> dup_reverse(f)
     [3, 2, 1]
     """
-    return dup_strip(list(reversed(f)))
-
-
-def dup_copy(f):
-    """
-    Create a new copy of a polynomial ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3, 0])
-    >>> dup_copy([1, 2, 3, 0])
-    [1, 2, 3, 0]
-    """
-    return list(f)
+    return dmp_strip(list(reversed(f)), 0)
 
 
 def dmp_copy(f, u):
@@ -380,26 +308,7 @@ def dmp_copy(f, u):
         return list(f)
 
     v = u - 1
-
-    return [ dmp_copy(c, v) for c in f ]
-
-
-def dup_to_tuple(f):
-    """
-    Convert `f` into a tuple.
-
-    This is needed for hashing. This is similar to dup_copy().
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3, 0])
-    >>> dup_copy([1, 2, 3, 0])
-    [1, 2, 3, 0]
-    """
-    return tuple(f)
+    return [dmp_copy(c, v) for c in f]
 
 
 def dmp_to_tuple(f, u):
@@ -413,30 +322,19 @@ def dmp_to_tuple(f, u):
 
     >>> from diofant.domains import ZZ
 
+    >>> f = ZZ.map([1, 2, 3, 0])
+    >>> dmp_to_tuple(f, 0)
+    (1, 2, 3, 0)
+
     >>> f = ZZ.map([[1], [1, 2]])
     >>> dmp_to_tuple(f, 1)
     ((1,), (1, 2))
     """
     if not u:
-        return dup_to_tuple(f)
+        return tuple(f)
+
     v = u - 1
-
     return tuple(dmp_to_tuple(c, v) for c in f)
-
-
-def dup_normal(f, K):
-    """
-    Normalize univariate polynomial in the given domain.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> dup_normal([0, 1.5, 2, 3], ZZ)
-    [1, 2, 3]
-    """
-    return dup_strip([ K.normal(c) for c in f ])
 
 
 def dmp_normal(f, u, K):
@@ -452,34 +350,12 @@ def dmp_normal(f, u, K):
     [[1, 2]]
     """
     if not u:
-        return dup_normal(f, K)
-
-    v = u - 1
-
-    return dmp_strip([ dmp_normal(c, v, K) for c in f ], u)
-
-
-def dup_convert(f, K0, K1):
-    """
-    Convert the ground domain of ``f`` from ``K0`` to ``K1``.
-
-    Examples
-    ========
-
-    >>> from diofant.polys.rings import ring
-    >>> from diofant.domains import ZZ
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> dup_convert([R(1), R(2)], R.to_domain(), ZZ)
-    [1, 2]
-    >>> dup_convert([ZZ(1), ZZ(2)], ZZ, R.to_domain())
-    [1, 2]
-    """
-    if K0 is not None and K0 == K1:
-        return f
+        r = [K.normal(c) for c in f]
     else:
-        return dup_strip([ K1.convert(c, K0) for c in f ])
+        v = u - 1
+        r = [dmp_normal(c, v, K) for c in f]
+
+    return dmp_strip(r, u)
 
 
 def dmp_convert(f, u, K0, K1):
@@ -499,30 +375,16 @@ def dmp_convert(f, u, K0, K1):
     >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R.to_domain())
     [[1], [2]]
     """
-    if not u:
-        return dup_convert(f, K0, K1)
     if K0 is not None and K0 == K1:
         return f
 
-    v = u - 1
+    if not u:
+        r = [K1.convert(c, K0) for c in f]
+    else:
+        v = u - 1
+        r = [dmp_convert(c, v, K0, K1) for c in f]
 
-    return dmp_strip([ dmp_convert(c, v, K0, K1) for c in f ], u)
-
-
-def dup_from_diofant(f, K):
-    """
-    Convert the ground domain of ``f`` from Diofant to ``K``.
-
-    Examples
-    ========
-
-    >>> from diofant import Integer
-    >>> from diofant.domains import ZZ
-
-    >>> dup_from_diofant([Integer(1), Integer(2)], ZZ)
-    [1, 2]
-    """
-    return dup_strip([ K.from_diofant(c) for c in f ])
+    return dmp_strip(r, u)
 
 
 def dmp_from_diofant(f, u, K):
@@ -539,39 +401,16 @@ def dmp_from_diofant(f, u, K):
     [[1], [2]]
     """
     if not u:
-        return dup_from_diofant(f, K)
-
-    v = u - 1
-
-    return dmp_strip([ dmp_from_diofant(c, v, K) for c in f ], u)
-
-
-def dup_nth(f, n, K):
-    """
-    Return the ``n``-th coefficient of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3])
-    >>> dup_nth(f, 0, ZZ)
-    3
-    >>> dup_nth(f, 4, ZZ)
-    0
-    """
-    if n < 0:
-        raise IndexError("'n' must be non-negative, got %i" % n)
-    elif n >= len(f):
-        return K.zero
+        r = [K.from_diofant(c) for c in f]
     else:
-        return f[dup_degree(f) - n]
+        v = u - 1
+        r = [dmp_from_diofant(c, v, K) for c in f]
+    return dmp_strip(r, u)
 
 
 def dmp_nth(f, n, u, K):
     """
-    Return the ``n``-th coefficient of ``f`` in ``K[x]``.
+    Return the ``n``-th coefficient of ``f`` in ``x_0`` in ``K[X]``.
 
     Examples
     ========
@@ -587,7 +426,7 @@ def dmp_nth(f, n, u, K):
     if n < 0:
         raise IndexError("'n' must be non-negative, got %i" % n)
     elif n >= len(f):
-        return dmp_zero(u - 1)
+        return dmp_zero(u - 1) if u else K.zero
     else:
         return f[dmp_degree(f, u) - n]
 
@@ -847,7 +686,7 @@ def dup_from_dict(f, K):
         for k in range(n, -1, -1):
             h.append(f.get((k,), K.zero))
 
-    return dup_strip(h)
+    return dmp_strip(h, 0)
 
 
 def dup_from_raw_dict(f, K):
@@ -870,7 +709,7 @@ def dup_from_raw_dict(f, K):
     for k in range(n, -1, -1):
         h.append(f.get(k, K.zero))
 
-    return dup_strip(h)
+    return dmp_strip(h, 0)
 
 
 def dmp_from_dict(f, u, K):
@@ -1120,7 +959,7 @@ def dup_deflate(f, K):
     >>> dup_deflate(f, ZZ)
     (3, [1, 1, 1])
     """
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return 1, f
 
     g = 0
@@ -1197,7 +1036,7 @@ def dup_multi_deflate(polys, K):
     G = 0
 
     for p in polys:
-        if dup_degree(p) <= 0:
+        if dmp_degree(p, 0) <= 0:
             return 1, polys
 
         g = 0
@@ -1502,7 +1341,7 @@ def dup_terms_gcd(f, K):
     >>> dup_terms_gcd(f, ZZ)
     (2, [1, 0, 1])
     """
-    if dup_TC(f, K) or not f:
+    if dmp_TC(f, K) or not f:
         return 0, f
 
     i = 0
@@ -1621,7 +1460,7 @@ def dup_apply_pairs(f, g, h, args, K):
     for a, b in zip(f, g):
         result.append(h(a, b, *args))
 
-    return dup_strip(result)
+    return dmp_strip(result, 0)
 
 
 def dmp_apply_pairs(f, g, h, args, u, K):

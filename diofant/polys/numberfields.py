@@ -764,10 +764,7 @@ def primitive_element(extension, x=None, **args):
     if not args.get('polys', False):
         g = g.as_expr()
 
-    if args.get('ex', False):
-        return g, list(coeffs), H
-    else:
-        return g, list(coeffs)
+    return g, list(coeffs), H
 
 
 def is_isomorphism_possible(a, b):
@@ -898,7 +895,7 @@ def to_number_field(extension, theta=None, **args):
     if len(extension) == 1 and type(extension[0]) is tuple:
         return AlgebraicNumber(extension[0])
 
-    minpoly, coeffs = primitive_element(extension, gen, polys=True)
+    minpoly, coeffs = primitive_element(extension, gen, polys=True)[:-1]
     root = sum(coeff*ext for coeff, ext in zip(coeffs, extension))
 
     if theta is None:

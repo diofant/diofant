@@ -8,16 +8,16 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_pdiv, dmp_pexquo, dmp_pow, dmp_pquo, dmp_prem,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sqr, dmp_sub,
                          dmp_sub_ground, dmp_sub_mul, dup_add, dup_mul,
-                         dup_neg, dup_pow, dup_rem, dup_sub)
-from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
+                         dup_pow, dup_sub)
+from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_from_diofant, dmp_ground,
                          dmp_ground_LC, dmp_ground_nth, dmp_ground_p,
-                         dmp_ground_TC, dmp_inject, dmp_list_terms,
+                         dmp_ground_TC, dmp_inject, dmp_LC, dmp_list_terms,
                          dmp_negative_p, dmp_one, dmp_one_p, dmp_permute,
-                         dmp_slice_in, dmp_terms_gcd, dmp_to_dict,
-                         dmp_to_tuple, dmp_validate, dmp_zero_p, dup_convert,
-                         dup_degree, dup_from_dict, dup_LC, dup_strip, dup_TC)
+                         dmp_slice_in, dmp_strip, dmp_TC, dmp_terms_gcd,
+                         dmp_to_dict, dmp_to_tuple, dmp_validate, dmp_zero_p,
+                         dup_from_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -194,7 +194,7 @@ class DMP(CantSympify):
     def all_monoms(self):
         """Returns all monomials from ``self``. """
         if not self.lev:
-            n = dup_degree(self.rep)
+            n = dmp_degree(self.rep, 0)
 
             if n < 0:
                 return [(0,)]
@@ -206,7 +206,7 @@ class DMP(CantSympify):
     def all_terms(self):
         """Returns all terms from a ``self``. """
         if not self.lev:
-            n = dup_degree(self.rep)
+            n = dmp_degree(self.rep, 0)
 
             if n < 0:
                 return [((0,), self.domain.zero)]
@@ -1170,7 +1170,7 @@ class ANP(CantSympify):
             if type(rep) is not list:
                 rep = [dom.convert(rep)]
 
-            self.rep = dup_strip(rep)
+            self.rep = dmp_strip(rep, 0)
 
         if isinstance(mod, DMP):
             self.mod = mod.rep
@@ -1178,7 +1178,7 @@ class ANP(CantSympify):
             if type(mod) is dict:
                 self.mod = dup_from_dict(mod, dom)
             else:
-                self.mod = dup_strip(mod)
+                self.mod = dmp_strip(mod, 0)
 
         self.domain = dom
 
@@ -1196,10 +1196,10 @@ class ANP(CantSympify):
         else:
             dom = self.domain.unify(other.domain)
 
-            F = dup_convert(self.rep, self.domain, dom)
-            G = dup_convert(other.rep, other.domain, dom)
+            F = dmp_convert(self.rep, 0, self.domain, dom)
+            G = dmp_convert(other.rep, 0, other.domain, dom)
 
-            mod = dup_convert(self.mod, self.domain, dom)
+            mod = dmp_convert(self.mod, 0, self.domain, dom)
 
             def per(rep):
                 return ANP(rep, mod, dom)
@@ -1248,10 +1248,10 @@ class ANP(CantSympify):
 
     @classmethod
     def from_list(cls, rep, mod, dom):
-        return ANP(dup_strip(list(map(dom.convert, rep))), mod, dom)
+        return ANP(dmp_strip(list(map(dom.convert, rep)), 0), mod, dom)
 
     def neg(self):
-        return self.per(dup_neg(self.rep, self.domain))
+        return self.per(dmp_neg(self.rep, 0, self.domain))
 
     def add(self, other):
         dom, per, F, G, mod = self.unify(other)
@@ -1263,7 +1263,7 @@ class ANP(CantSympify):
 
     def mul(self, other):
         dom, per, F, G, mod = self.unify(other)
-        return per(dup_rem(dup_mul(F, G, dom), mod, dom))
+        return per(dmp_rem(dup_mul(F, G, dom), mod, 0, dom))
 
     def pow(self, n):
         """Raise ``self`` to an integer power ``n``. """
@@ -1273,15 +1273,15 @@ class ANP(CantSympify):
             else:
                 F = self.rep
 
-            return self.per(dup_rem(dup_pow(F, n, self.domain),
-                                    self.mod, self.domain))
+            return self.per(dmp_rem(dup_pow(F, n, self.domain),
+                                    self.mod, 0, self.domain))
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
 
     def div(self, other):
         dom, per, F, G, mod = self.unify(other)
-        return (per(dup_rem(dup_mul(F, dup_invert(G, mod, dom),
-                                    dom), mod, dom)), self.zero(mod, dom))
+        return (per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom),
+                                    dom), mod, 0, dom)), self.zero(mod, dom))
 
     def rem(self, other):
         dom, _, _, _, mod = self.unify(other)
@@ -1289,17 +1289,17 @@ class ANP(CantSympify):
 
     def quo(self, other):
         dom, per, F, G, mod = self.unify(other)
-        return per(dup_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, dom))
+        return per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, 0, dom))
 
     exquo = quo
 
     def LC(self):
         """Returns the leading coefficient of ``self``. """
-        return dup_LC(self.rep, self.domain)
+        return dmp_LC(self.rep, self.domain)
 
     def TC(self):
         """Returns the trailing coefficient of ``self``. """
-        return dup_TC(self.rep, self.domain)
+        return dmp_TC(self.rep, self.domain)
 
     @property
     def is_zero(self):

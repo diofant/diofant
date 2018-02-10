@@ -1,7 +1,7 @@
 from diofant.abc import x
 from diofant.domains import EX, RR, ZZ
 from diofant.polys import Poly
-from diofant.polys.densebasic import dup_normal
+from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import (ComputationFailed, ExactQuotientFailed,
                                       OperationNotSupported,
                                       PolificationFailed,
@@ -12,19 +12,19 @@ __all__ = ()
 
 
 def test_printing():
-    f, g = [dup_normal([], EX)]*2
+    f, g = [dmp_normal([], 0, EX)]*2
     e = PolynomialDivisionFailed(f, g, EX)
     assert str(e)[:57] == ("couldn't reduce degree in a polynomial "
                            "division algorithm")
     assert str(e)[-140:][:57] == ("You may want to use a different "
                                   "simplification algorithm.")
 
-    f, g = [dup_normal([], RR)]*2
+    f, g = [dmp_normal([], 0, RR)]*2
     e = PolynomialDivisionFailed(f, g, RR)
     assert str(e)[-139:][:74] == ("Your working precision or tolerance of "
                                   "computations may be set improperly.")
 
-    f, g = [dup_normal([], ZZ)]*2
+    f, g = [dmp_normal([], 0, ZZ)]*2
     e = PolynomialDivisionFailed(f, g, ZZ)
     assert str(e)[-168:][:80] == ("Zero detection is guaranteed in this "
                                   "coefficient domain. This may indicate a bug")

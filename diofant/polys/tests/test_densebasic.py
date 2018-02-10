@@ -21,14 +21,11 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_strip, dmp_swap, dmp_TC,
                                       dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
                                       dmp_validate, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_convert, dup_copy,
-                                      dup_deflate, dup_degree, dup_from_dict,
-                                      dup_from_diofant, dup_from_raw_dict,
-                                      dup_inflate, dup_LC, dup_multi_deflate,
-                                      dup_normal, dup_nth, dup_random,
-                                      dup_reverse, dup_slice, dup_strip,
-                                      dup_TC, dup_terms_gcd, dup_to_dict,
-                                      dup_to_raw_dict)
+                                      dmp_zeros, dup_deflate, dup_from_dict,
+                                      dup_from_raw_dict, dup_inflate,
+                                      dup_multi_deflate, dup_random,
+                                      dup_reverse, dup_slice, dup_terms_gcd,
+                                      dup_to_dict, dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -38,24 +35,18 @@ __all__ = ()
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
 
-def test_dup_LC():
-    assert dup_LC([], ZZ) == 0
-    assert dup_LC([2, 3, 4, 5], ZZ) == 2
-
-
-def test_dup_TC():
-    assert dup_TC([], ZZ) == 0
-    assert dup_TC([2, 3, 4, 5], ZZ) == 5
-
-
 def test_dmp_LC():
     assert dmp_LC([[]], ZZ) == []
+    assert dmp_LC([], ZZ) == 0
+    assert dmp_LC([2, 3, 4, 5], ZZ) == 2
     assert dmp_LC([[2, 3, 4], [5]], ZZ) == [2, 3, 4]
     assert dmp_LC([[[]]], ZZ) == [[]]
     assert dmp_LC([[[2], [3, 4]], [[5]]], ZZ) == [[2], [3, 4]]
 
 
 def test_dmp_TC():
+    assert dmp_TC([], ZZ) == 0
+    assert dmp_TC([2, 3, 4, 5], ZZ) == 5
     assert dmp_TC([[]], ZZ) == []
     assert dmp_TC([[2, 3, 4], [5]], ZZ) == [5]
     assert dmp_TC([[[]]], ZZ) == [[]]
@@ -85,14 +76,13 @@ def test_dmp_true_LT():
     assert dmp_true_LT([[1, 0], []], 1, ZZ) == ((1, 1), 1)
 
 
-def test_dup_degree():
-    assert dup_degree([]) == -oo
-    assert dup_degree([1]) == 0
-    assert dup_degree([1, 0]) == 1
-    assert dup_degree([1, 0, 0, 0, 1]) == 4
-
-
 def test_dmp_degree():
+    assert dmp_degree([], 0) == -oo
+    assert dmp_degree([1], 0) == 0
+    assert dmp_degree([1, 0], 0) == 1
+    assert dmp_degree([1, 0, 0, 0, 1], 0) == 4
+    assert dmp_degree([1, 2, 0, 3], 0) == 3
+
     assert dmp_degree([[]], 1) == -oo
     assert dmp_degree([[[]]], 2) == -oo
 
@@ -134,22 +124,22 @@ def test_dmp_degree_list():
     assert dmp_degree_list(f_6, 3) == (4, 4, 6, 3)
 
 
-def test_dup_strip():
-    assert dup_strip([]) == []
-    assert dup_strip([0]) == []
-    assert dup_strip([0, 0, 0]) == []
-
-    assert dup_strip([1]) == [1]
-    assert dup_strip([0, 1]) == [1]
-    assert dup_strip([0, 0, 0, 1]) == [1]
-
-    assert dup_strip([1, 2, 0]) == [1, 2, 0]
-    assert dup_strip([0, 1, 2, 0]) == [1, 2, 0]
-    assert dup_strip([0, 0, 0, 1, 2, 0]) == [1, 2, 0]
-
-
 def test_dmp_strip():
+    assert dmp_strip([], 0) == []
+    assert dmp_strip([0], 0) == []
+    assert dmp_strip([0, 0, 0], 0) == []
+
+    assert dmp_strip([1], 0) == [1]
+    assert dmp_strip([0, 1], 0) == [1]
+    assert dmp_strip([0, 0, 0, 1], 0) == [1]
+
+    assert dmp_strip([1, 2, 0], 0) == [1, 2, 0]
+    assert dmp_strip([0, 1, 2, 0], 0) == [1, 2, 0]
+    assert dmp_strip([0, 0, 0, 1, 2, 0], 0) == [1, 2, 0]
+
     assert dmp_strip([0, 1, 0], 0) == [1, 0]
+
+    assert dmp_strip([0, 0, 1, 2, 3, 0], 0) == [1, 2, 3, 0]
 
     assert dmp_strip([[]], 1) == [[]]
     assert dmp_strip([[], []], 1) == [[]]
@@ -181,77 +171,74 @@ def test_dup_reverse():
     assert dup_reverse([1, 2, 3, 0]) == [3, 2, 1]
 
 
-def test_dup_copy():
-    f = [ZZ(1), ZZ(0), ZZ(2)]
-    g = dup_copy(f)
+def test_dmp_copy():
+    f = [ZZ(1), ZZ(2), ZZ(3), ZZ(0)]
+    g = dmp_copy(f, 0)
+    assert f is not g
+    assert f == g
 
     g[0], g[2] = ZZ(7), ZZ(0)
-
     assert f != g
 
+    f = [ZZ(1), ZZ(0), ZZ(2)]
+    g = dmp_copy(f, 0)
+    assert f is not g
+    assert f == g
 
-def test_dmp_copy():
+    g[0], g[2] = ZZ(7), ZZ(0)
+    assert f != g
+
     f = [[ZZ(1)], [ZZ(2), ZZ(0)]]
     g = dmp_copy(f, 1)
+    assert f is not g
+    assert f == g
 
     g[0][0], g[1][1] = ZZ(7), ZZ(1)
-
     assert f != g
-
-
-def test_dup_normal():
-    assert dup_normal([0, 0, 2, 1, 0, 11, 0], ZZ) == \
-        [ZZ(2), ZZ(1), ZZ(0), ZZ(11), ZZ(0)]
 
 
 def test_dmp_normal():
-    assert dmp_normal([[0], [], [0, 2, 1], [0], [11], []], 1, ZZ) == \
-        [[ZZ(2), ZZ(1)], [], [ZZ(11)], []]
+    assert dmp_normal([0, 1.5, 2, 3], 0, ZZ) == [ZZ(1), ZZ(2), ZZ(3)]
 
+    assert (dmp_normal([0, 0, 2, 1, 0, 11, 0], 0, ZZ) ==
+            [ZZ(2), ZZ(1), ZZ(0), ZZ(11), ZZ(0)])
 
-def test_dup_convert():
-    K0, K1 = ZZ['x'], ZZ
-
-    f = [K0(1), K0(2), K0(0), K0(3)]
-
-    assert dup_convert(f, K0, K1) == \
-        [ZZ(1), ZZ(2), ZZ(0), ZZ(3)]
+    assert (dmp_normal([[0], [], [0, 2, 1], [0], [11], []], 1, ZZ) ==
+            [[ZZ(2), ZZ(1)], [], [ZZ(11)], []])
 
 
 def test_dmp_convert():
     K0, K1 = ZZ['x'], ZZ
 
+    assert dmp_convert([K0(1), K0(2)], 0, K0, K1) == [ZZ(1), ZZ(2)]
+    assert dmp_convert([K1(1), K1(2)], 0, K1, K0) == [K0(1), K0(2)]
+
+    f = [K0(1), K0(2), K0(0), K0(3)]
+
+    assert dmp_convert(f, 0, K0, K1) == [ZZ(1), ZZ(2), ZZ(0), ZZ(3)]
+
     f = [[K0(1)], [K0(2)], [], [K0(3)]]
 
-    assert dmp_convert(f, 1, K0, K1) == \
-        [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
-
-
-def test_dup_from_diofant():
-    assert dup_from_diofant([Integer(1), Integer(2)], ZZ) == \
-        [ZZ(1), ZZ(2)]
-    assert dup_from_diofant([Rational(1, 2), Integer(3)], QQ) == \
-        [QQ(1, 2), QQ(3, 1)]
+    assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
 
 
 def test_dmp_from_diofant():
-    assert dmp_from_diofant([[Integer(1), Integer(2)], [Integer(0)]], 1, ZZ) == \
-        [[ZZ(1), ZZ(2)], []]
-    assert dmp_from_diofant([[Rational(1, 2), Integer(2)]], 1, QQ) == \
-        [[QQ(1, 2), QQ(2, 1)]]
+    assert dmp_from_diofant([Integer(1), Integer(2)], 0, ZZ) == [ZZ(1), ZZ(2)]
+    assert dmp_from_diofant([Rational(1, 2), Integer(3)], 0, QQ) == [QQ(1, 2), QQ(3, 1)]
 
-
-def test_dup_nth():
-    assert dup_nth([1, 2, 3], 0, ZZ) == 3
-    assert dup_nth([1, 2, 3], 1, ZZ) == 2
-    assert dup_nth([1, 2, 3], 2, ZZ) == 1
-
-    assert dup_nth([1, 2, 3], 9, ZZ) == 0
-
-    pytest.raises(IndexError, lambda: dup_nth([3, 4, 5], -1, ZZ))
+    assert dmp_from_diofant([[Integer(1), Integer(2)], [Integer(0)]], 1, ZZ) == [[ZZ(1), ZZ(2)], []]
+    assert dmp_from_diofant([[Rational(1, 2), Integer(2)]], 1, QQ) == [[QQ(1, 2), QQ(2, 1)]]
 
 
 def test_dmp_nth():
+    assert dmp_nth([1, 2, 3], 0, 0, ZZ) == 3
+    assert dmp_nth([1, 2, 3], 1, 0, ZZ) == 2
+    assert dmp_nth([1, 2, 3], 2, 0, ZZ) == 1
+    assert dmp_nth([1, 2, 3], 4, 0, ZZ) == 0
+    assert dmp_nth([1, 2, 3], 9, 0, ZZ) == 0
+
+    pytest.raises(IndexError, lambda: dmp_nth([3, 4, 5], -1, 0, ZZ))
+
     assert dmp_nth([[1], [2], [3]], 0, 1, ZZ) == [3]
     assert dmp_nth([[1], [2], [3]], 1, 1, ZZ) == [2]
     assert dmp_nth([[1], [2], [3]], 2, 1, ZZ) == [1]
@@ -720,22 +707,22 @@ def test_dmp_slice():
 def test_dup_random():
     f = dup_random(0, -10, 10, ZZ)
 
-    assert dup_degree(f) == 0
+    assert dmp_degree(f, 0) == 0
     assert all(-10 <= c <= 10 for c in f)
 
     f = dup_random(1, -20, 20, ZZ)
 
-    assert dup_degree(f) == 1
+    assert dmp_degree(f, 0) == 1
     assert all(-20 <= c <= 20 for c in f)
 
     f = dup_random(2, -30, 30, ZZ)
 
-    assert dup_degree(f) == 2
+    assert dmp_degree(f, 0) == 2
     assert all(-30 <= c <= 30 for c in f)
 
     f = dup_random(3, -40, 40, ZZ)
 
-    assert dup_degree(f) == 3
+    assert dmp_degree(f, 0) == 3
     assert all(-40 <= c <= 40 for c in f)
 
     random.seed(11)

@@ -1432,7 +1432,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
     while g:
         rem = f
         deg = g.degree(0)  # degree in x
-        lcinv, _, gcd = _gf_gcdex(ring.dmp_LC(g), minpoly, p)
+        lcinv, _, gcd = _gf_gcdex(g.drop_to_ground(-1).LC, minpoly, p)
 
         if not gcd == 1:
             return
@@ -1441,13 +1441,13 @@ def _euclidean_algorithm(f, g, minpoly, p):
             degrem = rem.degree(0)  # degree in x
             if degrem < deg:
                 break
-            quo = (lcinv * ring.dmp_LC(rem)).set_ring(ring)
+            quo = (lcinv * rem.drop_to_ground(-1).LC).set_ring(ring)
             rem = _trunc(rem - g.mul_monom((degrem - deg, 0))*quo, minpoly, p)
 
         f = g
         g = rem
 
-    lcfinv = _gf_gcdex(ring.dmp_LC(f), minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.drop_to_ground(-1).LC, minpoly, p)[0].set_ring(ring)
 
     return _trunc(f * lcfinv, minpoly, p)
 
@@ -1592,7 +1592,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     d = 1
 
     # polynomial in Z_p[t_1, ..., t_k][z]
-    gamma = ring.dmp_LC(f) * ring.dmp_LC(g)
+    gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
     # polynomial in Z_p[t_1, ..., t_k]
     delta = minpoly.LC
 
@@ -1901,7 +1901,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     cg, g = g.primitive()
 
     # polynomial in Z[t_1, ..., t_k][z]
-    gamma = ring.dmp_LC(f) * ring.dmp_LC(g)
+    gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
     # polynomial in Z[t_1, ..., t_k]
     delta = minpoly.LC
 

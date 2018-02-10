@@ -4,16 +4,14 @@ from math import ceil as _ceil
 from math import log as _log
 
 from ..utilities import variations
-from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
-                         dmp_mul, dmp_mul_ground, dmp_quo_ground, dmp_rem,
-                         dmp_sub, dup_add, dup_add_term, dup_div,
-                         dup_exquo_ground, dup_lshift, dup_mul, dup_mul_ground,
-                         dup_quo_ground, dup_rem, dup_sqr, dup_sub)
+from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
+                         dmp_exquo_ground, dmp_mul, dmp_mul_ground,
+                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add,
+                         dup_add_term, dup_lshift, dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros, dup_convert,
-                         dup_degree, dup_from_raw_dict, dup_LC, dup_strip,
-                         dup_TC, dup_to_raw_dict)
+                         dmp_zero, dmp_zero_p, dmp_zeros, dup_from_raw_dict,
+                         dup_to_raw_dict)
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
@@ -133,7 +131,7 @@ def dup_diff(f, m, K):
     if m <= 0:
         return f
 
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
 
     if n < m:
         return []
@@ -154,7 +152,7 @@ def dup_diff(f, m, K):
             deriv.append(K(k)*coeff)
             n -= 1
 
-    return dup_strip(deriv)
+    return dmp_strip(deriv, 0)
 
 
 def dmp_diff(f, m, u, K):
@@ -251,7 +249,7 @@ def dup_eval(f, a, K):
     11
     """
     if not a:
-        return dup_TC(f, K)
+        return dmp_TC(f, K)
 
     result = K.zero
 
@@ -427,7 +425,7 @@ def dup_trunc(f, p, K):
     else:
         g = [ c % p for c in f ]
 
-    return dup_strip(g)
+    return dmp_strip(g, 0)
 
 
 def dmp_trunc(f, p, u, K):
@@ -495,12 +493,12 @@ def dup_monic(f, K):
     if not f:
         return f
 
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
 
     if K.is_one(lc):
         return f
     else:
-        return dup_exquo_ground(f, lc, K)
+        return dmp_exquo_ground(f, lc, 0, K)
 
 
 def dmp_ground_monic(f, u, K):
@@ -656,7 +654,7 @@ def dup_primitive(f, K):
     if K.is_one(cont):
         return cont, f
     else:
-        return cont, dup_quo_ground(f, cont, K)
+        return cont, dmp_quo_ground(f, cont, 0, K)
 
 
 def dmp_ground_primitive(f, u, K):
@@ -715,8 +713,8 @@ def dup_extract(f, g, K):
     gcd = K.gcd(fc, gc)
 
     if not K.is_one(gcd):
-        f = dup_quo_ground(f, gcd, K)
-        g = dup_quo_ground(g, gcd, K)
+        f = dmp_quo_ground(f, gcd, 0, K)
+        g = dmp_quo_ground(g, gcd, 0, K)
 
     return gcd, f, g
 
@@ -886,7 +884,7 @@ def dup_transform(f, p, q, K):
 
     for c, q in zip(f[1:], Q[1:]):
         h = dup_mul(h, p, K)
-        q = dup_mul_ground(q, c, K)
+        q = dmp_mul_ground(q, c, 0, K)
         h = dup_add(h, q, K)
 
     return h
@@ -907,7 +905,7 @@ def dup_compose(f, g, K):
     x**2 - x
     """
     if len(g) <= 1:
-        return dup_strip([dup_eval(f, dup_LC(g, K), K)])
+        return dmp_strip([dup_eval(f, dmp_LC(g, K), K)], 0)
 
     if not f:
         return []
@@ -953,7 +951,7 @@ def dmp_compose(f, g, u, K):
 def _dup_right_decompose(f, s, K):
     """Helper function for :func:`_dup_decompose`."""
     n = len(f) - 1
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
 
     f = dup_to_raw_dict(f)
     g = { s: K.one }
@@ -982,12 +980,12 @@ def _dup_left_decompose(f, h, K):
     g, i = {}, 0
 
     while f:
-        q, r = dup_div(f, h, K)
+        q, r = dmp_div(f, h, 0, K)
 
-        if dup_degree(r) > 0:
+        if dmp_degree(r, 0) > 0:
             return
         else:
-            g[i] = dup_LC(r, K)
+            g[i] = dmp_LC(r, K)
             f, i = q, i + 1
 
     return dup_from_raw_dict(g, K)
@@ -1159,12 +1157,12 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
         common = K1.lcm(common, K0.denom(c))
 
     if not K1.is_one(common):
-        f = dup_mul_ground(f, common, K0)
+        f = dmp_mul_ground(f, common, 0, K0)
 
     if not convert:
         return common, f
     else:
-        return common, dup_convert(f, K0, K1)
+        return common, dmp_convert(f, 0, K0, K1)
 
 
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
@@ -1239,16 +1237,16 @@ def dup_revert(f, n, K):
     >>> R.dup_revert(f, 8)
     61/720*x**6 + 5/24*x**4 + 1/2*x**2 + 1
     """
-    g = [K.revert(dup_TC(f, K))]
+    g = [K.revert(dmp_TC(f, K))]
     h = [K.one, K.zero, K.zero]
 
     N = int(_ceil(_log(n, 2)))
 
     for i in range(1, N + 1):
-        a = dup_mul_ground(g, K(2), K)
+        a = dmp_mul_ground(g, K(2), 0, K)
         b = dup_mul(f, dup_sqr(g, K), K)
-        g = dup_rem(dup_sub(a, b, K), h, K)
-        h = dup_lshift(h, dup_degree(h), K)
+        g = dmp_rem(dup_sub(a, b, K), h, 0, K)
+        h = dup_lshift(h, dmp_degree(h, 0), K)
 
     return g
 

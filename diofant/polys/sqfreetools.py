@@ -1,10 +1,9 @@
 """Square-free decomposition algorithms and related tools. """
 
 from .densearith import (dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul,
-                         dup_mul_ground, dup_neg, dup_quo, dup_sub)
-from .densebasic import (dmp_degree, dmp_ground, dmp_ground_LC, dmp_inject,
-                         dmp_raise, dmp_zero_p, dup_convert, dup_degree,
-                         dup_LC, dup_strip)
+                         dup_sub)
+from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
+                         dmp_inject, dmp_LC, dmp_raise, dmp_strip, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_diff, dup_monic,
                          dup_primitive, dup_shift)
@@ -34,7 +33,7 @@ def dup_sqf_p(f, K):
     if not f:
         return True
     else:
-        return not dup_degree(dup_gcd(f, dup_diff(f, 1, K), K))
+        return not dmp_degree(dup_gcd(f, dup_diff(f, 1, K), K), 0)
 
 
 def dmp_sqf_p(f, u, K):
@@ -158,9 +157,9 @@ def dmp_sqf_norm(f, u, K):
 
 def dup_gf_sqf_part(f, K):
     """Compute square-free part of ``f`` in ``GF(p)[x]``. """
-    f = dup_convert(f, K, K.domain)
+    f = dmp_convert(f, 0, K, K.domain)
     g = gf_sqf_part(f, K.mod, K.domain)
-    return dup_convert(g, K.domain, K)
+    return dmp_convert(g, 0, K.domain, K)
 
 
 def dmp_gf_sqf_part(f, u, K):  # pragma: no cover
@@ -189,11 +188,11 @@ def dup_sqf_part(f, K):
     if not f:
         return f
 
-    if K.is_negative(dup_LC(f, K)):
-        f = dup_neg(f, K)
+    if K.is_negative(dmp_LC(f, K)):
+        f = dmp_neg(f, 0, K)
 
     gcd = dup_gcd(f, dup_diff(f, 1, K), K)
-    sqf = dup_quo(f, gcd, K)
+    sqf = dmp_quo(f, gcd, 0, K)
 
     if K.has_Field:
         return dup_monic(sqf, K)
@@ -239,12 +238,12 @@ def dmp_sqf_part(f, u, K):
 
 def dup_gf_sqf_list(f, K, all=False):
     """Compute square-free decomposition of ``f`` in ``GF(p)[x]``. """
-    f = dup_convert(f, K, K.domain)
+    f = dmp_convert(f, 0, K, K.domain)
 
     coeff, factors = gf_sqf_list(f, K.mod, K.domain, all=all)
 
     for i, (f, k) in enumerate(factors):
-        factors[i] = (dup_convert(f, K.domain, K), k)
+        factors[i] = (dmp_convert(f, 0, K.domain, K), k)
 
     return K.convert(coeff, K.domain), factors
 
@@ -277,16 +276,16 @@ def dup_sqf_list(f, K, all=False):
         return dup_gf_sqf_list(f, K, all=all)
 
     if K.has_Field:
-        coeff = dup_LC(f, K)
+        coeff = dmp_LC(f, K)
         f = dup_monic(f, K)
     else:
         coeff, f = dup_primitive(f, K)
 
-        if K.is_negative(dup_LC(f, K)):
-            f = dup_neg(f, K)
+        if K.is_negative(dmp_LC(f, K)):
+            f = dmp_neg(f, 0, K)
             coeff = -coeff
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return coeff, []
 
     result, i = [], 1
@@ -304,7 +303,7 @@ def dup_sqf_list(f, K, all=False):
 
         g, p, q = dup_inner_gcd(p, h, K)
 
-        if all or dup_degree(g) > 0:
+        if all or dmp_degree(g, 0) > 0:
             result.append((g, i))
 
         i += 1
@@ -334,10 +333,10 @@ def dup_sqf_list_include(f, K, all=False):
     coeff, factors = dup_sqf_list(f, K, all=all)
 
     if factors and factors[0][1] == 1:
-        g = dup_mul_ground(factors[0][0], coeff, K)
+        g = dmp_mul_ground(factors[0][0], coeff, 0, K)
         return [(g, 1)] + factors[1:]
     else:
-        g = dup_strip([coeff])
+        g = dmp_strip([coeff], 0)
         return [(g, 1)] + factors
 
 
@@ -454,7 +453,7 @@ def dup_gff_list(f, K):
 
     f = dup_monic(f, K)
 
-    if not dup_degree(f):
+    if not dmp_degree(f, 0):
         return []
     else:
         g = dup_gcd(f, dup_shift(f, K.one, K), K)
@@ -464,9 +463,9 @@ def dup_gff_list(f, K):
             g = dup_mul(g, dup_shift(h, -K(k), K), K)
             H[i] = (h, k + 1)
 
-        f = dup_quo(f, g, K)
+        f = dmp_quo(f, g, 0, K)
 
-        if not dup_degree(f):
+        if not dmp_degree(f, 0):
             return H
         else:
             return [(f, 1)] + H
