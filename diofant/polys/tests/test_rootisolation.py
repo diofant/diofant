@@ -2,6 +2,7 @@
 
 import pytest
 
+from diofant.core import I
 from diofant.domains import EX, QQ, ZZ
 from diofant.polys.polyerrors import DomainError, RefinementFailed
 from diofant.polys.rings import ring
@@ -307,6 +308,17 @@ def test_dup_isolate_real_roots_sqf():
 
     R, x = ring("x", EX)
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots_sqf(x + 3))
+
+    R, x = ring("x", QQ.algebraic_field(I))
+    f = (x - 1)*(x**3 + I*x - 2)
+
+    assert R.dup_isolate_real_roots_sqf(f) == [(1, 1)]
+    assert R.dup_isolate_real_roots_sqf(f, sup=0) == []
+
+    f = (x**2 - 2)*(x**3 - x + I)
+
+    assert R.dup_isolate_real_roots_sqf(f) == [(-2, -1), (1, 2)]
+    assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 10), inf=0) == [(QQ(7, 5), QQ(10, 7))]
 
 
 def test_dup_isolate_real_roots():
@@ -760,6 +772,21 @@ def test_dup_count_complex_roots_exclude():
 
     assert R.dup_count_complex_roots(f, a, b, exclude=True) == 1
 
+    R, x = ring("x", QQ.algebraic_field(I))
+
+    f = x**4 + I*x**3 - x + 1
+
+    assert R.dup_count_complex_roots(f, inf=(QQ(0), QQ(0)), sup=(QQ(1), QQ(1))) == 1
+
+    r = R.dup_isolate_complex_roots_sqf(f)
+
+    assert r == [((QQ(-201, 100), QQ(-201, 100)), (0, 0)),
+                 ((QQ(-201, 100), 0), (0, QQ(201, 100))),
+                 ((0, QQ(-201, 100)), (QQ(201, 100), 0)),
+                 ((0, 0), (QQ(201, 100), QQ(201, 100)))]
+    assert all(R.dup_count_complex_roots(f, inf=i, sup=s) == 1
+               for i, s in r)
+
 
 def test_dup_isolate_complex_roots_sqf():
     R, x = ring("x", ZZ)
@@ -799,7 +826,43 @@ def test_dup_isolate_complex_roots_sqf():
     assert R.dup_isolate_complex_roots_sqf(f) == [((0, -4), (4, 0)), ((0, 0), (4, 4))]
 
     R, x = ring("x", EX)
-    pytest.raises(DomainError, lambda: R.dup_isolate_complex_roots_sqf(x))
+    pytest.raises(DomainError,
+                  lambda: R.dup_isolate_complex_roots_sqf(x, inf=(QQ(-1), QQ(0)),
+                                                          sup=(QQ(1), QQ(1))))
+
+    R, x = ring("x", QQ.algebraic_field(I))
+
+    f = x**4 + I*x**3 - x + 1
+
+    assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(0), QQ(0)),
+                                           sup=(QQ(1), QQ(1))) == [((0, 0), (1, QQ(1, 2)))]
+    assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(0), QQ(0)), sup=(QQ(1), QQ(1)),
+                                           eps=QQ(1, 100)) == [((QQ(79, 128), QQ(19, 64)),
+                                                                (QQ(5, 8), QQ(39, 128)))]
+    assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(0), QQ(-1)),
+                                           sup=(QQ(1), QQ(1))) == [((0, -1), (1, QQ(-1, 2))),
+                                                                   ((0, 0), (1, QQ(1, 2)))]
+    assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(0), QQ(-1)), sup=(QQ(1), QQ(1)),
+                                           eps=QQ(1, 100)) == [((QQ(79, 128), QQ(19, 64)),
+                                                                (QQ(5, 8), QQ(39, 128))),
+                                                               ((QQ(45, 64), QQ(-91, 128)),
+                                                                (QQ(91, 128), QQ(-45, 64)))]
+
+    g = (x - 1)*f
+    assert R.dup_isolate_complex_roots_sqf(g) == [((QQ(-401, 100), QQ(-401, 100)), (0, 0)),
+                                                  ((QQ(-401, 100), 0), (0, QQ(401, 100))),
+                                                  ((0, QQ(-401, 100)), (QQ(401, 100), 0)),
+                                                  ((0, 0), (QQ(401, 100), QQ(401, 100)))]
+
+    f = x**7 + I*x**4 - (2 + I)*x**3 - 3*x + 5
+
+    assert R.dup_isolate_complex_roots_sqf(f) == [((QQ(-1001, 100), 0), (0, QQ(1001, 100))),
+                                                  ((QQ(-1001, 400), QQ(-1001, 800)), (QQ(-1001, 800), 0)),
+                                                  ((QQ(-1001, 800), QQ(-1001, 800)), (0, 0)),
+                                                  ((0, QQ(-1001, 400)), (QQ(1001, 400), QQ(-1001, 800))),
+                                                  ((0, QQ(-1001, 800)), (QQ(1001, 400), 0)),
+                                                  ((0, 0), (QQ(1001, 400), QQ(1001, 800))),
+                                                  ((0, QQ(1001, 800)), (QQ(1001, 400), QQ(1001, 400)))]
 
 
 def test_dup_isolate_all_roots_sqf():

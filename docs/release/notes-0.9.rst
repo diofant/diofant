@@ -83,6 +83,7 @@ Minor changes
 * Export set singletons, see :pull:`577`.
 * Added :func:`~diofant.ntheory.primetest.is_square`, :func:`~diofant.utilities.iterables.ordered_partitions`, :func:`~diofant.utilities.iterables.permute_signs` and :func:`~diofant.utilities.iterables.signed_permutations`, see :pull:`578`.
 * Correct implementation of the trial method (uses Gröbner bases) in :func:`~diofant.polys.numberfields.primitive_element`, see :pull:`608` and :pull:`609`.
+* Internal (not in :class:`~diofant.polys.rootoftools.RootOf` yet) support of root isolation for polynomials over Gaussian rationals, see :pull:`606`.
 
 Developer changes
 =================

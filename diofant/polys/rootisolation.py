@@ -1,5 +1,6 @@
 """Real and complex root isolation and refinement algorithms. """
 
+from ..core import I
 from .densearith import dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
                          dmp_terms_gcd, dup_reverse)
@@ -496,6 +497,11 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     """
     if K.is_QQ:
         f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
+    elif K.is_Algebraic:
+        A, K = K, K.domain
+        polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
+        r = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup)
+        return [_[0] for _ in r if _[1].keys() == {0, 1}]
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
@@ -1209,15 +1215,16 @@ def _winding_number(T, field):
 
 
 def _roots_bound(f, F):
-    lc = abs(dmp_LC(f, F))
-    return 2*max(F.quo(abs(c), lc) for c in f)
+    lc = F.to_diofant(dmp_LC(f, F))
+    B = 2*max(abs(F.to_diofant(c)/lc) for c in f)
+    if not F.is_Algebraic:
+        return F.from_diofant(B)
+    else:
+        return F.domain(int(100*B) + 1)/F.domain(100)
 
 
 def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm. """
-    if not K.is_ZZ and not K.is_QQ:
-        raise DomainError("complex root counting is not supported over %s" % K)
-
     F = K.get_field()
 
     f = dmp_convert(f, 0, K, F)
@@ -1240,6 +1247,11 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
         s, t = B, B
 
     f1, f2 = dup_real_imag(f, F)
+
+    if F.is_Algebraic:
+        F = F.domain
+
+    R = F.get_ring()
 
     f1L1F = dmp_eval_in(f1, v, 1, 1, F)
     f2L1F = dmp_eval_in(f2, v, 1, 1, F)
@@ -1529,9 +1541,6 @@ def _rectangle_small_p(a, b, eps):
 
 def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False):
     """Isolate complex roots of a square-free polynomial using Collins-Krandick algorithm. """
-    if not K.is_ZZ and not K.is_QQ:
-        raise DomainError("isolation of complex roots is not supported over %s" % K)
-
     if dmp_degree(f, 0) <= 0:
         return []
 
@@ -1559,18 +1568,36 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if t <= v or s <= u:
         raise ValueError("not a valid complex isolation rectangle")
 
-    if F.is_QQ and v < 0 < t:
-        roots = []
-        for root in dup_isolate_complex_roots_sqf(f, F, eps=eps,
-                                                  inf=(u, F.zero), sup=(s, t),
-                                                  blackbox=True):
-            croot = root.conjugate()
-            if croot.ay >= v:
-                roots.append(croot)
-            roots.append(root)
+    if v < 0 < t:
+        roots = dup_isolate_complex_roots_sqf(f, F, eps=eps, inf=(u, 0),
+                                              sup=(s, t), blackbox=True)
+        if F.is_QQ:
+            _roots = []
+            for root in roots:
+                croot = root.conjugate()
+                if croot.ay >= v:
+                    _roots.append(croot)
+                _roots.append(root)
+            roots = _roots
+        elif F.is_Algebraic and F.ext.as_expr() == I:
+            # Take conjugated polynomial to get solutions in the
+            # bottom half-plane.
+            f = [F([-_.to_dict().get((1,), F.domain.zero),
+                    +_.to_dict().get((0,), F.domain.zero)]) for _ in f]
+            roots += [_.conjugate()
+                      for _ in dup_isolate_complex_roots_sqf(f, F, eps=eps,
+                                                             inf=(u, 0), sup=(s, -v),
+                                                             blackbox=True)]
+            roots = sorted(roots, key=lambda r: (r.ax, r.ay))
+        else:  # pragma: no cover
+            raise NotImplementedError
+
         return roots if blackbox else [r.as_tuple() for r in roots]
 
     f1, f2 = dup_real_imag(f, F)
+
+    if F.is_Algebraic:
+        F = K.domain
 
     f1L1 = dmp_eval_in(f1, v, 1, 1, F)
     f2L1 = dmp_eval_in(f2, v, 1, 1, F)
@@ -1608,19 +1635,19 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if not N:
         return []
 
-    I = I_L1, I_L2, I_L3, I_L4
-    Q = Q_L1, Q_L2, Q_L3, Q_L4
+    I_L = I_L1, I_L2, I_L3, I_L4
+    Q_L = Q_L1, Q_L2, Q_L3, Q_L4
 
     F1 = f1L1, f1L2, f1L3, f1L4
     F2 = f2L1, f2L2, f2L3, f2L4
 
-    rectangles, roots = [(N, (u, v), (s, t), I, Q, F1, F2)], []
+    rectangles, roots = [(N, (u, v), (s, t), I_L, Q_L, F1, F2)], []
 
     while rectangles:
-        N, (u, v), (s, t), I, Q, F1, F2 = _depth_first_select(rectangles)
+        N, (u, v), (s, t), I_L, Q_L, F1, F2 = _depth_first_select(rectangles)
 
         if s - u > t - v:
-            D_L, D_R = _vertical_bisection(N, (u, v), (s, t), I, Q, F1, F2, f1, f2, F)
+            D_L, D_R = _vertical_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2, F)
 
             N_L, a, b, I_L, Q_L, F1_L, F2_L = D_L
             N_R, c, d, I_R, Q_R, F1_R, F2_R = D_R
@@ -1637,7 +1664,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                 else:
                     rectangles.append(D_R)
         else:
-            D_B, D_U = _horizontal_bisection(N, (u, v), (s, t), I, Q, F1, F2, f1, f2, F)
+            D_B, D_U = _horizontal_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2, F)
 
             N_B, a, b, I_B, Q_B, F1_B, F2_B = D_B
             N_U, c, d, I_U, Q_U, F1_U, F2_U = D_U
