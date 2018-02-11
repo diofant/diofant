@@ -92,40 +92,12 @@ def dup_gf_sqf_part(f, K):
 
 def dmp_gf_sqf_part(f, u, K):  # pragma: no cover
     """Compute square-free part of ``f`` in ``GF(p)[X]``. """
-    raise NotImplementedError('multivariate polynomials over finite fields')
-
-
-def dup_sqf_part(f, K):
-    """
-    Returns square-free part of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sqf_part(x**3 - 3*x - 2)
-    x**2 - x - 2
-
-    """
-    if K.is_FiniteField:
-        return dup_gf_sqf_part(f, K)
-
-    if not f:
-        return f
-
-    if K.is_negative(dmp_LC(f, K)):
-        f = dmp_neg(f, 0, K)
-
-    gcd = dup_gcd(f, dup_diff(f, 1, K), K)
-    sqf = dmp_quo(f, gcd, 0, K)
-
-    if K.has_Field:
-        return dup_monic(sqf, K)
+    if not u:
+        f = dmp_convert(f, u, K, K.domain)
+        g = gf_sqf_part(f, K.mod, K.domain)
+        return dmp_convert(g, u, K.domain, K)
     else:
-        return dup_primitive(sqf, K)[1]
+        raise NotImplementedError('multivariate polynomials over finite fields')
 
 
 def dmp_sqf_part(f, u, K):
@@ -143,9 +115,6 @@ def dmp_sqf_part(f, u, K):
     x**2 + x*y
 
     """
-    if not u:
-        return dup_sqf_part(f, K)
-
     if K.is_FiniteField:
         return dmp_gf_sqf_part(f, u, K)
 

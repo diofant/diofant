@@ -29,7 +29,7 @@ from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part, dup_sqf_part
+from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 def dup_trial_division(f, factors, K):
@@ -397,7 +397,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     if F == g and dup_cyclotomic_p(g, K):
         return True
 
-    G = dup_sqf_part(F, K)
+    G = dmp_sqf_part(F, 0, K)
 
     if dup_sqr(G, K) == F and dup_cyclotomic_p(G, K):
         return True
@@ -559,7 +559,7 @@ def dup_zz_factor(f, K):
         if dup_zz_irreducible_p(g, K):
             return cont, [(g, 1)]
 
-    g = dup_sqf_part(g, K)
+    g = dmp_sqf_part(g, 0, K)
     H = None
 
     if query('USE_CYCLOTOMIC_FACTOR'):
@@ -1055,7 +1055,7 @@ def dup_ext_factor(f, K):
     if n == 1:
         return lc, [(f, 1)]
 
-    f, F = dup_sqf_part(f, K), f
+    f, F = dmp_sqf_part(f, 0, K), f
     s, g, r = dmp_sqf_norm(f, 0, K)
 
     factors = dup_factor_list_include(r, K.domain)

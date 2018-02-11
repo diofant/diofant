@@ -18,26 +18,29 @@ f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 def test_dup_sqf():
     R, x = ring("x", ZZ)
 
-    assert R.dup_sqf_part(0) == 0
+    assert R.dmp_sqf_part(0) == 0
     assert R(0).is_squarefree is True
 
-    assert R.dup_sqf_part(7) == 1
+    assert R.dmp_sqf_part(7) == 1
     assert R(7).is_squarefree is True
 
-    assert R.dup_sqf_part(2*x + 2) == x + 1
+    assert R.dmp_sqf_part(2*x + 2) == x + 1
     assert (2*x + 2).is_squarefree is True
 
-    assert R.dup_sqf_part(x**3 + x + 1) == x**3 + x + 1
+    assert R.dmp_sqf_part(x**3 + x + 1) == x**3 + x + 1
     assert (x**3 + x + 1).is_squarefree is True
 
-    assert R.dup_sqf_part(-x**3 + x + 1) == x**3 - x - 1
+    assert R.dmp_sqf_part(-x**3 + x + 1) == x**3 - x - 1
     assert (-x**3 + x + 1).is_squarefree is True
 
-    assert R.dup_sqf_part(2*x**3 + 3*x**2) == 2*x**2 + 3*x
+    assert R.dmp_sqf_part(2*x**3 + 3*x**2) == 2*x**2 + 3*x
     assert (2*x**3 + 3*x**2).is_squarefree is False
 
-    assert R.dup_sqf_part(-2*x**3 + 3*x**2) == 2*x**2 - 3*x
+    assert R.dmp_sqf_part(-2*x**3 + 3*x**2) == 2*x**2 - 3*x
     assert (-2*x**3 + 3*x**2).is_squarefree is False
+
+    assert R.dmp_sqf_part(x**3 - 3*x - 2) == x**2 - x - 2
+    assert (x**3 - 3*x - 2).is_squarefree is False
 
     assert R.dup_sqf_list(0) == (0, [])
     assert R.dup_sqf_list(1) == (1, [])
@@ -71,8 +74,8 @@ def test_dup_sqf():
     f = x**3 + 1
     g = y**3 + 1
 
-    assert R1.dup_sqf_part(f) == f
-    assert R2.dup_sqf_part(g) == y + 1
+    assert R1.dmp_sqf_part(f) == f
+    assert R2.dmp_sqf_part(g) == y + 1
 
     assert f.is_squarefree is True
     assert g.is_squarefree is False

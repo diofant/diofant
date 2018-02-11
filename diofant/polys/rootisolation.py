@@ -8,7 +8,7 @@ from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_sign_variations, dup_transform)
 from .factortools import dup_factor_list
 from .polyerrors import DomainError, RefinementFailed
-from .sqfreetools import dup_sqf_list, dup_sqf_part
+from .sqfreetools import dmp_sqf_part, dup_sqf_list
 
 
 def dup_sturm(f, K):
@@ -39,7 +39,7 @@ def dup_sturm(f, K):
     if not K.has_Field:
         raise DomainError("can't compute Sturm sequence over %s" % K)
 
-    f = dup_sqf_part(f, K)
+    f = dmp_sqf_part(f, 0, K)
 
     sturm = [f, dup_diff(f, 1, K)]
 
