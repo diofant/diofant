@@ -83,20 +83,13 @@ def dmp_sqf_norm(f, u, K):
     return s, f, r
 
 
-def dup_gf_sqf_part(f, K):
-    """Compute square-free part of ``f`` in ``GF(p)[x]``. """
-    f = dmp_convert(f, 0, K, K.domain)
-    g = gf_sqf_part(f, K.mod, K.domain)
-    return dmp_convert(g, 0, K.domain, K)
-
-
-def dmp_gf_sqf_part(f, u, K):  # pragma: no cover
+def dmp_gf_sqf_part(f, u, K):
     """Compute square-free part of ``f`` in ``GF(p)[X]``. """
     if not u:
         f = dmp_convert(f, u, K, K.domain)
         g = gf_sqf_part(f, K.mod, K.domain)
         return dmp_convert(g, u, K.domain, K)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError('multivariate polynomials over finite fields')
 
 
