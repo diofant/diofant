@@ -35,51 +35,6 @@ def dmp_sqf_p(f, u, K):
         return not dmp_degree(dmp_gcd(f, dmp_diff(f, 1, u, K), u, K), u)
 
 
-def dup_sqf_norm(f, K):
-    """
-    Square-free norm of ``f`` in ``K[x]``, useful over algebraic domains.
-
-    Returns ``s``, ``f``, ``r``, such that ``g(x) = f(x-sa)`` and ``r(x) = Norm(g(x))``
-    is a square-free polynomial over K, where ``a`` is the algebraic extension of ``K``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> from diofant import sqrt
-
-    >>> K = QQ.algebraic_field(sqrt(3))
-    >>> R, x = ring("x", K)
-    >>> _, X = ring("x", QQ)
-
-    >>> s, f, r = R.dup_sqf_norm(x**2 - 2)
-
-    >>> s == 1
-    True
-    >>> f == x**2 + K([QQ(-2), QQ(0)])*x + 1
-    True
-    >>> r == X**4 - 10*X**2 + 1
-    True
-
-    """
-    if not K.is_Algebraic:
-        raise DomainError("ground domain must be algebraic")
-
-    s, g = 0, dmp_raise(K.mod.rep, 1, 0, K.domain)
-
-    while True:
-        h, _ = dmp_inject(f, 0, K, front=True)
-        r = dmp_resultant(g, h, 1, K.domain)
-
-        if dmp_sqf_p(r, 0, K.domain):
-            break
-        else:
-            f, s = dup_shift(f, -K.unit, K), s + 1
-
-    return s, f, r
-
-
 def dmp_sqf_norm(f, u, K):
     """
     Square-free norm of ``f`` in ``K[X]``, useful over algebraic domains.
@@ -108,9 +63,6 @@ def dmp_sqf_norm(f, u, K):
     True
 
     """
-    if not u:
-        return dup_sqf_norm(f, K)
-
     if not K.is_Algebraic:
         raise DomainError("ground domain must be algebraic")
 

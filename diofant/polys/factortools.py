@@ -29,8 +29,7 @@ from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import (dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part, dup_sqf_norm,
-                          dup_sqf_part)
+from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part, dup_sqf_part
 
 
 def dup_trial_division(f, factors, K):
@@ -1057,7 +1056,7 @@ def dup_ext_factor(f, K):
         return lc, [(f, 1)]
 
     f, F = dup_sqf_part(f, K), f
-    s, g, r = dup_sqf_norm(f, K)
+    s, g, r = dmp_sqf_norm(f, 0, K)
 
     factors = dup_factor_list_include(r, K.domain)
 

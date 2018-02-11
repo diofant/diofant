@@ -4,6 +4,7 @@ import pytest
 
 from diofant.core import I
 from diofant.domains import FF, QQ, ZZ
+from diofant.functions import sqrt
 from diofant.polys.polyerrors import DomainError, MultivariatePolynomialError
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
@@ -87,11 +88,16 @@ def test_dup_sqf():
 
     assert R.drop(x).dup_sqf_list(res) == (45796, [(h, 3)])
 
-    pytest.raises(DomainError, lambda: R.dup_sqf_norm(x**2 - 1))
+    pytest.raises(DomainError, lambda: R.dmp_sqf_norm(x**2 - 1))
 
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
     assert R.dup_sqf_list_include(t**3*x**2) == [(t**3, 1), (x, 2)]
+
+    K = QQ.algebraic_field(sqrt(3))
+    R, x = ring("x", K)
+    _, X = ring("x", QQ)
+    assert R.dmp_sqf_norm(x**2 - 2) == (1, x**2 + K([QQ(-2), QQ(0)])*x + 1, X**4 - 10*X**2 + 1)
 
 
 def test_dmp_sqf():
