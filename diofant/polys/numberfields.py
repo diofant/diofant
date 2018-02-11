@@ -12,7 +12,6 @@ from ..core.function import _mexpand
 from ..domains import QQ, ZZ
 from ..functions import cos, root, sin, sqrt
 from ..ntheory import divisors, sieve
-from ..printing.lambdarepr import LambdaPrinter
 from ..sets import Integers
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
@@ -913,16 +912,3 @@ def to_number_field(extension, theta=None, **args):
         else:
             raise IsomorphismFailed(
                 "%s is not in a subfield of %s" % (root, theta.root))
-
-
-class IntervalPrinter(LambdaPrinter):
-    """Use ``lambda`` printer but print numbers as ``mpi`` intervals. """
-
-    def _print_Integer(self, expr):
-        return "mpi('%s')" % super(IntervalPrinter, self)._print_Integer(expr)
-
-    def _print_Rational(self, expr):
-        return "mpi('%s')" % super(IntervalPrinter, self)._print_Rational(expr)
-
-    def _print_Pow(self, expr):
-        return super(IntervalPrinter, self)._print_Pow(expr, rational=True)
