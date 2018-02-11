@@ -1,7 +1,7 @@
 import pytest
 
-from diofant.domains import (CC, FF, FF_gmpy, PythonRational, QQ_gmpy,
-                             QQ_python, ZZ_gmpy, ZZ_python)
+from diofant.domains import (CC, FF, FF_gmpy, FF_python, PythonRational,
+                             QQ_gmpy, QQ_python, ZZ_gmpy, ZZ_python)
 from diofant.external import import_module
 from diofant.polys.polyerrors import CoercionFailed
 
@@ -15,12 +15,14 @@ gmpy = import_module('gmpy2')
 def test_convert():
     F3 = FF(3)
     F3g = FF_gmpy(3)
+    F3p = FF_python(3)
 
     assert F3.convert(gmpy.mpz(2)) == F3.dtype(2)
     assert F3.convert(gmpy.mpq(2, 1)) == F3.dtype(2)
     pytest.raises(CoercionFailed, lambda: F3.convert(gmpy.mpq(1, 2)))
 
-    assert ZZ_gmpy().convert(F3(1)) == ZZ_gmpy().dtype(1)
+    assert ZZ_gmpy().convert(F3p(1)) == ZZ_gmpy().dtype(1)
+    assert ZZ_gmpy().convert(F3g(1)) == ZZ_gmpy().dtype(1)
 
     assert ZZ_gmpy().convert(PythonRational(2)) == ZZ_gmpy().dtype(2)
     pytest.raises(CoercionFailed,

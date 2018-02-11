@@ -47,6 +47,9 @@ class GMPYIntegerRing(IntegerRing):
         """Convert ``ModularInteger(mpz)`` to GMPY's ``mpz``. """
         return a.to_int()
 
+    def from_FF_python(self, a, K0):
+        return a.to_int()
+
     def from_ZZ_gmpy(self, a, K0):
         """Convert GMPY's ``mpz`` to GMPY's ``mpz``. """
         return a
