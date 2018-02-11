@@ -13,28 +13,6 @@ from .galoistools import gf_sqf_list, gf_sqf_part
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
-def dup_sqf_p(f, K):
-    """
-    Return ``True`` if ``f`` is a square-free polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> dup_sqf_p([], ZZ)
-    True
-    >>> dup_sqf_p([1, -2, 1], ZZ)
-    False
-    >>> dup_sqf_p([1, 0, -1], ZZ)
-    True
-    """
-    if not f:
-        return True
-    else:
-        return not dmp_degree(dup_gcd(f, dup_diff(f, 1, K), K), 0)
-
-
 def dmp_sqf_p(f, u, K):
     """
     Return ``True`` if ``f`` is a square-free polynomial in ``K[X]``.
@@ -94,7 +72,7 @@ def dup_sqf_norm(f, K):
         h, _ = dmp_inject(f, 0, K, front=True)
         r = dmp_resultant(g, h, 1, K.domain)
 
-        if dup_sqf_p(r, K.domain):
+        if dmp_sqf_p(r, 0, K.domain):
             break
         else:
             f, s = dup_shift(f, -K.unit, K), s + 1

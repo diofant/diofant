@@ -29,7 +29,7 @@ from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import (dmp_sqf_norm, dmp_sqf_part, dup_sqf_norm, dup_sqf_p,
+from .sqfreetools import (dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part, dup_sqf_norm,
                           dup_sqf_part)
 
 
@@ -600,7 +600,7 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
 
     g = dmp_eval_tail(f, A, u, K)
 
-    if not dup_sqf_p(g, K):
+    if not dmp_sqf_p(g, 0, K):
         raise EvaluationFailed('no luck')
 
     c, h = dup_primitive(g, K)
