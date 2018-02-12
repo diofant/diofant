@@ -1,7 +1,7 @@
 """Computational algebraic field theory. """
 
-from functools import reduce
-from itertools import islice, tee
+import functools
+import itertools
 
 import mpmath
 
@@ -12,15 +12,14 @@ from ..core.function import _mexpand
 from ..domains import QQ, ZZ
 from ..functions import cos, root, sin, sqrt
 from ..ntheory import divisors, sieve
-from ..sets import Integers
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
-from ..utilities import cantor_product, lambdify, numbered_symbols, sift
+from ..utilities import lambdify, numbered_symbols, sift
 from .orthopolys import dup_chebyshevt
-from .polyerrors import (CoercionFailed, GeneratorsError, IsomorphismFailed,
-                         NotAlgebraic)
+from .polyerrors import GeneratorsError, IsomorphismFailed, NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
-                        parallel_poly_from_expr, poly_from_expr, resultant)
+                        parallel_poly_from_expr, poly_from_expr, resultant,
+                        sqf_norm)
 from .polyutils import dict_from_expr, expr_from_dict
 from .ring_series import rs_compose_add
 from .rings import ring
@@ -509,7 +508,7 @@ def _minpoly_compose(ex, x, dom):
             ex1 = Mul(*[bx**ex for bx, ex in r[False] + r[None]])
             r1 = r[True]
             dens = [y.q for _, y in r1]
-            lcmdens = reduce(lcm, dens, 1)
+            lcmdens = functools.reduce(lcm, dens, 1)
             nums = [base**(y.p*lcmdens // y.q) for base, y in r1]
             ex2 = Mul(*nums)
             mp1 = minimal_polynomial(ex1, x)
@@ -712,58 +711,24 @@ def primitive_element(extension, x=None, **args):
     else:
         x, cls = Dummy('x'), PurePoly
 
-    generator = numbered_symbols('y', cls=Dummy)
+    extension = [AlgebraicNumber(ext, gen=x) for ext in extension]
+    g, coeffs = extension[0].minpoly.replace(x), [1]
 
-    F, Y = [], []
-    max_degree = -1
+    for ext in extension[1:]:
+        s, _, g = sqf_norm(g, x, extension=ext, polys=True)
+        coeffs = [s*c for c in coeffs] + [1]
 
-    for ext in extension:
-        ext = sympify(ext)
-        y = next(generator)
-
-        if ext.is_Poly:
-            if ext.is_univariate:
-                f = ext.as_expr(y)
-                deg = ext.degree()
-            else:
-                raise ValueError("expected minimal polynomial, got %s" % ext)
-        else:
-            f = minimal_polynomial(ext, y, polys=True)
-            deg = f.degree()
-            f = f.as_expr()
-
-        F.append(f)
-        Y.append(y)
-
-        if deg > max_degree:
-            max_degree = deg
-
-    nonzero_ints = islice(Integers, 1, None)
-    coeffs_iter = islice(cantor_product(*tee(nonzero_ints, len(Y))),
-                         max_degree**len(extension))
-
-    for coeffs in coeffs_iter:  # pragma: no branch
-        f = x - sum(c*y for c, y in zip(coeffs, Y))
-        G = groebner(F + [f], Y + [x], order='lex', field=True)
-
-        H, g = G[:-1], cls(G[-1], x, domain='QQ')
-
-        for i, (h, y) in enumerate(zip(H, Y)):
-            try:
-                H[i] = Poly(y - h, x, domain='QQ').all_coeffs()
-            except CoercionFailed:
-                break  # G is not a triangular set
-        else:
-            break
-    else:  # pragma: no cover
-        raise RuntimeError("run out of coefficient configurations")
-
-    _, g = g.clear_denoms()
-
+    g = cls(g)
     if not args.get('polys', False):
         g = g.as_expr()
 
-    return g, list(coeffs), H
+    Y = list(itertools.islice(numbered_symbols('y', cls=Dummy), len(extension)))
+    F = [ext.minpoly.replace(y) for ext, y in zip(extension, Y)]
+    f = x - sum(c*y for c, y in zip(coeffs, Y))
+    G = groebner(F + [f], Y + [x], field=True, polys=True)
+    H = [(y - h).eject(*Y).retract().all_coeffs() for y, h in zip(Y, G[:-1])]
+
+    return g, coeffs, H
 
 
 def is_isomorphism_possible(a, b):
