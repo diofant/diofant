@@ -1,6 +1,6 @@
 """Computational algebraic field theory. """
 
-from functools import reduce
+import functools
 from itertools import islice, tee
 
 import mpmath
@@ -508,7 +508,7 @@ def _minpoly_compose(ex, x, dom):
             ex1 = Mul(*[bx**ex for bx, ex in r[False] + r[None]])
             r1 = r[True]
             dens = [y.q for _, y in r1]
-            lcmdens = reduce(lcm, dens, 1)
+            lcmdens = functools.reduce(lcm, dens, 1)
             nums = [base**(y.p*lcmdens // y.q) for base, y in r1]
             ex2 = Mul(*nums)
             mp1 = minimal_polynomial(ex1, x)
