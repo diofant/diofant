@@ -92,6 +92,7 @@ Developer changes
 * Sort imports with `isort <https://github.com/timothycrosley/isort>`_, see :pull:`520`.
 * Depend on `hypothesis <https://hypothesis.readthedocs.io/en/latest/>`_, see :pull:`547`.
 * Depend on `pytest-xdist <https://github.com/pytest-dev/pytest-xdist>`_, see :pull:`551`.
+* Depend on `pytest-timeout <https://bitbucket.org/pytest-dev/pytest-timeout>`_, see :pull:`608`.
 
 Issues closed
 =============
