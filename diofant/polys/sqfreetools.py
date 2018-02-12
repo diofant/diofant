@@ -7,7 +7,7 @@ from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_monic, dup_shift)
 from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant, dup_gcd
 from .galoistools import gf_sqf_list, gf_sqf_part
-from .polyerrors import DomainError, MultivariatePolynomialError
+from .polyerrors import DomainError
 
 
 def dmp_sqf_p(f, u, K):
@@ -262,21 +262,3 @@ def dup_gff_list(f, K):
             return H
         else:
             return [(f, 1)] + H
-
-
-def dmp_gff_list(f, u, K):
-    """
-    Compute greatest factorial factorization of ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x, y = ring("x y", ZZ)
-
-    """
-    if not u:
-        return dup_gff_list(f, K)
-    else:
-        raise MultivariatePolynomialError(f)

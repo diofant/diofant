@@ -5,7 +5,7 @@ import pytest
 from diofant.core import I
 from diofant.domains import FF, QQ, ZZ
 from diofant.functions import sqrt
-from diofant.polys.polyerrors import DomainError, MultivariatePolynomialError
+from diofant.polys.polyerrors import DomainError
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -156,8 +156,6 @@ def test_dmp_sqf():
     assert R.dmp_sqf_list_include(f) == [(-x**3 - x**2 - x - 1, 1), (x - 1, 2)]
 
     pytest.raises(DomainError, lambda: R.dmp_sqf_norm(x**2 + y**2))
-    pytest.raises(MultivariatePolynomialError,
-                  lambda: R.dmp_gff_list(x**2 + y**2))
 
     f = -x**2 + 2*x - 1
     assert R.dmp_sqf_list_include(f) == [(-1, 1), (x - 1, 2)]
