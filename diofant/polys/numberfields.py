@@ -1,21 +1,19 @@
 """Computational algebraic field theory. """
 
 import functools
-from itertools import islice, tee
 
 import mpmath
 
 from ..core import (Add, AlgebraicNumber, Dummy, E, GoldenRatio, I, Integer,
-                    Mul, Rational, S, expand_mul, pi, sympify)
+                    Mul, Rational, S, expand_mul, pi, prod, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ
 from ..functions import cos, root, sin, sqrt
 from ..ntheory import divisors, sieve
-from ..sets import Integers
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
-from ..utilities import cantor_product, lambdify, numbered_symbols, sift
+from ..utilities import lambdify, numbered_symbols, sift
 from .orthopolys import dup_chebyshevt
 from .polyerrors import GeneratorsError, IsomorphismFailed, NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
@@ -702,7 +700,16 @@ minpoly = minimal_polynomial
 
 
 def primitive_element(extension, x=None, **args):
-    """Construct a common number field for all extensions. """
+    """Construct a common number field for all extensions.
+
+    References
+    ==========
+
+    .. [1] Kazuhiro Yokoyama, Masayuki Noro, Taku Takeshima, Computing
+           primitive elements of extension fields, Journal of Symbolic
+           Computation, Volume 8, Issue 6, 1989, pp. 553-580,
+           https://doi.org/10.1016/S0747-7171(89)80061-6.
+    """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
 
@@ -714,13 +721,10 @@ def primitive_element(extension, x=None, **args):
     F, Y = zip(*[(minimal_polynomial(e, y, polys=True), y)
                  for e, y in zip(extension, numbered_symbols('y', cls=Dummy))])
 
-    max_degree = max(f.degree() for f in F)
-    nonzero_ints = islice(Integers, 1, None)
-    coeffs_iter = islice(cantor_product(*tee(nonzero_ints, len(Y))),
-                         max_degree**len(extension))
-
-    for coeffs in coeffs_iter:  # pragma: no branch
+    for u in range(1, (len(F) - 1)*prod(f.degree() for f in F) + 1):
+        coeffs = [u**n for n in range(len(Y))]
         f = x - sum(c*y for c, y in zip(coeffs, Y))
+
         *H, g = groebner(F + (f,), Y + (x,), field=True, polys=True)
 
         for i, (h, y) in enumerate(zip(H, Y)):
@@ -732,8 +736,11 @@ def primitive_element(extension, x=None, **args):
         else:
             g = g.eject(*Y).retract()
             break
-    else:  # pragma: no cover
-        raise RuntimeError("run out of coefficient configurations")
+    else:
+        if len(F) == 1:
+            g, coeffs, H = F[0].replace(x), [S.One], [[S.One, S.Zero]]
+        else:  # pragma: no cover
+            raise RuntimeError("run out of coefficient configurations")
 
     _, g = cls(g).clear_denoms(convert=True)
     if not args.get('polys', False):
