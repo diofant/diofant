@@ -1894,7 +1894,6 @@ def test_U4():
     assert diff(x**n, x, n).rewrite(factorial) == factorial(n)
 
 
-@pytest.mark.xfail
 def test_U6():
     h = Function('h')
     # raises ValueError: Invalid limits given: (y, h(x), g(x))
