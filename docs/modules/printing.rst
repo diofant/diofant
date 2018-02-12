@@ -378,7 +378,6 @@ Pretty-Printing Implementation Helpers
 
 .. autofunction:: U
 .. autofunction:: pretty_use_unicode
-.. autofunction:: pretty_try_use_unicode
 
 The following two functions return the Unicode version of the inputted Greek
 letter.
