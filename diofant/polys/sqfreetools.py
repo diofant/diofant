@@ -2,7 +2,7 @@
 
 from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul
 from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
-                         dmp_inject, dmp_raise, dmp_strip, dmp_zero_p)
+                         dmp_inject, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_monic, dup_shift)
 from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant, dup_gcd
@@ -197,35 +197,6 @@ def dmp_sqf_list(f, u, K, all=False):
     return coeff, result
 
 
-def dup_sqf_list_include(f, K, all=False):
-    """
-    Return square-free decomposition of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
-
-    >>> R.dup_sqf_list_include(f)
-    [(2, 1), (x + 1, 2), (x + 2, 3)]
-    >>> R.dup_sqf_list_include(f, all=True)
-    [(2, 1), (x + 1, 2), (x + 2, 3)]
-
-    """
-    coeff, factors = dmp_sqf_list(f, 0, K, all=all)
-
-    if factors and factors[0][1] == 1:
-        g = dmp_mul_ground(factors[0][0], coeff, 0, K)
-        return [(g, 1)] + factors[1:]
-    else:
-        g = dmp_strip([coeff], 0)
-        return [(g, 1)] + factors
-
-
 def dmp_sqf_list_include(f, u, K, all=False):
     """
     Return square-free decomposition of a polynomial in ``K[x]``.
@@ -245,9 +216,6 @@ def dmp_sqf_list_include(f, u, K, all=False):
     [(1, 1), (x + y, 2), (x, 3)]
 
     """
-    if not u:
-        return dup_sqf_list_include(f, K, all=all)
-
     coeff, factors = dmp_sqf_list(f, u, K, all=all)
 
     if factors and factors[0][1] == 1:

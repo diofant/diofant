@@ -95,7 +95,7 @@ def test_dup_sqf():
 
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
-    assert R.dup_sqf_list_include(t**3*x**2) == [(t**3, 1), (x, 2)]
+    assert R.dmp_sqf_list_include(t**3*x**2) == [(t**3, 1), (x, 2)]
 
     K = QQ.algebraic_field(sqrt(3))
     R, x = ring("x", K)
@@ -144,7 +144,10 @@ def test_dmp_sqf():
     f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
 
     assert R.dmp_sqf_list(f) == (2, [(x + 1, 2), (x + 2, 3)])
+    assert R.dmp_sqf_list_include(f) == [(2, 1), (x + 1, 2), (x + 2, 3)]
+
     assert R.dmp_sqf_list(f, all=True) == (2, [(1, 1), (x + 1, 2), (x + 2, 3)])
+    assert R.dmp_sqf_list_include(f, all=True) == [(2, 1), (x + 1, 2), (x + 2, 3)]
 
     R, x, y = ring("x,y", ZZ)
     f = -x**5 + x**4 + x - 1
