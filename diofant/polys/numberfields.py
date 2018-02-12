@@ -17,8 +17,7 @@ from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import cantor_product, lambdify, numbered_symbols, sift
 from .orthopolys import dup_chebyshevt
-from .polyerrors import (CoercionFailed, GeneratorsError, IsomorphismFailed,
-                         NotAlgebraic)
+from .polyerrors import GeneratorsError, IsomorphismFailed, NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, poly_from_expr, resultant)
 from .polyutils import dict_from_expr, expr_from_dict
@@ -712,54 +711,31 @@ def primitive_element(extension, x=None, **args):
     else:
         x, cls = Dummy('x'), PurePoly
 
-    generator = numbered_symbols('y', cls=Dummy)
+    F, Y = zip(*[(minimal_polynomial(e, y, polys=True), y)
+                 for e, y in zip(extension, numbered_symbols('y', cls=Dummy))])
 
-    F, Y = [], []
-    max_degree = -1
-
-    for ext in extension:
-        ext = sympify(ext)
-        y = next(generator)
-
-        if ext.is_Poly:
-            if ext.is_univariate:
-                f = ext.as_expr(y)
-                deg = ext.degree()
-            else:
-                raise ValueError("expected minimal polynomial, got %s" % ext)
-        else:
-            f = minimal_polynomial(ext, y, polys=True)
-            deg = f.degree()
-            f = f.as_expr()
-
-        F.append(f)
-        Y.append(y)
-
-        if deg > max_degree:
-            max_degree = deg
-
+    max_degree = max(f.degree() for f in F)
     nonzero_ints = islice(Integers, 1, None)
     coeffs_iter = islice(cantor_product(*tee(nonzero_ints, len(Y))),
                          max_degree**len(extension))
 
     for coeffs in coeffs_iter:  # pragma: no branch
         f = x - sum(c*y for c, y in zip(coeffs, Y))
-        G = groebner(F + [f], Y + [x], order='lex', field=True)
-
-        H, g = G[:-1], cls(G[-1], x, domain='QQ')
+        *H, g = groebner(F + (f,), Y + (x,), field=True, polys=True)
 
         for i, (h, y) in enumerate(zip(H, Y)):
-            try:
-                H[i] = Poly(y - h, x, domain='QQ').all_coeffs()
-            except CoercionFailed:
+            t = (y - h).eject(*Y).retract(field=True)
+            if t.domain.is_QQ:
+                H[i] = t.all_coeffs()
+            else:
                 break  # G is not a triangular set
         else:
+            g = g.eject(*Y).retract()
             break
     else:  # pragma: no cover
         raise RuntimeError("run out of coefficient configurations")
 
-    _, g = g.clear_denoms()
-
+    _, g = cls(g).clear_denoms(convert=True)
     if not args.get('polys', False):
         g = g.as_expr()
 
