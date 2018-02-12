@@ -331,17 +331,22 @@ def test_primitive_element():
     assert primitive_element([sqrt(2)], polys=True)[:-1] == (Poly(x**2 - 2), [1])
 
     pytest.raises(ValueError, lambda: primitive_element([], x))
-
-    assert primitive_element([Poly(x**2 - 2)], x)[:-1] == (x**2 - 2, [1])
     pytest.raises(ValueError, lambda: primitive_element([Poly(x**2 - y)], x))
 
     # issue sympy/sympy#13849
     assert (primitive_element([sqrt(2), sqrt(2) + sqrt(5)], x) ==
-            (x**8 - 120*x**6 + 3672*x**4 - 24800*x**2 + 1296, [1, 2],
-             [[QQ(1, 3456), 0, QQ(-59, 1728), 0, QQ(871, 864),
-               0, QQ(-895, 144), 0],
-              [QQ(-1, 6912), 0, QQ(59, 3456), 0, QQ(-871, 1728),
-               0, QQ(1039, 288), 0]]))
+            (x**4 - 26*x**2 + 9, [1, 1],
+             [[QQ(-1, 12), 0, QQ(29, 12), 0], [QQ(1, 12), 0, QQ(-17, 12), 0]]))
+
+    assert (primitive_element([sqrt(2) + I, -sqrt(2) + sqrt(3) + I], x)[:-1] ==
+            (x**8 - 20*x**6 + 966*x**4 + 5164*x**2 + 187489, [1, 2]))
+
+    # issue sympy/sympy#14117
+    assert (primitive_element([I*sqrt(2*sqrt(2) + 3),
+                               I*sqrt(-2*sqrt(2) + 3), I], x) ==
+            (x**4 + 18*x**2 + 49, [1, 1, 1], [[QQ(-1, 28), 0, QQ(3, 28), 0],
+                                              [QQ(3, 28), 0, QQ(47, 28), 0],
+                                              [QQ(-1, 14), 0, QQ(-11, 14), 0]]))
 
 
 def test_field_isomorphism_pslq():

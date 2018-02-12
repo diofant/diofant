@@ -228,6 +228,18 @@ class NumExprPrinter(LambdaPrinter):
         return "evaluate('%s')" % lstr
 
 
+class MpmathPrinter(LambdaPrinter):
+    def _print_RootOf(self, expr):
+        return ("findroot(lambda %s: %s, %s, "
+                "method='bisection')" % (self._print(expr.poly.gen),
+                                         self._print(expr.expr),
+                                         self._print(expr.interval.as_tuple())))
+
+    def _print_mpq(self, expr):
+        return "mp.mpq(%s, %s)" % (self._print(expr.numerator),
+                                   self._print(expr.denominator))
+
+
 def lambdarepr(expr, **settings):
     """
     Returns a string usable for lambdifying.

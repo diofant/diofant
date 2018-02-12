@@ -1,7 +1,7 @@
 """Computational algebraic field theory. """
 
+import itertools
 from functools import reduce
-from itertools import islice, tee
 
 import mpmath
 
@@ -17,8 +17,7 @@ from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import cantor_product, lambdify, numbered_symbols, sift
 from .orthopolys import dup_chebyshevt
-from .polyerrors import (CoercionFailed, GeneratorsError, IsomorphismFailed,
-                         NotAlgebraic)
+from .polyerrors import GeneratorsError, IsomorphismFailed, NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, poly_from_expr, resultant)
 from .polyutils import dict_from_expr, expr_from_dict
@@ -707,63 +706,22 @@ def primitive_element(extension, x=None, **args):
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
 
-    if x is not None:
-        x, cls = sympify(x), Poly
-    else:
-        x, cls = Dummy('x'), PurePoly
+    nonzero_ints = itertools.islice(Integers, 1, None)
 
-    generator = numbered_symbols('y', cls=Dummy)
-
-    F, Y = [], []
-    max_degree = -1
-
-    for ext in extension:
-        ext = sympify(ext)
-        y = next(generator)
-
-        if ext.is_Poly:
-            if ext.is_univariate:
-                f = ext.as_expr(y)
-                deg = ext.degree()
-            else:
-                raise ValueError("expected minimal polynomial, got %s" % ext)
-        else:
-            f = minimal_polynomial(ext, y, polys=True)
-            deg = f.degree()
-            f = f.as_expr()
-
-        F.append(f)
-        Y.append(y)
-
-        if deg > max_degree:
-            max_degree = deg
-
-    nonzero_ints = islice(Integers, 1, None)
-    coeffs_iter = islice(cantor_product(*tee(nonzero_ints, len(Y))),
-                         max_degree**len(extension))
-
-    for coeffs in coeffs_iter:  # pragma: no branch
-        f = x - sum(c*y for c, y in zip(coeffs, Y))
-        G = groebner(F + [f], Y + [x], order='lex', field=True)
-
-        H, g = G[:-1], cls(G[-1], x, domain='QQ')
-
-        for i, (h, y) in enumerate(zip(H, Y)):
-            try:
-                H[i] = Poly(y - h, x, domain='QQ').all_coeffs()
-            except CoercionFailed:
-                break  # G is not a triangular set
+    for coeffs in cantor_product(*itertools.tee(nonzero_ints,  # pragma: no branch
+                                                len(extension))):
+        if coeffs[0] < 0:
+            continue
+        t = sum(c*e for c, e in zip(coeffs, extension))
+        H = [[]]*len(extension)
+        for i, e in enumerate(extension):
+            H[i] = field_isomorphism(e, t)
+            if H[i] is None:
+                break
         else:
             break
-    else:  # pragma: no cover
-        raise RuntimeError("run out of coefficient configurations")
 
-    _, g = g.clear_denoms()
-
-    if not args.get('polys', False):
-        g = g.as_expr()
-
-    return g, list(coeffs), H
+    return minimal_polynomial(t, x, **args), list(coeffs), H
 
 
 def is_isomorphism_possible(a, b):
