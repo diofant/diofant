@@ -658,6 +658,51 @@ def dmp_positive_p(f, u, K):
     return K.is_positive(dmp_ground_LC(f, u, K))
 
 
+def dup_from_raw_dict(f, K):
+    """
+    Create a ``K[x]`` polynomial from a raw ``dict``.
+
+    Examples
+    ========
+
+    >>> from diofant.domains import ZZ
+
+    >>> dup_from_raw_dict({0: ZZ(7), 2: ZZ(5), 4: ZZ(1)}, ZZ)
+    [1, 0, 5, 0, 7]
+    """
+    if not f:
+        return []
+
+    n, h = max(f), []
+
+    for k in range(n, -1, -1):
+        h.append(f.get(k, K.zero))
+
+    return dmp_strip(h, 0)
+
+
+def dup_to_raw_dict(f, K=None, zero=False):
+    """
+    Convert a ``K[x]`` polynomial to a raw ``dict``.
+
+    Examples
+    ========
+
+    >>> dup_to_raw_dict([1, 0, 5, 0, 7])
+    {0: 7, 2: 5, 4: 1}
+    """
+    if not f and zero:
+        return {0: K.zero}
+
+    n, result = len(f) - 1, {}
+
+    for k in range(n + 1):
+        if f[n - k]:
+            result[k] = f[n - k]
+
+    return result
+
+
 def dup_from_dict(f, K):
     """
     Create a ``K[x]`` polynomial from a ``dict``.
@@ -685,29 +730,6 @@ def dup_from_dict(f, K):
 
         for k in range(n, -1, -1):
             h.append(f.get((k,), K.zero))
-
-    return dmp_strip(h, 0)
-
-
-def dup_from_raw_dict(f, K):
-    """
-    Create a ``K[x]`` polynomial from a raw ``dict``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> dup_from_raw_dict({0: ZZ(7), 2: ZZ(5), 4: ZZ(1)}, ZZ)
-    [1, 0, 5, 0, 7]
-    """
-    if not f:
-        return []
-
-    n, h = max(f), []
-
-    for k in range(n, -1, -1):
-        h.append(f.get(k, K.zero))
 
     return dmp_strip(h, 0)
 
@@ -774,28 +796,6 @@ def dup_to_dict(f, K=None, zero=False):
     for k in range(n + 1):
         if f[n - k]:
             result[(k,)] = f[n - k]
-
-    return result
-
-
-def dup_to_raw_dict(f, K=None, zero=False):
-    """
-    Convert a ``K[x]`` polynomial to a raw ``dict``.
-
-    Examples
-    ========
-
-    >>> dup_to_raw_dict([1, 0, 5, 0, 7])
-    {0: 7, 2: 5, 4: 1}
-    """
-    if not f and zero:
-        return {0: K.zero}
-
-    n, result = len(f) - 1, {}
-
-    for k in range(n + 1):
-        if f[n - k]:
-            result[k] = f[n - k]
 
     return result
 
@@ -945,37 +945,6 @@ def dmp_raise(f, l, u, K):
     return [ dmp_raise(c, l, v, K) for c in f ]
 
 
-def dup_deflate(f, K):
-    """
-    Map ``x**m`` to ``y`` in a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 0, 1, 0, 0, 1])
-
-    >>> dup_deflate(f, ZZ)
-    (3, [1, 1, 1])
-    """
-    if dmp_degree(f, 0) <= 0:
-        return 1, f
-
-    g = 0
-
-    for i in range(len(f)):
-        if not f[-i - 1]:
-            continue
-
-        g = igcd(g, i)
-
-        if g == 1:
-            return 1, f
-
-    return g, f[::g]
-
-
 def dmp_deflate(f, u, K):
     """
     Map ``x_i**m_i`` to ``y_i`` in a polynomial in ``K[X]``.
@@ -1012,47 +981,10 @@ def dmp_deflate(f, u, K):
     H = {}
 
     for A, coeff in F.items():
-        N = [ a // b for a, b in zip(A, B) ]
+        N = [a // b for a, b in zip(A, B)]
         H[tuple(N)] = coeff
 
     return B, dmp_from_dict(H, u, K)
-
-
-def dup_multi_deflate(polys, K):
-    """
-    Map ``x**m`` to ``y`` in a set of polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 2, 0, 3])
-    >>> g = ZZ.map([4, 0, 0])
-
-    >>> dup_multi_deflate((f, g), ZZ)
-    (2, ([1, 2, 3], [4, 0]))
-    """
-    G = 0
-
-    for p in polys:
-        if dmp_degree(p, 0) <= 0:
-            return 1, polys
-
-        g = 0
-
-        for i in range(len(p)):
-            if not p[-i - 1]:
-                continue
-
-            g = igcd(g, i)
-
-            if g == 1:
-                return 1, polys
-
-        G = igcd(G, g)
-
-    return G, tuple(p[::G] for p in polys)
 
 
 def dmp_multi_deflate(polys, u, K):
@@ -1070,10 +1002,6 @@ def dmp_multi_deflate(polys, u, K):
     >>> dmp_multi_deflate((f, g), 1, ZZ)
     ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
     """
-    if not u:
-        M, H = dup_multi_deflate(polys, K)
-        return (M,), H
-
     F, B = [], [0]*(u + 1)
 
     for p in polys:
@@ -1325,34 +1253,6 @@ def dmp_eject(f, u, K, front=False):
         h[monom] = K(c)
 
     return dmp_from_dict(h, v - 1, K)
-
-
-def dup_terms_gcd(f, K):
-    """
-    Remove GCD of terms from ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 1, 0, 0])
-
-    >>> dup_terms_gcd(f, ZZ)
-    (2, [1, 0, 1])
-    """
-    if dmp_TC(f, K) or not f:
-        return 0, f
-
-    i = 0
-
-    for c in reversed(f):  # pragma: no branch
-        if not c:
-            i += 1
-        else:
-            break
-
-    return i, f[:-i]
 
 
 def dmp_terms_gcd(f, u, K):

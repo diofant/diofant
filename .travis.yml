@@ -44,6 +44,7 @@ matrix:
         - python setup.py build_sphinx -W -b html
         - |
           if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]; then
+            rm -rf build/
             python setup.py build_sphinx -W -b linkcheck
           fi
         - travis_wait py.test --numprocesses 2 --cov diofant diofant/polys

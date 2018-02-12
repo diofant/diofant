@@ -4,6 +4,7 @@ import pytest
 
 from diofant.core import I
 from diofant.domains import FF, QQ, ZZ
+from diofant.functions import sqrt
 from diofant.polys.polyerrors import DomainError, MultivariatePolynomialError
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
@@ -17,26 +18,29 @@ f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 def test_dup_sqf():
     R, x = ring("x", ZZ)
 
-    assert R.dup_sqf_part(0) == 0
-    assert R.dup_sqf_p(0) is True
+    assert R.dmp_sqf_part(0) == 0
+    assert R(0).is_squarefree is True
 
-    assert R.dup_sqf_part(7) == 1
-    assert R.dup_sqf_p(7) is True
+    assert R.dmp_sqf_part(7) == 1
+    assert R(7).is_squarefree is True
 
-    assert R.dup_sqf_part(2*x + 2) == x + 1
-    assert R.dup_sqf_p(2*x + 2) is True
+    assert R.dmp_sqf_part(2*x + 2) == x + 1
+    assert (2*x + 2).is_squarefree is True
 
-    assert R.dup_sqf_part(x**3 + x + 1) == x**3 + x + 1
-    assert R.dup_sqf_p(x**3 + x + 1) is True
+    assert R.dmp_sqf_part(x**3 + x + 1) == x**3 + x + 1
+    assert (x**3 + x + 1).is_squarefree is True
 
-    assert R.dup_sqf_part(-x**3 + x + 1) == x**3 - x - 1
-    assert R.dup_sqf_p(-x**3 + x + 1) is True
+    assert R.dmp_sqf_part(-x**3 + x + 1) == x**3 - x - 1
+    assert (-x**3 + x + 1).is_squarefree is True
 
-    assert R.dup_sqf_part(2*x**3 + 3*x**2) == 2*x**2 + 3*x
-    assert R.dup_sqf_p(2*x**3 + 3*x**2) is False
+    assert R.dmp_sqf_part(2*x**3 + 3*x**2) == 2*x**2 + 3*x
+    assert (2*x**3 + 3*x**2).is_squarefree is False
 
-    assert R.dup_sqf_part(-2*x**3 + 3*x**2) == 2*x**2 - 3*x
-    assert R.dup_sqf_p(-2*x**3 + 3*x**2) is False
+    assert R.dmp_sqf_part(-2*x**3 + 3*x**2) == 2*x**2 - 3*x
+    assert (-2*x**3 + 3*x**2).is_squarefree is False
+
+    assert R.dmp_sqf_part(x**3 - 3*x - 2) == x**2 - x - 2
+    assert (x**3 - 3*x - 2).is_squarefree is False
 
     assert R.dup_sqf_list(0) == (0, [])
     assert R.dup_sqf_list(1) == (1, [])
@@ -70,11 +74,11 @@ def test_dup_sqf():
     f = x**3 + 1
     g = y**3 + 1
 
-    assert R1.dup_sqf_part(f) == f
-    assert R2.dup_sqf_part(g) == y + 1
+    assert R1.dmp_sqf_part(f) == f
+    assert R2.dmp_sqf_part(g) == y + 1
 
-    assert R1.dup_sqf_p(f) is True
-    assert R2.dup_sqf_p(g) is False
+    assert f.is_squarefree is True
+    assert g.is_squarefree is False
 
     R, x, y = ring("x,y", ZZ)
 
@@ -87,43 +91,48 @@ def test_dup_sqf():
 
     assert R.drop(x).dup_sqf_list(res) == (45796, [(h, 3)])
 
-    pytest.raises(DomainError, lambda: R.dup_sqf_norm(x**2 - 1))
+    pytest.raises(DomainError, lambda: R.dmp_sqf_norm(x**2 - 1))
 
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
     assert R.dup_sqf_list_include(t**3*x**2) == [(t**3, 1), (x, 2)]
 
+    K = QQ.algebraic_field(sqrt(3))
+    R, x = ring("x", K)
+    _, X = ring("x", QQ)
+    assert R.dmp_sqf_norm(x**2 - 2) == (1, x**2 + K([QQ(-2), QQ(0)])*x + 1, X**4 - 10*X**2 + 1)
+
 
 def test_dmp_sqf():
     R, x, y = ring("x,y", ZZ)
     assert R.dmp_sqf_part(0) == 0
-    assert R.dmp_sqf_p(0) is True
+    assert R(0).is_squarefree is True
 
     assert R.dmp_sqf_part(7) == 1
-    assert R.dmp_sqf_p(7) is True
+    assert R(7).is_squarefree is True
 
     assert R.dmp_sqf_list(3) == (3, [])
     assert R.dmp_sqf_list_include(3) == [(3, 1)]
 
     R, x, y, z = ring("x,y,z", ZZ)
-    assert R.dmp_sqf_p(f_0) is True
-    assert R.dmp_sqf_p(f_0**2) is False
-    assert R.dmp_sqf_p(f_1) is True
-    assert R.dmp_sqf_p(f_1**2) is False
-    assert R.dmp_sqf_p(f_2) is True
-    assert R.dmp_sqf_p(f_2**2) is False
-    assert R.dmp_sqf_p(f_3) is True
-    assert R.dmp_sqf_p(f_3**2) is False
-    assert R.dmp_sqf_p(f_5) is False
-    assert R.dmp_sqf_p(f_5**2) is False
+    assert f_0.is_squarefree is True
+    assert (f_0**2).is_squarefree is False
+    assert f_1.is_squarefree is True
+    assert (f_1**2).is_squarefree is False
+    assert f_2.is_squarefree is True
+    assert (f_2**2).is_squarefree is False
+    assert f_3.is_squarefree is True
+    assert (f_3**2).is_squarefree is False
+    assert f_5.is_squarefree is False
+    assert (f_5**2).is_squarefree is False
 
-    assert R.dmp_sqf_p(f_4) is True
+    assert f_4.is_squarefree is True
     assert R.dmp_sqf_part(f_4) == -f_4
 
     assert R.dmp_sqf_part(f_5) == x + y - z
 
     R, x, y, z, t = ring("x,y,z,t", ZZ)
-    assert R.dmp_sqf_p(f_6) is True
+    assert f_6.is_squarefree is True
     assert R.dmp_sqf_part(f_6) == f_6
 
     R, x = ring("x", ZZ)

@@ -14,7 +14,7 @@ polynomials within Diofant. All code examples assume::
 
     >>> from diofant import *
     >>> x, y, z = symbols('x y z')
-    >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
+    >>> init_printing(pretty_print=True, use_unicode=True, wrap_line=False, no_global=True)
 
 Basic functionality
 ===================
@@ -37,14 +37,14 @@ uniquely defined this way::
 
     >>> q, r = div(f, g, domain='QQ')
     >>> q
-    5*x   5
-    --- + -
+    5⋅x   5
+    ─── + ─
      2    2
     >>> r
     -2
     >>> (q*g + r).expand()
        2
-    5*x  + 10*x + 3
+    5⋅x  + 10⋅x + 3
 
 As you can see, ``q`` has a non-integer coefficient. If you want to do division
 only in the ring of polynomials with integer coefficients, you can specify an
@@ -55,7 +55,7 @@ additional parameter::
     0
     >>> r
        2
-    5*x  + 10*x + 3
+    5⋅x  + 10⋅x + 3
 
 But be warned, that this ring is no longer Euclidean and that the degree of the
 remainder doesn't need to be smaller than that of ``f``. Since 2 doesn't divide 5,
@@ -67,10 +67,10 @@ remainder doesn't need to be smaller than that of ``f``. Since 2 doesn't divide 
     >>> q
     x
     >>> r
-    9*x + 3
+    9⋅x + 3
     >>> (q*g + r).expand()
        2
-    5*x  + 10*x + 3
+    5⋅x  + 10⋅x + 3
 
 This also works for polynomials with multiple variables::
 
@@ -80,7 +80,7 @@ This also works for polynomials with multiple variables::
     >>> q, r = div(f, g, domain='QQ')
     >>> q
     y
-    -
+    ─
     3
     >>> r
     0
@@ -94,13 +94,13 @@ constant as coefficient, you can specify the variables explicitly::
     >>> g = 3*x + 2
     >>> q, r = div(f, g, domain='QQ')
     >>> q
-    a*x   2*a   b
-    --- - --- + -
+    a⋅x   2⋅a   b
+    ─── - ─── + ─
      3     9    3
 
     >>> r
-    4*a   2*b
-    --- - --- + c
+    4⋅a   2⋅b
+    ─── - ─── + c
      9     3
 
 GCD and LCM
@@ -115,7 +115,7 @@ considered::
     >>> f = (12*x + 12)*x
     >>> g = 16*x**2
     >>> gcd(f, g)
-    4*x
+    4⋅x
 
 But if the polynomials have rational coefficients, then the returned polynomial is
 monic::
@@ -132,23 +132,23 @@ alphabetically, be default, which has influence on the leading coefficient::
     >>> g = 3*x + 6*y
 
     >>> gcd(f, g)
-    x + 2*y
+    x + 2⋅y
 
 The lcm is connected with the gcd and one can be computed using the other::
 
     >>> f = x*y**2 + x**2*y
     >>> g = x**2*y**2
     >>> gcd(f, g)
-    x*y
+    x⋅y
     >>> lcm(f, g)
      3  2    2  3
-    x *y  + x *y
+    x ⋅y  + x ⋅y
     >>> (f*g).expand()
      4  3    3  4
-    x *y  + x *y
+    x ⋅y  + x ⋅y
     >>> (gcd(f, g, x, y)*lcm(f, g, x, y)).expand()
      4  3    3  4
-    x *y  + x *y
+    x ⋅y  + x ⋅y
 
 Square-free factorization
 -------------------------
@@ -163,7 +163,7 @@ factors (not necessarily irreducible) of degree 1, 2 etc.::
 
     >>> sqf(f)
      2        2
-    x *(x + 1) *(x + 2)
+    x ⋅(x + 1) ⋅(x + 2)
 
 Factorization
 -------------
@@ -173,13 +173,13 @@ with rational coefficients::
 
     >>> factor(x**4/2 + 5*x**3/12 - x**2/3)
      2
-    x *(2*x - 1)*(3*x + 4)
-    ----------------------
+    x ⋅(2⋅x - 1)⋅(3⋅x + 4)
+    ──────────────────────
               12
 
     >>> factor(x**2 + 4*x*y + 4*y**2)
              2
-    (x + 2*y)
+    (x + 2⋅y)
 
 Gröbner bases
 -------------
@@ -187,13 +187,13 @@ Gröbner bases
 Buchberger's algorithm is implemented, supporting various monomial orders::
 
     >>> groebner([x**2 + 1, y**4*x + x**3], x, y, order='lex')
-                 /[ 2       4    ]                            \
-    GroebnerBasis\[x  + 1, y  - 1], x, y, domain=ZZ, order=lex/
+                 ⎛⎡ 2       4    ⎤                           ⎞
+    GroebnerBasis⎝⎣x  + 1, y  - 1⎦, x, y, domain=ℤ, order=lex⎠
 
 
     >>> groebner([x**2 + 1, y**4*x + x**3, x*y*z**3], x, y, z, order='grevlex')
-                 /[ 4       3   2    ]                                   \
-    GroebnerBasis\[y  - 1, z , x  + 1], x, y, z, domain=ZZ, order=grevlex/
+                 ⎛⎡ 4       3   2    ⎤                                  ⎞
+    GroebnerBasis⎝⎣y  - 1, z , x  + 1⎦, x, y, z, domain=ℤ, order=grevlex⎠
 
 Solving Equations
 -----------------
@@ -204,26 +204,28 @@ polynomials and to solve some systems of polynomial equations::
     >>> from diofant import roots, solve_poly_system
 
     >>> solve(x**3 + 2*x + 3, x)
-                        ____               ____
-                  1   \/ 11 *I       1   \/ 11 *I
-    [{x: -1}, {x: - - --------}, {x: - + --------}]
-                  2      2           2      2
+    ⎡         ⎧         ____  ⎫  ⎧         ____  ⎫⎤
+    ⎢         ⎪   1   ╲╱ 11 ⋅ⅈ⎪  ⎪   1   ╲╱ 11 ⋅ⅈ⎪⎥
+    ⎢{x: -1}, ⎨x: ─ - ────────⎬, ⎨x: ─ + ────────⎬⎥
+    ⎢         ⎪   2      2    ⎪  ⎪   2      2    ⎪⎥
+    ⎣         ⎩               ⎭  ⎩               ⎭⎦
 
     >>> p = Symbol('p')
     >>> q = Symbol('q')
 
     >>> solve(x**2 + p*x + q, x)
-                  __________                __________
-                 /  2                      /  2
-           p   \/  p  - 4*q          p   \/  p  - 4*q
-    [{x: - - - -------------}, {x: - - + -------------}]
-           2         2               2         2
+    ⎡⎧            __________⎫  ⎧            __________⎫⎤
+    ⎢⎪           ╱  2       ⎪  ⎪           ╱  2       ⎪⎥
+    ⎢⎨     p   ╲╱  p  - 4⋅q ⎬  ⎨     p   ╲╱  p  - 4⋅q ⎬⎥
+    ⎢⎪x: - ─ - ─────────────⎪, ⎪x: - ─ + ─────────────⎪⎥
+    ⎣⎩     2         2      ⎭  ⎩     2         2      ⎭⎦
 
     >>> solve_poly_system([y - x, x - 5], x, y)
     [{x: 5, y: 5}]
 
     >>> solve_poly_system([y**2 - x**3 + 1, y*x], x, y)
-                                                            ___                       ___
-                                                      1   \/ 3 *I               1   \/ 3 *I
-    [{x: 0, y: -I}, {x: 0, y: I}, {x: 1, y: 0}, {x: - - - -------, y: 0}, {x: - - + -------, y: 0}]
-                                                      2      2                  2      2
+    ⎡                                           ⎧           ___        ⎫  ⎧           ___        ⎫⎤
+    ⎢                                           ⎪     1   ╲╱ 3 ⋅ⅈ      ⎪  ⎪     1   ╲╱ 3 ⋅ⅈ      ⎪⎥
+    ⎢{x: 0, y: -ⅈ}, {x: 0, y: ⅈ}, {x: 1, y: 0}, ⎨x: - ─ - ───────, y: 0⎬, ⎨x: - ─ + ───────, y: 0⎬⎥
+    ⎢                                           ⎪     2      2         ⎪  ⎪     2      2         ⎪⎥
+    ⎣                                           ⎩                      ⎭  ⎩                      ⎭⎦

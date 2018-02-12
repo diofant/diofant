@@ -1,7 +1,7 @@
 """Printing subsystem"""
 
 from .pretty import (pretty, pretty_print, pprint,  # noqa: F401
-                     pprint_use_unicode, pprint_try_use_unicode)
+                     pprint_use_unicode)
 from .latex import latex  # noqa: F401
 from .mathml import mathml, print_mathml  # noqa: F401
 from .python import python, print_python  # noqa: F401

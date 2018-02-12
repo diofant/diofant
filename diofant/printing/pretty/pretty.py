@@ -5,14 +5,13 @@ from ..conventions import requires_partial
 from ..printer import Printer
 from ..str import sstr
 from .pretty_symbology import (annotated, greek_unicode, hobj, pretty_atom,
-                               pretty_symbol, pretty_try_use_unicode,
-                               pretty_use_unicode, vobj, xobj, xsym)
+                               pretty_symbol, pretty_use_unicode, vobj, xobj,
+                               xsym)
 from .stringpict import prettyForm, stringPict
 
 
 # rename for usage from outside
 pprint_use_unicode = pretty_use_unicode
-pprint_try_use_unicode = pretty_try_use_unicode
 
 
 class PrettyPrinter(Printer):

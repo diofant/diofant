@@ -1,6 +1,5 @@
 """Symbolic primitives + unicode/ASCII abstraction for pretty.py"""
 
-import sys
 import unicodedata
 
 from ...core.alphabets import greeks
@@ -41,13 +40,6 @@ def pretty_use_unicode(flag=None):
     use_unicode_prev = _use_unicode
     _use_unicode = flag
     return use_unicode_prev
-
-
-def pretty_try_use_unicode():
-    """See if unicode output is available and leverage it if possible"""
-
-    if sys.stdout.encoding == 'UTF-8':  # pragma: no branch
-        pretty_use_unicode(True)
 
 
 # GREEK

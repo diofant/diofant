@@ -41,16 +41,14 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dup_qq_heu_gcd, dup_resultant, dup_rr_lcm,
                           dup_rr_prs_gcd, dup_subresultants, dup_zz_heu_gcd)
 from .factortools import (dmp_ext_factor, dmp_factor_list,
-                          dmp_factor_list_include, dmp_irreducible_p,
-                          dmp_trial_division, dmp_zz_factor,
-                          dmp_zz_mignotte_bound, dmp_zz_wang,
+                          dmp_factor_list_include, dmp_trial_division,
+                          dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
                           dup_ext_factor, dup_factor_list,
-                          dup_factor_list_include, dup_irreducible_p,
-                          dup_trial_division, dup_zz_cyclotomic_factor,
-                          dup_zz_cyclotomic_poly, dup_zz_factor,
-                          dup_zz_factor_sqf, dup_zz_hensel_lift,
+                          dup_factor_list_include, dup_trial_division,
+                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
+                          dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
                           dup_zz_hensel_step, dup_zz_irreducible_p,
                           dup_zz_mignotte_bound)
 from .galoistools import gf_factor_sqf, gf_strip
@@ -63,9 +61,8 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_root_lower_bound, dup_root_upper_bound,
                             dup_sturm)
 from .sqfreetools import (dmp_gff_list, dmp_sqf_list, dmp_sqf_list_include,
-                          dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part, dup_gff_list,
-                          dup_sqf_list, dup_sqf_list_include, dup_sqf_norm,
-                          dup_sqf_p, dup_sqf_part)
+                          dmp_sqf_norm, dmp_sqf_part, dup_gff_list,
+                          dup_sqf_list, dup_sqf_list_include)
 
 
 @public
@@ -674,32 +671,13 @@ class IPolys:
         factors = dmp_factor_list_include(self.to_dense(f), self.ngens-1, self.domain)
         return [ (self.from_dense(g), k) for g, k in factors ]
 
-    def dup_irreducible_p(self, f):
-        return dup_irreducible_p(self.to_dense(f), self.domain)
-
-    def dmp_irreducible_p(self, f):
-        return dmp_irreducible_p(self.to_dense(f), self.ngens-1, self.domain)
-
     def dup_sturm(self, f):
         seq = dup_sturm(self.to_dense(f), self.domain)
         return list(map(self.from_dense, seq))
 
-    def dup_sqf_p(self, f):
-        return dup_sqf_p(self.to_dense(f), self.domain)
-
-    def dmp_sqf_p(self, f):
-        return dmp_sqf_p(self.to_dense(f), self.ngens-1, self.domain)
-
-    def dup_sqf_norm(self, f):
-        s, F, R = dup_sqf_norm(self.to_dense(f), self.domain)
-        return s, self.from_dense(F), self.to_ground().from_dense(R)
-
     def dmp_sqf_norm(self, f):
         s, F, R = dmp_sqf_norm(self.to_dense(f), self.ngens-1, self.domain)
         return s, self.from_dense(F), self.to_ground().from_dense(R)
-
-    def dup_sqf_part(self, f):
-        return self.from_dense(dup_sqf_part(self.to_dense(f), self.domain))
 
     def dmp_sqf_part(self, f):
         return self.from_dense(dmp_sqf_part(self.to_dense(f), self.ngens-1, self.domain))

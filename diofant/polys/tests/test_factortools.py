@@ -5,7 +5,7 @@ import pytest
 from diofant import I, nextprime, sin, sqrt
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.polys import polyconfig as config
-from diofant.polys.factortools import dmp_zz_diophantine
+from diofant.polys.factortools import dmp_irreducible_p, dmp_zz_diophantine
 from diofant.polys.polyclasses import ANP
 from diofant.polys.polyerrors import DomainError
 from diofant.polys.rings import ring
@@ -296,7 +296,7 @@ def test_dmp_zz_wang():
         1036728*_x**6 + 915552*_x**5 + 55748*_x**4 + 105621*_x**3 - 17304*_x**2 - 26841*_x - 644
 
     assert R.dmp_zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
-    assert UV.dup_sqf_p(s) and UV.dmp_degree(s) == R.dmp_degree(w_1)
+    assert s.is_squarefree and UV.dmp_degree(s) == R.dmp_degree(w_1)
 
     _, H = UV.dup_zz_factor_sqf(s)
 
@@ -727,14 +727,23 @@ def test_dmp_factor_list():
     pytest.raises(DomainError, lambda: R.dmp_factor_list(EX(sin(1))))
 
 
-def test_dup_irreducible_p():
-    R, x = ring("x", ZZ)
-    assert R.dup_irreducible_p(x**2 + x + 1) is True
-    assert R.dup_irreducible_p(x**2 + 2*x + 1) is False
-
-
 def test_dmp_irreducible_p():
+    R, x = ring("x", ZZ)
+
+    assert dmp_irreducible_p((x**2 + x + 1).to_dense(), 0, ZZ) is True
+    assert dmp_irreducible_p((x**2 + 2*x + 1).to_dense(), 0, ZZ) is False
+
+    assert (x**2 + x + 1).is_irreducible is True
+    assert (x**2 + 2*x + 1).is_irreducible is False
+
     R, x, y = ring("x,y", ZZ)
-    assert R.dmp_irreducible_p(2) is True
-    assert R.dmp_irreducible_p(x**2 + x + 1) is True
-    assert R.dmp_irreducible_p(x**2 + 2*x + 1) is False
+
+    assert dmp_irreducible_p(R(2).to_dense(), 1, ZZ) is True
+    assert dmp_irreducible_p((x**2 + x + 1).to_dense(), 1, ZZ) is True
+    assert dmp_irreducible_p((x**2 + 2*x + 1).to_dense(), 1, ZZ) is False
+
+    assert R(2).is_irreducible is True
+    assert (x**2 + x + 1).is_irreducible is True
+    assert (x**2 + 2*x + 1).is_irreducible is False
+    assert ((x - 2*y)*(x + y)).is_irreducible is False
+    assert (x**2 + y**2).is_irreducible is True

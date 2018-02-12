@@ -13,29 +13,6 @@ from .galoistools import gf_sqf_list, gf_sqf_part
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
-def dup_sqf_p(f, K):
-    """
-    Return ``True`` if ``f`` is a square-free polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sqf_p(x**2 - 2*x + 1)
-    False
-    >>> R.dup_sqf_p(x**2 - 1)
-    True
-
-    """
-    if not f:
-        return True
-    else:
-        return not dmp_degree(dup_gcd(f, dup_diff(f, 1, K), K), 0)
-
-
 def dmp_sqf_p(f, u, K):
     """
     Return ``True`` if ``f`` is a square-free polynomial in ``K[X]``.
@@ -44,64 +21,18 @@ def dmp_sqf_p(f, u, K):
     ========
 
     >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_p(x**2 + 2*x*y + y**2)
-    False
-    >>> R.dmp_sqf_p(x**2 + y**2)
+    >>> dmp_sqf_p([[]], 1, ZZ)
     True
-
+    >>> dmp_sqf_p([[1], [2, 0], [1, 0, 0]], 1, ZZ)
+    False
+    >>> dmp_sqf_p([[1], [], [1, 0, 0]], 1, ZZ)
+    True
     """
     if dmp_zero_p(f, u):
         return True
     else:
         return not dmp_degree(dmp_gcd(f, dmp_diff(f, 1, u, K), u, K), u)
-
-
-def dup_sqf_norm(f, K):
-    """
-    Square-free norm of ``f`` in ``K[x]``, useful over algebraic domains.
-
-    Returns ``s``, ``f``, ``r``, such that ``g(x) = f(x-sa)`` and ``r(x) = Norm(g(x))``
-    is a square-free polynomial over K, where ``a`` is the algebraic extension of ``K``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> from diofant import sqrt
-
-    >>> K = QQ.algebraic_field(sqrt(3))
-    >>> R, x = ring("x", K)
-    >>> _, X = ring("x", QQ)
-
-    >>> s, f, r = R.dup_sqf_norm(x**2 - 2)
-
-    >>> s == 1
-    True
-    >>> f == x**2 + K([QQ(-2), QQ(0)])*x + 1
-    True
-    >>> r == X**4 - 10*X**2 + 1
-    True
-
-    """
-    if not K.is_Algebraic:
-        raise DomainError("ground domain must be algebraic")
-
-    s, g = 0, dmp_raise(K.mod.rep, 1, 0, K.domain)
-
-    while True:
-        h, _ = dmp_inject(f, 0, K, front=True)
-        r = dmp_resultant(g, h, 1, K.domain)
-
-        if dup_sqf_p(r, K.domain):
-            break
-        else:
-            f, s = dup_shift(f, -K.unit, K), s + 1
-
-    return s, f, r
 
 
 def dmp_sqf_norm(f, u, K):
@@ -132,9 +63,6 @@ def dmp_sqf_norm(f, u, K):
     True
 
     """
-    if not u:
-        return dup_sqf_norm(f, K)
-
     if not K.is_Algebraic:
         raise DomainError("ground domain must be algebraic")
 
@@ -155,49 +83,14 @@ def dmp_sqf_norm(f, u, K):
     return s, f, r
 
 
-def dup_gf_sqf_part(f, K):
-    """Compute square-free part of ``f`` in ``GF(p)[x]``. """
-    f = dmp_convert(f, 0, K, K.domain)
-    g = gf_sqf_part(f, K.mod, K.domain)
-    return dmp_convert(g, 0, K.domain, K)
-
-
-def dmp_gf_sqf_part(f, u, K):  # pragma: no cover
+def dmp_gf_sqf_part(f, u, K):
     """Compute square-free part of ``f`` in ``GF(p)[X]``. """
-    raise NotImplementedError('multivariate polynomials over finite fields')
-
-
-def dup_sqf_part(f, K):
-    """
-    Returns square-free part of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sqf_part(x**3 - 3*x - 2)
-    x**2 - x - 2
-
-    """
-    if K.is_FiniteField:
-        return dup_gf_sqf_part(f, K)
-
-    if not f:
-        return f
-
-    if K.is_negative(dmp_LC(f, K)):
-        f = dmp_neg(f, 0, K)
-
-    gcd = dup_gcd(f, dup_diff(f, 1, K), K)
-    sqf = dmp_quo(f, gcd, 0, K)
-
-    if K.has_Field:
-        return dup_monic(sqf, K)
-    else:
-        return dup_primitive(sqf, K)[1]
+    if not u:
+        f = dmp_convert(f, u, K, K.domain)
+        g = gf_sqf_part(f, K.mod, K.domain)
+        return dmp_convert(g, u, K.domain, K)
+    else:  # pragma: no cover
+        raise NotImplementedError('multivariate polynomials over finite fields')
 
 
 def dmp_sqf_part(f, u, K):
@@ -215,9 +108,6 @@ def dmp_sqf_part(f, u, K):
     x**2 + x*y
 
     """
-    if not u:
-        return dup_sqf_part(f, K)
-
     if K.is_FiniteField:
         return dmp_gf_sqf_part(f, u, K)
 

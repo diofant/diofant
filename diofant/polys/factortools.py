@@ -15,7 +15,7 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
                          dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_zero_p,
-                         dup_inflate, dup_terms_gcd)
+                         dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -29,8 +29,7 @@ from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import (dmp_sqf_norm, dmp_sqf_part, dup_sqf_norm, dup_sqf_p,
-                          dup_sqf_part)
+from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 def dup_trial_division(f, factors, K):
@@ -398,7 +397,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     if F == g and dup_cyclotomic_p(g, K):
         return True
 
-    G = dup_sqf_part(F, K)
+    G = dmp_sqf_part(F, 0, K)
 
     if dup_sqr(G, K) == F and dup_cyclotomic_p(G, K):
         return True
@@ -560,7 +559,7 @@ def dup_zz_factor(f, K):
         if dup_zz_irreducible_p(g, K):
             return cont, [(g, 1)]
 
-    g = dup_sqf_part(g, K)
+    g = dmp_sqf_part(g, 0, K)
     H = None
 
     if query('USE_CYCLOTOMIC_FACTOR'):
@@ -600,7 +599,7 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
 
     g = dmp_eval_tail(f, A, u, K)
 
-    if not dup_sqf_p(g, K):
+    if not dmp_sqf_p(g, 0, K):
         raise EvaluationFailed('no luck')
 
     c, h = dup_primitive(g, K)
@@ -1056,8 +1055,8 @@ def dup_ext_factor(f, K):
     if n == 1:
         return lc, [(f, 1)]
 
-    f, F = dup_sqf_part(f, K), f
-    s, g, r = dup_sqf_norm(f, K)
+    f, F = dmp_sqf_part(f, 0, K), f
+    s, g, r = dmp_sqf_norm(f, 0, K)
 
     factors = dup_factor_list_include(r, K.domain)
 
@@ -1125,7 +1124,7 @@ def dmp_gf_factor(f, u, K):
 
 def dup_factor_list(f, K0):
     """Factor polynomials into irreducibles in `K[x]`. """
-    j, f = dup_terms_gcd(f, K0)
+    (j,), f = dmp_terms_gcd(f, 0, K0)
     cont, f = dup_primitive(f, K0)
 
     if K0.is_FiniteField:
@@ -1279,11 +1278,6 @@ def dmp_factor_list_include(f, u, K):
     else:
         g = dmp_mul_ground(factors[0][0], coeff, u, K)
         return [(g, factors[0][1])] + factors[1:]
-
-
-def dup_irreducible_p(f, K):
-    """Returns ``True`` if ``f`` has no factors over its domain. """
-    return dmp_irreducible_p(f, 0, K)
 
 
 def dmp_irreducible_p(f, u, K):

@@ -21,10 +21,9 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_strip, dmp_swap, dmp_TC,
                                       dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
                                       dmp_validate, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_deflate, dup_from_dict,
+                                      dmp_zeros, dup_from_dict,
                                       dup_from_raw_dict, dup_inflate,
-                                      dup_multi_deflate, dup_random,
-                                      dup_reverse, dup_slice, dup_terms_gcd,
+                                      dup_random, dup_reverse, dup_slice,
                                       dup_to_dict, dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
@@ -433,33 +432,27 @@ def test_dmp_raise():
         [[[[1]], [[2]], [[3]]], [[[]]], [[[2]], [[3]]]]
 
 
-def test_dup_deflate():
-    assert dup_deflate([], ZZ) == (1, [])
-    assert dup_deflate([2], ZZ) == (1, [2])
-    assert dup_deflate([1, 2, 3], ZZ) == (1, [1, 2, 3])
-    assert dup_deflate([1, 0, 2, 0, 3], ZZ) == (2, [1, 2, 3])
-
-    assert dup_deflate(dup_from_raw_dict({7: 1, 1: 1}, ZZ), ZZ) == \
-        (1, [1, 0, 0, 0, 0, 0, 1, 0])
-    assert dup_deflate(dup_from_raw_dict({7: 1, 0: 1}, ZZ), ZZ) == \
-        (7, [1, 1])
-    assert dup_deflate(dup_from_raw_dict({7: 1, 3: 1}, ZZ), ZZ) == \
-        (1, [1, 0, 0, 0, 1, 0, 0, 0])
-
-    assert dup_deflate(dup_from_raw_dict({7: 1, 4: 1}, ZZ), ZZ) == \
-        (1, [1, 0, 0, 1, 0, 0, 0, 0])
-    assert dup_deflate(dup_from_raw_dict({8: 1, 4: 1}, ZZ), ZZ) == \
-        (4, [1, 1, 0])
-
-    assert dup_deflate(dup_from_raw_dict({8: 1}, ZZ), ZZ) == \
-        (8, [1, 0])
-    assert dup_deflate(dup_from_raw_dict({7: 1}, ZZ), ZZ) == \
-        (7, [1, 0])
-    assert dup_deflate(dup_from_raw_dict({1: 1}, ZZ), ZZ) == \
-        (1, [1, 0])
-
-
 def test_dmp_deflate():
+    assert dmp_deflate([], 0, ZZ) == ((1,), [])
+    assert dmp_deflate([2], 0, ZZ) == ((1,), [2])
+    assert dmp_deflate([1, 2, 3], 0, ZZ) == ((1,), [1, 2, 3])
+    assert dmp_deflate([1, 0, 2, 0, 3], 0, ZZ) == ((2,), [1, 2, 3])
+    assert dmp_deflate([1, 0, 0, 1, 0, 0, 1], 0, ZZ) == ((3,), [1, 1, 1])
+
+    assert dmp_deflate(dup_from_raw_dict({7: 1, 1: 1}, ZZ), 0, ZZ) == \
+        ((1,), [1, 0, 0, 0, 0, 0, 1, 0])
+    assert dmp_deflate(dup_from_raw_dict({7: 1, 0: 1}, ZZ), 0, ZZ) == ((7,), [1, 1])
+    assert dmp_deflate(dup_from_raw_dict({7: 1, 3: 1}, ZZ), 0, ZZ) == \
+        ((1,), [1, 0, 0, 0, 1, 0, 0, 0])
+
+    assert dmp_deflate(dup_from_raw_dict({7: 1, 4: 1}, ZZ), 0, ZZ) == \
+        ((1,), [1, 0, 0, 1, 0, 0, 0, 0])
+    assert dmp_deflate(dup_from_raw_dict({8: 1, 4: 1}, ZZ), 0, ZZ) == ((4,), [1, 1, 0])
+
+    assert dmp_deflate(dup_from_raw_dict({8: 1}, ZZ), 0, ZZ) == ((8,), [1, 0])
+    assert dmp_deflate(dup_from_raw_dict({7: 1}, ZZ), 0, ZZ) == ((7,), [1, 0])
+    assert dmp_deflate(dup_from_raw_dict({1: 1}, ZZ), 0, ZZ) == ((1,), [1, 0])
+
     assert dmp_deflate([[]], 1, ZZ) == ((1, 1), [[]])
     assert dmp_deflate([[2]], 1, ZZ) == ((1, 1), [[2]])
 
@@ -468,20 +461,20 @@ def test_dmp_deflate():
     assert dmp_deflate(f, 1, ZZ) == ((2, 1), [[1, 0, 0], [1, 0], [1]])
 
 
-def test_dup_multi_deflate():
-    assert dup_multi_deflate(([2],), ZZ) == (1, ([2],))
-    assert dup_multi_deflate(([], []), ZZ) == (1, ([], []))
-
-    assert dup_multi_deflate(([1, 2, 3],), ZZ) == (1, ([1, 2, 3],))
-    assert dup_multi_deflate(([1, 0, 2, 0, 3],), ZZ) == (2, ([1, 2, 3],))
-
-    assert dup_multi_deflate(([1, 0, 2, 0, 3], [2, 0, 0]), ZZ) == \
-        (2, ([1, 2, 3], [2, 0]))
-    assert dup_multi_deflate(([1, 0, 2, 0, 3], [2, 1, 0]), ZZ) == \
-        (1, ([1, 0, 2, 0, 3], [2, 1, 0]))
-
-
 def test_dmp_multi_deflate():
+    assert dmp_multi_deflate(([2],), 0, ZZ) == ((1,), ([2],))
+    assert dmp_multi_deflate(([], []), 0, ZZ) == ((1,), ([], []))
+
+    assert dmp_multi_deflate(([1, 2, 3],), 0, ZZ) == ((1,), ([1, 2, 3],))
+    assert dmp_multi_deflate(([1, 0, 2, 0, 3],), 0, ZZ) == ((2,), ([1, 2, 3],))
+
+    assert dmp_multi_deflate(([1, 0, 2, 0, 3], [2, 0, 0]), 0, ZZ) == \
+        ((2,), ([1, 2, 3], [2, 0]))
+    assert dmp_multi_deflate(([1, 0, 2, 0, 3], [4, 0, 0]), 0, ZZ) == \
+        ((2,), ([1, 2, 3], [4, 0]))
+    assert dmp_multi_deflate(([1, 0, 2, 0, 3], [2, 1, 0]), 0, ZZ) == \
+        ((1,), ([1, 0, 2, 0, 3], [2, 1, 0]))
+
     assert dmp_multi_deflate(([[]],), 1, ZZ) == \
         ((1, 1), ([[]],))
     assert dmp_multi_deflate(([[]], [[]]), 1, ZZ) == \
@@ -603,23 +596,20 @@ def test_dmp_eject():
     assert dmp_eject(g, 2, K) == f
 
 
-def test_dup_terms_gcd():
-    assert dup_terms_gcd([], ZZ) == (0, [])
-    assert dup_terms_gcd([1, 0, 1], ZZ) == (0, [1, 0, 1])
-    assert dup_terms_gcd([1, 0, 1, 0], ZZ) == (1, [1, 0, 1])
-    assert dup_terms_gcd([1, 3, 1, 4, 2, 0], ZZ) == (1, [1, 3, 1, 4, 2])
-
-
 def test_dmp_terms_gcd():
+    assert dmp_terms_gcd([], 0, ZZ) == ((0,), [])
+    assert dmp_terms_gcd([1, 0, 1], 0, ZZ) == ((0,), [1, 0, 1])
+    assert dmp_terms_gcd([1, 0, 1, 0], 0, ZZ) == ((1,), [1, 0, 1])
+    assert dmp_terms_gcd([1, 3, 1, 4, 2, 0], 0, ZZ) == ((1,), [1, 3, 1, 4, 2])
+    assert dmp_terms_gcd([1, 0, 1, 0, 0], 0, ZZ) == ((2,), [1, 0, 1])
+
     assert dmp_terms_gcd([[]], 1, ZZ) == ((0, 0), [[]])
 
     assert dmp_terms_gcd([1, 0, 1, 0], 0, ZZ) == ((1,), [1, 0, 1])
     assert dmp_terms_gcd([[1], [], [1], []], 1, ZZ) == ((1, 0), [[1], [], [1]])
 
-    assert dmp_terms_gcd(
-        [[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
-    assert dmp_terms_gcd(
-        [[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
+    assert dmp_terms_gcd([[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
+    assert dmp_terms_gcd([[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
 
 
 def test_dmp_list_terms():

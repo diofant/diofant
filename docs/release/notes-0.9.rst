@@ -59,6 +59,7 @@ Compatibility breaks
 * Drop ``MonomialOps`` class, see :pull:`586`.
 * Renamed 'n' argiment of :meth:`~diofant.core.evalf.EvalfMixin.evalf` to 'dps', see :pull:`596`.
 * Make ``ex=True`` - default format for :func:`~diofant.polys.numberfields.primitive_element`, see :pull:`597`.
+* Removed ``pprint_try_use_unicode()`` function, see :pull:`605`.
 
 Minor changes
 =============

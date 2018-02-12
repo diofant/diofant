@@ -1078,12 +1078,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         See Also
         ========
 
-        as_coefficient: separate the expression into a coefficient and factor
-        as_coeff_Add: separate the additive constant from an expression
-        as_coeff_Mul: separate the multiplicative constant from an expression
-        as_independent: separate x-dependent terms/factors from others
-        diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
-        diofant.polys.polytools.Poly.nth: like coeff_monomial but powers of monomial terms are used
+        diofant.core.expr.Expr.as_coefficient
+        diofant.core.expr.Expr.as_coeff_Add
+        diofant.core.expr.Expr.as_coeff_Mul
+        diofant.core.expr.Expr.as_independent
+        diofant.polys.polytools.Poly.coeff_monomial
+        diofant.polys.polytools.Poly.nth
 
         Examples
         ========

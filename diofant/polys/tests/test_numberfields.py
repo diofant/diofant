@@ -7,8 +7,7 @@ from diofant import (Add, GoldenRatio, I, Integer, Mul, Poly, Rational, Symbol,
                      nsimplify, oo, pi, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains import QQ
-from diofant.polys.numberfields import (AlgebraicNumber, IntervalPrinter,
-                                        field_isomorphism,
+from diofant.polys.numberfields import (AlgebraicNumber, field_isomorphism,
                                         field_isomorphism_pslq,
                                         is_isomorphism_possible,
                                         minimal_polynomial, primitive_element,
@@ -788,13 +787,6 @@ def test_to_algebraic_integer():
     assert a.minpoly == x**2 - 12
     assert a.root == 2*sqrt(3)
     assert a.rep == DMP([QQ(7, 19), QQ(3)], QQ)
-
-
-def test_IntervalPrinter():
-    ip = IntervalPrinter()
-    assert ip.doprint(x**2) == "x**mpi('2')"
-    assert ip.doprint(x**Q(1, 3)) == "x**(mpi('1/3'))"
-    assert ip.doprint(sqrt(x)) == "x**(mpi('1/2'))"
 
 
 def test_minpoly_fraction_field():
