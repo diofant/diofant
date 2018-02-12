@@ -126,21 +126,20 @@ def dmp_sqf_part(f, u, K):
         return dmp_ground_primitive(sqf, u, K)[1]
 
 
-def dup_gf_sqf_list(f, K, all=False):
-    """Compute square-free decomposition of ``f`` in ``GF(p)[x]``. """
-    f = dmp_convert(f, 0, K, K.domain)
-
-    coeff, factors = gf_sqf_list(f, K.mod, K.domain, all=all)
-
-    for i, (f, k) in enumerate(factors):
-        factors[i] = (dmp_convert(f, 0, K.domain, K), k)
-
-    return K.convert(coeff, K.domain), factors
-
-
 def dmp_gf_sqf_list(f, u, K, all=False):
     """Compute square-free decomposition of ``f`` in ``GF(p)[X]``. """
-    raise NotImplementedError('multivariate polynomials over finite fields')
+    if not u:
+        f = dmp_convert(f, u, K, K.domain)
+
+        coeff, factors = gf_sqf_list(f, K.mod, K.domain, all=all)
+
+        for i, (f, k) in enumerate(factors):
+            factors[i] = (dmp_convert(f, u, K.domain, K), k)
+
+        return K.convert(coeff, K.domain), factors
+
+    else:
+        raise NotImplementedError('multivariate polynomials over finite fields')
 
 
 def dup_sqf_list(f, K, all=False):
@@ -163,7 +162,7 @@ def dup_sqf_list(f, K, all=False):
     (2, [(1, 1), (x + 1, 2), (x + 2, 3)])
     """
     if K.is_FiniteField:
-        return dup_gf_sqf_list(f, K, all=all)
+        return dmp_gf_sqf_list(f, 0, K, all=all)
 
     if K.has_Field:
         coeff = dmp_LC(f, K)
