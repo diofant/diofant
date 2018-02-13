@@ -784,43 +784,6 @@ def dmp_sqr(f, u, K):
     return dmp_strip(h, u)
 
 
-def dup_pow(f, n, K):
-    """
-    Raise ``f`` to the ``n``-th power in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_pow(x - 2, 3)
-    x**3 - 6*x**2 + 12*x - 8
-    """
-    if not n:
-        return [K.one]
-    if n < 0:
-        raise ValueError("can't raise polynomial to a negative power")
-    if n == 1 or not f or f == [K.one]:
-        return f
-
-    g = [K.one]
-
-    while True:
-        n, m = n//2, n
-
-        if m % 2:
-            g = dup_mul(g, f, K)
-
-            if not n:
-                break
-
-        f = dup_sqr(f, K)
-
-    return g
-
-
 def dmp_pow(f, n, u, K):
     """
     Raise ``f`` to the ``n``-th power in ``K[X]``.
@@ -835,9 +798,6 @@ def dmp_pow(f, n, u, K):
     >>> R.dmp_pow(x*y + 1, 3)
     x**3*y**3 + 3*x**2*y**2 + 3*x*y + 1
     """
-    if not u:
-        return dup_pow(f, n, K)
-
     if not n:
         return dmp_one(u, K)
     if n < 0:

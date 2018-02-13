@@ -15,10 +15,9 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_sub_mul, dmp_sub_term, dup_add,
                                       dup_add_mul, dup_add_term, dup_ff_div,
                                       dup_lshift, dup_mul, dup_mul_term,
-                                      dup_pdiv, dup_pexquo, dup_pow, dup_pquo,
-                                      dup_prem, dup_rr_div, dup_rshift,
-                                      dup_sqr, dup_sub, dup_sub_mul,
-                                      dup_sub_term)
+                                      dup_pdiv, dup_pexquo, dup_pquo, dup_prem,
+                                      dup_rr_div, dup_rshift, dup_sqr, dup_sub,
+                                      dup_sub_mul, dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
@@ -696,41 +695,39 @@ def test_dmp_sqr():
     assert dmp_sqr([[K(3)], [K(4)]], 1, K) == [[K(6)], [K(7)]]
 
 
-def test_dup_pow():
-    assert dup_pow([], 0, ZZ) == [ZZ(1)]
-    assert dup_pow([], 0, QQ) == [QQ(1)]
+def test_dmp_pow():
+    assert dmp_pow([], 0, 0, ZZ) == [ZZ(1)]
+    assert dmp_pow([], 0, 0, QQ) == [QQ(1)]
 
-    assert dup_pow([], 1, ZZ) == []
-    assert dup_pow([], 7, ZZ) == []
+    assert dmp_pow([], 1, 0, ZZ) == []
+    assert dmp_pow([], 7, 0, ZZ) == []
 
-    pytest.raises(ValueError, lambda: dup_pow([ZZ(1)], -1, ZZ))
+    pytest.raises(ValueError, lambda: dmp_pow([ZZ(1)], -1, 0, ZZ))
 
-    assert dup_pow([ZZ(1)], 0, ZZ) == [ZZ(1)]
-    assert dup_pow([ZZ(1)], 1, ZZ) == [ZZ(1)]
-    assert dup_pow([ZZ(1)], 7, ZZ) == [ZZ(1)]
+    assert dmp_pow([ZZ(1)], 0, 0, ZZ) == [ZZ(1)]
+    assert dmp_pow([ZZ(1)], 1, 0, ZZ) == [ZZ(1)]
+    assert dmp_pow([ZZ(1)], 7, 0, ZZ) == [ZZ(1)]
 
-    assert dup_pow([ZZ(3)], 0, ZZ) == [ZZ(1)]
-    assert dup_pow([ZZ(3)], 1, ZZ) == [ZZ(3)]
-    assert dup_pow([ZZ(3)], 7, ZZ) == [ZZ(2187)]
+    assert dmp_pow([ZZ(3)], 0, 0, ZZ) == [ZZ(1)]
+    assert dmp_pow([ZZ(3)], 1, 0, ZZ) == [ZZ(3)]
+    assert dmp_pow([ZZ(3)], 7, 0, ZZ) == [ZZ(2187)]
 
-    assert dup_pow([QQ(1, 1)], 0, QQ) == [QQ(1, 1)]
-    assert dup_pow([QQ(1, 1)], 1, QQ) == [QQ(1, 1)]
-    assert dup_pow([QQ(1, 1)], 7, QQ) == [QQ(1, 1)]
+    assert dmp_pow([QQ(1, 1)], 0, 0, QQ) == [QQ(1, 1)]
+    assert dmp_pow([QQ(1, 1)], 1, 0, QQ) == [QQ(1, 1)]
+    assert dmp_pow([QQ(1, 1)], 7, 0, QQ) == [QQ(1, 1)]
 
-    assert dup_pow([QQ(3, 7)], 0, QQ) == [QQ(1, 1)]
-    assert dup_pow([QQ(3, 7)], 1, QQ) == [QQ(3, 7)]
-    assert dup_pow([QQ(3, 7)], 7, QQ) == [QQ(2187, 823543)]
+    assert dmp_pow([QQ(3, 7)], 0, 0, QQ) == [QQ(1, 1)]
+    assert dmp_pow([QQ(3, 7)], 1, 0, QQ) == [QQ(3, 7)]
+    assert dmp_pow([QQ(3, 7)], 7, 0, QQ) == [QQ(2187, 823543)]
 
     f = dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
 
-    assert dup_pow(f, 0, ZZ) == dmp_normal([1], 0, ZZ)
-    assert dup_pow(f, 1, ZZ) == dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
-    assert dup_pow(f, 2, ZZ) == dmp_normal([4, 0, 0, 4, 28, 0, 1, 14, 49], 0, ZZ)
-    assert dup_pow(f, 3, ZZ) == dmp_normal([8, 0, 0, 12, 84, 0, 6, 84,
-                                            294, 1, 21, 147, 343], 0, ZZ)
+    assert dmp_pow(f, 0, 0, ZZ) == dmp_normal([1], 0, ZZ)
+    assert dmp_pow(f, 1, 0, ZZ) == dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
+    assert dmp_pow(f, 2, 0, ZZ) == dmp_normal([4, 0, 0, 4, 28, 0, 1, 14, 49], 0, ZZ)
+    assert dmp_pow(f, 3, 0, ZZ) == dmp_normal([8, 0, 0, 12, 84, 0, 6, 84,
+                                               294, 1, 21, 147, 343], 0, ZZ)
 
-
-def test_dmp_pow():
     assert dmp_pow([[]], 0, 1, ZZ) == [[ZZ(1)]]
     assert dmp_pow([[]], 0, 1, QQ) == [[QQ(1)]]
 
@@ -749,7 +746,9 @@ def test_dmp_pow():
 
     f = dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
 
-    assert dmp_pow(f, 2, 0, ZZ) == dup_pow(f, 2, ZZ)
+    assert dmp_pow(f, 2, 0, ZZ) == [4, 0, 0, 4, 28, 0, 1, 14, 49]
+
+    assert dmp_pow([1, -2], 3, 0, ZZ) == [1, -6, 12, -8]
 
 
 def test_dup_pdiv():
