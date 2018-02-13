@@ -527,23 +527,6 @@ def dmp_sub(f, g, u, K):
         return h + [ dmp_sub(a, b, v, K) for a, b in zip(f, g) ]
 
 
-def dup_add_mul(f, g, h, K):
-    """
-    Returns ``f + g*h`` where ``f, g, h`` are in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_add_mul(x**2 - 1, x - 2, x + 2)
-    2*x**2 - 5
-    """
-    return dup_add(f, dup_mul(g, h, K), K)
-
-
 def dmp_add_mul(f, g, h, u, K):
     """
     Returns ``f + g*h`` where ``f, g, h`` are in ``K[X]``.

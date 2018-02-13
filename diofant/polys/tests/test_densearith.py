@@ -13,9 +13,9 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_quo_ground, dmp_rem, dmp_rr_div,
                                       dmp_sqr, dmp_sub, dmp_sub_ground,
                                       dmp_sub_mul, dmp_sub_term, dup_add,
-                                      dup_add_mul, dup_add_term, dup_ff_div,
-                                      dup_lshift, dup_mul, dup_mul_term,
-                                      dup_pdiv, dup_pexquo, dup_pquo, dup_prem,
+                                      dup_add_term, dup_ff_div, dup_lshift,
+                                      dup_mul, dup_mul_term, dup_pdiv,
+                                      dup_pexquo, dup_pquo, dup_prem,
                                       dup_rr_div, dup_rshift, dup_sqr, dup_sub,
                                       dup_sub_mul, dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
@@ -397,11 +397,13 @@ def test_dmp_sub():
     assert dmp_sub([[[QQ(1, 7)]]], [[[QQ(2, 7)]]], 2, QQ) == [[[QQ(-1, 7)]]]
 
 
-def test_dup_add_mul():
-    assert dup_add_mul([ZZ(1), ZZ(2), ZZ(3)], [ZZ(3), ZZ(2), ZZ(1)],
-                       [ZZ(1), ZZ(2)], ZZ) == [ZZ(3), ZZ(9), ZZ(7), ZZ(5)]
+def test_dmp_add_mul():
+    assert dmp_add_mul([ZZ(1), ZZ(2), ZZ(3)], [ZZ(3), ZZ(2), ZZ(1)],
+                       [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(3), ZZ(9), ZZ(7), ZZ(5)]
     assert dmp_add_mul([[ZZ(1), ZZ(2)], [ZZ(3)]], [[ZZ(3)], [ZZ(2), ZZ(1)]],
                        [[ZZ(1)], [ZZ(2)]], 1, ZZ) == [[ZZ(3)], [ZZ(3), ZZ(9)], [ZZ(4), ZZ(5)]]
+    assert dmp_add_mul([ZZ(1), 0, ZZ(-1)], [ZZ(1), ZZ(-2)],
+                       [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(2), 0, ZZ(-5)]
 
 
 def test_dup_sub_mul():
