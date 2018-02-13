@@ -10,14 +10,15 @@ http://www.emba.uvm.edu/~ddummit/quintics/quintics.nb
 
 from ..core import Dummy, I, N, Rational
 from ..functions import sqrt
-from ..utilities import public
 from .polytools import Poly
+
+
+__all__ = ('PolyQuintic',)
 
 
 x = Dummy('dummy_for_polyquinticconst')
 
 
-@public
 class PolyQuintic:
     """Special functions for solvable quintics"""
 

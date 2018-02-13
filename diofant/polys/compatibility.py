@@ -1,6 +1,5 @@
 """Compatibility interface between dense and sparse polys. """
 
-from ..utilities import public
 from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_add_term, dmp_div, dmp_expand, dmp_exquo,
                          dmp_exquo_ground, dmp_ff_div, dmp_l1_norm,
@@ -63,7 +62,9 @@ from .sqfreetools import (dmp_sqf_list, dmp_sqf_list_include, dmp_sqf_norm,
                           dmp_sqf_part, dup_gff_list)
 
 
-@public
+__all__ = ('IPolys',)
+
+
 class IPolys:
     symbols = None
     ngens = None
