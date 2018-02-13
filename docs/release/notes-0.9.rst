@@ -82,6 +82,7 @@ Minor changes
 * Added :func:`~diofant.tensor.array.permutedims` and :func:`~diofant.tensor.array.derive_by_array`, see :pull:`567`.  Thanks to Francesco Bonazzi.
 * Export set singletons, see :pull:`577`.
 * Added :func:`~diofant.ntheory.primetest.is_square`, :func:`~diofant.utilities.iterables.ordered_partitions`, :func:`~diofant.utilities.iterables.permute_signs` and :func:`~diofant.utilities.iterables.signed_permutations`, see :pull:`578`.
+* Correct implementation of the trial method (uses Gröbner bases) in :func:`~diofant.polys.numberfields.primitive_element`, see :pull:`608`.
 
 Developer changes
 =================
@@ -92,6 +93,7 @@ Developer changes
 * Sort imports with `isort <https://github.com/timothycrosley/isort>`_, see :pull:`520`.
 * Depend on `hypothesis <https://hypothesis.readthedocs.io/en/latest/>`_, see :pull:`547`.
 * Depend on `pytest-xdist <https://github.com/pytest-dev/pytest-xdist>`_, see :pull:`551`.
+* Depend on `pytest-timeout <https://bitbucket.org/pytest-dev/pytest-timeout>`_, see :pull:`608`.
 
 Issues closed
 =============
@@ -244,3 +246,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`12506` Simplify() returns wrong simplified expressions using Sympy 1.0 (trigonometric functions)
 * :sympyissue:`13115` Bug in simplify ?
 * :sympyissue:`13149` factor() of expression with float coefficients gives incorrect result
+* :sympyissue:`14117` Run out of coefficient configurations in primitive_element()

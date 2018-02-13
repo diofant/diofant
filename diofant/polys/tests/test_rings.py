@@ -1511,6 +1511,10 @@ def test_PolyElement_gff_list():
     f = x*(x - 1)**3*(x - 2)**2*(x - 4)**2*(x - 5)
     assert f.gff_list() == [(x**2 - 5*x + 4, 1), (x**2 - 5*x + 4, 2), (x, 3)]
 
+    _, x, y = ring("x,y", ZZ)
+
+    pytest.raises(MultivariatePolynomialError, lambda: (x + y).gff_list())
+
 
 def test_PolyElement_sqf_norm():
     R, x = ring("x", QQ.algebraic_field(sqrt(3)))

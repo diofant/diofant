@@ -1,16 +1,13 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import (dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul,
-                         dup_sub)
+from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul
 from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
-                         dmp_inject, dmp_LC, dmp_raise, dmp_strip, dmp_zero_p)
+                         dmp_inject, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
-                         dmp_ground_primitive, dup_diff, dup_monic,
-                         dup_primitive, dup_shift)
-from .euclidtools import (dmp_gcd, dmp_inner_gcd, dmp_resultant, dup_gcd,
-                          dup_inner_gcd)
+                         dmp_ground_primitive, dup_monic, dup_shift)
+from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant, dup_gcd
 from .galoistools import gf_sqf_list, gf_sqf_part
-from .polyerrors import DomainError, MultivariatePolynomialError
+from .polyerrors import DomainError
 
 
 def dmp_sqf_p(f, u, K):
@@ -126,108 +123,20 @@ def dmp_sqf_part(f, u, K):
         return dmp_ground_primitive(sqf, u, K)[1]
 
 
-def dup_gf_sqf_list(f, K, all=False):
-    """Compute square-free decomposition of ``f`` in ``GF(p)[x]``. """
-    f = dmp_convert(f, 0, K, K.domain)
-
-    coeff, factors = gf_sqf_list(f, K.mod, K.domain, all=all)
-
-    for i, (f, k) in enumerate(factors):
-        factors[i] = (dmp_convert(f, 0, K.domain, K), k)
-
-    return K.convert(coeff, K.domain), factors
-
-
 def dmp_gf_sqf_list(f, u, K, all=False):
     """Compute square-free decomposition of ``f`` in ``GF(p)[X]``. """
-    raise NotImplementedError('multivariate polynomials over finite fields')
+    if not u:
+        f = dmp_convert(f, u, K, K.domain)
 
+        coeff, factors = gf_sqf_list(f, K.mod, K.domain, all=all)
 
-def dup_sqf_list(f, K, all=False):
-    """
-    Return square-free decomposition of a polynomial in ``K[x]``.
+        for i, (f, k) in enumerate(factors):
+            factors[i] = (dmp_convert(f, u, K.domain, K), k)
 
-    Examples
-    ========
+        return K.convert(coeff, K.domain), factors
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
-
-    >>> R.dup_sqf_list(f)
-    (2, [(x + 1, 2), (x + 2, 3)])
-    >>> R.dup_sqf_list(f, all=True)
-    (2, [(1, 1), (x + 1, 2), (x + 2, 3)])
-    """
-    if K.is_FiniteField:
-        return dup_gf_sqf_list(f, K, all=all)
-
-    if K.has_Field:
-        coeff = dmp_LC(f, K)
-        f = dup_monic(f, K)
     else:
-        coeff, f = dup_primitive(f, K)
-
-        if K.is_negative(dmp_LC(f, K)):
-            f = dmp_neg(f, 0, K)
-            coeff = -coeff
-
-    if dmp_degree(f, 0) <= 0:
-        return coeff, []
-
-    result, i = [], 1
-
-    h = dup_diff(f, 1, K)
-    g, p, q = dup_inner_gcd(f, h, K)
-
-    while True:
-        d = dup_diff(p, 1, K)
-        h = dup_sub(q, d, K)
-
-        if not h:
-            result.append((p, i))
-            break
-
-        g, p, q = dup_inner_gcd(p, h, K)
-
-        if all or dmp_degree(g, 0) > 0:
-            result.append((g, i))
-
-        i += 1
-
-    return coeff, result
-
-
-def dup_sqf_list_include(f, K, all=False):
-    """
-    Return square-free decomposition of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
-
-    >>> R.dup_sqf_list_include(f)
-    [(2, 1), (x + 1, 2), (x + 2, 3)]
-    >>> R.dup_sqf_list_include(f, all=True)
-    [(2, 1), (x + 1, 2), (x + 2, 3)]
-
-    """
-    coeff, factors = dup_sqf_list(f, K, all=all)
-
-    if factors and factors[0][1] == 1:
-        g = dmp_mul_ground(factors[0][0], coeff, 0, K)
-        return [(g, 1)] + factors[1:]
-    else:
-        g = dmp_strip([coeff], 0)
-        return [(g, 1)] + factors
+        raise NotImplementedError('multivariate polynomials over finite fields')
 
 
 def dmp_sqf_list(f, u, K, all=False):
@@ -249,9 +158,6 @@ def dmp_sqf_list(f, u, K, all=False):
     >>> R.dmp_sqf_list(f, all=True)
     (1, [(1, 1), (x + y, 2), (x, 3)])
     """
-    if not u:
-        return dup_sqf_list(f, K, all=all)
-
     if K.is_FiniteField:
         return dmp_gf_sqf_list(f, u, K, all=all)
 
@@ -310,9 +216,6 @@ def dmp_sqf_list_include(f, u, K, all=False):
     [(1, 1), (x + y, 2), (x, 3)]
 
     """
-    if not u:
-        return dup_sqf_list_include(f, K, all=all)
-
     coeff, factors = dmp_sqf_list(f, u, K, all=all)
 
     if factors and factors[0][1] == 1:
@@ -359,21 +262,3 @@ def dup_gff_list(f, K):
             return H
         else:
             return [(f, 1)] + H
-
-
-def dmp_gff_list(f, u, K):
-    """
-    Compute greatest factorial factorization of ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x, y = ring("x y", ZZ)
-
-    """
-    if not u:
-        return dup_gff_list(f, K)
-    else:
-        raise MultivariatePolynomialError(f)

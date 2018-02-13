@@ -8,7 +8,7 @@ from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
                          dup_sign_variations, dup_transform)
 from .factortools import dup_factor_list
 from .polyerrors import DomainError, RefinementFailed
-from .sqfreetools import dmp_sqf_part, dup_sqf_list
+from .sqfreetools import dmp_sqf_list, dmp_sqf_part
 
 
 def dup_sturm(f, K):
@@ -540,7 +540,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
 
     I_zero, f = _isolate_zero(f, K, inf, sup, basis=basis, sqf=False)
 
-    _, factors = dup_sqf_list(f, K)
+    _, factors = dmp_sqf_list(f, 0, K)
 
     if len(factors) == 1:
         ((f, k),) = factors
@@ -1663,7 +1663,7 @@ def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     if not K.is_ZZ and not K.is_QQ:
         raise DomainError("isolation of real and complex roots is not supported over %s" % K)
 
-    _, factors = dup_sqf_list(f, K)
+    _, factors = dmp_sqf_list(f, 0, K)
 
     if len(factors) == 1:
         ((f, k),) = factors

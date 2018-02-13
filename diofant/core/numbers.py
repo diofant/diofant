@@ -1849,7 +1849,7 @@ class AlgebraicNumber(Expr):
             minpoly, root = minimal_polynomial(
                 expr, args.get('gen'), polys=True), expr
 
-        dom = minpoly.domain
+        dom = minpoly.domain.get_field()
 
         if not isinstance(coeffs, ANP):
             rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)

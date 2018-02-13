@@ -5,7 +5,7 @@ import pytest
 from diofant.core import I
 from diofant.domains import FF, QQ, ZZ
 from diofant.functions import sqrt
-from diofant.polys.polyerrors import DomainError, MultivariatePolynomialError
+from diofant.polys.polyerrors import DomainError
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -42,28 +42,28 @@ def test_dup_sqf():
     assert R.dmp_sqf_part(x**3 - 3*x - 2) == x**2 - x - 2
     assert (x**3 - 3*x - 2).is_squarefree is False
 
-    assert R.dup_sqf_list(0) == (0, [])
-    assert R.dup_sqf_list(1) == (1, [])
+    assert R.dmp_sqf_list(0) == (0, [])
+    assert R.dmp_sqf_list(1) == (1, [])
 
-    assert R.dup_sqf_list(x) == (1, [(x, 1)])
-    assert R.dup_sqf_list(2*x**2) == (2, [(x, 2)])
-    assert R.dup_sqf_list(3*x**3) == (3, [(x, 3)])
+    assert R.dmp_sqf_list(x) == (1, [(x, 1)])
+    assert R.dmp_sqf_list(2*x**2) == (2, [(x, 2)])
+    assert R.dmp_sqf_list(3*x**3) == (3, [(x, 3)])
 
-    assert R.dup_sqf_list(-x**5 + x**4 + x - 1) == \
+    assert R.dmp_sqf_list(-x**5 + x**4 + x - 1) == \
         (-1, [(x**3 + x**2 + x + 1, 1), (x - 1, 2)])
-    assert R.dup_sqf_list(x**8 + 6*x**6 + 12*x**4 + 8*x**2) == \
+    assert R.dmp_sqf_list(x**8 + 6*x**6 + 12*x**4 + 8*x**2) == \
         ( 1, [(x, 2), (x**2 + 2, 3)])
 
-    assert R.dup_sqf_list(2*x**2 + 4*x + 2) == (2, [(x + 1, 2)])
+    assert R.dmp_sqf_list(2*x**2 + 4*x + 2) == (2, [(x + 1, 2)])
 
     R, x = ring("x", QQ)
-    assert R.dup_sqf_list(2*x**2 + 4*x + 2) == (2, [(x + 1, 2)])
+    assert R.dmp_sqf_list(2*x**2 + 4*x + 2) == (2, [(x + 1, 2)])
 
     R, x = ring("x", FF(2))
-    assert R.dup_sqf_list(x**2 + 1) == (1, [(x + 1, 2)])
+    assert R.dmp_sqf_list(x**2 + 1) == (1, [(x + 1, 2)])
 
     R, x = ring("x", FF(3))
-    assert R.dup_sqf_list(x**10 + 2*x**7 + 2*x**4 + x) == \
+    assert R.dmp_sqf_list(x**10 + 2*x**7 + 2*x**4 + x) == \
         (1, [(x, 1),
              (x + 1, 3),
              (x + 2, 6)])
@@ -89,13 +89,13 @@ def test_dup_sqf():
     res = R.dmp_resultant(f, g)
     h = (4*y**2 + 1).drop(x)
 
-    assert R.drop(x).dup_sqf_list(res) == (45796, [(h, 3)])
+    assert R.drop(x).dmp_sqf_list(res) == (45796, [(h, 3)])
 
     pytest.raises(DomainError, lambda: R.dmp_sqf_norm(x**2 - 1))
 
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
-    assert R.dup_sqf_list_include(t**3*x**2) == [(t**3, 1), (x, 2)]
+    assert R.dmp_sqf_list_include(t**3*x**2) == [(t**3, 1), (x, 2)]
 
     K = QQ.algebraic_field(sqrt(3))
     R, x = ring("x", K)
@@ -141,6 +141,14 @@ def test_dmp_sqf():
     assert R.dmp_sqf_list(f) == (-1, [(x**3 + x**2 + x + 1, 1), (x - 1, 2)])
     assert R.dmp_sqf_list_include(f) == [(-x**3 - x**2 - x - 1, 1), (x - 1, 2)]
 
+    f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
+
+    assert R.dmp_sqf_list(f) == (2, [(x + 1, 2), (x + 2, 3)])
+    assert R.dmp_sqf_list_include(f) == [(2, 1), (x + 1, 2), (x + 2, 3)]
+
+    assert R.dmp_sqf_list(f, all=True) == (2, [(1, 1), (x + 1, 2), (x + 2, 3)])
+    assert R.dmp_sqf_list_include(f, all=True) == [(2, 1), (x + 1, 2), (x + 2, 3)]
+
     R, x, y = ring("x,y", ZZ)
     f = -x**5 + x**4 + x - 1
 
@@ -148,8 +156,6 @@ def test_dmp_sqf():
     assert R.dmp_sqf_list_include(f) == [(-x**3 - x**2 - x - 1, 1), (x - 1, 2)]
 
     pytest.raises(DomainError, lambda: R.dmp_sqf_norm(x**2 + y**2))
-    pytest.raises(MultivariatePolynomialError,
-                  lambda: R.dmp_gff_list(x**2 + y**2))
 
     f = -x**2 + 2*x - 1
     assert R.dmp_sqf_list_include(f) == [(-1, 1), (x - 1, 2)]
