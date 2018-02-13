@@ -4,7 +4,7 @@ from ..ntheory import nextprime
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
-                         dup_mul, dup_prem, dup_sub_mul)
+                         dmp_sub_mul, dup_mul, dup_prem)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
                          dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
@@ -47,7 +47,7 @@ def dup_half_gcdex(f, g, K):
     while g:
         q, r = dmp_div(f, g, 0, K)
         f, g = g, r
-        a, b = b, dup_sub_mul(a, q, b, K)
+        a, b = b, dmp_sub_mul(a, q, b, 0, K)
 
     a = dmp_quo_ground(a, dmp_LC(f, K), 0, K)
     f = dup_monic(f, K)
@@ -85,7 +85,7 @@ def dup_gcdex(f, g, K):
     """
     s, h = dup_half_gcdex(f, g, K)
 
-    F = dup_sub_mul(h, s, f, K)
+    F = dmp_sub_mul(h, s, f, 0, K)
     t = dmp_quo(F, g, 0, K)
 
     return s, t, h

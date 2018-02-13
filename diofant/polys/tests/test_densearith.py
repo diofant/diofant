@@ -17,7 +17,7 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dup_mul, dup_mul_term, dup_pdiv,
                                       dup_pexquo, dup_pquo, dup_prem,
                                       dup_rr_div, dup_rshift, dup_sqr, dup_sub,
-                                      dup_sub_mul, dup_sub_term)
+                                      dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
@@ -406,11 +406,13 @@ def test_dmp_add_mul():
                        [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(2), 0, ZZ(-5)]
 
 
-def test_dup_sub_mul():
-    assert dup_sub_mul([ZZ(1), ZZ(2), ZZ(3)], [ZZ(3), ZZ(2), ZZ(1)],
-                       [ZZ(1), ZZ(2)], ZZ) == [ZZ(-3), ZZ(-7), ZZ(-3), ZZ(1)]
+def test_dmp_sub_mul():
+    assert dmp_sub_mul([ZZ(1), ZZ(2), ZZ(3)], [ZZ(3), ZZ(2), ZZ(1)],
+                       [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(-3), ZZ(-7), ZZ(-3), ZZ(1)]
     assert dmp_sub_mul([[ZZ(1), ZZ(2)], [ZZ(3)]], [[ZZ(3)], [ZZ(2), ZZ(1)]],
                        [[ZZ(1)], [ZZ(2)]], 1, ZZ) == [[ZZ(-3)], [ZZ(-1), ZZ(-5)], [ZZ(-4), ZZ(1)]]
+    assert dmp_sub_mul([ZZ(1), 0, ZZ(-1)], [ZZ(1), ZZ(-2)],
+                       [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(3)]
 
 
 def test_dup_mul():
