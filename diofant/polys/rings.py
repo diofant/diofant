@@ -2253,7 +2253,10 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             raise MultivariatePolynomialError("half extended Euclidean algorithm")
 
     def gcdex(self, other):
-        return self.ring.dmp_gcdex(self, other)
+        if self.ring.is_univariate:
+            return self.ring.dup_gcdex(self, other)
+        else:
+            raise MultivariatePolynomialError("extended Euclidean algorithm")
 
     def subresultants(self, other):
         return self.ring.dmp_subresultants(self, other)

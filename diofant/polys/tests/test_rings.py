@@ -1437,6 +1437,7 @@ def test_PolyElement_gcdex():
     _, x, y = ring("x,y", QQ)
 
     pytest.raises(MultivariatePolynomialError, lambda: (x + y).half_gcdex(x*y))
+    pytest.raises(MultivariatePolynomialError, lambda: (x + y).gcdex(x*y))
 
 
 def test_PolyElement_subresultants():

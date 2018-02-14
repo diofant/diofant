@@ -17,7 +17,7 @@ from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
 from .galoistools import gf_crt, gf_int
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
-                         MultivariatePolynomialError, NotInvertible)
+                         NotInvertible)
 
 
 def dup_half_gcdex(f, g, K):
@@ -81,14 +81,6 @@ def dup_gcdex(f, g, K):
     t = dmp_quo(F, g, 0, K)
 
     return s, t, h
-
-
-def dmp_gcdex(f, g, u, K):
-    """Extended Euclidean algorithm in `F[X]`."""
-    if not u:
-        return dup_gcdex(f, g, K)
-    else:
-        raise MultivariatePolynomialError(f, g)
 
 
 def dup_invert(f, g, K):

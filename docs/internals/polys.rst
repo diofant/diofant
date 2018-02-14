@@ -393,7 +393,7 @@ analogous to `Bézout's identity
 in the case of integers.
 
 .. autofunction:: dup_half_gcdex
-.. autofunction:: dmp_gcdex
+.. autofunction:: dup_gcdex
 
 Simplified remainder sequences
 ------------------------------
