@@ -10,8 +10,7 @@ from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
                          dup_add_term, dup_lshift, dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros, dup_from_raw_dict,
-                         dup_to_raw_dict)
+                         dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
 from .polyerrors import DomainError, MultivariatePolynomialError
 
 
@@ -775,9 +774,9 @@ def dup_real_imag(f, K):
         h = dmp_mul(h, g, 2, K)
         h = dmp_add_term(h, dmp_ground(c, 1), 0, 2, K)
 
-    H = dup_to_raw_dict(h)
+    H = dmp_to_dict(h, 0)
 
-    for k, h in H.items():
+    for (k,), h in H.items():
         m = k % 4
 
         if not m:
@@ -953,8 +952,8 @@ def _dup_right_decompose(f, s, K):
     n = len(f) - 1
     lc = dmp_LC(f, K)
 
-    f = dup_to_raw_dict(f)
-    g = { s: K.one }
+    f = dmp_to_dict(f, 0)
+    g = {(s,): K.one}
 
     r = n // s
 
@@ -962,17 +961,17 @@ def _dup_right_decompose(f, s, K):
         coeff = K.zero
 
         for j in range(i):
-            if not n + j - i in f:
+            if not (n + j - i,) in f:
                 continue
 
-            assert s - j in g
+            assert (s - j,) in g
 
-            fc, gc = f[n + j - i], g[s - j]
+            fc, gc = f[(n + j - i,)], g[(s - j,)]
             coeff += (i - r*j)*fc*gc
 
-        g[s - i] = K.quo(coeff, i*r*lc)
+        g[(s - i,)] = K.quo(coeff, i*r*lc)
 
-    return dup_from_raw_dict(g, K)
+    return dup_from_dict(g, K)
 
 
 def _dup_left_decompose(f, h, K):
@@ -985,10 +984,10 @@ def _dup_left_decompose(f, h, K):
         if dmp_degree(r, 0) > 0:
             return
         else:
-            g[i] = dmp_LC(r, K)
+            g[(i,)] = dmp_LC(r, K)
             f, i = q, i + 1
 
-    return dup_from_raw_dict(g, K)
+    return dup_from_dict(g, K)
 
 
 def _dup_decompose(f, K):

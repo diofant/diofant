@@ -658,51 +658,6 @@ def dmp_positive_p(f, u, K):
     return K.is_positive(dmp_ground_LC(f, u, K))
 
 
-def dup_from_raw_dict(f, K):
-    """
-    Create a ``K[x]`` polynomial from a raw ``dict``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> dup_from_raw_dict({0: ZZ(7), 2: ZZ(5), 4: ZZ(1)}, ZZ)
-    [1, 0, 5, 0, 7]
-    """
-    if not f:
-        return []
-
-    n, h = max(f), []
-
-    for k in range(n, -1, -1):
-        h.append(f.get(k, K.zero))
-
-    return dmp_strip(h, 0)
-
-
-def dup_to_raw_dict(f, K=None, zero=False):
-    """
-    Convert a ``K[x]`` polynomial to a raw ``dict``.
-
-    Examples
-    ========
-
-    >>> dup_to_raw_dict([1, 0, 5, 0, 7])
-    {0: 7, 2: 5, 4: 1}
-    """
-    if not f and zero:
-        return {0: K.zero}
-
-    n, result = len(f) - 1, {}
-
-    for k in range(n + 1):
-        if f[n - k]:
-            result[k] = f[n - k]
-
-    return result
-
-
 def dup_from_dict(f, K):
     """
     Create a ``K[x]`` polynomial from a ``dict``.

@@ -21,10 +21,8 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_strip, dmp_swap, dmp_TC,
                                       dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
                                       dmp_validate, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_from_dict,
-                                      dup_from_raw_dict, dup_inflate,
-                                      dup_random, dup_reverse, dup_slice,
-                                      dup_to_raw_dict)
+                                      dmp_zeros, dup_from_dict, dup_inflate,
+                                      dup_random, dup_reverse, dup_slice)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -346,36 +344,27 @@ def test_dmp_positive_p():
 
 
 def test_dup_from_to_dict():
-    assert dup_from_raw_dict({}, ZZ) == []
     assert dup_from_dict({}, ZZ) == []
 
-    assert dup_to_raw_dict([]) == {}
     assert dmp_to_dict([], 0) == {}
 
-    assert dup_to_raw_dict([], ZZ, zero=True) == {0: ZZ(0)}
     assert dmp_to_dict([], 0, ZZ, zero=True) == {(0,): ZZ(0)}
 
     f = [3, 0, 0, 2, 0, 0, 0, 0, 8]
-    g = {8: 3, 5: 2, 0: 8}
     h = {(8,): 3, (5,): 2, (0,): 8}
 
-    assert dup_from_raw_dict(g, ZZ) == f
     assert dup_from_dict(h, ZZ) == f
 
-    assert dup_to_raw_dict(f) == g
     assert dmp_to_dict(f, 0) == h
 
     R,  x, y = ring("x,y", ZZ)
     K = R.to_domain()
 
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
-    g = {5: R(3), 3: R(2), 0: R(8)}
     h = {(5,): R(3), (3,): R(2), (0,): R(8)}
 
-    assert dup_from_raw_dict(g, K) == f
     assert dup_from_dict(h, K) == f
 
-    assert dup_to_raw_dict(f) == g
     assert dmp_to_dict(f, 0) == h
 
     assert dmp_to_dict([1, 0, 5, 0, 7], 0) == {(0,): 7, (2,): 5, (4,): 1}
@@ -441,19 +430,19 @@ def test_dmp_deflate():
     assert dmp_deflate([1, 0, 2, 0, 3], 0, ZZ) == ((2,), [1, 2, 3])
     assert dmp_deflate([1, 0, 0, 1, 0, 0, 1], 0, ZZ) == ((3,), [1, 1, 1])
 
-    assert dmp_deflate(dup_from_raw_dict({7: 1, 1: 1}, ZZ), 0, ZZ) == \
+    assert dmp_deflate(dup_from_dict({(7,): 1, (1,): 1}, ZZ), 0, ZZ) == \
         ((1,), [1, 0, 0, 0, 0, 0, 1, 0])
-    assert dmp_deflate(dup_from_raw_dict({7: 1, 0: 1}, ZZ), 0, ZZ) == ((7,), [1, 1])
-    assert dmp_deflate(dup_from_raw_dict({7: 1, 3: 1}, ZZ), 0, ZZ) == \
+    assert dmp_deflate(dup_from_dict({(7,): 1, (0,): 1}, ZZ), 0, ZZ) == ((7,), [1, 1])
+    assert dmp_deflate(dup_from_dict({(7,): 1, (3,): 1}, ZZ), 0, ZZ) == \
         ((1,), [1, 0, 0, 0, 1, 0, 0, 0])
 
-    assert dmp_deflate(dup_from_raw_dict({7: 1, 4: 1}, ZZ), 0, ZZ) == \
+    assert dmp_deflate(dup_from_dict({(7,): 1, (4,): 1}, ZZ), 0, ZZ) == \
         ((1,), [1, 0, 0, 1, 0, 0, 0, 0])
-    assert dmp_deflate(dup_from_raw_dict({8: 1, 4: 1}, ZZ), 0, ZZ) == ((4,), [1, 1, 0])
+    assert dmp_deflate(dup_from_dict({(8,): 1, (4,): 1}, ZZ), 0, ZZ) == ((4,), [1, 1, 0])
 
-    assert dmp_deflate(dup_from_raw_dict({8: 1}, ZZ), 0, ZZ) == ((8,), [1, 0])
-    assert dmp_deflate(dup_from_raw_dict({7: 1}, ZZ), 0, ZZ) == ((7,), [1, 0])
-    assert dmp_deflate(dup_from_raw_dict({1: 1}, ZZ), 0, ZZ) == ((1,), [1, 0])
+    assert dmp_deflate(dup_from_dict({(8,): 1}, ZZ), 0, ZZ) == ((8,), [1, 0])
+    assert dmp_deflate(dup_from_dict({(7,): 1}, ZZ), 0, ZZ) == ((7,), [1, 0])
+    assert dmp_deflate(dup_from_dict({(1,): 1}, ZZ), 0, ZZ) == ((1,), [1, 0])
 
     assert dmp_deflate([[]], 1, ZZ) == ((1, 1), [[]])
     assert dmp_deflate([[2]], 1, ZZ) == ((1, 1), [[2]])

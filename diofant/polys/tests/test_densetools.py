@@ -7,7 +7,7 @@ from diofant.abc import x
 from diofant.domains import EX, FF, QQ, ZZ
 from diofant.polys.densearith import dmp_mul_ground
 from diofant.polys.densebasic import (dmp_convert, dmp_normal, dmp_swap,
-                                      dup_from_raw_dict)
+                                      dup_from_dict)
 from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_diff_eval_in, dmp_diff_in, dmp_eval,
                                       dmp_eval_in, dmp_eval_tail,
@@ -51,11 +51,11 @@ def test_dup_integrate():
     assert dup_integrate([QQ(1), QQ(2), QQ(3)], 3, QQ) == \
         [QQ(1, 60), QQ(1, 12), QQ(1, 2), QQ(0), QQ(0), QQ(0)]
 
-    assert dup_integrate(dup_from_raw_dict({29: QQ(17)}, QQ), 3, QQ) == \
-        dup_from_raw_dict({32: QQ(17, 29760)}, QQ)
+    assert dup_integrate(dup_from_dict({(29,): QQ(17)}, QQ), 3, QQ) == \
+        dup_from_dict({(32,): QQ(17, 29760)}, QQ)
 
-    assert dup_integrate(dup_from_raw_dict({29: QQ(17), 5: QQ(1, 2)}, QQ), 3, QQ) == \
-        dup_from_raw_dict({32: QQ(17, 29760), 8: QQ(1, 672)}, QQ)
+    assert dup_integrate(dup_from_dict({(29,): QQ(17), (5,): QQ(1, 2)}, QQ), 3, QQ) == \
+        dup_from_dict({(32,): QQ(17, 29760), (8,): QQ(1, 672)}, QQ)
 
 
 def test_dmp_integrate():
