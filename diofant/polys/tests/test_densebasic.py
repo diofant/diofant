@@ -715,5 +715,15 @@ def test_dup_random():
     assert dmp_degree(f, 0) == 3
     assert all(-40 <= c <= 40 for c in f)
 
+    f = dup_random(3, -400, 400, ZZ)
+
+    assert dmp_degree(f, 0) == 3
+    assert all(-400 <= c <= 400 for c in f)
+
     random.seed(11)
-    assert dup_random(10, -1, 1, ZZ) == [1, 1, 0, 0, 1, 1, -1, -1, 1, 0, 1]
+    assert dup_random(10, -1, 1, ZZ) == [1, 0, 0, -1, 0, 0, -1, 1, 1, 0, 1]
+
+    for i in range(10):
+        f = dup_random(3, -10, 10, ZZ, percent=50)
+        assert f[0]
+        assert len([c for c in f if c == 0]) == 2

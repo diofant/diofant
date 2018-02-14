@@ -1446,9 +1446,12 @@ def dmp_slice_in(f, m, n, j, u, K):
     return dmp_from_dict(g, u, K)
 
 
-def dup_random(n, a, b, K):
+def dup_random(n, a, b, K, percent=None):
     """
     Return a polynomial of degree ``n`` with coefficients in ``[a, b]``.
+
+    If ``percent`` is a natural number less than 100 then only approximately
+    the given percentage of elements will be non-zero.
 
     Examples
     ========
@@ -1458,9 +1461,21 @@ def dup_random(n, a, b, K):
     >>> dup_random(3, -10, 10, ZZ) #doctest: +SKIP
     [-2, -8, 9, -4]
     """
-    f = [K.convert(random.randint(a, b)) for _ in range(n + 1)]
+    if percent is None:
+        percent = 100//(b - a)
+    percent = min(max(0, percent), 100)
+    nz = ((n + 1)*percent)//100
 
-    while not f[0]:
-        f[0] = K.convert(random.randint(a, b))
+    f = []
+    while len(f) < n + 1:
+        v = K.convert(random.randint(a, b))
+        if v:
+            f.append(v)
+
+    if nz:
+        f[-nz:] = [K.zero]*nz
+        lt = f.pop(0)
+        random.shuffle(f)
+        f.insert(0, lt)
 
     return f
