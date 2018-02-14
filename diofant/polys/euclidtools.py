@@ -55,14 +55,6 @@ def dup_half_gcdex(f, g, K):
     return a, f
 
 
-def dmp_half_gcdex(f, g, u, K):
-    """Half extended Euclidean algorithm in `F[X]`."""
-    if not u:
-        return dup_half_gcdex(f, g, K)
-    else:
-        raise MultivariatePolynomialError(f, g)
-
-
 def dup_gcdex(f, g, K):
     """
     Extended Euclidean algorithm in `F[x]`.

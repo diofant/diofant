@@ -2247,7 +2247,10 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return self.ring.dmp_exquo(self, other)
 
     def half_gcdex(self, other):
-        return self.ring.dmp_half_gcdex(self, other)
+        if self.ring.is_univariate:
+            return self.ring.dup_half_gcdex(self, other)
+        else:
+            raise MultivariatePolynomialError("half extended Euclidean algorithm")
 
     def gcdex(self, other):
         return self.ring.dmp_gcdex(self, other)

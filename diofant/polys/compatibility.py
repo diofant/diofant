@@ -25,13 +25,12 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_gcdex,
-                          dmp_half_gcdex, dmp_inner_gcd,
-                          dmp_inner_subresultants, dmp_lcm, dmp_primitive,
-                          dmp_prs_resultant, dmp_qq_collins_resultant,
-                          dmp_qq_heu_gcd, dmp_resultant, dmp_rr_lcm,
-                          dmp_rr_prs_gcd, dmp_subresultants,
-                          dmp_zz_collins_resultant, dmp_zz_heu_gcd,
-                          dmp_zz_modular_resultant, dup_cancel,
+                          dmp_inner_gcd, dmp_inner_subresultants, dmp_lcm,
+                          dmp_primitive, dmp_prs_resultant,
+                          dmp_qq_collins_resultant, dmp_qq_heu_gcd,
+                          dmp_resultant, dmp_rr_lcm, dmp_rr_prs_gcd,
+                          dmp_subresultants, dmp_zz_collins_resultant,
+                          dmp_zz_heu_gcd, dmp_zz_modular_resultant, dup_cancel,
                           dup_discriminant, dup_euclidean_prs, dup_ff_lcm,
                           dup_ff_prs_gcd, dup_gcd, dup_gcdex, dup_half_gcdex,
                           dup_inner_gcd, dup_inner_subresultants, dup_invert,
@@ -357,10 +356,6 @@ class IPolys:
 
     def dup_half_gcdex(self, f, g):
         s, h = dup_half_gcdex(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(s), self.from_dense(h)
-
-    def dmp_half_gcdex(self, f, g):
-        s, h = dmp_half_gcdex(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(s), self.from_dense(h)
 
     def dup_gcdex(self, f, g):
