@@ -24,7 +24,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_zeros, dup_from_dict,
                                       dup_from_raw_dict, dup_inflate,
                                       dup_random, dup_reverse, dup_slice,
-                                      dup_to_dict, dup_to_raw_dict)
+                                      dup_to_raw_dict)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -350,10 +350,10 @@ def test_dup_from_to_dict():
     assert dup_from_dict({}, ZZ) == []
 
     assert dup_to_raw_dict([]) == {}
-    assert dup_to_dict([]) == {}
+    assert dmp_to_dict([], 0) == {}
 
     assert dup_to_raw_dict([], ZZ, zero=True) == {0: ZZ(0)}
-    assert dup_to_dict([], ZZ, zero=True) == {(0,): ZZ(0)}
+    assert dmp_to_dict([], 0, ZZ, zero=True) == {(0,): ZZ(0)}
 
     f = [3, 0, 0, 2, 0, 0, 0, 0, 8]
     g = {8: 3, 5: 2, 0: 8}
@@ -363,7 +363,7 @@ def test_dup_from_to_dict():
     assert dup_from_dict(h, ZZ) == f
 
     assert dup_to_raw_dict(f) == g
-    assert dup_to_dict(f) == h
+    assert dmp_to_dict(f, 0) == h
 
     R,  x, y = ring("x,y", ZZ)
     K = R.to_domain()
@@ -376,7 +376,9 @@ def test_dup_from_to_dict():
     assert dup_from_dict(h, K) == f
 
     assert dup_to_raw_dict(f) == g
-    assert dup_to_dict(f) == h
+    assert dmp_to_dict(f, 0) == h
+
+    assert dmp_to_dict([1, 0, 5, 0, 7], 0) == {(0,): 7, (2,): 5, (4,): 1}
 
 
 def test_dmp_from_to_dict():

@@ -776,30 +776,6 @@ def dmp_from_dict(f, u, K):
     return dmp_strip(h, u)
 
 
-def dup_to_dict(f, K=None, zero=False):
-    """
-    Convert ``K[x]`` polynomial to a ``dict``.
-
-    Examples
-    ========
-
-    >>> dup_to_dict([1, 0, 5, 0, 7])
-    {(0,): 7, (2,): 5, (4,): 1}
-    >>> dup_to_dict([])
-    {}
-    """
-    if not f and zero:
-        return {(0,): K.zero}
-
-    n, result = len(f) - 1, {}
-
-    for k in range(n + 1):
-        if f[n - k]:
-            result[(k,)] = f[n - k]
-
-    return result
-
-
 def dmp_to_dict(f, u, K=None, zero=False):
     """
     Convert a ``K[X]`` polynomial to a ``dict````.
@@ -809,12 +785,7 @@ def dmp_to_dict(f, u, K=None, zero=False):
 
     >>> dmp_to_dict([[1, 0], [], [2, 3]], 1)
     {(0, 0): 3, (0, 1): 2, (2, 1): 1}
-    >>> dmp_to_dict([], 0)
-    {}
     """
-    if not u:
-        return dup_to_dict(f, K, zero=zero)
-
     if dmp_zero_p(f, u) and zero:
         return {(0,)*(u + 1): K.zero}
 
@@ -824,10 +795,13 @@ def dmp_to_dict(f, u, K=None, zero=False):
         n = -1
 
     for k in range(n + 1):
-        h = dmp_to_dict(f[n - k], v)
-
-        for exp, coeff in h.items():
-            result[(k,) + exp] = coeff
+        if f[n - k]:
+            if u:
+                h = dmp_to_dict(f[n - k], v)
+                for exp, coeff in h.items():
+                    result[(k,) + exp] = coeff
+            else:
+                result[(k,)] = f[n - k]
 
     return result
 
