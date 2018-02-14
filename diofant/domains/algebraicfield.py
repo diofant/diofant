@@ -40,7 +40,10 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         self.one = self.dtype.one(self.mod.rep, dom)
 
     def new(self, element):
-        return self.dtype(element, self.mod.rep, self.domain)
+        if isinstance(element, list):
+            return self.dtype(element, self.mod.rep, self.domain)
+        else:
+            return self.convert(element)
 
     def __str__(self):
         return str(self.domain) + '<' + str(self.ext) + '>'
@@ -79,23 +82,23 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def from_ZZ_python(self, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
-        return self(self.domain.convert(a, K0))
+        return self([self.domain.convert(a, K0)])
 
     def from_QQ_python(self, a, K0):
         """Convert a Python ``Fraction`` object to ``dtype``. """
-        return self(self.domain.convert(a, K0))
+        return self([self.domain.convert(a, K0)])
 
     def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY ``mpz`` object to ``dtype``. """
-        return self(self.domain.convert(a, K0))
+        return self([self.domain.convert(a, K0)])
 
     def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY ``mpq`` object to ``dtype``. """
-        return self(self.domain.convert(a, K0))
+        return self([self.domain.convert(a, K0)])
 
     def from_RealField(self, a, K0):
         """Convert a mpmath ``mpf`` object to ``dtype``. """
-        return self(self.domain.convert(a, K0))
+        return self([self.domain.convert(a, K0)])
 
     def from_AlgebraicField(self, a, K0):
         return self.from_diofant(K0.to_diofant(a))

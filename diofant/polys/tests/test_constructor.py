@@ -31,12 +31,12 @@ def test_construct_domain():
     alg = QQ.algebraic_field(sqrt(2))
 
     assert (construct_domain([7, Rational(1, 2), sqrt(2)], extension=True) ==
-            (alg, [alg.convert(7), alg.convert(Rational(1, 2)), alg.convert(sqrt(2))]))
+            (alg, [alg(7), alg(Rational(1, 2)), alg(sqrt(2))]))
 
     alg = QQ.algebraic_field(sqrt(2) + sqrt(3))
 
     assert (construct_domain([7, sqrt(2), sqrt(3)], extension=True) ==
-            (alg, [alg.convert(7), alg.convert(sqrt(2)), alg.convert(sqrt(3))]))
+            (alg, [alg(7), alg(sqrt(2)), alg(sqrt(3))]))
 
     dom = ZZ[x]
 
@@ -85,17 +85,10 @@ def test_construct_domain():
 
 
 def test_composite_option():
-    assert construct_domain({(1,): sin(y)}, composite=False) == \
-        (EX, {(1,): EX(sin(y))})
-
-    assert construct_domain({(1,): y}, composite=False) == \
-        (EX, {(1,): EX(y)})
-
-    assert construct_domain({(1, 1): 1}, composite=False) == \
-        (ZZ, {(1, 1): 1})
-
-    assert construct_domain({(1, 0): y}, composite=False) == \
-        (EX, {(1, 0): EX(y)})
+    assert construct_domain({(1,): sin(y)}, composite=False) == (EX, {(1,): EX(sin(y))})
+    assert construct_domain({(1,): y}, composite=False) == (EX, {(1,): EX(y)})
+    assert construct_domain({(1, 1): 1}, composite=False) == (ZZ, {(1, 1): 1})
+    assert construct_domain({(1, 0): y}, composite=False) == (EX, {(1, 0): EX(y)})
 
 
 def test_precision():
@@ -116,9 +109,5 @@ def test_precision():
 
 def test_sympyissue_11538():
     assert construct_domain(E)[0] == ZZ[E]
-
-    assert (construct_domain(x**2 + 2*x + E) ==
-            (ZZ[x, E], ZZ[x, E](x**2 + 2*x + E)))
-
-    assert (construct_domain(x + y + GoldenRatio) ==
-            (EX, EX(x + y + GoldenRatio)))
+    assert (construct_domain(x**2 + 2*x + E) == (ZZ[x, E], ZZ[x, E](x**2 + 2*x + E)))
+    assert (construct_domain(x + y + GoldenRatio) == (EX, EX(x + y + GoldenRatio)))
