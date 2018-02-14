@@ -3089,7 +3089,7 @@ class Poly(Expr):
                 if not im:
                     inf = QQ.convert(inf)
                 else:
-                    inf, inf_real = list(map(QQ.convert, (re, im))), False
+                    inf, inf_real = tuple(map(QQ.convert, (re, im))), False
 
         if sup is not None:
             sup = sympify(sup)
@@ -3102,7 +3102,7 @@ class Poly(Expr):
                 if not im:
                     sup = QQ.convert(sup)
                 else:
-                    sup, sup_real = list(map(QQ.convert, (re, im))), False
+                    sup, sup_real = tuple(map(QQ.convert, (re, im))), False
 
         if inf_real and sup_real:
             if hasattr(self.rep, 'count_real_roots'):

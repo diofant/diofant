@@ -717,6 +717,8 @@ def test_dup_count_complex_roots_implicit():
     assert R.dup_count_complex_roots(f, sup=(0, 0)) == 3
     assert R.dup_count_complex_roots(f, inf=(0, 0)) == 3
 
+    assert R.dup_count_complex_roots(f, inf=QQ(-2), sup=QQ(-1)) == 1
+
 
 def test_dup_count_complex_roots_exclude():
     R, x = ring("x", ZZ)
@@ -760,15 +762,12 @@ def test_dup_isolate_complex_roots_sqf():
     assert [ r.as_tuple() for r in R.dup_isolate_complex_roots_sqf(f, blackbox=True) ] == \
         [((0, -6), (6, 0)), ((0, 0), (6, 6))]
 
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(1)), sup=(QQ(3), QQ(3))) == \
-        [((1, -2), (3, -1)), ((1, 1), (3, 2))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(0), QQ(0)), sup=(QQ(1, 6), QQ(1, 7))) == []
+    assert R.dup_isolate_complex_roots_sqf(f, inf=QQ(1), sup=QQ(3)) == [((1, -3), (3, 0)), ((1, 0), (3, 3))]
+    assert R.dup_isolate_complex_roots_sqf(f, inf=QQ(0), sup=QQ(1, 6)) == []
 
     assert R.dup_isolate_complex_roots_sqf(R.zero) == []
 
-    pytest.raises(ValueError, lambda: R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(-1))))
-    pytest.raises(ValueError, lambda: R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(1)), sup=(QQ(3), QQ(1))))
-    pytest.raises(ValueError, lambda: R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(1)), sup=(QQ(1), QQ(3))))
+    pytest.raises(ValueError, lambda: R.dup_isolate_complex_roots_sqf(f, inf=QQ(1), sup=QQ(1)))
 
     assert R.dup_isolate_complex_roots_sqf(f, eps=QQ(1, 10)) == \
         [((QQ(15, 16), -QQ(3, 2)), (QQ(33, 32), -QQ(45, 32))),
