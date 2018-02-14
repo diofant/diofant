@@ -1833,10 +1833,12 @@ class AlgebraicNumber(Expr):
 
         dom = minpoly.domain.get_field()
 
-        if not isinstance(coeffs, ANP):
-            rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
-        else:
+        if isinstance(coeffs, ANP):
             rep = DMP.from_list(coeffs.to_list(), 0, dom)
+        elif isinstance(coeffs, DMP):
+            rep = coeffs
+        else:
+            rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
 
         if rep.degree() >= minpoly.degree():
             rep = rep.rem(minpoly.rep)
@@ -1880,8 +1882,7 @@ class AlgebraicNumber(Expr):
 
         if other.is_AlgebraicNumber:
             if self.minpoly == other.minpoly and self.root == other.root:
-                coeffs = self.rep + other.rep
-                return self.func(self, coeffs.to_tuple(), self.alias)
+                return self.func(self, self.rep + other.rep, self.alias)
             else:
                 return Add(self, other, evaluate=False)
         else:
@@ -1894,8 +1895,7 @@ class AlgebraicNumber(Expr):
 
         if other.is_AlgebraicNumber:
             if self.minpoly == other.minpoly and self.root == other.root:
-                coeffs = self.rep - other.rep
-                return self.func(self, coeffs.to_tuple(), self.alias)
+                return self.func(self, self.rep - other.rep, self.alias)
             else:
                 return Add(self, -other, evaluate=False)
         else:
@@ -1908,8 +1908,7 @@ class AlgebraicNumber(Expr):
 
         if other.is_AlgebraicNumber:
             if self.minpoly == other.minpoly and self.root == other.root:
-                coeffs = self.rep * other.rep
-                return self.func(self, coeffs.to_tuple(), self.alias)
+                return self.func(self, self.rep * other.rep, self.alias)
             else:
                 return Mul(self, other, evaluate=False)
         else:
