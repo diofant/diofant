@@ -1808,7 +1808,7 @@ class AlgebraicNumber(Expr):
     is_algebraic = True
     is_number = True
 
-    def __new__(cls, expr, coeffs=(1, 0), alias=None, **args):
+    def __new__(cls, expr, coeffs=(1, 0), alias=None, **kwargs):
         """Construct a new algebraic number. """
         from ..polys import Poly
         from ..polys.polyclasses import ANP, DMP
@@ -1829,7 +1829,7 @@ class AlgebraicNumber(Expr):
                 raise ValueError("Not a number: %s" % expr)
 
             minpoly, root = minimal_polynomial(
-                expr, args.get('gen'), polys=True), expr
+                expr, kwargs.get('gen'), polys=True), expr
 
         dom = minpoly.domain.get_field()
 
@@ -1842,14 +1842,14 @@ class AlgebraicNumber(Expr):
             rep = rep.rem(minpoly.rep)
 
         coeffs = Tuple(*rep.all_coeffs())
-        sargs = (root, coeffs)
+        args = root, coeffs
 
         if alias is not None:
             if not isinstance(alias, Symbol):
                 alias = Symbol(alias)
-            sargs = sargs + (alias,)
+            args += (alias,)
 
-        obj = Expr.__new__(cls, *sargs)
+        obj = Expr.__new__(cls, *args)
 
         obj.rep = rep
         obj.root = root
