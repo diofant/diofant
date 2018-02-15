@@ -303,8 +303,11 @@ class IPolys:
         return c, self.from_dense(F), self.from_dense(G)
 
     def dup_real_imag(self, f):
-        p, q = dup_real_imag(self.wrap(f).drop(1).to_dense(), self.domain)
-        return self.from_dense(p), self.from_dense(q)
+        ring = self
+        p, q = dup_real_imag(ring.wrap(f).drop(1).to_dense(), ring.domain)
+        if ring.domain.is_Algebraic:
+            ring = ring.to_ground()
+        return ring.from_dense(p), ring.from_dense(q)
 
     def dup_mirror(self, f):
         return self.from_dense(dup_mirror(self.to_dense(f), self.domain))

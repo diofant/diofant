@@ -3,9 +3,10 @@
 from math import ceil as _ceil
 from math import log as _log
 
+from ..core import I
 from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
-                         dmp_exquo_ground, dmp_mul, dmp_mul_ground,
+                         dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
                          dmp_quo_ground, dmp_rem, dmp_sub, dup_add,
                          dup_add_term, dup_lshift, dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
@@ -758,7 +759,12 @@ def dup_real_imag(f, K):
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
     (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
     """
-    if not K.is_ZZ and not K.is_QQ:
+    if K.is_Algebraic and K.ext.as_expr() == I:
+        K0 = K.domain
+        r1, i1 = dup_real_imag([_.to_dict().get((0,), K0.zero) for _ in f], K0)
+        r2, i2 = dup_real_imag([_.to_dict().get((1,), K0.zero) for _ in f], K0)
+        return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
+    elif not K.is_ZZ and not K.is_QQ:
         raise DomainError("computing real and imaginary parts is not supported over %s" % K)
 
     f1 = dmp_zero(1)
