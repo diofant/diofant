@@ -517,8 +517,13 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
             x = x.to_poly()
             numer, denom = self.numer.evaluate(x, a), self.denom.evaluate(x, a)
 
-        field = numer.ring.to_field()
-        return field.new(numer, denom)
+        if self._extract_ground(denom) == (1, 1, None):
+            return numer
+        if isinstance(numer, PolyElement):
+            field = numer.ring.to_field()
+        else:
+            field = self.field
+        return field.new(field.ring(numer), field.ring(denom))
 
     def subs(self, x, a=None):
         if isinstance(x, list) and a is None:
