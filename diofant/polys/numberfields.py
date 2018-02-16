@@ -728,19 +728,23 @@ def primitive_element(extension, x=None, **args):
         *H, g = groebner(F + (f,), Y + (x,), field=True, polys=True)
 
         for i, (h, y) in enumerate(zip(H, Y)):
-            t = (y - h).eject(*Y).retract(field=True)
-            if t.domain.is_QQ:
-                H[i] = t.all_coeffs()
-            else:
+            H[i] = (y - h).eject(*Y).retract(field=True)
+            if not H[i].domain.is_QQ:
                 break  # G is not a triangular set
         else:
             g = g.eject(*Y).retract()
             break
     else:
         if len(F) == 1:
-            g, coeffs, H = F[0].replace(x), [S.One], [[S.One, S.Zero]]
+            g, coeffs, H = F[0].replace(x), [S.One], [Poly(x)]
         else:  # pragma: no cover
             raise RuntimeError("run out of coefficient configurations")
+
+    _, factors = factor_list(g)
+    t = sum(c*e for c, e in zip(coeffs, extension))
+    g = _choose_factor(factors, x, t)
+
+    H = [h.rem(g).all_coeffs() for y, h in zip(Y, H)]
 
     _, g = cls(g).clear_denoms(convert=True)
     if not args.get('polys', False):
