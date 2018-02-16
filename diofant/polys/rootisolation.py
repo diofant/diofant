@@ -1227,18 +1227,22 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
 
     f = dmp_convert(f, 0, K, F)
 
-    if inf is None or sup is None:
+    if not all(isinstance(_, tuple) for _ in (inf, sup)):
         B = _roots_bound(f, F)
 
-    if inf is None:
-        (u, v) = (-B, -B)
+    if isinstance(inf, tuple):
+        u, v = inf
+    elif inf is not None:
+        u, v = inf, -B
     else:
-        (u, v) = inf
+        u, v = -B, -B
 
-    if sup is None:
-        (s, t) = (+B, +B)
+    if isinstance(sup, tuple):
+        s, t = sup
+    elif sup is not None:
+        s, t = sup, B
     else:
-        (s, t) = sup
+        s, t = B, B
 
     f1, f2 = dup_real_imag(f, F)
 
@@ -1542,16 +1546,15 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     f = dmp_convert(f, 0, K, F)
 
     B = _roots_bound(f, F)
-
-    (u, v), (s, t) = (-B, F.zero), (B, B)
+    u, v, s, t = -B, F.zero, B, B
 
     if inf is not None:
-        u, v = inf
+        u = inf
 
     if sup is not None:
-        s, t = sup
+        s = sup
 
-    if v < 0 or t <= v or s <= u:
+    if s <= u:
         raise ValueError("not a valid complex isolation rectangle")
 
     f1, f2 = dup_real_imag(f, F)

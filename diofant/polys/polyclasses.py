@@ -8,7 +8,7 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_pdiv, dmp_pexquo, dmp_pow, dmp_pquo, dmp_prem,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sqr, dmp_sub,
                          dmp_sub_ground, dmp_sub_mul, dup_add, dup_mul,
-                         dup_pow, dup_sub)
+                         dup_sub)
 from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_from_diofant, dmp_ground,
@@ -1273,7 +1273,7 @@ class ANP(CantSympify):
             else:
                 F = self.rep
 
-            return self.per(dmp_rem(dup_pow(F, n, self.domain),
+            return self.per(dmp_rem(dmp_pow(F, n, 0, self.domain),
                                     self.mod, 0, self.domain))
         else:
             raise TypeError("``int`` expected, got %s" % type(n))

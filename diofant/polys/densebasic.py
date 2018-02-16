@@ -658,51 +658,6 @@ def dmp_positive_p(f, u, K):
     return K.is_positive(dmp_ground_LC(f, u, K))
 
 
-def dup_from_raw_dict(f, K):
-    """
-    Create a ``K[x]`` polynomial from a raw ``dict``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> dup_from_raw_dict({0: ZZ(7), 2: ZZ(5), 4: ZZ(1)}, ZZ)
-    [1, 0, 5, 0, 7]
-    """
-    if not f:
-        return []
-
-    n, h = max(f), []
-
-    for k in range(n, -1, -1):
-        h.append(f.get(k, K.zero))
-
-    return dmp_strip(h, 0)
-
-
-def dup_to_raw_dict(f, K=None, zero=False):
-    """
-    Convert a ``K[x]`` polynomial to a raw ``dict``.
-
-    Examples
-    ========
-
-    >>> dup_to_raw_dict([1, 0, 5, 0, 7])
-    {0: 7, 2: 5, 4: 1}
-    """
-    if not f and zero:
-        return {0: K.zero}
-
-    n, result = len(f) - 1, {}
-
-    for k in range(n + 1):
-        if f[n - k]:
-            result[k] = f[n - k]
-
-    return result
-
-
 def dup_from_dict(f, K):
     """
     Create a ``K[x]`` polynomial from a ``dict``.
@@ -776,30 +731,6 @@ def dmp_from_dict(f, u, K):
     return dmp_strip(h, u)
 
 
-def dup_to_dict(f, K=None, zero=False):
-    """
-    Convert ``K[x]`` polynomial to a ``dict``.
-
-    Examples
-    ========
-
-    >>> dup_to_dict([1, 0, 5, 0, 7])
-    {(0,): 7, (2,): 5, (4,): 1}
-    >>> dup_to_dict([])
-    {}
-    """
-    if not f and zero:
-        return {(0,): K.zero}
-
-    n, result = len(f) - 1, {}
-
-    for k in range(n + 1):
-        if f[n - k]:
-            result[(k,)] = f[n - k]
-
-    return result
-
-
 def dmp_to_dict(f, u, K=None, zero=False):
     """
     Convert a ``K[X]`` polynomial to a ``dict````.
@@ -809,12 +740,7 @@ def dmp_to_dict(f, u, K=None, zero=False):
 
     >>> dmp_to_dict([[1, 0], [], [2, 3]], 1)
     {(0, 0): 3, (0, 1): 2, (2, 1): 1}
-    >>> dmp_to_dict([], 0)
-    {}
     """
-    if not u:
-        return dup_to_dict(f, K, zero=zero)
-
     if dmp_zero_p(f, u) and zero:
         return {(0,)*(u + 1): K.zero}
 
@@ -824,10 +750,13 @@ def dmp_to_dict(f, u, K=None, zero=False):
         n = -1
 
     for k in range(n + 1):
-        h = dmp_to_dict(f[n - k], v)
-
-        for exp, coeff in h.items():
-            result[(k,) + exp] = coeff
+        if f[n - k]:
+            if u:
+                h = dmp_to_dict(f[n - k], v)
+                for exp, coeff in h.items():
+                    result[(k,) + exp] = coeff
+            else:
+                result[(k,)] = f[n - k]
 
     return result
 
@@ -1446,9 +1375,12 @@ def dmp_slice_in(f, m, n, j, u, K):
     return dmp_from_dict(g, u, K)
 
 
-def dup_random(n, a, b, K):
+def dup_random(n, a, b, K, percent=None):
     """
     Return a polynomial of degree ``n`` with coefficients in ``[a, b]``.
+
+    If ``percent`` is a natural number less than 100 then only approximately
+    the given percentage of elements will be non-zero.
 
     Examples
     ========
@@ -1458,9 +1390,21 @@ def dup_random(n, a, b, K):
     >>> dup_random(3, -10, 10, ZZ) #doctest: +SKIP
     [-2, -8, 9, -4]
     """
-    f = [K.convert(random.randint(a, b)) for _ in range(n + 1)]
+    if percent is None:
+        percent = 100//(b - a)
+    percent = min(max(0, percent), 100)
+    nz = ((n + 1)*percent)//100
 
-    while not f[0]:
-        f[0] = K.convert(random.randint(a, b))
+    f = []
+    while len(f) < n + 1:
+        v = K.convert(random.randint(a, b))
+        if v:
+            f.append(v)
+
+    if nz:
+        f[-nz:] = [K.zero]*nz
+        lt = f.pop(0)
+        random.shuffle(f)
+        f.insert(0, lt)
 
     return f

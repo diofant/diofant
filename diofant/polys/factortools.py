@@ -9,7 +9,7 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
                          dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
                          dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
-                         dup_sub, dup_sub_mul)
+                         dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
@@ -119,7 +119,7 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     """
     M = m**2
 
-    e = dup_sub_mul(f, g, h, K)
+    e = dmp_sub_mul(f, g, h, 0, K)
     e = dup_trunc(e, M, K)
 
     q, r = dmp_div(dup_mul(s, e, K), h, 0, K)

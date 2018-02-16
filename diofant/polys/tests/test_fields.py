@@ -5,7 +5,7 @@ import pytest
 from diofant import Rational, sqrt
 from diofant.core import symbols
 from diofant.domains import QQ, ZZ
-from diofant.polys.fields import FracField, field
+from diofant.polys.fields import FracElement, FracField, field
 from diofant.polys.orderings import lex
 from diofant.polys.rings import ring
 
@@ -330,18 +330,12 @@ def test_FracElement___call__():
 
     pytest.raises(ValueError, lambda: f(1, 1, 1, 1))
 
-    Fz, *_ = field("z", ZZ)
-    assert f(1, 1) == 4/Fz.z
-
-
-@pytest.mark.xfail
-def test_FracElement___call__xfail():
-    F,  x, y, z = field("x,y,z", ZZ)
-    f = (x**2 + 3*y)/z
-
     r = f(1, 1, 1)
     assert r == 4 and not isinstance(r, FracElement)
     pytest.raises(ZeroDivisionError, lambda: f(1, 1, 0))
+
+    Fz, *_ = field("z", ZZ)
+    assert f(1, 1) == 4/Fz.z
 
 
 def test_FracElement_evaluate():

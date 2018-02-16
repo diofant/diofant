@@ -1,6 +1,5 @@
 """Compatibility interface between dense and sparse polys. """
 
-from ..utilities import public
 from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_add_term, dmp_div, dmp_expand, dmp_exquo,
                          dmp_exquo_ground, dmp_ff_div, dmp_l1_norm,
@@ -8,11 +7,10 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dmp_neg, dmp_pdiv, dmp_pexquo, dmp_pow, dmp_pquo,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem,
                          dmp_rr_div, dmp_sqr, dmp_sub, dmp_sub_ground,
-                         dmp_sub_mul, dmp_sub_term, dup_add, dup_add_mul,
-                         dup_add_term, dup_ff_div, dup_lshift, dup_mul,
-                         dup_mul_term, dup_pdiv, dup_pexquo, dup_pow, dup_pquo,
-                         dup_prem, dup_rr_div, dup_rshift, dup_sqr, dup_sub,
-                         dup_sub_mul, dup_sub_term)
+                         dmp_sub_mul, dmp_sub_term, dup_add, dup_add_term,
+                         dup_ff_div, dup_lshift, dup_mul, dup_mul_term,
+                         dup_pdiv, dup_pexquo, dup_pquo, dup_prem, dup_rr_div,
+                         dup_rshift, dup_sqr, dup_sub, dup_sub_term)
 from .densebasic import dmp_degree, dmp_LC, dmp_to_dict
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_diff_eval_in, dmp_diff_in, dmp_eval, dmp_eval_in,
@@ -26,8 +24,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dup_shift, dup_sign_variations, dup_transform,
                          dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
-                          dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_gcdex,
-                          dmp_half_gcdex, dmp_inner_gcd,
+                          dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
                           dmp_prs_resultant, dmp_qq_collins_resultant,
                           dmp_qq_heu_gcd, dmp_resultant, dmp_rr_lcm,
@@ -64,7 +61,9 @@ from .sqfreetools import (dmp_sqf_list, dmp_sqf_list_include, dmp_sqf_norm,
                           dmp_sqf_part, dup_gff_list)
 
 
-@public
+__all__ = ('IPolys',)
+
+
 class IPolys:
     symbols = None
     ngens = None
@@ -145,14 +144,8 @@ class IPolys:
     def dmp_sub(self, f, g):
         return self.from_dense(dmp_sub(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
 
-    def dup_add_mul(self, f, g, h):
-        return self.from_dense(dup_add_mul(self.to_dense(f), self.to_dense(g), self.to_dense(h), self.domain))
-
     def dmp_add_mul(self, f, g, h):
         return self.from_dense(dmp_add_mul(self.to_dense(f), self.to_dense(g), self.to_dense(h), self.ngens-1, self.domain))
-
-    def dup_sub_mul(self, f, g, h):
-        return self.from_dense(dup_sub_mul(self.to_dense(f), self.to_dense(g), self.to_dense(h), self.domain))
 
     def dmp_sub_mul(self, f, g, h):
         return self.from_dense(dmp_sub_mul(self.to_dense(f), self.to_dense(g), self.to_dense(h), self.ngens-1, self.domain))
@@ -168,9 +161,6 @@ class IPolys:
 
     def dmp_sqr(self, f):
         return self.from_dense(dmp_sqr(self.to_dense(f), self.ngens-1, self.domain))
-
-    def dup_pow(self, f, n):
-        return self.from_dense(dup_pow(self.to_dense(f), n, self.domain))
 
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
@@ -313,8 +303,11 @@ class IPolys:
         return c, self.from_dense(F), self.from_dense(G)
 
     def dup_real_imag(self, f):
-        p, q = dup_real_imag(self.wrap(f).drop(1).to_dense(), self.domain)
-        return self.from_dense(p), self.from_dense(q)
+        ring = self
+        p, q = dup_real_imag(ring.wrap(f).drop(1).to_dense(), ring.domain)
+        if ring.domain.is_Algebraic:
+            ring = ring.to_ground()
+        return ring.from_dense(p), ring.from_dense(q)
 
     def dup_mirror(self, f):
         return self.from_dense(dup_mirror(self.to_dense(f), self.domain))
@@ -368,16 +361,8 @@ class IPolys:
         s, h = dup_half_gcdex(self.to_dense(f), self.to_dense(g), self.domain)
         return self.from_dense(s), self.from_dense(h)
 
-    def dmp_half_gcdex(self, f, g):
-        s, h = dmp_half_gcdex(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(s), self.from_dense(h)
-
     def dup_gcdex(self, f, g):
         s, t, h = dup_gcdex(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(s), self.from_dense(t), self.from_dense(h)
-
-    def dmp_gcdex(self, f, g):
-        s, t, h = dmp_gcdex(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(s), self.from_dense(t), self.from_dense(h)
 
     def dup_invert(self, f, g):

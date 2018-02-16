@@ -527,23 +527,6 @@ def dmp_sub(f, g, u, K):
         return h + [ dmp_sub(a, b, v, K) for a, b in zip(f, g) ]
 
 
-def dup_add_mul(f, g, h, K):
-    """
-    Returns ``f + g*h`` where ``f, g, h`` are in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_add_mul(x**2 - 1, x - 2, x + 2)
-    2*x**2 - 5
-    """
-    return dup_add(f, dup_mul(g, h, K), K)
-
-
 def dmp_add_mul(f, g, h, u, K):
     """
     Returns ``f + g*h`` where ``f, g, h`` are in ``K[X]``.
@@ -560,23 +543,6 @@ def dmp_add_mul(f, g, h, u, K):
 
     """
     return dmp_add(f, dmp_mul(g, h, u, K), u, K)
-
-
-def dup_sub_mul(f, g, h, K):
-    """
-    Returns ``f - g*h`` where ``f, g, h`` are in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sub_mul(x**2 - 1, x - 2, x + 2)
-    3
-    """
-    return dup_sub(f, dup_mul(g, h, K), K)
 
 
 def dmp_sub_mul(f, g, h, u, K):
@@ -784,43 +750,6 @@ def dmp_sqr(f, u, K):
     return dmp_strip(h, u)
 
 
-def dup_pow(f, n, K):
-    """
-    Raise ``f`` to the ``n``-th power in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_pow(x - 2, 3)
-    x**3 - 6*x**2 + 12*x - 8
-    """
-    if not n:
-        return [K.one]
-    if n < 0:
-        raise ValueError("can't raise polynomial to a negative power")
-    if n == 1 or not f or f == [K.one]:
-        return f
-
-    g = [K.one]
-
-    while True:
-        n, m = n//2, n
-
-        if m % 2:
-            g = dup_mul(g, f, K)
-
-            if not n:
-                break
-
-        f = dup_sqr(f, K)
-
-    return g
-
-
 def dmp_pow(f, n, u, K):
     """
     Raise ``f`` to the ``n``-th power in ``K[X]``.
@@ -835,9 +764,6 @@ def dmp_pow(f, n, u, K):
     >>> R.dmp_pow(x*y + 1, 3)
     x**3*y**3 + 3*x**2*y**2 + 3*x*y + 1
     """
-    if not u:
-        return dup_pow(f, n, K)
-
     if not n:
         return dmp_one(u, K)
     if n < 0:

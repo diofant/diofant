@@ -7,7 +7,7 @@ from diofant.abc import x
 from diofant.domains import EX, FF, QQ, ZZ
 from diofant.polys.densearith import dmp_mul_ground
 from diofant.polys.densebasic import (dmp_convert, dmp_normal, dmp_swap,
-                                      dup_from_raw_dict)
+                                      dup_from_dict)
 from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_diff_eval_in, dmp_diff_in, dmp_eval,
                                       dmp_eval_in, dmp_eval_tail,
@@ -19,9 +19,9 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dup_content, dup_decompose, dup_diff,
                                       dup_eval, dup_extract, dup_integrate,
                                       dup_mirror, dup_monic, dup_primitive,
-                                      dup_real_imag, dup_revert, dup_scale,
-                                      dup_shift, dup_sign_variations,
-                                      dup_transform, dup_trunc)
+                                      dup_revert, dup_scale, dup_shift,
+                                      dup_sign_variations, dup_transform,
+                                      dup_trunc)
 from diofant.polys.polyclasses import ANP
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
                                       MultivariatePolynomialError,
@@ -51,11 +51,11 @@ def test_dup_integrate():
     assert dup_integrate([QQ(1), QQ(2), QQ(3)], 3, QQ) == \
         [QQ(1, 60), QQ(1, 12), QQ(1, 2), QQ(0), QQ(0), QQ(0)]
 
-    assert dup_integrate(dup_from_raw_dict({29: QQ(17)}, QQ), 3, QQ) == \
-        dup_from_raw_dict({32: QQ(17, 29760)}, QQ)
+    assert dup_integrate(dup_from_dict({(29,): QQ(17)}, QQ), 3, QQ) == \
+        dup_from_dict({(32,): QQ(17, 29760)}, QQ)
 
-    assert dup_integrate(dup_from_raw_dict({29: QQ(17), 5: QQ(1, 2)}, QQ), 3, QQ) == \
-        dup_from_raw_dict({32: QQ(17, 29760), 8: QQ(1, 672)}, QQ)
+    assert dup_integrate(dup_from_dict({(29,): QQ(17), (5,): QQ(1, 2)}, QQ), 3, QQ) == \
+        dup_from_dict({(32,): QQ(17, 29760), (8,): QQ(1, 672)}, QQ)
 
 
 def test_dmp_integrate():
@@ -440,16 +440,33 @@ def test_dmp_ground_extract():
 
 
 def test_dup_real_imag():
-    assert dup_real_imag([], ZZ) == ([[]], [[]])
-    assert dup_real_imag([1], ZZ) == ([[1]], [[]])
+    R, x, y = ring("x y", ZZ)
 
-    assert dup_real_imag([1, 1], ZZ) == ([[1], [1]], [[1, 0]])
-    assert dup_real_imag([1, 2], ZZ) == ([[1], [2]], [[1, 0]])
+    assert R.dup_real_imag(R.zero) == (R.zero, R.zero)
+    assert R.dup_real_imag(R.one) == (R.one, R.zero)
 
-    assert dup_real_imag(
-        [1, 2, 3], ZZ) == ([[1], [2], [-1, 0, 3]], [[2, 0], [2, 0]])
+    assert R.dup_real_imag(x + 1) == (x + 1, y)
+    assert R.dup_real_imag(x + 2) == (x + 2, y)
 
-    pytest.raises(DomainError, lambda: dup_real_imag([EX(1), EX(2)], EX))
+    assert R.dup_real_imag(x**2 + 2*x + 3) == (x**2 - y**2 + 2*x + 3,
+                                               2*x*y + 2*y)
+
+    f = x**3 + x**2 + x + 1
+
+    assert R.dup_real_imag(f) == (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1,
+                                  3*x**2*y + 2*x*y - y**3 + y)
+
+    R, x, y = ring("x y", EX)
+    pytest.raises(DomainError, lambda: R.dup_real_imag(x + 1))
+
+    R, *_ = ring("x y", ZZ.algebraic_field(I))
+    x, y = R.to_ground().gens
+
+    f = R.x**4 + I*R.x**3 - R.x + 1
+    r = x**4 - 6*x**2*y**2 - 3*x**2*y - x + y**4 + y**3 + 1
+    i = 4*x**3*y + x**3 - 4*x*y**3 - 3*x*y**2 - y
+
+    assert R.dup_real_imag(f) == (r, i)
 
 
 def test_dup_mirror():

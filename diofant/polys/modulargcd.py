@@ -6,9 +6,12 @@ from ..core import Dummy
 from ..domains import PolynomialRing
 from ..ntheory import nextprime
 from ..ntheory.modular import crt
-from ..utilities import public
 from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
+
+
+__all__ = ('modgcd_univariate', 'modgcd_bivariate', 'modgcd_multivariate',
+           'func_field_modgcd')
 
 
 def _trivial_gcd(f, g):
@@ -154,7 +157,6 @@ def _chinese_remainder_reconstruction_univariate(hp, hq, p, q):
     return hpq
 
 
-@public
 def modgcd_univariate(f, g):
     r"""
     Computes the GCD of two polynomials in `\mathbb{Z}[x]` using a modular
@@ -694,7 +696,6 @@ def _interpolate_multivariate(evalpoints, hpeval, ring, i, p, ground=False):
     return hp.trunc_ground(p)
 
 
-@public
 def modgcd_bivariate(f, g):
     r"""
     Computes the GCD of two polynomials in `\mathbb{Z}[x, y]` using a
@@ -1058,7 +1059,6 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     return
 
 
-@public
 def modgcd_multivariate(f, g):
     r"""
     Compute the GCD of two polynomials in `\mathbb{Z}[x_0, \ldots, x_{k-1}]`
@@ -2119,7 +2119,6 @@ def _primitive_in_x0(f):
 
 
 # TODO: add support for algebraic function fields
-@public
 def func_field_modgcd(f, g):
     r"""
     Compute the GCD of two polynomials `f` and `g` in
