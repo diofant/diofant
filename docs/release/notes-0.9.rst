@@ -247,3 +247,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`13115` Bug in simplify ?
 * :sympyissue:`13149` factor() of expression with float coefficients gives incorrect result
 * :sympyissue:`14117` Run out of coefficient configurations in primitive_element()
+* :sympyissue:`14159` Can't set bottom and top bounds of root isolation rectangle with dup_isolate_complex_roots_sqf()

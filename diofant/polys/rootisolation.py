@@ -1220,10 +1220,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     if not K.is_ZZ and not K.is_QQ:
         raise DomainError("complex root counting is not supported over %s" % K)
 
-    if K.is_ZZ:
-        R, F = K, K.get_field()
-    else:
-        R, F = K.get_ring(), K
+    F = K.get_field()
 
     f = dmp_convert(f, 0, K, F)
 
@@ -1248,6 +1245,8 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
 
     f1L1F = dmp_eval_in(f1, v, 1, 1, F)
     f2L1F = dmp_eval_in(f2, v, 1, 1, F)
+
+    R = F.get_ring()
 
     _, f1L1R = dup_clear_denoms(f1L1F, F, R, convert=True)
     _, f2L1R = dup_clear_denoms(f2L1F, F, R, convert=True)
@@ -1538,24 +1537,40 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if dmp_degree(f, 0) <= 0:
         return []
 
-    if K.is_ZZ:
-        F = K.get_field()
-    else:
-        F = K
+    F = K.get_field()
 
     f = dmp_convert(f, 0, K, F)
 
-    B = _roots_bound(f, F)
-    u, v, s, t = -B, F.zero, B, B
+    if not all(isinstance(_, tuple) for _ in (inf, sup)):
+        B = _roots_bound(f, F)
 
-    if inf is not None:
-        u = inf
+    if isinstance(inf, tuple):
+        u, v = inf
+    elif inf is not None:
+        u, v = inf, -B
+    else:
+        u, v = -B, -B
 
-    if sup is not None:
-        s = sup
+    if isinstance(sup, tuple):
+        s, t = sup
+    elif sup is not None:
+        s, t = sup, B
+    else:
+        s, t = B, B
 
-    if s <= u:
+    if t <= v or s <= u:
         raise ValueError("not a valid complex isolation rectangle")
+
+    if F.is_QQ and v < 0 < t:
+        roots = []
+        for root in dup_isolate_complex_roots_sqf(f, F, eps=eps,
+                                                  inf=(u, F.zero), sup=(s, t),
+                                                  blackbox=True):
+            croot = root.conjugate()
+            if croot.ay >= v:
+                roots.append(croot)
+            roots.append(root)
+        return roots if blackbox else [r.as_tuple() for r in roots]
 
     f1, f2 = dup_real_imag(f, F)
 
@@ -1643,15 +1658,8 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                 else:
                     rectangles.append(D_U)
 
-    _roots, roots = sorted(roots, key=lambda r: (r.ax, r.ay)), []
-
-    for root in _roots:
-        roots.extend([root.conjugate(), root])
-
-    if blackbox:
-        return roots
-    else:
-        return [r.as_tuple() for r in roots]
+    roots = sorted(roots, key=lambda r: (r.ax, r.ay))
+    return roots if blackbox else [r.as_tuple() for r in roots]
 
 
 def dup_isolate_all_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, blackbox=False):
