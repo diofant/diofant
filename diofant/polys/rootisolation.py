@@ -514,7 +514,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     if not blackbox:
         return roots
     else:
-        return [ RealInterval((a, b), f, K) for (a, b) in roots ]
+        return [RealInterval((a, b), f, K) for (a, b) in roots]
 
 
 def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast=False):
@@ -548,8 +548,8 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
         I_neg = dup_inner_isolate_negative_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
         I_pos = dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
 
-        I_neg = [ ((u, v), k) for u, v in I_neg ]
-        I_pos = [ ((u, v), k) for u, v in I_pos ]
+        I_neg = [((u, v), k) for u, v in I_neg]
+        I_pos = [((u, v), k) for u, v in I_pos]
     else:
         I_neg, I_pos = _real_isolate_and_disjoin(factors, K,
                                                  eps=eps, inf=inf, sup=sup, basis=basis, fast=fast)
@@ -692,15 +692,15 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
 
     field = K.get_field()
 
-    I_neg = [ (_mobius_to_interval(M, field), k, f) for (_, M, k, f) in I_neg ]
-    I_pos = [ (_mobius_to_interval(M, field), k, f) for (_, M, k, f) in I_pos ]
+    I_neg = [(_mobius_to_interval(M, field), k, f) for (_, M, k, f) in I_neg]
+    I_pos = [(_mobius_to_interval(M, field), k, f) for (_, M, k, f) in I_pos]
 
     if not basis:
-        I_neg = [ ((-v, -u), k) for ((u, v), k, _) in I_neg ]
-        I_pos = [ (( u, v), k) for ((u, v), k, _) in I_pos ]
+        I_neg = [((-v, -u), k) for ((u, v), k, _) in I_neg]
+        I_pos = [((+u, +v), k) for ((u, v), k, _) in I_pos]
     else:
-        I_neg = [ ((-v, -u), k, f) for ((u, v), k, f) in I_neg ]
-        I_pos = [ (( u, v), k, f) for ((u, v), k, f) in I_pos ]
+        I_neg = [((-v, -u), k, f) for ((u, v), k, f) in I_neg]
+        I_pos = [((+u, +v), k, f) for ((u, v), k, f) in I_pos]
 
     return I_neg, I_pos
 
@@ -719,12 +719,12 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
     if inf is None:
         signs_inf = dup_sign_variations([dmp_LC(s, K)*(-1)**dmp_degree(s, 0) for s in sturm], K)
     else:
-        signs_inf = dup_sign_variations([ dup_eval(s, inf, K) for s in sturm ], K)
+        signs_inf = dup_sign_variations([dup_eval(s, inf, K) for s in sturm], K)
 
     if sup is None:
         signs_sup = dup_sign_variations([dmp_LC(s, K) for s in sturm], K)
     else:
-        signs_sup = dup_sign_variations([ dup_eval(s, sup, K) for s in sturm ], K)
+        signs_sup = dup_sign_variations([dup_eval(s, sup, K) for s in sturm], K)
 
     count = abs(signs_inf - signs_sup)
 
@@ -929,7 +929,7 @@ _rules_ambiguous = {
 }
 
 _values = {
-    0: [( 0, 1)],
+    0: [(+0, 1)],
     1: [(+1, 4)],
     2: [(-1, 4)],
     3: [(+1, 4)],
@@ -950,8 +950,8 @@ _values = {
     14: [(+3, 4), (-5, 4)],
     15: [(+1, 2), (-3, 2)],
     16: [(+3, 2), (-1, 2)],
-    17: [(+2, 1), ( 0, 1)],
-    18: [(+2, 1), ( 0, 1)],
+    17: [(+2, 1), (+0, 1)],
+    18: [(+2, 1), (+0, 1)],
 }
 
 
@@ -1202,7 +1202,7 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
 
 def _reverse_intervals(intervals):
     """Reverse intervals for traversal from right to left and from top to bottom. """
-    return [ ((b, a), indices, f) for (a, b), indices, f in reversed(intervals) ]
+    return [((b, a), indices, f) for (a, b), indices, f in reversed(intervals)]
 
 
 def _winding_number(T, field):
@@ -1651,13 +1651,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if blackbox:
         return roots
     else:
-        return [ r.as_tuple() for r in roots ]
+        return [r.as_tuple() for r in roots]
 
 
 def dup_isolate_all_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, blackbox=False):
     """Isolate real and complex roots of a square-free polynomial ``f``. """
     return (
-        dup_isolate_real_roots_sqf( f, K, eps=eps, inf=inf, sup=sup, fast=fast, blackbox=blackbox),
+        dup_isolate_real_roots_sqf(f, K, eps=eps, inf=inf, sup=sup, fast=fast, blackbox=blackbox),
         dup_isolate_complex_roots_sqf(f, K, eps=eps, inf=inf, sup=sup, blackbox=blackbox))
 
 
@@ -1674,12 +1674,12 @@ def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
         real_part, complex_part = dup_isolate_all_roots_sqf(
             f, K, eps=eps, inf=inf, sup=sup, fast=fast)
 
-        real_part = [ ((a, b), k) for (a, b) in real_part ]
-        complex_part = [ ((a, b), k) for (a, b) in complex_part ]
+        real_part = [((a, b), k) for (a, b) in real_part]
+        complex_part = [((a, b), k) for (a, b) in complex_part]
 
         return real_part, complex_part
     else:
-        raise NotImplementedError( "only trivial square-free polynomials are supported")
+        raise NotImplementedError("only trivial square-free polynomials are supported")
 
 
 class RealInterval:
