@@ -130,6 +130,10 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(5) == []
 
     assert R.dup_isolate_real_roots_sqf(x**2 + x) == [(-1, -1), (0, 0)]
+    assert R.dup_isolate_real_roots_sqf(x**2 + x, inf=QQ(+1)) == []
+    assert R.dup_isolate_real_roots_sqf(x**2 + x, sup=QQ(-1)) == [(-1, -1)]
+    assert R.dup_isolate_real_roots_sqf(x**2 + x, sup=QQ(-2)) == []
+
     assert R.dup_isolate_real_roots_sqf(x**2 - x) == [( 0,  0), (1, 1)]
 
     assert R.dup_isolate_real_roots_sqf(x**4 + x + 1) == []
@@ -495,6 +499,10 @@ def test_dup_count_complex_roots_1():
     R, x = ring("x", ZZ)
 
     f = x - 1
+    assert R.dup_count_complex_roots(f, a, b) == 1
+    assert R.dup_count_complex_roots(f, c, d) == 1
+
+    f = 1 - x
     assert R.dup_count_complex_roots(f, a, b) == 1
     assert R.dup_count_complex_roots(f, c, d) == 1
 
