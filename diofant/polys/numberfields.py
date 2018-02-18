@@ -708,7 +708,7 @@ def primitive_element(extension, x=None, **args):
     .. [1] Kazuhiro Yokoyama, Masayuki Noro, Taku Takeshima, Computing
            primitive elements of extension fields, Journal of Symbolic
            Computation, Volume 8, Issue 6, 1989, pp. 553-580,
-           https://doi.org/10.1016/S0747-7171(89)80061-6.
+           https://linkinghub.elsevier.com/retrieve/pii/S0747717189800616.
     """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
