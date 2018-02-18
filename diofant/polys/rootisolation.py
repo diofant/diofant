@@ -1,6 +1,6 @@
 """Real and complex root isolation and refinement algorithms. """
 
-from .densearith import dmp_neg, dmp_rem, dup_rshift
+from .densearith import dmp_add, dmp_neg, dmp_pow, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
                          dmp_terms_gcd, dup_reverse)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
@@ -1833,7 +1833,22 @@ class ComplexInterval:
         if re_distinct:
             return True
         im_distinct = (self.by <= other.ay or other.by <= self.ay)
-        return im_distinct
+        if im_distinct and (self.ax == other.ax):
+            # In this case, both roots could be on western edges.  Lets
+            # test that and terminate refinement if it's the case.
+            l1 = dmp_add(dmp_pow(dmp_eval_in(self.f1, self.ax, 0, 1, self.domain),
+                                 2, 0, self.domain),
+                         dmp_pow(dmp_eval_in(self.f2, self.ax, 0, 1, self.domain),
+                                 2, 0, self.domain), 0, self.domain)
+            t1 = dup_count_real_roots(l1, self.domain, inf=self.ay, sup=self.by)
+
+            l2 = dmp_add(dmp_pow(dmp_eval_in(other.f1, other.ax, 0, 1, other.domain),
+                                 2, 0, other.domain),
+                         dmp_pow(dmp_eval_in(other.f2, other.ax, 0, 1, other.domain),
+                                 2, 0, other.domain), 0, other.domain)
+            t2 = dup_count_real_roots(l2, other.domain, inf=other.ay, sup=other.by)
+            return t1 and t2
+        return False
 
     def _inner_refine(self):
         """Internal one step complex root refinement procedure. """
