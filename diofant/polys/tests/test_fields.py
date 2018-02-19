@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import Rational, sqrt
+from diofant import I, Rational, sqrt
 from diofant.core import symbols
 from diofant.domains import QQ, ZZ
 from diofant.polys.fields import FracElement, FracField, field
@@ -322,6 +322,10 @@ def test_FracElement_diff():
     F,  x, y, z = field("x,y,z", ZZ)
 
     assert ((x**2 + y)/(z + 1)).diff(x) == 2*x/(z + 1)
+
+    F,  x, y = field('x,y', QQ.algebraic_field(I))
+
+    assert ((x - y)/x).diff(x) == y/x**2
 
 
 def test_FracElement___call__():
