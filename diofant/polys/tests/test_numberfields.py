@@ -579,6 +579,13 @@ def test_to_number_field():
     assert AlgebraicNumber(1).rep == to_number_field(1, AlgebraicNumber(1)).rep
     assert AlgebraicNumber(sqrt(2)).rep == to_number_field(sqrt(2), AlgebraicNumber(sqrt(2))).rep
 
+    p = x**6 - 6*x**4 - 6*x**3 + 12*x**2 - 36*x + 1
+    r0, r1 = p.as_poly(x).all_roots()[:2]
+    a = AlgebraicNumber(r0, [Rational(-96, 755), Rational(-54, 755),
+                             Rational(128, 151), Rational(936, 755),
+                             Rational(-1003, 755), Rational(2184, 755)])
+    assert to_number_field(r1, r0) == a
+
 
 def test_AlgebraicNumber():
     minpoly, root = x**2 - 2, sqrt(2)
