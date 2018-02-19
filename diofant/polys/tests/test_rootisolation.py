@@ -138,10 +138,10 @@ def test_dup_isolate_real_roots_sqf():
 
     assert R.dup_isolate_real_roots_sqf(x**4 + x + 1) == []
 
-    I = [(-2, -1), (1, 2)]
+    i = [(-2, -1), (1, 2)]
 
-    assert R.dup_isolate_real_roots_sqf(x**2 - 2) == I
-    assert R.dup_isolate_real_roots_sqf(-x**2 + 2) == I
+    assert R.dup_isolate_real_roots_sqf(x**2 - 2) == i
+    assert R.dup_isolate_real_roots_sqf(-x**2 + 2) == i
 
     assert R.dup_isolate_real_roots_sqf(x - 1) == \
         [(1, 1)]
@@ -289,12 +289,12 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(f, inf=-QQ(7, 5)) == [(1, 2)]
     assert R.dup_isolate_real_roots_sqf(f, inf=-QQ(7, 4)) == [(-QQ(3, 2), -1), (1, 2)]
 
-    I = [(-2, -1), (1, 2)]
+    i = [(-2, -1), (1, 2)]
 
-    assert R.dup_isolate_real_roots_sqf(f, inf=-2) == I
-    assert R.dup_isolate_real_roots_sqf(f, sup=+2) == I
+    assert R.dup_isolate_real_roots_sqf(f, inf=-2) == i
+    assert R.dup_isolate_real_roots_sqf(f, sup=+2) == i
 
-    assert R.dup_isolate_real_roots_sqf(f, inf=-2, sup=2) == I
+    assert R.dup_isolate_real_roots_sqf(f, inf=-2, sup=2) == i
 
     assert R.dup_isolate_real_roots_sqf(f, inf=+1) == [(+1, +2)]
     assert R.dup_isolate_real_roots_sqf(f, sup=-1) == [(-2, -1)]
@@ -323,10 +323,10 @@ def test_dup_isolate_real_roots():
 
     assert R.dup_isolate_real_roots(x**4 + x + 1) == []
 
-    I = [((-2, -1), 1), ((1, 2), 1)]
+    i = [((-2, -1), 1), ((1, 2), 1)]
 
-    assert R.dup_isolate_real_roots(x**2 - 2) == I
-    assert R.dup_isolate_real_roots(-x**2 + 2) == I
+    assert R.dup_isolate_real_roots(x**2 - 2) == i
+    assert R.dup_isolate_real_roots(-x**2 + 2) == i
 
     f = 16*x**14 - 96*x**13 + 24*x**12 + 936*x**11 - 1599*x**10 - 2880*x**9 + 9196*x**8 \
         + 552*x**7 - 21831*x**6 + 13968*x**5 + 21690*x**4 - 26784*x**3 - 2916*x**2 + 15552*x - 5832
@@ -364,12 +364,12 @@ def test_dup_isolate_real_roots():
     assert R.dup_isolate_real_roots(f, inf=-QQ(7, 5)) == [((1, 2), 2)]
     assert R.dup_isolate_real_roots(f, inf=-QQ(7, 4)) == [((-QQ(3, 2), -1), 2), ((1, 2), 2)]
 
-    I = [((-2, -1), 2), ((1, 2), 2)]
+    i = [((-2, -1), 2), ((1, 2), 2)]
 
-    assert R.dup_isolate_real_roots(f, inf=-2) == I
-    assert R.dup_isolate_real_roots(f, sup=+2) == I
+    assert R.dup_isolate_real_roots(f, inf=-2) == i
+    assert R.dup_isolate_real_roots(f, sup=+2) == i
 
-    assert R.dup_isolate_real_roots(f, inf=-2, sup=2) == I
+    assert R.dup_isolate_real_roots(f, inf=-2, sup=2) == i
 
     f = x**11 - 3*x**10 - x**9 + 11*x**8 - 8*x**7 - 8*x**6 + 12*x**5 - 4*x**4
 
