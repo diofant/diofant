@@ -1836,18 +1836,13 @@ class ComplexInterval:
         if im_distinct and (self.ax == other.ax):
             # In this case, both roots could be on western edges.  Lets
             # test that and terminate refinement if it's the case.
-            f1L4 = dmp_eval_in(self.f1, self.ax, 0, 1, self.domain)
-            f2L4 = dmp_eval_in(self.f2, self.ax, 0, 1, self.domain)
-            S_L4 = [f1L4, f2L4]
-            I_L4 = dup_isolate_real_roots_list(S_L4, self.domain, inf=self.ay, sup=self.by, fast=True, strict=True, basis=True)
-            if not any((not f1L4 or 0 in _[1]) and (not f2L4 or 1 in _[1]) for _ in I_L4):
+
+            if not any(((not self.F1[3] or 0 in self.I[3][0][1]) and
+                        (not self.F2[3] or 1 in _[1])) for _ in self.I[3]):
                 return False
 
-            f1L4 = dmp_eval_in(other.f1, other.ax, 0, 1, other.domain)
-            f2L4 = dmp_eval_in(other.f2, other.ax, 0, 1, other.domain)
-            S_L4 = [f1L4, f2L4]
-            I_L4 = dup_isolate_real_roots_list(S_L4, other.domain, inf=other.ay, sup=other.by, fast=True, strict=True, basis=True)
-            return any((not f1L4 or 0 in _[1]) and (not f2L4 or 1 in _[1]) for _ in I_L4)
+            return any(((not other.F1[3] or 0 in _[1]) and
+                        (not other.F2[3] or 1 in _[1])) for _ in other.I[3])
         return False
 
     def _inner_refine(self):
