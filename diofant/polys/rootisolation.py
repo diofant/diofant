@@ -1,6 +1,6 @@
 """Real and complex root isolation and refinement algorithms. """
 
-from .densearith import dmp_add, dmp_neg, dmp_pow, dmp_rem, dup_rshift
+from .densearith import dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
                          dmp_terms_gcd, dup_reverse)
 from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
