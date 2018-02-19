@@ -1836,18 +1836,18 @@ class ComplexInterval:
         if im_distinct and (self.ax == other.ax):
             # In this case, both roots could be on western edges.  Lets
             # test that and terminate refinement if it's the case.
-            l1 = dmp_add(dmp_pow(dmp_eval_in(self.f1, self.ax, 0, 1, self.domain),
-                                 2, 0, self.domain),
-                         dmp_pow(dmp_eval_in(self.f2, self.ax, 0, 1, self.domain),
-                                 2, 0, self.domain), 0, self.domain)
-            t1 = dup_count_real_roots(l1, self.domain, inf=self.ay, sup=self.by)
+            f1L4 = dmp_eval_in(self.f1, self.ax, 0, 1, self.domain)
+            f2L4 = dmp_eval_in(self.f2, self.ax, 0, 1, self.domain)
+            S_L4 = [f1L4, f2L4]
+            I_L4 = dup_isolate_real_roots_list(S_L4, self.domain, inf=self.ay, sup=self.by, fast=True, strict=True, basis=True)
+            if not any((not f1L4 or 0 in _[1]) and (not f2L4 or 1 in _[1]) for _ in I_L4):
+                return False
 
-            l2 = dmp_add(dmp_pow(dmp_eval_in(other.f1, other.ax, 0, 1, other.domain),
-                                 2, 0, other.domain),
-                         dmp_pow(dmp_eval_in(other.f2, other.ax, 0, 1, other.domain),
-                                 2, 0, other.domain), 0, other.domain)
-            t2 = dup_count_real_roots(l2, other.domain, inf=other.ay, sup=other.by)
-            return t1 and t2
+            f1L4 = dmp_eval_in(other.f1, other.ax, 0, 1, other.domain)
+            f2L4 = dmp_eval_in(other.f2, other.ax, 0, 1, other.domain)
+            S_L4 = [f1L4, f2L4]
+            I_L4 = dup_isolate_real_roots_list(S_L4, other.domain, inf=other.ay, sup=other.by, fast=True, strict=True, basis=True)
+            return any((not f1L4 or 0 in _[1]) and (not f2L4 or 1 in _[1]) for _ in I_L4)
         return False
 
     def _inner_refine(self):
