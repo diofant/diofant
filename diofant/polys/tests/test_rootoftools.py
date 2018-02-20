@@ -3,8 +3,8 @@
 import pytest
 
 from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, Symbol,
-                     exp, false, legendre_poly, log, oo, root, solve, sqrt,
-                     tan, true)
+                     conjugate, exp, false, legendre_poly, log, oo, root,
+                     solve, sqrt, tan, true)
 from diofant.abc import a, b, r, x, y, z
 from diofant.polys.polyerrors import (GeneratorsNeeded,
                                       MultivariatePolynomialError,
@@ -189,6 +189,25 @@ def test_RootOf_power():
     assert e**2 == Pow(e, 2, evaluate=False)
     e2 = RootOf(y**3 - x*y, y, 0)
     assert e2**3 == Pow(e2, 3, evaluate=False)
+
+
+def test_RootOf_conjugate():
+    p = x**7 + x + 1
+    assert RootOf(p, 0).conjugate() == RootOf(p, 0)
+    assert RootOf(p, 1).conjugate() == RootOf(p, 2)
+    assert RootOf(p, 2).conjugate() == RootOf(p, 1)
+    assert RootOf(p, 6).conjugate() == RootOf(p, 5)
+
+    p2 = p*(x - 123)
+    assert RootOf(p2, 0).conjugate() == RootOf(p2, 0)
+    assert RootOf(p2, 1).conjugate() == RootOf(p2, 1)
+    assert RootOf(p2, 2).conjugate() == RootOf(p2, 3)
+    assert RootOf(p2, 3).conjugate() == RootOf(p2, 2)
+    assert RootOf(p2, 7).conjugate() == RootOf(p2, 6)
+
+    p3 = Poly(x**7 + x*y + 1, x)
+    assert RootOf(p3, x, 0).conjugate() == conjugate(RootOf(p3, x, 0),
+                                                     evaluate=False)
 
 
 def test_RootOf_subs():
