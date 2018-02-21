@@ -23,10 +23,6 @@ def _preprocess(expr, func=None, hint='_Integral'):
     In case func is None, an attempt will be made to autodetect the
     function to be solved for.
 
-    >>> from diofant import Derivative, Function, Integral, sin
-    >>> from diofant.abc import x, y, z
-    >>> f, g = map(Function, 'fg')
-
     Apply doit to derivatives that contain more than the function
     of interest:
 
@@ -92,9 +88,6 @@ def ode_order(expr, func):
     Examples
     ========
 
-    >>> from diofant import Function
-    >>> from diofant.abc import x
-    >>> f, g = map(Function, ['f', 'g'])
     >>> ode_order(f(x).diff(x, 2) + f(x).diff(x)**2 +
     ... f(x).diff(x), f(x))
     2

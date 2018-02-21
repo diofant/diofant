@@ -7,7 +7,6 @@ class Trace(Expr):
 
     Represents the trace of a matrix expression.
 
-    >>> from diofant import MatrixSymbol, eye
     >>> A = MatrixSymbol('A', 3, 3)
     >>> Trace(A)
     Trace(A)
@@ -60,8 +59,6 @@ class Trace(Expr):
 def trace(expr):
     """ Trace of a Matrix.  Sum of the diagonal elements
 
-    >>> from diofant import trace, Symbol, MatrixSymbol, pprint, eye
-    >>> n = Symbol('n')
     >>> X = MatrixSymbol('X', n, n)  # A square matrix
     >>> trace(2*X)
     2*Trace(X)

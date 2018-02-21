@@ -213,8 +213,6 @@ class Plot:
         second plot's first series object to the first, use the
         ``append`` method, like so:
 
-        >>> from diofant import symbols
-        >>> x = symbols('x')
         >>> p1 = plot(x*x)
         >>> p2 = plot(x)
         >>> p1.append(p2[0])
@@ -243,8 +241,6 @@ class Plot:
         Consider two ``Plot`` objects, ``p1`` and ``p2``. To add the
         second plot to the first, use the ``extend`` method, like so:
 
-        >>> from diofant import symbols
-        >>> x = symbols('x')
         >>> p1 = plot(x*x)
         >>> p2 = plot(x)
         >>> p1.extend(p2)
@@ -1134,9 +1130,6 @@ def plot(*args, **kwargs):
     Examples
     ========
 
-    >>> from diofant import symbols
-    >>> x = symbols('x')
-
     Single Plot
 
     >>> print(str(plot(x**2, (x, -5, 5))))
@@ -1287,7 +1280,6 @@ def plot_parametric(*args, **kwargs):
     Examples
     ========
 
-    >>> from diofant import symbols, cos, sin
     >>> u = symbols('u')
 
     Single Parametric plot
@@ -1385,7 +1377,6 @@ def plot3d_parametric_line(*args, **kwargs):
     Examples
     ========
 
-    >>> from diofant import symbols, cos, sin
     >>> u = symbols('u')
 
     Single plot.
@@ -1481,9 +1472,6 @@ def plot3d(*args, **kwargs):
 
     Examples
     ========
-
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
 
     Single plot
 
@@ -1587,7 +1575,6 @@ def plot3d_parametric_surface(*args, **kwargs):
     Examples
     ========
 
-    >>> from diofant import symbols, cos, sin
     >>> u, v = symbols('u v')
 
     Single plot.
@@ -1622,8 +1609,6 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
     Examples
     ========
 
-    >>> from diofant import cos, sin, symbols
-    >>> x = symbols('x')
     >>> check_arguments([cos(x), sin(x)], 2, 1)
         [(cos(x), sin(x), (x, -10, 10))]
 

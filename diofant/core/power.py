@@ -604,7 +604,6 @@ class Pow(Expr):
         Examples
         ========
 
-        >>> from diofant import S
         >>> p = Pow(S.Half, 2, evaluate=False)
         >>> p.as_base_exp()
         (2, -2)
@@ -1241,14 +1240,10 @@ class Pow(Expr):
         Examples
         ========
 
-        >>> from diofant import sqrt
         >>> sqrt(4 + 4*sqrt(2)).as_content_primitive()
         (2, sqrt(1 + sqrt(2)))
         >>> sqrt(3 + 3*sqrt(2)).as_content_primitive()
         (1, sqrt(3)*sqrt(1 + sqrt(2)))
-
-        >>> from diofant import expand_power_base, powsimp, Mul
-        >>> from diofant.abc import x, y
 
         >>> ((2*x + 2)**2).as_content_primitive()
         (4, (x + 1)**2)

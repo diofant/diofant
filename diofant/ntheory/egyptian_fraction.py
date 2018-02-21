@@ -24,7 +24,6 @@ def egyptian_fraction(r, algorithm="Greedy"):
     Examples
     ========
 
-    >>> from diofant import Rational
     >>> egyptian_fraction(Rational(3, 7))
     [3, 11, 231]
     >>> egyptian_fraction(Rational(3, 7), "Graham Jewett")

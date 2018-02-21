@@ -96,8 +96,6 @@ class CoordSystem(Basic):
     Define a Manifold and a Patch, and then define two coord systems on that
     patch:
 
-    >>> from diofant import symbols, sin, cos, pi
-    >>> from diofant.simplify import simplify
     >>> r, theta = symbols('r, theta')
     >>> m = Manifold('M', 2)
     >>> patch = Patch('P', m)
@@ -384,7 +382,7 @@ class Point(Basic):
 
     Define the boilerplate Manifold, Patch and coordinate systems:
 
-    >>> from diofant import symbols, sin, cos, pi
+    >>> from diofant.diffgeom import Point
     >>> r, theta = symbols('r, theta')
     >>> m = Manifold('M', 2)
     >>> p = Patch('P', m)
@@ -447,7 +445,6 @@ class BaseScalarField(Expr):
 
     Define boilerplate Manifold, Patch and coordinate systems:
 
-    >>> from diofant import symbols, sin, cos, pi, Function
     >>> r0, theta0 = symbols('r0, theta0')
     >>> m = Manifold('M', 2)
     >>> p = Patch('P', m)
@@ -526,9 +523,7 @@ class BaseVectorField(Expr):
 
     Use the predefined R2 manifold, setup some boilerplate.
 
-    >>> from diofant import symbols, pi, Function
     >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
-    >>> from diofant import pprint
     >>> x0, y0, r0, theta0 = symbols('x0, y0, r0, theta0')
 
     Points to be used as arguments for the field:
@@ -620,8 +615,6 @@ class Commutator(Expr):
     Use the predefined R2 manifold, setup some boilerplate.
 
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant import pprint
-    >>> from diofant.simplify import simplify
 
     Vector fields:
 
@@ -693,9 +686,7 @@ class Differential(Expr):
 
     Use the predefined R2 manifold, setup some boilerplate.
 
-    >>> from diofant import Function
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant import pprint
 
     Scalar field (0-forms):
 
@@ -804,9 +795,7 @@ class TensorProduct(Expr):
 
     Use the predefined R2 manifold, setup some boilerplate.
 
-    >>> from diofant import Function
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant import pprint
 
     >>> TensorProduct(R2.dx, R2.dy)(R2.e_x, R2.e_y)
     1
@@ -889,9 +878,7 @@ class WedgeProduct(TensorProduct):
 
     Use the predefined R2 manifold, setup some boilerplate.
 
-    >>> from diofant import Function
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant import pprint
 
     >>> WedgeProduct(R2.dx, R2.dy)(R2.e_x, R2.e_y)
     1
@@ -1138,7 +1125,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
 
     Use the predefined R2 manifold:
 
-    >>> from diofant.abc import t, x, y
+    >>> from diofant.abc import t
     >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
 
     Specify a starting point and a vector field:
@@ -1540,7 +1527,6 @@ def metric_to_Riemann_components(expr):
     Examples
     ========
 
-    >>> from diofant import pprint, exp
     >>> from diofant.diffgeom.rn import R2
     >>> TP = TensorProduct
     >>> metric_to_Riemann_components(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))
@@ -1592,7 +1578,6 @@ def metric_to_Ricci_components(expr):
     Examples
     ========
 
-    >>> from diofant import pprint, exp
     >>> from diofant.diffgeom.rn import R2
     >>> TP = TensorProduct
     >>> metric_to_Ricci_components(TP(R2.dx, R2.dx) + TP(R2.dy, R2.dy))

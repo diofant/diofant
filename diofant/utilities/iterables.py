@@ -36,7 +36,6 @@ def flatten(iterable, levels=None, cls=None):
     If cls argument is specified, it will only flatten instances of that
     class, for example:
 
-    >>> from diofant.core import Basic
     >>> class MyOp(Basic):
     ...     pass
     ...
@@ -231,7 +230,7 @@ def postorder_traversal(node, keys=None):
     Examples
     ========
 
-    >>> from diofant.abc import w, x, y, z
+    >>> from diofant.abc import w
 
     The nodes are returned in the order that they are encountered unless key
     is given; simply passing key=True will guarantee that the traversal is
@@ -374,6 +373,8 @@ def subsets(seq, k=None, repetition=False):
     without repetition, i.e. once an item has been removed, it can no
     longer be "taken":
 
+    >>> from diofant.utilities.iterables import subsets
+
     >>> list(subsets([1, 2], 2))
     [(1, 2)]
     >>> list(subsets([1, 2]))
@@ -478,8 +479,6 @@ def capture(func):
     `func` should be a function without arguments that produces output with
     print statements.
 
-    >>> from diofant import pprint
-    >>> from diofant.abc import x
     >>> def foo():
     ...     print('hello world!')
     ...
@@ -511,8 +510,6 @@ def sift(seq, keyfunc):
     ========
 
     >>> from collections import defaultdict
-    >>> from diofant.abc import x, y
-    >>> from diofant import sqrt, exp, E
 
     >>> sift(range(5), lambda x: x % 2) == defaultdict(int, {0: [0, 2, 4], 1: [1, 3]})
     True
@@ -861,7 +858,6 @@ def multiset_permutations(m, size=None, g=None):
     Examples
     ========
 
-    >>> from diofant import factorial
     >>> [''.join(i) for i in multiset_permutations('aab')]
     ['aab', 'aba', 'baa']
     >>> factorial(len('banana'))
@@ -1028,7 +1024,6 @@ def multiset_partitions(multiset, m=None):
 
     The number of partitions of a set is given by the bell number:
 
-    >>> from diofant import bell
     >>> len(list(multiset_partitions(5))) == bell(5) == 52
     True
 
@@ -1201,6 +1196,8 @@ def partitions(n, m=None, k=None, size=False):
 
     The numbers appearing in the partition (the key of the returned dict)
     are limited with k:
+
+    >>> from diofant.utilities.iterables import partitions
 
     >>> for p in partitions(6, k=2):  # doctest: +SKIP
     ...     print(p)
@@ -1520,8 +1517,6 @@ def has_dups(seq):
     Examples
     ========
 
-    >>> from diofant import Dict, Set
-
     >>> has_dups((1, 2, 1))
     True
     >>> has_dups(range(3))
@@ -1607,7 +1602,6 @@ def generate_bell(n):
     ========
 
     >>> from itertools import permutations
-    >>> from diofant import zeros, Matrix
 
     This is the sort of permutation used in the ringing of physical bells,
     and does not produce permutations in lexicographical order. Rather, the
@@ -1873,7 +1867,6 @@ def minlex(seq, directed=True, is_set=False, small=None):
     Examples
     ========
 
-    >>> from diofant.combinatorics.polyhedron import minlex
     >>> minlex((1, 2, 0))
     (0, 1, 2)
     >>> minlex((1, 0, 2))

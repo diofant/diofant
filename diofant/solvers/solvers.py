@@ -45,8 +45,6 @@ def denoms(eq, symbols=None):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
-
     >>> denoms(x/y)
     {y}
     >>> denoms(x/(y*z))
@@ -81,8 +79,6 @@ def checksol(f, sol, **flags):
     Examples
     ========
 
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
     >>> checksol(x**4 - 1, {x: 1})
     True
     >>> checksol(x**4 - 1, {x: 0})
@@ -251,9 +247,6 @@ def solve(f, *symbols, **flags):
     Examples
     ========
 
-    >>> from diofant import Symbol
-    >>> from diofant.abc import x, y, z
-
     Single equation:
 
     >>> solve(x**2 - y**2)
@@ -289,10 +282,6 @@ def solve(f, *symbols, **flags):
     work if the specified object can be replaced with a Symbol using the
     subs method.
 
-    >>> from diofant import Function
-    >>> from diofant.abc import x
-
-    >>> f = Function('f')
     >>> solve(f(x) - x, f(x))
     [{f(x): x}]
     >>> solve(f(x).diff(x) - f(x) - x, f(x).diff(x))
@@ -1044,8 +1033,6 @@ def solve_linear(f, x):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-
     >>> solve_linear(1/x - y**2, x)
     (x, y**(-2))
     >>> solve_linear(x**2/y**2 - 3, x)
@@ -1189,9 +1176,6 @@ def _tsolve(eq, sym, **flags):
     Examples
     ========
 
-    >>> from diofant import log
-    >>> from diofant.abc import x
-
     >>> _tsolve(3**(2*x + 5) - 4, x)
     [-5/2 + log(2)/log(3), (-5*log(3)/2 + log(2) + I*pi)/log(3)]
 
@@ -1333,8 +1317,6 @@ def _invert(eq, *symbols, **kwargs):
     Examples
     ========
 
-    >>> from diofant import sqrt, cos
-    >>> from diofant.abc import x, y
     >>> _invert(x - 3)
     (3, x)
     >>> _invert(3)

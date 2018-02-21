@@ -1658,8 +1658,7 @@ def latex(expr, **settings):
     r"""
     Convert the given expression to LaTeX representation.
 
-    >>> from diofant import pi, sin, asin, Integral, Matrix, Rational
-    >>> from diofant.abc import x, y, mu, r, tau
+    >>> from diofant.abc import mu, r, tau
 
     >>> print(latex((2*tau)**Rational(7, 2)))
     8 \sqrt{2} \tau^{\frac{7}{2}}

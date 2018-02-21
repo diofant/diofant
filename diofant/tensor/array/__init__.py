@@ -24,7 +24,6 @@ Array construction can detect the shape of nested lists and tuples:
 (3, 2)
 >>> a1.rank()
 2
->>> from diofant.abc import x, y, z
 >>> a2 = Array([[[x, y], [z, x*z]], [[1, x*y], [1/x, x/y]]])
 >>> a2
 [[[x, y], [z, x*z]], [[1, x*y], [1/x, x/y]]]
@@ -53,7 +52,6 @@ Slice support:
 
 Elementwise derivative:
 
->>> from diofant.abc import x, y, z
 >>> m3 = Array([x**3, x*y, z])
 >>> m3.diff(x)
 [3*x**2, y, 0]
@@ -97,7 +95,7 @@ creates the combined array `P = A \otimes B` defined as
 It is available through ``tensorproduct(...)``:
 
 >>> from diofant.tensor.array import Array, tensorproduct
->>> from diofant.abc import x, y, z, t
+>>> from diofant.abc import t
 >>> A = Array([x, y, z, t])
 >>> B = Array([1, 2, 3, 4])
 >>> tensorproduct(A, B)
@@ -106,7 +104,6 @@ It is available through ``tensorproduct(...)``:
 
 Tensor product between a rank-1 array and a matrix creates a rank-3 array:
 
->>> from diofant import eye
 >>> p1 = tensorproduct(A, eye(4))
 >>> p1
 [[[x, 0, 0, 0], [0, x, 0, 0], [0, 0, x, 0], [0, 0, 0, x]],
@@ -151,7 +148,6 @@ axes number 1, 2).
 
 One may verify that the matrix product is equivalent:
 
->>> from diofant import Matrix
 >>> Matrix([[x, y], [z, t]])*Matrix([[2, 1], [0, -1]])
 Matrix([
 [2*x,  x - y],
@@ -181,8 +177,7 @@ the derivative of arrays will return a new array `B` defined by
 The function ``derive_by_array`` performs such an operation:
 
 >>> from diofant.tensor.array import Array, tensorcontraction, derive_by_array
->>> from diofant.abc import x, y, z, t
->>> from diofant import sin, exp, symbols, Function
+>>> from diofant.abc import t
 
 With scalars, it behaves exactly as the ordinary derivative:
 

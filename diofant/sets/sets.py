@@ -146,7 +146,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import S
         >>> Interval(0, 1).complement(S.Reals)
         (-oo, 0) U (1, oo)
 
@@ -421,7 +420,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import S
         >>> S.Reals.is_open
         True
 
@@ -499,7 +497,6 @@ class ProductSet(Set):
     Examples
     ========
 
-    >>> from diofant import Symbol
     >>> I = Interval(0, 5); S = FiniteSet(1, 2, 3)
     >>> ProductSet(I, S)
     [0, 5] x {1, 2, 3}
@@ -649,7 +646,6 @@ class Interval(Set, EvalfMixin):
     Examples
     ========
 
-    >>> from diofant import Symbol
     >>> Interval(0, 1)
     [0, 1]
     >>> Interval(0, 1, False, True)
@@ -1468,7 +1464,6 @@ class EmptySet(Set, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S
     >>> S.EmptySet
     EmptySet()
 
@@ -1534,7 +1529,6 @@ class UniversalSet(Set, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S
     >>> S.UniversalSet
     UniversalSet()
 
@@ -1821,9 +1815,6 @@ def imageset(*args):
 
     Examples
     ========
-
-    >>> from diofant import Symbol, sin, Lambda
-    >>> x = Symbol('x')
 
     >>> imageset(x, 2*x, Interval(0, 2))
     [0, 4]

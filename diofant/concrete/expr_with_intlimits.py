@@ -35,8 +35,7 @@ class ExprWithIntLimits(ExprWithLimits):
         Examples
         ========
 
-        >>> from diofant import Sum, Product, simplify
-        >>> from diofant.abc import x, y, a, b, c, d, u, v, i, j, k, l
+        >>> from diofant.abc import a, b, c, d, u, v, i, j, l
 
         >>> S = Sum(x, (x, a, b))
         >>> S.doit()
@@ -150,8 +149,7 @@ class ExprWithIntLimits(ExprWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import x, y, a, b, c, d
-        >>> from diofant import Sum, Product
+        >>> from diofant.abc import a, b, c, d
         >>> Sum(x*y, (x, a, b), (y, c, d)).index(x)
         0
         >>> Sum(x*y, (x, a, b), (y, c, d)).index(y)
@@ -190,8 +188,7 @@ class ExprWithIntLimits(ExprWithLimits):
         Examples
         ========
 
-        >>> from diofant import Sum, Product
-        >>> from diofant.abc import x, y, z, a, b, c, d, e, f
+        >>> from diofant.abc import a, b, c, d, e, f
 
         >>> Sum(x*y, (x, a, b), (y, c, d)).reorder((x, y))
         Sum(x*y, (y, c, d), (x, a, b))
@@ -256,8 +253,7 @@ class ExprWithIntLimits(ExprWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import x, y, z, a, b, c, d, e, f
-        >>> from diofant import Sum, Product
+        >>> from diofant.abc import a, b, c, d, e, f
 
         >>> Sum(x*y*z, (x, a, b), (y, c, d), (z, e, f)).reorder_limit(0, 2)
         Sum(x*y*z, (z, e, f), (y, c, d), (x, a, b))

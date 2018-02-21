@@ -43,10 +43,6 @@ class Field(Ring):
         This definition of GCD over fields allows to clear denominators
         in `primitive()`.
 
-        >>> from diofant.domains import QQ
-        >>> from diofant import Rational, gcd, primitive
-        >>> from diofant.abc import x
-
         >>> QQ.gcd(QQ(2, 3), QQ(4, 9))
         2/9
         >>> gcd(Rational(2, 3), Rational(4, 9))
@@ -67,9 +63,6 @@ class Field(Ring):
     def lcm(self, a, b):
         """
         Returns LCM of ``a`` and ``b``.
-
-        >>> from diofant.domains import QQ
-        >>> from diofant import Rational, lcm
 
         >>> QQ.lcm(QQ(2, 3), QQ(4, 9))
         4/3

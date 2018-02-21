@@ -16,7 +16,6 @@ def _cmp_perm_lists(first, second):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation
     >>> a = Permutation([0, 2, 3, 4, 1])
     >>> b = Permutation([1, 2, 0, 4, 3])
     >>> c = Permutation([3, 4, 0, 1, 2])
@@ -42,7 +41,6 @@ def _naive_list_centralizer(self, other, af=False):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import DihedralGroup
     >>> D = DihedralGroup(4)
     >>> _naive_list_centralizer(D, D)
     [Permutation([0, 1, 2, 3]), Permutation([2, 3, 0, 1])]
@@ -89,7 +87,6 @@ def _verify_bsgs(group, base, gens):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import AlternatingGroup
     >>> A = AlternatingGroup(4)
     >>> A.schreier_sims()
     >>> _verify_bsgs(A, A.base, A.strong_gens)
@@ -124,10 +121,7 @@ def _verify_centralizer(group, arg, centr=None):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
     ... AlternatingGroup)
-    >>> from diofant.combinatorics.perm_groups import PermutationGroup
-    >>> from diofant.combinatorics.permutations import Permutation
     >>> S = SymmetricGroup(5)
     >>> A = AlternatingGroup(5)
     >>> centr = PermutationGroup([Permutation([0, 1, 2, 3, 4])])
@@ -159,8 +153,6 @@ def _verify_normal_closure(group, arg, closure=None):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
-    ... AlternatingGroup)
     >>> S = SymmetricGroup(3)
     >>> A = AlternatingGroup(3)
     >>> _verify_normal_closure(S, A, closure=A)
@@ -213,7 +205,6 @@ def canonicalize_naive(g, dummies, sym, *v):
     ========
 
     >>> from diofant.combinatorics.tensor_can import get_symmetric_group_sgs
-    >>> from diofant.combinatorics import Permutation, PermutationGroup
     >>> g = Permutation([1, 3, 2, 0, 4, 5])
     >>> base2, gens2 = get_symmetric_group_sgs(2)
     >>> canonicalize_naive(g, [2, 3], 0, (base2, gens2, 2, 0))

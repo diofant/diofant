@@ -104,7 +104,6 @@ def diophantine(eq, param=symbols("t", integer=True), syms=None):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
     >>> diophantine(x**2 - y**2)
     {(t_0, -t_0), (t_0, t_0)}
 
@@ -252,7 +251,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z, w
+    >>> from diofant.abc import w
     >>> diop_solve(2*x + 3*y - 5)
     (3*t_0 - 5, -2*t_0 + 5)
     >>> diop_solve(4*x + 3*y -4*z + 5)
@@ -329,7 +328,7 @@ def classify_diop(eq, _dict=True):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z, w, t
+    >>> from diofant.abc import w, t
     >>> classify_diop(4*x + 6*y - 4)
     ([x, y], {1: -4, x: 4, y: 6}, 'linear')
     >>> classify_diop(x + 3*y -4*z + 5)
@@ -447,7 +446,6 @@ def diop_linear(eq, param=symbols("t", integer=True)):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
     >>> diop_linear(2*x - 3*y - 5)
     (3*t_0 - 5, 2*t_0 - 5)
 
@@ -725,7 +723,7 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, t
+    >>> from diofant.abc import t
     >>> diop_quadratic(x**2 + y**2 + 2*x + 2*y + 2, t)
     {(-1, -1)}
 
@@ -1425,7 +1423,6 @@ def transformation_to_DN(eq):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
     >>> A, B = transformation_to_DN(x**2 - 3*x*y - y**2 - 2*y + 1)
     >>> A
     Matrix([
@@ -1441,7 +1438,6 @@ def transformation_to_DN(eq):
     will give an equation of the form `x^2 - Dy^2 = N`.
 
     >>> from diofant.abc import X, Y
-    >>> from diofant import Matrix, simplify
     >>> u = (A*Matrix([X, Y]) + B)[0]  # Transformation for x
     >>> u
     X/26 + 3*Y/26 - 6/13
@@ -1552,7 +1548,6 @@ def find_DN(eq):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
     >>> find_DN(x**2 - 3*x*y - y**2 - 2*y + 1)
     (13, -884)
 
@@ -1644,7 +1639,6 @@ def diop_ternary_quadratic(eq):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
     >>> diop_ternary_quadratic(x**2 + 3*y**2 - z**2)
     (1, 0, 1)
     >>> diop_ternary_quadratic(4*x**2 + 5*y**2 - z**2)
@@ -1861,7 +1855,6 @@ def parametrize_ternary_quadratic(eq):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
     >>> parametrize_ternary_quadratic(x**2 + y**2 - z**2)
     (2*p*q, p**2 - q**2, p**2 + q**2)
 
@@ -1938,7 +1931,6 @@ def diop_ternary_quadratic_normal(eq):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
     >>> diop_ternary_quadratic_normal(x**2 + 3*y**2 - z**2)
     (1, 0, 1)
     >>> diop_ternary_quadratic_normal(4*x**2 + 5*y**2 - z**2)

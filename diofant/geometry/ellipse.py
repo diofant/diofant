@@ -79,7 +79,6 @@ class Ellipse(GeometrySet):
     Examples
     ========
 
-    >>> from diofant import Point, Rational
     >>> e1 = Ellipse(Point(0, 0), 5, 1)
     >>> e1.hradius, e1.vradius
     (5, 1)
@@ -140,7 +139,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.center
@@ -166,7 +164,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.hradius
@@ -192,7 +189,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.vradius
@@ -218,7 +214,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Symbol
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.minor
@@ -265,7 +260,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Symbol
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.major
@@ -307,7 +301,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.area
@@ -323,7 +316,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.circumference
@@ -350,7 +342,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, sqrt
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, sqrt(2))
         >>> e1.eccentricity
@@ -378,7 +369,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.periapsis
@@ -406,7 +396,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.apoapsis
@@ -434,7 +423,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.focus_distance
@@ -466,7 +454,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.foci
@@ -497,7 +484,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import pi
         >>> Ellipse((1, 0), 2, 1).rotate(pi/2)
         Ellipse(Point2D(0, 1), 1, 2)
         >>> Ellipse((1, 0), 2, 1).rotate(pi)
@@ -539,10 +525,8 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Line
         >>> Circle((0, 1), 1).reflect(Line((0, 0), (1, 1)))
         Circle(Point2D(1, 0), -1)
-        >>> from diofant import Line, Point
         >>> Ellipse(Point(3, 4), 1, 3).reflect(Line(Point(0, -4), Point(5, 0)))
         Traceback (most recent call last):
         ...
@@ -601,7 +585,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import S
         >>> from diofant.abc import t
         >>> e = Ellipse((0, 0), 3, 2)
         >>> e.encloses_point((0, 0))
@@ -659,7 +642,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.tangent_lines(Point(3, 0))
         [Line(Point2D(3, 0), Point2D(3, -12))]
@@ -735,7 +717,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line
         >>> p0, p1, p2 = Point(0, 0), Point(3, 0), Point(3, 3)
         >>> e1 = Ellipse(p0, 3, 2)
         >>> l1 = Line(p1, p2)
@@ -782,7 +763,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Line, Point
         >>> e = Ellipse((0, 0), 2, 3)
         >>> c = e.center
         >>> e.normal_lines(c + Point(1, 0))
@@ -874,7 +854,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.arbitrary_point()
         Point2D(3*cos(t), 2*sin(t))
@@ -905,7 +884,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.plot_interval()
         [t, -pi, pi]
@@ -931,7 +909,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Segment
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.random_point() # gives some random point
         Point2D(...)
@@ -1015,7 +992,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> e1 = Ellipse(Point(1, 0), 3, 2)
         >>> e1.equation()
         y**2/4 + (x/3 - 1/3)**2 - 1
@@ -1105,7 +1081,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Line, sqrt
         >>> e = Ellipse(Point(0, 0), 5, 7)
         >>> e.intersection(Point(0, 0))
         []
@@ -1171,7 +1146,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> e1 = Ellipse(Point(1, 0), 3, 2)
         >>> e1.evolute()
         2**(2/3)*y**(2/3) + (3*x - 3)**(2/3) - 5**(2/3)
@@ -1240,7 +1214,6 @@ class Circle(Ellipse):
     Examples
     ========
 
-    >>> from diofant.geometry import Point
     >>> # a circle constructed from a center and radius
     >>> c1 = Circle(Point(0, 0), 5)
     >>> c1.hradius, c1.vradius, c1.radius
@@ -1291,7 +1264,6 @@ class Circle(Ellipse):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> c1 = Circle(Point(3, 4), 6)
         >>> c1.radius
         6
@@ -1313,7 +1285,6 @@ class Circle(Ellipse):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> c1 = Circle(Point(3, 4), 6)
         >>> c1.vradius
         6
@@ -1332,7 +1303,6 @@ class Circle(Ellipse):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> c1 = Circle(Point(3, 4), 6)
         >>> c1.circumference
         12*pi
@@ -1359,7 +1329,6 @@ class Circle(Ellipse):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> c1 = Circle(Point(0, 0), 5)
         >>> c1.equation()
         x**2 + y**2 - 25
@@ -1387,7 +1356,6 @@ class Circle(Ellipse):
         Examples
         ========
 
-        >>> from diofant import Point, Line, Ray
         >>> p1, p2, p3 = Point(0, 0), Point(5, 5), Point(6, 0)
         >>> p4 = Point(5, 0)
         >>> c1 = Circle(p1, 5)
@@ -1463,7 +1431,6 @@ class Circle(Ellipse):
         Examples
         ========
 
-        >>> from diofant import Line
         >>> Circle((0, 1), 1).reflect(Line((0, 0), (1, 1)))
         Circle(Point2D(1, 0), -1)
         """

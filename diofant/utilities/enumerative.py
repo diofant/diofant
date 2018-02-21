@@ -303,7 +303,6 @@ def factoring_visitor(state, primes):
     partition as being the prime factors and the multiplicities as being their
     exponents.
 
-    >>> from diofant import factorint
     >>> primes, multiplicities = zip(*factorint(24).items())
     >>> primes
     (2, 3)

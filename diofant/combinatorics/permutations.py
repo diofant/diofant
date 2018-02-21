@@ -1469,7 +1469,6 @@ class Permutation(Basic):
         If an array is given then the permutation selects the items
         from the array (i.e. the permutation is applied to the array):
 
-        >>> from diofant.abc import x
         >>> p([x, 1, 0, x**2])
         [0, x**2, x, 1]
         """

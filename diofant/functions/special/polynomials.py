@@ -53,8 +53,7 @@ class jacobi(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import conjugate, diff, Rational
-    >>> from diofant.abc import n, a, b, x
+    >>> from diofant.abc import a, b
 
     >>> jacobi(0, a, b, x)
     1
@@ -209,7 +208,7 @@ def jacobi_normalized(n, a, b, x):
     Examples
     ========
 
-    >>> from diofant.abc import n, a, b, x
+    >>> from diofant.abc import a, b
 
     >>> jacobi_normalized(n, a, b, x)
     jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)/((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1)))
@@ -261,8 +260,7 @@ class gegenbauer(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import conjugate, diff
-    >>> from diofant.abc import n, a, x
+    >>> from diofant.abc import a
     >>> gegenbauer(0, a, x)
     1
     >>> gegenbauer(1, a, x)
@@ -396,8 +394,6 @@ class chebyshevt(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import diff
-    >>> from diofant.abc import n, x
     >>> chebyshevt(0, x)
     1
     >>> chebyshevt(1, x)
@@ -495,8 +491,6 @@ class chebyshevu(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import diff
-    >>> from diofant.abc import n, x
     >>> chebyshevu(0, x)
     1
     >>> chebyshevu(1, x)
@@ -676,8 +670,6 @@ class legendre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import diff
-    >>> from diofant.abc import x, n
     >>> legendre(0, x)
     1
     >>> legendre(1, x)
@@ -769,7 +761,6 @@ class assoc_legendre(Function):
     Examples
     ========
 
-    >>> from diofant.abc import x, m, n
     >>> assoc_legendre(0, 0, x)
     1
     >>> assoc_legendre(1, 0, x)
@@ -854,8 +845,6 @@ class hermite(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import diff
-    >>> from diofant.abc import x, n
     >>> hermite(0, x)
     1
     >>> hermite(1, x)
@@ -940,8 +929,6 @@ class laguerre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import diff
-    >>> from diofant.abc import x, n
     >>> laguerre(0, x)
     1
     >>> laguerre(1, x)
@@ -1033,8 +1020,7 @@ class assoc_laguerre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import diff
-    >>> from diofant.abc import x, n, a
+    >>> from diofant.abc import a
     >>> assoc_laguerre(0, a, x)
     1
     >>> assoc_laguerre(1, a, x)

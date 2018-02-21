@@ -10,7 +10,6 @@ Exact Diofant expressions can be converted to floating-point approximations
 (decimal numbers) using either the ``.evalf()`` method or the ``N()`` function.
 ``N(expr, <args>)`` is equivalent to ``sympify(expr).evalf(<args>)``.
 
-    >>> from diofant import *
     >>> N(sqrt(2)*pi)
     4.44288293815837
     >>> (sqrt(2)*pi).evalf()

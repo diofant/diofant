@@ -33,8 +33,6 @@ def verify_numerically(f, g, z=None, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     Examples
     ========
 
-    >>> from diofant import sin, cos
-    >>> from diofant.abc import x
     >>> verify_numerically(sin(x)**2 + cos(x)**2, 1, x)
     true
     """
@@ -58,8 +56,6 @@ def verify_derivative_numerically(f, z, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     Examples
     ========
 
-    >>> from diofant import sin
-    >>> from diofant.abc import x
     >>> verify_derivative_numerically(sin(x), x)
     true
     """

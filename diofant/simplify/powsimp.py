@@ -52,8 +52,6 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     Examples
     ========
 
-    >>> from diofant import exp, log, symbols
-    >>> from diofant.abc import x, y, z, n
     >>> powsimp(x**y*x**z*y**z, combine='all')
     x**(y + z)*y**z
     >>> powsimp(x**y*x**z*y**z, combine='exp')
@@ -76,7 +74,6 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
 
     Radicals with Mul bases will be combined if combine='exp'
 
-    >>> from diofant import sqrt, Mul
     >>> x, y = symbols('x y')
 
     Two radicals are automatically joined through Mul:
@@ -519,8 +516,7 @@ def powdenest(eq, force=False, polar=False):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, x, y, z
-    >>> from diofant import Symbol, exp, log, sqrt, symbols
+    >>> from diofant.abc import a, b
 
     >>> powdenest((x**(2*a/3))**(3*x))
     (x**(2*a/3))**(3*x)

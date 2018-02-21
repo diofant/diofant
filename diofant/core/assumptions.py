@@ -12,7 +12,6 @@ have 3 possible values: True, False, None.  True is returned if the
 object has the property and False is returned if it doesn't or can't
 (i.e. doesn't make sense):
 
-    >>> from diofant import I
     >>> I.is_algebraic
     True
     >>> I.is_real
@@ -392,14 +391,11 @@ def check_assumptions(expr, **assumptions):
     Examples
     ========
 
-    >>> from diofant import Symbol
-
     >>> check_assumptions(-5, integer=True)
     True
     >>> x = Symbol('x', positive=True)
     >>> check_assumptions(2*x + 1, negative=True)
     False
-    >>> z = Symbol('z')
     >>> check_assumptions(z, real=True) is None
     True
     """

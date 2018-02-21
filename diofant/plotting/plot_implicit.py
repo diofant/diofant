@@ -138,9 +138,6 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
 
     Plot expressions:
 
-    >>> from diofant import cos, sin, symbols, Eq, And
-    >>> x, y = symbols('x y')
-
     Without any ranges for the symbols in the expression
 
     >>> p1 = plot_implicit(Eq(x**2 + y**2, 5))

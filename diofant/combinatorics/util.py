@@ -31,7 +31,6 @@ def _base_ordering(base, degree):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import SymmetricGroup
     >>> S = SymmetricGroup(4)
     >>> S.schreier_sims()
     >>> _base_ordering(S.base, S.degree)
@@ -77,7 +76,6 @@ def _check_cycles_alt_sym(perm):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation
     >>> a = Permutation([[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [11, 12]])
     >>> _check_cycles_alt_sym(a)
     False
@@ -138,9 +136,7 @@ def _distribute_gens_by_base(base, gens):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.named_groups import DihedralGroup
     >>> D = DihedralGroup(3)
     >>> D.schreier_sims()
     >>> D.strong_gens
@@ -205,9 +201,7 @@ def _handle_precomputed_bsgs(base, strong_gens, transversals=None,
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.named_groups import DihedralGroup
     >>> D = DihedralGroup(3)
     >>> D.schreier_sims()
     >>> _handle_precomputed_bsgs(D.base, D.strong_gens,
@@ -265,9 +259,7 @@ def _orbits_transversals_from_bsgs(base, strong_gens_distr,
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.named_groups import SymmetricGroup
     >>> S = SymmetricGroup(3)
     >>> S.schreier_sims()
     >>> strong_gens_distr = _distribute_gens_by_base(S.base, S.strong_gens)
@@ -321,8 +313,6 @@ def _remove_gens(base, strong_gens, basic_orbits=None, strong_gens_distr=None):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import SymmetricGroup
-    >>> from diofant.combinatorics.perm_groups import PermutationGroup
     >>> from diofant.combinatorics.testutil import _verify_bsgs
     >>> S = SymmetricGroup(15)
     >>> base, strong_gens = S.schreier_sims_incremental()
@@ -403,10 +393,7 @@ def _strip(g, base, orbits, transversals):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.named_groups import SymmetricGroup
-    >>> from diofant.combinatorics.permutations import Permutation
     >>> S = SymmetricGroup(5)
     >>> S.schreier_sims()
     >>> g = Permutation([0, 2, 3, 1, 4])
@@ -485,9 +472,7 @@ def _strong_gens_from_distr(strong_gens_distr):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.named_groups import SymmetricGroup
     >>> S = SymmetricGroup(3)
     >>> S.schreier_sims()
     >>> S.strong_gens

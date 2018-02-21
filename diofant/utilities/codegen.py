@@ -295,7 +295,6 @@ class Variable:
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> x = Variable(Symbol('x'))
         >>> x.get_datatype('c')
         'double'
@@ -1407,7 +1406,6 @@ def codegen(name_expr, language, prefix=None, project="project",
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
     >>> [(c_name, c_code), (h_name, c_header)] = codegen(
     ...     ("f", x+y*z), "C", "test", header=False, empty=False)
     >>> print(c_name)
@@ -1432,7 +1430,6 @@ def codegen(name_expr, language, prefix=None, project="project",
     filename (prefix) is taken from the first (name, expr) pair.
 
     >>> from diofant.abc import f, g
-    >>> from diofant import Eq
     >>> [(c_name, c_code), (h_name, c_header)] = codegen(
     ...      [("myfcn", x + y), ("fcn2", [Eq(f, 2*x), Eq(g, y)])],
     ...      "C", header=False, empty=False)
@@ -1455,7 +1452,6 @@ def codegen(name_expr, language, prefix=None, project="project",
     global variables have been defined, the 'global_vars' option can be used
     to remove the specified variables from the function signature
 
-    >>> from diofant.abc import x, y, z
     >>> [(f_name, f_code), header] = codegen(
     ...     ("f", x+y*z), "F95", header=False, empty=False,
     ...     argument_sequence=(x, y), global_vars=(z,))
@@ -1528,8 +1524,7 @@ def make_routine(name, expr, argument_sequence=None,
     Examples
     ========
 
-    >>> from diofant.abc import x, y, f, g
-    >>> from diofant import Eq
+    >>> from diofant.abc import f, g
     >>> r = make_routine('test', [Eq(f, 2*x), Eq(g, x + y)])
     >>> [arg.result_var for arg in r.results]
     []
@@ -1543,7 +1538,6 @@ def make_routine(name, expr, argument_sequence=None,
     Another more complicated example with a mixture of specified and
     automatically-assigned names.  Also has Matrix output.
 
-    >>> from diofant import Matrix
     >>> r = make_routine('fcn', [x*y, Eq(f, 1), Eq(g, x + g), Matrix([[x, 2]])])
     >>> [arg.result_var for arg in r.results]
     [result_...]

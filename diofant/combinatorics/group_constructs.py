@@ -21,7 +21,6 @@ def DirectProduct(*groups):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import CyclicGroup
     >>> C = CyclicGroup(4)
     >>> G = DirectProduct(C, C, C)
     >>> G.order()

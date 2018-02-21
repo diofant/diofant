@@ -233,7 +233,6 @@ class PropKB(KB):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
         >>> l = PropKB()
         >>> l.clauses
         []
@@ -255,7 +254,6 @@ class PropKB(KB):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
         >>> l = PropKB()
         >>> l.tell(x & ~y)
         >>> l.ask(x)
@@ -271,7 +269,6 @@ class PropKB(KB):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
         >>> l = PropKB()
         >>> l.clauses
         []

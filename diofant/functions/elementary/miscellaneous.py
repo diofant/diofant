@@ -17,7 +17,6 @@ class IdentityFunction(Lambda, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import Symbol
     >>> x = Symbol('x')
     >>> Id(x)
     x
@@ -48,9 +47,6 @@ def sqrt(arg, **kwargs):
     Examples
     ========
 
-    >>> from diofant import Symbol
-    >>> x = Symbol('x')
-
     >>> sqrt(x)
     sqrt(x)
 
@@ -65,7 +61,6 @@ def sqrt(arg, **kwargs):
     This is because the two are not equal to each other in general.
     For example, consider x == -1:
 
-    >>> from diofant import Eq
     >>> Eq(sqrt(x**2), x).subs(x, -1)
     false
 
@@ -80,15 +75,12 @@ def sqrt(arg, **kwargs):
     You can force this simplification by using the powdenest() function with
     the force option set to True:
 
-    >>> from diofant import powdenest
     >>> sqrt(x**2)
     sqrt(x**2)
     >>> powdenest(sqrt(x**2), force=True)
     x
 
     To get both branches of the square root you can use the RootOf function:
-
-    >>> from diofant import RootOf
 
     >>> [RootOf(x**2 - 3, i) for i in (0, 1)]
     [-sqrt(3), sqrt(3)]
@@ -117,9 +109,6 @@ def cbrt(arg, **kwargs):
     Examples
     ========
 
-    >>> from diofant import Symbol
-    >>> x = Symbol('x')
-
     >>> cbrt(x)
     x**(1/3)
 
@@ -134,7 +123,6 @@ def cbrt(arg, **kwargs):
     This is because the two are not equal to each other in general.
     For example, consider `x == -1`:
 
-    >>> from diofant import Eq
     >>> Eq(cbrt(x**3), x).subs(x, -1)
     false
 
@@ -170,9 +158,6 @@ def root(arg, n, k=0, **kwargs):
     Examples
     ========
 
-    >>> from diofant import Rational
-    >>> from diofant.abc import x, n
-
     >>> root(x, 2)
     sqrt(x)
 
@@ -193,8 +178,6 @@ def root(arg, n, k=0, **kwargs):
     To get all n n-th roots you can use the RootOf function.
     The following examples show the roots of unity for n
     equal 2, 3 and 4:
-
-    >>> from diofant import RootOf, I
 
     >>> [RootOf(x**2 - 1, i) for i in range(2)]
     [-1, 1]
@@ -260,8 +243,6 @@ def real_root(arg, n=None):
 
     Examples
     ========
-
-    >>> from diofant.abc import x, n
 
     >>> real_root(-8, 3)
     -2
@@ -470,9 +451,6 @@ class Max(MinMaxBase, Application):
     Examples
     ========
 
-    >>> from diofant import Symbol, oo
-
-    >>> from diofant.abc import x, y, z
     >>> p = Symbol('p', positive=True)
     >>> n = Symbol('n', negative=True)
 
@@ -560,9 +538,6 @@ class Min(MinMaxBase, Application):
     Examples
     ========
 
-    >>> from diofant import Symbol, oo
-
-    >>> from diofant.abc import x, y
     >>> p = Symbol('p', positive=True)
     >>> n = Symbol('n', negative=True)
 

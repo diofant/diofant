@@ -9,9 +9,7 @@ Creating Matrices
 The linear algebra module is designed to be as simple as possible. First, we
 import and declare our first ``Matrix`` object:
 
-    >>> from diofant.interactive.printing import init_printing
     >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
-    >>> from diofant.matrices import Matrix, eye, zeros, ones, diag, GramSchmidt
     >>> M = Matrix([[1, 0, 0], [0, 0, 0]]); M
     [1  0  0]
     [       ]
@@ -327,8 +325,6 @@ but we can also apply functions to our matrix entries using ``applyfunc()``. Her
 
 One more useful matrix-wide entry application function is the substitution function. Let's declare a matrix with symbolic entries then substitute a value. Remember we can substitute anything - even another symbol!:
 
-    >>> from diofant import Symbol
-    >>> x = Symbol('x')
     >>> M = eye(3) * x
     >>> M
     [x  0  0]

@@ -32,9 +32,6 @@ class beta(Function):
     Examples
     ========
 
-    >>> from diofant import I, pi, conjugate, diff
-    >>> from diofant.abc import x, y
-
     The Beta function obeys the mirror symmetry:
 
     >>> conjugate(beta(x, y))

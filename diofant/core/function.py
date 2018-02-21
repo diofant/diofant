@@ -16,9 +16,6 @@ There are three types of functions implemented in Diofant:
     Examples
     ========
 
-    >>> import diofant
-    >>> f = diofant.Function("f")
-    >>> from diofant.abc import x
     >>> f(x)
     f(x)
     >>> print(repr(f(x).func))
@@ -59,7 +56,6 @@ def _coeff_isneg(a):
     Examples
     ========
 
-    >>> from diofant import Integer, Symbol, oo, pi
     >>> _coeff_isneg(-3*pi)
     True
     >>> _coeff_isneg(Integer(3))
@@ -138,9 +134,6 @@ class FunctionClass(ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
-        >>> f = Function('f')
-
         If the function can take any number of arguments, the set of whole
         numbers is returned:
 
@@ -159,7 +152,6 @@ class FunctionClass(ManagedProperties):
         attribute; the actual number of arguments is always available by
         checking the ``args`` attribute:
 
-        >>> f = Function('f')
         >>> f(1).nargs
         Naturals0()
         >>> len(f(1).args)
@@ -265,10 +257,7 @@ class Function(Application, Expr):
     First example shows how to use Function as a constructor for undefined
     function classes:
 
-    >>> from diofant import Symbol
-    >>> x = Symbol('x')
-    >>> f = Function('f')
-    >>> g = Function('g')(x)
+    >>> g = g(x)
     >>> f
     f
     >>> f(x)
@@ -287,7 +276,6 @@ class Function(Application, Expr):
     Suppose also that *my_func(x)* is real exactly when *x* is real. Here is
     an implementation that honours those requirements:
 
-    >>> from diofant import S, oo, I, sin, Symbol
     >>> class my_func(Function):
     ...
     ...     @classmethod
@@ -332,9 +320,6 @@ class Function(Application, Expr):
         Examples
         ========
 
-        >>> from diofant import Symbol
-        >>> f = Function('f')
-        >>> x = Symbol('x')
         >>> f(x)._diff_wrt
         True
 
@@ -493,8 +478,6 @@ class Function(Application, Expr):
         Examples
         ========
 
-        >>> from diofant import atan2
-        >>> from diofant.abc import x, y
         >>> atan2(x, y).series(x, n=2)
         atan2(0, y) + x/y + O(x**2)
         >>> atan2(x, y).series(y, n=2)
@@ -503,7 +486,6 @@ class Function(Application, Expr):
         This function also computes asymptotic expansions, if necessary
         and possible:
 
-        >>> from diofant import loggamma
         >>> loggamma(1/x)._eval_nseries(x, 0, None)
         -1/x - log(x)/x + log(x)/2 + O(1)
 
@@ -681,10 +663,7 @@ class WildFunction(Function, AtomicExpr):
     Examples
     ========
 
-    >>> from diofant import cos
-    >>> from diofant.abc import x, y
     >>> F = WildFunction('F')
-    >>> f = Function('f')
     >>> F.nargs
     Naturals0()
     >>> x.match(F)
@@ -772,8 +751,6 @@ class Derivative(Expr):
     automatically simplified in a fairly conservative fashion unless the
     keyword ``simplify`` is set to False.
 
-        >>> from diofant import sqrt
-        >>> from diofant.abc import x
         >>> e = sqrt((x + 1)**2 + x)
         >>> diff(e, x, 5, simplify=False).count_ops()
         136
@@ -807,8 +784,6 @@ class Derivative(Expr):
     Derivative objects.  Note that this leads to what may appear to be
     mathematically inconsistent results.  For example::
 
-        >>> from diofant import cos, sin, sqrt
-        >>> from diofant.abc import x
         >>> (2*cos(x)).diff(cos(x))
         2
         >>> (2*sqrt(1 - sin(x)**2)).diff(cos(x))
@@ -859,7 +834,6 @@ class Derivative(Expr):
     in an expression, some of which may surprise the reader (for example, a
     very strict definition would have that (x*y*z).diff(x*y) == 0).
 
-        >>> from diofant.abc import x, y, z
         >>> (x*y*z).diff(x*y)
         Traceback (most recent call last):
         ...
@@ -869,8 +843,6 @@ class Derivative(Expr):
     chain rule.  Note how the chain rule in Diofant is defined using unevaluated
     Subs objects::
 
-        >>> from diofant import symbols
-        >>> f, g = symbols('f g', cls=Function)
         >>> f(2*g(x)).diff(x)
         2*Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1),
                                               (_xi_1,), (2*g(x),))
@@ -900,12 +872,6 @@ class Derivative(Expr):
 
     Some basic examples:
 
-        >>> from diofant import Symbol
-        >>> f = Function('f')
-        >>> g = Function('g')
-        >>> x = Symbol('x')
-        >>> y = Symbol('y')
-
         >>> Derivative(x**2, x, evaluate=True)
         2*x
         >>> Derivative(Derivative(f(x, y), x), y)
@@ -933,9 +899,6 @@ class Derivative(Expr):
         Examples
         ========
 
-            >>> from diofant import Symbol
-            >>> f = Function('f')
-            >>> x = Symbol('x')
             >>> Derivative(f(x), x)._diff_wrt
             True
             >>> Derivative(x**2, x)._diff_wrt
@@ -1116,10 +1079,7 @@ class Derivative(Expr):
         Examples
         ========
 
-        >>> from diofant import symbols
         >>> vsort = Derivative._sort_variables
-        >>> x, y, z = symbols('x y z')
-        >>> f, g, h = symbols('f g h', cls=Function)
 
         >>> vsort((x, y, z))
         [x, y, z]
@@ -1293,14 +1253,13 @@ class Lambda(Expr):
 
     A simple example:
 
-    >>> from diofant.abc import x
     >>> f = Lambda(x, x**2)
     >>> f(4)
     16
 
     For multivariate functions, use:
 
-    >>> from diofant.abc import y, z, t
+    >>> from diofant.abc import t
     >>> f2 = Lambda((x, y, z, t), x + y**z + t**z)
     >>> f2(1, 2, 3, 4)
     73
@@ -1411,9 +1370,6 @@ class Subs(Expr):
 
     A simple example:
 
-    >>> from diofant import sin
-    >>> from diofant.abc import x, y, z
-    >>> f = Function('f')
     >>> e = Subs(f(x).diff(x), x, y)
     >>> e.subs(y, 0)
     Subs(Derivative(f(x), x), (x,), (0,))
@@ -1582,10 +1538,6 @@ def diff(f, *symbols, **kwargs):
     Examples
     ========
 
-    >>> from diofant import sin, cos
-    >>> from diofant.abc import x, y
-    >>> f = Function('f')
-
     >>> diff(sin(x), x)
     cos(x)
     >>> diff(f(x), x, x, x)
@@ -1661,8 +1613,6 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     mul : boolean, optional
         Distributes multiplication over addition (``):
 
-        >>> from diofant import cos, exp, sin
-        >>> from diofant.abc import x, y, z
         >>> (y*(x + z)).expand(mul=True)
         x*y + y*z
 
@@ -1707,7 +1657,6 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
         proper assumptions--the arguments must be positive and the exponents must
         be real--or else the ``force`` hint must be True:
 
-        >>> from diofant import log, symbols
         >>> log(x**2*y).expand(log=True)
         log(x**2*y)
         >>> log(x**2*y).expand(log=True, force=True)
@@ -1732,7 +1681,6 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     func : boolean : optional
         Expand other functions.
 
-        >>> from diofant import gamma
         >>> gamma(x + 1).expand(func=True)
         x*gamma(x)
 
@@ -1881,7 +1829,6 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     Examples
     ========
 
-    >>> from diofant import Expr, sympify
     >>> class MyClass(Expr):
     ...     def __new__(cls, *args):
     ...         args = sympify(args)
@@ -1962,7 +1909,6 @@ def expand_mul(expr, deep=True):
     Examples
     ========
 
-    >>> from diofant import symbols, exp, log
     >>> x, y = symbols('x y', positive=True)
     >>> expand_mul(exp(x+y)*(x+y)*log(x*y**2))
     E**(x + y)*x*log(x*y**2) + E**(x + y)*y*log(x*y**2)
@@ -1979,7 +1925,6 @@ def expand_multinomial(expr, deep=True):
     Examples
     ========
 
-    >>> from diofant import symbols, exp
     >>> x, y = symbols('x y', positive=True)
     >>> expand_multinomial((x + exp(x + 1))**2)
     2*E**(x + 1)*x + E**(2*x + 2) + x**2
@@ -1996,7 +1941,6 @@ def expand_log(expr, deep=True, force=False):
     Examples
     ========
 
-    >>> from diofant import symbols, exp, log
     >>> x, y = symbols('x y', positive=True)
     >>> expand_log(exp(x+y)*(x+y)*log(x*y**2))
     E**(x + y)*(x + y)*(log(x) + 2*log(y))
@@ -2014,8 +1958,6 @@ def expand_func(expr, deep=True):
     Examples
     ========
 
-    >>> from diofant import gamma
-    >>> from diofant.abc import x
     >>> expand_func(gamma(x + 2))
     x*(x + 1)*gamma(x)
     """
@@ -2031,8 +1973,6 @@ def expand_trig(expr, deep=True):
     Examples
     ========
 
-    >>> from diofant import sin
-    >>> from diofant.abc import x, y
     >>> expand_trig(sin(x+y)*(x+y))
     (x + y)*(sin(x)*cos(y) + sin(y)*cos(x))
 
@@ -2049,8 +1989,6 @@ def expand_complex(expr, deep=True):
     Examples
     ========
 
-    >>> from diofant import exp, sqrt, I
-    >>> from diofant.abc import z
     >>> expand_complex(exp(z))
     E**re(z)*I*sin(im(z)) + E**re(z)*cos(im(z))
     >>> expand_complex(sqrt(I))
@@ -2079,9 +2017,6 @@ def expand_power_base(expr, deep=True, force=False):
     force=True (default is False) will cause the expansion to ignore
     assumptions about the base and exponent. When False, the expansion will
     only happen if the base is non-negative or the exponent is an integer.
-
-    >>> from diofant.abc import x, y, z
-    >>> from diofant import sin, cos, exp
 
     >>> (x*y)**2
     x**2*y**2
@@ -2139,7 +2074,6 @@ def expand_power_exp(expr, deep=True):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
     >>> expand_power_exp(x**(y + 2))
     x**2*x**y
 
@@ -2169,8 +2103,7 @@ def count_ops(expr, visual=False):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, x, y
-    >>> from diofant import sin
+    >>> from diofant.abc import a, b
 
     Although there isn't a SUB object, minus signs are interpreted as
     either negations or subtractions:
@@ -2352,8 +2285,6 @@ def nfloat(expr, n=15, exponent=False):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-    >>> from diofant import cos, pi, sqrt
     >>> nfloat(x**4 + x/2 + cos(pi/3) + 1 + sqrt(y))
     x**4 + 0.5*x + sqrt(y) + 1.5
     >>> nfloat(x**4 + sqrt(y), exponent=True)

@@ -449,8 +449,6 @@ def given(expr, condition=None, **kwargs):
     is considered fixed.
 
     >>> from diofant.stats import Normal
-    >>> from diofant import pprint
-    >>> from diofant.abc import z
 
     >>> X = Normal('X', 0, 1)
     >>> Y = Normal('Y', 0, 1)
@@ -567,7 +565,6 @@ def probability(condition, given_condition=None, numsamples=None,
     ========
 
     >>> from diofant.stats import P, Die
-    >>> from diofant import Eq
     >>> X, Y = Die('X', 6), Die('Y', 6)
     >>> P(X > 3)
     1/2
@@ -664,7 +661,6 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     ========
 
     >>> from diofant.stats import Die, Normal
-    >>> from diofant import Symbol
 
     >>> x = Symbol('x')
     >>> D = Die('D', 6)
@@ -737,7 +733,6 @@ def where(condition, given_condition=None, **kwargs):
     ========
 
     >>> from diofant.stats import Die, Normal
-    >>> from diofant import symbols, And
 
     >>> D1, D2 = Die('a', 6), Die('b', 6)
     >>> a, b = D1.symbol, D2.symbol
@@ -916,7 +911,6 @@ def dependent(a, b):
     ========
 
     >>> from diofant.stats import Normal
-    >>> from diofant import Tuple, Eq
 
     >>> X, Y = Normal('X', 0, 1), Normal('Y', 0, 1)
     >>> dependent(X, Y)
@@ -952,7 +946,6 @@ def independent(a, b):
     ========
 
     >>> from diofant.stats import Normal
-    >>> from diofant import Tuple, Eq
 
     >>> X, Y = Normal('X', 0, 1), Normal('Y', 0, 1)
     >>> independent(X, Y)

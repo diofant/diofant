@@ -75,7 +75,6 @@ class GeometryEntity(Basic):
         Examples
         ========
 
-        >>> from diofant import Point, RegularPolygon, Polygon, pi
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t # vertex on x axis
         Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
@@ -105,7 +104,6 @@ class GeometryEntity(Basic):
         Examples
         ========
 
-        >>> from diofant import RegularPolygon, Point, Polygon
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t
         Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
@@ -132,7 +130,6 @@ class GeometryEntity(Basic):
         Examples
         ========
 
-        >>> from diofant import RegularPolygon, Point, Polygon
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t
         Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
@@ -199,7 +196,6 @@ class GeometryEntity(Basic):
         Examples
         ========
 
-        >>> from diofant import RegularPolygon, Point, Polygon
         >>> t  = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t2 = Polygon(*RegularPolygon(Point(0, 0), 2, 3).vertices)
         >>> t2.encloses(t)
@@ -382,7 +378,6 @@ def rotate(th):
     then the origin, translate the Point, do the rotation, and
     translate it back:
 
-    >>> from diofant import Point, pi
     >>> rot_about_11 = translate(-1, -1)*rotate(pi/2)*translate(1, 1)
     >>> Point(1, 1).transform(rot_about_11)
     Point2D(1, 1)

@@ -192,8 +192,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     To get the old default behavior you must pass in ``[{'ImmutableMatrix':
     numpy.matrix}, 'numpy']`` to the ``modules`` kwarg.
 
-    >>> from diofant import Matrix
-    >>> from diofant.abc import x, y
     >>> import numpy
     >>> array2mat = [{'ImmutableMatrix': numpy.matrix}, 'numpy']
     >>> f = lambdify((x, y), Matrix([x, y]), modules=array2mat)
@@ -203,8 +201,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     (1) Use one of the provided modules:
 
-        >>> from diofant import sin, tan, gamma
-        >>> from diofant.abc import x, y
         >>> f = lambdify(x, sin(x), "math")
 
         Attention: Functions that are not in the math module will throw a name
@@ -240,9 +236,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     Examples
     ========
 
-    >>> from diofant import sqrt, sin, Matrix
-    >>> from diofant import Function
-    >>> from diofant.abc import w, x, y, z
+    >>> from diofant.abc import w
 
     >>> f = lambdify(x, x**2)
     >>> f(2)
@@ -271,7 +265,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     A more robust way of handling this is to always work with flattened
     arguments:
 
-    >>> from diofant.utilities.iterables import flatten
     >>> args = w, (x, (y, z))
     >>> vals = 1, (2, (3, 4))
     >>> f = lambdify(flatten(args), w + x + y + z)
@@ -422,7 +415,6 @@ def lambdastr(args, expr, printer=None, dummify=False):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
     >>> lambdastr(x, x**2)
     'lambda x: (x**2)'
     >>> lambdastr((x, y, z), [z, y, x])
@@ -550,8 +542,6 @@ def _imp_namespace(expr, namespace=None):
     Examples
     --------
 
-    >>> from diofant.abc import x
-    >>> from diofant import Function
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> g = implemented_function(Function('g'), lambda x: x*10)
     >>> namespace = _imp_namespace(f(g(x)))
@@ -619,8 +609,6 @@ def implemented_function(symfunc, implementation):
     Examples
     --------
 
-    >>> from diofant.abc import x
-    >>> from diofant import Function
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> lam_f = lambdify(x, f(x))
     >>> lam_f(4)

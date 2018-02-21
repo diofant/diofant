@@ -1084,7 +1084,6 @@ class _TensorDataLazyEvaluator(CantSympify):
         Examples
         ========
 
-        >>> from diofant.printing import sstr
         >>> print(sstr(_TensorDataLazyEvaluator.parse_data([1, 3, -6, 12])))
         [1 3 -6 12]
 
@@ -1338,7 +1337,6 @@ class TensorIndexType(Basic):
     Examples
     ========
 
-    >>> from diofant.printing import sstr
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> Lorentz.metric
     metric(Lorentz,Lorentz)
@@ -1929,7 +1927,6 @@ class TensorHead(Basic):
     represents the values of a non-fully covariant tensor, see the other
     examples.
 
-    >>> from diofant.printing import sstr
     >>> Lorentz.data = [1, -1, -1, -1]
     >>> i0, i1 = tensor_indices('i0:2', Lorentz)
     >>> A.data = [[j+2*i for j in range(4)] for i in range(4)]
@@ -1992,7 +1989,6 @@ class TensorHead(Basic):
     example, the covariant components data of the Electromagnetic tensor are
     injected into `A`:
 
-    >>> from diofant import symbols
     >>> Ex, Ey, Ez, Bx, By, Bz = symbols('E_x E_y E_z B_x B_y B_z')
     >>> c = symbols('c', positive=True)
 
@@ -2026,7 +2022,6 @@ class TensorHead(Basic):
 
     To convert the numpy's ndarray to a diofant matrix, just cast:
 
-    >>> from diofant import Matrix
     >>> Matrix(F.data)
     Matrix([
     [    0, -E_x/c, -E_y/c, -E_z/c],
@@ -2041,7 +2036,6 @@ class TensorHead(Basic):
     It is also possible to store symbolic components data inside a tensor, for
     example, define a four-momentum-like tensor:
 
-    >>> from diofant import symbols
     >>> P = tensorhead('P', [Lorentz], [[1]])
     >>> E, px, py, pz = symbols('E p_x p_y p_z', positive=True)
     >>> P.data = [E, px, py, pz]
@@ -2373,7 +2367,6 @@ class TensExpr(Basic):
         Examples
         ========
 
-        >>> from diofant import ones
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> sym2 = tensorsymmetry([1]*2)
         >>> S2 = TensorType([Lorentz]*2, sym2)
@@ -2461,7 +2454,6 @@ class TensAdd(TensExpr):
 
     Examples with components data added to the tensor expression:
 
-    >>> from diofant import eye
     >>> Lorentz.data = [1, -1, -1, -1]
     >>> a, b = tensor_indices('a, b', Lorentz)
     >>> p.data = [2, 3, -2, 7]
@@ -2666,7 +2658,6 @@ class TensAdd(TensExpr):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> D = Symbol('D')
         >>> Lorentz = TensorIndexType('Lorentz', dim=D, dummy_fmt='L')
         >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
@@ -3487,7 +3478,6 @@ class TensMul(TensExpr):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> D = Symbol('D')
         >>> Lorentz = TensorIndexType('Lorentz', dim=D, dummy_fmt='L')
         >>> i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)

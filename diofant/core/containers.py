@@ -22,13 +22,11 @@ class Tuple(Basic):
     Diofant framework.  The wrapped tuple is available as self.args, but
     you can also access elements or slices with [:] syntax.
 
-    >>> from diofant import symbols
     >>> a, b, c, d = symbols('a b c d')
     >>> Tuple(a, b, c)[1:]
     (b, c)
     >>> Tuple(a, b, c).subs(a, d)
     (d, b, c)
-
     """
 
     def __new__(cls, *args):
@@ -149,7 +147,6 @@ def tuple_wrapper(method):
 
     >>> g(0, (1, 2), 3)
     (0, (1, 2), 3)
-
     """
     def wrap_tuples(*args, **kw_args):
         newargs = []

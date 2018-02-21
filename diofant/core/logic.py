@@ -74,8 +74,6 @@ def fuzzy_and(args):
     Examples
     ========
 
-    >>> from diofant import Dummy
-
     If you had a list of objects to test the commutivity of
     and you want the fuzzy_and logic applied, passing an
     iterator will allow the commutativity to only be computed

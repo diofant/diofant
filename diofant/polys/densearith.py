@@ -12,8 +12,6 @@ def dup_add_term(f, c, i, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_add_term(x**2 - 1, ZZ(2), 4)
@@ -41,8 +39,6 @@ def dmp_add_term(f, c, i, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_add_term(x*y + 1, 2, 2)
@@ -75,8 +71,6 @@ def dup_sub_term(f, c, i, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_sub_term(2*x**4 + x**2 - 1, ZZ(2), 4)
@@ -104,8 +98,6 @@ def dmp_sub_term(f, c, i, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sub_term(2*x**2 + x*y + 1, 2, 2)
@@ -138,8 +130,6 @@ def dup_mul_term(f, c, i, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_mul_term(x**2 - 1, ZZ(3), 2)
@@ -158,8 +148,6 @@ def dmp_mul_term(f, c, i, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_mul_term(x**2*y + x, 3*y, 2)
@@ -185,8 +173,6 @@ def dmp_add_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_add_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
@@ -202,8 +188,6 @@ def dmp_sub_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sub_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
@@ -219,8 +203,6 @@ def dmp_mul_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_mul_ground(2*x + 2*y, ZZ(3))
@@ -240,8 +222,6 @@ def dmp_quo_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x y", ZZ)
     >>> R.dmp_quo_ground(2*x**2*y + 3*x, ZZ(2))
@@ -273,8 +253,6 @@ def dmp_exquo_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", QQ)
 
     >>> R.dmp_exquo_ground(x**2*y + 2*x, QQ(2))
@@ -299,8 +277,6 @@ def dup_lshift(f, n, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_lshift(x**2 + 1, 2)
@@ -319,8 +295,6 @@ def dup_rshift(f, n, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_rshift(x**4 + x**2, 2)
@@ -338,8 +312,6 @@ def dmp_abs(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_abs(x**2*y - x)
@@ -359,8 +331,6 @@ def dmp_neg(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_neg(x**2*y - x)
@@ -380,8 +350,6 @@ def dup_add(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_add(x**2 - 1, x - 2)
@@ -415,8 +383,6 @@ def dmp_add(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_add(x**2 + y, x**2*y + x)
@@ -457,8 +423,6 @@ def dup_sub(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_sub(x**2 - 1, x - 2)
@@ -492,8 +456,6 @@ def dmp_sub(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sub(x**2 + y, x**2*y + x)
@@ -534,8 +496,6 @@ def dmp_add_mul(f, g, h, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_add_mul(x**2 + y, x, x + 2)
@@ -552,8 +512,6 @@ def dmp_sub_mul(f, g, h, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sub_mul(x**2 + y, x, x + 2)
@@ -569,8 +527,6 @@ def dup_mul(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_mul(x - 2, x + 2)
@@ -626,8 +582,6 @@ def dmp_mul(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_mul(x*y + 1, x)
@@ -669,8 +623,6 @@ def dup_sqr(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_sqr(x**2 + 1)
@@ -709,8 +661,6 @@ def dmp_sqr(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sqr(x**2 + x*y + y**2)
@@ -757,8 +707,6 @@ def dmp_pow(f, n, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_pow(x*y + 1, 3)
@@ -794,8 +742,6 @@ def dup_pdiv(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_pdiv(x**2 + 1, 2*x - 4)
@@ -847,8 +793,6 @@ def dup_prem(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_prem(x**2 + 1, 2*x - 4)
@@ -892,8 +836,6 @@ def dup_pquo(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_pquo(x**2 - 1, 2*x - 2)
@@ -912,8 +854,6 @@ def dup_pexquo(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_pexquo(x**2 - 1, 2*x - 2)
@@ -939,8 +879,6 @@ def dmp_pdiv(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_pdiv(x**2 + x*y, 2*x + 2)
@@ -996,8 +934,6 @@ def dmp_prem(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_prem(x**2 + x*y, 2*x + 2)
@@ -1047,8 +983,6 @@ def dmp_pquo(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + x*y
@@ -1071,8 +1005,6 @@ def dmp_pexquo(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + x*y
@@ -1102,8 +1034,6 @@ def dup_rr_div(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_rr_div(x**2 + 1, 2*x - 4)
@@ -1151,8 +1081,6 @@ def dmp_rr_div(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_rr_div(x**2 + x*y, 2*x + 2)
@@ -1204,8 +1132,6 @@ def dup_ff_div(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
     >>> R.dup_ff_div(x**2 + 1, 2*x - 4)
@@ -1250,8 +1176,6 @@ def dmp_ff_div(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", QQ)
 
     >>> R.dmp_ff_div(x**2 + x*y, 2*x + 2)
@@ -1303,9 +1227,6 @@ def dmp_div(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
     >>> R, x, y = ring("x y", ZZ)
     >>> R.dmp_div(x**2 + x*y, 2*x + 2)
     (0, x**2 + x*y)
@@ -1327,9 +1248,6 @@ def dmp_rem(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
     >>> R, x, y = ring("x y", ZZ)
     >>> R.dmp_rem(x**2 + x*y, 2*x + 2)
     x**2 + x*y
@@ -1347,9 +1265,6 @@ def dmp_quo(f, g, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x y", ZZ)
     >>> R.dmp_quo(x**2 + x*y, 2*x + 2)
@@ -1369,8 +1284,6 @@ def dmp_exquo(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + x*y
@@ -1400,8 +1313,6 @@ def dmp_max_norm(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_max_norm(2*x*y - x - 3)
@@ -1421,8 +1332,6 @@ def dmp_l1_norm(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_l1_norm(2*x*y - x - 3)
@@ -1442,8 +1351,6 @@ def dmp_expand(polys, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_expand([x**2 + y**2, x + 1])

@@ -1037,7 +1037,6 @@ class Rational(Number):
     Examples
     ========
 
-    >>> from diofant import nsimplify
     >>> Rational(3)
     3
     >>> Rational(1, 2)
@@ -1767,9 +1766,6 @@ class AlgebraicNumber(Expr):
     Examples
     ========
 
-    >>> from diofant import sqrt, RootOf
-    >>> from diofant.abc import x
-
     >>> a = AlgebraicNumber(sqrt(3), alias='a')
 
     Numbers in the same field are automatically combined by
@@ -1999,7 +1995,6 @@ class Zero(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S
     >>> Integer(0) is S.Zero
     True
     >>> 1/S.Zero
@@ -2047,7 +2042,6 @@ class One(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S
     >>> Integer(1) is S.One
     True
 
@@ -2078,7 +2072,6 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S
     >>> Integer(-1) is S.NegativeOne
     True
 
@@ -2134,7 +2127,6 @@ class Half(RationalConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S
     >>> Rational(1, 2) is S.Half
     True
 
@@ -2168,7 +2160,6 @@ class Infinity(Number, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import exp, limit, Symbol
     >>> 1 + oo
     oo
     >>> 42/oo
@@ -2561,7 +2552,6 @@ class NaN(Number, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import Eq
     >>> nan is nan
     True
     >>> oo - oo
@@ -2761,7 +2751,6 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import exp, log
     >>> E is exp(1)
     True
     >>> log(E)
@@ -2890,7 +2879,6 @@ class Pi(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import sin, exp, integrate, Symbol
     >>> pi > 3
     true
     >>> pi.is_irrational
@@ -2947,7 +2935,6 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import GoldenRatio
     >>> GoldenRatio > 1
     true
     >>> GoldenRatio.expand(func=True)
@@ -3003,7 +2990,6 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import EulerGamma
     >>> EulerGamma.is_irrational
     >>> EulerGamma > 0
     true
@@ -3050,7 +3036,6 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import Catalan
     >>> Catalan.is_irrational
     >>> Catalan > 0
     true
@@ -3092,7 +3077,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import sqrt
     >>> sqrt(-1)
     I
     >>> I*I

@@ -283,7 +283,6 @@ class MatrixExpr(Expr):
         Test elementwise equality between matrices, potentially of different
         types
 
-        >>> from diofant import eye
         >>> Identity(3).equals(eye(3))
         True
         """

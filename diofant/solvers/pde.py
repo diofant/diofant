@@ -126,8 +126,6 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     **Tips**
         - You can declare the derivative of an unknown function this way:
 
-            >>> from diofant import Function, Derivative
-            >>> from diofant.abc import x, y # x and y are the independent variables
             >>> f = Function("f")(x, y) # f is a function of x and y
             >>> # fx will be the partial derivative of f with respect to x
             >>> fx = Derivative(f, x)
@@ -145,8 +143,6 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant import Function, diff, Eq
-    >>> from diofant.abc import x, y
     >>> f = Function('f')
     >>> u = f(x, y)
     >>> ux = u.diff(x)
@@ -248,9 +244,6 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     Examples
     ========
 
-    >>> from diofant import Function, diff, Eq
-    >>> from diofant.abc import x, y
-    >>> f = Function('f')
     >>> u = f(x, y)
     >>> ux = u.diff(x)
     >>> uy = u.diff(y)
@@ -403,9 +396,6 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     Examples
     ========
 
-    >>> from diofant import Function, symbols, diff
-    >>> x, y = symbols('x y')
-    >>> f = Function('f')
     >>> eq = 2*f(x, y) + 3*f(x, y).diff(x) + 4*f(x, y).diff(y)
     >>> sol = pdsolve(eq)
     >>> assert checkpdesol(eq, sol)[0]
@@ -456,9 +446,7 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
 
     The general solution is of the form::
 
-        >>> from diofant.abc import x, y, a, b, c
-        >>> from diofant import Function, pprint
-        >>> f = Function('f')
+        >>> from diofant.abc import a, b, c
         >>> u = f(x, y)
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
@@ -478,9 +466,6 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     Examples
     ========
 
-    >>> from diofant import Function, diff, pprint
-    >>> from diofant.abc import x, y
-    >>> f = Function('f')
     >>> pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y))
     Eq(f(x, y), E**(-x/2 - y/2)*F(x - y))
     >>> pprint(pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y)), use_unicode=False)
@@ -523,8 +508,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
 
     The general solution of the PDE is::
 
-        >>> from diofant.abc import x, y, a, b, c
-        >>> from diofant import Function, pprint
+        >>> from diofant.abc import a, b, c
         >>> f = Function('f')
         >>> G = Function('G')
         >>> u = f(x, y)
@@ -573,9 +557,6 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     Examples
     ========
 
-    >>> from diofant import Function, diff, exp
-    >>> from diofant.abc import x, y
-    >>> f = Function('f')
     >>> eq = -2*f(x, y).diff(x) + 4*f(x, y).diff(y) + 5*f(x, y) - exp(x + 3*y)
     >>> pdsolve(eq)
     Eq(f(x, y), E**(x/2 - y)*(E**(x/2 + 4*y)/15 + F(4*x + 2*y)))
@@ -634,8 +615,6 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
 
     The general form of this PDE is::
 
-        >>> from diofant.abc import x, y
-        >>> from diofant import Function, pprint
         >>> a, b, c, G, f= [Function(i) for i in ['a', 'b', 'c', 'G', 'f']]
         >>> u = f(x, y)
         >>> ux = u.diff(x)
@@ -649,8 +628,6 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     Examples
     ========
 
-    >>> from diofant import Function, diff, pprint, exp
-    >>> from diofant.abc import x, y
     >>> f = Function('f')
     >>> eq =  x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
     >>> pdsolve(eq)
@@ -767,15 +744,14 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     Examples
     ========
 
-    >>> from diofant import E, Eq, Function, Derivative as D
-    >>> from diofant.abc import x, t
+    >>> from diofant.abc import t
     >>> u, X, T = map(Function, 'uXT')
 
-    >>> eq = Eq(D(u(x, t), x), E**(u(x, t))*D(u(x, t), t))
+    >>> eq = Eq(Derivative(u(x, t), x), E**(u(x, t))*Derivative(u(x, t), t))
     >>> pde_separate(eq, u(x, t), [X(x), T(t)], strategy='add')
     [E**(-X(x))*Derivative(X(x), x), E**T(t)*Derivative(T(t), t)]
 
-    >>> eq = Eq(D(u(x, t), x, 2), D(u(x, t), t, 2))
+    >>> eq = Eq(Derivative(u(x, t), x, 2), Derivative(u(x, t), t, 2))
     >>> pde_separate(eq, u(x, t), [X(x), T(t)], strategy='mul')
     [Derivative(X(x), x, x)/X(x), Derivative(T(t), t, t)/T(t)]
 
@@ -850,11 +826,10 @@ def pde_separate_add(eq, fun, sep):
     Examples
     ========
 
-    >>> from diofant import E, Eq, Function, Derivative as D
-    >>> from diofant.abc import x, t
+    >>> from diofant.abc import t
     >>> u, X, T = map(Function, 'uXT')
 
-    >>> eq = Eq(D(u(x, t), x), E**(u(x, t))*D(u(x, t), t))
+    >>> eq = Eq(Derivative(u(x, t), x), E**(u(x, t))*Derivative(u(x, t), t))
     >>> pde_separate_add(eq, u(x, t), [X(x), T(t)])
     [E**(-X(x))*Derivative(X(x), x), E**T(t)*Derivative(T(t), t)]
     """
@@ -874,11 +849,9 @@ def pde_separate_mul(eq, fun, sep):
     Examples
     ========
 
-    >>> from diofant import Function, Eq, Derivative as D
-    >>> from diofant.abc import x, y
     >>> u, X, Y = map(Function, 'uXY')
 
-    >>> eq = Eq(D(u(x, y), x, 2), D(u(x, y), y, 2))
+    >>> eq = Eq(Derivative(u(x, y), x, 2), Derivative(u(x, y), y, 2))
     >>> pde_separate_mul(eq, u(x, y), [X(x), Y(y)])
     [Derivative(X(x), x, x)/X(x), Derivative(Y(y), y, y)/Y(y)]
 

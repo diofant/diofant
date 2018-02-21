@@ -35,8 +35,6 @@ def apart(f, x=None, full=False, **options):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-
     By default, using the undetermined coefficients method:
 
     >>> apart(y/(x + 2)/(x + 1), x)
@@ -239,7 +237,7 @@ def apart_list(f, x=None, dummies=None, **options):
 
     A first example:
 
-    >>> from diofant.abc import x, t
+    >>> from diofant.abc import t
 
     >>> f = (2*x**3 - 2*x) / (x**2 - 2*x + 1)
     >>> pfd = apart_list(f)
@@ -410,8 +408,6 @@ def assemble_partfrac_list(partial_list):
 
     This example is taken from Bronstein's original paper:
 
-    >>> from diofant.abc import x, y
-
     >>> f = 36 / (x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2)
     >>> pfd = apart_list(f)
     >>> pfd
@@ -441,7 +437,6 @@ def assemble_partfrac_list(partial_list):
     >>> pfda.doit()
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
 
-    >>> from diofant import Dummy, Poly, Lambda, sqrt
     >>> a = Dummy("a")
     >>> pfd = (1, Poly(0, x, domain='ZZ'), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
 

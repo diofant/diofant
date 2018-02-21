@@ -20,7 +20,6 @@ def row_echelon(matlist, K):
     Examples
     ========
 
-    >>> from diofant import QQ
     >>> a = [
     ... [QQ(3), QQ(7), QQ(4)],
     ... [QQ(2), QQ(4), QQ(5)],
@@ -50,7 +49,6 @@ def rref(matlist, K):
     Examples
     ========
 
-    >>> from diofant import QQ
     >>> a = [
     ... [QQ(1), QQ(2), QQ(1)],
     ... [QQ(-2), QQ(-3), QQ(1)],
@@ -81,7 +79,6 @@ def LU(matlist, K, reverse=0):
     Examples
     ========
 
-    >>> from diofant import QQ
     >>> a = [
     ... [QQ(1), QQ(2), QQ(3)],
     ... [QQ(2), QQ(-4), QQ(6)],
@@ -113,7 +110,6 @@ def cholesky(matlist, K):
     Examples
     ========
 
-    >>> from diofant import QQ
     >>> cholesky([[QQ(25), QQ(15), QQ(-5)], [QQ(15), QQ(18), QQ(0)], [QQ(-5), QQ(0), QQ(11)]], QQ)
     ([[5, 0, 0], [3, 3, 0], [-1, 1, 3]], [[5, 3, -1], [0, 3, 1], [0, 0, 3]])
 
@@ -144,8 +140,6 @@ def LDL(matlist, K):
 
     Examples
     ========
-
-    >>> from diofant import QQ
 
     >>> a = [
     ... [QQ(4), QQ(12), QQ(-16)],
@@ -178,7 +172,6 @@ def upper_triangle(matlist, K):
     Examples
     ========
 
-    >>> from diofant import QQ
     >>> a = [
     ... [QQ(4,1), QQ(12,1), QQ(-16,1)],
     ... [QQ(12,1), QQ(37,1), QQ(-43,1)],
@@ -204,7 +197,6 @@ def lower_triangle(matlist, K):
     Examples
     ========
 
-    >>> from diofant import QQ
     >>> a = [
     ... [QQ(4,1), QQ(12,1), QQ(-16)],
     ... [QQ(12,1), QQ(37,1), QQ(-43,1)],
@@ -230,8 +222,6 @@ def rref_solve(matlist, variable, constant, K):
     Examples
     ========
 
-    >>> from diofant import QQ
-    >>> from diofant import Dummy
     >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
     >>> coefficients = [
     ... [QQ(25), QQ(15), QQ(-5)],
@@ -268,8 +258,6 @@ def LU_solve(matlist, variable, constant, K):
     Examples
     ========
 
-    >>> from diofant import QQ
-    >>> from diofant import Dummy
     >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
     >>> coefficients = [
     ... [QQ(2), QQ(-1), QQ(-2)],
@@ -310,8 +298,6 @@ def cholesky_solve(matlist, variable, constant, K):
     Examples
     ========
 
-    >>> from diofant import QQ
-    >>> from diofant import Dummy
     >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
     >>> coefficients = [
     ... [QQ(25), QQ(15), QQ(-5)],
@@ -352,8 +338,6 @@ def forward_substitution(lower_triangle, variable, constant, K):
     Examples
     ========
 
-    >>> from diofant import QQ
-    >>> from diofant import Dummy
     >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
     >>> a = [
     ... [QQ(1), QQ(0), QQ(0)],
@@ -394,8 +378,6 @@ def backward_substitution(upper_triangle, variable, constant, K):
     Examples
     ========
 
-    >>> from diofant import QQ
-    >>> from diofant import Dummy
     >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
     >>> a = [
     ... [QQ(2), QQ(-1), QQ(-2)],

@@ -233,13 +233,12 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant.abc import a, x
-        >>> (3*x + a*x + 4).as_coefficients_dict()
-        {1: 4, x: 3, a*x: 1}
-        >>> _[a]
+        >>> (3*x + x*y + 4).as_coefficients_dict()
+        {1: 4, x: 3, x*y: 1}
+        >>> _[y]
         0
-        >>> (3*a*x).as_coefficients_dict()
-        {a*x: 3}
+        >>> (3*y*x).as_coefficients_dict()
+        {x*y: 3}
         """
 
         d = defaultdict(list)
@@ -264,7 +263,6 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> (7 + 3*x).as_coeff_add()
         (7, (3*x,))
         >>> (7*x).as_coeff_add()
@@ -347,7 +345,6 @@ class Add(AssocOp):
         - if you want the coefficient when self is treated as a Mul
           then use self.as_coeff_mul()[0]
 
-        >>> from diofant.abc import x, y
         >>> (3*x*y).as_two_terms()
         (3, x*y)
         """
@@ -581,7 +578,6 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> (x + 1 + 1/x**5).extract_leading_order(x)
         ((x**(-5), O(x**(-5))),)
         >>> (1 + x).extract_leading_order(x)
@@ -616,7 +612,6 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant import I
         >>> (7 + 9*I).as_real_imag()
         (7, 9)
         >>> ((1 + I)/(1 - I)).as_real_imag()
@@ -674,8 +669,6 @@ class Add(AssocOp):
 
         Examples
         ========
-
-        >>> from diofant.abc import x, y
 
         >>> (2*x + 4*y).primitive()
         (2, x + 2*y)
@@ -752,7 +745,6 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant import sqrt
         >>> (3 + 3*sqrt(2)).as_content_primitive()
         (3, 1 + sqrt(2))
 

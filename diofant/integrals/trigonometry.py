@@ -33,9 +33,6 @@ _u = Dummy('u')
 def trigintegrate(f, x, conds='piecewise'):
     """Integrate f = Mul(trig) over x
 
-       >>> from diofant import Symbol, sin, cos, tan, sec, csc, cot
-       >>> from diofant.abc import x
-
        >>> trigintegrate(sin(x)*cos(x), x)
        sin(x)**2/2
 

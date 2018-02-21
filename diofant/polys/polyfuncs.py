@@ -28,8 +28,6 @@ def symmetrize(F, *gens, **args):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-
     >>> symmetrize(x**2 + y**2)
     (-2*x*y + (x + y)**2, 0)
 
@@ -151,7 +149,7 @@ def horner(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, a, b, c, d, e
+    >>> from diofant.abc import a, b, c, d, e
 
     >>> horner(9*x**4 + 8*x**3 + 7*x**2 + 6*x + 5)
     x*(x*(x*(9*x + 8) + 7) + 6) + 5
@@ -200,8 +198,6 @@ def interpolate(data, x):
     Examples
     ========
 
-    >>> from diofant.abc import x
-
     A list is interpreted as though it were paired with a range starting
     from 1:
 
@@ -244,8 +240,6 @@ def viete(f, roots=None, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant import symbols
 
     >>> x, a, b, c, r1, r2 = symbols('x a:c r1:3')
 

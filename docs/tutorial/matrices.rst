@@ -3,8 +3,6 @@
 ==========
 
 ..
-    >>> from diofant import *
-    >>> x, y, z = symbols('x y z')
     >>> init_printing(pretty_print=True, use_unicode=True)
 
 To make a matrix in Diofant, use the

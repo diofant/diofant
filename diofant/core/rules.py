@@ -17,8 +17,6 @@ class Transform:
     Examples
     --------
 
-    >>> from diofant.abc import x
-
     This Transform will return, as a value, one more than the key:
 
     >>> add1 = Transform(lambda x: x + 1)

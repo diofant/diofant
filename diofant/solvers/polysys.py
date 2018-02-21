@@ -40,8 +40,6 @@ def solve_linear_system(system, *symbols, **flags):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-
     Solve the following system::
 
            x + 4 y ==  2
@@ -95,8 +93,6 @@ def solve_poly_system(eqs, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant.abc import x, y
 
     >>> solve_poly_system([x*y - 2*y, 2*y**2 - x**2], x, y)
     [{x: 0, y: 0}, {x: 2, y: -sqrt(2)}, {x: 2, y: sqrt(2)}]

@@ -126,9 +126,6 @@ def _chinese_remainder_reconstruction_univariate(hp, hq, p, q):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x = ring("x", ZZ)
     >>> p = 3
     >>> q = 5
@@ -188,9 +185,6 @@ def modgcd_univariate(f, g):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
 
     >>> R, x = ring("x", ZZ)
 
@@ -309,9 +303,6 @@ def _primitive(f, p):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x, y = ring("x, y", ZZ)
     >>> p = 3
 
@@ -366,9 +357,6 @@ def _deg(f):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x, y = ring("x, y", ZZ)
 
     >>> f = x**2*y**2 + x**2*y - 1
@@ -413,9 +401,6 @@ def _LC(f):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -568,9 +553,6 @@ def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
     >>> p = 3
@@ -733,9 +715,6 @@ def modgcd_bivariate(f, g):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -1093,9 +1072,6 @@ def modgcd_multivariate(f, g):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -1855,9 +1831,6 @@ def _func_field_modgcd_m(f, g, minpoly):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x, z = ring('x, z', ZZ)
     >>> minpoly = (z**2 - 2).drop(0)
 
@@ -2171,10 +2144,6 @@ def func_field_modgcd(f, g):
 
     Examples
     ========
-
-    >>> from diofant.domains import AlgebraicField, QQ
-    >>> from diofant.polys import ring
-    >>> from diofant import sqrt
 
     >>> A = AlgebraicField(QQ, sqrt(2))
     >>> R, x = ring('x', A)

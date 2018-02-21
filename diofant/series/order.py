@@ -26,9 +26,6 @@ class Order(Expr):
     Examples
     ========
 
-    >>> from diofant import oo, cos, pi
-    >>> from diofant.abc import x, y
-
     The order of a function can be intuitively thought of representing all
     terms of powers greater than the one specified.  For example, `O(x^3)`
     corresponds to any terms proportional to `x^3, x^4,\ldots` and any

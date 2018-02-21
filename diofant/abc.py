@@ -6,7 +6,6 @@ conveniently do
 
 instead of the slightly more clunky-looking
 
-    >>> from diofant import symbols
     >>> x, y = symbols('x y')
 
 Caveats
@@ -76,7 +75,6 @@ def clashing():
     Examples
     ========
 
-    >>> from diofant import sympify
     >>> from diofant.abc import _clash1, _clash2, _clash
     >>> sympify("Q & C", locals=_clash1)
     And(C, Q)

@@ -86,7 +86,6 @@ class Tr(Expr):
     a) Trace(A+B) = Tr(A) + Tr(B)
     b) Trace(scalar*Operator) = scalar*Trace(Operator)
 
-    >>> from diofant import symbols, Matrix
     >>> a, b = symbols('a b', commutative=True)
     >>> A, B = symbols('A B', commutative=False)
     >>> Tr(a*A, [2])
@@ -166,7 +165,6 @@ class Tr(Expr):
         Examples
         ========
 
-        >>> from diofant import symbols
         >>> A, B, C, D = symbols('A B C D', commutative=False)
         >>> t = Tr(A*B*C*D)
         >>> t.permute(2)

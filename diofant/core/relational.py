@@ -35,7 +35,6 @@ class Relational(Boolean, Expr, EvalfMixin):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
     >>> Rel(y, x+x**2, '==')
     Eq(y, x**2 + x)
 
@@ -75,7 +74,6 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> Eq(x, 1)
         Eq(x, 1)
         >>> _.reversed
@@ -205,7 +203,6 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> x = Symbol('x', extended_real=True)
         >>> (x > 0).as_set()
         (0, oo)
@@ -244,8 +241,6 @@ class Equality(Relational):
     Examples
     ========
 
-    >>> from diofant import simplify, exp, cos
-    >>> from diofant.abc import x, y
     >>> Eq(y, x + x**2)
     Eq(y, x**2 + x)
     >>> Eq(2, 5)
@@ -329,7 +324,6 @@ class Unequality(Relational):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
     >>> Ne(y, x+x**2)
     Ne(y, x**2 + x)
 
@@ -479,9 +473,6 @@ class GreaterThan(_Greater):
     in an algorithm rather than .lhs and .rhs as an assumption of inequality
     direction will make more explicit the intent of a certain section of code,
     and will make it similarly more robust to client code changes:
-
-    >>> from diofant import And, Integer
-    >>> from diofant.abc import x, y, z
 
     >>> e = GreaterThan(x, 1)
     >>> e

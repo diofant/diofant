@@ -33,7 +33,6 @@ def itermonomials(variables, degree):
     Consider monomials in variables `x` and `y`::
 
         >>> from diofant.polys.orderings import monomial_key
-        >>> from diofant.abc import x, y
 
         >>> sorted(itermonomials([x, y], 2), key=monomial_key('grlex', [y, x]))
         [1, x, y, x**2, x*y, y**2]
@@ -71,7 +70,6 @@ def monomial_count(V, N):
     ========
 
     >>> from diofant.polys.orderings import monomial_key
-    >>> from diofant.abc import x, y
 
     >>> monomial_count(2, 2)
     6

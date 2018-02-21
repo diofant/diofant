@@ -44,7 +44,6 @@ def iterable(i, exclude=(str, dict, NotIterable)):
     Examples
     ========
 
-    >>> from diofant import Tuple
     >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1: 2}, '1', 1]
     >>> for i in things:
     ...     print('%s %s' % (iterable(i), type(i)))
@@ -124,7 +123,6 @@ def as_int(n):
     Examples
     ========
 
-    >>> from diofant import sqrt
     >>> 3.0
     3.0
     >>> as_int(3.0)  # convert to int and test for equality
@@ -167,9 +165,7 @@ def default_sort_key(item, order=None):
     Examples
     ========
 
-    >>> from diofant import S, I, sin, cos, sqrt
     >>> from diofant.core.function import UndefinedFunction
-    >>> from diofant.abc import x
 
     The following are equivalent ways of getting the key for an object:
 
@@ -341,9 +337,6 @@ def ordered(seq, keys=None, default=True, warn=False):
 
     Examples
     ========
-
-    >>> from diofant import count_ops
-    >>> from diofant.abc import x, y
 
     The count_ops is not sufficient to break ties in this list and the first
     two items appear in their original order (i.e. the sorting is stable):

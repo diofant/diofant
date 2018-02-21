@@ -83,11 +83,8 @@ Tutorial
 
 First, let's import the highest API of the Diophantine module.
 
->>> from diofant.solvers.diophantine import diophantine
-
 Before we start solving the equations, we need to define the variables.
 
->>> from diofant import symbols
 >>> x, y, z, t, p, q = symbols("x, y, z, t, p, q", integer=True)
 >>> t1, t2, t3, t4, t5 = symbols("t1:6", integer=True)
 
@@ -177,7 +174,6 @@ solutions. Consider the below cases where `\Delta = 8`.
 
 >>> diophantine(x**2 - 4*x*y + 2*y**2 - 3*x + 7*y - 5)
 set()
->>> from diofant import sqrt
 >>> n = symbols("n", integer=True)
 >>> s = diophantine(x**2 -  2*y**2 - 2*x - 4*y, n)
 >>> x_1, y_1 = s.pop()
@@ -193,7 +189,6 @@ Here `n` is an integer. Although x_n and y_n may not look like
 integers, substituting in specific values for n (and simplifying) shows that they
 are. For example consider the following example where we set n equal to 9.
 
->>> from diofant import simplify
 >>> simplify(x_n.subs({n: 9}))
 -9369318
 
@@ -306,7 +301,6 @@ Simple Eqyptian fractions can be found with the Diophantine module, too.
 For example, here are the ways that one might represent 1/2 as a sum of two
 unit fractions:
 
->>> from diofant import Eq, Rational
 >>> diophantine(Eq(1/x + 1/y, Rational(1, 2)))
 {(-2, 1), (1, -2), (3, 6), (4, 4), (6, 3)}
 

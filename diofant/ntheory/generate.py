@@ -463,7 +463,6 @@ def primorial(n, nth=True):
     """Returns the product of the first n primes (default) or
     the primes less than or equal to n (when ``nth=False``).
 
-    >>> from diofant import factorint, Mul, primefactors, sqrt
     >>> primorial(4) # the first 4 primes are 2, 3, 5, 7
     210
     >>> primorial(4, nth=False) # primes <= 4 are 2 and 3

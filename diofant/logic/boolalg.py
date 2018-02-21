@@ -149,7 +149,6 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import sympify
     >>> sympify(True)
     true
     >>> ~true
@@ -201,7 +200,6 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import sympify
     >>> sympify(False)
     false
     >>> false >> false
@@ -294,8 +292,6 @@ class And(LatticeOp, BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.core import symbols
-    >>> from diofant.abc import x, y
     >>> x & y
     And(x, y)
 
@@ -342,7 +338,6 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> x = Symbol('x', extended_real=True)
         >>> And(x<2, x>-2).as_set()
         (-2, 2)
@@ -366,8 +361,6 @@ class Or(LatticeOp, BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.core import symbols
-    >>> from diofant.abc import x, y
     >>> x | y
     Or(x, y)
 
@@ -412,7 +405,6 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> x = Symbol('x', extended_real=True)
         >>> Or(x>2, x<-2).as_set()
         (-oo, -2) U (2, oo)
@@ -436,7 +428,7 @@ class Not(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.abc import x, A, B
+    >>> from diofant.abc import A, B
     >>> Not(True)
     false
     >>> Not(False)
@@ -500,7 +492,6 @@ class Not(BooleanFunction):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> x = Symbol('x', extended_real=True)
         >>> Not(x>0, evaluate=False).as_set()
         (-oo, 0]
@@ -561,8 +552,6 @@ class Xor(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
     >>> Xor(True, False)
     true
     >>> Xor(True, True)
@@ -660,8 +649,6 @@ class Nand(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
     >>> Nand(False, True)
     true
     >>> Nand(True, True)
@@ -687,9 +674,6 @@ class Nor(BooleanFunction):
 
     Examples
     ========
-
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
 
     >>> Nor(True, False)
     false
@@ -720,9 +704,6 @@ class Implies(BooleanFunction):
 
     Examples
     ========
-
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
 
     >>> Implies(True, False)
     false
@@ -797,7 +778,6 @@ class Equivalent(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
     >>> Equivalent(False, False, False)
     true
     >>> Equivalent(True, False, False)
@@ -868,7 +848,6 @@ class ITE(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
     >>> ITE(True, False, True)
     false
     >>> ITE(Or(True, False), And(True, True), Xor(True, True))
@@ -1262,8 +1241,6 @@ def to_int_repr(clauses, symbols):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-
     >>> to_int_repr([x | y, y], [x, y])
     [{1, 2}, {2}]
     """
@@ -1402,8 +1379,7 @@ def SOPform(variables, minterms, dontcares=None):
     Examples
     ========
 
-    >>> from diofant import symbols
-    >>> w, x, y, z = symbols('w x y z')
+    >>> w = Symbol('w')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1],
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
@@ -1452,8 +1428,7 @@ def POSform(variables, minterms, dontcares=None):
     Examples
     ========
 
-    >>> from diofant import symbols
-    >>> w, x, y, z = symbols('w x y z')
+    >>> w = Symbol('w')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1],
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
@@ -1520,8 +1495,6 @@ def simplify_logic(expr, form=None, deep=True):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
-    >>> from diofant import sympify
     >>> b = (~x & ~y & ~z) | (~x & ~y & z)
     >>> simplify_logic(b)
     And(Not(x), Not(y))
@@ -1566,7 +1539,7 @@ def _finger(eq):
     counting Symbol as 1 and Not(Symbol) as 2
     ]
 
-    >>> from diofant.abc import a, b, x, y
+    >>> from diofant.abc import a, b
     >>> eq = Or(And(Not(y), a), And(Not(y), b), And(x, y))
     >>> dict(_finger(eq))
     {(0, 0, 1, 0, 2): [x],
@@ -1612,7 +1585,7 @@ def bool_map(bool1, bool2):
     Examples
     ========
 
-    >>> from diofant.abc import w, x, y, z, a, b, c, d
+    >>> from diofant.abc import w, a, b, c, d
     >>> function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
     >>> function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2)

@@ -67,7 +67,6 @@ def print_tree(node):
     Examples
     ========
 
-    >>> from diofant import Symbol
     >>> x = Symbol('x', odd=True)
     >>> y = Symbol('y', even=True)
     >>> print_tree(y**x)

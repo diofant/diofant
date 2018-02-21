@@ -64,8 +64,6 @@ class RootOf(Expr):
     Examples
     ========
 
-    >>> from diofant import I
-    >>> from diofant.abc import x
     >>> RootOf(x**3 + I*x + 2, 0, extension=True)
     RootOf(x**6 + 4*x**3 + x**2 + 4, 1)
     """
@@ -679,8 +677,6 @@ class RootOf(Expr):
         evaluates it to 5 decimal digits (so all digits will be correct
         including rounding):
 
-        >>> from diofant import Rational, legendre_poly, Symbol
-        >>> x = Symbol("x")
         >>> p = legendre_poly(4, x, polys=True)
         >>> roots = [r.eval_rational(Rational(1, 10)**7) for r in p.real_roots()]
         >>> roots = [str(r.n(5)) for r in roots]

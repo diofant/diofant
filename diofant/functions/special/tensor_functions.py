@@ -42,7 +42,7 @@ class LeviCivita(Function):
     Examples
     ========
 
-    >>> from diofant.abc import i, j, k
+    >>> from diofant.abc import i, j
     >>> LeviCivita(1, 2, 3)
     1
     >>> LeviCivita(1, 3, 2)
@@ -100,7 +100,7 @@ class KroneckerDelta(Function):
 
     Symbolic indices::
 
-        >>> from diofant.abc import i, j, k
+        >>> from diofant.abc import i, j
         >>> KroneckerDelta(i, j)
         KroneckerDelta(i, j)
         >>> KroneckerDelta(i, i)
@@ -132,7 +132,7 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.abc import i, j, k
+        >>> from diofant.abc import i, j
 
         >>> KroneckerDelta(i, j)
         KroneckerDelta(i, j)
@@ -175,7 +175,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -208,7 +207,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -241,7 +239,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -271,7 +268,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -301,7 +297,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -336,7 +331,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> j = Symbol('j', below_fermi=True)
@@ -372,7 +366,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> j = Symbol('j', below_fermi=True)

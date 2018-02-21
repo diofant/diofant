@@ -54,7 +54,6 @@ Suppose you have a coordinate system `A`.
 You want to initialize a new coordinate system `B`, that is rotated with
 respect to `A`'s Z-axis by an angle `\theta`.
 
-  >>> from diofant import Symbol
   >>> theta = Symbol('theta')
 
 .. only:: html

@@ -17,9 +17,6 @@ def _invert_monoms(p1):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', ZZ)
     >>> p = x**2 + 2*x + 3
     >>> _invert_monoms(p)
@@ -60,9 +57,6 @@ def rs_trunc(p1, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x**10 + x**5 + x + 1
     >>> rs_trunc(p, x, 12)
@@ -89,9 +83,6 @@ def rs_mul(p1, p2, x, prec):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> p1 = x**2 + 2*x + 1
@@ -138,9 +129,6 @@ def rs_square(p1, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + 2*x + 1
     >>> rs_square(p, x, 3)
@@ -177,9 +165,6 @@ def rs_pow(p1, n, x, prec):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> p = x + 1
@@ -226,9 +211,6 @@ def _has_constant_term(p, x):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + x + 1
     >>> _has_constant_term(p, x)
@@ -254,9 +236,6 @@ def _series_inversion1(p, x, prec):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> p = x + 1
@@ -284,9 +263,6 @@ def rs_series_inversion(p, x, prec):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x, y = ring('x, y', QQ)
     >>> rs_series_inversion(1 + x*y**2, x, 4)
@@ -318,9 +294,6 @@ def rs_series_from_list(p, c, x, prec, concur=1):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + x + 1
@@ -400,9 +373,6 @@ def rs_integrate(self, x):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x, y = ring('x, y', QQ)
     >>> p = x + x**2*y**3
     >>> rs_integrate(p, x)
@@ -432,9 +402,6 @@ def rs_log(p, x, prec):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> rs_log(1 + x, x, 8)
@@ -470,9 +437,6 @@ def rs_exp(p, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> rs_exp(x**2, x, 7)
     1/6*x**6 + 1/2*x**4 + x**2 + 1
@@ -502,9 +466,6 @@ def rs_newton(p, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x**2 - 2
     >>> rs_newton(p, x, 5)
@@ -527,9 +488,6 @@ def rs_hadamard_exp(p1, inverse=False):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> p = 1 + x + x**2 + x**3
@@ -555,9 +513,6 @@ def rs_compose_add(p1, p2):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> f = x**2 - 2

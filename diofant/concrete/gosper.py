@@ -34,8 +34,6 @@ def gosper_normal(f, g, n, polys=True):
     Examples
     ========
 
-    >>> from diofant.abc import n
-
     >>> gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n, polys=False)
     (1/4, n + 3/2, n + 1/4)
     """
@@ -80,9 +78,6 @@ def gosper_term(f, n):
 
     Examples
     ========
-
-    >>> from diofant.functions import factorial
-    >>> from diofant.abc import n
 
     >>> gosper_term((4*n + 1)*factorial(n)/factorial(2*n + 1), n)
     (-n - 1/2)/(n + 1/4)
@@ -154,8 +149,7 @@ def gosper_sum(f, k):
     Examples
     ========
 
-    >>> from diofant.functions import factorial
-    >>> from diofant.abc import i, n, k
+    >>> from diofant.abc import i
 
     >>> f = (4*k + 1)*factorial(k)/factorial(2*k + 1)
     >>> gosper_sum(f, (k, 0, n))

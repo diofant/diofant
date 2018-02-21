@@ -166,8 +166,6 @@ def continued_fraction_iterator(x):
     Examples
     ========
 
-    >>> from diofant.core import Rational, pi
-
     >>> list(continued_fraction_iterator(Rational(3, 8)))
     [0, 2, 1, 2]
     >>> list(continued_fraction_iterator(Rational(-3, 8)))
@@ -214,8 +212,6 @@ def continued_fraction_convergents(cf):
 
     Examples
     ========
-
-    >>> from diofant.core import Rational, pi
 
     >>> list(continued_fraction_convergents([0, 2, 1, 2]))
     [0, 1/2, 1/3, 3/8]

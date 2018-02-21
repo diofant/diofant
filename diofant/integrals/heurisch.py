@@ -23,9 +23,6 @@ def components(f, x):
     non-integer powers. Fractional powers are collected with with
     minimal, positive exponents.
 
-    >>> from diofant import cos, sin
-    >>> from diofant.abc import x, y
-
     >>> components(sin(x)*cos(x)**2, x)
     {x, sin(x), cos(x)}
 
@@ -90,9 +87,6 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     Examples
     ========
 
-    >>> from diofant.core import symbols
-    >>> from diofant.functions import cos
-    >>> n, x = symbols('n x')
     >>> heurisch(cos(n*x), x)
     sin(n*x)/n
     >>> heurisch_wrapper(cos(n*x), x)
@@ -196,9 +190,6 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     Examples
     ========
-
-    >>> from diofant import tan
-    >>> from diofant.abc import x, y
 
     >>> heurisch(y*tan(x), x)
     y*log(tan(x)**2 + 1)/2

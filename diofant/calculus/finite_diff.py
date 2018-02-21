@@ -55,7 +55,6 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> from diofant import Integer, Rational
     >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2), Rational(3, 2), Rational(5, 2)], 0)
     >>> res
     [[[1, 0, 0, 0],
@@ -122,7 +121,6 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     The capability to generate weights at arbitrary points can be
     used e.g. to minimize Runge's phenomenon by using Chebyshev nodes:
 
-    >>> from diofant import cos, symbols, pi, simplify
     >>> N, (h, x) = 4, symbols('h x')
     >>> x_list = [x + h*cos(i*pi/(N)) for i in range(N, -1, -1)] # chebyshev nodes
     >>> x_list
@@ -227,7 +225,6 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     we see that the example above only contain rounding errors.
     apply_finite_diff can also be used on more abstract objects:
 
-    >>> from diofant import IndexedBase, Idx
     >>> x, y = map(IndexedBase, 'xy')
     >>> i = Idx('i')
     >>> x_list, y_list = zip(*[(x[i + j], y[i + j]) for j in range(-1, 2)])
@@ -307,9 +304,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
     Examples
     ========
 
-    >>> from diofant import symbols, Function, exp, sqrt, Symbol
     >>> x, h = symbols('x h')
-    >>> f = Function('f')
     >>> as_finite_diff(f(x).diff(x))
     -f(x - 1/2) + f(x + 1/2)
 
