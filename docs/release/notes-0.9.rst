@@ -248,3 +248,14 @@ These Sympy issues also were addressed:
 * :sympyissue:`13149` factor() of expression with float coefficients gives incorrect result
 * :sympyissue:`14117` Run out of coefficient configurations in primitive_element()
 * :sympyissue:`14159` Can't set bottom and top bounds of root isolation rectangle with dup_isolate_complex_roots_sqf()
+* :sympyissue:`11122` x > 0 doesn't evaluate for x = Symbol('x', positive=False)
+* :sympyissue:`11418` diophantine: misclassification
+* :sympyissue:`9862` [tensor] error when retrieving data from TensAdd instance involving fully contracted tensor and scalar
+* :sympyissue:`11525` [tensor] TensAdd ignores all but one scalar argument
+* :sympyissue:`11530` ITE(x, True, False) should auto simplify to x
+* :sympyissue:`11559` str of Transpose should be valid Python
+* :sympyissue:`11547` mathml(Matrix([0,1,2])) gives back error
+* :sympyissue:`11306` numpy lambdify of piecewise doesn't work for invalid values
+* :sympyissue:`7171` sin(x).rewrite(pow) raises RuntimeError: maximum recursion depth
+* :sympyissue:`2866` lambdify inserts numpy after math
+* :sympyissue:`11351` TypeError exception in totient and reduced_totient LaTeX printers

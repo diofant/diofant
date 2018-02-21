@@ -23,7 +23,7 @@ from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..matrices import Matrix, zeros
-from ..polys import Poly, RootOf, cancel, factor, roots, together
+from ..polys import Poly, RootOf, factor, roots
 from ..polys.polyerrors import PolynomialError
 from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
                         powsimp, simplify)
@@ -161,7 +161,7 @@ def checksol(f, sol, **flags):
                     sol[k] = simplify(sol[k])
             # start over without the failed expanded form, possibly
             # with a simplified solution
-            val = f.subs(sol)
+            val = simplify(f.subs(sol))
             if flags.get('force', True):
                 val, reps = posify(val)
                 # expansion may work now, so try again and check
@@ -169,16 +169,6 @@ def checksol(f, sol, **flags):
                 if exval.is_number or not exval.free_symbols:
                     # we can decide now
                     val = exval
-        elif attempt == 3:
-            val = powsimp(val)
-        elif attempt == 4:
-            val = cancel(val)
-        elif attempt == 5:
-            val = val.expand()
-        elif attempt == 6:
-            val = together(val)
-        elif attempt == 7:
-            val = powsimp(val)
         else:
             # if there are no radicals and no functions then this can't be
             # zero anymore -- can it?

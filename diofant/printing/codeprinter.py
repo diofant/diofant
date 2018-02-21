@@ -366,7 +366,10 @@ class CodePrinter(StrPrinter):
                         break
                 else:
                     return self._print_not_supported(expr)
-            return "%s(%s)" % (func, self.stringify(expr.args, ", "))
+            try:
+                return func(*[self.parenthesize(item, 0) for item in expr.args])
+            except TypeError:
+                return "%s(%s)" % (func, self.stringify(expr.args, ", "))
         elif hasattr(expr, '_imp_') and isinstance(expr._imp_, Lambda):
             # inlined function
             return self._print(expr._imp_(*expr.args))

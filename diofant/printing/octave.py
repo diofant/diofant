@@ -19,18 +19,29 @@ from .precedence import precedence
 
 # List of known functions.  First, those that have the same name in
 # Diofant and Octave.   This is almost certainly incomplete!
-known_fcns_src1 = ["sin", "cos", "tan", "asin", "acos", "atan", "atan2",
-                   "sinh", "cosh", "tanh", "asinh", "acosh", "atanh",
-                   "log", "exp", "erf", "gamma", "sign", "floor", "csc",
-                   "sec", "cot", "coth", "acot", "acoth", "erfc",
-                   "besselj", "bessely", "besseli", "besselk",
-                   "erfinv", "erfcinv", "factorial" ]
+known_fcns_src1 = ["sin", "cos", "tan", "cot", "sec", "csc",
+                   "asin", "acos", "acot", "atan", "atan2", "asec", "acsc",
+                   "sinh", "cosh", "tanh", "coth", "csch", "sech",
+                   "asinh", "acosh", "atanh", "acoth", "asech", "acsch",
+                   "erfc", "erfi", "erf", "erfinv", "erfcinv",
+                   "besseli", "besselj", "besselk", "bessely",
+                   "exp", "factorial", "floor", "fresnelc", "fresnels",
+                   "gamma", "log", "polylog", "sign", "zeta"]
+
 # These functions have different names ("Diofant": "Octave"), more
 # generally a mapping to (argument_conditions, octave_function).
 known_fcns_src2 = {
     "Abs": "abs",
     "ceiling": "ceil",
+    "Chi": "coshint",
+    "Ci": "cosint",
     "conjugate": "conj",
+    "laguerre": "laguerreL",
+    "li": "logint",
+    "loggamma": "gammaln",
+    "polygamma": "psi",
+    "Shi": "sinhint",
+    "Si": "sinint",
 }
 
 
@@ -327,6 +338,14 @@ class OctaveCodePrinter(CodePrinter):
     def _print_Identity(self, expr):
         return "eye(%s)" % self._print(expr.shape[0])
 
+    def _print_uppergamma(self, expr):
+        return "gammainc(%s, %s, 'upper')" % (self._print(expr.args[1]),
+                                              self._print(expr.args[0]))
+
+    def _print_lowergamma(self, expr):
+        return "gammainc(%s, %s, 'lower')" % (self._print(expr.args[1]),
+                                              self._print(expr.args[0]))
+
     def _print_hankel1(self, expr):
         return "besselh(%s, 1, %s)" % (self._print(expr.order),
                                        self._print(expr.argument))
@@ -359,6 +378,11 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_airybiprime(self, expr):
         return "airy(3, %s)" % self._print(expr.args[0])
+
+    def _print_LambertW(self, expr):
+        # argument order is reversed
+        args = ", ".join([self._print(x) for x in reversed(expr.args)])
+        return "lambertw(" + args + ")"
 
     def _print_Piecewise(self, expr):
         if expr.args[-1].cond != S.true:

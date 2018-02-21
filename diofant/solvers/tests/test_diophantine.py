@@ -70,6 +70,10 @@ def test_classify_diop():
     assert classify_diop(x*y + z*w) == ([w, x, y, z], {x*y: 1, w*z: 1}, 'homogeneous_general_quadratic')
     assert classify_diop(x*y**2 + 1) == ([x, y], {x*y**2: 1, 1: 1}, 'cubic_thue')
 
+    # issue sympy/sympy#11418
+    pytest.raises(NotImplementedError, lambda: classify_diop(x**3 + y**3 + z**4 - 90))
+    assert classify_diop(x**4 + y**4 + z**4 - 98) == ([x, y, z], {1: -98, x**4: 1, z**4: 1, y**4: 1}, 'general_sum_of_even_powers')
+
 
 def test_linear():
     assert diop_solve(x) == (0,)

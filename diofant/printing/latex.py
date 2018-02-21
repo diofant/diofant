@@ -7,7 +7,7 @@ import re
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Add, S, Symbol, oo
+from ..core import Add, Mod, S, Symbol, oo
 from ..core.alphabets import greeks
 from ..core.compatibility import default_sort_key
 from ..core.function import _coeff_isneg
@@ -185,6 +185,9 @@ class LatexPrinter(Printer):
             if not first and _coeff_isneg(expr):
                 return True
 
+        if expr.has(Mod):
+            return True
+
         if (not last and any(expr.has(x) for
                              x in (Integral, Piecewise, Product, Sum))):
             return True
@@ -198,6 +201,8 @@ class LatexPrinter(Printer):
         things.
         """
         if expr.is_Relational:
+            return True
+        if expr.has(Mod):
             return True
         return False
 
@@ -1140,7 +1145,10 @@ class LatexPrinter(Printer):
             if expr.p < 0:
                 sign = "- "
                 p = -p
-            return r"%s\frac{%d}{%d}" % (sign, p, expr.q)
+            if self._settings['fold_short_frac']:
+                return r"%s%d / %d" % (sign, p, expr.q)
+            else:
+                return r"%s\frac{%d}{%d}" % (sign, p, expr.q)
         else:
             return self._print(expr.p)
 
@@ -1307,6 +1315,15 @@ class LatexPrinter(Printer):
                 return r"\left(%s\right)" % self._print(x)
             return self._print(x)
         return ' '.join(map(parens, expr.args))
+
+    def _print_Mod(self, expr, exp=None):
+        if exp is not None:
+            return r'\left(%s\bmod{%s}\right)^{%s}' % (self.parenthesize(expr.args[0],
+                                                                         PRECEDENCE['Mul']),
+                                                       self._print(expr.args[1]), self._print(exp))
+        return r'%s\bmod{%s}' % (self.parenthesize(expr.args[0],
+                                                   PRECEDENCE['Mul']),
+                                 self._print(expr.args[1]))
 
     def _print_HadamardProduct(self, expr):
         from ..core import Add
@@ -1593,8 +1610,11 @@ class LatexPrinter(Printer):
         contents = self._print(p.args[0])
         return r'\mbox{Tr}\left(%s\right)' % (contents)
 
-    def _print_totient(self, expr):
-        return r'\phi\left( %s \right)' % self._print(expr.args[0])
+    def _print_totient(self, expr, exp=None):
+        if exp is not None:
+            return r'\left(\phi\left(%s\right)\right)^{%s}' % (self._print(expr.args[0]),
+                                                               self._print(exp))
+        return r'\phi\left(%s\right)' % self._print(expr.args[0])
 
     def _print_divisor_sigma(self, expr, exp=None):
         if len(expr.args) == 2:
@@ -1668,7 +1688,7 @@ def latex(expr, **settings):
     8 \sqrt{2} \mu^{\frac{7}{2}}
 
     >>> print(latex((2*tau)**Rational(7, 2), mode='inline'))
-    $8 \sqrt{2} \tau^{\frac{7}{2}}$
+    $8 \sqrt{2} \tau^{7 / 2}$
 
     >>> print(latex((2*mu)**Rational(7, 2), mode='equation*'))
     \begin{equation*}8 \sqrt{2} \mu^{\frac{7}{2}}\end{equation*}

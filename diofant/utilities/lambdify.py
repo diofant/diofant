@@ -159,10 +159,12 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     """
     Returns a lambda function for fast calculation of numerical values.
 
-    If not specified differently by the user, Diofant functions are replaced as
-    far as possible by either python-math, numpy (if available) or mpmath
-    functions - exactly in this order. To change this behavior, the "modules"
-    argument can be used. It accepts:
+    If not specified differently by the user, ``modules`` defaults to
+    ``["numpy"]`` if NumPy is installed, and ``["math", "mpmath", "sympy"]``
+    if it isn't, that is, Diofant functions are replaced as far as possible by
+    either ``numpy`` functions if available, and Python's standard library
+    ``math``, or ``mpmath`` functions otherwise. To change this behavior, the
+    "modules" argument can be used. It accepts:
 
      - the strings "math", "mpmath", "numpy", "numexpr", "diofant"
      - any modules (e.g. math)
@@ -292,20 +294,21 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     from ..core import Symbol
     from .iterables import flatten
 
+    module_provided = True
+
     # If the user hasn't specified any modules, use what is available.
     if modules is None:
-        # Use either numpy (if available) or python.math where possible.
-        # XXX: This leads to different behaviour on different systems and
-        #      might be the reason for irreproducible errors.
-        modules = ["math", "mpmath", "diofant"]
+        module_provided = False
 
-        # Attempt to import numpy
         try:
             _import("numpy")
         except ImportError:
-            pass
+            # Use either numpy (if available) or python.math where possible.
+            # XXX: This leads to different behaviour on different systems and
+            #      might be the reason for irreproducible errors.
+            modules = ["math", "mpmath", "diofant"]
         else:
-            modules.insert(1, "numpy")
+            modules = ["numpy"]
 
     # Get the needed namespaces.
     namespaces = []
@@ -370,6 +373,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     if flat in lstr:
         namespace.update({flat: flatten})
     func = eval(lstr, namespace)
+    # For numpy lambdify, wrap all input arguments in arrays.
+    if module_provided and _module_present('numpy', namespaces):
+        def array_wrap(funcarg):
+            def wrapper(*argsx, **kwargsx):
+                return funcarg(*[namespace['asarray'](i) for i in argsx], **kwargsx)
+            return wrapper
+        func = array_wrap(func)
     # Apply the docstring
     sig = "func({0})".format(", ".join(str(i) for i in names))
     sig = textwrap.fill(sig, subsequent_indent=' '*8)

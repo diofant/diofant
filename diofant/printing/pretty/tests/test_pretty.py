@@ -8,11 +8,12 @@ from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
                      Complement, Contains, Derivative, Dict, Eq, Equivalent,
                      EulerGamma, FiniteSet, Float, Function, Ge, GoldenRatio,
                      Gt, I, Implies, Integer, Integral, Intersection, Interval,
-                     Lambda, Le, Limit, Lt, Matrix, MatrixSymbol, Mul, Nand,
-                     Ne, Nor, Not, O, Or, Pow, Product, Range, Rational, Ray,
-                     RealField, RootOf, RootSum, S, Segment, Subs, Sum, Symbol,
-                     SymmetricDifference, Trace, Tuple, Union, Xor, cbrt,
-                     conjugate, grlex, groebner, ilex, oo, pi, root, symbols)
+                     Lambda, Le, Limit, Lt, Matrix, MatrixSymbol, Mod, Mul,
+                     Nand, Ne, Nor, Not, O, Or, Pow, Product, Range, Rational,
+                     Ray, RealField, RootOf, RootSum, S, Segment, Subs, Sum,
+                     Symbol, SymmetricDifference, Trace, Tuple, Union, Xor,
+                     cbrt, conjugate, grlex, groebner, ilex, oo, pi, root,
+                     symbols)
 from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
@@ -5035,3 +5036,32 @@ def test_sympyissue_11801():
 
 def test_Order():
     assert upretty(O(1)) == "O(1)"
+
+
+def test_pretty_Mod():
+    ascii_str1 = "x mod 7"
+    ucode_str1 = "x mod 7"
+
+    ascii_str2 = "(x + 1) mod 7"
+    ucode_str2 = "(x + 1) mod 7"
+
+    ascii_str3 = "2*x mod 7"
+    ucode_str3 = "2⋅x mod 7"
+
+    ascii_str4 = "(x mod 7) + 1"
+    ucode_str4 = "(x mod 7) + 1"
+
+    ascii_str5 = "2*(x mod 7)"
+    ucode_str5 = "2⋅(x mod 7)"
+
+    x = symbols('x', integer=True)
+    assert pretty(Mod(x, 7)) == ascii_str1
+    assert upretty(Mod(x, 7)) == ucode_str1
+    assert pretty(Mod(x + 1, 7)) == ascii_str2
+    assert upretty(Mod(x + 1, 7)) == ucode_str2
+    assert pretty(Mod(2 * x, 7)) == ascii_str3
+    assert upretty(Mod(2 * x, 7)) == ucode_str3
+    assert pretty(Mod(x, 7) + 1) == ascii_str4
+    assert upretty(Mod(x, 7) + 1) == ucode_str4
+    assert pretty(2 * Mod(x, 7)) == ascii_str5
+    assert upretty(2 * Mod(x, 7)) == ucode_str5

@@ -170,7 +170,7 @@ def test_sin_rewrite():
     assert sin(cot(x)).rewrite(
         exp).subs(x, 3).n() == sin(x).rewrite(exp).subs(x, cot(3)).n()
     assert sin(log(x)).rewrite(Pow) == I*x**-I / 2 - I*x**I / 2
-    assert sin(x).rewrite(Pow) == sin(x)
+    assert sin(x).rewrite(Pow) == sin(x)  # issue sympy/sympy#7171
     assert sin(x).rewrite(csc) == 1/csc(x)
 
 

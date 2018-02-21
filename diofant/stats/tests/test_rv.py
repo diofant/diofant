@@ -142,8 +142,8 @@ def test_Sample():
 
     pytest.raises(TypeError, lambda: P(Y > z, numsamples=5))
 
-    assert P(sin(Y) <= 1, numsamples=10) == 1
-    assert P(sin(Y) <= 1, cos(Y) < 1, numsamples=10) == 1
+    assert P(sin(Y) <= 1, numsamples=10, modules=["math"]) == 1
+    assert P(sin(Y) <= 1, cos(Y) < 1, numsamples=10, modules=["math"]) == 1
 
     assert all(i in range(1, 7) for i in density(X, numsamples=10))
     assert all(i in range(4, 7) for i in density(X, X > 3, numsamples=10))
@@ -153,7 +153,8 @@ def test_Sample():
 def test_Sample_slow():
     # Make sure this doesn't raise an error
     Y = Normal('Y', 0, 1)
-    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3)
+    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3,
+      modules=["math", "mpmath", "diofant"])
 
 
 def test_given():

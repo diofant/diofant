@@ -891,10 +891,14 @@ class ITE(BooleanFunction):
             raise ValueError("ITE expects exactly 3 arguments")
         if a == S.true:
             return b
-        if a == S.false:
+        elif a == S.false:
             return c
-        if b == c:
+        elif b == c:
             return b
+        elif b == S.true and c == S.false:
+            return a
+        elif b == S.false and c == S.true:
+            return Not(a)
 
     def to_nnf(self, simplify=True):
         a, b, c = self.args

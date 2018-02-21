@@ -315,6 +315,8 @@ class prettyForm(stringPict):
         Addition of negative numbers is simplified.
         """
         arg = self
+        if arg.binding > prettyForm.NEG:
+            arg = stringPict(*arg.parens())
         result = [arg]
         for arg in others:
             # add parentheses for weak binders

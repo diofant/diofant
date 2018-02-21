@@ -290,15 +290,39 @@ class MatrixBase(DefaultPrinting):
             return
 
     def copy(self):
+        """Returns the copy of a matrix."""
         return self._new(self.rows, self.cols, self._mat)
 
     def trace(self):
+        """Returns the trace of a matrix."""
         if not self.is_square:
             raise NonSquareMatrixError()
         return self._eval_trace()
 
     def inv(self, method=None, **kwargs):
-        r"""Returns the inverse of the matrix"""
+        r"""Returns the inverse of the matrix.
+
+        Parameters
+        ==========
+
+        method : {'GE', 'LU', 'ADJ', 'CH', 'LDL'} or None
+            Selects algorithm for inversion.  For dense matrices
+            available {'GE', 'LU', 'ADJ'}, default is 'GE'.  For
+            sparse: {'CH', 'LDL'}, default is 'LDL'.
+
+        Raises
+        ======
+
+        ValueError
+            If the determinant of the matrix is zero.
+
+        See Also
+        ========
+
+        inverse_LU
+        inverse_GE
+        inverse_ADJ
+        """
         if not self.is_square:
             raise NonSquareMatrixError()
         if method is not None:

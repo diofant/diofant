@@ -243,7 +243,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is nan:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_extended_real and other.is_extended_real:
+        if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonnegative is not None and \
                     dif.is_nonnegative is not dif.is_negative:
@@ -258,7 +258,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is nan:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_extended_real and other.is_extended_real:
+        if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonpositive is not None and \
                     dif.is_nonpositive is not dif.is_positive:
@@ -273,7 +273,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is nan:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_extended_real and other.is_extended_real:
+        if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_positive is not None and \
                     dif.is_positive is not dif.is_nonpositive:
@@ -288,7 +288,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is nan:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_extended_real and other.is_extended_real:
+        if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_negative is not None and \
                     dif.is_negative is not dif.is_nonnegative:
@@ -3148,15 +3148,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify import trigsimp
         return trigsimp(self, **args)
 
-    def radsimp(self):
+    def radsimp(self, **kwargs):
         """See the radsimp function in diofant.simplify"""
         from ..simplify import radsimp
-        return radsimp(self)
+        return radsimp(self, **kwargs)
 
-    def powsimp(self, deep=False, combine='all'):
+    def powsimp(self, **args):
         """See the powsimp function in diofant.simplify"""
         from ..simplify import powsimp
-        return powsimp(self, deep, combine)
+        return powsimp(self, **args)
 
     def combsimp(self):
         """See the combsimp function in diofant.simplify"""

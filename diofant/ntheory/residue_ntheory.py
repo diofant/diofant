@@ -769,16 +769,23 @@ def quadratic_residues(p):
 
 
 def legendre_symbol(a, p):
-    """Legendre symbol function [1]_.
+    r"""Returns the Legendre symbol `(a / p)`.
 
-    Returns
-    =======
+    For an integer ``a`` and an odd prime ``p``, the Legendre symbol is
+    defined as
 
-    1. 0 if a is multiple of p
-    2. 1 if a is a quadratic residue of p
-    3. -1 otherwise
+    .. math ::
+        \genfrac(){}{}{a}{p} = \begin{cases}
+             0 & \text{if } p \text{ divides } a\\
+             1 & \text{if } a \text{ is a quadratic residue modulo } p\\
+            -1 & \text{if } a \text{ is a quadratic nonresidue modulo } p
+        \end{cases}
 
-    p should be an odd prime by definition
+    Parameters
+    ==========
+
+    a : integer
+    p : odd prime
 
     Examples
     ========
@@ -810,15 +817,37 @@ def legendre_symbol(a, p):
 
 
 def jacobi_symbol(m, n):
-    """Returns the product of the legendre_symbol(m, p)
-    for all the prime factors, p, of n.
+    r"""
+    Returns the Jacobi symbol `(m / n)`.
 
-    Returns
-    =======
+    For any integer ``m`` and any positive odd integer ``n`` the Jacobi symbol
+    is defined as the product of the Legendre symbols corresponding to the
+    prime factors of ``n``:
 
-    1. 0 if m cong 0 mod(n)
-    2. 1 if x**2 cong m mod(n) has a solution
-    3. -1 otherwise
+    .. math ::
+        \genfrac(){}{}{m}{n} =
+            \genfrac(){}{}{m}{p^{1}}^{\alpha_1}
+            \genfrac(){}{}{m}{p^{2}}^{\alpha_2}
+            ...
+            \genfrac(){}{}{m}{p^{k}}^{\alpha_k}
+            \text{ where } n =
+                p_1^{\alpha_1}
+                p_2^{\alpha_2}
+                ...
+                p_k^{\alpha_k}
+
+    Like the Legendre symbol, if the Jacobi symbol `\genfrac(){}{}{m}{n} = -1`
+    then ``m`` is a quadratic nonresidue modulo ``n``.
+
+    But, unlike the Legendre symbol, if the Jacobi symbol
+    `\genfrac(){}{}{m}{n} = 1` then ``m`` may or may not be a quadratic residue
+    modulo ``n``.
+
+    Parameters
+    ==========
+
+    m : integer
+    n : odd positive integer
 
     Examples
     ========
@@ -829,7 +858,7 @@ def jacobi_symbol(m, n):
     >>> jacobi_symbol(60, 121)
     1
 
-    The relationship between the jacobi_symbol and legendre_symbol can
+    The relationship between the ``jacobi_symbol`` and ``legendre_symbol`` can
     be demonstrated as follows:
 
     >>> L = legendre_symbol

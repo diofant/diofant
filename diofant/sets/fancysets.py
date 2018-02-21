@@ -236,6 +236,14 @@ class ImageSet(Set):
     4
     9
     16
+
+    If you want to get value for `x` = 2, 1/2 etc. (Please check whether the
+    `x` value is in `base_set` or not before passing it as args)
+
+    >>> squares.lamda(2)
+    4
+    >>> squares.lamda(S.One/2)
+    1/4
     """
 
     def __new__(cls, lamda, base_set):

@@ -1101,6 +1101,15 @@ class PrettyPrinter(Printer):
         pform = prettyForm(*pform.left(name))
         return pform
 
+    def _print_Mod(self, expr):
+        pform = self._print(expr.args[0])
+        if pform.binding > prettyForm.MUL:
+            pform = prettyForm(*pform.parens())
+        pform = prettyForm(*pform.right(' mod '))
+        pform = prettyForm(*pform.right(self._print(expr.args[1])))
+        pform.binding = prettyForm.OPEN
+        return pform
+
     def _print_GoldenRatio(self, expr):
         if self._use_unicode:
             return prettyForm(pretty_symbol('phi'))

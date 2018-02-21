@@ -1,5 +1,6 @@
 from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Mul,
-                     Rational, S, Symbol, Tuple, factor_terms, oo, pi, sympify)
+                     Rational, S, Symbol, Tuple, factor_terms, nan, oo, pi,
+                     sympify, zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
 from ...logic.boolalg import BooleanAtom
 from .exponential import exp, exp_polar, log
@@ -46,7 +47,9 @@ class re(Function):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_extended_real:
+        if arg is zoo:
+            return nan
+        elif arg.is_extended_real:
             return arg
         elif arg.is_imaginary or (I*arg).is_extended_real:
             return S.Zero
@@ -131,7 +134,9 @@ class im(Function):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_extended_real:
+        if arg is zoo:
+            return nan
+        elif arg.is_extended_real:
             return S.Zero
         elif arg.is_imaginary or (I*arg).is_extended_real:
             return -I * arg

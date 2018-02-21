@@ -44,7 +44,7 @@ leveraging a variety of numerical libraries.  It is used as follows:
     >>> expr = sin(x)/x
     >>> f = lambdify(x, expr)
     >>> f(3.14)
-    0.0005072143046136395
+    0.000507214304614
 
 Here lambdify makes a function that computes ``f(x) = sin(x)/x``.  By default
 lambdify relies on implementations in the ``math`` standard library. This

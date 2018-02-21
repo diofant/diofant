@@ -578,6 +578,8 @@ def test_as_independent():
     assert (x + Integral(x, (x, 1, 2))).as_independent(x, strict=True) == \
            (Integral(x, (x, 1, 2)), x)
 
+    assert (x*y).as_independent(z, as_Add=True) == (x*y, 0)
+
 
 @pytest.mark.xfail
 def test_call_2():
@@ -1061,6 +1063,8 @@ def test_coeff():
     assert (n*m + o*m*n).coeff(m*n, right=1) == 1
     assert (n*m + n*m*n).coeff(n*m, right=1) == 1 + n  # = n*m*(n + 1)
 
+    assert (x*y).coeff(z, 0) == x*y
+
 
 def test_coeff2():
     psi = Function("psi")
@@ -1111,8 +1115,11 @@ def test_action_verbs():
     assert ratsimp(1/x + 1/y) == (1/x + 1/y).ratsimp()
     assert trigsimp(log(x), deep=True) == (log(x)).trigsimp(deep=True)
     assert radsimp(1/(2 + sqrt(2))) == (1/(2 + sqrt(2))).radsimp()
+    assert radsimp(1/(a + b*sqrt(c)), symbolic=False) == \
+        (1/(a + b*sqrt(c))).radsimp(symbolic=False)
     assert powsimp(x**y*x**z*y**z, combine='all') == \
         (x**y*x**z*y**z).powsimp(combine='all')
+    assert (x**t*y**t).powsimp(force=True) == (x*y)**t
     assert simplify(x**y*x**z*y**z) == (x**y*x**z*y**z).simplify()
     assert together(1/x + 1/y) == (1/x + 1/y).together()
     assert collect(a*x**2 + b*x**2 + a*x - b*x + c, x) == \
@@ -1614,6 +1621,11 @@ def test_sympyissue_7426():
     f1 = a % c
     f2 = x % z
     assert f1.equals(f2) is False
+
+
+def test_sympyissue_11122():
+    p = Symbol('p', positive=False)
+    assert (p > 0) is false
 
 
 def test_pow_rewrite():

@@ -213,7 +213,7 @@ def test_sqrt():
 
 
 def test_trig():
-    f = lambdify([x], [cos(x), sin(x)])
+    f = lambdify([x], [cos(x), sin(x)], 'math')
     d = f(pi)
     prec = 1e-11
     assert -prec < d[0] + 1 < prec
@@ -243,7 +243,7 @@ def test_vector_discontinuous():
 
 
 def test_trig_symbolic():
-    f = lambdify([x], [cos(x), sin(x)])
+    f = lambdify([x], [cos(x), sin(x)], 'math')
     d = f(pi)
     assert abs(d[0] + 1) < 0.0001
     assert abs(d[1] - 0) < 0.0001
@@ -325,6 +325,12 @@ def test_numpy_old_matrix():
     f = lambdify((x, y, z), A, [{'ImmutableMatrix': numpy.matrix}, 'numpy'])
     numpy.testing.assert_allclose(f(1, 2, 3), sol_arr)
     assert isinstance(f(1, 2, 3), numpy.matrix)
+
+
+@pytest.mark.skipif(numpy is None, reason="no numpy")
+def test_python_div_zero_sympyissue_11306():
+    p = Piecewise((1 / x, y < -1), (x, y <= 1), (1 / x, True))
+    lambdify([x, y], p, modules='numpy')(0, 1)
 
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
