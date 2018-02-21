@@ -869,14 +869,17 @@ def to_number_field(extension, theta=None, **args):
         return AlgebraicNumber((minpoly, root))
     else:
         theta = sympify(theta)
+        alias = None
 
         if not theta.is_AlgebraicNumber:
-            theta = AlgebraicNumber(theta, gen=gen)
+            theta = AlgebraicNumber(theta, gen=gen, alias=alias)
+        else:
+            alias = theta.alias
 
         coeffs = field_isomorphism(root, theta)
 
         if coeffs is not None:
-            return AlgebraicNumber(theta, coeffs)
+            return AlgebraicNumber(theta, coeffs, alias=alias)
         else:
             raise IsomorphismFailed(
                 "%s is not in a subfield of %s" % (root, theta.root))
