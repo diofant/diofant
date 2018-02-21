@@ -43,8 +43,6 @@ def euler_equations(L, funcs=(), vars=()):
     Examples
     ========
 
-    >>> from diofant import Symbol, Function
-
     >>> x = Function('x')
     >>> t = Symbol('t')
     >>> L = (x(t).diff(t))**2/2 - x(t)**2/2

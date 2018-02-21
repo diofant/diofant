@@ -70,8 +70,6 @@ class Partition(FiniteSet):
         Examples
         ========
 
-        >>> from diofant.utilities.iterables import default_sort_key
-        >>> from diofant.abc import x
         >>> a = Partition([1, 2])
         >>> b = Partition([3, 4])
         >>> c = Partition([1, x])

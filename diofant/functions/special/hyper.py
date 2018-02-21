@@ -111,13 +111,12 @@ class hyper(TupleParametersBase):
     The parameters `a_p` and `b_q` can be passed as arbitrary
     iterables, for example:
 
-    >>> from diofant.abc import x, n, a
+    >>> from diofant.abc import a
     >>> hyper((1, 2, 3), [3, 4], x)
     hyper((1, 2, 3), (3, 4), x)
 
     There is also pretty printing (it looks better using unicode):
 
-    >>> from diofant import pprint
     >>> pprint(hyper((1, 2, 3), [3, 4], x), use_unicode=False)
       _
      |_  /1, 2, 3 |  \
@@ -141,19 +140,16 @@ class hyper(TupleParametersBase):
     using named special functions.
     For example:
 
-    >>> from diofant import hyperexpand
     >>> hyperexpand(hyper([], [], x))
     E**x
 
     You can also use expand_func:
 
-    >>> from diofant import expand_func
     >>> expand_func(x*hyper([1, 1], [2], -x))
     log(x + 1)
 
     More examples:
 
-    >>> from diofant import Rational
     >>> hyperexpand(hyper([], [Rational(1, 2)], -x**2/4))
     cos(x)
     >>> hyperexpand(x*hyper([Rational(1, 2), Rational(1, 2)], [Rational(3, 2)], x**2))
@@ -252,7 +248,6 @@ class hyper(TupleParametersBase):
         outside of the radius of convergence by analytic continuation. But if
         this is zero, then the function is not actually defined anywhere else.
 
-        >>> from diofant.abc import z
         >>> hyper((1, 2), [3], z).radius_of_convergence
         1
         >>> hyper((1, 2, 3), [4], z).radius_of_convergence
@@ -368,9 +363,7 @@ class meijerg(TupleParametersBase):
 
     You can pass the parameters either as four separate vectors:
 
-    >>> from diofant.abc import x, a
-    >>> from diofant.core.containers import Tuple
-    >>> from diofant import pprint
+    >>> from diofant.abc import a
     >>> pprint(meijerg([1, 2], [a, 4], [5], [], x), use_unicode=False)
      __1, 2 /1, 2  a, 4 |  \
     /__     |           | x|
@@ -391,7 +384,6 @@ class meijerg(TupleParametersBase):
 
     All the subvectors of parameters are available:
 
-    >>> from diofant import pprint
     >>> g = meijerg([1], [2], [3], [4], x)
     >>> pprint(g, use_unicode=False)
      __1, 1 /1  2 |  \
@@ -414,7 +406,6 @@ class meijerg(TupleParametersBase):
     In some cases it can be expressed in terms of hypergeometric functions,
     using Slater's theorem. For example:
 
-    >>> from diofant import hyperexpand
     >>> from diofant.abc import a, b, c
     >>> hyperexpand(meijerg([a], [], [c], [b], x), allow_hyper=True)
     x**c*gamma(-a + c + 1)*hyper((-a + c + 1,),
@@ -424,7 +415,6 @@ class meijerg(TupleParametersBase):
     cases. You can use expand_func or hyperexpand to (try to) rewrite a
     Meijer G-function in terms of named special functions. For example:
 
-    >>> from diofant import expand_func, Rational
     >>> expand_func(meijerg([[], []], [[0], []], -x))
     E**x
     >>> hyperexpand(meijerg([[], []], [[Rational(1, 2)], [0]], (x/2)**2))
@@ -575,9 +565,6 @@ class meijerg(TupleParametersBase):
     def get_period(self):
         """
         Return a number P such that G(x*exp(I*P)) == G(x).
-
-        >>> from diofant.abc import z
-        >>> from diofant import pi, S
 
         >>> meijerg([1], [], [], [], z).get_period()
         2*pi

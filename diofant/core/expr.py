@@ -318,9 +318,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import log, Integral
-        >>> from diofant.abc import x
-
         >>> x.is_number
         False
         >>> (2*x).is_number
@@ -350,8 +347,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sqrt
-        >>> from diofant.abc import x, y
         >>> x._random()                         # doctest: +SKIP
         0.0392918155679172 + 0.916050214307199*I
         >>> x._random(2)                        # doctest: +SKIP
@@ -445,8 +440,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import cos, sin, Sum, S, pi
-        >>> from diofant.abc import a, n, x, y
+        >>> from diofant.abc import a
+
         >>> x.is_constant()
         False
         >>> Integer(2).is_constant()
@@ -872,9 +867,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sin, cos
-        >>> from diofant.abc import x
-
         >>> (sin(x)**2*cos(x) + sin(x)**2 + 1).as_ordered_terms()
         [sin(x)**2*cos(x), sin(x)**2, 1]
         """
@@ -971,8 +963,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import O
-        >>> from diofant.abc import x
         >>> (1 + x + O(x**2)).getn()
         2
         >>> (1 + x).getn()
@@ -1019,7 +1009,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Note: -1 is always separated from a Number unless split_1 is False.
 
-        >>> from diofant import symbols, oo
         >>> A, B = symbols('A B', commutative=0)
         >>> x, y = symbols('x y')
         >>> (-2*x*y).args_cnc()
@@ -1088,9 +1077,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import symbols
-        >>> from diofant.abc import x, y, z
-
         You can select terms that have an explicit negative in front of them:
 
         >>> (-x + 2*y).coeff(-1)
@@ -1124,7 +1110,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (-x - 2*y).coeff(2)
         -y
-        >>> from diofant import sqrt
         >>> (x + sqrt(2)*x).coeff(sqrt(2))
         x
 
@@ -1149,7 +1134,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         If such factoring is desired, factor_terms can be used first:
 
-        >>> from diofant import factor_terms
         >>> factor_terms(x + z*(x + x*y)).coeff(x)
         z*(y + 1) + 1
 
@@ -1340,9 +1324,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sin
-        >>> from diofant.abc import x, y
-
         >>> f = (x**2 + x*y).as_poly(x, y)
         >>> f.as_expr()
         x**2 + x*y
@@ -1357,9 +1338,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Examples
         ========
-
-        >>> from diofant import sin
-        >>> from diofant.abc import x, y
 
         >>> (x**2 + x*y).as_poly()
         Poly(x**2 + x*y, x, y, domain='ZZ')
@@ -1386,9 +1364,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Examples
         ========
-
-        >>> from diofant import E, pi, sin, I, Poly
-        >>> from diofant.abc import x
 
         >>> E.as_coefficient(E)
         1
@@ -1471,9 +1446,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         -- self is an Add
 
-        >>> from diofant import sin, cos, exp
-        >>> from diofant.abc import x, y, z
-
         >>> (x + x*y).as_independent(x)
         (0, x*y + x)
         >>> (x + x*y).as_independent(y)
@@ -1490,7 +1462,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         non-commutative terms cannot always be separated out when self is a Mul
 
-        >>> from diofant import symbols
         >>> n1, n2, n3 = symbols('n1 n2 n3', commutative=False)
         >>> (n1 + n1*n2).as_independent(n2)
         (n1, n1*n2)
@@ -1534,7 +1505,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
            of .has(). The former considers only symbols in the free
            symbols while the latter considers all symbols
 
-        >>> from diofant import Integral
         >>> I = Integral(x, (x, 1, 2))
         >>> I.has(x)
         True
@@ -1550,7 +1520,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         track of what you send to this routine so you know how to interpret
         the returned values
 
-        >>> from diofant import separatevars, log
         >>> separatevars(exp(x+y)).as_independent(x)
         (E**y, E**x)
         >>> (x + x*y).as_independent(y)
@@ -1637,14 +1606,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         functions and get exactly the same results as with
         a single call to this function.
 
-        >>> from diofant import symbols, I
-
         >>> x, y = symbols('x y', extended_real=True)
 
         >>> (x + y*I).as_real_imag()
         (x, y)
 
-        >>> from diofant.abc import z, w
+        >>> from diofant.abc import w
 
         >>> (z + w*I).as_real_imag()
         (re(z) - im(w), re(w) + im(z))
@@ -1677,7 +1644,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import a, x
+        >>> from diofant.abc import a
         >>> (3*x + a*x + 4).as_coefficients_dict()
         {1: 4, x: 3, a*x: 1}
         >>> _[a]
@@ -1722,7 +1689,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         - if you want to split self into an independent and dependent parts
           use ``self.as_independent(*deps)``
 
-        >>> from diofant.abc import x, y
         >>> (Integer(3)).as_coeff_mul()
         (3, ())
         >>> (3*x*y).as_coeff_mul()
@@ -1756,7 +1722,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         - if you want to split self into an independent and dependent parts
           use ``self.as_independent(*deps)``
 
-        >>> from diofant.abc import x, y
         >>> (Integer(3)).as_coeff_add()
         (3, ())
         >>> (3 + x).as_coeff_add()
@@ -1780,7 +1745,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> (3*(x + 1)**2).primitive()
         (3, (x + 1)**2)
         >>> a = (6*x + 2); a.primitive()
@@ -1807,9 +1771,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Examples
         ========
-
-        >>> from diofant import sqrt
-        >>> from diofant.abc import x, y, z
 
         >>> eq = 2 + 2*x + 2*y*(3 + 3*y)
 
@@ -1873,8 +1834,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """Return None if it's not possible to make self in the form
         c * something in a nice way, i.e. preserving the properties
         of arguments of self.
-
-        >>> from diofant import symbols, Rational
 
         >>> x, y = symbols('x y', extended_real=True)
 
@@ -1983,7 +1942,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
         >>> e = 2*x + 3
         >>> e.extract_additively(x + 1)
         x + 2
@@ -1996,7 +1954,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Sometimes auto-expansion will return a less simplified result
         than desired; gcd_terms might be used in such cases:
 
-        >>> from diofant import gcd_terms
         >>> (4*x*(y + 1) + y).extract_additively(x)
         4*x*(y + 1) + x*(4*y + 3) - x*(4*y + 4) + y
         >>> gcd_terms(_)
@@ -2090,7 +2047,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         For any expression, the set ``{e.could_extract_minus_sign(),
         (-e).could_extract_minus_sign()}`` must be ``{True, False}``.
 
-        >>> from diofant.abc import x, y
         >>> (x-y).could_extract_minus_sign() != (y-x).could_extract_minus_sign()
         True
         """
@@ -2125,8 +2081,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """Try to write self as ``exp_polar(2*pi*I*n)*z`` in a nice way.
         Return (z, n).
 
-        >>> from diofant import exp_polar, I, pi
-        >>> from diofant.abc import x, y
         >>> exp_polar(I*pi).extract_branch_factor()
         (exp_polar(I*pi), 0)
         >>> exp_polar(2*I*pi).extract_branch_factor()
@@ -2217,8 +2171,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Symbol
-        >>> x = Symbol('x')
         >>> ((x**2 + 1)**4).is_polynomial(x)
         True
         >>> ((x**2 + 1)**4).is_polynomial()
@@ -2235,7 +2187,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         result in an expression that does not appear to be a polynomial to
         become one.
 
-        >>> from diofant import sqrt, factor, cancel
         >>> y = Symbol('y', positive=True)
         >>> a = sqrt(y**2 + 2*y + 1)
         >>> a.is_polynomial(y)
@@ -2291,9 +2242,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Symbol, sin
-        >>> from diofant.abc import x, y
-
         >>> (x/y).is_rational_function()
         True
 
@@ -2311,7 +2259,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         result in an expression that does not appear to be a rational function
         to become one.
 
-        >>> from diofant import sqrt, factor
         >>> y = Symbol('y', positive=True)
         >>> a = sqrt(y**2 + 2*y + 1)/y
         >>> a.is_rational_function(y)
@@ -2358,7 +2305,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Symbol, sqrt
         >>> x = Symbol('x', extended_real=True)
         >>> sqrt(1 + x).is_rational_function()
         False
@@ -2369,7 +2315,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         result in an expression that does not appear to be an algebraic
         expression to become one.
 
-        >>> from diofant import exp, factor
         >>> a = sqrt(exp(x)**2 + 2*exp(x) + 1)/(exp(x) + 1)
         >>> a.is_algebraic_expr(x)
         False
@@ -2416,7 +2361,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import exp_polar, pi, I
         >>> (I*exp_polar(I*pi/2)).is_comparable
         True
         >>> (I*exp_polar(I*pi*2)).is_comparable
@@ -2452,8 +2396,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         If ``x=None`` and ``self`` is univariate, the univariate symbol will
         be supplied, otherwise an error will be raised.
 
-        >>> from diofant import cos, exp
-        >>> from diofant.abc import x, y
         >>> cos(x).series()
         1 - x**2/2 + x**4/24 + O(x**6)
         >>> cos(x).series(n=4)
@@ -2691,8 +2633,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sin, log, Symbol
-        >>> from diofant.abc import x
         >>> sin(x).nseries(x)
         x - x**3/6 + x**5/120 + O(x**7)
         >>> log(x + 1).nseries(x, 5)
@@ -2759,8 +2699,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sin, exp
-        >>> from diofant.abc import x, y
         >>> e = sin(1/x + exp(-x)) - sin(1/x)
         >>> e.aseries(x)
         E**(-x)*(1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))
@@ -2887,7 +2825,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> (1 + x + x**2).as_leading_term(x)
         1
         >>> (1/x**2 + x + x**2).as_leading_term(x)
@@ -2947,8 +2884,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Lambda
-        >>> from diofant.abc import x
         >>> Lambda(x, 2*x).canonical_variables
         {x: 0_}
         """
@@ -3198,7 +3133,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import pi, E, I, Add, Mul, Number, Float
         >>> Float(10.5).round()
         11.
         >>> pi.round()
@@ -3313,7 +3247,6 @@ def _mag(x):
     Examples
     ========
 
-    >>> from diofant import Float
     >>> _mag(Float(.1))
     0
     >>> _mag(Float(.01))

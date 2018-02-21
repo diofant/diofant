@@ -47,9 +47,6 @@ def combsimp(expr):
     Examples
     ========
 
-    >>> from diofant import factorial, binomial
-    >>> from diofant.abc import n, k
-
     >>> combsimp(factorial(n)/factorial(n - 3))
     n*(n - 2)*(n - 1)
     >>> combsimp(binomial(n+1, k+1)/binomial(n, k))

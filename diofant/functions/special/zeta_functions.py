@@ -78,8 +78,7 @@ class lerchphi(Function):
 
     If `z=1`, the Lerch transcendent reduces to the Hurwitz zeta function:
 
-    >>> from diofant import expand_func
-    >>> from diofant.abc import z, s, a
+    >>> from diofant.abc import s, a
     >>> expand_func(lerchphi(1, s, a))
     zeta(s, a)
 
@@ -97,7 +96,6 @@ class lerchphi(Function):
     More generally, if `a` is rational, the Lerch transcendent reduces
     to a sum of polylogarithms:
 
-    >>> from diofant import Rational
     >>> expand_func(lerchphi(z, s, Rational(1, 2)))
     2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                 polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))
@@ -247,8 +245,6 @@ class polylog(Function):
     polylogarithm can be expressed using elementary functions. This can be
     done using expand_func():
 
-    >>> from diofant import expand_func
-    >>> from diofant.abc import z
     >>> expand_func(polylog(1, z))
     -log(-z + 1)
     >>> expand_func(polylog(0, z))

@@ -75,10 +75,6 @@ class Options(dict):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
-    >>> from diofant.abc import x, y, z
-
     >>> Options((x, y, z), {'domain': 'ZZ'})
     {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
 
@@ -725,8 +721,6 @@ def allowed_flags(args, flags):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> allowed_flags({'domain': ZZ}, [])
 

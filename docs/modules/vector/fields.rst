@@ -54,7 +54,6 @@ use the ``diff`` method.
   >>> from diofant.vector import CoordSysCartesian
   >>> R = CoordSysCartesian('R')
   >>> electric_potential = 2*R.x**2*R.y
-  >>> from diofant import diff
   >>> diff(electric_potential, R.x)
   4*R.x*R.y
 

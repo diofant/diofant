@@ -489,13 +489,10 @@ def octave_code(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> from diofant import symbols, sin, pi
-    >>> x = symbols('x')
     >>> octave_code(sin(x).series(x).removeO())
     'x.^5/120 - x.^3/6 + x'
 
-    >>> from diofant import Rational, ceiling, Abs
-    >>> x, y, tau = symbols("x, y, tau")
+    >>> tau = symbols("tau")
     >>> octave_code((2*tau)**Rational(7, 2))
     '8*sqrt(2)*tau.^(7/2)'
 
@@ -509,7 +506,6 @@ def octave_code(expr, assign_to=None, **settings):
     If you need a matrix product "*" or matrix power "^", you can specify the
     symbol as a ``MatrixSymbol``.
 
-    >>> from diofant import Symbol, MatrixSymbol
     >>> n = Symbol('n', integer=True, positive=True)
     >>> A = MatrixSymbol('A', n, n)
     >>> octave_code(3*pi*A**3)
@@ -530,7 +526,6 @@ def octave_code(expr, assign_to=None, **settings):
     ``assign_to`` with matrices, the name can be specified either as a string
     or as a ``MatrixSymbol``.  The dimenions must align in the latter case.
 
-    >>> from diofant import Matrix, MatrixSymbol
     >>> mat = Matrix([[x**2, sin(x), ceiling(x)]])
     >>> octave_code(mat, assign_to='A')
     'A = [x.^2 sin(x) ceil(x)];'
@@ -541,7 +536,6 @@ def octave_code(expr, assign_to=None, **settings):
     ``(expr, True)`` then an error will be thrown.  This is to prevent
     generating an expression that may not evaluate to anything.
 
-    >>> from diofant import Piecewise
     >>> pw = Piecewise((x + 1, x > 0), (x, True))
     >>> octave_code(pw, assign_to=tau)
     'tau = ((x > 0).*(x + 1) + (~(x > 0)).*(x));'
@@ -558,9 +552,6 @@ def octave_code(expr, assign_to=None, **settings):
     dictionary value can be a list of tuples i.e., [(argument_test,
     cfunction_string)].  This can be used to call a custom Octave function.
 
-    >>> from diofant import Function
-    >>> f = Function('f')
-    >>> g = Function('g')
     >>> custom_functions = {
     ...   "f": "existing_octave_fcn",
     ...   "g": [(lambda x: x.is_Matrix, "my_mat_fcn"),
@@ -575,7 +566,6 @@ def octave_code(expr, assign_to=None, **settings):
     ``contract=False`` will just print the assignment expression that should be
     looped over:
 
-    >>> from diofant import Eq, IndexedBase, Idx, ccode
     >>> len_y = 5
     >>> y = IndexedBase('y', shape=[len_y])
     >>> t = IndexedBase('t', shape=[len_y])

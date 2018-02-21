@@ -17,7 +17,6 @@ def AbelianGroup(*cyclic_orders):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
     >>> AbelianGroup(3, 4)
     PermutationGroup([

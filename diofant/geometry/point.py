@@ -49,7 +49,6 @@ class Point(GeometryEntity):
     Examples
     ========
 
-    >>> from diofant.abc import x
     >>> Point(1, 2, 3)
     Point3D(1, 2, 3)
     >>> Point([1, 2])
@@ -150,7 +149,6 @@ class Point(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> p1, p2 = Point(0, 0), Point(1, 1)
         >>> p3, p4, p5 = Point(2, 2), Point(x, x), Point(1, 2)
         >>> Point.is_collinear(p1, p2, p3, p4)
@@ -245,7 +243,6 @@ class Point(GeometryEntity):
         >>> p1.distance(p2)
         5
 
-        >>> from diofant.abc import x, y
         >>> p3 = Point(x, y)
         >>> p3.distance(Point(0, 0))
         sqrt(x**2 + y**2)
@@ -299,7 +296,6 @@ class Point(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Rational
         >>> p1 = Point(Rational(1, 2), Rational(3, 2))
         >>> p1
         Point2D(1/2, 3/2)
@@ -442,7 +438,6 @@ class Point2D(Point):
     Examples
     ========
 
-    >>> from diofant.abc import x
     >>> Point2D(1, 2)
     Point2D(1, 2)
     >>> Point2D([1, 2])
@@ -599,7 +594,6 @@ class Point2D(Point):
         Examples
         ========
 
-        >>> from diofant import pi
         >>> t = Point2D(1, 0)
         >>> t.rotate(pi/2)
         Point2D(0, 1)
@@ -724,7 +718,6 @@ class Point3D(Point):
     Examples
     ========
 
-    >>> from diofant.abc import x
     >>> Point3D(1, 2, 3)
     Point3D(1, 2, 3)
     >>> Point3D([1, 2, 3])
@@ -880,8 +873,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Matrix
-        >>> from diofant.abc import x
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(1, 1, 1)
         >>> p3, p4, p5 = Point3D(2, 2, 2), Point3D(x, x, x), Point3D(1, 2, 6)
         >>> Point3D.are_collinear(p1, p2, p3, p4)

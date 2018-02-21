@@ -45,8 +45,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     Examples
     ========
 
-    >>> from diofant import expand, factor
-    >>> from diofant.abc import a, b, c, x, y
+    >>> from diofant.abc import a, b, c
 
     This function can collect symbolic coefficients in polynomials or
     rational expressions. It will manage to find all integer or rational
@@ -74,7 +73,6 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
     Also more complicated expressions can be used as patterns:
 
-    >>> from diofant import sin, log
     >>> collect(a*sin(2*x) + b*sin(2*x), sin(2*x))
     (a + b)*sin(2*x)
 
@@ -83,7 +81,6 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
     You can use wildcards in the pattern:
 
-    >>> from diofant import Wild
     >>> w = Wild('w1')
     >>> collect(a*x**y - b*x**y, w**y)
     x**y*(a - b)
@@ -106,7 +103,6 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     Note also that all previously stated facts about :func:`collect` function
     apply to the exponential function, so you can get:
 
-    >>> from diofant import exp
     >>> collect(a*exp(2*x) + b*exp(2*x), exp(x))
     E**(2*x)*(a + b)
 
@@ -124,24 +120,23 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     derivatives of that function will also be collected. Use
     ``exact=True`` to prevent this from happening:
 
-    >>> from diofant import Derivative as D, Function
-    >>> f = Function('f')(x)
+    >>> f = f(x)
 
-    >>> collect(a*D(f, x) + b*D(f, x), D(f, x))
+    >>> collect(a*Derivative(f, x) + b*Derivative(f, x), Derivative(f, x))
     (a + b)*Derivative(f(x), x)
 
-    >>> collect(a*D(D(f, x), x) + b*D(D(f, x), x), f)
+    >>> collect(a*Derivative(f, x, 2) + b*Derivative(f, x, 2), f)
     (a + b)*Derivative(f(x), x, x)
 
-    >>> collect(a*D(D(f, x), x) + b*D(D(f, x), x), D(f, x), exact=True)
+    >>> collect(a*Derivative(f, x, 2) + b*Derivative(f, x, 2), Derivative(f, x), exact=True)
     a*Derivative(f(x), x, x) + b*Derivative(f(x), x, x)
 
-    >>> collect(a*D(f, x) + b*D(f, x) + a*f + b*f, f)
+    >>> collect(a*Derivative(f, x) + b*Derivative(f, x) + a*f + b*f, f)
     f(x)*(a + b) + (a + b)*Derivative(f(x), x)
 
     Or you can even match both derivative order and exponent at the same time:
 
-    >>> collect(a*D(D(f, x), x)**2 + b*D(D(f, x), x)**2, D(f, x))
+    >>> collect(a*Derivative(f, x, 2)**2 + b*Derivative(f, x, 2)**2, Derivative(f, x))
     (a + b)*Derivative(f(x), x, x)**2
 
     Finally, you can apply a function to each of the collected coefficients.
@@ -402,8 +397,6 @@ def rcollect(expr, *vars):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-
     >>> expr = (x**2*y + x*y + x + y)/(x + y)
 
     >>> rcollect(expr, y)
@@ -437,7 +430,6 @@ def collect_sqrt(expr, evaluate=True):
     Examples
     ========
 
-    >>> from diofant import sqrt
     >>> from diofant.abc import a, b
 
     >>> r2, r3, r5 = [sqrt(i) for i in [2, 3, 5]]
@@ -508,8 +500,7 @@ def collect_const(expr, *vars, **kwargs):
     Examples
     ========
 
-    >>> from diofant import sqrt
-    >>> from diofant.abc import a, s, x, y, z
+    >>> from diofant.abc import a, s
     >>> collect_const(sqrt(3) + sqrt(3)*(1 + sqrt(2)))
     sqrt(3)*(sqrt(2) + 2)
     >>> collect_const(sqrt(3)*s + sqrt(7)*s + sqrt(3) + sqrt(7))
@@ -622,8 +613,6 @@ def radsimp(expr, symbolic=True, max_terms=4):
     Examples
     ========
 
-    >>> from diofant import sqrt, Symbol, denom, pprint, I
-    >>> from diofant import factor_terms, fraction, signsimp
     >>> from diofant.abc import a, b, c
 
     >>> radsimp(1/(I + 1))
@@ -863,7 +852,6 @@ def rad_rationalize(num, den):
     Examples
     ========
 
-    >>> from diofant import sqrt
     >>> rad_rationalize(sqrt(3), 1 + sqrt(2)/3)
     (-sqrt(3) + sqrt(6)/3, -7/9)
     """
@@ -888,9 +876,6 @@ def fraction(expr, exact=False):
     If only one of the numerator/denominator pair is needed then
     use numer(expr) or denom(expr) functions respectively.
 
-    >>> from diofant import Rational, Symbol
-    >>> from diofant.abc import x, y
-
     >>> fraction(x/y)
     (x, y)
     >>> fraction(x)
@@ -914,7 +899,6 @@ def fraction(expr, exact=False):
     flag is unset, then structure this exponent's structure will
     be analyzed and pretty fraction will be returned:
 
-    >>> from diofant import exp
     >>> fraction(2*x**(-y))
     (2, x**y)
 
@@ -990,7 +974,6 @@ def split_surds(expr):
     Examples
     ========
 
-    >>> from diofant import sqrt
     >>> split_surds(3*sqrt(3) + sqrt(5)/7 + sqrt(6) + sqrt(10) + sqrt(15))
     (3, sqrt(2) + sqrt(5) + 3, sqrt(5)/7 + sqrt(10))
     """

@@ -329,8 +329,6 @@ def sub_func_doit(eq, func, new):
     Examples
     ========
 
-    >>> from diofant import Derivative, symbols, Function
-    >>> x, z = symbols('x, z')
     >>> y = Function('y')
 
     >>> sub_func_doit(3*Derivative(y(x), x) - 1, y(x), x)
@@ -487,8 +485,6 @@ def dsolve(eq, func=None, hint="default", simplify=True,
 
         - You can declare the derivative of an unknown function this way:
 
-            >>> from diofant import Function, Derivative
-            >>> from diofant.abc import x  # x is the independent variable
             >>> f = Function("f")(x)  # f is a function of x
             >>> # f_ will be the derivative of f with respect to x
             >>> f_ = Derivative(f, x)
@@ -540,8 +536,6 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     Examples
     ========
 
-    >>> from diofant import Function, Eq, Derivative, sin, cos, symbols, exp, E
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> dsolve(Derivative(f(x), x, x) + 9*f(x), f(x))
     Eq(f(x), C1*sin(3*x) + C2*cos(3*x))
@@ -720,7 +714,6 @@ def solve_init(sols, funcs, constants, init):
     Example
     =======
     >>> # From dsolve(f(x).diff(x) - f(x), f(x))
-    >>> from diofant import symbols, Eq, exp, Function
     >>> f = Function('f')
     >>> x, C1 = symbols('x C1')
     >>> sols = [Eq(f(x), C1*exp(x))]
@@ -897,8 +890,6 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant import Function, Eq
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> classify_ode(Eq(f(x).diff(x), 0), f(x))
     ('separable', '1st_linear', '1st_homogeneous_coeff_best',
@@ -1425,7 +1416,6 @@ def classify_sysode(eq, funcs=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant import Function, Eq, symbols, diff, Derivative
     >>> from diofant.abc import t
     >>> f, x, y = symbols('f, x, y', cls=Function)
     >>> k, l, m, n = symbols('k, l, m, n', Integer=True)
@@ -1972,7 +1962,6 @@ def checksysodesol(eqs, sols, func=None):
     Examples
     ========
 
-    >>> from diofant import Eq, diff, symbols, sin, cos, exp, sqrt, Rational, Function
     >>> C1, C2 = symbols('C1:3')
     >>> t = symbols('t')
     >>> x, y = symbols('x y', cls=Function)
@@ -2062,7 +2051,6 @@ def odesimp(eq, func, order, constants, hint):
     Examples
     ========
 
-    >>> from diofant import sin, symbols, pprint, Function
     >>> x, u2, C1= symbols('x u2 C1')
     >>> f = Function('f')
 
@@ -2252,7 +2240,6 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
     Examples
     ========
 
-    >>> from diofant import Eq, Function, symbols
     >>> x, C1 = symbols('x C1')
     >>> f = Function('f')
     >>> checkodesol(f(x).diff(x), Eq(f(x), C1))
@@ -2471,7 +2458,6 @@ def ode_sol_simplicity(sol, func, trysolving=True):
     such as ``min(listofsolutions, key=lambda i: ode_sol_simplicity(i,
     f(x)))``.
 
-    >>> from diofant import symbols, Function, Eq, tan, cos, sqrt, Integral
     >>> x, C1, C2 = symbols('x, C1, C2')
     >>> f = Function('f')
 
@@ -2678,7 +2664,6 @@ def constantsimp(expr, constants):
     Examples
     ========
 
-    >>> from diofant import symbols
     >>> C1, C2, C3, x, y = symbols('C1, C2, C3, x, y')
     >>> constantsimp(2*C1*x, {C1, C2, C3})
     C1*x
@@ -2771,7 +2756,6 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
     Examples
     ========
 
-    >>> from diofant import symbols, Eq, pprint
     >>> x, C0, C1, C2, C3, C4 = symbols('x C:5')
 
     Only constants in the given range (inclusive) are renumbered;
@@ -2893,7 +2877,6 @@ def ode_1st_exact(eq, func, order, match):
     to be exact is that `\partial{}P/\partial{}y = \partial{}Q/\partial{}x`.
     Then, the solution will be as given below::
 
-        >>> from diofant import Function, Eq, Integral, symbols, pprint
         >>> x, y, t, x0, y0, C1= symbols('x y t x0 y0 C1')
         >>> P, Q, F= map(Function, ['P', 'Q', 'F'])
         >>> pprint(Eq(Eq(F(x, y), Integral(P(t, y), (t, x0, x)) +
@@ -2917,8 +2900,6 @@ def ode_1st_exact(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, cos, sin
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> dsolve(cos(f(x)) - (x*sin(f(x)) - f(x)**2)*f(x).diff(x),
     ...        f(x), hint='1st_exact')
@@ -2963,8 +2944,6 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
     ...               hint='1st_homogeneous_coeff_best', simplify=False),
@@ -3030,8 +3009,6 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     substitution on `Q(x, f(x))` in the differential equation `P(x, f(x)) +
     Q(x, f(x)) f'(x) = 0`, then the general solution is::
 
-        >>> from diofant import Function, pprint
-        >>> from diofant.abc import x
         >>> f, g, h = map(Function, ['f', 'g', 'h'])
         >>> genform = g(f(x)/x) + h(f(x)/x)*f(x).diff(x)
         >>> pprint(genform, use_unicode=False)
@@ -3063,8 +3040,6 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
     ...               hint='1st_homogeneous_coeff_subs_dep_div_indep',
@@ -3124,8 +3099,6 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     substitution on `Q(x, f(x))` in the differential equation `P(x, f(x)) +
     Q(x, f(x)) f'(x) = 0`, then the general solution is:
 
-    >>> from diofant import Function, pprint
-    >>> from diofant.abc import x
     >>> f, g, h = map(Function, ['f', 'g', 'h'])
     >>> genform = g(x/f(x)) + h(x/f(x))*f(x).diff(x)
     >>> pprint(genform, use_unicode=False)
@@ -3159,8 +3132,6 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
     ...               hint='1st_homogeneous_coeff_subs_indep_div_dep',
@@ -3225,8 +3196,6 @@ def homogeneous_order(eq, *symbols):
     Examples
     ========
 
-    >>> from diofant import Function, sqrt
-    >>> from diofant.abc import x, y
     >>> f = Function('f')
     >>> homogeneous_order(f(x), f(x)) is None
     True
@@ -3299,8 +3268,6 @@ def ode_1st_linear(eq, func, order, match):
     integrating factor `e^{\int P(x) \,dx}` will turn the equation into a
     separable equation.  The general solution is::
 
-        >>> from diofant import Function, Eq, pprint, diff, sin
-        >>> from diofant.abc import x
         >>> f, P, Q = map(Function, ['f', 'P', 'Q'])
         >>> genform = Eq(f(x).diff(x) + P(x)*f(x), Q(x))
         >>> pprint(genform, use_unicode=False)
@@ -3356,8 +3323,6 @@ def ode_Bernoulli(eq, func, order, match):
     into one that is linear (see the docstring of
     :py:meth:`~diofant.solvers.ode.ode_1st_linear`).  The general solution is::
 
-        >>> from diofant import Function, Eq, pprint
-        >>> from diofant.abc import x, n
         >>> f, P, Q = map(Function, ['f', 'P', 'Q'])
         >>> genform = Eq(f(x).diff(x) + P(x)*f(x), Q(x)*f(x)**n)
         >>> pprint(genform, use_unicode=False)
@@ -3398,8 +3363,6 @@ def ode_Bernoulli(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, Eq, pprint, log
-    >>> from diofant.abc import x
     >>> f = Function('f')
 
     >>> pprint(dsolve(Eq(x*f(x).diff(x) + f(x), log(x)*f(x)**2),
@@ -3439,8 +3402,7 @@ def ode_Riccati_special_minus2(eq, func, order, match):
     and is valid when neither `a` nor `b` are zero and either `c` or `d` is
     zero.
 
-    >>> from diofant.abc import x, y, a, b, c, d
-    >>> from diofant import pprint, Function
+    >>> from diofant.abc import a, b, c, d
     >>> f = Function('f')
     >>> y = f(x)
     >>> genform = a*y.diff(x) - (b*y**2 + c*y/x + d/x**2)
@@ -3486,8 +3448,6 @@ def ode_Liouville(eq, func, order, match):
 
     The general solution is:
 
-        >>> from diofant import Function, Eq, pprint, diff
-        >>> from diofant.abc import x
         >>> f, g, h = map(Function, ['f', 'g', 'h'])
         >>> genform = Eq(diff(f(x), x, x) + g(f(x))*diff(f(x), x)**2 +
         ...              h(x)*diff(f(x), x), 0)
@@ -3514,8 +3474,6 @@ def ode_Liouville(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, Eq, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(diff(f(x), x, x) + diff(f(x), x)**2/f(x) +
     ...               diff(f(x), x)/x, f(x), hint='Liouville'),
@@ -3563,8 +3521,6 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, pprint
-    >>> from diofant.abc import x, y
     >>> f = Function("f")
     >>> eq = f(x).diff(x, 2) + f(x)
     >>> pprint(dsolve(eq, hint='2nd_power_series_ordinary'), use_unicode=False)
@@ -3722,8 +3678,6 @@ def ode_2nd_power_series_regular(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, pprint
-    >>> from diofant.abc import x, y
     >>> f = Function("f")
     >>> eq = x*(f(x).diff(x, 2)) + 2*(f(x).diff(x)) + x*f(x)
     >>> pprint(dsolve(eq), use_unicode=False)
@@ -3878,8 +3832,6 @@ def _nth_linear_match(eq, func, order):
     Examples
     ========
 
-    >>> from diofant import Function, cos, sin
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> _nth_linear_match(f(x).diff(x, 3) + 2*f(x).diff(x) +
     ... x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
@@ -3928,8 +3880,6 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     :py:class:`~diofant.polys.rootoftools.RootOf` instance will be returned
     instead.
 
-    >>> from diofant import Function, Eq
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> dsolve(4*x**2*f(x).diff(x, 2) + f(x), f(x),
     ...        hint='nth_linear_euler_eq_homogeneous')
@@ -3954,8 +3904,6 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     Examples
     ========
 
-    >>> from diofant import Function, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> eq = f(x).diff(x, 2)*x**2 - 4*f(x).diff(x)*x + 6*f(x)
     >>> pprint(dsolve(eq, f(x),
@@ -4082,8 +4030,6 @@ def ode_nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients(eq, func, o
     Examples
     ========
 
-    >>> from diofant import Function, Derivative, log
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> eq = x**2*Derivative(f(x), x, x) - 2*x*Derivative(f(x), x) + 2*f(x) - log(x)
     >>> dsolve(eq, f(x),
@@ -4159,8 +4105,6 @@ def ode_nth_linear_euler_eq_nonhomogeneous_variation_of_parameters(eq, func, ord
     Examples
     ========
 
-    >>> from diofant import Function, Derivative
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> eq = x**2*Derivative(f(x), x, x) - 2*x*Derivative(f(x), x) + 2*f(x) - x**4
     >>> dsolve(eq, f(x),
@@ -4194,8 +4138,6 @@ def ode_almost_linear(eq, func, order, match):
 
     The general solution is
 
-        >>> from diofant import Function, Eq, pprint
-        >>> from diofant.abc import x, y, n
         >>> f, g, k, l = map(Function, ['f', 'g', 'k', 'l'])
         >>> genform = Eq(f(x)*(l(y).diff(y)) + k(x)*l(y) + g(x))
         >>> pprint(genform, use_unicode=False)
@@ -4222,8 +4164,6 @@ def ode_almost_linear(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, Derivative, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> d = f(x).diff(x)
     >>> eq = x*d + x*f(x) + 1
@@ -4267,9 +4207,6 @@ def _linear_coeff_match(expr, func):
     Examples
     ========
 
-    >>> from diofant import Function
-    >>> from diofant.abc import x
-    >>> from diofant.functions.elementary.trigonometric import sin
     >>> f = Function('f')
     >>> _linear_coeff_match((
     ... (-25*f(x) - 8*x + 62)/(4*f(x) + 11*x - 11)), f(x))
@@ -4359,8 +4296,6 @@ def ode_linear_coefficients(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, Derivative, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> df = f(x).diff(x)
     >>> eq = (x + f(x) + 1)*df + (f(x) - 6*x + 1)
@@ -4396,8 +4331,6 @@ def ode_separable_reduced(eq, func, order, match):
 
     The general solution is:
 
-        >>> from diofant import Function, Eq, pprint
-        >>> from diofant.abc import x, n
         >>> f, g = map(Function, ['f', 'g'])
         >>> genform = f(x).diff(x) + (f(x)/x)*g(x**n*f(x))
         >>> pprint(genform, use_unicode=False)
@@ -4423,8 +4356,6 @@ def ode_separable_reduced(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, Derivative, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> d = f(x).diff(x)
     >>> eq = (x - x**2*f(x))*d - f(x)
@@ -4478,8 +4409,6 @@ def ode_1st_power_series(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, Derivative, pprint, exp
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> eq = exp(x)*(f(x).diff(x)) - f(x)
     >>> pprint(dsolve(eq, hint='1st_power_series'), use_unicode=False)
@@ -4558,8 +4487,6 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     :py:class:`~diofant.polys.rootoftools.RootOf` instance will be return
     instead.
 
-    >>> from diofant import Function, Eq
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> dsolve(f(x).diff(x, 5) + 10*f(x).diff(x) - 2*f(x), f(x),
     ... hint='nth_linear_constant_coeff_homogeneous')
@@ -4589,8 +4516,6 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     Examples
     ========
 
-    >>> from diofant import Function, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 4) + 2*f(x).diff(x, 3) -
     ...               2*f(x).diff(x, 2) - 6*f(x).diff(x) + 5*f(x), f(x),
@@ -4720,8 +4645,6 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     Examples
     ========
 
-    >>> from diofant import Function, pprint, exp, cos
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 2) + 2*f(x).diff(x) + f(x) -
     ...               4*exp(-x)*x**2 + cos(2*x), f(x),
@@ -4879,8 +4802,6 @@ def _undetermined_coefficients_match(expr, x):
     Examples
     ========
 
-    >>> from diofant import log, exp
-    >>> from diofant.abc import x
     >>> _undetermined_coefficients_match(9*x*exp(x) + exp(-x), x)
     {'test': True, 'trialset': {E**(-x), E**x, E**x*x}}
     >>> _undetermined_coefficients_match(log(x), x)
@@ -5042,8 +4963,6 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     Examples
     ========
 
-    >>> from diofant import Function, pprint, exp, log
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 3) - 3*f(x).diff(x, 2) +
     ...        3*f(x).diff(x) - f(x) - exp(x)*log(x), f(x),
@@ -5142,8 +5061,6 @@ def ode_separable(eq, func, order, match):
     separable equation `F(x, y)` into the proper form `P(x)\cdot{}Q(y)`.  The
     general solution is::
 
-        >>> from diofant import Function, Eq, pprint
-        >>> from diofant.abc import x
         >>> a, b, c, d, f = map(Function, ['a', 'b', 'c', 'd', 'f'])
         >>> genform = Eq(a(x)*b(f(x))*f(x).diff(x), c(x)*d(f(x)))
         >>> pprint(genform, use_unicode=False)
@@ -5164,8 +5081,6 @@ def ode_separable(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, Eq
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(Eq(f(x)*f(x).diff(x) + x, 3*x*f(x)**2), f(x),
     ...               hint='separable', simplify=False), use_unicode=False)
@@ -5298,8 +5213,6 @@ def ode_lie_group(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, exp, pprint
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x) + 2*x*f(x) - x*exp(-x**2), f(x),
     ...               hint='lie_group'), use_unicode=False)
@@ -5441,8 +5354,6 @@ def _lie_group_remove(coords):
     Examples
     ========
 
-    >>> from diofant import Function
-    >>> from diofant.abc import x, y
     >>> F = Function("F")
     >>> eq = x**2*y
     >>> _lie_group_remove(eq)
@@ -5503,8 +5414,6 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
 
     The infinitesimals can be found by solving the following PDE:
 
-        >>> from diofant import Function, diff, Eq, pprint
-        >>> from diofant.abc import x, y
         >>> xi, eta, h = map(Function, ['xi', 'eta', 'h'])
         >>> h = h(x, y)  # dy/dx = h
         >>> eta = eta(x, y)
@@ -5531,8 +5440,6 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
     Examples
     ========
 
-    >>> from diofant import Function, diff, exp
-    >>> from diofant.abc import x
     >>> f = Function('f')
     >>> eta = Function('eta')
     >>> xi = Function('xi')

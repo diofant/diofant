@@ -60,9 +60,6 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-    >>> from diofant import sin, tan, cos, sinh, cosh, tanh
-
     Suppose you want to simplify ``sin(x)*cos(x)``. Naively, nothing happens:
 
     >>> ex = sin(x)*cos(x)
@@ -437,8 +434,6 @@ def trigsimp(expr, **opts):
     Examples
     ========
 
-    >>> from diofant import sin, cos, log
-    >>> from diofant.abc import x, y
     >>> e = 2*sin(x)**2 + 2*cos(x)**2
     >>> trigsimp(e)
     2
@@ -453,7 +448,6 @@ def trigsimp(expr, **opts):
 
     The old trigsimp routine can be accessed as with method 'old'.
 
-    >>> from diofant import coth, tanh
     >>> t = 3*tanh(x)**7 - 2/coth(x)**7
     >>> trigsimp(t, method='old') == t
     True
@@ -515,9 +509,6 @@ def exptrigsimp(expr, simplify=True):
 
     Examples
     ========
-
-    >>> from diofant import exp, cosh, sinh
-    >>> from diofant.abc import z
 
     >>> exptrigsimp(exp(z) + exp(-z))
     2*cosh(z)
@@ -626,8 +617,6 @@ def trigsimp_old(expr, **opts):
     Examples
     ========
 
-    >>> from diofant import sin, cos, log, cosh, sinh, tan, cot
-    >>> from diofant.abc import x, y
     >>> e = 2*sin(x)**2 + 2*cos(x)**2
     >>> trigsimp(e, old=True)
     2
@@ -1078,8 +1067,6 @@ def futrig(e, **kwargs):
     Examples
     ========
 
-    >>> from diofant import tan, sinh, tanh
-    >>> from diofant.abc import x
     >>> trigsimp(1/tan(x)**2)
     tan(x)**(-2)
 

@@ -8,7 +8,6 @@ class FunctionMatrix(MatrixExpr):
 
     This class is an alternative to SparseMatrix
 
-    >>> from diofant import symbols, Lambda, MatMul, Matrix
     >>> i, j = symbols('i j')
     >>> X = FunctionMatrix(3, 3, Lambda((i, j), i + j))
     >>> Matrix(X)

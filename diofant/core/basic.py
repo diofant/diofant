@@ -102,13 +102,10 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import I, Rational, Symbol, root, sqrt
-
         >>> sorted([Rational(1, 2), I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
-        >>> x = Symbol('x')
-        >>> [x, 1/x, 1/x**2, x**2, sqrt(x), root(x, 4), x**Rational(3, 2)]
+        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
@@ -152,9 +149,6 @@ class Basic(object):
 
         Examples
         ========
-
-        >>> from diofant import Dummy
-        >>> from diofant.abc import x, y
 
         >>> u = Dummy('u')
 
@@ -222,8 +216,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import I, pi, sin
-        >>> from diofant.abc import x, y
         >>> e = 1 + x + 2*sin(y + I*pi)
         >>> e.atoms()
         {1, 2, I, pi, x, y}
@@ -231,7 +223,6 @@ class Basic(object):
         If one or more types are given, the results will contain only
         those types of atoms.
 
-        >>> from diofant import Number, NumberSymbol, Symbol
         >>> e.atoms(Symbol)
         {x, y}
 
@@ -257,7 +248,6 @@ class Basic(object):
         ``One``, a special type of diofant atom, while ``type(Integer(2))``
         is type ``Integer`` and will find all integers in an expression:
 
-        >>> from diofant import Integer
         >>> e.atoms(Integer(1))
         {1}
 
@@ -268,7 +258,6 @@ class Basic(object):
         diofant type can be listed as an argument and those types of "atoms"
         as found in scanning the arguments of the expression recursively:
 
-        >>> from diofant import Function, Mul
         >>> from diofant.core.function import AppliedUndef
 
         >>> (1 + x + 2*sin(y + I*pi)).atoms(Mul)
@@ -313,8 +302,6 @@ class Basic(object):
 
         however you can use
 
-        >>> from diofant import Lambda
-        >>> from diofant.abc import x, y, z
         >>> (x + Lambda(y, 2*y)).rcall(z)
         x + 2*z
         """
@@ -337,7 +324,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> a = 2*x
         >>> a.func
         <class 'diofant.core.mul.Mul'>
@@ -357,20 +343,10 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import cot
-        >>> from diofant.abc import x, y
-
         >>> cot(x).args
         (x,)
-
-        >>> cot(x).args[0]
-        x
-
         >>> (x*y).args
         (x, y)
-
-        >>> (x*y).args[1]
-        y
         """
         return self._args
 
@@ -405,8 +381,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import pi, exp, limit, oo
-        >>> from diofant.abc import x, y
         >>> (1 + x*y).subs(x, pi)
         pi*y + 1
         >>> (1 + x*y).subs({x: pi, y: 2})
@@ -448,7 +422,6 @@ class Basic(object):
         default_sort_key to break any ties. All other iterables are left
         unsorted.
 
-        >>> from diofant import sqrt, sin, cos
         >>> from diofant.abc import a, b, c, d, e
 
         >>> expr = sqrt(sin(2*x))*sin(exp(x)*x)*cos(2*x) + sin(2*x)
@@ -576,9 +549,6 @@ class Basic(object):
         should be applied wherein a search for replacements is made
         amongst the arguments of self.
 
-        >>> from diofant import Add
-        >>> from diofant.abc import x, y, z
-
         Examples
         ========
 
@@ -704,7 +674,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import symbols, pi, exp
         >>> x, y, z = symbols('x y z')
         >>> (1 + x*y).xreplace({x: pi})
         pi*y + 1
@@ -731,7 +700,6 @@ class Basic(object):
         following, subs(x, y) would not change x since it is a bound symbol,
         but xreplace does:
 
-        >>> from diofant import Integral
         >>> Integral(x, (x, 1, 2*x)).xreplace({x: y})
         Integral(y, (y, 1, 2*y))
 
@@ -778,8 +746,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import sin
-        >>> from diofant.abc import x, y, z
         >>> e = x**2 + sin(x*y)
         >>> e.has(z)
         False
@@ -827,8 +793,6 @@ class Basic(object):
 
         Initial setup
 
-            >>> from diofant import log, sin, cos, tan, Wild, Mul, Add
-            >>> from diofant.abc import x, y
             >>> f = log(sin(x)) + tan(sin(x**2))
 
         1.1. type -> type
@@ -1032,7 +996,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import symbols, Wild
         >>> a, b, c = symbols('a b c')
         >>> x = Wild('x')
         >>> Basic(a + x, x)._matches(Basic(a + b, c)) is None
@@ -1085,8 +1048,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> from diofant import Wild
-        >>> from diofant.abc import x, y
         >>> p = Wild("p")
         >>> q = Wild("q")
         >>> e = (x + y)**(x + y)
@@ -1129,9 +1090,6 @@ class Basic(object):
 
         Examples
         ========
-
-        >>> from diofant import Integral
-        >>> from diofant.abc import x
 
         >>> 2*Integral(x, x)
         2*Integral(x, x)
@@ -1189,9 +1147,6 @@ class Basic(object):
 
         Examples
         ========
-
-        >>> from diofant import sin, exp
-        >>> from diofant.abc import x
 
         Unspecified pattern:
 
@@ -1282,7 +1237,6 @@ def _aresame(a, b):
 
     To Diofant, 2.0 == 2:
 
-    >>> from diofant import Integer, Float
     >>> 2.0 == Integer(2)
     True
 
@@ -1337,7 +1291,6 @@ class preorder_traversal:
     Examples
     ========
 
-    >>> from diofant import symbols
     >>> x, y, z = symbols('x y z')
 
     The nodes are returned in the order that they are encountered unless key
@@ -1376,8 +1329,6 @@ class preorder_traversal:
         Examples
         ========
 
-        >>> from diofant.core import symbols
-        >>> x, y, z = symbols('x y z')
         >>> pt = preorder_traversal((x+y*z)*z)
         >>> for i in pt:
         ...     print(i)

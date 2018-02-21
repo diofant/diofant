@@ -35,7 +35,6 @@ class NDimArray:
 
     Create an N-dim array from a matrix:
 
-    >>> from diofant import Matrix
     >>> a = Matrix([[1, 2], [3, 4]])
     >>> a
     Matrix([
@@ -194,7 +193,6 @@ class NDimArray:
         ========
 
         >>> from diofant.tensor.array import ImmutableDenseNDimArray
-        >>> from diofant.abc import x, y
         >>> M = ImmutableDenseNDimArray([[x, y], [1, x*y]])
         >>> M.diff(x)
         [[1, 0], [0, y]]

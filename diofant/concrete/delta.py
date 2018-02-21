@@ -42,8 +42,7 @@ def _extract_delta(expr, index):
     Examples
     ========
 
-    >>> from diofant import KroneckerDelta
-    >>> from diofant.abc import x, y, i, j, k
+    >>> from diofant.abc import i, j
 
     >>> _extract_delta(4*x*y*KroneckerDelta(i, j), i)
     (KroneckerDelta(i, j), 4*x*y)
@@ -246,10 +245,7 @@ def deltasummation(f, limit, no_piecewise=False):
     Examples
     ========
 
-    >>> from diofant import oo, symbols
-    >>> from diofant.abc import k
     >>> i, j = symbols('i, j', integer=True, finite=True)
-    >>> from diofant import KroneckerDelta, Piecewise
     >>> deltasummation(KroneckerDelta(i, k), (k, -oo, oo))
     1
     >>> deltasummation(KroneckerDelta(i, k), (k, 0, oo))

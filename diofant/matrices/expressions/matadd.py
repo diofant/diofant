@@ -18,7 +18,6 @@ class MatAdd(MatrixExpr):
 
     MatAdd inherits from and operates like Diofant Add
 
-    >>> from diofant import MatrixSymbol
     >>> A = MatrixSymbol('A', 5, 5)
     >>> B = MatrixSymbol('B', 5, 5)
     >>> C = MatrixSymbol('C', 5, 5)
@@ -95,7 +94,6 @@ def combine(cnt, mat):
 def merge_explicit(matadd):
     """ Merge explicit MatrixBase arguments
 
-    >>> from diofant import MatrixSymbol, eye, Matrix, pprint
     >>> A = MatrixSymbol('A', 2, 2)
     >>> B = eye(2)
     >>> C = Matrix([[1, 2], [3, 4]])

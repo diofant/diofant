@@ -28,7 +28,6 @@ class Vector(BasisDependent):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> v = 3*C.i + 4*C.j + 5*C.k
         >>> v.components
@@ -72,7 +71,6 @@ class Vector(BasisDependent):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> C.i.dot(C.j)
         0
@@ -148,7 +146,6 @@ class Vector(BasisDependent):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> C.i.cross(C.j)
         C.k
@@ -225,7 +222,6 @@ class Vector(BasisDependent):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> N = CoordSysCartesian('N')
         >>> N.i.outer(N.j)
         (N.i|N.j)
@@ -266,7 +262,6 @@ class Vector(BasisDependent):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> from diofant.abc import a, b, c
         >>> v = a*C.i + b*C.j + c*C.k
@@ -292,7 +287,6 @@ class Vector(BasisDependent):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> R1 = CoordSysCartesian('R1')
         >>> R2 = CoordSysCartesian('R2')
         >>> v = R1.i + R2.i

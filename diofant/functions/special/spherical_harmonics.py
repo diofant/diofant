@@ -29,8 +29,6 @@ class Ynm(Function):
     Examples
     ========
 
-    >>> from diofant import Symbol
-    >>> from diofant.abc import n, m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -47,7 +45,6 @@ class Ynm(Function):
 
     as well as for the angles
 
-    >>> from diofant import simplify
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -90,7 +87,6 @@ class Ynm(Function):
     We can differentiate the functions with respect
     to both angles
 
-    >>> from diofant import diff
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -102,9 +98,9 @@ class Ynm(Function):
 
     Further we can compute the complex conjugation
 
-    >>> from diofant import conjugate
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
+    >>> m = Symbol('m')
 
     >>> conjugate(Ynm(n, m, theta, phi))
     (-1)**(2*m)*E**(-2*I*m*phi)*Ynm(n, m, theta, phi)
@@ -112,7 +108,6 @@ class Ynm(Function):
     To get back the well known expressions in spherical
     coordinates we use full expansion
 
-    >>> from diofant import expand_func
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 

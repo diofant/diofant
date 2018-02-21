@@ -57,8 +57,6 @@ class Piecewise(Function):
     Examples
     ========
 
-      >>> from diofant import log
-      >>> from diofant.abc import x
       >>> f = x**2
       >>> g = log(x)
       >>> p = Piecewise((0, x<-1), (f, x<=1), (g, True))
@@ -539,7 +537,6 @@ def piecewise_fold(expr):
     Examples
     ========
 
-    >>> from diofant.abc import x
     >>> p = Piecewise((x, x < 1), (1, x >= 1))
     >>> piecewise_fold(x*p)
     Piecewise((x**2, x < 1), (x, x >= 1))

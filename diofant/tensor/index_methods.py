@@ -44,7 +44,6 @@ def _remove_repeated(inds):
 def _get_indices_Mul(expr, return_dummies=False):
     """Determine the outer indices of a Mul object.
 
-    >>> from diofant.tensor.indexed import IndexedBase, Idx
     >>> i, j, k = map(Idx, ['i', 'j', 'k'])
     >>> x = IndexedBase('x')
     >>> y = IndexedBase('y')
@@ -93,7 +92,6 @@ def _get_indices_Pow(expr):
     contractable with its own base.  Note however, that indices in the same
     exponent can be contracted with each other.
 
-    >>> from diofant import Pow, exp, IndexedBase, Idx
     >>> A = IndexedBase('A')
     >>> x = IndexedBase('x')
     >>> i, j, k = map(Idx, ['i', 'j', 'k'])
@@ -130,7 +128,6 @@ def _get_indices_Add(expr):
 
     FIXME: Add support for Numpy broadcasting
 
-    >>> from diofant.tensor.indexed import IndexedBase, Idx
     >>> i, j, k = map(Idx, ['i', 'j', 'k'])
     >>> x = IndexedBase('x')
     >>> y = IndexedBase('y')
@@ -165,8 +162,6 @@ def get_indices(expr):
     Examples
     ========
 
-    >>> from diofant import symbols
-    >>> from diofant.tensor import IndexedBase, Idx
     >>> x, y, A = map(IndexedBase, ['x', 'y', 'A'])
     >>> i, j, a, z = symbols('i j a z', integer=True)
 
@@ -277,8 +272,6 @@ def get_contraction_structure(expr):
     Examples
     ========
 
-    >>> from diofant import symbols, default_sort_key
-    >>> from diofant.tensor import IndexedBase, Idx
     >>> x, y, A = map(IndexedBase, ['x', 'y', 'A'])
     >>> i, j, k, l = map(Idx, ['i', 'j', 'k', 'l'])
     >>> get_contraction_structure(x[i]*y[i] + A[j, j])
@@ -332,7 +325,6 @@ def get_contraction_structure(expr):
     represented with a string in the above examples, but it is easy to iterate
     over:
 
-    >>> from diofant import Expr
     >>> for key in d:
     ...     if isinstance(key, Expr):
     ...         continue

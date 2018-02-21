@@ -493,8 +493,6 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         Examples
         ========
 
-        >>> from diofant.domains import ZZ
-
         >>> _, x, y, z = field("x y z", ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)
         2*x/(z + 1)

@@ -87,8 +87,6 @@ def compare(a, b, x):
     Examples
     ========
 
-    >>> from diofant import Symbol, exp
-
     >>> x = Symbol('x', real=True, positive=True)
     >>> m = Symbol('m', real=True, positive=True)
 
@@ -120,8 +118,6 @@ def mrv(e, x):
 
     Examples
     ========
-
-    >>> from diofant import Symbol, exp, log
 
     >>> x = Symbol('x', real=True, positive=True)
 
@@ -206,8 +202,6 @@ def limitinf(e, x):
     Examples
     ========
 
-    >>> from diofant import Symbol, exp, log
-
     >>> x = Symbol('x', real=True, positive=True)
 
     >>> limitinf(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x)
@@ -265,8 +259,6 @@ def mrv_leadterm(e, x):
     Examples
     ========
 
-    >>> from diofant import Symbol, exp
-
     >>> x = Symbol('x', real=True, positive=True)
 
     >>> mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x)
@@ -319,8 +311,6 @@ def rewrite(e, x, w):
 
     Examples
     ========
-
-    >>> from diofant import Symbol, exp
 
     >>> x = Symbol('x', real=True, positive=True)
     >>> m = Symbol('m', real=True, positive=True)

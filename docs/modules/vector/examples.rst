@@ -33,7 +33,6 @@ loss of generality
 
 Define point A with respect to O
 
-  >>> from diofant import symbols
   >>> a1, a2, a3 = symbols('a1 a2 a3')
   >>> A = O.locate_new('A', a1*Sys.i + a2*Sys.j + a3*Sys.k)
 
@@ -91,7 +90,6 @@ The scalar field `f` and the measure numbers of the vector field
 coordinate system in general.
 Hence, define Diofant functions that way.
 
-  >>> from diofant import symbols, Function
   >>> v1, v2, v3, f = symbols('v1 v2 v3 f', cls=Function)
 
 ``v1``, ``v2`` and ``v3`` are the `X`, `Y` and `Z`

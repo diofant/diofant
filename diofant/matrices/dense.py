@@ -31,7 +31,6 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> from diofant import Matrix, I
         >>> m = Matrix([
         ... [1, 2 + I],
         ... [3, 4    ]])
@@ -105,7 +104,6 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(3, 3, range(9))
         >>> m
         Matrix([
@@ -199,7 +197,6 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> from diofant import Matrix, I
         >>> m = Matrix(((1, 2 + I), (3, 4)))
         >>> m
         Matrix([
@@ -313,9 +310,6 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
-        >>> from diofant.abc import x
-        >>> from diofant import cos
         >>> A = Matrix([x*(x - 1), 0])
         >>> B = Matrix([x**2 - x, 0])
         >>> A == B
@@ -426,7 +420,6 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(2, 2, lambda i, j: i*2+j)
         >>> m
         Matrix([
@@ -450,7 +443,6 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(2, 3, lambda i, j: 1)
         >>> m
         Matrix([
@@ -475,7 +467,6 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> from diofant import ImmutableMatrix
         >>> X = ImmutableMatrix([[1, 2], [3, 4]])
         >>> Y = X.as_mutable()
         >>> Y[1, 1] = 5 # Can set values in Y
@@ -576,7 +567,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         Examples
         ========
 
-        >>> from diofant import Matrix, I
         >>> m = Matrix(((1, 2+I), (3, 4)))
         >>> m
         Matrix([
@@ -629,7 +619,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
         >>> M = Matrix([[0, 1], [2, 3], [4, 5]])
         >>> I = eye(3)
         >>> I[:3, :2] = M
@@ -781,7 +770,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
         >>> M = Matrix([[0, 1], [1, 0]])
         >>> M
         Matrix([
@@ -808,7 +796,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
         >>> M = Matrix([[1, 0], [1, 0]])
         >>> M
         Matrix([
@@ -1030,8 +1017,6 @@ def rot_axis3(theta):
     Examples
     ========
 
-    >>> from diofant import pi
-
     A rotation of pi/3 (60 degrees):
 
     >>> theta = pi/3
@@ -1073,8 +1058,6 @@ def rot_axis2(theta):
 
     Examples
     ========
-
-    >>> from diofant import pi
 
     A rotation of pi/3 (60 degrees):
 
@@ -1118,8 +1101,6 @@ def rot_axis1(theta):
     Examples
     ========
 
-    >>> from diofant import pi
-
     A rotation of pi/3 (60 degrees):
 
     >>> theta = pi/3
@@ -1162,7 +1143,6 @@ def rot_axis1(theta):
 def matrix_multiply_elementwise(A, B):
     """Return the Hadamard product (elementwise product) of A and B
 
-    >>> from diofant.matrices import Matrix
     >>> A = Matrix([[0, 1, 2], [3, 4, 5]])
     >>> B = Matrix([[1, 10, 100], [100, 10, 1]])
     >>> matrix_multiply_elementwise(A, B)
@@ -1246,7 +1226,6 @@ def diag(*values, **kwargs):
     Examples
     ========
 
-    >>> from diofant.matrices import Matrix
     >>> diag(1, 2, 3)
     Matrix([
     [1, 0, 0],
@@ -1261,7 +1240,6 @@ def diag(*values, **kwargs):
     The diagonal elements can be matrices; diagonal filling will
     continue on the diagonal from the last element of the matrix:
 
-    >>> from diofant.abc import x, y, z
     >>> a = Matrix([x, y, z])
     >>> b = Matrix([[1, 2], [3, 4]])
     >>> c = Matrix([[5, 6]])
@@ -1309,7 +1287,6 @@ def diag(*values, **kwargs):
 
     >>> type(diag(1))
     <class 'diofant.matrices.dense.MutableDenseMatrix'>
-    >>> from diofant.matrices import ImmutableMatrix
     >>> type(diag(1, cls=ImmutableMatrix))
     <class 'diofant.matrices.immutable.ImmutableMatrix'>
 
@@ -1378,7 +1355,6 @@ def jordan_cell(eigenval, n):
     Examples
     ========
 
-    >>> from diofant.abc import x
     >>> jordan_cell(x, 4)
     Matrix([
     [x, 1, 0, 0],
@@ -1403,8 +1379,6 @@ def hessian(f, varlist, constraints=[]):
     Examples
     ========
 
-    >>> from diofant import Function, pprint
-    >>> from diofant.abc import x, y
     >>> f = Function('f')(x, y)
     >>> g1 = Function('g')(x, y)
     >>> g2 = x**2 + 3*y
@@ -1548,7 +1522,6 @@ def casoratian(seqs, n, zero=True):
     to a generating set of a recurrence to factor out linearly
     dependent solutions and return a basis:
 
-    >>> from diofant import Symbol, factorial
     >>> n = Symbol('n', integer=True)
 
     Exponential and factorial are linearly independent:

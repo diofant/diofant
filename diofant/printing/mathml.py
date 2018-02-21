@@ -386,7 +386,6 @@ def print_mathml(expr, **settings):
     Examples
     ========
 
-    >>> from diofant.abc import x
     >>> print_mathml(x+1)  #doctest: +NORMALIZE_WHITESPACE
     <apply>
         <plus/>

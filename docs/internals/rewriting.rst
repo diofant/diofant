@@ -18,8 +18,6 @@ of more general functions is possible. Below are listed all currently available
 expand rules.
 
 Expanding of arithmetic expressions involving products and powers:
-    >>> from diofant import *
-    >>> x, y, z = symbols('x y z')
     >>> ((x + y)*(x - y)).expand(basic=True)
     x**2 - y**2
     >>> ((x + y + z)**2).expand(basic=True)
@@ -66,9 +64,6 @@ Common Subexpression Detection and Collection
 Before evaluating a large expression, it is often useful to identify common
 subexpressions, collect them and evaluate them at once. This is implemented
 in the :func:`~diofant.simplify.cse_main.cse` function. Examples::
-
-    >>> from diofant import cse, sqrt, sin, pprint
-    >>> from diofant.abc import x
 
     >>> pprint(cse(sqrt(sin(x))), use_unicode=True)
     ⎛    ⎡  ________⎤⎞

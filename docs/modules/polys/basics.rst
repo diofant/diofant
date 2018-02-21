@@ -12,8 +12,6 @@ Introduction
 This tutorial tries to give an overview of the functionality concerning
 polynomials within Diofant. All code examples assume::
 
-    >>> from diofant import *
-    >>> x, y, z = symbols('x y z')
     >>> init_printing(pretty_print=True, use_unicode=True, wrap_line=False, no_global=True)
 
 Basic functionality
@@ -200,8 +198,6 @@ Solving Equations
 
 We have (incomplete) methods to find the complex or even symbolic roots of
 polynomials and to solve some systems of polynomial equations::
-
-    >>> from diofant import roots, solve_poly_system
 
     >>> solve(x**3 + 2*x + 3, x)
     ⎡         ⎧         ____  ⎫  ⎧         ____  ⎫⎤

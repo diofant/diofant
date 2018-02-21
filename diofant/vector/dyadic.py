@@ -149,7 +149,6 @@ class Dyadic(BasisDependent):
         [1, 0, 0],
         [2, 0, 0],
         [0, 0, 0]])
-        >>> from diofant import Symbol
         >>> q = Symbol('q')
         >>> P = N.orient_new_axis('P', q, N.k)
         >>> d.to_matrix(N, P)

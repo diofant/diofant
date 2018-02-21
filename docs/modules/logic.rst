@@ -16,8 +16,6 @@ You can build Boolean expressions with the standard python operators ``&``
 (:class:`~diofant.logic.boolalg.And`), ``|`` (:class:`~diofant.logic.boolalg.Or`),
 ``~`` (:class:`~diofant.logic.boolalg.Not`)::
 
-    >>> from diofant import *
-    >>> x, y = symbols('x y')
     >>> y | (x & y)
     Or(And(x, y), y)
     >>> x | y
@@ -108,10 +106,6 @@ values for ``x`` that make this sentence ``True``. On the other hand, ``(x
 | y) & (x | ~y) & (~x | y)`` is satisfiable with both ``x`` and ``y`` being
 ``True``.
 
-    >>> from diofant.logic.inference import satisfiable
-    >>> from diofant import Symbol
-    >>> x = Symbol('x')
-    >>> y = Symbol('y')
     >>> satisfiable(x & ~x)
     False
     >>> satisfiable((x | y) & (x | ~y) & (~x | y))

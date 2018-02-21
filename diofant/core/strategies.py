@@ -51,7 +51,6 @@ def rm_id(isid):
 
     isid - fn :: x -> Bool  --- whether or not this element is an identity
 
-    >>> from diofant import Basic
     >>> remove_zeros = rm_id(lambda x: x==0)
     >>> remove_zeros(Basic(1, 0, 2))
     Basic(1, 2)
@@ -79,9 +78,6 @@ def rm_id(isid):
 
 def glom(key, count, combine):
     """ Create a rule to conglomerate identical args
-
-    >>> from diofant import Add
-    >>> from diofant.abc import x
 
     >>> key     = lambda x: x.as_coeff_Mul()[1]
     >>> count   = lambda x: x.as_coeff_Mul()[0]
@@ -116,7 +112,6 @@ def glom(key, count, combine):
 def sort(key):
     """ Create a rule to sort by a key function
 
-    >>> from diofant import Basic
     >>> sort_rl = sort(str)
     >>> sort_rl(Basic(3, 1, 2))
     Basic(1, 2, 3)
@@ -133,7 +128,6 @@ def sort(key):
 def unpack(expr):
     """ Rule to unpack singleton args
 
-    >>> from diofant import Basic
     >>> unpack(Basic(2))
     2
     """

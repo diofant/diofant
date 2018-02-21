@@ -23,7 +23,6 @@ def smoothness(n):
     The smoothness of n is the largest prime factor of n; the power-
     smoothness is the largest divisor raised to its multiplicity.
 
-    >>> from diofant.ntheory.factor_ import smoothness
     >>> smoothness(2**7*3**2)
     (3, 128)
     >>> smoothness(2**4*13)
@@ -59,7 +58,6 @@ def smoothness_p(n, m=-1, power=0, visual=None):
     factor govern the results that are obtained from the p +/- 1 type factoring
     methods.
 
-        >>> from diofant.ntheory.factor_ import smoothness_p, factorint
         >>> smoothness_p(10431, m=1)
         (1, [(3, (2, 2, 4)), (19, (1, 5, 5)), (61, (1, 31, 31))])
         >>> smoothness_p(10431)
@@ -154,7 +152,6 @@ def trailing(n):
     Examples
     ========
 
-    >>> from diofant import trailing
     >>> trailing(128)
     7
     >>> trailing(63)
@@ -189,11 +186,9 @@ def multiplicity(p, n):
     Examples
     ========
 
-    >>> from diofant.ntheory import multiplicity
-    >>> from diofant.core.numbers import Rational as R
     >>> [multiplicity(5, n) for n in [8, 5, 25, 125, 250]]
     [0, 1, 2, 3, 3]
-    >>> multiplicity(3, R(1, 9))
+    >>> multiplicity(3, Rational(1, 9))
     -2
     """
     try:
@@ -265,7 +260,6 @@ def perfect_power(n, candidates=None, big=True, factor=True):
     Examples
     ========
 
-    >>> from diofant import perfect_power
     >>> perfect_power(16)
     (2, 4)
     >>> perfect_power(16, big = False)
@@ -368,7 +362,6 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     For a given function, very different leader-loop values can be obtained
     so it is a good idea to allow for retries:
 
-    >>> from diofant.ntheory.generate import cycle_length
     >>> n = 16843009
     >>> F = lambda x: (2048*pow(x, 2, n) + 32767)%n
     >>> for s in range(5):
@@ -412,7 +405,6 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     Examples
     ========
 
-    >>> from diofant import pollard_rho
     >>> n = 16843009
     >>> F = lambda x: (2048*pow(x, 2, n) + 32767) % n
     >>> pollard_rho(n, F=F)
@@ -486,7 +478,6 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     below it is stated that if gcd(a**M - 1, n) = N then a**M % q**r is 1
     for every prime power divisor of N. But consider the following:
 
-        >>> from diofant.ntheory.factor_ import smoothness_p, pollard_pm1
         >>> n = 257*1009
         >>> smoothness_p(n)
         (-1, [(257, (1, 2, 256)), (1009, (1, 7, 16))])
@@ -511,8 +502,6 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     work had a gcd value not equal to ``n`` but equal to one of the
     factors:
 
-        >>> from diofant.core.numbers import ilcm, igcd
-        >>> from diofant import factorint, Pow
         >>> M = 1
         >>> for i in range(2, 256):
         ...     M = ilcm(M, i)
@@ -542,7 +531,6 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
 
     With the default smoothness bound, this number can't be cracked:
 
-        >>> from diofant.ntheory import pollard_pm1, primefactors
         >>> pollard_pm1(21477639576571)
 
     Increasing the smoothness bound helps:
@@ -552,8 +540,6 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
 
     Looking at the smoothness of the factors of this number we find:
 
-        >>> from diofant.utilities import flatten
-        >>> from diofant.ntheory.factor_ import smoothness_p, factorint
         >>> print(smoothness_p(21477639576571, visual=1))
         p**i=4410317**1 has p-1 B=1787, B-pow=1787
         p**i=4869863**1 has p-1 B=2434931, B-pow=2434931
@@ -591,7 +577,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
            A Computational Perspective", Springer, 2nd edition, 236-238
     .. [2] https://web.archive.org/web/20150716201437/http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
-    .. [3] http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
+    .. [3] https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
     """
 
     n = int(n)
@@ -794,7 +780,6 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     the prime factors of ``n`` as keys and their respective multiplicities
     as values. For example:
 
-    >>> from diofant.ntheory import factorint
     >>> factorint(2000)    # 2000 = (2**4) * (5**3)
     {2: 4, 5: 3}
     >>> factorint(65537)   # This number is prime
@@ -820,7 +805,6 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     This number, for example, has two small factors and a huge
     semi-prime factor that cannot be reduced easily:
 
-    >>> from diofant.ntheory import isprime
     >>> a = 1407633717262338957430697921446883
     >>> f = factorint(a, limit=10000)
     >>> f
@@ -839,7 +823,6 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     If ``visual`` is set to ``True``, then it will return a visual
     factorization of the integer.  For example:
 
-    >>> from diofant import pprint
     >>> pprint(factorint(4200, visual=True), use_unicode=False)
      3  1  2  1
     2 *3 *5 *7
@@ -854,7 +837,6 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     You can easily switch between the two forms by sending them back to
     factorint:
 
-    >>> from diofant import Mul, Pow
     >>> regular = factorint(1764); regular
     {2: 2, 3: 2, 7: 2}
     >>> pprint(factorint(regular), use_unicode=False)
@@ -1164,8 +1146,6 @@ def factorrat(rat, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     the prime factors of ``r`` as keys and their respective multiplicities
     as values. For example:
 
-    >>> from diofant.ntheory import factorrat
-    >>> from diofant.core import Rational
     >>> factorrat(Rational(8, 9))  # = (2**3) * (3**-2)
     {2: 3, 3: -2}
     >>> factorrat(Rational(-1, 987))  # = -1 * (3**-1) * (7**-1) * (47**-1)
@@ -1215,7 +1195,6 @@ def primefactors(n, limit=None, verbose=False):
     Examples
     ========
 
-    >>> from diofant.ntheory import primefactors, factorint, isprime
     >>> primefactors(6)
     [2, 3]
     >>> primefactors(-5)
@@ -1280,7 +1259,6 @@ def divisors(n, generator=False):
     Examples
     ========
 
-    >>> from diofant import divisors, divisor_count
     >>> divisors(24)
     [1, 2, 3, 4, 6, 8, 12, 24]
     >>> divisor_count(24)
@@ -1327,7 +1305,6 @@ def divisor_count(n, modulus=1):
     Examples
     ========
 
-    >>> from diofant import divisor_count
     >>> divisor_count(6)
     4
 
@@ -1377,7 +1354,6 @@ def antidivisors(n, generator=False):
     Examples
     ========
 
-    >>> from diofant.ntheory.factor_ import antidivisors
     >>> antidivisors(24)
     [7, 16]
 
@@ -1410,7 +1386,6 @@ def antidivisor_count(n):
     Examples
     ========
 
-    >>> from diofant.ntheory.factor_ import antidivisor_count
     >>> antidivisor_count(13)
     4
     >>> antidivisor_count(27)
@@ -1432,7 +1407,6 @@ def antidivisor_count(n):
 class totient(Function):
     """Calculate the Euler totient function phi(n)
 
-    >>> from diofant.ntheory import totient
     >>> totient(1)
     1
     >>> totient(25)
@@ -1496,7 +1470,6 @@ class divisor_sigma(Function):
     Examples
     ========
 
-    >>> from diofant.ntheory import divisor_sigma
     >>> divisor_sigma(18, 0)
     6
     >>> divisor_sigma(39, 1)

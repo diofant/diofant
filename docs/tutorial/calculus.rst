@@ -3,8 +3,6 @@
 ==========
 
 ..
-    >>> from diofant import *
-    >>> x, y, z = symbols('x y z')
     >>> init_printing(pretty_print=True, use_unicode=True)
 
 This section covers how to do basic calculus tasks such as derivatives,

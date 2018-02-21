@@ -18,7 +18,6 @@ def evaluate(x):
     Examples
     ========
 
-    >>> from diofant.abc import x
     >>> x + x
     2*x
     >>> with evaluate(False):

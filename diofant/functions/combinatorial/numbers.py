@@ -59,8 +59,6 @@ class fibonacci(Function):
     Examples
     ========
 
-    >>> from diofant import Symbol
-
     >>> [fibonacci(x) for x in range(11)]
     [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
     >>> fibonacci(5, Symbol('t'))
@@ -355,8 +353,6 @@ class bell(Function):
     Examples
     ========
 
-    >>> from diofant import Symbol, symbols
-
     >>> [bell(n) for n in range(11)]
     [1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975]
     >>> bell(30)
@@ -485,8 +481,6 @@ class harmonic(Function):
     Examples
     ========
 
-    >>> from diofant import oo
-
     >>> [harmonic(n) for n in range(6)]
     [0, 1, 3/2, 11/6, 25/12, 137/60]
     >>> [harmonic(n, 2) for n in range(6)]
@@ -494,16 +488,12 @@ class harmonic(Function):
     >>> harmonic(oo, 2)
     pi**2/6
 
-    >>> from diofant import Symbol, Sum
-    >>> n = Symbol("n")
-
     >>> harmonic(n).rewrite(Sum)
     Sum(1/_k, (_k, 1, n))
 
     We can evaluate harmonic numbers for all integral and positive
     rational arguments:
 
-    >>> from diofant import expand_func, simplify
     >>> harmonic(8)
     761/280
     >>> harmonic(11)
@@ -530,9 +520,6 @@ class harmonic(Function):
 
     We can rewrite harmonic numbers in terms of polygamma functions:
 
-    >>> from diofant import digamma, polygamma
-    >>> m = Symbol("m")
-
     >>> harmonic(n).rewrite(digamma)
     polygamma(0, n + 1) + EulerGamma
 
@@ -547,8 +534,6 @@ class harmonic(Function):
 
     Integer offsets in the argument can be pulled out:
 
-    >>> from diofant import expand_func
-
     >>> expand_func(harmonic(n+4))
     harmonic(n) + 1/(n + 4) + 1/(n + 3) + 1/(n + 2) + 1/(n + 1)
 
@@ -556,8 +541,6 @@ class harmonic(Function):
     harmonic(n) - 1/(n - 1) - 1/(n - 2) - 1/(n - 3) - 1/n
 
     Some limits can be computed as well:
-
-    >>> from diofant import limit, oo
 
     >>> limit(harmonic(n), n, oo)
     oo
@@ -717,10 +700,10 @@ class euler(Function):
     Examples
     ========
 
-    >>> from diofant import Symbol
+    >>> from diofant.functions import euler
+
     >>> [euler(n) for n in range(10)]
     [1, 0, -1, 0, 5, 0, -61, 0, 1385, 0]
-    >>> n = Symbol("n")
     >>> euler(n+2*n)
     euler(3*n)
 
@@ -782,13 +765,8 @@ class catalan(Function):
     Examples
     ========
 
-    >>> from diofant import (Symbol, binomial, gamma, hyper, polygamma,
-    ...                      diff, combsimp, Rational, I)
-
     >>> [catalan(i) for i in range(1, 10)]
     [1, 2, 5, 14, 42, 132, 429, 1430, 4862]
-
-    >>> n = Symbol("n", integer=True)
 
     >>> catalan(n)
     catalan(n)
@@ -926,7 +904,6 @@ class genocchi(Function):
     Examples
     ========
 
-    >>> from diofant import Symbol
     >>> [genocchi(n) for n in range(1, 9)]
     [1, -1, 0, 1, 0, -3, 0, 17]
     >>> n = Symbol('n', integer=True, positive=True)
@@ -1048,6 +1025,7 @@ def nP(n, k=None, replacement=False):
     ========
 
     >>> from diofant.utilities.iterables import multiset_permutations, multiset
+
     >>> nP(3, 2)
     6
     >>> nP('abc', 2) == nP(multiset('abc'), 2) == 6
@@ -1155,7 +1133,6 @@ def _AOP_product(n):
     Examples
     ========
 
-    >>> from diofant.abc import x
     >>> n = (2, 2, 3)  # e.g. aabbccc
     >>> prod = ((x**2 + x + 1)*(x**2 + x + 1)*(x**3 + x**2 + x + 1)).expand()
     >>> c = _AOP_product(n); dict(c)
@@ -1361,7 +1338,6 @@ def stirling(n, k, d=None, kind=2, signed=False):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> from diofant.utilities.iterables import (multiset_partitions,
     ...                                          permutations, subsets)
 
@@ -1391,7 +1367,6 @@ def stirling(n, k, d=None, kind=2, signed=False):
 
     Reduced second kind:
 
-    >>> from diofant import oo
     >>> def delta(p):
     ...    if len(p) == 1:
     ...        return oo

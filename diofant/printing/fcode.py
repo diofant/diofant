@@ -441,7 +441,6 @@ def fcode(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> from diofant import symbols, Rational, sin, ceiling, floor
     >>> x, tau = symbols("x, tau")
     >>> fcode((2*tau)**Rational(7, 2))
     '      8*sqrt(2.0d0)*tau**(7.0d0/2.0d0)'
@@ -468,7 +467,6 @@ def fcode(expr, assign_to=None, **settings):
     This is to prevent generating an expression that may not evaluate to
     anything.
 
-    >>> from diofant import Piecewise
     >>> expr = Piecewise((x + 1, x > 0), (x, True))
     >>> print(fcode(expr, tau))
           if (x > 0) then
@@ -482,7 +480,6 @@ def fcode(expr, assign_to=None, **settings):
     ``contract=False`` will just print the assignment expression that should be
     looped over:
 
-    >>> from diofant import Eq, IndexedBase, Idx
     >>> len_y = 5
     >>> y = IndexedBase('y', shape=[len_y])
     >>> t = IndexedBase('t', shape=[len_y])
@@ -496,7 +493,6 @@ def fcode(expr, assign_to=None, **settings):
     must be provided to ``assign_to``. Note that any expression that can be
     generated normally can also exist inside a Matrix:
 
-    >>> from diofant import Matrix, MatrixSymbol
     >>> mat = Matrix([x**2, Piecewise((x + 1, x > 0), (x, True)), sin(x)])
     >>> A = MatrixSymbol('A', 3, 1)
     >>> print(fcode(mat, A))

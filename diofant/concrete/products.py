@@ -57,8 +57,7 @@ class Product(ExprWithIntLimits):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, i, k, m, n, x
-    >>> from diofant import factorial, oo
+    >>> from diofant.abc import a, b, i
 
     >>> Product(k, (k, 1, m))
     Product(k, (k, 1, m))
@@ -82,7 +81,6 @@ class Product(ExprWithIntLimits):
 
     But we can approach the infinite product by a limit of finite products:
 
-    >>> from diofant import limit
     >>> W2 = Product(2*i/(2*i-1)*2*i/(2*i+1), (i, 1, n))
     >>> W2
     Product(4*i**2/((2*i - 1)*(2*i + 1)), (i, 1, n))
@@ -93,8 +91,6 @@ class Product(ExprWithIntLimits):
     pi/2
 
     By the same formula we can compute sin(pi/2):
-
-    >>> from diofant import pi, gamma, simplify
 
     >>> P = pi * x * Product(1 - x**2/k**2, (k, 1, n))
     >>> P = P.subs(x, pi/2)
@@ -332,8 +328,7 @@ class Product(ExprWithIntLimits):
         Examples
         ========
 
-        >>> from diofant import simplify, RisingFactorial, gamma, Sum
-        >>> from diofant.abc import x, y, a, b, c, d
+        >>> from diofant.abc import a, b, c, d
 
         >>> P = Product(x, (x, a, b))
         >>> Pr = P.reverse_order(x)
@@ -421,8 +416,7 @@ def product(*args, **kwargs):
     If it cannot compute the product, it returns an unevaluated Product object.
     Repeated products can be computed by introducing additional symbols tuples::
 
-    >>> from diofant import symbols
-    >>> i, n, m, k = symbols('i n m k', integer=True)
+    >>> i = symbols('i', integer=True)
 
     >>> product(i, (i, 1, k))
     factorial(k)

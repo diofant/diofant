@@ -14,7 +14,6 @@ Examples
 --------
 Diofant can integrate a vast array of functions. It can integrate polynomial functions::
 
-    >>> from diofant import *
     >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
     >>> x = Symbol('x')
     >>> integrate(x**2 + x + 1, x)

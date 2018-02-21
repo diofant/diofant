@@ -34,8 +34,6 @@ def _unevaluated_Mul(*args):
     Examples
     ========
 
-    >>> from diofant import sqrt, Integer, Float
-    >>> from diofant.abc import x
     >>> a = _unevaluated_Mul(*[Float(3.0), x, Integer(2)])
     >>> a.args[0]
     6.00000000000000
@@ -95,8 +93,6 @@ class Mul(AssocOp):
               -  Sometimes terms are not combined as one would like:
                  {c.f. https://github.com/sympy/sympy/issues/4596}
 
-                >>> from diofant import sqrt
-                >>> from diofant.abc import x, y, z
                 >>> 2*(x + 1) # this is the 2-arg Mul behavior
                 2*x + 2
                 >>> y*(x + 1)*2
@@ -632,7 +628,6 @@ class Mul(AssocOp):
         - if you want the coefficient when self is treated as an Add
           then use self.as_coeff_add()[0]
 
-        >>> from diofant.abc import x, y
         >>> (3*x*y).as_two_terms()
         (3, x*y)
         """
@@ -1441,7 +1436,6 @@ class Mul(AssocOp):
         Examples
         ========
 
-        >>> from diofant import sqrt
         >>> (-3*sqrt(2)*(2 - 2*sqrt(2))).as_content_primitive()
         (6, -sqrt(2)*(-sqrt(2) + 1))
 
@@ -1469,9 +1463,6 @@ class Mul(AssocOp):
         Examples
         ========
 
-        >>> from diofant import sin, cos
-        >>> from diofant.abc import x, y
-
         >>> (2*x*y*sin(x)*cos(x)).as_ordered_factors()
         [2, x, y, sin(x), cos(x)]
 
@@ -1492,7 +1483,6 @@ def prod(a, start=1):
     Examples
     ========
 
-    >>> from diofant import Integer
     >>> prod(range(3))
     0
     >>> type(_) is int
@@ -1522,9 +1512,6 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
 
     Examples
     ========
-
-    >>> from diofant.abc import x, y
-    >>> from diofant import S, Integer
 
     >>> _keep_coeff(S.Half, x + 2)
     (x + 2)/2

@@ -16,7 +16,6 @@ interact freely with Diofant's Matrix Expression module.
 You can turn any Matrix-like object into an :class:`~diofant.matrices.immutable.ImmutableMatrix` by calling
 the constructor
 
-    >>> from diofant import Matrix, ImmutableMatrix
     >>> M = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     >>> M[1, 1] = 0
     >>> IM = ImmutableMatrix(M)

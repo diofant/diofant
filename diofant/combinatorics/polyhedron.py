@@ -59,9 +59,8 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
-        >>> from diofant.abc import w, x, y, z
+        >>> from diofant.abc import w
 
         Here we construct the Polyhedron object for a tetrahedron.
 
@@ -257,9 +256,6 @@ class Polyhedron(Basic):
         not a proper polyhedron, but the Polyhedron class can be used to
         represent it in a way that helps to visualize the Rubik's cube.
 
-        >>> from diofant.utilities.iterables import flatten, unflatten
-        >>> from diofant import symbols, sstr
-        >>> from diofant.combinatorics import RubikGroup
         >>> facelets = flatten([symbols(s+'1:5') for s in 'UFRBLD'])
         >>> def show():
         ...     pairs = unflatten(r2.corners, 2)
@@ -421,7 +417,6 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation, Cycle
         >>> tetrahedron.array_form
         [0, 1, 2, 3]
 
@@ -525,7 +520,6 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> cube.corners
         (0, 1, 2, 3, 4, 5, 6, 7)
         >>> cube.rotate(0)
@@ -635,7 +629,6 @@ def _pgroup_calcs():
     of the polyhedron, here we also demonstrate the powers of the given
     permutations create a complete group for the tetrahedron:
 
-    >>> from diofant.combinatorics import Permutation, PermutationGroup
     >>> for h in polyhedra[:1]:
     ...     G = h.pgroup
     ...     perms = set()

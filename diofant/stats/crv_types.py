@@ -106,7 +106,6 @@ def ContinuousRV(symbol, density, set=Interval(-oo, oo, True, True)):
     Examples
     ========
 
-    >>> from diofant import Symbol, sqrt, exp, pi
     >>> from diofant.stats import P, E
 
     >>> x = Symbol("x")
@@ -171,7 +170,6 @@ def Arcsin(name, a=0, b=1):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol, simplify
 
     >>> a = Symbol("a", extended_real=True)
     >>> b = Symbol("b", extended_real=True)
@@ -237,7 +235,6 @@ def Benini(name, alpha, beta, sigma):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
@@ -311,7 +308,6 @@ def Beta(name, alpha, beta):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify, pprint, expand_func
 
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
@@ -378,7 +374,6 @@ def BetaPrime(name, alpha, beta):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol, pprint
 
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
@@ -438,7 +433,6 @@ def Cauchy(name, x0, gamma):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol
 
     >>> x0 = Symbol("x0")
     >>> gamma = Symbol("gamma", positive=True)
@@ -495,8 +489,7 @@ def Chi(name, k):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, std
-    >>> from diofant import Symbol, simplify
+    >>> from diofant.stats import density, E, std, Chi
 
     >>> k = Symbol("k", integer=True)
     >>> z = Symbol("z")
@@ -557,7 +550,6 @@ def ChiNoncentral(name, k, l):
     ========
 
     >>> from diofant.stats import density, E, std
-    >>> from diofant import Symbol, simplify
 
     >>> k = Symbol("k", integer=True)
     >>> l = Symbol("l")
@@ -616,7 +608,6 @@ def ChiSquared(name, k):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify, combsimp, expand_func
 
     >>> k = Symbol("k", integer=True, positive=True)
     >>> z = Symbol("z")
@@ -681,7 +672,6 @@ def Dagum(name, p, a, b):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol, simplify
 
     >>> p = Symbol("p", positive=True)
     >>> b = Symbol("b", positive=True)
@@ -731,7 +721,6 @@ def Erlang(name, k, l):
     ========
 
     >>> from diofant.stats import density, cdf, E, variance
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> k = Symbol("k", integer=True, positive=True)
     >>> l = Symbol("l", positive=True)
@@ -813,9 +802,7 @@ def Exponential(name, rate):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E
-    >>> from diofant.stats import variance, std, skewness
-    >>> from diofant import Symbol
+    >>> from diofant.stats import density, cdf, E, variance, std, skewness
 
     >>> l = Symbol("lambda", positive=True)
     >>> z = Symbol("z")
@@ -902,7 +889,6 @@ def FDistribution(name, d1, d2):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> d1 = Symbol("d1", positive=True)
     >>> d2 = Symbol("d2", positive=True)
@@ -971,7 +957,6 @@ def FisherZ(name, d1, d2):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> d1 = Symbol("d1", positive=True)
     >>> d2 = Symbol("d2", positive=True)
@@ -1046,7 +1031,6 @@ def Frechet(name, a, s=1, m=0):
     ========
 
     >>> from diofant.stats import density, E, std
-    >>> from diofant import Symbol, simplify
 
     >>> a = Symbol("a", positive=True)
     >>> s = Symbol("s", positive=True)
@@ -1114,7 +1098,6 @@ def Gamma(name, k, theta):
     ========
 
     >>> from diofant.stats import density, cdf, E, variance
-    >>> from diofant import Symbol, pprint, simplify
 
     >>> k = Symbol("k", positive=True)
     >>> theta = Symbol("theta", positive=True)
@@ -1204,7 +1187,6 @@ def GammaInverse(name, a, b):
     ========
 
     >>> from diofant.stats import density, cdf, E, variance
-    >>> from diofant import Symbol, pprint
 
     >>> a = Symbol("a", positive=True)
     >>> b = Symbol("b", positive=True)
@@ -1274,7 +1256,6 @@ def Kumaraswamy(name, a, b):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> a = Symbol("a", positive=True)
     >>> b = Symbol("b", positive=True)
@@ -1333,7 +1314,6 @@ def Laplace(name, mu, b):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol
 
     >>> mu = Symbol("mu")
     >>> b = Symbol("b", positive=True)
@@ -1389,7 +1369,6 @@ def Logistic(name, mu, s):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol
 
     >>> mu = Symbol("mu", extended_real=True)
     >>> s = Symbol("s", positive=True)
@@ -1453,7 +1432,6 @@ def LogNormal(name, mean, std):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> mu = Symbol("mu", extended_real=True)
     >>> sigma = Symbol("sigma", positive=True)
@@ -1528,7 +1506,6 @@ def Maxwell(name, a):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify
 
     >>> a = Symbol("a", positive=True)
     >>> z = Symbol("z")
@@ -1594,7 +1571,6 @@ def Nakagami(name, mu, omega):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> mu = Symbol("mu", positive=True)
     >>> omega = Symbol("omega", positive=True)
@@ -1672,7 +1648,6 @@ def Normal(name, mean, std):
     ========
 
     >>> from diofant.stats import density, E, std, cdf, skewness
-    >>> from diofant import Symbol, simplify, pprint, factor, together, factor_terms
 
     >>> mu = Symbol("mu")
     >>> sigma = Symbol("sigma", positive=True)
@@ -1764,7 +1739,6 @@ def Pareto(name, xm, alpha):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol
 
     >>> xm = Symbol("xm", positive=True)
     >>> beta = Symbol("beta", positive=True)
@@ -1829,7 +1803,6 @@ def QuadraticU(name, a, b):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify, factor, pprint
 
     >>> a = Symbol("a", extended_real=True)
     >>> b = Symbol("b", extended_real=True)
@@ -1905,7 +1878,6 @@ def RaisedCosine(name, mu, s):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> mu = Symbol("mu", extended_real=True)
     >>> s = Symbol("s", positive=True)
@@ -1970,7 +1942,6 @@ def Rayleigh(name, sigma):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify
 
     >>> sigma = Symbol("sigma", positive=True)
     >>> z = Symbol("z")
@@ -2032,7 +2003,6 @@ def StudentT(name, nu):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> nu = Symbol("nu", positive=True)
     >>> z = Symbol("z")
@@ -2109,7 +2079,6 @@ def Triangular(name, a, b, c):
     ========
 
     >>> from diofant.stats import density, E
-    >>> from diofant import Symbol, pprint
 
     >>> a = Symbol("a")
     >>> b = Symbol("b")
@@ -2207,7 +2176,6 @@ def Uniform(name, left, right):
     ========
 
     >>> from diofant.stats import density, cdf, E, variance, skewness
-    >>> from diofant import Symbol, simplify
 
     >>> a = Symbol("a", negative=True)
     >>> b = Symbol("b", positive=True)
@@ -2285,7 +2253,6 @@ def UniformSum(name, n):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import Symbol, pprint
 
     >>> n = Symbol("n", integer=True)
     >>> z = Symbol("z")
@@ -2358,7 +2325,6 @@ def VonMises(name, mu, k):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify, pprint
 
     >>> mu = Symbol("mu")
     >>> k = Symbol("k", positive=True)
@@ -2432,7 +2398,6 @@ def Weibull(name, alpha, beta):
     ========
 
     >>> from diofant.stats import density, E, variance
-    >>> from diofant import Symbol, simplify
 
     >>> l = Symbol("lambda", positive=True)
     >>> k = Symbol("k", positive=True)
@@ -2500,7 +2465,6 @@ def WignerSemicircle(name, R):
     ========
 
     >>> from diofant.stats import density, E
-    >>> from diofant import Symbol, simplify
 
     >>> R = Symbol("R", positive=True)
     >>> z = Symbol("z")

@@ -54,7 +54,6 @@ class AxisOrienter(Orienter):
         ========
 
         >>> from diofant.vector import CoordSysCartesian
-        >>> from diofant import symbols
         >>> q1 = symbols('q1')
         >>> N = CoordSysCartesian('N')
         >>> orienter = AxisOrienter(q1, N.i + 2 * N.j)
@@ -197,7 +196,6 @@ class BodyOrienter(ThreeAngleOrienter):
         ========
 
         >>> from diofant.vector import CoordSysCartesian
-        >>> from diofant import symbols
         >>> q1, q2, q3 = symbols('q1 q2 q3')
         >>> N = CoordSysCartesian('N')
 
@@ -268,7 +266,6 @@ class SpaceOrienter(ThreeAngleOrienter):
         ========
 
         >>> from diofant.vector import CoordSysCartesian
-        >>> from diofant import symbols
         >>> q1, q2, q3 = symbols('q1 q2 q3')
         >>> N = CoordSysCartesian('N')
 
@@ -356,7 +353,6 @@ class QuaternionOrienter(Orienter):
         ========
 
         >>> from diofant.vector import CoordSysCartesian
-        >>> from diofant import symbols
         >>> q0, q1, q2, q3 = symbols('q0 q1 q2 q3')
         >>> N = CoordSysCartesian('N')
         >>> q_orienter = QuaternionOrienter(q0, q1, q2, q3)

@@ -44,7 +44,6 @@ class Del(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> C.delop.gradient(9)
         (Derivative(9, C.x))*C.i + (Derivative(9, C.y))*C.j + (Derivative(9, C.z))*C.k
@@ -85,7 +84,6 @@ class Del(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> C.delop.dot(C.x*C.i)
         Derivative(C.x, C.x)
@@ -125,7 +123,6 @@ class Del(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> v = C.x*C.y*C.z * (C.i + C.j + C.k)
         >>> C.delop.cross(v, doit = True)

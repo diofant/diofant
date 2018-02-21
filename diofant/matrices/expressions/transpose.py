@@ -13,8 +13,6 @@ class Transpose(MatrixExpr):
     Examples
     ========
 
-    >>> from diofant.matrices import MatrixSymbol
-    >>> from diofant.functions import transpose
     >>> A = MatrixSymbol('A', 3, 5)
     >>> B = MatrixSymbol('B', 5, 3)
     >>> Transpose(A)

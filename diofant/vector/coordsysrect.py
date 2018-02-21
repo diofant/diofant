@@ -219,7 +219,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant import symbols
         >>> q1 = symbols('q1')
         >>> N = CoordSysCartesian('N')
         >>> A = N.orient_new_axis('A', q1, N.i)
@@ -296,7 +295,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant import Symbol, cos, sin
         >>> A = CoordSysCartesian('A')
         >>> q = Symbol('q')
         >>> B = A.orient_new_axis('B', q, A.k)
@@ -388,31 +386,26 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant import symbols
         >>> q0, q1, q2, q3 = symbols('q0 q1 q2 q3')
         >>> N = CoordSysCartesian('N')
 
         Using an AxisOrienter
 
-        >>> from diofant.vector import AxisOrienter
         >>> axis_orienter = AxisOrienter(q1, N.i + 2 * N.j)
         >>> A = N.orient_new('A', [axis_orienter])
 
         Using a BodyOrienter
 
-        >>> from diofant.vector import BodyOrienter
         >>> body_orienter = BodyOrienter(q1, q2, q3, '123')
         >>> B = N.orient_new('B', [body_orienter])
 
         Using a SpaceOrienter
 
-        >>> from diofant.vector import SpaceOrienter
         >>> space_orienter = SpaceOrienter(q1, q2, q3, '312')
         >>> C = N.orient_new('C', [space_orienter])
 
         Using a QuaternionOrienter
 
-        >>> from diofant.vector import QuaternionOrienter
         >>> q_orienter = QuaternionOrienter(q0, q1, q2, q3)
         >>> D = N.orient_new('D', [q_orienter])
 
@@ -475,7 +468,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant import symbols
         >>> q1 = symbols('q1')
         >>> N = CoordSysCartesian('N')
         >>> B = N.orient_new_axis('B', q1, N.i + 2 * N.j)
@@ -523,7 +515,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant import symbols
         >>> q1, q2, q3 = symbols('q1 q2 q3')
         >>> N = CoordSysCartesian('N')
 
@@ -596,7 +587,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant import symbols
         >>> q1, q2, q3 = symbols('q1 q2 q3')
         >>> N = CoordSysCartesian('N')
 
@@ -663,7 +653,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant import symbols
         >>> q0, q1, q2, q3 = symbols('q0 q1 q2 q3')
         >>> N = CoordSysCartesian('N')
         >>> B = N.orient_new_quaternion('B', q0, q1, q2, q3)

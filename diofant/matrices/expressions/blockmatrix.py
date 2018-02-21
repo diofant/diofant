@@ -21,7 +21,6 @@ class BlockMatrix(MatrixExpr):
     The submatrices are stored in a Diofant Matrix object but accessed as part of
     a Matrix Expression
 
-    >>> from diofant import MatrixSymbol, symbols, Identity, ZeroMatrix
     >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
@@ -121,8 +120,7 @@ class BlockMatrix(MatrixExpr):
         Examples
         ========
 
-        >>> from diofant import MatrixSymbol, ZeroMatrix
-        >>> from diofant.abc import l, m, n
+        >>> from diofant.abc import l
         >>> X = MatrixSymbol('X', n, n)
         >>> Y = MatrixSymbol('Y', m, m)
         >>> Z = MatrixSymbol('Z', n, m)
@@ -180,7 +178,6 @@ class BlockDiagMatrix(BlockMatrix):
     """
     A BlockDiagMatrix is a BlockMatrix with matrices only along the diagonal
 
-    >>> from diofant import MatrixSymbol, symbols, Identity
     >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
@@ -247,7 +244,6 @@ class BlockDiagMatrix(BlockMatrix):
 def block_collapse(expr):
     """Evaluates a block matrix expression
 
-    >>> from diofant import MatrixSymbol, symbols, Identity, Matrix, ZeroMatrix
     >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
@@ -410,7 +406,6 @@ def bounds(sizes):
 def blockcut(expr, rowsizes, colsizes):
     """ Cut a matrix expression into Blocks
 
-    >>> from diofant import ImmutableMatrix
     >>> M = ImmutableMatrix(4, 4, range(16))
     >>> B = blockcut(M, (1, 3), (1, 3))
     >>> type(B).__name__

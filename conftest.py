@@ -5,6 +5,7 @@ import warnings
 import hypothesis
 import pytest
 
+import diofant
 from diofant.core.cache import USE_CACHE, clear_cache
 from diofant.core.compatibility import GROUND_TYPES
 
@@ -80,3 +81,13 @@ def enable_mpl_agg_backend():
         del mpl
     except ImportError:
         pass
+
+
+@pytest.fixture(autouse=True)
+def add_np(doctest_namespace):
+    for sym in (diofant.symbols('x y z t') +
+                diofant.symbols('k m n', integer=True) +
+                diofant.symbols('f g h', cls=diofant.Function)):
+        doctest_namespace[str(sym)] = sym
+    for name in dir(diofant):
+        doctest_namespace[name] = getattr(diofant, name)

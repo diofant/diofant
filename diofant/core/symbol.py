@@ -288,8 +288,6 @@ class Wild(BaseSymbol):
     Examples
     ========
 
-    >>> from diofant import WildFunction, cos, pi
-    >>> from diofant.abc import x, y, z
     >>> a = Wild('a')
     >>> x.match(a)
     {a_: x}
@@ -403,9 +401,6 @@ def symbols(names, **args):
     from ``names`` argument, which can be a comma or whitespace delimited
     string, or a sequence of strings::
 
-        >>> from diofant import Function
-
-        >>> x, y, z = symbols('x,y,z')
         >>> a, b, c = symbols('a b c')
 
     The type of output is dependent on the properties of input arguments::

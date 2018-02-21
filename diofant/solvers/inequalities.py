@@ -23,8 +23,6 @@ def solve_poly_inequality(poly, rel):
     Examples
     ========
 
-    >>> from diofant.abc import x
-
     >>> solve_poly_inequality(Poly(x, x, domain='ZZ'), '==')
     [{0}]
     >>> solve_poly_inequality(Poly(x**2 - 1, x, domain='ZZ'), '!=')
@@ -104,8 +102,6 @@ def solve_poly_inequalities(polys):
     Examples
     ========
 
-    >>> from diofant.abc import x
-
     >>> solve_poly_inequalities(((Poly(x**2 - 3), ">"),
     ...                          (Poly(-x**2 + 1), ">")))
     (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
@@ -119,8 +115,6 @@ def solve_rational_inequalities(eqs):
 
     Examples
     ========
-
-    >>> from diofant.abc import x
 
     >>> solve_rational_inequalities([[((Poly(-x + 1), Poly(1, x)), '>='),
     ...                               ((Poly(-x + 1), Poly(1, x)), '<=')]])

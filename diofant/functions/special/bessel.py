@@ -109,7 +109,6 @@ class besselj(BesselBase):
 
     Create a Bessel function object:
 
-    >>> from diofant.abc import z, n
     >>> b = besselj(n, z)
 
     Differentiate it:
@@ -221,7 +220,6 @@ class bessely(BesselBase):
     Examples
     ========
 
-    >>> from diofant.abc import z, n
     >>> b = bessely(n, z)
     >>> b.diff(z)
     bessely(n - 1, z)/2 - bessely(n + 1, z)/2
@@ -297,7 +295,6 @@ class besseli(BesselBase):
     Examples
     ========
 
-    >>> from diofant.abc import z, n
     >>> besseli(n, z).diff(z)
     besseli(n - 1, z)/2 + besseli(n + 1, z)/2
 
@@ -388,7 +385,6 @@ class besselk(BesselBase):
     Examples
     ========
 
-    >>> from diofant.abc import z, n
     >>> besselk(n, z).diff(z)
     -besselk(n - 1, z)/2 - besselk(n + 1, z)/2
 
@@ -460,7 +456,6 @@ class hankel1(BesselBase):
     Examples
     ========
 
-    >>> from diofant.abc import z, n
     >>> hankel1(n, z).diff(z)
     hankel1(n - 1, z)/2 - hankel1(n + 1, z)/2
 
@@ -503,7 +498,6 @@ class hankel2(BesselBase):
     Examples
     ========
 
-    >>> from diofant.abc import z, n
     >>> hankel2(n, z).diff(z)
     hankel2(n - 1, z)/2 - hankel2(n + 1, z)/2
 
@@ -583,8 +577,6 @@ class jn(SphericalBesselBase):
     Examples
     ========
 
-    >>> from diofant import Symbol, sin, cos, expand_func
-    >>> z = Symbol("z")
     >>> print(jn(0, z).expand(func=True))
     sin(z)/z
     >>> jn(1, z).expand(func=True) == sin(z)/z**2 - cos(z)/z
@@ -634,9 +626,7 @@ class yn(SphericalBesselBase):
     Examples
     ========
 
-    >>> from diofant import Symbol, sin, cos, expand_func
-    >>> z = Symbol("z")
-    >>> print(expand_func(yn(0, z)))
+    >>> expand_func(yn(0, z))
     -cos(z)/z
     >>> expand_func(yn(1, z)) == -cos(z)/z**2-sin(z)/z
     True
@@ -785,8 +775,6 @@ class airyai(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant.abc import z
-
     >>> airyai(z)
     airyai(z)
 
@@ -794,7 +782,6 @@ class airyai(AiryBase):
 
     >>> airyai(0)
     3**(1/3)/(3*gamma(2/3))
-    >>> from diofant import oo
     >>> airyai(oo)
     0
     >>> airyai(-oo)
@@ -802,13 +789,11 @@ class airyai(AiryBase):
 
     The Airy function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(airyai(z))
     airyai(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(airyai(z), z)
     airyaiprime(z)
     >>> diff(airyai(z), z, 2)
@@ -816,7 +801,6 @@ class airyai(AiryBase):
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(airyai(z), z, 0, 3)
     3**(5/6)*gamma(1/3)/(6*pi) - 3**(1/6)*z*gamma(2/3)/(2*pi) + O(z**3)
 
@@ -828,7 +812,6 @@ class airyai(AiryBase):
 
     Rewrite Ai(z) in terms of hypergeometric functions:
 
-    >>> from diofant import hyper
     >>> airyai(z).rewrite(hyper)
     -3**(2/3)*z*hyper((), (4/3,), z**3/9)/(3*gamma(1/3)) + 3**(1/3)*hyper((), (2/3,), z**3/9)/(3*gamma(2/3))
 
@@ -947,8 +930,6 @@ class airybi(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant.abc import z
-
     >>> airybi(z)
     airybi(z)
 
@@ -956,7 +937,6 @@ class airybi(AiryBase):
 
     >>> airybi(0)
     3**(5/6)/(3*gamma(2/3))
-    >>> from diofant import oo
     >>> airybi(oo)
     oo
     >>> airybi(-oo)
@@ -964,13 +944,11 @@ class airybi(AiryBase):
 
     The Airy function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(airybi(z))
     airybi(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(airybi(z), z)
     airybiprime(z)
     >>> diff(airybi(z), z, 2)
@@ -978,7 +956,6 @@ class airybi(AiryBase):
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(airybi(z), z, 0, 3)
     3**(1/3)*gamma(1/3)/(2*pi) + 3**(2/3)*z*gamma(2/3)/(2*pi) + O(z**3)
 
@@ -990,7 +967,6 @@ class airybi(AiryBase):
 
     Rewrite Bi(z) in terms of hypergeometric functions:
 
-    >>> from diofant import hyper
     >>> airybi(z).rewrite(hyper)
     3**(1/6)*z*hyper((), (4/3,), z**3/9)/gamma(1/3) + 3**(5/6)*hyper((), (2/3,), z**3/9)/(3*gamma(2/3))
 
@@ -1160,8 +1136,6 @@ class airyaiprime(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant.abc import z
-
     >>> airyaiprime(z)
     airyaiprime(z)
 
@@ -1169,19 +1143,16 @@ class airyaiprime(AiryBase):
 
     >>> airyaiprime(0)
     -3**(2/3)/(3*gamma(1/3))
-    >>> from diofant import oo
     >>> airyaiprime(oo)
     0
 
     The Airy function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(airyaiprime(z))
     airyaiprime(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(airyaiprime(z), z)
     z*airyai(z)
     >>> diff(airyaiprime(z), z, 2)
@@ -1189,7 +1160,6 @@ class airyaiprime(AiryBase):
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(airyaiprime(z), z, 0, 3)
     -3**(2/3)/(3*gamma(1/3)) + 3**(1/3)*z**2/(6*gamma(2/3)) + O(z**3)
 
@@ -1201,7 +1171,6 @@ class airyaiprime(AiryBase):
 
     Rewrite Ai'(z) in terms of hypergeometric functions:
 
-    >>> from diofant import hyper
     >>> airyaiprime(z).rewrite(hyper)
     3**(1/3)*z**2*hyper((), (5/3,), z**3/9)/(6*gamma(2/3)) - 3**(2/3)*hyper((), (1/3,), z**3/9)/(3*gamma(1/3))
 
@@ -1307,8 +1276,6 @@ class airybiprime(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant.abc import z
-
     >>> airybiprime(z)
     airybiprime(z)
 
@@ -1316,7 +1283,6 @@ class airybiprime(AiryBase):
 
     >>> airybiprime(0)
     3**(1/6)/gamma(1/3)
-    >>> from diofant import oo
     >>> airybiprime(oo)
     oo
     >>> airybiprime(-oo)
@@ -1324,13 +1290,11 @@ class airybiprime(AiryBase):
 
     The Airy function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(airybiprime(z))
     airybiprime(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(airybiprime(z), z)
     z*airybi(z)
     >>> diff(airybiprime(z), z, 2)
@@ -1338,7 +1302,6 @@ class airybiprime(AiryBase):
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(airybiprime(z), z, 0, 3)
     3**(1/6)/gamma(1/3) + 3**(5/6)*z**2/(6*gamma(2/3)) + O(z**3)
 
@@ -1350,7 +1313,6 @@ class airybiprime(AiryBase):
 
     Rewrite Bi'(z) in terms of hypergeometric functions:
 
-    >>> from diofant import hyper
     >>> airybiprime(z).rewrite(hyper)
     3**(5/6)*z**2*hyper((), (5/3,), z**3/9)/(6*gamma(2/3)) + 3**(1/6)*hyper((), (1/3,), z**3/9)/gamma(1/3)
 

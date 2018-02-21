@@ -96,7 +96,6 @@ def fastlog(x):
     Examples
     ========
 
-    >>> from diofant import log
     >>> s, m, e = 0, 5, 1
     >>> bc = bitcount(m)
     >>> n = [1, -1][s]*m*2**e
@@ -113,7 +112,6 @@ def pure_complex(v):
     """Return a and b if v matches a + I*b where b is not zero and
     a and b are Numbers, else None.
 
-    >>> from diofant import Tuple, I
     >>> a, b = Tuple(2, 3)
     >>> pure_complex(a)
     >>> pure_complex(a + b*I)
@@ -137,7 +135,6 @@ def scaled_zero(mag, sign=1):
     Examples
     ========
 
-    >>> from diofant import Float
     >>> z, p = scaled_zero(100)
     >>> z, p
     (([0], 1, 100, 1), -1)
@@ -1359,8 +1356,6 @@ def N(x, dps=15, **options):
     Examples
     ========
 
-    >>> from diofant import Sum, oo
-    >>> from diofant.abc import k
     >>> Sum(1/k**k, (k, 1, oo))
     Sum(k**(-k), (k, 1, oo))
     >>> N(_, 4)

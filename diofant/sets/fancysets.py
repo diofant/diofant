@@ -16,7 +16,6 @@ class Naturals(Set, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Interval, pprint
     >>> 5 in S.Naturals
     True
     >>> iterable = iter(S.Naturals)
@@ -93,7 +92,6 @@ class Integers(Set, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Interval, pprint
     >>> 5 in S.Naturals
     True
     >>> iterable = iter(S.Integers)
@@ -216,9 +214,6 @@ class ImageSet(Set):
     Examples
     ========
 
-    >>> from diofant import Symbol, S, FiniteSet, Lambda
-
-    >>> x = Symbol('x')
     >>> N = S.Naturals
     >>> squares = ImageSet(Lambda(x, x**2), N) # {x**2 for x in N}
     >>> 4 in squares

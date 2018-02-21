@@ -22,8 +22,6 @@ def dup_integrate(f, m, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
     >>> R.dup_integrate(x**2 + 2*x, 1)
@@ -54,8 +52,6 @@ def dmp_integrate(f, m, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", QQ)
 
     >>> R.dmp_integrate(x + 2*y, 1)
@@ -89,8 +85,6 @@ def dmp_integrate_in(f, m, j, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", QQ)
 
     >>> R.dmp_integrate_in(x + 2*y, 1, 0)
@@ -119,8 +113,6 @@ def dup_diff(f, m, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_diff(x**3 + 2*x**2 + 3*x + 4, 1)
@@ -162,8 +154,6 @@ def dmp_diff(f, m, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
@@ -209,8 +199,6 @@ def dmp_diff_in(f, m, j, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
@@ -241,8 +229,6 @@ def dup_eval(f, a, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_eval(x**2 + 2*x + 3, 2)
@@ -267,8 +253,6 @@ def dmp_eval(f, a, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_eval(2*x*y + 3*x + y + 2, 2)
@@ -296,8 +280,6 @@ def dmp_eval_in(f, a, j, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 2*x*y + 3*x + y + 2
@@ -328,8 +310,6 @@ def dmp_eval_tail(f, A, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 2*x*y + 3*x + y + 2
@@ -371,8 +351,6 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
@@ -405,8 +383,6 @@ def dup_trunc(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
@@ -435,8 +411,6 @@ def dmp_trunc(f, p, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
@@ -455,8 +429,6 @@ def dmp_ground_trunc(f, p, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
@@ -478,9 +450,6 @@ def dup_monic(f, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
 
     >>> R, x = ring("x", ZZ)
     >>> R.dup_monic(3*x**2 + 6*x + 9)
@@ -507,9 +476,6 @@ def dmp_ground_monic(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x y", ZZ)
     >>> f = 3*x**2*y + 6*x**2 + 3*x*y + 9*y + 3
@@ -543,9 +509,6 @@ def dup_content(f, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
 
     >>> R, x = ring("x", ZZ)
     >>> f = 6*x**2 + 8*x + 12
@@ -585,9 +548,6 @@ def dmp_ground_content(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x y", ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
@@ -631,9 +591,6 @@ def dup_primitive(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
     >>> R, x = ring("x", ZZ)
     >>> f = 6*x**2 + 8*x + 12
 
@@ -663,9 +620,6 @@ def dmp_ground_primitive(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x y", ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
@@ -700,8 +654,6 @@ def dup_extract(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_extract(6*x**2 + 12*x + 18, 4*x**2 + 8*x + 12)
@@ -726,8 +678,6 @@ def dmp_ground_extract(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_ground_extract(6*x*y + 12*x + 18, 4*x*y + 8*x + 12)
@@ -752,8 +702,6 @@ def dup_real_imag(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
@@ -804,8 +752,6 @@ def dup_mirror(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_mirror(x**3 + 2*x**2 - 4*x + 2)
@@ -826,8 +772,6 @@ def dup_scale(f, a, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_scale(x**2 - 2*x + 1, ZZ(2))
@@ -848,8 +792,6 @@ def dup_shift(f, a, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_shift(x**2 - 2*x + 1, ZZ(2))
@@ -871,8 +813,6 @@ def dup_transform(f, p, q, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
@@ -902,8 +842,6 @@ def dup_compose(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_compose(x**2 + x, x - 1)
@@ -931,8 +869,6 @@ def dmp_compose(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_compose(x*y + 2*x + y, y)
@@ -1037,8 +973,6 @@ def dup_decompose(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_decompose(x**4 - 2*x**3 + x**2)
@@ -1069,10 +1003,6 @@ def dmp_lift(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> from diofant.core import I
 
     >>> K = QQ.algebraic_field(I)
     >>> R, x = ring("x", K)
@@ -1113,8 +1043,6 @@ def dup_sign_variations(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
@@ -1139,8 +1067,6 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
     >>> f = x/2 + QQ(1, 3)
@@ -1177,8 +1103,6 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", QQ)
 
     >>> f = x/2 + y/3 + 1
@@ -1233,8 +1157,6 @@ def dup_revert(f, n, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
     >>> f = -x**6/720 + x**4/24 - x**2/2 + 1
@@ -1263,8 +1185,6 @@ def dmp_revert(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x, y = ring("x y", QQ)
     """
     if not u:

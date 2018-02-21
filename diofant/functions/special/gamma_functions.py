@@ -31,9 +31,6 @@ class gamma(Function):
     Examples
     ========
 
-    >>> from diofant import I, pi, oo, Rational
-    >>> from diofant.abc import x
-
     Several special values are known:
 
     >>> gamma(1)
@@ -45,19 +42,16 @@ class gamma(Function):
 
     The Gamma function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(gamma(x))
     gamma(conjugate(x))
 
     Differentiation with respect to x is supported:
 
-    >>> from diofant import diff
     >>> diff(gamma(x), x)
     gamma(x)*polygamma(0, x)
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(gamma(x), x, 0, 3)
     1/x - EulerGamma + x*(EulerGamma**2/2 + pi**2/12) + x**2*(-EulerGamma*pi**2/12 + polygamma(2, 1)/6 - EulerGamma**3/6) + O(x**3)
 
@@ -215,8 +209,7 @@ class lowergamma(Function):
     Examples
     ========
 
-    >>> from diofant import Rational
-    >>> from diofant.abc import s, x
+    >>> from diofant.abc import s
     >>> lowergamma(s, x)
     lowergamma(s, x)
     >>> lowergamma(3, x)
@@ -356,8 +349,7 @@ class uppergamma(Function):
     Examples
     ========
 
-    >>> from diofant import Rational
-    >>> from diofant.abc import s, x
+    >>> from diofant.abc import s
     >>> uppergamma(s, x)
     uppergamma(s, x)
     >>> uppergamma(3, x)
@@ -480,7 +472,6 @@ class polygamma(Function):
 
     Several special values are known:
 
-    >>> from diofant import Integer
     >>> polygamma(0, 1)
     -EulerGamma
     >>> polygamma(0, 1/Integer(2))
@@ -494,7 +485,6 @@ class polygamma(Function):
     >>> polygamma(0, 23)
     -EulerGamma + 19093197/5173168
 
-    >>> from diofant import oo, I
     >>> polygamma(0, oo)
     oo
     >>> polygamma(0, -oo)
@@ -506,8 +496,6 @@ class polygamma(Function):
 
     Differentiation with respect to x is supported:
 
-    >>> from diofant import Symbol, diff
-    >>> x = Symbol("x")
     >>> diff(polygamma(0, x), x)
     polygamma(1, x)
     >>> diff(polygamma(0, x), x, 2)
@@ -523,7 +511,6 @@ class polygamma(Function):
     >>> diff(polygamma(2, x), x, 2)
     polygamma(4, x)
 
-    >>> n = Symbol("n")
     >>> diff(polygamma(n, x), x)
     polygamma(n + 1, x)
     >>> diff(polygamma(n, x), x, 2)
@@ -531,7 +518,6 @@ class polygamma(Function):
 
     We can rewrite polygamma functions in terms of harmonic numbers:
 
-    >>> from diofant import harmonic
     >>> polygamma(0, x).rewrite(harmonic)
     harmonic(x - 1) - EulerGamma
     >>> polygamma(2, x).rewrite(harmonic)
@@ -746,7 +732,6 @@ class loggamma(Function):
 
     and for symbolic values:
 
-    >>> from diofant import Symbol
     >>> n = Symbol("n", integer=True, positive=True)
     >>> loggamma(n)
     log(gamma(n))
@@ -755,7 +740,6 @@ class loggamma(Function):
 
     for half-integral values:
 
-    >>> from diofant import pi, Rational
     >>> loggamma(Rational(5, 2))
     log(3*sqrt(pi)/4)
     >>> loggamma(n/2)
@@ -763,7 +747,6 @@ class loggamma(Function):
 
     and general rational arguments:
 
-    >>> from diofant import expand_func
     >>> L = loggamma(Rational(16, 3))
     >>> expand_func(L).doit()
     -5*log(3) + loggamma(1/3) + log(4) + log(7) + log(10) + log(13)
@@ -776,7 +759,6 @@ class loggamma(Function):
 
     The loggamma function has the following limits towards infinity:
 
-    >>> from diofant import oo
     >>> loggamma(oo)
     oo
     >>> loggamma(-oo)
@@ -785,28 +767,23 @@ class loggamma(Function):
     The loggamma function obeys the mirror symmetry
     if `x \in \mathbb{C} \setminus \{-\infty, 0\}`:
 
-    >>> from diofant import conjugate
     >>> c = Symbol('c', complex=True, extended_real=False)
     >>> conjugate(loggamma(c))
     loggamma(conjugate(c))
 
     Differentiation with respect to x is supported:
 
-    >>> from diofant import diff
-    >>> from diofant.abc import x
     >>> diff(loggamma(x), x)
     polygamma(0, x)
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(loggamma(x), x, 0, 4)
     -log(x) - EulerGamma*x + pi**2*x**2/12 + x**3*polygamma(2, 1)/6 + O(x**4)
 
     We can numerically evaluate the gamma function to arbitrary precision
     on the whole complex plane:
 
-    >>> from diofant import I
     >>> loggamma(5).evalf(30)
     3.17805383034794561964694160130
     >>> loggamma(I).evalf(20)

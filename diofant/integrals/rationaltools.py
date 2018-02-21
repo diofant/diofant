@@ -15,8 +15,6 @@ def ratint(f, x, **flags):
     where `p` and `q` are polynomials in `K[x]`,
     returns a function `g` such that `f = g'`.
 
-    >>> from diofant.abc import x
-
     >>> ratint(36/(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2), x)
     (12*x + 6)/(x**2 - 1) + 4*log(x - 2) - 4*log(x + 1)
 
@@ -119,8 +117,6 @@ def ratint_ratpart(f, g, x):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-    >>> from diofant import Poly
     >>> ratint_ratpart(Poly(1, x), Poly(x + 1, x), x)
     (0, 1/(x + 1))
     >>> ratint_ratpart(Poly(1, x, domain='EX'),
@@ -182,8 +178,6 @@ def ratint_logpart(f, g, x, t=None):
     Examples
     ========
 
-    >>> from diofant.abc import x
-    >>> from diofant import Poly
     >>> ratint_logpart(Poly(1, x), Poly(x**2 + x + 1, x), x)
     [(Poly(x + 3*_t/2 + 1/2, x, domain='QQ[_t]'),
       Poly(3*_t**2 + 1, _t, domain='ZZ'))]
@@ -261,8 +255,6 @@ def log_to_atan(f, g):
     Examples
     ========
 
-    >>> from diofant.abc import x
-    >>> from diofant import Poly, sqrt, Rational
     >>> log_to_atan(Poly(x, x), Poly(1, x))
     2*atan(x)
     >>> log_to_atan(Poly(x + Rational(1, 2), x), Poly(sqrt(3)/2, x))
@@ -305,8 +297,6 @@ def log_to_real(h, q, x, t):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-    >>> from diofant import Poly, sqrt, Rational
     >>> log_to_real(Poly(x + 3*y/2 + Rational(1, 2), x),
     ...             Poly(3*y**2 + 1, y), x, y)
     2*sqrt(3)*atan(2*sqrt(3)*x/3 + sqrt(3)/3)/3

@@ -10,9 +10,6 @@ def use(expr, func, level=0, args=(), kwargs={}):
     Examples
     ========
 
-    >>> from diofant import expand
-    >>> from diofant.abc import x, y
-
     >>> f = (x + y)**2*x + 1
 
     >>> use(f, expand, level=2)

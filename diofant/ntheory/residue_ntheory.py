@@ -150,7 +150,6 @@ def is_primitive_root(a, p):
     Examples
     ========
 
-    >>> from diofant.ntheory import totient
     >>> is_primitive_root(3, 10)
     True
     >>> is_primitive_root(9, 10)
@@ -852,7 +851,6 @@ def jacobi_symbol(m, n):
     Examples
     ========
 
-    >>> from diofant import Mul, S, Integer
     >>> jacobi_symbol(45, 77)
     -1
     >>> jacobi_symbol(60, 121)

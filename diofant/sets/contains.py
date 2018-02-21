@@ -7,7 +7,6 @@ class Contains(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant import Symbol, Integer, S
     >>> Contains(Integer(2), S.Integers)
     true
     >>> Contains(Integer(-2), S.Naturals)

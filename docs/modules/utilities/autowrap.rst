@@ -7,7 +7,6 @@ The autowrap module works very well in tandem with the Indexed classes of the
 routine that calculates a matrix-vector product.
 
 >>> from diofant.utilities.autowrap import autowrap
->>> from diofant import symbols, IndexedBase, Idx, Eq
 >>> A, x, y = map(IndexedBase, ['A', 'x', 'y'])
 >>> m, n = symbols('m n', integer=True)
 >>> i = Idx('i', m)

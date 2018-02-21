@@ -13,8 +13,6 @@ def residue(expr, x, x0):
     Examples
     ========
 
-    >>> from diofant import sin
-    >>> from diofant.abc import x
     >>> residue(1/x, x, 0)
     1
     >>> residue(1/x**2, x, 0)

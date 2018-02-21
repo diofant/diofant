@@ -90,7 +90,6 @@ def DiscreteUniform(name, items):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import symbols, Symbol
 
     >>> X = DiscreteUniform('X', symbols('a b c')) # equally likely over a, b, c
     >>> density(X).dict
@@ -172,7 +171,6 @@ def Bernoulli(name, p, succ=1, fail=0):
     Returns a RandomSymbol
 
     >>> from diofant.stats import density
-    >>> from diofant import Rational, Symbol
 
     >>> X = Bernoulli('X', Rational(3, 4)) # 1-0 Bernoulli variable, probability = 3/4
     >>> density(X).dict
@@ -195,7 +193,6 @@ def Coin(name, p=S.Half):
     Returns a RandomSymbol.
 
     >>> from diofant.stats import density
-    >>> from diofant import Rational, Symbol
 
     >>> H, T = Symbol('H'), Symbol('T')
 
@@ -249,7 +246,6 @@ def Binomial(name, n, p, succ=1, fail=0):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import S
 
     >>> X = Binomial('X', 4, S.Half) # Four "coin flips"
     >>> density(X).dict
@@ -288,7 +284,6 @@ def Hypergeometric(name, N, m, n):
     ========
 
     >>> from diofant.stats import density
-    >>> from diofant import S
 
     >>> X = Hypergeometric('X', 10, 5, 3) # 10 marbles, 5 white (success), 3 draws
     >>> density(X).dict

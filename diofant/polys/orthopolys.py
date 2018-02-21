@@ -280,9 +280,6 @@ def spherical_bessel_fn(n, x=None, **args):
     Examples
     ========
 
-    >>> from diofant import Symbol
-
-    >>> z = Symbol("z")
     >>> spherical_bessel_fn(1, z)
     z**(-2)
     >>> spherical_bessel_fn(2, z)

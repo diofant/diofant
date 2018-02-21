@@ -11,7 +11,8 @@ def trace(matlist, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
+    >>> from diofant.matrices.densetools import eye, trace
+
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -36,7 +37,8 @@ def transpose(matlist, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
+    >>> from diofant.matrices.densetools import transpose
+
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -55,7 +57,8 @@ def conjugate(matlist, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
+    >>> from diofant.matrices.densetools import conjugate
+
     >>> a = [
     ... [ZZ(3), ZZ(2), ZZ(6)],
     ... [ZZ(7), ZZ(4), ZZ(2)],
@@ -78,7 +81,6 @@ def conjugate_row(row, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
     >>> a = [ZZ(3), ZZ(2), ZZ(6)]
     >>> conjugate_row(a, ZZ)
     [3, 2, 6]
@@ -99,7 +101,6 @@ def conjugate_transpose(matlist, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -117,7 +118,6 @@ def augment(matlist, column, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -139,7 +139,7 @@ def eye(n, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
+    >>> from diofant.matrices.densetools import eye
     >>> eye(3, ZZ)
     [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
     """
@@ -161,7 +161,6 @@ def row(matlist, i):
     Examples
     ========
 
-    >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -180,7 +179,6 @@ def col(matlist, i):
     Examples
     ========
 
-    >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -225,7 +223,6 @@ def isHermitian(matlist, K):
     Examples
     ========
 
-    >>> from diofant import QQ
     >>> a = [
     ... [QQ(2,1), QQ(-1,1), QQ(-1,1)],
     ... [QQ(0,1), QQ(4,1), QQ(-1,1)],

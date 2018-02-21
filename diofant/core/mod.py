@@ -13,12 +13,10 @@ class Mod(Function):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
     >>> x**2 % y
     x**2%y
     >>> _.subs({x: 5, y: 6})
     1
-
     """
 
     @classmethod

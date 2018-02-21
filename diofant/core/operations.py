@@ -56,8 +56,6 @@ class AssocOp(Expr):
 
            This is handy when we want to optimize things, e.g.
 
-               >>> from diofant import Mul, S
-               >>> from diofant.abc import x, y
                >>> e = Mul(3, x, y)
                >>> e.args
                (3, x, y)
@@ -121,7 +119,6 @@ class AssocOp(Expr):
 
         For instance:
 
-        >>> from diofant import symbols, Wild, sin
         >>> a = Wild("a")
         >>> b = Wild("b")
         >>> c = Wild("c")
@@ -335,9 +332,6 @@ class AssocOp(Expr):
         """
         Return a sequence of elements `args` such that cls(*args) == expr
 
-        >>> from diofant import Symbol, Mul, Add
-        >>> x, y = map(Symbol, 'xy')
-
         >>> Mul.make_args(x*y)
         (x, y)
         >>> Add.make_args(x*y)
@@ -368,7 +362,6 @@ class LatticeOp(AssocOp):
     This is an abstract base class, concrete derived classes must declare
     attributes zero and identity. All defining properties are then respected.
 
-    >>> from diofant import Integer
     >>> class my_join(LatticeOp):
     ...     zero = Integer(0)
     ...     identity = Integer(1)
@@ -427,9 +420,6 @@ class LatticeOp(AssocOp):
     def make_args(cls, expr):
         """
         Return a sequence of elements `args` such that cls(*args) == expr
-
-        >>> from diofant import Symbol, Mul, Add
-        >>> x, y = map(Symbol, 'xy')
 
         >>> Mul.make_args(x*y)
         (x, y)

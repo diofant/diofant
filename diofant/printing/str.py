@@ -305,7 +305,6 @@ class StrPrinter(Printer):
         during doctests, the dict's __repr__ form is used. Defining this _print
         function solves that problem.
 
-        >>> from diofant.combinatorics import Cycle
         >>> Cycle(1, 2) # will print as a dict without this method
         Cycle(1, 2)
         """
@@ -671,7 +670,6 @@ def sstr(expr, **settings):
     Examples
     ========
 
-    >>> from diofant import symbols, Eq
     >>> a, b = symbols('a b')
     >>> sstr(Eq(a + b, 0))
     'Eq(a + b, 0)'

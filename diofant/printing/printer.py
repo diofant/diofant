@@ -116,7 +116,6 @@ class Printer:
 
     Here we will overload ``StrPrinter``.
 
-    >>> from diofant import Function, Symbol
     >>> from diofant.printing.str import StrPrinter
 
     >>> class CustomStrPrinter(StrPrinter):

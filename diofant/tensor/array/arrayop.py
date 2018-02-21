@@ -24,7 +24,7 @@ def tensorproduct(*args):
     ========
 
     >>> from diofant.tensor.array import Array
-    >>> from diofant.abc import x, y, z, t
+    >>> from diofant.abc import t
     >>> A = Array([[1, 2], [3, 4]])
     >>> B = Array([x, y])
     >>> tensorproduct(A, B)
@@ -37,7 +37,6 @@ def tensorproduct(*args):
 
     Applying this function on two matrices will result in a rank 4 array.
 
-    >>> from diofant import Matrix, eye
     >>> m = Matrix([[x, y], [z, t]])
     >>> p = tensorproduct(eye(3), m)
     >>> p
@@ -73,7 +72,6 @@ def tensorcontraction(array, *contraction_axes):
     ========
 
     >>> from diofant.tensor.array import Array
-    >>> from diofant import Matrix, eye
     >>> tensorcontraction(eye(3), (0, 1))
     3
     >>> A = Array(range(18), (3, 2, 3))
@@ -180,8 +178,7 @@ def derive_by_array(expr, dx):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z, t
-    >>> from diofant import cos
+    >>> from diofant.abc import t
     >>> derive_by_array(cos(x*t), x)
     -t*sin(t*x)
     >>> derive_by_array(cos(x*t), [x, y, z, t])
@@ -218,8 +215,7 @@ def permutedims(expr, perm):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z, t
-    >>> from diofant import sin
+    >>> from diofant.abc import t
     >>> from diofant.tensor.array import Array
     >>> a = Array([[x, y, z], [t, sin(x), 0]])
     >>> a
@@ -229,7 +225,6 @@ def permutedims(expr, perm):
 
     If the array is of second order, ``transpose`` can be used:
 
-    >>> from diofant import transpose
     >>> transpose(a)
     [[x, t], [y, sin(x)], [z, 0]]
 
@@ -243,7 +238,6 @@ def permutedims(expr, perm):
 
     ``Permutation`` objects are also allowed:
 
-    >>> from diofant.combinatorics import Permutation
     >>> permutedims(b, Permutation([1, 2, 0]))
     [[[1, 5], [2, 6]], [[3, 7], [4, 8]]]
     """

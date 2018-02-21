@@ -35,8 +35,6 @@ class Assignment(Relational):
     Examples
     --------
 
-    >>> from diofant import symbols, MatrixSymbol, Matrix
-    >>> x, y, z = symbols('x, y, z')
     >>> Assignment(x, y)
     x := y
     >>> Assignment(x, 0)

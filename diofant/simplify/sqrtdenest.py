@@ -17,8 +17,6 @@ def is_sqrt(expr):
 def sqrt_depth(p):
     """Return the maximum depth of any square root argument of p.
 
-    >>> from diofant.functions.elementary.miscellaneous import sqrt
-
     Neither of these square roots contains any other square roots
     so the depth is 1:
 
@@ -49,8 +47,6 @@ def is_algebraic(p):
     Examples
     ========
 
-    >>> from diofant.functions.elementary.miscellaneous import sqrt
-    >>> from diofant import cos
     >>> is_algebraic(sqrt(2)*(3/(sqrt(7) + sqrt(5)*sqrt(2))))
     True
     >>> is_algebraic(sqrt(2)*(3/(sqrt(7) + sqrt(5)*cos(2))))
@@ -105,7 +101,6 @@ def sqrtdenest(expr, max_iter=3):
     Examples
     ========
 
-    >>> from diofant import sqrt
     >>> sqrtdenest(sqrt(5 + 2 * sqrt(6)))
     sqrt(2) + sqrt(3)
 
@@ -138,7 +133,6 @@ def _sqrt_match(p):
     Examples
     ========
 
-    >>> from diofant.functions.elementary.miscellaneous import sqrt
     >>> _sqrt_match(1 + sqrt(2) + sqrt(2)*sqrt(3) +  2*sqrt(1+sqrt(5)))
     [1 + sqrt(2) + sqrt(6), 2, 1 + sqrt(5)]
     """
@@ -252,7 +246,6 @@ def _sqrtdenest_rec(expr):
     Examples
     ========
 
-    >>> from diofant import sqrt
     >>> _sqrtdenest_rec(sqrt(-72*sqrt(2) + 158*sqrt(5) + 498))
     -sqrt(10) + sqrt(2) + 9 + 9*sqrt(5)
     >>> w = -6*sqrt(55)-6*sqrt(35)-2*sqrt(22)-2*sqrt(14)+2*sqrt(77)+6*sqrt(10)+65
@@ -370,9 +363,6 @@ def _sqrt_symbolic_denest(a, b, r):
     Examples
     ========
 
-    >>> from diofant import sqrt, Symbol
-    >>> from diofant.abc import x
-
     >>> a, b, r = 16 - 2*sqrt(29), 2, -10*sqrt(29) + 55
     >>> _sqrt_symbolic_denest(a, b, r)
     sqrt(-2*sqrt(29) + 11) + sqrt(5)
@@ -472,7 +462,6 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     Examples
     ========
 
-    >>> from diofant import sqrt
     >>> z = sqrt((2*sqrt(2) + 4)*sqrt(2 + sqrt(2)) + 5*sqrt(2) + 8)
     >>> a, b, r = _sqrt_match(z**2)
     >>> d2 = a**2 - b**2*r
@@ -648,9 +637,6 @@ def unrad(eq, *syms, **flags):
 
     Examples
     ========
-
-    >>> from diofant.abc import x
-    >>> from diofant import cbrt, sqrt, Rational, root, real_roots, solve
 
     >>> unrad(sqrt(x)*cbrt(x) + 2)
     (x**5 - 64, [])

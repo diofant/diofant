@@ -52,9 +52,6 @@ to strings of C code).
 
 Usage::
 
-    >>> from diofant.printing import print_ccode
-    >>> from diofant.functions import sin, cos, Abs
-    >>> from diofant.abc import x
     >>> print_ccode(sin(x)**2 + cos(x)**2)
     pow(sin(x), 2) + pow(cos(x), 2)
     >>> print_ccode(2*x + cos(x), assign_to="result")
@@ -94,8 +91,6 @@ that manual changes in the result are no longer needed.
 
 Two basic examples:
 
-    >>> from diofant import *
-    >>> x = symbols("x")
     >>> fcode(sqrt(1-x**2))
     '      sqrt(-x**2 + 1)'
     >>> fcode((3 + 4*I)/(1 - conjugate(x)))
@@ -270,9 +265,6 @@ PythonPrinter
 .. module:: diofant.printing.python
 
 This class implements Python printing. Usage::
-
-    >>> from diofant import print_python, sin
-    >>> from diofant.abc import x
 
     >>> print_python(5*x**3 + sin(x))
     x = Symbol('x')

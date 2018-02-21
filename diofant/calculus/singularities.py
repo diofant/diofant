@@ -10,9 +10,6 @@ def singularities(f, x):
     Examples
     ========
 
-    >>> from diofant import Symbol, exp, log
-    >>> from diofant.abc import x
-
     >>> singularities(1/(1 + x), x)
     {-1}
 

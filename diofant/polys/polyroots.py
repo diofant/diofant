@@ -186,8 +186,6 @@ def _roots_quartic_euler(p, q, r, a):
     Examples
     ========
 
-    >>> from diofant import Rational, Integer
-
     >>> p, q, r = -Rational(64, 5), -Rational(512, 125), -Rational(1024, 3125)
     >>> _roots_quartic_euler(p, q, r, Integer(0))[0]
     -sqrt(32*sqrt(5)/125 + 16/5) + 4*sqrt(5)/5
@@ -234,8 +232,6 @@ def roots_quartic(f):
 
     Examples
     ========
-
-        >>> from diofant import Poly, symbols, I
 
         >>> r = roots_quartic(Poly('x**4-6*x**3+17*x**2-26*x+20'))
 
@@ -623,9 +619,6 @@ def _integer_basis(poly):
     Examples
     ========
 
-    >>> from diofant.polys import Poly
-    >>> from diofant.abc import x
-
     >>> p = Poly(x**5 + 512*x + 1024, x, domain='ZZ')
     >>> _integer_basis(p)
     4
@@ -763,9 +756,6 @@ def roots(f, *gens, **flags):
 
     Examples
     ========
-
-    >>> from diofant import Poly, roots, sqrt
-    >>> from diofant.abc import x, y
 
     >>> roots(x**2 - 1, x)
     {-1: 1, 1: 1}
@@ -985,8 +975,6 @@ def root_factors(f, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant.abc import x, y
 
     >>> root_factors(x**2 - y, x)
     [x - sqrt(y), x + sqrt(y)]

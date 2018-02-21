@@ -81,9 +81,6 @@ def _separate_sq(p):
     Examples
     ========
 
-    >>> from diofant import sqrt
-    >>> from diofant.abc import x
-
     >>> p = -x + sqrt(2) + sqrt(3) + sqrt(7)
     >>> p = _separate_sq(p); p
     -x**2 + 2*sqrt(3)*x + 2*sqrt(7)*x - 2*sqrt(21) - 8
@@ -148,9 +145,6 @@ def _minimal_polynomial_sq(p, n, x):
     Examples
     ========
 
-    >>> from diofant import sqrt
-    >>> from diofant.abc import x
-
     >>> q = 1 + sqrt(2) + sqrt(3)
     >>> _minimal_polynomial_sq(q, 3, x)
     x**12 - 4*x**9 - 4*x**6 + 16*x**3 - 8
@@ -192,9 +186,6 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
     Examples
     ========
-
-    >>> from diofant import sqrt, Add, Mul, QQ
-    >>> from diofant.abc import x, y
 
     >>> p1 = sqrt(sqrt(2) + 1)
     >>> p2 = sqrt(sqrt(2) - 1)
@@ -291,9 +282,6 @@ def _minpoly_pow(ex, pw, x, dom):
 
     Examples
     ========
-
-    >>> from diofant import cbrt, sqrt, QQ, Rational
-    >>> from diofant.abc import x, y
 
     >>> p = sqrt(1 + sqrt(2))
     >>> _minpoly_pow(p, 2, x, QQ)
@@ -470,8 +458,6 @@ def _minpoly_compose(ex, x, dom):
     Examples
     ========
 
-    >>> from diofant import sqrt, Rational
-    >>> from diofant.abc import x, y
     >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=True)
     x**2 - 2*x - 1
     >>> minimal_polynomial(sqrt(y) + 1/y, x, compose=True)
@@ -559,9 +545,6 @@ def minimal_polynomial(ex, x=None, **args):
     Examples
     ========
 
-    >>> from diofant import sqrt, solve, QQ
-    >>> from diofant.abc import x, y
-
     >>> minimal_polynomial(sqrt(2), x)
     x**2 - 2
     >>> minimal_polynomial(sqrt(2), x, domain=QQ.algebraic_field(sqrt(2)))
@@ -622,8 +605,6 @@ def minpoly_groebner(ex, x):
     Examples
     ========
 
-    >>> from diofant import sqrt, Rational
-    >>> from diofant.abc import x
     >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=False)
     x**2 - 2*x - 1
 
@@ -708,7 +689,7 @@ def primitive_element(extension, x=None, **args):
     .. [1] Kazuhiro Yokoyama, Masayuki Noro, Taku Takeshima, Computing
            primitive elements of extension fields, Journal of Symbolic
            Computation, Volume 8, Issue 6, 1989, pp. 553-580,
-           https://doi.org/10.1016/S0747-7171(89)80061-6.
+           https://linkinghub.elsevier.com/retrieve/pii/S0747717189800616.
     """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
