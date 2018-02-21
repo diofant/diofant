@@ -259,3 +259,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`7171` sin(x).rewrite(pow) raises RuntimeError: maximum recursion depth
 * :sympyissue:`2866` lambdify inserts numpy after math
 * :sympyissue:`11351` TypeError exception in totient and reduced_totient LaTeX printers
+* :sympyissue:`14289` Sign of generator of an algebraic numberfield
