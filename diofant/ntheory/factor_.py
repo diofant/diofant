@@ -577,7 +577,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
            A Computational Perspective", Springer, 2nd edition, 236-238
     .. [2] https://web.archive.org/web/20150716201437/http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
-    .. [3] http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
+    .. [3] https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
     """
 
     n = int(n)
