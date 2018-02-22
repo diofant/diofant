@@ -1,6 +1,8 @@
 Printing
 ========
 
+.. module:: diofant.printing
+
 See the :ref:`tutorial-printing` section in Tutorial for introduction into
 printing.
 
