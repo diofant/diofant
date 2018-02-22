@@ -148,13 +148,9 @@ def test_Sample():
     assert all(i in range(1, 7) for i in density(X, numsamples=10))
     assert all(i in range(4, 7) for i in density(X, X > 3, numsamples=10))
 
-
-@pytest.mark.slow
-def test_Sample_slow():
     # Make sure this doesn't raise an error
     Y = Normal('Y', 0, 1)
-    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3,
-      modules=["math", "mpmath", "diofant"])
+    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3, modules="mpmath")
 
 
 def test_given():
