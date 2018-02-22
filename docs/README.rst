@@ -6,5 +6,3 @@ To make the html documentation, first install the Diofant
 requirement, then enter the project directory and run::
 
     python setup.py build_sphinx
-
-Documentation tree will be located in the build/sphinx/html/ directory.
