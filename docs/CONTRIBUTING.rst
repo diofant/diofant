@@ -48,10 +48,16 @@ All work should be submitted via `Pull Requests (PR)`_.
       mind, doctests are not tests.  Think of them as examples that
       happen to be tested.
 
-6. Usually, it's good idea to be sure that all existing tests
+6. It's good idea to be sure that **all** existing tests
    pass and you don't break anything, so please run::
 
        $ python setup.py test
+
+7. If your change affects documentation, please build it by::
+
+       $ python setup.py build_sphinx -W
+
+   and check that it looks as expected.
 
 License
 -------
