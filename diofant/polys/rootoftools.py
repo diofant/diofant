@@ -204,6 +204,25 @@ class RootOf(Expr):
         elif n == 4:
             return roots_quartic(p)[i]
 
+    def _eval_conjugate(self):
+        if self.is_real:
+            return self
+        elif self.poly.domain.is_ZZ:
+            # XXX There should be a simpler way to get conjugate, when
+            # conjugated roots sorted to be in adjacent pairs.  Then
+            # we could set: i = index + 2*((index - nreals + 1) % 2) - 1.
+            # See sympy/sympy#14293.
+            degree = self.poly.degree()
+            poly = self.poly
+            conj_interval = self.interval.conjugate()
+            index = self.index
+            nreals = len(_reals_cache[poly])
+            for i in range(nreals, degree - nreals):  # pragma: no branch
+                other = _complexes_cache[poly][i - nreals]
+                if i != index and not other.is_disjoint(conj_interval):
+                    break
+            return self._new(poly, i)
+
     @property
     def is_number(self):
         return not self.free_symbols

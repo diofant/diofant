@@ -1849,9 +1849,10 @@ class ComplexInterval:
         return (self.ax, self.ay), (self.bx, self.by)
 
     def conjugate(self):
-        """This complex interval really is located in lower half-plane. """
+        """Return conjugated isolating interval. """
         return ComplexInterval(self.a, self.b, self.I, self.Q,
-                               self.F1, self.F2, self.f1, self.f2, self.domain, conj=True)
+                               self.F1, self.F2, self.f1, self.f2,
+                               self.domain, conj=not self.conj)
 
     def is_disjoint(self, other):
         """Return ``True`` if two isolation intervals are disjoint. """
