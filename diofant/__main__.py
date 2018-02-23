@@ -39,9 +39,12 @@ def main():
             config.InteractiveShell.ast_transformers.append(diofant.interactive.session.IntegerDivisionWrapper())
         if args.auto_symbols:
             config.InteractiveShell.ast_transformers.append(diofant.interactive.session.AutomaticSymbols())
-        config.InteractiveShellApp.exec_lines = lines
 
-        IPython.start_ipython(argv=ipython_args, config=config)
+        app = IPython.terminal.ipapp.TerminalIPythonApp.instance(config=config)
+        app.initialize(ipython_args)
+        for l in lines:
+            app.shell.run_cell(l, store_history=True, silent=False)
+        app.start()
     else:
         class DiofantConsole(code.InteractiveConsole):
             """An interactive console with readline support. """
