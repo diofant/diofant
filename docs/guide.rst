@@ -105,5 +105,3 @@ Following table lists meanings of labels, including
 +------------------+----------------------------------------------------+
 | wontfix          | indicates that work won't continue on this issue   |
 +------------------+----------------------------------------------------+
-
-.. include:: README.rst

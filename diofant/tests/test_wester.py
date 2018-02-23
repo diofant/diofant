@@ -2207,6 +2207,7 @@ def test_W24():
     assert (r1 - (sqrt(2) + asinh(1))/3).simplify() == 0
 
 
+@pytest.mark.slow
 def test_W26():
     x, y = symbols('x y', real=True)
     assert integrate(integrate(abs(y - x**2), (y, 0, 2)),
