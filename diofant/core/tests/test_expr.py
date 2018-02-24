@@ -918,6 +918,7 @@ def test_as_coeff_exponent():
 
 
 def test_extractions():
+    assert ((x*y)**3).extract_multiplicatively(1) == (x*y)**3
     assert ((x*y)**3).extract_multiplicatively(x**2 * y) == x*y**2
     assert ((x*y)**3).extract_multiplicatively(x**4 * y) is None
     assert (2*x).extract_multiplicatively(2) == x
@@ -927,6 +928,11 @@ def test_extractions():
     assert (sqrt(x)).extract_multiplicatively(x) is None
     assert (sqrt(x)).extract_multiplicatively(1/x) is None
     assert x.extract_multiplicatively(-x) is None
+    assert oo.extract_multiplicatively(2) is oo
+    assert oo.extract_multiplicatively(-1) is None
+    assert (-oo).extract_multiplicatively(2) is -oo
+    assert (-oo).extract_multiplicatively(-2) is oo
+    assert (-oo).extract_multiplicatively(0) is None
 
     assert ((x*y)**3).extract_additively(1) is None
     assert (x + 1).extract_additively(x) == 1
