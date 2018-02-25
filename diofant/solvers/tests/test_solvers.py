@@ -832,6 +832,7 @@ def test_sympyissue_4463():
     assert solve((a/x + exp(x/2)).diff(x), x) == [{x: 4*LambertW(sqrt(2)*sqrt(a)/4)}]
 
 
+@pytest.mark.slow
 def test_sympyissue_5114():
     # there is no 'a' in the equation set but this is how the
     # problem was originally posed
