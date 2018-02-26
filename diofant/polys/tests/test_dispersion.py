@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.abc import a, x, y
-from diofant.core import Integer, oo
+from diofant.core import oo
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.polys import poly
 from diofant.polys.dispersion import dispersion, dispersionset
@@ -16,10 +16,10 @@ def test_dispersion():
     pytest.raises(ValueError, lambda: dispersionset(poly(x, x),
                                                     poly(y, y)))
 
-    fp = poly(Integer(0), x)
+    fp = poly(0, x)
     assert sorted(dispersionset(fp)) == [0]
 
-    fp = poly(Integer(2), x)
+    fp = poly(2, x)
     assert sorted(dispersionset(fp)) == [0]
 
     fp = poly(x + 1, x)

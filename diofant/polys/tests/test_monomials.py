@@ -3,7 +3,6 @@
 import pytest
 
 from diofant.abc import a, b, c, x, y, z
-from diofant.core import Integer
 from diofant.domains import QQ, ZZ
 from diofant.polys.monomials import (Monomial, itermonomials, monomial_count,
                                      monomial_div, monomial_divides,
@@ -17,21 +16,20 @@ __all__ = ()
 
 
 def test_monomials():
-    assert itermonomials([], 0) == {Integer(1)}
-    assert itermonomials([], 1) == {Integer(1)}
-    assert itermonomials([], 2) == {Integer(1)}
-    assert itermonomials([], 3) == {Integer(1)}
+    assert itermonomials([], 0) == {1}
+    assert itermonomials([], 1) == {1}
+    assert itermonomials([], 2) == {1}
+    assert itermonomials([], 3) == {1}
 
-    assert itermonomials([x], 0) == {Integer(1)}
-    assert itermonomials([x], 1) == {Integer(1), x}
-    assert itermonomials([x], 2) == {Integer(1), x, x**2}
-    assert itermonomials([x], 3) == {Integer(1), x, x**2, x**3}
+    assert itermonomials([x], 0) == {1}
+    assert itermonomials([x], 1) == {1, x}
+    assert itermonomials([x], 2) == {1, x, x**2}
+    assert itermonomials([x], 3) == {1, x, x**2, x**3}
 
-    assert itermonomials([x, y], 0) == {Integer(1)}
-    assert itermonomials([x, y], 1) == {Integer(1), x, y}
-    assert itermonomials([x, y], 2) == {Integer(1), x, y, x**2, y**2, x*y}
-    assert itermonomials([x, y], 3) == \
-        {Integer(1), x, y, x**2, x**3, y**2, y**3, x*y, x*y**2, y*x**2}
+    assert itermonomials([x, y], 0) == {1}
+    assert itermonomials([x, y], 1) == {1, x, y}
+    assert itermonomials([x, y], 2) == {1, x, y, x**2, y**2, x*y}
+    assert itermonomials([x, y], 3) == {1, x, y, x**2, x**3, y**2, y**3, x*y, x*y**2, y*x**2}
 
 
 def test_monomial_count():
@@ -81,7 +79,7 @@ def test_term_div():
 
 def test_Monomial():
     m = Monomial((3, 4, 1), (x, y, z))
-    m2 = Monomial((3, 4, 1))
+    l = Monomial((3, 4, 1))
     n = Monomial((1, 2, 0), (x, y, z))
 
     assert m.as_expr() == x**3*y**4*z
@@ -90,7 +88,7 @@ def test_Monomial():
     assert m.as_expr(a, b, c) == a**3*b**4*c
     assert n.as_expr(a, b, c) == a**1*b**2
 
-    pytest.raises(ValueError, lambda: m2.as_expr())
+    pytest.raises(ValueError, lambda: l.as_expr())
 
     assert m.exponents == (3, 4, 1)
     assert m.gens == (x, y, z)
@@ -146,4 +144,4 @@ def test_Monomial():
     pytest.raises(ExactQuotientFailed, lambda: m/Monomial((5, 2, 0)))
 
     assert str(m) == "x**3*y**4*z**1"
-    assert str(m2) == "Monomial((3, 4, 1))"
+    assert str(l) == "Monomial((3, 4, 1))"
