@@ -1876,9 +1876,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return oo
                 elif c.is_positive:
                     return -oo
-            elif self is zoo:
-                if not c.is_zero:
-                    return zoo
             elif self.is_Integer:
                 if not quotient.is_Integer:
                     return

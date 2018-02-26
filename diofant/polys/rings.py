@@ -182,10 +182,7 @@ class PolyRing(DefaultPrinting, IPolys):
 
             obj._one = [(obj.zero_monom, domain.one)]
 
-            if order is lex:
-                obj.leading_expv = lambda f: max(f)
-            else:
-                obj.leading_expv = lambda f: max(f, key=order)
+            obj.leading_expv = lambda f: max(f, key=order)
 
             for symbol, generator in zip(obj.symbols, obj.gens):
                 if isinstance(symbol, Symbol):
@@ -1589,10 +1586,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             order = OrderOpt.preprocess(order)
 
-        if order is lex:
-            return sorted(seq, key=lambda monom: monom[0], reverse=True)
-        else:
-            return sorted(seq, key=lambda monom: order(monom[0]), reverse=True)
+        return sorted(seq, key=lambda monom: order(monom[0]), reverse=True)
 
     def coeffs(self, order=None):
         """Ordered list of polynomial coefficients.

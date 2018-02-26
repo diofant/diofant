@@ -138,7 +138,7 @@ class RootOf(Expr):
                         break
             poly, index = minpoly, idx
 
-        if poly.domain.is_ZZ:
+        if poly.domain.is_ZZ or poly.domain == QQ.algebraic_field(I):
             root = cls._indexed_root(poly, index)
         else:
             root = poly, index
@@ -527,7 +527,7 @@ class RootOf(Expr):
     def _all_roots(cls, poly):
         """Get real and complex roots of a composite polynomial. """
 
-        if not poly.domain.is_ZZ:
+        if not poly.domain.is_ZZ and poly.domain != QQ.algebraic_field(I):
             return [(poly, i) for i in range(poly.degree())]
 
         (_, factors) = poly.factor_list()

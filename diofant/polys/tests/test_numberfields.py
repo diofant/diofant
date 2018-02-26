@@ -3,8 +3,9 @@
 import pytest
 
 from diofant import (Add, GoldenRatio, I, Integer, Mul, Poly, Rational, Symbol,
-                     Tuple, cbrt, cos, exp, expand, expand_multinomial,
-                     nsimplify, oo, pi, root, sin, solve, sqrt)
+                     Tuple, cbrt, cos, exp, exp_polar, expand,
+                     expand_multinomial, nsimplify, oo, pi, root, sin, solve,
+                     sqrt)
 from diofant.abc import x, y, z
 from diofant.domains import QQ
 from diofant.polys.numberfields import (AlgebraicNumber, field_isomorphism,
@@ -186,6 +187,8 @@ def test_minimal_polynomial():
     assert minimal_polynomial(1/(1 + sqrt(2)) + 1, x, compose=False) == x**2 - 2
     assert minimal_polynomial(sqrt(2)*I + I*(1 + sqrt(2)), x,
                               compose=False) == x**4 + 18*x**2 + 49
+
+    assert minimal_polynomial(exp_polar(0), x) == x - 1
 
 
 def test_minimal_polynomial_hi_prec():
