@@ -9,7 +9,7 @@ from ..core import (Add, AlgebraicNumber, Dummy, E, GoldenRatio, I, Integer,
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ
-from ..functions import cos, root, sin, sqrt
+from ..functions import cos, exp_polar, root, sin, sqrt
 from ..ntheory import divisors, sieve
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
@@ -470,6 +470,8 @@ def _minpoly_compose(ex, x, dom):
         return x**2 + 1
     if ex is GoldenRatio:
         return x**2 - x - 1
+    if ex == exp_polar(0):
+        return x - 1
     if hasattr(dom, 'symbols') and ex in dom.symbols:
         return x - ex
 
