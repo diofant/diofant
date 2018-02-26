@@ -610,8 +610,6 @@ class Mul(AssocOp):
                 rv = -m
         else:
             rv = AssocOp._eval_evalf(self, prec)
-        if rv.is_number:
-            return rv.expand()
         return rv
 
     @cacheit
