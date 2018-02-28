@@ -1862,7 +1862,15 @@ class ComplexInterval:
         if re_distinct:
             return True
         im_distinct = self.by <= other.ay or other.by <= self.ay
-        return im_distinct
+        if im_distinct and (self.ax == other.ax):
+            # In this case, both roots could be on western edges.  Lets
+            # test that and terminate refinement if it's the case.
+
+            if 'OO' not in self.Q[3]:
+                return False
+            else:
+                return 'OO' in other.Q[3]
+        return False
 
     def _inner_refine(self):
         """Internal one step complex root refinement procedure. """
