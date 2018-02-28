@@ -15,9 +15,8 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_ground_LC, dmp_ground_nth, dmp_ground_p,
                          dmp_ground_TC, dmp_inject, dmp_LC, dmp_list_terms,
                          dmp_negative_p, dmp_one, dmp_one_p, dmp_permute,
-                         dmp_slice_in, dmp_strip, dmp_TC, dmp_terms_gcd,
-                         dmp_to_dict, dmp_to_tuple, dmp_validate, dmp_zero_p,
-                         dup_from_dict)
+                         dmp_slice_in, dmp_strip, dmp_terms_gcd, dmp_to_dict,
+                         dmp_to_tuple, dmp_validate, dmp_zero_p, dup_from_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -1179,7 +1178,7 @@ class ANP(CantSympify):
         self.domain = dom
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.to_tuple(),
+        return hash((self.__class__.__name__, dmp_to_tuple(self.rep, 0),
                      dmp_to_tuple(self.mod, 0), self.domain))
 
     def unify(self, other):
@@ -1217,15 +1216,6 @@ class ANP(CantSympify):
         """Convert ``self`` to a dict representation with native coefficients. """
         return dmp_to_dict(self.rep, 0, self.domain)
 
-    def to_diofant_dict(self):
-        """Convert ``self`` to a dict representation with Diofant coefficients. """
-        rep = dmp_to_dict(self.rep, 0, self.domain)
-
-        for k, v in rep.items():
-            rep[k] = self.domain.to_diofant(v)
-
-        return rep
-
     def to_list(self):
         """Convert ``self`` to a list representation with native coefficients. """
         return self.rep
@@ -1234,68 +1224,13 @@ class ANP(CantSympify):
         """Convert ``self`` to a list representation with Diofant coefficients. """
         return [self.domain.to_diofant(c) for c in self.rep]
 
-    def to_tuple(self):
-        """
-        Convert ``self`` to a tuple representation with native coefficients.
-
-        This is needed for hashing.
-        """
-        return dmp_to_tuple(self.rep, 0)
-
     @classmethod
     def from_list(cls, rep, mod, dom):
         return ANP(dmp_strip(list(map(dom.convert, rep)), 0), mod, dom)
 
-    def neg(self):
-        return self.per(dmp_neg(self.rep, 0, self.domain))
-
-    def add(self, other):
-        dom, per, F, G, mod = self.unify(other)
-        return per(dup_add(F, G, dom))
-
-    def sub(self, other):
-        dom, per, F, G, mod = self.unify(other)
-        return per(dup_sub(F, G, dom))
-
-    def mul(self, other):
-        dom, per, F, G, mod = self.unify(other)
-        return per(dmp_rem(dup_mul(F, G, dom), mod, 0, dom))
-
-    def pow(self, n):
-        """Raise ``self`` to an integer power ``n``. """
-        if isinstance(n, int):
-            if n < 0:
-                F, n = dup_invert(self.rep, self.mod, self.domain), -n
-            else:
-                F = self.rep
-
-            return self.per(dmp_rem(dmp_pow(F, n, 0, self.domain),
-                                    self.mod, 0, self.domain))
-        else:
-            raise TypeError("``int`` expected, got %s" % type(n))
-
-    def div(self, other):
-        dom, per, F, G, mod = self.unify(other)
-        return (per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom),
-                                    dom), mod, 0, dom)), self.zero(mod, dom))
-
-    def rem(self, other):
-        dom, _, _, _, mod = self.unify(other)
-        return self.zero(mod, dom)
-
-    def quo(self, other):
-        dom, per, F, G, mod = self.unify(other)
-        return per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, 0, dom))
-
-    exquo = quo
-
     def LC(self):
         """Returns the leading coefficient of ``self``. """
         return dmp_LC(self.rep, self.domain)
-
-    def TC(self):
-        """Returns the trailing coefficient of ``self``. """
-        return dmp_TC(self.rep, self.domain)
 
     @property
     def is_zero(self):
@@ -1313,61 +1248,77 @@ class ANP(CantSympify):
         return not self.rep or len(self.rep) == 1
 
     def __neg__(self):
-        return self.neg()
+        return self.per(dmp_neg(self.rep, 0, self.domain))
 
     def __add__(self, other):
-        if isinstance(other, ANP):
-            return self.add(other)
-        else:
+        if not isinstance(other, ANP):
             try:
-                return self.add(self.per(other))
+                other = self.per(other)
             except (CoercionFailed, TypeError):
                 return NotImplemented
+
+        dom, per, F, G, mod = self.unify(other)
+        return per(dup_add(F, G, dom))
 
     def __radd__(self, other):
         return self.__add__(other)
 
     def __sub__(self, other):
-        if isinstance(other, ANP):
-            return self.sub(other)
-        else:
+        if not isinstance(other, ANP):
             try:
-                return self.sub(self.per(other))
+                other = self.per(other)
             except (CoercionFailed, TypeError):
                 return NotImplemented
+
+        dom, per, F, G, mod = self.unify(other)
+        return per(dup_sub(F, G, dom))
 
     def __rsub__(self, other):
         return (-self).__add__(other)
 
     def __mul__(self, other):
-        if isinstance(other, ANP):
-            return self.mul(other)
-        else:
+        if not isinstance(other, ANP):
             try:
-                return self.mul(self.per(other))
+                other = self.per(other)
             except (CoercionFailed, TypeError):
                 return NotImplemented
+
+        dom, per, F, G, mod = self.unify(other)
+        return per(dmp_rem(dup_mul(F, G, dom), mod, 0, dom))
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
     def __pow__(self, n):
-        return self.pow(n)
+        if isinstance(n, int):
+            if n < 0:
+                F, n = dup_invert(self.rep, self.mod, self.domain), -n
+            else:
+                F = self.rep
+
+            return self.per(dmp_rem(dmp_pow(F, n, 0, self.domain),
+                                    self.mod, 0, self.domain))
+        else:
+            raise TypeError("``int`` expected, got %s" % type(n))
 
     def __divmod__(self, other):
-        return self.div(other)
+        dom, per, F, G, mod = self.unify(other)
+        return (per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom),
+                                    dom), mod, 0, dom)), self.zero(mod, dom))
 
     def __mod__(self, other):
-        return self.rem(other)
+        dom, _, _, _, mod = self.unify(other)
+        return self.zero(mod, dom)
 
     def __truediv__(self, other):
-        if isinstance(other, ANP):
-            return self.quo(other)
-        else:
+        if not isinstance(other, ANP):
             try:
-                return self.quo(self.per(other))
+                other = self.per(other)
             except (CoercionFailed, TypeError):
                 return NotImplemented
+
+        dom, per, F, G, mod = self.unify(other)
+        return per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, 0, dom))
 
     def __eq__(self, other):
         try:
