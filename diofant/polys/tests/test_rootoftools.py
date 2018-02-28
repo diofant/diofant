@@ -326,6 +326,15 @@ def test_RootOf_all_roots():
         RootOf(x**3 - x**2 + 1, 2),
     ]
 
+    r = Poly((x**3 + x + 20)*(x**3 + x + 21)).all_roots()
+
+    assert r[0].is_real and r[1].is_real
+    assert all(not _.is_real for _ in r[2:])
+
+    assert r == [RootOf(x**3 + x + 21, 0), RootOf(x**3 + x + 20, 0),
+                 RootOf(x**3 + x + 20, 1), RootOf(x**3 + x + 20, 2),
+                 RootOf(x**3 + x + 21, 1), RootOf(x**3 + x + 21, 2)]
+
 
 def test_RootOf_eval_rational():
     p = legendre_poly(4, x, polys=True)
