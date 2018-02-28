@@ -317,8 +317,12 @@ def test_dup_isolate_real_roots_sqf():
 
     f = (x**2 - 2)*(x**3 - x + I)
 
-    assert R.dup_isolate_real_roots_sqf(f) == [(-2, -1), (1, 2)]
+    assert R.dup_isolate_real_roots_sqf(f) == [(QQ(-3, 2), QQ(-4, 3)), (QQ(4, 3), QQ(3, 2))]
     assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 10), inf=0) == [(QQ(7, 5), QQ(10, 7))]
+
+    assert R.dup_isolate_real_roots_sqf(x) == [(0, 0)]
+    assert R.dup_isolate_real_roots_sqf(x - 1) == [(1, 1)]
+    assert R.dup_isolate_real_roots_sqf(x - I) == []
 
 
 def test_dup_isolate_real_roots():

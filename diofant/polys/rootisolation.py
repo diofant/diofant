@@ -495,13 +495,18 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
            Fractions Method Using New Bounds of Positive Roots.  Nonlinear
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
-    if K.is_QQ:
-        f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
-    elif K.is_Algebraic:
+    if K.is_Algebraic:
         A, K = K, K.domain
         polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
-        r = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup)
-        return [_[0] for _ in r if _[1].keys() == {0, 1}]
+        if not polys[1]:
+            f = polys[0]
+        else:
+            roots = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup, strict=True)
+            roots = [_[0] for _ in roots if _[1].keys() == {0, 1}]
+            return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
+
+    if K.is_QQ:
+        f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
