@@ -1863,13 +1863,9 @@ class AlgebraicNumber(Expr):
     def _eval_power(self, expt):
         from ..polys.polyclasses import ANP
         if expt.is_Integer:
-            expt = int(expt)
-            if expt >= 0:
-                coeffs = self.rep**expt
-            else:
-                coeffs = ANP(self.rep.to_dict(), self.minpoly.rep,
-                             self.rep.domain)**expt
-            return self.func(self, coeffs.to_tuple(), self.alias)
+            coeffs = ANP(self.rep.to_dict(), self.minpoly.rep,
+                         self.rep.domain)**int(expt)
+            return self.func(self, coeffs, self.alias)
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):

@@ -170,12 +170,16 @@ def test_RootOf_is_real():
     r = RootOf(x**3 + y*x + 1, x, 0)
     assert r.is_real is None
 
+    assert RootOf(x**3 + I*x + 2, 0).is_real is False
+
 
 def test_RootOf_is_complex():
     assert RootOf(x**3 + x + 3, 0).is_complex is True
     assert RootOf(x**3 + y*x + 3, x, 0).is_complex is None
 
     assert RootOf(x**3 + y*x + 3, x, 0).is_commutative
+
+    assert RootOf(x**3 + I*x + 2, 0).is_complex is True
 
 
 def test_RootOf_is_algebraic():
@@ -291,6 +295,9 @@ def test_RootOf_evalf():
 
     assert isinstance(RootOf(x**3 + y*x + 1, x, 0).n(2), RootOf)
 
+    assert RootOf(x**3 + I*x + 2, 0).n(7) == (Float('-1.260785326', dps=7) +
+                                              I*Float('0.2684419416', dps=7))
+
 
 def test_RootOf_evalf_caching_bug():
     r = RootOf(x**5 - 5*x + 12, 1)
@@ -325,6 +332,15 @@ def test_RootOf_all_roots():
         RootOf(x**3 - x**2 + 1, 1),
         RootOf(x**3 - x**2 + 1, 2),
     ]
+
+    r = Poly((x**3 + x + 20)*(x**3 + x + 21)).all_roots()
+
+    assert r[0].is_real and r[1].is_real
+    assert all(not _.is_real for _ in r[2:])
+
+    assert r == [RootOf(x**3 + x + 21, 0), RootOf(x**3 + x + 20, 0),
+                 RootOf(x**3 + x + 20, 1), RootOf(x**3 + x + 20, 2),
+                 RootOf(x**3 + x + 21, 1), RootOf(x**3 + x + 21, 2)]
 
 
 def test_RootOf_eval_rational():

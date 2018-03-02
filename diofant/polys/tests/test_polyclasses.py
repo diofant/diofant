@@ -589,7 +589,6 @@ def test_ANP_to_dict():
 
     a = ANP([QQ(1), QQ(1)], mod, QQ)
     assert a.to_dict() == {(0,): QQ(1), (1,): QQ(1)}
-    assert a.to_diofant_dict() == {(0,): 1, (1,): 1}
 
 
 def test_ANP___bool__():
@@ -608,7 +607,6 @@ def test_ANP_properties():
 
     a = ANP([QQ(1), -QQ(1), QQ(2)], mod, QQ)
     assert a.LC() == 1
-    assert a.TC() == 2
 
 
 def test_ANP_arithmetics():
@@ -619,12 +617,12 @@ def test_ANP_arithmetics():
 
     c = ANP([QQ(-2), QQ(1), QQ(-1)], mod, QQ)
 
-    assert a.neg() == -a == c
+    assert -a == c
 
     c = ANP([QQ(2), QQ(0), QQ(3)], mod, QQ)
 
-    assert a.add(b) == a + b == c
-    assert b.add(a) == b + a == c
+    assert a + b == c
+    assert b + a == c
 
     assert c + 1 == ANP([QQ(2), QQ(0), QQ(4)], mod, QQ)
     pytest.raises(TypeError, lambda: c + "x")
@@ -632,11 +630,11 @@ def test_ANP_arithmetics():
 
     c = ANP([QQ(2), QQ(-2), QQ(-1)], mod, QQ)
 
-    assert a.sub(b) == a - b == c
+    assert a - b == c
 
     c = ANP([QQ(-2), QQ(2), QQ(1)], mod, QQ)
 
-    assert b.sub(a) == b - a == c
+    assert b - a == c
 
     assert c - 1 == ANP([QQ(-2), QQ(2), QQ(0)], mod, QQ)
     pytest.raises(TypeError, lambda: c - "x")
@@ -644,8 +642,8 @@ def test_ANP_arithmetics():
 
     c = ANP([QQ(3), QQ(-1), QQ(6)], mod, QQ)
 
-    assert a.mul(b) == a*b == c
-    assert b.mul(a) == b*a == c
+    assert a*b == c
+    assert b*a == c
 
     assert c*2 == ANP([QQ(6), QQ(-2), QQ(12)], mod, QQ)
     pytest.raises(TypeError, lambda: c*"x")
@@ -653,8 +651,8 @@ def test_ANP_arithmetics():
 
     c = ANP([QQ(11, 10), -QQ(1, 5), -QQ(3, 5)], mod, QQ)
     d = ANP([], mod, QQ)
-    assert a.div(b) == divmod(a, b) == (c, d)
-    assert a.rem(b) == a % b == d
+    assert divmod(a, b) == (c, d)
+    assert a % b == d
 
     assert c/2 == ANP([QQ(11, 20), -QQ(1, 10), -QQ(3, 10)], mod, QQ)
     pytest.raises(TypeError, lambda: c/"x")
@@ -662,12 +660,12 @@ def test_ANP_arithmetics():
 
     c = ANP([QQ(-1, 43), QQ(9, 43), QQ(5, 43)], mod, QQ)
 
-    assert a.pow(0) == a**(0) == ANP(1, mod, QQ)
-    assert a.pow(1) == a**(1) == a
-    assert a.pow(-1) == a**(-1) == c
-    pytest.raises(TypeError, lambda: a.pow(QQ(1, 2)))
+    assert a**0 == ANP(1, mod, QQ)
+    assert a**1 == a
+    assert a**-1 == c
+    pytest.raises(TypeError, lambda: a**QQ(1, 2))
 
-    assert a.quo(a) == a.mul(a.pow(-1)) == a*a**(-1) == ANP(1, mod, QQ)
+    assert a*a**(-1) == ANP(1, mod, QQ)
 
     a = ANP([QQ(1, 2), QQ(1), QQ(2)], [QQ(1), QQ(0), QQ(1)], QQ)
     b = ANP([ZZ(1), ZZ(1), ZZ(2)], [ZZ(1), ZZ(0), ZZ(1)], ZZ)

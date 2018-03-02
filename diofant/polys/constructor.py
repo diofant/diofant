@@ -20,9 +20,8 @@ def _construct_simple(coeffs, opt):
             return coeff.is_number and coeff.is_algebraic
     else:
         def is_algebraic(coeff):
-            return False
+            return all(_.is_Rational for _ in coeff.as_real_imag())
 
-    # XXX: add support for a + b*I coefficients
     for coeff in coeffs:
         if coeff.is_Rational:
             if not coeff.is_Integer:

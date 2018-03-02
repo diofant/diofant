@@ -67,18 +67,11 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def from_diofant(self, a):
         """Convert Diofant's expression to ``dtype``. """
-        try:
-            return self([self.domain.from_diofant(a)])
-        except CoercionFailed:
-            pass
-
         from ..polys.numberfields import to_number_field
-
         try:
             return self(to_number_field(a, self.ext).native_coeffs())
         except (NotAlgebraic, IsomorphismFailed):
-            raise CoercionFailed(
-                "%s is not a valid algebraic number in %s" % (a, self))
+            raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
 
     def from_ZZ_python(self, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
