@@ -22,7 +22,6 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dup_revert, dup_scale, dup_shift,
                                       dup_sign_variations, dup_transform,
                                       dup_trunc)
-from diofant.polys.polyclasses import ANP
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
                                       MultivariatePolynomialError,
                                       NotReversible)
@@ -578,14 +577,12 @@ def test_dup_decompose():
 
 
 def test_dmp_lift():
-    q = [QQ(1, 1), QQ(0, 1), QQ(1, 1)]
+    R, _ = ring('x', QQ.algebraic_field(I))
+    x, = R.to_ground().gens
 
-    f = [ANP([QQ(1, 1)], q, QQ), ANP([], q, QQ), ANP([], q, QQ),
-         ANP([QQ(1, 1), QQ(0, 1)], q, QQ), ANP([QQ(17, 1), QQ(0, 1)], q, QQ)]
+    f = R.x**4 + I*R.x + 17*I
 
-    assert dmp_lift(f, 0, QQ.algebraic_field(I)) == \
-        [QQ(1), QQ(0), QQ(0), QQ(0), QQ(0), QQ(0), QQ(2), QQ(0), QQ(578),
-         QQ(0), QQ(0), QQ(0), QQ(1), QQ(0), QQ(-578), QQ(0), QQ(83521)]
+    assert R.dmp_lift(f) == x**16 + 2*x**10 + 578*x**8 + x**4 - 578*x**2 + 83521
 
     pytest.raises(DomainError, lambda: dmp_lift([EX(1), EX(2)], 0, EX))
 

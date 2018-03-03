@@ -48,7 +48,7 @@ def dmp_sqf_norm(f, u, K):
 
     >>> s == 1
     True
-    >>> f == x*y + y**2 + K([QQ(-1), QQ(0)])*y
+    >>> f == x*y + y**2 - I*y
     True
     >>> r == X**2*Y**2 + 2*X*Y**3 + Y**4 + Y**2
     True
