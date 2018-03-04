@@ -70,7 +70,8 @@ matrix:
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
-  - travis_wait pip install .[exports,plot,interactive,gmpy,docs]
+  - pip install --pre -U gmpy2
+  - travis_wait pip install .[exports,plot,interactive,docs]
 script:
   - |
     if [ -n "${COVERAGE}" ]; then
