@@ -13,6 +13,8 @@ Major changes
 Compatibility breaks
 ====================
 
+* Removed ``DMF`` class, see :pull:`620`.
+
 Minor changes
 =============
 

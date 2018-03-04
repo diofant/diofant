@@ -165,7 +165,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         return self(K0.to_diofant(a))
 
     def from_FractionField(self, a, K0):
-        """Convert a ``DMF`` object to ``dtype``. """
+        """Convert a ``FracElement`` object to ``dtype``. """
         return self(K0.to_diofant(a))
 
     def from_ExpressionDomain(self, a, K0):
