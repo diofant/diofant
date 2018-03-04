@@ -1886,6 +1886,13 @@ def test_mul_zero_detection():
         test2(z, b, e)
 
 
+def test_Mul_does_not_distribute_infinity():
+    assert ((1 + I)*oo).is_Mul
+    assert ((a + c)*(-oo)).is_Mul
+    assert ((a + 1)*zoo).is_Mul
+    assert ((1 + I)*oo).is_finite is False
+
+
 def test_sympyissue_8274():
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_positive is False  # it's 0
