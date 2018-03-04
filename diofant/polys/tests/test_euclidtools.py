@@ -22,8 +22,8 @@ def test_dup_gcdex():
     f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
     g = x**3 + x**2 - 4*x - 4
 
-    s = -QQ(1, 5)*x + QQ(3, 5)
-    t = QQ(1, 5)*x**2 - QQ(6, 5)*x + 2
+    s = -x/5 + QQ(3, 5)
+    t = x**2/5 - 6*x/5 + 2
     h = x + 1
 
     assert R.dup_half_gcdex(f, g) == (s, h)
@@ -43,7 +43,7 @@ def test_dup_gcdex():
     f = 2*x
     g = x**2 - 16
 
-    s = QQ(1, 32)*x
+    s = x/32
     t = -QQ(1, 16)
     h = 1
 
@@ -53,7 +53,7 @@ def test_dup_gcdex():
 
 def test_dup_invert():
     R, x = ring("x", QQ)
-    assert R.dup_invert(2*x, x**2 - 16) == QQ(1, 32)*x
+    assert R.dup_invert(2*x, x**2 - 16) == x/32
 
 
 def test_dup_euclidean_prs():
@@ -65,9 +65,9 @@ def test_dup_euclidean_prs():
     assert R.dup_euclidean_prs(f, g) == [
         f,
         g,
-        -QQ(5, 9)*x**4 + QQ(1, 9)*x**2 - QQ(1, 3),
-        -QQ(117, 25)*x**2 - 9*x + QQ(441, 25),
-        QQ(233150, 19773)*x - QQ(102500, 6591),
+        -5*x**4/9 + x**2/9 - QQ(1, 3),
+        -117*x**2/25 - 9*x + QQ(441, 25),
+        233150*x/19773 - QQ(102500, 6591),
         -QQ(1288744821, 543589225)]
 
 
@@ -227,13 +227,13 @@ def test_dmp_subresultants():
 
     R,  x, y, z, u, v = ring("x,y,z,u,v", QQ)
 
-    f = x**2 - QQ(1, 2)*x*y - QQ(1, 3)*x*z + QQ(1, 6)*y*z
+    f = x**2 - x*y/2 - x*z/3 + y*z/6
     g = x**2 - x*u - x*v + u*v
 
-    r = QQ(1, 36)*y**2*z**2 - QQ(1, 12)*y**2*z*u - QQ(1, 12)*y**2*z*v + QQ(1, 4)*y**2*u*v \
-        - QQ(1, 18)*y*z**2*u - QQ(1, 18)*y*z**2*v + QQ(1, 6)*y*z*u**2 + QQ(1, 3)*y*z*u*v \
-        + QQ(1, 6)*y*z*v**2 - QQ(1, 2)*y*u**2*v - QQ(1, 2)*y*u*v**2 + QQ(1, 9)*z**2*u*v \
-        - QQ(1, 3)*z*u**2*v - QQ(1, 3)*z*u*v**2 + u**2*v**2
+    r = y**2*z**2/36 - y**2*z*u/12 - y**2*z*v/12 + y**2*u*v/4 \
+        - y*z**2*u/18 - y*z**2*v/18 + y*z*u**2/6 + y*z*u*v/3 \
+        + y*z*v**2/6 - y*u**2*v/2 - y*u*v**2/2 + z**2*u*v/9 \
+        - z*u**2*v/3 - z*u*v**2/3 + u**2*v**2
 
     assert R.dmp_qq_collins_resultant(f, g) == r.drop(x)
 
@@ -430,8 +430,8 @@ def test_dup_gcd():
 
     R, x = ring("x", QQ)
 
-    f = QQ(1, 2)*x**2 + x + QQ(1, 2)
-    g = QQ(1, 2)*x + QQ(1, 2)
+    f = x**2/2 + x + QQ(1, 2)
+    g = x/2 + QQ(1, 2)
 
     h = x + 1
 
@@ -602,8 +602,8 @@ def test_dmp_gcd():
 
     R, x, y = ring("x,y", QQ)
 
-    f = QQ(1, 2)*x**2 + x + QQ(1, 2)
-    g = QQ(1, 2)*x + QQ(1, 2)
+    f = x**2/2 + x + QQ(1, 2)
+    g = x/2 + QQ(1, 2)
 
     h = x + 1
 

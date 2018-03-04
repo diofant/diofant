@@ -105,7 +105,7 @@ def test_dup_cyclotomic_p():
 
     R, x = ring("x", QQ)
     assert R.dup_cyclotomic_p(x**2 + x + 1) is True
-    assert R.dup_cyclotomic_p(QQ(1, 2)*x**2 + x + 1) is False
+    assert R.dup_cyclotomic_p(x**2/2 + x + 1) is False
 
     R, x = ring("x", ZZ["y"])
     assert R.dup_cyclotomic_p(x**2 + x + 1) is False
@@ -538,7 +538,7 @@ def test_dup_factor_list():
     assert R.dup_factor_list(6*x**2 - 5*x - 6) == (1, [(2*x - 3, 1), (3*x + 2, 1)])
 
     R, x = ring("x", QQ)
-    assert R.dup_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert R.dup_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x = ring("x", FF(2))
     assert R.dup_factor_list(x**2 + 1) == (1, [(x + 1, 2)])
@@ -569,7 +569,7 @@ def test_dup_factor_list():
     Rt, t = ring("t", QQ)
     R, x = ring("x", Rt)
 
-    f = QQ(1, 2)*t*x**2 + QQ(1, 2)*t**2*x
+    f = t*x**2/2 + t**2*x/2
 
     assert R.dup_factor_list(f) == (t/2, [(x, 1), (x + t, 1)])
 
@@ -617,12 +617,12 @@ def test_dmp_factor_list():
     R, x = ring("x", ZZ)
     assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
     R, x = ring("x", QQ)
-    assert R.dmp_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert R.dmp_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
     assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
     R, x, y = ring("x,y", QQ)
-    assert R.dmp_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert R.dmp_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
     f = 4*x**2*y + 4*x*y**2
@@ -638,7 +638,7 @@ def test_dmp_factor_list():
          (x + y, 1)]
 
     R,  x, y = ring("x,y", QQ)
-    f = QQ(1, 2)*x**2*y + QQ(1, 2)*x*y**2
+    f = x**2*y/2 + x*y**2/2
 
     assert R.dmp_factor_list(f) == \
         (QQ(1, 2), [(y, 1),
@@ -673,11 +673,9 @@ def test_dmp_factor_list():
 
     Rt, t = ring("t", QQ)
     R, x, y = ring("x,y", Rt)
-    f = QQ(1, 2)*t*x**2 + QQ(1, 2)*t**2*x
+    f = t*x**2/2 + t**2*x/2
 
-    assert R.dmp_factor_list(f) == \
-        (QQ(1, 2)*t, [(x, 1),
-                      (x + t, 1)])
+    assert R.dmp_factor_list(f) == (t/2, [(x, 1), (x + t, 1)])
 
     R, x, y = ring("x,y", FF(2))
     pytest.raises(NotImplementedError, lambda: R.dmp_factor_list(x**2 + y**2))
