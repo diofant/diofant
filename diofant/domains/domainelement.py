@@ -8,9 +8,10 @@ class DomainElement:
     Represents an element of a domain.
 
     Mix in this trait into a class which instances should be recognized as
-    elements of a domain. Method ``parent()`` gives that domain.
+    elements of a domain.  Property ``parent`` gives that domain.
 
     """
 
+    @property
     def parent(self):
         raise NotImplementedError("abstract method")

@@ -26,10 +26,10 @@ def unify(K0, K1):
 
 
 def test_Domain_interface():
-    pytest.raises(NotImplementedError, lambda: DomainElement().parent())
+    pytest.raises(NotImplementedError, lambda: DomainElement().parent)
 
-    assert RR(1).parent() is RR
-    assert CC(1).parent() is CC
+    assert RR(1).parent is RR
+    assert CC(1).parent is CC
 
     assert RR.has_default_precision
     assert CC.has_default_precision

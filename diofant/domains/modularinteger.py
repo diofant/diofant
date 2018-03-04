@@ -14,6 +14,7 @@ class ModularInteger(DomainElement):
 
     mod, domain, sym, _parent = None, None, None, None
 
+    @property
     def parent(self):
         return self._parent
 

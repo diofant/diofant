@@ -447,6 +447,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def new(self, init):
         return self.__class__(init)
 
+    @property
     def parent(self):
         return self.ring.to_domain()
 

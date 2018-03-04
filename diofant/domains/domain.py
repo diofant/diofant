@@ -110,7 +110,7 @@ class Domain(DefaultPrinting):
             return self.convert_from(parent(element), parent)
 
         if isinstance(element, DomainElement):
-            return self.convert_from(element, element.parent())
+            return self.convert_from(element, element.parent)
 
         if isinstance(element, Basic):
             try:

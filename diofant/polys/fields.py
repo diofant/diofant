@@ -211,6 +211,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
             raise ValueError("self.denom should be 1")
         return self.numer
 
+    @property
     def parent(self):
         return self.field.to_domain()
 
