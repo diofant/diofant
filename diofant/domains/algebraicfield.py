@@ -115,11 +115,3 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
         return self.domain.is_nonnegative(a.LC())
-
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        return a
-
-    def denom(self, a):
-        """Returns denominator of ``a``. """
-        return self.one
