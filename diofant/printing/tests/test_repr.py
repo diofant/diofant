@@ -233,3 +233,8 @@ def test_FracElement():
 def test_BooleanAtom():
     assert repr(true) == "true"
     assert repr(false) == "false"
+
+
+def test_AlgebraicField():
+    sT(QQ.algebraic_field(sqrt(2)),
+       "AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))" % repr(QQ))
