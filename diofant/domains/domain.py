@@ -46,9 +46,6 @@ class Domain(DefaultPrinting):
     rep = None
     alias = None
 
-    def __str__(self):
-        return self.rep
-
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
 

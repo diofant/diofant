@@ -39,14 +39,13 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         self.zero = self.dtype.zero(self.mod.rep, dom)
         self.one = self.dtype.one(self.mod.rep, dom)
 
+        self.rep = str(self.domain) + '<' + str(self.ext) + '>'
+
     def new(self, element):
         if isinstance(element, list):
             return self.dtype(element, self.mod.rep, self.domain)
         else:
             return self.convert(element)
-
-    def __str__(self):
-        return str(self.domain) + '<' + str(self.ext) + '>'
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.domain, self.ext))

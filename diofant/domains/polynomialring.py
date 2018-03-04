@@ -32,6 +32,8 @@ class PolynomialRing(Ring, CompositeDomain):
         self.symbols = ring.symbols
         self.domain = ring.domain
 
+        self.rep = str(self.domain) + '[' + ','.join(map(str, self.symbols)) + ']'
+
     def new(self, element):
         return self.ring.ring_new(element)
 
@@ -46,9 +48,6 @@ class PolynomialRing(Ring, CompositeDomain):
     @property
     def order(self):
         return self.ring.order
-
-    def __str__(self):
-        return str(self.domain) + '[' + ','.join(map(str, self.symbols)) + ']'
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.domain, self.symbols))

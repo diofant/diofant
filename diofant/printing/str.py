@@ -660,6 +660,9 @@ class StrPrinter(Printer):
         # TODO : Handle indices
         return "%s(%s)" % ("Tr", self._print(expr.args[0]))
 
+    def _print_Domain(self, expr):
+        return expr.rep
+
 
 def sstr(expr, **settings):
     """Returns the expression as a string.
