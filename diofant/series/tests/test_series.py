@@ -209,3 +209,7 @@ def test_sympyissue_12375():
 
 def test_sympyissue_12747():
     assert exp(x).series(x, y, n=1) == exp(y) + O(x - y, (x, y))
+
+
+def test_sympyissue_14384():
+    assert (x**y).series(x) == x**y

@@ -430,36 +430,36 @@ def test_PolyElement_coeff():
 def test_PolyElement_LC():
     R,  x, y = ring("x,y", QQ, lex)
     assert R(0).LC == QQ(0)
-    assert (QQ(1, 2)*x).LC == QQ(1, 2)
-    assert (QQ(1, 4)*x*y + QQ(1, 2)*x).LC == QQ(1, 4)
+    assert (x/2).LC == QQ(1, 2)
+    assert (x*y/4 + x/2).LC == QQ(1, 4)
 
 
 def test_PolyElement_LM():
     R,  x, y = ring("x,y", QQ, lex)
     assert R(0).LM == (0, 0)
-    assert (QQ(1, 2)*x).LM == (1, 0)
-    assert (QQ(1, 4)*x*y + QQ(1, 2)*x).LM == (1, 1)
+    assert (x/2).LM == (1, 0)
+    assert (x*y/4 + x/2).LM == (1, 1)
 
 
 def test_PolyElement_LT():
     R,  x, y = ring("x,y", QQ, lex)
     assert R(0).LT == ((0, 0), QQ(0))
-    assert (QQ(1, 2)*x).LT == ((1, 0), QQ(1, 2))
-    assert (QQ(1, 4)*x*y + QQ(1, 2)*x).LT == ((1, 1), QQ(1, 4))
+    assert (x/2).LT == ((1, 0), QQ(1, 2))
+    assert (x*y/4 + x/2).LT == ((1, 1), QQ(1, 4))
 
 
 def test_PolyElement_leading_monom():
     R,  x, y = ring("x,y", QQ, lex)
     assert R(0).leading_monom() == 0
-    assert (QQ(1, 2)*x).leading_monom() == x
-    assert (QQ(1, 4)*x*y + QQ(1, 2)*x).leading_monom() == x*y
+    assert (x/2).leading_monom() == x
+    assert (x*y/4 + x/2).leading_monom() == x*y
 
 
 def test_PolyElement_leading_term():
     R,  x, y = ring("x,y", QQ, lex)
     assert R(0).leading_term() == 0
-    assert (QQ(1, 2)*x).leading_term() == QQ(1, 2)*x
-    assert (QQ(1, 4)*x*y + QQ(1, 2)*x).leading_term() == QQ(1, 4)*x*y
+    assert (x/2).leading_term() == x/2
+    assert (x*y/4 + x/2).leading_term() == x*y/4
 
 
 def test_PolyElement_terms():
@@ -758,7 +758,7 @@ def test_PolyElement___truediv__():
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
 
     f, g = 3*x**3 + x**2 + x + 5, 5*x**2 - 3*x + 1
-    q, r = QQ(3, 5)*x + QQ(14, 25), QQ(52, 25)*x + QQ(111, 25)
+    q, r = 3*x/5 + QQ(14, 25), 52*x/25 + QQ(111, 25)
 
     assert f.div(g) == divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
@@ -897,7 +897,7 @@ def test_PolyElement_div():
 
     R, x = ring("x", QQ, grlex)
     f = x**2 + 2*x + 2
-    assert f.div([R(2)]) == ([QQ(1, 2)*x**2 + x + 1], 0)
+    assert f.div([R(2)]) == ([x**2/2 + x + 1], 0)
 
     R,  x, y = ring("x,y", ZZ, grlex)
     f = 4*x**2*y - 2*x*y + 4*x - 2*y + 8
@@ -1004,7 +1004,7 @@ def test_PolyElement_clear_denoms():
     assert R(QQ(7, 3)).clear_denoms() == (3, 7)
 
     assert (3*x**2 + x).clear_denoms() == (1, 3*x**2 + x)
-    assert (x**2 + QQ(1, 2)*x).clear_denoms() == (2, 2*x**2 + x)
+    assert (x**2 + x/2).clear_denoms() == (2, 2*x**2 + x)
 
     rQQ,  x, t = ring("x,t", QQ, lex)
     rZZ,  X, T = ring("x,t", ZZ, lex)
@@ -1112,8 +1112,8 @@ def test_PolyElement_cofactors():
 
     R,  x, y = ring("x,y", QQ)
 
-    f = QQ(1, 2)*x**2 + x + QQ(1, 2)
-    g = QQ(1, 2)*x + QQ(1, 2)
+    f = x**2/2 + x + QQ(1, 2)
+    g = x/2 + QQ(1, 2)
 
     h = x + 1
 
@@ -1133,8 +1133,8 @@ def test_PolyElement_cofactors():
 def test_PolyElement_gcd():
     R,  x, y = ring("x,y", QQ)
 
-    f = QQ(1, 2)*x**2 + x + QQ(1, 2)
-    g = QQ(1, 2)*x + QQ(1, 2)
+    f = x**2/2 + x + QQ(1, 2)
+    g = x/2 + QQ(1, 2)
 
     assert f.gcd(g) == x + 1
 
@@ -1154,8 +1154,8 @@ def test_PolyElement_cancel():
 
     R,  x, y = ring("x,y", QQ)
 
-    f = QQ(1, 2)*x**3 + x**2 + QQ(1, 2)*x
-    g = QQ(1, 3)*x**2 + QQ(1, 3)*x
+    f = x**3/2 + x**2 + x/2
+    g = x**2/3 + x/3
     F = 3*x + 3
     G = 2
 
@@ -1194,11 +1194,11 @@ def test_PolyElement_l1_norm():
 def test_PolyElement_diff():
     R, *X = ring("x:11", QQ)
 
-    f = QQ(288, 5)*X[0]**8*X[1]**6*X[4]**3*X[10]**2 + 8*X[0]**2*X[2]**3*X[4]**3 + 2*X[0]**2 - 2*X[1]**2
+    f = 288*X[0]**8*X[1]**6*X[4]**3*X[10]**2/5 + 8*X[0]**2*X[2]**3*X[4]**3 + 2*X[0]**2 - 2*X[1]**2
 
-    assert f.diff(X[0]) == QQ(2304, 5)*X[0]**7*X[1]**6*X[4]**3*X[10]**2 + 16*X[0]*X[2]**3*X[4]**3 + 4*X[0]
-    assert f.diff(X[4]) == QQ(864, 5)*X[0]**8*X[1]**6*X[4]**2*X[10]**2 + 24*X[0]**2*X[2]**3*X[4]**2
-    assert f.diff(X[10]) == QQ(576, 5)*X[0]**8*X[1]**6*X[4]**3*X[10]
+    assert f.diff(X[0]) == 2304*X[0]**7*X[1]**6*X[4]**3*X[10]**2/5 + 16*X[0]*X[2]**3*X[4]**3 + 4*X[0]
+    assert f.diff(X[4]) == 864*X[0]**8*X[1]**6*X[4]**2*X[10]**2/5 + 24*X[0]**2*X[2]**3*X[4]**2
+    assert f.diff(X[10]) == 576*X[0]**8*X[1]**6*X[4]**3*X[10]/5
 
 
 def test_PolyElement___call__():

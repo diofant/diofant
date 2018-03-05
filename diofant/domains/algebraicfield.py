@@ -39,14 +39,13 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         self.zero = self.dtype.zero(self.mod.rep, dom)
         self.one = self.dtype.one(self.mod.rep, dom)
 
+        self.rep = str(self.domain) + '<' + str(self.ext) + '>'
+
     def new(self, element):
         if isinstance(element, list):
             return self.dtype(element, self.mod.rep, self.domain)
         else:
             return self.convert(element)
-
-    def __str__(self):
-        return str(self.domain) + '<' + str(self.ext) + '>'
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.domain, self.ext))
@@ -63,7 +62,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
         from ..polys.numberfields import AlgebraicNumber
-        return AlgebraicNumber(self.ext, a).as_expr()
+        return AlgebraicNumber(self.ext, a.rep).as_expr()
 
     def from_diofant(self, a):
         """Convert Diofant's expression to ``dtype``. """
@@ -115,11 +114,3 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
         return self.domain.is_nonnegative(a.LC())
-
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        return a
-
-    def denom(self, a):
-        """Returns denominator of ``a``. """
-        return self.one

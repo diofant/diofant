@@ -32,6 +32,8 @@ class FractionField(Field, CompositeDomain):
         self.symbols = field.symbols
         self.domain = field.domain
 
+        self.rep = str(self.domain) + '(' + ','.join(map(str, self.symbols)) + ')'
+
     def new(self, element):
         return self.field.field_new(element)
 
@@ -46,9 +48,6 @@ class FractionField(Field, CompositeDomain):
     @property
     def order(self):
         return self.field.order
-
-    def __str__(self):
-        return str(self.domain) + '(' + ','.join(map(str, self.symbols)) + ')'
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.domain, self.symbols))

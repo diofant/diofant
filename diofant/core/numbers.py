@@ -1807,7 +1807,7 @@ class AlgebraicNumber(Expr):
     def __new__(cls, expr, coeffs=(1, 0), alias=None, **kwargs):
         """Construct a new algebraic number. """
         from ..polys import Poly
-        from ..polys.polyclasses import ANP, DMP
+        from ..polys.polyclasses import DMP
         from ..polys.numberfields import minimal_polynomial
         from .symbol import Symbol
 
@@ -1829,9 +1829,7 @@ class AlgebraicNumber(Expr):
 
         dom = minpoly.domain.get_field()
 
-        if isinstance(coeffs, ANP):
-            rep = DMP.from_list(coeffs.to_list(), 0, dom)
-        elif isinstance(coeffs, DMP):
+        if isinstance(coeffs, DMP):
             rep = coeffs
         else:
             rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
@@ -1861,11 +1859,10 @@ class AlgebraicNumber(Expr):
         return set()
 
     def _eval_power(self, expt):
-        from ..polys.polyclasses import ANP
         if expt.is_Integer:
-            coeffs = ANP(self.rep.to_dict(), self.minpoly.rep,
-                         self.rep.domain)**int(expt)
-            return self.func(self, coeffs, self.alias)
+            A = self.rep.domain.algebraic_field(self.root)
+            r = A(self.rep.rep)**int(expt)
+            return self.func(self, r.rep, self.alias)
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):

@@ -56,7 +56,7 @@ from diofant.polys.monomials import Monomial
 from diofant.polys.numberfields import AlgebraicNumber
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
-from diofant.polys.polyclasses import ANP, DMF, DMP
+from diofant.polys.polyclasses import ANP, DMP
 from diofant.polys.polyerrors import (CoercionFailed, DomainError,
                                       EvaluationFailed, ExtraneousFactors,
                                       FlagError, GeneratorsError,
@@ -293,8 +293,6 @@ def test_pickling_polys_polytools():
 
 def test_pickling_polys_polyclasses():
     for c in (DMP, DMP([[ZZ(1)], [ZZ(2)], [ZZ(3)]], ZZ)):
-        check(c)
-    for c in (DMF, DMF(([ZZ(1), ZZ(2)], [ZZ(1), ZZ(3)]), ZZ)):
         check(c)
     for c in (ANP, ANP([QQ(1), QQ(2)], [QQ(1), QQ(2), QQ(3)], QQ)):
         check(c)

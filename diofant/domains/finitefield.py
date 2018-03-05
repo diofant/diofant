@@ -13,8 +13,6 @@ __all__ = ('FiniteField',)
 class FiniteField(Field, SimpleDomain):
     """General class for finite fields. """
 
-    rep = 'FF'
-
     is_FiniteField = is_FF = True
     is_Numerical = True
 
@@ -33,8 +31,7 @@ class FiniteField(Field, SimpleDomain):
         self.domain = dom
         self.mod = mod
 
-    def __str__(self):
-        return 'GF(%s)' % self.mod
+        self.rep = 'GF(%s)' % self.mod
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.mod, self.domain))

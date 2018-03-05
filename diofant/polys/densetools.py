@@ -1007,7 +1007,7 @@ def dmp_lift(f, u, K):
     >>> K = QQ.algebraic_field(I)
     >>> R, x = ring("x", K)
 
-    >>> f = x**2 + K([QQ(1), QQ(0)])*x + K([QQ(2), QQ(0)])
+    >>> f = x**2 + I*x + 2*I
 
     >>> R.dmp_lift(f)
     x**8 + 2*x**6 + 9*x**4 - 8*x**2 + 16

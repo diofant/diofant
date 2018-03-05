@@ -46,18 +46,11 @@ class Domain(DefaultPrinting):
     rep = None
     alias = None
 
-    def __str__(self):
-        return self.rep
-
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
 
     def new(self, *args):
         return self.dtype(*args)
-
-    @property
-    def tp(self):
-        return self.dtype
 
     def __call__(self, *args):
         """Construct an element of ``self`` domain from ``args``. """
@@ -101,11 +94,11 @@ class Domain(DefaultPrinting):
 
         if HAS_GMPY:
             integers = GMPYIntegerRing()
-            if isinstance(element, integers.tp):
+            if isinstance(element, integers.dtype):
                 return self.convert_from(element, integers)
 
             rationals = GMPYRationalField()
-            if isinstance(element, rationals.tp):
+            if isinstance(element, rationals.dtype):
                 return self.convert_from(element, rationals)
 
         if isinstance(element, float):
@@ -117,7 +110,7 @@ class Domain(DefaultPrinting):
             return self.convert_from(parent(element), parent)
 
         if isinstance(element, DomainElement):
-            return self.convert_from(element, element.parent())
+            return self.convert_from(element, element.parent)
 
         if isinstance(element, Basic):
             try:
@@ -129,7 +122,7 @@ class Domain(DefaultPrinting):
 
     def of_type(self, element):
         """Check if ``a`` is of type ``dtype``. """
-        return isinstance(element, self.tp)  # XXX: this isn't correct, e.g. PolyElement
+        return isinstance(element, self.dtype)  # XXX: this isn't correct, e.g. PolyElement
 
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain. """
