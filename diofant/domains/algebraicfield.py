@@ -62,7 +62,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
         from ..polys.numberfields import AlgebraicNumber
-        return AlgebraicNumber(self.ext, a).as_expr()
+        return AlgebraicNumber(self.ext, a.rep).as_expr()
 
     def from_diofant(self, a):
         """Convert Diofant's expression to ``dtype``. """

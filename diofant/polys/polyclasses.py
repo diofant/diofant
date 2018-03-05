@@ -839,13 +839,10 @@ class ANP(CantSympify):
 
             self.rep = dmp_strip(rep, 0)
 
-        if isinstance(mod, DMP):
-            self.mod = mod.rep
+        if type(mod) is dict:
+            self.mod = dup_from_dict(mod, dom)
         else:
-            if type(mod) is dict:
-                self.mod = dup_from_dict(mod, dom)
-            else:
-                self.mod = dmp_strip(mod, 0)
+            self.mod = dmp_strip(mod, 0)
 
         self.domain = dom
 
@@ -887,10 +884,6 @@ class ANP(CantSympify):
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients. """
         return dmp_to_dict(self.rep, 0, self.domain)
-
-    def to_list(self):
-        """Convert ``self`` to a list representation with native coefficients. """
-        return self.rep
 
     def to_diofant_list(self):
         """Convert ``self`` to a list representation with Diofant coefficients. """
