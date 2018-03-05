@@ -30,3 +30,4 @@ for complete list of issues and pull requests involved in this release.
 These Sympy issues also were addressed:
 
 * :sympyissue:`14384` An unspecified power of x is reported to be `O(log(x)**6)`
+* :sympyissue:`14393` Incorrect limit
