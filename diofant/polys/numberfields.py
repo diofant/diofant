@@ -560,7 +560,6 @@ def minimal_polynomial(ex, x=None, **args):
 
     """
     from .polytools import degree
-    from ..domains import FractionField
     from ..core import preorder_traversal
 
     compose = args.get('compose', True)
@@ -580,7 +579,7 @@ def minimal_polynomial(ex, x=None, **args):
         x, cls = Dummy('x'), PurePoly
 
     if not dom:
-        dom = FractionField(QQ, list(ex.free_symbols)) if ex.free_symbols else QQ
+        dom = QQ.frac_field(*ex.free_symbols) if ex.free_symbols else QQ
     if hasattr(dom, 'symbols') and x in dom.symbols:
         raise GeneratorsError("the variable %s is an element of the ground domain %s" % (x, dom))
 
