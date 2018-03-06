@@ -586,6 +586,9 @@ def minimal_polynomial(ex, x=None, **args):
 
     if compose:
         result = _minpoly_compose(ex, x, dom)
+        if args.get('domain', None):
+            _, factors = factor_list(result, x, domain=dom)
+            result = _choose_factor(factors, x, ex)
         result = result.primitive()[1]
         c = result.coeff(x**degree(result, x))
         if c.is_negative:

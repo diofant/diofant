@@ -18,6 +18,8 @@ Compatibility breaks
 Minor changes
 =============
 
+* Be sure that :func:`~diofant.polys.numberfields.minimal_polynomial` returns an irreducible polynomial over specified domain, see :pull:`622`.
+
 Developer changes
 =================
 
