@@ -993,9 +993,5 @@ class ANP(CantSympify):
         except UnificationFailed:
             return False
 
-    def __lt__(self, other):
-        _, _, F, G, _ = self.unify(other)
-        return F.__lt__(G)
-
     def __bool__(self):
         return bool(self.rep)

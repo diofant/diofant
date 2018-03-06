@@ -4900,16 +4900,23 @@ def sqf_part(f, *gens, **args):
 
 def _sorted_factors(factors, method):
     """Sort a list of ``(expr, exp)`` pairs. """
+    def sort_key(f):
+        from .polyclasses import ANP
+        if isinstance(f, list):
+            return [sort_key(_) for _ in f]
+        else:
+            return f.rep if isinstance(f, ANP) else f
+
     if method == 'sqf':
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return exp, len(rep), len(poly.gens), rep
+            return exp, len(rep), len(poly.gens), sort_key(rep)
     else:
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return len(rep), len(poly.gens), exp, rep
+            return len(rep), len(poly.gens), exp, sort_key(rep)
 
     return sorted(factors, key=key)
 

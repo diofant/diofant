@@ -156,12 +156,19 @@ def _analyze_gens(gens):
 
 def _sort_factors(factors, **args):
     """Sort low-level factors in increasing 'complexity' order. """
+    def sort_key(f):
+        from .polyclasses import ANP
+        if isinstance(f, list):
+            return [sort_key(_) for _ in f]
+        else:
+            return f.rep if isinstance(f, ANP) else f
+
     def order_if_multiple_key(factor):
         (f, n) = factor
-        return len(f), n, f
+        return len(f), n, sort_key(f)
 
     def order_no_multiple_key(f):
-        return len(f), f
+        return len(f), sort_key(f)
 
     if args.get('multiple', True):
         return sorted(factors, key=order_if_multiple_key)
