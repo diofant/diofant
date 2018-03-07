@@ -890,6 +890,7 @@ def test_ModularInteger():
 
     pytest.raises(ValueError, lambda: FF(0))
     pytest.raises(ValueError, lambda: FF(2.1))
+    pytest.raises(ValueError, lambda: FF(6))
 
 
 def test_QQ_int():
