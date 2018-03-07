@@ -1730,7 +1730,7 @@ def integer_rational_reconstruction(c, m, domain):
     else:
         return
 
-    field = domain.get_field()
+    field = domain.field
 
     return field(a) / field(b)
 
@@ -1864,11 +1864,11 @@ def _func_field_modgcd_m(f, g, minpoly):
 
     if isinstance(domain, PolynomialRing):
         k = domain.ngens
-        QQdomain = domain.ring.clone(domain=domain.domain.get_field())
+        QQdomain = domain.ring.clone(domain=domain.domain.field)
         QQring = ring.clone(domain=QQdomain)
     else:
         k = 0
-        QQring = ring.clone(domain=ring.domain.get_field())
+        QQring = ring.clone(domain=ring.domain.field)
 
     cf, f = f.primitive()
     cg, g = g.primitive()

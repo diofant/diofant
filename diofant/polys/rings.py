@@ -361,8 +361,7 @@ class PolyRing(DefaultPrinting, IPolys):
         return PolynomialRing(self)
 
     def to_field(self):
-        from .fields import FracField
-        return FracField(self.symbols, self.domain, self.order)
+        return self.domain.frac_field(*self.symbols, order=self.order)
 
     @property
     def is_univariate(self):

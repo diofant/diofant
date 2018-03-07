@@ -440,10 +440,10 @@ def test_Poly__unify():
     F, A, B = field("a,b", ZZ)
 
     assert Poly(a*x, x, domain='ZZ[a]')._unify(Poly(a*b*x, x, domain='ZZ(a,b)'))[2:] == \
-        (DMP([A, F(0)], F.to_domain()), DMP([A*B, F(0)], F.to_domain()))
+        (DMP([A, F(0)], F), DMP([A*B, F(0)], F))
 
     assert Poly(a*x, x, domain='ZZ(a)')._unify(Poly(a*b*x, x, domain='ZZ(a,b)'))[2:] == \
-        (DMP([A, F(0)], F.to_domain()), DMP([A*B, F(0)], F.to_domain()))
+        (DMP([A, F(0)], F), DMP([A*B, F(0)], F))
 
     pytest.raises(CoercionFailed, lambda: Poly(Poly(x**2 + x**2*z, y, field=True), domain='ZZ(x)'))
 

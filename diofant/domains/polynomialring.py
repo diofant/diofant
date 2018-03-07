@@ -104,9 +104,10 @@ class PolynomialRing(Ring, CompositeDomain):
         if denom.is_ground:
             return self.from_PolynomialRing(K0.numer(a)/denom, K0.field.ring.to_domain())
 
-    def get_field(self):
+    @property
+    def field(self):
         """Returns a field associated with `self`. """
-        return self.ring.to_field().to_domain()
+        return self.ring.to_field()
 
     def is_positive(self, a):
         """Returns True if `LC(a)` is positive. """

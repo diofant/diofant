@@ -270,7 +270,7 @@ class Domain(DefaultPrinting):
 
     def frac_field(self, *symbols, **kwargs):
         """Returns a fraction field, i.e. `K(X)`. """
-        from .fractionfield import FractionField
+        from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
 
     def is_one(self, a):

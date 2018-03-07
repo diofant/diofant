@@ -90,7 +90,7 @@ def dup_root_upper_bound(f, K):
     if not P:
         return
     else:
-        return K.get_field()(2)**(max(P) + 1)
+        return K.field(2)**(max(P) + 1)
 
 
 def dup_root_lower_bound(f, K):
@@ -184,7 +184,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
 
 def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fast=False, mobius=False):
     """Refine a positive root of `f` given a Mobius transform or an interval. """
-    F = K.get_field()
+    F = K.field
 
     if len(M) == 2:
         a, b, c, d = _mobius_from_interval(M, F)
@@ -227,7 +227,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
 
 def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
     """Refine a positive root of `f` given an interval `(s, t)`. """
-    a, b, c, d = _mobius_from_interval((s, t), K.get_field())
+    a, b, c, d = _mobius_from_interval((s, t), K.field)
 
     f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), K)
 
@@ -393,7 +393,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
 
 def _discard_if_outside_interval(f, M, inf, sup, K, negative, fast, mobius):
     """Discard an isolating interval if outside ``(inf, sup)``. """
-    F = K.get_field()
+    F = K.field
 
     while True:
         u, v = _mobius_to_interval(M, F)
@@ -419,7 +419,7 @@ def dup_inner_isolate_positive_roots(f, K, eps=None, inf=None, sup=None, fast=Fa
 
     roots = dup_inner_isolate_real_roots(f, K, eps=eps, fast=fast)
 
-    F, results = K.get_field(), []
+    F, results = K.field, []
 
     if inf is not None or sup is not None:
         for f, M in roots:
@@ -444,7 +444,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, fast=Fa
 
     roots = dup_inner_isolate_real_roots(dup_mirror(f, K), K, eps=eps, fast=fast)
 
-    F, results = K.get_field(), []
+    F, results = K.field, []
 
     if inf is not None or sup is not None:
         for f, M in roots:
@@ -467,7 +467,7 @@ def _isolate_zero(f, K, inf, sup, basis=False, sqf=False):
     (j,), f = dmp_terms_gcd(f, 0, K)
 
     if j > 0:
-        F = K.get_field()
+        F = K.field
 
         if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
             if not sqf:
@@ -615,7 +615,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
     I_neg, I_pos = _real_isolate_and_disjoin(factors_list, K, eps=eps,
                                              inf=inf, sup=sup, strict=strict, basis=basis, fast=fast)
 
-    F = K.get_field()
+    F = K.field
 
     if not zeros or not zero_indices:
         I_zero = []
@@ -699,7 +699,7 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
                 I_pos[j] = g, N, m, G
                 break
 
-    field = K.get_field()
+    field = K.field
 
     I_neg = [(_mobius_to_interval(M, field), k, f) for (_, M, k, f) in I_neg]
     I_pos = [(_mobius_to_interval(M, field), k, f) for (_, M, k, f) in I_pos]
@@ -720,7 +720,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
         return 0
 
     if not K.has_Field:
-        R, K = K, K.get_field()
+        R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
 
     sturm = dup_sturm(f, K)
@@ -1230,7 +1230,7 @@ def _roots_bound(f, F):
 
 def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm. """
-    F = K.get_field()
+    F = K.field
 
     f = dmp_convert(f, 0, K, F)
 
@@ -1549,7 +1549,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if dmp_degree(f, 0) <= 0:
         return []
 
-    F = K.get_field()
+    F = K.field
 
     f = dmp_convert(f, 0, K, F)
 
@@ -1732,7 +1732,7 @@ class RealInterval:
                 else:
                     raise ValueError("can't refine a real root in (%s, %s)" % (s, t))
 
-            a, b, c, d = _mobius_from_interval((s, t), dom.get_field())
+            a, b, c, d = _mobius_from_interval((s, t), dom.field)
 
             f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), dom)
 
@@ -1746,7 +1746,7 @@ class RealInterval:
     @property
     def a(self):
         """Return the position of the left end. """
-        field = self.domain.get_field()
+        field = self.domain.field
         a, b, c, d = self.mobius
 
         if not self.neg:

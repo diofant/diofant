@@ -5,44 +5,45 @@ from operator import add, ge, gt, le, lt, mul
 
 from ..core import Expr, Symbol, sympify
 from ..core.sympify import CantSympify
+from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
-from ..domains.fractionfield import FractionField
+from ..domains.field import Field
 from ..domains.polynomialring import PolynomialRing
 from ..printing.defaults import DefaultPrinting
 from ..utilities.magic import pollute
 from .orderings import lex
-from .polyerrors import CoercionFailed
+from .polyerrors import CoercionFailed, GeneratorsError
 from .rings import PolyElement
 
 
-__all__ = ('field', 'sfield', 'vfield')
+__all__ = ('FractionField', 'field', 'vfield')
 
 
 def field(symbols, domain, order=lex):
     """Construct new rational function field returning (field, x1, ..., xn). """
-    _field = FracField(symbols, domain, order)
+    _field = FractionField(domain, symbols, order)
     return (_field,) + _field.gens
 
 
 def vfield(symbols, domain, order=lex):
     """Construct new rational function field and inject generators into global namespace. """
-    _field = FracField(symbols, domain, order)
-    pollute([ sym.name for sym in _field.symbols ], _field.gens)
+    _field = FractionField(domain, symbols, order)
+    pollute([sym.name for sym in _field.symbols], _field.gens)
     return _field
-
-
-def sfield(exprs, *symbols, **options):
-    """Construct a field deriving generators and domain from options and input expressions. """
-    raise NotImplementedError  # pragma: no cover
 
 
 _field_cache = {}
 
 
-class FracField(DefaultPrinting):
-    """Multivariate distributed rational function field. """
+class FractionField(Field, CompositeDomain):
+    """A class for representing multivariate rational function fields. """
 
-    def __new__(cls, symbols, domain, order=lex):
+    is_FractionField = is_Frac = True
+
+    has_assoc_Ring = True
+    has_assoc_Field = True
+
+    def __new__(cls, domain, symbols, order=lex):
         from .rings import PolyRing
         ring = PolyRing(symbols, domain, order)
         symbols = ring.symbols
@@ -67,6 +68,8 @@ class FracField(DefaultPrinting):
             obj.one = obj.dtype(ring.one)
 
             obj.gens = obj._gens()
+
+            obj.rep = str(domain) + '(' + ','.join(map(str, symbols)) + ')'
 
             for symbol, generator in zip(obj.symbols, obj.gens):
                 if isinstance(symbol, Symbol):
@@ -112,7 +115,7 @@ class FracField(DefaultPrinting):
 
             if not domain.has_Field and domain.has_assoc_Field:
                 ring = self.ring
-                ground_field = domain.get_field()
+                ground_field = domain.field
                 element = ground_field.convert(element)
                 numer = ring.ground_new(ground_field.numer(element))
                 denom = ring.ground_new(ground_field.denom(element))
@@ -164,7 +167,7 @@ class FracField(DefaultPrinting):
                 return domain.convert(expr)
             except CoercionFailed:
                 if not domain.has_Field and domain.has_assoc_Field:
-                    return domain.get_field().convert(expr)
+                    return domain.field.convert(expr)
                 else:  # pragma: no cover
                     raise NotImplementedError
 
@@ -180,12 +183,83 @@ class FracField(DefaultPrinting):
         else:
             return self.field_new(frac)
 
-    def to_domain(self):
-        return FractionField(self)
-
     def to_ring(self):
         from .rings import PolyRing
         return PolyRing(self.symbols, self.domain, self.order)
+
+    def to_diofant(self, a):
+        """Convert `a` to a Diofant object. """
+        return a.as_expr()
+
+    def from_diofant(self, a):
+        """Convert Diofant's expression to `dtype`. """
+        return self.from_expr(a)
+
+    def from_ZZ_python(self, a, K0):
+        """Convert a Python `int` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_QQ_python(self, a, K0):
+        """Convert a Python `Fraction` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_ZZ_gmpy(self, a, K0):
+        """Convert a GMPY `mpz` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_QQ_gmpy(self, a, K0):
+        """Convert a GMPY `mpq` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_RealField(self, a, K0):
+        """Convert a mpmath `mpf` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_PolynomialRing(self, a, K0):
+        """Convert a polynomial to ``dtype``. """
+        try:
+            return self.field_new(a)
+        except (CoercionFailed, GeneratorsError):
+            return
+
+    def from_FractionField(self, a, K0):
+        """Convert a rational function to ``dtype``. """
+        try:
+            return a.set_field(self)
+        except (CoercionFailed, GeneratorsError):
+            return
+
+    def get_ring(self):
+        """Returns a field associated with `self`. """
+        return self.to_ring().to_domain()
+
+    def is_positive(self, a):
+        """Returns True if `LC(a)` is positive. """
+        return self.domain.is_positive(a.numer.LC)
+
+    def is_negative(self, a):
+        """Returns True if `LC(a)` is negative. """
+        return self.domain.is_negative(a.numer.LC)
+
+    def is_nonpositive(self, a):
+        """Returns True if `LC(a)` is non-positive. """
+        return self.domain.is_nonpositive(a.numer.LC)
+
+    def is_nonnegative(self, a):
+        """Returns True if `LC(a)` is non-negative. """
+        return self.domain.is_nonnegative(a.numer.LC)
+
+    def numer(self, a):
+        """Returns numerator of ``a``. """
+        return a.numer
+
+    def denom(self, a):
+        """Returns denominator of ``a``. """
+        return a.denom
+
+    def factorial(self, a):
+        """Returns factorial of `a`. """
+        return self.dtype(self.domain.factorial(a))
 
 
 class FracElement(DomainElement, DefaultPrinting, CantSympify):
@@ -213,7 +287,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
     @property
     def parent(self):
-        return self.field.to_domain()
+        return self.field
 
     _hash = None
 
@@ -281,7 +355,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         try:
             element = domain.convert(element)
         except CoercionFailed:
-            ground_field = domain.get_field()
+            ground_field = domain.field
 
             try:
                 element = ground_field.convert(element)

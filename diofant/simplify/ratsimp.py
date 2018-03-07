@@ -66,7 +66,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
 
     polys, opt = parallel_poly_from_expr([num, denom] + G, *gens, **args)
     domain = opt.domain
-    opt.domain = domain.get_field()
+    opt.domain = domain.field
 
     # compute only once
     leading_monomials = [g.LM(opt.order) for g in polys[2:]]

@@ -21,14 +21,15 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
     has_assoc_Ring = True
     has_assoc_Field = True
 
-    def get_field(self):
+    @property
+    def field(self):
         """Returns a field associated with ``self``. """
         from . import QQ
         return QQ
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
-        return self.get_field().algebraic_field(*extension)
+        return self.field.algebraic_field(*extension)
 
     def from_AlgebraicField(self, a, K0):
         """Convert a ``ANP`` object to ``dtype``. """

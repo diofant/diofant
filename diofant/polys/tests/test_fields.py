@@ -5,18 +5,17 @@ import pytest
 from diofant import I, Rational, sqrt
 from diofant.core import symbols
 from diofant.domains import QQ, ZZ
-from diofant.polys.fields import FracElement, FracField, field
-from diofant.polys.orderings import lex
+from diofant.polys.fields import FracElement, field
 from diofant.polys.rings import ring
 
 
 __all__ = ()
 
 
-def test_FracField___init__():
-    F1 = FracField("x,y", ZZ, lex)
-    F2 = FracField("x,y", ZZ, lex)
-    F3 = FracField("x,y,z", ZZ, lex)
+def test_FractionField___init__():
+    F1 = ZZ.frac_field("x", "y")
+    F2 = ZZ.frac_field("x", "y")
+    F3 = ZZ.frac_field("x", "y", "z")
 
     assert F1.x == F1.gens[0]
     assert F1.y == F1.gens[1]
@@ -25,16 +24,16 @@ def test_FracField___init__():
     assert F1.x != F3.x
     assert F1.y != F3.y
 
-    F4 = FracField("gens", ZZ)
+    F4 = ZZ.frac_field("gens")
     assert type(F4.gens) is tuple
 
 
-def test_FracField___hash__():
+def test_FractionField___hash__():
     F, x, y, z = field("x,y,z", QQ)
     assert hash(F)
 
 
-def test_FracField___eq__():
+def test_FractionField___eq__():
     assert field("x,y,z", QQ)[0] == field("x,y,z", QQ)[0]
     assert field("x,y,z", QQ)[0] is field("x,y,z", QQ)[0]
 
@@ -51,8 +50,8 @@ def test_FracField___eq__():
     assert field("x,y", QQ)[0] is not field("x,y,z", QQ)[0]
 
 
-def test_FracField_methods():
-    F = FracField("x", ZZ)
+def test_FractionField_methods():
+    F = ZZ.frac_field("x")
 
     assert F.domain_new(2) == ZZ(2)
 
@@ -338,7 +337,7 @@ def test_FracElement___call__():
     assert r == 4 and not isinstance(r, FracElement)
     pytest.raises(ZeroDivisionError, lambda: f(1, 1, 0))
 
-    Fz, *_ = field("z", ZZ)
+    Fz = ZZ.frac_field("z")
     assert f(1, 1) == 4/Fz.z
 
 

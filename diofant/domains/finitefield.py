@@ -48,7 +48,8 @@ class FiniteField(Field, SimpleDomain):
         """Return the characteristic of this domain. """
         return self.mod
 
-    def get_field(self):
+    @property
+    def field(self):
         """Returns a field associated with ``self``. """
         return self
 

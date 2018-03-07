@@ -147,7 +147,7 @@ class DMP(CantSympify):
 
     def to_field(self):
         """Make the ground domain a field. """
-        return self.convert(self.domain.get_field())
+        return self.convert(self.domain.field)
 
     def to_exact(self):
         """Make the ground domain exact. """

@@ -14,7 +14,6 @@ from . import pythonrationalfield  # noqa: F401
 from . import gmpyrationalfield  # noqa: F401
 from . import algebraicfield  # noqa: F401
 from . import polynomialring  # noqa: F401
-from . import fractionfield  # noqa: F401
 from . import expressiondomain  # noqa: F401
 
 from .domain import Domain  # noqa: F401
@@ -31,7 +30,6 @@ from .pythonrationalfield import PythonRationalField
 from .gmpyrationalfield import GMPYRationalField
 from .algebraicfield import AlgebraicField  # noqa: F401
 from .polynomialring import PolynomialRing  # noqa: F401
-from .fractionfield import FractionField  # noqa: F401
 from .expressiondomain import ExpressionDomain
 from .groundtypes import PythonRational  # noqa: F401
 

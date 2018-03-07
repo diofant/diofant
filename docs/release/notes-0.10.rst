@@ -16,6 +16,8 @@ Compatibility breaks
 * Removed ``DMF`` class, see :pull:`620`.
 * Removed ``K[x, y, ...]`` sugar, use :meth:`~diofant.domains.domain.Domain.poly_ring` to create polynomial rings, see :pull:`622`.
 * Allow only prime orders for :class:`~diofant.domains.FiniteField`, see :pull:`622`.
+* Removed ``FracField`` class, see :pull:`622`.
+* ``get_field()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.field.Field.field`, see :pull:`622`.
 
 Minor changes
 =============

@@ -5619,7 +5619,7 @@ def reduced(f, G, *gens, **args):
     retract = False
 
     if opt.auto and domain.has_Ring and not domain.has_Field:
-        opt = opt.clone({'domain': domain.get_field()})
+        opt = opt.clone({'domain': domain.field})
         retract = True
 
     _ring, *_ = ring(opt.gens, opt.domain, opt.order)
@@ -5865,7 +5865,7 @@ class GroebnerBasis(Basic):
         polys = self.polys
         domain = self.domain
 
-        opt = self._options.clone({'domain': domain.get_field(),
+        opt = self._options.clone({'domain': domain.field,
                                    'order': dst_order})
 
         _ring, *_ = ring(opt.gens, opt.domain, src_order)
@@ -5917,7 +5917,7 @@ class GroebnerBasis(Basic):
         retract = False
 
         if auto and domain.has_Ring and not domain.has_Field:
-            opt = self._options.clone({'domain': domain.get_field()})
+            opt = self._options.clone({'domain': domain.field})
             retract = True
 
         _ring, *_ = ring(opt.gens, opt.domain, opt.order)

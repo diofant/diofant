@@ -16,7 +16,8 @@ class Field(Ring):
         """Returns a ring associated with ``self``. """
         raise DomainError('there is no ring associated with %s' % self)
 
-    def get_field(self):
+    @property
+    def field(self):
         """Returns a field associated with ``self``. """
         return self
 

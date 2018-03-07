@@ -360,10 +360,6 @@ class StrPrinter(Printer):
         return "Polynomial ring in %s over %s with %s order" % \
             (", ".join(map(self._print, ring.symbols)), ring.domain, ring.order)
 
-    def _print_FracField(self, field):
-        return "Rational function field in %s over %s with %s order" % \
-            (", ".join(map(self._print, field.symbols)), field.domain, field.order)
-
     def _print_PolyElement(self, poly):
         return poly.str(self, PRECEDENCE, "%s**%d", "*")
 
