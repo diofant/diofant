@@ -18,7 +18,6 @@ __all__ = ()
 # environment is the scope of "from diofant import *" for most cases.
 ENV = {}
 imports = ["from diofant import *",
-           "from diofant.polys.fields import FracField",
            "from diofant.polys.orderings import GradedLexOrder, LexOrder",
            "from diofant.polys.rings import PolyRing"]
 exec("\n".join(imports), ENV)
@@ -190,21 +189,21 @@ def test_PolyRing():
                               "%s, LexOrder())" % repr(ZZ))
     sT(ring("x,y", QQ, grlex)[0], "PolyRing((Symbol('x'), Symbol('y')), "
                                   "%s, GradedLexOrder())" % repr(QQ))
-    sT(ring("x,y,z", ZZ["t"], lex)[0],
+    sT(ring("x,y,z", ZZ.poly_ring("t"), lex)[0],
        "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), "
        "PolynomialRing(PolyRing((Symbol('t'),), "
        "%s, LexOrder())), LexOrder())" % repr(ZZ))
 
 
-def test_FracField():
-    sT(field("x", ZZ, lex)[0], "FracField((Symbol('x'),), "
-                               "%s, LexOrder())" % repr(ZZ))
-    sT(field("x,y", QQ, grlex)[0], "FracField((Symbol('x'), Symbol('y')), "
-                                   "%s, GradedLexOrder())" % repr(QQ))
-    sT(field("x,y,z", ZZ["t"], lex)[0],
-       "FracField((Symbol('x'), Symbol('y'), Symbol('z')), "
-       "PolynomialRing(PolyRing((Symbol('t'),), %s, "
-       "LexOrder())), LexOrder())" % repr(ZZ))
+def test_FractionField():
+    sT(ZZ.frac_field("x"), "FractionField(%s, (Symbol('x'),), "
+                           "LexOrder())" % repr(ZZ))
+    sT(QQ.frac_field("x", "y", order=grlex),
+       "FractionField(%s, (Symbol('x'), Symbol('y')), "
+       "GradedLexOrder())" % repr(QQ))
+    sT(ZZ.poly_ring("t").frac_field("x", "y", "z"),
+       "FractionField(PolynomialRing(PolyRing((Symbol('t'),), %s, LexOrder())), "
+       "(Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())" % repr(ZZ))
 
 
 def test_PolyElement():
@@ -220,8 +219,8 @@ def test_PolyElement():
 def test_FracElement():
     F, x, y = field("x,y", ZZ)
     g = F.domain.dtype
-    assert repr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FracField((Symbol('x'), "
-                                               "Symbol('y')), %s, LexOrder()), [((2, 1), %s), "
+    assert repr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FractionField(%s, (Symbol('x'), "
+                                               "Symbol('y')), LexOrder()), [((2, 1), %s), "
                                                "((0, 0), %s)], [((1, 0), %s), "
                                                "((0, 2), %s)])" % (repr(ZZ),
                                                                    repr(g(3)),

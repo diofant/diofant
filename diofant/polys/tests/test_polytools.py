@@ -178,22 +178,22 @@ def test_Poly_from_poly():
         h, domain=QQ).rep == DMP([[QQ(1)], [QQ(1), QQ(0)]], QQ)
     assert Poly.from_poly(h, domain=K).rep == DMP([[K(1)], [K(1), K(0)]], K)
 
-    assert Poly.from_poly(h, gens=x) == Poly(x + y, x, domain=ZZ[y])
+    assert Poly.from_poly(h, gens=x) == Poly(x + y, x, domain=ZZ.poly_ring(y))
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=x, domain=ZZ))
     assert Poly.from_poly(
-        h, gens=x, domain=ZZ[y]) == Poly(x + y, x, domain=ZZ[y])
+        h, gens=x, domain=ZZ.poly_ring(y)) == Poly(x + y, x, domain=ZZ.poly_ring(y))
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=x, domain=QQ))
     assert Poly.from_poly(
-        h, gens=x, domain=QQ[y]) == Poly(x + y, x, domain=QQ[y])
+        h, gens=x, domain=QQ.poly_ring(y)) == Poly(x + y, x, domain=QQ.poly_ring(y))
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=x, modulus=3))
 
-    assert Poly.from_poly(h, gens=y) == Poly(x + y, y, domain=ZZ[x])
+    assert Poly.from_poly(h, gens=y) == Poly(x + y, y, domain=ZZ.poly_ring(x))
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=y, domain=ZZ))
     assert Poly.from_poly(
-        h, gens=y, domain=ZZ[x]) == Poly(x + y, y, domain=ZZ[x])
+        h, gens=y, domain=ZZ.poly_ring(x)) == Poly(x + y, y, domain=ZZ.poly_ring(x))
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=y, domain=QQ))
     assert Poly.from_poly(
-        h, gens=y, domain=QQ[x]) == Poly(x + y, y, domain=QQ[x])
+        h, gens=y, domain=QQ.poly_ring(x)) == Poly(x + y, y, domain=QQ.poly_ring(x))
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=y, modulus=3))
 
     assert Poly.from_poly(h, gens=(x, y)) == h
@@ -253,8 +253,8 @@ def test_Poly_from_expr():
 def test_Poly__new__():
     pytest.raises(GeneratorsError, lambda: Poly(x + 1, x, x))
 
-    pytest.raises(GeneratorsError, lambda: Poly(x + y, x, y, domain=ZZ[x]))
-    pytest.raises(GeneratorsError, lambda: Poly(x + y, x, y, domain=ZZ[y]))
+    pytest.raises(GeneratorsError, lambda: Poly(x + y, x, y, domain=ZZ.poly_ring(x)))
+    pytest.raises(GeneratorsError, lambda: Poly(x + y, x, y, domain=ZZ.poly_ring(y)))
 
     pytest.raises(OptionError, lambda: Poly(x, x, symmetric=True))
     pytest.raises(OptionError, lambda: Poly(x + 2, x, modulus=3, domain=QQ))
@@ -440,10 +440,10 @@ def test_Poly__unify():
     F, A, B = field("a,b", ZZ)
 
     assert Poly(a*x, x, domain='ZZ[a]')._unify(Poly(a*b*x, x, domain='ZZ(a,b)'))[2:] == \
-        (DMP([A, F(0)], F.to_domain()), DMP([A*B, F(0)], F.to_domain()))
+        (DMP([A, F(0)], F), DMP([A*B, F(0)], F))
 
     assert Poly(a*x, x, domain='ZZ(a)')._unify(Poly(a*b*x, x, domain='ZZ(a,b)'))[2:] == \
-        (DMP([A, F(0)], F.to_domain()), DMP([A*B, F(0)], F.to_domain()))
+        (DMP([A, F(0)], F), DMP([A*B, F(0)], F))
 
     pytest.raises(CoercionFailed, lambda: Poly(Poly(x**2 + x**2*z, y, field=True), domain='ZZ(x)'))
 
@@ -476,8 +476,8 @@ def test_Poly__eq__():
     assert (Poly(x, x, domain=QQ) == Poly(x, x)) is True
     assert (Poly(x, x) == Poly(x, x, domain=QQ)) is True
 
-    assert (Poly(x, x, domain=ZZ[a]) == Poly(x, x)) is True
-    assert (Poly(x, x) == Poly(x, x, domain=ZZ[a])) is True
+    assert (Poly(x, x, domain=ZZ.poly_ring(a)) == Poly(x, x)) is True
+    assert (Poly(x, x) == Poly(x, x, domain=ZZ.poly_ring(a))) is True
 
     assert (Poly(x*y, x, y) == Poly(x, x)) is False
 
@@ -509,8 +509,8 @@ def test_PurePoly__eq__():
     assert (PurePoly(x, x, domain=QQ) == PurePoly(x, x)) is True
     assert (PurePoly(x, x) == PurePoly(x, x, domain=QQ)) is True
 
-    assert (PurePoly(x, x, domain=ZZ[a]) == PurePoly(x, x)) is True
-    assert (PurePoly(x, x) == PurePoly(x, x, domain=ZZ[a])) is True
+    assert (PurePoly(x, x, domain=ZZ.poly_ring(a)) == PurePoly(x, x)) is True
+    assert (PurePoly(x, x) == PurePoly(x, x, domain=ZZ.poly_ring(a))) is True
 
     assert (PurePoly(x*y, x, y) == PurePoly(x, x)) is False
 
@@ -575,7 +575,7 @@ def test_Poly_set_domain():
     pytest.raises(CoercionFailed, lambda: Poly(x/2 + 1).set_domain(ZZ))
     pytest.raises(CoercionFailed, lambda: Poly(x + 1, modulus=2).set_domain(QQ))
 
-    pytest.raises(GeneratorsError, lambda: Poly(x*y, x, y).set_domain(ZZ[y]))
+    pytest.raises(GeneratorsError, lambda: Poly(x*y, x, y).set_domain(ZZ.poly_ring(y)))
 
 
 def test_Poly_get_modulus():
@@ -889,7 +889,7 @@ def test_Poly_to_exact():
 
 
 def test_Poly_retract():
-    f = Poly(x**2 + 1, x, domain=QQ[y])
+    f = Poly(x**2 + 1, x, domain=QQ.poly_ring(y))
 
     assert f.retract() == Poly(x**2 + 1, x, domain='ZZ')
     assert f.retract(field=True) == Poly(x**2 + 1, x, domain='QQ')
@@ -1109,7 +1109,7 @@ def test_Poly_eject():
     assert g.eject(t, w) == Poly(ex, x, y, z, domain='ZZ[w, t]')
     assert g.eject(z, t, w) == Poly(ex, x, y, domain='ZZ[w, t, z]')
 
-    pytest.raises(DomainError, lambda: Poly(x*y, x, y, domain=ZZ[z]).eject(y))
+    pytest.raises(DomainError, lambda: Poly(x*y, x, y, domain=ZZ.poly_ring(z)).eject(y))
     pytest.raises(NotImplementedError, lambda: Poly(x*y, x, y, z).eject(y))
 
 
@@ -1389,7 +1389,7 @@ def test_Poly_clear_denoms():
 
     coeff, poly = Poly(x/y + 1, x).clear_denoms(convert=True)
     assert coeff == y and poly == Poly(
-        x + y, x, domain='ZZ[y]') and poly.domain == ZZ[y]
+        x + y, x, domain='ZZ[y]') and poly.domain == ZZ.poly_ring(y)
 
     coeff, poly = Poly(x/3 + sqrt(2), x, domain='EX').clear_denoms()
     assert coeff == 3 and poly == Poly(
@@ -3307,10 +3307,10 @@ def test_poly():
 
     assert poly(Poly(x + y + z, y, x, z)) == Poly(x + y + z, y, x, z)
 
-    assert poly((x + y)**2, x) == Poly(x**2 + 2*x*y + y**2, x, domain=ZZ[y])
+    assert poly((x + y)**2, x) == Poly(x**2 + 2*x*y + y**2, x, domain=ZZ.poly_ring(y))
     assert poly((x + y)**2, x, expand=True) == Poly(x**2 + 2*x*y + y**2,
-                                                    x, domain=ZZ[y])
-    assert poly((x + y)**2, y) == Poly(x**2 + 2*x*y + y**2, y, domain=ZZ[x])
+                                                    x, domain=ZZ.poly_ring(y))
+    assert poly((x + y)**2, y) == Poly(x**2 + 2*x*y + y**2, y, domain=ZZ.poly_ring(x))
 
     assert poly(1, x) == Poly(1, x)
     pytest.raises(GeneratorsNeeded, lambda: poly(1))

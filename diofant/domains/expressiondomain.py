@@ -181,7 +181,8 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         """Returns a ring associated with ``self``. """
         return self  # XXX: EX is not a ring but we don't have much choice here.
 
-    def get_field(self):
+    @property
+    def field(self):
         """Returns a field associated with ``self``. """
         return self
 

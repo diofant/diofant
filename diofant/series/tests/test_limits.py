@@ -608,3 +608,7 @@ def test_diofantissue_558():
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs(c, c + 1)
     assert limit(expr, n, oo) == Limit(expr, n, oo)
+
+
+def test_sympyissue_14393():
+    assert limit((x**b - y**b)/(x**a - y**a), x, y) == b*y**b/y**a/a

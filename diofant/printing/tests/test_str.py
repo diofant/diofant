@@ -358,13 +358,13 @@ def test_Poly():
 def test_PolyRing():
     assert str(ring("x", ZZ, lex)[0]) == "Polynomial ring in x over ZZ with lex order"
     assert str(ring("x,y", QQ, grlex)[0]) == "Polynomial ring in x, y over QQ with grlex order"
-    assert str(ring("x,y,z", ZZ["t"], lex)[0]) == "Polynomial ring in x, y, z over ZZ[t] with lex order"
+    assert str(ring("x,y,z", ZZ.poly_ring("t"), lex)[0]) == "Polynomial ring in x, y, z over ZZ[t] with lex order"
 
 
-def test_FracField():
-    assert str(field("x", ZZ, lex)[0]) == "Rational function field in x over ZZ with lex order"
-    assert str(field("x,y", QQ, grlex)[0]) == "Rational function field in x, y over QQ with grlex order"
-    assert str(field("x,y,z", ZZ["t"], lex)[0]) == "Rational function field in x, y, z over ZZ[t] with lex order"
+def test_FractionField():
+    assert str(ZZ.frac_field("x")) == "ZZ(x)"
+    assert str(QQ.frac_field("x", "y", order=grlex)) == "QQ(x,y)"
+    assert str(ZZ.poly_ring("t").frac_field("x", "y", "z")) == "ZZ[t](x,y,z)"
 
 
 def test_PolyElement():
@@ -669,7 +669,7 @@ def test_FiniteSet():
 
 def test_PrettyPoly():
     F = QQ.frac_field(x, y)
-    R = QQ[x, y]
+    R = QQ.poly_ring(x, y)
     assert sstr(F.convert(x/(x + y))) == sstr(x/(x + y))
     assert sstr(R.convert(x + y)) == sstr(x + y)
 

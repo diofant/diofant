@@ -844,14 +844,21 @@ def test_minpoly_fraction_field_slow():
 
 
 def test_minpoly_domain():
-    assert minimal_polynomial(sqrt(2), x, domain=QQ.algebraic_field(sqrt(2))) == \
-        x - sqrt(2)
-    assert minimal_polynomial(sqrt(8), x, domain=QQ.algebraic_field(sqrt(2))) == \
-        x - 2*sqrt(2)
-    assert minimal_polynomial(sqrt(Rational(3, 2)), x,
-                              domain=QQ.algebraic_field(sqrt(2))) == 2*x**2 - 3
+    F = QQ.algebraic_field(sqrt(2))
+
+    assert minimal_polynomial(sqrt(2), x, domain=F) == x - sqrt(2)
+    assert minimal_polynomial(sqrt(8), x, domain=F) == x - 2*sqrt(2)
+    assert minimal_polynomial(sqrt(Rational(3, 2)), x, domain=F) == 2*x**2 - 3
 
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(y, x, domain=QQ))
+
+    F = QQ.algebraic_field(I)
+
+    assert minimal_polynomial(I, x, domain=F) == x - I
+
+    F = QQ.algebraic_field(sqrt(3)*I)
+
+    assert minimal_polynomial(exp(I*pi/3), x, domain=F) == 2*x - sqrt(3)*I - 1
 
 
 def test_sympyissue_11553():

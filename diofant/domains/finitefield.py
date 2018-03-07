@@ -1,5 +1,6 @@
 """Implementation of :class:`FiniteField` class. """
 
+from ..ntheory import isprime, perfect_power
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
 from .groundtypes import DiofantInteger
@@ -22,8 +23,10 @@ class FiniteField(Field, SimpleDomain):
     mod = None
 
     def __init__(self, mod, dom, symmetric=True):
-        if mod <= 0:
-            raise ValueError('modulus must be a positive integer, got %s' % mod)
+        if not isprime(mod):
+            if perfect_power(mod):  # pragma: no cover
+                raise NotImplementedError
+            raise ValueError('modulus must be a positive prime number, got %s' % mod)
 
         self.dtype = ModularIntegerFactory(mod, dom, symmetric, self)
         self.zero = self.dtype(0)
@@ -45,7 +48,8 @@ class FiniteField(Field, SimpleDomain):
         """Return the characteristic of this domain. """
         return self.mod
 
-    def get_field(self):
+    @property
+    def field(self):
         """Returns a field associated with ``self``. """
         return self
 

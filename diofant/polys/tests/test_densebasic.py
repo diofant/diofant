@@ -205,7 +205,7 @@ def test_dmp_normal():
 
 
 def test_dmp_convert():
-    K0, K1 = ZZ['x'], ZZ
+    K0, K1 = ZZ.poly_ring('x'), ZZ
 
     assert dmp_convert([K0(1), K0(2)], 0, K0, K1) == [ZZ(1), ZZ(2)]
     assert dmp_convert([K1(1), K1(2)], 0, K1, K0) == [K0(1), K0(2)]

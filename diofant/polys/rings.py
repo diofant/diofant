@@ -350,14 +350,6 @@ class PolyRing(DefaultPrinting, IPolys):
         else:
             return self.clone(symbols=symbols)
 
-    def __getitem__(self, key):
-        symbols = self.symbols[key]
-
-        if not symbols:
-            return self.domain
-        else:
-            return self.clone(symbols=symbols)
-
     def to_ground(self):
         # TODO: should AlgebraicField be a Composite domain?
         if self.domain.is_Composite or hasattr(self.domain, 'domain'):
@@ -369,8 +361,7 @@ class PolyRing(DefaultPrinting, IPolys):
         return PolynomialRing(self)
 
     def to_field(self):
-        from .fields import FracField
-        return FracField(self.symbols, self.domain, self.order)
+        return self.domain.frac_field(*self.symbols, order=self.order)
 
     @property
     def is_univariate(self):
@@ -640,8 +631,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         i = ring.index(gen)
 
         symbols = list(ring.symbols)
+        symbol = symbols[i]
         del symbols[i]
-        return i, ring.clone(symbols=symbols, domain=ring[i])
+        return i, ring.clone(symbols=symbols, domain=ring.clone([symbol]))
 
     def drop_to_ground(self, gen):
         if self.ring.ngens == 1:

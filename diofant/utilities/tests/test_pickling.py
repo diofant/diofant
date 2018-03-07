@@ -4,7 +4,7 @@ import warnings
 
 import pytest
 
-from diofant import QQ, ZZ, lex
+from diofant import QQ, ZZ
 from diofant.abc import x, y, z
 from diofant.concrete.products import Product
 from diofant.concrete.summations import Sum
@@ -51,7 +51,7 @@ from diofant.integrals.integrals import Integral
 from diofant.matrices import Matrix, SparseMatrix
 from diofant.ntheory.generate import Sieve
 from diofant.plotting.plot import Plot
-from diofant.polys.fields import FracField
+from diofant.polys.fields import FractionField
 from diofant.polys.monomials import Monomial
 from diofant.polys.numberfields import AlgebraicNumber
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
@@ -287,7 +287,7 @@ def test_pickling_polys_polytools():
         check(c)
 
     # TODO: fix pickling of Options class (see GroebnerBasis._options)
-    # for c in (GroebnerBasis, GroebnerBasis([x**2 - 1], x, order=lex)):
+    # for c in (GroebnerBasis, GroebnerBasis([x**2 - 1], x)):
     #     check(c)
 
 
@@ -303,7 +303,7 @@ def test_pickling_polys_rings():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of rings works properly.
 
-    ring = PolyRing("x,y,z", ZZ, lex)
+    ring = PolyRing("x,y,z", ZZ)
 
     for c in (PolyRing, ring):
         check(c, exclude=[0, 1])
@@ -317,7 +317,7 @@ def test_pickling_polys_fields():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of fields works properly.
 
-    field = FracField("x,y,z", ZZ, lex)
+    field = FractionField(ZZ, "x,y,z")
 
     for c in (FracField, field):
         check(c, exclude=[0, 1])

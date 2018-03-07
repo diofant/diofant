@@ -38,27 +38,27 @@ def test_construct_domain():
     assert (construct_domain([7, sqrt(2), sqrt(3)], extension=True) ==
             (alg, [alg(7), alg(sqrt(2)), alg(sqrt(3))]))
 
-    dom = ZZ[x]
+    dom = ZZ.poly_ring(x)
 
     assert construct_domain([2*x, 3]) == (dom, [dom(2*x), dom(3)])
 
-    dom = ZZ[x, y]
+    dom = ZZ.poly_ring(x, y)
 
     assert construct_domain([2*x, 3*y]) == (dom, [dom(2*x), dom(3*y)])
 
-    dom = QQ[x]
+    dom = QQ.poly_ring(x)
 
     assert construct_domain([x/2, 3]) == (dom, [dom(x/2), dom(3)])
 
-    dom = QQ[x, y]
+    dom = QQ.poly_ring(x, y)
 
     assert construct_domain([x/2, 3*y]) == (dom, [dom(x/2), dom(3*y)])
 
-    dom = RR[x]
+    dom = RR.poly_ring(x)
 
     assert construct_domain([x/2, 3.5]) == (dom, [dom(x/2), dom(3.5)])
 
-    dom = RR[x, y]
+    dom = RR.poly_ring(x, y)
 
     assert construct_domain([x/2, 3.5*y]) == (dom, [dom(x/2), dom(3.5*y)])
 
@@ -108,6 +108,6 @@ def test_precision():
 
 
 def test_sympyissue_11538():
-    assert construct_domain(E)[0] == ZZ[E]
-    assert (construct_domain(x**2 + 2*x + E) == (ZZ[x, E], ZZ[x, E](x**2 + 2*x + E)))
+    assert construct_domain(E)[0] == ZZ.poly_ring(E)
+    assert (construct_domain(x**2 + 2*x + E) == (ZZ.poly_ring(x, E), ZZ.poly_ring(x, E)(x**2 + 2*x + E)))
     assert (construct_domain(x + y + GoldenRatio) == (EX, EX(x + y + GoldenRatio)))

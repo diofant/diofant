@@ -162,9 +162,9 @@ class ReprPrinter(Printer):
     def _print_PolynomialRing(self, expr):
         return "%s(%s)" % (expr.__class__.__name__, repr(expr.ring))
 
-    def _print_FracField(self, field):
+    def _print_FractionField(self, field):
         return "%s(%s, %s, %s)" % (field.__class__.__name__,
-                                   self._print(field.symbols), self._print(field.domain), self._print(field.order))
+                                   self._print(field.domain), self._print(field.symbols), self._print(field.order))
 
     def _print_PolyElement(self, poly):
         terms = list(poly.terms())

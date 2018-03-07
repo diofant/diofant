@@ -53,7 +53,7 @@ Concrete Domains
 .. autoclass:: diofant.domains.AlgebraicField
    :members:
 
-.. autoclass:: FractionField
+.. autoclass:: diofant.polys.fields.FractionField
    :members:
 
 .. autoclass:: RealField

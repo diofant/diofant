@@ -8,7 +8,7 @@ import pytest
 from diofant import oo, pi, sqrt
 from diofant.core import Symbol, symbols
 from diofant.domains import EX, FF, QQ, RR, ZZ
-from diofant.polys.fields import FracField, field
+from diofant.polys.fields import field
 from diofant.polys.orderings import grlex, lex
 from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
                                       GeneratorsError, GeneratorsNeeded,
@@ -30,9 +30,9 @@ def test_PolyRing___init__():
     pytest.raises(GeneratorsNeeded, lambda: PolyRing([], ZZ, lex))
     pytest.raises(GeneratorsError, lambda: PolyRing(0, ZZ, lex))
 
-    assert PolyRing("x", ZZ[t], lex).domain == ZZ[t]
-    assert PolyRing("x", 'ZZ[t]', lex).domain == ZZ[t]
-    assert PolyRing("x", PolyRing("t", ZZ, lex), lex).domain == ZZ[t]
+    assert PolyRing("x", ZZ.poly_ring(t), lex).domain == ZZ.poly_ring(t)
+    assert PolyRing("x", 'ZZ[t]', lex).domain == ZZ.poly_ring(t)
+    assert PolyRing("x", PolyRing("t", ZZ, lex), lex).domain == ZZ.poly_ring(t)
 
     pytest.raises(GeneratorsError, lambda: PolyRing("x", PolyRing("x", ZZ, lex), lex))
 
@@ -115,15 +115,6 @@ def test_PolyRing_drop():
     pytest.raises(ValueError, lambda: R.drop(x).drop(y))
 
 
-def test_PolyRing___getitem__():
-    R,  x, y, z = ring("x,y,z", ZZ)
-
-    assert R[0:] == PolyRing("x,y,z", ZZ, lex)
-    assert R[1:] == PolyRing("y,z", ZZ, lex)
-    assert R[2:] == PolyRing("z", ZZ, lex)
-    assert R[3:] == ZZ
-
-
 def test_PolyRing_index():
     R,  x, y, z = ring("x,y,z", ZZ)
 
@@ -190,7 +181,7 @@ def test_sring():
     R = PolyRing("x,y,z", Rt, lex)
     assert sring(x + t*y/2 + t**2*z/3, x, y, z) == (R, R.x + Rt.t*R.y/2 + Rt.t**2*R.z/3)
 
-    Rt = FracField("t", ZZ, lex)
+    Rt = ZZ.frac_field("t")
     R = PolyRing("x,y,z", Rt, lex)
     assert sring(x + 2*y/t + t**2*z/3, x, y, z) == (R, R.x + 2*R.y/Rt.t + Rt.t**2*R.z/3)
 

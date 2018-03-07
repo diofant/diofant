@@ -3534,12 +3534,12 @@ def test_pretty_Domain():
 
     assert upretty(RealField(prec=100)) == "ℝ₁₀₀"
 
-    expr = QQ[x]
+    expr = QQ.poly_ring(x)
 
     assert pretty(expr) == "QQ[x]"
     assert upretty(expr) == "ℚ[x]"
 
-    expr = QQ[x, y]
+    expr = QQ.poly_ring(x, y)
 
     assert pretty(expr) == "QQ[x, y]"
     assert upretty(expr) == "ℚ[x, y]"
