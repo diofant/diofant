@@ -146,9 +146,9 @@ class ReprPrinter(Printer):
     def _print_WildFunction(self, expr):
         return "%s('%s')" % (expr.__class__.__name__, expr.name)
 
-    def _print_PolyRing(self, ring):
+    def _print_PolynomialRing(self, ring):
         return "%s(%s, %s, %s)" % (ring.__class__.__name__,
-                                   self._print(ring.symbols), self._print(ring.domain), self._print(ring.order))
+                                   self._print(ring.domain), self._print(ring.symbols), self._print(ring.order))
 
     def _print_GMPYIntegerRing(self, expr):
         return "%s()" % expr.__class__.__name__
@@ -158,9 +158,6 @@ class ReprPrinter(Printer):
 
     _print_LexOrder = _print_GMPYIntegerRing
     _print_GradedLexOrder = _print_LexOrder
-
-    def _print_PolynomialRing(self, expr):
-        return "%s(%s)" % (expr.__class__.__name__, repr(expr.ring))
 
     def _print_FractionField(self, field):
         return "%s(%s, %s, %s)" % (field.__class__.__name__,

@@ -44,9 +44,6 @@ Concrete Domains
 .. autoclass:: IntegerRing
    :members:
 
-.. autoclass:: PolynomialRing
-   :members:
-
 .. autoclass:: RationalField
    :members:
 

@@ -11,7 +11,6 @@ from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
 from ..polys.monomials import itermonomials
 from ..polys.polyroots import root_factors
-from ..polys.rings import PolyRing
 from ..polys.solvers import solve_lin_sys
 from ..utilities.iterables import uniq
 
@@ -520,8 +519,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         else:
             ground, _ = construct_domain(non_syms, field=True, extension=True)
 
-        coeff_ring = PolyRing(poly_coeffs, ground)
-        ring = PolyRing(V, coeff_ring)
+        coeff_ring = ground.poly_ring(*poly_coeffs)
+        ring = coeff_ring.poly_ring(*V)
 
         try:
             numer = ring.from_expr(raw_numer)

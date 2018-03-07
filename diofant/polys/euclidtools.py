@@ -618,7 +618,7 @@ def dmp_qq_collins_resultant(f, g, u, K0):
     if n < 0 or m < 0:
         return dmp_zero(u - 1)
 
-    K1 = K0.get_ring()
+    K1 = K0.ring
 
     cf, f = dmp_clear_denoms(f, u, K0, K1)
     cg, g = dmp_clear_denoms(g, u, K0, K1)
@@ -1240,7 +1240,7 @@ def dup_qq_heu_gcd(f, g, K0):
     if result is not None:
         return result
 
-    K1 = K0.get_ring()
+    K1 = K0.ring
 
     cf, f = dup_clear_denoms(f, K0, K1)
     cg, g = dup_clear_denoms(g, K0, K1)
@@ -1288,7 +1288,7 @@ def dmp_qq_heu_gcd(f, g, u, K0):
     if result is not None:
         return result
 
-    K1 = K0.get_ring()
+    K1 = K0.ring
 
     cf, f = dmp_clear_denoms(f, u, K0, K1)
     cg, g = dmp_clear_denoms(g, u, K0, K1)
@@ -1685,7 +1685,7 @@ def dmp_cancel(f, g, u, K, include=True):
     K0 = None
 
     if K.has_Field and K.has_assoc_Ring:
-        K0, K = K, K.get_ring()
+        K0, K = K, K.ring
 
         cq, f = dmp_clear_denoms(f, u, K0, K, convert=True)
         cp, g = dmp_clear_denoms(g, u, K0, K, convert=True)

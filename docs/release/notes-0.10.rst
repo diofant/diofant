@@ -18,6 +18,8 @@ Compatibility breaks
 * Allow only prime orders for :class:`~diofant.domains.FiniteField`, see :pull:`622`.
 * Removed ``FracField`` class, see :pull:`622`.
 * ``get_field()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.field.Field.field`, see :pull:`622`.
+* Removed ``PolyRing`` class, see :pull:`621`.
+* ``get_ring()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.ring.Ring.ring`, see :pull:`621`.
 
 Minor changes
 =============
@@ -39,3 +41,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14393` Incorrect limit
 * :sympyissue:`14414` Should QQ[x, y, ...] syntax be removed?
 * :sympyissue:`13886` Raise an exception for non-prime p in FiniteFIeld(p)
+* :sympyissue:`14220` Should be there both PolyRing and PolynomialRing?

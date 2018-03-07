@@ -3,11 +3,11 @@ import random
 from mpmath import sqrt
 
 from ..core import Dummy
-from ..domains import PolynomialRing
 from ..ntheory import nextprime
 from ..ntheory.modular import crt
 from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
+from .rings import PolynomialRing
 
 
 __all__ = ('modgcd_univariate', 'modgcd_bivariate', 'modgcd_multivariate',
@@ -634,7 +634,7 @@ def _interpolate_multivariate(evalpoints, hpeval, ring, i, p, ground=False):
         list of polynomials in (resp. over)
         `\mathbb{Z}_p[x_0, \ldots, x_{i-1}, x_{i+1}, \ldots, x_{k-1}]`,
         images of `h_p` evaluated in the variable `x_i`
-    ring : PolyRing
+    ring : PolynomialRing
         `h_p` will be an element of this ring
     i : Integer
         index of the variable which has to be reconstructed
@@ -1284,7 +1284,7 @@ def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
         prime number, modulus of `\mathbb Z_p`
     m : PolyElement
         modulus, polynomial in `\mathbb Z[t]`, not necessarily irreducible
-    ring : PolyRing
+    ring : PolynomialRing
         `\mathbb Z(t_k)[t_1, \ldots, t_{k-1}][x, z]`, `h` will be an
         element of this ring
     k : Integer
@@ -1619,9 +1619,9 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         evalpoints_a = [a]
         heval_a = [ha]
         if k == 1:
-            m = qring.domain.get_ring().one
+            m = qring.domain.ring.one
         else:
-            m = qring.domain.domain.get_ring().one
+            m = qring.domain.domain.ring.one
 
         t = m.ring.gens[0]
 
@@ -1759,7 +1759,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
         polynomial in `\mathbb Z[t_1, \ldots, t_k][x, z]`
     m : Integer
         modulus, not necessarily prime
-    ring : PolyRing
+    ring : PolynomialRing
         `\mathbb Q[t_1, \ldots, t_k][x, z]`, `h` will be an element of this
         ring
 
@@ -1963,7 +1963,7 @@ def _to_ZZ_poly(f, ring):
 
     f : PolyElement
         polynomial in `\mathbb Q(\alpha)[x_0, \ldots, x_{n-1}]`
-    ring : PolyRing
+    ring : PolynomialRing
         `\mathbb Z[x_1, \ldots, x_{n-1}][x_0, z]`
 
     Returns
@@ -2021,7 +2021,7 @@ def _to_ANP_poly(f, ring):
 
     f : PolyElement
         polynomial in `\mathbb Z[x_1, \ldots, x_{n-1}][x_0, z]`
-    ring : PolyRing
+    ring : PolynomialRing
         `\mathbb Q(\alpha)[x_0, \ldots, x_{n-1}]`
 
     Returns
@@ -2203,7 +2203,7 @@ def func_field_modgcd(f, g):
 
     z = Dummy('z')
 
-    ZZring = ring.clone(symbols=ring.symbols + (z,), domain=domain.domain.get_ring())
+    ZZring = ring.clone(symbols=ring.symbols + (z,), domain=domain.domain.ring)
 
     if n == 1:
         f_ = _to_ZZ_poly(f, ZZring)

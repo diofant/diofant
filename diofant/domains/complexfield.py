@@ -91,10 +91,6 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
     def from_ComplexField(self, element, base):
         return self.dtype(element)
 
-    def get_ring(self):
-        """Returns a ring associated with ``self``. """
-        raise DomainError("there is no ring associated with %s" % self)
-
     def get_exact(self):
         """Returns an exact domain associated with ``self``. """
         raise DomainError("there is no exact domain associated with %s" % self)

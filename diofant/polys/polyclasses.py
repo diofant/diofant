@@ -143,7 +143,7 @@ class DMP(CantSympify):
 
     def to_ring(self):
         """Make the ground domain a ring. """
-        return self.convert(self.domain.get_ring())
+        return self.convert(self.domain.ring)
 
     def to_field(self):
         """Make the ground domain a field. """

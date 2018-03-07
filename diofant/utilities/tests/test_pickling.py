@@ -70,7 +70,7 @@ from diofant.polys.polyerrors import (CoercionFailed, DomainError,
                                       UnivariatePolynomialError)
 from diofant.polys.polyoptions import Options
 from diofant.polys.polytools import Poly, PurePoly
-from diofant.polys.rings import PolyRing
+from diofant.polys.rings import PolynomialRing
 from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.printing.latex import LatexPrinter
 from diofant.printing.mathml import MathMLPrinter
@@ -303,9 +303,9 @@ def test_pickling_polys_rings():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of rings works properly.
 
-    ring = PolyRing("x,y,z", ZZ)
+    ring = PolynomialRing(ZZ, "x,y,z")
 
-    for c in (PolyRing, ring):
+    for c in (PolynomialRing, ring):
         check(c, exclude=[0, 1])
 
     for c in (ring.dtype, ring.one):

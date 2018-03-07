@@ -95,9 +95,10 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     def from_AlgebraicField(self, a, K0):
         return self.from_diofant(K0.to_diofant(a))
 
-    def get_ring(self):
+    @property
+    def ring(self):
         """Returns a ring associated with ``self``. """
-        raise DomainError('there is no ring associated with %s' % self)
+        raise AttributeError('there is no ring associated with %s' % self)
 
     def is_positive(self, a):
         """Returns True if ``a`` is positive. """

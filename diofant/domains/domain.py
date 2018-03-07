@@ -197,7 +197,7 @@ class Domain(DefaultPrinting):
             if ((self.is_FractionField and K1.is_PolynomialRing or
                  K1.is_FractionField and self.is_PolynomialRing) and
                     (not self_ground.has_Field or not K1_ground.has_Field) and domain.has_Field):
-                domain = domain.get_ring()
+                domain = domain.ring
 
             if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):
                 cls = self.__class__
@@ -265,7 +265,7 @@ class Domain(DefaultPrinting):
 
     def poly_ring(self, *symbols, **kwargs):
         """Returns a polynomial ring, i.e. `K[X]`. """
-        from .polynomialring import PolynomialRing
+        from ..polys import PolynomialRing
         return PolynomialRing(self, symbols, kwargs.get("order", lex))
 
     def frac_field(self, *symbols, **kwargs):

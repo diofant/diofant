@@ -1,6 +1,6 @@
 """Implementation of :class:`Field` class. """
 
-from ..polys.polyerrors import DomainError, NotReversible
+from ..polys.polyerrors import NotReversible
 from .ring import Ring
 
 
@@ -12,9 +12,10 @@ class Field(Ring):
 
     has_Field = True
 
-    def get_ring(self):
+    @property
+    def ring(self):
         """Returns a ring associated with ``self``. """
-        raise DomainError('there is no ring associated with %s' % self)
+        raise AttributeError('there is no ring associated with %s' % self)
 
     @property
     def field(self):
@@ -52,8 +53,8 @@ class Field(Ring):
         (2/9, 3*x + 2)
         """
         try:
-            ring = self.get_ring()
-        except DomainError:
+            ring = self.ring
+        except AttributeError:
             return self.one
 
         p = ring.gcd(self.numer(a), self.numer(b))
@@ -72,8 +73,8 @@ class Field(Ring):
         """
 
         try:
-            ring = self.get_ring()
-        except DomainError:
+            ring = self.ring
+        except AttributeError:
             return a*b
 
         p = ring.lcm(self.numer(a), self.numer(b))

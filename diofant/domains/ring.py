@@ -13,7 +13,8 @@ class Ring(Domain):
 
     has_Ring = True
 
-    def get_ring(self):
+    @property
+    def ring(self):
         """Returns a ring associated with ``self``. """
         return self
 

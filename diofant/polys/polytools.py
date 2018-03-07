@@ -28,7 +28,7 @@ from .polyutils import (_dict_from_expr, _dict_reorder,
                         _parallel_dict_from_expr, _sort_gens, _unify_gens,
                         basic_from_dict)
 from .rationaltools import together
-from .rings import PolyRing, ring
+from .rings import PolynomialRing, ring
 from .rootisolation import dup_isolate_real_roots_list
 
 
@@ -1812,7 +1812,7 @@ class Poly(Expr):
 
         dom = f.domain
         if dom.has_assoc_Ring:
-            dom = f.rep.domain.get_ring()
+            dom = f.rep.domain.ring
 
         if hasattr(f.rep, 'clear_denoms'):
             coeff, result = f.rep.clear_denoms()
@@ -3122,7 +3122,7 @@ class Poly(Expr):
 
         if not include:
             if dom.has_assoc_Ring:
-                dom = dom.get_ring()
+                dom = dom.ring
 
             cp, cq, p, q = result
 
@@ -5710,7 +5710,7 @@ class GroebnerBasis(Basic):
         except PolificationFailed as exc:
             raise ComputationFailed('groebner', len(F), exc)
 
-        ring = PolyRing(opt.gens, opt.domain, opt.order)
+        ring = PolynomialRing(opt.domain, opt.gens, opt.order)
 
         if not ring.domain.is_Exact:
             raise ValueError('Domain must be exact, got %s' % ring.domain)
