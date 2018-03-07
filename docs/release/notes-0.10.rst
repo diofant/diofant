@@ -14,6 +14,7 @@ Compatibility breaks
 ====================
 
 * Removed ``DMF`` class, see :pull:`620`.
+* Removed ``K[x, y, ...]`` sugar, use :meth:`~diofant.domains.domain.Domain.poly_ring` to create polynomial rings, see :pull:`622`.
 
 Minor changes
 =============
@@ -33,3 +34,4 @@ These Sympy issues also were addressed:
 
 * :sympyissue:`14384` An unspecified power of x is reported to be `O(log(x)**6)`
 * :sympyissue:`14393` Incorrect limit
+* :sympyissue:`14414` Should QQ[x, y, ...] syntax be removed?

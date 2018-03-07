@@ -107,7 +107,7 @@ def test_dup_cyclotomic_p():
     assert R.dup_cyclotomic_p(x**2 + x + 1) is True
     assert R.dup_cyclotomic_p(x**2/2 + x + 1) is False
 
-    R, x = ring("x", ZZ["y"])
+    R, x = ring("x", ZZ.poly_ring("y"))
     assert R.dup_cyclotomic_p(x**2 + x + 1) is False
 
 
@@ -520,11 +520,11 @@ def test_dup_factor_list():
     assert R.dup_factor_list(0) == (0, [])
     assert R.dup_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
 
-    R, x = ring("x", ZZ['t'])
+    R, x = ring("x", ZZ.poly_ring('t'))
     assert R.dup_factor_list(0) == (0, [])
     assert R.dup_factor_list(7) == (7, [])
 
-    R, x = ring("x", QQ['t'])
+    R, x = ring("x", QQ.poly_ring('t'))
     assert R.dup_factor_list(0) == (0, [])
     assert R.dup_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
 

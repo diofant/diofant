@@ -61,7 +61,7 @@ def test_Domain_unify():
     assert unify(F3, ALG) == ALG
     assert unify(F3, RR) == RR
     assert unify(F3, CC) == CC
-    assert unify(F3, ZZ[x]) == F3[x]
+    assert unify(F3, ZZ.poly_ring(x)) == F3.poly_ring(x)
     assert unify(F3, ZZ.frac_field(x)) == F3.frac_field(x)
     assert unify(F3, EX) == EX
 
@@ -71,7 +71,7 @@ def test_Domain_unify():
     assert unify(ZZ, ALG) == ALG
     assert unify(ZZ, RR) == RR
     assert unify(ZZ, CC) == CC
-    assert unify(ZZ, ZZ[x]) == ZZ[x]
+    assert unify(ZZ, ZZ.poly_ring(x)) == ZZ.poly_ring(x)
     assert unify(ZZ, ZZ.frac_field(x)) == ZZ.frac_field(x)
     assert unify(ZZ, EX) == EX
 
@@ -81,7 +81,7 @@ def test_Domain_unify():
     assert unify(QQ, ALG) == ALG
     assert unify(QQ, RR) == RR
     assert unify(QQ, CC) == CC
-    assert unify(QQ, ZZ[x]) == QQ[x]
+    assert unify(QQ, ZZ.poly_ring(x)) == QQ.poly_ring(x)
     assert unify(QQ, ZZ.frac_field(x)) == QQ.frac_field(x)
     assert unify(QQ, EX) == EX
 
@@ -91,7 +91,7 @@ def test_Domain_unify():
     assert unify(RR, ALG) == RR
     assert unify(RR, RR) == RR
     assert unify(RR, CC) == CC
-    assert unify(RR, ZZ[x]) == RR[x]
+    assert unify(RR, ZZ.poly_ring(x)) == RR.poly_ring(x)
     assert unify(RR, ZZ.frac_field(x)) == RR.frac_field(x)
     assert unify(RR, EX) == EX
 
@@ -101,7 +101,7 @@ def test_Domain_unify():
     assert unify(CC, ALG) == CC
     assert unify(CC, RR) == CC
     assert unify(CC, CC) == CC
-    assert unify(CC, ZZ[x]) == CC[x]
+    assert unify(CC, ZZ.poly_ring(x)) == CC.poly_ring(x)
     assert unify(CC, ZZ.frac_field(x)) == CC.frac_field(x)
     assert unify(CC, EX) == EX
 
@@ -112,15 +112,15 @@ def test_Domain_unify():
     assert unify(RR, RR2) == unify(RR2, RR) == RealField(prec=RR.precision,
                                                          tol=RR2.tolerance)
 
-    assert unify(ZZ[x], F3) == F3[x]
-    assert unify(ZZ[x], ZZ) == ZZ[x]
-    assert unify(ZZ[x], QQ) == QQ[x]
-    assert unify(ZZ[x], ALG) == ALG[x]
-    assert unify(ZZ[x], RR) == RR[x]
-    assert unify(ZZ[x], CC) == CC[x]
-    assert unify(ZZ[x], ZZ[x]) == ZZ[x]
-    assert unify(ZZ[x], ZZ.frac_field(x)) == ZZ.frac_field(x)
-    assert unify(ZZ[x], EX) == EX
+    assert unify(ZZ.poly_ring(x), F3) == F3.poly_ring(x)
+    assert unify(ZZ.poly_ring(x), ZZ) == ZZ.poly_ring(x)
+    assert unify(ZZ.poly_ring(x), QQ) == QQ.poly_ring(x)
+    assert unify(ZZ.poly_ring(x), ALG) == ALG.poly_ring(x)
+    assert unify(ZZ.poly_ring(x), RR) == RR.poly_ring(x)
+    assert unify(ZZ.poly_ring(x), CC) == CC.poly_ring(x)
+    assert unify(ZZ.poly_ring(x), ZZ.poly_ring(x)) == ZZ.poly_ring(x)
+    assert unify(ZZ.poly_ring(x), ZZ.frac_field(x)) == ZZ.frac_field(x)
+    assert unify(ZZ.poly_ring(x), EX) == EX
 
     assert unify(ZZ.frac_field(x), F3) == F3.frac_field(x)
     assert unify(ZZ.frac_field(x), ZZ) == ZZ.frac_field(x)
@@ -128,7 +128,7 @@ def test_Domain_unify():
     assert unify(ZZ.frac_field(x), ALG) == ALG.frac_field(x)
     assert unify(ZZ.frac_field(x), RR) == RR.frac_field(x)
     assert unify(ZZ.frac_field(x), CC) == CC.frac_field(x)
-    assert unify(ZZ.frac_field(x), ZZ[x]) == ZZ.frac_field(x)
+    assert unify(ZZ.frac_field(x), ZZ.poly_ring(x)) == ZZ.frac_field(x)
     assert unify(ZZ.frac_field(x), ZZ.frac_field(x)) == ZZ.frac_field(x)
     assert unify(ZZ.frac_field(x), EX) == EX
 
@@ -138,7 +138,7 @@ def test_Domain_unify():
     assert unify(EX, ALG) == EX
     assert unify(EX, RR) == EX
     assert unify(EX, CC) == EX
-    assert unify(EX, ZZ[x]) == EX
+    assert unify(EX, ZZ.poly_ring(x)) == EX
     assert unify(EX, ZZ.frac_field(x)) == EX
     assert unify(EX, EX) == EX
 
@@ -272,14 +272,14 @@ def test_Domain_unify_algebraic():
 
     assert sqrt5.unify(sqrt7) == sqrt57
 
-    assert sqrt5.unify(sqrt5[x, y]) == sqrt5[x, y]
-    assert sqrt5[x, y].unify(sqrt5) == sqrt5[x, y]
+    assert sqrt5.unify(sqrt5.poly_ring(x, y)) == sqrt5.poly_ring(x, y)
+    assert sqrt5.poly_ring(x, y).unify(sqrt5) == sqrt5.poly_ring(x, y)
 
     assert sqrt5.unify(sqrt5.frac_field(x, y)) == sqrt5.frac_field(x, y)
     assert sqrt5.frac_field(x, y).unify(sqrt5) == sqrt5.frac_field(x, y)
 
-    assert sqrt5.unify(sqrt7[x, y]) == sqrt57[x, y]
-    assert sqrt5[x, y].unify(sqrt7) == sqrt57[x, y]
+    assert sqrt5.unify(sqrt7.poly_ring(x, y)) == sqrt57.poly_ring(x, y)
+    assert sqrt5.poly_ring(x, y).unify(sqrt7) == sqrt57.poly_ring(x, y)
 
     assert sqrt5.unify(sqrt7.frac_field(x, y)) == sqrt57.frac_field(x, y)
     assert sqrt5.frac_field(x, y).unify(sqrt7) == sqrt57.frac_field(x, y)
@@ -297,8 +297,8 @@ def test_Domain_unify_algebraic():
 
 
 def test_Domain_unify_with_symbols():
-    pytest.raises(UnificationFailed, lambda: ZZ[x, y].unify_with_symbols(ZZ, (y, z)))
-    pytest.raises(UnificationFailed, lambda: ZZ.unify_with_symbols(ZZ[x, y], (y, z)))
+    pytest.raises(UnificationFailed, lambda: ZZ.poly_ring(x, y).unify_with_symbols(ZZ, (y, z)))
+    pytest.raises(UnificationFailed, lambda: ZZ.unify_with_symbols(ZZ.poly_ring(x, y), (y, z)))
 
 
 def test_Domain__contains__():
@@ -308,9 +308,9 @@ def test_Domain__contains__():
     assert (0 in RR) is True
     assert (0 in CC) is True
     assert (0 in ALG) is True
-    assert (0 in ZZ[x, y]) is True
-    assert (0 in QQ[x, y]) is True
-    assert (0 in RR[x, y]) is True
+    assert (0 in ZZ.poly_ring(x, y)) is True
+    assert (0 in QQ.poly_ring(x, y)) is True
+    assert (0 in RR.poly_ring(x, y)) is True
 
     assert (-7 in EX) is True
     assert (-7 in ZZ) is True
@@ -318,9 +318,9 @@ def test_Domain__contains__():
     assert (-7 in RR) is True
     assert (-7 in CC) is True
     assert (-7 in ALG) is True
-    assert (-7 in ZZ[x, y]) is True
-    assert (-7 in QQ[x, y]) is True
-    assert (-7 in RR[x, y]) is True
+    assert (-7 in ZZ.poly_ring(x, y)) is True
+    assert (-7 in QQ.poly_ring(x, y)) is True
+    assert (-7 in RR.poly_ring(x, y)) is True
 
     assert (17 in EX) is True
     assert (17 in ZZ) is True
@@ -328,9 +328,9 @@ def test_Domain__contains__():
     assert (17 in RR) is True
     assert (17 in CC) is True
     assert (17 in ALG) is True
-    assert (17 in ZZ[x, y]) is True
-    assert (17 in QQ[x, y]) is True
-    assert (17 in RR[x, y]) is True
+    assert (17 in ZZ.poly_ring(x, y)) is True
+    assert (17 in QQ.poly_ring(x, y)) is True
+    assert (17 in RR.poly_ring(x, y)) is True
 
     assert (-Rational(1, 7) in EX) is True
     assert (-Rational(1, 7) in ZZ) is False
@@ -338,9 +338,9 @@ def test_Domain__contains__():
     assert (-Rational(1, 7) in RR) is True
     assert (-Rational(1, 7) in CC) is True
     assert (-Rational(1, 7) in ALG) is True
-    assert (-Rational(1, 7) in ZZ[x, y]) is False
-    assert (-Rational(1, 7) in QQ[x, y]) is True
-    assert (-Rational(1, 7) in RR[x, y]) is True
+    assert (-Rational(1, 7) in ZZ.poly_ring(x, y)) is False
+    assert (-Rational(1, 7) in QQ.poly_ring(x, y)) is True
+    assert (-Rational(1, 7) in RR.poly_ring(x, y)) is True
 
     assert (Rational(3, 5) in EX) is True
     assert (Rational(3, 5) in ZZ) is False
@@ -348,9 +348,9 @@ def test_Domain__contains__():
     assert (Rational(3, 5) in RR) is True
     assert (Rational(3, 5) in CC) is True
     assert (Rational(3, 5) in ALG) is True
-    assert (Rational(3, 5) in ZZ[x, y]) is False
-    assert (Rational(3, 5) in QQ[x, y]) is True
-    assert (Rational(3, 5) in RR[x, y]) is True
+    assert (Rational(3, 5) in ZZ.poly_ring(x, y)) is False
+    assert (Rational(3, 5) in QQ.poly_ring(x, y)) is True
+    assert (Rational(3, 5) in RR.poly_ring(x, y)) is True
 
     assert (3.0 in EX) is True
     assert (3.0 in ZZ) is True
@@ -358,9 +358,9 @@ def test_Domain__contains__():
     assert (3.0 in RR) is True
     assert (3.0 in CC) is True
     assert (3.0 in ALG) is True
-    assert (3.0 in ZZ[x, y]) is True
-    assert (3.0 in QQ[x, y]) is True
-    assert (3.0 in RR[x, y]) is True
+    assert (3.0 in ZZ.poly_ring(x, y)) is True
+    assert (3.0 in QQ.poly_ring(x, y)) is True
+    assert (3.0 in RR.poly_ring(x, y)) is True
 
     assert (3.14 in EX) is True
     assert (3.14 in ZZ) is False
@@ -368,9 +368,9 @@ def test_Domain__contains__():
     assert (3.14 in RR) is True
     assert (3.14 in CC) is True
     assert (3.14 in ALG) is True
-    assert (3.14 in ZZ[x, y]) is False
-    assert (3.14 in QQ[x, y]) is True
-    assert (3.14 in RR[x, y]) is True
+    assert (3.14 in ZZ.poly_ring(x, y)) is False
+    assert (3.14 in QQ.poly_ring(x, y)) is True
+    assert (3.14 in RR.poly_ring(x, y)) is True
 
     assert (oo in EX) is True
     assert (oo in ZZ) is False
@@ -378,9 +378,9 @@ def test_Domain__contains__():
     assert (oo in RR) is True
     assert (oo in CC) is True
     assert (oo in ALG) is False
-    assert (oo in ZZ[x, y]) is False
-    assert (oo in QQ[x, y]) is False
-    assert (oo in RR[x, y]) is True
+    assert (oo in ZZ.poly_ring(x, y)) is False
+    assert (oo in QQ.poly_ring(x, y)) is False
+    assert (oo in RR.poly_ring(x, y)) is True
 
     assert (-oo in EX) is True
     assert (-oo in ZZ) is False
@@ -388,9 +388,9 @@ def test_Domain__contains__():
     assert (-oo in RR) is True
     assert (-oo in CC) is True
     assert (-oo in ALG) is False
-    assert (-oo in ZZ[x, y]) is False
-    assert (-oo in QQ[x, y]) is False
-    assert (-oo in RR[x, y]) is True
+    assert (-oo in ZZ.poly_ring(x, y)) is False
+    assert (-oo in QQ.poly_ring(x, y)) is False
+    assert (-oo in RR.poly_ring(x, y)) is True
 
     assert (sqrt(7) in EX) is True
     assert (sqrt(7) in ZZ) is False
@@ -398,9 +398,9 @@ def test_Domain__contains__():
     assert (sqrt(7) in RR) is True
     assert (sqrt(7) in CC) is True
     assert (sqrt(7) in ALG) is False
-    assert (sqrt(7) in ZZ[x, y]) is False
-    assert (sqrt(7) in QQ[x, y]) is False
-    assert (sqrt(7) in RR[x, y]) is True
+    assert (sqrt(7) in ZZ.poly_ring(x, y)) is False
+    assert (sqrt(7) in QQ.poly_ring(x, y)) is False
+    assert (sqrt(7) in RR.poly_ring(x, y)) is True
 
     assert (2*sqrt(3) + 1 in EX) is True
     assert (2*sqrt(3) + 1 in ZZ) is False
@@ -408,9 +408,9 @@ def test_Domain__contains__():
     assert (2*sqrt(3) + 1 in RR) is True
     assert (2*sqrt(3) + 1 in CC) is True
     assert (2*sqrt(3) + 1 in ALG) is True
-    assert (2*sqrt(3) + 1 in ZZ[x, y]) is False
-    assert (2*sqrt(3) + 1 in QQ[x, y]) is False
-    assert (2*sqrt(3) + 1 in RR[x, y]) is True
+    assert (2*sqrt(3) + 1 in ZZ.poly_ring(x, y)) is False
+    assert (2*sqrt(3) + 1 in QQ.poly_ring(x, y)) is False
+    assert (2*sqrt(3) + 1 in RR.poly_ring(x, y)) is True
 
     assert (sin(1) in EX) is True
     assert (sin(1) in ZZ) is False
@@ -418,9 +418,9 @@ def test_Domain__contains__():
     assert (sin(1) in RR) is True
     assert (sin(1) in CC) is True
     assert (sin(1) in ALG) is False
-    assert (sin(1) in ZZ[x, y]) is False
-    assert (sin(1) in QQ[x, y]) is False
-    assert (sin(1) in RR[x, y]) is True
+    assert (sin(1) in ZZ.poly_ring(x, y)) is False
+    assert (sin(1) in QQ.poly_ring(x, y)) is False
+    assert (sin(1) in RR.poly_ring(x, y)) is True
 
     assert (x**2 + 1 in EX) is True
     assert (x**2 + 1 in ZZ) is False
@@ -428,12 +428,12 @@ def test_Domain__contains__():
     assert (x**2 + 1 in RR) is False
     assert (x**2 + 1 in CC) is False
     assert (x**2 + 1 in ALG) is False
-    assert (x**2 + 1 in ZZ[x]) is True
-    assert (x**2 + 1 in QQ[x]) is True
-    assert (x**2 + 1 in RR[x]) is True
-    assert (x**2 + 1 in ZZ[x, y]) is True
-    assert (x**2 + 1 in QQ[x, y]) is True
-    assert (x**2 + 1 in RR[x, y]) is True
+    assert (x**2 + 1 in ZZ.poly_ring(x)) is True
+    assert (x**2 + 1 in QQ.poly_ring(x)) is True
+    assert (x**2 + 1 in RR.poly_ring(x)) is True
+    assert (x**2 + 1 in ZZ.poly_ring(x, y)) is True
+    assert (x**2 + 1 in QQ.poly_ring(x, y)) is True
+    assert (x**2 + 1 in RR.poly_ring(x, y)) is True
 
     assert (x**2 + y**2 in EX) is True
     assert (x**2 + y**2 in ZZ) is False
@@ -441,23 +441,23 @@ def test_Domain__contains__():
     assert (x**2 + y**2 in RR) is False
     assert (x**2 + y**2 in CC) is False
     assert (x**2 + y**2 in ALG) is False
-    assert (x**2 + y**2 in ZZ[x]) is False
-    assert (x**2 + y**2 in QQ[x]) is False
-    assert (x**2 + y**2 in RR[x]) is False
-    assert (x**2 + y**2 in ZZ[x, y]) is True
-    assert (x**2 + y**2 in QQ[x, y]) is True
-    assert (x**2 + y**2 in RR[x, y]) is True
+    assert (x**2 + y**2 in ZZ.poly_ring(x)) is False
+    assert (x**2 + y**2 in QQ.poly_ring(x)) is False
+    assert (x**2 + y**2 in RR.poly_ring(x)) is False
+    assert (x**2 + y**2 in ZZ.poly_ring(x, y)) is True
+    assert (x**2 + y**2 in QQ.poly_ring(x, y)) is True
+    assert (x**2 + y**2 in RR.poly_ring(x, y)) is True
 
-    assert (Rational(3, 2)*x/(y + 1) - z in QQ[x, y, z]) is False
+    assert (Rational(3, 2)*x/(y + 1) - z in QQ.poly_ring(x, y, z)) is False
 
 
 def test_Domain_get_ring():
     assert ZZ.has_assoc_Ring is True
     assert QQ.has_assoc_Ring is True
-    assert ZZ[x].has_assoc_Ring is True
-    assert QQ[x].has_assoc_Ring is True
-    assert ZZ[x, y].has_assoc_Ring is True
-    assert QQ[x, y].has_assoc_Ring is True
+    assert ZZ.poly_ring(x).has_assoc_Ring is True
+    assert QQ.poly_ring(x).has_assoc_Ring is True
+    assert ZZ.poly_ring(x, y).has_assoc_Ring is True
+    assert QQ.poly_ring(x, y).has_assoc_Ring is True
     assert ZZ.frac_field(x).has_assoc_Ring is True
     assert QQ.frac_field(x).has_assoc_Ring is True
     assert ZZ.frac_field(x, y).has_assoc_Ring is True
@@ -469,14 +469,14 @@ def test_Domain_get_ring():
 
     assert ZZ.get_ring() == ZZ
     assert QQ.get_ring() == ZZ
-    assert ZZ[x].get_ring() == ZZ[x]
-    assert QQ[x].get_ring() == QQ[x]
-    assert ZZ[x, y].get_ring() == ZZ[x, y]
-    assert QQ[x, y].get_ring() == QQ[x, y]
-    assert ZZ.frac_field(x).get_ring() == ZZ[x]
-    assert QQ.frac_field(x).get_ring() == QQ[x]
-    assert ZZ.frac_field(x, y).get_ring() == ZZ[x, y]
-    assert QQ.frac_field(x, y).get_ring() == QQ[x, y]
+    assert ZZ.poly_ring(x).get_ring() == ZZ.poly_ring(x)
+    assert QQ.poly_ring(x).get_ring() == QQ.poly_ring(x)
+    assert ZZ.poly_ring(x, y).get_ring() == ZZ.poly_ring(x, y)
+    assert QQ.poly_ring(x, y).get_ring() == QQ.poly_ring(x, y)
+    assert ZZ.frac_field(x).get_ring() == ZZ.poly_ring(x)
+    assert QQ.frac_field(x).get_ring() == QQ.poly_ring(x)
+    assert ZZ.frac_field(x, y).get_ring() == ZZ.poly_ring(x, y)
+    assert QQ.frac_field(x, y).get_ring() == QQ.poly_ring(x, y)
 
     assert EX.get_ring() == EX
 
@@ -490,20 +490,20 @@ def test_Domain_get_field():
     assert QQ.has_assoc_Field is True
     assert RR.has_assoc_Field is True
     assert ALG.has_assoc_Field is True
-    assert ZZ[x].has_assoc_Field is True
-    assert QQ[x].has_assoc_Field is True
-    assert ZZ[x, y].has_assoc_Field is True
-    assert QQ[x, y].has_assoc_Field is True
+    assert ZZ.poly_ring(x).has_assoc_Field is True
+    assert QQ.poly_ring(x).has_assoc_Field is True
+    assert ZZ.poly_ring(x, y).has_assoc_Field is True
+    assert QQ.poly_ring(x, y).has_assoc_Field is True
 
     assert EX.get_field() == EX
     assert ZZ.get_field() == QQ
     assert QQ.get_field() == QQ
     assert RR.get_field() == RR
     assert ALG.get_field() == ALG
-    assert ZZ[x].get_field() == ZZ.frac_field(x)
-    assert QQ[x].get_field() == QQ.frac_field(x)
-    assert ZZ[x, y].get_field() == ZZ.frac_field(x, y)
-    assert QQ[x, y].get_field() == QQ.frac_field(x, y)
+    assert ZZ.poly_ring(x).get_field() == ZZ.frac_field(x)
+    assert QQ.poly_ring(x).get_field() == QQ.frac_field(x)
+    assert ZZ.poly_ring(x, y).get_field() == ZZ.frac_field(x, y)
+    assert QQ.poly_ring(x, y).get_field() == QQ.frac_field(x, y)
 
 
 def test_Domain_get_exact():
@@ -512,10 +512,10 @@ def test_Domain_get_exact():
     assert QQ.get_exact() == QQ
     assert RR.get_exact() == QQ
     assert ALG.get_exact() == ALG
-    assert ZZ[x].get_exact() == ZZ[x]
-    assert QQ[x].get_exact() == QQ[x]
-    assert ZZ[x, y].get_exact() == ZZ[x, y]
-    assert QQ[x, y].get_exact() == QQ[x, y]
+    assert ZZ.poly_ring(x).get_exact() == ZZ.poly_ring(x)
+    assert QQ.poly_ring(x).get_exact() == QQ.poly_ring(x)
+    assert ZZ.poly_ring(x, y).get_exact() == ZZ.poly_ring(x, y)
+    assert QQ.poly_ring(x, y).get_exact() == QQ.poly_ring(x, y)
     assert ZZ.frac_field(x).get_exact() == ZZ.frac_field(x)
     assert QQ.frac_field(x).get_exact() == QQ.frac_field(x)
     assert ZZ.frac_field(x, y).get_exact() == ZZ.frac_field(x, y)
@@ -624,10 +624,10 @@ def test_FractionField__init():
 
 
 def test_inject():
-    assert ZZ.inject(x, y, z) == ZZ[x, y, z]
-    assert ZZ[x].inject(y, z) == ZZ[x, y, z]
+    assert ZZ.inject(x, y, z) == ZZ.poly_ring(x, y, z)
+    assert ZZ.poly_ring(x).inject(y, z) == ZZ.poly_ring(x, y, z)
     assert ZZ.frac_field(x).inject(y, z) == ZZ.frac_field(x, y, z)
-    pytest.raises(GeneratorsError, lambda: ZZ[x].inject(x))
+    pytest.raises(GeneratorsError, lambda: ZZ.poly_ring(x).inject(x))
 
 
 def test_Domain_map():
@@ -641,11 +641,11 @@ def test_Domain_map():
 
 
 def test_Domain___eq__():
-    assert (ZZ[x, y] == ZZ[x, y]) is True
-    assert (QQ[x, y] == QQ[x, y]) is True
+    assert (ZZ.poly_ring(x, y) == ZZ.poly_ring(x, y)) is True
+    assert (QQ.poly_ring(x, y) == QQ.poly_ring(x, y)) is True
 
-    assert (ZZ[x, y] == QQ[x, y]) is False
-    assert (QQ[x, y] == ZZ[x, y]) is False
+    assert (ZZ.poly_ring(x, y) == QQ.poly_ring(x, y)) is False
+    assert (QQ.poly_ring(x, y) == ZZ.poly_ring(x, y)) is False
 
     assert (ZZ.frac_field(x, y) == ZZ.frac_field(x, y)) is True
     assert (QQ.frac_field(x, y) == QQ.frac_field(x, y)) is True
@@ -728,7 +728,7 @@ def test_FF_of_type():
 
 
 def test___eq__():
-    assert not QQ[x] == ZZ[x]
+    assert not QQ.poly_ring(x) == ZZ.poly_ring(x)
     assert not QQ.frac_field(x) == ZZ.frac_field(x)
 
     assert EX(1) != EX(2)

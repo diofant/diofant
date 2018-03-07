@@ -145,8 +145,8 @@ def ratint_ratpart(f, g, x):
 
     C_coeffs = A_coeffs + B_coeffs
 
-    A = Poly(A_coeffs, x, domain=ZZ[C_coeffs])
-    B = Poly(B_coeffs, x, domain=ZZ[C_coeffs])
+    A = Poly(A_coeffs, x, domain=ZZ.poly_ring(*C_coeffs))
+    B = Poly(B_coeffs, x, domain=ZZ.poly_ring(*C_coeffs))
 
     H = f - A.diff()*v + A*(u.diff()*v).quo(u) - B*u
 

@@ -246,8 +246,8 @@ def test__dict_from_expr_no_gens():
     assert dict_from_expr(sqrt(2)) == ({(1,): 1}, (sqrt(2),))
     pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(sqrt(2), greedy=False))
 
-    assert dict_from_expr(x*y, domain=ZZ[x]) == ({(1,): x}, (y,))
-    assert dict_from_expr(x*y, domain=ZZ[y]) == ({(1,): y}, (x,))
+    assert dict_from_expr(x*y, domain=ZZ.poly_ring(x)) == ({(1,): x}, (y,))
+    assert dict_from_expr(x*y, domain=ZZ.poly_ring(y)) == ({(1,): y}, (x,))
 
     assert dict_from_expr(3*sqrt(
         2)*pi*x*y, extension=None) == ({(1, 1, 1, 1): 3}, (x, y, pi, sqrt(2)))

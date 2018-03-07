@@ -232,7 +232,7 @@ class IPolys:
     def dmp_LC(self, f):
         LC = dmp_LC(self.to_dense(f), self.domain)
         if self.ngens > 1:
-            return self[1:].from_dense(LC)
+            return self.drop(0).from_dense(LC)
         else:
             return LC
 
@@ -262,7 +262,7 @@ class IPolys:
 
     def dmp_eval(self, f, a):
         result = dmp_eval(self.to_dense(f), a, self.ngens-1, self.domain)
-        return self[1:].from_dense(result)
+        return self.drop(0).from_dense(result)
 
     def dmp_eval_in(self, f, a, j):
         result = dmp_eval_in(self.to_dense(f), a, j, self.ngens-1, self.domain)
@@ -275,7 +275,7 @@ class IPolys:
     def dmp_eval_tail(self, f, A):
         result = dmp_eval_tail(self.to_dense(f), A, self.ngens-1, self.domain)
         if isinstance(result, list):
-            return self[:-len(A)].from_dense(result)
+            return self.drop(*range(self.ngens)[-len(A):]).from_dense(result)
         else:
             return result
 
@@ -283,7 +283,7 @@ class IPolys:
         return self.from_dense(dup_trunc(self.to_dense(f), p, self.domain))
 
     def dmp_trunc(self, f, g):
-        return self.from_dense(dmp_trunc(self.to_dense(f), self[1:].to_dense(g), self.ngens-1, self.domain))
+        return self.from_dense(dmp_trunc(self.to_dense(f), self.drop(0).to_dense(g), self.ngens-1, self.domain))
 
     def dmp_ground_trunc(self, f, p):
         return self.from_dense(dmp_ground_trunc(self.to_dense(f), p, self.ngens-1, self.domain))
@@ -399,20 +399,20 @@ class IPolys:
     def dmp_prs_resultant(self, f, g):
         res, prs = dmp_prs_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         if isinstance(res, list):
-            res = self[1:].from_dense(res)
+            res = self.drop(0).from_dense(res)
         return res, list(map(self.from_dense, prs))
 
     def dmp_zz_modular_resultant(self, f, g, p):
         res = dmp_zz_modular_resultant(self.to_dense(f), self.to_dense(g), self.domain_new(p), self.ngens-1, self.domain)
-        return self[1:].from_dense(res)
+        return self.drop(0).from_dense(res)
 
     def dmp_zz_collins_resultant(self, f, g):
         res = dmp_zz_collins_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self[1:].from_dense(res)
+        return self.drop(0).from_dense(res)
 
     def dmp_qq_collins_resultant(self, f, g):
         res = dmp_qq_collins_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self[1:].from_dense(res)
+        return self.drop(0).from_dense(res)
 
     def dup_resultant(self, f, g):
         return dup_resultant(self.to_dense(f), self.to_dense(g), self.domain)
@@ -420,7 +420,7 @@ class IPolys:
     def dmp_resultant(self, f, g, includePRS=False):
         res = dmp_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain, includePRS=includePRS)
         if isinstance(res, list):
-            return self[1:].from_dense(res)
+            return self.drop(0).from_dense(res)
         else:
             return res
 
@@ -430,7 +430,7 @@ class IPolys:
     def dmp_discriminant(self, f):
         disc = dmp_discriminant(self.to_dense(f), self.ngens-1, self.domain)
         if isinstance(disc, list):
-            return self[1:].from_dense(disc)
+            return self.drop(0).from_dense(disc)
         else:
             return disc
 
@@ -516,11 +516,11 @@ class IPolys:
 
     def dmp_content(self, f):
         cont = dmp_content(self.to_dense(f), self.ngens-1, self.domain)
-        return self[1:].from_dense(cont)
+        return self.drop(0).from_dense(cont)
 
     def dmp_primitive(self, f):
         cont, prim = dmp_primitive(self.to_dense(f), self.ngens-1, self.domain)
-        return self[1:].from_dense(cont), self.from_dense(prim)
+        return self.drop(0).from_dense(cont), self.from_dense(prim)
 
     def dmp_ground_content(self, f):
         cont = dmp_ground_content(self.to_dense(f), self.ngens-1, self.domain)
@@ -599,17 +599,17 @@ class IPolys:
 
     # f: Poly, T: List[(Poly, int)], cs: ZZ, E: List[ZZ], H: List[Poly], A: List[ZZ]
     def dmp_zz_wang_lead_coeffs(self, f, T, cs, E, H, A):
-        mv = self[1:]
+        mv = self.drop(0)
         T = [ (mv.to_dense(t), k) for t, k in T ]
-        uv = self[:1]
+        uv = self.drop(*range(1, self.ngens))
         H = list(map(uv.to_dense, H))
         f, HH, CC = dmp_zz_wang_lead_coeffs(self.to_dense(f), T, cs, E, H, A, self.ngens-1, self.domain)
         return self.from_dense(f), list(map(uv.from_dense, HH)), list(map(mv.from_dense, CC))
 
     # f: Poly, H: List[Poly], LC: List[Poly], A: List[ZZ], p: ZZ
     def dmp_zz_wang_hensel_lifting(self, f, H, LC, A, p):
-        uv = self[:1]
-        mv = self[1:]
+        uv = self.drop(*range(1, self.ngens))
+        mv = self.drop(0)
         H = list(map(uv.to_dense, H))
         LC = list(map(mv.to_dense, LC))
         result = dmp_zz_wang_hensel_lifting(self.to_dense(f), H, LC, A, p, self.ngens-1, self.domain)

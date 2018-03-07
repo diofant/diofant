@@ -1084,7 +1084,7 @@ def dmp_eject(f, u, K, front=False):
     Examples
     ========
 
-    >>> dmp_eject([[[1]], [[1], [2]]], 2, ZZ['x', 'y'])
+    >>> dmp_eject([[[1]], [[1], [2]]], 2, ZZ.poly_ring('x', 'y'))
     [1, x + 2]
     """
     f, h = dmp_to_dict(f, u), {}

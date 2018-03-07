@@ -30,9 +30,9 @@ def test_PolyRing___init__():
     pytest.raises(GeneratorsNeeded, lambda: PolyRing([], ZZ, lex))
     pytest.raises(GeneratorsError, lambda: PolyRing(0, ZZ, lex))
 
-    assert PolyRing("x", ZZ[t], lex).domain == ZZ[t]
-    assert PolyRing("x", 'ZZ[t]', lex).domain == ZZ[t]
-    assert PolyRing("x", PolyRing("t", ZZ, lex), lex).domain == ZZ[t]
+    assert PolyRing("x", ZZ.poly_ring(t), lex).domain == ZZ.poly_ring(t)
+    assert PolyRing("x", 'ZZ[t]', lex).domain == ZZ.poly_ring(t)
+    assert PolyRing("x", PolyRing("t", ZZ, lex), lex).domain == ZZ.poly_ring(t)
 
     pytest.raises(GeneratorsError, lambda: PolyRing("x", PolyRing("x", ZZ, lex), lex))
 
@@ -113,15 +113,6 @@ def test_PolyRing_drop():
 
     pytest.raises(ValueError, lambda: R.drop(3))
     pytest.raises(ValueError, lambda: R.drop(x).drop(y))
-
-
-def test_PolyRing___getitem__():
-    R,  x, y, z = ring("x,y,z", ZZ)
-
-    assert R[0:] == PolyRing("x,y,z", ZZ, lex)
-    assert R[1:] == PolyRing("y,z", ZZ, lex)
-    assert R[2:] == PolyRing("z", ZZ, lex)
-    assert R[3:] == ZZ
 
 
 def test_PolyRing_index():

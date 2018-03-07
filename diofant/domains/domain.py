@@ -263,13 +263,6 @@ class Domain(DefaultPrinting):
         """Returns an exact domain associated with ``self``. """
         return self
 
-    def __getitem__(self, symbols):
-        """The mathematical way to make a polynomial ring. """
-        if hasattr(symbols, '__iter__'):
-            return self.poly_ring(*symbols)
-        else:
-            return self.poly_ring(symbols)
-
     def poly_ring(self, *symbols, **kwargs):
         """Returns a polynomial ring, i.e. `K[X]`. """
         from .polynomialring import PolynomialRing
