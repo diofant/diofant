@@ -5,7 +5,7 @@ import functools
 import mpmath
 
 from ..core import (Add, AlgebraicNumber, Dummy, E, GoldenRatio, I, Integer,
-                    Mul, Rational, S, expand_mul, pi, prod, sympify)
+                    Mul, Rational, S, pi, prod, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ
@@ -557,20 +557,16 @@ def minimal_polynomial(ex, x=None, **args):
     x**3 + x + 3
     >>> minimal_polynomial(sqrt(y), x)
     x**2 - y
-
     """
-    from .polytools import degree
-    from ..core import preorder_traversal
 
     compose = args.get('compose', True)
     polys = args.get('polys', False)
-    dom = args.get('domain', None)
 
     ex = sympify(ex)
     if ex.is_number:
         # not sure if it's always needed but try it for numbers (issue sympy/sympy#8354)
         ex = _mexpand(ex, recursive=True)
-    if any(e.is_AlgebraicNumber for e in preorder_traversal(ex)):
+    if ex.has(AlgebraicNumber):
         compose = False
 
     if x is not None:
@@ -578,30 +574,23 @@ def minimal_polynomial(ex, x=None, **args):
     else:
         x, cls = Dummy('x'), PurePoly
 
-    if not dom:
-        dom = QQ.frac_field(*ex.free_symbols) if ex.free_symbols else QQ
-    if hasattr(dom, 'symbols') and x in dom.symbols:
-        raise GeneratorsError("the variable %s is an element of the ground domain %s" % (x, dom))
+    domain = args.get('domain',
+                      QQ.frac_field(*ex.free_symbols) if ex.free_symbols else QQ)
+    if domain.is_Composite and x in domain.symbols:
+        raise GeneratorsError("the variable %s is an element of the "
+                              "ground domain %s" % (x, domain))
 
-    if compose:
-        result = _minpoly_compose(ex, x, dom)
-        if args.get('domain', None):
-            _, factors = factor_list(result, x, domain=dom)
-            result = _choose_factor(factors, x, ex)
-        result = result.primitive()[1]
-        c = result.coeff(x**degree(result, x))
-        if c.is_negative:
-            result = expand_mul(-result)
-        return cls(result, x, field=True) if polys else result.collect(x)
+    method = _minpoly_compose if compose else minpoly_groebner
 
-    if not dom.is_QQ:
-        raise NotImplementedError("groebner method only works for QQ")
+    result = method(ex, x, domain)
+    _, factors = factor_list(result, x, domain=domain)
+    result = _choose_factor(factors, x, ex)
+    result = result.primitive()[1]
 
-    result = minpoly_groebner(ex, x)
     return cls(result, x, field=True) if polys else result.collect(x)
 
 
-def minpoly_groebner(ex, x):
+def minpoly_groebner(ex, x, domain):
     """
     Computes the minimal polynomial of an algebraic number
     using Gröbner bases
@@ -641,6 +630,8 @@ def minpoly_groebner(ex, x):
                 return update_mapping(ex, 2, 1)
             elif ex.is_Rational:
                 return ex
+            elif ex.is_Symbol:
+                return ex
         elif ex.is_Add or ex.is_Mul:
             return ex.func(*[bottom_up_scan(g) for g in ex.args])
         elif ex.is_Pow:
@@ -651,7 +642,7 @@ def minpoly_groebner(ex, x):
                         base, exp = base**exp.p, Rational(1, exp.q)
                     base = bottom_up_scan(base)
                 else:
-                    bmp = PurePoly(minpoly_groebner(1/base, x), x)
+                    bmp = PurePoly(minpoly_groebner(1/base, x, domain=domain), x)
                     base, exp = update_mapping(1/base, bmp), -exp
                 return update_mapping(ex, exp.q, -base**exp.p)
         elif ex.is_AlgebraicNumber:
@@ -675,10 +666,9 @@ def minpoly_groebner(ex, x):
         n, d = bottom_up_scan(ex), S.One
 
     F = [d*x - n] + list(mapping.values())
-    G = groebner(F, list(symbols.values()) + [x], order='lex')
+    G = groebner(F, list(symbols.values()) + [x], order='lex', domain=domain)
 
-    _, factors = factor_list(G[-1])  # by construction G[-1] has root `ex`
-    return _choose_factor(factors, x, ex)
+    return G[-1]  # by construction G[-1] has root `ex`
 
 
 minpoly = minimal_polynomial

@@ -25,6 +25,7 @@ Minor changes
 =============
 
 * Be sure that :func:`~diofant.polys.numberfields.minimal_polynomial` returns an irreducible polynomial over specified domain, see :pull:`622`.
+* Support algebraic function fields in :func:`~diofant.polys.numberfields.minpoly_groebner`, see :pull:`623`.
 
 Developer changes
 =================
