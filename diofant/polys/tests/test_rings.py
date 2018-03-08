@@ -6,6 +6,7 @@ from operator import add, mul
 import pytest
 
 from diofant import oo, pi, sqrt
+from diofant.abc import t, x, y, z
 from diofant.core import Symbol, symbols
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.polys.fields import field
@@ -13,37 +14,34 @@ from diofant.polys.orderings import grlex, lex
 from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
                                       GeneratorsError, GeneratorsNeeded,
                                       MultivariatePolynomialError)
-from diofant.polys.rings import PolyElement, PolyRing, ring, sring
+from diofant.polys.rings import PolyElement, PolynomialRing, ring, sring
 
 
 __all__ = ()
 
 
-def test_PolyRing___init__():
-    x, y, z, t = map(Symbol, "xyzt")
+def test_PolynomialRing___init__():
+    assert len(PolynomialRing(ZZ, "x,y,z").gens) == 3
+    assert len(ZZ.poly_ring(x).gens) == 1
+    assert len(ZZ.poly_ring("x", "y", "z").gens) == 3
+    assert len(ZZ.poly_ring(x, y, z).gens) == 3
 
-    assert len(PolyRing("x,y,z", ZZ, lex).gens) == 3
-    assert len(PolyRing(x, ZZ, lex).gens) == 1
-    assert len(PolyRing(("x", "y", "z"), ZZ, lex).gens) == 3
-    assert len(PolyRing((x, y, z), ZZ, lex).gens) == 3
+    pytest.raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
+    pytest.raises(GeneratorsError, lambda: ZZ.poly_ring(0))
 
-    pytest.raises(GeneratorsNeeded, lambda: PolyRing([], ZZ, lex))
-    pytest.raises(GeneratorsError, lambda: PolyRing(0, ZZ, lex))
+    assert ZZ.poly_ring(t).poly_ring("x").domain == ZZ.poly_ring(t)
+    assert PolynomialRing('ZZ[t]', "x").domain == ZZ.poly_ring(t)
 
-    assert PolyRing("x", ZZ.poly_ring(t), lex).domain == ZZ.poly_ring(t)
-    assert PolyRing("x", 'ZZ[t]', lex).domain == ZZ.poly_ring(t)
-    assert PolyRing("x", PolyRing("t", ZZ, lex), lex).domain == ZZ.poly_ring(t)
-
-    pytest.raises(GeneratorsError, lambda: PolyRing("x", PolyRing("x", ZZ, lex), lex))
+    pytest.raises(GeneratorsError, lambda: ZZ.poly_ring("x").poly_ring("x"))
 
     _lex = Symbol("lex")
-    assert PolyRing("x", ZZ, lex).order == lex
-    assert PolyRing("x", ZZ, _lex).order == lex
-    assert PolyRing("x", ZZ, 'lex').order == lex
+    assert PolynomialRing(ZZ, "x").order == lex
+    assert PolynomialRing(ZZ, "x", _lex).order == lex
+    assert PolynomialRing(ZZ, "x", 'lex').order == lex
 
-    R1 = PolyRing("x,y", ZZ, lex)
-    R2 = PolyRing("x,y", ZZ, lex)
-    R3 = PolyRing("x,y,z", ZZ, lex)
+    R1 = ZZ.poly_ring("x", "y")
+    R2 = ZZ.poly_ring("x", "y")
+    R3 = ZZ.poly_ring("x", "y", "z")
 
     assert R1.x == R1.gens[0]
     assert R1.y == R1.gens[1]
@@ -52,19 +50,19 @@ def test_PolyRing___init__():
     assert R1.x != R3.x
     assert R1.y != R3.y
 
-    R4 = PolyRing("gens", ZZ)
+    R4 = ZZ.poly_ring("gens")
     assert type(R4.gens) is tuple
 
-    pytest.raises(GeneratorsError, lambda: PolyRing({1: 2}, ZZ))
-    pytest.raises(GeneratorsError, lambda: PolyRing(["x", ["y"]], ZZ))
+    pytest.raises(GeneratorsError, lambda: PolynomialRing(ZZ, {1: 2}))
+    pytest.raises(GeneratorsError, lambda: PolynomialRing(ZZ, ["x", ["y"]]))
 
 
-def test_PolyRing___hash__():
+def test_PolynomialRing___hash__():
     R, x, y, z = ring("x,y,z", QQ)
     assert hash(R)
 
 
-def test_PolyRing___eq__():
+def test_PolynomialRing___eq__():
     assert ring("x,y,z", QQ)[0] == ring("x,y,z", QQ)[0]
     assert ring("x,y,z", QQ)[0] is ring("x,y,z", QQ)[0]
 
@@ -81,7 +79,7 @@ def test_PolyRing___eq__():
     assert ring("x,y", QQ)[0] is not ring("x,y,z", QQ)[0]
 
 
-def test_PolyRing_ring_new():
+def test_PolynomialRing_ring_new():
     R, x, y, z = ring("x,y,z", QQ)
 
     assert R.ring_new(7) == R(7)
@@ -94,28 +92,28 @@ def test_PolyRing_ring_new():
     assert R.ring_new([((2, 0, 0), 1), ((1, 1, 0), 2), ((1, 0, 0), 3), ((0, 0, 2), 4), ((0, 0, 1), 5), ((0, 0, 0), 6)]) == f
 
 
-def test_PolyRing_drop():
+def test_PolynomialRing_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
 
-    assert R.drop(x) == PolyRing("y,z", ZZ, lex)
-    assert R.drop(y) == PolyRing("x,z", ZZ, lex)
-    assert R.drop(z) == PolyRing("x,y", ZZ, lex)
+    assert R.drop(x) == ZZ.poly_ring("y", "z")
+    assert R.drop(y) == ZZ.poly_ring("x", "z")
+    assert R.drop(z) == ZZ.poly_ring("x", "y")
 
-    assert R.drop(0) == PolyRing("y,z", ZZ, lex)
-    assert R.drop(0).drop(0) == PolyRing("z", ZZ, lex)
+    assert R.drop(0) == ZZ.poly_ring("y", "z")
+    assert R.drop(0).drop(0) == ZZ.poly_ring("z")
     assert R.drop(0).drop(0).drop(0) == ZZ
 
-    assert R.drop(1) == PolyRing("x,z", ZZ, lex)
+    assert R.drop(1) == ZZ.poly_ring("x", "z")
 
-    assert R.drop(2) == PolyRing("x,y", ZZ, lex)
-    assert R.drop(2).drop(1) == PolyRing("x", ZZ, lex)
+    assert R.drop(2) == ZZ.poly_ring("x", "y")
+    assert R.drop(2).drop(1) == ZZ.poly_ring("x")
     assert R.drop(2).drop(1).drop(0) == ZZ
 
     pytest.raises(ValueError, lambda: R.drop(3))
     pytest.raises(ValueError, lambda: R.drop(x).drop(y))
 
 
-def test_PolyRing_index():
+def test_PolynomialRing_index():
     R,  x, y, z = ring("x,y,z", ZZ)
 
     assert R.index(0) == 0
@@ -127,65 +125,65 @@ def test_PolyRing_index():
     pytest.raises(ValueError, lambda: R.index(x + y))
 
 
-def test_PolyRing_is_():
-    R = PolyRing("x", QQ, lex)
+def test_PolynomialRing_is_():
+    R = QQ.poly_ring("x")
 
     assert R.is_univariate is True
     assert R.is_multivariate is False
 
-    R = PolyRing("x,y,z", QQ, lex)
+    R = QQ.poly_ring("x", "y", "z")
 
     assert R.is_univariate is False
     assert R.is_multivariate is True
 
 
-def test_PolyRing_add():
+def test_PolynomialRing_add():
     R, x = ring("x", ZZ)
     F = [ x**2 + 2*i + 3 for i in range(4) ]
 
     assert R.add(F) == reduce(add, F) == 4*x**2 + 24
 
 
-def test_PolyRing_mul():
+def test_PolynomialRing_mul():
     R, x = ring("x", ZZ)
     F = [ x**2 + 2*i + 3 for i in range(4) ]
 
     assert R.mul(F) == reduce(mul, F) == x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
 
 
-def test_PolyRing_to_ground():
+def test_PolynomialRing_to_ground():
     R, x = ring("x", ZZ)
 
     pytest.raises(ValueError, lambda: R.to_ground())
 
     R2, x, y = ring("x,y", ZZ)
-    assert R2.drop_to_ground(x) == PolyRing("y", ZZ.poly_ring("x"))
+    assert R2.drop_to_ground(x) == ZZ.poly_ring("x").poly_ring("y")
     assert R2.drop_to_ground(x, y) == R2
 
 
 def test_sring():
     x, y, z, t = symbols("x,y,z,t")
 
-    R = PolyRing("x,y,z", ZZ, lex)
+    R = ZZ.poly_ring("x", "y", "z")
     assert sring(x + 2*y + 3*z) == (R, R.x + 2*R.y + 3*R.z)
 
-    R = PolyRing("x,y,z", QQ, lex)
+    R = QQ.poly_ring("x", "y", "z")
     assert sring(x + 2*y + z/3) == (R, R.x + 2*R.y + R.z/3)
     assert sring([x, 2*y, z/3]) == (R, [R.x, 2*R.y, R.z/3])
 
-    Rt = PolyRing("t", ZZ, lex)
-    R = PolyRing("x,y,z", Rt, lex)
+    Rt = ZZ.poly_ring("t")
+    R = Rt.poly_ring("x", "y", "z")
     assert sring(x + 2*t*y + 3*t**2*z, x, y, z) == (R, R.x + 2*Rt.t*R.y + 3*Rt.t**2*R.z)
 
-    Rt = PolyRing("t", QQ, lex)
-    R = PolyRing("x,y,z", Rt, lex)
+    Rt = QQ.poly_ring("t")
+    R = Rt.poly_ring("x", "y", "z")
     assert sring(x + t*y/2 + t**2*z/3, x, y, z) == (R, R.x + Rt.t*R.y/2 + Rt.t**2*R.z/3)
 
     Rt = ZZ.frac_field("t")
-    R = PolyRing("x,y,z", Rt, lex)
+    R = Rt.poly_ring("x", "y", "z")
     assert sring(x + 2*y/t + t**2*z/3, x, y, z) == (R, R.x + 2*R.y/Rt.t + Rt.t**2*R.z/3)
 
-    R = PolyRing("x,y", QQ)
+    R = QQ.poly_ring("x", "y")
     assert sring(x + y, domain=QQ) == (R, R.x + R.y)
 
 
@@ -195,7 +193,7 @@ def test_PolyElement___hash__():
 
 
 def test_PolyElement___eq__():
-    R,  x, y = ring("x,y", ZZ, lex)
+    R,  x, y = ring("x,y", ZZ)
 
     assert ((x*y + 5*x*y) == 6) is False
     assert ((x*y + 5*x*y) == 6*x*y) is True
@@ -398,7 +396,7 @@ def test_PolyElement_tail_degrees():
 
 
 def test_PolyElement_coeff():
-    R,  x, y, z = ring("x,y,z", ZZ, lex)
+    R,  x, y, z = ring("x,y,z", ZZ)
     f = 3*x**2*y - x*y*z + 7*z**3 + 23
 
     assert f.coeff(1) == 23
@@ -419,35 +417,35 @@ def test_PolyElement_coeff():
 
 
 def test_PolyElement_LC():
-    R,  x, y = ring("x,y", QQ, lex)
+    R,  x, y = ring("x,y", QQ)
     assert R(0).LC == QQ(0)
     assert (x/2).LC == QQ(1, 2)
     assert (x*y/4 + x/2).LC == QQ(1, 4)
 
 
 def test_PolyElement_LM():
-    R,  x, y = ring("x,y", QQ, lex)
+    R,  x, y = ring("x,y", QQ)
     assert R(0).LM == (0, 0)
     assert (x/2).LM == (1, 0)
     assert (x*y/4 + x/2).LM == (1, 1)
 
 
 def test_PolyElement_LT():
-    R,  x, y = ring("x,y", QQ, lex)
+    R,  x, y = ring("x,y", QQ)
     assert R(0).LT == ((0, 0), QQ(0))
     assert (x/2).LT == ((1, 0), QQ(1, 2))
     assert (x*y/4 + x/2).LT == ((1, 1), QQ(1, 4))
 
 
 def test_PolyElement_leading_monom():
-    R,  x, y = ring("x,y", QQ, lex)
+    R,  x, y = ring("x,y", QQ)
     assert R(0).leading_monom() == 0
     assert (x/2).leading_monom() == x
     assert (x*y/4 + x/2).leading_monom() == x*y
 
 
 def test_PolyElement_leading_term():
-    R,  x, y = ring("x,y", QQ, lex)
+    R,  x, y = ring("x,y", QQ)
     assert R(0).leading_term() == 0
     assert (x/2).leading_term() == x/2
     assert (x*y/4 + x/2).leading_term() == x*y/4
@@ -458,7 +456,7 @@ def test_PolyElement_terms():
     terms = (x**2/3 + y**3/4 + z**4/5).terms()
     assert terms == [((2, 0, 0), QQ(1, 3)), ((0, 3, 0), QQ(1, 4)), ((0, 0, 4), QQ(1, 5))]
 
-    R,  x, y = ring("x,y", ZZ, lex)
+    R,  x, y = ring("x,y", ZZ)
     f = x*y**7 + 2*x**2*y**3
 
     assert f.terms() == f.terms(lex) == f.terms('lex') == [((2, 3), 2), ((1, 7), 1)]
@@ -476,7 +474,7 @@ def test_PolyElement_monoms():
     monoms = (x**2/3 + y**3/4 + z**4/5).monoms()
     assert monoms == [(2, 0, 0), (0, 3, 0), (0, 0, 4)]
 
-    R,  x, y = ring("x,y", ZZ, lex)
+    R,  x, y = ring("x,y", ZZ)
     f = x*y**7 + 2*x**2*y**3
 
     assert f.monoms() == f.monoms(lex) == f.monoms('lex') == [(2, 3), (1, 7)]
@@ -494,7 +492,7 @@ def test_PolyElement_coeffs():
     coeffs = (x**2/3 + y**3/4 + z**4/5).coeffs()
     assert coeffs == [QQ(1, 3), QQ(1, 4), QQ(1, 5)]
 
-    R,  x, y = ring("x,y", ZZ, lex)
+    R,  x, y = ring("x,y", ZZ)
     f = x*y**7 + 2*x**2*y**3
 
     assert f.coeffs() == f.coeffs(lex) == f.coeffs('lex') == [2, 1]
@@ -997,8 +995,8 @@ def test_PolyElement_clear_denoms():
     assert (3*x**2 + x).clear_denoms() == (1, 3*x**2 + x)
     assert (x**2 + x/2).clear_denoms() == (2, 2*x**2 + x)
 
-    rQQ,  x, t = ring("x,t", QQ, lex)
-    rZZ,  X, T = ring("x,t", ZZ, lex)
+    rQQ,  x, t = ring("x,t", QQ)
+    rZZ,  X, T = ring("x,t", ZZ)
 
     F = [x - QQ(17824537287975195925064602467992950991718052713078834557692023531499318507213727406844943097, 413954288007559433755329699713866804710749652268151059918115348815925474842910720000)*t**7
            - QQ(4882321164854282623427463828745855894130208215961904469205260756604820743234704900167747753, 12936071500236232304854053116058337647210926633379720622441104650497671088840960000)*t**6
@@ -1388,8 +1386,8 @@ def test_PolyElement_is_():
 def test_PolyElement_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
 
-    assert R(1).drop(0).ring == PolyRing("y,z", ZZ, lex)
-    assert R(1).drop(0).drop(0).ring == PolyRing("z", ZZ, lex)
+    assert R(1).drop(0).ring == ZZ.poly_ring("y", "z")
+    assert R(1).drop(0).drop(0).ring == ZZ.poly_ring("z")
     assert isinstance(R(1).drop(0).drop(0).drop(0), R.dtype) is False
 
     pytest.raises(ValueError, lambda: z.drop(0).drop(0).drop(0))
@@ -1400,7 +1398,7 @@ def test_PolyElement_drop():
     assert f.drop_to_ground(z) == z**2*R2.x + 2*z*R2.y + z*R2.x + 1
 
     R3 = R.drop(y, z)
-    assert R3 == PolyRing('x', ZZ)
+    assert R3 == ZZ.poly_ring('x')
     pytest.raises(ValueError, lambda: R3.x.drop_to_ground(R3.x))
 
 

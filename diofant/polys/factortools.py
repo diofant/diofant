@@ -348,7 +348,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     """
     if K.is_QQ:
         try:
-            K0, K = K, K.get_ring()
+            K0, K = K, K.ring
             f = dmp_convert(f, 0, K0, K)
         except CoercionFailed:
             return False
@@ -1131,7 +1131,7 @@ def dup_factor_list(f, K0):
             K0_inexact = None
 
         if K0.has_Field:
-            K = K0.get_ring()
+            K = K0.ring
 
             denom, f = dup_clear_denoms(f, K0, K)
             f = dmp_convert(f, 0, K0, K)
@@ -1206,7 +1206,7 @@ def dmp_factor_list(f, u, K0):
             K0_inexact = None
 
         if K0.has_Field:
-            K = K0.get_ring()
+            K = K0.ring
 
             denom, f = dmp_clear_denoms(f, u, K0, K)
             f = dmp_convert(f, u, K0, K)

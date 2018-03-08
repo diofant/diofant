@@ -41,5 +41,5 @@ from .orthopolys import (jacobi_poly, chebyshevt_poly,  # noqa: F401
                          laguerre_poly, spherical_bessel_fn)
 from .partfrac import apart, apart_list, assemble_partfrac_list  # noqa: F401
 from .polyoptions import Options  # noqa: F401
-from .rings import ring, sring, vring  # noqa: F401,F403
+from .rings import PolynomialRing, ring, sring, vring  # noqa: F401,F403
 from .fields import FractionField, field, vfield  # noqa: F401

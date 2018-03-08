@@ -868,7 +868,7 @@ def test_Poly_to_ring():
     assert Poly(2*x + 1, domain='QQ').to_ring() == Poly(2*x + 1, domain='ZZ')
 
     pytest.raises(CoercionFailed, lambda: Poly(x/2 + 1).to_ring())
-    pytest.raises(DomainError, lambda: Poly(2*x + 1, modulus=3).to_ring())
+    pytest.raises(AttributeError, lambda: Poly(2*x + 1, modulus=3).to_ring())
 
 
 def test_Poly_to_field():

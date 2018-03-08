@@ -177,7 +177,8 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         from ..core.numbers import AlgebraicNumber
         return self(AlgebraicNumber(K0.ext, a.rep).as_expr())
 
-    def get_ring(self):
+    @property
+    def ring(self):
         """Returns a ring associated with ``self``. """
         return self  # XXX: EX is not a ring but we don't have much choice here.
 

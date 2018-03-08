@@ -289,7 +289,7 @@ Sparse polynomials are represented as dictionaries.
 .. autofunction:: vring
 .. autofunction:: sring
 
-.. autoclass:: PolyRing
+.. autoclass:: PolynomialRing
    :members:
 
 .. autoclass:: PolyElement

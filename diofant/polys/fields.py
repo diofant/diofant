@@ -8,12 +8,11 @@ from ..core.sympify import CantSympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field
-from ..domains.polynomialring import PolynomialRing
 from ..printing.defaults import DefaultPrinting
 from ..utilities.magic import pollute
 from .orderings import lex
 from .polyerrors import CoercionFailed, GeneratorsError
-from .rings import PolyElement
+from .rings import PolyElement, PolynomialRing
 
 
 __all__ = ('FractionField', 'field', 'vfield')
@@ -44,8 +43,7 @@ class FractionField(Field, CompositeDomain):
     has_assoc_Field = True
 
     def __new__(cls, domain, symbols, order=lex):
-        from .rings import PolyRing
-        ring = PolyRing(symbols, domain, order)
+        ring = PolynomialRing(domain, symbols, order)
         symbols = ring.symbols
         ngens = ring.ngens
         domain = ring.domain
@@ -57,7 +55,6 @@ class FractionField(Field, CompositeDomain):
         if obj is None:
             obj = object.__new__(cls)
             obj._hash = _hash
-            obj.ring = ring
             obj.dtype = type("FracElement", (FracElement,), {"field": obj})
             obj.symbols = symbols
             obj.ngens = ngens
@@ -184,8 +181,7 @@ class FractionField(Field, CompositeDomain):
             return self.field_new(frac)
 
     def to_ring(self):
-        from .rings import PolyRing
-        return PolyRing(self.symbols, self.domain, self.order)
+        return self.domain.poly_ring(*self.symbols, order=self.order)
 
     def to_diofant(self, a):
         """Convert `a` to a Diofant object. """
@@ -229,9 +225,10 @@ class FractionField(Field, CompositeDomain):
         except (CoercionFailed, GeneratorsError):
             return
 
-    def get_ring(self):
+    @property
+    def ring(self):
         """Returns a field associated with `self`. """
-        return self.to_ring().to_domain()
+        return self.to_ring()
 
     def is_positive(self, a):
         """Returns True if `LC(a)` is positive. """

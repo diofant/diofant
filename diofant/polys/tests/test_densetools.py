@@ -458,7 +458,7 @@ def test_dup_real_imag():
     R, x, y = ring("x y", EX)
     pytest.raises(DomainError, lambda: R.dup_real_imag(x + 1))
 
-    R, *_ = ring("x y", ZZ.algebraic_field(I))
+    R = ZZ.algebraic_field(I).poly_ring("x", "y")
     x, y = R.to_ground().gens
 
     f = R.x**4 + I*R.x**3 - R.x + 1
@@ -573,7 +573,7 @@ def test_dup_decompose():
          624*t**2 + 864*t + 384,
          108*t**3 + 312*t**2 + 432*t + 192]
 
-    assert dup_decompose(f, R.to_domain()) == [f]
+    assert dup_decompose(f, R) == [f]
 
 
 def test_dmp_lift():

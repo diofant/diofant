@@ -1,7 +1,7 @@
 """Implementation of :class:`RealField` class. """
 
 from ..core import Float
-from ..polys.polyerrors import CoercionFailed, DomainError
+from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
@@ -97,10 +97,6 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
     def to_rational(self, element, limit=True):
         """Convert a real number to rational number. """
         return self._context.to_rational(element, limit)
-
-    def get_ring(self):
-        """Returns a ring associated with ``self``. """
-        raise DomainError('there is no ring associated with %s' % self)
 
     def get_exact(self):
         """Returns an exact domain associated with ``self``. """

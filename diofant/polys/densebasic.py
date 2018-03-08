@@ -343,9 +343,9 @@ def dmp_convert(f, u, K0, K1):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> dmp_convert([[R(1)], [R(2)]], 1, R.to_domain(), ZZ)
+    >>> dmp_convert([[R(1)], [R(2)]], 1, R, ZZ)
     [[1], [2]]
-    >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R.to_domain())
+    >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R)
     [[1], [2]]
     """
     if K0 is not None and K0 == K1:
@@ -1054,9 +1054,9 @@ def dmp_inject(f, u, K, front=False):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> dmp_inject([R(1), x + 2], 0, R.to_domain())
+    >>> dmp_inject([R(1), x + 2], 0, R)
     ([[[1]], [[1], [2]]], 2)
-    >>> dmp_inject([R(1), x + 2], 0, R.to_domain(), front=True)
+    >>> dmp_inject([R(1), x + 2], 0, R, front=True)
     ([[[1]], [[1, 2]]], 2)
     """
     f, h = dmp_to_dict(f, u), {}

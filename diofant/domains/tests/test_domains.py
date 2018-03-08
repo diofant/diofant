@@ -42,7 +42,7 @@ def test_Domain_interface():
     assert RealField(tol="0.1").tolerance == 0.1
     pytest.raises(ValueError, lambda: RealField(tol=object()))
 
-    pytest.raises(DomainError, lambda: CC.get_ring())
+    pytest.raises(AttributeError, lambda: CC.ring)
     pytest.raises(DomainError, lambda: CC.get_exact())
 
     assert str(EX(1)) == 'EX(1)'
@@ -451,7 +451,7 @@ def test_Domain__contains__():
     assert (Rational(3, 2)*x/(y + 1) - z in QQ.poly_ring(x, y, z)) is False
 
 
-def test_Domain_get_ring():
+def test_Domain_ring():
     assert ZZ.has_assoc_Ring is True
     assert QQ.has_assoc_Ring is True
     assert ZZ.poly_ring(x).has_assoc_Ring is True
@@ -467,21 +467,21 @@ def test_Domain_get_ring():
     assert RR.has_assoc_Ring is False
     assert ALG.has_assoc_Ring is False
 
-    assert ZZ.get_ring() == ZZ
-    assert QQ.get_ring() == ZZ
-    assert ZZ.poly_ring(x).get_ring() == ZZ.poly_ring(x)
-    assert QQ.poly_ring(x).get_ring() == QQ.poly_ring(x)
-    assert ZZ.poly_ring(x, y).get_ring() == ZZ.poly_ring(x, y)
-    assert QQ.poly_ring(x, y).get_ring() == QQ.poly_ring(x, y)
-    assert ZZ.frac_field(x).get_ring() == ZZ.poly_ring(x)
-    assert QQ.frac_field(x).get_ring() == QQ.poly_ring(x)
-    assert ZZ.frac_field(x, y).get_ring() == ZZ.poly_ring(x, y)
-    assert QQ.frac_field(x, y).get_ring() == QQ.poly_ring(x, y)
+    assert ZZ.ring == ZZ
+    assert QQ.ring == ZZ
+    assert ZZ.poly_ring(x).ring == ZZ.poly_ring(x)
+    assert QQ.poly_ring(x).ring == QQ.poly_ring(x)
+    assert ZZ.poly_ring(x, y).ring == ZZ.poly_ring(x, y)
+    assert QQ.poly_ring(x, y).ring == QQ.poly_ring(x, y)
+    assert ZZ.frac_field(x).ring == ZZ.poly_ring(x)
+    assert QQ.frac_field(x).ring == QQ.poly_ring(x)
+    assert ZZ.frac_field(x, y).ring == ZZ.poly_ring(x, y)
+    assert QQ.frac_field(x, y).ring == QQ.poly_ring(x, y)
 
-    assert EX.get_ring() == EX
+    assert EX.ring == EX
 
-    pytest.raises(DomainError, lambda: RR.get_ring())
-    pytest.raises(DomainError, lambda: ALG.get_ring())
+    pytest.raises(AttributeError, lambda: RR.ring)
+    pytest.raises(AttributeError, lambda: ALG.ring)
 
 
 def test_Domain_field():
@@ -527,7 +527,7 @@ def test_Domain_convert():
 
     R, x = ring("x", ZZ)
     assert ZZ.convert(x - x) == 0
-    assert ZZ.convert(x - x, R.to_domain()) == 0
+    assert ZZ.convert(x - x, R) == 0
 
     F3 = FF(3)
     assert F3.convert(Float(2.0)) == F3.dtype(2)
@@ -685,9 +685,9 @@ def test_PolynomialRing_from_FractionField():
     g = (x**2 + y**2)/4
     h = x**2 + y**2
 
-    assert R.to_domain().from_FractionField(f, F) is None
-    assert R.to_domain().from_FractionField(g, F) == X**2/4 + Y**2/4
-    assert R.to_domain().from_FractionField(h, F) == X**2 + Y**2
+    assert R.from_FractionField(f, F) is None
+    assert R.from_FractionField(g, F) == X**2/4 + Y**2/4
+    assert R.from_FractionField(h, F) == X**2 + Y**2
 
     F,  x, y = field("x,y", QQ)
     R,  X, Y = ring("x,y", QQ)
@@ -696,9 +696,9 @@ def test_PolynomialRing_from_FractionField():
     g = (x**2 + y**2)/4
     h = x**2 + y**2
 
-    assert R.to_domain().from_FractionField(f, F) is None
-    assert R.to_domain().from_FractionField(g, F) == X**2/4 + Y**2/4
-    assert R.to_domain().from_FractionField(h, F) == X**2 + Y**2
+    assert R.from_FractionField(f, F) is None
+    assert R.from_FractionField(g, F) == X**2/4 + Y**2/4
+    assert R.from_FractionField(h, F) == X**2 + Y**2
 
 
 def test_FractionField_from_PolynomialRing():
@@ -708,8 +708,8 @@ def test_FractionField_from_PolynomialRing():
     f = 3*x**2 + 5*y**2
     g = x**2/3 + y**2/5
 
-    assert F.from_PolynomialRing(f, R.to_domain()) == 3*X**2 + 5*Y**2
-    assert F.from_PolynomialRing(g, R.to_domain()) == (5*X**2 + 3*Y**2)/15
+    assert F.from_PolynomialRing(f, R) == 3*X**2 + 5*Y**2
+    assert F.from_PolynomialRing(g, R) == (5*X**2 + 3*Y**2)/15
 
     RALG,  u, v = ring("u,v", ALG)
     pytest.raises(CoercionFailed,

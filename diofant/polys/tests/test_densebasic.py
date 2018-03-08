@@ -358,12 +358,11 @@ def test_dup_from_to_dict():
     assert dmp_to_dict(f, 0) == h
 
     R,  x, y = ring("x,y", ZZ)
-    K = R.to_domain()
 
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
     h = {(5,): R(3), (3,): R(2), (0,): R(8)}
 
-    assert dup_from_dict(h, K) == f
+    assert dup_from_dict(h, R) == f
 
     assert dmp_to_dict(f, 0) == h
 
@@ -553,38 +552,36 @@ def test_dmp_include():
 
 def test_dmp_inject():
     R,  x, y = ring("x,y", ZZ)
-    K = R.to_domain()
 
-    assert dmp_inject([], 0, K) == ([[[]]], 2)
-    assert dmp_inject([[]], 1, K) == ([[[[]]]], 3)
+    assert dmp_inject([], 0, R) == ([[[]]], 2)
+    assert dmp_inject([[]], 1, R) == ([[[[]]]], 3)
 
-    assert dmp_inject([R(1)], 0, K) == ([[[1]]], 2)
-    assert dmp_inject([[R(1)]], 1, K) == ([[[[1]]]], 3)
+    assert dmp_inject([R(1)], 0, R) == ([[[1]]], 2)
+    assert dmp_inject([[R(1)]], 1, R) == ([[[[1]]]], 3)
 
-    assert dmp_inject([R(1), 2*x + 3*y + 4], 0, K) == ([[[1]], [[2], [3, 4]]], 2)
+    assert dmp_inject([R(1), 2*x + 3*y + 4], 0, R) == ([[[1]], [[2], [3, 4]]], 2)
 
     f = [3*x**2 + 7*x*y + 5*y**2, 2*x, R(0), x*y**2 + 11]
     g = [[[3], [7, 0], [5, 0, 0]], [[2], []], [[]], [[1, 0, 0], [11]]]
 
-    assert dmp_inject(f, 0, K) == (g, 2)
+    assert dmp_inject(f, 0, R) == (g, 2)
 
 
 def test_dmp_eject():
     R,  x, y = ring("x,y", ZZ)
-    K = R.to_domain()
 
-    assert dmp_eject([[[]]], 2, K) == []
-    assert dmp_eject([[[[]]]], 3, K) == [[]]
+    assert dmp_eject([[[]]], 2, R) == []
+    assert dmp_eject([[[[]]]], 3, R) == [[]]
 
-    assert dmp_eject([[[1]]], 2, K) == [R(1)]
-    assert dmp_eject([[[[1]]]], 3, K) == [[R(1)]]
+    assert dmp_eject([[[1]]], 2, R) == [R(1)]
+    assert dmp_eject([[[[1]]]], 3, R) == [[R(1)]]
 
-    assert dmp_eject([[[1]], [[2], [3, 4]]], 2, K) == [R(1), 2*x + 3*y + 4]
+    assert dmp_eject([[[1]], [[2], [3, 4]]], 2, R) == [R(1), 2*x + 3*y + 4]
 
     f = [3*x**2 + 7*x*y + 5*y**2, 2*x, R(0), x*y**2 + 11]
     g = [[[3], [7, 0], [5, 0, 0]], [[2], []], [[]], [[1, 0, 0], [11]]]
 
-    assert dmp_eject(g, 2, K) == f
+    assert dmp_eject(g, 2, R) == f
 
 
 def test_dmp_terms_gcd():

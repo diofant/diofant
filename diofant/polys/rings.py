@@ -9,8 +9,9 @@ from ..core import symbols as _symbols
 from ..core import sympify
 from ..core.compatibility import is_sequence
 from ..core.sympify import CantSympify
+from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
-from ..domains.polynomialring import PolynomialRing
+from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
 from ..printing.defaults import DefaultPrinting
 from ..utilities.magic import pollute
@@ -29,7 +30,7 @@ from .polyoptions import build_options
 from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
 
 
-__all__ = ('ring', 'sring', 'vring')
+__all__ = ('PolynomialRing', 'ring', 'sring', 'vring')
 
 
 def ring(symbols, domain, order=lex):
@@ -45,15 +46,15 @@ def ring(symbols, domain, order=lex):
     Examples
     ========
 
-    >>> R, x, y, z = ring("x y z", ZZ, lex)
+    >>> R, x, y, z = ring("x y z", ZZ)
     >>> R
-    Polynomial ring in x, y, z over ZZ with lex order
+    ZZ[x,y,z]
     >>> x + y + z
     x + y + z
     >>> type(_)
     <class 'diofant.polys.rings.PolyElement'>
     """
-    _ring = PolyRing(symbols, domain, order)
+    _ring = PolynomialRing(domain, symbols, order)
     return (_ring,) + _ring.gens
 
 
@@ -70,15 +71,15 @@ def vring(symbols, domain, order=lex):
     Examples
     ========
 
-    >>> vring("x y z", ZZ, lex)
-    Polynomial ring in x, y, z over ZZ with lex order
+    >>> vring("x y z", ZZ)
+    ZZ[x,y,z]
     >>> x + y + z
     x + y + z
     >>> type(_)
     <class 'diofant.polys.rings.PolyElement'>
     """
-    _ring = PolyRing(symbols, domain, order)
-    pollute([ sym.name for sym in _ring.symbols ], _ring.gens)
+    _ring = PolynomialRing(domain, symbols, order)
+    pollute([sym.name for sym in _ring.symbols], _ring.gens)
     return _ring
 
 
@@ -98,7 +99,7 @@ def sring(exprs, *symbols, **options):
     >>> x, y, z = symbols("x y z")
     >>> R, f = sring(x + 2*y + 3*z)
     >>> R
-    Polynomial ring in x, y, z over ZZ with lex order
+    ZZ[x,y,z]
     >>> f
     x + 2*y + 3*z
     >>> type(_)
@@ -121,7 +122,7 @@ def sring(exprs, *symbols, **options):
         coeffs = sum((list(rep.values()) for rep in reps), [])
         opt.domain, _ = construct_domain(coeffs, opt=opt)
 
-    _ring = PolyRing(opt.gens, opt.domain, opt.order)
+    _ring = PolynomialRing(opt.domain, opt.gens, opt.order)
     polys = list(map(_ring.from_dict, reps))
 
     if single:
@@ -152,10 +153,15 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolyRing(DefaultPrinting, IPolys):
-    """Multivariate distributed polynomial ring. """
+class PolynomialRing(Ring, CompositeDomain, IPolys):
+    """A class for representing multivariate polynomial rings. """
 
-    def __new__(cls, symbols, domain, order=lex):
+    is_PolynomialRing = is_Poly = True
+
+    has_assoc_Ring = True
+    has_assoc_Field = True
+
+    def __new__(cls, domain, symbols, order=lex):
         symbols = tuple(_parse_symbols(symbols))
         ngens = len(symbols)
         domain = DomainOpt.preprocess(domain)
@@ -183,6 +189,8 @@ class PolyRing(DefaultPrinting, IPolys):
             obj._one = [(obj.zero_monom, domain.one)]
 
             obj.leading_expv = lambda f: max(f, key=order)
+
+            obj.rep = str(domain) + '[' + ','.join(map(str, symbols)) + ']'
 
             for symbol, generator in zip(obj.symbols, obj.gens):
                 if isinstance(symbol, Symbol):
@@ -216,7 +224,7 @@ class PolyRing(DefaultPrinting, IPolys):
         return self is not other
 
     def clone(self, symbols=None, domain=None, order=None):
-        return self.__class__(symbols or self.symbols, domain or self.domain, order or self.order)
+        return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
 
     def monomial_basis(self, i):
         """Return the ith-basis element. """
@@ -267,7 +275,7 @@ class PolyRing(DefaultPrinting, IPolys):
         else:
             return self.ground_new(element)
 
-    __call__ = ring_new
+    __call__ = new = ring_new
 
     def from_dict(self, element):
         domain_new = self.domain_new
@@ -357,9 +365,6 @@ class PolyRing(DefaultPrinting, IPolys):
         else:
             raise ValueError("%s is not a composite domain" % self.domain)
 
-    def to_domain(self):
-        return PolynomialRing(self)
-
     def to_field(self):
         return self.domain.frac_field(*self.symbols, order=self.order)
 
@@ -431,6 +436,90 @@ class PolyRing(DefaultPrinting, IPolys):
         else:
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
+    def to_diofant(self, a):
+        """Convert `a` to a Diofant object. """
+        return a.as_expr()
+
+    def from_diofant(self, a):
+        """Convert Diofant's expression to `dtype`. """
+        return self.from_expr(a)
+
+    def from_ZZ_python(self, a, K0):
+        """Convert a Python `int` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_QQ_python(self, a, K0):
+        """Convert a Python `Fraction` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_ZZ_gmpy(self, a, K0):
+        """Convert a GMPY `mpz` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_QQ_gmpy(self, a, K0):
+        """Convert a GMPY `mpq` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_RealField(self, a, K0):
+        """Convert a mpmath `mpf` object to `dtype`. """
+        return self(self.domain.convert(a, K0))
+
+    def from_AlgebraicField(self, a, K0):
+        """Convert an algebraic number to ``dtype``. """
+        if self.domain == K0:
+            return self.new(a)
+
+    def from_PolynomialRing(self, a, K0):
+        """Convert a polynomial to ``dtype``. """
+        try:
+            return a.set_ring(self)
+        except (CoercionFailed, GeneratorsError):
+            return
+
+    def from_FractionField(self, a, K0):
+        """Convert a rational function to ``dtype``. """
+        denom = K0.denom(a)
+
+        if denom.is_ground:
+            return self.from_PolynomialRing(K0.numer(a)/denom, K0.ring)
+
+    @property
+    def field(self):
+        """Returns a field associated with `self`. """
+        return self.ring.to_field()
+
+    def is_positive(self, a):
+        """Returns True if `LC(a)` is positive. """
+        return self.domain.is_positive(a.LC)
+
+    def is_negative(self, a):
+        """Returns True if `LC(a)` is negative. """
+        return self.domain.is_negative(a.LC)
+
+    def is_nonpositive(self, a):
+        """Returns True if `LC(a)` is non-positive. """
+        return self.domain.is_nonpositive(a.LC)
+
+    def is_nonnegative(self, a):
+        """Returns True if `LC(a)` is non-negative. """
+        return self.domain.is_nonnegative(a.LC)
+
+    def gcdex(self, a, b):
+        """Extended GCD of `a` and `b`. """
+        return a.gcdex(b)
+
+    def gcd(self, a, b):
+        """Returns GCD of `a` and `b`. """
+        return a.gcd(b)
+
+    def lcm(self, a, b):
+        """Returns LCM of `a` and `b`. """
+        return a.lcm(b)
+
+    def factorial(self, a):
+        """Returns factorial of `a`. """
+        return self.new(self.domain.factorial(a))
+
 
 class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     """Element of multivariate distributed polynomial ring. """
@@ -440,7 +529,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     @property
     def parent(self):
-        return self.ring.to_domain()
+        return self.ring
 
     _hash = None
 
@@ -506,7 +595,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not domain.has_Field or not domain.has_assoc_Ring:
             return domain.one, self
 
-        ground_ring = domain.get_ring()
+        ground_ring = domain.ring
         common = ground_ring.one
         lcm = ground_ring.lcm
         denom = domain.denom
@@ -1940,7 +2029,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def _gcd_QQ(self, g):
         f = self
         ring = f.ring
-        new_ring = ring.clone(domain=ring.domain.get_ring())
+        new_ring = ring.clone(domain=ring.domain.ring)
 
         cf, f = f.clear_denoms()
         cg, g = g.clear_denoms()
@@ -1984,7 +2073,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             if q.is_negative:
                 p, q = -p, -q
         else:
-            new_ring = ring.clone(domain=domain.get_ring())
+            new_ring = ring.clone(domain=domain.ring)
 
             cq, f = f.clear_denoms()
             cp, g = g.clear_denoms()

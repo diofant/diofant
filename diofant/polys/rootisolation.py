@@ -240,7 +240,7 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
 def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
     """Refine real root's approximating interval to the given precision. """
     if K.is_QQ:
-        f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
+        f, K = dup_clear_denoms(f, K, convert=True)[1], K.ring
     elif not K.is_ZZ:
         raise DomainError("real root refinement not supported over %s" % K)
 
@@ -506,7 +506,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
             return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
 
     if K.is_QQ:
-        f, K = dup_clear_denoms(f, K, convert=True)[1], K.get_ring()
+        f, K = dup_clear_denoms(f, K, convert=True)[1], K.ring
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
@@ -540,7 +540,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
     if K.is_QQ:
-        (_, f), K = dup_clear_denoms(f, K, convert=True), K.get_ring()
+        (_, f), K = dup_clear_denoms(f, K, convert=True), K.ring
     elif not K.is_ZZ:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
@@ -581,7 +581,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
     if K.is_QQ:
-        K, F, polys = K.get_ring(), K, polys[:]
+        K, F, polys = K.ring, K, polys[:]
 
         for i, p in enumerate(polys):
             polys[i] = dup_clear_denoms(p, F, K, convert=True)[1]
@@ -1256,12 +1256,12 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     if F.is_Algebraic:
         F = F.domain
 
-    R = F.get_ring()
+    R = F.ring
 
     f1L1F = dmp_eval_in(f1, v, 1, 1, F)
     f2L1F = dmp_eval_in(f2, v, 1, 1, F)
 
-    R = F.get_ring()
+    R = F.ring
 
     _, f1L1R = dup_clear_denoms(f1L1F, F, R, convert=True)
     _, f2L1R = dup_clear_denoms(f2L1F, F, R, convert=True)
@@ -1346,7 +1346,7 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
             elif a >= x:
                 I_L1_R.append(I)
             else:
-                a, b = dup_refine_real_root(h, a, b, F.get_ring(), disjoint=x, fast=True)
+                a, b = dup_refine_real_root(h, a, b, F.ring, disjoint=x, fast=True)
 
                 if b <= x:
                     I_L1_L.append(((a, b), indices, h))
@@ -1370,7 +1370,7 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
             elif a >= x:
                 I_L3_R.append(I)
             else:
-                a, b = dup_refine_real_root(h, a, b, F.get_ring(), disjoint=x, fast=True)
+                a, b = dup_refine_real_root(h, a, b, F.ring, disjoint=x, fast=True)
 
                 if b <= x:
                     I_L3_L.append(((b, a), indices, h))
@@ -1453,7 +1453,7 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
             elif a >= y:
                 I_L2_U.append(I)
             else:
-                a, b = dup_refine_real_root(h, a, b, F.get_ring(), disjoint=y, fast=True)
+                a, b = dup_refine_real_root(h, a, b, F.ring, disjoint=y, fast=True)
 
                 if b <= y:
                     I_L2_B.append(((a, b), indices, h))
@@ -1477,7 +1477,7 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
             elif a >= y:
                 I_L4_U.append(I)
             else:
-                a, b = dup_refine_real_root(h, a, b, F.get_ring(), disjoint=y, fast=True)
+                a, b = dup_refine_real_root(h, a, b, F.ring, disjoint=y, fast=True)
 
                 if b <= y:
                     I_L4_B.append(((b, a), indices, h))

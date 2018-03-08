@@ -356,10 +356,6 @@ class StrPrinter(Printer):
     def _print_Pi(self, expr):
         return 'pi'
 
-    def _print_PolyRing(self, ring):
-        return "Polynomial ring in %s over %s with %s order" % \
-            (", ".join(map(self._print, ring.symbols)), ring.domain, ring.order)
-
     def _print_PolyElement(self, poly):
         return poly.str(self, PRECEDENCE, "%s**%d", "*")
 

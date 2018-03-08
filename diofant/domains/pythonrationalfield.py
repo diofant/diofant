@@ -20,7 +20,8 @@ class PythonRationalField(RationalField):
     def __init__(self):
         pass
 
-    def get_ring(self):
+    @property
+    def ring(self):
         """Returns ring associated with ``self``. """
         from . import PythonIntegerRing
         return PythonIntegerRing()

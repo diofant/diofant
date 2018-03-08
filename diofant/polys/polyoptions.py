@@ -402,8 +402,6 @@ class Domain(Option, metaclass=OptionType):
         from .. import domains
         if isinstance(domain, domains.Domain):
             return domain
-        elif hasattr(domain, 'to_domain'):
-            return domain.to_domain()
         elif isinstance(domain, str):
             if domain in ['Z', 'ZZ']:
                 return domains.ZZ

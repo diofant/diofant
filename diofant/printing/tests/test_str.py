@@ -15,8 +15,7 @@ from diofant.core import Expr
 from diofant.core.trace import Tr
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Circle, Point
-from diofant.polys import (Poly, RootOf, RootSum, field, grlex, groebner, lex,
-                           ring)
+from diofant.polys import Poly, RootOf, RootSum, field, grlex, groebner, ring
 from diofant.printing import StrPrinter, sstr, sstrrepr
 from diofant.stats import Die, Exponential, Normal, pspace, where
 
@@ -355,10 +354,10 @@ def test_Poly():
         "Poly(y*x*sqrt(3), x, sqrt(3), domain='ZZ[y]')"
 
 
-def test_PolyRing():
-    assert str(ring("x", ZZ, lex)[0]) == "Polynomial ring in x over ZZ with lex order"
-    assert str(ring("x,y", QQ, grlex)[0]) == "Polynomial ring in x, y over QQ with grlex order"
-    assert str(ring("x,y,z", ZZ.poly_ring("t"), lex)[0]) == "Polynomial ring in x, y, z over ZZ[t] with lex order"
+def test_PolynomialRing():
+    assert str(ZZ.poly_ring("x")) == "ZZ[x]"
+    assert str(QQ.poly_ring("x", "y", order=grlex)) == "QQ[x,y]"
+    assert str(ZZ.poly_ring("t").poly_ring("x", "y", "z")) == "ZZ[t][x,y,z]"
 
 
 def test_FractionField():
