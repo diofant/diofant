@@ -15,6 +15,7 @@ from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
 from .orthopolys import dup_chebyshevt
+from .polyconfig import query
 from .polyerrors import GeneratorsError, IsomorphismFailed, NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, poly_from_expr, resultant)
@@ -458,9 +459,9 @@ def _minpoly_compose(ex, x, dom):
     Examples
     ========
 
-    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=True)
+    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, method='compose')
     x**2 - 2*x - 1
-    >>> minimal_polynomial(sqrt(y) + 1/y, x, compose=True)
+    >>> minimal_polynomial(sqrt(y) + 1/y, x, method='compose')
     x**2*y**2 - 2*x*y - y**3 + 1
 
     """
@@ -518,12 +519,14 @@ def _minpoly_compose(ex, x, dom):
         res = _minpoly_cos(ex, x)
     elif ex.__class__ is RootOf:
         res = _minpoly_rootof(ex, x)
+    elif ex.__class__ is AlgebraicNumber:
+        res = minpoly_groebner(ex, x, dom)
     else:
         raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
     return res
 
 
-def minimal_polynomial(ex, x=None, **args):
+def minimal_polynomial(ex, x=None, method=None, **args):
     """
     Computes the minimal polynomial of an algebraic element.
 
@@ -532,12 +535,12 @@ def minimal_polynomial(ex, x=None, **args):
 
     ex : algebraic element expression
     x : independent variable of the minimal polynomial
-    compose : boolean, optional
-        If ``True`` (default), the minimal polynomial of the subexpressions
+    method : str, optional
+        If ``compose``, the minimal polynomial of the subexpressions
         of ``ex`` are computed, then the arithmetic operations on them are
-        performed using the resultant and factorization.  Else a bottom-up
-        algorithm is used with ``groebner``.  The default algorithm
-        stalls less frequently.
+        performed using the resultant and factorization.  If ``groebner``,
+        a bottom-up algorithm, using Gröbner bases is used.
+        Defaults are determined by :func:`~diofant.polys.polyconfig.setup`.
     polys : boolean, optional
         if ``True`` returns a ``Poly`` object (the default is ``False``).
     domain : Domain, optional
@@ -559,15 +562,21 @@ def minimal_polynomial(ex, x=None, **args):
     x**2 - y
     """
 
-    compose = args.get('compose', True)
+    if method is None:
+        method = query('minpoly_method')
+    _minpoly_methods = {'compose': _minpoly_compose, 'groebner': minpoly_groebner}
+    try:
+        _minpoly = _minpoly_methods[method]
+    except KeyError:
+        raise ValueError("'%s' is not a valid algorithm for computing minimal "
+                         " polynomial" % method)
+
     polys = args.get('polys', False)
 
     ex = sympify(ex)
     if ex.is_number:
         # not sure if it's always needed but try it for numbers (issue sympy/sympy#8354)
         ex = _mexpand(ex, recursive=True)
-    if ex.has(AlgebraicNumber):
-        compose = False
 
     if x is not None:
         x, cls = sympify(x), Poly
@@ -580,9 +589,7 @@ def minimal_polynomial(ex, x=None, **args):
         raise GeneratorsError("the variable %s is an element of the "
                               "ground domain %s" % (x, domain))
 
-    method = _minpoly_compose if compose else minpoly_groebner
-
-    result = method(ex, x, domain)
+    result = _minpoly(ex, x, domain)
     _, factors = factor_list(result, x, domain=domain)
     result = _choose_factor(factors, x, ex)
     result = result.primitive()[1]
@@ -598,7 +605,7 @@ def minpoly_groebner(ex, x, domain):
     Examples
     ========
 
-    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=False)
+    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, method='groebner')
     x**2 - 2*x - 1
 
     References

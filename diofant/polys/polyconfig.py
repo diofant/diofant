@@ -23,6 +23,7 @@ _default_config = {
     'GF_FACTOR_METHOD':           'zassenhaus',
 
     'GROEBNER':                   'buchberger',
+    'MINPOLY_METHOD':             'compose',
 }
 
 _current_config = {}
