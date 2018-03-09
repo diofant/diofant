@@ -45,3 +45,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14414` Should QQ[x, y, ...] syntax be removed?
 * :sympyissue:`13886` Raise an exception for non-prime p in FiniteFIeld(p)
 * :sympyissue:`14220` Should be there both PolyRing and PolynomialRing?
+* :sympyissue:`7724` roots should find the roots of x**4*I + x**2 + I
