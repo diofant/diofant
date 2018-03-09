@@ -174,8 +174,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
 
     def from_AlgebraicField(self, a, K0):
         """Convert a ``ANP`` object to ``dtype``. """
-        from ..core.numbers import AlgebraicNumber
-        return self(AlgebraicNumber(K0.ext, a.rep).as_expr())
+        return self(K0.to_diofant(a))
 
     @property
     def ring(self):
