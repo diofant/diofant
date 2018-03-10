@@ -14,6 +14,7 @@ from ..ntheory import divisors, sieve
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
+from ..utilities.iterables import uniq
 from .orthopolys import dup_chebyshevt
 from .polyconfig import query
 from .polyerrors import GeneratorsError, IsomorphismFailed, NotAlgebraic
@@ -695,6 +696,8 @@ def primitive_element(extension, x=None, **args):
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
 
+    extension = list(uniq(extension))
+
     if x is not None:
         x, cls = sympify(x), Poly
     else:
@@ -859,6 +862,8 @@ def to_number_field(extension, theta=None, **args):
         extension = list(extension)
     else:
         extension = [extension]
+
+    extension = list(uniq(extension))
 
     minpoly, coeffs = primitive_element(extension, gen, polys=True)[:-1]
     root = sum(coeff*ext for coeff, ext in zip(coeffs, extension))
