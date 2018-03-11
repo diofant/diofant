@@ -111,8 +111,6 @@ def test_Rational():
 def test_AlgebraicNumber():
     a = AlgebraicNumber(sqrt(2))
     sT(a, "AlgebraicNumber(Pow(Integer(2), Rational(1, 2)), Tuple(Integer(1), Integer(0)))")
-    a = AlgebraicNumber(sqrt(2), alias='a')
-    sT(a, "AlgebraicNumber(Pow(Integer(2), Rational(1, 2)), Tuple(Integer(1), Integer(0)), Symbol('a'))")
     a = AlgebraicNumber(root(-2, 3))
     sT(a, "AlgebraicNumber(Pow(Integer(-2), Rational(1, 3)), Tuple(Integer(1), Integer(0)))")
 

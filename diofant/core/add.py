@@ -79,8 +79,6 @@ class Add(AssocOp):
                     if coeff is nan:
                         # we know for sure the result will be nan
                         return [nan], [], None
-                elif coeff.is_AlgebraicNumber:
-                    coeff += o
                 o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 

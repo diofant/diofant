@@ -1760,40 +1760,6 @@ class AlgebraicNumber(Expr):
         A tuple of rational coefficients `(c_n, c_{n-1},\dots,c_0)`.
         The default is ``(1, 0)``.
 
-    alias : Symbol, optional
-        Alias to denote the generator `\theta`.
-
-    Examples
-    ========
-
-    >>> a = AlgebraicNumber(sqrt(3), alias='a')
-
-    Numbers in the same field are automatically combined by
-    arithmetic operations.
-
-    >>> a + 1
-    a + 1
-    >>> _ + a
-    2*a + 1
-
-    Powers with integer exponents also automatically evaluated and
-    the coefficient list reduced accordingly to the degree of the minimal
-    polynomial of `\theta`.
-
-    >>> _**3
-    30*a + 37
-    >>> 1/a
-    a/3
-
-    The generator `\theta` can be any algebraic number, represented in terms
-    of radicals or RootOf objects.
-
-    >>> b = AlgebraicNumber(RootOf(x**7 - x + 1, 1), (1, 2, -1), 'b')
-    >>> b
-    b**2 + 2*b - 1
-    >>> b**7
-    490*b**6 - 119*b**5 - 196*b**4 - 203*b**3 - 265*b**2 + 637*b - 198
-
     See Also
     ========
 
@@ -1804,12 +1770,11 @@ class AlgebraicNumber(Expr):
     is_algebraic = True
     is_number = True
 
-    def __new__(cls, expr, coeffs=(1, 0), alias=None, **kwargs):
+    def __new__(cls, expr, coeffs=(1, 0), **kwargs):
         """Construct a new algebraic number. """
         from ..polys import Poly
         from ..polys.polyclasses import DMP
         from ..polys.numberfields import minimal_polynomial
-        from .symbol import Symbol
 
         expr = sympify(expr)
 
@@ -1840,16 +1805,10 @@ class AlgebraicNumber(Expr):
         coeffs = Tuple(*rep.all_coeffs())
         args = root, coeffs
 
-        if alias is not None:
-            if not isinstance(alias, Symbol):
-                alias = Symbol(alias)
-            args += (alias,)
-
         obj = Expr.__new__(cls, *args)
 
         obj.rep = rep
         obj.root = root
-        obj.alias = alias
         obj.minpoly = minpoly
 
         return obj
@@ -1862,16 +1821,16 @@ class AlgebraicNumber(Expr):
         if expt.is_Integer:
             A = self.rep.domain.algebraic_field(self.root)
             r = A(self.rep.rep)**int(expt)
-            return self.func(self, r.rep, self.alias)
+            return self.func(self, r.rep)
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if other.is_Rational:
-            other = self.func(self, (other,), self.alias)
+            other = self.func(self, (other,))
 
         if other.is_AlgebraicNumber:
             if self.minpoly == other.minpoly and self.root == other.root:
-                return self.func(self, self.rep + other.rep, self.alias)
+                return self.func(self, self.rep + other.rep)
             else:
                 return Add(self, other, evaluate=False)
         else:
@@ -1880,11 +1839,11 @@ class AlgebraicNumber(Expr):
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
         if other.is_Rational:
-            other = self.func(self, (other,), self.alias)
+            other = self.func(self, (other,))
 
         if other.is_AlgebraicNumber:
             if self.minpoly == other.minpoly and self.root == other.root:
-                return self.func(self, self.rep - other.rep, self.alias)
+                return self.func(self, self.rep - other.rep)
             else:
                 return Add(self, -other, evaluate=False)
         else:
@@ -1893,11 +1852,11 @@ class AlgebraicNumber(Expr):
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if other.is_Rational:
-            other = self.func(self, (other,), self.alias)
+            other = self.func(self, (other,))
 
         if other.is_AlgebraicNumber:
             if self.minpoly == other.minpoly and self.root == other.root:
-                return self.func(self, self.rep * other.rep, self.alias)
+                return self.func(self, self.rep * other.rep)
             else:
                 return Mul(self, other, evaluate=False)
         else:
@@ -1906,11 +1865,6 @@ class AlgebraicNumber(Expr):
     def _eval_evalf(self, prec):
         return self.as_expr()._evalf(prec)
 
-    @property
-    def is_aliased(self):
-        """Returns ``True`` if ``alias`` was set. """
-        return self.alias is not None
-
     def as_poly(self, x=None):
         """Create a Poly instance from ``self``. """
         from .symbol import Dummy
@@ -1918,10 +1872,7 @@ class AlgebraicNumber(Expr):
         if x is not None:
             return Poly.new(self.rep, x)
         else:
-            if self.alias is not None:
-                return Poly.new(self.rep, self.alias)
-            else:
-                return PurePoly.new(self.rep, Dummy('x'))
+            return PurePoly.new(self.rep, Dummy('x'))
 
     def as_expr(self, x=None):
         """Create a Basic expression from ``self``. """
