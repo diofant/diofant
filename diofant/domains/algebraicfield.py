@@ -1,5 +1,6 @@
 """Implementation of :class:`AlgebraicField` class. """
 
+from ..core import Integer, sympify
 from ..polys.polyclasses import ANP
 from ..polys.polyerrors import (CoercionFailed, DomainError, IsomorphismFailed,
                                 NotAlgebraic)
@@ -26,14 +27,21 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         if not dom.is_QQ:
             raise DomainError("ground domain must be a rational field")
 
-        from ..polys.numberfields import to_number_field
+        ext = [sympify(_).as_expr() for _ in ext]
 
-        self.ext = to_number_field(ext)
-        self.mod = self.ext.minpoly.rep
+        from ..polys.numberfields import primitive_element
+
+        minpoly, coeffs, H = primitive_element(ext, polys=True)
+
+        self.ext = sum(c*e for c, e in zip(coeffs, ext))
+        self.minpoly = minpoly
+        self.mod = minpoly.rep
         self.domain = dom
 
         self.ngens = 1
         self.symbols = self.gens = (self.ext.as_expr(),)
+
+        self.root = sum(self(h) for h in H)
         self.unit = self([dom(1), dom(0)])
 
         self.zero = self.dtype.zero(self.mod.rep, dom)
@@ -43,7 +51,8 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def new(self, element):
         if isinstance(element, list):
-            return self.dtype(element, self.mod.rep, self.domain)
+            return self.dtype([self.domain.convert(_) for _ in element],
+                              self.mod.rep, self.domain)
         else:
             return self.convert(element)
 
@@ -61,14 +70,13 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
-        from ..polys.numberfields import AlgebraicNumber
-        return AlgebraicNumber(self.ext, a.rep).as_expr()
+        return sum((c*self.ext**n for n, c in enumerate(reversed(a.rep))), Integer(0))
 
     def from_diofant(self, a):
         """Convert Diofant's expression to ``dtype``. """
         from ..polys.numberfields import to_number_field
         try:
-            return self(to_number_field(a, self.ext).native_coeffs())
+            return self(to_number_field(a, self.ext).rep)
         except (NotAlgebraic, IsomorphismFailed):
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
 

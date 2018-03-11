@@ -123,7 +123,7 @@ class RootOf(Expr):
         if poly.domain.is_Algebraic and extension:
             x, y = poly.gen, Dummy('y')
             p = sum(Poly(c.rep, y)*x**n for (n,), c in poly.rep.terms()).inject(x)
-            q = poly.domain.ext.minpoly.eval(y)
+            q = poly.domain.minpoly.eval(y)
             minpoly = PurePoly(resultant(p, q, y), x)
             for idx, r in enumerate(minpoly.all_roots()):  # pragma: no branch
                 if poly.as_expr().evalf(2, subs={x: r}, chop=True) == 0:
