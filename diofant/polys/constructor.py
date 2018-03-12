@@ -98,9 +98,9 @@ def _construct_algebraic(coeffs, opt):
 
     for i, (coeff, a, b) in enumerate(result):
         if coeff is not None:
-            coeff = a*domain.dtype.from_list(H[exts.index(coeff)], g, QQ) + b
+            coeff = a*domain.dtype.from_list(H[exts.index(coeff)]) + b
         else:
-            coeff = domain.dtype.from_list([b], g, QQ)
+            coeff = domain.dtype.from_list([b])
 
         result[i] = coeff
 

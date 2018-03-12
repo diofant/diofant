@@ -50,9 +50,6 @@ Level One
 .. autoclass:: DMP
    :members:
 
-.. autoclass:: ANP
-   :members:
-
 Level Zero
 ==========
 

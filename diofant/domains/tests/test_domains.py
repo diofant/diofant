@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import Float, I, Integer, Poly, Rational, oo, sin, sqrt
+from diofant import Float, I, Integer, Poly, Rational, oo, root, sin, sqrt
 from diofant.abc import x, y, z
 from diofant.domains import CC, EX, FF, GF, QQ, RR, ZZ, QQ_python, ZZ_python
 from diofant.domains.algebraicfield import AlgebraicField
@@ -750,6 +750,113 @@ def test_RealField_from_diofant():
     assert RR.convert(oo) == RR("+inf")
     assert RR.convert(-oo) == RR("-inf")
     pytest.raises(CoercionFailed, lambda: RR.convert(x))
+
+
+def test_AlgebraicElement():
+    A = QQ.algebraic_field(I)
+
+    rep = [QQ(1), QQ(1)]
+    mod = [QQ(1), QQ(0), QQ(1)]
+
+    f = A(rep)
+
+    assert f.rep == rep
+    assert f.mod == mod
+    assert f.domain == QQ
+
+    f = A(1)
+
+    assert f.rep == [QQ(1)]
+    assert f.mod == mod
+    assert f.domain == QQ
+
+    B = QQ.algebraic_field(I*sqrt(2))
+
+    a = A([QQ(1), QQ(1)])
+    b = B([QQ(1), QQ(1)])
+
+    assert (a == a) is True
+    assert (a != a) is False
+
+    assert (a == b) is False
+    assert (a != b) is True
+
+    b = A([QQ(1), QQ(2)])
+
+    assert (a == b) is False
+    assert (a != b) is True
+
+    assert A([1, 1]) == A([int(1), int(1)])
+    assert hash(A([1, 1])) == hash(A([int(1), int(1)]))
+
+    assert a.to_dict() == {(0,): QQ(1), (1,): QQ(1)}
+
+    assert bool(A([])) is False
+    assert bool(A([QQ(1)])) is True
+
+    a = A([QQ(1), -QQ(1), QQ(2)])
+    assert a.LC() == 1
+
+    A = QQ.algebraic_field(root(2, 3))
+
+    a = A([QQ(2), QQ(-1), QQ(1)])
+    b = A([QQ(1), QQ(2)])
+
+    c = A([QQ(-2), QQ(1), QQ(-1)])
+
+    assert -a == c
+
+    c = A([QQ(2), QQ(0), QQ(3)])
+
+    assert a + b == c
+    assert b + a == c
+
+    assert c + 1 == A([QQ(2), QQ(0), QQ(4)])
+    pytest.raises(TypeError, lambda: c + "x")
+    pytest.raises(TypeError, lambda: "x" + c)
+
+    c = A([QQ(2), QQ(-2), QQ(-1)])
+
+    assert a - b == c
+
+    c = A([QQ(-2), QQ(2), QQ(1)])
+
+    assert b - a == c
+
+    assert c - 1 == A([QQ(-2), QQ(2), QQ(0)])
+    pytest.raises(TypeError, lambda: c - "x")
+    pytest.raises(TypeError, lambda: "x" - c)
+
+    c = A([QQ(3), QQ(-1), QQ(6)])
+
+    assert a*b == c
+    assert b*a == c
+
+    assert c*2 == A([QQ(6), QQ(-2), QQ(12)])
+    pytest.raises(TypeError, lambda: c*"x")
+    pytest.raises(TypeError, lambda: "x"*c)
+
+    c = A([QQ(11, 10), -QQ(1, 5), -QQ(3, 5)])
+
+    assert c/2 == A([QQ(11, 20), -QQ(1, 10), -QQ(3, 10)])
+    pytest.raises(TypeError, lambda: c/"x")
+    pytest.raises(TypeError, lambda: "x"/c)
+
+    c = A([QQ(-1, 43), QQ(9, 43), QQ(5, 43)])
+
+    assert a**0 == A(1)
+    assert a**1 == a
+    assert a**-1 == c
+    pytest.raises(TypeError, lambda: a**QQ(1, 2))
+
+    assert a*a**(-1) == A(1)
+
+    A = QQ.algebraic_field(I)
+
+    a = A([QQ(1, 2), QQ(1), QQ(2)])
+    b = A([ZZ(1), ZZ(1), ZZ(2)])
+    c = A([QQ(3, 2), QQ(2), QQ(4)])
+    assert a + b == b + a == c
 
 
 def test_ModularInteger():

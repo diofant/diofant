@@ -10,6 +10,8 @@ New features
 Major changes
 =============
 
+* New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619`.
+
 Compatibility breaks
 ====================
 
@@ -25,6 +27,7 @@ Compatibility breaks
 * :func:`~diofant.polys.numberfields.field_isomorphism` take fields as arguments, :func:`~diofant.polys.numberfields.to_number_field` returns field element, see :pull:`627`.
 * :func:`~diofant.polys.numberfields.to_number_field` take expression and algebraic field as arguments, see :pull:`627`.
 * Functions :func:`~diofant.polys.numberfields.minimal_polynomial` and :func:`~diofant.polys.numberfields.primitive_element` return :class:`~diofant.polys.polytools.PurePoly` instances, see :pull:`628`.
+* Removed ``ANP`` class, see :pull:`619`.
 
 Minor changes
 =============
@@ -53,3 +56,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`7724` roots should find the roots of x**4*I + x**2 + I
 * :sympyissue:`5850` minpoly() should use PurePoly
 * :sympyissue:`14494` make better decisions for minpoly based on domain
+* :sympyissue:`14389` AlgebraicNumber should be a domain element?

@@ -25,6 +25,6 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
         return AlgebraicField(self, *extension)
 
     def from_AlgebraicField(self, a, K0):
-        """Convert a ``ANP`` object to ``dtype``. """
+        """Convert an algebraic number to ``dtype``. """
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
