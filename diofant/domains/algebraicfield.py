@@ -76,7 +76,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         """Convert Diofant's expression to ``dtype``. """
         from ..polys.numberfields import to_number_field
         try:
-            return self(to_number_field(a, self.ext).rep)
+            return to_number_field(a, self)
         except (NotAlgebraic, IsomorphismFailed):
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
 

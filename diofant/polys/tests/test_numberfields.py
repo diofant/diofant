@@ -554,20 +554,19 @@ def test_field_isomorphism():
 
 def test_to_number_field():
     A = QQ.algebraic_field(sqrt(2))
-    assert to_number_field(sqrt(2)) == A([1, 0])
+    assert to_number_field(sqrt(2), A) == A([1, 0])
     B = A.algebraic_field(sqrt(3))
-    assert to_number_field([sqrt(2), sqrt(3)]) == B([1, 0])
+    assert to_number_field(sqrt(2) + sqrt(3), B) == B([1, 0])
 
     a = AlgebraicNumber(sqrt(2) + sqrt(3), [Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)])
 
-    assert to_number_field(sqrt(2), sqrt(2) + sqrt(3)) == B(a.coeffs())
-    assert to_number_field(sqrt(2), AlgebraicNumber(sqrt(2) + sqrt(3))) == B(a.coeffs())
+    assert to_number_field(sqrt(2), B) == B(a.coeffs())
 
-    pytest.raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), sqrt(3)))
+    pytest.raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), QQ.algebraic_field(sqrt(3))))
 
     # issue sympy/sympy#5649
-    assert AlgebraicNumber(1).rep.rep == to_number_field(1, AlgebraicNumber(1)).rep
-    assert AlgebraicNumber(sqrt(2)).rep.rep == to_number_field(sqrt(2), AlgebraicNumber(sqrt(2))).rep
+    assert AlgebraicNumber(1).rep.rep == to_number_field(1, QQ.algebraic_field(1)).rep
+    assert AlgebraicNumber(sqrt(2)).rep.rep == to_number_field(sqrt(2), A).rep
 
     p = x**6 - 6*x**4 - 6*x**3 + 12*x**2 - 36*x + 1
     r0, r1 = p.as_poly(x).all_roots()[:2]
@@ -575,7 +574,7 @@ def test_to_number_field():
                              Rational(128, 151), Rational(936, 755),
                              Rational(-1003, 755), Rational(2184, 755)])
     A = QQ.algebraic_field(r0)
-    assert to_number_field(r1, r0) == A(a.coeffs())
+    assert to_number_field(r1, A) == A(a.coeffs())
 
 
 def test_AlgebraicNumber():
@@ -678,8 +677,9 @@ def test_AlgebraicNumber():
     assert a.as_expr() == 2*sqrt(2) + 3
     assert a.as_expr(x) == 2*x + 3
 
-    a = QQ.algebraic_field(AlgebraicNumber(sqrt(2)))([1, 0])
-    b = to_number_field(sqrt(2))
+    A = QQ.algebraic_field(AlgebraicNumber(sqrt(2)))
+    a = A([1, 0])
+    b = to_number_field(sqrt(2), A)
     assert a == b
 
     a = AlgebraicNumber(sqrt(2), [1, 2, 3])
