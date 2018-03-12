@@ -24,10 +24,10 @@ Compatibility breaks
 * ``get_ring()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.ring.Ring.ring`, see :pull:`621`.
 * Removed ``compose`` option for :func:`~diofant.polys.numberfields.minimal_polynomial`, use ``method`` instead, see :pull:`624`.
 * Removed ``alias`` option for :class:`~diofant.core.numbers.AlgebraicNumber`, see :pull:`626`.
-* :func:`~diofant.polys.numberfields.field_isomorphism` take fields as arguments, :func:`~diofant.polys.numberfields.to_number_field` returns field element, see :pull:`627`.
-* :func:`~diofant.polys.numberfields.to_number_field` take expression and algebraic field as arguments, see :pull:`627`.
+* :func:`~diofant.polys.numberfields.field_isomorphism` take fields as arguments, see :pull:`627`.
 * Functions :func:`~diofant.polys.numberfields.minimal_polynomial` and :func:`~diofant.polys.numberfields.primitive_element` return :class:`~diofant.polys.polytools.PurePoly` instances, see :pull:`628`.
 * Removed ``ANP`` class, see :pull:`619`.
+* Removed ``to_number_field()``, use :meth:`~diofant.domains.domain.Domain.convert` instead, see :pull:`619`.
 
 Minor changes
 =============

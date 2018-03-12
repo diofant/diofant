@@ -5,9 +5,9 @@ from ..core.sympify import CantSympify
 from ..polys.densearith import (dmp_neg, dmp_pow, dmp_rem, dup_add, dup_mul,
                                 dup_sub)
 from ..polys.densebasic import dmp_LC, dmp_strip, dmp_to_dict, dmp_to_tuple
+from ..polys.densetools import dmp_compose
 from ..polys.euclidtools import dup_invert
-from ..polys.polyerrors import (CoercionFailed, DomainError, IsomorphismFailed,
-                                NotAlgebraic)
+from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
 from .domainelement import DomainElement
 from .field import Field
@@ -84,11 +84,11 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def from_diofant(self, a):
         """Convert Diofant's expression to ``dtype``. """
-        from ..polys.numberfields import to_number_field
         try:
-            return to_number_field(a, self)
-        except (NotAlgebraic, IsomorphismFailed):
+            K0 = self.domain.algebraic_field(a)
+        except NotAlgebraic:
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
+        return self.from_AlgebraicField(K0.root, K0)
 
     def from_ZZ_python(self, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
@@ -111,7 +111,15 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         return self([self.domain.convert(a, K0)])
 
     def from_AlgebraicField(self, a, K0):
-        return self.from_diofant(K0.to_diofant(a))
+        from ..polys import field_isomorphism
+
+        coeffs = field_isomorphism(K0, self)
+
+        if coeffs is not None:
+            a_coeffs = dmp_compose(a.rep, coeffs, 0, self.domain)
+            return self(a_coeffs)
+        else:
+            raise CoercionFailed("%s is not in a subfield of %s" % (K0, self))
 
     @property
     def ring(self):
