@@ -432,10 +432,7 @@ class StrPrinter(Printer):
         return ' x '.join(self._print(set) for set in p.sets)
 
     def _print_AlgebraicNumber(self, expr):
-        if expr.is_aliased:
-            return self._print(expr.as_poly().as_expr())
-        else:
-            return self._print(expr.as_expr())
+        return self._print(expr.as_expr())
 
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)

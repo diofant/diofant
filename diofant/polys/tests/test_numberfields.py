@@ -2,10 +2,9 @@
 
 import pytest
 
-from diofant import (Add, GoldenRatio, I, Integer, Mul, Poly, Rational, Symbol,
-                     Tuple, cbrt, cos, exp, exp_polar, expand,
-                     expand_multinomial, nsimplify, oo, pi, root, sin, solve,
-                     sqrt)
+from diofant import (Add, GoldenRatio, I, Integer, Mul, Poly, Rational, Tuple,
+                     cbrt, cos, exp, exp_polar, expand, expand_multinomial,
+                     nsimplify, oo, pi, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains import QQ
 from diofant.polys.numberfields import (AlgebraicNumber, field_isomorphism,
@@ -599,34 +598,25 @@ def test_AlgebraicNumber():
 
     assert a.rep == DMP([QQ(1), QQ(0)], QQ)
     assert a.root == root
-    assert a.alias is None
     assert a.minpoly == minpoly
     assert a.is_number
-
-    assert a.is_aliased is False
 
     assert a.coeffs() == [Integer(1), Integer(0)]
     assert a.native_coeffs() == [QQ(1), QQ(0)]
 
-    a = AlgebraicNumber(root, gen=x, alias='y')
+    a = AlgebraicNumber(root, gen=x)
 
     assert a.rep == DMP([QQ(1), QQ(0)], QQ)
     assert a.root == root
-    assert a.alias == Symbol('y')
     assert a.minpoly == minpoly
     assert a.is_number
 
-    assert a.is_aliased is True
-
-    a = AlgebraicNumber(root, gen=x, alias=Symbol('y'))
+    a = AlgebraicNumber(root, gen=x)
 
     assert a.rep == DMP([QQ(1), QQ(0)], QQ)
     assert a.root == root
-    assert a.alias == Symbol('y')
     assert a.minpoly == minpoly
     assert a.is_number
-
-    assert a.is_aliased is True
 
     assert AlgebraicNumber(sqrt(2), []).rep == DMP([], QQ)
 
@@ -643,11 +633,8 @@ def test_AlgebraicNumber():
 
     assert a.rep == DMP([QQ(1), QQ(2)], QQ)
     assert a.root == root
-    assert a.alias is None
     assert a.minpoly == minpoly
     assert a.is_number
-
-    assert a.is_aliased is False
 
     assert a.coeffs() == [Integer(1), Integer(2)]
     assert a.native_coeffs() == [QQ(1), QQ(2)]
@@ -656,21 +643,15 @@ def test_AlgebraicNumber():
 
     assert a.rep == DMP([QQ(1), QQ(2)], QQ)
     assert a.root == root
-    assert a.alias is None
     assert a.minpoly == minpoly
     assert a.is_number
-
-    assert a.is_aliased is False
 
     a = AlgebraicNumber((Poly(minpoly), root), [1, 2])
 
     assert a.rep == DMP([QQ(1), QQ(2)], QQ)
     assert a.root == root
-    assert a.alias is None
     assert a.minpoly == minpoly
     assert a.is_number
-
-    assert a.is_aliased is False
 
     assert AlgebraicNumber( sqrt(3)).rep == DMP([ QQ(1), QQ(0)], QQ)
     assert AlgebraicNumber(-sqrt(3)).rep == DMP([ QQ(1), QQ(0)], QQ)
@@ -693,36 +674,26 @@ def test_AlgebraicNumber():
     assert (a == x) is False and (a != x) is True
 
     a = AlgebraicNumber(sqrt(2), [1, 0])
-    b = AlgebraicNumber(sqrt(2), [1, 0], alias=y)
 
     assert a.as_poly(x) == Poly(x)
-    assert b.as_poly() == Poly(y)
 
     assert a.as_expr() == sqrt(2)
     assert a.as_expr(x) == x
-    assert b.as_expr() == sqrt(2)
-    assert b.as_expr(x) == x
 
     a = AlgebraicNumber(sqrt(2), [2, 3])
-    b = AlgebraicNumber(sqrt(2), [2, 3], alias=y)
 
     p = a.as_poly()
 
     assert p == Poly(2*p.gen + 3)
 
     assert a.as_poly(x) == Poly(2*x + 3)
-    assert b.as_poly() == Poly(2*y + 3)
 
     assert a.as_expr() == 2*sqrt(2) + 3
     assert a.as_expr(x) == 2*x + 3
-    assert b.as_expr() == 2*sqrt(2) + 3
-    assert b.as_expr(x) == 2*x + 3
 
     a = AlgebraicNumber(sqrt(2))
     b = to_number_field(sqrt(2))
     assert a.args == b.args == (sqrt(2), Tuple(1, 0))
-    b = AlgebraicNumber(sqrt(2), alias='alpha')
-    assert b.args == (sqrt(2), Tuple(1, 0), Symbol('alpha'))
 
     a = AlgebraicNumber(sqrt(2), [1, 2, 3])
     assert a.args == (sqrt(2), Tuple(2, 5))
@@ -730,17 +701,28 @@ def test_AlgebraicNumber():
     pytest.raises(ValueError, lambda: AlgebraicNumber(RootOf(x**3 + y*x + 1,
                                                              x, 0)))
 
-    a = AlgebraicNumber(RootOf(x**3 + 2*x - 1, 1), alias='alpha')
+    a = AlgebraicNumber(RootOf(x**3 + 2*x - 1, 1))
     assert a.free_symbols == set()
 
     # integer powers:
     assert a**0 == 1
-    assert a**2 == AlgebraicNumber(a, (1, 0, 0), alias='alpha')
-    assert a**5 == AlgebraicNumber(a, (1, 0, 0, 0, 0, 0), alias='alpha')
-    assert a**110 == AlgebraicNumber(a, ([1] + [0]*110), alias='alpha')
+    assert a**2 == AlgebraicNumber(a, (1, 0, 0))
+    assert a**5 == AlgebraicNumber(a, (1, 0, 0, 0, 0, 0))
+    assert a**110 == AlgebraicNumber(a, ([1] + [0]*110))
     assert (a**pi).is_Pow
 
-    b = AlgebraicNumber(sqrt(2), (1, 0), alias='theta')
+    b = AlgebraicNumber(sqrt(3))
+    assert b + 1 == AlgebraicNumber(sqrt(3), (1, 1))
+    assert (b + 1) + b == AlgebraicNumber(sqrt(3), (2, 1))
+
+    assert (2*b + 1)**3 == 30*b + 37
+    assert 1/b == b/3
+
+    b = AlgebraicNumber(RootOf(x**7 - x + 1, 1), (1, 2, -1))
+    t = AlgebraicNumber(b.root)
+    assert b**7 == 490*t**6 - 119*t**5 - 196*t**4 - 203*t**3 - 265*t**2 + 637*t - 198
+
+    b = AlgebraicNumber(sqrt(2), (1, 0))
     c = b + 1
     assert c**2 == 2*b + 3
     assert c**5 == 29*b + 41

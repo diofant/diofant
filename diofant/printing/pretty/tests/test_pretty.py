@@ -5019,14 +5019,12 @@ def test_MatrixElement():
 
 def test_AlgebraicNumber():
     a = AlgebraicNumber(sqrt(2), (1, 1))
-    b = AlgebraicNumber(sqrt(2), (1, 1), alias="theta")
     ucode_str = \
         """\
       ___\n\
 1 + ╲╱ 2 \
 """
     assert upretty(a) == ucode_str
-    assert upretty(b) == "θ + 1"
 
 
 def test_sympyissue_11801():

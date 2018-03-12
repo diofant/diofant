@@ -281,10 +281,13 @@ domains, which includes:
 
 * algebraic numbers::
 
-    >>> alg = AlgebraicNumber((sqrt(5) - 1)/2, alias='alpha')
+    >>> phi = (sqrt(5) - 1)/2
 
-    >>> factor(f, extension=alg)
-    (x - α - 1)⋅(x - α)⋅(x + α)⋅(x + α + 1)
+    >>> factor(f, extension=phi)
+    ⎛          ___⎞ ⎛          ___⎞ ⎛      ___    ⎞ ⎛      ___    ⎞
+    ⎜    1   ╲╱ 5 ⎟ ⎜    1   ╲╱ 5 ⎟ ⎜    ╲╱ 5    1⎟ ⎜    ╲╱ 5    1⎟
+    ⎜x - ─ + ─────⎟⋅⎜x + ─ + ─────⎟⋅⎜x - ───── - ─⎟⋅⎜x - ───── + ─⎟
+    ⎝    2     2  ⎠ ⎝    2     2  ⎠ ⎝      2     2⎠ ⎝      2     2⎠
 
 Factoring polynomials into linear factors
 -----------------------------------------
