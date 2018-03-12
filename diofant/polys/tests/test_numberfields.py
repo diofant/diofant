@@ -32,14 +32,16 @@ def test_minimal_polynomial():
     assert minimal_polynomial( 1, x) == x - 1
     assert minimal_polynomial( 7, x) == x - 7
 
-    assert minimal_polynomial(Rational(1, 3), x, compose=False) == 3*x - 1
+    assert minimal_polynomial(Rational(1, 3), x, method='groebner') == 3*x - 1
 
     pytest.raises(NotAlgebraic,
-                  lambda: minimal_polynomial(pi, x, compose=False))
+                  lambda: minimal_polynomial(pi, x, method='groebner'))
     pytest.raises(NotAlgebraic,
-                  lambda: minimal_polynomial(sin(sqrt(2)), x, compose=False))
+                  lambda: minimal_polynomial(sin(sqrt(2)), x, method='groebner'))
     pytest.raises(NotAlgebraic,
-                  lambda: minimal_polynomial(2**pi, x, compose=False))
+                  lambda: minimal_polynomial(2**pi, x, method='groebner'))
+
+    pytest.raises(ValueError, lambda: minimal_polynomial(1, method='spam'))
 
     assert minimal_polynomial(sqrt(2), x) == x**2 - 2
     assert minimal_polynomial(sqrt(5), x) == x**2 - 5
@@ -67,7 +69,7 @@ def test_minimal_polynomial():
         sqrt(2) + sqrt(3) + sqrt(6), x) == x**4 - 22*x**2 - 48*x - 23
 
     e = 1/sqrt(sqrt(1 + sqrt(3)) - 4)
-    assert minimal_polynomial(e, x) == minimal_polynomial(e, x, compose=False)
+    assert minimal_polynomial(e, x) == minimal_polynomial(e, x, method='groebner')
     assert minimal_polynomial(e, x) == (222*x**8 + 240*x**6 +
                                         94*x**4 + 16*x**2 + 1)
 
@@ -87,7 +89,7 @@ def test_minimal_polynomial():
 
     assert minimal_polynomial(sqrt(2), polys=True) == Poly(x**2 - 2)
     assert minimal_polynomial(sqrt(2), x, polys=True) == Poly(x**2 - 2)
-    assert minimal_polynomial(sqrt(2), x, polys=True, compose=False) == Poly(x**2 - 2)
+    assert minimal_polynomial(sqrt(2), x, polys=True, method='groebner') == Poly(x**2 - 2)
 
     a = AlgebraicNumber(sqrt(2))
     b = AlgebraicNumber(sqrt(3))
@@ -111,7 +113,7 @@ def test_minimal_polynomial():
     ans = minimal_polynomial(theta, x)
     assert ans == (x**7 - 7*x**6 + 19*x**5 - 27*x**4 + 63*x**3 -
                    115*x**2 + 82*x - 147)
-    assert minimal_polynomial(theta.as_expr(), x, compose=False) == ans
+    assert minimal_polynomial(theta.as_expr(), x, method='groebner') == ans
     theta = AlgebraicNumber(RootOf(x**5 + 5*x - 1, 2), (1, -1, 1))
     ans = (x**30 - 15*x**28 - 10*x**27 + 135*x**26 + 330*x**25 - 705*x**24 -
            150*x**23 + 3165*x**22 - 6850*x**21 + 7182*x**20 + 3900*x**19 +
@@ -178,15 +180,15 @@ def test_minimal_polynomial():
     assert minimal_polynomial((a*sqrt(2) + a)**3, x) == x**2 - 198*x + 1
 
     p = 1/(1 + sqrt(2) + sqrt(3))
-    assert minimal_polynomial(p, x, compose=False) == 8*x**4 - 16*x**3 + 4*x**2 + 4*x - 1
+    assert minimal_polynomial(p, x, method='groebner') == 8*x**4 - 16*x**3 + 4*x**2 + 4*x - 1
 
     p = 2/(1 + sqrt(2) + sqrt(3))
-    assert minimal_polynomial(p, x, compose=False) == x**4 - 4*x**3 + 2*x**2 + 4*x - 2
+    assert minimal_polynomial(p, x, method='groebner') == x**4 - 4*x**3 + 2*x**2 + 4*x - 2
 
-    assert minimal_polynomial(1 + sqrt(2)*I, x, compose=False) == x**2 - 2*x + 3
-    assert minimal_polynomial(1/(1 + sqrt(2)) + 1, x, compose=False) == x**2 - 2
+    assert minimal_polynomial(1 + sqrt(2)*I, x, method='groebner') == x**2 - 2*x + 3
+    assert minimal_polynomial(1/(1 + sqrt(2)) + 1, x, method='groebner') == x**2 - 2
     assert minimal_polynomial(sqrt(2)*I + I*(1 + sqrt(2)), x,
-                              compose=False) == x**4 + 18*x**2 + 49
+                              method='groebner') == x**4 + 18*x**2 + 49
 
     assert minimal_polynomial(exp_polar(0), x) == x - 1
 
@@ -805,7 +807,7 @@ def test_minpoly_fraction_field():
     assert minimal_polynomial(1 / (x + 1), y) == (x + 1)*y - 1
 
     assert minimal_polynomial(sqrt(x), y) == y**2 - x
-    assert minimal_polynomial(sqrt(x), y, compose=False) == y**2 - x
+    assert minimal_polynomial(sqrt(x), y, method='groebner') == y**2 - x
 
     assert minimal_polynomial(sqrt(x + 1), y) == y**2 - x - 1
     assert minimal_polynomial(sqrt(x) / x, y) == x*y**2 - 1
@@ -813,7 +815,7 @@ def test_minpoly_fraction_field():
 
     assert minimal_polynomial(sqrt(2) + sqrt(x), y) == \
         y**4 + (-2*x - 4)*y**2 + x**2 - 4*x + 4
-    assert minimal_polynomial(sqrt(2) + sqrt(x), y, compose=False) == \
+    assert minimal_polynomial(sqrt(2) + sqrt(x), y, method='groebner') == \
         y**4 + (-2*x - 4)*y**2 + x**2 - 4*x + 4
 
     assert minimal_polynomial(cbrt(x), y) == y**3 - x

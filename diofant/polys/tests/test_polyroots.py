@@ -669,3 +669,10 @@ def test_nroots2():
 
 def test_roots_composite():
     assert len(roots(Poly(y**3 + y**2*sqrt(x) + y + x, y, composite=True))) == 3
+
+
+def test_sympyissue_7724():
+    e = x**4*I + x**2 + I
+    r1, r2 = roots(e, x), Poly(e, x).all_roots()
+    assert len(r1) == 4
+    assert {_.n() for _ in r1} == {_.n() for _ in r2}

@@ -635,6 +635,12 @@ class RootOf(Expr):
             r1 < re and re < r2) and (
             i1 < im and im < i2))
 
+    def _eval_derivative(self, x):
+        coeffs = self.poly.all_coeffs()
+        num = sum(c.diff(x)*self**n for n, c in enumerate(reversed(coeffs)))
+        den = sum(c*n*self**(n - 1) for n, c in enumerate(reversed(coeffs)))
+        return -num/den
+
 
 class RootSum(Expr):
     """Represents a sum of all roots of a univariate polynomial. """

@@ -94,7 +94,7 @@ def _construct_algebraic(coeffs, opt):
     g, span, H = primitive_element(exts, polys=True)
     root = sum(s*ext for s, ext in zip(span, exts))
 
-    domain, g = QQ.algebraic_field((g, root)), g.rep.rep
+    domain, g = QQ.algebraic_field(root), g.rep.rep
 
     for i, (coeff, a, b) in enumerate(result):
         if coeff is not None:

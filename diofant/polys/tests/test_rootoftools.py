@@ -224,6 +224,10 @@ def test_RootOf_diff():
     assert RootOf(x**3 + x + 1, 0).diff(x) == 0
     assert RootOf(x**3 + x + 1, 0).diff(y) == 0
 
+    r = RootOf(x**7 + x*y + 1, x, 0)
+    assert r.diff(y) == -r/(y + 7*r**6)
+    assert r.diff(x) == 0
+
 
 def test_RootOf_evalf():
     real = RootOf(x**3 + x + 3, 0).evalf(20)

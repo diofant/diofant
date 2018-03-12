@@ -676,6 +676,9 @@ def test_Domain__algebraic_field():
 
     assert alg.characteristic() == 0
 
+    alg = QQ.algebraic_field(I)
+    assert alg.algebraic_field(I) == alg
+
 
 def test_PolynomialRing_from_FractionField():
     F,  x, y = field("x,y", ZZ)
