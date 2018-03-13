@@ -5026,6 +5026,12 @@ def test_AlgebraicNumber():
 """
     assert upretty(a) == ucode_str
 
+    ucode_str = \
+        """\
+x - 1 + ⅈ\
+"""
+    assert upretty(AlgebraicNumber(I, (-1, 1)) + x) == ucode_str
+
 
 def test_sympyissue_11801():
     assert pretty(Symbol("")) == ""

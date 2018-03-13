@@ -1161,7 +1161,7 @@ class PrettyPrinter(Printer):
             elif term.is_AlgebraicNumber and term.coeffs()[0] < 0:
                 new_coeffs = term.coeffs()
                 new_coeffs[0] = -new_coeffs[0]
-                pform = self._print(term.func(term.root, new_coeffs, term.alias))
+                pform = self._print(term.func(term.root, new_coeffs))
                 pforms.append(pretty_negative(pform, i))
             elif term.is_Relational:
                 pforms.append(prettyForm(*self._print(term).parens()))
