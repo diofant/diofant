@@ -660,6 +660,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..polys.numberfields import minimal_polynomial
         from ..polys.polyerrors import NotAlgebraic
         from .function import count_ops
+        from .symbol import Dummy
 
         if self.is_number:
             try:
@@ -680,7 +681,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if count_ops(self) > 75:
                     return
                 try:
-                    if minimal_polynomial(self).is_Symbol:
+                    if minimal_polynomial(self)(Dummy()).is_Symbol:
                         return True
                 except (NotAlgebraic, NotImplementedError):
                     pass

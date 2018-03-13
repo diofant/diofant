@@ -31,7 +31,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
         from ..polys.numberfields import primitive_element
 
-        minpoly, coeffs, H = primitive_element(ext, polys=True)
+        minpoly, coeffs, H = primitive_element(ext)
 
         self.ext = sum(c*e for c, e in zip(coeffs, ext))
         self.minpoly = minpoly
