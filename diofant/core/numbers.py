@@ -1789,8 +1789,9 @@ class AlgebraicNumber(Expr):
             if expr.free_symbols:
                 raise ValueError("Not a number: %s" % expr)
 
-            minpoly, root = minimal_polynomial(
-                expr, kwargs.get('gen'), polys=True), expr
+            minpoly, root = minimal_polynomial(expr), expr
+            if kwargs.get('gen'):
+                minpoly = minpoly.replace(kwargs.get('gen'))
 
         dom = minpoly.domain.field
 
@@ -1904,9 +1905,10 @@ class AlgebraicNumber(Expr):
 
     def _eval_simplify(self, ratio, measure):
         from ..polys import RootOf, minimal_polynomial
+        from .symbol import Dummy
 
         for r in [r for r in self.minpoly.all_roots() if r.func != RootOf]:
-            if minimal_polynomial(self.root - r).is_Symbol:
+            if minimal_polynomial(self.root - r)(Dummy()).is_Symbol:
                 # use the matching root if it's simpler
                 if measure(r) < ratio*measure(self.root):
                     return AlgebraicNumber(r)

@@ -24,6 +24,7 @@ Compatibility breaks
 * Removed ``alias`` option for :class:`~diofant.core.numbers.AlgebraicNumber`, see :pull:`626`.
 * :func:`~diofant.polys.numberfields.field_isomorphism` take fields as arguments, :func:`~diofant.polys.numberfields.to_number_field` returns field element, see :pull:`627`.
 * :func:`~diofant.polys.numberfields.to_number_field` take expression and algebraic field as arguments, see :pull:`627`.
+* Functions :func:`~diofant.polys.numberfields.minimal_polynomial` and :func:`~diofant.polys.numberfields.primitive_element` return :class:`~diofant.polys.polytools.PurePoly` instances, see :pull:`628`.
 
 Minor changes
 =============
@@ -50,3 +51,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`13886` Raise an exception for non-prime p in FiniteFIeld(p)
 * :sympyissue:`14220` Should be there both PolyRing and PolynomialRing?
 * :sympyissue:`7724` roots should find the roots of x**4*I + x**2 + I
+* :sympyissue:`5850` minpoly() should use PurePoly
+* :sympyissue:`14494` make better decisions for minpoly based on domain
