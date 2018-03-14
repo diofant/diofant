@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (Abs, Add, And, Catalan, Complement, Derivative, Dict,
-                     Dummy, E, Equivalent, EulerGamma, FiniteSet, Float,
-                     Function, GoldenRatio, I, Integer, Integral, Interval,
-                     Lambda, Limit, Matrix, MatrixSymbol, Mul, O, Pow,
-                     Rational, Rel, S, SparseMatrix, Sum, Symbol,
+from diofant import (Abs, Add, AlgebraicNumber, And, Catalan, Complement,
+                     Derivative, Dict, Dummy, E, Equivalent, EulerGamma,
+                     FiniteSet, Float, Function, GoldenRatio, I, Integer,
+                     Integral, Interval, Lambda, Limit, Matrix, MatrixSymbol,
+                     Mul, O, Pow, Rational, Rel, S, SparseMatrix, Sum, Symbol,
                      SymmetricDifference, Tuple, Wild, WildFunction, Xor, cbrt,
                      cos, exp, factor, factorial, factorial2, false, nan, oo,
                      pi, root, sin, sqrt, subfactorial, summation, symbols,
@@ -717,3 +717,7 @@ def test_Complement():
 def test_SymmetricDifference():
     assert str(SymmetricDifference(Interval(2, 3), Interval(3, 4), evaluate=False)) == \
         'SymmetricDifference([2, 3], [3, 4])'
+
+
+def test_AlgebraicNumber():
+    assert str(AlgebraicNumber(sqrt(2))) == 'sqrt(2)'

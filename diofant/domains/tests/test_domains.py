@@ -656,15 +656,15 @@ def test_Domain___eq__():
 
 def test_Domain__algebraic_field():
     alg = ZZ.algebraic_field(sqrt(2))
-    assert alg.ext.minpoly == Poly(x**2 - 2)
+    assert alg.minpoly == Poly(x**2 - 2)
     assert alg.domain == QQ
 
     alg = QQ.algebraic_field(sqrt(2))
-    assert alg.ext.minpoly == Poly(x**2 - 2)
+    assert alg.minpoly == Poly(x**2 - 2)
     assert alg.domain == QQ
 
     alg = alg.algebraic_field(sqrt(3))
-    assert alg.ext.minpoly == Poly(x**4 - 10*x**2 + 1)
+    assert alg.minpoly == Poly(x**4 - 10*x**2 + 1)
     assert alg.domain == QQ
 
     assert alg.is_nonpositive(alg([-1, 1])) is True

@@ -8,7 +8,6 @@ from diofant import (Add, GoldenRatio, I, Integer, Mul, Poly, Rational, Tuple,
 from diofant.abc import x, y, z
 from diofant.domains import QQ
 from diofant.polys.numberfields import (AlgebraicNumber, field_isomorphism,
-                                        field_isomorphism_pslq,
                                         is_isomorphism_possible,
                                         minimal_polynomial, primitive_element,
                                         to_number_field)
@@ -20,8 +19,6 @@ from diofant.polys.rootoftools import RootOf
 
 
 __all__ = ()
-
-Q = Rational
 
 
 def test_minimal_polynomial():
@@ -147,8 +144,7 @@ def test_minimal_polynomial():
     assert minimal_polynomial(sqrt(a) + sqrt(sqrt(a)), x) == f
     assert minimal_polynomial(sqrt(b) + sqrt(sqrt(b)), x) == f
 
-    assert minimal_polynomial(
-        a**Q(3, 2), x) == 729*x**4 - 506898*x**2 + 84604519
+    assert minimal_polynomial(a**Rational(3, 2), x) == 729*x**4 - 506898*x**2 + 84604519
 
     a = AlgebraicNumber(RootOf(x**3 + x - 1, 0))
     assert minimal_polynomial(1/a**2, x) == x**3 - x**2 - 2*x - 1
@@ -324,13 +320,13 @@ def test_primitive_element():
 
     assert primitive_element([sqrt(2)], x) == (x**2 - 2, [1], [[1, 0]])
     assert (primitive_element([sqrt(2), sqrt(3)], x) ==
-            (x**4 - 10*x**2 + 1, [1, 1], [[Q(+1, 2), 0, -Q(9, 2), 0],
-                                          [Q(-1, 2), 0, Q(11, 2), 0]]))
+            (x**4 - 10*x**2 + 1, [1, 1], [[QQ(+1, 2), 0, -QQ(9, 2), 0],
+                                          [QQ(-1, 2), 0, QQ(11, 2), 0]]))
 
     assert primitive_element([sqrt(2)], x, polys=True) == (Poly(x**2 - 2), [1], [[1, 0]])
     assert (primitive_element([sqrt(2), sqrt(3)], x, polys=True) ==
-            (Poly(x**4 - 10*x**2 + 1), [1, 1], [[Q(+1, 2), 0, -Q(9, 2), 0],
-                                                [Q(-1, 2), 0, Q(11, 2), 0]]))
+            (Poly(x**4 - 10*x**2 + 1), [1, 1], [[QQ(+1, 2), 0, -QQ(9, 2), 0],
+                                                [QQ(-1, 2), 0, QQ(11, 2), 0]]))
 
     assert primitive_element([sqrt(2)], polys=True)[:-1] == (Poly(x**2 - 2), [1])
 
@@ -349,93 +345,77 @@ def test_primitive_element():
                                      [QQ(-1, 54), 0, QQ(-5, 6), 0]])
 
 
-def test_field_isomorphism_pslq():
-    a = AlgebraicNumber(I)
-    b = AlgebraicNumber(I*sqrt(3))
-
-    pytest.raises(NotImplementedError, lambda: field_isomorphism_pslq(a, b))
-
-    a = AlgebraicNumber(sqrt(2))
-    b = AlgebraicNumber(sqrt(3))
-    c = AlgebraicNumber(sqrt(7))
-    d = AlgebraicNumber(sqrt(2) + sqrt(3))
-    e = AlgebraicNumber(sqrt(2) + sqrt(3) + sqrt(7))
-
-    assert field_isomorphism_pslq(a, a) == [1, 0]
-    assert field_isomorphism_pslq(a, b) is None
-    assert field_isomorphism_pslq(a, c) is None
-    assert field_isomorphism_pslq(a, d) == [Q(1, 2), 0, -Q(9, 2), 0]
-    assert field_isomorphism_pslq(
-        a, e) == [Q(1, 80), 0, -Q(1, 2), 0, Q(59, 20), 0]
-
-    assert field_isomorphism_pslq(b, a) is None
-    assert field_isomorphism_pslq(b, b) == [1, 0]
-    assert field_isomorphism_pslq(b, c) is None
-    assert field_isomorphism_pslq(b, d) == [-Q(1, 2), 0, Q(11, 2), 0]
-    assert field_isomorphism_pslq(b, e) == [-Q(
-        3, 640), 0, Q(67, 320), 0, -Q(297, 160), 0, Q(313, 80), 0]
-
-    assert field_isomorphism_pslq(c, a) is None
-    assert field_isomorphism_pslq(c, b) is None
-    assert field_isomorphism_pslq(c, c) == [1, 0]
-    assert field_isomorphism_pslq(c, d) is None
-    assert field_isomorphism_pslq(c, e) == [Q(
-        3, 640), 0, -Q(71, 320), 0, Q(377, 160), 0, -Q(469, 80), 0]
-
-    assert field_isomorphism_pslq(d, a) is None
-    assert field_isomorphism_pslq(d, b) is None
-    assert field_isomorphism_pslq(d, c) is None
-    assert field_isomorphism_pslq(d, d) == [1, 0]
-    assert field_isomorphism_pslq(d, e) == [-Q(
-        3, 640), 0, Q(71, 320), 0, -Q(377, 160), 0, Q(549, 80), 0]
-
-    assert field_isomorphism_pslq(e, a) is None
-    assert field_isomorphism_pslq(e, b) is None
-    assert field_isomorphism_pslq(e, c) is None
-    assert field_isomorphism_pslq(e, d) is None
-    assert field_isomorphism_pslq(e, e) == [1, 0]
-
-    f = AlgebraicNumber(3*sqrt(2) + 8*sqrt(7) - 5)
-
-    assert field_isomorphism_pslq(
-        f, e) == [Q(3, 80), 0, -Q(139, 80), 0, Q(347, 20), 0, -Q(761, 20), -5]
-
-
 def test_field_isomorphism():
-    assert field_isomorphism(3, sqrt(2)) == [3]
+    a = QQ.algebraic_field(sqrt(2))
+    b = QQ.algebraic_field(sqrt(3))
+    c = QQ.algebraic_field(sqrt(7))
+    d = QQ.algebraic_field(sqrt(2) + sqrt(3))
+    e = QQ.algebraic_field(sqrt(2) + sqrt(3) + sqrt(7))
 
-    assert field_isomorphism( I*sqrt(3), I*sqrt(3)/2) == [ 2, 0]
-    assert field_isomorphism(-I*sqrt(3), I*sqrt(3)/2) == [-2, 0]
+    assert field_isomorphism(a, a) == [1, 0]
+    assert field_isomorphism(a, b) is None
+    assert field_isomorphism(a, c) is None
+    assert field_isomorphism(a, d) == [QQ(1, 2), 0, -QQ(9, 2), 0]
+    assert field_isomorphism(a, e) == [QQ(1, 80), 0, -QQ(1, 2), 0, QQ(59, 20), 0]
 
-    assert field_isomorphism( I*sqrt(3), -I*sqrt(3)/2) == [-2, 0]
-    assert field_isomorphism(-I*sqrt(3), -I*sqrt(3)/2) == [ 2, 0]
+    assert field_isomorphism(b, a) is None
+    assert field_isomorphism(b, b) == [1, 0]
+    assert field_isomorphism(b, c) is None
+    assert field_isomorphism(b, d) == [-QQ(1, 2), 0, QQ(11, 2), 0]
+    assert field_isomorphism(b, e) == [-QQ(3, 640), 0, QQ(67, 320), 0, -QQ(297, 160), 0, QQ(313, 80), 0]
 
-    assert field_isomorphism( 2*I*sqrt(3)/7, 5*I*sqrt(3)/3) == [ Rational(6, 35), 0]
-    assert field_isomorphism(-2*I*sqrt(3)/7, 5*I*sqrt(3)/3) == [-Rational(6, 35), 0]
+    assert field_isomorphism(c, a) is None
+    assert field_isomorphism(c, b) is None
+    assert field_isomorphism(c, c) == [1, 0]
+    assert field_isomorphism(c, d) is None
+    assert field_isomorphism(c, e) == [QQ(3, 640), 0, -QQ(71, 320), 0, QQ(377, 160), 0, -QQ(469, 80), 0]
 
-    assert field_isomorphism( 2*I*sqrt(3)/7, -5*I*sqrt(3)/3) == [-Rational(6, 35), 0]
-    assert field_isomorphism(-2*I*sqrt(3)/7, -5*I*sqrt(3)/3) == [ Rational(6, 35), 0]
+    assert field_isomorphism(d, a) is None
+    assert field_isomorphism(d, b) is None
+    assert field_isomorphism(d, c) is None
+    assert field_isomorphism(d, d) == [1, 0]
+    assert field_isomorphism(d, e) == [-QQ(3, 640), 0, QQ(71, 320), 0, -QQ(377, 160), 0, QQ(549, 80), 0]
 
-    assert field_isomorphism(
-        2*I*sqrt(3)/7 + 27, 5*I*sqrt(3)/3) == [ Rational(6, 35), 27]
-    assert field_isomorphism(
-        -2*I*sqrt(3)/7 + 27, 5*I*sqrt(3)/3) == [-Rational(6, 35), 27]
+    assert field_isomorphism(e, a) is None
+    assert field_isomorphism(e, b) is None
+    assert field_isomorphism(e, c) is None
+    assert field_isomorphism(e, d) is None
+    assert field_isomorphism(e, e) == [1, 0]
 
-    assert field_isomorphism(
-        2*I*sqrt(3)/7 + 27, -5*I*sqrt(3)/3) == [-Rational(6, 35), 27]
-    assert field_isomorphism(
-        -2*I*sqrt(3)/7 + 27, -5*I*sqrt(3)/3) == [ Rational(6, 35), 27]
+    f = QQ.algebraic_field(3*sqrt(2) + 8*sqrt(7) - 5)
 
-    p = AlgebraicNumber( sqrt(2) + sqrt(3))
-    q = AlgebraicNumber(-sqrt(2) + sqrt(3))
-    r = AlgebraicNumber( sqrt(2) - sqrt(3))
-    s = AlgebraicNumber(-sqrt(2) - sqrt(3))
-    c = AlgebraicNumber(cbrt(2))
+    assert field_isomorphism(f, e) == [QQ(3, 80), 0, -QQ(139, 80), 0, QQ(347, 20), 0, -QQ(761, 20), -5]
 
-    pos_coeffs = [ Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)]
-    neg_coeffs = [-Rational(1, 2), Integer(0), Rational(9, 2), Integer(0)]
+    assert field_isomorphism(QQ.algebraic_field(3), QQ.algebraic_field(sqrt(2))) == [1, 0]
 
-    a = AlgebraicNumber(sqrt(2))
+    assert field_isomorphism(QQ.algebraic_field(+I*sqrt(3)), QQ.algebraic_field(I*sqrt(3)/2)) == [+2, 0]
+    assert field_isomorphism(QQ.algebraic_field(-I*sqrt(3)), QQ.algebraic_field(I*sqrt(3)/2)) == [-2, 0]
+
+    assert field_isomorphism(QQ.algebraic_field(+I*sqrt(3)), QQ.algebraic_field(-I*sqrt(3)/2)) == [-2, 0]
+    assert field_isomorphism(QQ.algebraic_field(-I*sqrt(3)), QQ.algebraic_field(-I*sqrt(3)/2)) == [+2, 0]
+
+    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7), QQ.algebraic_field(5*I*sqrt(3)/3)) == [+QQ(6, 35), 0]
+    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7), QQ.algebraic_field(5*I*sqrt(3)/3)) == [-QQ(6, 35), 0]
+
+    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [-QQ(6, 35), 0]
+    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [+QQ(6, 35), 0]
+
+    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7 + 27), QQ.algebraic_field(5*I*sqrt(3)/3)) == [+QQ(6, 35), 27]
+    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7 + 27), QQ.algebraic_field(5*I*sqrt(3)/3)) == [-QQ(6, 35), 27]
+
+    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7 + 27), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [-QQ(6, 35), 27]
+    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7 + 27), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [+QQ(6, 35), 27]
+
+    p = QQ.algebraic_field(+sqrt(2) + sqrt(3))
+    q = QQ.algebraic_field(-sqrt(2) + sqrt(3))
+    r = QQ.algebraic_field(+sqrt(2) - sqrt(3))
+    s = QQ.algebraic_field(-sqrt(2) - sqrt(3))
+    c = QQ.algebraic_field(cbrt(2))
+
+    pos_coeffs = [+QQ(1, 2), 0, -QQ(9, 2), 0]
+    neg_coeffs = [-QQ(1, 2), 0, +QQ(9, 2), 0]
+
+    a = QQ.algebraic_field(sqrt(2))
 
     assert is_isomorphism_possible(a, c) is False
     assert field_isomorphism(a, c) is None
@@ -455,7 +435,7 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == pos_coeffs
     assert field_isomorphism(a, s, fast=False) == neg_coeffs
 
-    a = AlgebraicNumber(-sqrt(2))
+    a = QQ.algebraic_field(-sqrt(2))
 
     assert is_isomorphism_possible(a, p) is True
     assert is_isomorphism_possible(a, q) is True
@@ -472,10 +452,10 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == neg_coeffs
     assert field_isomorphism(a, s, fast=False) == pos_coeffs
 
-    pos_coeffs = [ Rational(1, 2), Integer(0), -Rational(11, 2), Integer(0)]
-    neg_coeffs = [-Rational(1, 2), Integer(0), Rational(11, 2), Integer(0)]
+    pos_coeffs = [+QQ(1, 2), 0, -QQ(11, 2), 0]
+    neg_coeffs = [-QQ(1, 2), 0, +QQ(11, 2), 0]
 
-    a = AlgebraicNumber(sqrt(3))
+    a = QQ.algebraic_field(sqrt(3))
 
     assert is_isomorphism_possible(a, p) is True
     assert is_isomorphism_possible(a, q) is True
@@ -492,7 +472,7 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == pos_coeffs
     assert field_isomorphism(a, s, fast=False) == pos_coeffs
 
-    a = AlgebraicNumber(-sqrt(3))
+    a = QQ.algebraic_field(-sqrt(3))
 
     assert is_isomorphism_possible(a, p) is True
     assert is_isomorphism_possible(a, q) is True
@@ -509,10 +489,10 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == neg_coeffs
     assert field_isomorphism(a, s, fast=False) == neg_coeffs
 
-    pos_coeffs = [ Rational(3, 2), Integer(0), -Rational(33, 2), -Integer(8)]
-    neg_coeffs = [-Rational(3, 2), Integer(0), Rational(33, 2), -Integer(8)]
+    pos_coeffs = [+QQ(3, 2), 0, -QQ(33, 2), -8]
+    neg_coeffs = [-QQ(3, 2), 0, +QQ(33, 2), -8]
 
-    a = AlgebraicNumber(3*sqrt(3) - 8)
+    a = QQ.algebraic_field(3*sqrt(3) - 8)
 
     assert is_isomorphism_possible(a, p) is True
     assert is_isomorphism_possible(a, q) is True
@@ -529,12 +509,12 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == pos_coeffs
     assert field_isomorphism(a, s, fast=False) == pos_coeffs
 
-    a = AlgebraicNumber(3*sqrt(2) + 2*sqrt(3) + 1)
+    a = QQ.algebraic_field(3*sqrt(2) + 2*sqrt(3) + 1)
 
-    pos_1_coeffs = [ Rational(1, 2), Integer(0), -Rational(5, 2), Integer(1)]
-    neg_5_coeffs = [-Rational(5, 2), Integer(0), Rational(49, 2), Integer(1)]
-    pos_5_coeffs = [ Rational(5, 2), Integer(0), -Rational(49, 2), Integer(1)]
-    neg_1_coeffs = [-Rational(1, 2), Integer(0), Rational(5, 2), Integer(1)]
+    pos_1_coeffs = [+QQ(1, 2), 0, -QQ(5, 2), 1]
+    neg_1_coeffs = [-QQ(1, 2), 0, +QQ(5, 2), 1]
+    pos_5_coeffs = [+QQ(5, 2), 0, -QQ(49, 2), 1]
+    neg_5_coeffs = [-QQ(5, 2), 0, +QQ(49, 2), 1]
 
     assert is_isomorphism_possible(a, p) is True
     assert is_isomorphism_possible(a, q) is True
@@ -551,44 +531,47 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == pos_5_coeffs
     assert field_isomorphism(a, s, fast=False) == neg_1_coeffs
 
-    a = AlgebraicNumber(sqrt(2))
-    b = AlgebraicNumber(sqrt(3))
-    c = AlgebraicNumber(sqrt(7))
+    a = QQ.algebraic_field(sqrt(2))
+    b = QQ.algebraic_field(sqrt(3))
+    c = QQ.algebraic_field(sqrt(7))
 
     assert is_isomorphism_possible(a, b) is True
     assert is_isomorphism_possible(b, a) is True
 
     assert is_isomorphism_possible(c, p) is False
 
-    assert field_isomorphism(sqrt(2), sqrt(3), fast=True) is None
-    assert field_isomorphism(sqrt(3), sqrt(2), fast=True) is None
+    assert field_isomorphism(a, b, fast=True) is None
+    assert field_isomorphism(b, a, fast=True) is None
 
-    assert field_isomorphism(sqrt(2), sqrt(3), fast=False) is None
-    assert field_isomorphism(sqrt(3), sqrt(2), fast=False) is None
+    assert field_isomorphism(a, b, fast=False) is None
+    assert field_isomorphism(b, a, fast=False) is None
+
+    pytest.raises(ValueError, lambda: field_isomorphism(1, 2))
 
 
 def test_to_number_field():
-    assert to_number_field(sqrt(2)) == AlgebraicNumber(sqrt(2))
-    assert to_number_field(
-        [sqrt(2), sqrt(3)]) == AlgebraicNumber(sqrt(2) + sqrt(3))
+    A = QQ.algebraic_field(sqrt(2))
+    assert to_number_field(sqrt(2), A) == A([1, 0])
+    B = A.algebraic_field(sqrt(3))
+    assert to_number_field(sqrt(2) + sqrt(3), B) == B([1, 0])
 
     a = AlgebraicNumber(sqrt(2) + sqrt(3), [Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)])
 
-    assert to_number_field(sqrt(2), sqrt(2) + sqrt(3)) == a
-    assert to_number_field(sqrt(2), AlgebraicNumber(sqrt(2) + sqrt(3))) == a
+    assert to_number_field(sqrt(2), B) == B(a.coeffs())
 
-    pytest.raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), sqrt(3)))
+    pytest.raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), QQ.algebraic_field(sqrt(3))))
 
     # issue sympy/sympy#5649
-    assert AlgebraicNumber(1).rep == to_number_field(1, AlgebraicNumber(1)).rep
-    assert AlgebraicNumber(sqrt(2)).rep == to_number_field(sqrt(2), AlgebraicNumber(sqrt(2))).rep
+    assert AlgebraicNumber(1).rep.rep == to_number_field(1, QQ.algebraic_field(1)).rep
+    assert AlgebraicNumber(sqrt(2)).rep.rep == to_number_field(sqrt(2), A).rep
 
     p = x**6 - 6*x**4 - 6*x**3 + 12*x**2 - 36*x + 1
     r0, r1 = p.as_poly(x).all_roots()[:2]
     a = AlgebraicNumber(r0, [Rational(-96, 755), Rational(-54, 755),
                              Rational(128, 151), Rational(936, 755),
                              Rational(-1003, 755), Rational(2184, 755)])
-    assert to_number_field(r1, r0) == a
+    A = QQ.algebraic_field(r0)
+    assert to_number_field(r1, A) == A(a.coeffs())
 
 
 def test_AlgebraicNumber():
@@ -691,9 +674,10 @@ def test_AlgebraicNumber():
     assert a.as_expr() == 2*sqrt(2) + 3
     assert a.as_expr(x) == 2*x + 3
 
-    a = AlgebraicNumber(sqrt(2))
-    b = to_number_field(sqrt(2))
-    assert a.args == b.args == (sqrt(2), Tuple(1, 0))
+    A = QQ.algebraic_field(AlgebraicNumber(sqrt(2)))
+    a = A([1, 0])
+    b = to_number_field(sqrt(2), A)
+    assert a == b
 
     a = AlgebraicNumber(sqrt(2), [1, 2, 3])
     assert a.args == (sqrt(2), Tuple(2, 5))
