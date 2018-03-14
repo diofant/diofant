@@ -93,8 +93,6 @@ def _separate_sq(p):
     -x**8 + 48*x**6 - 536*x**4 + 1728*x**2 - 400
 
     """
-    from ..utilities import sift
-
     def is_sqrt(expr):
         return expr.is_Pow and expr.exp is S.Half
 
@@ -129,8 +127,7 @@ def _separate_sq(p):
             a2.append(y*z**S.Half)
     p1 = Add(*a1)
     p2 = Add(*a2)
-    p = _mexpand(p1**2) - _mexpand(p2**2)
-    return p
+    return _mexpand(p1**2) - _mexpand(p2**2)
 
 
 def _minimal_polynomial_sq(p, n, x):
@@ -170,8 +167,7 @@ def _minimal_polynomial_sq(p, n, x):
     # the minimal polynomial is the factor vanishing in x = pn
     factors = factor_list(p)[1]
 
-    result = _choose_factor(factors, x, pn)
-    return result
+    return _choose_factor(factors, x, pn)
 
 
 def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
@@ -373,8 +369,7 @@ def _minpoly_sin(ex, x):
             return res
 
         expr = ((1 - cos(2*c*pi))/2)**S.Half
-        res = _minpoly_compose(expr, x, QQ)
-        return res
+        return _minpoly_compose(expr, x, QQ)
 
     raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
 
@@ -403,8 +398,7 @@ def _minpoly_cos(ex, x):
         a = [x**(n - i)*a[i] for i in range(n + 1)]
         r = Add(*a) - (-1)**c.p
         _, factors = factor_list(r)
-        res = _choose_factor(factors, x, ex)
-        return res
+        return _choose_factor(factors, x, ex)
 
     raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
 
@@ -437,8 +431,7 @@ def _minpoly_exp(ex, x):
 
         # x**(2*q) = product(factors)
         factors = [cyclotomic_poly(i, x) for i in divisors(2*q)]
-        mp = _choose_factor(factors, x, ex)
-        return mp
+        return _choose_factor(factors, x, ex)
     raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
 
 
@@ -449,8 +442,7 @@ def _minpoly_rootof(ex, x):
     p = ex.expr
     p = p.subs({ex.poly.gens[0]: x})
     _, factors = factor_list(p, x)
-    result = _choose_factor(factors, x, ex)
-    return result
+    return _choose_factor(factors, x, ex)
 
 
 def _minpoly_compose(ex, x, dom):
