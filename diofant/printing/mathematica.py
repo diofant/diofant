@@ -186,9 +186,9 @@ class MCodePrinter(CodePrinter):
         return "RootSum[%s, %s]" % (self.doprint(Lambda(p.gens, p.as_expr())),
                                     self.doprint(f))
 
-    def _print_AlgebraicNumber(self, expr):
-        coeffs = list(reversed(expr.coeffs()))
-        return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.root),
+    def _print_AlgebraicElement(self, expr):
+        coeffs = list(reversed(expr.rep))
+        return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.parent.ext),
                                             self.doprint(coeffs))
 
     def _print_Dummy(self, expr):

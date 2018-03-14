@@ -1184,7 +1184,7 @@ class Rational(Number):
     def __add__(self, other):
         if isinstance(other, Rational):
             return Rational(self.p*other.q + self.q*other.p, self.q*other.q)
-        elif isinstance(other, (Float, AlgebraicNumber)):
+        elif isinstance(other, Float):
             return other + self
         else:
             return Number.__add__(self, other)
@@ -1193,7 +1193,7 @@ class Rational(Number):
     def __sub__(self, other):
         if isinstance(other, Rational):
             return Rational(self.p*other.q - self.q*other.p, self.q*other.q)
-        elif isinstance(other, (Float, AlgebraicNumber)):
+        elif isinstance(other, Float):
             return -other + self
         else:
             return Number.__sub__(self, other)
@@ -1202,7 +1202,7 @@ class Rational(Number):
     def __mul__(self, other):
         if isinstance(other, Rational):
             return Rational(self.p*other.p, self.q*other.q)
-        elif isinstance(other, (Float, AlgebraicNumber)):
+        elif isinstance(other, Float):
             return other*self
         else:
             return Number.__mul__(self, other)
@@ -1636,180 +1636,6 @@ numbers.Integral.register(Integer)
 
 # Add sympify converters
 converter[int] = Integer
-
-
-class AlgebraicNumber(Expr):
-    r"""Class for algebraic numbers in Diofant.
-
-    Represents the algebraic number in the field `\mathbb Q[\theta]`
-    given by
-
-    .. math::
-        c_n \theta^n + c_{n-1} \theta^{n-1} + \dots + c_0
-
-    Parameters
-    ==========
-
-    expr : Expr
-        A generator `\theta` for the algebraic number.
-
-    coeffs : tuple, optional
-        A tuple of rational coefficients `(c_n, c_{n-1},\dots,c_0)`.
-        The default is ``(1, 0)``.
-
-    See Also
-    ========
-
-    diofant.polys.rootoftools.RootOf
-    """
-
-    is_AlgebraicNumber = True
-    is_algebraic = True
-    is_number = True
-
-    def __new__(cls, expr, coeffs=(1, 0), **kwargs):
-        """Construct a new algebraic number. """
-        from ..polys import Poly
-        from ..polys.polyclasses import DMP
-        from ..polys.numberfields import minimal_polynomial
-
-        expr = sympify(expr)
-
-        if isinstance(expr, (tuple, Tuple)):
-            minpoly, root = expr
-
-            if not minpoly.is_Poly:
-                minpoly = Poly(minpoly)
-        elif expr.is_AlgebraicNumber:
-            minpoly, root = expr.minpoly, expr.root
-        else:
-            if expr.free_symbols:
-                raise ValueError("Not a number: %s" % expr)
-
-            minpoly, root = minimal_polynomial(expr), expr
-            if kwargs.get('gen'):
-                minpoly = minpoly.replace(kwargs.get('gen'))
-
-        dom = minpoly.domain.field
-
-        if isinstance(coeffs, DMP):
-            rep = coeffs
-        else:
-            rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
-
-        if rep.degree() >= minpoly.degree():
-            rep = rep.rem(minpoly.rep)
-
-        coeffs = Tuple(*rep.all_coeffs())
-        args = root, coeffs
-
-        obj = Expr.__new__(cls, *args)
-
-        obj.rep = rep
-        obj.root = root
-        obj.minpoly = minpoly
-
-        return obj
-
-    @property
-    def free_symbols(self):
-        return set()
-
-    def _eval_power(self, expt):
-        if expt.is_Integer:
-            A = self.rep.domain.algebraic_field(self.root)
-            r = A(self.rep.rep)**int(expt)
-            return self.func(self, r.rep)
-
-    @_sympifyit('other', NotImplemented)
-    def __add__(self, other):
-        if other.is_Rational:
-            other = self.func(self, (other,))
-
-        if other.is_AlgebraicNumber:
-            if self.minpoly == other.minpoly and self.root == other.root:
-                return self.func(self, self.rep + other.rep)
-            else:
-                return Add(self, other, evaluate=False)
-        else:
-            return Number.__add__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __sub__(self, other):
-        if other.is_Rational:
-            other = self.func(self, (other,))
-
-        if other.is_AlgebraicNumber:
-            if self.minpoly == other.minpoly and self.root == other.root:
-                return self.func(self, self.rep - other.rep)
-            else:
-                return Add(self, -other, evaluate=False)
-        else:
-            return Number.__sub__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __mul__(self, other):
-        if other.is_Rational:
-            other = self.func(self, (other,))
-
-        if other.is_AlgebraicNumber:
-            if self.minpoly == other.minpoly and self.root == other.root:
-                return self.func(self, self.rep * other.rep)
-            else:
-                return Mul(self, other, evaluate=False)
-        else:
-            return Number.__mul__(self, other)
-
-    def _eval_evalf(self, prec):
-        return self.as_expr()._evalf(prec)
-
-    def as_poly(self, x=None):
-        """Create a Poly instance from ``self``. """
-        from .symbol import Dummy
-        from ..polys import Poly, PurePoly
-        if x is not None:
-            return Poly.new(self.rep, x)
-        else:
-            return PurePoly.new(self.rep, Dummy('x'))
-
-    def as_expr(self, x=None):
-        """Create a Basic expression from ``self``. """
-        return self.as_poly(x or self.root).as_expr().expand()
-
-    def coeffs(self):
-        """Returns all Diofant coefficients of an algebraic number. """
-        return [self.rep.domain.to_expr(c) for c in self.rep.all_coeffs()]
-
-    def native_coeffs(self):
-        """Returns all native coefficients of an algebraic number. """
-        return self.rep.all_coeffs()
-
-    def to_algebraic_integer(self):
-        """Convert ``self`` to an algebraic integer. """
-        from ..polys import Poly
-        f = self.minpoly
-
-        if f.LC() == 1:
-            return self
-
-        coeff = f.LC()**(f.degree() - 1)
-        poly = f.compose(Poly(f.gen/f.LC()))
-
-        minpoly = poly*coeff
-        root = f.LC()*self.root
-
-        return AlgebraicNumber((minpoly, root), self.coeffs())
-
-    def _eval_simplify(self, ratio, measure):
-        from ..polys import RootOf, minimal_polynomial
-        from .symbol import Dummy
-
-        for r in [r for r in self.minpoly.all_roots() if r.func != RootOf]:
-            if minimal_polynomial(self.root - r)(Dummy()).is_Symbol:
-                # use the matching root if it's simpler
-                if measure(r) < ratio*measure(self.root):
-                    return AlgebraicNumber(r)
-        return self
 
 
 class RationalConstant(Rational):

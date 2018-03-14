@@ -82,10 +82,6 @@ class Add(AssocOp):
                 o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
-            elif o.is_AlgebraicNumber:
-                coeff += o
-                continue
-
             elif o is zoo:
                 if coeff.is_finite is False:
                     # we know for sure the result will be nan

@@ -39,8 +39,7 @@ from diofant.functions import (Abs, DiracDelta, Eijk, Heaviside, LambertW,
                                erf, exp, factorial, ff, fibonacci, floor,
                                gamma, harmonic, hermite, im, legendre, ln, log,
                                loggamma, lowergamma, lucas, polygamma, re, rf,
-                               sign, sin, sinh, sqrt, tan, tanh, uppergamma,
-                               zeta)
+                               sign, sin, sinh, tan, tanh, uppergamma, zeta)
 from diofant.geometry.ellipse import Circle, Ellipse
 from diofant.geometry.entity import GeometryEntity
 from diofant.geometry.line import Line, LinearEntity, Ray, Segment
@@ -52,7 +51,6 @@ from diofant.ntheory.generate import Sieve
 from diofant.plotting.plot import Plot
 from diofant.polys.fields import FractionField
 from diofant.polys.monomials import Monomial
-from diofant.polys.numberfields import AlgebraicNumber
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
 from diofant.polys.polyclasses import DMP
@@ -387,11 +385,6 @@ def test_pickling_polys_domains():
     #     check(c)
 
     for c in (ExpressionDomain, ExpressionDomain()):
-        check(c)
-
-
-def test_pickling_polys_numberfields():
-    for c in (AlgebraicNumber, AlgebraicNumber(sqrt(3))):
         check(c)
 
 

@@ -9,10 +9,10 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_div, dmp_exquo,
                          dmp_rem, dmp_sqr, dmp_sub, dmp_sub_ground)
 from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
-                         dmp_from_dict, dmp_from_diofant, dmp_ground,
-                         dmp_ground_LC, dmp_ground_nth, dmp_ground_p,
-                         dmp_ground_TC, dmp_inject, dmp_list_terms, dmp_one_p,
-                         dmp_permute, dmp_slice_in, dmp_terms_gcd, dmp_to_dict,
+                         dmp_from_dict, dmp_ground, dmp_ground_LC,
+                         dmp_ground_nth, dmp_ground_p, dmp_ground_TC,
+                         dmp_inject, dmp_list_terms, dmp_one_p, dmp_permute,
+                         dmp_slice_in, dmp_terms_gcd, dmp_to_dict,
                          dmp_to_tuple, dmp_validate, dmp_zero_p)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
@@ -103,11 +103,6 @@ class DMP(CantSympify):
     def from_list(cls, rep, lev, dom):
         """Create an instance of ``cls`` given a list of native coefficients. """
         return cls(dmp_convert(rep, lev, None, dom), dom, lev)
-
-    @classmethod
-    def from_diofant_list(cls, rep, lev, dom):
-        """Create an instance of ``cls`` given a list of Diofant coefficients. """
-        return cls(dmp_from_diofant(rep, lev, dom), dom, lev)
 
     def to_dict(self, zero=False):
         """Convert ``self`` to a dict representation with native coefficients. """

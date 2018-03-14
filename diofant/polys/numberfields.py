@@ -5,8 +5,8 @@ import operator
 
 import mpmath
 
-from ..core import (Add, AlgebraicNumber, Dummy, E, GoldenRatio, I, Integer,
-                    Mul, Rational, S, pi, prod, sympify)
+from ..core import (Add, Dummy, E, GoldenRatio, I, Mul, Rational, S, pi, prod,
+                    sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ, AlgebraicField
@@ -513,8 +513,6 @@ def _minpoly_compose(ex, x, dom):
         res = _minpoly_cos(ex, x)
     elif ex.__class__ is RootOf:
         res = _minpoly_rootof(ex, x)
-    elif ex.__class__ is AlgebraicNumber:
-        res = minpoly_groebner(ex, x, dom)
     else:
         raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
     return res
@@ -634,16 +632,6 @@ def minpoly_groebner(ex, x, domain):
                     bmp = PurePoly(minpoly_groebner(1/base, x, domain=domain), x)
                     base, exp = update_mapping(1/base, bmp), -exp
                 return update_mapping(ex, exp.q, -base**exp.p)
-        elif ex.is_AlgebraicNumber:
-            base = update_mapping(ex.root, ex.minpoly)
-            res = Integer(0)
-            for exp, coeff in ex.rep.terms():
-                exp = Integer(exp[0])
-                if exp:
-                    res += coeff*update_mapping(base**exp, 1, -base**exp)
-                else:
-                    res += coeff
-            return res
         elif isinstance(ex, RootOf) and ex.poly.domain.is_IntegerRing:
             return update_mapping(ex, ex.poly)
 
