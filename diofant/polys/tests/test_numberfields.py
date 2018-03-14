@@ -799,12 +799,12 @@ def test_minpoly_domain():
 
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(y, domain=QQ))
 
-    F = QQ.algebraic_field(I)
+    # issue sympy/sympy#14494
 
+    F = QQ.algebraic_field(I)
     assert minimal_polynomial(I, domain=F)(x) == x - I
 
     F = QQ.algebraic_field(sqrt(3)*I)
-
     assert minimal_polynomial(exp(I*pi/3), domain=F)(x) == 2*x - sqrt(3)*I - 1
 
 

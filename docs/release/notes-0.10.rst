@@ -52,3 +52,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14220` Should be there both PolyRing and PolynomialRing?
 * :sympyissue:`7724` roots should find the roots of x**4*I + x**2 + I
 * :sympyissue:`5850` minpoly() should use PurePoly
+* :sympyissue:`14494` make better decisions for minpoly based on domain
