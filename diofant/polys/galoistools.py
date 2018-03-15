@@ -6,6 +6,7 @@ from random import uniform
 
 from ..core import prod
 from ..ntheory import factorint
+from .densebasic import dmp_LC
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
@@ -127,22 +128,6 @@ def gf_degree(f):
     -1
     """
     return len(f) - 1
-
-
-def gf_LC(f, K):
-    """
-    Return the leading coefficient of ``f``.
-
-    Examples
-    ========
-
-    >>> gf_LC([3, 0, 1], ZZ)
-    3
-    """
-    if not f:
-        return K.zero
-    else:
-        return f[0]
 
 
 def gf_TC(f, K):
@@ -1082,7 +1067,7 @@ def gf_compose(f, g, p, K):
     [2, 4, 0, 3, 0]
     """
     if len(g) <= 1:
-        return gf_strip([gf_eval(f, gf_LC(g, K), p, K)])
+        return gf_strip([gf_eval(f, dmp_LC(g, K), p, K)])
 
     if not f:
         return []

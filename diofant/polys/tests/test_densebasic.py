@@ -39,6 +39,9 @@ def test_dmp_LC():
     assert dmp_LC([[2, 3, 4], [5]], ZZ) == [2, 3, 4]
     assert dmp_LC([[[]]], ZZ) == [[]]
     assert dmp_LC([[[2], [3, 4]], [[5]]], ZZ) == [[2], [3, 4]]
+    assert dmp_LC([3, 0, 1], ZZ) == 3
+    assert dmp_LC([1], ZZ) == 1
+    assert dmp_LC([1, 2], ZZ) == 1
 
 
 def test_dmp_TC():
