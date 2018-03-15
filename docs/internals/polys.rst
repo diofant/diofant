@@ -213,7 +213,6 @@ fields.
 .. autofunction:: gf_crt2
 .. autofunction:: gf_int
 .. autofunction:: gf_degree
-.. autofunction:: gf_TC
 .. autofunction:: gf_strip
 .. autofunction:: gf_trunc
 .. autofunction:: gf_normal

@@ -23,9 +23,9 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_Qmatrix, gf_quo, gf_rem, gf_rshift,
                                        gf_sqf_list, gf_sqf_p, gf_sqf_part,
                                        gf_sqr, gf_strip, gf_sub, gf_sub_ground,
-                                       gf_sub_mul, gf_TC, gf_to_dict,
-                                       gf_to_int_poly, gf_trace_map, gf_trunc,
-                                       gf_value, linear_congruence)
+                                       gf_sub_mul, gf_to_dict, gf_to_int_poly,
+                                       gf_trace_map, gf_trunc, gf_value,
+                                       linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
 
@@ -118,12 +118,6 @@ def test_gf_from_to_int_poly():
 
     assert gf_to_int_poly([10], 11, symmetric=True) == [-1]
     assert gf_to_int_poly([10], 11, symmetric=False) == [10]
-
-
-def test_gf_TC():
-    assert gf_TC([], ZZ) == 0
-    assert gf_TC([1], ZZ) == 1
-    assert gf_TC([1, 2], ZZ) == 2
 
 
 def test_gf_monic():

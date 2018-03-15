@@ -130,23 +130,6 @@ def gf_degree(f):
     return len(f) - 1
 
 
-def gf_TC(f, K):
-    """
-    Return the trailing coefficient of ``f``.
-
-    Examples
-    ========
-
-    >>> gf_TC([3, 0, 1], ZZ)
-    1
-
-    """
-    if not f:
-        return K.zero
-    else:
-        return f[-1]
-
-
 def gf_strip(f):
     """
     Remove leading zeros from ``f``.

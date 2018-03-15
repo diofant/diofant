@@ -51,6 +51,9 @@ def test_dmp_TC():
     assert dmp_TC([[2, 3, 4], [5]], ZZ) == [5]
     assert dmp_TC([[[]]], ZZ) == [[]]
     assert dmp_TC([[[2], [3, 4]], [[5]]], ZZ) == [[5]]
+    assert dmp_TC([1], ZZ) == 1
+    assert dmp_TC([1, 2], ZZ) == 2
+    assert dmp_TC([3, 0, 1], ZZ) == 1
 
 
 def test_dmp_ground_LC():
