@@ -191,7 +191,6 @@ may be slightly more efficient.)
 .. autofunction:: dmp_lift
 .. autofunction:: dup_sign_variations
 .. autofunction:: dmp_clear_denoms
-.. autofunction:: dmp_revert
 
 .. currentmodule:: diofant.polys.rootisolation
 

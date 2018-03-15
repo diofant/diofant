@@ -12,7 +12,7 @@ from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
-from .polyerrors import DomainError, MultivariatePolynomialError
+from .polyerrors import DomainError
 
 
 def dup_integrate(f, m, K):
@@ -1176,18 +1176,3 @@ def dup_revert(f, n, K):
         h = dup_lshift(h, dmp_degree(h, 0), K)
 
     return g
-
-
-def dmp_revert(f, g, u, K):
-    """
-    Compute ``f**(-1)`` mod ``x**n`` using Newton iteration.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-    """
-    if not u:
-        return dup_revert(f, g, K)
-    else:
-        raise MultivariatePolynomialError(f, g)

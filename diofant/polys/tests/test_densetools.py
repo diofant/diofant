@@ -14,8 +14,8 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_ground_content, dmp_ground_extract,
                                       dmp_ground_monic, dmp_ground_primitive,
                                       dmp_ground_trunc, dmp_integrate,
-                                      dmp_integrate_in, dmp_lift, dmp_revert,
-                                      dmp_trunc, dup_clear_denoms, dup_compose,
+                                      dmp_integrate_in, dmp_lift, dmp_trunc,
+                                      dup_clear_denoms, dup_compose,
                                       dup_content, dup_decompose, dup_diff,
                                       dup_eval, dup_extract, dup_integrate,
                                       dup_mirror, dup_monic, dup_primitive,
@@ -23,7 +23,6 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dup_sign_variations, dup_transform,
                                       dup_trunc)
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
-                                      MultivariatePolynomialError,
                                       NotReversible)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
@@ -249,15 +248,6 @@ def test_dup_revert():
     assert dup_revert(f, 8, QQ) == g
 
     pytest.raises(NotReversible, lambda: dup_revert([QQ(1), QQ(0)], 3, QQ))
-
-
-def test_dmp_revert():
-    f = [-QQ(1, 720), QQ(0), QQ(1, 24), QQ(0), -QQ(1, 2), QQ(0), QQ(1)]
-    g = [QQ(61, 720), QQ(0), QQ(5, 24), QQ(0), QQ(1, 2), QQ(0), QQ(1)]
-
-    assert dmp_revert(f, 8, 0, QQ) == g
-
-    pytest.raises(MultivariatePolynomialError, lambda: dmp_revert([[1]], 2, 1, QQ))
 
 
 def test_dup_trunc():
