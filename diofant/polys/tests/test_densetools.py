@@ -15,11 +15,11 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_ground_monic, dmp_ground_primitive,
                                       dmp_ground_trunc, dmp_integrate,
                                       dmp_integrate_in, dmp_lift, dmp_trunc,
-                                      dup_clear_denoms, dup_compose,
-                                      dup_content, dup_decompose, dup_diff,
-                                      dup_eval, dup_extract, dup_integrate,
-                                      dup_mirror, dup_monic, dup_primitive,
-                                      dup_revert, dup_scale, dup_shift,
+                                      dup_clear_denoms, dup_content,
+                                      dup_decompose, dup_diff, dup_eval,
+                                      dup_extract, dup_integrate, dup_mirror,
+                                      dup_monic, dup_primitive, dup_revert,
+                                      dup_scale, dup_shift,
                                       dup_sign_variations, dup_transform,
                                       dup_trunc)
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
@@ -491,26 +491,26 @@ def test_dup_transform():
         [6, -82, 541, -2205, 6277, -12723, 17191, -13603, 4773]
 
 
-def test_dup_compose():
-    assert dup_compose([], [], ZZ) == []
-    assert dup_compose([], [1], ZZ) == []
-    assert dup_compose([], [1, 2], ZZ) == []
-
-    assert dup_compose([1], [], ZZ) == [1]
-
-    assert dup_compose([1, 2, 0], [], ZZ) == []
-    assert dup_compose([1, 2, 1], [], ZZ) == [1]
-
-    assert dup_compose([1, 2, 1], [1], ZZ) == [4]
-    assert dup_compose([1, 2, 1], [7], ZZ) == [64]
-
-    assert dup_compose([1, 2, 1], [1, -1], ZZ) == [1, 0, 0]
-    assert dup_compose([1, 2, 1], [1, 1], ZZ) == [1, 4, 4]
-    assert dup_compose([1, 2, 1], [1, 2, 1], ZZ) == [1, 4, 8, 8, 4]
-
-
 def test_dmp_compose():
+    assert dmp_compose([], [], 0, ZZ) == []
+    assert dmp_compose([], [1], 0, ZZ) == []
+    assert dmp_compose([], [1, 2], 0, ZZ) == []
+
+    assert dmp_compose([1], [], 0, ZZ) == [1]
+
+    assert dmp_compose([1, 2, 0], [], 0, ZZ) == []
+    assert dmp_compose([1, 2, 1], [], 0, ZZ) == [1]
+
+    assert dmp_compose([1, 2, 1], [1], 0, ZZ) == [4]
+    assert dmp_compose([1, 2, 1], [7], 0, ZZ) == [64]
+
+    assert dmp_compose([1, 2, 1], [1, -1], 0, ZZ) == [1, 0, 0]
+    assert dmp_compose([1, 2, 1], [1, 1], 0, ZZ) == [1, 4, 4]
     assert dmp_compose([1, 2, 1], [1, 2, 1], 0, ZZ) == [1, 4, 8, 8, 4]
+
+    assert dmp_compose([1, 2, 1], [1, 2, 1], 0, ZZ) == [1, 4, 8, 8, 4]
+
+    assert dmp_compose([1, 1, 0], [1, -1], 0, ZZ) == [1, -1, 0]
 
     assert dmp_compose([[[]]], [[[]]], 2, ZZ) == [[[]]]
     assert dmp_compose([[[]]], [[[1]]], 2, ZZ) == [[[]]]
