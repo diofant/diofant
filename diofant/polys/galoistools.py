@@ -6,7 +6,7 @@ from random import uniform
 
 from ..core import prod
 from ..ntheory import factorint
-from .densebasic import dmp_LC
+from .densebasic import dmp_LC, dmp_strip
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
@@ -130,31 +130,6 @@ def gf_degree(f):
     return len(f) - 1
 
 
-def gf_strip(f):
-    """
-    Remove leading zeros from ``f``.
-
-
-    Examples
-    ========
-
-    >>> gf_strip([0, 0, 0, 3, 0, 1])
-    [3, 0, 1]
-    """
-    if not f or f[0]:
-        return f
-
-    k = 0
-
-    for coeff in f:
-        if coeff:
-            break
-        else:
-            k += 1
-
-    return f[k:]
-
-
 def gf_trunc(f, p):
     """
     Reduce all coefficients modulo ``p``.
@@ -166,7 +141,7 @@ def gf_trunc(f, p):
     [2, 3, 3]
 
     """
-    return gf_strip([ a % p for a in f ])
+    return dmp_strip([a % p for a in f], 0)
 
 
 def gf_normal(f, p, K):
@@ -367,7 +342,7 @@ def gf_add(f, g, p, K):
     dg = gf_degree(g)
 
     if df == dg:
-        return gf_strip([ (a + b) % p for a, b in zip(f, g) ])
+        return dmp_strip([(a + b) % p for a, b in zip(f, g)], 0)
     else:
         k = abs(df - dg)
 
@@ -398,7 +373,7 @@ def gf_sub(f, g, p, K):
     dg = gf_degree(g)
 
     if df == dg:
-        return gf_strip([ (a - b) % p for a, b in zip(f, g) ])
+        return dmp_strip([(a - b) % p for a, b in zip(f, g)], 0)
     else:
         k = abs(df - dg)
 
@@ -434,7 +409,7 @@ def gf_mul(f, g, p, K):
 
         h[i] = coeff % p
 
-    return gf_strip(h)
+    return dmp_strip(h, 0)
 
 
 def gf_sqr(f, p, K):
@@ -473,7 +448,7 @@ def gf_sqr(f, p, K):
 
         h[i] = coeff % p
 
-    return gf_strip(h)
+    return dmp_strip(h, 0)
 
 
 def gf_add_mul(f, g, h, p, K):
@@ -573,7 +548,7 @@ def gf_div(f, g, p, K):
 
         h[i] = coeff % p
 
-    return h[:dq + 1], gf_strip(h[dq + 1:])
+    return h[:dq + 1], dmp_strip(h[dq + 1:], 0)
 
 
 def gf_rem(f, g, p, K):
@@ -1003,7 +978,7 @@ def gf_diff(f, p, K):
 
         n -= 1
 
-    return gf_strip(h)
+    return dmp_strip(h, 0)
 
 
 def gf_eval(f, a, p, K):
@@ -1050,7 +1025,7 @@ def gf_compose(f, g, p, K):
     [2, 4, 0, 3, 0]
     """
     if len(g) <= 1:
-        return gf_strip([gf_eval(f, dmp_LC(g, K), p, K)])
+        return dmp_strip([gf_eval(f, dmp_LC(g, K), p, K)], 0)
 
     if not f:
         return []
@@ -1518,7 +1493,7 @@ def gf_berlekamp(f, p, K):
     V = gf_Qbasis(Q, p, K)
 
     for i, v in enumerate(V):
-        V[i] = gf_strip(list(reversed(v)))
+        V[i] = dmp_strip(list(reversed(v)), 0)
 
     factors = [f]
 

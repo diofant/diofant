@@ -144,6 +144,8 @@ def test_dmp_strip():
 
     assert dmp_strip([0, 0, 1, 2, 3, 0], 0) == [1, 2, 3, 0]
 
+    assert dmp_strip([0, 0, 0, 3, 0, 1], 0) == [3, 0, 1]
+
     assert dmp_strip([[]], 1) == [[]]
     assert dmp_strip([[], []], 1) == [[]]
     assert dmp_strip([[], [], []], 1) == [[]]
