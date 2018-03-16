@@ -32,7 +32,7 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
         return self.field.algebraic_field(*extension)
 
     def from_AlgebraicField(self, a, K0):
-        """Convert a ``ANP`` object to ``dtype``. """
+        """Convert an algebraic number to ``dtype``. """
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
 

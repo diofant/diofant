@@ -173,7 +173,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         return a
 
     def from_AlgebraicField(self, a, K0):
-        """Convert a ``ANP`` object to ``dtype``. """
+        """Convert an algebraic number to ``dtype``. """
         return self(K0.to_diofant(a))
 
     @property

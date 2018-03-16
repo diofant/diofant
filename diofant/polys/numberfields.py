@@ -15,10 +15,9 @@ from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
 from ..utilities.iterables import uniq
-from .densetools import dmp_compose
 from .orthopolys import dup_chebyshevt
 from .polyconfig import query
-from .polyerrors import IsomorphismFailed, NotAlgebraic
+from .polyerrors import NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, poly_from_expr, resultant)
 from .polyutils import dict_from_expr, expr_from_dict
@@ -29,7 +28,7 @@ from .specialpolys import cyclotomic_poly
 
 
 __all__ = ('minimal_polynomial', 'minpoly', 'primitive_element',
-           'field_isomorphism', 'to_number_field')
+           'field_isomorphism')
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
@@ -823,18 +822,3 @@ def field_isomorphism(a, b, **args):
             pass
 
     return field_isomorphism_factor(a, b)
-
-
-def to_number_field(expr, K, **args):
-    """Express ``expr`` in the algebraic field ``K``. """
-
-    expr_field = QQ.algebraic_field(expr)
-    root = expr_field.root
-
-    coeffs = field_isomorphism(expr_field, K)
-
-    if coeffs is not None:
-        root_coeffs = dmp_compose(root.rep, coeffs, 0, K.domain)
-        return K(root_coeffs)
-    else:
-        raise IsomorphismFailed("%s is not in a subfield of %s" % (expr_field, K))

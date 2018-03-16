@@ -106,7 +106,6 @@ Algebraic number fields
 
 .. autofunction:: primitive_element
 .. autofunction:: field_isomorphism
-.. autofunction:: to_number_field
 
 Monomials encoded as tuples
 ===========================

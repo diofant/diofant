@@ -6,16 +6,14 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_div, dmp_exquo,
                          dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_neg, dmp_pdiv, dmp_pexquo,
                          dmp_pow, dmp_pquo, dmp_prem, dmp_quo, dmp_quo_ground,
-                         dmp_rem, dmp_sqr, dmp_sub, dmp_sub_ground, dup_add,
-                         dup_mul, dup_sub)
+                         dmp_rem, dmp_sqr, dmp_sub, dmp_sub_ground)
 from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_from_diofant, dmp_ground,
                          dmp_ground_LC, dmp_ground_nth, dmp_ground_p,
-                         dmp_ground_TC, dmp_inject, dmp_LC, dmp_list_terms,
-                         dmp_one_p, dmp_permute, dmp_slice_in, dmp_strip,
-                         dmp_terms_gcd, dmp_to_dict, dmp_to_tuple,
-                         dmp_validate, dmp_zero_p, dup_from_dict)
+                         dmp_ground_TC, dmp_inject, dmp_list_terms, dmp_one_p,
+                         dmp_permute, dmp_slice_in, dmp_terms_gcd, dmp_to_dict,
+                         dmp_to_tuple, dmp_validate, dmp_zero_p)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -26,7 +24,7 @@ from .euclidtools import (dmp_cancel, dmp_discriminant, dmp_gcd, dmp_inner_gcd,
                           dup_half_gcdex, dup_invert)
 from .factortools import (dmp_factor_list, dmp_factor_list_include,
                           dmp_irreducible_p, dup_cyclotomic_p)
-from .polyerrors import CoercionFailed, PolynomialError, UnificationFailed
+from .polyerrors import PolynomialError, UnificationFailed
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_real_roots, dup_isolate_real_roots_sqf,
@@ -825,177 +823,3 @@ class DMP(CantSympify):
 
     def __bool__(self):
         return not dmp_zero_p(self.rep, self.lev)
-
-
-class ANP(CantSympify):
-    """Dense Algebraic Number Polynomials over a field. """
-
-    def __init__(self, rep, mod, dom):
-        if type(rep) is dict:
-            self.rep = dup_from_dict(rep, dom)
-        else:
-            if type(rep) is not list:
-                rep = [dom.convert(rep)]
-
-            self.rep = dmp_strip(rep, 0)
-
-        if type(mod) is dict:
-            self.mod = dup_from_dict(mod, dom)
-        else:
-            self.mod = dmp_strip(mod, 0)
-
-        self.domain = dom
-
-    def __hash__(self):
-        return hash((self.__class__.__name__, dmp_to_tuple(self.rep, 0),
-                     dmp_to_tuple(self.mod, 0), self.domain))
-
-    def unify(self, other):
-        """Unify representations of two algebraic numbers. """
-        if not isinstance(other, ANP) or self.mod != other.mod:
-            raise UnificationFailed("can't unify %s with %s" % (self, other))
-
-        if self.domain == other.domain:
-            return self.domain, self.per, self.rep, other.rep, self.mod
-        else:
-            dom = self.domain.unify(other.domain)
-
-            F = dmp_convert(self.rep, 0, self.domain, dom)
-            G = dmp_convert(other.rep, 0, other.domain, dom)
-
-            mod = dmp_convert(self.mod, 0, self.domain, dom)
-
-            def per(rep):
-                return ANP(rep, mod, dom)
-
-            return dom, per, F, G, mod
-
-    def per(self, rep, mod=None, dom=None):
-        return ANP(rep, mod or self.mod, dom or self.domain)
-
-    @classmethod
-    def zero(cls, mod, dom):
-        return ANP(0, mod, dom)
-
-    @classmethod
-    def one(cls, mod, dom):
-        return ANP(1, mod, dom)
-
-    def to_dict(self):
-        """Convert ``self`` to a dict representation with native coefficients. """
-        return dmp_to_dict(self.rep, 0, self.domain)
-
-    def to_diofant_list(self):
-        """Convert ``self`` to a list representation with Diofant coefficients. """
-        return [self.domain.to_diofant(c) for c in self.rep]
-
-    @classmethod
-    def from_list(cls, rep, mod, dom):
-        return ANP(dmp_strip(list(map(dom.convert, rep)), 0), mod, dom)
-
-    def LC(self):
-        """Returns the leading coefficient of ``self``. """
-        return dmp_LC(self.rep, self.domain)
-
-    @property
-    def is_zero(self):
-        """Returns ``True`` if ``self`` is a zero algebraic number. """
-        return not self
-
-    @property
-    def is_one(self):
-        """Returns ``True`` if ``self`` is a unit algebraic number. """
-        return self.rep == [self.domain.one]
-
-    @property
-    def is_ground(self):
-        """Returns ``True`` if ``self`` is an element of the ground domain. """
-        return not self.rep or len(self.rep) == 1
-
-    def __neg__(self):
-        return self.per(dmp_neg(self.rep, 0, self.domain))
-
-    def __add__(self, other):
-        if not isinstance(other, ANP):
-            try:
-                other = self.per(other)
-            except (CoercionFailed, TypeError):
-                return NotImplemented
-
-        dom, per, F, G, mod = self.unify(other)
-        return per(dup_add(F, G, dom))
-
-    def __radd__(self, other):
-        return self.__add__(other)
-
-    def __sub__(self, other):
-        if not isinstance(other, ANP):
-            try:
-                other = self.per(other)
-            except (CoercionFailed, TypeError):
-                return NotImplemented
-
-        dom, per, F, G, mod = self.unify(other)
-        return per(dup_sub(F, G, dom))
-
-    def __rsub__(self, other):
-        return (-self).__add__(other)
-
-    def __mul__(self, other):
-        if not isinstance(other, ANP):
-            try:
-                other = self.per(other)
-            except (CoercionFailed, TypeError):
-                return NotImplemented
-
-        dom, per, F, G, mod = self.unify(other)
-        return per(dmp_rem(dup_mul(F, G, dom), mod, 0, dom))
-
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
-    def __pow__(self, n):
-        if isinstance(n, int):
-            if n < 0:
-                F, n = dup_invert(self.rep, self.mod, self.domain), -n
-            else:
-                F = self.rep
-
-            return self.per(dmp_rem(dmp_pow(F, n, 0, self.domain),
-                                    self.mod, 0, self.domain))
-        else:
-            raise TypeError("``int`` expected, got %s" % type(n))
-
-    def __divmod__(self, other):
-        dom, per, F, G, mod = self.unify(other)
-        return (per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom),
-                                    dom), mod, 0, dom)), self.zero(mod, dom))
-
-    def __mod__(self, other):
-        dom, _, _, _, mod = self.unify(other)
-        return self.zero(mod, dom)
-
-    def __truediv__(self, other):
-        if not isinstance(other, ANP):
-            try:
-                other = self.per(other)
-            except (CoercionFailed, TypeError):
-                return NotImplemented
-
-        dom, per, F, G, mod = self.unify(other)
-        return per(dmp_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, 0, dom))
-
-    def __eq__(self, other):
-        try:
-            _, _, F, G, _ = self.unify(other)
-
-            return F == G
-        except UnificationFailed:
-            return False
-
-    def __lt__(self, other):
-        _, _, F, G, _ = self.unify(other)
-        return F.__lt__(G)
-
-    def __bool__(self):
-        return bool(self.rep)

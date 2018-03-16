@@ -10,10 +10,9 @@ from diofant.abc import x, y, z
 from diofant.domains import QQ
 from diofant.polys.numberfields import (AlgebraicNumber, field_isomorphism,
                                         is_isomorphism_possible,
-                                        minimal_polynomial, primitive_element,
-                                        to_number_field)
+                                        minimal_polynomial, primitive_element)
 from diofant.polys.polyclasses import DMP
-from diofant.polys.polyerrors import IsomorphismFailed, NotAlgebraic
+from diofant.polys.polyerrors import CoercionFailed, NotAlgebraic
 from diofant.polys.polytools import degree
 from diofant.polys.rootoftools import RootOf
 
@@ -531,19 +530,19 @@ def test_field_isomorphism():
 
 def test_to_number_field():
     A = QQ.algebraic_field(sqrt(2))
-    assert to_number_field(sqrt(2), A) == A([1, 0])
+    assert A.from_diofant(sqrt(2)) == A([1, 0])
     B = A.algebraic_field(sqrt(3))
-    assert to_number_field(sqrt(2) + sqrt(3), B) == B([1, 0])
+    assert B.from_diofant(sqrt(2) + sqrt(3)) == B([1, 0])
 
     a = AlgebraicNumber(sqrt(2) + sqrt(3), [Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)])
 
-    assert to_number_field(sqrt(2), B) == B(a.coeffs())
+    assert B.from_diofant(sqrt(2)) == B(a.coeffs())
 
-    pytest.raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), QQ.algebraic_field(sqrt(3))))
+    pytest.raises(CoercionFailed, lambda: QQ.algebraic_field(sqrt(3)).from_diofant(sqrt(2)))
 
     # issue sympy/sympy#5649
-    assert AlgebraicNumber(1).rep.rep == to_number_field(1, QQ.algebraic_field(1)).rep
-    assert AlgebraicNumber(sqrt(2)).rep.rep == to_number_field(sqrt(2), A).rep
+    assert AlgebraicNumber(1).rep.rep == QQ.algebraic_field(1).from_diofant(1).rep
+    assert AlgebraicNumber(sqrt(2)).rep.rep == A.from_diofant(sqrt(2)).rep
 
     p = x**6 - 6*x**4 - 6*x**3 + 12*x**2 - 36*x + 1
     r0, r1 = p.as_poly(x).all_roots()[:2]
@@ -551,7 +550,7 @@ def test_to_number_field():
                              Rational(128, 151), Rational(936, 755),
                              Rational(-1003, 755), Rational(2184, 755)])
     A = QQ.algebraic_field(r0)
-    assert to_number_field(r1, A) == A(a.coeffs())
+    assert A.from_diofant(r1) == A(a.coeffs())
 
 
 def test_AlgebraicNumber():
@@ -656,7 +655,7 @@ def test_AlgebraicNumber():
 
     A = QQ.algebraic_field(AlgebraicNumber(sqrt(2)))
     a = A([1, 0])
-    b = to_number_field(sqrt(2), A)
+    b = A.from_diofant(sqrt(2))
     assert a == b
 
     a = AlgebraicNumber(sqrt(2), [1, 2, 3])
