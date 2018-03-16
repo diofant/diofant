@@ -39,6 +39,9 @@ def test_dmp_LC():
     assert dmp_LC([[2, 3, 4], [5]], ZZ) == [2, 3, 4]
     assert dmp_LC([[[]]], ZZ) == [[]]
     assert dmp_LC([[[2], [3, 4]], [[5]]], ZZ) == [[2], [3, 4]]
+    assert dmp_LC([3, 0, 1], ZZ) == 3
+    assert dmp_LC([1], ZZ) == 1
+    assert dmp_LC([1, 2], ZZ) == 1
 
 
 def test_dmp_TC():
@@ -48,6 +51,9 @@ def test_dmp_TC():
     assert dmp_TC([[2, 3, 4], [5]], ZZ) == [5]
     assert dmp_TC([[[]]], ZZ) == [[]]
     assert dmp_TC([[[2], [3, 4]], [[5]]], ZZ) == [[5]]
+    assert dmp_TC([1], ZZ) == 1
+    assert dmp_TC([1, 2], ZZ) == 2
+    assert dmp_TC([3, 0, 1], ZZ) == 1
 
 
 def test_dmp_ground_LC():
@@ -137,6 +143,8 @@ def test_dmp_strip():
     assert dmp_strip([0, 1, 0], 0) == [1, 0]
 
     assert dmp_strip([0, 0, 1, 2, 3, 0], 0) == [1, 2, 3, 0]
+
+    assert dmp_strip([0, 0, 0, 3, 0, 1], 0) == [3, 0, 1]
 
     assert dmp_strip([[]], 1) == [[]]
     assert dmp_strip([[], []], 1) == [[]]

@@ -188,7 +188,6 @@ may be slightly more efficient.)
 .. autofunction:: dmp_lift
 .. autofunction:: dup_sign_variations
 .. autofunction:: dmp_clear_denoms
-.. autofunction:: dmp_revert
 
 .. currentmodule:: diofant.polys.rootisolation
 
@@ -210,9 +209,6 @@ fields.
 .. autofunction:: gf_crt2
 .. autofunction:: gf_int
 .. autofunction:: gf_degree
-.. autofunction:: gf_LC
-.. autofunction:: gf_TC
-.. autofunction:: gf_strip
 .. autofunction:: gf_trunc
 .. autofunction:: gf_normal
 .. autofunction:: gf_from_dict

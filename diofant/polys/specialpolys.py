@@ -87,9 +87,9 @@ def symmetric_poly(n, *gens, **args):
         return Poly(poly, *gens)
 
 
-def random_poly(x, n, inf, sup, domain=ZZ, polys=False):
+def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
     """Return a polynomial of degree ``n`` with coefficients in ``[inf, sup]``. """
-    poly = Poly(dup_random(n, inf, sup, domain), x, domain=domain)
+    poly = Poly(dup_random(n, inf, sup, domain, percent), x, domain=domain)
 
     if not polys:
         return poly.as_expr()

@@ -7,12 +7,12 @@ from ..core import I
 from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
                          dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add,
-                         dup_add_term, dup_lshift, dup_mul, dup_sqr, dup_sub)
+                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_lshift,
+                         dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
-from .polyerrors import DomainError, MultivariatePolynomialError
+from .polyerrors import DomainError
 
 
 def dup_integrate(f, m, K):
@@ -835,33 +835,6 @@ def dup_transform(f, p, q, K):
     return h
 
 
-def dup_compose(f, g, K):
-    """
-    Evaluate functional composition ``f(g)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_compose(x**2 + x, x - 1)
-    x**2 - x
-    """
-    if len(g) <= 1:
-        return dmp_strip([dup_eval(f, dmp_LC(g, K), K)], 0)
-
-    if not f:
-        return []
-
-    h = [f[0]]
-
-    for c in f[1:]:
-        h = dup_mul(h, g, K)
-        h = dup_add_term(h, c, 0, K)
-
-    return h
-
-
 def dmp_compose(f, g, u, K):
     """
     Evaluate functional composition ``f(g)`` in ``K[X]``.
@@ -874,9 +847,6 @@ def dmp_compose(f, g, u, K):
     >>> R.dmp_compose(x*y + 2*x + y, y)
     y**2 + 3*y
     """
-    if not u:
-        return dup_compose(f, g, K)
-
     if dmp_zero_p(f, u):
         return f
 
@@ -1176,18 +1146,3 @@ def dup_revert(f, n, K):
         h = dup_lshift(h, dmp_degree(h, 0), K)
 
     return g
-
-
-def dmp_revert(f, g, u, K):
-    """
-    Compute ``f**(-1)`` mod ``x**n`` using Newton iteration.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-    """
-    if not u:
-        return dup_revert(f, g, K)
-    else:
-        raise MultivariatePolynomialError(f, g)

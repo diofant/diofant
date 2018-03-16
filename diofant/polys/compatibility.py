@@ -11,18 +11,17 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
                          dup_ff_div, dup_lshift, dup_mul, dup_mul_term,
                          dup_pdiv, dup_pexquo, dup_pquo, dup_prem, dup_rr_div,
                          dup_rshift, dup_sqr, dup_sub, dup_sub_term)
-from .densebasic import dmp_degree, dmp_LC, dmp_to_dict
+from .densebasic import dmp_degree, dmp_LC, dmp_strip, dmp_to_dict
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_diff_eval_in, dmp_diff_in, dmp_eval, dmp_eval_in,
                          dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate, dmp_integrate_in,
-                         dmp_lift, dmp_trunc, dup_clear_denoms, dup_compose,
-                         dup_content, dup_decompose, dup_diff, dup_eval,
-                         dup_extract, dup_integrate, dup_mirror, dup_monic,
-                         dup_primitive, dup_real_imag, dup_revert, dup_scale,
-                         dup_shift, dup_sign_variations, dup_transform,
-                         dup_trunc)
+                         dmp_lift, dmp_trunc, dup_clear_denoms, dup_content,
+                         dup_decompose, dup_diff, dup_eval, dup_extract,
+                         dup_integrate, dup_mirror, dup_monic, dup_primitive,
+                         dup_real_imag, dup_revert, dup_scale, dup_shift,
+                         dup_sign_variations, dup_transform, dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -48,7 +47,7 @@ from .factortools import (dmp_ext_factor, dmp_factor_list,
                           dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
                           dup_zz_hensel_step, dup_zz_irreducible_p,
                           dup_zz_mignotte_bound)
-from .galoistools import gf_factor_sqf, gf_strip
+from .galoistools import gf_factor_sqf
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -320,9 +319,6 @@ class IPolys:
 
     def dup_transform(self, f, p, q):
         return self.from_dense(dup_transform(self.to_dense(f), self.to_dense(p), self.to_dense(q), self.domain))
-
-    def dup_compose(self, f, g):
-        return self.from_dense(dup_compose(self.to_dense(f), self.to_dense(g), self.domain))
 
     def dmp_compose(self, f, g):
         return self.from_dense(dmp_compose(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
@@ -724,7 +720,7 @@ class IPolys:
         return tuple(map(self.from_dense, dmp_fateman_poly_F_3(self.ngens-1, self.domain)))
 
     def to_gf_dense(self, element):
-        return gf_strip([ self.domain.domain.convert(c, self.domain) for c in self.wrap(element).to_dense() ])
+        return dmp_strip([self.domain.domain.convert(c, self.domain) for c in self.wrap(element).to_dense()], 0)
 
     def from_gf_dense(self, element):
         return self.from_dict(dmp_to_dict(element, self.ngens-1, self.domain.domain))
