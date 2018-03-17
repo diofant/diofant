@@ -57,3 +57,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`5850` minpoly() should use PurePoly
 * :sympyissue:`14494` make better decisions for minpoly based on domain
 * :sympyissue:`14389` AlgebraicNumber should be a domain element?
+* :sympyissue:`14291` poly(((x - 1)**2 + 1)*((x - 1)**2 + 2)*(x - 1)).all_roots() hangs
