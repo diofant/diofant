@@ -252,7 +252,7 @@ class RootOf(Expr):
 
         for factor, k in factors:
             real_part = cls._get_reals_sqf(factor)
-            reals.extend([ (root, factor, k) for root in real_part ])
+            reals.extend([(root, factor, k) for root in real_part])
 
         return reals
 
@@ -263,7 +263,7 @@ class RootOf(Expr):
 
         for factor, k in factors:
             complex_part = cls._get_complexes_sqf(factor)
-            complexes.extend([ (root, factor, k) for root in complex_part ])
+            complexes.extend([(root, factor, k) for root in complex_part])
 
         return complexes
 
@@ -812,7 +812,7 @@ class RootSum(Expr):
         if len(_roots) < self.poly.degree():
             return self
         else:
-            return Add(*[ self.fun(r) for r in _roots ])
+            return Add(*[self.fun(r) for r in _roots])
 
     def _eval_evalf(self, prec):
         try:
@@ -820,7 +820,7 @@ class RootSum(Expr):
         except (DomainError, PolynomialError):
             return self
         else:
-            return Add(*[ self.fun(r) for r in _roots ])
+            return Add(*[self.fun(r) for r in _roots])
 
     def _eval_derivative(self, x):
         var, expr = self.fun.args
