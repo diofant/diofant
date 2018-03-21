@@ -148,8 +148,8 @@ class RootOf(Expr):
         obj.index = index
 
         try:
-            _reals_cache[obj.poly] = _reals_cache[poly]
-            _complexes_cache[obj.poly] = _complexes_cache[poly]
+            _reals_cache[obj.poly.rep] = _reals_cache[poly.rep]
+            _complexes_cache[obj.poly.rep] = _complexes_cache[poly.rep]
         except KeyError:
             pass
 
@@ -172,7 +172,7 @@ class RootOf(Expr):
 
     def _eval_is_real(self):
         try:
-            return self.index < len(_reals_cache[self.poly])
+            return self.index < len(_reals_cache[self.poly.rep])
         except KeyError:
             pass
     _eval_is_extended_real = _eval_is_real
@@ -210,9 +210,9 @@ class RootOf(Expr):
             poly = self.poly
             conj_interval = self.interval.conjugate()
             index = self.index
-            nreals = len(_reals_cache[poly])
+            nreals = len(_reals_cache[poly.rep])
             for i in range(nreals, degree - nreals):  # pragma: no branch
-                other = _complexes_cache[poly][i - nreals]
+                other = _complexes_cache[poly.rep][i - nreals]
                 if i != index and not other.is_disjoint(conj_interval):
                     break
             return self._new(poly, i)
@@ -234,16 +234,16 @@ class RootOf(Expr):
     @classmethod
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial. """
-        if factor not in _reals_cache:
-            _reals_cache[factor] = dup_isolate_real_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
-        return _reals_cache[factor]
+        if factor.rep not in _reals_cache:
+            _reals_cache[factor.rep] = dup_isolate_real_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+        return _reals_cache[factor.rep]
 
     @classmethod
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial. """
-        if factor not in _complexes_cache:
-            _complexes_cache[factor] = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, eps=Rational(1, 10), blackbox=True)
-        return _complexes_cache[factor]
+        if factor.rep not in _complexes_cache:
+            _complexes_cache[factor.rep] = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, eps=Rational(1, 10), blackbox=True)
+        return _complexes_cache[factor.rep]
 
     @classmethod
     def _get_reals(cls, factors):
@@ -288,7 +288,7 @@ class RootOf(Expr):
                 cache[factor] = [root]
 
         for factor, roots in cache.items():
-            _reals_cache[factor] = roots
+            _reals_cache[factor.rep] = roots
 
         return reals
 
@@ -315,7 +315,7 @@ class RootOf(Expr):
                 cache[factor] = [root]
 
         for factor, roots in cache.items():
-            _complexes_cache[factor] = roots
+            _complexes_cache[factor.rep] = roots
 
         return complexes
 
@@ -349,7 +349,7 @@ class RootOf(Expr):
                     if factor == poly:
                         index += 1
 
-                index += len(_reals_cache[poly])
+                index += len(_reals_cache[poly.rep])
 
                 return poly, index
             else:
@@ -485,10 +485,10 @@ class RootOf(Expr):
     def interval(self):
         """Return isolation interval for the root. """
         if self.is_real:
-            return _reals_cache[self.poly][self.index]
+            return _reals_cache[self.poly.rep][self.index]
         else:
-            reals_count = len(_reals_cache[self.poly])
-            return _complexes_cache[self.poly][self.index - reals_count]
+            reals_count = len(_reals_cache[self.poly.rep])
+            return _complexes_cache[self.poly.rep][self.index - reals_count]
 
     def _eval_subs(self, old, new):
         if old in self.free_symbols:
