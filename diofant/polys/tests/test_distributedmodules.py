@@ -114,8 +114,7 @@ def test_sdm_nf_mora():
     f1 = sdm_from_dict({(1, 1, 1, 0): QQ(1), (1, 0, 2, 0): QQ(1),
                         (1, 0, 0, 0): QQ(-1)}, grlex)
     f2 = sdm_from_dict({(1, 1, 1, 0): QQ(1)}, grlex)
-    (id0, id1, id2) = [sdm_from_dict({(i, 0, 0, 0): QQ(1)}, grlex)
-                       for i in range(3)]
+    id0, id1, id2 = [sdm_from_dict({(i, 0, 0, 0): QQ(1)}, grlex) for i in range(3)]
 
     assert sdm_nf_mora(f, [f1, f2], grlex, QQ, phantom=(id0, [id1, id2])) == \
         ([((1, 0, 2, 1), QQ(1)), ((1, 0, 0, 3), QQ(1)), ((1, 1, 1, 0), QQ(1)),
@@ -141,8 +140,7 @@ def test_sdm_nf_buchberger():
     f1 = sdm_from_dict({(1, 1, 1, 0): QQ(1), (1, 0, 2, 0): QQ(1),
                         (1, 0, 0, 0): QQ(-1)}, grlex)
     f2 = sdm_from_dict({(1, 1, 1, 0): QQ(1)}, grlex)
-    (id0, id1, id2) = [sdm_from_dict({(i, 0, 0, 0): QQ(1)}, grlex)
-                       for i in range(3)]
+    id0, id1, id2 = [sdm_from_dict({(i, 0, 0, 0): QQ(1)}, grlex) for i in range(3)]
 
     assert sdm_nf_buchberger(f, [f1, f2], grlex, QQ) == [((1, 0, 2, 1), 1),
                                                          ((1, 0, 0, 3), 1),

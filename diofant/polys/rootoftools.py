@@ -363,7 +363,7 @@ class RootOf(Expr):
     @classmethod
     def _indexed_root(cls, poly, index):
         """Get a root of a composite polynomial by index. """
-        (_, factors) = poly.factor_list()
+        _, factors = poly.factor_list()
 
         reals = cls._get_reals(factors)
         reals_count = cls._count_roots(reals)
@@ -379,7 +379,7 @@ class RootOf(Expr):
     @classmethod
     def _real_roots(cls, poly):
         """Get real roots of a composite polynomial. """
-        (_, factors) = poly.factor_list()
+        _, factors = poly.factor_list()
 
         reals = cls._get_reals(factors)
         reals = cls._reals_sorted(reals)
@@ -399,7 +399,7 @@ class RootOf(Expr):
         if not poly.domain.is_ZZ and poly.domain != QQ.algebraic_field(I):
             return [(poly, i) for i in range(poly.degree())]
 
-        (_, factors) = poly.factor_list()
+        _, factors = poly.factor_list()
 
         reals = cls._get_reals(factors)
         reals = cls._reals_sorted(reals)
@@ -778,12 +778,12 @@ class RootSum(Expr):
         if p is not None:
             p = Poly(dict(zip(p_monom, p_coeff)), *p.gens).as_expr()
         else:
-            (p,) = p_coeff
+            p, = p_coeff
 
         if q is not None:
             q = Poly(dict(zip(q_monom, q_coeff)), *q.gens).as_expr()
         else:
-            (q,) = q_coeff
+            q, = q_coeff
 
         return factor(p/q)
 

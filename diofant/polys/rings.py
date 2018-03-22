@@ -1493,7 +1493,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         p1 = self
         if p1 in p1.ring._gens_set:
             p1 = p1.copy()
-        (m, c) = mc
+        m, c = mc
         get = p1.get
         zero = p1.ring.domain.zero
         for k, v in p2.items():

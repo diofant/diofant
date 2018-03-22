@@ -552,7 +552,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
     _, factors = dmp_sqf_list(f, 0, K)
 
     if len(factors) == 1:
-        ((f, k),) = factors
+        (f, k), = factors
 
         I_neg = dup_inner_isolate_negative_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
         I_pos = dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
@@ -1704,7 +1704,7 @@ def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     _, factors = dmp_sqf_list(f, 0, K)
 
     if len(factors) == 1:
-        ((f, k),) = factors
+        (f, k), = factors
 
         real_part, complex_part = dup_isolate_all_roots_sqf(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
 

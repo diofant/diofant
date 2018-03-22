@@ -991,25 +991,25 @@ def test_Poly_termwise():
     g = Poly(x**2 + 2*x + 4)
 
     def func(monom, coeff):
-        (k,) = monom
+        k, = monom
         return coeff//10**(2 - k)
 
     assert f.termwise(func) == g
 
     def func(monom, coeff):
-        (k,) = monom
+        k, = monom
         return (k,), coeff//10**(2 - k)
 
     assert f.termwise(func) == g
 
     def func(monom, coeff):
-        (k,) = monom
+        k, = monom
         return (k,), coeff // 2
 
     assert f.termwise(func) == Poly(10*x + 200)
 
     def func(monom, coeff):
-        (k,) = monom
+        k, = monom
         return k % 2, coeff
 
     pytest.raises(PolynomialError, lambda: f.termwise(func))
@@ -3172,7 +3172,7 @@ def test_dimension_and_independent_sets():
     # polynomial ideals. J. Symbolic Computation, 6(1):231–247, November 1988.
 
     # Ex. 4.1.
-    V = (A31, A32, A21, B1, B2, B3, C3, C2) = symbols('A31 A32 A21 B1 B2 B3 C3 C2')
+    V = A31, A32, A21, B1, B2, B3, C3, C2 = symbols('A31 A32 A21 B1 B2 B3 C3 C2')
     S = (C2 - A21, C3 - A31 - A32, B1 + B2 + B3 - 1,
          B2*C2 + B3*C3 - QQ(1, 2), B2*C2**2 + B3*C3**2 - QQ(1, 3),
          B3*A32*C2 - QQ(1, 6))
@@ -3181,7 +3181,7 @@ def test_dimension_and_independent_sets():
     assert G.dimension == 2
 
     # Ex. 4.3
-    V = (B1, A32, B2, B3, A, C3, C2, B) = symbols('B1 A32 B2 B3 A C3 C2 B')
+    V = B1, A32, B2, B3, A, C3, C2, B = symbols('B1 A32 B2 B3 A C3 C2 B')
     S = (B1 + B2 + B3 - A - B,
          B2*C2 + B3*C3 - QQ(1, 2) - B/2 - B**2 + A*B,
          B2*C2**2 + B3*C3**2 - A/3 - A*B**2 + 4*B/3 + B**2 + B**3,
@@ -3195,7 +3195,7 @@ def test_dimension_and_independent_sets():
     assert G.dimension == 3
 
     # Ex. 4.4
-    V = (L7, L6, L4, L1, L5, L3, L2) = symbols('L7 L6 L4 L1 L5 L3 L2')
+    V = L7, L6, L4, L1, L5, L3, L2 = symbols('L7 L6 L4 L1 L5 L3 L2')
     S = (L1*(L4 - L5/2 + L6),
          (2*L1**2/7 - L4)*(-10*L1 + 5*L2 - L3),
          (2*L1**2/7 - L4)*(3*L4 - L5 + L6),
@@ -3213,7 +3213,7 @@ def test_dimension_and_independent_sets():
     assert G.dimension == 3
 
     # Algebraic Solution of Nonlinear Equation Systems in REDUCE, p.7.
-    V = (ax, bx, cx, gx, jx, lx, mx, nx, q) = symbols('ax bx cx gx jx lx mx nx q')
+    V = ax, bx, cx, gx, jx, lx, mx, nx, q = symbols('ax bx cx gx jx lx mx nx q')
     S = (ax*q - lx*q - mx, ax - gx*q - lx, bx*q**2 + cx*q - jx*q - nx,
          q*(-ax*q + lx*q + mx), q*(-ax + gx*q + lx))
     G = groebner(S, V, domain=QQ)

@@ -525,7 +525,7 @@ def test_roots_slow():
     assert list(roots(f1, x).values()) == [1, 1]
     assert list(roots(f2, x).values()) == [1, 1]
 
-    (zz, yy, xx, zy, zx, yx, k) = symbols("zz,yy,xx,zy,zx,yx,k")
+    zz, yy, xx, zy, zx, yx, k = symbols("zz,yy,xx,zy,zx,yx,k")
 
     e1 = (zz - k)*(yy - k)*(xx - k) + zy*yx*zx + zx - zy - yx
     e2 = (zz - k)*yx*yx + zx*(yy - k)*zx + zy*zy*(xx - k)
