@@ -1543,5 +1543,4 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
                           for i in range(self.rows) for j in range(self.cols)}
 
 
-#:
 SparseMatrix = MutableSparseMatrix

@@ -115,7 +115,6 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 ImmutableMatrix.is_zero = DenseMatrix.is_zero
 
 
-#:
 ImmutableDenseMatrix = ImmutableMatrix
 
 

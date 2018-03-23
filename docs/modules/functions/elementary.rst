@@ -151,12 +151,6 @@ acot
 .. autoclass:: diofant.functions.elementary.trigonometric.acot
    :members:
 
-asec
-----
-
-.. autoclass:: diofant.functions.elementary.trigonometric.asec
-   :members:
-
 acsc
 ----
 

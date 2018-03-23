@@ -404,5 +404,4 @@ class Order(Expr):
         return self.expr.is_commutative
 
 
-#:
 O = Order
