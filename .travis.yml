@@ -4,6 +4,7 @@ sudo: false
 cache: pip
 python:
   - 3.6
+  - 3.7-dev
 env:
   global:
     - PYTHONHASHSEED=0
@@ -67,6 +68,8 @@ matrix:
         distributions: "sdist bdist_wheel"
         on:
           tags: true
+  allow_failures:
+    - python: 3.7-dev
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
