@@ -44,14 +44,9 @@ class SingleContinuousDomain(ContinuousDomain, SingleDomain):
     """
 
     def integrate(self, expr, variables=None, **kwargs):
-        if variables is None:
-            variables = self.symbols
-        if not variables:
-            return expr
-        if frozenset(variables) != frozenset(self.symbols):
-            raise ValueError("Values should be equal")
         # assumes only intervals
-        return Integral(expr, (self.symbol, self.set), **kwargs)
+        ivl = (self.set.left, self.set.right)
+        return Integral(expr, (self.symbol, *ivl), **kwargs)
 
     def as_boolean(self):
         return self.set.as_relational(self.symbol)
@@ -63,8 +58,6 @@ class ProductContinuousDomain(ProductDomain, ContinuousDomain):
     """
 
     def integrate(self, expr, variables=None, **kwargs):
-        if variables is None:
-            variables = self.symbols
         for domain in self.domains:
             domain_vars = frozenset(variables) & frozenset(domain.symbols)
             if domain_vars:
@@ -112,16 +105,15 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                     symbol = symbols.pop()
                     # Find the limit with x, such as (x, -oo, oo)
                     for i, limit in enumerate(limits):
-                        if limit[0] == symbol:
-                            # Make condition into an Interval like [0, oo]
-                            cintvl = reduce_rational_inequalities_wrap(
-                                cond, symbol)
-                            # Make limit into an Interval like [-oo, oo]
-                            lintvl = Interval(limit[1], limit[2])
-                            # Intersect them to get [0, oo]
-                            intvl = cintvl.intersection(lintvl)
-                            # Put back into limits list
-                            limits[i] = (symbol, intvl.left, intvl.right)
+                        assert limit[0] == symbol
+                        # Make condition into an Interval like [0, oo]
+                        cintvl = reduce_rational_inequalities_wrap(cond, symbol)
+                        # Make limit into an Interval like [-oo, oo]
+                        lintvl = Interval(limit[1], limit[2])
+                        # Intersect them to get [0, oo]
+                        intvl = cintvl.intersection(lintvl)
+                        # Put back into limits list
+                        limits[i] = (symbol, intvl.left, intvl.right)
             else:
                 raise TypeError(
                     "Condition %s is not a relational or Boolean" % cond)
@@ -249,16 +241,10 @@ class ContinuousPSpace(PSpace):
     def pdf(self):
         return self.density(*self.domain.symbols)
 
-    def integrate(self, expr, rvs=None, **kwargs):
-        if rvs is None:
-            rvs = self.values
-        else:
-            rvs = frozenset(rvs)
-
+    def integrate(self, expr, **kwargs):
+        rvs = self.values
         expr = expr.xreplace({rv: rv.symbol for rv in rvs})
-
         domain_symbols = frozenset(rv.symbol for rv in rvs)
-
         return self.domain.integrate(self.pdf * expr,
                                      domain_symbols, **kwargs)
 
@@ -313,14 +299,12 @@ class ContinuousPSpace(PSpace):
         interval = interval.intersection(self.domain.set)
         return SingleContinuousDomain(rv.symbol, interval)
 
-    def conditional_space(self, condition, normalize=True, **kwargs):
-
+    def conditional_space(self, condition, **kwargs):
         condition = condition.xreplace({rv: rv.symbol for rv in self.values})
 
         domain = ConditionalContinuousDomain(self.domain, condition)
-        if normalize:
-            pdf = self.pdf / domain.integrate(self.pdf, **kwargs)
-            density = Lambda(domain.symbols, pdf)
+        pdf = self.pdf / domain.integrate(self.pdf, **kwargs)
+        density = Lambda(domain.symbols, pdf)
 
         return ContinuousPSpace(domain, density)
 
@@ -353,22 +337,15 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
 
     def integrate(self, expr, rvs=None, **kwargs):
         rvs = rvs or (self.value,)
-        if self.value not in rvs:
-            return expr
-
         expr = expr.xreplace({rv: rv.symbol for rv in rvs})
-
         x = self.value.symbol
-        try:
-            return self.distribution.expectation(expr, x, evaluate=False, **kwargs)
-        except Exception:
-            return Integral(expr * self.pdf, (x, self.set), **kwargs)
+        return self.distribution.expectation(expr, x, evaluate=False, **kwargs)
 
     def compute_cdf(self, expr, **kwargs):
         if expr == self.value:
             return self.distribution.compute_cdf(**kwargs)
-        else:
-            return ContinuousPSpace.compute_cdf(self, expr, **kwargs)
+        else:  # pragma: no cover
+            raise NotImplementedError
 
     def compute_density(self, expr, **kwargs):
         # https//en.wikipedia.org/wiki/Random_variable#Functions_of_random_variables
@@ -376,8 +353,6 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
             return self.density
         y = Dummy('y')
         gs = solve(expr - y, self.value)
-        if not gs:
-            raise ValueError("Can not solve %s for %s" % (expr, self.value))
         fx = self.compute_density(self.value)
         fy = sum(fx(g[self.value]) * abs(g[self.value].diff(y)) for g in gs)
         return Lambda(y, fy)
@@ -404,13 +379,12 @@ def _reduce_inequalities(conditions, var, **kwargs):
 def reduce_rational_inequalities_wrap(condition, var):
     if condition.is_Relational:
         return _reduce_inequalities([[condition]], var, relational=False)
-    if condition.__class__ is Or:
-        return _reduce_inequalities([list(condition.args)],
-                                    var, relational=False)
-    if condition.__class__ is And:
+    elif condition.__class__ is And:
         intervals = [_reduce_inequalities([[arg]], var, relational=False)
                      for arg in condition.args]
         I = intervals[0]
         for i in intervals:
             I = I.intersection(i)
         return I
+    else:  # pragma: no cover
+        raise NotImplementedError
