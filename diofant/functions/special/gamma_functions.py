@@ -767,7 +767,7 @@ class loggamma(Function):
     The loggamma function obeys the mirror symmetry
     if `x \in \mathbb{C} \setminus \{-\infty, 0\}`:
 
-    >>> c = Symbol('c', complex=True, extended_real=False)
+    >>> c = Symbol('c', complex=True, real=False)
     >>> conjugate(loggamma(c))
     loggamma(conjugate(c))
 

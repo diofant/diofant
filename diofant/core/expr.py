@@ -1607,15 +1607,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         functions and get exactly the same results as with
         a single call to this function.
 
-        >>> x, y = symbols('x y', extended_real=True)
+        >>> x, y = symbols('x y', real=True)
 
         >>> (x + y*I).as_real_imag()
         (x, y)
 
-        >>> from diofant.abc import w
-
-        >>> (z + w*I).as_real_imag()
-        (re(z) - im(w), re(w) + im(z))
+        >>> (z + t*I).as_real_imag()
+        (re(z) - im(t), re(t) + im(z))
         """
         from ..functions import im, re
         if hints.get('ignore') == self:
@@ -1836,7 +1834,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         c * something in a nice way, i.e. preserving the properties
         of arguments of self.
 
-        >>> x, y = symbols('x y', extended_real=True)
+        >>> x, y = symbols('x y', real=True)
 
         >>> ((x*y)**3).extract_multiplicatively(x**2 * y)
         x*y**2
@@ -2303,7 +2301,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> sqrt(1 + x).is_rational_function()
         False
         >>> sqrt(1 + x).is_algebraic_expr()

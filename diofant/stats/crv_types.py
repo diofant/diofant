@@ -171,12 +171,9 @@ def Arcsin(name, a=0, b=1):
 
     >>> from diofant.stats import density
 
-    >>> a = Symbol("a", extended_real=True)
-    >>> b = Symbol("b", extended_real=True)
-    >>> z = Symbol("z")
+    >>> a, b = symbols("a b", real=True)
 
     >>> X = Arcsin("x", a, b)
-
     >>> density(X)(z)
     1/(pi*sqrt((-a + z)*(b - z)))
 
@@ -1032,10 +1029,8 @@ def Frechet(name, a, s=1, m=0):
 
     >>> from diofant.stats import density, E, std
 
-    >>> a = Symbol("a", positive=True)
-    >>> s = Symbol("s", positive=True)
-    >>> m = Symbol("m", extended_real=True)
-    >>> z = Symbol("z")
+    >>> a, s = symbols("a s", positive=True)
+    >>> m = Symbol("m", real=True)
 
     >>> X = Frechet("x", a, s, m)
 
@@ -1370,9 +1365,8 @@ def Logistic(name, mu, s):
 
     >>> from diofant.stats import density
 
-    >>> mu = Symbol("mu", extended_real=True)
+    >>> mu = Symbol("mu", real=True)
     >>> s = Symbol("s", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Logistic("x", mu, s)
 
@@ -1433,9 +1427,8 @@ def LogNormal(name, mean, std):
 
     >>> from diofant.stats import density
 
-    >>> mu = Symbol("mu", extended_real=True)
+    >>> mu = Symbol("mu", real=True)
     >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = LogNormal("x", mu, sigma)
 
@@ -1804,9 +1797,7 @@ def QuadraticU(name, a, b):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> a = Symbol("a", extended_real=True)
-    >>> b = Symbol("b", extended_real=True)
-    >>> z = Symbol("z")
+    >>> a, b = symbols("a b", real=True)
 
     >>> X = QuadraticU("x", a, b)
 
@@ -1879,9 +1870,8 @@ def RaisedCosine(name, mu, s):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> mu = Symbol("mu", extended_real=True)
+    >>> mu = Symbol("mu", real=True)
     >>> s = Symbol("s", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = RaisedCosine("x", mu, s)
 

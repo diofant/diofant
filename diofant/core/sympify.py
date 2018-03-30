@@ -75,14 +75,14 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
 
     >>> sympify(2).is_integer
     True
-    >>> sympify(2).is_extended_real
+    >>> sympify(2).is_real
     True
 
-    >>> sympify(2.0).is_extended_real
+    >>> sympify(2.0).is_real
     True
-    >>> sympify("2.0").is_extended_real
+    >>> sympify("2.0").is_real
     True
-    >>> sympify("2e-45").is_extended_real
+    >>> sympify("2e-45").is_real
     True
 
     If the expression could not be converted, a SympifyError is raised.

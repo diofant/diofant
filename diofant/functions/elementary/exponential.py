@@ -432,7 +432,7 @@ class LambertW(Function):
     0.635564016364870
     >>> LambertW(1.2, -1).n()
     -1.34747534407696 - 4.41624341514535*I
-    >>> LambertW(-1).is_extended_real
+    >>> LambertW(-1).is_real
     False
 
     References

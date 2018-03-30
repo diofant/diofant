@@ -657,7 +657,7 @@ class Interval(Set, EvalfMixin):
     >>> Interval.open(0, 1)
     (0, 1)
 
-    >>> a = Symbol('a', extended_real=True)
+    >>> a = Symbol('a', real=True)
     >>> Interval(0, a)
     [0, a]
 

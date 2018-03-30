@@ -338,7 +338,7 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> And(x<2, x>-2).as_set()
         (-2, 2)
         """
@@ -405,7 +405,7 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> Or(x>2, x<-2).as_set()
         (-oo, -2) U (2, oo)
         """
@@ -492,7 +492,7 @@ class Not(BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> Not(x>0, evaluate=False).as_set()
         (-oo, 0]
         """

@@ -862,7 +862,7 @@ def logcombine(expr, force=False):
     >>> logcombine(a*log(x) + log(y) - log(z), force=True)
     log(x**a*y/z)
     >>> x, y, z = symbols('x y z', positive=True)
-    >>> a = Symbol('a', extended_real=True)
+    >>> a = Symbol('a', real=True)
     >>> logcombine(a*log(x) + log(y) - log(z))
     log(x**a*y/z)
 
