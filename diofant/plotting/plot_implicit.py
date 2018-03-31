@@ -211,7 +211,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     free_symbols = expr.free_symbols
     range_symbols = Tuple(*flatten(xyvar)).free_symbols
     undeclared = free_symbols - range_symbols
-    if len(free_symbols & range_symbols) > 2:
+    if len(free_symbols & range_symbols) > 2:  # pragma: no cover
         raise NotImplementedError("Implicit plotting is not implemented for "
                                   "more than 2 variables")
 
@@ -223,7 +223,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
             return Tuple(s) + default_range
         if len(s) == 3:
             return Tuple(*s)
-        raise ValueError('symbol or `(symbol, min, max)` expected but got %s' % s)
+        raise ValueError('symbol or `(symbol, min, max)` expected but got %s' % str(s))
 
     if len(xyvar) == 0:
         xyvar = list(_sort_gens(free_symbols))
