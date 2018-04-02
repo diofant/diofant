@@ -525,7 +525,7 @@ def test_roots_slow():
     assert list(roots(f1, x).values()) == [1, 1]
     assert list(roots(f2, x).values()) == [1, 1]
 
-    (zz, yy, xx, zy, zx, yx, k) = symbols("zz,yy,xx,zy,zx,yx,k")
+    zz, yy, xx, zy, zx, yx, k = symbols("zz,yy,xx,zy,zx,yx,k")
 
     e1 = (zz - k)*(yy - k)*(xx - k) + zy*yx*zx + zx - zy - yx
     e2 = (zz - k)*yx*yx + zx*(yy - k)*zx + zy*zy*(xx - k)
@@ -676,3 +676,8 @@ def test_sympyissue_7724():
     r1, r2 = roots(e, x), Poly(e, x).all_roots()
     assert len(r1) == 4
     assert {_.n() for _ in r1} == {_.n() for _ in r2}
+
+
+def test_sympyissue_14291():
+    p = Poly(((x - 1)**2 + 1)*((x - 1)**2 + 2)*(x - 1))
+    assert set(p.all_roots()) == {1, 1 - I, 1 + I, 1 - I*sqrt(2), 1 + sqrt(2)*I}

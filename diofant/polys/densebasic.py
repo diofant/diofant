@@ -633,7 +633,7 @@ def dup_from_dict(f, K):
         for k in range(n, -1, -1):
             h.append(f.get(k, K.zero))
     else:
-        (n,) = n
+        n, = n
 
         for k in range(n, -1, -1):
             h.append(f.get((k,), K.zero))

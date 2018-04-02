@@ -897,7 +897,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         self._mat = [value]*len(self)
 
 
-#:
 MutableMatrix = MutableDenseMatrix
 
 ###########
