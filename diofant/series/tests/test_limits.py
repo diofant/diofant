@@ -612,3 +612,7 @@ def test_diofantissue_558():
 
 def test_sympyissue_14393():
     assert limit((x**b - y**b)/(x**a - y**a), x, y) == b*y**b/y**a/a
+
+
+def test_sympyissue_14590():
+    assert limit((n**3*((n + 1)/n)**n)/((n + 1)*(n + 2)*(n + 3)), n, oo) == E
