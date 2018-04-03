@@ -100,9 +100,9 @@ def runtest_sympyissue_10274(language, backend):
         if file.startswith("wrapped_code_") and file.endswith(".c"):
             fil = open(tmp + '/' + file)
             assert fil.read() == ("/******************************************************************************\n"
-                                  " *                    Code generated with diofant " + diofant.__version__+"                     *\n"
+                                  " *                  Code generated with diofant " + diofant.__version__+"                   *\n"
                                   " *                                                                            *\n"
-                                  " *              See https://diofant.readthedocs.io/ for more information.               *\n"
+                                  " *         See https://diofant.readthedocs.io/ for more information.          *\n"
                                   " *                                                                            *\n"
                                   " *                      This file is part of 'autowrap'                       *\n"
                                   " ******************************************************************************/\n"
