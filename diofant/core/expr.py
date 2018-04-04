@@ -646,19 +646,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     except NotImplementedError:  # pragma: no cover
                         pass
 
-        # diff has not simplified to zero; constant is either None, True
-        # or the number with significance (prec != 1) that was randomly
-        # calculated twice as the same value.
-        if constant not in (True, None) and constant != 0:
-            return False
-
         if failing_expression:
             return diff
-        return
 
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
-        from ..polys.polyerrors import NotAlgebraic
         from .function import count_ops
         from .symbol import Dummy
 
@@ -681,10 +673,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if count_ops(self) > 75:
                     return
                 try:
-                    if minimal_polynomial(self)(Dummy()).is_Symbol:
-                        return True
-                except (NotAlgebraic, NotImplementedError):
-                    pass
+                    return minimal_polynomial(self)(Dummy()).is_Symbol
+                except NotImplementedError:  # pragma: no cover
+                    return
 
     def _eval_is_positive(self):
         if self.is_number:
@@ -976,15 +967,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             o = o.expr
             if o is S.One:
                 return S.Zero
-            if o.is_Symbol:
+            elif o.is_Symbol:
                 return S.One
-            if o.is_Pow:
+            elif o.is_Pow:
                 return o.args[1]
-            if o.is_Mul:  # x**n*log(x)**n or x**n/log(x)**n
+            elif o.is_Mul:  # x**n*log(x)**n or x**n/log(x)**n
                 for oi in o.args:
                     if oi.is_Symbol:
                         return S.One
-                    if oi.is_Pow:
+                    elif oi.is_Pow:
                         syms = oi.atoms(Dummy, Symbol)
                         if len(syms) == 1:
                             x = syms.pop()
