@@ -386,26 +386,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             # e.g. exp_polar(2*I*pi) doesn't evaluate but is_number is True
             return
 
-        if nmag._prec == 1:
-            # increase the precision up to the default maximum
-            # precision to see if we can get any significance
-
-            from mpmath.libmp.libintmath import giant_steps
-            from .evalf import DEFAULT_MAXPREC as TARGET
-
-            # evaluate
-            for prec in giant_steps(2, TARGET):
-                nmag = abs(self.evalf(prec, strict=False, subs=reps))
-                if nmag._prec != 1:
-                    break
-
         if nmag._prec != 1:
             if n is None:
                 n = max(prec, 15)
             return self.evalf(n, strict=False, subs=reps)
-
-        # never got any significance
-        return
 
     def is_constant(self, *wrt, **flags):
         """Return True if self is constant, False if not, or None if
@@ -636,13 +620,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         # to see if we are in the right ballpark or not and if so
                         # *then* the simplification will be attempted.
                         sol = solve(diff, s, check=False, simplify=False)
-                        if sol:
-                            if any(s in list(_.values()) for _ in sol):
-                                return True
-                            if s.is_real and any(nsimplify(si[s], [s]) == s
-                                                 and simplify(si[s]) == s
-                                                 for si in sol):
-                                return True
+                        if any(s in list(_.values()) for _ in sol):
+                            return True
+                        if s.is_real and any(nsimplify(si[s], [s]) == s
+                                             and simplify(si[s]) == s
+                                             for si in sol):
+                            return True
                     except NotImplementedError:  # pragma: no cover
                         pass
 
@@ -1233,7 +1216,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     co.append(Mul(*resid))
             if co == []:
                 return S.Zero
-            elif co:
+            else:
                 return Add(*co)
         elif x_c:
             xargs = x.args_cnc(cset=True, warn=False)[0]
@@ -1246,7 +1229,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     co.append(Mul(*(list(resid) + nc)))
             if co == []:
                 return S.Zero
-            elif co:
+            else:
                 return Add(*co)
         else:  # both nc
             xargs, nx = x.args_cnc(cset=True)
@@ -1887,12 +1870,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return
                 else:
                     return quotient
-        elif self.is_NumberSymbol or self.is_Symbol or self is I:
-            if quotient.is_Mul and len(quotient.args) == 2:
-                if quotient.args[0].is_Integer and quotient.args[0].is_positive and quotient.args[1] == self:
-                    return quotient
-            elif quotient.is_Integer and c.is_Number:
-                return quotient
+            else:  # pragma: no cover
+                raise NotImplementedError
         elif self.is_Add:
             cs, ps = self.primitive()
             if cs is not S.One:
@@ -2458,7 +2437,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 rep2b = -x0
             s = self.subs(x, rep).series(x, x0=0, n=n, dir='+', logx=logx)
             if n is None:  # lseries...
-                return (si.subs(x, rep2 + rep2b) for si in s)
+                return (si.subs(x, rep2 + rep2b) for si in s)  # pragma: no branch
             return s.subs(x, rep2 + rep2b)
 
         # from here on it's x0=0 and dir='+' handling
