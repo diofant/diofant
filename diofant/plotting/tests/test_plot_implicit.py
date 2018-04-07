@@ -32,6 +32,11 @@ def plot_and_save(name):
                   (y, -2, 2), show=False).save(tmp_file(name))
     plot_implicit(y <= x**2, (x, -3, 3),
                   (y, -1, 5), show=False).save(tmp_file(name))
+    plot_implicit(Or(And(x < y, x > y**2), sin(y) > x),
+                  show=False).save(tmp_file(name))
+    plot_implicit(Or(And(x < y, x > y**2), sin(y)),
+                  show=False).save(tmp_file(name))
+    plot_implicit(Or(x < y, sin(x) >= y), show=False).save(tmp_file(name))
 
     # Test all input args for plot_implicit
     plot_implicit(Eq(y**2, x**3 - x), show=False).save(tmp_file(name))
@@ -47,6 +52,8 @@ def plot_and_save(name):
     plot_implicit(y > cos(x), adaptive=False, show=False).save(tmp_file(name))
     plot_implicit(y < cos(x), adaptive=False, show=False).save(tmp_file(name))
     plot_implicit(y - cos(pi / x), show=False).save(tmp_file(name))
+
+    pytest.raises(ValueError, lambda: plot_implicit(y > x, (x, -1, 1, 2)))
 
 
 def test_line_color():

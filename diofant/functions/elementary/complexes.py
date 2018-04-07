@@ -350,7 +350,7 @@ class Abs(Function):
 
     >>> Abs(-1)
     1
-    >>> x = Symbol('x', extended_real=True)
+    >>> x = Symbol('x', real=True)
     >>> Abs(-x)
     Abs(x)
     >>> Abs(x**2)

@@ -2962,7 +2962,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> A = Matrix([[0, 1, 0], [0, x, 0], [-1, 0, 0]])
         >>> A.singular_values()
         [sqrt(x**2 + 1), 1, 0]

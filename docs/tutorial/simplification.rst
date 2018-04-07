@@ -242,7 +242,7 @@ Powers and Logarithms
 :func:`~diofant.simplify.powsimp.powdenest` function applies identity
 `(x^a)^b = x^{a b}`, from left to right, if assumptions allow.
 
-    >>> a, b = symbols('a b', extended_real=True)
+    >>> a, b = symbols('a b', real=True)
     >>> p = symbols('p', positive=True)
     >>> powdenest((p**a)**b)
      a⋅b
