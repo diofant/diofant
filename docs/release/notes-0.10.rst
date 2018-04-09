@@ -28,6 +28,7 @@ Compatibility breaks
 * Functions :func:`~diofant.polys.numberfields.minimal_polynomial` and :func:`~diofant.polys.numberfields.primitive_element` return :class:`~diofant.polys.polytools.PurePoly` instances, see :pull:`628`.
 * Removed ``ANP`` class, see :pull:`619`.
 * Removed ``to_number_field()``, use :meth:`~diofant.domains.domain.Domain.convert` instead, see :pull:`619`.
+* Removed ``RealNumber`` alias, see :pull:`635`.
 
 Minor changes
 =============

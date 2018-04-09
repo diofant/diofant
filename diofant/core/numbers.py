@@ -1027,9 +1027,6 @@ class Float(Number):
 # Add sympify converters
 converter[float] = converter[decimal.Decimal] = Float
 
-# this is here to work nicely in Sage
-RealNumber = Float
-
 
 class Rational(Number):
     """Represents integers and rational numbers (p/q) of any size.
