@@ -1380,7 +1380,7 @@ class Rational(Number):
 
         return factorrat(self, limit=limit, use_trial=use_trial,
                          use_rho=use_rho, use_pm1=use_pm1,
-                         verbose=verbose).copy()
+                         verbose=verbose, visual=visual).copy()
 
     @_sympifyit('other', NotImplemented)
     def gcd(self, other):
@@ -1998,13 +1998,6 @@ class One(IntegerConstant, metaclass=Singleton):
 
     p = 1
     q = 1
-
-    def factors(self, limit=None, use_trial=True, use_rho=False,
-                use_pm1=False, verbose=False, visual=False):
-        if visual:
-            return self
-        else:
-            return {}
 
 
 class NegativeOne(IntegerConstant, metaclass=Singleton):
