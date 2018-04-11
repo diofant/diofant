@@ -1491,84 +1491,11 @@ class Integer(Rational):
     def __getnewargs__(self):
         return self.p,
 
-    # Arithmetic operations are here for efficiency
-    def __int__(self):
+    def __hash__(self):
+        return hash(self.p)
+
+    def __index__(self):
         return self.p
-
-    def __neg__(self):
-        return Integer(-self.p)
-
-    def __abs__(self):
-        if self.p >= 0:
-            return self
-        else:
-            return Integer(-self.p)
-
-    def __divmod__(self, other):
-        from .containers import Tuple
-        if isinstance(other, Integer):
-            return Tuple(*(divmod(self.p, other.p)))
-        else:
-            return Number.__divmod__(self, other)
-
-    def __rdivmod__(self, other):
-        from .containers import Tuple
-        if isinstance(other, int):
-            return Tuple(*(divmod(other, self.p)))
-        else:
-            other = Number(other)
-            return Number.__divmod__(other, self)
-
-    # TODO make it decorator + bytecodehacks?
-    def __add__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p + other)
-        elif isinstance(other, Integer):
-            return Integer(self.p + other.p)
-        return Rational.__add__(self, other)
-
-    def __radd__(self, other):
-        if isinstance(other, int):
-            return Integer(other + self.p)
-        return Rational.__add__(self, other)
-
-    def __sub__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p - other)
-        elif isinstance(other, Integer):
-            return Integer(self.p - other.p)
-        return Rational.__sub__(self, other)
-
-    def __rsub__(self, other):
-        if isinstance(other, int):
-            return Integer(other - self.p)
-        return Rational.__rsub__(self, other)
-
-    def __mul__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p*other)
-        elif isinstance(other, Integer):
-            return Integer(self.p*other.p)
-        return Rational.__mul__(self, other)
-
-    def __rmul__(self, other):
-        if isinstance(other, int):
-            return Integer(other*self.p)
-        return Rational.__mul__(self, other)
-
-    def __mod__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p % other)
-        elif isinstance(other, Integer):
-            return Integer(self.p % other.p)
-        return Rational.__mod__(self, other)
-
-    def __rmod__(self, other):
-        if isinstance(other, int):
-            return Integer(other % self.p)
-        elif isinstance(other, Integer):
-            return Integer(other.p % self.p)
-        return Rational.__rmod__(self, other)
 
     def __eq__(self, other):
         if isinstance(other, int):
@@ -1576,36 +1503,6 @@ class Integer(Rational):
         elif isinstance(other, Integer):
             return (self.p == other.p)
         return Rational.__eq__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __gt__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p > other.p, strict=True)
-        return Rational.__gt__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __lt__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p < other.p, strict=True)
-        return Rational.__lt__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __ge__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p >= other.p, strict=True)
-        return Rational.__ge__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __le__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p <= other.p, strict=True)
-        return Rational.__le__(self, other)
-
-    def __hash__(self):
-        return hash(self.p)
-
-    def __index__(self):
-        return self.p
 
     ########################################
 
