@@ -1174,6 +1174,9 @@ class Rational(Number):
     def _eval_is_zero(self):
         return self.p == 0
 
+    def __bool__(self):
+        return self.is_nonzero
+
     def __neg__(self):
         return Rational(-self.p, self.q)
 
@@ -1869,9 +1872,6 @@ class Zero(IntegerConstant, metaclass=Singleton):
             return zoo**terms
         if coeff is not S.One:  # there is a Number to discard
             return self**terms
-
-    def __bool__(self):
-        return False
 
 
 class One(IntegerConstant, metaclass=Singleton):
