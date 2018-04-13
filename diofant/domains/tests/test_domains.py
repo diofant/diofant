@@ -1074,3 +1074,10 @@ def test_sympyissue_13545():
     assert Poly(x + 1, x, modulus=2) + 1 == Poly(x, x, modulus=2)
     pytest.raises(NotImplementedError,
                   lambda: Poly(x, modulus=2) + Poly(x, modulus=3))
+
+
+def test_sympyissue_14294():
+    A = QQ.algebraic_field(I)
+
+    a = A.convert(I)
+    assert A.convert(a) == a
