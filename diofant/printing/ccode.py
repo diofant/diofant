@@ -219,7 +219,7 @@ class CCodePrinter(CodePrinter):
 
     def _print_Symbol(self, expr):
 
-        name = super(CCodePrinter, self)._print_Symbol(expr)
+        name = super()._print_Symbol(expr)
 
         if expr in self._dereference:
             return '(*{0})'.format(name)

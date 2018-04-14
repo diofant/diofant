@@ -8,8 +8,7 @@ class ReorderError(NotImplementedError):
     """
 
     def __init__(self, expr, msg):
-        super(ReorderError, self).__init__(
-            "%s could not be reordered: %s." % (expr, msg))
+        super().__init__("%s could not be reordered: %s." % (expr, msg))
 
 
 class ExprWithIntLimits(ExprWithLimits):

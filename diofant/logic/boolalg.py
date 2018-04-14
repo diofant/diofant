@@ -577,7 +577,7 @@ class Xor(BooleanFunction):
 
     def __new__(cls, *args, **kwargs):
         argset = set()
-        obj = super(Xor, cls).__new__(cls, *args, **kwargs)
+        obj = super().__new__(cls, *args, **kwargs)
         for arg in super(Xor, obj).args:
             if isinstance(arg, Number) or arg in (True, False):
                 if not arg:
@@ -821,7 +821,7 @@ class Equivalent(BooleanFunction):
             argset.discard(False)
             return And(*[~arg for arg in argset])
         _args = frozenset(argset)
-        obj = super(Equivalent, cls).__new__(cls, _args)
+        obj = super().__new__(cls, _args)
         obj._argset = _args
         return obj
 

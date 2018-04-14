@@ -236,7 +236,7 @@ class elliptic_e(Function):
         from ...simplify import hyperexpand
         if len(self.args) == 1:
             return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n, logx=logx))
-        return super(elliptic_e, self)._eval_nseries(x, n=n, logx=logx)
+        return super()._eval_nseries(x, n=n, logx=logx)
 
     def _eval_rewrite_as_hyper(self, *args):
         if len(args) == 1:

@@ -1896,7 +1896,7 @@ class atan(InverseTrigonometricFunction):
         if args0[0] == oo:
             return (pi/2 - atan(1/self.args[0]))._eval_nseries(x, n, logx)
         else:
-            return super(atan, self)._eval_aseries(n, args0, x, logx)
+            return super()._eval_aseries(n, args0, x, logx)
 
     def inverse(self, argindex=1):
         """
@@ -2038,7 +2038,7 @@ class acot(InverseTrigonometricFunction):
         if args0[0] == oo:
             return (pi/2 - acot(1/self.args[0]))._eval_nseries(x, n, logx)
         else:
-            return super(acot, self)._eval_aseries(n, args0, x, logx)
+            return super()._eval_aseries(n, args0, x, logx)
 
     def _eval_rewrite_as_log(self, x):
         return I/2 * \

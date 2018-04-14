@@ -110,13 +110,13 @@ class DieDistribution(SingleFiniteDistribution):
         if fuzzy_not(fuzzy_and((sides_sym.is_integer, sides_sym.is_positive))):
             raise ValueError("'sides' must be a positive integer.")
         else:
-            return super(DieDistribution, cls).__new__(cls, sides)
+            return super().__new__(cls, sides)
 
     @property
     @cacheit
     def dict(self):
         as_int(self.sides)
-        return super(DieDistribution, self).dict
+        return super().dict
 
     @property
     def set(self):
@@ -221,7 +221,7 @@ class BinomialDistribution(SingleFiniteDistribution):
         elif fuzzy_not(fuzzy_and((p_sym.is_nonnegative, (p_sym - 1).is_nonpositive))):
             raise ValueError("'p' must be: 0 <= p <= 1 . p = %s" % str(p))
         else:
-            return super(BinomialDistribution, cls).__new__(cls, *args)
+            return super().__new__(cls, *args)
 
     @property
     def n(self):

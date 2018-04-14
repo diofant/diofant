@@ -908,7 +908,7 @@ class Polygon(GeometrySet):
         return False
 
     def __hash__(self):
-        return super(Polygon, self).__hash__()
+        return super().__hash__()
 
     def __contains__(self, o):
         """
@@ -1537,7 +1537,7 @@ class RegularPolygon(Polygon):
         return self.args == o.args
 
     def __hash__(self):
-        return super(RegularPolygon, self).__hash__()
+        return super().__hash__()
 
 
 class Triangle(Polygon):

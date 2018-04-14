@@ -183,7 +183,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
         elif vector1 == Vector.zero or vector2 == Vector.zero:
             return Dyadic.zero
         # Initialize instance
-        obj = super(BaseDyadic, cls).__new__(cls, vector1, vector2)
+        obj = super().__new__(cls, vector1, vector2)
         obj._base_instance = obj
         obj._measure_number = 1
         obj._components = {obj: Integer(1)}

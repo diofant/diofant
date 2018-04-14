@@ -452,7 +452,7 @@ class Add(AssocOp):
 
     def _eval_is_positive(self):
         if self.is_number:
-            n = super(Add, self)._eval_is_positive()
+            n = super()._eval_is_positive()
             if n is not None:
                 return n
 
@@ -481,7 +481,7 @@ class Add(AssocOp):
 
     def _eval_is_negative(self):
         if self.is_number:
-            n = super(Add, self)._eval_is_negative()
+            n = super()._eval_is_negative()
             if n is not None:
                 return n
 

@@ -485,7 +485,7 @@ class Hyper_Function(Expr):
     """ A generalized hypergeometric function. """
 
     def __new__(cls, ap, bq):
-        obj = super(Hyper_Function, cls).__new__(cls)
+        obj = super().__new__(cls)
         obj.ap = Tuple(*list(map(expand, ap)))
         obj.bq = Tuple(*list(map(expand, bq)))
         return obj
@@ -508,8 +508,7 @@ class Hyper_Function(Expr):
         return sum(bool(x.is_integer and x.is_negative) for x in self.ap)
 
     def _hashable_content(self):
-        return super(Hyper_Function, self)._hashable_content() + (self.ap,
-                                                                  self.bq)
+        return super()._hashable_content() + (self.ap, self.bq)
 
     def __call__(self, arg):
         return hyper(self.ap, self.bq, arg)
@@ -607,7 +606,7 @@ class G_Function(Expr):
     """ A Meijer G-function. """
 
     def __new__(cls, an, ap, bm, bq):
-        obj = super(G_Function, cls).__new__(cls)
+        obj = super().__new__(cls)
         obj.an = Tuple(*list(map(expand, an)))
         obj.ap = Tuple(*list(map(expand, ap)))
         obj.bm = Tuple(*list(map(expand, bm)))
@@ -619,7 +618,7 @@ class G_Function(Expr):
         return self.an, self.ap, self.bm, self.bq
 
     def _hashable_content(self):
-        return super(G_Function, self)._hashable_content() + self.args
+        return super()._hashable_content() + self.args
 
     def __call__(self, z):
         return meijerg(self.an, self.ap, self.bm, self.bq, z)

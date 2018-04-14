@@ -404,7 +404,7 @@ class Point(Basic):
     """
 
     def __init__(self, coord_sys, coords):
-        super(Point, self).__init__()
+        super().__init__()
         self._coord_sys = coord_sys
         self._coords = Matrix(coords).as_immutable()
         self._args = self._coord_sys, self._coords
@@ -656,10 +656,10 @@ class Commutator(Expr):
                     res += c1*b1(c2)*b2 - c2*b2(c1)*b1
             return res
         else:
-            return super(Commutator, cls).__new__(cls, v1, v2)
+            return super().__new__(cls, v1, v2)
 
     def __init__(self, v1, v2):
-        super(Commutator, self).__init__()
+        super().__init__()
         self._args = (v1, v2)
         self._v1 = v1
         self._v2 = v2
@@ -726,10 +726,10 @@ class Differential(Expr):
         if isinstance(form_field, Differential):
             return Zero()
         else:
-            return super(Differential, cls).__new__(cls, form_field)
+            return super().__new__(cls, form_field)
 
     def __init__(self, form_field):
-        super(Differential, self).__init__()
+        super().__init__()
         self._form_field = form_field
         self._args = (self._form_field, )
 
@@ -833,12 +833,12 @@ class TensorProduct(Expr):
         if forms:
             if len(forms) == 1:
                 return scalar*forms[0]
-            return scalar*super(TensorProduct, cls).__new__(cls, *forms)
+            return scalar*super().__new__(cls, *forms)
         else:
             return scalar
 
     def __init__(self, *args):
-        super(TensorProduct, self).__init__()
+        super().__init__()
         self._args = args
 
     def __call__(self, *v_fields):
@@ -948,14 +948,14 @@ class LieDerivative(Expr):
                              ' vector fields. The supplied argument was not a '
                              'vector field.')
         if expr_form_ord > 0:
-            return super(LieDerivative, cls).__new__(cls, v_field, expr)
+            return super().__new__(cls, v_field, expr)
         if expr.atoms(BaseVectorField):
             return Commutator(v_field, expr)
         else:
             return v_field.rcall(expr)
 
     def __init__(self, v_field, expr):
-        super(LieDerivative, self).__init__()
+        super().__init__()
         self._v_field = v_field
         self._expr = expr
         self._args = (self._v_field, self._expr)
@@ -988,7 +988,7 @@ class BaseCovarDerivativeOp(Expr):
     """
 
     def __init__(self, coord_sys, index, christoffel):
-        super(BaseCovarDerivativeOp, self).__init__()
+        super().__init__()
         self._coord_sys = coord_sys
         self._index = Integer(index)
         self._christoffel = ImmutableDenseNDimArray(christoffel)
@@ -1054,7 +1054,7 @@ class CovarDerivativeOp(Expr):
     """
 
     def __init__(self, wrt, christoffel):
-        super(CovarDerivativeOp, self).__init__()
+        super().__init__()
         if len({v._coord_sys
                 for v in wrt.atoms(BaseVectorField)}) > 1:  # pragma: no cover
             raise NotImplementedError

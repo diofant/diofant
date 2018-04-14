@@ -1081,14 +1081,14 @@ class _airyais(Function):
             return Add(*l)._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
-        return super(_airyais, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
         if x0 is S.Zero:
             return self.rewrite('intractable')._eval_nseries(x, n, logx)
         else:
-            return super(_airyais, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
 
 
 class _airybis(Function):
@@ -1110,14 +1110,14 @@ class _airybis(Function):
             return Add(*l)._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
-        return super(_airybis, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
         if x0 is S.Zero:
             return self.rewrite('intractable')._eval_nseries(x, n, logx)
         else:
-            return super(_airybis, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
 
 
 class airyaiprime(AiryBase):

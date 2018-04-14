@@ -507,28 +507,28 @@ class DenseMatrix(MatrixBase):
 
     @call_highest_priority('__radd__')
     def __add__(self, other):
-        return super(DenseMatrix, self).__add__(_force_mutable(other))
+        return super().__add__(_force_mutable(other))
 
     @call_highest_priority('__rsub__')
     def __sub__(self, other):
-        return super(DenseMatrix, self).__sub__(_force_mutable(other))
+        return super().__sub__(_force_mutable(other))
 
     @call_highest_priority('__rmul__')
     def __mul__(self, other):
         """Return self*other"""
-        return super(DenseMatrix, self).__mul__(_force_mutable(other))
+        return super().__mul__(_force_mutable(other))
 
     @call_highest_priority('__mul__')
     def __rmul__(self, other):
-        return super(DenseMatrix, self).__rmul__(_force_mutable(other))
+        return super().__rmul__(_force_mutable(other))
 
     @call_highest_priority('__truediv__')
     def __truediv__(self, other):
-        return super(DenseMatrix, self).__truediv__(_force_mutable(other))
+        return super().__truediv__(_force_mutable(other))
 
     @call_highest_priority('__rpow__')
     def __pow__(self, other):
-        return super(DenseMatrix, self).__pow__(other)
+        return super().__pow__(other)
 
 
 def _force_mutable(x):

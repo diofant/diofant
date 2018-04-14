@@ -433,7 +433,7 @@ class Number(AtomicExpr):
         return AtomicExpr.__truediv__(self, other)
 
     def __hash__(self):
-        return super(Number, self).__hash__()
+        return super().__hash__()
 
     def is_constant(self, *wrt, **flags):
         """Return True if self is constant.
@@ -1003,7 +1003,7 @@ class Float(Number):
         return Expr.__le__(self, other)
 
     def __hash__(self):
-        return super(Float, self).__hash__()
+        return super().__hash__()
 
     def epsilon_eq(self, other, epsilon="1e-15"):
         """Test approximate equality."""
@@ -1360,7 +1360,7 @@ class Rational(Number):
         return Expr.__le__(expr, other)
 
     def __hash__(self):
-        return super(Rational, self).__hash__()
+        return super().__hash__()
 
     def factors(self, limit=None, use_trial=True, use_rho=False,
                 use_pm1=False, verbose=False, visual=False):
@@ -1530,7 +1530,7 @@ class Integer(Rational):
             return Rational(1, self)**oo
         if isinstance(expt, Float):
             # Rational knows how to exponentiate by a Float
-            return super(Integer, self)._eval_power(expt)
+            return super()._eval_power(expt)
         if not isinstance(expt, Rational):
             return
         if expt is S.Half and self.is_negative:
@@ -1946,7 +1946,7 @@ class Infinity(Number, metaclass=Singleton):
         return mlib.finf
 
     def __hash__(self):
-        return super(Infinity, self).__hash__()
+        return super().__hash__()
 
     def __eq__(self, other):
         return other is oo
@@ -2117,7 +2117,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
         return mlib.fninf
 
     def __hash__(self):
-        return super(NegativeInfinity, self).__hash__()
+        return super().__hash__()
 
     def __eq__(self, other):
         return other is -oo
@@ -2236,7 +2236,7 @@ class NaN(Number, metaclass=Singleton):
         return _mpf_nan
 
     def __hash__(self):
-        return super(NaN, self).__hash__()
+        return super().__hash__()
 
     def __eq__(self, other):
         # NaN is structurally equal to another NaN
@@ -2372,7 +2372,7 @@ class NumberSymbol(AtomicExpr):
         raise NotImplementedError  # pragma: no cover
 
     def __hash__(self):
-        return super(NumberSymbol, self).__hash__()
+        return super().__hash__()
 
 
 class Exp1(NumberSymbol, metaclass=Singleton):
