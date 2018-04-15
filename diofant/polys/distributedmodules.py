@@ -26,8 +26,8 @@ The main reference for this file is [SCA],
 "A Singular Introduction to Commutative Algebra".
 """
 
-from collections import defaultdict
-from itertools import permutations
+import collections
+import itertools
 
 from ..core import S, sympify
 from .monomials import monomial_deg, monomial_div, monomial_lcm, monomial_mul
@@ -357,7 +357,7 @@ def sdm_to_vector(f, gens, K, n=None):
     [x**2 + y**2, 2*z]
     """
     dic = sdm_to_dict(f)
-    dics = defaultdict(list)
+    dics = collections.defaultdict(list)
     for k, v in dic.items():
         dics[k[0]].append((k[1:], v))
     n = n or len(dics)
@@ -693,7 +693,7 @@ def sdm_groebner(G, NF, O, K, extended=False):
     # Finally interreduce the standard basis.
     # (TODO again, better data structures)
     S = {(tuple(f), i) for i, f in enumerate(S)}
-    for (a, ai), (b, bi) in permutations(S, 2):
+    for (a, ai), (b, bi) in itertools.permutations(S, 2):
         A = sdm_LM(a)
         B = sdm_LM(b)
         if sdm_monomial_divides(A, B) and (b, bi) in S and (a, ai) in S:

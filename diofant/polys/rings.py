@@ -1,8 +1,8 @@
 """Sparse polynomial rings. """
 
-from functools import reduce
-from operator import add, ge, gt, le, lt, mul
-from types import GeneratorType
+import functools
+import operator
+import types
 
 from ..core import Expr, Symbol, igcd, oo
 from ..core import symbols as _symbols
@@ -303,9 +303,9 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             if generator is not None:
                 return generator
             elif expr.is_Add:
-                return reduce(add, list(map(_rebuild, expr.args)))
+                return functools.reduce(operator.add, list(map(_rebuild, expr.args)))
             elif expr.is_Mul:
-                return reduce(mul, list(map(_rebuild, expr.args)))
+                return functools.reduce(operator.mul, list(map(_rebuild, expr.args)))
             elif expr.is_Pow:
                 c, a = expr.exp.as_coeff_Mul(rational=True)
                 if c.is_Integer and c > 1:
@@ -392,7 +392,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         p = self.zero
 
         for obj in objs:
-            if is_sequence(obj, include=GeneratorType):
+            if is_sequence(obj, include=types.GeneratorType):
                 p += self.add(*obj)
             else:
                 p += obj
@@ -415,7 +415,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         p = self.one
 
         for obj in objs:
-            if is_sequence(obj, include=GeneratorType):
+            if is_sequence(obj, include=types.GeneratorType):
                 p *= self.mul(*obj)
             else:
                 p *= obj
@@ -672,16 +672,16 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return NotImplemented
 
     def __lt__(self, other):
-        return self._cmp(other, lt)
+        return self._cmp(other, operator.lt)
 
     def __le__(self, other):
-        return self._cmp(other, le)
+        return self._cmp(other, operator.le)
 
     def __gt__(self, other):
-        return self._cmp(other, gt)
+        return self._cmp(other, operator.gt)
 
     def __ge__(self, other):
-        return self._cmp(other, ge)
+        return self._cmp(other, operator.ge)
 
     def _drop(self, gen):
         ring = self.ring

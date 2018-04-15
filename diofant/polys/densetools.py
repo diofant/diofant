@@ -1,7 +1,6 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from math import ceil as _ceil
-from math import log as _log
+import math
 
 from ..core import I
 from ..utilities import variations
@@ -1137,7 +1136,7 @@ def dup_revert(f, n, K):
     g = [K.revert(dmp_TC(f, K))]
     h = [K.one, K.zero, K.zero]
 
-    N = int(_ceil(_log(n, 2)))
+    N = int(math.ceil(math.log(n, 2)))
 
     for i in range(1, N + 1):
         a = dmp_mul_ground(g, K(2), 0, K)
