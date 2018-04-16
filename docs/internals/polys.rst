@@ -272,8 +272,6 @@ Dense representations quickly require infeasible amounts of storage and
 computation time if the number of variables increases. For this reason,
 there is code to manipulate polynomials in a *sparse* representation.
 
-
-
 .. currentmodule:: diofant.polys.rings
 
 Sparse polynomials are represented as dictionaries.
