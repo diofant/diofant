@@ -633,11 +633,11 @@ def test_inject():
 def test_Domain_map():
     seq = ZZ.map([1, 2, 3, 4])
 
-    assert all(ZZ.of_type(elt) for elt in seq)
+    assert all(isinstance(elt, ZZ.dtype) for elt in seq)
 
     seq = ZZ.map([[1, 2, 3, 4]])
 
-    assert all(ZZ.of_type(elt) for elt in seq[0]) and len(seq) == 1
+    assert all(isinstance(elt, ZZ.dtype) for elt in seq[0]) and len(seq) == 1
 
 
 def test_Domain___eq__():
@@ -725,9 +725,9 @@ def test_FractionField_convert():
 
 
 def test_FF_of_type():
-    assert FF(3).of_type(FF(3)(1)) is True
-    assert FF(5).of_type(FF(5)(3)) is True
-    assert FF(5).of_type(FF(7)(3)) is False
+    assert isinstance(FF(3)(1), FF(3).dtype) is True
+    assert isinstance(FF(5)(3), FF(5).dtype) is True
+    assert isinstance(FF(7)(3), FF(5).dtype) is False
 
 
 def test___eq__():

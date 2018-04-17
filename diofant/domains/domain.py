@@ -79,7 +79,7 @@ class Domain(DefaultPrinting):
         if base is not None:
             return self.convert_from(element, base)
 
-        if self.of_type(element):
+        if isinstance(element, self.dtype):
             return element
 
         from . import (PythonIntegerRing, GMPYIntegerRing, GMPYRationalField,
@@ -119,10 +119,6 @@ class Domain(DefaultPrinting):
                 pass
 
         raise CoercionFailed("can't convert %s of type %s to %s" % (element, type(element), self))
-
-    def of_type(self, element):
-        """Check if ``a`` is of type ``dtype``. """
-        return isinstance(element, self.dtype)  # XXX: this isn't correct, e.g. PolyElement
 
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain. """
