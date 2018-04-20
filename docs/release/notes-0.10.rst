@@ -28,6 +28,7 @@ Compatibility breaks
 * Functions :func:`~diofant.polys.numberfields.minimal_polynomial` and :func:`~diofant.polys.numberfields.primitive_element` return :class:`~diofant.polys.polytools.PurePoly` instances, see :pull:`628`.
 * Removed ``ANP`` class, see :pull:`619`.
 * Removed ``to_number_field()``, use :meth:`~diofant.domains.domain.Domain.convert` instead, see :pull:`619`.
+* Removed ``RealNumber`` alias, see :pull:`635`.
 
 Minor changes
 =============
@@ -59,3 +60,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14389` AlgebraicNumber should be a domain element?
 * :sympyissue:`14291` poly(((x - 1)**2 + 1)*((x - 1)**2 + 2)*(x - 1)).all_roots() hangs
 * :sympyissue:`14590` limit((n**3*((n + 1)/n)**n)/((n + 1)*(n + 2)*(n + 3)), n, oo) is incorrect
+* :sympyissue:`14645` Bug when solving multivariate polynomial systems with identical equations

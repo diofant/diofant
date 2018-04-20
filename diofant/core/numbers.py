@@ -1027,9 +1027,6 @@ class Float(Number):
 # Add sympify converters
 converter[float] = converter[decimal.Decimal] = Float
 
-# this is here to work nicely in Sage
-RealNumber = Float
-
 
 class Rational(Number):
     """Represents integers and rational numbers (p/q) of any size.
@@ -1176,6 +1173,9 @@ class Rational(Number):
 
     def _eval_is_zero(self):
         return self.p == 0
+
+    def __bool__(self):
+        return self.is_nonzero
 
     def __neg__(self):
         return Rational(-self.p, self.q)
@@ -1383,7 +1383,7 @@ class Rational(Number):
 
         return factorrat(self, limit=limit, use_trial=use_trial,
                          use_rho=use_rho, use_pm1=use_pm1,
-                         verbose=verbose).copy()
+                         verbose=verbose, visual=visual).copy()
 
     @_sympifyit('other', NotImplemented)
     def gcd(self, other):
@@ -1494,84 +1494,11 @@ class Integer(Rational):
     def __getnewargs__(self):
         return self.p,
 
-    # Arithmetic operations are here for efficiency
-    def __int__(self):
+    def __hash__(self):
+        return hash(self.p)
+
+    def __index__(self):
         return self.p
-
-    def __neg__(self):
-        return Integer(-self.p)
-
-    def __abs__(self):
-        if self.p >= 0:
-            return self
-        else:
-            return Integer(-self.p)
-
-    def __divmod__(self, other):
-        from .containers import Tuple
-        if isinstance(other, Integer):
-            return Tuple(*(divmod(self.p, other.p)))
-        else:
-            return Number.__divmod__(self, other)
-
-    def __rdivmod__(self, other):
-        from .containers import Tuple
-        if isinstance(other, int):
-            return Tuple(*(divmod(other, self.p)))
-        else:
-            other = Number(other)
-            return Number.__divmod__(other, self)
-
-    # TODO make it decorator + bytecodehacks?
-    def __add__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p + other)
-        elif isinstance(other, Integer):
-            return Integer(self.p + other.p)
-        return Rational.__add__(self, other)
-
-    def __radd__(self, other):
-        if isinstance(other, int):
-            return Integer(other + self.p)
-        return Rational.__add__(self, other)
-
-    def __sub__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p - other)
-        elif isinstance(other, Integer):
-            return Integer(self.p - other.p)
-        return Rational.__sub__(self, other)
-
-    def __rsub__(self, other):
-        if isinstance(other, int):
-            return Integer(other - self.p)
-        return Rational.__rsub__(self, other)
-
-    def __mul__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p*other)
-        elif isinstance(other, Integer):
-            return Integer(self.p*other.p)
-        return Rational.__mul__(self, other)
-
-    def __rmul__(self, other):
-        if isinstance(other, int):
-            return Integer(other*self.p)
-        return Rational.__mul__(self, other)
-
-    def __mod__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p % other)
-        elif isinstance(other, Integer):
-            return Integer(self.p % other.p)
-        return Rational.__mod__(self, other)
-
-    def __rmod__(self, other):
-        if isinstance(other, int):
-            return Integer(other % self.p)
-        elif isinstance(other, Integer):
-            return Integer(other.p % self.p)
-        return Rational.__rmod__(self, other)
 
     def __eq__(self, other):
         if isinstance(other, int):
@@ -1579,36 +1506,6 @@ class Integer(Rational):
         elif isinstance(other, Integer):
             return (self.p == other.p)
         return Rational.__eq__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __gt__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p > other.p, strict=True)
-        return Rational.__gt__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __lt__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p < other.p, strict=True)
-        return Rational.__lt__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __ge__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p >= other.p, strict=True)
-        return Rational.__ge__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __le__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p <= other.p, strict=True)
-        return Rational.__le__(self, other)
-
-    def __hash__(self):
-        return hash(self.p)
-
-    def __index__(self):
-        return self.p
 
     ########################################
 
@@ -1976,9 +1873,6 @@ class Zero(IntegerConstant, metaclass=Singleton):
         if coeff is not S.One:  # there is a Number to discard
             return self**terms
 
-    def __bool__(self):
-        return False
-
 
 class One(IntegerConstant, metaclass=Singleton):
     """The number one.
@@ -2001,13 +1895,6 @@ class One(IntegerConstant, metaclass=Singleton):
 
     p = 1
     q = 1
-
-    def factors(self, limit=None, use_trial=True, use_rho=False,
-                use_pm1=False, verbose=False, visual=False):
-        if visual:
-            return self
-        else:
-            return {}
 
 
 class NegativeOne(IntegerConstant, metaclass=Singleton):

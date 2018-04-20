@@ -1490,3 +1490,10 @@ def test_sympyissue_12180():
 def test_diofantissue_427():
     assert solve([1 + y, x - y], x) == []
     assert solve([x - y, y - 3], x) == []
+
+
+def test_sympyissue_14645():
+    eq = x*y - x - y
+    ans = [{x: y/(y - 1)}]
+    assert solve([eq], [x, y]) == ans
+    assert solve([eq, eq], [x, y]) == ans

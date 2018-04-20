@@ -118,11 +118,6 @@ NumberSymbol
 .. autoclass:: NumberSymbol
    :members:
 
-RealNumber
-^^^^^^^^^^
-.. autoclass:: RealNumber
-   :members:
-
 igcd
 ^^^^
 .. autofunction:: igcd
