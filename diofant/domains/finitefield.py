@@ -44,6 +44,7 @@ class FiniteField(Field, SimpleDomain):
         return isinstance(other, FiniteField) and \
             self.mod == other.mod and self.domain == other.domain
 
+    @property
     def characteristic(self):
         """Return the characteristic of this domain. """
         return self.mod

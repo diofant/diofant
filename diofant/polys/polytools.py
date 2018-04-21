@@ -423,7 +423,7 @@ class Poly(Expr):
         domain = self.domain
 
         if domain.is_FiniteField:
-            return Integer(domain.characteristic())
+            return Integer(domain.characteristic)
         else:
             raise PolynomialError("not a polynomial over a Galois field")
 

@@ -35,6 +35,9 @@ Abstract Domains
 .. autoclass:: diofant.domains.compositedomain.CompositeDomain
    :members:
 
+.. autoclass:: diofant.domains.characteristiczero.CharacteristicZero
+   :members:
+
 Concrete Domains
 ****************
 

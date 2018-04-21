@@ -30,6 +30,7 @@ Compatibility breaks
 * Removed ``to_number_field()``, use :meth:`~diofant.domains.domain.Domain.convert` instead, see :pull:`619`.
 * Removed ``RealNumber`` alias, see :pull:`635`.
 * Removed ``of_type()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`636`.
+* Method ``characteristic()`` now is a property of :class:`~diofant.domains.characteristiczero.CharacteristicZero` and :class:`~diofant.domains.FiniteField`, see :pull:`636`.
 
 Minor changes
 =============

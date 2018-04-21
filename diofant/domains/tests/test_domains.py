@@ -674,7 +674,7 @@ def test_Domain__algebraic_field():
 
     pytest.raises(DomainError, lambda: AlgebraicField(ZZ, sqrt(2)))
 
-    assert alg.characteristic() == 0
+    assert alg.characteristic == 0
 
     alg = QQ.algebraic_field(I)
     assert alg.algebraic_field(I) == alg
