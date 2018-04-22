@@ -8,7 +8,7 @@ __all__ = ('GMPYFiniteField',)
 
 
 class GMPYFiniteField(FiniteField):
-    """Finite field based on GMPY integers. """
+    """Finite field based on GMPY's integers. """
 
     alias = 'FF_gmpy'
 

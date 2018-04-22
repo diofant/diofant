@@ -10,7 +10,7 @@ __all__ = ('GMPYIntegerRing',)
 
 
 class GMPYIntegerRing(IntegerRing):
-    """Integer ring based on GMPY's ``mpz`` type. """
+    """Integer ring based on GMPY's integers. """
 
     dtype = GMPYInteger
     zero = dtype(0)
