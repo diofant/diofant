@@ -188,7 +188,7 @@ class Poly(Expr):
         return self.rep, self.gens
 
     def __hash__(self):
-        return super(Poly, self).__hash__()
+        return super().__hash__()
 
     @property
     def free_symbols(self):
@@ -3524,7 +3524,7 @@ class PurePoly(Poly):
         return self.rep,
 
     def __hash__(self):
-        return super(PurePoly, self).__hash__()
+        return super().__hash__()
 
     @property
     def free_symbols(self):

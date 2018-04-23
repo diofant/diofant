@@ -510,7 +510,7 @@ class RootOf(Expr):
             try:
                 interval = self.interval
             except KeyError:
-                return super(Expr, self)._eval_evalf(prec)
+                return super()._eval_evalf(prec)
 
             while True:
                 if self.is_extended_real:
