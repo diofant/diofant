@@ -145,7 +145,7 @@ class Factors:
 
             handle = []
             for k in factors:
-                if k is I or k in (-1, 1):
+                if k in (I, -1, 1):
                     handle.append(k)
             if handle:
                 i1 = S.One
@@ -168,8 +168,8 @@ class Factors:
                         elif a == -1:
                             factors[-a] = S.One
                             factors[S.NegativeOne] = S.One
-                        else:
-                            raise ValueError('unexpected factor in i1: %s' % a)
+                        else:  # pragma: no cover
+                            raise RuntimeError('unexpected factor in i1: %s' % a)
 
         self.factors = factors
         self.gens = frozenset(factors)
@@ -596,12 +596,6 @@ class Term:
         self.coeff = coeff
         self.numer = numer
         self.denom = denom
-
-    def __hash__(self):  # Term
-        return hash((self.coeff, self.numer, self.denom))
-
-    def __repr__(self):  # Term
-        return "Term(%s, %s, %s)" % (self.coeff, self.numer, self.denom)
 
     def as_expr(self):  # Term
         return self.coeff*(self.numer.as_expr()/self.denom.as_expr())
