@@ -71,7 +71,7 @@ def decompose_power(expr):
 class Factors:
     """Efficient representation of ``f_1*f_2*...*f_n``."""
 
-    def __init__(self, factors=None):  # Factors
+    def __init__(self, factors=None):
         """Initialize Factors from dict or expr.
 
         Examples
@@ -174,17 +174,17 @@ class Factors:
         self.factors = factors
         self.gens = frozenset(factors)
 
-    def __hash__(self):  # Factors
+    def __hash__(self):
         keys = tuple(ordered(self.factors))
         values = tuple(self.factors[k] for k in keys)
         return hash((keys, values))
 
-    def __repr__(self):  # Factors
+    def __repr__(self):
         return "Factors({%s})" % ', '.join(
             ['%s: %s' % (k, v) for k, v in ordered(self.factors.items())])
 
     @property
-    def is_zero(self):  # Factors
+    def is_zero(self):
         """
         >>> Factors(0).is_zero
         True
@@ -193,14 +193,14 @@ class Factors:
         return len(f) == 1 and 0 in f
 
     @property
-    def is_one(self):  # Factors
+    def is_one(self):
         """
         >>> Factors(1).is_one
         True
         """
         return not self.factors
 
-    def as_expr(self):  # Factors
+    def as_expr(self):
         """Return the underlying expression.
 
         Examples
@@ -226,7 +226,7 @@ class Factors:
                 args.append(factor)
         return Mul(*args)
 
-    def mul(self, other):  # Factors
+    def mul(self, other):
         """Return Factors of ``self * other``.
 
         Examples
@@ -327,7 +327,7 @@ class Factors:
 
         return Factors(self_factors), Factors(other_factors)
 
-    def div(self, other):  # Factors
+    def div(self, other):
         """Return ``self`` and ``other`` with ``gcd`` removed from each.
         This is optimized for the case when there are many factors in common.
 
@@ -424,7 +424,7 @@ class Factors:
 
         return Factors(quo), Factors(rem)
 
-    def quo(self, other):  # Factors
+    def quo(self, other):
         """Return numerator Factor of ``self / other``.
 
         Examples
@@ -437,7 +437,7 @@ class Factors:
         """
         return self.div(other)[0]
 
-    def rem(self, other):  # Factors
+    def rem(self, other):
         """Return denominator Factors of ``self / other``.
 
         Examples
@@ -452,7 +452,7 @@ class Factors:
         """
         return self.div(other)[1]
 
-    def pow(self, other):  # Factors
+    def pow(self, other):
         """Return self raised to a non-negative integer power.
 
         Examples
@@ -478,7 +478,7 @@ class Factors:
         else:
             raise ValueError("expected non-negative integer, got %s" % other)
 
-    def gcd(self, other):  # Factors
+    def gcd(self, other):
         """Return Factors of ``gcd(self, other)``. The keys are
         the intersection of factors with the minimum exponent for
         each factor.
@@ -509,7 +509,7 @@ class Factors:
 
         return Factors(factors)
 
-    def lcm(self, other):  # Factors
+    def lcm(self, other):
         """Return Factors of ``lcm(self, other)`` which are
         the union of factors with the maximum exponent for
         each factor.
@@ -537,22 +537,22 @@ class Factors:
 
         return Factors(factors)
 
-    def __mul__(self, other):  # Factors
+    def __mul__(self, other):
         return self.mul(other)
 
-    def __divmod__(self, other):  # Factors
+    def __divmod__(self, other):
         return self.div(other)
 
-    def __truediv__(self, other):  # Factors
+    def __truediv__(self, other):
         return self.quo(other)
 
-    def __mod__(self, other):  # Factors
+    def __mod__(self, other):
         return self.rem(other)
 
-    def __pow__(self, other):  # Factors
+    def __pow__(self, other):
         return self.pow(other)
 
-    def __eq__(self, other):  # Factors
+    def __eq__(self, other):
         if not isinstance(other, Factors):
             other = Factors(other)
         return self.factors == other.factors
@@ -561,7 +561,7 @@ class Factors:
 class Term:
     """Efficient representation of ``coeff*(numer/denom)``. """
 
-    def __init__(self, term, numer=None, denom=None):  # Term
+    def __init__(self, term, numer=None, denom=None):
         if numer is None and denom is None:
             if not term.is_commutative:
                 raise NonCommutativeExpression(
@@ -597,10 +597,10 @@ class Term:
         self.numer = numer
         self.denom = denom
 
-    def as_expr(self):  # Term
+    def as_expr(self):
         return self.coeff*(self.numer.as_expr()/self.denom.as_expr())
 
-    def mul(self, other):  # Term
+    def mul(self, other):
         coeff = self.coeff*other.coeff
         numer = self.numer.mul(other.numer)
         denom = self.denom.mul(other.denom)
@@ -609,13 +609,13 @@ class Term:
 
         return Term(coeff, numer, denom)
 
-    def inv(self):  # Term
+    def inv(self):
         return Term(1/self.coeff, self.denom, self.numer)
 
-    def quo(self, other):  # Term
+    def quo(self, other):
         return self.mul(other.inv())
 
-    def pow(self, other):  # Term
+    def pow(self, other):
         if other < 0:
             return self.inv().pow(-other)
         else:
@@ -623,35 +623,35 @@ class Term:
                         self.numer.pow(other),
                         self.denom.pow(other))
 
-    def gcd(self, other):  # Term
+    def gcd(self, other):
         return Term(self.coeff.gcd(other.coeff),
                     self.numer.gcd(other.numer),
                     self.denom.gcd(other.denom))
 
-    def lcm(self, other):  # Term
+    def lcm(self, other):
         return Term(self.coeff.lcm(other.coeff),
                     self.numer.lcm(other.numer),
                     self.denom.lcm(other.denom))
 
-    def __mul__(self, other):  # Term
+    def __mul__(self, other):
         if isinstance(other, Term):
             return self.mul(other)
         else:
             return NotImplemented
 
-    def __truediv__(self, other):  # Term
+    def __truediv__(self, other):
         if isinstance(other, Term):
             return self.quo(other)
         else:
             return NotImplemented
 
-    def __pow__(self, other):  # Term
+    def __pow__(self, other):
         if isinstance(other, DIOFANT_INTS):
             return self.pow(other)
         else:
             return NotImplemented
 
-    def __eq__(self, other):  # Term
+    def __eq__(self, other):
         return (self.coeff == other.coeff and
                 self.numer == other.numer and
                 self.denom == other.denom)
