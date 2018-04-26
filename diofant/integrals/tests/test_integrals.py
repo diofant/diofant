@@ -370,8 +370,15 @@ def NS(e, n=15, **options):
     return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
-@pytest.mark.slow
 def test_evalf_integrals():
+    assert NS(Integral(cos(x)/x, (x, 1, oo)), quad='osc') == '-0.337403922900968'
+
+    pytest.raises(ValueError,
+                  lambda: NS(Integral(acos(x)/x, (x, 1, oo)), quad='osc'))
+
+
+@pytest.mark.slow
+def test_evalf_integrals_slow():
     assert NS(Integral(x, (x, 2, 5)), 15) == '10.5000000000000'
     gauss = Integral(exp(-x**2), (x, -oo, oo))
     assert NS(gauss, 15) == '1.77245385090552'

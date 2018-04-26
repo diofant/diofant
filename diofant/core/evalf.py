@@ -233,9 +233,9 @@ def evalf_im(expr, prec, options):
 
 
 def finalize_complex(re, im, prec):
-    if re == fzero and im == fzero:
-        raise ValueError("got complex zero with unknown accuracy")
-    elif re == fzero:
+    assert re != fzero or im != fzero
+
+    if re == fzero:
         return None, im, None, prec
     elif im == fzero:
         return re, None, prec, None
@@ -256,18 +256,11 @@ def chop_parts(value, prec):
     Chop off tiny real or complex parts.
     """
     re, im, re_acc, im_acc = value
-    # Method 1: chop based on absolute value
+    # chop based on absolute value
     if re and re not in _infs_nan and (fastlog(re) < -prec + 4):
         re, re_acc = None, None
     if im and im not in _infs_nan and (fastlog(im) < -prec + 4):
         im, im_acc = None, None
-    # Method 2: chop if inaccurate and relatively small
-    if re and im:
-        delta = fastlog(re) - fastlog(im)
-        if re_acc < 2 and (delta - re_acc <= -prec + 4):
-            re, re_acc = None, None
-        if im_acc < 2 and (delta - im_acc >= prec - 4):
-            im, im_acc = None, None
     return re, im, re_acc, im_acc
 
 
@@ -552,11 +545,11 @@ def evalf_pow(v, prec, options):
             case = p % 4
             if case == 0:
                 return z, None, target_prec, None
-            if case == 1:
+            elif case == 1:
                 return None, z, None, target_prec
-            if case == 2:
+            elif case == 2:
                 return mpf_neg(z), None, target_prec, None
-            if case == 3:
+            else:
                 return None, mpf_neg(z), None, target_prec
         # Zero raised to an integer power
         if not re:
@@ -753,17 +746,11 @@ def evalf_subs(prec, subs):
 
 
 def evalf_piecewise(expr, prec, options):
-    from .numbers import Float, Integer
     if 'subs' in options:
         expr = expr.subs(evalf_subs(prec, options['subs']))
         newopts = options.copy()
         del newopts['subs']
-        if hasattr(expr, 'func'):
-            return evalf(expr, prec, newopts)
-        if type(expr) == float:
-            return evalf(Float(expr), prec, newopts)
-        if type(expr) == int:
-            return evalf(Integer(expr), prec, newopts)
+        return evalf(expr, prec, newopts)
 
     # We still have undefined symbols
     raise NotImplementedError
