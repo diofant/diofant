@@ -1,5 +1,7 @@
 """Implementation of :class:`Domain` class. """
 
+import abc
+
 from ..core import Basic
 from ..core.compatibility import HAS_GMPY
 from ..polys.orderings import lex
@@ -12,7 +14,7 @@ from .domainelement import DomainElement
 __all__ = ('Domain',)
 
 
-class Domain(DefaultPrinting):
+class Domain(DefaultPrinting, abc.ABC):
     """Represents an abstract domain. """
 
     dtype = None

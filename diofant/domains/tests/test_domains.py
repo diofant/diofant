@@ -26,7 +26,7 @@ def unify(K0, K1):
 
 
 def test_Domain_interface():
-    pytest.raises(NotImplementedError, lambda: DomainElement().parent)
+    pytest.raises(TypeError, lambda: DomainElement().parent)
 
     assert RR(1).parent is RR
     assert CC(1).parent is CC

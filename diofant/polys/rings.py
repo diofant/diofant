@@ -51,8 +51,6 @@ def ring(symbols, domain, order=lex):
     ZZ[x,y,z]
     >>> x + y + z
     x + y + z
-    >>> type(_)
-    <class 'diofant.polys.rings.PolyElement'>
     """
     _ring = PolynomialRing(domain, symbols, order)
     return (_ring,) + _ring.gens
@@ -75,8 +73,6 @@ def vring(symbols, domain, order=lex):
     ZZ[x,y,z]
     >>> x + y + z
     x + y + z
-    >>> type(_)
-    <class 'diofant.polys.rings.PolyElement'>
     """
     _ring = PolynomialRing(domain, symbols, order)
     pollute([sym.name for sym in _ring.symbols], _ring.gens)
@@ -102,8 +98,6 @@ def sring(exprs, *symbols, **options):
     ZZ[x,y,z]
     >>> f
     x + 2*y + 3*z
-    >>> type(_)
-    <class 'diofant.polys.rings.PolyElement'>
     """
     single = False
 
