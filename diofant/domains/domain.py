@@ -128,10 +128,9 @@ class Domain(DefaultPrinting, abc.ABC):
         """Check if ``a`` belongs to this domain. """
         try:
             self.convert(a)
+            return True
         except CoercionFailed:
             return False
-
-        return True
 
     def from_PolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """
@@ -280,10 +279,6 @@ class Domain(DefaultPrinting, abc.ABC):
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
         return a >= 0
-
-    def abs(self, a):
-        """Absolute value of ``a``, implies ``__abs__``. """
-        return abs(a)
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``. """

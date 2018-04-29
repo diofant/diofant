@@ -1894,8 +1894,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not self:
             return self.ring.domain.zero
         else:
-            ground_abs = self.ring.domain.abs
-            return norm_func([ground_abs(coeff) for coeff in self.itercoeffs()])
+            return norm_func([abs(coeff) for coeff in self.itercoeffs()])
 
     def max_norm(self):
         return self._norm(max)
