@@ -29,3 +29,7 @@ Contents:
    guide
    aboutus
    release/index
+
+
+.. autoprogram:: diofant.__main__:parser
+   :prog: dsh
