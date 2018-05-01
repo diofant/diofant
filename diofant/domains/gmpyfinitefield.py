@@ -8,9 +8,9 @@ __all__ = ('GMPYFiniteField',)
 
 
 class GMPYFiniteField(FiniteField):
-    """Finite field based on GMPY integers. """
+    """Finite field based on GMPY's integers. """
 
     alias = 'FF_gmpy'
 
     def __init__(self, mod, symmetric=True):
-        return super(GMPYFiniteField, self).__init__(mod, GMPYIntegerRing(), symmetric)
+        return super().__init__(mod, GMPYIntegerRing(), symmetric)

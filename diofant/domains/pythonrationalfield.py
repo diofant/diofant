@@ -10,7 +10,7 @@ __all__ = ('PythonRationalField',)
 
 
 class PythonRationalField(RationalField):
-    """Rational field based on Python rational number type. """
+    """Rational field based on Python's rationals. """
 
     dtype = PythonRational
     zero = dtype(0)

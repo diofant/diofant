@@ -1,7 +1,7 @@
 """Algorithms for computing symbolic roots of polynomials. """
 
+import functools
 import math
-from functools import reduce
 
 from ..core import (Dummy, Eq, Float, I, Integer, Rational, S, Symbol, comp,
                     factor_terms, igcd, pi, symbols, sympify)
@@ -1000,7 +1000,7 @@ def root_factors(f, *gens, **args):
             factors, N = factors + [Poly(x - r, x)]*n, N + n
 
         if N < F.degree():
-            G = reduce(lambda p, q: p*q, factors)
+            G = functools.reduce(lambda p, q: p*q, factors)
             factors.append(F.quo(G))
 
     if not isinstance(f, Poly):

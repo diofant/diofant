@@ -226,7 +226,7 @@ def dmp_validate(f, K=None):
     """
     def validate(f, g, i, K):
         if type(g) is not list:
-            if K is not None and not K.of_type(g):
+            if K is not None and not isinstance(g, K.dtype):
                 raise TypeError("%s in %s in not of type %s" % (g, f, K.dtype))
 
             return {i - 1}

@@ -633,11 +633,11 @@ def test_inject():
 def test_Domain_map():
     seq = ZZ.map([1, 2, 3, 4])
 
-    assert all(ZZ.of_type(elt) for elt in seq)
+    assert all(isinstance(elt, ZZ.dtype) for elt in seq)
 
     seq = ZZ.map([[1, 2, 3, 4]])
 
-    assert all(ZZ.of_type(elt) for elt in seq[0]) and len(seq) == 1
+    assert all(isinstance(elt, ZZ.dtype) for elt in seq[0]) and len(seq) == 1
 
 
 def test_Domain___eq__():
@@ -674,7 +674,7 @@ def test_Domain__algebraic_field():
 
     pytest.raises(DomainError, lambda: AlgebraicField(ZZ, sqrt(2)))
 
-    assert alg.characteristic() == 0
+    assert alg.characteristic == 0
 
     alg = QQ.algebraic_field(I)
     assert alg.algebraic_field(I) == alg
@@ -725,9 +725,9 @@ def test_FractionField_convert():
 
 
 def test_FF_of_type():
-    assert FF(3).of_type(FF(3)(1)) is True
-    assert FF(5).of_type(FF(5)(3)) is True
-    assert FF(5).of_type(FF(7)(3)) is False
+    assert isinstance(FF(3)(1), FF(3).dtype) is True
+    assert isinstance(FF(5)(3), FF(5).dtype) is True
+    assert isinstance(FF(7)(3), FF(5).dtype) is False
 
 
 def test___eq__():
@@ -1074,3 +1074,10 @@ def test_sympyissue_13545():
     assert Poly(x + 1, x, modulus=2) + 1 == Poly(x, x, modulus=2)
     pytest.raises(NotImplementedError,
                   lambda: Poly(x, modulus=2) + Poly(x, modulus=3))
+
+
+def test_sympyissue_14294():
+    A = QQ.algebraic_field(I)
+
+    a = A.convert(I)
+    assert A.convert(a) == a

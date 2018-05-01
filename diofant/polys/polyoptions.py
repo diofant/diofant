@@ -205,7 +205,7 @@ class Options(dict):
         if attr in self.__options__:
             self[attr] = value
         else:
-            super(Options, self).__setattr__(attr, value)
+            super().__setattr__(attr, value)
 
     @property
     def args(self):

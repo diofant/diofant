@@ -1,8 +1,7 @@
 """Dense univariate polynomials with coefficients in Galois fields. """
 
-from math import ceil as _ceil
-from math import sqrt as _sqrt
-from random import uniform
+import math
+import random
 
 from ..core import prod
 from ..ntheory import factorint
@@ -1138,7 +1137,7 @@ def gf_random(n, p, K):
     >>> gf_random(10, 5, ZZ) #doctest: +SKIP
     [1, 2, 3, 2, 1, 1, 1, 2, 0, 4, 2]
     """
-    return [K.one] + [ K(int(uniform(0, p))) for i in range(n) ]
+    return [K.one] + [ K(int(random.uniform(0, p))) for i in range(n) ]
 
 
 def gf_irreducible(n, p, K):
@@ -1651,7 +1650,7 @@ def gf_ddf_shoup(f, p, K):
     .. [3] [Gathen92]_
     """
     n = gf_degree(f)
-    k = int(_ceil(_sqrt(n//2)))
+    k = int(math.ceil(math.sqrt(n//2)))
     b = gf_frobenius_monomial_base(f, p, K)
     h = gf_frobenius_map([K.one, K.zero], f, b, p, K)
     # U[i] = x**(p**i)

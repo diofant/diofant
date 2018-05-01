@@ -66,11 +66,13 @@ class Domain(DefaultPrinting):
         else:
             method = "from_" + base.__class__.__name__
 
-        _convert = getattr(self, method)
-        result = _convert(element, base)
+        convert = getattr(self, method, None)
 
-        if result is not None:
-            return result
+        if convert:
+            result = convert(element, base)
+
+            if result is not None:
+                return result
 
         raise CoercionFailed("can't convert %s of type %s from %s to %s" % (element, type(element), base, self))
 
@@ -79,7 +81,7 @@ class Domain(DefaultPrinting):
         if base is not None:
             return self.convert_from(element, base)
 
-        if self.of_type(element):
+        if isinstance(element, self.dtype):
             return element
 
         from . import (PythonIntegerRing, GMPYIntegerRing, GMPYRationalField,
@@ -120,10 +122,6 @@ class Domain(DefaultPrinting):
 
         raise CoercionFailed("can't convert %s of type %s to %s" % (element, type(element), self))
 
-    def of_type(self, element):
-        """Check if ``a`` is of type ``dtype``. """
-        return isinstance(element, self.dtype)  # XXX: this isn't correct, e.g. PolyElement
-
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain. """
         try:
@@ -133,22 +131,10 @@ class Domain(DefaultPrinting):
 
         return True
 
-    def from_FF_python(self, a, K0):
-        """Convert ``ModularInteger(int)`` to ``dtype``. """
-        return
-
-    def from_FF_gmpy(self, a, K0):
-        """Convert ``ModularInteger(mpz)`` to ``dtype``. """
-        return
-
     def from_PolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """
         if a.is_ground:
             return self.convert(a.LC, K0.domain)
-
-    def from_FractionField(self, a, K0):
-        """Convert a rational function to ``dtype``. """
-        return
 
     def unify_with_symbols(self, K1, symbols):
         if (self.is_Composite and (set(self.symbols) & set(symbols))) or (K1.is_Composite and (set(K1.symbols) & set(symbols))):

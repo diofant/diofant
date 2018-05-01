@@ -10,7 +10,7 @@ __all__ = ('GMPYRationalField',)
 
 
 class GMPYRationalField(RationalField):
-    """Rational field based on GMPY mpq class. """
+    """Rational field based on GMPY's rationals. """
 
     dtype = GMPYRational
     zero = dtype(0)

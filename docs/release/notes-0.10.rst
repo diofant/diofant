@@ -29,6 +29,8 @@ Compatibility breaks
 * Removed ``ANP`` class, see :pull:`619`.
 * Removed ``to_number_field()``, use :meth:`~diofant.domains.domain.Domain.convert` instead, see :pull:`619`.
 * Removed ``RealNumber`` alias, see :pull:`635`.
+* Removed ``of_type()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`636`.
+* Method ``characteristic()`` now is a property of :class:`~diofant.domains.characteristiczero.CharacteristicZero` and :class:`~diofant.domains.FiniteField`, see :pull:`636`.
 
 Minor changes
 =============
@@ -61,3 +63,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14291` poly(((x - 1)**2 + 1)*((x - 1)**2 + 2)*(x - 1)).all_roots() hangs
 * :sympyissue:`14590` limit((n**3*((n + 1)/n)**n)/((n + 1)*(n + 2)*(n + 3)), n, oo) is incorrect
 * :sympyissue:`14645` Bug when solving multivariate polynomial systems with identical equations
+* :sympyissue:`14294` to_number_field should be idempotent for single extension

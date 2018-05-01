@@ -10,7 +10,7 @@ __all__ = ('PythonIntegerRing',)
 
 
 class PythonIntegerRing(IntegerRing):
-    """Integer ring based on Python's ``int`` type. """
+    """Integer ring based on Python's integers. """
 
     dtype = PythonInteger
     zero = dtype(0)
