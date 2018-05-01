@@ -9,6 +9,7 @@ New features
 
 * New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619` and :pull:`631`.
 * Ground domains for :class:`~diofant.domains.AlgebraicField` can be also instances of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
+* Provide customized REPL script, based on standard interactive facilities of Python or Jupyter Console, see :pull:`601`.
 
 Major changes
 =============
