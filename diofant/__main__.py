@@ -1,3 +1,11 @@
+"""
+Python shell for Diofant.
+
+This is just a normal Python shell (IPython shell if you have the
+IPython package installed), that adds default imports and run
+some initialization code.
+"""
+
 import argparse
 import atexit
 import code
@@ -7,18 +15,19 @@ import readline
 import diofant
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--no-wrap-division",
-                        help="Don't wrap integer divisions",
-                        action="store_true")
-    parser.add_argument("-a", "--auto-symbols",
-                        help="Automatically create missing symbols",
-                        action="store_true")
-    parser.add_argument("--no-ipython",
-                        help="Don't use IPython",
-                        action="store_true")
+parser = argparse.ArgumentParser(description="Python shell for Diofant.")
+parser.add_argument("--no-wrap-division",
+                    help="Don't wrap integer divisions",
+                    action="store_true")
+parser.add_argument("-a", "--auto-symbols",
+                    help="Automatically create missing symbols",
+                    action="store_true")
+parser.add_argument("--no-ipython",
+                    help="Don't use IPython",
+                    action="store_true")
 
+
+if __name__ == "__main__":
     args, ipython_args = parser.parse_known_args()
 
     lines = ["from diofant import *",
@@ -64,7 +73,3 @@ def main():
         for l in lines:
             c.push(l)
         c.interact("")
-
-
-if __name__ == "__main__":
-    main()
