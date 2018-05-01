@@ -12,7 +12,7 @@ def main():
     parser.add_argument("--no-wrap-division",
                         help="Don't wrap integer divisions",
                         action="store_true")
-    parser.add_argument("--auto-symbols",
+    parser.add_argument("-a", "--auto-symbols",
                         help="Automatically create missing symbols",
                         action="store_true")
     parser.add_argument("--no-ipython",
@@ -39,11 +39,13 @@ def main():
             config.InteractiveShell.ast_transformers.append(diofant.interactive.session.IntegerDivisionWrapper())
         if args.auto_symbols:
             config.InteractiveShell.ast_transformers.append(diofant.interactive.session.AutomaticSymbols())
+        config.InteractiveShell.confirm_exit = False
+        config.TerminalIPythonApp.display_banner = False
 
         app = IPython.terminal.ipapp.TerminalIPythonApp.instance(config=config)
         app.initialize(ipython_args)
         for l in lines:
-            app.shell.run_cell(l, store_history=True, silent=False)
+            app.shell.run_cell(l, silent=True)
         app.start()
     else:
         class DiofantConsole(code.InteractiveConsole):
@@ -59,11 +61,9 @@ def main():
                 atexit.register(readline.write_history_file, history)
 
         c = DiofantConsole()
-        banner_python = "\n".join(">>> " + l for l in lines)
         for l in lines:
             c.push(l)
-            readline.add_history(l)
-        c.interact(banner_python)
+        c.interact("")
 
 
 if __name__ == "__main__":
