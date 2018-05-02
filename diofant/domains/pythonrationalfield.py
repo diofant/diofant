@@ -15,7 +15,6 @@ class PythonRationalField(RationalField):
     dtype = PythonRational
     zero = dtype(0)
     one = dtype(1)
-    alias = 'QQ_python'
 
     def __init__(self):
         pass
@@ -41,19 +40,19 @@ class PythonRationalField(RationalField):
         else:
             raise CoercionFailed("expected `Rational` object, got %s" % a)
 
-    def from_ZZ_python(self, a, K0):
+    def from_PythonIntegerRing(self, a, K0):
         """Convert a Python `int` object to `dtype`. """
         return PythonRational(a)
 
-    def from_QQ_python(self, a, K0):
+    def from_PythonRationalField(self, a, K0):
         """Convert a Python `Fraction` object to `dtype`. """
         return a
 
-    def from_ZZ_gmpy(self, a, K0):
+    def from_GMPYIntegerRing(self, a, K0):
         """Convert a GMPY `mpz` object to `dtype`. """
         return PythonRational(PythonInteger(a))
 
-    def from_QQ_gmpy(self, a, K0):
+    def from_GMPYRationalField(self, a, K0):
         """Convert a GMPY `mpq` object to `dtype`. """
         return PythonRational(PythonInteger(a.numerator),
                               PythonInteger(a.denominator))

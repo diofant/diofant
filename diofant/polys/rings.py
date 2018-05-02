@@ -438,19 +438,19 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         """Convert Diofant's expression to `dtype`. """
         return self.from_expr(a)
 
-    def from_ZZ_python(self, a, K0):
+    def from_PythonIntegerRing(self, a, K0):
         """Convert a Python `int` object to `dtype`. """
         return self(self.domain.convert(a, K0))
 
-    def from_QQ_python(self, a, K0):
+    def from_PythonRationalField(self, a, K0):
         """Convert a Python `Fraction` object to `dtype`. """
         return self(self.domain.convert(a, K0))
 
-    def from_ZZ_gmpy(self, a, K0):
+    def from_GMPYIntegerRing(self, a, K0):
         """Convert a GMPY `mpz` object to `dtype`. """
         return self(self.domain.convert(a, K0))
 
-    def from_QQ_gmpy(self, a, K0):
+    def from_GMPYRationalField(self, a, K0):
         """Convert a GMPY `mpq` object to `dtype`. """
         return self(self.domain.convert(a, K0))
 

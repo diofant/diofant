@@ -46,7 +46,6 @@ class Domain(DefaultPrinting, abc.ABC):
     has_CharacteristicZero = False
 
     rep = None
-    alias = None
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
@@ -63,10 +62,7 @@ class Domain(DefaultPrinting, abc.ABC):
 
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain. """
-        if base.alias is not None:
-            method = "from_" + base.alias
-        else:
-            method = "from_" + base.__class__.__name__
+        method = "from_" + base.__class__.__name__
 
         convert = getattr(self, method, None)
 

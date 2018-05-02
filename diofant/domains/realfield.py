@@ -72,16 +72,16 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
         else:
             raise CoercionFailed("expected real number, got %s" % expr)
 
-    def from_ZZ_python(self, element, base):
+    def from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
 
-    def from_QQ_python(self, element, base):
+    def from_PythonRationalField(self, element, base):
         return self.dtype(element.numerator) / element.denominator
 
-    def from_ZZ_gmpy(self, element, base):
+    def from_GMPYIntegerRing(self, element, base):
         return self.dtype(int(element))
 
-    def from_QQ_gmpy(self, element, base):
+    def from_GMPYRationalField(self, element, base):
         return self.dtype(int(element.numerator)) / int(element.denominator)
 
     def from_RealField(self, element, base):
