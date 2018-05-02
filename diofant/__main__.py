@@ -27,7 +27,7 @@ parser.add_argument("--no-ipython",
                     action="store_true")
 
 
-if __name__ == "__main__":
+def main():
     args, ipython_args = parser.parse_known_args()
 
     lines = ["from diofant import *",
@@ -73,3 +73,7 @@ if __name__ == "__main__":
         for l in lines:
             c.push(l)
         c.interact("")
+
+
+if __name__ == "__main__":
+    main()
