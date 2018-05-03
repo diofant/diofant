@@ -76,7 +76,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
-        return AlgebraicField(self.domain, *((self.ext.as_expr(),) + extension))
+        return self.domain.algebraic_field(*((self.ext.as_expr(),) + extension))
 
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
