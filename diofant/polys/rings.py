@@ -431,31 +431,31 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
     def to_diofant(self, a):
-        """Convert `a` to a Diofant object. """
+        """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 
     def from_diofant(self, a):
-        """Convert Diofant's expression to `dtype`. """
+        """Convert Diofant's expression to ``dtype``. """
         return self.from_expr(a)
 
     def from_PythonIntegerRing(self, a, K0):
-        """Convert a Python `int` object to `dtype`. """
+        """Convert a Python ``int`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_PythonRationalField(self, a, K0):
-        """Convert a Python `Fraction` object to `dtype`. """
+        """Convert a Python ``Fraction`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_GMPYIntegerRing(self, a, K0):
-        """Convert a GMPY `mpz` object to `dtype`. """
+        """Convert a GMPY ``mpz`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_GMPYRationalField(self, a, K0):
-        """Convert a GMPY `mpq` object to `dtype`. """
+        """Convert a GMPY ``mpq`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_RealField(self, a, K0):
-        """Convert a mpmath `mpf` object to `dtype`. """
+        """Convert a mpmath ``mpf`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_AlgebraicField(self, a, K0):
@@ -479,39 +479,39 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
     @property
     def field(self):
-        """Returns a field associated with `self`. """
+        """Returns a field associated with ``self``. """
         return self.ring.to_field()
 
     def is_positive(self, a):
-        """Returns True if `LC(a)` is positive. """
+        """Returns True if ``LC(a)`` is positive. """
         return self.domain.is_positive(a.LC)
 
     def is_negative(self, a):
-        """Returns True if `LC(a)` is negative. """
+        """Returns True if ``LC(a)`` is negative. """
         return self.domain.is_negative(a.LC)
 
     def is_nonpositive(self, a):
-        """Returns True if `LC(a)` is non-positive. """
+        """Returns True if ``LC(a)`` is non-positive. """
         return self.domain.is_nonpositive(a.LC)
 
     def is_nonnegative(self, a):
-        """Returns True if `LC(a)` is non-negative. """
+        """Returns True if ``LC(a)`` is non-negative. """
         return self.domain.is_nonnegative(a.LC)
 
     def gcdex(self, a, b):
-        """Extended GCD of `a` and `b`. """
+        """Extended GCD of ``a`` and ``b``. """
         return a.gcdex(b)
 
     def gcd(self, a, b):
-        """Returns GCD of `a` and `b`. """
+        """Returns GCD of ``a`` and ``b``. """
         return a.gcd(b)
 
     def lcm(self, a, b):
-        """Returns LCM of `a` and `b`. """
+        """Returns LCM of ``a`` and ``b``. """
         return a.lcm(b)
 
     def factorial(self, a):
-        """Returns factorial of `a`. """
+        """Returns factorial of ``a``. """
         return self.new(self.domain.factorial(a))
 
 

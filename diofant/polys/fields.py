@@ -184,31 +184,31 @@ class FractionField(Field, CompositeDomain):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
     def to_diofant(self, a):
-        """Convert `a` to a Diofant object. """
+        """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 
     def from_diofant(self, a):
-        """Convert Diofant's expression to `dtype`. """
+        """Convert Diofant's expression to ``dtype``. """
         return self.from_expr(a)
 
     def from_PythonIntegerRing(self, a, K0):
-        """Convert a Python `int` object to `dtype`. """
+        """Convert a Python ``int`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_PythonRationalField(self, a, K0):
-        """Convert a Python `Fraction` object to `dtype`. """
+        """Convert a Python ``Fraction`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_GMPYIntegerRing(self, a, K0):
-        """Convert a GMPY `mpz` object to `dtype`. """
+        """Convert a GMPY ``mpz`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_GMPYRationalField(self, a, K0):
-        """Convert a GMPY `mpq` object to `dtype`. """
+        """Convert a GMPY ``mpq`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_RealField(self, a, K0):
-        """Convert a mpmath `mpf` object to `dtype`. """
+        """Convert a mpmath ``mpf`` object to ``dtype``. """
         return self(self.domain.convert(a, K0))
 
     def from_PolynomialRing(self, a, K0):
@@ -227,23 +227,23 @@ class FractionField(Field, CompositeDomain):
 
     @property
     def ring(self):
-        """Returns a field associated with `self`. """
+        """Returns a field associated with ``self``. """
         return self.to_ring()
 
     def is_positive(self, a):
-        """Returns True if `LC(a)` is positive. """
+        """Returns True if ``LC(a)`` is positive. """
         return self.domain.is_positive(a.numer.LC)
 
     def is_negative(self, a):
-        """Returns True if `LC(a)` is negative. """
+        """Returns True if ``LC(a)`` is negative. """
         return self.domain.is_negative(a.numer.LC)
 
     def is_nonpositive(self, a):
-        """Returns True if `LC(a)` is non-positive. """
+        """Returns True if ``LC(a)`` is non-positive. """
         return self.domain.is_nonpositive(a.numer.LC)
 
     def is_nonnegative(self, a):
-        """Returns True if `LC(a)` is non-negative. """
+        """Returns True if ``LC(a)`` is non-negative. """
         return self.domain.is_nonnegative(a.numer.LC)
 
     def numer(self, a):
@@ -255,7 +255,7 @@ class FractionField(Field, CompositeDomain):
         return a.denom
 
     def factorial(self, a):
-        """Returns factorial of `a`. """
+        """Returns factorial of ``a``. """
         return self.dtype(self.domain.factorial(a))
 
 
