@@ -516,7 +516,13 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
 
 class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
-    """Element of multivariate distributed polynomial ring. """
+    """Element of multivariate distributed polynomial ring.
+
+    See Also
+    ========
+
+    PolynomialRing
+    """
 
     def new(self, init):
         return self.__class__(init)

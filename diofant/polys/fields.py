@@ -260,7 +260,13 @@ class FractionField(Field, CompositeDomain):
 
 
 class FracElement(DomainElement, DefaultPrinting, CantSympify):
-    """Element of multivariate distributed rational function field. """
+    """Element of multivariate distributed rational function field.
+
+    See Also
+    ========
+
+    FractionField
+    """
 
     def __init__(self, numer, denom=None):
         if denom is None:
