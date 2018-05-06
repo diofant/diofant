@@ -290,10 +290,10 @@ def sdm_mul_term(f, term, O, K):
     if not f or not c:
         return []
     else:
-        if K.is_one(c):
-            return [ (sdm_monomial_mul(f_M, X), f_c) for f_M, f_c in f ]
+        if c == K.one:
+            return [(sdm_monomial_mul(f_M, X), f_c) for f_M, f_c in f]
         else:
-            return [ (sdm_monomial_mul(f_M, X), f_c * c) for f_M, f_c in f ]
+            return [(sdm_monomial_mul(f_M, X), f_c * c) for f_M, f_c in f]
 
 
 def sdm_zero():

@@ -948,7 +948,7 @@ def gf_monic(f, p, K):
     else:
         lc = f[0]
 
-        if K.is_one(lc):
+        if lc == K.one:
             return lc, list(f)
         else:
             return lc, gf_quo_ground(f, lc, p, K)

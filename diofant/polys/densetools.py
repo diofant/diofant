@@ -463,7 +463,7 @@ def dup_monic(f, K):
 
     lc = dmp_LC(f, K)
 
-    if K.is_one(lc):
+    if lc == K.one:
         return f
     else:
         return dmp_exquo_ground(f, lc, 0, K)
@@ -496,7 +496,7 @@ def dmp_ground_monic(f, u, K):
 
     lc = dmp_ground_LC(f, u, K)
 
-    if K.is_one(lc):
+    if lc == K.one:
         return f
     else:
         return dmp_exquo_ground(f, lc, u, K)
@@ -535,7 +535,7 @@ def dup_content(f, K):
         for c in f:
             cont = K.gcd(cont, c)
 
-            if K.is_one(cont):
+            if cont == K.one:
                 break
 
     return cont
@@ -577,7 +577,7 @@ def dmp_ground_content(f, u, K):
         for c in f:
             cont = K.gcd(cont, dmp_ground_content(c, v, K))
 
-            if K.is_one(cont):
+            if cont == K.one:
                 break
 
     return cont
@@ -607,7 +607,7 @@ def dup_primitive(f, K):
 
     cont = dup_content(f, K)
 
-    if K.is_one(cont):
+    if cont == K.one:
         return cont, f
     else:
         return cont, dmp_quo_ground(f, cont, 0, K)
@@ -640,7 +640,7 @@ def dmp_ground_primitive(f, u, K):
 
     cont = dmp_ground_content(f, u, K)
 
-    if K.is_one(cont):
+    if cont == K.one:
         return cont, f
     else:
         return cont, dmp_quo_ground(f, cont, u, K)
@@ -663,7 +663,7 @@ def dup_extract(f, g, K):
 
     gcd = K.gcd(fc, gc)
 
-    if not K.is_one(gcd):
+    if gcd != K.one:
         f = dmp_quo_ground(f, gcd, 0, K)
         g = dmp_quo_ground(g, gcd, 0, K)
 
@@ -687,7 +687,7 @@ def dmp_ground_extract(f, g, u, K):
 
     gcd = K.gcd(fc, gc)
 
-    if not K.is_one(gcd):
+    if gcd != K.one:
         f = dmp_quo_ground(f, gcd, u, K)
         g = dmp_quo_ground(g, gcd, u, K)
 
@@ -1056,7 +1056,7 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
     for c in f:
         common = K1.lcm(common, K0.denom(c))
 
-    if not K1.is_one(common):
+    if common != K1.one:
         f = dmp_mul_ground(f, common, 0, K0)
 
     if not convert:
@@ -1106,7 +1106,7 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
 
     common = clear_denoms(f, u, K0, K1)
 
-    if not K1.is_one(common):
+    if common != K1.one:
         f = dmp_mul_ground(f, common, u, K0)
 
     if not convert:

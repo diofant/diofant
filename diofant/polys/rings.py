@@ -832,11 +832,11 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     @property
     def is_monic(self):
-        return self.ring.domain.is_one(self.LC)
+        return self.LC == self.ring.domain.one
 
     @property
     def is_primitive(self):
-        return self.ring.domain.is_one(self.content())
+        return self.content() == self.ring.domain.one
 
     @property
     def is_linear(self):

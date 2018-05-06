@@ -586,7 +586,7 @@ def dmp_zz_collins_resultant(f, g, u, K):
         except HomomorphismFailed:
             continue
 
-        if K.is_one(P):
+        if P == K.one:
             r = R
         else:
             r = dmp_apply_pairs(r, R, _collins_crt, (P, p, K), v, K)

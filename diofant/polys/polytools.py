@@ -4345,7 +4345,7 @@ def gcd_list(seq, *gens, **args):
                 for number in numbers:
                     result = domain.gcd(result, number)
 
-                    if domain.is_one(result):
+                    if result == domain.one:
                         break
 
                 return domain.to_diofant(result)

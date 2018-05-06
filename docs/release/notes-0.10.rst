@@ -31,7 +31,7 @@ Compatibility breaks
 * Removed ``RealNumber`` alias, see :pull:`635`.
 * Removed ``of_type()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`636`.
 * Method ``characteristic()`` now is a property of :class:`~diofant.domains.characteristiczero.CharacteristicZero` and :class:`~diofant.domains.FiniteField`, see :pull:`636`.
-* Removed ``abs()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`637`.
+* Removed ``abs()`` and ``is_one()`` methods of :class:`~diofant.domains.domain.Domain`, see :pull:`637`.
 
 Minor changes
 =============

@@ -458,7 +458,7 @@ def dup_zz_cyclotomic_factor(f, K):
     n = dmp_degree(f, 0)
     F = _dup_cyclotomic_decompose(n, K)
 
-    if not K.is_one(tc_f):
+    if tc_f != K.one:
         return F
     else:
         H = []
@@ -578,7 +578,7 @@ def dmp_zz_wang_non_divisors(E, cs, ct, K):
                 r = K.gcd(r, q)
                 q = q // r
 
-            if K.is_one(q):
+            if q == K.one:
                 return
 
         result.append(q)
@@ -640,7 +640,7 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
         d = dmp_eval_tail(c, A, v, K)
         lc = dmp_LC(h, K)
 
-        if K.is_one(cs):
+        if cs == K.one:
             cc = lc//d
         else:
             g = K.gcd(lc, d)
@@ -652,7 +652,7 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
         CC.append(c)
         HH.append(h)
 
-    if K.is_one(cs):
+    if cs == K.one:
         return f, HH, CC
 
     CCC, HHH = [], []

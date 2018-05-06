@@ -256,10 +256,6 @@ class Domain(DefaultPrinting, abc.ABC):
         from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
 
-    def is_one(self, a):
-        """Returns True if ``a`` is one. """
-        return a == self.one
-
     def is_positive(self, a):
         """Returns True if ``a`` is positive. """
         return a > 0

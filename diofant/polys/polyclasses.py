@@ -708,12 +708,12 @@ class DMP(CantSympify):
     @property
     def is_monic(self):
         """Returns ``True`` if the leading coefficient of ``self`` is one. """
-        return self.domain.is_one(dmp_ground_LC(self.rep, self.lev, self.domain))
+        return dmp_ground_LC(self.rep, self.lev, self.domain) == self.domain.one
 
     @property
     def is_primitive(self):
         """Returns ``True`` if the GCD of the coefficients of ``self`` is one. """
-        return self.domain.is_one(dmp_ground_content(self.rep, self.lev, self.domain))
+        return dmp_ground_content(self.rep, self.lev, self.domain) == self.domain.one
 
     @property
     def is_linear(self):
