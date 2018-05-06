@@ -1,11 +1,12 @@
 from ..core import Derivative, Dummy, Eq, Function, Integer, Wild, nan, oo
-from ..functions import Piecewise
+from ..functions import Piecewise, ceiling
 from ..logic import false
 from ..polys import PolynomialError, apart
 from ..solvers import solve
 from .expr_with_intlimits import ExprWithIntLimits
 from .expr_with_limits import AddWithLimits
 from .gosper import gosper_sum
+from .zeilberger import zb_sum
 
 
 class Sum(AddWithLimits, ExprWithIntLimits):
@@ -678,6 +679,12 @@ def eval_sum_symbolic(f, limits):
     r = gosper_sum(f, (i, a, b))
     if r is not None and r.is_finite:
         return r
+
+    r = zb_sum(f, (i, a, b))
+    if r is not None:
+        res, w = r
+        return Piecewise((res, (w > 0) & (Eq(w, ceiling(w)))),
+                         (Sum(f, (i, a, b)), True))
 
     return eval_sum_hyper(f_orig, (i, a, b))
 
