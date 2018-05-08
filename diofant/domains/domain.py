@@ -43,8 +43,6 @@ class Domain(DefaultPrinting, abc.ABC):
     is_Simple = False
     is_Composite = False
 
-    has_CharacteristicZero = False
-
     rep = None
 
     def __hash__(self):
