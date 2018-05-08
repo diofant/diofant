@@ -49,11 +49,6 @@ class FiniteField(Field, SimpleDomain):
         """Return the characteristic of this domain. """
         return self.mod
 
-    @property
-    def field(self):
-        """Returns a field associated with ``self``. """
-        return self
-
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
         return DiofantInteger(int(a))

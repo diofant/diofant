@@ -181,11 +181,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         """Returns a ring associated with ``self``. """
         return self  # XXX: EX is not a ring but we don't have much choice here.
 
-    @property
-    def field(self):
-        """Returns a field associated with ``self``. """
-        return self
-
     def is_positive(self, a):
         """Returns True if ``a`` is positive. """
         return a.ex.as_coeff_mul()[0].is_positive
