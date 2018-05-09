@@ -479,50 +479,50 @@ def _ask(fact, obj):
 class ManagedProperties(type):
     """Metaclass for classes with old-style assumptions"""
 
-    def __init__(self, *args, **kws):
+    def __init__(cls, *args, **kws):
         local_defs = {}
         for k in _assume_defined:
             attrname = as_property(k)
-            v = self.__dict__.get(attrname, '')
+            v = cls.__dict__.get(attrname, '')
             if isinstance(v, int):
                 v = bool(v)
                 local_defs[k] = v
 
         defs = {}
-        for base in reversed(self.__bases__):
+        for base in reversed(cls.__bases__):
             try:
                 defs.update(base._explicit_class_assumptions)
             except AttributeError:
                 pass
         defs.update(local_defs)
 
-        self._explicit_class_assumptions = defs
-        self.default_assumptions = StdFactKB(defs)
+        cls._explicit_class_assumptions = defs
+        cls.default_assumptions = StdFactKB(defs)
 
-        self._prop_handler = {}
+        cls._prop_handler = {}
         for k in _assume_defined:
             try:
-                self._prop_handler[k] = getattr(self, '_eval_is_%s' % k)
+                cls._prop_handler[k] = getattr(cls, '_eval_is_%s' % k)
             except AttributeError:
                 pass
 
         # Put definite results directly into the class dict, for speed
-        for k, v in self.default_assumptions.items():
-            setattr(self, as_property(k), v)
+        for k, v in cls.default_assumptions.items():
+            setattr(cls, as_property(k), v)
 
         # protection e.g. for Integer.is_even=F <- (Rational.is_integer=F)
         derived_from_bases = set()
-        for base in self.__bases__:
+        for base in cls.__bases__:
             try:
                 derived_from_bases |= set(base.default_assumptions)
             except AttributeError:
                 continue  # not an assumption-aware class
-        for fact in derived_from_bases - set(self.default_assumptions):
+        for fact in derived_from_bases - set(cls.default_assumptions):
             pname = as_property(fact)
-            setattr(self, pname, make_property(fact))
+            setattr(cls, pname, make_property(fact))
 
         # Finally, add any missing automagic property (e.g. for Basic)
         for fact in _assume_defined:
             pname = as_property(fact)
-            if not hasattr(self, pname):
-                setattr(self, pname, make_property(fact))
+            if not hasattr(cls, pname):
+                setattr(cls, pname, make_property(fact))
