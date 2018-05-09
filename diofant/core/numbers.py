@@ -1145,8 +1145,8 @@ class Rational(Number):
             return S.Half
 
         obj = Expr.__new__(cls)
-        obj.p = p
-        obj.q = q
+        obj.p = int(p)
+        obj.q = int(q)
 
         return obj
 

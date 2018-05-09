@@ -1,7 +1,9 @@
 """Implementation of :class:`RationalField` class. """
 
+from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .field import Field
+from .groundtypes import DiofantRational
 from .simpledomain import SimpleDomain
 
 
@@ -23,6 +25,40 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
         from . import AlgebraicField
         return AlgebraicField(self, *extension)
+
+    def to_diofant(self, a):
+        """Convert ``a`` to a Diofant object. """
+        return DiofantRational(a.numerator, a.denominator)
+
+    def from_diofant(self, a):
+        """Convert Diofant's Integer to ``dtype``. """
+        if a.is_Rational:
+            return self.dtype(a.p, a.q)
+        elif a.is_Float:
+            from . import RR
+            return self.dtype(*RR.to_rational(a))
+        else:
+            raise CoercionFailed("expected `Rational` object, got %s" % a)
+
+    def from_PythonIntegerRing(self, a, K0):
+        """Convert a Python's ``int`` to ``dtype``. """
+        return self.dtype(a)
+
+    def from_PythonRationalField(self, a, K0):
+        """Convert a Python's ``Fraction`` to ``dtype``. """
+        return self.dtype(a.numerator, a.denominator)
+
+    def from_GMPYIntegerRing(self, a, K0):
+        """Convert a GMPY's ``mpz`` to ``dtype``. """
+        return self.dtype(a)
+
+    def from_GMPYRationalField(self, a, K0):
+        """Convert a GMPY's ``mpq`` to ``dtype``. """
+        return self.dtype(a.numerator, a.denominator)
+
+    def from_RealField(self, a, K0):
+        """Convert a mpmath's ``mpf`` to ``dtype``. """
+        return self.dtype(*K0.to_rational(a))
 
     def from_AlgebraicField(self, a, K0):
         """Convert an algebraic number to ``dtype``. """

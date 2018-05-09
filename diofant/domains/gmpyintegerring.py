@@ -1,8 +1,7 @@
 """Implementaton of :class:`GMPYIntegerRing` class. """
 
-from ..polys.polyerrors import CoercionFailed
-from .groundtypes import (DiofantInteger, GMPYInteger, gmpy_factorial,
-                          gmpy_gcd, gmpy_gcdex, gmpy_lcm, gmpy_sqrt)
+from .groundtypes import (GMPYInteger, gmpy_factorial, gmpy_gcd, gmpy_gcdex,
+                          gmpy_lcm, gmpy_sqrt)
 from .integerring import IntegerRing
 
 
@@ -18,51 +17,6 @@ class GMPYIntegerRing(IntegerRing):
 
     def __init__(self):
         """Allow instantiation of this domain. """
-
-    def to_diofant(self, a):
-        """Convert ``a`` to a Diofant object. """
-        return DiofantInteger(int(a))
-
-    def from_diofant(self, a):
-        """Convert Diofant's Integer to ``dtype``. """
-        if a.is_Integer:
-            return GMPYInteger(a.p)
-        elif a.is_Float and int(a) == a:
-            return GMPYInteger(int(a))
-        else:
-            raise CoercionFailed("expected an integer, got %s" % a)
-
-    def from_PythonIntegerRing(self, a, K0):
-        """Convert Python's ``int`` to GMPY's ``mpz``. """
-        return GMPYInteger(a)
-
-    def from_PythonRationalField(self, a, K0):
-        """Convert Python's ``Fraction`` to GMPY's ``mpz``. """
-        if a.denominator == 1:
-            return GMPYInteger(a.numerator)
-
-    def from_GMPYFiniteField(self, a, K0):
-        """Convert ``ModularInteger(mpz)`` to GMPY's ``mpz``. """
-        return a.to_int()
-
-    def from_PythonFiniteField(self, a, K0):
-        return a.to_int()
-
-    def from_GMPYIntegerRing(self, a, K0):
-        """Convert GMPY's ``mpz`` to GMPY's ``mpz``. """
-        return a
-
-    def from_GMPYRationalField(self, a, K0):
-        """Convert GMPY ``mpq`` to GMPY's ``mpz``. """
-        if a.denominator == 1:
-            return a.numerator
-
-    def from_RealField(self, a, K0):
-        """Convert mpmath's ``mpf`` to GMPY's ``mpz``. """
-        p, q = K0.to_rational(a)
-
-        if q == 1:
-            return GMPYInteger(p)
 
     def gcdex(self, a, b):
         """Compute extended GCD of ``a`` and ``b``. """
