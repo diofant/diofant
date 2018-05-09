@@ -1865,7 +1865,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return self.new([t for t in terms if t is not None])
 
     def trunc_ground(self, p):
-        if self.ring.domain.is_ZZ:
+        if self.ring.domain.is_IntegerRing:
             terms = []
 
             for monom, coeff in self.iterterms():
@@ -2015,9 +2015,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def _gcd(self, other):
         ring = self.ring
 
-        if ring.domain.is_QQ:
+        if ring.domain.is_RationalField:
             return self._gcd_QQ(other)
-        elif ring.domain.is_ZZ:
+        elif ring.domain.is_IntegerRing:
             return self._gcd_ZZ(other)
         else:  # TODO: don't use dense representation (port PRS algorithms)
             return ring.dmp_inner_gcd(self, other)

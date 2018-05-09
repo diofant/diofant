@@ -30,7 +30,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Field = True
 
     def __init__(self, dom, *ext):
-        if not dom.is_QQ:
+        if not dom.is_RationalField:
             raise DomainError("ground domain must be a rational field")
 
         ext = [sympify(_).as_expr() for _ in ext]

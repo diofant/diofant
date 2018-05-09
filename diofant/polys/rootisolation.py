@@ -239,9 +239,9 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
 
 def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
     """Refine real root's approximating interval to the given precision. """
-    if K.is_QQ:
+    if K.is_RationalField:
         f, K = dup_clear_denoms(f, K, convert=True)[1], K.ring
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         raise DomainError("real root refinement not supported over %s" % K)
 
     if s == t:
@@ -505,9 +505,9 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
             roots = [_[0] for _ in roots if _[1].keys() == {0, 1}]
             return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
 
-    if K.is_QQ:
+    if K.is_RationalField:
         f, K = dup_clear_denoms(f, K, convert=True)[1], K.ring
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
     if dmp_degree(f, 0) <= 0:
@@ -539,9 +539,9 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
            Fractions Method Using New Bounds of Positive Roots.  Nonlinear
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
-    if K.is_QQ:
+    if K.is_RationalField:
         (_, f), K = dup_clear_denoms(f, K, convert=True), K.ring
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
     if dmp_degree(f, 0) <= 0:
@@ -580,12 +580,12 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
            Fractions Method Using New Bounds of Positive Roots.  Nonlinear
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
-    if K.is_QQ:
+    if K.is_RationalField:
         K, F, polys = K.ring, K, polys[:]
 
         for i, p in enumerate(polys):
             polys[i] = dup_clear_denoms(p, F, K, convert=True)[1]
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
     zeros, factors_dict = False, {}
@@ -1576,7 +1576,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if v < 0 < t:
         roots = dup_isolate_complex_roots_sqf(f, F, eps=eps, inf=(u, 0),
                                               sup=(s, t), blackbox=True)
-        if F.is_QQ:
+        if F.is_RationalField:
             _roots = []
             for root in roots:
                 croot = root.conjugate()
@@ -1698,7 +1698,7 @@ def dup_isolate_all_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, bl
 
 def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     """Isolate real and complex roots of a non-square-free polynomial ``f``. """
-    if not K.is_ZZ and not K.is_QQ:
+    if not K.is_IntegerRing and not K.is_RationalField:
         raise DomainError("isolation of real and complex roots is not supported over %s" % K)
 
     _, factors = dmp_sqf_list(f, 0, K)

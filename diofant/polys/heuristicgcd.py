@@ -48,7 +48,7 @@ def heugcd(f, g):
 
     .. [1] [Liao95]_
     """
-    assert f.ring == g.ring and f.ring.domain.is_ZZ
+    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     ring = f.ring
     x0 = ring.gens[0]

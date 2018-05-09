@@ -387,7 +387,7 @@ def dup_trunc(f, p, K):
     >>> R.dup_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
     -x**3 - x + 1
     """
-    if K.is_ZZ:
+    if K.is_IntegerRing:
         g = []
 
         for c in f:
@@ -711,7 +711,7 @@ def dup_real_imag(f, K):
         r1, i1 = dup_real_imag([_.to_dict().get((0,), K0.zero) for _ in f], K0)
         r2, i2 = dup_real_imag([_.to_dict().get((1,), K0.zero) for _ in f], K0)
         return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
-    elif not K.is_ZZ and not K.is_QQ:
+    elif not K.is_IntegerRing and not K.is_RationalField:
         raise DomainError("computing real and imaginary parts is not supported over %s" % K)
 
     f1 = dmp_zero(1)

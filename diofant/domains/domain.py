@@ -159,9 +159,9 @@ class Domain(DefaultPrinting, abc.ABC):
         if self == K1:
             return self
 
-        if self.is_EX:
+        if self.is_SymbolicDomain:
             return self
-        if K1.is_EX:
+        if K1.is_SymbolicDomain:
             return K1
 
         if self.is_Composite or K1.is_Composite:

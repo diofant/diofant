@@ -657,10 +657,10 @@ def dmp_resultant(f, g, u, K, includePRS=False):
         return dmp_prs_resultant(f, g, u, K)
 
     if K.has_Field:
-        if K.is_QQ and query('USE_COLLINS_RESULTANT'):
+        if K.is_RationalField and query('USE_COLLINS_RESULTANT'):
             return dmp_qq_collins_resultant(f, g, u, K)
     else:
-        if K.is_ZZ and query('USE_COLLINS_RESULTANT'):
+        if K.is_IntegerRing and query('USE_COLLINS_RESULTANT'):
             return dmp_zz_collins_resultant(f, g, u, K)
 
     return dmp_prs_resultant(f, g, u, K)[0]
@@ -1345,7 +1345,7 @@ def dup_inner_gcd(f, g, K):
 
         return h, cff, cfg
     elif K.has_Field:
-        if K.is_QQ and query('USE_HEU_GCD'):
+        if K.is_RationalField and query('USE_HEU_GCD'):
             try:
                 return dup_qq_heu_gcd(f, g, K)
             except HeuristicGCDFailed:  # pragma: no cover
@@ -1353,7 +1353,7 @@ def dup_inner_gcd(f, g, K):
 
         return dup_ff_prs_gcd(f, g, K)
     else:
-        if K.is_ZZ and query('USE_HEU_GCD'):
+        if K.is_IntegerRing and query('USE_HEU_GCD'):
             try:
                 return dup_zz_heu_gcd(f, g, K)
             except HeuristicGCDFailed:  # pragma: no cover
@@ -1381,7 +1381,7 @@ def _dmp_inner_gcd(f, g, u, K):
 
         return h, cff, cfg
     elif K.has_Field:
-        if K.is_QQ and query('USE_HEU_GCD'):
+        if K.is_RationalField and query('USE_HEU_GCD'):
             try:
                 return dmp_qq_heu_gcd(f, g, u, K)
             except HeuristicGCDFailed:  # pragma: no cover
@@ -1389,7 +1389,7 @@ def _dmp_inner_gcd(f, g, u, K):
 
         return dmp_ff_prs_gcd(f, g, u, K)
     else:
-        if K.is_ZZ and query('USE_HEU_GCD'):
+        if K.is_IntegerRing and query('USE_HEU_GCD'):
             try:
                 return dmp_zz_heu_gcd(f, g, u, K)
             except HeuristicGCDFailed:  # pragma: no cover

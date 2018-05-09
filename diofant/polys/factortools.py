@@ -345,13 +345,13 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     >>> R.dup_cyclotomic_p(g)
     True
     """
-    if K.is_QQ:
+    if K.is_RationalField:
         try:
             K0, K = K, K.ring
             f = dmp_convert(f, 0, K0, K)
         except CoercionFailed:
             return False
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         return False
 
     lc = dmp_LC(f, K)
@@ -1137,7 +1137,7 @@ def dup_factor_list(f, K0):
         else:
             K = K0
 
-        if K.is_ZZ:
+        if K.is_IntegerRing:
             coeff, factors = dup_zz_factor(f, K)
         elif K.is_Poly:
             f, u = dmp_inject(f, 0, K)
@@ -1212,7 +1212,7 @@ def dmp_factor_list(f, u, K0):
         else:
             K = K0
 
-        if K.is_ZZ:
+        if K.is_IntegerRing:
             levels, f, v = dmp_exclude(f, u, K)
             coeff, factors = dmp_zz_factor(f, v, K)
 

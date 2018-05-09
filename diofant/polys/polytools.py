@@ -232,7 +232,7 @@ class Poly(Expr):
         if domain.is_Composite:
             for gen in domain.symbols:
                 symbols |= gen.free_symbols
-        elif domain.is_EX:
+        elif domain.is_SymbolicDomain:
             for coeff in self.coeffs():
                 symbols |= coeff.free_symbols
 
@@ -5159,7 +5159,7 @@ def to_rational_coeffs(f):
                     return False
         return has_sq
 
-    if f.domain.is_EX and _has_square_roots(f):
+    if f.domain.is_SymbolicDomain and _has_square_roots(f):
         f1 = f.monic()
         r = _try_rescale(f, f1)
         if r:
