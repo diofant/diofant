@@ -15,7 +15,6 @@ class GMPYIntegerRing(IntegerRing):
     dtype = GMPYInteger
     zero = dtype(0)
     one = dtype(1)
-    tp = type(one)
 
     def __init__(self):
         """Allow instantiation of this domain. """
