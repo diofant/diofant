@@ -114,8 +114,8 @@ class FractionField(Field, CompositeDomain):
                 ring = self.ring
                 ground_field = domain.field
                 element = ground_field.convert(element)
-                numer = ring.ground_new(ground_field.numer(element))
-                denom = ring.ground_new(ground_field.denom(element))
+                numer = ring.ground_new(element.numerator)
+                denom = ring.ground_new(element.denominator)
                 return self.raw_new(numer, denom)
             else:  # pragma: no cover
                 raise NotImplementedError
@@ -246,14 +246,6 @@ class FractionField(Field, CompositeDomain):
         """Returns True if ``LC(a)`` is non-negative. """
         return self.domain.is_nonnegative(a.numer.LC)
 
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        return a.numer
-
-    def denom(self, a):
-        """Returns denominator of ``a``. """
-        return a.denom
-
     def factorial(self, a):
         """Returns factorial of ``a``. """
         return self.dtype(self.domain.factorial(a))
@@ -287,6 +279,14 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         if self.denom != self.field.ring.one:
             raise ValueError("self.denom should be 1")
         return self.numer
+
+    @property
+    def numerator(self):
+        return self.numer
+
+    @property
+    def denominator(self):
+        return self.denom
 
     @property
     def parent(self):
@@ -365,7 +365,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
             except CoercionFailed:
                 return 0, None, None
             else:
-                return -1, ground_field.numer(element), ground_field.denom(element)
+                return -1, element.numerator, element.denominator
         else:
             return 1, element, None
 

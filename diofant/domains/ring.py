@@ -52,11 +52,3 @@ class Ring(Domain):
             return a
         else:
             raise NotReversible('only unity is reversible in a ring')
-
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        return a
-
-    def denom(self, a):
-        """Returns denominator of `a`. """
-        return self.one

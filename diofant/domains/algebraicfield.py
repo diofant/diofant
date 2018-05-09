@@ -272,3 +272,11 @@ class AlgebraicElement(DomainElement, CantSympify):
 
     def __bool__(self):
         return bool(self.rep)
+
+    @property
+    def numerator(self):
+        return self
+
+    @property
+    def denominator(self):
+        return self.parent.one

@@ -472,10 +472,10 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
     def from_FractionField(self, a, K0):
         """Convert a rational function to ``dtype``. """
-        denom = K0.denom(a)
+        denom = a.denominator
 
         if denom.is_ground:
-            return self.from_PolynomialRing(K0.numer(a)/denom, K0.ring)
+            return self.from_PolynomialRing(a.numerator/denom, K0.ring)
 
     @property
     def field(self):
@@ -598,10 +598,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ground_ring = domain.ring
         common = ground_ring.one
         lcm = ground_ring.lcm
-        denom = domain.denom
 
         for coeff in self.values():
-            common = lcm(common, denom(coeff))
+            common = lcm(common, coeff.denominator)
 
         poly = self.new([ (k, v*common) for k, v in self.items() ])
         return common, poly

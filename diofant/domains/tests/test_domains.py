@@ -575,8 +575,8 @@ def test_arithmetics():
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2
 
-    assert EX(Rational(2, 3)).numer() == 2
-    assert EX(Rational(2, 3)).denom() == 3
+    assert EX(Rational(2, 3)).numerator == 2
+    assert EX(Rational(2, 3)).denominator == 3
 
     assert abs(EX(-2)) == 2
 
@@ -611,8 +611,8 @@ def test_arithmetics():
 
 
 def test_Ring():
-    assert ZZ.numer(ZZ(3)) == 3
-    assert ZZ.denom(ZZ(3)) == 1
+    assert ZZ(3).numerator == 3
+    assert ZZ(3).denominator == 1
 
 
 def test_PolynomialRing__init():
@@ -670,7 +670,7 @@ def test_Domain__algebraic_field():
     assert alg.is_nonpositive(alg([-1, 1])) is True
     assert alg.is_nonnegative(alg([2, -1])) is True
 
-    assert alg.numer(alg(1)) == alg(1)
+    assert alg(1).numerator == alg(1)
 
     pytest.raises(DomainError, lambda: AlgebraicField(ZZ, sqrt(2)))
 
@@ -1029,6 +1029,9 @@ def test_RR_Float():
     assert RR2(f1)-1 > 1e-50
     assert RR2(f2)-1 > 1e-50  # RR's precision is equal to f2's
 
+    a = RR(2.1)
+    assert a.numerator == a and a.denominator == 1
+
 
 def test_CC_double():
     assert CC(3.14).real > 1e-50
@@ -1044,6 +1047,9 @@ def test_CC_double():
     assert CC(1e-15j).imag > 1e-50
     assert CC(1e-20j).imag > 1e-50
     assert CC(1e-40j).imag > 1e-50
+
+    a = CC(2.1 + 1j)
+    assert a.numerator == a and a.denominator == 1
 
 
 def test_almosteq():
@@ -1066,8 +1072,8 @@ def test_EX():
     assert EX.is_negative(EX(-1))
     assert EX.is_nonpositive(EX(-1))
 
-    assert EX.numer(EX(1)/2) == 1
-    assert EX.denom(EX(1)/2) == 2
+    assert (EX(1)/2).numerator == 1
+    assert (EX(1)/2).denominator == 2
 
 
 def test_sympyissue_13545():

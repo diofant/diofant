@@ -1054,7 +1054,7 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
     common = K1.one
 
     for c in f:
-        common = K1.lcm(common, K0.denom(c))
+        common = K1.lcm(common, c.denominator)
 
     if common != K1.one:
         f = dmp_mul_ground(f, common, 0, K0)
@@ -1095,7 +1095,7 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
 
         if not v:
             for c in g:
-                common = K1.lcm(common, K0.denom(c))
+                common = K1.lcm(common, c.denominator)
         else:
             w = v - 1
 

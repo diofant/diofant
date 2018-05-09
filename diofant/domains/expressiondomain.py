@@ -32,10 +32,12 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         def as_expr(self):
             return self.ex
 
-        def numer(self):
+        @property
+        def numerator(self):
             return self.__class__(self.ex.as_numer_denom()[0])
 
-        def denom(self):
+        @property
+        def denominator(self):
             return self.__class__(self.ex.as_numer_denom()[1])
 
         def simplify(self, ex):
@@ -196,14 +198,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
         return a.ex.as_coeff_mul()[0].is_nonnegative
-
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        return a.numer()
-
-    def denom(self, a):
-        """Returns denominator of ``a``. """
-        return a.denom()
 
     def gcd(self, a, b):
         return a.gcd(b)

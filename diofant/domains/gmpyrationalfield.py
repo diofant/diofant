@@ -31,14 +31,6 @@ class GMPYRationalField(RationalField):
         """Quotient of `a` and `b`, implies `__truediv__`. """
         return self.dtype(gmpy_qdiv(a, b))
 
-    def numer(self, a):
-        """Returns numerator of `a`. """
-        return a.numerator
-
-    def denom(self, a):
-        """Returns denominator of `a`. """
-        return a.denominator
-
     def factorial(self, a):
         """Returns factorial of `a`. """
         return self.dtype(gmpy_factorial(int(a)))

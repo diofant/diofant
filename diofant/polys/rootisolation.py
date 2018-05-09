@@ -117,8 +117,8 @@ def _mobius_from_interval(I, field):
     """Convert an open interval to a Mobius transform. """
     s, t = I
 
-    a, c = field.numer(s), field.denom(s)
-    b, d = field.numer(t), field.denom(t)
+    a, c = s.numerator, s.denominator
+    b, d = t.numerator, t.denominator
 
     return a, b, c, d
 
