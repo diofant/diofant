@@ -29,7 +29,7 @@ from diofant.domains import QQ_gmpy, ZZ_gmpy
 from diofant.domains.expressiondomain import ExpressionDomain
 from diofant.domains.groundtypes import PythonRational
 from diofant.domains.integerring import PythonIntegerRing
-from diofant.domains.pythonrationalfield import PythonRationalField
+from diofant.domains.rationalfield import PythonRationalField
 from diofant.functions import (Abs, DiracDelta, Eijk, Heaviside, LambertW,
                                Piecewise, acos, acosh, acot, acoth, arg, asin,
                                asinh, assoc_legendre, atan, atan2, atanh, bell,
