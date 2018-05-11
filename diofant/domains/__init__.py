@@ -6,8 +6,6 @@ from . import integerring  # noqa: F401
 from . import rationalfield  # noqa: F401
 from . import realfield  # noqa: F401
 from . import complexfield  # noqa: F401
-from . import pythonfinitefield  # noqa: F401
-from . import gmpyfinitefield  # noqa: F401
 from . import pythonintegerring  # noqa: F401
 from . import gmpyintegerring  # noqa: F401
 from . import pythonrationalfield  # noqa: F401
@@ -16,13 +14,11 @@ from . import algebraicfield  # noqa: F401
 from . import expressiondomain  # noqa: F401
 
 from .domain import Domain  # noqa: F401
-from .finitefield import FiniteField  # noqa: F401
+from .finitefield import FiniteField, GMPYFiniteField, PythonFiniteField  # noqa: F401
 from .integerring import IntegerRing  # noqa: F401
 from .rationalfield import RationalField  # noqa: F401
 from .realfield import RealField
 from .complexfield import ComplexField
-from .pythonfinitefield import PythonFiniteField
-from .gmpyfinitefield import GMPYFiniteField
 from .pythonintegerring import PythonIntegerRing
 from .gmpyintegerring import GMPYIntegerRing
 from .pythonrationalfield import PythonRationalField

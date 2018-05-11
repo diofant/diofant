@@ -3,12 +3,14 @@
 from ..ntheory import isprime, perfect_power
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
+from .gmpyintegerring import GMPYIntegerRing
 from .groundtypes import DiofantInteger
 from .modularinteger import ModularIntegerFactory
+from .pythonintegerring import PythonIntegerRing
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('FiniteField',)
+__all__ = ('FiniteField', 'GMPYFiniteField', 'PythonFiniteField')
 
 
 class FiniteField(Field, SimpleDomain):
@@ -94,3 +96,17 @@ class FiniteField(Field, SimpleDomain):
 
         if q == 1:
             return self.dtype(self.domain.dtype(p))
+
+
+class PythonFiniteField(FiniteField):
+    """Finite field based on Python's integers. """
+
+    def __init__(self, mod, symmetric=True):
+        return super().__init__(mod, PythonIntegerRing(), symmetric)
+
+
+class GMPYFiniteField(FiniteField):
+    """Finite field based on GMPY's integers. """
+
+    def __init__(self, mod, symmetric=True):
+        return super().__init__(mod, GMPYIntegerRing(), symmetric)
