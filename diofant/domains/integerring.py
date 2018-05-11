@@ -4,12 +4,15 @@ import math
 
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
-from .groundtypes import DiofantInteger
+from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
+                          gmpy_factorial, gmpy_gcd, gmpy_gcdex, gmpy_lcm,
+                          gmpy_sqrt, python_factorial, python_gcd,
+                          python_gcdex, python_lcm, python_sqrt)
 from .ring import Ring
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('IntegerRing',)
+__all__ = ('GMPYIntegerRing', 'IntegerRing', 'PythonIntegerRing')
 
 
 class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
@@ -87,3 +90,66 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
     def log(self, a, b):
         """Returns b-base logarithm of ``a``. """
         return self.dtype(math.log(int(a), b))
+
+
+class PythonIntegerRing(IntegerRing):
+    """Integer ring based on Python's integers. """
+
+    dtype = PythonInteger
+    zero = dtype(0)
+    one = dtype(1)
+
+    def __init__(self):
+        """Allow instantiation of this domain. """
+
+    def gcdex(self, a, b):
+        """Compute extended GCD of ``a`` and ``b``. """
+        return python_gcdex(a, b)
+
+    def gcd(self, a, b):
+        """Compute GCD of ``a`` and ``b``. """
+        return python_gcd(a, b)
+
+    def lcm(self, a, b):
+        """Compute LCM of ``a`` and ``b``. """
+        return python_lcm(a, b)
+
+    def sqrt(self, a):
+        """Compute square root of ``a``. """
+        return python_sqrt(a)
+
+    def factorial(self, a):
+        """Compute factorial of ``a``. """
+        return python_factorial(a)
+
+
+class GMPYIntegerRing(IntegerRing):
+    """Integer ring based on GMPY's integers. """
+
+    dtype = GMPYInteger
+    zero = dtype(0)
+    one = dtype(1)
+
+    def __init__(self):
+        """Allow instantiation of this domain. """
+
+    def gcdex(self, a, b):
+        """Compute extended GCD of ``a`` and ``b``. """
+        h, s, t = gmpy_gcdex(a, b)
+        return s, t, h
+
+    def gcd(self, a, b):
+        """Compute GCD of ``a`` and ``b``. """
+        return gmpy_gcd(a, b)
+
+    def lcm(self, a, b):
+        """Compute LCM of ``a`` and ``b``. """
+        return gmpy_lcm(a, b)
+
+    def sqrt(self, a):
+        """Compute square root of ``a``. """
+        return gmpy_sqrt(a)
+
+    def factorial(self, a):
+        """Compute factorial of ``a``. """
+        return gmpy_factorial(a)

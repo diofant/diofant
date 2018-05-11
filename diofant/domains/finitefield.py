@@ -3,10 +3,9 @@
 from ..ntheory import isprime, perfect_power
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
-from .gmpyintegerring import GMPYIntegerRing
 from .groundtypes import DiofantInteger
+from .integerring import GMPYIntegerRing, PythonIntegerRing
 from .modularinteger import ModularIntegerFactory
-from .pythonintegerring import PythonIntegerRing
 from .simpledomain import SimpleDomain
 
 
