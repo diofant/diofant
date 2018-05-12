@@ -65,29 +65,29 @@ class FiniteField(Field, SimpleDomain):
 
     def from_PythonFiniteField(self, a, K0=None):
         """Convert ``ModularInteger(int)`` to ``dtype``. """
-        return self.dtype(self.domain.from_PythonIntegerRing(a.val, K0.domain))
+        return self.dtype(self.domain.convert(a.val, K0.domain))
 
     def from_PythonIntegerRing(self, a, K0=None):
         """Convert Python's ``int`` to ``dtype``. """
-        return self.dtype(self.domain.from_PythonIntegerRing(a, K0))
+        return self.dtype(self.domain.convert(a, K0))
 
     def from_PythonRationalField(self, a, K0=None):
         """Convert Python's ``Fraction`` to ``dtype``. """
         if a.denominator == 1:
-            return self.from_PythonIntegerRing(a.numerator)
+            return self.convert(a.numerator)
 
     def from_GMPYFiniteField(self, a, K0=None):
         """Convert ``ModularInteger(mpz)`` to ``dtype``. """
-        return self.dtype(self.domain.from_GMPYIntegerRing(a.val, K0.domain))
+        return self.dtype(self.domain.convert(a.val, K0.domain))
 
     def from_GMPYIntegerRing(self, a, K0=None):
         """Convert GMPY's ``mpz`` to ``dtype``. """
-        return self.dtype(self.domain.from_GMPYIntegerRing(a, K0))
+        return self.dtype(self.domain.convert(a, K0))
 
     def from_GMPYRationalField(self, a, K0=None):
         """Convert GMPY's ``mpq`` to ``dtype``. """
         if a.denominator == 1:
-            return self.from_GMPYIntegerRing(a.numerator)
+            return self.convert(a.numerator)
 
     def from_RealField(self, a, K0):
         """Convert mpmath's ``mpf`` to ``dtype``. """

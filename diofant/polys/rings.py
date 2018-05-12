@@ -475,7 +475,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         denom = a.denominator
 
         if denom.is_ground:
-            return self.from_PolynomialRing(a.numerator/denom, K0.ring)
+            return self.convert(a.numerator/denom, K0.ring)
 
     @property
     def field(self):

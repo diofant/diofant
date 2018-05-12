@@ -88,7 +88,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             K0 = self.domain.algebraic_field(a)
         except NotAlgebraic:
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        return self.from_AlgebraicField(K0.root, K0)
+        return self.convert(K0.root, K0)
 
     def from_PythonIntegerRing(self, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
