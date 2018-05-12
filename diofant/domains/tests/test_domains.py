@@ -297,8 +297,8 @@ def test_Domain_unify_algebraic():
 
 
 def test_Domain_unify_with_symbols():
-    pytest.raises(UnificationFailed, lambda: ZZ.poly_ring(x, y).unify_with_symbols(ZZ, (y, z)))
-    pytest.raises(UnificationFailed, lambda: ZZ.unify_with_symbols(ZZ.poly_ring(x, y), (y, z)))
+    pytest.raises(UnificationFailed, lambda: ZZ.poly_ring(x, y).unify(ZZ, (y, z)))
+    pytest.raises(UnificationFailed, lambda: ZZ.unify(ZZ.poly_ring(x, y), (y, z)))
 
 
 def test_Domain__contains__():

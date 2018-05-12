@@ -1995,7 +1995,7 @@ class Poly(Expr):
                 raise DomainError("can't evaluate at %s in %s" % (a, f.rep.domain))
             else:
                 a_domain, [a] = construct_domain([a])
-                new_domain = f.domain.unify_with_symbols(a_domain, f.gens)
+                new_domain = f.domain.unify(a_domain, f.gens)
 
                 f = f.set_domain(new_domain)
                 a = new_domain.convert(a, a_domain)

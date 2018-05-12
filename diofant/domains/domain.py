@@ -131,13 +131,7 @@ class Domain(DefaultPrinting, abc.ABC):
         if a.is_ground:
             return self.convert(a.LC, K0.domain)
 
-    def unify_with_symbols(self, K1, symbols):
-        if (self.is_Composite and (set(self.symbols) & set(symbols))) or (K1.is_Composite and (set(K1.symbols) & set(symbols))):
-            raise UnificationFailed("can't unify %s with %s, given %s generators" % (self, K1, tuple(symbols)))
-
-        return self.unify(K1)
-
-    def unify(self, K1, symbols=None):
+    def unify(self, K1, symbols=()):
         """
         Construct a minimal domain that contains elements of ``self`` and ``K1``.
 
@@ -153,8 +147,13 @@ class Domain(DefaultPrinting, abc.ABC):
         - ``K(x, y, z)``
         - ``EX``
         """
-        if symbols is not None:
-            return self.unify_with_symbols(K1, symbols)
+        if symbols:
+            if any(d.is_Composite and (set(d.symbols) & set(symbols))
+                   for d in [self, K1]):
+                raise UnificationFailed("Can't unify %s with %s, given %s"
+                                        " generators" % (self, K1, tuple(symbols)))
+
+            return self.unify(K1)
 
         if self == K1:
             return self
