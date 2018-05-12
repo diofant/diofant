@@ -55,7 +55,7 @@ class FiniteField(Field, SimpleDomain):
         return DiofantInteger(int(a))
 
     def from_diofant(self, a):
-        """Convert Diofant's Integer to Diofant's ``Integer``. """
+        """Convert Diofant's Integer to ``dtype``. """
         if a.is_Integer:
             return self.dtype(self.domain.dtype(int(a)))
         elif a.is_Float and int(a) == a:
