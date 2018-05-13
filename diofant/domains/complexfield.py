@@ -73,22 +73,22 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
         else:
             raise CoercionFailed("expected complex number, got %s" % expr)
 
-    def from_PythonIntegerRing(self, element, base):
+    def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
 
-    def from_PythonRationalField(self, element, base):
+    def _from_PythonRationalField(self, element, base):
         return self.dtype(element.numerator) / element.denominator
 
-    def from_GMPYIntegerRing(self, element, base):
+    def _from_GMPYIntegerRing(self, element, base):
         return self.dtype(int(element))
 
-    def from_GMPYRationalField(self, element, base):
+    def _from_GMPYRationalField(self, element, base):
         return self.dtype(int(element.numerator)) / int(element.denominator)
 
-    def from_RealField(self, element, base):
+    def _from_RealField(self, element, base):
         return self.dtype(element)
 
-    def from_ComplexField(self, element, base):
+    def _from_ComplexField(self, element, base):
         return self.dtype(element)
 
     def get_exact(self):

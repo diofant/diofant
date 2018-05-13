@@ -49,41 +49,33 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
         else:
             raise CoercionFailed("expected an integer, got %s" % a)
 
-    def from_PythonIntegerRing(self, a, K0):
-        """Convert Python's ``int`` to ``dtype``. """
+    def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
 
-    def from_PythonFiniteField(self, a, K0):
-        """Convert ``ModularInteger(int)`` to ``dtype``. """
+    def _from_PythonFiniteField(self, a, K0):
         return self.dtype(a.to_int())
 
-    def from_PythonRationalField(self, a, K0):
-        """Convert Python's ``Fraction`` to ``dtype``. """
+    def _from_PythonRationalField(self, a, K0):
         if a.denominator == 1:
             return self.dtype(a.numerator)
 
-    def from_GMPYFiniteField(self, a, K0):
-        """Convert ``ModularInteger(mpz)`` to ``dtype``. """
+    def _from_GMPYFiniteField(self, a, K0):
         return self.dtype(a.to_int())
 
-    def from_GMPYIntegerRing(self, a, K0):
-        """Convert GMPY's ``mpz`` to ``dtype``. """
+    def _from_GMPYIntegerRing(self, a, K0):
         return self.dtype(a)
 
-    def from_GMPYRationalField(self, a, K0):
-        """Convert GMPY's ``mpq`` to ``dtype``. """
+    def _from_GMPYRationalField(self, a, K0):
         if a.denominator == 1:
             return self.dtype(a.numerator)
 
-    def from_RealField(self, a, K0):
-        """Convert mpmath's ``mpf`` to ``dtype``. """
+    def _from_RealField(self, a, K0):
         p, q = K0.to_rational(a)
 
         if q == 1:
             return self.dtype(p)
 
-    def from_AlgebraicField(self, a, K0):
-        """Convert an algebraic number to ``dtype``. """
+    def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
 

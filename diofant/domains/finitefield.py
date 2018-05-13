@@ -63,34 +63,27 @@ class FiniteField(Field, SimpleDomain):
         else:
             raise CoercionFailed("expected an integer, got %s" % a)
 
-    def from_PythonFiniteField(self, a, K0=None):
-        """Convert ``ModularInteger(int)`` to ``dtype``. """
+    def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.val, K0.domain))
 
-    def from_PythonIntegerRing(self, a, K0=None):
-        """Convert Python's ``int`` to ``dtype``. """
+    def _from_PythonIntegerRing(self, a, K0=None):
         return self.dtype(self.domain.convert(a, K0))
 
-    def from_PythonRationalField(self, a, K0=None):
-        """Convert Python's ``Fraction`` to ``dtype``. """
+    def _from_PythonRationalField(self, a, K0=None):
         if a.denominator == 1:
             return self.convert(a.numerator)
 
-    def from_GMPYFiniteField(self, a, K0=None):
-        """Convert ``ModularInteger(mpz)`` to ``dtype``. """
+    def _from_GMPYFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.val, K0.domain))
 
-    def from_GMPYIntegerRing(self, a, K0=None):
-        """Convert GMPY's ``mpz`` to ``dtype``. """
+    def _from_GMPYIntegerRing(self, a, K0=None):
         return self.dtype(self.domain.convert(a, K0))
 
-    def from_GMPYRationalField(self, a, K0=None):
-        """Convert GMPY's ``mpq`` to ``dtype``. """
+    def _from_GMPYRationalField(self, a, K0=None):
         if a.denominator == 1:
             return self.convert(a.numerator)
 
-    def from_RealField(self, a, K0):
-        """Convert mpmath's ``mpf`` to ``dtype``. """
+    def _from_RealField(self, a, K0):
         p, q = K0.to_rational(a)
 
         if q == 1:

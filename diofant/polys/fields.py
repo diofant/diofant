@@ -191,35 +191,28 @@ class FractionField(Field, CompositeDomain):
         """Convert Diofant's expression to ``dtype``. """
         return self.from_expr(a)
 
-    def from_PythonIntegerRing(self, a, K0):
-        """Convert a Python ``int`` object to ``dtype``. """
+    def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_PythonRationalField(self, a, K0):
-        """Convert a Python ``Fraction`` object to ``dtype``. """
+    def _from_PythonRationalField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_GMPYIntegerRing(self, a, K0):
-        """Convert a GMPY ``mpz`` object to ``dtype``. """
+    def _from_GMPYIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_GMPYRationalField(self, a, K0):
-        """Convert a GMPY ``mpq`` object to ``dtype``. """
+    def _from_GMPYRationalField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_RealField(self, a, K0):
-        """Convert a mpmath ``mpf`` object to ``dtype``. """
+    def _from_RealField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_PolynomialRing(self, a, K0):
-        """Convert a polynomial to ``dtype``. """
+    def _from_PolynomialRing(self, a, K0):
         try:
             return self.field_new(a)
         except (CoercionFailed, GeneratorsError):
             return
 
-    def from_FractionField(self, a, K0):
-        """Convert a rational function to ``dtype``. """
+    def _from_FractionField(self, a, K0):
         try:
             return a.set_field(self)
         except (CoercionFailed, GeneratorsError):

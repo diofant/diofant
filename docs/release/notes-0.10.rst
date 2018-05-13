@@ -33,6 +33,7 @@ Compatibility breaks
 * Method ``characteristic()`` now is a property of :class:`~diofant.domains.characteristiczero.CharacteristicZero` and :class:`~diofant.domains.FiniteField`, see :pull:`636`.
 * Removed ``abs()``, ``is_one()`` and ``unify_with_symbols()`` methods and ``has_CharacteristicZero`` attribute of :class:`~diofant.domains.domain.Domain`, see :pull:`637`.
 * Removed ``is_unit()``, ``numer()`` and ``denom()`` methods of :class:`~diofant.domains.ring.Ring`, see :pull:`637`.
+* ``from_<Foo>()`` methods of :class:`~diofant.domains.domain.Domain` now are private, see :pull:`637`.
 
 Minor changes
 =============

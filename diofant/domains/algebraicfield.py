@@ -90,27 +90,22 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
         return self.convert(K0.root, K0)
 
-    def from_PythonIntegerRing(self, a, K0):
-        """Convert a Python ``int`` object to ``dtype``. """
+    def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_PythonRationalField(self, a, K0):
-        """Convert a Python ``Fraction`` object to ``dtype``. """
+    def _from_PythonRationalField(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_GMPYIntegerRing(self, a, K0):
-        """Convert a GMPY ``mpz`` object to ``dtype``. """
+    def _from_GMPYIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_GMPYRationalField(self, a, K0):
-        """Convert a GMPY ``mpq`` object to ``dtype``. """
+    def _from_GMPYRationalField(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_RealField(self, a, K0):
-        """Convert a mpmath ``mpf`` object to ``dtype``. """
+    def _from_RealField(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_AlgebraicField(self, a, K0):
+    def _from_AlgebraicField(self, a, K0):
         from ..polys import field_isomorphism
 
         coeffs = field_isomorphism(K0, self)

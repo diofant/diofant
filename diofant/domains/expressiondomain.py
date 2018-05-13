@@ -142,40 +142,31 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         """Convert Diofant's expression to ``dtype``. """
         return self.dtype(a)
 
-    def from_PythonIntegerRing(self, a, K0):
-        """Convert a Python ``int`` object to ``dtype``. """
+    def _from_PythonIntegerRing(self, a, K0):
         return self(K0.to_diofant(a))
 
-    def from_PythonRationalField(self, a, K0):
-        """Convert a Python ``Fraction`` object to ``dtype``. """
+    def _from_PythonRationalField(self, a, K0):
         return self(K0.to_diofant(a))
 
-    def from_GMPYIntegerRing(self, a, K0):
-        """Convert a GMPY ``mpz`` object to ``dtype``. """
+    def _from_GMPYIntegerRing(self, a, K0):
         return self(K0.to_diofant(a))
 
-    def from_GMPYRationalField(self, a, K0):
-        """Convert a GMPY ``mpq`` object to ``dtype``. """
+    def _from_GMPYRationalField(self, a, K0):
         return self(K0.to_diofant(a))
 
-    def from_RealField(self, a, K0):
-        """Convert a mpmath ``mpf`` object to ``dtype``. """
+    def _from_RealField(self, a, K0):
         return self(K0.to_diofant(a))
 
-    def from_PolynomialRing(self, a, K0):
-        """Convert a ``DMP`` object to ``dtype``. """
+    def _from_PolynomialRing(self, a, K0):
         return self(K0.to_diofant(a))
 
-    def from_FractionField(self, a, K0):
-        """Convert a ``FracElement`` object to ``dtype``. """
+    def _from_FractionField(self, a, K0):
         return self(K0.to_diofant(a))
 
-    def from_ExpressionDomain(self, a, K0):
-        """Convert a ``EX`` object to ``dtype``. """
+    def _from_ExpressionDomain(self, a, K0):
         return a
 
-    def from_AlgebraicField(self, a, K0):
-        """Convert an algebraic number to ``dtype``. """
+    def _from_AlgebraicField(self, a, K0):
         return self(K0.to_diofant(a))
 
     @property

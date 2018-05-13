@@ -60,7 +60,7 @@ class Domain(DefaultPrinting, abc.ABC):
 
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain. """
-        method = "from_" + base.__class__.__name__
+        method = "_from_" + base.__class__.__name__
 
         convert = getattr(self, method, None)
 
@@ -126,8 +126,7 @@ class Domain(DefaultPrinting, abc.ABC):
         except CoercionFailed:
             return False
 
-    def from_PolynomialRing(self, a, K0):
-        """Convert a polynomial to ``dtype``. """
+    def _from_PolynomialRing(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC, K0.domain)
 

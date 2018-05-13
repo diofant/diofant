@@ -41,28 +41,22 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
         else:
             raise CoercionFailed("expected `Rational` object, got %s" % a)
 
-    def from_PythonIntegerRing(self, a, K0):
-        """Convert a Python's ``int`` to ``dtype``. """
+    def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
 
-    def from_PythonRationalField(self, a, K0):
-        """Convert a Python's ``Fraction`` to ``dtype``. """
+    def _from_PythonRationalField(self, a, K0):
         return self.dtype(a.numerator, a.denominator)
 
-    def from_GMPYIntegerRing(self, a, K0):
-        """Convert a GMPY's ``mpz`` to ``dtype``. """
+    def _from_GMPYIntegerRing(self, a, K0):
         return self.dtype(a)
 
-    def from_GMPYRationalField(self, a, K0):
-        """Convert a GMPY's ``mpq`` to ``dtype``. """
+    def _from_GMPYRationalField(self, a, K0):
         return self.dtype(a.numerator, a.denominator)
 
-    def from_RealField(self, a, K0):
-        """Convert a mpmath's ``mpf`` to ``dtype``. """
+    def _from_RealField(self, a, K0):
         return self.dtype(*K0.to_rational(a))
 
-    def from_AlgebraicField(self, a, K0):
-        """Convert an algebraic number to ``dtype``. """
+    def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
 
