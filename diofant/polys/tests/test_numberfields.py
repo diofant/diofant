@@ -530,19 +530,19 @@ def test_field_isomorphism():
 
 def test_to_number_field():
     A = QQ.algebraic_field(sqrt(2))
-    assert A.from_diofant(sqrt(2)) == A([1, 0])
+    assert A.convert(sqrt(2)) == A([1, 0])
     B = A.algebraic_field(sqrt(3))
-    assert B.from_diofant(sqrt(2) + sqrt(3)) == B([1, 0])
+    assert B.convert(sqrt(2) + sqrt(3)) == B([1, 0])
 
     a = AlgebraicNumber(sqrt(2) + sqrt(3), [Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)])
 
-    assert B.from_diofant(sqrt(2)) == B(a.coeffs())
+    assert B.convert(sqrt(2)) == B(a.coeffs())
 
-    pytest.raises(CoercionFailed, lambda: QQ.algebraic_field(sqrt(3)).from_diofant(sqrt(2)))
+    pytest.raises(CoercionFailed, lambda: QQ.algebraic_field(sqrt(3)).convert(sqrt(2)))
 
     # issue sympy/sympy#5649
-    assert AlgebraicNumber(1).rep.rep == QQ.algebraic_field(1).from_diofant(1).rep
-    assert AlgebraicNumber(sqrt(2)).rep.rep == A.from_diofant(sqrt(2)).rep
+    assert AlgebraicNumber(1).rep.rep == QQ.algebraic_field(1).convert(1).rep
+    assert AlgebraicNumber(sqrt(2)).rep.rep == A.convert(sqrt(2)).rep
 
     p = x**6 - 6*x**4 - 6*x**3 + 12*x**2 - 36*x + 1
     r0, r1 = p.as_poly(x).all_roots()[:2]
@@ -550,7 +550,7 @@ def test_to_number_field():
                              Rational(128, 151), Rational(936, 755),
                              Rational(-1003, 755), Rational(2184, 755)])
     A = QQ.algebraic_field(r0)
-    assert A.from_diofant(r1) == A(a.coeffs())
+    assert A.convert(r1) == A(a.coeffs())
 
 
 def test_AlgebraicNumber():
@@ -655,7 +655,7 @@ def test_AlgebraicNumber():
 
     A = QQ.algebraic_field(AlgebraicNumber(sqrt(2)))
     a = A([1, 0])
-    b = A.from_diofant(sqrt(2))
+    b = A.convert(sqrt(2))
     assert a == b
 
     a = AlgebraicNumber(sqrt(2), [1, 2, 3])

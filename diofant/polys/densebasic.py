@@ -371,7 +371,7 @@ def dmp_from_diofant(f, u, K):
     [[1], [2]]
     """
     if not u:
-        r = [K.from_diofant(c) for c in f]
+        r = [K.convert(c) for c in f]
     else:
         v = u - 1
         r = [dmp_from_diofant(c, v, K) for c in f]

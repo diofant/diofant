@@ -321,7 +321,7 @@ class Poly(Expr):
         if not other.is_Poly:
             try:
                 return (self.rep.domain, self.per, self.rep,
-                        self.rep.per(self.rep.domain.from_diofant(other)))
+                        self.rep.per(self.rep.domain.convert(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
@@ -3577,7 +3577,7 @@ class PurePoly(Poly):
         if not other.is_Poly:
             try:
                 return (self.rep.domain, self.per, self.rep,
-                        self.rep.per(self.rep.domain.from_diofant(other)))
+                        self.rep.per(self.rep.domain.convert(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
@@ -3640,7 +3640,7 @@ def _poly_from_expr(expr, opt):
     if domain is None:
         opt.domain, coeffs = construct_domain(coeffs, opt=opt)
     else:
-        coeffs = list(map(domain.from_diofant, coeffs))
+        coeffs = list(map(domain.convert, coeffs))
 
     rep = dict(zip(monoms, coeffs))
     poly = Poly._from_dict(rep, opt)
@@ -3734,7 +3734,7 @@ def _parallel_poly_from_expr(exprs, opt):
     if domain is None:
         opt.domain, coeffs_list = construct_domain(coeffs_list, opt=opt)
     else:
-        coeffs_list = list(map(domain.from_diofant, coeffs_list))
+        coeffs_list = list(map(domain.convert, coeffs_list))
 
     for k in lengths:
         all_coeffs.append(coeffs_list[:k])

@@ -82,7 +82,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         """Convert ``a`` to a Diofant object. """
         return sum((c*self.ext**n for n, c in enumerate(reversed(a.rep))), Integer(0))
 
-    def from_diofant(self, a):
+    def from_expr(self, a):
         """Convert Diofant's expression to ``dtype``. """
         try:
             K0 = self.domain.algebraic_field(a)

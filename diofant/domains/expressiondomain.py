@@ -138,7 +138,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 
-    def from_diofant(self, a):
+    def from_expr(self, a):
         """Convert Diofant's expression to ``dtype``. """
         return self.dtype(a)
 

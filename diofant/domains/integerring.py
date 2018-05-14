@@ -40,7 +40,7 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
         """Convert ``a`` to a Diofant object. """
         return DiofantInteger(a)
 
-    def from_diofant(self, a):
+    def from_expr(self, a):
         """Convert Diofant's Integer to ``dtype``. """
         if a.is_Integer:
             return self.dtype(a.p)

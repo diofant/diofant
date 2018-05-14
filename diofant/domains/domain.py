@@ -2,7 +2,7 @@
 
 import abc
 
-from ..core import Basic
+from ..core import Expr
 from ..core.compatibility import HAS_GMPY
 from ..polys.orderings import lex
 from ..polys.polyerrors import CoercionFailed, UnificationFailed
@@ -58,6 +58,11 @@ class Domain(DefaultPrinting, abc.ABC):
     def normal(self, *args):
         return self.dtype(*args)
 
+    @abc.abstractmethod
+    def from_expr(self, element):
+        """Convert Diofant's expression to ``dtype``. """
+        raise NotImplementedError  # pragma: no cover
+
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain. """
         method = "_from_" + base.__class__.__name__
@@ -110,9 +115,9 @@ class Domain(DefaultPrinting, abc.ABC):
         if isinstance(element, DomainElement):
             return self.convert_from(element, element.parent)
 
-        if isinstance(element, Basic):
+        if isinstance(element, Expr):
             try:
-                return self.from_diofant(element)
+                return self.from_expr(element)
             except (TypeError, ValueError):
                 pass
 

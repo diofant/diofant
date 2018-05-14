@@ -1223,7 +1223,7 @@ def _roots_bound(f, F):
     lc = F.to_diofant(dmp_LC(f, F))
     B = 2*max(abs(F.to_diofant(c)/lc) for c in f)
     if not F.is_Algebraic:
-        return F.from_diofant(B)
+        return F.convert(B)
     else:
         return F.domain(int(100*B) + 1)/F.domain(100)
 

@@ -31,7 +31,7 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
         """Convert ``a`` to a Diofant object. """
         return DiofantRational(a.numerator, a.denominator)
 
-    def from_diofant(self, a):
+    def from_expr(self, a):
         """Convert Diofant's Integer to ``dtype``. """
         if a.is_Rational:
             return self.dtype(a.p, a.q)

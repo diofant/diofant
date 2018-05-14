@@ -265,7 +265,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             except ValueError:
                 return self.from_list(element)
         elif isinstance(element, Expr):
-            return self.from_expr(element)
+            return self.convert(element)
         else:
             return self.ground_new(element)
 
@@ -310,6 +310,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
+        """Convert Diofant's expression to ``dtype``. """
         mapping = dict(zip(self.symbols, self.gens))
 
         try:
@@ -433,10 +434,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
         return a.as_expr()
-
-    def from_diofant(self, a):
-        """Convert Diofant's expression to ``dtype``. """
-        return self.from_expr(a)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
