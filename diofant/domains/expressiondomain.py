@@ -134,7 +134,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     def __init__(self):
         pass
 
-    def to_diofant(self, a):
+    def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 
@@ -143,31 +143,31 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         return self.dtype(a)
 
     def _from_PythonIntegerRing(self, a, K0):
-        return self(K0.to_diofant(a))
+        return self(K0.to_expr(a))
 
     def _from_PythonRationalField(self, a, K0):
-        return self(K0.to_diofant(a))
+        return self(K0.to_expr(a))
 
     def _from_GMPYIntegerRing(self, a, K0):
-        return self(K0.to_diofant(a))
+        return self(K0.to_expr(a))
 
     def _from_GMPYRationalField(self, a, K0):
-        return self(K0.to_diofant(a))
+        return self(K0.to_expr(a))
 
     def _from_RealField(self, a, K0):
-        return self(K0.to_diofant(a))
+        return self(K0.to_expr(a))
 
     def _from_PolynomialRing(self, a, K0):
-        return self(K0.to_diofant(a))
+        return self(K0.to_expr(a))
 
     def _from_FractionField(self, a, K0):
-        return self(K0.to_diofant(a))
+        return self(K0.to_expr(a))
 
     def _from_ExpressionDomain(self, a, K0):
         return a
 
     def _from_AlgebraicField(self, a, K0):
-        return self(K0.to_diofant(a))
+        return self(K0.to_expr(a))
 
     @property
     def ring(self):

@@ -35,6 +35,7 @@ Compatibility breaks
 * Removed ``is_unit()``, ``numer()`` and ``denom()`` methods of :class:`~diofant.domains.ring.Ring`, see :pull:`637`.
 * ``from_<Foo>()`` methods of :class:`~diofant.domains.domain.Domain` now are private, see :pull:`637`.
 * Method :meth:`~diofant.domains.domain.Domain.from_expr` was renamed from ``from_diofant()``, see :pull:`637`.
+* Method :meth:`~diofant.domains.domain.Domain.to_expr` was renamed from ``to_diofant()``, see :pull:`637`.
 
 Minor changes
 =============

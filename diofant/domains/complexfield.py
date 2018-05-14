@@ -59,7 +59,7 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.precision, self.tolerance))
 
-    def to_diofant(self, element):
+    def to_expr(self, element):
         """Convert ``element`` to Diofant number. """
         return Float(element.real, self.dps) + I*Float(element.imag, self.dps)
 

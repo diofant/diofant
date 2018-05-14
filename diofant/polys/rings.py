@@ -431,7 +431,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         else:
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
-    def to_diofant(self, a):
+    def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 
@@ -575,8 +575,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return expr_from_dict(self.as_expr_dict(), *symbols)
 
     def as_expr_dict(self):
-        to_diofant = self.ring.domain.to_diofant
-        return {monom: to_diofant(coeff) for monom, coeff in self.iterterms()}
+        to_expr = self.ring.domain.to_expr
+        return {monom: to_expr(coeff) for monom, coeff in self.iterterms()}
 
     def clear_denoms(self):
         domain = self.ring.domain

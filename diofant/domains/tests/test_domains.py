@@ -1062,8 +1062,8 @@ def test_almosteq():
     assert RR._context.almosteq(RR(2), 1, None, 1) is True
 
 
-def test_to_diofant():
-    assert CC.to_diofant(1 - 2j) == 1 - 2*I
+def test_to_expr():
+    assert CC.to_expr(1 - 2j) == 1 - 2*I
 
 
 def test_EX():

@@ -118,7 +118,7 @@ class DMP(CantSympify):
         rep = dmp_to_dict(self.rep, self.lev, self.domain, zero=zero)
 
         for k, v in rep.items():
-            rep[k] = self.domain.to_diofant(v)
+            rep[k] = self.domain.to_expr(v)
 
         return rep
 

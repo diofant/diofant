@@ -1778,7 +1778,7 @@ class AlgebraicNumber(Expr):
 
     def coeffs(self):
         """Returns all Diofant coefficients of an algebraic number. """
-        return [self.rep.domain.to_diofant(c) for c in self.rep.all_coeffs()]
+        return [self.rep.domain.to_expr(c) for c in self.rep.all_coeffs()]
 
     def native_coeffs(self):
         """Returns all native coefficients of an algebraic number. """

@@ -184,7 +184,7 @@ class FractionField(Field, CompositeDomain):
     def to_ring(self):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
-    def to_diofant(self, a):
+    def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 

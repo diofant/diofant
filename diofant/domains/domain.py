@@ -63,6 +63,11 @@ class Domain(DefaultPrinting, abc.ABC):
         """Convert Diofant's expression to ``dtype``. """
         raise NotImplementedError  # pragma: no cover
 
+    @abc.abstractmethod
+    def to_expr(self, element):
+        """Convert ``element`` to Diofant expression. """
+        raise NotImplementedError  # pragma: no cover
+
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain. """
         method = "_from_" + base.__class__.__name__

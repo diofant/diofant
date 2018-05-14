@@ -27,7 +27,7 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
         from . import AlgebraicField
         return AlgebraicField(self, *extension)
 
-    def to_diofant(self, a):
+    def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return DiofantRational(a.numerator, a.denominator)
 

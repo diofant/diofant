@@ -50,7 +50,7 @@ class FiniteField(Field, SimpleDomain):
         """Return the characteristic of this domain. """
         return self.mod
 
-    def to_diofant(self, a):
+    def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return DiofantInteger(int(a))
 

@@ -78,7 +78,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
         return self.domain.algebraic_field(*((self.ext.as_expr(),) + extension))
 
-    def to_diofant(self, a):
+    def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return sum((c*self.ext**n for n, c in enumerate(reversed(a.rep))), Integer(0))
 
@@ -176,7 +176,7 @@ class AlgebraicElement(DomainElement, CantSympify):
 
     def to_diofant_list(self):
         """Convert ``self`` to a list representation with Diofant coefficients. """
-        return [self.domain.to_diofant(c) for c in self.rep]
+        return [self.domain.to_expr(c) for c in self.rep]
 
     @classmethod
     def from_list(cls, rep):

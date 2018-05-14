@@ -1220,8 +1220,8 @@ def _winding_number(T, field):
 
 
 def _roots_bound(f, F):
-    lc = F.to_diofant(dmp_LC(f, F))
-    B = 2*max(abs(F.to_diofant(c)/lc) for c in f)
+    lc = F.to_expr(dmp_LC(f, F))
+    B = 2*max(abs(F.to_expr(c)/lc) for c in f)
     if not F.is_Algebraic:
         return F.convert(B)
     else:
