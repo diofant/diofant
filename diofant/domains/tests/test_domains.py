@@ -552,10 +552,10 @@ def test_Domain_convert():
     a = ALG.convert(a2, ALG2)
     assert a.rep == [QQ(1, 2), 0, -QQ(9, 2), 0]
 
-    assert ZZ_python().convert(3.0) == ZZ_python().dtype(3)
-    pytest.raises(CoercionFailed, lambda: ZZ_python().convert(3.2))
+    assert ZZ_python.convert(3.0) == ZZ_python.dtype(3)
+    pytest.raises(CoercionFailed, lambda: ZZ_python.convert(3.2))
 
-    assert CC.convert(QQ_python()(1, 2)) == CC(0.5)
+    assert CC.convert(QQ_python(1, 2)) == CC(0.5)
     CC01 = ComplexField(tol=0.1)
     assert CC.convert(CC01(0.3)) == CC(0.3)
 
@@ -569,8 +569,7 @@ def test_arithmetics():
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
 
-    QQp = QQ_python()
-    assert QQp.factorial(QQp(7, 2)) == 6
+    assert QQ_python.factorial(QQ_python(7, 2)) == 6
 
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2
@@ -721,7 +720,7 @@ def test_FractionField_from_PolynomialRing():
 
 def test_FractionField_convert():
     F,  X, Y = field("x,y", QQ)
-    F.convert(QQ_python()(1, 3)) == F.one/3
+    F.convert(QQ_python(1, 3)) == F.one/3
 
 
 def test_FF_of_type():

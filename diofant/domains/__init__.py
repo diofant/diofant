@@ -22,19 +22,19 @@ from .groundtypes import PythonRational  # noqa: F401
 FF_python = PythonFiniteField
 FF_gmpy = GMPYFiniteField
 
-ZZ_python = PythonIntegerRing
-ZZ_gmpy = GMPYIntegerRing
+ZZ_python = PythonIntegerRing()
+ZZ_gmpy = GMPYIntegerRing()
 
-QQ_python = PythonRationalField
-QQ_gmpy = GMPYRationalField
+QQ_python = PythonRationalField()
+QQ_gmpy = GMPYRationalField()
 
 RR = RealField()
 CC = ComplexField()
 
 from ..core.compatibility import GROUND_TYPES
 
-_GROUND_TYPES_MAP = {'gmpy': (FF_gmpy, ZZ_gmpy(), QQ_gmpy()),
-                     'python': (FF_python, ZZ_python(), QQ_python())}
+_GROUND_TYPES_MAP = {'gmpy': (FF_gmpy, ZZ_gmpy, QQ_gmpy),
+                     'python': (FF_python, ZZ_python, QQ_python)}
 
 FF, ZZ, QQ = _GROUND_TYPES_MAP[GROUND_TYPES]
 GF = FF

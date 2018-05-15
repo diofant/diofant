@@ -25,11 +25,11 @@ from diofant.core.relational import (Equality, GreaterThan, LessThan,
                                      StrictLessThan, Unequality)
 from diofant.core.singleton import S, SingletonRegistry
 from diofant.core.symbol import Dummy, Symbol, Wild
-from diofant.domains import QQ_gmpy, ZZ_gmpy
 from diofant.domains.expressiondomain import ExpressionDomain
 from diofant.domains.groundtypes import PythonRational
-from diofant.domains.integerring import PythonIntegerRing
-from diofant.domains.rationalfield import PythonRationalField
+from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
+from diofant.domains.rationalfield import (GMPYRationalField,
+                                           PythonRationalField)
 from diofant.functions import (Abs, DiracDelta, Eijk, Heaviside, LambertW,
                                Piecewise, acos, acosh, acot, acoth, arg, asin,
                                asinh, assoc_legendre, atan, atan2, atanh, bell,
@@ -360,10 +360,10 @@ def test_pickling_polys_domains():
         # for c in (GMPYFiniteField, GMPYFiniteField(17)):
         #     check(c)
 
-        for c in (ZZ_gmpy, ZZ_gmpy()):
+        for c in (GMPYIntegerRing, GMPYIntegerRing()):
             check(c)
 
-        for c in (QQ_gmpy, QQ_gmpy()):
+        for c in (GMPYRationalField, GMPYRationalField()):
             check(c)
 
     # TODO: fix pickling of RealElement
