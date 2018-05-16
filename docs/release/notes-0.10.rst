@@ -69,3 +69,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14590` limit((n**3*((n + 1)/n)**n)/((n + 1)*(n + 2)*(n + 3)), n, oo) is incorrect
 * :sympyissue:`14645` Bug when solving multivariate polynomial systems with identical equations
 * :sympyissue:`14294` to_number_field should be idempotent for single extension
+* :sympyissue:`14721` solve can't find solution
