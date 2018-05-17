@@ -1659,13 +1659,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
             if N_L >= 1:
                 if N_L == 1 and _rectangle_small_p(a, b, eps):
-                    roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2, F))
+                    roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2, f, F))
                 else:
                     rectangles.append(D_L)
 
             if N_R >= 1:
                 if N_R == 1 and _rectangle_small_p(c, d, eps):
-                    roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2, F))
+                    roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2, f, F))
                 else:
                     rectangles.append(D_R)
         else:
@@ -1676,13 +1676,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
             if N_B >= 1:
                 if N_B == 1 and _rectangle_small_p(a, b, eps):
-                    roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2, F))
+                    roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2, f, F))
                 else:
                     rectangles.append(D_B)
 
             if N_U >= 1:
                 if N_U == 1 and _rectangle_small_p(c, d, eps):
-                    roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2, F))
+                    roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2, f, F))
                 else:
                     rectangles.append(D_U)
 
@@ -1807,11 +1807,12 @@ class ComplexInterval:
     coordinates of the interval's rectangle.
     """
 
-    def __init__(self, a, b, I, Q, F1, F2, f1, f2, dom, conj=False):
+    def __init__(self, a, b, I, Q, F1, F2, f1, f2, f, dom, conj=False):
         """Initialize new complex interval with complete information. """
         self.a, self.b = a, b  # the southwest and northeast corner: (x1, y1), (x2, y2)
         self.I, self.Q = I, Q
 
+        self.f = f
         self.f1, self.F1 = f1, F1
         self.f2, self.F2 = f2, F2
 
@@ -1857,7 +1858,7 @@ class ComplexInterval:
         """Return conjugated isolating interval. """
         return ComplexInterval(self.a, self.b, self.I, self.Q,
                                self.F1, self.F2, self.f1, self.f2,
-                               self.domain, conj=not self.conj)
+                               self.f, self.domain, conj=not self.conj)
 
     def is_disjoint(self, other):
         """Return ``True`` if two isolation intervals are disjoint. """
@@ -1875,6 +1876,7 @@ class ComplexInterval:
 
         I, Q = self.I, self.Q
 
+        f = self.f
         f1, F1 = self.f1, self.F1
         f2, F2 = self.f2, self.F2
 
@@ -1895,7 +1897,7 @@ class ComplexInterval:
             else:
                 _, a, b, I, Q, F1, F2 = D_U
 
-        return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, dom, self.conj)
+        return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, f, dom, self.conj)
 
     def refine_disjoint(self, other):
         """Refine an isolating interval until it is disjoint with another one. """
