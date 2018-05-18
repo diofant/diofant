@@ -51,8 +51,6 @@ def ring(symbols, domain, order=lex):
     ZZ[x,y,z]
     >>> x + y + z
     x + y + z
-    >>> type(_)
-    <class 'diofant.polys.rings.PolyElement'>
     """
     _ring = PolynomialRing(domain, symbols, order)
     return (_ring,) + _ring.gens
@@ -75,8 +73,6 @@ def vring(symbols, domain, order=lex):
     ZZ[x,y,z]
     >>> x + y + z
     x + y + z
-    >>> type(_)
-    <class 'diofant.polys.rings.PolyElement'>
     """
     _ring = PolynomialRing(domain, symbols, order)
     pollute([sym.name for sym in _ring.symbols], _ring.gens)
@@ -102,8 +98,6 @@ def sring(exprs, *symbols, **options):
     ZZ[x,y,z]
     >>> f
     x + 2*y + 3*z
-    >>> type(_)
-    <class 'diofant.polys.rings.PolyElement'>
     """
     single = False
 
@@ -271,7 +265,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             except ValueError:
                 return self.from_list(element)
         elif isinstance(element, Expr):
-            return self.from_expr(element)
+            return self.convert(element)
         else:
             return self.ground_new(element)
 
@@ -316,6 +310,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
+        """Convert Diofant's expression to ``dtype``. """
         mapping = dict(zip(self.symbols, self.gens))
 
         try:
@@ -436,93 +431,87 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         else:
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
-    def to_diofant(self, a):
-        """Convert `a` to a Diofant object. """
+    def to_expr(self, a):
+        """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 
-    def from_diofant(self, a):
-        """Convert Diofant's expression to `dtype`. """
-        return self.from_expr(a)
-
-    def from_ZZ_python(self, a, K0):
-        """Convert a Python `int` object to `dtype`. """
+    def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_QQ_python(self, a, K0):
-        """Convert a Python `Fraction` object to `dtype`. """
+    def _from_PythonRationalField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_ZZ_gmpy(self, a, K0):
-        """Convert a GMPY `mpz` object to `dtype`. """
+    def _from_GMPYIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_QQ_gmpy(self, a, K0):
-        """Convert a GMPY `mpq` object to `dtype`. """
+    def _from_GMPYRationalField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_RealField(self, a, K0):
-        """Convert a mpmath `mpf` object to `dtype`. """
+    def _from_RealField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_AlgebraicField(self, a, K0):
-        """Convert an algebraic number to ``dtype``. """
+    def _from_AlgebraicField(self, a, K0):
         if self.domain == K0:
             return self.new(a)
 
-    def from_PolynomialRing(self, a, K0):
-        """Convert a polynomial to ``dtype``. """
+    def _from_PolynomialRing(self, a, K0):
         try:
             return a.set_ring(self)
         except (CoercionFailed, GeneratorsError):
             return
 
-    def from_FractionField(self, a, K0):
-        """Convert a rational function to ``dtype``. """
-        denom = K0.denom(a)
+    def _from_FractionField(self, a, K0):
+        denom = a.denominator
 
         if denom.is_ground:
-            return self.from_PolynomialRing(K0.numer(a)/denom, K0.ring)
+            return self.convert(a.numerator/denom, K0.ring)
 
     @property
     def field(self):
-        """Returns a field associated with `self`. """
+        """Returns a field associated with ``self``. """
         return self.ring.to_field()
 
     def is_positive(self, a):
-        """Returns True if `LC(a)` is positive. """
+        """Returns True if ``LC(a)`` is positive. """
         return self.domain.is_positive(a.LC)
 
     def is_negative(self, a):
-        """Returns True if `LC(a)` is negative. """
+        """Returns True if ``LC(a)`` is negative. """
         return self.domain.is_negative(a.LC)
 
     def is_nonpositive(self, a):
-        """Returns True if `LC(a)` is non-positive. """
+        """Returns True if ``LC(a)`` is non-positive. """
         return self.domain.is_nonpositive(a.LC)
 
     def is_nonnegative(self, a):
-        """Returns True if `LC(a)` is non-negative. """
+        """Returns True if ``LC(a)`` is non-negative. """
         return self.domain.is_nonnegative(a.LC)
 
     def gcdex(self, a, b):
-        """Extended GCD of `a` and `b`. """
+        """Extended GCD of ``a`` and ``b``. """
         return a.gcdex(b)
 
     def gcd(self, a, b):
-        """Returns GCD of `a` and `b`. """
+        """Returns GCD of ``a`` and ``b``. """
         return a.gcd(b)
 
     def lcm(self, a, b):
-        """Returns LCM of `a` and `b`. """
+        """Returns LCM of ``a`` and ``b``. """
         return a.lcm(b)
 
     def factorial(self, a):
-        """Returns factorial of `a`. """
+        """Returns factorial of ``a``. """
         return self.new(self.domain.factorial(a))
 
 
 class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
-    """Element of multivariate distributed polynomial ring. """
+    """Element of multivariate distributed polynomial ring.
+
+    See Also
+    ========
+
+    PolynomialRing
+    """
 
     def new(self, init):
         return self.__class__(init)
@@ -586,8 +575,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return expr_from_dict(self.as_expr_dict(), *symbols)
 
     def as_expr_dict(self):
-        to_diofant = self.ring.domain.to_diofant
-        return {monom: to_diofant(coeff) for monom, coeff in self.iterterms()}
+        to_expr = self.ring.domain.to_expr
+        return {monom: to_expr(coeff) for monom, coeff in self.iterterms()}
 
     def clear_denoms(self):
         domain = self.ring.domain
@@ -598,10 +587,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ground_ring = domain.ring
         common = ground_ring.one
         lcm = ground_ring.lcm
-        denom = domain.denom
 
         for coeff in self.values():
-            common = lcm(common, denom(coeff))
+            common = lcm(common, coeff.denominator)
 
         poly = self.new([ (k, v*common) for k, v in self.items() ])
         return common, poly
@@ -832,11 +820,11 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     @property
     def is_monic(self):
-        return self.ring.domain.is_one(self.LC)
+        return self.LC == self.ring.domain.one
 
     @property
     def is_primitive(self):
-        return self.ring.domain.is_one(self.content())
+        return self.content() == self.ring.domain.one
 
     @property
     def is_linear(self):
@@ -1865,7 +1853,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return self.new([t for t in terms if t is not None])
 
     def trunc_ground(self, p):
-        if self.ring.domain.is_ZZ:
+        if self.ring.domain.is_IntegerRing:
             terms = []
 
             for monom, coeff in self.iterterms():
@@ -1900,8 +1888,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not self:
             return self.ring.domain.zero
         else:
-            ground_abs = self.ring.domain.abs
-            return norm_func([ground_abs(coeff) for coeff in self.itercoeffs()])
+            return norm_func([abs(coeff) for coeff in self.itercoeffs()])
 
     def max_norm(self):
         return self._norm(max)
@@ -2016,9 +2003,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def _gcd(self, other):
         ring = self.ring
 
-        if ring.domain.is_QQ:
+        if ring.domain.is_RationalField:
             return self._gcd_QQ(other)
-        elif ring.domain.is_ZZ:
+        elif ring.domain.is_IntegerRing:
             return self._gcd_ZZ(other)
         else:  # TODO: don't use dense representation (port PRS algorithms)
             return ring.dmp_inner_gcd(self, other)

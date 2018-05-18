@@ -41,29 +41,14 @@ class Ring(Domain):
         """Returns inversion of ``a mod b``. """
         s, t, h = self.gcdex(a, b)
 
-        if self.is_one(h):
+        if h == self.one:
             return s % b
         else:
             raise NotInvertible("zero divisor")
 
     def revert(self, a):
         """Returns ``a**(-1)`` if possible. """
-        if self.is_one(a):
+        if a == self.one:
             return a
         else:
             raise NotReversible('only unity is reversible in a ring')
-
-    def is_unit(self, a):
-        try:
-            self.revert(a)
-            return True
-        except NotReversible:
-            return False
-
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        return a
-
-    def denom(self, a):
-        """Returns denominator of `a`. """
-        return self.one

@@ -39,8 +39,8 @@ def test_globalring():
     assert X + 1 == R.convert(x + 1)
     assert X**2 / X == X
 
-    assert R.from_PolynomialRing(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
-    assert R.from_FractionField(Qxy.convert(x), Qxy) == X
+    assert R.convert(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
+    assert R.convert(Qxy.convert(x), Qxy) == X
 
 
 def test_localring():
@@ -58,8 +58,8 @@ def test_localring():
     assert X + 1 == R.convert(x + 1)
     assert X**2 / X == X
 
-    assert R.from_PolynomialRing(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
-    assert R.from_FractionField(Qxy.convert(x), Qxy) == X
+    assert R.convert(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
+    assert R.convert(Qxy.convert(x), Qxy) == X
 
 
 def test_conversion():
@@ -78,19 +78,19 @@ def test_conversion():
 
 def test_units():
     R = QQ.poly_ring(x)
-    assert R.is_unit(R.convert(1))
-    assert not R.is_unit(R.convert(x))
-    assert not R.is_unit(R.convert(1 + x))
+    assert R.convert(1) == R.one
+    assert R.convert(x) != R.one
+    assert R.convert(1 + x) != R.one
 
     R = QQ.poly_ring(x, order='ilex')
-    assert R.is_unit(R.convert(1))
-    assert not R.is_unit(R.convert(x))
+    assert R.convert(1) == R.one
+    assert R.convert(x) != R.one
 
     R = ZZ.poly_ring(x)
-    assert R.is_unit(R.convert(1))
-    assert not R.is_unit(R.convert(2))
-    assert not R.is_unit(R.convert(x))
-    assert not R.is_unit(R.convert(1 + x))
+    assert R.convert(1) == R.one
+    assert R.convert(2) != R.one
+    assert R.convert(x) != R.one
+    assert R.convert(1 + x) != R.one
 
 
 def test_poly_frac():

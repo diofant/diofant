@@ -213,7 +213,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
 
             domain = opt.domain.get_exact()
 
-            if not (domain.is_ZZ or domain.is_QQ):
+            if not (domain.is_IntegerRing or domain.is_RationalField):
                 expr = numer/denom
                 expr = Relational(expr, 0, rel)
                 solution &= solve_univariate_inequality(expr, gen, relational=False)

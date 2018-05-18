@@ -232,7 +232,7 @@ class Poly(Expr):
         if domain.is_Composite:
             for gen in domain.symbols:
                 symbols |= gen.free_symbols
-        elif domain.is_EX:
+        elif domain.is_SymbolicDomain:
             for coeff in self.coeffs():
                 symbols |= coeff.free_symbols
 
@@ -321,7 +321,7 @@ class Poly(Expr):
         if not other.is_Poly:
             try:
                 return (self.rep.domain, self.per, self.rep,
-                        self.rep.per(self.rep.domain.from_diofant(other)))
+                        self.rep.per(self.rep.domain.convert(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
@@ -358,7 +358,7 @@ class Poly(Expr):
                 gens = gens[:remove] + gens[remove + 1:]
 
                 if not gens:
-                    return dom.to_diofant(rep)
+                    return dom.to_expr(rep)
 
             return cls.new(rep, *gens)
 
@@ -386,7 +386,7 @@ class Poly(Expr):
             gens = gens[:remove] + gens[remove + 1:]
 
             if not gens:
-                return self.rep.domain.to_diofant(rep)
+                return self.rep.domain.to_expr(rep)
 
         return self.__class__.new(rep, *gens)
 
@@ -676,7 +676,7 @@ class Poly(Expr):
         coeff_monomial
         nth
         """
-        return [self.rep.domain.to_diofant(c) for c in self.rep.coeffs(order=order)]
+        return [self.rep.domain.to_expr(c) for c in self.rep.coeffs(order=order)]
 
     def monoms(self, order=None):
         """
@@ -710,7 +710,7 @@ class Poly(Expr):
 
         all_terms
         """
-        return [(m, self.rep.domain.to_diofant(c)) for m, c in self.rep.terms(order=order)]
+        return [(m, self.rep.domain.to_expr(c)) for m, c in self.rep.terms(order=order)]
 
     def all_coeffs(self):
         """
@@ -722,7 +722,7 @@ class Poly(Expr):
         >>> Poly(x**3 + 2*x - 1, x).all_coeffs()
         [1, 0, 2, -1]
         """
-        return [self.rep.domain.to_diofant(c) for c in self.rep.all_coeffs()]
+        return [self.rep.domain.to_expr(c) for c in self.rep.all_coeffs()]
 
     def all_monoms(self):
         """
@@ -751,7 +751,7 @@ class Poly(Expr):
         >>> Poly(x**3 + 2*x - 1, x).all_terms()
         [((3,), 1), ((2,), 0), ((1,), 2), ((0,), -1)]
         """
-        return [(m, self.rep.domain.to_diofant(c)) for m, c in self.rep.all_terms()]
+        return [(m, self.rep.domain.to_expr(c)) for m, c in self.rep.all_terms()]
 
     def termwise(self, func, *gens, **args):
         """
@@ -1590,7 +1590,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'LC')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def TC(self):
         """
@@ -1607,7 +1607,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(f, 'TC')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def EC(self, order=None):
         """
@@ -1687,7 +1687,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'nth')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def coeff(self, x, n=1, right=False):
         # the semantics of coeff_monomial and Expr.coeff are different;
@@ -1772,7 +1772,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'max_norm')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def l1_norm(self):
         """
@@ -1789,7 +1789,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'l1_norm')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def clear_denoms(self, convert=False):
         """
@@ -1819,7 +1819,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(f, 'clear_denoms')
 
-        coeff, f = dom.to_diofant(coeff), f.per(result)
+        coeff, f = dom.to_expr(coeff), f.per(result)
 
         if not convert or not dom.has_assoc_Ring:
             return coeff, f
@@ -1995,7 +1995,7 @@ class Poly(Expr):
                 raise DomainError("can't evaluate at %s in %s" % (a, f.rep.domain))
             else:
                 a_domain, [a] = construct_domain([a])
-                new_domain = f.domain.unify_with_symbols(a_domain, f.gens)
+                new_domain = f.domain.unify(a_domain, f.gens)
 
                 f = f.set_domain(new_domain)
                 a = new_domain.convert(a, a_domain)
@@ -2474,7 +2474,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'content')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def primitive(self):
         """
@@ -2491,7 +2491,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'primitive')
 
-        return self.rep.domain.to_diofant(cont), self.per(result)
+        return self.rep.domain.to_expr(cont), self.per(result)
 
     def compose(self, other):
         """
@@ -2657,7 +2657,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'sqf_list')
 
-        return (self.rep.domain.to_diofant(coeff),
+        return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
     def sqf_list_include(self, all=False):
@@ -2710,7 +2710,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'factor_list')
 
-        return (self.rep.domain.to_diofant(coeff),
+        return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
     def factor_list_include(self):
@@ -2783,15 +2783,15 @@ class Poly(Expr):
         if sqf:
             def _real(interval):
                 s, t = interval
-                return QQ.to_diofant(s), QQ.to_diofant(t)
+                return QQ.to_expr(s), QQ.to_expr(t)
 
             if not all:
                 return list(map(_real, result))
 
             def _complex(rectangle):
                 (u, v), (s, t) = rectangle
-                return (QQ.to_diofant(u) + I*QQ.to_diofant(v),
-                        QQ.to_diofant(s) + I*QQ.to_diofant(t))
+                return (QQ.to_expr(u) + I*QQ.to_expr(v),
+                        QQ.to_expr(s) + I*QQ.to_expr(t))
 
             real_part, complex_part = result
 
@@ -2799,15 +2799,15 @@ class Poly(Expr):
         else:
             def _real(interval):
                 (s, t), k = interval
-                return (QQ.to_diofant(s), QQ.to_diofant(t)), k
+                return (QQ.to_expr(s), QQ.to_expr(t)), k
 
             if not all:
                 return list(map(_real, result))
 
             def _complex(rectangle):
                 ((u, v), (s, t)), k = rectangle
-                return ((QQ.to_diofant(u) + I*QQ.to_diofant(v),
-                         QQ.to_diofant(s) + I*QQ.to_diofant(t)), k)
+                return ((QQ.to_expr(u) + I*QQ.to_expr(v),
+                         QQ.to_expr(s) + I*QQ.to_expr(t)), k)
 
             real_part, complex_part = result
 
@@ -2844,7 +2844,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'refine_root')
 
-        return QQ.to_diofant(S), QQ.to_diofant(T)
+        return QQ.to_expr(S), QQ.to_expr(T)
 
     def count_roots(self, inf=None, sup=None):
         """
@@ -3126,8 +3126,8 @@ class Poly(Expr):
 
             cp, cq, p, q = result
 
-            cp = dom.to_diofant(cp)
-            cq = dom.to_diofant(cq)
+            cp = dom.to_expr(cp)
+            cq = dom.to_expr(cq)
 
             return cp/cq, per(p), per(q)
         else:
@@ -3577,7 +3577,7 @@ class PurePoly(Poly):
         if not other.is_Poly:
             try:
                 return (self.rep.domain, self.per, self.rep,
-                        self.rep.per(self.rep.domain.from_diofant(other)))
+                        self.rep.per(self.rep.domain.convert(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
@@ -3597,7 +3597,7 @@ class PurePoly(Poly):
                 gens = gens[:remove] + gens[remove + 1:]
 
                 if not gens:
-                    return dom.to_diofant(rep)
+                    return dom.to_expr(rep)
 
             return cls.new(rep, *gens)
 
@@ -3640,7 +3640,7 @@ def _poly_from_expr(expr, opt):
     if domain is None:
         opt.domain, coeffs = construct_domain(coeffs, opt=opt)
     else:
-        coeffs = list(map(domain.from_diofant, coeffs))
+        coeffs = list(map(domain.convert, coeffs))
 
     rep = dict(zip(monoms, coeffs))
     poly = Poly._from_dict(rep, opt)
@@ -3734,7 +3734,7 @@ def _parallel_poly_from_expr(exprs, opt):
     if domain is None:
         opt.domain, coeffs_list = construct_domain(coeffs_list, opt=opt)
     else:
-        coeffs_list = list(map(domain.from_diofant, coeffs_list))
+        coeffs_list = list(map(domain.convert, coeffs_list))
 
     for k in lengths:
         all_coeffs.append(coeffs_list[:k])
@@ -4115,7 +4115,7 @@ def half_gcdex(f, g, *gens, **args):
         domain, (a, b) = construct_domain(exc.exprs)
 
         s, h = domain.half_gcdex(a, b)
-        return domain.to_diofant(s), domain.to_diofant(h)
+        return domain.to_expr(s), domain.to_expr(h)
 
     s, h = F.half_gcdex(G, auto=opt.auto)
 
@@ -4146,7 +4146,7 @@ def gcdex(f, g, *gens, **args):
         domain, (a, b) = construct_domain(exc.exprs)
 
         s, t, h = domain.gcdex(a, b)
-        return domain.to_diofant(s), domain.to_diofant(t), domain.to_diofant(h)
+        return domain.to_expr(s), domain.to_expr(t), domain.to_expr(h)
 
     s, t, h = F.gcdex(G, auto=opt.auto)
 
@@ -4191,7 +4191,7 @@ def invert(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        return domain.to_diofant(domain.invert(a, b))
+        return domain.to_expr(domain.invert(a, b))
 
     h = F.invert(G, auto=opt.auto)
 
@@ -4310,7 +4310,7 @@ def cofactors(f, g, *gens, **args):
         domain, (a, b) = construct_domain(exc.exprs)
 
         h, cff, cfg = domain.cofactors(a, b)
-        return tuple(map(domain.to_diofant, (h, cff, cfg)))
+        return tuple(map(domain.to_expr, (h, cff, cfg)))
 
     h, cff, cfg = F.cofactors(G)
 
@@ -4345,10 +4345,10 @@ def gcd_list(seq, *gens, **args):
                 for number in numbers:
                     result = domain.gcd(result, number)
 
-                    if domain.is_one(result):
+                    if result == domain.one:
                         break
 
-                return domain.to_diofant(result)
+                return domain.to_expr(result)
 
         return
 
@@ -4406,7 +4406,7 @@ def gcd(f, g, *gens, **args):
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
-        return domain.to_diofant(domain.gcd(a, b))
+        return domain.to_expr(domain.gcd(a, b))
 
     result = F.gcd(G)
 
@@ -4441,7 +4441,7 @@ def lcm_list(seq, *gens, **args):
                 for number in numbers:
                     result = domain.lcm(result, number)
 
-                return domain.to_diofant(result)
+                return domain.to_expr(result)
 
         return
 
@@ -4496,7 +4496,7 @@ def lcm(f, g, *gens, **args):
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
-        return domain.to_diofant(domain.lcm(a, b))
+        return domain.to_expr(domain.lcm(a, b))
 
     result = F.lcm(G)
 
@@ -5159,7 +5159,7 @@ def to_rational_coeffs(f):
                     return False
         return has_sq
 
-    if f.domain.is_EX and _has_square_roots(f):
+    if f.domain.is_SymbolicDomain and _has_square_roots(f):
         f1 = f.monic()
         r = _try_rescale(f, f1)
         if r:
@@ -5375,7 +5375,7 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
         result = []
 
         for (s, t), indices in intervals:
-            s, t = opt.domain.to_diofant(s), opt.domain.to_diofant(t)
+            s, t = opt.domain.to_expr(s), opt.domain.to_expr(t)
             result.append(((s, t), indices))
 
         return result

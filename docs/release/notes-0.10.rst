@@ -31,6 +31,11 @@ Compatibility breaks
 * Removed ``RealNumber`` alias, see :pull:`635`.
 * Removed ``of_type()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`636`.
 * Method ``characteristic()`` now is a property of :class:`~diofant.domains.characteristiczero.CharacteristicZero` and :class:`~diofant.domains.FiniteField`, see :pull:`636`.
+* Removed ``abs()``, ``is_one()`` and ``unify_with_symbols()`` methods and ``has_CharacteristicZero`` attribute of :class:`~diofant.domains.domain.Domain`, see :pull:`637`.
+* Removed ``is_unit()``, ``numer()`` and ``denom()`` methods of :class:`~diofant.domains.ring.Ring`, see :pull:`637`.
+* ``from_<Foo>()`` methods of :class:`~diofant.domains.domain.Domain` now are private, see :pull:`637`.
+* Method :meth:`~diofant.domains.domain.Domain.from_expr` was renamed from ``from_diofant()``, see :pull:`637`.
+* Method :meth:`~diofant.domains.domain.Domain.to_expr` was renamed from ``to_diofant()``, see :pull:`637`.
 
 Minor changes
 =============
@@ -64,3 +69,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14590` limit((n**3*((n + 1)/n)**n)/((n + 1)*(n + 2)*(n + 3)), n, oo) is incorrect
 * :sympyissue:`14645` Bug when solving multivariate polynomial systems with identical equations
 * :sympyissue:`14294` to_number_field should be idempotent for single extension
+* :sympyissue:`14721` solve can't find solution

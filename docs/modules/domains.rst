@@ -53,6 +53,9 @@ Concrete Domains
 .. autoclass:: AlgebraicField
    :members:
 
+.. autoclass:: diofant.polys.rings.PolynomialRing
+   :members:
+
 .. autoclass:: diofant.polys.fields.FractionField
    :members:
 

@@ -30,7 +30,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Field = True
 
     def __init__(self, dom, *ext):
-        if not dom.is_QQ:
+        if not dom.is_RationalField:
             raise DomainError("ground domain must be a rational field")
 
         ext = [sympify(_).as_expr() for _ in ext]
@@ -76,41 +76,36 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
-        return AlgebraicField(self.domain, *((self.ext.as_expr(),) + extension))
+        return self.domain.algebraic_field(*((self.ext.as_expr(),) + extension))
 
-    def to_diofant(self, a):
+    def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return sum((c*self.ext**n for n, c in enumerate(reversed(a.rep))), Integer(0))
 
-    def from_diofant(self, a):
+    def from_expr(self, a):
         """Convert Diofant's expression to ``dtype``. """
         try:
             K0 = self.domain.algebraic_field(a)
         except NotAlgebraic:
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        return self.from_AlgebraicField(K0.root, K0)
+        return self.convert(K0.root, K0)
 
-    def from_ZZ_python(self, a, K0):
-        """Convert a Python ``int`` object to ``dtype``. """
+    def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_QQ_python(self, a, K0):
-        """Convert a Python ``Fraction`` object to ``dtype``. """
+    def _from_PythonRationalField(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_ZZ_gmpy(self, a, K0):
-        """Convert a GMPY ``mpz`` object to ``dtype``. """
+    def _from_GMPYIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_QQ_gmpy(self, a, K0):
-        """Convert a GMPY ``mpq`` object to ``dtype``. """
+    def _from_GMPYRationalField(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_RealField(self, a, K0):
-        """Convert a mpmath ``mpf`` object to ``dtype``. """
+    def _from_RealField(self, a, K0):
         return self([self.domain.convert(a, K0)])
 
-    def from_AlgebraicField(self, a, K0):
+    def _from_AlgebraicField(self, a, K0):
         from ..polys import field_isomorphism
 
         coeffs = field_isomorphism(K0, self)
@@ -181,7 +176,7 @@ class AlgebraicElement(DomainElement, CantSympify):
 
     def to_diofant_list(self):
         """Convert ``self`` to a list representation with Diofant coefficients. """
-        return [self.domain.to_diofant(c) for c in self.rep]
+        return [self.domain.to_expr(c) for c in self.rep]
 
     @classmethod
     def from_list(cls, rep):
@@ -272,3 +267,11 @@ class AlgebraicElement(DomainElement, CantSympify):
 
     def __bool__(self):
         return bool(self.rep)
+
+    @property
+    def numerator(self):
+        return self
+
+    @property
+    def denominator(self):
+        return self.parent.one

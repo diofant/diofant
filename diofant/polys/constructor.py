@@ -59,7 +59,7 @@ def _construct_simple(coeffs, opt):
         result = []
 
         for coeff in coeffs:
-            result.append(domain.from_diofant(coeff))
+            result.append(domain.convert(coeff))
 
     return domain, result
 
@@ -72,7 +72,7 @@ def _construct_algebraic(coeffs, opt):
 
     for coeff in coeffs:
         if coeff.is_Rational:
-            coeff = (None, 0, QQ.from_diofant(coeff))
+            coeff = (None, 0, QQ.convert(coeff))
         else:
             a = coeff.as_coeff_add()[0]
             coeff -= a
@@ -82,8 +82,8 @@ def _construct_algebraic(coeffs, opt):
 
             exts.add(coeff)
 
-            a = QQ.from_diofant(a)
-            b = QQ.from_diofant(b)
+            a = QQ.convert(a)
+            b = QQ.convert(b)
 
             coeff = (coeff, b, a)
 
@@ -193,7 +193,7 @@ def _construct_composite(coeffs, opt):
 
         for numer in numers:
             for monom, coeff in numer.items():
-                numer[monom] = ground.from_diofant(coeff)
+                numer[monom] = ground.convert(coeff)
 
             result.append(domain(numer))
     else:
@@ -201,10 +201,10 @@ def _construct_composite(coeffs, opt):
 
         for numer, denom in zip(numers, denoms):
             for monom, coeff in numer.items():
-                numer[monom] = ground.from_diofant(coeff)
+                numer[monom] = ground.convert(coeff)
 
             for monom, coeff in denom.items():
-                denom[monom] = ground.from_diofant(coeff)
+                denom[monom] = ground.convert(coeff)
 
             result.append(domain((numer, denom)))
 
@@ -216,7 +216,7 @@ def _construct_expression(coeffs, opt):
     domain, result = EX, []
 
     for coeff in coeffs:
-        result.append(domain.from_diofant(coeff))
+        result.append(domain.convert(coeff))
 
     return domain, result
 

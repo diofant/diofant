@@ -1497,3 +1497,10 @@ def test_sympyissue_14645():
     ans = [{x: y/(y - 1)}]
     assert solve([eq], [x, y]) == ans
     assert solve([eq, eq], [x, y]) == ans
+
+
+def test_sympyissue_14721():
+    assert solve([h, -1 + (-k + 1)**2/b**2 + (-h - 1)**2/a**2,
+                  -1 + (-k + 1)**2/b**2 + (-h + 1)**2/a**2, k + 2],
+                 h, k, a, b) == [{a: -sqrt(b**2/(b**2 - 9)), h: 0, k: -2},
+                                 {a: sqrt(b**2/(b**2 - 9)), h: 0, k: -2}]

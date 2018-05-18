@@ -24,6 +24,14 @@ class RealElement(_mpf, DomainElement):
     def parent(self):
         return self.context._parent
 
+    @property
+    def numerator(self):
+        return self
+
+    @property
+    def denominator(self):
+        return self.parent.one
+
 
 class ComplexElement(_mpc, DomainElement):
     """An element of a complex domain. """
@@ -36,6 +44,14 @@ class ComplexElement(_mpc, DomainElement):
     @property
     def parent(self):
         return self.context._parent
+
+    @property
+    def numerator(self):
+        return self
+
+    @property
+    def denominator(self):
+        return self.parent.one
 
 
 new = object.__new__

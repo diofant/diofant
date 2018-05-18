@@ -469,7 +469,7 @@ def _minpoly_compose(ex, x, dom):
     if hasattr(dom, 'symbols') and ex in dom.symbols:
         return x - ex
 
-    if dom.is_QQ and _is_sum_surds(ex):
+    if dom.is_RationalField and _is_sum_surds(ex):
         # eliminate the square roots
         ex -= x
         while 1:
@@ -643,7 +643,7 @@ def minpoly_groebner(ex, x, domain):
                 else:
                     res += coeff
             return res
-        elif isinstance(ex, RootOf) and ex.poly.domain.is_ZZ:
+        elif isinstance(ex, RootOf) and ex.poly.domain.is_IntegerRing:
             return update_mapping(ex, ex.poly)
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
@@ -690,7 +690,7 @@ def primitive_element(extension, **args):
 
         for i, (h, y) in enumerate(zip(H, Y)):
             H[i] = (y - h).eject(*Y).retract(field=True)
-            if not H[i].domain.is_QQ:
+            if not H[i].domain.is_RationalField:
                 break  # G is not a triangular set
         else:
             g = g.eject(*Y).retract()

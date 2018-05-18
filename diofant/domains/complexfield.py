@@ -59,11 +59,11 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.precision, self.tolerance))
 
-    def to_diofant(self, element):
+    def to_expr(self, element):
         """Convert ``element`` to Diofant number. """
         return Float(element.real, self.dps) + I*Float(element.imag, self.dps)
 
-    def from_diofant(self, expr):
+    def from_expr(self, expr):
         """Convert Diofant's number to ``dtype``. """
         number = expr.evalf(self.dps, strict=False)
         real, imag = number.as_real_imag()
@@ -73,22 +73,22 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
         else:
             raise CoercionFailed("expected complex number, got %s" % expr)
 
-    def from_ZZ_python(self, element, base):
+    def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
 
-    def from_QQ_python(self, element, base):
+    def _from_PythonRationalField(self, element, base):
         return self.dtype(element.numerator) / element.denominator
 
-    def from_ZZ_gmpy(self, element, base):
+    def _from_GMPYIntegerRing(self, element, base):
         return self.dtype(int(element))
 
-    def from_QQ_gmpy(self, element, base):
+    def _from_GMPYRationalField(self, element, base):
         return self.dtype(int(element.numerator)) / int(element.denominator)
 
-    def from_RealField(self, element, base):
+    def _from_RealField(self, element, base):
         return self.dtype(element)
 
-    def from_ComplexField(self, element, base):
+    def _from_ComplexField(self, element, base):
         return self.dtype(element)
 
     def get_exact(self):

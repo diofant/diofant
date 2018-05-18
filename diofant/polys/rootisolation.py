@@ -117,8 +117,8 @@ def _mobius_from_interval(I, field):
     """Convert an open interval to a Mobius transform. """
     s, t = I
 
-    a, c = field.numer(s), field.denom(s)
-    b, d = field.numer(t), field.denom(t)
+    a, c = s.numerator, s.denominator
+    b, d = t.numerator, t.denominator
 
     return a, b, c, d
 
@@ -239,9 +239,9 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
 
 def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
     """Refine real root's approximating interval to the given precision. """
-    if K.is_QQ:
+    if K.is_RationalField:
         f, K = dup_clear_denoms(f, K, convert=True)[1], K.ring
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         raise DomainError("real root refinement not supported over %s" % K)
 
     if s == t:
@@ -505,9 +505,9 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
             roots = [_[0] for _ in roots if _[1].keys() == {0, 1}]
             return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
 
-    if K.is_QQ:
+    if K.is_RationalField:
         f, K = dup_clear_denoms(f, K, convert=True)[1], K.ring
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
     if dmp_degree(f, 0) <= 0:
@@ -539,9 +539,9 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
            Fractions Method Using New Bounds of Positive Roots.  Nonlinear
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
-    if K.is_QQ:
+    if K.is_RationalField:
         (_, f), K = dup_clear_denoms(f, K, convert=True), K.ring
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
     if dmp_degree(f, 0) <= 0:
@@ -580,12 +580,12 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
            Fractions Method Using New Bounds of Positive Roots.  Nonlinear
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
-    if K.is_QQ:
+    if K.is_RationalField:
         K, F, polys = K.ring, K, polys[:]
 
         for i, p in enumerate(polys):
             polys[i] = dup_clear_denoms(p, F, K, convert=True)[1]
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         raise DomainError("isolation of real roots not supported over %s" % K)
 
     zeros, factors_dict = False, {}
@@ -1220,10 +1220,10 @@ def _winding_number(T, field):
 
 
 def _roots_bound(f, F):
-    lc = F.to_diofant(dmp_LC(f, F))
-    B = 2*max(abs(F.to_diofant(c)/lc) for c in f)
+    lc = F.to_expr(dmp_LC(f, F))
+    B = 2*max(abs(F.to_expr(c)/lc) for c in f)
     if not F.is_Algebraic:
-        return F.from_diofant(B)
+        return F.convert(B)
     else:
         return F.domain(int(100*B) + 1)/F.domain(100)
 
@@ -1576,7 +1576,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if v < 0 < t:
         roots = dup_isolate_complex_roots_sqf(f, F, eps=eps, inf=(u, 0),
                                               sup=(s, t), blackbox=True)
-        if F.is_QQ:
+        if F.is_RationalField:
             _roots = []
             for root in roots:
                 croot = root.conjugate()
@@ -1659,13 +1659,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
             if N_L >= 1:
                 if N_L == 1 and _rectangle_small_p(a, b, eps):
-                    roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2, F))
+                    roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2, f, F))
                 else:
                     rectangles.append(D_L)
 
             if N_R >= 1:
                 if N_R == 1 and _rectangle_small_p(c, d, eps):
-                    roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2, F))
+                    roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2, f, F))
                 else:
                     rectangles.append(D_R)
         else:
@@ -1676,13 +1676,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
             if N_B >= 1:
                 if N_B == 1 and _rectangle_small_p(a, b, eps):
-                    roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2, F))
+                    roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2, f, F))
                 else:
                     rectangles.append(D_B)
 
             if N_U >= 1:
                 if N_U == 1 and _rectangle_small_p(c, d, eps):
-                    roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2, F))
+                    roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2, f, F))
                 else:
                     rectangles.append(D_U)
 
@@ -1698,7 +1698,7 @@ def dup_isolate_all_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, bl
 
 def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     """Isolate real and complex roots of a non-square-free polynomial ``f``. """
-    if not K.is_ZZ and not K.is_QQ:
+    if not K.is_IntegerRing and not K.is_RationalField:
         raise DomainError("isolation of real and complex roots is not supported over %s" % K)
 
     _, factors = dmp_sqf_list(f, 0, K)
@@ -1807,11 +1807,12 @@ class ComplexInterval:
     coordinates of the interval's rectangle.
     """
 
-    def __init__(self, a, b, I, Q, F1, F2, f1, f2, dom, conj=False):
+    def __init__(self, a, b, I, Q, F1, F2, f1, f2, f, dom, conj=False):
         """Initialize new complex interval with complete information. """
         self.a, self.b = a, b  # the southwest and northeast corner: (x1, y1), (x2, y2)
         self.I, self.Q = I, Q
 
+        self.f = f
         self.f1, self.F1 = f1, F1
         self.f2, self.F2 = f2, F2
 
@@ -1857,7 +1858,7 @@ class ComplexInterval:
         """Return conjugated isolating interval. """
         return ComplexInterval(self.a, self.b, self.I, self.Q,
                                self.F1, self.F2, self.f1, self.f2,
-                               self.domain, conj=not self.conj)
+                               self.f, self.domain, conj=not self.conj)
 
     def is_disjoint(self, other):
         """Return ``True`` if two isolation intervals are disjoint. """
@@ -1875,6 +1876,7 @@ class ComplexInterval:
 
         I, Q = self.I, self.Q
 
+        f = self.f
         f1, F1 = self.f1, self.F1
         f2, F2 = self.f2, self.F2
 
@@ -1895,7 +1897,7 @@ class ComplexInterval:
             else:
                 _, a, b, I, Q, F1, F2 = D_U
 
-        return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, dom, self.conj)
+        return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, f, dom, self.conj)
 
     def refine_disjoint(self, other):
         """Refine an isolating interval until it is disjoint with another one. """

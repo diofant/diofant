@@ -1,6 +1,8 @@
 """Implementation of :class:`Domain` class. """
 
-from ..core import Basic
+import abc
+
+from ..core import Expr
 from ..core.compatibility import HAS_GMPY
 from ..polys.orderings import lex
 from ..polys.polyerrors import CoercionFailed, UnificationFailed
@@ -12,7 +14,7 @@ from .domainelement import DomainElement
 __all__ = ('Domain',)
 
 
-class Domain(DefaultPrinting):
+class Domain(DefaultPrinting, abc.ABC):
     """Represents an abstract domain. """
 
     dtype = None
@@ -41,10 +43,7 @@ class Domain(DefaultPrinting):
     is_Simple = False
     is_Composite = False
 
-    has_CharacteristicZero = False
-
     rep = None
-    alias = None
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
@@ -59,12 +58,19 @@ class Domain(DefaultPrinting):
     def normal(self, *args):
         return self.dtype(*args)
 
+    @abc.abstractmethod
+    def from_expr(self, element):
+        """Convert Diofant's expression to ``dtype``. """
+        raise NotImplementedError  # pragma: no cover
+
+    @abc.abstractmethod
+    def to_expr(self, element):
+        """Convert ``element`` to Diofant expression. """
+        raise NotImplementedError  # pragma: no cover
+
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain. """
-        if base.alias is not None:
-            method = "from_" + base.alias
-        else:
-            method = "from_" + base.__class__.__name__
+        method = "_from_" + base.__class__.__name__
 
         convert = getattr(self, method, None)
 
@@ -114,9 +120,9 @@ class Domain(DefaultPrinting):
         if isinstance(element, DomainElement):
             return self.convert_from(element, element.parent)
 
-        if isinstance(element, Basic):
+        if isinstance(element, Expr):
             try:
-                return self.from_diofant(element)
+                return self.from_expr(element)
             except (TypeError, ValueError):
                 pass
 
@@ -126,23 +132,15 @@ class Domain(DefaultPrinting):
         """Check if ``a`` belongs to this domain. """
         try:
             self.convert(a)
+            return True
         except CoercionFailed:
             return False
 
-        return True
-
-    def from_PolynomialRing(self, a, K0):
-        """Convert a polynomial to ``dtype``. """
+    def _from_PolynomialRing(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC, K0.domain)
 
-    def unify_with_symbols(self, K1, symbols):
-        if (self.is_Composite and (set(self.symbols) & set(symbols))) or (K1.is_Composite and (set(K1.symbols) & set(symbols))):
-            raise UnificationFailed("can't unify %s with %s, given %s generators" % (self, K1, tuple(symbols)))
-
-        return self.unify(K1)
-
-    def unify(self, K1, symbols=None):
+    def unify(self, K1, symbols=()):
         """
         Construct a minimal domain that contains elements of ``self`` and ``K1``.
 
@@ -158,15 +156,20 @@ class Domain(DefaultPrinting):
         - ``K(x, y, z)``
         - ``EX``
         """
-        if symbols is not None:
-            return self.unify_with_symbols(K1, symbols)
+        if symbols:
+            if any(d.is_Composite and (set(d.symbols) & set(symbols))
+                   for d in [self, K1]):
+                raise UnificationFailed("Can't unify %s with %s, given %s"
+                                        " generators" % (self, K1, tuple(symbols)))
+
+            return self.unify(K1)
 
         if self == K1:
             return self
 
-        if self.is_EX:
+        if self.is_SymbolicDomain:
             return self
-        if K1.is_EX:
+        if K1.is_SymbolicDomain:
             return K1
 
         if self.is_Composite or K1.is_Composite:
@@ -259,10 +262,6 @@ class Domain(DefaultPrinting):
         from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
 
-    def is_one(self, a):
-        """Returns True if ``a`` is one. """
-        return a == self.one
-
     def is_positive(self, a):
         """Returns True if ``a`` is positive. """
         return a > 0
@@ -278,10 +277,6 @@ class Domain(DefaultPrinting):
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
         return a >= 0
-
-    def abs(self, a):
-        """Absolute value of ``a``, implies ``__abs__``. """
-        return abs(a)
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``. """

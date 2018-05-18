@@ -287,27 +287,27 @@ def test_PolyElement_from_expr():
     x, y, z = symbols("x,y,z")
     R, X, Y, Z = ring((x, y, z), ZZ)
 
-    f = R.from_expr(1)
+    f = R.convert(1)
     assert f == 1 and isinstance(f, R.dtype)
 
-    f = R.from_expr(x)
+    f = R.convert(x)
     assert f == X and isinstance(f, R.dtype)
 
-    f = R.from_expr(x*y*z)
+    f = R.convert(x*y*z)
     assert f == X*Y*Z and isinstance(f, R.dtype)
 
-    f = R.from_expr(x*y*z + x*y + x)
+    f = R.convert(x*y*z + x*y + x)
     assert f == X*Y*Z + X*Y + X and isinstance(f, R.dtype)
 
-    f = R.from_expr(x**3*y*z + x**2*y**7 + 1)
+    f = R.convert(x**3*y*z + x**2*y**7 + 1)
     assert f == X**3*Y*Z + X**2*Y**7 + 1 and isinstance(f, R.dtype)
 
-    pytest.raises(ValueError, lambda: R.from_expr(1/x))
-    pytest.raises(ValueError, lambda: R.from_expr(2**x))
-    pytest.raises(ValueError, lambda: R.from_expr(7*x + sqrt(2)))
+    pytest.raises(CoercionFailed, lambda: R.convert(1/x))
+    pytest.raises(CoercionFailed, lambda: R.convert(2**x))
+    pytest.raises(CoercionFailed, lambda: R.convert(7*x + sqrt(2)))
 
     R,  X, Y = ring((2**x, y), ZZ)
-    f = R.from_expr(2**(2*x) + 1)
+    f = R.convert(2**(2*x) + 1)
     assert f == X**2 + 1
 
 

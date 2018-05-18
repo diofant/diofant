@@ -26,7 +26,7 @@ def unify(K0, K1):
 
 
 def test_Domain_interface():
-    pytest.raises(NotImplementedError, lambda: DomainElement().parent)
+    pytest.raises(TypeError, lambda: DomainElement().parent)
 
     assert RR(1).parent is RR
     assert CC(1).parent is CC
@@ -297,8 +297,8 @@ def test_Domain_unify_algebraic():
 
 
 def test_Domain_unify_with_symbols():
-    pytest.raises(UnificationFailed, lambda: ZZ.poly_ring(x, y).unify_with_symbols(ZZ, (y, z)))
-    pytest.raises(UnificationFailed, lambda: ZZ.unify_with_symbols(ZZ.poly_ring(x, y), (y, z)))
+    pytest.raises(UnificationFailed, lambda: ZZ.poly_ring(x, y).unify(ZZ, (y, z)))
+    pytest.raises(UnificationFailed, lambda: ZZ.unify(ZZ.poly_ring(x, y), (y, z)))
 
 
 def test_Domain__contains__():
@@ -548,14 +548,14 @@ def test_Domain_convert():
     assert EX.convert(ALG.new([1, 1]), ALG) == sqrt(2) + sqrt(3) + 1
 
     ALG2 = QQ.algebraic_field(sqrt(2))
-    a2 = ALG2.from_diofant(sqrt(2))
+    a2 = ALG2.convert(sqrt(2))
     a = ALG.convert(a2, ALG2)
     assert a.rep == [QQ(1, 2), 0, -QQ(9, 2), 0]
 
-    assert ZZ_python().convert(3.0) == ZZ_python().dtype(3)
-    pytest.raises(CoercionFailed, lambda: ZZ_python().convert(3.2))
+    assert ZZ_python.convert(3.0) == ZZ_python.dtype(3)
+    pytest.raises(CoercionFailed, lambda: ZZ_python.convert(3.2))
 
-    assert CC.convert(QQ_python()(1, 2)) == CC(0.5)
+    assert CC.convert(QQ_python(1, 2)) == CC(0.5)
     CC01 = ComplexField(tol=0.1)
     assert CC.convert(CC01(0.3)) == CC(0.3)
 
@@ -569,14 +569,13 @@ def test_arithmetics():
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
 
-    QQp = QQ_python()
-    assert QQp.factorial(QQp(7, 2)) == 6
+    assert QQ_python.factorial(QQ_python(7, 2)) == 6
 
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2
 
-    assert EX(Rational(2, 3)).numer() == 2
-    assert EX(Rational(2, 3)).denom() == 3
+    assert EX(Rational(2, 3)).numerator == 2
+    assert EX(Rational(2, 3)).denominator == 3
 
     assert abs(EX(-2)) == 2
 
@@ -611,8 +610,8 @@ def test_arithmetics():
 
 
 def test_Ring():
-    assert ZZ.numer(ZZ(3)) == 3
-    assert ZZ.denom(ZZ(3)) == 1
+    assert ZZ(3).numerator == 3
+    assert ZZ(3).denominator == 1
 
 
 def test_PolynomialRing__init():
@@ -670,7 +669,7 @@ def test_Domain__algebraic_field():
     assert alg.is_nonpositive(alg([-1, 1])) is True
     assert alg.is_nonnegative(alg([2, -1])) is True
 
-    assert alg.numer(alg(1)) == alg(1)
+    assert alg(1).numerator == alg(1)
 
     pytest.raises(DomainError, lambda: AlgebraicField(ZZ, sqrt(2)))
 
@@ -688,9 +687,9 @@ def test_PolynomialRing_from_FractionField():
     g = (x**2 + y**2)/4
     h = x**2 + y**2
 
-    assert R.from_FractionField(f, F) is None
-    assert R.from_FractionField(g, F) == X**2/4 + Y**2/4
-    assert R.from_FractionField(h, F) == X**2 + Y**2
+    pytest.raises(CoercionFailed, lambda: R.convert(f, F))
+    assert R.convert(g, F) == X**2/4 + Y**2/4
+    assert R.convert(h, F) == X**2 + Y**2
 
     F,  x, y = field("x,y", QQ)
     R,  X, Y = ring("x,y", QQ)
@@ -699,9 +698,9 @@ def test_PolynomialRing_from_FractionField():
     g = (x**2 + y**2)/4
     h = x**2 + y**2
 
-    assert R.from_FractionField(f, F) is None
-    assert R.from_FractionField(g, F) == X**2/4 + Y**2/4
-    assert R.from_FractionField(h, F) == X**2 + Y**2
+    pytest.raises(CoercionFailed, lambda: R.convert(f, F))
+    assert R.convert(g, F) == X**2/4 + Y**2/4
+    assert R.convert(h, F) == X**2 + Y**2
 
 
 def test_FractionField_from_PolynomialRing():
@@ -711,8 +710,8 @@ def test_FractionField_from_PolynomialRing():
     f = 3*x**2 + 5*y**2
     g = x**2/3 + y**2/5
 
-    assert F.from_PolynomialRing(f, R) == 3*X**2 + 5*Y**2
-    assert F.from_PolynomialRing(g, R) == (5*X**2 + 3*Y**2)/15
+    assert F.convert(f, R) == 3*X**2 + 5*Y**2
+    assert F.convert(g, R) == (5*X**2 + 3*Y**2)/15
 
     RALG,  u, v = ring("u,v", ALG)
     pytest.raises(CoercionFailed,
@@ -721,7 +720,7 @@ def test_FractionField_from_PolynomialRing():
 
 def test_FractionField_convert():
     F,  X, Y = field("x,y", QQ)
-    F.convert(QQ_python()(1, 3)) == F.one/3
+    F.convert(QQ_python(1, 3)) == F.one/3
 
 
 def test_FF_of_type():
@@ -741,7 +740,7 @@ def test___eq__():
     assert F11(2) != object()
 
 
-def test_RealField_from_diofant():
+def test_RealField_from_expr():
     assert RR.convert(Integer(0)) == RR.dtype(0)
     assert RR.convert(Float(0.0)) == RR.dtype(0.0)
     assert RR.convert(Integer(1)) == RR.dtype(1)
@@ -1029,6 +1028,9 @@ def test_RR_Float():
     assert RR2(f1)-1 > 1e-50
     assert RR2(f2)-1 > 1e-50  # RR's precision is equal to f2's
 
+    a = RR(2.1)
+    assert a.numerator == a and a.denominator == 1
+
 
 def test_CC_double():
     assert CC(3.14).real > 1e-50
@@ -1045,6 +1047,9 @@ def test_CC_double():
     assert CC(1e-20j).imag > 1e-50
     assert CC(1e-40j).imag > 1e-50
 
+    a = CC(2.1 + 1j)
+    assert a.numerator == a and a.denominator == 1
+
 
 def test_almosteq():
     assert CC.almosteq(CC(2), 3) is False
@@ -1056,8 +1061,8 @@ def test_almosteq():
     assert RR._context.almosteq(RR(2), 1, None, 1) is True
 
 
-def test_to_diofant():
-    assert CC.to_diofant(1 - 2j) == 1 - 2*I
+def test_to_expr():
+    assert CC.to_expr(1 - 2j) == 1 - 2*I
 
 
 def test_EX():
@@ -1066,8 +1071,8 @@ def test_EX():
     assert EX.is_negative(EX(-1))
     assert EX.is_nonpositive(EX(-1))
 
-    assert EX.numer(EX(1)/2) == 1
-    assert EX.denom(EX(1)/2) == 2
+    assert (EX(1)/2).numerator == 1
+    assert (EX(1)/2).denominator == 2
 
 
 def test_sympyissue_13545():

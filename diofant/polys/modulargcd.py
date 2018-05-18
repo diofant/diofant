@@ -217,7 +217,7 @@ def modgcd_univariate(f, g):
 
     .. [1] [Monagan00]_
     """
-    assert f.ring == g.ring and f.ring.domain.is_ZZ
+    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     result = _trivial_gcd(f, g)
     if result is not None:
@@ -747,7 +747,7 @@ def modgcd_bivariate(f, g):
 
     .. [1] [Monagan00]_
     """
-    assert f.ring == g.ring and f.ring.domain.is_ZZ
+    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     result = _trivial_gcd(f, g)
     if result is not None:
@@ -1113,7 +1113,7 @@ def modgcd_multivariate(f, g):
     _modgcd_multivariate_p
 
     """
-    assert f.ring == g.ring and f.ring.domain.is_ZZ
+    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     result = _trivial_gcd(f, g)
     if result is not None:

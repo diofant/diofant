@@ -449,3 +449,6 @@ DIOFANT_INTS = (int,)
 
 if GROUND_TYPES == 'gmpy':
     DIOFANT_INTS += (type(gmpy.mpz(0)),)
+
+if GROUND_TYPES == 'python':
+    os.environ['MPMATH_NOGMPY'] = 'yes'

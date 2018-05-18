@@ -1730,13 +1730,13 @@ def test_div():
     f, g = Poly(x**2), Poly(x)
 
     q, r = f.div(g)
-    assert q.domain.is_ZZ and r.domain.is_ZZ
+    assert q.domain.is_IntegerRing and r.domain.is_IntegerRing
     r = f.rem(g)
-    assert r.domain.is_ZZ
+    assert r.domain.is_IntegerRing
     q = f.quo(g)
-    assert q.domain.is_ZZ
+    assert q.domain.is_IntegerRing
     q = f.exquo(g)
-    assert q.domain.is_ZZ
+    assert q.domain.is_IntegerRing
 
     f, g, q = x**2 + 1, 2*x - 9, QQ(85, 4)
     assert rem(f, g) == q

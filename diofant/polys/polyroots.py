@@ -710,7 +710,7 @@ def preprocess_roots(poly, extension=None):
         if gens:
             poly = poly.eject(*gens)
 
-    if poly.is_univariate and poly.domain.is_ZZ:
+    if poly.is_univariate and poly.domain.is_IntegerRing:
         basis = _integer_basis(poly)
 
         if basis is not None:
@@ -902,7 +902,7 @@ def roots(f, *gens, **flags):
                     _update_dict(result, r, 1)
             else:
                 if len(factors) == 1 and factors[0][1] == 1:
-                    if f.domain.is_EX:
+                    if f.domain.is_SymbolicDomain:
                         res = to_rational_coeffs(f)
                         if res:
                             if res[0] is None:

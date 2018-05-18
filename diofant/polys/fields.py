@@ -114,8 +114,8 @@ class FractionField(Field, CompositeDomain):
                 ring = self.ring
                 ground_field = domain.field
                 element = ground_field.convert(element)
-                numer = ring.ground_new(ground_field.numer(element))
-                denom = ring.ground_new(ground_field.denom(element))
+                numer = ring.ground_new(element.numerator)
+                denom = ring.ground_new(element.denominator)
                 return self.raw_new(numer, denom)
             else:  # pragma: no cover
                 raise NotImplementedError
@@ -137,7 +137,7 @@ class FractionField(Field, CompositeDomain):
         elif isinstance(element, str):  # pragma: no cover
             raise NotImplementedError("parsing")
         elif isinstance(element, Expr):
-            return self.from_expr(element)
+            return self.convert(element)
         else:
             return self.ground_new(element)
 
@@ -171,6 +171,7 @@ class FractionField(Field, CompositeDomain):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
+        """Convert Diofant's expression to ``dtype``. """
         mapping = dict(zip(self.symbols, self.gens))
 
         try:
@@ -183,43 +184,32 @@ class FractionField(Field, CompositeDomain):
     def to_ring(self):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
-    def to_diofant(self, a):
-        """Convert `a` to a Diofant object. """
+    def to_expr(self, a):
+        """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 
-    def from_diofant(self, a):
-        """Convert Diofant's expression to `dtype`. """
-        return self.from_expr(a)
-
-    def from_ZZ_python(self, a, K0):
-        """Convert a Python `int` object to `dtype`. """
+    def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_QQ_python(self, a, K0):
-        """Convert a Python `Fraction` object to `dtype`. """
+    def _from_PythonRationalField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_ZZ_gmpy(self, a, K0):
-        """Convert a GMPY `mpz` object to `dtype`. """
+    def _from_GMPYIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_QQ_gmpy(self, a, K0):
-        """Convert a GMPY `mpq` object to `dtype`. """
+    def _from_GMPYRationalField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_RealField(self, a, K0):
-        """Convert a mpmath `mpf` object to `dtype`. """
+    def _from_RealField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
-    def from_PolynomialRing(self, a, K0):
-        """Convert a polynomial to ``dtype``. """
+    def _from_PolynomialRing(self, a, K0):
         try:
             return self.field_new(a)
         except (CoercionFailed, GeneratorsError):
             return
 
-    def from_FractionField(self, a, K0):
-        """Convert a rational function to ``dtype``. """
+    def _from_FractionField(self, a, K0):
         try:
             return a.set_field(self)
         except (CoercionFailed, GeneratorsError):
@@ -227,40 +217,38 @@ class FractionField(Field, CompositeDomain):
 
     @property
     def ring(self):
-        """Returns a field associated with `self`. """
+        """Returns a field associated with ``self``. """
         return self.to_ring()
 
     def is_positive(self, a):
-        """Returns True if `LC(a)` is positive. """
+        """Returns True if ``LC(a)`` is positive. """
         return self.domain.is_positive(a.numer.LC)
 
     def is_negative(self, a):
-        """Returns True if `LC(a)` is negative. """
+        """Returns True if ``LC(a)`` is negative. """
         return self.domain.is_negative(a.numer.LC)
 
     def is_nonpositive(self, a):
-        """Returns True if `LC(a)` is non-positive. """
+        """Returns True if ``LC(a)`` is non-positive. """
         return self.domain.is_nonpositive(a.numer.LC)
 
     def is_nonnegative(self, a):
-        """Returns True if `LC(a)` is non-negative. """
+        """Returns True if ``LC(a)`` is non-negative. """
         return self.domain.is_nonnegative(a.numer.LC)
 
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        return a.numer
-
-    def denom(self, a):
-        """Returns denominator of ``a``. """
-        return a.denom
-
     def factorial(self, a):
-        """Returns factorial of `a`. """
+        """Returns factorial of ``a``. """
         return self.dtype(self.domain.factorial(a))
 
 
 class FracElement(DomainElement, DefaultPrinting, CantSympify):
-    """Element of multivariate distributed rational function field. """
+    """Element of multivariate distributed rational function field.
+
+    See Also
+    ========
+
+    FractionField
+    """
 
     def __init__(self, numer, denom=None):
         if denom is None:
@@ -281,6 +269,14 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         if self.denom != self.field.ring.one:
             raise ValueError("self.denom should be 1")
         return self.numer
+
+    @property
+    def numerator(self):
+        return self.numer
+
+    @property
+    def denominator(self):
+        return self.denom
 
     @property
     def parent(self):
@@ -359,7 +355,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
             except CoercionFailed:
                 return 0, None, None
             else:
-                return -1, ground_field.numer(element), ground_field.denom(element)
+                return -1, element.numerator, element.denominator
         else:
             return 1, element, None
 

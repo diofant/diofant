@@ -96,7 +96,7 @@ class RootOf(Expr):
         elif index < 0:
             index += degree
 
-        if not dom.is_ZZ and poly.LC().is_nonzero is False:
+        if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
             raise NotImplementedError("sorted roots not supported over %s" % dom)
 
         if evaluate is None:
@@ -132,7 +132,7 @@ class RootOf(Expr):
                         break
             poly, index = minpoly, idx
 
-        if poly.domain.is_ZZ or poly.domain == QQ.algebraic_field(I):
+        if poly.domain.is_IntegerRing or poly.domain == QQ.algebraic_field(I):
             root = cls._indexed_root(poly, index)
         else:
             root = poly, index
@@ -201,7 +201,7 @@ class RootOf(Expr):
     def _eval_conjugate(self):
         if self.is_real:
             return self
-        elif self.poly.domain.is_ZZ:
+        elif self.poly.domain.is_IntegerRing:
             # XXX There should be a simpler way to get conjugate, when
             # conjugated roots sorted to be in adjacent pairs.  Then
             # we could set: i = index + 2*((index - nreals + 1) % 2) - 1.
@@ -396,7 +396,7 @@ class RootOf(Expr):
     def _all_roots(cls, poly):
         """Get real and complex roots of a composite polynomial. """
 
-        if not poly.domain.is_ZZ and poly.domain != QQ.algebraic_field(I):
+        if not poly.domain.is_IntegerRing and poly.domain != QQ.algebraic_field(I):
             return [(poly, i) for i in range(poly.degree())]
 
         _, factors = poly.factor_list()
@@ -453,7 +453,7 @@ class RootOf(Expr):
         coeff, poly = preprocess_roots(poly, extension=extension)
         dom = poly.domain
 
-        if not dom.is_ZZ and poly.LC().is_nonzero is False:
+        if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
             raise NotImplementedError("sorted roots not supported over %s" % dom)
 
         return coeff, poly

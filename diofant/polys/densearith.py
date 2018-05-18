@@ -318,7 +318,7 @@ def dmp_abs(f, u, K):
     x**2*y + x
     """
     if not u:
-        return [K.abs(coeff) for coeff in f]
+        return [abs(coeff) for coeff in f]
     else:
         v = u - 1
         return [dmp_abs(coeff, v, K) for coeff in f]

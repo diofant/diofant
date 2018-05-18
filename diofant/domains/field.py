@@ -57,8 +57,8 @@ class Field(Ring):
         except AttributeError:
             return self.one
 
-        p = ring.gcd(self.numer(a), self.numer(b))
-        q = ring.lcm(self.denom(a), self.denom(b))
+        p = ring.gcd(a.numerator, b.numerator)
+        q = ring.lcm(a.denominator, b.denominator)
 
         return self.convert(p, ring)/q
 
@@ -77,8 +77,8 @@ class Field(Ring):
         except AttributeError:
             return a*b
 
-        p = ring.lcm(self.numer(a), self.numer(b))
-        q = ring.gcd(self.denom(a), self.denom(b))
+        p = ring.lcm(a.numerator, b.numerator)
+        q = ring.gcd(a.denominator, b.denominator)
 
         return self.convert(p, ring)/q
 
