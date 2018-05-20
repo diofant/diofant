@@ -889,7 +889,7 @@ def do_integral(expr, prec, options):
 def evalf_integral(expr, prec, options):
     limits = expr.limits
     if len(limits) != 1 or len(limits[0]) != 3:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
     workprec = prec
     i = 0
     maxprec = options.get('maxprec', INF)
@@ -1060,14 +1060,12 @@ def evalf_sum(expr, prec, options):
         return v, None, min(prec, delta), None
     except NotImplementedError:
         # Euler-Maclaurin summation for general series
-        eps = Float(2.0)**(-prec)
-        for i in range(1, 5):
-            m = n = 2**i * prec
-            s, err = expr.euler_maclaurin(m=m, n=n, eps=eps,
+        m, err, eps = prec, oo, Float(2.0)**(-prec)
+        while err > eps:
+            m <<= 1
+            s, err = expr.euler_maclaurin(m=m, n=m, eps=eps,
                                           eval_integral=False)
             err = err.evalf(strict=False)
-            if err <= eps:
-                break
         err = fastlog(evalf(abs(err), 20, options)[0])
         re, im, re_acc, im_acc = evalf(s, prec2, options)
         if re_acc is None:
@@ -1177,14 +1175,14 @@ def evalf(x, prec, options):
             if re == 0:
                 re = None
                 reprec = None
-            elif re.is_number:
-                re = re._to_mpmath(prec, allow_ints=False)._mpf_
+            else:
+                re = re._to_mpmath(prec)._mpf_
                 reprec = prec
             if im == 0:
                 im = None
                 imprec = None
-            elif im.is_number:
-                im = im._to_mpmath(prec, allow_ints=False)._mpf_
+            else:
+                im = im._to_mpmath(prec)._mpf_
                 imprec = prec
             r = re, im, reprec, imprec
         except AttributeError:
@@ -1202,8 +1200,6 @@ def evalf(x, prec, options):
             # the formula here will will make 1e-i rounds to 0 for
             # i in the range +/-27 while 2e-i will not be chopped
             chop_prec = int(round(-3.321*math.log10(chop) + 2.5))
-            if chop_prec == 3:
-                chop_prec -= 1
         r = chop_parts(r, chop_prec)
     if options.get("strict"):
         check_target(x, r, prec)
@@ -1296,11 +1292,9 @@ class EvalfMixin:
     def _eval_evalf(self, prec):
         return
 
-    def _to_mpmath(self, prec, allow_ints=True):
+    def _to_mpmath(self, prec):
         # mpmath functions accept ints as input
         errmsg = "cannot convert to mpmath number"
-        if allow_ints and self.is_Integer:
-            return self.p
         if hasattr(self, '_as_mpf_val'):
             return make_mpf(self._as_mpf_val(prec))
         try:
@@ -1317,19 +1311,12 @@ class EvalfMixin:
             v = self._eval_evalf(prec)
             if v is None:
                 raise ValueError(errmsg)
-            if v.is_Float:
-                return make_mpf(v._mpf_)
-            # Number + Number*I is also fine
             re, im = v.as_real_imag()
-            if allow_ints and re.is_Integer:
-                re = from_int(re.p)
-            elif re.is_Float:
+            if re.is_Float:
                 re = re._mpf_
             else:
                 raise ValueError(errmsg)
-            if allow_ints and im.is_Integer:
-                im = from_int(im.p)
-            elif im.is_Float:
+            if im.is_Float:
                 im = im._mpf_
             else:
                 raise ValueError(errmsg)

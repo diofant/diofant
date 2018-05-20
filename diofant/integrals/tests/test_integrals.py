@@ -376,6 +376,11 @@ def test_evalf_integrals():
     pytest.raises(ValueError,
                   lambda: NS(Integral(acos(x)/x, (x, 1, oo)), quad='osc'))
 
+    assert NS(Integral(sin(x + I), (x, 0, pi/2))) == '1.54308063481524 + 1.17520119364380*I'
+
+    assert Integral(pi, (x, y, z)).evalf() == Integral(pi, (x, y, z))
+    assert Integral(pi, (x, y, y + z)).evalf() == Integral(pi, (x, y, y + z))
+
 
 @pytest.mark.slow
 def test_evalf_integrals_slow():
