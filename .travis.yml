@@ -30,14 +30,14 @@ stages:
 matrix:
   include:
     - python: 3.5
-      env: COVERAGE='on' SPLIT='1/3'
+      env: SPLIT='1/3' COVERAGE='on'
     - python: 3.5
-      env: COVERAGE='on' SPLIT='2/3'
+      env: SPLIT='2/3' COVERAGE='on'
     - python: 3.5
-      env: COVERAGE='on' SPLIT='3/3'
+      env: SPLIT='3/3' COVERAGE='on'
     - stage: quality
       python: 3.5
-      env: COVERAGE='on' EXTRA='on'
+      env: COVERAGE='on'
       install:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
