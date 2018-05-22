@@ -569,7 +569,7 @@ class Point2D(Point):
             return True
         points = [Point(p) for p in points]
         if len(points) == 3:
-            return (not Point.is_collinear(*points))
+            return not Point.is_collinear(*points)
 
         try:
             from .ellipse import Circle

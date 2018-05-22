@@ -466,7 +466,7 @@ class cos(TrigonometricFunction):
         pi_coeff = _pi_coeff(arg)
         if pi_coeff is not None:
             if pi_coeff.is_integer:
-                return (S.NegativeOne)**pi_coeff
+                return S.NegativeOne**pi_coeff
 
             if (2*pi_coeff).is_odd:
                 return S.Zero
@@ -1191,7 +1191,7 @@ class sec(ReciprocalTrigonometricFunction):
         return (cot_half_sq + 1)/(cot_half_sq - 1)
 
     def _eval_rewrite_as_cos(self, arg):
-        return (1/cos(arg))
+        return 1/cos(arg)
 
     def _eval_rewrite_as_sincos(self, arg):
         return sin(arg)/(cos(arg)*sin(arg))
@@ -1262,7 +1262,7 @@ class csc(ReciprocalTrigonometricFunction):
     _is_odd = True
 
     def _eval_rewrite_as_sin(self, arg):
-        return (1/sin(arg))
+        return 1/sin(arg)
 
     def _eval_rewrite_as_sincos(self, arg):
         return cos(arg)/(sin(arg)*cos(arg))

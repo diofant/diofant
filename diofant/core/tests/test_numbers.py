@@ -353,7 +353,7 @@ def test_Rational_cmp():
 def test_Float():
     def eq(a, b):
         t = Float("1.0E-15")
-        return (-t < a - b < t)
+        return -t < a - b < t
 
     a = Float(2) ** Float(3)
     assert eq(a, Float(8))

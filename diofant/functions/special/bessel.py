@@ -163,7 +163,7 @@ class besselj(BesselBase):
             return S.Zero
 
         if z.could_extract_minus_sign():
-            return (z)**nu*(-z)**(-nu)*besselj(nu, -z)
+            return z**nu*(-z)**(-nu)*besselj(nu, -z)
         if nu.is_integer:
             if nu.could_extract_minus_sign():
                 return Integer(-1)**(-nu)*besselj(-nu, z)
@@ -328,7 +328,7 @@ class besseli(BesselBase):
             return S.Zero
 
         if z.could_extract_minus_sign():
-            return (z)**nu*(-z)**(-nu)*besseli(nu, -z)
+            return z**nu*(-z)**(-nu)*besseli(nu, -z)
         if nu.is_integer:
             if nu.could_extract_minus_sign():
                 return besseli(-nu, z)
@@ -1080,7 +1080,7 @@ class _airyais(Function):
                                      z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
-            return (Add(*l))._eval_nseries(x, n, logx) + o
+            return Add(*l)._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
         return super(_airyais, self)._eval_aseries(n, args0, x, logx)
@@ -1109,7 +1109,7 @@ class _airybis(Function):
                                     z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
-            return (Add(*l))._eval_nseries(x, n, logx) + o
+            return Add(*l)._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
         return super(_airybis, self)._eval_aseries(n, args0, x, logx)
