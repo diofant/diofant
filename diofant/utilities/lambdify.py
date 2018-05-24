@@ -4,7 +4,7 @@ lambda functions which can be used to calculate numerical values very fast.
 """
 
 import inspect
-import textwrap
+import linecache
 
 from ..core.compatibility import is_sequence, iterable
 from ..external import import_module  # noqa: F401
@@ -151,6 +151,11 @@ def _import(module, reload="False"):
     # Add translated names to namespace
     for diofantname, translation in translations.items():
         namespace[diofantname] = namespace[translation]
+
+
+# Used for dynamically generated filenames that are inserted into the
+# linecache.
+_lambdify_generated_counter = 1
 
 
 @doctest_depends_on(modules=('numpy'))
@@ -365,7 +370,15 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     if flat in lstr:
         namespace.update({flat: flatten})
-    func = eval(lstr, namespace)
+
+    global _lambdify_generated_counter
+    filename = '<lambdifygenerated-%s>' % _lambdify_generated_counter
+    _lambdify_generated_counter += 1
+    c = compile(lstr, filename, 'eval')
+    func = eval(c, namespace)
+    # mtime has to be None or else linecache.checkcache will remove it
+    linecache.cache[filename] = (len(lstr), None, lstr.splitlines(True), filename)
+
     # For numpy lambdify, wrap all input arguments in arrays.
     if module_provided and _module_present('numpy', namespaces):
         def array_wrap(funcarg):
@@ -374,13 +387,8 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
             return wrapper
         func = array_wrap(func)
     # Apply the docstring
-    sig = "func({0})".format(", ".join(str(i) for i in names))
-    sig = textwrap.fill(sig, subsequent_indent=' '*8)
-    expr_str = str(expr)
-    if len(expr_str) > 78:
-        expr_str = textwrap.wrap(expr_str, 75)[0] + '...'
-    func.__doc__ = ("Created with lambdify. Signature:\n\n{sig}\n\n"
-                    "Expression:\n\n{expr}").format(sig=sig, expr=expr_str)
+    func.__doc__ = "Created with lambdify."
+    func.__signature__ = inspect.signature(func)
     return func
 
 
