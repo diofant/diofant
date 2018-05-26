@@ -242,7 +242,7 @@ class RootOf(Expr):
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial. """
         if factor.rep not in _complexes_cache:
-            _complexes_cache[factor.rep] = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, eps=Rational(1, 10), blackbox=True)
+            _complexes_cache[factor.rep] = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
         return _complexes_cache[factor.rep]
 
     @classmethod
@@ -302,13 +302,16 @@ class RootOf(Expr):
 
         for i, (u, f, k) in enumerate(complexes):
             for j, (v, g, m) in enumerate(complexes[i + 1:]):
-                while not u.is_disjoint(v):
+                while not u.is_disjoint(v, check_re_refinement=True):
                     u, v = u.refine(), v.refine()
                 complexes[i + j + 1] = (v, g, m)
 
             complexes[i] = (u, f, k)
 
-        complexes = sorted(complexes, key=lambda r: (r[0].ax, r[0].ay))
+        complexes = sorted(complexes,
+                           key=lambda r: (max(_[0].ax for _ in complexes
+                                              if not _[0].is_disjoint(r[0], re_disjoint=True)),
+                                          r[0].ay))
 
         for root, factor, _ in complexes:
             if factor in cache:

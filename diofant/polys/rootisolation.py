@@ -2,11 +2,12 @@
 
 from ..core import I
 from .densearith import dmp_neg, dmp_rem, dup_rshift
-from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
-                         dmp_terms_gcd, dup_reverse)
+from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_permute,
+                         dmp_strip, dmp_TC, dmp_terms_gcd, dup_reverse)
 from .densetools import (dmp_compose, dmp_eval_in, dup_clear_denoms, dup_diff,
                          dup_eval, dup_mirror, dup_real_imag, dup_scale,
                          dup_shift, dup_sign_variations, dup_transform)
+from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dup_factor_list
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list, dmp_sqf_part
@@ -1846,17 +1847,54 @@ class ComplexInterval:
         """Return conjugated isolating interval. """
         return ComplexInterval(self.a, self.b, self.I, self.Q,
                                self.F1, self.F2, self.f1, self.f2,
-                               self.f, self.domain, conj=not self.conj)
+                               self.f, self.domain, not self.conj)
 
-    def is_disjoint(self, other):
-        """Return ``True`` if two isolation intervals are disjoint. """
+    def is_disjoint(self, other, check_re_refinement=False, re_disjoint=False):
+        """Return ``True`` if two isolation intervals are disjoint.
+
+        Parameters
+        ==========
+
+        check_re_refinement : bool, optional
+            If enabled, test that either real projections of isolation
+            intervals are disjoint or roots share common real part.
+        re_disjoint : bool, optional
+            If enabled, return ``True`` only if real projections of isolation
+            intervals are disjoint.
+        """
         if self.conj != other.conj:
             return True
-        re_distinct = self.bx <= other.ax or other.bx <= self.ax
-        if re_distinct:
-            return True
-        im_distinct = self.by <= other.ay or other.by <= self.ay
-        return im_distinct
+        test_re = self.bx <= other.ax or other.bx <= self.ax
+        if test_re or re_disjoint:
+            return test_re
+        if not check_re_refinement:
+            return self.by <= other.ay or other.by <= self.ay
+
+        resultants = []
+        for i in (self, other):
+            re = dmp_permute(i.f1, [1, 0], 1, i.domain)
+            im = dmp_permute(i.f2, [1, 0], 1, i.domain)
+            resultants.append(dmp_resultant(re, im, 1, i.domain))
+        dom = self.domain.unify(other.domain)
+        gcd = dmp_gcd(*resultants, 0, dom)
+        gcd_roots = dup_isolate_real_roots(gcd, dom,
+                                           inf=max(self.ax, other.ax),
+                                           sup=min(self.bx, other.bx))
+        if len(gcd_roots) != 1:
+            return False
+
+        l, r = gcd_roots[0][0]
+        if l == r:
+            # Can't use dup_count_complex_roots() here, as the new isolation
+            # interval will be degenerate: a vertical line segment.  Make
+            # sure we only count roots on the northern/western edges and
+            # on the north-western corner of the original isolation rectangle.
+            return all(len([1 for _ in dup_isolate_imaginary_roots(dup_shift(i.f, r, 0), i.domain, inf=i.ay,
+                                                                   sup=i.by) if i.ay < _[0][0] and r < i.bx]) == 1
+                       for i in (self, other))
+        else:
+            return all(dup_count_complex_roots(i.f, i.domain, (l, i.ay), (r, i.by)) == 1
+                       for i in (self, other))
 
     def refine(self):
         """Perform one step of complex root refinement algorithm. """

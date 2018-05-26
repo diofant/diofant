@@ -101,6 +101,11 @@ def test_sympyissue_8289():
     assert roots == _nsort(roots)
 
 
+def test_sympyissue_14293():
+    roots = Poly(x**8 + 2*x**6 + 37*x**4 - 36*x**2 + 324).all_roots()
+    assert roots == _nsort(roots)
+
+
 def test_roots_cubic():
     assert roots_cubic(Poly(2*x**3, x)) == [0, 0, 0]
     assert roots_cubic(Poly(x**3 - 3*x**2 + 3*x - 1, x)) == [1, 1, 1]
