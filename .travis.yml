@@ -70,7 +70,7 @@ matrix:
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
-  - pip install --pre -U gmpy2
+  - pip install --pre -U 'gmpy2;platform_python_implementation!="PyPy"'
   - travis_wait pip install .[exports,plot,interactive,docs]
 script:
   - |
