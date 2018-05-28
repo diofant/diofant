@@ -409,7 +409,7 @@ def test_pareto():
 
     dens = density(X)
     x = Symbol('x')
-    assert dens(x) == x**(-(alpha + 1))*xm**(alpha)*(alpha)
+    assert dens(x) == x**(-(alpha + 1))*alpha*xm**alpha
 
     # These fail because Diofant can not deduce that 1/xm != 0
     # assert simplify(E(X)) == alpha*xm/(alpha-1)

@@ -1287,8 +1287,8 @@ class Pow(Expr):
             # = b**(ce*h)*b**(ce*t)
             # = b**(cehp/cehq)*b**(ce*t)
             # = b**(iceh+r/cehq)*b**(ce*t)
-            # = b**(iceh)*b**(r/cehq)*b**(ce*t)
-            # = b**(iceh)*b**(ce*t + r/cehq)
+            # = b**iceh*b**(r/cehq)*b**(ce*t)
+            # = b**iceh*b**(ce*t + r/cehq)
             h, t = pe.as_coeff_Add()
             if h.is_Rational:
                 ceh = ce*h

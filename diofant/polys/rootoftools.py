@@ -274,7 +274,8 @@ class RootOf(Expr):
 
         for i, (u, f, k) in enumerate(reals):
             for j, (v, g, m) in enumerate(reals[i + 1:]):
-                u, v = u.refine_disjoint(v)
+                while not u.is_disjoint(v):
+                    u, v = u.refine(), v.refine()
                 reals[i + j + 1] = (v, g, m)
 
             reals[i] = (u, f, k)
@@ -301,7 +302,8 @@ class RootOf(Expr):
 
         for i, (u, f, k) in enumerate(complexes):
             for j, (v, g, m) in enumerate(complexes[i + 1:]):
-                u, v = u.refine_disjoint(v)
+                while not u.is_disjoint(v):
+                    u, v = u.refine(), v.refine()
                 complexes[i + j + 1] = (v, g, m)
 
             complexes[i] = (u, f, k)

@@ -1502,9 +1502,9 @@ class Integer(Rational):
 
     def __eq__(self, other):
         if isinstance(other, int):
-            return (self.p == other)
+            return self.p == other
         elif isinstance(other, Integer):
-            return (self.p == other.p)
+            return self.p == other.p
         return Rational.__eq__(self, other)
 
     ########################################
@@ -2966,7 +2966,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
                 if expt == 2:
                     return -S.One
                 return -I
-            return (S.NegativeOne)**(expt*S.Half)
+            return S.NegativeOne**(expt*S.Half)
         return
 
     def as_base_exp(self):

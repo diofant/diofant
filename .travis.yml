@@ -30,14 +30,16 @@ stages:
 matrix:
   include:
     - python: 3.5
-      env: COVERAGE='on' SPLIT='1/3'
+      env: SPLIT='1/4' COVERAGE='on'
     - python: 3.5
-      env: COVERAGE='on' SPLIT='2/3'
+      env: SPLIT='2/4' COVERAGE='on'
     - python: 3.5
-      env: COVERAGE='on' SPLIT='3/3'
+      env: SPLIT='3/4' COVERAGE='on'
+    - python: 3.5
+      env: SPLIT='4/4' COVERAGE='on'
     - stage: quality
       python: 3.5
-      env: COVERAGE='on' EXTRA='on'
+      env: COVERAGE='on'
       install:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
@@ -48,14 +50,8 @@ matrix:
             rm -rf build/
             python setup.py build_sphinx -W -b linkcheck
           fi
-        - travis_wait py.test --numprocesses 2 --cov diofant diofant/polys
-    - stage: test
-      python: 3.5
-      env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
-      install:
-        - travis_wait pip install .[exports,develop]
-      script:
-        - py.test --numprocesses 2 --cov diofant diofant/domains
+        - DIOFANT_GROUND_TYPES='gmpy' py.test --numprocesses 2 --cov diofant diofant/domains
+        - travis_wait py.test --numprocesses 2 --cov diofant --cov-append diofant/polys
     - stage: deploy
       env:
         -

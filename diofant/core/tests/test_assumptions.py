@@ -833,7 +833,7 @@ def test_inconsistent():
 
 
 def test_sympyissue_6631():
-    assert ((-1)**(I)).is_extended_real is True
+    assert ((-1)**I).is_extended_real is True
     assert ((-1)**(I*2)).is_extended_real is True
     assert ((-1)**(I/2)).is_extended_real is True
     assert ((-1)**(I*pi)).is_extended_real is True

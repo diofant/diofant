@@ -416,12 +416,12 @@ class PrettyPrinter(Printer):
 
             lines = []
             if use_ascii:
-                lines.append("_"*(w) + ' ')
+                lines.append("_"*w + ' ')
                 lines.append("\%s`" % (' '*(w - 1)))
                 for i in range(1, d):
                     lines.append('%s\\%s' % (' '*i, ' '*(w - i)))
                 if more:
-                    lines.append('%s)%s' % (' '*(d), ' '*(w - d)))
+                    lines.append('%s)%s' % (' '*d, ' '*(w - d)))
                 for i in reversed(range(1, d)):
                     lines.append('%s/%s' % (' '*i, ' '*(w - i)))
                 lines.append("/" + "_"*(w - 1) + ',')
@@ -430,12 +430,12 @@ class PrettyPrinter(Printer):
                 w = w + more
                 d = d + more
                 vsum = vobj('sum', 4)
-                lines.append("_"*(w))
+                lines.append("_"*w)
                 for i in range(d):
                     lines.append('%s%s%s' % (' '*i, vsum[2], ' '*(w - i - 1)))
                 for i in reversed(range(d)):
                     lines.append('%s%s%s' % (' '*i, vsum[4], ' '*(w - i - 1)))
-                lines.append(vsum[8]*(w))
+                lines.append(vsum[8]*w)
                 return d, h + 2*more, lines, more
 
         f = expr.function
@@ -597,7 +597,7 @@ class PrettyPrinter(Printer):
         D = self._print(e.arg)
         D = prettyForm(*D.parens('(', ')'))
         D.baseline = D.height()//2
-        D = prettyForm(*D.left('\n'*(0) + 'tr'))
+        D = prettyForm(*D.left('\n'*0 + 'tr'))
         return D
 
     def _print_MatrixElement(self, expr):

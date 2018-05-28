@@ -1286,8 +1286,8 @@ class OctaveCodeGen(CodeGen):
                 else:
                     name = obj
                 declarations.append(
-                    "  %% unsupported: %s\n" % (name))
-            code_lines.append("%s\n" % (oct_expr))
+                    "  %% unsupported: %s\n" % name)
+            code_lines.append("%s\n" % oct_expr)
         return declarations + code_lines
 
     def _indent_code(self, codelines):

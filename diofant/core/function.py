@@ -539,7 +539,7 @@ class Function(Application, Expr):
                 # let's try the general algorithm
                 term = e.subs(x, S.Zero)
                 if term.is_finite is False:
-                    raise PoleError("Cannot expand %s around 0" % (self))
+                    raise PoleError("Cannot expand %s around 0" % self)
                 series = term
                 fact = S.One
                 _x = Dummy('x', real=True, positive=True)

@@ -1253,7 +1253,7 @@ def clear_coefficients(expr, rhs=Integer(0)):
     was = None
     free = expr.free_symbols
     if expr.is_Rational:
-        return (Integer(0), rhs - expr)
+        return Integer(0), rhs - expr
     while expr and was != expr:
         was = expr
         m, expr = (expr.as_content_primitive() if free else

@@ -65,7 +65,7 @@ def test_Permutation():
     assert p.cyclic_form == [[0, 2, 1, 5], [3, 6, 4]]
     t = p.transpositions()
     assert t == [(0, 5), (0, 1), (0, 2), (3, 4), (3, 6)]
-    assert Permutation.rmul(*[Permutation(Cycle(*ti)) for ti in (t)])
+    assert Permutation.rmul(*[Permutation(Cycle(*ti)) for ti in t])
     assert Permutation([1, 0]).transpositions() == [(0, 1)]
 
     assert p**13 == p

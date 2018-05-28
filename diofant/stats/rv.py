@@ -396,7 +396,7 @@ def pspace(expr):
     expr = sympify(expr)
     rvs = random_symbols(expr)
     if not rvs:
-        raise ValueError("Expression containing Random Variable expected, not %s" % (expr))
+        raise ValueError("Expression containing Random Variable expected, not %s" % expr)
     # If only one space present
     if all(rv.pspace == rvs[0].pspace for rv in rvs):
         return rvs[0].pspace
@@ -585,7 +585,7 @@ def probability(condition, given_condition=None, numsamples=None,
         return S.Zero
     if not isinstance(condition, (Relational, Boolean)):
         raise ValueError("%s is not a relational or combination of relationals"
-                         % (condition))
+                         % condition)
     if condition is S.true:
         return S.One
     if condition is S.false:

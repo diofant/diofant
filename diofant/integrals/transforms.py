@@ -923,11 +923,11 @@ def _simplifyconds(expr, s, a):
         """ simplify x < y """
         if not (x.is_positive or isinstance(x, Abs)) \
                 or not (y.is_positive or isinstance(y, Abs)):
-            return (x < y)
+            return x < y
         r = bigger(x, y)
         if r is not None:
             return not r
-        return (x < y)
+        return x < y
 
     def replue(x, y):
         b = bigger(x, y)

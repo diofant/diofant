@@ -3060,7 +3060,7 @@ class PermutationGroup(Basic):
             # if G_k is transitive on the subset excluding b_0,...,b_(k-1)
             # then G is (k+1)-transitive
             for i in range(n):
-                orb = G.orbit((i))
+                orb = G.orbit(i)
                 if len(orb) != n - i:
                     self._transitivity_degree = i
                     return i

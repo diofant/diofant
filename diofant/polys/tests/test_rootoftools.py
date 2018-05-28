@@ -291,8 +291,8 @@ def test_RootOf_evalf():
     # issue sympy/sympy#9019
     r0 = RootOf(x**2 + 1, 0, radicals=False)
     r1 = RootOf(x**2 + 1, 1, radicals=False)
-    assert r0.n(4) == -1.0*I
-    assert r1.n(4) == 1.0*I
+    assert r0.n(4, chop=True) == -1.0*I
+    assert r1.n(4, chop=True) == +1.0*I
 
     # make sure verification is used in case a max/min traps the "root"
     assert str(RootOf(4*x**5 + 16*x**3 + 12*x**2 + 7, 0).n(3)) == '-0.976'
@@ -542,8 +542,3 @@ def test_RootOf_algebraic_domain():
     e = RootOf(x**4 + t*x + 1, 1, extension=True)
     assert e == RootOf(x**20 + 5*x**16 + 10*x**12 + 14*x**8 -
                        2*x**5 + 9*x**4 + 1, 5)
-
-    e = RootOf(x**3 - root(2, 3)*x + 5*root(-2, 3)**5, 0, extension=True)
-    assert e == RootOf(x**18 + 60*x**13 - 4*x**12 - 8000*x**9 +
-                       3600*x**8 - 120*x**7 + 4*x**6 -
-                       240000*x**4 + 16000*x**3 + 16000000, 1)

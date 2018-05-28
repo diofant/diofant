@@ -119,7 +119,7 @@ class Plane(GeometryEntity):
         a = Point3D(x, y, z)
         b = self.p1.direction_ratio(a)
         c = self.normal_vector
-        return (sum(i*j for i, j in zip(b, c)))
+        return sum(i*j for i, j in zip(b, c))
 
     def projection(self, pt):
         """Project the given point onto the plane along the plane normal.

@@ -1778,27 +1778,15 @@ class RealInterval:
 
     def is_disjoint(self, other):
         """Return ``True`` if two isolation intervals are disjoint. """
-        return (self.b <= other.a or other.b <= self.a)
+        return self.b <= other.a or other.b <= self.a
 
-    def _inner_refine(self):
-        """Internal one step real root refinement procedure. """
+    def refine(self):
+        """Perform one step of real root refinement algorithm. """
         assert self.mobius is not None
 
         f, mobius = dup_inner_refine_real_root(self.f, self.mobius, self.domain, steps=1, mobius=True)
 
         return RealInterval(mobius + (self.neg,), f, self.domain)
-
-    def refine_disjoint(self, other):
-        """Refine an isolating interval until it is disjoint with another one. """
-        expr = self
-        while not expr.is_disjoint(other):
-            expr, other = expr._inner_refine(), other._inner_refine()
-
-        return expr, other
-
-    def refine(self):
-        """Perform one step of real root refinement algorithm. """
-        return self._inner_refine()
 
 
 class ComplexInterval:
@@ -1870,8 +1858,8 @@ class ComplexInterval:
         im_distinct = self.by <= other.ay or other.by <= self.ay
         return im_distinct
 
-    def _inner_refine(self):
-        """Internal one step complex root refinement procedure. """
+    def refine(self):
+        """Perform one step of complex root refinement algorithm. """
         (u, v), (s, t) = self.a, self.b
 
         I, Q = self.I, self.Q
@@ -1898,15 +1886,3 @@ class ComplexInterval:
                 _, a, b, I, Q, F1, F2 = D_U
 
         return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, f, dom, self.conj)
-
-    def refine_disjoint(self, other):
-        """Refine an isolating interval until it is disjoint with another one. """
-        expr = self
-        while not expr.is_disjoint(other):
-            expr, other = expr._inner_refine(), other._inner_refine()
-
-        return expr, other
-
-    def refine(self):
-        """Perform one step of complex root refinement algorithm. """
-        return self._inner_refine()

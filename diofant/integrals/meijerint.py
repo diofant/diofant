@@ -650,9 +650,9 @@ def _condsimp(cond):
         if not m:
             if isinstance(expr, periodic_argument) and not expr.args[0].is_polar \
                     and expr.args[1] == oo:
-                return (expr.args[0] > 0)
+                return expr.args[0] > 0
             return orig
-        return (m[p] > 0)
+        return m[p] > 0
     return cond.replace(
         lambda expr: expr.is_Relational and expr.rel_op == '==',
         repl_eq)

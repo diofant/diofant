@@ -127,7 +127,7 @@ def egypt_greedy(x, y):
     if x == 1:
         return [y]
     else:
-        a = (-y) % (x)
+        a = (-y) % x
         b = y*(y//x + 1)
         c = math.gcd(a, b)
         if c > 1:
