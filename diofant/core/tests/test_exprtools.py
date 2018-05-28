@@ -50,11 +50,12 @@ def test_Factors():
     assert b.pow(3) == b**3 == Factors({y: 12, z: 9, t: 30})
 
     pytest.raises(ValueError, lambda: a.pow(3.1))
+    pytest.raises(ValueError, lambda: a.pow(Factors(3.1)))
 
     assert a.pow(0) == Factors()
 
     assert a.gcd(b) == Factors({y: 3, z: 3})
-    assert a.lcm(b) == Factors({x: 5, y: 4, z: 7, t: 10})
+    assert a.lcm(b) == a.lcm(b.as_expr()) == Factors({x: 5, y: 4, z: 7, t: 10})
 
     a = Factors({x: 4, y: 7, t: 7})
     b = Factors({z: 1, t: 3})
@@ -103,6 +104,7 @@ def test_Factors():
     assert Factors(x).div(x) == (Factors(), Factors())
     assert Factors({x: .2})/Factors({x: .2}) == Factors()
     assert Factors(x) != Factors()
+    assert Factors(x) == x
     assert Factors(Integer(0)).normal(x) == (Factors(Integer(0)), Factors())
     n, d = x**(2 + y), x**2
     f = Factors(n)
@@ -119,6 +121,8 @@ def test_Factors():
     f = Factors(n)
     assert f.div(d) == f.normal(d) == (Factors({Integer(2): x}), Factors({Integer(2): y}))
     assert f.gcd(d) == Factors()
+
+    assert f.div(f) == (Factors(), Factors())
 
     # extraction of constant only
     n = x**(x + 3)

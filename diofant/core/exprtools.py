@@ -299,12 +299,9 @@ class Factors:
             else:
                 r = self_exp.extract_additively(other_exp)
                 if r is not None:
-                    if r:
-                        self_factors[factor] = r
-                        del other_factors[factor]
-                    else:  # should be handled already
-                        del self_factors[factor]
-                        del other_factors[factor]
+                    assert r
+                    self_factors[factor] = r
+                    del other_factors[factor]
                 else:
                     sc, sa = self_exp.as_coeff_Add()
                     if sc:
@@ -395,10 +392,8 @@ class Factors:
                 else:
                     r = quo[factor].extract_additively(exp)
                     if r is not None:
-                        if r:
-                            quo[factor] = r
-                        else:  # should be handled already
-                            del quo[factor]
+                        assert r
+                        quo[factor] = r
                     else:
                         other_exp = exp
                         sc, sa = quo[factor].as_coeff_Add()
@@ -812,9 +807,7 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
     def handle(a):
         # don't treat internal args like terms of an Add
         if not isinstance(a, Expr):
-            if isinstance(a, Basic):
-                return a.func(*[handle(i) for i in a.args])
-            return type(a)([handle(i) for i in a])
+            return a.func(*[handle(i) for i in a.args])
         return gcd_terms(a, isprimitive, clear, fraction)
 
     if isinstance(terms, Dict):
