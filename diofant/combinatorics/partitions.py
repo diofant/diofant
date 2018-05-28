@@ -118,7 +118,7 @@ class Partition(FiniteSet):
         """
         other = as_int(other)
         offset = self.rank + other
-        result = RGS_unrank((offset) %
+        result = RGS_unrank(offset %
                             RGS_enum(self.size),
                             self.size)
         return Partition.from_rgs(result, self.members)

@@ -91,7 +91,7 @@ def runtest_ufuncify(language, backend):
 
 
 def runtest_sympyissue_10274(language, backend):
-    expr = (a - b + c)**(13)
+    expr = (a - b + c)**13
     tmp = tempfile.mkdtemp()
     f = autowrap(expr, language, backend, tempdir=tmp, helpers=('helper', a - b + c, (a, b, c)))
     assert f(1, 1, 1) == 1

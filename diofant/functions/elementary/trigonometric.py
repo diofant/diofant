@@ -278,7 +278,7 @@ class sin(TrigonometricFunction):
                 p = previous_terms[-2]
                 return -p * x**2 / (n*(n - 1))
             else:
-                return (-1)**(n//2) * x**(n)/factorial(n)
+                return (-1)**(n//2) * x**n/factorial(n)
 
     def _eval_rewrite_as_exp(self, arg):
         return (exp(arg*I) - exp(-arg*I)) / (2*I)
@@ -570,7 +570,7 @@ class cos(TrigonometricFunction):
                 p = previous_terms[-2]
                 return -p * x**2 / (n*(n - 1))
             else:
-                return (-1)**(n//2)*x**(n)/factorial(n)
+                return (-1)**(n//2)*x**n/factorial(n)
 
     def _eval_rewrite_as_exp(self, arg):
         return (exp(arg*I) + exp(-arg*I)) / 2

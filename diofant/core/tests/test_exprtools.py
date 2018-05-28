@@ -252,7 +252,7 @@ def test_factor_terms():
     A = Symbol('A', commutative=False)
     assert factor_terms(9*(x + x*y + 1) + (3*x + 3)**(2 + 2*x)) == \
         9*x*y + 9*x + _keep_coeff(Integer(3), x + 1)**_keep_coeff(Integer(2), x + 1) + 9
-    assert factor_terms(9*(x + x*y + 1) + (3)**(2 + 2*x)) == \
+    assert factor_terms(9*(x + x*y + 1) + 3**(2 + 2*x)) == \
         _keep_coeff(Integer(9), 3**(2*x) + x*y + x + 1)
     assert factor_terms(3**(2 + 2*x) + a*3**(2 + 2*x)) == \
         9*3**(2*x)*(a + 1)

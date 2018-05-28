@@ -390,7 +390,7 @@ def test_add():
     assert (0.1 + a).subs(0.1, Rational(1, 10)) == Rational(1, 10) + a
 
     e = (-x*(-y + 1) - y*(y - 1))
-    ans = (-x*(x) - y*(-x)).expand()
+    ans = (-x*x - y*(-x)).expand()
     assert e.subs(-y + 1, x) == ans
 
 

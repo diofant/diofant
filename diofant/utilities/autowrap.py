@@ -6,7 +6,7 @@ as f2py, fwrap, Cython, SWIG(?) etc. (Currently only f2py and Cython are
 implemented) The goal is to provide access to compiled binaries of acceptable
 performance with a one-button user interface, i.e.
 
-    >>> expr = ((x - y)**(25)).expand()
+    >>> expr = ((x - y)**25).expand()
     >>> binary_callable = autowrap(expr)
     >>> binary_callable(1, 2)
     -1.0
@@ -482,7 +482,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     Examples
     --------
 
-    >>> expr = ((x - y + z)**(13)).expand()
+    >>> expr = ((x - y + z)**13).expand()
     >>> binary_func = autowrap(expr)
     >>> binary_func(1, 4, 2)
     -1.0
@@ -532,7 +532,7 @@ def binary_function(symfunc, expr, **kwargs):
     autowrap the Diofant expression and attaching it to a Function object
     with implemented_function().
 
-    >>> expr = ((x - y)**(25)).expand()
+    >>> expr = ((x - y)**25).expand()
     >>> f = binary_function('f', expr)
     >>> type(f)
     <class 'diofant.core.function.UndefinedFunction'>

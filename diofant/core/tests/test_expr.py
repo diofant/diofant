@@ -1205,7 +1205,7 @@ def test_sympyissue_5226():
 def test_free_symbols():
     # free_symbols should return the free symbols of an object
     assert Integer(1).free_symbols == set()
-    assert (x).free_symbols == {x}
+    assert x.free_symbols == {x}
     assert Integral(x, (x, 1, y)).free_symbols == {y}
     assert (-Integral(x, (x, 1, y))).free_symbols == {y}
 

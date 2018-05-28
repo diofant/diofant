@@ -903,7 +903,7 @@ def test_powers_Integer():
     assert root(-16, 4) == 2 * root(-1, 4)
     assert 9 ** Rational(3, 2) == 27
     assert (-9) ** Rational(3, 2) == -27*I
-    assert (27) ** Rational(2, 3) == 9
+    assert 27 ** Rational(2, 3) == 9
     assert (-27) ** Rational(2, 3) == 9 * ((-1) ** Rational(2, 3))
     assert (-2) ** Rational(-2, 1) == Rational(1, 4)
 

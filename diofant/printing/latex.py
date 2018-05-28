@@ -932,7 +932,7 @@ class LatexPrinter(Printer):
         return self._do_exponent(tex, exp)
 
     def _hprint_BesselBase(self, expr, exp, sym):
-        tex = r"%s" % (sym)
+        tex = r"%s" % sym
 
         need_exp = False
         if exp is not None:
@@ -1608,7 +1608,7 @@ class LatexPrinter(Printer):
     def _print_Tr(self, p):
         # Todo: Handle indices
         contents = self._print(p.args[0])
-        return r'\mbox{Tr}\left(%s\right)' % (contents)
+        return r'\mbox{Tr}\left(%s\right)' % contents
 
     def _print_totient(self, expr, exp=None):
         if exp is not None:

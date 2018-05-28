@@ -179,7 +179,7 @@ def prde_linear_constraints(a, b, G, DE):
     Gns, Gds = list(zip(*G))
     d = reduce(lambda i, j: i.lcm(j), Gds)
     d = Poly(d, field=True)
-    Q = [(ga*(d).quo(gd)).div(d) for ga, gd in G]
+    Q = [(ga*d.quo(gd)).div(d) for ga, gd in G]
 
     if not all(ri.is_zero for _, ri in Q):
         N = max(ri.degree(DE.t) for _, ri in Q)

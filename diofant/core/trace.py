@@ -180,7 +180,7 @@ class Tr(Expr):
 
         args = list(self.args[0].args[-pos:] + self.args[0].args[0:-pos])
 
-        return Tr(Mul(*(args)))
+        return Tr(Mul(*args))
 
     def _hashable_content(self):
         if isinstance(self.args[0], Mul):

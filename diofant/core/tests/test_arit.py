@@ -155,8 +155,8 @@ def test_pow():
     assert ((x*y)**3).expand() == y**3 * x**3
     assert ((x*y)**-3).expand() == y**-3 * x**-3
 
-    assert (x**5*(3*x)**(3)).expand() == 27 * x**8
-    assert (x**5*(-3*x)**(3)).expand() == -27 * x**8
+    assert (x**5*(3*x)**3).expand() == 27 * x**8
+    assert (x**5*(-3*x)**3).expand() == -27 * x**8
     assert (x**5*(3*x)**(-3)).expand() == Rational(1, 27) * x**2
     assert (x**5*(-3*x)**(-3)).expand() == -Rational(1, 27) * x**2
 
@@ -253,7 +253,7 @@ def test_pow_im():
     assert Mul(*args, evaluate=False)**e == ans
     assert Mul(*args)**e == ans
     args.append(-3)
-    ans = (6)**e
+    ans = 6**e
     assert Mul(*args, evaluate=False)**e == ans
     assert Mul(*args)**e == ans
     args.append(-1)
@@ -344,7 +344,7 @@ def test_Mul_doesnt_expand_exp():
     assert 2**x*2**y == 2**x*2**y
     assert x**2*x**3 == x**5
     assert 2**x*3**x == 6**x
-    assert x**(y)*x**(2*y) == x**(3*y)
+    assert x**y*x**(2*y) == x**(3*y)
     assert sqrt(2)*sqrt(2) == 2
     assert 2**x*2**(2*x) == 2**(3*x)
     assert sqrt(2)*root(2, 4)*5**Rational(3, 4) == 10**Rational(3, 4)

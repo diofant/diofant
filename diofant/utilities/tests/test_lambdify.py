@@ -307,14 +307,14 @@ def test_numpy_matrix():
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_transpose():
     A = Matrix([[1, x], [0, 1]])
-    f = lambdify((x), A.T, modules="numpy")
+    f = lambdify(x, A.T, modules="numpy")
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, 0], [2, 1]]))
 
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_inverse():
     A = Matrix([[1, x], [0, 1]])
-    f = lambdify((x), A**-1, modules="numpy")
+    f = lambdify(x, A**-1, modules="numpy")
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, -2], [0,  1]]))
 
 
@@ -349,7 +349,7 @@ def test_numpy_piecewise():
 def test_numpy_logical_ops():
     and_func = lambdify((x, y), And(x, y), modules="numpy")
     or_func = lambdify((x, y), Or(x, y), modules="numpy")
-    not_func = lambdify((x), Not(x), modules="numpy")
+    not_func = lambdify(x, Not(x), modules="numpy")
     arr1 = numpy.array([True, True])
     arr2 = numpy.array([False, True])
     numpy.testing.assert_array_equal(and_func(arr1, arr2), numpy.array([False, True]))
