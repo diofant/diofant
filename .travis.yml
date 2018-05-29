@@ -5,6 +5,7 @@ cache: pip
 python:
   - 3.6
   - 3.7-dev
+  - pypy3.5
 env:
   global:
     - PYTHONHASHSEED=0
@@ -65,11 +66,11 @@ matrix:
         on:
           tags: true
   allow_failures:
-    - python: 3.7-dev
+    - python: pypy3.5
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
-  - pip install --pre -U gmpy2
+  - pip install --pre -U 'gmpy2;platform_python_implementation!="PyPy"'
   - travis_wait pip install .[exports,plot,interactive,docs]
 script:
   - |
