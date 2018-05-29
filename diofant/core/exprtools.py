@@ -384,11 +384,9 @@ class Factors:
                     if d >= 0:
                         if d:
                             quo[factor] = d
-
-                        continue
-
-                    exp = -d
-
+                    else:
+                        exp = -d
+                        rem[factor] = exp
                 else:
                     r = quo[factor].extract_additively(exp)
                     if r is not None:
@@ -413,9 +411,8 @@ class Factors:
                             rem[factor] = other_exp
                         else:
                             assert factor not in rem
-                    continue
-
-            rem[factor] = exp
+            else:
+                rem[factor] = exp
 
         return Factors(quo), Factors(rem)
 
@@ -1012,11 +1009,9 @@ def _mask_nc(eq, name=None):
                     nc_obj.add(a)
                 pot.skip()
 
-    # If there is only one nc symbol or object, it can be factored regularly
+    # If there is only one nc symbol, it can be factored regularly
     # but polys is going to complain, so replace it with a Dummy.
-    if len(nc_obj) == 1 and not nc_syms:
-        rep.append((nc_obj.pop(), Dummy()))
-    elif len(nc_syms) == 1 and not nc_obj:
+    if len(nc_syms) == 1 and not nc_obj:
         rep.append((nc_syms.pop(), Dummy()))
 
     # Any remaining nc-objects will be replaced with an nc-Dummy and
@@ -1116,8 +1111,7 @@ def factor_nc(expr):
                         for i, a in enumerate(args):
                             args[i][1][0] = il*args[i][1][0]
                         break
-                if not ok:
-                    break
+                break
         else:
             hit = True
             lenn = len(n)
@@ -1152,8 +1146,7 @@ def factor_nc(expr):
                         for i, a in enumerate(args):
                             args[i][1][-1] = args[i][1][-1]*il
                         break
-                if not ok:
-                    break
+                break
         else:
             hit = True
             lenn = len(n)

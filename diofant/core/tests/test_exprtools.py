@@ -355,6 +355,9 @@ def test_factor_nc():
     eq = m*sin(n) - sin(n)*m
     assert factor_nc(eq) == eq
 
+    eq = (sin(n) + x)*(cos(n) + x)
+    assert factor_nc(eq.expand()) == eq
+
     # issue sympy/sympy#6534
     assert (2*n + 2*m).factor() == 2*(n + m)
 
