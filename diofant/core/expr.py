@@ -589,16 +589,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if constant is False:
             return False
 
-        if constant is None and (diff.free_symbols or not diff.is_number):
+        if constant is None:
             # e.g. unless the right simplification is done, a symbolic
             # zero is possible (see expression of issue sympy/sympy#6829: without
             # simplification constant will be None).
             return
 
-        if constant is True:
-            ndiff = diff._random()
-            if ndiff:
-                return False
+        ndiff = diff._random()
+        if ndiff:
+            return False
 
         # sometimes we can use a simplified result to give a clue as to
         # what the expression should be; if the expression is *not* zero
@@ -713,8 +712,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             A = self.subs(x, a)
             if A.has(nan, oo, -oo, zoo):
                 A = limit(self, x, a)
-                if A is nan:
-                    return A
                 if isinstance(A, Limit):
                     raise NotImplementedError("Could not compute limit")
 
@@ -2490,6 +2487,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         do = (si - yielded + o).removeO()
                         o *= x
                         if not do or do.is_Order:
+                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         if do.is_Add:
                             ndid += len(do.args)
