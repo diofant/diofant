@@ -526,7 +526,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
         return [RealInterval((a, b), f, K) for (a, b) in roots]
 
 
-def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast=False):
+def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     """Isolate real roots using Vincent-Akritas-Strzebonski (VAS) continued fractions approach.
 
     References
@@ -541,29 +541,22 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
     """
     if K.is_RationalField:
         (_, f), K = dup_clear_denoms(f, K, convert=True), K.ring
-    elif not K.is_IntegerRing:
-        raise DomainError("isolation of real roots not supported over %s" % K)
-
-    if dmp_degree(f, 0) <= 0:
-        return []
-
-    I_zero, f = _isolate_zero(f, K, inf, sup, basis=basis, sqf=False)
 
     _, factors = dmp_sqf_list(f, 0, K)
 
     if len(factors) == 1:
         (f, k), = factors
-
-        I_neg = dup_inner_isolate_negative_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
-        I_pos = dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
-
-        I_neg = [((u, v), k) for u, v in I_neg]
-        I_pos = [((u, v), k) for u, v in I_pos]
+        return [(r, k) for r in dup_isolate_real_roots_sqf(f, K, eps, inf, sup, fast)]
     else:
-        I_neg, I_pos = _real_isolate_and_disjoin(factors, K,
-                                                 eps=eps, inf=inf, sup=sup, basis=basis, fast=fast)
+        if K.is_Algebraic:
+            raise NotImplementedError  # pragma: no cover
 
-    return sorted(I_neg + I_zero + I_pos)
+        if not K.is_IntegerRing:
+            raise DomainError("isolation of real roots not supported over %s" % K)
+
+        I_zero, f = _isolate_zero(f, K, inf, sup, sqf=False)
+        I_neg, I_pos = _real_isolate_and_disjoin(factors, K, eps, inf, sup, fast=fast)
+        return sorted(I_neg + I_zero + I_pos)
 
 
 def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=False, basis=False, fast=False):
