@@ -4,9 +4,9 @@ from ..core import I
 from .densearith import dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_strip, dmp_TC,
                          dmp_terms_gcd, dup_reverse)
-from .densetools import (dmp_eval_in, dup_clear_denoms, dup_diff, dup_eval,
-                         dup_mirror, dup_real_imag, dup_scale, dup_shift,
-                         dup_sign_variations, dup_transform)
+from .densetools import (dmp_compose, dmp_eval_in, dup_clear_denoms, dup_diff,
+                         dup_eval, dup_mirror, dup_real_imag, dup_scale,
+                         dup_shift, dup_sign_variations, dup_transform)
 from .factortools import dup_factor_list
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list, dmp_sqf_part
@@ -734,6 +734,13 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
         count += 1
 
     return count
+
+
+def dup_isolate_imaginary_roots(f, K, eps=None, inf=None, sup=None, fast=False):
+    """Isolate imaginary roots. """
+    F = K.algebraic_field(I)
+    f = dmp_compose(dmp_convert(f, 0, K, F), [F([1, 0]), 0], 0, F)
+    return dup_isolate_real_roots(f, F, eps=eps, inf=inf, sup=sup, fast=fast)
 
 
 OO = 'OO'  # Origin of (re, im) coordinate system
