@@ -63,7 +63,6 @@ def gauss_legendre(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gaussian_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/legendre_rule/legendre_rule.html
     """
     x = Dummy("x")
     p = legendre_poly(n, x, polys=True)
@@ -137,7 +136,6 @@ def gauss_laguerre(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/laguerre_rule/laguerre_rule.html
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, polys=True)
@@ -210,8 +208,6 @@ def gauss_hermite(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/hermite_rule/hermite_rule.html
-    .. [3] http://people.sc.fsu.edu/~jburkardt/cpp_src/gen_hermite_rule/gen_hermite_rule.html
     """
     x = Dummy("x")
     p = hermite_poly(n, x, polys=True)
@@ -286,7 +282,6 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/gen_laguerre_rule/gen_laguerre_rule.html
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, alpha=alpha, polys=True)
@@ -361,7 +356,6 @@ def gauss_chebyshev_t(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev1_rule/chebyshev1_rule.html
     """
     xi = []
     w = []
@@ -430,7 +424,6 @@ def gauss_chebyshev_u(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev2_rule/chebyshev2_rule.html
     """
     xi = []
     w = []
@@ -504,8 +497,6 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/jacobi_rule/jacobi_rule.html
-    .. [3] http://people.sc.fsu.edu/~jburkardt/cpp_src/gegenbauer_rule/gegenbauer_rule.html
     """
     x = Dummy("x")
     p = jacobi_poly(n, alpha, beta, x, polys=True)
