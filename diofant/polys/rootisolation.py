@@ -1864,7 +1864,6 @@ class ComplexInterval:
 
         I, Q = self.I, self.Q
 
-        f = self.f
         f1, F1 = self.f1, self.F1
         f2, F2 = self.f2, self.F2
 
@@ -1885,4 +1884,4 @@ class ComplexInterval:
             else:
                 _, a, b, I, Q, F1, F2 = D_U
 
-        return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, f, dom, self.conj)
+        return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, self.f, dom, self.conj)
