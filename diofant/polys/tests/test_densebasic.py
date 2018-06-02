@@ -6,8 +6,9 @@ import pytest
 
 from diofant import Integer, Rational, oo
 from diofant.domains import QQ, ZZ
-from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
-                                      dmp_deflate, dmp_degree, dmp_degree_in,
+from diofant.polys.densebasic import (dmp_apply_pairs, dmp_cache_key,
+                                      dmp_convert, dmp_copy, dmp_deflate,
+                                      dmp_degree, dmp_degree_in,
                                       dmp_degree_list, dmp_eject, dmp_exclude,
                                       dmp_from_dict, dmp_from_diofant,
                                       dmp_ground, dmp_ground_LC,
@@ -723,3 +724,8 @@ def test_dup_random():
         f = dup_random(3, -10, 10, ZZ, percent=50)
         assert f[0]
         assert len([c for c in f if c == 0]) == 2
+
+
+def test_dmp_cache_key():
+    assert dmp_cache_key([[1], [2, 1]], [3, 1], ZZ,
+                         spam=True) == (((1,), (2, 1)), (3, 1), ZZ, ('spam', True))
