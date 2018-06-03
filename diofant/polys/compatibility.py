@@ -51,6 +51,7 @@ from .galoistools import gf_factor_sqf
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
+                            dup_isolate_imaginary_roots,
                             dup_isolate_real_roots,
                             dup_isolate_real_roots_list,
                             dup_isolate_real_roots_sqf, dup_refine_real_root,
@@ -686,8 +687,11 @@ class IPolys:
     def dup_isolate_real_roots_sqf(self, f, eps=None, inf=None, sup=None, fast=False, blackbox=False):
         return dup_isolate_real_roots_sqf(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast, blackbox=blackbox)
 
-    def dup_isolate_real_roots(self, f, eps=None, inf=None, sup=None, basis=False, fast=False):
-        return dup_isolate_real_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, basis=basis, fast=fast)
+    def dup_isolate_real_roots(self, f, eps=None, inf=None, sup=None, fast=False):
+        return dup_isolate_real_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast)
+
+    def dup_isolate_imaginary_roots(self, f, eps=None, inf=None, sup=None, fast=False):
+        return dup_isolate_imaginary_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast)
 
     def dup_isolate_real_roots_list(self, polys, eps=None, inf=None, sup=None, strict=False, basis=False, fast=False):
         return dup_isolate_real_roots_list(list(map(self.to_dense, polys)), self.domain, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis, fast=fast)

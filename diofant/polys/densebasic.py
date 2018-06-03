@@ -1323,3 +1323,10 @@ def dup_random(n, a, b, K, percent=None):
         f.insert(0, lt)
 
     return f
+
+
+def dmp_cache_key(*args, **kwargs):
+    """Return a cache key, assuming dense recursive polynomials in some arguments. """
+    new_args = [dmp_to_tuple(p, dmp_validate(p)[1]) if isinstance(p, list) else p
+                for p in args]
+    return tuple(new_args + [(str(x), kwargs[x]) for x in sorted(kwargs)])

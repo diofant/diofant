@@ -1426,6 +1426,10 @@ def test_is_constant():
     e = factorial(x) % x
     assert e.subs({x: x - 1}).is_constant() is False
 
+    e = a*sin(x)**2 + a*cos(x)**2
+    assert e.is_constant(x) is True
+    assert e.is_constant(a) is False
+
 
 def test_equals():
     assert (-3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2).equals(0)
