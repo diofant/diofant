@@ -11,6 +11,7 @@ Major changes
 =============
 
 * New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619`.
+* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633`.
 
 Compatibility breaks
 ====================
@@ -70,3 +71,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14645` Bug when solving multivariate polynomial systems with identical equations
 * :sympyissue:`14294` to_number_field should be idempotent for single extension
 * :sympyissue:`14721` solve can't find solution
+* :sympyissue:`14293` Sorting of polynomial roots
