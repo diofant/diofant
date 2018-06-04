@@ -74,3 +74,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14721` solve can't find solution
 * :sympyissue:`14293` Sorting of polynomial roots
 * :sympyissue:`14380` AlgebraicField.numer() could return an algebraic integer
+* :sympyissue:`14442` Should AlgebraicField be a Composite domain?
