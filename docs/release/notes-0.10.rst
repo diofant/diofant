@@ -75,3 +75,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14293` Sorting of polynomial roots
 * :sympyissue:`14380` AlgebraicField.numer() could return an algebraic integer
 * :sympyissue:`14442` Should AlgebraicField be a Composite domain?
+* :sympyissue:`14759` dup_isolate_real_roots_list() docstring is wrong

@@ -561,7 +561,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
 
 
 def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=False, basis=False, fast=False):
-    """Isolate real roots of a list of square-free polynomial using Vincent-Akritas-Strzebonski (VAS) CF approach.
+    """Isolate real roots of a list of polynomials using Vincent-Akritas-Strzebonski (VAS) CF approach.
 
     References
     ==========
