@@ -45,6 +45,7 @@ Minor changes
 * Support algebraic function fields in :func:`~diofant.polys.numberfields.minpoly_groebner`, see :pull:`623`.
 * Added argument ``method`` for :func:`~diofant.polys.numberfields.minimal_polynomial` and ``MINPOLY_METHOD`` configuration option to select default algorithm, see :pull:`624`.
 * Support derivatives of :class:`~diofant.polys.rootoftools.RootOf` instances, see :pull:`624`.
+* :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer, see :pull:`643`.
 
 Developer changes
 =================
@@ -72,3 +73,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14294` to_number_field should be idempotent for single extension
 * :sympyissue:`14721` solve can't find solution
 * :sympyissue:`14293` Sorting of polynomial roots
+* :sympyissue:`14380` AlgebraicField.numer() could return an algebraic integer
