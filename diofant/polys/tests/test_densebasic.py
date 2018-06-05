@@ -86,6 +86,7 @@ def test_dmp_degree():
     assert dmp_degree([1, 0], 0) == 1
     assert dmp_degree([1, 0, 0, 0, 1], 0) == 4
     assert dmp_degree([1, 2, 0, 3], 0) == 3
+    assert dmp_degree([1, 1, 2, 0], 0) == 3
 
     assert dmp_degree([[]], 1) == -oo
     assert dmp_degree([[[]]], 2) == -oo

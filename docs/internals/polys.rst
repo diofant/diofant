@@ -204,7 +204,6 @@ fields.
 .. autofunction:: gf_crt1
 .. autofunction:: gf_crt2
 .. autofunction:: gf_int
-.. autofunction:: gf_degree
 .. autofunction:: gf_trunc
 .. autofunction:: gf_from_dict
 .. autofunction:: gf_to_dict

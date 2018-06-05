@@ -8,10 +8,10 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_compose, gf_compose_mod, gf_crt,
                                        gf_crt1, gf_crt2, gf_csolve,
                                        gf_ddf_shoup, gf_ddf_zassenhaus,
-                                       gf_degree, gf_diff, gf_div,
-                                       gf_edf_shoup, gf_edf_zassenhaus,
-                                       gf_eval, gf_expand, gf_exquo, gf_factor,
-                                       gf_factor_sqf, gf_frobenius_map,
+                                       gf_diff, gf_div, gf_edf_shoup,
+                                       gf_edf_zassenhaus, gf_eval, gf_expand,
+                                       gf_exquo, gf_factor, gf_factor_sqf,
+                                       gf_frobenius_map,
                                        gf_frobenius_monomial_base,
                                        gf_from_dict, gf_from_int_poly, gf_gcd,
                                        gf_gcdex, gf_int, gf_irred_p_ben_or,
@@ -55,13 +55,6 @@ def test_gf_int():
     assert gf_int(3, 5) == -2
     assert gf_int(4, 5) == -1
     assert gf_int(5, 5) == 0
-
-
-def test_gf_degree():
-    assert gf_degree([]) == -1
-    assert gf_degree([1]) == 0
-    assert gf_degree([1, 0]) == 1
-    assert gf_degree([1, 0, 0, 0, 1]) == 4
 
 
 def test_gf_trunc():
