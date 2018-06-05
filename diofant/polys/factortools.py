@@ -19,7 +19,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_clear_denoms, dup_mirror,
-                         dup_monic, dup_primitive, dup_shift, dup_trunc)
+                         dup_primitive, dup_shift, dup_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_inner_gcd
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
                           gf_from_int_poly, gf_gcdex, gf_lshift, gf_mul,
@@ -1039,7 +1039,7 @@ def dup_ext_factor(f, K):
     """Factor univariate polynomials over algebraic number fields. """
     n, lc = dmp_degree(f, 0), dmp_LC(f, K)
 
-    f = dup_monic(f, K)
+    f = dmp_ground_monic(f, 0, K)
 
     if n <= 0:
         return lc, []

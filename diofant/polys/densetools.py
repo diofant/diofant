@@ -443,32 +443,6 @@ def dmp_ground_trunc(f, p, u, K):
     return dmp_strip([ dmp_ground_trunc(c, p, v, K) for c in f ], u)
 
 
-def dup_monic(f, K):
-    """
-    Divide all coefficients by ``LC(f)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_monic(3*x**2 + 6*x + 9)
-    x**2 + 2*x + 3
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_monic(3*x**2 + 4*x + 2)
-    x**2 + 4/3*x + 2/3
-    """
-    if not f:
-        return f
-
-    lc = dmp_LC(f, K)
-
-    if lc == K.one:
-        return f
-    else:
-        return dmp_exquo_ground(f, lc, 0, K)
-
-
 def dmp_ground_monic(f, u, K):
     """
     Divide all coefficients by ``LC(f)`` in ``K[X]``.
@@ -488,9 +462,6 @@ def dmp_ground_monic(f, u, K):
     >>> R.dmp_ground_monic(f)
     x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
     """
-    if not u:
-        return dup_monic(f, K)
-
     if dmp_zero_p(f, u):
         return f
 

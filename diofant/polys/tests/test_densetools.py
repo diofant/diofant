@@ -17,10 +17,10 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_integrate_in, dmp_lift, dmp_trunc,
                                       dup_clear_denoms, dup_decompose,
                                       dup_diff, dup_eval, dup_extract,
-                                      dup_integrate, dup_mirror, dup_monic,
-                                      dup_primitive, dup_revert, dup_scale,
-                                      dup_shift, dup_sign_variations,
-                                      dup_transform, dup_trunc)
+                                      dup_integrate, dup_mirror, dup_primitive,
+                                      dup_revert, dup_scale, dup_shift,
+                                      dup_sign_variations, dup_transform,
+                                      dup_trunc)
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
                                       NotReversible)
 from diofant.polys.rings import ring
@@ -265,26 +265,23 @@ def test_dmp_ground_trunc():
             [[[1, -1, 0], [-1]], [[]], [[1, -1, 0], [1, -1, 1], [1]]], 2, ZZ)
 
 
-def test_dup_monic():
-    assert dup_monic([3, 6, 9], ZZ) == [1, 2, 3]
-
-    pytest.raises(ExactQuotientFailed, lambda: dup_monic([3, 4, 5], ZZ))
-
-    assert dup_monic([], QQ) == []
-    assert dup_monic([QQ(1)], QQ) == [QQ(1)]
-    assert dup_monic([QQ(7), QQ(1), QQ(21)], QQ) == [QQ(1), QQ(1, 7), QQ(3)]
-
-
 def test_dmp_ground_monic():
-    assert dmp_ground_monic([[3], [6], [9]], 1, ZZ) == [[1], [2], [3]]
+    assert dmp_ground_monic([ZZ(3), ZZ(6), ZZ(9)], 0, ZZ) == [1, 2, 3]
+    assert dmp_ground_monic([QQ(3), QQ(4), QQ(2)], 0, QQ) == [1, QQ(4, 3), QQ(2, 3)]
 
-    pytest.raises(
-        ExactQuotientFailed, lambda: dmp_ground_monic([[3], [4], [5]], 1, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dmp_ground_monic([3, 4, 5], 0, ZZ))
+
+    assert dmp_ground_monic([], 0, QQ) == []
+    assert dmp_ground_monic([QQ(1)], 0, QQ) == [1]
+    assert dmp_ground_monic([QQ(7), QQ(1), QQ(21)], 0, QQ) == [1, QQ(1, 7), 3]
+
+    assert dmp_ground_monic([[ZZ(3)], [ZZ(6)], [ZZ(9)]], 1, ZZ) == [[1], [2], [3]]
+
+    pytest.raises(ExactQuotientFailed, lambda: dmp_ground_monic([[3], [4], [5]], 1, ZZ))
 
     assert dmp_ground_monic([[]], 1, QQ) == [[]]
-    assert dmp_ground_monic([[QQ(1)]], 1, QQ) == [[QQ(1)]]
-    assert dmp_ground_monic(
-        [[QQ(7)], [QQ(1)], [QQ(21)]], 1, QQ) == [[QQ(1)], [QQ(1, 7)], [QQ(3)]]
+    assert dmp_ground_monic([[QQ(1)]], 1, QQ) == [[1]]
+    assert dmp_ground_monic([[QQ(7)], [QQ(1)], [QQ(21)]], 1, QQ) == [[1], [QQ(1, 7)], [3]]
 
 
 def test_dmp_ground_content():

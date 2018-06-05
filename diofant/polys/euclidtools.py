@@ -16,7 +16,7 @@ from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
                          dup_clear_denoms, dup_diff, dup_eval, dup_extract,
-                         dup_monic, dup_primitive, dup_trunc)
+                         dup_primitive, dup_trunc)
 from .galoistools import gf_crt, gf_int
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
@@ -51,7 +51,7 @@ def dup_half_gcdex(f, g, K):
         a, b = b, dmp_sub_mul(a, q, b, 0, K)
 
     a = dmp_quo_ground(a, dmp_LC(f, K), 0, K)
-    f = dup_monic(f, K)
+    f = dmp_ground_monic(f, 0, K)
 
     return a, f
 
@@ -745,9 +745,9 @@ def _dup_ff_trivial_gcd(f, g, K):
     if not (f or g):
         return [], [], []
     elif not f:
-        return dup_monic(g, K), [], [dmp_LC(g, K)]
+        return dmp_ground_monic(g, 0, K), [], [dmp_LC(g, K)]
     elif not g:
-        return dup_monic(f, K), [dmp_LC(f, K)], []
+        return dmp_ground_monic(f, 0, K), [dmp_LC(f, K)], []
 
 
 def _dmp_rr_trivial_gcd(f, g, u, K):
@@ -882,7 +882,7 @@ def dup_ff_prs_gcd(f, g, K):
         return result
 
     h = dup_subresultants(f, g, K)[-1]
-    h = dup_monic(h, K)
+    h = dmp_ground_monic(h, 0, K)
 
     cff = dmp_quo(f, h, 0, K)
     cfg = dmp_quo(g, h, 0, K)
@@ -1257,7 +1257,7 @@ def dup_qq_heu_gcd(f, g, K0):
     h = dmp_convert(h, 0, K1, K0)
 
     c = dmp_LC(h, K0)
-    h = dup_monic(h, K0)
+    h = dmp_ground_monic(h, 0, K0)
 
     cff = dmp_convert(cff, 0, K1, K0)
     cfg = dmp_convert(cfg, 0, K1, K0)
@@ -1510,7 +1510,7 @@ def dup_ff_lcm(f, g, K):
     h = dmp_quo(dup_mul(f, g, K),
                 dup_gcd(f, g, K), 0, K)
 
-    return dup_monic(h, K)
+    return dmp_ground_monic(h, 0, K)
 
 
 def dup_lcm(f, g, K):

@@ -170,7 +170,6 @@ may be slightly more efficient.)
 .. autofunction:: dmp_diff_eval_in
 .. autofunction:: dmp_trunc
 .. autofunction:: dmp_ground_trunc
-.. autofunction:: dup_monic
 .. autofunction:: dmp_ground_monic
 .. autofunction:: dmp_ground_content
 .. autofunction:: dup_primitive
