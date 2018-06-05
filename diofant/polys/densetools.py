@@ -513,36 +513,6 @@ def dmp_ground_content(f, u, K):
     return cont
 
 
-def dup_primitive(f, K):
-    """
-    Compute content and the primitive form of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_primitive(f)
-    (2, 3*x**2 + 4*x + 6)
-
-    >>> R, x = ring("x", QQ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_primitive(f)
-    (2, 3*x**2 + 4*x + 6)
-    """
-    if not f:
-        return K.zero, f
-
-    cont = dmp_ground_content(f, 0, K)
-
-    if cont == K.one:
-        return cont, f
-    else:
-        return cont, dmp_quo_ground(f, cont, 0, K)
-
-
 def dmp_ground_primitive(f, u, K):
     """
     Compute content and the primitive form of ``f`` in ``K[X]``.
@@ -562,9 +532,6 @@ def dmp_ground_primitive(f, u, K):
     >>> R.dmp_ground_primitive(f)
     (2, x*y + 3*x + 2*y + 6)
     """
-    if not u:
-        return dup_primitive(f, K)
-
     if dmp_zero_p(f, u):
         return K.zero, f
 

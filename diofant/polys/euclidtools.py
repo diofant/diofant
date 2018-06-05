@@ -16,7 +16,7 @@ from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
                          dup_clear_denoms, dup_diff, dup_eval, dup_extract,
-                         dup_primitive, dup_trunc)
+                         dup_trunc)
 from .galoistools import gf_crt, gf_int
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
@@ -180,12 +180,12 @@ def dup_primitive_prs(f, g, K):
 
     """
     prs = [f, g]
-    _, h = dup_primitive(dup_prem(f, g, K), K)
+    _, h = dmp_ground_primitive(dup_prem(f, g, K), 0, K)
 
     while h:
         prs.append(h)
         f, g = g, h
-        _, h = dup_primitive(dup_prem(f, g, K), K)
+        _, h = dmp_ground_primitive(dup_prem(f, g, K), 0, K)
 
     return prs
 
@@ -841,13 +841,13 @@ def dup_rr_prs_gcd(f, g, K):
     if result is not None:
         return result
 
-    fc, F = dup_primitive(f, K)
-    gc, G = dup_primitive(g, K)
+    fc, F = dmp_ground_primitive(f, 0, K)
+    gc, G = dmp_ground_primitive(g, 0, K)
 
     c = K.gcd(fc, gc)
 
     h = dup_subresultants(F, G, K)[-1]
-    _, h = dup_primitive(h, K)
+    _, h = dmp_ground_primitive(h, 0, K)
 
     if K.is_negative(dmp_LC(h, K)):
         c = -c
@@ -1060,7 +1060,7 @@ def dup_zz_heu_gcd(f, g, K):
             cfg = gg // h
 
             h = _dup_zz_gcd_interpolate(h, x, K)
-            h = dup_primitive(h, K)[1]
+            h = dmp_ground_primitive(h, 0, K)[1]
 
             cff_, r = dmp_div(f, h, 0, K)
 
@@ -1480,8 +1480,8 @@ def dup_rr_lcm(f, g, K):
     x**3 - 2*x**2 - x + 2
 
     """
-    fc, f = dup_primitive(f, K)
-    gc, g = dup_primitive(g, K)
+    fc, f = dmp_ground_primitive(f, 0, K)
+    gc, g = dmp_ground_primitive(g, 0, K)
 
     c = K.lcm(fc, gc)
 

@@ -19,7 +19,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_clear_denoms, dup_mirror,
-                         dup_primitive, dup_shift, dup_trunc)
+                         dup_shift, dup_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_inner_gcd
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
                           gf_from_int_poly, gf_gcdex, gf_lshift, gf_mul,
@@ -273,7 +273,7 @@ def dup_zz_zassenhaus(f, K):
                 for i in S:
                     G = dup_mul(G, g[i], K)
                 G = dup_trunc(G, pl, K)
-                G = dup_primitive(G, K)[1]
+                G = dmp_ground_primitive(G, 0, K)[1]
                 q = G[-1]
                 if q and fc % q != 0:
                     continue
@@ -300,8 +300,8 @@ def dup_zz_zassenhaus(f, K):
                 T = T_S
                 sorted_T = [i for i in sorted_T if i not in S]
 
-                G = dup_primitive(G, K)[1]
-                f = dup_primitive(H, K)[1]
+                G = dmp_ground_primitive(G, 0, K)[1]
+                f = dmp_ground_primitive(H, 0, K)[1]
 
                 factors.append(G)
                 b = dmp_LC(f, K)
@@ -472,7 +472,7 @@ def dup_zz_cyclotomic_factor(f, K):
 
 def dup_zz_factor_sqf(f, K):
     """Factor square-free (non-primitive) polynomials in `Z[x]`. """
-    cont, g = dup_primitive(f, K)
+    cont, g = dmp_ground_primitive(f, 0, K)
 
     n = dmp_degree(g, 0)
 
@@ -537,7 +537,7 @@ def dup_zz_factor(f, K):
 
     .. [1] [Gathen99]_
     """
-    cont, g = dup_primitive(f, K)
+    cont, g = dmp_ground_primitive(f, 0, K)
 
     n = dmp_degree(g, 0)
 
@@ -596,7 +596,7 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
     if not dmp_sqf_p(g, 0, K):
         raise EvaluationFailed('no luck')
 
-    c, h = dup_primitive(g, K)
+    c, h = dmp_ground_primitive(g, 0, K)
 
     if K.is_negative(dmp_LC(h, K)):
         c, h = -c, dmp_neg(h, 0, K)
@@ -1116,7 +1116,7 @@ def dmp_gf_factor(f, u, K):
 def dup_factor_list(f, K0):
     """Factor polynomials into irreducibles in `K[x]`. """
     (j,), f = dmp_terms_gcd(f, 0, K0)
-    cont, f = dup_primitive(f, K0)
+    cont, f = dmp_ground_primitive(f, 0, K0)
 
     if K0.is_FiniteField:
         coeff, factors = dup_gf_factor(f, K0)
