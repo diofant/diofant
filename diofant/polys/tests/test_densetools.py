@@ -16,11 +16,10 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_ground_trunc, dmp_integrate,
                                       dmp_integrate_in, dmp_lift, dmp_trunc,
                                       dup_clear_denoms, dup_decompose,
-                                      dup_diff, dup_eval, dup_extract,
-                                      dup_integrate, dup_mirror, dup_revert,
-                                      dup_scale, dup_shift,
-                                      dup_sign_variations, dup_transform,
-                                      dup_trunc)
+                                      dup_diff, dup_eval, dup_integrate,
+                                      dup_mirror, dup_revert, dup_scale,
+                                      dup_shift, dup_sign_variations,
+                                      dup_transform, dup_trunc)
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
                                       NotReversible)
 from diofant.polys.rings import ring
@@ -382,17 +381,19 @@ def test_dmp_ground_primitive():
     assert dmp_ground_primitive([[QQ(2, 3)], [QQ(4, 5)]], 1, QQ) == (QQ(2, 15), [[5], [6]])
 
 
-def test_dup_extract():
+def test_dmp_ground_extract():
     f = dmp_normal([2930944, 0, 2198208, 0, 549552, 0, 45796], 0, ZZ)
     g = dmp_normal([17585664, 0, 8792832, 0, 1099104, 0], 0, ZZ)
 
     F = dmp_normal([64, 0, 48, 0, 12, 0, 1], 0, ZZ)
     G = dmp_normal([384, 0, 192, 0, 24, 0], 0, ZZ)
 
-    assert dup_extract(f, g, ZZ) == (45796, F, G)
+    assert dmp_ground_extract(f, g, 0, ZZ) == (45796, F, G)
 
+    f, g = [ZZ(6), ZZ(12), ZZ(18)], [ZZ(4), ZZ(8), ZZ(12)]
 
-def test_dmp_ground_extract():
+    assert dmp_ground_extract(f, g, 0, ZZ) == (2, [3, 6, 9], [2, 4, 6])
+
     f = dmp_normal([[2930944], [], [2198208], [], [549552], [], [45796]], 1, ZZ)
     g = dmp_normal([[17585664], [], [8792832], [], [1099104], []], 1, ZZ)
 

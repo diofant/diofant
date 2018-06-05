@@ -173,7 +173,6 @@ may be slightly more efficient.)
 .. autofunction:: dmp_ground_monic
 .. autofunction:: dmp_ground_content
 .. autofunction:: dmp_ground_primitive
-.. autofunction:: dup_extract
 .. autofunction:: dmp_ground_extract
 .. autofunction:: dup_real_imag
 .. autofunction:: dup_mirror

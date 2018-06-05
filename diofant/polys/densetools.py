@@ -543,30 +543,6 @@ def dmp_ground_primitive(f, u, K):
         return cont, dmp_quo_ground(f, cont, u, K)
 
 
-def dup_extract(f, g, K):
-    """
-    Extract common content from a pair of polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_extract(6*x**2 + 12*x + 18, 4*x**2 + 8*x + 12)
-    (2, 3*x**2 + 6*x + 9, 2*x**2 + 4*x + 6)
-    """
-    fc = dmp_ground_content(f, 0, K)
-    gc = dmp_ground_content(g, 0, K)
-
-    gcd = K.gcd(fc, gc)
-
-    if gcd != K.one:
-        f = dmp_quo_ground(f, gcd, 0, K)
-        g = dmp_quo_ground(g, gcd, 0, K)
-
-    return gcd, f, g
-
-
 def dmp_ground_extract(f, g, u, K):
     """
     Extract common content from a pair of polynomials in ``K[X]``.

@@ -15,8 +15,7 @@ from .densebasic import (dmp_apply_pairs, dmp_cache_key, dmp_convert,
 from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
-                         dup_clear_denoms, dup_diff, dup_eval, dup_extract,
-                         dup_trunc)
+                         dup_clear_denoms, dup_diff, dup_eval, dup_trunc)
 from .galoistools import gf_crt, gf_int
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
@@ -1035,7 +1034,7 @@ def dup_zz_heu_gcd(f, g, K):
     df = dmp_degree(f, 0)
     dg = dmp_degree(g, 0)
 
-    gcd, f, g = dup_extract(f, g, K)
+    gcd, f, g = dmp_ground_extract(f, g, 0, K)
 
     if df == 0 or dg == 0:
         return [gcd], f, g
