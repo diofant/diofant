@@ -443,32 +443,6 @@ def dmp_ground_trunc(f, p, u, K):
     return dmp_strip([ dmp_ground_trunc(c, p, v, K) for c in f ], u)
 
 
-def dup_monic(f, K):
-    """
-    Divide all coefficients by ``LC(f)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_monic(3*x**2 + 6*x + 9)
-    x**2 + 2*x + 3
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_monic(3*x**2 + 4*x + 2)
-    x**2 + 4/3*x + 2/3
-    """
-    if not f:
-        return f
-
-    lc = dmp_LC(f, K)
-
-    if lc == K.one:
-        return f
-    else:
-        return dmp_exquo_ground(f, lc, 0, K)
-
-
 def dmp_ground_monic(f, u, K):
     """
     Divide all coefficients by ``LC(f)`` in ``K[X]``.
@@ -488,9 +462,6 @@ def dmp_ground_monic(f, u, K):
     >>> R.dmp_ground_monic(f)
     x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
     """
-    if not u:
-        return dup_monic(f, K)
-
     if dmp_zero_p(f, u):
         return f
 
@@ -500,45 +471,6 @@ def dmp_ground_monic(f, u, K):
         return f
     else:
         return dmp_exquo_ground(f, lc, u, K)
-
-
-def dup_content(f, K):
-    """
-    Compute the GCD of coefficients of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_content(f)
-    2
-
-    >>> R, x = ring("x", QQ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_content(f)
-    2
-    """
-    from ..domains import QQ
-
-    if not f:
-        return K.zero
-
-    cont = K.zero
-
-    if K == QQ:
-        for c in f:
-            cont = K.gcd(cont, c)
-    else:
-        for c in f:
-            cont = K.gcd(cont, c)
-
-            if cont == K.one:
-                break
-
-    return cont
 
 
 def dmp_ground_content(f, u, K):
@@ -560,17 +492,15 @@ def dmp_ground_content(f, u, K):
     >>> R.dmp_ground_content(f)
     2
     """
-    from ..domains import QQ
-
-    if not u:
-        return dup_content(f, K)
+    if u < 0:
+        return f
 
     if dmp_zero_p(f, u):
         return K.zero
 
     cont, v = K.zero, u - 1
 
-    if K == QQ:
+    if K.is_RationalField:
         for c in f:
             cont = K.gcd(cont, dmp_ground_content(c, v, K))
     else:
@@ -581,36 +511,6 @@ def dmp_ground_content(f, u, K):
                 break
 
     return cont
-
-
-def dup_primitive(f, K):
-    """
-    Compute content and the primitive form of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_primitive(f)
-    (2, 3*x**2 + 4*x + 6)
-
-    >>> R, x = ring("x", QQ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_primitive(f)
-    (2, 3*x**2 + 4*x + 6)
-    """
-    if not f:
-        return K.zero, f
-
-    cont = dup_content(f, K)
-
-    if cont == K.one:
-        return cont, f
-    else:
-        return cont, dmp_quo_ground(f, cont, 0, K)
 
 
 def dmp_ground_primitive(f, u, K):
@@ -632,9 +532,6 @@ def dmp_ground_primitive(f, u, K):
     >>> R.dmp_ground_primitive(f)
     (2, x*y + 3*x + 2*y + 6)
     """
-    if not u:
-        return dup_primitive(f, K)
-
     if dmp_zero_p(f, u):
         return K.zero, f
 
@@ -644,30 +541,6 @@ def dmp_ground_primitive(f, u, K):
         return cont, f
     else:
         return cont, dmp_quo_ground(f, cont, u, K)
-
-
-def dup_extract(f, g, K):
-    """
-    Extract common content from a pair of polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_extract(6*x**2 + 12*x + 18, 4*x**2 + 8*x + 12)
-    (2, 3*x**2 + 6*x + 9, 2*x**2 + 4*x + 6)
-    """
-    fc = dup_content(f, K)
-    gc = dup_content(g, K)
-
-    gcd = K.gcd(fc, gc)
-
-    if gcd != K.one:
-        f = dmp_quo_ground(f, gcd, 0, K)
-        g = dmp_quo_ground(g, gcd, 0, K)
-
-    return gcd, f, g
 
 
 def dmp_ground_extract(f, g, u, K):

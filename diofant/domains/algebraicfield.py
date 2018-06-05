@@ -1,5 +1,7 @@
 """Implementation of :class:`AlgebraicField` class. """
 
+import functools
+
 from ..core import Integer, sympify
 from ..core.sympify import CantSympify
 from ..polys.densearith import (dmp_neg, dmp_pow, dmp_rem, dup_add, dup_mul,
@@ -270,8 +272,10 @@ class AlgebraicElement(DomainElement, CantSympify):
 
     @property
     def numerator(self):
-        return self
+        return self*self.denominator
 
     @property
     def denominator(self):
-        return self.parent.one
+        return self.per(functools.reduce(self.domain.ring.lcm,
+                                         (_.denominator for _ in self.rep),
+                                         self.domain.ring.one))

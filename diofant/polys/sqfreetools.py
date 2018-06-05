@@ -4,7 +4,7 @@ from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul
 from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
                          dmp_inject, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
-                         dmp_ground_primitive, dup_monic, dup_shift)
+                         dmp_ground_primitive, dup_shift)
 from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant, dup_gcd
 from .galoistools import gf_sqf_list, gf_sqf_part
 from .polyerrors import DomainError
@@ -229,7 +229,7 @@ def dup_gff_list(f, K):
     if not f:
         raise ValueError("greatest factorial factorization doesn't exist for a zero polynomial")
 
-    f = dup_monic(f, K)
+    f = dmp_ground_monic(f, 0, K)
 
     if not dmp_degree(f, 0):
         return []

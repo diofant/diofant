@@ -289,7 +289,7 @@ def test_dmp_zz_wang():
     A = [ZZ(-14), ZZ(3)]
 
     S = R.dmp_eval_tail(w_1, A)
-    cs, s = UV.dup_primitive(S)
+    cs, s = UV.dmp_ground_primitive(S)
 
     assert cs == 1 and s == S == \
         1036728*_x**6 + 915552*_x**5 + 55748*_x**4 + 105621*_x**3 - 17304*_x**2 - 26841*_x - 644

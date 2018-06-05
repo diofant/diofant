@@ -1,6 +1,7 @@
 """Computational algebraic field theory. """
 
 import functools
+import operator
 
 import mpmath
 
@@ -9,8 +10,8 @@ from ..core import (Add, AlgebraicNumber, Dummy, E, GoldenRatio, I, Integer,
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ, AlgebraicField
-from ..functions import cos, exp_polar, root, sin, sqrt
-from ..ntheory import divisors, sieve
+from ..functions import ceiling, cos, exp_polar, root, sin, sqrt
+from ..ntheory import divisors, factorint, multiplicity, sieve
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
@@ -672,6 +673,10 @@ def primitive_element(extension, **args):
            primitive elements of extension fields, Journal of Symbolic
            Computation, Volume 8, Issue 6, 1989, pp. 553-580,
            https://linkinghub.elsevier.com/retrieve/pii/S0747717189800616.
+    .. [2] Steven Arno, M.L. Robinson, Ferell S. Wheeler, On Denominators
+           of Algebraic Numbers and Integer Polynomials, Journal of Number
+           Theory, Volume 57, Issue 2, 1996, pp. 292-302,
+           https://doi.org/10.1006/jnth.1996.0049.
     """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
@@ -708,6 +713,15 @@ def primitive_element(extension, **args):
     H = [h.rem(g).all_coeffs() for y, h in zip(Y, H)]
 
     _, g = PurePoly(g).clear_denoms(convert=True)
+
+    if g.LC() != 1:
+        d = functools.reduce(operator.mul,
+                             (p**max(ceiling((multiplicity(p, g.LC()) - multiplicity(p, a))/j)
+                                     for j, a in enumerate(g.all_coeffs()[1:], 1) if a)
+                              for p in factorint(g.LC())))
+        H = [list(reversed([c/d**n for n, c in enumerate(reversed(h))])) for h in H]
+        coeffs = [c*d for c in coeffs]
+        g = (g.compose(Poly(g.gen/d))*d**g.degree()//g.LC()).retract()
 
     return g, list(coeffs), H
 

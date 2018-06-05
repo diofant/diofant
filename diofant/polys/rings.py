@@ -354,11 +354,11 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return self.clone(symbols=symbols)
 
     def to_ground(self):
-        # TODO: should AlgebraicField be a Composite domain?
-        if self.domain.is_Composite or hasattr(self.domain, 'domain'):
+        if self.domain.is_Composite or self.domain.is_Algebraic:
             return self.clone(domain=self.domain.domain)
         else:
-            raise ValueError("%s is not a composite domain" % self.domain)
+            raise ValueError("%s is not a composite or algebraic "
+                             "domain" % self.domain)
 
     def to_field(self):
         return self.domain.frac_field(*self.symbols, order=self.order)

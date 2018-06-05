@@ -654,9 +654,13 @@ def test_Domain___eq__():
 
 
 def test_Domain__algebraic_field():
-    alg = ZZ.algebraic_field(sqrt(2))
-    assert alg.minpoly == Poly(x**2 - 2)
+    alg = ZZ.algebraic_field(sqrt(3))
+    assert alg.minpoly == Poly(x**2 - 3)
     assert alg.domain == QQ
+    assert alg.from_expr(sqrt(3)).denominator == 1
+    assert alg.from_expr(2*sqrt(3)).denominator == 1
+    assert alg.from_expr(sqrt(3)/2).denominator == 2
+    assert alg([QQ(7, 38), QQ(3, 2)]).denominator == 38
 
     alg = QQ.algebraic_field(sqrt(2))
     assert alg.minpoly == Poly(x**2 - 2)
@@ -670,6 +674,8 @@ def test_Domain__algebraic_field():
     assert alg.is_nonnegative(alg([2, -1])) is True
 
     assert alg(1).numerator == alg(1)
+    assert alg.from_expr(sqrt(3)/2).numerator == alg.from_expr(2*sqrt(3))
+    assert alg.from_expr(sqrt(3)/2).denominator == 4
 
     pytest.raises(DomainError, lambda: AlgebraicField(ZZ, sqrt(2)))
 

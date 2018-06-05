@@ -8,24 +8,23 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_compose, gf_compose_mod, gf_crt,
                                        gf_crt1, gf_crt2, gf_csolve,
                                        gf_ddf_shoup, gf_ddf_zassenhaus,
-                                       gf_degree, gf_diff, gf_div,
-                                       gf_edf_shoup, gf_edf_zassenhaus,
-                                       gf_eval, gf_expand, gf_exquo, gf_factor,
-                                       gf_factor_sqf, gf_frobenius_map,
+                                       gf_diff, gf_div, gf_edf_shoup,
+                                       gf_edf_zassenhaus, gf_eval, gf_expand,
+                                       gf_exquo, gf_factor, gf_factor_sqf,
+                                       gf_frobenius_map,
                                        gf_frobenius_monomial_base,
                                        gf_from_dict, gf_from_int_poly, gf_gcd,
                                        gf_gcdex, gf_int, gf_irred_p_ben_or,
                                        gf_irred_p_rabin, gf_irreducible,
                                        gf_irreducible_p, gf_lcm, gf_lshift,
                                        gf_monic, gf_mul, gf_mul_ground,
-                                       gf_multi_eval, gf_neg, gf_normal,
-                                       gf_pow, gf_pow_mod, gf_Qbasis,
-                                       gf_Qmatrix, gf_quo, gf_rem, gf_rshift,
-                                       gf_sqf_list, gf_sqf_p, gf_sqf_part,
-                                       gf_sqr, gf_sub, gf_sub_ground,
-                                       gf_sub_mul, gf_to_dict, gf_to_int_poly,
-                                       gf_trace_map, gf_trunc, gf_value,
-                                       linear_congruence)
+                                       gf_multi_eval, gf_neg, gf_pow,
+                                       gf_pow_mod, gf_Qbasis, gf_Qmatrix,
+                                       gf_quo, gf_rem, gf_rshift, gf_sqf_list,
+                                       gf_sqf_p, gf_sqf_part, gf_sqr, gf_sub,
+                                       gf_sub_ground, gf_sub_mul, gf_to_dict,
+                                       gf_to_int_poly, gf_trace_map, gf_trunc,
+                                       gf_value, linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
 
@@ -58,13 +57,6 @@ def test_gf_int():
     assert gf_int(5, 5) == 0
 
 
-def test_gf_degree():
-    assert gf_degree([]) == -1
-    assert gf_degree([1]) == 0
-    assert gf_degree([1, 0]) == 1
-    assert gf_degree([1, 0, 0, 0, 1]) == 4
-
-
 def test_gf_trunc():
     assert gf_trunc([], 11) == []
     assert gf_trunc([1], 11) == [1]
@@ -73,10 +65,6 @@ def test_gf_trunc():
 
     assert gf_trunc([11, 22, 17, 1, 0], 11) == [6, 1, 0]
     assert gf_trunc([12, 23, 17, 1, 0], 11) == [1, 1, 6, 1, 0]
-
-
-def test_gf_normal():
-    assert gf_normal([11, 22, 17, 1, 0], 11, ZZ) == [6, 1, 0]
 
 
 def test_gf_from_to_dict():
