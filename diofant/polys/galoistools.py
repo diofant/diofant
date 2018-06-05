@@ -143,19 +143,6 @@ def gf_trunc(f, p):
     return dmp_strip([a % p for a in f], 0)
 
 
-def gf_normal(f, p, K):
-    """
-    Normalize all coefficients in ``K``.
-
-    Examples
-    ========
-
-    >>> gf_normal([5, 10, 21, -3], 5, ZZ)
-    [1, 2]
-    """
-    return gf_trunc(list(map(K, f)), p)
-
-
 def gf_from_dict(f, p, K):
     """
     Create a ``GF(p)[x]`` polynomial from a dict.

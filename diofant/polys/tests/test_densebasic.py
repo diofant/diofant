@@ -5,7 +5,7 @@ import random
 import pytest
 
 from diofant import Integer, Rational, oo
-from diofant.domains import QQ, ZZ
+from diofant.domains import FF, QQ, ZZ
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_cache_key,
                                       dmp_convert, dmp_copy, dmp_deflate,
                                       dmp_degree, dmp_degree_in,
@@ -211,6 +211,11 @@ def test_dmp_normal():
 
     assert (dmp_normal([[0], [], [0, 2, 1], [0], [11], []], 1, ZZ) ==
             [[ZZ(2), ZZ(1)], [], [ZZ(11)], []])
+
+    F5 = FF(5)
+    assert dmp_normal([5, 10, 21, -3], 0, F5) == [F5(1), F5(2)]
+    F11 = FF(11)
+    assert dmp_normal([11, 22, 17, 1, 0], 0, F11) == [F11(6), F11(1), F11(0)]
 
 
 def test_dmp_convert():

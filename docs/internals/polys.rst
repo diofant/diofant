@@ -206,7 +206,6 @@ fields.
 .. autofunction:: gf_int
 .. autofunction:: gf_degree
 .. autofunction:: gf_trunc
-.. autofunction:: gf_normal
 .. autofunction:: gf_from_dict
 .. autofunction:: gf_to_dict
 .. autofunction:: gf_from_int_poly
