@@ -15,13 +15,12 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_ground_monic, dmp_ground_primitive,
                                       dmp_ground_trunc, dmp_integrate,
                                       dmp_integrate_in, dmp_lift, dmp_trunc,
-                                      dup_clear_denoms, dup_content,
-                                      dup_decompose, dup_diff, dup_eval,
-                                      dup_extract, dup_integrate, dup_mirror,
-                                      dup_monic, dup_primitive, dup_revert,
-                                      dup_scale, dup_shift,
-                                      dup_sign_variations, dup_transform,
-                                      dup_trunc)
+                                      dup_clear_denoms, dup_decompose,
+                                      dup_diff, dup_eval, dup_extract,
+                                      dup_integrate, dup_mirror, dup_monic,
+                                      dup_primitive, dup_revert, dup_scale,
+                                      dup_shift, dup_sign_variations,
+                                      dup_transform, dup_trunc)
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
                                       NotReversible)
 from diofant.polys.rings import ring
@@ -288,59 +287,52 @@ def test_dmp_ground_monic():
         [[QQ(7)], [QQ(1)], [QQ(21)]], 1, QQ) == [[QQ(1)], [QQ(1, 7)], [QQ(3)]]
 
 
-def test_dup_content():
-    assert dup_content([], ZZ) == ZZ(0)
-    assert dup_content([1], ZZ) == ZZ(1)
-    assert dup_content([-1], ZZ) == ZZ(1)
-    assert dup_content([1, 1], ZZ) == ZZ(1)
-    assert dup_content([2, 2], ZZ) == ZZ(2)
-    assert dup_content([1, 2, 1], ZZ) == ZZ(1)
-    assert dup_content([2, 4, 2], ZZ) == ZZ(2)
-
-    assert dup_content([QQ(2, 3), QQ(4, 9)], QQ) == QQ(2, 9)
-    assert dup_content([QQ(2, 3), QQ(4, 5)], QQ) == QQ(2, 15)
-
-
 def test_dmp_ground_content():
-    assert dmp_ground_content([[]], 1, ZZ) == ZZ(0)
-    assert dmp_ground_content([[]], 1, QQ) == QQ(0)
-    assert dmp_ground_content([[1]], 1, ZZ) == ZZ(1)
-    assert dmp_ground_content([[-1]], 1, ZZ) == ZZ(1)
-    assert dmp_ground_content([[1], [1]], 1, ZZ) == ZZ(1)
-    assert dmp_ground_content([[2], [2]], 1, ZZ) == ZZ(2)
-    assert dmp_ground_content([[1], [2], [1]], 1, ZZ) == ZZ(1)
-    assert dmp_ground_content([[2], [4], [2]], 1, ZZ) == ZZ(2)
+    assert dmp_ground_content([], 0, ZZ) == 0
+    assert dmp_ground_content([ZZ(+1)], 0, ZZ) == 1
+    assert dmp_ground_content([ZZ(-1)], 0, ZZ) == 1
+    assert dmp_ground_content([ZZ(1), ZZ(1)], 0, ZZ) == 1
+    assert dmp_ground_content([ZZ(2), ZZ(2)], 0, ZZ) == 2
+    assert dmp_ground_content([ZZ(1), ZZ(2), ZZ(1)], 0, ZZ) == 1
+    assert dmp_ground_content([ZZ(2), ZZ(4), ZZ(2)], 0, ZZ) == 2
+    assert dmp_ground_content([ZZ(6), ZZ(8), ZZ(12)], 0, ZZ) == 2
+    assert dmp_ground_content([QQ(6), QQ(8), QQ(12)], 0, QQ) == 2
+
+    assert dmp_ground_content([QQ(2, 3), QQ(4, 9)], 0, QQ) == QQ(2, 9)
+    assert dmp_ground_content([QQ(2, 3), QQ(4, 5)], 0, QQ) == QQ(2, 15)
+
+    assert dmp_ground_content([[]], 1, ZZ) == 0
+    assert dmp_ground_content([[]], 1, QQ) == 0
+    assert dmp_ground_content([[ZZ(+1)]], 1, ZZ) == 1
+    assert dmp_ground_content([[ZZ(-1)]], 1, ZZ) == 1
+    assert dmp_ground_content([[ZZ(1)], [ZZ(1)]], 1, ZZ) == 1
+    assert dmp_ground_content([[ZZ(2)], [ZZ(2)]], 1, ZZ) == 2
+    assert dmp_ground_content([[ZZ(1)], [ZZ(2)], [ZZ(1)]], 1, ZZ) == 1
+    assert dmp_ground_content([[ZZ(2)], [ZZ(4)], [ZZ(2)]], 1, ZZ) == 2
 
     assert dmp_ground_content([[QQ(2, 3)], [QQ(4, 9)]], 1, QQ) == QQ(2, 9)
     assert dmp_ground_content([[QQ(2, 3)], [QQ(4, 5)]], 1, QQ) == QQ(2, 15)
 
-    assert dmp_ground_content(f_0, 2, ZZ) == ZZ(1)
-    assert dmp_ground_content(
-        dmp_mul_ground(f_0, ZZ(2), 2, ZZ), 2, ZZ) == ZZ(2)
+    assert dmp_ground_content(f_0, 2, ZZ) == 1
+    assert dmp_ground_content(dmp_mul_ground(f_0, ZZ(2), 2, ZZ), 2, ZZ) == 2
 
-    assert dmp_ground_content(f_1, 2, ZZ) == ZZ(1)
-    assert dmp_ground_content(
-        dmp_mul_ground(f_1, ZZ(3), 2, ZZ), 2, ZZ) == ZZ(3)
+    assert dmp_ground_content(f_1, 2, ZZ) == 1
+    assert dmp_ground_content(dmp_mul_ground(f_1, ZZ(3), 2, ZZ), 2, ZZ) == 3
 
-    assert dmp_ground_content(f_2, 2, ZZ) == ZZ(1)
-    assert dmp_ground_content(
-        dmp_mul_ground(f_2, ZZ(4), 2, ZZ), 2, ZZ) == ZZ(4)
+    assert dmp_ground_content(f_2, 2, ZZ) == 1
+    assert dmp_ground_content(dmp_mul_ground(f_2, ZZ(4), 2, ZZ), 2, ZZ) == 4
 
-    assert dmp_ground_content(f_3, 2, ZZ) == ZZ(1)
-    assert dmp_ground_content(
-        dmp_mul_ground(f_3, ZZ(5), 2, ZZ), 2, ZZ) == ZZ(5)
+    assert dmp_ground_content(f_3, 2, ZZ) == 1
+    assert dmp_ground_content(dmp_mul_ground(f_3, ZZ(5), 2, ZZ), 2, ZZ) == 5
 
-    assert dmp_ground_content(f_4, 2, ZZ) == ZZ(1)
-    assert dmp_ground_content(
-        dmp_mul_ground(f_4, ZZ(6), 2, ZZ), 2, ZZ) == ZZ(6)
+    assert dmp_ground_content(f_4, 2, ZZ) == 1
+    assert dmp_ground_content(dmp_mul_ground(f_4, ZZ(6), 2, ZZ), 2, ZZ) == 6
 
-    assert dmp_ground_content(f_5, 2, ZZ) == ZZ(1)
-    assert dmp_ground_content(
-        dmp_mul_ground(f_5, ZZ(7), 2, ZZ), 2, ZZ) == ZZ(7)
+    assert dmp_ground_content(f_5, 2, ZZ) == 1
+    assert dmp_ground_content(dmp_mul_ground(f_5, ZZ(7), 2, ZZ), 2, ZZ) == 7
 
-    assert dmp_ground_content(f_6, 3, ZZ) == ZZ(1)
-    assert dmp_ground_content(
-        dmp_mul_ground(f_6, ZZ(8), 3, ZZ), 3, ZZ) == ZZ(8)
+    assert dmp_ground_content(f_6, 3, ZZ) == 1
+    assert dmp_ground_content(dmp_mul_ground(f_6, ZZ(8), 3, ZZ), 3, ZZ) == 8
 
 
 def test_dup_primitive():

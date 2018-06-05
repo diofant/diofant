@@ -16,10 +16,10 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_zero_p,
                          dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc,
-                         dup_clear_denoms, dup_content, dup_mirror, dup_monic,
-                         dup_primitive, dup_shift, dup_trunc)
+                         dmp_eval_in, dmp_eval_tail, dmp_ground_content,
+                         dmp_ground_monic, dmp_ground_primitive,
+                         dmp_ground_trunc, dup_clear_denoms, dup_mirror,
+                         dup_monic, dup_primitive, dup_shift, dup_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_inner_gcd
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
                           gf_from_int_poly, gf_gcdex, gf_lshift, gf_mul,
@@ -318,7 +318,7 @@ def dup_zz_irreducible_p(f, K):
     lc = dmp_LC(f, K)
     tc = dmp_TC(f, K)
 
-    e_fc = dup_content(f[1:], K)
+    e_fc = dmp_ground_content(f[1:], 0, K)
 
     if e_fc:
         e_ff = factorint(int(e_fc))

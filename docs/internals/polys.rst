@@ -172,7 +172,6 @@ may be slightly more efficient.)
 .. autofunction:: dmp_ground_trunc
 .. autofunction:: dup_monic
 .. autofunction:: dmp_ground_monic
-.. autofunction:: dup_content
 .. autofunction:: dmp_ground_content
 .. autofunction:: dup_primitive
 .. autofunction:: dmp_ground_primitive

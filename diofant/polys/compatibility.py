@@ -17,11 +17,11 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate, dmp_integrate_in,
-                         dmp_lift, dmp_trunc, dup_clear_denoms, dup_content,
-                         dup_decompose, dup_diff, dup_eval, dup_extract,
-                         dup_integrate, dup_mirror, dup_monic, dup_primitive,
-                         dup_real_imag, dup_revert, dup_scale, dup_shift,
-                         dup_sign_variations, dup_transform, dup_trunc)
+                         dmp_lift, dmp_trunc, dup_clear_denoms, dup_decompose,
+                         dup_diff, dup_eval, dup_extract, dup_integrate,
+                         dup_mirror, dup_monic, dup_primitive, dup_real_imag,
+                         dup_revert, dup_scale, dup_shift, dup_sign_variations,
+                         dup_transform, dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -502,10 +502,6 @@ class IPolys:
     def dmp_lcm(self, f, g):
         H = dmp_lcm(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H)
-
-    def dup_content(self, f):
-        cont = dup_content(self.to_dense(f), self.domain)
-        return cont
 
     def dup_primitive(self, f):
         cont, prim = dup_primitive(self.to_dense(f), self.domain)
