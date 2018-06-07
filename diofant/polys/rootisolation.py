@@ -463,7 +463,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, fast=Fa
     return results
 
 
-def _isolate_zero(f, K, inf, sup, basis=False, sqf=False):
+def _isolate_zero(f, K, inf, sup, sqf=False):
     """Handle special case of CF algorithm when ``f`` is homogeneous. """
     (j,), f = dmp_terms_gcd(f, 0, K)
 
@@ -472,10 +472,7 @@ def _isolate_zero(f, K, inf, sup, basis=False, sqf=False):
 
         if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
             if not sqf:
-                if not basis:
-                    return [((F.zero, F.zero), j)], f
-                else:
-                    return [((F.zero, F.zero), j, [K.one, K.zero])], f
+                return [((F.zero, F.zero), j)], f
             else:
                 return [(F.zero, F.zero)], f
 
@@ -514,7 +511,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     if dmp_degree(f, 0) <= 0:
         return []
 
-    I_zero, f = _isolate_zero(f, K, inf, sup, basis=False, sqf=True)
+    I_zero, f = _isolate_zero(f, K, inf, sup, sqf=True)
 
     I_neg = dup_inner_isolate_negative_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
     I_pos = dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
@@ -555,7 +552,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
         if not K.is_IntegerRing:
             raise DomainError("isolation of real roots not supported over %s" % K)
 
-        I_zero, f = _isolate_zero(f, K, inf, sup, sqf=False)
+        I_zero, f = _isolate_zero(f, K, inf, sup)
         I_neg, I_pos = _real_isolate_and_disjoin(factors, K, eps, inf, sup, fast=fast)
         return sorted(I_neg + I_zero + I_pos)
 
