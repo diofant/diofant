@@ -442,6 +442,7 @@ def test_roots0():
     assert roots(a*b*c*x**3 + 2*x**2 + 4*x + 8, x, cubics=True) != {}
 
     assert roots(x**4 - 1, x, filter='Z') == {1: 1, -1: 1}
+    assert roots(x**4 - 1, x, filter='R') == {1: 1, -1: 1}
     assert roots(x**4 - 1, x, filter='I') == {I: 1, -I: 1}
 
     pytest.raises(ValueError, lambda: roots(x**4 - 1, x, filter='spam'))

@@ -185,39 +185,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return Mod(other, self)
 
     def __int__(self):
-        # Although we only need to round to the units position, we'll
-        # get one more digit so the extra testing below can be avoided
-        # unless the rounded value rounded to an integer, e.g. if an
-        # expression were equal to 1.9 and we rounded to the unit position
-        # we would get a 2 and would not know if this rounded up or not
-        # without doing a test (as done below). But if we keep an extra
-        # digit we know that 1.9 is not the same as 1 and there is no
-        # need for further testing: our int value is correct. If the value
-        # were 1.99, however, this would round to 2.0 and our int value is
-        # off by one. So...if our round value is the same as the int value
-        # (regardless of how much extra work we do to calculate extra decimal
-        # places) we need to test whether we are off by one.
-        from .symbol import Dummy
         r = self.round(2)
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
         if r in (nan, oo, -oo):
             raise TypeError("can't convert %s to int" % r)
-        i = int(r)
-        if not i:
-            return 0
-        # off-by-one check
-        if i == r and not (self - i).equals(0):
-            isign = 1 if i > 0 else -1
-            x = Dummy()
-            # in the following (self - i).evalf(2, strict=False) will not always work while
-            # (self - r).evalf(2, strict=False) and the use of subs does; if the test that
-            # was added when this comment was added passes, it might be safe
-            # to simply use sign to compute this rather than doing this by hand:
-            diff_sign = 1 if (self - x).evalf(2, strict=False, subs={x: i}) > 0 else -1
-            if diff_sign != isign:
-                i -= isign
-        return i
+        return int(r)
 
     def __float__(self):
         # Don't bother testing if it's a number; if it's not this is going

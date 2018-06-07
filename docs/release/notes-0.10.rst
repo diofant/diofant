@@ -76,3 +76,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14380` AlgebraicField.numer() could return an algebraic integer
 * :sympyissue:`14442` Should AlgebraicField be a Composite domain?
 * :sympyissue:`14759` dup_isolate_real_roots_list() docstring is wrong
+* :sympyissue:`14738` dup_count_complex_roots() can't handle degenerate cases

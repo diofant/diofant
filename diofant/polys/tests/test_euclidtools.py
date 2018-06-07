@@ -254,8 +254,9 @@ def test_dmp_subresultants():
 
     assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
 
+    g += 1
     with using(use_collins_resultant=True):
-        assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
+        assert R.dmp_resultant(f, g) == (2 + 2*y**2).drop(x)
 
     R, x, y = ring("x,y", QQ)
 
