@@ -171,21 +171,14 @@ class Relational(Boolean, Expr, EvalfMixin):
             dif = r.lhs - r.rhs
             # We want a Number to compare with zero and be sure to get a
             # True/False answer.  Check if we can deduce that dif is
-            # definitively zero or non-zero.  If non-zero, replace with an
-            # approximation.  If .equals(0) gives None, cannot be deduced.
+            # definitively zero or non-zero.
             if not dif.has(Dummy, Symbol):
                 know = dif.equals(0)
-                if know:
-                    dif = S.Zero
-                elif know is False:
+                if know is False:
                     if isinstance(r, Eq):
                         return False
                     elif isinstance(r, Ne):
                         return True
-            # Can definitively compare a Number to zero, if appropriate.
-            if dif.is_Number and dif.is_extended_real:
-                # Always T/F (we never return an expression w/ the evalf)
-                r = r.func._eval_relation(dif, S.Zero)
 
         r = r.canonical
         if measure(r) < ratio*measure(self):

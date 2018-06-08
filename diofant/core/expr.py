@@ -516,9 +516,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if not (deriv.is_Number or pure_complex(deriv)):
                     if flags.get('failing_number', False):
                         return failing_number
-                    elif deriv.free_symbols:
-                        # dead line provided _random returns None in such cases
-                        return
+                    else:
+                        assert deriv.free_symbols
+                        return  # dead line provided _random returns None in such cases
                 return False
         return True
 
@@ -536,9 +536,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         a Rational result, or is greater than 1) then the evalf value will be
         used to return True or False.
         """
-        from ..simplify.simplify import nsimplify, simplify
-        from ..solvers.solvers import solve
-
         other = sympify(other)
         if self == other:
             return True
@@ -572,34 +569,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if ndiff:
             return False
 
-        # sometimes we can use a simplified result to give a clue as to
-        # what the expression should be; if the expression is *not* zero
-        # then we should have been able to compute that and so now
-        # we can just consider the cases where the approximation appears
-        # to be zero -- we try to prove it via minimal_polynomial.
-        if diff.is_number:
-            approx = diff.nsimplify()
-            if not approx:
-                # try to prove via self-consistency
-                surds = [s for s in diff.atoms(Pow) if s.args[0].is_Integer]
-                # it seems to work better to try big ones first
-                surds.sort(key=lambda x: -x.args[0])
-                for s in surds:
-                    try:
-                        # simplify is False here -- this expression has already
-                        # been identified as being hard to identify as zero;
-                        # we will handle the checking ourselves using nsimplify
-                        # to see if we are in the right ballpark or not and if so
-                        # *then* the simplification will be attempted.
-                        sol = solve(diff, s, check=False, simplify=False)
-                        if any(s in list(_.values()) for _ in sol):
-                            return True
-                        if s.is_real and any(nsimplify(si[s], [s]) == s
-                                             and simplify(si[s]) == s
-                                             for si in sol):
-                            return True
-                    except NotImplementedError:  # pragma: no cover
-                        pass
+        if diff.is_zero:
+            return True
 
         if failing_expression:
             return diff
