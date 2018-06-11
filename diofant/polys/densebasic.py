@@ -1213,27 +1213,6 @@ def dmp_apply_pairs(f, g, h, args, u, K):
     return dmp_strip(result, u)
 
 
-def dup_slice(f, m, n, K):
-    """Take a continuous subsequence of terms of ``f`` in ``K[x]``. """
-    k = len(f)
-
-    if k >= m:
-        M = k - m
-    else:
-        M = 0
-    if k >= n:
-        N = k - n
-    else:
-        N = 0
-
-    f = f[N:M]
-
-    if not f:
-        return []
-    else:
-        return f + [K.zero]*m
-
-
 def dmp_slice(f, m, n, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``K[X]``. """
     return dmp_slice_in(f, m, n, 0, u, K)
@@ -1245,7 +1224,11 @@ def dmp_slice_in(f, m, n, j, u, K):
         raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
 
     if not u:
-        return dup_slice(f, m, n, K)
+        k = len(f)
+        M = k - m if k >= m else 0
+        N = k - n if k >= n else 0
+        f = f[N:M]
+        return f + [K.zero]*m if f else []
 
     f, g = dmp_to_dict(f, u), {}
 

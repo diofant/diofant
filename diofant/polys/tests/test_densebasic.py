@@ -23,7 +23,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_cache_key,
                                       dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
                                       dmp_validate, dmp_zero, dmp_zero_p,
                                       dmp_zeros, dup_from_dict, dup_inflate,
-                                      dup_random, dup_reverse, dup_slice)
+                                      dup_random, dup_reverse)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -666,35 +666,33 @@ def test_dmp_apply_pairs():
     assert dmp_apply_pairs([1, 2, 3], [3, 2, 1], h2, [1], 0, ZZ) == [4, 5, 6]
 
 
-def test_dup_slice():
+def test_dmp_slice():
     f = [1, 2, 3, 4]
 
-    assert dup_slice(f, 0, 0, ZZ) == []
-    assert dup_slice(f, 0, 1, ZZ) == [4]
-    assert dup_slice(f, 0, 2, ZZ) == [3, 4]
-    assert dup_slice(f, 0, 3, ZZ) == [2, 3, 4]
-    assert dup_slice(f, 0, 4, ZZ) == [1, 2, 3, 4]
+    assert dmp_slice(f, 0, 0, 0, ZZ) == []
+    assert dmp_slice(f, 0, 1, 0, ZZ) == [4]
+    assert dmp_slice(f, 0, 2, 0, ZZ) == [3, 4]
+    assert dmp_slice(f, 0, 3, 0, ZZ) == [2, 3, 4]
+    assert dmp_slice(f, 0, 4, 0, ZZ) == [1, 2, 3, 4]
 
-    assert dup_slice(f, 0, 4, ZZ) == f
-    assert dup_slice(f, 0, 9, ZZ) == f
+    assert dmp_slice(f, 0, 4, 0, ZZ) == f
+    assert dmp_slice(f, 0, 9, 0, ZZ) == f
 
-    assert dup_slice(f, 1, 0, ZZ) == []
-    assert dup_slice(f, 1, 1, ZZ) == []
-    assert dup_slice(f, 1, 2, ZZ) == [3, 0]
-    assert dup_slice(f, 1, 3, ZZ) == [2, 3, 0]
-    assert dup_slice(f, 1, 4, ZZ) == [1, 2, 3, 0]
+    assert dmp_slice(f, 1, 0, 0, ZZ) == []
+    assert dmp_slice(f, 1, 1, 0, ZZ) == []
+    assert dmp_slice(f, 1, 2, 0, ZZ) == [3, 0]
+    assert dmp_slice(f, 1, 3, 0, ZZ) == [2, 3, 0]
+    assert dmp_slice(f, 1, 4, 0, ZZ) == [1, 2, 3, 0]
 
-    assert dup_slice([1, 2], 0, 3, ZZ) == [1, 2]
+    assert dmp_slice([1, 2], 0, 3, 0, ZZ) == [1, 2]
 
-
-def test_dmp_slice():
     f = [[1], [2, 3, 4]]
     assert dmp_slice(f, 1, 2, 1, ZZ) == f
     assert dmp_slice(f, 2, 1, 1, ZZ) == [[2, 3, 5]]
 
     g = [1, 2, 3, 4]
-    assert dmp_slice(g, 0, 0, 0, ZZ) == dup_slice(g, 0, 0, ZZ)
-    assert dmp_slice(g, 0, 3, 0, ZZ) == dup_slice(g, 0, 3, ZZ)
+    assert dmp_slice(g, 0, 0, 0, ZZ) == []
+    assert dmp_slice(g, 0, 3, 0, ZZ) == [2, 3, 4]
 
     pytest.raises(IndexError, lambda: dmp_slice(g, 0, 0, -1, ZZ))
 
