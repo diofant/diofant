@@ -1225,3 +1225,7 @@ def test_diofantissue_447():
     assert integrate(1/(2*sin(x) + cos(x)),
                      x) == (sqrt(5)*log(tan(x/2) - 2 + sqrt(5))/5 -
                             sqrt(5)*log(tan(x/2) - sqrt(5) - 2)/5)
+
+
+def test_sympyissue_14782():
+    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) != 0

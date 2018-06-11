@@ -24,7 +24,7 @@ setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner', 'isort']
 extra_reqs = {'exports': ['numpy>=1.12.1', 'scipy', 'Theano>=0.9.0', 'Cython'],
               'gmpy': ['gmpy2>=2.1.0;platform_python_implementation!="PyPy"'],
               'plot': ['pyparsing!=2.1.2', 'matplotlib!=2.1.1'],
-              'interactive': ['ipython>=2.3.0'],
+              'interactive': ['ipykernel'],
               'docs': ['docutils!=0.13.1', 'sphinx>=1.6.7', 'numpydoc',
                        'sphinx_rtd_theme>=0.2.4'],
               }
