@@ -607,7 +607,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
         from .function import count_ops
-        from .symbol import Dummy
 
         if self.is_number:
             try:
